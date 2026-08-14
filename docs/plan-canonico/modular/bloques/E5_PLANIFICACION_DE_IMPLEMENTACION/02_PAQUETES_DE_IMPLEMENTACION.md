@@ -61,16 +61,16 @@ Se conserva `IMPLEMENTATION-PACKAGE-IDENTITY-CONTRACT-001@1.1.0` como contrato d
 
 ##### 3.2. Campos de identidad y linaje
 
-| Campo                     | Semántica canónica            | Regla                                             |
-| ------------------------- | ----------------------------- | ------------------------------------------------- |
-| `package_id`              | identidad permanente          | inmutable mientras represente el mismo expediente |
-| `package_revision`        | revisión del expediente       | monotónica dentro del mismo `package_id`          |
-| `package_status`          | estado documental u operativo | separado de identidad                             |
-| `package_title`           | nombre humano                 | modificable sin renumeración                      |
+| Campo                     | Semántica canónica            | Regla                                                                |
+| ------------------------- | ----------------------------- | -------------------------------------------------------------------- |
+| `package_id`              | identidad permanente          | inmutable mientras represente el mismo expediente                    |
+| `package_revision`        | revisión del expediente       | monotónica dentro del mismo `package_id`                             |
+| `package_status`          | estado documental u operativo | separado de identidad                                                |
+| `package_title`           | nombre humano                 | modificable sin renumeración                                         |
 | `implementation_unit_id`  | unidad física ejecutable      | se materializa después de definir repositorio, despliegue y rollback |
-| `derived_from_package_id` | linaje por división           | solo con decisión explícita                       |
-| `merged_from_package_ids` | linaje por fusión             | solo con decisión explícita                       |
-| `supersedes_package_id`   | linaje por sustitución        | solo con decisión explícita                       |
+| `derived_from_package_id` | linaje por división           | solo con decisión explícita                                          |
+| `merged_from_package_ids` | linaje por fusión             | solo con decisión explícita                                          |
+| `supersedes_package_id`   | linaje por sustitución        | solo con decisión explícita                                          |
 
 Los campos de linaje permanecen vacíos mientras no exista una decisión canónica que los materialice.
 
@@ -619,61 +619,61 @@ La materialización del delta es cerrada: seis brechas, seis paquetes, seis capa
 
 La matriz siguiente proyecta sin inferencia los vínculos aprobados por `PROCESS-GAP-RETURN-MATRIX-001`. La brecha fuente se resuelve contra la matriz completa de E1 para recuperar su `package_id`; cada par idéntico se conserva una sola vez.
 
-| `package_id` | `process_id` | Brecha fuente confirmada | `gap_id` estable E1 | `capability_id` | Decisión E2 |
-| --- | --- | --- | --- | --- | --- |
-| `GAP-PKG-094` | `VPROC-0001` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-01.02` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0003` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-01.05` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0004` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-01.08` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0009` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-02.08` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0012` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-03.01` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0013` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-03.04` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0014` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-03.06` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0018` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-04.09` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0020` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-05.04` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0027` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-06.14` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0029` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-07.02` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0030` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-07.07` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0031` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-07.12` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0033` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-08.02` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0035` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-08.12` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0037` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-08.13` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0041` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-09.14` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0047` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-10.08` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0048` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-11.02` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0055` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-13.07` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0058` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-15.06` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-094` | `VPROC-0062` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-18.05` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-097` | `VPROC-0065` | `H-CAP-COVER-011-008` | `H-CAP-COVER-011-008` | `CAP-02.10` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-107` | `VPROC-0032` | `H-CAP-SCOPE-007-007` | `H-CAP-SCOPE-007-007` | `CAP-07.03` | `EXISTING_GAP_SCOPE_EXTENDED` |
-| `GAP-PKG-107` | `VPROC-0067` | `H-CAP-SCOPE-008-012` | `H-CAP-SCOPE-008-012` | `CAP-07.11` | `EXISTING_GAP_SCOPE_EXTENDED` |
-| `GAP-PKG-108` | `VPROC-0032` | `H-CAP-SCOPE-007-006` | `H-CAP-SCOPE-007-006` | `CAP-07.03` | `EXISTING_GAP_SCOPE_EXTENDED` |
-| `GAP-PKG-147` | `VPROC-0056` | `H-CAP-SCOPE-014-006` | `H-CAP-SCOPE-014-006` | `CAP-14.03` | `EXISTING_GAP_SCOPE_EXTENDED` |
-| `GAP-PKG-147` | `VPROC-0057` | `H-CAP-SCOPE-014-006` | `H-CAP-SCOPE-014-006` | `CAP-14.07` | `EXISTING_GAP_SCOPE_EXTENDED` |
-| `GAP-PKG-167` | `VPROC-0001` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-01.02` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0003` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-01.05` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0004` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-01.08` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0009` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-02.08` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0012` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-03.01` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0013` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-03.04` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0014` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-03.06` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0018` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-04.09` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0020` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-05.04` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0027` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-06.14` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0029` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-07.02` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0030` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-07.07` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0031` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-07.12` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0033` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-08.02` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0035` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-08.12` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0037` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-08.13` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0041` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-09.14` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0047` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-10.08` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0048` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-11.02` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0055` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-13.07` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0058` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-15.06` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-167` | `VPROC-0062` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-18.05` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-174` | `VPROC-0065` | `H-CAP-SCOPE-002-010` | `H-CAP-SCOPE-002-010` | `CAP-02.10` | `LINKED_TO_EXISTING_GAP` |
-| `GAP-PKG-192` | `VPROC-0056` | `H-CODE-019-005` | `H-CODE-019-005` | `CAP-14.03` | `EXISTING_GAP_SCOPE_EXTENDED` |
-| `GAP-PKG-192` | `VPROC-0057` | `H-CODE-019-005` | `H-CODE-019-005` | `CAP-14.07` | `EXISTING_GAP_SCOPE_EXTENDED` |
+| `package_id`  | `process_id` | Brecha fuente confirmada | `gap_id` estable E1   | `capability_id` | Decisión E2                   |
+| ------------- | ------------ | ------------------------ | --------------------- | --------------- | ----------------------------- |
+| `GAP-PKG-094` | `VPROC-0001` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-01.02`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0003` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-01.05`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0004` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-01.08`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0009` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-02.08`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0012` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-03.01`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0013` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-03.04`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0014` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-03.06`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0018` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-04.09`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0020` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-05.04`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0027` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-06.14`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0029` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-07.02`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0030` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-07.07`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0031` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-07.12`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0033` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-08.02`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0035` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-08.12`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0037` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-08.13`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0041` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-09.14`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0047` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-10.08`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0048` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-11.02`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0055` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-13.07`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0058` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-15.06`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-094` | `VPROC-0062` | `H-CAP-COVER-002-008`    | `H-CAP-COVER-002-008` | `CAP-18.05`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-097` | `VPROC-0065` | `H-CAP-COVER-011-008`    | `H-CAP-COVER-011-008` | `CAP-02.10`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-107` | `VPROC-0032` | `H-CAP-SCOPE-007-007`    | `H-CAP-SCOPE-007-007` | `CAP-07.03`     | `EXISTING_GAP_SCOPE_EXTENDED` |
+| `GAP-PKG-107` | `VPROC-0067` | `H-CAP-SCOPE-008-012`    | `H-CAP-SCOPE-008-012` | `CAP-07.11`     | `EXISTING_GAP_SCOPE_EXTENDED` |
+| `GAP-PKG-108` | `VPROC-0032` | `H-CAP-SCOPE-007-006`    | `H-CAP-SCOPE-007-006` | `CAP-07.03`     | `EXISTING_GAP_SCOPE_EXTENDED` |
+| `GAP-PKG-147` | `VPROC-0056` | `H-CAP-SCOPE-014-006`    | `H-CAP-SCOPE-014-006` | `CAP-14.03`     | `EXISTING_GAP_SCOPE_EXTENDED` |
+| `GAP-PKG-147` | `VPROC-0057` | `H-CAP-SCOPE-014-006`    | `H-CAP-SCOPE-014-006` | `CAP-14.07`     | `EXISTING_GAP_SCOPE_EXTENDED` |
+| `GAP-PKG-167` | `VPROC-0001` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-01.02`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0003` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-01.05`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0004` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-01.08`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0009` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-02.08`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0012` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-03.01`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0013` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-03.04`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0014` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-03.06`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0018` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-04.09`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0020` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-05.04`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0027` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-06.14`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0029` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-07.02`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0030` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-07.07`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0031` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-07.12`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0033` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-08.02`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0035` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-08.12`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0037` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-08.13`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0041` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-09.14`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0047` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-10.08`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0048` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-11.02`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0055` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-13.07`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0058` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-15.06`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-167` | `VPROC-0062` | `H-CAP-COVER-003-007`    | `H-CAP-COVER-003-007` | `CAP-18.05`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-174` | `VPROC-0065` | `H-CAP-SCOPE-002-010`    | `H-CAP-SCOPE-002-010` | `CAP-02.10`     | `LINKED_TO_EXISTING_GAP`      |
+| `GAP-PKG-192` | `VPROC-0056` | `H-CODE-019-005`         | `H-CODE-019-005`      | `CAP-14.03`     | `EXISTING_GAP_SCOPE_EXTENDED` |
+| `GAP-PKG-192` | `VPROC-0057` | `H-CODE-019-005`         | `H-CODE-019-005`      | `CAP-14.07`     | `EXISTING_GAP_SCOPE_EXTENDED` |
 
 Reconciliación histórica cerrada: **53 pares únicos**, **27 `process_id`**, **8 `package_id`**, cero brechas fuente sin resolución a paquete y cero pares obtenidos por semejanza. Los demás paquetes históricos conservan cardinalidad cero de proceso mientras no exista una fuente canónica explícita que la cambie.
 
@@ -734,7 +734,7 @@ La reconstrucción debe ser independiente del orden de filas y producir siempre 
 | paquetes nuevos sin brecha explícita                         |               **0** |
 | pares históricos `package_id` ↔ `process_id`                 |              **53** |
 | procesos históricos confirmados en esos pares                |              **27** |
-| paquetes históricos con proceso confirmado                  |               **8** |
+| paquetes históricos con proceso confirmado                   |               **8** |
 | brechas fuente de proceso sin resolución a paquete           |               **0** |
 | valores provisionales promovidos a `process_id`              |               **0** |
 | paquetes históricos renumerados por esta tarea               |               **0** |
@@ -861,7 +861,473 @@ La tarea consume y organiza relaciones documentales ya aprobadas. No crea compor
 `DELIV-PKG-003 — Definir aplicación, dominio y repositorio propietarios`
 
 
-### [ ] DELIV-PKG-003 — Definir aplicación, dominio y repositorio propietarios
+### ✅ DELIV-PKG-003 — Definir aplicación, dominio y repositorio propietarios
+
+**Estado:** APROBADA
+**Tarea anterior:** `DELIV-PKG-002 — Vincular el paquete con capability_id, process_id y gap_id`
+**Tarea siguiente:** `DELIV-PKG-004 — Definir estado AS-IS y resultado TO-BE verificable`
+**Tipo de tarea:** documental — definición normativa y materialización completa de `application_owner`, `domain_owner` y `repo_owner` para los 207 `package_id` vigentes
+
+---
+
+#### 1. Propósito
+
+Cerrar la propiedad técnica y funcional de cada raíz `GAP-PKG-*` vigente sin alterar su identidad, membresía de brechas, capacidades o procesos aprobados. El resultado determina, para cada uno de los **207 paquetes**, qué aplicación o frontera distribuida conserva la responsabilidad funcional, qué dominio documental/técnico gobierna el cambio y qué repositorio conserva la responsabilidad primaria de materializar y coordinar el paquete.
+
+La asignación de esta tarea no equivale a enumerar todavía todos los repositorios consumidores ni todos los archivos afectados. `repo_owner` identifica el repositorio responsable de la raíz del paquete; `DELIV-PKG-014` materializará el inventario exacto de archivos y podrá incorporar repositorios consumidores sin transferir la propiedad raíz.
+
+---
+
+#### 2. Alcance y entradas canónicas preservadas
+
+- universo vigente de **207** `package_id`: `GAP-PKG-001..207`;
+- las **820** brechas reales y sus relaciones de `DELIV-PKG-002` permanecen sin modificación;
+- las capacidades, procesos, clase, propietario funcional de la brecha, ola, fecha, tarea dominante y perfiles de cierre heredados no se reinterpretan;
+- los códigos canónicos de aplicación continúan siendo `anima`, `aura`, `fogo`, `nexo`, `numera`, `origo`, `pass`, `pulso`, `shell` y `viso`;
+- aplicación, repositorio y paquete compartido conservan identidades distintas;
+- `VISO-SCHEDULE-MONTHLY-001` y `NEXO-REMISSIONS-001` permanecen fuera del universo `GAP-PKG-001..207`;
+- ninguna decisión de esta tarea autoriza implementación física, despliegue, migración, DDL, DML, backfill o cambio de producción.
+
+---
+
+#### 3. Contrato canónico de propiedad
+
+Cada `package_id` queda materializado con las siguientes propiedades:
+
+| Campo                | Regla canónica                                                                                                                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `package_id`         | identidad raíz estable `GAP-PKG-*`; no se renumera                                                                                                                                    |
+| `application_owner`  | código de aplicación canónico cuando existe una aplicación propietaria inequívoca; en trabajo transversal se usa una frontera distribuida explícita sin crear una aplicación ficticia |
+| `domain_owner`       | namespace exacto de la tarea dominante que gobierna el resultado del paquete                                                                                                          |
+| `repo_owner`         | repositorio primario responsable de materializar y coordinar la raíz del paquete; no implica exclusividad sobre consumidores posteriores                                              |
+| `ownership_state`    | estado documental de la asignación y de cualquier bloqueo de propiedad                                                                                                                |
+| `blocking_condition` | tarea o condición exacta que impide cerrar la propiedad cuando la fuente actual no permite asignar repositorio                                                                        |
+
+Invariantes:
+
+1. `application_owner` no se deriva del nombre del repositorio.
+2. `repo_owner` no convierte al código `shell` en propietario funcional de dominios ajenos.
+3. Un paquete transversal puede tener `FRONTERA_DISTRIBUIDA` como frontera funcional y `devVentoGroup/vento-shell` como repositorio coordinador de su raíz.
+4. `domain_owner` conserva el namespace de la tarea dominante y no se reemplaza por la familia `CAP-*`, por el owner organizacional ni por un repositorio.
+5. La ausencia de un repositorio confirmado no se rellena por inferencia; se materializa como bloqueo con dueño documental exacto.
+6. Esta tarea no decide los archivos exactos ni la frontera física final de implementación; esas decisiones permanecen reservadas a `DELIV-PKG-014` y tareas posteriores aplicables.
+
+---
+
+#### 4. Reglas de asignación
+
+##### 4.1. Aplicaciones con repositorio confirmado
+
+Cuando la tarea dominante pertenece inequívocamente a un namespace de aplicación con repositorio vigente, se asigna el código canónico de aplicación y su repositorio técnico correspondiente:
+
+| Namespace     | `application_owner` | `repo_owner`                 |
+| ------------- | ------------------- | ---------------------------- |
+| `ANIMA-*`     | `anima`             | `devVentoGroup/vento-anima`  |
+| `VISO-*`      | `viso`              | `devVentoGroup/vento-viso`   |
+| `NEXO-*`      | `nexo`              | `devVentoGroup/vento-nexo`   |
+| `FOGO-*`      | `fogo`              | `devVentoGroup/vento-fogo`   |
+| `ORIGO-*`     | `origo`             | `devVentoGroup/vento-origo`  |
+| `PULSO-*`     | `pulso`             | `devVentoGroup/vento-pulso`  |
+| `NUMERA-*`    | `numera`            | `devVentoGroup/vento-numera` |
+| `PASS-*`      | `pass`              | `devVentoGroup/vento-pass`   |
+| `SHELL-APP-*` | `shell`             | `devVentoGroup/vento-shell`  |
+
+##### 4.2. Frontera distribuida
+
+Los paquetes cuya tarea dominante pertenece a gobierno, autorización, Supabase, datos compartidos, información, procesos, continuidad, integración, evidencia, NFR, QA, infraestructura transversal o fundación técnica conservan `application_owner = FRONTERA_DISTRIBUIDA`. Su raíz se coordina en `devVentoGroup/vento-shell`; esto no transfiere a la aplicación `shell` la fuente de verdad funcional de las aplicaciones consumidoras.
+
+##### 4.3. TALENTO
+
+`CAP-TAL-*` no se promueve a un nuevo código de aplicación, porque `talento` no forma parte del catálogo canónico de diez aplicaciones. Los paquetes correspondientes conservan `FRONTERA_DISTRIBUIDA_TALENTO_VISO_ANIMA`, con `devVentoGroup/vento-talento` como repositorio técnico confirmado y VISO/ANIMA como fronteras funcionales relacionadas según el diseño aprobado.
+
+##### 4.4. Producción física `OPS-PRD-*`
+
+El paquete cuyo dominante es `OPS-PRD-001` queda primariamente en `fogo` / `devVentoGroup/vento-fogo`, porque el diseño productivo y la ejecución pertenecen a FOGO. NEXO conserva condición de consumidor/colaborador por inventario y movimientos; esta relación no divide ni renumera la raíz `GAP-PKG-*`.
+
+##### 4.5. AURA
+
+`aura` continúa como código de aplicación canónico, pero no existe un repositorio propietario confirmado. Ningún paquete AURA se reasigna a `vento-shell` ni a otra aplicación para ocultar esa ausencia. Los paquetes AURA quedan con `repo_owner = NO_CONFIRMADO` y `ownership_state = BLOQUEADO_REPO_AURA` hasta que `AURA-AUD-001`, `AURA-AUD-010` y `AURA-AUD-012` resuelvan repositorio y continuidad.
+
+---
+
+#### 5. Matriz materializada de propiedad de los 207 paquetes
+
+| `package_id`  | `capability_id`                                                                                                                  | Tarea dominante  | `application_owner`                       | `domain_owner` | `repo_owner`                  | `ownership_state`                            | `blocking_condition`                           |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ----------------------------------------- | -------------- | ----------------------------- | -------------------------------------------- | ---------------------------------------------- |
+| `GAP-PKG-001` | `CAP-02.06`                                                                                                                      | `AUTH-DB-003`    | `FRONTERA_DISTRIBUIDA`                    | `AUTH-DB`      | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-002` | `CAP-10.07`, `CAP-10.10`                                                                                                         | `AUTH-DB-002`    | `FRONTERA_DISTRIBUIDA`                    | `AUTH-DB`      | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-003` | `CAP-14.04`                                                                                                                      | `SUPA-AUD-015`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-004` | `CAP-15.01`                                                                                                                      | `AUTH-DB-002`    | `FRONTERA_DISTRIBUIDA`                    | `AUTH-DB`      | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-005` | `CAP-16.06`, `CAP-16.07`                                                                                                         | `INT-EXT-002`    | `FRONTERA_DISTRIBUIDA`                    | `INT-EXT`      | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-006` | `CAP-09.14`                                                                                                                      | `AURA-DOM-007`   | `aura`                                    | `AURA-DOM`     | `NO_CONFIRMADO`               | `BLOQUEADO_REPO_AURA`                        | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-007` | `CAP-10.01`                                                                                                                      | `PASS-INT-001`   | `pass`                                    | `PASS-INT`     | `devVentoGroup/vento-pass`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-008` | `CAP-14.05`                                                                                                                      | `AURA-DOM-008`   | `aura`                                    | `AURA-DOM`     | `NO_CONFIRMADO`               | `BLOQUEADO_REPO_AURA`                        | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-009` | `CAP-15.09`                                                                                                                      | `INT-EXT-001`    | `FRONTERA_DISTRIBUIDA`                    | `INT-EXT`      | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-010` | `CAP-01.05`                                                                                                                      | `DATA-DOM-001`   | `FRONTERA_DISTRIBUIDA`                    | `DATA-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-011` | `CAP-01.01`, `CAP-01.03`                                                                                                         | `DATA-DOM-002`   | `FRONTERA_DISTRIBUIDA`                    | `DATA-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-012` | `CAP-02.13`                                                                                                                      | `INFO-DOM-004`   | `FRONTERA_DISTRIBUIDA`                    | `INFO-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-013` | `CAP-04.01`                                                                                                                      | `DATA-DOM-001`   | `FRONTERA_DISTRIBUIDA`                    | `DATA-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-014` | `CAP-05.03`                                                                                                                      | `INFO-DOM-010`   | `FRONTERA_DISTRIBUIDA`                    | `INFO-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-015` | `CAP-06.05`                                                                                                                      | `DATA-DOM-010`   | `FRONTERA_DISTRIBUIDA`                    | `DATA-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-016` | `CAP-07.01`                                                                                                                      | `INFO-DOM-001`   | `FRONTERA_DISTRIBUIDA`                    | `INFO-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-017` | `CAP-10.07`                                                                                                                      | `PASS-INT-001`   | `pass`                                    | `PASS-INT`     | `devVentoGroup/vento-pass`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-018` | `CAP-15.01`                                                                                                                      | `SUPA-AUD-010`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-019` | `CAP-15.01`, `CAP-15.08`, `CAP-15.09`                                                                                            | `SUPA-AUD-016`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-020` | `CAP-16.07`                                                                                                                      | `INFO-INT-003`   | `FRONTERA_DISTRIBUIDA`                    | `INFO-INT`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-021` | `CAP-16.01`, `CAP-16.02`, `CAP-16.05`, `CAP-16.07`, `CAP-16.08`, `CAP-16.09`, `CAP-16.10`                                        | `INFO-AUTH-001`  | `FRONTERA_DISTRIBUIDA`                    | `INFO-AUTH`    | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-022` | `CAP-17.03`                                                                                                                      | `DATA-INT-003`   | `FRONTERA_DISTRIBUIDA`                    | `DATA-INT`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-023` | `CAP-17.01`, `CAP-17.03`, `CAP-17.04`, `CAP-17.12`                                                                               | `DATA-DOM-017`   | `FRONTERA_DISTRIBUIDA`                    | `DATA-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-024` | `CAP-12.02`, `CAP-12.13`                                                                                                         | `NUMERA-DOM-003` | `numera`                                  | `NUMERA-DOM`   | `devVentoGroup/vento-numera`  | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-025` | `CAP-12.01`                                                                                                                      | `INT-DB-008`     | `FRONTERA_DISTRIBUIDA`                    | `INT-DB`       | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-026` | `CAP-15.08`                                                                                                                      | `NUMERA-DOM-002` | `numera`                                  | `NUMERA-DOM`   | `devVentoGroup/vento-numera`  | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-027` | `CAP-01.03`, `CAP-01.05`                                                                                                         | `EXT-GOV-001`    | `FRONTERA_DISTRIBUIDA`                    | `EXT-GOV`      | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-028` | `CAP-01.03`, `CAP-01.04`                                                                                                         | `VISO-CORE-006`  | `viso`                                    | `VISO-CORE`    | `devVentoGroup/vento-viso`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-029` | `CAP-07.01`                                                                                                                      | `NEXO-DOM-001`   | `nexo`                                    | `NEXO-DOM`     | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-030` | `CAP-15.09`                                                                                                                      | `SUPA-AUD-023`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-031` | `CAP-01.02`, `CAP-01.03`, `CAP-01.04`, `CAP-01.05`, `CAP-01.07`, `CAP-01.08`                                                     | `PROC-CAT-005`   | `FRONTERA_DISTRIBUIDA`                    | `PROC-CAT`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-032` | `CAP-02.03`                                                                                                                      | `INT-WORK-002`   | `FRONTERA_DISTRIBUIDA`                    | `INT-WORK`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-033` | `CAP-04.01`, `CAP-04.07`                                                                                                         | `SHELL-CON-016`  | `FRONTERA_DISTRIBUIDA`                    | `SHELL-CON`    | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-034` | `CAP-04.01`, `CAP-04.03`, `CAP-04.04`                                                                                            | `SHELL-CON-016`  | `FRONTERA_DISTRIBUIDA`                    | `SHELL-CON`    | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-035` | `CAP-05.08`                                                                                                                      | `SUPA-AUD-019`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-036` | `CAP-05.03`                                                                                                                      | `SUPA-AUD-019`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-037` | `CAP-06.01`, `CAP-06.02`, `CAP-06.07`, `CAP-06.09`, `CAP-06.12`, `CAP-06.14`                                                     | `NEXO-UX-009`    | `nexo`                                    | `NEXO-UX`      | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-038` | `CAP-06.01`, `CAP-06.02`, `CAP-06.05`, `CAP-06.14`, `CAP-06.15`                                                                  | `SUPA-AUD-019`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-039` | `CAP-07.01`                                                                                                                      | `ORIGO-UX-014`   | `origo`                                   | `ORIGO-UX`     | `devVentoGroup/vento-origo`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-040` | `CAP-08.01`, `CAP-08.03`, `CAP-08.07`                                                                                            | `FOGO-AUTH-010`  | `fogo`                                    | `FOGO-AUTH`    | `devVentoGroup/vento-fogo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-041` | `CAP-09.06`, `CAP-09.08`, `CAP-09.09`, `CAP-09.13`, `CAP-09.15`                                                                  | `UX-QA-027`      | `FRONTERA_DISTRIBUIDA`                    | `UX-QA`        | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-042` | `CAP-10.07`, `CAP-10.09`                                                                                                         | `INT-MKT-002`    | `FRONTERA_DISTRIBUIDA`                    | `INT-MKT`      | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-043` | `CAP-10.08`                                                                                                                      | `PROC-CAT-009`   | `FRONTERA_DISTRIBUIDA`                    | `PROC-CAT`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-044` | `CAP-11.01`, `CAP-11.06`, `CAP-11.09`, `CAP-11.10`                                                                               | `PULSO-UX-009`   | `pulso`                                   | `PULSO-UX`     | `devVentoGroup/vento-pulso`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-045` | `CAP-12.10`                                                                                                                      | `SHELL-CON-002`  | `FRONTERA_DISTRIBUIDA`                    | `SHELL-CON`    | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-046` | `CAP-13.01`, `CAP-13.08`                                                                                                         | `NEXO-DOM-029`   | `nexo`                                    | `NEXO-DOM`     | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-047` | `CAP-13.01`                                                                                                                      | `INT-DB-008`     | `FRONTERA_DISTRIBUIDA`                    | `INT-DB`       | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-048` | `CAP-14.04`                                                                                                                      | `PULSO-UX-020`   | `pulso`                                   | `PULSO-UX`     | `devVentoGroup/vento-pulso`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-049` | `CAP-15.01`, `CAP-15.03`, `CAP-15.05`, `CAP-15.07`, `CAP-15.08`, `CAP-15.09`                                                     | `SUPA-ARC-007`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-ARC`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-050` | `CAP-15.01`                                                                                                                      | `DATA-AUTH-003`  | `FRONTERA_DISTRIBUIDA`                    | `DATA-AUTH`    | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-051` | `CAP-16.07`                                                                                                                      | `FOGO-AUTH-008`  | `fogo`                                    | `FOGO-AUTH`    | `devVentoGroup/vento-fogo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-052` | `CAP-17.10`                                                                                                                      | `INT-APP-008`    | `FRONTERA_DISTRIBUIDA`                    | `INT-APP`      | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-053` | `CAP-18.01`, `CAP-18.04`                                                                                                         | `CONT-DOM-003`   | `FRONTERA_DISTRIBUIDA`                    | `CONT-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-054` | `CAP-18.05`                                                                                                                      | `NEXO-UX-037`    | `nexo`                                    | `NEXO-UX`      | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-055` | `CAP-01.04`, `CAP-01.07`, `CAP-01.08`, `CAP-01.10`                                                                               | `SUPA-ARC-001`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-ARC`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-056` | `CAP-02.03`, `CAP-02.13`                                                                                                         | `ANIMA-AUTH-015` | `anima`                                   | `ANIMA-AUTH`   | `devVentoGroup/vento-anima`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-057` | `CAP-03.04`                                                                                                                      | `AUTH-QA-029`    | `FRONTERA_DISTRIBUIDA`                    | `AUTH-QA`      | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-058` | `CAP-10.02`, `CAP-10.07`, `CAP-10.10`                                                                                            | `AUTH-QA-029`    | `FRONTERA_DISTRIBUIDA`                    | `AUTH-QA`      | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-059` | `CAP-14.01`                                                                                                                      | `AURA-INT-001`   | `aura`                                    | `AURA-INT`     | `NO_CONFIRMADO`               | `BLOQUEADO_REPO_AURA`                        | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-060` | `CAP-15.01`, `CAP-15.02`, `CAP-15.09`                                                                                            | `INFO-AUTH-004`  | `FRONTERA_DISTRIBUIDA`                    | `INFO-AUTH`    | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-061` | `CAP-16.06`, `CAP-16.08`, `CAP-16.11`                                                                                            | `INFO-AUTH-002`  | `FRONTERA_DISTRIBUIDA`                    | `INFO-AUTH`    | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-062` | `CAP-03.03`, `CAP-03.08`                                                                                                         | `AUTH-QA-026`    | `FRONTERA_DISTRIBUIDA`                    | `AUTH-QA`      | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-063` | `CAP-02.06`                                                                                                                      | `INT-WORK-001`   | `FRONTERA_DISTRIBUIDA`                    | `INT-WORK`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-064` | `CAP-02.02`                                                                                                                      | `CAP-TAL-003`    | `FRONTERA_DISTRIBUIDA_TALENTO_VISO_ANIMA` | `CAP-TAL`      | `devVentoGroup/vento-talento` | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-065` | `CAP-01.02`, `CAP-01.04`, `CAP-01.08`                                                                                            | `SHELL-CI-016`   | `FRONTERA_DISTRIBUIDA`                    | `SHELL-CI`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-066` | `CAP-02.07`                                                                                                                      | `ANIMA-AUTH-014` | `anima`                                   | `ANIMA-AUTH`   | `devVentoGroup/vento-anima`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-067` | `CAP-04.01`                                                                                                                      | `TI-DOM-001`     | `FRONTERA_DISTRIBUIDA`                    | `TI-DOM`       | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-068` | `CAP-06.01`, `CAP-06.12`, `CAP-06.13`                                                                                            | `SUPA-ARC-020`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-ARC`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-069` | `CAP-09.09`, `CAP-09.11`                                                                                                         | `PULSO-UX-003`   | `pulso`                                   | `PULSO-UX`     | `devVentoGroup/vento-pulso`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-070` | `CAP-10.01`, `CAP-10.06`, `CAP-10.07`                                                                                            | `PASS-INT-001`   | `pass`                                    | `PASS-INT`     | `devVentoGroup/vento-pass`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-071` | `CAP-11.04`, `CAP-11.08`                                                                                                         | `UX-QA-019`      | `FRONTERA_DISTRIBUIDA`                    | `UX-QA`        | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-072` | `CAP-15.05`                                                                                                                      | `TI-INT-003`     | `FRONTERA_DISTRIBUIDA`                    | `TI-INT`       | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-073` | `CAP-15.01`, `CAP-15.05`, `CAP-15.09`                                                                                            | `SHELL-CI-007`   | `FRONTERA_DISTRIBUIDA`                    | `SHELL-CI`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-074` | `CAP-16.07`, `CAP-16.08`                                                                                                         | `SUPA-ARC-016`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-ARC`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-075` | `CAP-17.03`, `CAP-17.10`, `CAP-17.12`                                                                                            | `DATA-DOM-004`   | `FRONTERA_DISTRIBUIDA`                    | `DATA-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-076` | `CAP-18.08`, `CAP-18.11`                                                                                                         | `CONT-INT-001`   | `FRONTERA_DISTRIBUIDA`                    | `CONT-INT`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-077` | `CAP-01.05`                                                                                                                      | `PROC-CAT-009`   | `FRONTERA_DISTRIBUIDA`                    | `PROC-CAT`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-078` | `CAP-09.14`                                                                                                                      | `AURA-DOM-007`   | `aura`                                    | `AURA-DOM`     | `NO_CONFIRMADO`               | `BLOQUEADO_REPO_AURA`                        | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-079` | `CAP-10.01`, `CAP-10.07`, `CAP-10.08`                                                                                            | `PASS-UX-006`    | `pass`                                    | `PASS-UX`      | `devVentoGroup/vento-pass`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-080` | `CAP-14.05`                                                                                                                      | `AURA-DOM-001`   | `aura`                                    | `AURA-DOM`     | `NO_CONFIRMADO`               | `BLOQUEADO_REPO_AURA`                        | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-081` | `CAP-14.05`                                                                                                                      | `PASS-UX-012`    | `pass`                                    | `PASS-UX`      | `devVentoGroup/vento-pass`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-082` | `CAP-01.04`                                                                                                                      | `SUPA-AUD-012`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-083` | `CAP-06.01`, `CAP-06.13`                                                                                                         | `SUPA-TRANS-006` | `FRONTERA_DISTRIBUIDA`                    | `SUPA-TRANS`   | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-084` | `CAP-17.10`                                                                                                                      | `SUPA-AUD-019`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-085` | `CAP-01.03`                                                                                                                      | `NUMERA-DOM-013` | `numera`                                  | `NUMERA-DOM`   | `devVentoGroup/vento-numera`  | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-086` | `CAP-04.01`                                                                                                                      | `NUMERA-DOM-005` | `numera`                                  | `NUMERA-DOM`   | `devVentoGroup/vento-numera`  | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-087` | `CAP-06.14`                                                                                                                      | `NUMERA-DOM-016` | `numera`                                  | `NUMERA-DOM`   | `devVentoGroup/vento-numera`  | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-088` | `CAP-09.09`, `CAP-09.10`                                                                                                         | `NUMERA-DOM-016` | `numera`                                  | `NUMERA-DOM`   | `devVentoGroup/vento-numera`  | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-089` | `CAP-12.01`, `CAP-12.02`, `CAP-12.04`, `CAP-12.09`, `CAP-12.10`, `CAP-12.13`                                                     | `NUMERA-DOM-014` | `numera`                                  | `NUMERA-DOM`   | `devVentoGroup/vento-numera`  | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-090` | `CAP-15.01`, `CAP-15.06`                                                                                                         | `NUMERA-DOM-005` | `numera`                                  | `NUMERA-DOM`   | `devVentoGroup/vento-numera`  | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-091` | `CAP-01.04`                                                                                                                      | `NEXO-UX-009`    | `nexo`                                    | `NEXO-UX`      | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-092` | `CAP-01.04`                                                                                                                      | `DATA-DOM-006`   | `FRONTERA_DISTRIBUIDA`                    | `DATA-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-093` | `CAP-06.08`                                                                                                                      | `VISO-CORE-006`  | `viso`                                    | `VISO-CORE`    | `devVentoGroup/vento-viso`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-094` | `CAP-01.02`, `CAP-01.03`, `CAP-01.06`, `CAP-01.08`                                                                               | `PROC-CAT-002`   | `FRONTERA_DISTRIBUIDA`                    | `PROC-CAT`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-095` | `CAP-01.01`, `CAP-01.04`, `CAP-01.05`, `CAP-01.07`, `CAP-01.08`                                                                  | `PROC-CAT-002`   | `FRONTERA_DISTRIBUIDA`                    | `PROC-CAT`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-096` | `CAP-02.02`, `CAP-02.08`, `CAP-02.13`                                                                                            | `NEXO-UX-019`    | `nexo`                                    | `NEXO-UX`      | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-097` | `CAP-02.07`, `CAP-02.08`, `CAP-02.10`                                                                                            | `PROC-CAT-001`   | `FRONTERA_DISTRIBUIDA`                    | `PROC-CAT`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-098` | `CAP-03.03`, `CAP-03.06`                                                                                                         | `OPS-PRD-001`    | `fogo`                                    | `OPS-PRD`      | `devVentoGroup/vento-fogo`    | `ASIGNADO_PRIMARIO_FOGO_CON_NEXO_CONSUMIDOR` | —                                              |
+| `GAP-PKG-099` | `CAP-04.04`                                                                                                                      | `NEXO-DOM-029`   | `nexo`                                    | `NEXO-DOM`     | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-100` | `CAP-04.01`, `CAP-04.02`, `CAP-04.04`, `CAP-04.10`                                                                               | `FOGO-UX-009`    | `fogo`                                    | `FOGO-UX`      | `devVentoGroup/vento-fogo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-101` | `CAP-04.01`                                                                                                                      | `NEXO-DOM-033`   | `nexo`                                    | `NEXO-DOM`     | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-102` | `CAP-05.04`, `CAP-05.08`, `CAP-05.09`                                                                                            | `ORIGO-AUTH-004` | `origo`                                   | `ORIGO-AUTH`   | `devVentoGroup/vento-origo`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-103` | `CAP-05.03`                                                                                                                      | `CONT-DOM-013`   | `FRONTERA_DISTRIBUIDA`                    | `CONT-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-104` | `CAP-06.01`, `CAP-06.02`, `CAP-06.05`, `CAP-06.09`, `CAP-06.12`, `CAP-06.13`, `CAP-06.14`                                        | `NEXO-UX-037`    | `nexo`                                    | `NEXO-UX`      | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-105` | `CAP-06.02`, `CAP-06.05`                                                                                                         | `FOGO-UX-012`    | `fogo`                                    | `FOGO-UX`      | `devVentoGroup/vento-fogo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-106` | `CAP-07.01`                                                                                                                      | `SUPA-AUD-019`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-107` | `CAP-07.01`, `CAP-07.02`, `CAP-07.07`, `CAP-07.08`, `CAP-07.09`, `CAP-07.11`                                                     | `NEXO-DOM-008`   | `nexo`                                    | `NEXO-DOM`     | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-108` | `CAP-07.01`, `CAP-07.02`, `CAP-07.03`, `CAP-07.07`, `CAP-07.10`, `CAP-07.12`                                                     | `SUPA-AUD-019`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-109` | `CAP-08.01`, `CAP-08.05`, `CAP-08.07`, `CAP-08.08`, `CAP-08.09`, `CAP-08.10`, `CAP-08.11`, `CAP-08.12`, `CAP-08.13`, `CAP-08.14` | `FOGO-UX-010`    | `fogo`                                    | `FOGO-UX`      | `devVentoGroup/vento-fogo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-110` | `CAP-09.01`, `CAP-09.02`, `CAP-09.03`, `CAP-09.05`, `CAP-09.06`, `CAP-09.07`, `CAP-09.08`, `CAP-09.09`, `CAP-09.11`, `CAP-09.12` | `PULSO-UX-021`   | `pulso`                                   | `PULSO-UX`     | `devVentoGroup/vento-pulso`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-111` | `CAP-10.05`, `CAP-10.07`                                                                                                         | `PULSO-UX-009`   | `pulso`                                   | `PULSO-UX`     | `devVentoGroup/vento-pulso`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-112` | `CAP-11.01`, `CAP-11.02`, `CAP-11.03`, `CAP-11.07`, `CAP-11.08`, `CAP-11.09`                                                     | `NEXO-UX-013`    | `nexo`                                    | `NEXO-UX`      | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-113` | `CAP-11.02`, `CAP-11.04`, `CAP-11.07`, `CAP-11.09`                                                                               | `NEXO-UX-001`    | `nexo`                                    | `NEXO-UX`      | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-114` | `CAP-12.02`, `CAP-12.09`                                                                                                         | `PULSO-UX-010`   | `pulso`                                   | `PULSO-UX`     | `devVentoGroup/vento-pulso`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-115` | `CAP-13.01`, `CAP-13.04`                                                                                                         | `NEXO-DOM-029`   | `nexo`                                    | `NEXO-DOM`     | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-116` | `CAP-13.01`, `CAP-13.04`, `CAP-13.05`, `CAP-13.06`, `CAP-13.08`, `CAP-13.09`, `CAP-13.10`                                        | `NEXO-AUTH-031`  | `nexo`                                    | `NEXO-AUTH`    | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-117` | `CAP-14.03`, `CAP-14.04`                                                                                                         | `NEXO-DOM-003`   | `nexo`                                    | `NEXO-DOM`     | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-118` | `CAP-14.02`                                                                                                                      | `AURA-DOM-006`   | `aura`                                    | `AURA-DOM`     | `NO_CONFIRMADO`               | `BLOQUEADO_REPO_AURA`                        | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-119` | `CAP-15.01`, `CAP-15.02`, `CAP-15.05`, `CAP-15.09`                                                                               | `NFR-REQ-012`    | `FRONTERA_DISTRIBUIDA`                    | `NFR-REQ`      | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-120` | `CAP-15.01`, `CAP-15.08`                                                                                                         | `ORIGO-UX-001`   | `origo`                                   | `ORIGO-UX`     | `devVentoGroup/vento-origo`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-121` | `CAP-16.07`, `CAP-16.09`                                                                                                         | `INFO-DOM-003`   | `FRONTERA_DISTRIBUIDA`                    | `INFO-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-122` | `CAP-16.07`                                                                                                                      | `NEXO-DOM-026`   | `nexo`                                    | `NEXO-DOM`     | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-123` | `CAP-17.05`, `CAP-17.10`, `CAP-17.12`                                                                                            | `PULSO-UX-017`   | `pulso`                                   | `PULSO-UX`     | `devVentoGroup/vento-pulso`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-124` | `CAP-17.10`, `CAP-17.12`                                                                                                         | `DATA-DOM-001`   | `FRONTERA_DISTRIBUIDA`                    | `DATA-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-125` | `CAP-18.02`, `CAP-18.04`, `CAP-18.05`, `CAP-18.06`                                                                               | `TI-INT-003`     | `FRONTERA_DISTRIBUIDA`                    | `TI-INT`       | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-126` | `CAP-07.07`                                                                                                                      | `NEXO-DOM-026`   | `nexo`                                    | `NEXO-DOM`     | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-127` | `CAP-02.02`, `CAP-02.04`, `CAP-02.06`, `CAP-02.07`                                                                               | `ANIMA-UX-017`   | `anima`                                   | `ANIMA-UX`     | `devVentoGroup/vento-anima`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-128` | `CAP-06.01`                                                                                                                      | `ANIMA-UX-017`   | `anima`                                   | `ANIMA-UX`     | `devVentoGroup/vento-anima`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-129` | `CAP-14.05`                                                                                                                      | `ANIMA-UX-017`   | `anima`                                   | `ANIMA-UX`     | `devVentoGroup/vento-anima`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-130` | `CAP-15.11`                                                                                                                      | `TI-DOM-001`     | `FRONTERA_DISTRIBUIDA`                    | `TI-DOM`       | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-131` | `CAP-01.02`, `CAP-01.03`, `CAP-01.04`, `CAP-01.06`, `CAP-01.07`, `CAP-01.08`                                                     | `PASS-UX-001`    | `pass`                                    | `PASS-UX`      | `devVentoGroup/vento-pass`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-132` | `CAP-02.02`, `CAP-02.06`, `CAP-02.07`, `CAP-02.08`                                                                               | `SHELL-APP-001`  | `shell`                                   | `SHELL-APP`    | `devVentoGroup/vento-shell`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-133` | `CAP-04.01`, `CAP-04.02`, `CAP-04.07`                                                                                            | `SUPA-TRANS-005` | `FRONTERA_DISTRIBUIDA`                    | `SUPA-TRANS`   | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-134` | `CAP-06.01`                                                                                                                      | `SUPA-AUD-014`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-135` | `CAP-07.01`                                                                                                                      | `SUPA-TRANS-006` | `FRONTERA_DISTRIBUIDA`                    | `SUPA-TRANS`   | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-136` | `CAP-08.09`                                                                                                                      | `PASS-UX-001`    | `pass`                                    | `PASS-UX`      | `devVentoGroup/vento-pass`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-137` | `CAP-09.04`, `CAP-09.08`, `CAP-09.09`                                                                                            | `DATA-DOM-009`   | `FRONTERA_DISTRIBUIDA`                    | `DATA-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-138` | `CAP-10.01`, `CAP-10.07`                                                                                                         | `PASS-UX-001`    | `pass`                                    | `PASS-UX`      | `devVentoGroup/vento-pass`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-139` | `CAP-12.02`, `CAP-12.09`                                                                                                         | `SUPA-AUD-019`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-140` | `CAP-15.01`, `CAP-15.03`, `CAP-15.04`, `CAP-15.05`, `CAP-15.06`, `CAP-15.09`                                                     | `SHELL-AUD-011`  | `FRONTERA_DISTRIBUIDA`                    | `SHELL-AUD`    | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-141` | `CAP-16.07`, `CAP-16.08`, `CAP-16.09`                                                                                            | `INFO-DOM-001`   | `FRONTERA_DISTRIBUIDA`                    | `INFO-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-142` | `CAP-17.12`                                                                                                                      | `DATA-DOM-001`   | `FRONTERA_DISTRIBUIDA`                    | `DATA-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-143` | `CAP-18.11`                                                                                                                      | `CONT-DOM-011`   | `FRONTERA_DISTRIBUIDA`                    | `CONT-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-144` | `CAP-06.14`                                                                                                                      | `AURA-DOM-007`   | `aura`                                    | `AURA-DOM`     | `NO_CONFIRMADO`               | `BLOQUEADO_REPO_AURA`                        | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-145` | `CAP-10.01`, `CAP-10.02`                                                                                                         | `PASS-INT-001`   | `pass`                                    | `PASS-INT`     | `devVentoGroup/vento-pass`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-146` | `CAP-10.04`                                                                                                                      | `PASS-UX-001`    | `pass`                                    | `PASS-UX`      | `devVentoGroup/vento-pass`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-147` | `CAP-14.01`, `CAP-14.02`, `CAP-14.05`                                                                                            | `AURA-DOM-002`   | `aura`                                    | `AURA-DOM`     | `NO_CONFIRMADO`               | `BLOQUEADO_REPO_AURA`                        | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-148` | `CAP-15.10`                                                                                                                      | `AURA-DOM-003`   | `aura`                                    | `AURA-DOM`     | `NO_CONFIRMADO`               | `BLOQUEADO_REPO_AURA`                        | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-149` | `CAP-15.01`                                                                                                                      | `AURA-DOM-005`   | `aura`                                    | `AURA-DOM`     | `NO_CONFIRMADO`               | `BLOQUEADO_REPO_AURA`                        | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-150` | `CAP-01.04`                                                                                                                      | `SUPA-AUD-012`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-151` | `CAP-02.06`                                                                                                                      | `SUPA-AUD-014`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-152` | `CAP-10.07`                                                                                                                      | `PASS-INT-002`   | `pass`                                    | `PASS-INT`     | `devVentoGroup/vento-pass`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-153` | `CAP-15.01`, `CAP-15.06`                                                                                                         | `SUPA-ARC-004`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-ARC`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-154` | `CAP-17.01`, `CAP-17.03`                                                                                                         | `DATA-DOM-001`   | `FRONTERA_DISTRIBUIDA`                    | `DATA-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-155` | `CAP-12.01`, `CAP-12.09`, `CAP-12.15`                                                                                            | `NUMERA-UX-014`  | `numera`                                  | `NUMERA-UX`    | `devVentoGroup/vento-numera`  | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-156` | `CAP-15.01`                                                                                                                      | `NUMERA-DOM-009` | `numera`                                  | `NUMERA-DOM`   | `devVentoGroup/vento-numera`  | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-157` | `CAP-01.04`                                                                                                                      | `EXT-GOV-001`    | `FRONTERA_DISTRIBUIDA`                    | `EXT-GOV`      | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-158` | `CAP-01.01`                                                                                                                      | `CONT-DOM-004`   | `FRONTERA_DISTRIBUIDA`                    | `CONT-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-159` | `CAP-02.12`                                                                                                                      | `PULSO-UX-008`   | `pulso`                                   | `PULSO-UX`     | `devVentoGroup/vento-pulso`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-160` | `CAP-02.03`                                                                                                                      | `CONT-DOM-010`   | `FRONTERA_DISTRIBUIDA`                    | `CONT-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-161` | `CAP-08.03`                                                                                                                      | `FOGO-UX-001`    | `fogo`                                    | `FOGO-UX`      | `devVentoGroup/vento-fogo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-162` | `CAP-09.13`                                                                                                                      | `CONT-DOM-006`   | `FRONTERA_DISTRIBUIDA`                    | `CONT-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-163` | `CAP-11.04`, `CAP-11.11`                                                                                                         | `NEXO-UX-012`    | `nexo`                                    | `NEXO-UX`      | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-164` | `CAP-13.06`                                                                                                                      | `NFR-REQ-010`    | `FRONTERA_DISTRIBUIDA`                    | `NFR-REQ`      | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-165` | `CAP-15.04`, `CAP-15.05`                                                                                                         | `NEXO-UX-037`    | `nexo`                                    | `NEXO-UX`      | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-166` | `CAP-15.01`                                                                                                                      | `CONT-DOM-005`   | `FRONTERA_DISTRIBUIDA`                    | `CONT-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-167` | `CAP-16.02`                                                                                                                      | `PROC-CAT-002`   | `FRONTERA_DISTRIBUIDA`                    | `PROC-CAT`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-168` | `CAP-17.12`                                                                                                                      | `PROC-CAT-018`   | `FRONTERA_DISTRIBUIDA`                    | `PROC-CAT`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-169` | `CAP-18.06`                                                                                                                      | `CONT-DOM-001`   | `FRONTERA_DISTRIBUIDA`                    | `CONT-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-170` | `CAP-18.01`, `CAP-18.02`, `CAP-18.04`, `CAP-18.07`                                                                               | `CONT-DOM-008`   | `FRONTERA_DISTRIBUIDA`                    | `CONT-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-171` | `CAP-03.05`, `CAP-03.07`                                                                                                         | `PROC-CAT-002`   | `FRONTERA_DISTRIBUIDA`                    | `PROC-CAT`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-172` | `CAP-15.08`                                                                                                                      | `EVID-ARC-001`   | `FRONTERA_DISTRIBUIDA`                    | `EVID-ARC`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-173` | `CAP-15.09`                                                                                                                      | `PROC-ACTOR-003` | `FRONTERA_DISTRIBUIDA`                    | `PROC-ACTOR`   | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-174` | `CAP-02.06`, `CAP-02.07`, `CAP-02.08`, `CAP-02.09`, `CAP-02.10`                                                                  | `VISO-AUTH-010`  | `viso`                                    | `VISO-AUTH`    | `devVentoGroup/vento-viso`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-175` | `CAP-09.09`                                                                                                                      | `INT-EXT-019`    | `FRONTERA_DISTRIBUIDA`                    | `INT-EXT`      | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-176` | `CAP-16.03`                                                                                                                      | `SUPA-AUD-012`   | `FRONTERA_DISTRIBUIDA`                    | `SUPA-AUD`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-177` | `CAP-16.07`                                                                                                                      | `ANIMA-UX-017`   | `anima`                                   | `ANIMA-UX`     | `devVentoGroup/vento-anima`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-178` | `CAP-04.01`                                                                                                                      | `TI-DOM-001`     | `FRONTERA_DISTRIBUIDA`                    | `TI-DOM`       | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-179` | `CAP-06.01`                                                                                                                      | `SUPA-TRANS-013` | `FRONTERA_DISTRIBUIDA`                    | `SUPA-TRANS`   | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-180` | `CAP-07.01`                                                                                                                      | `SUPA-TRANS-013` | `FRONTERA_DISTRIBUIDA`                    | `SUPA-TRANS`   | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-181` | `CAP-13.01`                                                                                                                      | `TI-DOM-009`     | `FRONTERA_DISTRIBUIDA`                    | `TI-DOM`       | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-182` | `CAP-15.01`                                                                                                                      | `TI-DOM-006`     | `FRONTERA_DISTRIBUIDA`                    | `TI-DOM`       | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-183` | `CAP-15.06`                                                                                                                      | `TI-DOM-007`     | `FRONTERA_DISTRIBUIDA`                    | `TI-DOM`       | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-184` | `CAP-15.06`                                                                                                                      | `TI-DOM-001`     | `FRONTERA_DISTRIBUIDA`                    | `TI-DOM`       | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-185` | `CAP-15.01`, `CAP-15.05`, `CAP-15.09`                                                                                            | `SHELL-CI-007`   | `FRONTERA_DISTRIBUIDA`                    | `SHELL-CI`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-186` | `CAP-16.07`                                                                                                                      | `GAP-CTRL-007`   | `FRONTERA_DISTRIBUIDA`                    | `GAP-CTRL`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-187` | `CAP-14.01`                                                                                                                      | `AURA-INT-001`   | `aura`                                    | `AURA-INT`     | `NO_CONFIRMADO`               | `BLOQUEADO_REPO_AURA`                        | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-188` | `CAP-14.01`, `CAP-14.05`                                                                                                         | `AURA-INT-001`   | `aura`                                    | `AURA-INT`     | `NO_CONFIRMADO`               | `BLOQUEADO_REPO_AURA`                        | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-189` | `CAP-15.01`, `CAP-15.05`                                                                                                         | `AURA-AUTH-001`  | `aura`                                    | `AURA-AUTH`    | `NO_CONFIRMADO`               | `BLOQUEADO_REPO_AURA`                        | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-190` | `CAP-17.03`                                                                                                                      | `DATA-DOM-001`   | `FRONTERA_DISTRIBUIDA`                    | `DATA-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-191` | `CAP-01.02`, `CAP-01.05`                                                                                                         | `PROC-CAT-002`   | `FRONTERA_DISTRIBUIDA`                    | `PROC-CAT`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-192` | `CAP-10.08`                                                                                                                      | `AURA-AUD-010`   | `aura`                                    | `AURA-AUD`     | `NO_CONFIRMADO`               | `BLOQUEADO_REPO_AURA`                        | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-193` | `CAP-15.09`                                                                                                                      | `CONT-DOM-014`   | `FRONTERA_DISTRIBUIDA`                    | `CONT-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-194` | `CAP-18.06`, `CAP-18.10`, `CAP-18.11`                                                                                            | `CONT-AUTH-004`  | `FRONTERA_DISTRIBUIDA`                    | `CONT-AUTH`    | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-195` | `CAP-10.02`                                                                                                                      | `PROC-CAT-004`   | `FRONTERA_DISTRIBUIDA`                    | `PROC-CAT`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-196` | `CAP-02.04`                                                                                                                      | `ANIMA-UX-001`   | `anima`                                   | `ANIMA-UX`     | `devVentoGroup/vento-anima`   | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-197` | `CAP-04.01`, `CAP-04.04`                                                                                                         | `CAP-TAL-003`    | `FRONTERA_DISTRIBUIDA_TALENTO_VISO_ANIMA` | `CAP-TAL`      | `devVentoGroup/vento-talento` | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-198` | `CAP-06.01`                                                                                                                      | `SHELL-AUD-010`  | `FRONTERA_DISTRIBUIDA`                    | `SHELL-AUD`    | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-199` | `CAP-07.01`                                                                                                                      | `NEXO-DOM-001`   | `nexo`                                    | `NEXO-DOM`     | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-200` | `CAP-15.05`, `CAP-15.06`, `CAP-15.09`                                                                                            | `SHELL-CI-007`   | `FRONTERA_DISTRIBUIDA`                    | `SHELL-CI`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-201` | `CAP-16.07`                                                                                                                      | `INFO-DOM-003`   | `FRONTERA_DISTRIBUIDA`                    | `INFO-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-202` | `CAP-01.07`                                                                                                                      | `INFO-DOM-012`   | `FRONTERA_DISTRIBUIDA`                    | `INFO-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-203` | `CAP-01.09`                                                                                                                      | `INFO-INT-003`   | `FRONTERA_DISTRIBUIDA`                    | `INFO-INT`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-204` | `CAP-03.03`                                                                                                                      | `NEXO-DOM-001`   | `nexo`                                    | `NEXO-DOM`     | `devVentoGroup/vento-nexo`    | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-205` | `CAP-10.06`                                                                                                                      | `DATA-DOM-012`   | `FRONTERA_DISTRIBUIDA`                    | `DATA-DOM`     | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+| `GAP-PKG-206` | `CAP-12.11`                                                                                                                      | `NUMERA-DOM-018` | `numera`                                  | `NUMERA-DOM`   | `devVentoGroup/vento-numera`  | `ASIGNADO`                                   | —                                              |
+| `GAP-PKG-207` | `CAP-15.06`                                                                                                                      | `SHELL-AUD-011`  | `FRONTERA_DISTRIBUIDA`                    | `SHELL-AUD`    | `devVentoGroup/vento-shell`   | `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          | —                                              |
+
+---
+
+#### 6. Reconciliación cuantitativa
+
+| Control                                                 |          Resultado |
+| ------------------------------------------------------- | -----------------: |
+| `package_id` esperados                                  |            **207** |
+| `package_id` materializados                             |            **207** |
+| rango                                                   | `GAP-PKG-001..207` |
+| faltantes                                               |              **0** |
+| duplicados                                              |              **0** |
+| decisiones de `application_owner`                       |      **207 / 207** |
+| decisiones de `domain_owner`                            |      **207 / 207** |
+| repositorios primarios confirmados                      |      **193 / 207** |
+| repositorios no confirmados                             |       **14 / 207** |
+| paquetes bloqueados exclusivamente por repositorio AURA |             **14** |
+| paquetes con frontera distribuida                       |            **121** |
+| paquetes con asignación directa de aplicación           |             **71** |
+| paquete FOGO con NEXO consumidor explícito              |              **1** |
+
+##### 6.1. Distribución por aplicación o frontera
+
+| `application_owner`                       | Paquetes |
+| ----------------------------------------- | -------: |
+| `FRONTERA_DISTRIBUIDA`                    |  **119** |
+| `nexo`                                    |   **21** |
+| `aura`                                    |   **14** |
+| `numera`                                  |   **11** |
+| `pass`                                    |   **11** |
+| `pulso`                                   |    **8** |
+| `anima`                                   |    **7** |
+| `fogo`                                    |    **7** |
+| `origo`                                   |    **3** |
+| `viso`                                    |    **3** |
+| `FRONTERA_DISTRIBUIDA_TALENTO_VISO_ANIMA` |    **2** |
+| `shell`                                   |    **1** |
+| **Total**                                 |  **207** |
+
+##### 6.2. Distribución por repositorio primario
+
+| `repo_owner`                  | Paquetes |
+| ----------------------------- | -------: |
+| `devVentoGroup/vento-shell`   |  **120** |
+| `devVentoGroup/vento-nexo`    |   **21** |
+| `NO_CONFIRMADO`               |   **14** |
+| `devVentoGroup/vento-numera`  |   **11** |
+| `devVentoGroup/vento-pass`    |   **11** |
+| `devVentoGroup/vento-pulso`   |    **8** |
+| `devVentoGroup/vento-anima`   |    **7** |
+| `devVentoGroup/vento-fogo`    |    **7** |
+| `devVentoGroup/vento-origo`   |    **3** |
+| `devVentoGroup/vento-viso`    |    **3** |
+| `devVentoGroup/vento-talento` |    **2** |
+| **Total**                     |  **207** |
+
+##### 6.3. Distribución por estado de propiedad
+
+| `ownership_state`                            | Paquetes |
+| -------------------------------------------- | -------: |
+| `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`          |  **121** |
+| `ASIGNADO`                                   |   **71** |
+| `BLOQUEADO_REPO_AURA`                        |   **14** |
+| `ASIGNADO_PRIMARIO_FOGO_CON_NEXO_CONSUMIDOR` |    **1** |
+| **Total**                                    |  **207** |
+
+---
+
+#### 7. Registro de bloqueo AURA
+
+Los siguientes paquetes tienen una decisión de propiedad materializada, pero su `repo_owner` no puede cerrarse sin inventar una fuente inexistente:
+
+| `package_id`  | Tarea dominante | `capability_id`                       | `application_owner` | `repo_owner`    | Resolución obligatoria                         |
+| ------------- | --------------- | ------------------------------------- | ------------------- | --------------- | ---------------------------------------------- |
+| `GAP-PKG-006` | `AURA-DOM-007`  | `CAP-09.14`                           | `aura`              | `NO_CONFIRMADO` | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-008` | `AURA-DOM-008`  | `CAP-14.05`                           | `aura`              | `NO_CONFIRMADO` | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-059` | `AURA-INT-001`  | `CAP-14.01`                           | `aura`              | `NO_CONFIRMADO` | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-078` | `AURA-DOM-007`  | `CAP-09.14`                           | `aura`              | `NO_CONFIRMADO` | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-080` | `AURA-DOM-001`  | `CAP-14.05`                           | `aura`              | `NO_CONFIRMADO` | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-118` | `AURA-DOM-006`  | `CAP-14.02`                           | `aura`              | `NO_CONFIRMADO` | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-144` | `AURA-DOM-007`  | `CAP-06.14`                           | `aura`              | `NO_CONFIRMADO` | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-147` | `AURA-DOM-002`  | `CAP-14.01`, `CAP-14.02`, `CAP-14.05` | `aura`              | `NO_CONFIRMADO` | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-148` | `AURA-DOM-003`  | `CAP-15.10`                           | `aura`              | `NO_CONFIRMADO` | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-149` | `AURA-DOM-005`  | `CAP-15.01`                           | `aura`              | `NO_CONFIRMADO` | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-187` | `AURA-INT-001`  | `CAP-14.01`                           | `aura`              | `NO_CONFIRMADO` | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-188` | `AURA-INT-001`  | `CAP-14.01`, `CAP-14.05`              | `aura`              | `NO_CONFIRMADO` | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-189` | `AURA-AUTH-001` | `CAP-15.01`, `CAP-15.05`              | `aura`              | `NO_CONFIRMADO` | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-192` | `AURA-AUD-010`  | `CAP-10.08`                           | `aura`              | `NO_CONFIRMADO` | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+
+Este bloqueo no deja un pendiente narrativo sin dueño. La condición de salida es que la cadena `AURA-AUD-001` / `AURA-AUD-010` / `AURA-AUD-012` confirme repositorio y continuidad; hasta entonces esos catorce paquetes no pueden declararse listos para implementación física.
+
+---
+
+#### 8. Casos de rechazo
+
+La propiedad de un paquete se considera inválida si ocurre cualquiera de los siguientes casos:
+
+- se asigna un código de aplicación que no existe en el catálogo canónico;
+- se usa el nombre de un repositorio como si fuera automáticamente el código de aplicación;
+- un paquete AURA recibe un repositorio inventado o prestado de otra aplicación;
+- un paquete transversal se atribuye funcionalmente a `shell` solo porque su raíz se coordina en `vento-shell`;
+- un `domain_owner` no coincide con el namespace de la tarea dominante materializada;
+- una identidad `GAP-PKG-*` queda sin decisión de aplicación/frontera o dominio;
+- una ausencia de repositorio queda expresada como `TBD`, texto libre o pendiente sin tarea propietaria;
+- se renumera, fusiona o divide un paquete para simplificar propiedad;
+- se modifica la membresía de brechas, capacidades o procesos resuelta por tareas anteriores;
+- se confunde `repo_owner` con el inventario exhaustivo de repositorios y archivos que corresponde a `DELIV-PKG-014`.
+
+---
+
+#### 9. Fronteras de responsabilidad
+
+`DELIV-PKG-003` **sí cierra**:
+
+- una decisión explícita de `application_owner` o frontera distribuida para cada uno de los 207 paquetes;
+- un `domain_owner` explícito y trazable para cada paquete;
+- un `repo_owner` confirmado para 193 paquetes;
+- el bloqueo explícito y gobernado de los 14 paquetes AURA cuyo repositorio no existe actualmente;
+- la regla de que la propiedad del repositorio raíz no elimina consumidores ni repositorios impactados posteriores.
+
+`DELIV-PKG-003` **no cierra**:
+
+- estado AS-IS ni resultado TO-BE, reservado a `DELIV-PKG-004`;
+- alcance incluido, excluido o diferido, reservado a `DELIV-PKG-005`;
+- archivos exactos, reservado a `DELIV-PKG-014`;
+- dependencias, bloqueos técnicos y orden de aplicación, reservado a `DELIV-PKG-015`;
+- requisitos `TREQ-*` y plan de pruebas por paquete, reservado a `DELIV-PKG-016`;
+- despliegue, rollback, piloto, evidencia de cierre o aprobación física.
+
+---
+
+#### 10. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+Esta tarea materializa exclusivamente metadatos documentales de propiedad sobre identidades y relaciones ya aprobadas. No crea comportamiento ejecutable, regla de negocio, autorización, contrato de integración, transición, cálculo ni restricción técnica. La vinculación de `TREQ-*` por paquete permanece reservada a `DELIV-PKG-016`; por tanto, se crean **0** requisitos y se modifican **0** requisitos existentes.
+
+---
+
+#### 11. Criterios de aceptación
+
+- [x] existen exactamente **207** filas, una por `GAP-PKG-001..207`;
+- [x] no existen `package_id` faltantes ni duplicados;
+- [x] cada paquete tiene una decisión explícita de aplicación o frontera distribuida;
+- [x] cada paquete tiene `domain_owner` trazable a su tarea dominante;
+- [x] **193** paquetes tienen repositorio primario confirmado;
+- [x] los **14** paquetes AURA conservan `repo_owner = NO_CONFIRMADO` sin inventar repositorio;
+- [x] los catorce bloqueos AURA tienen resolución documental explícita mediante `AURA-AUD-001`, `AURA-AUD-010` y `AURA-AUD-012`;
+- [x] los paquetes transversales no transfieren propiedad funcional a la aplicación `shell`;
+- [x] TALENTO no se convierte en un undécimo código de aplicación;
+- [x] el paquete productivo `OPS-PRD-001` conserva FOGO como propietario primario y NEXO como consumidor relacionado;
+- [x] no se modifican identidades, brechas, capacidades ni procesos de `DELIV-PKG-001/002`;
+- [x] no se crea ni modifica ningún requisito de prueba;
+- [x] no se inicia implementación física ni se ejecutan cambios de repositorio, Supabase o producción.
+
+---
+
+ÚLTIMA TAREA APROBADA
+`DELIV-PKG-002 — Vincular el paquete con capability_id, process_id y gap_id`
+
+TAREA ACTUAL APROBADA
+`DELIV-PKG-003 — Definir aplicación, dominio y repositorio propietarios`
+
+SIGUIENTE TAREA RESERVADA
+`DELIV-PKG-004 — Definir estado AS-IS y resultado TO-BE verificable`
+
+
 ### [ ] DELIV-PKG-004 — Definir estado AS-IS y resultado TO-BE verificable
 ### [ ] DELIV-PKG-005 — Definir alcance incluido, excluido y diferido
 ### [ ] DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán
