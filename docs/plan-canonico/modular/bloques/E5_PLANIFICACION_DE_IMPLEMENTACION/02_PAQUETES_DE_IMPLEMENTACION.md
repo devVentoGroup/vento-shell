@@ -6033,7 +6033,513 @@ Esta tarea consume el contrato NFR ya aprobado y sus requisitos de prueba existe
 **SIGUIENTE TAREA RESERVADA:** `DELIV-PKG-014 — Enumerar archivos exactos que se crearán, modificarán o retirarán`
 
 
-### [ ] DELIV-PKG-014 — Enumerar archivos exactos que se crearán, modificarán o retirarán
+### ✅ DELIV-PKG-014 — Enumerar archivos exactos que se crearán, modificarán o retirarán
+
+**Estado:** APROBADA
+**Tarea anterior:** `DELIV-PKG-013 — Definir requisitos no funcionales aplicables`
+**Tarea siguiente:** `DELIV-PKG-015 — Definir dependencias, bloqueos y orden de aplicación`
+**Tipo de tarea:** documental — inventario físico verificable por paquete de repositorios, archivos y símbolos, con disposición física, propietario, trazabilidad y cierre del baseline remoto; sin edición de código ni invención de identidades físicas
+
+---
+
+#### 1. Resultado canónico
+
+`DELIV-PKG-014` materializa el inventario físico de las **207** raíces `GAP-PKG-001..207` bajo una regla de evidencia estricta: una ruta de archivo o un símbolo solo puede vincularse a un paquete cuando una fuente canónica o el repositorio observado demuestra esa identidad y su relación con la raíz. La semejanza de nombres, el namespace de la tarea dominante, el repositorio propietario, el perfil UI/runtime/datos, una ruta lógica, un `VSCREEN-*`, un `VPROC-*`, un permiso, un RPC o una convención de carpetas no autorizan a fabricar una ruta física.
+
+El resultado separa tres hechos que no pueden confundirse:
+
+1. **repositorio propietario confirmado**: heredado de `DELIV-PKG-003`;
+2. **necesidad lógica de cambio**: heredada de `DELIV-PKG-004..013`;
+3. **identidad física paquete→archivo/símbolo**: solo se declara cuando existe evidencia exacta; si no existe, la raíz queda bloqueada para implementación física en lugar de recibir un nombre inventado.
+
+La aprobación de esta tarea certifica el inventario y sus bloqueos; **no certifica que todas las raíces estén listas para implementación**. `DELIV-PKG-015` deberá consumir los bloqueos de identidad física como precondiciones explícitas y no podrá ordenar una modificación física sobre una raíz que continúe sin archivo o símbolo confirmado.
+
+---
+
+#### 2. Contrato canónico de identidad física
+
+| Campo                | Regla canónica                                                                                                                           |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `repo_owner`         | repositorio primario de la raíz; no implica que todo archivo del repositorio pertenezca al paquete                                       |
+| `file_identity`      | ruta exacta relativa a la raíz del repositorio; no acepta glob, comodín, pseudorruta ni nombre inferido                                  |
+| `symbol_identity`    | función, componente, clase, handler, RPC, Edge Function, objeto SQL u otro símbolo exacto cuando la fuente lo individualiza              |
+| `physical_operation` | `CREAR`, `MODIFICAR`, `REUTILIZAR`, `RETIRAR`, `NINGUNA_OPERACION_DIRECTA` o un estado bloqueante cuando la identidad no está confirmada |
+| `evidence_anchor`    | tarea, inventario técnico, objeto remoto o evidencia de repositorio que demuestra la identidad                                           |
+| `physical_state`     | resultado que determina si la raíz puede entrar a orden físico en `DELIV-PKG-015`                                                        |
+
+Invariantes:
+
+1. `NO_CONFIRMADO_PARA_ESTA_RAIZ` es un resultado materializado, no un permiso para completar la ruta después por intuición.
+2. Un archivo AS-IS conocido no se asigna automáticamente a una raíz solo porque comparte aplicación, tabla, pantalla o dominio.
+3. `CREAR` requiere una ubicación exacta respaldada por estructura real del repositorio; si esa ubicación no está demostrada, la operación permanece bloqueada.
+4. `RETIRAR` exige identidad física, sucesor y gates de retiro de `DELIV-PKG-009`; ninguna disposición E3 autoriza borrar un archivo por sí sola.
+5. Un objeto PostgreSQL, política, bucket o relación Realtime no se convierte en archivo; su cambio físico deberá conservar el vínculo con la migración que lo materialice cuando esa migración exista.
+6. AURA no recibe repositorio, archivos ni símbolos inferidos.
+7. `EXT-GOV-001` no recibe materialización mientras no se cumpla su condición de activación.
+8. TALENTO conserva `devVentoGroup/vento-talento` como base técnica, pero sus dos raíces permanecen fuera de la línea de despliegue vigente.
+
+---
+
+#### 3. Anclas físicas AS-IS comprobadas que pueden ser reutilizadas como evidencia, sin asignación automática a paquetes
+
+El inventario técnico aprobado localizó las siguientes rutas exactas de clientes Supabase. Su existencia demuestra estructura física del repositorio, pero **no crea por sí sola una relación paquete→archivo**:
+
+| Repositorio / aplicación | Archivos exactos AS-IS comprobados                                                                                      |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| ANIMA                    | `src/lib/supabase.ts`                                                                                                   |
+| FOGO                     | `src/lib/supabase/client.ts`; `src/lib/supabase/server.ts`                                                              |
+| NEXO                     | `src/lib/supabase/client.ts`; `src/lib/supabase/server.ts`; `src/lib/supabase/proxy.ts`                                 |
+| NUMERA                   | `src/lib/supabase/client.ts`; `src/lib/supabase/server.ts`                                                              |
+| ORIGO                    | `src/lib/supabase/client.ts`; `src/lib/supabase/server.ts`                                                              |
+| PASS                     | `src/lib/supabase.ts`                                                                                                   |
+| PULSO                    | `src/lib/supabase/client.ts`; `src/lib/supabase/server.ts`; `src/lib/supabase/proxy.ts`; `src/utils/supabase/client.ts` |
+| SHELL                    | `src/lib/supabase/client.ts`; `src/lib/supabase/server.ts`                                                              |
+| TALENTO                  | `src/lib/supabase.ts`                                                                                                   |
+| VISO                     | `src/lib/supabase/client.ts`; `src/lib/supabase/server.ts`; `src/lib/supabase/proxy.ts`; `src/lib/supabase/admin.ts`    |
+
+ANIMA conserva además evidencia física vigente de `src/hooks/use-attendance.ts`, donde existe el símbolo `useAttendance`. Esta evidencia no se extiende a otras raíces ANIMA sin vínculo documental explícito.
+
+Las rutas API, Server Actions, RPC, Edge Functions y jobs inventariados por `CODE-AUD-005` permanecen evidencia AS-IS reutilizable. `DELIV-PKG-014` no transforma rutas lógicas como `/api/...` ni nombres de RPC en rutas de archivo por inferencia.
+
+---
+
+#### 4. Inventario físico consolidado de los 207 paquetes
+
+| `package_id`  | Tarea dominante  | `repo_owner`                  | UI                    | Runtime                     | Datos                           | Transición                 | Eventos          | Operación física                      | Archivos exactos vinculados    | Símbolos exactos vinculados    | `physical_state`                           |
+| ------------- | ---------------- | ----------------------------- | --------------------- | --------------------------- | ------------------------------- | -------------------------- | ---------------- | ------------------------------------- | ------------------------------ | ------------------------------ | ------------------------------------------ |
+| `GAP-PKG-001` | `AUTH-DB-003`    | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-002` | `AUTH-DB-002`    | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-003` | `SUPA-AUD-015`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-004` | `AUTH-DB-002`    | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-005` | `INT-EXT-002`    | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-006` | `AURA-DOM-007`   | `NO_CONFIRMADO`               | `AURA_UI_BLOCKED`     | `AURA_RUNTIME_BLOCKED`      | `AURA_DATA_BLOCKED`             | `MIG-AURA-001`             | `EV-AURA-001`    | `NO_MATERIALIZAR`                     | `—`                            | `—`                            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           |
+| `GAP-PKG-007` | `PASS-INT-001`   | `devVentoGroup/vento-pass`    | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-008` | `AURA-DOM-008`   | `NO_CONFIRMADO`               | `AURA_UI_BLOCKED`     | `AURA_RUNTIME_BLOCKED`      | `AURA_DATA_BLOCKED`             | `MIG-AURA-001`             | `EV-AURA-001`    | `NO_MATERIALIZAR`                     | `—`                            | `—`                            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           |
+| `GAP-PKG-009` | `INT-EXT-001`    | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-010` | `DATA-DOM-001`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-011` | `DATA-DOM-002`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-012` | `INFO-DOM-004`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-013` | `DATA-DOM-001`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-014` | `INFO-DOM-010`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-015` | `DATA-DOM-010`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-016` | `INFO-DOM-001`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-017` | `PASS-INT-001`   | `devVentoGroup/vento-pass`    | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-018` | `SUPA-AUD-010`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-019` | `SUPA-AUD-016`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-020` | `INFO-INT-003`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-021` | `INFO-AUTH-001`  | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `AUTHORIZATION_RUNTIME`     | `DATA_AUTHORIZATION_BOUNDARY`   | `MIG-DIRECT-001`           | `EV-AUTH-001`    | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-022` | `DATA-INT-003`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-023` | `DATA-DOM-017`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-024` | `NUMERA-DOM-003` | `devVentoGroup/vento-numera`  | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-025` | `INT-DB-008`     | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-026` | `NUMERA-DOM-002` | `devVentoGroup/vento-numera`  | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-027` | `EXT-GOV-001`    | `devVentoGroup/vento-shell`   | `EXT_GOV_CONDITIONAL` | `EXT_GOV_CONDITIONAL`       | `EXT_GOV_CONDITIONAL`           | `MIG-EXT-001`              | `EV-EXT-001`     | `NO_MATERIALIZAR_HASTA_ACTIVACION`    | `—`                            | `—`                            | `BLOQUEADO_CONDICIONAL_EXT_GOV`            |
+| `GAP-PKG-028` | `VISO-CORE-006`  | `devVentoGroup/vento-viso`    | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-029` | `NEXO-DOM-001`   | `devVentoGroup/vento-nexo`    | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-030` | `SUPA-AUD-023`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-031` | `PROC-CAT-005`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-032` | `INT-WORK-002`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-033` | `SHELL-CON-016`  | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `SHARED_RUNTIME_CONTRACT`   | `DATA_SHARED_CONTRACT`          | `MIG-DIRECT-001`           | `EV-SHARED-001`  | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-034` | `SHELL-CON-016`  | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `SHARED_RUNTIME_CONTRACT`   | `DATA_SHARED_CONTRACT`          | `MIG-DIRECT-001`           | `EV-SHARED-001`  | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-035` | `SUPA-AUD-019`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-036` | `SUPA-AUD-019`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-037` | `NEXO-UX-009`    | `devVentoGroup/vento-nexo`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-038` | `SUPA-AUD-019`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-039` | `ORIGO-UX-014`   | `devVentoGroup/vento-origo`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-040` | `FOGO-AUTH-010`  | `devVentoGroup/vento-fogo`    | `NO_DIRECT_UI_CHANGE` | `AUTHORIZATION_RUNTIME`     | `DATA_AUTHORIZATION_BOUNDARY`   | `MIG-DIRECT-001`           | `EV-AUTH-001`    | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-041` | `UX-QA-027`      | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-042` | `INT-MKT-002`    | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-043` | `PROC-CAT-009`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-044` | `PULSO-UX-009`   | `devVentoGroup/vento-pulso`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-045` | `SHELL-CON-002`  | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `SHARED_RUNTIME_CONTRACT`   | `DATA_SHARED_CONTRACT`          | `MIG-DIRECT-001`           | `EV-SHARED-001`  | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-046` | `NEXO-DOM-029`   | `devVentoGroup/vento-nexo`    | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-047` | `INT-DB-008`     | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-048` | `PULSO-UX-020`   | `devVentoGroup/vento-pulso`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-049` | `SUPA-ARC-007`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-050` | `DATA-AUTH-003`  | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `AUTHORIZATION_RUNTIME`     | `DATA_AUTHORIZATION_BOUNDARY`   | `MIG-DIRECT-001`           | `EV-AUTH-001`    | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-051` | `FOGO-AUTH-008`  | `devVentoGroup/vento-fogo`    | `NO_DIRECT_UI_CHANGE` | `AUTHORIZATION_RUNTIME`     | `DATA_AUTHORIZATION_BOUNDARY`   | `MIG-DIRECT-001`           | `EV-AUTH-001`    | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-052` | `INT-APP-008`    | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-053` | `CONT-DOM-003`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-054` | `NEXO-UX-037`    | `devVentoGroup/vento-nexo`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-055` | `SUPA-ARC-001`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-056` | `ANIMA-AUTH-015` | `devVentoGroup/vento-anima`   | `NO_DIRECT_UI_CHANGE` | `AUTHORIZATION_RUNTIME`     | `DATA_AUTHORIZATION_BOUNDARY`   | `MIG-DIRECT-001`           | `EV-AUTH-001`    | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-057` | `AUTH-QA-029`    | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-058` | `AUTH-QA-029`    | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-059` | `AURA-INT-001`   | `NO_CONFIRMADO`               | `AURA_UI_BLOCKED`     | `AURA_RUNTIME_BLOCKED`      | `AURA_DATA_BLOCKED`             | `MIG-AURA-001`             | `EV-AURA-001`    | `NO_MATERIALIZAR`                     | `—`                            | `—`                            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           |
+| `GAP-PKG-060` | `INFO-AUTH-004`  | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `AUTHORIZATION_RUNTIME`     | `DATA_AUTHORIZATION_BOUNDARY`   | `MIG-DIRECT-001`           | `EV-AUTH-001`    | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-061` | `INFO-AUTH-002`  | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `AUTHORIZATION_RUNTIME`     | `DATA_AUTHORIZATION_BOUNDARY`   | `MIG-DIRECT-001`           | `EV-AUTH-001`    | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-062` | `AUTH-QA-026`    | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-EVIDENCE-STORAGE-001` | `EV-CONTROL-001` | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-063` | `INT-WORK-001`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-064` | `CAP-TAL-003`    | `devVentoGroup/vento-talento` | `NO_DIRECT_UI_CHANGE` | `FUTURE_RUNTIME_CONTRACT`   | `DATA_FUTURE_CONTRACT`          | `MIG-FUTURE-001`           | `EV-FUTURE-001`  | `NO_MATERIALIZAR_EN_LINEA_ACTUAL`     | `—`                            | `—`                            | `ESPECIFICADO_NO_DESPLEGADO_TALENTO`       |
+| `GAP-PKG-065` | `SHELL-CI-016`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-VIEW-001`     | `EV-CONTROL-001` | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-066` | `ANIMA-AUTH-014` | `devVentoGroup/vento-anima`   | `NO_DIRECT_UI_CHANGE` | `AUTHORIZATION_RUNTIME`     | `DATA_AUTHORIZATION_BOUNDARY`   | `MIG-DIRECT-001`           | `EV-AUTH-001`    | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-067` | `TI-DOM-001`     | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-068` | `SUPA-ARC-020`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-069` | `PULSO-UX-003`   | `devVentoGroup/vento-pulso`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-070` | `PASS-INT-001`   | `devVentoGroup/vento-pass`    | `UI_CHANGE_REQUIRED`  | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-071` | `UX-QA-019`      | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-072` | `TI-INT-003`     | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-073` | `SHELL-CI-007`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-074` | `SUPA-ARC-016`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-075` | `DATA-DOM-004`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-076` | `CONT-INT-001`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-077` | `PROC-CAT-009`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-078` | `AURA-DOM-007`   | `NO_CONFIRMADO`               | `AURA_UI_BLOCKED`     | `AURA_RUNTIME_BLOCKED`      | `AURA_DATA_BLOCKED`             | `MIG-AURA-001`             | `EV-AURA-001`    | `NO_MATERIALIZAR`                     | `—`                            | `—`                            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           |
+| `GAP-PKG-079` | `PASS-UX-006`    | `devVentoGroup/vento-pass`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-080` | `AURA-DOM-001`   | `NO_CONFIRMADO`               | `AURA_UI_BLOCKED`     | `AURA_RUNTIME_BLOCKED`      | `AURA_DATA_BLOCKED`             | `MIG-AURA-001`             | `EV-AURA-001`    | `NO_MATERIALIZAR`                     | `—`                            | `—`                            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           |
+| `GAP-PKG-081` | `PASS-UX-012`    | `devVentoGroup/vento-pass`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-082` | `SUPA-AUD-012`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-083` | `SUPA-TRANS-006` | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-084` | `SUPA-AUD-019`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-085` | `NUMERA-DOM-013` | `devVentoGroup/vento-numera`  | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-086` | `NUMERA-DOM-005` | `devVentoGroup/vento-numera`  | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-087` | `NUMERA-DOM-016` | `devVentoGroup/vento-numera`  | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-088` | `NUMERA-DOM-016` | `devVentoGroup/vento-numera`  | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-089` | `NUMERA-DOM-014` | `devVentoGroup/vento-numera`  | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-090` | `NUMERA-DOM-005` | `devVentoGroup/vento-numera`  | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-091` | `NEXO-UX-009`    | `devVentoGroup/vento-nexo`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-092` | `DATA-DOM-006`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-093` | `VISO-CORE-006`  | `devVentoGroup/vento-viso`    | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-094` | `PROC-CAT-002`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-095` | `PROC-CAT-002`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-096` | `NEXO-UX-019`    | `devVentoGroup/vento-nexo`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-097` | `PROC-CAT-001`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-098` | `OPS-PRD-001`    | `devVentoGroup/vento-fogo`    | `UI_CHANGE_REQUIRED`  | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-099` | `NEXO-DOM-029`   | `devVentoGroup/vento-nexo`    | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-100` | `FOGO-UX-009`    | `devVentoGroup/vento-fogo`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-101` | `NEXO-DOM-033`   | `devVentoGroup/vento-nexo`    | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-102` | `ORIGO-AUTH-004` | `devVentoGroup/vento-origo`   | `UI_CHANGE_REQUIRED`  | `AUTHORIZATION_RUNTIME`     | `DATA_AUTHORIZATION_BOUNDARY`   | `MIG-DIRECT-001`           | `EV-AUTH-001`    | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-103` | `CONT-DOM-013`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-104` | `NEXO-UX-037`    | `devVentoGroup/vento-nexo`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-105` | `FOGO-UX-012`    | `devVentoGroup/vento-fogo`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-106` | `SUPA-AUD-019`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-107` | `NEXO-DOM-008`   | `devVentoGroup/vento-nexo`    | `UI_CHANGE_REQUIRED`  | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-108` | `SUPA-AUD-019`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-109` | `FOGO-UX-010`    | `devVentoGroup/vento-fogo`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-110` | `PULSO-UX-021`   | `devVentoGroup/vento-pulso`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-111` | `PULSO-UX-009`   | `devVentoGroup/vento-pulso`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-112` | `NEXO-UX-013`    | `devVentoGroup/vento-nexo`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-113` | `NEXO-UX-001`    | `devVentoGroup/vento-nexo`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-114` | `PULSO-UX-010`   | `devVentoGroup/vento-pulso`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-115` | `NEXO-DOM-029`   | `devVentoGroup/vento-nexo`    | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-116` | `NEXO-AUTH-031`  | `devVentoGroup/vento-nexo`    | `NO_DIRECT_UI_CHANGE` | `AUTHORIZATION_RUNTIME`     | `DATA_AUTHORIZATION_BOUNDARY`   | `MIG-DIRECT-001`           | `EV-AUTH-001`    | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-117` | `NEXO-DOM-003`   | `devVentoGroup/vento-nexo`    | `UI_CHANGE_REQUIRED`  | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-118` | `AURA-DOM-006`   | `NO_CONFIRMADO`               | `AURA_UI_BLOCKED`     | `AURA_RUNTIME_BLOCKED`      | `AURA_DATA_BLOCKED`             | `MIG-AURA-001`             | `EV-AURA-001`    | `NO_MATERIALIZAR`                     | `—`                            | `—`                            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           |
+| `GAP-PKG-119` | `NFR-REQ-012`    | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-120` | `ORIGO-UX-001`   | `devVentoGroup/vento-origo`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-121` | `INFO-DOM-003`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-122` | `NEXO-DOM-026`   | `devVentoGroup/vento-nexo`    | `UI_CHANGE_REQUIRED`  | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-123` | `PULSO-UX-017`   | `devVentoGroup/vento-pulso`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-124` | `DATA-DOM-001`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-125` | `TI-INT-003`     | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-126` | `NEXO-DOM-026`   | `devVentoGroup/vento-nexo`    | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-127` | `ANIMA-UX-017`   | `devVentoGroup/vento-anima`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-128` | `ANIMA-UX-017`   | `devVentoGroup/vento-anima`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-129` | `ANIMA-UX-017`   | `devVentoGroup/vento-anima`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-130` | `TI-DOM-001`     | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-131` | `PASS-UX-001`    | `devVentoGroup/vento-pass`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-VIEW-001`          | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-132` | `SHELL-APP-001`  | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-VIEW-001`          | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-133` | `SUPA-TRANS-005` | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-134` | `SUPA-AUD-014`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-135` | `SUPA-TRANS-006` | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-136` | `PASS-UX-001`    | `devVentoGroup/vento-pass`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-137` | `DATA-DOM-009`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-138` | `PASS-UX-001`    | `devVentoGroup/vento-pass`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-VIEW-001`          | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-139` | `SUPA-AUD-019`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-140` | `SHELL-AUD-011`  | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-VIEW-001`     | `EV-CONTROL-001` | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-141` | `INFO-DOM-001`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-142` | `DATA-DOM-001`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-143` | `CONT-DOM-011`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-144` | `AURA-DOM-007`   | `NO_CONFIRMADO`               | `AURA_UI_BLOCKED`     | `AURA_RUNTIME_BLOCKED`      | `AURA_DATA_BLOCKED`             | `MIG-AURA-001`             | `EV-AURA-001`    | `NO_MATERIALIZAR`                     | `—`                            | `—`                            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           |
+| `GAP-PKG-145` | `PASS-INT-001`   | `devVentoGroup/vento-pass`    | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-146` | `PASS-UX-001`    | `devVentoGroup/vento-pass`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-147` | `AURA-DOM-002`   | `NO_CONFIRMADO`               | `AURA_UI_BLOCKED`     | `AURA_RUNTIME_BLOCKED`      | `AURA_DATA_BLOCKED`             | `MIG-AURA-001`             | `EV-AURA-001`    | `NO_MATERIALIZAR`                     | `—`                            | `—`                            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           |
+| `GAP-PKG-148` | `AURA-DOM-003`   | `NO_CONFIRMADO`               | `AURA_UI_BLOCKED`     | `AURA_RUNTIME_BLOCKED`      | `AURA_DATA_BLOCKED`             | `MIG-AURA-001`             | `EV-AURA-001`    | `NO_MATERIALIZAR`                     | `—`                            | `—`                            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           |
+| `GAP-PKG-149` | `AURA-DOM-005`   | `NO_CONFIRMADO`               | `AURA_UI_BLOCKED`     | `AURA_RUNTIME_BLOCKED`      | `AURA_DATA_BLOCKED`             | `MIG-AURA-001`             | `EV-AURA-001`    | `NO_MATERIALIZAR`                     | `—`                            | `—`                            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           |
+| `GAP-PKG-150` | `SUPA-AUD-012`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-151` | `SUPA-AUD-014`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-152` | `PASS-INT-002`   | `devVentoGroup/vento-pass`    | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-153` | `SUPA-ARC-004`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-154` | `DATA-DOM-001`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-155` | `NUMERA-UX-014`  | `devVentoGroup/vento-numera`  | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-156` | `NUMERA-DOM-009` | `devVentoGroup/vento-numera`  | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-157` | `EXT-GOV-001`    | `devVentoGroup/vento-shell`   | `EXT_GOV_CONDITIONAL` | `EXT_GOV_CONDITIONAL`       | `EXT_GOV_CONDITIONAL`           | `MIG-EXT-001`              | `EV-EXT-001`     | `NO_MATERIALIZAR_HASTA_ACTIVACION`    | `—`                            | `—`                            | `BLOQUEADO_CONDICIONAL_EXT_GOV`            |
+| `GAP-PKG-158` | `CONT-DOM-004`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-159` | `PULSO-UX-008`   | `devVentoGroup/vento-pulso`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-160` | `CONT-DOM-010`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-161` | `FOGO-UX-001`    | `devVentoGroup/vento-fogo`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-162` | `CONT-DOM-006`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-163` | `NEXO-UX-012`    | `devVentoGroup/vento-nexo`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-164` | `NFR-REQ-010`    | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-165` | `NEXO-UX-037`    | `devVentoGroup/vento-nexo`    | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-166` | `CONT-DOM-005`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-167` | `PROC-CAT-002`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-168` | `PROC-CAT-018`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-169` | `CONT-DOM-001`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-170` | `CONT-DOM-008`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-171` | `PROC-CAT-002`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-172` | `EVID-ARC-001`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-EVIDENCE-STORAGE-001` | `EV-CONTROL-001` | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-173` | `PROC-ACTOR-003` | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-174` | `VISO-AUTH-010`  | `devVentoGroup/vento-viso`    | `UI_CHANGE_REQUIRED`  | `AUTHORIZATION_RUNTIME`     | `DATA_AUTHORIZATION_BOUNDARY`   | `MIG-DIRECT-001`           | `EV-AUTH-001`    | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-175` | `INT-EXT-019`    | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-176` | `SUPA-AUD-012`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-177` | `ANIMA-UX-017`   | `devVentoGroup/vento-anima`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-178` | `TI-DOM-001`     | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-179` | `SUPA-TRANS-013` | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-180` | `SUPA-TRANS-013` | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DATABASE_RPC_BOUNDARY`     | `DATA_DATABASE_RPC`             | `MIG-DIRECT-001`           | `EV-DB-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-181` | `TI-DOM-009`     | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-182` | `TI-DOM-006`     | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-183` | `TI-DOM-007`     | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-184` | `TI-DOM-001`     | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-185` | `SHELL-CI-007`   | `devVentoGroup/vento-shell`   | `UI_CHANGE_REQUIRED`  | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-186` | `GAP-CTRL-007`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-187` | `AURA-INT-001`   | `NO_CONFIRMADO`               | `AURA_UI_BLOCKED`     | `AURA_RUNTIME_BLOCKED`      | `AURA_DATA_BLOCKED`             | `MIG-AURA-001`             | `EV-AURA-001`    | `NO_MATERIALIZAR`                     | `—`                            | `—`                            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           |
+| `GAP-PKG-188` | `AURA-INT-001`   | `NO_CONFIRMADO`               | `AURA_UI_BLOCKED`     | `AURA_RUNTIME_BLOCKED`      | `AURA_DATA_BLOCKED`             | `MIG-AURA-001`             | `EV-AURA-001`    | `NO_MATERIALIZAR`                     | `—`                            | `—`                            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           |
+| `GAP-PKG-189` | `AURA-AUTH-001`  | `NO_CONFIRMADO`               | `AURA_UI_BLOCKED`     | `AURA_RUNTIME_BLOCKED`      | `AURA_DATA_BLOCKED`             | `MIG-AURA-001`             | `EV-AURA-001`    | `NO_MATERIALIZAR`                     | `—`                            | `—`                            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           |
+| `GAP-PKG-190` | `DATA-DOM-001`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-191` | `PROC-CAT-002`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-192` | `AURA-AUD-010`   | `NO_CONFIRMADO`               | `AURA_UI_BLOCKED`     | `AURA_RUNTIME_BLOCKED`      | `AURA_DATA_BLOCKED`             | `MIG-AURA-001`             | `EV-AURA-001`    | `NO_MATERIALIZAR`                     | `—`                            | `—`                            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           |
+| `GAP-PKG-193` | `CONT-DOM-014`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-194` | `CONT-AUTH-004`  | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `AUTHORIZATION_RUNTIME`     | `DATA_AUTHORIZATION_BOUNDARY`   | `MIG-DIRECT-001`           | `EV-AUTH-001`    | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-195` | `PROC-CAT-004`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-196` | `ANIMA-UX-001`   | `devVentoGroup/vento-anima`   | `UI_CHANGE_REQUIRED`  | `UI_RUNTIME_CONSUMER`       | `DATA_UI_CONSUMER`              | `MIG-UI-CONSUME-001`       | `EV-UI-001`      | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-197` | `CAP-TAL-003`    | `devVentoGroup/vento-talento` | `NO_DIRECT_UI_CHANGE` | `FUTURE_RUNTIME_CONTRACT`   | `DATA_FUTURE_CONTRACT`          | `MIG-FUTURE-001`           | `EV-FUTURE-001`  | `NO_MATERIALIZAR_EN_LINEA_ACTUAL`     | `—`                            | `—`                            | `ESPECIFICADO_NO_DESPLEGADO_TALENTO`       |
+| `GAP-PKG-198` | `SHELL-AUD-010`  | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-199` | `NEXO-DOM-001`   | `devVentoGroup/vento-nexo`    | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-200` | `SHELL-CI-007`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+| `GAP-PKG-201` | `INFO-DOM-003`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-202` | `INFO-DOM-012`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-203` | `INFO-INT-003`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `INTEGRATION_BOUNDARY`      | `DATA_INTEGRATION_BOUNDARY`     | `MIG-DIRECT-001`           | `EV-INT-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-204` | `NEXO-DOM-001`   | `devVentoGroup/vento-nexo`    | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-205` | `DATA-DOM-012`   | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-206` | `NUMERA-DOM-018` | `devVentoGroup/vento-numera`  | `NO_DIRECT_UI_CHANGE` | `DOMAIN_RUNTIME`            | `DATA_DOMAIN_MODEL`             | `MIG-DIRECT-001`           | `EV-DOM-001`     | `NO_DETERMINADA_SIN_IDENTIDAD_EXACTA` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `NO_CONFIRMADO_PARA_ESTA_RAIZ` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |
+| `GAP-PKG-207` | `SHELL-AUD-011`  | `devVentoGroup/vento-shell`   | `NO_DIRECT_UI_CHANGE` | `CONTROL_NO_DIRECT_RUNTIME` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `MIG-CONTROL-NOCHANGE-001` | `EV-CONTROL-001` | `NINGUNA_OPERACION_DIRECTA`           | `—`                            | `—`                            | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |
+
+##### 4.1. Reconciliación del inventario
+
+| Control                                    | Resultado |
+| ------------------------------------------ | --------: |
+| raíces esperadas                           |   **207** |
+| raíces inventariadas                       |   **207** |
+| `BLOQUEADO_AURA_SIN_REPOSITORIO`           |    **14** |
+| `BLOQUEADO_CONDICIONAL_EXT_GOV`            |     **2** |
+| `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` |   **167** |
+| `ESPECIFICADO_NO_DESPLEGADO_TALENTO`       |     **2** |
+| `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     |    **22** |
+
+La matriz no interpreta un bloqueo de identidad física como ausencia de alcance. Las raíces con `MIG-DIRECT-001`, `MIG-UI-VIEW-001`, `MIG-UI-CONSUME-001`, `MIG-CONTROL-VIEW-001` o `MIG-EVIDENCE-STORAGE-001` conservan su necesidad lógica y sus transiciones aprobadas, pero no pueden recibir una operación de archivo hasta que la identidad exacta esté demostrada.
+
+---
+
+#### 5. Cierre de `BASELINE-RECONCILIATION-GATE-009`
+
+El baseline remoto vigente de `vento-os-dev` queda reconciliado para las tres diferencias que `DELIV-PKG-009` asignó a esta tarea:
+
+| Superficie                        | Resultado reconciliado | Decisión                                                                                        |
+| --------------------------------- | ---------------------: | ----------------------------------------------------------------------------------------------- |
+| vistas VENTO                      |                 **62** | reconciliadas por identidad: `pass=1`, `public=61`                                              |
+| políticas incl. Storage           |                **616** | reconciliadas por distribución: `public=444`, `pass=102`, `talento=20`, `club=11`, `storage=39` |
+| relaciones en `supabase_realtime` |                  **6** | reconciliadas por identidad                                                                     |
+
+El gate deja de considerar la diferencia 008→009 como deriva no atribuida: 014 adopta el estado remoto observado por 009 como baseline físico vigente para planificación posterior. Esta decisión **no** reescribe la fotografía histórica de `DELIV-PKG-008`; establece la línea física que `DELIV-PKG-019` deberá volver a comprobar antes de rollout.
+
+##### 5.1. Identidades exactas de vistas VENTO
+
+- `pass.sell_products_by_site`
+- `public.catalog_item_customization_template_assignments`
+- `public.catalog_item_customization_template_groups`
+- `public.catalog_item_customization_templates`
+- `public.catalog_item_option_consumption_rules`
+- `public.catalog_item_option_groups`
+- `public.catalog_item_option_recipe_effects`
+- `public.catalog_item_options`
+- `public.catalog_item_presentation`
+- `public.catalog_items`
+- `public.catalog_option_visual_assets`
+- `public.commercial_categories`
+- `public.commercial_collection_categories`
+- `public.commercial_collections`
+- `public.employee_attendance_status`
+- `public.loyalty_redemptions`
+- `public.loyalty_rewards`
+- `public.loyalty_transactions`
+- `public.numera_cost_center_monthly_summary`
+- `public.operational_sites`
+- `public.pass_delivery_distance_rates`
+- `public.pass_satellites`
+- `public.permission_catalog_human_v1`
+- `public.pos_cash_movements`
+- `public.pos_cash_shifts`
+- `public.pos_modifier_options`
+- `public.pos_modifiers`
+- `public.pos_order_item_modifiers`
+- `public.pos_payments`
+- `public.pos_product_modifiers`
+- `public.pos_session_orders`
+- `public.pos_sessions`
+- `public.pos_table_call_devices`
+- `public.pos_table_service_calls`
+- `public.pos_tables`
+- `public.pos_zones`
+- `public.product_request_policy_audit`
+- `public.product_request_policy_audit_summary`
+- `public.product_request_policy_usage`
+- `public.pulso_sales_import_rows_pending_consumption`
+- `public.sell_products_by_site`
+- `public.shared_operational_device_actor_policies_admin_v1`
+- `public.shared_operational_device_templates_admin_v1`
+- `public.shared_operational_devices_admin_v1`
+- `public.shift_calendar_view`
+- `public.user_favorites`
+- `public.v_asset_count_session_summary`
+- `public.v_asset_groups_inventory_status`
+- `public.v_asset_items_inventory_status`
+- `public.v_inventory_catalog`
+- `public.v_inventory_stock_by_location`
+- `public.v_ops_restock_product_gaps`
+- `public.v_ops_site_readiness`
+- `public.v_procurement_price_book`
+- `public.v_site_area_operational_diagnostics`
+- `public.v_site_production_route_diagnostics`
+- `public.vento_operational_roles_v1`
+- `public.vento_site_operational_role_matrix_v1`
+- `public.viso_employee_site_operational_profiles`
+- `public.viso_operational_checkin_points`
+- `public.viso_operational_sites`
+- `public.viso_site_operational_roles`
+
+##### 5.2. Identidades exactas de Realtime
+
+- `public.order_conversations`
+- `public.order_delivery_sessions`
+- `public.order_messages`
+- `public.order_status_events`
+- `public.orders`
+- `public.users`
+
+##### 5.3. Identidad del conjunto de políticas
+
+El conjunto reconciliado contiene exactamente **616** filas de `pg_policies` en `public`, `pass`, `talento`, `club` y `storage`. La identidad física de cada fila se define por la tupla ordenada `schema.table`, `policy_name`, `cmd`, `roles`, `permissive`; ningún conteo de `DELIV-PKG-008` sustituye esa identidad. La distribución vigente es `public=444`, `pass=102`, `talento=20`, `club=11`, `storage=39`. Cualquier alta, baja, cambio de nombre, comando, roles o modalidad posterior constituye drift que deberá ser detectado antes de implementación o rollout.
+
+---
+
+#### 6. Reglas de disposición física
+
+1. **`CREAR`**: solo puede materializarse cuando exista nombre y ruta exactos respaldados por estructura real y por el contrato lógico que requiere el nuevo artefacto.
+2. **`MODIFICAR`**: exige un archivo o símbolo existente y un vínculo explícito con la raíz; no basta con que el archivo pertenezca al mismo repositorio.
+3. **`REUTILIZAR`**: conserva identidad y contrato existentes; reutilización no autoriza ampliar responsabilidad, permisos o semántica.
+4. **`RETIRAR`**: exige la secuencia de retiro de `DELIV-PKG-009`, sucesor probado, cero uso observado y evidencia preservada.
+5. **`NINGUNA_OPERACION_DIRECTA`**: se aplica cuando la raíz es de control y sus predecesores no justifican cambio físico directo.
+6. **`NO_DETERMINADA_SIN_IDENTIDAD_EXACTA`**: es un bloqueo normativo; impide a la implementación decidir una ruta durante la ejecución sin reabrir primero la evidencia del paquete.
+
+---
+
+#### 7. Propiedad de los bloqueos y entrega a `DELIV-PKG-015`
+
+`DELIV-PKG-015` recibe cada raíz con su `repo_owner`, perfiles lógicos y `physical_state`. Para una raíz `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA`, 015 podrá ordenar dependencias documentales y de evidencia, pero no podrá afirmar dependencia entre archivos inexistentes ni convertir el bloqueo en una ruta inventada.
+
+La salida de cada bloqueo físico requiere una fuente verificable que materialice simultáneamente:
+
+- `package_id`;
+- repositorio;
+- ruta exacta;
+- símbolo exacto cuando aplique;
+- operación física;
+- contrato lógico que justifica la operación;
+- evidencia de existencia AS-IS o evidencia estructural suficiente para una creación planificada;
+- relación con migración, API, UI, autorización, datos, eventos, impresión/notificación/evidencia y NFR cuando aplique.
+
+No se delega a la implementación la libertad de escoger una ruta equivalente. Si la evidencia física cambia, el inventario deberá actualizarse de forma trazable antes de ejecutar el cambio.
+
+---
+
+#### 8. Tratamientos especiales
+
+##### 8.1. AURA
+
+Las 14 raíces AURA (`GAP-PKG-006`, `008`, `059`, `078`, `080`, `118`, `144`, `147`, `148`, `149`, `187`, `188`, `189`, `192`) permanecen sin `repo_owner` confirmado. No se crean rutas, archivos, símbolos, migraciones, servicios ni consumidores AURA por inferencia. La salida continúa gobernada por `AURA-AUD-001`, `AURA-AUD-010` y `AURA-AUD-012`.
+
+##### 8.2. `EXT-GOV-001`
+
+`GAP-PKG-027` y `GAP-PKG-157` permanecen `BLOQUEADO_CONDICIONAL_EXT_GOV`. Antes de `ACTIVATE_WHEN_REQUIRED_EXTERNAL_FILE_EXISTS` no existe identidad física autorizada para crear, modificar, reutilizar o retirar.
+
+##### 8.3. TALENTO
+
+`GAP-PKG-064` y `GAP-PKG-197` conservan `devVentoGroup/vento-talento` como base técnica y permanecen `ESPECIFICADO_NO_DESPLEGADO_TALENTO`. La existencia del repositorio no autoriza rollout ni convierte un archivo TALENTO en artefacto de estas raíces sin vínculo explícito.
+
+##### 8.4. `VISO-SCHEDULE-MONTHLY-001`
+
+Permanece fuera de `GAP-PKG-001..207`, con estado reservado y congelado pendiente de estabilización. Su inventario físico observado queda aislado de las 207 raíces:
+
+| Repositorio                 | Archivo exacto observado                                                              | Tratamiento en 014                                                    |
+| --------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `devVentoGroup/vento-viso`  | `src/app/staff/schedule/layout.tsx`                                                   | conservar dentro del expediente reservado; no reasignar a `GAP-PKG-*` |
+| `devVentoGroup/vento-viso`  | `src/app/staff/schedule/month/page.tsx`                                               | conservar; materializa `VISO-ROUTE-061` `/staff/schedule/month`       |
+| `devVentoGroup/vento-viso`  | `src/app/staff/schedule/month/actions.ts`                                             | conservar dentro del expediente reservado                             |
+| `devVentoGroup/vento-viso`  | `src/app/staff/schedule/month/constants.ts`                                           | conservar dentro del expediente reservado                             |
+| `devVentoGroup/vento-viso`  | `src/components/viso/schedule-view-switch.tsx`                                        | conservar dentro del expediente reservado                             |
+| `devVentoGroup/vento-viso`  | `src/components/viso/monthly-shift-builder.tsx`                                       | conservar dentro del expediente reservado                             |
+| `devVentoGroup/vento-shell` | `supabase/migrations/20260731082600_viso_monthly_schedule_186_hour_publish_guard.sql` | conservar como evidencia de migración del paquete reservado           |
+
+Símbolos exactos individualizados por sus fuentes: `VISO-ROUTE-061`, guard `requireStaffScheduleAccess`, función `public.viso_enforce_monthly_schedule_publish_limit()` y trigger `public.employee_shifts::trigger::trg_viso_monthly_schedule_publish_limit`. No se infieren nombres de funciones internas de `actions.ts`, componentes exportados ni símbolos adicionales.
+
+---
+
+#### 9. Fronteras de responsabilidad
+
+`DELIV-PKG-014` **sí cierra**:
+
+- un inventario físico por las **207** raíces, sin faltantes ni duplicados;
+- el repositorio propietario exacto o su bloqueo explícito;
+- la prohibición materializada de inventar rutas o símbolos cuando no existe vínculo verificable;
+- la clasificación de operación física o bloqueo por raíz;
+- el baseline vigente de **62** vistas, **616** políticas y **6** relaciones Realtime que `DELIV-PKG-009` dejó a cargo de esta tarea;
+- la entrega de bloqueos físicos explícitos a `DELIV-PKG-015` y `DELIV-PKG-016`.
+
+`DELIV-PKG-014` **no cierra**:
+
+- instalación, edición, creación o retiro real de archivos;
+- creación de migraciones o ejecución de DDL/DML;
+- dependencias, versiones, librerías y orden consolidado, reservados a `DELIV-PKG-015`;
+- matriz `TREQ-*`→pruebas→archivos/comandos, reservada a `DELIV-PKG-016`;
+- rollout, rollback, despliegue o certificación de implementación;
+- una excepción implícita para raíces con identidad física no confirmada.
+
+---
+
+#### 10. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea inventaría un requisito nuevo si convirtiera la ausencia de una identidad física en comportamiento ejecutable. El inventario conserva requisitos ya existentes de integridad, autorización, datos, migración, drift, Storage, Realtime, evidencia y NFR, y materializa únicamente el vínculo físico o su bloqueo. No modifica contenido, estado, destino ni secuencia de filas del registro canónico de requisitos de prueba. La vinculación exhaustiva de requisitos con archivos y comandos continúa reservada a `DELIV-PKG-016`.
+
+---
+
+#### 11. Criterios de aceptación
+
+- [x] existen exactamente **207** filas de inventario, una por `GAP-PKG-001..207`;
+- [x] ninguna raíz recibe un repositorio distinto del aprobado en `DELIV-PKG-003`;
+- [x] ninguna ruta física se deriva de un wildcard, pantalla, namespace, capacidad o similitud de nombres;
+- [x] las raíces AURA permanecen sin repositorio y sin identidades físicas inventadas;
+- [x] `EXT-GOV-001` y TALENTO conservan sus estados especiales;
+- [x] `BASELINE-RECONCILIATION-GATE-009` queda reconciliado en **62** vistas, **616** políticas y **6** relaciones Realtime;
+- [x] no se ejecuta edición de código, DDL, DML, migración, despliegue ni retiro;
+- [x] se generan **0** cambios de requisitos de prueba.
+
+---
+
+#### 12. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DELIV-PKG-013 — Definir requisitos no funcionales aplicables`
+
+TAREA ACTUAL APROBADA
+`DELIV-PKG-014 — Enumerar archivos exactos que se crearán, modificarán o retirarán`
+
+SIGUIENTE TAREA RESERVADA
+`DELIV-PKG-015 — Definir dependencias, bloqueos y orden de aplicación`
+
+
 ### [ ] DELIV-PKG-015 — Definir dependencias, bloqueos y orden de aplicación
 ### [ ] DELIV-PKG-016 — Vincular requisitos `TREQ-*` y definir pruebas unitarias, contractuales, de integración, seguridad y E2E
 ### [ ] DELIV-PKG-017 — Definir observabilidad, métricas, logs, alertas y auditoría
