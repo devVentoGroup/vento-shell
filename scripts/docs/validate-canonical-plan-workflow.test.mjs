@@ -11,6 +11,9 @@ const productionIntegrationPath = path.resolve(
 const posTransitionPath = path.resolve(
   'docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md',
 );
+const implementationPackagesPath = path.resolve(
+  'docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md',
+);
 
 test('verifica fuentes antes del build y publica el compilado regenerado', () => {
   const workflow = fs.readFileSync(workflowPath, 'utf8');
@@ -102,4 +105,19 @@ test('INT-POS-018 entrega acumulación, reversión y conciliación a identidades
   assert.match(task, /idempotencia detallada de acumulación[^\n]+PASS-INT-001/u);
   assert.match(task, /reversión o compensación de acumulación PASS[^\n]+PASS-INT-001/u);
   assert.match(task, /conciliación de acumulación PASS[^\n]+PASS-INT-001[^\n]+PASS-QA-001/u);
+});
+
+test('DELIV-PKG-003 conserva un único título canónico en sus referencias de continuidad', () => {
+  const source = fs.readFileSync(implementationPackagesPath, 'utf8');
+  const canonicalTitle = 'Definir aplicación, dominio y repositorio propietarios';
+
+  assert.match(source, new RegExp(`^### \\[ \\] DELIV-PKG-003 — ${canonicalTitle}$`, 'mu'));
+  const titledReferences = [
+    ...source.matchAll(/`DELIV-PKG-003 — (?<title>[^`\n]+)`/gu),
+  ];
+  assert.ok(titledReferences.length > 0, 'faltan referencias tituladas a DELIV-PKG-003');
+  assert.deepEqual(
+    [...new Set(titledReferences.map((match) => match.groups.title))],
+    [canonicalTitle],
+  );
 });

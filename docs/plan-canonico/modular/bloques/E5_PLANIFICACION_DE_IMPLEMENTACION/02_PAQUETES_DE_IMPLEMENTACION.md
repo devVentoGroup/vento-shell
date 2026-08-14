@@ -517,7 +517,7 @@ SIGUIENTE TAREA RESERVADA
 
 **Estado:** APROBADA
 **Tarea anterior:** `DELIV-PKG-001 — Crear identificador estable para cada paquete de implementación`
-**Tarea siguiente:** `DELIV-PKG-003 — Asignar application_owner, domain_owner y repo_owner`
+**Tarea siguiente:** `DELIV-PKG-003 — Definir aplicación, dominio y repositorio propietarios`
 **Tipo de tarea:** documental — trazabilidad canónica entre paquetes, capacidades, procesos y brechas
 
 ---
@@ -736,7 +736,7 @@ La tarea organiza trazabilidad documental existente y no introduce comportamient
 `DELIV-PKG-002 — Vincular el paquete con capability_id, process_id y gap_id`
 
 **SIGUIENTE TAREA RESERVADA**
-`DELIV-PKG-003 — Asignar application_owner, domain_owner y repo_owner`
+`DELIV-PKG-003 — Definir aplicación, dominio y repositorio propietarios`
 
 
 ### [ ] DELIV-PKG-003 — Definir aplicación, dominio y repositorio propietarios
