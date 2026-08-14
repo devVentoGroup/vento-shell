@@ -2783,7 +2783,534 @@ SIGUIENTE TAREA RESERVADA
 `DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions`
 
 
-### [ ] DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions
+### ✅ DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions
+
+**Estado:** APROBADA
+**Tarea anterior:** `DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán`
+**Tarea siguiente:** `DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados`
+**Tipo de tarea:** documental — descomposición normativa y materialización completa de la lógica de dominio y de las fronteras Server Action, API, RPC y Edge Function para los 207 `package_id` vigentes
+
+---
+
+#### 1. Resultado canónico
+
+`DELIV-PKG-007` fija una decisión explícita de runtime para cada una de las **207** raíces `GAP-PKG-001..207`, preservando las **820** brechas incluidas y la propiedad, alcance, AS-IS/TO-BE e impacto de interfaz aprobados en `DELIV-PKG-001..006`.
+
+La tarea separa cinco conceptos que no pueden confundirse:
+
+1. **lógica de dominio:** reglas, invariantes, transiciones, cálculos y orquestación que materializan el resultado TO-BE aprobado;
+2. **Server Action:** frontera de servidor propia de una aplicación Next.js cuando el contrato fuente y el repositorio propietario justifican esa modalidad;
+3. **API:** frontera HTTP explícita para interoperabilidad, descarga, carga, webhook, servicio auxiliar o integración cuando la fuente canónica exige ese contrato;
+4. **RPC:** contrato PostgreSQL invocable cuando la atomicidad, autorización, concurrencia, cálculo o consistencia aprobados requieren una operación del lado de datos;
+5. **Edge Function:** frontera Supabase para webhook, proveedor externo, trabajo asíncrono, enlace firmado, notificación, pago u otra ejecución que no deba resolverse como lógica de presentación.
+
+Ninguna modalidad se asigna por preferencia tecnológica. La tarea dominante sirve únicamente como ancla de clasificación; el conjunto completo de tareas primarias, dependencias y contratos del paquete conserva precedencia sobre el perfil resumido de esta matriz.
+
+La distribución materializada es:
+
+| `runtime_profile`           | Paquetes | Decisión normativa                                                                                                                                                      |
+| --------------------------- | -------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DOMAIN_RUNTIME`            |   **61** | la raíz exige lógica de dominio gobernada por sus contratos fuente; las fronteras concretas solo existen cuando esas fuentes las requieren                              |
+| `DATABASE_RPC_BOUNDARY`     |   **31** | la raíz se concentra en contrato de datos/RPC; no se inventa Server Action, API o Edge Function para encapsular una obligación de base de datos                         |
+| `INTEGRATION_BOUNDARY`      |   **18** | la raíz exige adaptador o contrato de integración; API/RPC/Edge se conservan según la frontera fuente y sin duplicar transportes                                        |
+| `AUTHORIZATION_RUNTIME`     |   **12** | la raíz exige comprobación de autorización en servidor; los permisos y el contrato de recurso permanecen reservados a `DELIV-PKG-012`                                   |
+| `UI_RUNTIME_CONSUMER`       |   **38** | la tarea dominante es consumidora de runtime; la UI no crea por sí sola un servicio nuevo y consume contratos fuente existentes o planificados                          |
+| `SHARED_RUNTIME_CONTRACT`   |    **3** | la raíz usa un contrato compartido de contexto o shell y evita multiplicar implementaciones por aplicación                                                              |
+| `CONTROL_NO_DIRECT_RUNTIME` |   **26** | la tarea dominante es control, auditoría, QA, CI, catálogo o evidencia; no crea una frontera de negocio independiente y consume la que corresponda al resto del paquete |
+| `FUTURE_RUNTIME_CONTRACT`   |    **2** | la raíz pertenece a TALENTO no desplegado; el contrato queda planificado sin declarar disponibilidad productiva                                                         |
+| `AURA_RUNTIME_BLOCKED`      |   **14** | la raíz conserva necesidad de runtime, pero no puede materializar repositorio ni frontera física mientras AURA siga sin repositorio confirmado                          |
+| `EXT_GOV_CONDITIONAL`       |    **2** | la raíz conserva alcance, pero su runtime solo se materializa si se activa `EXT-GOV-001` conforme a su condición canónica                                               |
+| **Total**                   |  **207** | cobertura completa, sin faltantes ni duplicados                                                                                                                         |
+
+---
+
+#### 2. Fuentes y precedencia documental
+
+La descomposición consume y preserva:
+
+- `DELIV-PKG-001..006`, que fijan identidades, membresía, propietarios, AS-IS/TO-BE, alcance e impacto UI;
+- `CODE-AUD-003..005`, que distinguen acción visible, lógica, servicios, Server Actions, API, RPC, Edge Functions, jobs y estado de despliegue;
+- las tareas primarias y de soporte vinculadas a cada brecha y paquete en el registro canónico de brechas;
+- los contratos de dominio y aplicación aprobados en los bloques funcionales;
+- la arquitectura de datos de E3, sin adelantar los objetos físicos reservados a `DELIV-PKG-008`;
+- los contratos de integración de BLOQUE X, sin adelantar eventos, colas y compensaciones reservados a `DELIV-PKG-010`;
+- las reglas de autorización aprobadas, sin adelantar la matriz de permisos y recurso reservada a `DELIV-PKG-012`;
+- el inventario de requisitos `TREQ-*`, cuya vinculación formal por paquete permanece reservada a `DELIV-PKG-016`;
+- los bloqueos AURA y la activación condicional de `EXT-GOV-001` preservados por `DELIV-PKG-003..006`.
+
+Una clasificación de esta tarea no puede eliminar un contrato primario ya aprobado. Si el perfil resumido y una tarea primaria concreta difieren, gobierna la tarea primaria y deberá conservarse su frontera dentro del mismo paquete.
+
+---
+
+#### 3. Línea base técnica consumida
+
+La línea AS-IS aprobada por `CODE-AUD-005` registra:
+
+| Superficie                                                | Corte aprobado consumido |
+| --------------------------------------------------------- | -----------------------: |
+| archivos con Server Actions                               |                  **101** |
+| rutas API Next.js                                         |                   **20** |
+| métodos HTTP declarados en esas rutas                     |                   **24** |
+| endpoints auxiliares ANIMA/PASS                           |                    **8** |
+| archivos consumidores de RPC                              |                  **105** |
+| nombres RPC literales únicos consumidos                   |                   **93** |
+| nombres RPC consumidos existentes remotamente en el corte |             **93 de 93** |
+| Edge Functions remotas activas                            |                   **24** |
+| Edge Functions locales únicas                             |                   **29** |
+| jobs `pg_cron` activos                                    |                    **7** |
+
+El contraste remoto de solo lectura realizado para esta planificación conserva **24 Edge Functions activas** y **7 jobs `pg_cron` activos**. En los seis esquemas empresariales revisados existen actualmente **348 funciones PostgreSQL**, distribuidas como `public=247`, `pass=30`, `talento=16`, `vital=47`, `club=7` y `app_private=1`.
+
+La diferencia de una función frente al corte de `CODE-AUD-005` queda explicada por `public.viso_enforce_monthly_schedule_publish_limit()`, incorporada por la migración reservada de `VISO-SCHEDULE-MONTHLY-001`. Esa función y su trigger permanecen **fuera de la membresía `GAP-PKG-*`** de esta tarea y no se reasignan a ninguna de las 207 raíces. Su paquete reservado mantiene su propia continuidad documental.
+
+El inventario AS-IS no autoriza conservar una superficie solo porque exista. Toda reutilización futura deberá demostrar consumidor, contrato, seguridad y compatibilidad antes de implementación física.
+
+---
+
+#### 4. Contrato de descomposición runtime por paquete
+
+| Campo                 | Regla canónica                                                                                |
+| --------------------- | --------------------------------------------------------------------------------------------- |
+| `package_id`          | conserva `GAP-PKG-*`; no se crea una identidad runtime paralela                               |
+| `dominant_task`       | ancla heredada de `DELIV-PKG-004/005`; no sustituye el conjunto completo de tareas primarias  |
+| `runtime_profile`     | clasificación normativa de la frontera predominante creada por esta tarea                     |
+| `domain_logic_scope`  | decisión sobre responsabilidad de lógica y orquestación                                       |
+| `server_action_scope` | decisión sobre uso o no inferencia de Server Actions                                          |
+| `api_scope`           | decisión sobre frontera HTTP/API                                                              |
+| `rpc_scope`           | decisión sobre frontera RPC sin definir todavía tablas, funciones físicas, grants o políticas |
+| `edge_scope`          | decisión sobre Edge Functions sin definir eventos, colas, secretos ni despliegue              |
+| `runtime_state`       | `ESPECIFICADO`, `ESPECIFICADO_NO_DESPLEGADO`, `BLOQUEADO` o `BLOQUEADO_CONDICIONAL`           |
+
+La disposición física `CREAR`, `MODIFICAR`, `REUTILIZAR` o `RETIRAR` de archivos y símbolos se materializa en `DELIV-PKG-014`. `DELIV-PKG-007` fija primero la responsabilidad y la modalidad lógica para impedir que esa disposición física invente una arquitectura distinta.
+
+---
+
+#### 5. Códigos de lógica de dominio
+
+| Código              | Regla                                                                                                                                                                   |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `LOGIC-SOURCE-001`  | materializar las invariantes, transiciones, cálculos y orquestación definidos por las tareas primarias del paquete; no añadir reglas por conveniencia de implementación |
+| `LOGIC-DB-001`      | la obligación predominante se materializa en una frontera de datos/RPC; la semántica física del objeto pertenece a `DELIV-PKG-008`                                      |
+| `LOGIC-ADAPTER-001` | aislar traducción entre contrato VENTO y proveedor/sistema externo; el adaptador no se convierte en fuente de verdad del dominio                                        |
+| `LOGIC-AUTH-001`    | resolver autorización en servidor antes del efecto; la interfaz, URL, rol visible o dato enviado por cliente no concede autoridad                                       |
+| `LOGIC-CONSUME-001` | consumir lógica ya gobernada por otra tarea primaria del paquete; una tarea UI no duplica reglas en cliente                                                             |
+| `LOGIC-SHARED-001`  | consumir un contrato compartido de contexto/shell y evitar variantes incompatibles por aplicación                                                                       |
+| `LOGIC-CONTROL-001` | la tarea dominante verifica, gobierna o evidencia; no crea una regla de negocio adicional y debe observar la lógica primaria del paquete                                |
+| `LOGIC-FUTURE-001`  | definir contrato para TALENTO como base no desplegada, sin afirmar disponibilidad operativa                                                                             |
+| `LOGIC-AURA-001`    | conservar la obligación funcional sin inventar repositorio, servicio o transportes AURA                                                                                 |
+| `LOGIC-EXT-001`     | conservar la obligación hasta que se cumpla la activación de `EXT-GOV-001`; sin activación no se crea runtime                                                           |
+
+---
+
+#### 6. Códigos de Server Actions
+
+| Código            | Regla                                                                                                                                                           |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SA-SOURCE-001`   | usar Server Action únicamente cuando la aplicación propietaria y el contrato fuente ya sitúan una mutación o comando en servidor Next.js                        |
+| `SA-AUTH-001`     | toda Server Action aplicable revalida principal, contexto y autorización en servidor antes del efecto; la definición exacta de permiso queda en `DELIV-PKG-012` |
+| `SA-SHARED-001`   | una acción compartida conserva contrato común y no se copia por repositorio sin necesidad demostrada                                                            |
+| `SA-CONSUME-001`  | la tarea dominante consume una acción fuente; no crea una Server Action independiente por el solo hecho de tener UI, QA, catálogo o control                     |
+| `SA-NO-INFER-001` | una obligación de base de datos no recibe Server Action adicional salvo que una tarea primaria concreta lo exija                                                |
+| `SA-FUTURE-001`   | TALENTO no adquiere Server Actions Next.js por inferencia; conserva su arquitectura de servicios no desplegada hasta decisión de implementación                 |
+| `SA-AURA-001`     | bloqueado por ausencia de repositorio AURA confirmado                                                                                                           |
+| `SA-EXT-001`      | condicionado a la activación de `EXT-GOV-001`                                                                                                                   |
+
+---
+
+#### 7. Códigos de API
+
+| Código                | Regla                                                                                                                                                                        |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `API-SOURCE-001`      | conservar o planificar frontera HTTP solo cuando la tarea primaria necesite interoperabilidad, carga/descarga, servicio auxiliar o consumidor no cubierto por acción interna |
+| `API-INTEGRATION-001` | una integración puede usar API cuando el contrato externo lo requiera; no se duplica la misma operación en API y Edge sin responsabilidad diferenciada                       |
+| `API-AUTH-001`        | toda API aplicable valida autenticación, contexto, recurso y alcance en servidor; los detalles exactos se cierran en `DELIV-PKG-012`                                         |
+| `API-SHARED-001`      | un contrato HTTP compartido mantiene versión y semántica común; no se crea una variante por aplicación sin incompatibilidad demostrada                                       |
+| `API-CONSUME-001`     | la tarea dominante consume una API fuente; no crea un endpoint propio por necesidad de presentación o control                                                                |
+| `API-NO-INFER-001`    | una obligación SQL/RPC no recibe API intermedia por defecto                                                                                                                  |
+| `API-FUTURE-001`      | TALENTO conserva servicios futuros no desplegados; no se declara endpoint productivo                                                                                         |
+| `API-AURA-001`        | bloqueado por ausencia de repositorio AURA confirmado                                                                                                                        |
+| `API-EXT-001`         | condicionado a la activación de `EXT-GOV-001`                                                                                                                                |
+
+---
+
+#### 8. Códigos de RPC
+
+| Código            | Regla                                                                                                                                             |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RPC-SOURCE-001`  | conservar o planificar RPC únicamente si una tarea primaria exige atomicidad, consistencia, cálculo, autorización o transacción del lado de datos |
+| `RPC-DB-001`      | la raíz tiene frontera predominante de datos/RPC; el nombre, firma, función SQL, grants y políticas se materializan con E3 y `DELIV-PKG-008`      |
+| `RPC-AUTH-001`    | cualquier RPC privilegiada debe validar autoridad efectiva y alcance de recurso; `SECURITY DEFINER` nunca se usa como sustituto de autorización   |
+| `RPC-SHARED-001`  | reutilizar contrato RPC compartido cuando exista identidad aprobada, evitando variantes equivalentes por aplicación                               |
+| `RPC-CONSUME-001` | la tarea dominante consume la RPC de una tarea primaria del paquete sin duplicar lógica en cliente                                                |
+| `RPC-FUTURE-001`  | TALENTO conserva sus contratos RPC como base no desplegada hasta su implementación autorizada                                                     |
+| `RPC-AURA-001`    | bloqueado por ausencia de repositorio AURA confirmado                                                                                             |
+| `RPC-EXT-001`     | condicionado a la activación de `EXT-GOV-001`                                                                                                     |
+
+---
+
+#### 9. Códigos de Edge Functions
+
+| Código                 | Regla                                                                                                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `EDGE-SOURCE-001`      | usar Edge Function solo cuando el contrato fuente requiera una frontera Supabase independiente de la aplicación propietaria                                  |
+| `EDGE-INTEGRATION-001` | reservar Edge para webhook, proveedor externo, enlace firmado, notificación u otra integración cuyo límite de confianza lo justifique                        |
+| `EDGE-AUTH-001`        | una Edge Function aplicable conserva controles de autenticación/autorización propios de su canal; `verify_jwt` por sí solo no prueba autorización de negocio |
+| `EDGE-SHARED-001`      | reutilizar una función compartida cuando el contrato sea común y no multiplicar despliegues equivalentes                                                     |
+| `EDGE-CONSUME-001`     | la tarea dominante consume una Edge Function fuente y no crea otra por conveniencia de UI o control                                                          |
+| `EDGE-NO-INFER-001`    | una obligación de datos/RPC no se mueve a Edge sin una frontera externa o asíncrona aprobada                                                                 |
+| `EDGE-FUTURE-001`      | TALENTO no adquiere Edge Functions desplegadas por inferencia                                                                                                |
+| `EDGE-AURA-001`        | bloqueado por ausencia de repositorio AURA confirmado                                                                                                        |
+| `EDGE-EXT-001`         | condicionado a la activación de `EXT-GOV-001`                                                                                                                |
+
+---
+
+#### 10. Reglas transversales de diseño runtime
+
+1. La lógica de negocio se define una vez en la frontera propietaria; la UI puede validar forma y experiencia, pero no sustituye las invariantes del servidor.
+2. Una Server Action no se convierte en API pública por reutilización casual ni una API en RPC por comodidad.
+3. Un RPC existente no se reutiliza solo por coincidencia nominal: deben coincidir semántica, autoridad, parámetros, efectos, idempotencia y compatibilidad.
+4. Una Edge Function activa no se considera canónicamente asignada a un paquete hasta que exista consumidor y contrato fuente trazables.
+5. `verify_jwt = false` no implica automáticamente defecto ni autorización suficiente; webhook, cron o enlace firmado requieren su propio límite de confianza y evidencia.
+6. `SECURITY DEFINER` no concede autoridad de negocio. Las decisiones de permiso, modalidad, contexto y recurso se cierran en `DELIV-PKG-012`.
+7. Ningún servicio puede confiar en rol, sede, tenant, recurso, etapa o permiso enviados por el cliente sin resolución autoritativa.
+8. Idempotencia, retry, compensación, eventos y colas se descomponen en `DELIV-PKG-010`; esta tarea solo conserva la frontera responsable.
+9. Tablas, vistas, funciones SQL, políticas, Storage y Realtime se descomponen en `DELIV-PKG-008`; una referencia `RPC-*` aquí no autoriza DDL.
+10. Migraciones, backfills, compatibilidad y retiro legacy se descomponen en `DELIV-PKG-009`; ningún contrato se retira en esta tarea.
+11. Archivos y símbolos físicos se enumeran en `DELIV-PKG-014`; no se inventan nombres físicos durante esta descomposición lógica.
+12. Toda modificación futura de Supabase VENTO deberá quedar creada, versionada y documentada desde `vento-shell`.
+
+---
+
+#### 11. Matriz materializada de las 207 decisiones runtime
+
+| `package_id`  | Tarea dominante  | `runtime_profile`           | Lógica              | Server Action     | API                   | RPC               | Edge                   | Estado                       |
+| ------------- | ---------------- | --------------------------- | ------------------- | ----------------- | --------------------- | ----------------- | ---------------------- | ---------------------------- |
+| `GAP-PKG-001` | `AUTH-DB-003`    | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-002` | `AUTH-DB-002`    | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-003` | `SUPA-AUD-015`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-004` | `AUTH-DB-002`    | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-005` | `INT-EXT-002`    | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-006` | `AURA-DOM-007`   | `AURA_RUNTIME_BLOCKED`      | `LOGIC-AURA-001`    | `SA-AURA-001`     | `API-AURA-001`        | `RPC-AURA-001`    | `EDGE-AURA-001`        | `BLOQUEADO`                  |
+| `GAP-PKG-007` | `PASS-INT-001`   | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-008` | `AURA-DOM-008`   | `AURA_RUNTIME_BLOCKED`      | `LOGIC-AURA-001`    | `SA-AURA-001`     | `API-AURA-001`        | `RPC-AURA-001`    | `EDGE-AURA-001`        | `BLOQUEADO`                  |
+| `GAP-PKG-009` | `INT-EXT-001`    | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-010` | `DATA-DOM-001`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-011` | `DATA-DOM-002`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-012` | `INFO-DOM-004`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-013` | `DATA-DOM-001`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-014` | `INFO-DOM-010`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-015` | `DATA-DOM-010`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-016` | `INFO-DOM-001`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-017` | `PASS-INT-001`   | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-018` | `SUPA-AUD-010`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-019` | `SUPA-AUD-016`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-020` | `INFO-INT-003`   | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-021` | `INFO-AUTH-001`  | `AUTHORIZATION_RUNTIME`     | `LOGIC-AUTH-001`    | `SA-AUTH-001`     | `API-AUTH-001`        | `RPC-AUTH-001`    | `EDGE-AUTH-001`        | `ESPECIFICADO`               |
+| `GAP-PKG-022` | `DATA-INT-003`   | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-023` | `DATA-DOM-017`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-024` | `NUMERA-DOM-003` | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-025` | `INT-DB-008`     | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-026` | `NUMERA-DOM-002` | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-027` | `EXT-GOV-001`    | `EXT_GOV_CONDITIONAL`       | `LOGIC-EXT-001`     | `SA-EXT-001`      | `API-EXT-001`         | `RPC-EXT-001`     | `EDGE-EXT-001`         | `BLOQUEADO_CONDICIONAL`      |
+| `GAP-PKG-028` | `VISO-CORE-006`  | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-029` | `NEXO-DOM-001`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-030` | `SUPA-AUD-023`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-031` | `PROC-CAT-005`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-032` | `INT-WORK-002`   | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-033` | `SHELL-CON-016`  | `SHARED_RUNTIME_CONTRACT`   | `LOGIC-SHARED-001`  | `SA-SHARED-001`   | `API-SHARED-001`      | `RPC-SHARED-001`  | `EDGE-SHARED-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-034` | `SHELL-CON-016`  | `SHARED_RUNTIME_CONTRACT`   | `LOGIC-SHARED-001`  | `SA-SHARED-001`   | `API-SHARED-001`      | `RPC-SHARED-001`  | `EDGE-SHARED-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-035` | `SUPA-AUD-019`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-036` | `SUPA-AUD-019`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-037` | `NEXO-UX-009`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-038` | `SUPA-AUD-019`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-039` | `ORIGO-UX-014`   | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-040` | `FOGO-AUTH-010`  | `AUTHORIZATION_RUNTIME`     | `LOGIC-AUTH-001`    | `SA-AUTH-001`     | `API-AUTH-001`        | `RPC-AUTH-001`    | `EDGE-AUTH-001`        | `ESPECIFICADO`               |
+| `GAP-PKG-041` | `UX-QA-027`      | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-042` | `INT-MKT-002`    | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-043` | `PROC-CAT-009`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-044` | `PULSO-UX-009`   | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-045` | `SHELL-CON-002`  | `SHARED_RUNTIME_CONTRACT`   | `LOGIC-SHARED-001`  | `SA-SHARED-001`   | `API-SHARED-001`      | `RPC-SHARED-001`  | `EDGE-SHARED-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-046` | `NEXO-DOM-029`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-047` | `INT-DB-008`     | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-048` | `PULSO-UX-020`   | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-049` | `SUPA-ARC-007`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-050` | `DATA-AUTH-003`  | `AUTHORIZATION_RUNTIME`     | `LOGIC-AUTH-001`    | `SA-AUTH-001`     | `API-AUTH-001`        | `RPC-AUTH-001`    | `EDGE-AUTH-001`        | `ESPECIFICADO`               |
+| `GAP-PKG-051` | `FOGO-AUTH-008`  | `AUTHORIZATION_RUNTIME`     | `LOGIC-AUTH-001`    | `SA-AUTH-001`     | `API-AUTH-001`        | `RPC-AUTH-001`    | `EDGE-AUTH-001`        | `ESPECIFICADO`               |
+| `GAP-PKG-052` | `INT-APP-008`    | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-053` | `CONT-DOM-003`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-054` | `NEXO-UX-037`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-055` | `SUPA-ARC-001`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-056` | `ANIMA-AUTH-015` | `AUTHORIZATION_RUNTIME`     | `LOGIC-AUTH-001`    | `SA-AUTH-001`     | `API-AUTH-001`        | `RPC-AUTH-001`    | `EDGE-AUTH-001`        | `ESPECIFICADO`               |
+| `GAP-PKG-057` | `AUTH-QA-029`    | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-058` | `AUTH-QA-029`    | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-059` | `AURA-INT-001`   | `AURA_RUNTIME_BLOCKED`      | `LOGIC-AURA-001`    | `SA-AURA-001`     | `API-AURA-001`        | `RPC-AURA-001`    | `EDGE-AURA-001`        | `BLOQUEADO`                  |
+| `GAP-PKG-060` | `INFO-AUTH-004`  | `AUTHORIZATION_RUNTIME`     | `LOGIC-AUTH-001`    | `SA-AUTH-001`     | `API-AUTH-001`        | `RPC-AUTH-001`    | `EDGE-AUTH-001`        | `ESPECIFICADO`               |
+| `GAP-PKG-061` | `INFO-AUTH-002`  | `AUTHORIZATION_RUNTIME`     | `LOGIC-AUTH-001`    | `SA-AUTH-001`     | `API-AUTH-001`        | `RPC-AUTH-001`    | `EDGE-AUTH-001`        | `ESPECIFICADO`               |
+| `GAP-PKG-062` | `AUTH-QA-026`    | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-063` | `INT-WORK-001`   | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-064` | `CAP-TAL-003`    | `FUTURE_RUNTIME_CONTRACT`   | `LOGIC-FUTURE-001`  | `SA-FUTURE-001`   | `API-FUTURE-001`      | `RPC-FUTURE-001`  | `EDGE-FUTURE-001`      | `ESPECIFICADO_NO_DESPLEGADO` |
+| `GAP-PKG-065` | `SHELL-CI-016`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-066` | `ANIMA-AUTH-014` | `AUTHORIZATION_RUNTIME`     | `LOGIC-AUTH-001`    | `SA-AUTH-001`     | `API-AUTH-001`        | `RPC-AUTH-001`    | `EDGE-AUTH-001`        | `ESPECIFICADO`               |
+| `GAP-PKG-067` | `TI-DOM-001`     | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-068` | `SUPA-ARC-020`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-069` | `PULSO-UX-003`   | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-070` | `PASS-INT-001`   | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-071` | `UX-QA-019`      | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-072` | `TI-INT-003`     | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-073` | `SHELL-CI-007`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-074` | `SUPA-ARC-016`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-075` | `DATA-DOM-004`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-076` | `CONT-INT-001`   | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-077` | `PROC-CAT-009`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-078` | `AURA-DOM-007`   | `AURA_RUNTIME_BLOCKED`      | `LOGIC-AURA-001`    | `SA-AURA-001`     | `API-AURA-001`        | `RPC-AURA-001`    | `EDGE-AURA-001`        | `BLOQUEADO`                  |
+| `GAP-PKG-079` | `PASS-UX-006`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-080` | `AURA-DOM-001`   | `AURA_RUNTIME_BLOCKED`      | `LOGIC-AURA-001`    | `SA-AURA-001`     | `API-AURA-001`        | `RPC-AURA-001`    | `EDGE-AURA-001`        | `BLOQUEADO`                  |
+| `GAP-PKG-081` | `PASS-UX-012`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-082` | `SUPA-AUD-012`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-083` | `SUPA-TRANS-006` | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-084` | `SUPA-AUD-019`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-085` | `NUMERA-DOM-013` | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-086` | `NUMERA-DOM-005` | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-087` | `NUMERA-DOM-016` | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-088` | `NUMERA-DOM-016` | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-089` | `NUMERA-DOM-014` | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-090` | `NUMERA-DOM-005` | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-091` | `NEXO-UX-009`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-092` | `DATA-DOM-006`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-093` | `VISO-CORE-006`  | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-094` | `PROC-CAT-002`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-095` | `PROC-CAT-002`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-096` | `NEXO-UX-019`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-097` | `PROC-CAT-001`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-098` | `OPS-PRD-001`    | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-099` | `NEXO-DOM-029`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-100` | `FOGO-UX-009`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-101` | `NEXO-DOM-033`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-102` | `ORIGO-AUTH-004` | `AUTHORIZATION_RUNTIME`     | `LOGIC-AUTH-001`    | `SA-AUTH-001`     | `API-AUTH-001`        | `RPC-AUTH-001`    | `EDGE-AUTH-001`        | `ESPECIFICADO`               |
+| `GAP-PKG-103` | `CONT-DOM-013`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-104` | `NEXO-UX-037`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-105` | `FOGO-UX-012`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-106` | `SUPA-AUD-019`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-107` | `NEXO-DOM-008`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-108` | `SUPA-AUD-019`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-109` | `FOGO-UX-010`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-110` | `PULSO-UX-021`   | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-111` | `PULSO-UX-009`   | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-112` | `NEXO-UX-013`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-113` | `NEXO-UX-001`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-114` | `PULSO-UX-010`   | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-115` | `NEXO-DOM-029`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-116` | `NEXO-AUTH-031`  | `AUTHORIZATION_RUNTIME`     | `LOGIC-AUTH-001`    | `SA-AUTH-001`     | `API-AUTH-001`        | `RPC-AUTH-001`    | `EDGE-AUTH-001`        | `ESPECIFICADO`               |
+| `GAP-PKG-117` | `NEXO-DOM-003`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-118` | `AURA-DOM-006`   | `AURA_RUNTIME_BLOCKED`      | `LOGIC-AURA-001`    | `SA-AURA-001`     | `API-AURA-001`        | `RPC-AURA-001`    | `EDGE-AURA-001`        | `BLOQUEADO`                  |
+| `GAP-PKG-119` | `NFR-REQ-012`    | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-120` | `ORIGO-UX-001`   | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-121` | `INFO-DOM-003`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-122` | `NEXO-DOM-026`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-123` | `PULSO-UX-017`   | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-124` | `DATA-DOM-001`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-125` | `TI-INT-003`     | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-126` | `NEXO-DOM-026`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-127` | `ANIMA-UX-017`   | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-128` | `ANIMA-UX-017`   | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-129` | `ANIMA-UX-017`   | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-130` | `TI-DOM-001`     | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-131` | `PASS-UX-001`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-132` | `SHELL-APP-001`  | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-133` | `SUPA-TRANS-005` | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-134` | `SUPA-AUD-014`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-135` | `SUPA-TRANS-006` | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-136` | `PASS-UX-001`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-137` | `DATA-DOM-009`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-138` | `PASS-UX-001`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-139` | `SUPA-AUD-019`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-140` | `SHELL-AUD-011`  | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-141` | `INFO-DOM-001`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-142` | `DATA-DOM-001`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-143` | `CONT-DOM-011`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-144` | `AURA-DOM-007`   | `AURA_RUNTIME_BLOCKED`      | `LOGIC-AURA-001`    | `SA-AURA-001`     | `API-AURA-001`        | `RPC-AURA-001`    | `EDGE-AURA-001`        | `BLOQUEADO`                  |
+| `GAP-PKG-145` | `PASS-INT-001`   | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-146` | `PASS-UX-001`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-147` | `AURA-DOM-002`   | `AURA_RUNTIME_BLOCKED`      | `LOGIC-AURA-001`    | `SA-AURA-001`     | `API-AURA-001`        | `RPC-AURA-001`    | `EDGE-AURA-001`        | `BLOQUEADO`                  |
+| `GAP-PKG-148` | `AURA-DOM-003`   | `AURA_RUNTIME_BLOCKED`      | `LOGIC-AURA-001`    | `SA-AURA-001`     | `API-AURA-001`        | `RPC-AURA-001`    | `EDGE-AURA-001`        | `BLOQUEADO`                  |
+| `GAP-PKG-149` | `AURA-DOM-005`   | `AURA_RUNTIME_BLOCKED`      | `LOGIC-AURA-001`    | `SA-AURA-001`     | `API-AURA-001`        | `RPC-AURA-001`    | `EDGE-AURA-001`        | `BLOQUEADO`                  |
+| `GAP-PKG-150` | `SUPA-AUD-012`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-151` | `SUPA-AUD-014`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-152` | `PASS-INT-002`   | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-153` | `SUPA-ARC-004`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-154` | `DATA-DOM-001`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-155` | `NUMERA-UX-014`  | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-156` | `NUMERA-DOM-009` | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-157` | `EXT-GOV-001`    | `EXT_GOV_CONDITIONAL`       | `LOGIC-EXT-001`     | `SA-EXT-001`      | `API-EXT-001`         | `RPC-EXT-001`     | `EDGE-EXT-001`         | `BLOQUEADO_CONDICIONAL`      |
+| `GAP-PKG-158` | `CONT-DOM-004`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-159` | `PULSO-UX-008`   | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-160` | `CONT-DOM-010`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-161` | `FOGO-UX-001`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-162` | `CONT-DOM-006`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-163` | `NEXO-UX-012`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-164` | `NFR-REQ-010`    | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-165` | `NEXO-UX-037`    | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-166` | `CONT-DOM-005`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-167` | `PROC-CAT-002`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-168` | `PROC-CAT-018`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-169` | `CONT-DOM-001`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-170` | `CONT-DOM-008`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-171` | `PROC-CAT-002`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-172` | `EVID-ARC-001`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-173` | `PROC-ACTOR-003` | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-174` | `VISO-AUTH-010`  | `AUTHORIZATION_RUNTIME`     | `LOGIC-AUTH-001`    | `SA-AUTH-001`     | `API-AUTH-001`        | `RPC-AUTH-001`    | `EDGE-AUTH-001`        | `ESPECIFICADO`               |
+| `GAP-PKG-175` | `INT-EXT-019`    | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-176` | `SUPA-AUD-012`   | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-177` | `ANIMA-UX-017`   | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-178` | `TI-DOM-001`     | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-179` | `SUPA-TRANS-013` | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-180` | `SUPA-TRANS-013` | `DATABASE_RPC_BOUNDARY`     | `LOGIC-DB-001`      | `SA-NO-INFER-001` | `API-NO-INFER-001`    | `RPC-DB-001`      | `EDGE-NO-INFER-001`    | `ESPECIFICADO`               |
+| `GAP-PKG-181` | `TI-DOM-009`     | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-182` | `TI-DOM-006`     | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-183` | `TI-DOM-007`     | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-184` | `TI-DOM-001`     | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-185` | `SHELL-CI-007`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-186` | `GAP-CTRL-007`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-187` | `AURA-INT-001`   | `AURA_RUNTIME_BLOCKED`      | `LOGIC-AURA-001`    | `SA-AURA-001`     | `API-AURA-001`        | `RPC-AURA-001`    | `EDGE-AURA-001`        | `BLOQUEADO`                  |
+| `GAP-PKG-188` | `AURA-INT-001`   | `AURA_RUNTIME_BLOCKED`      | `LOGIC-AURA-001`    | `SA-AURA-001`     | `API-AURA-001`        | `RPC-AURA-001`    | `EDGE-AURA-001`        | `BLOQUEADO`                  |
+| `GAP-PKG-189` | `AURA-AUTH-001`  | `AURA_RUNTIME_BLOCKED`      | `LOGIC-AURA-001`    | `SA-AURA-001`     | `API-AURA-001`        | `RPC-AURA-001`    | `EDGE-AURA-001`        | `BLOQUEADO`                  |
+| `GAP-PKG-190` | `DATA-DOM-001`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-191` | `PROC-CAT-002`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-192` | `AURA-AUD-010`   | `AURA_RUNTIME_BLOCKED`      | `LOGIC-AURA-001`    | `SA-AURA-001`     | `API-AURA-001`        | `RPC-AURA-001`    | `EDGE-AURA-001`        | `BLOQUEADO`                  |
+| `GAP-PKG-193` | `CONT-DOM-014`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-194` | `CONT-AUTH-004`  | `AUTHORIZATION_RUNTIME`     | `LOGIC-AUTH-001`    | `SA-AUTH-001`     | `API-AUTH-001`        | `RPC-AUTH-001`    | `EDGE-AUTH-001`        | `ESPECIFICADO`               |
+| `GAP-PKG-195` | `PROC-CAT-004`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-196` | `ANIMA-UX-001`   | `UI_RUNTIME_CONSUMER`       | `LOGIC-CONSUME-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-197` | `CAP-TAL-003`    | `FUTURE_RUNTIME_CONTRACT`   | `LOGIC-FUTURE-001`  | `SA-FUTURE-001`   | `API-FUTURE-001`      | `RPC-FUTURE-001`  | `EDGE-FUTURE-001`      | `ESPECIFICADO_NO_DESPLEGADO` |
+| `GAP-PKG-198` | `SHELL-AUD-010`  | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-199` | `NEXO-DOM-001`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-200` | `SHELL-CI-007`   | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+| `GAP-PKG-201` | `INFO-DOM-003`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-202` | `INFO-DOM-012`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-203` | `INFO-INT-003`   | `INTEGRATION_BOUNDARY`      | `LOGIC-ADAPTER-001` | `SA-SOURCE-001`   | `API-INTEGRATION-001` | `RPC-SOURCE-001`  | `EDGE-INTEGRATION-001` | `ESPECIFICADO`               |
+| `GAP-PKG-204` | `NEXO-DOM-001`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-205` | `DATA-DOM-012`   | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-206` | `NUMERA-DOM-018` | `DOMAIN_RUNTIME`            | `LOGIC-SOURCE-001`  | `SA-SOURCE-001`   | `API-SOURCE-001`      | `RPC-SOURCE-001`  | `EDGE-SOURCE-001`      | `ESPECIFICADO`               |
+| `GAP-PKG-207` | `SHELL-AUD-011`  | `CONTROL_NO_DIRECT_RUNTIME` | `LOGIC-CONTROL-001` | `SA-CONSUME-001`  | `API-CONSUME-001`     | `RPC-CONSUME-001` | `EDGE-CONSUME-001`     | `ESPECIFICADO`               |
+
+La matriz es una decisión por identidad. El perfil no reemplaza las tareas primarias: si una raíz tiene varias tareas fuente, cada contrato aplicable de ese conjunto debe conservarse aunque el `dominant_task` pertenezca a otra familia.
+
+---
+
+#### 12. Reconciliación cuantitativa
+
+| Control                                    |          Resultado |
+| ------------------------------------------ | -----------------: |
+| `package_id` esperados                     |            **207** |
+| `package_id` materializados                |            **207** |
+| rango continuo                             | `GAP-PKG-001..207` |
+| brechas vigentes preservadas               |            **820** |
+| paquetes `DOMAIN_RUNTIME`                  |             **61** |
+| paquetes `DATABASE_RPC_BOUNDARY`           |             **31** |
+| paquetes `INTEGRATION_BOUNDARY`            |             **18** |
+| paquetes `AUTHORIZATION_RUNTIME`           |             **12** |
+| paquetes `UI_RUNTIME_CONSUMER`             |             **38** |
+| paquetes `SHARED_RUNTIME_CONTRACT`         |              **3** |
+| paquetes `CONTROL_NO_DIRECT_RUNTIME`       |             **26** |
+| paquetes `FUTURE_RUNTIME_CONTRACT`         |              **2** |
+| paquetes `AURA_RUNTIME_BLOCKED`            |             **14** |
+| paquetes `EXT_GOV_CONDITIONAL`             |              **2** |
+| contratos runtime retirados por esta tarea |              **0** |
+| nuevas identidades `package_id`            |              **0** |
+
+Los diez perfiles son mutuamente excluyentes y suman **207**.
+
+---
+
+#### 13. Tratamientos especiales
+
+##### 13.1. AURA
+
+Los **14** paquetes AURA conservan alcance runtime pero quedan `BLOQUEADO`. La salida sigue dependiendo de `AURA-AUD-001`, `AURA-AUD-010` y `AURA-AUD-012`. Queda prohibido asignar por inferencia esos contratos a `vento-shell` u otro repositorio para eliminar el bloqueo.
+
+##### 13.2. `EXT-GOV-001`
+
+`GAP-PKG-027` y `GAP-PKG-157` permanecen `BLOQUEADO_CONDICIONAL`. Solo se materializa runtime cuando se cumpla `ACTIVATE_WHEN_REQUIRED_EXTERNAL_FILE_EXISTS` y exista el expediente externo exigible. La falta de activación no cierra ni excluye sus brechas.
+
+##### 13.3. TALENTO
+
+`GAP-PKG-064` y `GAP-PKG-197` conservan contratos de runtime futuros sobre la base técnica TALENTO existente, pero su estado es `ESPECIFICADO_NO_DESPLEGADO`. Esta tarea no convierte esa base en producto adoptado ni superficie productiva.
+
+##### 13.4. `VISO-SCHEDULE-MONTHLY-001`
+
+La función y el trigger provisionales de programación mensual VISO detectados en el estado remoto pertenecen al paquete reservado `VISO-SCHEDULE-MONTHLY-001`, no al rango `GAP-PKG-*`. Se conservan fuera de esta matriz y continúan bajo su delta y tareas `VISO-SCH-*`; su existencia no amplía silenciosamente ninguno de los 207 paquetes.
+
+---
+
+#### 14. Fronteras de responsabilidad
+
+`DELIV-PKG-007` **sí cierra**:
+
+- la clasificación runtime de las **207** raíces;
+- la separación normativa entre lógica de dominio, Server Action, API, RPC y Edge Function;
+- la regla de que la tarea dominante no reemplaza el conjunto completo de tareas primarias;
+- el tratamiento de fronteras de datos, integración, autorización, consumo UI, contratos compartidos, control y runtime futuro;
+- la preservación explícita de los **14** bloqueos AURA y los **2** casos `EXT-GOV-001`;
+- la exclusión trazable de `VISO-SCHEDULE-MONTHLY-001` de la membresía `GAP-PKG-*`;
+- la regla de no crear transportes ni identidades técnicas por inferencia.
+
+`DELIV-PKG-007` **no cierra**:
+
+- tablas, vistas, funciones SQL físicas, RLS, grants, Storage o Realtime, reservados a `DELIV-PKG-008`;
+- migraciones, backfills, compatibilidad y retiro legacy, reservados a `DELIV-PKG-009`;
+- eventos, colas, retry y compensaciones, reservados a `DELIV-PKG-010`;
+- impresión, notificaciones, documentos y evidencia, reservados a `DELIV-PKG-011`;
+- permisos, modalidad, alcance, contexto y contrato de recurso, reservados a `DELIV-PKG-012`;
+- requisitos no funcionales, reservados a `DELIV-PKG-013`;
+- archivos y símbolos exactos, reservados a `DELIV-PKG-014`;
+- dependencias y orden de aplicación, reservados a `DELIV-PKG-015`;
+- vinculación formal de `TREQ-*` y diseño de pruebas por paquete, reservados a `DELIV-PKG-016`;
+- implementación física, despliegue, invocación operativa o cambios remotos.
+
+---
+
+#### 15. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea asigna fronteras de implementación a reglas, contratos y obligaciones ya aprobados y preserva sus requisitos de prueba existentes. No introduce una regla de negocio nueva, no cambia autorización, cálculo, transición, datos, evento ni resultado esperado, y no modifica estado, contenido, destino o secuencia de ningún `TREQ-*`. La vinculación formal de requisitos con cada paquete permanece reservada a `DELIV-PKG-016`.
+
+---
+
+#### 16. Criterios de aceptación
+
+- [x] existen exactamente **207** decisiones materializadas y el rango es continuo `GAP-PKG-001..207`;
+- [x] los diez perfiles runtime suman exactamente **207** sin solapamiento;
+- [x] las **820** brechas vigentes conservan su pertenencia y alcance;
+- [x] cada fila declara lógica, Server Action, API, RPC, Edge y estado;
+- [x] la tarea dominante se usa como ancla y no sustituye las demás tareas primarias del paquete;
+- [x] ningún Server Action, API, RPC o Edge Function se crea únicamente por preferencia tecnológica;
+- [x] la línea AS-IS conserva **101** archivos con Server Actions, **20** rutas API Next.js, **93** RPC literales consumidas y **24** Edge Functions activas como inventario de referencia, sin tratarlas como aprobación automática de reutilización;
+- [x] el delta remoto de `public` queda atribuido a `VISO-SCHEDULE-MONTHLY-001` y no se asigna a una raíz `GAP-PKG-*`;
+- [x] los **14** paquetes AURA permanecen bloqueados sin repositorio inventado;
+- [x] `GAP-PKG-027` y `GAP-PKG-157` permanecen condicionados a `EXT-GOV-001`;
+- [x] TALENTO permanece planificado y no desplegado;
+- [x] los objetos físicos de datos continúan reservados a `DELIV-PKG-008`;
+- [x] los eventos, colas y compensaciones continúan reservados a `DELIV-PKG-010`;
+- [x] los permisos y contratos de recurso continúan reservados a `DELIV-PKG-012`;
+- [x] los archivos y símbolos exactos continúan reservados a `DELIV-PKG-014`;
+- [x] no se crea, modifica, difiere, descarta ni vuelve obsoleto ningún `TREQ-*`;
+- [x] no se implementa código, configuración, DDL, DML, migración, despliegue ni cambio remoto;
+
+---
+
+#### 17. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán`
+
+TAREA ACTUAL APROBADA
+`DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions`
+
+SIGUIENTE TAREA RESERVADA
+`DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados`
+
+
 ### [ ] DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados
 ### [ ] DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy
 ### [ ] DELIV-PKG-010 — Definir eventos emitidos, consumidos, colas y compensaciones
