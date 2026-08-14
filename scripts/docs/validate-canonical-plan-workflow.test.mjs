@@ -14,6 +14,19 @@ const posTransitionPath = path.resolve(
 const implementationPackagesPath = path.resolve(
   'docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md',
 );
+const canonicalGapRegistryPath = path.resolve(
+  'docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md',
+);
+const processGapReturnPath = path.resolve(
+  'docs/plan-canonico/modular/bloques/E2_PROCESOS_Y_EXPERIENCIA/06_03_MATRIZ_ASIS_TOBE_Y_RETORNO_DE_BRECHAS.md',
+);
+
+function sliceSection(source, startMarker, endMarker) {
+  const start = source.indexOf(startMarker);
+  const end = source.indexOf(endMarker, start + startMarker.length);
+  assert.ok(start >= 0 && end > start, `no se pudo aislar ${startMarker}`);
+  return source.slice(start, end);
+}
 
 test('verifica fuentes antes del build y publica el compilado regenerado', () => {
   const workflow = fs.readFileSync(workflowPath, 'utf8');
@@ -120,4 +133,91 @@ test('DELIV-PKG-003 conserva un único título canónico en sus referencias de c
     [...new Set(titledReferences.map((match) => match.groups.title))],
     [canonicalTitle],
   );
+});
+
+test('DELIV-PKG-001 separa identidad raíz de frontera física sin perder el cierre obligatorio', () => {
+  const packages = fs.readFileSync(implementationPackagesPath, 'utf8');
+  const gapRegistry = fs.readFileSync(canonicalGapRegistryPath, 'utf8');
+  const task = sliceSection(packages, '### ✅ DELIV-PKG-001', '### ✅ DELIV-PKG-002');
+
+  assert.doesNotMatch(gapRegistry, /Durante `DELIV-PKG-001` se deberá:/u);
+  assert.match(gapRegistry, /Esta regla rectifica el mandato histórico/u);
+  assert.match(task, /`implementation_unit_id`/u);
+  assert.match(task, /`DELIV-PKG-025` deberá registrar para cada uno de los 207 expedientes/u);
+  assert.match(task, /KEEP_AS_SINGLE_UNIT/u);
+  assert.match(task, /SPLIT_INTO_IMPLEMENTATION_UNITS/u);
+  assert.match(task, /SHARE_IMPLEMENTATION_UNIT_WITH_LINEAGE/u);
+});
+
+test('DELIV-PKG-002 materializa exactamente los vínculos históricos proceso-paquete aprobados', () => {
+  const packages = fs.readFileSync(implementationPackagesPath, 'utf8');
+  const gapRegistry = fs.readFileSync(canonicalGapRegistryPath, 'utf8');
+  const processReturn = fs.readFileSync(processGapReturnPath, 'utf8');
+
+  const packageProcessMatrix = sliceSection(
+    packages,
+    '##### 7.2. Matriz histórica `package_id` ↔ `process_id`',
+    '#### 8. Tratamiento de la línea histórica',
+  );
+  const actual = packageProcessMatrix
+    .split(/\r?\n/u)
+    .map((line) =>
+      line.match(
+        /^\| `(GAP-PKG-\d{3})` \| `(VPROC-\d{4})` \| `([^`]+)` \| `([^`]+)` \| `(CAP-[^`]+)` \| `([^`]+)` \|$/u,
+      ),
+    )
+    .filter(Boolean)
+    .map((match) => match.slice(1).join('|'));
+
+  const historicalGapMatrix = sliceSection(
+    gapRegistry,
+    '#### 9. Matriz completa brecha → tarea → paquete',
+    '#### 10. Referencias de control o evidencia',
+  );
+  const gapToPackage = new Map();
+  for (const line of historicalGapMatrix.split(/\r?\n/u)) {
+    if (!/^\|\s*`/u.test(line) || !line.includes('GAP-PKG-')) continue;
+    const identities = line.match(/^\|\s*`([^`]+)`\s*\|\s*`([^`]+)`/u);
+    const packageId = line.match(/`(GAP-PKG-\d{3})`/u);
+    if (!identities || !packageId) continue;
+    gapToPackage.set(identities[1], { gapId: identities[1], packageId: packageId[1] });
+    gapToPackage.set(identities[2], { gapId: identities[1], packageId: packageId[1] });
+  }
+
+  const processGapMatrix = sliceSection(
+    processReturn,
+    '#### 5. PROCESS-GAP-RETURN-MATRIX-001',
+    '#### 6. PROCESS-GAP-REGISTER-DELTA-001',
+  );
+  const expected = [];
+  for (const line of processGapMatrix.split(/\r?\n/u)) {
+    if (!/^\|\s*`VPROC-/u.test(line)) continue;
+    const cells = line
+      .split('|')
+      .slice(1, -1)
+      .map((cell) => cell.trim().replaceAll('`', ''));
+    const [processId, , capabilityId, , , decision, gaps] = cells;
+    if (gaps === '—' || gaps.includes('H-PROC-COVER-010-')) continue;
+
+    for (const sourceGap of gaps.split(';').map((gap) => gap.trim())) {
+      const resolved = gapToPackage.get(sourceGap);
+      assert.ok(resolved, `brecha de proceso sin paquete histórico: ${sourceGap}`);
+      expected.push(
+        [
+          resolved.packageId,
+          processId,
+          sourceGap,
+          resolved.gapId,
+          capabilityId,
+          decision,
+        ].join('|'),
+      );
+    }
+  }
+
+  assert.equal(actual.length, 53);
+  assert.equal(new Set(actual).size, 53);
+  assert.equal(new Set(actual.map((row) => row.split('|')[1])).size, 27);
+  assert.equal(new Set(actual.map((row) => row.split('|')[0])).size, 8);
+  assert.deepEqual([...actual].sort(), [...expected].sort());
 });

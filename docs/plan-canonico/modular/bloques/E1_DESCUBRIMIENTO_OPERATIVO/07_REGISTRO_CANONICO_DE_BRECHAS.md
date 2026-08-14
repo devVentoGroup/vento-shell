@@ -5110,13 +5110,16 @@ gap_ids[]
 
 Los identificadores `GAP-PKG-001` a `GAP-PKG-201` son identificadores estables de enlace **pre-E5** dentro del registro de brechas.
 
-Durante `DELIV-PKG-001` se deberá:
+La secuencia causal vigente de E5 distingue la **identidad raíz del expediente** de sus **unidades físicas de implementación**:
 
-1. ratificar el identificador cuando el alcance pueda implementarse como una sola unidad;
-2. dividir el paquete cuando exceda un repositorio, una ventana de despliegue o una estrategia de rollback coherente;
-3. fusionarlo únicamente si comparte propietario, dependencias, despliegue y rollback con otro paquete;
-4. conservar siempre `GAP-PKG-*` como alias histórico;
-5. actualizar todas las brechas vinculadas sin perder trazabilidad.
+1. `DELIV-PKG-001` ratifica `GAP-PKG-*` como `package_id` raíz estable y no renumerable;
+2. `DELIV-PKG-003`, `DELIV-PKG-014`, `DELIV-PKG-015`, `DELIV-PKG-019` y `DELIV-PKG-020` aportan, respectivamente, propietarios, archivos, dependencias, despliegue y rollback necesarios para decidir la frontera física sin inferencias prematuras;
+3. `DELIV-PKG-025` no podrá aprobar el catálogo mientras cada `package_id` no tenga una decisión explícita `KEEP_AS_SINGLE_UNIT`, `SPLIT_INTO_IMPLEMENTATION_UNITS` o `SHARE_IMPLEMENTATION_UNIT_WITH_LINEAGE`;
+4. cuando el alcance exceda un repositorio, una ventana de despliegue o una estrategia de rollback coherente, se crearán varias `implementation_unit_id` bajo el mismo expediente raíz, sin borrar ni renumerar su `GAP-PKG-*`;
+5. dos expedientes solo podrán compartir una unidad física cuando coincidan propietario, dependencias, despliegue y rollback, conservando la relación explícita con todos los `package_id` de origen;
+6. todas las brechas vinculadas conservarán trazabilidad tanto al `package_id` raíz como a la unidad física que finalmente las ejecute.
+
+Esta regla rectifica el mandato histórico que concentraba división y fusión en `DELIV-PKG-001`: la identidad se fija primero y la frontera física se certifica al final de E5, cuando ya existe la evidencia requerida para decidirla.
 
 No se permite reemplazar un paquete por expresiones como “se verá en E5”, “roadmap futuro” o “pendiente técnico”.
 

@@ -5,511 +5,481 @@
 **Estado:** APROBADA
 **Tarea anterior:** `EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage`
 **Tarea siguiente:** `DELIV-PKG-002 — Vincular el paquete con capability_id, process_id y gap_id`
-**Tipo de tarea:** documental — definición normativa, corrección y materialización completa de identidad de paquetes de implementación
-**Repositorio propietario:** `vento-shell`
-**Contrato producido:** `IMPLEMENTATION-PACKAGE-IDENTITY-CONTRACT-001@1.1.0`
-**Contrato sustituido:** `IMPLEMENTATION-PACKAGE-IDENTITY-CONTRACT-001@1.0.0`
+**Tipo de tarea:** documental — definición normativa y materialización completa de identidad estable de paquetes de implementación
 
 ---
 
 #### 1. Resultado canónico
 
-`DELIV-PKG-001` establece la identidad estable de los paquetes de implementación y corrige la materialización incompleta de la revisión anterior de esta misma tarea.
+`DELIV-PKG-001` fija el espacio de identidad estable que E5 deberá utilizar para todos los paquetes de implementación derivados del registro canónico de brechas.
 
-La línea base canónica que debe conservarse está formada por:
+El universo vigente queda compuesto por **207 identidades `GAP-PKG-*` continuas y únicas**, desde `GAP-PKG-001` hasta `GAP-PKG-207`.
 
-1. `GAP-PKG-001` a `GAP-PKG-201`, definidos por `GAP-CTRL-006` como identificadores estables de enlace pre-E5;
-2. `VISO-SCHEDULE-MONTHLY-001`, reservado expresamente por el delta de programación mensual VISO;
-3. `NEXO-REMISSIONS-001`, conservado como identidad histórica de carril y excluido del espacio de `package_id` mientras no exista una asignación explícita de paquete.
+La composición del universo se conserva con procedencia explícita:
 
-La revisión `1.1.0` ratifica las **201 identidades pre-E5**, conserva la identidad reservada VISO y elimina la conclusión anterior que reducía el inventario a una sola identidad de paquete.
+- `GAP-PKG-001..201`: línea base histórica pre-E5 producida por `GAP-CTRL-006`;
+- `GAP-PKG-202..207`: delta append-only producido por `PROC-COVER-010`;
+- ninguna de las 201 identidades históricas es renumerada, sustituida, fusionada ni eliminada por la incorporación del delta;
+- los seis identificadores nuevos se agregan al final del espacio existente y no reinterpretan ninguna fila histórica.
 
-El `package_id` es la identidad permanente del expediente de implementación. No representa estado, revisión documental, prioridad, ambiente, repositorio, rama, commit, release, ola, fecha ni ejecución.
-
----
-
-#### 2. Línea base obligatoria recibida de `GAP-CTRL-006`
-
-La reconciliación parte de los siguientes controles heredados:
-
-| Control                                                   |     Valor heredado | Resultado en esta tarea                            |
-| --------------------------------------------------------- | -----------------: | -------------------------------------------------- |
-| Identificadores pre-E5                                    |            **201** | **201 materializados**                             |
-| Rango esperado                                            | `GAP-PKG-001..201` | **completo y continuo**                            |
-| Paquetes con un solo perfil de cierre                     |            **160** | **preservados**                                    |
-| Paquetes con más de un perfil de cierre                   |             **41** | **preservados**                                    |
-| Total de perfiles por paquete simplificados por identidad |              **0** | no se colapsan perfiles por compartir `package_id` |
-| Identificadores faltantes                                 |              **0** | **0**                                              |
-| Identificadores duplicados                                |              **0** | **0**                                              |
-
-La distribución `160 + 41 = 201` se conserva como propiedad de la línea base. Un paquete multiperfil mantiene obligaciones de evidencia independientes por cada perfil aplicable; la identidad estable no autoriza aplicar el criterio de cierre más débil a todo el paquete.
+`package_id` identifica de forma permanente un expediente de implementación y su linaje. No representa estado, prioridad, ola, fecha, repositorio, rama, commit, release, ambiente, despliegue, rollback ni evidencia de ejecución.
 
 ---
 
-#### 3. Contrato `IMPLEMENTATION-PACKAGE-IDENTITY-CONTRACT-001@1.1.0`
+#### 2. Precedencia y reconciliación de la línea base
+
+La aparente diferencia entre **201** y **207** paquetes corresponde a dos momentos de la misma línea canónica y no a dos universos competidores.
+
+| Capa                              | Paquetes | Brechas | Tratamiento         |
+| --------------------------------- | -------: | ------: | ------------------- |
+| Línea histórica de `GAP-CTRL-006` |  **201** | **814** | se preserva íntegra |
+| Delta de `PROC-COVER-010`         |   **+6** |  **+6** | append-only         |
+| Universo vigente para E5          |  **207** | **820** | normativo           |
+
+La regla de precedencia es obligatoria: los conteos vigentes **820/207** prevalecen para planificación posterior, mientras que las filas históricas **814/201** permanecen válidas como procedencia y trazabilidad.
+
+No se permite tratar `GAP-PKG-202..207` como correcciones retroactivas de los primeros 201 paquetes ni volver a una línea base de 201 por utilizar una sección histórica del registro.
+
+---
+
+#### 3. Contrato de identidad estable
+
+Se conserva `IMPLEMENTATION-PACKAGE-IDENTITY-CONTRACT-001@1.1.0` como contrato documental de esta tarea.
 
 ##### 3.1. Invariantes
 
-1. Todo paquete reconocido en E5 posee exactamente un `package_id` estable.
-2. Un `package_id` identifica una intención documental de implementación y su linaje; no demuestra por sí mismo que la frontera física final de despliegue ya esté cerrada.
+1. Todo paquete reconocido por E5 posee exactamente un `package_id` estable.
+2. Todo `package_id` reconocido debe estar materializado documentalmente; una cadena con sintaxis válida no basta para crear identidad.
 3. Un identificador asignado no se renumera ni se reutiliza.
-4. Cambiar título, estado, prioridad, ola, fecha, ambiente, repositorio, revisión, commit o release no cambia el `package_id`.
-5. Una división, fusión o sustitución crea nuevas identidades cuando cambia la unidad independiente de aprobación, despliegue o rollback; las identidades de origen permanecen trazables.
-6. La identidad pre-E5 `GAP-PKG-*` nunca se pierde por una división, fusión o sustitución posterior.
-7. La existencia de una cadena con sintaxis válida no la convierte en `package_id`; debe existir una asignación documental explícita.
-8. `package_id` no sustituye `task_id`, `capability_id`, `process_id`, `gap_id`, identificadores de aplicación, requisitos de prueba, migraciones, releases o commits.
-9. Dos espacios de identidad con texto parecido no se fusionan por inferencia.
-10. La revisión `1.1.0` es normativa para esta tarea y sustituye la materialización incompleta `1.0.0` sin romper el linaje ya publicado.
+4. Cambios de título, estado, prioridad, ola, fecha, repositorio, ambiente o revisión no cambian el `package_id`.
+5. `package_id` no sustituye `task_id`, `capability_id`, `process_id`, `gap_id`, requisito de prueba, identificador de aplicación, migración, release o commit.
+6. Una división, fusión o sustitución posterior debe preservar el linaje de todos los `GAP-PKG-*` de origen.
+7. La incorporación append-only de `GAP-PKG-202..207` no altera identidad, historial, perfiles ni membresía de `GAP-PKG-001..201`.
+8. No se crean identidades por semejanza semántica, coincidencia de propietario, capacidad, proceso, tarea o aplicación.
+9. La identidad documental no certifica por sí sola una frontera física única de repositorio, despliegue o rollback.
+10. La ausencia todavía de una frontera física certificada tiene propietario documental posterior y no convierte el paquete en huérfano.
 
-##### 3.2. Espacios de identidad admitidos
+##### 3.2. Campos de identidad y linaje
 
-Se reconocen dos formas de identidad estable.
+| Campo                     | Semántica canónica            | Regla                                             |
+| ------------------------- | ----------------------------- | ------------------------------------------------- |
+| `package_id`              | identidad permanente          | inmutable mientras represente el mismo expediente |
+| `package_revision`        | revisión del expediente       | monotónica dentro del mismo `package_id`          |
+| `package_status`          | estado documental u operativo | separado de identidad                             |
+| `package_title`           | nombre humano                 | modificable sin renumeración                      |
+| `implementation_unit_id`  | unidad física ejecutable      | se materializa después de definir repositorio, despliegue y rollback |
+| `derived_from_package_id` | linaje por división           | solo con decisión explícita                       |
+| `merged_from_package_ids` | linaje por fusión             | solo con decisión explícita                       |
+| `supersedes_package_id`   | linaje por sustitución        | solo con decisión explícita                       |
 
-**A. Línea base pre-E5**
+Los campos de linaje permanecen vacíos mientras no exista una decisión canónica que los materialice.
+
+---
+
+#### 4. Regla de ratificación, división y fusión
+
+1. `GAP-PKG-001..207` quedan ratificados como identidades raíz estables disponibles para E5.
+2. Esta tarea no certifica que cada identidad corresponda ya a una única unidad física de despliegue, porque todavía no existen las decisiones de propietario, archivos, dependencias, despliegue y rollback de `DELIV-PKG-003`, `014`, `015`, `019` y `020`.
+3. La frontera física se expresará mediante `implementation_unit_id`, separada de `package_id`: un expediente podrá conservar una o varias unidades y una unidad compartida podrá referenciar varios expedientes solo con linaje explícito.
+4. `DELIV-PKG-025` deberá registrar para cada uno de los 207 expedientes exactamente una decisión `KEEP_AS_SINGLE_UNIT`, `SPLIT_INTO_IMPLEMENTATION_UNITS` o `SHARE_IMPLEMENTATION_UNIT_WITH_LINEAGE`; sin esa decisión no podrá aprobar el catálogo.
+5. Una división física no podrá borrar el `package_id` de origen y deberá asignar cada brecha afectada a una unidad ejecutable.
+6. Una unidad compartida no podrá borrar ninguno de los `package_id` de origen ni mezclar propietarios, dependencias, despliegues o rollbacks incompatibles.
+7. Una sustitución no podrá reutilizar un identificador retirado para un expediente distinto.
+8. Ninguna decisión posterior podrá compactar el rango para eliminar huecos históricos.
+9. `GAP-PKG-202..207` ya son identidades reales del catálogo vigente y no quedan "reservadas" ni "pendientes de numeración".
+
+Esta secuencia rectifica expresamente la instrucción histórica de `GAP-CTRL-006` que concentraba ratificación, división y fusión en `DELIV-PKG-001`. E5 fija primero la identidad raíz y certifica la frontera física en `DELIV-PKG-025`, después de reunir la evidencia necesaria, sin multiplicar ni aprobar por separado los marcadores globales `DELIV-PKG-*`.
+
+---
+
+#### 5. Materialización completa del espacio `GAP-PKG-001..207`
+
+Cada fila siguiente representa una identidad canónica reconocida. La matriz no anticipa la frontera física de despliegue; únicamente certifica existencia, continuidad, procedencia y decisión de identidad.
+
+| Identidad fuente | Procedencia                                                     | Decisión                                 | `package_id` canónico | Estado de identidad | Frontera física                |
+| ---------------- | --------------------------------------------------------------- | ---------------------------------------- | --------------------- | ------------------- | ------------------------------ |
+| `GAP-PKG-001`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-001`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-002`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-002`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-003`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-003`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-004`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-004`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-005`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-005`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-006`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-006`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-007`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-007`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-008`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-008`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-009`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-009`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-010`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-010`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-011`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-011`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-012`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-012`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-013`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-013`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-014`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-014`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-015`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-015`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-016`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-016`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-017`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-017`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-018`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-018`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-019`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-019`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-020`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-020`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-021`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-021`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-022`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-022`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-023`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-023`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-024`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-024`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-025`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-025`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-026`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-026`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-027`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-027`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-028`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-028`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-029`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-029`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-030`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-030`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-031`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-031`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-032`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-032`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-033`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-033`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-034`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-034`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-035`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-035`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-036`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-036`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-037`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-037`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-038`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-038`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-039`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-039`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-040`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-040`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-041`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-041`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-042`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-042`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-043`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-043`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-044`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-044`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-045`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-045`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-046`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-046`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-047`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-047`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-048`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-048`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-049`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-049`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-050`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-050`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-051`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-051`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-052`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-052`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-053`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-053`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-054`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-054`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-055`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-055`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-056`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-056`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-057`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-057`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-058`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-058`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-059`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-059`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-060`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-060`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-061`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-061`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-062`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-062`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-063`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-063`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-064`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-064`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-065`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-065`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-066`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-066`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-067`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-067`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-068`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-068`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-069`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-069`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-070`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-070`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-071`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-071`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-072`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-072`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-073`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-073`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-074`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-074`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-075`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-075`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-076`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-076`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-077`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-077`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-078`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-078`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-079`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-079`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-080`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-080`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-081`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-081`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-082`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-082`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-083`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-083`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-084`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-084`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-085`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-085`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-086`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-086`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-087`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-087`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-088`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-088`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-089`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-089`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-090`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-090`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-091`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-091`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-092`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-092`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-093`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-093`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-094`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-094`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-095`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-095`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-096`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-096`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-097`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-097`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-098`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-098`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-099`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-099`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-100`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-100`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-101`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-101`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-102`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-102`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-103`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-103`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-104`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-104`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-105`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-105`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-106`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-106`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-107`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-107`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-108`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-108`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-109`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-109`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-110`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-110`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-111`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-111`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-112`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-112`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-113`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-113`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-114`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-114`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-115`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-115`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-116`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-116`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-117`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-117`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-118`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-118`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-119`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-119`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-120`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-120`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-121`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-121`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-122`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-122`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-123`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-123`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-124`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-124`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-125`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-125`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-126`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-126`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-127`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-127`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-128`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-128`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-129`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-129`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-130`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-130`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-131`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-131`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-132`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-132`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-133`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-133`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-134`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-134`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-135`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-135`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-136`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-136`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-137`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-137`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-138`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-138`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-139`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-139`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-140`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-140`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-141`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-141`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-142`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-142`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-143`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-143`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-144`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-144`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-145`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-145`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-146`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-146`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-147`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-147`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-148`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-148`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-149`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-149`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-150`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-150`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-151`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-151`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-152`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-152`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-153`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-153`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-154`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-154`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-155`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-155`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-156`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-156`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-157`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-157`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-158`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-158`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-159`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-159`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-160`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-160`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-161`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-161`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-162`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-162`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-163`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-163`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-164`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-164`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-165`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-165`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-166`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-166`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-167`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-167`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-168`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-168`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-169`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-169`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-170`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-170`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-171`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-171`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-172`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-172`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-173`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-173`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-174`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-174`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-175`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-175`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-176`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-176`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-177`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-177`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-178`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-178`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-179`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-179`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-180`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-180`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-181`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-181`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-182`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-182`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-183`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-183`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-184`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-184`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-185`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-185`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-186`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-186`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-187`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-187`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-188`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-188`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-189`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-189`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-190`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-190`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-191`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-191`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-192`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-192`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-193`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-193`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-194`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-194`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-195`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-195`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-196`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-196`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-197`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-197`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-198`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-198`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-199`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-199`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-200`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-200`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-201`    | `GAP-CTRL-006` — línea base histórica pre-E5                    | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-201`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-202`    | `PROC-COVER-010` — delta append-only posterior a `GAP-CTRL-006` | `INCORPORAR_IDENTIDAD_APPEND_ONLY`       | `GAP-PKG-202`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-203`    | `PROC-COVER-010` — delta append-only posterior a `GAP-CTRL-006` | `INCORPORAR_IDENTIDAD_APPEND_ONLY`       | `GAP-PKG-203`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-204`    | `PROC-COVER-010` — delta append-only posterior a `GAP-CTRL-006` | `INCORPORAR_IDENTIDAD_APPEND_ONLY`       | `GAP-PKG-204`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-205`    | `PROC-COVER-010` — delta append-only posterior a `GAP-CTRL-006` | `INCORPORAR_IDENTIDAD_APPEND_ONLY`       | `GAP-PKG-205`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-206`    | `PROC-COVER-010` — delta append-only posterior a `GAP-CTRL-006` | `INCORPORAR_IDENTIDAD_APPEND_ONLY`       | `GAP-PKG-206`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+| `GAP-PKG-207`    | `PROC-COVER-010` — delta append-only posterior a `GAP-CTRL-006` | `INCORPORAR_IDENTIDAD_APPEND_ONLY`       | `GAP-PKG-207`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` |
+
+---
+
+#### 6. Delta append-only `GAP-PKG-202..207`
+
+Los seis paquetes incorporados por `PROC-COVER-010` se materializan con su contexto ya aprobado para impedir que la identidad se separe de su procedencia.
+
+| `package_id`  | `gap_id` de origen     | `capability_id` | proceso de contexto | Clase         | Propietario de brecha | Ola  | Fecha        | Perfil de cierre | Estado de enrutamiento |
+| ------------- | ---------------------- | --------------- | ------------------- | ------------- | --------------------- | ---- | ------------ | ---------------- | ---------------------- |
+| `GAP-PKG-202` | `H-PROC-COVER-010-001` | `CAP-01.07`     | `VPROC-0063`        | `OPERACION`   | `OWN-GG`              | `W4` | `2026-10-23` | `CLOSE-OPE-ADP`  | `OPEN_ROUTED`          |
+| `GAP-PKG-203` | `H-PROC-COVER-010-002` | `CAP-01.09`     | `VPROC-0064`        | `CONTRACTUAL` | `OWN-GG`              | `W1` | `2026-08-21` | `CLOSE-CON-CTR`  | `OPEN_ROUTED`          |
+| `GAP-PKG-204` | `H-PROC-COVER-010-003` | `CAP-03.03`     | `VPROC-0066`        | `OPERACION`   | `OWN-SST`             | `W2` | `2026-09-11` | `CLOSE-OPE-ADP`  | `OPEN_ROUTED`          |
+| `GAP-PKG-205` | `H-PROC-COVER-010-004` | `CAP-10.06`     | `VPROC-0068`        | `FUNCIONAL`   | `OWN-COM`             | `W4` | `2026-10-23` | `CLOSE-FUN-VAL`  | `OPEN_ROUTED`          |
+| `GAP-PKG-206` | `H-PROC-COVER-010-005` | `CAP-12.11`     | `VPROC-0069`        | `FUNCIONAL`   | `OWN-FIN`             | `W4` | `2026-10-23` | `CLOSE-FUN-IMP`  | `OPEN_ROUTED`          |
+| `GAP-PKG-207` | `H-PROC-COVER-010-006` | `CAP-15.06`     | `VPROC-TRANSVERSAL` | `TECNICA`     | `OWN-TEC`             | `W3` | `2026-10-02` | `CLOSE-TEC-VAL`  | `OPEN_ROUTED`          |
+
+Estos seis paquetes son **adiciones**, no reemplazos de paquetes históricos. Cada uno incorpora una sola brecha nueva y un solo perfil de cierre en el delta vigente.
+
+---
+
+#### 7. Reconciliación cuantitativa de identidades
+
+##### 7.1. Por origen
+
+| Origen           | Identidades | Resultado             |
+| ---------------- | ----------: | --------------------- |
+| `GAP-CTRL-006`   |     **201** | preservadas           |
+| `PROC-COVER-010` |       **6** | agregadas append-only |
+| Total vigente    |     **207** | reconciliado          |
+
+##### 7.2. Por perfil de cierre
+
+La línea histórica registraba **160 paquetes de un solo perfil** y **41 multiperfil**. Los seis paquetes nuevos tienen un único perfil cada uno.
+
+| Tipo             | Históricos | Delta | Vigente |
+| ---------------- | ---------: | ----: | ------: |
+| un solo perfil   |        160 |    +6 | **166** |
+| más de un perfil |         41 |    +0 |  **41** |
+| total            |        201 |    +6 | **207** |
+
+Un paquete multiperfil conserva las obligaciones independientes de cada perfil; la identidad común no autoriza a aplicar el criterio de cierre más débil al conjunto.
+
+##### 7.3. Por ola
+
+| Ola       | Brechas vigentes | Paquetes vigentes |
+| --------- | ---------------: | ----------------: |
+| `W0`      |           **28** |             **5** |
+| `W1`      |          **302** |            **72** |
+| `W2`      |          **223** |            **55** |
+| `W3`      |          **121** |            **14** |
+| `W4`      |          **108** |            **46** |
+| `W5`      |           **38** |            **15** |
+| **Total** |          **820** |           **207** |
+
+##### 7.4. Por clasificación
+
+| Clasificación | Brechas vigentes | Paquetes vigentes |
+| ------------- | ---------------: | ----------------: |
+| `FUNCIONAL`   |          **189** |            **50** |
+| `CONTRACTUAL` |          **103** |            **37** |
+| `TECNICA`     |          **221** |            **36** |
+| `DATOS`       |          **126** |            **44** |
+| `SEGURIDAD`   |           **98** |            **12** |
+| `OPERACION`   |           **83** |            **28** |
+| **Total**     |          **820** |           **207** |
+
+---
+
+#### 8. Identidades relacionadas fuera del rango `GAP-PKG-*`
+
+##### 8.1. `VISO-SCHEDULE-MONTHLY-001`
+
+`VISO-SCHEDULE-MONTHLY-001` conserva su identidad descriptiva expresamente reservada. No se renombra como `GAP-PKG-*`, no consume un número del rango `001..207` y no se fusiona por semejanza funcional con un paquete del registro de brechas.
+
+Su existencia no modifica el conteo de **207 paquetes `GAP-PKG-*`** derivados del registro canónico de brechas.
+
+##### 8.2. `NEXO-REMISSIONS-001`
+
+`NEXO-REMISSIONS-001` conserva su naturaleza de identidad histórica de carril. No se convierte implícitamente en `package_id` y no entra en el conteo `GAP-PKG-001..207` mientras no exista una asignación documental explícita distinta.
+
+---
+
+#### 9. Unicidad, continuidad y no reutilización
+
+La identidad queda inválida si ocurre cualquiera de estas condiciones:
+
+- un mismo `GAP-PKG-*` identifica dos expedientes diferentes;
+- un expediente recibe dos `package_id` sin una decisión explícita de linaje;
+- falta cualquier número dentro de `001..207` sin antecedente de retiro canónico;
+- aparece un `GAP-PKG-*` superior a `207` sin fuente aprobada que lo cree;
+- `GAP-PKG-202..207` se absorbe dentro de un paquete histórico sin conservar linaje;
+- un identificador histórico se reutiliza para otro alcance;
+- una identidad descriptiva ajena se cuenta automáticamente como `GAP-PKG-*`.
+
+La secuencia vigente cumple: **207 identificadores, 207 valores únicos, rango continuo `001..207`, cero colisiones conocidas en el catálogo aprobado**.
+
+---
+
+#### 10. Instancias y ejecuciones
+
+La identidad de paquete se mantiene separada de cada ejecución concreta. Una implementación posterior podrá materializar, como mínimo, relaciones conceptuales equivalentes a:
 
 ```text
-GAP-PKG-001
-...
-GAP-PKG-201
+package_id
+package_revision
+implementation_unit_id
+implementation_instance_id
+source_revision
+artifact_revision
+migration_ids[]
+deployment_id
+rollback_reference
+executed_at
+executed_by
+verification_evidence[]
 ```
 
-Reglas:
-
-- son identidades preexistentes y estables;
-- se preservan exactamente, sin renombrado cosmético;
-- mientras sigan representando el mismo expediente, su `package_id` es el mismo valor;
-- si una tarea posterior demuestra que una frontera debe dividirse o fusionarse, el `GAP-PKG-*` de origen queda como referencia histórica de linaje.
-
-**B. Identidades descriptivas expresamente reservadas o creadas en E5**
-
-Forma estructural:
-
-```text
-<ALCANCE-ESTABLE>-<PROPOSITO-ESTABLE>-<SECUENCIA>
-```
-
-Expresión de referencia:
-
-```text
-^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-[0-9]{3,}$
-```
-
-La convención descriptiva se utiliza para identidades nuevas cuando exista una decisión explícita. No obliga a renombrar las 201 identidades `GAP-PKG-*` heredadas.
-
-##### 3.3. Revisión e identidad
-
-Cada expediente distingue:
-
-| Campo                     | Significado                   | Regla                                    |
-| ------------------------- | ----------------------------- | ---------------------------------------- |
-| `package_id`              | identidad permanente          | inmutable mientras sea el mismo paquete  |
-| `package_revision`        | revisión del expediente       | monotónica dentro del mismo `package_id` |
-| `package_status`          | estado documental u operativo | separado de la identidad                 |
-| `package_title`           | título humano                 | modificable sin renumerar                |
-| `derived_from_package_id` | linaje por división           | solo cuando exista división real         |
-| `merged_from_package_ids` | linaje por fusión             | solo cuando exista fusión real           |
-| `supersedes_package_id`   | linaje por sustitución        | solo cuando exista sustitución real      |
-
-Los campos de linaje no se completan con valores ficticios.
+Esta estructura no se materializa físicamente en `DELIV-PKG-001`; únicamente fija que ninguna instancia, release o despliegue puede sustituir la identidad estable del paquete.
 
 ---
 
-#### 4. Regla de ratificación, división y fusión de la línea base pre-E5
+#### 11. Fronteras de responsabilidad
 
-`GAP-CTRL-006` exige que la identidad pre-E5 no sea descartada durante E5. Esta tarea aplica la regla así:
+`DELIV-PKG-001` **sí cierra**:
 
-1. **Identidad:** `GAP-PKG-001..201` queda ratificada como línea base estable y trazable.
-2. **Frontera física:** esta tarea no afirma que cada una de las 201 agrupaciones ya tenga demostrado un único repositorio, una única estrategia de despliegue o un único rollback.
-3. **Repositorio propietario:** se materializa en `DELIV-PKG-003`.
-4. **Estrategia de despliegue y ventana:** se materializa en `DELIV-PKG-019`.
-5. **Rollback técnico, funcional y de datos:** se materializa en `DELIV-PKG-020`.
-6. Si esas tareas prueban que una agrupación no puede continuar como una sola unidad independiente, deberán crear la identidad resultante que corresponda y preservar el `GAP-PKG-*` de origen como linaje histórico.
-7. Si varias agrupaciones solo pueden constituir una unidad por compartir propietario, dependencias, despliegue y rollback, la fusión deberá crear una identidad resultante nueva y conservar todas las identidades de origen.
-8. La ausencia todavía de esas definiciones no autoriza renombrar, descartar, duplicar o inventar fronteras en `DELIV-PKG-001`.
+- existencia y continuidad del espacio `GAP-PKG-001..207`;
+- procedencia histórica `001..201` y append-only `202..207`;
+- invariantes de identidad, revisión y linaje;
+- tratamiento separado de `VISO-SCHEDULE-MONTHLY-001` y `NEXO-REMISSIONS-001`;
+- prohibición de renumeración, reutilización, fusión implícita o creación inferida.
 
-Por tanto, la decisión de esta tarea es una **ratificación de identidad**, no una certificación anticipada de despliegue.
+`DELIV-PKG-001` **no cierra**:
 
----
-
-#### 5. Matriz completa de decisión `GAP-PKG-001..201`
-
-La matriz contiene una fila por cada identidad heredada. `Estado de frontera física = NO_CERTIFICADA_EN_ESTA_TAREA` no constituye un pendiente huérfano: sus propietarios documentales exactos son `DELIV-PKG-003`, `DELIV-PKG-019` y `DELIV-PKG-020`.
-
-| ID pre-E5     | Decisión de identidad                    | `package_id` canónico | Estado de identidad | Estado de frontera física      | Propietarios de cierre de frontera                |
-| ------------- | ---------------------------------------- | --------------------- | ------------------- | ------------------------------ | ------------------------------------------------- |
-| `GAP-PKG-001` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-001`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-002` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-002`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-003` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-003`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-004` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-004`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-005` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-005`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-006` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-006`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-007` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-007`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-008` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-008`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-009` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-009`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-010` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-010`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-011` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-011`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-012` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-012`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-013` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-013`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-014` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-014`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-015` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-015`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-016` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-016`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-017` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-017`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-018` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-018`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-019` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-019`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-020` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-020`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-021` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-021`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-022` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-022`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-023` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-023`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-024` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-024`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-025` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-025`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-026` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-026`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-027` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-027`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-028` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-028`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-029` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-029`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-030` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-030`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-031` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-031`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-032` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-032`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-033` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-033`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-034` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-034`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-035` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-035`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-036` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-036`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-037` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-037`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-038` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-038`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-039` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-039`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-040` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-040`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-041` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-041`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-042` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-042`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-043` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-043`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-044` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-044`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-045` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-045`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-046` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-046`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-047` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-047`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-048` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-048`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-049` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-049`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-050` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-050`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-051` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-051`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-052` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-052`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-053` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-053`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-054` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-054`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-055` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-055`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-056` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-056`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-057` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-057`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-058` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-058`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-059` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-059`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-060` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-060`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-061` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-061`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-062` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-062`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-063` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-063`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-064` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-064`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-065` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-065`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-066` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-066`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-067` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-067`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-068` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-068`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-069` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-069`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-070` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-070`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-071` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-071`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-072` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-072`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-073` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-073`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-074` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-074`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-075` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-075`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-076` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-076`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-077` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-077`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-078` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-078`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-079` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-079`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-080` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-080`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-081` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-081`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-082` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-082`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-083` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-083`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-084` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-084`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-085` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-085`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-086` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-086`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-087` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-087`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-088` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-088`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-089` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-089`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-090` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-090`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-091` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-091`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-092` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-092`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-093` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-093`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-094` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-094`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-095` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-095`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-096` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-096`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-097` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-097`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-098` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-098`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-099` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-099`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-100` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-100`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-101` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-101`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-102` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-102`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-103` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-103`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-104` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-104`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-105` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-105`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-106` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-106`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-107` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-107`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-108` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-108`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-109` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-109`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-110` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-110`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-111` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-111`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-112` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-112`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-113` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-113`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-114` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-114`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-115` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-115`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-116` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-116`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-117` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-117`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-118` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-118`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-119` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-119`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-120` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-120`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-121` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-121`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-122` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-122`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-123` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-123`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-124` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-124`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-125` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-125`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-126` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-126`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-127` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-127`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-128` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-128`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-129` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-129`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-130` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-130`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-131` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-131`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-132` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-132`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-133` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-133`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-134` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-134`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-135` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-135`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-136` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-136`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-137` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-137`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-138` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-138`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-139` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-139`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-140` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-140`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-141` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-141`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-142` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-142`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-143` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-143`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-144` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-144`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-145` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-145`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-146` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-146`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-147` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-147`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-148` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-148`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-149` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-149`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-150` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-150`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-151` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-151`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-152` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-152`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-153` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-153`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-154` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-154`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-155` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-155`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-156` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-156`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-157` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-157`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-158` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-158`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-159` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-159`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-160` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-160`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-161` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-161`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-162` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-162`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-163` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-163`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-164` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-164`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-165` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-165`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-166` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-166`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-167` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-167`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-168` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-168`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-169` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-169`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-170` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-170`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-171` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-171`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-172` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-172`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-173` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-173`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-174` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-174`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-175` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-175`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-176` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-176`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-177` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-177`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-178` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-178`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-179` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-179`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-180` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-180`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-181` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-181`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-182` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-182`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-183` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-183`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-184` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-184`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-185` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-185`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-186` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-186`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-187` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-187`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-188` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-188`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-189` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-189`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-190` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-190`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-191` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-191`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-192` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-192`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-193` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-193`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-194` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-194`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-195` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-195`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-196` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-196`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-197` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-197`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-198` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-198`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-199` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-199`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-200` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-200`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
-| `GAP-PKG-201` | `PRESERVAR_Y_RATIFICAR_IDENTIDAD_PRE_E5` | `GAP-PKG-201`         | `ESPECIFICADO`      | `NO_CERTIFICADA_EN_ESTA_TAREA` | `DELIV-PKG-003`, `DELIV-PKG-019`, `DELIV-PKG-020` |
+- relaciones `package_id` ↔ capacidad/proceso/brecha, responsabilidad de `DELIV-PKG-002`;
+- aplicación, dominio o repositorio propietario, responsabilidad de `DELIV-PKG-003`;
+- resultado AS-IS/TO-BE, alcance funcional, componentes, contratos técnicos, dependencias, despliegue, rollback o evidencia de ejecución de tareas posteriores del bloque E5.
 
 ---
 
-#### 6. Reconciliación de identidades adicionales
-
-##### 6.1. `VISO-SCHEDULE-MONTHLY-001`
-
-El delta canónico de programación mensual VISO reserva expresamente esta identidad. Se conserva sin renombrarla y sin fusionarla por semejanza funcional con ningún `GAP-PKG-*`.
-
-| Campo                                | Decisión                             |
-| ------------------------------------ | ------------------------------------ |
-| `package_id`                         | `VISO-SCHEDULE-MONTHLY-001`          |
-| Estado de identidad                  | `ESPECIFICADO`                       |
-| Estado documental heredado           | `RESERVED_NOT_APPROVED`              |
-| Resultado                            | `PRESERVAR_COMO_IDENTIDAD_RESERVADA` |
-| Fusión con `GAP-PKG-*`               | `NO_INFERIDA`                        |
-| División                             | `NO_INFERIDA`                        |
-| Siguiente materialización relacional | `DELIV-PKG-002`                      |
-
-La existencia de relaciones funcionales en las fuentes de VISO no se convierte aquí en la vinculación formal `capability_id`, `process_id` o `gap_id`; esa responsabilidad permanece en `DELIV-PKG-002`.
-
-##### 6.2. `NEXO-REMISSIONS-001`
-
-`NEXO-REMISSIONS-001` permanece como identidad histórica de carril y no como identidad de paquete vigente.
-
-| Campo                   | Decisión               |
-| ----------------------- | ---------------------- |
-| Identidad observada     | `NEXO-REMISSIONS-001`  |
-| Clasificación           | `HISTORICAL_LANE_ONLY` |
-| `package_id`            | `NO_ASIGNADO`          |
-| Resultado               | `NOT_A_PACKAGE_ID`     |
-| Reactivación automática | `PROHIBIDA`            |
-
-Si en otra tarea autorizada se materializa un paquete de Remisiones, deberá recibir una asignación explícita de `package_id`; no se reutilizará este carril por inferencia.
-
----
-
-#### 7. Balance canónico de identidades
-
-| Control                                                           | Cantidad |
-| ----------------------------------------------------------------- | -------: |
-| `GAP-PKG-*` esperados                                             |  **201** |
-| `GAP-PKG-*` materializados                                        |  **201** |
-| `GAP-PKG-*` faltantes                                             |    **0** |
-| `GAP-PKG-*` duplicados                                            |    **0** |
-| Identidades pre-E5 preservadas                                    |  **201** |
-| Identidades reservadas adicionales confirmadas                    |    **1** |
-| Identidades de paquete estables o reservadas reconocidas al corte |  **202** |
-| Carriles históricos excluidos del espacio `package_id`            |    **1** |
-| Renombrados cosméticos de `GAP-PKG-*`                             |    **0** |
-| Fusiones inferidas                                                |    **0** |
-| Divisiones inferidas                                              |    **0** |
-
-El total **202** no significa que existan 202 paquetes aprobados para implementación física. Significa que existen 201 identidades pre-E5 ratificadas y una identidad VISO reservada que deben conservar trazabilidad independiente hasta que las tareas posteriores completen sus contratos.
-
----
-
-#### 8. Unicidad, no reutilización y linaje
-
-Antes de aceptar una identidad nueva deberá comprobarse:
-
-1. inexistencia de otro `package_id` idéntico;
-2. inexistencia de una identidad histórica retirada con el mismo valor;
-3. inexistencia de un segundo `package_id` activo para la misma unidad documental sin relación de linaje;
-4. que una división o fusión conserve todas las identidades fuente;
-5. que la nueva identidad no dependa de prioridad, sprint, fecha, ambiente, commit o persona;
-6. que una coincidencia textual con otro espacio de nombres no se trate como equivalencia automática.
-
-Linaje obligatorio:
-
-```text
-DIVISION
-package_id_origen -> package_id_nuevo_A + package_id_nuevo_B + ...
-
-FUSION
-package_id_origen_A + package_id_origen_B + ... -> package_id_nuevo
-
-SUSTITUCION
-package_id_anterior -> package_id_sucesor
-```
-
-El origen nunca desaparece de la historia.
-
----
-
-#### 9. Instancias por paquete
-
-Las tareas globales que el protocolo ejecute por paquete utilizarán:
-
-```text
-<task_id>::<package_id>
-```
-
-Reglas:
-
-1. una instancia no crea una tarea canónica nueva;
-2. una aprobación de instancia solo aplica al `package_id` indicado;
-3. dos paquetes distintos no comparten una misma instancia;
-4. todas las instancias de un mismo expediente mantienen el mismo `package_id` mientras no ocurra una división, fusión o sustitución formal;
-5. el linaje entre identidades no transfiere automáticamente aprobaciones;
-6. una revisión documental del mismo paquete no cambia la identidad de instancia.
-
----
-
-#### 10. Fronteras exactas de `DELIV-PKG-001`
-
-Esta tarea resuelve identidad estable y linaje. No adelanta:
-
-- vínculos formales con capacidades, procesos y brechas: `DELIV-PKG-002`;
-- aplicación, dominio y repositorio propietarios: `DELIV-PKG-003`;
-- AS-IS y resultado TO-BE: `DELIV-PKG-004`;
-- alcance incluido, excluido y diferido: `DELIV-PKG-005`;
-- pantallas y componentes: `DELIV-PKG-006`;
-- lógica, API, RPC y Edge Functions: `DELIV-PKG-007`;
-- tablas, funciones, políticas, Storage y Realtime: `DELIV-PKG-008`;
-- migraciones, backfills y retiro legacy: `DELIV-PKG-009`;
-- eventos, colas y compensaciones: `DELIV-PKG-010`;
-- impresión, notificaciones, documentos y evidencia: `DELIV-PKG-011`;
-- permisos y contratos de recurso: `DELIV-PKG-012`;
-- requisitos no funcionales: `DELIV-PKG-013`;
-- inventario exacto de archivos: `DELIV-PKG-014`;
-- dependencias y orden: `DELIV-PKG-015`;
-- requisitos de prueba y pruebas: `DELIV-PKG-016`;
-- observabilidad: `DELIV-PKG-017`;
-- feature flags y activación progresiva: `DELIV-PKG-018`;
-- despliegue y rollout: `DELIV-PKG-019`;
-- rollback: `DELIV-PKG-020`;
-- documentación y capacitación: `DELIV-PKG-021`;
-- piloto: `DELIV-PKG-022`;
-- criterios y evidencia de cierre: `DELIV-PKG-023`;
-- vínculo final con el registro de brechas: `DELIV-PKG-024`;
-- aprobación previa a implementación física: `DELIV-PKG-025`.
-
----
-
-#### Requisitos de prueba derivados
+#### 12. Requisitos de prueba derivados
 
 **Resultado:** NO GENERA REQUISITOS DE PRUEBA
 
-**Justificación:** la corrección completa un inventario de identidades y reglas documentales de trazabilidad. No crea ni modifica comportamiento ejecutable, autorización, cálculo, transición, integración, dato operativo, migración, efecto físico ni contrato runtime. Los requisitos ya asociados a las brechas y componentes conservan sus identidades y estados.
+La tarea corrige y consolida identidad documental ya gobernada por el registro canónico de brechas. No introduce comportamiento ejecutable, regla de negocio nueva, cambio de autorización, migración, contrato de runtime ni modificación de un requisito `TREQ-*`.
 
 ---
 
-#### 11. Criterios de aceptación
+#### 13. Criterios de aceptación
 
-1. El rango `GAP-PKG-001..201` aparece completo, sin faltantes ni duplicados.
-2. Cada una de las 201 identidades tiene decisión explícita, `package_id`, estado de identidad, estado de frontera y tarea propietaria de la frontera no certificada.
-3. La distribución heredada de 160 paquetes con un solo perfil y 41 multiperfil suma exactamente 201 y no se colapsa.
-4. Ningún `GAP-PKG-*` se renombra solo para ajustarlo a una convención descriptiva posterior.
-5. Cualquier futura división, fusión o sustitución conserva el `GAP-PKG-*` de origen como linaje histórico.
-6. `VISO-SCHEDULE-MONTHLY-001` se conserva como identidad reservada adicional y no se fusiona por inferencia.
-7. `NEXO-REMISSIONS-001` permanece fuera del espacio de `package_id` vigente.
-8. El balance de identidades reconocidas es `201 + 1 = 202`, con un carril histórico excluido.
-9. `package_id`, revisión, estado, título y linaje permanecen conceptualmente separados.
-10. Las instancias `task_id::package_id` aíslan aprobaciones por paquete.
-11. No se materializan relaciones `capability_id`, `process_id` o `gap_id` antes de `DELIV-PKG-002`.
-12. No se certifican repositorios, rollout o rollback antes de `DELIV-PKG-003`, `DELIV-PKG-019` y `DELIV-PKG-020`.
-13. No se ejecutan cambios de código, migraciones, datos, Supabase ni despliegues.
-14. La tarea produce cero cambios en requisitos de prueba.
-15. La continuidad reserva exclusivamente `DELIV-PKG-002`.
+`DELIV-PKG-001` queda cerrada únicamente cuando se cumplen simultáneamente:
+
+- [x] `GAP-PKG-001..201` conserva exactamente sus identidades históricas.
+- [x] `GAP-PKG-202..207` queda incorporado como delta append-only de `PROC-COVER-010`.
+- [x] El universo vigente contiene **207** `package_id` `GAP-PKG-*` únicos y continuos.
+- [x] Ninguna de las **814** brechas históricas es reidentificada por el delta.
+- [x] Las **6** brechas nuevas conservan paquetes `202..207` uno a uno.
+- [x] Los conteos actuales reconciliados son **820 brechas / 207 paquetes**.
+- [x] Los **22** registros de control/evidencia no crean identidades de paquete adicionales.
+- [x] `VISO-SCHEDULE-MONTHLY-001` permanece separado del conteo `GAP-PKG-*`.
+- [x] `NEXO-REMISSIONS-001` permanece como carril histórico, no como paquete inferido.
+- [x] No se certifica prematuramente aplicación, repositorio, despliegue ni rollback.
+- [x] La instrucción histórica de división/fusión queda reconciliada: `DELIV-PKG-025` deberá cerrar una decisión física por cada expediente raíz con linaje completo.
+- [x] No se crea ni modifica ningún requisito de prueba.
 
 ---
 
-#### 12. Continuidad
+#### 14. Continuidad
 
-ÚLTIMA TAREA APROBADA
+**ÚLTIMA TAREA APROBADA**
 `EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage`
 
-TAREA ACTUAL APROBADA
+**TAREA ACTUAL APROBADA**
 `DELIV-PKG-001 — Crear identificador estable para cada paquete de implementación`
 
-SIGUIENTE TAREA RESERVADA
+**SIGUIENTE TAREA RESERVADA**
 `DELIV-PKG-002 — Vincular el paquete con capability_id, process_id y gap_id`
 
 
@@ -518,216 +488,368 @@ SIGUIENTE TAREA RESERVADA
 **Estado:** APROBADA
 **Tarea anterior:** `DELIV-PKG-001 — Crear identificador estable para cada paquete de implementación`
 **Tarea siguiente:** `DELIV-PKG-003 — Definir aplicación, dominio y repositorio propietarios`
-**Tipo de tarea:** documental — trazabilidad canónica entre paquetes, capacidades, procesos y brechas
+**Tipo de tarea:** documental — materialización y gobierno de trazabilidad canónica paquete ↔ capacidad ↔ proceso ↔ brecha
 
 ---
 
 #### 1. Resultado canónico
 
-`DELIV-PKG-002` vincula las identidades de paquete ratificadas por `DELIV-PKG-001` con los identificadores canónicos de capacidad, proceso y brecha ya presentes en las fuentes aprobadas.
+`DELIV-PKG-002` cierra la trazabilidad estructural entre las **207 identidades `GAP-PKG-001..207`** y las **820 brechas reales vigentes** del registro canónico.
 
-La vinculación no crea una segunda fuente de verdad para las 814 brechas. El registro canónico de brechas conserva el detalle fila a fila; E5 consume ese detalle mediante relaciones deterministas y preserva la identidad estable del paquete.
+El resultado no es una clasificación nueva ni una segunda fuente de verdad. La tarea fija cómo E5 consume, preserva y verifica las relaciones ya aprobadas sin perder granularidad ni reinterpretar la línea histórica.
 
-El resultado obligatorio es:
+La reconciliación obligatoria es:
 
-1. **201/201** identidades `GAP-PKG-001..201` vinculables por regla determinista con sus capacidades y brechas;
-2. **814/814** brechas reales cubiertas por exactamente un paquete ratificado;
-3. `process_id` vinculado solo cuando existe una referencia AS-IS confirmada en la fuente canónica;
-4. cero conversiones de valores provisionales en procesos canónicos;
-5. cero creación de capacidades, procesos, brechas o paquetes por inferencia;
-6. preservación separada de `VISO-SCHEDULE-MONTHLY-001` y de `NEXO-REMISSIONS-001` según su estado aprobado en `DELIV-PKG-001`.
+```text
+814 brechas históricas
++  6 brechas append-only de PROC-COVER-010
+=820 brechas reales vigentes
+
+201 paquetes históricos
++  6 paquetes append-only
+=207 package_id GAP-PKG-* vigentes
+
+820 brechas reales
++ 22 referencias de control/evidencia
+=842 registros equivalentes conciliados
+```
+
+Cada una de las 820 brechas reales debe ser recuperable desde exactamente un `package_id`. Las 22 referencias de control/evidencia permanecen fuera de la relación paquete-brecha.
+
+La capa de proceso conserva además **53 pares históricos únicos `package_id` ↔ `process_id`**, correspondientes a **27 procesos confirmados** y **8 paquetes históricos**, más los seis contextos explícitos del delta `202..207`. Una brecha sin proceso confirmado conserva cardinalidad cero; una relación ya aprobada por `PROC-COVER-010` no puede omitirse como si esa ausencia existiera.
 
 ---
 
 #### 2. Fuentes y precedencia documental
 
-La relación se resuelve con la siguiente precedencia:
+La vinculación se gobierna en este orden:
 
-1. `DELIV-PKG-001` define qué valores son `package_id` válidos y cuáles identidades permanecen reservadas o excluidas.
-2. `GAP-CTRL-006` y su catálogo pre-E5 definen, para `GAP-PKG-001..201`, el conteo de brechas y el conjunto de capacidades asociado a cada paquete.
-3. El registro canónico de brechas define el `gap_id`, la capacidad primaria, las capacidades relacionadas, el proceso provisional, los `Procesos AS-IS` y la asignación `GAP-PKG-*` de cada brecha real.
-4. El catálogo canónico de procesos valida la identidad de los procesos AS-IS referenciados; la ausencia de proceso no se sustituye con un valor provisional.
-5. Si una fuente posterior autorizada modifica una identidad o una relación, debe preservar el linaje de las identidades anteriores; esta tarea no renumera ni reagrupa la línea base.
+1. registro canónico de brechas, incluida su actualización append-only de `PROC-COVER-010`;
+2. catálogo de paquetes y matrices brecha → tarea → paquete de `GAP-CTRL-006` para las 814 brechas históricas;
+3. `PROCESS-GAP-RETURN-MATRIX-001` de `PROC-COVER-010` para los vínculos históricos proceso ↔ brecha confirmados o ampliados;
+4. filas explícitas de las seis brechas y seis paquetes añadidos por `PROC-COVER-010`;
+5. catálogo canónico de capacidades `CAP-*` para validar identidad de capacidad;
+6. catálogo AS-IS de procesos `VPROC-*` para validar que cada identidad de proceso existe y conserva su estado aprobado.
 
-Una diferencia material entre el conteo del catálogo de paquetes y la membresía fila a fila del registro de brechas no puede corregirse por inferencia. La reconciliación final paquete-registro permanece reservada a `DELIV-PKG-024`.
+La actualización que declara **820 brechas y 207 paquetes** prevalece sobre los conteos históricos **814/201**, pero no reescribe las relaciones históricas. El delta solo agrega `GAP-PKG-202..207` y `H-PROC-COVER-010-001..006`.
+
+No se permite utilizar una copia histórica de la matriz para reducir el universo vigente a 201 paquetes ni reinterpretar una brecha histórica por información posterior no declarada como ampliación de alcance.
 
 ---
 
 #### 3. Grano canónico de las relaciones
 
-La vinculación se modela como tres relaciones independientes. No se fuerza una falsa relación 1:1.
+| Relación                    | Clave lógica                    | Cardinalidad permitida                                                                        | Restricción de integridad                              |
+| --------------------------- | ------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| paquete ↔ brecha            | (`package_id`, `gap_id`)        | un paquete contiene una o varias brechas; cada brecha real pertenece a exactamente un paquete | un `gap_id` vigente no puede pertenecer a dos paquetes |
+| paquete ↔ capacidad         | (`package_id`, `capability_id`) | muchos a muchos                                                                               | no duplicar el mismo par                               |
+| paquete ↔ proceso           | (`package_id`, `process_id`)    | cero, uno o varios procesos por paquete; un proceso puede aparecer en varios paquetes         | no duplicar el mismo par                               |
+| brecha ↔ capacidad primaria | (`gap_id`, `capability_id`)     | una capacidad primaria por brecha en la matriz vigente                                        | no sustituir por familia genérica                      |
+| brecha ↔ proceso            | (`gap_id`, `process_id`)        | cero, uno o varios procesos confirmados según procedencia                                     | no promover valores provisionales                      |
 
-| Relación          | Grano documental                     | Cardinalidad permitida                                                                                      | Regla de unicidad                                            |
-| ----------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| paquete-capacidad | un `package_id` + un `capability_id` | un paquete puede tener una o varias capacidades; una capacidad puede aparecer en varios paquetes            | no repetir el mismo par                                      |
-| paquete-proceso   | un `package_id` + un `process_id`    | un paquete puede tener cero, uno o varios procesos; un proceso puede aparecer en varios paquetes            | no repetir el mismo par                                      |
-| paquete-brecha    | un `package_id` + un `gap_id`        | un paquete tiene una o varias brechas; cada brecha real de la línea base pertenece a exactamente un paquete | `gap_id` no puede pertenecer a dos paquetes de la línea base |
-
-La multiplicidad es información canónica. Reducir un paquete multiproceso o multicapacidad a una sola relación destruiría trazabilidad.
+La multiplicidad es información canónica. Compartir capacidad, proceso, tarea u owner no fusiona paquetes.
 
 ---
 
 #### 4. Regla canónica `package_id` ↔ `gap_id`
 
-Para `GAP-PKG-001..201`, la membresía de brechas se obtiene exclusivamente de la asignación `GAP-PKG-*` registrada en cada fila clasificada como brecha real.
-
-Reglas obligatorias:
-
-1. participan exclusivamente las **814 brechas reales** de la línea base aprobada;
-2. las **22 referencias de control, agregación o evidencia** no se convierten en `gap_id` de implementación;
-3. cada brecha real conserva el `GAP-PKG-*` ya asignado;
-4. una brecha no puede aparecer en dos paquetes simultáneamente;
-5. no se reasigna una brecha por similitud de nombre, tarea dominante, aplicación, propietario, capacidad o prioridad;
-6. el número de brechas derivado por paquete debe coincidir con la columna `Brechas` del catálogo pre-E5;
-7. la suma de los 201 conteos debe seguir siendo **814**;
-8. una futura división o fusión de paquete deberá preservar el `GAP-PKG-*` de origen como linaje y no reescribir la evidencia histórica.
-
-Esta regla materializa la relación completa sin copiar 814 filas a una segunda matriz E5 que pudiera divergir del registro canónico.
+1. Participan exactamente las **820 brechas reales** vigentes.
+2. Las **814 brechas históricas** conservan el `GAP-PKG-*` aprobado en la matriz histórica.
+3. Las **6 brechas nuevas** conservan su asignación explícita uno a uno a `GAP-PKG-202..207`.
+4. Las **22 referencias de control/evidencia** no son `gap_id` de implementación y no reciben paquete.
+5. Una brecha no puede pertenecer simultáneamente a dos paquetes.
+6. Una brecha no se mueve de paquete por similitud de nombre, capability, process, task, owner, fecha, ola o aplicación.
+7. El conteo de brechas por paquete debe reconciliar con el catálogo vigente.
+8. La suma global de membresías paquete-brecha debe ser exactamente **820**.
+9. Cualquier división o fusión posterior deberá preservar el `GAP-PKG-*` histórico de origen y su membresía de procedencia; no se reescribe esta matriz silenciosamente.
 
 ---
 
 #### 5. Regla canónica `package_id` ↔ `capability_id`
 
-El conjunto de `capability_id` de cada `GAP-PKG-*` es exactamente el conjunto consignado en la columna `Capacidades` del catálogo pre-E5.
-
-Reglas obligatorias:
-
-1. una capacidad del paquete debe conservar su identificador `CAP-*` aprobado;
-2. un paquete puede conservar más de una capacidad sin elegir una sola como sustituta;
-3. la capacidad primaria de cada brecha integrante se utiliza como comprobación de consistencia de la vinculación;
-4. una `Capacidad relacionada` de una brecha no se promueve automáticamente a capacidad del paquete;
-5. la familia `CAP-xx` mostrada en el catálogo no reemplaza los `capability_id` concretos;
-6. no se crean capacidades sintéticas para agrupar varias capacidades existentes;
-7. si una brecha miembro declarara una capacidad primaria incompatible con el conjunto aprobado del paquete, la diferencia se conserva como discrepancia documental para `DELIV-PKG-024`; no se corrige silenciosamente en esta tarea.
+1. Todo `capability_id` vinculado debe ser un identificador `CAP-*` existente y aprobado.
+2. Para `GAP-PKG-001..201`, el conjunto del paquete es el conjunto aprobado en el catálogo histórico y debe ser compatible con las capacidades primarias de sus brechas miembro.
+3. Para `GAP-PKG-202..207`, el vínculo inicial se toma de la capacidad primaria explícita de la nueva brecha.
+4. Un paquete puede conservar varias capacidades; no se reduce a una familia `CAP-xx` ni a una sola capacidad dominante.
+5. Una capacidad relacionada o secundaria no se promueve automáticamente a vínculo de paquete si la fuente no la declara como parte del conjunto aplicable.
+6. No se crean capacidades sintéticas para simplificar paquetes multicapacidad.
+7. Una discrepancia entre la capacidad de una brecha y el conjunto declarado del paquete se conserva como inconsistencia documental; no se corrige por inferencia.
 
 ---
 
 #### 6. Regla canónica `package_id` ↔ `process_id`
 
-El conjunto de `process_id` de un paquete es la unión, sin duplicados, de los procesos AS-IS confirmados por las brechas que pertenecen a ese paquete.
-
-Reglas obligatorias:
-
-1. solo un identificador presente en `Procesos AS-IS` puede generar una relación `package_id` ↔ `process_id` dentro de la línea base de 201 paquetes;
-2. el campo `Proceso provisional` no es un `process_id` y nunca se promueve como tal;
-3. valores `PROVISIONAL`, `—`, vacíos o ausentes no crean procesos ficticios;
-4. cero procesos AS-IS confirmados es una cardinalidad válida y explícita para un paquete;
-5. si varias brechas del mismo paquete referencian el mismo proceso, el paquete conserva una sola relación con ese `process_id` y mantiene la procedencia en las brechas fuente;
-6. si una brecha referencia varios procesos AS-IS, todos se conservan;
-7. que un proceso aparezca en varios paquetes no fusiona los paquetes;
-8. la relación con proceso describe contexto operativo; no asigna por sí misma propietario de aplicación, dominio o repositorio.
+1. `process_id` solo puede provenir de `PROCESS-GAP-RETURN-MATRIX-001`, de otro vínculo AS-IS confirmado o de una asignación canónica explícita del delta.
+2. Un valor provisional, texto libre, familia funcional, tarea o capability no se convierte en `process_id`.
+3. La ausencia de proceso confirmado es una cardinalidad válida: cero procesos no autoriza inventar uno.
+4. Si varias brechas del mismo paquete referencian el mismo proceso, el par paquete-proceso se materializa una sola vez y conserva procedencia desde todas las brechas fuente.
+5. Si una brecha referencia varios procesos confirmados, todos se conservan.
+6. Un mismo proceso puede aparecer en varios paquetes sin provocar fusión.
+7. La relación con proceso describe contexto operacional y no decide `application_owner`, `domain_owner` ni `repo_owner`.
+8. `VPROC-TRANSVERSAL` se conserva cuando la fuente lo declara expresamente; no se sustituye por un proceso concreto inventado.
+9. Los **53 pares históricos** materializados en 7.2 son una proyección determinista de `process_id` → brecha E1 → `package_id`; no crean procesos, brechas ni paquetes nuevos.
 
 ---
 
-#### 7. Regla de derivación determinista
+#### 7. Materialización explícita del delta `202..207`
 
-Para cada `package_id = GAP-PKG-nnn` ratificado:
+| `package_id`  | `gap_id`               | `capability_id` | `process_id` / contexto canónico | Clase         | Propietario | Tarea primaria   | Perfil          | Evidencia mínima                                              | Revisor   | Estado    |
+| ------------- | ---------------------- | --------------- | -------------------------------- | ------------- | ----------- | ---------------- | --------------- | ------------------------------------------------------------- | --------- | --------- |
+| `GAP-PKG-202` | `H-PROC-COVER-010-001` | `CAP-01.07`     | `VPROC-0063`                     | `OPERACION`   | `OWN-GG`    | `INFO-DOM-012`   | `CLOSE-OPE-ADP` | `EV-01`; `EV-02`; `EV-07`; `EV-11`                            | `OWN-OPS` | `ABIERTA` |
+| `GAP-PKG-203` | `H-PROC-COVER-010-002` | `CAP-01.09`     | `VPROC-0064`                     | `CONTRACTUAL` | `OWN-GG`    | `INFO-INT-003`   | `CLOSE-CON-CTR` | `EV-01`; `EV-02`; `EV-05`; `EV-11`; `EV-17`                   | `OWN-DAT` | `ABIERTA` |
+| `GAP-PKG-204` | `H-PROC-COVER-010-003` | `CAP-03.03`     | `VPROC-0066`                     | `OPERACION`   | `OWN-SST`   | `NEXO-DOM-001`   | `CLOSE-OPE-ADP` | `EV-01`; `EV-02`; `EV-07`; `EV-11`; `EV-13`                   | `OWN-OPS` | `ABIERTA` |
+| `GAP-PKG-205` | `H-PROC-COVER-010-004` | `CAP-10.06`     | `VPROC-0068`                     | `FUNCIONAL`   | `OWN-COM`   | `DATA-DOM-012`   | `CLOSE-FUN-VAL` | `EV-01`; `EV-02`; `EV-07`; `EV-08`; `EV-11`                   | `OWN-DAT` | `ABIERTA` |
+| `GAP-PKG-206` | `H-PROC-COVER-010-005` | `CAP-12.11`     | `VPROC-0069`                     | `FUNCIONAL`   | `OWN-FIN`   | `NUMERA-DOM-018` | `CLOSE-FUN-IMP` | `EV-01`; `EV-02`; `EV-03`; `EV-04`; `EV-08`; `EV-11`          | `OWN-GG`  | `ABIERTA` |
+| `GAP-PKG-207` | `H-PROC-COVER-010-006` | `CAP-15.06`     | `VPROC-TRANSVERSAL`              | `TECNICA`     | `OWN-TEC`   | `SHELL-AUD-011`  | `CLOSE-TEC-VAL` | `EV-01`; `EV-02`; `EV-03`; `EV-04`; `EV-06`; `EV-11`; `EV-17` | `OWN-OPS` | `ABIERTA` |
 
-1. seleccionar todas las brechas reales cuya asignación de paquete sea exactamente `GAP-PKG-nnn`;
-2. proyectar sus `gap_id` sin alterar identidad ni clasificación;
-3. tomar el conjunto de `capability_id` aprobado para `GAP-PKG-nnn` en el catálogo pre-E5;
-4. reunir los identificadores confirmados de `Procesos AS-IS` de las brechas miembro;
-5. eliminar duplicados solo dentro de cada tipo de relación, nunca eliminar brechas distintas por compartir capacidad o proceso;
-6. comprobar que el conteo de brechas resultante coincide con el conteo aprobado del paquete.
+##### 7.1. Tareas de apoyo conservadas por el delta
 
-La relación es reproducible porque parte de identificadores y columnas canónicas ya existentes. No depende de texto libre, similitud semántica, orden de filas ni criterio del implementador.
+| `package_id`  | Tareas de apoyo                                                |
+| ------------- | -------------------------------------------------------------- |
+| `GAP-PKG-202` | `READY-GATE-014`; `DATA-DOM-004`; `DATA-DOM-015`               |
+| `GAP-PKG-203` | `INFO-DOM-010`; `INFO-DOM-003`; `INFO-DOM-011`                 |
+| `GAP-PKG-204` | `NEXO-DOM-008`; `NEXO-DOM-011`; `NEXO-DOM-017`; `INFO-DOM-011` |
+| `GAP-PKG-205` | `INFO-DOM-008`; `DATA-DOM-004`; `DATA-DOM-015`                 |
+| `GAP-PKG-206` | `NUMERA-AUTH-015`; `DATA-DOM-013`; `NUMERA-DOM-014`            |
+| `GAP-PKG-207` | `PROC-SCREEN-026`; `DELIV-PKG-009`; `SHELL-CI-017`             |
 
----
+La materialización del delta es cerrada: seis brechas, seis paquetes, seis capacidades primarias, seis contextos de proceso, cero brechas nuevas sin paquete.
 
-#### 8. Controles de integridad de la línea base
+##### 7.2. Matriz histórica `package_id` ↔ `process_id`
 
-| Control                                                        | Resultado canónico requerido |
-| -------------------------------------------------------------- | ---------------------------: |
-| `package_id` pre-E5 ratificados                                |                      **201** |
-| rango de `package_id` pre-E5                                   |           `GAP-PKG-001..201` |
-| brechas reales vinculadas                                      |                      **814** |
-| brechas reales sin paquete                                     |                        **0** |
-| brechas reales vinculadas a más de un paquete                  |                        **0** |
-| referencias de control/evidencia promovidas a brecha           |                        **0** |
-| identificadores provisionales promovidos a `process_id`        |                        **0** |
-| procesos inventados por ausencia de AS-IS                      |                        **0** |
-| paquetes renumerados, fusionados o divididos por esta tarea    |                        **0** |
-| identidades reservadas VISO incluidas en el conteo 201         |                        **0** |
-| carriles históricos NEXO convertidos implícitamente en paquete |                        **0** |
+La matriz siguiente proyecta sin inferencia los vínculos aprobados por `PROCESS-GAP-RETURN-MATRIX-001`. La brecha fuente se resuelve contra la matriz completa de E1 para recuperar su `package_id`; cada par idéntico se conserva una sola vez.
 
-Los conteos de capacidades y procesos son conjuntos derivados y pueden variar entre paquetes; por ello no se impone una cardinalidad global artificial.
+| `package_id` | `process_id` | Brecha fuente confirmada | `gap_id` estable E1 | `capability_id` | Decisión E2 |
+| --- | --- | --- | --- | --- | --- |
+| `GAP-PKG-094` | `VPROC-0001` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-01.02` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0003` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-01.05` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0004` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-01.08` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0009` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-02.08` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0012` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-03.01` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0013` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-03.04` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0014` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-03.06` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0018` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-04.09` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0020` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-05.04` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0027` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-06.14` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0029` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-07.02` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0030` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-07.07` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0031` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-07.12` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0033` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-08.02` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0035` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-08.12` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0037` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-08.13` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0041` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-09.14` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0047` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-10.08` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0048` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-11.02` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0055` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-13.07` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0058` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-15.06` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-094` | `VPROC-0062` | `H-CAP-COVER-002-008` | `H-CAP-COVER-002-008` | `CAP-18.05` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-097` | `VPROC-0065` | `H-CAP-COVER-011-008` | `H-CAP-COVER-011-008` | `CAP-02.10` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-107` | `VPROC-0032` | `H-CAP-SCOPE-007-007` | `H-CAP-SCOPE-007-007` | `CAP-07.03` | `EXISTING_GAP_SCOPE_EXTENDED` |
+| `GAP-PKG-107` | `VPROC-0067` | `H-CAP-SCOPE-008-012` | `H-CAP-SCOPE-008-012` | `CAP-07.11` | `EXISTING_GAP_SCOPE_EXTENDED` |
+| `GAP-PKG-108` | `VPROC-0032` | `H-CAP-SCOPE-007-006` | `H-CAP-SCOPE-007-006` | `CAP-07.03` | `EXISTING_GAP_SCOPE_EXTENDED` |
+| `GAP-PKG-147` | `VPROC-0056` | `H-CAP-SCOPE-014-006` | `H-CAP-SCOPE-014-006` | `CAP-14.03` | `EXISTING_GAP_SCOPE_EXTENDED` |
+| `GAP-PKG-147` | `VPROC-0057` | `H-CAP-SCOPE-014-006` | `H-CAP-SCOPE-014-006` | `CAP-14.07` | `EXISTING_GAP_SCOPE_EXTENDED` |
+| `GAP-PKG-167` | `VPROC-0001` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-01.02` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0003` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-01.05` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0004` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-01.08` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0009` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-02.08` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0012` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-03.01` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0013` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-03.04` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0014` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-03.06` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0018` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-04.09` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0020` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-05.04` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0027` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-06.14` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0029` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-07.02` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0030` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-07.07` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0031` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-07.12` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0033` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-08.02` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0035` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-08.12` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0037` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-08.13` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0041` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-09.14` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0047` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-10.08` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0048` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-11.02` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0055` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-13.07` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0058` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-15.06` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-167` | `VPROC-0062` | `H-CAP-COVER-003-007` | `H-CAP-COVER-003-007` | `CAP-18.05` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-174` | `VPROC-0065` | `H-CAP-SCOPE-002-010` | `H-CAP-SCOPE-002-010` | `CAP-02.10` | `LINKED_TO_EXISTING_GAP` |
+| `GAP-PKG-192` | `VPROC-0056` | `H-CODE-019-005` | `H-CODE-019-005` | `CAP-14.03` | `EXISTING_GAP_SCOPE_EXTENDED` |
+| `GAP-PKG-192` | `VPROC-0057` | `H-CODE-019-005` | `H-CODE-019-005` | `CAP-14.07` | `EXISTING_GAP_SCOPE_EXTENDED` |
 
----
-
-#### 9. Ejemplos de comprobación de la regla
-
-Los siguientes ejemplos no sustituyen la relación completa; demuestran cómo se aplica la misma regla a casos de distinta cardinalidad.
-
-| `package_id`  | Vinculación canónica comprobable                            | Regla aplicada                                                                                            |
-| ------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `GAP-PKG-001` | capacidad de paquete `CAP-02.06`; una brecha en el catálogo | el proceso solo existe como enlace si la fila miembro aporta un `Procesos AS-IS` confirmado               |
-| `GAP-PKG-002` | capacidades `CAP-10.07` y `CAP-10.10`; dos brechas          | se preservan ambas capacidades; no se colapsan a la familia `CAP-10`                                      |
-| `GAP-PKG-004` | capacidad `CAP-15.01`; veintidós brechas                    | las brechas comparten paquete sin obligar a compartir un solo proceso                                     |
-| `GAP-PKG-006` | capacidad `CAP-09.14`; una brecha                           | la ausencia de proceso AS-IS, cuando corresponda, se conserva como ausencia y no como proceso provisional |
-
----
-
-#### 10. Tratamiento de `VISO-SCHEDULE-MONTHLY-001`
-
-`VISO-SCHEDULE-MONTHLY-001` conserva la identidad reservada reconocida por `DELIV-PKG-001`.
-
-En esta tarea:
-
-1. no se incorpora a `GAP-PKG-001..201`;
-2. no consume ninguna de las 814 brechas de la línea base;
-3. se preserva la referencia de proceso `VPROC-0007` ya documentada para su contexto de programación mensual;
-4. `VPROC-0007` no se mezcla con la derivación de `Procesos AS-IS` de los 201 paquetes pre-E5;
-5. no se asigna un `capability_id` ni un `gap_id` nuevo por inferencia;
-6. cualquier incorporación posterior a la cobertura de implementación deberá partir de una asignación documental explícita y preservar esta procedencia.
-
----
-
-#### 11. Tratamiento de `NEXO-REMISSIONS-001`
-
-`NEXO-REMISSIONS-001` permanece como identidad histórica de carril y no pertenece al espacio de `package_id` mientras no exista una asignación explícita aprobada.
-
-Por tanto, `DELIV-PKG-002` no le crea relaciones de `capability_id`, `process_id` ni `gap_id` y no lo incluye en los conteos de paquetes.
-
----
-
-#### 12. Separación de responsabilidades frente a tareas posteriores
-
-Esta tarea cierra exclusivamente la trazabilidad de identidad.
-
-- `DELIV-PKG-003` asigna `application_owner`, `domain_owner` y `repo_owner`; ninguna relación definida aquí sustituye esos propietarios.
-- `DELIV-PKG-004` decide la división del paquete cuando la frontera de implementación lo exija; `DELIV-PKG-002` no divide ni fusiona identidades.
-- `DELIV-PKG-005` define dependencias entre paquetes; compartir capacidad o proceso no crea por sí mismo una dependencia.
-- `DELIV-PKG-024` realiza la reconciliación final de cada paquete con el registro canónico de brechas una vez completados los demás campos de planificación.
-- `DELIV-PKG-025` prepara la representación exportable; no redefine las relaciones canónicas.
-
----
-
-#### 13. Criterios de aceptación documental
-
-`DELIV-PKG-002` queda especificada cuando se cumplen simultáneamente las siguientes condiciones:
-
-1. los 201 `GAP-PKG-*` conservan identidad estable;
-2. las 814 brechas reales son recuperables de forma determinista desde su `package_id`;
-3. cada brecha real participa en una sola relación paquete-brecha;
-4. cada paquete conserva todas sus capacidades aprobadas sin colapso;
-5. cada proceso vinculado proviene de evidencia AS-IS confirmada;
-6. la ausencia de proceso se representa como ausencia, no como invención;
-7. los valores provisionales permanecen separados de `process_id`;
-8. `VISO-SCHEDULE-MONTHLY-001` permanece reservado y fuera del universo 201/814;
-9. `NEXO-REMISSIONS-001` permanece fuera del espacio de `package_id`;
-10. no se anticipan propietarios, repositorios, dependencias, despliegue, rollback ni exportación de tareas posteriores.
+Reconciliación histórica cerrada: **53 pares únicos**, **27 `process_id`**, **8 `package_id`**, cero brechas fuente sin resolución a paquete y cero pares obtenidos por semejanza. Los demás paquetes históricos conservan cardinalidad cero de proceso mientras no exista una fuente canónica explícita que la cambie.
 
 ---
 
-#### 14. Requisitos de prueba derivados
+#### 8. Tratamiento de la línea histórica `001..201`
+
+Las 814 relaciones históricas no se duplican en una segunda tabla de 814 filas dentro de E5. Su materialización canónica es la matriz completa del registro de brechas producida por `GAP-CTRL-006`, que ya contiene por brecha:
+
+- identidad de brecha;
+- clase;
+- capacidad primaria;
+- propietario y fecha;
+- tarea primaria y tareas de soporte;
+- `GAP-PKG-*`;
+- confianza;
+- perfil de cierre, criterio y evidencia en las matrices complementarias.
+
+La matriz histórica de E1 no materializa identidades `VPROC-*`; por tanto, no puede utilizarse por sí sola para afirmar que la relación paquete ↔ proceso está cerrada. `DELIV-PKG-002` adopta por referencia normativa sus **814 relaciones brecha ↔ paquete** sin copiarlas ni reinterpretarlas, materializa en 7.2 los **53 pares históricos paquete ↔ proceso** aprobados por `PROCESS-GAP-RETURN-MATRIX-001` y agrega explícitamente el delta `202..207`.
+
+Esta separación conserva una sola fuente propietaria por relación y evita tanto la duplicación de 814 filas como la omisión de procesos ya confirmados.
+
+---
+
+#### 9. Algoritmo determinista de reconstrucción
+
+Para cualquier `package_id = GAP-PKG-nnn`:
+
+1. seleccionar todas las brechas reales cuyo paquete sea exactamente `GAP-PKG-nnn`;
+2. conservar cada `gap_id` sin renombrado ni deduplicación semántica;
+3. obtener el conjunto de `capability_id` aprobado para el paquete y contrastarlo con las capacidades primarias de las brechas miembro;
+4. reunir los `process_id` históricos materializados en 7.2 y toda asignación explícita del delta 7;
+5. deduplicar únicamente pares idénticos dentro de un mismo tipo de relación;
+6. conservar cero procesos cuando no exista ninguno confirmado;
+7. comprobar el conteo de brechas del paquete contra el catálogo vigente;
+8. comprobar globalmente que la unión disjunta de membresías contiene exactamente **820** `gap_id`;
+9. comprobar que ninguna de las 22 referencias de control/evidencia entró en el conjunto;
+10. rechazar cualquier relación obtenida por texto libre, similitud o inferencia.
+
+La reconstrucción debe ser independiente del orden de filas y producir siempre el mismo conjunto lógico.
+
+---
+
+#### 10. Controles globales de integridad
+
+| Control                                                      | Resultado requerido |
+| ------------------------------------------------------------ | ------------------: |
+| `package_id` `GAP-PKG-*` vigentes                            |             **207** |
+| rango continuo                                               |  `GAP-PKG-001..207` |
+| brechas reales vigentes                                      |             **820** |
+| brechas históricas preservadas                               |             **814** |
+| brechas append-only incorporadas                             |               **6** |
+| brechas sin paquete                                          |               **0** |
+| brechas asignadas a más de un paquete                        |               **0** |
+| referencias control/evidencia convertidas en brecha          |               **0** |
+| referencias control/evidencia conservadas fuera de membresía |              **22** |
+| registros equivalentes reconciliados                         |             **842** |
+| paquetes nuevos sin brecha explícita                         |               **0** |
+| pares históricos `package_id` ↔ `process_id`                 |              **53** |
+| procesos históricos confirmados en esos pares                |              **27** |
+| paquetes históricos con proceso confirmado                  |               **8** |
+| brechas fuente de proceso sin resolución a paquete           |               **0** |
+| valores provisionales promovidos a `process_id`              |               **0** |
+| paquetes históricos renumerados por esta tarea               |               **0** |
+| falsos cierres de brecha producidos por esta tarea           |               **0** |
+
+---
+
+#### 11. Reconciliación por ola
+
+| Ola       | Brechas históricas |  Delta | Brechas vigentes | Paquetes históricos |  Delta | Paquetes vigentes |
+| --------- | -----------------: | -----: | ---------------: | ------------------: | -----: | ----------------: |
+| `W0`      |                 28 |      0 |           **28** |                   5 |      0 |             **5** |
+| `W1`      |                301 |     +1 |          **302** |                  71 |     +1 |            **72** |
+| `W2`      |                222 |     +1 |          **223** |                  54 |     +1 |            **55** |
+| `W3`      |                120 |     +1 |          **121** |                  13 |     +1 |            **14** |
+| `W4`      |                105 |     +3 |          **108** |                  43 |     +3 |            **46** |
+| `W5`      |                 38 |      0 |           **38** |                  15 |      0 |            **15** |
+| **Total** |            **814** | **+6** |          **820** |             **201** | **+6** |           **207** |
+
+---
+
+#### 12. Reconciliación por clasificación
+
+| Clasificación | Brechas históricas |  Delta | Brechas vigentes | Paquetes históricos |  Delta | Paquetes vigentes |
+| ------------- | -----------------: | -----: | ---------------: | ------------------: | -----: | ----------------: |
+| `FUNCIONAL`   |                187 |     +2 |          **189** |                  48 |     +2 |            **50** |
+| `CONTRACTUAL` |                102 |     +1 |          **103** |                  36 |     +1 |            **37** |
+| `TECNICA`     |                220 |     +1 |          **221** |                  35 |     +1 |            **36** |
+| `DATOS`       |                126 |      0 |          **126** |                  44 |      0 |            **44** |
+| `SEGURIDAD`   |                 98 |      0 |           **98** |                  12 |      0 |            **12** |
+| `OPERACION`   |                 81 |     +2 |           **83** |                  26 |     +2 |            **28** |
+| **Total**     |            **814** | **+6** |          **820** |             **201** | **+6** |           **207** |
+
+---
+
+#### 13. Tratamiento de identidades relacionadas
+
+##### 13.1. `VISO-SCHEDULE-MONTHLY-001`
+
+Conserva su identidad reservada y su contexto `VPROC-0007`, pero no forma parte del rango `GAP-PKG-001..207` ni consume una de las 820 brechas reales. Esta tarea no le crea `gap_id` ni `capability_id` por inferencia.
+
+##### 13.2. `NEXO-REMISSIONS-001`
+
+Permanece como carril histórico. No se incorpora al universo `package_id` y no recibe relaciones `capability_id`, `process_id` o `gap_id` por inferencia.
+
+---
+
+#### 14. Casos de rechazo
+
+La vinculación se considera inválida si ocurre cualquiera de los siguientes casos:
+
+- una brecha vigente queda sin `package_id`;
+- una brecha vigente aparece en dos paquetes;
+- una referencia de control/evidencia se promueve a brecha;
+- un `process_id` se inventa desde un proceso provisional o texto libre;
+- un vínculo histórico aprobado por `PROCESS-GAP-RETURN-MATRIX-001` queda omitido de la matriz 7.2;
+- una capacidad de familia reemplaza un `CAP-*` concreto;
+- el delta `202..207` se omite por usar únicamente la línea histórica;
+- una de las 814 relaciones históricas se reescribe sin una fuente canónica que declare la modificación;
+- se asignan propietarios de aplicación, dominio o repositorio dentro de esta tarea;
+- compartir capacidad o proceso se interpreta como orden de fusión;
+- la reconciliación global produce un total distinto de **820/207/22/842**.
+
+---
+
+#### 15. Fronteras de responsabilidad
+
+`DELIV-PKG-002` **sí cierra**:
+
+- relación paquete ↔ brecha para el universo vigente;
+- reglas de relación paquete ↔ capacidad;
+- reglas y materialización de relación paquete ↔ proceso;
+- incorporación explícita de los 53 pares históricos paquete ↔ proceso;
+- incorporación explícita de las seis relaciones append-only;
+- exclusión formal de 22 referencias de control/evidencia;
+- controles de unicidad, cardinalidad y reconstrucción determinista.
+
+`DELIV-PKG-002` **no cierra**:
+
+- `application_owner`, `domain_owner` y `repo_owner`, reservados a `DELIV-PKG-003`;
+- estado AS-IS y resultado TO-BE, reservado a `DELIV-PKG-004`;
+- alcance incluido, excluido y diferido, reservado a `DELIV-PKG-005`;
+- diseño físico de pantallas, lógica, datos, integraciones, despliegue, rollback, observabilidad o evidencia de ejecución de tareas posteriores de E5.
+
+---
+
+#### 16. Requisitos de prueba derivados
 
 **Resultado:** NO GENERA REQUISITOS DE PRUEBA
 
-La tarea organiza trazabilidad documental existente y no introduce comportamiento ejecutable, cambio de datos, contrato de runtime ni nueva obligación verificable de producto.
+La tarea consume y organiza relaciones documentales ya aprobadas. No crea comportamiento ejecutable, modifica runtime, altera una regla de negocio ni cambia el contenido de un requisito `TREQ-*`.
 
 ---
 
-#### 15. Continuidad
+#### 17. Criterios de aceptación
+
+`DELIV-PKG-002` queda cerrada únicamente cuando se cumplen simultáneamente:
+
+- [x] existen exactamente **207** identidades `GAP-PKG-*` en el universo vigente;
+- [x] las **820** brechas reales son recuperables mediante exactamente un `package_id`;
+- [x] las **814** relaciones históricas se preservan sin reescritura silenciosa;
+- [x] las seis relaciones `202..207` están materializadas con `gap_id`, `capability_id` y proceso explícito;
+- [x] los **53 pares históricos** paquete ↔ proceso están materializados sin duplicados y preservan **27 procesos** en **8 paquetes**;
+- [x] ninguna brecha fuente de `PROCESS-GAP-RETURN-MATRIX-001` queda sin resolución a su paquete histórico;
+- [x] las **22** referencias de control/evidencia permanecen fuera de la membresía paquete-brecha;
+- [x] el total conciliado es **842 registros equivalentes**;
+- [x] ningún valor provisional es promovido a `process_id`;
+- [x] ninguna capacidad sintética sustituye identificadores aprobados;
+- [x] ninguna ausencia de proceso se rellena por inferencia;
+- [x] no se asignan application/domain/repo owners prematuramente;
+- [x] no se crea ni modifica ningún requisito de prueba.
+
+---
+
+#### 18. Continuidad
 
 **ÚLTIMA TAREA APROBADA**
 `DELIV-PKG-001 — Crear identificador estable para cada paquete de implementación`
