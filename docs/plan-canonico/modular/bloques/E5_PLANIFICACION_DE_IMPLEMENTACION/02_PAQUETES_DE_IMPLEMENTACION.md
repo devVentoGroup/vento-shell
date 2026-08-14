@@ -8333,7 +8333,512 @@ SIGUIENTE TAREA RESERVADA
 `DELIV-PKG-019 — Definir estrategia de despliegue y rollout`
 
 
-### [ ] DELIV-PKG-019 — Definir estrategia de despliegue y rollout
+### ✅ DELIV-PKG-019 — Definir estrategia de despliegue y rollout
+
+**Estado:** APROBADA
+**Tarea anterior:** `DELIV-PKG-018 — Definir feature flags, configuración y activación progresiva`
+**Tarea siguiente:** `DELIV-PKG-020 — Definir rollback técnico, funcional y de datos`
+**Tipo de tarea:** documental — materialización de estrategia de despliegue y rollout para las 207 raíces `GAP-PKG-*`, con artefactos, secuencia ambiental, cohortes, canary, pausas, promoción y evidencia; sin ejecutar deploy, cutover, promoción real, modificación de ambientes ni rollback
+
+---
+
+#### 1. Resultado canónico
+
+Queda definida la estrategia de despliegue y rollout para **207/207** raíces `GAP-PKG-001..207`, conservando las identidades, repositorios, propietarios, perfiles `TP-*`, ambientes, defaults seguros y gates aprobados en `DELIV-PKG-014..018`.
+
+La estrategia separa obligatoriamente tres operaciones que no son equivalentes:
+
+1. **materializar un artefacto de release** desde la identidad física autorizada;
+2. **desplegar o distribuir ese artefacto en un ambiente** sin asumir que la capacidad queda activa;
+3. **ampliar exposición funcional** mediante el control aprobado en `DELIV-PKG-018`.
+
+Una migración, contrato compartido, build web/móvil, bundle de Edge Function o cambio de integración no se considera promovido por existir en un ambiente. La exposición funcional solo avanza cuando sus gates de prueba, observabilidad, autorización, integridad, compatibilidad y evidencia están satisfechos.
+
+El estado físico heredado impide afirmar que exista hoy un release ejecutable para las **167** raíces con identidad física no confirmada. Las **14** raíces AURA, **2** raíces condicionadas por `EXT-GOV-001` y **2** raíces TALENTO fuera de la línea funcional conservan sus bloqueos. Las **22** raíces con `MIG-CONTROL-NOCHANGE-001` no reciben un deploy directo inventado y se tratan como controles/evidencia de capa 4.
+
+---
+
+#### 2. Invariantes de rollout
+
+1. `package_id` permanece como identidad de rollout; no se crea un segundo identificador de paquete.
+2. El conjunto de archivos, símbolos, migraciones o configuraciones desplegables se toma exclusivamente de `DELIV-PKG-014`; una identidad física bloqueada no se completa por inferencia.
+3. El orden de `DELIV-PKG-015` permanece vigente: capa 0 → capa 1 → capa 2 → capa 3 → capa 4, con la secuencia `EXPAND → backfill/reconciliación → compatibilidad/coexistencia → switch de consumidores → cutover → retiro legacy` cuando aplique.
+4. La baseline tecnológica coordinada de `DELIV-PKG-015` es gate de release train; una versión candidata no se vuelve baseline canónica mientras un repositorio aplicable conserve incompatibilidad crítica o drift no autorizado.
+5. Los perfiles y controles de `DELIV-PKG-018` gobiernan exposición. Esta tarea no redefine defaults seguros, autorización, kill switches ni condiciones especiales AURA/EXT/TALENTO.
+6. Toda modificación de Supabase VENTO se materializa y despliega desde `vento-shell`.
+7. El despliegue de un artefacto y la activación de una capacidad son decisiones distintas; un artefacto puede estar presente con efecto funcional cero.
+8. No existe promoción automática por tiempo. Cada expansión requiere evidencia y decisión explícita del propietario del paquete y del responsable técnico del repositorio.
+9. Una cohorte nunca concede autorización ni modifica el alcance de permisos definido en `DELIV-PKG-012`.
+10. Los umbrales de calidad, seguridad, compatibilidad, rendimiento, disponibilidad, privacidad y recuperación se heredan de `DELIV-PKG-013`; 019 no los rebaja para permitir una promoción.
+11. `OBS-P0`, `OBS-P1`, gaps P0/P1, violaciones de seguridad/integridad de tolerancia cero o una reconciliación fallida bloquean promoción.
+12. `FULL` significa 100% de exposición elegible al comportamiento nuevo; no autoriza por sí mismo retirar compatibilidad, ejecutar cutover irreversible ni eliminar legado.
+
+---
+
+#### 3. Contrato de artefacto de release
+
+Para cada paquete físicamente ejecutable, el release candidato deberá quedar asociado como mínimo a: `package_id`, repositorio propietario, commit de origen, conjunto exacto de `DELIV-PKG-014`, versión de contratos/tipos aplicables, ambiente destino, identidad del actor de despliegue, evidencia de build/pruebas, versión del control de `DELIV-PKG-018` y una huella inmutable del artefacto cuando el mecanismo técnico la produzca.
+
+| Clase                                        | Artefacto gobernado                                                                                                            | Regla de procedencia                                                                                      | Condición previa a exposición                                                                                                   |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `TP-DB-001`                                  | migración, SQL, configuración, función, RPC, vista, Storage, Realtime o bundle Supabase únicamente cuando `014` lo identifique | `vento-shell`; versiones y hashes de migración/bundle cuando correspondan                                 | reconstrucción/upgrade, paridad, autorización, RLS/grants, pruebas `016`, observabilidad `017`, control `018` en default seguro |
+| `TP-SHARED-001`                              | contrato/tipo/paquete compartido identificado por `014`                                                                        | productor y consumidores con versión/procedencia trazable                                                 | compatibilidad productor-consumidor demostrada antes de ampliar consumidores                                                    |
+| `TP-DOM-001`                                 | build o unidad de release del repositorio propietario que contenga el cambio exacto de `014`                                   | commit + build reproducible del repositorio                                                               | capacidad nueva presente pero inactiva hasta control `018`                                                                      |
+| `TP-AUTH-001`                                | implementación autoritativa server-side identificada por `014`                                                                 | repositorio propietario; el cliente nunca es autoridad                                                    | comparación shadow, pruebas positivas/negativas y equivalencia de autorización antes de efecto                                  |
+| `TP-INT-001`                                 | productor/consumidor, worker, webhook, función o configuración de integración identificados por `014`                          | repositorio propietario; Supabase desde `vento-shell`                                                     | sandbox/shadow, idempotencia, conciliación y protección contra doble efecto                                                     |
+| `TP-UI-001`                                  | build web/móvil correspondiente al cambio exacto de `014`                                                                      | build firmado/versionado por el mecanismo real del repositorio; no se presupone proveedor de distribución | UI oculta/interna hasta que servidor, contratos y autorización compatibles estén disponibles                                    |
+| `TP-CONTROL-001`                             | control, vista, evidencia o gate; puede no existir artefacto runtime                                                           | solo la identidad física confirmada por `014`; `MIG-CONTROL-NOCHANGE-001` no crea deploy propio           | observación antes de enforcement; sin mutación empresarial ficticia                                                             |
+| `TP-AURA-001`, `TP-EXT-001`, `TP-FUTURE-001` | ninguno en la línea actual mientras el gate siga cerrado                                                                       | no materializar por inferencia                                                                            | resolver el gate canónico correspondiente                                                                                       |
+
+No se inventa una imagen, paquete, container, canal de tienda, branch de Supabase ni nombre de archivo cuando el repositorio actual no lo demuestra. Si el mecanismo real no produce una huella de artefacto, la procedencia mínima continúa siendo el commit y el conjunto exacto de archivos de `014`; la implementación deberá cerrar la brecha antes de promoción productiva si la clase de riesgo exige un artefacto inmutable verificable.
+
+---
+
+#### 4. Secuencia ambiental y estados de rollout
+
+La secuencia base es una máquina de estados documental. Cada salto exige que el estado anterior haya producido evidencia suficiente; ningún estado autoriza ejecución por sí solo.
+
+| Etapa          | Alcance                                                                                                                                    |  Efecto empresarial nuevo | Salida exigida                                                            |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------: | ------------------------------------------------------------------------- |
+| `GATE`         | resolver identidad física, baseline, dependencias, pruebas, observabilidad, control y seguridad                                            |                        0% | todos los gates aplicables cerrados                                       |
+| `BUILD_VERIFY` | producir/verificar candidato inmutable en el repositorio propietario                                                                       |                        0% | procedencia, build y pruebas aplicables aprobados                         |
+| `STAGING`      | ambiente canónico de CI/staging/sandbox/device definido por 016/018                                                                        |             0% productivo | contrato, integración, seguridad, NFR y compatibilidad aprobados          |
+| `PROD_SHADOW`  | producción correspondiente cuando el diseño permita presencia backward-compatible                                                          |                        0% | señales 017 comparables y sin divergencia material                        |
+| `PILOT`        | cohorte materializada por `DELIV-PKG-022` cuando el perfil 018 admite `PILOT`                                                              |          solo cohorte 022 | criterios de piloto aprobados y evidencia de la cohorte                   |
+| `CANARY_5`     | primera expansión porcentual después del piloto, o primera `LIMITED` cuando el perfil no usa `PILOT` y existe población segmentable segura |  5% del universo elegible | pausa de evidencia cerrada y promoción explícita                          |
+| `LIMITED_25`   | expansión monotónica                                                                                                                       | 25% del universo elegible | pausa de evidencia cerrada y promoción explícita                          |
+| `LIMITED_50`   | expansión monotónica                                                                                                                       | 50% del universo elegible | pausa de evidencia cerrada y promoción explícita                          |
+| `FULL_100`     | totalidad del universo elegible                                                                                                            |                      100% | estabilidad demostrada; todavía sin autorizar retiro/cutover irreversible |
+
+`PROD_SHADOW` solo se usa cuando la presencia del candidato es backward-compatible y puede observarse sin producir efecto empresarial. Si la mera presencia del artefacto modifica comportamiento, esa etapa se omite y el candidato permanece en preproducción hasta la primera exposición autorizada. Omitir shadow no permite omitir pruebas, observabilidad ni piloto/canary aplicables.
+
+---
+
+#### 5. Cohortes y canary
+
+Cuando exista una población estable, no sensible y segmentable con seguridad, la pertenencia porcentual se resuelve de forma determinista y monotónica:
+
+`bucket = first32(SHA-256("VENTO_ROLLOUT_V1|" + package_id + "|" + environment_class + "|" + stable_scope_id)) mod 10000`
+
+- `CANARY_5`: `bucket < 500`;
+- `LIMITED_25`: `bucket < 2500`;
+- `LIMITED_50`: `bucket < 5000`;
+- `FULL_100`: `bucket < 10000`.
+
+La monotonicidad garantiza que la cohorte de 5% sea subconjunto de 25%, la de 25% de 50% y la de 50% de 100%. `stable_scope_id` deberá ser un identificador opaco aprobado para la dimensión de targeting permitida por `DELIV-PKG-018`; el valor crudo no se usa como etiqueta de telemetría ni se convierte en permiso. Cambiar `VENTO_ROLLOUT_V1`, la dimensión o el algoritmo exige una nueva versión explícita de asignación y no puede rebarajar una cohorte activa de forma silenciosa.
+
+El porcentaje no se fuerza cuando la unidad de despliegue no es fraccionable. Contratos compartidos usan cohortes discretas de consumidores compatibles; integraciones usan unidades de integración/ruta capaces de aislar efectos; controles no targetables se promueven de forma atómica únicamente después de observación y evidencia. Si no existe una partición segura, la ausencia de porcentaje es un bloqueo de rollout, no una autorización para repartir por usuario, request o dato sensible.
+
+`PILOT` no se sustituye por el 5%. Los actores, sedes, datos, dispositivos, exclusiones y duración exactos del piloto pertenecen a `DELIV-PKG-022`. Hasta que 022 materialice esa cohorte, un perfil que exige `PILOT` no puede avanzar a `CANARY_5`.
+
+---
+
+#### 6. Especialización por perfil `TP-*`
+
+| Perfil 018       | Secuencia 019                                                                      | Unidad de canary                                                      | Regla crítica                                                                                                                                        |
+| ---------------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TP-DB-001`      | `GATE → BUILD_VERIFY → STAGING → PROD_SHADOW → PILOT → 5 → 25 → 50 → 100`          | comportamiento/ruta nueva, no la migración física                     | el artefacto de esquema/configuración se aplica de forma backward-compatible; la autoridad y los datos se reconcilian antes de cada expansión        |
+| `TP-SHARED-001`  | `GATE → BUILD_VERIFY → STAGING → SHADOW → LIMITED → FULL`                          | consumidores compatibles discretos                                    | productor y consumidores no pueden quedar en combinación contractual no soportada; no se inventa un 5% de tráfico si la unidad real es un consumidor |
+| `TP-DOM-001`     | `GATE → BUILD_VERIFY → STAGING → PROD_SHADOW → PILOT → 5 → 25 → 50 → 100`          | scope estable aprobado por 018                                        | efectos ya confirmados permanecen; la exposición se controla por el flag, no por branches de lógica divergentes sin trazabilidad                     |
+| `TP-AUTH-001`    | `GATE → BUILD_VERIFY → STAGING → SHADOW_COMPARE → PILOT → 5 → 25 → 50 → 100`       | scope autorizado estable                                              | shadow no cambia autoridad; cualquier `allow` no autorizado, bypass o divergencia de tolerancia cero aborta promoción                                |
+| `TP-INT-001`     | `GATE → BUILD_VERIFY → STAGING/SANDBOX → SHADOW → PILOT → CANARY → LIMITED → FULL` | unidad de integración/ruta con efectos aislables                      | nunca partir reintentos de una misma operación entre rutas; reconciliar intentos, resultados, duplicados y efectos antes de expandir                 |
+| `TP-UI-001`      | `GATE → BUILD_VERIFY → STAGING/DEVICE → INTERNAL → PILOT → 5 → 25 → 50 → 100`      | scope de exposición del control 018                                   | distribución del build y visibilidad funcional son distintas; UI no concede autoridad                                                                |
+| `TP-CONTROL-001` | `GATE → OBSERVE → ENFORCE`                                                         | porcentaje solo si el enforcement es targetable sin perder integridad | `MIG-CONTROL-NOCHANGE-001` no recibe deploy propio; un control global no se fragmenta artificialmente                                                |
+| `TP-AURA-001`    | bloqueado                                                                          | ninguna                                                               | no existe repositorio/runtime confirmado                                                                                                             |
+| `TP-EXT-001`     | bloqueado hasta `EXT-GOV-001`; después usa el perfil técnico que corresponda       | ninguna mientras el gate esté cerrado                                 | no se activa por existencia de una estrategia 019                                                                                                    |
+| `TP-FUTURE-001`  | fuera de la línea funcional vigente                                                | ninguna                                                               | la baseline móvil no equivale a rollout TALENTO                                                                                                      |
+
+---
+
+#### 7. Pausas y reglas de promoción
+
+Toda transición que incremente efecto productivo entra primero en una **pausa de evidencia**. La pausa no tiene un temporizador universal: su ventana es la observación NFR/SLI/SLO ya aprobada para el paquete y la señal definida en `DELIV-PKG-017`. Si el volumen o duración observados no son representativos, la pausa permanece abierta; no se reduce el gate para forzar avance.
+
+La promoción solo puede ocurrir cuando todas las condiciones aplicables son verdaderas:
+
+1. la identidad física y el artefacto candidato son verificables y corresponden al mismo commit/conjunto de `DELIV-PKG-014`;
+2. la capa y prerrequisitos de `DELIV-PKG-015` están satisfechos;
+3. las pruebas aplicables de `DELIV-PKG-016` existen, se ejecutaron en la implementación y su evidencia está aprobada;
+4. las señales, alertas, auditoría y correlación de `DELIV-PKG-017` están operativas para el alcance;
+5. el control de `DELIV-PKG-018` está versionado, en el ambiente correcto y puede volver al default seguro;
+6. los umbrales aplicables de `DELIV-PKG-013` se cumplen y no existe `UNKNOWN_BLOCKED`, `COMPAT-P0/P1`, `OBS-P0/P1` o bloqueo crítico abierto;
+7. no existe violación de autorización, privacidad, integridad, idempotencia o doble efecto con tolerancia contractual cero;
+8. la reconciliación de datos/efectos/consumidores está cerrada cuando el perfil la exige;
+9. la cohorte efectiva coincide con la versión de asignación declarada y no contiene targeting prohibido;
+10. el propietario `OWN-*` de la fila y el responsable técnico del repositorio aprueban la promoción con evidencia.
+
+`OBS-P2/P3` no bloquean automáticamente si el contrato NFR permite operar con degradación controlada, pero la decisión y el riesgo deberán quedar registrados. Un `OBS-P0/P1`, una violación de seguridad/integridad de tolerancia cero o una reconciliación fallida suspende la expansión inmediatamente y ordena retorno al default seguro cuando ese retorno no introduce un daño mayor. El procedimiento técnico, funcional y de datos de rollback pertenece a `DELIV-PKG-020`.
+
+---
+
+#### 8. Coordinación entre repositorios y capas
+
+1. Los cambios Supabase y contratos autoritativos de capa 1 se preparan antes de consumidores que dependan de ellos y siempre desde `vento-shell` cuando afectan Supabase VENTO.
+2. Dominio, autorización e integraciones de capa 2 solo amplían exposición cuando la capa 1 requerida es compatible.
+3. Consumidores UI de capa 3 pueden recibir un build con la capacidad oculta, pero no hacen visible una ruta antes de que servidor, autorización y datos sean compatibles.
+4. Controles/evidencia de capa 4 observan el comportamiento gobernado y no se usan para inventar un cambio empresarial propio.
+5. Una raíz que involucre varios repositorios se trata como una sola unidad lógica de rollout: ningún subartefacto puede declarar `FULL` si otro componente obligatorio permanece incompatible.
+6. El release train tecnológico de 015 mantiene promoción coordinada de baseline web, móvil y transversal. Un hotfix de seguridad puede producir drift temporal documentado, pero no redefine por sí solo la baseline.
+7. Los paquetes sin arista `GAP-PKG-* → GAP-PKG-*` confirmada no reciben una dependencia inventada; continúan sujetos a las capas y contratos que ya tengan aprobados.
+
+---
+
+#### 9. Evidencia mínima de cada decisión de rollout
+
+Cada intento de promoción deberá producir un registro trazable que permita reconstruir, como mínimo:
+
+1. `package_id`, repositorio y propietario `OWN-*`;
+2. commit/release candidato y huella del artefacto cuando aplique;
+3. conjunto de archivos/símbolos/migraciones gobernado por `DELIV-PKG-014`;
+4. ambiente y etapa de rollout;
+5. versión del control/configuración de `DELIV-PKG-018` y default seguro;
+6. versión de algoritmo de cohorte, dimensión, umbral y tamaño agregado elegible/expuesto;
+7. evidencia de pruebas `016` aplicables a la etapa;
+8. ventana y señales `017`, con referencias NFR/SLI/SLO `013`;
+9. alertas, defectos, excepciones y reconciliaciones abiertas/cerradas;
+10. decisión `PROMOVER`, `MANTENER_PAUSA` o `DETENER`, actor y momento;
+11. referencia al objetivo de recuperación/rollback aplicable, cuya materialización detallada corresponde a `DELIV-PKG-020`.
+
+La evidencia no incluirá secretos, tokens, credenciales ni PII como dimensiones ordinarias. Una ausencia de evidencia se registra como gate abierto; nunca como aprobación implícita.
+
+---
+
+#### 10. Matriz materializada de rollout para las 207 raíces
+
+Cada fila vincula la identidad canónica con su perfil 018 y conserva el gate físico de 015. La secuencia, cohortes y pausas se resuelven por el perfil `TP-*` de la misma fila; no se crea una ruta física adicional.
+
+| package_id    | Repositorio                   | Propietario | Perfil / ambiente                                   | Gate físico 015                            | Orden            | Artefacto de rollout                                                         | Resultado 019                                              |
+| ------------- | ----------------------------- | ----------- | --------------------------------------------------- | ------------------------------------------ | ---------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `GAP-PKG-001` | `devVentoGroup/vento-shell`   | `OWN-SEG`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-002` | `devVentoGroup/vento-shell`   | `OWN-SEG`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-003` | `devVentoGroup/vento-shell`   | `OWN-SEG`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-004` | `devVentoGroup/vento-shell`   | `OWN-SEG`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-005` | `devVentoGroup/vento-shell`   | `OWN-SEG`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-006` | `NO_CONFIRMADO`               | `OWN-COM`   | `TP-AURA-001` / `ENV-AURA-BLOCKED`                  | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | Sin orden físico | no materializable hasta confirmar repositorio AURA                           | `ROLLOUT_BLOQUEADO_AURA`                                   |
+| `GAP-PKG-007` | `devVentoGroup/vento-pass`    | `OWN-COM`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-008` | `NO_CONFIRMADO`               | `OWN-COM`   | `TP-AURA-001` / `ENV-AURA-BLOCKED`                  | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | Sin orden físico | no materializable hasta confirmar repositorio AURA                           | `ROLLOUT_BLOQUEADO_AURA`                                   |
+| `GAP-PKG-009` | `devVentoGroup/vento-shell`   | `OWN-COM`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-010` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-011` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-012` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-013` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-014` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-015` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-016` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-017` | `devVentoGroup/vento-pass`    | `OWN-DAT`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-018` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-019` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-020` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-021` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-AUTH-001` / `ENV-WEB-CI-STAGING`                | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-022` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-023` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-024` | `devVentoGroup/vento-numera`  | `OWN-FIN`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-025` | `devVentoGroup/vento-shell`   | `OWN-FIN`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-026` | `devVentoGroup/vento-numera`  | `OWN-FIN`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-027` | `devVentoGroup/vento-shell`   | `OWN-GG`    | `TP-EXT-001` / `ENV-EXT-BLOCKED`                    | `BLOQUEADO_CONDICIONAL_EXT_GOV`            | Sin orden físico | no materializable antes del gate `EXT-GOV-001`                               | `ROLLOUT_BLOQUEADO_EXT`                                    |
+| `GAP-PKG-028` | `devVentoGroup/vento-viso`    | `OWN-GG`    | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-029` | `devVentoGroup/vento-nexo`    | `OWN-GG`    | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-030` | `devVentoGroup/vento-shell`   | `OWN-GG`    | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-031` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-032` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-033` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-SHARED-001` / `ENV-WEB-CI-STAGING`              | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-034` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-SHARED-001` / `ENV-WEB-CI-STAGING`              | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-035` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-036` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-037` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-038` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-039` | `devVentoGroup/vento-origo`   | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-040` | `devVentoGroup/vento-fogo`    | `OWN-OPS`   | `TP-AUTH-001` / `ENV-WEB-CI-STAGING`                | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-041` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-042` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-043` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-044` | `devVentoGroup/vento-pulso`   | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-045` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-SHARED-001` / `ENV-WEB-CI-STAGING`              | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-046` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-047` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-048` | `devVentoGroup/vento-pulso`   | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-049` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-050` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-AUTH-001` / `ENV-WEB-CI-STAGING`                | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-051` | `devVentoGroup/vento-fogo`    | `OWN-OPS`   | `TP-AUTH-001` / `ENV-WEB-CI-STAGING`                | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-052` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-053` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-054` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-055` | `devVentoGroup/vento-shell`   | `OWN-SEG`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-056` | `devVentoGroup/vento-anima`   | `OWN-SEG`   | `TP-AUTH-001` / `ENV-MOBILE-CI-STAGING-DEVICE`      | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-057` | `devVentoGroup/vento-shell`   | `OWN-SEG`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-058` | `devVentoGroup/vento-shell`   | `OWN-SEG`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-059` | `NO_CONFIRMADO`               | `OWN-SEG`   | `TP-AURA-001` / `ENV-AURA-BLOCKED`                  | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | Sin orden físico | no materializable hasta confirmar repositorio AURA                           | `ROLLOUT_BLOQUEADO_AURA`                                   |
+| `GAP-PKG-060` | `devVentoGroup/vento-shell`   | `OWN-SEG`   | `TP-AUTH-001` / `ENV-WEB-CI-STAGING`                | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-061` | `devVentoGroup/vento-shell`   | `OWN-SEG`   | `TP-AUTH-001` / `ENV-WEB-CI-STAGING`                | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-062` | `devVentoGroup/vento-shell`   | `OWN-SST`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 4           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-063` | `devVentoGroup/vento-shell`   | `OWN-TAL`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-064` | `devVentoGroup/vento-talento` | `OWN-TAL`   | `TP-FUTURE-001` / `ENV-FUTURE`                      | `FUERA_DE_LINEA_ACTUAL_TALENTO`            | Línea futura     | no materializable en la línea funcional actual                               | `ROLLOUT_FUERA_DE_LINEA`                                   |
+| `GAP-PKG-065` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 4           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-066` | `devVentoGroup/vento-anima`   | `OWN-TEC`   | `TP-AUTH-001` / `ENV-MOBILE-CI-STAGING-DEVICE`      | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-067` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-068` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-069` | `devVentoGroup/vento-pulso`   | `OWN-TEC`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-070` | `devVentoGroup/vento-pass`    | `OWN-TEC`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-071` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-072` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-073` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-074` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-075` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-076` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-077` | `devVentoGroup/vento-shell`   | `OWN-COM`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-078` | `NO_CONFIRMADO`               | `OWN-COM`   | `TP-AURA-001` / `ENV-AURA-BLOCKED`                  | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | Sin orden físico | no materializable hasta confirmar repositorio AURA                           | `ROLLOUT_BLOQUEADO_AURA`                                   |
+| `GAP-PKG-079` | `devVentoGroup/vento-pass`    | `OWN-COM`   | `TP-UI-001` / `ENV-MOBILE-CI-STAGING-DEVICE`        | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-080` | `NO_CONFIRMADO`               | `OWN-COM`   | `TP-AURA-001` / `ENV-AURA-BLOCKED`                  | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | Sin orden físico | no materializable hasta confirmar repositorio AURA                           | `ROLLOUT_BLOQUEADO_AURA`                                   |
+| `GAP-PKG-081` | `devVentoGroup/vento-pass`    | `OWN-COM`   | `TP-UI-001` / `ENV-MOBILE-CI-STAGING-DEVICE`        | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-082` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-083` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-084` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-085` | `devVentoGroup/vento-numera`  | `OWN-FIN`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-086` | `devVentoGroup/vento-numera`  | `OWN-FIN`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-087` | `devVentoGroup/vento-numera`  | `OWN-FIN`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-088` | `devVentoGroup/vento-numera`  | `OWN-FIN`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-089` | `devVentoGroup/vento-numera`  | `OWN-FIN`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-090` | `devVentoGroup/vento-numera`  | `OWN-FIN`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-091` | `devVentoGroup/vento-nexo`    | `OWN-GG`    | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-092` | `devVentoGroup/vento-shell`   | `OWN-GG`    | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-093` | `devVentoGroup/vento-viso`    | `OWN-GG`    | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-094` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-095` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-096` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-097` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-098` | `devVentoGroup/vento-fogo`    | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-099` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-100` | `devVentoGroup/vento-fogo`    | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-101` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-102` | `devVentoGroup/vento-origo`   | `OWN-OPS`   | `TP-AUTH-001` / `ENV-WEB-CI-STAGING`                | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-103` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-104` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-105` | `devVentoGroup/vento-fogo`    | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-106` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-107` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-108` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-109` | `devVentoGroup/vento-fogo`    | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-110` | `devVentoGroup/vento-pulso`   | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-111` | `devVentoGroup/vento-pulso`   | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-112` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-113` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-114` | `devVentoGroup/vento-pulso`   | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-115` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-116` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-AUTH-001` / `ENV-WEB-CI-STAGING`                | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-117` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-118` | `NO_CONFIRMADO`               | `OWN-OPS`   | `TP-AURA-001` / `ENV-AURA-BLOCKED`                  | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | Sin orden físico | no materializable hasta confirmar repositorio AURA                           | `ROLLOUT_BLOQUEADO_AURA`                                   |
+| `GAP-PKG-119` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-120` | `devVentoGroup/vento-origo`   | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-121` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-122` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-123` | `devVentoGroup/vento-pulso`   | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-124` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-125` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-126` | `devVentoGroup/vento-nexo`    | `OWN-SST`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-127` | `devVentoGroup/vento-anima`   | `OWN-TAL`   | `TP-UI-001` / `ENV-MOBILE-CI-STAGING-DEVICE`        | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-128` | `devVentoGroup/vento-anima`   | `OWN-TAL`   | `TP-UI-001` / `ENV-MOBILE-CI-STAGING-DEVICE`        | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-129` | `devVentoGroup/vento-anima`   | `OWN-TAL`   | `TP-UI-001` / `ENV-MOBILE-CI-STAGING-DEVICE`        | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-130` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-131` | `devVentoGroup/vento-pass`    | `OWN-TEC`   | `TP-UI-001` / `ENV-MOBILE-CI-STAGING-DEVICE`        | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-132` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-133` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-134` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-135` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-136` | `devVentoGroup/vento-pass`    | `OWN-TEC`   | `TP-UI-001` / `ENV-MOBILE-CI-STAGING-DEVICE`        | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-137` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-138` | `devVentoGroup/vento-pass`    | `OWN-TEC`   | `TP-UI-001` / `ENV-MOBILE-CI-STAGING-DEVICE`        | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-139` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-140` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 4           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-141` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-142` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-143` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-144` | `NO_CONFIRMADO`               | `OWN-COM`   | `TP-AURA-001` / `ENV-AURA-BLOCKED`                  | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | Sin orden físico | no materializable hasta confirmar repositorio AURA                           | `ROLLOUT_BLOQUEADO_AURA`                                   |
+| `GAP-PKG-145` | `devVentoGroup/vento-pass`    | `OWN-COM`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-146` | `devVentoGroup/vento-pass`    | `OWN-COM`   | `TP-UI-001` / `ENV-MOBILE-CI-STAGING-DEVICE`        | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-147` | `NO_CONFIRMADO`               | `OWN-COM`   | `TP-AURA-001` / `ENV-AURA-BLOCKED`                  | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | Sin orden físico | no materializable hasta confirmar repositorio AURA                           | `ROLLOUT_BLOQUEADO_AURA`                                   |
+| `GAP-PKG-148` | `NO_CONFIRMADO`               | `OWN-COM`   | `TP-AURA-001` / `ENV-AURA-BLOCKED`                  | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | Sin orden físico | no materializable hasta confirmar repositorio AURA                           | `ROLLOUT_BLOQUEADO_AURA`                                   |
+| `GAP-PKG-149` | `NO_CONFIRMADO`               | `OWN-COM`   | `TP-AURA-001` / `ENV-AURA-BLOCKED`                  | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | Sin orden físico | no materializable hasta confirmar repositorio AURA                           | `ROLLOUT_BLOQUEADO_AURA`                                   |
+| `GAP-PKG-150` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-151` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-152` | `devVentoGroup/vento-pass`    | `OWN-DAT`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-153` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-154` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-155` | `devVentoGroup/vento-numera`  | `OWN-FIN`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-156` | `devVentoGroup/vento-numera`  | `OWN-FIN`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-157` | `devVentoGroup/vento-shell`   | `OWN-GG`    | `TP-EXT-001` / `ENV-EXT-BLOCKED`                    | `BLOQUEADO_CONDICIONAL_EXT_GOV`            | Sin orden físico | no materializable antes del gate `EXT-GOV-001`                               | `ROLLOUT_BLOQUEADO_EXT`                                    |
+| `GAP-PKG-158` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-159` | `devVentoGroup/vento-pulso`   | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-160` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-161` | `devVentoGroup/vento-fogo`    | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-162` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-163` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-164` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-165` | `devVentoGroup/vento-nexo`    | `OWN-OPS`   | `TP-UI-001` / `ENV-WEB-CI-STAGING`                  | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-166` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-167` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-168` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-169` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-170` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-171` | `devVentoGroup/vento-shell`   | `OWN-SST`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-172` | `devVentoGroup/vento-shell`   | `OWN-SST`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 4           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-173` | `devVentoGroup/vento-shell`   | `OWN-SST`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-174` | `devVentoGroup/vento-viso`    | `OWN-TAL`   | `TP-AUTH-001` / `ENV-WEB-CI-STAGING`                | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-175` | `devVentoGroup/vento-shell`   | `OWN-TAL`   | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-176` | `devVentoGroup/vento-shell`   | `OWN-TAL`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-177` | `devVentoGroup/vento-anima`   | `OWN-TAL`   | `TP-UI-001` / `ENV-MOBILE-CI-STAGING-DEVICE`        | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-178` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-179` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-180` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`       | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 1           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-181` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-182` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-183` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-184` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-185` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-186` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-187` | `NO_CONFIRMADO`               | `OWN-COM`   | `TP-AURA-001` / `ENV-AURA-BLOCKED`                  | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | Sin orden físico | no materializable hasta confirmar repositorio AURA                           | `ROLLOUT_BLOQUEADO_AURA`                                   |
+| `GAP-PKG-188` | `NO_CONFIRMADO`               | `OWN-COM`   | `TP-AURA-001` / `ENV-AURA-BLOCKED`                  | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | Sin orden físico | no materializable hasta confirmar repositorio AURA                           | `ROLLOUT_BLOQUEADO_AURA`                                   |
+| `GAP-PKG-189` | `NO_CONFIRMADO`               | `OWN-COM`   | `TP-AURA-001` / `ENV-AURA-BLOCKED`                  | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | Sin orden físico | no materializable hasta confirmar repositorio AURA                           | `ROLLOUT_BLOQUEADO_AURA`                                   |
+| `GAP-PKG-190` | `devVentoGroup/vento-shell`   | `OWN-DAT`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-191` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-192` | `NO_CONFIRMADO`               | `OWN-OPS`   | `TP-AURA-001` / `ENV-AURA-BLOCKED`                  | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | Sin orden físico | no materializable hasta confirmar repositorio AURA                           | `ROLLOUT_BLOQUEADO_AURA`                                   |
+| `GAP-PKG-193` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-194` | `devVentoGroup/vento-shell`   | `OWN-OPS`   | `TP-AUTH-001` / `ENV-WEB-CI-STAGING`                | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-195` | `devVentoGroup/vento-shell`   | `OWN-SST`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-196` | `devVentoGroup/vento-anima`   | `OWN-TAL`   | `TP-UI-001` / `ENV-MOBILE-CI-STAGING-DEVICE`        | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 3           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-197` | `devVentoGroup/vento-talento` | `OWN-TEC`   | `TP-FUTURE-001` / `ENV-FUTURE`                      | `FUERA_DE_LINEA_ACTUAL_TALENTO`            | Línea futura     | no materializable en la línea funcional actual                               | `ROLLOUT_FUERA_DE_LINEA`                                   |
+| `GAP-PKG-198` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-199` | `devVentoGroup/vento-nexo`    | `OWN-TEC`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-200` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+| `GAP-PKG-201` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-202` | `devVentoGroup/vento-shell`   | `OWN-GG`    | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-203` | `devVentoGroup/vento-shell`   | `OWN-GG`    | `TP-INT-001` / `ENV-INTEGRATION-CI-STAGING-SANDBOX` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-204` | `devVentoGroup/vento-nexo`    | `OWN-SST`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-205` | `devVentoGroup/vento-shell`   | `OWN-COM`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-206` | `devVentoGroup/vento-numera`  | `OWN-FIN`   | `TP-DOM-001` / `ENV-WEB-CI-STAGING`                 | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | Capa 2           | conjunto exacto de `DELIV-PKG-014`; hoy sin artefacto desplegable confirmado | `ROLLOUT_ESPECIFICADO_BLOQUEADO_POR_014`                   |
+| `GAP-PKG-207` | `devVentoGroup/vento-shell`   | `OWN-TEC`   | `TP-CONTROL-001` / `ENV-DOC-CI`                     | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | Capa 4           | ninguno directo; evidencia/control de capa 4                                 | `NO_APLICA_DEPLOY_DIRECTO; rollout de evidencia posterior` |
+
+##### 10.1. Reconciliación cuantitativa
+
+| Control                        | Resultado |
+| ------------------------------ | --------: |
+| raíces esperadas               |   **207** |
+| raíces materializadas          |   **207** |
+| IDs únicos                     |   **207** |
+| faltantes                      |     **0** |
+| duplicados                     |     **0** |
+| identidad física no confirmada |   **167** |
+| AURA sin repositorio           |    **14** |
+| `EXT-GOV-001` condicional      |     **2** |
+| TALENTO fuera de línea actual  |     **2** |
+| sin cambio físico directo      |    **22** |
+| `TP-DB-001`                    |    **31** |
+| `TP-SHARED-001`                |     **3** |
+| `TP-DOM-001`                   |    **61** |
+| `TP-AUTH-001`                  |    **12** |
+| `TP-INT-001`                   |    **18** |
+| `TP-UI-001`                    |    **38** |
+| `TP-CONTROL-001`               |    **26** |
+| `TP-AURA-001`                  |    **14** |
+| `TP-EXT-001`                   |     **2** |
+| `TP-FUTURE-001`                |     **2** |
+
+La suma de estados físicos es `167 + 14 + 2 + 2 + 22 = 207`. La distribución de perfiles se conserva sin cambios respecto de `DELIV-PKG-018`: `31 + 3 + 61 + 12 + 18 + 38 + 26 + 14 + 2 + 2 = 207`.
+
+---
+
+#### 11. Tratamientos especiales
+
+##### 11.1. Bases de datos y migraciones
+
+Una migración no se despliega “al 5%”. Se promueve ambientalmente como artefacto backward-compatible cuando corresponda y el porcentaje controla el **uso del nuevo comportamiento/ruta**. Antes de cualquier expansión se exige paridad de migraciones, hashes, constraints, RLS/grants, tipos, backup/restore/rollback aplicables y reconciliación. `FULL_100` no habilita el retiro legacy; ese gate sigue separado.
+
+##### 11.2. Integraciones
+
+El canary se asigna a unidades de integración capaces de aislar efectos. Una misma operación lógica, idempotency key o reintento no puede alternar entre cohortes. Shadow/sandbox no emite un efecto productivo nuevo; cualquier efecto externo debe poder reconciliarse antes de ampliar.
+
+##### 11.3. Web y móvil
+
+La distribución del build y la exposición funcional permanecen desacopladas. Una versión puede estar disponible con la capacidad `HIDDEN/INTERNAL` sin exponerla a usuarios. La compatibilidad real de release/runtime/dispositivo definida por `NFR-REQ-011` sigue siendo gate; no se presupone tienda, MDM, CDN o proveedor de hosting no confirmado.
+
+##### 11.4. AURA, `EXT-GOV-001` y TALENTO
+
+Las 14 raíces AURA no tienen rollout físico mientras no exista repositorio/runtime confirmado. `GAP-PKG-027` y `GAP-PKG-157` permanecen bloqueados por `EXT-GOV-001`. `GAP-PKG-064` y `GAP-PKG-197` continúan fuera de la línea funcional vigente. Ninguna de estas condiciones se resuelve por disponer de una estrategia documental.
+
+##### 11.5. Controles sin deploy directo
+
+Las 22 raíces `MIG-CONTROL-NOCHANGE-001` no reciben un artefacto de despliegue ficticio. Su secuencia es posterior al comportamiento gobernado: evidencia disponible → observación → gate/confirmación, conservando `NO_APLICA_DEPLOY_DIRECTO`. Los cuatro perfiles de control que sí dependen de identidad física (`GAP-PKG-062`, `065`, `140`, `172`) permanecen bloqueados por `DELIV-PKG-014` hasta que la identidad exista.
+
+---
+
+#### 12. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0.
+**Requisitos modificados:** 0.
+
+**Justificación:** `DELIV-PKG-019` materializa la estrategia de despliegue y rollout usando requisitos ya existentes y vigentes del registro canónico 04A. No introduce una regla de prueba nueva ni cambia estado, paquete, ambiente, evidencia o relación de ninguna fila del registro. Consume sin modificar las obligaciones ya vigentes de procedencia, drift, aislamiento ambiental, feature flags, migraciones, promoción y trazabilidad, además de la vinculación por paquete aprobada en `DELIV-PKG-016`. Por tanto no corresponde generar fragmentos 04A de entrega para esta tarea.
+
+---
+
+#### 13. Fronteras de responsabilidad
+
+`DELIV-PKG-019` **sí cierra**:
+
+- estrategia de artefacto y procedencia por perfil y paquete;
+- secuencia ambiental hasta `FULL_100` sin ejecutar ninguna transición;
+- cohortes porcentuales monotónicas `5% → 25% → 50% → 100%` cuando existe población segmentable segura;
+- regla determinista y versionada de asignación de cohortes;
+- separación entre piloto 022 y canary porcentual;
+- pausa obligatoria de evidencia entre expansiones productivas;
+- gates de promoción y detención;
+- coordinación de capas, repositorios, contratos compartidos y cambios Supabase;
+- evidencia mínima de cada decisión de rollout;
+- decisión explícita para las 207 raíces y preservación de todos los bloqueos heredados.
+
+`DELIV-PKG-019` **no cierra**:
+
+- deploy, distribución productiva, activación, promoción, cutover o modificación real de ambientes;
+- resolución ficticia de las 167 identidades físicas bloqueadas;
+- cohorte humana/sede/dato/dispositivo y duración exacta del piloto, reservadas a `DELIV-PKG-022`;
+- procedimientos técnicos, funcionales y de datos de rollback, reservados a `DELIV-PKG-020`;
+- criterios finales de aceptación y manifiesto de cierre, reservados a `DELIV-PKG-023`;
+- certificación de que una prueba, señal, canary, rollback o rollout fue ejecutado.
+
+---
+
+#### 14. Criterios de aceptación
+
+- [x] existen exactamente **207** filas, una por `GAP-PKG-001..207`, sin faltantes ni duplicados;
+- [x] cada raíz conserva repositorio, propietario `OWN-*`, perfil `TP-*`, ambiente y gate físico heredados;
+- [x] las **167** identidades físicas no confirmadas permanecen bloqueadas y no reciben artefactos inventados;
+- [x] las **14** raíces AURA, **2** EXT y **2** TALENTO conservan sus gates;
+- [x] las **22** raíces sin cambio físico directo no reciben deploy ficticio;
+- [x] el rollout porcentual es monotónico `5% → 25% → 50% → 100%` únicamente donde existe segmentación segura;
+- [x] `PILOT` queda condicionado a la cohorte exacta de `DELIV-PKG-022` y no se sustituye por el canary del 5%;
+- [x] las migraciones y contratos no se “parten” por porcentaje; el porcentaje gobierna exposición del comportamiento cuando sea técnicamente seguro;
+- [x] cada expansión productiva exige pausa de evidencia y promoción explícita;
+- [x] no existe auto-promoción por tiempo ni bypass por ausencia de volumen;
+- [x] `OBS-P0/P1`, seguridad/integridad de tolerancia cero, incompatibilidad crítica o reconciliación fallida bloquean promoción;
+- [x] `FULL_100` no autoriza retiro legacy ni cutover irreversible;
+- [x] toda modificación Supabase VENTO permanece centralizada en `vento-shell`;
+- [x] se generan **0** cambios `TREQ-*` y no se altera 04A;
+- [x] no se ejecuta deploy, cutover, promoción, rollback, DDL/DML, migración, distribución productiva ni cambio remoto.
+
+---
+
+#### 15. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DELIV-PKG-018 — Definir feature flags, configuración y activación progresiva`
+
+TAREA ACTUAL APROBADA
+`DELIV-PKG-019 — Definir estrategia de despliegue y rollout`
+
+SIGUIENTE TAREA RESERVADA
+`DELIV-PKG-020 — Definir rollback técnico, funcional y de datos`
+
+
 ### [ ] DELIV-PKG-020 — Definir rollback técnico, funcional y de datos
 ### [ ] DELIV-PKG-021 — Definir documentación, procedimiento y capacitación
 ### [ ] DELIV-PKG-022 — Definir alcance, actores, datos y duración del piloto

@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **829** |
+| Tareas aprobadas | **830** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **765** |
+| Tareas no iniciadas | **764** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **52.01% (829/1594)** |
+| Porcentaje de completamiento | **52.07% (830/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DELIV-PKG-018 — Definir feature flags, configuración y activación progresiva** |
-| Tarea actual | **DELIV-PKG-019 — Definir estrategia de despliegue y rollout** |
+| Última tarea aprobada | **DELIV-PKG-019 — Definir estrategia de despliegue y rollout** |
+| Tarea actual | **DELIV-PKG-020 — Definir rollback técnico, funcional y de datos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DELIV-PKG-020 — Definir rollback técnico, funcional y de datos** |
+| Siguiente tarea | **DELIV-PKG-021 — Definir documentación, procedimiento y capacitación** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 18 de 68 aprobadas; DELIV-PKG-019 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 19 de 68 aprobadas; DELIV-PKG-020 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DELIV-PKG-018` — Definir feature flags, configuración y activación progresiva |
-| Tarea actual | `DELIV-PKG-019` — Definir estrategia de despliegue y rollout — **NO INICIADA** |
-| Siguiente tarea | `DELIV-PKG-020` — Definir rollback técnico, funcional y de datos |
+| Última aprobada | `DELIV-PKG-019` — Definir estrategia de despliegue y rollout |
+| Tarea actual | `DELIV-PKG-020` — Definir rollback técnico, funcional y de datos — **NO INICIADA** |
+| Siguiente tarea | `DELIV-PKG-021` — Definir documentación, procedimiento y capacitación |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 18 DE 68 APROBADAS — ACTUAL DELIV-PKG-019** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 19 DE 68 APROBADAS — ACTUAL DELIV-PKG-020** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DELIV-PKG-018 — Definir feature flags, configuración y activación progresiva
-        ↓
-TAREA ACTUAL
 DELIV-PKG-019 — Definir estrategia de despliegue y rollout
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DELIV-PKG-020 — Definir rollback técnico, funcional y de datos
         ↓
+SIGUIENTE TAREA RESERVADA
+DELIV-PKG-021 — Definir documentación, procedimiento y capacitación
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 18 de 68 tareas aprobadas
+BLOQUE E5 — 19 de 68 tareas aprobadas
 ```
