@@ -7187,7 +7187,853 @@ SIGUIENTE TAREA RESERVADA
 `QUEUE-ARC-011 — Definir métricas de espera, ejecución y error`
 
 
-### [ ] QUEUE-ARC-011 — Definir métricas de espera, ejecución y error
+### ✅ QUEUE-ARC-011 — Definir métricas de espera, ejecución y error
+
+**Estado:** APROBADA
+**Tarea anterior:** `QUEUE-ARC-010 — Definir estados y eventos canónicos`
+**Tarea siguiente:** `QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos`
+**Tipo de tarea:** documental; especialización canónica de las métricas de espera, ejecución, retry, error, aislamiento, recuperación y concurrencia del trabajo asíncrono, utilizando el catálogo transversal de observabilidad ya aprobado y la máquina de estados y eventos de `QUEUE-ARC-010`, con decisión explícita para las 19 identidades `QAI-*`, sin implementar instrumentación, almacenamiento de telemetría, dashboards, alertas, SLO ni autorización
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`
+**Línea base documental:** `vento-shell@5e3a2dc9a39ab84bcac029d08b6fc916f6359808`
+**Registro de observabilidad consumido:** `TRANSVERSE-SERVICE-OBSERVABILITY-REGISTRY-001@1.0.0`
+**Contrato de estados y eventos consumido:** `WORK-STATE-EVENT-CONTRACT-001@1.0.0`
+**Inventario consumido:** `QUEUE-CURRENT-ASSET-INVENTORY-001` — 19 identidades `QAI-*`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo Vento OS mide el tiempo que una operación espera, el tiempo durante el cual realmente ejecuta, la presión de backlog, los reintentos, los conflictos, los errores, la incertidumbre y la recuperación, sin confundir una medición técnica con el resultado empresarial ni convertir una métrica en una decisión de scheduling, retry, cancelación, recuperación o autorización.
+
+La regla raíz es:
+
+```text
+ESTADO DURABLE + EVENTOS CANÓNICOS + RELOJ DECLARADO
+        ↓
+MEDICIONES RECONSTRUIBLES
+        ↓
+ESPERA / EJECUCIÓN / ERROR / AISLAMIENTO / RECUPERACIÓN
+        ↓
+AGREGADOS Y DISTRIBUCIONES CON SEMÁNTICA ESTABLE
+```
+
+La separación obligatoria queda fijada así:
+
+```text
+MÉTRICA
+≠ EVENTO
+≠ LOG
+≠ TRAZA
+≠ ALERTA
+≠ SLO
+≠ RESULTADO EMPRESARIAL
+≠ AUTORIZACIÓN
+```
+
+Una métrica resume evidencia técnica dentro de un alcance y una ventana. No modifica el estado del trabajo, no concede permisos y no demuestra por sí sola que el efecto empresarial o físico haya ocurrido.
+
+---
+
+#### 2. Resultado sustantivo
+
+`QUEUE-ARC-011` especializa `TRANSVERSE-SERVICE-OBSERVABILITY-REGISTRY-001@1.0.0` para las 19 identidades `QAI-*` y fija la semántica de medición que deberá derivarse de `WORK-STATE-EVENT-CONTRACT-001@1.0.0`.
+
+La tarea **no crea un segundo catálogo de identidades `TSVC-MET-*`**. Conserva exactamente `TSVC-MET-001..020` y define vistas, distribuciones y relaciones derivadas necesarias para medir el ciclo de vida de colas y jobs sin renombrar ni reemplazar las métricas transversales aprobadas.
+
+El resultado material fija:
+
+1. una base temporal única y verificable para medir transiciones;
+2. la diferencia entre tiempo programado, tiempo elegible, espera de cola, bloqueo, espera de retry y ejecución;
+3. la medición de dwell por estado sin inferir estados ausentes;
+4. la latencia de adquisición de claim y la contención concurrente;
+5. la duración de cada intento y la duración end-to-end de la operación;
+6. la separación entre duración activa, tiempo de dependencia y tiempo total calendario;
+7. la medición de drift y misfire para trabajo programado;
+8. la medición de retry sin contar reintentos como operaciones nuevas;
+9. la medición separada de `failed`, `result_unknown`, `quarantined`, `dead_letter`, `expired` y cancelación;
+10. la edad y duración de conciliación y recuperación;
+11. reglas de cohortes, denominadores y ventanas para tasas y proporciones;
+12. reglas de cardinalidad, privacidad y frescura heredadas de `TSVC-CAT-007`;
+13. la prohibición de presentar ausencia de instrumentación como valor cero;
+14. una decisión explícita de medición para las 19 identidades `QAI-*`.
+
+Balance:
+
+| Métrica de control                            | Resultado |
+| --------------------------------------------- | --------: |
+| Identidades `QAI-*` esperadas                 |    **19** |
+| Identidades materializadas                    |    **19** |
+| `APLICA_METRICAS_DE_TRABAJO`                  |    **16** |
+| `PROPAGA_NO_DECIDE_METRICAS`                  |     **2** |
+| `NO_APLICA`                                   |     **1** |
+| Perfil `SCHEDULED_WORK`                       |     **9** |
+| Perfil `OFFLINE_OR_DEVICE_WORK`               |     **4** |
+| Perfil `EVENT_DRIVEN_WORK`                    |     **3** |
+| Métricas transversales `TSVC-MET-*` heredadas |    **20** |
+| Nuevas identidades `TSVC-MET-*` creadas       |     **0** |
+| Identificadores `QAI-*` duplicados            |     **0** |
+| Identidades sin decisión                      |     **0** |
+| Requisitos de prueba creados o modificados    |     **0** |
+| Objetos físicos creados o modificados         |     **0** |
+
+---
+
+#### 3. Herencia contractual obligatoria
+
+Esta tarea no redefine estados, eventos, retry, concurrencia ni observabilidad.
+
+Hereda obligatoriamente:
+
+- de `TRANSVERSE-SERVICE-OBSERVABILITY-REGISTRY-001@1.0.0`, las siete clases de señal, las veinte métricas `TSVC-MET-001..020`, la política de cardinalidad, la separación entre resultado empresarial y observabilidad, el uso de distribuciones para latencia y la prohibición de fijar umbrales sin baseline y SLO aprobados;
+- de `WORK-STATE-EVENT-CONTRACT-001@1.0.0`, los dieciséis estados durables, los treinta y tres eventos canónicos, `status_version`, `event_sequence`, `occurred_at`, `recorded_at`, terminalidad y transiciones;
+- de `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0`, `scheduled_at`, `deadline_at`, `logical_fire_at_utc`, prioridad, misfire y elegibilidad;
+- de `WORK-ASSIGNMENT-CONTRACT-001@1.0.0`, `assignment_id`, `assignment_version` y la diferencia entre assignment y claim;
+- de `WORK-RETRY-POLICY-CONTRACT-001@1.0.0`, `attempt_id`, `attempt_no`, `next_retry_at`, perfiles `RR0..RR5`, presupuesto y clasificación de errores;
+- de `WORK-CANCELLATION-CONTRACT-001@1.0.0`, la separación entre solicitud, efectividad, llegada demasiado tardía e incertidumbre;
+- de `WORK-FAILURE-RECOVERY-CONTRACT-001@1.0.0`, aislamiento, conciliación, `failure_entry_id`, `recovery_request_id` y recuperación controlada;
+- de `WORK-CONCURRENCY-CONTROL-CONTRACT-001@1.0.0`, `claim_id`, lease, fencing, `concurrency_key`, conflictos de versión y rechazo de ejecutores obsoletos;
+- de `QUEUE-CURRENT-ASSET-INVENTORY-001`, las 19 identidades materiales y sus fronteras actuales.
+
+La autoridad para crear, cancelar o forzar reintentos permanece reservada a `QUEUE-ARC-012`. Una métrica, alerta, dashboard, rol de observación o señal de health no concede esa autoridad.
+
+---
+
+#### 4. Planos de medición
+
+Toda medición de trabajo asíncrono pertenece a uno de estos planos semánticos:
+
+| Plano           | Pregunta                                                          | Fuente principal                                                    | Prohibición                                                     |
+| --------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `WAIT`          | ¿cuánto tiempo permaneció sin ejecutar y por qué?                 | estados/eventos de programación, cola, bloqueo, retry e aislamiento | sumar toda espera como si fuera retraso de worker               |
+| `EXECUTION`     | ¿cuánto tiempo ejecutó realmente un intento o dependencia?        | `WORK_PROCESSING_STARTED`, cierre del intento, spans/dependencias   | incluir tiempo programado u offline como CPU/ejecución          |
+| `OUTCOME_ERROR` | ¿cómo terminó o se desvió la operación?                           | eventos de resultado, retry, aislamiento, conflicto y error         | reducir todo resultado no exitoso a `failed`                    |
+| `CONCURRENCY`   | ¿hubo contención, pérdida de lease o rechazo por versión/fencing? | eventos de claim, lease, fencing y versión                          | usar `concurrency_key` libre como etiqueta de alta cardinalidad |
+| `RECOVERY`      | ¿cuánto duró la incertidumbre, conciliación o recuperación?       | eventos `result_unknown`, reconciliation y recovery                 | considerar resuelto por desaparecer de una cola                 |
+| `CAPACITY`      | ¿el sistema recibe y drena trabajo al ritmo necesario?            | backlog, inflight y tasas de entrada/salida                         | convertir capacidad observada en SLO no aprobado                |
+
+Una misma operación puede aportar mediciones a varios planos. Los planos no son estados ni clases de error.
+
+---
+
+#### 5. Base temporal y reloj de medición
+
+La precisión temporal debe ser demostrable.
+
+Reglas:
+
+1. Las duraciones entre transiciones del state machine utilizan preferentemente `recorded_at` de los eventos aceptados por la fuente durable común, porque esos tiempos pertenecen al mismo plano de registro.
+2. `occurred_at` conserva el momento del hecho observado y puede utilizarse para latencia real cuando las fuentes implicadas comparten una referencia temporal confiable o existe corrección de clock skew documentada.
+3. No se restan timestamps de dispositivos, proveedores, navegadores, GitHub Actions, Supabase y móviles como si pertenecieran automáticamente al mismo reloj.
+4. Una dependencia mide su duración dentro de la frontera que controla el inicio y fin de la llamada o span; esa medición alimenta `TSVC-MET-014`.
+5. Todos los intervalos se conservan con precisión suficiente para expresar milisegundos cuando la fuente la soporte; las edades agregadas pueden exponerse en segundos conforme al catálogo transversal.
+6. Un intervalo negativo, una secuencia temporal imposible o un salto de reloj no se corrigen a cero por conveniencia: se registran como problema de calidad de telemetría y se excluyen de agregados que requieran orden temporal válido.
+7. `event_sequence` y `status_version` gobiernan el orden lógico cuando el timestamp no permite probar causalidad.
+8. Los percentiles se calculan sobre distribuciones válidas y con ventana declarada; el promedio aislado no representa la latencia canónica.
+9. Toda serie declara ambiente, versión del catálogo, fuente y frescura.
+10. La ausencia de muestras no equivale a duración cero ni a ausencia de trabajo.
+
+---
+
+#### 6. Catálogo `TSVC-MET-*` heredado
+
+Se conservan sin modificación las veinte métricas comunes de `TSVC-CAT-007`:
+
+| ID             | Métrica                         | Uso dentro de `QUEUE-ARC-011`                                                              |
+| -------------- | ------------------------------- | ------------------------------------------------------------------------------------------ |
+| `TSVC-MET-001` | `operations_accepted_total`     | denominador de operaciones aceptadas; nunca incluye retries como operaciones nuevas        |
+| `TSVC-MET-002` | `operations_completed_total`    | operaciones con cierre técnico satisfactorio compatible con `succeeded`                    |
+| `TSVC-MET-003` | `operations_failed_total`       | operaciones cerradas técnicamente como `failed`; no absorbe otros estados                  |
+| `TSVC-MET-004` | `operations_deduplicated_total` | repeticiones suprimidas o resueltas sin segundo efecto                                     |
+| `TSVC-MET-005` | `attempts_total`                | ejecuciones reales iniciadas, incluido el primer intento y retries                         |
+| `TSVC-MET-006` | `retries_scheduled_total`       | retries programados por política después de un intento                                     |
+| `TSVC-MET-007` | `result_unknown_total`          | entradas a incertidumbre por posible efecto no confirmado                                  |
+| `TSVC-MET-008` | `dead_letter_total`             | entradas a `dead_letter`; no representa fallo empresarial terminal                         |
+| `TSVC-MET-009` | `quarantine_total`              | entradas a `quarantined` por conflicto, integridad o incompatibilidad                      |
+| `TSVC-MET-010` | `backlog_depth`                 | profundidad pendiente según el scope de backlog declarado                                  |
+| `TSVC-MET-011` | `oldest_backlog_age_seconds`    | edad del elemento pendiente más antiguo dentro del mismo scope                             |
+| `TSVC-MET-012` | `in_flight_operations`          | operaciones reclamadas o activas bajo autoridad vigente                                    |
+| `TSVC-MET-013` | `operation_duration_ms`         | duración técnica end-to-end de una operación cerrada con frontera temporal declarada       |
+| `TSVC-MET-014` | `dependency_duration_ms`        | duración observada de dependencia, proveedor, dispositivo o servicio                       |
+| `TSVC-MET-015` | `lease_expired_total`           | leases vencidos antes de cierre válido                                                     |
+| `TSVC-MET-016` | `claim_conflict_total`          | conflictos de adquisición o cierre por concurrencia, fencing o versión según evento fuente |
+| `TSVC-MET-017` | `contract_rejected_total`       | solicitudes rechazadas por contrato o versión incompatible                                 |
+| `TSVC-MET-018` | `authentication_rejected_total` | solicitudes rechazadas por identidad o autenticación técnica                               |
+| `TSVC-MET-019` | `worker_heartbeat_age_seconds`  | edad del heartbeat aceptado del worker cuando exista servicio de health aplicable          |
+| `TSVC-MET-020` | `worker_state`                  | proyección cerrada del estado de health del worker; no estado empresarial del trabajo      |
+
+Reglas de especialización:
+
+1. `operations_completed_total` y `operations_failed_total` se derivan de operaciones, no de intentos.
+2. `attempts_total` crece una vez por `WORK_PROCESSING_STARTED` aceptado para un `attempt_id` nuevo.
+3. `retries_scheduled_total` crece por `WORK_ATTEMPT_RETRY_SCHEDULED`, no por cada wake-up de un worker.
+4. `operations_deduplicated_total` se deriva de `WORK_DUPLICATE_SUPPRESSED` o equivalente compatible sin crear otro efecto.
+5. `result_unknown_total`, `dead_letter_total` y `quarantine_total` permanecen separados aunque una misma operación atraviese más de una condición en episodios distintos.
+6. Los gauges representan el instante de observación y su frescura; no se reconstruyen como contadores acumulativos.
+7. Ninguna de estas métricas sustituye los 33 eventos de `QUEUE-ARC-010`.
+
+---
+
+#### 7. Métricas de espera
+
+La espera se mide por **causa**, no como un único tiempo de cola.
+
+##### 7.1. Dwell por estado
+
+Para cada episodio continuo en un estado no terminal:
+
+```text
+state_dwell = recorded_at(evento_de_salida) - recorded_at(evento_de_entrada)
+```
+
+Cuando la operación sigue en el estado durante una consulta:
+
+```text
+current_state_age = observed_at - recorded_at(evento_de_entrada)
+```
+
+Se conservan por separado, como mínimo:
+
+- tiempo en `scheduled`;
+- tiempo en `queued`;
+- tiempo en `assigned` antes de claim;
+- tiempo en `blocked`;
+- tiempo en `retry_pending`;
+- tiempo en `cancel_requested`;
+- tiempo en `result_unknown`;
+- tiempo en `reconciling`;
+- tiempo en `quarantined`;
+- tiempo en `dead_letter`.
+
+No se suma `scheduled` con `queued` como si toda programación futura fuera atraso.
+
+##### 7.2. Espera elegible hasta claim
+
+La espera elegible se calcula como la suma de los episodios `queued` y `assigned` durante los cuales la operación podía competir por un claim, excluyendo periodos `scheduled`, `blocked`, `retry_pending`, `cancel_requested`, `result_unknown`, `reconciling`, `quarantined` y `dead_letter`.
+
+El claim wait de una operación no puede ser negativo y no se mide desde `first_requested_at` cuando existió una programación deliberada futura.
+
+##### 7.3. Backlog
+
+`TSVC-MET-010` y `TSVC-MET-011` se reportan con un scope explícito que declare qué estados incluye.
+
+Un backlog operativo puede distinguir, sin mezclarlos:
+
+- elegible: `queued` + `assigned`;
+- bloqueado: `blocked`;
+- retry: `retry_pending`;
+- incertidumbre: `result_unknown` + `reconciling`;
+- aislamiento: `quarantined` + `dead_letter`.
+
+La suma global puede mostrarse cuando el consumidor conserva la composición por estado. Un único número sin composición no permite distinguir capacidad insuficiente de bloqueo, retry o recovery.
+
+##### 7.4. Espera de retry
+
+Se distinguen:
+
+```text
+planned_retry_wait = next_retry_at - failure_observed_at
+retry_lateness = WORK_RETRY_DUE.observed_at - next_retry_at
+```
+
+El primer valor describe la política aplicada. El segundo describe qué tan tarde se reactivó la elegibilidad respecto de lo programado. El tick de un worker no se interpreta como backoff contractual.
+
+##### 7.5. Edad de incertidumbre e aislamiento
+
+- la edad de `result_unknown` comienza en `WORK_RESULT_UNKNOWN`;
+- la conciliación se mide desde `WORK_RECONCILIATION_STARTED` hasta `WORK_RECONCILIATION_RESOLVED` o la observación vigente;
+- la edad de cuarentena comienza en `WORK_QUARANTINED`;
+- la edad de dead-letter comienza en `WORK_DEAD_LETTERED`;
+- una solicitud de recovery no resetea la edad histórica del episodio de aislamiento;
+- un nuevo episodio posterior se mide por separado y conserva causalidad.
+
+---
+
+#### 8. Métricas de ejecución
+
+##### 8.1. Duración de intento
+
+Cada `attempt_id` se mide desde `WORK_PROCESSING_STARTED` hasta el primer evento autoritativo que cierre esa ejecución concreta o la saque de `processing`.
+
+```text
+attempt_duration = attempt_exit_at - processing_started_at
+```
+
+Reglas:
+
+1. adquirir un claim sin iniciar `WORK_PROCESSING_STARTED` no genera duración de intento;
+2. espera de lease, assignment o queue no se suma a la duración del intento;
+3. un intento que termina en retry conserva su duración propia y no se fusiona con el intento siguiente;
+4. un intento que pierde lease conserva su duración histórica hasta la pérdida o salida autoritativa;
+5. si el efecto puede haber ocurrido y el intento termina en incertidumbre, su duración termina al salir de `processing`; el tiempo posterior pertenece a `result_unknown` o conciliación;
+6. la distribución se segmenta por `operation_type`, ambiente y perfil cerrado cuando sea útil y seguro.
+
+##### 8.2. Duración end-to-end de operación
+
+`TSVC-MET-013` mide desde la reserva aceptada de la intención hasta su cierre técnico terminal.
+
+```text
+operation_duration = terminal_recorded_at - WORK_RESERVED.recorded_at
+```
+
+Incluye las esperas deliberadas, retry, bloqueo y recuperación que hayan ocurrido antes del terminal. Por esa razón siempre debe interpretarse junto con los dwell de estado y no como sustituto de tiempo activo.
+
+Una operación todavía no terminal no se incorpora a la distribución de terminales como si ya hubiera terminado; su edad actual se analiza como operación abierta.
+
+##### 8.3. Tiempo activo acumulado
+
+La suma de las duraciones válidas de todos los intentos de la misma operación representa tiempo activo observado. No es igual a `operation_duration` y no se usa para esconder espera, backoff o conciliación.
+
+##### 8.4. Dependencias
+
+`TSVC-MET-014` mide por llamada o span controlado el tiempo de:
+
+- proveedor externo;
+- base de datos o RPC;
+- Storage;
+- dispositivo o periférico;
+- adaptador;
+- consumidor downstream;
+- otra dependencia técnica identificada.
+
+La dependencia conserva una clase cerrada y, cuando sea seguro, proveedor o servicio de baja cardinalidad. URLs, identificadores individuales, payloads y errores libres no son etiquetas métricas.
+
+##### 8.5. Inflight y throughput
+
+- `TSVC-MET-012` cuenta operaciones con claim o procesamiento vigente dentro del scope declarado;
+- throughput es la tasa de cambio de contadores terminales dentro de una ventana explícita;
+- la tasa de entrada deriva de operaciones aceptadas, no de intentos;
+- la tasa de salida distingue éxito, fallo y otros cierres sin fusionarlos;
+- el sistema puede comparar entrada, salida y backlog para evaluar capacidad, pero no convierte esa comparación en un SLO no aprobado.
+
+---
+
+#### 9. Programación, drift y misfire
+
+Para `SCHEDULED_WORK` se distinguen:
+
+```text
+logical_fire_at_utc
+actual_trigger_at
+eligibility_recorded_at
+claim_recorded_at
+processing_started_at
+terminal_recorded_at
+```
+
+Reglas:
+
+1. `schedule drift` describe la diferencia entre el instante lógico y el disparo real observado por el scheduler bajo un reloj confiable.
+2. `eligibility lag` describe la demora entre la ocurrencia que debía ser elegible y `WORK_ELIGIBLE` cuando ambas marcas son comparables.
+3. `claim wait` comienza después de elegibilidad, no desde `logical_fire_at_utc` si hubo bloqueo o condición adicional.
+4. `WORK_MISFIRE_DETECTED` se contabiliza separado de un fallo de intento porque puede ocurrir sin haber iniciado ejecución.
+5. `WORK_MISFIRE_RESOLVED` clasifica la salida de cada misfire sin borrar la ocurrencia omitida o coalescida.
+6. `WORK_EXPIRED` contabiliza vencimiento del trabajo; no se fusiona con `operations_failed_total`.
+7. dos schedules distintos que producen un efecto equivalente, como `QAI-001` y `QAI-004`, conservan sus métricas de ocurrencia separadas y pueden compartir agregados de contención por clase de recurso sin fusionar `operation_id`.
+8. no se fija un valor universal de drift permitido; cualquier umbral requiere baseline, SLO, criticidad y ambiente aprobados.
+
+---
+
+#### 10. Retry y amplificación
+
+Las métricas de retry conservan las identidades de operación e intento.
+
+Se distinguen:
+
+- operaciones con al menos un retry;
+- `attempts_total`;
+- `retries_scheduled_total`;
+- distribución de `attempt_no` al cierre;
+- espera programada y lateness de retry;
+- errores que originaron retry;
+- operaciones que agotaron política y pasaron a aislamiento;
+- operaciones que terminaron después de uno o más retries.
+
+La **amplificación de intentos** se calcula dentro de una cohorte compatible como:
+
+```text
+attempt_amplification = attempts_started / operations_with_execution
+```
+
+Reglas:
+
+1. el denominador cuenta operaciones únicas con al menos un intento;
+2. una operación que solo espera conectividad y nunca inicia intento no incrementa el numerador;
+3. el indicador no se interpreta como error automáticamente: algunos retries están permitidos;
+4. una subida debe analizarse junto con `error_class`, dependencia, backlog y resultado;
+5. no se agregan perfiles de retry incompatibles como si tuvieran el mismo presupuesto.
+
+---
+
+#### 11. Métricas de error y resultado
+
+El error se mide en niveles separados.
+
+##### 11.1. Error de intento
+
+Un intento puede terminar sin éxito y aun así dejar la operación no terminal. El conteo por intento utiliza `attempt_id` y `error_class` y nunca incrementa `operations_failed_total` por sí solo.
+
+##### 11.2. Fallo terminal de operación
+
+`TSVC-MET-003` crece únicamente cuando la operación entra a `failed` mediante `WORK_FAILED`.
+
+No se consideran equivalentes a `failed`:
+
+- `retry_pending`;
+- `result_unknown`;
+- `reconciling`;
+- `quarantined`;
+- `dead_letter`;
+- `cancelled`;
+- `expired`.
+
+##### 11.3. Incertidumbre y aislamiento
+
+- `TSVC-MET-007` cuenta entradas a `result_unknown`;
+- `TSVC-MET-008` cuenta entradas a `dead_letter`;
+- `TSVC-MET-009` cuenta entradas a `quarantined`;
+- una operación puede generar más de un episodio histórico de aislamiento si fue recuperada y volvió a fallar; la métrica de episodios no se presenta como número de operaciones únicas sin declarar esa diferencia.
+
+##### 11.4. Rechazos
+
+- `TSVC-MET-017` conserva rechazos por contrato o versión;
+- `TSVC-MET-018` conserva rechazo de identidad o autenticación técnica;
+- una denegación empresarial o de autorización no se reetiqueta como fallo interno del worker;
+- la política de quién puede ejecutar la acción queda en `QUEUE-ARC-012`.
+
+##### 11.5. Otros resultados medibles por eventos
+
+Sin crear nuevas identidades `TSVC-MET-*`, las vistas de análisis pueden contar de forma derivada:
+
+- `WORK_EXPIRED`;
+- `WORK_CANCELLATION_REQUESTED` y resoluciones de cancelación;
+- `WORK_RECONCILIATION_STARTED` y resultados de conciliación;
+- `WORK_RECOVERY_REQUESTED` y resoluciones de recovery;
+- `WORK_LATE_RESULT_OBSERVED`;
+- `WORK_MISFIRE_DETECTED` y sus resoluciones;
+- `WORK_FENCING_REJECTED`;
+- `WORK_VERSION_CONFLICT`.
+
+Cada vista conserva el evento fuente y no se publica como nueva métrica canónica global sin versionar el catálogo transversal correspondiente.
+
+---
+
+#### 12. Concurrencia, claim, lease y duplicados
+
+La medición de concurrencia utiliza las primitivas ya aprobadas.
+
+1. `TSVC-MET-015` crece cuando un lease pierde vigencia antes de un cierre válido.
+2. `TSVC-MET-016` agrega conflictos de claim/concurrencia a partir de eventos compatibles como `WORK_CLAIM_REJECTED`, `WORK_FENCING_REJECTED` o conflictos de versión que realmente pertenezcan a la misma clase semántica.
+3. Un mismo hecho no se contabiliza dos veces únicamente porque produzca log y evento.
+4. `WORK_DUPLICATE_SUPPRESSED` alimenta `TSVC-MET-004` cuando la repetición fue suprimida de forma segura.
+5. Colisiones por `concurrency_key` se agregan por clase cerrada de frontera, servicio, tipo de operación o recurso tipificado; la clave concreta no se usa como etiqueta libre.
+6. La latencia de claim se mide desde elegibilidad hasta `WORK_CLAIM_ACQUIRED`, excluyendo periodos en los que la operación no era elegible.
+7. Un claim rechazado que no inicia intento no incrementa `attempts_total`.
+8. Un fencing rechazado no se registra como fallo de la operación vigente si solo impidió el cierre de un ejecutor obsoleto.
+9. La pérdida de lease después de posible efecto se correlaciona con `result_unknown` y no se cuenta como retry seguro por inferencia.
+
+---
+
+#### 13. Cancelación, incertidumbre, conciliación y recovery
+
+##### 13.1. Cancelación
+
+Se miden por separado:
+
+- solicitudes de cancelación;
+- tiempo desde `WORK_CANCELLATION_REQUESTED` hasta `WORK_CANCELLATION_RESOLVED`;
+- distribución de las siete resoluciones aprobadas por el contrato de cancelación;
+- operaciones que terminan `cancelled`;
+- cancelaciones demasiado tardías;
+- cancelaciones que derivan a `result_unknown`.
+
+La demora de resolución de cancelación no es igual al tiempo de ejecución ni al tiempo de cola.
+
+##### 13.2. Resultado desconocido
+
+La edad de incertidumbre se mide desde `WORK_RESULT_UNKNOWN` hasta una resolución autoritativa o hasta el instante observado. Una operación que entra a `result_unknown` no incrementa `operations_failed_total`.
+
+##### 13.3. Conciliación
+
+Se mide:
+
+- número de conciliaciones iniciadas;
+- duración desde `WORK_RECONCILIATION_STARTED` hasta `WORK_RECONCILIATION_RESOLVED`;
+- resolución final por vocabulario aprobado;
+- permanencia sin resolución;
+- resultado recuperado sin repetir efecto;
+- necesidad de operación correctiva cuando corresponda.
+
+##### 13.4. Recovery
+
+Se mide:
+
+- solicitudes `WORK_RECOVERY_REQUESTED`;
+- tiempo hasta `WORK_RECOVERY_RESOLVED`;
+- acción y resolución aprobadas;
+- reejecuciones extraordinarias efectivamente iniciadas como nuevos `attempt_id` de la misma intención cuando el contrato lo permita;
+- reincidencia en aislamiento después de recovery.
+
+Recovery no reinicia el histórico de la operación ni borra el episodio anterior.
+
+---
+
+#### 14. Cohortes, tasas y denominadores
+
+Toda tasa debe declarar qué cuenta y sobre qué conjunto.
+
+Reglas:
+
+1. Una tasa por operación utiliza `operation_id` única como unidad, no `attempt_id`.
+2. Una tasa por intento utiliza `attempt_id` y no se presenta como tasa de operaciones.
+3. El denominador de una cohorte terminal excluye operaciones aún abiertas o las reporta explícitamente como censuradas.
+4. No se mezcla una cohorte de un minuto con un backlog cuya edad cubre días sin indicar la diferencia de ventana.
+5. Una tasa de éxito técnico no representa éxito empresarial.
+6. Una tasa de error de proveedor se calcula sobre llamadas a esa dependencia, no sobre todas las operaciones del sistema.
+7. Una tasa de misfire se calcula sobre ocurrencias programadas debidas dentro del scope, no sobre intentos.
+8. Una tasa de deduplicación se calcula sobre submissions o eventos repetidos observados, no sobre operaciones únicas sin exposición a replay.
+9. Una tasa de recovery se separa entre solicitudes resueltas y operaciones que finalmente alcanzaron terminalidad compatible.
+10. Un porcentaje no se publica cuando su denominador sea cero, desconocido o incompleto; se presenta como sin evidencia suficiente, no como `0 %`.
+
+---
+
+#### 15. Dimensiones, cardinalidad y privacidad
+
+Se hereda la política de `TSVC-CAT-007`.
+
+Dimensiones cerradas compatibles, cuando apliquen y permanezcan acotadas:
+
+- `service_id`;
+- `contract_version`;
+- `operation_type`;
+- `operation_status`;
+- `error_class`;
+- `retry_profile`;
+- `priority_class`;
+- `environment`;
+- clase de dependencia;
+- clase de frontera de concurrencia;
+- perfil de ciclo `SCHEDULED_WORK`, `OFFLINE_OR_DEVICE_WORK` o `EVENT_DRIVEN_WORK`.
+
+Reglas:
+
+1. `operation_id`, `attempt_id`, `claim_id`, `event_id`, `trace_id`, `span_id`, `idempotency_key`, `concurrency_key`, `recovery_request_id`, `cancellation_request_id` y referencias individuales no se usan como etiquetas libres de métricas.
+2. Los identificadores individuales permanecen disponibles en logs, trazas, eventos o auditoría con acceso gobernado.
+3. `QAI-*` identifica el inventario documental y puede emplearse como dimensión analítica cerrada únicamente durante la coexistencia si la implementación declara su mapping estable; no se deriva de nombres libres de cola o URLs.
+4. Sitio, dispositivo, proveedor o consumidor solo se exponen como dimensión cuando cardinalidad, finalidad y sensibilidad lo permitan.
+5. Ningún payload, mensaje de error libre, correo, teléfono, documento, firma, secreto, token, URL completa o dato personal se incorpora a etiquetas.
+6. Cambiar la semántica de una métrica requiere versionado del catálogo; un dashboard no redefine su significado.
+
+---
+
+#### 16. Frescura, completitud y ausencia de instrumentación
+
+La ausencia de una muestra puede significar al menos:
+
+- no hubo trabajo;
+- la fuente no está instrumentada;
+- la telemetría no llegó;
+- la consulta está incompleta;
+- el pipeline de observabilidad está degradado;
+- el componente no existe o no está desplegado en ese ambiente.
+
+Por tanto:
+
+1. no se transforma ausencia de señal en valor cero sin evidencia de cobertura completa;
+2. toda métrica debe permitir conocer `observed_at` o frescura equivalente;
+3. un contador que reinicia declara instancia o ventana de reset sin usar esa instancia como etiqueta de alta cardinalidad global;
+4. un gauge stale no se presenta como valor actual;
+5. una consulta parcial no se extrapola a todos los ambientes;
+6. `QAI-008` permanece `PENDIENTE_DE_EVIDENCIA`: que no exista ejecución observada no demuestra una tasa cero de trabajo objetivo;
+7. los activos `DEFINED_NOT_INSTRUMENTED` de `TSVC-CAT-007` no pasan a instrumentados por quedar definida esta semántica;
+8. el fallo del pipeline de observabilidad se mide y declara como visibilidad degradada, no como salud de los servicios observados.
+
+---
+
+#### 17. Matriz materializada de métricas para las 19 identidades `QAI-*`
+
+| ID        | Clasificación                | Perfil                   | Espera y capacidad                                                                                       | Ejecución                                                                                                       | Error, incertidumbre y control                                                                    | Estado y brecha documental                                                                                                                                       |
+| --------- | ---------------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QAI-001` | `APLICA_METRICAS_DE_TRABAJO` | `SCHEDULED_WORK`         | drift de ocurrencia, misfire, elegibilidad, wait hasta claim, backlog y edad                             | intento de cierre y duración end-to-end de la ocurrencia                                                        | retry, expiry, conflicto de versión, claim/fencing y colisión de efecto con otros cierres         | `ESPECIFICADO`; métricas de la ocurrencia permanecen separadas de `QAI-004`, aunque comparten análisis de contención por turno/recurso                           |
+| `QAI-002` | `APLICA_METRICAS_DE_TRABAJO` | `SCHEDULED_WORK`         | drift del schedule, espera de ocurrencia raíz y espera de cada hijo/etapa                                | duración raíz, transporte, Edge Function y trabajos hijos con efecto independiente                              | retry por etapa, backlog downstream, resultado desconocido, aislamiento y fallo de dependencia    | `ESPECIFICADO`; éxito del cron o del transporte no equivale a cierre de los trabajos hijos                                                                       |
+| `QAI-003` | `APLICA_METRICAS_DE_TRABAJO` | `SCHEDULED_WORK`         | drift, misfire, wait y bloqueo por versión del turno                                                     | duración del intento de corrección stale                                                                        | conflicto de versión, retry, expiry, claim rechazado y terminalidad                               | `ESPECIFICADO`; no se cuenta como error que otro cierre legítimo haya dejado el turno no elegible sin clasificar primero el evento                               |
+| `QAI-004` | `APLICA_METRICAS_DE_TRABAJO` | `SCHEDULED_WORK`         | drift y wait propios del schedule transicional                                                           | duración de su propia ocurrencia                                                                                | overlap, duplicado suprimido, conflicto de recurso y efectos rechazados frente a `QAI-001`        | `ESPECIFICADO`; continuidad legacy y retiro permanecen bajo `TSVC-CAT-010`                                                                                       |
+| `QAI-005` | `APLICA_METRICAS_DE_TRABAJO` | `SCHEDULED_WORK`         | drift del batch, backlog raíz y de entregas hijas, edad por canal cuando aplique                         | duración del batch, `pg_net`, worker y proveedor como fronteras separadas                                       | rate limit, retry, dependencia, dedup, resultado desconocido y aislamiento                        | `ESPECIFICADO`; ACK técnico no se cuenta como entrega final de alerta                                                                                            |
+| `QAI-006` | `APLICA_METRICAS_DE_TRABAJO` | `SCHEDULED_WORK`         | drift de ocurrencia, wait y backlog de mantenimiento                                                     | duración de limpieza por ocurrencia y, cuando aplique, por unidad                                               | retry, misfire, expiry y error técnico                                                            | `ESPECIFICADO`; la vigencia empresarial de una cotización permanece separada del resultado técnico del job                                                       |
+| `QAI-007` | `APLICA_METRICAS_DE_TRABAJO` | `SCHEDULED_WORK`         | drift, wait de la ocurrencia y backlog de checkouts a reconciliar                                        | duración raíz y duración por unidad/checkout cuando tenga efecto independiente                                  | retry, conflictos de lock/versión, `result_unknown`, conciliación y fallos terminales             | `ESPECIFICADO`; un batch técnico exitoso no oculta un checkout todavía ambiguo                                                                                   |
+| `QAI-008` | `APLICA_METRICAS_DE_TRABAJO` | `SCHEDULED_WORK`         | modelo completo de drift, misfire, wait, backlog y edad objetivo                                         | intento y duración de la ocurrencia cuando exista despliegue acreditado                                         | retry, expiry, error y aislamiento según contrato                                                 | `PENDIENTE_DE_EVIDENCIA`; no se publica cero como sustituto de la ausencia de despliegue/telemetría; adopción y evidencia corresponden a `DELIV-PKG-001`         |
+| `QAI-009` | `APLICA_METRICAS_DE_TRABAJO` | `SCHEDULED_WORK`         | lag del workflow programado, wait del batch y edad de solicitudes elegibles                              | duración del workflow/worker y de cada solicitud destructiva como unidad independiente                          | cancelación, efecto parcial, `result_unknown`, recovery, retry y fallo por solicitud              | `ESPECIFICADO`; conclusión `success` del workflow no demuestra que toda solicitud hija alcanzó resultado autoritativo                                            |
+| `QAI-010` | `PROPAGA_NO_DECIDE_METRICAS` | `UPSTREAM_PROPAGATED`    | profundidad, edad y latencia de transporte pueden medirse como señales técnicas                          | duración HTTP o de transporte como dependencia upstream                                                         | errores de transporte, timeout y backlog se correlacionan con el trabajo propietario              | `ESPECIFICADO`; `pg_net` no crea contadores de operaciones empresariales ni terminalidad propia por inferencia                                                   |
+| `QAI-011` | `APLICA_METRICAS_DE_TRABAJO` | `OFFLINE_OR_DEVICE_WORK` | edad de custodia local, espera offline, retry_pending y backlog por dispositivo bajo cardinalidad segura | duración de cada intento de sync y dependencia servidora                                                        | retry, conflicto, error local/servidor, dedup y conciliación                                      | `ESPECIFICADO`; `pending/syncing/failed/conflict` actuales son evidencia local parcial, no métricas transversales completas                                      |
+| `QAI-012` | `APLICA_METRICAS_DE_TRABAJO` | `OFFLINE_OR_DEVICE_WORK` | misma familia que `QAI-011`, conservando backlog y edad separados para descansos                         | duración de intento y RPC start/end aplicable                                                                   | retry, conflicto, error, dedup y conciliación propios                                             | `ESPECIFICADO`; compartir worker no mezcla denominadores, backlog ni intentos con asistencia                                                                     |
+| `QAI-013` | `PROPAGA_NO_DECIDE_METRICAS` | `UPSTREAM_PROPAGATED`    | frecuencia real de wake-up, capacidad y frescura pueden observarse como health técnico                   | tiempo del sweep técnico sin convertirlo en duración de cada operación                                          | errores del loop se correlacionan con `QAI-011`/`QAI-012`; el tick no es retry                    | `ESPECIFICADO`; intervalo de `15000 ms` no se utiliza como backoff ni como nueva operación                                                                       |
+| `QAI-014` | `APLICA_METRICAS_DE_TRABAJO` | `OFFLINE_OR_DEVICE_WORK` | espera atribuible al SO/conectividad y tiempo hasta ejecución servidora, sin ampliar deadline            | duración del callback procesado y de la mutación servidora                                                      | conflicto de turno/versión, retry cuando aplique, incertidumbre y conciliación                    | `ESPECIFICADO`; ubicación o callback no constituyen resultado autoritativo por sí solos                                                                          |
+| `QAI-015` | `APLICA_METRICAS_DE_TRABAJO` | `OFFLINE_OR_DEVICE_WORK` | edad de cola local, wait hasta dispatch y disponibilidad de dispositivo                                  | duración del dispatch/adaptador y dependencia de impresora                                                      | timeout, duplicado suprimido, resultado físico desconocido, conciliación y reimpresión autorizada | `ESPECIFICADO`; vaciar `localStorage` no produce `operations_completed_total`; detalle especializado continúa en `PRINT-ARC-*`                                   |
+| `QAI-016` | `NO_APLICA`                  | `NO_APLICA`              | `NO_APLICA`                                                                                              | `NO_APLICA`                                                                                                     | `NO_APLICA`                                                                                       | `NO_APLICA`; refresco de lectura sin trabajo durable ni efecto empresarial; su telemetría de UI pertenece a su propio contrato, no a métricas de trabajo de cola |
+| `QAI-017` | `APLICA_METRICAS_DE_TRABAJO` | `EVENT_DRIVEN_WORK`      | tiempo desde evento fuente hasta reserva/entrega derivada y backlog de notificación                      | duración de worker, transporte y proveedor cuando aplique                                                       | retry, dependencia, dedup, timeout, resultado desconocido y terminalidad de la entrega            | `ESPECIFICADO`; el `support_message` sigue siendo fuente y no se contabiliza como resultado de notificación                                                      |
+| `QAI-018` | `APLICA_METRICAS_DE_TRABAJO` | `EVENT_DRIVEN_WORK`      | latencia de recepción a reserva/claim y espera de procesamiento del evento Wompi                         | duración del procesamiento y de la mutación de transacción/recurso                                              | replay suprimido, firma inválida, conflicto, `result_unknown`, conciliación y error de proveedor  | `ESPECIFICADO`; `processed` y HTTP `200` permanecen señales específicas y no sustituyen el resultado empresarial del pago                                        |
+| `QAI-019` | `APLICA_METRICAS_DE_TRABAJO` | `EVENT_DRIVEN_WORK`      | latencia desde recepción a procesamiento y backlog/replay cuando se materialice la reserva canónica      | duración del procesamiento y de componentes suscripción/entitlement/auditoría cuando sean medibles por separado | replay, componente fallido, resultado parcial, conciliación y terminalidad                        | `ESPECIFICADO`; el flujo actual no acredita reserva/state machine transversal ni éxito verificable de los tres componentes; adopción en `DELIV-PKG-001`          |
+
+Resultado de reconciliación:
+
+```text
+19 IDENTIDADES ESPERADAS
+19 IDENTIDADES MATERIALIZADAS
+16 APLICAN MÉTRICAS DE TRABAJO
+2 PROPAGAN Y NO DECIDEN MÉTRICAS
+1 NO APLICA
+0 FALTANTES
+0 DUPLICADOS
+
+PERFILES ENTRE LAS 16 APLICABLES
+SCHEDULED_WORK         = 9
+OFFLINE_OR_DEVICE_WORK = 4
+EVENT_DRIVEN_WORK      = 3
+```
+
+---
+
+#### 18. Reconciliación con implementación actual
+
+##### 18.1. Schedulers y jobs recurrentes
+
+Las ejecuciones actuales de `pg_cron` y GitHub Actions pueden aportar evidencia de disparo, duración o conclusión de su propia capa. No acreditan por sí solas:
+
+- `WORK_RESERVED` de cada intención;
+- claim/fencing de la operación;
+- estado de trabajos hijos;
+- resultado empresarial;
+- conciliación de efectos ambiguos.
+
+Por tanto, un `succeeded` del scheduler no alimenta automáticamente `TSVC-MET-002` del trabajo end-to-end.
+
+##### 18.2. `QAI-008`
+
+La definición está versionada, pero el inventario aprobado no acredita despliegue remoto del schedule. La cobertura métrica se mantiene `PENDIENTE_DE_EVIDENCIA` hasta que `DELIV-PKG-001` reciba evidencia de adopción/despliegue y la instrumentación correspondiente. La ausencia de señal no se registra como backlog cero, misfire cero ni éxito.
+
+##### 18.3. ANIMA offline
+
+La implementación actual conserva estados locales `pending`, `syncing`, `failed`, `conflict`, contador de intentos y `nextRetryAt`. Esos campos permiten diagnóstico local y mediciones parciales, pero no acreditan:
+
+- estado transversal end-to-end;
+- claim/lease/fencing distribuido;
+- reloj común con servidor;
+- métricas centrales completas;
+- resultado empresarial únicamente por desaparecer de la cola local.
+
+La adopción física y la reconciliación de instrumentación corresponden a `DELIV-PKG-001`.
+
+##### 18.4. NEXO impresión
+
+La cola local y BrowserPrint permiten observar intención local y dispatch, pero el vaciado de la cola después de iniciar envío no demuestra impresión física. `TSVC-MET-002` solo puede crecer cuando exista resultado autoritativo suficiente conforme al contrato de impresión. Timeout o callback incierto alimentan incertidumbre/conciliación, no éxito ni retry ciego.
+
+##### 18.5. Wompi
+
+El handler vigente conserva controles específicos de firma, lookup de evento, estado `processed`, mutación de transacción y registro de evento. Esos elementos son señales parciales útiles, pero no constituyen por sí solos el conjunto de métricas de `QUEUE-ARC-011`. La observabilidad futura correlaciona replay, procesamiento, dependencia, resultado y conciliación sin usar el estado de transacción como `operation_status`.
+
+##### 18.6. RevenueCat
+
+El handler vigente produce suscripción, entitlement y auditoría de forma secuencial y no acredita una reserva transversal previa del evento ni una máquina común de estado. Una respuesta HTTP exitosa no permite, por sí sola, construir una tasa de éxito end-to-end de los tres componentes. La instrumentación futura deberá registrar cada frontera suficiente para distinguir resultado completo, parcial e incierto; su adopción corresponde a `DELIV-PKG-001`.
+
+##### 18.7. `pg_net` y worker móvil
+
+`QAI-010` y `QAI-013` pueden exponer señales técnicas propias de transporte o health, pero no se convierten en otra población de operaciones empresariales. Sus errores, latencias y backlog se correlacionan con las operaciones upstream.
+
+---
+
+#### 19. Umbrales, SLO y alertas
+
+Esta tarea define **qué medir y cómo interpretar la medición**, no objetivos numéricos universales.
+
+Queda fijado:
+
+1. no se aprueba un máximo universal de queue wait;
+2. no se aprueba un máximo universal de attempt duration;
+3. no se aprueba una tasa universal de error, retry, misfire, dead-letter o result unknown;
+4. no se aprueba un percentil objetivo universal;
+5. no se aprueba un umbral de backlog común a todos los servicios;
+6. no se aprueba un timeout de dependencia por inferencia métrica;
+7. los futuros thresholds deberán provenir de baseline medido, criticidad, contrato, capacidad, ambiente y SLO aprobado;
+8. una alerta consume métricas; no modifica por sí misma retry, prioridad, cancelación, recovery ni autorización;
+9. `TSVC-CAT-007` continúa siendo propietario del catálogo transversal de alertas y observabilidad;
+10. cualquier instrumentación física y baseline se materializan dentro de los paquetes de implementación recibidos por `DELIV-PKG-001`.
+
+---
+
+#### 20. Handoff exacto
+
+| Destino                                                                           | Responsabilidad recibida                                                                                                                                                                                                                                  |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos` | definir quién puede crear trabajo, solicitar o hacer efectiva cancelación, forzar retry, recovery o acciones extraordinarias; las métricas de esta tarea son evidencia de contexto y nunca permiso                                                        |
+| `DELIV-PKG-001`                                                                   | recibir las brechas de instrumentación del inventario, planificar adopción física de estados/eventos/métricas, repositorios consumidores, almacenamiento de telemetría, pruebas, baseline y evidencia sin declarar instrumentación antes de implementarla |
+| `TSVC-CAT-010`                                                                    | conservar la transición y retiro controlado de soluciones legacy, incluida coexistencia de observabilidad parcial durante adopción                                                                                                                        |
+| `PRINT-ARC-*`                                                                     | especializar la evidencia y medición física de impresión sin redefinir la métrica transversal de trabajo                                                                                                                                                  |
+
+No se desarrolla ninguna de esas responsabilidades dentro de `QUEUE-ARC-011`.
+
+---
+
+#### 21. Prohibiciones
+
+Esta tarea no autoriza:
+
+1. crear tablas, vistas, índices, funciones, triggers, colas, buckets o esquemas de métricas;
+2. modificar Supabase, RLS, grants, Realtime, Storage, Edge Functions, cron o configuración;
+3. instalar SDK, agente, collector, exporter, OpenTelemetry, Prometheus, Sentry ni otro proveedor;
+4. crear dashboards, paneles, consultas operativas o alertas físicas;
+5. fijar SLO, SLA, percentiles objetivo o umbrales universales;
+6. modificar los veinte `TSVC-MET-*` aprobados por `TSVC-CAT-007`;
+7. crear nuevas identidades `TSVC-MET-*` desde esta especialización;
+8. modificar los dieciséis estados o treinta y tres eventos de `QUEUE-ARC-010`;
+9. tratar un retry como operación nueva;
+10. tratar un claim como resultado;
+11. tratar `dead_letter`, `quarantined` o `result_unknown` como `failed` por conveniencia estadística;
+12. tratar un scheduler exitoso como resultado end-to-end;
+13. tratar ausencia de telemetría como cero;
+14. usar identificadores de alta cardinalidad, payloads, secretos o datos personales como etiquetas métricas;
+15. derivar autoridad de una métrica, alerta, dashboard o estado de health;
+16. activar `QAI-008`;
+17. retirar `QAI-004`;
+18. modificar ANIMA, NEXO, PASS ni otro consumidor;
+19. declarar instrumentación, baseline, monitoreo operativo o validación física inexistentes;
+20. iniciar o desarrollar `QUEUE-ARC-012`.
+
+---
+
+#### 22. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea especializa para el inventario `QAI-*` la semántica de observabilidad y métricas ya aprobada transversalmente. No crea comportamiento ejecutable, no altera estados, transiciones, retry, concurrencia, integración, seguridad ni resultado empresarial, y no modifica el catálogo `TSVC-MET-*`; únicamente define cómo derivar y separar mediciones de espera, ejecución y error a partir de fuentes canónicas existentes.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 23. Cobertura de prueba existente preservada
+
+Se preserva sin modificación la cobertura que `TSVC-CAT-007` ya declaró suficiente para observabilidad, métricas, capacidad, backlog, latencias, retry, resultado desconocido, idempotencia, salud, privacidad y reconstrucción end-to-end, incluyendo:
+
+- `TREQ-PROC-095` a `TREQ-PROC-110`;
+- `TREQ-PROC-251` a `TREQ-PROC-269`;
+- `TREQ-PROC-271` a `TREQ-PROC-294`;
+- `TREQ-PROC-355` a `TREQ-PROC-368`;
+- `TREQ-INTEGRATION-003`;
+- `TREQ-INTEGRATION-019`;
+- `TREQ-INTEGRATION-023`.
+
+También permanece vigente la trazabilidad de `TREQ-INTEGRATION-004` para reconstruir cadenas de jobs, triggers, webhooks y notificaciones con causa, intento, error y efecto final.
+
+Ninguna fila del registro canónico cambia de identificador, regla, estado, responsable, evidencia, relación o secuencia por esta tarea.
+
+---
+
+#### 24. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `QUEUE-ARC-010` como tarea anterior aprobada;
+2. conserva `QUEUE-ARC-012` como única tarea siguiente reservada;
+3. especializa `TRANSVERSE-SERVICE-OBSERVABILITY-REGISTRY-001@1.0.0` sin crear un catálogo paralelo;
+4. conserva exactamente las veinte métricas `TSVC-MET-001..020`;
+5. crea cero identidades nuevas `TSVC-MET-*`;
+6. conserva los dieciséis estados y treinta y tres eventos de `QUEUE-ARC-010` sin modificarlos;
+7. distingue wait, execution, outcome/error, concurrency, recovery y capacity;
+8. define reloj y fuente comparables antes de restar timestamps;
+9. usa `event_sequence` y `status_version` para orden lógico cuando los relojes no bastan;
+10. rechaza intervalos negativos o temporalidad imposible en vez de corregirlos silenciosamente a cero;
+11. mide dwell por estado no terminal;
+12. separa `scheduled`, wait elegible, `blocked`, `retry_pending`, incertidumbre e aislamiento;
+13. define wait hasta claim solo durante elegibilidad real;
+14. conserva `backlog_depth` y `oldest_backlog_age_seconds` con scope de estados explícito;
+15. distingue backoff programado de lateness real de retry;
+16. mide duración de intento por `attempt_id` sin incluir espera previa;
+17. mide duración end-to-end de operación desde reserva hasta terminalidad;
+18. conserva tiempo activo separado de duración end-to-end;
+19. mide dependencias dentro de fronteras de reloj controladas;
+20. conserva retries como intentos y no como operaciones;
+21. define amplificación de intentos con denominador de operaciones que realmente ejecutaron;
+22. mantiene `failed`, `result_unknown`, `quarantined`, `dead_letter`, `cancelled` y `expired` separados;
+23. conserva rechazos de contrato y autenticación separados del fallo interno;
+24. mide claim, lease, fencing, versión y duplicados sin doble conteo;
+25. mide cancelación, incertidumbre, conciliación y recovery por episodios identificables;
+26. define cohortes y denominadores antes de publicar tasas;
+27. no publica `0 %` cuando el denominador o la cobertura son desconocidos;
+28. aplica dimensiones cerradas y cardinalidad acotada;
+29. excluye identificadores individuales, payloads, secretos y datos personales de labels libres;
+30. no interpreta ausencia de señal como valor cero;
+31. conserva `QAI-008` como `PENDIENTE_DE_EVIDENCIA`;
+32. materializa exactamente una decisión para `QAI-001..QAI-019`;
+33. obtiene 16 `APLICA_METRICAS_DE_TRABAJO`, 2 `PROPAGA_NO_DECIDE_METRICAS` y 1 `NO_APLICA`;
+34. obtiene 9 `SCHEDULED_WORK`, 4 `OFFLINE_OR_DEVICE_WORK` y 3 `EVENT_DRIVEN_WORK` entre las 16 aplicables;
+35. mantiene 0 identidades faltantes y 0 duplicadas;
+36. mantiene `QAI-010` y `QAI-013` como propagadores técnicos sin población empresarial propia;
+37. mantiene `QAI-016` como `NO_APLICA`;
+38. distingue scheduler success de resultado end-to-end;
+39. conserva estados locales ANIMA como evidencia parcial y no equivalencia automática;
+40. impide que vaciar la cola NEXO signifique impresión exitosa;
+41. conserva Wompi como observabilidad específica parcial sin convertir `processed` en estado transversal;
+42. documenta la falta de state machine e instrumentación transversal acreditada para RevenueCat;
+43. no fija SLO ni umbrales universales;
+44. asigna adopción física, baseline e instrumentación a `DELIV-PKG-001`;
+45. reserva autoridad exclusivamente para `QUEUE-ARC-012`;
+46. declara cero cambios de requisitos de prueba con justificación concreta;
+47. crea cero objetos físicos;
+48. modifica cero repositorios, Supabase, cron, colas, workers, dispositivos, adaptadores o webhooks;
+49. no inicia ni desarrolla `QUEUE-ARC-012`.
+
+---
+
+#### 25. Resultado de la tarea
+
+`QUEUE-ARC-011` deja definida la semántica de métricas del trabajo asíncrono sin crear una segunda fuente de verdad:
+
+```text
+ESTADO + EVENTOS
+        ↓
+DWELL POR CAUSA
+        ↓
+ESPERA ELEGIBLE / BLOQUEO / RETRY / AISLAMIENTO
+        ↓
+CLAIM
+        ↓
+INTENTO Y DEPENDENCIAS
+        ↓
+RESULTADO / ERROR / INCERTIDUMBRE
+        ↓
+CONCILIACIÓN Y RECOVERY CUANDO APLIQUE
+        ↓
+AGREGADOS CON COHORTE, VENTANA, FRESCURA Y CARDINALIDAD CONTROLADAS
+```
+
+Las 19 identidades quedan reconciliadas una a una. Las veinte métricas transversales existentes siguen siendo la base común; esta tarea determina cómo interpretarlas y qué mediciones derivar del ciclo de vida para distinguir espera, ejecución y error sin fabricar resultados, tasas, salud ni cumplimiento cuando la instrumentación aún no existe.
+
+---
+
+#### 26. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`QUEUE-ARC-010 — Definir estados y eventos canónicos`
+
+TAREA ACTUAL APROBADA
+
+`QUEUE-ARC-011 — Definir métricas de espera, ejecución y error`
+
+SIGUIENTE TAREA RESERVADA
+
+`QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos`
+
+
 ### [ ] QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos
 
 Estados mínimos:
