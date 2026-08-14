@@ -1121,7 +1121,676 @@ SIGUIENTE TAREA RESERVADA
 `QUEUE-ARC-003 — Definir clave de idempotencia por trabajo`
 
 
-### [ ] QUEUE-ARC-003 — Definir clave de idempotencia por trabajo
+### ✅ QUEUE-ARC-003 — Definir clave de idempotencia por trabajo
+
+**Estado:** APROBADA
+**Tarea anterior:** `QUEUE-ARC-002 — Definir contrato canónico de trabajo asíncrono`
+**Tarea siguiente:** `QUEUE-ARC-004 — Definir prioridad, programación y vencimiento`
+**Tipo de tarea:** documental; especialización canónica de identidad idempotente para trabajos asíncronos, ocurrencias programadas, eventos disparadores, colas locales y webhooks inventariados, definiendo ámbito de unicidad, origen de clave, huella lógica, reserva, recuperación del trabajo existente y conflicto semántico sin implementar persistencia, retry, concurrencia, estados, métricas ni autorización física
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`
+**Línea base documental:** `vento-shell@791b70dee38d48535fbf65b423a25feca68f6ed3`
+**Contrato base consumido:** `TSVC-SVC-001.CONTRACT@1.0.0`
+**Registro de confiabilidad consumido:** `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`
+**Inventario consumido:** `QUEUE-CURRENT-ASSET-INVENTORY-001` — 19 identidades `QAI-*`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada cómo una intención de trabajo obtiene y conserva una identidad idempotente antes de su primera entrega al servicio asíncrono, de modo que una repetición técnica pueda recuperar el mismo trabajo y su resultado sin crear un segundo efecto, mientras el uso de la misma clave para una intención distinta produzca conflicto verificable.
+
+La regla raíz es:
+
+```text
+MISMO ÁMBITO
++
+MISMA CLAVE IDEMPOTENTE
++
+MISMA HUELLA LÓGICA
+=
+MISMA INTENCIÓN REGISTRADA
+→ MISMO operation_id
+→ MISMO work_receipt_id
+→ MISMO ESTADO / RESULTADO RECUPERABLE
+
+MISMO ÁMBITO
++
+MISMA CLAVE IDEMPOTENTE
++
+HUELLA LÓGICA DISTINTA
+=
+IDEMPOTENCY_CONFLICT
+→ CERO SEGUNDO TRABAJO
+→ CERO SEGUNDO EFECTO AUTORIZADO POR ESA CLAVE
+```
+
+Una intención nueva usa una clave nueva. Una ejecución nueva de la misma intención no la usa.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se establece `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0` como especialización del contrato de trabajo asíncrono aprobado en `QUEUE-ARC-002` y de la confiabilidad transversal aprobada en `TSVC-CAT-006`.
+
+El resultado material fija:
+
+1. la unidad exacta que se reserva idempotentemente;
+2. la diferencia entre `idempotency_key`, `operation_id`, `attempt_id`, `request_id`, `correlation_id` y `causation_id`;
+3. el ámbito de unicidad de una clave de trabajo;
+4. el límite responsable de originar la clave;
+5. los campos semánticos que deben participar en la huella lógica;
+6. los campos técnicos que no deben convertir un reintento en otra intención;
+7. la conducta ante repetición válida, conflicto y resultado desconocido;
+8. la propagación de la identidad por scheduler, cola, worker, adaptador y transporte;
+9. una decisión explícita para cada una de las 19 identidades `QAI-*` del inventario aprobado;
+10. el handoff exacto hacia las responsabilidades reservadas de `QUEUE-ARC-004..012`.
+
+Balance:
+
+| Métrica                               | Resultado |
+| ------------------------------------- | --------: |
+| Identidades `QAI-*` esperadas         |    **19** |
+| Identidades materializadas            |    **19** |
+| `APLICA_IDEMPOTENCIA_DE_TRABAJO`      |    **16** |
+| `PROPAGA_NO_GENERA`                   |     **2** |
+| `NO_APLICA`                           |     **1** |
+| Identificadores `QAI-*` duplicados    |     **0** |
+| Identidades sin decisión              |     **0** |
+| Requisitos `TREQ-*` creados           |     **0** |
+| Objetos físicos creados o modificados |     **0** |
+
+---
+
+#### 3. Herencia contractual obligatoria
+
+`WORK-IDEMPOTENCY-CONTRACT-001@1.0.0` no crea un contrato paralelo ni sustituye los contratos transversales ya aprobados.
+
+Hereda obligatoriamente:
+
+- de `TSVC-SVC-001.CONTRACT@1.0.0`, la solicitud `WORK_SUBMISSION`, el resultado `WORK_OUTCOME`, el error `WORK_ERROR`, la versión contractual y la autoridad de la aplicación propietaria;
+- de `QUEUE-ARC-002`, la separación entre intención, trabajo, intento, claim, transporte, efecto y resultado;
+- de `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`, el modelo `AT_LEAST_ONCE_WITH_IDEMPOTENT_EFFECTS`, la clave estable previa al primer envío, la huella lógica, la reserva atómica, el resultado recuperable y `IDEMPOTENCY_CONFLICT`;
+- de `TSVC-CAT-005`, la separación entre actor, aplicación llamadora, principal de servicio, worker, dispositivo, proveedor y scheduler;
+- de `QUEUE-ARC-001`, las 19 identidades materiales y su clasificación técnica actual.
+
+No se declara garantía de ejecución exactamente una vez.
+
+La no duplicidad observable se obtiene mediante identidad estable, reserva de intención, recuperación del trabajo existente, efecto idempotente y conciliación cuando el resultado sea ambiguo.
+
+---
+
+#### 4. Unidad idempotente canónica
+
+La unidad reservada es una **intención lógica de trabajo**, no un intento, una petición HTTP, un mensaje de transporte, un tick de temporizador ni una ejecución concreta de worker.
+
+La identidad de reserva queda definida conceptualmente por:
+
+```text
+WORK_IDEMPOTENCY_IDENTITY =
+  service_id
+  + producer_application
+  + operation_type
+  + business_reference
+  + idempotency_key
+```
+
+Reglas:
+
+1. `service_id` identifica el servicio transversal al que pertenece la intención.
+2. `producer_application` identifica la aplicación que somete la intención.
+3. `operation_type` fija la semántica de trabajo solicitada.
+4. `business_reference` identifica el hecho, recurso, solicitud, ocurrencia, evento, documento o propósito empresarial al que pertenece el trabajo.
+5. `idempotency_key` distingue una intención concreta dentro de ese ámbito.
+6. La reserva se evalúa junto con `payload_fingerprint` para distinguir repetición válida de reutilización incompatible.
+7. La misma clave puede existir en ámbitos distintos únicamente cuando la identidad completa anterior sea distinta y el contrato lo permita.
+8. Una implementación no podrá reducir el ámbito a `idempotency_key` global si ello permite colisiones entre aplicaciones, operaciones o referencias empresariales.
+9. Una implementación tampoco podrá ampliar silenciosamente el ámbito hasta volver imposible reconocer reintentos legítimos de la misma intención.
+
+---
+
+#### 5. Identificadores que no son equivalentes
+
+| Campo                                            | Función canónica                                                           | ¿Se conserva en el reintento de la misma intención? | ¿Puede sustituir `idempotency_key`?                                    |
+| ------------------------------------------------ | -------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------- |
+| `idempotency_key`                                | Identifica la misma intención dentro de su ámbito                          | **sí**                                              | no aplica                                                              |
+| `operation_id`                                   | Identifica el trabajo canónico registrado después de reservar la intención | **sí**                                              | **no**                                                                 |
+| `attempt_id`                                     | Identifica una ejecución concreta                                          | **no**; cada intento recibe otro                    | **no**                                                                 |
+| `request_id`                                     | Identifica una llamada o petición técnica                                  | puede cambiar                                       | **no**                                                                 |
+| `correlation_id`                                 | Agrupa operaciones relacionadas                                            | normalmente se conserva en la coordinación          | **no**                                                                 |
+| `causation_id`                                   | Identifica la causa directa                                                | se conserva mientras la causa lógica sea la misma   | **no**                                                                 |
+| `deduplication_key`                              | Detecta repetición de un elemento transportado o fuente                    | depende del elemento                                | **no**                                                                 |
+| ID de mensaje HTTP, `pg_net`, broker o proveedor | Identidad de transporte                                                    | puede cambiar                                       | **no**, salvo que sea a la vez el ID estable de evento fuente aprobado |
+| `lease_token` / `fencing_token`                  | Controla reclamación y concurrencia                                        | cambia según claim                                  | **no**                                                                 |
+
+Una fila local, una solicitud de red, un tick de cron o un identificador de ejecución no adquieren semántica idempotente por llamarse `id`.
+
+---
+
+#### 6. Origen permitido de la clave
+
+Se establecen las siguientes clases de procedencia:
+
+| Clase                    | Uso                                                                                          | Regla                                                                                                                                                             |
+| ------------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PRODUCER_STABLE_KEY`    | intención iniciada por aplicación o API sin registro empresarial previo suficiente           | la productora crea una clave una sola vez antes del primer envío, la conserva durablemente durante la vida de la intención y la reutiliza en todos los reintentos |
+| `BUSINESS_RECORD_ID`     | existe una solicitud o registro empresarial estable que representa exactamente una intención | el identificador empresarial puede ser origen de la clave dentro de un ámbito que impida colisiones semánticas                                                    |
+| `SOURCE_EVENT_ID`        | trigger o webhook recibe un evento fuente con ID estable                                     | el ID del evento fuente se combina con proveedor/origen y operación; el replay conserva la misma identidad                                                        |
+| `SCHEDULE_OCCURRENCE_ID` | trabajo generado por una ocurrencia lógica programada                                        | la clave deriva de la identidad estable del schedule y de `logical_fire_at_utc`, no de la hora real en que un worker despertó                                     |
+| `AUTHORIZED_COPY_ID`     | impresión o emisión donde una nueva copia puede ser una intención legítimamente distinta     | la clave incorpora la identidad de copia autorizada y no trata una reimpresión deliberada como simple retry                                                       |
+| `UPSTREAM_PROPAGATED`    | transporte, adaptador o worker recibe un trabajo ya registrado                               | conserva la clave y el `operation_id` upstream; no genera otra identidad de intención                                                                             |
+| `NO_APLICA`              | mecanismo sin trabajo durable ni efecto empresarial asíncrono                                | no genera clave de trabajo                                                                                                                                        |
+
+No se permite una clase implícita o desconocida.
+
+---
+
+#### 7. Reglas de generación y estabilidad
+
+1. La clave se obtiene en el límite que conoce la intención, **antes del primer envío o registro del trabajo**.
+2. El worker no genera una nueva clave para un trabajo ya aceptado.
+3. Un adaptador no sustituye la clave porque cambie el protocolo o proveedor.
+4. Un reintento conserva la misma clave aunque cambien `request_id`, conexión, worker, transporte o `attempt_id`.
+5. Una intención nueva obtiene otra clave, aunque provenga de la misma pantalla, cron, usuario, documento o recurso.
+6. Una clave aleatoria es válida únicamente si se crea una sola vez, se persiste antes de depender de ella y se reutiliza para la misma intención. Regenerar otro valor aleatorio en cada intento está prohibido.
+7. Un timestamp, contador de proceso, PID, índice de array, posición en memoria o combinación `Date.now + random` creada de nuevo en cada envío no constituye una clave estable.
+8. La clave no debe contener secretos, credenciales, tokens de sesión ni datos personales innecesarios.
+9. La clave no prueba autorización; una solicitud repetida sigue sometida a las reglas de autoridad aplicables a consulta, cancelación o reintento según su contrato.
+10. La clave no prueba éxito; únicamente permite resolver la intención registrada y recuperar su estado o resultado.
+11. El retiro o expiración operativa de registros no autoriza reutilizar una clave histórica con otro significado.
+12. La serialización física, longitud, índice y almacenamiento se definirán únicamente durante la implementación autorizada, manteniendo esta semántica.
+
+---
+
+#### 8. Huella lógica del trabajo
+
+`payload_fingerprint` protege el significado de la intención asociada a una clave.
+
+Toda implementación futura deberá calcular una huella criptográfica del contenido lógico normalizado y conservar un `fingerprint_version` verificable.
+
+La huella incluirá, cuando apliquen y cuando alteren el efecto:
+
+- `contract_id` y `contract_version`;
+- `operation_type`;
+- `business_owner_application`;
+- `business_reference` o `source_reference` estable;
+- `source_version`;
+- finalidad o propósito de la operación;
+- identificadores del recurso, documento, destinatario, proveedor o destino que formen parte de la intención;
+- cantidades, unidades, parámetros, plantilla, versión, contenido o snapshot lógico que alteren el resultado;
+- cualquier dato cuya modificación pudiera producir otro efecto empresarial o físico.
+
+La huella excluirá los campos puramente técnicos o volátiles que no cambian la intención, entre ellos:
+
+- `request_id`;
+- `attempt_id`, `attempt_no` y `retry_count`;
+- tiempos de recepción o ejecución técnica;
+- latencia, trace/span IDs y metadata de observabilidad;
+- token de autenticación o credencial técnica;
+- `lease_token`, `fencing_token` y heartbeat;
+- ID de transporte generado después de aceptar el trabajo;
+- worker asignado dinámicamente;
+- dispositivo o adaptador asignado dinámicamente, salvo que el contrato declare que elegir ese destino concreto forma parte de la intención empresarial;
+- respuesta transitoria o código de conexión.
+
+`correlation_id` y `causation_id` se conservan para trazabilidad, pero no deberán alterar por sí solos la huella cuando el contenido lógico y la intención sean idénticos.
+
+---
+
+#### 9. Reserva idempotente
+
+La frontera lógica de aceptación es:
+
+```text
+RECIBIR WORK_SUBMISSION
+        ↓
+VALIDAR CONTRATO Y CAMPOS BASE
+        ↓
+RESOLVER business_reference E idempotency_scope
+        ↓
+OBTENER idempotency_key ESTABLE
+        ↓
+CALCULAR payload_fingerprint
+        ↓
+RESERVAR (scope + key) DE FORMA ATÓMICA O EQUIVALENTE
+        ↓
+┌──────────────────────────────────────────────────────────┐
+│ NUEVA IDENTIDAD                                          │
+│ → crear un solo operation_id y work_receipt_id           │
+│                                                          │
+│ MISMA IDENTIDAD + MISMA HUELLA                           │
+│ → recuperar el mismo trabajo                             │
+│ → no crear otro operation_id                             │
+│                                                          │
+│ MISMA IDENTIDAD + HUELLA DISTINTA                        │
+│ → IDEMPOTENCY_CONFLICT                                   │
+│ → no ejecutar el segundo contenido                       │
+└──────────────────────────────────────────────────────────┘
+```
+
+Esta tarea define la semántica. El mecanismo físico de constraint, transacción, lock, upsert, advisory lock, tabla, función o servicio se implementará únicamente en la fase autorizada.
+
+---
+
+#### 10. Resultado de una repetición
+
+| Situación                                               | Resultado canónico de idempotencia                                                                                  |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| clave nueva dentro del ámbito                           | registrar una intención y producir un solo `operation_id`                                                           |
+| misma clave + misma huella, trabajo pendiente           | devolver el mismo `operation_id`, `work_receipt_id` y estado consultable                                            |
+| misma clave + misma huella, trabajo terminado con éxito | devolver o referenciar el mismo resultado autoritativo                                                              |
+| misma clave + misma huella, trabajo con error terminal  | devolver el mismo estado/error terminal; no reiniciar por crear otra operación                                      |
+| misma clave + huella distinta                           | `IDEMPOTENCY_CONFLICT`; no sobrescribir contenido anterior                                                          |
+| misma clave + resultado externo o físico desconocido    | conservar la misma intención y entrar a consulta/conciliación; no crear otra intención automáticamente              |
+| clave distinta + misma huella                           | se considera otra intención salvo que una regla empresarial o de deduplicación independiente demuestre lo contrario |
+| replay de un evento fuente estable                      | recuperar la operación asociada al mismo ID de evento y origen                                                      |
+
+La igualdad de huella por sí sola no convierte todas las solicitudes iguales en una única intención. Dos acciones empresariales legítimamente distintas pueden tener el mismo contenido y claves distintas.
+
+---
+
+#### 11. Relación entre idempotencia y deduplicación
+
+La tarea distingue:
+
+```text
+IDEMPOTENCIA
+= repetir la misma intención sin repetir su efecto
+
+DEDUPLICACIÓN
+= detectar repetición del mismo elemento transportado o fuente
+```
+
+Reglas:
+
+1. Un webhook puede deduplicarse por `provider_event_id` y además mantener una operación idempotente interna.
+2. Un outbox puede deduplicar `event_id` sin usar ese valor como identidad de una operación empresarial diferente.
+3. Un scheduler deduplica una ocurrencia lógica; sus trabajos hijos pueden tener claves propias.
+4. Una cola local no convierte su ID de fila en clave idempotente salvo que ese ID haya sido creado y persistido como identidad de intención antes del primer envío.
+5. Un transport request ID nunca reemplaza la clave de intención.
+6. La deduplicación entre trabajos distintos o la exclusión de ejecuciones concurrentes se completa en `QUEUE-ARC-009`; esta tarea no decide locks ni fencing físicos.
+
+---
+
+#### 12. Relación con programación recurrente
+
+Para trabajos originados por schedule se adopta la identidad ya definida por la confiabilidad transversal:
+
+```text
+SCHEDULE_DEFINITION_IDENTITY
+= business_owner_application
+  + schedule_id
+  + schedule_version
+
+SCHEDULE_OCCURRENCE_IDENTITY
+= business_owner_application
+  + schedule_id
+  + logical_fire_at_utc
+  + contract_version
+```
+
+La ocurrencia lógica obtiene un `schedule_occurrence_id` estable y este valor origina o alimenta la clave idempotente del trabajo que la ocurrencia crea.
+
+Reglas:
+
+1. `logical_fire_at_utc` representa la ocurrencia prevista, no la hora real del retry.
+2. Un misfire, retraso o reanudación de la misma ocurrencia conserva la misma identidad.
+3. Una ejecución manual deliberadamente adicional utiliza otra clave y queda vinculada con la ocurrencia original cuando corresponda.
+4. Modificar prioridad, ventana, deadline, misfire o vencimiento pertenece a `QUEUE-ARC-004`.
+5. La coexistencia de dos schedules distintos que produzcan un efecto semejante no se colapsa automáticamente en esta tarea; la detección de duplicado semántico y la concurrencia pertenecen a `QUEUE-ARC-009`.
+
+---
+
+#### 13. Relación con colas offline y dispositivos
+
+Una cola offline deberá conservar la clave de la intención independientemente de:
+
+- reinicio de la aplicación;
+- pérdida y recuperación de conectividad;
+- reanudación del sistema operativo;
+- cambio de `attempt_id`;
+- cambio de request de red;
+- reejecución del worker local.
+
+El dispositivo puede custodiar temporalmente la intención, pero no adquiere propiedad empresarial del hecho.
+
+Un `queued_attempt_id`, ID de fila local o tick del worker es técnico y no puede sustituir la clave idempotente salvo que sea exactamente la identidad estable creada para la intención y se mantenga con esa semántica.
+
+La asignación a dispositivo o worker queda reservada para `QUEUE-ARC-005`; los reintentos y backoff para `QUEUE-ARC-006`.
+
+---
+
+#### 14. Relación con webhooks
+
+Para webhooks entrantes:
+
+```text
+INBOUND_WEBHOOK_IDEMPOTENCY_SCOPE
+= service_id
+  + provider_identity
+  + provider_event_id
+  + operation_type
+```
+
+Reglas:
+
+1. El ID de evento estable del proveedor identifica el replay del mismo evento cuando el proveedor lo suministra.
+2. El secreto, firma o checksum autentican/verifican el mensaje, pero no son la clave idempotente.
+3. El replay válido del mismo evento devuelve o reconstruye el mismo acuse y operación interna.
+4. Un mismo `provider_event_id` con contenido incompatible produce conflicto y evidencia; no se sobrescribe silenciosamente.
+5. Si el proveedor no ofrece una identidad de evento suficiente, el adaptador deberá materializar una identidad estable a partir del contrato específico antes de confiar en el flujo; no se inventa en esta tarea una fórmula universal que pueda confundir eventos legítimos.
+6. Un timeout después de un efecto externo potencialmente aplicado conserva `RESULT_UNKNOWN` y exige conciliación; una clave nueva no se usa para ocultar la incertidumbre.
+
+---
+
+#### 15. Relación con impresión y efectos físicos
+
+La intención de impresión utiliza como ámbito lógico, cuando aplique:
+
+```text
+business_owner_application
++ document_or_command_reference
++ source_version
++ print_purpose
++ authorized_copy_identity
++ idempotency_key
+```
+
+Reglas:
+
+1. Repetir técnicamente la misma impresión pendiente conserva la misma clave.
+2. Una reimpresión autorizada como nueva copia es una intención distinta y usa otra identidad de copia y otra clave.
+3. Un job eliminado de `localStorage` no prueba que el efecto físico ocurrió.
+4. Un ID de BrowserPrint o periférico no es la identidad empresarial del trabajo.
+5. Un resultado físico ambiguo no se repite ciegamente solo por cambiar la clave.
+6. La selección o asignación física del dispositivo pertenece a `QUEUE-ARC-005` y al bloque `PRINT-ARC-*`.
+
+---
+
+#### 16. Matriz materializada de las 19 identidades `QAI-*`
+
+| ID        | Clasificación en esta tarea      | Origen canónico de la clave                                                                      | Referencia / ámbito lógico                                                     | Conducta idempotente exigida                                                                                                                     | Situación documental actual                                                                                        |
+| --------- | -------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `QAI-001` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `SCHEDULE_OCCURRENCE_ID`                                                                         | schedule de cierre diario + ocurrencia lógica                                  | misma ocurrencia conserva una operación; retry no crea otro cierre                                                                               | objetivo definido; la coexistencia con `QAI-004` no se resuelve por cambiar claves                                 |
+| `QAI-002` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `SCHEDULE_OCCURRENCE_ID`                                                                         | schedule del runtime de turnos + ocurrencia lógica                             | cron, SQL, `pg_net` y Edge Function propagan la misma identidad raíz; IDs de transporte no la sustituyen                                         | objetivo definido para cadena multi-etapa                                                                          |
+| `QAI-003` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `SCHEDULE_OCCURRENCE_ID`                                                                         | schedule de autocierre stale + ocurrencia lógica                               | la misma ocurrencia no crea un segundo trabajo correctivo                                                                                        | objetivo definido                                                                                                  |
+| `QAI-004` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `SCHEDULE_OCCURRENCE_ID`                                                                         | schedule `auto-close-attendance` + ocurrencia lógica                           | retry de su ocurrencia conserva clave; no se fusiona silenciosamente con `QAI-001` por compartir función                                         | objetivo definido; reconciliación entre schedules queda para `QUEUE-ARC-009` y transición legacy                   |
+| `QAI-005` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `SCHEDULE_OCCURRENCE_ID`                                                                         | `document-alerts-daily` + ocurrencia lógica                                    | el schedule conserva identidad; `pg_net` propaga; secretos no forman parte de la clave                                                           | objetivo definido; seguridad de credenciales sigue en su tarea propietaria                                         |
+| `QAI-006` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `SCHEDULE_OCCURRENCE_ID`                                                                         | limpieza de cotizaciones + ocurrencia lógica                                   | una reejecución técnica de la misma ocurrencia conserva trabajo; una ocurrencia futura es otra intención                                         | objetivo definido                                                                                                  |
+| `QAI-007` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `SCHEDULE_OCCURRENCE_ID`                                                                         | reconciliación de expiraciones + ocurrencia lógica                             | misma ocurrencia no crea operación paralela por retry; los efectos por checkout conservan además identidad empresarial propia                    | objetivo definido                                                                                                  |
+| `QAI-008` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `SCHEDULE_OCCURRENCE_ID`                                                                         | purga de borradores + ocurrencia lógica                                        | si se despliega en el futuro, cada ocurrencia usa identidad estable; ausencia remota no autoriza asumir ejecución                                | contrato definido; activo sigue sin acreditación de despliegue según inventario aprobado                           |
+| `QAI-009` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `SCHEDULE_OCCURRENCE_ID` para el batch + `BUSINESS_RECORD_ID` para cada solicitud de eliminación | ocurrencia del workflow y solicitud individual de eliminación de cuenta        | el batch no debe ser la única clave de los efectos hijos; cada solicitud conserva su identidad estable                                           | objetivo definido para frontera entre workflow y worker                                                            |
+| `QAI-010` | `PROPAGA_NO_GENERA`              | `UPSTREAM_PROPAGATED`                                                                            | `operation_id` + identidad idempotente del trabajo que originó la llamada HTTP | `net.http_request_queue` transporta la identidad upstream; su request ID no crea otra intención                                                  | cola técnica, no trabajo empresarial autónomo                                                                      |
+| `QAI-011` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `PRODUCER_STABLE_KEY` o registro empresarial estable existente                                   | operación de asistencia + referencia laboral/turno aplicable                   | la misma operación offline conserva clave tras reinicio, conectividad y retries                                                                  | existe patrón local con `idempotency_key`; esta tarea fija su semántica canónica sin afirmar cumplimiento integral |
+| `QAI-012` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `PRODUCER_STABLE_KEY` o registro empresarial estable existente                                   | operación de descanso + referencia laboral/turno aplicable                     | la misma intención de descanso conserva clave; la cola separada no autoriza duplicar el hecho                                                    | existe persistencia local; cumplimiento integral queda sujeto a implementación y pruebas                           |
+| `QAI-013` | `PROPAGA_NO_GENERA`              | `UPSTREAM_PROPAGATED`                                                                            | elementos pendientes `QAI-011` y `QAI-012`                                     | cada tick procesa la clave ya almacenada; el intervalo de 15 s no crea una intención nueva                                                       | worker técnico efímero                                                                                             |
+| `QAI-014` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `SOURCE_EVENT_ID` o `PRODUCER_STABLE_KEY` materializado al aceptar el evento de salida           | trabajador + relación laboral/turno + evento lógico de salida                  | callbacks repetidos de ubicación no deben crear múltiples cierres; la coordenada o timestamp crudo no bastan por sí solos como clave empresarial | objetivo definido; servidor conserva decisión final                                                                |
+| `QAI-015` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `AUTHORIZED_COPY_ID`                                                                             | documento/comanda + versión + propósito + identidad de copia                   | retry conserva trabajo; reimpresión deliberada usa otra copia autorizada y otra clave                                                            | cola local actual no acredita resultado físico durable                                                             |
+| `QAI-016` | `NO_APLICA`                      | `NO_APLICA`                                                                                      | refresco de lectura de tablero                                                 | no genera trabajo durable ni efecto empresarial en el alcance actual                                                                             | permanece excluido de materialización como job                                                                     |
+| `QAI-017` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `SOURCE_EVENT_ID`                                                                                | mensaje fuente estable + propósito de notificación                             | un mismo mensaje insertado no genera dos trabajos raíz por replay del trigger; `pg_net` conserva identidad upstream                              | objetivo definido; entrega de notificación se gobierna además por `NOTIFY-ARC-*`                                   |
+| `QAI-018` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `SOURCE_EVENT_ID` del proveedor                                                                  | proveedor Wompi + ID de evento + operación                                     | replay recupera la misma operación y no aplica segundo efecto; incertidumbre externa entra a conciliación                                        | el inventario aprobado ya observó protección de evento procesado; esta tarea no declara certificación E2E          |
+| `QAI-019` | `APLICA_IDEMPOTENCIA_DE_TRABAJO` | `SOURCE_EVENT_ID` del proveedor                                                                  | RevenueCat + ID de evento + operación                                          | replay debe recuperar la misma operación; mismo ID con contenido incompatible produce conflicto                                                  | brecha explícita del inventario: protección equivalente no estaba materializada en el código observado             |
+
+Resultado de reconciliación:
+
+```text
+19 IDENTIDADES ESPERADAS
+19 IDENTIDADES MATERIALIZADAS
+16 APLICAN CLAVE DE TRABAJO
+2 PROPAGAN Y NO GENERAN
+1 NO APLICA
+0 FALTANTES
+0 DUPLICADOS
+```
+
+---
+
+#### 17. Reglas específicas para schedules duplicados o solapados
+
+`QAI-001` y `QAI-004` invocan la misma función base desde schedules distintos.
+
+Esta tarea fija únicamente que:
+
+1. cada schedule tiene identidad de definición propia;
+2. cada ocurrencia lógica tiene identidad propia;
+3. un retry de una ocurrencia no crea otra intención;
+4. usar claves distintas para dos schedules distintos **no demuestra** que ambos efectos empresariales sean legítimamente distintos;
+5. la relación causal, referencia empresarial y función/propósito deberán permanecer visibles para que `QUEUE-ARC-009` pueda decidir bloqueo de duplicados y concurrencia;
+6. esta tarea no retira, fusiona ni desactiva ninguno de los schedules.
+
+La clave idempotente protege repetición de una intención; no corrige por sí sola dos autoridades distintas que ordenen el mismo efecto.
+
+---
+
+#### 18. Reglas para trabajos contenedores y trabajos hijos
+
+Cuando una automatización procese múltiples unidades empresariales, se separan:
+
+```text
+IDENTIDAD DE LA EJECUCIÓN CONTENEDORA
+≠
+IDENTIDAD IDEMPOTENTE DE CADA EFECTO HIJO
+```
+
+Ejemplos del inventario:
+
+- `QAI-009`: la ocurrencia del workflow de eliminación de cuentas tiene clave de schedule; cada solicitud de eliminación procesada conserva su propia identidad empresarial;
+- `QAI-007`: la ocurrencia de reconciliación tiene clave de schedule; cada checkout afectado conserva sus identificadores autoritativos y no debe duplicarse por reejecutar el batch;
+- `QAI-006`: la limpieza tiene identidad de ocurrencia, pero no puede convertir todos los registros limpiados en una única entidad empresarial.
+
+Un batch reintentado no autoriza repetir efectos hijos ya confirmados únicamente porque el batch tenga otro `attempt_id`.
+
+---
+
+#### 19. Recuperación del trabajo existente
+
+Una repetición válida deberá poder recuperar como mínimo:
+
+```text
+operation_id
+work_receipt_id
+idempotency_scope
+idempotency_key
+payload_fingerprint
+fingerprint_version
+contract_id
+contract_version
+operation_type
+business_reference
+work_status
+result_ref
+error_code
+```
+
+Reglas:
+
+1. si el trabajo sigue activo, se devuelve la misma identidad y estado;
+2. si terminó, se recupera el resultado o error autoritativo;
+3. si el efecto permanece incierto, se conserva el mismo trabajo en condición conciliable;
+4. nunca se crea otra operación únicamente porque el cliente perdió la respuesta;
+5. el detalle de los estados canónicos se cierra en `QUEUE-ARC-010`;
+6. la política de retry que decide cuándo ejecutar otro intento se cierra en `QUEUE-ARC-006`.
+
+---
+
+#### 20. Conflicto idempotente
+
+`IDEMPOTENCY_CONFLICT` ocurre cuando la misma identidad de reserva pretende representar contenido materialmente distinto.
+
+El conflicto incluye, entre otros:
+
+- cambio de `contract_version` incompatible bajo la misma intención;
+- cambio de `operation_type` o referencia empresarial;
+- cambio de recurso, destinatario, proveedor, cantidad, plantilla, versión, propósito o payload material;
+- cambio de identidad de copia autorizada;
+- reuso de una clave de evento para otro evento;
+- reuso de una clave de schedule para otra ocurrencia lógica;
+- reuso de una clave persistida localmente para una acción empresarial nueva.
+
+Reglas:
+
+1. el segundo contenido no reemplaza al primero;
+2. el conflicto no se corrige actualizando silenciosamente la huella almacenada;
+3. el conflicto no se convierte en retry automático;
+4. una intención empresarial realmente nueva exige una clave nueva y su relación causal correspondiente;
+5. la respuesta exacta de error y sus estados se materializan en `QUEUE-ARC-010` sin cambiar esta semántica.
+
+---
+
+#### 21. Handoff exacto a `QUEUE-ARC-004..012`
+
+| Tarea                                                                             | Responsabilidad reservada recibida desde esta tarea                                                                                                                                    |
+| --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QUEUE-ARC-004 — Definir prioridad, programación y vencimiento`                   | usar la identidad de intención ya estable para decidir prioridad, `scheduled_at`, ocurrencia, deadline y vencimiento sin regenerar la clave                                            |
+| `QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador`        | asignar ejecutor o destino sin convertir la asignación dinámica en otra intención salvo que el contrato declare ese destino como parte material de la solicitud                        |
+| `QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo`                     | crear nuevos `attempt_id` conservando `idempotency_key`, huella, `operation_id`, contrato y referencia empresarial                                                                     |
+| `QUEUE-ARC-007 — Definir cancelación antes y durante ejecución`                   | cancelar el mismo trabajo identificado sin reutilizar su clave para una operación de cancelación semánticamente distinta cuando esta requiera identidad propia                         |
+| `QUEUE-ARC-008 — Definir cola de fallos y recuperación manual`                    | aislar y recuperar el mismo trabajo sin borrar ni sustituir su identidad idempotente                                                                                                   |
+| `QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia`                    | impedir ganadores simultáneos, trabajos semánticamente solapados o cierres concurrentes mediante claim, lock, lease, fencing o mecanismo equivalente sin cambiar la clave de intención |
+| `QUEUE-ARC-010 — Definir estados y eventos canónicos`                             | representar aceptación, conflicto, procesamiento, resultado, incertidumbre y terminalidad alrededor del mismo `operation_id`                                                           |
+| `QUEUE-ARC-011 — Definir métricas de espera, ejecución y error`                   | medir duplicados recuperados, conflictos, intentos y tiempos sin usar la telemetría como identidad de intención                                                                        |
+| `QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos` | validar quién puede crear o actuar sobre la intención sin tratar la posesión de una clave como permiso empresarial                                                                     |
+
+Ninguna de esas responsabilidades se desarrolla en esta tarea.
+
+---
+
+#### 22. Prohibiciones
+
+Esta tarea no autoriza:
+
+1. crear tablas o columnas de idempotencia;
+2. crear índices únicos o constraints;
+3. modificar RPC, funciones SQL, triggers o Edge Functions;
+4. cambiar schedules;
+5. alterar `pg_net`;
+6. cambiar SecureStore, localStorage, BrowserPrint o TaskManager;
+7. modificar webhooks de Wompi o RevenueCat;
+8. crear locks, leases o fencing físicos;
+9. definir o modificar perfiles de retry;
+10. definir prioridades o deadlines;
+11. definir estados finales de la cola;
+12. desplegar una cola transversal;
+13. afirmar que los 16 activos aplicables cumplen ya el contrato objetivo;
+14. convertir un ID técnico existente en clave idempotente sin demostrar su estabilidad y ámbito;
+15. tratar `idempotency_key` como autenticación o autorización;
+16. tratar una reserva o receipt como éxito empresarial;
+17. iniciar `QUEUE-ARC-004`.
+
+---
+
+#### 23. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea especializa para el trabajo canónico una obligación de idempotencia ya registrada y vigente: clave estable antes del primer envío, huella del contenido lógico, recuperación del mismo resultado para la misma identidad, conflicto ante reutilización incompatible y protección frente a efectos duplicados. No introduce una obligación verificable nueva ni modifica la semántica de un requisito existente; materializa su aplicación a las 19 identidades del inventario de colas y conserva las tareas responsables ya asignadas.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 24. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, que exige clave estable, huella lógica, estado durable, resultado recuperable, conflicto ante contenido distinto, idempotencia, claim, conciliación y recuperación para operaciones asíncronas;
+- `TREQ-INTEGRATION-004`, que exige reconstruir causa, payload, principal técnico, recurso, intento, resultado, error y efecto final en cadenas trigger, job y webhook;
+- la cobertura específica de ANIMA, NEXO, PASS, Supabase e integraciones ya relacionada con esas obligaciones.
+
+Ninguna fila del registro canónico cambia de identificador, dominio, regla protegida, estado, responsable, evidencia, relación o secuencia por esta tarea.
+
+---
+
+#### 25. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `QUEUE-ARC-002` como tarea anterior aprobada;
+2. conserva `QUEUE-ARC-004` como única siguiente tarea reservada;
+3. especializa `TSVC-SVC-001.CONTRACT@1.0.0` sin crear un contrato paralelo;
+4. conserva el modelo `AT_LEAST_ONCE_WITH_IDEMPOTENT_EFFECTS` sin afirmar exactamente-una-vez;
+5. define la intención lógica como unidad idempotente;
+6. define el ámbito `service_id + producer_application + operation_type + business_reference + idempotency_key`;
+7. separa `idempotency_key`, `operation_id`, `attempt_id`, `request_id`, `correlation_id` y `causation_id`;
+8. obliga a crear u obtener la clave antes del primer envío;
+9. obliga a conservar la misma clave en todos los retries y handoffs de la misma intención;
+10. define una nueva clave para una intención empresarial nueva;
+11. define la función de `payload_fingerprint` y `fingerprint_version`;
+12. separa campos lógicos de campos técnicos volátiles en la huella;
+13. define recuperación del mismo trabajo para misma clave y misma huella;
+14. define `IDEMPOTENCY_CONFLICT` para misma clave y huella incompatible;
+15. prohíbe crear otro trabajo por pérdida de respuesta o resultado desconocido;
+16. distingue idempotencia de deduplicación;
+17. define identidad idempotente de ocurrencias programadas;
+18. define persistencia de clave para colas offline;
+19. define propagación de identidad por transportes y workers;
+20. define replay idempotente de webhooks mediante identidad estable de evento fuente;
+21. define identidad de copia autorizada para impresión;
+22. materializa las 19 identidades `QAI-*` exactamente una vez;
+23. obtiene 16 `APLICA_IDEMPOTENCIA_DE_TRABAJO`, 2 `PROPAGA_NO_GENERA` y 1 `NO_APLICA`;
+24. deja 0 identidades faltantes y 0 duplicadas;
+25. no fusiona `QAI-001` y `QAI-004` por inferencia;
+26. separa identidad del batch e identidad de sus efectos hijos;
+27. asigna de forma exacta los handoffs `QUEUE-ARC-004..012` sin intercambiar responsabilidades;
+28. crea cero requisitos de prueba;
+29. modifica cero requisitos de prueba;
+30. crea cero objetos físicos;
+31. modifica cero repositorios consumidores, Supabase, cron, colas, workers o webhooks;
+32. no inicia ni desarrolla `QUEUE-ARC-004`.
+
+---
+
+#### 26. Resultado de la tarea
+
+`QUEUE-ARC-003` deja establecido que todo trabajo aplicable del inventario canónico debe poder reconocer inequívocamente la misma intención antes de ejecutar efectos:
+
+```text
+INTENCIÓN
+→ ÁMBITO IDEMPOTENTE
+→ CLAVE ESTABLE
+→ HUELLA LÓGICA
+→ RESERVA
+→ operation_id ÚNICO PARA ESA INTENCIÓN
+→ RECUPERACIÓN DEL MISMO TRABAJO EN REPETICIONES
+
+MISMA CLAVE + MISMA HUELLA
+→ MISMO TRABAJO
+
+MISMA CLAVE + HUELLA DISTINTA
+→ IDEMPOTENCY_CONFLICT
+
+NUEVA INTENCIÓN
+→ NUEVA CLAVE
+```
+
+El contrato queda completamente definido a nivel documental y listo para que las tareas siguientes añadan programación, asignación, retry, cancelación, recuperación, concurrencia, estados, métricas y autorización sin redefinir la identidad de la intención.
+
+---
+
+#### 27. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`QUEUE-ARC-002 — Definir contrato canónico de trabajo asíncrono`
+
+TAREA ACTUAL APROBADA
+
+`QUEUE-ARC-003 — Definir clave de idempotencia por trabajo`
+
+SIGUIENTE TAREA RESERVADA
+
+`QUEUE-ARC-004 — Definir prioridad, programación y vencimiento`
+
+
 ### [ ] QUEUE-ARC-004 — Definir prioridad, programación y vencimiento
 ### [ ] QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador
 ### [ ] QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo
