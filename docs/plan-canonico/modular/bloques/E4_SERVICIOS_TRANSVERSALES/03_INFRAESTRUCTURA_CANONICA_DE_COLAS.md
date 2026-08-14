@@ -8034,7 +8034,1049 @@ SIGUIENTE TAREA RESERVADA
 `QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos`
 
 
-### [ ] QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos
+
+### ✅ QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos
+
+**Estado:** APROBADA
+**Tarea anterior:** `QUEUE-ARC-011 — Definir métricas de espera, ejecución y error`
+**Tarea siguiente:** `DELIV-PKG-001 — Crear identificador estable para cada paquete de implementación`
+**Tipo de tarea:** documental; especialización canónica de autorización y control para crear trabajo asíncrono, disparar ocurrencias manuales, cambiar prioridad o asignación, solicitar cancelación, forzar retry elegible, iniciar recuperación y recuperar exclusiones técnicas, separando autorización empresarial, identidad técnica, ejecución automática y acciones extraordinarias para las 19 identidades `QAI-*`, sin crear PermissionKeys, grants, roles, RPC, RLS, colas, workers, credenciales, interfaces ni cambios físicos
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`
+**Línea base documental:** `vento-shell@e462f6f962646cfe7dc7ed106b90856cf63a06db`
+**Contrato base de trabajo:** `TSVC-SVC-001.CONTRACT@1.0.0`
+**Registro de identidad técnica consumido:** `TRANSVERSE-SERVICE-TECHNICAL-IDENTITY-REGISTRY-001@1.0.0`
+**Registro de confiabilidad consumido:** `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`
+**Contrato de idempotencia consumido:** `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`
+**Contrato temporal consumido:** `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0`
+**Contrato de asignación consumido:** `WORK-ASSIGNMENT-CONTRACT-001@1.0.0`
+**Contrato de retry consumido:** `WORK-RETRY-POLICY-CONTRACT-001@1.0.0`
+**Contrato de cancelación consumido:** `WORK-CANCELLATION-CONTRACT-001@1.0.0`
+**Contrato de recuperación consumido:** `WORK-FAILURE-RECOVERY-CONTRACT-001@1.0.0`
+**Contrato de concurrencia consumido:** `WORK-CONCURRENCY-CONTROL-CONTRACT-001@1.0.0`
+**Contrato de estados y eventos consumido:** `WORK-STATE-EVENT-CONTRACT-001@1.0.0`
+**Registro de observabilidad consumido:** `TRANSVERSE-SERVICE-OBSERVABILITY-REGISTRY-001@1.0.0`
+**Contrato canónico de decisión consumido:** `AuthorizationDecision@1.0.0`
+**Inventario consumido:** `QUEUE-CURRENT-ASSET-INVENTORY-001` — 19 identidades `QAI-*`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Cerrar la dimensión de autoridad del trabajo asíncrono de Vento OS: quién puede originar una intención, quién puede solicitar una acción de control sobre una operación existente, qué decisiones pueden continuar automáticamente bajo la autoridad ya validada de la intención original y qué acciones extraordinarias exigen una nueva decisión de autorización antes de modificar el tratamiento técnico del trabajo.
+
+La regla raíz es:
+
+```text
+IDENTIDAD TÉCNICA AUTENTICADA
+≠
+AUTORIZACIÓN EMPRESARIAL
+≠
+AUTORIDAD PARA UNA ACCIÓN DE CONTROL
+≠
+CLAIM / LEASE / FENCING
+≠
+RESULTADO EMPRESARIAL
+```
+
+Y también:
+
+```text
+POSEER operation_id
+POSEER receipt_id
+POSEER idempotency_key
+POSEER claim_id
+POSEER lease_token
+POSEER fencing_token
+POSEER UNA CREDENCIAL DE SERVICIO
+POSEER UNA CREDENCIAL DE DISPOSITIVO
+POSEER UNA CREDENCIAL DE PROVEEDOR
+        ↓
+NO CONCEDE POR SÍ SOLO PERMISO PARA
+CREAR / CANCELAR / REINTENTAR / RECUPERAR / REASIGNAR
+```
+
+Toda acción protegida debe resolverse mediante el modelo canónico de autorización de Vento OS y permanecer separada de la credencial que permite al servicio, worker, dispositivo, scheduler o adaptador autenticarse técnicamente.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se establece `WORK-AUTHORIZATION-CONTRACT-001@1.0.0` como especialización de autoridad y control del contrato canónico de trabajo asíncrono.
+
+El resultado material fija:
+
+1. la separación obligatoria entre autenticación técnica, autorización empresarial, autoridad de control y ejecución técnica;
+2. un modelo cerrado para autorizar creación ordinaria, creación derivada por reglas del sistema y acciones manuales o extraordinarias;
+3. nueve acciones canónicas de control, sin convertir sus nombres en nuevas PermissionKeys;
+4. un sobre mínimo de solicitud y decisión de control;
+5. la obligación de resolver un `required_permission_ref` canónico por operación y acción, sin inventar permisos por nombre de cola, worker, endpoint o interfaz;
+6. default-deny cuando una acción manual no tenga permiso, recurso, ámbito, owner o política de control explícitos;
+7. la regla de que el retry automático ordinario continúa la misma intención y no exige una nueva intención ni una nueva concesión por intento;
+8. la regla de que un retry manual solo puede acelerar o solicitar una ejecución todavía permitida por la política vigente y nunca anular un error no reintentable, un deadline, un efecto ambiguo, una cancelación o un presupuesto agotado;
+9. la separación entre `FORCE_RETRY` y la recuperación extraordinaria `SAFE_REEXECUTE_SAME_INTENTION` ya definida en `QUEUE-ARC-008`;
+10. la autoridad requerida para solicitud de cancelación, disparo manual, cambio de prioridad, reasignación forzada, recovery y recuperación de una exclusión técnica;
+11. la prohibición de romper un claim, lease, fencing o guardia de recurso todavía válidos únicamente porque el solicitante tenga una capacidad administrativa;
+12. la conducta de identidades `SERVICE_RUNTIME_IDENTITY`, `WORKER_IDENTITY`, `DEVICE_IDENTITY`, `PROVIDER_IDENTITY`, `SCHEDULER_IDENTITY`, `OBSERVER_IDENTITY` y `BREAK_GLASS_IDENTITY` frente a acciones de control;
+13. la regla de que un sistema programado o event-driven puede originar trabajo solamente desde una regla contractual aprobada, versionada y vigente de la aplicación propietaria;
+14. la regla de que un proveedor externo aporta un evento y autenticidad de frontera, pero nunca autoridad para gobernar la cola interna ni el resultado empresarial;
+15. la integración con los 33 eventos ya aprobados sin crear un segundo state machine ni un segundo catálogo de eventos;
+16. una decisión explícita para las 19 identidades `QAI-*` del inventario aprobado;
+17. el cierre documental de `QUEUE-ARC-001..012` y el handoff exclusivo a planificación de implementación.
+
+Balance:
+
+| Métrica                                        | Resultado |
+| ---------------------------------------------- | --------: |
+| Identidades `QAI-*` esperadas                  |    **19** |
+| Identidades materializadas                     |    **19** |
+| `APLICA_AUTORIZACION_DE_CONTROL`               |    **16** |
+| `PROPAGA_NO_DECIDE_AUTORIZACION`               |     **2** |
+| `NO_APLICA`                                    |     **1** |
+| Perfil `SCHEDULED_SYSTEM_AUTHORITY`            |     **9** |
+| Perfil `OFFLINE_OR_DEVICE_DELEGATED_AUTHORITY` |     **4** |
+| Perfil `EVENT_DERIVED_AUTHORITY`               |     **3** |
+| Perfil `UPSTREAM_PROPAGATED`                   |     **2** |
+| Perfil `NO_APLICA`                             |     **1** |
+| Acciones canónicas de control                  |     **9** |
+| PermissionKeys nuevas creadas                  |     **0** |
+| Identificadores `QAI-*` duplicados             |     **0** |
+| Identidades sin decisión                       |     **0** |
+| Requisitos de prueba creados o modificados     |     **0** |
+| Objetos físicos creados o modificados          |     **0** |
+
+---
+
+#### 3. Herencia contractual obligatoria
+
+`WORK-AUTHORIZATION-CONTRACT-001@1.0.0` no sustituye el modelo general de autorización ni crea una segunda fuente de verdad de permisos.
+
+Hereda obligatoriamente:
+
+- de `AuthorizationDecision@1.0.0`, aplicación, permiso exacto, requisito de autorización, recurso real, decisión base, decisión operativa, allows coincidentes, denegaciones, razones de bloqueo y decisión final `ALLOW` o `DENY`;
+- de `ADR-AUTH-001`, la separación entre principal autenticado, identidad de dominio, actor efectivo, contexto, permiso, recurso, alcance, allows, denegaciones y decisión efectiva;
+- del catálogo canónico de autorización, que un permiso representa una capacidad empresarial y no una pantalla, endpoint, método HTTP, cola, worker o credencial;
+- de `TRANSVERSE-SERVICE-TECHNICAL-IDENTITY-REGISTRY-001@1.0.0`, la separación entre actor, caller, aplicación propietaria, servicio, worker, dispositivo, proveedor, scheduler, observador y break-glass;
+- de `TSVC-SVC-001.CONTRACT@1.0.0`, `operation_id`, `operation_type`, productor, aplicación propietaria, causalidad, resultado y versión contractual;
+- de `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`, la identidad estable de la intención y la prohibición de crear otra operación para ocultar repetición, conflicto o incertidumbre;
+- de `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0`, prioridad, schedule, ocurrencia, `scheduled_at`, `deadline_at`, misfire y ejecución manual diferenciada;
+- de `WORK-ASSIGNMENT-CONTRACT-001@1.0.0`, `assignment_id`, `assignment_version`, target técnico y reasignación sin transferencia de ownership;
+- de `WORK-RETRY-POLICY-CONTRACT-001@1.0.0`, intentos, presupuesto, `next_retry_at`, error no reintentable, resultado ambiguo y agotamiento;
+- de `WORK-CANCELLATION-CONTRACT-001@1.0.0`, `cancellation_request_id`, resolución de cancelación y separación entre solicitud, efectividad, rollback y compensación;
+- de `WORK-FAILURE-RECOVERY-CONTRACT-001@1.0.0`, aislamiento, `recovery_request_id`, seis acciones de recovery y ocho resoluciones de recuperación;
+- de `WORK-CONCURRENCY-CONTROL-CONTRACT-001@1.0.0`, claim, lease, fencing, `concurrency_key`, guardias de recurso y rechazo de ejecutores obsoletos;
+- de `WORK-STATE-EVENT-CONTRACT-001@1.0.0`, los dieciséis estados y treinta y tres eventos que representan el ciclo de vida sin conceder autoridad;
+- de `TRANSVERSE-SERVICE-OBSERVABILITY-REGISTRY-001@1.0.0` y su especialización en `QUEUE-ARC-011`, la regla de que telemetría, health, dashboard, alerta o ausencia de señal no conceden autoridad;
+- de `QUEUE-CURRENT-ASSET-INVENTORY-001`, las 19 identidades materiales y las brechas actuales documentadas.
+
+Ninguna identidad técnica se convierte en rol empresarial. Ningún rol empresarial se convierte en bypass universal. Ningún token, secreto, claim o estado operativo sustituye `AuthorizationDecision@1.0.0`.
+
+---
+
+#### 4. Cuatro planos de autoridad separados
+
+Toda implementación futura deberá distinguir los siguientes planos:
+
+| Plano                       | Pregunta                                                                                       | Evidencia mínima                                                              | No concede                                      |
+| --------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------- |
+| `BUSINESS_AUTHORIZATION`    | ¿el actor o regla propietaria puede ordenar esta capacidad sobre este recurso y ámbito?        | decisión canónica o regla propietaria aprobada y versionada                   | credencial técnica del worker                   |
+| `CONTROL_AUTHORIZATION`     | ¿puede el solicitante ejecutar esta acción de control sobre esta operación concreta?           | permiso requerido + recurso + acción + política de control + decisión vigente | claim, lease o ownership técnico                |
+| `TECHNICAL_EXECUTION_SCOPE` | ¿puede esta identidad técnica ejecutar la etapa aprobada para este servicio, ambiente y scope? | identidad técnica + credencial mínima + scope                                 | autoridad para inventar otra acción empresarial |
+| `CONCURRENCY_AUTHORITY`     | ¿qué ejecutor conserva temporalmente derecho técnico de cierre sobre esta versión?             | claim/lease/fencing/guardia vigente                                           | permiso empresarial ni capacidad administrativa |
+
+Reglas:
+
+1. los cuatro planos pueden coincidir temporalmente en un mismo proceso, pero nunca se fusionan conceptualmente;
+2. un `ALLOW` empresarial no entrega automáticamente credenciales técnicas;
+3. una credencial técnica válida no transforma un `DENY` empresarial en `ALLOW`;
+4. una acción de control aprobada no permite a un worker obsoleto ignorar fencing;
+5. poseer un claim vigente permite ejecutar únicamente el trabajo ya autorizado y dentro de su scope técnico;
+6. un administrador técnico no puede concederse a sí mismo la capacidad empresarial que pretende ejercer;
+7. un sistema de observabilidad conserva lectura y evidencia; observar una operación no autoriza modificarla;
+8. el resultado empresarial continúa perteneciendo a la aplicación propietaria aunque la acción técnica haya sido autorizada correctamente.
+
+---
+
+#### 5. Regla canónica de decisión de control
+
+Una acción de control sobre trabajo asíncrono solo puede aceptarse cuando todas las condiciones aplicables son verdaderas:
+
+```text
+PRINCIPAL AUTENTICADO Y VIGENTE
++
+ACTOR EFECTIVO O REGLA DE SISTEMA RESOLUBLE
++
+APLICACIÓN PROPIETARIA CORRECTA
++
+OPERACIÓN / CONTRATO / VERSIÓN CORRECTOS
++
+ACCIÓN DE CONTROL DECLARADA
++
+required_permission_ref RESUELTO
++
+RECURSO REAL Y VERSIÓN RESUELTOS
++
+ÁMBITO TERRITORIAL / EMPRESARIAL COMPATIBLE
++
+AuthorizationDecision = ALLOW
++
+POLÍTICA DEL TRABAJO ADMITE LA ACCIÓN
++
+ESTADO / DEADLINE / CANCELACIÓN / RESULTADO COMPATIBLES
++
+VERSIÓN OBSERVADA NO OBSOLETA
++
+CONTROLES DE SEGURIDAD Y CONCURRENCIA VIGENTES
+        ↓
+CONTROL_ACTION_ALLOWED
+```
+
+La ausencia o ambigüedad de cualquiera de los elementos obligatorios produce denegación. No se aplica un permiso parecido, un rol de emergencia informal, un owner técnico genérico ni una credencial amplia como fallback.
+
+---
+
+#### 6. `required_permission_ref` y prohibición de inventar PermissionKeys
+
+Cada `operation_type` aplicable deberá declarar, por acción protegida, la referencia exacta al permiso empresarial que gobierna la capacidad.
+
+Esta tarea no crea PermissionKeys nuevas.
+
+El contrato de una operación deberá poder resolver, cuando la acción exista:
+
+```text
+create_permission_ref
+manual_trigger_permission_ref
+priority_change_permission_ref
+reassignment_permission_ref
+cancel_permission_ref
+manual_retry_permission_ref
+recovery_permission_ref
+concurrency_recovery_permission_ref
+corrective_create_permission_ref
+```
+
+Reglas:
+
+1. cada referencia apunta a una PermissionKey canónica publicada y vigente;
+2. dos referencias pueden apuntar al mismo permiso únicamente cuando el contrato propietario declare que la misma capacidad cubre ambos controles;
+3. un control más sensible puede exigir una referencia más restrictiva que la creación ordinaria;
+4. la ausencia de una referencia para una acción manual significa `DENY`, no autorización implícita;
+5. una aplicación cliente no elige el permiso requerido; el servidor o contrato propietario lo deriva desde la operación y acción solicitadas;
+6. el permiso no se deriva del nombre del endpoint, job, queue, workflow, Edge Function, worker o dispositivo;
+7. una referencia no publicada, retirada, incompatible o perteneciente a otra aplicación produce denegación;
+8. una capacidad administrativa global sigue requiriendo el permiso explícito correspondiente; el nombre del rol no actúa como bypass;
+9. el acceso a una herramienta técnica, GitHub, Supabase, un dashboard o un proveedor no crea una PermissionKey empresarial;
+10. si la adopción física detecta que un control necesario no posee permiso canónico compatible, ese control permanece deshabilitado hasta que el gobierno de autorización apruebe la evolución contractual correspondiente.
+
+---
+
+#### 7. Sobre mínimo de solicitud y decisión de control
+
+Toda materialización futura de una acción manual o extraordinaria deberá poder conservar, cuando aplique:
+
+```text
+control_request_id
+control_action
+operation_id
+operation_version_observed
+contract_id
+contract_version
+operation_type
+business_owner_application
+caller_application
+principal_reference
+actor_reference
+authority_basis
+required_permission_ref
+authorization_decision_ref
+resource_reference
+resource_version_observed
+site_scope
+area_scope
+tenant_scope
+device_scope
+provider_scope
+assignment_version_observed
+failure_entry_id
+failure_entry_version_observed
+cancellation_request_id
+recovery_request_id
+claim_id_observed
+fencing_token_observed
+request_reason
+requested_at
+control_decision
+control_decided_at
+control_expires_at
+correlation_id
+causation_id
+technical_executor_identity
+```
+
+Reglas:
+
+1. `control_request_id` identifica una solicitud de control, no la intención empresarial ni un intento;
+2. `control_action` usa únicamente el vocabulario cerrado de esta tarea;
+3. `authorization_decision_ref` referencia la decisión canónica utilizada y no contiene credenciales;
+4. `authority_basis` identifica si la acción procede de actor autorizado, regla de sistema aprobada o recovery autorizado;
+5. `operation_version_observed`, `assignment_version_observed` y las versiones de recovery permiten detectar solicitudes obsoletas antes de actuar;
+6. una decisión autorizada puede expirar y nunca se conserva como token empresarial reutilizable indefinidamente;
+7. `technical_executor_identity` identifica quién ejecuta el efecto técnico después de aprobarlo y permanece separada del actor que lo solicitó;
+8. `request_reason` es obligatorio para acciones extraordinarias y usa catálogo o clasificación gobernada cuando exista; un texto libre no sustituye la autorización;
+9. secretos, tokens, service-role, credenciales de proveedor, PIN y material sensible no forman parte del sobre;
+10. campos no aplicables se omiten o se declaran `NO_APLICA`; no se inventan identidades ni permisos.
+
+---
+
+#### 8. Catálogo cerrado de acciones de control
+
+Se definen exactamente nueve acciones semánticas de control. **No son PermissionKeys**.
+
+| Acción                        | Propósito                                                                           | Autoridad requerida                                                         | Restricción principal                                                           |
+| ----------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `CREATE_WORK`                 | registrar una nueva intención de trabajo                                            | permiso empresarial de creación de la operación o regla de sistema aprobada | debe crear una sola intención idempotente                                       |
+| `TRIGGER_MANUAL_OCCURRENCE`   | originar una ocurrencia adicional deliberada de un schedule                         | permiso explícito para disparo manual                                       | no se hace pasar por una ocurrencia perdida ni extiende deadline anterior       |
+| `CHANGE_PRIORITY`             | modificar prioridad de una intención existente cuando su contrato lo permita        | permiso de control declarado por la operación                               | no cambia deadline, causalidad ni dependencia                                   |
+| `FORCE_REASSIGNMENT`          | solicitar un cambio manual de target compatible                                     | permiso de control + scope del recurso/target                               | no concede claim ni autoridad empresarial al nuevo target                       |
+| `REQUEST_CANCELLATION`        | solicitar control de cancelación sobre una operación existente                      | permiso de cancelación + versión vigente                                    | solicitud no equivale a cancelación efectiva                                    |
+| `FORCE_RETRY`                 | solicitar manualmente otro intento todavía permitido por retry ordinario            | permiso de retry + presupuesto y ventana vigentes                           | no ignora backoff, deadline, error no reintentable ni resultado ambiguo         |
+| `REQUEST_RECOVERY`            | iniciar una intervención identificada sobre trabajo aislado o incierto              | permiso de recovery + precondiciones de `QUEUE-ARC-008`                     | no reabre ni reejecuta por sí sola                                              |
+| `RECOVER_CONCURRENCY_GUARD`   | recuperar una exclusión demostrablemente vencida, huérfana o inválida               | permiso extraordinario + evidencia de pérdida de autoridad                  | no rompe un claim, lease o fencing todavía válido                               |
+| `CREATE_CORRECTIVE_OPERATION` | crear una nueva intención porque corregir cambia payload, recurso, versión o efecto | nueva autorización empresarial completa                                     | nueva `operation_id`, nueva idempotencia y causalidad con la operación original |
+
+Las acciones automáticas internas como claim ordinario, renovación de lease, ejecución de un retry ya programado o escritura de una métrica no se convierten en acciones manuales de este catálogo.
+
+---
+
+#### 9. Bases de autoridad permitidas
+
+El campo `authority_basis` usa este vocabulario cerrado:
+
+| Base                           | Uso                                                                                                           | Regla                                                                                                          |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `ACTOR_AUTHORIZATION_DECISION` | acción iniciada por una persona o actor empresarial                                                           | requiere `AuthorizationDecision@1.0.0` vigente sobre permiso, recurso y contexto reales                        |
+| `APPROVED_SYSTEM_RULE`         | schedule, evento interno o automatización aprobada que origina trabajo sin intervención humana por ocurrencia | la regla debe estar versionada, activa, vinculada a owner y operación y ejecutada por identidad técnica mínima |
+| `AUTHORIZED_RECOVERY_DECISION` | acción posterior a aislamiento, incertidumbre o agotamiento                                                   | requiere decisión de recovery compatible y permiso de control aplicable; no elude seguridad                    |
+| `UPSTREAM_PROPAGATED`          | transporte o worker recibe una decisión ya resuelta upstream                                                  | conserva la referencia de autoridad y no crea otra por sí mismo                                                |
+| `NO_APLICA`                    | mecanismo fuera del contrato de trabajo durable                                                               | no genera decisión de control                                                                                  |
+
+Reglas:
+
+1. un evento de proveedor no constituye por sí solo `APPROVED_SYSTEM_RULE`; el adaptador debe validar identidad de proveedor y mapping contra un contrato VENTO aprobado;
+2. un schedule no constituye autoridad por existir en `cron.job` o GitHub Actions; su definición y versión deben pertenecer a una regla aprobada de la aplicación propietaria;
+3. un dispositivo no constituye `ACTOR_AUTHORIZATION_DECISION`; debe existir actor efectivo cuando el efecto empresarial lo requiera;
+4. una ejecución automática ordinaria puede continuar bajo la misma autoridad de la intención mientras esta permanezca vigente y ninguna denegación o revocación aplicable la invalide;
+5. una acción manual extraordinaria nunca usa `UPSTREAM_PROPAGATED` para fabricar autoridad ausente;
+6. break-glass se trata como una identidad técnica excepcional y no como una quinta base de autoridad empresarial.
+
+---
+
+#### 10. Creación de trabajo iniciada por actor
+
+Cuando una persona inicia una capacidad que debe ejecutarse de forma asíncrona:
+
+1. la aplicación propietaria determina `operation_type` y `create_permission_ref`;
+2. el servidor resuelve principal, actor efectivo, contexto, recurso y versión;
+3. se evalúa el permiso exacto mediante el contrato canónico de autorización;
+4. un `DENY` impide reservar la intención;
+5. un `ALLOW` permite continuar únicamente dentro del recurso, ámbito y modalidad aprobados;
+6. la productora genera u obtiene la identidad idempotente antes del primer envío;
+7. la reserva de trabajo conserva referencia a la decisión de autorización sin almacenar la credencial del actor;
+8. el worker posterior utiliza identidad técnica propia y no reutiliza persistentemente el token del usuario;
+9. cambiar el worker, dispositivo o adaptador no cambia el permiso con el que se originó la intención;
+10. si el trabajo se materializa mucho después y el contrato exige revalidación de condiciones mutables antes del efecto, el executor debe resolverlas desde fuentes autoritativas; una autorización histórica no obliga a ejecutar contra un recurso que ya no admite la acción.
+
+---
+
+#### 11. Creación por schedule o regla automática
+
+Una regla automática puede originar trabajo sin una nueva interacción humana por cada ocurrencia únicamente cuando existe una definición aprobada y versionada.
+
+Para una ocurrencia programada deben mantenerse:
+
+```text
+business_owner_application
+schedule_id
+schedule_version
+operation_type
+contract_version
+logical_fire_at_utc
+schedule_occurrence_id
+authority_basis = APPROVED_SYSTEM_RULE
+scheduler_identity
+```
+
+Reglas:
+
+1. la aprobación de la definición no convierte al scheduler en owner empresarial;
+2. la identidad técnica del scheduler solo permite disparar las operaciones, ambientes y ventanas declarados;
+3. un fire ordinario no exige inventar un actor humano;
+4. una definición suspendida, retirada, incompatible o fuera de vigencia no puede seguir originando trabajo por conservar una credencial válida;
+5. una ocurrencia manual adicional utiliza `TRIGGER_MANUAL_OCCURRENCE` y una decisión de control nueva;
+6. recuperar exactamente una ocurrencia anterior conserva su identidad y sigue las reglas de recovery, no crea una ocurrencia manual nueva;
+7. un schedule legacy observado no se declara conforme únicamente porque se ejecute correctamente;
+8. cambiar calendario, prioridad, vigencia o política exige la autoridad y el versionado ya definidos por el contrato temporal.
+
+---
+
+#### 12. Creación derivada de evento, trigger o webhook
+
+Un evento fuente puede causar trabajo asíncrono sin otorgar autoridad de control al emisor externo.
+
+```text
+EVENTO / HECHO FUENTE
+        ↓
+VALIDACIÓN DE ORIGEN
++
+CONTRATO / MAPPING APROBADO
++
+IDEMPOTENCIA DE FUENTE
++
+APLICACIÓN PROPIETARIA
+        ↓
+APPROVED_SYSTEM_RULE
+        ↓
+WORK_SUBMISSION DERIVADO
+```
+
+Reglas:
+
+1. el proveedor externo aporta un evento, no una PermissionKey de Vento OS;
+2. firma, secreto o autenticación del proveedor prueban origen técnico, no permiso para mutar cualquier recurso interno;
+3. el adaptador solo puede mapear operaciones y recursos aprobados por su contrato;
+4. un trigger de base de datos puede originar un efecto derivado solo dentro de la regla aprobada del evento fuente;
+5. `pg_net` transporta y no autoriza;
+6. un replay conserva la misma identidad de fuente y no crea otra autoridad;
+7. una acción manual posterior sobre la operación interna exige la autorización de control correspondiente;
+8. un `200 OK` al proveedor no representa una decisión empresarial ni una autorización para repetir efectos.
+
+---
+
+#### 13. Trabajo offline, dispositivo y actor efectivo
+
+Para operaciones creadas o custodiadas en un dispositivo:
+
+1. el dispositivo mantiene identidad técnica propia y separada del actor;
+2. una sesión, PIN, enrolamiento o credencial de dispositivo no expande los permisos del actor;
+3. cuando el trabajo representa una acción humana, la creación debe conservar referencia al actor efectivo y al permiso requerido;
+4. la persistencia local conserva la intención y la decisión/referencia necesaria, pero no un token de usuario de larga duración para el worker;
+5. al sincronizar, el servidor valida contrato, recurso, versión, temporalidad, cancelación y las condiciones de autorización que el contrato exija en ese momento;
+6. un evento offline que perdió vigencia no se ejecuta por reconectar;
+7. el retry automático de la misma intención no crea otra autorización por cada tick del worker;
+8. una acción manual de cancelación, retry o recovery usa una nueva decisión de control;
+9. cambiar de dispositivo no transfiere automáticamente autoridad humana ni empresarial;
+10. el dispositivo nunca decide por sí solo que un cierre, impresión, movimiento o resultado empresarial es válido.
+
+---
+
+#### 14. Retry automático ordinario
+
+El retry automático ordinario **no es una nueva acción empresarial**. Es otro intento de la misma intención ya autorizada.
+
+Puede proceder sin una nueva solicitud humana cuando simultáneamente:
+
+1. la operación conserva la misma identidad, payload y huella;
+2. la clase de error admite retry;
+3. existe presupuesto restante;
+4. `next_retry_at` ya llegó;
+5. el deadline sigue vigente;
+6. no existe cancelación efectiva;
+7. no existe resultado terminal o `RESULT_UNKNOWN` que prohíba repetición directa;
+8. el recurso y versión siguen permitiendo la ejecución cuando el contrato exige revalidación;
+9. la identidad técnica ejecutora conserva scope válido;
+10. ninguna denegación, suspensión o revocación aplicable bloquea la operación.
+
+Reglas:
+
+- el retry conserva la referencia de autoridad de la intención original;
+- no conserva como credencial persistente el token original del actor;
+- una renovación de credencial técnica no convierte un error de autorización en error transitorio;
+- el worker no puede aumentar `max_attempts` ni extender deadline por tener permisos técnicos;
+- la política puede terminar una operación antes de consumir todo el presupuesto;
+- si la intención dejó de ser válida, la operación se bloquea, cancela, expira o concilia según sus contratos; no se fuerza ejecución por haber sido autorizada en el pasado.
+
+---
+
+#### 15. `FORCE_RETRY` manual
+
+`FORCE_RETRY` significa solicitar manualmente otro intento **todavía ordinariamente permitido**. No significa ignorar la política de retry.
+
+La acción exige:
+
+1. `manual_retry_permission_ref` resuelto y autorizado;
+2. `operation_id` y versión observada vigentes;
+3. error reintentable;
+4. presupuesto restante;
+5. deadline vigente;
+6. ausencia de cancelación efectiva;
+7. ausencia de resultado terminal;
+8. ausencia de efecto externo o físico ambiguo pendiente de conciliación;
+9. revalidación de resource/version cuando corresponda;
+10. claim nuevo antes de la ejecución real.
+
+Queda prohibido que `FORCE_RETRY`:
+
+- cambie `retry_profile` a uno más permisivo;
+- reinicie `attempt_no`;
+- aumente `max_attempts`;
+- ignore `next_retry_at` cuando la política vigente exige respetarlo;
+- convierta un error de validación, autorización, contrato, conflicto o rechazo empresarial en transitorio;
+- reviva una operación terminal;
+- repita un efecto ambiguo;
+- sustituya la recovery extraordinaria de `QUEUE-ARC-008`.
+
+Cuando el presupuesto ordinario se agotó, una nueva ejecución de la misma intención solo puede proceder mediante `REQUEST_RECOVERY` y una resolución `SAFE_REEXECUTION_APPROVED` compatible con el contrato de recuperación.
+
+---
+
+#### 16. Cancelación
+
+`REQUEST_CANCELLATION` es una acción de control protegida sobre una operación existente.
+
+Reglas:
+
+1. conocer `operation_id`, receipt, idempotency key o estado no concede permiso para cancelar;
+2. la solicitud exige `cancel_permission_ref`, recurso, ámbito y decisión `ALLOW`;
+3. la solicitud registra `cancellation_request_id` y la versión observada;
+4. aceptar la solicitud no declara todavía cancelación efectiva;
+5. el worker ejecuta la detención cooperativa bajo su identidad técnica una vez exista una solicitud válida y compatible;
+6. un target no puede ignorar una cancelación válida porque conserve una credencial técnica;
+7. un actor no puede cancelar un trabajo de otro recurso, owner, sede o ámbito únicamente porque pueda verlo;
+8. una operación terminal conserva su resultado y no se reabre para marcarla cancelada;
+9. si el efecto pudo ocurrir antes de resolver la cancelación, se utiliza resultado desconocido y conciliación;
+10. rollback y compensación empresarial continúan siendo operaciones distintas con autorización propia.
+
+---
+
+#### 17. Cambio de prioridad, disparo manual y reasignación
+
+##### 17.1. `CHANGE_PRIORITY`
+
+Cambiar prioridad exige autorización de control y nunca puede:
+
+- modificar `scheduled_at` o `deadline_at` por inferencia;
+- romper causalidad, dependencia o guardia de recurso;
+- convertir una operación vencida en elegible;
+- crear otra idempotency key;
+- conceder autoridad adicional al target.
+
+##### 17.2. `TRIGGER_MANUAL_OCCURRENCE`
+
+Una ocurrencia manual adicional:
+
+- exige permiso explícito de control;
+- recibe nueva identidad de ocurrencia e idempotencia;
+- conserva referencia al schedule y motivo;
+- no se utiliza para esconder una ocurrencia perdida, vencida o ya ejecutada;
+- no obtiene privilegios empresariales por ejecutarse desde GitHub, Supabase o una consola técnica.
+
+##### 17.3. `FORCE_REASSIGNMENT`
+
+Una reasignación manual:
+
+- exige `reassignment_permission_ref` y scope compatible;
+- conserva `operation_id`, idempotencia, payload, prioridad y deadline;
+- selecciona únicamente target compatible;
+- crea otra `assignment_version`;
+- no concede claim al nuevo target;
+- no revoca por sí sola un claim válido del target anterior;
+- se coordina con `QUEUE-ARC-009` antes de permitir otra ejecución real;
+- no convierte al operador en owner del resultado empresarial.
+
+---
+
+#### 18. Recovery y acciones extraordinarias
+
+`REQUEST_RECOVERY` abre una intervención sobre una operación aislada, incierta o agotada; no produce un efecto por sí sola.
+
+Las seis acciones de recovery ya aprobadas se gobiernan así:
+
+| Acción de recovery              | Autoridad de `QUEUE-ARC-012`                                                          | Regla adicional                                           |
+| ------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `RECOVER_EXISTING_RESULT`       | permiso de recovery + acceso al recurso/resultados necesarios                         | enlaza resultado existente; no repite efecto              |
+| `RECONCILE_ONLY`                | permiso de recovery o conciliación aplicable                                          | consulta fuentes; no ejecuta el efecto original           |
+| `SAFE_REEXECUTE_SAME_INTENTION` | permiso de recovery + resolución de seguridad + autoridad sobre la operación original | no reinicia presupuesto automático ni cambia la intención |
+| `COMPLETE_MISSING_COMPONENTS`   | permiso de recovery + autoridad sobre cada componente faltante                        | jamás repite componentes confirmados                      |
+| `CREATE_CORRECTIVE_OPERATION`   | autorización empresarial completa para una nueva intención                            | nueva operación, clave y causalidad                       |
+| `KEEP_ISOLATED`                 | permiso para resolver la solicitud de recovery sin ejecución                          | conserva aislamiento y evidencia                          |
+
+Reglas:
+
+1. liberar una unidad de dead-letter o cuarentena no es una acción anónima de operador;
+2. una liberación masiva requiere criterio contractual explícito, scope definido y autoridad suficiente para cada unidad; la mera selección múltiple de UI no la autoriza;
+3. un `AUTHENTICATION_OR_AUTHORIZATION` previo no se corrige ejecutando con una credencial más amplia sin una nueva decisión válida;
+4. cambiar payload, recurso, versión, destinatario, finalidad o efecto exige `CREATE_CORRECTIVE_OPERATION` y nueva autorización empresarial;
+5. una recovery autorizada sigue subordinada a idempotencia, cancelación, concurrencia, estado y evidencia de efecto;
+6. el servicio técnico no decide consecuencias empresariales que el owner de dominio deba resolver.
+
+---
+
+#### 19. Recuperación de exclusiones y break-glass
+
+`RECOVER_CONCURRENCY_GUARD` se utiliza únicamente cuando existe evidencia de que una exclusión técnica dejó de representar autoridad vigente.
+
+Puede aplicarse a:
+
+- claim abandonado;
+- lease realmente vencido;
+- worker definitivamente reemplazado;
+- registro de exclusión huérfano;
+- situación equivalente comprobada por el contrato de concurrencia.
+
+No puede aplicarse para:
+
+- romper un claim válido por conveniencia operativa;
+- permitir dos ejecutores simultáneos;
+- hacer que un worker con fencing obsoleto cierre otra versión;
+- repetir un efecto externo, físico o destructivo incierto;
+- eludir una guardia de versión del recurso;
+- convertir `last write wins` en política de resolución.
+
+La identidad `BREAK_GLASS_IDENTITY`:
+
+1. solo existe para incidente o recuperación documentados;
+2. requiere autoridad designada, ambiente, scope, duración y razón explícitos;
+3. se audita y revoca o suspende al terminar la intervención;
+4. no se usa como credencial ordinaria;
+5. no convierte `DENY` empresarial en `ALLOW` por sí misma;
+6. no puede inventar un resultado empresarial;
+7. no permite al ejecutor obsoleto ignorar fencing;
+8. no sustituye la decisión propietaria cuando una recovery exige decidir consecuencias de negocio.
+
+---
+
+#### 20. Identidades técnicas y límites de acción
+
+| Identidad técnica          | Puede hacer bajo contrato                                                        | No puede hacer por su sola identidad                                                              |
+| -------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `SERVICE_RUNTIME_IDENTITY` | ejecutar operaciones del servicio dentro del scope y decisiones ya autorizadas   | crear capacidad empresarial nueva, ampliar scopes o autorizarse a sí misma                        |
+| `WORKER_IDENTITY`          | claim/ejecución/cierre técnico de trabajos de su servicio bajo authority vigente | cancelar, reintentar extraordinariamente, cambiar owner o alterar payload por conveniencia        |
+| `CALLER_IDENTITY`          | someter solicitudes dentro del contrato y scope permitidos                       | elegir un permiso menos restrictivo ni falsificar actor/recurso                                   |
+| `DEVICE_IDENTITY`          | custodiar o ejecutar etapa local/física dentro de enrolamiento y scope           | actuar como usuario humano, ampliar permisos del actor o confirmar efecto empresarial por existir |
+| `PROVIDER_IDENTITY`        | autenticar evento o llamada del proveedor dentro del adaptador aprobado          | administrar operaciones internas, cancelar/retry arbitrario o convertirse en owner VENTO          |
+| `SCHEDULER_IDENTITY`       | disparar schedules/operaciones declarados en ambiente y ventana aprobados        | ejecutar como worker genérico, disparar operaciones manuales adicionales sin control autorizado   |
+| `OBSERVER_IDENTITY`        | consultar señales y estado autorizado en modo de solo lectura                    | mutar, reintentar, cancelar, conciliar o cambiar configuración                                    |
+| `BREAK_GLASS_IDENTITY`     | ejecutar recuperación excepcional previamente autorizada y acotada               | uso diario, bypass empresarial, ampliación permanente o eliminación de auditoría                  |
+
+`SUPABASE_SERVICE_ROLE_KEY` continúa siendo una credencial amplia legacy. Su posesión no representa ninguna de las nueve acciones de control aprobadas ni sustituye `AuthorizationDecision@1.0.0`.
+
+---
+
+#### 21. Estados y eventos
+
+`QUEUE-ARC-012` no crea nuevos estados ni eventos de trabajo.
+
+Las acciones autorizadas utilizan el vocabulario ya aprobado:
+
+| Acción de control             | Representación de estado/evento ya existente                                                           |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `CREATE_WORK`                 | `WORK_RECEIVED` / `WORK_RESERVED` después de superar validación y reserva                              |
+| `TRIGGER_MANUAL_OCCURRENCE`   | crea una nueva ocurrencia y después usa los eventos normales de reserva/scheduling                     |
+| `CHANGE_PRIORITY`             | conserva la operación; el cambio deberá ser reconstruible sin inventar estado empresarial              |
+| `FORCE_REASSIGNMENT`          | `WORK_REASSIGNMENT_RECORDED` cuando la reasignación sea aceptada                                       |
+| `REQUEST_CANCELLATION`        | `WORK_CANCELLATION_REQUESTED`; la resolución usa `WORK_CANCELLATION_RESOLVED`                          |
+| `FORCE_RETRY`                 | no crea evento especial; si procede usa la secuencia ordinaria de retry ya definida                    |
+| `REQUEST_RECOVERY`            | `WORK_RECOVERY_REQUESTED`; la resolución usa `WORK_RECOVERY_RESOLVED`                                  |
+| `RECOVER_CONCURRENCY_GUARD`   | los eventos de claim/lease/fencing existentes representan el resultado técnico; no reabre terminalidad |
+| `CREATE_CORRECTIVE_OPERATION` | nueva operación causalmente vinculada que inicia su propio ciclo de eventos                            |
+
+Una denegación de autorización no cambia `operation_status`. La decisión negativa se conserva en la auditoría de autorización y, cuando corresponda, en evidencia técnica correlacionada, sin fabricar una transición de trabajo.
+
+---
+
+#### 22. Auditoría mínima de control
+
+Toda acción manual o extraordinaria deberá dejar evidencia suficiente para reconstruir:
+
+```text
+control_request_id
+control_action
+principal_reference
+actor_reference
+business_owner_application
+required_permission_ref
+authorization_decision_ref
+operation_id
+operation_version_observed
+resource_reference
+resource_version_observed
+scope
+request_reason
+requested_at
+control_decision
+control_decided_at
+technical_executor_identity
+correlation_id
+causation_id
+```
+
+Reglas:
+
+1. la auditoría no contiene secretos ni payloads completos;
+2. una denegación se registra cuando la sensibilidad o el contrato lo requieran;
+3. una intervención excepcional conserva antes, después, motivo, autoridad y resultado técnico;
+4. aprobar una solicitud no borra solicitudes o decisiones previas;
+5. la auditoría técnica del servicio permanece correlacionada con la auditoría empresarial del owner, pero no la sustituye;
+6. un evento de auditoría no concede autorización retroactiva;
+7. cambiar la política de control es un cambio contractual/configuracional y no una acción ordinaria sobre un item;
+8. observabilidad y auditoría no se convierten en superficies de mutación por defecto.
+
+---
+
+#### 23. Matriz materializada de autorización para las 19 identidades `QAI-*`
+
+| ID        | Clasificación                    | Perfil de autoridad                     | Creación / origen autorizado                                                                                                                            | Cancelación, retry y control extraordinario                                                                                                                                          | Estado y decisión documental                                                                                         |
+| --------- | -------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `QAI-001` | `APLICA_AUTORIZACION_DE_CONTROL` | `SCHEDULED_SYSTEM_AUTHORITY`            | una ocurrencia del cierre diario solo se origina desde definición ANIMA aprobada y versionada bajo `APPROVED_SYSTEM_RULE`; `pg_cron` es trigger técnico | ejecución automática conserva autoridad de la ocurrencia; disparo manual, cambio de prioridad, cancelación, retry manual, reasignación forzada o recovery exigen decisión de control | `ESPECIFICADO`; compartir efecto con `QAI-004` no crea autoridad dual y la exclusión sigue bajo concurrencia         |
+| `QAI-002` | `APLICA_AUTORIZACION_DE_CONTROL` | `SCHEDULED_SYSTEM_AUTHORITY`            | la ocurrencia de runtime se origina por regla ANIMA aprobada; cron/SQL/`pg_net` no adquieren permiso empresarial                                        | cada trabajo hijo conserva su propia autoridad; un error de transporte no autoriza retry ilimitado ni control manual sin permiso                                                     | `ESPECIFICADO`; cadena multi-etapa conserva owner y causalidad                                                       |
+| `QAI-003` | `APLICA_AUTORIZACION_DE_CONTROL` | `SCHEDULED_SYSTEM_AUTHORITY`            | cierre stale solo bajo schedule/contrato ANIMA vigente y recurso compatible                                                                             | una ejecución manual o recovery exige control autorizado; un turno ya resuelto no se reabre por credencial del scheduler                                                             | `ESPECIFICADO`; versión del turno sigue siendo guardia empresarial                                                   |
+| `QAI-004` | `APLICA_AUTORIZACION_DE_CONTROL` | `SCHEDULED_SYSTEM_AUTHORITY`            | mientras el schedule transicional permanezca activo, solo su regla aprobada puede originar la ocurrencia                                                | su existencia remota no autoriza ampliar vigencia, duplicar `QAI-001` ni disparar manualmente sin control; retiro/adopción sigue bajo `TSVC-CAT-010`                                 | `ESPECIFICADO`; no se eleva el patrón legacy a autoridad objetivo                                                    |
+| `QAI-005` | `APLICA_AUTORIZACION_DE_CONTROL` | `SCHEDULED_SYSTEM_AUTHORITY`            | `document-alerts-daily` solo origina su operación declarada; la credencial embebida observada autentica técnicamente y no es permiso empresarial        | manual trigger, cancelación, retry/recovery o cambio de política requieren control canónico; secretos continúan bajo `TI-AUTH-004`                                                   | `ESPECIFICADO`; material sensible actual no se convierte en fuente de autoridad                                      |
+| `QAI-006` | `APLICA_AUTORIZACION_DE_CONTROL` | `SCHEDULED_SYSTEM_AUTHORITY`            | limpieza de cotizaciones procede únicamente desde regla PASS aprobada y scope del mantenimiento                                                         | ejecución adicional deliberada, cambio de prioridad o recovery requieren control; el worker no decide sobre entrega empresarial                                                      | `ESPECIFICADO`; mantenimiento técnico conserva owner PASS                                                            |
+| `QAI-007` | `APLICA_AUTORIZACION_DE_CONTROL` | `SCHEDULED_SYSTEM_AUTHORITY`            | reconciliación de expiraciones procede desde schedule/contrato aprobado; cada checkout mantiene recurso y versión propios                               | force retry no puede convertir timeout/resultado ambiguo en fallo repetible; recovery y control manual requieren autorización                                                        | `ESPECIFICADO`; row lock o ejecución del cron no conceden autoridad de negocio                                       |
+| `QAI-008` | `APLICA_AUTORIZACION_DE_CONTROL` | `SCHEDULED_SYSTEM_AUTHORITY`            | si el schedule se despliega, solo una definición NEXO aprobada podrá originar la purga dentro del scope y vigencia declarados                           | no existe autorización implícita para activarlo por estar en migración; cualquier activación/control físico deberá planificarse en `DELIV-PKG-001`                                   | `PENDIENTE_DE_EVIDENCIA`; no se activa ni se presume desplegado                                                      |
+| `QAI-009` | `APLICA_AUTORIZACION_DE_CONTROL` | `SCHEDULED_SYSTEM_AUTHORITY`            | ejecución programada de eliminación de cuentas usa la regla propietaria aprobada; el workflow GitHub solo dispara                                       | `workflow_dispatch` o mecanismo manual equivalente se trata como `TRIGGER_MANUAL_OCCURRENCE`; permiso de GitHub por sí solo no autoriza la acción empresarial ni recovery            | `ESPECIFICADO`; frontera `vento-pass` → `vento-shell` requiere adopción física en `DELIV-PKG-001`                    |
+| `QAI-010` | `PROPAGA_NO_DECIDE_AUTORIZACION` | `UPSTREAM_PROPAGATED`                   | transporta una solicitud ya autorizada upstream                                                                                                         | request ID, fila de `pg_net`, extensión o credencial técnica no pueden crear, cancelar, retry o recuperar trabajo empresarial                                                        | `ESPECIFICADO`; transporte sin ownership de autorización                                                             |
+| `QAI-011` | `APLICA_AUTORIZACION_DE_CONTROL` | `OFFLINE_OR_DEVICE_DELEGATED_AUTHORITY` | la intención de asistencia conserva actor efectivo, permiso/recurso y contexto originadores; el dispositivo solo custodia                               | retry automático conserva la misma intención; cancelación, retry manual, recovery o corrección requieren decisión de control y revalidación servidora                                | `ESPECIFICADO`; SecureStore y enrolamiento no constituyen permiso empresarial                                        |
+| `QAI-012` | `APLICA_AUTORIZACION_DE_CONTROL` | `OFFLINE_OR_DEVICE_DELEGATED_AUTHORITY` | la intención de descanso conserva autoridad y contexto propios separados de asistencia                                                                  | compartir dispositivo o worker no comparte permiso; control extraordinario se evalúa sobre la operación de descanso y su recurso vigente                                             | `ESPECIFICADO`; no se hereda autoridad de `QAI-011` por proximidad técnica                                           |
+| `QAI-013` | `PROPAGA_NO_DECIDE_AUTORIZACION` | `UPSTREAM_PROPAGATED`                   | el loop móvil consume operaciones autorizadas de `QAI-011` y `QAI-012`; cada tick no crea autoridad                                                     | el worker no autoriza retry por despertarse ni puede convertir un item bloqueado/denegado en ejecutable                                                                              | `ESPECIFICADO`; worker técnico efímero sin authority propia de negocio                                               |
+| `QAI-014` | `APLICA_AUTORIZACION_DE_CONTROL` | `OFFLINE_OR_DEVICE_DELEGATED_AUTHORITY` | callback de ubicación puede causar trabajo solo bajo contrato ANIMA y contexto de actor/turno compatibles; el servidor decide el efecto                 | SO, ubicación y dispositivo no conceden permiso para cerrar; control manual o corrección exige autorización canónica                                                                 | `ESPECIFICADO`; callback tardío no supera versión, deadline ni denegación vigente                                    |
+| `QAI-015` | `APLICA_AUTORIZACION_DE_CONTROL` | `OFFLINE_OR_DEVICE_DELEGATED_AUTHORITY` | una impresión nace de una operación propietaria autorizada y una identidad de copia válida; worker y printer solo ejecutan técnicamente                 | reimpresión deliberada es nueva intención autorizada; efecto físico ambiguo no admite `FORCE_RETRY` y requiere recovery/conciliación antes de otra copia                             | `ESPECIFICADO`; BrowserPrint, `localStorage` o credencial de impresora no conceden autoridad empresarial             |
+| `QAI-016` | `NO_APLICA`                      | `NO_APLICA`                             | refresco de lectura sin trabajo durable ni efecto empresarial                                                                                           | `NO_APLICA`                                                                                                                                                                          | `NO_APLICA`; no se fuerza una autorización de control de queue                                                       |
+| `QAI-017` | `APLICA_AUTORIZACION_DE_CONTROL` | `EVENT_DERIVED_AUTHORITY`               | inserción del mensaje puede causar notificación derivada únicamente bajo contrato aprobado; trigger y `pg_net` no son owner                             | resend manual, cancelación, retry extraordinario o recovery de entrega requieren control autorizado; mensaje fuente permanece intacto                                                | `ESPECIFICADO`; autoridad de entrega separada del mensaje y del transporte                                           |
+| `QAI-018` | `APLICA_AUTORIZACION_DE_CONTROL` | `EVENT_DERIVED_AUTHORITY`               | evento Wompi autenticado y deduplicado puede causar procesamiento interno solo mediante mapping y contrato VENTO aprobados                              | Wompi no puede cancelar/retry trabajo interno; ante efecto ambiguo no existe force retry directo y la recovery exige decisión canónica                                               | `ESPECIFICADO`; autenticidad del proveedor no equivale a autoridad sobre venta, orden o cola                         |
+| `QAI-019` | `APLICA_AUTORIZACION_DE_CONTROL` | `EVENT_DERIVED_AUTHORITY`               | evento RevenueCat puede causar procesamiento interno únicamente tras autenticación, identidad estable y mapping aprobado                                | proveedor no gobierna retry/cancelación; la brecha de replay ya documentada permanece bajo idempotencia/concurrencia y no se corrige con autorización                                | `ESPECIFICADO`; adopción física y cierre de replay se planifican en `DELIV-PKG-001` sin declarar cumplimiento actual |
+
+Resultado de reconciliación:
+
+```text
+19 IDENTIDADES ESPERADAS
+19 IDENTIDADES MATERIALIZADAS
+16 APLICAN AUTORIZACIÓN DE CONTROL
+2 PROPAGAN Y NO DECIDEN AUTORIZACIÓN
+1 NO APLICA
+0 FALTANTES
+0 DUPLICADOS
+
+PERFILES
+SCHEDULED_SYSTEM_AUTHORITY            = 9
+OFFLINE_OR_DEVICE_DELEGATED_AUTHORITY = 4
+EVENT_DERIVED_AUTHORITY               = 3
+UPSTREAM_PROPAGATED                   = 2
+NO_APLICA                             = 1
+```
+
+---
+
+#### 24. Reconciliación con superficies actuales
+
+##### 24.1. `pg_cron` y schedules Supabase
+
+La capacidad de ejecutar un job técnico no constituye permiso empresarial.
+
+- cada schedule aplicable debe estar vinculado a owner, contrato, versión, operación y ambiente;
+- una credencial cron o función SQL no concede ejecución manual adicional;
+- cambiar schedule, prioridad o vigencia exige control autorizado y versionado;
+- `QAI-008` no puede activarse por inferencia;
+- `QAI-004` no puede retirarse o ampliarse por esta tarea.
+
+##### 24.2. GitHub Actions de eliminación de cuentas
+
+El workflow `Process Account Deletions` admite ejecución programada y manual en el estado inventariado.
+
+Decisión:
+
+```text
+ACCESO A GITHUB ACTIONS
+≠
+AUTORIZACIÓN EMPRESARIAL PARA DISPARAR EL TRABAJO
+```
+
+La ejecución programada consume la regla aprobada del schedule. Una ejecución manual adicional debe pasar por el control canónico de disparo manual y conservar actor, motivo, alcance, causalidad y decisión. La adopción física se recibe en `DELIV-PKG-001`.
+
+##### 24.3. ANIMA offline
+
+Las colas locales y el worker móvil no mantienen una autoridad empresarial independiente.
+
+- el actor y contexto pertenecen a la intención;
+- el dispositivo custodia, no concede;
+- reconectar no reactiva una autoridad revocada;
+- el retry automático no pide otra intención;
+- una corrección de payload no es retry y requiere nueva operación autorizada;
+- las diferencias entre policy objetivo y retry legacy se reciben en `DELIV-PKG-001`.
+
+##### 24.4. Impresión NEXO
+
+La impresión requiere separar:
+
+```text
+AUTORIZACIÓN DE LA ACCIÓN EMPRESARIAL
++
+IDENTIDAD DE COPIA AUTORIZADA
++
+IDENTIDAD TÉCNICA DEL WORKER
++
+IDENTIDAD DEL DISPOSITIVO
+```
+
+Una nueva copia deliberada exige nueva intención y autorización. Una aceptación física incierta exige conciliación; ningún privilegio técnico habilita repetición ciega. El detalle especializado continúa en `PRINT-ARC-*` y la adopción física se recibe en `DELIV-PKG-001`.
+
+##### 24.5. Webhooks y triggers
+
+- `QAI-017`: el trigger deriva una notificación bajo contrato del mensaje fuente;
+- `QAI-018`: la firma/identidad Wompi autentica el evento, no concede control de cola;
+- `QAI-019`: la autenticación RevenueCat no corrige por sí sola la brecha de reserva/replay;
+- `pg_net` sigue siendo transporte;
+- proveedor, trigger y adaptador nunca se convierten en owner empresarial.
+
+##### 24.6. Credenciales amplias y secretos
+
+Una credencial amplia permite técnicamente más acciones de las que un servicio debería ejecutar, por lo que su mera posesión no puede definir authority.
+
+- `SUPABASE_SERVICE_ROLE_KEY` permanece `LEGACY_BROAD_CREDENTIAL`;
+- los secretos de scheduler o proveedor se separan de PermissionKeys;
+- ninguna credencial puede autocrear scopes, desactivar auditoría o ampliar su propia finalidad;
+- `QAI-H03` continúa bajo `TI-AUTH-004` para la protección del material sensible asociado a `document-alerts-daily`.
+
+---
+
+#### 25. Denegaciones obligatorias
+
+Una acción de control se deniega, como mínimo, cuando ocurra cualquiera de estas condiciones aplicables:
+
+1. principal inexistente, inactivo, revocado o no autenticado;
+2. actor efectivo requerido no resoluble;
+3. aplicación o permiso desconocidos, retirados o incompatibles;
+4. `required_permission_ref` ausente para una acción manual;
+5. decisión canónica distinta de `ALLOW`;
+6. recurso inexistente, incompatible o fuera del scope del actor;
+7. sede, área, tenant, dispositivo o proveedor fuera del alcance permitido;
+8. owner de la operación distinto del que el control pretende usar;
+9. operación, contrato o versión incompatibles;
+10. versión observada obsoleta respecto del estado actual;
+11. acción no admitida por el contrato de la operación;
+12. operación terminal que la acción pretende reabrir;
+13. deadline vencido para retry ordinario;
+14. presupuesto agotado cuando se intenta `FORCE_RETRY` en lugar de recovery;
+15. error no reintentable;
+16. efecto externo o físico ambiguo sin conciliación;
+17. cancelación efectiva que prohíbe nuevos efectos;
+18. claim o lease todavía válidos cuando se intenta recuperar exclusión;
+19. fencing obsoleto del ejecutor;
+20. target incompatible con servicio, ambiente o scope;
+21. credencial técnica presentada como única evidencia de business authority;
+22. acceso a GitHub, Supabase, dashboard, logs o consola presentado como permiso empresarial;
+23. identidad de proveedor intentando gobernar recursos internos fuera del mapping aprobado;
+24. observer intentando mutar o iniciar acciones;
+25. break-glass sin incidente, autoridad, scope, duración y auditoría aprobados;
+26. corrección que cambia payload, recurso, versión o efecto pero intenta conservar la intención original;
+27. intento de ejecutar dos veces un componente ya confirmado durante recovery;
+28. intento de usar prioridad, reasignación o retry para eludir causalidad, versión o concurrencia.
+
+La denegación no se corrige eligiendo un principal más amplio, cambiando de worker, regenerando una idempotency key o editando la evidencia original.
+
+---
+
+#### 26. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea especializa para el trabajo asíncrono obligaciones de autorización, identidad, contexto, alcance, mínimo privilegio, segregación entre credencial y permiso, default-deny, dispositivo compartido, trazabilidad y control extraordinario que ya están protegidas por el registro canónico vigente. No crea una capacidad empresarial nueva ni modifica una obligación de prueba existente; define cómo esas invariantes ya aprobadas se aplican a las acciones de control y a las 19 identidades inventariadas.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 27. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-AUTH-001`, para resolver capacidades protegidas mediante permisos, contexto y alcance canónicos sin autorización por nombres de rol;
+- `TREQ-AUTH-004`, para que todos los evaluadores produzcan la misma decisión y no ignoren scopes ni incorporen excepciones locales;
+- `TREQ-AUTH-008`, para separar autorización base y operativa y exigir las condiciones contextuales correspondientes;
+- `TREQ-AUTH-009`, para resolución territorial determinista y denegación de cruces fuera de scope;
+- `TREQ-AUTH-011`, para impedir que un dispositivo compartido transfiera privilegios del administrador o amplíe permisos del actor;
+- `TREQ-SHELL-010`, para separar cuenta, permiso, credencial, secreto, endpoint, dispositivo y sesión y conservar autoridad, alcance, vigencia, actor y evidencia;
+- `TREQ-INTEGRATION-003`, para identidad estable, idempotencia, retry, claim, conciliación y recuperación segura del trabajo asíncrono;
+- `TREQ-INTEGRATION-004`, para reconstruir principal técnico, causa, intento, resultado, error y efecto final de cadenas asíncronas;
+- la cobertura vigente relacionada por `TSVC-CAT-005` para mínimo privilegio, credenciales técnicas y separación entre actor, servicio, worker, dispositivo, proveedor y scheduler.
+
+Ninguna fila del registro canónico cambia de identificador, dominio, regla protegida, estado, responsable, evidencia, relación o secuencia por esta tarea.
+
+---
+
+#### 28. Handoff a implementación
+
+`QUEUE-ARC-012` cierra documentalmente la familia `QUEUE-ARC-001..012`.
+
+La planificación de implementación deberá recibir, como mínimo:
+
+1. `TSVC-SVC-001.CONTRACT@1.0.0`;
+2. los contratos `WORK-*` aprobados por `QUEUE-ARC-003..012`;
+3. las 19 decisiones `QAI-*`;
+4. la separación entre business authority y technical execution scope;
+5. el catálogo de nueve acciones de control;
+6. las referencias de permiso requeridas por operación y acción;
+7. la regla de default-deny cuando falte mapping de permiso;
+8. la distinción entre retry automático, `FORCE_RETRY` y recovery extraordinaria;
+9. la prohibición de control por credencial, claim, dashboard o acceso administrativo técnico;
+10. las brechas actuales de ANIMA, NEXO, GitHub Actions, schedules, `pg_net` y webhooks;
+11. la exigencia de instrumentar auditoría, concurrencia y state machine sin alterar la semántica aprobada;
+12. las decisiones pendientes de evidencia ya asignadas a `DELIV-PKG-001`.
+
+La planificación debe decidir paquetes, repositorios, migraciones, contratos compartidos, código, pruebas, rollback, cutover y evidencia antes de cualquier implementación física. Esta tarea no selecciona esos archivos ni ejecuta cambios.
+
+---
+
+#### 29. Prohibiciones
+
+Esta tarea no autoriza:
+
+1. crear o modificar PermissionKeys, roles, matrices, grants o denegaciones canónicas;
+2. crear tablas, columnas, constraints, índices, funciones, RPC, RLS, triggers, queues, leases o eventos físicos;
+3. modificar Supabase, datos, Auth, Storage, Realtime, Edge Functions, cron, `pg_net`, secretos o configuración;
+4. modificar GitHub Actions;
+5. modificar ANIMA, NEXO, PASS ni otro repositorio consumidor;
+6. activar `QAI-008`;
+7. retirar `QAI-004`;
+8. cambiar `document-alerts-daily` ni su material sensible;
+9. convertir acceso a GitHub o Supabase en business authority;
+10. utilizar `service_role` como permiso empresarial;
+11. persistir el token del actor como credencial del worker;
+12. conceder wildcard de acciones, recursos, ambientes, devices o providers;
+13. permitir que un scheduler ejecute operaciones no declaradas;
+14. permitir que un provider gobierne la cola interna;
+15. permitir que un observer mutile estado o dispare control;
+16. permitir que un worker se autorice a sí mismo;
+17. permitir `FORCE_RETRY` sobre error no reintentable, resultado ambiguo, operación cancelada, terminal o fuera de deadline;
+18. reiniciar presupuesto mediante control manual;
+19. liberar dead-letter o quarantine sin recovery identificada;
+20. romper un claim o fencing vigente por privilegio administrativo;
+21. reabrir una operación terminal;
+22. cambiar payload o recurso de la operación original mediante recovery;
+23. repetir una impresión o efecto externo ambiguo a ciegas;
+24. inferir autoridad desde prioridad, assignment, claim, status, métrica, alerta o health;
+25. declarar que los activos actuales implementan este contrato por quedar documentados;
+26. iniciar `DELIV-PKG-001`.
+
+---
+
+#### 30. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `QUEUE-ARC-011` como tarea anterior aprobada;
+2. conserva `DELIV-PKG-001` como única tarea siguiente reservada;
+3. establece `WORK-AUTHORIZATION-CONTRACT-001@1.0.0` sin crear otra fuente de verdad de permisos;
+4. consume `AuthorizationDecision@1.0.0` y el modelo canónico de identidad/contexto/autorización;
+5. separa business authorization, control authorization, technical execution scope y concurrency authority;
+6. define que credencial técnica, claim, lease, fencing, operation ID y receipt no conceden permiso empresarial;
+7. define exactamente nueve acciones semánticas de control;
+8. declara explícitamente que esas acciones no son PermissionKeys;
+9. define `required_permission_ref` por operación y acción;
+10. aplica default-deny cuando falta una referencia de permiso manual;
+11. impide que el cliente elija un permiso menos restrictivo;
+12. define un sobre de solicitud/decisión de control con identidad, actor, recurso, versión, scope, motivo, decisión y executor técnico;
+13. define cinco bases cerradas de autoridad, incluida propagación y `NO_APLICA`;
+14. define creación iniciada por actor con decisión canónica y actor efectivo;
+15. define creación programada por `APPROVED_SYSTEM_RULE` sin inventar un actor humano por ocurrencia;
+16. define creación derivada de evento sin convertir proveedor, trigger o transport en owner;
+17. define trabajo offline sin convertir device identity en permiso humano;
+18. define que retry automático ordinario conserva la misma autoridad de intención sin crear otra autorización por intento;
+19. define `FORCE_RETRY` como control manual subordinado a la política y no como bypass;
+20. impide force retry tras agotamiento y deriva ese caso a recovery segura;
+21. define cancelación como control protegido y separado de efectividad, rollback y compensación;
+22. define autoridad para cambio de prioridad, disparo manual y reasignación forzada;
+23. mapea las seis acciones de recovery aprobadas a requisitos de autoridad sin redefinirlas;
+24. exige nueva autorización completa para `CREATE_CORRECTIVE_OPERATION`;
+25. define recuperación de exclusión sin romper una autoridad concurrente todavía válida;
+26. conserva break-glass como identidad excepcional, temporal, auditable y no empresarial;
+27. define límites explícitos para ocho clases de identidad técnica;
+28. conserva los 33 eventos de `QUEUE-ARC-010` sin crear un catálogo paralelo;
+29. impide que una denegación de autorización cambie `operation_status` por sí sola;
+30. define auditoría mínima de toda acción manual o extraordinaria;
+31. materializa exactamente una decisión para cada `QAI-001..QAI-019`;
+32. obtiene 16 `APLICA_AUTORIZACION_DE_CONTROL`, 2 `PROPAGA_NO_DECIDE_AUTORIZACION` y 1 `NO_APLICA`;
+33. obtiene 9 `SCHEDULED_SYSTEM_AUTHORITY`, 4 `OFFLINE_OR_DEVICE_DELEGATED_AUTHORITY`, 3 `EVENT_DERIVED_AUTHORITY`, 2 `UPSTREAM_PROPAGATED` y 1 `NO_APLICA`;
+34. mantiene 0 identidades faltantes y 0 duplicadas;
+35. mantiene `QAI-010` y `QAI-013` como propagadores técnicos sin autoridad propia;
+36. mantiene `QAI-016` como `NO_APLICA`;
+37. mantiene `QAI-008` como `PENDIENTE_DE_EVIDENCIA` sin activarlo;
+38. documenta que la ejecución manual de `QAI-009` no queda autorizada por acceso a GitHub;
+39. documenta que el material sensible de `QAI-005` no constituye business authority;
+40. documenta que SecureStore, device enrollment y worker loop de ANIMA no conceden permisos;
+41. documenta que BrowserPrint y la printer identity no conceden permiso de reimpresión;
+42. documenta que Wompi y RevenueCat autentican eventos pero no gobiernan operaciones internas;
+43. conserva la brecha de replay de `QAI-019` bajo sus tareas propietarias previas y la planificación de implementación;
+44. declara cero PermissionKeys nuevas;
+45. declara cero cambios de requisitos de prueba con justificación concreta;
+46. crea cero objetos físicos;
+47. modifica cero repositorios, Supabase, cron, colas, workers, dispositivos, adaptadores, webhooks o workflows;
+48. cierra documentalmente la familia `QUEUE-ARC-001..012`;
+49. reserva exclusivamente `DELIV-PKG-001`;
+50. no inicia ni desarrolla la tarea reservada.
+
+---
+
+#### 31. Resultado de la tarea
+
+`QUEUE-ARC-012` deja cerrada la autoridad del trabajo asíncrono de Vento OS:
+
+```text
+INTENCIÓN NUEVA
+→ PERMISO EMPRESARIAL O REGLA DE SISTEMA APROBADA
+→ RECURSO + CONTEXTO + SCOPE
+→ DECISIÓN CANÓNICA
+→ RESERVA DE TRABAJO
+
+MISMA INTENCIÓN + RETRY AUTOMÁTICO VÁLIDO
+→ MISMA AUTORIDAD DE INTENCIÓN
+→ NUEVO INTENTO SOLO DENTRO DE POLÍTICA
+
+ACCIÓN MANUAL / EXTRAORDINARIA
+→ ACCIÓN DE CONTROL IDENTIFICADA
+→ PERMISO DE CONTROL RESUELTO
+→ NUEVA DECISIÓN DE AUTORIZACIÓN
+→ PRECONDICIONES DE ESTADO / SEGURIDAD / CONCURRENCIA
+→ EJECUCIÓN TÉCNICA ACOTADA
+
+CREDENCIAL TÉCNICA
+≠ PERMISO
+
+CLAIM / LEASE / FENCING
+≠ PERMISO
+
+PROVEEDOR / DISPOSITIVO / SCHEDULER
+≠ OWNER EMPRESARIAL
+```
+
+Las 19 identidades inventariadas quedan reconciliadas una a una. La familia `QUEUE-ARC-001..012` queda documentalmente cerrada: identidad, idempotencia, tiempo, asignación, retry, cancelación, recovery, concurrencia, estados, métricas y autorización conservan fronteras separadas y consumibles por la planificación de implementación.
+
+---
+
+#### 32. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`QUEUE-ARC-011 — Definir métricas de espera, ejecución y error`
+
+TAREA ACTUAL APROBADA
+
+`QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos`
+
+SIGUIENTE TAREA RESERVADA
+
+`DELIV-PKG-001 — Crear identificador estable para cada paquete de implementación`
+
 
 Estados mínimos:
 
