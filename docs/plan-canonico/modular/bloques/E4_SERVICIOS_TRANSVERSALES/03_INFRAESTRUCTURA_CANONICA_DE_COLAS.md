@@ -4376,7 +4376,909 @@ SIGUIENTE TAREA RESERVADA
 `QUEUE-ARC-008 — Definir cola de fallos y recuperación manual`
 
 
-### [ ] QUEUE-ARC-008 — Definir cola de fallos y recuperación manual
+### ✅ QUEUE-ARC-008 — Definir cola de fallos y recuperación manual
+
+**Estado:** APROBADA
+**Tarea anterior:** `QUEUE-ARC-007 — Definir cancelación antes y durante ejecución`
+**Tarea siguiente:** `QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia`
+**Tipo de tarea:** documental; especialización canónica de aislamiento de fallos, dead-letter, cuarentena, conciliación y recuperación manual controlada para trabajo asíncrono, con preservación de identidad, historia, resultado y causalidad, y decisión explícita para las 19 identidades `QAI-*`, sin implementar colas físicas, claims, locks, estados, métricas ni autorización
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`
+**Línea base documental:** `vento-shell@d9460ce668e78fcb59ca1daa3dc741b491675843`
+**Contrato base de trabajo:** `TSVC-SVC-001.CONTRACT@1.0.0`
+**Registro de confiabilidad consumido:** `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`
+**Contrato de idempotencia consumido:** `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`
+**Contrato temporal consumido:** `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0`
+**Contrato de asignación consumido:** `WORK-ASSIGNMENT-CONTRACT-001@1.0.0`
+**Contrato de retry consumido:** `WORK-RETRY-POLICY-CONTRACT-001@1.0.0`
+**Contrato de cancelación consumido:** `WORK-CANCELLATION-CONTRACT-001@1.0.0`
+**Inventario consumido:** `QUEUE-CURRENT-ASSET-INVENTORY-001` — 19 identidades `QAI-*`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada qué ocurre cuando una operación asíncrona ya no puede continuar de forma automática y segura, cómo se aísla sin perder identidad ni evidencia, cuándo debe pasar a conciliación en lugar de reintentarse, y bajo qué condiciones una intervención manual puede recuperar el resultado, reanudar la misma intención o exigir una operación correctiva distinta.
+
+La regla raíz es:
+
+```text
+OPERACIÓN IDENTIFICADA
++
+TRATAMIENTO AUTOMÁTICO AGOTADO O EJECUCIÓN INSEGURA
++
+RESULTADO AÚN NO RESUELTO DE FORMA SEGURA
+        ↓
+CLASIFICAR LA CAUSA
+        ↓
+┌───────────────────────────────────────┐
+│ DEAD_LETTER                          │
+│ QUARANTINE                           │
+│ RECONCILIATION                       │
+└───────────────────────────────────────┘
+        ↓
+PRESERVAR IDENTIDAD + HISTORIA + EVIDENCIA
+        ↓
+REVISIÓN / CONCILIACIÓN CONTROLADA
+        ↓
+RESULTADO RECUPERADO
+O REEJECUCIÓN SEGURA DE LA MISMA INTENCIÓN
+O NUEVA OPERACIÓN CORRECTIVA
+O PERMANENCIA AISLADA
+```
+
+La separación canónica queda fijada así:
+
+```text
+FALLO
+≠ DEAD_LETTER
+≠ QUARANTINE
+≠ RESULT_UNKNOWN
+≠ CANCELACIÓN
+≠ VENCIMIENTO
+≠ RECHAZO EMPRESARIAL
+≠ NUEVA INTENCIÓN
+
+RECUPERACIÓN MANUAL
+≠ EDITAR EL PAYLOAD ORIGINAL
+≠ REINICIAR EL PRESUPUESTO AUTOMÁTICO
+≠ BORRAR HISTORIA
+≠ FORZAR UN EFECTO AMBIGUO
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+Se establece `WORK-FAILURE-RECOVERY-CONTRACT-001@1.0.0` como especialización de aislamiento y recuperación controlada del contrato canónico de trabajo asíncrono.
+
+El resultado material fija:
+
+1. tres carriles semánticos cerrados de aislamiento: `DEAD_LETTER`, `QUARANTINE` y `RECONCILIATION`;
+2. la diferencia entre error terminal, agotamiento automático, mensaje no procesable, conflicto, resultado desconocido y efecto parcial;
+3. un registro de aislamiento que conserva la misma `operation_id` sin crear otra intención;
+4. las causas cerradas que permiten enviar una operación a cada carril;
+5. los datos mínimos que deben preservarse sin copiar secretos ni payloads sensibles completos;
+6. una identidad propia para cada solicitud de recuperación manual;
+7. precondiciones obligatorias antes de cualquier recuperación;
+8. un catálogo cerrado de acciones y resoluciones de recuperación sin definir todavía estados persistidos;
+9. la prohibición de reejecución ciega ante efectos externos, físicos, destructivos o parcialmente confirmados;
+10. el tratamiento de operaciones canceladas, vencidas, terminales y parcialmente ejecutadas;
+11. la relación entre contenedores, hijos, schedules, colas offline, impresión y webhooks;
+12. la frontera exacta con concurrencia, estados, métricas y autorización;
+13. la reconciliación documental con fallos actuales observados en eliminación de cuentas, ANIMA, impresión NEXO y webhooks;
+14. una decisión explícita para las 19 identidades `QAI-*` del inventario aprobado.
+
+Balance:
+
+| Métrica                                    | Resultado |
+| ------------------------------------------ | --------: |
+| Identidades `QAI-*` esperadas              |    **19** |
+| Identidades materializadas                 |    **19** |
+| `APLICA_AISLAMIENTO_Y_RECUPERACION`        |    **16** |
+| `PROPAGA_NO_DECIDE_AISLAMIENTO`            |     **2** |
+| `NO_APLICA`                                |     **1** |
+| Carril primario `DEAD_LETTER`              |     **7** |
+| Carril primario `QUARANTINE`               |     **3** |
+| Carril primario `RECONCILIATION`           |     **6** |
+| Modo `UPSTREAM_PROPAGATED`                 |     **2** |
+| Modo `NO_APLICA`                           |     **1** |
+| Identificadores `QAI-*` duplicados         |     **0** |
+| Identidades sin decisión                   |     **0** |
+| Requisitos de prueba creados o modificados |     **0** |
+| Objetos físicos creados o modificados      |     **0** |
+
+---
+
+#### 3. Herencia contractual obligatoria
+
+`WORK-FAILURE-RECOVERY-CONTRACT-001@1.0.0` no crea otra identidad de trabajo ni sustituye los contratos aprobados.
+
+Hereda obligatoriamente:
+
+- de `TSVC-SVC-001.CONTRACT@1.0.0`, `operation_id`, `WORK_SUBMISSION`, `WORK_OUTCOME`, `WORK_ERROR`, causalidad, propiedad empresarial, versión y resultado autoritativo;
+- de `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`, `DEAD_LETTER`, `QUARANTINED`, `RESULT_UNKNOWN`, conciliación, preservación de intentos y prohibición de repetición ciega;
+- de `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`, `idempotency_key`, `payload_fingerprint`, recuperación del mismo trabajo y prohibición de mutar silenciosamente una intención;
+- de `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0`, `deadline_at`, vigencia, identidad de ocurrencia y prohibición de extender la ventana original mediante recuperación ordinaria;
+- de `WORK-ASSIGNMENT-CONTRACT-001@1.0.0`, historial de `assignment_id`, `assignment_version` y separación entre reasignación y nueva intención;
+- de `WORK-RETRY-POLICY-CONTRACT-001@1.0.0`, `attempt_id`, `attempt_no`, `max_attempts`, agotamiento, error no reintentable y regla de que el presupuesto automático no se reinicia;
+- de `WORK-CANCELLATION-CONTRACT-001@1.0.0`, la prohibición de revivir por defecto una operación cancelada y la obligación de conciliar cualquier efecto tardío o incierto;
+- de `TRANSVERSE-SERVICE-CONTINGENCY-REGISTRY-001@1.0.0`, la separación entre recuperación de una operación concreta y los modos generales de contingencia o degradación del servicio;
+- de `QUEUE-CURRENT-ASSET-INVENTORY-001`, las 19 identidades materiales y sus brechas actuales.
+
+La retención física, archivado y limpieza de entradas aisladas permanecen gobernados por el registro transversal de retención. Esta tarea no fija ventanas temporales de conservación.
+
+---
+
+#### 4. Unidad canónica de aislamiento
+
+Una entrada de fallo representa una proyección controlada sobre **la misma operación** que requiere tratamiento fuera del flujo automático ordinario.
+
+```text
+OPERACIÓN ORIGINAL
+operation_id = estable
+idempotency_key = estable
+payload_fingerprint = estable
+
+ENTRADA DE AISLAMIENTO
+failure_entry_id = identidad propia
+operation_id = referencia a la operación original
+failure_lane = carril semántico
+isolation_reason = causa cerrada
+```
+
+Reglas:
+
+1. `failure_entry_id` identifica un episodio de aislamiento; no sustituye `operation_id`, `idempotency_key`, `attempt_id` ni `cancellation_request_id`.
+2. Aislar no crea otra intención ni otra clave idempotente.
+3. Un trabajo puede tener más de un episodio de aislamiento a lo largo de su historia si una recuperación controlada vuelve a ejecutarlo y falla nuevamente.
+4. Cada episodio conserva referencia al intento, error, resultado conocido y contexto contractual que lo originaron.
+5. El aislamiento nunca borra intentos previos ni sobrescribe un resultado autoritativo.
+6. Una entrada no se considera resuelta por eliminarla físicamente de una tabla, lista, cola local o interfaz.
+7. La fuente empresarial que originó el trabajo permanece intacta salvo que su propio contrato ordene otra cosa.
+8. El servicio transversal no adquiere autoridad para decidir el resultado empresarial por custodiar una entrada aislada.
+
+---
+
+#### 5. Carriles canónicos de aislamiento
+
+Se definen exactamente tres carriles semánticos para las operaciones aplicables.
+
+| Carril           | Uso canónico                                                                                                                                             | Regla de seguridad                                                        |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `DEAD_LETTER`    | el tratamiento automático terminó o agotó presupuesto y no existe un efecto ambiguo que haga insegura una nueva ejecución                                | detener automatismos y exigir decisión controlada antes de otra ejecución |
+| `QUARANTINE`     | existe contenido no procesable, conflicto, orden inválido, contrato incompatible o condición que exige revisión antes de permitir ejecución              | no ejecutar ni corregir silenciosamente el trabajo aislado                |
+| `RECONCILIATION` | el efecto pudo ocurrir, ocurrió parcialmente o existe divergencia entre fuentes y no puede decidirse con seguridad desde el resultado técnico disponible | consultar fuentes autoritativas antes de repetir, completar o cerrar      |
+
+Reglas:
+
+1. Los tres carriles son semánticos; no obligan a tres tecnologías o tablas físicas distintas.
+2. Un elemento puede pasar de `DEAD_LETTER` o `QUARANTINE` a `RECONCILIATION` si la revisión descubre un posible efecto previo.
+3. Una operación en `RECONCILIATION` no vuelve a `DEAD_LETTER` para eludir la incertidumbre.
+4. `DEAD_LETTER` no significa fallo empresarial definitivo.
+5. `QUARANTINE` no significa que el payload pueda editarse y reenviarse con la misma identidad.
+6. `RECONCILIATION` no significa retry ni compensación.
+7. Cancelación y expiración no son carriles de fallo; sus reglas siguen siendo propias.
+8. Una operación ya `succeeded` no ingresa a aislamiento por un fallo de telemetría posterior; el fallo técnico secundario conserva su propia identidad cuando corresponda.
+9. El vocabulario final de estados y eventos que materializa estos carriles pertenece a `QUEUE-ARC-010`.
+
+---
+
+#### 6. Causas canónicas de aislamiento
+
+El campo `isolation_reason` utiliza el siguiente vocabulario cerrado inicial:
+
+| Causa                         | Carril primario  | Regla                                                                                                         |
+| ----------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------- |
+| `RETRY_BUDGET_EXHAUSTED`      | `DEAD_LETTER`    | se agotó el tratamiento automático permitido sin resultado exitoso ni ambigüedad material                     |
+| `PERMANENT_TECHNICAL_FAILURE` | `DEAD_LETTER`    | el fallo técnico conocido no admite otro intento automático bajo la política vigente                          |
+| `POISON_OR_UNPROCESSABLE`     | `QUARANTINE`     | la unidad no puede procesarse de forma segura y repetirla produciría el mismo fallo o riesgo                  |
+| `CONFLICT_OR_OUT_OF_ORDER`    | `QUARANTINE`     | existe conflicto idempotente, causal, de versión o de orden que exige revisión controlada                     |
+| `RESULT_UNKNOWN`              | `RECONCILIATION` | el efecto pudo ocurrir pero no existe confirmación autoritativa suficiente                                    |
+| `PARTIAL_EFFECT`              | `RECONCILIATION` | algunas etapas o componentes produjeron efecto y otras no tienen cierre compatible                            |
+| `SOURCE_OR_RESULT_DIVERGENCE` | `RECONCILIATION` | fuentes o registros relevantes no convergen a un resultado único y seguro                                     |
+| `OPERATOR_REVIEW_REQUIRED`    | según evidencia  | el contrato exige revisión humana antes de decidir; el carril se selecciona por la naturaleza real del riesgo |
+
+Reglas:
+
+1. La clasificación parte de evidencia del intento y del contrato, no de un texto libre del operador.
+2. Un error de validación corregible no se convierte en `DEAD_LETTER` para reutilizar la misma intención con contenido distinto.
+3. Un rechazo empresarial no se vuelve reintentable por entrar a una cola de fallos.
+4. Un conflicto idempotente no se resuelve eligiendo silenciosamente uno de los payloads.
+5. Un error de autorización no se corrige ejecutando el trabajo con un principal más amplio sin una nueva evaluación contractual.
+6. Cuando exista posibilidad material de efecto externo, físico o destructivo, prevalece `RECONCILIATION` sobre una reejecución directa.
+7. Un fallo conocido antes de cualquier efecto puede aislarse en `DEAD_LETTER` o `QUARANTINE` según si el problema es agotamiento recuperable o incompatibilidad que exige revisión.
+
+---
+
+#### 7. Sobre mínimo de aislamiento y recuperación
+
+Toda materialización futura deberá poder conservar, cuando aplique:
+
+```text
+failure_entry_id
+failure_entry_version
+failure_lane
+isolation_reason
+isolated_at
+operation_id
+contract_id
+contract_version
+operation_type
+business_owner_application
+idempotency_key
+payload_fingerprint
+source_reference
+resource_reference
+resource_version
+source_attempt_id
+attempt_no
+retry_profile
+max_attempts
+error_code
+error_class
+failed_at
+deadline_at
+cancellation_resolution
+result_ref
+reconciliation_status
+reconciliation_evidence_ref
+recovery_request_id
+recovery_action
+recovery_requested_at
+requested_by_reference
+operation_version_observed
+failure_entry_version_observed
+recovery_attempt_id
+replacement_operation_id
+recovery_resolution_ref
+```
+
+Reglas:
+
+1. Los campos no aplicables se omiten o se declaran `NO_APLICA`; no se inventan identidades.
+2. El registro conserva referencias suficientes para reconstruir causa, intento, recurso, contrato y efecto conocido.
+3. Secretos, tokens, credenciales, payloads sensibles completos, documentos y evidencia física no se copian a la cola de fallos cuando una referencia protegida sea suficiente.
+4. `failure_entry_version` conserva evolución del episodio de aislamiento sin reescribir historia.
+5. `reconciliation_evidence_ref` apunta a evidencia protegida o fuente autoritativa, no a un mensaje de UI ni a un log aislado.
+6. `recovery_attempt_id` solo existe cuando una recuperación controlada inicia otra ejecución real.
+7. `replacement_operation_id` solo existe cuando la resolución exige una intención correctiva o empresarial nueva.
+8. La representación física de estas relaciones queda para la implementación autorizada.
+
+---
+
+#### 8. Ingreso a aislamiento
+
+Una operación deja el flujo automático ordinario cuando se cumple una condición que impide continuar con seguridad.
+
+```text
+INTENTO / DECISIÓN AUTOMÁTICA
+        ↓
+¿EXISTE RESULTADO AUTORITATIVO SUFICIENTE?
+        ├─ SÍ, ÉXITO → conservar resultado; no aislar por la operación principal
+        └─ NO
+             ↓
+¿EFECTO POSIBLE, PARCIAL O DIVERGENTE?
+        ├─ SÍ → RECONCILIATION
+        └─ NO
+             ↓
+¿CONFLICTO / POISON / ORDEN / INCOMPATIBILIDAD?
+        ├─ SÍ → QUARANTINE
+        └─ NO
+             ↓
+¿TRATAMIENTO AUTOMÁTICO AGOTADO O FALLO TÉCNICO TERMINAL?
+        ├─ SÍ → DEAD_LETTER
+        └─ NO → seguir política ordinaria propietaria
+```
+
+Reglas:
+
+1. El ingreso no reinicia `attempt_no` ni `max_attempts`.
+2. No se programa `next_retry_at` ordinario para una unidad ya aislada por agotamiento o inseguridad.
+3. Un worker con un item en memoria no puede continuar ejecutándolo solo porque no haya observado todavía el almacenamiento físico de aislamiento; la exclusión efectiva se resuelve en `QUEUE-ARC-009`.
+4. Aislar conserva la operación original para consulta y reconstrucción.
+5. Si el fallo pertenece a un trabajo hijo, el contenedor no se marca automáticamente como recuperado, fallido o exitoso sin aplicar su contrato de resultados parciales.
+6. Un transporte técnico que falle propaga evidencia al trabajo propietario; no se convierte automáticamente en su cola de fallos empresarial.
+
+---
+
+#### 9. Semántica de `DEAD_LETTER`
+
+`DEAD_LETTER` se utiliza cuando la automatización ya no puede continuar sin intervención controlada y no existe evidencia de efecto ambiguo que exija conciliación previa.
+
+Reglas:
+
+1. Entrar a `DEAD_LETTER` detiene retries ordinarios de esa operación.
+2. El presupuesto consumido permanece consumido; no se resetea.
+3. La entrada conserva el último error y todos los intentos anteriores por referencia.
+4. La operación no se presenta como resultado empresarial fallido únicamente por estar aislada.
+5. Un operador no puede sacar la unidad de `DEAD_LETTER` y volver a encolarla sin ejecutar las precondiciones de recuperación de esta tarea.
+6. Si la revisión encuentra evidencia de un posible efecto previo, la unidad pasa a tratamiento de conciliación antes de cualquier reejecución.
+7. Si resolver el fallo exige cambiar payload, recurso, versión, destinatario, finalidad o contrato material, se requiere una nueva operación correctiva o nueva intención; no se muta el trabajo original.
+8. La entrada puede permanecer aislada indefinidamente desde el punto de vista semántico hasta que su política de retención propietaria disponga archivo o cierre; esta tarea no define duración física.
+
+---
+
+#### 10. Semántica de `QUARANTINE`
+
+`QUARANTINE` protege al sistema frente a una unidad cuyo contenido, contexto, versión, orden o contrato no permiten ejecución segura.
+
+Reglas:
+
+1. Un mensaje venenoso o determinísticamente no procesable no se reintenta automáticamente.
+2. Un `IDEMPOTENCY_CONFLICT` conserva las dos evidencias incompatibles sin sobrescribir la intención reservada.
+3. Un elemento fuera de orden no puede aplicar una versión antigua sobre una más nueva.
+4. Un contrato o versión desconocidos no se interpretan mediante un esquema parecido por conveniencia.
+5. Una unidad en cuarentena no se corrige editando el payload original.
+6. Si la causa se resuelve sin cambiar el significado de la intención —por ejemplo, disponibilidad de una dependencia contractual ya compatible— podrá evaluarse recuperación de la misma operación.
+7. Si la corrección cambia significado, recurso, versión material, destinatario o efecto, se crea una operación nueva causalmente vinculada.
+8. Una liberación masiva de cuarentena sin evaluación individual o criterio contractual explícito queda prohibida.
+9. La autoridad para liberar, crear corrección o descartar una acción permanece reservada a `QUEUE-ARC-012`.
+
+---
+
+#### 11. Semántica de `RECONCILIATION`
+
+`RECONCILIATION` es obligatoria cuando repetir puede duplicar, contradecir o destruir un efecto que quizá ya ocurrió.
+
+Debe consultar, según el contrato aplicable:
+
+- clave idempotente o `operation_id`;
+- identificador de proveedor o evento;
+- receipt técnico confiable;
+- recurso y versión autoritativos;
+- hash u objeto persistido;
+- estado de dispositivo o periférico;
+- registro empresarial propietario;
+- evidencia de componentes o etapas ya completadas.
+
+La conciliación clasifica el resultado en una de estas condiciones:
+
+| Condición                      | Decisión                                                                                                                                     |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CONFIRMED_EXECUTED`           | recuperar el resultado existente; no repetir el efecto                                                                                       |
+| `CONFIRMED_NOT_EXECUTED`       | evaluar reejecución de la misma intención solo si sigue vigente, no está cancelada y la repetición es segura                                 |
+| `PARTIALLY_EXECUTED`           | completar únicamente componentes faltantes de forma idempotente cuando el contrato lo permita; en otro caso crear acción correctiva separada |
+| `EXECUTED_INCOMPATIBLE_RESULT` | escalar a la aplicación propietaria; no sobrescribir el resultado ni repetir ciegamente                                                      |
+| `UNDETERMINABLE`               | mantener aislamiento y prohibir reejecución destructiva, física o externa insegura                                                           |
+
+Reglas:
+
+1. La vuelta de conectividad o disponibilidad no cierra conciliación.
+2. Un proveedor que responde nuevamente no prueba por sí solo qué ocurrió en el intento anterior.
+3. La conciliación debe preservar todas las evidencias consultadas mediante referencias auditables.
+4. Completar componentes faltantes conserva la identidad original únicamente cuando el contrato permita demostrar que son partes pendientes del mismo efecto.
+5. Una compensación empresarial es una operación distinta y no se disfraza como conciliación.
+6. La aplicación propietaria decide cuando el servicio técnico no puede inferir de forma segura el resultado empresarial.
+
+---
+
+#### 12. Unidad de recuperación manual
+
+La recuperación manual es una acción de control identificada sobre una operación aislada.
+
+```text
+RECOVERY REQUEST
+recovery_request_id = identidad propia
+failure_entry_id = episodio de aislamiento observado
+operation_id = operación original
+requested_by_reference = solicitante auditable
+recovery_action = acción propuesta
+```
+
+Reglas:
+
+1. `recovery_request_id` no sustituye `operation_id`, `attempt_id`, `failure_entry_id` ni `cancellation_request_id`.
+2. Repetir la misma solicitud de recuperación debe recuperar la misma decisión y no crear múltiples intentos.
+3. Una nueva solicitud para una segunda intervención distinta utiliza otro `recovery_request_id`.
+4. La solicitud registra la versión de operación y de entrada de fallo observadas para permitir control concurrente posterior.
+5. La solicitud no concede por sí misma autoridad para actuar; la autoridad y segregación se cierran en `QUEUE-ARC-012`.
+6. Abrir una solicitud no modifica la intención original ni reabre automáticamente el trabajo.
+7. La recuperación manual debe dejar una resolución consultable aunque se decida no ejecutar nada.
+
+---
+
+#### 13. Precondiciones obligatorias de recuperación
+
+Antes de aprobar cualquier acción que pueda producir un nuevo efecto, se debe comprobar en este orden:
+
+1. identidad exacta de `operation_id`, `failure_entry_id` y contrato;
+2. que la entrada observada continúa vigente y no fue resuelta por otro resultado;
+3. que no existe `WORK_OUTCOME` exitoso autoritativo que haga innecesaria la repetición;
+4. estado de cancelación y su resolución efectiva;
+5. vigencia temporal y `deadline_at` del trabajo original;
+6. recurso, versión y fuente empresarial actuales;
+7. payload y `payload_fingerprint` originales, sin mutación;
+8. último intento, error, presupuesto consumido y resultado conocido;
+9. existencia de efecto ambiguo, parcial o externo que obligue a conciliar;
+10. compatibilidad actual de contrato, target y dependencias;
+11. identidad y referencia del solicitante para que la tarea de autorización determine su autoridad;
+12. versión observada necesaria para que la tarea de concurrencia impida dos recuperaciones simultáneas.
+
+Si cualquiera de estas comprobaciones impide ejecución segura, la recuperación no puede convertirse en reintento por conveniencia operativa.
+
+---
+
+#### 14. Acciones canónicas de recuperación
+
+El campo `recovery_action` utiliza este vocabulario cerrado:
+
+| Acción                          | Uso                                                                                                                                              |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `RECOVER_EXISTING_RESULT`       | registrar o enlazar un resultado autoritativo ya producido sin repetir efecto                                                                    |
+| `RECONCILE_ONLY`                | investigar y cerrar incertidumbre sin iniciar nueva ejecución                                                                                    |
+| `SAFE_REEXECUTE_SAME_INTENTION` | iniciar una ejecución extraordinaria de la misma operación cuando se demostró que no hubo efecto incompatible y la intención sigue siendo válida |
+| `COMPLETE_MISSING_COMPONENTS`   | completar partes faltantes de un efecto parcial únicamente cuando el contrato permita hacerlo idempotentemente                                   |
+| `CREATE_CORRECTIVE_OPERATION`   | crear una nueva operación causalmente vinculada porque corregir exige otra intención, payload, versión, recurso o efecto                         |
+| `KEEP_ISOLATED`                 | conservar la unidad sin ejecución porque no existe una salida segura o falta decisión propietaria                                                |
+
+Reglas:
+
+1. `SAFE_REEXECUTE_SAME_INTENTION` no reinicia el presupuesto automático original.
+2. `COMPLETE_MISSING_COMPONENTS` no permite volver a ejecutar componentes ya confirmados.
+3. `CREATE_CORRECTIVE_OPERATION` utiliza una nueva `operation_id` y la identidad idempotente que corresponda a la nueva intención.
+4. `KEEP_ISOLATED` es una resolución válida cuando ejecutar sería más riesgoso que conservar el pendiente.
+5. Ninguna acción modifica retroactivamente intentos, errores ni resultados anteriores.
+6. La materialización de permisos para cada acción pertenece a `QUEUE-ARC-012`.
+
+---
+
+#### 15. Resoluciones canónicas de recuperación
+
+Sin sustituir el state machine de `QUEUE-ARC-010`, una solicitud de recuperación puede resolver semánticamente a:
+
+| Resolución                              | Significado                                                                                      |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `RESULT_RECOVERED`                      | se localizó y vinculó el resultado autoritativo existente                                        |
+| `SAFE_REEXECUTION_APPROVED`             | se demostró que otra ejecución de la misma intención puede iniciarse bajo control extraordinario |
+| `MISSING_COMPONENT_COMPLETION_APPROVED` | se identificaron componentes faltantes que pueden completarse sin repetir los ya confirmados     |
+| `CORRECTIVE_OPERATION_REQUIRED`         | el trabajo original no debe mutarse; se necesita una operación nueva relacionada                 |
+| `NO_SAFE_REEXECUTION`                   | repetir no es seguro por ambigüedad, cancelación, vencimiento, conflicto o efecto previo         |
+| `OWNER_DECISION_REQUIRED`               | el resultado técnico no basta para decidir la consecuencia empresarial                           |
+| `KEEP_ISOLATED`                         | no existe todavía condición de salida segura                                                     |
+| `ALREADY_RESOLVED_NO_CHANGE`            | la entrada ya había sido resuelta y la solicitud no cambia el resultado                          |
+
+La resolución no concede autorización ni define el nombre final del estado persistido.
+
+---
+
+#### 16. Recuperación extraordinaria después de agotamiento
+
+Cuando el presupuesto automático se agotó y una revisión concluye que la **misma intención** sigue siendo segura y vigente:
+
+1. la recuperación utiliza un `recovery_request_id` explícito;
+2. la operación conserva `operation_id`, `idempotency_key`, payload y huella;
+3. el siguiente intento recibe un `attempt_id` nuevo y continúa la historia monotónica de intentos;
+4. `max_attempts` original no se reescribe ni se presenta como si nunca se hubiera agotado;
+5. una solicitud de recuperación autoriza semánticamente como máximo una nueva ejecución extraordinaria; no abre otro loop automático de retries;
+6. si ese intento falla, se clasifica nuevamente y vuelve a aislamiento según evidencia;
+7. una segunda ejecución extraordinaria requiere otra solicitud de recuperación identificada y una nueva evaluación;
+8. la exclusión que impide dos ejecuciones por la misma solicitud se materializa en `QUEUE-ARC-009`;
+9. la autoridad para solicitar o permitir la recuperación se materializa en `QUEUE-ARC-012`.
+
+La recuperación extraordinaria no convierte el modelo en retries ilimitados.
+
+---
+
+#### 17. Cancelación, vencimiento y terminalidad
+
+##### 17.1. Operación cancelada
+
+Una cancelación efectiva impide reencolar la misma operación para producir el efecto ordinario.
+
+Se permite únicamente:
+
+- conciliar un efecto tardío o incierto;
+- recuperar un resultado ya producido;
+- crear una nueva operación empresarial o correctiva cuando el dominio lo requiera y exista la autoridad correspondiente.
+
+No se utiliza recuperación manual para revocar la cancelación original.
+
+##### 17.2. Operación vencida
+
+Al alcanzar `deadline_at`, la operación original no recupera elegibilidad ordinaria mediante una cola de fallos.
+
+Se permite:
+
+- conciliar y recuperar resultados ya existentes;
+- determinar que no hubo efecto;
+- crear una nueva intención cuando el proceso todavía requiera una acción vigente bajo un nuevo contexto contractual.
+
+La recuperación no extiende silenciosamente `deadline_at`.
+
+##### 17.3. Operación con resultado terminal
+
+Un resultado exitoso o rechazo empresarial autoritativo no se reabre por una solicitud de recuperación. Si existe una acción posterior legítima, se modela como una nueva operación causalmente vinculada.
+
+---
+
+#### 18. Trabajos contenedores e hijos
+
+1. El aislamiento de un contenedor no convierte automáticamente todos sus hijos en fallidos.
+2. Un hijo ya registrado conserva su `operation_id`, resultado e historial propios.
+3. Un contenedor recuperado no vuelve a ejecutar hijos que ya tengan resultado confirmado.
+4. Si un hijo está en `RESULT_UNKNOWN`, se concilia ese hijo antes de decidir el cierre del contenedor.
+5. Un batch parcialmente ejecutado conserva por unidad qué efectos fueron confirmados, faltantes o inciertos.
+6. La recuperación de un batch solo procesa unidades pendientes compatibles y nunca usa un nuevo `attempt_id` del contenedor para justificar duplicar efectos hijos.
+7. La causalidad entre contenedor, hijos y una eventual operación correctiva permanece visible.
+
+---
+
+#### 19. Schedules y ocurrencias recurrentes
+
+Para `QAI-001..QAI-009`:
+
+1. aislar una ocurrencia conserva `schedule_occurrence_id` y `logical_fire_at_utc`;
+2. la siguiente ocurrencia ordinaria del schedule es otra intención y no recupera automáticamente la anterior;
+3. `DEAD_LETTER` de una ocurrencia no desactiva la definición del schedule;
+4. una ocurrencia vencida no se revive extendiendo su deadline;
+5. una ocurrencia que produjo efectos parciales concilia por recurso o trabajo hijo antes de cualquier recuperación;
+6. una ejecución manual adicional deliberada sigue siendo una nueva ocurrencia;
+7. una ejecución manual destinada a recuperar la misma ocurrencia conserva su identidad únicamente si sigue vigente y se cumplen las precondiciones de recuperación;
+8. el solapamiento `QAI-001` / `QAI-004` no se resuelve liberando ambas unidades de aislamiento; su exclusión permanece en `QUEUE-ARC-009` y la transición legacy en `TSVC-CAT-010`.
+
+---
+
+#### 20. Dispositivos, offline e impresión
+
+1. Un fallo local debe conservar identidad suficiente para sobrevivir reinicio y reconexión.
+2. El dispositivo no decide que un error sea recuperable por tener nuevamente conectividad.
+3. Un item `failed` o `conflict` local no se vuelve seguro porque un operador pulse una acción equivalente a forzar sincronización.
+4. Conflictos de versión o negocio se revisan antes de ejecutar; no se fuerzan con el mismo payload contra una fuente más nueva.
+5. Una impresión cuyo envío pudo llegar al periférico entra primero a conciliación física; no se reimprime para comprobar si la primera salió.
+6. Si se confirma que no hubo impresión y la intención sigue vigente, puede evaluarse recuperación controlada de la misma intención.
+7. Si se confirma impresión y se necesita otra copia, la reimpresión autorizada es otra intención con identidad de copia propia.
+8. El detalle especializado de recuperación de impresión permanece bajo `PRINT-ARC-*` sin alterar estas invariantes transversales.
+
+---
+
+#### 21. Webhooks, integraciones y efectos externos
+
+1. Un evento de proveedor recibido permanece como hecho fuente aunque su procesamiento interno falle.
+2. El replay del proveedor no se modela automáticamente como recuperación manual ni como nueva intención.
+3. Cuando una mutación interna puede haberse aplicado antes de fallar el registro del evento o acuse, la operación entra a conciliación.
+4. La conciliación compara identificador de evento, transacción o recurso, versión y resultado interno antes de cualquier reejecución.
+5. Un `200 OK` previo no prueba que todas las etapas internas terminaron si el flujo no conserva un resultado autoritativo compuesto.
+6. Un `500` tampoco prueba que ninguna etapa produjo efecto.
+7. Una integración con varias escrituras debe conciliar cada componente relevante cuando una respuesta o error no demuestre atomicidad.
+8. Una recuperación nunca convierte al proveedor externo en propietario de la decisión empresarial.
+
+---
+
+#### 22. Matriz materializada de aislamiento y recuperación de las 19 identidades `QAI-*`
+
+| ID        | Clasificación                       | Carril primario       | Disparador de aislamiento                                                                                   | Regla de recuperación manual                                                                                                                                                                               | Estado y brecha documental                                                                                                                                                                                          |
+| --------- | ----------------------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QAI-001` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `DEAD_LETTER`         | agotamiento de la ocurrencia de cierre diario sin efecto ambiguo confirmado                                 | recuperar la misma ocurrencia solo si continúa vigente, no fue cancelada y no existe cierre ya confirmado; efectos por recurso se concilian antes de repetir                                               | `ESPECIFICADO`; el solapamiento con `QAI-004` continúa bajo `QUEUE-ARC-009`                                                                                                                                         |
+| `QAI-002` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `DEAD_LETTER`         | agotamiento del procesamiento raíz o fallo terminal conocido en la cadena cron → transporte → worker        | recuperar la ocurrencia raíz sin volver a ejecutar trabajos hijos ya cerrados; cada hijo conserva aislamiento y resultado propios                                                                          | `ESPECIFICADO`; éxito del cron o transporte no acredita el resultado de etapas hijas                                                                                                                                |
+| `QAI-003` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `DEAD_LETTER`         | agotamiento de la corrección stale cuando no existe efecto previo incierto                                  | antes de recuperar se revalida si el turno o contexto continúa stale; un recurso ya corregido no vuelve a mutarse                                                                                          | `ESPECIFICADO`; vigencia del recurso prevalece sobre el deseo de drenar backlog                                                                                                                                     |
+| `QAI-004` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `QUARANTINE`          | fallo, solapamiento o necesidad de recuperación mientras coexiste con `QAI-001` sobre la misma función base | no liberar para ejecución hasta resolver exclusión de autoridad y versión; la recuperación no legitima doble cierre                                                                                        | `ESPECIFICADO`; coexistencia legacy sigue bajo `TSVC-CAT-010` y exclusión bajo `QUEUE-ARC-009`                                                                                                                      |
+| `QAI-005` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `DEAD_LETTER`         | entrega conocida como fallida después de agotar política                                                    | puede recuperarse la entrega pendiente preservando mensaje y propósito; si el proveedor pudo aceptarla, cambia a `RECONCILIATION` antes de reenviar                                                        | `ESPECIFICADO`; `pg_net` no es la fuente de resultado y la entrega especializada continúa bajo `NOTIFY-ARC-*`                                                                                                       |
+| `QAI-006` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `DEAD_LETTER`         | ocurrencia de limpieza agotada o fallo técnico terminal conocido                                            | recuperar solo trabajo de limpieza todavía aplicable; no restaurar ni volver a modificar registros ya procesados válidamente mediante retry del batch                                                      | `ESPECIFICADO`; mantenimiento no adquiere autoridad empresarial adicional                                                                                                                                           |
+| `QAI-007` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `DEAD_LETTER`         | agotamiento de la ocurrencia de reconciliación sin ambigüedad sobre el root job                             | cada checkout hijo se revisa por separado; cualquier pago o estado ambiguo entra a `RECONCILIATION` antes de otra mutación                                                                                 | `ESPECIFICADO`; el batch no permite repetir efectos hijos confirmados                                                                                                                                               |
+| `QAI-008` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `DEAD_LETTER`         | política objetivo si la purga llega a desplegarse y agota tratamiento                                       | misma regla de ocurrencia y recurso que mantenimiento; la definición documental no crea una cola física ni acredita el job                                                                                 | `PENDIENTE_DE_EVIDENCIA`; adopción y despliegue quedan para `DELIV-PKG-001`                                                                                                                                         |
+| `QAI-009` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `RECONCILIATION`      | fallo durante el procesamiento destructivo de una solicitud de eliminación                                  | comprobar por solicitud si anonimización, eliminación de identidad y cierre de registro ocurrieron; nunca repetir todas las etapas solo porque el registro diga `failed`                                   | `ESPECIFICADO`; el worker actual puede marcar `failed` después de una excepción sin conservar una fase durable por cada efecto destructivo; materialización física en `DELIV-PKG-001`                               |
+| `QAI-010` | `PROPAGA_NO_DECIDE_AISLAMIENTO`     | `UPSTREAM_PROPAGATED` | error o request pendiente de transporte HTTP                                                                | propagar error, receipt y referencia al trabajo propietario; retirar un request de `pg_net` no resuelve el trabajo ni autoriza recovery empresarial                                                        | `ESPECIFICADO`; transporte administrado, no autoridad de aislamiento                                                                                                                                                |
+| `QAI-011` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `QUARANTINE`          | item local `failed` o `conflict` que no admite retry automático                                             | `conflict` exige revalidar fuente y versión; `failed` exige clasificar causa; el parámetro actual de ejecución forzada no equivale a recuperación canónica auditada                                        | `ESPECIFICADO`; el cliente conserva fallo y conflicto, pero no materializa solicitud de recuperación canónica; transición en `DELIV-PKG-001`                                                                        |
+| `QAI-012` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `QUARANTINE`          | item de descanso `failed` o `conflict` fuera del retry automático                                           | misma regla que asistencia, con identidad independiente; no se fuerza un descanso contra un turno o estado empresarial cambiado                                                                            | `ESPECIFICADO`; recuperación controlada no está acreditada en el cliente actual; transición en `DELIV-PKG-001`                                                                                                      |
+| `QAI-013` | `PROPAGA_NO_DECIDE_AISLAMIENTO`     | `UPSTREAM_PROPAGATED` | recibe items pendientes o aislados de `QAI-011` / `QAI-012`                                                 | el tick procesa únicamente unidades elegibles según su resolución upstream; no libera cuarentena ni crea recovery por sí mismo                                                                             | `ESPECIFICADO`; worker técnico, no propietario de recuperación                                                                                                                                                      |
+| `QAI-014` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `RECONCILIATION`      | callback de background cuyo efecto servidor pudo haberse aplicado antes de perder confirmación              | consultar el registro autoritativo de asistencia/salida; si el cierre existe recuperar resultado, y si no existe evaluar vigencia antes de nueva ejecución                                                 | `ESPECIFICADO`; pérdida del callback o del proceso móvil no demuestra ausencia de efecto                                                                                                                            |
+| `QAI-015` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `RECONCILIATION`      | envío a BrowserPrint con resultado físico fallido o desconocido                                             | confirmar si el periférico aceptó o imprimió antes de reemitir; solo un resultado `CONFIRMED_NOT_EXECUTED` y una intención vigente permiten recuperación de la misma copia                                 | `ESPECIFICADO`; la cola local se vacía al iniciar envío y no conserva aislamiento ni resultado físico durable; detalle en `PRINT-ARC-*` y adopción en `DELIV-PKG-001`                                               |
+| `QAI-016` | `NO_APLICA`                         | `NO_APLICA`           | `NO_APLICA`                                                                                                 | refresco de lectura sin trabajo durable ni efecto empresarial                                                                                                                                              | `NO_APLICA`; no se fuerza al contrato de recuperación                                                                                                                                                               |
+| `QAI-017` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `RECONCILIATION`      | fallo de entrega derivada cuando no puede probarse si el proveedor o destino recibió la notificación        | conservar `support_message` como fuente; una entrega claramente no enviada puede aislarse como dead-letter, pero una aceptación incierta exige conciliación antes de reenviar                              | `ESPECIFICADO`; trigger y `pg_net` no se convierten en fuente del resultado de entrega                                                                                                                              |
+| `QAI-018` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `RECONCILIATION`      | divergencia o fallo entre evento Wompi, actualización de transacción y registro del evento                  | conciliar `provider_event_id`, transacción y registro procesado; si la transacción ya cambió no repetir el efecto, y si falta solo evidencia completar únicamente el componente faltante cuando sea seguro | `ESPECIFICADO`; el flujo actual puede aplicar estado y luego fallar el registro de evento, por lo que un error HTTP aislado no prueba ausencia de efecto                                                            |
+| `QAI-019` | `APLICA_AISLAMIENTO_Y_RECUPERACION` | `RECONCILIATION`      | fallo o divergencia entre suscripción, entitlement y auditoría derivados de RevenueCat                      | comparar los tres componentes antes de replay; completar solo lo faltante cuando pueda demostrarse, y mantener aislamiento si el evento no tiene protección suficiente contra repetición                   | `ESPECIFICADO`; el handler actual no comprueba explícitamente los errores devueltos por sus tres mutaciones antes de responder éxito; replay/concurrencia quedan bajo `QUEUE-ARC-009` y adopción en `DELIV-PKG-001` |
+
+Resultado de reconciliación:
+
+```text
+19 IDENTIDADES ESPERADAS
+19 IDENTIDADES MATERIALIZADAS
+16 APLICAN AISLAMIENTO Y RECUPERACIÓN
+2 PROPAGAN Y NO DECIDEN AISLAMIENTO
+1 NO APLICA
+0 FALTANTES
+0 DUPLICADOS
+
+DISTRIBUCIÓN DE CARRIL PRIMARIO ENTRE LAS 16 APLICABLES
+DEAD_LETTER     = 7
+QUARANTINE      = 3
+RECONCILIATION  = 6
+```
+
+---
+
+#### 23. Reconciliación con implementación actual
+
+##### 23.1. Eliminación programada de cuentas
+
+El worker vigente de eliminación selecciona solicitudes pendientes, las cambia a `processing`, ejecuta anonimización, elimina la identidad de Auth y después intenta registrar `completed`. Ante cualquier excepción dentro de ese tramo actualiza la solicitud a `failed`.
+
+Esto implica que el valor `failed` por sí solo no demuestra cuál de las etapas destructivas ocurrió.
+
+Decisión documental:
+
+```text
+FALLO DEL WORKER
++
+POSIBLE EFECTO PARCIAL DESTRUCTIVO
+=
+RECONCILIATION
+NO REEJECUCIÓN CIEGA DEL PIPELINE COMPLETO
+```
+
+La materialización física de checkpoints, aislamiento y recuperación se planifica en `DELIV-PKG-001`. La exclusión de dos recuperadores pertenece a `QUEUE-ARC-009`; los estados y eventos a `QUEUE-ARC-010`; la autoridad a `QUEUE-ARC-012`.
+
+##### 23.2. Colas offline ANIMA
+
+Las colas inspeccionadas conservan estados locales `pending`, `syncing`, `failed` y `conflict`, además de intentos, error y `nextRetryAt`. Los elementos `failed` o `conflict` dejan de procesarse automáticamente salvo cuando la ejecución se fuerza mediante el parámetro actual `force`.
+
+Decisión documental:
+
+```text
+FORCE ACTUAL
+= CAPACIDAD TÉCNICA DE REPROCESAMIENTO
+≠ RECUPERACIÓN MANUAL CANÓNICA
+```
+
+Una recuperación canónica requiere identificar la solicitud, revisar conflicto y versión, conservar evidencia y evitar que `force` omita la causa que hizo insegura la ejecución. La adopción física queda en `DELIV-PKG-001`.
+
+##### 23.3. Impresión local NEXO
+
+El cliente conserva la lista pendiente en `localStorage`. `printAll()` invoca BrowserPrint y retira de la cola total o parcialmente los elementos inmediatamente después de iniciar el envío, mientras los callbacks de resultado se resuelven por separado.
+
+Decisión documental:
+
+```text
+ELEMENTO RETIRADO DE LA COLA LOCAL
+≠ RESULTADO FÍSICO
+≠ RECUPERACIÓN CERRADA
+```
+
+Un fallo o timeout post-envío se concilia antes de imprimir de nuevo. La arquitectura específica continúa en `PRINT-ARC-*` y la adopción física en `DELIV-PKG-001`.
+
+##### 23.4. Webhook Wompi
+
+El handler vigente protege replay mediante consulta del evento de proveedor. No obstante, la actualización de estado de transacción y el registro posterior del evento son operaciones separadas. Un error al registrar el evento después de una actualización de transacción puede dejar evidencia técnica divergente.
+
+Decisión documental:
+
+```text
+ERROR DE REGISTRO DE EVENTO
+DESPUÉS DE POSIBLE MUTACIÓN DE TRANSACCIÓN
+=
+RECONCILIATION
+```
+
+La recuperación debe consultar evento, transacción y estado procesado antes de volver a aplicar el efecto.
+
+##### 23.5. Webhook RevenueCat
+
+El handler vigente ejecuta secuencialmente inserción de suscripción, `upsert` de entitlement e inserción de auditoría. En el recorrido inspeccionado las respuestas de esas tres mutaciones no son comprobadas mediante sus campos de error antes de devolver `{ ok: true }`.
+
+Decisión documental:
+
+```text
+RESPUESTA OK DEL HANDLER ACTUAL
+≠ PRUEBA DE QUE LAS TRES MUTACIONES CONVERGIERON
+```
+
+Cualquier recuperación deberá conciliar suscripción, entitlement y auditoría como componentes separados. La brecha de replay y exclusión permanece bajo `QUEUE-ARC-009`; la materialización física se planifica en `DELIV-PKG-001`.
+
+---
+
+#### 24. Recuperación manual frente a contingencia
+
+La recuperación de esta tarea actúa sobre una operación aislada e identificada.
+
+El modo transversal `DEGRADED_MANUAL_HANDOFF` de contingencia actúa sobre la capacidad del servicio durante una afectación más amplia.
+
+```text
+RECUPERACIÓN MANUAL DE TRABAJO
+= resolver una operación concreta y su resultado
+
+HANDOFF MANUAL DE CONTINGENCIA
+= mantener una capacidad limitada mediante procedimiento alterno gobernado
+```
+
+Reglas:
+
+1. un handoff manual no libera automáticamente elementos de `DEAD_LETTER` o `QUARANTINE`;
+2. una recuperación de una operación no declara restaurado el servicio completo;
+3. ambos mecanismos preservan identidad, ownership, autoridad y conciliación;
+4. una operación generada por un procedimiento manual debe tener la identidad y causalidad que su contrato exija;
+5. volver a modo normal no elimina backlog o resultados ambiguos pendientes.
+
+---
+
+#### 25. Handoff exacto a `QUEUE-ARC-009..012`
+
+| Tarea                                                                             | Responsabilidad reservada recibida desde esta tarea                                                                                                                                                                       |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia`                    | materializar claim, lease, fencing, compare-and-set, exclusión y orden seguro para que una entrada aislada o un `recovery_request_id` no produzcan dos recuperadores válidos, y para impedir carreras con workers tardíos |
+| `QUEUE-ARC-010 — Definir estados y eventos canónicos`                             | representar ingreso a dead-letter, cuarentena y conciliación, apertura y resolución de recovery, reejecución extraordinaria, permanencia aislada y resultado recuperado sin redefinir la semántica de esta tarea          |
+| `QUEUE-ARC-011 — Definir métricas de espera, ejecución y error`                   | medir profundidad y edad de aislamiento, tiempo de conciliación, tasa de recuperación, fallos repetidos y residuales sin convertir métricas en política de liberación                                                     |
+| `QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos` | definir quién puede inspeccionar, conciliar, liberar, solicitar recuperación, ejecutar un intento extraordinario o crear una operación correctiva, con segregación y alcance explícitos                                   |
+
+Ninguna de esas responsabilidades se desarrolla en esta tarea.
+
+---
+
+#### 26. Prohibiciones
+
+Esta tarea no autoriza:
+
+1. crear tablas, columnas, índices, constraints, funciones, RPC, triggers, buckets o colas físicas de dead-letter;
+2. modificar Supabase, datos, RLS, grants, Realtime, cron, Edge Functions o secretos;
+3. modificar ANIMA, NEXO, PASS o cualquier repositorio consumidor;
+4. activar `QAI-008`;
+5. retirar `QAI-004`;
+6. crear un retry loop nuevo después de agotamiento;
+7. resetear `attempt_no`, `max_attempts` o `deadline_at`;
+8. mutar payload, huella, recurso, versión o contrato de la operación original;
+9. reejecutar una operación cancelada para producir el efecto ordinario;
+10. revivir una operación vencida extendiendo silenciosamente su ventana;
+11. repetir un efecto externo, físico o destructivo antes de conciliar incertidumbre;
+12. liberar un conflicto idempotente por sobrescritura;
+13. tratar `force`, un botón administrativo o acceso a base de datos como autoridad suficiente para recuperación;
+14. declarar un item recuperado porque fue eliminado de una cola o lista;
+15. declarar una operación fallida solo porque esté en `DEAD_LETTER`;
+16. crear una compensación empresarial como efecto automático de la cola de fallos;
+17. cerrar claim, lease, fencing, locking o compare-and-set;
+18. cerrar el state machine final ni los nombres de eventos persistidos;
+19. fijar métricas, SLOs, umbrales o alertas;
+20. conceder permisos para inspeccionar, liberar, reintentar o corregir operaciones;
+21. fijar periodos físicos de retención de fallos;
+22. declarar conformidad operativa de los activos actuales por esta definición documental;
+23. iniciar o desarrollar `QUEUE-ARC-009`.
+
+---
+
+#### 27. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea especializa para el inventario canónico una obligación de confiabilidad ya registrada: aislamiento de trabajo no procesable o agotado, preservación de identidad e historia, conciliación ante resultado desconocido o parcial, prohibición de repetición insegura y recuperación manual controlada. No introduce una obligación verificable independiente ni modifica el alcance, estado, responsable, evidencia, relación o secuencia de requisitos vigentes.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 28. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, que ya exige estado durable y resultado recuperable, límites de retry, tratamiento de resultado desconocido, claim seguro, conciliación, cola de fallos y recuperación manual controlada, y asigna responsabilidad explícita a `QUEUE-ARC-001` a `QUEUE-ARC-010`;
+- `TREQ-INTEGRATION-004`, que exige reconstruir causa, payload, principal técnico, recurso, intento, resultado, error y efecto final de cadenas asíncronas sin pérdida silenciosa ni efectos duplicados;
+- la cobertura específica vigente de ANIMA, PASS, NEXO, Supabase e integraciones relacionada con offline, dispositivos, impresión, webhooks, idempotencia, concurrencia, resultados ambiguos y recuperación.
+
+Ninguna fila del registro canónico cambia de identificador, dominio, regla protegida, estado, responsable, evidencia, relación o secuencia por esta tarea.
+
+---
+
+#### 29. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `QUEUE-ARC-007` como tarea anterior aprobada;
+2. conserva `QUEUE-ARC-009` como única tarea siguiente reservada;
+3. establece `WORK-FAILURE-RECOVERY-CONTRACT-001@1.0.0` sin crear una fuente de verdad paralela;
+4. conserva `operation_id`, `idempotency_key`, payload, huella, propietario, contrato e historial al aislar;
+5. define exactamente tres carriles semánticos: `DEAD_LETTER`, `QUARANTINE` y `RECONCILIATION`;
+6. distingue error terminal, agotamiento, conflicto, poison, resultado desconocido, efecto parcial, cancelación, vencimiento y rechazo empresarial;
+7. define `failure_entry_id` y `failure_entry_version` sin sustituir identidades del trabajo;
+8. define el sobre mínimo de aislamiento y recuperación sin copiar secretos ni payloads sensibles completos;
+9. define causas cerradas de aislamiento y su carril primario;
+10. impide retries ordinarios después de entrar a aislamiento por agotamiento o inseguridad;
+11. impide que `DEAD_LETTER` se interprete como resultado empresarial;
+12. impide editar el payload original para liberar una cuarentena;
+13. exige conciliación antes de repetir cualquier efecto ambiguo, externo, físico o destructivo;
+14. clasifica conciliación en ejecutado, no ejecutado, parcial, incompatible o indeterminable;
+15. recupera un resultado existente sin repetir el efecto cuando este ya se produjo;
+16. completa únicamente componentes faltantes cuando el contrato permita demostrar seguridad e idempotencia;
+17. define `recovery_request_id` como identidad propia e idempotente de intervención;
+18. define acciones `RECOVER_EXISTING_RESULT`, `RECONCILE_ONLY`, `SAFE_REEXECUTE_SAME_INTENTION`, `COMPLETE_MISSING_COMPONENTS`, `CREATE_CORRECTIVE_OPERATION` y `KEEP_ISOLATED`;
+19. define resoluciones canónicas de recovery sin apropiarse del state machine de `QUEUE-ARC-010`;
+20. obliga a revalidar resultado, cancelación, deadline, recurso, versión, contrato, payload, error y evidencia antes de otro efecto;
+21. impide reiniciar `max_attempts` mediante recuperación extraordinaria;
+22. limita cada solicitud de recuperación extraordinaria a una nueva ejecución real como máximo;
+23. exige otra solicitud identificada para una intervención extraordinaria posterior;
+24. impide reejecutar una operación cancelada para producir el efecto ordinario;
+25. impide revivir una operación vencida extendiendo su deadline;
+26. conserva resultados terminales autoritativos sin reabrirlos;
+27. conserva identidad separada de contenedores e hijos y no duplica efectos hijos confirmados;
+28. conserva identidad de ocurrencia de schedules y no confunde dead-letter con desactivación de schedule;
+29. exige tratamiento seguro de items offline `failed` y `conflict` antes de forzarlos;
+30. exige conciliación física antes de reimpresión cuando BrowserPrint pudo aceptar el trabajo;
+31. preserva eventos de proveedor como hechos fuente durante recuperación;
+32. materializa exactamente una decisión para cada `QAI-001..QAI-019`;
+33. obtiene 16 `APLICA_AISLAMIENTO_Y_RECUPERACION`, 2 `PROPAGA_NO_DECIDE_AISLAMIENTO` y 1 `NO_APLICA`;
+34. obtiene 7 `DEAD_LETTER`, 3 `QUARANTINE` y 6 `RECONCILIATION` entre las 16 aplicables;
+35. mantiene 0 identidades faltantes y 0 duplicadas;
+36. mantiene `QAI-010` y `QAI-013` como propagadores, no como autoridades de recovery;
+37. mantiene `QAI-016` como `NO_APLICA`;
+38. mantiene `QAI-008` como `PENDIENTE_DE_EVIDENCIA` sin activar su schedule;
+39. documenta que el `failed` actual del worker de eliminación de cuentas no prueba qué efectos destructivos ocurrieron;
+40. documenta que el `force` actual de ANIMA no equivale a recuperación manual canónica;
+41. documenta que retirar items de la cola local NEXO no prueba resultado físico ni recovery;
+42. documenta la necesidad de reconciliar Wompi cuando mutación y registro de evento divergen;
+43. documenta que la respuesta exitosa actual de RevenueCat no acredita por sí sola convergencia de sus tres mutaciones observadas;
+44. distingue recuperación manual por operación de handoff manual de contingencia del servicio;
+45. reserva exclusión, claim, lease, fencing y compare-and-set para `QUEUE-ARC-009`;
+46. reserva estados y eventos exactos para `QUEUE-ARC-010`;
+47. reserva métricas para `QUEUE-ARC-011`;
+48. reserva autoridad y segregación para `QUEUE-ARC-012`;
+49. declara cero cambios de requisitos de prueba con justificación concreta;
+50. crea cero objetos físicos;
+51. modifica cero repositorios, Supabase, cron, colas, workers, dispositivos, adaptadores o webhooks;
+52. no inicia ni desarrolla `QUEUE-ARC-009`.
+
+---
+
+#### 30. Resultado de la tarea
+
+`QUEUE-ARC-008` deja establecido el contrato canónico de aislamiento y recuperación del trabajo asíncrono:
+
+```text
+FALLO O CONDICIÓN INSEGURA
+        ↓
+CLASIFICAR EVIDENCIA
+        ↓
+DEAD_LETTER
+O QUARANTINE
+O RECONCILIATION
+        ↓
+PRESERVAR MISMA OPERACIÓN E HISTORIA
+        ↓
+RECOVERY REQUEST IDENTIFICADA
+        ↓
+REVALIDAR RESULTADO + CANCELACIÓN + VIGENCIA + RECURSO + VERSIÓN
+        ↓
+┌──────────────────────────────────────────┐
+│ RECUPERAR RESULTADO EXISTENTE           │
+│ CONCILIAR SIN EJECUTAR                  │
+│ REEJECUTAR MISMA INTENCIÓN SI ES SEGURO│
+│ COMPLETAR SOLO COMPONENTES FALTANTES    │
+│ CREAR OPERACIÓN CORRECTIVA NUEVA        │
+│ MANTENER AISLADA                        │
+└──────────────────────────────────────────┘
+
+NUNCA:
+- borrar historia;
+- resetear presupuesto;
+- mutar intención original;
+- repetir un efecto ambiguo a ciegas;
+- revivir cancelaciones o vencimientos por conveniencia.
+```
+
+Las 19 identidades inventariadas quedan reconciliadas una a una. La cola de fallos deja de ser una bolsa genérica de errores y se convierte en una frontera contractual de seguridad: cada unidad conserva su identidad, evidencia y resultado conocido, y solo puede abandonar el aislamiento mediante una decisión reconstruible que no duplique ni contradiga efectos previos.
+
+---
+
+#### 31. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`QUEUE-ARC-007 — Definir cancelación antes y durante ejecución`
+
+TAREA ACTUAL APROBADA
+
+`QUEUE-ARC-008 — Definir cola de fallos y recuperación manual`
+
+SIGUIENTE TAREA RESERVADA
+
+`QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia`
+
+
 ### [ ] QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia
 ### [ ] QUEUE-ARC-010 — Definir estados y eventos canónicos
 ### [ ] QUEUE-ARC-011 — Definir métricas de espera, ejecución y error
