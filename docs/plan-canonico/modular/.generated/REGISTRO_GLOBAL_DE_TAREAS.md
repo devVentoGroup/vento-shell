@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **812** |
+| Aprobadas | **813** |
 | En propuesta | **0** |
-| No iniciadas | **782** |
+| No iniciadas | **781** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **50.94% (812/1594)** |
+| Porcentaje de completamiento | **51.00% (813/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DELIV-PKG-001` — Crear identificador estable para cada paquete de implementación | ✅ APROBADA |
-| Tarea actual | `DELIV-PKG-002` — Vincular el paquete con capability_id, process_id y gap_id | ⬜ NO INICIADA |
-| Siguiente reservada | `DELIV-PKG-003` — Definir aplicación, dominio y repositorio propietarios | ⬜ NO INICIADA |
+| Última aprobada | `DELIV-PKG-002` — Vincular el paquete con capability_id, process_id y gap_id | ✅ APROBADA |
+| Tarea actual | `DELIV-PKG-003` — Definir aplicación, dominio y repositorio propietarios | ⬜ NO INICIADA |
+| Siguiente reservada | `DELIV-PKG-004` — Definir estado AS-IS y resultado TO-BE verificable | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -529,7 +529,7 @@
 | ✅ APROBADA | `EVID-ARC-009` | Definir conservación legal y eliminación | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ✅ APROBADA | `EVID-ARC-010` | Definir contingencia ante indisponibilidad de Storage | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ✅ APROBADA | `DELIV-PKG-001` | Crear identificador estable para cada paquete de implementación | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
-| ⬜ NO INICIADA | `DELIV-PKG-002` | Vincular el paquete con capability_id, process_id y gap_id | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
+| ✅ APROBADA | `DELIV-PKG-002` | Vincular el paquete con capability_id, process_id y gap_id | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-003` | Definir aplicación, dominio y repositorio propietarios | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-004` | Definir estado AS-IS y resultado TO-BE verificable | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-005` | Definir alcance incluido, excluido y diferido | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |

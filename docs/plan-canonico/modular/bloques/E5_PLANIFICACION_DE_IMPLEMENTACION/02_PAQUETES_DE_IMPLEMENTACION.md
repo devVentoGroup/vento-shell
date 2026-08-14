@@ -513,7 +513,232 @@ SIGUIENTE TAREA RESERVADA
 `DELIV-PKG-002 — Vincular el paquete con capability_id, process_id y gap_id`
 
 
-### [ ] DELIV-PKG-002 — Vincular el paquete con capability_id, process_id y gap_id
+### ✅ DELIV-PKG-002 — Vincular el paquete con capability_id, process_id y gap_id
+
+**Estado:** APROBADA
+**Tarea anterior:** `DELIV-PKG-001 — Crear identificador estable para cada paquete de implementación`
+**Tarea siguiente:** `DELIV-PKG-003 — Asignar application_owner, domain_owner y repo_owner`
+**Tipo de tarea:** documental — trazabilidad canónica entre paquetes, capacidades, procesos y brechas
+
+---
+
+#### 1. Resultado canónico
+
+`DELIV-PKG-002` vincula las identidades de paquete ratificadas por `DELIV-PKG-001` con los identificadores canónicos de capacidad, proceso y brecha ya presentes en las fuentes aprobadas.
+
+La vinculación no crea una segunda fuente de verdad para las 814 brechas. El registro canónico de brechas conserva el detalle fila a fila; E5 consume ese detalle mediante relaciones deterministas y preserva la identidad estable del paquete.
+
+El resultado obligatorio es:
+
+1. **201/201** identidades `GAP-PKG-001..201` vinculables por regla determinista con sus capacidades y brechas;
+2. **814/814** brechas reales cubiertas por exactamente un paquete ratificado;
+3. `process_id` vinculado solo cuando existe una referencia AS-IS confirmada en la fuente canónica;
+4. cero conversiones de valores provisionales en procesos canónicos;
+5. cero creación de capacidades, procesos, brechas o paquetes por inferencia;
+6. preservación separada de `VISO-SCHEDULE-MONTHLY-001` y de `NEXO-REMISSIONS-001` según su estado aprobado en `DELIV-PKG-001`.
+
+---
+
+#### 2. Fuentes y precedencia documental
+
+La relación se resuelve con la siguiente precedencia:
+
+1. `DELIV-PKG-001` define qué valores son `package_id` válidos y cuáles identidades permanecen reservadas o excluidas.
+2. `GAP-CTRL-006` y su catálogo pre-E5 definen, para `GAP-PKG-001..201`, el conteo de brechas y el conjunto de capacidades asociado a cada paquete.
+3. El registro canónico de brechas define el `gap_id`, la capacidad primaria, las capacidades relacionadas, el proceso provisional, los `Procesos AS-IS` y la asignación `GAP-PKG-*` de cada brecha real.
+4. El catálogo canónico de procesos valida la identidad de los procesos AS-IS referenciados; la ausencia de proceso no se sustituye con un valor provisional.
+5. Si una fuente posterior autorizada modifica una identidad o una relación, debe preservar el linaje de las identidades anteriores; esta tarea no renumera ni reagrupa la línea base.
+
+Una diferencia material entre el conteo del catálogo de paquetes y la membresía fila a fila del registro de brechas no puede corregirse por inferencia. La reconciliación final paquete-registro permanece reservada a `DELIV-PKG-024`.
+
+---
+
+#### 3. Grano canónico de las relaciones
+
+La vinculación se modela como tres relaciones independientes. No se fuerza una falsa relación 1:1.
+
+| Relación          | Grano documental                     | Cardinalidad permitida                                                                                      | Regla de unicidad                                            |
+| ----------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| paquete-capacidad | un `package_id` + un `capability_id` | un paquete puede tener una o varias capacidades; una capacidad puede aparecer en varios paquetes            | no repetir el mismo par                                      |
+| paquete-proceso   | un `package_id` + un `process_id`    | un paquete puede tener cero, uno o varios procesos; un proceso puede aparecer en varios paquetes            | no repetir el mismo par                                      |
+| paquete-brecha    | un `package_id` + un `gap_id`        | un paquete tiene una o varias brechas; cada brecha real de la línea base pertenece a exactamente un paquete | `gap_id` no puede pertenecer a dos paquetes de la línea base |
+
+La multiplicidad es información canónica. Reducir un paquete multiproceso o multicapacidad a una sola relación destruiría trazabilidad.
+
+---
+
+#### 4. Regla canónica `package_id` ↔ `gap_id`
+
+Para `GAP-PKG-001..201`, la membresía de brechas se obtiene exclusivamente de la asignación `GAP-PKG-*` registrada en cada fila clasificada como brecha real.
+
+Reglas obligatorias:
+
+1. participan exclusivamente las **814 brechas reales** de la línea base aprobada;
+2. las **22 referencias de control, agregación o evidencia** no se convierten en `gap_id` de implementación;
+3. cada brecha real conserva el `GAP-PKG-*` ya asignado;
+4. una brecha no puede aparecer en dos paquetes simultáneamente;
+5. no se reasigna una brecha por similitud de nombre, tarea dominante, aplicación, propietario, capacidad o prioridad;
+6. el número de brechas derivado por paquete debe coincidir con la columna `Brechas` del catálogo pre-E5;
+7. la suma de los 201 conteos debe seguir siendo **814**;
+8. una futura división o fusión de paquete deberá preservar el `GAP-PKG-*` de origen como linaje y no reescribir la evidencia histórica.
+
+Esta regla materializa la relación completa sin copiar 814 filas a una segunda matriz E5 que pudiera divergir del registro canónico.
+
+---
+
+#### 5. Regla canónica `package_id` ↔ `capability_id`
+
+El conjunto de `capability_id` de cada `GAP-PKG-*` es exactamente el conjunto consignado en la columna `Capacidades` del catálogo pre-E5.
+
+Reglas obligatorias:
+
+1. una capacidad del paquete debe conservar su identificador `CAP-*` aprobado;
+2. un paquete puede conservar más de una capacidad sin elegir una sola como sustituta;
+3. la capacidad primaria de cada brecha integrante se utiliza como comprobación de consistencia de la vinculación;
+4. una `Capacidad relacionada` de una brecha no se promueve automáticamente a capacidad del paquete;
+5. la familia `CAP-xx` mostrada en el catálogo no reemplaza los `capability_id` concretos;
+6. no se crean capacidades sintéticas para agrupar varias capacidades existentes;
+7. si una brecha miembro declarara una capacidad primaria incompatible con el conjunto aprobado del paquete, la diferencia se conserva como discrepancia documental para `DELIV-PKG-024`; no se corrige silenciosamente en esta tarea.
+
+---
+
+#### 6. Regla canónica `package_id` ↔ `process_id`
+
+El conjunto de `process_id` de un paquete es la unión, sin duplicados, de los procesos AS-IS confirmados por las brechas que pertenecen a ese paquete.
+
+Reglas obligatorias:
+
+1. solo un identificador presente en `Procesos AS-IS` puede generar una relación `package_id` ↔ `process_id` dentro de la línea base de 201 paquetes;
+2. el campo `Proceso provisional` no es un `process_id` y nunca se promueve como tal;
+3. valores `PROVISIONAL`, `—`, vacíos o ausentes no crean procesos ficticios;
+4. cero procesos AS-IS confirmados es una cardinalidad válida y explícita para un paquete;
+5. si varias brechas del mismo paquete referencian el mismo proceso, el paquete conserva una sola relación con ese `process_id` y mantiene la procedencia en las brechas fuente;
+6. si una brecha referencia varios procesos AS-IS, todos se conservan;
+7. que un proceso aparezca en varios paquetes no fusiona los paquetes;
+8. la relación con proceso describe contexto operativo; no asigna por sí misma propietario de aplicación, dominio o repositorio.
+
+---
+
+#### 7. Regla de derivación determinista
+
+Para cada `package_id = GAP-PKG-nnn` ratificado:
+
+1. seleccionar todas las brechas reales cuya asignación de paquete sea exactamente `GAP-PKG-nnn`;
+2. proyectar sus `gap_id` sin alterar identidad ni clasificación;
+3. tomar el conjunto de `capability_id` aprobado para `GAP-PKG-nnn` en el catálogo pre-E5;
+4. reunir los identificadores confirmados de `Procesos AS-IS` de las brechas miembro;
+5. eliminar duplicados solo dentro de cada tipo de relación, nunca eliminar brechas distintas por compartir capacidad o proceso;
+6. comprobar que el conteo de brechas resultante coincide con el conteo aprobado del paquete.
+
+La relación es reproducible porque parte de identificadores y columnas canónicas ya existentes. No depende de texto libre, similitud semántica, orden de filas ni criterio del implementador.
+
+---
+
+#### 8. Controles de integridad de la línea base
+
+| Control                                                        | Resultado canónico requerido |
+| -------------------------------------------------------------- | ---------------------------: |
+| `package_id` pre-E5 ratificados                                |                      **201** |
+| rango de `package_id` pre-E5                                   |           `GAP-PKG-001..201` |
+| brechas reales vinculadas                                      |                      **814** |
+| brechas reales sin paquete                                     |                        **0** |
+| brechas reales vinculadas a más de un paquete                  |                        **0** |
+| referencias de control/evidencia promovidas a brecha           |                        **0** |
+| identificadores provisionales promovidos a `process_id`        |                        **0** |
+| procesos inventados por ausencia de AS-IS                      |                        **0** |
+| paquetes renumerados, fusionados o divididos por esta tarea    |                        **0** |
+| identidades reservadas VISO incluidas en el conteo 201         |                        **0** |
+| carriles históricos NEXO convertidos implícitamente en paquete |                        **0** |
+
+Los conteos de capacidades y procesos son conjuntos derivados y pueden variar entre paquetes; por ello no se impone una cardinalidad global artificial.
+
+---
+
+#### 9. Ejemplos de comprobación de la regla
+
+Los siguientes ejemplos no sustituyen la relación completa; demuestran cómo se aplica la misma regla a casos de distinta cardinalidad.
+
+| `package_id`  | Vinculación canónica comprobable                            | Regla aplicada                                                                                            |
+| ------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `GAP-PKG-001` | capacidad de paquete `CAP-02.06`; una brecha en el catálogo | el proceso solo existe como enlace si la fila miembro aporta un `Procesos AS-IS` confirmado               |
+| `GAP-PKG-002` | capacidades `CAP-10.07` y `CAP-10.10`; dos brechas          | se preservan ambas capacidades; no se colapsan a la familia `CAP-10`                                      |
+| `GAP-PKG-004` | capacidad `CAP-15.01`; veintidós brechas                    | las brechas comparten paquete sin obligar a compartir un solo proceso                                     |
+| `GAP-PKG-006` | capacidad `CAP-09.14`; una brecha                           | la ausencia de proceso AS-IS, cuando corresponda, se conserva como ausencia y no como proceso provisional |
+
+---
+
+#### 10. Tratamiento de `VISO-SCHEDULE-MONTHLY-001`
+
+`VISO-SCHEDULE-MONTHLY-001` conserva la identidad reservada reconocida por `DELIV-PKG-001`.
+
+En esta tarea:
+
+1. no se incorpora a `GAP-PKG-001..201`;
+2. no consume ninguna de las 814 brechas de la línea base;
+3. se preserva la referencia de proceso `VPROC-0007` ya documentada para su contexto de programación mensual;
+4. `VPROC-0007` no se mezcla con la derivación de `Procesos AS-IS` de los 201 paquetes pre-E5;
+5. no se asigna un `capability_id` ni un `gap_id` nuevo por inferencia;
+6. cualquier incorporación posterior a la cobertura de implementación deberá partir de una asignación documental explícita y preservar esta procedencia.
+
+---
+
+#### 11. Tratamiento de `NEXO-REMISSIONS-001`
+
+`NEXO-REMISSIONS-001` permanece como identidad histórica de carril y no pertenece al espacio de `package_id` mientras no exista una asignación explícita aprobada.
+
+Por tanto, `DELIV-PKG-002` no le crea relaciones de `capability_id`, `process_id` ni `gap_id` y no lo incluye en los conteos de paquetes.
+
+---
+
+#### 12. Separación de responsabilidades frente a tareas posteriores
+
+Esta tarea cierra exclusivamente la trazabilidad de identidad.
+
+- `DELIV-PKG-003` asigna `application_owner`, `domain_owner` y `repo_owner`; ninguna relación definida aquí sustituye esos propietarios.
+- `DELIV-PKG-004` decide la división del paquete cuando la frontera de implementación lo exija; `DELIV-PKG-002` no divide ni fusiona identidades.
+- `DELIV-PKG-005` define dependencias entre paquetes; compartir capacidad o proceso no crea por sí mismo una dependencia.
+- `DELIV-PKG-024` realiza la reconciliación final de cada paquete con el registro canónico de brechas una vez completados los demás campos de planificación.
+- `DELIV-PKG-025` prepara la representación exportable; no redefine las relaciones canónicas.
+
+---
+
+#### 13. Criterios de aceptación documental
+
+`DELIV-PKG-002` queda especificada cuando se cumplen simultáneamente las siguientes condiciones:
+
+1. los 201 `GAP-PKG-*` conservan identidad estable;
+2. las 814 brechas reales son recuperables de forma determinista desde su `package_id`;
+3. cada brecha real participa en una sola relación paquete-brecha;
+4. cada paquete conserva todas sus capacidades aprobadas sin colapso;
+5. cada proceso vinculado proviene de evidencia AS-IS confirmada;
+6. la ausencia de proceso se representa como ausencia, no como invención;
+7. los valores provisionales permanecen separados de `process_id`;
+8. `VISO-SCHEDULE-MONTHLY-001` permanece reservado y fuera del universo 201/814;
+9. `NEXO-REMISSIONS-001` permanece fuera del espacio de `package_id`;
+10. no se anticipan propietarios, repositorios, dependencias, despliegue, rollback ni exportación de tareas posteriores.
+
+---
+
+#### 14. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+La tarea organiza trazabilidad documental existente y no introduce comportamiento ejecutable, cambio de datos, contrato de runtime ni nueva obligación verificable de producto.
+
+---
+
+#### 15. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`DELIV-PKG-001 — Crear identificador estable para cada paquete de implementación`
+
+**TAREA ACTUAL APROBADA**
+`DELIV-PKG-002 — Vincular el paquete con capability_id, process_id y gap_id`
+
+**SIGUIENTE TAREA RESERVADA**
+`DELIV-PKG-003 — Asignar application_owner, domain_owner y repo_owner`
+
+
 ### [ ] DELIV-PKG-003 — Definir aplicación, dominio y repositorio propietarios
 ### [ ] DELIV-PKG-004 — Definir estado AS-IS y resultado TO-BE verificable
 ### [ ] DELIV-PKG-005 — Definir alcance incluido, excluido y diferido
