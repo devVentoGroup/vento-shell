@@ -460,7 +460,667 @@ SIGUIENTE TAREA RESERVADA
 `QUEUE-ARC-002 — Definir contrato canónico de trabajo asíncrono`
 
 
-### [ ] QUEUE-ARC-002 — Definir contrato canónico de trabajo asíncrono
+### ✅ QUEUE-ARC-002 — Definir contrato canónico de trabajo asíncrono
+
+**Estado:** APROBADA
+**Tarea anterior:** `QUEUE-ARC-001 — Inventariar colas, cron, jobs y automatizaciones existentes`
+**Tarea siguiente:** `QUEUE-ARC-003 — Definir clave de idempotencia por trabajo`
+**Tipo de tarea:** documental; definición normativa y consumible del contrato base de trabajo asíncrono de Vento OS, especializado sobre `TSVC-SVC-001.CONTRACT@1.0.0`, con identidad, propiedad, causalidad, versionado, sobre mínimo, aceptación, resultado, error, composición con triggers y transportes, y reconciliación explícita de las 19 identidades `QAI-*`, sin materializar todavía persistencia, workers, colas, schedulers, endpoints ni políticas reservadas a `QUEUE-ARC-003..012`
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`
+**Servicio transversal propietario:** `TSVC-SVC-001 — Orquestación genérica de trabajos asíncronos`
+**Contrato base consumido:** `TSVC-SVC-001.CONTRACT@1.0.0`
+**Entrada inventariada:** `QUEUE-CURRENT-ASSET-INVENTORY-001` — 19 identidades `QAI-*`
+**Línea base documental:** `vento-shell@a26c13c1cebf6ff985a3aed05c5cffdd5b65ad52`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir una unidad contractual única para representar trabajo asíncrono dentro de Vento OS sin convertir una tecnología de cola, un scheduler, un worker, un trigger, un webhook, un dispositivo o un repositorio local en propietario del proceso empresarial.
+
+El contrato deberá permitir que una intención aceptada pueda identificarse, consultarse, correlacionarse, ejecutarse y cerrar con resultado o error verificable aunque su transporte, scheduler, worker o almacenamiento cambien durante la evolución del sistema.
+
+La separación canónica queda fijada así:
+
+```text
+INTENCIÓN EMPRESARIAL O TÉCNICA
+!=
+TRABAJO CANÓNICO
+!=
+INTENTO DE EJECUCIÓN
+!=
+CLAIM O LEASE
+!=
+TRANSPORTE
+!=
+EFECTO EMPRESARIAL O FÍSICO
+!=
+RESULTADO AUTORITATIVO
+```
+
+Y también:
+
+```text
+TRIGGER != TRABAJO
+SCHEDULE != TRABAJO
+WEBHOOK != TRABAJO
+WORKER != TRABAJO
+COLA FÍSICA != TRABAJO
+ACK TÉCNICO != RESULTADO EMPRESARIAL
+```
+
+---
+
+#### 2. Base canónica consumida
+
+`QUEUE-ARC-002` especializa, sin cambiar identidad ni versión, el contrato transversal ya aprobado:
+
+| Campo                             | Valor canónico                                 |
+| --------------------------------- | ---------------------------------------------- |
+| `service_id`                      | `TSVC-SVC-001`                                 |
+| `service_name`                    | `Orquestación genérica de trabajos asíncronos` |
+| `contract_id`                     | `TSVC-SVC-001.CONTRACT`                        |
+| `contract_version`                | `1.0.0`                                        |
+| Solicitud canónica                | `WORK_SUBMISSION`                              |
+| Resultado canónico                | `WORK_OUTCOME`                                 |
+| Error canónico                    | `WORK_ERROR`                                   |
+| Estado documental del contrato    | `DEFINED`                                      |
+| Propietario técnico institucional | Tecnología de Vento Group                      |
+| Repositorio canónico              | `vento-shell`                                  |
+
+Reglas:
+
+1. `QUEUE-ARC-002` no crea otro `contract_id` para la misma capacidad.
+2. La identidad `TSVC-SVC-001.CONTRACT` no cambia por tecnología, proveedor, cola, repositorio, scheduler o worker.
+3. La versión `1.0.0` permanece inmutable como versión inicial aprobada.
+4. Todo cambio incompatible posterior deberá seguir la regla de versionado de `TSVC-CAT-004`.
+5. El servicio transversal ejecuta capacidad técnica compartida; la aplicación propietaria conserva la decisión y el resultado empresarial.
+6. Un adaptador específico de proveedor, dispositivo o transporte no adquiere identidad de contrato canónico por existir primero.
+
+---
+
+#### 3. Unidad conceptual de trabajo
+
+La unidad `WORK_SUBMISSION` representa una intención aceptable para ejecución desacoplada del request, pantalla, dispositivo o proceso que la originó.
+
+Un trabajo canónico debe poder responder, sin depender de la implementación física, estas preguntas:
+
+1. ¿qué operación es?;
+2. ¿qué versión contractual gobierna su semántica?;
+3. ¿qué aplicación produjo la solicitud?;
+4. ¿qué aplicación conserva la propiedad del resultado empresarial?;
+5. ¿qué consumidoras pueden consultar o utilizar el resultado?;
+6. ¿qué solicitud, evento u operación lo causó?;
+7. ¿a qué coordinación mayor pertenece?;
+8. ¿qué recurso o referencia empresarial afecta?;
+9. ¿qué esquema valida la entrada?;
+10. ¿qué esquema valida el resultado?;
+11. ¿qué esquema valida el error?;
+12. ¿cuándo fue creado?;
+13. ¿cuál es su estado operativo actual?;
+14. ¿cuál es el resultado autoritativo o error recuperable cuando termine?;
+15. ¿qué extensión normativa gobierna idempotencia, programación, asignación, retry, cancelación, fallos, concurrencia, estados, métricas y autorización?
+
+Un trabajo no se identifica por el proceso del worker que lo ejecuta ni por el registro físico de la cola que lo contiene.
+
+---
+
+#### 4. Sobre base `WORK_SUBMISSION`
+
+Toda materialización futura del trabajo asíncrono deberá soportar conceptualmente el siguiente sobre base:
+
+```text
+service_id
+contract_id
+contract_version
+operation_id
+operation_type
+producer_application
+business_owner_application
+consumer_application
+request_id
+correlation_id
+causation_id
+source_reference
+request_schema_ref
+result_schema_ref
+error_schema_ref
+created_at
+payload
+operation_status
+receipt_id
+result_ref
+error_code
+```
+
+Reglas de obligatoriedad:
+
+| Campo                        | Regla                                                                                                                                      |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `service_id`                 | obligatorio; para este contrato conserva `TSVC-SVC-001`                                                                                    |
+| `contract_id`                | obligatorio; conserva `TSVC-SVC-001.CONTRACT`                                                                                              |
+| `contract_version`           | obligatorio; nunca se infiere por ausencia                                                                                                 |
+| `operation_id`               | obligatorio; identifica una operación concreta y no se reutiliza para otra                                                                 |
+| `operation_type`             | obligatorio; identifica de forma estable la clase lógica de trabajo definida por su contrato propietario                                   |
+| `producer_application`       | obligatorio; debe corresponder a una aplicación productora autorizada por el catálogo transversal                                          |
+| `business_owner_application` | obligatorio; conserva la autoridad sobre el resultado empresarial                                                                          |
+| `consumer_application`       | obligatorio cuando exista una consumidora empresarial concreta; no convierte al worker en aplicación consumidora                           |
+| `request_id`                 | obligatorio cuando el origen disponga de una solicitud identificable; si no existe deberá quedar semánticamente `NO_APLICA`, no inventarse |
+| `correlation_id`             | obligatorio para preservar la coordinación de operaciones relacionadas                                                                     |
+| `causation_id`               | obligatorio cuando exista una causa directa identificable; si no aplica deberá quedar declarado                                            |
+| `source_reference`           | obligatorio cuando la solicitud deriva de un recurso, evento, documento, schedule, webhook u otra fuente identificable                     |
+| `request_schema_ref`         | obligatorio; identifica el esquema versionado de entrada                                                                                   |
+| `result_schema_ref`          | obligatorio; identifica el esquema versionado de resultado                                                                                 |
+| `error_schema_ref`           | obligatorio; identifica el esquema versionado de error                                                                                     |
+| `created_at`                 | obligatorio; registra creación del trabajo, no inicio de intento                                                                           |
+| `payload`                    | obligatorio salvo operación sin parámetros; debe validar contra `request_schema_ref`                                                       |
+| `operation_status`           | obligatorio; su vocabulario y transiciones pertenecen a `QUEUE-ARC-010`                                                                    |
+| `receipt_id`                 | obligatorio después de aceptación durable o reserva equivalente; no prueba ejecución ni efecto                                             |
+| `result_ref`                 | obligatorio cuando exista resultado autoritativo recuperable; no apunta a un log, spinner ni ACK transitorio                               |
+| `error_code`                 | obligatorio cuando el trabajo exponga un error contractual; taxonomía y transición permanecen gobernadas por las tareas propietarias       |
+
+Cuando la operación afecte un recurso versionado, el `payload` o el esquema referenciado deberá conservar obligatoriamente la identidad del recurso y la versión esperada. Esa versión no podrá inferirse desde el estado más reciente al momento de ejecutar si hacerlo cambia la intención original.
+
+---
+
+#### 5. Inmutabilidad y proyección operativa
+
+El trabajo se divide conceptualmente en dos capas.
+
+##### 5.1. Descriptor inmutable
+
+Después de aceptar una intención no podrán cambiar silenciosamente:
+
+```text
+service_id
+contract_id
+contract_version
+operation_id
+operation_type
+producer_application
+business_owner_application
+request_id
+correlation_id
+causation_id
+source_reference
+request_schema_ref
+result_schema_ref
+error_schema_ref
+payload lógico
+recurso objetivo y versión esperada cuando apliquen
+```
+
+Cambiar semántica, propietario, contrato, recurso, versión o payload material representa otra intención o una operación de corrección explícitamente relacionada; no una mutación silenciosa del trabajo original.
+
+##### 5.2. Proyección operativa mutable
+
+Podrán evolucionar mediante reglas controladas:
+
+- estado del trabajo;
+- prioridad y programación;
+- asignación técnica;
+- intentos y retry;
+- solicitud o resultado de cancelación;
+- aislamiento de fallos;
+- claim, lease y fencing;
+- métricas y tiempos operativos;
+- referencias de resultado, error y conciliación.
+
+La mutabilidad operativa no cambia la identidad empresarial ni contractual de la intención.
+
+---
+
+#### 6. Contrato de aceptación
+
+Aceptar un `WORK_SUBMISSION` significa exclusivamente que la intención superó las validaciones aplicables de contrato y quedó registrada de manera consultable o reservada mediante un mecanismo equivalente.
+
+La aceptación deberá producir o devolver:
+
+```text
+operation_id
+receipt_id
+contract_id
+contract_version
+operation_status
+correlation_id
+```
+
+Reglas:
+
+1. `receipt_id` es un acuse consultable; no demuestra ejecución, entrega, impresión, pago, notificación, cierre empresarial ni otro efecto final.
+2. Un `2xx`, ACK de proveedor, inserción en una cola técnica o respuesta del scheduler no equivale por sí solo a `WORK_OUTCOME` exitoso.
+3. La ausencia de confirmación final no autoriza a declarar éxito.
+4. Un trabajo aceptado deberá poder recuperarse por su identidad estable aunque cambie de worker o intento.
+5. El contrato de aceptación no define todavía cómo se deduplican solicitudes repetidas; esa decisión pertenece a `QUEUE-ARC-003`.
+6. El contrato de aceptación no define todavía prioridad, calendario ni vencimiento; esa decisión pertenece a `QUEUE-ARC-004`.
+7. La autorización requerida para crear el trabajo pertenece a `QUEUE-ARC-012`; una credencial técnica válida no concede por sí sola autoridad empresarial.
+
+---
+
+#### 7. Contrato de resultado `WORK_OUTCOME`
+
+Un `WORK_OUTCOME` representa la conclusión autoritativa conocida de un trabajo y deberá conservar al menos:
+
+```text
+service_id
+contract_id
+contract_version
+operation_id
+correlation_id
+operation_status
+result_schema_ref
+result_ref
+```
+
+Reglas:
+
+1. el resultado conserva la misma identidad y versión contractual del trabajo que lo originó;
+2. `result_ref` apunta a una fuente autoritativa o artefacto verificable;
+3. el resultado no se redefine a partir de logs, UI, tiempo transcurrido o desaparición del elemento de una cola local;
+4. el servicio transversal puede registrar el resultado técnico, pero no inventa un resultado empresarial que pertenece a otra aplicación;
+5. cuando el efecto sea físico o externo y la confirmación sea ambigua, el trabajo no se declara exitoso solo por haber enviado la solicitud;
+6. una consumidora puede proyectar el resultado, pero no modificar retroactivamente la intención original;
+7. el vocabulario exacto de estados terminales y eventos se cierra en `QUEUE-ARC-010`.
+
+---
+
+#### 8. Contrato de error `WORK_ERROR`
+
+Un `WORK_ERROR` deberá conservar al menos:
+
+```text
+service_id
+contract_id
+contract_version
+operation_id
+correlation_id
+operation_status
+error_schema_ref
+error_code
+```
+
+Reglas:
+
+1. un error debe ser consultable y correlacionable con el trabajo original;
+2. error técnico, rechazo empresarial, conflicto contractual, timeout ambiguo y cancelación no se fusionan bajo un único significado genérico;
+3. un error no reescribe el payload ni la identidad del trabajo;
+4. la clasificación de retry y backoff corresponde a `QUEUE-ARC-006`;
+5. la cola de fallos y recuperación manual corresponde a `QUEUE-ARC-008`;
+6. la transición exacta entre estados corresponde a `QUEUE-ARC-010`;
+7. las métricas derivadas del error corresponden a `QUEUE-ARC-011`.
+
+---
+
+#### 9. Composición con otros servicios y mecanismos
+
+El contrato de trabajo no absorbe los contratos de otros servicios transversales.
+
+##### 9.1. Programación recurrente
+
+```text
+TSVC-SVC-009.CONTRACT
+SCHEDULE_DEFINITION / ocurrencia lógica
+        ↓
+puede originar
+        ↓
+TSVC-SVC-001.CONTRACT
+WORK_SUBMISSION
+```
+
+El schedule conserva su identidad propia. Una ocurrencia y el trabajo que genera son correlacionables, no intercambiables.
+
+##### 9.2. Integraciones y webhooks
+
+```text
+TSVC-SVC-008.CONTRACT
+INTEGRATION_MESSAGE
+        ↓
+validación / mapping / deduplicación de frontera
+        ↓
+puede originar
+        ↓
+WORK_SUBMISSION
+```
+
+El evento de proveedor no se convierte en aplicación VENTO ni en fuente de verdad del resultado empresarial.
+
+##### 9.3. Outbox y eventos
+
+`TSVC-SVC-002.CONTRACT` conserva la identidad del evento empresarial. Si una consumidora necesita procesamiento asíncrono, el evento puede causar un trabajo distinto con `causation_id` y `correlation_id` preservados.
+
+##### 9.4. Impresión, notificaciones, documentos, archivos y evidencia
+
+Los contratos `TSVC-SVC-003..007` conservan su semántica especializada. La orquestación genérica puede ejecutar o coordinar sus trabajos sin convertir `WORK_SUBMISSION` en sustituto de `PRINT_REQUEST`, `NOTIFICATION_REQUEST`, `DOCUMENT_GENERATION_REQUEST`, `FILE_INGEST_REQUEST` o `EVIDENCE_CAPTURE_REQUEST`.
+
+---
+
+#### 10. Propiedad, productor, consumidor y ejecutor
+
+Se fija la siguiente separación:
+
+| Rol                      | Responsabilidad                                   | No puede asumir                                  |
+| ------------------------ | ------------------------------------------------- | ------------------------------------------------ |
+| aplicación productora    | someter la intención bajo contrato compatible     | propiedad automática del servicio transversal    |
+| aplicación propietaria   | decidir semántica y resultado empresarial         | usar la cola como fuente de verdad del dominio   |
+| servicio transversal     | registrar y coordinar ejecución técnica           | alterar reglas del proceso empresarial           |
+| worker                   | ejecutar un intento bajo identidad técnica        | cambiar propietario, contrato o payload material |
+| scheduler                | originar una ocurrencia programada                | declarar por sí solo éxito empresarial           |
+| adaptador                | traducir transporte o proveedor                   | inventar campos autoritativos ausentes           |
+| dispositivo o periférico | ejecutar o confirmar efecto físico cuando aplique | conceder autorización empresarial                |
+| consumidor autorizado    | leer o usar resultado compatible                  | reabrir o reescribir la intención original       |
+
+La aplicación propietaria del resultado deberá permanecer identificable durante toda la vida del trabajo, aun cuando productora, worker, dispositivo, adaptador y consumidora sean entidades distintas.
+
+---
+
+#### 11. Identidad técnica y secretos
+
+El contrato conserva la separación aprobada entre actor, aplicación, servicio, worker, dispositivo, proveedor y scheduler.
+
+Reglas:
+
+1. el payload empresarial no incorpora secretos, `service_role`, API keys, tokens privados ni claves cron;
+2. una referencia de secreto o principal técnico no forma parte de la semántica empresarial del payload;
+3. el worker no conserva como credencial persistente el token del actor originador;
+4. rotar una credencial no cambia `operation_id`, `contract_id` ni propiedad empresarial;
+5. logs, errores y evidencia no deberán copiar payloads sensibles completos cuando una referencia segura sea suficiente;
+6. autorización empresarial y autenticación técnica permanecen separadas;
+7. el detalle de autorización para crear, cancelar y reintentar trabajos se cierra en `QUEUE-ARC-012`.
+
+---
+
+#### 12. Extensiones normativas reservadas `QUEUE-ARC-003..012`
+
+`QUEUE-ARC-002` fija los puntos de extensión y sus propietarios exactos. Ninguna tarea posterior podrá reasignar silenciosamente estas responsabilidades.
+
+| Tarea           | Responsabilidad exclusiva o principal                   | Relación con el contrato base                                                                                  |
+| --------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `QUEUE-ARC-003` | clave de idempotencia por trabajo                       | define `idempotency_key`, ámbito, huella y conflicto de repetición                                             |
+| `QUEUE-ARC-004` | prioridad, programación y vencimiento                   | define prioridad, disponibilidad temporal, calendario, vigencia, deadline, expiración y misfire cuando aplique |
+| `QUEUE-ARC-005` | asignación a trabajador, dispositivo o adaptador        | define destinatario técnico de ejecución y reglas de asignación                                                |
+| `QUEUE-ARC-006` | reintentos, backoff y límite máximo                     | define intento, contador, clases reintentables, backoff, presupuesto y agotamiento                             |
+| `QUEUE-ARC-007` | cancelación antes y durante ejecución                   | define solicitud, aceptación, carrera con ejecución y resultado de cancelación                                 |
+| `QUEUE-ARC-008` | cola de fallos y recuperación manual                    | define aislamiento, dead-letter, cuarentena y reanudación controlada                                           |
+| `QUEUE-ARC-009` | bloqueo de duplicados y concurrencia                    | define claim, lease, fencing, exclusión y conflictos concurrentes                                              |
+| `QUEUE-ARC-010` | estados y eventos canónicos                             | define estado, transiciones, eventos y terminalidad                                                            |
+| `QUEUE-ARC-011` | métricas de espera, ejecución y error                   | define tiempos, contadores, SLIs y dimensiones operativas                                                      |
+| `QUEUE-ARC-012` | autorización para crear, cancelar y reintentar trabajos | define autoridad empresarial y técnica de las acciones de control                                              |
+
+Los siguientes nombres de estado permanecen reservados por el bloque y no se redefinen en esta tarea:
+
+```text
+queued
+scheduled
+assigned
+processing
+succeeded
+retry_pending
+failed
+cancelled
+expired
+```
+
+Su significado exacto, transición y evento correspondiente pertenecen a `QUEUE-ARC-010`.
+
+---
+
+#### 13. Reconciliación de las 19 identidades `QAI-*`
+
+Se materializa una decisión explícita para cada identidad del inventario `QUEUE-CURRENT-ASSET-INVENTORY-001`.
+
+| ID        | Identidad actual                                     | Relación con el contrato canónico                        | Decisión de `QUEUE-ARC-002`                                                                                                                                                                    |
+| --------- | ---------------------------------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QAI-001` | `anima_attendance_day_end_close_0005`                | schedule que ejecuta cierre diario                       | la ocurrencia programada deberá conservar identidad de schedule y correlacionarse con un `WORK_SUBMISSION` o mecanismo contractualmente equivalente; el cron no será la identidad del trabajo  |
+| `QAI-002` | `anima_shift_runtime_processor_every_5m`             | cadena cron → SQL → `pg_net` → Edge Function             | cada ocurrencia y procesamiento deberá ser reconstruible como trabajo, intentos y resultado; `pg_net` permanece transporte, no fuente del resultado                                            |
+| `QAI-003` | `attendance_stale_open_shift_autoclose_daily_bogota` | schedule correctivo de asistencia                        | cada ocurrencia lógica deberá conservar causa y trabajo distinguibles del cierre diario ordinario                                                                                              |
+| `QAI-004` | `auto-close-attendance`                              | schedule transicional que comparte función con `QAI-001` | conserva identidad independiente mientras exista; cualquier ejecución deberá correlacionarse con trabajo canónico sin fusionarse con `QAI-001` por usar la misma función                       |
+| `QAI-005` | `document-alerts-daily`                              | cron → `pg_net` → Edge Function                          | deberá separar schedule, trabajo, transporte y resultado; los secretos del comando no forman parte del payload contractual                                                                     |
+| `QAI-006` | `pass_delivery_quotes_cleanup_hourly`                | mantenimiento recurrente                                 | la ocurrencia deberá representar una intención técnica con propietario PASS y resultado consultable, sin convertir limpieza técnica en decisión empresarial de entrega                         |
+| `QAI-007` | `pass_payment_checkout_expiry_reconciliation`        | reconciliación programada                                | cada ocurrencia deberá conservar contrato, causa y resultado; timeout o ausencia de filas no se interpretan automáticamente como éxito empresarial                                             |
+| `QAI-008` | `purge_inventory_form_drafts_daily`                  | schedule declarado en migración y no observado activo    | queda sujeto al mismo contrato si se materializa; la definición en código no equivale a un trabajo ejecutado ni a un resultado                                                                 |
+| `QAI-009` | `Process Account Deletions`                          | GitHub Actions cron → Edge Function                      | schedule y worker en repositorios distintos deberán compartir `operation_id`, correlación y resultado contractual cuando la operación se implemente bajo la arquitectura objetivo              |
+| `QAI-010` | `net.http_request_queue`                             | cola administrada de transporte HTTP                     | se clasifica como soporte técnico, no como registro canónico de trabajo; toda solicitud transportada deberá correlacionarse con el trabajo propietario cuando exista                           |
+| `QAI-011` | cola ANIMA de operaciones de asistencia              | cola offline local                                       | representa staging local de una intención; deberá converger a una identidad de trabajo/operación estable sin que `SecureStore` se convierta en fuente del hecho empresarial                    |
+| `QAI-012` | cola ANIMA de operaciones de descanso                | cola offline local                                       | misma regla que `QAI-011`, conservando identidad separada de la intención de descanso y sin mezclar órdenes ni resultados                                                                      |
+| `QAI-013` | worker móvil de retry cada `15000 ms`                | ejecutor periódico local                                 | se clasifica como worker, no como trabajo; procesa trabajos o intenciones pendientes y no genera una nueva identidad por cada tick                                                             |
+| `QAI-014` | `vento.attendance.background-location.v1`            | trigger móvil en background                              | el callback no es un trabajo por sí solo; cuando produzca una acción diferida o reintentable deberá originar/correlacionar trabajo conservando dispositivo, causa y resultado del servidor     |
+| `QAI-015` | `vento-nexo:printing:queue:v1`                       | cola local de impresión                                  | cada intención de impresión deberá conservar identidad contractual estable y resultado separado de BrowserPrint; `localStorage` no será la identidad canónica                                  |
+| `QAI-016` | auto-refresh NEXO cada `20 s`                        | refresco de lectura de UI                                | `NO_APLICA` como trabajo durable mientras permanezca lectura recurrente sin efecto empresarial; no deberá migrarse a la cola genérica por el solo hecho de usar temporizador                   |
+| `QAI-017` | `trg_support_messages_notify_inserted`               | trigger PostgreSQL → `pg_net` → notificación             | el mensaje original conserva propiedad; la entrega derivada deberá tener trabajo/operación correlacionable sin convertir la notificación en fuente del mensaje                                 |
+| `QAI-018` | `payments-webhook`                                   | webhook externo Wompi                                    | el evento entrante conserva contrato de integración; cualquier procesamiento diferido originado deberá vincularse a trabajo distinto mediante causalidad y no duplicar el efecto transaccional |
+| `QAI-019` | `club-revenuecat-webhook`                            | webhook externo RevenueCat                               | el evento entrante conserva contrato de integración; cualquier procesamiento diferido deberá usar trabajo correlacionable y no convertir al proveedor en propietario de la relación PASS/CLUB  |
+
+Balance:
+
+```text
+IDENTIDADES ESPERADAS = 19
+IDENTIDADES MATERIALIZADAS = 19
+IDENTIFICADORES DUPLICADOS = 0
+IDENTIDADES SIN DECISIÓN = 0
+```
+
+---
+
+#### 14. Reglas de adaptación del estado actual
+
+1. Ningún `QAI-*` se declara migrado por esta tarea.
+2. La existencia de un activo actual no modifica `TSVC-SVC-001.CONTRACT@1.0.0`.
+3. Los activos locales podrán conservarse durante transición si preservan identidad, causalidad y resultado sin competir con la fuente autoritativa.
+4. `pg_cron`, GitHub Actions y temporizadores son fuentes de disparo; no constituyen por sí solos el registro de trabajo.
+5. `pg_net` es transporte HTTP; no constituye resultado empresarial ni cola empresarial canónica.
+6. `SecureStore` y `localStorage` pueden conservar intenciones offline/locales, pero no adquieren propiedad del hecho empresarial.
+7. Un Edge Function puede ejecutar un trabajo, pero su nombre de función no sustituye `operation_id` ni `operation_type`.
+8. Un webhook puede causar un trabajo; el ID externo y el `operation_id` permanecen conceptos distintos.
+9. Una automatización que permanezca exclusivamente de lectura, como `QAI-016`, no se fuerza al contrato de trabajo durable.
+10. La implementación física, migración o retiro de estos activos se realizará únicamente mediante los paquetes posteriores que correspondan y bajo las reglas aprobadas de adopción progresiva.
+
+---
+
+#### 15. Garantía de entrega y efecto
+
+El contrato base adopta la decisión transversal ya aprobada:
+
+```text
+ENTREGA / EJECUCIÓN TÉCNICA
+= puede requerir procesamiento AL MENOS UNA VEZ
+
+EFECTO OBSERVABLE
+= debe protegerse contra duplicidad mediante contrato e idempotencia
+
+GARANTÍA EXACTLY-ONCE END-TO-END
+= NO SE DECLARA SIN EVIDENCIA END-TO-END
+```
+
+Por tanto:
+
+1. una cola o proveedor puede entregar más de una vez;
+2. el trabajo conserva identidad estable a través de reentregas;
+3. el efecto empresarial no puede depender de que la infraestructura entregue una sola vez;
+4. `QUEUE-ARC-003`, `QUEUE-ARC-006` y `QUEUE-ARC-009` completarán las protecciones específicas;
+5. un efecto ambiguo deberá permanecer recuperable o conciliable y nunca convertirse automáticamente en otra intención.
+
+---
+
+#### 16. Compatibilidad y evolución
+
+1. `contract_version` viaja con solicitud, resultado y error.
+2. No existe versión implícita por ausencia del campo.
+3. Una versión desconocida o incompatible se rechaza antes de producir un efecto.
+4. Campos opcionales futuros solo podrán agregarse mediante una versión compatible cuando su ausencia sea semánticamente segura.
+5. Cambiar propietario, semántica del resultado, estado terminal, garantía de aceptación, obligatoriedad de un campo, tipo o significado exige la clasificación de cambio correspondiente de `TSVC-CAT-004`.
+6. Un adaptador de compatibilidad conserva versión de origen, versión de destino e identidad del adaptador.
+7. Una versión de contrato no se reescribe retroactivamente para acomodar implementaciones legacy.
+8. `QUEUE-ARC-003..012` podrán completar extensiones del trabajo sin cambiar la identidad contractual base; si una decisión posterior resulta incompatible, deberá versionarse de forma explícita.
+
+---
+
+#### 17. Persistencia y tecnología física
+
+Esta tarea no selecciona ni crea:
+
+- tabla de trabajos;
+- tabla de intentos;
+- outbox o inbox;
+- queue/topic físico;
+- broker;
+- extensión PostgreSQL adicional;
+- RPC de submit, claim o complete;
+- Edge Function de worker;
+- cron;
+- scheduler empresarial;
+- DLQ física;
+- API HTTP;
+- esquema RLS;
+- grants;
+- Realtime;
+- secretos;
+- dashboards;
+- alertas.
+
+La materialización posterior deberá conservar el contrato aunque cambie la tecnología utilizada.
+
+Toda modificación futura de Supabase perteneciente a VENTO deberá crearse, versionarse, documentarse y ejecutarse desde `vento-shell` durante una fase que lo autorice.
+
+---
+
+#### 18. Prohibiciones
+
+Queda prohibido interpretar este contrato como autorización para:
+
+1. crear tablas o colas;
+2. activar o retirar jobs actuales;
+3. cambiar cron expressions;
+4. modificar GitHub Actions;
+5. modificar Edge Functions;
+6. modificar webhooks;
+7. modificar colas locales de ANIMA o NEXO;
+8. cambiar retry o backoff;
+9. definir idempotency keys finales;
+10. definir prioridades, calendars o expiraciones finales;
+11. asignar workers, dispositivos o adaptadores finales;
+12. definir cancelación final;
+13. crear dead-letter o recuperación manual;
+14. definir leases, fencing o concurrencia final;
+15. cerrar el state machine de trabajos;
+16. fijar SLIs, SLOs o umbrales de alerta;
+17. conceder permisos para crear, cancelar o reintentar trabajos;
+18. declarar un activo actual como arquitectura objetivo solo por estar desplegado;
+19. declarar `exactly once` sin evidencia end-to-end;
+20. iniciar o desarrollar `QUEUE-ARC-003`.
+
+---
+
+#### 19. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa documentalmente el contrato `TSVC-SVC-001.CONTRACT@1.0.0` y materializa su aplicación al inventario `QAI-*` sin introducir una obligación técnicamente verificable que no esté ya protegida por el registro canónico vigente. La identidad estable de operación, contrato y versión, el recurso afectado, el estado durable, el resultado recuperable, la trazabilidad de causa y payload, la no duplicidad observable, la conciliación y la reconstrucción de cadenas asíncronas ya cuentan con cobertura transversal. Las tareas `QUEUE-ARC-003..012` completarán sus dimensiones propietarias sin que esta tarea cree un requisito paralelo o duplicado.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 20. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, que protege identidad estable de operación, huella del contenido lógico, recurso y versión, estado durable, resultado recuperable, idempotencia, retry, claim, observabilidad, conciliación, cola de fallos y recuperación;
+- `TREQ-INTEGRATION-004`, que exige reconstruir causa, payload, actor o principal técnico, recurso, destinatario, intento, resultado, error y efecto final de cadenas trigger, función, job, webhook o notificación;
+- la cobertura ya relacionada por `TSVC-CAT-004`, `TSVC-CAT-005` y `TSVC-CAT-006` para propiedad, contrato versionado, identidad técnica, seguridad, deduplicación y confiabilidad transversal.
+
+Ninguna fila del registro canónico cambia de identidad, regla, estado, responsable, relación, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 21. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `QUEUE-ARC-001` como tarea anterior aprobada;
+2. conserva `QUEUE-ARC-003` como única tarea siguiente reservada;
+3. utiliza `TSVC-SVC-001.CONTRACT@1.0.0` sin crear un contrato paralelo;
+4. preserva `WORK_SUBMISSION`, `WORK_OUTCOME` y `WORK_ERROR` como unidades canónicas del servicio;
+5. define la diferencia entre intención, trabajo, intento, claim, transporte, efecto y resultado;
+6. define el sobre base del trabajo con identidad, propiedad, causalidad, esquema, payload, estado, receipt, resultado y error;
+7. distingue descriptor inmutable y proyección operativa mutable;
+8. define qué significa aceptación sin confundirla con éxito;
+9. define resultado autoritativo sin inferirlo desde ACK, logs, UI o desaparición de una cola;
+10. define error correlacionable sin mezclar error técnico, rechazo empresarial y efecto ambiguo;
+11. conserva aplicación productora, aplicación propietaria, servicio, worker, scheduler, adaptador, dispositivo y consumidora como identidades separadas;
+12. preserva separación entre autenticación técnica y autorización empresarial;
+13. fija la composición con `TSVC-SVC-002`, `TSVC-SVC-003..007`, `TSVC-SVC-008` y `TSVC-SVC-009` sin absorber sus contratos;
+14. asigna exactamente una decisión de relación contractual a cada `QAI-001..QAI-019`;
+15. materializa **19 de 19** identidades, con **0** faltantes y **0** duplicados;
+16. mantiene `QAI-010` como transporte técnico y no como registro empresarial de trabajo;
+17. mantiene `QAI-013` como worker y no como trabajo independiente;
+18. mantiene `QAI-016` como `NO_APLICA` al trabajo durable mientras continúe siendo refresco de lectura sin efecto empresarial;
+19. reserva idempotencia a `QUEUE-ARC-003`;
+20. reserva prioridad, programación y vencimiento a `QUEUE-ARC-004`;
+21. reserva asignación a `QUEUE-ARC-005`;
+22. reserva retry y backoff a `QUEUE-ARC-006`;
+23. reserva cancelación a `QUEUE-ARC-007`;
+24. reserva cola de fallos y recuperación a `QUEUE-ARC-008`;
+25. reserva bloqueo y concurrencia a `QUEUE-ARC-009`;
+26. reserva estados y eventos a `QUEUE-ARC-010`;
+27. reserva métricas a `QUEUE-ARC-011`;
+28. reserva autorización a `QUEUE-ARC-012`;
+29. conserva los estados mínimos ya listados por el bloque sin definir aún sus transiciones;
+30. declara cero cambios `TREQ-*` con justificación concreta;
+31. crea cero objetos físicos;
+32. modifica cero objetos físicos;
+33. no ejecuta DDL, DML, migraciones, despliegues ni cambios de Supabase;
+34. no modifica repositorios ni estado remoto;
+35. no inicia ni desarrolla `QUEUE-ARC-003`.
+
+---
+
+#### 22. Resultado de la tarea
+
+`QUEUE-ARC-002` deja establecido el contrato canónico base de trabajo asíncrono de Vento OS:
+
+```text
+TSVC-SVC-001.CONTRACT@1.0.0
+
+WORK_SUBMISSION
+    ↓
+IDENTIDAD + PROPIEDAD + CAUSALIDAD + VERSIÓN + PAYLOAD VALIDADO
+    ↓
+ACEPTACIÓN CONSULTABLE
+    ↓
+EJECUCIÓN TÉCNICA DESACOPLADA
+    ↓
+WORK_OUTCOME O WORK_ERROR
+```
+
+La tecnología de cola queda desacoplada de la identidad del trabajo. Los 19 activos inventariados tienen una disposición contractual explícita y las responsabilidades `QUEUE-ARC-003..012` permanecen separadas y correctamente asignadas.
+
+---
+
+#### 23. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`QUEUE-ARC-001 — Inventariar colas, cron, jobs y automatizaciones existentes`
+
+TAREA ACTUAL APROBADA
+
+`QUEUE-ARC-002 — Definir contrato canónico de trabajo asíncrono`
+
+SIGUIENTE TAREA RESERVADA
+
+`QUEUE-ARC-003 — Definir clave de idempotencia por trabajo`
+
+
 ### [ ] QUEUE-ARC-003 — Definir clave de idempotencia por trabajo
 ### [ ] QUEUE-ARC-004 — Definir prioridad, programación y vencimiento
 ### [ ] QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador

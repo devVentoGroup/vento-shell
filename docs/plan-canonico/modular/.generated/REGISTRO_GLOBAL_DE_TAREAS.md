@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **800** |
+| Aprobadas | **801** |
 | En propuesta | **0** |
-| No iniciadas | **794** |
+| No iniciadas | **793** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **50.19% (800/1594)** |
+| Porcentaje de completamiento | **50.25% (801/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `QUEUE-ARC-001` — Inventariar colas, cron, jobs y automatizaciones existentes | ✅ APROBADA |
-| Tarea actual | `QUEUE-ARC-002` — Definir contrato canónico de trabajo asíncrono | ⬜ NO INICIADA |
-| Siguiente reservada | `QUEUE-ARC-003` — Definir clave de idempotencia por trabajo | ⬜ NO INICIADA |
+| Última aprobada | `QUEUE-ARC-002` — Definir contrato canónico de trabajo asíncrono | ✅ APROBADA |
+| Tarea actual | `QUEUE-ARC-003` — Definir clave de idempotencia por trabajo | ⬜ NO INICIADA |
+| Siguiente reservada | `QUEUE-ARC-004` — Definir prioridad, programación y vencimiento | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -477,7 +477,7 @@
 | ✅ APROBADA | `TSVC-CAT-009` | Definir retención, archivado y limpieza | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ✅ APROBADA | `TSVC-CAT-010` | Definir adopción progresiva y retiro de soluciones legacy | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ✅ APROBADA | `QUEUE-ARC-001` | Inventariar colas, cron, jobs y automatizaciones existentes | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
-| ⬜ NO INICIADA | `QUEUE-ARC-002` | Definir contrato canónico de trabajo asíncrono | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
+| ✅ APROBADA | `QUEUE-ARC-002` | Definir contrato canónico de trabajo asíncrono | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-003` | Definir clave de idempotencia por trabajo | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-004` | Definir prioridad, programación y vencimiento | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-005` | Definir asignación a trabajador, dispositivo o adaptador | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |

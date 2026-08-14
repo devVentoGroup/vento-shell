@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **800** |
+| Tareas aprobadas | **801** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **794** |
+| Tareas no iniciadas | **793** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **50.19% (800/1594)** |
+| Porcentaje de completamiento | **50.25% (801/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **QUEUE-ARC-001 — Inventariar colas, cron, jobs y automatizaciones existentes** |
-| Tarea actual | **QUEUE-ARC-002 — Definir contrato canónico de trabajo asíncrono** |
+| Última tarea aprobada | **QUEUE-ARC-002 — Definir contrato canónico de trabajo asíncrono** |
+| Tarea actual | **QUEUE-ARC-003 — Definir clave de idempotencia por trabajo** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **QUEUE-ARC-003 — Definir clave de idempotencia por trabajo** |
+| Siguiente tarea | **QUEUE-ARC-004 — Definir prioridad, programación y vencimiento** |
 | Bloque actual | **BLOQUE E4 — Servicios transversales** |
-| Progreso del bloque | **BLOQUE E4: 51 de 62 aprobadas; QUEUE-ARC-002 pendiente** |
+| Progreso del bloque | **BLOQUE E4: 52 de 62 aprobadas; QUEUE-ARC-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `QUEUE-ARC-001` — Inventariar colas, cron, jobs y automatizaciones existentes |
-| Tarea actual | `QUEUE-ARC-002` — Definir contrato canónico de trabajo asíncrono — **NO INICIADA** |
-| Siguiente tarea | `QUEUE-ARC-003` — Definir clave de idempotencia por trabajo |
+| Última aprobada | `QUEUE-ARC-002` — Definir contrato canónico de trabajo asíncrono |
+| Tarea actual | `QUEUE-ARC-003` — Definir clave de idempotencia por trabajo — **NO INICIADA** |
+| Siguiente tarea | `QUEUE-ARC-004` — Definir prioridad, programación y vencimiento |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E4: 51 DE 62 APROBADAS — ACTUAL QUEUE-ARC-002** |
+| CONTINUIDAD ACTIVA | **BLOQUE E4: 52 DE 62 APROBADAS — ACTUAL QUEUE-ARC-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-QUEUE-ARC-001 — Inventariar colas, cron, jobs y automatizaciones existentes
-        ↓
-TAREA ACTUAL
 QUEUE-ARC-002 — Definir contrato canónico de trabajo asíncrono
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 QUEUE-ARC-003 — Definir clave de idempotencia por trabajo
         ↓
+SIGUIENTE TAREA RESERVADA
+QUEUE-ARC-004 — Definir prioridad, programación y vencimiento
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E4 — 51 de 62 tareas aprobadas
+BLOQUE E4 — 52 de 62 tareas aprobadas
 ```
