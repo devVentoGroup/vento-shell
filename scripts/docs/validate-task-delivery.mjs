@@ -613,7 +613,7 @@ function validateFragmentShape({ fileName, source, contract, taskId }) {
 
 function rowIdOccurrences(source, treqId) {
   const pattern = new RegExp(
-    `^\\|\\s*\\\`?${escapeRegex(treqId)}\\\`?\\s*\\|`,
+    `^\\|\\s*\`?${escapeRegex(treqId)}\`?\\s*\\|`,
     'gmu'
   );
   return source.match(pattern)?.length ?? 0;
@@ -832,8 +832,7 @@ function main() {
     contract = JSON.parse(contractSource);
   } catch (error) {
     fail(
-      `Contrato JSON inválido: ${
-        error instanceof Error ? error.message : String(error)
+      `Contrato JSON inválido: ${error instanceof Error ? error.message : String(error)
       }`
     );
   }
@@ -898,8 +897,8 @@ function main() {
 
   console.log(
     `OK: tarea ${taskResult.taskId}; `
-      + `${taskResult.registryTreqIds.length} TREQ declarados para actualización; `
-      + `${sha256(taskResult.source)} SHA-256.`
+    + `${taskResult.registryTreqIds.length} TREQ declarados para actualización; `
+    + `${sha256(taskResult.source)} SHA-256.`
   );
 
   if (registryResult) {
@@ -916,15 +915,14 @@ function main() {
 const isCli =
   process.argv[1]
   && path.resolve(process.argv[1])
-    === path.resolve(fileURLToPath(import.meta.url));
+  === path.resolve(fileURLToPath(import.meta.url));
 
 if (isCli) {
   try {
     main();
   } catch (error) {
     console.error(
-      `ERROR: ${
-        error instanceof Error ? error.message : String(error)
+      `ERROR: ${error instanceof Error ? error.message : String(error)
       }`
     );
     process.exit(1);
