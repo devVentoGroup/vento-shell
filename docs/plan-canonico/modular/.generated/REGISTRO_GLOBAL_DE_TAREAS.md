@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **808** |
+| Aprobadas | **809** |
 | En propuesta | **0** |
-| No iniciadas | **786** |
+| No iniciadas | **785** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **50.69% (808/1594)** |
+| Porcentaje de completamiento | **50.75% (809/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `QUEUE-ARC-009` — Definir bloqueo de duplicados y concurrencia | ✅ APROBADA |
-| Tarea actual | `QUEUE-ARC-010` — Definir estados y eventos canónicos | ⬜ NO INICIADA |
-| Siguiente reservada | `QUEUE-ARC-011` — Definir métricas de espera, ejecución y error | ⬜ NO INICIADA |
+| Última aprobada | `QUEUE-ARC-010` — Definir estados y eventos canónicos | ✅ APROBADA |
+| Tarea actual | `QUEUE-ARC-011` — Definir métricas de espera, ejecución y error | ⬜ NO INICIADA |
+| Siguiente reservada | `QUEUE-ARC-012` — Definir autorización para crear, cancelar y reintentar trabajos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -485,7 +485,7 @@
 | ✅ APROBADA | `QUEUE-ARC-007` | Definir cancelación antes y durante ejecución | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ✅ APROBADA | `QUEUE-ARC-008` | Definir cola de fallos y recuperación manual | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ✅ APROBADA | `QUEUE-ARC-009` | Definir bloqueo de duplicados y concurrencia | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
-| ⬜ NO INICIADA | `QUEUE-ARC-010` | Definir estados y eventos canónicos | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
+| ✅ APROBADA | `QUEUE-ARC-010` | Definir estados y eventos canónicos | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-011` | Definir métricas de espera, ejecución y error | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-012` | Definir autorización para crear, cancelar y reintentar trabajos | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ✅ APROBADA | `PRINT-ARC-001` | Inventariar impresoras por empresa, sede, área y punto operativo | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |

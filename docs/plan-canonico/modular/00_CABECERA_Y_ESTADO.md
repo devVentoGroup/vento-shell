@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **808** |
+| Tareas aprobadas | **809** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **786** |
+| Tareas no iniciadas | **785** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **50.69% (808/1594)** |
+| Porcentaje de completamiento | **50.75% (809/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia** |
-| Tarea actual | **QUEUE-ARC-010 — Definir estados y eventos canónicos** |
+| Última tarea aprobada | **QUEUE-ARC-010 — Definir estados y eventos canónicos** |
+| Tarea actual | **QUEUE-ARC-011 — Definir métricas de espera, ejecución y error** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **QUEUE-ARC-011 — Definir métricas de espera, ejecución y error** |
+| Siguiente tarea | **QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos** |
 | Bloque actual | **BLOQUE E4 — Servicios transversales** |
-| Progreso del bloque | **BLOQUE E4: 59 de 62 aprobadas; QUEUE-ARC-010 pendiente** |
+| Progreso del bloque | **BLOQUE E4: 60 de 62 aprobadas; QUEUE-ARC-011 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `QUEUE-ARC-009` — Definir bloqueo de duplicados y concurrencia |
-| Tarea actual | `QUEUE-ARC-010` — Definir estados y eventos canónicos — **NO INICIADA** |
-| Siguiente tarea | `QUEUE-ARC-011` — Definir métricas de espera, ejecución y error |
+| Última aprobada | `QUEUE-ARC-010` — Definir estados y eventos canónicos |
+| Tarea actual | `QUEUE-ARC-011` — Definir métricas de espera, ejecución y error — **NO INICIADA** |
+| Siguiente tarea | `QUEUE-ARC-012` — Definir autorización para crear, cancelar y reintentar trabajos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E4: 59 DE 62 APROBADAS — ACTUAL QUEUE-ARC-010** |
+| CONTINUIDAD ACTIVA | **BLOQUE E4: 60 DE 62 APROBADAS — ACTUAL QUEUE-ARC-011** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia
-        ↓
-TAREA ACTUAL
 QUEUE-ARC-010 — Definir estados y eventos canónicos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 QUEUE-ARC-011 — Definir métricas de espera, ejecución y error
         ↓
+SIGUIENTE TAREA RESERVADA
+QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E4 — 59 de 62 tareas aprobadas
+BLOQUE E4 — 60 de 62 tareas aprobadas
 ```

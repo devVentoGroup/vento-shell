@@ -6241,7 +6241,952 @@ SIGUIENTE TAREA RESERVADA
 `QUEUE-ARC-010 — Definir estados y eventos canónicos`
 
 
-### [ ] QUEUE-ARC-010 — Definir estados y eventos canónicos
+### ✅ QUEUE-ARC-010 — Definir estados y eventos canónicos
+
+**Estado:** APROBADA
+**Tarea anterior:** `QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia`
+**Tarea siguiente:** `QUEUE-ARC-011 — Definir métricas de espera, ejecución y error`
+**Tipo de tarea:** documental; especialización canónica del ciclo de vida durable y del registro inmutable de eventos del trabajo asíncrono, consolidando programación, asignación, claim, ejecución, retry, cancelación, incertidumbre, conciliación, aislamiento, recuperación, concurrencia y terminalidad para las 19 identidades `QAI-*`, sin implementar tablas, enums, triggers, workers, métricas, alertas ni autorización
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`
+**Línea base documental:** `vento-shell@622c29e32fa52db970d0a88916d884a57a3bace7`
+**Contrato base de trabajo:** `TSVC-SVC-001.CONTRACT@1.0.0`
+**Registro de confiabilidad consumido:** `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`
+**Contrato de idempotencia consumido:** `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`
+**Contrato temporal consumido:** `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0`
+**Contrato de asignación consumido:** `WORK-ASSIGNMENT-CONTRACT-001@1.0.0`
+**Contrato de retry consumido:** `WORK-RETRY-POLICY-CONTRACT-001@1.0.0`
+**Contrato de cancelación consumido:** `WORK-CANCELLATION-CONTRACT-001@1.0.0`
+**Contrato de recuperación consumido:** `WORK-FAILURE-RECOVERY-CONTRACT-001@1.0.0`
+**Contrato de concurrencia consumido:** `WORK-CONCURRENCY-CONTROL-CONTRACT-001@1.0.0`
+**Inventario consumido:** `QUEUE-CURRENT-ASSET-INVENTORY-001` — 19 identidades `QAI-*`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir un único ciclo de vida durable para el trabajo asíncrono de Vento OS y un vocabulario inmutable de eventos capaz de reconstruir cómo una operación fue recibida, programada, asignada, reclamada, ejecutada, bloqueada, reintentada, cancelada, conciliada, aislada, recuperada o cerrada.
+
+La regla raíz es:
+
+```text
+INTENCIÓN REGISTRADA
+        ↓
+ESTADO DURABLE ACTUAL
+        +
+HISTORIA INMUTABLE DE EVENTOS
+        +
+VERSIONADO MONOTÓNICO
+        ↓
+TRANSICIONES CONDICIONALES Y RECONSTRUIBLES
+        ↓
+RESULTADO AUTORITATIVO O AISLAMIENTO CONTROLADO
+```
+
+La separación canónica queda fijada así:
+
+```text
+ESTADO DEL TRABAJO ASÍNCRONO
+≠ ESTADO EMPRESARIAL DEL RECURSO
+≠ ESTADO DEL TRANSPORTE
+≠ ESTADO DE UI
+≠ ESTADO DEL PROVEEDOR
+≠ RESULTADO FÍSICO
+≠ EVENTO DE AUDITORÍA
+≠ MÉTRICA
+```
+
+El estado del trabajo describe la situación operativa de una `operation_id`. No sustituye el estado de una orden, turno, pago, suscripción, solicitud de eliminación, mensaje, documento, impresión física ni otro recurso empresarial.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se establece `WORK-STATE-EVENT-CONTRACT-001@1.0.0` como especialización del ciclo de vida y de la historia de transición del contrato canónico de trabajo asíncrono.
+
+El resultado material fija:
+
+1. exactamente dieciséis estados durables de operación;
+2. cuatro estados terminales y doce estados no terminales;
+3. el mapeo explícito entre el vocabulario histórico de confiabilidad y los estados persistibles de esta tarea;
+4. treinta y tres tipos de evento canónicos;
+5. un sobre mínimo de estado y un sobre mínimo de evento;
+6. versionado monotónico del estado y secuencia monotónica de eventos por operación;
+7. la obligación de conservar `status_before` y `status_after` en todo evento que cambie estado;
+8. la diferencia entre evento de transición y evento informativo que no cambia estado;
+9. las transiciones admitidas entre programación, elegibilidad, asignación, claim, ejecución, retry, bloqueo, cancelación, incertidumbre, conciliación, aislamiento y cierre;
+10. la representación de misfire, claim rechazado, lease perdido, fencing rechazado, conflicto de versión y duplicado suprimido sin inventar un segundo trabajo;
+11. la integración exacta de las resoluciones aprobadas de cancelación y recuperación;
+12. la regla de terminalidad que impide reabrir silenciosamente una operación ya cerrada;
+13. el tratamiento de resultados tardíos sin sobrescribir una decisión terminal previa;
+14. la separación entre estado actual y estados legacy observados en implementaciones existentes;
+15. una decisión explícita para las 19 identidades `QAI-*`.
+
+Balance:
+
+| Métrica                                    | Resultado |
+| ------------------------------------------ | --------: |
+| Identidades `QAI-*` esperadas              |    **19** |
+| Identidades materializadas                 |    **19** |
+| `APLICA_ESTADOS_Y_EVENTOS`                 |    **16** |
+| `PROPAGA_NO_DECIDE_ESTADO`                 |     **2** |
+| `NO_APLICA`                                |     **1** |
+| Estados durables canónicos                 |    **16** |
+| Estados terminales                         |     **4** |
+| Estados no terminales                      |    **12** |
+| Tipos de evento canónicos                  |    **33** |
+| Perfil `SCHEDULED_WORK`                    |     **9** |
+| Perfil `OFFLINE_OR_DEVICE_WORK`            |     **4** |
+| Perfil `EVENT_DRIVEN_WORK`                 |     **3** |
+| Identificadores `QAI-*` duplicados         |     **0** |
+| Identidades sin decisión                   |     **0** |
+| Requisitos de prueba creados o modificados |     **0** |
+| Objetos físicos creados o modificados      |     **0** |
+
+---
+
+#### 3. Herencia contractual obligatoria
+
+`WORK-STATE-EVENT-CONTRACT-001@1.0.0` no redefine las decisiones sustantivas de las tareas anteriores. Únicamente les asigna una representación durable y una historia de eventos común.
+
+Hereda obligatoriamente:
+
+- de `TSVC-SVC-001.CONTRACT@1.0.0`, `operation_id`, `WORK_SUBMISSION`, `WORK_OUTCOME`, `WORK_ERROR`, causalidad, propiedad empresarial, versión contractual y resultado autoritativo;
+- de `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`, `operation_status`, estado durable, resultado recuperable, `RESULT_UNKNOWN`, conciliación, `DEAD_LETTER`, `QUARANTINED`, claim, lease, fencing y prohibición de reabrir una intención terminal por retry;
+- de `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`, reserva estable de intención, `receipt_id`, `idempotency_key`, `payload_fingerprint`, conflicto y recuperación del mismo trabajo;
+- de `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0`, `scheduled_at`, `deadline_at`, `schedule_occurrence_id`, `logical_fire_at_utc`, misfire y elegibilidad temporal;
+- de `WORK-ASSIGNMENT-CONTRACT-001@1.0.0`, `assignment_id`, `assignment_version`, target técnico y reasignación versionada;
+- de `WORK-RETRY-POLICY-CONTRACT-001@1.0.0`, `attempt_id`, `attempt_no`, `next_retry_at`, presupuesto, agotamiento y resultado ambiguo;
+- de `WORK-CANCELLATION-CONTRACT-001@1.0.0`, `cancellation_request_id`, siete resoluciones de cancelación y separación entre solicitud, efectividad y llegada demasiado tardía;
+- de `WORK-FAILURE-RECOVERY-CONTRACT-001@1.0.0`, `failure_entry_id`, `failure_entry_version`, tres carriles de aislamiento, `recovery_request_id`, seis acciones y ocho resoluciones de recovery;
+- de `WORK-CONCURRENCY-CONTROL-CONTRACT-001@1.0.0`, `concurrency_key`, `claim_id`, lease, fencing, compare-and-set, conflicto de versión, orden causal y rechazo de ejecutores obsoletos;
+- de `QUEUE-CURRENT-ASSET-INVENTORY-001`, las 19 identidades materiales y sus brechas observadas.
+
+La tarea no concede autoridad empresarial. Registrar o producir un evento técnico no autoriza a crear, cancelar, recuperar, reintentar o forzar una operación; esa decisión permanece en `QUEUE-ARC-012`.
+
+---
+
+#### 4. Separación entre estado de trabajo y estado empresarial
+
+Toda implementación futura deberá conservar dos planos distintos:
+
+```text
+PLANO EMPRESARIAL
+orden / turno / pago / suscripción / solicitud / mensaje / documento / recurso
+
+PLANO DE TRABAJO ASÍNCRONO
+operation_id / operation_status / intentos / claims / eventos / resultado técnico
+```
+
+Reglas:
+
+1. el estado de una entidad empresarial no se copia ni renombra automáticamente como `operation_status`;
+2. `operation_status = succeeded` significa que el trabajo produjo o recuperó su resultado autoritativo; no significa que el recurso empresarial deba llamarse `succeeded`;
+3. `operation_status = failed` no obliga a marcar como fallido el proceso empresarial cuando el contrato propietario admita otra decisión;
+4. `operation_status = cancelled` describe terminalidad del trabajo, no rollback ni compensación del recurso;
+5. `operation_status = expired` describe vencimiento de la intención de trabajo, no borrado de la fuente que la originó;
+6. un booleano `processed`, un estado de workflow, un callback HTTP, un status de proveedor o una marca local de UI no sustituyen el estado transversal;
+7. una aplicación puede proyectar el estado transversal a su UI con vocabulario propio, siempre que no altere su significado;
+8. la aplicación propietaria conserva la autoridad sobre el resultado empresarial y sobre cualquier compensación o acción posterior.
+
+---
+
+#### 5. Estados durables canónicos
+
+El campo `operation_status` utiliza exactamente este vocabulario cerrado inicial:
+
+| Estado             | Clase       | Semántica canónica                                                                                                                                   |
+| ------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `queued`           | no terminal | intención reservada y admitida, temporalmente elegible o pendiente de selección técnica, sin ejecución activa                                        |
+| `scheduled`        | no terminal | intención registrada cuyo `scheduled_at` o condición temporal todavía impide ejecución ordinaria                                                     |
+| `assigned`         | no terminal | existe una `assignment_version` compatible y la operación puede intentar adquirir claim cuando sea elegible                                          |
+| `blocked`          | no terminal | existe una condición concreta de dependencia, versión, capacidad, autoridad, dispositivo u otra restricción que impide ejecutar sin consumir intento |
+| `claimed`          | no terminal | existe un claim técnico vigente con lease/fencing aplicables, pero todavía no se acredita inicio de una ejecución capaz de efecto                    |
+| `processing`       | no terminal | existe un `attempt_id` iniciado bajo autoridad técnica vigente y la operación está ejecutando una etapa capaz de producir efecto                     |
+| `cancel_requested` | no terminal | existe una solicitud de cancelación válida registrada cuya efectividad todavía no se ha resuelto                                                     |
+| `retry_pending`    | no terminal | el intento anterior terminó sin éxito, el error admite otra ejecución y existe `next_retry_at`, presupuesto y vigencia suficientes                   |
+| `result_unknown`   | no terminal | el efecto pudo ocurrir, pero no existe evidencia suficiente para declarar éxito, fallo, cancelación ni seguridad de repetición                       |
+| `reconciling`      | no terminal | se están consultando fuentes autoritativas para resolver `result_unknown`, efecto parcial o divergencia                                              |
+| `quarantined`      | no terminal | la operación está aislada por conflicto, orden inválido, contrato incompatible o unidad no procesable y requiere revisión controlada                 |
+| `dead_letter`      | no terminal | el tratamiento automático terminó o agotó presupuesto y la operación permanece aislada para resolución controlada                                    |
+| `succeeded`        | terminal    | existe un resultado autoritativo compatible y no queda efecto ordinario pendiente de la misma operación                                              |
+| `failed`           | terminal    | existe cierre técnico o contractual definitivo para la misma operación y no queda retry ordinario ni recovery de la misma intención pendiente        |
+| `cancelled`        | terminal    | quedó garantizado que no habrá efectos ordinarios posteriores de la operación por cancelación efectiva                                               |
+| `expired`          | terminal    | venció la intención sin efecto ambiguo pendiente y no pueden iniciarse nuevos intentos ordinarios                                                    |
+
+Reglas:
+
+1. los cuatro estados terminales son `succeeded`, `failed`, `cancelled` y `expired`;
+2. `dead_letter` y `quarantined` no son terminales porque `QUEUE-ARC-008` permite revisión o recuperación controlada;
+3. `result_unknown` y `reconciling` no son equivalentes a fallo;
+4. `cancel_requested` no es equivalente a `cancelled`;
+5. `claimed` no es equivalente a `processing`;
+6. `assigned` no es equivalente a `claimed`;
+7. `scheduled` no es equivalente a `queued` cuando la ventana temporal aún no permite ejecución;
+8. un error transitorio no utiliza `failed`; utiliza `retry_pending` cuando procede otro intento;
+9. un presupuesto automático agotado no se fuerza directamente a `failed` si la política aprobada exige `dead_letter` o conciliación;
+10. un conflicto que exige revisión utiliza `quarantined` o `blocked` según si la unidad debe aislarse o solo esperar una condición resoluble.
+
+---
+
+#### 6. Mapeo del vocabulario de confiabilidad ya aprobado
+
+El ciclo de `TSVC-CAT-006` se conserva sin cambiar su significado. Esta tarea fija cómo se representa en el campo persistible `operation_status` y en los eventos:
+
+| Término aprobado en confiabilidad | Representación de `QUEUE-ARC-010`                                                                    |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `RECEIVED`                        | evento `WORK_RECEIVED`; todavía no obliga a crear un estado durable si la intención no fue reservada |
+| `RESERVED`                        | evento `WORK_RESERVED`; produce `scheduled` o `queued` según la política temporal                    |
+| `CLAIMED`                         | `claimed`                                                                                            |
+| `EXECUTING`                       | `processing`                                                                                         |
+| `RETRY_SCHEDULED`                 | `retry_pending`                                                                                      |
+| `SUCCEEDED`                       | `succeeded`                                                                                          |
+| `FAILED_TERMINAL`                 | `failed`                                                                                             |
+| `RESULT_UNKNOWN`                  | `result_unknown`                                                                                     |
+| `RECONCILING`                     | `reconciling`                                                                                        |
+| `BLOCKED`                         | `blocked`                                                                                            |
+| `CANCEL_REQUESTED`                | `cancel_requested`                                                                                   |
+| `CANCELLED`                       | `cancelled`                                                                                          |
+| `EXPIRED`                         | `expired`                                                                                            |
+| `QUARANTINED`                     | `quarantined`                                                                                        |
+| `DEAD_LETTER`                     | `dead_letter`                                                                                        |
+
+`scheduled` y `assigned` completan dimensiones ya aprobadas en `QUEUE-ARC-004` y `QUEUE-ARC-005` que el ciclo de confiabilidad general no representaba como estados persistibles separados.
+
+---
+
+#### 7. Sobre mínimo de estado
+
+Toda materialización futura del estado actual deberá poder conservar, cuando aplique:
+
+```text
+operation_id
+operation_version
+operation_status
+status_version
+status_changed_at
+status_reason_code
+status_event_id
+previous_status
+service_id
+contract_id
+contract_version
+business_owner_application
+producer_application
+idempotency_key
+payload_fingerprint
+scheduled_at
+deadline_at
+next_retry_at
+assignment_id
+assignment_version
+attempt_id
+attempt_no
+claim_id
+lease_expires_at
+fencing_token
+resource_reference
+resource_version
+schedule_occurrence_id
+cancellation_request_id
+failure_entry_id
+failure_entry_version
+recovery_request_id
+result_ref
+error_code
+reconciliation_status
+```
+
+Reglas:
+
+1. `status_version` es monotónico por `operation_id` y aumenta exactamente una vez por cada transición durable aceptada;
+2. `status_event_id` identifica el evento que produjo la versión actual;
+3. `previous_status` conserva el estado inmediatamente anterior sin sustituir la historia de eventos;
+4. un evento informativo que no cambie `operation_status` no incrementa `status_version`;
+5. los campos no aplicables permanecen ausentes o `NO_APLICA`; no se inventan identidades;
+6. el estado actual y el evento que lo produce se persisten atómicamente o mediante un mecanismo equivalente que impida una proyección sin historia o una historia que afirme una transición no aplicada;
+7. la implementación puede usar snapshot más historial, event log con proyección, outbox o mecanismo equivalente; esta tarea no impone event sourcing como tecnología;
+8. secretos, tokens, credenciales y payloads sensibles completos no forman parte del estado.
+
+---
+
+#### 8. Sobre mínimo de evento
+
+Todo evento canónico de trabajo deberá poder conservar:
+
+```text
+event_id
+event_type
+event_version
+operation_id
+operation_version
+event_sequence
+status_version
+status_before
+status_after
+occurred_at
+recorded_at
+reason_code
+correlation_id
+causation_id
+producer_application
+business_owner_application
+actor_reference
+service_principal_id
+assignment_id
+assignment_version
+attempt_id
+attempt_no
+claim_id
+fencing_token
+schedule_occurrence_id
+cancellation_request_id
+failure_entry_id
+failure_entry_version
+recovery_request_id
+provider_event_id
+resource_reference
+resource_version
+result_ref
+error_code
+reconciliation_status
+metadata_ref
+```
+
+Reglas:
+
+1. `event_id` es único e inmutable;
+2. reingresar el mismo `event_id` recupera el mismo evento y no crea una segunda transición;
+3. `event_sequence` es monotónico por `operation_id` y ordena la historia aceptada de la operación;
+4. `occurred_at` representa cuándo ocurrió el hecho observado y `recorded_at` cuándo fue registrado; ninguno sustituye el orden causal o el versionado;
+5. eventos recibidos tarde conservan su tiempo real sin poder sobrescribir una versión posterior únicamente por timestamp;
+6. todo evento que cambie estado declara `status_before`, `status_after` y la nueva `status_version`;
+7. todo evento que no cambie estado conserva `status_before = status_after` y la `status_version` vigente;
+8. `actor_reference` y `service_principal_id` identifican participación técnica o humana sin incluir credenciales;
+9. `metadata_ref` apunta a metadata protegida cuando sea necesaria; no convierte el evento en depósito de payloads sensibles;
+10. una corrección de metadata o interpretación se agrega como otro evento o versión relacionada; no se reescribe silenciosamente la historia previa.
+
+---
+
+#### 9. Catálogo cerrado de eventos canónicos
+
+Se definen exactamente treinta y tres tipos iniciales.
+
+| Evento                         | Cambio de estado | Semántica                                                                                                                       |
+| ------------------------------ | ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `WORK_RECEIVED`                | no obligatorio   | una solicitud llegó a la frontera del servicio antes de completar reserva idempotente                                           |
+| `WORK_RESERVED`                | sí               | la intención fue reservada; el estado resultante es `scheduled` o `queued`                                                      |
+| `WORK_SCHEDULED`               | sí o no          | se fijó o actualizó de forma versionada una espera temporal; usa `scheduled` cuando todavía no es elegible                      |
+| `WORK_ELIGIBLE`                | sí               | la condición temporal dejó de bloquear y la operación pasa a `queued` o `assigned` después de revalidar                         |
+| `WORK_MISFIRE_DETECTED`        | no obligatorio   | una ocurrencia no fue ejecutada en su momento lógico y requiere aplicar la política de misfire vigente                          |
+| `WORK_MISFIRE_RESOLVED`        | sí o no          | registra si la ocurrencia sigue elegible, fue coalescida de forma compatible o quedó vencida según el contrato temporal         |
+| `WORK_EXPIRED`                 | sí               | la operación cierra como `expired` únicamente cuando no existe efecto ambiguo pendiente                                         |
+| `WORK_ASSIGNMENT_RECORDED`     | sí o no          | se materializó una asignación compatible; si la operación ya es temporalmente elegible puede pasar a `assigned`                 |
+| `WORK_REASSIGNMENT_RECORDED`   | sí o no          | se registró una nueva `assignment_version` sin crear otra intención                                                             |
+| `WORK_BLOCKED`                 | sí               | una condición concreta impide continuar y la operación pasa a `blocked`                                                         |
+| `WORK_UNBLOCKED`               | sí               | desapareció el bloqueo y la operación se reevalúa hacia `scheduled`, `queued` o `assigned`                                      |
+| `WORK_CLAIM_ACQUIRED`          | sí               | un único ganador obtuvo autoridad técnica vigente y la operación pasa a `claimed`                                               |
+| `WORK_CLAIM_REJECTED`          | no               | otro claim, versión, bloqueo o condición vigente impidió adquirir autoridad; no crea intento                                    |
+| `WORK_LEASE_RENEWED`           | no               | se extendió el lease del mismo claim sin crear otro intento ni fencing                                                          |
+| `WORK_LEASE_LOST`              | sí o no          | el claim dejó de ser vigente; el destino posterior depende de si hubo ejecución y de si el efecto pudo ocurrir                  |
+| `WORK_PROCESSING_STARTED`      | sí               | comenzó un `attempt_id` capaz de producir efecto y la operación pasa a `processing`                                             |
+| `WORK_FENCING_REJECTED`        | no               | una generación obsoleta intentó cerrar o mutar y fue rechazada sin alterar el estado válido actual                              |
+| `WORK_VERSION_CONFLICT`        | sí o no          | una versión observada dejó de ser compatible; puede bloquear o aislar según la naturaleza del conflicto                         |
+| `WORK_DUPLICATE_SUPPRESSED`    | no               | una repetición de intención, fuente o efecto fue reconocida y no produjo otro trabajo o efecto                                  |
+| `WORK_ATTEMPT_RETRY_SCHEDULED` | sí               | un intento reintentable terminó y la operación pasa a `retry_pending` con `next_retry_at` válido                                |
+| `WORK_RETRY_DUE`               | sí               | llegó la próxima oportunidad de retry y la operación se reevalúa hacia `queued` o `assigned`                                    |
+| `WORK_CANCELLATION_REQUESTED`  | sí               | se registró una solicitud válida y la operación pasa a `cancel_requested` mientras se resuelve su efectividad                   |
+| `WORK_CANCELLATION_RESOLVED`   | sí o no          | registra una de las resoluciones aprobadas de cancelación y aplica el estado resultante correspondiente                         |
+| `WORK_RESULT_UNKNOWN`          | sí               | existe un posible efecto sin confirmación y la operación pasa a `result_unknown`                                                |
+| `WORK_RECONCILIATION_STARTED`  | sí               | comenzó conciliación contra fuentes autoritativas y la operación pasa a `reconciling`                                           |
+| `WORK_RECONCILIATION_RESOLVED` | sí o no          | registra el resultado de conciliación y conduce a terminalidad, retry, aislamiento o permanencia según evidencia                |
+| `WORK_QUARANTINED`             | sí               | un conflicto, orden inválido, contrato incompatible o unidad no procesable lleva a `quarantined`                                |
+| `WORK_DEAD_LETTERED`           | sí               | agotamiento o fallo técnico terminal automático lleva a `dead_letter` sin declarar resultado empresarial                        |
+| `WORK_RECOVERY_REQUESTED`      | no obligatorio   | se abrió una intervención identificada sobre una entrada aislada; no ejecuta por sí sola                                        |
+| `WORK_RECOVERY_RESOLVED`       | sí o no          | registra la resolución de recovery y solo cambia estado cuando esa resolución lo exige                                          |
+| `WORK_SUCCEEDED`               | sí               | el resultado autoritativo queda confirmado y la operación pasa a `succeeded`                                                    |
+| `WORK_FAILED`                  | sí               | la operación obtiene un cierre definitivo compatible con `failed`                                                               |
+| `WORK_LATE_RESULT_OBSERVED`    | no automático    | se observó evidencia después de una decisión terminal o pérdida de autoridad; nunca sobrescribe directamente el estado terminal |
+
+Los eventos no crean una segunda taxonomía de errores, cancelación, recovery o concurrencia. `reason_code`, `cancellation_resolution`, `recovery_action`, `recovery_resolution`, `isolation_reason` y `error_class` conservan los vocabularios aprobados por sus contratos propietarios.
+
+---
+
+#### 10. Regla de transición y consistencia
+
+Toda transición durable deberá satisfacer simultáneamente:
+
+```text
+OPERATION_ID CORRECTA
++
+STATUS_VERSION ESPERADA
++
+ESTADO ACTUAL COMPATIBLE
++
+CONTRATO Y VERSIÓN VIGENTES
++
+TEMPORALIDAD VÁLIDA CUANDO APLIQUE
++
+CLAIM / FENCING VIGENTES CUANDO APLIQUE
++
+RESOURCE_VERSION COMPATIBLE CUANDO APLIQUE
++
+CONTROL DE CANCELACIÓN VIGENTE
+        ↓
+TRANSICIÓN ACEPTADA
+        ↓
+NUEVA STATUS_VERSION + EVENTO INMUTABLE
+```
+
+Reglas:
+
+1. dos escritores no pueden producir dos `status_version` distintas desde la misma versión esperada sin que una sea rechazada o conciliada;
+2. un evento de transición con `status_before` incompatible no se aplica por conveniencia;
+3. un worker con fencing obsoleto no puede emitir una transición autoritativa de cierre;
+4. una operación no cambia a terminal únicamente porque el runtime desaparezca, el transporte se vacíe o un callback no llegue;
+5. el estado proyectado actual y la historia deben converger al mismo resultado;
+6. `last write wins` queda prohibido para resolver el estado canónico;
+7. una transición rechazada puede producir un evento informativo de conflicto o fencing sin modificar el estado vigente;
+8. un evento externo puede causar una transición, pero el evento del proveedor y el evento canónico del trabajo conservan identidades distintas.
+
+---
+
+#### 11. Transiciones canónicas permitidas
+
+La siguiente matriz describe destinos permitidos. La existencia de un destino no concede autoridad para ejecutarlo; solo declara compatibilidad semántica.
+
+| Estado actual      | Destinos permitidos por transición válida                                                                                                       |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scheduled`        | `queued`, `assigned`, `blocked`, `cancel_requested`, `expired`                                                                                  |
+| `queued`           | `scheduled`, `assigned`, `blocked`, `cancel_requested`, `expired`, `quarantined`                                                                |
+| `assigned`         | `scheduled`, `blocked`, `claimed`, `cancel_requested`, `expired`, `quarantined`                                                                 |
+| `blocked`          | `scheduled`, `queued`, `assigned`, `cancel_requested`, `expired`, `quarantined`, `dead_letter`, `result_unknown`                                |
+| `claimed`          | `processing`, `queued`, `assigned`, `blocked`, `cancel_requested`, `retry_pending`, `result_unknown`, `expired`                                 |
+| `processing`       | `succeeded`, `retry_pending`, `blocked`, `cancel_requested`, `result_unknown`, `quarantined`, `dead_letter`, `failed`, `expired`                |
+| `cancel_requested` | `cancelled`, `processing`, `retry_pending`, `blocked`, `result_unknown`, `reconciling`, `succeeded`, `failed`, `expired`                        |
+| `retry_pending`    | `scheduled`, `queued`, `assigned`, `blocked`, `cancel_requested`, `result_unknown`, `dead_letter`, `expired`                                    |
+| `result_unknown`   | `reconciling`, `succeeded`, `failed`, `cancelled`, `expired`, `quarantined`, `dead_letter`                                                      |
+| `reconciling`      | `succeeded`, `failed`, `cancelled`, `expired`, `retry_pending`, `queued`, `assigned`, `blocked`, `quarantined`, `dead_letter`, `result_unknown` |
+| `quarantined`      | `reconciling`, `queued`, `assigned`, `blocked`, `failed`, `cancelled`, `expired`, `dead_letter`                                                 |
+| `dead_letter`      | `reconciling`, `queued`, `assigned`, `blocked`, `failed`, `cancelled`, `expired`, `quarantined`                                                 |
+| `succeeded`        | ninguno; terminal                                                                                                                               |
+| `failed`           | ninguno; terminal                                                                                                                               |
+| `cancelled`        | ninguno; terminal                                                                                                                               |
+| `expired`          | ninguno; terminal                                                                                                                               |
+
+Reglas adicionales:
+
+1. volver desde aislamiento a `queued` o `assigned` solo ocurre mediante recovery controlado, nunca por un retry automático que reinicie presupuesto;
+2. `claimed → queued` o `claimed → assigned` solo procede cuando se pierde o libera autoridad antes de iniciar un efecto y la operación sigue elegible;
+3. `processing → expired` solo procede si puede demostrarse que no existe efecto ambiguo; en caso contrario se usa `result_unknown`;
+4. un conflicto de versión no obliga siempre a `quarantined`: puede utilizar `blocked` cuando la condición sea temporalmente resoluble sin alterar la intención;
+5. las operaciones terminales no vuelven a estados activos; una acción posterior legítima se modela como nueva operación o como episodio de conciliación vinculado que no reabre silenciosamente el estado terminal.
+
+---
+
+#### 12. Programación, elegibilidad y misfire
+
+Para trabajo recurrente:
+
+1. la reserva de una ocurrencia futura usa `scheduled` mientras `scheduled_at > now_utc`;
+2. al alcanzar elegibilidad se emite `WORK_ELIGIBLE` y la operación pasa a `queued` o `assigned` según exista asignación compatible;
+3. `WORK_MISFIRE_DETECTED` conserva `schedule_id`, `schedule_version`, `schedule_occurrence_id` y `logical_fire_at_utc`;
+4. `RUN_ONCE_IF_STILL_VALID` permite continuar la misma ocurrencia únicamente si sigue antes de `deadline_at` y satisface las demás precondiciones;
+5. `COALESCE_TO_LATEST_VALID` decide qué ocurrencia sigue siendo elegible sin fusionar identidades ni borrar las ocurrencias omitidas;
+6. una ocurrencia vencida sin efecto ambiguo usa `WORK_EXPIRED`;
+7. una ocurrencia que pudo ejecutar efecto antes de ser detectada como tardía utiliza `result_unknown` y conciliación, no `expired` por inferencia;
+8. modificar calendario, zona horaria, vigencia o regla de misfire conserva las reglas de versionado de `QUEUE-ARC-004` y no se representa como edición retroactiva de eventos históricos.
+
+---
+
+#### 13. Asignación, claim, lease y fencing
+
+1. `WORK_ASSIGNMENT_RECORDED` puede existir mientras una operación sigue `scheduled`; la asignación no la vuelve temporalmente elegible;
+2. cuando la operación es elegible y existe una asignación compatible, el estado puede ser `assigned`;
+3. `WORK_CLAIM_ACQUIRED` produce `claimed` y registra `claim_id`, lease y fencing aplicables;
+4. `WORK_CLAIM_REJECTED` no crea `attempt_id` ni cambia estado por sí solo;
+5. `WORK_LEASE_RENEWED` mantiene el mismo claim, fencing y intento cuando la ejecución ya comenzó;
+6. `WORK_LEASE_LOST` antes de iniciar intento puede devolver la operación a `queued` o `assigned` después de revalidar;
+7. si el lease se pierde durante ejecución y puede probarse que no hubo efecto, la política de retry decide entre `retry_pending`, `blocked` o cierre;
+8. si el efecto pudo ocurrir antes de la pérdida de lease, el destino obligatorio es `result_unknown`;
+9. `WORK_FENCING_REJECTED` nunca permite al ejecutor obsoleto cambiar el estado actual;
+10. `WORK_VERSION_CONFLICT` conserva la versión observada y la vigente para decidir bloqueo, cuarentena o conciliación;
+11. `WORK_DUPLICATE_SUPPRESSED` conserva el estado original y referencia el receipt, resultado o intención ya existente.
+
+---
+
+#### 14. Retry y agotamiento
+
+1. un intento transitorio fallido que conserva presupuesto y vigencia emite `WORK_ATTEMPT_RETRY_SCHEDULED` y pasa a `retry_pending`;
+2. `retry_pending` exige `next_retry_at`, `error_class`, presupuesto restante y `deadline_at` vigente;
+3. al llegar `next_retry_at`, `WORK_RETRY_DUE` no inicia ejecución por sí solo: revalida temporalidad, cancelación, asignación, dependencia y recurso;
+4. después de la revalidación vuelve a `queued` o `assigned` y debe adquirir un claim nuevo antes del siguiente intento;
+5. agotar el presupuesto sin efecto ambiguo utiliza `dead_letter` cuando la política exige aislamiento;
+6. un error no reintentable con cierre definitivo puede producir `failed`;
+7. un error no reintentable que exige revisión de contenido, contrato, orden o versión puede producir `quarantined`;
+8. un timeout posterior a posible efecto nunca produce directamente `retry_pending`; primero usa `result_unknown`;
+9. la recuperación extraordinaria desde aislamiento no reinicia `max_attempts` ni reutiliza el evento de retry ordinario.
+
+---
+
+#### 15. Cancelación
+
+La resolución de `WORK_CANCELLATION_RESOLVED` utiliza exactamente el vocabulario aprobado por `WORK-CANCELLATION-CONTRACT-001@1.0.0`.
+
+| Resolución de cancelación                | Estado resultante                                                                 |
+| ---------------------------------------- | --------------------------------------------------------------------------------- |
+| `REQUEST_ACCEPTED_PENDING_EFFECTIVENESS` | `cancel_requested`                                                                |
+| `EFFECTIVE_BEFORE_EXECUTION`             | `cancelled`                                                                       |
+| `EFFECTIVE_AT_SAFE_POINT`                | `cancelled`                                                                       |
+| `TOO_LATE_EFFECT_CONFIRMED`              | conservar o completar el resultado autoritativo; nunca `cancelled` por inferencia |
+| `RESULT_UNKNOWN_RECONCILIATION_REQUIRED` | `result_unknown`                                                                  |
+| `ALREADY_TERMINAL_NO_CHANGE`             | conservar el estado terminal existente                                            |
+| `NOT_CANCELLABLE_BY_CONTRACT`            | revalidar y conservar el estado operativo previo compatible; no `cancelled`       |
+
+Reglas:
+
+1. `WORK_CANCELLATION_REQUESTED` conserva la referencia al estado desde el que se solicitó control para poder reconstruir la resolución;
+2. una solicitud aceptada pero pendiente de efectividad no oculta un intento que todavía pueda estar ejecutando;
+3. hacer efectiva la cancelación impide nuevos intentos y nuevos efectos ordinarios;
+4. una cancelación demasiado tardía conserva el resultado ya confirmado;
+5. cuando no puede demostrarse precedencia entre cancelación y efecto, se usa `result_unknown`;
+6. una operación terminal no se reabre para marcarla cancelada;
+7. rechazo por falta de autoridad se representará conforme a `QUEUE-ARC-012` sin convertir automáticamente la operación en terminal.
+
+---
+
+#### 16. Resultado desconocido y conciliación
+
+1. `WORK_RESULT_UNKNOWN` exige evidencia concreta de que un efecto pudo ocurrir sin confirmación suficiente;
+2. mientras el estado sea `result_unknown`, quedan prohibidos reintentos ciegos del mismo efecto;
+3. `WORK_RECONCILIATION_STARTED` produce `reconciling` y conserva referencias a las fuentes que deben consultarse;
+4. la conciliación distingue `CONFIRMED_EXECUTED`, `CONFIRMED_NOT_EXECUTED`, `PARTIALLY_EXECUTED`, `EXECUTED_INCOMPATIBLE_RESULT` y `UNDETERMINABLE` según `QUEUE-ARC-008`;
+5. `CONFIRMED_EXECUTED` cierra con el estado que corresponda al resultado autoritativo recuperado, sin repetir efecto;
+6. `CONFIRMED_NOT_EXECUTED` solo vuelve a trabajo ejecutable si retry o recovery lo permiten, la intención sigue vigente y no está cancelada;
+7. `PARTIALLY_EXECUTED` permanece bajo conciliación hasta resolver componentes faltantes o crear una operación correctiva compatible;
+8. `EXECUTED_INCOMPATIBLE_RESULT` no se corrige mediante `last write wins`; permanece aislado o bloqueado hasta decisión propietaria;
+9. `UNDETERMINABLE` conserva `result_unknown` o `reconciling` y prohíbe repetición insegura;
+10. un resultado empresarial que el servicio técnico no pueda inferir queda para la aplicación propietaria.
+
+---
+
+#### 17. Aislamiento y recuperación manual
+
+##### 17.1. Aislamiento
+
+- `WORK_QUARANTINED` produce `quarantined` para conflicto, poison, orden inválido, contrato incompatible o revisión obligatoria;
+- `WORK_DEAD_LETTERED` produce `dead_letter` cuando el tratamiento automático terminó o agotó presupuesto sin efecto ambiguo que exija primero conciliación;
+- ninguna de las dos condiciones equivale a resultado empresarial terminal;
+- aislar conserva `operation_id`, intentos, errores, resultado conocido y causalidad.
+
+##### 17.2. Recovery
+
+`WORK_RECOVERY_REQUESTED` registra `recovery_request_id` sin sacar automáticamente la operación del aislamiento.
+
+`WORK_RECOVERY_RESOLVED` aplica las resoluciones aprobadas por `QUEUE-ARC-008`:
+
+| Resolución de recovery                  | Regla de estado                                                                                                     |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `RESULT_RECOVERED`                      | cerrar con el estado que corresponda al resultado autoritativo recuperado; no asumir siempre `succeeded`            |
+| `SAFE_REEXECUTION_APPROVED`             | revalidar vigencia y asignación; después pasar a `queued` o `assigned` antes de adquirir un claim nuevo             |
+| `MISSING_COMPONENT_COMPLETION_APPROVED` | conservar causalidad y habilitar únicamente componentes faltantes mediante trabajo compatible                       |
+| `CORRECTIVE_OPERATION_REQUIRED`         | la operación original no se muta para cambiar intención; se crea una operación nueva relacionada cuando corresponda |
+| `NO_SAFE_REEXECUTION`                   | permanecer aislada o cerrar según la decisión propietaria compatible; nunca repetir a ciegas                        |
+| `OWNER_DECISION_REQUIRED`               | permanecer `blocked`, `quarantined`, `dead_letter` o `reconciling` según la condición real                          |
+| `KEEP_ISOLATED`                         | conservar `quarantined` o `dead_letter` sin ejecución                                                               |
+| `ALREADY_RESOLVED_NO_CHANGE`            | conservar el estado y resultado ya vigentes                                                                         |
+
+Una ejecución extraordinaria aprobada sigue utilizando `WORK_CLAIM_ACQUIRED` y `WORK_PROCESSING_STARTED`; no crea un ciclo paralelo de estados de recovery.
+
+---
+
+#### 18. Terminalidad y resultados tardíos
+
+Los estados `succeeded`, `failed`, `cancelled` y `expired` son inmutables respecto de la operación original.
+
+Reglas:
+
+1. un retry no reabre un estado terminal;
+2. una reasignación no reabre un estado terminal;
+3. un claim tardío no reabre un estado terminal;
+4. una solicitud de cancelación tardía conserva `ALREADY_TERMINAL_NO_CHANGE` o `TOO_LATE_EFFECT_CONFIRMED` según evidencia;
+5. una nueva necesidad empresarial después de terminalidad utiliza una nueva operación causalmente vinculada;
+6. `expired` solo se usa como terminal cuando al cerrar no existe un efecto previo ambiguo pendiente;
+7. si un callback, proveedor, dispositivo o worker reporta después un posible efecto que contradice una terminalidad previa, se emite `WORK_LATE_RESULT_OBSERVED` y se abre un episodio de conciliación vinculado sin sobrescribir directamente el estado terminal;
+8. el episodio tardío conserva la decisión anterior, la nueva evidencia y cualquier operación correctiva posterior;
+9. un resultado tardío de un worker con fencing obsoleto no se convierte automáticamente en resultado válido;
+10. la aplicación propietaria decide cualquier consecuencia empresarial derivada de una discrepancia terminal.
+
+---
+
+#### 19. Contenedores, hijos y batches
+
+1. un contenedor y cada hijo con efecto independiente conservan `operation_id`, `operation_status`, `status_version` y eventos propios;
+2. el estado del contenedor no se infiere únicamente de que una cola local quede vacía;
+3. un hijo `succeeded` no vuelve a ejecutarse porque el contenedor entre a retry;
+4. un hijo `result_unknown` mantiene al contenedor sin cierre incompatible hasta resolver la dependencia requerida;
+5. un batch puede estar `processing` mientras hijos distintos estén en estados diferentes;
+6. el cierre del contenedor se calcula desde resultados hijos autoritativos y su contrato, no por conteo de callbacks;
+7. los eventos hijos conservan `causation_id` o referencia equivalente al contenedor cuando corresponda;
+8. el orden causal prevalece sobre timestamps de llegada.
+
+---
+
+#### 20. Perfiles de ciclo de vida para el inventario `QAI-*`
+
+Se utilizan tres perfiles de aplicación y dos clasificaciones no propietarias:
+
+| Perfil                   | Identidades                                | Regla base                                                                                                                                            |
+| ------------------------ | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SCHEDULED_WORK`         | `QAI-001..QAI-009`                         | reserva de ocurrencia, `scheduled` cuando corresponda, elegibilidad, asignación, claim, intento y cierre; misfire conserva la identidad de ocurrencia |
+| `OFFLINE_OR_DEVICE_WORK` | `QAI-011`, `QAI-012`, `QAI-014`, `QAI-015` | custodia local o dispositivo antes del efecto servidor/físico; persistencia local no sustituye estado autoritativo ni resultado                       |
+| `EVENT_DRIVEN_WORK`      | `QAI-017`, `QAI-018`, `QAI-019`            | evento fuente estable, reserva/deduplicación, procesamiento interno y resultado; replay recupera la misma operación                                   |
+| `UPSTREAM_PROPAGATED`    | `QAI-010`, `QAI-013`                       | mecanismo técnico que transporta o ejecuta decisiones de operaciones upstream y no crea su propio ciclo empresarial                                   |
+| `NO_APLICA`              | `QAI-016`                                  | refresco de lectura sin trabajo durable ni efecto empresarial                                                                                         |
+
+---
+
+#### 21. Reconciliación con implementaciones actuales
+
+##### 21.1. Jobs recurrentes y schedules
+
+Los estados de ejecución que expongan `pg_cron`, GitHub Actions, un runtime o un scheduler son evidencia técnica de esa capa. No reemplazan `operation_status` de una ocurrencia ni el resultado de los trabajos hijos.
+
+Una ejecución del scheduler puede terminar técnicamente mientras una entrega hija permanezca `processing`, `retry_pending`, `result_unknown` o aislada.
+
+##### 21.2. Eliminación programada de cuentas
+
+La tabla `account_deletion_requests` utiliza actualmente `pending`, `processing`, `completed`, `rejected`, `canceled` y `failed` como vocabulario del proceso de eliminación.
+
+Decisión documental:
+
+```text
+account_deletion_requests.status
+= ESTADO DEL PROCESO / SOLICITUD EMPRESARIAL EXISTENTE
+
+operation_status
+= ESTADO DEL TRABAJO ASÍNCRONO QUE PROCESA LA SOLICITUD
+```
+
+Por tanto:
+
+- `processing` del registro actual no acredita por sí solo `claimed` ni fencing vigente;
+- `failed` del registro actual no equivale automáticamente a `failed` canónico porque `QUEUE-ARC-008` ya documentó posibles efectos parciales destructivos;
+- `completed` puede correlacionarse con un trabajo `succeeded` únicamente cuando exista resultado autoritativo suficiente;
+- `canceled` empresarial no sustituye la resolución de `cancellation_request_id` del trabajo.
+
+La adopción física se recibe en `DELIV-PKG-001`.
+
+##### 21.3. Colas offline ANIMA
+
+Las colas actuales conservan `pending`, `syncing`, `failed` y `conflict`.
+
+La reconciliación queda así:
+
+| Estado local actual | Relación con el contrato canónico                                                                                                        |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `pending`           | evidencia de trabajo local pendiente; puede corresponder a `queued` o `retry_pending` según `nextRetryAt`, pero no se mapea sin contexto |
+| `syncing`           | indica procesamiento local en curso; no acredita por sí solo `claimed`, lease ni fencing distribuido                                     |
+| `failed`            | exige clasificar error; puede terminar en `retry_pending`, `dead_letter`, `quarantined`, `failed` o conciliación según evidencia         |
+| `conflict`          | exige preservar conflicto y versión; puede corresponder a `blocked` o `quarantined`, nunca a retry ciego                                 |
+
+Los estados locales permanecen evidencia de compatibilidad y no se declaran cumplimiento transversal completo. La transición física se recibe en `DELIV-PKG-001`.
+
+##### 21.4. Impresión local NEXO
+
+Vaciar o reducir `vento-nexo:printing:queue:v1` después de iniciar BrowserPrint no produce por sí solo `succeeded`.
+
+- antes del dispatch, el trabajo puede estar `queued`, `assigned` o `claimed` según la materialización futura;
+- durante el envío capaz de efecto se utiliza `processing`;
+- aceptación o impresión incierta utiliza `result_unknown`;
+- solo evidencia autoritativa suficiente permite `succeeded`;
+- una reimpresión autorizada posterior es otra intención, no una transición desde un terminal previo.
+
+La arquitectura especializada continúa en `PRINT-ARC-*` y la adopción física se recibe en `DELIV-PKG-001`.
+
+##### 21.5. Wompi
+
+`payments.webhook_events.processed` y los estados de transacción existentes permanecen fuentes específicas del dominio de pago. No se renombran como estados de trabajo.
+
+La operación canónica del evento debe poder registrar:
+
+```text
+WORK_RESERVED
+→ WORK_CLAIM_ACQUIRED
+→ WORK_PROCESSING_STARTED
+→ WORK_SUCCEEDED
+```
+
+cuando el resultado completo sea conocido, o `WORK_RESULT_UNKNOWN` / conciliación cuando exista divergencia entre mutación y registro de evento.
+
+Las protecciones actuales de unicidad de evento y row lock se conservan como primitivas compatibles; no se declaran por sí solas state machine transversal completo.
+
+##### 21.6. RevenueCat
+
+El handler actual no materializa una reserva previa de evento ni un estado transversal único antes de sus tres mutaciones observadas.
+
+La adopción objetivo deberá conservar la identidad estable del evento, registrar la operación antes del efecto y producir estados/eventos sin confundir:
+
+- fila de suscripción;
+- entitlement;
+- auditoría;
+- acuse HTTP;
+- estado del trabajo asíncrono.
+
+La adopción física se recibe en `DELIV-PKG-001`.
+
+##### 21.7. `pg_net` y workers técnicos
+
+`QAI-010` y `QAI-013` no adquieren un ciclo empresarial independiente.
+
+- una fila o request de `pg_net` conserva metadata de transporte, no `operation_status` empresarial;
+- el tick de `QAI-013` no crea un nuevo estado ni otra operación;
+- errores de esas capas se correlacionan con la operación upstream y producen eventos de esa operación cuando el contrato lo requiera.
+
+---
+
+#### 22. Matriz materializada de estados y eventos para las 19 identidades `QAI-*`
+
+| ID        | Clasificación              | Perfil                   | Estados/eventos propietarios                                                                                               | Regla materializada                                                                                                               | Estado y brecha documental                                                                                         |
+| --------- | -------------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `QAI-001` | `APLICA_ESTADOS_Y_EVENTOS` | `SCHEDULED_WORK`         | `scheduled`, `queued`, `assigned`, `claimed`, `processing`, retry/aislamiento/terminales; misfire, claim, versión y cierre | cada ocurrencia conserva su estado propio; el cierre del turno usa eventos de conflicto/versión cuando compita con otra operación | `ESPECIFICADO`; comparte guardia de efecto con `QAI-004` y la coexistencia legacy sigue bajo `TSVC-CAT-010`        |
+| `QAI-002` | `APLICA_ESTADOS_Y_EVENTOS` | `SCHEDULED_WORK`         | ciclo de ocurrencia raíz y ciclos separados para hijos con efecto independiente                                            | éxito del cron o transporte no cierra hijos; cada hijo conserva estado y resultado propios                                        | `ESPECIFICADO`; cadena multi-etapa requiere correlación por causalidad                                             |
+| `QAI-003` | `APLICA_ESTADOS_Y_EVENTOS` | `SCHEDULED_WORK`         | ciclo programado con `WORK_VERSION_CONFLICT`, bloqueo, retry y cierre                                                      | una corrección stale no pasa a éxito si el turno ya cambió; conflicto se registra sin sobrescribir la versión vigente             | `ESPECIFICADO`; comparte frontera de recurso con otros cierres de asistencia                                       |
+| `QAI-004` | `APLICA_ESTADOS_Y_EVENTOS` | `SCHEDULED_WORK`         | mismo ciclo de ocurrencia que un schedule normal, con identidad propia                                                     | mantener schedule transicional no fusiona su estado con `QAI-001`; doble efecto se suprime por concurrencia                       | `ESPECIFICADO`; retiro o adopción legacy permanece bajo `TSVC-CAT-010`                                             |
+| `QAI-005` | `APLICA_ESTADOS_Y_EVENTOS` | `SCHEDULED_WORK`         | ciclo raíz programado; entregas hijas usan ciclos propios cuando se materialicen como trabajos                             | un batch `succeeded` exige resultado raíz compatible y no convierte un ACK de `pg_net` en entrega final                           | `ESPECIFICADO`; entrega especializada continúa bajo `NOTIFY-ARC-*`                                                 |
+| `QAI-006` | `APLICA_ESTADOS_Y_EVENTOS` | `SCHEDULED_WORK`         | ocurrencia de mantenimiento con misfire, retry, bloqueo y terminalidad                                                     | cada ocurrencia se cierra sin reabrir registros ya tratados; siguiente schedule es otra operación                                 | `ESPECIFICADO`; estado técnico no decide resultado empresarial de entrega                                          |
+| `QAI-007` | `APLICA_ESTADOS_Y_EVENTOS` | `SCHEDULED_WORK`         | ciclo raíz de reconciliación y estados propios por checkout cuando corresponda                                             | row locks actuales son evidencia de concurrencia; un checkout ambiguo usa conciliación, no éxito del batch                        | `ESPECIFICADO`; no se fusionan estados de transacción, orden y operación de cola                                   |
+| `QAI-008` | `APLICA_ESTADOS_Y_EVENTOS` | `SCHEDULED_WORK`         | modelo objetivo completo de schedule y trabajo                                                                             | si se despliega, deberá registrar ocurrencia, misfire, claim, intento y cierre; esta tarea no activa el job                       | `PENDIENTE_DE_EVIDENCIA`; evidencia de despliegue y adopción se recibe en `DELIV-PKG-001`                          |
+| `QAI-009` | `APLICA_ESTADOS_Y_EVENTOS` | `SCHEDULED_WORK`         | ciclo de batch y trabajo por solicitud destructiva; cancelación, claim, resultado ambiguo y recovery                       | estados empresariales `pending/processing/completed/rejected/canceled/failed` permanecen separados de `operation_status`          | `ESPECIFICADO`; checkpoints y state machine físicos se reciben en `DELIV-PKG-001`                                  |
+| `QAI-010` | `PROPAGA_NO_DECIDE_ESTADO` | `UPSTREAM_PROPAGATED`    | eventos y estado pertenecen a la operación upstream                                                                        | request de transporte no se convierte en trabajo empresarial ni terminaliza por desaparecer de la cola técnica                    | `ESPECIFICADO`; transporte administrado sin ownership de estado                                                    |
+| `QAI-011` | `APLICA_ESTADOS_Y_EVENTOS` | `OFFLINE_OR_DEVICE_WORK` | `queued`, `retry_pending`, `blocked`, `processing`, conflicto/aislamiento y terminales; eventos de sync y reconciliación   | `pending/syncing/failed/conflict` locales se conservan como evidencia parcial y se correlacionan por contexto                     | `ESPECIFICADO`; no se acredita state machine transversal end-to-end actual                                         |
+| `QAI-012` | `APLICA_ESTADOS_Y_EVENTOS` | `OFFLINE_OR_DEVICE_WORK` | mismo conjunto general con identidad propia de descanso                                                                    | compartir worker no mezcla estado, `status_version`, intentos ni conflictos de asistencia y descanso                              | `ESPECIFICADO`; adopción física se recibe en `DELIV-PKG-001`                                                       |
+| `QAI-013` | `PROPAGA_NO_DECIDE_ESTADO` | `UPSTREAM_PROPAGATED`    | consume estados de `QAI-011` y `QAI-012`                                                                                   | cada tick procesa unidades elegibles; despertar o terminar el loop no cambia el estado empresarial por sí solo                    | `ESPECIFICADO`; worker técnico efímero                                                                             |
+| `QAI-014` | `APLICA_ESTADOS_Y_EVENTOS` | `OFFLINE_OR_DEVICE_WORK` | evento local/background, operación servidora, conflicto de versión y resultado                                             | callback tardío no produce otro cierre si el turno ya cambió; resultado incierto usa conciliación                                 | `ESPECIFICADO`; ubicación y callback no equivalen a resultado autoritativo                                         |
+| `QAI-015` | `APLICA_ESTADOS_Y_EVENTOS` | `OFFLINE_OR_DEVICE_WORK` | cola local, claim de dispatch, `processing`, `result_unknown`, conciliación y resultado físico confirmado                  | vaciar `localStorage` no terminaliza; callback tardío o ambiguo no autoriza otro envío                                            | `ESPECIFICADO`; detalle especializado en `PRINT-ARC-*`, adopción en `DELIV-PKG-001`                                |
+| `QAI-016` | `NO_APLICA`                | `NO_APLICA`              | `NO_APLICA`                                                                                                                | refresco de lectura sin trabajo durable ni efecto empresarial                                                                     | `NO_APLICA`; no se fuerza al contrato                                                                              |
+| `QAI-017` | `APLICA_ESTADOS_Y_EVENTOS` | `EVENT_DRIVEN_WORK`      | reserva de trabajo derivado, entrega, retry, incertidumbre y terminalidad                                                  | `support_message` permanece fuente; trigger y `pg_net` no se convierten en estado de la entrega                                   | `ESPECIFICADO`; resultado de notificación separado del mensaje                                                     |
+| `QAI-018` | `APLICA_ESTADOS_Y_EVENTOS` | `EVENT_DRIVEN_WORK`      | reserva de evento Wompi, claim, procesamiento, conciliación y cierre                                                       | `processed` y estados de pago se correlacionan, pero no reemplazan `operation_status`; replay recupera la misma operación         | `ESPECIFICADO`; controles actuales compatibles se preservan sin declarar adopción transversal completa             |
+| `QAI-019` | `APLICA_ESTADOS_Y_EVENTOS` | `EVENT_DRIVEN_WORK`      | reserva de evento RevenueCat, procesamiento compuesto, conciliación y cierre                                               | suscripción, entitlement y auditoría permanecen componentes/resultados del dominio; el acuse HTTP no terminaliza por sí solo      | `ESPECIFICADO`; reserva/state machine de evento no acreditados actualmente y adopción se recibe en `DELIV-PKG-001` |
+
+Resultado de reconciliación:
+
+```text
+19 IDENTIDADES ESPERADAS
+19 IDENTIDADES MATERIALIZADAS
+16 APLICAN ESTADOS Y EVENTOS
+2 PROPAGAN Y NO DECIDEN ESTADO
+1 NO APLICA
+0 FALTANTES
+0 DUPLICADOS
+
+PERFILES ENTRE LAS 16 APLICABLES
+SCHEDULED_WORK         = 9
+OFFLINE_OR_DEVICE_WORK = 4
+EVENT_DRIVEN_WORK      = 3
+```
+
+---
+
+#### 23. Invariantes de integridad de la historia
+
+1. una `operation_id` conserva una sola secuencia lógica de estados;
+2. `status_version` no retrocede ni se reutiliza;
+3. `event_sequence` no retrocede ni se reutiliza dentro de la operación;
+4. un estado terminal no se sobrescribe mediante retry, callback tardío o worker obsoleto;
+5. un evento repetido con el mismo `event_id` no vuelve a aplicar la transición;
+6. un evento distinto con causa duplicada no elude idempotencia ni concurrencia;
+7. una transición incompatible conserva evidencia del conflicto y no se corrige editando historia;
+8. el payload empresarial original permanece referenciado por fuente o huella y no se copia indiscriminadamente a eventos;
+9. estado, resultado, error, cancelación, recovery y conciliación mantienen identidades separadas;
+10. el orden de historia se decide por secuencia/versionado y causalidad, no por el timestamp más reciente únicamente;
+11. el historial permite reconstruir qué worker, dispositivo, adaptador o principal técnico participó cuando aplique, sin convertir esa identidad en autoridad empresarial;
+12. cualquier materialización que use eventos de dominio, outbox o auditoría compartida preserva estas identidades y no fusiona hechos distintos por conveniencia.
+
+---
+
+#### 24. Handoff exacto a `QUEUE-ARC-011..012`
+
+| Tarea                                                                             | Responsabilidad reservada recibida desde esta tarea                                                                                                                                                                                               |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QUEUE-ARC-011 — Definir métricas de espera, ejecución y error`                   | medir tiempos y conteos derivados de `operation_status`, eventos, intentos, claims, retries, bloqueos, cancelaciones, conciliaciones, aislamiento, conflictos y terminalidad sin convertir telemetría en política de transición                   |
+| `QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos` | definir quién puede producir solicitudes o decisiones de control y qué eventos deben registrar dichas decisiones, sin convertir posesión de `operation_id`, claim, lease, fencing, dispositivo, token o credencial técnica en permiso empresarial |
+
+Ninguna de esas responsabilidades se desarrolla en esta tarea.
+
+---
+
+#### 25. Prohibiciones
+
+Esta tarea no autoriza:
+
+1. crear tablas, columnas, enums, índices, constraints, triggers, funciones, RPC, topics, colas, outbox o event stores;
+2. modificar Supabase, datos, RLS, grants, Realtime, Storage, cron, Edge Functions o secretos;
+3. modificar ANIMA, NEXO, PASS ni otro repositorio consumidor;
+4. activar `QAI-008`;
+5. retirar `QAI-004`;
+6. cambiar `priority_class`, `scheduled_at`, `deadline_at`, misfire o calendario;
+7. cambiar routing, capacidades o target técnico;
+8. cambiar perfiles de retry, `max_attempts`, backoff, jitter o `Retry-After`;
+9. modificar las resoluciones aprobadas de cancelación;
+10. modificar carriles, acciones o resoluciones aprobadas de recovery;
+11. cambiar `concurrency_key`, lease, fencing o reglas de compare-and-set;
+12. interpretar un estado de transporte como resultado empresarial;
+13. declarar éxito porque una cola quede vacía;
+14. declarar fallo terminal porque un intento falle una sola vez;
+15. declarar cancelación por cerrar un proceso o borrar un item local;
+16. reabrir una operación terminal mediante retry o recovery ordinario;
+17. editar o borrar eventos históricos para corregir el estado actual;
+18. guardar secretos, tokens o payloads sensibles completos dentro de eventos;
+19. fijar métricas, SLOs, umbrales, dashboards o alertas;
+20. conceder autoridad para crear, cancelar, reintentar, recuperar o forzar trabajos;
+21. declarar implementación, despliegue o adopción física de este contrato;
+22. iniciar o desarrollar `QUEUE-ARC-011`.
+
+---
+
+#### 26. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea especializa y unifica en un único ciclo durable obligaciones de estado, resultado recuperable, trazabilidad, no duplicidad, retry controlado, cancelación, resultado desconocido, conciliación, aislamiento, recovery y concurrencia que ya están registradas para la arquitectura asíncrona. La tarea no introduce una obligación verificable independiente ni modifica alcance, estado, responsable, evidencia, relación o secuencia de requisitos vigentes.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 27. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, que exige identidad estable, estado durable, resultado recuperable, retry controlado, claim seguro, bloqueo/versionado, conciliación, cola de fallos y recuperación manual y asigna responsabilidad explícita a `QUEUE-ARC-001` a `QUEUE-ARC-010`;
+- `TREQ-INTEGRATION-004`, que exige reconstruir causa, payload, principal técnico, recurso, intento, resultado, error y efecto final de cadenas trigger, función, job, webhook o notificación;
+- la cobertura vigente de ANIMA, PASS, NEXO, Supabase e integraciones relacionada con offline, concurrencia, idempotencia, webhooks, dispositivos, pagos, impresión y resultados ambiguos.
+
+Ninguna fila del registro canónico cambia de identificador, dominio, regla protegida, estado, responsable, evidencia, relación o secuencia por esta tarea.
+
+---
+
+#### 28. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `QUEUE-ARC-009` como tarea anterior aprobada;
+2. conserva `QUEUE-ARC-011` como única tarea siguiente reservada;
+3. establece `WORK-STATE-EVENT-CONTRACT-001@1.0.0` sin crear una fuente empresarial paralela;
+4. define exactamente 16 estados durables;
+5. conserva exactamente cuatro terminales: `succeeded`, `failed`, `cancelled`, `expired`;
+6. conserva `dead_letter`, `quarantined`, `result_unknown` y `reconciling` como no terminales cuando requieren resolución controlada;
+7. incluye los nueve estados mínimos del marcador: `queued`, `scheduled`, `assigned`, `processing`, `succeeded`, `retry_pending`, `failed`, `cancelled`, `expired`;
+8. incorpora `blocked`, `claimed`, `cancel_requested`, `result_unknown`, `reconciling`, `quarantined` y `dead_letter` sin crear significados incompatibles con `TSVC-CAT-006`;
+9. mapea explícitamente `RECEIVED`, `RESERVED`, `CLAIMED`, `EXECUTING`, `RETRY_SCHEDULED`, `SUCCEEDED` y `FAILED_TERMINAL` al modelo persistible;
+10. separa estado de trabajo de estado empresarial, transporte, UI, proveedor y resultado físico;
+11. define `status_version` monotónico y `status_event_id`;
+12. define `event_id`, `event_sequence`, `status_before`, `status_after`, `occurred_at` y `recorded_at`;
+13. define exactamente 33 tipos de evento canónicos;
+14. distingue eventos que cambian estado de eventos informativos que no lo cambian;
+15. impide aplicar dos transiciones desde la misma versión esperada sin conflicto explícito;
+16. prohíbe `last write wins` para estado canónico;
+17. representa programación, elegibilidad y misfire sin cambiar identidad de ocurrencia;
+18. representa assignment sin convertirlo en claim;
+19. representa claim adquirido y rechazado sin crear intentos espurios;
+20. representa renovación y pérdida de lease sin reiniciar identidad;
+21. representa fencing rechazado sin permitir al worker obsoleto cerrar;
+22. representa conflictos de versión sin sobrescribir el recurso más nuevo;
+23. representa duplicados suprimidos sin crear una segunda operación;
+24. representa inicio de procesamiento con `attempt_id` real;
+25. representa retry pendiente solo con presupuesto, `next_retry_at` y deadline compatibles;
+26. impide retry directo ante efecto ambiguo;
+27. mapea las siete resoluciones aprobadas de cancelación al state machine;
+28. impide equiparar `cancel_requested` con `cancelled`;
+29. representa `result_unknown` y `reconciling` como condiciones distintas de fallo;
+30. mapea las cinco condiciones de conciliación aprobadas sin inventar resultados;
+31. representa `quarantined` y `dead_letter` como aislamiento recuperable;
+32. mapea las ocho resoluciones de recovery sin abrir un ciclo paralelo de estados;
+33. impide que recovery ordinario reinicie una operación terminal;
+34. trata resultados tardíos mediante evento vinculado y conciliación sin sobrescribir terminalidad;
+35. conserva contenedores e hijos con estados y secuencias propias;
+36. materializa tres perfiles aplicables: 9 `SCHEDULED_WORK`, 4 `OFFLINE_OR_DEVICE_WORK` y 3 `EVENT_DRIVEN_WORK`;
+37. materializa exactamente una decisión para `QAI-001..QAI-019`;
+38. obtiene 16 `APLICA_ESTADOS_Y_EVENTOS`, 2 `PROPAGA_NO_DECIDE_ESTADO` y 1 `NO_APLICA`;
+39. mantiene 0 identidades faltantes y 0 duplicadas;
+40. mantiene `QAI-010` y `QAI-013` como propagadores técnicos sin ciclo empresarial propio;
+41. mantiene `QAI-016` como `NO_APLICA`;
+42. mantiene `QAI-008` como `PENDIENTE_DE_EVIDENCIA` sin activar su schedule;
+43. distingue `account_deletion_requests.status` de `operation_status`;
+44. reconcilia `pending`, `syncing`, `failed` y `conflict` de ANIMA sin declararlos equivalencias universales;
+45. impide que vaciar la cola NEXO signifique éxito físico;
+46. distingue `payments.webhook_events.processed` y estados de transacción del estado del trabajo Wompi;
+47. documenta la ausencia de state machine transversal acreditada para RevenueCat sin inventar un ID de proveedor;
+48. conserva las decisiones de idempotencia, scheduling, asignación, retry, cancelación, recovery y concurrencia ya aprobadas;
+49. reserva métricas para `QUEUE-ARC-011`;
+50. reserva autoridad y segregación para `QUEUE-ARC-012`;
+51. declara cero cambios de requisitos de prueba con justificación concreta;
+52. crea cero objetos físicos;
+53. modifica cero repositorios, Supabase, cron, colas, workers, dispositivos, adaptadores o webhooks;
+54. no inicia ni desarrolla `QUEUE-ARC-011`.
+
+---
+
+#### 29. Resultado de la tarea
+
+`QUEUE-ARC-010` deja establecido un único contrato de estado e historia para el trabajo asíncrono:
+
+```text
+RESERVA DE INTENCIÓN
+        ↓
+scheduled / queued
+        ↓
+assigned
+        ↓
+claimed
+        ↓
+processing
+        ├─→ succeeded
+        ├─→ retry_pending → queued / assigned
+        ├─→ cancel_requested → cancelled / resultado previo / result_unknown
+        ├─→ result_unknown → reconciling
+        ├─→ quarantined
+        ├─→ dead_letter
+        └─→ failed / expired cuando corresponda
+
+CADA CAMBIO DURABLE
+= STATUS_VERSION NUEVA
++ EVENTO INMUTABLE
++ CAUSA RECONSTRUIBLE
+
+ESTADO EMPRESARIAL
+≠ OPERATION_STATUS
+```
+
+Las 19 identidades inventariadas quedan reconciliadas una a una. El trabajo asíncrono obtiene una semántica de estado común sin apropiarse de estados empresariales ni de tecnologías concretas, y cada transición puede reconstruirse por identidad, versión, causa, intento, claim, control y resultado.
+
+---
+
+#### 30. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia`
+
+TAREA ACTUAL APROBADA
+
+`QUEUE-ARC-010 — Definir estados y eventos canónicos`
+
+SIGUIENTE TAREA RESERVADA
+
+`QUEUE-ARC-011 — Definir métricas de espera, ejecución y error`
+
+
 ### [ ] QUEUE-ARC-011 — Definir métricas de espera, ejecución y error
 ### [ ] QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos
 
