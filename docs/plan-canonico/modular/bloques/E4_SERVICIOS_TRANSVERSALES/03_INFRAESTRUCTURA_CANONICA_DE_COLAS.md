@@ -1791,7 +1791,577 @@ SIGUIENTE TAREA RESERVADA
 `QUEUE-ARC-004 — Definir prioridad, programación y vencimiento`
 
 
-### [ ] QUEUE-ARC-004 — Definir prioridad, programación y vencimiento
+### ✅ QUEUE-ARC-004 — Definir prioridad, programación y vencimiento
+
+**Estado:** APROBADA
+**Tarea anterior:** `QUEUE-ARC-003 — Definir clave de idempotencia por trabajo`
+**Tarea siguiente:** `QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador`
+**Tipo de tarea:** documental; especialización canónica de prioridad, elegibilidad temporal, programación, ocurrencias recurrentes, deadline, vencimiento y tratamiento de misfire para el trabajo asíncrono inventariado, con decisión explícita para las 19 identidades `QAI-*`, sin modificar schedules, colas, workers, webhooks, código, datos ni estado desplegado
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`
+**Línea base documental:** `vento-shell@abfe4611d79f0a96659814581af585b7ed0cb9cf`
+**Contrato base de trabajo:** `TSVC-SVC-001.CONTRACT@1.0.0`
+**Contrato base de programación:** `TSVC-SVC-009.CONTRACT@1.0.0`
+**Registro de confiabilidad consumido:** `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`
+**Contrato de idempotencia consumido:** `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`
+**Inventario consumido:** `QUEUE-CURRENT-ASSET-INVENTORY-001` — 19 identidades `QAI-*`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada cuándo un trabajo aplicable puede empezar a competir por ejecución, con qué prioridad relativa, cuándo representa una ocurrencia programada, hasta qué instante puede iniciar una ejecución ordinaria y qué debe ocurrir cuando una ejecución prevista llega tarde.
+
+La regla raíz es:
+
+```text
+IDENTIDAD DE INTENCIÓN ESTABLE
+        +
+PROGRAMACIÓN EXPLÍCITA
+        +
+PRIORIDAD ACOTADA
+        +
+DEADLINE FINITO
+        +
+POLÍTICA DE MISFIRE CUANDO EXISTA SCHEDULE
+        ↓
+TRABAJO TEMPORALMENTE ELEGIBLE Y ORDENABLE
+```
+
+La prioridad no concede autorización, no cambia la intención, no crea otra clave idempotente y no puede romper causalidad, dependencia, versión, exclusión concurrente ni deadline.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se establece `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0` como especialización temporal de los contratos aprobados de trabajo asíncrono y programación recurrente.
+
+El resultado material fija:
+
+1. cuatro clases cerradas de prioridad de trabajo;
+2. los campos temporales mínimos para trabajo inmediato, diferido y recurrente;
+3. la diferencia entre definición de schedule, ocurrencia lógica, ejecución real, reintento y ejecución manual;
+4. una regla única de elegibilidad y ordenación que preserva causalidad y deadline;
+5. un deadline finito para toda intención de trabajo aplicable antes de su ejecución ordinaria;
+6. la prohibición de ampliar silenciosamente el deadline por espera, reconexión, retry o cambio de worker;
+7. dos políticas canónicas de misfire suficientes para las ocurrencias recurrentes inventariadas;
+8. la relación entre calendario empresarial, zona horaria declarada y `logical_fire_at_utc`;
+9. la semántica de vencimiento sin cerrar todavía estados ni eventos, responsabilidad de `QUEUE-ARC-010`;
+10. una decisión explícita para cada una de las 19 identidades `QAI-*`.
+
+Balance:
+
+| Métrica                                        | Resultado |
+| ---------------------------------------------- | --------: |
+| Identidades `QAI-*` esperadas                  |    **19** |
+| Identidades materializadas                     |    **19** |
+| `APLICA_POLITICA_TEMPORAL_DE_TRABAJO`          |    **16** |
+| `PROPAGA_NO_DECIDE_POLITICA_TEMPORAL`          |     **2** |
+| `NO_APLICA`                                    |     **1** |
+| Identificadores `QAI-*` duplicados             |     **0** |
+| Identidades sin decisión                       |     **0** |
+| Clases canónicas de prioridad                  |     **4** |
+| Políticas de misfire para schedules aplicables |     **2** |
+| Requisitos de prueba creados o modificados     |     **0** |
+| Objetos físicos creados o modificados          |     **0** |
+
+---
+
+#### 3. Herencia contractual obligatoria
+
+`WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0` no crea una fuente de verdad paralela ni sustituye contratos aprobados.
+
+Hereda obligatoriamente:
+
+- de `TSVC-SVC-001.CONTRACT@1.0.0`, `WORK_SUBMISSION`, `WORK_OUTCOME`, `WORK_ERROR`, `operation_id`, propiedad empresarial y versión contractual;
+- de `TSVC-SVC-009.CONTRACT@1.0.0`, la identidad separada de definición y ocurrencia programada, junto con calendario, zona horaria, vigencia y misfire;
+- de `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`, deadline, límites de edad, prioridad subordinada al orden causal, `logical_fire_at_utc`, tratamiento de resultado ambiguo y regla de que el deadline prevalece sobre el presupuesto de intentos;
+- de `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`, `idempotency_key`, `payload_fingerprint`, `operation_id` y `schedule_occurrence_id` estables durante la misma intención;
+- de `QUEUE-CURRENT-ASSET-INVENTORY-001`, las 19 identidades materiales y su clasificación actual.
+
+Esta tarea no redefine retry, backoff, claim, lease, fencing, estados, métricas ni autorización.
+
+---
+
+#### 4. Vocabulario temporal canónico
+
+| Campo / término          | Definición canónica                                                                                                                                                |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `priority_class`         | clase relativa de despacho entre trabajos temporalmente elegibles e independientes; no representa severidad empresarial ni autorización                            |
+| `created_at`             | instante de creación de la intención registrada; no se reescribe por espera ni retry                                                                               |
+| `scheduled_at`           | primer instante UTC en que una intención ordinaria puede ser considerada para ejecución; para trabajo inmediato coincide con su disponibilidad inicial             |
+| `deadline_at`            | instante UTC exclusivo a partir del cual no puede iniciarse un nuevo intento ordinario                                                                             |
+| `schedule_id`            | identidad estable de una definición programada; no es el ID del intento ni el job físico                                                                           |
+| `schedule_version`       | versión de una definición concreta de calendario, zona horaria, vigencia, misfire y política temporal                                                              |
+| `logical_fire_at_utc`    | instante UTC de la ocurrencia prevista; no cambia porque el worker se ejecute tarde                                                                                |
+| `schedule_occurrence_id` | identidad estable de la ocurrencia lógica definida por el contrato de idempotencia                                                                                 |
+| `schedule_timezone`      | zona horaria IANA declarada por la definición cuando el calendario se expresa en tiempo civil; nunca se infiere de un nombre, comentario o cron expression         |
+| `effective_from_at`      | inicio de vigencia de una definición de schedule                                                                                                                   |
+| `effective_until_at`     | fin de vigencia de una definición de schedule cuando exista                                                                                                        |
+| `misfire`                | condición en la que una ocurrencia no inició cuando debía y sigue pendiente de decisión temporal                                                                   |
+| `manual_occurrence`      | ejecución deliberadamente disparada fuera del calendario ordinario; es nueva ocurrencia salvo que sea recuperación explícita de una ocurrencia previa identificada |
+| `temporal_expiry`        | pérdida de elegibilidad para iniciar ejecución ordinaria por alcanzar `deadline_at`; el estado y evento exactos pertenecen a `QUEUE-ARC-010`                       |
+
+Todos los instantes persistidos o intercambiados por el contrato temporal se expresan en UTC. Una regla empresarial basada en tiempo civil conserva además la zona horaria IANA que permitió calcular el instante UTC.
+
+---
+
+#### 5. Clases canónicas de prioridad
+
+El vocabulario cerrado inicial es:
+
+| Clase            | Orden | Uso objetivo                                                                                                        |
+| ---------------- | ----: | ------------------------------------------------------------------------------------------------------------------- |
+| `P1_TIME_BOUND`  |     1 | trabajo cuyo valor o corrección depende directamente de una ventana operacional, estado vigente o vencimiento       |
+| `P2_STANDARD`    |     2 | trabajo empresarial ordinario que debe progresar de forma durable sin ser mantenimiento ni procesamiento de fondo   |
+| `P3_BACKGROUND`  |     3 | trabajo derivado o informativo que puede esperar mientras preserve su deadline y no bloquee un efecto prioritario   |
+| `P4_MAINTENANCE` |     4 | limpieza, purga, mantenimiento o reconciliación periódica cuya ejecución no representa interacción directa de actor |
+
+Reglas:
+
+1. un número menor representa mayor prioridad relativa;
+2. la prioridad solo ordena trabajos que ya son elegibles y compatibles entre sí;
+3. una prioridad mayor no puede ejecutar un trabajo antes de `scheduled_at`;
+4. una prioridad mayor no puede ejecutar un trabajo después de `deadline_at`;
+5. una prioridad mayor no puede saltar una dependencia, versión, causalidad u orden obligatorio;
+6. una prioridad mayor no concede permiso ni sustituye la autorización de `QUEUE-ARC-012`;
+7. cambiar la prioridad de una intención existente no cambia `idempotency_key`, `operation_id`, huella, payload ni propietario;
+8. cualquier cambio de prioridad después de la aceptación deberá ser reconstruible; el evento exacto pertenece a `QUEUE-ARC-010` y la autoridad para realizarlo a `QUEUE-ARC-012`;
+9. no existe promoción automática por antigüedad en esta versión del contrato; evitar starvation deberá resolverse respetando deadline y la política de selección, no reescribiendo silenciosamente la clase.
+
+---
+
+#### 6. Modos de programación
+
+Toda identidad aplicable se clasifica en uno de estos modos:
+
+| Modo              | Regla                                                                                                                                       |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `IMMEDIATE`       | `scheduled_at` coincide con el instante inicial de disponibilidad de la intención                                                           |
+| `DEFERRED`        | `scheduled_at` es un instante futuro explícito y anterior a `deadline_at`                                                                   |
+| `RECURRENT`       | una definición versionada produce ocurrencias con `logical_fire_at_utc`, `schedule_occurrence_id`, `scheduled_at` y `deadline_at`           |
+| `EVENT_DRIVEN`    | un evento fuente aceptado origina trabajo; `scheduled_at` se deriva de la aceptación salvo que el contrato propietario declare diferimiento |
+| `OFFLINE_DURABLE` | la intención se crea antes o durante pérdida de conectividad y conserva `scheduled_at` y `deadline_at` originales a través de reconexiones  |
+| `OS_BACKGROUND`   | un callback del sistema operativo puede originar trabajo, pero la demora del SO no amplía la vigencia de la intención                       |
+| `PROPAGATED`      | transporte o worker técnico recibe la política temporal del trabajo upstream y no genera otra                                               |
+| `NO_APLICA`       | el mecanismo no representa trabajo durable ni efecto empresarial dentro del alcance actual                                                  |
+
+Un retry no es un nuevo modo de programación de intención. Su `next_retry_at` y presupuesto pertenecen a `QUEUE-ARC-006` y siempre quedan subordinados al `deadline_at` definido aquí.
+
+---
+
+#### 7. Campos mínimos del sobre temporal
+
+Para las 16 identidades que aplican política temporal, el trabajo deberá poder conservar:
+
+```text
+operation_id
+idempotency_key
+priority_class
+created_at
+scheduled_at
+deadline_at
+```
+
+Cuando exista programación recurrente deberá conservar además:
+
+```text
+schedule_id
+schedule_version
+schedule_timezone
+logical_fire_at_utc
+schedule_occurrence_id
+misfire_policy
+```
+
+Reglas de obligatoriedad:
+
+1. `scheduled_at` y `deadline_at` son obligatorios para toda intención aplicable;
+2. `scheduled_at < deadline_at` debe cumplirse antes de aceptar programación ordinaria;
+3. `deadline_at` es finito y se calcula de forma determinista desde el contrato propietario, la vigencia del recurso o la regla de ocurrencia aplicable;
+4. si el recurso empresarial expira antes del deadline técnico propuesto, prevalece el instante empresarial más restrictivo;
+5. un retry, reconnect, reinicio, handoff, cambio de worker o espera de cola no amplía `deadline_at`;
+6. un `Retry-After` puede desplazar un intento solamente si el nuevo instante permanece antes de `deadline_at`;
+7. una acción de recuperación posterior al vencimiento no puede ocultarse extendiendo el deadline original; cualquier recuperación extraordinaria se gobierna por `QUEUE-ARC-008` y su autoridad por `QUEUE-ARC-012`;
+8. transportes y workers no crean otro deadline ni otra prioridad cuando reciben trabajo upstream.
+
+---
+
+#### 8. Regla canónica de elegibilidad y ordenación
+
+Un trabajo puede competir por ejecución ordinaria únicamente cuando:
+
+```text
+scheduled_at <= now_utc < deadline_at
+```
+
+y además no existe una restricción causal, de versión, dependencia, concurrencia o control que lo haga inelegible.
+
+Entre trabajos independientes y simultáneamente elegibles, la selección deberá respetar, en este orden:
+
+1. causalidad, dependencia, versión y orden obligatorio del recurso;
+2. `deadline_at` más próximo;
+3. `priority_class` de mayor prioridad;
+4. `scheduled_at` más antiguo;
+5. `created_at` más antiguo;
+6. `operation_id` como desempate estable, sin significado empresarial adicional.
+
+Consecuencias:
+
+- un trabajo `P1_TIME_BOUND` no rompe causalidad para adelantar uno dependiente;
+- un trabajo de prioridad inferior próximo a vencer puede preceder a otro con deadline posterior;
+- la hora de llegada aislada nunca sustituye dependencia, versión ni deadline;
+- esta regla define orden lógico de elegibilidad, no claim, locking ni exclusión física, responsabilidad de `QUEUE-ARC-009`.
+
+---
+
+#### 9. Programación recurrente y versión
+
+Una definición recurrente se identifica por:
+
+```text
+business_owner_application
++ schedule_id
++ schedule_version
+```
+
+Una ocurrencia se identifica por:
+
+```text
+business_owner_application
++ schedule_id
++ logical_fire_at_utc
++ contract_version
+```
+
+Reglas:
+
+1. `logical_fire_at_utc` representa la ocurrencia prevista y permanece igual si la ejecución comienza tarde;
+2. el cron expression, regla de calendario o mecanismo físico no es por sí solo la identidad de la ocurrencia;
+3. `schedule_timezone` es obligatoria cuando el calendario depende de tiempo civil;
+4. un nombre que contenga una ciudad o una hora no acredita por sí mismo la zona horaria;
+5. cambiar calendario, zona horaria, vigencia, misfire, prioridad por defecto o regla de deadline exige una nueva `schedule_version`; no se reescriben ocurrencias históricas;
+6. cambiar la semántica contractual incompatible de `SCHEDULE_DEFINITION` exige además el versionado aplicable de `TSVC-SVC-009.CONTRACT`;
+7. las expresiones actualmente observadas se conservan como evidencia del estado existente; esta tarea no las reinterpreta ni las modifica;
+8. una implementación posterior deberá materializar explícitamente zona horaria y versión antes de presentar una definición existente como conforme al contrato objetivo.
+
+---
+
+#### 10. Política canónica de misfire
+
+Para las ocurrencias recurrentes actuales se utilizan exactamente estas decisiones:
+
+| Política                   | Semántica                                                                                                                                                                                           |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RUN_ONCE_IF_STILL_VALID`  | la ocurrencia retrasada puede iniciar una sola vez mientras siga antes de su deadline y el recurso o contexto empresarial continúe siendo válido                                                    |
+| `COALESCE_TO_LATEST_VALID` | varias ocurrencias vencidas o no iniciadas no se ejecutan como una ráfaga; la última ocurrencia todavía válida representa la reanudación y las anteriores no generan efectos tardíos independientes |
+
+Reglas comunes:
+
+1. un misfire conserva la identidad de la ocurrencia que intenta recuperarse;
+2. un retry de esa ocurrencia conserva la misma identidad y se gobierna por `QUEUE-ARC-006`;
+3. si `now_utc >= deadline_at`, no se inicia un intento ordinario de la ocurrencia vencida;
+4. coalescer no fusiona claves idempotentes ni reescribe historia; solo determina qué ocurrencia sigue siendo elegible;
+5. una ocurrencia descartada por vigencia no implica que el hecho empresarial subyacente se considere resuelto;
+6. una consecuencia empresarial no resuelta deberá quedar disponible para la siguiente ocurrencia, conciliación o tarea propietaria según el contrato de dominio;
+7. la transición de estado y el evento exacto de misfire o vencimiento pertenecen a `QUEUE-ARC-010`.
+
+---
+
+#### 11. Ejecución manual frente a ocurrencia programada
+
+Una ejecución manual de un schedule puede representar dos casos distintos:
+
+```text
+RECUPERAR UNA OCURRENCIA EXISTENTE
+→ conservar schedule_occurrence_id
+→ conservar idempotency_key
+→ conservar logical_fire_at_utc
+
+CREAR UNA EJECUCIÓN ADICIONAL DELIBERADA
+→ nueva ocurrencia manual
+→ nueva clave idempotente
+→ correlación con schedule y motivo de origen
+```
+
+Nunca se genera una clave nueva para fingir que una ocurrencia vencida es la misma intención. La autorización para disparar una ejecución manual o recuperar trabajo pertenece a `QUEUE-ARC-012`; el tratamiento de recuperación fallida pertenece a `QUEUE-ARC-008`.
+
+---
+
+#### 12. Vencimiento
+
+`deadline_at` define la frontera temporal de ejecución ordinaria.
+
+Al alcanzarse el deadline:
+
+1. no comienza un nuevo intento ordinario;
+2. no se crea otra intención automáticamente;
+3. no se cambia la clave idempotente para eludir el vencimiento;
+4. no se amplía el deadline por ausencia de worker, falta de conectividad, throttling o indisponibilidad de dispositivo;
+5. un efecto externo o físico potencialmente producido pero no confirmado permanece sujeto a conciliación y no se clasifica como fallido solo por el reloj;
+6. un resultado que llega tarde no sobrescribe silenciosamente una decisión posterior del recurso;
+7. el estado y evento canónicos que representan vencimiento, resultado tardío o conciliación se cierran en `QUEUE-ARC-010`;
+8. las métricas de espera hasta deadline, lateness y expiración se cierran en `QUEUE-ARC-011`.
+
+El vencimiento del trabajo no elimina ni invalida por sí mismo la fuente empresarial que lo originó. Un mensaje, pago, solicitud, documento o registro puede seguir requiriendo conciliación bajo su propietaria.
+
+---
+
+#### 13. Matriz temporal materializada de las 19 identidades `QAI-*`
+
+| ID        | Clasificación                         | Prioridad objetivo | Modo              | Programación / ocurrencia                                                                 | Regla de deadline                                                                                                                       | Misfire / atraso                                                  | Estado y decisión documental                                                                                                                                                                         |
+| --------- | ------------------------------------- | ------------------ | ----------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QAI-001` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P1_TIME_BOUND`    | `RECURRENT`       | expresión observada `5 0 * * *`; cada fire lógico conserva identidad propia               | se deriva de la vigencia del día, turno o contexto de asistencia afectado; nunca se extiende por retry                                  | `RUN_ONCE_IF_STILL_VALID`                                         | `ESPECIFICADO`; no obtiene precedencia automática sobre `QAI-004`; cualquier solapamiento sobre el mismo recurso se resuelve en `QUEUE-ARC-009` y la transición legacy permanece bajo `TSVC-CAT-010` |
+| `QAI-002` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P1_TIME_BOUND`    | `RECURRENT`       | expresión observada `*/5 * * * *`; una ocurrencia representa el ciclo de evaluación       | la ocurrencia de barrido vence al llegar la siguiente ocurrencia lógica; trabajos hijos conservan su propio deadline                    | `COALESCE_TO_LATEST_VALID`                                        | `ESPECIFICADO`; cron, SQL, `pg_net` y Edge Function no pueden crear fechas o prioridades divergentes para la misma intención                                                                         |
+| `QAI-003` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P1_TIME_BOUND`    | `RECURRENT`       | expresión observada `10 5 * * *`; ocurrencia correctiva separada del cierre ordinario     | vigencia del turno o contexto stale que todavía pueda corregirse sin contradecir un cierre posterior                                    | `RUN_ONCE_IF_STILL_VALID`                                         | `ESPECIFICADO`; si el recurso ya fue cerrado o sustituido, la ocurrencia tardía no fuerza otro efecto                                                                                                |
+| `QAI-004` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P1_TIME_BOUND`    | `RECURRENT`       | expresión remota observada `59 4 * * *`; conserva identidad de schedule independiente     | misma frontera empresarial del cierre de asistencia que pretende ejecutar                                                               | `RUN_ONCE_IF_STILL_VALID`                                         | `ESPECIFICADO`; estar antes en el reloj o tener la misma prioridad no concede autoridad sobre `QAI-001`; exclusión y duplicidad quedan en `QUEUE-ARC-009`                                            |
+| `QAI-005` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P3_BACKGROUND`    | `RECURRENT`       | expresión observada `0 14 * * *`; cada ciclo de alertas es una ocurrencia                 | vigencia de la intención de notificación; una entrega tardía no puede superar el deadline de la comunicación                            | `RUN_ONCE_IF_STILL_VALID`                                         | `ESPECIFICADO`; `pg_net` propaga la política y no la redefine; la protección de credenciales conserva su tarea propietaria                                                                           |
+| `QAI-006` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P4_MAINTENANCE`   | `RECURRENT`       | expresión observada `17 * * * *`; barrido de limpieza por ocurrencia                      | la ocurrencia vence al llegar la siguiente; la expiración real de cada cotización sigue perteneciendo al recurso                        | `COALESCE_TO_LATEST_VALID`                                        | `ESPECIFICADO`; no se ejecuta una ráfaga de limpiezas históricas al recuperar capacidad                                                                                                              |
+| `QAI-007` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P1_TIME_BOUND`    | `RECURRENT`       | expresión observada `*/5 * * * *`; reconciliación periódica de checkouts                  | la ocurrencia vence al llegar la siguiente; el vencimiento del checkout continúa siendo la fuente empresarial                           | `COALESCE_TO_LATEST_VALID`                                        | `ESPECIFICADO`; perder una ocurrencia no convierte timeout ni pago ambiguo en fallo definitivo                                                                                                       |
+| `QAI-008` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P4_MAINTENANCE`   | `RECURRENT`       | expresión declarada `15 3 * * *`; contrato temporal definido aunque no esté activo remoto | la ocurrencia vence al llegar la siguiente; la edad de borradores sigue gobernada por la regla propietaria                              | `COALESCE_TO_LATEST_VALID`                                        | `PENDIENTE_DE_EVIDENCIA`; esta tarea no activa el job; despliegue, estado y evidencia continúan gobernados por `QUEUE-ARC-010`, `QUEUE-ARC-011` y la planificación de `DELIV-PKG-001`                |
+| `QAI-009` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P2_STANDARD`      | `RECURRENT`       | workflow observado `0 3 * * *` UTC y ejecución manual permitida                           | la ocurrencia batch vence al llegar la siguiente; las solicitudes pendientes permanecen en su fuente de verdad                          | `COALESCE_TO_LATEST_VALID`; manual adicional usa nueva ocurrencia | `ESPECIFICADO`; recuperar una ocurrencia conserva su identidad; una ejecución manual extra no se hace pasar por el schedule perdido                                                                  |
+| `QAI-010` | `PROPAGA_NO_DECIDE_POLITICA_TEMPORAL` | `UPSTREAM`         | `PROPAGATED`      | transporta la solicitud HTTP ya originada                                                 | conserva el deadline upstream; el request técnico de `pg_net` no crea otro                                                              | `NO_APLICA`                                                       | `ESPECIFICADO`; la cola administrada es transporte y no autoridad para prioridad, schedule o vencimiento                                                                                             |
+| `QAI-011` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P1_TIME_BOUND`    | `OFFLINE_DURABLE` | intención disponible desde su creación local; reconexión no cambia `scheduled_at`         | vigencia del contexto de asistencia, turno y versión capturada al originar la intención                                                 | `NO_APLICA`                                                       | `ESPECIFICADO`; una operación offline tardía no se vuelve válida por reconectar el dispositivo                                                                                                       |
+| `QAI-012` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P1_TIME_BOUND`    | `OFFLINE_DURABLE` | intención de descanso conserva programación original durante offline                      | vigencia del descanso, turno y contexto que originaron la intención                                                                     | `NO_APLICA`                                                       | `ESPECIFICADO`; la cola separada no amplía la ventana temporal ni cruza prioridad con asistencia                                                                                                     |
+| `QAI-013` | `PROPAGA_NO_DECIDE_POLITICA_TEMPORAL` | `UPSTREAM`         | `PROPAGATED`      | loop observado cada `15000 ms` solo busca pendientes                                      | no crea deadline; cada elemento conserva el suyo                                                                                        | `NO_APLICA`                                                       | `ESPECIFICADO`; el intervalo del worker no es `scheduled_at` del trabajo y el timing de retry se define en `QUEUE-ARC-006`                                                                           |
+| `QAI-014` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P1_TIME_BOUND`    | `OS_BACKGROUND`   | callback de ubicación puede originar trabajo al ser aceptado                              | vigencia de relación laboral, turno y evento lógico de salida; retraso del SO no la amplía                                              | `NO_APLICA`                                                       | `ESPECIFICADO`; una ubicación tardía no autoriza por sí sola un cierre fuera del contexto vigente                                                                                                    |
+| `QAI-015` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P2_STANDARD`      | `OFFLINE_DURABLE` | impresión queda disponible según intención y disponibilidad técnica                       | vigencia de documento o comanda, versión, propósito e identidad de copia autorizada                                                     | `NO_APLICA`                                                       | `ESPECIFICADO`; esperar BrowserPrint o dispositivo no amplía el deadline; efecto físico ambiguo exige conciliación y detalle posterior `PRINT-ARC-*`                                                 |
+| `QAI-016` | `NO_APLICA`                           | `NO_APLICA`        | `NO_APLICA`       | refresco de lectura cada `20 s`                                                           | `NO_APLICA`                                                                                                                             | `NO_APLICA`                                                       | `NO_APLICA`; continúa siendo refresco de UI sin trabajo durable ni efecto empresarial                                                                                                                |
+| `QAI-017` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P2_STANDARD`      | `EVENT_DRIVEN`    | la inserción fuente origina la intención de notificación                                  | vigencia contractual de la notificación; el mensaje fuente no vence por fallar su entrega                                               | `NO_APLICA`                                                       | `ESPECIFICADO`; trigger y `pg_net` no pueden redefinir prioridad ni deadline; detalle de entrega permanece bajo `NOTIFY-ARC-*`                                                                       |
+| `QAI-018` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P1_TIME_BOUND`    | `EVENT_DRIVEN`    | evento Wompi aceptado origina procesamiento inmediato salvo diferimiento contractual      | deadline del procesamiento automático derivado del contrato de integración; al agotarse, el evento pasa a conciliación y no se descarta | `NO_APLICA`                                                       | `ESPECIFICADO`; un evento tardío o resultado incierto conserva trazabilidad y no crea una venta ni un segundo efecto                                                                                 |
+| `QAI-019` | `APLICA_POLITICA_TEMPORAL_DE_TRABAJO` | `P1_TIME_BOUND`    | `EVENT_DRIVEN`    | evento RevenueCat aceptado origina procesamiento inmediato salvo diferimiento contractual | deadline del procesamiento automático derivado del contrato de integración; al agotarse, la fuente queda conciliable                    | `NO_APLICA`                                                       | `ESPECIFICADO`; la política temporal no oculta ni corrige la brecha de replay ya identificada y no afirma cumplimiento end-to-end                                                                    |
+
+Resultado de reconciliación:
+
+```text
+19 IDENTIDADES ESPERADAS
+19 IDENTIDADES MATERIALIZADAS
+16 APLICAN POLÍTICA TEMPORAL DE TRABAJO
+2 PROPAGAN Y NO DECIDEN POLÍTICA TEMPORAL
+1 NO APLICA
+0 FALTANTES
+0 DUPLICADOS
+
+DISTRIBUCIÓN DE PRIORIDAD ENTRE LAS 16 APLICABLES
+P1_TIME_BOUND  = 10
+P2_STANDARD    = 3
+P3_BACKGROUND  = 1
+P4_MAINTENANCE = 2
+```
+
+---
+
+#### 14. Reconciliación de schedules actuales
+
+El inventario aprobado conserva nueve mecanismos con programación recurrente explícita dentro del universo materializado: ocho identidades de schedule `QAI-001..QAI-008` provenientes de la unión código/remoto y el workflow `QAI-009`.
+
+Esta tarea fija:
+
+1. las siete identidades `pg_cron` observadas activas conservan sus expresiones actuales como evidencia, no como aprobación de una nueva configuración;
+2. `QAI-008` conserva su expresión declarada y su ausencia remota; la especificación temporal no acredita despliegue;
+3. `QAI-009` conserva el schedule fuente `0 3 * * *` UTC y la posibilidad de ejecución manual observada;
+4. ninguna expresión actual se modifica, normaliza o reinterpreta;
+5. una futura adopción deberá declarar explícitamente `schedule_timezone`, `schedule_version`, prioridad por defecto, regla de deadline y misfire antes de presentarse como conforme;
+6. la falta de zona horaria explícita en un mecanismo actual es una brecha de materialización del contrato, no una licencia para inferir UTC o una zona local desde el nombre;
+7. la planificación de implementación y transición de estas brechas se recibe en `DELIV-PKG-001`; los estados y eventos observables de adopción permanecen vinculados a `QUEUE-ARC-010` y sus métricas a `QUEUE-ARC-011`.
+
+---
+
+#### 15. Solapamiento `QAI-001` / `QAI-004`
+
+Los dos schedules que invocan el cierre diario base mantienen:
+
+```text
+DOS DEFINICIONES
+DOS OCURRENCIAS
+DOS IDENTIDADES IDEMPOTENTES
+MISMA PRIORIDAD TEMPORAL OBJETIVO
+```
+
+Esta tarea prohíbe resolver la doble autoridad mediante una prioridad artificial.
+
+Reglas:
+
+1. ninguno adquiere autoridad por ejecutarse primero en el reloj;
+2. ninguno se fusiona con el otro por usar la misma función;
+3. cada ocurrencia conserva su propio deadline y misfire;
+4. si ambos resultan elegibles sobre el mismo recurso, la exclusión semántica y concurrente se resuelve en `QUEUE-ARC-009`;
+5. la decisión de coexistencia o retiro legacy permanece bajo `TSVC-CAT-010`;
+6. esta tarea no retira, desactiva ni cambia horario a ninguno.
+
+---
+
+#### 16. Relación con idempotencia
+
+Prioridad y tiempo pertenecen a la proyección operativa y no cambian la identidad original.
+
+Por tanto:
+
+- cambiar `priority_class` no crea otra `idempotency_key`;
+- esperar hasta `scheduled_at` no cambia `operation_id`;
+- un misfire recuperable conserva `schedule_occurrence_id`;
+- un retry conserva deadline y clave;
+- alcanzar el deadline no autoriza una clave nueva;
+- una ejecución manual adicional sí representa una intención distinta y usa nueva identidad;
+- una ejecución manual que recupera exactamente una ocurrencia previa conserva la identidad de esa ocurrencia.
+
+---
+
+#### 17. Handoff exacto a `QUEUE-ARC-005..012`
+
+| Tarea                                                                             | Responsabilidad reservada recibida desde esta tarea                                                                                                                       |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador`        | seleccionar destino técnico sin alterar `priority_class`, `scheduled_at` ni `deadline_at` de la intención                                                                 |
+| `QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo`                     | calcular `next_retry_at` y presupuesto únicamente dentro de la ventana anterior a `deadline_at`                                                                           |
+| `QUEUE-ARC-007 — Definir cancelación antes y durante ejecución`                   | cancelar trabajo temporalmente válido o en ejecución sin confundir cancelación con vencimiento                                                                            |
+| `QUEUE-ARC-008 — Definir cola de fallos y recuperación manual`                    | recuperar trabajo sin extender silenciosamente el deadline original y dejando explícita cualquier intervención extraordinaria                                             |
+| `QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia`                    | aplicar claim, lease, fencing y exclusión después de la selección temporal, preservando causalidad y resolviendo solapamientos como `QAI-001` / `QAI-004`                 |
+| `QUEUE-ARC-010 — Definir estados y eventos canónicos`                             | materializar los estados y eventos exactos de programación, misfire, inicio tardío, vencimiento y resultado posterior al deadline                                         |
+| `QUEUE-ARC-011 — Definir métricas de espera, ejecución y error`                   | medir queue wait, lateness, tiempo hasta deadline, misfires, vencimientos y distribución por prioridad                                                                    |
+| `QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos` | definir quién puede programar, disparar manualmente, cambiar prioridad o autorizar recuperación sin convertir la posesión de una identidad técnica en permiso empresarial |
+
+Ninguna de esas responsabilidades se desarrolla en esta tarea.
+
+---
+
+#### 18. Prohibiciones
+
+Esta tarea no autoriza:
+
+1. modificar cron expressions existentes;
+2. activar `QAI-008`;
+3. desactivar o retirar `QAI-004`;
+4. cambiar GitHub Actions;
+5. crear schedulers, tablas, columnas, índices, constraints, funciones o triggers;
+6. modificar `pg_net`;
+7. cambiar colas SecureStore o localStorage;
+8. cambiar el intervalo del worker móvil;
+9. modificar TaskManager, BrowserPrint, webhooks o Edge Functions;
+10. cambiar perfiles de retry o backoff;
+11. asignar workers, dispositivos o adaptadores;
+12. definir claims, leases, fencing o locks;
+13. cerrar el vocabulario de estados o sus transiciones;
+14. fijar métricas, SLOs o alertas;
+15. conceder autoridad para cambiar prioridad, schedule o recuperación;
+16. inferir cumplimiento del contrato objetivo por observar un job activo;
+17. iniciar o desarrollar `QUEUE-ARC-005`.
+
+---
+
+#### 19. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea especializa y materializa para el inventario de colas reglas temporales ya protegidas por la cobertura transversal vigente: límite de edad, deadline, orden seguro, programación recurrente, ocurrencia lógica, misfire, prioridad subordinada a causalidad, resultado desconocido, conciliación y prohibición de efectos tardíos ordinarios. No introduce un comportamiento verificable adicional fuera de esas obligaciones ni modifica el alcance, estado, responsable o relación de requisitos existentes.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 20. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, que protege límites de intentos y edad, retry controlado, resultado desconocido, claim, conciliación, cola de fallos, recuperación y no duplicidad para operaciones asíncronas;
+- `TREQ-INTEGRATION-004`, que exige reconstruir trigger, función, job, webhook o notificación con causa, intento, resultado, error y efecto final;
+- la cobertura ya consumida por `TSVC-CAT-006` para deadline, orden causal, schedule, misfire, reintento y ejecución manual.
+
+Ninguna fila del registro canónico cambia de identificador, dominio, regla protegida, estado, responsable, evidencia, relación o secuencia por esta tarea.
+
+---
+
+#### 21. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `QUEUE-ARC-003` como tarea anterior aprobada;
+2. conserva `QUEUE-ARC-005` como única tarea siguiente reservada;
+3. consume `TSVC-SVC-001.CONTRACT@1.0.0` y `TSVC-SVC-009.CONTRACT@1.0.0` sin crear una fuente de verdad paralela;
+4. consume `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0` sin regenerar claves por cambios temporales;
+5. define exactamente cuatro clases de prioridad;
+6. define `scheduled_at` como frontera inicial de elegibilidad;
+7. define `deadline_at` como frontera exclusiva para iniciar intentos ordinarios;
+8. exige deadline finito para las 16 identidades aplicables;
+9. impide que retry, reconexión, espera o cambio de worker amplíen el deadline;
+10. mantiene `logical_fire_at_utc` estable aunque la ejecución real sea tardía;
+11. distingue `schedule_id`, `schedule_version`, `schedule_occurrence_id` e intento;
+12. exige zona horaria declarada cuando el calendario dependa de tiempo civil;
+13. prohíbe inferir zona horaria desde nombre o cron expression;
+14. define dos políticas de misfire y asigna una a cada schedule recurrente aplicable;
+15. distingue recuperación de una ocurrencia existente de una ejecución manual adicional;
+16. ordena trabajo elegible preservando primero causalidad, dependencia, versión y deadline;
+17. materializa exactamente una decisión para cada `QAI-001..QAI-019`;
+18. obtiene 16 `APLICA_POLITICA_TEMPORAL_DE_TRABAJO`, 2 `PROPAGA_NO_DECIDE_POLITICA_TEMPORAL` y 1 `NO_APLICA`;
+19. obtiene 10 `P1_TIME_BOUND`, 3 `P2_STANDARD`, 1 `P3_BACKGROUND` y 2 `P4_MAINTENANCE` entre las 16 identidades aplicables;
+20. mantiene 0 identidades faltantes y 0 duplicadas;
+21. conserva las siete expresiones `pg_cron` activas actuales sin modificarlas;
+22. conserva `QAI-008` como definido pero no acreditado remotamente;
+23. conserva `QAI-009` con schedule fuente UTC y ejecución manual diferenciada;
+24. no utiliza prioridad para resolver la doble autoridad `QAI-001` / `QAI-004`;
+25. mantiene `QAI-010` y `QAI-013` como propagadores, no originadores de política temporal;
+26. mantiene `QAI-016` como `NO_APLICA`;
+27. separa vencimiento de cancelación, error terminal y resultado ambiguo;
+28. asigna con exactitud las responsabilidades `QUEUE-ARC-005..012`;
+29. declara cero cambios de requisitos de prueba con justificación concreta;
+30. crea cero objetos físicos;
+31. modifica cero repositorios, Supabase, cron, colas, workers, webhooks o dispositivos;
+32. no inicia ni desarrolla `QUEUE-ARC-005`.
+
+---
+
+#### 22. Resultado de la tarea
+
+`QUEUE-ARC-004` deja establecido el contrato temporal del trabajo asíncrono de Vento OS:
+
+```text
+INTENCIÓN IDEMPOTENTE
+        ↓
+PRIORITY_CLASS
+        ↓
+SCHEDULED_AT
+        ↓
+ELEGIBILIDAD
+        ↓
+DEADLINE_AT
+        ↓
+EJECUCIÓN ORDINARIA SOLO DENTRO DE LA VENTANA
+
+SI ES RECURRENTE
+SCHEDULE VERSIONADO
+→ LOGICAL_FIRE_AT_UTC
+→ OCURRENCIA ESTABLE
+→ MISFIRE EXPLÍCITO
+→ SIN RÁFAGAS NI EFECTOS TARDÍOS POR INFERENCIA
+```
+
+Las 19 identidades inventariadas quedan reconciliadas una a una. La política temporal está completamente definida a nivel documental sin modificar la implementación actual ni anticipar asignación, retry, cancelación, recuperación, concurrencia, estados, métricas o autorización.
+
+---
+
+#### 23. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`QUEUE-ARC-003 — Definir clave de idempotencia por trabajo`
+
+TAREA ACTUAL APROBADA
+
+`QUEUE-ARC-004 — Definir prioridad, programación y vencimiento`
+
+SIGUIENTE TAREA RESERVADA
+
+`QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador`
+
+
 ### [ ] QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador
 ### [ ] QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo
 ### [ ] QUEUE-ARC-007 — Definir cancelación antes y durante ejecución

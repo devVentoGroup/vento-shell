@@ -5,25 +5,25 @@
   "sequence_id": "PHASE-02-E4-TRANSVERSE-SERVICES",
   "block_code": "BLOQUE E4",
   "block_title": "Servicios transversales",
-  "previous_task_id": "QUEUE-ARC-003",
+  "previous_task_id": "QUEUE-ARC-004",
   "latest_treq_task_id": "NEXO-UX-025",
   "handoff_task_id": "DELIV-PKG-001",
   "handoff_sequence_id": "PHASE-02-E5-IMPLEMENTATION-PLANNING",
   "segments": [
     {
       "prefix": "QUEUE-ARC",
-      "from": 4,
+      "from": 5,
       "to": 12
     }
   ],
   "block_progress": {
     "total_tasks": 62,
-    "approved_tasks": 53,
-    "pending_tasks": 9
+    "approved_tasks": 54,
+    "pending_tasks": 8
   },
   "route_progress": {
     "covered_tasks": 1594,
-    "pending_tasks": 792,
+    "pending_tasks": 791,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
     "active_stage": 7

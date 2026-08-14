@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **802** |
+| Tareas aprobadas | **803** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **792** |
+| Tareas no iniciadas | **791** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **50.31% (802/1594)** |
+| Porcentaje de completamiento | **50.38% (803/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **QUEUE-ARC-003 — Definir clave de idempotencia por trabajo** |
-| Tarea actual | **QUEUE-ARC-004 — Definir prioridad, programación y vencimiento** |
+| Última tarea aprobada | **QUEUE-ARC-004 — Definir prioridad, programación y vencimiento** |
+| Tarea actual | **QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador** |
+| Siguiente tarea | **QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo** |
 | Bloque actual | **BLOQUE E4 — Servicios transversales** |
-| Progreso del bloque | **BLOQUE E4: 53 de 62 aprobadas; QUEUE-ARC-004 pendiente** |
+| Progreso del bloque | **BLOQUE E4: 54 de 62 aprobadas; QUEUE-ARC-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `QUEUE-ARC-003` — Definir clave de idempotencia por trabajo |
-| Tarea actual | `QUEUE-ARC-004` — Definir prioridad, programación y vencimiento — **NO INICIADA** |
-| Siguiente tarea | `QUEUE-ARC-005` — Definir asignación a trabajador, dispositivo o adaptador |
+| Última aprobada | `QUEUE-ARC-004` — Definir prioridad, programación y vencimiento |
+| Tarea actual | `QUEUE-ARC-005` — Definir asignación a trabajador, dispositivo o adaptador — **NO INICIADA** |
+| Siguiente tarea | `QUEUE-ARC-006` — Definir reintentos, backoff y límite máximo |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E4: 53 DE 62 APROBADAS — ACTUAL QUEUE-ARC-004** |
+| CONTINUIDAD ACTIVA | **BLOQUE E4: 54 DE 62 APROBADAS — ACTUAL QUEUE-ARC-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-QUEUE-ARC-003 — Definir clave de idempotencia por trabajo
-        ↓
-TAREA ACTUAL
 QUEUE-ARC-004 — Definir prioridad, programación y vencimiento
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador
         ↓
+SIGUIENTE TAREA RESERVADA
+QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E4 — 53 de 62 tareas aprobadas
+BLOQUE E4 — 54 de 62 tareas aprobadas
 ```
