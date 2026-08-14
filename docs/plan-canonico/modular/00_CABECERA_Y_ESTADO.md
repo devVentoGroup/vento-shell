@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **811** |
+| Tareas aprobadas | **812** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **783** |
+| Tareas no iniciadas | **782** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **50.88% (811/1594)** |
+| Porcentaje de completamiento | **50.94% (812/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage** |
-| Tarea actual | **DELIV-PKG-001 — Crear identificador estable para cada paquete de implementación** |
+| Última tarea aprobada | **DELIV-PKG-001 — Crear identificador estable para cada paquete de implementación** |
+| Tarea actual | **DELIV-PKG-002 — Vincular el paquete con capability_id, process_id y gap_id** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DELIV-PKG-002 — Vincular el paquete con capability_id, process_id y gap_id** |
+| Siguiente tarea | **DELIV-PKG-003 — Definir aplicación, dominio y repositorio propietarios** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 0 de 68 aprobadas; DELIV-PKG-001 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 1 de 68 aprobadas; DELIV-PKG-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `EVID-ARC-010` — Definir contingencia ante indisponibilidad de Storage |
-| Tarea actual | `DELIV-PKG-001` — Crear identificador estable para cada paquete de implementación — **NO INICIADA** |
-| Siguiente tarea | `DELIV-PKG-002` — Vincular el paquete con capability_id, process_id y gap_id |
+| Última aprobada | `DELIV-PKG-001` — Crear identificador estable para cada paquete de implementación |
+| Tarea actual | `DELIV-PKG-002` — Vincular el paquete con capability_id, process_id y gap_id — **NO INICIADA** |
+| Siguiente tarea | `DELIV-PKG-003` — Definir aplicación, dominio y repositorio propietarios |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 0 DE 68 APROBADAS — ACTUAL DELIV-PKG-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 1 DE 68 APROBADAS — ACTUAL DELIV-PKG-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage
-        ↓
-TAREA ACTUAL
 DELIV-PKG-001 — Crear identificador estable para cada paquete de implementación
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DELIV-PKG-002 — Vincular el paquete con capability_id, process_id y gap_id
         ↓
+SIGUIENTE TAREA RESERVADA
+DELIV-PKG-003 — Definir aplicación, dominio y repositorio propietarios
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 0 de 68 tareas aprobadas
+BLOQUE E5 — 1 de 68 tareas aprobadas
 ```
