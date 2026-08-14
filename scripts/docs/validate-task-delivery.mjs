@@ -38,7 +38,7 @@ function parseArgs(argv) {
   const args = {
     contract: DEFAULT_CONTRACT,
     task: null,
-    registry: null,
+    registries: [],
     help: false,
   };
 
@@ -60,7 +60,12 @@ function parseArgs(argv) {
       fail(`Falta el valor de ${token}`);
     }
 
-    args[token.slice(2)] = value;
+    if (token === '--registry') {
+      args.registries.push(value);
+    } else {
+      args[token.slice(2)] = value;
+    }
+
     index += 1;
   }
 
@@ -70,17 +75,17 @@ function parseArgs(argv) {
 function printUsage() {
   console.log(`Uso:
   npm run docs:delivery:check
-  npm run docs:delivery:check -- --task <archivo-tarea.md> [--registry <archivo-04A-unico.md>]
+  npm run docs:delivery:check -- --task <archivo-tarea.md> [--registry <fragmento-04A.md> ...]
 
 Opciones:
   --contract <ruta>   Contrato de entrega. Predeterminado: ${DEFAULT_CONTRACT}
   --task <ruta>       Artefacto de tarea que se validará.
-  --registry <ruta>   Registro 04A entregado con nombre único.
+  --registry <ruta>   Fragmento 04A completo. Puede repetirse una vez por cada fragmento afectado.
   --help              Muestra esta ayuda.
 
 Sin --task se valida únicamente el contrato.
 Con --task se valida el formato completo de la entrega.
-Si la tarea genera o modifica TREQ, --registry es obligatorio.`);
+Si la tarea crea o modifica TREQ, deben proporcionarse los fragmentos 04A afectados con su nombre canónico exacto.`);
 }
 
 function isPlainObject(value) {
@@ -106,41 +111,27 @@ function validateContract(contract) {
     return ['El contrato debe ser un objeto JSON.'];
   }
 
-  if (!Number.isInteger(contract.schema_version) || contract.schema_version < 1) {
-    errors.push('schema_version debe ser un entero positivo.');
+  if (!Number.isInteger(contract.schema_version) || contract.schema_version < 2) {
+    errors.push('schema_version debe ser un entero mayor o igual que 2 para el modelo 04A modular.');
   }
 
   if (!isPlainObject(contract.task_artifact)) {
     errors.push('task_artifact debe ser un objeto.');
   } else {
-    requireString(
-      contract.task_artifact,
-      'filename',
-      'task_artifact',
-      errors
-    );
-
-    requireBoolean(
-      contract.task_artifact,
-      'exactly_one_task',
-      'task_artifact',
-      errors
-    );
-
+    requireString(contract.task_artifact, 'filename', 'task_artifact', errors);
+    requireBoolean(contract.task_artifact, 'exactly_one_task', 'task_artifact', errors);
     requireBoolean(
       contract.task_artifact,
       'allow_replacement_instructions_inside_file',
       'task_artifact',
       errors
     );
-
     requireBoolean(
       contract.task_artifact,
       'allow_chat_instructions_inside_file',
       'task_artifact',
       errors
     );
-
     requireBoolean(
       contract.task_artifact,
       'allow_global_summary_inside_file',
@@ -156,51 +147,60 @@ function validateContract(contract) {
     }
   }
 
-  if (!isPlainObject(contract.registry_artifact)) {
+  const registry = contract.registry_artifact;
+
+  if (!isPlainObject(registry)) {
     errors.push('registry_artifact debe ser un objeto.');
   } else {
-    requireString(
-      contract.registry_artifact,
-      'canonical_repository_filename',
-      'registry_artifact',
-      errors
-    );
+    for (const key of [
+      'source_model',
+      'manifest_repository_path',
+      'fragment_directory_repository_path',
+      'fragment_filename_pattern',
+      'header_fragment_filename',
+      'legacy_monolithic_filename',
+      'delivery_mode',
+      'delivery_filename_strategy',
+    ]) {
+      requireString(registry, key, 'registry_artifact', errors);
+    }
 
-    requireString(
-      contract.registry_artifact,
-      'delivery_filename',
-      'registry_artifact',
-      errors
-    );
+    for (const key of [
+      'allow_legacy_monolithic_delivery',
+      'replace_complete_fragment',
+      'deliver_unchanged_fragments',
+      'require_header_fragment_when_registry_changes',
+      'preserve_unaffected_fragments',
+      'validate_resulting_registry_as_complete',
+    ]) {
+      requireBoolean(registry, key, 'registry_artifact', errors);
+    }
 
-    requireBoolean(
-      contract.registry_artifact,
-      'delivery_filename_must_be_unique',
-      'registry_artifact',
-      errors
-    );
+    if (registry.source_model !== 'modular') {
+      errors.push('registry_artifact.source_model debe ser "modular".');
+    }
+    if (registry.delivery_mode !== 'affected_fragments_only') {
+      errors.push('registry_artifact.delivery_mode debe ser "affected_fragments_only".');
+    }
+    if (registry.delivery_filename_strategy !== 'exact_canonical_fragment_filename') {
+      errors.push(
+        'registry_artifact.delivery_filename_strategy debe ser "exact_canonical_fragment_filename".'
+      );
+    }
+    if (registry.allow_legacy_monolithic_delivery !== false) {
+      errors.push('registry_artifact.allow_legacy_monolithic_delivery debe permanecer en false.');
+    }
+    if (registry.replace_complete_fragment !== true) {
+      errors.push('registry_artifact.replace_complete_fragment debe permanecer en true.');
+    }
+    if (registry.preserve_unaffected_fragments !== true) {
+      errors.push('registry_artifact.preserve_unaffected_fragments debe permanecer en true.');
+    }
 
-    requireBoolean(
-      contract.registry_artifact,
-      'replace_complete_file',
-      'registry_artifact',
-      errors
-    );
-
-    const template = contract.registry_artifact.delivery_filename;
-
-    if (typeof template === 'string') {
-      for (const placeholder of [
-        '<TASK-ID>',
-        '<REVISION>',
-        '<TIMESTAMP>',
-      ]) {
-        if (!template.includes(placeholder)) {
-          errors.push(
-            `registry_artifact.delivery_filename debe contener ${placeholder}.`
-          );
-        }
-      }
+    try {
+      new RegExp(registry.fragment_filename_pattern, 'u');
+    } catch {
+      errors.push('registry_artifact.fragment_filename_pattern no es una expresión regular válida.');
     }
   }
 
@@ -230,7 +230,6 @@ function templateToRegex(template, placeholders) {
 
   for (const match of template.matchAll(markerRegex)) {
     source += escapeRegex(template.slice(cursor, match.index));
-
     const replacement = placeholders[match[0]];
 
     if (!replacement) {
@@ -269,28 +268,36 @@ function findLiteral(source, literal) {
     .includes(literal.toLocaleLowerCase('es'));
 }
 
+function addTreqRange(references, domain, fromRaw, toRaw) {
+  const from = Number(fromRaw);
+  const to = Number(toRaw);
+
+  if (!Number.isInteger(from) || !Number.isInteger(to) || to < from) {
+    return;
+  }
+
+  for (let number = from; number <= to; number += 1) {
+    references.add(`TREQ-${domain}-${String(number).padStart(3, '0')}`);
+  }
+}
+
 function expandTreqReferences(value) {
   const references = new Set();
   let withoutRanges = value;
 
-  const rangeRegex =
+  const explicitRange =
     /TREQ-([A-Z]+)-(\d{3,})`?\s+a\s+`?TREQ-\1-(\d{3,})/g;
 
-  for (const match of value.matchAll(rangeRegex)) {
-    const [, domain, fromRaw, toRaw] = match;
-    const from = Number(fromRaw);
-    const to = Number(toRaw);
+  for (const match of value.matchAll(explicitRange)) {
+    addTreqRange(references, match[1], match[2], match[3]);
+    withoutRanges = withoutRanges.replace(match[0], '');
+  }
 
-    if (!Number.isInteger(from) || !Number.isInteger(to) || to < from) {
-      continue;
-    }
+  const compactRange =
+    /TREQ-([A-Z]+)-(\d{3,})\.\.(\d{3,})/g;
 
-    for (let number = from; number <= to; number += 1) {
-      references.add(
-        `TREQ-${domain}-${String(number).padStart(3, '0')}`
-      );
-    }
-
+  for (const match of withoutRanges.matchAll(compactRange)) {
+    addTreqRange(references, match[1], match[2], match[3]);
     withoutRanges = withoutRanges.replace(match[0], '');
   }
 
@@ -307,7 +314,7 @@ function expandTreqReferences(value) {
 
 function extractRequirementsSection(source) {
   const headingPattern =
-    /^####(?:\s+\d+\.)?\s+Requisitos de prueba (?:derivados|generados|incorporados)\s*$/gmi;
+    /^####(?:\s+\d+\.)?\s+Requisitos de prueba (?:derivados|generados|incorporados|modificados|vinculados)\s*$/gmi;
 
   const matches = [...source.matchAll(headingPattern)];
 
@@ -326,6 +333,14 @@ function extractRequirementsSection(source) {
       ? afterHeading + nextHeadingOffset
       : source.length
   );
+}
+
+function extractDeclaredCount(section, label) {
+  if (!section) return 0;
+  const match = section.match(
+    new RegExp(`\\*\\*${escapeRegex(label)}:\\*\\*\\s+\\*{0,2}(\\d+)`, 'i')
+  );
+  return match ? Number(match[1]) : 0;
 }
 
 function validateTask({ taskPath, contract }) {
@@ -380,9 +395,7 @@ function validateTask({ taskPath, contract }) {
   }
 
   const approvedStates =
-    visibleSource.match(
-      /^\*\*Estado:\*\*\s+APROBADA\s*$/gmu
-    ) ?? [];
+    visibleSource.match(/^\*\*Estado:\*\*\s+APROBADA\s*$/gmu) ?? [];
 
   if (approvedStates.length !== 1) {
     errors.push(
@@ -419,13 +432,11 @@ function validateTask({ taskPath, contract }) {
     }
   }
 
-  if (
-    !contract.task_artifact
-      .allow_replacement_instructions_inside_file
-  ) {
+  if (!contract.task_artifact.allow_replacement_instructions_inside_file) {
     const replacementPatterns = [
       /marcador\s+exacto/i,
       /reemplazar\s+completamente\s+(?:el\s+)?(?:archivo\s+)?04A/i,
+      /fragmentos?\s+04A\s+que\s+deben\s+reemplazarse/i,
       /no\s+copiar[^\n]*filas/i,
       /instrucci[oó]n\s+de\s+reemplazo/i,
     ];
@@ -446,34 +457,42 @@ function validateTask({ taskPath, contract }) {
       ) ?? [];
 
     if (globalSummary.length > 0) {
-      errors.push(
-        'La tarea contiene un resumen global prohibido por el contrato.'
-      );
+      errors.push('La tarea contiene un resumen global prohibido por el contrato.');
     }
   }
 
   const requirementsSection = extractRequirementsSection(source);
-
   const declaresNoRequirements =
     /NO\s+GENERA\s+REQUISITOS\s+DE\s+PRUEBA/i.test(source);
 
   if (!requirementsSection && !declaresNoRequirements) {
     errors.push(
-      'La tarea debe incluir una sección de requisitos de prueba derivados/generados/incorporados o declarar NO GENERA REQUISITOS DE PRUEBA.'
+      'La tarea debe incluir una sección de requisitos de prueba derivados/generados/incorporados/modificados/vinculados o declarar NO GENERA REQUISITOS DE PRUEBA.'
     );
   }
 
-  const derivedTreqIds = requirementsSection
+  const registryTreqIds = requirementsSection
     ? expandTreqReferences(requirementsSection)
     : [];
 
+  const createdCount = extractDeclaredCount(
+    requirementsSection,
+    'Requisitos creados'
+  );
+  const modifiedCount = extractDeclaredCount(
+    requirementsSection,
+    'Requisitos modificados'
+  );
+
   if (
     requirementsSection
-    && derivedTreqIds.length === 0
+    && registryTreqIds.length === 0
+    && createdCount === 0
+    && modifiedCount === 0
     && !declaresNoRequirements
   ) {
     errors.push(
-      'La sección de requisitos de prueba no declara ningún TREQ ni la ausencia de requisitos.'
+      'La sección de requisitos de prueba no declara TREQ creados/modificados ni la ausencia de requisitos.'
     );
   }
 
@@ -481,155 +500,318 @@ function validateTask({ taskPath, contract }) {
     errors,
     source,
     taskId: headingTaskId ?? filenameTaskId,
-    derivedTreqIds,
-    requiresRegistry: derivedTreqIds.length > 0,
+    registryTreqIds,
+    requiresRegistry:
+      registryTreqIds.length > 0 || createdCount > 0 || modifiedCount > 0,
   };
 }
 
-function isValidTimestamp(value) {
-  const match = value.match(
-    /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})$/
+function loadRegistryConfiguration({ root, contract }) {
+  const registry = contract.registry_artifact;
+  const manifestPath = path.resolve(root, registry.manifest_repository_path);
+  const fragmentDirectory = path.resolve(
+    root,
+    registry.fragment_directory_repository_path
   );
 
-  if (!match) {
-    return false;
+  const manifest = JSON.parse(readUtf8(manifestPath, 'Manifest canónico'));
+  const modularRoot = path.dirname(manifestPath);
+  const pattern = new RegExp(registry.fragment_filename_pattern, 'u');
+  const fragments = new Map();
+
+  for (const relativePath of manifest.files ?? []) {
+    const absolutePath = path.resolve(modularRoot, relativePath);
+    if (path.dirname(absolutePath) !== fragmentDirectory) continue;
+
+    const basename = path.basename(absolutePath);
+    if (!pattern.test(basename)) continue;
+
+    fragments.set(basename, absolutePath);
   }
 
-  const [, year, month, day, hour, minute, second] =
-    match.map(Number);
+  if (fragments.size === 0) {
+    fail('Manifest canónico: no se encontraron fragmentos 04A modulares.');
+  }
 
-  const date = new Date(
-    Date.UTC(
-      year,
-      month - 1,
-      day,
-      hour,
-      minute,
-      second
-    )
-  );
+  if (!fragments.has(registry.header_fragment_filename)) {
+    fail(
+      `Manifest canónico: falta el fragmento de cabecera ${registry.header_fragment_filename}.`
+    );
+  }
 
-  return (
-    date.getUTCFullYear() === year
-    && date.getUTCMonth() === month - 1
-    && date.getUTCDate() === day
-    && date.getUTCHours() === hour
-    && date.getUTCMinutes() === minute
-    && date.getUTCSeconds() === second
-  );
+  return { fragments };
 }
 
-function validateRegistry({
-  registryPath,
+function expectedDomainFromFilename(fileName) {
+  const match = fileName.match(/^04A_\d{2}_([A-Z]+)\.md$/u);
+  return match?.[1] ?? null;
+}
+
+function validateFragmentShape({ fileName, source, contract, taskId }) {
+  const errors = [];
+  const registry = contract.registry_artifact;
+
+  if (fileName === registry.header_fragment_filename) {
+    const headings =
+      source.match(/^## REGISTRO CANÓNICO DE REQUISITOS DE PRUEBA\s*$/gmu) ?? [];
+
+    if (headings.length !== 1) {
+      errors.push(
+        `${fileName}: la cabecera 04A debe contener exactamente un encabezado principal canónico.`
+      );
+    }
+
+    const latestTaskMatch = source.match(
+      /^\|\s*Última tarea incorporada\s*\|\s*`?([^`|]+)`?\s*\|\s*$/mu
+    );
+    const latestTask = latestTaskMatch?.[1]?.trim() ?? null;
+
+    if (!latestTask) {
+      errors.push(`${fileName}: falta "Última tarea incorporada".`);
+    } else if (taskId && latestTask !== taskId) {
+      errors.push(
+        `${fileName}: declara como última tarea ${latestTask}, pero se esperaba ${taskId}.`
+      );
+    }
+
+    return errors;
+  }
+
+  if (/^04A_\d{2}_REGLAS_OBLIGATORIAS\.md$/u.test(fileName)) {
+    const headings =
+      source.match(/^### Reglas obligatorias\s*$/gmu) ?? [];
+    if (headings.length !== 1) {
+      errors.push(
+        `${fileName}: debe contener exactamente una sección "### Reglas obligatorias".`
+      );
+    }
+    return errors;
+  }
+
+  const domain = expectedDomainFromFilename(fileName);
+
+  if (!domain) {
+    errors.push(`${fileName}: no se pudo resolver el dominio del fragmento.`);
+    return errors;
+  }
+
+  const headings =
+    source.match(new RegExp(`^####\\s+${escapeRegex(domain)}\\s*$`, 'gmu')) ?? [];
+
+  if (headings.length !== 1) {
+    errors.push(
+      `${fileName}: debe contener exactamente el encabezado de dominio "#### ${domain}".`
+    );
+  }
+
+  if (!/^\|\s*ID\s*\|\s*Dominio\s*\|/mu.test(source)) {
+    errors.push(`${fileName}: falta la cabecera completa de la tabla TREQ.`);
+  }
+
+  return errors;
+}
+
+function rowIdOccurrences(source, treqId) {
+  const pattern = new RegExp(
+    `^\\|\\s*\\\`?${escapeRegex(treqId)}\\\`?\\s*\\|`,
+    'gmu'
+  );
+  return source.match(pattern)?.length ?? 0;
+}
+
+function parseAllRowIds(source) {
+  return [
+    ...source.matchAll(
+      /^\|\s*`?(TREQ-[A-Z]+-\d{3,})`?\s*\|/gmu
+    ),
+  ].map((match) => match[1]);
+}
+
+function validateProspectiveRegistry({
+  canonicalFragments,
+  deliveredSources,
   contract,
   taskId,
-  derivedTreqIds,
 }) {
   const errors = [];
-  const source = readUtf8(registryPath, 'Registro 04A');
-  const fileName = path.basename(registryPath);
+  const allIds = [];
+  let headerSource = null;
 
-  const canonicalName =
-    contract.registry_artifact.canonical_repository_filename;
+  for (const [fileName, canonicalPath] of canonicalFragments) {
+    const source = deliveredSources.get(fileName)
+      ?? readUtf8(canonicalPath, `Fragmento canónico ${fileName}`);
 
-  if (
-    contract.registry_artifact.delivery_filename_must_be_unique
-    && fileName === canonicalName
-  ) {
     errors.push(
-      `El registro entregado no puede usar el nombre canónico ${canonicalName}; debe usar un nombre único.`
+      ...validateFragmentShape({
+        fileName,
+        source,
+        contract,
+        taskId:
+          fileName === contract.registry_artifact.header_fragment_filename
+            ? taskId
+            : null,
+      })
+    );
+
+    if (fileName === contract.registry_artifact.header_fragment_filename) {
+      headerSource = source;
+    }
+
+    allIds.push(...parseAllRowIds(source));
+  }
+
+  const uniqueIds = new Set(allIds);
+
+  if (uniqueIds.size !== allIds.length) {
+    errors.push(
+      `Registro 04A resultante: existen ${allIds.length - uniqueIds.size} identificadores TREQ duplicados.`
     );
   }
 
-  const registryRegex = templateToRegex(
-    contract.registry_artifact.delivery_filename,
-    {
-      '<TASK-ID>': `(?<taskId>${TASK_ID_SOURCE})`,
-      '<REVISION>': '(?<revision>\\d{2,})',
-      '<TIMESTAMP>': '(?<timestamp>\\d{8}-\\d{6})',
-    }
+  const summaryMatch = headerSource?.match(
+    /^\|\s*Requisitos vigentes\s*\|\s*\**(\d+)\**\s*\|\s*$/mu
   );
 
-  const filenameMatch = fileName.match(registryRegex);
-
-  if (!filenameMatch) {
+  if (!summaryMatch) {
     errors.push(
-      `El nombre del registro no cumple registry_artifact.delivery_filename: ${fileName}`
+      'Registro 04A resultante: la cabecera no declara "Requisitos vigentes".'
     );
-  } else {
-    if (filenameMatch.groups?.taskId !== taskId) {
-      errors.push(
-        `El registro declara ${filenameMatch.groups?.taskId} en el nombre, pero la tarea es ${taskId}.`
-      );
-    }
+  } else if (Number(summaryMatch[1]) !== allIds.length) {
+    errors.push(
+      `Registro 04A resultante: la cabecera declara ${summaryMatch[1]} requisitos y las tablas contienen ${allIds.length}.`
+    );
+  }
 
-    if (Number(filenameMatch.groups?.revision) < 1) {
-      errors.push(
-        'La revisión del registro debe ser mayor o igual que 01.'
-      );
-    }
+  return errors;
+}
+
+function validateRegistryFragments({
+  registryPaths,
+  contract,
+  taskId,
+  registryTreqIds,
+}) {
+  const errors = [];
+  const root = process.cwd();
+  const { fragments } = loadRegistryConfiguration({ root, contract });
+  const deliveredSources = new Map();
+  const registry = contract.registry_artifact;
+
+  for (const registryPathRaw of registryPaths) {
+    const registryPath = path.resolve(registryPathRaw);
+    const fileName = path.basename(registryPath);
 
     if (
-      !isValidTimestamp(
-        filenameMatch.groups?.timestamp ?? ''
-      )
+      fileName === registry.legacy_monolithic_filename
+      && !registry.allow_legacy_monolithic_delivery
     ) {
       errors.push(
-        'El timestamp del registro no es válido; se requiere YYYYMMDD-HHMMSS.'
+        `${fileName}: el 04A monolítico legacy no es un artefacto de entrega permitido.`
       );
+      continue;
     }
-  }
 
-  const mainHeadings =
-    source.match(
-      /^## REGISTRO CANÓNICO DE REQUISITOS DE PRUEBA\s*$/gmu
-    ) ?? [];
-
-  if (mainHeadings.length !== 1) {
-    errors.push(
-      `El 04A debe contener exactamente un encabezado principal canónico; encontrados: ${mainHeadings.length}.`
-    );
-  }
-
-  const latestTaskMatch = source.match(
-    /^\|\s*Última tarea incorporada\s*\|\s*`?([^`|]+)`?\s*\|\s*$/mu
-  );
-
-  const latestTask =
-    latestTaskMatch?.[1]?.trim() ?? null;
-
-  if (!latestTask) {
-    errors.push(
-      'El 04A no declara "Última tarea incorporada" en el resumen vigente.'
-    );
-  } else if (latestTask !== taskId) {
-    errors.push(
-      `El 04A declara como última tarea ${latestTask}, pero se esperaba ${taskId}.`
-    );
-  }
-
-  for (const treqId of derivedTreqIds) {
-    const occurrences =
-      source.match(
-        new RegExp(`\\b${escapeRegex(treqId)}\\b`, 'g')
-      ) ?? [];
-
-    if (occurrences.length === 0) {
+    if (!fragments.has(fileName)) {
       errors.push(
-        `El 04A no contiene el requisito derivado ${treqId}.`
+        `${fileName}: no es un fragmento 04A canónico registrado en manifest.json.`
       );
+      continue;
+    }
+
+    if (deliveredSources.has(fileName)) {
+      errors.push(`${fileName}: fragmento 04A entregado más de una vez.`);
+      continue;
+    }
+
+    const source = readUtf8(registryPath, `Fragmento 04A ${fileName}`);
+    deliveredSources.set(fileName, source);
+
+    errors.push(
+      ...validateFragmentShape({ fileName, source, contract, taskId })
+    );
+
+    if (!registry.deliver_unchanged_fragments) {
+      const canonicalSource = readUtf8(
+        fragments.get(fileName),
+        `Fragmento canónico ${fileName}`
+      );
+
+      if (source === canonicalSource) {
+        errors.push(
+          `${fileName}: el fragmento entregado es idéntico al canónico y no debe incluirse como afectado.`
+        );
+      }
     }
   }
 
-  if (!contract.registry_artifact.replace_complete_file) {
+  if (
+    registry.require_header_fragment_when_registry_changes
+    && !deliveredSources.has(registry.header_fragment_filename)
+  ) {
     errors.push(
-      'registry_artifact.replace_complete_file debe permanecer en true.'
+      `Falta ${registry.header_fragment_filename}; toda creación o modificación TREQ debe actualizar la cabecera/resumen del registro.`
+    );
+  }
+
+  const domainsNeeded = new Map();
+
+  for (const treqId of registryTreqIds) {
+    const match = treqId.match(/^TREQ-([A-Z]+)-\d{3,}$/u);
+    if (!match) continue;
+    const domain = match[1];
+
+    const expectedFile = [...fragments.keys()].find(
+      (fileName) => expectedDomainFromFilename(fileName) === domain
+    );
+
+    if (!expectedFile) {
+      errors.push(
+        `${treqId}: no existe fragmento 04A canónico para el dominio ${domain}.`
+      );
+      continue;
+    }
+
+    if (!domainsNeeded.has(expectedFile)) {
+      domainsNeeded.set(expectedFile, []);
+    }
+    domainsNeeded.get(expectedFile).push(treqId);
+  }
+
+  for (const [expectedFile, treqIds] of domainsNeeded) {
+    const source = deliveredSources.get(expectedFile);
+
+    if (!source) {
+      errors.push(
+        `Falta el fragmento afectado ${expectedFile}; contiene ${treqIds.length} TREQ declarados por la tarea.`
+      );
+      continue;
+    }
+
+    for (const treqId of treqIds) {
+      const occurrences = rowIdOccurrences(source, treqId);
+
+      if (occurrences !== 1) {
+        errors.push(
+          `${expectedFile}: ${treqId} debe existir exactamente una vez como fila del registro; encontrado ${occurrences}.`
+        );
+      }
+    }
+  }
+
+  if (registry.validate_resulting_registry_as_complete) {
+    errors.push(
+      ...validateProspectiveRegistry({
+        canonicalFragments: fragments,
+        deliveredSources,
+        contract,
+        taskId,
+      })
     );
   }
 
   return {
     errors,
-    source,
+    deliveredSources,
   };
 }
 
@@ -642,10 +824,7 @@ function main() {
   }
 
   const contractPath = path.resolve(args.contract);
-  const contractSource = readUtf8(
-    contractPath,
-    'Contrato'
-  );
+  const contractSource = readUtf8(contractPath, 'Contrato');
 
   let contract;
 
@@ -654,9 +833,7 @@ function main() {
   } catch (error) {
     fail(
       `Contrato JSON inválido: ${
-        error instanceof Error
-          ? error.message
-          : String(error)
+        error instanceof Error ? error.message : String(error)
       }`
     );
   }
@@ -665,16 +842,14 @@ function main() {
 
   if (contractErrors.length > 0) {
     fail(
-      `Contrato de entrega inválido:\n- ${contractErrors.join(
-        '\n- '
-      )}`
+      `Contrato de entrega inválido:\n- ${contractErrors.join('\n- ')}`
     );
   }
 
   const contractHash = sha256(contractSource);
 
   console.log(
-    `OK: contrato de entrega; SHA-256 ${contractHash}.`
+    `OK: contrato de entrega modular; SHA-256 ${contractHash}.`
   );
 
   if (!args.task) {
@@ -685,7 +860,6 @@ function main() {
   }
 
   const taskPath = path.resolve(args.task);
-
   const taskResult = validateTask({
     taskPath,
     contract,
@@ -694,25 +868,23 @@ function main() {
   const errors = [...taskResult.errors];
 
   if (!taskResult.taskId) {
-    errors.push(
-      'No se pudo resolver el identificador de la tarea.'
-    );
+    errors.push('No se pudo resolver el identificador de la tarea.');
   }
 
-  if (taskResult.requiresRegistry && !args.registry) {
+  if (taskResult.requiresRegistry && args.registries.length === 0) {
     errors.push(
-      'La tarea genera o modifica TREQ; debe proporcionarse --registry con un nombre único.'
+      'La tarea crea o modifica TREQ; debe proporcionarse al menos un --registry por cada fragmento 04A afectado.'
     );
   }
 
   let registryResult = null;
 
-  if (args.registry && taskResult.taskId) {
-    registryResult = validateRegistry({
-      registryPath: path.resolve(args.registry),
+  if (args.registries.length > 0 && taskResult.taskId) {
+    registryResult = validateRegistryFragments({
+      registryPaths: args.registries,
       contract,
       taskId: taskResult.taskId,
-      derivedTreqIds: taskResult.derivedTreqIds,
+      registryTreqIds: taskResult.registryTreqIds,
     });
 
     errors.push(...registryResult.errors);
@@ -720,23 +892,23 @@ function main() {
 
   if (errors.length > 0) {
     fail(
-      `Entrega documental inválida:\n- ${errors.join(
-        '\n- '
-      )}`
+      `Entrega documental inválida:\n- ${errors.join('\n- ')}`
     );
   }
 
   console.log(
     `OK: tarea ${taskResult.taskId}; `
-      + `${taskResult.derivedTreqIds.length} TREQ derivados; `
+      + `${taskResult.registryTreqIds.length} TREQ declarados para actualización; `
       + `${sha256(taskResult.source)} SHA-256.`
   );
 
   if (registryResult) {
+    const files = [...registryResult.deliveredSources.entries()]
+      .map(([fileName, source]) => `${fileName}:${sha256(source)}`)
+      .join(', ');
+
     console.log(
-      `OK: registro 04A único; `
-        + `${path.basename(args.registry)}; `
-        + `${sha256(registryResult.source)} SHA-256.`
+      `OK: fragmentos 04A afectados: ${files}.`
     );
   }
 }
@@ -752,12 +924,9 @@ if (isCli) {
   } catch (error) {
     console.error(
       `ERROR: ${
-        error instanceof Error
-          ? error.message
-          : String(error)
+        error instanceof Error ? error.message : String(error)
       }`
     );
-
     process.exit(1);
   }
 }

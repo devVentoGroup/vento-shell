@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "task_artifact": {
     "filename": "<TASK-ID>_APROBADA_PARA_REEMPLAZAR.md",
     "exactly_one_task": true,
@@ -8,15 +8,26 @@
     "allow_global_summary_inside_file": false
   },
   "registry_artifact": {
-    "canonical_repository_filename": "04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md",
-    "delivery_filename": "04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA__ACTUALIZADO_HASTA_<TASK-ID>__R<REVISION>__<TIMESTAMP>.md",
-    "delivery_filename_must_be_unique": true,
-    "replace_complete_file": true
+    "source_model": "modular",
+    "manifest_repository_path": "docs/plan-canonico/modular/manifest.json",
+    "fragment_directory_repository_path": "docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO",
+    "fragment_filename_pattern": "^04A_\\d{2}_.+\\.md$",
+    "header_fragment_filename": "04A_00_CABECERA_Y_GOBIERNO_DEL_REGISTRO.md",
+    "legacy_monolithic_filename": "04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md",
+    "allow_legacy_monolithic_delivery": false,
+    "delivery_mode": "affected_fragments_only",
+    "delivery_filename_strategy": "exact_canonical_fragment_filename",
+    "replace_complete_fragment": true,
+    "deliver_unchanged_fragments": false,
+    "require_header_fragment_when_registry_changes": true,
+    "preserve_unaffected_fragments": true,
+    "validate_resulting_registry_as_complete": true
   },
   "chat_only_content": [
     "marcador exacto que debe reemplazarse",
     "instrucción de reemplazo",
-    "advertencia de reemplazar 04A completamente",
+    "lista exacta de fragmentos 04A afectados",
+    "advertencia de conservar intactos los fragmentos 04A no entregados",
     "validaciones ejecutadas",
     "validaciones pendientes",
     "enlaces de descarga"
@@ -27,6 +38,7 @@
     "Descargar",
     "Reemplazar completamente 04A",
     "copiar o combinar filas",
+    "lista exacta de fragmentos 04A afectados",
     "VALIDACIÓN REAL DEL REPOSITORIO PENDIENTE"
   ]
 }

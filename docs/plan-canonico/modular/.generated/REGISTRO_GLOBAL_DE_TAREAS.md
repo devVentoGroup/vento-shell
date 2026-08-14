@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **826** |
+| Aprobadas | **827** |
 | En propuesta | **0** |
-| No iniciadas | **768** |
+| No iniciadas | **767** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **51.82% (826/1594)** |
+| Porcentaje de completamiento | **51.88% (827/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DELIV-PKG-015` — Definir dependencias, bloqueos y orden de aplicación | ✅ APROBADA |
-| Tarea actual | `DELIV-PKG-016` — Vincular requisitos `TREQ-*` y definir pruebas unitarias, contractuales, de integración, seguridad y E2E | ⬜ NO INICIADA |
-| Siguiente reservada | `DELIV-PKG-017` — Definir observabilidad, métricas, logs, alertas y auditoría | ⬜ NO INICIADA |
+| Última aprobada | `DELIV-PKG-016` — Vincular requisitos `TREQ-*` y definir pruebas unitarias, contractuales, de integración, seguridad y E2E | ✅ APROBADA |
+| Tarea actual | `DELIV-PKG-017` — Definir observabilidad, métricas, logs, alertas y auditoría | ⬜ NO INICIADA |
+| Siguiente reservada | `DELIV-PKG-018` — Definir feature flags, configuración y activación progresiva | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -543,7 +543,7 @@
 | ✅ APROBADA | `DELIV-PKG-013` | Definir requisitos no funcionales aplicables | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-014` | Enumerar archivos exactos que se crearán, modificarán o retirarán | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-015` | Definir dependencias, bloqueos y orden de aplicación | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
-| ⬜ NO INICIADA | `DELIV-PKG-016` | Vincular requisitos `TREQ-*` y definir pruebas unitarias, contractuales, de integración, seguridad y E2E | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
+| ✅ APROBADA | `DELIV-PKG-016` | Vincular requisitos `TREQ-*` y definir pruebas unitarias, contractuales, de integración, seguridad y E2E | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-017` | Definir observabilidad, métricas, logs, alertas y auditoría | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-018` | Definir feature flags, configuración y activación progresiva | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-019` | Definir estrategia de despliegue y rollout | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
