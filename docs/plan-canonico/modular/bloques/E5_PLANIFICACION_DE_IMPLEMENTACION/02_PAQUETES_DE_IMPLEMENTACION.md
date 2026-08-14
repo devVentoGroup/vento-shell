@@ -7448,7 +7448,7 @@ SIGUIENTE TAREA RESERVADA
 
 **Estado:** APROBADA
 **Tarea anterior:** `DELIV-PKG-016 — Vincular requisitos TREQ-* y definir pruebas unitarias, contractuales, de integración, seguridad y E2E`
-**Tarea siguiente:** `DELIV-PKG-018 — Definir contratos de integración externa y rollout/rollback`
+**Tarea siguiente:** `DELIV-PKG-018 — Definir feature flags, configuración y activación progresiva`
 **Tipo de tarea:** documental — materialización del contrato de observabilidad por las 207 raíces `GAP-PKG-*`, con métricas, logs, correlación, alertas, auditoría, soporte y aceptación; sin instrumentación física, selección de proveedor, instalación de agentes, creación de infraestructura, despliegue ni ejecución operativa
 
 ---
@@ -7897,7 +7897,7 @@ TAREA ACTUAL APROBADA
 `DELIV-PKG-017 — Definir observabilidad, métricas, logs, alertas y auditoría`
 
 SIGUIENTE TAREA RESERVADA
-`DELIV-PKG-018 — Definir contratos de integración externa y rollout/rollback`
+`DELIV-PKG-018 — Definir feature flags, configuración y activación progresiva`
 
 
 ### [ ] DELIV-PKG-018 — Definir feature flags, configuración y activación progresiva
