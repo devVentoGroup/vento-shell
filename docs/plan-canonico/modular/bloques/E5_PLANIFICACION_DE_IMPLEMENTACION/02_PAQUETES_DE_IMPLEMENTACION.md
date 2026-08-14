@@ -3311,7 +3311,473 @@ SIGUIENTE TAREA RESERVADA
 `DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados`
 
 
-### [ ] DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados
+### ✅ DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados
+
+**Estado:** APROBADA
+**Tarea anterior:** `DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions`
+**Tarea siguiente:** `DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy`
+**Tipo de tarea:** documental — descomposición normativa y materialización completa del impacto de tablas, vistas, funciones PostgreSQL, políticas, Storage y Realtime para los 207 `package_id` vigentes
+
+---
+
+#### 1. Resultado canónico
+
+`DELIV-PKG-008` fija una decisión explícita de superficie de datos para cada una de las **207** raíces `GAP-PKG-001..207`, preservando las **820** brechas, el alcance aprobado y la descomposición runtime de `DELIV-PKG-007`.
+
+La tarea distingue impacto **directo**, **consumo**, **preservación**, **sin cambio directo**, **futuro no desplegado**, **bloqueado AURA** y **condicional EXT-GOV**. La ausencia de una identidad física paquete→objeto en las fuentes no se reemplaza con nombres inventados: los nombres reales siguen gobernados por E3 y por el estado remoto; esta matriz decide qué clase de superficie debe ser tratada por cada paquete y cuál no puede ampliarse por inferencia.
+
+No se autoriza DDL, DML, migraciones, backfills, cambios de RLS, creación o retiro de buckets, cambios de publicación Realtime ni despliegues. `DELIV-PKG-009` materializará migraciones, compatibilidad y retiro legacy; `DELIV-PKG-014` enumerará archivos físicos exactos.
+
+---
+
+#### 2. Fuentes y precedencia documental
+
+- `DELIV-PKG-001..007`, que fijan identidad, membresía, propiedad, AS-IS/TO-BE, alcance, UI y runtime por paquete;
+- el registro canónico de brechas E1, incluida la lista completa de tareas primarias por `package_id`; la tarea dominante se conserva solo como ancla resumida;
+- la arquitectura E3, en particular separación de propiedad relacional, funciones/RPC, `SECURITY DEFINER`, grants/RLS, Storage y Realtime;
+- el estado remoto de `vento-os-dev` obtenido en solo lectura para comprobar existencia actual de relaciones, funciones, políticas, buckets y publicación Realtime;
+- el bloqueo AURA y la activación condicional `ACTIVATE_WHEN_REQUIRED_EXTERNAL_FILE_EXISTS` de `EXT-GOV-001`;
+- el delta separado `VISO-SCHEDULE-MONTHLY-001`, que no pertenece al rango `GAP-PKG-*` y no se incorpora a ninguna de las 207 raíces.
+
+Precedencia obligatoria: una tarea primaria explícita de datos o Supabase gobierna sobre el perfil resumido. Un consumidor UI o de control no adquiere propiedad sobre un objeto por el solo hecho de leerlo o mostrarlo.
+
+---
+
+#### 3. Línea base remota vigente consumida
+
+| Superficie            | `public` | `pass` | `talento` | `club` | `app_private` | Total VENTO |
+| --------------------- | -------: | -----: | --------: | -----: | ------------: | ----------: |
+| tablas                |      185 |     26 |        13 |     11 |             1 |     **236** |
+| vistas                |       45 |      7 |         1 |      2 |             0 |      **55** |
+| vistas materializadas |        0 |      0 |         0 |      0 |             0 |       **0** |
+| tablas con RLS        |      185 |     26 |        13 |     11 |             0 |     **235** |
+| funciones PostgreSQL  |      247 |     30 |        16 |      7 |             1 |     **301** |
+
+Las **301** funciones excluyen el esquema `vital`, porque VITAL permanece separado de Vento OS y no forma parte de estos 207 paquetes. La función provisional `public.viso_enforce_monthly_schedule_publish_limit()` pertenece a `VISO-SCHEDULE-MONTHLY-001` y se mantiene fuera de esta matriz.
+
+Políticas actuales observadas: `public=500`, `pass=59`, `talento=26`, `club=19` y `storage=12`, para **616** políticas. La existencia de una política no demuestra autorización correcta ni justifica conservarla sin revisión.
+
+Buckets actuales observados (**14**): `anima-documentos`, `delivery-proof`, `employee-documents`, `general-images`, `labels`, `manuals`, `nexo-imports`, `nexo-labels`, `pass-assets`, `picking-packing-evidence`, `product-images`, `receiving-evidence`, `remission-evidence` y `website-media`.
+
+La publicación Realtime actual `supabase_realtime` contiene **una** tabla: `public.order_conversation_messages`. Su existencia es baseline AS-IS; no se convierte en evento empresarial ni se expande por inferencia.
+
+---
+
+#### 4. Contrato de impacto por superficie
+
+| Superficie | Regla canónica                                                                                                                                                                          |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| tablas     | una raíz `DIRECT` debe resolver el modelo relacional exigido por sus tareas primarias; `CONSUME` usa objetos existentes sin adquirir propiedad; `NONE` no autoriza cambios relacionales |
+| vistas     | solo `VIEW-DIRECT-001` autoriza tratar una vista como superficie directa del paquete; en los demás casos no se crea una vista para simplificar consultas                                |
+| funciones  | las funciones/RPC siguen E3; no se agrega función permanente a `public` por conveniencia y `SECURITY DEFINER` permanece excepcional                                                     |
+| políticas  | RLS, grants y exposición son controles separados; esta tarea marca la superficie afectada, mientras `DELIV-PKG-012` define actor, permiso, alcance y contrato de recurso                |
+| Storage    | el bucket transporta binarios; metadata empresarial, estados, permisos y trazabilidad viven en el modelo relacional                                                                     |
+| Realtime   | es transporte de sincronización de UI después del estado canónico; no sustituye evento empresarial, cola, comando privilegiado, contabilidad, inventario ni compensación                |
+
+---
+
+#### 5. Códigos de tablas
+
+- `TABLE-DIRECT-001`: la raíz tiene impacto relacional directo; debe conservar y materializar su modelo aprobado sin inventar nombres paquete-locales.
+- `TABLE-CONSUME-001`: consume objetos relacionales existentes o planificados por otras tareas primarias del mismo paquete; no cambia propiedad.
+- `TABLE-NONE-001`: no se demuestra cambio relacional directo en esta tarea.
+- `TABLE-FUTURE-001`: contrato relacional de TALENTO planificado, no desplegado.
+- `TABLE-AURA-001`: superficie relacional bloqueada hasta resolver repositorio y continuidad AURA.
+- `TABLE-EXT-001`: superficie condicional a la activación de `EXT-GOV-001`.
+
+---
+
+#### 6. Códigos de vistas
+
+- `VIEW-DIRECT-001`: las tareas primarias del paquete contienen una obligación explícita de transición/vista o auditoría de objetos que obliga a tratar vistas como superficie directa.
+- `VIEW-CONSUME-001`: la raíz UI puede consumir una vista existente; no autoriza crearla ni cambiar su semántica.
+- `VIEW-NO-DIRECT-001`: no existe obligación primaria suficiente para declarar cambio directo de vista.
+- `VIEW-AURA-001` y `VIEW-EXT-001`: bloqueos equivalentes a AURA y EXT-GOV.
+
+Paquetes con `VIEW-DIRECT-001`: `GAP-PKG-023`, `049`, `065`, `068`, `083`, `131`, `132`, `135`, `138`, `140` y `154`.
+
+---
+
+#### 7. Códigos de funciones y políticas
+
+- `FUNC-DIRECT-001`: la raíz tiene frontera de función/RPC o lógica de datos directa; la identidad física debe provenir de E3 o de la tarea primaria, nunca del `package_id`.
+- `FUNC-CONSUME-001`: consume función/RPC sin cambiar el contrato por inferencia.
+- `FUNC-NONE-001`: no se demuestra cambio directo de función.
+- `FUNC-FUTURE-001`, `FUNC-AURA-001`, `FUNC-EXT-001`: futuro o bloqueo equivalente.
+- `POLICY-DIRECT-001`: la raíz tiene impacto directo de autorización/datos y debe revisar RLS/grants aplicables.
+- `POLICY-PRESERVE-001`: la raíz de dominio/integración/contrato compartido debe preservar el envelope de autorización; no crea política nueva automáticamente.
+- `POLICY-CONSUME-001`: la UI consume el resultado autorizado y no define RLS desde cliente.
+- `POLICY-NONE-001`: no existe cambio directo de política demostrado.
+- `POLICY-FUTURE-001`, `POLICY-AURA-001`, `POLICY-EXT-001`: futuro o bloqueo equivalente.
+
+`DELIV-PKG-008` no aprueba `SECURITY DEFINER` para corregir errores de permisos. Las funciones privilegiadas deben conservar autenticación, autorización, `search_path`, grants y owner conforme a E3 y a la matriz de permisos de `DELIV-PKG-012`.
+
+---
+
+#### 8. Códigos de Storage
+
+- `STORAGE-DIRECT-001`: el conjunto primario contiene gobierno explícito de Storage; el paquete debe decidir sobre los buckets/objetos canónicos existentes sin crear buckets por nombre de paquete.
+- `STORAGE-EVIDENCE-001`: el paquete requiere evidencia documental/binaria; Storage puede ser transporte, mientras metadata y estado de evidencia siguen siendo relacionales.
+- `STORAGE-NONE-001`: no se demuestra impacto directo de Storage.
+- `STORAGE-AURA-001` y `STORAGE-EXT-001`: superficie bloqueada o condicional.
+
+Paquetes `STORAGE-DIRECT-001`: `GAP-PKG-004`, `060`, `082`, `083`, `150`, `154` y `176`. Paquetes `STORAGE-EVIDENCE-001`: `GAP-PKG-061`, `062` y `172`.
+
+---
+
+#### 9. Códigos de Realtime
+
+- `REALTIME-DIRECT-001`: el conjunto primario contiene gobierno explícito de Realtime; debe evaluar `REALTIME_ALLOWED`, `REALTIME_FORBIDDEN` o `REALTIME_COMPATIBILITY_ONLY` bajo E3.
+- `REALTIME-NONE-001`: no se demuestra necesidad de cambiar publicación o canal; queda prohibido agregar una tabla a Realtime solo para evitar refresh/polling.
+- `REALTIME-AURA-001` y `REALTIME-EXT-001`: superficie bloqueada o condicional.
+
+Paquetes `REALTIME-DIRECT-001`: `GAP-PKG-060` y `GAP-PKG-154`. El baseline de una única tabla publicada no se asigna automáticamente a ninguna otra raíz.
+
+---
+
+#### 10. Matriz materializada de las 207 decisiones de datos
+
+| `package_id`  | Ancla primaria   | `data_profile`                  | Tablas              | Vistas               | Funciones          | Políticas             | Storage                | Realtime              | `data_state`                 |
+| ------------- | ---------------- | ------------------------------- | ------------------- | -------------------- | ------------------ | --------------------- | ---------------------- | --------------------- | ---------------------------- |
+| `GAP-PKG-001` | `AUTH-DB-003`    | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-002` | `AUTH-DB-002`    | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-003` | `SUPA-AUD-015`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-004` | `AUTH-DB-002`    | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-DIRECT-001`   | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-005` | `INT-EXT-002`    | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-006` | `AURA-DOM-007`   | `AURA_DATA_BLOCKED`             | `TABLE-AURA-001`    | `VIEW-AURA-001`      | `FUNC-AURA-001`    | `POLICY-AURA-001`     | `STORAGE-AURA-001`     | `REALTIME-AURA-001`   | `BLOQUEADO`                  |
+| `GAP-PKG-007` | `PASS-INT-001`   | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-008` | `AURA-DOM-008`   | `AURA_DATA_BLOCKED`             | `TABLE-AURA-001`    | `VIEW-AURA-001`      | `FUNC-AURA-001`    | `POLICY-AURA-001`     | `STORAGE-AURA-001`     | `REALTIME-AURA-001`   | `BLOQUEADO`                  |
+| `GAP-PKG-009` | `INT-EXT-001`    | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-010` | `DATA-DOM-001`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-011` | `DATA-DOM-002`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-012` | `INFO-DOM-004`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-013` | `DATA-DOM-001`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-014` | `INFO-DOM-010`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-015` | `DATA-DOM-010`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-016` | `INFO-DOM-001`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-017` | `PASS-INT-001`   | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-018` | `SUPA-AUD-010`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-019` | `SUPA-AUD-016`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-020` | `INFO-INT-003`   | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-021` | `INFO-AUTH-001`  | `DATA_AUTHORIZATION_BOUNDARY`   | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-022` | `DATA-INT-003`   | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-023` | `DATA-DOM-017`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-DIRECT-001`    | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-024` | `NUMERA-DOM-003` | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-025` | `INT-DB-008`     | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-026` | `NUMERA-DOM-002` | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-027` | `EXT-GOV-001`    | `EXT_GOV_CONDITIONAL`           | `TABLE-EXT-001`     | `VIEW-EXT-001`       | `FUNC-EXT-001`     | `POLICY-EXT-001`      | `STORAGE-EXT-001`      | `REALTIME-EXT-001`    | `BLOQUEADO_CONDICIONAL`      |
+| `GAP-PKG-028` | `VISO-CORE-006`  | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-029` | `NEXO-DOM-001`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-030` | `SUPA-AUD-023`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-031` | `PROC-CAT-005`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-032` | `INT-WORK-002`   | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-033` | `SHELL-CON-016`  | `DATA_SHARED_CONTRACT`          | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-034` | `SHELL-CON-016`  | `DATA_SHARED_CONTRACT`          | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-035` | `SUPA-AUD-019`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-036` | `SUPA-AUD-019`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-037` | `NEXO-UX-009`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-038` | `SUPA-AUD-019`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-039` | `ORIGO-UX-014`   | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-040` | `FOGO-AUTH-010`  | `DATA_AUTHORIZATION_BOUNDARY`   | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-041` | `UX-QA-027`      | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-042` | `INT-MKT-002`    | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-043` | `PROC-CAT-009`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-044` | `PULSO-UX-009`   | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-045` | `SHELL-CON-002`  | `DATA_SHARED_CONTRACT`          | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-046` | `NEXO-DOM-029`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-047` | `INT-DB-008`     | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-048` | `PULSO-UX-020`   | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-049` | `SUPA-ARC-007`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-DIRECT-001`    | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-050` | `DATA-AUTH-003`  | `DATA_AUTHORIZATION_BOUNDARY`   | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-051` | `FOGO-AUTH-008`  | `DATA_AUTHORIZATION_BOUNDARY`   | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-052` | `INT-APP-008`    | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-053` | `CONT-DOM-003`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-054` | `NEXO-UX-037`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-055` | `SUPA-ARC-001`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-056` | `ANIMA-AUTH-015` | `DATA_AUTHORIZATION_BOUNDARY`   | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-057` | `AUTH-QA-029`    | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-058` | `AUTH-QA-029`    | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-059` | `AURA-INT-001`   | `AURA_DATA_BLOCKED`             | `TABLE-AURA-001`    | `VIEW-AURA-001`      | `FUNC-AURA-001`    | `POLICY-AURA-001`     | `STORAGE-AURA-001`     | `REALTIME-AURA-001`   | `BLOQUEADO`                  |
+| `GAP-PKG-060` | `INFO-AUTH-004`  | `DATA_AUTHORIZATION_BOUNDARY`   | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-DIRECT-001`   | `REALTIME-DIRECT-001` | `ESPECIFICADO`               |
+| `GAP-PKG-061` | `INFO-AUTH-002`  | `DATA_AUTHORIZATION_BOUNDARY`   | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-EVIDENCE-001` | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-062` | `AUTH-QA-026`    | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-EVIDENCE-001` | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-063` | `INT-WORK-001`   | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-064` | `CAP-TAL-003`    | `DATA_FUTURE_CONTRACT`          | `TABLE-FUTURE-001`  | `VIEW-NO-DIRECT-001` | `FUNC-FUTURE-001`  | `POLICY-FUTURE-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO_NO_DESPLEGADO` |
+| `GAP-PKG-065` | `SHELL-CI-016`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-DIRECT-001`    | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-066` | `ANIMA-AUTH-014` | `DATA_AUTHORIZATION_BOUNDARY`   | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-067` | `TI-DOM-001`     | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-068` | `SUPA-ARC-020`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-DIRECT-001`    | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-069` | `PULSO-UX-003`   | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-070` | `PASS-INT-001`   | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-071` | `UX-QA-019`      | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-072` | `TI-INT-003`     | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-073` | `SHELL-CI-007`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-074` | `SUPA-ARC-016`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-075` | `DATA-DOM-004`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-076` | `CONT-INT-001`   | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-077` | `PROC-CAT-009`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-078` | `AURA-DOM-007`   | `AURA_DATA_BLOCKED`             | `TABLE-AURA-001`    | `VIEW-AURA-001`      | `FUNC-AURA-001`    | `POLICY-AURA-001`     | `STORAGE-AURA-001`     | `REALTIME-AURA-001`   | `BLOQUEADO`                  |
+| `GAP-PKG-079` | `PASS-UX-006`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-080` | `AURA-DOM-001`   | `AURA_DATA_BLOCKED`             | `TABLE-AURA-001`    | `VIEW-AURA-001`      | `FUNC-AURA-001`    | `POLICY-AURA-001`     | `STORAGE-AURA-001`     | `REALTIME-AURA-001`   | `BLOQUEADO`                  |
+| `GAP-PKG-081` | `PASS-UX-012`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-082` | `SUPA-AUD-012`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-DIRECT-001`   | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-083` | `SUPA-TRANS-006` | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-DIRECT-001`    | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-DIRECT-001`   | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-084` | `SUPA-AUD-019`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-085` | `NUMERA-DOM-013` | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-086` | `NUMERA-DOM-005` | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-087` | `NUMERA-DOM-016` | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-088` | `NUMERA-DOM-016` | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-089` | `NUMERA-DOM-014` | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-090` | `NUMERA-DOM-005` | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-091` | `NEXO-UX-009`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-092` | `DATA-DOM-006`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-093` | `VISO-CORE-006`  | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-094` | `PROC-CAT-002`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-095` | `PROC-CAT-002`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-096` | `NEXO-UX-019`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-097` | `PROC-CAT-001`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-098` | `OPS-PRD-001`    | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-099` | `NEXO-DOM-029`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-100` | `FOGO-UX-009`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-101` | `NEXO-DOM-033`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-102` | `ORIGO-AUTH-004` | `DATA_AUTHORIZATION_BOUNDARY`   | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-103` | `CONT-DOM-013`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-104` | `NEXO-UX-037`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-105` | `FOGO-UX-012`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-106` | `SUPA-AUD-019`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-107` | `NEXO-DOM-008`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-108` | `SUPA-AUD-019`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-109` | `FOGO-UX-010`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-110` | `PULSO-UX-021`   | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-111` | `PULSO-UX-009`   | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-112` | `NEXO-UX-013`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-113` | `NEXO-UX-001`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-114` | `PULSO-UX-010`   | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-115` | `NEXO-DOM-029`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-116` | `NEXO-AUTH-031`  | `DATA_AUTHORIZATION_BOUNDARY`   | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-117` | `NEXO-DOM-003`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-118` | `AURA-DOM-006`   | `AURA_DATA_BLOCKED`             | `TABLE-AURA-001`    | `VIEW-AURA-001`      | `FUNC-AURA-001`    | `POLICY-AURA-001`     | `STORAGE-AURA-001`     | `REALTIME-AURA-001`   | `BLOQUEADO`                  |
+| `GAP-PKG-119` | `NFR-REQ-012`    | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-120` | `ORIGO-UX-001`   | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-121` | `INFO-DOM-003`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-122` | `NEXO-DOM-026`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-123` | `PULSO-UX-017`   | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-124` | `DATA-DOM-001`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-125` | `TI-INT-003`     | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-126` | `NEXO-DOM-026`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-127` | `ANIMA-UX-017`   | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-128` | `ANIMA-UX-017`   | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-129` | `ANIMA-UX-017`   | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-130` | `TI-DOM-001`     | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-131` | `PASS-UX-001`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-DIRECT-001`    | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-132` | `SHELL-APP-001`  | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-DIRECT-001`    | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-133` | `SUPA-TRANS-005` | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-134` | `SUPA-AUD-014`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-135` | `SUPA-TRANS-006` | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-DIRECT-001`    | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-136` | `PASS-UX-001`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-137` | `DATA-DOM-009`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-138` | `PASS-UX-001`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-DIRECT-001`    | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-139` | `SUPA-AUD-019`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-140` | `SHELL-AUD-011`  | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-DIRECT-001`    | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-141` | `INFO-DOM-001`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-142` | `DATA-DOM-001`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-143` | `CONT-DOM-011`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-144` | `AURA-DOM-007`   | `AURA_DATA_BLOCKED`             | `TABLE-AURA-001`    | `VIEW-AURA-001`      | `FUNC-AURA-001`    | `POLICY-AURA-001`     | `STORAGE-AURA-001`     | `REALTIME-AURA-001`   | `BLOQUEADO`                  |
+| `GAP-PKG-145` | `PASS-INT-001`   | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-146` | `PASS-UX-001`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-147` | `AURA-DOM-002`   | `AURA_DATA_BLOCKED`             | `TABLE-AURA-001`    | `VIEW-AURA-001`      | `FUNC-AURA-001`    | `POLICY-AURA-001`     | `STORAGE-AURA-001`     | `REALTIME-AURA-001`   | `BLOQUEADO`                  |
+| `GAP-PKG-148` | `AURA-DOM-003`   | `AURA_DATA_BLOCKED`             | `TABLE-AURA-001`    | `VIEW-AURA-001`      | `FUNC-AURA-001`    | `POLICY-AURA-001`     | `STORAGE-AURA-001`     | `REALTIME-AURA-001`   | `BLOQUEADO`                  |
+| `GAP-PKG-149` | `AURA-DOM-005`   | `AURA_DATA_BLOCKED`             | `TABLE-AURA-001`    | `VIEW-AURA-001`      | `FUNC-AURA-001`    | `POLICY-AURA-001`     | `STORAGE-AURA-001`     | `REALTIME-AURA-001`   | `BLOQUEADO`                  |
+| `GAP-PKG-150` | `SUPA-AUD-012`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-DIRECT-001`   | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-151` | `SUPA-AUD-014`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-152` | `PASS-INT-002`   | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-153` | `SUPA-ARC-004`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-154` | `DATA-DOM-001`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-DIRECT-001`    | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-DIRECT-001`   | `REALTIME-DIRECT-001` | `ESPECIFICADO`               |
+| `GAP-PKG-155` | `NUMERA-UX-014`  | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-156` | `NUMERA-DOM-009` | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-157` | `EXT-GOV-001`    | `EXT_GOV_CONDITIONAL`           | `TABLE-EXT-001`     | `VIEW-EXT-001`       | `FUNC-EXT-001`     | `POLICY-EXT-001`      | `STORAGE-EXT-001`      | `REALTIME-EXT-001`    | `BLOQUEADO_CONDICIONAL`      |
+| `GAP-PKG-158` | `CONT-DOM-004`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-159` | `PULSO-UX-008`   | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-160` | `CONT-DOM-010`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-161` | `FOGO-UX-001`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-162` | `CONT-DOM-006`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-163` | `NEXO-UX-012`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-164` | `NFR-REQ-010`    | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-165` | `NEXO-UX-037`    | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-166` | `CONT-DOM-005`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-167` | `PROC-CAT-002`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-168` | `PROC-CAT-018`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-169` | `CONT-DOM-001`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-170` | `CONT-DOM-008`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-171` | `PROC-CAT-002`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-172` | `EVID-ARC-001`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-EVIDENCE-001` | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-173` | `PROC-ACTOR-003` | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-174` | `VISO-AUTH-010`  | `DATA_AUTHORIZATION_BOUNDARY`   | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-175` | `INT-EXT-019`    | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-176` | `SUPA-AUD-012`   | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-DIRECT-001`   | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-177` | `ANIMA-UX-017`   | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-178` | `TI-DOM-001`     | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-179` | `SUPA-TRANS-013` | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-180` | `SUPA-TRANS-013` | `DATA_DATABASE_RPC`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-181` | `TI-DOM-009`     | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-182` | `TI-DOM-006`     | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-183` | `TI-DOM-007`     | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-184` | `TI-DOM-001`     | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-185` | `SHELL-CI-007`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-186` | `GAP-CTRL-007`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-187` | `AURA-INT-001`   | `AURA_DATA_BLOCKED`             | `TABLE-AURA-001`    | `VIEW-AURA-001`      | `FUNC-AURA-001`    | `POLICY-AURA-001`     | `STORAGE-AURA-001`     | `REALTIME-AURA-001`   | `BLOQUEADO`                  |
+| `GAP-PKG-188` | `AURA-INT-001`   | `AURA_DATA_BLOCKED`             | `TABLE-AURA-001`    | `VIEW-AURA-001`      | `FUNC-AURA-001`    | `POLICY-AURA-001`     | `STORAGE-AURA-001`     | `REALTIME-AURA-001`   | `BLOQUEADO`                  |
+| `GAP-PKG-189` | `AURA-AUTH-001`  | `AURA_DATA_BLOCKED`             | `TABLE-AURA-001`    | `VIEW-AURA-001`      | `FUNC-AURA-001`    | `POLICY-AURA-001`     | `STORAGE-AURA-001`     | `REALTIME-AURA-001`   | `BLOQUEADO`                  |
+| `GAP-PKG-190` | `DATA-DOM-001`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-191` | `PROC-CAT-002`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-192` | `AURA-AUD-010`   | `AURA_DATA_BLOCKED`             | `TABLE-AURA-001`    | `VIEW-AURA-001`      | `FUNC-AURA-001`    | `POLICY-AURA-001`     | `STORAGE-AURA-001`     | `REALTIME-AURA-001`   | `BLOQUEADO`                  |
+| `GAP-PKG-193` | `CONT-DOM-014`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-194` | `CONT-AUTH-004`  | `DATA_AUTHORIZATION_BOUNDARY`   | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-DIRECT-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-195` | `PROC-CAT-004`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-196` | `ANIMA-UX-001`   | `DATA_UI_CONSUMER`              | `TABLE-CONSUME-001` | `VIEW-CONSUME-001`   | `FUNC-CONSUME-001` | `POLICY-CONSUME-001`  | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-197` | `CAP-TAL-003`    | `DATA_FUTURE_CONTRACT`          | `TABLE-FUTURE-001`  | `VIEW-NO-DIRECT-001` | `FUNC-FUTURE-001`  | `POLICY-FUTURE-001`   | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO_NO_DESPLEGADO` |
+| `GAP-PKG-198` | `SHELL-AUD-010`  | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-199` | `NEXO-DOM-001`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-200` | `SHELL-CI-007`   | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-201` | `INFO-DOM-003`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-202` | `INFO-DOM-012`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-203` | `INFO-INT-003`   | `DATA_INTEGRATION_BOUNDARY`     | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-204` | `NEXO-DOM-001`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-205` | `DATA-DOM-012`   | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-206` | `NUMERA-DOM-018` | `DATA_DOMAIN_MODEL`             | `TABLE-DIRECT-001`  | `VIEW-NO-DIRECT-001` | `FUNC-DIRECT-001`  | `POLICY-PRESERVE-001` | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+| `GAP-PKG-207` | `SHELL-AUD-011`  | `DATA_CONTROL_NO_DIRECT_CHANGE` | `TABLE-NONE-001`    | `VIEW-NO-DIRECT-001` | `FUNC-NONE-001`    | `POLICY-NONE-001`     | `STORAGE-NONE-001`     | `REALTIME-NONE-001`   | `ESPECIFICADO`               |
+
+La matriz es una decisión por identidad. El `data_profile` hereda la descomposición runtime aprobada en `DELIV-PKG-007`, mientras las excepciones de vistas, Storage y Realtime se materializan únicamente cuando el conjunto de tareas primarias contiene una obligación E3 explícita. La ancla primaria no sustituye ese conjunto completo.
+
+---
+
+#### 11. Reconciliación cuantitativa
+
+| Control                                |          Resultado |
+| -------------------------------------- | -----------------: |
+| `package_id` esperados                 |            **207** |
+| `package_id` materializados            |            **207** |
+| rango                                  | `GAP-PKG-001..207` |
+| brechas incluidas preservadas          |            **820** |
+| tablas remotas VENTO en baseline       |            **236** |
+| vistas remotas VENTO en baseline       |             **55** |
+| funciones PostgreSQL VENTO en baseline |            **301** |
+| políticas observadas incl. Storage     |            **616** |
+| buckets Storage                        |             **14** |
+| tablas en publicación Realtime         |              **1** |
+| paquetes AURA bloqueados               |             **14** |
+| paquetes EXT-GOV condicionales         |              **2** |
+
+- **table:** `TABLE-AURA-001`=14; `TABLE-CONSUME-001`=38; `TABLE-DIRECT-001`=125; `TABLE-EXT-001`=2; `TABLE-FUTURE-001`=2; `TABLE-NONE-001`=26.
+- **view:** `VIEW-AURA-001`=14; `VIEW-CONSUME-001`=35; `VIEW-DIRECT-001`=11; `VIEW-EXT-001`=2; `VIEW-NO-DIRECT-001`=145.
+- **func:** `FUNC-AURA-001`=14; `FUNC-CONSUME-001`=38; `FUNC-DIRECT-001`=125; `FUNC-EXT-001`=2; `FUNC-FUTURE-001`=2; `FUNC-NONE-001`=26.
+- **policy:** `POLICY-AURA-001`=14; `POLICY-CONSUME-001`=38; `POLICY-DIRECT-001`=43; `POLICY-EXT-001`=2; `POLICY-FUTURE-001`=2; `POLICY-NONE-001`=26; `POLICY-PRESERVE-001`=82.
+- **storage:** `STORAGE-AURA-001`=14; `STORAGE-DIRECT-001`=7; `STORAGE-EVIDENCE-001`=3; `STORAGE-EXT-001`=2; `STORAGE-NONE-001`=181.
+- **realtime:** `REALTIME-AURA-001`=14; `REALTIME-DIRECT-001`=2; `REALTIME-EXT-001`=2; `REALTIME-NONE-001`=189.
+- **state:** `BLOQUEADO`=14; `BLOQUEADO_CONDICIONAL`=2; `ESPECIFICADO`=189; `ESPECIFICADO_NO_DESPLEGADO`=2.
+
+---
+
+#### 12. Tratamiento AURA
+
+Los **14** paquetes AURA conservan su necesidad de datos, pero quedan `BLOQUEADO` con códigos `*-AURA-001`. No se les asigna esquema, tabla, vista, función, política, bucket o canal Realtime por inferencia. La salida continúa gobernada por `AURA-AUD-001`, `AURA-AUD-010` y `AURA-AUD-012`.
+
+---
+
+#### 13. Tratamiento `EXT-GOV-001`
+
+`GAP-PKG-027` y `GAP-PKG-157` conservan su alcance y quedan `BLOQUEADO_CONDICIONAL`. Ningún objeto físico se materializa mientras no se active `EXT-GOV-001` mediante `ACTIVATE_WHEN_REQUIRED_EXTERNAL_FILE_EXISTS`. La falta de activación no elimina sus brechas ni las convierte en `NO_APLICA`.
+
+---
+
+#### 14. Delta VISO separado
+
+`public.viso_enforce_monthly_schedule_publish_limit()` y su trigger pertenecen al paquete reservado `VISO-SCHEDULE-MONTHLY-001`, cuyo estado continúa congelado pendiente de estabilización. Esa función no se incorpora a `GAP-PKG-001..207`, no altera sus conteos de membresía y no sirve para justificar una función nueva en otro paquete.
+
+---
+
+#### 15. Fronteras de responsabilidad
+
+`DELIV-PKG-008` **sí cierra**:
+- la decisión por los 207 paquetes sobre tablas, vistas, funciones, políticas, Storage y Realtime;
+- la distinción entre superficie directa, consumida, preservada, sin cambio directo, futura, bloqueada y condicional;
+- el baseline remoto verificable que deberá reconciliar la implementación posterior;
+- la prohibición de convertir Storage en fuente de verdad empresarial o Realtime en evento de negocio;
+- la exclusión explícita del delta `VISO-SCHEDULE-MONTHLY-001` de las 207 raíces.
+
+`DELIV-PKG-008` **no cierra**:
+- SQL de migración, backfill, compatibilidad o retiro legacy, reservado a `DELIV-PKG-009`;
+- eventos, productores, consumidores, colas y compensaciones, reservados a `DELIV-PKG-010`;
+- permisos concretos por actor/recurso/contexto, reservados a `DELIV-PKG-012`;
+- archivos físicos exactos, reservados a `DELIV-PKG-014`;
+- vinculación `TREQ-*` y pruebas por paquete, reservadas a `DELIV-PKG-016`;
+- DDL, DML, cambios remotos, despliegues o evidencia de ejecución.
+
+---
+
+#### 16. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea proyecta a los paquetes la arquitectura de datos y las obligaciones ya aprobadas, sin introducir una regla ejecutable nueva, cambiar semántica de autorización, crear objetos físicos ni modificar el estado de requisitos existentes. La vinculación formal de `TREQ-*` con cada paquete permanece reservada a `DELIV-PKG-016`.
+
+---
+
+#### 17. Criterios de aceptación
+
+- [x] existen exactamente **207** decisiones, una por `GAP-PKG-001..207`, sin faltantes ni duplicados;
+- [x] las **820** brechas permanecen incluidas en sus raíces;
+- [x] cada paquete declara disposición para tablas, vistas, funciones, políticas, Storage y Realtime;
+- [x] AURA conserva **14** bloqueos y EXT-GOV **2** condiciones sin objetos inventados;
+- [x] se conserva como baseline remoto **236 tablas**, **55 vistas**, **301 funciones PostgreSQL VENTO**, **616 políticas**, **14 buckets** y **1 tabla Realtime**;
+- [x] VITAL queda excluido de los conteos de Vento OS y `VISO-SCHEDULE-MONTHLY-001` permanece fuera de `GAP-PKG-*`;
+- [x] Storage se limita a objeto/binario y la metadata empresarial permanece relacional;
+- [x] Realtime se trata como transporte de sincronización y no como evento empresarial;
+- [x] ninguna función `SECURITY DEFINER`, política, grant, bucket o publicación se aprueba solo por existir;
+- [x] no se crean nombres de objetos por inferencia desde `package_id`, tarea dominante, repositorio o perfil;
+- [x] no se ejecuta DDL, DML, migración, backfill, cambio de RLS, Storage, Realtime ni despliegue;
+- [x] se generan **0** cambios `TREQ-*`.
+
+---
+
+#### 18. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions`
+
+TAREA ACTUAL APROBADA
+`DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados`
+
+SIGUIENTE TAREA RESERVADA
+`DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy`
+
+#### Alcance resumido canónico de las tareas reservadas
+
+Esta tabla restringe la interpretación del título sin modificar la identidad ni el encabezado canónico de cada tarea. El campo **Decide** expresa el resultado documental que debe quedar cerrado; **No decide ni ejecuta** impide adelantar trabajo de otra tarea; **Entrega a** identifica el consumidor mínimo de la decisión. Una descripción generada o un iniciador posterior no puede ampliar estos límites por inferencia.
+
+<!-- TASK-SCOPE-CONTRACT:START -->
+| Tarea | Decide | No decide ni ejecuta | Entrega a |
+| --- | --- | --- | --- |
+| `DELIV-PKG-009` | Plan de transición por paquete: migraciones y operaciones DDL/DML previstas, precondiciones, secuencia, backfills, compatibilidad temporal y retiro legacy. | Creación de archivos SQL, ejecución de DDL/DML, cambios remotos o redefinición de los objetos gobernados por `DELIV-PKG-008`. | `DELIV-PKG-014`, `DELIV-PKG-019`, `DELIV-PKG-020` e implementación física. |
+| `DELIV-PKG-010` | Catálogo por paquete de eventos, productores, consumidores, contratos, entrega, idempotencia, retry, colas, DLQ, compensación y conciliación. | Despliegue de brokers o colas, ejecución de consumidores o duplicación del estado de negocio como evento. | `DELIV-PKG-014..017` e implementación de integraciones. |
+| `DELIV-PKG-011` | Necesidades por paquete de impresión, notificaciones, documentos y evidencia, con canal, contenido, propietario, conservación y disparador. | Selección o contratación de proveedores, credenciales, envío real o despliegue de servicios. | `DELIV-PKG-014..017` y tareas de implementación propietarias. |
+| `DELIV-PKG-012` | Contrato de autorización por paquete: acción, actor, modalidad, alcance, contexto, recurso y frontera autoritativa de servidor. | Autorización confiada a la UI, implementación de permisos o RLS, ni roles inferidos sin fuente canónica. | `DELIV-PKG-014..016` y bloques de autorización e implementación. |
+| `DELIV-PKG-013` | Requisitos no funcionales aplicables por paquete, con umbral medible para seguridad, rendimiento, disponibilidad, operación offline, accesibilidad, privacidad, retención, compatibilidad y operación. | Listas genéricas sin umbral, ejecución de pruebas o certificación de cumplimiento. | `DELIV-PKG-016`, `DELIV-PKG-017`, `DELIV-PKG-019`, `DELIV-PKG-020` y `DELIV-PKG-023`. |
+| `DELIV-PKG-014` | Inventario exacto por paquete de repositorios, archivos y símbolos que se crearán, modificarán, reutilizarán o retirarán, con propietario y trazabilidad. | Edición física de código ni invención de rutas o archivos sin evidencia del repositorio. | `DELIV-PKG-015`, `DELIV-PKG-016` e implementación física. |
+| `DELIV-PKG-015` | Cierre consolidado de la arquitectura definida en `DELIV-PKG-006..014`: topología entre repositorios, módulos, archivos y símbolos, dependencias, SDK, frameworks, librerías, toolchain, versiones compatibles, bloqueos, precondiciones y orden de actualización. | Redefinición silenciosa de decisiones anteriores, instalación, actualización o despliegue físico, versiones flotantes ni adopción de “latest” sin verificar estabilidad y compatibilidad. | `DELIV-PKG-016..020`, `DELIV-PKG-025` e implementación física. |
+| `DELIV-PKG-016` | Matriz por paquete entre `TREQ-*`, niveles de prueba, archivos, comandos, fixtures, entornos, responsables y evidencia esperada. | Ejecución de pruebas ni cambio de estado a `IMPLEMENTADO` o `VALIDADO` por planificación documental. | Implementación del paquete, bloque de pruebas y certificación. |
+| `DELIV-PKG-017` | Contrato de observabilidad por paquete: logs, métricas, trazas, alertas, auditoría, umbrales, propietarios, conservación y datos prohibidos. | Instrumentación o dashboards físicos, configuración de proveedores, alertas productivas ni registro de secretos o datos sensibles. | `DELIV-PKG-018..023` e implementación operativa. |
+| `DELIV-PKG-018` | Feature flags y configuración por paquete: clave, propietario, entorno, valor predeterminado, prerrequisitos, activación, expiración y kill switch. | Secretos, activación real, cambio remoto de configuración o despliegue. | `DELIV-PKG-019`, `DELIV-PKG-020`, `DELIV-PKG-022` y `DELIV-PKG-025`. |
+| `DELIV-PKG-019` | Estrategia por paquete de artefactos, entornos, secuencia, cohortes, canary, pausas, promoción y evidencia de rollout. | Deploy, cutover, promoción o modificación real de entornos. | `DELIV-PKG-020`, gates de readiness, cutover y CI. |
+| `DELIV-PKG-020` | Rollback técnico, funcional y de datos por paquete, con disparadores, autoridad, objetivo, procedimiento, efectos irreversibles y conciliación. | Ejecución del rollback ni afirmación de que fue probado sin evidencia real. | Gates de readiness, cutover, hypercare e implementación. |
+| `DELIV-PKG-021` | Documentación, runbooks, procedimientos y capacitación requeridos por paquete, con audiencia, propietario, versión y criterio de actualización. | Ejecución de capacitación, publicación operativa ni certificación de preparación del soporte. | Gates de documentación, soporte, capacitación y `DELIV-PKG-023`. |
+| `DELIV-PKG-022` | Piloto por paquete: actores, sedes, datos, dispositivos, entorno, duración, cohortes, exclusiones y salvaguardas. | Ejecución del piloto ni ampliación a paquetes, actores o sedes no aprobados. | `DELIV-PKG-023`, cutover y validación del piloto. |
+| `DELIV-PKG-023` | Criterios medibles de aceptación y manifiesto de evidencia por paquete, con umbral, responsable, estados de resultado y tratamiento de defectos. | Certificación basada en evidencia planeada, incompleta o no ejecutada. | `DELIV-PKG-024`, `DELIV-PKG-025` y gates de cierre. |
+| `DELIV-PKG-024` | Trazabilidad completa del paquete hacia brechas, capacidades, procesos, tareas y `TREQ-*`, incluyendo cobertura y detección de huérfanos. | Reapertura, reasignación o creación silenciosa de brechas sin modificar primero su fuente canónica. | `DELIV-PKG-025` y gates de cierre de E5. |
+| `DELIV-PKG-025` | Decisión final por expediente para conservar, dividir, compartir con linaje, aprobar o bloquear el paquete después de revisar el dossier completo. | Implementación, despliegue, aprobación global por lote ni avance con decisiones o evidencia faltantes. | Gates finales de E5 y comienzo autorizado de implementación física. |
+<!-- TASK-SCOPE-CONTRACT:END -->
+
+
 ### [ ] DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy
 ### [ ] DELIV-PKG-010 — Definir eventos emitidos, consumidos, colas y compensaciones
 ### [ ] DELIV-PKG-011 — Definir impresión, notificaciones, documentos y evidencia requeridos

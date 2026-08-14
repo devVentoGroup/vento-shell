@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **818** |
+| Aprobadas | **819** |
 | En propuesta | **0** |
-| No iniciadas | **776** |
+| No iniciadas | **775** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **51.32% (818/1594)** |
+| Porcentaje de completamiento | **51.38% (819/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DELIV-PKG-007` — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions | ✅ APROBADA |
-| Tarea actual | `DELIV-PKG-008` — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados | ⬜ NO INICIADA |
-| Siguiente reservada | `DELIV-PKG-009` — Definir migraciones, backfills, compatibilidad y retiro legacy | ⬜ NO INICIADA |
+| Última aprobada | `DELIV-PKG-008` — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados | ✅ APROBADA |
+| Tarea actual | `DELIV-PKG-009` — Definir migraciones, backfills, compatibilidad y retiro legacy | ⬜ NO INICIADA |
+| Siguiente reservada | `DELIV-PKG-010` — Definir eventos emitidos, consumidos, colas y compensaciones | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -535,7 +535,7 @@
 | ✅ APROBADA | `DELIV-PKG-005` | Definir alcance incluido, excluido y diferido | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-006` | Definir pantallas, componentes y navegación que se crearán o modificarán | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-007` | Definir lógica de dominio, Server Actions, API, RPC y Edge Functions | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
-| ⬜ NO INICIADA | `DELIV-PKG-008` | Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
+| ✅ APROBADA | `DELIV-PKG-008` | Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-009` | Definir migraciones, backfills, compatibilidad y retiro legacy | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-010` | Definir eventos emitidos, consumidos, colas y compensaciones | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-011` | Definir impresión, notificaciones, documentos y evidencia requeridos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |

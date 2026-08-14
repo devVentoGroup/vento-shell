@@ -3,6 +3,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const TASK_REGEX = /^###\s+(?<marker>\[[ x~]\]|[✅🟡❌])\s+(?<id>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3})\b(?:\s+[—-]\s+(?<title>[^\n]+))?$/gmu;
+const TASK_ID_PATTERN = '[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\\d{3}';
+const SCOPE_START = '<!-- TASK-SCOPE-CONTRACT:START -->';
+const SCOPE_END = '<!-- TASK-SCOPE-CONTRACT:END -->';
 const OUTPUT = '.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md';
 
 function maskFencedCode(text) {
@@ -51,6 +54,53 @@ export function describePendingTask(title) {
   return `Completar ${subject.toLowerCase()}, definiendo el resultado material, sus límites, responsables, evidencia y criterios de cierre.`;
 }
 
+function countOccurrences(source, token) {
+  return source.split(token).length - 1;
+}
+
+export function parseTaskScopeContracts(source, relativePath = '(fuente desconocida)') {
+  const startCount = countOccurrences(source, SCOPE_START);
+  const endCount = countOccurrences(source, SCOPE_END);
+  if (startCount !== endCount) {
+    throw new Error(`Contrato de alcance sin cierre válido en ${relativePath}.`);
+  }
+
+  const contracts = new Map();
+  const blockPattern = new RegExp(`${SCOPE_START}([\\s\\S]*?)${SCOPE_END}`, 'gu');
+  const scopeRowStartPattern = new RegExp('^\\|\\s*`' + TASK_ID_PATTERN + '`', 'u');
+  const rowPattern = new RegExp(
+    '^\\|\\s*`(?<id>' + TASK_ID_PATTERN + ')`\\s*\\|\\s*(?<decides>[^|]+?)\\s*\\|\\s*(?<excludes>[^|]+?)\\s*\\|\\s*(?<handoff>[^|]+?)\\s*\\|\\s*$',
+    'u',
+  );
+
+  for (const block of source.matchAll(blockPattern)) {
+    let rows = 0;
+    for (const line of block[1].split('\n')) {
+      if (!scopeRowStartPattern.test(line)) continue;
+      const match = line.match(rowPattern);
+      if (!match?.groups) {
+        throw new Error(`Fila de alcance inválida en ${relativePath}: ${line.trim()}`);
+      }
+      const { id, decides, excludes, handoff } = match.groups;
+      if (contracts.has(id)) throw new Error(`Contrato de alcance duplicado para ${id}.`);
+      contracts.set(id, {
+        decides: decides.trim(),
+        excludes: excludes.trim(),
+        handoff: handoff.trim(),
+      });
+      rows += 1;
+    }
+    if (rows === 0) throw new Error(`Contrato de alcance vacío en ${relativePath}.`);
+  }
+
+  return contracts;
+}
+
+export function describeTaskScope(task) {
+  if (!task.scope) return describePendingTask(task.title);
+  return `Decide: ${task.scope.decides} No decide ni ejecuta: ${task.scope.excludes} Entrega a: ${task.scope.handoff}`;
+}
+
 function readCanonicalTasks(baseDir) {
   const manifest = JSON.parse(fs.readFileSync(path.join(baseDir, 'manifest.json'), 'utf8'));
   const tasks = [];
@@ -58,14 +108,22 @@ function readCanonicalTasks(baseDir) {
     const fullPath = path.join(baseDir, relativePath);
     if (!fs.existsSync(fullPath) || !fs.statSync(fullPath).isFile()) continue;
     const source = maskFencedCode(fs.readFileSync(fullPath, 'utf8').replace(/\r\n?/gu, '\n'));
+    const scopes = parseTaskScopeContracts(source, relativePath);
+    const fileTaskIds = new Set();
     for (const match of source.matchAll(TASK_REGEX)) {
       const state = stateFromMarker(match.groups?.marker ?? '');
+      fileTaskIds.add(match.groups.id);
       tasks.push({
         id: match.groups.id,
         title: (match.groups.title ?? '(sin título canónico)').trim(),
         state,
         relativePath,
+        scope: scopes.get(match.groups.id) ?? null,
       });
+    }
+    const orphanScopes = [...scopes.keys()].filter((id) => !fileTaskIds.has(id));
+    if (orphanScopes.length > 0) {
+      throw new Error(`Contratos de alcance sin tarea canónica en ${relativePath}: ${orphanScopes.join(', ')}.`);
     }
   }
   const ids = tasks.map(({ id }) => id);
@@ -227,12 +285,12 @@ function render(tasks, route, active) {
     '',
     '> Las etapas `ACTIVE` aparecen primero en su orden ejecutable. Las tareas de etapas `DEFERRED` permanecen incluidas al final y no se pierden, pero no bloquean la continuidad activa hasta que se resuelva su condición de activación.',
     '',
-    '| Pendiente # | Orden canónico | Etapa | Estado | Identificador | Título canónico | Resultado material esperado | Fragmento propietario |',
+    '| Pendiente # | Orden canónico | Etapa | Estado | Identificador | Título canónico | Alcance resumido | Fragmento propietario |',
     '| ---: | ---: | --- | --- | --- | --- | --- | --- |',
   ];
   for (const [pendingIndex, task] of tasks.entries()) {
     const esc = (value) => String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
-    lines.push(`| ${pendingIndex + 1} | ${task.canonicalOrder} | \`${task.sequenceId}\` | ${task.state} | \`${task.id}\` | ${esc(task.title)} | ${esc(describePendingTask(task.title))} | \`${esc(task.relativePath)}\` |`);
+    lines.push(`| ${pendingIndex + 1} | ${task.canonicalOrder} | \`${task.sequenceId}\` | ${task.state} | \`${task.id}\` | ${esc(task.title)} | ${esc(describeTaskScope(task))} | \`${esc(task.relativePath)}\` |`);
   }
   lines.push('');
   return lines.join('\n');

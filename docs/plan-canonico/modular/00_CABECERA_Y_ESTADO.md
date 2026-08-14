@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **818** |
+| Tareas aprobadas | **819** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **776** |
+| Tareas no iniciadas | **775** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **51.32% (818/1594)** |
+| Porcentaje de completamiento | **51.38% (819/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions** |
-| Tarea actual | **DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados** |
+| Última tarea aprobada | **DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados** |
+| Tarea actual | **DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy** |
+| Siguiente tarea | **DELIV-PKG-010 — Definir eventos emitidos, consumidos, colas y compensaciones** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 7 de 68 aprobadas; DELIV-PKG-008 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 8 de 68 aprobadas; DELIV-PKG-009 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DELIV-PKG-007` — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions |
-| Tarea actual | `DELIV-PKG-008` — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados — **NO INICIADA** |
-| Siguiente tarea | `DELIV-PKG-009` — Definir migraciones, backfills, compatibilidad y retiro legacy |
+| Última aprobada | `DELIV-PKG-008` — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados |
+| Tarea actual | `DELIV-PKG-009` — Definir migraciones, backfills, compatibilidad y retiro legacy — **NO INICIADA** |
+| Siguiente tarea | `DELIV-PKG-010` — Definir eventos emitidos, consumidos, colas y compensaciones |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 7 DE 68 APROBADAS — ACTUAL DELIV-PKG-008** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 8 DE 68 APROBADAS — ACTUAL DELIV-PKG-009** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions
-        ↓
-TAREA ACTUAL
 DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy
         ↓
+SIGUIENTE TAREA RESERVADA
+DELIV-PKG-010 — Definir eventos emitidos, consumidos, colas y compensaciones
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 7 de 68 tareas aprobadas
+BLOQUE E5 — 8 de 68 tareas aprobadas
 ```

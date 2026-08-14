@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { orderPendingTasksByRoute } from './sync-pending-task-context.mjs';
+import {
+  describeTaskScope,
+  orderPendingTasksByRoute,
+  parseTaskScopeContracts,
+} from './sync-pending-task-context.mjs';
 
 const task = (id, state = 'NO INICIADA') => ({
   id,
@@ -80,4 +84,41 @@ test('conserva las tareas diferidas sin ponerlas delante de la continuidad activ
   );
   assert.deepEqual(result.map(({ id }) => id), ['TEST-ACTIVE-001', 'TEST-DEFERRED-001']);
   assert.deepEqual(result.map(({ canonicalOrder }) => canonicalOrder), [2, 1]);
+});
+
+test('extrae el alcance canónico sin alterar el título de la tarea', () => {
+  const scopes = parseTaskScopeContracts(`
+<!-- TASK-SCOPE-CONTRACT:START -->
+| Tarea | Decide | No decide ni ejecuta | Entrega a |
+| --- | --- | --- | --- |
+| \`TEST-A-001\` | Arquitectura y versiones compatibles. | Instalación física. | \`TEST-A-002\`. |
+<!-- TASK-SCOPE-CONTRACT:END -->
+`, 'test.md');
+
+  const scope = scopes.get('TEST-A-001');
+  assert.deepEqual(scope, {
+    decides: 'Arquitectura y versiones compatibles.',
+    excludes: 'Instalación física.',
+    handoff: '`TEST-A-002`.',
+  });
+  assert.equal(
+    describeTaskScope({ ...task('TEST-A-001'), scope }),
+    'Decide: Arquitectura y versiones compatibles. No decide ni ejecuta: Instalación física. Entrega a: `TEST-A-002`.',
+  );
+});
+
+test('rechaza contratos de alcance ambiguos o incompletos', () => {
+  assert.throws(
+    () => parseTaskScopeContracts(`
+<!-- TASK-SCOPE-CONTRACT:START -->
+| \`TEST-A-001\` | Solo dos columnas. |
+<!-- TASK-SCOPE-CONTRACT:END -->
+`, 'test.md'),
+    /Fila de alcance inválida/u,
+  );
+
+  assert.throws(
+    () => parseTaskScopeContracts('<!-- TASK-SCOPE-CONTRACT:START -->', 'test.md'),
+    /sin cierre válido/u,
+  );
 });
