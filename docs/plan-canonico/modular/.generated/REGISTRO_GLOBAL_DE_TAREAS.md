@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **816** |
+| Aprobadas | **817** |
 | En propuesta | **0** |
-| No iniciadas | **778** |
+| No iniciadas | **777** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **51.19% (816/1594)** |
+| Porcentaje de completamiento | **51.25% (817/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DELIV-PKG-005` — Definir alcance incluido, excluido y diferido | ✅ APROBADA |
-| Tarea actual | `DELIV-PKG-006` — Definir pantallas, componentes y navegación que se crearán o modificarán | ⬜ NO INICIADA |
-| Siguiente reservada | `DELIV-PKG-007` — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions | ⬜ NO INICIADA |
+| Última aprobada | `DELIV-PKG-006` — Definir pantallas, componentes y navegación que se crearán o modificarán | ✅ APROBADA |
+| Tarea actual | `DELIV-PKG-007` — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions | ⬜ NO INICIADA |
+| Siguiente reservada | `DELIV-PKG-008` — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -533,7 +533,7 @@
 | ✅ APROBADA | `DELIV-PKG-003` | Definir aplicación, dominio y repositorio propietarios | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-004` | Definir estado AS-IS y resultado TO-BE verificable | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-005` | Definir alcance incluido, excluido y diferido | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
-| ⬜ NO INICIADA | `DELIV-PKG-006` | Definir pantallas, componentes y navegación que se crearán o modificarán | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
+| ✅ APROBADA | `DELIV-PKG-006` | Definir pantallas, componentes y navegación que se crearán o modificarán | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-007` | Definir lógica de dominio, Server Actions, API, RPC y Edge Functions | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-008` | Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-009` | Definir migraciones, backfills, compatibilidad y retiro legacy | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |

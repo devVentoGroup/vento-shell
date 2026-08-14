@@ -2310,7 +2310,479 @@ SIGUIENTE TAREA RESERVADA
 `DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán`
 
 
-### [ ] DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán
+### ✅ DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán
+
+**Estado:** APROBADA
+**Tarea anterior:** `DELIV-PKG-005 — Definir alcance incluido, excluido y diferido`
+**Tarea siguiente:** `DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions`
+**Tipo de tarea:** documental — descomposición normativa y materialización completa del impacto de pantallas, componentes y navegación para los 207 `package_id` vigentes
+
+---
+
+#### 1. Resultado canónico
+
+`DELIV-PKG-006` fija una decisión explícita de interfaz para cada una de las **207** raíces `GAP-PKG-001..207`, sin convertir una dependencia técnica, de datos, contractual o de seguridad en una pantalla por inferencia.
+
+La clasificación materializada es:
+
+| Decisión              | Paquetes | Regla                                                                                                                                                                    |
+| --------------------- | -------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `UI_CHANGE_REQUIRED`  |   **68** | el conjunto de tareas primarias incluidas contiene al menos una tarea propietaria de experiencia, superficie o navegación que obliga a descomponer el cambio de interfaz |
+| `NO_DIRECT_UI_CHANGE` |  **123** | ninguna tarea primaria incluida exige cambio directo de pantalla, componente o navegación; el resultado de esta tarea para el paquete es `NO_APLICA`                     |
+| `AURA_UI_BLOCKED`     |   **14** | el paquete pertenece a AURA y la superficie no puede materializarse mientras el repositorio y la continuidad AURA sigan bloqueados                                       |
+| `EXT_GOV_CONDITIONAL` |    **2** | el paquete depende de la activación condicional de `EXT-GOV-001`; la decisión UI deberá reevaluarse solo si se cumple la condición de activación                         |
+| **Total**             |  **207** | cobertura completa, sin faltantes ni duplicados                                                                                                                          |
+
+Las **820 brechas** continúan dentro de sus paquetes. `NO_DIRECT_UI_CHANGE` no excluye una brecha ni reduce el resultado TO-BE: declara exclusivamente que su cierre no requiere un cambio directo de interfaz según las fuentes primarias vigentes.
+
+Esta tarea define el alcance lógico de superficie. `DELIV-PKG-014` enumerará los archivos físicos exactos y distinguirá las operaciones de creación, modificación o retiro de archivos sin redefinir la decisión UI aprobada aquí.
+
+---
+
+#### 2. Fuentes y precedencia documental
+
+La descomposición consume, sin reescribir:
+
+- `DELIV-PKG-001..005`, que fijan identidad, membresía, propiedad, AS-IS/TO-BE y alcance de las 207 raíces;
+- el registro canónico de brechas de E1, en particular la matriz `package_id` con sus tareas primarias incluidas;
+- `PROC-SCREEN-001..004` y el inventario canónico `VSCREEN-0001..VSCREEN-0177`;
+- `UX-STATION-012` y su catálogo cerrado de componentes operativos `OPC-*`;
+- los contratos de navegación por actor, tarea, contexto y carril de E2;
+- las tareas `*-UX-*`, `UX-ADMIN-*`, `SHELL-APP-*` y `SHELL-UI-*` presentes como tareas primarias del paquete;
+- las condiciones AURA aprobadas en `DELIV-PKG-003..005`;
+- la activación condicional de `EXT-GOV-001` aprobada para `GAP-PKG-027` y `GAP-PKG-157`.
+
+Precedencia obligatoria: una referencia UI incluida como tarea primaria habilita alcance de interfaz; una referencia que exista solo como soporte no se promueve automáticamente a cambio de interfaz. Si una tarea posterior demuestra que un `NO_DIRECT_UI_CHANGE` necesita UI, `DELIV-PKG-006` deberá revisarse expresamente antes de `DELIV-PKG-025`; no se permite ampliar el paquete de forma silenciosa.
+
+---
+
+#### 3. Contrato de descomposición UI por paquete
+
+| Campo              | Regla canónica                                                                                             |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- |
+| `package_id`       | conserva la identidad `GAP-PKG-*` vigente                                                                  |
+| `ui_decision`      | exactamente uno de `UI_CHANGE_REQUIRED`, `NO_DIRECT_UI_CHANGE`, `AURA_UI_BLOCKED` o `EXT_GOV_CONDITIONAL`  |
+| `ui_owner_tasks`   | conjunto exacto de tareas primarias que justifican el impacto UI; no admite tareas inferidas por similitud |
+| `screen_scope`     | código que determina si el paquete modifica una superficie canónica, no aplica o permanece bloqueado       |
+| `component_scope`  | código que gobierna reutilización del catálogo `OPC-*` y prohíbe crear semántica nueva por inferencia      |
+| `navigation_scope` | código que conserva actor, tarea, contexto y carril; una ruta visible nunca concede autoridad              |
+| `ui_state`         | `ESPECIFICADO`, `NO_APLICA`, `BLOQUEADO` o `BLOQUEADO_CONDICIONAL`                                         |
+
+Invariantes:
+
+1. una tarea de backend, datos, contrato, migración o seguridad no crea una pantalla por el solo hecho de afectar una capacidad usada por humanos;
+2. una tarea UI primaria no puede omitirse porque el paquete también contenga trabajo técnico;
+3. un `VSCREEN-*`, un `OPC-*`, una ruta, un carril y un permiso son identidades diferentes;
+4. visibilidad y navegación no sustituyen la autorización de servidor;
+5. una aplicación transversal no crea un código de aplicación ficticio para alojar pantallas;
+6. un nuevo `VSCREEN-*` solo puede aparecer cuando exista un cambio material de identidad gobernado por `PROC-SCREEN-001` y sus vínculos de aplicación, proceso y paso;
+7. un nuevo identificador semántico `OPC-*` no puede ser creado por un paquete sin una evolución explícita del contrato de `UX-STATION-012`;
+8. el estado físico de archivos, rutas y componentes de código se materializa en `DELIV-PKG-014` y no altera la identidad lógica decidida aquí.
+
+---
+
+#### 4. Alcance canónico de pantallas
+
+El inventario de referencia contiene **177** identidades continuas `VSCREEN-0001..VSCREEN-0177`, distribuidas entre nueve aplicaciones con pantalla materializada:
+
+| Aplicación | Pantallas | Rango canónico                                                       |
+| ---------- | --------: | -------------------------------------------------------------------- |
+| `shell`    |         7 | `VSCREEN-0001..0007`                                                 |
+| `viso`     |        31 | `VSCREEN-0008..0026`, `VSCREEN-0113..0123`, `VSCREEN-0175`           |
+| `anima`    |        14 | `VSCREEN-0027..0032`, `VSCREEN-0124..0131`                           |
+| `nexo`     |        37 | `VSCREEN-0033..0054`, `VSCREEN-0132..0144`, `VSCREEN-0176..0177`     |
+| `fogo`     |        15 | `VSCREEN-0055..0067`, `VSCREEN-0173..0174`                           |
+| `origo`    |        14 | `VSCREEN-0068..0079`, `VSCREEN-0145..0146`                           |
+| `pulso`    |        20 | `VSCREEN-0080..0093`, `VSCREEN-0147..0152`                           |
+| `numera`   |        20 | `VSCREEN-0094..0106`, `VSCREEN-0153..0159`                           |
+| `pass`     |        19 | `VSCREEN-0107..0112`, `VSCREEN-0160..0172`                           |
+| `aura`     |         0 | sin identidad `VSCREEN-*` materializada mientras permanezca diferida |
+
+Códigos usados por la matriz:
+
+- `SCREEN-SOURCE-001`: el paquete tiene cambio UI directo. La superficie objetivo es la gobernada por sus `ui_owner_tasks`, dentro del contrato `VSCREEN-*`; no se inventa una pantalla adicional por el nombre del paquete.
+- `SCREEN-NONE-001`: no existe cambio directo de pantalla exigido por las tareas primarias del paquete.
+- `SCREEN-AURA-001`: AURA no tiene `VSCREEN-*` materializado; la superficie permanece bloqueada por `AURA-AUD-001`, `AURA-AUD-010` y `AURA-AUD-012`.
+- `SCREEN-EXT-001`: no se materializa superficie mientras `EXT-GOV-001` permanezca inactivo; al activarse se debe reevaluar el paquete antes de `DELIV-PKG-025`.
+
+`DELIV-PKG-006` crea **cero identidades nuevas `VSCREEN-*`**. La tarea vincula paquetes con las obligaciones UI ya presentes en su conjunto de tareas primarias y conserva la evolución de identidad bajo `PROC-SCREEN-001`.
+
+---
+
+#### 5. Alcance canónico de componentes
+
+El catálogo semántico de referencia contiene **24** componentes operativos aprobados:
+
+`OPC-CONTEXT-001`, `OPC-ACTOR-001`, `OPC-CONNECTION-001`, `OPC-WORK-001`, `OPC-STATE-001`, `OPC-RISK-001`, `OPC-ACTION-001`, `OPC-ACTION-002`, `OPC-TEXT-001`, `OPC-QUANTITY-001`, `OPC-SELECTION-001`, `OPC-SELECTION-002`, `OPC-SCAN-001`, `OPC-CAMERA-001`, `OPC-MEASURE-001`, `OPC-CHECKLIST-001`, `OPC-REASON-001`, `OPC-CONFIRM-001`, `OPC-HANDOFF-001`, `OPC-OFFLINE-001`, `OPC-PERIPHERAL-001`, `OPC-RECEIPT-001`, `OPC-HELP-001`, `OPC-PRIVACY-001`.
+
+Los siete slots de composición se conservan como `PERSISTENT_CONTEXT`, `BLOCKING_STATE`, `WORK_IDENTITY`, `STEP_CONTENT`, `PRIMARY_ACTION`, `SECONDARY_SUPPORT` y `RESULT_AND_RECEIPT`.
+
+Códigos usados por la matriz:
+
+- `COMP-SOURCE-001`: reutilizar y componer exclusivamente los `OPC-*` requeridos por la superficie y la tarea UI propietaria; no se crea un identificador semántico nuevo por conveniencia de implementación.
+- `COMP-NONE-001`: no aplica cambio de componente de interfaz para el paquete.
+- `COMP-AURA-001`: composición diferida junto con la superficie AURA.
+- `COMP-EXT-001`: composición condicional a la activación de `EXT-GOV-001`.
+
+La creación de un componente de código local no equivale a crear un nuevo `OPC-*`; los archivos concretos pertenecen al inventario de `DELIV-PKG-014`.
+
+---
+
+#### 6. Alcance canónico de navegación
+
+La navegación conserva los seis carriles aprobados:
+
+`OPERATIONAL_EXECUTION`, `OPERATIONAL_SUPERVISION`, `ADMINISTRATIVE_WORK`, `CONFIGURATION_GOVERNANCE`, `AUDIT_ANALYTICS`, `PERSONAL_CUSTOMER_CANDIDATE`.
+
+Códigos usados por la matriz:
+
+- `NAV-SOURCE-001`: aplicar el contrato de navegación de la tarea UI propietaria, preservando actor efectivo, tarea, contexto, retorno y carril; una URL o elemento visible no concede permiso.
+- `NAV-NONE-001`: el paquete no exige cambio directo de navegación.
+- `NAV-AURA-001`: navegación AURA bloqueada junto con la superficie.
+- `NAV-EXT-001`: navegación condicional a la activación de `EXT-GOV-001`.
+
+Una ruta nueva no se crea por inferencia desde `package_id`, capability, rol, repositorio o pantalla. Cuando una fuente UI aprobada requiera una ruta o transición nueva, esa identidad deberá conservar el contrato de pantalla y la navegación autorizada antes de su inventario físico en `DELIV-PKG-014`.
+
+---
+
+#### 7. Matriz materializada de las 207 decisiones UI
+
+| `package_id`  | `ui_decision`         | `ui_owner_tasks`                                                                                               | `screen_scope`      | `component_scope` | `navigation_scope` | `ui_state`              |
+| ------------- | --------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------- | ----------------- | ------------------ | ----------------------- |
+| `GAP-PKG-001` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-002` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-003` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-004` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-005` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-006` | `AURA_UI_BLOCKED`     | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012`                                                                 | `SCREEN-AURA-001`   | `COMP-AURA-001`   | `NAV-AURA-001`     | `BLOQUEADO`             |
+| `GAP-PKG-007` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-008` | `AURA_UI_BLOCKED`     | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012`                                                                 | `SCREEN-AURA-001`   | `COMP-AURA-001`   | `NAV-AURA-001`     | `BLOQUEADO`             |
+| `GAP-PKG-009` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-010` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-011` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-012` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-013` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-014` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-015` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-016` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-017` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-018` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-019` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-020` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-021` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-022` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-023` | `UI_CHANGE_REQUIRED`  | `DATA-UX-002`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-024` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-025` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-026` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-027` | `EXT_GOV_CONDITIONAL` | `EXT-GOV-001`                                                                                                  | `SCREEN-EXT-001`    | `COMP-EXT-001`    | `NAV-EXT-001`      | `BLOQUEADO_CONDICIONAL` |
+| `GAP-PKG-028` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-029` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-030` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-031` | `UI_CHANGE_REQUIRED`  | `FOGO-UX-011`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-032` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-033` | `UI_CHANGE_REQUIRED`  | `PULSO-UX-016`                                                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-034` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-035` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-036` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-037` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-009`; `NEXO-UX-018`; `NEXO-UX-022`                                                                    | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-038` | `UI_CHANGE_REQUIRED`  | `PULSO-UX-021`; `NEXO-UX-015`                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-039` | `UI_CHANGE_REQUIRED`  | `ORIGO-UX-014`                                                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-040` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-041` | `UI_CHANGE_REQUIRED`  | `PULSO-UX-010`                                                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-042` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-043` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-044` | `UI_CHANGE_REQUIRED`  | `PULSO-UX-009`; `NEXO-UX-011`; `NEXO-UX-013`                                                                   | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-045` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-046` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-047` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-048` | `UI_CHANGE_REQUIRED`  | `PULSO-UX-020`                                                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-049` | `UI_CHANGE_REQUIRED`  | `FOGO-UX-005`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-050` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-051` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-052` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-053` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-054` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-037`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-055` | `UI_CHANGE_REQUIRED`  | `VISO-UX-013`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-056` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-057` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-058` | `UI_CHANGE_REQUIRED`  | `PULSO-UX-018`; `PASS-UX-001`                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-059` | `AURA_UI_BLOCKED`     | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012`                                                                 | `SCREEN-AURA-001`   | `COMP-AURA-001`   | `NAV-AURA-001`     | `BLOQUEADO`             |
+| `GAP-PKG-060` | `UI_CHANGE_REQUIRED`  | `VISO-UX-020`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-061` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-062` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-063` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-064` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-065` | `UI_CHANGE_REQUIRED`  | `PASS-UX-001`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-066` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-067` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-068` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-069` | `UI_CHANGE_REQUIRED`  | `PULSO-UX-003`                                                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-070` | `UI_CHANGE_REQUIRED`  | `PASS-UX-001`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-071` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-072` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-073` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-009`; `PULSO-UX-020`                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-074` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-075` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-037`; `NEXO-UX-009`                                                                                   | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-076` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-077` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-078` | `AURA_UI_BLOCKED`     | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012`                                                                 | `SCREEN-AURA-001`   | `COMP-AURA-001`   | `NAV-AURA-001`     | `BLOQUEADO`             |
+| `GAP-PKG-079` | `UI_CHANGE_REQUIRED`  | `PASS-UX-006`; `PULSO-UX-009`; `PULSO-UX-007`; `PASS-UX-002`                                                   | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-080` | `AURA_UI_BLOCKED`     | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012`                                                                 | `SCREEN-AURA-001`   | `COMP-AURA-001`   | `NAV-AURA-001`     | `BLOQUEADO`             |
+| `GAP-PKG-081` | `UI_CHANGE_REQUIRED`  | `PASS-UX-012`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-082` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-083` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-084` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-085` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-086` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-087` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-088` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-089` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-090` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-091` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-009`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-092` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-093` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-094` | `UI_CHANGE_REQUIRED`  | `VISO-UX-005`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-095` | `UI_CHANGE_REQUIRED`  | `VISO-UX-005`; `NEXO-UX-013`                                                                                   | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-096` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-019`; `VISO-UX-001`; `ORIGO-UX-014`                                                                   | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-097` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-005`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-098` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-037`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-099` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-100` | `UI_CHANGE_REQUIRED`  | `FOGO-UX-009`; `FOGO-UX-013`                                                                                   | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-101` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-102` | `UI_CHANGE_REQUIRED`  | `ORIGO-UX-009`; `ORIGO-UX-011`                                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-103` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-104` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-037`; `NEXO-UX-019`; `NEXO-UX-022`; `NEXO-UX-001`; `NEXO-UX-039`; `NEXO-UX-009`; `FOGO-UX-005`        | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-105` | `UI_CHANGE_REQUIRED`  | `FOGO-UX-012`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-106` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-107` | `UI_CHANGE_REQUIRED`  | `FOGO-UX-012`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-108` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-109` | `UI_CHANGE_REQUIRED`  | `FOGO-UX-010`; `FOGO-UX-004`; `FOGO-UX-001`; `FOGO-UX-005`; `FOGO-UX-006`; `FOGO-UX-007`; `FOGO-UX-011`        | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-110` | `UI_CHANGE_REQUIRED`  | `PULSO-UX-021`; `PULSO-UX-008`; `PULSO-UX-001`; `PULSO-UX-007`; `PULSO-UX-004`; `PULSO-UX-009`; `PULSO-UX-020` | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-111` | `UI_CHANGE_REQUIRED`  | `PULSO-UX-009`; `PASS-UX-006`                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-112` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-013`; `NEXO-UX-022`; `PULSO-UX-009`; `NEXO-UX-010`; `NEXO-UX-011`; `PULSO-UX-021`                     | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-113` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-001`; `NEXO-UX-005`; `NEXO-UX-010`; `NEXO-UX-012`; `PULSO-UX-018`; `NEXO-UX-041`                      | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-114` | `UI_CHANGE_REQUIRED`  | `PULSO-UX-010`; `ORIGO-UX-011`; `PULSO-UX-020`                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-115` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-116` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-117` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-009`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-118` | `AURA_UI_BLOCKED`     | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012`                                                                 | `SCREEN-AURA-001`   | `COMP-AURA-001`   | `NAV-AURA-001`     | `BLOQUEADO`             |
+| `GAP-PKG-119` | `UI_CHANGE_REQUIRED`  | `UX-ADMIN-001`; `FOGO-UX-011`; `SHELL-APP-002`                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-120` | `UI_CHANGE_REQUIRED`  | `ORIGO-UX-001`                                                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-121` | `UI_CHANGE_REQUIRED`  | `PASS-UX-001`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-122` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-011`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-123` | `UI_CHANGE_REQUIRED`  | `PULSO-UX-017`; `NUMERA-UX-025`                                                                                | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-124` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-125` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-126` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-127` | `UI_CHANGE_REQUIRED`  | `ANIMA-UX-017`; `ANIMA-UX-011`; `FOGO-UX-005`                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-128` | `UI_CHANGE_REQUIRED`  | `ANIMA-UX-017`                                                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-129` | `UI_CHANGE_REQUIRED`  | `ANIMA-UX-017`                                                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-130` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-131` | `UI_CHANGE_REQUIRED`  | `PASS-UX-001`; `PASS-UX-006`; `NEXO-UX-009`; `PULSO-UX-001`                                                    | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-132` | `UI_CHANGE_REQUIRED`  | `SHELL-APP-001`                                                                                                | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-133` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-001`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-134` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-135` | `UI_CHANGE_REQUIRED`  | `PASS-UX-001`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-136` | `UI_CHANGE_REQUIRED`  | `PASS-UX-001`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-137` | `UI_CHANGE_REQUIRED`  | `PASS-UX-001`; `PULSO-UX-020`                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-138` | `UI_CHANGE_REQUIRED`  | `PASS-UX-001`; `PULSO-UX-001`                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-139` | `UI_CHANGE_REQUIRED`  | `PULSO-UX-001`                                                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-140` | `UI_CHANGE_REQUIRED`  | `PASS-UX-001`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-141` | `UI_CHANGE_REQUIRED`  | `SHELL-UI-014`                                                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-142` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-143` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-144` | `AURA_UI_BLOCKED`     | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012`                                                                 | `SCREEN-AURA-001`   | `COMP-AURA-001`   | `NAV-AURA-001`     | `BLOQUEADO`             |
+| `GAP-PKG-145` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-146` | `UI_CHANGE_REQUIRED`  | `PASS-UX-001`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-147` | `AURA_UI_BLOCKED`     | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012`                                                                 | `SCREEN-AURA-001`   | `COMP-AURA-001`   | `NAV-AURA-001`     | `BLOQUEADO`             |
+| `GAP-PKG-148` | `AURA_UI_BLOCKED`     | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012`                                                                 | `SCREEN-AURA-001`   | `COMP-AURA-001`   | `NAV-AURA-001`     | `BLOQUEADO`             |
+| `GAP-PKG-149` | `AURA_UI_BLOCKED`     | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012`                                                                 | `SCREEN-AURA-001`   | `COMP-AURA-001`   | `NAV-AURA-001`     | `BLOQUEADO`             |
+| `GAP-PKG-150` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-151` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-152` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-153` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-154` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-155` | `UI_CHANGE_REQUIRED`  | `NUMERA-UX-014`; `NUMERA-UX-021`                                                                               | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-156` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-157` | `EXT_GOV_CONDITIONAL` | `EXT-GOV-001`                                                                                                  | `SCREEN-EXT-001`    | `COMP-EXT-001`    | `NAV-EXT-001`      | `BLOQUEADO_CONDICIONAL` |
+| `GAP-PKG-158` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-159` | `UI_CHANGE_REQUIRED`  | `PULSO-UX-008`                                                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-160` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-161` | `UI_CHANGE_REQUIRED`  | `FOGO-UX-001`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-162` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-163` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-012`; `NEXO-UX-013`                                                                                   | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-164` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-165` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-037`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-166` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-167` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-168` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-169` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-170` | `UI_CHANGE_REQUIRED`  | `CONT-UX-001`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-171` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-172` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-173` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-174` | `UI_CHANGE_REQUIRED`  | `VISO-UX-002`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-175` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-176` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-177` | `UI_CHANGE_REQUIRED`  | `ANIMA-UX-017`                                                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-178` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-179` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-180` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-181` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-182` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-183` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-184` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-185` | `UI_CHANGE_REQUIRED`  | `NEXO-UX-037`                                                                                                  | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-186` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-187` | `AURA_UI_BLOCKED`     | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012`                                                                 | `SCREEN-AURA-001`   | `COMP-AURA-001`   | `NAV-AURA-001`     | `BLOQUEADO`             |
+| `GAP-PKG-188` | `AURA_UI_BLOCKED`     | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012`                                                                 | `SCREEN-AURA-001`   | `COMP-AURA-001`   | `NAV-AURA-001`     | `BLOQUEADO`             |
+| `GAP-PKG-189` | `AURA_UI_BLOCKED`     | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012`                                                                 | `SCREEN-AURA-001`   | `COMP-AURA-001`   | `NAV-AURA-001`     | `BLOQUEADO`             |
+| `GAP-PKG-190` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-191` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-192` | `AURA_UI_BLOCKED`     | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012`                                                                 | `SCREEN-AURA-001`   | `COMP-AURA-001`   | `NAV-AURA-001`     | `BLOQUEADO`             |
+| `GAP-PKG-193` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-194` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-195` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-196` | `UI_CHANGE_REQUIRED`  | `ANIMA-UX-001`                                                                                                 | `SCREEN-SOURCE-001` | `COMP-SOURCE-001` | `NAV-SOURCE-001`   | `ESPECIFICADO`          |
+| `GAP-PKG-197` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-198` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-199` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-200` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-201` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-202` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-203` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-204` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-205` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-206` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+| `GAP-PKG-207` | `NO_DIRECT_UI_CHANGE` | —                                                                                                              | `SCREEN-NONE-001`   | `COMP-NONE-001`   | `NAV-NONE-001`     | `NO_APLICA`             |
+
+---
+
+#### 8. Reconciliación de cobertura
+
+| Control                                                      |    Resultado |
+| ------------------------------------------------------------ | -----------: |
+| `package_id` materializados                                  |      **207** |
+| `UI_CHANGE_REQUIRED`                                         |       **68** |
+| `NO_DIRECT_UI_CHANGE`                                        |      **123** |
+| `AURA_UI_BLOCKED`                                            |       **14** |
+| `EXT_GOV_CONDITIONAL`                                        |        **2** |
+| filas duplicadas                                             |        **0** |
+| identificadores faltantes en `001..207`                      |        **0** |
+| nuevas identidades `VSCREEN-*` creadas por esta tarea        |        **0** |
+| nuevas identidades semánticas `OPC-*` creadas por esta tarea |        **0** |
+| brechas excluidas por esta tarea                             | **0 de 820** |
+
+Las 68 raíces con cambio UI referencian **61 tareas propietarias distintas** de experiencia, superficie o navegación. La multiplicidad se conserva: una misma tarea UI puede participar en varios paquetes y un paquete puede requerir varias tareas UI sin fusionar sus identidades.
+
+---
+
+#### 9. Tratamiento de AURA
+
+Los 14 paquetes AURA son `GAP-PKG-006`, `008`, `059`, `078`, `080`, `118`, `144`, `147`, `148`, `149`, `187`, `188`, `189` y `192`.
+
+Para estos paquetes:
+
+- el alcance funcional permanece incluido;
+- no se inventa un repositorio ni una ruta;
+- no se asigna una identidad `VSCREEN-*` inexistente;
+- `AURA-AUD-001`, `AURA-AUD-010` y `AURA-AUD-012` son la condición documental exacta de desbloqueo;
+- después del desbloqueo, `DELIV-PKG-006` deberá revisarse para materializar la decisión de superficie antes de que esos paquetes puedan superar `DELIV-PKG-025`.
+
+El bloqueo no convierte a AURA en `NO_APLICA` y no transfiere sus superficies a `shell` ni a otra aplicación.
+
+---
+
+#### 10. Tratamiento de `EXT-GOV-001`
+
+`GAP-PKG-027` y `GAP-PKG-157` conservan `EXT_GOV_CONDITIONAL`. Mientras no exista el archivo externo requerido por la regla `ACTIVATE_WHEN_REQUIRED_EXTERNAL_FILE_EXISTS`, esta tarea no materializa pantalla, componente ni navegación para esos dos paquetes.
+
+Si la condición se activa, `EXT-GOV-001` deberá producir la evidencia que permita reevaluar el impacto UI y la matriz de esta misma tarea deberá actualizarse antes de `DELIV-PKG-025`. El silencio o la ausencia del archivo no se interpreta como `NO_APLICA` permanente.
+
+---
+
+#### 11. Relación con la descomposición posterior de E5
+
+Esta tarea fija el alcance lógico de interfaz y no invade responsabilidades posteriores:
+
+- `DELIV-PKG-007` definirá lógica de dominio, Server Actions, API, RPC y Edge Functions;
+- `DELIV-PKG-008` definirá datos, políticas, Storage y Realtime;
+- `DELIV-PKG-009` definirá migraciones, backfills, compatibilidad y retiro legacy;
+- `DELIV-PKG-010..013` definirán integración operativa, evidencia, autorización y requisitos no funcionales;
+- `DELIV-PKG-014` enumerará archivos exactos y la operación física prevista sobre cada archivo;
+- `DELIV-PKG-015` fijará dependencias y orden;
+- `DELIV-PKG-016` vinculará requisitos `TREQ-*` y pruebas por paquete;
+- `DELIV-PKG-023` consolidará criterios y evidencia de cierre;
+- `DELIV-PKG-025` impedirá aprobar un paquete con una decisión UI bloqueada, condicional no resuelta o contradicha por la descomposición posterior.
+
+Un hallazgo de `DELIV-PKG-007..013` que contradiga `NO_DIRECT_UI_CHANGE` no autoriza a modificar la interfaz silenciosamente: obliga a revisar esta tarea antes del cierre del paquete.
+
+---
+
+#### 12. Fronteras de responsabilidad
+
+`DELIV-PKG-006` **sí cierra**:
+
+- una decisión UI explícita para las 207 raíces;
+- identificación de las 68 raíces con obligación UI directa y sus 61 tareas propietarias;
+- 123 decisiones `NO_DIRECT_UI_CHANGE` justificadas por ausencia de tarea primaria UI;
+- 14 bloqueos AURA y 2 condiciones `EXT-GOV-001`;
+- reglas de pantalla, componente y navegación que impiden identidades inventadas;
+- continuidad con el inventario `VSCREEN-*`, el catálogo `OPC-*` y los carriles de navegación vigentes;
+- regla de reapertura si una descomposición posterior demuestra impacto UI no registrado.
+
+`DELIV-PKG-006` **no cierra**:
+
+- archivos físicos concretos, reservados a `DELIV-PKG-014`;
+- lógica de dominio o servidor, reservada a `DELIV-PKG-007`;
+- tablas, funciones, RLS, Storage o Realtime, reservados a `DELIV-PKG-008`;
+- migraciones y retiro legacy, reservados a `DELIV-PKG-009`;
+- autorización funcional, reservada a `DELIV-PKG-012`;
+- pruebas por paquete, reservadas a `DELIV-PKG-016`;
+- implementación de frontend, rutas, componentes o despliegues;
+- desbloqueo AURA o activación de `EXT-GOV-001`.
+
+---
+
+#### 13. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa una clasificación documental de alcance UI y consume contratos de pantallas, componentes y navegación ya aprobados. No introduce comportamiento ejecutable, no modifica autorización, runtime ni datos y no cambia el contenido de ningún requisito de prueba vigente. La vinculación de requisitos existentes por paquete permanece en `DELIV-PKG-016`.
+
+---
+
+#### 14. Criterios de aceptación
+
+- [x] existen exactamente **207** filas y el rango `GAP-PKG-001..207` es continuo;
+- [x] cada paquete tiene exactamente una `ui_decision`;
+- [x] **68** paquetes quedan como `UI_CHANGE_REQUIRED` con tareas UI propietarias explícitas;
+- [x] **123** paquetes quedan como `NO_DIRECT_UI_CHANGE` sin convertir trabajo técnico en pantalla por inferencia;
+- [x] los **14** paquetes AURA conservan bloqueo y no reciben `VSCREEN-*` inventado;
+- [x] `GAP-PKG-027` y `GAP-PKG-157` conservan la condición exacta de `EXT-GOV-001`;
+- [x] las **820** brechas permanecen incluidas en sus paquetes;
+- [x] el inventario `VSCREEN-0001..0177` se conserva sin renumeración;
+- [x] el catálogo de **24** `OPC-*` se conserva sin crear semántica paralela;
+- [x] los seis carriles de navegación se preservan y no se confunden con autoridad;
+- [x] no se enumeran archivos físicos antes de `DELIV-PKG-014`;
+- [x] no se crea ni modifica ningún requisito de prueba;
+- [x] no se inicia código, migración, cambio de Supabase, despliegue ni tarea posterior.
+
+---
+
+#### 15. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DELIV-PKG-005 — Definir alcance incluido, excluido y diferido`
+
+TAREA ACTUAL APROBADA
+`DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán`
+
+SIGUIENTE TAREA RESERVADA
+`DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions`
+
+
 ### [ ] DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions
 ### [ ] DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados
 ### [ ] DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy

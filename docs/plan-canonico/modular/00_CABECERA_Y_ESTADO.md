@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **816** |
+| Tareas aprobadas | **817** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **778** |
+| Tareas no iniciadas | **777** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **51.19% (816/1594)** |
+| Porcentaje de completamiento | **51.25% (817/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DELIV-PKG-005 — Definir alcance incluido, excluido y diferido** |
-| Tarea actual | **DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán** |
+| Última tarea aprobada | **DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán** |
+| Tarea actual | **DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions** |
+| Siguiente tarea | **DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 5 de 68 aprobadas; DELIV-PKG-006 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 6 de 68 aprobadas; DELIV-PKG-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DELIV-PKG-005` — Definir alcance incluido, excluido y diferido |
-| Tarea actual | `DELIV-PKG-006` — Definir pantallas, componentes y navegación que se crearán o modificarán — **NO INICIADA** |
-| Siguiente tarea | `DELIV-PKG-007` — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions |
+| Última aprobada | `DELIV-PKG-006` — Definir pantallas, componentes y navegación que se crearán o modificarán |
+| Tarea actual | `DELIV-PKG-007` — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions — **NO INICIADA** |
+| Siguiente tarea | `DELIV-PKG-008` — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 5 DE 68 APROBADAS — ACTUAL DELIV-PKG-006** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 6 DE 68 APROBADAS — ACTUAL DELIV-PKG-007** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DELIV-PKG-005 — Definir alcance incluido, excluido y diferido
-        ↓
-TAREA ACTUAL
 DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions
         ↓
+SIGUIENTE TAREA RESERVADA
+DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 5 de 68 tareas aprobadas
+BLOQUE E5 — 6 de 68 tareas aprobadas
 ```
