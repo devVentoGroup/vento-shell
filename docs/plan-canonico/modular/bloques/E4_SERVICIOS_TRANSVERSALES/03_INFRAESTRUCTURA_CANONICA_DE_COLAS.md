@@ -2964,7 +2964,699 @@ SIGUIENTE TAREA RESERVADA
 `QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo`
 
 
-### [ ] QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo
+### ✅ QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo
+
+**Estado:** APROBADA
+**Tarea anterior:** `QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador`
+**Tarea siguiente:** `QUEUE-ARC-007 — Definir cancelación antes y durante ejecución`
+**Tipo de tarea:** documental; especialización canónica de intentos, clasificación de errores, perfiles de reintento, backoff, presupuesto máximo y agotamiento para el trabajo asíncrono inventariado, con decisión explícita para las 19 identidades `QAI-*`, sin modificar colas, workers, schedules, webhooks, dispositivos, código, datos, Supabase ni estados desplegados
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`
+**Línea base documental:** `vento-shell@a1e4369bdd4a1e23fa994d3d737117586df21569`
+**Contrato base de trabajo:** `TSVC-SVC-001.CONTRACT@1.0.0`
+**Registro de confiabilidad consumido:** `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`
+**Contrato de idempotencia consumido:** `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`
+**Contrato temporal consumido:** `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0`
+**Contrato de asignación consumido:** `WORK-ASSIGNMENT-CONTRACT-001@1.0.0`
+**Inventario consumido:** `QUEUE-CURRENT-ASSET-INVENTORY-001` — 19 identidades `QAI-*`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada cuándo una ejecución fallida o una dependencia temporalmente indisponible puede producir otro intento de la **misma intención**, cuánto debe esperar antes de ese intento, qué límite máximo la detiene y qué condiciones prohíben repetir automáticamente un efecto.
+
+La regla raíz es:
+
+```text
+MISMA operation_id
++
+MISMA idempotency_key
++
+MISMO payload_fingerprint
++
+ERROR REINTENTABLE
++
+PRESUPUESTO DISPONIBLE
++
+DEADLINE VIGENTE
+        ↓
+NUEVO attempt_id
+        ↓
+BACKOFF ACOTADO + JITTER
+        ↓
+SIGUIENTE INTENTO DE LA MISMA INTENCIÓN
+```
+
+Un retry no crea otra intención, no reinicia el deadline, no cambia silenciosamente el payload y no autoriza repetir un efecto externo o físico cuyo resultado permanezca desconocido.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se establece `WORK-RETRY-POLICY-CONTRACT-001@1.0.0` como especialización de intentos y reintentos del contrato canónico de trabajo asíncrono.
+
+El resultado material fija:
+
+1. la unidad exacta de `attempt` y su relación con `operation_id`;
+2. la diferencia entre fallo reintentable, espera por disponibilidad, resultado ambiguo y agotamiento;
+3. la adopción sin renombrar de los seis perfiles `RR0..RR5` ya aprobados transversalmente;
+4. el contador de intentos y el significado de `max_attempts`;
+5. las secuencias de backoff base ya aprobadas para cada perfil;
+6. la regla de jitter acotado sin introducir una segunda taxonomía de retry;
+7. el tratamiento de `Retry-After` sin ampliar deadline ni presupuesto;
+8. la frontera de edad de la intención, subordinada a `deadline_at` y a cualquier límite propietario más restrictivo;
+9. la prohibición de que capas locales, SDK, transportes o workers reinicien o multipliquen el presupuesto de intentos;
+10. la conducta ante errores no reintentables y efectos externos o físicos ambiguos;
+11. la relación entre retry, reasignación y pérdida de target sin anticipar claim, lease ni fencing;
+12. una decisión explícita para las 19 identidades `QAI-*` del inventario aprobado.
+
+Balance:
+
+| Métrica                                    | Resultado |
+| ------------------------------------------ | --------: |
+| Identidades `QAI-*` esperadas              |    **19** |
+| Identidades materializadas                 |    **19** |
+| `APLICA_POLITICA_DE_RETRY`                 |    **16** |
+| `PROPAGA_NO_DECIDE_RETRY`                  |     **2** |
+| `NO_APLICA`                                |     **1** |
+| Perfil base `RR2_DURABLE_DELIVERY`         |     **3** |
+| Perfil base `RR3_DEVICE_OR_OFFLINE`        |     **4** |
+| Perfil base `RR4_SCHEDULED_OCCURRENCE`     |     **9** |
+| Identificadores `QAI-*` duplicados         |     **0** |
+| Identidades sin decisión                   |     **0** |
+| Requisitos de prueba creados o modificados |     **0** |
+| Objetos físicos creados o modificados      |     **0** |
+
+Los perfiles `RR0_NO_RETRY`, `RR1_SHORT_TRANSIENT` y `RR5_COALESCING_SIGNAL` permanecen vigentes dentro del registro transversal aunque ninguna de las 16 identidades materiales de este inventario los use como perfil base. `RR0_NO_RETRY` sigue actuando como disposición obligatoria cuando la clase de error prohíbe retry.
+
+---
+
+#### 3. Herencia contractual obligatoria
+
+`WORK-RETRY-POLICY-CONTRACT-001@1.0.0` no crea perfiles paralelos ni sustituye las decisiones aprobadas de confiabilidad.
+
+Hereda obligatoriamente:
+
+- de `TSVC-SVC-001.CONTRACT@1.0.0`, `operation_id`, `WORK_SUBMISSION`, `WORK_OUTCOME`, `WORK_ERROR`, propiedad empresarial y versión contractual;
+- de `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`, el modelo `AT_LEAST_ONCE_WITH_IDEMPOTENT_EFFECTS`, los seis perfiles `RR0..RR5`, sus máximos de intentos, secuencias base, clasificación de errores, jitter, `Retry-After`, tratamiento de resultado desconocido y regla de que el deadline prevalece sobre el presupuesto;
+- de `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`, `idempotency_key`, `payload_fingerprint`, `operation_id` y la prohibición de crear otra intención por un retry;
+- de `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0`, `scheduled_at`, `deadline_at`, vigencia de la intención y la prohibición de ampliar la ventana por espera, reconnect, retry o cambio de worker;
+- de `WORK-ASSIGNMENT-CONTRACT-001@1.0.0`, `assignment_id`, `assignment_version`, destino técnico y la regla de que una reasignación no decide por sí sola si existe un nuevo intento;
+- de `QUEUE-CURRENT-ASSET-INVENTORY-001`, las 19 identidades materiales y su evidencia actual.
+
+La tarea no modifica los máximos, secuencias o clases ya aprobados por `TSVC-CAT-006`; los aplica al universo `QAI-*` y cierra su semántica operativa como contrato documental.
+
+---
+
+#### 4. Unidad canónica de intento
+
+Un `attempt` es una ejecución concreta de una operación ya registrada.
+
+Se fija:
+
+```text
+INTENCIÓN / TRABAJO
+operation_id = estable
+idempotency_key = estable
+payload_fingerprint = estable
+
+INTENTO 1
+attempt_id = nuevo
+attempt_no = 1
+
+RETRY
+attempt_id = nuevo
+attempt_no = anterior + 1
+operation_id = el mismo
+idempotency_key = la misma
+payload_fingerprint = la misma
+```
+
+Reglas:
+
+1. `attempt_no = 1` corresponde al primer intento real de ejecución.
+2. `max_attempts` **incluye** el primer intento.
+3. `max_retries = max_attempts - 1`.
+4. Esperar conectividad, disponibilidad de dispositivo, capacidad o `next_retry_at` sin iniciar otra llamada o ejecución no consume un intento.
+5. Un retry solo existe cuando comienza otra ejecución capaz de producir el efecto técnico, empresarial o físico correspondiente.
+6. Un `request_id`, tick de worker, wake-up, polling, callback o claim no constituye por sí solo otro intento.
+7. Un intento no puede ocultar múltiples envíos capaces de producir el mismo efecto para eludir el presupuesto canónico.
+8. Si una librería, transporte o helper realiza reenvíos internos capaces de producir efecto, esas ejecuciones deberán contabilizarse dentro del presupuesto efectivo de la operación; ninguna capa reinicia el contador.
+9. Cambiar worker, dispositivo o adaptador no reinicia `attempt_no`.
+10. Un payload corregido, una operación distinta o una intención nueva no se materializan como otro intento del trabajo anterior.
+
+---
+
+#### 5. Sobre mínimo de retry
+
+Toda materialización futura deberá poder conservar, cuando aplique:
+
+```text
+operation_id
+attempt_id
+attempt_no
+retry_profile
+max_attempts
+first_requested_at
+attempt_started_at
+attempt_finished_at
+last_attempt_at
+next_retry_at
+deadline_at
+error_code
+error_class
+retryable
+retry_after_at
+assignment_id
+assignment_version
+worker_identity
+device_identity
+adapter_identity
+result_ref
+reconciliation_status
+```
+
+Definiciones:
+
+| Campo                   | Regla canónica                                                                                                                 |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `attempt_id`            | identidad única de una ejecución concreta; nunca sustituye `operation_id` ni `idempotency_key`                                 |
+| `attempt_no`            | ordinal monotónico de intentos realmente iniciados para la misma operación                                                     |
+| `retry_profile`         | una de las identidades `RR0..RR5` del registro transversal vigente                                                             |
+| `max_attempts`          | techo total de intentos, incluido el primero                                                                                   |
+| `first_requested_at`    | origen temporal estable para medir edad; no se reescribe por retry o reasignación                                              |
+| `last_attempt_at`       | instante del intento más reciente efectivamente iniciado                                                                       |
+| `next_retry_at`         | primer instante en que otro intento puede volver a ser elegible; no garantiza que será ejecutado                               |
+| `retry_after_at`        | límite inferior derivado de `Retry-After` o equivalente cuando exista; no amplía el deadline                                   |
+| `error_class`           | clase canónica que determina si el fallo admite retry directo, espera, conciliación o cierre                                   |
+| `retryable`             | proyección derivada de la clase y del contexto; no convierte en transitorio un error que el contrato clasifica como definitivo |
+| `reconciliation_status` | referencia a la condición de conciliación cuando el efecto pudo ocurrir y no existe confirmación autoritativa suficiente       |
+
+Los campos de estado exacto y sus transiciones pertenecen a `QUEUE-ARC-010`; esta tarea define únicamente la semántica de retry que esos estados deberán representar.
+
+---
+
+#### 6. Perfiles canónicos heredados
+
+Se adoptan exactamente los perfiles aprobados por el registro de confiabilidad:
+
+| Perfil                     | Uso objetivo                                                                                     | `max_attempts` | Esperas base después del primer fallo            | Disposición al agotar                               |
+| -------------------------- | ------------------------------------------------------------------------------------------------ | -------------: | ------------------------------------------------ | --------------------------------------------------- |
+| `RR0_NO_RETRY`             | validación, autorización, conflicto, contrato incompatible, rechazo empresarial o señal obsoleta |              1 | no aplica                                        | error terminal                                      |
+| `RR1_SHORT_TRANSIENT`      | fallo técnico breve, runtime reiniciado o dependencia interna momentánea                         |              4 | `5 s`, `30 s`, `2 min`                           | aislamiento o terminal según contrato               |
+| `RR2_DURABLE_DELIVERY`     | entrega durable, notificación, integración o trabajo que tolera espera                           |              7 | `15 s`, `1 min`, `5 min`, `15 min`, `1 h`, `6 h` | aislamiento y conciliación                          |
+| `RR3_DEVICE_OR_OFFLINE`    | dispositivo, periférico, operación offline o conectividad intermitente                           |              6 | `10 s`, `1 min`, `5 min`, `30 min`, `2 h`        | bloqueo o conciliación; sin repetición física ciega |
+| `RR4_SCHEDULED_OCCURRENCE` | ejecución de una ocurrencia lógica de schedule                                                   |              4 | `30 s`, `2 min`, `10 min`                        | ocurrencia agotada o conciliación                   |
+| `RR5_COALESCING_SIGNAL`    | heartbeat o señal donde una más reciente sustituye la necesidad de reenviar una antigua          |              1 | no aplica                                        | señal vencida u omitida de forma registrada         |
+
+Reglas de aplicación:
+
+1. El perfil base expresa el máximo permitido, no una obligación de consumir todos los intentos.
+2. Una aplicación propietaria puede ser **más restrictiva** por operación.
+3. Aumentar intentos, ampliar deadline o reclasificar como reintentable una clase previamente no reintentable exige una decisión contractual versionada y evidencia de seguridad.
+4. Un error no reintentable detiene la repetición aunque el perfil base conserve presupuesto.
+5. Alcanzar el deadline detiene la repetición aunque `attempt_no < max_attempts`.
+6. El perfil no concede autorización para ejecutar, cancelar o forzar retry; la autoridad se define en `QUEUE-ARC-012`.
+
+---
+
+#### 7. Clasificación de errores y decisión de retry
+
+La clasificación transversal se aplica sin renombrar:
+
+| Clase                             | Retry directo   | Decisión de `QUEUE-ARC-006`                                                                 |
+| --------------------------------- | --------------- | ------------------------------------------------------------------------------------------- |
+| `VALIDATION_ERROR`                | no              | no repetir el mismo payload; una corrección es otra intención u operación explícita         |
+| `AUTHENTICATION_OR_AUTHORIZATION` | no              | bloquear la ejecución ordinaria; renovar identidad no revive por sí sola el intento fallido |
+| `CONTRACT_OR_VERSION_ERROR`       | no              | rechazar; requiere compatibilidad o contrato correcto                                       |
+| `IDEMPOTENCY_CONFLICT`            | no              | conservar conflicto; no sobrescribir ni reintentar                                          |
+| `BUSINESS_REJECTION`              | no              | devolver decisión propietaria; una solicitud nueva requiere nueva intención                 |
+| `TRANSIENT_INTERNAL`              | sí              | aplicar perfil y backoff asignados                                                          |
+| `THROTTLED`                       | sí              | respetar `Retry-After`, presupuesto y deadline                                              |
+| `DEPENDENCY_UNAVAILABLE`          | sí              | aplicar backoff sin ampliar autoridad ni deadline                                           |
+| `LEASE_LOST`                      | sí condicionado | abandonar el intento; otro claim puede continuar la misma intención bajo `QUEUE-ARC-009`    |
+| `OFFLINE_OR_DEVICE_UNREACHABLE`   | espera          | esperar disponibilidad; no consumir intento hasta emitir una nueva ejecución                |
+| `AMBIGUOUS_EXTERNAL_EFFECT`       | no directo      | conservar `RESULT_UNKNOWN`; consultar o conciliar antes de decidir otra ejecución           |
+| `AMBIGUOUS_PHYSICAL_EFFECT`       | no directo      | conservar `RESULT_UNKNOWN`; confirmar o inspeccionar antes de repetir                       |
+| `DEADLINE_EXCEEDED`               | no              | no iniciar otro intento ordinario                                                           |
+| `POISON_MESSAGE`                  | no              | aislar; no repetir automáticamente un elemento determinísticamente no procesable            |
+
+La disposición física de aislamiento, dead-letter, cuarentena o recuperación manual pertenece a `QUEUE-ARC-008` y no se implementa en esta tarea.
+
+---
+
+#### 8. Regla canónica de backoff
+
+Para un fallo reintentable se utiliza la espera base del perfil correspondiente al `attempt_no` que acaba de fallar.
+
+Ejemplo conceptual:
+
+```text
+attempt_no = 1 falla
+→ usar primera espera del perfil
+
+attempt_no = 2 falla
+→ usar segunda espera del perfil
+
+...
+
+si ya no existe otra espera porque se alcanzó max_attempts
+→ no programar otro intento
+```
+
+La programación del siguiente intento debe cumplir simultáneamente:
+
+```text
+base_delay = espera del perfil para el fallo actual
+jittered_delay = base_delay con jitter acotado según política implementada
+retry_after_floor = espera mínima de proveedor cuando exista
+actual_delay = máximo entre jittered_delay y retry_after_floor aplicable
+next_retry_at = failure_observed_at + actual_delay
+```
+
+Reglas:
+
+1. Todo backoff aplica jitter acotado, determinista o aleatorio seguro, según la política implementada y versionada.
+2. Esta tarea no inventa un porcentaje universal de jitter distinto del registro transversal.
+3. La espera nunca se reduce a un loop inmediato.
+4. `next_retry_at` debe quedar estrictamente antes del límite temporal de retry aplicable.
+5. Si la espera calculada alcanza o supera ese límite, no se programa otro intento ordinario.
+6. Un proceso que despierta antes de `next_retry_at` no consume intento ni adelanta la ejecución.
+7. Un proceso que despierta después de `next_retry_at` puede intentar únicamente si la operación sigue vigente y conserva presupuesto.
+8. El polling del worker no reemplaza la espera contractual: despertar cada cierto intervalo no transforma ese intervalo en backoff del trabajo.
+
+---
+
+#### 9. Presupuesto de intentos y límite de edad
+
+El retry está acotado por **dos fronteras simultáneas**:
+
+```text
+PRESUPUESTO DE CONTEO
+attempt_no <= max_attempts
+
+PRESUPUESTO TEMPORAL
+now_utc < retry_cutoff_at
+```
+
+Para esta versión del contrato:
+
+```text
+retry_cutoff_at =
+  el menor entre:
+  - deadline_at de la intención;
+  - un límite de edad propietario más restrictivo, cuando el contrato especializado ya lo declare.
+```
+
+Reglas:
+
+1. `deadline_at` nunca se extiende por retry, backoff, throttling, reconnect, cambio de worker, reasignación o indisponibilidad de dispositivo.
+2. Si no existe otro límite propietario más restrictivo, `deadline_at` es la frontera temporal máxima del retry ordinario.
+3. Alcanzar `max_attempts` agota el presupuesto aunque todavía quede tiempo.
+4. Alcanzar `retry_cutoff_at` agota el retry ordinario aunque queden intentos numéricos.
+5. El presupuesto no se reinicia al reiniciar una aplicación, worker, navegador, dispositivo o proceso.
+6. El presupuesto no se reinicia al cambiar `assignment_id` o `assignment_version`.
+7. El presupuesto de un batch no autoriza repetir efectos hijos ya confirmados; cada efecto hijo conserva su propia identidad y resultado.
+8. Una recuperación extraordinaria posterior al agotamiento pertenece a `QUEUE-ARC-008` y requiere la autoridad que defina `QUEUE-ARC-012`.
+
+---
+
+#### 10. `Retry-After`, throttling y dependencia no disponible
+
+Cuando una dependencia entregue `Retry-After` o una señal equivalente:
+
+1. se interpreta como **límite inferior de espera**, no como ampliación del contrato;
+2. no incrementa `max_attempts`;
+3. no amplía `deadline_at` ni otro límite de edad más restrictivo;
+4. si `retry_after_at >= retry_cutoff_at`, no se inicia otro intento ordinario;
+5. si el valor es inválido, se aplica el backoff del perfil y se registra el error técnico correspondiente; no se crea una espera arbitraria infinita;
+6. cambiar de worker o adaptador para eludir una restricción legítima de proveedor no está permitido;
+7. la aplicación propietaria puede imponer una espera mayor o terminar antes, pero no una política más permisiva sin versionado contractual.
+
+---
+
+#### 11. Resultado ambiguo y prohibición de retry ciego
+
+Un timeout o desconexión **después de que el efecto pudo haber sido aceptado** no se clasifica automáticamente como fallo reintentable.
+
+```text
+ENVÍO REALIZADO
++
+NO HAY CONFIRMACIÓN AUTORITATIVA
+=
+RESULT_UNKNOWN
+```
+
+Reglas:
+
+1. `AMBIGUOUS_EXTERNAL_EFFECT` no produce retry directo.
+2. `AMBIGUOUS_PHYSICAL_EFFECT` no produce retry directo.
+3. Se consulta proveedor, dispositivo, receipt, fuente autoritativa o mecanismo de conciliación antes de otra ejecución.
+4. Una nueva clave idempotente no se utiliza para ocultar la incertidumbre.
+5. Una reimpresión deliberada, una nueva solicitud empresarial o una corrección son intenciones nuevas cuando su contrato así lo define; no son retry del trabajo ambiguo.
+6. La recuperación manual y la cola de fallos se cierran en `QUEUE-ARC-008`.
+7. El estado y los eventos exactos de incertidumbre, agotamiento o resultado tardío se cierran en `QUEUE-ARC-010`.
+
+---
+
+#### 12. Relación entre retry y reasignación
+
+Retry y reasignación son conceptos distintos.
+
+```text
+REASIGNACIÓN
+= cambia destino técnico compatible
+
+RETRY
+= inicia otra ejecución de la misma operación
+```
+
+Reglas:
+
+1. Una reasignación sin ejecución nueva no consume intento.
+2. Una nueva ejecución después de reasignar sí recibe otro `attempt_id` y consume presupuesto.
+3. Reasignar conserva `operation_id`, idempotencia, huella, prioridad y deadline.
+4. La pérdida de un target antes de iniciar ejecución puede causar espera o reasignación sin consumir intento.
+5. La pérdida de un target después de iniciar una ejecución capaz de producir efecto conserva ese intento como iniciado; cualquier nueva ejecución deberá respetar la clasificación de resultado y presupuesto.
+6. Dos targets no pueden ejecutar simultáneamente la misma versión bajo la excusa de retry; claim, lease, fencing y exclusión pertenecen a `QUEUE-ARC-009`.
+7. Una reasignación forzada o retry manual requiere la autorización que defina `QUEUE-ARC-012`.
+
+---
+
+#### 13. Reintentos anidados y presupuesto end-to-end
+
+El presupuesto canónico gobierna la operación completa y no puede multiplicarse por capas.
+
+Queda fijado:
+
+```text
+RETRY DE APLICACIÓN
++
+RETRY DE WORKER
++
+RETRY DE SDK
++
+RETRY DE TRANSPORTE
++
+RETRY DE DISPOSITIVO
+≠
+PRESUPUESTOS INDEPENDIENTES ILIMITADOS
+```
+
+Reglas:
+
+1. Ninguna capa puede reiniciar `attempt_no` al recibir el mismo `operation_id`.
+2. Una llamada capaz de producir el efecto no puede repetirse internamente sin quedar incluida en el presupuesto efectivo de la operación.
+3. Un helper local puede encapsular detalle técnico, pero no ocultar ejecuciones adicionales que hagan posible superar `max_attempts`.
+4. El worker debe conocer o poder recuperar el presupuesto restante antes de iniciar otra ejecución.
+5. Un retry de transporte que solo reanuda una transferencia sin posibilidad de duplicar el efecto deberá demostrar esa semántica en su contrato especializado; no se presume por biblioteca o proveedor.
+6. La ausencia de visibilidad sobre cuántos envíos capaces de producir efecto realizó una capa impide declarar conformidad con el contrato de retry.
+7. La implementación futura deberá reconciliar cualquier retry legacy anidado antes de declarar el presupuesto end-to-end como validado.
+
+---
+
+#### 14. Matriz materializada de retry de las 19 identidades `QAI-*`
+
+| ID        | Clasificación              | Perfil base                | `max_attempts` | Regla materializada de retry                                                                                                                                                              | Estado y brecha documental                                                                                                                                                  |
+| --------- | -------------------------- | -------------------------- | -------------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QAI-001` | `APLICA_POLITICA_DE_RETRY` | `RR4_SCHEDULED_OCCURRENCE` |              4 | la misma ocurrencia puede reintentarse con `30 s`, `2 min`, `10 min` de espera base mientras siga antes de su deadline; el retry no crea otro cierre                                      | `ESPECIFICADO`; el solapamiento con `QAI-004` no se resuelve mediante retry y permanece bajo `QUEUE-ARC-009`                                                                |
+| `QAI-002` | `APLICA_POLITICA_DE_RETRY` | `RR4_SCHEDULED_OCCURRENCE` |              4 | el retry de la ocurrencia conserva identidad raíz a través de cron, SQL, transporte y worker; un fallo de entrega hijo puede generar trabajo durable separado bajo su contrato            | `ESPECIFICADO`; el éxito del cron no agota ni acredita el resultado de etapas posteriores                                                                                   |
+| `QAI-003` | `APLICA_POLITICA_DE_RETRY` | `RR4_SCHEDULED_OCCURRENCE` |              4 | solo se reintenta la misma ocurrencia correctiva mientras el contexto stale siga vigente y antes del deadline                                                                             | `ESPECIFICADO`; un recurso ya corregido o sustituido no se fuerza mediante retry                                                                                            |
+| `QAI-004` | `APLICA_POLITICA_DE_RETRY` | `RR4_SCHEDULED_OCCURRENCE` |              4 | conserva presupuesto propio como schedule transicional; retry no fusiona su ocurrencia con `QAI-001` ni legitima doble autoridad                                                          | `ESPECIFICADO`; coexistencia y exclusión siguen bajo `TSVC-CAT-010` y `QUEUE-ARC-009`                                                                                       |
+| `QAI-005` | `APLICA_POLITICA_DE_RETRY` | `RR4_SCHEDULED_OCCURRENCE` |              4 | la ocurrencia diaria usa el perfil de schedule; entregas de notificación hijas que se materialicen como trabajos separados usan su política especializada, no reinician este batch        | `ESPECIFICADO`; `pg_net` no crea presupuesto adicional y la credencial del cron no altera retry                                                                             |
+| `QAI-006` | `APLICA_POLITICA_DE_RETRY` | `RR4_SCHEDULED_OCCURRENCE` |              4 | una ocurrencia de limpieza reintenta solo dentro de su vigencia; el siguiente schedule es otra ocurrencia y no un retry de la anterior                                                    | `ESPECIFICADO`; el coalescing temporal aprobado evita ráfagas de ocurrencias históricas                                                                                     |
+| `QAI-007` | `APLICA_POLITICA_DE_RETRY` | `RR4_SCHEDULED_OCCURRENCE` |              4 | la ocurrencia de reconciliación conserva identidad; cada checkout afectado conserva además su identidad propia y un timeout ambiguo no se vuelve fallo definitivo                         | `ESPECIFICADO`; un batch reintentado no autoriza duplicar efectos hijos confirmados                                                                                         |
+| `QAI-008` | `APLICA_POLITICA_DE_RETRY` | `RR4_SCHEDULED_OCCURRENCE` |              4 | si llega a desplegarse, la ocurrencia usa el mismo perfil de schedule y queda sujeta a su deadline y misfire                                                                              | `PENDIENTE_DE_EVIDENCIA`; no existe acreditación remota del job; la adopción se recibe en `DELIV-PKG-001`                                                                   |
+| `QAI-009` | `APLICA_POLITICA_DE_RETRY` | `RR4_SCHEDULED_OCCURRENCE` |              4 | el workflow programado conserva presupuesto de la ocurrencia batch; cada solicitud de eliminación mantiene identidad y resultado propios                                                  | `ESPECIFICADO`; reejecutar el workflow no autoriza reprocesar solicitudes ya terminadas                                                                                     |
+| `QAI-010` | `PROPAGA_NO_DECIDE_RETRY`  | `UPSTREAM_PROPAGATED`      |     `UPSTREAM` | `pg_net` transporta el presupuesto, deadline e identidad del trabajo upstream; cualquier política interna no puede ampliar silenciosamente el número efectivo de envíos                   | `ESPECIFICADO`; la cola técnica no es autoridad para decidir retry empresarial                                                                                              |
+| `QAI-011` | `APLICA_POLITICA_DE_RETRY` | `RR3_DEVICE_OR_OFFLINE`    |              6 | la intención offline espera disponibilidad sin consumir intento; cuando ejecuta usa `10 s`, `1 min`, `5 min`, `30 min`, `2 h` de espera base con jitter y deadline                        | `ESPECIFICADO`; el código actual usa política legacy distinta y deberá reconciliarse en la planificación recibida por `DELIV-PKG-001` antes de declarar conformidad         |
+| `QAI-012` | `APLICA_POLITICA_DE_RETRY` | `RR3_DEVICE_OR_OFFLINE`    |              6 | misma política que `QAI-011`, conservando identidad y presupuesto separados para descanso; compartir worker no mezcla contadores                                                          | `ESPECIFICADO`; la implementación local actual no acredita todavía límite end-to-end ni jitter canónico                                                                     |
+| `QAI-013` | `PROPAGA_NO_DECIDE_RETRY`  | `UPSTREAM_PROPAGATED`      |     `UPSTREAM` | el worker periódico consume `next_retry_at` y presupuesto de `QAI-011`/`QAI-012`; su tick de `15000 ms` no es otro intento ni perfil de backoff                                           | `ESPECIFICADO`; el worker actual no debe reiniciar contadores al despertar                                                                                                  |
+| `QAI-014` | `APLICA_POLITICA_DE_RETRY` | `RR3_DEVICE_OR_OFFLINE`    |              6 | indisponibilidad de SO, ubicación o conectividad espera sin consumir ejecución; una nueva llamada efectiva consume intento y conserva la misma intención                                  | `ESPECIFICADO`; un callback repetido no crea cierres nuevos y la demora del SO no amplía deadline                                                                           |
+| `QAI-015` | `APLICA_POLITICA_DE_RETRY` | `RR3_DEVICE_OR_OFFLINE`    |              6 | solo se reintenta antes de resultado físico ambiguo; después de aceptación incierta del periférico se concilia antes de otra impresión                                                    | `ESPECIFICADO`; `localStorage` + BrowserPrint actuales no acreditan presupuesto, resultado físico ni conciliación canónica; detalle continúa en `PRINT-ARC-*`               |
+| `QAI-016` | `NO_APLICA`                | `NO_APLICA`                |    `NO_APLICA` | refresco de lectura sin trabajo durable ni efecto empresarial                                                                                                                             | `NO_APLICA`; no se fuerza al contrato de retry                                                                                                                              |
+| `QAI-017` | `APLICA_POLITICA_DE_RETRY` | `RR2_DURABLE_DELIVERY`     |              7 | la entrega derivada del mensaje usa `15 s`, `1 min`, `5 min`, `15 min`, `1 h`, `6 h` de espera base con jitter; el mensaje fuente no se pierde por agotar entrega                         | `ESPECIFICADO`; trigger y `pg_net` no reinician presupuesto y la recuperación física pertenece a `QUEUE-ARC-008` / `NOTIFY-ARC-*`                                           |
+| `QAI-018` | `APLICA_POLITICA_DE_RETRY` | `RR2_DURABLE_DELIVERY`     |              7 | el procesamiento interno del evento Wompi usa entrega durable; un replay del proveedor es repetición de evento fuente, no un nuevo retry interno, y un efecto externo ambiguo se concilia | `ESPECIFICADO`; la protección de evento ya observada no se eleva a certificación end-to-end                                                                                 |
+| `QAI-019` | `APLICA_POLITICA_DE_RETRY` | `RR2_DURABLE_DELIVERY`     |              7 | el procesamiento interno usa entrega durable solo bajo identidad estable; replay del proveedor no debe abrir otra intención y resultado ambiguo no admite repetición ciega                | `ESPECIFICADO`; la brecha de reclamación idempotente observada impide declarar conformidad de retry hasta resolver protección de replay y concurrencia bajo `QUEUE-ARC-009` |
+
+Resultado de reconciliación:
+
+```text
+19 IDENTIDADES ESPERADAS
+19 IDENTIDADES MATERIALIZADAS
+16 APLICAN POLÍTICA DE RETRY
+2 PROPAGAN Y NO DECIDEN RETRY
+1 NO APLICA
+0 FALTANTES
+0 DUPLICADOS
+
+DISTRIBUCIÓN DE PERFIL BASE ENTRE LAS 16 APLICABLES
+RR2_DURABLE_DELIVERY     = 3
+RR3_DEVICE_OR_OFFLINE    = 4
+RR4_SCHEDULED_OCCURRENCE = 9
+```
+
+---
+
+#### 15. Reconciliación con retry actual de ANIMA
+
+El código vigente de ANIMA materializa dos niveles distintos de retry alrededor de asistencia:
+
+1. el helper de escritura directa intenta hasta **3** veces y, para fallos de red, espera de forma lineal `700 ms × attempt` entre envíos;
+2. las colas offline de asistencia y descanso conservan `attempts`, `nextRetryAt`, `lastError` y estado local; para errores semejantes a offline calculan un backoff exponencial desde `700 ms`, con tope de `2 min`;
+3. el worker de cola se despierta aproximadamente cada `15000 ms` cuando existen pendientes;
+4. el flujo observado no presenta en la cola un corte canónico por `max_attempts` ni la política de jitter exigida por el registro transversal;
+5. conflicto deja de ser reintentable automáticamente, coherente con la clasificación canónica;
+6. el intervalo del worker y el backoff de la intención son dimensiones distintas.
+
+Decisión documental:
+
+```text
+IMPLEMENTACIÓN ACTUAL ANIMA
+= EVIDENCIA DE RETRY LEGACY / PARCIAL
+
+CONTRATO OBJETIVO QAI-011 / QAI-012
+= RR3_DEVICE_OR_OFFLINE
+= max_attempts 6
+= secuencia base 10 s / 1 min / 5 min / 30 min / 2 h
+= jitter acotado
+= deadline vigente
+= cero reinicio de presupuesto entre capas
+```
+
+Esta tarea no modifica ANIMA. La reconciliación de código, pruebas, almacenamiento de presupuesto y migración de la política se recibe en la planificación de implementación a partir de `DELIV-PKG-001`, preservando `QUEUE-ARC-009` para exclusión concurrente y `QUEUE-ARC-010` para estados/eventos.
+
+---
+
+#### 16. Schedules y ocurrencias recurrentes
+
+`QAI-001..QAI-009` usan `RR4_SCHEDULED_OCCURRENCE` como perfil base de la **ocurrencia raíz**.
+
+Reglas:
+
+1. un retry conserva `schedule_occurrence_id`, `logical_fire_at_utc`, `idempotency_key` y `operation_id`;
+2. el siguiente fire del schedule es otra ocurrencia y no consume ni repone el presupuesto de la anterior;
+3. un misfire recuperable conserva la misma identidad y su propio presupuesto;
+4. una ejecución manual adicional deliberada es otra intención; una ejecución manual que recupera la misma ocurrencia conserva identidad y presupuesto restante;
+5. `COALESCE_TO_LATEST_VALID` no crea una ráfaga de retries de ocurrencias antiguas;
+6. `RUN_ONCE_IF_STILL_VALID` permite la recuperación únicamente mientras exista vigencia y presupuesto;
+7. el solapamiento `QAI-001` / `QAI-004` no se resuelve por consumir retries; su exclusión permanece en `QUEUE-ARC-009`.
+
+Los trabajos hijos que una ocurrencia origine pueden tener contrato y perfil propios. El presupuesto del contenedor nunca reemplaza la identidad ni el presupuesto del efecto hijo.
+
+---
+
+#### 17. Dispositivos, impresión y trabajo offline
+
+Para `RR3_DEVICE_OR_OFFLINE`:
+
+1. indisponibilidad del dispositivo o ausencia de conectividad no consume intento mientras no se inicie otra ejecución;
+2. reconectar no reinicia `attempt_no` ni `deadline_at`;
+3. una nueva ejecución real sí consume intento;
+4. si el efecto físico pudo ocurrir y no existe confirmación, se detiene el retry directo y se concilia;
+5. una reimpresión autorizada como copia nueva no utiliza el presupuesto de la intención anterior;
+6. el dispositivo no decide ampliar intentos ni edad por permanecer offline;
+7. la recuperación después de agotamiento pertenece a `QUEUE-ARC-008` y su autoridad a `QUEUE-ARC-012`.
+
+---
+
+#### 18. Transportes, notificaciones y webhooks
+
+Para `RR2_DURABLE_DELIVERY` y transportes propagadores:
+
+1. `QAI-010` no crea un presupuesto independiente del trabajo que transporta;
+2. `QAI-017` preserva el mensaje fuente aunque la entrega de notificación agote sus intentos;
+3. los replays de `QAI-018` y `QAI-019` se resuelven primero por identidad de evento e idempotencia, no creando una nueva intención por cada entrega del proveedor;
+4. el proveedor puede tener su propia política externa de reenvío, pero esa política no aumenta `max_attempts` interno de VENTO;
+5. timeout posterior a un posible efecto externo produce `RESULT_UNKNOWN`, no retry ciego;
+6. una respuesta `Retry-After` válida solo desplaza el siguiente intento dentro del deadline vigente;
+7. la brecha de replay de `QAI-019` permanece explícita y no se declara resuelta por asignarle un perfil documental.
+
+---
+
+#### 19. Handoff exacto a `QUEUE-ARC-007..012`
+
+| Tarea                                                                             | Responsabilidad reservada recibida desde esta tarea                                                                                                                    |
+| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QUEUE-ARC-007 — Definir cancelación antes y durante ejecución`                   | decidir cómo una solicitud de cancelación impide intentos futuros o interactúa con un intento en curso, sin confundir cancelación con agotamiento o deadline           |
+| `QUEUE-ARC-008 — Definir cola de fallos y recuperación manual`                    | materializar aislamiento, dead-letter, cuarentena, conciliación y recuperación después de agotamiento o error no procesable sin reiniciar silenciosamente la intención |
+| `QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia`                    | gobernar claim, lease, fencing y exclusión para que retry, reasignación o pérdida de lease no produzcan dos ejecutores válidos simultáneos                             |
+| `QUEUE-ARC-010 — Definir estados y eventos canónicos`                             | representar intento iniciado, retry pendiente, agotamiento, resultado ambiguo, fallo, expiración y demás transiciones sin redefinir presupuesto o backoff              |
+| `QUEUE-ARC-011 — Definir métricas de espera, ejecución y error`                   | medir intentos, retries, backoff efectivo, agotamientos, edad y distribución de errores sin convertir métricas en política                                             |
+| `QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos` | definir quién puede forzar retry, recuperación o cambio de política más restrictiva sin convertir posesión técnica del trabajo en autoridad empresarial                |
+
+Ninguna de esas responsabilidades se desarrolla en esta tarea.
+
+---
+
+#### 20. Prohibiciones
+
+Esta tarea no autoriza:
+
+1. cambiar el retry real de ANIMA, NEXO, PASS o cualquier otra aplicación;
+2. modificar `ATTENDANCE_WRITE_MAX_ATTEMPTS`, intervalos, constantes o helpers actuales;
+3. crear tablas de intentos, columnas, índices, constraints, funciones, RPC o triggers;
+4. crear o modificar dead-letter, cuarentena o recuperación manual;
+5. modificar `pg_cron`, `pg_net`, GitHub Actions, Edge Functions, webhooks, TaskManager, SecureStore, localStorage o BrowserPrint;
+6. activar `QAI-008`;
+7. retirar `QAI-004`;
+8. ampliar `deadline_at`;
+9. crear otra `idempotency_key` para un retry;
+10. repetir automáticamente un efecto externo o físico ambiguo;
+11. convertir un error de validación, autorización, contrato, conflicto o rechazo empresarial en transitorio;
+12. reiniciar presupuesto por cambio de worker, dispositivo, adaptador, proceso o repositorio;
+13. definir cancelación final;
+14. definir claim, lease, fencing, locks o exclusión concurrente;
+15. cerrar estados, eventos, métricas, SLOs o alertas;
+16. conceder autorización para retry manual o recuperación;
+17. declarar conformidad operativa de los activos actuales por esta definición documental;
+18. iniciar o desarrollar `QUEUE-ARC-007`.
+
+---
+
+#### 21. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea especializa y materializa para el inventario de colas una obligación de confiabilidad ya registrada: clasificación canónica del error, retry únicamente cuando corresponde, backoff con jitter, límite de intentos y edad, respeto de una espera de proveedor sin ampliar deadline, preservación de identidad durante el retry, tratamiento de resultado desconocido y prohibición de efectos duplicados. No introduce una obligación verificable independiente ni cambia alcance, estado, responsable, evidencia o relación de requisitos vigentes.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 22. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, que ya exige códigos canónicos, backoff con jitter, límites de intentos y edad, `Retry-After`, tratamiento de timeout desconocido, idempotencia, claim, conciliación, cola de fallos y recuperación controlada;
+- `TREQ-INTEGRATION-004`, que exige reconstruir cada intento, resultado, error y efecto final sin pérdida silenciosa ni duplicación por retries;
+- la cobertura específica vigente de ANIMA, PASS, NEXO, Supabase e integraciones relacionada con trabajo offline, webhooks, colas, dispositivos y reintentos.
+
+Ninguna fila del registro canónico cambia de identificador, dominio, regla protegida, estado, responsable, evidencia, relación o secuencia por esta tarea.
+
+---
+
+#### 23. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `QUEUE-ARC-005` como tarea anterior aprobada;
+2. conserva `QUEUE-ARC-007` como única tarea siguiente reservada;
+3. establece `WORK-RETRY-POLICY-CONTRACT-001@1.0.0` sin crear perfiles paralelos;
+4. adopta exactamente `RR0_NO_RETRY`, `RR1_SHORT_TRANSIENT`, `RR2_DURABLE_DELIVERY`, `RR3_DEVICE_OR_OFFLINE`, `RR4_SCHEDULED_OCCURRENCE` y `RR5_COALESCING_SIGNAL`;
+5. conserva sus máximos y secuencias base aprobados;
+6. define `attempt_id` como ejecución concreta y `attempt_no` como ordinal monotónico;
+7. define que `max_attempts` incluye el primer intento;
+8. conserva `operation_id`, `idempotency_key`, payload y huella entre retries;
+9. impide reiniciar presupuesto por reasignación, reconnect, restart o cambio de capa;
+10. no consume intento por mera espera offline o de disponibilidad antes de una nueva ejecución;
+11. obliga a que cualquier ejecución capaz de producir efecto quede dentro del presupuesto efectivo;
+12. prohíbe retries anidados que multipliquen silenciosamente `max_attempts`;
+13. aplica jitter acotado a las esperas sin inventar una segunda política transversal;
+14. trata `Retry-After` como límite inferior sin ampliar deadline ni intentos;
+15. utiliza el menor límite temporal aplicable entre `deadline_at` y cualquier edad propietaria más restrictiva;
+16. detiene retry por agotamiento numérico o temporal, lo que ocurra primero;
+17. aplica la clasificación canónica de errores sin convertir errores definitivos en transitorios;
+18. conserva `RESULT_UNKNOWN` ante efecto externo o físico ambiguo y prohíbe repetición ciega;
+19. distingue reasignación de retry;
+20. mantiene claim, lease, fencing y exclusión para `QUEUE-ARC-009`;
+21. materializa exactamente una decisión para cada `QAI-001..QAI-019`;
+22. obtiene 16 `APLICA_POLITICA_DE_RETRY`, 2 `PROPAGA_NO_DECIDE_RETRY` y 1 `NO_APLICA`;
+23. obtiene 9 perfiles base `RR4`, 4 perfiles base `RR3` y 3 perfiles base `RR2` entre las 16 identidades aplicables;
+24. mantiene 0 identidades faltantes y 0 duplicadas;
+25. mantiene `QAI-010` y `QAI-013` como propagadores, no como autoridades de retry;
+26. mantiene `QAI-016` como `NO_APLICA`;
+27. mantiene `QAI-008` como `PENDIENTE_DE_EVIDENCIA` sin activar su schedule;
+28. registra la política actual de retry de ANIMA como evidencia legacy/parcial sin declarar cumplimiento del contrato objetivo;
+29. conserva la brecha de replay de `QAI-019` y no la oculta mediante un perfil documental;
+30. asigna con exactitud los handoffs `QUEUE-ARC-007..012`;
+31. declara cero cambios de requisitos de prueba con justificación concreta;
+32. crea cero objetos físicos;
+33. modifica cero repositorios, Supabase, cron, colas, workers, dispositivos, adaptadores o webhooks;
+34. no inicia ni desarrolla `QUEUE-ARC-007`.
+
+---
+
+#### 24. Resultado de la tarea
+
+`QUEUE-ARC-006` deja establecido el contrato canónico de retry del trabajo asíncrono:
+
+```text
+MISMA INTENCIÓN
+        ↓
+INTENTO IDENTIFICADO
+        ↓
+ERROR CLASIFICADO
+        ↓
+¿REINTENTABLE?
+        ↓ sí
+¿QUEDA PRESUPUESTO?
+        ↓ sí
+¿SIGUE VIGENTE?
+        ↓ sí
+BACKOFF DEL PERFIL + JITTER
+        ↓
+next_retry_at
+        ↓
+NUEVO attempt_id
+
+SI NO QUEDA PRESUPUESTO
+O SE ALCANZA EL DEADLINE
+O EL EFECTO ES AMBIGUO
+→ NO RETRY CIEGO
+→ AISLAMIENTO / CONCILIACIÓN / RESULTADO
+  SEGÚN TAREAS PROPIETARIAS
+```
+
+Las 19 identidades inventariadas quedan reconciliadas una a una. El retry conserva identidad, contrato, payload, asignación histórica y deadline; ninguna capa técnica puede multiplicar silenciosamente el presupuesto de intentos.
+
+---
+
+#### 25. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador`
+
+TAREA ACTUAL APROBADA
+
+`QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo`
+
+SIGUIENTE TAREA RESERVADA
+
+`QUEUE-ARC-007 — Definir cancelación antes y durante ejecución`
+
+
 ### [ ] QUEUE-ARC-007 — Definir cancelación antes y durante ejecución
 ### [ ] QUEUE-ARC-008 — Definir cola de fallos y recuperación manual
 ### [ ] QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia
