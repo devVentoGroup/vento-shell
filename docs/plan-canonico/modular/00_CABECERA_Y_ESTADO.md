@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **819** |
+| Tareas aprobadas | **820** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **775** |
+| Tareas no iniciadas | **774** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **51.38% (819/1594)** |
+| Porcentaje de completamiento | **51.44% (820/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados** |
-| Tarea actual | **DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy** |
+| Última tarea aprobada | **DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy** |
+| Tarea actual | **DELIV-PKG-010 — Definir eventos emitidos, consumidos, colas y compensaciones** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DELIV-PKG-010 — Definir eventos emitidos, consumidos, colas y compensaciones** |
+| Siguiente tarea | **DELIV-PKG-011 — Definir impresión, notificaciones, documentos y evidencia requeridos** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 8 de 68 aprobadas; DELIV-PKG-009 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 9 de 68 aprobadas; DELIV-PKG-010 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DELIV-PKG-008` — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados |
-| Tarea actual | `DELIV-PKG-009` — Definir migraciones, backfills, compatibilidad y retiro legacy — **NO INICIADA** |
-| Siguiente tarea | `DELIV-PKG-010` — Definir eventos emitidos, consumidos, colas y compensaciones |
+| Última aprobada | `DELIV-PKG-009` — Definir migraciones, backfills, compatibilidad y retiro legacy |
+| Tarea actual | `DELIV-PKG-010` — Definir eventos emitidos, consumidos, colas y compensaciones — **NO INICIADA** |
+| Siguiente tarea | `DELIV-PKG-011` — Definir impresión, notificaciones, documentos y evidencia requeridos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 8 DE 68 APROBADAS — ACTUAL DELIV-PKG-009** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 9 DE 68 APROBADAS — ACTUAL DELIV-PKG-010** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados
-        ↓
-TAREA ACTUAL
 DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DELIV-PKG-010 — Definir eventos emitidos, consumidos, colas y compensaciones
         ↓
+SIGUIENTE TAREA RESERVADA
+DELIV-PKG-011 — Definir impresión, notificaciones, documentos y evidencia requeridos
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 8 de 68 tareas aprobadas
+BLOQUE E5 — 9 de 68 tareas aprobadas
 ```

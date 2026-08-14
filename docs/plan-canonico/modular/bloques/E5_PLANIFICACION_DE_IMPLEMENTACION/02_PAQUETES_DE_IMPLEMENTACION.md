@@ -1,5 +1,32 @@
 ### PAQUETES DE IMPLEMENTACIÓN
 
+#### Alcance resumido canónico de las tareas reservadas
+
+Esta tabla restringe la interpretación del título sin modificar la identidad ni el encabezado canónico de cada tarea. El campo **Decide** expresa el resultado documental que debe quedar cerrado; **No decide ni ejecuta** impide adelantar trabajo de otra tarea; **Entrega a** identifica el consumidor mínimo de la decisión. Una descripción generada o un iniciador posterior no puede ampliar estos límites por inferencia.
+
+<!-- TASK-SCOPE-CONTRACT:START -->
+| Tarea           | Decide                                                                                                                                                                                                                                                             | No decide ni ejecuta                                                                                                                                                                      | Entrega a                                                                             |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `DELIV-PKG-009` | Plan de transición por paquete: migraciones y operaciones DDL/DML previstas, precondiciones, secuencia, backfills, compatibilidad temporal y retiro legacy.                                                                                                        | Creación de archivos SQL, ejecución de DDL/DML, cambios remotos o redefinición de los objetos gobernados por `DELIV-PKG-008`.                                                             | `DELIV-PKG-014`, `DELIV-PKG-019`, `DELIV-PKG-020` e implementación física.            |
+| `DELIV-PKG-010` | Catálogo por paquete de eventos, productores, consumidores, contratos, entrega, idempotencia, retry, colas, DLQ, compensación y conciliación.                                                                                                                      | Despliegue de brokers o colas, ejecución de consumidores o duplicación del estado de negocio como evento.                                                                                 | `DELIV-PKG-014..017` e implementación de integraciones.                               |
+| `DELIV-PKG-011` | Necesidades por paquete de impresión, notificaciones, documentos y evidencia, con canal, contenido, propietario, conservación y disparador.                                                                                                                        | Selección o contratación de proveedores, credenciales, envío real o despliegue de servicios.                                                                                              | `DELIV-PKG-014..017` y tareas de implementación propietarias.                         |
+| `DELIV-PKG-012` | Contrato de autorización por paquete: acción, actor, modalidad, alcance, contexto, recurso y frontera autoritativa de servidor.                                                                                                                                    | Autorización confiada a la UI, implementación de permisos o RLS, ni roles inferidos sin fuente canónica.                                                                                  | `DELIV-PKG-014..016` y bloques de autorización e implementación.                      |
+| `DELIV-PKG-013` | Requisitos no funcionales aplicables por paquete, con umbral medible para seguridad, rendimiento, disponibilidad, operación offline, accesibilidad, privacidad, retención, compatibilidad y operación.                                                             | Listas genéricas sin umbral, ejecución de pruebas o certificación de cumplimiento.                                                                                                        | `DELIV-PKG-016`, `DELIV-PKG-017`, `DELIV-PKG-019`, `DELIV-PKG-020` y `DELIV-PKG-023`. |
+| `DELIV-PKG-014` | Inventario exacto por paquete de repositorios, archivos y símbolos que se crearán, modificarán, reutilizarán o retirarán, con propietario y trazabilidad.                                                                                                          | Edición física de código ni invención de rutas o archivos sin evidencia del repositorio.                                                                                                  | `DELIV-PKG-015`, `DELIV-PKG-016` e implementación física.                             |
+| `DELIV-PKG-015` | Cierre consolidado de la arquitectura definida en `DELIV-PKG-006..014`: topología entre repositorios, módulos, archivos y símbolos, dependencias, SDK, frameworks, librerías, toolchain, versiones compatibles, bloqueos, precondiciones y orden de actualización. | Redefinición silenciosa de decisiones anteriores, instalación, actualización o despliegue físico, versiones flotantes ni adopción de “latest” sin verificar estabilidad y compatibilidad. | `DELIV-PKG-016..020`, `DELIV-PKG-025` e implementación física.                        |
+| `DELIV-PKG-016` | Matriz por paquete entre `TREQ-*`, niveles de prueba, archivos, comandos, fixtures, entornos, responsables y evidencia esperada.                                                                                                                                   | Ejecución de pruebas ni cambio de estado a `IMPLEMENTADO` o `VALIDADO` por planificación documental.                                                                                      | Implementación del paquete, bloque de pruebas y certificación.                        |
+| `DELIV-PKG-017` | Contrato de observabilidad por paquete: logs, métricas, trazas, alertas, auditoría, umbrales, propietarios, conservación y datos prohibidos.                                                                                                                       | Instrumentación o dashboards físicos, configuración de proveedores, alertas productivas ni registro de secretos o datos sensibles.                                                        | `DELIV-PKG-018..023` e implementación operativa.                                      |
+| `DELIV-PKG-018` | Feature flags y configuración por paquete: clave, propietario, entorno, valor predeterminado, prerrequisitos, activación, expiración y kill switch.                                                                                                                | Secretos, activación real, cambio remoto de configuración o despliegue.                                                                                                                   | `DELIV-PKG-019`, `DELIV-PKG-020`, `DELIV-PKG-022` y `DELIV-PKG-025`.                  |
+| `DELIV-PKG-019` | Estrategia por paquete de artefactos, entornos, secuencia, cohortes, canary, pausas, promoción y evidencia de rollout.                                                                                                                                             | Deploy, cutover, promoción o modificación real de entornos.                                                                                                                               | `DELIV-PKG-020`, gates de readiness, cutover y CI.                                    |
+| `DELIV-PKG-020` | Rollback técnico, funcional y de datos por paquete, con disparadores, autoridad, objetivo, procedimiento, efectos irreversibles y conciliación.                                                                                                                    | Ejecución del rollback ni afirmación de que fue probado sin evidencia real.                                                                                                               | Gates de readiness, cutover, hypercare e implementación.                              |
+| `DELIV-PKG-021` | Documentación, runbooks, procedimientos y capacitación requeridos por paquete, con audiencia, propietario, versión y criterio de actualización.                                                                                                                    | Ejecución de capacitación, publicación operativa ni certificación de preparación del soporte.                                                                                             | Gates de documentación, soporte, capacitación y `DELIV-PKG-023`.                      |
+| `DELIV-PKG-022` | Piloto por paquete: actores, sedes, datos, dispositivos, entorno, duración, cohortes, exclusiones y salvaguardas.                                                                                                                                                  | Ejecución del piloto ni ampliación a paquetes, actores o sedes no aprobados.                                                                                                              | `DELIV-PKG-023`, cutover y validación del piloto.                                     |
+| `DELIV-PKG-023` | Criterios medibles de aceptación y manifiesto de evidencia por paquete, con umbral, responsable, estados de resultado y tratamiento de defectos.                                                                                                                   | Certificación basada en evidencia planeada, incompleta o no ejecutada.                                                                                                                    | `DELIV-PKG-024`, `DELIV-PKG-025` y gates de cierre.                                   |
+| `DELIV-PKG-024` | Trazabilidad completa del paquete hacia brechas, capacidades, procesos, tareas y `TREQ-*`, incluyendo cobertura y detección de huérfanos.                                                                                                                          | Reapertura, reasignación o creación silenciosa de brechas sin modificar primero su fuente canónica.                                                                                       | `DELIV-PKG-025` y gates de cierre de E5.                                              |
+| `DELIV-PKG-025` | Decisión final por expediente para conservar, dividir, compartir con linaje, aprobar o bloquear el paquete después de revisar el dossier completo.                                                                                                                 | Implementación, despliegue, aprobación global por lote ni avance con decisiones o evidencia faltantes.                                                                                    | Gates finales de E5 y comienzo autorizado de implementación física.                   |
+<!-- TASK-SCOPE-CONTRACT:END -->
+
+
 ### ✅ DELIV-PKG-001 — Crear identificador estable para cada paquete de implementación
 
 **Estado:** APROBADA
@@ -3751,34 +3778,540 @@ TAREA ACTUAL APROBADA
 SIGUIENTE TAREA RESERVADA
 `DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy`
 
-#### Alcance resumido canónico de las tareas reservadas
+### ✅ DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy
 
-Esta tabla restringe la interpretación del título sin modificar la identidad ni el encabezado canónico de cada tarea. El campo **Decide** expresa el resultado documental que debe quedar cerrado; **No decide ni ejecuta** impide adelantar trabajo de otra tarea; **Entrega a** identifica el consumidor mínimo de la decisión. Una descripción generada o un iniciador posterior no puede ampliar estos límites por inferencia.
+**Estado:** APROBADA
+**Tarea anterior:** `DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados`
+**Tarea siguiente:** `DELIV-PKG-010 — Definir eventos emitidos, consumidos, colas y compensaciones`
+**Tipo de tarea:** documental — plan materializado de transición, migraciones previstas, DDL/DML, backfills, compatibilidad temporal y retiro legacy para las 207 raíces `GAP-PKG-001..207`; sin crear archivos SQL ni ejecutar cambios físicos
 
-<!-- TASK-SCOPE-CONTRACT:START -->
-| Tarea | Decide | No decide ni ejecuta | Entrega a |
-| --- | --- | --- | --- |
-| `DELIV-PKG-009` | Plan de transición por paquete: migraciones y operaciones DDL/DML previstas, precondiciones, secuencia, backfills, compatibilidad temporal y retiro legacy. | Creación de archivos SQL, ejecución de DDL/DML, cambios remotos o redefinición de los objetos gobernados por `DELIV-PKG-008`. | `DELIV-PKG-014`, `DELIV-PKG-019`, `DELIV-PKG-020` e implementación física. |
-| `DELIV-PKG-010` | Catálogo por paquete de eventos, productores, consumidores, contratos, entrega, idempotencia, retry, colas, DLQ, compensación y conciliación. | Despliegue de brokers o colas, ejecución de consumidores o duplicación del estado de negocio como evento. | `DELIV-PKG-014..017` e implementación de integraciones. |
-| `DELIV-PKG-011` | Necesidades por paquete de impresión, notificaciones, documentos y evidencia, con canal, contenido, propietario, conservación y disparador. | Selección o contratación de proveedores, credenciales, envío real o despliegue de servicios. | `DELIV-PKG-014..017` y tareas de implementación propietarias. |
-| `DELIV-PKG-012` | Contrato de autorización por paquete: acción, actor, modalidad, alcance, contexto, recurso y frontera autoritativa de servidor. | Autorización confiada a la UI, implementación de permisos o RLS, ni roles inferidos sin fuente canónica. | `DELIV-PKG-014..016` y bloques de autorización e implementación. |
-| `DELIV-PKG-013` | Requisitos no funcionales aplicables por paquete, con umbral medible para seguridad, rendimiento, disponibilidad, operación offline, accesibilidad, privacidad, retención, compatibilidad y operación. | Listas genéricas sin umbral, ejecución de pruebas o certificación de cumplimiento. | `DELIV-PKG-016`, `DELIV-PKG-017`, `DELIV-PKG-019`, `DELIV-PKG-020` y `DELIV-PKG-023`. |
-| `DELIV-PKG-014` | Inventario exacto por paquete de repositorios, archivos y símbolos que se crearán, modificarán, reutilizarán o retirarán, con propietario y trazabilidad. | Edición física de código ni invención de rutas o archivos sin evidencia del repositorio. | `DELIV-PKG-015`, `DELIV-PKG-016` e implementación física. |
-| `DELIV-PKG-015` | Cierre consolidado de la arquitectura definida en `DELIV-PKG-006..014`: topología entre repositorios, módulos, archivos y símbolos, dependencias, SDK, frameworks, librerías, toolchain, versiones compatibles, bloqueos, precondiciones y orden de actualización. | Redefinición silenciosa de decisiones anteriores, instalación, actualización o despliegue físico, versiones flotantes ni adopción de “latest” sin verificar estabilidad y compatibilidad. | `DELIV-PKG-016..020`, `DELIV-PKG-025` e implementación física. |
-| `DELIV-PKG-016` | Matriz por paquete entre `TREQ-*`, niveles de prueba, archivos, comandos, fixtures, entornos, responsables y evidencia esperada. | Ejecución de pruebas ni cambio de estado a `IMPLEMENTADO` o `VALIDADO` por planificación documental. | Implementación del paquete, bloque de pruebas y certificación. |
-| `DELIV-PKG-017` | Contrato de observabilidad por paquete: logs, métricas, trazas, alertas, auditoría, umbrales, propietarios, conservación y datos prohibidos. | Instrumentación o dashboards físicos, configuración de proveedores, alertas productivas ni registro de secretos o datos sensibles. | `DELIV-PKG-018..023` e implementación operativa. |
-| `DELIV-PKG-018` | Feature flags y configuración por paquete: clave, propietario, entorno, valor predeterminado, prerrequisitos, activación, expiración y kill switch. | Secretos, activación real, cambio remoto de configuración o despliegue. | `DELIV-PKG-019`, `DELIV-PKG-020`, `DELIV-PKG-022` y `DELIV-PKG-025`. |
-| `DELIV-PKG-019` | Estrategia por paquete de artefactos, entornos, secuencia, cohortes, canary, pausas, promoción y evidencia de rollout. | Deploy, cutover, promoción o modificación real de entornos. | `DELIV-PKG-020`, gates de readiness, cutover y CI. |
-| `DELIV-PKG-020` | Rollback técnico, funcional y de datos por paquete, con disparadores, autoridad, objetivo, procedimiento, efectos irreversibles y conciliación. | Ejecución del rollback ni afirmación de que fue probado sin evidencia real. | Gates de readiness, cutover, hypercare e implementación. |
-| `DELIV-PKG-021` | Documentación, runbooks, procedimientos y capacitación requeridos por paquete, con audiencia, propietario, versión y criterio de actualización. | Ejecución de capacitación, publicación operativa ni certificación de preparación del soporte. | Gates de documentación, soporte, capacitación y `DELIV-PKG-023`. |
-| `DELIV-PKG-022` | Piloto por paquete: actores, sedes, datos, dispositivos, entorno, duración, cohortes, exclusiones y salvaguardas. | Ejecución del piloto ni ampliación a paquetes, actores o sedes no aprobados. | `DELIV-PKG-023`, cutover y validación del piloto. |
-| `DELIV-PKG-023` | Criterios medibles de aceptación y manifiesto de evidencia por paquete, con umbral, responsable, estados de resultado y tratamiento de defectos. | Certificación basada en evidencia planeada, incompleta o no ejecutada. | `DELIV-PKG-024`, `DELIV-PKG-025` y gates de cierre. |
-| `DELIV-PKG-024` | Trazabilidad completa del paquete hacia brechas, capacidades, procesos, tareas y `TREQ-*`, incluyendo cobertura y detección de huérfanos. | Reapertura, reasignación o creación silenciosa de brechas sin modificar primero su fuente canónica. | `DELIV-PKG-025` y gates de cierre de E5. |
-| `DELIV-PKG-025` | Decisión final por expediente para conservar, dividir, compartir con linaje, aprobar o bloquear el paquete después de revisar el dossier completo. | Implementación, despliegue, aprobación global por lote ni avance con decisiones o evidencia faltantes. | Gates finales de E5 y comienzo autorizado de implementación física. |
-<!-- TASK-SCOPE-CONTRACT:END -->
+#### 1. Resultado canónico
+
+`DELIV-PKG-009` fija un plan de transición explícito para las **207** raíces `GAP-PKG-001..207`, preservando las **820** brechas y las superficies aprobadas en `DELIV-PKG-008`.
+
+La unidad física de transición no es el `package_id` sino el `TRANSITION_KEY` aprobado por E3. Un paquete puede contener múltiples identidades con disposiciones diferentes; por tanto, esta tarea prohíbe reducir un paquete a un único `DROP`, `ALTER`, copia o backfill inferido. Cada operación futura deberá conservar la identidad E3, su disposición, dependencias, owner, consumidores, compatibilidad, rollback y evidencia.
+
+Esta tarea **no** crea archivos de migración, SQL ejecutable, DDL, DML, backfills, cambios de RLS, cambios Storage, cambios Realtime, despliegues ni mutaciones remotas. La materialización física queda para la fase de implementación autorizada desde `vento-shell`.
+
+---
+
+#### 2. Fuentes y precedencia
+
+Gobiernan esta tarea:
+
+- `DELIV-PKG-001..008`, en especial la matriz de **207** decisiones de datos de `DELIV-PKG-008`;
+- `SUPA-TRANS-001..015`, incluido el universo de **970** identidades y sus contratos de disposición, dependencias, orden, backfill, compatibilidad, consumidores, coexistencia de escrituras, rollback, retiro legacy, paridad ambiental y roadmap ejecutable;
+- `DATA-NORM-TRANS-005`, para backfills deterministas, lotes, checkpoints, reconciliación y reversibilidad;
+- el registro `04A` vigente, que ya contiene requisitos de migración, drift, compatibilidad, backfill, rollback y retiro;
+- el historial de migraciones de `vento-shell` y el estado remoto de `vento-os-dev` como diagnóstico técnico actual.
+
+Precedencia: `DELIV-PKG-008` conserva la decisión de **qué superficies corresponden a cada paquete**; E3 conserva la identidad y disposición por `TRANSITION_KEY`; el estado remoto actual determina el precheck técnico antes de cualquier implementación. Ninguna diferencia remota autoriza a reescribir silenciosamente una decisión documental aprobada.
+
+---
+
+#### 3. Gate de reconciliación del baseline remoto
+
+Se establece `BASELINE-RECONCILIATION-GATE-009` como **bloqueante para implementación física, rollout y retiro legacy**, sin bloquear el cierre documental de este plan.
+
+| Superficie                    | Baseline aprobado en `DELIV-PKG-008` | Estado remoto consumido por 009 | Decisión                                                                    |
+| ----------------------------- | -----------------------------------: | ------------------------------: | --------------------------------------------------------------------------- |
+| tablas VENTO                  |                                  236 |                             236 | reconciliado                                                                |
+| vistas VENTO                  |                                   55 |                              62 | diferencia no atribuida; exige reconciliación de identidades                |
+| funciones PostgreSQL VENTO    |                                  301 |                             301 | reconciliado                                                                |
+| políticas incl. Storage       |                                  616 |                             616 | total reconciliado; distribución por schema no reconciliada                 |
+| buckets Storage               |                                   14 |                              14 | reconciliado                                                                |
+| tablas en `supabase_realtime` |                                    1 |                               6 | diferencia no atribuida; exige reconciliación de publicación y consumidores |
+| migraciones remotas           |                                  550 |                             550 | ledger estable en el corte consumido                                        |
+| última versión remota         |                     `20260731082600` |                `20260731082600` | reconciliado                                                                |
+
+La publicación `supabase_realtime` observada por 009 contiene: `public.order_conversations`, `public.order_delivery_sessions`, `public.order_messages`, `public.order_status_events`, `public.orders` y `public.users`.
+
+La distribución observada de políticas es `public=444`, `pass=102`, `talento=20`, `club=11`, `storage=39`; el total permanece en **616**, pero no coincide con la distribución congelada en 008. Esta tarea no infiere la causa.
+
+**Propietario documental primario de resolución:** `DELIV-PKG-014`, que deberá enumerar las identidades físicas exactas sin asumir que los conteos de 008 siguen describiendo el remoto.
+
+**Gate de promoción:** `DELIV-PKG-019` deberá impedir rollout mientras `BASELINE-RECONCILIATION-GATE-009` no tenga resultado reconciliado o excepción explícita y expirable. `DELIV-PKG-020` deberá consumir el resultado para el rollback de datos y contratos.
+
+---
+
+#### 4. Contrato E3 de disposición física
+
+El universo aprobado de E3 contiene **970** identidades lógicas con la siguiente disposición:
+
+| Disposición E3 | Identidades | Tratamiento en 009                                                                                    |
+| -------------- | ----------: | ----------------------------------------------------------------------------------------------------- |
+| `CONSERVAR`    |         420 | preservar identidad y autoridad; no crear retiro por conveniencia                                     |
+| `MOVER`        |         494 | expandir destino, preservar origen, migrar consumidores y retirar origen solo después de gates        |
+| `FUSIONAR`     |          11 | crosswalk/sobreviviente aprobado, reconciliación y retiro de no sobrevivientes después de estabilidad |
+| `DIVIDIR`      |           6 | routing explícito, cobertura completa y retiro de fuente solo después de validar todos los destinos   |
+| `RENOMBRAR`    |           0 | no existe autorización canónica para renames directos                                                 |
+| `RETIRAR`      |          39 | retiro progresivo; la clasificación no constituye autorización de eliminación física                  |
+
+Un paquete `MIG-DIRECT-001` ejecutará en el futuro únicamente las operaciones correspondientes a los `TRANSITION_KEY` realmente vinculados a sus tareas primarias. Si un paquete reúne disposiciones distintas, cada identidad conserva su lane independiente.
+
+---
+
+#### 5. Secuencia obligatoria de transición
+
+Toda transición física futura seguirá este orden lógico cerrado:
+
+1. confirmar `TRANSITION_KEY`, disposición E3, owner, consumidores y dependencias;
+2. congelar nuevas autoridades legacy o aislar el drift que impida comparar;
+3. materializar destino o contrato expandido sin retirar el origen;
+4. habilitar compatibilidad temporal, RLS/grants y observabilidad aplicables;
+5. ejecutar backfill/replay solo cuando el modo aprobado sea distinto de `NO_BACKFILL_REQUIRED`;
+6. reconciliar estructura, datos, efectos, seguridad, tipos y rollback;
+7. mover escritores manteniendo **una única autoridad empresarial de escritura por instante**;
+8. mover lectores/consumidores por cohortes y demostrar ausencia de consumidores ocultos dentro del alcance declarado;
+9. observar estabilidad, deprecación y uso cero durante la ventana aprobada;
+10. habilitar retiro lógico y, posteriormente, retiro físico solo cuando el gate de retiro sea `ZERO_CONFIRMED`.
+
+No se permite `DROP ... CASCADE` como mecanismo de transición, editar una migración ya aplicada para fingir rollback, ni usar dual-write como mecanismo normal de migración.
+
+---
+
+#### 6. Perfiles de migración por paquete
+
+| Perfil                     | Cantidad | DDL/DML previsto                                                 | Backfill                        | Compatibilidad                                     | Retiro legacy                                  |
+| -------------------------- | -------: | ---------------------------------------------------------------- | ------------------------------- | -------------------------------------------------- | ---------------------------------------------- |
+| `MIG-DIRECT-001`           |      125 | switch por disposición E3 mediante `OP-E3-DIRECT-001`            | `BF-E3-001`                     | `COMPAT-E3-001`                                    | `LEGACY-E3-001`                                |
+| `MIG-UI-VIEW-001`          |        3 | solo superficie de vista/contrato autorizada por 008             | no aplica a datos empresariales | `COMPAT-VIEW-001`                                  | el consumidor no retira la fuente              |
+| `MIG-UI-CONSUME-001`       |       35 | cero DDL/DML package-local                                       | no aplica                       | adaptación de consumidor                           | el consumidor no retira la fuente              |
+| `MIG-CONTROL-VIEW-001`     |        2 | reconciliación/compatibilidad de vista, sin mutación empresarial | no aplica                       | `COMPAT-VIEW-001`                                  | evidencia/gate, no eliminación                 |
+| `MIG-EVIDENCE-STORAGE-001` |        2 | cero DDL/DML empresarial                                         | no aplica                       | compatibilidad de evidencia cuando exista contrato | no elimina binarios ni metadata por inferencia |
+| `MIG-CONTROL-NOCHANGE-001` |       22 | cero DDL/DML                                                     | no aplica                       | no aplica                                          | no aplica                                      |
+| `MIG-FUTURE-001`           |        2 | no desplegar en esta continuidad                                 | futuro                          | futuro                                             | no aplica                                      |
+| `MIG-AURA-001`             |       14 | bloqueado                                                        | bloqueado                       | bloqueado                                          | bloqueado                                      |
+| `MIG-EXT-001`              |        2 | condicional a `EXT-GOV-001`                                      | condicional                     | condicional                                        | condicional                                    |
+
+Los nueve perfiles son mutuamente excluyentes y suman **207**.
+
+---
+
+#### 7. Operaciones DDL/DML previstas
+
+`OP-E3-DIRECT-001` es un switch material por identidad:
+
+- `CONSERVAR`: no autoriza traslado ni retiro; solo cambios explícitos exigidos por la tarea primaria y por contratos E3 posteriores;
+- `MOVER`: `EXPAND` del destino, enlaces/constraints/índices/grants/políticas necesarios, coexistencia controlada, cutover y retiro posterior del origen;
+- `FUSIONAR`: materializar sobreviviente/crosswalk aprobado, reubicar referencias autorizadas y conservar historia;
+- `DIVIDIR`: materializar destinos, routing determinista y cobertura completa antes de desactivar la fuente;
+- `RETIRAR`: no crear reemplazo ficticio; preservar evidencia/compatibilidad cuando corresponda y aplicar lane de deprecación hasta retiro físico;
+- `RENOMBRAR`: no aplica porque E3 contiene cero identidades con esta disposición.
+
+`OP-VIEW-COMPAT-001` puede crear o modificar únicamente una vista/proyección temporal cuya identidad exacta sea confirmada por `DELIV-PKG-014`; no autoriza DML empresarial ni convierte una vista en fuente de verdad.
+
+`OP-NONE-001` significa **cero operación DDL/DML package-local**. La existencia de consumidores, QA, documentación o evidencia no convierte el paquete en propietario de una migración.
+
+---
+
+#### 8. Backfills y calidad de datos
+
+`BF-E3-001` obliga a seleccionar por `TRANSITION_KEY` exactamente uno de los modos aprobados por E3:
+
+`NO_BACKFILL_REQUIRED`, `EXACT_COPY`, `VERSIONED_TRANSFORMATION`, `REFERENCE_CROSSWALK`, `LEDGER_OR_HISTORY_REPLAY`, `PROJECTION_REBUILD`, `APPROVED_MERGE_PLAN`, `APPROVED_SPLIT_PLAN`, `QUARANTINE_ONLY` o `NO_COPY_RETIREMENT`.
+
+Reglas obligatorias:
+
+- ningún mapping heurístico, por nombre o similitud crea identidad;
+- cada corrida conserva source cut, versión de mapping/política, lote, rango de claves, conteos, digest y checkpoint posterior al commit;
+- reintentar no duplica efectos; un payload/version diferente bajo la misma identidad produce conflicto;
+- source drift bloquea el lote antes de mutar;
+- el original y la procedencia se preservan cuando la transformación derive otra representación;
+- merges/splits solo se ejecutan cuando exista decisión aprobada de sobreviviente/routing y rollback;
+- los planes `QUARANTINE_ONLY` no se reinterpretan como permiso de corregir datos automáticamente.
+
+`GAP-PKG-133` incorpora el modificador `BACKFILL_ORCHESTRATION` por su ancla `SUPA-TRANS-005`. Esto no asigna a ese paquete la propiedad de todos los datos: coordina el contrato de backfill que cada `TRANSITION_KEY` directo deba consumir.
+
+---
+
+#### 9. Compatibilidad temporal
+
+`COMPAT-E3-001` obliga a decidir por identidad entre:
+
+`NO_COMPATIBILITY_REQUIRED`, `READ_COMPATIBILITY_VIEW`, `QUERY_RPC_WRAPPER`, `COMMAND_RPC_WRAPPER`, `COLUMN_READ_ALIAS`, `OBJECT_NAME_ALIAS`, `TYPE_OR_ENUM_ADAPTER`, `EVENT_OR_PAYLOAD_ADAPTER`, `STORAGE_PATH_OR_METADATA_ADAPTER` o `CONFIGURATION_ALIAS`.
+
+Reglas:
+
+- ausencia de adapter solo es válida con evidencia de `NO_COMPATIBILITY_REQUIRED`;
+- la compatibilidad nunca adquiere autoridad empresarial propia;
+- una sola autoridad de escritura permanece vigente durante todo el cutover;
+- alias/wrapper registra consumidores, versión, paridad, owner, telemetría, gate de salida y rollback;
+- `GAP-PKG-083` y `GAP-PKG-135` incorporan `COMPAT_ORCHESTRATION` por su ancla `SUPA-TRANS-006`;
+- `GAP-PKG-131`, `132` y `138` son consumidores UI con vista directa y usan `COMPAT-VIEW-001` sin DML empresarial;
+- `GAP-PKG-065` y `140` son controles con vista directa y no adquieren autoridad sobre datos.
+
+---
+
+#### 10. Storage y Realtime dentro de la transición
+
+Paquetes con Storage directo heredado de 008: `GAP-PKG-004`, `060`, `082`, `083`, `150`, `154` y `176`. `GAP-PKG-061` conserva `STORAGE_EVIDENCE` dentro de un paquete directo; `GAP-PKG-062` y `172` son evidencia Storage sin cambio relacional directo.
+
+Reglas Storage:
+
+- los binarios y la metadata empresarial permanecen separados;
+- un cambio de bucket/path exige inventario, consumidores, políticas, retención, huérfanos, compatibilidad y rollback;
+- la eliminación física de objetos Storage se realiza únicamente mediante mecanismos soportados y nunca borrando metadata interna por SQL;
+- ningún bucket se crea, fusiona o retira por similitud de nombre.
+
+Paquetes con Realtime directo heredado de 008: `GAP-PKG-060` y `154`.
+
+Reglas Realtime:
+
+- una publicación es transporte, no evento empresarial ni fuente de verdad;
+- incorporación/retiro de una tabla exige publicación, operaciones, replica identity, consumidores, autorización, volumen, reconexión y fallback;
+- la diferencia `1 -> 6` observada en `supabase_realtime` activa `BASELINE-RECONCILIATION-GATE-009` y prohíbe planificar un cambio físico a partir del conteo de 008 sin reconciliar identidades.
+
+---
+
+#### 11. Retiro legacy
+
+Las **550** identidades E3 cuya disposición no es `CONSERVAR` siguen una lane de retiro. La fase mínima es:
+
+`INVENTORIED → SUCCESSOR_PROVEN → DEPRECATION_ANNOUNCED → NO_NEW_USAGE_FENCED → LEGACY_READ_ONLY → ZERO_USAGE_OBSERVED → DATA_AND_EVIDENCE_PRESERVED → LOGICALLY_DISABLED → PHYSICALLY_REMOVED → POST_REMOVAL_OBSERVED → RETIREMENT_CLOSED`.
+
+Reglas terminales:
+
+- `MOVER`: retirar origen solo después de autoridad objetivo y consumidores migrados;
+- `FUSIONAR`: retirar no sobrevivientes solo después de crosswalk estable y ausencia de referencias pendientes;
+- `DIVIDIR`: retirar fuente solo después de cobertura completa del routing;
+- `RETIRAR`: aplicar deprecación progresiva sin inventar sucesor;
+- `CONSERVAR`: no entra a lane de retiro;
+- `ZERO_CONFIRMED` exige múltiples señales de telemetría y una ventana que cubra como mínimo 30 días, dos ciclos de release, dos ciclos del job si existe, TTL, reintentos y horizonte de soporte aplicable;
+- una búsqueda negativa de código no demuestra cero consumidores;
+- no se permite `CASCADE` para cerrar dependencias ocultas.
+
+---
+
+#### 12. Matriz materializada de las 207 decisiones
+
+| `package_id`  | Perfil 009                 | DDL/DML              | Backfill        | Compatibilidad                | Legacy                | Modificadores                                     | Estado documental            |
+| ------------- | -------------------------- | -------------------- | --------------- | ----------------------------- | --------------------- | ------------------------------------------------- | ---------------------------- |
+| `GAP-PKG-001` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-002` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-003` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-004` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `STORAGE_DIRECT`                                  | `ESPECIFICADO`               |
+| `GAP-PKG-005` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-006` | `MIG-AURA-001`             | `OP-AURA-001`        | `BF-AURA-001`   | `COMPAT-AURA-001`             | `LEGACY-AURA-001`     | `—`                                               | `BLOQUEADO`                  |
+| `GAP-PKG-007` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-008` | `MIG-AURA-001`             | `OP-AURA-001`        | `BF-AURA-001`   | `COMPAT-AURA-001`             | `LEGACY-AURA-001`     | `—`                                               | `BLOQUEADO`                  |
+| `GAP-PKG-009` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-010` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-011` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-012` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-013` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-014` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-015` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-016` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-017` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-018` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-019` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-020` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-021` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-022` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-023` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `VIEW_DIRECT`                                     | `ESPECIFICADO`               |
+| `GAP-PKG-024` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-025` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-026` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-027` | `MIG-EXT-001`              | `OP-EXT-001`         | `BF-EXT-001`    | `COMPAT-EXT-001`              | `LEGACY-EXT-001`      | `—`                                               | `BLOQUEADO_CONDICIONAL`      |
+| `GAP-PKG-028` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-029` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-030` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-031` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-032` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-033` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-034` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-035` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-036` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-037` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-038` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-039` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-040` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-041` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-042` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-043` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-044` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-045` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-046` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-047` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-048` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-049` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `VIEW_DIRECT`                                     | `ESPECIFICADO`               |
+| `GAP-PKG-050` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-051` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-052` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-053` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-054` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-055` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-056` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-057` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-058` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-059` | `MIG-AURA-001`             | `OP-AURA-001`        | `BF-AURA-001`   | `COMPAT-AURA-001`             | `LEGACY-AURA-001`     | `—`                                               | `BLOQUEADO`                  |
+| `GAP-PKG-060` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `STORAGE_DIRECT,REALTIME_DIRECT`                  | `ESPECIFICADO`               |
+| `GAP-PKG-061` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `STORAGE_EVIDENCE`                                | `ESPECIFICADO`               |
+| `GAP-PKG-062` | `MIG-EVIDENCE-STORAGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-STORAGE-EVIDENCE-001` | `LEGACY-CONTROL-001`  | `STORAGE_EVIDENCE`                                | `ESPECIFICADO`               |
+| `GAP-PKG-063` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-064` | `MIG-FUTURE-001`           | `OP-FUTURE-001`      | `BF-FUTURE-001` | `COMPAT-FUTURE-001`           | `LEGACY-FUTURE-001`   | `—`                                               | `ESPECIFICADO_NO_DESPLEGADO` |
+| `GAP-PKG-065` | `MIG-CONTROL-VIEW-001`     | `OP-VIEW-COMPAT-001` | `BF-NONE-001`   | `COMPAT-VIEW-001`             | `LEGACY-CONTROL-001`  | `VIEW_DIRECT`                                     | `ESPECIFICADO`               |
+| `GAP-PKG-066` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-067` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-068` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `VIEW_DIRECT`                                     | `ESPECIFICADO`               |
+| `GAP-PKG-069` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-070` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-071` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-072` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-073` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-074` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-075` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-076` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-077` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-078` | `MIG-AURA-001`             | `OP-AURA-001`        | `BF-AURA-001`   | `COMPAT-AURA-001`             | `LEGACY-AURA-001`     | `—`                                               | `BLOQUEADO`                  |
+| `GAP-PKG-079` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-080` | `MIG-AURA-001`             | `OP-AURA-001`        | `BF-AURA-001`   | `COMPAT-AURA-001`             | `LEGACY-AURA-001`     | `—`                                               | `BLOQUEADO`                  |
+| `GAP-PKG-081` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-082` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `STORAGE_DIRECT`                                  | `ESPECIFICADO`               |
+| `GAP-PKG-083` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `VIEW_DIRECT,STORAGE_DIRECT,COMPAT_ORCHESTRATION` | `ESPECIFICADO`               |
+| `GAP-PKG-084` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-085` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-086` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-087` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-088` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-089` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-090` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-091` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-092` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-093` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-094` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-095` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-096` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-097` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-098` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-099` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-100` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-101` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-102` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-103` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-104` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-105` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-106` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-107` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-108` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-109` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-110` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-111` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-112` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-113` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-114` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-115` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-116` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-117` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-118` | `MIG-AURA-001`             | `OP-AURA-001`        | `BF-AURA-001`   | `COMPAT-AURA-001`             | `LEGACY-AURA-001`     | `—`                                               | `BLOQUEADO`                  |
+| `GAP-PKG-119` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-120` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-121` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-122` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-123` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-124` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-125` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-126` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-127` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-128` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-129` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-130` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-131` | `MIG-UI-VIEW-001`          | `OP-VIEW-COMPAT-001` | `BF-NONE-001`   | `COMPAT-VIEW-001`             | `LEGACY-CONSUMER-001` | `VIEW_DIRECT`                                     | `ESPECIFICADO`               |
+| `GAP-PKG-132` | `MIG-UI-VIEW-001`          | `OP-VIEW-COMPAT-001` | `BF-NONE-001`   | `COMPAT-VIEW-001`             | `LEGACY-CONSUMER-001` | `VIEW_DIRECT`                                     | `ESPECIFICADO`               |
+| `GAP-PKG-133` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `BACKFILL_ORCHESTRATION`                          | `ESPECIFICADO`               |
+| `GAP-PKG-134` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-135` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `VIEW_DIRECT,COMPAT_ORCHESTRATION`                | `ESPECIFICADO`               |
+| `GAP-PKG-136` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-137` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-138` | `MIG-UI-VIEW-001`          | `OP-VIEW-COMPAT-001` | `BF-NONE-001`   | `COMPAT-VIEW-001`             | `LEGACY-CONSUMER-001` | `VIEW_DIRECT`                                     | `ESPECIFICADO`               |
+| `GAP-PKG-139` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-140` | `MIG-CONTROL-VIEW-001`     | `OP-VIEW-COMPAT-001` | `BF-NONE-001`   | `COMPAT-VIEW-001`             | `LEGACY-CONTROL-001`  | `VIEW_DIRECT`                                     | `ESPECIFICADO`               |
+| `GAP-PKG-141` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-142` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-143` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-144` | `MIG-AURA-001`             | `OP-AURA-001`        | `BF-AURA-001`   | `COMPAT-AURA-001`             | `LEGACY-AURA-001`     | `—`                                               | `BLOQUEADO`                  |
+| `GAP-PKG-145` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-146` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-147` | `MIG-AURA-001`             | `OP-AURA-001`        | `BF-AURA-001`   | `COMPAT-AURA-001`             | `LEGACY-AURA-001`     | `—`                                               | `BLOQUEADO`                  |
+| `GAP-PKG-148` | `MIG-AURA-001`             | `OP-AURA-001`        | `BF-AURA-001`   | `COMPAT-AURA-001`             | `LEGACY-AURA-001`     | `—`                                               | `BLOQUEADO`                  |
+| `GAP-PKG-149` | `MIG-AURA-001`             | `OP-AURA-001`        | `BF-AURA-001`   | `COMPAT-AURA-001`             | `LEGACY-AURA-001`     | `—`                                               | `BLOQUEADO`                  |
+| `GAP-PKG-150` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `STORAGE_DIRECT`                                  | `ESPECIFICADO`               |
+| `GAP-PKG-151` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-152` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-153` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-154` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `VIEW_DIRECT,STORAGE_DIRECT,REALTIME_DIRECT`      | `ESPECIFICADO`               |
+| `GAP-PKG-155` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-156` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-157` | `MIG-EXT-001`              | `OP-EXT-001`         | `BF-EXT-001`    | `COMPAT-EXT-001`              | `LEGACY-EXT-001`      | `—`                                               | `BLOQUEADO_CONDICIONAL`      |
+| `GAP-PKG-158` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-159` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-160` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-161` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-162` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-163` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-164` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-165` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-166` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-167` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-168` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-169` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-170` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-171` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-172` | `MIG-EVIDENCE-STORAGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-STORAGE-EVIDENCE-001` | `LEGACY-CONTROL-001`  | `STORAGE_EVIDENCE`                                | `ESPECIFICADO`               |
+| `GAP-PKG-173` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-174` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-175` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-176` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `STORAGE_DIRECT`                                  | `ESPECIFICADO`               |
+| `GAP-PKG-177` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-178` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-179` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `ENV_PARITY`                                      | `ESPECIFICADO`               |
+| `GAP-PKG-180` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `ENV_PARITY`                                      | `ESPECIFICADO`               |
+| `GAP-PKG-181` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-182` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-183` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-184` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-185` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-186` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-187` | `MIG-AURA-001`             | `OP-AURA-001`        | `BF-AURA-001`   | `COMPAT-AURA-001`             | `LEGACY-AURA-001`     | `—`                                               | `BLOQUEADO`                  |
+| `GAP-PKG-188` | `MIG-AURA-001`             | `OP-AURA-001`        | `BF-AURA-001`   | `COMPAT-AURA-001`             | `LEGACY-AURA-001`     | `—`                                               | `BLOQUEADO`                  |
+| `GAP-PKG-189` | `MIG-AURA-001`             | `OP-AURA-001`        | `BF-AURA-001`   | `COMPAT-AURA-001`             | `LEGACY-AURA-001`     | `—`                                               | `BLOQUEADO`                  |
+| `GAP-PKG-190` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-191` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-192` | `MIG-AURA-001`             | `OP-AURA-001`        | `BF-AURA-001`   | `COMPAT-AURA-001`             | `LEGACY-AURA-001`     | `—`                                               | `BLOQUEADO`                  |
+| `GAP-PKG-193` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-194` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-195` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-196` | `MIG-UI-CONSUME-001`       | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-CONSUME-001`          | `LEGACY-CONSUMER-001` | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-197` | `MIG-FUTURE-001`           | `OP-FUTURE-001`      | `BF-FUTURE-001` | `COMPAT-FUTURE-001`           | `LEGACY-FUTURE-001`   | `—`                                               | `ESPECIFICADO_NO_DESPLEGADO` |
+| `GAP-PKG-198` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-199` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-200` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-201` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-202` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-203` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-204` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-205` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-206` | `MIG-DIRECT-001`           | `OP-E3-DIRECT-001`   | `BF-E3-001`     | `COMPAT-E3-001`               | `LEGACY-E3-001`       | `—`                                               | `ESPECIFICADO`               |
+| `GAP-PKG-207` | `MIG-CONTROL-NOCHANGE-001` | `OP-NONE-001`        | `BF-NONE-001`   | `COMPAT-NONE-001`             | `LEGACY-CONTROL-001`  | `—`                                               | `ESPECIFICADO`               |
+
+---
+
+#### 13. Reconciliación cuantitativa
+
+| Control                                                        |                       Resultado |
+| -------------------------------------------------------------- | ------------------------------: |
+| `package_id` esperados                                         |                         **207** |
+| `package_id` materializados                                    |                         **207** |
+| brechas preservadas                                            |                         **820** |
+| `MIG-DIRECT-001`                                               |                         **125** |
+| `MIG-UI-VIEW-001`                                              |                           **3** |
+| `MIG-UI-CONSUME-001`                                           |                          **35** |
+| `MIG-CONTROL-VIEW-001`                                         |                           **2** |
+| `MIG-EVIDENCE-STORAGE-001`                                     |                           **2** |
+| `MIG-CONTROL-NOCHANGE-001`                                     |                          **22** |
+| `MIG-FUTURE-001`                                               |                           **2** |
+| `MIG-AURA-001`                                                 |                          **14** |
+| `MIG-EXT-001`                                                  |                           **2** |
+| identidades E3 de transición                                   |                         **970** |
+| `CONSERVAR / MOVER / FUSIONAR / DIVIDIR / RENOMBRAR / RETIRAR` | **420 / 494 / 11 / 6 / 0 / 39** |
+
+---
+
+#### 14. Tratamientos especiales y bloqueos
+
+##### 14.1 AURA
+
+`GAP-PKG-006`, `008`, `059`, `078`, `080`, `118`, `144`, `147`, `148`, `149`, `187`, `188`, `189` y `192` permanecen `BLOQUEADO`. No se asignan migraciones, tablas, SQL, repositorios, backfills ni retiros por inferencia. La salida continúa gobernada por `AURA-AUD-001`, `AURA-AUD-010` y `AURA-AUD-012`.
+
+##### 14.2 EXT-GOV
+
+`GAP-PKG-027` y `GAP-PKG-157` permanecen `BLOQUEADO_CONDICIONAL`. `MIG-EXT-001` solo se activa cuando `EXT-GOV-001` cumpla `ACTIVATE_WHEN_REQUIRED_EXTERNAL_FILE_EXISTS`; antes de esa condición no se materializa DDL/DML, backfill, compatibilidad ni retiro.
+
+##### 14.3 TALENTO
+
+`GAP-PKG-064` y `GAP-PKG-197` permanecen `ESPECIFICADO_NO_DESPLEGADO`. No existe migración actual autorizada por esta tarea; cualquier futura materialización deberá conservar la base técnica TALENTO y revalidar el baseline antes de implementar.
+
+##### 14.4 VISO reservado
+
+`VISO-SCHEDULE-MONTHLY-001` continúa fuera de `GAP-PKG-001..207`. La migración `20260731082600_viso_monthly_schedule_186_hour_publish_guard.sql` permanece asociada exclusivamente a ese paquete reservado y no se usa para justificar DDL, función, trigger o backfill en ninguna raíz de esta matriz.
+
+##### 14.5 Baseline remoto
+
+`BASELINE-RECONCILIATION-GATE-009` queda con:
+
+- insumo faltante: reconciliación exacta de las **62** vistas, las **6** relaciones Realtime y la distribución actual de las **616** políticas contra la identidad física y contractual vigente;
+- propietario documental primario: `DELIV-PKG-014`;
+- gate de promoción: `DELIV-PKG-019`;
+- consumidor de rollback: `DELIV-PKG-020`;
+- condición de salida: inventario exacto reconciliado o excepción explícita, justificada, trazable y expirable antes de rollout.
+
+---
+
+#### 15. Fronteras de responsabilidad
+
+`DELIV-PKG-009` **sí cierra**:
+
+- un plan explícito para los **207** paquetes;
+- qué paquetes prevén transición física directa, compatibilidad de vista, adaptación de consumidores, control sin cambio, tratamiento futuro o bloqueo;
+- el switch de DDL/DML por disposición E3 sin inventar nombres físicos;
+- los modos permitidos de backfill y sus reglas de idempotencia/reconciliación;
+- compatibilidad temporal, autoridad única de escritura y gates de salida;
+- lane de retiro legacy y `ZERO_CONFIRMED`;
+- tratamiento de Storage y Realtime dentro de la transición;
+- `BASELINE-RECONCILIATION-GATE-009` y su dueño documental.
+
+`DELIV-PKG-009` **no cierra**:
+
+- eventos, productores, consumidores, colas y compensaciones, reservados a `DELIV-PKG-010`;
+- permisos concretos por actor/recurso/contexto, reservados a `DELIV-PKG-012`;
+- archivos y símbolos físicos exactos, reservados a `DELIV-PKG-014`;
+- dependencias y orden consolidado entre paquetes, reservados a `DELIV-PKG-015`;
+- vinculación formal de `TREQ-*` por paquete y diseño de pruebas, reservados a `DELIV-PKG-016`;
+- estrategia de rollout, reservada a `DELIV-PKG-019`;
+- rollback técnico/funcional/de datos por paquete, reservado a `DELIV-PKG-020`;
+- creación o ejecución de SQL, migraciones, DDL, DML, backfills, cambios remotos o retiros físicos.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa por paquete las reglas de transición, migración, backfill, compatibilidad, drift, rollback y retiro legacy ya cubiertas por el registro `04A`, mediante requisitos `SUPABASE` ya existentes en el registro canónico, sin crear identidades nuevas ni alterar filas vigentes. No introduce una semántica de negocio, autorización, dato, compatibilidad o retiro nueva respecto de E3; no modifica estado, destino ni contenido de requisitos existentes. La vinculación exhaustiva `package_id ↔ TREQ-*` continúa reservada a `DELIV-PKG-016`.
+
+---
+
+#### 17. Criterios de aceptación
+
+- [x] existen exactamente **207** decisiones materializadas, una por `GAP-PKG-001..207`, sin faltantes ni duplicados;
+- [x] las **820** brechas permanecen incluidas en sus raíces;
+- [x] los nueve perfiles suman exactamente **207**;
+- [x] los **125** paquetes directos no reciben una disposición física inventada; cada identidad conserva su disposición E3;
+- [x] se preservan las **970** identidades E3 y la distribución `420/494/11/6/0/39`;
+- [x] cada paquete declara DDL/DML, backfill, compatibilidad, legacy y estado documental;
+- [x] los **38** consumidores UI no adquieren propiedad de datos y los **26** paquetes de control no reciben DDL/DML por inferencia;
+- [x] Storage y Realtime conservan sus tratamientos explícitos de 008;
+- [x] se documenta el gate de reconciliación entre 008 y el remoto sin alterar silenciosamente 008;
+- [x] AURA conserva **14** bloqueos, EXT-GOV **2** condiciones y TALENTO **2** contratos no desplegados;
+- [x] `VISO-SCHEDULE-MONTHLY-001` permanece separado de las 207 raíces;
+- [x] no se crea ni ejecuta SQL, DDL, DML, migración, backfill, despliegue o cambio remoto;
+- [x] se generan **0** cambios `TREQ-*`.
+
+---
+
+#### 18. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados`
+
+TAREA ACTUAL APROBADA
+`DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy`
+
+SIGUIENTE TAREA RESERVADA
+`DELIV-PKG-010 — Definir eventos emitidos, consumidos, colas y compensaciones`
 
 
-### [ ] DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy
 ### [ ] DELIV-PKG-010 — Definir eventos emitidos, consumidos, colas y compensaciones
 ### [ ] DELIV-PKG-011 — Definir impresión, notificaciones, documentos y evidencia requeridos
 ### [ ] DELIV-PKG-012 — Definir permisos, modalidad, alcance, contexto y contrato de recurso

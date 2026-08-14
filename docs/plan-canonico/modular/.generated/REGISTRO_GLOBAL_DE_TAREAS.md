@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **819** |
+| Aprobadas | **820** |
 | En propuesta | **0** |
-| No iniciadas | **775** |
+| No iniciadas | **774** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **51.38% (819/1594)** |
+| Porcentaje de completamiento | **51.44% (820/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DELIV-PKG-008` — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados | ✅ APROBADA |
-| Tarea actual | `DELIV-PKG-009` — Definir migraciones, backfills, compatibilidad y retiro legacy | ⬜ NO INICIADA |
-| Siguiente reservada | `DELIV-PKG-010` — Definir eventos emitidos, consumidos, colas y compensaciones | ⬜ NO INICIADA |
+| Última aprobada | `DELIV-PKG-009` — Definir migraciones, backfills, compatibilidad y retiro legacy | ✅ APROBADA |
+| Tarea actual | `DELIV-PKG-010` — Definir eventos emitidos, consumidos, colas y compensaciones | ⬜ NO INICIADA |
+| Siguiente reservada | `DELIV-PKG-011` — Definir impresión, notificaciones, documentos y evidencia requeridos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -536,7 +536,7 @@
 | ✅ APROBADA | `DELIV-PKG-006` | Definir pantallas, componentes y navegación que se crearán o modificarán | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-007` | Definir lógica de dominio, Server Actions, API, RPC y Edge Functions | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-008` | Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
-| ⬜ NO INICIADA | `DELIV-PKG-009` | Definir migraciones, backfills, compatibilidad y retiro legacy | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
+| ✅ APROBADA | `DELIV-PKG-009` | Definir migraciones, backfills, compatibilidad y retiro legacy | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-010` | Definir eventos emitidos, consumidos, colas y compensaciones | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-011` | Definir impresión, notificaciones, documentos y evidencia requeridos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-012` | Definir permisos, modalidad, alcance, contexto y contrato de recurso | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
