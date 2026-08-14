@@ -2362,7 +2362,608 @@ SIGUIENTE TAREA RESERVADA
 `QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador`
 
 
-### [ ] QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador
+### ✅ QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador
+
+**Estado:** APROBADA
+**Tarea anterior:** `QUEUE-ARC-004 — Definir prioridad, programación y vencimiento`
+**Tarea siguiente:** `QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo`
+**Tipo de tarea:** documental; especialización canónica de asignación técnica de trabajos asíncronos a worker, dispositivo o adaptador, con separación entre selección de destino, identidad técnica, transporte, ejecución y claim, y decisión explícita para las 19 identidades `QAI-*`, sin implementar workers, enrolamiento, adaptadores, colas, locks, retries, estados, métricas ni autorización física
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`
+**Línea base documental:** `vento-shell@f280a78a81ec94066a31ae4095e3ba2ee0e22bfb`
+**Contrato base de trabajo:** `TSVC-SVC-001.CONTRACT@1.0.0`
+**Registro de identidad técnica consumido:** `TRANSVERSE-SERVICE-TECHNICAL-IDENTITY-REGISTRY-001@1.0.0`
+**Registro de confiabilidad consumido:** `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`
+**Contrato de idempotencia consumido:** `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`
+**Contrato temporal consumido:** `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0`
+**Inventario consumido:** `QUEUE-CURRENT-ASSET-INVENTORY-001` — 19 identidades `QAI-*`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada cómo un trabajo ya identificado, temporalmente elegible y contractualmente válido obtiene un destino técnico de ejecución sin transferir propiedad empresarial, sin convertir una decisión de routing en otra intención y sin confundir asignación con claim, intento, transporte, autenticación o autorización.
+
+La regla raíz es:
+
+```text
+TRABAJO CANÓNICO ELEGIBLE
+        +
+CAPACIDAD TÉCNICA REQUERIDA
+        +
+ÁMBITO Y AMBIENTE COMPATIBLES
+        +
+DESTINO TÉCNICO IDENTIFICABLE
+        ↓
+ASIGNACIÓN RECONSTRUIBLE
+        ↓
+WORKER / DISPOSITIVO / ADAPTADOR COMPATIBLE
+```
+
+Asignar significa seleccionar el destino técnico que puede intentar ejecutar o encaminar el trabajo. No significa que el destino ya haya reclamado la unidad, que tenga autoridad empresarial para ordenar el efecto, que el efecto haya comenzado ni que haya terminado correctamente.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se establece `WORK-ASSIGNMENT-CONTRACT-001@1.0.0` como especialización de routing y destino técnico del contrato de trabajo asíncrono.
+
+El resultado material fija:
+
+1. tres clases cerradas de destino técnico: `WORKER`, `DEVICE` y `ADAPTER`;
+2. la posibilidad de componer una ruta ordenada con más de una clase cuando el efecto exige custodia local, adaptación o ejecución servidora;
+3. la diferencia entre asignación, claim, intento, transporte y resultado;
+4. el sobre mínimo de asignación y su historial versionado;
+5. la regla de compatibilidad por servicio, contrato, ambiente, operación, capacidad y scopes aplicables;
+6. la prohibición de usar un destino técnico como sustituto de actor, aplicación propietaria o autorización;
+7. reglas específicas para worker, dispositivo y adaptador;
+8. la relación entre asignación dinámica e identidad idempotente;
+9. la relación entre asignación y la ventana temporal ya definida en `QUEUE-ARC-004`;
+10. la conducta ante reasignación sin definir todavía retry, claim, lease, fencing, estados ni eventos;
+11. una decisión explícita para las 19 identidades `QAI-*` del inventario aprobado.
+
+Balance:
+
+| Métrica                                    | Resultado |
+| ------------------------------------------ | --------: |
+| Identidades `QAI-*` esperadas              |    **19** |
+| Identidades materializadas                 |    **19** |
+| `APLICA_ASIGNACION_DE_TRABAJO`             |    **16** |
+| `PROPAGA_NO_DECIDE_ASIGNACION`             |     **2** |
+| `NO_APLICA`                                |     **1** |
+| Rutas `WORKER`                             |    **10** |
+| Rutas `DEVICE → WORKER`                    |     **3** |
+| Rutas `WORKER → DEVICE`                    |     **1** |
+| Rutas `ADAPTER → WORKER`                   |     **2** |
+| Identificadores `QAI-*` duplicados         |     **0** |
+| Identidades sin decisión                   |     **0** |
+| Requisitos de prueba creados o modificados |     **0** |
+| Objetos físicos creados o modificados      |     **0** |
+
+---
+
+#### 3. Herencia contractual obligatoria
+
+`WORK-ASSIGNMENT-CONTRACT-001@1.0.0` no crea una fuente de verdad paralela ni una identidad técnica nueva.
+
+Hereda obligatoriamente:
+
+- de `TSVC-SVC-001.CONTRACT@1.0.0`, `operation_id`, `operation_type`, versión contractual, aplicación productora y aplicación propietaria del resultado;
+- de `TRANSVERSE-SERVICE-TECHNICAL-IDENTITY-REGISTRY-001@1.0.0`, las clases `WORKER_IDENTITY`, `DEVICE_IDENTITY`, `PROVIDER_IDENTITY`, `SERVICE_RUNTIME_IDENTITY`, `CALLER_IDENTITY` y `SCHEDULER_IDENTITY`, junto con la separación entre identidad técnica y autoridad empresarial;
+- de `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`, el sobre de ejecución, la obligación de preservar identidad durante handoffs y la separación entre worker, dispositivo, proveedor, scheduler, claim, lease y fencing;
+- de `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`, la intención estable, su huella y la regla de que un cambio dinámico de worker, dispositivo o adaptador no crea otra intención salvo que ese destino concreto forme parte material del contrato empresarial;
+- de `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0`, `priority_class`, `scheduled_at`, `deadline_at` y la regla de que una reasignación no amplía la ventana temporal;
+- de `QUEUE-CURRENT-ASSET-INVENTORY-001`, las 19 identidades materiales y su clasificación técnica actual.
+
+La tarea no aprovisiona principals, credenciales, enrolamientos, workers, dispositivos ni adaptadores y no presenta las identidades objetivo como activas.
+
+---
+
+#### 4. Asignación no equivale a claim ni ejecución
+
+Se fijan las siguientes fronteras:
+
+```text
+ASIGNACIÓN
+= seleccionar un destino técnico compatible
+
+CLAIM
+= adquirir temporalmente derecho técnico de procesamiento
+
+INTENTO
+= una ejecución concreta
+
+TRANSPORTE
+= mover la solicitud o el mensaje entre fronteras
+
+EFECTO
+= modificación técnica, empresarial o física producida
+```
+
+Reglas:
+
+1. una unidad puede estar asignada sin haber sido reclamada;
+2. una unidad reclamada no demuestra que el efecto haya ocurrido;
+3. un `request_id`, mensaje HTTP, ID de `pg_net` o callback no es un `assignment_id`;
+4. el claim, lease y fencing se definen en `QUEUE-ARC-009` y no se anticipan aquí;
+5. la creación de un nuevo intento y su contador se definen en `QUEUE-ARC-006`;
+6. un cambio de destino no convierte por sí mismo el trabajo en retry ni en nueva intención;
+7. la aplicación propietaria continúa siendo autoridad sobre el resultado aunque el trabajo cambie de worker, dispositivo o adaptador.
+
+---
+
+#### 5. Clases canónicas de destino técnico
+
+El vocabulario cerrado inicial es:
+
+| Clase     | Función                                                                                               | No representa                                                                  |
+| --------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `WORKER`  | runtime técnico que puede ejecutar una operación o etapa del trabajo bajo el servicio correspondiente | actor humano, propiedad empresarial, scheduler ni autorización general         |
+| `DEVICE`  | dispositivo o periférico identificado que custodia o ejecuta una etapa física/local cuando aplica     | usuario, sede completa, fuente de verdad ni confirmación automática del efecto |
+| `ADAPTER` | frontera técnica que valida, traduce o encamina entre contrato interno y transporte/proveedor         | proveedor como propietario, worker empresarial ni permiso para inventar datos  |
+
+Una ruta puede contener varias etapas. La composición describe responsabilidad técnica; no crea trabajos hijos por sí sola y no sustituye la causalidad ni los contratos especializados.
+
+---
+
+#### 6. Vocabulario y sobre mínimo de asignación
+
+Toda materialización futura de una asignación deberá poder conservar, cuando aplique:
+
+```text
+operation_id
+assignment_id
+assignment_version
+service_id
+contract_id
+contract_version
+environment
+assignment_route
+required_capabilities
+target_kind
+target_identity
+worker_identity
+device_identity
+adapter_identity
+provider_identity
+resource_scope
+site_scope
+tenant_scope
+assigned_at
+assignment_reason
+```
+
+Definiciones:
+
+| Campo                   | Regla canónica                                                                                                                      |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `assignment_id`         | identidad única de una decisión de asignación; no reemplaza `operation_id`, `attempt_id` ni identidad del target                    |
+| `assignment_version`    | versión monotónica de la decisión de routing de una misma operación; una reasignación incrementa la versión sin reescribir historia |
+| `assignment_route`      | secuencia ordenada de clases técnicas necesarias para llegar al efecto; cada etapa conserva identidad y responsabilidad separadas   |
+| `required_capabilities` | capacidades técnicas mínimas que un candidato debe demostrar según contrato; no constituye autorización empresarial                 |
+| `target_kind`           | una de `WORKER`, `DEVICE` o `ADAPTER`                                                                                               |
+| `target_identity`       | identidad técnica concreta seleccionada o referencia resoluble a la identidad autorizada                                            |
+| `assignment_reason`     | causa reconstruible de selección o reasignación; no se usa para esconder cambios de intención                                       |
+
+Reglas:
+
+1. `assignment_id` no se reutiliza para dos decisiones distintas;
+2. una reasignación conserva `operation_id`, `idempotency_key`, contrato, huella, prioridad y deadline;
+3. los campos no aplicables se omiten o se declaran `NO_APLICA`; no se inventan identidades;
+4. ninguna referencia de credencial o secreto forma parte del routing empresarial;
+5. la asignación conserva la identidad del servicio, ambiente y aplicación propietaria;
+6. un `assignment_route` con varias etapas debe preservar el mismo `operation_id` salvo que un contrato especializado cree explícitamente otro trabajo causal;
+7. la versión de asignación es operativa y no modifica por sí sola `contract_version`.
+
+---
+
+#### 7. Regla canónica de compatibilidad del destino
+
+Un candidato solo puede ser seleccionado cuando satisface simultáneamente los criterios aplicables:
+
+```text
+MISMO SERVICIO O SERVICIO DE DESTINO DECLARADO
++
+AMBIENTE COMPATIBLE
++
+CONTRATO Y VERSIÓN SOPORTADOS
++
+OPERATION_TYPE SOPORTADO
++
+CAPACIDAD TÉCNICA REQUERIDA
++
+RESOURCE / TENANT / SITE / DEVICE / PROVIDER SCOPE COMPATIBLE
++
+VENTANA TEMPORAL AÚN VÁLIDA
+```
+
+Reglas:
+
+1. conocer el ID de una cola, función, dispositivo o proveedor no hace elegible al candidato;
+2. un worker de otro servicio no se usa por conveniencia técnica salvo contrato explícito compatible;
+3. un dispositivo debe pertenecer al ambiente, sitio y capacidades aplicables cuando esas dimensiones gobiernen el efecto;
+4. un adaptador debe soportar dirección, proveedor, mapping y versión contractual requeridos;
+5. la selección no concede acciones fuera del alcance técnico mínimo del target;
+6. la ausencia de un candidato compatible no autoriza fallback silencioso a otro ambiente, dispositivo, proveedor o principal amplio;
+7. la forma de representar el estado de espera o bloqueo pertenece a `QUEUE-ARC-010`;
+8. la recuperación ante indisponibilidad o agotamiento se gobierna por `QUEUE-ARC-006` y `QUEUE-ARC-008` según corresponda.
+
+---
+
+#### 8. Asignación a `WORKER`
+
+Un worker es elegible únicamente cuando su identidad técnica corresponde al servicio y ambiente de la operación y declara la capacidad requerida.
+
+Reglas:
+
+1. el worker recibe el `operation_id` existente; no genera otra intención;
+2. el worker no sustituye `caller_application`, `business_owner_application`, actor, recurso ni causa;
+3. un token delegado de usuario no se convierte en credencial persistente del worker;
+4. la asignación puede referir una clase o pool de worker compatible y resolverse a una identidad concreta antes de ejecutar, sin convertir el pool en propietario;
+5. cambiar de worker por disponibilidad conserva la misma operación y deja una nueva versión de asignación;
+6. un worker no puede asumir trabajo de otra operación únicamente porque comparta función SQL, runtime o Edge Function;
+7. un scheduler puede originar una ocurrencia, pero no se convierte por ello en el worker de la operación;
+8. una función SQL o Edge Function observada actualmente es evidencia de ejecución existente, no acreditación de que exista el worker transversal objetivo.
+
+---
+
+#### 9. Asignación a `DEVICE`
+
+Un dispositivo o periférico puede participar cuando el trabajo requiere custodia local, disponibilidad del equipo o un efecto físico.
+
+Reglas:
+
+1. el dispositivo conserva una identidad técnica separada del usuario y de la aplicación;
+2. la selección debe respetar ambiente, sede, enrolamiento y capacidades requeridas cuando apliquen;
+3. el dispositivo no adquiere propiedad empresarial del hecho que custodia o ejecuta;
+4. reinicio, desconexión o cierre de la aplicación no prueban que el trabajo haya terminado;
+5. asignar un dispositivo no demuestra resultado físico;
+6. si el dispositivo concreto forma parte material de la intención, su identidad debe existir ya en el contrato o huella lógica y no puede cambiarse silenciosamente;
+7. si el dispositivo es puramente técnico y sustituible, una reasignación compatible conserva la misma intención y queda registrada;
+8. la indisponibilidad del dispositivo no amplía `deadline_at`;
+9. un dispositivo no puede usar una credencial administrativa general como sustituto de enrolamiento y alcance mínimo.
+
+---
+
+#### 10. Asignación a `ADAPTER`
+
+Un adaptador es la frontera técnica que traduce o transporta entre contratos, proveedores o mecanismos sin apropiarse del proceso empresarial.
+
+Reglas:
+
+1. el adaptador conserva `operation_id`, correlación, causalidad y versión de origen;
+2. debe declarar proveedor o frontera técnica, dirección, versión y mapping compatibles;
+3. no puede inventar campos autoritativos ausentes en la fuente;
+4. no puede convertir un ACK de transporte en resultado empresarial;
+5. la credencial del proveedor permanece separada de la identidad del adaptador y del trabajo;
+6. un proveedor externo no se convierte en aplicación VENTO ni en propietario del proceso;
+7. cambiar de adaptador compatible no cambia la intención salvo que proveedor o destino formen parte material del contrato;
+8. `pg_net` y un request HTTP son mecanismos de transporte y no deciden por sí mismos el destino empresarial;
+9. el replay o deduplicación de proveedor conserva las reglas de idempotencia ya aprobadas y no se redefine aquí.
+
+---
+
+#### 11. Rutas técnicas compuestas
+
+Se admiten rutas compuestas solo cuando cada etapa tiene responsabilidad distinta y necesaria.
+
+Patrones materializados por esta tarea:
+
+```text
+WORKER
+DEVICE → WORKER
+WORKER → DEVICE
+ADAPTER → WORKER
+```
+
+Semántica:
+
+- `WORKER`: una etapa servidora o técnica ejecuta la operación;
+- `DEVICE → WORKER`: el dispositivo captura o custodia una intención y el worker servidor conserva la decisión autoritativa del efecto;
+- `WORKER → DEVICE`: un worker prepara o coordina un efecto que debe ejecutarse en un dispositivo o periférico identificado;
+- `ADAPTER → WORKER`: un adaptador valida/mapea una entrada externa y un worker interno procesa la consecuencia bajo autoridad VENTO.
+
+Reglas:
+
+1. la flecha indica handoff técnico, no transferencia de ownership;
+2. cada etapa conserva la identidad del trabajo y su causalidad;
+3. un transporte intermedio no se materializa como etapa de negocio por el solo hecho de mover bytes;
+4. una ruta compuesta no permite saltar validación contractual, temporal o de scope;
+5. la decisión de claim concurrente para cada etapa se cierra en `QUEUE-ARC-009`.
+
+---
+
+#### 12. Regla de selección y asignación
+
+La selección lógica de destino deberá seguir este orden:
+
+1. resolver `operation_id`, servicio, contrato, versión y operación;
+2. confirmar que el trabajo sigue dentro de su ventana temporal de `QUEUE-ARC-004`;
+3. derivar la ruta técnica y capacidades requeridas desde el contrato, sin inventarlas desde infraestructura disponible;
+4. filtrar candidatos por ambiente, servicio, versión, operación y scopes aplicables;
+5. excluir targets incompatibles, suspendidos o ajenos al ámbito de la operación cuando esa condición sea conocida;
+6. seleccionar un target compatible según la política técnica del servicio;
+7. materializar `assignment_id`, `assignment_version`, `target_identity`, `assigned_at` y motivo;
+8. conservar el descriptor para que el claim posterior pueda operar sobre una decisión reconstruible.
+
+No se define aquí un algoritmo de balanceo físico, round-robin, least-loaded, afinidad de infraestructura ni mecanismo de descubrimiento. Esas decisiones se materializan dentro del paquete de implementación que adopte este contrato sin cambiar su semántica.
+
+---
+
+#### 13. Reasignación y estabilidad
+
+Una reasignación está permitida cuando el destino anterior deja de ser compatible o utilizable y el contrato admite sustitución técnica.
+
+Reglas:
+
+1. se conserva `operation_id`, clave idempotente, huella, contrato y referencia empresarial;
+2. se crea una nueva `assignment_version` y no se sobrescribe la asignación anterior;
+3. la reasignación no amplía `deadline_at` ni aumenta prioridad;
+4. la reasignación no concede permiso adicional;
+5. un cambio de target material para la intención no se trata como simple reasignación; exige la semántica contractual e idempotente correspondiente;
+6. la reasignación no decide por sí misma si existe un nuevo intento; esa frontera pertenece a `QUEUE-ARC-006`;
+7. la reasignación no autoriza dos ejecutores simultáneos; la exclusión efectiva pertenece a `QUEUE-ARC-009`;
+8. la reasignación forzada por operador requiere la autoridad que defina `QUEUE-ARC-012`;
+9. la recuperación de una unidad aislada o fallida conserva además las reglas de `QUEUE-ARC-008`.
+
+---
+
+#### 14. Relación con programación, prioridad y vencimiento
+
+La asignación consume y no reescribe la política temporal.
+
+Por tanto:
+
+- `priority_class` puede influir en qué trabajo se selecciona antes, pero no en qué identidad técnica está autorizada;
+- un target no puede iniciar antes de `scheduled_at`;
+- un target no puede obtener una nueva ventana por ser lento, remoto u offline;
+- si `now_utc >= deadline_at`, no se crea una asignación ordinaria para iniciar otro intento;
+- una reasignación conserva el deadline original;
+- un scheduler identifica la ocurrencia, pero el worker, dispositivo o adaptador se asigna por esta política de routing;
+- la asignación no resuelve el solapamiento empresarial entre `QAI-001` y `QAI-004`; esa exclusión permanece en `QUEUE-ARC-009`.
+
+---
+
+#### 15. Relación con idempotencia
+
+La asignación es parte de la proyección operativa mutable.
+
+Reglas:
+
+1. cambiar un worker dinámico no cambia `idempotency_key`;
+2. cambiar un dispositivo sustituible no cambia `idempotency_key`;
+3. cambiar un adaptador técnicamente equivalente no cambia `idempotency_key`;
+4. `assignment_id` nunca sustituye `operation_id` ni `idempotency_key`;
+5. si proveedor, dispositivo, destinatario o destino concreto alteran materialmente el efecto empresarial, deben formar parte de la intención y de su huella antes de asignar;
+6. una reasignación técnica no permite modificar payload para adaptarlo al target;
+7. un target incompatible no se vuelve compatible mediante una nueva clave creada por el worker.
+
+---
+
+#### 16. Matriz materializada de asignación de las 19 identidades `QAI-*`
+
+| ID        | Clasificación                  | Ruta canónica         | Destino técnico principal                                | Regla de asignación                                                                                                                                                              | Estado y decisión documental                                                                                                                 |
+| --------- | ------------------------------ | --------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QAI-001` | `APLICA_ASIGNACION_DE_TRABAJO` | `WORKER`              | worker del servicio de cierre de asistencia              | la ocurrencia se asigna a capacidad servidora compatible; `pg_cron` origina el fire pero no adquiere ownership ni sustituye la identidad del worker                              | `ESPECIFICADO`; compartir función con `QAI-004` no fusiona asignaciones ni resuelve concurrencia                                             |
+| `QAI-002` | `APLICA_ASIGNACION_DE_TRABAJO` | `WORKER`              | worker compatible con procesamiento de runtime de turnos | cron y SQL originan/encaminan; `pg_net` transporta; la etapa ejecutora conserva el mismo `operation_id`                                                                          | `ESPECIFICADO`; la cadena multi-etapa no convierte IDs de transporte en destino de trabajo                                                   |
+| `QAI-003` | `APLICA_ASIGNACION_DE_TRABAJO` | `WORKER`              | worker de corrección de asistencia stale                 | la capacidad correctiva debe quedar separada del cierre ordinario y conservar recurso, contexto y operación                                                                      | `ESPECIFICADO`; compartir dominio no autoriza intercambio de operación                                                                       |
+| `QAI-004` | `APLICA_ASIGNACION_DE_TRABAJO` | `WORKER`              | worker compatible con cierre de asistencia               | conserva asignación propia mientras el schedule transicional exista; usar la misma función que `QAI-001` no convierte ambos trabajos en una unidad                               | `ESPECIFICADO`; coexistencia y exclusión permanecen fuera de esta tarea                                                                      |
+| `QAI-005` | `APLICA_ASIGNACION_DE_TRABAJO` | `WORKER`              | worker de alertas documentales                           | `pg_net` conserva transporte; la función ejecutora recibe identidad, contrato y scope sin heredar la credencial del scheduler                                                    | `ESPECIFICADO`; material sensible actual no forma parte del descriptor de asignación                                                         |
+| `QAI-006` | `APLICA_ASIGNACION_DE_TRABAJO` | `WORKER`              | worker de mantenimiento de cotizaciones                  | el trabajo de limpieza solo puede dirigirse a una capacidad compatible con su operación y ámbito PASS                                                                            | `ESPECIFICADO`; mantenimiento técnico no adquiere autoridad para decidir entrega                                                             |
+| `QAI-007` | `APLICA_ASIGNACION_DE_TRABAJO` | `WORKER`              | worker de reconciliación de expiraciones                 | el worker procesa la ocurrencia y preserva identidades empresariales de cada checkout afectado                                                                                   | `ESPECIFICADO`; la asignación batch no convierte los efectos hijos en una sola entidad                                                       |
+| `QAI-008` | `APLICA_ASIGNACION_DE_TRABAJO` | `WORKER`              | worker de purga de borradores                            | si la definición llega a desplegarse, la ocurrencia deberá asignarse a capacidad de purga compatible; esta tarea no activa ni acredita ese target                                | `PENDIENTE_DE_EVIDENCIA`; el insumo faltante es evidencia de despliegue y operación, a planificar en `DELIV-PKG-001` antes de implementación |
+| `QAI-009` | `APLICA_ASIGNACION_DE_TRABAJO` | `WORKER`              | worker de procesamiento de eliminaciones de cuenta       | GitHub Actions actúa como scheduler; la ejecución autoritativa se dirige al worker del servicio sin convertir el workflow en worker ni propietario                               | `ESPECIFICADO`; la frontera entre repositorios conserva `operation_id`, causa y resultado                                                    |
+| `QAI-010` | `PROPAGA_NO_DECIDE_ASIGNACION` | `UPSTREAM_PROPAGATED` | target upstream                                          | `net.http_request_queue` mueve la solicitud al destino ya resuelto por el trabajo; su request ID no genera otra asignación empresarial                                           | `ESPECIFICADO`; `pg_net` es transporte administrado y no autoridad de routing empresarial                                                    |
+| `QAI-011` | `APLICA_ASIGNACION_DE_TRABAJO` | `DEVICE → WORKER`     | dispositivo ANIMA que custodia → worker servidor         | la intención offline queda vinculada al dispositivo que la custodia y posteriormente al worker servidor que decide/aplica el efecto bajo contrato                                | `ESPECIFICADO`; SecureStore conserva trabajo local, no propiedad del hecho                                                                   |
+| `QAI-012` | `APLICA_ASIGNACION_DE_TRABAJO` | `DEVICE → WORKER`     | dispositivo ANIMA que custodia → worker servidor         | la cola de descanso conserva identidad y routing propios; compartir dispositivo o worker con asistencia no mezcla operaciones                                                    | `ESPECIFICADO`; cualquier orden o exclusión cruzada pertenece a `QUEUE-ARC-009`                                                              |
+| `QAI-013` | `PROPAGA_NO_DECIDE_ASIGNACION` | `UPSTREAM_PROPAGATED` | asignaciones de `QAI-011` y `QAI-012`                    | el loop móvil es un ejecutor técnico actual de pendientes y consume la asignación existente; cada tick no crea un trabajo ni una decisión de routing nueva                       | `ESPECIFICADO`; su disponibilidad y retry se gobiernan en `QUEUE-ARC-006` sin convertir el intervalo en identidad                            |
+| `QAI-014` | `APLICA_ASIGNACION_DE_TRABAJO` | `DEVICE → WORKER`     | dispositivo móvil → worker servidor de asistencia        | el callback del SO se vincula al dispositivo/contexto que lo originó; el servidor conserva la decisión final del cierre y no delega ownership al dispositivo                     | `ESPECIFICADO`; ubicación y dispositivo son contexto, no prueba automática del efecto                                                        |
+| `QAI-015` | `APLICA_ASIGNACION_DE_TRABAJO` | `WORKER → DEVICE`     | worker de impresión → impresora/periférico enrolado      | la intención se enruta primero por capacidad de impresión y después al dispositivo compatible; BrowserPrint/localStorage actuales no acreditan identidad de dispositivo objetivo | `ESPECIFICADO`; la adopción física y enrolamiento se planifican en `DELIV-PKG-001` sin declarar cumplimiento actual                          |
+| `QAI-016` | `NO_APLICA`                    | `NO_APLICA`           | `NO_APLICA`                                              | refresco recurrente de lectura sin trabajo durable ni efecto empresarial                                                                                                         | `NO_APLICA`; no se fuerza al contrato de asignación                                                                                          |
+| `QAI-017` | `APLICA_ASIGNACION_DE_TRABAJO` | `WORKER`              | worker de notificación derivada de mensaje de soporte    | el trigger origina el efecto derivado y `pg_net` lo transporta; el worker procesa la notificación sin convertirla en fuente del mensaje                                          | `ESPECIFICADO`; el mensaje original conserva ownership y la entrega mantiene resultado separado                                              |
+| `QAI-018` | `APLICA_ASIGNACION_DE_TRABAJO` | `ADAPTER → WORKER`    | adaptador Wompi → worker interno de procesamiento        | el adaptador valida/mapea el evento de proveedor y lo entrega a capacidad interna; Wompi no recibe autoridad sobre la venta ni sobre otros recursos                              | `ESPECIFICADO`; la protección de replay observada no se reinterpreta como cumplimiento transversal completo                                  |
+| `QAI-019` | `APLICA_ASIGNACION_DE_TRABAJO` | `ADAPTER → WORKER`    | adaptador RevenueCat → worker interno de procesamiento   | el adaptador conserva proveedor, evento, mapping y contrato; el worker interno aplica la consecuencia bajo propiedad PASS/CLUB                                                   | `ESPECIFICADO`; la brecha de replay ya identificada permanece bajo `QUEUE-ARC-006` y `QUEUE-ARC-009` y no se oculta mediante routing         |
+
+Resultado de reconciliación:
+
+```text
+19 IDENTIDADES ESPERADAS
+19 IDENTIDADES MATERIALIZADAS
+16 APLICAN ASIGNACIÓN DE TRABAJO
+2 PROPAGAN Y NO DECIDEN ASIGNACIÓN
+1 NO APLICA
+0 FALTANTES
+0 DUPLICADOS
+
+DISTRIBUCIÓN DE RUTAS ENTRE LAS 16 APLICABLES
+WORKER            = 10
+DEVICE → WORKER   = 3
+WORKER → DEVICE   = 1
+ADAPTER → WORKER  = 2
+```
+
+---
+
+#### 17. Reconciliación con activos actuales
+
+##### 17.1. `pg_cron`, GitHub Actions y schedulers
+
+Los schedulers actuales pueden originar ocurrencias, pero no se adoptan como workers por inferencia.
+
+- `QAI-001..QAI-008` separan schedule de capacidad ejecutora;
+- `QAI-009` separa el workflow de GitHub Actions del worker de eliminación;
+- una credencial o secreto de cron no se transporta al descriptor empresarial de asignación;
+- la asignación conserva el ambiente y contrato del trabajo, no el repositorio donde vive el scheduler.
+
+##### 17.2. `pg_net`
+
+`QAI-010` permanece como transporte técnico. `pg_net` puede trasladar una invocación a un target resuelto, pero no decide por sí solo ownership, prioridad, deadline, worker empresarial ni resultado.
+
+##### 17.3. ANIMA offline y background
+
+`QAI-011`, `QAI-012` y `QAI-014` usan una ruta objetivo `DEVICE → WORKER`. El dispositivo conserva custodia y contexto local; la decisión autoritativa del efecto permanece en la frontera servidora. `QAI-013` procesa localmente pendientes existentes y no crea otro routing cada quince segundos.
+
+##### 17.4. Impresión NEXO
+
+`QAI-015` usa una ruta objetivo `WORKER → DEVICE`. La implementación actual `localStorage` + BrowserPrint se conserva como evidencia funcional, pero no se presenta como cumplimiento de identidad, enrolamiento, worker transversal o resultado físico. La transición física deberá quedar incorporada al paquete de implementación correspondiente a partir de `DELIV-PKG-001`.
+
+##### 17.5. Webhooks externos
+
+`QAI-018` y `QAI-019` usan `ADAPTER → WORKER`. El proveedor aporta el evento y autenticidad técnica; el adaptador valida y mapea; la capacidad interna conserva la propiedad de la consecuencia empresarial. Una credencial de proveedor nunca sustituye la identidad del adaptador ni del worker.
+
+---
+
+#### 18. Handoff exacto a `QUEUE-ARC-006..012`
+
+| Tarea                                                                             | Responsabilidad reservada recibida desde esta tarea                                                                                                                                |
+| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo`                     | decidir cuándo una indisponibilidad o fallo de target produce un nuevo intento, con qué presupuesto y backoff, conservando la operación y la asignación histórica                  |
+| `QUEUE-ARC-007 — Definir cancelación antes y durante ejecución`                   | invalidar o detener la ejecución del mismo trabajo sin confundir la solicitud de cancelación con una reasignación                                                                  |
+| `QUEUE-ARC-008 — Definir cola de fallos y recuperación manual`                    | permitir recuperación controlada y eventual reasignación sin borrar historial ni extender silenciosamente la intención original                                                    |
+| `QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia`                    | aplicar claim, lease, fencing y exclusión sobre trabajo elegible/asignado y evitar que dos targets cierren simultáneamente la misma versión                                        |
+| `QUEUE-ARC-010 — Definir estados y eventos canónicos`                             | representar asignación, reasignación, espera de target, inicio, resultado y cambios de routing mediante estados/eventos canónicos sin redefinir el contrato de asignación          |
+| `QUEUE-ARC-011 — Definir métricas de espera, ejecución y error`                   | medir latencia de asignación, reasignaciones, disponibilidad por clase de target y errores de routing sin convertir telemetría en identidad                                        |
+| `QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos` | definir quién puede forzar o cambiar destino cuando exista elección manual y quién puede actuar sobre el trabajo sin convertir credencial técnica o posesión del target en permiso |
+
+Ninguna de esas responsabilidades se desarrolla en esta tarea.
+
+---
+
+#### 19. Prohibiciones
+
+Esta tarea no autoriza:
+
+1. crear tablas, columnas, índices, constraints, funciones, triggers o RPC de asignación;
+2. aprovisionar principals, credenciales, tokens, certificados o secretos;
+3. enrolar dispositivos o impresoras;
+4. desplegar workers o adaptadores;
+5. modificar Edge Functions, GitHub Actions, `pg_cron`, `pg_net`, TaskManager, SecureStore, localStorage o BrowserPrint;
+6. activar `QAI-008`;
+7. retirar `QAI-004`;
+8. modificar prioridad, `scheduled_at` o `deadline_at`;
+9. definir `attempt_id`, backoff, presupuesto o agotamiento de retry;
+10. definir cancelación;
+11. crear dead-letter o recuperación manual física;
+12. definir claim, lease, fencing o locks;
+13. cerrar estados, eventos, métricas o SLOs;
+14. conceder autorización empresarial a un worker, dispositivo, scheduler, adaptador o proveedor;
+15. presentar una identidad objetivo como aprovisionada o validada operativamente;
+16. iniciar o desarrollar `QUEUE-ARC-006`.
+
+---
+
+#### 20. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea especializa para el inventario de colas reglas de identidad técnica, mínimo privilegio, trazabilidad de destino, handoff, idempotencia y ejecución asíncrona ya protegidas por la cobertura transversal vigente. La asignación documentada no introduce una obligación verificable independiente de esas invariantes ni cambia alcance, estado, responsable, evidencia o relación de requisitos existentes.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 21. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, que protege identidad estable, estado durable, claim seguro, no duplicidad, retry controlado, conciliación y recuperación del trabajo asíncrono;
+- `TREQ-INTEGRATION-004`, que exige reconstruir causa, payload, principal técnico, recurso, destinatario, intento, resultado, error y efecto final de cadenas asíncronas;
+- la cobertura de identidad técnica y mínimo privilegio ya consumida por `TSVC-CAT-005`;
+- la cobertura de confiabilidad, worker, dispositivo, proveedor, scheduler, deadline y resultado desconocido ya materializada por `TSVC-CAT-006` y `QUEUE-ARC-004`.
+
+Ninguna fila del registro canónico cambia de identificador, dominio, regla protegida, estado, responsable, evidencia, relación o secuencia por esta tarea.
+
+---
+
+#### 22. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `QUEUE-ARC-004` como tarea anterior aprobada;
+2. conserva `QUEUE-ARC-006` como única tarea siguiente reservada;
+3. establece `WORK-ASSIGNMENT-CONTRACT-001@1.0.0` sin crear una fuente de verdad paralela;
+4. consume las identidades técnicas aprobadas en `TSVC-CAT-005` sin presentar principals como aprovisionados;
+5. distingue asignación de claim, intento, transporte y efecto;
+6. define exactamente tres clases de destino técnico: `WORKER`, `DEVICE` y `ADAPTER`;
+7. define las cuatro rutas materializadas `WORKER`, `DEVICE → WORKER`, `WORKER → DEVICE` y `ADAPTER → WORKER`;
+8. define `assignment_id` y `assignment_version` sin sustituir `operation_id` ni `idempotency_key`;
+9. exige compatibilidad de servicio, ambiente, contrato, operación, capacidad y scopes antes de seleccionar target;
+10. impide fallback silencioso a otro ambiente, proveedor, dispositivo o principal incompatible;
+11. conserva aplicación propietaria, actor, causa y recurso durante la asignación;
+12. prohíbe que scheduler, transporte o credencial se conviertan en worker o autorización por inferencia;
+13. conserva prioridad, `scheduled_at` y `deadline_at` durante asignación y reasignación;
+14. conserva identidad idempotente durante cambios puramente técnicos de target;
+15. obliga a tratar un destino material para la intención como parte del contrato/huella y no como reasignación silenciosa;
+16. define asignación a worker sin usar el token del usuario como credencial persistente;
+17. define asignación a dispositivo sin transferir ownership ni inferir resultado físico;
+18. define asignación a adaptador sin convertir proveedor ni ACK en fuente de verdad empresarial;
+19. materializa exactamente una decisión para cada `QAI-001..QAI-019`;
+20. obtiene 16 `APLICA_ASIGNACION_DE_TRABAJO`, 2 `PROPAGA_NO_DECIDE_ASIGNACION` y 1 `NO_APLICA`;
+21. obtiene 10 rutas `WORKER`, 3 `DEVICE → WORKER`, 1 `WORKER → DEVICE` y 2 `ADAPTER → WORKER` entre las 16 aplicables;
+22. mantiene 0 identidades faltantes y 0 duplicadas;
+23. mantiene `QAI-010` como transporte que propaga y no decide asignación;
+24. mantiene `QAI-013` como worker actual que procesa asignaciones upstream y no como trabajo autónomo;
+25. mantiene `QAI-016` como `NO_APLICA`;
+26. conserva `QAI-008` como `PENDIENTE_DE_EVIDENCIA` sin activar el schedule;
+27. no usa asignación para resolver el solapamiento `QAI-001` / `QAI-004`;
+28. preserva la brecha de replay de `QAI-019` bajo sus tareas propietarias y no la oculta mediante routing;
+29. asigna con exactitud los handoffs `QUEUE-ARC-006..012`;
+30. declara cero cambios de requisitos de prueba con justificación concreta;
+31. crea cero objetos físicos;
+32. modifica cero repositorios, Supabase, cron, colas, workers, dispositivos, adaptadores o webhooks;
+33. no inicia ni desarrolla `QUEUE-ARC-006`.
+
+---
+
+#### 23. Resultado de la tarea
+
+`QUEUE-ARC-005` deja establecido el contrato de asignación técnica del trabajo asíncrono:
+
+```text
+OPERACIÓN CANÓNICA
+        ↓
+VENTANA TEMPORAL VÁLIDA
+        ↓
+CAPACIDADES REQUERIDAS
+        ↓
+RUTA TÉCNICA
+        ↓
+TARGET COMPATIBLE
+        ↓
+ASIGNACIÓN VERSIONADA
+        ↓
+CLAIM / INTENTO / EJECUCIÓN
+SE DEFINEN EN SUS TAREAS PROPIETARIAS
+```
+
+Las 19 identidades inventariadas quedan reconciliadas una a una. La asignación preserva ownership, contrato, idempotencia, prioridad y deadline, y separa de forma explícita worker, dispositivo, adaptador, scheduler y transporte.
+
+---
+
+#### 24. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`QUEUE-ARC-004 — Definir prioridad, programación y vencimiento`
+
+TAREA ACTUAL APROBADA
+
+`QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador`
+
+SIGUIENTE TAREA RESERVADA
+
+`QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo`
+
+
 ### [ ] QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo
 ### [ ] QUEUE-ARC-007 — Definir cancelación antes y durante ejecución
 ### [ ] QUEUE-ARC-008 — Definir cola de fallos y recuperación manual
