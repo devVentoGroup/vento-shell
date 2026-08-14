@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **823** |
+| Tareas aprobadas | **824** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **771** |
+| Tareas no iniciadas | **770** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **51.63% (823/1594)** |
+| Porcentaje de completamiento | **51.69% (824/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DELIV-PKG-012 — Definir permisos, modalidad, alcance, contexto y contrato de recurso** |
-| Tarea actual | **DELIV-PKG-013 — Definir requisitos no funcionales aplicables** |
+| Última tarea aprobada | **DELIV-PKG-013 — Definir requisitos no funcionales aplicables** |
+| Tarea actual | **DELIV-PKG-014 — Enumerar archivos exactos que se crearán, modificarán o retirarán** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DELIV-PKG-014 — Enumerar archivos exactos que se crearán, modificarán o retirarán** |
+| Siguiente tarea | **DELIV-PKG-015 — Definir dependencias, bloqueos y orden de aplicación** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 12 de 68 aprobadas; DELIV-PKG-013 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 13 de 68 aprobadas; DELIV-PKG-014 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DELIV-PKG-012` — Definir permisos, modalidad, alcance, contexto y contrato de recurso |
-| Tarea actual | `DELIV-PKG-013` — Definir requisitos no funcionales aplicables — **NO INICIADA** |
-| Siguiente tarea | `DELIV-PKG-014` — Enumerar archivos exactos que se crearán, modificarán o retirarán |
+| Última aprobada | `DELIV-PKG-013` — Definir requisitos no funcionales aplicables |
+| Tarea actual | `DELIV-PKG-014` — Enumerar archivos exactos que se crearán, modificarán o retirarán — **NO INICIADA** |
+| Siguiente tarea | `DELIV-PKG-015` — Definir dependencias, bloqueos y orden de aplicación |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 12 DE 68 APROBADAS — ACTUAL DELIV-PKG-013** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 13 DE 68 APROBADAS — ACTUAL DELIV-PKG-014** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DELIV-PKG-012 — Definir permisos, modalidad, alcance, contexto y contrato de recurso
-        ↓
-TAREA ACTUAL
 DELIV-PKG-013 — Definir requisitos no funcionales aplicables
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DELIV-PKG-014 — Enumerar archivos exactos que se crearán, modificarán o retirarán
         ↓
+SIGUIENTE TAREA RESERVADA
+DELIV-PKG-015 — Definir dependencias, bloqueos y orden de aplicación
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 12 de 68 tareas aprobadas
+BLOQUE E5 — 13 de 68 tareas aprobadas
 ```
