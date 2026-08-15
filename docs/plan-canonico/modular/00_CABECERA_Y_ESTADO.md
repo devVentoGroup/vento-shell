@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **862** |
+| Tareas aprobadas | **863** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **732** |
+| Tareas no iniciadas | **731** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **54.08% (862/1594)** |
+| Porcentaje de completamiento | **54.14% (863/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **HYPERCARE-OPS-001 — Definir inicio, duración y salida del acompañamiento intensivo** |
-| Tarea actual | **HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos** |
+| Última tarea aprobada | **HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos** |
+| Tarea actual | **HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento** |
+| Siguiente tarea | **HYPERCARE-OPS-004 — Definir monitoreo de adopción, tiempos y desviaciones operativas** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 51 de 68 aprobadas; HYPERCARE-OPS-002 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 52 de 68 aprobadas; HYPERCARE-OPS-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `HYPERCARE-OPS-001` — Definir inicio, duración y salida del acompañamiento intensivo |
-| Tarea actual | `HYPERCARE-OPS-002` — Definir responsables funcionales y técnicos — **NO INICIADA** |
-| Siguiente tarea | `HYPERCARE-OPS-003` — Definir monitoreo de errores, colas, integraciones y rendimiento |
+| Última aprobada | `HYPERCARE-OPS-002` — Definir responsables funcionales y técnicos |
+| Tarea actual | `HYPERCARE-OPS-003` — Definir monitoreo de errores, colas, integraciones y rendimiento — **NO INICIADA** |
+| Siguiente tarea | `HYPERCARE-OPS-004` — Definir monitoreo de adopción, tiempos y desviaciones operativas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 51 DE 68 APROBADAS — ACTUAL HYPERCARE-OPS-002** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 52 DE 68 APROBADAS — ACTUAL HYPERCARE-OPS-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-HYPERCARE-OPS-001 — Definir inicio, duración y salida del acompañamiento intensivo
-        ↓
-TAREA ACTUAL
 HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento
         ↓
+SIGUIENTE TAREA RESERVADA
+HYPERCARE-OPS-004 — Definir monitoreo de adopción, tiempos y desviaciones operativas
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 51 de 68 tareas aprobadas
+BLOQUE E5 — 52 de 68 tareas aprobadas
 ```

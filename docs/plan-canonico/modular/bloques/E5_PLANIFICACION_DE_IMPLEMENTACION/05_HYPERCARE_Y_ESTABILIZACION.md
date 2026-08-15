@@ -684,7 +684,725 @@ HYPERCARE-OPS-001 — Definir inicio, duración y salida del acompañamiento int
 HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos
 
 
-### [ ] HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos
+### ✅ HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos
+
+**Estado:** APROBADA
+**Tarea anterior:** `HYPERCARE-OPS-001 — Definir inicio, duración y salida del acompañamiento intensivo`
+**Tarea siguiente:** `HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento`
+**Tipo de tarea:** documental — definición normativa y materialización por `package_id` de la responsabilidad funcional y técnica que gobernará el acompañamiento intensivo, incluyendo autoridad, cobertura, suplencia, escalamiento y segregación, consumiendo propietarios y responsables ya aprobados sin crear cargos, personas, permisos ni autoridades nuevas; sin ejecutar hypercare, monitoreo, diagnóstico, correcciones, conciliaciones, rollback, transferencias a soporte, cambios de configuración, despliegues, migraciones, DDL/DML, backfills, modificaciones de datos ni operaciones sobre Supabase
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`HYPERCARE-OPS-002` define quién conserva la responsabilidad funcional y quién conserva la responsabilidad técnica durante la fase de acompañamiento intensivo diseñada por `HYPERCARE-OPS-001`, para cada uno de los 207 `package_id` canónicos.
+
+La tarea resuelve exclusivamente:
+
+```text
+PAQUETE / CANDIDATO / AMBIENTE / ALCANCE
++
+RESPONSABLE FUNCIONAL CANÓNICO
++
+RESPONSABLE TÉCNICO CANÓNICO
++
+COBERTURA, SUPLENCIA Y ESCALAMIENTO VIGENTES
++
+FRONTERAS DE AUTORIDAD SIN SOLAPAMIENTO AMBIGUO
+=
+RESPONSABILIDAD DE HYPERCARE TRAZABLE Y EJECUTABLE
+```
+
+La tarea no crea una organización paralela de hypercare. Reutiliza las autoridades y responsables ya materializados en el expediente del paquete y define cómo deben quedar vinculados a `SHELL-CI-023::<package_id>`.
+
+---
+
+#### 2. Resultado sustantivo
+
+Por cada `package_id`, la tarea materializa cuatro piezas documentales:
+
+1. `hypercare_responsibility_resolution::<package_id>` — resolución de las fuentes canónicas que determinan responsabilidad funcional, responsabilidad técnica, cobertura y escalamiento;
+2. `hypercare_functional_technical_map::<package_id>` — mapa de separación y cooperación entre autoridad funcional y técnica para la misma instancia de hypercare;
+3. `hypercare_coverage_manifest::<package_id>` — contrato de disponibilidad, suplencia, handoff y escalamiento que deberá poder demostrarse antes y durante la ejecución;
+4. `hypercare_responsibility_handoff::<package_id>` — conjunto de referencias que las tareas `HYPERCARE-OPS-003..010` y `SHELL-CI-023::<package_id>` consumirán sin reinterpretar ownership.
+
+Estas piezas quedan `ESPECIFICADAS`. No prueban disponibilidad real de una persona, ejecución de turnos, respuesta a incidentes ni cierre de hypercare.
+
+---
+
+#### 3. Entradas obligatorias y precedencia
+
+`HYPERCARE-OPS-002` consume sin redefinir:
+
+- `HYPERCARE-OPS-001`: identidad de instancia, inicio, ciclo de vida, suspensión, extensión y elegibilidad temporal de salida;
+- `DELIV-PKG-014`: repositorios, archivos, símbolos y ownership materializados por paquete;
+- `DELIV-PKG-015`: topología, dependencias y unidades de implementación;
+- `DELIV-PKG-017`: contrato de observabilidad y `Responsable de decisión` `OWN-*` por cada una de las 207 raíces;
+- `DELIV-PKG-019`: rollout y participación del responsable técnico del repositorio en decisiones de promoción;
+- `DELIV-PKG-020`: `functional_authority_ref`, `technical_authority_ref`, autoridad de recovery/rollback y segregación aplicables;
+- `DELIV-PKG-021`: runbooks, procedimientos, audiencia y soporte requeridos;
+- `DELIV-PKG-022`: modalidad y alcance de piloto de cada raíz;
+- `READY-GATE-010`: cobertura efectiva de soporte, responsables, suplencia y escalamiento;
+- `READY-GATE-011`: propietarios de señales y rutas de respuesta de observabilidad;
+- `READY-GATE-014`: autoridades de riesgo y condiciones de suspensión;
+- `CUTOVER-OPS-006`: semántica de continuar, pausar y revertir durante el piloto, como antecedente de decisiones transferidas a hypercare;
+- `CUTOVER-OPS-007`: historial de incidentes y decisiones entregado a hypercare;
+- `CUTOVER-OPS-010`: superficies elegibles, bloqueadas, dependencias legacy y obligaciones abiertas entregadas a hypercare;
+- `TREQ-CONT-002`: obligación vigente de autoridad explícita, responsables, sustitutos, escalamiento y bitácora para incidentes de continuidad.
+
+Precedencia obligatoria:
+
+```text
+OWNERSHIP DEL PAQUETE
+→ AUTORIDAD FUNCIONAL / TÉCNICA YA APROBADA
+→ COBERTURA Y SUPLENCIA DE READINESS
+→ RESPONSABILIDAD DE HYPERCARE
+```
+
+Una fuente de hypercare nunca puede sobrescribir una autoridad propietaria anterior por conveniencia operativa.
+
+---
+
+#### 4. Invariante de responsabilidad
+
+Para una misma instancia:
+
+```text
+RESPONSABILIDAD FUNCIONAL
+≠ RESPONSABILIDAD TÉCNICA
+≠ EJECUTOR DE UNA ACCIÓN
+≠ SOPORTE ORDINARIO
+≠ AUTORIDAD FINAL DE CIERRE
+```
+
+Las responsabilidades pueden recaer materialmente en la misma persona únicamente cuando las fuentes propietarias lo permiten y no se rompe segregación. Que una persona cubra dos funciones no fusiona sus autoridades ni elimina la evidencia exigida para cada decisión.
+
+`HYPERCARE-OPS-002` no crea un rol universal denominado “líder de hypercare”, “war room owner”, “incident commander” o equivalente.
+
+---
+
+#### 5. Unidad mínima de resolución
+
+La responsabilidad se resuelve para:
+
+```text
+package_id
++
+candidate_ref
++
+environment
++
+authorized_scope_ref
++
+hypercare_lifecycle_manifest_ref
+```
+
+Cuando el paquete tenga unidades físicas o repositorios múltiples, la resolución técnica conserva las unidades exactas y sus responsables; no colapsa varios repositorios bajo una persona o autoridad inferida.
+
+Una resolución perteneciente a otro candidato, ambiente, alcance o revisión no es reutilizable como cobertura de la instancia actual.
+
+---
+
+#### 6. Responsable funcional
+
+El `functional_owner_ref` de hypercare se toma exclusivamente del `Responsable de decisión` `OWN-*` de la fila homónima de `DELIV-PKG-017`, preservando cualquier especialización de autoridad ya establecida por `DELIV-PKG-018..020` y readiness.
+
+El responsable funcional:
+
+1. conserva la interpretación autoritativa del impacto sobre el proceso, capacidad, usuarios y resultado empresarial dentro de su alcance aprobado;
+2. confirma qué efecto funcional observado pertenece realmente al paquete y qué efecto debe escalarse a otra fuente propietaria;
+3. participa en decisiones que las fuentes vigentes exijan como funcionales, incluida la valoración de exposición empresarial y la aceptación o rechazo de continuidad cuando corresponda;
+4. mantiene propietario para toda obligación funcional abierta durante hypercare;
+5. no modifica por sí solo severidades, umbrales, permisos, alcance, rollout, rollback, datos ni contratos;
+6. no puede declarar cierre final de hypercare por sí solo; esa autoridad permanece en `HYPERCARE-OPS-010` y la certificación material en `SHELL-CI-024::<package_id>`.
+
+Un `OWN-*` es una referencia canónica de responsabilidad. Esta tarea no lo transforma en nombre de persona ni inventa una identidad nominal.
+
+---
+
+#### 7. Responsable técnico
+
+El `technical_owner_ref` se resuelve desde `technical_authority_ref` de `DELIV-PKG-020` para la fila homónima y conserva la identidad técnica de repositorio o unidad materializada por `DELIV-PKG-014`, `DELIV-PKG-015` y `DELIV-PKG-019`.
+
+El responsable técnico:
+
+1. conserva ownership técnico del candidato, runtime, repositorio, unidad de implementación y dependencias que le correspondan;
+2. recibe y dirige técnicamente el diagnóstico cuando una señal de `HYPERCARE-OPS-003` o una desviación de `HYPERCARE-OPS-004` requiera actuación;
+3. conserva la trazabilidad entre síntoma, versión, configuración, evidencia, cambio y resultado técnico;
+4. ejecuta o coordina las acciones técnicas únicamente mediante los procedimientos y autoridades que `HYPERCARE-OPS-006`, `DELIV-PKG-020` y las tareas de implementación propietarias permitan;
+5. no acepta por sí solo riesgo empresarial, no amplía alcance y no cambia ownership funcional;
+6. no convierte una corrección técnica exitosa en cierre funcional u operativo.
+
+Si una unidad física involucra más de un repositorio, cada responsabilidad técnica aplicable permanece identificable. No se inventa un único propietario técnico para ocultar dependencias múltiples.
+
+---
+
+#### 8. Campos obligatorios del mapa funcional/técnico
+
+`hypercare_functional_technical_map::<package_id>` deberá conservar como mínimo:
+
+| Campo                             | Regla                                                            |
+| --------------------------------- | ---------------------------------------------------------------- |
+| `package_id`                      | identidad canónica exacta                                        |
+| `candidate_ref`                   | mismo candidato entregado por 001                                |
+| `environment`                     | mismo ambiente entregado por 001                                 |
+| `authorized_scope_ref`            | mismo alcance de la instancia                                    |
+| `functional_owner_ref`            | `OWN-*` de la fila homónima de `DELIV-PKG-017`                   |
+| `functional_authority_source_ref` | fuente exacta que gobierna la decisión funcional aplicable       |
+| `technical_owner_ref`             | `technical_authority_ref` de la fila homónima de `DELIV-PKG-020` |
+| `technical_repository_refs`       | repositorios/unidades vigentes de `DELIV-PKG-014/015/019`        |
+| `support_coverage_ref`            | cobertura vigente de `READY-GATE-010`                            |
+| `observability_routing_ref`       | ownership/routing vigente de `DELIV-PKG-017` y `READY-GATE-011`  |
+| `recovery_authority_ref`          | autoridad vigente de `DELIV-PKG-020` cuando aplique              |
+| `substitute_ref`                  | suplente autorizado cuando la fuente lo exija                    |
+| `escalation_ref`                  | ruta de escalamiento vigente                                     |
+| `coverage_state`                  | estado documental de cobertura de la instancia                   |
+| `resolution_state`                | `ESPECIFICADO`, `BLOQUEADO`, `INVALIDADO` o `NO_APLICA_DIRECTA`  |
+
+No se almacenan credenciales ni datos personales innecesarios como parte del contrato documental.
+
+---
+
+#### 9. Responsabilidades funcionales durante el ciclo de hypercare
+
+La responsabilidad funcional cubre, según aplicabilidad:
+
+- entrada: confirmar que el alcance empresarial entregado por `HYPERCARE-OPS-001` es el que se acompañará;
+- estabilización: responder por la interpretación de impacto funcional y por el destino de toda obligación empresarial abierta;
+- incidentes: aportar autoridad funcional conforme a `HYPERCARE-OPS-006`, sin redefinir su clasificación o procedimiento;
+- conciliación: conservar la fuente funcional que `HYPERCARE-OPS-005` deba usar, sin ejecutar la conciliación desde 002;
+- deuda: participar en la disposición que `HYPERCARE-OPS-007` defina cuando exista impacto funcional;
+- transferencia: entregar a `HYPERCARE-OPS-008` ownership y pendientes funcionales trazables;
+- contingencias: participar conforme a la autoridad propietaria en la decisión documentada por `HYPERCARE-OPS-009`;
+- cierre: aportar la evidencia funcional requerida por `HYPERCARE-OPS-010`, sin anticipar su decisión.
+
+---
+
+#### 10. Responsabilidades técnicas durante el ciclo de hypercare
+
+La responsabilidad técnica cubre, según aplicabilidad:
+
+- entrada: confirmar correlación entre candidato, artefacto, repositorio, runtime, configuración y ambiente que recibe `SHELL-CI-023`;
+- estabilización: conservar ownership técnico de diagnóstico, contención y tratamiento conforme a los contratos vigentes;
+- monitoreo: recibir las señales que `HYPERCARE-OPS-003` formalice y mantener su ruta técnica de respuesta;
+- operación: aportar evidencia para desviaciones de rendimiento o comportamiento técnico que `HYPERCARE-OPS-004` relacione con la operación;
+- conciliación: ejecutar o coordinar únicamente las acciones técnicas que `HYPERCARE-OPS-005/006` y sus fuentes permitan;
+- corrección: conservar la referencia exacta de implementación y prueba para toda corrección real que `HYPERCARE-OPS-006` gobierne;
+- deuda: entregar deuda técnica a `HYPERCARE-OPS-007` con propietario y destino;
+- transferencia: entregar runbooks, conocimiento y pendientes técnicos según `HYPERCARE-OPS-008`;
+- contingencias: demostrar el estado técnico requerido por `HYPERCARE-OPS-009`;
+- cierre: aportar evidencia técnica a `HYPERCARE-OPS-010`, sin certificar unilateralmente el cierre.
+
+---
+
+#### 11. Decisiones conjuntas y segregación
+
+Cuando una fuente vigente exija participación funcional y técnica, una decisión solo es válida cuando ambas autoridades aplicables hayan cumplido su parte.
+
+Reglas:
+
+1. una aprobación funcional no demuestra seguridad técnica;
+2. una aprobación técnica no acepta impacto empresarial;
+3. un ejecutor no adquiere autoridad de decisión por ejecutar una acción;
+4. un proveedor o tercero no hereda autoridad empresarial por prestar soporte técnico;
+5. una persona que ocupe materialmente dos funciones deberá dejar evidencia separada de cada autoridad cuando la segregación lo permita;
+6. si la fuente exige segregación entre decisión y ejecución, 002 la conserva sin excepciones locales;
+7. un conflicto entre autoridades bloquea la decisión afectada y usa la ruta de escalamiento vigente; no se resuelve por mayoría ni por jerarquía inferida.
+
+---
+
+#### 12. Cobertura temporal obligatoria
+
+`hypercare_coverage_manifest::<package_id>` debe permitir demostrar cobertura suficiente para el periodo `ACTIVA`, `SUSPENDIDA` o `EXTENDIDA` de `HYPERCARE-OPS-001`.
+
+La cobertura deberá distinguir:
+
+- responsable funcional primario;
+- responsable técnico primario por repositorio/unidad aplicable;
+- suplente autorizado cuando sea obligatorio;
+- ventanas o condiciones de disponibilidad;
+- mecanismo de handoff entre responsables;
+- ruta de escalamiento;
+- autoridad de recovery/rollback cuando aplique;
+- cobertura de soporte y observabilidad exigida por las fuentes propietarias.
+
+La cobertura nominal de un contacto no equivale a cobertura ejecutable. Antes de que una instancia pueda operar bajo `SHELL-CI-023::<package_id>`, `READY-GATE-010` y el handoff de `HYPERCARE-OPS-001` deberán permitir demostrar quién cubre realmente las responsabilidades exigibles.
+
+---
+
+#### 13. Suplencia
+
+Una suplencia solo es válida cuando:
+
+1. el suplente está autorizado para la responsabilidad concreta;
+2. la fuente propietaria permite la sustitución;
+3. el alcance temporal y material de la suplencia es trazable;
+4. el handoff conserva paquete, candidato, ambiente, alcance, incidentes, decisiones, conciliaciones, recovery y pendientes aplicables;
+5. la suplencia no rompe segregación ni amplía permisos;
+6. existe mecanismo de escalamiento si el suplente tampoco está disponible.
+
+No se considera suplencia válida “cualquier persona del equipo”, “alguien de guardia” o una identidad sin autoridad verificable.
+
+---
+
+#### 14. Escalamiento
+
+El escalamiento reutiliza exclusivamente rutas vigentes de `READY-GATE-010`, `DELIV-PKG-017`, `DELIV-PKG-020`, continuidad y fuentes funcionales propietarias.
+
+002 define que todo bloqueo de responsabilidad deberá identificar:
+
+- responsabilidad ausente o en conflicto;
+- paquete y alcance afectados;
+- fuente propietaria;
+- autoridad que debe resolverlo;
+- ruta de escalamiento aplicable;
+- condición objetiva de salida;
+- efecto sobre la capacidad de continuar hypercare.
+
+002 no define tiempos de respuesta, severidades ni niveles nuevos; esas materias permanecen en sus fuentes vigentes y en `HYPERCARE-OPS-003/006` según corresponda.
+
+---
+
+#### 15. Relación con `SHELL-CI-023::<package_id>`
+
+Durante ejecución, `SHELL-CI-023::<package_id>` deberá poder registrar para cada acción o decisión relevante:
+
+```text
+QUIÉN OBSERVÓ
++
+QUIÉN TENÍA RESPONSABILIDAD FUNCIONAL
++
+QUIÉN TENÍA RESPONSABILIDAD TÉCNICA
++
+QUIÉN EJECUTÓ
++
+QUIÉN DECIDIÓ
++
+QUÉ AUTORIDAD Y FUENTE RESPALDABAN CADA PAPEL
+```
+
+Las identidades reales y su disponibilidad son evidencia de ejecución de `SHELL-CI-023`, no evidencia inventada por E5.
+
+---
+
+#### 16. Tratamiento por modalidad heredada
+
+002 no cambia la distribución heredada de `DELIV-PKG-022` y `HYPERCARE-OPS-001`:
+
+| Modalidad heredada            | Cantidad | Tratamiento de responsabilidad                                                                                                                                               |
+| ----------------------------- | -------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PILOT-DIRECT-001`            |  **160** | conserva `OWN-*` funcional y responsable técnico del repositorio/unidad de la instancia directa                                                                              |
+| `PILOT-SHARED-001`            |    **3** | responsabilidad funcional/técnica se ejerce mediante el contrato compartido y los consumidores directos aplicables; no se crea un equipo de hypercare ficticio independiente |
+| `PILOT-CONTROL-001`           |   **26** | conserva ownership del control y, cuando exista superficie técnica ejecutable, su responsable técnico; la observación de raíces gobernadas no transfiere su ownership        |
+| AURA bloqueada                |   **14** | conserva fuentes de responsabilidad, pero no fabrica cobertura de hypercare activo mientras persista el gate                                                                 |
+| dependencia externa bloqueada |    **2** | conserva ownership interno y contraparte contractual existente sin otorgar autoridad empresarial al proveedor                                                                |
+| TALENTO fuera de línea actual |    **2** | conserva referencias de ownership sin simular una ejecución de hypercare en la línea actual                                                                                  |
+
+Reconciliación:
+
+```text
+160 + 3 + 26 + 14 + 2 + 2 = 207
+```
+
+---
+
+#### 17. Matriz materializada de responsabilidad para las 207 raíces
+
+Cada `package_id` aparece exactamente una vez. La matriz fija la fuente determinista de responsabilidad y prohíbe crear una autoridad paralela. El valor `ESPECIFICADO` significa que el binding documental queda definido; no significa que una persona esté actualmente de turno ni que el paquete haya entrado a hypercare.
+
+| `package_id`  | `functional_owner_ref`                                               | `technical_owner_ref`                                                                                | cobertura/suplencia | decisión 002                  | estado documental |
+| ------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------- | ----------------------------- | ----------------- |
+| `GAP-PKG-001` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-002` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-003` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-004` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-005` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-006` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-007` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-008` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-009` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-010` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-011` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-012` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-013` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-014` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-015` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-016` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-017` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-018` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-019` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-020` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-021` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-022` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-023` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-024` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-025` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-026` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-027` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-028` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-029` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-030` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-031` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-032` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-033` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-034` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-035` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-036` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-037` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-038` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-039` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-040` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-041` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-042` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-043` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-044` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-045` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-046` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-047` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-048` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-049` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-050` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-051` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-052` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-053` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-054` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-055` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-056` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-057` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-058` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-059` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-060` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-061` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-062` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-063` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-064` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-065` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-066` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-067` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-068` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-069` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-070` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-071` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-072` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-073` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-074` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-075` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-076` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-077` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-078` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-079` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-080` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-081` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-082` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-083` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-084` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-085` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-086` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-087` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-088` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-089` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-090` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-091` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-092` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-093` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-094` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-095` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-096` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-097` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-098` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-099` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-100` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-101` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-102` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-103` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-104` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-105` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-106` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-107` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-108` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-109` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-110` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-111` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-112` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-113` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-114` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-115` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-116` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-117` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-118` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-119` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-120` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-121` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-122` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-123` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-124` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-125` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-126` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-127` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-128` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-129` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-130` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-131` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-132` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-133` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-134` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-135` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-136` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-137` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-138` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-139` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-140` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-141` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-142` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-143` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-144` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-145` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-146` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-147` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-148` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-149` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-150` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-151` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-152` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-153` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-154` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-155` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-156` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-157` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-158` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-159` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-160` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-161` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-162` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-163` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-164` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-165` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-166` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-167` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-168` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-169` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-170` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-171` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-172` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-173` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-174` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-175` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-176` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-177` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-178` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-179` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-180` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-181` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-182` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-183` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-184` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-185` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-186` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-187` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-188` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-189` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-190` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-191` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-192` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-193` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-194` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-195` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-196` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-197` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-198` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-199` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-200` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-201` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-202` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-203` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-204` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-205` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-206` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+| `GAP-PKG-207` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    | La matriz conserva **207/207** identidades, sin omisiones ni duplicaciones. La modalidad, gate y ejecutabilidad de cada fila continúan siendo los de su fila homónima en `DELIV-PKG-022` y `HYPERCARE-OPS-001`; 002 no los reclasifica. |
+
+---
+
+#### 18. Estados documentales de resolución
+
+| Estado              | Semántica                                                                                                                                                    |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ESPECIFICADO`      | las fuentes de responsabilidad funcional, técnica, cobertura y escalamiento están determinadas documentalmente                                               |
+| `BLOQUEADO`         | una instancia que pretende ejecutar hypercare no puede demostrar identidad, autoridad, cobertura, suplencia o escalamiento obligatorio                       |
+| `INVALIDADO`        | una resolución anterior dejó de corresponder al candidato, ambiente, alcance, repositorio, unidad o authority source vigentes                                |
+| `NO_APLICA_DIRECTA` | la modalidad no posee una ejecución de hypercare independiente y la responsabilidad se ejerce mediante las raíces consumidoras o gobernadas que correspondan |
+
+`ESPECIFICADO` no equivale a `VALIDADO` ni a disponibilidad real.
+
+---
+
+#### 19. Bloqueos obligatorios
+
+Una instancia queda `BLOQUEADO` respecto de responsabilidad cuando:
+
+1. no puede resolverse el `functional_owner_ref` vigente;
+2. no puede resolverse el `technical_owner_ref` de una unidad técnica aplicable;
+3. existen dos fuentes vigentes que atribuyen autoridad incompatible y la precedencia no está resuelta;
+4. falta cobertura obligatoria de responsable funcional o técnico;
+5. falta suplencia cuando la fuente la exige;
+6. la ruta de escalamiento obligatoria no puede demostrarse;
+7. un proveedor o tercero es la única identidad disponible para una decisión empresarial que exige autoridad interna;
+8. la misma persona solo podría cubrir funciones rompiendo segregación;
+9. el candidato, ambiente, alcance, repositorio o unidad ya no coinciden con la resolución;
+10. continuar exigiría inventar persona, cargo, autoridad, permiso o excepción.
+
+Todo bloqueo conserva fuente propietaria y condición objetiva de salida. La falta de responsable no se transforma en permiso para operar sin ownership.
+
+---
+
+#### 20. Invalidación y revalidación
+
+La resolución queda `INVALIDADO` cuando cambia materialmente:
+
+- candidato o revisión;
+- ambiente;
+- alcance autorizado;
+- `OWN-*` funcional;
+- repositorio o unidad de implementación;
+- responsable técnico propietario;
+- estrategia de rollout o recovery que cambie autoridad;
+- cobertura, suplencia o escalamiento exigidos;
+- modalidad de ejecución;
+- contrato compartido o dependencia que determine ownership.
+
+La revalidación parte de las fuentes vigentes. No se reescribe una asignación histórica para aparentar que siempre correspondió a la nueva revisión.
+
+---
+
+#### 21. Frontera con `HYPERCARE-OPS-003..010`
+
+| Tarea               | Responsabilidad reservada                                                     |
+| ------------------- | ----------------------------------------------------------------------------- |
+| `HYPERCARE-OPS-003` | señales, errores, colas, integraciones y rendimiento que deberán monitorearse |
+| `HYPERCARE-OPS-004` | adopción, tiempos y desviaciones operativas                                   |
+| `HYPERCARE-OPS-005` | conciliaciones de datos y efectos entre dominios                              |
+| `HYPERCARE-OPS-006` | clasificación, prioridad y procedimiento de corrección de incidentes          |
+| `HYPERCARE-OPS-007` | registro, ownership y aprobación de deuda y tareas posteriores                |
+| `HYPERCARE-OPS-008` | criterio de transferencia a soporte ordinario y documentación definitiva      |
+| `HYPERCARE-OPS-009` | criterio y evidencia para retirar contingencias temporales                    |
+| `HYPERCARE-OPS-010` | autoridad y evidencia para aprobar cierre funcional, técnico y operativo      |
+
+002 entrega responsables a esas tareas, pero no define por anticipado sus señales, umbrales, incidentes, conciliaciones, deuda, transferencia, retiro de contingencias ni cierre.
+
+---
+
+#### 22. Handoff a `HYPERCARE-OPS-003`
+
+002 entrega a 003:
+
+```text
+PAQUETE / CANDIDATO / AMBIENTE / ALCANCE
++
+RESPONSABLE FUNCIONAL CANÓNICO
++
+RESPONSABLE TÉCNICO CANÓNICO
++
+REPOSITORIOS / UNIDADES TÉCNICAS
++
+COBERTURA, SUPLENCIA Y ESCALAMIENTO
++
+OWNERSHIP DE OBSERVABILIDAD YA EXISTENTE
+=
+DESTINATARIOS Y AUTORIDADES PARA EL MONITOREO DE HYPERCARE
+```
+
+003 podrá definir qué señales deben vigilarse y cómo se enrutan conforme a los contratos existentes, pero no podrá reasignar ownership por inferencia.
+
+---
+
+#### 23. Separación entre planificación y ejecución
+
+`HYPERCARE-OPS-002` es exclusivamente documental.
+
+No ejecuta:
+
+- turnos o guardias reales;
+- monitoreo;
+- diagnóstico;
+- alertas;
+- correcciones;
+- cambios de código;
+- despliegues;
+- rollback o recovery;
+- conciliaciones;
+- cambios de feature flags;
+- migraciones;
+- DDL/DML;
+- backfills;
+- modificaciones de datos;
+- cambios de permisos;
+- operaciones sobre Supabase.
+
+La ejecución real de hypercare pertenece a `SHELL-CI-023::<package_id>`.
+
+---
+
+#### 24. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `HYPERCARE-OPS-002` no crea autoridad, rol, permiso, workflow, severidad, transición empresarial, umbral, algoritmo de asignación ni comportamiento runtime nuevo. Materializa por `package_id` el binding de autoridades y responsables ya aprobados en `DELIV-PKG-014/015/017/019/020`, readiness y continuidad. La obligación de contar con responsables, autoridad explícita, sustitutos, escalamiento y bitácora ya está protegida por `TREQ-CONT-002`. Si una ejecución no puede demostrar esas identidades o cobertura, queda bloqueada en vez de introducir una regla nueva.
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+**Fragmentos 04A afectados:** 0
+
+---
+
+#### 25. Criterios de aceptación documental
+
+`HYPERCARE-OPS-002` queda documentalmente completo cuando:
+
+1. conserva `HYPERCARE-OPS-001 → HYPERCARE-OPS-002 → HYPERCARE-OPS-003`;
+2. define `hypercare_responsibility_resolution`, `hypercare_functional_technical_map`, `hypercare_coverage_manifest` y `hypercare_responsibility_handoff`;
+3. la unidad de resolución conserva paquete, candidato, ambiente, alcance y manifiesto de lifecycle;
+4. el responsable funcional se deriva del `OWN-*` exacto de la fila homónima de `DELIV-PKG-017`;
+5. el responsable técnico se deriva de `technical_authority_ref` y de los repositorios/unidades vigentes de `DELIV-PKG-014/015/019/020`;
+6. no se inventan nombres de personas, cargos, comités, repositorios ni autoridades;
+7. responsabilidad funcional y técnica permanecen conceptualmente separadas;
+8. ejecutar una acción no concede autoridad de decisión;
+9. un proveedor no hereda autoridad empresarial;
+10. una misma persona solo cubre varias funciones cuando las fuentes y segregación lo permiten;
+11. la cobertura conserva responsable primario, suplencia exigible, handoff y escalamiento;
+12. una identidad nominal sin autoridad no satisface cobertura;
+13. una instancia que no puede demostrar cobertura obligatoria queda bloqueada para operar bajo hypercare;
+14. cambios materiales invalidan la resolución y exigen revalidación;
+15. 003 recibe destinatarios y ownership suficientes sin que 002 defina señales o umbrales;
+16. 004 conserva propiedad de adopción, tiempos y desviaciones operativas;
+17. 005 conserva propiedad de conciliaciones;
+18. 006 conserva clasificación, prioridad y procedimiento de incidentes;
+19. 007 conserva deuda y tareas posteriores;
+20. 008 conserva transferencia a soporte ordinario;
+21. 009 conserva retiro de contingencias temporales;
+22. 010 conserva autoridad y evidencia de cierre;
+23. las 207 raíces aparecen exactamente una vez en la matriz de 002;
+24. la matriz no cambia la distribución heredada `160 + 3 + 26 + 14 + 2 + 2 = 207`;
+25. todas las filas fijan fuente funcional, fuente técnica, cobertura y una decisión explícita sin crear autoridad paralela;
+26. `ESPECIFICADO` no se presenta como evidencia de disponibilidad real ni ejecución;
+27. la ejecución física permanece en `SHELL-CI-023::<package_id>`;
+28. no se ejecutan código, despliegues, configuración remota, migraciones, DDL/DML, backfills, modificaciones de datos ni operaciones de Supabase;
+29. se crean cero requisitos `TREQ-*`, se modifican cero requisitos `TREQ-*` y se afectan cero fragmentos 04A.
+
+---
+
+#### 26. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+HYPERCARE-OPS-001 — Definir inicio, duración y salida del acompañamiento intensivo
+
+##### TAREA ACTUAL APROBADA
+HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos
+
+##### SIGUIENTE TAREA RESERVADA
+HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento
+
+
 ### [ ] HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento
 ### [ ] HYPERCARE-OPS-004 — Definir monitoreo de adopción, tiempos y desviaciones operativas
 ### [ ] HYPERCARE-OPS-005 — Definir conciliaciones de datos y efectos entre dominios

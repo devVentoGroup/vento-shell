@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **862** |
+| Aprobadas | **863** |
 | En propuesta | **0** |
-| No iniciadas | **732** |
+| No iniciadas | **731** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **54.08% (862/1594)** |
+| Porcentaje de completamiento | **54.14% (863/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `HYPERCARE-OPS-001` — Definir inicio, duración y salida del acompañamiento intensivo | ✅ APROBADA |
-| Tarea actual | `HYPERCARE-OPS-002` — Definir responsables funcionales y técnicos | ⬜ NO INICIADA |
-| Siguiente reservada | `HYPERCARE-OPS-003` — Definir monitoreo de errores, colas, integraciones y rendimiento | ⬜ NO INICIADA |
+| Última aprobada | `HYPERCARE-OPS-002` — Definir responsables funcionales y técnicos | ✅ APROBADA |
+| Tarea actual | `HYPERCARE-OPS-003` — Definir monitoreo de errores, colas, integraciones y rendimiento | ⬜ NO INICIADA |
+| Siguiente reservada | `HYPERCARE-OPS-004` — Definir monitoreo de adopción, tiempos y desviaciones operativas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -579,7 +579,7 @@
 | ✅ APROBADA | `CUTOVER-OPS-009` | Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ✅ APROBADA | `CUTOVER-OPS-010` | Definir condiciones y evidencia para retirar el proceso anterior | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ✅ APROBADA | `HYPERCARE-OPS-001` | Definir inicio, duración y salida del acompañamiento intensivo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `HYPERCARE-OPS-002` | Definir responsables funcionales y técnicos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
+| ✅ APROBADA | `HYPERCARE-OPS-002` | Definir responsables funcionales y técnicos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ⬜ NO INICIADA | `HYPERCARE-OPS-003` | Definir monitoreo de errores, colas, integraciones y rendimiento | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ⬜ NO INICIADA | `HYPERCARE-OPS-004` | Definir monitoreo de adopción, tiempos y desviaciones operativas | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ⬜ NO INICIADA | `HYPERCARE-OPS-005` | Definir conciliaciones de datos y efectos entre dominios | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
