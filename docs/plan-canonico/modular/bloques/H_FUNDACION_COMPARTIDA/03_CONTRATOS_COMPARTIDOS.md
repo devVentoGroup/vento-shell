@@ -483,7 +483,613 @@ Todos los elementos tienen propietario documental identificado y ninguno exige c
 - **SIGUIENTE TAREA RESERVADA:** SHELL-CON-002 — Centralizar códigos de aplicaciones
 
 
-### [ ] SHELL-CON-002 — Centralizar códigos de aplicaciones
+### ✅ SHELL-CON-002 — Centralizar códigos de aplicaciones
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CON-001 — Crear @vento/contracts
+**Tarea siguiente:** SHELL-CON-003 — Centralizar códigos de permisos
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Estado físico resultante:** `CONTRATO_DE_APLICACIONES_DEFINIDO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-002` centraliza la identidad técnica de las aplicaciones de Vento OS sobre el catálogo ya aprobado por `AUTH-CAT-001`, sin crear un segundo catálogo ni reinterpretar aplicaciones desde repositorios, rutas, plataformas, dominios, entornos o listas locales.
+
+La decisión vinculante es:
+
+```text
+CATÁLOGO CANÓNICO VERSIONADO
+→ applications.json
+→ AppCode y metadata derivada
+→ consumidores
+
+CONSUMIDORES
+→ pueden proyectar presentación, navegación y disponibilidad
+→ no pueden redefinir app_code
+```
+
+La tarea materializa las diez identidades de aplicación, su metadata contractual mínima, sus reglas de estabilidad y las fronteras de compatibilidad necesarias para retirar progresivamente cadenas locales divergentes. No crea todavía archivos físicos dentro de `packages/contracts`, no modifica consumidores y no cambia Supabase.
+
+---
+
+#### 2. Resultado canónico
+
+Queda establecido un único conjunto canónico de códigos de aplicación:
+
+```text
+shell
+anima
+viso
+nexo
+fogo
+origo
+pulso
+numera
+aura
+pass
+```
+
+**Conciliación:** 10 aplicaciones esperadas, 10 materializadas, 10 códigos únicos, 0 faltantes, 0 duplicados y 0 códigos nuevos.
+
+El conjunto anterior es cerrado para el corte contractual vigente. Una cadena que cumpla la forma sintáctica de un código no adquiere identidad de aplicación por ese hecho: deberá existir en una versión aprobada del catálogo.
+
+---
+
+#### 3. Fuentes y precedencia
+
+La tarea conserva, sin reabrirlas, las siguientes decisiones aprobadas:
+
+| Fuente                                                                | Uso vinculante                                                                                    |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`                          | continuidad, fase documental, trazabilidad y requisitos de prueba                                 |
+| `docs/plan-canonico/modular/delivery-contract.json`                   | estructura del artefacto documental                                                               |
+| `docs/plan-canonico/modular/active-sequence.json`                     | continuidad vigente hacia `SHELL-CON-002`                                                         |
+| `SHELL-CON-001 — Crear @vento/contracts`                              | raíz contractual única y fronteras de package                                                     |
+| `AUTH-CAT-001 — Normalizar el catálogo y los códigos de aplicaciones` | diez identidades, convención, clasificación, dominio, roadmap y ciclo de vida                     |
+| `AUTH-CAT-002 — Definir convención app.modulo.recurso.accion`         | uso de `app_code` como prefijo de permisos                                                        |
+| `AUTH-CAT-017 — Crear catálogo versionado en vento-shell`             | `applications.json`, campos mínimos y fuente técnica objetivo                                     |
+| `AUTH-CAT-018 — Crear tipos TypeScript derivados del catálogo`        | `AppCode` y tipos de aplicación generados, no mantenidos manualmente                              |
+| `SHELL-AUD-009` y `SHELL-AUD-010`                                     | divergencia de tipos/listas locales y disposición `GENERAR` para códigos y metadata de aplicación |
+| Registro Canónico de Requisitos de Prueba                             | cobertura vigente para catálogo único, navegación, destinos y consumidores                        |
+| código actual de SHELL y consumidores inspeccionados                  | evidencia de listas, unions y strings locales todavía presentes                                   |
+
+Precedencia:
+
+```text
+AUTH-CAT-001
+→ AUTH-CAT-017 / AUTH-CAT-018
+→ SHELL-CON-001
+→ SHELL-CON-002
+→ implementación física autorizada
+→ migración de consumidores
+```
+
+Una lista local existente no puede prevalecer sobre el catálogo aprobado aunque actualmente sea utilizada por un runtime.
+
+---
+
+#### 4. Línea base verificable
+
+El estado técnico actual confirma que la centralización todavía no está materializada físicamente:
+
+| Evidencia                                                  | Estado observado                                                                      | Consecuencia contractual                                               |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `packages/contracts` en `vento-shell`                      | no materializado                                                                      | no existe todavía package consumible de `@vento/contracts`             |
+| `vento-shell/src/app/page.tsx`                             | mantiene `INTERNAL_APPS` local con cinco aplicaciones y `AppLink.id: string`          | lista local transitoria; no es fuente canónica                         |
+| `vento-viso/src/components/vento/standard/vento-shell.tsx` | mantiene unión local `APP_ENTITY`, `APP_CODE` y `APP_SWITCHER_ITEMS`                  | identidad local debe converger al catálogo generado                    |
+| `vento-viso`                                               | la unión local admite `default` y no representa todo el catálogo de diez aplicaciones | `default` no puede ingresar a `AppCode`                                |
+| AppSwitcher inspeccionado                                  | utiliza `id: string` y una identidad visual `hub`                                     | `hub` no puede ingresar a `AppCode`; la aplicación canónica es `shell` |
+| tipos de dispositivo inspeccionados                        | `default_app_code` y `allowed_app_codes` permanecen como strings                      | deberán validarse contra el conjunto canónico durante implementación   |
+| búsqueda de `@vento/contracts` en consumidores web         | sin consumo runtime confirmado en el corte                                            | adopción física aún pendiente                                          |
+
+Estas diferencias son evidencia del problema que esta tarea resuelve documentalmente. No autorizan editar ahora los consumidores.
+
+---
+
+#### 5. Matriz canónica completa de aplicaciones
+
+Los valores siguientes se materializan a partir del catálogo aprobado. `permission_namespace` coincide exactamente con `app_code`, porque el código de aplicación es el prefijo contractual de los permisos. Todas las diez identidades forman parte del catálogo de autorización y permanecen `active` en este corte.
+
+| Orden | `app_code` | `display_name` | `app_kind`       | `domain`  | `roadmap_scope` | `lifecycle_status` | `permission_namespace` | `is_authorization_catalog_member` | Repositorio confirmado                                    |
+| ----: | ---------- | -------------- | ---------------- | --------- | --------------- | ------------------ | ---------------------- | --------------------------------- | --------------------------------------------------------- |
+|     1 | `shell`    | Vento OS       | `hub`            | `laboral` | `core`          | `active`           | `shell`                | `true`                            | `devVentoGroup/vento-shell`                               |
+|     2 | `anima`    | ANIMA          | `hybrid`         | `laboral` | `core`          | `active`           | `anima`                | `true`                            | `devVentoGroup/vento-anima`                               |
+|     3 | `viso`     | VISO           | `administrative` | `laboral` | `core`          | `active`           | `viso`                 | `true`                            | `devVentoGroup/vento-viso`                                |
+|     4 | `nexo`     | NEXO           | `hybrid`         | `laboral` | `core`          | `active`           | `nexo`                 | `true`                            | `devVentoGroup/vento-nexo`                                |
+|     5 | `fogo`     | FOGO           | `operational`    | `laboral` | `core`          | `active`           | `fogo`                 | `true`                            | `devVentoGroup/vento-fogo`                                |
+|     6 | `origo`    | ORIGO          | `hybrid`         | `laboral` | `core`          | `active`           | `origo`                | `true`                            | `devVentoGroup/vento-origo`                               |
+|     7 | `pulso`    | PULSO          | `operational`    | `laboral` | `core`          | `active`           | `pulso`                | `true`                            | `devVentoGroup/vento-pulso`                               |
+|     8 | `numera`   | NUMERA         | `hybrid`         | `laboral` | `core`          | `active`           | `numera`               | `true`                            | `devVentoGroup/vento-numera`                              |
+|     9 | `aura`     | AURA           | `administrative` | `laboral` | `deferred`      | `active`           | `aura`                 | `true`                            | `NO_CONFIRMADO`; resolución propietaria en `AURA-AUD-010` |
+|    10 | `pass`     | Vento Pass     | `customer`       | `cliente` | `adjacent`      | `active`           | `pass`                 | `true`                            | `devVentoGroup/vento-pass`                                |
+
+**Conciliación de dominio:** 9 aplicaciones laborales + 1 aplicación cliente = 10.
+
+**Conciliación de roadmap:** 8 `core` + 1 `deferred` + 1 `adjacent` = 10.
+
+**Conciliación de tipo:** 1 `hub` + 2 `administrative` + 2 `operational` + 4 `hybrid` + 1 `customer` = 10.
+
+**Conciliación de ciclo de vida:** 10 `active`, 0 `deprecated`, 0 `retired`, 0 `reserved`.
+
+La ausencia de repositorio confirmado para AURA no altera la identidad `aura`, su estado de catálogo ni su clasificación contractual.
+
+---
+
+#### 6. Fuente técnica única
+
+`SHELL-CON-002` no crea un catálogo paralelo de aplicaciones. La fuente técnica objetivo permanece dentro del catálogo versionado ya definido en `@vento/contracts/authorization`:
+
+```text
+@vento/contracts/authorization
+→ catalog/versions/<catalog_version>/applications.json
+→ schema de aplicación
+→ artefactos TypeScript derivados
+```
+
+`applications.json` deberá contener exactamente una fila por cada una de las diez identidades canónicas y conservar como mínimo los campos ya definidos por `AUTH-CAT-017`:
+
+- `app_code`;
+- `display_name`;
+- `domain`;
+- `app_kind`;
+- `roadmap_scope`;
+- `lifecycle_status`;
+- `repository_owner` cuando esté confirmado;
+- `permission_namespace`;
+- `is_authorization_catalog_member`.
+
+Reglas:
+
+1. no se mantiene una segunda lista de `app_code` como fuente independiente;
+2. una aplicación se agrega, depreca o retira mediante una nueva versión del catálogo, no editando una unión TypeScript aislada;
+3. el repositorio, URL, logo, color, plataforma o ambiente no sustituyen `app_code`;
+4. el estado runtime de disponibilidad no modifica identidad, tipo, dominio ni roadmap;
+5. `public.apps` puede continuar como proyección/runtime durante la transición, pero no puede redefinir el significado contractual de una identidad aprobada;
+6. cualquier proyección posterior hacia Supabase deberá originarse desde una versión publicada y conservar la identidad exacta.
+
+---
+
+#### 7. Contrato derivado de tipos y valores
+
+La centralización TypeScript se realizará como proyección generada del catálogo, de acuerdo con `AUTH-CAT-018`.
+
+La versión contractual inicial deberá producir exactamente:
+
+```text
+AppCode
+→ "shell"
+| "anima"
+| "viso"
+| "nexo"
+| "fogo"
+| "origo"
+| "pulso"
+| "numera"
+| "aura"
+| "pass"
+```
+
+Además, la misma fuente deberá derivar las categorías ya aprobadas:
+
+```text
+AppDomain
+AppKind
+RoadmapScope
+ApplicationLifecycleStatus
+ApplicationDefinition
+ApplicationByCode
+```
+
+Reglas vinculantes:
+
+1. `AppCode` no se escribe manualmente como fuente;
+2. `AppCode` no se define como `string` abierto;
+3. un patrón sintácticamente válido no basta para convertirse en `AppCode`;
+4. un valor externo se valida contra la versión concreta del catálogo antes de convertirse en identidad interna;
+5. los tipos derivados cambian únicamente como consecuencia de una versión de catálogo válida;
+6. cualquier salida generada divergente de `applications.json` queda inválida y debe regenerarse desde la fuente;
+7. los consumidores no agregan miembros localmente a la unión.
+
+---
+
+#### 8. Convención e invariantes de `app_code`
+
+Todo código canónico deberá cumplir simultáneamente:
+
+```text
+^[a-z][a-z0-9_]*$
+```
+
+Y además:
+
+- minúsculas;
+- ASCII;
+- primer carácter alfabético;
+- identidad única;
+- estabilidad contractual;
+- sin prefijo de marca `vento`;
+- sin mayúsculas, espacios, acentos, guiones medios o puntos;
+- sin versión, ambiente, sede, dispositivo, plataforma o repositorio embebidos;
+- preferencia por una sola palabra;
+- `snake_case` únicamente cuando una identidad futura realmente requiera varias palabras.
+
+No son códigos de aplicación válidos por identidad:
+
+```text
+vento-nexo
+vento_nexo
+nexo_prod
+nexo_staging
+nexo_kiosk
+nexo_inventory
+pulso_web
+anima_mobile
+```
+
+Ninguno de esos ejemplos crea una identidad aunque un consumidor pudiera representarlo como string.
+
+---
+
+#### 9. Separación entre aplicación, repositorio, package y superficie
+
+La identidad se conserva así:
+
+```text
+shell
+→ aplicación Vento OS
+
+vento-shell
+→ repositorio técnico
+
+@vento/contracts
+→ package compartido
+
+nexo.inventory
+→ módulo dentro de una aplicación
+
+nexo.ventogroup.co
+→ destino técnico o dominio web
+```
+
+Reglas:
+
+1. un repositorio puede implementar una aplicación, pero su nombre no es `app_code`;
+2. un package compartido nunca se registra como aplicación por contener código transversal;
+3. una ruta, pantalla, módulo o microfrontend no crea otra aplicación;
+4. una variante web, móvil, tablet o kiosco no crea otra aplicación;
+5. un ambiente no crea otra aplicación;
+6. una sede o área pertenece al contexto y no a la identidad de aplicación;
+7. un dispositivo compartido habilita o limita aplicaciones existentes y no constituye una aplicación.
+
+---
+
+#### 10. Clasificación de identificadores locales no canónicos
+
+El código actual contiene valores que pueden confundirse con una identidad de aplicación. Se clasifican expresamente:
+
+| Valor actual                      | Clasificación                                                | Decisión                                                                                  |
+| --------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| `hub`                             | identificador de presentación local observado en AppSwitcher | no pertenece a `AppCode`; la aplicación representada es `shell`                           |
+| `default`                         | sentinel de configuración observado en `APP_ENTITY`          | no pertenece a `AppCode`; no puede persistirse ni propagarse como identidad de aplicación |
+| `vento-shell`, `vento-nexo`, etc. | nombres de repositorio                                       | no pertenecen a `AppCode`                                                                 |
+| `nexo_prod`, `nexo_staging`, etc. | identidad mezclada con ambiente                              | inválidos como `AppCode`                                                                  |
+| `nexo_kiosk`, `pulso_web`, etc.   | identidad mezclada con plataforma o dispositivo              | inválidos como `AppCode`                                                                  |
+
+`hub` no se registra como alias contractual de aplicación. Es una deuda de presentación que deberá converger a `shell` durante la migración del consumidor correspondiente.
+
+`default` tampoco se registra como alias. Es una condición local de configuración y deberá resolverse a una aplicación canónica antes de cruzar cualquier frontera que exija `AppCode`.
+
+La resolución física de consumidores y eliminación de estos usos se ejecutará mediante `SHELL-MIG-001` a `SHELL-MIG-003` y, cuando afecte componentes compartidos, `SHELL-MIG-005`, conservando inventario, lotes reversibles, compatibilidad y rollback.
+
+---
+
+#### 11. Estabilidad, alta, deprecación y retiro
+
+`app_code` es una identidad contractual estable.
+
+##### 11.1. Alta de una aplicación
+
+Una aplicación futura solo podrá ingresar cuando exista una decisión canónica que materialice su identidad y una nueva versión del catálogo la incluya. La forma válida de la cadena no constituye alta.
+
+##### 11.2. Cambio de código
+
+Cambiar `app_code` es una ruptura contractual porque afecta permisos, navegación, políticas, auditoría, dispositivos, tipos, migraciones y consumidores.
+
+No se renombra una identidad en sitio. Un cambio deberá conservar trazabilidad mediante nueva identidad, compatibilidad temporal, migración y retiro controlado según las tareas propietarias aplicables.
+
+##### 11.3. Deprecación y retiro
+
+Los estados contractuales permitidos permanecen:
+
+```text
+active
+deprecated
+retired
+reserved
+```
+
+Un código retirado no se reutiliza para otra aplicación. Su identidad histórica permanece reservada para auditoría y compatibilidad.
+
+Esta tarea no cambia el ciclo de vida de ninguna de las diez aplicaciones actuales.
+
+---
+
+#### 12. Dominio de identidad y autorización
+
+La clasificación de aplicación no concede capacidades.
+
+```text
+app_code
+→ identifica la aplicación
+
+app_kind
+→ describe su naturaleza
+
+domain
+→ identifica el dominio laboral o cliente
+
+roadmap_scope
+→ describe su inclusión en el roadmap
+
+permiso + contexto + recurso + precedencia
+→ determinan autorización
+```
+
+Consecuencias:
+
+- `nexo` sea `hybrid` no autoriza automáticamente carril base u operativo;
+- `fogo` sea `operational` no convierte todos sus permisos en operativos;
+- `aura` permanezca `active` no significa que esté lista para implementación o despliegue;
+- `pass` conserva dominio `cliente` y no convierte la identidad del cliente en identidad laboral;
+- una aplicación `active` puede no estar desplegada, navegable o disponible para un actor concreto.
+
+---
+
+#### 13. Frontera con presentación, navegación y disponibilidad
+
+La identidad canónica centralizada no convierte todos los atributos visuales u operativos en `AppCode`.
+
+| Aspecto                        | Relación con `app_code`                                                      |
+| ------------------------------ | ---------------------------------------------------------------------------- |
+| nombre visible                 | metadata contractual asociada; no sustituye el código                        |
+| logo, color y marca visual     | proyección de presentación referenciada por código; no crea identidad        |
+| URL o destino                  | configuración/navegación asociada a una aplicación válida; no crea identidad |
+| disponibilidad de despliegue   | estado operativo separado del código                                         |
+| visibilidad para un actor      | decisión derivada de autorización/contexto, no del código                    |
+| estado `soon` de un componente | estado de presentación local; no es `lifecycle_status` canónico              |
+| `active` del catálogo          | ciclo de vida contractual; no equivale a acceso ni despliegue                |
+
+Todo catálogo de presentación, navegación, dispositivo o runtime deberá usar una identidad `AppCode` válida como clave de referencia y no mantener un universo paralelo de aplicaciones.
+
+Esta tarea no fija nuevos destinos, colores, logos ni reglas de acceso; conserva sus propietarios funcionales y de interfaz existentes y únicamente impide que dichos atributos redefinan la identidad de aplicación.
+
+---
+
+#### 14. Consumo y validación de fronteras
+
+Cuando la implementación física sea autorizada, toda frontera que reciba un código de aplicación desde configuración, base de datos, URL, dispositivo, evento o payload deberá distinguir:
+
+```text
+STRING EXTERNO
+→ validar contra catálogo publicado
+→ AppCode válido
+
+STRING DESCONOCIDO
+→ no convertir a AppCode
+→ no inventar aplicación
+→ no ampliar permisos ni navegación
+```
+
+La identidad válida deberá conservar la versión contractual que permitió resolverla cuando la operación requiera trazabilidad reproducible.
+
+Esta tarea no crea códigos de error específicos; la taxonomía de errores y diagnósticos compartidos permanece reservada a `SHELL-CON-008`.
+
+---
+
+#### 15. Relación con permisos
+
+El `permission_namespace` de cada aplicación es exactamente su `app_code`.
+
+La relación canónica es:
+
+```text
+<app_code>.access
+```
+
+o:
+
+```text
+<app_code>.<module>.<resource>.<action>
+```
+
+Por tanto:
+
+- un permiso no puede usar un prefijo de aplicación inexistente;
+- el namespace de permisos no crea aplicaciones nuevas;
+- `SHELL-CON-002` fija la identidad de la primera parte del permiso;
+- `SHELL-CON-003` conserva la responsabilidad de centralizar los códigos de permisos completos y no se desarrolla en esta tarea.
+
+---
+
+#### 16. Relación con `public.apps` y Supabase
+
+Durante la transición, `public.apps` puede continuar siendo el registro efectivo utilizado por runtime, tal como fue documentado por `AUTH-CAT-001`.
+
+La arquitectura objetivo permanece:
+
+```text
+catálogo versionado en vento-shell
+→ validación y materialización autorizada
+→ proyección compatible en Supabase
+→ consumidores
+```
+
+Reglas:
+
+1. `public.apps` no puede redefinir una identidad aprobada mediante edición ad hoc;
+2. una proyección de catálogo deberá conservar `app_code` exacto y versión aplicable;
+3. la sincronización futura deberá detectar aplicaciones faltantes, desconocidas o divergentes;
+4. esta tarea no crea migraciones, seeds, funciones, triggers, RLS, grants ni cambios de datos;
+5. cualquier cambio físico posterior de Supabase perteneciente a Vento deberá originarse y versionarse desde `vento-shell` en su tarea propietaria.
+
+---
+
+#### 17. Cobertura de consumidores y migración posterior
+
+La centralización no exige una migración simultánea de todos los repositorios.
+
+La adopción física deberá respetar:
+
+```text
+catálogo y tipos publicados
+→ inventario ejecutable de consumidores
+→ lotes reversibles por repositorio
+→ compatibilidad temporal donde exista consumo real
+→ bloqueo de nuevos usos legacy
+→ migración gradual
+→ pruebas de paridad
+→ retiro de copias legacy
+```
+
+Los propietarios ya existentes son:
+
+- `SHELL-MIG-001` — consolidar inventario ejecutable de consumidores;
+- `SHELL-MIG-002` — definir lotes reversibles por repositorio;
+- `SHELL-MIG-003` — preparar compatibilidad y bloquear nuevos consumidores legacy;
+- `SHELL-MIG-005` — migrar componentes cuando el cambio alcance AppSwitcher, Chrome o superficies compartidas;
+- `SHELL-MIG-007` — ejecutar pruebas de paridad de consumidores;
+- `SHELL-MIG-008` — retirar copias legacy y certificar adopción.
+
+No se retira una lista local solamente porque exista una fuente objetivo; primero debe existir una versión consumible y el consumidor debe migrarse con evidencia y rollback.
+
+---
+
+#### 18. Relación con el paquete de implementación y la puerta física
+
+El registro vigente ya vincula la centralización del catálogo de aplicaciones con `GAP-PKG-045` y con su plan de prueba de fundación compartida.
+
+El cierre global de E5 mantiene 0 de 207 expedientes autorizados para implementación física. Por tanto, esta tarea produce únicamente el contrato documental:
+
+```text
+SHELL-CON-002
+→ contrato de códigos de aplicaciones completo
+→ 0 cambios físicos
+→ 0 migraciones
+→ 0 adopciones de consumidor
+```
+
+La materialización del catálogo, los tipos generados y la migración de consumidores solo podrán ejecutarse cuando el paquete aplicable supere su puerta física y las tareas de implementación correspondientes estén habilitadas.
+
+---
+
+#### 19. Decisiones vinculantes
+
+1. el universo vigente contiene exactamente diez `app_code` canónicos;
+2. no se crea ningún código nuevo en esta tarea;
+3. la fuente técnica objetivo es `applications.json` dentro del catálogo versionado ya definido para `@vento/contracts/authorization`;
+4. no se crea un segundo catálogo de aplicaciones ni un subpath competidor;
+5. `AppCode` se genera desde el catálogo publicado y no se mantiene manualmente;
+6. `AppCode` no acepta `string` abierto como representación interna canónica;
+7. `permission_namespace` coincide exactamente con `app_code` para las diez aplicaciones;
+8. las diez aplicaciones pertenecen al catálogo de autorización vigente;
+9. las diez permanecen `active` en este corte;
+10. `shell` identifica la aplicación Vento OS y no el repositorio `vento-shell`;
+11. `pass` conserva dominio cliente y no hereda identidad laboral;
+12. `aura` conserva identidad activa y roadmap `deferred` aunque su repositorio no esté confirmado;
+13. `hub` es un identificador de presentación local, no un `AppCode` ni un alias contractual;
+14. `default` es un sentinel local de configuración, no un `AppCode` ni un alias contractual;
+15. repositorios, plataformas, ambientes, sedes, dispositivos, módulos, rutas y pantallas no generan códigos adicionales;
+16. un código retirado no se reutiliza;
+17. cambiar un `app_code` es una ruptura contractual y no se ejecuta como renombre en sitio;
+18. una aplicación activa no equivale a aplicación desplegada, navegable o autorizada;
+19. presentación, destino y disponibilidad deben referenciar `AppCode` sin redefinirlo;
+20. entradas externas desconocidas no se convierten en aplicaciones por inferencia;
+21. `public.apps` permanece como runtime transitorio hasta la materialización y migración autorizadas, sin convertirse en fuente semántica competidora;
+22. la migración física se realiza gradualmente mediante las tareas `SHELL-MIG-*` propietarias;
+23. esta tarea no modifica código, package, consumidores, Supabase, CI, releases ni continuidad;
+24. `SHELL-CON-003` permanece como única tarea siguiente reservada.
+
+---
+
+#### 20. Hallazgos y destinos exactos
+
+| Hallazgo                                                                           | Estado                      | Destino exacto / condición de salida                                                                              |
+| ---------------------------------------------------------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `@vento/contracts` aún no está materializado físicamente                           | esperado por fase           | implementación solo después de la puerta física aplicable                                                         |
+| SHELL mantiene una lista local de cinco aplicaciones                               | `LEGACY_ACTIVO`             | `SHELL-MIG-001`, `SHELL-MIG-002`, `SHELL-MIG-003` y lote de migración aplicable                                   |
+| consumidores mantienen `AppSwitcherItem.id: string`                                | `LEGACY_ACTIVO`             | `SHELL-MIG-001`, `SHELL-MIG-003`, `SHELL-MIG-005` y pruebas de paridad en `SHELL-MIG-007`                         |
+| `hub` aparece como identidad local de presentación                                 | `NO_CANONICO_COMO_APP_CODE` | converger a referencia canónica `shell` durante el lote propietario; retiro legacy en `SHELL-MIG-008`             |
+| `default` aparece como sentinel en configuración local                             | `NO_CANONICO_COMO_APP_CODE` | resolverlo antes de una frontera `AppCode` durante `SHELL-MIG-003`; retirar propagación legacy en `SHELL-MIG-008` |
+| VISO mantiene una unión local que no representa el universo completo               | `LEGACY_ACTIVO`             | reemplazo por tipo derivado dentro del lote de consumidor definido en `SHELL-MIG-002` y `SHELL-MIG-003`           |
+| campos de dispositivo para aplicación permanecen como strings                      | `LEGACY_ACTIVO`             | tipado/validación al adoptar contratos; integración mediante `SHELL-MIG-003` y tareas de dispositivo propietarias |
+| repositorio AURA no está confirmado                                                | `PENDIENTE_DE_EVIDENCIA`    | `AURA-AUD-010`; no altera el código canónico `aura`                                                               |
+| códigos de permisos completos todavía no se centralizan                            | `RESERVADO_POR_SECUENCIA`   | `SHELL-CON-003`                                                                                                   |
+| errores/diagnósticos específicos para código desconocido todavía no se centralizan | `RESERVADO_POR_SECUENCIA`   | `SHELL-CON-008`                                                                                                   |
+
+No se crea ninguna tarea nueva: todos los hallazgos poseen propietario existente y condición de salida.
+
+---
+
+#### 21. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa documentalmente la misma centralización del catálogo de aplicaciones que ya cuenta con cobertura canónica vigente para identidad única, metadata coherente, navegación y destinos válidos, consumidores de listas versionadas, compatibilidad de packages y migración controlada. No introduce una regla ejecutable independiente ni modifica comportamiento físico; por ello no corresponde crear ni modificar requisitos del registro en este corte.
+
+| Operación sobre requisitos de prueba | Cantidad |
+| ------------------------------------ | -------: |
+| creados                              |    **0** |
+| modificados                          |    **0** |
+| diferidos                            |    **0** |
+| descartados                          |    **0** |
+| obsoletos                            |    **0** |
+
+---
+
+#### 22. Criterios de aceptación
+
+`SHELL-CON-002` queda materialmente completa porque:
+
+- conserva exactamente las diez aplicaciones aprobadas y ninguna adicional;
+- materializa una fila contractual por cada identidad;
+- concilia 10 de 10 códigos, sin faltantes ni duplicados;
+- conserva nombre, tipo, dominio, roadmap y ciclo de vida aprobados;
+- fija `permission_namespace = app_code` para las diez aplicaciones;
+- conserva las diez identidades como miembros del catálogo de autorización;
+- utiliza `applications.json` como fuente técnica objetivo existente en vez de crear un catálogo paralelo;
+- conserva `@vento/contracts/authorization` como superficie contractual ya aprobada;
+- deriva `AppCode` y tipos asociados desde el catálogo en vez de mantener uniones manuales;
+- clasifica `hub` y `default` como valores locales no canónicos para `AppCode`;
+- separa identidad de aplicación de repositorio, package, plataforma, ambiente, sede, dispositivo, módulo y ruta;
+- impide crear identidades por forma sintáctica o inferencia;
+- conserva `shell`, `pass` y `aura` con las distinciones aprobadas;
+- mantiene `public.apps` como runtime transitorio sin concederle autoridad semántica alternativa;
+- asigna la migración física a tareas `SHELL-MIG-*` ya existentes;
+- conserva el vínculo de implementación existente sin autorizar físicamente el paquete;
+- no crea ni modifica requisitos de prueba;
+- no implementa código, package, tipos, migraciones, Supabase, CI, release ni cambios de consumidor;
+- deja `SHELL-CON-003` como única continuidad reservada.
+
+---
+
+#### 23. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+SHELL-CON-001 — Crear @vento/contracts
+
+##### TAREA ACTUAL APROBADA
+SHELL-CON-002 — Centralizar códigos de aplicaciones
+
+##### SIGUIENTE TAREA RESERVADA
+SHELL-CON-003 — Centralizar códigos de permisos
+
+
 ### [ ] SHELL-CON-003 — Centralizar códigos de permisos
 ### [ ] SHELL-CON-004 — Centralizar roles base
 ### [ ] SHELL-CON-005 — Centralizar roles operativos

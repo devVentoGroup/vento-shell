@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **880** |
+| Aprobadas | **881** |
 | En propuesta | **0** |
-| No iniciadas | **714** |
+| No iniciadas | **713** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **55.21% (880/1594)** |
+| Porcentaje de completamiento | **55.27% (881/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CON-001` — Crear @vento/contracts | ✅ APROBADA |
-| Tarea actual | `SHELL-CON-002` — Centralizar códigos de aplicaciones | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CON-003` — Centralizar códigos de permisos | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CON-002` — Centralizar códigos de aplicaciones | ✅ APROBADA |
+| Tarea actual | `SHELL-CON-003` — Centralizar códigos de permisos | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CON-004` — Centralizar roles base | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -707,7 +707,7 @@
 | ✅ APROBADA | `SHELL-PKG-007` | Definir actualizaciones mediante PR | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-PKG-008` | Evitar actualizaciones automáticas sin pruebas | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CON-001` | Crear @vento/contracts | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-CON-002` | Centralizar códigos de aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-CON-002` | Centralizar códigos de aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-003` | Centralizar códigos de permisos | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-004` | Centralizar roles base | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-005` | Centralizar roles operativos | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
