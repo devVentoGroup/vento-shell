@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **846** |
+| Tareas aprobadas | **847** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **748** |
+| Tareas no iniciadas | **747** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **53.07% (846/1594)** |
+| Porcentaje de completamiento | **53.14% (847/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento** |
-| Tarea actual | **READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas** |
+| Última tarea aprobada | **READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas** |
+| Tarea actual | **READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados** |
+| Siguiente tarea | **READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 35 de 68 aprobadas; READY-GATE-011 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 36 de 68 aprobadas; READY-GATE-012 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `READY-GATE-010` — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento |
-| Tarea actual | `READY-GATE-011` — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas — **NO INICIADA** |
-| Siguiente tarea | `READY-GATE-012` — Definir criterio y evidencia para confirmar respaldo y rollback probados |
+| Última aprobada | `READY-GATE-011` — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas |
+| Tarea actual | `READY-GATE-012` — Definir criterio y evidencia para confirmar respaldo y rollback probados — **NO INICIADA** |
+| Siguiente tarea | `READY-GATE-013` — Definir método y evidencia para capturar la línea base previa al piloto |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 35 DE 68 APROBADAS — ACTUAL READY-GATE-011** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 36 DE 68 APROBADAS — ACTUAL READY-GATE-012** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento
-        ↓
-TAREA ACTUAL
 READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados
         ↓
+SIGUIENTE TAREA RESERVADA
+READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 35 de 68 tareas aprobadas
+BLOQUE E5 — 36 de 68 tareas aprobadas
 ```

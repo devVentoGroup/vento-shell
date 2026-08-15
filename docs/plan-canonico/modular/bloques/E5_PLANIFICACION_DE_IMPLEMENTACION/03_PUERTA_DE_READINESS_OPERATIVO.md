@@ -4015,7 +4015,1027 @@ SIGUIENTE TAREA RESERVADA
 `READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas`
 
 
-### [ ] READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas
+### ✅ READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas
+
+**Estado:** APROBADA  
+**Tarea anterior:** `READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento` — APROBADA  
+**Tarea siguiente:** `READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados` — RESERVADA  
+**Tipo de tarea:** documental; definición normativa y materializada de la puerta de readiness que deberá confirmar, por paquete y ambiente objetivo, que el monitoreo, las métricas, los SLI/SLO aplicables, la salud, las alertas, el routing, los runbooks, la protección de telemetría y el metamonitoreo requeridos se encuentran realmente materializados y producen evidencia accionable antes de cutover o piloto, sin instrumentar físicamente servicios ni configurar proveedores, dashboards, reglas, canales o alertas productivas  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md`  
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, agentes, SDK, collectors, exportadores, dashboards, reglas de alerta, canales, secretos, integraciones, infraestructura, configuración remota, tablas, RLS, RPC, funciones, triggers, Edge Functions, migraciones, datos, despliegues ni configuración de Supabase  
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** fijar el contrato que deberá ejecutar posteriormente `SHELL-CI-021::<package_id>` para demostrar que la porción de observabilidad definida por el expediente aprobado del paquete ya existe en el ambiente objetivo, produce señales frescas y correlacionables, permite consultar las métricas y SLI requeridos, activa alertas accionables con routing y runbook verificables, detecta su propia degradación, protege datos sensibles y distingue salud técnica de resultado empresarial. Esta tarea no afirma que dicha instrumentación esté implementada hoy y no ejecuta pruebas operativas de los paquetes.
+
+---
+
+#### 1. Propósito
+
+Antes de permitir que un paquete avance desde implementación física hacia cutover o piloto, la instancia de readiness deberá poder responder con evidencia real:
+
+```text
+¿QUÉ PARTE DEL PAQUETE DEBE SER OBSERVABLE?
+¿QUÉ SEÑALES REALES ESTÁ PRODUCIENDO EN EL AMBIENTE OBJETIVO?
+¿SON FRESCAS, CORRELACIONABLES Y ATRIBUIBLES A LA VERSIÓN CORRECTA?
+¿QUÉ MÉTRICAS Y SLI SE PUEDEN CONSULTAR Y REPRODUCIR?
+¿QUÉ SLO U OBJETIVO APROBADO GOBIERNA CADA MEDICIÓN, CUANDO EXISTA?
+¿QUÉ ALERTAS SON ACCIONABLES Y QUIÉN LAS RECIBE?
+¿EL ROUTING, FALLBACK, ACK Y ESCALAMIENTO FUNCIONAN?
+¿EL RUNBOOK CORRESPONDIENTE ESTÁ VIGENTE Y ES EJECUTABLE?
+¿SE DETECTA LA CAÍDA DEL PROPIO PIPELINE DE OBSERVABILIDAD?
+¿LA TELEMETRÍA EVITA SECRETOS, DATOS SENSIBLES Y CARDINALIDAD INCONTROLADA?
+¿LA SALUD TÉCNICA COINCIDE CON EL RESULTADO EMPRESARIAL OBSERVABLE?
+```
+
+La puerta no aprueba un paquete porque exista un dashboard, porque no hayan aparecido alertas o porque un health check responda. Aprueba únicamente cuando la cobertura requerida puede demostrarse de extremo a extremo en el ambiente y versión que serán utilizados por el piloto o cutover correspondiente.
+
+---
+
+#### 2. Entradas canónicas y autoridad preservada
+
+La puerta consume y preserva, sin redefinir:
+
+1. el expediente aprobado del `package_id` y su alcance materializado por `DELIV-PKG-001..025`;
+2. `DELIV-PKG-013`, que fija los requisitos no funcionales aplicables y sus umbrales medibles sin certificar cumplimiento;
+3. `DELIV-PKG-016`, que vincula requisitos de prueba, niveles, fixtures, ambientes, responsables y evidencia esperada sin ejecutar las pruebas;
+4. `DELIV-PKG-017`, que define por paquete logs, métricas, trazas, alertas, auditoría, umbrales, propietarios, conservación y datos prohibidos, sin instrumentación física;
+5. `DELIV-PKG-019`, para ambiente, release, secuencia y estrategia de rollout que determinan el contexto de observación;
+6. `DELIV-PKG-021`, para runbooks, procedimientos y documentación que deba consumir soporte;
+7. `DELIV-PKG-023`, para criterios medibles y manifiesto de evidencia del paquete;
+8. `NFR-REQ-009`, incluidos sus contratos de observabilidad, perfiles, matriz de procesos, catálogo de alertas, soporte, runbooks y excepciones;
+9. `NFR-REQ-012`, que exige correlacionar proceso, comando, servicio, cola, integración, dispositivo y resultado empresarial con alertas accionables y runbook;
+10. `TI-DOM-010`, que gobierna monitoreo, señales, salud, métricas, SLI/SLO, alertas, logging y correlación con cambios;
+11. `READY-GATE-010`, como autoridad de readiness sobre mesa de soporte, responsables, suplencia, cobertura y escalamiento humano;
+12. los requisitos de prueba ya existentes que protegen observabilidad y los requisitos específicos vinculados al paquete;
+13. la implementación física producida por `SHELL-CI-020::<package_id>` como objeto que deberá comprobarse, no como evidencia automática de readiness.
+
+Precedencia obligatoria:
+
+```text
+CONTRATO DOCUMENTAL DEL PAQUETE
+≠ INSTRUMENTACIÓN IMPLEMENTADA
+≠ EVIDENCIA DE EJECUCIÓN
+≠ READINESS APROBADO
+```
+
+La existencia de `DELIV-PKG-017` demuestra planificación documental. El resultado de `READY-GATE-011` solo podrá obtenerse cuando la futura instancia de `SHELL-CI-021::<package_id>` inspeccione y ejercite la implementación autorizada del paquete.
+
+---
+
+#### 3. Conjunto requerido de observabilidad por paquete
+
+Antes de observar el ambiente objetivo deberá derivarse un `required_observability_set` únicamente desde el expediente aprobado del mismo paquete.
+
+El conjunto incluirá, cuando pertenezcan al alcance real:
+
+- procesos `VPROC-*` afectados;
+- servicios `TI-SERVICE-*` afectados;
+- aplicaciones y ambientes;
+- endpoints y dispositivos compartidos;
+- recursos de red;
+- impresoras y periféricos;
+- colas, outbox, inbox y jobs;
+- integraciones internas y externas;
+- bases de datos y servicios Supabase;
+- Storage, Realtime y funciones cuando sean parte del paquete;
+- proveedores o dependencias externas;
+- operaciones offline y sincronización;
+- cambios, releases, migraciones, feature flags o configuración que deban quedar correlacionados;
+- respaldos o mecanismos de recuperación únicamente como fuente de señal cuando el paquete los consuma, sin adelantar `READY-GATE-012`.
+
+Reglas:
+
+1. el conjunto se deriva antes de mirar qué telemetría resulta cómoda o ya existe;
+2. una fuente no se excluye porque todavía no esté instrumentada;
+3. tampoco se incorporan indiscriminadamente los 69 procesos, los once servicios o todas las dependencias de VENTO cuando el paquete no las afecta;
+4. toda exclusión material deberá estar respaldada por el alcance canónico del paquete;
+5. una dependencia crítica indirecta se incluye cuando su fallo pueda invalidar el resultado del paquete;
+6. una señal disponible pero fuera del conjunto requerido puede conservarse como evidencia complementaria, nunca como sustituto de una señal obligatoria ausente;
+7. el conjunto conserva identidad canónica; no se crean objetos paralelos por nombre de dashboard, host, URL, IP o proveedor.
+
+Resultado esperado: **100 % del conjunto requerido clasificado**, sin elementos críticos omitidos por muestreo.
+
+---
+
+#### 4. Seis planos independientes de readiness
+
+La evaluación se divide en seis planos. Un resultado favorable en uno no compensa un fallo en otro.
+
+| Plano                                   | Pregunta de readiness                                                                                                    | Evidencia mínima                                                                                           |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| **Señal y correlación**                 | ¿la operación o elemento produce señales atribuibles al paquete, ambiente, versión y resultado correctos?                | señal real o prueba controlada con tiempo, fuente, identidad, correlación y resultado                      |
+| **Salud y frescura**                    | ¿el estado puede distinguir salud, degradación, indisponibilidad, mala configuración e incertidumbre sin fabricar verde? | fuente, regla de salud, ventana de frescura y evidencia actual                                             |
+| **Métricas, SLI y SLO**                 | ¿las mediciones requeridas son consultables, reproducibles y tienen semántica estable?                                   | consulta o serie, definición, población, unidad, ventana, exclusiones y objetivo solo cuando esté aprobado |
+| **Alerta y routing**                    | ¿la condición relevante genera una alerta accionable y llega al responsable correcto con fallback y escalamiento?        | ejercicio controlado de activación, entrega, deduplicación, ACK cuando aplique, recuperación y cierre      |
+| **Runbook y handoff de soporte**        | ¿la persona que recibe la alerta sabe qué comprobar y puede escalar sin improvisar ni exceder autoridad?                 | runbook vigente, propietario, práctica exigible y vínculo con readiness de soporte                         |
+| **Pipeline y protección de telemetría** | ¿el propio monitoreo puede demostrar que funciona y que no expone ni mezcla datos o ambientes?                           | metamonitoreo, aislamiento, pérdida/lag observables, configuración segura y evidencia de minimización      |
+
+Para cada plano aplicable se registra un resultado independiente.
+
+---
+
+#### 5. Expediente mínimo de evidencia por elemento observable
+
+Cada elemento del conjunto requerido deberá conservar, según aplique:
+
+```text
+package_id
+ambiente_objetivo
+release_o_version
+proceso_o_servicio_canonico
+elemento_o_dependencia_observada
+fuente_de_senal
+forma_de_observacion
+clase_de_senal
+clave_de_correlacion
+regla_de_frescura
+estado_de_salud_observable
+metricas_requeridas
+sli_requeridos
+referencia_slo_si_existe
+fuente_del_umbral
+regla_de_alerta
+severidad_de_alerta
+propietario
+receptor
+y_suplencia_o_fallback_cuando_aplique
+canal
+regla_de_deduplicacion_e_inhibicion
+ruta_de_escalamiento
+runbook_y_version
+prueba_o_estimulo_controlado
+evidencia_de_activacion
+evidencia_de_entrega_y_ack_cuando_aplique
+evidencia_de_recovery_o_clear
+metamonitoreo_aplicable
+proteccion_y_minimizacion
+resultado_por_plano
+motivo_de_fallo_o_bloqueo
+momento_de_evidencia
+```
+
+No se almacenan valores de secretos, credenciales, tokens, cookies o payloads sensibles como evidencia de readiness. Una referencia segura a configuración o custodia es suficiente cuando el valor secreto no debe exponerse.
+
+---
+
+#### 6. Señal, forma de observación y correlación
+
+Se conservan exactamente las seis clases aprobadas por `TI-DOM-010`:
+
+- `INFO`;
+- `WARNING`;
+- `FAILURE`;
+- `RECOVERY`;
+- `SATURATION`;
+- `SECURITY_SIGNAL`.
+
+Se conservan exactamente las siete formas de observación:
+
+1. métrica;
+2. evento o transición;
+3. log;
+4. heartbeat;
+5. prueba sintética;
+6. resultado de operación;
+7. observación manual controlada.
+
+La prueba de readiness deberá demostrar que una señal material:
+
+1. identifica su fuente real;
+2. conserva tiempo observado y tiempo recibido cuando exista diferencia relevante;
+3. referencia el ambiente y la versión correctos;
+4. puede correlacionarse con el proceso, servicio, operación, cola, integración, dispositivo o dependencia que corresponda;
+5. distingue reintentos, resultado desconocido y recuperación cuando sean parte del contrato;
+6. no usa coincidencia temporal, nombre, URL, IP o texto libre como única prueba de relación;
+7. no convierte una señal en alerta, incidente o causa por inferencia.
+
+Una señal emitida por otra versión, ambiente o recurso no satisface el elemento evaluado.
+
+---
+
+#### 7. Salud y frescura
+
+La puerta preserva exactamente cinco estados de salud:
+
+```text
+HEALTHY
+DEGRADED
+OFFLINE
+MISCONFIGURED
+UNKNOWN
+```
+
+Criterios obligatorios:
+
+- `HEALTHY` exige evidencia suficientemente fresca y atribuible;
+- `UNKNOWN` es el resultado correcto cuando la evidencia falta, está obsoleta, es contradictoria o no permite concluir;
+- una ausencia de alertas no transforma `UNKNOWN` en `HEALTHY`;
+- reachability no prueba configuración correcta;
+- liveness no prueba readiness;
+- readiness técnica no prueba salud empresarial;
+- salud de dependencia, salud de datos y salud de dispositivo/periférico permanecen distinguibles;
+- un `RECOVERY` aislado no demuestra estabilidad sostenida;
+- una señal verde de un componente no puede ocultar que el camino empresarial requerido está fallando;
+- la condición de frescura utilizada deberá corresponder a la fuente y al uso real de la señal.
+
+Para pasar este plano, cada elemento crítico deberá poder explicar **qué evidencia soporta el estado actual y hasta cuándo se considera vigente**.
+
+---
+
+#### 8. Métricas mínimas aplicables
+
+La puerta conserva las doce familias mínimas de `TI-DOM-010`:
+
+1. latencia `p50`, `p95` y `p99` cuando exista población suficiente;
+2. razón de éxito empresarial;
+3. razón de error por código o clase;
+4. throughput;
+5. tamaño y edad de backlog;
+6. cantidad de reintentos o reprocesos;
+7. cumplimiento de SLI/SLO y burn rate cuando exista SLO;
+8. salud de dispositivo local;
+9. disponibilidad de integración o workflow;
+10. razón de captura exitosa de evidencia;
+11. frescura de sincronización o lag de replicación cuando aplique;
+12. cantidad de excepciones observacionales o manuales cuando no exista métrica automática.
+
+No todo elemento debe producir las doce. Para cada elemento del conjunto requerido se registrará cuáles aplican y por qué una familia no aplica cuando sea materialmente relevante preguntarlo.
+
+Una métrica pasa readiness cuando:
+
+- su nombre y significado corresponden al contrato aprobado;
+- unidad y tipo son correctos;
+- las dimensiones no mezclan ambientes o versiones;
+- la población observada es identificable;
+- la ventana es reproducible;
+- el dato puede consultarse en el ambiente objetivo;
+- la cardinalidad está controlada;
+- el resultado puede vincularse con el efecto empresarial cuando la métrica lo exige;
+- una ausencia de muestras se distingue de un valor cero;
+- la fuente y el retraso de los datos son conocidos.
+
+---
+
+#### 9. SLI y SLO
+
+Se preservan las ocho categorías de SLI:
+
+1. disponibilidad;
+2. integridad;
+3. rendimiento;
+4. capacidad;
+5. frescura;
+6. confiabilidad;
+7. observabilidad;
+8. resultado humano.
+
+Para flujos críticos, cuando apliquen, se preservan las cuatro categorías de SLO ya aprobadas:
+
+1. disponibilidad;
+2. integridad;
+3. rendimiento o capacidad;
+4. observabilidad.
+
+Cada SLI requerido deberá tener definición, población, éxito, punto de medición, unidad, ventana, exclusiones, propietario, vista o consulta y relación con alertas.
+
+Cada SLO existente deberá conservar objetivo, ventana, población, exclusiones, muestra mínima, retraso permitido, condición de incumplimiento y consecuencia operativa.
+
+Reglas de gate:
+
+1. esta tarea no crea porcentajes ni objetivos SLO nuevos;
+2. un SLI medido sin objetivo aprobado puede demostrar medición, pero no “cumplimiento de SLO”;
+3. la ausencia de objetivo aprobado bloquea cualquier afirmación de cumplimiento que dependa de ese objetivo;
+4. los umbrales provisionales de `TI-DOM-010` solo pueden utilizarse como referencia provisional cuando el paquete los haya heredado explícitamente y nunca se presentan como SLO definitivo;
+5. los SLO técnicos no sustituyen el SLA de atención de `TI-DOM-007`;
+6. percentiles sin muestra suficiente no sustentan un PASS;
+7. exclusiones posteriores destinadas a mejorar artificialmente el indicador invalidan la evidencia.
+
+---
+
+#### 10. Referencias provisionales de umbral
+
+Cuando el expediente del paquete consuma las referencias provisionales de `TI-DOM-010`, la puerta conserva su naturaleza transitoria:
+
+| Condición                     | Referencia documental existente                                     |
+| ----------------------------- | ------------------------------------------------------------------- |
+| caída sostenida de throughput | reducción igual o superior al 20 % frente a la referencia aplicable |
+| degradación de latencia       | `p95` por encima de la referencia inicial durante cinco minutos     |
+| saturación                    | 80 % como advertencia y 90 % como candidato crítico                 |
+| captura de evidencia          | razón inferior a `0.99`                                             |
+| backlog                       | tamaño o edad por encima del baseline del servicio                  |
+| drift                         | diferencia superior a la tolerancia aprobada del objeto             |
+| falla de dispositivo local    | repetición dentro de una ventana de diez minutos                    |
+
+La presencia de estos valores no autoriza a aplicarlos universalmente. El PASS exige que la fuente del umbral sea explícita y que la regla tenga propietario, destinatario y acción. Si el paquete requiere un umbral específico que todavía no posee autoridad canónica, la condición queda `BLOQUEADO` en lugar de inventar un valor.
+
+---
+
+#### 11. Alerta accionable
+
+Se conserva el ciclo aprobado:
+
+```text
+CANDIDATO
+→ SUPRIMIDO O DEDUPLICADO, SI APLICA
+→ ACTIVO Y ACCIONABLE
+→ ACK
+→ CORRELACIONADO CON INCIDENTE, CUANDO CORRESPONDA
+→ CLEAR / CIERRE DE LA ALERTA
+```
+
+Toda regla requerida deberá demostrar en el ambiente objetivo:
+
+1. identidad única;
+2. condición de activación;
+3. fuente o SLI;
+4. severidad;
+5. propietario;
+6. destinatario;
+7. canal;
+8. intervalo de deduplicación;
+9. inhibición o silencio;
+10. ruta de escalamiento;
+11. runbook;
+12. relación esperada con incidente;
+13. revisión o vigencia;
+14. comportamiento ante fallo del canal de notificación.
+
+Una regla no pasa porque exista en configuración. Deberá demostrarse mediante prueba controlada o evidencia operativa equivalente que la cadena relevante funciona hasta su destino y recuperación.
+
+---
+
+#### 12. Severidad de alerta, severidad operativa y prioridad de incidente
+
+La puerta conserva sin fusionarlas tres dimensiones distintas:
+
+**Severidad técnica de alerta de `TI-DOM-010`:**
+- `SEV1`;
+- `SEV2`;
+- `SEV3`;
+- `SEV4`.
+
+**Clasificación operativa de observabilidad de `NFR-REQ-009`:**
+- `OBS-P0`;
+- `OBS-P1`;
+- `OBS-P2`;
+- `OBS-P3`.
+
+**Prioridad del incidente de `TI-DOM-007`:**
+- se deriva mediante su propia matriz de impacto y urgencia y no se infiere del nivel del log, nombre del componente ni severidad de la alerta.
+
+No se define una equivalencia automática entre estas taxonomías.
+
+Para readiness:
+
+- una condición `OBS-P0` o `OBS-P1` sin práctica vigente bloquea;
+- una brecha `OBS-GAP-P0` o `OBS-GAP-P1` abierta sin control aprobado bloquea;
+- una alerta informativa no utiliza canales de interrupción urgente por conveniencia;
+- una prioridad de incidente no se reescribe para coincidir con el nivel de alerta.
+
+---
+
+#### 13. Deduplicación, persistencia, histéresis, inhibición y silencio
+
+El ejercicio de alertamiento deberá cubrir, cuando aplique:
+
+- tolerancia a blips;
+- agrupación de síntomas equivalentes;
+- deduplicación de réplicas;
+- inhibición de cascadas;
+- persistencia suficiente para evitar flapping;
+- histéresis de activación y recuperación;
+- mantenimiento planificado;
+- silencio con alcance, motivo, actor autorizado, inicio y vencimiento;
+- señal de recuperación durante silencio;
+- reactivación cuando la condición excede el efecto esperado del mantenimiento.
+
+Un silencio o ACK no resuelve la condición. La prueba deberá preservar la diferencia entre:
+
+```text
+ACK DE ALERTA
+≠ RECUPERACIÓN DE LA CONDICIÓN
+≠ RESTAURACIÓN DEL SERVICIO
+≠ CIERRE DEL INCIDENTE
+```
+
+Una señal de seguridad no se silencia por comodidad operativa.
+
+---
+
+#### 14. Routing, destinatarios, fallback y escalamiento
+
+El routing solo puede declararse listo cuando resuelve hacia actores realmente elegibles y cubiertos por `READY-GATE-010`.
+
+Por cada alerta humana requerida se comprobará:
+
+- propietario funcional cuando aplique;
+- propietario técnico;
+- receptor primario;
+- contacto alterno o suplencia;
+- ventana real de atención;
+- condición fuera de horario cuando corresponda;
+- canal primario;
+- fallback;
+- escalamiento por falta de ACK;
+- proveedor relacionado cuando exista dependencia externa;
+- autoridad para la acción inicial o mitigación.
+
+Reglas:
+
+1. una dirección, grupo, webhook o canal existente no demuestra que haya una persona elegible detrás;
+2. no se impone una guardia permanente cuando el modelo de cobertura no la respalda;
+3. una alerta enviada sin evidencia de entrega no pasa el plano de routing;
+4. si el contrato exige ACK, la prueba debe demostrar recepción y reconocimiento por un actor válido;
+5. el receptor no obtiene privilegios por recibir la alerta;
+6. un proveedor no sustituye al owner interno de VENTO;
+7. el fallo del canal deberá seguir la estrategia de fallback aprobada sin borrar la alerta original.
+
+---
+
+#### 15. Runbook y práctica operativa
+
+Toda alerta `OBS-P0` o `OBS-P1` deberá tener runbook vigente con:
+
+1. propósito y alcance;
+2. señales de entrada y falsos positivos conocidos;
+3. verificaciones seguras;
+4. acciones iniciales reversibles;
+5. criterios de contingencia, rollback o escalamiento;
+6. datos que no deben recopilarse;
+7. comunicación requerida;
+8. prueba de recuperación;
+9. conciliación y pendientes;
+10. cuándo crear problema o cambio;
+11. propietario, versión y última práctica.
+
+Criterio de readiness:
+
+- documento existente sin propietario o versión vigente: `FAIL`;
+- runbook correcto pero sin práctica vigente cuando la severidad la exige: `FAIL`;
+- práctica imposible porque depende de recurso, permiso, actor o integración aún no disponible: `BLOQUEADO`;
+- práctica satisfactoria y evidencia reproducible dentro de su vigencia: `PASS`.
+
+La práctica no deberá ejecutar comandos destructivos, exponer secretos ni producir efectos empresariales no autorizados.
+
+---
+
+#### 16. Metamonitoreo
+
+La ausencia de alertas solo es interpretable si el propio pipeline de observabilidad está verificado.
+
+La puerta deberá demostrar, según la arquitectura materializada del paquete, visibilidad sobre:
+
+```text
+fuente o SDK
+→ agente / collector cuando exista
+→ exportación
+→ recepción
+→ almacenamiento o consulta
+→ atraso y pérdida
+→ evaluación de regla
+→ dashboard o consulta
+→ routing
+→ canal
+```
+
+Criterios:
+
+1. el pipeline puede detectar o evidenciar pérdida de señal;
+2. el atraso de ingestión es observable;
+3. la falla de regla o evaluación no queda silenciosa;
+4. el canal de notificación puede comprobarse de extremo a extremo;
+5. una alerta basada en ausencia de evento verifica primero que el canal de observación está funcionando;
+6. una degradación del monitoreo produce `UNKNOWN`, `DEGRADED` o el estado aplicable, nunca salud fabricada;
+7. la pérdida de telemetría no elimina eventos empresariales, auditoría o evidencia con retención propia.
+
+Monitoreo sin metamonitoreo requerido no supera el gate.
+
+---
+
+#### 17. Pruebas black-box y sintéticas
+
+Los caminos críticos deberán combinar, cuando el contrato lo exija, señales internas con una comprobación desde consumidor, estación o frontera equivalente.
+
+Toda prueba sintética deberá ser:
+
+- identificable como sintética;
+- atribuible al ambiente correcto;
+- segura;
+- idempotente cuando corresponda;
+- incapaz de crear ventas, pagos, inventario, documentos, movimientos, notificaciones o datos reales no deseados;
+- separable de tráfico real para evitar contaminar SLI productivos;
+- correlacionable con las señales que pretende verificar.
+
+Un health check interno exitoso sin prueba del camino crítico no compensa la ausencia de black-box cuando esta sea obligatoria.
+
+---
+
+#### 18. Aislamiento de ambientes
+
+Local, CI, staging, piloto y producción deberán poder distinguirse en:
+
+- señales;
+- reglas;
+- dashboards o consultas;
+- canales;
+- silencios;
+- credenciales o referencias técnicas;
+- datos;
+- tráfico sintético;
+- ejercicios;
+- release y versión.
+
+No se acepta como evidencia del ambiente objetivo:
+
+- una ejecución de staging para afirmar producción;
+- una prueba local para afirmar piloto;
+- una regla activa en otro proyecto o cuenta;
+- una serie que mezcle ambientes sin separación verificable;
+- datos productivos copiados a pruebas sin control autorizado.
+
+El gate evalúa exclusivamente el ambiente declarado por la instancia de paquete.
+
+---
+
+#### 19. Logging, trazas y protección de datos
+
+Los logs relevantes deberán ser estructurados y conservar, cuando aplique:
+
+- timestamp;
+- severidad;
+- servicio;
+- componente;
+- ambiente;
+- versión;
+- código estable;
+- plantilla;
+- contexto estructurado minimizado;
+- correlación;
+- resultado;
+- sensibilidad.
+
+Las trazas de caminos críticos deberán enlazar dependencias, reintentos, errores y resultados sin perder los casos críticos por una estrategia de muestreo inadecuada.
+
+Queda prohibido utilizar como evidencia ordinaria o dimensiones de telemetría:
+
+- contraseñas;
+- tokens completos;
+- secretos;
+- PIN;
+- OTP;
+- códigos de recuperación MFA;
+- credenciales privilegiadas;
+- datos de pago;
+- cookies o cabeceras indiscriminadas;
+- payloads sensibles;
+- variables de ambiente completas;
+- identificadores personales o de negocio de cardinalidad ilimitada cuando no sean estrictamente necesarios;
+- texto libre como dimensión no controlada.
+
+La consulta o exportación de diagnóstico sensible conserva los controles de autorización de `TI-AUTH-004`. Readiness no autoriza acceso adicional.
+
+---
+
+#### 20. Cardinalidad, muestreo, retención y costo
+
+La puerta comprobará que el perfil aplicable gobierna:
+
+- volumen;
+- cardinalidad;
+- muestreo;
+- agregación;
+- retención;
+- descarte;
+- almacenamiento;
+- transferencia;
+- costo.
+
+Reglas:
+
+1. usuario, documento, ID de instancia, URL cruda, mensaje libre, token o payload no se aceptan como dimensiones ilimitadas;
+2. el muestreo deberá preservar fallos y errores críticos que el contrato exija investigar;
+3. la telemetría no adopta retención indefinida por ausencia de decisión;
+4. la retención de telemetría no sustituye la retención de auditoría o evidencia;
+5. un incremento de cardinalidad o volumen que pueda inutilizar la plataforma constituye falla de readiness cuando el paquete lo introduce;
+6. ocultar una señal para reducir costo no satisface una obligación de observabilidad.
+
+---
+
+#### 21. Separación entre salud técnica y resultado empresarial
+
+La puerta exige comprobar explícitamente que:
+
+```text
+SERVICIO RESPONDE
+≠ PROCESO FUNCIONA
+
+HEALTH CHECK VERDE
+≠ RESULTADO EMPRESARIAL CORRECTO
+
+TRABAJO ACEPTADO
+≠ EFECTO FÍSICO O EMPRESARIAL CONFIRMADO
+
+STATUS PAGE VERDE
+≠ DEPENDENCIA INTERNA RESTAURADA
+```
+
+Cuando el paquete protege un camino empresarial, la evidencia deberá incluir la señal o resultado mínimo que permita detectar un escenario donde la infraestructura responde pero el proceso falla.
+
+Una métrica técnica favorable no podrá ocultar:
+
+- errores empresariales;
+- backlog envejecido;
+- pérdida de mensajes;
+- resultado desconocido;
+- impresión sin confirmación física cuando corresponda;
+- datos obsoletos;
+- sincronización pendiente;
+- degradación de dependencia crítica.
+
+---
+
+#### 22. Cobertura específica por clase técnica
+
+Cuando la clase pertenezca al conjunto requerido, se evaluará como mínimo:
+
+| Clase                  | Evidencia de readiness relevante                                                                                                                                 |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| aplicación/servicio    | disponibilidad observable, latencia, errores, versión, ambiente, dependencia y resultado empresarial                                                             |
+| endpoint/dispositivo   | heartbeat o comprobación, postura o baseline aplicable, versión, conectividad, frescura y falla local                                                            |
+| red                    | enlace, reachability, latencia, pérdida, saturación, drift y dependencia de servicio, sin confundir `up` con extremo a extremo                                   |
+| impresora/periférico   | conectividad, cola, trabajo, error, consumible, receipt y resultado; online no equivale a impresión correcta                                                     |
+| integración/proveedor  | solicitud, respuesta, rechazo, timeout, resultado desconocido, retry, deduplicación, contrato y conciliación                                                     |
+| base de datos/Supabase | disponibilidad, latencia, errores, conexiones, saturación, bloqueos, consultas lentas, servicios aplicables, versión y frescura sin exponer parámetros sensibles |
+| cola/job/batch         | trabajo esperado, pendiente, activo, completado, fallido, retry, dead-letter, edad, capacidad, backpressure, último éxito, corte y resultado parcial             |
+| offline/sincronización | intención, pendiente, expiración, sync, aceptación técnica, confirmación empresarial, conflicto, rechazo, backlog y edad                                         |
+
+La tabla define mínimos de comprobación, no crea una obligación para clases que el paquete no consume.
+
+---
+
+#### 23. Ejercicio mínimo de alertamiento
+
+Para cada familia de alerta crítica requerida por el paquete, la evidencia deberá poder reconstruir:
+
+```text
+CONDICIÓN CONTROLADA O EVIDENCIA OPERATIVA EQUIVALENTE
+→ SEÑAL
+→ CANDIDATO
+→ DEDUPLICACIÓN / INHIBICIÓN CUANDO APLIQUE
+→ ALERTA ACCIONABLE
+→ ROUTING
+→ ENTREGA
+→ ACK CUANDO SEA OBLIGATORIO
+→ ESCALAMIENTO SI FALTA ACK CUANDO CORRESPONDA
+→ CORRELACIÓN CON CASO CUANDO LA REGLA LO EXIJA
+→ RECOVERY / CLEAR
+→ EVIDENCIA FINAL
+```
+
+El estímulo deberá respetar la seguridad y las restricciones del ambiente. Cuando no sea seguro provocar físicamente la condición, se utilizará una prueba controlada equivalente ya aprobada por el expediente de pruebas; la imposibilidad no se convierte en PASS por inspección documental.
+
+---
+
+#### 24. Evidencia aceptable
+
+Puede sustentar readiness, según el elemento:
+
+- consulta o serie del ambiente objetivo con identidad, versión y ventana verificables;
+- resultado de prueba sintética segura;
+- prueba de fallo controlado autorizada por el expediente del paquete;
+- secuencia de señal, regla, alerta, entrega, ACK y recuperación;
+- evidencia de routing primario y fallback;
+- consulta de salud con fuente y frescura explícitas;
+- definición versionada de métrica o SLI más una ejecución real correspondiente;
+- referencia de SLO ya aprobado y su medición, cuando exista;
+- evidencia de deduplicación, histéresis, inhibición o silencio temporal;
+- runbook vigente y evidencia de la práctica requerida;
+- registro de metamonitoreo y verificación del canal;
+- correlación con release, cambio, ambiente y paquete;
+- configuración leída en modo no sensible junto con evidencia de funcionamiento;
+- evidencia de minimización y ausencia de datos prohibidos en una muestra controlada;
+- ticket o incidente correlacionado cuando la regla realmente deba producirlo.
+
+La evidencia deberá conservar momento, actor o principal técnico cuando corresponda, ambiente, versión, fuente y resultado.
+
+---
+
+#### 25. Evidencia insuficiente
+
+Por sí solos no demuestran readiness:
+
+- screenshot de un dashboard;
+- existencia de un dashboard;
+- archivo de configuración o variable de ambiente;
+- SDK, agente o collector instalado;
+- una línea de log;
+- un health check `200`;
+- puerto, DNS o endpoint alcanzable;
+- servicio “online”;
+- ausencia de alertas;
+- status page del proveedor;
+- una métrica sin definición o población;
+- una serie sin ambiente o versión identificables;
+- una regla de alerta que nunca fue ejercitada;
+- una notificación entregada sin demostrar su regla, owner y contexto;
+- ACK manual sin identidad o relación con la alerta;
+- runbook existente sin vigencia o práctica cuando esta sea obligatoria;
+- SLI sin punto de medición;
+- objetivo provisional presentado como SLO definitivo;
+- evidencia de staging para aprobar otro ambiente;
+- contrato documental de `DELIV-PKG-017` sin implementación;
+- aprobación documental de `TI-DOM-010`;
+- éxito parcial de una sola señal dentro de un camino crítico más amplio.
+
+---
+
+#### 26. Estados de decisión
+
+Cada elemento, cada plano y el paquete completo utilizarán exactamente:
+
+| Estado      | Significado                                                                                                                               |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `PASS`      | existe evidencia suficiente, vigente y reproducible para el alcance evaluado                                                              |
+| `FAIL`      | la capacidad requerida existe o debía existir, pero su evidencia demuestra incumplimiento o funcionamiento incorrecto                     |
+| `BLOQUEADO` | falta una precondición, autoridad, objetivo, actor, dependencia o medio de comprobación que impide obtener un resultado válido sin asumir |
+| `NO_APLICA` | el elemento no pertenece al alcance real del paquete y la exclusión está respaldada por la fuente canónica                                |
+
+`PENDIENTE`, `DESCONOCIDO`, “sin datos” o “no se pudo revisar” no se convierten en PASS. Cuando impidan decidir una obligación requerida, el resultado es `BLOQUEADO`.
+
+---
+
+#### 27. Regla de agregación
+
+El resultado del paquete se calcula así:
+
+```text
+SI EXISTE AL MENOS UN FAIL REQUERIDO
+→ FAIL
+
+SI NO EXISTE FAIL PERO EXISTE AL MENOS UN BLOQUEADO REQUERIDO
+→ BLOQUEADO
+
+SI TODO ELEMENTO REQUERIDO ES PASS O NO_APLICA VÁLIDO
+→ PASS
+```
+
+Reglas adicionales:
+
+1. un PASS de métrica no compensa un FAIL de routing;
+2. un PASS de alerta no compensa metamonitoreo bloqueado cuando sea requerido;
+3. un dashboard verde no compensa una prueba black-box fallida;
+4. una alerta `OBS-P0` o `OBS-P1` sin práctica vigente impide PASS;
+5. una brecha `OBS-GAP-P0` o `OBS-GAP-P1` sin control aprobado impide PASS;
+6. no se permite aprobar por muestreo una ruta crítica que el conjunto requerido declara obligatoria;
+7. un `NO_APLICA` requiere fundamento de alcance, no conveniencia de implementación;
+8. no se promedian resultados para ocultar un incumplimiento crítico.
+
+---
+
+#### 28. Relación con la mesa de soporte
+
+`READY-GATE-011` no vuelve a decidir personas, turnos ni cobertura de soporte.
+
+Consume de `READY-GATE-010` únicamente la evidencia de que:
+
+- el owner técnico requerido existe y está vigente;
+- la suplencia o alternativa aplicable existe;
+- la ventana de atención es real;
+- la ruta de escalamiento llega a actores elegibles;
+- el proveedor no reemplaza ownership VENTO.
+
+Si una regla de alerta no puede resolver a la estructura aprobada por `READY-GATE-010`, el plano de routing falla o queda bloqueado según la causa. No se inventa un destinatario local para superar esta puerta.
+
+---
+
+#### 29. Relación con respaldo, rollback y continuidad
+
+Esta tarea puede exigir señales que indiquen:
+
+- ejecución o fallo de backup;
+- frescura de una copia;
+- disparador de rollback;
+- señal posterior a rollback;
+- estado de una dependencia de recuperación.
+
+No certifica:
+
+- que el respaldo sea restaurable;
+- que el restore haya sido probado;
+- que el rollback técnico, funcional o de datos funcione;
+- RTO, RPO, MTPD o MBCO;
+- cierre de recuperación o continuidad.
+
+Esas comprobaciones permanecen en `READY-GATE-012` y autoridades de recuperación aplicables. Una alerta de backup saludable no sustituye una prueba real de restauración.
+
+---
+
+#### 30. Frontera con implementación y ejecución
+
+La secuencia permanece:
+
+```text
+E5-GATE-008::<package_id>
+→ SHELL-CI-020::<package_id>
+→ SHELL-CI-021::<package_id>
+→ SHELL-CI-022::<package_id>
+→ SHELL-CI-023::<package_id>
+→ SHELL-CI-024::<package_id>
+```
+
+`READY-GATE-011` define el contrato documental que deberá consumir `SHELL-CI-021::<package_id>`.
+
+No realiza:
+
+- instrumentación;
+- instalación de agentes;
+- selección o alta de proveedor;
+- creación de dashboards;
+- creación o activación de reglas;
+- cambios de routing;
+- envío de alertas productivas;
+- pruebas destructivas;
+- despliegue;
+- cutover;
+- piloto;
+- modificación remota de configuración;
+- cambios de Supabase.
+
+La prueba real del gate ocurre después de la implementación del paquete y antes de `SHELL-CI-022::<package_id>`.
+
+---
+
+#### 31. Casos especiales
+
+##### 31.1. Ausencia de telemetría
+
+Si una obligación requiere señal automática y la señal no existe, el resultado no es salud. Es `FAIL` cuando la instrumentación debía quedar materializada por el paquete o `BLOQUEADO` cuando una dependencia previa impide legítimamente producirla.
+
+##### 31.2. Fuente manual controlada
+
+Una observación manual puede satisfacer únicamente una obligación cuyo contrato admita esa forma. Debe conservar actor, método, momento, fuente y resultado. No se presenta como telemetría automática.
+
+##### 31.3. Proveedor externo
+
+La métrica o status page del proveedor puede aportar evidencia, pero VENTO deberá conservar correlación interna con el efecto que le interesa. Un proveedor verde con el proceso VENTO fallando no produce PASS.
+
+##### 31.4. Señal de seguridad
+
+Una `SECURITY_SIGNAL` conserva protección reforzada. La prueba del routing no exige exponer el detalle sensible al destinatario incorrecto y el silencio por conveniencia no es válido.
+
+##### 31.5. Bajo volumen
+
+Si no existe población suficiente para percentiles o tasas estables, el gate no fabrica estadística. Utiliza la forma de evidencia aprobada por el paquete y conserva la limitación; cuando un objetivo exija una muestra mínima aún no alcanzada, la afirmación de cumplimiento queda bloqueada.
+
+##### 31.6. Ambiente sin tráfico real previo
+
+La ausencia de historia no elimina observabilidad. El paquete deberá demostrar los caminos críticos mediante pruebas sintéticas, fixtures o ejercicios controlados aprobados y mantener explícita la diferencia entre baseline provisional y evidencia productiva.
+
+##### 31.7. Alertas durante mantenimiento
+
+La inhibición autorizada puede evitar ruido esperado, pero no elimina señales, no convierte degradación en éxito y no puede esconder una condición que exceda la ventana o el efecto esperado del cambio.
+
+---
+
+#### 32. Resultado material de la tarea
+
+La tarea deja completamente definido:
+
+- cómo derivar el conjunto requerido de observabilidad por paquete;
+- los seis planos independientes que deberán superar readiness;
+- el expediente mínimo de evidencia por elemento;
+- el tratamiento exacto de clases de señal y formas de observación;
+- los cinco estados de salud y su relación con frescura;
+- las doce familias de métricas mínimas aplicables;
+- las ocho categorías de SLI y cuatro categorías de SLO;
+- la prohibición de inventar SLO;
+- el tratamiento de referencias provisionales de umbral;
+- el ciclo completo de alerta;
+- la separación entre severidad de alerta, clasificación operacional e prioridad de incidente;
+- deduplicación, histéresis, inhibición, silencio y recuperación;
+- routing, fallback, ACK y escalamiento;
+- requisitos de runbook y práctica para condiciones críticas;
+- metamonitoreo;
+- black-box y pruebas sintéticas seguras;
+- aislamiento de ambientes;
+- logging, trazas, cardinalidad, muestreo, retención y protección;
+- separación de salud técnica y resultado empresarial;
+- evidencia aceptable e insuficiente;
+- estados de decisión y agregación;
+- fronteras con soporte, recuperación, implementación y cutover.
+
+No queda una decisión sustantiva de criterio de observabilidad diferida a `READY-GATE-012`.
+
+---
+
+#### 33. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta puerta operacionaliza criterios de readiness que ya están protegidos por el registro canónico vigente y por los contratos aprobados de observabilidad, pruebas y evidencia. No crea una nueva semántica de señal, métrica, SLI, SLO, alerta, salud, routing, runbook, privacidad o metamonitoreo; únicamente define qué evidencia deberá presentar la futura ejecución por paquete para demostrar esas obligaciones antes del piloto.
+
+**Requisitos creados:** 0  
+**Requisitos modificados:** 0  
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 34. Criterios de aceptación
+
+- [x] la continuidad vigente es `READY-GATE-010 → READY-GATE-011 → READY-GATE-012`;
+- [x] la tarea permanece exclusivamente documental;
+- [x] el conjunto requerido se deriva antes de observar el ambiente;
+- [x] una fuente requerida no puede excluirse porque todavía no esté instrumentada;
+- [x] se materializan seis planos independientes de readiness;
+- [x] cada elemento requerido conserva un expediente mínimo de evidencia;
+- [x] se preservan exactamente seis clases de señal;
+- [x] se preservan exactamente siete formas de observación;
+- [x] se preservan exactamente cinco estados de salud;
+- [x] `UNKNOWN` no puede convertirse en `HEALTHY` por ausencia de alertas;
+- [x] liveness, readiness, salud empresarial, salud de datos y salud de dispositivo permanecen distinguibles;
+- [x] se preservan las doce familias mínimas de métricas;
+- [x] cada métrica aplicable conserva semántica, unidad, población, ambiente y versión verificables;
+- [x] se preservan ocho categorías de SLI y cuatro categorías de SLO;
+- [x] la tarea no inventa SLO ni porcentajes de cumplimiento;
+- [x] los umbrales provisionales permanecen referencias provisionales y no SLO definitivos;
+- [x] se preserva el ciclo completo candidato→alerta→ACK→correlación→clear;
+- [x] cada regla de alerta requerida conserva los catorce elementos mínimos aprobados;
+- [x] `SEV1..SEV4`, `OBS-P0..OBS-P3` y la prioridad del incidente no se fusionan;
+- [x] `OBS-P0` y `OBS-P1` exigen práctica vigente;
+- [x] `OBS-GAP-P0` y `OBS-GAP-P1` sin control aprobado bloquean readiness;
+- [x] se comprueban deduplicación, persistencia, histéresis, inhibición y silencio cuando apliquen;
+- [x] ACK y silencio no equivalen a recuperación;
+- [x] routing y escalamiento consumen responsables ya acreditados por `READY-GATE-010`;
+- [x] el proveedor no sustituye ownership interno;
+- [x] el fallo del canal conserva fallback y no borra la alerta;
+- [x] runbooks críticos conservan propietario, versión y última práctica;
+- [x] se exige metamonitoreo cuando el pipeline de observabilidad es material para la detección;
+- [x] la ausencia de alertas no demuestra salud si el pipeline no está verificado;
+- [x] las pruebas sintéticas quedan identificadas y aisladas del tráfico real;
+- [x] local, CI, staging, piloto y producción permanecen aislados;
+- [x] logs, trazas, métricas y diagnóstico excluyen secretos y datos prohibidos;
+- [x] cardinalidad, muestreo, retención y costo quedan gobernados;
+- [x] salud técnica no sustituye resultado empresarial;
+- [x] existe una lista explícita de evidencia suficiente e insuficiente;
+- [x] los estados son `PASS`, `FAIL`, `BLOQUEADO` y `NO_APLICA`;
+- [x] cualquier `FAIL` requerido falla el paquete y un `BLOQUEADO` requerido impide PASS;
+- [x] no se aprueba por promedio ni por muestreo una obligación crítica;
+- [x] `READY-GATE-012` conserva respaldo y rollback probados sin ser adelantada;
+- [x] se crean cero requisitos de prueba y se modifican cero requisitos existentes;
+- [x] no se modifica código, infraestructura, proveedores, canales, reglas, datos ni Supabase;
+- [x] `READY-GATE-012` permanece únicamente reservada.
+
+---
+
+#### 35. Invariantes
+
+1. señal no equivale a alerta;
+2. alerta no equivale a incidente;
+3. incidente no equivale a causa;
+4. SLI no equivale a SLO;
+5. SLO no equivale a SLA de soporte;
+6. severidad de alerta no equivale a prioridad de incidente;
+7. health check verde no equivale a resultado empresarial correcto;
+8. liveness no equivale a readiness;
+9. ACK no equivale a recuperación;
+10. silencio no equivale a resolución;
+11. dashboard no equivale a evidencia de extremo a extremo;
+12. ausencia de alertas no equivale a salud;
+13. ausencia de telemetría no equivale a cero;
+14. `UNKNOWN` no equivale a `HEALTHY`;
+15. status page de proveedor no equivale a estado VENTO;
+16. SDK instalado no equivale a observabilidad operativa;
+17. regla configurada no equivale a alerta probada;
+18. runbook escrito no equivale a práctica vigente;
+19. métrica emitida no equivale a SLI correctamente definido;
+20. SLI medido no equivale a SLO cumplido;
+21. referencia provisional no equivale a objetivo definitivo;
+22. alerta entregada no equivale a condición recuperada;
+23. proveedor no equivale a owner interno;
+24. routing no concede privilegio;
+25. telemetría no reemplaza auditoría ni evidencia canónica;
+26. metamonitoreo no puede depender exclusivamente del mismo fallo que debe detectar;
+27. evidencia de staging no certifica otro ambiente;
+28. una prueba sintética no se presenta como tráfico real;
+29. un log sensible no se expone para demostrar readiness;
+30. `READY-GATE-011` no instrumenta ni configura físicamente observabilidad;
+31. `READY-GATE-012` permanece únicamente reservada.
+
+---
+
+#### 36. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento`
+
+TAREA ACTUAL APROBADA
+`READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas`
+
+SIGUIENTE TAREA RESERVADA
+`READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados`
+
+
 ### [ ] READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados
 ### [ ] READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto
 ### [ ] READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión
