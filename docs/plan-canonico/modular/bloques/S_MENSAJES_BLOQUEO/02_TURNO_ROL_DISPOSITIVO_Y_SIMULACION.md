@@ -2757,7 +2757,7 @@ No se inicia ni modifica `AUTH-ERR-011` en esta tarea.
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md`
 **Artefactos producidos:** `CHECKIN-REQUIRED-BLOCKING-CONTRACT-001`, `CHECKIN-STATE-DECISION-MATRIX-001`, `CHECKIN-CHANNEL-RESPONSE-MATRIX-001`, `CHECKIN-APPLICATION-COVERAGE-REGISTER-001` y `CHECKIN-PHYSICAL-RECONCILIATION-001`
-**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001` a `AUTH-MOD-004`; `AUTH-MOD-007` a `AUTH-MOD-011`; `AUTH-MOD-018`; `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-012` a `AUTH-CAT-015`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-009` a `AUTH-CTX-017`; `AUTH-CTX-020`; `AUTH-CTX-024` a `AUTH-CTX-030`; `AUTH-ERR-001` a `AUTH-ERR-010`; contratos vigentes de identidad, aplicación, territorio, publicación, temporalidad, turno, check-in, rol, permiso, recurso, disponibilidad y precedencia; estado remoto y desplegado inspeccionado; contrato documental vigente
+**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001` a `AUTH-MOD-004`; `AUTH-MOD-007` a `AUTH-MOD-011`; `AUTH-MOD-018`; `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-012` a `AUTH-CAT-015`; `AUTH-CAT-022` a `AUTH-CAT-024`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-009` a `AUTH-CTX-017`; `AUTH-CTX-020`; `AUTH-CTX-024` a `AUTH-CTX-030`; `AUTH-ERR-001` a `AUTH-ERR-010`; contratos vigentes de identidad, aplicación, territorio, publicación, temporalidad, turno, check-in, rol, permiso, recurso, disponibilidad y precedencia; estado remoto y desplegado inspeccionado; contrato documental vigente
 **Cambios físicos autorizados:** ninguno; no modifica código, Supabase, Auth, RLS, RPC, Edge Functions, datos, migraciones, constraints, índices, triggers, eventos de asistencia, turnos, empleados, sedes, áreas, roles, permisos, aplicaciones ni despliegues
 
 ---
@@ -3108,12 +3108,12 @@ La distribución canónica se conserva:
 
 | Grupo                         | Cantidad | Check-in                       |
 | ----------------------------- | -------: | ------------------------------ |
-| permisos sin carril operativo |       54 | no aplica                      |
+| permisos sin carril operativo |       68 | no aplica                      |
 | carriles operativos `T`       |       19 | no requerido                   |
-| carriles operativos `T+C`     |       39 | requerido                      |
-| total de permisos canónicos   |      112 | decisión explícita por permiso |
+| carriles operativos `T+C`     |       53 | requerido                      |
+| total de permisos canónicos   |      140 | decisión explícita por permiso |
 
-La ausencia de check-in solo puede bloquear los 39 carriles `T+C` cuando sean
+La ausencia de check-in solo puede bloquear los 53 carriles `T+C` cuando sean
 el carril necesario para autorizar la solicitud.
 
 Una política por aplicación no sustituye esta matriz. `requires_checkin=true`
@@ -3535,7 +3535,7 @@ Los logs internos deberán respetar retención, acceso mínimo y trazabilidad.
 | PASS       | la sesión cliente no es check-in laboral y nunca satisface este contrato                                                                |
 
 La tabla decide las diez aplicaciones sin inventar cobertura implementada. El
-catálogo de 112 permisos sigue siendo la fuente de granularidad.
+catálogo de 140 permisos sigue siendo la fuente de granularidad.
 
 ---
 
@@ -3676,7 +3676,7 @@ ejecutarse desde `vento-shell`.
 | ID              | Regla protegida                                                                                                                                                                                                                                                                                 | Tipo                                             | Prioridad | Momento de implementación            | Destino                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | --------- | ------------------------------------ | --------------------------------------------------------------------------------------------- |
 | `TREQ-AUTH-229` | Un carril `T+C` con turno publicado y vigente, resolución concluyente y ausencia de sesión abierta compatible produce `AUTH_CHECKIN_REQUIRED`, `403`, deny y cero efectos.                                                                                                                      | contractual + seguridad + contexto               | crítica   | evaluador unificado                  | `AUTH-DB-034`; `SHELL-CI-016`                                                                 |
-| `TREQ-AUTH-230` | La ausencia de check-in se aplica solo a 39 carriles `T+C`; 19 carriles `T` y 54 permisos sin carril operativo no se bloquean por esta razón.                                                                                                                                                   | catálogo + contractual + regresión               | crítica   | catálogo físico y paridad            | `AUTH-DB-020`; `AUTH-DB-031`; `SHELL-CI-016`                                                  |
+| `TREQ-AUTH-230` | La ausencia de check-in se aplica solo a 53 carriles `T+C`; 19 carriles `T` y 68 permisos sin carril operativo no se bloquean por esta razón.                                                                                                                                                   | catálogo + contractual + regresión               | crítica   | catálogo físico y paridad            | `AUTH-DB-020`; `AUTH-DB-031`; `SHELL-CI-016`                                                  |
 | `TREQ-AUTH-231` | Una sesión activa debe coincidir exactamente con actor, sede y turno, estar abierta, confirmada y ser única; cliente, evento reciente o `limit 1` no bastan.                                                                                                                                    | base de datos + contexto + seguridad             | crítica   | resolver de asistencia               | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-018`                                                  |
 | `TREQ-AUTH-232` | Ausencia y cierre normal conservan `AUTH-ERR-011`; mismatch, multiplicidad, sesión residual y check-out contradictorio usan `AUTH-ERR-017` cuando son concluyentes; indisponibilidad usa `AUTH-ERR-019`; `AUTH-ERR-012` queda exclusivamente para rol faltante.                                 | razones + integración + regresión                | crítica   | catálogo de razones y evaluador      | `AUTH-ERR-017`; `AUTH-ERR-019`; `AUTH-DB-033`; `AUTH-DB-034`                                  |
 | `TREQ-AUTH-233` | Publicación y temporalidad preceden al check-in; rol, dispositivo y permiso se evalúan después de resolver una sesión requerida.                                                                                                                                                                | precedencia + autorización + seguridad           | crítica   | evaluador unificado                  | `AUTH-DB-034`; `SHELL-AUTH-004`; `SHELL-CI-016`                                               |
@@ -3686,6 +3686,8 @@ ejecutarse desde `vento-shell`.
 | `TREQ-AUTH-237` | Solicitudes offline, concurrencia y replay no crean autoridad ni sesiones duplicadas; la confirmación invalida contexto y obliga a una decisión nueva.                                                                                                                                          | idempotencia + concurrencia + offline            | crítica   | ledger, invalidación y adapters      | `AUTH-DB-033`; `AUTH-DB-035`; `SHELL-CI-018`; `SHELL-CI-019`                                  |
 | `TREQ-AUTH-238` | La regresión reconcilia 5132 eventos, cero sesiones abiertas en el snapshot, una política NEXO, 13 funciones consumidoras, 8 índices y catorce brechas sin alterar datos productivos.                                                                                                           | regresión + RPC + RLS + seguridad                | crítica   | gates y evidencia E5                 | `AUTH-DB-031`; `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-AUTH-004`; `SHELL-CI-016`; `SHELL-CI-018` |
 | `TREQ-AUTH-330` | Ausencia limpia y cierre normal conservan `AUTH-ERR-011`; mismatch, multiplicidad, sesión residual y check-out contradictorio producen `AUTH-ERR-017` cuando son concluyentes; indisponibilidad produce `AUTH-ERR-019`; `AUTH-ERR-012` queda reservado exclusivamente a rol operativo faltante. | razones + integración + concurrencia + regresión | crítica   | resolver de asistencia y precedencia | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`; `SHELL-CI-018`                                  |
+
+La reconciliación con `AUTH-CAT-024` modifica el requisito existente `TREQ-AUTH-230`; no crea identificadores `TREQ-*` nuevos. `TREQ-AUTH-330` permanece sin modificación y conserva la ampliación causal ya incorporada a esta tarea.
 
 ---
 
@@ -3756,7 +3758,7 @@ AUTH-ERR-011 no:
 - reconstruye correlaciones históricas;
 - corrige eventos duplicados o huérfanos;
 - modifica turnos, publicaciones, sedes, áreas o roles;
-- cambia los conteos 54/19/39;
+- cambia los conteos 68/19/53;
 - reclasifica permisos;
 - implementa `AccessContext` o `AuthorizationDecision`;
 - crea tablas, columnas, constraints, índices, funciones, RPC, RLS o triggers;
@@ -3779,9 +3781,9 @@ AUTH-ERR-011 no:
 5. La respuesta no navegacional usa `403`.
 6. La decisión es `DENY`, `executable=false` y cero efectos.
 7. La capacidad y el carril se resuelven antes de evaluar check-in.
-8. Solo los 39 carriles `T+C` pueden producir esta razón.
+8. Solo los 53 carriles `T+C` pueden producir esta razón.
 9. Los 19 carriles `T` no exigen check-in.
-10. Los 54 permisos sin carril operativo no se bloquean.
+10. Los 68 permisos sin carril operativo no se bloquean.
 11. Existe exactamente un turno publicado y vigente antes de esta razón.
 12. Sin publicación permanece `AUTH-ERR-009`.
 13. Fuera de ventana permanece `AUTH-ERR-010`.
@@ -3824,7 +3826,7 @@ AUTH-ERR-011 no:
 50. El snapshot registra una función que emite `checkin_required`.
 51. El snapshot registra ocho índices sobre `attendance_logs`.
 52. Las catorce brechas tienen propietario y condición de salida.
-53. Se generan `TREQ-AUTH-229` a `TREQ-AUTH-238`.
+53. Se mantienen `TREQ-AUTH-229` a `TREQ-AUTH-238` y `TREQ-AUTH-330` como requisitos vinculados a esta tarea.
 54. Las 6626 filas históricas del registro se conservan sin modificación.
 55. No se modifica código, Supabase, datos ni repositorios remotos.
 56. `AUTH-ERR-012` permanece reservada.
