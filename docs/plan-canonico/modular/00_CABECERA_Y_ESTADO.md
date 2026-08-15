@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **881** |
+| Tareas aprobadas | **882** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **713** |
+| Tareas no iniciadas | **712** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **55.27% (881/1594)** |
+| Porcentaje de completamiento | **55.33% (882/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-CON-002 — Centralizar códigos de aplicaciones** |
-| Tarea actual | **SHELL-CON-003 — Centralizar códigos de permisos** |
+| Última tarea aprobada | **SHELL-CON-003 — Centralizar códigos de permisos** |
+| Tarea actual | **SHELL-CON-004 — Centralizar roles base** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CON-004 — Centralizar roles base** |
+| Siguiente tarea | **SHELL-CON-005 — Centralizar roles operativos** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 31 de 109 aprobadas; SHELL-CON-003 pendiente** |
+| Progreso del bloque | **BLOQUE H: 32 de 109 aprobadas; SHELL-CON-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-CON-002` — Centralizar códigos de aplicaciones |
-| Tarea actual | `SHELL-CON-003` — Centralizar códigos de permisos — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CON-004` — Centralizar roles base |
+| Última aprobada | `SHELL-CON-003` — Centralizar códigos de permisos |
+| Tarea actual | `SHELL-CON-004` — Centralizar roles base — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CON-005` — Centralizar roles operativos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 31 DE 109 APROBADAS — ACTUAL SHELL-CON-003** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 32 DE 109 APROBADAS — ACTUAL SHELL-CON-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-CON-002 — Centralizar códigos de aplicaciones
-        ↓
-TAREA ACTUAL
 SHELL-CON-003 — Centralizar códigos de permisos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-CON-004 — Centralizar roles base
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CON-005 — Centralizar roles operativos
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 31 de 109 tareas aprobadas
+BLOQUE H — 32 de 109 tareas aprobadas
 ```
