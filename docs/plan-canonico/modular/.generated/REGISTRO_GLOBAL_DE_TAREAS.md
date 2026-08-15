@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **879** |
+| Aprobadas | **880** |
 | En propuesta | **0** |
-| No iniciadas | **715** |
+| No iniciadas | **714** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **55.14% (879/1594)** |
+| Porcentaje de completamiento | **55.21% (880/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-PKG-008` — Evitar actualizaciones automáticas sin pruebas | ✅ APROBADA |
-| Tarea actual | `SHELL-CON-001` — Crear @vento/contracts | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CON-002` — Centralizar códigos de aplicaciones | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CON-001` — Crear @vento/contracts | ✅ APROBADA |
+| Tarea actual | `SHELL-CON-002` — Centralizar códigos de aplicaciones | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CON-003` — Centralizar códigos de permisos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -706,7 +706,7 @@
 | ✅ APROBADA | `SHELL-PKG-006` | Definir rollback por aplicación | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-PKG-007` | Definir actualizaciones mediante PR | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-PKG-008` | Evitar actualizaciones automáticas sin pruebas | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-CON-001` | Crear @vento/contracts | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-CON-001` | Crear @vento/contracts | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-002` | Centralizar códigos de aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-003` | Centralizar códigos de permisos | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-004` | Centralizar roles base | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
