@@ -1137,7 +1137,585 @@ CUTOVER-OPS-002 — Definir secuencia de activación por sede, área, rol o proc
 CUTOVER-OPS-003 — Definir convivencia temporal con el proceso anterior
 
 
-### [ ] CUTOVER-OPS-003 — Definir convivencia temporal con el proceso anterior
+### ✅ CUTOVER-OPS-003 — Definir convivencia temporal con el proceso anterior
+
+**Estado:** APROBADA  
+**Tarea anterior:** `CUTOVER-OPS-002 — Definir secuencia de activación por sede, área, rol o proceso`  
+**Tarea siguiente:** `CUTOVER-OPS-004 — Diseñar controles contra doble registro y doble efecto durante la transición`  
+**Tipo de tarea:** documental — definición normativa y materialización de la convivencia temporal entre el proceso anterior y el proceso objetivo para cada unidad y ola de activación ya secuenciada, preservando una autoridad inequívoca por alcance, la compatibilidad temporal aprobada y las rutas de recuperación existentes; sin ampliar el alcance, alterar la secuencia, ejecutar activaciones, diseñar todavía controles contra doble registro o doble efecto, conciliar resultados, decidir pausa/reversión/continuación, retirar el proceso anterior, desplegar cambios, modificar configuración, ejecutar migraciones, DDL/DML, backfills, modificaciones de datos ni operaciones sobre Supabase  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md`  
+**Ejecución posterior:** `SHELL-CI-022::<package_id>` después de `SHELL-CI-021::<package_id>`  
+**Cambios físicos autorizados:** ninguno  
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`CUTOVER-OPS-003` define cómo puede convivir temporalmente el proceso anterior con el proceso objetivo durante una secuencia de activación ya aprobada, sin convertir esa convivencia en doble autoridad, doble escritura, doble efecto ni retiro anticipado de la ruta anterior.
+
+La tarea responde exclusivamente a estas preguntas:
+
+```text
+¿QUÉ UNIDAD Y OLA ESTÁN SIENDO ACTIVADAS?
++
+¿QUÉ PROCESO O RUTA ANTERIOR SIGUE APLICANDO A ESA UNIDAD O AL RESTO DEL ALCANCE?
++
+¿QUÉ RUTA ES AUTORITATIVA ANTES, DURANTE Y DESPUÉS DEL PUNTO DE ACTIVACIÓN?
++
+¿QUÉ COMPATIBILIDAD TEMPORAL YA APROBADA DEBE CONSERVARSE?
++
+¿QUÉ TRABAJO EN CURSO, COLAS, REINTENTOS O EFECTOS PREEXISTENTES DEBEN MANTENER SU RUTA?
++
+¿QUÉ USO DEL PROCESO ANTERIOR SIGUE PERMITIDO Y HASTA QUÉ FRONTERA DOCUMENTAL?
+=
+CONVIVENCIA TEMPORAL DEFINIDA SIN AMBIGÜEDAD DE AUTORIDAD
+```
+
+La tarea no ejecuta el cambio de autoridad ni activa ninguna ola. Tampoco diseña todavía los controles que impedirán físicamente el doble registro o doble efecto: esa responsabilidad pertenece a `CUTOVER-OPS-004`.
+
+---
+
+#### 2. Resultado sustantivo
+
+Para cada instancia aplicable de `package_id`, `CUTOVER-OPS-003` materializa cuatro piezas documentales:
+
+1. `coexistence_scope_resolution::<package_id>` — identifica, sobre las unidades y olas ya definidas por `CUTOVER-OPS-002`, dónde existe realmente un proceso o ruta anterior que deba convivir temporalmente con el proceso objetivo;
+2. `coexistence_authority_map::<package_id>` — fija por unidad y estado de activación qué ruta conserva la autoridad operacional, sin crear una segunda fuente de verdad;
+3. `coexistence_transition_plan::<package_id>` — documenta el uso permitido del proceso anterior, las referencias de compatibilidad temporal, el tratamiento del trabajo en curso y las dependencias de recuperación;
+4. `coexistence_manifest::<package_id>` — consolida alcance, unidades, olas, referencias del proceso anterior y objetivo, fronteras de autoridad, compatibilidad, bloqueos, responsables y handoff a las tareas siguientes.
+
+Estas piezas describen una transición futura dentro de `SHELL-CI-022::<package_id>`. No prueban que la convivencia haya ocurrido ni que una unidad haya sido activada.
+
+---
+
+#### 3. Entradas obligatorias y frontera de autoridad
+
+`CUTOVER-OPS-003` consume, sin redefinirlos:
+
+- `CUTOVER-OPS-001`: paquete, candidato, ambiente, alcance, fecha, ventana, zona horaria y responsables vigentes;
+- `CUTOVER-OPS-002`: dimensión de activación, unidades, olas, orden, dependencias, responsables, estado seguro previo, estado objetivo permitido y puntos de decisión entre olas;
+- `READY-GATE-015`: elegibilidad final de entrada para la misma instancia;
+- `DELIV-PKG-009`: plan de transición, compatibilidad temporal, autoridad única de escritura, backfills y lane de retiro legacy;
+- `DELIV-PKG-010`: contratos de eventos, productores, consumidores, idempotencia, retry, compensación y conciliación ya aprobados cuando apliquen;
+- `DELIV-PKG-012`: frontera autoritativa de servidor y permisos vigentes cuando apliquen;
+- `DELIV-PKG-015`: dependencias, bloqueos y orden técnico consolidado;
+- `DELIV-PKG-018`: default seguro, targeting, activación, expiración y kill switch aplicables;
+- `DELIV-PKG-019`: estrategia de rollout, shadow, cohortes, pausas de evidencia y promoción;
+- `DELIV-PKG-020`: rollback técnico, funcional y de datos, recovery, compensation y tratamiento de efectos irreversibles;
+- `DELIV-PKG-021`: runbooks, procedimientos, soporte y audiencia operativa aplicables;
+- `DELIV-PKG-022`: alcance, actores, sedes, datos, dispositivos, entorno, duración, cohortes, exclusiones y salvaguardas del piloto;
+- `READY-GATE-010`: cobertura de soporte y escalamiento;
+- `READY-GATE-011`: monitoreo, métricas y alertas disponibles;
+- `READY-GATE-012`: respaldo, restauración y rollback aplicables;
+- `READY-GATE-014`: riesgos aceptados y condiciones de suspensión vigentes.
+
+No se permite usar esta tarea para reconstruir o corregir silenciosamente una fuente anterior. Si una entrada material es ambigua, incompatible o inexistente, la convivencia queda bloqueada hasta que la fuente propietaria resuelva la condición.
+
+---
+
+#### 4. Invariante de interpretación
+
+Se adopta la separación obligatoria:
+
+```text
+CONVIVENCIA TEMPORAL
+≠ DOBLE AUTORIDAD
+≠ DOBLE ESCRITURA
+≠ DOBLE EFECTO
+≠ ROLLBACK
+≠ CONCILIACIÓN
+≠ RETIRO LEGACY
+```
+
+La coexistencia puede significar que componentes, rutas, interfaces, procesos manuales o mecanismos de recuperación permanezcan disponibles al mismo tiempo, pero no autoriza que dos rutas sean simultáneamente autoritativas para el mismo alcance y el mismo hecho empresarial salvo que una fuente canónica previa haya definido expresamente una semántica compatible.
+
+`SHADOW` no crea una segunda autoridad empresarial. `FULL_100` tampoco autoriza por sí solo retirar el proceso anterior ni volver irreversible el cutover.
+
+---
+
+#### 5. Unidad mínima de decisión de convivencia
+
+La convivencia se define sobre la misma unidad ya materializada por `CUTOVER-OPS-002`:
+
+```text
+package_id
++
+candidate_ref
++
+environment
++
+authorized_scope_ref
++
+activation_unit_ref
++
+wave_ref
+```
+
+`CUTOVER-OPS-003` no puede:
+
+- crear unidades nuevas;
+- fusionar unidades existentes;
+- dividir una unidad para simplificar la convivencia;
+- cambiar el orden de olas;
+- mover una sede, área, rol, proceso o intersección a otra ola;
+- ampliar cohorte, actor, dato, dispositivo, superficie o ambiente;
+- sustituir la unidad canónica por una agrupación inventada.
+
+Si la convivencia segura exige modificar la secuencia, la tarea queda `BLOQUEADA` y la corrección debe ocurrir en la fuente propietaria antes de recalcular 003.
+
+---
+
+#### 6. Identificación del proceso o ruta anterior
+
+Para cada `activation_unit_ref`, el manifiesto deberá resolver `previous_process_ref` a partir de una fuente canónica vigente.
+
+La referencia puede corresponder al proceso, ruta, mecanismo manual, implementación legacy, consumidor, flujo o superficie anterior que realmente conserva responsabilidad antes de la activación. No se exige convertirla en un `VPROC-*` cuando la fuente no la modela así.
+
+Reglas:
+
+1. no se inventa `previous_process_ref` a partir del título del paquete, aplicación, repositorio, pantalla o capability;
+2. si no existe proceso anterior aplicable, la unidad se clasifica `NO_APLICA` para convivencia y no recibe una ruta legacy ficticia;
+3. si existe una ruta anterior pero su identidad o frontera no puede determinarse con evidencia suficiente, la unidad queda `BLOQUEADA`;
+4. una ruta técnica antigua que permanece únicamente por compatibilidad no se presenta como proceso empresarial autoritativo;
+5. una ruta de recuperación de `DELIV-PKG-020` no se presenta como ruta operativa normal salvo que su contrato lo permita expresamente.
+
+---
+
+#### 7. Estados documentales de convivencia
+
+Cada unidad usa exactamente uno de estos estados documentales:
+
+| Estado       | Semántica                                                                                                                                                           |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DEFINIDA`   | existe proceso o ruta anterior aplicable y la frontera temporal de autoridad y uso está resuelta mediante fuentes vigentes                                          |
+| `NO_APLICA`  | no existe convivencia aplicable para esa unidad o la fuente canónica demuestra que no hay proceso anterior que deba mantenerse                                      |
+| `BLOQUEADA`  | la convivencia sería necesaria, pero falta o contradice una condición indispensable de autoridad, compatibilidad, secuencia, recuperación, soporte u observabilidad |
+| `INVALIDADA` | una decisión previamente definida dejó de ser ejecutable por cambio material de candidato, ambiente, alcance, secuencia o fuente propietaria                        |
+
+No se utiliza `DEFINIDA` para ocultar una identidad anterior desconocida ni `NO_APLICA` por simple ausencia de documentación.
+
+---
+
+#### 8. Regla de autoridad por unidad
+
+Toda unidad con convivencia aplicable deberá materializar, como mínimo:
+
+- `authority_before_activation`;
+- `authority_after_activation`;
+- `previous_process_allowed_use`;
+- `target_process_allowed_use`;
+- `recovery_authority_ref` cuando aplique;
+- `authority_change_precondition_ref`;
+- `authority_reversion_ref` cuando aplique.
+
+La regla normativa es:
+
+1. antes del punto de activación de la unidad, la autoridad permanece donde la fuente vigente la ubique;
+2. la nueva ruta no se vuelve autoritativa por estar desplegada, visible, instalada, disponible o incluida en `SHADOW`;
+3. la autoridad solo puede cambiar cuando se ejecute el punto de activación previsto y se cumplan los gates aplicables de la secuencia;
+4. una unidad ya activada no vuelve a la ruta anterior por conveniencia operativa; una reversión debe seguir `DELIV-PKG-020` y la decisión propietaria de `CUTOVER-OPS-006`;
+5. el resto de unidades todavía no activadas conserva la ruta que les corresponda sin recibir exposición anticipada;
+6. una misma operación lógica, intento, idempotency key o retry no puede cambiar de ruta por pertenecer a una cohorte diferente a mitad de su ciclo cuando el contrato de integración exige continuidad de ruta.
+
+Esta tarea fija la frontera documental. Los mecanismos físicos que harán cumplir esa frontera se diseñan en `CUTOVER-OPS-004`.
+
+---
+
+#### 9. Convivencia segmentada por olas
+
+Cuando `CUTOVER-OPS-002` haya definido varias olas, puede existir simultáneamente:
+
+- proceso objetivo autoritativo para unidades cuya activación ya haya sido ejecutada y aceptada conforme a los gates aplicables;
+- proceso anterior autoritativo para unidades cuya activación todavía no haya ocurrido;
+- compatibilidad técnica temporal entre componentes de ambas generaciones cuando `DELIV-PKG-009` o `DELIV-PKG-019` lo requieran;
+- una ruta anterior retenida únicamente para recuperación cuando `DELIV-PKG-020` así lo defina.
+
+La coexistencia entre olas nunca autoriza que una unidad se atienda alternativamente por una ruta u otra según disponibilidad momentánea, preferencia del operador o conveniencia técnica.
+
+El alcance no activado no se utiliza como fallback informal para una unidad activada, y el alcance activado no absorbe silenciosamente unidades de olas posteriores.
+
+---
+
+#### 10. Compatibilidad temporal técnica
+
+La compatibilidad temporal se consume de `DELIV-PKG-009` y de los contratos consolidados del paquete.
+
+Por tanto:
+
+1. una migración, esquema, vista, contrato, productor, consumidor o build puede requerir coexistencia técnica backward-compatible sin que exista doble autoridad empresarial;
+2. las migraciones y contratos no se fraccionan por porcentaje; el porcentaje de rollout gobierna exposición de comportamiento únicamente cuando sea técnicamente seguro;
+3. la autoridad única de escritura definida por la transición debe conservarse mientras existan componentes de generaciones distintas;
+4. la presencia simultánea de versiones compatibles no autoriza doble escritura, doble confirmación ni duplicación de estado de negocio;
+5. una incompatibilidad crítica bloquea la convivencia y la promoción de la unidad afectada;
+6. el retiro físico de compatibilidad, adapters, rutas o superficies legacy permanece reservado a la tarea propietaria de retiro y no se ejecuta en 003.
+
+---
+
+#### 11. Trabajo en curso al cruzar la frontera de activación
+
+Cada unidad con operaciones en curso deberá identificar, por referencia a los contratos existentes, cómo se conserva la autoridad de esas operaciones durante la transición.
+
+El manifiesto deberá distinguir, cuando aplique:
+
+- operaciones iniciadas antes del punto de activación y todavía no finalizadas;
+- solicitudes o comandos enviados pero sin resultado definitivo;
+- colas, outbox, reintentos, jobs o tareas diferidas pendientes;
+- adjuntos, borradores o estados locales todavía no sincronizados;
+- efectos externos cuyo resultado sea incierto;
+- procesos manuales abiertos que no pueden migrarse de forma atómica.
+
+Reglas:
+
+1. una operación en curso no cambia automáticamente de ruta porque la unidad haya cambiado de interfaz o build;
+2. si la fuente ya define una estrategia de finalización, migración, retry, compensación o recuperación, 003 la referencia sin modificarla;
+3. si no puede determinarse qué ruta debe completar una operación en curso, la unidad queda `BLOQUEADA` antes de activarse;
+4. un resultado externo incierto no se asume fallido para reenviarlo por la ruta nueva;
+5. esta tarea no ejecuta conciliaciones ni crea reglas de compensación nuevas.
+
+---
+
+#### 12. Uso permitido del proceso anterior
+
+`previous_process_allowed_use` deberá quedar explícito por unidad y derivado de las fuentes vigentes.
+
+Puede conservarse únicamente para los fines que ya estén autorizados, por ejemplo:
+
+- operación normal de unidades todavía no activadas;
+- compatibilidad técnica necesaria mientras conviven generaciones;
+- finalización de trabajo en curso bajo la ruta que ya lo posee;
+- recuperación o reversión conforme a `DELIV-PKG-020`;
+- consulta o soporte cuando una fuente canónica lo permita sin generar un nuevo efecto empresarial.
+
+La lista anterior no concede permisos por sí misma. Cada uso debe estar respaldado por la fuente propietaria del paquete.
+
+Una vez activada una unidad, el proceso anterior no puede seguirse usando como ruta normal para esa misma unidad salvo que la fuente canónica haya definido expresamente una convivencia de autoridad compatible. La falta de comodidad, capacitación, velocidad o familiaridad con la nueva ruta no crea una excepción.
+
+---
+
+#### 13. `SHADOW` y coexistencia sin efecto empresarial
+
+Cuando `DELIV-PKG-019` permita `SHADOW`, la presencia del candidato puede coexistir con la ruta anterior únicamente sin producir un nuevo efecto empresarial.
+
+Por tanto:
+
+- `SHADOW` no transfiere autoridad;
+- no crea una segunda confirmación del mismo hecho;
+- no habilita una mutación adicional por observar el resultado;
+- no sustituye la cohorte o piloto definidos por `DELIV-PKG-022`;
+- no autoriza retirar la ruta anterior;
+- si la mera presencia del candidato modifica comportamiento, `SHADOW` no aplica y la convivencia debe conservar el estado seguro definido por las fuentes propietarias.
+
+---
+
+#### 14. Recuperación no equivale a operación paralela
+
+La retención del proceso anterior para rollback, recovery, compensation o restore no significa que permanezca habilitado como ruta operativa normal.
+
+`DELIV-PKG-020` conserva la propiedad de:
+
+- disparadores de rollback;
+- autoridad para decidirlo y ejecutarlo;
+- objetivo técnico y funcional seguro;
+- tratamiento de datos y efectos externos;
+- restore, recovery, compensation y conciliación aplicables.
+
+`CUTOVER-OPS-003` solo registra qué dependencia de recuperación obliga a mantener temporalmente una ruta, artefacto, compatibilidad o capacidad anterior disponible.
+
+La decisión de continuar, pausar o revertir durante la ejecución pertenece a `CUTOVER-OPS-006`.
+
+---
+
+#### 15. Integraciones, eventos y efectos externos
+
+Cuando la unidad dependa de integraciones o efectos externos:
+
+1. una misma operación lógica debe conservar la ruta compatible que le corresponda durante su ciclo;
+2. un idempotency key o retry no puede reencaminarse entre proceso anterior y objetivo de forma que cambie la semántica ya aprobada;
+3. `SHADOW` o sandbox no deben producir un efecto productivo nuevo cuando el contrato vigente los define como no efectivos;
+4. un efecto externo incierto debe conservar el tratamiento de reconciliación, retry o compensación de `DELIV-PKG-010` y `DELIV-PKG-020`;
+5. 003 no crea colas, DLQ, eventos, compensaciones ni políticas nuevas;
+6. la conciliación material durante el piloto permanece reservada a `CUTOVER-OPS-005`.
+
+---
+
+#### 16. Datos, migraciones y autoridad de escritura
+
+La convivencia de datos conserva las reglas aprobadas de `DELIV-PKG-009` y `DELIV-PKG-020`.
+
+En particular:
+
+- una migración aplicada no se revierte editando su historia para simular que nunca ocurrió;
+- la compatibilidad temporal puede exigir conservar superficies antiguas mientras consumidores y rutas terminan su transición;
+- la fuente autoritativa de escritura no se duplica por coexistencia;
+- backfills, DDL, DML, cambios de RLS, Storage o Realtime no se ejecutan en esta tarea;
+- la recuperación de datos no se confunde con rollback de interfaz o build;
+- un hecho empresarial confirmado conserva su historia y, cuando corresponda, se corrige, compensa o reconcilia según contratos existentes.
+
+Toda modificación física de Supabase VENTO permanece fuera de esta tarea y bajo su autoridad propietaria vigente.
+
+---
+
+#### 17. Offline, móvil y trabajo diferido
+
+Cuando existan clientes offline, móviles o trabajo diferido, la convivencia deberá conservar la clasificación y autoridad de los elementos pendientes.
+
+Ocultar una superficie, distribuir otro build, activar una ola o volver a una versión anterior no elimina por sí mismo:
+
+- outbox pendientes;
+- intentos locales;
+- adjuntos todavía no sincronizados;
+- comandos en retry;
+- acciones pendientes de reautorización.
+
+Cada elemento deberá seguir el contrato ya aprobado para determinar si se completa, descarta, reautoriza, compensa o reconcilia. 003 no crea una semántica nueva para esos estados y bloquea la unidad cuando la fuente vigente no permite determinar un tratamiento seguro.
+
+---
+
+#### 18. Soporte, observabilidad y operación durante la convivencia
+
+La convivencia solo puede quedar `DEFINIDA` cuando las referencias aplicables permiten observar y soportar ambos estados que existirán temporalmente.
+
+El manifiesto deberá conservar:
+
+- responsables y escalamiento de `READY-GATE-010`;
+- señales, métricas, alertas y propietarios de `READY-GATE-011` y `DELIV-PKG-017`;
+- riesgos aceptados y condiciones de suspensión de `READY-GATE-014`;
+- runbooks y procedimientos de `DELIV-PKG-021`;
+- referencias de recuperación de `DELIV-PKG-020`.
+
+Esta tarea no define métricas nuevas ni umbrales nuevos. Si la coexistencia introduce un estado que las fuentes de observabilidad vigentes no permiten distinguir o diagnosticar cuando esa distinción es necesaria para ejecutar con seguridad, la unidad queda `BLOQUEADA` hasta que la fuente propietaria resuelva la brecha.
+
+---
+
+#### 19. Inicio y término documental de la convivencia
+
+La convivencia de una unidad comienza documentalmente cuando existe una frontera aprobada en la que la ruta anterior debe seguir disponible al mismo tiempo que el candidato o la ruta objetivo entra en la secuencia de activación.
+
+La convivencia deja de requerir operación normal del proceso anterior para una unidad cuando:
+
+1. esa unidad ya alcanzó el estado objetivo permitido conforme a la secuencia y gates aplicables;
+2. no conserva trabajo en curso cuya autoridad siga en la ruta anterior;
+3. ninguna compatibilidad temporal vigente exige mantener la ruta anterior como participante normal;
+4. cualquier retención restante corresponde exclusivamente a recuperación, soporte, evidencia o retiro posterior.
+
+Ese resultado no autoriza el retiro físico del proceso anterior. `CUTOVER-OPS-010` conserva la responsabilidad de definir y ejecutar documentalmente el retiro correspondiente.
+
+---
+
+#### 20. Condiciones de bloqueo
+
+Una unidad queda `BLOQUEADA` para convivencia cuando ocurra cualquiera de estas condiciones:
+
+1. no puede identificarse el proceso o ruta anterior que realmente posee la operación previa;
+2. existe ambigüedad sobre qué ruta es autoritativa para el mismo alcance;
+3. la secuencia exige que una misma operación lógica pueda saltar entre rutas sin contrato aprobado;
+4. la compatibilidad técnica requerida no está demostrada o existe incompatibilidad crítica;
+5. no puede determinarse el tratamiento del trabajo en curso;
+6. la ruta anterior se necesita para recuperación, pero su disponibilidad o autoridad no está cubierta por `DELIV-PKG-020`;
+7. la convivencia requeriría ampliar alcance, permisos, cohorte, sede, rol, proceso, dato, dispositivo o ambiente;
+8. soporte u observabilidad no permiten operar de forma segura el estado temporal cuando son exigibles;
+9. una dependencia de `DELIV-PKG-015` permanece abierta;
+10. una condición de suspensión vigente ya está materializada;
+11. el candidato, ambiente, alcance, ventana o secuencia dejaron de coincidir con las fuentes de 001 y 002;
+12. el tratamiento exigiría inventar una regla de negocio, autorización, dato, evento, retry, compensación, rollback o conciliación no aprobada.
+
+Todo bloqueo deberá conservar causa, propietario documental y condición de salida verificable.
+
+---
+
+#### 21. Invalidation y revalidación
+
+`coexistence_manifest::<package_id>` queda `INVALIDADA` cuando cambie materialmente cualquiera de estas fuentes:
+
+- candidato o revisión;
+- ambiente;
+- alcance autorizado;
+- ventana de `CUTOVER-OPS-001`;
+- dimensión, unidades, olas u orden de `CUTOVER-OPS-002`;
+- transición o compatibilidad de `DELIV-PKG-009`;
+- contratos de integración de `DELIV-PKG-010`;
+- autorización de `DELIV-PKG-012`;
+- dependencias de `DELIV-PKG-015`;
+- activación o default seguro de `DELIV-PKG-018`;
+- rollout de `DELIV-PKG-019`;
+- recuperación de `DELIV-PKG-020`;
+- piloto de `DELIV-PKG-022`;
+- soporte, observabilidad, riesgo o elegibilidad de readiness.
+
+La revalidación debe partir de las fuentes vigentes. No se parchea únicamente el campo que cambió cuando ese cambio altera la frontera de autoridad o la secuencia.
+
+---
+
+#### 22. Contenido mínimo del manifiesto
+
+`coexistence_manifest::<package_id>` deberá contener, como mínimo:
+
+1. `package_id`;
+2. `candidate_ref`;
+3. `environment`;
+4. `authorized_scope_ref`;
+5. referencia a la ventana vigente de `CUTOVER-OPS-001`;
+6. referencia al manifiesto de secuencia de `CUTOVER-OPS-002`;
+7. `activation_unit_ref`;
+8. `wave_ref` y posición aplicable;
+9. `previous_process_ref` o justificación de `NO_APLICA`;
+10. referencia de la ruta o proceso objetivo cuando exista en las fuentes;
+11. `authority_before_activation`;
+12. `authority_after_activation`;
+13. `previous_process_allowed_use`;
+14. `target_process_allowed_use`;
+15. referencia de compatibilidad temporal de `DELIV-PKG-009` cuando aplique;
+16. referencia de rollout/shadow de `DELIV-PKG-019`;
+17. referencia de recovery/rollback de `DELIV-PKG-020`;
+18. tratamiento documentado de trabajo en curso;
+19. dependencias de integración o efectos externos aplicables;
+20. soporte y escalamiento aplicables;
+21. observabilidad aplicable;
+22. riesgo o condición de suspensión aplicable;
+23. estado `DEFINIDA`, `NO_APLICA`, `BLOQUEADA` o `INVALIDADA`;
+24. causa, propietario y condición de salida de cualquier bloqueo;
+25. revisión documental y referencias de evidencia.
+
+Los conteos de unidades deberán reconciliar exactamente el universo recibido de `CUTOVER-OPS-002`.
+
+---
+
+#### 23. Frontera con `CUTOVER-OPS-004..010`
+
+`CUTOVER-OPS-003` fija la frontera que las tareas siguientes consumen, sin anticiparlas:
+
+| Tarea             | Responsabilidad reservada                                                                                         |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `CUTOVER-OPS-004` | diseñar los controles que impiden doble registro y doble efecto usando la autoridad y fronteras definidas por 003 |
+| `CUTOVER-OPS-005` | definir las conciliaciones exigibles durante el piloto                                                            |
+| `CUTOVER-OPS-006` | definir el criterio operativo de pausa, reversión o continuación entre puntos de decisión                         |
+| `CUTOVER-OPS-007` | diseñar el registro de incidentes, decisiones y cambios de alcance                                                |
+| `CUTOVER-OPS-008` | definir métricas de tiempos, errores, adopción y resultado empresarial                                            |
+| `CUTOVER-OPS-009` | definir criterio y evidencia para declarar salida del piloto                                                      |
+| `CUTOVER-OPS-010` | definir el retiro del proceso anterior y el cierre de la transición                                               |
+
+003 puede declarar que una referencia posterior será exigible antes de ejecución, pero no puede completar por anticipado la decisión de su propietario.
+
+---
+
+#### 24. Handoff a `CUTOVER-OPS-004`
+
+`CUTOVER-OPS-003` entrega a `CUTOVER-OPS-004` únicamente la frontera documental necesaria para diseñar controles contra duplicidad:
+
+```text
+UNIDADES Y OLAS VIGENTES
++
+PROCESO/RUTA ANTERIOR APLICABLE
++
+RUTA OBJETIVO APLICABLE
++
+AUTORIDAD ANTES Y DESPUÉS DE ACTIVACIÓN
++
+USO PERMITIDO DE LA RUTA ANTERIOR
++
+TRABAJO EN CURSO Y FRONTERAS DE RUTA
++
+COMPATIBILIDAD TEMPORAL
++
+REFERENCIAS DE RECUPERACIÓN
+=
+SUPERFICIE EXACTA DONDE 004 DEBE IMPEDIR DOBLE REGISTRO O DOBLE EFECTO
+```
+
+`CUTOVER-OPS-004` no podrá ampliar alcance, modificar la secuencia ni reinterpretar una ambigüedad de autoridad como autorización para operar ambas rutas.
+
+---
+
+#### 25. Separación entre planificación y ejecución
+
+`CUTOVER-OPS-003` es exclusivamente documental.
+
+No ejecuta:
+
+- activaciones;
+- promociones;
+- cambios de routing;
+- feature flags;
+- cutover;
+- rollback o recovery;
+- conciliaciones;
+- migraciones;
+- DDL/DML;
+- backfills;
+- compensaciones;
+- correcciones de datos;
+- retiro legacy;
+- cambios de código;
+- despliegues;
+- cambios remotos;
+- operaciones de Supabase.
+
+La ejecución futura corresponde a `SHELL-CI-022::<package_id>` dentro de la ruta autorizada y consumiendo los contratos posteriores que sean aplicables.
+
+---
+
+#### 26. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0.  
+**Requisitos modificados:** 0.
+
+**Justificación:** `CUTOVER-OPS-003` materializa, para la secuencia de cutover, la aplicación conjunta de reglas de transición, compatibilidad temporal, autoridad única de escritura, integración, autorización, rollout, shadow, rollback, recovery, soporte y observabilidad que ya están aprobadas y cubiertas por requisitos existentes. `DELIV-PKG-009`, `DELIV-PKG-019`, `DELIV-PKG-020` y `DELIV-PKG-022` ya determinan que sus decisiones documentales reutilizan el registro 04A vigente sin crear semántica ejecutable nueva. Esta tarea no cambia el contenido, identidad, estado, relación o criterio de ningún `TREQ-*` y no corresponde generar fragmentos 04A.
+
+---
+
+#### 27. Criterios de aceptación documental
+
+`CUTOVER-OPS-003` queda documentalmente completo cuando:
+
+1. conserva `CUTOVER-OPS-002 → CUTOVER-OPS-003 → CUTOVER-OPS-004`;
+2. usa exactamente las unidades, olas y orden materializados por 002;
+3. no cambia paquete, candidato, ambiente, alcance, fecha, ventana ni autoridad de readiness;
+4. identifica el proceso o ruta anterior por fuente canónica o demuestra `NO_APLICA`;
+5. no inventa `VPROC-*`, rutas legacy, sistemas, owners ni repositorios;
+6. define `coexistence_scope_resolution`, `coexistence_authority_map`, `coexistence_transition_plan` y `coexistence_manifest`;
+7. cada unidad usa exactamente `DEFINIDA`, `NO_APLICA`, `BLOQUEADA` o `INVALIDADA`;
+8. cada unidad `DEFINIDA` posee frontera de autoridad antes y después de activación;
+9. `SHADOW` nunca se trata como segunda autoridad empresarial;
+10. `FULL_100` no se trata como autorización de retiro legacy;
+11. la convivencia técnica backward-compatible no se convierte en doble autoridad de escritura;
+12. las migraciones y contratos no se fraccionan por porcentaje;
+13. una unidad no alterna de ruta por conveniencia operativa;
+14. una misma operación lógica, intento o retry conserva la ruta exigida por sus contratos vigentes;
+15. el trabajo en curso recibe tratamiento referenciado o bloquea la unidad;
+16. los efectos externos inciertos no se asumen fallidos para reejecutarlos por otra ruta;
+17. una ruta retenida para recovery no se presenta como operación paralela normal;
+18. soporte, observabilidad, riesgo y recuperación quedan referenciados cuando son aplicables;
+19. toda incompatibilidad crítica bloquea la convivencia de la unidad afectada;
+20. todo bloqueo conserva causa, propietario y condición de salida;
+21. cambios materiales invalidan el manifiesto y obligan a revalidar desde fuentes vigentes;
+22. el manifiesto reconcilia exactamente todas las unidades recibidas de 002;
+23. 003 no diseña todavía controles de doble registro o doble efecto;
+24. 003 no ejecuta conciliaciones;
+25. 003 no decide pausa, reversión o continuación;
+26. 003 no define métricas, salida del piloto ni retiro del proceso anterior;
+27. `CUTOVER-OPS-004` recibe una frontera de autoridad suficiente para diseñar los controles contra duplicidad sin reinterpretar alcance;
+28. la ejecución física permanece en `SHELL-CI-022::<package_id>`;
+29. no se ejecutan código, despliegues, activaciones, promociones, migraciones, DDL/DML, backfills, modificaciones de datos, configuración remota ni operaciones de Supabase;
+30. se crean cero requisitos `TREQ-*`, se modifican cero requisitos `TREQ-*` y se afectan cero fragmentos 04A.
+
+---
+
+#### 28. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+CUTOVER-OPS-002 — Definir secuencia de activación por sede, área, rol o proceso
+
+##### TAREA ACTUAL APROBADA
+CUTOVER-OPS-003 — Definir convivencia temporal con el proceso anterior
+
+##### SIGUIENTE TAREA RESERVADA
+CUTOVER-OPS-004 — Diseñar controles contra doble registro y doble efecto durante la transición
+
+
 ### [ ] CUTOVER-OPS-004 — Diseñar controles contra doble registro y doble efecto durante la transición
 ### [ ] CUTOVER-OPS-005 — Definir conciliaciones durante el piloto
 ### [ ] CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación
