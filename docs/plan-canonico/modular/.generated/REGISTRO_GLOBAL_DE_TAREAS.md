@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **835** |
+| Aprobadas | **836** |
 | En propuesta | **0** |
-| No iniciadas | **759** |
+| No iniciadas | **758** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **52.38% (835/1594)** |
+| Porcentaje de completamiento | **52.45% (836/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DELIV-PKG-024` — Vincular el paquete con el registro canónico de brechas | ✅ APROBADA |
-| Tarea actual | `DELIV-PKG-025` — Aprobar el paquete antes de iniciar implementación física | ⬜ NO INICIADA |
-| Siguiente reservada | `READY-GATE-001` — Definir criterio y evidencia para confirmar código desplegado en el entorno objetivo | ⬜ NO INICIADA |
+| Última aprobada | `DELIV-PKG-025` — Aprobar el paquete antes de iniciar implementación física | ✅ APROBADA |
+| Tarea actual | `READY-GATE-001` — Definir criterio y evidencia para confirmar código desplegado en el entorno objetivo | ⬜ NO INICIADA |
+| Siguiente reservada | `READY-GATE-002` — Definir criterio y evidencia para confirmar migraciones aplicadas y datos validados | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -552,7 +552,7 @@
 | ✅ APROBADA | `DELIV-PKG-022` | Definir alcance, actores, datos y duración del piloto | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-023` | Definir criterios de aceptación y evidencia de cierre | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-024` | Vincular el paquete con el registro canónico de brechas | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
-| ⬜ NO INICIADA | `DELIV-PKG-025` | Aprobar el paquete antes de iniciar implementación física | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
+| ✅ APROBADA | `DELIV-PKG-025` | Aprobar el paquete antes de iniciar implementación física | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `READY-GATE-001` | Definir criterio y evidencia para confirmar código desplegado en el entorno objetivo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ⬜ NO INICIADA | `READY-GATE-002` | Definir criterio y evidencia para confirmar migraciones aplicadas y datos validados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ⬜ NO INICIADA | `READY-GATE-003` | Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |

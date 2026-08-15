@@ -10833,13 +10833,13 @@ SIGUIENTE TAREA RESERVADA
 **Tarea siguiente:** DELIV-PKG-025 — Aprobar el paquete antes de iniciar implementación física
 **Tipo de tarea:** Documental de trazabilidad, cobertura y detección de huérfanos
 
-## 1. Propósito
+#### 1. Propósito
 
 Consolidar la trazabilidad verificable de los 207 paquetes de implementación hacia sus brechas, capacidades, procesos cuando existen, tareas responsables y requisitos TREQ-* aplicables, preservando la identidad de origen y detectando ausencias reales de cobertura sin fabricar relaciones.
 
 Esta tarea cierra la reconciliación documental pendiente en DELIV-PKG-016 y exigida por DELIV-PKG-023. No ejecuta implementación, piloto, promoción, rollback ni certificación, y no convierte por sí sola ningún paquete en PASS.
 
-## 2. Fuentes canónicas y decisiones heredadas
+#### 2. Fuentes canónicas y decisiones heredadas
 
 - PLAN CANONICO modular y protocolo vigente.
 - Contrato vigente de entrega documental.
@@ -10851,7 +10851,7 @@ Esta tarea cierra la reconciliación documental pendiente en DELIV-PKG-016 y exi
 - Registro canonico de brechas: brecha, capacidad, proceso de fuente, tarea dominante y tareas de apoyo.
 - Registro 04A modular: 7.007 TREQ, 19 dominios, 14 columnas por fila, 0 IDs duplicados y 0 relaciones TREQ no resueltas.
 
-## 3. Universo y invariantes de trazabilidad
+#### 3. Universo y invariantes de trazabilidad
 
 | Invariante                               | Valor canonico preservado | Regla de 024                                                                                |
 | ---------------------------------------- | ------------------------: | ------------------------------------------------------------------------------------------- |
@@ -10864,19 +10864,19 @@ Esta tarea cierra la reconciliación documental pendiente en DELIV-PKG-016 y exi
 | TREQ sin enlace fuerte de paquete en 016 |                     4.892 | No se clasifican como huerfanos por esa sola condicion y no se les fabrica paquete.         |
 | Paquetes sin enlace fuerte en 016        |                        19 | Se resuelven por identidad en la matriz especifica de 024.                                  |
 
-### 3.1 Dos capas de proceso que no se deben confundir
+##### 3.1 Dos capas de proceso que no se deben confundir
 
 - **Proceso de fuente `PROC-*`:** referencia de proceso que puede aparecer en el registro de brechas y forma parte de la evidencia de origen de una brecha.
 - **Proceso TO-BE de paquete `VPROC-*`:** relación paquete/proceso definida en DELIV-PKG-002. Su cardinalidad permitida es 0, 1 o muchos.
 - La presencia de un `PROC-*` no autoriza crear un `VPROC-*`; la ausencia de `VPROC-*` no constituye huérfano ni falta de proceso por defecto.
 
-## 4. Modelo de trazabilidad de cierre
+#### 4. Modelo de trazabilidad de cierre
 
 `GAP-PKG-* -> brecha/origen -> capacidad -> proceso canonico cuando exista -> tarea dominante/apoyo -> TREQ-* o control canonico -> AC-023 -> EVID-CLOSE-001`
 
 La cadena se interpreta como grafo de evidencia, no como una obligación de que cada nodo tenga cardinalidad uno. Capacidad puede ser muchos-a-muchos; proceso puede ser cero/uno/muchos; TREQ puede cubrir varios orígenes cuando el registro 04A lo declara expresamente.
 
-## 5. Reglas de reconciliación TREQ
+#### 5. Reglas de reconciliación TREQ
 
 - **R1_GAP_EXACTO:** Un TREQ nombra literalmente la brecha asignada en su origen o relacion canonica.
 - **R2_GAP_RANGO:** Un rango canonico cerrado de origen del TREQ contiene la brecha asignada.
@@ -10885,7 +10885,7 @@ La cadena se interpreta como grafo de evidencia, no como una obligación de que 
 - **R5_RELACION_PROTEGIDA:** El TREQ se relaciona con la tarea, control o backlog canonico que materialmente protege la brecha.
 - **R6_CONTROL_CANONICO:** Solo para hechos documentales, de gobierno, procedencia o frontera sin comportamiento ejecutable autonomo: la cobertura se demuestra con evidencia canonica del control correspondiente. No sirve para dispensar una conducta tecnica verificable.
 
-### 5.1 Precedencia y restricciones
+##### 5.1 Precedencia y restricciones
 
 1. R1 y R2 prevalecen cuando existe identidad directa de brecha.
 2. R3 y R4 solo son válidas cuando la tarea está asignada canónicamente al paquete.
@@ -10894,7 +10894,7 @@ La cadena se interpreta como grafo de evidencia, no como una obligación de que 
 5. Ninguna regla autoriza crear, reasignar o reabrir brechas ni TREQ.
 6. Una brecha técnica ejecutable no puede cerrarse por R6 si existe conducta verificable pendiente.
 
-## 6. Relaciones VPROC-* explicitas preservadas
+#### 6. Relaciones VPROC-* explicitas preservadas
 
 | Paquete     | VPROC-* explicitos                                                                                                                                                                                                                                                     | Cantidad |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------: |
@@ -10916,7 +10916,7 @@ La cadena se interpreta como grafo de evidencia, no como una obligación de que 
 
 Los otros paquetes conservan cardinalidad `0 VPROC explícito` conforme a DELIV-PKG-002. No se deduce proceso TO-BE desde tareas, capacidades o procesos de fuente.
 
-## 7. Matriz completa de cobertura de los 207 paquetes
+#### 7. Matriz completa de cobertura de los 207 paquetes
 
 | Paquete     | Cobertura TREQ        | Brecha/capacidad/tarea          | VPROC-* explicito                                                                                                                                                                                                                                                      | Gate de cierre 023                                |
 | ----------- | --------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
@@ -11130,7 +11130,7 @@ Los otros paquetes conservan cardinalidad `0 VPROC explícito` conforme a DELIV-
 
 La matriz anterior enumera las 207 identidades de paquete. Los 188 paquetes `FUERTE_016_PRESERVADO` mantienen el enlace fuerte calculado en DELIV-PKG-016. Los 19 `RECONCILIADO_024` se desarrollan por brecha en la sección siguiente.
 
-## 8. Reconciliación individual de los 19 paquetes sin enlace fuerte en 016
+#### 8. Reconciliación individual de los 19 paquetes sin enlace fuerte en 016
 
 Los 19 paquetes contienen 68 brechas. Cada fila conserva la identidad de brecha y declara el puente de cobertura sin modificar el registro 04A.
 
@@ -11205,11 +11205,11 @@ Los 19 paquetes contienen 68 brechas. Cada fila conserva la identidad de brecha 
 | GAP-PKG-200 | H-CODE-007-003      | SHELL-CI-007                      | R4_TAREA_RANGO                              | TREQ-SHELL-006; archivos de contrato VITAL no prueban inclusion productiva                     | RESUELTO_EXISTENTE        |
 | GAP-PKG-200 | H-QA-REG-001-005    | normalizacion QA por dominio      | R5_RELACION_PROTEGIDA                       | TREQ-VISO-001 + TREQ-NUMERA-001 + TREQ-TALENTO-001                                             | RESUELTO_EXISTENTE        |
 
-### 8.1 Interpretación de los casos R6
+##### 8.1 Interpretación de los casos R6
 
 R6 no declara que la brecha sea inexistente ni satisfecha. Declara que el objeto verificable es documental, de gobierno, procedencia o frontera y que su evidencia debe integrarse en EVID-CLOSE-001. Si la ejecución futura revela comportamiento técnico autónomo, R6 deja de ser suficiente y la cobertura TREQ debe ser revisada mediante una tarea autorizada.
 
-## 9. Detección de huérfanos y condiciones de fallo
+#### 9. Detección de huérfanos y condiciones de fallo
 
 | Clase           | Condicion de huerfano                                          | Resultado                                              |
 | --------------- | -------------------------------------------------------------- | ------------------------------------------------------ |
@@ -11222,7 +11222,7 @@ R6 no declara que la brecha sea inexistente ni satisfecha. Declara que el objeto
 | TREQ 04A        | Una relacion interna del TREQ apunta a identidad no resoluble  | ERROR_04A                                              |
 | Evidencia       | Un criterio AC-023 no tiene evidencia reproducible aplicable   | PENDIENTE_DE_EVIDENCIA o BLOQUEADO; nunca PASS         |
 
-### 9.1 Resultado de la detección documental
+##### 9.1 Resultado de la detección documental
 
 - 207/207 paquetes presentes.
 - 820/820 brechas conservadas en una sola membresia de paquete.
@@ -11236,7 +11236,7 @@ R6 no declara que la brecha sea inexistente ni satisfecha. Declara que el objeto
 - 4.892 TREQ sin enlace fuerte de paquete permanecen sin asignacion artificial; la integridad del 04A sigue siendo independiente del grafo de paquetes.
 - 0 TREQ nuevos y 0 TREQ modificados por esta tarea.
 
-## 10. Integración con criterios de aceptación de DELIV-PKG-023
+#### 10. Integración con criterios de aceptación de DELIV-PKG-023
 
 La trazabilidad resuelta por 024 alimenta `AC-TREQ-001`, pero no satisface por sí sola el criterio. Para obtener PASS futuro se requiere la ejecución satisfactoria de los TREQ aplicables, evidencia reproducible y cumplimiento simultáneo de los demás criterios AC-NFR-001, AC-OBS-001, AC-PILOT-001, AC-ROLLBACK-001, AC-DOC-001, AC-DEFECT-001 y AC-MANIFEST-001.
 
@@ -11249,7 +11249,7 @@ Los estados iniciales de cierre definidos por DELIV-PKG-023 se preservan sin pro
 - 2 paquetes: FUERA_DE_LINEA_ACTUAL.
 - 0 paquetes reciben PASS por DELIV-PKG-024.
 
-## 11. Reglas de conservación para DELIV-PKG-025
+#### 11. Reglas de conservación para DELIV-PKG-025
 
 - 025 debe consumir la identidad de los 207 paquetes y la reconciliacion de 024 sin reabrir automaticamente la composicion de 002.
 - 025 debe mantener los bloqueos de 022/023 hasta que exista evidencia real que los levante por el mecanismo canonico correspondiente.
@@ -11257,7 +11257,7 @@ Los estados iniciales de cierre definidos por DELIV-PKG-023 se preservan sin pro
 - Los casos R6 deben mostrar evidencia del control en EVID-CLOSE-001; ausencia de evidencia produce PENDIENTE_DE_EVIDENCIA o BLOQUEADO.
 - Cualquier cambio material posterior de brecha, capacidad, proceso, tarea, TREQ, candidato, configuracion, autenticacion, esquema, datos, cohorte o dependencia invalida la parte afectada de la trazabilidad y exige reconciliacion.
 
-## 12. NO GENERA REQUISITOS DE PRUEBA
+#### 12. NO GENERA REQUISITOS DE PRUEBA
 
 **Requisitos TREQ-* creados:** 0
 **Requisitos TREQ-* modificados:** 0
@@ -11265,19 +11265,422 @@ Los estados iniciales de cierre definidos por DELIV-PKG-023 se preservan sin pro
 
 La tarea amplía la trazabilidad documental sobre requisitos ya existentes y sobre controles canónicos no ejecutables. No introduce comportamiento de runtime, permiso, transformación de datos, umbral NFR ni contrato técnico nuevo.
 
-## 13. Continuidad canónica
+#### 13. Continuidad canónica
 
-### ÚLTIMA TAREA APROBADA
+##### ÚLTIMA TAREA APROBADA
 DELIV-PKG-023 — Definir criterios de aceptación y evidencia de cierre
 
-### TAREA ACTUAL APROBADA
+##### TAREA ACTUAL APROBADA
 DELIV-PKG-024 — Vincular el paquete con el registro canónico de brechas
 
-### SIGUIENTE TAREA RESERVADA
+##### SIGUIENTE TAREA RESERVADA
 DELIV-PKG-025 — Aprobar el paquete antes de iniciar implementación física
 
 
-### [ ] DELIV-PKG-025 — Aprobar el paquete antes de iniciar implementación física
+### ✅ DELIV-PKG-025 — Aprobar el paquete antes de iniciar implementación física
+
+**Estado:** APROBADA
+**Tarea anterior:** DELIV-PKG-024 — Vincular el paquete con el registro canónico de brechas
+**Tarea siguiente:** READY-GATE-001 — Definir criterio y evidencia para confirmar código desplegado en el entorno objetivo
+**Tipo de tarea:** Documental de auditoría integral, decisión final por expediente y gate previo a implementación física
+
+#### 1. Propósito
+
+Cerrar `DELIV-PKG-025` mediante una revisión integral y reconciliada del dossier `DELIV-PKG-001..024`, emitir una decisión explícita para cada una de las 207 identidades `GAP-PKG-*` y determinar, sin inferencias de implementación, si cada expediente conserva una sola unidad, se divide, comparte unidad con linaje o permanece bloqueado antes de cualquier materialización física.
+
+La decisión estructural del expediente y la autorización de implementación son dimensiones independientes. `KEEP_AS_SINGLE_UNIT` ratifica la integridad del expediente lógico; no crea por sí sola un `implementation_unit_id`, no demuestra identidad física y no concede permiso de despliegue.
+
+#### 2. Alcance y reglas de cierre
+
+- Universo obligatorio: **207** expedientes `GAP-PKG-001..207` y **820** brechas canónicas.
+- Cada expediente recibe exactamente una disposición estructural de `DELIV-PKG-001`: `KEEP_AS_SINGLE_UNIT`, `SPLIT_INTO_IMPLEMENTATION_UNITS` o `SHARE_IMPLEMENTATION_UNIT_WITH_LINEAGE`.
+- Cada expediente recibe además una decisión final de gate 025. La ausencia de identidad física, evidencia, repositorio AURA, activación externa o línea funcional vigente impide aprobar implementación.
+- No se crea una unidad compartida por compartir repositorio, owner, contrato, capacidad, proceso o perfil de pruebas. Una unidad compartida exige identidad física y linaje explícitos.
+- No se divide un expediente sin fronteras físicas demostradas y asignación completa de sus brechas a unidades ejecutables.
+- No se transforma un estado documental `ESPECIFICADO`, un plan de pruebas, un rollout, un rollback, un piloto o una evidencia planificada en evidencia ejecutada.
+- Ninguna decisión de esta tarea ejecuta implementación, despliegue, migración, DDL, DML, backfill, piloto, cutover, rollback o cambio productivo.
+
+#### 3. Auditoría integral de `DELIV-PKG-001..024`
+
+| Tarea           | Objeto reconciliado                                       | Resultado de coherencia                                                                                                                                                                           | Efecto obligatorio en 025                                                                               |
+| --------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `DELIV-PKG-001` | Identidad estable y regla de ratificación/división/fusión | Coherente: 207 identidades estables; exige una disposición 025 por expediente                                                                                                                     | Materializar 207 decisiones estructurales sin renumerar ni inferir unidades                             |
+| `DELIV-PKG-002` | Membresía paquete-brecha, capacidades, procesos y tareas  | Coherente: 207 paquetes, 820 brechas, 0 brechas huérfanas y 0 membresías duplicadas                                                                                                               | Conservar membresía y linaje sin crear brechas ni procesos por inferencia                               |
+| `DELIV-PKG-003` | Repositorios y propiedad                                  | Coherente con diferimientos explícitos; AURA conserva repositorio no confirmado                                                                                                                   | No asignar repositorio AURA ni cambiar propiedad sin fuente                                             |
+| `DELIV-PKG-004` | Estado AS-IS / TO-BE                                      | Coherente con el alcance posterior                                                                                                                                                                | Conservar la diferencia entre estado actual y estado objetivo                                           |
+| `DELIV-PKG-005` | Inclusiones, exclusiones y fronteras                      | Coherente: ninguna de las 820 brechas miembro se excluye por conveniencia                                                                                                                         | No usar exclusiones para eludir seguridad, datos, operación o validación                                |
+| `DELIV-PKG-006` | Superficies UI                                            | Coherente con perfiles posteriores                                                                                                                                                                | No convertir superficie prevista en implementación existente                                            |
+| `DELIV-PKG-007` | Runtime, APIs, RPC y Edge Functions                       | Coherente con fronteras de runtime                                                                                                                                                                | No fabricar endpoint, RPC o función faltante                                                            |
+| `DELIV-PKG-008` | Datos, Storage, Realtime y superficies persistentes       | Coherente como inventario de planificación                                                                                                                                                        | Conservar autoridad de datos y tratamiento especial Storage/Realtime                                    |
+| `DELIV-PKG-009` | Transiciones, DDL/DML, backfill, compatibilidad y retiro  | Coherente tras la reconciliación física posterior de 014                                                                                                                                          | El drift histórico de baseline no se trata como contradicción abierta                                   |
+| `DELIV-PKG-010` | Eventos y efectos                                         | Coherente con runtime e integraciones                                                                                                                                                             | Mantener separados eventos empresariales, transporte y efectos externos                                 |
+| `DELIV-PKG-011` | Artefactos y evidencia                                    | Coherente como contrato de evidencia                                                                                                                                                              | Evidencia planeada no equivale a evidencia materializada                                                |
+| `DELIV-PKG-012` | Autorización y seguridad                                  | Coherente con perfiles AUTH e integraciones                                                                                                                                                       | Ningún flag, UI o rollout concede autoridad por sí mismo                                                |
+| `DELIV-PKG-013` | Requisitos no funcionales                                 | Coherente con pruebas y observabilidad posteriores                                                                                                                                                | Mantener NFR como obligaciones verificables, no como resultados ejecutados                              |
+| `DELIV-PKG-014` | Inventario físico exacto                                  | Coherente y determinante: 167 identidades físicas no confirmadas, 14 AURA, 2 EXT, 2 TALENTO y 22 sin cambio físico directo                                                                        | Mantener todos los gates físicos; 025 no puede inventar `implementation_unit_id`                        |
+| `DELIV-PKG-015` | Dependencias y orden                                      | Coherente; conserva los bloqueos de 014                                                                                                                                                           | No iniciar una unidad por orden teórico si su gate físico sigue abierto                                 |
+| `DELIV-PKG-016` | Pruebas y vínculos fuertes a `TREQ-*`                     | Coherente: 2.115 relaciones fuertes y 19 paquetes inicialmente sin vínculo fuerte                                                                                                                 | Consumir la reconciliación 024; no crear TREQ por conveniencia                                          |
+| `DELIV-PKG-017` | Observabilidad                                            | Coherente con perfiles y evidencia                                                                                                                                                                | Exigir señales observables donde apliquen antes de aceptar                                              |
+| `DELIV-PKG-018` | Flags, configuración y defaults seguros                   | Coherente; define activación pero no la ejecuta                                                                                                                                                   | Mantener defaults seguros y estados no activados                                                        |
+| `DELIV-PKG-019` | Rollout                                                   | Coherente; rollout especificado, bloqueado o no aplicable según perfil                                                                                                                            | No reinterpretar rollout planificado como despliegue realizado                                          |
+| `DELIV-PKG-020` | Rollback técnico, funcional y de datos                    | Coherente; procedimientos especificados sin ejecución ficticia                                                                                                                                    | No declarar rollback probado sin evidencia                                                              |
+| `DELIV-PKG-021` | Documentación, runbooks y capacitación                    | Coherente como preparación documental                                                                                                                                                             | Publicación/capacitación real sigue su evidencia correspondiente                                        |
+| `DELIV-PKG-022` | Piloto                                                    | Coherente: 160 directos, 3 shared, 26 control, 14 AURA, 2 EXT y 2 futuros                                                                                                                         | No ejecutar ni ampliar piloto; conservar salvaguardas y gates                                           |
+| `DELIV-PKG-023` | Aceptación y manifiesto de evidencia                      | Coherente y vinculante: 0 `PASS`                                                                                                                                                                  | Ningún expediente puede recibir autorización física en 025                                              |
+| `DELIV-PKG-024` | Trazabilidad, cobertura y huérfanos                       | Coherente: 19/19 paquetes y 68/68 brechas reconciliados; preserva 2.115 vínculos fuertes, 4.892 TREQ sin vínculo fuerte de paquete sin asignación artificial y 59 relaciones `VPROC-*` explícitas | Consumir la trazabilidad ampliada sin alterar las decisiones de aceptación ni el registro de 7.007 TREQ |
+
+##### 3.1. Reconciliaciones que no constituyen contradicción
+
+- La diferencia histórica de baseline observada en `DELIV-PKG-009` queda absorbida por la reconciliación física explícita de `DELIV-PKG-014`; no permanece como una segunda verdad competidora.
+- Los 19 `NINGUNO_VINCULADO` de `DELIV-PKG-016` describían ausencia de vínculo fuerte bajo ese algoritmo, no ausencia absoluta de cobertura. `DELIV-PKG-024` los reconcilia por brecha, tarea, rango o control canónico sin fabricar TREQ.
+- `TP-SHARED-001` en `GAP-PKG-033`, `GAP-PKG-034` y `GAP-PKG-045` describe un contrato runtime compartido; no demuestra que los tres expedientes deban compartir una misma unidad física de implementación.
+
+#### 4. Reconciliación cuantitativa del dossier
+
+| Control                                                                  | Resultado |
+| ------------------------------------------------------------------------ | --------: |
+| Expedientes `GAP-PKG-*` esperados                                        |   **207** |
+| Expedientes materializados en esta tarea                                 |   **207** |
+| Brechas canónicas conservadas                                            |   **820** |
+| TREQ vigentes en 04A                                                     | **7.007** |
+| Vínculos fuertes paquete→TREQ preservados por 024                        | **2.115** |
+| TREQ sin vínculo fuerte de paquete preservados sin asignación artificial | **4.892** |
+| Relaciones `VPROC-*` explícitas preservadas                              |    **59** |
+| Brechas huérfanas heredadas                                              |     **0** |
+| Membresías duplicadas heredadas                                          |     **0** |
+| Disposición `KEEP_AS_SINGLE_UNIT`                                        |   **207** |
+| Disposición `SPLIT_INTO_IMPLEMENTATION_UNITS`                            |     **0** |
+| Disposición `SHARE_IMPLEMENTATION_UNIT_WITH_LINEAGE`                     |     **0** |
+| Estado heredado `BLOQUEADO_014_Y_EVIDENCIA`                              |   **167** |
+| Estado heredado `PENDIENTE_DE_EVIDENCIA`                                 |    **22** |
+| Estado heredado `BLOQUEADO_AURA`                                         |    **14** |
+| Estado heredado `BLOQUEADO_EXT_GOV`                                      |     **2** |
+| Estado heredado `FUERA_DE_LINEA_ACTUAL`                                  |     **2** |
+| Decisiones finales 025 `BLOQUEADO`                                       |   **207** |
+| Decisiones finales 025 `APROBADO_PARA_IMPLEMENTACION_FISICA`             |     **0** |
+| `implementation_unit_id` inventados o inferidos                          |     **0** |
+
+La elección de `KEEP_AS_SINGLE_UNIT` para las 207 raíces es conservadora y estructural: no existe evidencia canónica suficiente para dividir una raíz ni para fusionar físicamente varias raíces. Donde `DELIV-PKG-014` mantiene identidad física pendiente, la unidad sigue sin materializar y el gate permanece bloqueado.
+
+#### 5. Contrato de decisión final 025
+
+##### 5.1. Identidad física no confirmada
+
+Para los **167** expedientes de esta clase:
+
+- disposición estructural: `KEEP_AS_SINGLE_UNIT`;
+- `implementation_unit_id`: no materializado;
+- estado heredado: `BLOQUEADO_014_Y_EVIDENCIA`;
+- decisión 025: `BLOQUEADO`;
+- propietario de salida: `DELIV-PKG-014`, mediante reapertura trazable;
+- condición de salida: demostrar identidad física exacta del paquete, repositorio, archivo/directorio y símbolo cuando aplique, operación física y contrato lógico; después materializar la evidencia exigida por 016/017/023 hasta obtener `PASS`.
+
+##### 5.2. AURA
+
+Para los **14** expedientes AURA:
+
+- disposición estructural: `KEEP_AS_SINGLE_UNIT`;
+- `implementation_unit_id`: no materializado;
+- estado heredado: `BLOQUEADO_AURA`;
+- decisión 025: `BLOQUEADO`;
+- propietarios de salida: `AURA-AUD-001`, `AURA-AUD-010` y `AURA-AUD-012`;
+- condición de salida: confirmar repositorio, runtime, datos y fronteras físicas AURA; luego materializar la evidencia 023 aplicable hasta `PASS`.
+
+##### 5.3. Dependencias externas
+
+Para `GAP-PKG-027` y `GAP-PKG-157`:
+
+- disposición estructural: `KEEP_AS_SINGLE_UNIT`;
+- `implementation_unit_id`: no materializado;
+- estado heredado: `BLOQUEADO_EXT_GOV`;
+- decisión 025: `BLOQUEADO`;
+- propietario de salida: `EXT-GOV-001`;
+- condición de salida: satisfacer la activación externa gobernada, confirmar el contrato físico exacto y completar la evidencia 023 hasta `PASS`.
+
+##### 5.4. TALENTO fuera de la línea actual
+
+Para `GAP-PKG-064` y `GAP-PKG-197`:
+
+- disposición estructural: `KEEP_AS_SINGLE_UNIT`;
+- `implementation_unit_id`: no materializado en la línea actual;
+- estado heredado: `FUERA_DE_LINEA_ACTUAL`;
+- estado físico 014: `ESPECIFICADO_NO_DESPLEGADO_TALENTO`;
+- decisión 025: `BLOQUEADO`;
+- propietario de salida: línea futura TALENTO asociada a `CAP-TAL-003`;
+- condición de salida: activación formal de la línea funcional TALENTO, materialización de la identidad aplicable y evidencia 023 hasta `PASS`.
+
+##### 5.5. Controles sin cambio físico directo
+
+Para los **22** expedientes con `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`:
+
+- disposición estructural: `KEEP_AS_SINGLE_UNIT`;
+- `implementation_unit_id`: `NO_APLICA` mientras el expediente permanezca sin operación física propia;
+- estado heredado: `PENDIENTE_DE_EVIDENCIA`;
+- decisión 025: `BLOQUEADO`;
+- propietario de salida: owner documental/técnico heredado por identidad de 016/019, materializado por fila en la matriz;
+- condición de salida: materializar la evidencia contractual, de regresión, observabilidad y aceptación exigida por 016/017/023 hasta `PASS`, sin inventar una operación física propia.
+
+#### 6. Matriz materializada de decisión por expediente
+
+| package_id    | Disposición 025       | Estado 023 heredado         | Estado físico heredado                     | `implementation_unit_id` | Decisión final 025 | Propietario de salida                        | Condición de salida                                                                                         |
+| ------------- | --------------------- | --------------------------- | ------------------------------------------ | ------------------------ | ------------------ | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `GAP-PKG-001` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-002` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-003` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-004` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-005` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-006` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_AURA`            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `AURA-AUD-001 + AURA-AUD-010 + AURA-AUD-012` | Confirmar repositorio/runtime/datos/frontera fisica AURA y completar evidencia 023 hasta PASS               |
+| `GAP-PKG-007` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-008` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_AURA`            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `AURA-AUD-001 + AURA-AUD-010 + AURA-AUD-012` | Confirmar repositorio/runtime/datos/frontera fisica AURA y completar evidencia 023 hasta PASS               |
+| `GAP-PKG-009` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-010` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-011` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-012` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-013` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-014` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-015` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-016` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-017` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-018` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-019` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-020` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-021` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-022` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-023` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-024` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-025` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-026` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-027` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_EXT_GOV`         | `BLOQUEADO_CONDICIONAL_EXT_GOV`            | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `EXT-GOV-001`                                | Activar condicion externa, confirmar contrato fisico exacto y completar evidencia 023 hasta PASS            |
+| `GAP-PKG-028` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-029` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-030` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-031` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-OPS`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-032` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-033` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-034` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-035` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-036` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-037` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-038` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-039` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-040` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-041` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-042` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-043` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-OPS`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-044` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-045` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-046` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-047` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-048` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-049` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-050` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-051` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-052` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-053` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-054` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-055` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-056` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-057` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-SEG`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-058` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-SEG`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-059` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_AURA`            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `AURA-AUD-001 + AURA-AUD-010 + AURA-AUD-012` | Confirmar repositorio/runtime/datos/frontera fisica AURA y completar evidencia 023 hasta PASS               |
+| `GAP-PKG-060` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-061` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-062` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-063` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-064` | `KEEP_AS_SINGLE_UNIT` | `FUERA_DE_LINEA_ACTUAL`     | `ESPECIFICADO_NO_DESPLEGADO_TALENTO`       | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `Linea futura TALENTO / CAP-TAL-003`         | Activar formalmente la linea TALENTO, materializar identidad aplicable y completar evidencia 023 hasta PASS |
+| `GAP-PKG-065` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-066` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-067` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-068` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-069` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-070` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-071` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-072` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-073` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-TEC`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-074` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-075` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-076` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-077` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-COM`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-078` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_AURA`            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `AURA-AUD-001 + AURA-AUD-010 + AURA-AUD-012` | Confirmar repositorio/runtime/datos/frontera fisica AURA y completar evidencia 023 hasta PASS               |
+| `GAP-PKG-079` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-080` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_AURA`            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `AURA-AUD-001 + AURA-AUD-010 + AURA-AUD-012` | Confirmar repositorio/runtime/datos/frontera fisica AURA y completar evidencia 023 hasta PASS               |
+| `GAP-PKG-081` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-082` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-083` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-084` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-085` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-086` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-087` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-088` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-089` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-090` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-091` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-092` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-093` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-094` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-OPS`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-095` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-OPS`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-096` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-097` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-OPS`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-098` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-099` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-100` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-101` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-102` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-103` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-104` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-105` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-106` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-107` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-108` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-109` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-110` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-111` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-112` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-113` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-114` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-115` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-116` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-117` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-118` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_AURA`            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `AURA-AUD-001 + AURA-AUD-010 + AURA-AUD-012` | Confirmar repositorio/runtime/datos/frontera fisica AURA y completar evidencia 023 hasta PASS               |
+| `GAP-PKG-119` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-OPS`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-120` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-121` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-122` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-123` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-124` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-125` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-126` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-127` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-128` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-129` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-130` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-131` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-132` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-133` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-134` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-135` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-136` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-137` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-138` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-139` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-140` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-141` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-142` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-143` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-144` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_AURA`            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `AURA-AUD-001 + AURA-AUD-010 + AURA-AUD-012` | Confirmar repositorio/runtime/datos/frontera fisica AURA y completar evidencia 023 hasta PASS               |
+| `GAP-PKG-145` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-146` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-147` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_AURA`            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `AURA-AUD-001 + AURA-AUD-010 + AURA-AUD-012` | Confirmar repositorio/runtime/datos/frontera fisica AURA y completar evidencia 023 hasta PASS               |
+| `GAP-PKG-148` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_AURA`            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `AURA-AUD-001 + AURA-AUD-010 + AURA-AUD-012` | Confirmar repositorio/runtime/datos/frontera fisica AURA y completar evidencia 023 hasta PASS               |
+| `GAP-PKG-149` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_AURA`            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `AURA-AUD-001 + AURA-AUD-010 + AURA-AUD-012` | Confirmar repositorio/runtime/datos/frontera fisica AURA y completar evidencia 023 hasta PASS               |
+| `GAP-PKG-150` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-151` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-152` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-153` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-154` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-155` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-156` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-157` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_EXT_GOV`         | `BLOQUEADO_CONDICIONAL_EXT_GOV`            | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `EXT-GOV-001`                                | Activar condicion externa, confirmar contrato fisico exacto y completar evidencia 023 hasta PASS            |
+| `GAP-PKG-158` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-159` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-160` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-161` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-162` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-163` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-164` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-OPS`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-165` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-166` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-167` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-OPS`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-168` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-OPS`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-169` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-170` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-171` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-SST`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-172` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-173` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-SST`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-174` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-175` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-176` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-177` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-178` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-179` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-180` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-181` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-182` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-183` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-184` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-185` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-TEC`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-186` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-TEC`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-187` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_AURA`            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `AURA-AUD-001 + AURA-AUD-010 + AURA-AUD-012` | Confirmar repositorio/runtime/datos/frontera fisica AURA y completar evidencia 023 hasta PASS               |
+| `GAP-PKG-188` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_AURA`            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `AURA-AUD-001 + AURA-AUD-010 + AURA-AUD-012` | Confirmar repositorio/runtime/datos/frontera fisica AURA y completar evidencia 023 hasta PASS               |
+| `GAP-PKG-189` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_AURA`            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `AURA-AUD-001 + AURA-AUD-010 + AURA-AUD-012` | Confirmar repositorio/runtime/datos/frontera fisica AURA y completar evidencia 023 hasta PASS               |
+| `GAP-PKG-190` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-191` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-OPS`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-192` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_AURA`            | `BLOQUEADO_AURA_SIN_REPOSITORIO`           | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `AURA-AUD-001 + AURA-AUD-010 + AURA-AUD-012` | Confirmar repositorio/runtime/datos/frontera fisica AURA y completar evidencia 023 hasta PASS               |
+| `GAP-PKG-193` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-194` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-195` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-SST`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-196` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-197` | `KEEP_AS_SINGLE_UNIT` | `FUERA_DE_LINEA_ACTUAL`     | `ESPECIFICADO_NO_DESPLEGADO_TALENTO`       | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `Linea futura TALENTO / CAP-TAL-003`         | Activar formalmente la linea TALENTO, materializar identidad aplicable y completar evidencia 023 hasta PASS |
+| `GAP-PKG-198` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-TEC`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-199` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-200` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-TEC`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+| `GAP-PKG-201` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-202` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-203` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-204` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-205` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-206` | `KEEP_AS_SINGLE_UNIT` | `BLOQUEADO_014_Y_EVIDENCIA` | `BLOQUEADO_IDENTIDAD_FISICA_NO_CONFIRMADA` | `NO_MATERIALIZADO`       | `BLOQUEADO`        | `DELIV-PKG-014 (reapertura trazable)`        | Confirmar identidad fisica exacta y completar evidencia 016/017/023 hasta PASS                              |
+| `GAP-PKG-207` | `KEEP_AS_SINGLE_UNIT` | `PENDIENTE_DE_EVIDENCIA`    | `SIN_CAMBIO_FISICO_DIRECTO_CONFIRMADO`     | `NO_APLICA`              | `BLOQUEADO`        | `OWN-TEC`                                    | Materializar evidencia 016/017/023 hasta PASS; no crear operacion fisica propia                             |
+
+#### 7. Decisión sobre unidades compartidas y divisiones
+
+- **0** expedientes reciben `SPLIT_INTO_IMPLEMENTATION_UNITS`: no existe una partición física completa y verificable que permita asignar cada brecha a una unidad ejecutable distinta.
+- **0** expedientes reciben `SHARE_IMPLEMENTATION_UNIT_WITH_LINEAGE`: no existe una identidad de unidad física compartida demostrada entre dos o más `package_id`.
+- `GAP-PKG-033`, `GAP-PKG-034` y `GAP-PKG-045` conservan `TP-SHARED-001`, pero ese perfil prueba un contrato runtime compartido, no una unidad física común. Permanecen como expedientes independientes con `KEEP_AS_SINGLE_UNIT` y gate 014 abierto.
+- Si evidencia posterior demuestra que una raíz debe dividirse o que varias raíces comparten una unidad real, la decisión deberá reabrirse con linaje explícito; 025 no anticipa esa evidencia.
+
+#### 8. Identidades relacionadas fuera del universo `GAP-PKG-*`
+
+##### 8.1. `VISO-SCHEDULE-MONTHLY-001`
+
+Permanece como paquete reservado separado del rango `GAP-PKG-001..207`, con `status = RESERVED_NOT_APPROVED`, `process = VPROC-0007` y repositorios `vento-viso` / `vento-shell`. No se cuenta como expediente 208, no se fusiona con una raíz por similitud y esta decisión global no aprueba su instancia especial. Su materialización continúa condicionada a `CODE-AUD-021`, `AUTH-UI-061`, `VISO-SCH-001..008` y al carril especial vigente.
+
+##### 8.2. `NEXO-REMISSIONS-001`
+
+Permanece como identidad histórica de carril. No se convierte en `package_id`, no consume una identidad del rango `001..207` y no recibe unidad de implementación por inferencia.
+
+#### 9. Resultado de cierre de `DELIV-PKG-025`
+
+1. El dossier documental `DELIV-PKG-001..024` queda reconciliado sin contradicción canónica bloqueante entre sus decisiones vigentes.
+2. El universo permanece en **207 paquetes / 820 brechas**, sin omisiones de identidad, sin brechas huérfanas y sin membresía duplicada.
+3. Los **207** expedientes reciben `KEEP_AS_SINGLE_UNIT` como disposición estructural conservadora; se emiten **0** divisiones y **0** unidades compartidas por falta de evidencia física que justifique esas transformaciones.
+4. Los **207** expedientes reciben decisión final `BLOQUEADO` para implementación física. El conteo de autorizaciones físicas es **0/207**.
+5. La distribución causal de los bloqueos conserva exactamente los estados heredados de 023: **167 + 22 + 14 + 2 + 2 = 207**.
+6. La ausencia de `PASS` no invalida el cierre documental de 025: la tarea exige emitir la decisión final por expediente y prohíbe avanzar cuando faltan decisiones o evidencia. El resultado correcto es conservar el catálogo con gates explícitos, no otorgar una aprobación global ficticia.
+7. `READY-GATE-*` podrá definir los gates finales de E5, pero esta tarea no ejecuta ni adelanta ninguna de esas tareas.
+
+#### 10. Condición para futura autorización física
+
+Un expediente solo podrá cambiar la decisión 025 de `BLOQUEADO` cuando su propietario de salida haya cerrado el bloqueo aplicable y el manifiesto de `DELIV-PKG-023` pueda demostrar `PASS` con evidencia verificable. La reapertura deberá conservar `package_id`, brechas, linaje, owner, dependencias, perfil de pruebas, rollout, rollback y trazabilidad TREQ.
+
+##### Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+- Requisitos `TREQ-*` creados: **0**.
+- Requisitos `TREQ-*` modificados: **0**.
+- Fragmentos del registro 04A afectados: **0**.
+- Justificación: 025 consume los requisitos, criterios, evidencias y relaciones ya definidos por 016, 023 y 024 para emitir un gate de decisión. No introduce comportamiento empresarial, permiso, contrato de datos, NFR, runtime, migración ni criterio de prueba nuevo.
+
+#### ÚLTIMA TAREA APROBADA
+DELIV-PKG-024 — Vincular el paquete con el registro canónico de brechas
+
+#### TAREA ACTUAL APROBADA
+DELIV-PKG-025 — Aprobar el paquete antes de iniciar implementación física
+
+#### SIGUIENTE TAREA RESERVADA
+READY-GATE-001 — Definir criterio y evidencia para confirmar código desplegado en el entorno objetivo
+
 
 ### Package reservado
 
