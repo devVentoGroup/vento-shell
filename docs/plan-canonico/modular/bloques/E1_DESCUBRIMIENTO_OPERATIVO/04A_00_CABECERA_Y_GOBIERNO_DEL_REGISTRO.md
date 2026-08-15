@@ -126,6 +126,7 @@ Distribución vigente:
 7. La entrega deberá incluir validación de identificadores únicos, dominio coherente, secuencia, catorce columnas, estados permitidos y relaciones resolubles.
 8. El documento de la tarea solo enumerará los identificadores creados o modificados y remitirá a este registro como única fuente de detalle.
 9. Quedan prohibidos los archivos paralelos `TREQ_NUEVOS_*` como mecanismo de actualización canónica.
-8. Las celdas `ID` y `Dominio` de cada fila deberán escribirse entre backticks. Los validadores deberán normalizar backticks opcionales antes de interpretar identificadores y nunca inferir pérdida histórica únicamente por diferencias de presentación Markdown.
+10. Las celdas `ID` y `Dominio` de cada fila deberán escribirse entre backticks. Los validadores deberán normalizar backticks opcionales antes de interpretar identificadores y nunca inferir pérdida histórica únicamente por diferencias de presentación Markdown.
+11. Cualquier generación o modificación que se haga al registro se hará en su debido fragmento y no sobre el 04A compilado
 
 ### Registro
