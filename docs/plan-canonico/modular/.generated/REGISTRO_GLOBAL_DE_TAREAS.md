@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **857** |
+| Aprobadas | **858** |
 | En propuesta | **0** |
-| No iniciadas | **737** |
+| No iniciadas | **736** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **53.76% (857/1594)** |
+| Porcentaje de completamiento | **53.83% (858/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CUTOVER-OPS-006` — Definir criterio de pausa, reversión o continuación | ✅ APROBADA |
-| Tarea actual | `CUTOVER-OPS-007` — Diseñar el registro de incidentes, decisiones y cambios de alcance | ⬜ NO INICIADA |
-| Siguiente reservada | `CUTOVER-OPS-008` — Definir métricas de tiempos, errores, adopción y resultado empresarial | ⬜ NO INICIADA |
+| Última aprobada | `CUTOVER-OPS-007` — Diseñar el registro de incidentes, decisiones y cambios de alcance | ✅ APROBADA |
+| Tarea actual | `CUTOVER-OPS-008` — Definir métricas de tiempos, errores, adopción y resultado empresarial | ⬜ NO INICIADA |
+| Siguiente reservada | `CUTOVER-OPS-009` — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -574,7 +574,7 @@
 | ✅ APROBADA | `CUTOVER-OPS-004` | Diseñar controles contra doble registro y doble efecto durante la transición | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ✅ APROBADA | `CUTOVER-OPS-005` | Definir conciliaciones durante el piloto | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ✅ APROBADA | `CUTOVER-OPS-006` | Definir criterio de pausa, reversión o continuación | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
-| ⬜ NO INICIADA | `CUTOVER-OPS-007` | Diseñar el registro de incidentes, decisiones y cambios de alcance | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
+| ✅ APROBADA | `CUTOVER-OPS-007` | Diseñar el registro de incidentes, decisiones y cambios de alcance | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ⬜ NO INICIADA | `CUTOVER-OPS-008` | Definir métricas de tiempos, errores, adopción y resultado empresarial | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ⬜ NO INICIADA | `CUTOVER-OPS-009` | Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ⬜ NO INICIADA | `CUTOVER-OPS-010` | Definir condiciones y evidencia para retirar el proceso anterior | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |

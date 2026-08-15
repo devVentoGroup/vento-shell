@@ -3905,7 +3905,938 @@ CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación
 CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de alcance
 
 
-### [ ] CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de alcance
+### ✅ CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de alcance
+
+**Estado:** APROBADA  
+**Tarea anterior:** `CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación`  
+**Tarea siguiente:** `CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial`  
+**Tipo de tarea:** documental — diseño normativo y materialización completa del registro trazable que la ejecución futura del cutover y piloto utilizará para conservar incidentes, decisiones de continuar/pausar/revertir y cambios de alcance por paquete, candidato, ambiente, unidad, ola y checkpoint, preservando autoridad, cronología, evidencia, causalidad e historial sin ejecutar acciones operativas ni redefinir métricas, criterios de salida, rollback o retiro legacy  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md`  
+**Ejecución posterior:** `SHELL-CI-022::<package_id>` después de `SHELL-CI-021::<package_id>` y de los contratos CUTOVER aplicables  
+**Cambios físicos autorizados:** ninguno  
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`CUTOVER-OPS-007` diseña el registro operativo que deberá conservar lo ocurrido y lo decidido durante la ejecución real del cutover y del piloto.
+
+El registro debe responder de forma reproducible:
+
+```text
+¿QUÉ OCURRIÓ?
++
+¿A QUÉ PAQUETE, CANDIDATO, AMBIENTE, ALCANCE, UNIDAD, OLA Y CHECKPOINT AFECTÓ?
++
+¿QUIÉN LO DETECTÓ, REGISTRÓ, DECIDIÓ O AUTORIZÓ?
++
+¿QUÉ EVIDENCIA EXISTE?
++
+¿QUÉ DECISIÓN SE TOMÓ?
++
+¿EL ALCANCE CAMBIÓ O PERMANECIÓ IGUAL?
++
+¿QUÉ ACCIÓN, CORRECCIÓN, RECOVERY O REEVALUACIÓN QUEDÓ VINCULADA?
+=
+HISTORIAL OPERATIVO TRAZABLE SIN REESCRIBIR EL PASADO
+```
+
+La tarea diseña y materializa el contrato documental del registro. No inventa incidentes, decisiones ejecutadas, cambios de alcance, defectos, timestamps, actores ni evidencia que todavía no existan.
+
+---
+
+#### 2. Resultado sustantivo
+
+El registro queda compuesto por una envolvente común y tres clases de entrada:
+
+1. **entrada de incidente** — conserva el hecho observado, su clasificación, impacto, responsables, escalamiento, contención, recuperación y relación con decisiones;
+2. **entrada de decisión** — conserva una decisión real `CONTINUAR`, `PAUSAR` o `REVERTIR` emitida bajo la semántica de `CUTOVER-OPS-006`;
+3. **entrada de cambio de alcance** — conserva una solicitud, decisión de autoridad y efecto real sobre el alcance sin convertir el registro en fuente de autorización.
+
+Todas las entradas pertenecen a una misma bitácora cronológica por `package_id` y mantienen referencias cruzadas cuando forman parte de la misma cadena causal.
+
+El registro no reemplaza las fuentes propietarias de incidentes, autorización, rollout, rollback, riesgos, pruebas, métricas o alcance. Su función es preservar la secuencia de hechos y decisiones de la ejecución del piloto.
+
+---
+
+#### 3. Entradas canónicas obligatorias
+
+007 consume sin redefinir:
+
+- `CUTOVER-OPS-001`: candidato, ambiente, alcance, ventana y responsables;
+- `CUTOVER-OPS-002`: unidades, olas, dependencias y checkpoints;
+- `CUTOVER-OPS-003`: convivencia y autoridad entre proceso anterior y objetivo;
+- `CUTOVER-OPS-004`: operaciones, efectos, controles anti-duplicidad y resultados inciertos;
+- `CUTOVER-OPS-005`: conciliaciones, diferencias, duplicidades y evidencia;
+- `CUTOVER-OPS-006`: estados de evaluación y decisiones `CONTINUAR`, `PAUSAR` y `REVERTIR`;
+- `READY-GATE-010`: soporte, responsables y escalamiento;
+- `READY-GATE-011`: observabilidad, señales, alertas y fuentes;
+- `READY-GATE-014`: riesgos aceptados y condiciones de suspensión;
+- `DELIV-PKG-017`: severidad, señales, auditoría, propietarios y evidencia;
+- `DELIV-PKG-018`: autoridad de activación, suspensión, desactivación y default seguro;
+- `DELIV-PKG-019`: rollout, cohortes, pausas, promoción y evidencia;
+- `DELIV-PKG-020`: disparadores, autoridad, objetivo y procedimiento de rollback/recovery;
+- `DELIV-PKG-022`: modalidad, cohorte, alcance, duración y salvaguardas del piloto;
+- `TREQ-CONT-002`: obligaciones vigentes de clasificación, responsables, decisiones, escalamiento, comunicaciones, contención, recuperación, autoridad y bitácora cronológica de incidentes.
+
+007 no reabre una decisión de esas fuentes para simplificar el registro.
+
+---
+
+#### 4. Fronteras obligatorias
+
+007 no define:
+
+- una severidad nueva;
+- un catálogo nuevo de incidentes;
+- un workflow empresarial nuevo para incidentes;
+- una autoridad nueva de suspensión, promoción o rollback;
+- un permiso nuevo para ampliar el piloto;
+- un umbral nuevo;
+- una métrica nueva;
+- un algoritmo de aceptación;
+- un procedimiento técnico de rollback;
+- una política nueva de retención;
+- una regla de compensación o conciliación;
+- una decisión de salida del piloto;
+- una decisión de retiro del proceso anterior.
+
+Cuando una fuente propietaria no resuelve una de esas materias, el registro conserva el bloqueo o la referencia pendiente; no crea una regla por inferencia.
+
+---
+
+#### 5. Envolvente común de toda entrada
+
+Toda entrada real del registro deberá conservar, cuando aplique:
+
+| Campo lógico            | Regla                                                                               |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| `record_id`             | identidad estable de la entrada; no se reutiliza para otro hecho o decisión         |
+| `record_type`           | distingue incidente, decisión o cambio de alcance                                   |
+| `package_id`            | raíz canónica exacta                                                                |
+| `candidate_ref`         | candidato o revisión realmente evaluados                                            |
+| `environment`           | ambiente efectivo                                                                   |
+| `authorized_scope_ref`  | alcance vigente al momento del hecho o decisión                                     |
+| `cutover_window_ref`    | ventana aplicable                                                                   |
+| `activation_unit_ref`   | unidad aplicable sin inventarla cuando la modalidad no la posee                     |
+| `wave_ref`              | ola aplicable sin crear una ola artificial                                          |
+| `checkpoint_ref`        | checkpoint de decisión o verificación cuando exista                                 |
+| `occurred_at`           | momento del hecho cuando pueda determinarse                                         |
+| `detected_at`           | momento de detección cuando corresponda                                             |
+| `recorded_at`           | momento en que la entrada fue registrada                                            |
+| `actor_ref`             | actor que observó o registró el hecho                                               |
+| `authority_ref`         | autoridad de la decisión cuando corresponda                                         |
+| `source_refs`           | fuentes operativas o canónicas que sustentan la entrada                             |
+| `evidence_refs`         | referencias reproducibles de evidencia sin copiar secretos por conveniencia         |
+| `caused_by_ref`         | entrada previa causal cuando exista                                                 |
+| `related_record_refs`   | otras entradas relacionadas sin fusionar semánticas                                 |
+| `supersedes_record_ref` | referencia a una entrada corregida o ampliada, sin borrar la original               |
+| `summary`               | descripción suficiente para entender el hecho o decisión sin sustituir la evidencia |
+
+Un campo no aplicable permanece no aplicable conforme a la modalidad heredada; no se rellena con un valor ficticio.
+
+---
+
+#### 6. Regla append-only e historial
+
+La bitácora es append-only en sentido documental:
+
+1. una entrada registrada no se reescribe para hacerla coincidir con información posterior;
+2. una corrección crea una nueva entrada o revisión vinculada a la anterior;
+3. el dato original permanece trazable;
+4. una decisión posterior no borra la decisión anterior;
+5. una reevaluación conserva el vínculo con la decisión que la precedió;
+6. un cambio de alcance conserva el alcance anterior y el nuevo alcance autorizado;
+7. una evidencia nueva complementa el historial sin convertir una observación pasada en otra distinta;
+8. el orden cronológico debe poder reconstruirse aun cuando `occurred_at`, `detected_at` y `recorded_at` no sean iguales.
+
+La bitácora no usa edición destructiva como mecanismo de corrección histórica.
+
+---
+
+#### 7. Separación entre hecho, riesgo, defecto, decisión y cambio de alcance
+
+El registro no colapsa objetos distintos:
+
+| Objeto                        | Tratamiento                                                                                                                           |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| riesgo aceptado               | antecedente gobernado por `READY-GATE-014`; no equivale a incidente                                                                   |
+| incidente                     | hecho observado durante ejecución que requiere trazabilidad y tratamiento conforme a su fuente                                        |
+| defecto                       | causa o falla de producto/proceso que puede originar corrección y regresión; no equivale por sí sola a toda la bitácora del incidente |
+| decisión                      | disposición `CONTINUAR`, `PAUSAR` o `REVERTIR` emitida bajo 006                                                                       |
+| cambio de alcance             | modificación solicitada o autorizada de la frontera del piloto; no equivale a una decisión de 006                                     |
+| acción de recovery/corrección | ejecución gobernada por su fuente técnica o funcional y vinculada al registro mediante evidencia                                      |
+
+Una misma situación puede tener entradas relacionadas de varios tipos, pero cada una conserva su semántica.
+
+---
+
+#### 8. Entrada de incidente
+
+Toda entrada de incidente real deberá conservar como mínimo:
+
+1. identidad común de la envolvente;
+2. naturaleza conforme a la clasificación propietaria;
+3. alcance afectado;
+4. impacto observado;
+5. urgencia cuando la fuente la exija;
+6. severidad conforme a la fuente vigente;
+7. momento y fuente de detección;
+8. declaración o activación cuando aplique;
+9. responsable y sustituto cuando la fuente lo exija;
+10. escalamiento realizado;
+11. comunicaciones operativas relevantes;
+12. contención aplicada o referencia a ella;
+13. estado operativo observado;
+14. decisiones relacionadas;
+15. recovery o recuperación relacionada;
+16. desactivación o cierre cuando ocurra;
+17. evidencia;
+18. relaciones con otros expedientes que no deban fusionarse.
+
+007 no redefine las categorías ni severidades de `TREQ-CONT-002`; las consume.
+
+---
+
+#### 9. Incidentes relacionados pero no intercambiables
+
+Cuando un hecho tenga dimensión laboral, tecnológica, de seguridad de información o de continuidad:
+
+- cada expediente propietario conserva su identidad;
+- 007 puede relacionarlos mediante referencias;
+- no se fusionan para ocultar responsabilidades distintas;
+- un cierre en un expediente no cierra automáticamente los demás;
+- la autoridad de activación o cierre se toma de la fuente propietaria;
+- la relación causal debe poder reconstruirse sin duplicar el hecho como si fueran eventos independientes cuando no lo son.
+
+---
+
+#### 10. Entrada de decisión
+
+Una entrada de decisión solo puede registrar una decisión emitida conforme a `CUTOVER-OPS-006`:
+
+```text
+CONTINUAR
+PAUSAR
+REVERTIR
+```
+
+Debe conservar:
+
+1. referencia a la evaluación 006 correspondiente;
+2. estado de evaluación que precedió la decisión;
+3. paquete, candidato, ambiente, alcance, unidad, ola y checkpoint;
+4. decisión emitida;
+5. autoridad o autoridades requeridas;
+6. motivo sustentado en reglas vigentes;
+7. señales, riesgos, incidentes, conciliaciones o bloqueos relevantes;
+8. evidencia utilizada;
+9. momento efectivo;
+10. alcance exacto al que aplica;
+11. acción posterior o handoff cuando exista;
+12. decisión anterior relacionada cuando la nueva decisión la supersede operativamente.
+
+El registro no transforma silencio, tiempo transcurrido ni ausencia aparente de incidentes en `CONTINUAR`.
+
+---
+
+#### 11. Decisiones y acciones permanecen separadas
+
+Registrar una decisión no demuestra que la acción correspondiente se ejecutó.
+
+Por tanto:
+
+- `PAUSAR` no demuestra que un flag, routing o cohorte haya cambiado;
+- `REVERTIR` no demuestra que rollback, restore, recovery o compensation hayan terminado;
+- `CONTINUAR` no demuestra que una siguiente ola haya comenzado;
+- una acción física deberá conservar su propia evidencia y referencia a la decisión que la autorizó;
+- el registro puede enlazar decisión y ejecución, pero no convertir una en evidencia de la otra.
+
+---
+
+#### 12. Entrada de cambio de alcance
+
+Toda entrada de cambio de alcance deberá conservar:
+
+1. alcance vigente antes del cambio;
+2. dimensión o dimensiones cuya modificación se solicita;
+3. razón de la solicitud;
+4. solicitante;
+5. momento de solicitud;
+6. fuente o requisito que obliga o permite evaluar el cambio;
+7. autoridad propietaria que debe resolverlo;
+8. referencia a la decisión de autorización;
+9. alcance autorizado resultante, únicamente cuando exista decisión válida;
+10. momento efectivo, únicamente cuando el cambio haya entrado realmente en vigor;
+11. unidades, olas, cohortes, actores, sedes, dispositivos, datos o superficies afectadas;
+12. evaluaciones o artefactos que quedan invalidados;
+13. nueva ventana o reevaluación requerida por las fuentes vigentes;
+14. evidencia.
+
+La solicitud de cambio no modifica por sí sola `authorized_scope_ref`.
+
+---
+
+#### 13. Cambio de alcance no autorizado
+
+Si una solicitud no cuenta con autorización válida:
+
+- el alcance efectivo permanece sin cambios;
+- la solicitud queda registrada como hecho de gobierno, no como alcance nuevo;
+- ninguna unidad, actor, sede, dispositivo, dato, superficie o tráfico se agrega por inferencia;
+- si existió un intento de operar fuera del alcance, ese hecho se vincula al incidente o control propietario que corresponda;
+- la ausencia de autoridad bloquea cualquier efecto del cambio.
+
+007 no crea una excepción de autorización.
+
+---
+
+#### 14. Cambio material y reevaluación
+
+Cuando una fuente vigente determine que el cambio es material:
+
+1. la evaluación 006 previa para el alcance afectado deja de ser reutilizable como autorización de continuidad;
+2. se registran las referencias de invalidación;
+3. se ejecuta nuevamente el gate o evaluación que la fuente propietaria exija;
+4. cuando `DELIV-PKG-022` lo ordene por cambio material de candidato, contrato, datos, autorización o cohorte, se inicia una nueva ventana para el alcance cambiado;
+5. el historial anterior permanece válido como evidencia de lo que ocurrió bajo la revisión previa.
+
+No se altera retroactivamente una decisión antigua para hacerla corresponder al nuevo alcance.
+
+---
+
+#### 15. Correlación causal mínima
+
+El registro deberá poder representar cadenas como:
+
+```text
+INCIDENTE
+→ DECISIÓN PAUSAR
+→ CONTENCIÓN / DIAGNÓSTICO
+→ CORRECCIÓN O RECOVERY
+→ EVIDENCIA
+→ REEVALUACIÓN 006
+→ DECISIÓN CONTINUAR
+```
+
+o:
+
+```text
+INCIDENTE
+→ DECISIÓN REVERTIR
+→ ROLLBACK / RECOVERY 020
+→ CONCILIACIÓN 005
+→ EVIDENCIA
+→ REEVALUACIÓN
+```
+
+o:
+
+```text
+SOLICITUD DE CAMBIO DE ALCANCE
+→ DECISIÓN DE AUTORIDAD
+→ INVALIDACIÓN DE EVALUACIÓN PREVIA
+→ NUEVA VENTANA / REEVALUACIÓN CUANDO APLIQUE
+→ DECISIÓN 006
+```
+
+Las flechas expresan correlación documental; no ejecutan acciones.
+
+---
+
+#### 16. Orden temporal
+
+El registro distingue:
+
+- momento del hecho;
+- momento de detección;
+- momento de registro;
+- momento de decisión;
+- momento efectivo de una acción o cambio cuando exista.
+
+Reglas:
+
+1. los timestamps reales no se fabrican cuando la fuente no los proporciona;
+2. un registro tardío conserva el momento real conocido del hecho y el momento de registro;
+3. eventos con igual timestamp deben seguir siendo distinguibles por su identidad y correlación;
+4. la cronología no sustituye causalidad;
+5. la causalidad no se presume únicamente por proximidad temporal;
+6. correcciones de timestamp se documentan sin borrar el valor histórico.
+
+---
+
+#### 17. Autoridad y actor
+
+El registro distingue:
+
+- quien detecta;
+- quien registra;
+- quien ejecuta;
+- quien decide;
+- quien autoriza;
+- quien escala;
+- quien comunica;
+- quien cierra cuando exista esa autoridad.
+
+Una persona disponible no adquiere autoridad por aparecer en la bitácora.
+
+Las autoridades se heredan de las fuentes vigentes: 017 para señales/routing, 018 para activación o suspensión, 019 para promoción, 020 para rollback/recovery, readiness para riesgos/soporte y 006 para la semántica de decisión.
+
+---
+
+#### 18. Evidencia y datos sensibles
+
+Cada entrada deberá referenciar evidencia suficiente para que otra persona autorizada pueda reconstruir el hecho o decisión.
+
+El registro:
+
+- conserva referencias a logs, métricas, trazas, auditoría, tickets, manifiestos, resultados de prueba o evidencia operativa cuando sean aplicables;
+- no copia secretos, tokens, credenciales o payloads sensibles completos por conveniencia;
+- no usa datos personales como dimensión ordinaria cuando basta una referencia autorizada;
+- conserva procedencia, versión y contexto de la evidencia;
+- distingue evidencia observada de interpretación;
+- no presenta una captura aislada como prueba suficiente cuando la fuente exige evidencia reproducible.
+
+---
+
+#### 19. Relación con controles anti-duplicidad y conciliación
+
+007 consume resultados de 004 y 005 sin reinterpretarlos.
+
+Cuando un incidente o decisión esté relacionado con:
+
+- doble registro;
+- doble efecto;
+- resultado incierto;
+- diferencia no resuelta;
+- duplicidad confirmada;
+- conciliación fallida;
+- efecto externo desconocido;
+
+el registro conserva la referencia exacta al control o conciliación que produjo la evidencia y a la decisión 006 resultante.
+
+007 no corrige ni concilia datos.
+
+---
+
+#### 20. Defectos, corrección y regresión
+
+Cuando durante la ejecución real se confirme un defecto:
+
+1. el incidente conserva la observación y evidencia;
+2. la decisión 006 conserva el tratamiento operativo;
+3. la corrección se asigna a una tarea exacta mediante el flujo canónico correspondiente;
+4. cuando el defecto exija protección de regresión, se materializa el requisito `TREQ-*` correspondiente en ese flujo;
+5. el registro 007 conserva `correction_task_ref` y `regression_requirement_ref` una vez existan;
+6. no se inventan anticipadamente esos identificadores;
+7. no se continúa ni se cierra cuando la fuente propietaria exige corrección y regresión previas.
+
+007 no crea requisitos de regresión para defectos hipotéticos.
+
+---
+
+#### 21. Cierre y reapertura de entradas
+
+Cerrar un incidente o completar una decisión registrada no autoriza borrar el historial.
+
+Cuando una fuente permita cierre o desactivación:
+
+- se conserva autoridad;
+- se conserva evidencia de recuperación;
+- se conservan acciones pendientes;
+- se conservan relaciones con conciliación y recovery;
+- un pendiente obligatorio sin propietario impide presentar el expediente como resuelto;
+- nueva evidencia material puede originar una nueva entrada relacionada sin reescribir la anterior.
+
+La semántica exacta de estados de incidente pertenece a la fuente propietaria; 007 no crea un enum paralelo.
+
+---
+
+#### 22. Bloqueos documentales
+
+Una entrada o relación queda documentalmente bloqueada cuando:
+
+1. no puede resolverse `package_id`;
+2. candidato o ambiente no pueden demostrarse;
+3. falta la referencia de alcance necesaria;
+4. una decisión carece de autoridad demostrable;
+5. un cambio de alcance pretende ser efectivo sin autorización;
+6. un incidente exige clasificación propietaria y esta no puede resolverse;
+7. falta evidencia obligatoria;
+8. dos fuentes vigentes se contradicen sobre la misma decisión o autoridad;
+9. una relación causal se intenta afirmar sin evidencia;
+10. se pretende cerrar un expediente con acciones obligatorias pendientes sin propietario.
+
+Todo bloqueo conserva la fuente responsable y la condición verificable que permitirá resolverlo.
+
+---
+
+#### 23. Invalidación
+
+Una entrada histórica no se invalida por haber ocurrido bajo una revisión anterior; permanece como evidencia histórica.
+
+Lo que puede quedar invalidado para uso futuro es una evaluación, decisión reutilizable, alcance o referencia cuando cambie materialmente:
+
+- candidato;
+- ambiente;
+- alcance;
+- cohorte;
+- autorización;
+- contrato;
+- datos;
+- configuración;
+- unidad u ola;
+- estrategia de rollout;
+- recovery/rollback;
+- observabilidad;
+- regla de conciliación;
+- requisito aplicable.
+
+La nueva entrada referencia el cambio y no modifica el pasado.
+
+---
+
+#### 24. Cobertura de las 207 raíces
+
+El registro conserva el universo completo de `GAP-PKG-001..207` definido por `DELIV-PKG-022`.
+
+La cobertura documental de 007 no significa que las 207 raíces tengan incidentes o decisiones ejecutadas. Significa que cada identidad tiene una decisión explícita de tratamiento para el registro:
+
+- si existe un hecho real aplicable, se registra bajo su identidad exacta;
+- si no existe hecho real, no se fabrica una fila operativa de incidente, decisión o cambio;
+- modalidad, estado, alcance y gate se heredan de `DELIV-PKG-022`;
+- 007 no crea un segundo inventario de modalidades.
+
+| `package_id`  | Fuente de modalidad/alcance      | Tratamiento 007                                                                      | Estado documental 007 | Bloqueo/condición                                                                                       |
+| ------------- | -------------------------------- | ------------------------------------------------------------------------------------ | --------------------- | ------------------------------------------------------------------------------------------------------- |
+| `GAP-PKG-001` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-002` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-003` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-004` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-005` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-006` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-007` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-008` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-009` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-010` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-011` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-012` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-013` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-014` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-015` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-016` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-017` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-018` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-019` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-020` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-021` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-022` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-023` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-024` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-025` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-026` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-027` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-028` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-029` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-030` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-031` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-032` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-033` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-034` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-035` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-036` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-037` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-038` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-039` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-040` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-041` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-042` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-043` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-044` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-045` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-046` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-047` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-048` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-049` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-050` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-051` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-052` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-053` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-054` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-055` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-056` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-057` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-058` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-059` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-060` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-061` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-062` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-063` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-064` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-065` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-066` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-067` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-068` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-069` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-070` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-071` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-072` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-073` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-074` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-075` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-076` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-077` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-078` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-079` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-080` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-081` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-082` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-083` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-084` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-085` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-086` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-087` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-088` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-089` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-090` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-091` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-092` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-093` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-094` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-095` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-096` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-097` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-098` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-099` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-100` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-101` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-102` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-103` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-104` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-105` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-106` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-107` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-108` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-109` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-110` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-111` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-112` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-113` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-114` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-115` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-116` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-117` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-118` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-119` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-120` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-121` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-122` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-123` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-124` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-125` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-126` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-127` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-128` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-129` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-130` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-131` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-132` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-133` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-134` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-135` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-136` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-137` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-138` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-139` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-140` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-141` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-142` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-143` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-144` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-145` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-146` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-147` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-148` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-149` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-150` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-151` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-152` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-153` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-154` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-155` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-156` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-157` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-158` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-159` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-160` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-161` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-162` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-163` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-164` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-165` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-166` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-167` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-168` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-169` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-170` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-171` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-172` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-173` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-174` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-175` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-176` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-177` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-178` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-179` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-180` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-181` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-182` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-183` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-184` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-185` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-186` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-187` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-188` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-189` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-190` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-191` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-192` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-193` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-194` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-195` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-196` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-197` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-198` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-199` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-200` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-201` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-202` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-203` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-204` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-205` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-206` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+| `GAP-PKG-207` | fila homónima de `DELIV-PKG-022` | incidente real, decisión de `CUTOVER-OPS-006` o cambio de alcance real cuando exista | `ESPECIFICADO`        | conservar modalidad, alcance, estado y gate heredados; 007 no los reclasifica ni crea eventos ficticios |
+
+---
+
+#### 25. Reconciliación cuantitativa
+
+La materialización documental demuestra:
+
+```text
+PAQUETES ESPERADOS = 207
+PAQUETES MATERIALIZADOS EN LA MATRIZ 007 = 207
+IDENTIFICADORES ÚNICOS = 207
+FALTANTES = 0
+DUPLICADOS = 0
+```
+
+La distribución operativa heredada permanece:
+
+```text
+160 PILOT-DIRECT-001
++ 3 PILOT-SHARED-001
++ 26 PILOT-CONTROL-001
++ 14 AURA bloqueadas
++ 2 EXT bloqueadas
++ 2 TALENTO fuera de línea
+= 207
+```
+
+Las tres raíces `PILOT-SHARED-001` permanecen `GAP-PKG-033`, `GAP-PKG-034` y `GAP-PKG-045`.
+
+007 no reasigna ninguna raíz entre modalidades.
+
+---
+
+#### 26. Tratamiento por modalidad
+
+##### 26.1. `PILOT-DIRECT-001`
+
+Las 160 raíces directas registran hechos y decisiones bajo sus unidades, olas y checkpoints reales cuando lleguen válidamente a ejecución.
+
+##### 26.2. `PILOT-SHARED-001`
+
+Las 3 raíces compartidas:
+
+- no reciben una cohorte humana propia;
+- no reciben una ola artificial;
+- relacionan hechos del contrato compartido con los consumidores directos afectados;
+- conservan identidad propia de paquete;
+- no duplican un incidente del consumidor como si hubiera ocurrido dos veces.
+
+##### 26.3. `PILOT-CONTROL-001`
+
+Las 26 raíces de control:
+
+- pueden aportar señales, gates o hechos de control;
+- no reciben una mutación empresarial ficticia;
+- no reciben rollback de deploy ficticio cuando no existe cambio físico propio;
+- conservan relación con las raíces gobernadas sin absorber su identidad.
+
+##### 26.4. AURA, EXT y TALENTO
+
+Las 14 AURA, 2 EXT y 2 TALENTO conservan sus gates. Mientras no exista exposición autorizada no se inventan incidentes de piloto, decisiones de ejecución ni cambios de alcance efectivos.
+
+---
+
+#### 27. Relación con duración y pausa
+
+007 registra los hechos temporales necesarios para reconstruir una pausa, pero no calcula métricas nuevas.
+
+Cuando exista una pausa de seguridad:
+
+- se registra inicio y fin reales cuando estén disponibles;
+- se referencia la decisión `PAUSAR`;
+- se conserva la evidencia de reanudación;
+- `DELIV-PKG-022` mantiene la regla de que ese día no cuenta como día activo del piloto;
+- un cambio material que obligue a nueva ventana se registra con su referencia de alcance y reevaluación.
+
+007 no decide por sí sola si la duración total ya satisface un criterio de salida.
+
+---
+
+#### 28. Handoff a `CUTOVER-OPS-008`
+
+007 entrega a 008 hechos crudos y trazables, no KPIs calculados:
+
+```text
+PAQUETE / CANDIDATO / AMBIENTE / ALCANCE
++
+TIMESTAMPS REALES DISPONIBLES
++
+INCIDENTES Y CLASIFICACIÓN HEREDADA
++
+DECISIONES 006
++
+PAUSAS / REANUDACIONES / REVERSIÓN
++
+CAMBIOS DE ALCANCE
++
+EVIDENCIA Y CORRELACIÓN
+=
+FUENTE TRAZABLE PARA DEFINIR MÉTRICAS EN 008
+```
+
+008 podrá definir tiempos, errores, adopción y resultado empresarial sobre estas fuentes sin que 007 anticipe fórmulas, denominadores, umbrales o objetivos.
+
+---
+
+#### 29. Frontera con `CUTOVER-OPS-008..010`
+
+007 no anticipa:
+
+- `CUTOVER-OPS-008`: métricas de tiempos, errores, adopción y resultado empresarial;
+- `CUTOVER-OPS-009`: autoridad y criterio para aprobar salida del piloto o exigir correcciones;
+- `CUTOVER-OPS-010`: condiciones y evidencia para retirar el proceso anterior.
+
+Registrar una decisión `CONTINUAR` dentro del piloto no equivale a aprobar salida.
+
+Registrar una reversión no decide el retiro definitivo de ningún proceso.
+
+---
+
+#### 30. Separación entre planificación y ejecución
+
+007 es exclusivamente documental.
+
+No ejecuta:
+
+- creación de incidentes reales;
+- decisiones operativas;
+- cambios de alcance;
+- activación o suspensión;
+- promociones;
+- kill switch;
+- rollback;
+- restore;
+- recovery;
+- compensation;
+- conciliación;
+- correcciones;
+- despliegues;
+- migraciones;
+- DDL/DML;
+- backfills;
+- cambios de RLS/grants;
+- configuración remota;
+- operaciones sobre Supabase.
+
+La ejecución real y captura de evidencia corresponden a `SHELL-CI-022::<package_id>` y a los sistemas o procedimientos propietarios que esa ejecución consuma.
+
+---
+
+#### 31. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0  
+**Requisitos modificados:** 0  
+**Fragmentos 04A afectados:** 0
+
+**Justificación:** `CUTOVER-OPS-007` no introduce un comportamiento empresarial nuevo, una severidad, una transición operativa nueva, una autoridad, una regla de autorización, un umbral, una métrica ni un mecanismo de rollback. La clasificación, autoridad, cronología, decisiones, escalamiento, comunicaciones, contención y recuperación de incidentes ya están protegidas por `TREQ-CONT-002`; las decisiones `CONTINUAR`, `PAUSAR` y `REVERTIR` ya fueron materializadas por `CUTOVER-OPS-006`; rollout y rollback permanecen gobernados por `DELIV-PKG-019/020`. 007 diseña el registro correlacionado y append-only que conserva esos hechos. Un defecto real futuro que exija una protección de regresión deberá crear o modificar su requisito en el flujo de corrección concreto, no de forma hipotética en esta tarea.
+
+---
+
+#### 32. Criterios de aceptación documental
+
+`CUTOVER-OPS-007` queda documentalmente completo cuando:
+
+1. conserva `CUTOVER-OPS-006 → CUTOVER-OPS-007 → CUTOVER-OPS-008`;
+2. materializa una envolvente común para todas las entradas;
+3. separa incidente, decisión y cambio de alcance;
+4. cada entrada conserva identidad estable;
+5. cada entrada se vincula al `package_id` exacto;
+6. candidato, ambiente y alcance se conservan cuando aplican;
+7. unidad, ola y checkpoint no se inventan para modalidades que no los poseen;
+8. hecho, detección, registro, decisión y efecto pueden conservar timestamps distintos;
+9. actor y autoridad permanecen separados;
+10. la bitácora es append-only y las correcciones no borran historia;
+11. los incidentes consumen la clasificación propietaria y no crean una severidad paralela;
+12. expedientes laborales, tecnológicos, de seguridad y continuidad pueden relacionarse sin fusionarse;
+13. decisiones operativas se limitan a las tres semánticas ya aprobadas por 006;
+14. registrar una decisión no demuestra su ejecución física;
+15. una solicitud de alcance no cambia el alcance efectivo;
+16. un cambio solo queda efectivo con autoridad válida;
+17. un cambio material invalida las evaluaciones que la fuente propietaria determine;
+18. cuando 022 lo exige, el cambio material inicia una nueva ventana para el alcance cambiado;
+19. la causalidad se expresa mediante referencias y no se presume por proximidad temporal;
+20. evidencia observada se distingue de interpretación;
+21. secretos, credenciales y payloads sensibles no se copian por conveniencia;
+22. resultados de 004 y 005 se vinculan sin reinterpretarlos;
+23. un defecto real conserva relación con corrección y requisito de regresión una vez materializados;
+24. no se inventan identificadores de corrección ni TREQ para defectos hipotéticos;
+25. el cierre de una entrada no borra decisiones, acciones ni evidencia previas;
+26. todo bloqueo conserva fuente responsable y condición de salida;
+27. las 207 raíces están materializadas exactamente una vez en la matriz de cobertura;
+28. existen 207 identificadores únicos, 0 faltantes y 0 duplicados;
+29. la distribución heredada `160 + 3 + 26 + 14 + 2 + 2 = 207` permanece intacta;
+30. las raíces shared continúan siendo `GAP-PKG-033`, `GAP-PKG-034` y `GAP-PKG-045`;
+31. AURA, EXT y TALENTO conservan sus gates;
+32. 007 registra timestamps/fuentes para 008 sin definir métricas;
+33. 008 conserva propiedad exclusiva de las métricas;
+34. 009 conserva propiedad de la salida del piloto;
+35. 010 conserva propiedad del retiro del proceso anterior;
+36. la ejecución real permanece en `SHELL-CI-022::<package_id>`;
+37. no se ejecutan código, despliegues, cambios de configuración, rollback, restore, conciliación, migraciones, DDL/DML, backfills, cambios de datos ni operaciones sobre Supabase;
+38. se crean cero requisitos de prueba, se modifican cero requisitos de prueba y se afectan cero fragmentos 04A.
+
+---
+
+#### 33. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación
+
+##### TAREA ACTUAL APROBADA
+CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de alcance
+
+##### SIGUIENTE TAREA RESERVADA
+CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial
+
+
 ### [ ] CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial
 ### [ ] CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones
 ### [ ] CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior
