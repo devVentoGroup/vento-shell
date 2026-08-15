@@ -510,7 +510,401 @@ READY-GATE-002 — Definir criterio y evidencia para confirmar migraciones aplic
 READY-GATE-003 — Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados
 
 
-### [ ] READY-GATE-003 — Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados
+### ✅ READY-GATE-003 — Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados
+
+**Estado:** APROBADA
+**Tarea anterior:** READY-GATE-002 — Definir criterio y evidencia para confirmar migraciones aplicadas y datos validados
+**Tarea siguiente:** READY-GATE-004 — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos
+**Tipo de tarea:** Documental — definición normativa del criterio de readiness y del expediente mínimo de evidencia para confirmar que permisos, matrices de autorización y configuración de dispositivos aplicables a un paquete quedaron materializados conforme a sus contratos canónicos; sin conceder permisos, asignar actores, configurar equipos, ejecutar migraciones, DDL/DML, RLS, RPC ni cambios remotos
+
+#### 1. Propósito
+
+Definir el criterio verificable y el formato mínimo de evidencia que `SHELL-CI-021::<package_id>` deberá ejecutar para confirmar, después de `SHELL-CI-020::<package_id>` y de las tareas de implementación aplicables, que el entorno objetivo conserva exactamente la configuración de autorización y de dispositivos requerida por el paquete, sin ampliaciones silenciosas, valores implícitos ni fuentes paralelas de autoridad.
+
+`READY-GATE-003` responde a esta pregunta:
+
+> ¿Los permisos, las matrices y los límites configurados de los dispositivos que el paquete necesita pueden reconstruirse desde fuentes canónicas versionadas, compararse con el estado observado del entorno y demostrar que restringen —sin conceder por sí solos— exactamente lo aprobado?
+
+Esta tarea diseña el gate. No crea ni concede permisos, no asigna usuarios o roles, no modifica matrices, no enrola ni configura físicamente dispositivos, no cambia RLS o RPC, no ejecuta migraciones y no produce evidencia operacional posterior al despliegue.
+
+#### 2. Alcance y frontera del gate
+
+La evaluación se realiza por `package_id` y separa tres planos que deben permanecer independientes:
+
+1. **catálogo y configuración de permisos:** identidad exacta, versión, vigencia, modalidad, alcance, contexto y contrato de recurso aplicables;
+2. **matrices y datasets de autorización:** carril base, carril operativo, componentes, overrides o denegaciones aplicables y sus invariantes de segregación;
+3. **configuración de dispositivo compartido:** identidad registral cuando exista, versión de plantilla, sede y área como límites del dispositivo, aplicaciones efectivas y techo máximo de permisos.
+
+Un `PASS` en un plano nunca compensa un `FAIL` o `BLOQUEADO` en otro.
+
+Este gate no sustituye ni anticipa:
+
+- `READY-GATE-001`: correlación del código realmente desplegado;
+- `READY-GATE-002`: migraciones aplicadas, drift y validación de datos;
+- `READY-GATE-004`: existencia y preparación de usuarios, roles, sedes, áreas y turnos requeridos;
+- `READY-GATE-005`: catálogos y datos maestros mínimos;
+- `READY-GATE-006`: integraciones y credenciales del ambiente;
+- `READY-GATE-007`: hardware, red, escáneres e impresoras;
+- `READY-GATE-008` a `READY-GATE-015`: procedimientos, capacitación, soporte, observabilidad, rollback, baseline, riesgos y autorización final de piloto.
+
+`READY-GATE-003` puede comprobar que una política de dispositivo referencia una sede o un área canónicas y que su configuración es restrictiva; no certifica que el actor, el turno, el check-in o la dotación física requeridos existan. Esa preparación permanece en sus gates propietarios.
+
+#### 3. Fuentes vinculantes para determinar el estado esperado
+
+La ejecución futura deberá derivar el estado esperado exclusivamente de artefactos aprobados y del expediente del paquete. Cuando apliquen, deberá reconciliar:
+
+- el catálogo canónico de permisos y sus decisiones de vigencia;
+- las matrices base, operativas, componentes y overrides aprobados;
+- los contratos de dispositivo compartido `AUTH-DEV-001` a `AUTH-DEV-006`;
+- la identidad, sede, área, aplicaciones y techo de permisos que el paquete haya incluido para cada dispositivo o plantilla afectada;
+- `DELIV-PKG-012` para permiso, modalidad, alcance, contexto y recurso;
+- `DELIV-PKG-014` y `DELIV-PKG-015` para artefactos físicos, dependencias y orden;
+- `DELIV-PKG-016` para requisitos de prueba, fixtures, comandos y resultados esperados;
+- `DELIV-PKG-018` cuando la configuración utilice flags o parámetros controlados;
+- `DELIV-PKG-023` para criterios de aceptación y evidencia;
+- `DELIV-PKG-025` para la decisión final del expediente;
+- las tareas de implementación realmente incluidas en el mismo `package_id`.
+
+Una configuración observada no se vuelve canónica por existir en el entorno. Si no puede trazarse hasta un contrato aprobado y una versión identificable, el resultado será `FAIL` o `BLOQUEADO` según exista evidencia suficiente para demostrar la divergencia.
+
+#### 4. Baseline contractual vigente que este gate debe preservar
+
+El baseline vigente al definir `READY-GATE-003` conserva las siguientes invariantes documentales. Una versión posterior solo podrá reemplazarlas cuando exista una decisión canónica aprobada, identificable y trazada por el paquete; el gate no las modifica por inferencia.
+
+##### 4.1. Catálogo y matrices de autorización
+
+| Artefacto        | Versión vigente de referencia                       | Invariantes documentales                                                                    |
+| ---------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Catálogo         | `vento.authorization@1.0.0`                         | claves exactas; sin permisos inferidos por rol, prefijo, ruta o dispositivo                 |
+| Matriz base      | `vento.authorization.base-role-grants@1.0.0`        | 499 concesiones lógicas; 7 roles base; 463 concesiones directas y 36 componentes            |
+| Matriz operativa | `vento.authorization.operational-role-grants@1.0.0` | 240 concesiones lógicas; 12 roles operativos; 218 concesiones directas y 22 componentes     |
+| Overrides        | `vento.authorization.individual-overrides@1.0.0`    | seed vigente con 0 registros; una futura excepción no puede aparecer sin decisión explícita |
+
+Digests contractuales vigentes:
+
+- catálogo: `sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe`;
+- matriz base: `sha256:bcea5460dfea42ecd2491a550bfe511478faa5403d766166c9e731cb499214e1`;
+- matriz operativa: `sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f`;
+- overrides: `sha256:ea72b513c482f9a6018ff6e7deb11c20ef986faf15f47cd78f71ddb1230aaf10`.
+
+El baseline contractual ya prohíbe wildcards, `null` con semántica global, dispositivos como sujetos de concesión, claves legacy o retiradas dentro de la matriz operativa y la combinación de componentes de actores distintos.
+
+##### 4.2. Contrato vigente de dispositivos compartidos
+
+El baseline documental de dispositivo conserva:
+
+| Invariante                                              | Valor vigente |
+| ------------------------------------------------------- | ------------: |
+| Claves del inventario                                   |            19 |
+| Instancias configuradas auditadas                       |             2 |
+| Observaciones físicas sin vínculo inequívoco            |             2 |
+| Plantillas objetivo                                     |            14 |
+| Plantillas legacy retiradas                             |             1 |
+| Códigos canónicos de aplicación usados por plantillas   |             7 |
+| Asociaciones máximas plantilla–aplicación               |            43 |
+| Paquetes exactos versionados de permisos de dispositivo |             9 |
+| Membresías internas de esos paquetes                    |           177 |
+| Claves únicas presentes en al menos un paquete          |            83 |
+| Asociaciones máximas plantilla–permiso                  |           266 |
+| Asociaciones `STANDARD`                                 |           229 |
+| Asociaciones `STRONG`                                   |            37 |
+| Claves `NOT_ALLOWED` admitidas por una plantilla        |             0 |
+| Permisos concedidos por el dispositivo                  |             0 |
+| Wildcards de dispositivo permitidos                     |             0 |
+
+Las dos instancias registrales conocidas —`CAJA_VENTO_CAFE_01` y `KIOSCO_BODEGA_CP`— permanecen como configuración candidata no equivalente por sí sola a verificación física u operacional. Las observaciones físicas sin enrolamiento no pueden tratarse como dispositivos configurados.
+
+#### 5. Clasificación de aplicabilidad por paquete
+
+Cada paquete deberá clasificar cada plano mediante una decisión explícita:
+
+| Plano        | `APLICA`                                                                                                                                      | `NO_APLICA`                                                                                                               |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Permisos     | El paquete consume, crea, reemplaza, retira o depende de claves de permiso o de su contrato de modalidad, alcance, contexto o recurso.        | El expediente demuestra que el resultado del paquete no depende de autorización empresarial ni modifica su configuración. |
+| Matrices     | El paquete depende de decisiones de rol, carril base u operativo, componentes, overrides o denegaciones materializadas.                       | El expediente demuestra que ninguna decisión matricial participa en su comportamiento.                                    |
+| Dispositivos | El paquete se ejecuta o puede ejecutarse desde dispositivo compartido, modifica su configuración o depende de límites de plantilla/instancia. | El expediente demuestra que no existe dependencia de dispositivo compartido para el alcance evaluado.                     |
+
+El silencio, un campo ausente o la falta de una instancia física no equivalen a `NO_APLICA`.
+
+Un paquete puede requerir verificar una configuración aunque no la haya modificado. Si una capacidad depende del catálogo, de una matriz o de una política de dispositivo ya existente, el gate deberá comprobar que la versión necesaria continúa vigente en el entorno objetivo.
+
+#### 6. Contrato de evidencia del plano de permisos
+
+Para cada permiso o conjunto contractual requerido por el paquete, la ejecución futura deberá conservar:
+
+| Campo                        | Regla                                                                                        |
+| ---------------------------- | -------------------------------------------------------------------------------------------- |
+| `package_id`                 | Paquete exacto evaluado.                                                                     |
+| `permission_key`             | Clave canónica exacta; no se aceptan prefijos ni patrones.                                   |
+| `expected_catalog_id`        | Identidad del catálogo aprobado.                                                             |
+| `expected_catalog_version`   | Versión que el paquete declara como compatible.                                              |
+| `expected_catalog_digest`    | Digest contractual o del artefacto materializado que corresponde a la versión esperada.      |
+| `expected_permission_state`  | Estado esperado de la clave: activa, retirada, reemplazada o condición equivalente aprobada. |
+| `expected_modality`          | Modalidad aprobada cuando sea relevante.                                                     |
+| `expected_scope_contract`    | Alcance o perfil de alcance exigido por el paquete.                                          |
+| `expected_context_contract`  | Dimensiones contextuales obligatorias.                                                       |
+| `expected_resource_contract` | Contrato de recurso que delimita la acción.                                                  |
+| `observed_configuration_ref` | Fuente autoritativa read-only del estado observado.                                          |
+| `observed_catalog_version`   | Versión efectiva observada.                                                                  |
+| `observed_catalog_digest`    | Digest reproducible del estado observado cuando aplique.                                     |
+| `result`                     | `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA`.                                                   |
+| `blocking_reason`            | Motivo concreto cuando no exista `PASS`.                                                     |
+| `evidence_refs`              | Referencias durables sin secretos.                                                           |
+
+Reglas obligatorias:
+
+1. una clave inexistente o distinta de la esperada produce `FAIL` cuando el estado observado es verificable;
+2. una clave retirada no puede reaparecer mediante alias, prefijo o equivalencia amplia;
+3. `<app>.access` no implica acceso a capacidades internas;
+4. una clave no obtiene alcance global por `null`, omisión o error de resolución;
+5. modalidad, alcance, contexto y recurso no pueden sustituirse por nombre de rol;
+6. una versión nueva del catálogo no se adopta automáticamente: debe existir compatibilidad y trazabilidad aprobadas para el paquete.
+
+#### 7. Contrato de evidencia del plano de matrices
+
+Para cada dataset o matriz aplicable deberá registrarse como mínimo:
+
+| Campo                       | Regla                                                                                         |
+| --------------------------- | --------------------------------------------------------------------------------------------- |
+| `matrix_id`                 | Identidad canónica del dataset o matriz.                                                      |
+| `matrix_version`            | Versión esperada por el paquete.                                                              |
+| `expected_digest`           | Digest contractual o del artefacto materializado.                                             |
+| `observed_digest`           | Digest reproducible del estado observado.                                                     |
+| `lane`                      | `BASE`, `OPERATIONAL`, `OVERRIDE` o categoría canónica equivalente.                           |
+| `expected_rows`             | Cantidad esperada para la versión evaluada.                                                   |
+| `observed_rows`             | Cantidad observada.                                                                           |
+| `unique_identity_result`    | Resultado de unicidad de la clave lógica de cada fila.                                        |
+| `catalog_resolution_result` | Toda clave de permiso resuelve contra el catálogo esperado.                                   |
+| `role_resolution_result`    | Todo rol o identidad de matriz resuelve contra su catálogo propietario.                       |
+| `scope_result`              | No existen wildcards ni globalidad implícita.                                                 |
+| `component_result`          | Los componentes múltiples conservan mismo actor, permiso, recurso y solicitud cuando aplique. |
+| `segregation_result`        | No existe ampliación incompatible con las decisiones de segregación vigentes.                 |
+| `override_result`           | Toda excepción o denegación observada tiene identidad, vigencia y fundamento aprobado.        |
+| `result`                    | `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA`.                                                    |
+| `evidence_refs`             | Referencias durables a manifiestos, consultas read-only o reportes reproducibles.             |
+
+##### 7.1. Invariantes obligatorias de matriz
+
+El gate deberá fallar cuando el estado observado muestre cualquiera de estas condiciones sin una decisión canónica posterior que la reemplace:
+
+- wildcard de rol, permiso, recurso, sede o área;
+- `null` interpretado como acceso global;
+- clave de permiso fuera del catálogo activo o versión esperada;
+- clave legacy o retirada incorporada como concesión vigente;
+- dispositivo o principal técnico usado como beneficiario de una concesión empresarial;
+- rol operativo tratado como autoridad global;
+- matriz base consumida como matriz operativa por coincidencia nominal;
+- `<app>.access` convertido en todas las capacidades de la aplicación;
+- componentes `BASE_AND_OPERATIONAL` combinados desde actores o recursos diferentes;
+- override activo sin identidad, vigencia, alcance, propietario y fundamento trazables;
+- diferencia no explicada de conteo o digest respecto de la versión esperada.
+
+#### 8. Contrato de evidencia del plano de dispositivos
+
+La comprobación de dispositivo se realiza sobre la configuración lógica y registral requerida por el paquete. No convierte por sí misma esa evidencia en certificación de hardware, red, periféricos o presencia física.
+
+Para cada instancia o plantilla aplicable se registrará:
+
+| Campo                              | Regla                                                                                            |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `inventory_key`                    | Clave canónica del inventario cuando la identidad provenga del baseline de dispositivo.          |
+| `device_id`                        | Identidad empresarial de instancia cuando exista; no se inventa para observaciones o plantillas. |
+| `device_code`                      | Código estable cuando exista.                                                                    |
+| `identity_assurance_state`         | Estado de aseguramiento observado; una fila registral no se promueve por inferencia.             |
+| `template_code`                    | Plantilla exacta aplicable.                                                                      |
+| `template_version`                 | Versión exacta que fija los límites de configuración.                                            |
+| `site_binding_ref`                 | Vínculo de sede del dispositivo cuando la instancia lo requiera.                                 |
+| `area_policy_ref`                  | Política de área subordinada a la sede cuando aplique.                                           |
+| `effective_app_set_ref`            | Conjunto efectivo de aplicaciones o digest equivalente.                                          |
+| `default_app_result`               | Coherencia de la aplicación predeterminada con el conjunto efectivo.                             |
+| `permission_package_refs`          | Paquetes de techo máximo fijados a la versión de plantilla.                                      |
+| `instance_reduction_ref`           | Reducción explícita de una instancia, si existe.                                                 |
+| `effective_permission_ceiling_ref` | Resultado o digest del techo efectivo de claves.                                                 |
+| `configuration_version`            | Identidad versionada de la configuración observada.                                              |
+| `observed_configuration_ref`       | Fuente autoritativa read-only utilizada para verificarla.                                        |
+| `result`                           | `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA`.                                                       |
+| `blocking_reason`                  | Motivo concreto cuando no exista `PASS`.                                                         |
+| `evidence_refs`                    | Referencias durables sin credenciales ni datos sensibles completos.                              |
+
+##### 8.1. Fórmulas restrictivas obligatorias
+
+Aplicaciones efectivas:
+
+```text
+APPS EFECTIVAS DEL DISPOSITIVO
+=
+APPS MÁXIMAS DE LA VERSIÓN DE PLANTILLA
+∩
+APPS HABILITADAS EXPLÍCITAMENTE EN LA INSTANCIA
+∩
+APPS CANÓNICAS ACTIVAS
+∩
+APPS DESPLEGADAS Y COMPATIBLES
+```
+
+Techo efectivo del dispositivo:
+
+```text
+TECHO EFECTIVO DEL DISPOSITIVO
+=
+CLAVES EXACTAS DE LOS PAQUETES DE LA VERSIÓN DE PLANTILLA
+∩
+CLAVES NO RETIRADAS POR LA REDUCCIÓN VIGENTE DE LA INSTANCIA
+∩
+CLAVES DE APLICACIONES EFECTIVAS
+∩
+CLAVES CANÓNICAS ACTIVAS Y COMPATIBLES CON DISPOSITIVO COMPARTIDO
+```
+
+Una acción empresarial permanece fuera del alcance de esta sola configuración. El dispositivo únicamente restringe; nunca crea un `ALLOW`.
+
+##### 8.2. Condiciones de fallo de dispositivo
+
+Produce `FAIL` cuando la evidencia suficiente demuestra, entre otros casos:
+
+- una instancia amplía su plantilla;
+- una aplicación o clave aparece por wildcard, prefijo, ruta, valor `null` o lista del cliente;
+- una clave `NOT_ALLOWED` aparece en el techo;
+- la sede o área del dispositivo se interpreta como autoridad del actor;
+- una aplicación instalada se trata como aplicación permitida sin vínculo canónico;
+- una aplicación permitida se trata como permiso interno;
+- la app predeterminada está fuera del conjunto efectivo o existen múltiples defaults;
+- el dispositivo o principal técnico actúa como trabajador;
+- una observación física recibe `device_id`, aplicaciones o paquetes por inferencia;
+- una plantilla retirada admite asociaciones nuevas;
+- una modificación de plantilla, apps o paquetes carece de versión e historial atribuibles.
+
+#### 9. Reglas de decisión por plano
+
+| Resultado   | Condición                                                                                                                                                                    |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PASS`      | El estado esperado es inequívoco, la fuente observada es autoritativa y reproducible, la identidad y versión coinciden y todas las invariantes aplicables pasan.             |
+| `FAIL`      | Existe evidencia suficiente de configuración distinta, expansión de autoridad, identidad/versionado divergente o invariante incumplida.                                      |
+| `BLOQUEADO` | Falta una fuente autoritativa, no puede resolverse la versión esperada u observada, la configuración está incompleta o el acceso autorizado no permite determinar el estado. |
+| `NO_APLICA` | El expediente aprobado demuestra explícitamente que el plano no participa en la capacidad evaluada.                                                                          |
+
+`NO_APLICA` nunca corrige un `FAIL` ni reemplaza una configuración requerida pero ausente.
+
+#### 10. Resultado agregado por paquete
+
+El resultado de `READY-GATE-003::<package_id>` se calcula de forma estricta:
+
+1. los tres planos se clasifican explícitamente;
+2. cada artefacto obligatorio de permiso, matriz y dispositivo aparece exactamente una vez en su evaluación;
+3. si cualquier plano obtiene `FAIL`, el paquete obtiene `FAIL`;
+4. si no existe `FAIL` pero algún plano obtiene `BLOQUEADO`, el paquete obtiene `BLOQUEADO`;
+5. el paquete obtiene `PASS` únicamente cuando todos los planos aplicables obtienen `PASS` y cada `NO_APLICA` está sustentado por el expediente;
+6. el paquete obtiene `NO_APLICA` únicamente cuando los tres planos están justificadamente fuera de alcance;
+7. no existe `PASS` parcial por coincidir solo el catálogo, solo la matriz o solo la configuración registral del dispositivo.
+
+#### 11. Evidencia aceptable
+
+La ejecución futura podrá usar, según el plano y sin exponer secretos:
+
+- manifiestos versionados con identidad, versión y digest;
+- consultas read-only versionadas que reconstruyan configuración efectiva;
+- exportes deterministas del catálogo y matrices con orden estable;
+- reportes de unicidad, resolución de claves, conteos, segregación y ausencia de wildcards;
+- snapshots de configuración de dispositivo que identifiquen plantilla, sede, área, apps y techo de permisos;
+- evidencia emitida por CI o por la plataforma de configuración que vincule `package_id`, candidato y entorno;
+- pruebas negativas y contractuales ya vinculadas al paquete;
+- referencias a eventos o historial de configuración que demuestren versión, vigencia, actor administrativo y motivo.
+
+Toda evidencia deberá indicar ambiente, candidato, fecha u origen verificable cuando corresponda, método de obtención, resultado y referencias durables.
+
+#### 12. Evidencia insuficiente por sí sola
+
+No constituye prueba suficiente de configuración correcta:
+
+- que el permiso exista en un archivo o en una interfaz;
+- que un rol tenga un nombre esperado;
+- que una matriz documental haya sido aprobada sin demostrar su estado materializado;
+- que una tabla o fila exista sin versión o correlación con el paquete;
+- que una aplicación aparezca en el launcher;
+- que una aplicación esté instalada;
+- que una ruta responda;
+- que una fila de dispositivo esté activa;
+- que `navigation_role` tenga un valor esperado;
+- una captura de pantalla sin fuente reproducible;
+- una exportación sin versión, digest o ambiente;
+- un `PASS` de migraciones en `READY-GATE-002` sin comprobar la semántica de la configuración resultante;
+- que un usuario real pueda ejecutar una acción; la preparación de actores y su contexto pertenece a `READY-GATE-004`.
+
+#### 13. Casos especiales y tratamiento obligatorio
+
+##### 13.1. Baseline contractual sin cambios en el paquete
+
+Si el paquete depende del baseline vigente pero no lo modifica, el gate deberá verificar que el entorno objetivo conserva la versión y digest esperados. La ausencia de cambio no elimina la necesidad de comprobar una dependencia crítica de readiness.
+
+##### 13.2. Versión canónica posterior
+
+Si una tarea aprobada posterior modifica catálogo, matrices o contratos de dispositivo, el paquete deberá identificar la nueva versión, digest y decisión propietaria. `READY-GATE-003` comparará contra esa versión y no contra una copia histórica. Un cambio observado sin esa trazabilidad produce `FAIL` o `BLOQUEADO`.
+
+##### 13.3. Instancias registrales no verificadas
+
+`CAJA_VENTO_CAFE_01` y `KIOSCO_BODEGA_CP` no pueden declararse físicamente u operacionalmente verificadas por la sola existencia de su fila. Este gate puede comprobar que su configuración registral coincide con el contrato del paquete, pero esa comprobación no sustituye la evidencia física, de sesión o de hardware asignada a las tareas y gates propietarios.
+
+##### 13.4. Observaciones físicas sin enrolamiento
+
+Una observación física sin identidad administrada no se promueve a dispositivo configurado. Si el paquete requiere una instancia que aún no existe o no puede correlacionarse, el plano de dispositivo queda `BLOQUEADO` hasta que la tarea propietaria materialice la identidad correspondiente.
+
+##### 13.5. Configuración almacenada en Supabase
+
+Cuando catálogo, matrices o políticas de dispositivo se materialicen en Supabase, toda modificación perteneciente a VENTO deberá provenir de artefactos versionados en `vento-shell`. `READY-GATE-002` confirma que la migración o cambio de datos fue aplicado y reconciliado; `READY-GATE-003` confirma que la semántica final observada coincide con el contrato de autorización y dispositivo.
+
+#### 14. Cobertura de prueba heredada
+
+Este gate consume y operacionaliza requisitos existentes sin crear una conducta empresarial nueva. La cobertura heredada relevante incluye:
+
+- `TREQ-AUTH-001`, `TREQ-AUTH-002`, `TREQ-AUTH-008`, `TREQ-AUTH-010` y `TREQ-AUTH-011` para autorización canónica, matrices, segregación y dispositivo como límite restrictivo;
+- `TREQ-AUTH-019` a `TREQ-AUTH-068` para identidad y configuración de dispositivo, sede, área, aplicaciones y techo máximo de permisos;
+- los `TREQ-*` adicionales ya vinculados por `DELIV-PKG-016` al `package_id` concreto que se esté evaluando.
+
+La ejecución futura deberá usar el estado vigente del Registro Canónico de Requisitos de Prueba y no inferir que un requisito está `VERIFICADO` por existir este gate documental.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `READY-GATE-003` define el criterio documental de evidencia para obligaciones de autorización, matrices y dispositivos que ya cuentan con requisitos de prueba identificados y vinculables por paquete. No crea un permiso, regla de negocio, transición de estado, restricción de integridad, contrato de integración ni comportamiento ejecutable nuevo; únicamente establece cómo `SHELL-CI-021::<package_id>` deberá demostrar posteriormente que la configuración materializada satisface los contratos existentes.
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+#### 15. Criterios de aceptación documental
+
+`READY-GATE-003` queda documentalmente completo cuando:
+
+1. separa permisos, matrices y dispositivos en tres planos independientes;
+2. define cómo resolver el estado esperado desde versiones canónicas y el expediente del paquete;
+3. conserva el baseline vigente de catálogo, matrices y dispositivos sin reinterpretarlo;
+4. exige claves exactas, versiones y digests reproducibles para permisos y matrices;
+5. impide wildcards, `null` global, claves legacy o retiradas y dispositivos como fuentes de concesión;
+6. conserva la segregación entre carriles base y operativo y entre componentes de autorización;
+7. exige que la configuración de dispositivo respete identidad, plantilla, sede, área, apps y techo de permisos sin ampliar autoridad;
+8. preserva las 19 claves de inventario, 14 plantillas, 43 asociaciones máximas de aplicaciones, 9 paquetes de permisos y 266 asociaciones plantilla–permiso como baseline vigente mientras no exista una versión canónica posterior;
+9. diferencia configuración registral de verificación física u operacional;
+10. define `PASS`, `FAIL`, `BLOQUEADO` y `NO_APLICA` sin resultados parciales implícitos;
+11. diferencia evidencia reproducible de señales insuficientes como una fila existente, una app visible o un screenshot;
+12. separa la migración aplicada de `READY-GATE-002` de la semántica configurada que evalúa este gate;
+13. mantiene usuarios, roles asignados, sedes/áreas operativas del actor y turnos en `READY-GATE-004`;
+14. mantiene la ejecución y captura de evidencia real en `SHELL-CI-021::<package_id>`;
+15. no crea ni modifica requisitos `TREQ-*` ni el Registro Canónico de Requisitos de Prueba;
+16. no concede permisos, no configura equipos, no ejecuta migraciones, DDL/DML, RLS, RPC ni modificaciones remotas;
+17. `READY-GATE-004` permanece reservada y no se desarrolla ni modifica.
+
+#### 16. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+READY-GATE-002 — Definir criterio y evidencia para confirmar migraciones aplicadas y datos validados
+
+##### TAREA ACTUAL APROBADA
+READY-GATE-003 — Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados
+
+##### SIGUIENTE TAREA RESERVADA
+READY-GATE-004 — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos
+
+
 ### [ ] READY-GATE-004 — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos
 ### [ ] READY-GATE-005 — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos
 ### [ ] READY-GATE-006 — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente

@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **838** |
+| Tareas aprobadas | **839** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **756** |
+| Tareas no iniciadas | **755** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **52.57% (838/1594)** |
+| Porcentaje de completamiento | **52.63% (839/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **READY-GATE-002 — Definir criterio y evidencia para confirmar migraciones aplicadas y datos validados** |
-| Tarea actual | **READY-GATE-003 — Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados** |
+| Última tarea aprobada | **READY-GATE-003 — Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados** |
+| Tarea actual | **READY-GATE-004 — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **READY-GATE-004 — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos** |
+| Siguiente tarea | **READY-GATE-005 — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 27 de 68 aprobadas; READY-GATE-003 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 28 de 68 aprobadas; READY-GATE-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `READY-GATE-002` — Definir criterio y evidencia para confirmar migraciones aplicadas y datos validados |
-| Tarea actual | `READY-GATE-003` — Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados — **NO INICIADA** |
-| Siguiente tarea | `READY-GATE-004` — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos |
+| Última aprobada | `READY-GATE-003` — Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados |
+| Tarea actual | `READY-GATE-004` — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos — **NO INICIADA** |
+| Siguiente tarea | `READY-GATE-005` — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 27 DE 68 APROBADAS — ACTUAL READY-GATE-003** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 28 DE 68 APROBADAS — ACTUAL READY-GATE-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-READY-GATE-002 — Definir criterio y evidencia para confirmar migraciones aplicadas y datos validados
-        ↓
-TAREA ACTUAL
 READY-GATE-003 — Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 READY-GATE-004 — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos
         ↓
+SIGUIENTE TAREA RESERVADA
+READY-GATE-005 — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 27 de 68 tareas aprobadas
+BLOQUE E5 — 28 de 68 tareas aprobadas
 ```
