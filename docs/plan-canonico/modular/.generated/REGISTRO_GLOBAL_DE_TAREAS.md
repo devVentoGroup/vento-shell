@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **854** |
+| Aprobadas | **855** |
 | En propuesta | **0** |
-| No iniciadas | **740** |
+| No iniciadas | **739** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **53.58% (854/1594)** |
+| Porcentaje de completamiento | **53.64% (855/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CUTOVER-OPS-003` — Definir convivencia temporal con el proceso anterior | ✅ APROBADA |
-| Tarea actual | `CUTOVER-OPS-004` — Diseñar controles contra doble registro y doble efecto durante la transición | ⬜ NO INICIADA |
-| Siguiente reservada | `CUTOVER-OPS-005` — Definir conciliaciones durante el piloto | ⬜ NO INICIADA |
+| Última aprobada | `CUTOVER-OPS-004` — Diseñar controles contra doble registro y doble efecto durante la transición | ✅ APROBADA |
+| Tarea actual | `CUTOVER-OPS-005` — Definir conciliaciones durante el piloto | ⬜ NO INICIADA |
+| Siguiente reservada | `CUTOVER-OPS-006` — Definir criterio de pausa, reversión o continuación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -571,7 +571,7 @@
 | ✅ APROBADA | `CUTOVER-OPS-001` | Definir criterio para seleccionar fecha, ventana y responsables del cutover | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ✅ APROBADA | `CUTOVER-OPS-002` | Definir secuencia de activación por sede, área, rol o proceso | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ✅ APROBADA | `CUTOVER-OPS-003` | Definir convivencia temporal con el proceso anterior | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
-| ⬜ NO INICIADA | `CUTOVER-OPS-004` | Diseñar controles contra doble registro y doble efecto durante la transición | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
+| ✅ APROBADA | `CUTOVER-OPS-004` | Diseñar controles contra doble registro y doble efecto durante la transición | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ⬜ NO INICIADA | `CUTOVER-OPS-005` | Definir conciliaciones durante el piloto | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ⬜ NO INICIADA | `CUTOVER-OPS-006` | Definir criterio de pausa, reversión o continuación | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ⬜ NO INICIADA | `CUTOVER-OPS-007` | Diseñar el registro de incidentes, decisiones y cambios de alcance | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |

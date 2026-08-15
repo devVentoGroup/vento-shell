@@ -1716,7 +1716,669 @@ CUTOVER-OPS-003 — Definir convivencia temporal con el proceso anterior
 CUTOVER-OPS-004 — Diseñar controles contra doble registro y doble efecto durante la transición
 
 
-### [ ] CUTOVER-OPS-004 — Diseñar controles contra doble registro y doble efecto durante la transición
+### ✅ CUTOVER-OPS-004 — Diseñar controles contra doble registro y doble efecto durante la transición
+
+**Estado:** APROBADA  
+**Tarea anterior:** `CUTOVER-OPS-003 — Definir convivencia temporal con el proceso anterior`  
+**Tarea siguiente:** `CUTOVER-OPS-005 — Definir conciliaciones durante el piloto`  
+**Tipo de tarea:** documental — definición normativa y materialización de los controles contra doble registro y doble efecto sobre las unidades, olas y fronteras de autoridad ya definidas para el cutover, vinculando mecanismos canónicos existentes de identidad de operación, idempotencia, atomicidad, deduplicación, fencing, autorización, retry, trabajo diferido y efectos externos; sin implementar controles físicos, ejecutar activaciones, modificar routing, crear colas, cambiar feature flags, conciliar resultados, decidir pausa/reversión/continuación, retirar legacy, desplegar código, ejecutar migraciones, DDL/DML, backfills, modificar datos ni operar Supabase  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md`  
+**Ejecución posterior:** `SHELL-CI-022::<package_id>` después de `SHELL-CI-021::<package_id>` y de completar los contratos CUTOVER aplicables  
+**Cambios físicos autorizados:** ninguno  
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`CUTOVER-OPS-004` define dónde y cómo deberán aplicarse durante la transición los controles canónicos ya existentes que impiden que una misma operación lógica sea registrada más de una vez o produzca más de un efecto empresarial por coexistencia entre la ruta anterior y la ruta objetivo.
+
+La tarea parte de la frontera resuelta por `CUTOVER-OPS-003` y responde exclusivamente a estas preguntas:
+
+```text
+¿QUÉ UNIDAD Y OLA ESTÁN EXPUESTAS?
++
+¿QUÉ RUTA ES AUTORITATIVA PARA ESA UNIDAD Y ESA OPERACIÓN?
++
+¿CUÁL ES LA IDENTIDAD ESTABLE DE LA OPERACIÓN O HECHO?
++
+¿QUÉ MECANISMO CANÓNICO YA APROBADO IMPIDE REEJECUCIÓN O DOBLE EFECTO?
++
+¿QUÉ SUCEDE ANTE RETRY, TIMEOUT, OFFLINE, REENVÍO, COLA O RESULTADO EXTERNO INCIERTO?
++
+¿QUÉ SUPERFICIE DEBE QUEDAR BLOQUEADA SI NO PUEDE DEMOSTRARSE EL CONTROL?
+=
+TRANSICIÓN SIN DOBLE REGISTRO NI DOBLE EFECTO
+```
+
+La tarea no crea una nueva semántica de idempotencia. Materializa la aplicación, por frontera de cutover, de contratos ya protegidos por el registro canónico de requisitos y por los expedientes `DELIV-PKG-*`.
+
+---
+
+#### 2. Definiciones operativas
+
+Para esta tarea:
+
+- **doble registro**: materialización repetida del mismo hecho, solicitud, comando, expediente, recepción, movimiento, confirmación o dato empresarial cuando el contrato vigente exige una única captura o identidad autoritativa;
+- **doble efecto**: producción más de una vez de una consecuencia empresarial para una misma operación lógica, incluyendo mutaciones internas o efectos externos gobernados por el paquete;
+- **operación lógica**: unidad identificable que conserva identidad estable durante su ciclo, incluidos retries, reenvíos, procesamiento asíncrono, offline o recuperación;
+- **control anti-duplicidad**: mecanismo aprobado por la fuente propietaria que permite impedir, detectar antes de aplicar o reconocer de manera determinista una repetición sin convertirla en un efecto adicional;
+- **fence de autoridad**: restricción que impide que una ruta no autoritativa produzca una mutación o efecto para la unidad gobernada;
+- **resultado incierto**: operación para la cual no existe todavía evidencia suficiente de éxito o fallo definitivo y que, por tanto, no puede reenviarse por otra ruta asumiendo fracaso.
+
+Estas definiciones no sustituyen la semántica específica de cada dominio o integración.
+
+---
+
+#### 3. Resultado sustantivo
+
+Por cada instancia aplicable de `package_id`, la tarea materializa cuatro piezas documentales:
+
+1. `duplicate_risk_surface::<package_id>` — inventario de superficies donde la convivencia puede producir registro o efecto duplicado;
+2. `duplicate_control_binding::<package_id>` — vínculo de cada superficie con el control, contrato, requisito `TREQ-*`, propietario y mecanismo existente que debe protegerla;
+3. `transition_effect_fence_plan::<package_id>` — frontera de autoridad y enforcement que debe permanecer vigente antes, durante y después del punto de activación de cada unidad;
+4. `duplicate_control_manifest::<package_id>` — expediente consolidado de unidades, operaciones, identidades, riesgos, controles, estados, bloqueos y referencias que `SHELL-CI-022::<package_id>` deberá consumir durante la ejecución.
+
+Estas piezas son diseño documental. No demuestran que el mecanismo físico exista, esté desplegado o haya sido probado.
+
+---
+
+#### 4. Entradas obligatorias
+
+`CUTOVER-OPS-004` consume, sin redefinirlos:
+
+- `CUTOVER-OPS-001`: ventana y responsables vigentes;
+- `CUTOVER-OPS-002`: unidades, olas, orden, dependencias, estados seguros y puntos de decisión;
+- `CUTOVER-OPS-003`: proceso o ruta anterior, ruta objetivo, autoridad antes/después, uso permitido de cada ruta, trabajo en curso, compatibilidad temporal y recovery;
+- `DELIV-PKG-009`: transición, compatibilidad, coexistencia de escrituras y retiro legacy;
+- `DELIV-PKG-010`: eventos, entrega, identidad, idempotencia, retry, colas, DLQ, compensación y conciliación;
+- `DELIV-PKG-012`: autorización y frontera autoritativa de servidor;
+- `DELIV-PKG-015`: dependencias y orden técnico;
+- `DELIV-PKG-016`: requisitos `TREQ-*`, niveles de prueba, fixtures, ambientes, responsables y evidencia esperada;
+- `DELIV-PKG-017`: observabilidad, logs, métricas, trazas, alertas y auditoría;
+- `DELIV-PKG-018`: estado seguro, targeting, activación y kill switch;
+- `DELIV-PKG-019`: rollout, shadow, cohortes, pausas y promoción;
+- `DELIV-PKG-020`: rollback, recovery, compensation y tratamiento de efectos inciertos o irreversibles;
+- `DELIV-PKG-022`: alcance y cohorte autorizados del piloto;
+- `READY-GATE-010..015`: soporte, observabilidad, recuperación, línea base, riesgo y autorización final de entrada.
+
+Cuando una entrada no permita determinar el control aplicable sin inventar comportamiento, la superficie queda `BLOQUEADA`.
+
+---
+
+#### 5. Invariante principal de anti-duplicidad
+
+Para toda superficie mutable o productora de efectos:
+
+```text
+UNA OPERACIÓN LÓGICA
+→ UNA IDENTIDAD ESTABLE
+→ UNA RUTA AUTORITATIVA
+→ UN MECANISMO CANÓNICO DE PROTECCIÓN
+→ COMO MÁXIMO UN EFECTO EMPRESARIAL EFECTIVO
+```
+
+Se preservan además estas reglas:
+
+1. el mismo identificador con el mismo contenido no puede producir un efecto adicional y debe reconocer o recuperar el resultado ya obtenido conforme al contrato aplicable;
+2. el mismo identificador con contenido lógico distinto debe producir conflicto o rechazo conforme al contrato existente;
+3. un retry no crea una nueva operación por el solo hecho de repetirse;
+4. cambiar de interfaz, build, sede activa, ola o ruta técnica no autoriza cambiar la identidad de una operación ya iniciada;
+5. una operación no puede saltar de la ruta anterior a la objetivo para eludir un resultado incierto;
+6. una ruta `SHADOW` no produce un segundo efecto empresarial;
+7. una ruta retenida para recovery no se convierte en segunda ruta operativa normal;
+8. la inexistencia o indeterminación del control no se interpreta como permiso para continuar.
+
+---
+
+#### 6. Unidad mínima de control
+
+La unidad mínima de evaluación es:
+
+```text
+package_id
++
+candidate_ref
++
+environment
++
+authorized_scope_ref
++
+activation_unit_ref
++
+wave_ref
++
+operation_or_effect_ref
+```
+
+`operation_or_effect_ref` debe provenir del contrato funcional, de integración, datos, evento, acción, proceso o superficie ya materializada para el paquete.
+
+No se inventan operaciones genéricas para completar una matriz.
+
+Una misma `activation_unit_ref` puede contener varias superficies con controles distintos. La aprobación de una superficie no cubre automáticamente las demás.
+
+---
+
+#### 7. Inventario de superficies de riesgo
+
+`duplicate_risk_surface::<package_id>` deberá evaluar, cuando existan en las fuentes del paquete:
+
+| Superficie                                | Riesgo de transición que debe resolverse                                                            |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| mutación síncrona de servidor             | envío repetido, doble submit, uso simultáneo de ruta anterior y objetivo                            |
+| RPC o transacción de datos                | repetición de mutación, carrera, estado parcialmente aplicado                                       |
+| job, cola, outbox, inbox o tarea diferida | reentrega, lease vencido, doble consumidor, replay                                                  |
+| webhook o callback                        | entrega repetida o fuera de orden                                                                   |
+| integración externa                       | timeout con resultado incierto, retry o reenvío por canal alterno                                   |
+| operación offline o móvil                 | sincronización repetida, reenvío después de reconexión                                              |
+| proceso manual/legacy                     | doble digitación o registro paralelo después del cambio de autoridad                                |
+| notificación, impresión o evidencia       | repetición de un efecto externo o documento cuando el contrato exige unicidad                       |
+| inventario, costo, contabilidad o ledger  | duplicación de movimiento, recepción, costo, obligación o hecho económico                           |
+| `SHADOW`                                  | mutación accidental desde una ruta que solo debía observar                                          |
+| backfill o transición de datos            | doble aplicación sobre una identidad ya procesada cuando el contrato aprobado contemple reanudación |
+| recuperación                              | reejecución del efecto original al intentar restaurar servicio                                      |
+
+Una superficie inexistente o no aplicable se marca `NO_APLICA` con referencia a la fuente que lo demuestra.
+
+---
+
+#### 8. Familias de control permitidas
+
+`CUTOVER-OPS-004` no selecciona tecnología por preferencia. Cada superficie debe enlazarse con uno o más mecanismos ya aprobados por su contrato propietario.
+
+Las familias documentales admitidas son:
+
+| Familia                        | Uso                                                                                                                    |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `AUTHORITY_FENCE`              | impedir que una ruta no autoritativa produzca mutaciones para la unidad                                                |
+| `STABLE_OPERATION_IDENTITY`    | conservar identidad estable entre intentos, retries, offline y rutas compatibles                                       |
+| `IDEMPOTENT_RESULT_REUSE`      | reconocer una repetición equivalente y recuperar el resultado original sin producir otro efecto                        |
+| `CONTENT_CONFLICT_GUARD`       | rechazar la reutilización de una misma identidad con contenido lógico incompatible                                     |
+| `ATOMICITY_OR_VERSION_GUARD`   | impedir efectos parciales o carreras mediante transacción, versión, bloqueo, claim o mecanismo equivalente ya aprobado |
+| `OUTBOX_INBOX_OR_CLAIM_GUARD`  | controlar entrega y consumo repetibles en procesamiento asíncrono                                                      |
+| `EXTERNAL_EFFECT_GUARD`        | preservar correlación/idempotencia y evitar reenvío ciego ante resultado externo incierto                              |
+| `SHADOW_NO_EFFECT_GUARD`       | asegurar que una superficie observacional no produzca mutaciones empresariales                                         |
+| `WORK_IN_PROGRESS_ROUTE_FENCE` | mantener una operación ya iniciada bajo la ruta que conserva su autoridad hasta resolución conforme a su contrato      |
+| `OBSERVABILITY_AUDIT_GUARD`    | conservar intento, resultado, duplicado reconocido, conflicto y efecto final sin exponer secretos                      |
+| `FAIL_CLOSED_GUARD`            | impedir activación o mutación cuando falta un control obligatorio o su estado no es demostrable                        |
+
+Un paquete puede usar mecanismos físicos diferentes para una misma familia. La tarea no obliga a una tabla, índice, lock, cola o librería concreta si la fuente propietaria no la ha definido.
+
+---
+
+#### 9. Selección del control por superficie
+
+Para cada superficie se aplica este algoritmo documental:
+
+1. identificar la operación o efecto exacto;
+2. identificar la ruta autoritativa derivada de `CUTOVER-OPS-003`;
+3. identificar el requisito `TREQ-*` ya vinculado al paquete o al contrato que protege esa conducta;
+4. identificar el mecanismo físico o contractual planificado en `DELIV-PKG-007..016`;
+5. comprobar que el mecanismo sigue siendo compatible con candidato, ambiente y secuencia;
+6. comprobar que cubre retries, concurrencia o reentrega que realmente apliquen;
+7. comprobar que el mecanismo no depende de que ambas rutas sean simultáneamente autoritativas;
+8. registrar el control y su propietario;
+9. si el mecanismo no existe, no es identificable o resulta insuficiente para el riesgo materializado, marcar `BLOQUEADA`.
+
+No se crea un mecanismo nuevo dentro de 004 para convertir un bloqueo en éxito.
+
+---
+
+#### 10. Control de doble registro entre ruta anterior y ruta objetivo
+
+Cuando ambas superficies estén disponibles temporalmente:
+
+1. solo la ruta autoritativa definida por 003 puede crear o confirmar el hecho para la unidad;
+2. la ruta no autoritativa deberá quedar en el uso permitido definido por 003;
+3. una interfaz legacy todavía visible no conserva derecho de escritura por visibilidad;
+4. una interfaz objetivo desplegada pero todavía no activada no adquiere derecho de escritura por disponibilidad;
+5. un operador no puede registrar el mismo hecho en ambas rutas para “asegurar” que quede procesado;
+6. un fallback manual no puede crear una copia autoritativa competidora salvo que exista un contrato previo específico que modele ese comportamiento;
+7. si no puede hacerse cumplir la autoridad única con los mecanismos existentes, la unidad queda `BLOQUEADA`.
+
+La existencia simultánea de dos superficies técnicas no equivale a dos fuentes de verdad.
+
+---
+
+#### 11. Control de reintentos y reenvíos
+
+Los retries preservan el contrato de `TREQ-INTEGRATION-003`:
+
+- misma identidad estable;
+- mismo contenido lógico esperado;
+- estado durable;
+- resultado recuperable;
+- límites y clasificación de retry del contrato propietario;
+- tratamiento explícito de timeout o resultado desconocido;
+- no creación de un nuevo efecto por repetición equivalente.
+
+Está prohibido:
+
+- cambiar la idempotency key para “forzar” un segundo intento;
+- reenviar por la ruta alternativa sin resolver el resultado del intento anterior;
+- considerar un timeout como fallo definitivo sin evidencia suficiente;
+- reiniciar desde cero una operación cuya identidad durable todavía existe;
+- utilizar el cambio de ola como motivo para generar una nueva identidad para la misma operación lógica.
+
+---
+
+#### 12. Operaciones asíncronas, colas y webhooks
+
+Cuando el paquete consuma procesamiento asíncrono, el control deberá enlazar el mecanismo aprobado de:
+
+- outbox;
+- inbox;
+- claim atómico;
+- lock;
+- versión;
+- clave de operación;
+- hash lógico;
+- estado durable;
+- resultado recuperable;
+- DLQ o equivalente;
+- observabilidad y recuperación controlada;
+
+según corresponda a las fuentes propietarias.
+
+La tarea no exige que todos esos mecanismos existan simultáneamente. Exige que el mecanismo aplicable satisfaga el contrato ya aprobado.
+
+La reentrega de un mensaje o webhook no debe transformarse en una segunda operación empresarial.
+
+---
+
+#### 13. Concurrencia y mutaciones de datos
+
+Para superficies con mutaciones concurrentes:
+
+1. se conserva la atomicidad o mecanismo idempotente/reconciliable aprobado;
+2. una escritura parcial no se acepta como estado final de una operación;
+3. dos rutas no pueden mantener contadores, ledgers, stock, costos o estados autoritativos competidores para el mismo hecho;
+4. versionado, locking, constraints, transacción, claim u otro mecanismo equivalente solo se exige cuando ya pertenece al contrato físico o de prueba del paquete;
+5. si una condición de carrera material no está cubierta por ningún mecanismo aprobado, la unidad queda `BLOQUEADA` y la corrección pertenece a la fuente técnica propietaria.
+
+004 no crea ni modifica tablas, índices, constraints, funciones, políticas RLS ni RPC.
+
+---
+
+#### 14. Efectos externos y resultado incierto
+
+Para pagos, proveedores, impresión, notificaciones, webhooks, dispositivos u otros efectos externos aplicables:
+
+1. la operación conserva una correlación o identidad estable;
+2. un timeout no autoriza repetir por otra ruta como una operación nueva;
+3. un resultado incierto permanece en el estado previsto por el contrato propietario hasta que pueda determinarse su tratamiento;
+4. un retry reutiliza la identidad exigida por el contrato;
+5. la ruta objetivo no reemite automáticamente un efecto iniciado por la ruta anterior;
+6. la ruta anterior no reemite automáticamente un efecto iniciado por la ruta objetivo;
+7. la conciliación que determine el resultado final pertenece a `CUTOVER-OPS-005`;
+8. la compensación o recuperación conserva la propiedad de `DELIV-PKG-010` y `DELIV-PKG-020`.
+
+004 define el fence de duplicidad; no ejecuta conciliación ni compensación.
+
+---
+
+#### 15. Offline, móvil y trabajo diferido
+
+Para elementos pendientes originados antes o durante la frontera de activación:
+
+- outbox;
+- comandos locales;
+- formularios pendientes de sincronización;
+- adjuntos;
+- retries;
+- trabajos diferidos;
+- operaciones en curso;
+
+deberán conservar identidad y ownership de ruta conforme a `CUTOVER-OPS-003` y a sus contratos técnicos.
+
+La reconexión no convierte un elemento pendiente en una operación nueva.
+
+Si un cliente antiguo y uno nuevo pueden reenviar el mismo trabajo sin compartir o correlacionar la identidad exigida por el contrato, la unidad se considera `BLOQUEADA` hasta que la fuente propietaria cierre la condición.
+
+---
+
+#### 16. `SHADOW` y superficies no efectivas
+
+Toda superficie `SHADOW` deberá enlazar un control que garantice que su ejecución:
+
+- no confirma el mismo hecho una segunda vez;
+- no escribe una segunda fuente autoritativa;
+- no genera notificación, impresión, pago, movimiento, costo, inventario, expediente u otro efecto empresarial adicional;
+- no consume una operación productiva como si fuera una segunda ejecución;
+- conserva observabilidad suficiente para comparar sin convertirse en autoridad.
+
+Cuando el candidato no pueda observar sin mutar, el modo `SHADOW` no es válido para esa superficie y se conserva el estado seguro definido por sus fuentes propietarias.
+
+---
+
+#### 17. Fencing por cambio de autoridad
+
+`transition_effect_fence_plan::<package_id>` deberá reflejar la frontera de 003:
+
+##### Antes de la activación
+
+- la ruta anterior conserva únicamente la autoridad que 003 le atribuya;
+- la ruta objetivo permanece en su estado seguro o no efectivo;
+- cualquier operación iniciada conserva identidad estable.
+
+##### En el punto de activación
+
+- la transferencia de autoridad ocurre solo si los gates aplicables permiten ejecutar ese punto;
+- no se abre una ventana de doble autoridad;
+- el control contra duplicidad debe ser aplicable antes de aceptar la primera mutación autoritativa de la nueva ruta.
+
+##### Después de la activación
+
+- la nueva ruta solo asume las unidades realmente activadas;
+- la ruta anterior conserva únicamente los usos permitidos por 003;
+- trabajo en curso anterior sigue el tratamiento aprobado;
+- una reversión utiliza `DELIV-PKG-020` y `CUTOVER-OPS-006`, no un bypass informal del fence.
+
+---
+
+#### 18. Evidencia documental exigida al control
+
+Cada `duplicate_control_binding` deberá conservar, como mínimo:
+
+| Campo                     | Regla                                                          |
+| ------------------------- | -------------------------------------------------------------- |
+| `package_id`              | identidad canónica                                             |
+| `candidate_ref`           | mismo candidato autorizado                                     |
+| `environment`             | mismo ambiente                                                 |
+| `activation_unit_ref`     | unidad exacta de 002/003                                       |
+| `wave_ref`                | ola exacta                                                     |
+| `operation_or_effect_ref` | operación o efecto protegido                                   |
+| `authoritative_route_ref` | ruta autoritativa derivada de 003                              |
+| `risk_type`               | doble registro, doble efecto o ambos                           |
+| `control_family`          | familia documental aplicable                                   |
+| `control_source_ref`      | fuente propietaria del mecanismo                               |
+| `treq_refs`               | requisitos existentes que protegen la conducta                 |
+| `implementation_ref`      | referencia física planificada cuando exista                    |
+| `retry_identity_ref`      | identidad o contrato aplicable a reintentos cuando corresponda |
+| `external_effect_ref`     | contrato de efecto externo cuando aplique                      |
+| `observability_ref`       | señal o evidencia esperada                                     |
+| `owner_ref`               | propietario vigente                                            |
+| `status`                  | estado documental del binding                                  |
+| `blocking_reason`         | causa concreta cuando exista                                   |
+| `blocking_owner`          | propietario canónico de resolución                             |
+| `exit_condition`          | condición verificable para salir del bloqueo                   |
+
+No se almacenan secretos, tokens ni payloads sensibles como evidencia ordinaria.
+
+---
+
+#### 19. Estados documentales
+
+Cada binding usa exactamente uno de estos estados:
+
+| Estado             | Semántica                                                                                                                        |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `CONTROL_DEFINIDO` | existe riesgo aplicable y está vinculado a un mecanismo canónico suficiente ya planificado/aprobado                              |
+| `NO_APLICA`        | la superficie no puede producir registro o efecto duplicado bajo el contrato vigente, con fundamento trazable                    |
+| `BLOQUEADA`        | existe riesgo material pero no puede identificarse o demostrarse un control suficiente                                           |
+| `INVALIDADA`       | un binding previamente definido dejó de corresponder a candidato, ambiente, unidad, autoridad, contrato o implementación vigente |
+
+`CONTROL_DEFINIDO` no significa `IMPLEMENTADO` ni `VALIDADO`.
+
+---
+
+#### 20. Regla de bloqueo obligatorio
+
+La unidad no puede considerarse lista para ejecutar cuando exista al menos una superficie material con estado `BLOQUEADA`.
+
+Causas de bloqueo incluyen:
+
+1. falta identidad estable donde el contrato la exige;
+2. dos rutas pueden mutar simultáneamente el mismo alcance;
+3. un retry podría cambiar de ruta o crear nueva identidad;
+4. timeout externo puede producir reenvío ciego;
+5. no existe control suficiente frente a reentrega de cola/webhook;
+6. el trabajo offline puede reaparecer como operación nueva;
+7. `SHADOW` produce efectos;
+8. una mutación crítica carece de atomicidad o mecanismo equivalente exigido por su contrato;
+9. observabilidad no permite atribuir intento, resultado y efecto cuando el contrato lo requiere;
+10. la implementación física referenciada no corresponde al candidato o ambiente;
+11. el control depende de una tarea o paquete cuyo gate permanece abierto;
+12. la solución exigiría inventar una regla o mecanismo no aprobado.
+
+Cada bloqueo conserva propietario y condición de salida. No se usa `TBD`.
+
+---
+
+#### 21. Relación con `DELIV-PKG-016` y el registro 04A
+
+004 no crea una matriz de pruebas paralela.
+
+Los controles deberán enlazar los `TREQ-*` ya aplicables al paquete y, en particular cuando corresponda:
+
+- `TREQ-INTEGRATION-003` para identidad estable, idempotencia, retry, estado durable y resultado recuperable;
+- `TREQ-INTEGRATION-004` para trazabilidad de cadenas y ausencia de duplicación por retry;
+- `TREQ-INTEGRATION-005` para continuidad de proceso y contexto entre aplicaciones;
+- `TREQ-INTEGRATION-006` para captura única y resolución de fuentes competidoras;
+- requisitos de dominio como `TREQ-INTEGRATION-007..010` cuando el paquete esté dentro de esos contratos;
+- `TREQ-SUPABASE-001` para compatibilidad legacy y gate de retiro cuando aplique;
+- `TREQ-SUPABASE-002` para atomicidad o mecanismo idempotente/reconciliable en operaciones de inventario y representaciones relacionadas;
+- `TREQ-SHELL-006` para compatibilidad entre contratos y consumidores;
+- `TREQ-SHELL-007` para recuperación independiente y compatible;
+- cualquier otro requisito ya vinculado por `DELIV-PKG-016` a la operación concreta.
+
+La lista es de reutilización, no una reasignación global de requisitos a todos los paquetes.
+
+---
+
+#### 22. Tratamiento por modalidad heredada
+
+La clasificación de `CUTOVER-OPS-002` se conserva sin cambios:
+
+| Modalidad heredada            | Tratamiento en 004                                                                                            |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `PILOT-DIRECT-001`            | materializar bindings para las superficies efectivas de sus unidades secuenciadas                             |
+| `PILOT-SHARED-001`            | proteger el contrato compartido en las ejecuciones de consumidores directos; no crear una activación ficticia |
+| `PILOT-CONTROL-001`           | observar o aplicar enforcement solo donde exista una superficie ejecutable ya aprobada                        |
+| AURA bloqueada                | conservar bloqueo; no diseñar un mecanismo físico ficticio                                                    |
+| dependencia externa bloqueada | conservar bloqueo hasta cerrar su gate                                                                        |
+| TALENTO fuera de línea actual | mantener fuera de ejecución en esta línea                                                                     |
+
+La cobertura heredada continúa reconciliando:
+
+```text
+160 + 3 + 26 + 14 + 2 + 2 = 207
+```
+
+004 no cambia modalidad, paquete, perfil técnico ni gate.
+
+---
+
+#### 23. Frontera con `CUTOVER-OPS-005`
+
+`CUTOVER-OPS-004` impide o reconoce duplicidad antes de permitir un segundo efecto. No define las conciliaciones empresariales que deberán comparar resultados durante el piloto.
+
+El handoff a 005 es:
+
+```text
+UNIDADES Y OLAS
++
+OPERACIONES Y EFECTOS IDENTIFICADOS
++
+RUTA AUTORITATIVA
++
+IDENTIDAD ESTABLE / CORRELACIÓN
++
+CONTROL ANTI-DUPLICIDAD VINCULADO
++
+RESULTADOS INCIERTOS O REPETICIONES RECONOCIDAS
++
+SEÑALES Y EVIDENCIA ESPERADA
+=
+SUPERFICIES QUE CUTOVER-OPS-005 DEBERÁ CONCILIAR CUANDO CORRESPONDA
+```
+
+`CUTOVER-OPS-005` no deberá reinterpretar una duplicación bloqueada como una diferencia reconciliable aceptable ni modificar la autoridad fijada por 003.
+
+---
+
+#### 24. Frontera con las tareas posteriores
+
+004 no anticipa:
+
+- `CUTOVER-OPS-005`: conciliaciones durante el piloto;
+- `CUTOVER-OPS-006`: criterio de pausa, reversión o continuación;
+- `CUTOVER-OPS-007`: registro de incidentes, decisiones y cambios de alcance;
+- `CUTOVER-OPS-008`: métricas de tiempos, errores, adopción y resultado empresarial;
+- `CUTOVER-OPS-009`: autoridad y criterio de salida del piloto;
+- `CUTOVER-OPS-010`: retiro del proceso anterior.
+
+Una señal de duplicidad podrá ser consumida posteriormente por esas tareas, pero 004 no define sus umbrales ni sus decisiones.
+
+---
+
+#### 25. Invalidation y revalidación
+
+`duplicate_control_manifest::<package_id>` queda `INVALIDADA` cuando cambia materialmente:
+
+- candidato;
+- ambiente;
+- alcance;
+- ventana;
+- unidad u ola;
+- autoridad de 003;
+- operación o efecto protegido;
+- contrato de integración;
+- mecanismo físico referenciado;
+- estrategia de retry;
+- modelo de datos;
+- estrategia de rollout;
+- recovery/rollback;
+- requisito `TREQ-*` aplicable;
+- responsable del control.
+
+La revalidación debe partir de las fuentes vigentes. No se conserva un binding antiguo por similitud de nombre o tecnología.
+
+---
+
+#### 26. Contenido mínimo del manifiesto
+
+`duplicate_control_manifest::<package_id>` deberá conservar:
+
+1. `package_id`;
+2. `candidate_ref`;
+3. `environment`;
+4. `authorized_scope_ref`;
+5. `cutover_window_ref`;
+6. `activation_sequence_ref`;
+7. `coexistence_manifest_ref`;
+8. total de unidades recibidas;
+9. total de unidades evaluadas;
+10. total de superficies evaluadas;
+11. bindings por `operation_or_effect_ref`;
+12. ruta autoritativa por binding;
+13. control family;
+14. fuentes propietarias;
+15. `treq_refs`;
+16. referencias físicas planificadas cuando existan;
+17. manejo de retry, offline o resultado incierto cuando apliquen;
+18. observabilidad y evidencia esperada;
+19. propietario;
+20. estado;
+21. bloqueos, propietario y condición de salida;
+22. revisión documental y referencias de evidencia.
+
+Todas las unidades recibidas de 003 deben quedar evaluadas, aunque su resultado sea `NO_APLICA`.
+
+---
+
+#### 27. Separación entre diseño y ejecución
+
+`CUTOVER-OPS-004` es exclusivamente documental.
+
+No ejecuta:
+
+- bloqueos físicos;
+- writes fences;
+- feature flags;
+- constraints;
+- locks;
+- colas;
+- outbox/inbox;
+- webhooks;
+- retries;
+- conciliaciones;
+- compensaciones;
+- rollback;
+- migraciones;
+- DDL/DML;
+- backfills;
+- despliegues;
+- mutaciones de datos;
+- configuración remota;
+- operaciones sobre Supabase.
+
+La implementación física corresponde a las tareas y paquetes propietarios ya definidos. La ejecución de cutover corresponde a `SHELL-CI-022::<package_id>`.
+
+---
+
+#### 28. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos TREQ-* creados:** 0  
+**Requisitos TREQ-* modificados:** 0  
+**Fragmentos 04A afectados:** 0
+
+**Justificación:** `CUTOVER-OPS-004` no introduce una regla ejecutable nueva. Materializa, en la frontera concreta de cutover definida por `CUTOVER-OPS-002/003`, la ubicación y vinculación de controles ya protegidos por requisitos vigentes: identidad estable, idempotencia, reutilización de resultado, conflicto por contenido, retry controlado, atomicidad o mecanismo equivalente, captura única, prevención de fuentes competidoras, compatibilidad legacy, recuperación y trazabilidad. La implementación y prueba de esos comportamientos permanece vinculada a los paquetes mediante `DELIV-PKG-016` y a sus tareas técnicas propietarias. La tarea no cambia identidad, contenido, estado, relación, prioridad, paquete, repositorio, artefacto ni evidencia de ninguna fila `TREQ-*`.
+
+---
+
+#### 29. Criterios de aceptación documental
+
+`CUTOVER-OPS-004` queda documentalmente completo cuando:
+
+1. conserva `CUTOVER-OPS-003 → CUTOVER-OPS-004 → CUTOVER-OPS-005`;
+2. utiliza únicamente unidades, olas, alcance y autoridad definidos por 002/003;
+3. define `duplicate_risk_surface`, `duplicate_control_binding`, `transition_effect_fence_plan` y `duplicate_control_manifest`;
+4. toda superficie mutable o productora de efectos queda evaluada;
+5. cada operación aplicable conserva identidad estable conforme a su contrato;
+6. una repetición equivalente no produce un segundo efecto;
+7. una reutilización incompatible de identidad queda asociada al conflicto exigido por el contrato vigente;
+8. ningún retry cambia de ruta para eludir un resultado incierto;
+9. un timeout no se interpreta automáticamente como fallo definitivo;
+10. el trabajo offline o diferido no pierde identidad por reconexión o cambio de ola;
+11. una ruta no autoritativa no conserva permiso de mutación por seguir visible o disponible;
+12. `SHADOW` no produce un segundo efecto empresarial;
+13. recovery no se convierte en segunda ruta operativa;
+14. procesamiento asíncrono referencia mecanismos existentes de idempotencia, claim, outbox/inbox, lock, versión o equivalente según aplicabilidad;
+15. operaciones de datos preservan la atomicidad o mecanismo equivalente ya aprobado;
+16. efectos externos inciertos no se reenvían ciegamente por otra ruta;
+17. la tarea no define conciliaciones, compensaciones o nuevos contratos de retry;
+18. ninguna tecnología concreta se impone por preferencia;
+19. todo control tiene fuente propietaria y `treq_refs` aplicables;
+20. `CONTROL_DEFINIDO` no se confunde con `IMPLEMENTADO` o `VALIDADO`;
+21. toda superficie material sin control suficiente queda `BLOQUEADA`;
+22. todo bloqueo tiene causa, propietario y condición de salida;
+23. los cambios materiales invalidan el manifiesto y exigen revalidación;
+24. las modalidades heredadas reconcilian `160 + 3 + 26 + 14 + 2 + 2 = 207`;
+25. shared y control no reciben activaciones ficticias;
+26. AURA, EXT y TALENTO conservan sus gates;
+27. 005 recibe superficies de conciliación sin que 004 ejecute la conciliación;
+28. la ejecución física permanece en `SHELL-CI-022::<package_id>` y en las tareas técnicas propietarias;
+29. no se ejecutan código, despliegues, activaciones, promociones, migraciones, DDL/DML, backfills, cambios de datos, configuración remota ni operaciones de Supabase;
+30. se crean cero requisitos `TREQ-*`, se modifican cero requisitos `TREQ-*` y se afectan cero fragmentos 04A.
+
+---
+
+#### 30. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+CUTOVER-OPS-003 — Definir convivencia temporal con el proceso anterior
+
+##### TAREA ACTUAL APROBADA
+CUTOVER-OPS-004 — Diseñar controles contra doble registro y doble efecto durante la transición
+
+##### SIGUIENTE TAREA RESERVADA
+CUTOVER-OPS-005 — Definir conciliaciones durante el piloto
+
+
 ### [ ] CUTOVER-OPS-005 — Definir conciliaciones durante el piloto
 ### [ ] CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación
 ### [ ] CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de alcance
