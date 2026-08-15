@@ -3332,7 +3332,689 @@ READY-GATE-009 — Definir criterio y evidencia para confirmar capacitación y m
 READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento
 
 
-### [ ] READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento
+### ✅ READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento
+
+**Estado:** APROBADA  
+**Tarea anterior:** `READY-GATE-009 — Definir criterio y evidencia para confirmar capacitación y material de apoyo` — APROBADA  
+**Tarea siguiente:** `READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas` — RESERVADA  
+**Tipo de tarea:** documental; definición normativa y materializada del criterio de readiness y de la evidencia que deberá confirmar, por paquete, ambiente y ventana de piloto, que la mesa de soporte, sus responsables nominales, cobertura, niveles de atención, escalamiento y comunicaciones están realmente preparados antes de habilitar operación controlada  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md`  
+**Ejecución posterior de la comprobación:** `SHELL-CI-021::<package_id>` después de `SHELL-CI-020::<package_id>` y de la implementación aplicable del paquete  
+**Cambios físicos autorizados:** ninguno; esta tarea no asigna personas, no crea turnos ni guardias, no abre casos reales, no ejecuta escalamiento, no modifica SLA, no publica canales, no configura VISO o ANIMA, no cambia código, datos, permisos, migraciones, notificaciones, proveedores ni Supabase  
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`READY-GATE-010` define la comprobación que permitirá responder, antes de un piloto de un paquete concreto:
+
+```text
+¿EXISTE UNA MESA DE SOPORTE REALMENTE UTILIZABLE PARA EL ALCANCE DEL PAQUETE?
++
+¿EXISTE UN RESPONSABLE TECNOLÓGICO TITULAR Y UN SUPLENTE ACTIVOS Y ELEGIBLES?
++
+¿CADA SERVICIO AFECTADO TIENE COBERTURA VIGENTE PARA LA VENTANA DEL PILOTO?
++
+¿LOS NIVELES L0–L3 PUEDEN RECIBIR Y TRANSFERIR EL MISMO CASO SIN PERDER OWNERSHIP?
++
+¿LAS CINCO CLASES DE ESCALAMIENTO TIENEN DESTINO, CANAL Y ACEPTACIÓN VERIFICABLES?
++
+¿LOS COMPROMISOS DE SLA Y COMUNICACIÓN PUEDEN SER ATENDIDOS POR PERSONAS REALES?
+=
+READINESS DE SOPORTE DEMOSTRABLE
+```
+
+La finalidad no es demostrar que ya ocurrió un incidente real ni producir evidencia histórica de cumplimiento. La finalidad es impedir que un paquete llegue al piloto con una mesa visible pero inoperable, un responsable solo nominal, una transferencia sin aceptación, un proveedor usado como owner interno, un horario sin cobertura o un escalamiento cuyo destino no pueda ser alcanzado.
+
+---
+
+#### 2. Resultado sustantivo
+
+La tarea materializa un contrato de readiness de soporte compuesto por seis planos coordinados:
+
+1. `MESA_Y_ENTRADA` — el canal permitido conduce al expediente único de soporte y la mesa administrativa puede recibirlo y seguirlo;
+2. `RESPONSABLES_NOMINALES` — titular, suplente y autoridades condicionadas son personas activas, trazables y elegibles;
+3. `COBERTURA_Y_DISPONIBILIDAD` — cada servicio afectado dispone de una ventana de soporte compatible con el piloto y con sus compromisos;
+4. `NIVELES_DE_ATENCION` — L0, L1, L2 y L3 conservan sus fronteras y existe handoff aceptable cuando el caso debe avanzar;
+5. `ESCALAMIENTO` — las cinco clases canónicas tienen disparador, destino, canal, contexto y mecanismo de aceptación verificables;
+6. `COMUNICACION_Y_CONTINUIDAD_DEL_CASO` — ownership, SLA, comunicaciones, historial y expediente permanecen íntegros durante reasignación, escalamiento, espera de tercero o cambio de turno.
+
+El resultado de cada plano es uno de:
+
+- `PASS`;
+- `FAIL`;
+- `BLOQUEADO`;
+- `NO_APLICA`.
+
+No existe resultado implícito por ausencia de datos.
+
+---
+
+#### 3. Alcance y fronteras
+
+La comprobación se ejecutará por `package_id`, candidato de implementación, ambiente y ventana de piloto.
+
+`READY-GATE-010`:
+
+- consume el alcance aprobado del paquete sin ampliarlo;
+- consume los servicios tecnológicos afectados por el paquete;
+- consume las personas, roles, sedes, áreas y turnos ya preparados por `READY-GATE-004` sin volver a definirlos;
+- consume los procedimientos y contingencias de `READY-GATE-008` sin volver a certificarlos;
+- consume capacitación y material de apoyo de `READY-GATE-009` sin convertir conocimiento en cobertura humana;
+- no sustituye `READY-GATE-011`, propietaria de monitoreo, métricas y alertas;
+- no sustituye `READY-GATE-012`, propietaria de respaldo y rollback probados;
+- no sustituye `READY-GATE-013`, propietaria de baseline y migraciones ensayadas;
+- no sustituye `READY-GATE-014`, propietaria de riesgos operativos y mitigaciones;
+- no sustituye `READY-GATE-015`, propietaria de la autoridad final de decisión de readiness.
+
+La existencia de una cuenta, un grupo de mensajería, una URL, un nombre en un documento, un contrato de proveedor o un runbook no equivale por sí sola a readiness de soporte.
+
+---
+
+#### 4. Autoridades canónicas consumidas
+
+La comprobación conserva sin redefinir:
+
+- `VPROC-0058` como proceso único de solicitudes e incidentes tecnológicos;
+- VISO como propietario de la experiencia administrativa del caso tecnológico;
+- ANIMA como experiencia personal permitida para reportar, consultar, responder y validar cuando corresponda;
+- `TI-DOM-001`, incluido el catálogo `TI-SERVICE-001` a `TI-SERVICE-011`, la responsabilidad `RESPONSABLE_TECNOLOGICO` y los cuatro niveles `TI-ATTN-001` a `TI-ATTN-004`;
+- `TI-DOM-007`, incluidos prioridad, perfiles SLA, reloj, pausas, escalamiento, comunicación, restauración, validación y cierre;
+- `TI-AUTH-001`, incluida la elegibilidad de titular y suplente y la segregación de decisiones protegidas;
+- `TI-UX-001` y `TI-UX-002`, incluida la separación `PORTAL DEL TRABAJADOR ≠ MESA DE SERVICIO ADMINISTRATIVA`;
+- el dossier vigente `DELIV-PKG-001..025::<package_id>` como fuente del alcance, ambiente, piloto, evidencia esperada, procedimientos, runbooks y aceptación del paquete;
+- el resultado futuro de `SHELL-CI-020::<package_id>` como precondición técnica de pruebas antes de la comprobación operativa de `SHELL-CI-021::<package_id>`.
+
+Ninguna de estas referencias autoriza a esta tarea a crear personas, permisos, turnos, calendarios, canales, casos, contratos o configuraciones físicas.
+
+---
+
+#### 5. Unidad de evaluación y universo esperado
+
+La unidad mínima de evaluación es:
+
+```text
+package_id
++
+candidate_id o referencia equivalente del candidato
++
+ambiente
++
+ventana de piloto
++
+servicio tecnológico afectado
++
+sede o alcance operativo cuando corresponda
+```
+
+El universo esperado no se deriva mirando qué personas aparecen disponibles en la mesa. Se obtiene primero del paquete aprobado y de sus servicios, actores, sedes y condiciones de piloto.
+
+Reglas:
+
+1. cada servicio tecnológico afectado deberá aparecer exactamente una vez en la reconciliación principal del gate para el alcance evaluado;
+2. un mismo servicio puede requerir varias filas de cobertura por sede, ventana o nivel de atención, pero conserva un único `service_id`;
+3. un servicio no afectado se marca `NO_APLICA` únicamente con justificación trazable al paquete;
+4. si el paquete no permite determinar de forma exhaustiva qué servicios o sedes participan, el plano queda `BLOQUEADO`;
+5. una muestra parcial de servicios, personas o escalaciones nunca produce `PASS` del paquete;
+6. no se inventa un número global de técnicos, guardias, turnos o contactos.
+
+---
+
+#### 6. Registro mínimo de evidencia de readiness de soporte
+
+Cada evaluación deberá poder reconstruir, como mínimo:
+
+| Campo                       | Regla                                                                       |
+| --------------------------- | --------------------------------------------------------------------------- |
+| `package_id`                | identidad canónica del paquete                                              |
+| `candidate_ref`             | candidato concreto sometido al gate                                         |
+| `environment`               | ambiente realmente evaluado                                                 |
+| `pilot_window`              | intervalo aprobado para el piloto                                           |
+| `service_id`                | `TI-SERVICE-*` afectado                                                     |
+| `site_scope`                | sede o alcance aplicable; no se usa `null` como global implícito            |
+| `intake_channel`            | canal permitido por el contrato del servicio/caso                           |
+| `case_system`               | autoridad que conserva el expediente tecnológico                            |
+| `primary_responsible_actor` | titular nominal vigente cuando aplique                                      |
+| `backup_responsible_actor`  | suplente nominal vigente cuando aplique                                     |
+| `responsibility_scope`      | servicios, sedes, recursos o responsabilidades cubiertas por la designación |
+| `coverage_window`           | ventana efectiva aplicable al servicio y piloto                             |
+| `attention_level`           | nivel actual o esperado L0–L3                                               |
+| `escalation_class`          | clase aplicable cuando exista condición de escalamiento                     |
+| `escalation_target`         | persona, función o tercero autorizado según la clase                        |
+| `acceptance_mechanism`      | forma verificable de aceptar transferencia o responsabilidad                |
+| `next_commitment`           | próximo compromiso operativo o de comunicación cuando aplique               |
+| `evidence_refs`             | referencias reproducibles y sanitizadas                                     |
+| `result`                    | `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA`                                   |
+| `blocking_reason`           | causa concreta cuando no exista `PASS`                                      |
+| `blocking_owner`            | función, tarea o fuente responsable de resolver el bloqueo                  |
+
+El registro es evidencia del gate; no crea una tabla física ni una nueva fuente de verdad.
+
+---
+
+#### 7. Criterio para `MESA_Y_ENTRADA`
+
+El plano queda `PASS` únicamente si el alcance del paquete demuestra una trayectoria operativa completa:
+
+```text
+ACTOR AUTORIZADO O INICIADOR PERMITIDO
+→ CANAL DE ENTRADA PERMITIDO
+→ MISMA IDENTIDAD DE CASO
+→ RECEPCIÓN EN LA MESA ADMINISTRATIVA
+→ TRIAGE / CLASIFICACIÓN
+→ PROPIETARIO VIGENTE
+→ SIGUIENTE ACCIÓN TRAZABLE
+```
+
+Cuando aplique la experiencia personal:
+
+```text
+ANIMA
+→ reportar / consultar / responder / validar
+
+VISO
+→ recibir / clasificar / priorizar / asignar / escalar / diagnosticar / comunicar / restaurar / validar / cerrar
+```
+
+Criterios obligatorios:
+
+1. el canal de entrada no se convierte en propietario del caso;
+2. la mensajería no crea una identidad paralela;
+3. una transición entre ANIMA, VISO, niveles de atención o proveedor conserva el mismo caso maestro;
+4. la mesa debe poder distinguir cola, prioridad, riesgo SLA, propietario y siguiente compromiso;
+5. la recepción debe poder atribuirse a un actor o sistema autorizado;
+6. la prueba futura deberá usar un caso controlado o mecanismo equivalente autorizado y nunca inventar un resultado productivo;
+7. acceso visual a la pantalla sin capacidad de recepción, seguimiento y ownership produce `FAIL`.
+
+---
+
+#### 8. Criterio para `RESPONSABLES_NOMINALES`
+
+La función `RESPONSABLE_TECNOLOGICO` no constituye por sí sola una asignación nominal.
+
+Antes del piloto deberá existir evidencia vigente de:
+
+1. persona titular activa;
+2. persona suplente activa;
+3. designación organizacional vigente;
+4. alcance explícito de servicios, sedes, recursos o responsabilidades;
+5. permisos efectivos aplicables a cada acción requerida, sin inferencia por cargo;
+6. inicio y fin de vigencia o mecanismo de revocación de la designación;
+7. separación frente a decisiones que el titular o suplente no pueda autoaprobar;
+8. canal de escalamiento cuando titular y suplente no sean elegibles, estén indisponibles o exista una decisión reservada.
+
+Reglas de gate:
+
+- si existe función pero no identidad nominal vigente: `FAIL`;
+- si la identidad nominal existe pero no puede demostrarse su vigencia o alcance: `BLOQUEADO`;
+- si titular y suplente son la misma persona cuando se exige continuidad de responsabilidad: `FAIL`;
+- si ambos existen pero una decisión protegida carece de autoridad separada: `FAIL`;
+- si el paquete no requiere intervención humana de una función concreta, esa función puede ser `NO_APLICA`, pero la justificación debe derivar del flujo aprobado y no de ausencia casual de personal.
+
+---
+
+#### 9. Funciones que deben permanecer diferenciadas
+
+La evaluación conserva las funciones canónicas y sus límites:
+
+| Función                                     | Responsabilidad de readiness                                                                                         | No demuestra por sí sola                                       |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `RESPONSABLE_TECNOLOGICO`                   | coordinación técnica, clasificación, diagnóstico, restauración y trazabilidad dentro de autorización                 | privilegio permanente, autoaprobación o cierre de alto impacto |
+| `RESPONSABLE_DEL_PROCESO`                   | contexto empresarial y validación de recuperación del resultado protegido                                            | administración técnica                                         |
+| `GERENCIA_O_SUPERVISION_DE_SEDE`            | contexto territorial y coordinación local                                                                            | ownership técnico o alcance global                             |
+| `RESPONSABLE_DE_SEGURIDAD_TECNOLOGICA`      | intervención cuando identidad, privilegio, evidencia o seguridad lo exijan                                           | acceso ilimitado                                               |
+| `COORDINACION_DE_OPERACIONES`               | control o aceptación condicionada en prioridad crítica, cambio sensible, incidente mayor o riesgo cuando corresponda | diagnóstico técnico                                            |
+| `TRABAJADOR`                                | reporte, evidencia y confirmación dentro de su contexto                                                              | ejecución o aprobación privilegiada                            |
+| `TECNICO_O_PRESTADOR_EXTERNO` / `PROVEEDOR` | ejecución especializada o contractual delimitada                                                                     | propiedad del caso, autoridad empresarial o cierre final       |
+
+Una persona puede acumular funciones solo donde el modelo de autorización y segregación lo permita. El gate no deduce autoridad por cargo, jerarquía, canal, dispositivo, nivel de atención ni posesión de credenciales.
+
+---
+
+#### 10. Criterio para `COBERTURA_Y_DISPONIBILIDAD`
+
+Para cada servicio afectado deberá existir una ventana de soporte vigente y atribuible que cubra la ventana de piloto o explique formalmente cómo se conserva la obligación aplicable.
+
+La comprobación deberá reconciliar:
+
+```text
+SERVICIO AFECTADO
++
+SEDE / ALCANCE
++
+VENTANA DEL PILOTO
++
+TITULAR
++
+SUPLENTE
++
+NIVEL DE ATENCIÓN INICIAL
++
+ESCALAMIENTO REQUERIDO
++
+COMPROMISO SLA APLICABLE
+=
+COBERTURA OPERABLE
+```
+
+Reglas:
+
+1. un calendario borrador no cuenta como cobertura;
+2. un contrato vigente sin ventana, alcance o contacto operativo verificables no cuenta como cobertura;
+3. soporte contratado no sustituye el ownership interno de VENTO;
+4. la espera de proveedor no elimina la obligación interna de seguimiento y comunicación;
+5. una ventana de soporte no puede reducir silenciosamente los compromisos canónicos del caso;
+6. si el piloto atraviesa cambio de turno, la evidencia deberá demostrar handoff y continuidad de owner;
+7. si existe una brecha entre ventana del piloto y cobertura humana, el resultado es `FAIL` salvo que el paquete tenga una salvaguarda aprobada que elimine realmente la exposición;
+8. la ausencia de evidencia sobre cobertura no se interpreta como disponibilidad.
+
+---
+
+#### 11. Universo de servicios y ruta normal de atención
+
+La evaluación utiliza exclusivamente las once familias vigentes de servicio y su ruta normal aprobada:
+
+| Servicio         | Alcance resumido                                      | Ruta normal                         |
+| ---------------- | ----------------------------------------------------- | ----------------------------------- |
+| `TI-SERVICE-001` | cuentas, identidad y acceso tecnológico               | L1 → L2 → L3 condicional            |
+| `TI-SERVICE-002` | endpoints y dispositivos compartidos                  | L0 → L1 → L2 → L3 condicional       |
+| `TI-SERVICE-003` | redes y conectividad                                  | L1 → L2 → L3                        |
+| `TI-SERVICE-004` | impresoras y periféricos                              | L0 → L1 → L2 → L3 condicional       |
+| `TI-SERVICE-005` | aplicaciones, ambientes y proveedores tecnológicos    | L1 → L2 → L3                        |
+| `TI-SERVICE-006` | solicitudes de soporte tecnológico                    | L0 → L1 → L2 → L3 condicional       |
+| `TI-SERVICE-007` | incidentes y restauración tecnológica                 | L1 → L2 → L3 condicional            |
+| `TI-SERVICE-008` | cambios, configuración y versiones tecnológicas       | L2 → L3 condicional                 |
+| `TI-SERVICE-009` | pruebas y aceptación técnica de soluciones            | L2 → L3 condicional                 |
+| `TI-SERVICE-010` | licencias, garantías, contratos y costos tecnológicos | L1 → L2 → L3 condicional            |
+| `TI-SERVICE-011` | conocimiento, capacitación y adopción tecnológica     | L0 → L1; L2 si existe falla técnica |
+
+El gate no fuerza a un paquete a recorrer niveles que no necesita, pero tampoco permite omitir un nivel o destino exigido por la capacidad necesaria para avanzar.
+
+---
+
+#### 12. Criterio para `NIVELES_DE_ATENCION`
+
+Se conservan exactamente cuatro niveles:
+
+| ID            | Nivel                       | Preparación que debe poder demostrarse                                                               |
+| ------------- | --------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `TI-ATTN-001` | `L0_AUTOSERVICIO_GUIADO`    | guía o conocimiento aprobado, diagnóstico no privilegiado y salida clara hacia L1 cuando no resuelve |
+| `TI-ATTN-002` | `L1_MESA_DE_SERVICIO`       | recepción, clasificación, contexto, evidencia, comunicación, seguimiento y acciones estándar seguras |
+| `TI-ATTN-003` | `L2_ESPECIALISTA_TECNICO`   | diagnóstico avanzado, dependencias, restauración y preparación de cambio dentro de autorización      |
+| `TI-ATTN-004` | `L3_PROVEEDOR_O_FABRICANTE` | soporte externo delimitado con evidencia devuelta al caso maestro y validación final de VENTO        |
+
+Para `PASS`:
+
+1. el nivel inicial debe ser compatible con la ruta del servicio;
+2. el nivel receptor debe ser identificable antes de ejecutar una transferencia;
+3. el receptor debe disponer del contexto mínimo para aceptar;
+4. la aceptación debe ser trazable;
+5. una transferencia no reinicia SLA ni borra breach;
+6. un nivel superior no concede autorización adicional por jerarquía técnica;
+7. L3 nunca cierra el caso maestro por VENTO.
+
+---
+
+#### 13. Criterio para `ESCALAMIENTO`
+
+Se conservan exactamente cinco clases:
+
+| Clase            | Disparador canónico                                                                      | Destino o resultado que debe estar preparado                                          |
+| ---------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `ESC_FUNCTIONAL` | ownership ambiguo, aprobación o decisión empresarial necesaria                           | responsable funcional incorporado o receptor válido sin perder owner tecnológico      |
+| `ESC_TECHNICAL`  | L1 no puede diagnosticar o restaurar de forma segura                                     | L2 identificable, alcanzable y capaz de aceptar contexto, evidencia y pendientes      |
+| `ESC_PROVIDER`   | garantía, ISP, fabricante, plataforma o soporte contratado requerido                     | L3 o subcaso externo correlacionado; VENTO conserva el caso maestro                   |
+| `ESC_SECURITY`   | secreto, identidad, privilegio, compromiso, soporte remoto sensible o evidencia de abuso | responsable y controles de seguridad activables con detalle restringido               |
+| `ESC_CONTINUITY` | no existe resultado mínimo seguro o la degradación supera el soporte ordinario           | evaluación separada y eventual caso vinculado de continuidad sin fusionar expedientes |
+
+Para cada clase aplicable, el gate deberá poder demostrar:
+
+- condición de disparo reconocible;
+- persona, función o tercero receptor;
+- canal operativo permitido;
+- alcance territorial o de recurso cuando aplique;
+- contexto mínimo que acompaña el handoff;
+- mecanismo de aceptación;
+- propietario que conserva el caso hasta aceptación;
+- siguiente compromiso después del escalamiento;
+- referencia de evidencia sanitizada.
+
+Escalar no se deduce únicamente por tiempo transcurrido, cargo del solicitante, cantidad de mensajes o existencia de un proveedor.
+
+---
+
+#### 14. Compromisos temporales que el soporte debe poder atender
+
+El gate no redefine SLA. Verifica que la preparación humana y operativa sea compatible con los cuatro perfiles ya aprobados:
+
+| Perfil       | Prioridad     |                        Acuse |            Primera respuesta |                          Restauración / workaround |                                              Solicitud | Comunicación                                      |
+| ------------ | ------------- | ---------------------------: | ---------------------------: | -------------------------------------------------: | -----------------------------------------------------: | ------------------------------------------------- |
+| `TI-SLA-001` | `P1_CRITICAL` |                      ≤ 5 min |                     ≤ 15 min |                                           ≤ 60 min |         acción preautorizada o plan/autoridad ≤ 60 min | cada ≤ 30 min                                     |
+| `TI-SLA-002` | `P2_HIGH`     |                     ≤ 15 min |                     ≤ 30 min |                                              ≤ 4 h |         ≤ 8 h de ventana o fecha comprometida aceptada | cada ≤ 60 min                                     |
+| `TI-SLA-003` | `P3_MEDIUM`   | ≤ 4 h de ventana de servicio | ≤ 8 h de ventana de servicio | ≤ 2 días hábiles de servicio o workaround acordado |                  ≤ 2 días hábiles o fecha comprometida | al menos una vez por día hábil con trabajo activo |
+| `TI-SLA-004` | `P4_LOW`      |                ≤ 1 día hábil |                ≤ 1 día hábil |            planificada; ordinario ≤ 5 días hábiles | programación o cumplimiento ordinario ≤ 5 días hábiles | por hito o cambio de fecha                        |
+
+La evidencia de readiness deberá mostrar qué persona o función puede asumir el próximo compromiso durante la ventana evaluada. Una tabla de SLA sin capacidad humana atribuible no produce `PASS`.
+
+---
+
+#### 15. Escalamiento preventivo por riesgo de SLA
+
+La preparación deberá contemplar los umbrales ya aprobados:
+
+| Prioridad     | Umbral preventivo                                                     |
+| ------------- | --------------------------------------------------------------------- |
+| `P1_CRITICAL` | 50 % del objetivo de restauración sin estrategia validada             |
+| `P2_HIGH`     | 50 % del objetivo de restauración sin diagnóstico o workaround viable |
+| `P3_MEDIUM`   | 75 % del objetivo vigente sin siguiente acción y propietario          |
+| `P4_LOW`      | fecha comprometida en riesgo o dependencia material modificada        |
+
+Al alcanzar el objetivo sin resultado, el soporte deberá poder registrar breach, elevar el nivel requerido y comunicar un nuevo compromiso sin borrar prioridad, historial ni ownership.
+
+El gate no exige provocar un incumplimiento real. Exige evidencia de que la ruta, los destinatarios y el mecanismo que responderían al umbral están materializados y alcanzables.
+
+---
+
+#### 16. Asignación, aceptación y continuidad del owner
+
+Se conserva la regla:
+
+```text
+PROPONER ASIGNACION
+≠
+ACEPTAR ASIGNACION
+≠
+TRANSFERIR RESPONSABILIDAD EFECTIVA
+```
+
+Toda transferencia que deba ser considerada preparada deberá conservar:
+
+- propietario anterior;
+- destinatario o función propuesta;
+- motivo;
+- momento;
+- pendientes;
+- evidencia relevante;
+- fecha objetivo;
+- aceptación trazable del receptor.
+
+Hasta la aceptación, el propietario anterior no queda liberado.
+
+Una reasignación o escalamiento:
+
+- no crea un caso nuevo;
+- no reinicia SLA;
+- no borra breach;
+- no amplía autorización;
+- no elimina el historial;
+- no permite que el caso quede temporalmente sin propietario.
+
+---
+
+#### 17. Comunicación durante soporte y escalamiento
+
+La preparación deberá conservar tres planos separados:
+
+```text
+MENSAJE AL SOLICITANTE
+≠
+NOTA INTERNA DE DIAGNOSTICO
+≠
+COMUNICACION A PROVEEDOR
+```
+
+Cuando aplique, la ruta de comunicación deberá poder identificar:
+
+1. qué se sabe;
+2. qué está afectado;
+3. qué continúa funcionando;
+4. qué acción segura debe realizar o evitar la persona;
+5. quién responde;
+6. cuándo será la siguiente actualización o compromiso;
+7. si existe workaround;
+8. cuándo se solicitará validación;
+9. qué quedó restaurado y qué continúa pendiente.
+
+Esperar información, aprobación o proveedor no elimina automáticamente ownership ni toda obligación de comunicación.
+
+---
+
+#### 18. Incidente mayor, seguridad y continuidad
+
+Cuando el alcance del paquete pueda producir un `MAJOR_INCIDENT`, la preparación deberá identificar antes del piloto:
+
+- coordinador;
+- responsables activos;
+- canal de coordinación;
+- cadencia de comunicación aplicable;
+- ruta de escalamiento preventivo;
+- dependencias críticas;
+- autoridad requerida para decisiones protegidas;
+- vínculo de evaluación de continuidad;
+- mecanismo de handoff entre turnos o personas.
+
+Reglas:
+
+1. `MAJOR_INCIDENT` no activa automáticamente continuidad;
+2. `ESC_CONTINUITY` abre una evaluación separada y conserva identidades correlacionadas;
+3. `ESC_SECURITY` restringe detalle y activa autoridad de seguridad, no amplía visibilidad pública del caso;
+4. prioridad crítica no concede privilegio;
+5. quien ejecuta una acción crítica o sensible no puede ser por sí solo la aprobación final ni el único validador de su propia corrección.
+
+---
+
+#### 19. Evidencia aceptable
+
+Puede sustentar el gate, según aplique:
+
+- roster vigente de titular, suplente y autoridades condicionadas con identificadores de actor y vigencia;
+- designación organizacional trazable de `RESPONSABLE_TECNOLOGICO` y alcance cubierto;
+- calendario o matriz de cobertura vigente por servicio, sede y ventana;
+- configuración o consulta de solo lectura que demuestre owner, nivel de atención, destino de escalamiento y aceptación;
+- caso controlado no productivo o prueba operativa autorizada que demuestre entrada, recepción, ownership y continuidad de identidad;
+- evidencia de que ANIMA y VISO proyectan el mismo caso cuando ambas superficies apliquen;
+- registro de asignación y aceptación con actor, tiempo y pendientes;
+- matriz vigente de escalamiento con sus cinco clases y receptores aplicables;
+- directorio o fuente autoritativa de contactos operativos, sin secretos embebidos;
+- evidencia de disponibilidad del canal de soporte o del mecanismo de contacto para la ventana evaluada;
+- configuración de SLA y umbrales consultada desde su autoridad;
+- evidencia de handoff entre titular y suplente o entre niveles de atención;
+- contrato de proveedor y ventana de soporte únicamente como parte de la evidencia L3, nunca como sustituto del owner interno;
+- ejercicio o simulación controlada de escalamiento cuando esté autorizado;
+- referencias sanitizadas a runbooks, procedimientos y material de soporte vigentes.
+
+Toda evidencia deberá quedar vinculada con paquete, candidato, ambiente, fecha, fuente, método, resultado y actor que la obtuvo.
+
+---
+
+#### 20. Evidencia insuficiente
+
+No producen `PASS` por sí solos:
+
+- una lista de nombres en un documento sin vigencia o identidad de actor;
+- “alguien de TI” como responsable;
+- titular sin suplente cuando la ventana requiere continuidad de responsabilidad;
+- un grupo de chat, correo o teléfono cuya recepción no fue verificada;
+- una URL de VISO accesible sin recepción y ownership de caso;
+- un mensaje enviado desde ANIMA que no pueda correlacionarse con recepción administrativa;
+- una asignación propuesta no aceptada;
+- un proveedor disponible sin owner interno VENTO;
+- un contrato o garantía sin ventana y alcance operativo verificables;
+- un calendario borrador;
+- un horario que deja descubierta parte de la ventana de piloto;
+- un runbook disponible sin persona elegible para ejecutarlo;
+- una prueba histórica de otro ambiente, paquete, sede o versión;
+- una captura aislada sin fuente, fecha o identidad verificable;
+- credenciales compartidas como mecanismo de continuidad;
+- un caso cerrado usado como prueba de que todas las clases de escalamiento funcionan;
+- telemetría verde o ausencia de alertas, que pertenece al gate de monitoreo;
+- silencio del receptor interpretado como aceptación de transferencia.
+
+---
+
+#### 21. Decisión por plano
+
+| Plano                                 | `PASS`                                                             | `FAIL`                                                    | `BLOQUEADO`                                           | `NO_APLICA`                                                                                                               |
+| ------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `MESA_Y_ENTRADA`                      | trayecto autorizado y expediente único demostrables                | canal, recepción, caso u ownership fallan                 | fuente o ambiente impiden determinar el resultado     | no permitido a nivel de paquete; toda implementación debe conservar una ruta de soporte para sus efectos                  |
+| `RESPONSABLES_NOMINALES`              | titular, suplente, alcance y segregación vigentes                  | falta persona obligatoria, suplencia o autoridad separada | vigencia/elegibilidad no puede resolverse             | solo para una autoridad condicionada realmente ajena al flujo; titular y suplente tecnológicos siguen siendo obligatorios |
+| `COBERTURA_Y_DISPONIBILIDAD`          | toda ventana requerida queda cubierta                              | existe hueco material de cobertura                        | calendario o ventana autoritativa no puede resolverse | permitido únicamente para una fila de servicio/sede fuera del alcance; no para la cobertura global del paquete            |
+| `NIVELES_DE_ATENCION`                 | niveles aplicables tienen receptor y handoff aceptable             | falta capacidad o transferencia válida                    | no puede determinarse capacidad requerida             | nivel no requerido por la ruta del servicio                                                                               |
+| `ESCALAMIENTO`                        | cada clase aplicable tiene disparador, destino, canal y aceptación | ruta aplicable incompleta o inalcanzable                  | autoridad o destino no puede resolverse               | clase no aplicable al alcance demostrado                                                                                  |
+| `COMUNICACION_Y_CONTINUIDAD_DEL_CASO` | owner, historial y compromisos sobreviven handoffs y esperas       | se pierde owner, caso, historial o compromiso             | evidencia no permite reconstruir continuidad          | únicamente si no existe transferencia ni comunicación aplicable, con justificación                                        |
+
+Un `NO_APLICA` nunca se utiliza para ocultar falta de evidencia.
+
+---
+
+#### 22. Regla agregada de decisión
+
+Resultado del gate por paquete:
+
+```text
+SI existe cualquier FAIL
+→ FAIL
+
+SI no existe FAIL y existe cualquier BLOQUEADO
+→ BLOQUEADO
+
+SI todos los planos aplicables están en PASS
+   y todo NO_APLICA está justificado
+→ PASS
+```
+
+Reglas adicionales:
+
+1. un servicio afectado sin responsable o cobertura produce `FAIL` del paquete;
+2. una escalación obligatoria sin receptor produce `FAIL`;
+3. un responsable esperado cuyo universo no puede determinarse produce `BLOQUEADO`;
+4. una muestra parcial nunca produce `PASS`;
+5. una sola prueba de escalamiento exitosa no certifica las demás clases aplicables;
+6. un proveedor no subsana la ausencia del owner interno;
+7. la evidencia debe pertenecer al candidato y ambiente evaluados;
+8. ningún resultado se hereda automáticamente de un piloto o release anterior.
+
+---
+
+#### 23. Estados y pendientes de ejecución
+
+Después de esta tarea documental:
+
+| Elemento                                               | Estado                                                                                                |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| criterio de readiness de mesa de soporte               | `ESPECIFICADO`                                                                                        |
+| criterio para titular y suplente                       | `ESPECIFICADO`                                                                                        |
+| criterio de cobertura humana por servicio/sede/ventana | `ESPECIFICADO`                                                                                        |
+| criterio para cuatro niveles de atención               | `ESPECIFICADO`                                                                                        |
+| criterio para cinco clases de escalamiento             | `ESPECIFICADO`                                                                                        |
+| criterio de continuidad de owner y aceptación          | `ESPECIFICADO`                                                                                        |
+| personas nominales realmente configuradas              | `PENDIENTE_DE_EVIDENCIA` — ejecución en `SHELL-CI-021::<package_id>`                                  |
+| cobertura real vigente para el piloto                  | `PENDIENTE_DE_EVIDENCIA` — ejecución en `SHELL-CI-021::<package_id>`                                  |
+| prueba real de entrada, asignación y escalamiento      | `PENDIENTE_DE_EVIDENCIA` — ejecución en `SHELL-CI-021::<package_id>`                                  |
+| evidencia histórica de cumplimiento SLA                | `FUERA_DE_ALCANCE` de este gate; permanece bajo sus tareas de observabilidad y operación propietarias |
+| monitoreo, métricas y alertas                          | `FUERA_DE_ALCANCE` — `READY-GATE-011`                                                                 |
+
+No queda un pendiente narrativo sin destino documental.
+
+---
+
+#### 24. Secuencia de ejecución futura
+
+La definición documental no ejecuta la comprobación.
+
+Para cada paquete, la secuencia aplicable permanece:
+
+```text
+E5-GATE-008::<package_id>
+→ SHELL-CI-020::<package_id>
+→ implementación aplicable del paquete
+→ SHELL-CI-021::<package_id>
+→ SHELL-CI-022::<package_id>
+```
+
+`SHELL-CI-021::<package_id>` deberá consumir este contrato y registrar evidencia real del candidato. Un `PASS` documental de esta tarea no constituye un `PASS` operativo del paquete.
+
+---
+
+#### 25. Cobertura de prueba heredada
+
+La tarea consume cobertura vigente que ya protege, entre otros comportamientos:
+
+- `TREQ-VISO-002`, para el expediente completo de mesa de servicio, asignación, comunicaciones, diagnóstico, restauración, validación, cierre, reapertura e incidente crítico;
+- `TREQ-VISO-046`, para prioridad derivada, los cuatro perfiles SLA, reloj reproducible, pausas autorizadas y escalamiento preventivo.
+
+`READY-GATE-010` no cambia esos comportamientos. Define la evidencia de preparación que deberá comprobarse antes del piloto.
+
+---
+
+#### 26. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea no introduce un proceso, estado, SLA, prioridad, nivel de atención, clase de escalamiento, mecanismo de autorización, canal, regla de ownership ni comportamiento ejecutable nuevo. Materializa exclusivamente el criterio de readiness y el manifiesto mínimo de evidencia con el que una etapa posterior deberá confirmar que los contratos de soporte ya aprobados están realmente preparados para el candidato y la ventana de piloto.
+
+**Requisitos creados:** 0  
+**Requisitos modificados:** 0  
+**Fragmentos 04A afectados:** 0
+
+---
+
+#### 27. Criterios de aceptación
+
+- [x] la continuidad vigente es `READY-GATE-009 → READY-GATE-010 → READY-GATE-011`;
+- [x] la tarea permanece exclusivamente documental;
+- [x] la comprobación se define por paquete, candidato, ambiente y ventana de piloto;
+- [x] se materializan seis planos de decisión independientes;
+- [x] el universo esperado se deriva del paquete antes de consultar la mesa;
+- [x] una muestra parcial no puede producir `PASS`;
+- [x] se conserva VISO como mesa administrativa y ANIMA como experiencia personal cuando corresponda;
+- [x] una transición entre superficies o niveles conserva el mismo caso maestro;
+- [x] acceso visual a la mesa no equivale a readiness de soporte;
+- [x] `RESPONSABLE_TECNOLOGICO` no se trata como rol base ni identidad nominal;
+- [x] se exige titular activo y suplente activo antes del piloto cuando corresponda;
+- [x] se exige designación, alcance, vigencia y revocación verificables;
+- [x] se conserva segregación para decisiones críticas o sensibles;
+- [x] el proveedor nunca se convierte en owner interno, aprobador empresarial ni responsable final de cierre;
+- [x] se exige cobertura vigente por servicio, sede y ventana aplicables;
+- [x] un calendario borrador no cuenta como cobertura;
+- [x] se preservan las once familias `TI-SERVICE-001` a `TI-SERVICE-011` sin renombrarlas;
+- [x] se preservan exactamente cuatro niveles `TI-ATTN-001` a `TI-ATTN-004`;
+- [x] nivel de atención no se confunde con prioridad, SLA o autorización;
+- [x] transferencia exige receptor identificable, contexto y aceptación;
+- [x] hasta aceptación, el propietario anterior conserva responsabilidad;
+- [x] reasignación no reinicia SLA ni borra breach;
+- [x] se preservan exactamente cinco clases de escalamiento;
+- [x] cada clase aplicable exige disparador, destino, canal, contexto y aceptación verificables;
+- [x] se preservan los cuatro perfiles SLA y sus compromisos sin modificarlos;
+- [x] se preservan los cuatro umbrales preventivos de escalamiento;
+- [x] el gate no exige provocar un breach real para demostrar preparación;
+- [x] comunicación a solicitante, nota interna y proveedor permanecen separadas;
+- [x] espera de proveedor no elimina ownership ni toda obligación de comunicación;
+- [x] incidente mayor y continuidad permanecen como identidades separadas y correlacionables;
+- [x] se definen `PASS`, `FAIL`, `BLOQUEADO` y `NO_APLICA` por plano;
+- [x] un servicio afectado sin responsable o cobertura produce `FAIL`;
+- [x] toda evidencia futura queda vinculada a paquete, candidato, ambiente, fecha, fuente, método, resultado y actor;
+- [x] la ejecución real queda asignada a `SHELL-CI-021::<package_id>`;
+- [x] se generan cero cambios en requisitos de prueba;
+- [x] se generan cero cambios físicos, de código, datos, permisos, notificaciones, migraciones o Supabase;
+- [x] `READY-GATE-011` permanece únicamente reservada.
+
+---
+
+#### 28. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`READY-GATE-009 — Definir criterio y evidencia para confirmar capacitación y material de apoyo`
+
+TAREA ACTUAL APROBADA
+`READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento`
+
+SIGUIENTE TAREA RESERVADA
+`READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas`
+
+
 ### [ ] READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas
 ### [ ] READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados
 ### [ ] READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto

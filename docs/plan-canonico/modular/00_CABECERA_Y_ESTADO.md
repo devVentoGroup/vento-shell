@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **845** |
+| Tareas aprobadas | **846** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **749** |
+| Tareas no iniciadas | **748** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **53.01% (845/1594)** |
+| Porcentaje de completamiento | **53.07% (846/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **READY-GATE-009 — Definir criterio y evidencia para confirmar capacitación y material de apoyo** |
-| Tarea actual | **READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento** |
+| Última tarea aprobada | **READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento** |
+| Tarea actual | **READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas** |
+| Siguiente tarea | **READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 34 de 68 aprobadas; READY-GATE-010 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 35 de 68 aprobadas; READY-GATE-011 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `READY-GATE-009` — Definir criterio y evidencia para confirmar capacitación y material de apoyo |
-| Tarea actual | `READY-GATE-010` — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento — **NO INICIADA** |
-| Siguiente tarea | `READY-GATE-011` — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas |
+| Última aprobada | `READY-GATE-010` — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento |
+| Tarea actual | `READY-GATE-011` — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas — **NO INICIADA** |
+| Siguiente tarea | `READY-GATE-012` — Definir criterio y evidencia para confirmar respaldo y rollback probados |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 34 DE 68 APROBADAS — ACTUAL READY-GATE-010** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 35 DE 68 APROBADAS — ACTUAL READY-GATE-011** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-READY-GATE-009 — Definir criterio y evidencia para confirmar capacitación y material de apoyo
-        ↓
-TAREA ACTUAL
 READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas
         ↓
+SIGUIENTE TAREA RESERVADA
+READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 34 de 68 tareas aprobadas
+BLOQUE E5 — 35 de 68 tareas aprobadas
 ```
