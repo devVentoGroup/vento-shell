@@ -2465,7 +2465,437 @@ READY-GATE-007 — Definir criterio y evidencia para confirmar hardware, red, es
 READY-GATE-008 — Definir criterio y evidencia para confirmar procedimientos operativos y contingencias
 
 
-### [ ] READY-GATE-008 — Definir criterio y evidencia para confirmar procedimientos operativos y contingencias
+### ✅ READY-GATE-008 — Definir criterio y evidencia para confirmar procedimientos operativos y contingencias
+
+**Estado:** APROBADA
+**Tarea anterior:** `READY-GATE-007 — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras` — APROBADA
+**Tarea siguiente:** `READY-GATE-009 — Definir criterio y evidencia para confirmar capacitación y material de apoyo` — RESERVADA
+**Tipo de tarea:** documental; definición del criterio de readiness y de la evidencia exigible para demostrar que los procedimientos operativos y las contingencias aplicables a cada paquete pueden ejecutarse de forma controlada, trazable y reversible hacia la operación normal, sin ejecutar todavía el checklist de `SHELL-CI-021` ni realizar cambios físicos, despliegues, migraciones, configuración remota o modificaciones de Supabase
+**Repositorio propietario:** `vento-shell`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`READY-GATE-008` define cómo `SHELL-CI-021` deberá decidir, después de `SHELL-CI-020` y de las tareas de implementación aplicables, si un paquete dispone de procedimientos operativos y contingencias suficientemente concretos para soportar la entrada a piloto sin depender de conocimiento tácito, improvisación, accesos extraordinarios no gobernados o fuentes paralelas de verdad.
+
+La pregunta de salida es:
+
+> ¿Puede un operador autorizado ejecutar la operación normal y responder a las contingencias aplicables siguiendo un procedimiento vigente, identificable y reproducible, con condiciones explícitas de entrada, límites, escalamiento, evidencia, suspensión, reincorporación y retorno a la operación normal?
+
+Esta tarea diseña el criterio y la evidencia. No afirma que los procedimientos hayan sido ejecutados, ensayados o certificados en el ambiente objetivo durante E5.
+
+---
+
+#### 2. Resultado sustantivo
+
+La comprobación de readiness se divide en cuatro planos independientes:
+
+1. **procedimiento operativo normal:** cómo se inicia, ejecuta, verifica, interrumpe y cierra la operación prevista por el paquete;
+2. **activación y ejecución de contingencia:** qué condición habilita un modo alterno, quién puede activarlo, qué acciones están permitidas y cuáles quedan bloqueadas;
+3. **reincorporación y reconciliación:** cómo se incorporan después los hechos, borradores, colas, documentos o registros producidos durante la falla sin duplicar, perder ni sobrescribir silenciosamente hechos posteriores;
+4. **suspensión y handoff:** cuándo el procedimiento deja de ser seguro, qué se detiene, qué evidencia se conserva y a qué proceso propietario se transfiere la resolución.
+
+Un resultado favorable en un plano no compensa un `FAIL` o `BLOQUEADO` en otro plano aplicable.
+
+---
+
+#### 3. Autoridades y fuentes vinculantes
+
+La evaluación conserva, sin redefinirlas, las siguientes autoridades:
+
+- `VPROC-0058` para solicitudes e incidentes tecnológicos;
+- `VPROC-0062` para continuidad empresarial;
+- `TI-DOM-004` para contingencias de red y conectividad;
+- `TI-DOM-007` para incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre tecnológico;
+- `TI-DOM-008` para problema, causa raíz, error conocido y workaround;
+- `TI-DOM-009` para cambios tecnológicos, incluida la frontera entre respuesta operativa y cambio controlado;
+- `TI-DOM-011` para respaldo, restauración y recuperación;
+- el bloque `AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION` para impacto, activación, modos de contingencia, operación degradada, reincorporación y ejercicios;
+- la evidencia y los escenarios de prueba asignados al paquete por `DELIV-PKG-016`;
+- los contratos funcionales, de autorización, datos, integración, dispositivos y hardware que el paquete consume.
+
+Una guía local, una nota, una conversación, una captura o una práctica conocida por el equipo no adquieren autoridad por existir. Deben corresponder al procedimiento aprobado y a la versión evaluada.
+
+---
+
+#### 4. Frontera con las demás tareas READY
+
+`READY-GATE-008` verifica la **ejecutabilidad procedimental** de la operación y de las contingencias. No absorbe las comprobaciones propietarias de otras puertas:
+
+- `READY-GATE-007` confirma la disponibilidad física de hardware, red, escáneres e impresoras;
+- `READY-GATE-009` confirma capacitación y material de apoyo;
+- `READY-GATE-010` confirma la mesa de soporte, responsables y escalamiento como capacidad disponible;
+- `READY-GATE-011` confirma monitoreo, métricas y alertas;
+- `READY-GATE-012` confirma respaldos y rollback probados;
+- `READY-GATE-013` captura la línea base previa al piloto;
+- `READY-GATE-014` gobierna riesgos aceptados y condiciones de suspensión;
+- `READY-GATE-015` gobierna la autoridad y el criterio final de entrada al piloto.
+
+Por tanto, `READY-GATE-008` puede exigir que un procedimiento referencie una dependencia, un responsable, una señal, un respaldo o un mecanismo de rollback, pero no declara disponible ni probado ese elemento fuera de su puerta propietaria.
+
+---
+
+#### 5. Universo de procedimientos aplicables por paquete
+
+Antes de consultar el ambiente, `SHELL-CI-021` deberá derivar desde el expediente del paquete el conjunto esperado de procedimientos. Cada clase se clasificará expresamente como `APLICA` o `NO_APLICA`:
+
+| Clase                   | Cuándo aplica                                                          | Resultado mínimo exigido                                                    |
+| ----------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| operación normal        | el paquete introduce o modifica una capacidad operativa                | procedimiento ejecutable de inicio a cierre                                 |
+| incidente o degradación | una dependencia puede fallar sin exigir abandono inmediato             | contención, límites, escalamiento y criterio de recuperación                |
+| operación bloqueada     | continuar podría producir un efecto inválido o inseguro                | condición de detención, protección de estado y reanudación controlada       |
+| lectura de snapshot     | existe una proyección histórica o copia de solo lectura admitida       | vigencia, alcance, marca visible de no actualidad y prohibición de mutación |
+| borrador local          | se permite capturar intención sin confirmar el hecho empresarial       | identidad local estable, actor, tiempo, contexto y posterior revalidación   |
+| cola offline            | la intención puede conservarse hasta recuperar conectividad            | deduplicación, orden, expiración, reintento y reconciliación                |
+| procedimiento manual    | el proceso admite continuidad fuera del sistema principal              | formulario o soporte controlado, custodia, identificadores y reconciliación |
+| ubicación alternativa   | la operación puede trasladarse a otra instalación o recurso autorizado | condiciones de activación, capacidad mínima, custodia y retorno             |
+| proveedor sustituto     | existe sustitución aprobada de una dependencia externa                 | autoridad, alcance, vigencia, datos mínimos y reversión al proveedor normal |
+| reincorporación         | cualquier modo alterno puede producir hechos pendientes                | importación o registro controlado, idempotencia, conflictos y cierre        |
+
+La ausencia de un mecanismo, un campo vacío, una dependencia todavía no comprobada o la inexistencia de evidencia no equivalen a `NO_APLICA`.
+
+---
+
+#### 6. Identidad mínima de cada procedimiento
+
+Cada procedimiento aplicable deberá conservar, como mínimo:
+
+- identificador estable o referencia inequívoca;
+- nombre y propósito;
+- paquete y capacidad protegida;
+- proceso o servicio propietario;
+- versión vigente y evidencia de vigencia;
+- ambiente, sede, área o alcance cuando corresponda;
+- actor o función que inicia;
+- actor o función que ejecuta;
+- autoridad necesaria;
+- precondiciones;
+- condición de inicio;
+- entradas y recursos requeridos;
+- pasos y puntos de decisión;
+- verificaciones intermedias;
+- acciones prohibidas;
+- condición de éxito;
+- condición de detención segura;
+- condición de escalamiento o handoff;
+- evidencia que debe producirse;
+- condición de cierre;
+- referencia al procedimiento de reincorporación cuando aplique.
+
+No se exige exponer secretos, credenciales, tokens o valores sensibles dentro del procedimiento. Cuando sean necesarios, solo se referencia el mecanismo autorizado que los provee.
+
+---
+
+#### 7. Criterio del procedimiento operativo normal
+
+Un procedimiento de operación normal obtiene `PASS` únicamente cuando:
+
+1. corresponde exactamente a la versión y alcance del paquete evaluado;
+2. identifica el actor, el contexto y los prerrequisitos que deben existir antes del primer efecto;
+3. distingue navegación, captura, validación, confirmación, persistencia y receipt cuando el flujo los tenga;
+4. no convierte una interfaz visible, una sesión abierta o una petición enviada en prueba de éxito;
+5. identifica checkpoints verificables y resultado final observable;
+6. define qué ocurre ante cancelación, revocación, dato parcial, conflicto, timeout o resultado desconocido;
+7. impide repetir ciegamente una operación cuyo resultado anterior sea desconocido;
+8. conserva la fuente de verdad y el proceso propietario del hecho empresarial;
+9. define cómo abandonar la operación sin dejar un estado ambiguo;
+10. produce o referencia evidencia suficiente para reconstruir actor, tiempo, recurso, decisión y resultado.
+
+Un procedimiento meramente narrativo que no permita decidir qué hacer frente a los estados reales del flujo no satisface este criterio.
+
+---
+
+#### 8. Criterio de activación de contingencia
+
+Toda contingencia aplicable deberá definir de forma explícita:
+
+- evento o condición que habilita su evaluación;
+- condición que obliga a detener la operación normal;
+- autoridad para declarar o activar el modo alterno;
+- alcance afectado;
+- duración o vigencia máxima cuando aplique;
+- operaciones permitidas;
+- operaciones prohibidas;
+- datos mínimos disponibles;
+- fuente de verdad que permanece vigente;
+- identificadores que preservan causalidad;
+- evidencia que debe capturarse durante el modo alterno;
+- punto de escalamiento;
+- criterio de abandono del modo contingencia;
+- condición de retorno a operación normal.
+
+La contingencia no concede permisos adicionales por estar activa. Un dispositivo, una sede, un proveedor, un archivo local o una red alternativa tampoco se convierten en fuente de autoridad.
+
+---
+
+#### 9. Reglas de operación degradada y offline
+
+Cuando el paquete permita trabajo degradado u offline deberán cumplirse simultáneamente estas reglas:
+
+1. la interfaz o soporte utilizado identifica que el resultado sigue pendiente cuando todavía no existe confirmación autoritativa;
+2. cada intención conserva un identificador estable antes de cualquier reintento;
+3. se conservan actor, dispositivo cuando aplique, tiempo real, contexto, proceso, recurso y referencia causal suficientes;
+4. la ausencia de conectividad no amplía territorio, permisos ni vigencia de sesión;
+5. un caché, snapshot, archivo temporal o almacenamiento local no se convierte en fuente canónica;
+6. una acción que requiera validación actual y no pueda revalidarse se bloquea o permanece como borrador no confirmado;
+7. el reintento distingue timeout, rechazo, conflicto, resultado desconocido y confirmación previa;
+8. la recuperación de conectividad inicia revalidación y reconciliación antes de volver a presentar la intención como aplicable;
+9. ninguna cola o borrador puede publicarse bajo un actor, contexto, versión o recurso ya revocados sin una nueva decisión autoritativa;
+10. los conflictos se hacen visibles y se resuelven según el proceso propietario; no se aplica sobrescritura silenciosa por ser el último dato recibido.
+
+---
+
+#### 10. Procedimiento manual controlado
+
+Cuando el paquete permita una contingencia manual, el soporte manual debe declarar:
+
+- finalidad exacta;
+- campos obligatorios;
+- identificador único o mecanismo de correlación;
+- responsable de creación;
+- responsable de custodia;
+- acceso permitido;
+- sensibilidad de la información;
+- lugar lógico de conservación autorizado;
+- control de versiones o secuencia;
+- manejo de correcciones sin borrar historia;
+- límite temporal de uso;
+- responsable de reincorporación;
+- prueba de reconciliación;
+- criterio y evidencia de cierre o disposición posterior.
+
+Una hoja de cálculo, formulario impreso, mensaje o archivo compartido sin estas salvaguardas no constituye contingencia aprobable.
+
+---
+
+#### 11. Reincorporación y reconciliación
+
+Todo procedimiento que pueda producir hechos pendientes durante una falla deberá definir cómo se reincorporan posteriormente.
+
+La reincorporación obtiene `PASS` solo cuando puede demostrar que:
+
+- cada hecho conserva origen, actor, hora real, hora de registro, versión y referencia de contingencia;
+- se detectan duplicados antes de crear un segundo efecto;
+- se detectan recursos modificados después del inicio de la contingencia;
+- se distinguen operaciones vigentes, vencidas, rechazadas, parciales y ya confirmadas;
+- la secuencia de efectos se preserva o se resuelve explícitamente cuando exista conflicto;
+- una corrección no sobrescribe silenciosamente un hecho posterior;
+- las proyecciones derivadas pueden reconstruirse o reconciliarse desde la fuente propietaria;
+- los pendientes quedan en cero o quedan transferidos con propietario explícito antes de cerrar la contingencia;
+- el retorno a operación normal no oculta un saldo, documento, cola, comunicación o transacción todavía pendiente.
+
+La mera recuperación de conectividad o el reinicio de una aplicación no constituye reconciliación.
+
+---
+
+#### 12. Incidente, workaround, cambio y recuperación
+
+El procedimiento deberá preservar las siguientes fronteras:
+
+```text
+CONTENER O DEGRADAR
+≠
+RESOLVER LA CAUSA
+≠
+AUTORIZAR UN CAMBIO
+≠
+PROBAR UN ROLLBACK O UNA RESTAURACIÓN
+```
+
+Reglas:
+
+1. un workaround puede permitir continuidad sin cerrar el problema ni eliminar su causa;
+2. una modificación de configuración, software, red, dispositivo o integración que exceda la acción previamente autorizada se transfiere al gobierno de cambio;
+3. una restauración desde respaldo o un rollback consumen el procedimiento propietario de recuperación y su evidencia se confirma en `READY-GATE-012`;
+4. la contingencia conserva el expediente original y las correlaciones necesarias para investigación posterior;
+5. cerrar un ticket técnico no equivale por sí solo a haber normalizado el proceso empresarial.
+
+---
+
+#### 13. Handoff y suspensión segura
+
+Cada procedimiento aplicable deberá definir un punto en el que el operador deja de ejecutar y transfiere la decisión.
+
+El handoff deberá conservar como mínimo:
+
+- procedimiento y paso alcanzado;
+- actor y contexto;
+- recurso afectado;
+- síntoma o condición observada;
+- último hecho confirmado;
+- operación pendiente si existe;
+- resultado desconocido si existe;
+- evidencia disponible;
+- acción ya intentada;
+- riesgo de repetir;
+- proceso o función receptora;
+- condición necesaria para reanudar.
+
+`READY-GATE-008` comprueba que el handoff esté definido. La disponibilidad real de la mesa, contactos, guardias, responsables y escalamiento se confirma en `READY-GATE-010`.
+
+---
+
+#### 14. Evidencia aceptable para la ejecución posterior
+
+`SHELL-CI-021` podrá aceptar, según el tipo de procedimiento y riesgo:
+
+- procedimiento o runbook versionado con propietario y vigencia;
+- matriz de contingencias con condiciones de entrada, acciones, límites y salida;
+- walkthrough controlado con evidencia de pasos y decisiones;
+- tabletop con escenario, participantes, decisiones, tiempos y desviaciones;
+- simulación técnica u operativa en ambiente autorizado;
+- evidencia de modo offline o degradado que preserve estados pendientes y posterior reconciliación;
+- formularios o soportes manuales controlados con identidad y custodia;
+- receipts, bitácoras, eventos o registros que permitan reconstruir la ejecución;
+- evidencia de reconciliación y ausencia de pendientes sin propietario;
+- reporte de ejercicio con fallos, acciones correctivas, responsable y estado.
+
+La evidencia debe identificar el paquete, ambiente, versión del procedimiento, escenario, fecha, actor o función ejecutora y resultado.
+
+---
+
+#### 15. Evidencia insuficiente
+
+No bastan por sí solos:
+
+- una wiki o documento sin versión ni propietario;
+- una lista de pasos sin precondiciones, límites o salida;
+- una captura de pantalla aislada;
+- afirmar que el equipo conoce el procedimiento;
+- una demo sin escenario de falla;
+- un archivo manual sin identidad, custodia o reconciliación;
+- un modo offline que solo guarda datos sin demostrar revalidación posterior;
+- un job o request enviado sin receipt o reconciliación del resultado;
+- un incidente cerrado sin demostrar retorno operativo;
+- una contingencia que depende de credenciales compartidas o permisos extraordinarios no gobernados;
+- un plan de recuperación no ensayado;
+- una estrategia genérica de red o proveedor que no esté materializada para el alcance evaluado;
+- la sola existencia de capacitación, monitoreo, soporte o respaldo pertenecientes a otras puertas READY.
+
+---
+
+#### 16. Resultado por procedimiento
+
+Cada procedimiento o contingencia evaluados obtendrá exactamente uno de estos estados:
+
+| Estado      | Criterio                                                                                                                                 |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `PASS`      | el procedimiento aplicable está vigente, completo, ejecutable y respaldado por la evidencia exigida                                      |
+| `FAIL`      | la evidencia demuestra una condición incompatible con el contrato, un paso inseguro, una omisión crítica o una reconciliación incorrecta |
+| `BLOQUEADO` | falta un prerrequisito, una autoridad, un ambiente, un insumo o una evidencia sin los cuales no puede emitirse resultado válido          |
+| `NO_APLICA` | el expediente demuestra que esa clase de procedimiento no corresponde al alcance del paquete                                             |
+
+`NO_APLICA` requiere justificación explícita. La ausencia de evidencia nunca se convierte en `PASS` ni en `NO_APLICA`.
+
+---
+
+#### 17. Resultado agregado por paquete
+
+La agregación es estricta:
+
+1. se determina primero el universo esperado de procedimientos y contingencias;
+2. cada elemento esperado se evalúa exactamente una vez;
+3. cualquier `FAIL` produce `READY-GATE-008::<package_id> = FAIL`;
+4. si no hay `FAIL` pero existe al menos un `BLOQUEADO`, el paquete obtiene `BLOQUEADO`;
+5. el paquete obtiene `PASS` solo cuando todos los elementos aplicables obtienen `PASS` y cada `NO_APLICA` está justificado;
+6. un paquete completo obtiene `NO_APLICA` únicamente cuando el expediente demuestra que no introduce ni depende de operación humana, procedimiento técnico, contingencia, reincorporación o handoff relevantes para el piloto;
+7. una muestra parcial de procedimientos, sedes, actores, modos degradados o escenarios no se extrapola al resto del paquete.
+
+---
+
+#### 18. Escenarios mínimos a decidir por aplicabilidad
+
+El expediente del paquete deberá decidir si exige evidencia para, al menos, los siguientes escenarios:
+
+- inicio, ejecución y cierre normales;
+- cancelación o detención segura;
+- actor, sesión o autorización revocados;
+- dependencia no disponible;
+- red intermitente o pérdida de conectividad;
+- dispositivo o periférico no disponible;
+- timeout o resultado desconocido;
+- reintento de una intención previa;
+- dato parcial, obsoleto o conflictivo;
+- cola o borrador pendiente;
+- proveedor externo no disponible;
+- operación manual controlada;
+- recuperación de conectividad;
+- reincorporación y reconciliación;
+- retorno a operación normal.
+
+La decisión de `NO_APLICA` para un escenario debe derivarse del alcance real del paquete y no de que el escenario no haya sido ensayado.
+
+---
+
+#### 19. Cobertura de prueba heredada
+
+Esta tarea consume cobertura ya registrada y no redefine sus comportamientos:
+
+- `TREQ-CONT-001` protege impacto, dependencias y objetivos de continuidad;
+- `TREQ-CONT-002` protege declaración, activación, escalamiento, comunicación y cierre del incidente de continuidad;
+- `TREQ-CONT-003` protege la selección y prueba de modos de contingencia, incluidos operación bloqueada, snapshot, borrador local, cola offline, procedimiento manual, ubicación alternativa y proveedor sustituto;
+- `TREQ-CONT-004` protege respaldo, restauración y recuperación, cuyo readiness específico permanece en `READY-GATE-012`;
+- `TREQ-CONT-005` protege la reincorporación idempotente y la reconciliación del trabajo ejecutado durante una falla;
+- `TREQ-CONT-006` protege walkthrough, tabletop, simulación, restauración y ejercicio, e impide declarar listo un plan sin prueba vigente;
+- las pruebas de paquete ya planificadas por `DELIV-PKG-016` conservan su escenario, fixture, oracle, ambiente y evidencia propietarios.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea no introduce un comportamiento ejecutable nuevo. Define el criterio con el que `SHELL-CI-021` deberá aceptar o rechazar la evidencia de procedimientos y contingencias cuyos comportamientos ya están protegidos por el registro canónico de continuidad y por las pruebas específicas de cada paquete.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+---
+
+#### 20. Criterios de aceptación
+
+`READY-GATE-008` queda documentalmente satisfecha cuando:
+
+1. define la diferencia entre operación normal, contingencia, reincorporación y suspensión;
+2. obliga a derivar el universo esperado antes de evaluar evidencia;
+3. exige decisión explícita `APLICA` o `NO_APLICA` por clase de procedimiento;
+4. define la identidad mínima de un procedimiento vigente;
+5. define qué vuelve ejecutable un procedimiento de operación normal;
+6. define autoridad, límites, entrada y salida de una contingencia;
+7. conserva autorización y contexto durante operación degradada u offline;
+8. prohíbe convertir cachés, snapshots o archivos manuales en fuentes canónicas;
+9. exige identificadores estables y control de reintentos;
+10. define controles mínimos del procedimiento manual;
+11. exige reincorporación idempotente y reconciliación explícita;
+12. distingue workaround, problema, cambio, rollback y restauración;
+13. define handoff y suspensión segura;
+14. separa este gate de capacitación, soporte, monitoreo, respaldo, riesgos y autoridad final de piloto;
+15. define evidencia aceptable e insuficiente;
+16. define `PASS`, `FAIL`, `BLOQUEADO` y `NO_APLICA`;
+17. establece agregación estricta por paquete;
+18. obliga a decidir escenarios de falla relevantes sin extrapolar una muestra parcial;
+19. crea 0 y modifica 0 requisitos `TREQ-*`;
+20. no ejecuta procedimientos, simulaciones, cambios físicos, despliegues, migraciones ni modificaciones de Supabase en E5;
+21. mantiene `READY-GATE-009` exclusivamente reservada como siguiente tarea.
+
+---
+
+#### 21. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+READY-GATE-007 — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras
+
+##### TAREA ACTUAL APROBADA
+READY-GATE-008 — Definir criterio y evidencia para confirmar procedimientos operativos y contingencias
+
+##### SIGUIENTE TAREA RESERVADA
+READY-GATE-009 — Definir criterio y evidencia para confirmar capacitación y material de apoyo
+
+
 ### [ ] READY-GATE-009 — Definir criterio y evidencia para confirmar capacitación y material de apoyo
 ### [ ] READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento
 ### [ ] READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas
