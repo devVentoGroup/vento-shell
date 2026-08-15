@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **870** |
+| Aprobadas | **871** |
 | En propuesta | **0** |
-| No iniciadas | **724** |
+| No iniciadas | **723** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **54.58% (870/1594)** |
+| Porcentaje de completamiento | **54.64% (871/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `HYPERCARE-OPS-009` — Definir criterio y evidencia para retirar contingencias temporales | ✅ APROBADA |
-| Tarea actual | `HYPERCARE-OPS-010` — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo | ⬜ NO INICIADA |
-| Siguiente reservada | `E5-GATE-001` — Confirmar que cada capacidad priorizada tiene paquete aprobado | ⬜ NO INICIADA |
+| Última aprobada | `HYPERCARE-OPS-010` — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo | ✅ APROBADA |
+| Tarea actual | `E5-GATE-001` — Confirmar que cada capacidad priorizada tiene paquete aprobado | ⬜ NO INICIADA |
+| Siguiente reservada | `E5-GATE-002` — Confirmar que cada brecha crítica tiene propietario y destino | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -587,7 +587,7 @@
 | ✅ APROBADA | `HYPERCARE-OPS-007` | Definir registro y aprobación de deuda y tareas posteriores | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ✅ APROBADA | `HYPERCARE-OPS-008` | Definir criterio de transferencia a soporte ordinario y documentación definitiva | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ✅ APROBADA | `HYPERCARE-OPS-009` | Definir criterio y evidencia para retirar contingencias temporales | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `HYPERCARE-OPS-010` | Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
+| ✅ APROBADA | `HYPERCARE-OPS-010` | Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ⬜ NO INICIADA | `E5-GATE-001` | Confirmar que cada capacidad priorizada tiene paquete aprobado | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-002` | Confirmar que cada brecha crítica tiene propietario y destino | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-003` | Confirmar que los requisitos no funcionales están cubiertos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |

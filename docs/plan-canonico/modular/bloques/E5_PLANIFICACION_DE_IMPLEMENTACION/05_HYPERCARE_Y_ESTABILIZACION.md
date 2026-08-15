@@ -6037,7 +6037,690 @@ HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias te
 HYPERCARE-OPS-010 — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo
 
 
-### [ ] HYPERCARE-OPS-010 — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo
+### ✅ HYPERCARE-OPS-010 — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo
+
+**Estado:** APROBADA
+**Tarea anterior:** `HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales`
+**Tarea siguiente:** `E5-GATE-001 — Confirmar que cada capacidad priorizada tiene paquete aprobado`
+**Tipo de tarea:** documental — definición normativa y materialización por `package_id` de la autoridad, el expediente de evidencia y la regla de decisión para aprobar o bloquear el cierre funcional, técnico y operativo de hypercare; sin ejecutar cierre real, certificación del paquete, monitoreo, conciliación, correcciones, transferencias, retiros materiales, despliegues, migraciones, DDL/DML, backfills, modificaciones de datos ni operaciones sobre Supabase
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md`
+**Ejecución posterior:** `SHELL-CI-023::<package_id>` producirá la evidencia real y `SHELL-CI-024::<package_id>` certificará posteriormente el cierre del paquete y la transferencia a soporte
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`HYPERCARE-OPS-010` define la autoridad y la evidencia que deberán existir para decidir si una instancia que llegó a `CANDIDATA_A_SALIDA` puede abandonar el acompañamiento intensivo o debe permanecer bajo hypercare.
+
+La tarea responde exclusivamente a esta decisión:
+
+```text
+MISMA IDENTIDAD DE PAQUETE / CANDIDATO / AMBIENTE / ALCANCE
++
+CANDIDATURA DE SALIDA VIGENTE DE HYPERCARE-OPS-001
++
+EVIDENCIA FUNCIONAL, TECNICA Y OPERATIVA SUFICIENTE
++
+CONCILIACIONES, INCIDENTES, RESIDUALES, SOPORTE Y CONTINGENCIAS CON DISPOSICION VALIDA
++
+AUTORIDAD DE DECISION VIGENTE Y SEGREGACION CONSERVADA
+=
+APROBAR_CIERRE_HYPERCARE O BLOQUEAR_CIERRE_HYPERCARE
+```
+
+La aprobación de cierre de hypercare no certifica por sí sola el cierre del paquete. Esa certificación material pertenece a `SHELL-CI-024::<package_id>`.
+
+---
+
+#### 2. Resultado sustantivo
+
+Para las 207 raíces `GAP-PKG-*`, 010 materializa un contrato de cierre que conserva cuatro piezas lógicas por identidad:
+
+1. `hypercare_closure_authority::<package_id>` — resolución de la autoridad de decisión existente, sin crear un rol nuevo;
+2. `hypercare_closure_evidence_bundle::<package_id>` — expediente agregador de evidencia producida por 001..009 y por la ejecución real de `SHELL-CI-023`;
+3. `hypercare_closure_assessment::<package_id>` — evaluación de completitud, vigencia, coherencia y ausencia de bloqueos de cierre;
+4. `hypercare_closure_decision::<package_id>` — decisión futura `APROBAR_CIERRE_HYPERCARE` o `BLOQUEAR_CIERRE_HYPERCARE` para una instancia ejecutada.
+
+La aprobación documental de esta tarea no emite una decisión real de cierre para ningún paquete.
+
+---
+
+#### 3. Entradas canónicas obligatorias
+
+010 consume sin redefinir:
+
+- `HYPERCARE-OPS-001`: identidad temporal, `hypercare_exit_candidate_gate`, requisitos de duración, estados temporales y `CANDIDATA_A_SALIDA`;
+- `HYPERCARE-OPS-002`: responsable funcional, responsable técnico, suplencia, cobertura, segregación y escalamiento;
+- `HYPERCARE-OPS-003`: evidencia de errores, colas, integraciones, rendimiento y salud de observabilidad;
+- `HYPERCARE-OPS-004`: evidencia de adopción, tiempos humanos y desviaciones operativas;
+- `HYPERCARE-OPS-005`: conciliación de datos, documentos, estados y efectos entre dominios;
+- `HYPERCARE-OPS-006`: clasificación, corrección, validación, resolución y reapertura de incidentes;
+- `HYPERCARE-OPS-007`: disposición aprobada de deuda y trabajo posterior con propietario, destino y condición de salida;
+- `HYPERCARE-OPS-008`: transferencia ejecutada a soporte ordinario, documentación vigente, conocimiento, runbooks y aceptación del handoff;
+- `HYPERCARE-OPS-009`: disposición de contingencias temporales sin confundir elegibilidad con retiro material;
+- los requisitos de prueba aplicables ya vinculados al paquete por su expediente y `DELIV-PKG-016`;
+- `SHELL-CI-023::<package_id>` como productor futuro de evidencia real de hypercare;
+- `SHELL-CI-024::<package_id>` como certificador posterior del cierre del paquete y la transferencia a soporte.
+
+La evidencia de otra revisión, ambiente, alcance o ejecución no puede sustituir la evidencia de la instancia evaluada.
+
+---
+
+#### 4. Fronteras obligatorias
+
+010 no:
+
+- redefine la duración de hypercare ni crea una ventana universal de observación;
+- crea responsables funcionales, técnicos, ejecutores, autoridades de recovery ni autoridades de soporte;
+- redefine métricas, SLI/SLO, umbrales, severidades, prioridades o SLA;
+- reabre conciliaciones ni corrige datos;
+- clasifica, resuelve o cierra incidentes;
+- aprueba deuda que no haya sido gobernada por 007;
+- ejecuta la transferencia a soporte de 008;
+- retira contingencias de 009;
+- retira superficies legacy;
+- modifica estados de requisitos de prueba por inferencia;
+- sustituye la certificación posterior de `SHELL-CI-024`;
+- autoriza despliegues, cambios de configuración, migraciones, cambios de datos ni operaciones sobre Supabase.
+
+010 decide exclusivamente si la evidencia y las disposiciones ya producidas permiten terminar el acompañamiento intensivo de una instancia.
+
+---
+
+#### 5. Unidad de evaluación de cierre
+
+La unidad mínima de cierre conserva la misma identidad de ejecución:
+
+```text
+package_id
++
+candidate_ref
++
+environment
++
+authorized_scope_ref
++
+shell_ci_023_execution_ref
+```
+
+La decisión es inválida si mezcla candidatos, ambientes, alcances, ejecuciones de hypercare o evidencia perteneciente a otra instancia.
+
+Para modalidades que no tengan ejecución directa independiente, 010 conserva el tratamiento heredado de 001: no fabrica un `shell_ci_023_execution_ref`, un reloj ni una aprobación de cierre directa inexistentes.
+
+---
+
+#### 6. Autoridad de cierre
+
+##### 6.1. Autoridad final de decisión
+
+`hypercare_closure_authority::<package_id>` se resuelve desde el `functional_owner_ref` de `HYPERCARE-OPS-002::<package_id>`, que a su vez hereda el `Responsable de decisión` `OWN-*` de la fila homónima de `DELIV-PKG-017`.
+
+010 no crea un `hypercare lead`, `incident commander`, comité de cierre ni propietario paralelo.
+
+La autoridad final:
+
+1. decide dentro del mismo alcance empresarial para el que ya posee autoridad;
+2. no puede ampliar sedes, cohortes, procesos, datos, dispositivos, repositorios ni ambientes por aprobar el cierre;
+3. no sustituye la autoridad técnica, de recovery, de seguridad, de continuidad o de aceptación de riesgo cuando esas fuentes exijan una decisión separada;
+4. no puede aceptar como estable una condición que una autoridad propietaria mantiene bloqueada;
+5. debe conservar referencia a la fuente de autoridad y a la evidencia utilizada.
+
+##### 6.2. Conformidad técnica
+
+El `technical_owner_ref` de 002 debe aportar la conclusión técnica exigible sobre estabilidad, observabilidad, correcciones, recovery y riesgos técnicos dentro de su alcance.
+
+Una conformidad técnica no acepta impacto empresarial y una aprobación funcional no demuestra seguridad técnica.
+
+##### 6.3. Conformidad operativa y soporte
+
+Cuando 008 sea aplicable, el expediente debe demostrar que la transferencia a soporte ordinario fue ejecutada y recibida por la autoridad o función de soporte que su contrato vigente determine.
+
+La recepción de soporte no adquiere autoridad para cerrar incidentes, aceptar deuda, retirar contingencias o aprobar el cierre empresarial.
+
+##### 6.4. Segregación y conflicto
+
+Si una misma persona ocupa más de una función y la segregación vigente lo permite, cada función conserva evidencia separada. Si existe conflicto entre autoridades o conclusiones obligatorias, la decisión es `BLOQUEAR_CIERRE_HYPERCARE` hasta que la ruta de escalamiento de 002 y de la fuente propietaria lo resuelva.
+
+Un ejecutor, proveedor, tercero o persona disponible no obtiene autoridad de cierre por participar en la operación.
+
+---
+
+#### 7. Expediente de evidencia de cierre
+
+`hypercare_closure_evidence_bundle::<package_id>` deberá permitir reconstruir como mínimo:
+
+| Componente                | Evidencia exigible                                                                                                                   |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| identidad                 | `package_id`, candidato, ambiente, alcance autorizado y `shell_ci_023_execution_ref`                                                 |
+| temporal                  | `hypercare_start_at`, periodos activos/suspendidos/extendidos, requisitos temporales y `CANDIDATA_A_SALIDA` de 001                   |
+| autoridad                 | responsabilidad funcional, técnica, suplencia, cobertura y decisiones separadas de 002                                               |
+| estabilidad técnica       | resultados aplicables de 003, salud de observabilidad y referencias de cambios/correcciones relevantes                               |
+| estabilidad operativa     | resultados aplicables de 004 sobre adopción, tiempos y desviaciones, con baseline o umbral heredado cuando exista                    |
+| datos y efectos           | resultados de 005, diferencias cerradas o disposiciones válidas y ausencia de pendientes sin propietario                             |
+| incidentes                | expedientes de 006 con estado y disposición compatibles con cierre; restauración de servicio no basta por sí sola                    |
+| deuda y trabajo posterior | registros de 007 con decisión, propietario, destino canónico, control, condición de salida y evidencia futura                        |
+| soporte                   | handoff ejecutado de 008, documentación vigente, runbooks, conocimiento, routing y aceptación del receptor cuando aplique            |
+| contingencias             | disposición vigente de 009 y evidencia de que su permanencia o retiro es compatible con salida de hypercare                          |
+| recovery y legacy         | obligaciones de rollback, recovery, compensation, reconciliation y superficies retenidas con tratamiento compatible                  |
+| pruebas                   | referencias a requisitos de prueba aplicables y a la evidencia real exigida por el expediente; sin alterar su estado por inferencia  |
+| vigencia                  | fecha de corte, versiones y procedencia que permitan demostrar que ninguna evidencia fue invalidada por un cambio material posterior |
+| decisión                  | autoridad que evaluó, conclusión, razones, bloqueos y referencia al expediente inmutable o versionado utilizado                      |
+
+Un dashboard aislado, captura, correo, comentario, ticket cerrado, ausencia aparente de alertas o paso del tiempo no constituyen por sí solos evidencia suficiente de cierre.
+
+---
+
+#### 8. Regla de vigencia y procedencia
+
+Toda evidencia utilizada para cerrar debe ser:
+
+1. atribuible a la misma identidad de la sección 5;
+2. producida por una fuente autorizada o por el procedimiento propietario correspondiente;
+3. suficientemente reproducible para que otra persona autorizada pueda llegar a la misma conclusión;
+4. vigente respecto del candidato, ambiente, alcance, configuración, topología, documentación y autoridades actuales;
+5. coherente con el resto del expediente;
+6. sanitizada de secretos, tokens, credenciales, PII innecesaria y payloads sensibles;
+7. conservada sin reescribir historia para ocultar incidentes, regresiones, deuda, contingencias o periodos suspendidos.
+
+Un cambio material posterior invalida la evaluación afectada y obliga a volver a la fuente que deba producir evidencia vigente. 010 no recicla evidencia incompatible para preservar una decisión previa.
+
+---
+
+#### 9. Precondición de evaluación
+
+Una instancia directa solo puede someterse a decisión de cierre cuando `HYPERCARE-OPS-001::<package_id>` la haya dejado en `CANDIDATA_A_SALIDA` para exactamente la misma identidad.
+
+`ACTIVA`, `SUSPENDIDA`, `EXTENDIDA`, `INVALIDADA`, `NO_INICIADA` o ausencia de evidencia suficiente impiden aprobar el cierre.
+
+`NO_APLICA_DIRECTA` no se convierte en una ejecución ficticia: la raíz conserva la cobertura derivada definida por 001 y sus consumidores o raíces gobernadas reales.
+
+---
+
+#### 10. Decisiones permitidas
+
+Para una instancia directa real y evaluable, `hypercare_closure_decision::<package_id>` utiliza exclusivamente:
+
+- `APROBAR_CIERRE_HYPERCARE` — la instancia cumple todos los criterios aplicables, la autoridad vigente emite la decisión y el expediente puede entregarse a `SHELL-CI-024::<package_id>`;
+- `BLOQUEAR_CIERRE_HYPERCARE` — existe al menos una condición aplicable abierta, contradictoria, inválida o sin evidencia suficiente.
+
+No existe aprobación parcial. Una dimensión favorable no compensa un bloqueo en otra dimensión obligatoria.
+
+La aprobación documental de 010 define la regla; no emite hoy `APROBAR_CIERRE_HYPERCARE` para ninguna de las 207 raíces.
+
+---
+
+#### 11. Regla estricta para aprobar cierre
+
+`APROBAR_CIERRE_HYPERCARE` solo es admisible cuando se cumplen simultáneamente todas las condiciones aplicables:
+
+1. identidad de la instancia completa y correlacionable;
+2. `CANDIDATA_A_SALIDA` vigente de 001;
+3. autoridad final de decisión vigente y dentro de alcance;
+4. conformidad técnica exigible y sin conflicto de autoridad;
+5. evidencia técnica obligatoria de 003 satisfecha;
+6. evidencia operativa obligatoria de 004 satisfecha;
+7. conciliaciones de 005 exigibles para salida cerradas conforme a su contrato;
+8. incidentes de 006 con disposición compatible con cierre y sin usar `SERVICE_RESTORED` como sustituto de resolución;
+9. toda deuda o trabajo posterior gobernados por 007, sin residual huérfano y sin usar el diferimiento para ocultar un bloqueo no diferible;
+10. transferencia a soporte de 008 ejecutada cuando aplique y documentación operativa vigente;
+11. contingencias temporales de 009 con disposición válida y compatible con operación posterior;
+12. ninguna obligación de rollback, recovery, compensation o reconciliation exige mantener acompañamiento intensivo;
+13. superficies legacy retenidas con tratamiento compatible con salida;
+14. requisitos de prueba aplicables con el estado y evidencia que su fuente exija para permitir salida;
+15. evidencia vigente, reproducible, completa y sin contradicciones materiales;
+16. ningún cambio material posterior invalidó la evaluación;
+17. el receptor de soporte conoce incidentes, deuda, known errors, workarounds, contingencias, recovery y restricciones que deban continuar después de hypercare;
+18. la decisión conserva autoridad, fecha, alcance, razones y referencias exactas de evidencia.
+
+---
+
+#### 12. Condiciones de bloqueo
+
+La decisión es `BLOQUEAR_CIERRE_HYPERCARE` cuando ocurra cualquiera de estas condiciones aplicables:
+
+1. no existe `CANDIDATA_A_SALIDA` vigente;
+2. identidad de paquete, candidato, ambiente, alcance o ejecución no correlacionable;
+3. autoridad final inexistente, ambigua, expirada, sustituida fuera de contrato o fuera de alcance;
+4. falta conformidad técnica obligatoria o existe conflicto no resuelto entre autoridades;
+5. monitoreo técnico u operativo obligatorio pendiente, bloqueado o sustentado por evidencia no saludable;
+6. conciliación obligatoria pendiente, resultado desconocido o diferencia sin propietario;
+7. incidente cuya fuente impide salida, o intento de equiparar restauración con resolución;
+8. deuda o residual sin aprobación aplicable, propietario, destino, control o condición de salida;
+9. soporte ordinario sin handoff ejecutado, cobertura, documentación, conocimiento, observabilidad o escalamiento exigibles;
+10. contingencia temporal sin disposición válida o que siga exigiendo acompañamiento intensivo;
+11. recovery, rollback, compensation o reconciliation abiertos que impidan estabilización final;
+12. superficie legacy retenida con obligación incompatible con salida;
+13. requisito de prueba aplicable cuya fuente impide cierre por ausencia del estado o evidencia exigidos;
+14. evidencia obsoleta, prestada de otra instancia, no reproducible o contradictoria;
+15. cambio material que invalide la evidencia utilizada;
+16. intento de cerrar ocultando historia, incidentes, deuda, riesgos, contingencias o pendientes;
+17. intento de usar la decisión para ampliar alcance o conceder una autorización que otra fuente no otorgó;
+18. cualquier otra fuente canónica propietaria mantiene explícitamente una condición incompatible con salida.
+
+Todo bloqueo conserva propietario, fuente y condición objetiva de salida. 010 no crea un pendiente narrativo sin dueño.
+
+---
+
+#### 13. Incidentes, problemas y deuda restante
+
+El cierre de hypercare no exige falsificar que todo expediente relacionado esté materialmente terminado.
+
+Puede existir trabajo posterior solo cuando:
+
+- 007 lo haya dispuesto mediante la autoridad aplicable;
+- tenga propietario y destino canónico;
+- exista control temporal suficiente cuando corresponda;
+- el riesgo residual sea compatible con salida de hypercare conforme a su fuente;
+- 008 lo haya transferido al soporte receptor cuando afecte operación ordinaria;
+- la fuente del incidente, problema o requisito permita su tratamiento posterior.
+
+Un incidente, problema, deuda o known error que una fuente exige resolver antes de salida bloquea 010 aunque exista una tarea futura.
+
+010 no cambia prioridad, severidad, estado de incidente, estado de backlog ni estado de requisito para facilitar el cierre.
+
+---
+
+#### 14. Soporte y contingencias al terminar hypercare
+
+El cambio de hypercare a soporte ordinario modifica el modo de acompañamiento, no las fuentes de verdad ni las responsabilidades permanentes.
+
+Por tanto:
+
+1. una contingencia puede permanecer solo si 009 y las fuentes vigentes la dejan con una disposición compatible con salida;
+2. una capacidad permanente de backup, restore, rollback, recovery, kill switch, auditoría u observabilidad no se elimina por cerrar hypercare;
+3. soporte recibe las restricciones, deudas, known errors, workarounds y rutas de escalamiento aplicables;
+4. una contingencia incompatible con soporte ordinario mantiene el cierre bloqueado;
+5. una transferencia ejecutada no compensa una conciliación, incidente o bloqueo técnico abierto.
+
+---
+
+#### 15. Handoff hacia `SHELL-CI-024::<package_id>`
+
+Cuando exista una decisión real `APROBAR_CIERRE_HYPERCARE`, 010 entrega a `SHELL-CI-024::<package_id>` un expediente que permita certificar, sin inferencias:
+
+- identidad exacta del paquete y de la ejecución;
+- decisión de cierre de hypercare y autoridad que la emitió;
+- evidencia funcional, técnica y operativa utilizada;
+- transferencia a soporte y documentación vigente;
+- incidentes, problemas, deuda y trabajo posterior que continúen, con destino exacto;
+- contingencias y mecanismos permanentes que continúen, con su disposición;
+- referencias de pruebas y evidencias exigibles;
+- restricciones, riesgos y obligaciones posteriores que la certificación deba conservar.
+
+`SHELL-CI-024` realiza una certificación posterior. No puede sustituirse por la aprobación documental de 010 ni por la sola existencia del expediente.
+
+---
+
+#### 16. Tratamiento por modalidad heredada
+
+010 conserva exactamente la distribución aprobada por `DELIV-PKG-022`, `HYPERCARE-OPS-001` y las tareas 002..009:
+
+| Modalidad heredada            |  Raíces | Tratamiento de cierre                                                                                                                    |
+| ----------------------------- | ------: | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `PILOT-DIRECT-001`            | **160** | la instancia real podrá recibir una decisión de cierre solo después de `CANDIDATA_A_SALIDA` y evidencia completa                         |
+| `PILOT-SHARED-001`            |   **3** | no se crea cierre directo ficticio; la cobertura se deriva de consumidores reales y obligaciones propias del contrato compartido         |
+| `PILOT-CONTROL-001`           |  **26** | no se crea cierre directo ficticio; se conserva la cobertura de las raíces gobernadas y cualquier frontera ejecutable propia ya aprobada |
+| AURA bloqueada                |  **14** | no se fabrica ejecución ni cierre mientras persista el gate                                                                              |
+| dependencia externa bloqueada |   **2** | no se fabrica ejecución ni cierre mientras persista el gate externo                                                                      |
+| TALENTO fuera de línea actual |   **2** | permanece fuera de la línea vigente y no recibe cierre de hypercare ficticio                                                             |
+| **Total**                     | **207** | **reconciliado documentalmente**                                                                                                         |
+
+Reconciliación: `160 + 3 + 26 + 14 + 2 + 2 = 207`.
+
+---
+
+#### 17. Matriz materializada de las 207 raíces
+
+Cada identidad aparece exactamente una vez. Las referencias `::<package_id>` apuntan a la fila homónima de la fuente indicada y no crean identificadores nuevos.
+
+La matriz no predeclara un cierre real. `ESPECIFICADO` significa que existe contrato documental de evaluación según la modalidad heredada; `BLOQUEADO` conserva el gate heredado y prohíbe fabricar ejecución.
+
+| `package_id`  | candidatura temporal             | autoridad                        | evidencia de estabilización                                                                                                                                                  | soporte y contingencias                                             | decisión documental 010                                      | estado 010     |
+| ------------- | -------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------ | -------------- |
+| `GAP-PKG-001` | `HYPERCARE-OPS-001::GAP-PKG-001` | `HYPERCARE-OPS-002::GAP-PKG-001` | `HYPERCARE-OPS-003::GAP-PKG-001` + `HYPERCARE-OPS-004::GAP-PKG-001` + `HYPERCARE-OPS-005::GAP-PKG-001` + `HYPERCARE-OPS-006::GAP-PKG-001` + `HYPERCARE-OPS-007::GAP-PKG-001` | `HYPERCARE-OPS-008::GAP-PKG-001` + `HYPERCARE-OPS-009::GAP-PKG-001` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-002` | `HYPERCARE-OPS-001::GAP-PKG-002` | `HYPERCARE-OPS-002::GAP-PKG-002` | `HYPERCARE-OPS-003::GAP-PKG-002` + `HYPERCARE-OPS-004::GAP-PKG-002` + `HYPERCARE-OPS-005::GAP-PKG-002` + `HYPERCARE-OPS-006::GAP-PKG-002` + `HYPERCARE-OPS-007::GAP-PKG-002` | `HYPERCARE-OPS-008::GAP-PKG-002` + `HYPERCARE-OPS-009::GAP-PKG-002` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-003` | `HYPERCARE-OPS-001::GAP-PKG-003` | `HYPERCARE-OPS-002::GAP-PKG-003` | `HYPERCARE-OPS-003::GAP-PKG-003` + `HYPERCARE-OPS-004::GAP-PKG-003` + `HYPERCARE-OPS-005::GAP-PKG-003` + `HYPERCARE-OPS-006::GAP-PKG-003` + `HYPERCARE-OPS-007::GAP-PKG-003` | `HYPERCARE-OPS-008::GAP-PKG-003` + `HYPERCARE-OPS-009::GAP-PKG-003` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-004` | `HYPERCARE-OPS-001::GAP-PKG-004` | `HYPERCARE-OPS-002::GAP-PKG-004` | `HYPERCARE-OPS-003::GAP-PKG-004` + `HYPERCARE-OPS-004::GAP-PKG-004` + `HYPERCARE-OPS-005::GAP-PKG-004` + `HYPERCARE-OPS-006::GAP-PKG-004` + `HYPERCARE-OPS-007::GAP-PKG-004` | `HYPERCARE-OPS-008::GAP-PKG-004` + `HYPERCARE-OPS-009::GAP-PKG-004` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-005` | `HYPERCARE-OPS-001::GAP-PKG-005` | `HYPERCARE-OPS-002::GAP-PKG-005` | `HYPERCARE-OPS-003::GAP-PKG-005` + `HYPERCARE-OPS-004::GAP-PKG-005` + `HYPERCARE-OPS-005::GAP-PKG-005` + `HYPERCARE-OPS-006::GAP-PKG-005` + `HYPERCARE-OPS-007::GAP-PKG-005` | `HYPERCARE-OPS-008::GAP-PKG-005` + `HYPERCARE-OPS-009::GAP-PKG-005` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-006` | `HYPERCARE-OPS-001::GAP-PKG-006` | `HYPERCARE-OPS-002::GAP-PKG-006` | `HYPERCARE-OPS-003::GAP-PKG-006` + `HYPERCARE-OPS-004::GAP-PKG-006` + `HYPERCARE-OPS-005::GAP-PKG-006` + `HYPERCARE-OPS-006::GAP-PKG-006` + `HYPERCARE-OPS-007::GAP-PKG-006` | `HYPERCARE-OPS-008::GAP-PKG-006` + `HYPERCARE-OPS-009::GAP-PKG-006` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-007` | `HYPERCARE-OPS-001::GAP-PKG-007` | `HYPERCARE-OPS-002::GAP-PKG-007` | `HYPERCARE-OPS-003::GAP-PKG-007` + `HYPERCARE-OPS-004::GAP-PKG-007` + `HYPERCARE-OPS-005::GAP-PKG-007` + `HYPERCARE-OPS-006::GAP-PKG-007` + `HYPERCARE-OPS-007::GAP-PKG-007` | `HYPERCARE-OPS-008::GAP-PKG-007` + `HYPERCARE-OPS-009::GAP-PKG-007` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-008` | `HYPERCARE-OPS-001::GAP-PKG-008` | `HYPERCARE-OPS-002::GAP-PKG-008` | `HYPERCARE-OPS-003::GAP-PKG-008` + `HYPERCARE-OPS-004::GAP-PKG-008` + `HYPERCARE-OPS-005::GAP-PKG-008` + `HYPERCARE-OPS-006::GAP-PKG-008` + `HYPERCARE-OPS-007::GAP-PKG-008` | `HYPERCARE-OPS-008::GAP-PKG-008` + `HYPERCARE-OPS-009::GAP-PKG-008` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-009` | `HYPERCARE-OPS-001::GAP-PKG-009` | `HYPERCARE-OPS-002::GAP-PKG-009` | `HYPERCARE-OPS-003::GAP-PKG-009` + `HYPERCARE-OPS-004::GAP-PKG-009` + `HYPERCARE-OPS-005::GAP-PKG-009` + `HYPERCARE-OPS-006::GAP-PKG-009` + `HYPERCARE-OPS-007::GAP-PKG-009` | `HYPERCARE-OPS-008::GAP-PKG-009` + `HYPERCARE-OPS-009::GAP-PKG-009` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-010` | `HYPERCARE-OPS-001::GAP-PKG-010` | `HYPERCARE-OPS-002::GAP-PKG-010` | `HYPERCARE-OPS-003::GAP-PKG-010` + `HYPERCARE-OPS-004::GAP-PKG-010` + `HYPERCARE-OPS-005::GAP-PKG-010` + `HYPERCARE-OPS-006::GAP-PKG-010` + `HYPERCARE-OPS-007::GAP-PKG-010` | `HYPERCARE-OPS-008::GAP-PKG-010` + `HYPERCARE-OPS-009::GAP-PKG-010` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-011` | `HYPERCARE-OPS-001::GAP-PKG-011` | `HYPERCARE-OPS-002::GAP-PKG-011` | `HYPERCARE-OPS-003::GAP-PKG-011` + `HYPERCARE-OPS-004::GAP-PKG-011` + `HYPERCARE-OPS-005::GAP-PKG-011` + `HYPERCARE-OPS-006::GAP-PKG-011` + `HYPERCARE-OPS-007::GAP-PKG-011` | `HYPERCARE-OPS-008::GAP-PKG-011` + `HYPERCARE-OPS-009::GAP-PKG-011` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-012` | `HYPERCARE-OPS-001::GAP-PKG-012` | `HYPERCARE-OPS-002::GAP-PKG-012` | `HYPERCARE-OPS-003::GAP-PKG-012` + `HYPERCARE-OPS-004::GAP-PKG-012` + `HYPERCARE-OPS-005::GAP-PKG-012` + `HYPERCARE-OPS-006::GAP-PKG-012` + `HYPERCARE-OPS-007::GAP-PKG-012` | `HYPERCARE-OPS-008::GAP-PKG-012` + `HYPERCARE-OPS-009::GAP-PKG-012` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-013` | `HYPERCARE-OPS-001::GAP-PKG-013` | `HYPERCARE-OPS-002::GAP-PKG-013` | `HYPERCARE-OPS-003::GAP-PKG-013` + `HYPERCARE-OPS-004::GAP-PKG-013` + `HYPERCARE-OPS-005::GAP-PKG-013` + `HYPERCARE-OPS-006::GAP-PKG-013` + `HYPERCARE-OPS-007::GAP-PKG-013` | `HYPERCARE-OPS-008::GAP-PKG-013` + `HYPERCARE-OPS-009::GAP-PKG-013` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-014` | `HYPERCARE-OPS-001::GAP-PKG-014` | `HYPERCARE-OPS-002::GAP-PKG-014` | `HYPERCARE-OPS-003::GAP-PKG-014` + `HYPERCARE-OPS-004::GAP-PKG-014` + `HYPERCARE-OPS-005::GAP-PKG-014` + `HYPERCARE-OPS-006::GAP-PKG-014` + `HYPERCARE-OPS-007::GAP-PKG-014` | `HYPERCARE-OPS-008::GAP-PKG-014` + `HYPERCARE-OPS-009::GAP-PKG-014` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-015` | `HYPERCARE-OPS-001::GAP-PKG-015` | `HYPERCARE-OPS-002::GAP-PKG-015` | `HYPERCARE-OPS-003::GAP-PKG-015` + `HYPERCARE-OPS-004::GAP-PKG-015` + `HYPERCARE-OPS-005::GAP-PKG-015` + `HYPERCARE-OPS-006::GAP-PKG-015` + `HYPERCARE-OPS-007::GAP-PKG-015` | `HYPERCARE-OPS-008::GAP-PKG-015` + `HYPERCARE-OPS-009::GAP-PKG-015` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-016` | `HYPERCARE-OPS-001::GAP-PKG-016` | `HYPERCARE-OPS-002::GAP-PKG-016` | `HYPERCARE-OPS-003::GAP-PKG-016` + `HYPERCARE-OPS-004::GAP-PKG-016` + `HYPERCARE-OPS-005::GAP-PKG-016` + `HYPERCARE-OPS-006::GAP-PKG-016` + `HYPERCARE-OPS-007::GAP-PKG-016` | `HYPERCARE-OPS-008::GAP-PKG-016` + `HYPERCARE-OPS-009::GAP-PKG-016` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-017` | `HYPERCARE-OPS-001::GAP-PKG-017` | `HYPERCARE-OPS-002::GAP-PKG-017` | `HYPERCARE-OPS-003::GAP-PKG-017` + `HYPERCARE-OPS-004::GAP-PKG-017` + `HYPERCARE-OPS-005::GAP-PKG-017` + `HYPERCARE-OPS-006::GAP-PKG-017` + `HYPERCARE-OPS-007::GAP-PKG-017` | `HYPERCARE-OPS-008::GAP-PKG-017` + `HYPERCARE-OPS-009::GAP-PKG-017` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-018` | `HYPERCARE-OPS-001::GAP-PKG-018` | `HYPERCARE-OPS-002::GAP-PKG-018` | `HYPERCARE-OPS-003::GAP-PKG-018` + `HYPERCARE-OPS-004::GAP-PKG-018` + `HYPERCARE-OPS-005::GAP-PKG-018` + `HYPERCARE-OPS-006::GAP-PKG-018` + `HYPERCARE-OPS-007::GAP-PKG-018` | `HYPERCARE-OPS-008::GAP-PKG-018` + `HYPERCARE-OPS-009::GAP-PKG-018` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-019` | `HYPERCARE-OPS-001::GAP-PKG-019` | `HYPERCARE-OPS-002::GAP-PKG-019` | `HYPERCARE-OPS-003::GAP-PKG-019` + `HYPERCARE-OPS-004::GAP-PKG-019` + `HYPERCARE-OPS-005::GAP-PKG-019` + `HYPERCARE-OPS-006::GAP-PKG-019` + `HYPERCARE-OPS-007::GAP-PKG-019` | `HYPERCARE-OPS-008::GAP-PKG-019` + `HYPERCARE-OPS-009::GAP-PKG-019` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-020` | `HYPERCARE-OPS-001::GAP-PKG-020` | `HYPERCARE-OPS-002::GAP-PKG-020` | `HYPERCARE-OPS-003::GAP-PKG-020` + `HYPERCARE-OPS-004::GAP-PKG-020` + `HYPERCARE-OPS-005::GAP-PKG-020` + `HYPERCARE-OPS-006::GAP-PKG-020` + `HYPERCARE-OPS-007::GAP-PKG-020` | `HYPERCARE-OPS-008::GAP-PKG-020` + `HYPERCARE-OPS-009::GAP-PKG-020` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-021` | `HYPERCARE-OPS-001::GAP-PKG-021` | `HYPERCARE-OPS-002::GAP-PKG-021` | `HYPERCARE-OPS-003::GAP-PKG-021` + `HYPERCARE-OPS-004::GAP-PKG-021` + `HYPERCARE-OPS-005::GAP-PKG-021` + `HYPERCARE-OPS-006::GAP-PKG-021` + `HYPERCARE-OPS-007::GAP-PKG-021` | `HYPERCARE-OPS-008::GAP-PKG-021` + `HYPERCARE-OPS-009::GAP-PKG-021` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-022` | `HYPERCARE-OPS-001::GAP-PKG-022` | `HYPERCARE-OPS-002::GAP-PKG-022` | `HYPERCARE-OPS-003::GAP-PKG-022` + `HYPERCARE-OPS-004::GAP-PKG-022` + `HYPERCARE-OPS-005::GAP-PKG-022` + `HYPERCARE-OPS-006::GAP-PKG-022` + `HYPERCARE-OPS-007::GAP-PKG-022` | `HYPERCARE-OPS-008::GAP-PKG-022` + `HYPERCARE-OPS-009::GAP-PKG-022` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-023` | `HYPERCARE-OPS-001::GAP-PKG-023` | `HYPERCARE-OPS-002::GAP-PKG-023` | `HYPERCARE-OPS-003::GAP-PKG-023` + `HYPERCARE-OPS-004::GAP-PKG-023` + `HYPERCARE-OPS-005::GAP-PKG-023` + `HYPERCARE-OPS-006::GAP-PKG-023` + `HYPERCARE-OPS-007::GAP-PKG-023` | `HYPERCARE-OPS-008::GAP-PKG-023` + `HYPERCARE-OPS-009::GAP-PKG-023` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-024` | `HYPERCARE-OPS-001::GAP-PKG-024` | `HYPERCARE-OPS-002::GAP-PKG-024` | `HYPERCARE-OPS-003::GAP-PKG-024` + `HYPERCARE-OPS-004::GAP-PKG-024` + `HYPERCARE-OPS-005::GAP-PKG-024` + `HYPERCARE-OPS-006::GAP-PKG-024` + `HYPERCARE-OPS-007::GAP-PKG-024` | `HYPERCARE-OPS-008::GAP-PKG-024` + `HYPERCARE-OPS-009::GAP-PKG-024` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-025` | `HYPERCARE-OPS-001::GAP-PKG-025` | `HYPERCARE-OPS-002::GAP-PKG-025` | `HYPERCARE-OPS-003::GAP-PKG-025` + `HYPERCARE-OPS-004::GAP-PKG-025` + `HYPERCARE-OPS-005::GAP-PKG-025` + `HYPERCARE-OPS-006::GAP-PKG-025` + `HYPERCARE-OPS-007::GAP-PKG-025` | `HYPERCARE-OPS-008::GAP-PKG-025` + `HYPERCARE-OPS-009::GAP-PKG-025` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-026` | `HYPERCARE-OPS-001::GAP-PKG-026` | `HYPERCARE-OPS-002::GAP-PKG-026` | `HYPERCARE-OPS-003::GAP-PKG-026` + `HYPERCARE-OPS-004::GAP-PKG-026` + `HYPERCARE-OPS-005::GAP-PKG-026` + `HYPERCARE-OPS-006::GAP-PKG-026` + `HYPERCARE-OPS-007::GAP-PKG-026` | `HYPERCARE-OPS-008::GAP-PKG-026` + `HYPERCARE-OPS-009::GAP-PKG-026` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-027` | `HYPERCARE-OPS-001::GAP-PKG-027` | `HYPERCARE-OPS-002::GAP-PKG-027` | `HYPERCARE-OPS-003::GAP-PKG-027` + `HYPERCARE-OPS-004::GAP-PKG-027` + `HYPERCARE-OPS-005::GAP-PKG-027` + `HYPERCARE-OPS-006::GAP-PKG-027` + `HYPERCARE-OPS-007::GAP-PKG-027` | `HYPERCARE-OPS-008::GAP-PKG-027` + `HYPERCARE-OPS-009::GAP-PKG-027` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-028` | `HYPERCARE-OPS-001::GAP-PKG-028` | `HYPERCARE-OPS-002::GAP-PKG-028` | `HYPERCARE-OPS-003::GAP-PKG-028` + `HYPERCARE-OPS-004::GAP-PKG-028` + `HYPERCARE-OPS-005::GAP-PKG-028` + `HYPERCARE-OPS-006::GAP-PKG-028` + `HYPERCARE-OPS-007::GAP-PKG-028` | `HYPERCARE-OPS-008::GAP-PKG-028` + `HYPERCARE-OPS-009::GAP-PKG-028` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-029` | `HYPERCARE-OPS-001::GAP-PKG-029` | `HYPERCARE-OPS-002::GAP-PKG-029` | `HYPERCARE-OPS-003::GAP-PKG-029` + `HYPERCARE-OPS-004::GAP-PKG-029` + `HYPERCARE-OPS-005::GAP-PKG-029` + `HYPERCARE-OPS-006::GAP-PKG-029` + `HYPERCARE-OPS-007::GAP-PKG-029` | `HYPERCARE-OPS-008::GAP-PKG-029` + `HYPERCARE-OPS-009::GAP-PKG-029` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-030` | `HYPERCARE-OPS-001::GAP-PKG-030` | `HYPERCARE-OPS-002::GAP-PKG-030` | `HYPERCARE-OPS-003::GAP-PKG-030` + `HYPERCARE-OPS-004::GAP-PKG-030` + `HYPERCARE-OPS-005::GAP-PKG-030` + `HYPERCARE-OPS-006::GAP-PKG-030` + `HYPERCARE-OPS-007::GAP-PKG-030` | `HYPERCARE-OPS-008::GAP-PKG-030` + `HYPERCARE-OPS-009::GAP-PKG-030` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-031` | `HYPERCARE-OPS-001::GAP-PKG-031` | `HYPERCARE-OPS-002::GAP-PKG-031` | `HYPERCARE-OPS-003::GAP-PKG-031` + `HYPERCARE-OPS-004::GAP-PKG-031` + `HYPERCARE-OPS-005::GAP-PKG-031` + `HYPERCARE-OPS-006::GAP-PKG-031` + `HYPERCARE-OPS-007::GAP-PKG-031` | `HYPERCARE-OPS-008::GAP-PKG-031` + `HYPERCARE-OPS-009::GAP-PKG-031` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-032` | `HYPERCARE-OPS-001::GAP-PKG-032` | `HYPERCARE-OPS-002::GAP-PKG-032` | `HYPERCARE-OPS-003::GAP-PKG-032` + `HYPERCARE-OPS-004::GAP-PKG-032` + `HYPERCARE-OPS-005::GAP-PKG-032` + `HYPERCARE-OPS-006::GAP-PKG-032` + `HYPERCARE-OPS-007::GAP-PKG-032` | `HYPERCARE-OPS-008::GAP-PKG-032` + `HYPERCARE-OPS-009::GAP-PKG-032` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-033` | `HYPERCARE-OPS-001::GAP-PKG-033` | `HYPERCARE-OPS-002::GAP-PKG-033` | `HYPERCARE-OPS-003::GAP-PKG-033` + `HYPERCARE-OPS-004::GAP-PKG-033` + `HYPERCARE-OPS-005::GAP-PKG-033` + `HYPERCARE-OPS-006::GAP-PKG-033` + `HYPERCARE-OPS-007::GAP-PKG-033` | `HYPERCARE-OPS-008::GAP-PKG-033` + `HYPERCARE-OPS-009::GAP-PKG-033` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-034` | `HYPERCARE-OPS-001::GAP-PKG-034` | `HYPERCARE-OPS-002::GAP-PKG-034` | `HYPERCARE-OPS-003::GAP-PKG-034` + `HYPERCARE-OPS-004::GAP-PKG-034` + `HYPERCARE-OPS-005::GAP-PKG-034` + `HYPERCARE-OPS-006::GAP-PKG-034` + `HYPERCARE-OPS-007::GAP-PKG-034` | `HYPERCARE-OPS-008::GAP-PKG-034` + `HYPERCARE-OPS-009::GAP-PKG-034` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-035` | `HYPERCARE-OPS-001::GAP-PKG-035` | `HYPERCARE-OPS-002::GAP-PKG-035` | `HYPERCARE-OPS-003::GAP-PKG-035` + `HYPERCARE-OPS-004::GAP-PKG-035` + `HYPERCARE-OPS-005::GAP-PKG-035` + `HYPERCARE-OPS-006::GAP-PKG-035` + `HYPERCARE-OPS-007::GAP-PKG-035` | `HYPERCARE-OPS-008::GAP-PKG-035` + `HYPERCARE-OPS-009::GAP-PKG-035` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-036` | `HYPERCARE-OPS-001::GAP-PKG-036` | `HYPERCARE-OPS-002::GAP-PKG-036` | `HYPERCARE-OPS-003::GAP-PKG-036` + `HYPERCARE-OPS-004::GAP-PKG-036` + `HYPERCARE-OPS-005::GAP-PKG-036` + `HYPERCARE-OPS-006::GAP-PKG-036` + `HYPERCARE-OPS-007::GAP-PKG-036` | `HYPERCARE-OPS-008::GAP-PKG-036` + `HYPERCARE-OPS-009::GAP-PKG-036` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-037` | `HYPERCARE-OPS-001::GAP-PKG-037` | `HYPERCARE-OPS-002::GAP-PKG-037` | `HYPERCARE-OPS-003::GAP-PKG-037` + `HYPERCARE-OPS-004::GAP-PKG-037` + `HYPERCARE-OPS-005::GAP-PKG-037` + `HYPERCARE-OPS-006::GAP-PKG-037` + `HYPERCARE-OPS-007::GAP-PKG-037` | `HYPERCARE-OPS-008::GAP-PKG-037` + `HYPERCARE-OPS-009::GAP-PKG-037` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-038` | `HYPERCARE-OPS-001::GAP-PKG-038` | `HYPERCARE-OPS-002::GAP-PKG-038` | `HYPERCARE-OPS-003::GAP-PKG-038` + `HYPERCARE-OPS-004::GAP-PKG-038` + `HYPERCARE-OPS-005::GAP-PKG-038` + `HYPERCARE-OPS-006::GAP-PKG-038` + `HYPERCARE-OPS-007::GAP-PKG-038` | `HYPERCARE-OPS-008::GAP-PKG-038` + `HYPERCARE-OPS-009::GAP-PKG-038` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-039` | `HYPERCARE-OPS-001::GAP-PKG-039` | `HYPERCARE-OPS-002::GAP-PKG-039` | `HYPERCARE-OPS-003::GAP-PKG-039` + `HYPERCARE-OPS-004::GAP-PKG-039` + `HYPERCARE-OPS-005::GAP-PKG-039` + `HYPERCARE-OPS-006::GAP-PKG-039` + `HYPERCARE-OPS-007::GAP-PKG-039` | `HYPERCARE-OPS-008::GAP-PKG-039` + `HYPERCARE-OPS-009::GAP-PKG-039` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-040` | `HYPERCARE-OPS-001::GAP-PKG-040` | `HYPERCARE-OPS-002::GAP-PKG-040` | `HYPERCARE-OPS-003::GAP-PKG-040` + `HYPERCARE-OPS-004::GAP-PKG-040` + `HYPERCARE-OPS-005::GAP-PKG-040` + `HYPERCARE-OPS-006::GAP-PKG-040` + `HYPERCARE-OPS-007::GAP-PKG-040` | `HYPERCARE-OPS-008::GAP-PKG-040` + `HYPERCARE-OPS-009::GAP-PKG-040` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-041` | `HYPERCARE-OPS-001::GAP-PKG-041` | `HYPERCARE-OPS-002::GAP-PKG-041` | `HYPERCARE-OPS-003::GAP-PKG-041` + `HYPERCARE-OPS-004::GAP-PKG-041` + `HYPERCARE-OPS-005::GAP-PKG-041` + `HYPERCARE-OPS-006::GAP-PKG-041` + `HYPERCARE-OPS-007::GAP-PKG-041` | `HYPERCARE-OPS-008::GAP-PKG-041` + `HYPERCARE-OPS-009::GAP-PKG-041` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-042` | `HYPERCARE-OPS-001::GAP-PKG-042` | `HYPERCARE-OPS-002::GAP-PKG-042` | `HYPERCARE-OPS-003::GAP-PKG-042` + `HYPERCARE-OPS-004::GAP-PKG-042` + `HYPERCARE-OPS-005::GAP-PKG-042` + `HYPERCARE-OPS-006::GAP-PKG-042` + `HYPERCARE-OPS-007::GAP-PKG-042` | `HYPERCARE-OPS-008::GAP-PKG-042` + `HYPERCARE-OPS-009::GAP-PKG-042` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-043` | `HYPERCARE-OPS-001::GAP-PKG-043` | `HYPERCARE-OPS-002::GAP-PKG-043` | `HYPERCARE-OPS-003::GAP-PKG-043` + `HYPERCARE-OPS-004::GAP-PKG-043` + `HYPERCARE-OPS-005::GAP-PKG-043` + `HYPERCARE-OPS-006::GAP-PKG-043` + `HYPERCARE-OPS-007::GAP-PKG-043` | `HYPERCARE-OPS-008::GAP-PKG-043` + `HYPERCARE-OPS-009::GAP-PKG-043` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-044` | `HYPERCARE-OPS-001::GAP-PKG-044` | `HYPERCARE-OPS-002::GAP-PKG-044` | `HYPERCARE-OPS-003::GAP-PKG-044` + `HYPERCARE-OPS-004::GAP-PKG-044` + `HYPERCARE-OPS-005::GAP-PKG-044` + `HYPERCARE-OPS-006::GAP-PKG-044` + `HYPERCARE-OPS-007::GAP-PKG-044` | `HYPERCARE-OPS-008::GAP-PKG-044` + `HYPERCARE-OPS-009::GAP-PKG-044` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-045` | `HYPERCARE-OPS-001::GAP-PKG-045` | `HYPERCARE-OPS-002::GAP-PKG-045` | `HYPERCARE-OPS-003::GAP-PKG-045` + `HYPERCARE-OPS-004::GAP-PKG-045` + `HYPERCARE-OPS-005::GAP-PKG-045` + `HYPERCARE-OPS-006::GAP-PKG-045` + `HYPERCARE-OPS-007::GAP-PKG-045` | `HYPERCARE-OPS-008::GAP-PKG-045` + `HYPERCARE-OPS-009::GAP-PKG-045` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-046` | `HYPERCARE-OPS-001::GAP-PKG-046` | `HYPERCARE-OPS-002::GAP-PKG-046` | `HYPERCARE-OPS-003::GAP-PKG-046` + `HYPERCARE-OPS-004::GAP-PKG-046` + `HYPERCARE-OPS-005::GAP-PKG-046` + `HYPERCARE-OPS-006::GAP-PKG-046` + `HYPERCARE-OPS-007::GAP-PKG-046` | `HYPERCARE-OPS-008::GAP-PKG-046` + `HYPERCARE-OPS-009::GAP-PKG-046` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-047` | `HYPERCARE-OPS-001::GAP-PKG-047` | `HYPERCARE-OPS-002::GAP-PKG-047` | `HYPERCARE-OPS-003::GAP-PKG-047` + `HYPERCARE-OPS-004::GAP-PKG-047` + `HYPERCARE-OPS-005::GAP-PKG-047` + `HYPERCARE-OPS-006::GAP-PKG-047` + `HYPERCARE-OPS-007::GAP-PKG-047` | `HYPERCARE-OPS-008::GAP-PKG-047` + `HYPERCARE-OPS-009::GAP-PKG-047` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-048` | `HYPERCARE-OPS-001::GAP-PKG-048` | `HYPERCARE-OPS-002::GAP-PKG-048` | `HYPERCARE-OPS-003::GAP-PKG-048` + `HYPERCARE-OPS-004::GAP-PKG-048` + `HYPERCARE-OPS-005::GAP-PKG-048` + `HYPERCARE-OPS-006::GAP-PKG-048` + `HYPERCARE-OPS-007::GAP-PKG-048` | `HYPERCARE-OPS-008::GAP-PKG-048` + `HYPERCARE-OPS-009::GAP-PKG-048` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-049` | `HYPERCARE-OPS-001::GAP-PKG-049` | `HYPERCARE-OPS-002::GAP-PKG-049` | `HYPERCARE-OPS-003::GAP-PKG-049` + `HYPERCARE-OPS-004::GAP-PKG-049` + `HYPERCARE-OPS-005::GAP-PKG-049` + `HYPERCARE-OPS-006::GAP-PKG-049` + `HYPERCARE-OPS-007::GAP-PKG-049` | `HYPERCARE-OPS-008::GAP-PKG-049` + `HYPERCARE-OPS-009::GAP-PKG-049` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-050` | `HYPERCARE-OPS-001::GAP-PKG-050` | `HYPERCARE-OPS-002::GAP-PKG-050` | `HYPERCARE-OPS-003::GAP-PKG-050` + `HYPERCARE-OPS-004::GAP-PKG-050` + `HYPERCARE-OPS-005::GAP-PKG-050` + `HYPERCARE-OPS-006::GAP-PKG-050` + `HYPERCARE-OPS-007::GAP-PKG-050` | `HYPERCARE-OPS-008::GAP-PKG-050` + `HYPERCARE-OPS-009::GAP-PKG-050` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-051` | `HYPERCARE-OPS-001::GAP-PKG-051` | `HYPERCARE-OPS-002::GAP-PKG-051` | `HYPERCARE-OPS-003::GAP-PKG-051` + `HYPERCARE-OPS-004::GAP-PKG-051` + `HYPERCARE-OPS-005::GAP-PKG-051` + `HYPERCARE-OPS-006::GAP-PKG-051` + `HYPERCARE-OPS-007::GAP-PKG-051` | `HYPERCARE-OPS-008::GAP-PKG-051` + `HYPERCARE-OPS-009::GAP-PKG-051` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-052` | `HYPERCARE-OPS-001::GAP-PKG-052` | `HYPERCARE-OPS-002::GAP-PKG-052` | `HYPERCARE-OPS-003::GAP-PKG-052` + `HYPERCARE-OPS-004::GAP-PKG-052` + `HYPERCARE-OPS-005::GAP-PKG-052` + `HYPERCARE-OPS-006::GAP-PKG-052` + `HYPERCARE-OPS-007::GAP-PKG-052` | `HYPERCARE-OPS-008::GAP-PKG-052` + `HYPERCARE-OPS-009::GAP-PKG-052` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-053` | `HYPERCARE-OPS-001::GAP-PKG-053` | `HYPERCARE-OPS-002::GAP-PKG-053` | `HYPERCARE-OPS-003::GAP-PKG-053` + `HYPERCARE-OPS-004::GAP-PKG-053` + `HYPERCARE-OPS-005::GAP-PKG-053` + `HYPERCARE-OPS-006::GAP-PKG-053` + `HYPERCARE-OPS-007::GAP-PKG-053` | `HYPERCARE-OPS-008::GAP-PKG-053` + `HYPERCARE-OPS-009::GAP-PKG-053` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-054` | `HYPERCARE-OPS-001::GAP-PKG-054` | `HYPERCARE-OPS-002::GAP-PKG-054` | `HYPERCARE-OPS-003::GAP-PKG-054` + `HYPERCARE-OPS-004::GAP-PKG-054` + `HYPERCARE-OPS-005::GAP-PKG-054` + `HYPERCARE-OPS-006::GAP-PKG-054` + `HYPERCARE-OPS-007::GAP-PKG-054` | `HYPERCARE-OPS-008::GAP-PKG-054` + `HYPERCARE-OPS-009::GAP-PKG-054` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-055` | `HYPERCARE-OPS-001::GAP-PKG-055` | `HYPERCARE-OPS-002::GAP-PKG-055` | `HYPERCARE-OPS-003::GAP-PKG-055` + `HYPERCARE-OPS-004::GAP-PKG-055` + `HYPERCARE-OPS-005::GAP-PKG-055` + `HYPERCARE-OPS-006::GAP-PKG-055` + `HYPERCARE-OPS-007::GAP-PKG-055` | `HYPERCARE-OPS-008::GAP-PKG-055` + `HYPERCARE-OPS-009::GAP-PKG-055` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-056` | `HYPERCARE-OPS-001::GAP-PKG-056` | `HYPERCARE-OPS-002::GAP-PKG-056` | `HYPERCARE-OPS-003::GAP-PKG-056` + `HYPERCARE-OPS-004::GAP-PKG-056` + `HYPERCARE-OPS-005::GAP-PKG-056` + `HYPERCARE-OPS-006::GAP-PKG-056` + `HYPERCARE-OPS-007::GAP-PKG-056` | `HYPERCARE-OPS-008::GAP-PKG-056` + `HYPERCARE-OPS-009::GAP-PKG-056` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-057` | `HYPERCARE-OPS-001::GAP-PKG-057` | `HYPERCARE-OPS-002::GAP-PKG-057` | `HYPERCARE-OPS-003::GAP-PKG-057` + `HYPERCARE-OPS-004::GAP-PKG-057` + `HYPERCARE-OPS-005::GAP-PKG-057` + `HYPERCARE-OPS-006::GAP-PKG-057` + `HYPERCARE-OPS-007::GAP-PKG-057` | `HYPERCARE-OPS-008::GAP-PKG-057` + `HYPERCARE-OPS-009::GAP-PKG-057` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-058` | `HYPERCARE-OPS-001::GAP-PKG-058` | `HYPERCARE-OPS-002::GAP-PKG-058` | `HYPERCARE-OPS-003::GAP-PKG-058` + `HYPERCARE-OPS-004::GAP-PKG-058` + `HYPERCARE-OPS-005::GAP-PKG-058` + `HYPERCARE-OPS-006::GAP-PKG-058` + `HYPERCARE-OPS-007::GAP-PKG-058` | `HYPERCARE-OPS-008::GAP-PKG-058` + `HYPERCARE-OPS-009::GAP-PKG-058` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-059` | `HYPERCARE-OPS-001::GAP-PKG-059` | `HYPERCARE-OPS-002::GAP-PKG-059` | `HYPERCARE-OPS-003::GAP-PKG-059` + `HYPERCARE-OPS-004::GAP-PKG-059` + `HYPERCARE-OPS-005::GAP-PKG-059` + `HYPERCARE-OPS-006::GAP-PKG-059` + `HYPERCARE-OPS-007::GAP-PKG-059` | `HYPERCARE-OPS-008::GAP-PKG-059` + `HYPERCARE-OPS-009::GAP-PKG-059` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-060` | `HYPERCARE-OPS-001::GAP-PKG-060` | `HYPERCARE-OPS-002::GAP-PKG-060` | `HYPERCARE-OPS-003::GAP-PKG-060` + `HYPERCARE-OPS-004::GAP-PKG-060` + `HYPERCARE-OPS-005::GAP-PKG-060` + `HYPERCARE-OPS-006::GAP-PKG-060` + `HYPERCARE-OPS-007::GAP-PKG-060` | `HYPERCARE-OPS-008::GAP-PKG-060` + `HYPERCARE-OPS-009::GAP-PKG-060` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-061` | `HYPERCARE-OPS-001::GAP-PKG-061` | `HYPERCARE-OPS-002::GAP-PKG-061` | `HYPERCARE-OPS-003::GAP-PKG-061` + `HYPERCARE-OPS-004::GAP-PKG-061` + `HYPERCARE-OPS-005::GAP-PKG-061` + `HYPERCARE-OPS-006::GAP-PKG-061` + `HYPERCARE-OPS-007::GAP-PKG-061` | `HYPERCARE-OPS-008::GAP-PKG-061` + `HYPERCARE-OPS-009::GAP-PKG-061` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-062` | `HYPERCARE-OPS-001::GAP-PKG-062` | `HYPERCARE-OPS-002::GAP-PKG-062` | `HYPERCARE-OPS-003::GAP-PKG-062` + `HYPERCARE-OPS-004::GAP-PKG-062` + `HYPERCARE-OPS-005::GAP-PKG-062` + `HYPERCARE-OPS-006::GAP-PKG-062` + `HYPERCARE-OPS-007::GAP-PKG-062` | `HYPERCARE-OPS-008::GAP-PKG-062` + `HYPERCARE-OPS-009::GAP-PKG-062` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-063` | `HYPERCARE-OPS-001::GAP-PKG-063` | `HYPERCARE-OPS-002::GAP-PKG-063` | `HYPERCARE-OPS-003::GAP-PKG-063` + `HYPERCARE-OPS-004::GAP-PKG-063` + `HYPERCARE-OPS-005::GAP-PKG-063` + `HYPERCARE-OPS-006::GAP-PKG-063` + `HYPERCARE-OPS-007::GAP-PKG-063` | `HYPERCARE-OPS-008::GAP-PKG-063` + `HYPERCARE-OPS-009::GAP-PKG-063` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-064` | `HYPERCARE-OPS-001::GAP-PKG-064` | `HYPERCARE-OPS-002::GAP-PKG-064` | `HYPERCARE-OPS-003::GAP-PKG-064` + `HYPERCARE-OPS-004::GAP-PKG-064` + `HYPERCARE-OPS-005::GAP-PKG-064` + `HYPERCARE-OPS-006::GAP-PKG-064` + `HYPERCARE-OPS-007::GAP-PKG-064` | `HYPERCARE-OPS-008::GAP-PKG-064` + `HYPERCARE-OPS-009::GAP-PKG-064` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-065` | `HYPERCARE-OPS-001::GAP-PKG-065` | `HYPERCARE-OPS-002::GAP-PKG-065` | `HYPERCARE-OPS-003::GAP-PKG-065` + `HYPERCARE-OPS-004::GAP-PKG-065` + `HYPERCARE-OPS-005::GAP-PKG-065` + `HYPERCARE-OPS-006::GAP-PKG-065` + `HYPERCARE-OPS-007::GAP-PKG-065` | `HYPERCARE-OPS-008::GAP-PKG-065` + `HYPERCARE-OPS-009::GAP-PKG-065` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-066` | `HYPERCARE-OPS-001::GAP-PKG-066` | `HYPERCARE-OPS-002::GAP-PKG-066` | `HYPERCARE-OPS-003::GAP-PKG-066` + `HYPERCARE-OPS-004::GAP-PKG-066` + `HYPERCARE-OPS-005::GAP-PKG-066` + `HYPERCARE-OPS-006::GAP-PKG-066` + `HYPERCARE-OPS-007::GAP-PKG-066` | `HYPERCARE-OPS-008::GAP-PKG-066` + `HYPERCARE-OPS-009::GAP-PKG-066` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-067` | `HYPERCARE-OPS-001::GAP-PKG-067` | `HYPERCARE-OPS-002::GAP-PKG-067` | `HYPERCARE-OPS-003::GAP-PKG-067` + `HYPERCARE-OPS-004::GAP-PKG-067` + `HYPERCARE-OPS-005::GAP-PKG-067` + `HYPERCARE-OPS-006::GAP-PKG-067` + `HYPERCARE-OPS-007::GAP-PKG-067` | `HYPERCARE-OPS-008::GAP-PKG-067` + `HYPERCARE-OPS-009::GAP-PKG-067` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-068` | `HYPERCARE-OPS-001::GAP-PKG-068` | `HYPERCARE-OPS-002::GAP-PKG-068` | `HYPERCARE-OPS-003::GAP-PKG-068` + `HYPERCARE-OPS-004::GAP-PKG-068` + `HYPERCARE-OPS-005::GAP-PKG-068` + `HYPERCARE-OPS-006::GAP-PKG-068` + `HYPERCARE-OPS-007::GAP-PKG-068` | `HYPERCARE-OPS-008::GAP-PKG-068` + `HYPERCARE-OPS-009::GAP-PKG-068` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-069` | `HYPERCARE-OPS-001::GAP-PKG-069` | `HYPERCARE-OPS-002::GAP-PKG-069` | `HYPERCARE-OPS-003::GAP-PKG-069` + `HYPERCARE-OPS-004::GAP-PKG-069` + `HYPERCARE-OPS-005::GAP-PKG-069` + `HYPERCARE-OPS-006::GAP-PKG-069` + `HYPERCARE-OPS-007::GAP-PKG-069` | `HYPERCARE-OPS-008::GAP-PKG-069` + `HYPERCARE-OPS-009::GAP-PKG-069` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-070` | `HYPERCARE-OPS-001::GAP-PKG-070` | `HYPERCARE-OPS-002::GAP-PKG-070` | `HYPERCARE-OPS-003::GAP-PKG-070` + `HYPERCARE-OPS-004::GAP-PKG-070` + `HYPERCARE-OPS-005::GAP-PKG-070` + `HYPERCARE-OPS-006::GAP-PKG-070` + `HYPERCARE-OPS-007::GAP-PKG-070` | `HYPERCARE-OPS-008::GAP-PKG-070` + `HYPERCARE-OPS-009::GAP-PKG-070` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-071` | `HYPERCARE-OPS-001::GAP-PKG-071` | `HYPERCARE-OPS-002::GAP-PKG-071` | `HYPERCARE-OPS-003::GAP-PKG-071` + `HYPERCARE-OPS-004::GAP-PKG-071` + `HYPERCARE-OPS-005::GAP-PKG-071` + `HYPERCARE-OPS-006::GAP-PKG-071` + `HYPERCARE-OPS-007::GAP-PKG-071` | `HYPERCARE-OPS-008::GAP-PKG-071` + `HYPERCARE-OPS-009::GAP-PKG-071` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-072` | `HYPERCARE-OPS-001::GAP-PKG-072` | `HYPERCARE-OPS-002::GAP-PKG-072` | `HYPERCARE-OPS-003::GAP-PKG-072` + `HYPERCARE-OPS-004::GAP-PKG-072` + `HYPERCARE-OPS-005::GAP-PKG-072` + `HYPERCARE-OPS-006::GAP-PKG-072` + `HYPERCARE-OPS-007::GAP-PKG-072` | `HYPERCARE-OPS-008::GAP-PKG-072` + `HYPERCARE-OPS-009::GAP-PKG-072` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-073` | `HYPERCARE-OPS-001::GAP-PKG-073` | `HYPERCARE-OPS-002::GAP-PKG-073` | `HYPERCARE-OPS-003::GAP-PKG-073` + `HYPERCARE-OPS-004::GAP-PKG-073` + `HYPERCARE-OPS-005::GAP-PKG-073` + `HYPERCARE-OPS-006::GAP-PKG-073` + `HYPERCARE-OPS-007::GAP-PKG-073` | `HYPERCARE-OPS-008::GAP-PKG-073` + `HYPERCARE-OPS-009::GAP-PKG-073` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-074` | `HYPERCARE-OPS-001::GAP-PKG-074` | `HYPERCARE-OPS-002::GAP-PKG-074` | `HYPERCARE-OPS-003::GAP-PKG-074` + `HYPERCARE-OPS-004::GAP-PKG-074` + `HYPERCARE-OPS-005::GAP-PKG-074` + `HYPERCARE-OPS-006::GAP-PKG-074` + `HYPERCARE-OPS-007::GAP-PKG-074` | `HYPERCARE-OPS-008::GAP-PKG-074` + `HYPERCARE-OPS-009::GAP-PKG-074` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-075` | `HYPERCARE-OPS-001::GAP-PKG-075` | `HYPERCARE-OPS-002::GAP-PKG-075` | `HYPERCARE-OPS-003::GAP-PKG-075` + `HYPERCARE-OPS-004::GAP-PKG-075` + `HYPERCARE-OPS-005::GAP-PKG-075` + `HYPERCARE-OPS-006::GAP-PKG-075` + `HYPERCARE-OPS-007::GAP-PKG-075` | `HYPERCARE-OPS-008::GAP-PKG-075` + `HYPERCARE-OPS-009::GAP-PKG-075` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-076` | `HYPERCARE-OPS-001::GAP-PKG-076` | `HYPERCARE-OPS-002::GAP-PKG-076` | `HYPERCARE-OPS-003::GAP-PKG-076` + `HYPERCARE-OPS-004::GAP-PKG-076` + `HYPERCARE-OPS-005::GAP-PKG-076` + `HYPERCARE-OPS-006::GAP-PKG-076` + `HYPERCARE-OPS-007::GAP-PKG-076` | `HYPERCARE-OPS-008::GAP-PKG-076` + `HYPERCARE-OPS-009::GAP-PKG-076` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-077` | `HYPERCARE-OPS-001::GAP-PKG-077` | `HYPERCARE-OPS-002::GAP-PKG-077` | `HYPERCARE-OPS-003::GAP-PKG-077` + `HYPERCARE-OPS-004::GAP-PKG-077` + `HYPERCARE-OPS-005::GAP-PKG-077` + `HYPERCARE-OPS-006::GAP-PKG-077` + `HYPERCARE-OPS-007::GAP-PKG-077` | `HYPERCARE-OPS-008::GAP-PKG-077` + `HYPERCARE-OPS-009::GAP-PKG-077` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-078` | `HYPERCARE-OPS-001::GAP-PKG-078` | `HYPERCARE-OPS-002::GAP-PKG-078` | `HYPERCARE-OPS-003::GAP-PKG-078` + `HYPERCARE-OPS-004::GAP-PKG-078` + `HYPERCARE-OPS-005::GAP-PKG-078` + `HYPERCARE-OPS-006::GAP-PKG-078` + `HYPERCARE-OPS-007::GAP-PKG-078` | `HYPERCARE-OPS-008::GAP-PKG-078` + `HYPERCARE-OPS-009::GAP-PKG-078` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-079` | `HYPERCARE-OPS-001::GAP-PKG-079` | `HYPERCARE-OPS-002::GAP-PKG-079` | `HYPERCARE-OPS-003::GAP-PKG-079` + `HYPERCARE-OPS-004::GAP-PKG-079` + `HYPERCARE-OPS-005::GAP-PKG-079` + `HYPERCARE-OPS-006::GAP-PKG-079` + `HYPERCARE-OPS-007::GAP-PKG-079` | `HYPERCARE-OPS-008::GAP-PKG-079` + `HYPERCARE-OPS-009::GAP-PKG-079` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-080` | `HYPERCARE-OPS-001::GAP-PKG-080` | `HYPERCARE-OPS-002::GAP-PKG-080` | `HYPERCARE-OPS-003::GAP-PKG-080` + `HYPERCARE-OPS-004::GAP-PKG-080` + `HYPERCARE-OPS-005::GAP-PKG-080` + `HYPERCARE-OPS-006::GAP-PKG-080` + `HYPERCARE-OPS-007::GAP-PKG-080` | `HYPERCARE-OPS-008::GAP-PKG-080` + `HYPERCARE-OPS-009::GAP-PKG-080` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-081` | `HYPERCARE-OPS-001::GAP-PKG-081` | `HYPERCARE-OPS-002::GAP-PKG-081` | `HYPERCARE-OPS-003::GAP-PKG-081` + `HYPERCARE-OPS-004::GAP-PKG-081` + `HYPERCARE-OPS-005::GAP-PKG-081` + `HYPERCARE-OPS-006::GAP-PKG-081` + `HYPERCARE-OPS-007::GAP-PKG-081` | `HYPERCARE-OPS-008::GAP-PKG-081` + `HYPERCARE-OPS-009::GAP-PKG-081` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-082` | `HYPERCARE-OPS-001::GAP-PKG-082` | `HYPERCARE-OPS-002::GAP-PKG-082` | `HYPERCARE-OPS-003::GAP-PKG-082` + `HYPERCARE-OPS-004::GAP-PKG-082` + `HYPERCARE-OPS-005::GAP-PKG-082` + `HYPERCARE-OPS-006::GAP-PKG-082` + `HYPERCARE-OPS-007::GAP-PKG-082` | `HYPERCARE-OPS-008::GAP-PKG-082` + `HYPERCARE-OPS-009::GAP-PKG-082` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-083` | `HYPERCARE-OPS-001::GAP-PKG-083` | `HYPERCARE-OPS-002::GAP-PKG-083` | `HYPERCARE-OPS-003::GAP-PKG-083` + `HYPERCARE-OPS-004::GAP-PKG-083` + `HYPERCARE-OPS-005::GAP-PKG-083` + `HYPERCARE-OPS-006::GAP-PKG-083` + `HYPERCARE-OPS-007::GAP-PKG-083` | `HYPERCARE-OPS-008::GAP-PKG-083` + `HYPERCARE-OPS-009::GAP-PKG-083` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-084` | `HYPERCARE-OPS-001::GAP-PKG-084` | `HYPERCARE-OPS-002::GAP-PKG-084` | `HYPERCARE-OPS-003::GAP-PKG-084` + `HYPERCARE-OPS-004::GAP-PKG-084` + `HYPERCARE-OPS-005::GAP-PKG-084` + `HYPERCARE-OPS-006::GAP-PKG-084` + `HYPERCARE-OPS-007::GAP-PKG-084` | `HYPERCARE-OPS-008::GAP-PKG-084` + `HYPERCARE-OPS-009::GAP-PKG-084` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-085` | `HYPERCARE-OPS-001::GAP-PKG-085` | `HYPERCARE-OPS-002::GAP-PKG-085` | `HYPERCARE-OPS-003::GAP-PKG-085` + `HYPERCARE-OPS-004::GAP-PKG-085` + `HYPERCARE-OPS-005::GAP-PKG-085` + `HYPERCARE-OPS-006::GAP-PKG-085` + `HYPERCARE-OPS-007::GAP-PKG-085` | `HYPERCARE-OPS-008::GAP-PKG-085` + `HYPERCARE-OPS-009::GAP-PKG-085` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-086` | `HYPERCARE-OPS-001::GAP-PKG-086` | `HYPERCARE-OPS-002::GAP-PKG-086` | `HYPERCARE-OPS-003::GAP-PKG-086` + `HYPERCARE-OPS-004::GAP-PKG-086` + `HYPERCARE-OPS-005::GAP-PKG-086` + `HYPERCARE-OPS-006::GAP-PKG-086` + `HYPERCARE-OPS-007::GAP-PKG-086` | `HYPERCARE-OPS-008::GAP-PKG-086` + `HYPERCARE-OPS-009::GAP-PKG-086` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-087` | `HYPERCARE-OPS-001::GAP-PKG-087` | `HYPERCARE-OPS-002::GAP-PKG-087` | `HYPERCARE-OPS-003::GAP-PKG-087` + `HYPERCARE-OPS-004::GAP-PKG-087` + `HYPERCARE-OPS-005::GAP-PKG-087` + `HYPERCARE-OPS-006::GAP-PKG-087` + `HYPERCARE-OPS-007::GAP-PKG-087` | `HYPERCARE-OPS-008::GAP-PKG-087` + `HYPERCARE-OPS-009::GAP-PKG-087` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-088` | `HYPERCARE-OPS-001::GAP-PKG-088` | `HYPERCARE-OPS-002::GAP-PKG-088` | `HYPERCARE-OPS-003::GAP-PKG-088` + `HYPERCARE-OPS-004::GAP-PKG-088` + `HYPERCARE-OPS-005::GAP-PKG-088` + `HYPERCARE-OPS-006::GAP-PKG-088` + `HYPERCARE-OPS-007::GAP-PKG-088` | `HYPERCARE-OPS-008::GAP-PKG-088` + `HYPERCARE-OPS-009::GAP-PKG-088` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-089` | `HYPERCARE-OPS-001::GAP-PKG-089` | `HYPERCARE-OPS-002::GAP-PKG-089` | `HYPERCARE-OPS-003::GAP-PKG-089` + `HYPERCARE-OPS-004::GAP-PKG-089` + `HYPERCARE-OPS-005::GAP-PKG-089` + `HYPERCARE-OPS-006::GAP-PKG-089` + `HYPERCARE-OPS-007::GAP-PKG-089` | `HYPERCARE-OPS-008::GAP-PKG-089` + `HYPERCARE-OPS-009::GAP-PKG-089` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-090` | `HYPERCARE-OPS-001::GAP-PKG-090` | `HYPERCARE-OPS-002::GAP-PKG-090` | `HYPERCARE-OPS-003::GAP-PKG-090` + `HYPERCARE-OPS-004::GAP-PKG-090` + `HYPERCARE-OPS-005::GAP-PKG-090` + `HYPERCARE-OPS-006::GAP-PKG-090` + `HYPERCARE-OPS-007::GAP-PKG-090` | `HYPERCARE-OPS-008::GAP-PKG-090` + `HYPERCARE-OPS-009::GAP-PKG-090` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-091` | `HYPERCARE-OPS-001::GAP-PKG-091` | `HYPERCARE-OPS-002::GAP-PKG-091` | `HYPERCARE-OPS-003::GAP-PKG-091` + `HYPERCARE-OPS-004::GAP-PKG-091` + `HYPERCARE-OPS-005::GAP-PKG-091` + `HYPERCARE-OPS-006::GAP-PKG-091` + `HYPERCARE-OPS-007::GAP-PKG-091` | `HYPERCARE-OPS-008::GAP-PKG-091` + `HYPERCARE-OPS-009::GAP-PKG-091` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-092` | `HYPERCARE-OPS-001::GAP-PKG-092` | `HYPERCARE-OPS-002::GAP-PKG-092` | `HYPERCARE-OPS-003::GAP-PKG-092` + `HYPERCARE-OPS-004::GAP-PKG-092` + `HYPERCARE-OPS-005::GAP-PKG-092` + `HYPERCARE-OPS-006::GAP-PKG-092` + `HYPERCARE-OPS-007::GAP-PKG-092` | `HYPERCARE-OPS-008::GAP-PKG-092` + `HYPERCARE-OPS-009::GAP-PKG-092` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-093` | `HYPERCARE-OPS-001::GAP-PKG-093` | `HYPERCARE-OPS-002::GAP-PKG-093` | `HYPERCARE-OPS-003::GAP-PKG-093` + `HYPERCARE-OPS-004::GAP-PKG-093` + `HYPERCARE-OPS-005::GAP-PKG-093` + `HYPERCARE-OPS-006::GAP-PKG-093` + `HYPERCARE-OPS-007::GAP-PKG-093` | `HYPERCARE-OPS-008::GAP-PKG-093` + `HYPERCARE-OPS-009::GAP-PKG-093` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-094` | `HYPERCARE-OPS-001::GAP-PKG-094` | `HYPERCARE-OPS-002::GAP-PKG-094` | `HYPERCARE-OPS-003::GAP-PKG-094` + `HYPERCARE-OPS-004::GAP-PKG-094` + `HYPERCARE-OPS-005::GAP-PKG-094` + `HYPERCARE-OPS-006::GAP-PKG-094` + `HYPERCARE-OPS-007::GAP-PKG-094` | `HYPERCARE-OPS-008::GAP-PKG-094` + `HYPERCARE-OPS-009::GAP-PKG-094` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-095` | `HYPERCARE-OPS-001::GAP-PKG-095` | `HYPERCARE-OPS-002::GAP-PKG-095` | `HYPERCARE-OPS-003::GAP-PKG-095` + `HYPERCARE-OPS-004::GAP-PKG-095` + `HYPERCARE-OPS-005::GAP-PKG-095` + `HYPERCARE-OPS-006::GAP-PKG-095` + `HYPERCARE-OPS-007::GAP-PKG-095` | `HYPERCARE-OPS-008::GAP-PKG-095` + `HYPERCARE-OPS-009::GAP-PKG-095` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-096` | `HYPERCARE-OPS-001::GAP-PKG-096` | `HYPERCARE-OPS-002::GAP-PKG-096` | `HYPERCARE-OPS-003::GAP-PKG-096` + `HYPERCARE-OPS-004::GAP-PKG-096` + `HYPERCARE-OPS-005::GAP-PKG-096` + `HYPERCARE-OPS-006::GAP-PKG-096` + `HYPERCARE-OPS-007::GAP-PKG-096` | `HYPERCARE-OPS-008::GAP-PKG-096` + `HYPERCARE-OPS-009::GAP-PKG-096` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-097` | `HYPERCARE-OPS-001::GAP-PKG-097` | `HYPERCARE-OPS-002::GAP-PKG-097` | `HYPERCARE-OPS-003::GAP-PKG-097` + `HYPERCARE-OPS-004::GAP-PKG-097` + `HYPERCARE-OPS-005::GAP-PKG-097` + `HYPERCARE-OPS-006::GAP-PKG-097` + `HYPERCARE-OPS-007::GAP-PKG-097` | `HYPERCARE-OPS-008::GAP-PKG-097` + `HYPERCARE-OPS-009::GAP-PKG-097` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-098` | `HYPERCARE-OPS-001::GAP-PKG-098` | `HYPERCARE-OPS-002::GAP-PKG-098` | `HYPERCARE-OPS-003::GAP-PKG-098` + `HYPERCARE-OPS-004::GAP-PKG-098` + `HYPERCARE-OPS-005::GAP-PKG-098` + `HYPERCARE-OPS-006::GAP-PKG-098` + `HYPERCARE-OPS-007::GAP-PKG-098` | `HYPERCARE-OPS-008::GAP-PKG-098` + `HYPERCARE-OPS-009::GAP-PKG-098` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-099` | `HYPERCARE-OPS-001::GAP-PKG-099` | `HYPERCARE-OPS-002::GAP-PKG-099` | `HYPERCARE-OPS-003::GAP-PKG-099` + `HYPERCARE-OPS-004::GAP-PKG-099` + `HYPERCARE-OPS-005::GAP-PKG-099` + `HYPERCARE-OPS-006::GAP-PKG-099` + `HYPERCARE-OPS-007::GAP-PKG-099` | `HYPERCARE-OPS-008::GAP-PKG-099` + `HYPERCARE-OPS-009::GAP-PKG-099` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-100` | `HYPERCARE-OPS-001::GAP-PKG-100` | `HYPERCARE-OPS-002::GAP-PKG-100` | `HYPERCARE-OPS-003::GAP-PKG-100` + `HYPERCARE-OPS-004::GAP-PKG-100` + `HYPERCARE-OPS-005::GAP-PKG-100` + `HYPERCARE-OPS-006::GAP-PKG-100` + `HYPERCARE-OPS-007::GAP-PKG-100` | `HYPERCARE-OPS-008::GAP-PKG-100` + `HYPERCARE-OPS-009::GAP-PKG-100` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-101` | `HYPERCARE-OPS-001::GAP-PKG-101` | `HYPERCARE-OPS-002::GAP-PKG-101` | `HYPERCARE-OPS-003::GAP-PKG-101` + `HYPERCARE-OPS-004::GAP-PKG-101` + `HYPERCARE-OPS-005::GAP-PKG-101` + `HYPERCARE-OPS-006::GAP-PKG-101` + `HYPERCARE-OPS-007::GAP-PKG-101` | `HYPERCARE-OPS-008::GAP-PKG-101` + `HYPERCARE-OPS-009::GAP-PKG-101` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-102` | `HYPERCARE-OPS-001::GAP-PKG-102` | `HYPERCARE-OPS-002::GAP-PKG-102` | `HYPERCARE-OPS-003::GAP-PKG-102` + `HYPERCARE-OPS-004::GAP-PKG-102` + `HYPERCARE-OPS-005::GAP-PKG-102` + `HYPERCARE-OPS-006::GAP-PKG-102` + `HYPERCARE-OPS-007::GAP-PKG-102` | `HYPERCARE-OPS-008::GAP-PKG-102` + `HYPERCARE-OPS-009::GAP-PKG-102` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-103` | `HYPERCARE-OPS-001::GAP-PKG-103` | `HYPERCARE-OPS-002::GAP-PKG-103` | `HYPERCARE-OPS-003::GAP-PKG-103` + `HYPERCARE-OPS-004::GAP-PKG-103` + `HYPERCARE-OPS-005::GAP-PKG-103` + `HYPERCARE-OPS-006::GAP-PKG-103` + `HYPERCARE-OPS-007::GAP-PKG-103` | `HYPERCARE-OPS-008::GAP-PKG-103` + `HYPERCARE-OPS-009::GAP-PKG-103` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-104` | `HYPERCARE-OPS-001::GAP-PKG-104` | `HYPERCARE-OPS-002::GAP-PKG-104` | `HYPERCARE-OPS-003::GAP-PKG-104` + `HYPERCARE-OPS-004::GAP-PKG-104` + `HYPERCARE-OPS-005::GAP-PKG-104` + `HYPERCARE-OPS-006::GAP-PKG-104` + `HYPERCARE-OPS-007::GAP-PKG-104` | `HYPERCARE-OPS-008::GAP-PKG-104` + `HYPERCARE-OPS-009::GAP-PKG-104` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-105` | `HYPERCARE-OPS-001::GAP-PKG-105` | `HYPERCARE-OPS-002::GAP-PKG-105` | `HYPERCARE-OPS-003::GAP-PKG-105` + `HYPERCARE-OPS-004::GAP-PKG-105` + `HYPERCARE-OPS-005::GAP-PKG-105` + `HYPERCARE-OPS-006::GAP-PKG-105` + `HYPERCARE-OPS-007::GAP-PKG-105` | `HYPERCARE-OPS-008::GAP-PKG-105` + `HYPERCARE-OPS-009::GAP-PKG-105` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-106` | `HYPERCARE-OPS-001::GAP-PKG-106` | `HYPERCARE-OPS-002::GAP-PKG-106` | `HYPERCARE-OPS-003::GAP-PKG-106` + `HYPERCARE-OPS-004::GAP-PKG-106` + `HYPERCARE-OPS-005::GAP-PKG-106` + `HYPERCARE-OPS-006::GAP-PKG-106` + `HYPERCARE-OPS-007::GAP-PKG-106` | `HYPERCARE-OPS-008::GAP-PKG-106` + `HYPERCARE-OPS-009::GAP-PKG-106` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-107` | `HYPERCARE-OPS-001::GAP-PKG-107` | `HYPERCARE-OPS-002::GAP-PKG-107` | `HYPERCARE-OPS-003::GAP-PKG-107` + `HYPERCARE-OPS-004::GAP-PKG-107` + `HYPERCARE-OPS-005::GAP-PKG-107` + `HYPERCARE-OPS-006::GAP-PKG-107` + `HYPERCARE-OPS-007::GAP-PKG-107` | `HYPERCARE-OPS-008::GAP-PKG-107` + `HYPERCARE-OPS-009::GAP-PKG-107` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-108` | `HYPERCARE-OPS-001::GAP-PKG-108` | `HYPERCARE-OPS-002::GAP-PKG-108` | `HYPERCARE-OPS-003::GAP-PKG-108` + `HYPERCARE-OPS-004::GAP-PKG-108` + `HYPERCARE-OPS-005::GAP-PKG-108` + `HYPERCARE-OPS-006::GAP-PKG-108` + `HYPERCARE-OPS-007::GAP-PKG-108` | `HYPERCARE-OPS-008::GAP-PKG-108` + `HYPERCARE-OPS-009::GAP-PKG-108` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-109` | `HYPERCARE-OPS-001::GAP-PKG-109` | `HYPERCARE-OPS-002::GAP-PKG-109` | `HYPERCARE-OPS-003::GAP-PKG-109` + `HYPERCARE-OPS-004::GAP-PKG-109` + `HYPERCARE-OPS-005::GAP-PKG-109` + `HYPERCARE-OPS-006::GAP-PKG-109` + `HYPERCARE-OPS-007::GAP-PKG-109` | `HYPERCARE-OPS-008::GAP-PKG-109` + `HYPERCARE-OPS-009::GAP-PKG-109` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-110` | `HYPERCARE-OPS-001::GAP-PKG-110` | `HYPERCARE-OPS-002::GAP-PKG-110` | `HYPERCARE-OPS-003::GAP-PKG-110` + `HYPERCARE-OPS-004::GAP-PKG-110` + `HYPERCARE-OPS-005::GAP-PKG-110` + `HYPERCARE-OPS-006::GAP-PKG-110` + `HYPERCARE-OPS-007::GAP-PKG-110` | `HYPERCARE-OPS-008::GAP-PKG-110` + `HYPERCARE-OPS-009::GAP-PKG-110` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-111` | `HYPERCARE-OPS-001::GAP-PKG-111` | `HYPERCARE-OPS-002::GAP-PKG-111` | `HYPERCARE-OPS-003::GAP-PKG-111` + `HYPERCARE-OPS-004::GAP-PKG-111` + `HYPERCARE-OPS-005::GAP-PKG-111` + `HYPERCARE-OPS-006::GAP-PKG-111` + `HYPERCARE-OPS-007::GAP-PKG-111` | `HYPERCARE-OPS-008::GAP-PKG-111` + `HYPERCARE-OPS-009::GAP-PKG-111` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-112` | `HYPERCARE-OPS-001::GAP-PKG-112` | `HYPERCARE-OPS-002::GAP-PKG-112` | `HYPERCARE-OPS-003::GAP-PKG-112` + `HYPERCARE-OPS-004::GAP-PKG-112` + `HYPERCARE-OPS-005::GAP-PKG-112` + `HYPERCARE-OPS-006::GAP-PKG-112` + `HYPERCARE-OPS-007::GAP-PKG-112` | `HYPERCARE-OPS-008::GAP-PKG-112` + `HYPERCARE-OPS-009::GAP-PKG-112` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-113` | `HYPERCARE-OPS-001::GAP-PKG-113` | `HYPERCARE-OPS-002::GAP-PKG-113` | `HYPERCARE-OPS-003::GAP-PKG-113` + `HYPERCARE-OPS-004::GAP-PKG-113` + `HYPERCARE-OPS-005::GAP-PKG-113` + `HYPERCARE-OPS-006::GAP-PKG-113` + `HYPERCARE-OPS-007::GAP-PKG-113` | `HYPERCARE-OPS-008::GAP-PKG-113` + `HYPERCARE-OPS-009::GAP-PKG-113` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-114` | `HYPERCARE-OPS-001::GAP-PKG-114` | `HYPERCARE-OPS-002::GAP-PKG-114` | `HYPERCARE-OPS-003::GAP-PKG-114` + `HYPERCARE-OPS-004::GAP-PKG-114` + `HYPERCARE-OPS-005::GAP-PKG-114` + `HYPERCARE-OPS-006::GAP-PKG-114` + `HYPERCARE-OPS-007::GAP-PKG-114` | `HYPERCARE-OPS-008::GAP-PKG-114` + `HYPERCARE-OPS-009::GAP-PKG-114` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-115` | `HYPERCARE-OPS-001::GAP-PKG-115` | `HYPERCARE-OPS-002::GAP-PKG-115` | `HYPERCARE-OPS-003::GAP-PKG-115` + `HYPERCARE-OPS-004::GAP-PKG-115` + `HYPERCARE-OPS-005::GAP-PKG-115` + `HYPERCARE-OPS-006::GAP-PKG-115` + `HYPERCARE-OPS-007::GAP-PKG-115` | `HYPERCARE-OPS-008::GAP-PKG-115` + `HYPERCARE-OPS-009::GAP-PKG-115` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-116` | `HYPERCARE-OPS-001::GAP-PKG-116` | `HYPERCARE-OPS-002::GAP-PKG-116` | `HYPERCARE-OPS-003::GAP-PKG-116` + `HYPERCARE-OPS-004::GAP-PKG-116` + `HYPERCARE-OPS-005::GAP-PKG-116` + `HYPERCARE-OPS-006::GAP-PKG-116` + `HYPERCARE-OPS-007::GAP-PKG-116` | `HYPERCARE-OPS-008::GAP-PKG-116` + `HYPERCARE-OPS-009::GAP-PKG-116` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-117` | `HYPERCARE-OPS-001::GAP-PKG-117` | `HYPERCARE-OPS-002::GAP-PKG-117` | `HYPERCARE-OPS-003::GAP-PKG-117` + `HYPERCARE-OPS-004::GAP-PKG-117` + `HYPERCARE-OPS-005::GAP-PKG-117` + `HYPERCARE-OPS-006::GAP-PKG-117` + `HYPERCARE-OPS-007::GAP-PKG-117` | `HYPERCARE-OPS-008::GAP-PKG-117` + `HYPERCARE-OPS-009::GAP-PKG-117` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-118` | `HYPERCARE-OPS-001::GAP-PKG-118` | `HYPERCARE-OPS-002::GAP-PKG-118` | `HYPERCARE-OPS-003::GAP-PKG-118` + `HYPERCARE-OPS-004::GAP-PKG-118` + `HYPERCARE-OPS-005::GAP-PKG-118` + `HYPERCARE-OPS-006::GAP-PKG-118` + `HYPERCARE-OPS-007::GAP-PKG-118` | `HYPERCARE-OPS-008::GAP-PKG-118` + `HYPERCARE-OPS-009::GAP-PKG-118` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-119` | `HYPERCARE-OPS-001::GAP-PKG-119` | `HYPERCARE-OPS-002::GAP-PKG-119` | `HYPERCARE-OPS-003::GAP-PKG-119` + `HYPERCARE-OPS-004::GAP-PKG-119` + `HYPERCARE-OPS-005::GAP-PKG-119` + `HYPERCARE-OPS-006::GAP-PKG-119` + `HYPERCARE-OPS-007::GAP-PKG-119` | `HYPERCARE-OPS-008::GAP-PKG-119` + `HYPERCARE-OPS-009::GAP-PKG-119` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-120` | `HYPERCARE-OPS-001::GAP-PKG-120` | `HYPERCARE-OPS-002::GAP-PKG-120` | `HYPERCARE-OPS-003::GAP-PKG-120` + `HYPERCARE-OPS-004::GAP-PKG-120` + `HYPERCARE-OPS-005::GAP-PKG-120` + `HYPERCARE-OPS-006::GAP-PKG-120` + `HYPERCARE-OPS-007::GAP-PKG-120` | `HYPERCARE-OPS-008::GAP-PKG-120` + `HYPERCARE-OPS-009::GAP-PKG-120` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-121` | `HYPERCARE-OPS-001::GAP-PKG-121` | `HYPERCARE-OPS-002::GAP-PKG-121` | `HYPERCARE-OPS-003::GAP-PKG-121` + `HYPERCARE-OPS-004::GAP-PKG-121` + `HYPERCARE-OPS-005::GAP-PKG-121` + `HYPERCARE-OPS-006::GAP-PKG-121` + `HYPERCARE-OPS-007::GAP-PKG-121` | `HYPERCARE-OPS-008::GAP-PKG-121` + `HYPERCARE-OPS-009::GAP-PKG-121` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-122` | `HYPERCARE-OPS-001::GAP-PKG-122` | `HYPERCARE-OPS-002::GAP-PKG-122` | `HYPERCARE-OPS-003::GAP-PKG-122` + `HYPERCARE-OPS-004::GAP-PKG-122` + `HYPERCARE-OPS-005::GAP-PKG-122` + `HYPERCARE-OPS-006::GAP-PKG-122` + `HYPERCARE-OPS-007::GAP-PKG-122` | `HYPERCARE-OPS-008::GAP-PKG-122` + `HYPERCARE-OPS-009::GAP-PKG-122` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-123` | `HYPERCARE-OPS-001::GAP-PKG-123` | `HYPERCARE-OPS-002::GAP-PKG-123` | `HYPERCARE-OPS-003::GAP-PKG-123` + `HYPERCARE-OPS-004::GAP-PKG-123` + `HYPERCARE-OPS-005::GAP-PKG-123` + `HYPERCARE-OPS-006::GAP-PKG-123` + `HYPERCARE-OPS-007::GAP-PKG-123` | `HYPERCARE-OPS-008::GAP-PKG-123` + `HYPERCARE-OPS-009::GAP-PKG-123` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-124` | `HYPERCARE-OPS-001::GAP-PKG-124` | `HYPERCARE-OPS-002::GAP-PKG-124` | `HYPERCARE-OPS-003::GAP-PKG-124` + `HYPERCARE-OPS-004::GAP-PKG-124` + `HYPERCARE-OPS-005::GAP-PKG-124` + `HYPERCARE-OPS-006::GAP-PKG-124` + `HYPERCARE-OPS-007::GAP-PKG-124` | `HYPERCARE-OPS-008::GAP-PKG-124` + `HYPERCARE-OPS-009::GAP-PKG-124` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-125` | `HYPERCARE-OPS-001::GAP-PKG-125` | `HYPERCARE-OPS-002::GAP-PKG-125` | `HYPERCARE-OPS-003::GAP-PKG-125` + `HYPERCARE-OPS-004::GAP-PKG-125` + `HYPERCARE-OPS-005::GAP-PKG-125` + `HYPERCARE-OPS-006::GAP-PKG-125` + `HYPERCARE-OPS-007::GAP-PKG-125` | `HYPERCARE-OPS-008::GAP-PKG-125` + `HYPERCARE-OPS-009::GAP-PKG-125` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-126` | `HYPERCARE-OPS-001::GAP-PKG-126` | `HYPERCARE-OPS-002::GAP-PKG-126` | `HYPERCARE-OPS-003::GAP-PKG-126` + `HYPERCARE-OPS-004::GAP-PKG-126` + `HYPERCARE-OPS-005::GAP-PKG-126` + `HYPERCARE-OPS-006::GAP-PKG-126` + `HYPERCARE-OPS-007::GAP-PKG-126` | `HYPERCARE-OPS-008::GAP-PKG-126` + `HYPERCARE-OPS-009::GAP-PKG-126` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-127` | `HYPERCARE-OPS-001::GAP-PKG-127` | `HYPERCARE-OPS-002::GAP-PKG-127` | `HYPERCARE-OPS-003::GAP-PKG-127` + `HYPERCARE-OPS-004::GAP-PKG-127` + `HYPERCARE-OPS-005::GAP-PKG-127` + `HYPERCARE-OPS-006::GAP-PKG-127` + `HYPERCARE-OPS-007::GAP-PKG-127` | `HYPERCARE-OPS-008::GAP-PKG-127` + `HYPERCARE-OPS-009::GAP-PKG-127` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-128` | `HYPERCARE-OPS-001::GAP-PKG-128` | `HYPERCARE-OPS-002::GAP-PKG-128` | `HYPERCARE-OPS-003::GAP-PKG-128` + `HYPERCARE-OPS-004::GAP-PKG-128` + `HYPERCARE-OPS-005::GAP-PKG-128` + `HYPERCARE-OPS-006::GAP-PKG-128` + `HYPERCARE-OPS-007::GAP-PKG-128` | `HYPERCARE-OPS-008::GAP-PKG-128` + `HYPERCARE-OPS-009::GAP-PKG-128` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-129` | `HYPERCARE-OPS-001::GAP-PKG-129` | `HYPERCARE-OPS-002::GAP-PKG-129` | `HYPERCARE-OPS-003::GAP-PKG-129` + `HYPERCARE-OPS-004::GAP-PKG-129` + `HYPERCARE-OPS-005::GAP-PKG-129` + `HYPERCARE-OPS-006::GAP-PKG-129` + `HYPERCARE-OPS-007::GAP-PKG-129` | `HYPERCARE-OPS-008::GAP-PKG-129` + `HYPERCARE-OPS-009::GAP-PKG-129` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-130` | `HYPERCARE-OPS-001::GAP-PKG-130` | `HYPERCARE-OPS-002::GAP-PKG-130` | `HYPERCARE-OPS-003::GAP-PKG-130` + `HYPERCARE-OPS-004::GAP-PKG-130` + `HYPERCARE-OPS-005::GAP-PKG-130` + `HYPERCARE-OPS-006::GAP-PKG-130` + `HYPERCARE-OPS-007::GAP-PKG-130` | `HYPERCARE-OPS-008::GAP-PKG-130` + `HYPERCARE-OPS-009::GAP-PKG-130` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-131` | `HYPERCARE-OPS-001::GAP-PKG-131` | `HYPERCARE-OPS-002::GAP-PKG-131` | `HYPERCARE-OPS-003::GAP-PKG-131` + `HYPERCARE-OPS-004::GAP-PKG-131` + `HYPERCARE-OPS-005::GAP-PKG-131` + `HYPERCARE-OPS-006::GAP-PKG-131` + `HYPERCARE-OPS-007::GAP-PKG-131` | `HYPERCARE-OPS-008::GAP-PKG-131` + `HYPERCARE-OPS-009::GAP-PKG-131` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-132` | `HYPERCARE-OPS-001::GAP-PKG-132` | `HYPERCARE-OPS-002::GAP-PKG-132` | `HYPERCARE-OPS-003::GAP-PKG-132` + `HYPERCARE-OPS-004::GAP-PKG-132` + `HYPERCARE-OPS-005::GAP-PKG-132` + `HYPERCARE-OPS-006::GAP-PKG-132` + `HYPERCARE-OPS-007::GAP-PKG-132` | `HYPERCARE-OPS-008::GAP-PKG-132` + `HYPERCARE-OPS-009::GAP-PKG-132` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-133` | `HYPERCARE-OPS-001::GAP-PKG-133` | `HYPERCARE-OPS-002::GAP-PKG-133` | `HYPERCARE-OPS-003::GAP-PKG-133` + `HYPERCARE-OPS-004::GAP-PKG-133` + `HYPERCARE-OPS-005::GAP-PKG-133` + `HYPERCARE-OPS-006::GAP-PKG-133` + `HYPERCARE-OPS-007::GAP-PKG-133` | `HYPERCARE-OPS-008::GAP-PKG-133` + `HYPERCARE-OPS-009::GAP-PKG-133` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-134` | `HYPERCARE-OPS-001::GAP-PKG-134` | `HYPERCARE-OPS-002::GAP-PKG-134` | `HYPERCARE-OPS-003::GAP-PKG-134` + `HYPERCARE-OPS-004::GAP-PKG-134` + `HYPERCARE-OPS-005::GAP-PKG-134` + `HYPERCARE-OPS-006::GAP-PKG-134` + `HYPERCARE-OPS-007::GAP-PKG-134` | `HYPERCARE-OPS-008::GAP-PKG-134` + `HYPERCARE-OPS-009::GAP-PKG-134` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-135` | `HYPERCARE-OPS-001::GAP-PKG-135` | `HYPERCARE-OPS-002::GAP-PKG-135` | `HYPERCARE-OPS-003::GAP-PKG-135` + `HYPERCARE-OPS-004::GAP-PKG-135` + `HYPERCARE-OPS-005::GAP-PKG-135` + `HYPERCARE-OPS-006::GAP-PKG-135` + `HYPERCARE-OPS-007::GAP-PKG-135` | `HYPERCARE-OPS-008::GAP-PKG-135` + `HYPERCARE-OPS-009::GAP-PKG-135` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-136` | `HYPERCARE-OPS-001::GAP-PKG-136` | `HYPERCARE-OPS-002::GAP-PKG-136` | `HYPERCARE-OPS-003::GAP-PKG-136` + `HYPERCARE-OPS-004::GAP-PKG-136` + `HYPERCARE-OPS-005::GAP-PKG-136` + `HYPERCARE-OPS-006::GAP-PKG-136` + `HYPERCARE-OPS-007::GAP-PKG-136` | `HYPERCARE-OPS-008::GAP-PKG-136` + `HYPERCARE-OPS-009::GAP-PKG-136` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-137` | `HYPERCARE-OPS-001::GAP-PKG-137` | `HYPERCARE-OPS-002::GAP-PKG-137` | `HYPERCARE-OPS-003::GAP-PKG-137` + `HYPERCARE-OPS-004::GAP-PKG-137` + `HYPERCARE-OPS-005::GAP-PKG-137` + `HYPERCARE-OPS-006::GAP-PKG-137` + `HYPERCARE-OPS-007::GAP-PKG-137` | `HYPERCARE-OPS-008::GAP-PKG-137` + `HYPERCARE-OPS-009::GAP-PKG-137` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-138` | `HYPERCARE-OPS-001::GAP-PKG-138` | `HYPERCARE-OPS-002::GAP-PKG-138` | `HYPERCARE-OPS-003::GAP-PKG-138` + `HYPERCARE-OPS-004::GAP-PKG-138` + `HYPERCARE-OPS-005::GAP-PKG-138` + `HYPERCARE-OPS-006::GAP-PKG-138` + `HYPERCARE-OPS-007::GAP-PKG-138` | `HYPERCARE-OPS-008::GAP-PKG-138` + `HYPERCARE-OPS-009::GAP-PKG-138` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-139` | `HYPERCARE-OPS-001::GAP-PKG-139` | `HYPERCARE-OPS-002::GAP-PKG-139` | `HYPERCARE-OPS-003::GAP-PKG-139` + `HYPERCARE-OPS-004::GAP-PKG-139` + `HYPERCARE-OPS-005::GAP-PKG-139` + `HYPERCARE-OPS-006::GAP-PKG-139` + `HYPERCARE-OPS-007::GAP-PKG-139` | `HYPERCARE-OPS-008::GAP-PKG-139` + `HYPERCARE-OPS-009::GAP-PKG-139` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-140` | `HYPERCARE-OPS-001::GAP-PKG-140` | `HYPERCARE-OPS-002::GAP-PKG-140` | `HYPERCARE-OPS-003::GAP-PKG-140` + `HYPERCARE-OPS-004::GAP-PKG-140` + `HYPERCARE-OPS-005::GAP-PKG-140` + `HYPERCARE-OPS-006::GAP-PKG-140` + `HYPERCARE-OPS-007::GAP-PKG-140` | `HYPERCARE-OPS-008::GAP-PKG-140` + `HYPERCARE-OPS-009::GAP-PKG-140` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-141` | `HYPERCARE-OPS-001::GAP-PKG-141` | `HYPERCARE-OPS-002::GAP-PKG-141` | `HYPERCARE-OPS-003::GAP-PKG-141` + `HYPERCARE-OPS-004::GAP-PKG-141` + `HYPERCARE-OPS-005::GAP-PKG-141` + `HYPERCARE-OPS-006::GAP-PKG-141` + `HYPERCARE-OPS-007::GAP-PKG-141` | `HYPERCARE-OPS-008::GAP-PKG-141` + `HYPERCARE-OPS-009::GAP-PKG-141` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-142` | `HYPERCARE-OPS-001::GAP-PKG-142` | `HYPERCARE-OPS-002::GAP-PKG-142` | `HYPERCARE-OPS-003::GAP-PKG-142` + `HYPERCARE-OPS-004::GAP-PKG-142` + `HYPERCARE-OPS-005::GAP-PKG-142` + `HYPERCARE-OPS-006::GAP-PKG-142` + `HYPERCARE-OPS-007::GAP-PKG-142` | `HYPERCARE-OPS-008::GAP-PKG-142` + `HYPERCARE-OPS-009::GAP-PKG-142` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-143` | `HYPERCARE-OPS-001::GAP-PKG-143` | `HYPERCARE-OPS-002::GAP-PKG-143` | `HYPERCARE-OPS-003::GAP-PKG-143` + `HYPERCARE-OPS-004::GAP-PKG-143` + `HYPERCARE-OPS-005::GAP-PKG-143` + `HYPERCARE-OPS-006::GAP-PKG-143` + `HYPERCARE-OPS-007::GAP-PKG-143` | `HYPERCARE-OPS-008::GAP-PKG-143` + `HYPERCARE-OPS-009::GAP-PKG-143` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-144` | `HYPERCARE-OPS-001::GAP-PKG-144` | `HYPERCARE-OPS-002::GAP-PKG-144` | `HYPERCARE-OPS-003::GAP-PKG-144` + `HYPERCARE-OPS-004::GAP-PKG-144` + `HYPERCARE-OPS-005::GAP-PKG-144` + `HYPERCARE-OPS-006::GAP-PKG-144` + `HYPERCARE-OPS-007::GAP-PKG-144` | `HYPERCARE-OPS-008::GAP-PKG-144` + `HYPERCARE-OPS-009::GAP-PKG-144` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-145` | `HYPERCARE-OPS-001::GAP-PKG-145` | `HYPERCARE-OPS-002::GAP-PKG-145` | `HYPERCARE-OPS-003::GAP-PKG-145` + `HYPERCARE-OPS-004::GAP-PKG-145` + `HYPERCARE-OPS-005::GAP-PKG-145` + `HYPERCARE-OPS-006::GAP-PKG-145` + `HYPERCARE-OPS-007::GAP-PKG-145` | `HYPERCARE-OPS-008::GAP-PKG-145` + `HYPERCARE-OPS-009::GAP-PKG-145` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-146` | `HYPERCARE-OPS-001::GAP-PKG-146` | `HYPERCARE-OPS-002::GAP-PKG-146` | `HYPERCARE-OPS-003::GAP-PKG-146` + `HYPERCARE-OPS-004::GAP-PKG-146` + `HYPERCARE-OPS-005::GAP-PKG-146` + `HYPERCARE-OPS-006::GAP-PKG-146` + `HYPERCARE-OPS-007::GAP-PKG-146` | `HYPERCARE-OPS-008::GAP-PKG-146` + `HYPERCARE-OPS-009::GAP-PKG-146` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-147` | `HYPERCARE-OPS-001::GAP-PKG-147` | `HYPERCARE-OPS-002::GAP-PKG-147` | `HYPERCARE-OPS-003::GAP-PKG-147` + `HYPERCARE-OPS-004::GAP-PKG-147` + `HYPERCARE-OPS-005::GAP-PKG-147` + `HYPERCARE-OPS-006::GAP-PKG-147` + `HYPERCARE-OPS-007::GAP-PKG-147` | `HYPERCARE-OPS-008::GAP-PKG-147` + `HYPERCARE-OPS-009::GAP-PKG-147` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-148` | `HYPERCARE-OPS-001::GAP-PKG-148` | `HYPERCARE-OPS-002::GAP-PKG-148` | `HYPERCARE-OPS-003::GAP-PKG-148` + `HYPERCARE-OPS-004::GAP-PKG-148` + `HYPERCARE-OPS-005::GAP-PKG-148` + `HYPERCARE-OPS-006::GAP-PKG-148` + `HYPERCARE-OPS-007::GAP-PKG-148` | `HYPERCARE-OPS-008::GAP-PKG-148` + `HYPERCARE-OPS-009::GAP-PKG-148` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-149` | `HYPERCARE-OPS-001::GAP-PKG-149` | `HYPERCARE-OPS-002::GAP-PKG-149` | `HYPERCARE-OPS-003::GAP-PKG-149` + `HYPERCARE-OPS-004::GAP-PKG-149` + `HYPERCARE-OPS-005::GAP-PKG-149` + `HYPERCARE-OPS-006::GAP-PKG-149` + `HYPERCARE-OPS-007::GAP-PKG-149` | `HYPERCARE-OPS-008::GAP-PKG-149` + `HYPERCARE-OPS-009::GAP-PKG-149` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-150` | `HYPERCARE-OPS-001::GAP-PKG-150` | `HYPERCARE-OPS-002::GAP-PKG-150` | `HYPERCARE-OPS-003::GAP-PKG-150` + `HYPERCARE-OPS-004::GAP-PKG-150` + `HYPERCARE-OPS-005::GAP-PKG-150` + `HYPERCARE-OPS-006::GAP-PKG-150` + `HYPERCARE-OPS-007::GAP-PKG-150` | `HYPERCARE-OPS-008::GAP-PKG-150` + `HYPERCARE-OPS-009::GAP-PKG-150` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-151` | `HYPERCARE-OPS-001::GAP-PKG-151` | `HYPERCARE-OPS-002::GAP-PKG-151` | `HYPERCARE-OPS-003::GAP-PKG-151` + `HYPERCARE-OPS-004::GAP-PKG-151` + `HYPERCARE-OPS-005::GAP-PKG-151` + `HYPERCARE-OPS-006::GAP-PKG-151` + `HYPERCARE-OPS-007::GAP-PKG-151` | `HYPERCARE-OPS-008::GAP-PKG-151` + `HYPERCARE-OPS-009::GAP-PKG-151` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-152` | `HYPERCARE-OPS-001::GAP-PKG-152` | `HYPERCARE-OPS-002::GAP-PKG-152` | `HYPERCARE-OPS-003::GAP-PKG-152` + `HYPERCARE-OPS-004::GAP-PKG-152` + `HYPERCARE-OPS-005::GAP-PKG-152` + `HYPERCARE-OPS-006::GAP-PKG-152` + `HYPERCARE-OPS-007::GAP-PKG-152` | `HYPERCARE-OPS-008::GAP-PKG-152` + `HYPERCARE-OPS-009::GAP-PKG-152` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-153` | `HYPERCARE-OPS-001::GAP-PKG-153` | `HYPERCARE-OPS-002::GAP-PKG-153` | `HYPERCARE-OPS-003::GAP-PKG-153` + `HYPERCARE-OPS-004::GAP-PKG-153` + `HYPERCARE-OPS-005::GAP-PKG-153` + `HYPERCARE-OPS-006::GAP-PKG-153` + `HYPERCARE-OPS-007::GAP-PKG-153` | `HYPERCARE-OPS-008::GAP-PKG-153` + `HYPERCARE-OPS-009::GAP-PKG-153` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-154` | `HYPERCARE-OPS-001::GAP-PKG-154` | `HYPERCARE-OPS-002::GAP-PKG-154` | `HYPERCARE-OPS-003::GAP-PKG-154` + `HYPERCARE-OPS-004::GAP-PKG-154` + `HYPERCARE-OPS-005::GAP-PKG-154` + `HYPERCARE-OPS-006::GAP-PKG-154` + `HYPERCARE-OPS-007::GAP-PKG-154` | `HYPERCARE-OPS-008::GAP-PKG-154` + `HYPERCARE-OPS-009::GAP-PKG-154` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-155` | `HYPERCARE-OPS-001::GAP-PKG-155` | `HYPERCARE-OPS-002::GAP-PKG-155` | `HYPERCARE-OPS-003::GAP-PKG-155` + `HYPERCARE-OPS-004::GAP-PKG-155` + `HYPERCARE-OPS-005::GAP-PKG-155` + `HYPERCARE-OPS-006::GAP-PKG-155` + `HYPERCARE-OPS-007::GAP-PKG-155` | `HYPERCARE-OPS-008::GAP-PKG-155` + `HYPERCARE-OPS-009::GAP-PKG-155` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-156` | `HYPERCARE-OPS-001::GAP-PKG-156` | `HYPERCARE-OPS-002::GAP-PKG-156` | `HYPERCARE-OPS-003::GAP-PKG-156` + `HYPERCARE-OPS-004::GAP-PKG-156` + `HYPERCARE-OPS-005::GAP-PKG-156` + `HYPERCARE-OPS-006::GAP-PKG-156` + `HYPERCARE-OPS-007::GAP-PKG-156` | `HYPERCARE-OPS-008::GAP-PKG-156` + `HYPERCARE-OPS-009::GAP-PKG-156` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-157` | `HYPERCARE-OPS-001::GAP-PKG-157` | `HYPERCARE-OPS-002::GAP-PKG-157` | `HYPERCARE-OPS-003::GAP-PKG-157` + `HYPERCARE-OPS-004::GAP-PKG-157` + `HYPERCARE-OPS-005::GAP-PKG-157` + `HYPERCARE-OPS-006::GAP-PKG-157` + `HYPERCARE-OPS-007::GAP-PKG-157` | `HYPERCARE-OPS-008::GAP-PKG-157` + `HYPERCARE-OPS-009::GAP-PKG-157` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-158` | `HYPERCARE-OPS-001::GAP-PKG-158` | `HYPERCARE-OPS-002::GAP-PKG-158` | `HYPERCARE-OPS-003::GAP-PKG-158` + `HYPERCARE-OPS-004::GAP-PKG-158` + `HYPERCARE-OPS-005::GAP-PKG-158` + `HYPERCARE-OPS-006::GAP-PKG-158` + `HYPERCARE-OPS-007::GAP-PKG-158` | `HYPERCARE-OPS-008::GAP-PKG-158` + `HYPERCARE-OPS-009::GAP-PKG-158` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-159` | `HYPERCARE-OPS-001::GAP-PKG-159` | `HYPERCARE-OPS-002::GAP-PKG-159` | `HYPERCARE-OPS-003::GAP-PKG-159` + `HYPERCARE-OPS-004::GAP-PKG-159` + `HYPERCARE-OPS-005::GAP-PKG-159` + `HYPERCARE-OPS-006::GAP-PKG-159` + `HYPERCARE-OPS-007::GAP-PKG-159` | `HYPERCARE-OPS-008::GAP-PKG-159` + `HYPERCARE-OPS-009::GAP-PKG-159` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-160` | `HYPERCARE-OPS-001::GAP-PKG-160` | `HYPERCARE-OPS-002::GAP-PKG-160` | `HYPERCARE-OPS-003::GAP-PKG-160` + `HYPERCARE-OPS-004::GAP-PKG-160` + `HYPERCARE-OPS-005::GAP-PKG-160` + `HYPERCARE-OPS-006::GAP-PKG-160` + `HYPERCARE-OPS-007::GAP-PKG-160` | `HYPERCARE-OPS-008::GAP-PKG-160` + `HYPERCARE-OPS-009::GAP-PKG-160` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-161` | `HYPERCARE-OPS-001::GAP-PKG-161` | `HYPERCARE-OPS-002::GAP-PKG-161` | `HYPERCARE-OPS-003::GAP-PKG-161` + `HYPERCARE-OPS-004::GAP-PKG-161` + `HYPERCARE-OPS-005::GAP-PKG-161` + `HYPERCARE-OPS-006::GAP-PKG-161` + `HYPERCARE-OPS-007::GAP-PKG-161` | `HYPERCARE-OPS-008::GAP-PKG-161` + `HYPERCARE-OPS-009::GAP-PKG-161` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-162` | `HYPERCARE-OPS-001::GAP-PKG-162` | `HYPERCARE-OPS-002::GAP-PKG-162` | `HYPERCARE-OPS-003::GAP-PKG-162` + `HYPERCARE-OPS-004::GAP-PKG-162` + `HYPERCARE-OPS-005::GAP-PKG-162` + `HYPERCARE-OPS-006::GAP-PKG-162` + `HYPERCARE-OPS-007::GAP-PKG-162` | `HYPERCARE-OPS-008::GAP-PKG-162` + `HYPERCARE-OPS-009::GAP-PKG-162` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-163` | `HYPERCARE-OPS-001::GAP-PKG-163` | `HYPERCARE-OPS-002::GAP-PKG-163` | `HYPERCARE-OPS-003::GAP-PKG-163` + `HYPERCARE-OPS-004::GAP-PKG-163` + `HYPERCARE-OPS-005::GAP-PKG-163` + `HYPERCARE-OPS-006::GAP-PKG-163` + `HYPERCARE-OPS-007::GAP-PKG-163` | `HYPERCARE-OPS-008::GAP-PKG-163` + `HYPERCARE-OPS-009::GAP-PKG-163` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-164` | `HYPERCARE-OPS-001::GAP-PKG-164` | `HYPERCARE-OPS-002::GAP-PKG-164` | `HYPERCARE-OPS-003::GAP-PKG-164` + `HYPERCARE-OPS-004::GAP-PKG-164` + `HYPERCARE-OPS-005::GAP-PKG-164` + `HYPERCARE-OPS-006::GAP-PKG-164` + `HYPERCARE-OPS-007::GAP-PKG-164` | `HYPERCARE-OPS-008::GAP-PKG-164` + `HYPERCARE-OPS-009::GAP-PKG-164` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-165` | `HYPERCARE-OPS-001::GAP-PKG-165` | `HYPERCARE-OPS-002::GAP-PKG-165` | `HYPERCARE-OPS-003::GAP-PKG-165` + `HYPERCARE-OPS-004::GAP-PKG-165` + `HYPERCARE-OPS-005::GAP-PKG-165` + `HYPERCARE-OPS-006::GAP-PKG-165` + `HYPERCARE-OPS-007::GAP-PKG-165` | `HYPERCARE-OPS-008::GAP-PKG-165` + `HYPERCARE-OPS-009::GAP-PKG-165` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-166` | `HYPERCARE-OPS-001::GAP-PKG-166` | `HYPERCARE-OPS-002::GAP-PKG-166` | `HYPERCARE-OPS-003::GAP-PKG-166` + `HYPERCARE-OPS-004::GAP-PKG-166` + `HYPERCARE-OPS-005::GAP-PKG-166` + `HYPERCARE-OPS-006::GAP-PKG-166` + `HYPERCARE-OPS-007::GAP-PKG-166` | `HYPERCARE-OPS-008::GAP-PKG-166` + `HYPERCARE-OPS-009::GAP-PKG-166` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-167` | `HYPERCARE-OPS-001::GAP-PKG-167` | `HYPERCARE-OPS-002::GAP-PKG-167` | `HYPERCARE-OPS-003::GAP-PKG-167` + `HYPERCARE-OPS-004::GAP-PKG-167` + `HYPERCARE-OPS-005::GAP-PKG-167` + `HYPERCARE-OPS-006::GAP-PKG-167` + `HYPERCARE-OPS-007::GAP-PKG-167` | `HYPERCARE-OPS-008::GAP-PKG-167` + `HYPERCARE-OPS-009::GAP-PKG-167` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-168` | `HYPERCARE-OPS-001::GAP-PKG-168` | `HYPERCARE-OPS-002::GAP-PKG-168` | `HYPERCARE-OPS-003::GAP-PKG-168` + `HYPERCARE-OPS-004::GAP-PKG-168` + `HYPERCARE-OPS-005::GAP-PKG-168` + `HYPERCARE-OPS-006::GAP-PKG-168` + `HYPERCARE-OPS-007::GAP-PKG-168` | `HYPERCARE-OPS-008::GAP-PKG-168` + `HYPERCARE-OPS-009::GAP-PKG-168` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-169` | `HYPERCARE-OPS-001::GAP-PKG-169` | `HYPERCARE-OPS-002::GAP-PKG-169` | `HYPERCARE-OPS-003::GAP-PKG-169` + `HYPERCARE-OPS-004::GAP-PKG-169` + `HYPERCARE-OPS-005::GAP-PKG-169` + `HYPERCARE-OPS-006::GAP-PKG-169` + `HYPERCARE-OPS-007::GAP-PKG-169` | `HYPERCARE-OPS-008::GAP-PKG-169` + `HYPERCARE-OPS-009::GAP-PKG-169` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-170` | `HYPERCARE-OPS-001::GAP-PKG-170` | `HYPERCARE-OPS-002::GAP-PKG-170` | `HYPERCARE-OPS-003::GAP-PKG-170` + `HYPERCARE-OPS-004::GAP-PKG-170` + `HYPERCARE-OPS-005::GAP-PKG-170` + `HYPERCARE-OPS-006::GAP-PKG-170` + `HYPERCARE-OPS-007::GAP-PKG-170` | `HYPERCARE-OPS-008::GAP-PKG-170` + `HYPERCARE-OPS-009::GAP-PKG-170` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-171` | `HYPERCARE-OPS-001::GAP-PKG-171` | `HYPERCARE-OPS-002::GAP-PKG-171` | `HYPERCARE-OPS-003::GAP-PKG-171` + `HYPERCARE-OPS-004::GAP-PKG-171` + `HYPERCARE-OPS-005::GAP-PKG-171` + `HYPERCARE-OPS-006::GAP-PKG-171` + `HYPERCARE-OPS-007::GAP-PKG-171` | `HYPERCARE-OPS-008::GAP-PKG-171` + `HYPERCARE-OPS-009::GAP-PKG-171` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-172` | `HYPERCARE-OPS-001::GAP-PKG-172` | `HYPERCARE-OPS-002::GAP-PKG-172` | `HYPERCARE-OPS-003::GAP-PKG-172` + `HYPERCARE-OPS-004::GAP-PKG-172` + `HYPERCARE-OPS-005::GAP-PKG-172` + `HYPERCARE-OPS-006::GAP-PKG-172` + `HYPERCARE-OPS-007::GAP-PKG-172` | `HYPERCARE-OPS-008::GAP-PKG-172` + `HYPERCARE-OPS-009::GAP-PKG-172` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-173` | `HYPERCARE-OPS-001::GAP-PKG-173` | `HYPERCARE-OPS-002::GAP-PKG-173` | `HYPERCARE-OPS-003::GAP-PKG-173` + `HYPERCARE-OPS-004::GAP-PKG-173` + `HYPERCARE-OPS-005::GAP-PKG-173` + `HYPERCARE-OPS-006::GAP-PKG-173` + `HYPERCARE-OPS-007::GAP-PKG-173` | `HYPERCARE-OPS-008::GAP-PKG-173` + `HYPERCARE-OPS-009::GAP-PKG-173` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-174` | `HYPERCARE-OPS-001::GAP-PKG-174` | `HYPERCARE-OPS-002::GAP-PKG-174` | `HYPERCARE-OPS-003::GAP-PKG-174` + `HYPERCARE-OPS-004::GAP-PKG-174` + `HYPERCARE-OPS-005::GAP-PKG-174` + `HYPERCARE-OPS-006::GAP-PKG-174` + `HYPERCARE-OPS-007::GAP-PKG-174` | `HYPERCARE-OPS-008::GAP-PKG-174` + `HYPERCARE-OPS-009::GAP-PKG-174` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-175` | `HYPERCARE-OPS-001::GAP-PKG-175` | `HYPERCARE-OPS-002::GAP-PKG-175` | `HYPERCARE-OPS-003::GAP-PKG-175` + `HYPERCARE-OPS-004::GAP-PKG-175` + `HYPERCARE-OPS-005::GAP-PKG-175` + `HYPERCARE-OPS-006::GAP-PKG-175` + `HYPERCARE-OPS-007::GAP-PKG-175` | `HYPERCARE-OPS-008::GAP-PKG-175` + `HYPERCARE-OPS-009::GAP-PKG-175` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-176` | `HYPERCARE-OPS-001::GAP-PKG-176` | `HYPERCARE-OPS-002::GAP-PKG-176` | `HYPERCARE-OPS-003::GAP-PKG-176` + `HYPERCARE-OPS-004::GAP-PKG-176` + `HYPERCARE-OPS-005::GAP-PKG-176` + `HYPERCARE-OPS-006::GAP-PKG-176` + `HYPERCARE-OPS-007::GAP-PKG-176` | `HYPERCARE-OPS-008::GAP-PKG-176` + `HYPERCARE-OPS-009::GAP-PKG-176` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-177` | `HYPERCARE-OPS-001::GAP-PKG-177` | `HYPERCARE-OPS-002::GAP-PKG-177` | `HYPERCARE-OPS-003::GAP-PKG-177` + `HYPERCARE-OPS-004::GAP-PKG-177` + `HYPERCARE-OPS-005::GAP-PKG-177` + `HYPERCARE-OPS-006::GAP-PKG-177` + `HYPERCARE-OPS-007::GAP-PKG-177` | `HYPERCARE-OPS-008::GAP-PKG-177` + `HYPERCARE-OPS-009::GAP-PKG-177` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-178` | `HYPERCARE-OPS-001::GAP-PKG-178` | `HYPERCARE-OPS-002::GAP-PKG-178` | `HYPERCARE-OPS-003::GAP-PKG-178` + `HYPERCARE-OPS-004::GAP-PKG-178` + `HYPERCARE-OPS-005::GAP-PKG-178` + `HYPERCARE-OPS-006::GAP-PKG-178` + `HYPERCARE-OPS-007::GAP-PKG-178` | `HYPERCARE-OPS-008::GAP-PKG-178` + `HYPERCARE-OPS-009::GAP-PKG-178` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-179` | `HYPERCARE-OPS-001::GAP-PKG-179` | `HYPERCARE-OPS-002::GAP-PKG-179` | `HYPERCARE-OPS-003::GAP-PKG-179` + `HYPERCARE-OPS-004::GAP-PKG-179` + `HYPERCARE-OPS-005::GAP-PKG-179` + `HYPERCARE-OPS-006::GAP-PKG-179` + `HYPERCARE-OPS-007::GAP-PKG-179` | `HYPERCARE-OPS-008::GAP-PKG-179` + `HYPERCARE-OPS-009::GAP-PKG-179` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-180` | `HYPERCARE-OPS-001::GAP-PKG-180` | `HYPERCARE-OPS-002::GAP-PKG-180` | `HYPERCARE-OPS-003::GAP-PKG-180` + `HYPERCARE-OPS-004::GAP-PKG-180` + `HYPERCARE-OPS-005::GAP-PKG-180` + `HYPERCARE-OPS-006::GAP-PKG-180` + `HYPERCARE-OPS-007::GAP-PKG-180` | `HYPERCARE-OPS-008::GAP-PKG-180` + `HYPERCARE-OPS-009::GAP-PKG-180` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-181` | `HYPERCARE-OPS-001::GAP-PKG-181` | `HYPERCARE-OPS-002::GAP-PKG-181` | `HYPERCARE-OPS-003::GAP-PKG-181` + `HYPERCARE-OPS-004::GAP-PKG-181` + `HYPERCARE-OPS-005::GAP-PKG-181` + `HYPERCARE-OPS-006::GAP-PKG-181` + `HYPERCARE-OPS-007::GAP-PKG-181` | `HYPERCARE-OPS-008::GAP-PKG-181` + `HYPERCARE-OPS-009::GAP-PKG-181` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-182` | `HYPERCARE-OPS-001::GAP-PKG-182` | `HYPERCARE-OPS-002::GAP-PKG-182` | `HYPERCARE-OPS-003::GAP-PKG-182` + `HYPERCARE-OPS-004::GAP-PKG-182` + `HYPERCARE-OPS-005::GAP-PKG-182` + `HYPERCARE-OPS-006::GAP-PKG-182` + `HYPERCARE-OPS-007::GAP-PKG-182` | `HYPERCARE-OPS-008::GAP-PKG-182` + `HYPERCARE-OPS-009::GAP-PKG-182` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-183` | `HYPERCARE-OPS-001::GAP-PKG-183` | `HYPERCARE-OPS-002::GAP-PKG-183` | `HYPERCARE-OPS-003::GAP-PKG-183` + `HYPERCARE-OPS-004::GAP-PKG-183` + `HYPERCARE-OPS-005::GAP-PKG-183` + `HYPERCARE-OPS-006::GAP-PKG-183` + `HYPERCARE-OPS-007::GAP-PKG-183` | `HYPERCARE-OPS-008::GAP-PKG-183` + `HYPERCARE-OPS-009::GAP-PKG-183` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-184` | `HYPERCARE-OPS-001::GAP-PKG-184` | `HYPERCARE-OPS-002::GAP-PKG-184` | `HYPERCARE-OPS-003::GAP-PKG-184` + `HYPERCARE-OPS-004::GAP-PKG-184` + `HYPERCARE-OPS-005::GAP-PKG-184` + `HYPERCARE-OPS-006::GAP-PKG-184` + `HYPERCARE-OPS-007::GAP-PKG-184` | `HYPERCARE-OPS-008::GAP-PKG-184` + `HYPERCARE-OPS-009::GAP-PKG-184` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-185` | `HYPERCARE-OPS-001::GAP-PKG-185` | `HYPERCARE-OPS-002::GAP-PKG-185` | `HYPERCARE-OPS-003::GAP-PKG-185` + `HYPERCARE-OPS-004::GAP-PKG-185` + `HYPERCARE-OPS-005::GAP-PKG-185` + `HYPERCARE-OPS-006::GAP-PKG-185` + `HYPERCARE-OPS-007::GAP-PKG-185` | `HYPERCARE-OPS-008::GAP-PKG-185` + `HYPERCARE-OPS-009::GAP-PKG-185` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-186` | `HYPERCARE-OPS-001::GAP-PKG-186` | `HYPERCARE-OPS-002::GAP-PKG-186` | `HYPERCARE-OPS-003::GAP-PKG-186` + `HYPERCARE-OPS-004::GAP-PKG-186` + `HYPERCARE-OPS-005::GAP-PKG-186` + `HYPERCARE-OPS-006::GAP-PKG-186` + `HYPERCARE-OPS-007::GAP-PKG-186` | `HYPERCARE-OPS-008::GAP-PKG-186` + `HYPERCARE-OPS-009::GAP-PKG-186` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-187` | `HYPERCARE-OPS-001::GAP-PKG-187` | `HYPERCARE-OPS-002::GAP-PKG-187` | `HYPERCARE-OPS-003::GAP-PKG-187` + `HYPERCARE-OPS-004::GAP-PKG-187` + `HYPERCARE-OPS-005::GAP-PKG-187` + `HYPERCARE-OPS-006::GAP-PKG-187` + `HYPERCARE-OPS-007::GAP-PKG-187` | `HYPERCARE-OPS-008::GAP-PKG-187` + `HYPERCARE-OPS-009::GAP-PKG-187` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-188` | `HYPERCARE-OPS-001::GAP-PKG-188` | `HYPERCARE-OPS-002::GAP-PKG-188` | `HYPERCARE-OPS-003::GAP-PKG-188` + `HYPERCARE-OPS-004::GAP-PKG-188` + `HYPERCARE-OPS-005::GAP-PKG-188` + `HYPERCARE-OPS-006::GAP-PKG-188` + `HYPERCARE-OPS-007::GAP-PKG-188` | `HYPERCARE-OPS-008::GAP-PKG-188` + `HYPERCARE-OPS-009::GAP-PKG-188` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-189` | `HYPERCARE-OPS-001::GAP-PKG-189` | `HYPERCARE-OPS-002::GAP-PKG-189` | `HYPERCARE-OPS-003::GAP-PKG-189` + `HYPERCARE-OPS-004::GAP-PKG-189` + `HYPERCARE-OPS-005::GAP-PKG-189` + `HYPERCARE-OPS-006::GAP-PKG-189` + `HYPERCARE-OPS-007::GAP-PKG-189` | `HYPERCARE-OPS-008::GAP-PKG-189` + `HYPERCARE-OPS-009::GAP-PKG-189` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-190` | `HYPERCARE-OPS-001::GAP-PKG-190` | `HYPERCARE-OPS-002::GAP-PKG-190` | `HYPERCARE-OPS-003::GAP-PKG-190` + `HYPERCARE-OPS-004::GAP-PKG-190` + `HYPERCARE-OPS-005::GAP-PKG-190` + `HYPERCARE-OPS-006::GAP-PKG-190` + `HYPERCARE-OPS-007::GAP-PKG-190` | `HYPERCARE-OPS-008::GAP-PKG-190` + `HYPERCARE-OPS-009::GAP-PKG-190` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-191` | `HYPERCARE-OPS-001::GAP-PKG-191` | `HYPERCARE-OPS-002::GAP-PKG-191` | `HYPERCARE-OPS-003::GAP-PKG-191` + `HYPERCARE-OPS-004::GAP-PKG-191` + `HYPERCARE-OPS-005::GAP-PKG-191` + `HYPERCARE-OPS-006::GAP-PKG-191` + `HYPERCARE-OPS-007::GAP-PKG-191` | `HYPERCARE-OPS-008::GAP-PKG-191` + `HYPERCARE-OPS-009::GAP-PKG-191` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-192` | `HYPERCARE-OPS-001::GAP-PKG-192` | `HYPERCARE-OPS-002::GAP-PKG-192` | `HYPERCARE-OPS-003::GAP-PKG-192` + `HYPERCARE-OPS-004::GAP-PKG-192` + `HYPERCARE-OPS-005::GAP-PKG-192` + `HYPERCARE-OPS-006::GAP-PKG-192` + `HYPERCARE-OPS-007::GAP-PKG-192` | `HYPERCARE-OPS-008::GAP-PKG-192` + `HYPERCARE-OPS-009::GAP-PKG-192` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-193` | `HYPERCARE-OPS-001::GAP-PKG-193` | `HYPERCARE-OPS-002::GAP-PKG-193` | `HYPERCARE-OPS-003::GAP-PKG-193` + `HYPERCARE-OPS-004::GAP-PKG-193` + `HYPERCARE-OPS-005::GAP-PKG-193` + `HYPERCARE-OPS-006::GAP-PKG-193` + `HYPERCARE-OPS-007::GAP-PKG-193` | `HYPERCARE-OPS-008::GAP-PKG-193` + `HYPERCARE-OPS-009::GAP-PKG-193` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-194` | `HYPERCARE-OPS-001::GAP-PKG-194` | `HYPERCARE-OPS-002::GAP-PKG-194` | `HYPERCARE-OPS-003::GAP-PKG-194` + `HYPERCARE-OPS-004::GAP-PKG-194` + `HYPERCARE-OPS-005::GAP-PKG-194` + `HYPERCARE-OPS-006::GAP-PKG-194` + `HYPERCARE-OPS-007::GAP-PKG-194` | `HYPERCARE-OPS-008::GAP-PKG-194` + `HYPERCARE-OPS-009::GAP-PKG-194` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-195` | `HYPERCARE-OPS-001::GAP-PKG-195` | `HYPERCARE-OPS-002::GAP-PKG-195` | `HYPERCARE-OPS-003::GAP-PKG-195` + `HYPERCARE-OPS-004::GAP-PKG-195` + `HYPERCARE-OPS-005::GAP-PKG-195` + `HYPERCARE-OPS-006::GAP-PKG-195` + `HYPERCARE-OPS-007::GAP-PKG-195` | `HYPERCARE-OPS-008::GAP-PKG-195` + `HYPERCARE-OPS-009::GAP-PKG-195` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-196` | `HYPERCARE-OPS-001::GAP-PKG-196` | `HYPERCARE-OPS-002::GAP-PKG-196` | `HYPERCARE-OPS-003::GAP-PKG-196` + `HYPERCARE-OPS-004::GAP-PKG-196` + `HYPERCARE-OPS-005::GAP-PKG-196` + `HYPERCARE-OPS-006::GAP-PKG-196` + `HYPERCARE-OPS-007::GAP-PKG-196` | `HYPERCARE-OPS-008::GAP-PKG-196` + `HYPERCARE-OPS-009::GAP-PKG-196` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-197` | `HYPERCARE-OPS-001::GAP-PKG-197` | `HYPERCARE-OPS-002::GAP-PKG-197` | `HYPERCARE-OPS-003::GAP-PKG-197` + `HYPERCARE-OPS-004::GAP-PKG-197` + `HYPERCARE-OPS-005::GAP-PKG-197` + `HYPERCARE-OPS-006::GAP-PKG-197` + `HYPERCARE-OPS-007::GAP-PKG-197` | `HYPERCARE-OPS-008::GAP-PKG-197` + `HYPERCARE-OPS-009::GAP-PKG-197` | `BLOQUEADO_POR_GATE_HEREDADO`                                | `BLOQUEADO`    |
+| `GAP-PKG-198` | `HYPERCARE-OPS-001::GAP-PKG-198` | `HYPERCARE-OPS-002::GAP-PKG-198` | `HYPERCARE-OPS-003::GAP-PKG-198` + `HYPERCARE-OPS-004::GAP-PKG-198` + `HYPERCARE-OPS-005::GAP-PKG-198` + `HYPERCARE-OPS-006::GAP-PKG-198` + `HYPERCARE-OPS-007::GAP-PKG-198` | `HYPERCARE-OPS-008::GAP-PKG-198` + `HYPERCARE-OPS-009::GAP-PKG-198` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-199` | `HYPERCARE-OPS-001::GAP-PKG-199` | `HYPERCARE-OPS-002::GAP-PKG-199` | `HYPERCARE-OPS-003::GAP-PKG-199` + `HYPERCARE-OPS-004::GAP-PKG-199` + `HYPERCARE-OPS-005::GAP-PKG-199` + `HYPERCARE-OPS-006::GAP-PKG-199` + `HYPERCARE-OPS-007::GAP-PKG-199` | `HYPERCARE-OPS-008::GAP-PKG-199` + `HYPERCARE-OPS-009::GAP-PKG-199` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-200` | `HYPERCARE-OPS-001::GAP-PKG-200` | `HYPERCARE-OPS-002::GAP-PKG-200` | `HYPERCARE-OPS-003::GAP-PKG-200` + `HYPERCARE-OPS-004::GAP-PKG-200` + `HYPERCARE-OPS-005::GAP-PKG-200` + `HYPERCARE-OPS-006::GAP-PKG-200` + `HYPERCARE-OPS-007::GAP-PKG-200` | `HYPERCARE-OPS-008::GAP-PKG-200` + `HYPERCARE-OPS-009::GAP-PKG-200` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-201` | `HYPERCARE-OPS-001::GAP-PKG-201` | `HYPERCARE-OPS-002::GAP-PKG-201` | `HYPERCARE-OPS-003::GAP-PKG-201` + `HYPERCARE-OPS-004::GAP-PKG-201` + `HYPERCARE-OPS-005::GAP-PKG-201` + `HYPERCARE-OPS-006::GAP-PKG-201` + `HYPERCARE-OPS-007::GAP-PKG-201` | `HYPERCARE-OPS-008::GAP-PKG-201` + `HYPERCARE-OPS-009::GAP-PKG-201` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-202` | `HYPERCARE-OPS-001::GAP-PKG-202` | `HYPERCARE-OPS-002::GAP-PKG-202` | `HYPERCARE-OPS-003::GAP-PKG-202` + `HYPERCARE-OPS-004::GAP-PKG-202` + `HYPERCARE-OPS-005::GAP-PKG-202` + `HYPERCARE-OPS-006::GAP-PKG-202` + `HYPERCARE-OPS-007::GAP-PKG-202` | `HYPERCARE-OPS-008::GAP-PKG-202` + `HYPERCARE-OPS-009::GAP-PKG-202` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-203` | `HYPERCARE-OPS-001::GAP-PKG-203` | `HYPERCARE-OPS-002::GAP-PKG-203` | `HYPERCARE-OPS-003::GAP-PKG-203` + `HYPERCARE-OPS-004::GAP-PKG-203` + `HYPERCARE-OPS-005::GAP-PKG-203` + `HYPERCARE-OPS-006::GAP-PKG-203` + `HYPERCARE-OPS-007::GAP-PKG-203` | `HYPERCARE-OPS-008::GAP-PKG-203` + `HYPERCARE-OPS-009::GAP-PKG-203` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-204` | `HYPERCARE-OPS-001::GAP-PKG-204` | `HYPERCARE-OPS-002::GAP-PKG-204` | `HYPERCARE-OPS-003::GAP-PKG-204` + `HYPERCARE-OPS-004::GAP-PKG-204` + `HYPERCARE-OPS-005::GAP-PKG-204` + `HYPERCARE-OPS-006::GAP-PKG-204` + `HYPERCARE-OPS-007::GAP-PKG-204` | `HYPERCARE-OPS-008::GAP-PKG-204` + `HYPERCARE-OPS-009::GAP-PKG-204` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-205` | `HYPERCARE-OPS-001::GAP-PKG-205` | `HYPERCARE-OPS-002::GAP-PKG-205` | `HYPERCARE-OPS-003::GAP-PKG-205` + `HYPERCARE-OPS-004::GAP-PKG-205` + `HYPERCARE-OPS-005::GAP-PKG-205` + `HYPERCARE-OPS-006::GAP-PKG-205` + `HYPERCARE-OPS-007::GAP-PKG-205` | `HYPERCARE-OPS-008::GAP-PKG-205` + `HYPERCARE-OPS-009::GAP-PKG-205` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-206` | `HYPERCARE-OPS-001::GAP-PKG-206` | `HYPERCARE-OPS-002::GAP-PKG-206` | `HYPERCARE-OPS-003::GAP-PKG-206` + `HYPERCARE-OPS-004::GAP-PKG-206` + `HYPERCARE-OPS-005::GAP-PKG-206` + `HYPERCARE-OPS-006::GAP-PKG-206` + `HYPERCARE-OPS-007::GAP-PKG-206` | `HYPERCARE-OPS-008::GAP-PKG-206` + `HYPERCARE-OPS-009::GAP-PKG-206` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+| `GAP-PKG-207` | `HYPERCARE-OPS-001::GAP-PKG-207` | `HYPERCARE-OPS-002::GAP-PKG-207` | `HYPERCARE-OPS-003::GAP-PKG-207` + `HYPERCARE-OPS-004::GAP-PKG-207` + `HYPERCARE-OPS-005::GAP-PKG-207` + `HYPERCARE-OPS-006::GAP-PKG-207` + `HYPERCARE-OPS-007::GAP-PKG-207` | `HYPERCARE-OPS-008::GAP-PKG-207` + `HYPERCARE-OPS-009::GAP-PKG-207` | `EVALUAR_CIERRE_CON_EVIDENCIA_REAL_SEGUN_MODALIDAD_HEREDADA` | `ESPECIFICADO` |
+
+La matriz materializa **207/207** identidades. No existe una decisión real `APROBAR_CIERRE_HYPERCARE` durante esta tarea documental.
+
+---
+
+#### 18. Reconciliación de cobertura
+
+| Comprobación                                | Resultado documental |
+| ------------------------------------------- | -------------------: |
+| raíces esperadas                            |              **207** |
+| raíces materializadas                       |              **207** |
+| faltantes                                   |                **0** |
+| duplicados                                  |                **0** |
+| contrato evaluable según modalidad heredada |              **189** |
+| bloqueos heredados conservados              |               **18** |
+| aprobaciones reales de cierre declaradas    |                **0** |
+| cambios de `package_id`                     |                **0** |
+| cambios de modalidad                        |                **0** |
+| cambios de autoridad propietaria            |                **0** |
+| umbrales numéricos nuevos                   |                **0** |
+
+Las 189 raíces no bloqueadas se componen de 160 directas, 3 compartidas y 26 de control. El término evaluable no convierte las 29 raíces shared/control en ejecuciones directas: su tratamiento sigue siendo el heredado de 001.
+
+Las 18 raíces bloqueadas conservan exactamente su gate heredado. 010 no sustituye esos gates por una decisión local.
+
+---
+
+#### 19. Procedimiento futuro de decisión
+
+Durante la ejecución real, para cada instancia aplicable se deberá:
+
+1. resolver la identidad exacta de la sección 5;
+2. confirmar `CANDIDATA_A_SALIDA` vigente de 001;
+3. resolver autoridad funcional, autoridad técnica, suplencia y segregación desde 002;
+4. construir el expediente de evidencia con 003..009 y las fuentes propietarias aplicables;
+5. comprobar vigencia, procedencia y coherencia de cada evidencia;
+6. evaluar una por una las condiciones de la sección 11;
+7. bloquear ante cualquier condición de la sección 12;
+8. emitir la decisión mediante la autoridad vigente, conservando fecha, alcance, razones y referencias;
+9. si se aprueba, entregar el expediente a `SHELL-CI-024::<package_id>`;
+10. si se bloquea, conservar la instancia bajo el ownership vigente y devolver cada condición a su fuente propietaria exacta;
+11. no reescribir evidencia histórica para hacer coincidir una conclusión posterior.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** 010 no introduce un comportamiento funcional, de autorización, datos, integración, continuidad o runtime independiente. Agrega y gobierna la decisión documental de salida usando obligaciones de autoridad, evidencia, conciliación, soporte, recuperación y trazabilidad ya protegidas por el registro vigente y por los requisitos aplicables de cada paquete. No altera el estado de ningún requisito existente ni anticipa una verificación sin evidencia real.
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+**Fragmentos 04A afectados:** 0
+
+---
+
+#### 20. Criterios de aceptación documental
+
+010 queda documentalmente completa cuando:
+
+1. conserva la separación `CANDIDATA_A_SALIDA` → decisión de cierre de 010 → certificación de `SHELL-CI-024`;
+2. resuelve la autoridad final desde la fuente ya materializada por 002 y no crea un propietario paralelo;
+3. separa aprobación funcional, conformidad técnica, recepción operativa, recovery y ejecución;
+4. define el expediente mínimo de evidencia funcional, técnica y operativa;
+5. exige misma identidad de paquete, candidato, ambiente, alcance y ejecución;
+6. define `APROBAR_CIERRE_HYPERCARE` y `BLOQUEAR_CIERRE_HYPERCARE` sin aprobación parcial;
+7. impide cerrar por paso del tiempo, ausencia aparente de alertas, ticket cerrado o simple restauración del servicio;
+8. exige cierre o disposición válida de conciliaciones, incidentes, deuda, soporte y contingencias según sus fuentes;
+9. permite trabajo posterior solo cuando tiene autoridad, propietario, destino, control y condición de salida compatibles con el cierre;
+10. impide usar soporte como sustituto de una obligación técnica o funcional pendiente;
+11. conserva mecanismos permanentes de resiliencia y controles que no pertenecen al acompañamiento temporal;
+12. invalida evidencia que ya no represente la misma instancia;
+13. materializa exactamente 207 raíces sin faltantes ni duplicados;
+14. preserva `160 + 3 + 26 + 14 + 2 + 2 = 207`;
+15. conserva 18 bloqueos heredados sin fabricar ejecución;
+16. declara cero aprobaciones reales de cierre durante esta tarea documental;
+17. crea cero requisitos de prueba y modifica cero requisitos existentes;
+18. ejecuta cero cambios físicos y cero operaciones sobre Supabase;
+19. entrega a `SHELL-CI-024` solo una decisión futura sustentada por evidencia real;
+20. deja `E5-GATE-001` exclusivamente reservada como siguiente tarea documental.
+
+---
+
+#### 21. Cambios físicos
+
+Ninguno.
+
+010 no autoriza ni ejecuta:
+
+- cierres reales de hypercare o de paquetes;
+- cierres o reaperturas de incidentes, problemas, deuda o backlog;
+- retiros lógicos o físicos de contingencias o superficies legacy;
+- cambios de feature flags, configuración, permisos o credenciales;
+- despliegues, rollback, recovery, compensation, replay o reconciliación reales;
+- cambios de datos, migraciones, DDL, DML o backfills;
+- cambios en Supabase;
+- certificaciones de `SHELL-CI-024`.
+
+---
+
+#### 22. Bloqueos y handoff documental
+
+Toda condición que impida cierre conserva su destino exacto:
+
+- candidatura temporal, suspensión, extensión o invalidación: `HYPERCARE-OPS-001`;
+- autoridad, suplencia, cobertura o segregación: `HYPERCARE-OPS-002`;
+- evidencia técnica: `HYPERCARE-OPS-003`;
+- adopción, tiempo humano o desviación: `HYPERCARE-OPS-004`;
+- diferencia de datos o efectos: `HYPERCARE-OPS-005`;
+- incidente, corrección, validación o reapertura: `HYPERCARE-OPS-006`;
+- deuda o trabajo posterior: `HYPERCARE-OPS-007`;
+- soporte, documentación, runbook o conocimiento: `HYPERCARE-OPS-008`;
+- contingencia temporal: `HYPERCARE-OPS-009`;
+- certificación material posterior: `SHELL-CI-024::<package_id>`.
+
+010 no absorbe la resolución de esas fuentes. Consolida su evidencia y emite la decisión de cierre solo cuando ninguna condición aplicable permanezca incompatible con salida.
+
+---
+
+#### 23. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales
+
+##### TAREA ACTUAL APROBADA
+
+HYPERCARE-OPS-010 — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo
+
+##### SIGUIENTE TAREA RESERVADA
+
+E5-GATE-001 — Confirmar que cada capacidad priorizada tiene paquete aprobado
+
 
 `SHELL-CI-023` ejecutará monitoreo, conciliación, respuesta y estabilización.
 `SHELL-CI-024` comprobará la salida de hypercare, la transferencia a soporte y
