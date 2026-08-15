@@ -6897,7 +6897,624 @@ CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto 
 CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior
 
 
-### [ ] CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior
+### ✅ CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior
+
+**Estado:** APROBADA  
+**Tarea anterior:** `CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones`  
+**Tarea siguiente:** `HYPERCARE-OPS-001 — Definir inicio, duración y salida del acompañamiento intensivo`  
+**Tipo de tarea:** documental — definición de condiciones, evidencia, bloqueos y expediente de elegibilidad para retirar el proceso anterior después del piloto, sin ejecutar retiro lógico o físico, despliegues, migraciones ni cambios remotos
+
+---
+
+#### 1. Resultado canónico
+
+`CUTOVER-OPS-010` cierra el bloque CUTOVER definiendo cómo determinar, para una instancia exacta de paquete, candidato, ambiente, alcance autorizado y superficie legacy, si el proceso anterior reúne evidencia suficiente para quedar **elegible para retiro**.
+
+La tarea no equipara salida aprobada del piloto con retiro. `CUTOVER-OPS-009` entrega únicamente una entrada elegible cuando existe una decisión válida `APROBAR_SALIDA`; 010 agrega la comprobación independiente de que el proceso anterior ya no conserva una necesidad material como autoridad, compatibilidad, consumidor, soporte de trabajo en curso, recuperación, conciliación, fuente de datos, integración o evidencia.
+
+El resultado documental se materializa mediante cinco piezas:
+
+1. `legacy_retirement_scope::<package_id>` — identifica las superficies del proceso anterior realmente sujetas a evaluación de retiro y su procedencia canónica;
+2. `required_legacy_retirement_evidence_set::<package_id>` — consolida las obligaciones de evidencia ya definidas por transición, aceptación, observabilidad, compatibilidad, conciliación, rollback y registro de requisitos;
+3. `legacy_retirement_evaluation::<package_id>` — evalúa cada superficie contra todas las condiciones aplicables sin inferir cierre por ausencia de señales;
+4. `legacy_retirement_decision::<package_id>` — registra el resultado documental de elegibilidad, bloqueo, no aplicabilidad o invalidación;
+5. `legacy_retirement_manifest::<package_id>` — conserva alcance, superficies, fuentes, condiciones, evidencia, bloqueos, responsables y relación con la fase siguiente.
+
+Ninguna de estas piezas elimina, desactiva, renombra, modifica o despliega componentes del proceso anterior.
+
+---
+
+#### 2. Fuentes canónicas consumidas
+
+010 consume sin redefinir autoridad:
+
+1. `CUTOVER-OPS-001..009`, en especial:
+   - unidades, olas y secuencia de activación de 002;
+   - convivencia, proceso anterior, proceso objetivo, autoridad, compatibilidad, trabajo en curso y recuperación de 003;
+   - controles contra doble registro y doble efecto de 004;
+   - conciliaciones y tratamiento de resultados inciertos de 005;
+   - decisión de pausa, reversión o continuación de 006;
+   - bitácora y evidencia de cambio de 007;
+   - métricas de 008;
+   - autoridad y decisión de salida de 009;
+2. `DELIV-PKG-009`, que gobierna transición, backfill, compatibilidad temporal, lane de retiro legacy y `ZERO_CONFIRMED`;
+3. `DELIV-PKG-010`, para operaciones asíncronas, retry, colas, compensación y conciliación cuando existan;
+4. `DELIV-PKG-014..017`, para identidad física, dependencias, pruebas y observabilidad;
+5. `DELIV-PKG-018..020`, para activación, rollout, rollback y recuperación;
+6. `DELIV-PKG-022..025`, para piloto, aceptación, trazabilidad y decisión documental del paquete;
+7. el registro 04A vigente, en particular los requisitos de retiro seguro, compatibilidad, consumidores, integridad, rollback, idempotencia, conciliación, trazabilidad e historia;
+8. las fuentes propietarias de cada superficie cuando definan conservación, retención, soporte, consumidor o dependencia adicional.
+
+La precedencia es conservadora: una fuente propietaria que exija conservar una superficie impide declararla elegible para retiro aunque otra evidencia demuestre que dejó de ser autoridad empresarial.
+
+---
+
+#### 3. Distinciones obligatorias
+
+010 mantiene separadas las siguientes decisiones:
+
+| Concepto                    | Significado en 010                                                                                   | No significa                                                              |
+| --------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| pérdida de autoridad legacy | la superficie anterior ya no decide ni produce el efecto empresarial autoritativo según 003          | que pueda eliminarse                                                      |
+| compatibilidad temporal     | la superficie anterior permanece por contrato para consumidores o transición                         | doble autoridad                                                           |
+| uso cero observado          | la telemetría aplicable cumple la puerta `ZERO_CONFIRMED` de `DELIV-PKG-009`                         | inexistencia absoluta demostrada por una sola búsqueda                    |
+| retiro lógico               | el proceso anterior deja de estar habilitado como camino operativo conforme a la transición aprobada | eliminación física                                                        |
+| retiro físico               | eliminación futura de la superficie exacta mediante su tarea de implementación propietaria           | efecto ejecutado por 010                                                  |
+| conservación histórica      | datos, auditoría, evidencia, crosswalks y referencias continúan preservados                          | mantener activa la lógica legacy                                          |
+| rollback o recovery         | mecanismo aprobado para volver a un objetivo seguro o recuperar hechos                               | autorización automática para mantener el proceso anterior indefinidamente |
+| elegibilidad de retiro      | todas las condiciones documentales aplicables están satisfechas con evidencia reproducible           | retiro ya ejecutado o validado                                            |
+
+La pérdida de autoridad es condición necesaria cuando aplica, pero no es evidencia suficiente de retiro.
+
+---
+
+#### 4. Unidad canónica de evaluación
+
+La evaluación no se realiza de forma global por nombre de aplicación ni por lote de paquetes. Cada instancia se identifica por la combinación verificable de:
+
+- `package_id`;
+- `candidate_ref`;
+- `environment`;
+- `authorized_scope_ref`;
+- `activation_unit_ref` y `wave_ref` cuando apliquen;
+- referencia del proceso o superficie anterior heredada de 003;
+- `TRANSITION_KEY` o identidad propietaria equivalente cuando exista en `DELIV-PKG-009`;
+- referencia de la superficie objetivo o sucesora cuando la disposición canónica la exija.
+
+Una misma raíz puede contener más de una identidad de transición y, por tanto, más de una decisión de retiro. No se permite reducir todas sus superficies a un único veredicto si sus dependencias, consumidores o disposiciones son distintas.
+
+---
+
+#### 5. Alcance de superficies legacy
+
+`legacy_retirement_scope::<package_id>` deberá clasificar únicamente superficies demostrables por fuente canónica. Entre ellas pueden existir, según el paquete:
+
+- procesos o caminos operativos anteriores;
+- rutas de escritura o lectura;
+- contratos, wrappers, aliases o vistas de compatibilidad;
+- funciones, RPC, endpoints, jobs, triggers o automatizaciones;
+- productores, consumidores, webhooks, colas y trabajo diferido;
+- tablas, vistas, relaciones, políticas u objetos de transición;
+- flags o controles temporales de activación;
+- adaptadores de consumidor;
+- integraciones externas y callbacks;
+- operación offline o trabajo en curso aún vinculado a la superficie anterior;
+- artefactos de recuperación que todavía dependan de la implementación legacy.
+
+La inclusión en esta lista no autoriza retiro. La identidad física exacta continúa gobernada por `DELIV-PKG-014` y las fuentes propietarias.
+
+---
+
+#### 6. Relación con la lane de retiro de `DELIV-PKG-009`
+
+010 no crea una segunda secuencia de retiro. Consume la lane ya aprobada:
+
+`INVENTORIED → SUCCESSOR_PROVEN → DEPRECATION_ANNOUNCED → NO_NEW_USAGE_FENCED → LEGACY_READ_ONLY → ZERO_USAGE_OBSERVED → DATA_AND_EVIDENCE_PRESERVED → LOGICALLY_DISABLED → PHYSICALLY_REMOVED → POST_REMOVAL_OBSERVED → RETIREMENT_CLOSED`.
+
+La evaluación de 010 debe señalar qué hitos están demostrados, cuáles siguen pendientes y qué fuente aporta la evidencia. No puede saltar hitos ni interpretar una etapa posterior como cumplida porque una anterior parezca innecesaria.
+
+Las disposiciones E3 conservan su semántica:
+
+- `CONSERVAR`: no entra en retiro por conveniencia;
+- `MOVER`: el origen solo puede avanzar hacia retiro después de autoridad objetivo y consumidores migrados;
+- `FUSIONAR`: los no sobrevivientes solo pueden avanzar después de crosswalk estable y ausencia de referencias pendientes;
+- `DIVIDIR`: la fuente solo puede avanzar después de cobertura completa del routing aprobado;
+- `RETIRAR`: sigue deprecación progresiva sin inventar sucesor.
+
+---
+
+#### 7. Condición de entrada desde `CUTOVER-OPS-009`
+
+Una evaluación de retiro solo puede comenzar como candidata a elegibilidad cuando la misma instancia posee una decisión vigente `APROBAR_SALIDA` de 009.
+
+Los siguientes casos impiden una conclusión favorable:
+
+- `EXIGIR_CORRECCIONES` vigente;
+- `BLOQUEAR_DECISION` vigente;
+- ausencia de decisión válida;
+- evaluación de 009 invalidada por cambio material;
+- candidato, ambiente, alcance o unidad distintos de los evaluados por 009.
+
+`APROBAR_SALIDA` no prueba ninguna condición de retiro por sí sola.
+
+---
+
+#### 8. Condición de autoridad única
+
+Para una superficie candidata a retiro deberá existir evidencia de que:
+
+1. la superficie objetivo conserva la autoridad definida por 003 para el estado posterior a activación;
+2. el proceso anterior no conserva autorización para crear nuevos hechos, confirmaciones o efectos empresariales dentro del alcance evaluado;
+3. cualquier presencia técnica residual del proceso anterior es no autoritativa y está clasificada por una razón canónica;
+4. 004 no registra una brecha que permita doble registro, doble efecto o reintento por una segunda ruta;
+5. no existe una ventana de doble autoridad usada como mecanismo de transición.
+
+Si la autoridad no puede demostrarse de forma unívoca, el retiro queda bloqueado.
+
+---
+
+#### 9. Condición de consumidores y compatibilidad
+
+La elegibilidad exige demostrar, según aplicabilidad, que:
+
+- los consumidores declarados de la superficie anterior fueron migrados, retirados o conservados bajo un contrato que no requiere ejecutar la lógica legacy candidata a retiro;
+- las dependencias estáticas, dinámicas, de framework, navegación, base de datos, scripts, CI e integraciones externas aplicables fueron cubiertas por la evidencia propietaria;
+- una compatibilidad temporal todavía necesaria permanece explícitamente retenida y, mientras dependa de la superficie anterior, bloquea el retiro físico de esa superficie;
+- la ausencia de imports o referencias en una búsqueda aislada no se interpreta como ausencia total de consumidores;
+- no se usa eliminación en cascada para descubrir o resolver dependencias ocultas.
+
+La superficie puede haber perdido autoridad empresarial y aun así permanecer retenida por compatibilidad. Esa retención no reabre autoridad.
+
+---
+
+#### 10. Condición `ZERO_CONFIRMED`
+
+Para toda superficie cuyo retiro físico dependa de uso cero, 010 reutiliza exactamente `ZERO_CONFIRMED` de `DELIV-PKG-009`.
+
+No se crea una ventana nueva ni un umbral alternativo. La evidencia deberá demostrar que las señales exigidas por esa fuente cubren su ventana aprobada, incluidos los ciclos y horizontes aplicables a releases, jobs, TTL, reintentos y soporte.
+
+Una sola métrica en cero, una búsqueda negativa, ausencia de tickets o falta de actividad visible en una interfaz no sustituyen `ZERO_CONFIRMED`.
+
+Si la ventana todavía no terminó, la conclusión de retiro permanece bloqueada por evidencia pendiente; 010 no anticipa el resultado.
+
+---
+
+#### 11. Condición de trabajo en curso
+
+La superficie anterior no será elegible para retiro mientras exista trabajo en curso que dependa materialmente de ella y no tenga tratamiento aprobado.
+
+La evidencia deberá resolver, cuando aplique:
+
+- solicitudes iniciadas antes de activación;
+- formularios, operaciones o adjuntos pendientes;
+- colas locales u operaciones offline;
+- jobs, outbox, inbox o mensajes todavía procesables;
+- reintentos programados;
+- casos parcialmente completados;
+- operaciones que deban volver a una interfaz anterior para completar un paso;
+- referencias históricas que aún requieran ejecución y no solo lectura.
+
+El trabajo en curso puede cerrarse, completarse, transferirse o mantenerse bajo el tratamiento ya definido por 003 y las fuentes propietarias; 010 no inventa una migración de WIP.
+
+---
+
+#### 12. Condición de operaciones asíncronas y resultados inciertos
+
+No se declara elegibilidad mientras exista una operación reintentable, encolada, externa u offline con resultado incierto cuya resolución pueda requerir el proceso anterior.
+
+La evaluación deberá demostrar, según aplicabilidad:
+
+- identidad estable de la operación;
+- estado durable y resultado recuperable;
+- ausencia de duplicación por reenvío o cambio de ruta;
+- conciliación de resultados desconocidos;
+- cierre o tratamiento controlado de dead-letter, retry o replay;
+- trazabilidad del efecto final.
+
+Un timeout, ACK ausente o error de transporte no permite asumir que el efecto anterior no ocurrió.
+
+---
+
+#### 13. Condición de conciliación
+
+Toda discrepancia relevante identificada por 005 o por las fuentes propietarias deberá estar resuelta antes de una conclusión favorable.
+
+La evaluación distingue al menos:
+
+- estructura y contrato;
+- datos y fuente de verdad;
+- efectos empresariales;
+- permisos y seguridad;
+- eventos y trabajo asíncrono;
+- integraciones externas;
+- evidencia y auditoría;
+- trabajo en curso.
+
+Una diferencia pendiente, una fuente competidora no resuelta o una conciliación manual sin procedencia y cierre bloquea el retiro de la superficie afectada.
+
+---
+
+#### 14. Condición de datos, migración y backfill
+
+Cuando la superficie legacy participa en datos o transición física, deberá existir evidencia de que:
+
+1. el destino aplicable fue materializado y reconciliado conforme a la disposición propietaria;
+2. los backfills, replays o conversiones exigidos están cerrados con su evidencia;
+3. no existen referencias huérfanas o divergencias conocidas que requieran la superficie anterior para interpretación o reparación;
+4. la fuente de verdad posterior está definida y no compite con una copia legacy editable;
+5. la historia efectiva, claves, crosswalks y procedencia necesarias permanecen preservadas;
+6. el baseline remoto aplicable no conserva un gate de reconciliación abierto que bloquee retiro.
+
+El retiro no puede usarse para ocultar drift, datos incompatibles o una transición incompleta.
+
+---
+
+#### 15. Condición de rollback, fallback y recovery
+
+010 separa estrictamente retiro de recuperación.
+
+Una superficie anterior no es elegible para retiro físico si la estrategia vigente de `DELIV-PKG-020`, 006 o una fuente propietaria todavía la requiere como:
+
+- objetivo de rollback funcional;
+- fallback operativo aprobado;
+- mecanismo de recovery;
+- herramienta necesaria para reconciliar efectos confirmados;
+- interfaz necesaria para completar trabajo en curso;
+- dependencia temporal para consumidores no migrados.
+
+Cuando la estrategia de recuperación haya evolucionado hacia un objetivo seguro que ya no dependa de esa superficie, la evaluación podrá usar la nueva evidencia canónica. 010 no modifica por sí misma el rollback aprobado.
+
+---
+
+#### 16. Condición de observabilidad y trazabilidad
+
+La evidencia de retiro deberá ser reproducible y atribuible a la instancia exacta evaluada.
+
+Según la superficie, podrá consumir:
+
+- métricas de uso y efecto;
+- logs y trazas correlacionadas;
+- auditoría de decisiones y mutaciones;
+- conteos de consumidores o ejecuciones;
+- eventos, colas y estados de retry;
+- conciliaciones;
+- resultados de pruebas y controles;
+- evidencia de dependencias y referencias;
+- historial de cambios de 007.
+
+Toda evidencia deberá conservar fuente, ventana, ambiente, candidato o versión, alcance, responsable, resultado y referencia verificable. Una observación sin procedencia no cierra una condición.
+
+---
+
+#### 17. Condición de historia, auditoría y evidencia
+
+Retirar el proceso anterior no autoriza destruir hechos históricos.
+
+Antes de declarar elegibilidad deberá demostrarse que permanecen accesibles mediante el modelo aprobado, según aplicabilidad:
+
+- hechos empresariales ya confirmados;
+- identidad y versión originalmente utilizadas;
+- auditoría de actor, tiempo, causa y resultado;
+- documentos y evidencia sujetos a retención;
+- relaciones y crosswalks necesarios para interpretar historia;
+- registros de migración, conciliación, corrección y retiro;
+- evidencia necesaria para soporte, investigación o cumplimiento.
+
+La preservación puede quedar en estructuras distintas de la lógica legacy, pero no puede depender de una eliminación destructiva que vuelva irreconstruible la historia.
+
+---
+
+#### 18. Condición para objetos Supabase y contratos heredados
+
+Cuando la superficie candidata incluya wrapper, alias, columna, vista, fallback, tabla, función, RPC, trigger, política, publicación, bucket u otro objeto gobernado por Supabase, la evaluación deberá reutilizar las puertas existentes del 04A.
+
+Como mínimo, la evidencia aplicable debe cubrir:
+
+- propietario y consumidores;
+- condición de activación y evidencia de uso;
+- paridad o reemplazo aprobado;
+- dependencias SQL y externas cuando apliquen;
+- datos existentes;
+- estrategia de rollback;
+- puerta explícita de retiro;
+- ambiente y drift;
+- conservación histórica y contractual.
+
+La clasificación de un objeto como legacy o gobernado por Vento no constituye autorización de retiro.
+
+---
+
+#### 19. Condición para flags y controles temporales
+
+Un flag, guardia o configuración temporal podrá ser evaluado para retiro únicamente según la expiración y condiciones ya definidas en `DELIV-PKG-018` y su tratamiento posterior.
+
+Retirar un control temporal no debe:
+
+- reabrir el camino legacy como autoridad;
+- eliminar un kill switch todavía requerido;
+- convertir una configuración temporal en permiso;
+- dejar una ruta nueva activa sin su contrato permanente;
+- romper rollback o recuperación todavía vigentes.
+
+010 registra la dependencia; no cambia valores de configuración.
+
+---
+
+#### 20. Evidencia mínima por superficie
+
+`required_legacy_retirement_evidence_set::<package_id>` deberá poder responder, para cada superficie evaluada:
+
+| Dimensión           | Pregunta obligatoria                                  | Evidencia de fuente                |
+| ------------------- | ----------------------------------------------------- | ---------------------------------- |
+| identidad           | ¿qué superficie exacta se evalúa?                     | 003, 009, 014 y fuente propietaria |
+| disposición         | ¿conservar, mover, fusionar, dividir o retirar?       | E3 / 009                           |
+| salida de piloto    | ¿existe `APROBAR_SALIDA` vigente?                     | 009                                |
+| autoridad           | ¿la superficie anterior dejó de ser autoritativa?     | 003, 004, 007                      |
+| consumidores        | ¿quedan consumidores que dependan de ella?            | 009, 014, 015, observabilidad      |
+| compatibilidad      | ¿sigue existiendo obligación temporal activa?         | 003, 009, contratos propietarios   |
+| uso                 | ¿se cumplió la puerta `ZERO_CONFIRMED` cuando aplica? | 009, 017, evidencia ejecutada      |
+| WIP                 | ¿queda trabajo en curso dependiente?                  | 003, 005, evidencia operativa      |
+| async / externo     | ¿quedan retries, colas o resultados inciertos?        | 004, 005, 010 de paquetes, 017     |
+| datos               | ¿migración, backfill y reconciliación están cerrados? | 009, 014..016, 04A                 |
+| rollback / recovery | ¿la recuperación vigente aún necesita legacy?         | 006, 020                           |
+| historia            | ¿datos, auditoría y evidencia permanecen preservados? | 007, 04A y fuentes propietarias    |
+| drift               | ¿existe gate remoto o diferencia material abierta?    | 009, 014, fuentes técnicas         |
+| ejecución física    | ¿hay identidad y propietario para la acción futura?   | 014, 015 y tarea propietaria       |
+
+Una dimensión no aplicable requiere una fuente que justifique la no aplicabilidad.
+
+---
+
+#### 21. Regla documental de decisión
+
+`legacy_retirement_decision::<package_id>` utiliza exclusivamente los siguientes resultados documentales:
+
+- `RETIRO_ELEGIBLE` — todas las condiciones aplicables están cerradas con evidencia reproducible y no existe dependencia material activa que requiera la superficie anterior;
+- `RETIRO_BLOQUEADO` — existe al menos una condición aplicable incumplida, no demostrada o todavía dependiente de legacy;
+- `NO_APLICA` — la instancia no posee una superficie anterior susceptible de retiro o su disposición canónica exige conservación;
+- `INVALIDADA` — cambió materialmente la identidad de candidato, ambiente, alcance, unidad, superficie, autoridad, disposición o una fuente de decisión necesaria.
+
+`RETIRO_ELEGIBLE` significa **elegibilidad documental**. No equivale a `LOGICALLY_DISABLED`, `PHYSICALLY_REMOVED`, `POST_REMOVAL_OBSERVED` ni `RETIREMENT_CLOSED`.
+
+No existe aprobación parcial por promedio. Una sola condición aplicable bloqueada impide `RETIRO_ELEGIBLE` para esa superficie.
+
+---
+
+#### 22. Causas mínimas de bloqueo
+
+La evaluación queda `RETIRO_BLOQUEADO` cuando se presente al menos una de estas situaciones:
+
+1. no existe `APROBAR_SALIDA` vigente de 009;
+2. la superficie no tiene identidad verificable;
+3. la disposición propietaria exige `CONSERVAR` y se intenta retirar;
+4. la autoridad posterior no está demostrada;
+5. el proceso anterior todavía puede producir hechos o efectos nuevos;
+6. persiste un consumidor que requiere la superficie;
+7. existe compatibilidad temporal activa dependiente de legacy;
+8. `ZERO_CONFIRMED` aplica y no está demostrado;
+9. existe WIP dependiente sin tratamiento cerrado;
+10. existen retries, mensajes, callbacks o resultados inciertos sin conciliación;
+11. existe drift o baseline bloqueante sin resolver;
+12. migración, backfill, routing o crosswalk aplicable no está cerrado;
+13. rollback, fallback o recovery vigente todavía requiere la superficie;
+14. historia, auditoría, evidencia o retención dependen de una eliminación destructiva;
+15. la observabilidad no permite atribuir uso y efecto a la superficie evaluada;
+16. la identidad física o el propietario de la acción futura no están confirmados;
+17. una fuente canónica posterior invalida la evaluación previa.
+
+La causa de bloqueo debe conservar propietario y condición de salida. 010 no crea una solución técnica para forzar el desbloqueo.
+
+---
+
+#### 23. Tratamiento de `NO_APLICA`
+
+`NO_APLICA` no puede usarse para evitar evidencia.
+
+Solo procede cuando una fuente canónica demuestra una de estas condiciones:
+
+- no existe proceso anterior para la unidad evaluada;
+- la superficie pertenece a una modalidad sin transición legacy aplicable;
+- la disposición propietaria es `CONSERVAR` y por ello no existe decisión de retiro en este alcance;
+- la raíz o modalidad permanece fuera de la línea ejecutable actual y no posee una instancia real de piloto de la cual retirar un proceso anterior.
+
+Una duda sobre identidad, consumidor, uso o dependencia produce bloqueo, no `NO_APLICA`.
+
+---
+
+#### 24. Invalidación y reevaluación
+
+Una decisión de elegibilidad se invalida cuando cambie materialmente cualquiera de los siguientes elementos:
+
+- candidato o revisión;
+- ambiente;
+- alcance autorizado;
+- unidad u ola;
+- proceso anterior o superficie objetivo;
+- `TRANSITION_KEY` o disposición;
+- autoridad posterior;
+- consumidores o compatibilidad;
+- estrategia de rollback/recovery;
+- contrato de retención o evidencia;
+- gate de baseline o drift;
+- una fuente propietaria usada para justificar la decisión.
+
+La invalidación no borra el expediente histórico. Una nueva evaluación deberá conservar referencia a la anterior y explicar la diferencia material.
+
+---
+
+#### 25. Contenido mínimo del manifiesto
+
+`legacy_retirement_manifest::<package_id>` deberá poder conservar, como mínimo:
+
+1. `package_id`;
+2. `candidate_ref`;
+3. `environment`;
+4. `authorized_scope_ref`;
+5. `activation_unit_ref` y `wave_ref` cuando apliquen;
+6. referencia de la decisión `APROBAR_SALIDA` de 009;
+7. referencia del `coexistence_manifest` de 003;
+8. referencia de la superficie legacy;
+9. `TRANSITION_KEY` o identidad propietaria equivalente cuando exista;
+10. disposición canónica;
+11. referencia de la superficie objetivo cuando aplique;
+12. estado de autoridad anterior y posterior;
+13. consumidores y dependencias relevantes;
+14. compatibilidad todavía requerida o cerrada;
+15. resultado de `ZERO_CONFIRMED` cuando aplique;
+16. estado de WIP;
+17. estado de operaciones asíncronas o externas inciertas;
+18. estado de conciliación;
+19. estado de migración/backfill/routing/crosswalk cuando aplique;
+20. dependencia vigente de rollback/fallback/recovery;
+21. evidencia de historia, auditoría y retención;
+22. evidencia de observabilidad;
+23. gates o drift pendientes;
+24. resultado `legacy_retirement_decision`;
+25. causas de bloqueo y propietarios cuando existan;
+26. referencias de evidencia;
+27. historial de invalidaciones y reevaluaciones.
+
+El manifiesto es un expediente documental y no una orden de eliminación.
+
+---
+
+#### 26. Reutilización explícita del registro 04A
+
+010 no introduce una semántica nueva de retiro. La evaluación se apoya, entre otros, en requisitos ya vigentes que protegen:
+
+- retiro de rutas, componentes, funciones, scripts o endpoints únicamente con evidencia reproducible de consumidores y pruebas aplicables;
+- compatibilidad de contratos y consumidores;
+- rollback independiente sin pérdida de datos ni auditoría;
+- wrappers, aliases, columnas, vistas y fallbacks legacy con propietario, consumidores, paridad, rollback y puerta explícita de retiro;
+- objetos Supabase con mapa de propietarios, consumidores, datos, reemplazo y rollback antes de eliminación;
+- operaciones idempotentes y reconciliables;
+- trazabilidad de efectos y reintentos sin duplicación;
+- captura única de datos empresariales, resolución de fuentes competidoras y preservación de evidencia;
+- fuente de verdad, historia efectiva y linaje de datos.
+
+010 materializa la aplicación de esas reglas al cierre de CUTOVER. No cambia su contenido, estado, secuencia ni relación.
+
+---
+
+#### 27. Cobertura de las 207 raíces y modalidades heredadas
+
+La tarea no reclasifica el universo de paquetes ni altera las modalidades heredadas por CUTOVER.
+
+Las 207 raíces continúan bajo sus identidades canónicas y solo pueden generar una evaluación de retiro cuando exista una instancia real y elegible de piloto. Los paquetes bloqueados, fuera de línea o sin proceso anterior real no adquieren elegibilidad por la aprobación documental de 010.
+
+010 tampoco convierte una raíz `CONTROL`, `SHARED`, AURA, EXT o TALENTO en una transición directa. Cada una conserva sus gates y propietarios ya definidos.
+
+No existe aprobación de retiro por lote de 207 raíces.
+
+---
+
+#### 28. Separación entre planificación y ejecución
+
+010 es exclusivamente documental.
+
+No ejecuta:
+
+- retiro lógico;
+- retiro físico;
+- borrado de código o datos;
+- eliminación de tablas, vistas, funciones, RPC, triggers, políticas, buckets o publicaciones;
+- cambios de feature flags o configuración;
+- despliegues;
+- DDL o DML;
+- migraciones o backfills;
+- cambios de RLS o grants;
+- activaciones o promociones;
+- rollback, fallback, recovery o compensation;
+- replays o purga de colas;
+- conciliaciones físicas;
+- cambios en Supabase remoto;
+- cambios en consumidores externos.
+
+Las acciones futuras permanecen en sus tareas de implementación y ejecución propietarias con la evidencia correspondiente.
+
+---
+
+#### 29. Handoff al bloque HYPERCARE
+
+Al cerrar CUTOVER, 010 puede entregar a la fase HYPERCARE, sin ejecutar ninguna acción:
+
+- superficies ya elegibles documentalmente pero todavía no retiradas;
+- superficies bloqueadas y causa exacta;
+- dependencias legacy todavía retenidas;
+- obligaciones de observación, soporte, conciliación o recovery que continúan abiertas;
+- evidencia de uso, autoridad y consumidores que debe mantenerse vigente;
+- historial de decisiones e invalidaciones.
+
+Este handoff no define inicio, duración ni salida de hypercare; esa materia comienza en `HYPERCARE-OPS-001`.
+
+---
+
+#### 30. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0  
+**Requisitos modificados:** 0  
+**Fragmentos 04A afectados:** 0
+
+**Justificación:** 010 no crea un comportamiento empresarial, técnico, de autorización, cálculo, persistencia, integración, retry, compatibilidad, rollback o retiro ejecutable nuevo. Define un expediente documental que aplica al cierre de CUTOVER las puertas y evidencias ya aprobadas por `DELIV-PKG-009`, CUTOVER previo y el registro 04A vigente. En particular, no altera `ZERO_CONFIRMED`, no introduce umbrales nuevos, no redefine consumidores, no crea una secuencia de retiro paralela y no autoriza eliminación física. Los comportamientos verificables subyacentes ya están protegidos por requisitos existentes de SHELL, SUPABASE, INTEGRATION, DATA y dominios propietarios.
+
+---
+
+#### 31. Criterios de aceptación documental
+
+`CUTOVER-OPS-010` queda documentalmente completa cuando:
+
+1. conserva `CUTOVER-OPS-009 → CUTOVER-OPS-010 → HYPERCARE-OPS-001`;
+2. mantiene el retiro separado de la aprobación de salida del piloto;
+3. exige una decisión vigente `APROBAR_SALIDA` antes de considerar elegibilidad;
+4. no permite que `APROBAR_SALIDA` autorice retiro por sí sola;
+5. materializa `legacy_retirement_scope`;
+6. materializa `required_legacy_retirement_evidence_set`;
+7. materializa `legacy_retirement_evaluation`;
+8. materializa `legacy_retirement_decision`;
+9. materializa `legacy_retirement_manifest`;
+10. evalúa superficies por identidad verificable y no únicamente por paquete o aplicación;
+11. conserva `TRANSITION_KEY` y disposición propietaria cuando existan;
+12. no retira una disposición `CONSERVAR` por conveniencia;
+13. reutiliza la lane de retiro ya definida en `DELIV-PKG-009`;
+14. reutiliza `ZERO_CONFIRMED` sin crear otro umbral;
+15. no acepta una búsqueda negativa de código como evidencia única de uso cero;
+16. exige autoridad objetivo unívoca y ausencia de nueva autoridad legacy;
+17. impide doble escritura o doble efecto durante el cierre;
+18. exige cierre de consumidores y compatibilidad aplicables;
+19. conserva compatibilidad todavía necesaria sin devolver autoridad al proceso anterior;
+20. exige tratamiento cerrado del trabajo en curso;
+21. exige resolución de operaciones asíncronas o externas con resultado incierto;
+22. exige conciliaciones aplicables cerradas;
+23. exige migración, backfill, routing o crosswalk cerrados cuando correspondan;
+24. impide retirar una superficie todavía necesaria para rollback, fallback o recovery;
+25. preserva hechos, historia, auditoría, evidencia y obligaciones de retención;
+26. exige procedencia de observabilidad y evidencia;
+27. exige identidad física y propietario antes de cualquier futura acción material;
+28. distingue `RETIRO_ELEGIBLE` de retiro lógico, retiro físico y cierre de retiro;
+29. una sola condición aplicable abierta produce `RETIRO_BLOQUEADO`;
+30. `NO_APLICA` requiere fuente canónica y no puede ocultar una duda;
+31. los cambios materiales invalidan la evaluación sin reescribir su historia;
+32. no existe aprobación de retiro global por las 207 raíces;
+33. AURA, EXT, TALENTO, shared y control conservan sus gates heredados;
+34. el handoff a HYPERCARE conserva superficies elegibles, bloqueadas y dependencias retenidas sin definir la tarea siguiente;
+35. no se ejecutan retiros, borrados, despliegues, configuración, DDL/DML, migraciones, backfills, rollback, recovery, conciliaciones ni operaciones remotas;
+36. se crean cero requisitos de prueba, se modifican cero requisitos y se afectan cero fragmentos 04A.
+
+---
+
+#### 32. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones
+
+##### TAREA ACTUAL APROBADA
+CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior
+
+##### SIGUIENTE TAREA RESERVADA
+HYPERCARE-OPS-001 — Definir inicio, duración y salida del acompañamiento intensivo
+
 
 La ejecución real conservará paquete, versión, ambiente, ventana, actor,
 decisión y evidencia mediante `SHELL-CI-022`. Los defectos encontrados deberán
