@@ -3403,11 +3403,12 @@ La comprobación se ejecutará por `package_id`, candidato de implementación, a
 - consume las personas, roles, sedes, áreas y turnos ya preparados por `READY-GATE-004` sin volver a definirlos;
 - consume los procedimientos y contingencias de `READY-GATE-008` sin volver a certificarlos;
 - consume capacitación y material de apoyo de `READY-GATE-009` sin convertir conocimiento en cobertura humana;
+- no sustituye `READY-GATE-002`, propietaria de migraciones aplicadas y datos validados;
 - no sustituye `READY-GATE-011`, propietaria de monitoreo, métricas y alertas;
 - no sustituye `READY-GATE-012`, propietaria de respaldo y rollback probados;
-- no sustituye `READY-GATE-013`, propietaria de baseline y migraciones ensayadas;
-- no sustituye `READY-GATE-014`, propietaria de riesgos operativos y mitigaciones;
-- no sustituye `READY-GATE-015`, propietaria de la autoridad final de decisión de readiness.
+- no sustituye `READY-GATE-013`, propietaria de la línea base previa al piloto;
+- no sustituye `READY-GATE-014`, propietaria del registro de riesgos aceptados y condiciones de suspensión;
+- no sustituye `READY-GATE-015`, propietaria de la autoridad y el criterio para aprobar la entrada al piloto operativo.
 
 La existencia de una cuenta, un grupo de mensajería, una URL, un nombre en un documento, un contrato de proveedor o un runbook no equivale por sí sola a readiness de soporte.
 
