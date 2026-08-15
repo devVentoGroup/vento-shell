@@ -5981,14 +5981,32 @@ SIGUIENTE TAREA RESERVADA
 ### ✅ READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto
 
 **Estado:** APROBADA  
-**Tarea anterior:** READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados — APROBADA  
-**Tarea siguiente:** READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión — RESERVADA  
-**Tipo de tarea:** documental — puerta de readiness operativo; definición del método, evidencia, integridad y criterio de aceptación de la línea base previa al piloto. No implementa código, despliegues, migraciones, configuración productiva, cambios físicos ni operaciones sobre Supabase.  
+**Tarea anterior:** `READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados` — APROBADA  
+**Tarea siguiente:** `READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión` — RESERVADA  
+**Tipo de tarea:** documental — definición normativa y materialización del contrato de readiness por paquete para construir, capturar, congelar, evidenciar y aceptar la línea base previa al piloto; sin ejecutar pilotos, despliegues, migraciones, DDL/DML, backfills, cambios físicos, configuración productiva ni operaciones sobre Supabase.  
 **Repositorio propietario:** `devVentoGroup/vento-shell`
 
-#### 1. Propósito
+---
 
-Definir el contrato canónico mediante el cual la ejecución posterior de `SHELL-CI-021` deberá demostrar que cada paquete que vaya a entrar a piloto cuenta con una línea base previa, identificable, reproducible y comparable, suficiente para distinguir el estado existente antes de la exposición del piloto de los efectos observados durante o después de éste.
+#### 1. Resultado sustantivo
+
+`READY-GATE-013` define la evaluación futura `READY-GATE-013::<package_id>` que deberá consumir `SHELL-CI-021::<package_id>` después de la implementación física autorizada y antes de que el paquete pueda presentarse a la decisión final de entrada al piloto.
+
+El resultado documental queda materializado mediante cinco piezas obligatorias y separadas:
+
+1. `required_baseline_set::<package_id>` — universo exhaustivo y versionado de indicadores, estados, poblaciones, dependencias y condiciones preexistentes que requieren referencia previa;
+2. contrato de captura por elemento — identidad, definición, fuente, ventana, corte, segmentación, calidad, comparabilidad y evidencia mínima;
+3. reglas deterministas de decisión — traducción de la condición de la captura a `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA`;
+4. reconciliación de completitud — conteos de esperado, materializado, faltantes, duplicados e identificadores no resolubles antes de emitir resultado agregado;
+5. `baseline_manifest::<package_id>` — manifiesto futuro de evidencia que deberá producir la ejecución de `SHELL-CI-021`.
+
+La tarea no captura todavía valores reales de línea base ni afirma que un paquete haya superado readiness. Define el contrato consumible que impedirá reconstruir, seleccionar o reinterpretar la referencia previa después de observar el resultado del piloto.
+
+---
+
+#### 2. Propósito
+
+Definir el método canónico mediante el cual cada paquete candidato a piloto deberá demostrar que dispone de una referencia previa identificable, reproducible, íntegra y comparable, suficiente para distinguir el estado existente antes de la exposición de los efectos observados durante o después del piloto.
 
 La línea base deberá permitir responder, sin reconstrucción oportunista posterior, al menos:
 
@@ -6001,34 +6019,57 @@ La línea base deberá permitir responder, sin reconstrucción oportunista poste
 - qué valor, distribución o estado previo quedó registrado;
 - qué faltantes, anomalías, incidentes o condiciones preexistentes podían afectar la interpretación;
 - qué evidencia permite reproducir o auditar la captura;
+- qué elementos esperados no pudieron materializarse y por qué;
 - y si la referencia sigue siendo comparable con la medición que se realizará durante el piloto.
 
-Esta tarea define la puerta documental y el método de aceptación. La captura material de la línea base y la evidencia resultante corresponden a la ejecución posterior del readiness y del piloto sobre el paquete implementado.
+La captura material de la línea base y la evidencia resultante corresponden a la ejecución posterior del readiness sobre el paquete implementado.
 
-#### 2. Invariante de interpretación
+---
+
+#### 3. Invariante de interpretación
 
 Se adopta la siguiente separación obligatoria:
 
-`LÍNEA BASE ≠ OBJETIVO ≠ UMBRAL DE ACEPTACIÓN ≠ TELEMETRÍA EN VIVO ≠ RESULTADO DEL PILOTO`
+```text
+LÍNEA BASE
+≠ OBJETIVO
+≠ UMBRAL DE ACEPTACIÓN
+≠ TELEMETRÍA EN VIVO
+≠ RESULTADO DEL PILOTO
+≠ EVIDENCIA DE CAUSALIDAD
+```
 
-La línea base es una referencia controlada del estado previo a la exposición del piloto. No constituye por sí misma un objetivo, un SLO, un umbral de aceptación, una garantía de desempeño ni evidencia de que el piloto haya producido una mejora o deterioro.
+La línea base es una referencia controlada del estado previo a la exposición del piloto.
 
-Un valor objetivo o contractual no podrá sustituirse por una observación histórica. De igual forma, una observación histórica favorable no podrá relajar un umbral aprobado en `DELIV-PKG-023`, `NFR-REQ-009` o el contrato aplicable del paquete.
+No constituye por sí misma:
 
-#### 3. Frontera con tareas y contratos adyacentes
+- un objetivo;
+- un SLO;
+- un umbral de aceptación;
+- una garantía de desempeño;
+- evidencia de mejora;
+- evidencia de deterioro;
+- evidencia de causalidad;
+- autorización para iniciar el piloto.
 
-`READY-GATE-013` consume, sin redefinirlos, los contratos canónicos ya aprobados que determinan qué debe medirse, sobre qué alcance y con qué evidencia:
+Un valor objetivo o contractual no podrá sustituirse por una observación histórica. Una observación histórica favorable no podrá relajar un umbral aprobado en `DELIV-PKG-023`, `NFR-REQ-009` o el contrato aplicable del paquete.
 
-- `DELIV-PKG-013`: requisitos no funcionales y compatibilidad aplicables al paquete;
-- `DELIV-PKG-016`: vínculo entre requisitos de prueba, nivel, archivos, fixtures, ambientes, responsables y evidencia esperada;
-- `DELIV-PKG-017`: contrato de observabilidad por paquete y definición de métricas, logs, eventos, alertas y fuentes aplicables;
-- `DELIV-PKG-019`: estrategia de rollout y segmentación progresiva;
-- `DELIV-PKG-022`: población, actores, sedes, datos, dispositivos, ambiente, duración, cohortes, exclusiones y salvaguardas del piloto;
-- `DELIV-PKG-023`: criterios medibles de aceptación y evidencia;
-- `DELIV-PKG-025`: dossier de cierre documental previo a implementación física;
-- `NFR-REQ-009`: obligaciones no funcionales de observabilidad y evidencia;
-- `READY-GATE-011`: disponibilidad y aptitud de monitoreo, métricas y alertas;
-- `READY-GATE-012`: evidencia de respaldo, restauración y rollback aplicable.
+---
+
+#### 4. Entradas canónicas y frontera con contratos adyacentes
+
+`READY-GATE-013` consume, sin redefinir su autoridad:
+
+1. `DELIV-PKG-013` para requisitos no funcionales y compatibilidad aplicables al paquete;
+2. `DELIV-PKG-016` para requisitos de prueba, nivel, archivos, fixtures, ambientes, responsables y evidencia esperada;
+3. `DELIV-PKG-017` para observabilidad, métricas, logs, eventos, alertas, fuentes y señales aplicables;
+4. `DELIV-PKG-019` para estrategia de rollout y segmentación progresiva;
+5. `DELIV-PKG-022` para población, actores, sedes, datos, dispositivos, ambiente, duración, cohortes, exclusiones y salvaguardas del piloto;
+6. `DELIV-PKG-023` para criterios medibles de aceptación y evidencia;
+7. `DELIV-PKG-025` como dossier documental previo a implementación física;
+8. `NFR-REQ-009` para obligaciones no funcionales de observabilidad y evidencia;
+9. `READY-GATE-011` para disponibilidad y aptitud de monitoreo, métricas y alertas;
+10. `READY-GATE-012` para evidencia de respaldo, restauración y rollback cuando esas condiciones puedan afectar la interpretación o recuperación del piloto.
 
 La frontera de las puertas siguientes permanece intacta:
 
@@ -6037,105 +6078,166 @@ La frontera de las puertas siguientes permanece intacta:
 
 Por tanto, una línea base correctamente capturada no autoriza el piloto, no acepta riesgos, no demuestra rollback y no reemplaza la aprobación final de readiness.
 
-#### 4. Universo obligatorio de línea base
+---
 
-Antes de observar los resultados deberá derivarse el universo de elementos que requieren referencia previa. No se permitirá seleccionar únicamente los indicadores que produzcan una comparación favorable.
+#### 5. Construcción obligatoria de `required_baseline_set`
 
-El universo deberá construirse, como mínimo, a partir de:
+Antes de observar resultados del piloto deberá construirse `required_baseline_set::<package_id>`.
 
-1. indicadores, SLI, métricas, eventos o estados definidos por el contrato de observabilidad del paquete cuando sean pertinentes para el piloto;
+El conjunto se deriva exclusivamente del dossier aprobado del paquete y no de los resultados que posteriormente produzca el piloto.
+
+Deberá incluir, cuando resulten aplicables:
+
+1. indicadores, SLI, métricas, eventos o estados definidos por el contrato de observabilidad;
 2. criterios de aceptación que requieran comparación antes/después, tendencia, distribución, tasa, proporción, volumen, duración, error, disponibilidad, calidad o referencia histórica;
-3. estados operativos preexistentes necesarios para interpretar correctamente el resultado del piloto;
-4. sedes, actores, roles, dispositivos, cohortes, poblaciones o segmentos que efectivamente estarán expuestos;
+3. estados operativos preexistentes necesarios para interpretar correctamente el resultado;
+4. sedes, actores, roles, dispositivos, cohortes, poblaciones o segmentos que estarán expuestos;
 5. dependencias, integraciones o condiciones de infraestructura cuyo estado preexistente pueda actuar como factor de confusión;
-6. colas, pendientes, backlog, incidencias o degradaciones existentes cuando puedan alterar el resultado observado;
-7. cualquier referencia previa declarada explícitamente por el contrato de aceptación, rollout o piloto.
+6. colas, pendientes, backlog, incidencias o degradaciones que puedan alterar el resultado observado;
+7. referencias previas exigidas expresamente por el contrato de aceptación, rollout o piloto;
+8. estados de configuración relevantes para interpretar la comparación, sin copiar secretos;
+9. condiciones de calendario, campaña, mantenimiento, cierre, estacionalidad o volumen que puedan afectar la ventana;
+10. reconstrucciones históricas permitidas cuando no exista una captura original y sea posible preservar comparabilidad de manera auditable.
 
-Cada elemento derivado deberá evaluarse exactamente una vez y quedar clasificado como `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA` conforme a esta tarea.
+Reglas:
 
-La ausencia de una medición histórica no elimina automáticamente el elemento del universo. `NO_APLICA` exige una justificación basada en el contrato del paquete y no en la falta de datos.
+1. el conjunto deberá quedar derivado antes de examinar el resultado del piloto;
+2. cada elemento esperado aparecerá exactamente una vez;
+3. un elemento no se elimina porque falte evidencia;
+4. un elemento no se elimina porque su valor sea desfavorable;
+5. un elemento no se convierte en `NO_APLICA` por ausencia de datos;
+6. una misma medición puede respaldar más de un elemento únicamente cuando la relación sea explícita y materialmente válida;
+7. el conjunto deberá conservar versión;
+8. cualquier cambio posterior en el universo deberá quedar versionado y justificado;
+9. una reducción del universo después de conocer resultados que busque mejorar la conclusión constituye incumplimiento material;
+10. la ejecución futura deberá demostrar conteos de completitud antes de emitir el resultado agregado.
 
-#### 5. Identidad mínima de la línea base
+---
 
-Toda línea base aceptable deberá poseer una identidad estable que permita relacionarla inequívocamente con el piloto posterior. Como mínimo deberá conservar:
+#### 6. Identidad mínima de cada elemento
 
-- identificador o referencia estable de la línea base;
-- paquete y capacidad observados;
-- candidato exacto, versión, revisión, artefacto o commit cuando resulte aplicable;
-- ambiente de ejecución;
-- sede, área, población, cohorte o segmento cubierto cuando resulte aplicable;
-- alcance funcional y técnico;
-- referencia al rollout y al contrato de piloto aplicables;
-- fecha y hora de corte;
-- zona horaria utilizada;
-- inicio y fin de la ventana de observación;
-- versión del conjunto de métricas o definiciones utilizadas;
-- fuente o sistema propietario de cada dato;
-- responsable de la captura o del proceso que la genera;
-- referencia a la evidencia preservada.
+Cada elemento de `required_baseline_set::<package_id>` deberá conservar, como mínimo y cuando aplique:
 
-Dos capturas con distinto candidato, ambiente, cohorte, definición métrica o alcance no deberán tratarse como la misma línea base salvo que exista una regla de equivalencia explícita y auditable que preserve la comparabilidad.
+| Campo                        | Regla                                                                                   |
+| ---------------------------- | --------------------------------------------------------------------------------------- |
+| `package_id`                 | paquete exacto evaluado                                                                 |
+| `baseline_set_version`       | versión inmutable del universo utilizado para la decisión                               |
+| `baseline_element_id`        | identidad estable y única dentro del paquete                                            |
+| `source_contract_ref`        | contrato canónico que origina la necesidad de referencia                                |
+| `source_element_ref`         | indicador, criterio, estado, dependencia, cohorte o identidad concreta de origen        |
+| `candidate_ref`              | candidato, versión, revisión, artefacto o commit evaluado cuando corresponda            |
+| `environment_ref`            | ambiente exacto al que corresponde la referencia                                        |
+| `site_or_scope_ref`          | sede, área, ámbito funcional o técnico cuando cambie la validez                         |
+| `population_or_cohort_ref`   | población, cohorte o segmento aplicable                                                 |
+| `pilot_or_rollout_ref`       | diseño de piloto o rollout con el que deberá compararse                                 |
+| `metric_or_state_ref`        | métrica, estado o condición previa que se captura                                       |
+| `measurement_definition_ref` | definición y versión de cálculo o interpretación                                        |
+| `authoritative_source_ref`   | fuente propietaria del dato o estado                                                    |
+| `window_start`               | inicio verificable de la ventana                                                        |
+| `window_end`                 | final verificable de la ventana                                                         |
+| `cutoff_at`                  | corte previo a la exposición aplicable                                                  |
+| `timezone`                   | zona horaria utilizada                                                                  |
+| `sample_or_population_rule`  | regla de cobertura o muestreo cuando exista                                             |
+| `required_dimensions`        | dimensiones que deben preservarse para comparabilidad                                   |
+| `required_evidence`          | evidencia mínima exigida por el contrato aplicable                                      |
+| `comparability_rule`         | condiciones que deberán seguir siendo equivalentes durante el piloto                    |
+| `quality_condition`          | condición de la captura conforme a esta tarea                                           |
+| `result`                     | `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA`                                               |
+| `evidence_ref`               | referencia durable a la evidencia utilizada                                             |
+| `blocking_reason`            | motivo exacto cuando la decisión no sea `PASS`                                          |
+| `blocking_owner`             | propietario del desbloqueo cuando exista                                                |
+| `blocking_task_ref`          | tarea o contrato responsable cuando el bloqueo deba resolverse fuera de esta evaluación |
+| `blocking_exit_condition`    | condición verificable que permite levantar el bloqueo                                   |
 
-#### 6. Registro mínimo por indicador o estado medido
+No se reutilizará por semejanza una referencia perteneciente a otro paquete, candidato, ambiente, cohorte, definición, fuente, ventana o alcance cuando esas diferencias sean materiales.
 
-Cada elemento cuantitativo o cualitativo de la línea base deberá conservar, según aplique:
+---
 
-- identificador estable del indicador o estado;
+#### 7. Registro mínimo por indicador o estado
+
+Cada elemento cuantitativo o cualitativo deberá conservar, según aplique:
+
+- identificador estable;
 - nombre y significado técnico u operativo;
 - unidad de medida;
 - fuente autoritativa;
-- referencia o versión de la consulta, extracción, cálculo o instrumento de medición;
-- numerador y denominador cuando se trate de tasas, porcentajes o proporciones;
+- referencia o versión de la consulta, extracción, cálculo o instrumento;
+- numerador y denominador para tasas, porcentajes o proporciones;
 - filtros, inclusiones y exclusiones;
 - regla de agregación;
 - dimensiones o segmentos relevantes;
-- regla de muestreo, si existe;
+- regla de muestreo cuando exista;
 - ventana temporal;
-- cobertura y frescura de los datos;
+- cobertura;
+- frescura;
 - valor, distribución, estado o clasificación obtenidos;
 - condición de calidad de la captura;
-- anomalías o limitaciones materiales conocidas;
+- anomalías o limitaciones materiales;
+- eventos extraordinarios ocurridos durante la ventana;
+- factores de confusión materiales;
 - referencia a evidencia suficiente para auditar el resultado.
 
 No será suficiente registrar únicamente un número final sin conservar la semántica y el alcance que permiten reproducirlo o compararlo.
 
-#### 7. Distinción obligatoria entre cero, ausencia y no aplicabilidad
+---
 
-La línea base deberá distinguir expresamente, sin equivalencias implícitas, al menos las siguientes condiciones:
+#### 8. Condiciones de calidad de la captura
 
-- `CERO_MEDIDO`: la fuente autoritativa fue consultada correctamente y el valor observado fue cero;
-- `SIN_OBSERVACIONES`: la métrica es aplicable pero la ventana no contiene observaciones suficientes;
-- `NO_DISPONIBLE`: la fuente o extracción requerida no pudo producir un dato confiable;
-- `NO_APLICA`: el indicador o estado no pertenece al alcance del paquete o piloto, con justificación;
-- `PROVISIONAL`: la captura existe pero presenta una limitación explícita de cobertura, frescura o completitud que debe evaluarse frente al contrato de aceptación;
-- `VALIDO`: la captura satisface identidad, fuente, ventana, cobertura e integridad requeridas.
+La captura deberá distinguir explícitamente, sin equivalencias implícitas:
 
-Un dato ausente nunca deberá convertirse silenciosamente en cero. Un dato provisional tampoco podrá presentarse como definitivo.
+| Condición           | Semántica                                                                                                      |
+| ------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `VALIDO`            | satisface identidad, fuente, ventana, cobertura, integridad y comparabilidad requeridas                        |
+| `CERO_MEDIDO`       | la fuente autoritativa fue consultada correctamente y el valor observado fue realmente cero                    |
+| `SIN_OBSERVACIONES` | el elemento es aplicable, pero la ventana no contiene observaciones suficientes para el uso previsto           |
+| `NO_DISPONIBLE`     | la fuente, historia, extracción o acceso no pudo producir un dato confiable                                    |
+| `PROVISIONAL`       | existe captura, pero conserva una limitación explícita de cobertura, frescura o completitud                    |
+| `RECONSTRUIDA`      | la referencia fue producida posteriormente desde historia autoritativa y está identificada como reconstrucción |
+| `NO_APLICA`         | el elemento no corresponde al paquete o al diseño del piloto conforme al contrato aplicable                    |
 
-`PROVISIONAL` es una condición de la evidencia y no un resultado adicional de la puerta. Un elemento provisional solo podrá resultar `PASS` si el contrato de aceptación aplicable permite explícitamente esa limitación y ésta no invalida la comparación prevista; en caso contrario deberá resultar `BLOQUEADO` o `FAIL` según la causa.
+Reglas:
 
-#### 8. Estados previos no numéricos
+1. un dato ausente nunca se transforma en cero;
+2. `CERO_MEDIDO` exige una consulta válida de la fuente;
+3. `SIN_OBSERVACIONES` no equivale a `CERO_MEDIDO`;
+4. `NO_DISPONIBLE` no equivale a `NO_APLICA`;
+5. `PROVISIONAL` no equivale a definitivo;
+6. `RECONSTRUIDA` no se presenta como captura original;
+7. `NO_APLICA` exige justificación basada en alcance;
+8. la condición de calidad no sustituye el resultado del gate.
 
-Cuando la interpretación del piloto dependa de condiciones que no sean una métrica escalar, la línea base deberá preservar la referencia previa correspondiente. Podrán incluir, según el paquete:
+---
+
+#### 9. Estados previos no numéricos
+
+Cuando la interpretación del piloto dependa de condiciones que no sean una métrica escalar, la línea base deberá preservar la referencia previa correspondiente.
+
+Podrán incluir, según el paquete:
 
 - backlog, colas o trabajos pendientes;
 - operaciones con resultado pendiente o desconocido;
-- incidentes, problemas, cambios o degradaciones abiertas que afecten materialmente el alcance;
+- incidentes, problemas, cambios o degradaciones abiertas;
 - configuración o estado funcional relevante, sin copiar secretos;
 - membresía efectiva de cohortes o poblaciones;
 - versión o referencia de datos utilizados para el piloto;
 - estado de integraciones o dependencias externas;
-- estado de dispositivos, red o periféricos relevantes para el alcance;
+- estado de dispositivos, red o periféricos;
 - disponibilidad o salud previa de servicios;
 - condiciones operativas excepcionales vigentes antes del piloto.
 
-Estos estados deberán referenciar su sistema propietario y no crear una segunda fuente de verdad. La evidencia de línea base podrá fijar una referencia, instantánea controlada o identificador de versión, pero no sustituirá al sistema canónico que gobierna el dato.
+Estos estados deberán referenciar su sistema propietario y no crear una segunda fuente de verdad.
 
-#### 9. Método temporal de captura
+La evidencia de línea base podrá fijar una referencia, instantánea controlada o identificador de versión, pero no sustituirá al sistema canónico que gobierna el dato.
+
+---
+
+#### 10. Método temporal de captura
 
 La ventana de línea base deberá terminar antes de la primera exposición del piloto capaz de modificar directa o indirectamente el indicador o estado que se pretende comparar.
 
-La duración de la ventana no será un número universal. Deberá justificarse con base en:
+La duración de la ventana no será un número universal.
+
+Deberá justificarse según:
 
 - comportamiento y frecuencia del indicador;
 - ciclo operativo o de negocio;
@@ -6145,39 +6247,83 @@ La duración de la ventana no será un número universal. Deberá justificarse c
 - estacionalidad, calendario o periodicidad material;
 - disponibilidad histórica de la fuente.
 
-La captura deberá registrar cualquier evento material dentro de la ventana, como mantenimientos planificados, cierres, festivos, campañas, incidentes, cambios de volumen o condiciones extraordinarias, cuando puedan distorsionar la comparación.
+La captura deberá registrar cualquier evento material dentro de la ventana, como:
 
-No se permitirá ampliar retroactivamente la ventana después de observar el resultado del piloto para obtener una referencia más favorable.
+- mantenimientos;
+- cierres;
+- festivos;
+- campañas;
+- incidentes;
+- cambios de volumen;
+- degradaciones;
+- cambios de configuración;
+- condiciones extraordinarias.
 
-#### 10. Corte previo a exposición y contaminación
+No se permitirá ampliar, reducir o desplazar retrospectivamente la ventana después de observar resultados para obtener una referencia más favorable.
 
-Se considera contaminada una línea base cuando incluye observaciones producidas después de que una persona, cohorte, sede, dispositivo, integración o proceso haya sido expuesto al candidato o a una intervención del piloto capaz de alterar el resultado medido.
+---
 
-Para evitar contaminación, la evidencia deberá conservar el corte temporal y, cuando el rollout sea progresivo, distinguir los segmentos todavía no expuestos de los ya expuestos.
+#### 11. Corte previo a exposición y contaminación
 
-Una cohorte expuesta no podrá seguir alimentando su propia línea base prepiloto. Si distintas cohortes inician en momentos diferentes, cada referencia deberá permanecer atribuible al corte aplicable a la cohorte correspondiente o a una referencia común capturada antes de la primera exposición, cuando el diseño aprobado lo permita.
+Se considera contaminada una línea base cuando incorpora observaciones producidas después de que una persona, cohorte, sede, dispositivo, integración o proceso haya sido expuesto al candidato o a una intervención del piloto capaz de alterar el resultado.
 
-#### 11. Cambios que obligan a recapturar o versionar
+La evidencia deberá conservar:
 
-Antes de la exposición, la línea base deberá recapturarse o declararse sustituida cuando ocurra un cambio material que invalide su comparabilidad, incluyendo cuando aplique:
+- fecha y hora del corte;
+- zona horaria;
+- primera exposición aplicable;
+- identidad de la cohorte o segmento;
+- método para separar expuestos de no expuestos cuando el rollout sea progresivo.
+
+Una cohorte expuesta no podrá seguir alimentando su propia línea base prepiloto.
+
+Si distintas cohortes inician en momentos diferentes, cada referencia deberá permanecer atribuible:
+
+- al corte específico de la cohorte; o
+- a una referencia común capturada antes de la primera exposición, únicamente cuando el diseño aprobado lo permita.
+
+Una referencia contaminada conocida no puede producir `PASS`.
+
+---
+
+#### 12. Cambios que obligan a recapturar o versionar
+
+Antes de la exposición, la línea base deberá recapturarse o declararse sustituida cuando ocurra un cambio material que invalide su comparabilidad.
+
+Incluye, cuando aplique:
 
 - cambio del candidato o versión que altera el comportamiento observado;
 - cambio de ambiente;
 - modificación del alcance funcional o técnico;
 - modificación material de sede, población o cohorte;
-- cambio de definición, unidad, denominador, filtro, agregación o fuente de una métrica;
+- cambio de definición, unidad, denominador, filtro, agregación o fuente;
 - cambio de configuración que altere el comportamiento de referencia;
 - modificación material de una dependencia;
 - corrección de datos que cambie de forma relevante el valor previo;
-- cambio del diseño de piloto o del criterio de aceptación.
+- cambio del diseño de piloto;
+- cambio del criterio de aceptación;
+- cambio del método de segmentación;
+- cambio de la regla de muestreo.
 
-Después de iniciada la exposición, la línea base original deberá quedar congelada. Una corrección posterior solo podrá incorporarse mediante una versión sucesora o una reconstrucción identificada, preservando la referencia original, el motivo, el método, el responsable y el impacto sobre la comparabilidad.
+Después de iniciada la exposición, la línea base original deberá quedar congelada.
+
+Una corrección posterior solo podrá incorporarse mediante una versión sucesora o una reconstrucción identificada, preservando:
+
+- referencia original;
+- motivo;
+- método;
+- responsable;
+- fecha;
+- evidencia;
+- impacto sobre comparabilidad.
 
 No se permitirá editar retrospectivamente la línea base original para hacerla coincidir con el resultado observado.
 
-#### 12. Reconstrucción y backfill
+---
 
-Cuando por una causa justificada no exista captura original suficiente y sea técnicamente posible reconstruir una referencia histórica desde fuentes autoritativas, la evidencia deberá identificarla expresamente como `RECONSTRUIDA`.
+#### 13. Reconstrucción y backfill
+
+Cuando no exista captura original suficiente y sea técnicamente posible reconstruir una referencia histórica desde fuentes autoritativas, la evidencia deberá identificarla expresamente como `RECONSTRUIDA`.
 
 Una reconstrucción deberá conservar:
 
@@ -6186,14 +6332,26 @@ Una reconstrucción deberá conservar:
 - fecha de reconstrucción;
 - método y versión de cálculo;
 - diferencias frente al método que habría sido usado en tiempo real;
-- datos faltantes o supuestos;
-- limitaciones conocidas;
+- datos faltantes;
+- supuestos;
+- limitaciones;
 - responsable;
-- impacto sobre la comparabilidad y el criterio de aceptación.
+- evidencia de reproducibilidad;
+- impacto sobre comparabilidad;
+- impacto sobre el criterio de aceptación.
 
-Una línea base reconstruida nunca podrá presentarse como si hubiese sido capturada originalmente antes del piloto. Si la reconstrucción no preserva comparabilidad suficiente, el elemento deberá quedar `BLOQUEADO` o `FAIL` y no podrá resolverse mediante una estimación informal.
+Reglas:
 
-#### 13. Comparabilidad obligatoria
+1. una línea base reconstruida nunca se presenta como captura original;
+2. la reconstrucción no puede utilizar telemetría contaminada por el piloto para fabricar una referencia previa;
+3. una estimación informal no sustituye una reconstrucción reproducible;
+4. si la reconstrucción preserva de manera demostrable la semántica y comparabilidad exigidas, puede participar en un `PASS`;
+5. si existe evidencia suficiente de que la reconstrucción es materialmente no comparable, produce `FAIL`;
+6. si todavía no puede demostrarse su validez por falta de fuente, método, historia o evidencia, produce `BLOQUEADO`.
+
+---
+
+#### 14. Comparabilidad obligatoria
 
 Una comparación válida entre línea base y piloto exige preservar, salvo transformación explícitamente documentada y aprobada:
 
@@ -6207,75 +6365,140 @@ Una comparación válida entre línea base y piloto exige preservar, salvo trans
 - ventana o regla temporal comparable;
 - método de cálculo;
 - tratamiento de datos faltantes;
-- estado de exposición de la cohorte.
+- estado de exposición de la cohorte;
+- regla de muestreo;
+- tratamiento de valores extremos cuando sea material.
 
-Si la definición cambia durante el piloto, deberá existir una regla de mapeo o normalización que permita demostrar equivalencia. Sin esa demostración, la comparación directa queda invalidada y deberá utilizarse una nueva referencia o declararse el bloqueo correspondiente.
+Si la definición cambia durante el piloto, deberá existir una regla de mapeo o normalización que permita demostrar equivalencia.
 
-Un delta entre dos valores no prueba causalidad. La evaluación deberá conservar factores de confusión materiales —por ejemplo, incidentes previos, diferencias de volumen, cambios de configuración, dependencia degradada, estacionalidad o cambios de población— para impedir que un cambio coincidente se atribuya automáticamente al piloto.
+Sin esa demostración:
 
-#### 14. Segmentación y cobertura
+- la comparación directa queda invalidada;
+- deberá utilizarse una nueva referencia válida cuando todavía sea posible; o
+- el elemento quedará `BLOQUEADO` o `FAIL` conforme a la evidencia disponible.
+
+Un delta entre dos valores no prueba causalidad.
+
+La evaluación deberá conservar factores de confusión materiales, como:
+
+- incidentes previos;
+- diferencias de volumen;
+- cambios de configuración;
+- dependencia degradada;
+- estacionalidad;
+- cambios de población;
+- campañas;
+- cierres;
+- cambios de dispositivo o canal.
+
+---
+
+#### 15. Segmentación y cobertura
 
 La línea base deberá cubrir el mismo universo sobre el que se pretende afirmar un resultado del piloto o una segmentación suficientemente equivalente y explícita.
 
 No se permitirá:
 
-- extrapolar una sede a todas las sedes sin una regla aprobada;
+- extrapolar una sede a todas las sedes sin regla aprobada;
 - extrapolar una cohorte a toda la población cuando existan diferencias materiales;
 - mezclar segmentos con comportamientos distintos hasta ocultar un deterioro relevante;
 - declarar cobertura completa a partir de una muestra sin justificar el método;
-- comparar un agregado prepiloto con un segmento pospiloto como si fueran equivalentes.
+- comparar un agregado prepiloto con un segmento pospiloto como si fueran equivalentes;
+- eliminar segmentos después de observar un resultado desfavorable.
 
 Cuando una métrica deba segmentarse por sede, dispositivo, rol, cohorte, canal u otra dimensión prevista por `DELIV-PKG-017` o `DELIV-PKG-022`, la línea base deberá conservar esa dimensión con cardinalidad y tratamiento compatibles con el contrato aprobado.
 
-#### 15. Evidencia aceptable
+---
 
-La evidencia podrá adoptar uno o varios de los siguientes soportes, siempre que conserve identidad, fuente, corte temporal y trazabilidad suficientes:
+#### 16. Evidencia aceptable
+
+Podrán participar como evidencia, cuando correspondan al elemento exacto evaluado:
 
 - manifiesto versionado de línea base;
 - exportación controlada y fechada de una fuente autoritativa;
-- instantánea de panel o reporte vinculada al identificador de la métrica, fuente y ventana;
-- definición o referencia versionada de la consulta o extracción utilizada;
+- instantánea de panel o reporte vinculada a métrica, fuente y ventana;
+- definición o referencia versionada de la consulta o extracción;
 - referencia a evidencia bruta controlada cuando sea necesaria para reproducibilidad;
 - instantánea controlada de alcance, cohorte o población;
 - registro previo de backlog, colas o pendientes;
 - evidencia prepiloto de SLI, métricas o estados operativos;
-- reporte de línea base que clasifique explícitamente faltantes, provisionales y no aplicables;
-- referencia a incidentes, cambios o condiciones preexistentes que afecten interpretación;
-- evidencia de responsable, fecha y versión cuando el contrato aplicable lo exija.
+- reporte que clasifique faltantes, provisionales y no aplicables;
+- referencia a incidentes, cambios o condiciones preexistentes;
+- evidencia de responsable, fecha y versión;
+- referencia de configuración o versión cuando afecte la interpretación;
+- evidencia de corte previo a exposición;
+- evidencia de reconstrucción, cuando aplique.
 
-Una captura visual podrá formar parte de la evidencia, pero no será suficiente por sí sola si no permite identificar la fuente, definición, alcance y ventana de la medición.
+La evidencia deberá permitir resolver identidad, alcance, tiempo, ambiente, definición, fuente, población, condición de calidad y resultado.
 
-#### 16. Evidencia insuficiente por sí sola
+Una captura visual podrá formar parte de la evidencia, pero no será suficiente por sí sola si no permite identificar fuente, definición, alcance y ventana.
 
-No se considerarán prueba suficiente de línea base, de manera aislada:
+---
+
+#### 17. Evidencia insuficiente por sí sola
+
+No constituyen prueba suficiente de línea base, aisladamente:
 
 - un número copiado manualmente sin fuente autoritativa;
 - una captura sin métrica, definición, alcance o ventana identificables;
-- un enlace mutable a un panel sin fijar el corte o la versión de la consulta;
-- una estimación basada en memoria del operador;
+- un enlace mutable a un panel sin fijar corte o versión;
+- una estimación basada en memoria;
 - una reconstrucción posterior presentada como captura original;
 - un dato sin asociación con paquete, ambiente, sede, cohorte o población cuando esas dimensiones sean materiales;
 - la sustitución de un valor ausente por cero;
-- un objetivo, SLO o umbral de aceptación usado como si fuera observación previa;
-- una muestra parcial extrapolada sin método documentado;
+- un objetivo, SLO o umbral usado como si fuera observación previa;
+- una muestra parcial extrapolada sin método;
 - un agregado que oculte segmentos materialmente diferentes;
-- un punto aislado cuando el criterio exige una ventana, tendencia o distribución;
-- un valor calculado con una definición distinta a la que se utilizará durante el piloto sin mapeo explícito;
-- telemetría emitida por el propio piloto después del corte presentada como referencia prepiloto.
+- un punto aislado cuando el criterio exige ventana, tendencia o distribución;
+- un valor calculado con definición distinta sin mapeo explícito;
+- telemetría emitida por el propio piloto después del corte presentada como referencia prepiloto;
+- una referencia de otro candidato o ambiente;
+- una afirmación manual de que “el comportamiento era normal”;
+- ausencia de incidentes como sustituto de medición;
+- datos cuya fuente o consulta no pueda reproducirse cuando la reproducibilidad sea obligatoria.
 
-#### 17. Integridad, trazabilidad y reproducibilidad
+---
 
-La evidencia deberá permitir a un revisor autorizado reconstruir cómo se obtuvo la línea base sin depender de conocimiento tácito del autor.
+#### 18. Integridad, trazabilidad y reproducibilidad
 
-Como mínimo, deberá ser posible relacionar:
+La evidencia deberá permitir a un revisor autorizado reconstruir cómo se obtuvo la línea base sin depender de conocimiento tácito.
 
-`paquete → candidato → piloto/rollout → elemento de baseline → definición → fuente → ventana → resultado → evidencia`
+Como mínimo deberá poder reconstruirse:
 
-Cuando la captura provenga de una consulta, script, panel o transformación versionable, deberá conservarse una referencia estable a la versión utilizada. Cuando la fuente sea externa y no permita versionado, deberá fijarse al menos el identificador disponible, ventana, parámetros, fecha de extracción y evidencia suficiente para reconstruir la operación.
+```text
+package_id
+→ baseline_set_version
+→ baseline_element_id
+→ candidato
+→ piloto/rollout
+→ definición
+→ fuente
+→ población/cohorte
+→ ventana
+→ corte
+→ condición de calidad
+→ resultado
+→ evidencia
+```
 
-La corrección de una línea base deberá preservar historial. No se admitirán sobrescrituras silenciosas de evidencias ya utilizadas para una decisión de readiness.
+Cuando la captura provenga de una consulta, script, panel o transformación versionable, deberá conservarse una referencia estable a la versión utilizada.
 
-#### 18. Seguridad, privacidad y minimización
+Cuando la fuente sea externa y no permita versionado, deberá fijarse al menos:
+
+- identificador disponible;
+- ventana;
+- parámetros;
+- fecha de extracción;
+- origen;
+- evidencia suficiente para reconstruir la operación.
+
+La corrección de una línea base deberá preservar historial.
+
+No se admitirán sobrescrituras silenciosas de evidencias ya utilizadas para una decisión de readiness.
+
+---
+
+#### 19. Seguridad, privacidad y minimización
 
 La captura de línea base no autoriza ampliar acceso ni copiar información sensible fuera de sus repositorios o sistemas propietarios.
 
@@ -6286,114 +6509,1388 @@ Deberán aplicarse, según corresponda:
 - control de acceso a evidencia sensible;
 - exclusión de secretos, tokens, credenciales y claves;
 - referencia a datos canónicos en lugar de duplicación cuando la copia no sea necesaria;
-- preservación de clasificación, retención y auditoría aplicables.
+- preservación de clasificación;
+- preservación de retención;
+- preservación de auditoría;
+- segregación entre evidencia de medición y valores secretos de configuración.
 
-Una necesidad analítica de comparación no convierte por sí misma datos restringidos en datos de libre uso.
+Una necesidad analítica de comparación no convierte datos restringidos en datos de libre uso.
 
-#### 19. Resultado por elemento
+---
 
-Cada elemento del universo deberá recibir exactamente uno de estos resultados:
+#### 20. Traducción determinista de condición de captura a resultado
 
-- `PASS`: existe una referencia previa suficiente, atribuible, íntegra y comparable para el uso previsto;
-- `FAIL`: la referencia existe o pudo obtenerse, pero incumple una condición obligatoria y la deficiencia invalida la decisión o comparación;
-- `BLOQUEADO`: una dependencia, fuente, historia, acceso autorizado o condición externa impide completar una referencia necesaria sin falsear el resultado;
-- `NO_APLICA`: el elemento no corresponde al paquete o al diseño del piloto y existe una justificación trazable basada en el contrato aplicable.
+La condición de calidad y el resultado del gate se mantienen separados.
 
-La falta de evidencia nunca equivale a `PASS` ni a `NO_APLICA`.
+La decisión se resolverá con estas reglas:
 
-#### 20. Resultado agregado por paquete
+| Condición observada                                                                                                                     | Resultado permitido                                                              |
+| --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `VALIDO` y cumple identidad, corte, cobertura, integridad y comparabilidad exigidas                                                     | `PASS`                                                                           |
+| `CERO_MEDIDO` y el cero fue medido correctamente con la misma semántica exigida                                                         | `PASS`                                                                           |
+| `SIN_OBSERVACIONES` y la comparación necesita observaciones históricas suficientes                                                      | `BLOQUEADO`, salvo que exista evidencia de incumplimiento material ya demostrada |
+| `NO_DISPONIBLE` por fuente, historia, dependencia o acceso todavía no resoluble                                                         | `BLOQUEADO`                                                                      |
+| `NO_DISPONIBLE` cuando la obligación exigía conservar la información y existe evidencia suficiente de pérdida o incumplimiento material | `FAIL`                                                                           |
+| `PROVISIONAL` expresamente permitido por el contrato y sin impacto material sobre comparabilidad                                        | `PASS`                                                                           |
+| `PROVISIONAL` con limitación todavía no resuelta y sin evidencia suficiente para declarar incumplimiento                                | `BLOQUEADO`                                                                      |
+| `PROVISIONAL` con limitación conocida que invalida el uso previsto                                                                      | `FAIL`                                                                           |
+| `RECONSTRUIDA` reproducible y materialmente comparable conforme al contrato                                                             | `PASS`                                                                           |
+| `RECONSTRUIDA` cuya no comparabilidad está demostrada                                                                                   | `FAIL`                                                                           |
+| `RECONSTRUIDA` cuya comparabilidad todavía no puede demostrarse                                                                         | `BLOQUEADO`                                                                      |
+| `NO_APLICA` sustentado por el alcance aprobado                                                                                          | `NO_APLICA`                                                                      |
+| referencia contaminada por exposición                                                                                                   | `FAIL`                                                                           |
+| referencia perteneciente a otro candidato, ambiente, población o definición materialmente distinta                                      | `FAIL`                                                                           |
+| identidad o pertenencia todavía no demostrable                                                                                          | `BLOQUEADO`                                                                      |
 
-La puerta se evaluará de forma estricta por paquete:
+Reglas adicionales:
 
-- si existe al menos un elemento `FAIL`, el resultado del paquete será `FAIL`;
-- si no existen elementos `FAIL` pero existe al menos un `BLOQUEADO`, el resultado será `BLOQUEADO`;
-- el paquete podrá resultar `PASS` únicamente cuando todos los elementos aplicables resulten `PASS` y todo `NO_APLICA` esté justificado;
-- no se permitirá compensar un fallo de baseline con resultados favorables en otros indicadores;
-- no se permitirá inferir cobertura completa desde una fracción del universo sin una regla de muestreo o equivalencia previamente aprobada.
+1. una falta de evidencia nunca produce `PASS`;
+2. una falta de evidencia nunca produce `NO_APLICA`;
+3. un `FAIL` no se rebaja a `BLOQUEADO` cuando ya existe evidencia suficiente del incumplimiento;
+4. un `BLOQUEADO` no se eleva a `PASS` por presión de calendario;
+5. una captura provisional no se presenta como definitiva;
+6. una reconstrucción válida debe seguir identificada como reconstruida aunque alcance `PASS`;
+7. un valor desfavorable puede alcanzar `PASS` si la línea base fue capturada correctamente; el gate evalúa aptitud de la referencia, no si el valor es bueno;
+8. la aceptación o rechazo del valor observado corresponde al contrato de piloto y no a esta puerta.
 
-Un `NO_APLICA` a nivel de paquete solo será admisible cuando el diseño aprobado no contenga ningún criterio de aceptación, estado operativo, población, dependencia o indicador que requiera referencia previa. La justificación deberá ser explícita y trazable.
+---
 
-#### 21. Consumo por `SHELL-CI-021`
+#### 21. Condiciones de `FAIL`
 
-Durante la ejecución futura del checklist de readiness, `SHELL-CI-021` deberá usar este contrato para verificar, por cada paquete candidato a piloto:
+Producen `FAIL`, entre otras condiciones materiales aplicables:
 
-1. que el universo de baseline fue derivado antes de evaluar resultados;
-2. que el corte ocurrió antes de la exposición aplicable;
-3. que la identidad de candidato, ambiente, alcance y cohorte es inequívoca;
-4. que cada indicador conserva definición, fuente, ventana y evidencia;
-5. que cero, ausencia, no disponibilidad, no aplicabilidad y provisionalidad están diferenciados;
-6. que los estados previos no numéricos relevantes fueron preservados;
-7. que la comparación prevista con el piloto es semántica y temporalmente válida;
-8. que los factores de confusión materiales están identificados;
-9. que cualquier reconstrucción o supersesión está declarada y versionada;
-10. que cada elemento tiene un resultado permitido;
-11. que el resultado agregado se calcula sin excepciones implícitas;
-12. y que la evidencia puede ser auditada sin depender de conocimiento tácito.
+1. referencia contaminada por exposición del piloto;
+2. uso de datos de otro candidato, release, ambiente, sede, cohorte o población como si fueran la referencia actual;
+3. fuente conocida como no autoritativa utilizada para sustituir la fuente exigida;
+4. definición, unidad, denominador, filtro o agregación materialmente incompatibles con el uso previsto;
+5. ventana manipulada después de observar resultados;
+6. población o cohorte materialmente incompatible presentada como equivalente;
+7. evidencia suficiente de que la captura perdió datos que el contrato obligaba a preservar;
+8. reconstrucción demostrablemente no comparable;
+9. sustitución de ausencia por cero;
+10. exclusión posterior de un segmento para ocultar un resultado desfavorable;
+11. agregado que oculta un deterioro material cuando el contrato exige segmentación;
+12. sobrescritura silenciosa de una baseline ya utilizada para readiness;
+13. evidencia cuyo corte real ocurre después de la exposición aplicable;
+14. muestra presentada como cobertura total sin regla de muestreo o equivalencia válida;
+15. referencia cuyo cálculo no puede reproducir el valor declarado y la discrepancia está demostrada;
+16. manifiesto que atribuye a `PASS` un elemento con condición conocida que invalida comparabilidad;
+17. reducción deliberada de `required_baseline_set` después de observar resultados;
+18. evidencia que expone información restringida fuera del alcance autorizado cuando esa exposición forma parte del artefacto evaluado;
+19. cualquier otra condición en la que exista evidencia suficiente de incumplimiento material del contrato de baseline.
 
-`SHELL-CI-021` no deberá reinterpretar una falta de baseline como aprobación tácita. Cuando la referencia necesaria no pueda obtenerse de manera válida, deberá conservar el bloqueo o fallo correspondiente para que las puertas siguientes actúen sobre un estado explícito.
+---
 
-#### 22. Condiciones que no resuelve esta tarea
+#### 22. Condiciones de `BLOQUEADO`
+
+Producen `BLOQUEADO`, entre otras condiciones aplicables:
+
+1. fuente autoritativa necesaria todavía inaccesible;
+2. historia suficiente no disponible y aún no se ha demostrado pérdida definitiva;
+3. definición o versión de la métrica todavía no resoluble;
+4. identidad del candidato, ambiente, cohorte o población ambigua;
+5. denominador obligatorio no disponible;
+6. ventana mínima necesaria todavía no completada;
+7. volumen u observaciones insuficientes para el uso previsto;
+8. dependencia necesaria para capturar o interpretar la referencia no disponible;
+9. comparación semántica todavía no demostrable;
+10. regla de equivalencia o normalización pendiente;
+11. reconstrucción posible pero aún no ejecutada o no validada;
+12. referencia provisional cuya limitación necesita resolución;
+13. evidencia incompleta o sin correlación suficiente;
+14. población o cohorte todavía no materializada con identidad verificable;
+15. corte temporal no demostrable;
+16. factor de confusión material pendiente de caracterización cuando impida interpretar la referencia;
+17. autorización necesaria para acceder a la fuente todavía no disponible;
+18. `required_baseline_set` con faltantes, duplicados o referencias irresolubles que impidan asegurar completitud;
+19. cualquier situación en la que todavía no exista evidencia suficiente para decidir `PASS` o `FAIL` sin falsear el resultado.
+
+`BLOQUEADO` conserva explícitamente la razón y el camino de resolución; no es una categoría genérica de pendiente.
+
+---
+
+#### 23. Handoff obligatorio de todo bloqueo
+
+Cada elemento `BLOQUEADO` deberá conservar:
+
+- `baseline_element_id`;
+- bloqueo concreto;
+- insumo faltante;
+- fuente o dependencia afectada;
+- propietario;
+- tarea o contrato responsable;
+- condición exacta de salida;
+- evidencia necesaria para levantarlo;
+- impacto sobre la comparabilidad;
+- impacto sobre el resultado agregado;
+- fecha o condición de revisión cuando exista una vigencia aplicable.
+
+No se admiten pendientes expresados únicamente como:
+
+- “por definir”;
+- “pendiente”;
+- “revisar después”;
+- “falta información”;
+- “TBD”.
+
+Si la causa pertenece a otra tarea o autoridad, el handoff deberá referenciarla sin transferirle el resultado principal de `READY-GATE-013`.
+
+---
+
+#### 24. Reconciliación cuantitativa y resultado agregado
+
+Antes de calcular el resultado del paquete deberá demostrarse:
+
+```text
+TOTAL_ESPERADO
+= TOTAL_PASS
++ TOTAL_FAIL
++ TOTAL_BLOQUEADO
++ TOTAL_NO_APLICA
+```
+
+Y además:
+
+```text
+FALTANTES = 0
+DUPLICADOS = 0
+IDENTIFICADORES_NO_RESOLUBLES = 0
+```
+
+Reglas de integridad:
+
+1. `TOTAL_ESPERADO` se deriva de la versión congelada de `required_baseline_set`;
+2. ningún elemento se omite por falta de evidencia;
+3. ningún elemento aparece más de una vez;
+4. un elemento con múltiples evidencias conserva una sola decisión;
+5. un `NO_APLICA` exige justificación;
+6. una discrepancia de conteos no se ignora;
+7. faltantes o duplicados todavía no resueltos producen `BLOQUEADO`;
+8. una reducción del universo ya demostrada como manipulación posterior a resultados produce `FAIL`.
+
+La decisión `READY-GATE-013::<package_id>` se calcula de forma estricta:
+
+```text
+SI EXISTE AL MENOS UN FAIL
+→ PACKAGE_RESULT = FAIL
+
+SI NO EXISTE FAIL Y EXISTE AL MENOS UN BLOQUEADO
+→ PACKAGE_RESULT = BLOQUEADO
+
+SI NO EXISTE FAIL NI BLOQUEADO
+Y TODOS LOS ELEMENTOS APLICABLES SON PASS
+Y TODO NO_APLICA ESTÁ JUSTIFICADO
+Y LA RECONCILIACIÓN DE COMPLETITUD ES EXACTA
+→ PACKAGE_RESULT = PASS
+```
+
+Un `NO_APLICA` a nivel de paquete solo será admisible cuando el diseño aprobado no contenga ningún criterio de aceptación, estado operativo, población, dependencia o indicador que requiera referencia previa.
+
+No se promedian resultados y no se compensa un elemento inválido con múltiples referencias correctas.
+
+---
+
+#### 25. Manifiesto futuro de evidencia
+
+La ejecución de `SHELL-CI-021::<package_id>` deberá poder producir `baseline_manifest::<package_id>` con, como mínimo:
+
+- `package_id`;
+- `candidate_ref`;
+- `environment_ref`;
+- `pilot_or_rollout_ref`;
+- `baseline_set_version`;
+- fecha de generación;
+- fecha y hora de corte;
+- zona horaria;
+- alcance funcional y técnico;
+- sedes;
+- poblaciones y cohortes;
+- `total_expected`;
+- `total_materialized`;
+- `total_pass`;
+- `total_fail`;
+- `total_blocked`;
+- `total_not_applicable`;
+- `missing_count`;
+- `duplicate_count`;
+- `unresolved_reference_count`;
+- lista completa de `baseline_element_id`;
+- fuente contractual de cada elemento;
+- definición o estado capturado;
+- ventana;
+- fuente autoritativa;
+- condición de calidad;
+- evidencia utilizada;
+- condición de reconstrucción cuando aplique;
+- supersesión o recaptura cuando aplique;
+- factores de confusión materiales;
+- resultado de comparabilidad;
+- motivo exacto de cada `FAIL`, `BLOQUEADO` o `NO_APLICA`;
+- propietario y condición de salida de cada bloqueo;
+- actor o proceso que materializó la captura;
+- actor o proceso que validó la evidencia cuando corresponda;
+- resultado agregado del paquete.
+
+El manifiesto referencia evidencia; no copia secretos, credenciales, dumps completos ni datos personales innecesarios.
+
+La ausencia de un elemento esperado en el manifiesto no se interpreta como no aplicabilidad.
+
+---
+
+#### 26. Consumo por `SHELL-CI-021`
+
+Durante la ejecución futura del checklist de readiness, `SHELL-CI-021` deberá verificar, por cada paquete candidato a piloto:
+
+1. que `required_baseline_set` fue derivado antes de evaluar resultados;
+2. que la versión del conjunto está congelada para la decisión;
+3. que el corte ocurrió antes de la exposición aplicable;
+4. que la identidad de candidato, ambiente, alcance y cohorte es inequívoca;
+5. que cada indicador conserva definición, fuente, ventana y evidencia;
+6. que cero, ausencia, no disponibilidad, no aplicabilidad, provisionalidad y reconstrucción están diferenciados;
+7. que los estados previos no numéricos relevantes fueron preservados;
+8. que la comparación prevista con el piloto es semántica y temporalmente válida;
+9. que los factores de confusión materiales están identificados;
+10. que cualquier reconstrucción o supersesión está declarada y versionada;
+11. que cada elemento tiene exactamente un resultado permitido;
+12. que cada bloqueo posee propietario y condición de salida;
+13. que la reconciliación cuantitativa es exacta;
+14. que no existen faltantes, duplicados o referencias irresolubles;
+15. que el resultado agregado se calcula sin excepciones implícitas;
+16. que `baseline_manifest` conserva la evidencia necesaria;
+17. que la evidencia puede ser auditada sin depender de conocimiento tácito.
+
+`SHELL-CI-021` no deberá reinterpretar una falta de baseline como aprobación tácita.
+
+Cuando la referencia necesaria no pueda obtenerse de manera válida, deberá conservar el bloqueo o fallo correspondiente.
+
+---
+
+#### 27. Condiciones que no resuelve esta tarea
 
 `READY-GATE-013` no:
 
 - define nuevos SLI, SLO, métricas o alertas;
-- modifica los umbrales de aceptación aprobados;
+- modifica umbrales de aceptación;
 - decide qué riesgos pueden aceptarse;
 - autoriza una condición de suspensión;
 - declara que soporte, monitoreo, respaldo o rollback estén disponibles;
 - ejecuta el piloto;
 - atribuye causalidad a cambios observados;
-- autoriza despliegues, accesos privilegiados, cambios de configuración o migraciones;
-- sustituye la evidencia de pruebas funcionales o no funcionales;
-- convierte una fuente analítica en fuente de verdad operativa.
+- autoriza despliegues;
+- autoriza accesos privilegiados;
+- cambia configuración;
+- ejecuta migraciones;
+- ejecuta DDL/DML;
+- ejecuta backfills;
+- sustituye evidencia de pruebas funcionales o no funcionales;
+- convierte una fuente analítica en fuente de verdad operativa;
+- crea datos productivos;
+- modifica Supabase.
 
-Su alcance termina en definir cuándo la referencia previa puede considerarse apta para una comparación posterior controlada.
+Su alcance termina en definir de forma consumible cuándo una referencia previa puede considerarse apta para una comparación posterior controlada.
 
-#### 23. Criterios de aceptación de `READY-GATE-013`
+---
 
-La tarea se considera documentalmente completa cuando quedan definidos de forma inequívoca los siguientes criterios:
+#### 28. Requisitos de prueba derivados
 
-1. existe una definición explícita de línea base distinta de objetivo, umbral y resultado del piloto;
-2. el universo de elementos se deriva de contratos previos y no de los resultados observados;
-3. cada baseline queda asociada a paquete, candidato, ambiente, alcance y piloto/rollout aplicables;
-4. el corte temporal ocurre antes de la exposición capaz de contaminar la referencia;
-5. la duración de la ventana debe justificarse según la naturaleza de la medición;
-6. cada indicador conserva semántica, unidad, fuente, cálculo, filtros, agregación y ventana cuando corresponda;
-7. tasas y proporciones conservan numerador y denominador;
-8. las dimensiones relevantes de sede, cohorte, población, dispositivo o canal permanecen comparables;
-9. cero medido, ausencia, no disponibilidad, provisionalidad y no aplicabilidad se distinguen explícitamente;
-10. los estados preexistentes no numéricos que puedan alterar la interpretación quedan referenciados;
-11. las fuentes autoritativas continúan siendo propietarias de sus datos y la baseline no crea una fuente paralela;
-12. existe una regla expresa contra contaminación posterior a la exposición;
-13. están definidos los cambios materiales que obligan a recapturar o versionar;
-14. una reconstrucción posterior queda identificada como tal y conserva sus limitaciones;
-15. la comparabilidad exige preservar definición, población, denominador, fuente y regla temporal o demostrar equivalencia;
-16. se registran factores de confusión materiales que impiden una atribución simplista de causalidad;
-17. la evidencia mantiene trazabilidad y reproducibilidad suficientes;
-18. la captura respeta seguridad, privacidad, minimización y control de acceso;
-19. cada elemento recibe exactamente `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA`;
-20. el agregado por paquete es estricto y no permite compensar fallos;
-21. la ausencia de evidencia no puede convertirse en aprobación;
-22. `SHELL-CI-021` queda identificado como consumidor posterior del contrato;
-23. las fronteras con `READY-GATE-011`, `READY-GATE-012`, `READY-GATE-014` y `READY-GATE-015` permanecen separadas;
-24. la tarea no introduce comportamiento ejecutable nuevo ni redefine los requisitos de prueba existentes.
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
 
-#### 24. Requisitos de prueba derivados
+**Justificación:** `READY-GATE-013` especializa en una puerta documental la forma de derivar, capturar, evidenciar, reconciliar y decidir referencias previas para comportamientos, métricas, estados y criterios que ya pertenecen a contratos funcionales, no funcionales, de observabilidad, rollout y piloto. La ampliación materializa el contrato consumible por `SHELL-CI-021`, pero no introduce una nueva conducta ejecutable del producto ni modifica la semántica de los requisitos de prueba existentes.
 
-**Resultado:** NO GENERA REQUISITOS DE PRUEBA  
 **Requisitos creados:** 0  
-**Requisitos modificados:** 0
+**Requisitos modificados:** 0  
+**Fragmentos 04A afectados:** 0
 
-La tarea formaliza el método documental con el que una ejecución futura deberá capturar y aceptar la referencia previa al piloto. No incorpora una nueva conducta ejecutable del producto ni modifica la semántica de los requisitos ya protegidos por los contratos funcionales, no funcionales, de observabilidad, prueba, rollout y piloto. Las conductas medibles continúan siendo verificadas mediante sus requisitos de prueba existentes.
+---
 
-#### 25. Continuidad canónica
+#### 29. Criterios de aceptación
 
-**ÚLTIMA TAREA APROBADA:** `READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados`  
-**TAREA ACTUAL APROBADA:** `READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto`  
-**SIGUIENTE TAREA RESERVADA:** `READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión`
+`READY-GATE-013` queda documentalmente completa cuando:
+
+1. separa línea base de objetivo, umbral, telemetría, resultado y causalidad;
+2. define `required_baseline_set::<package_id>` como universo obligatorio previo a resultados;
+3. establece identidad estable y única por elemento;
+4. obliga a conservar fuente contractual de cada referencia;
+5. define los campos mínimos de identidad, ventana, corte, población, fuente, evidencia y bloqueo;
+6. conserva semántica, unidad, cálculo, filtros, agregación y dimensiones;
+7. conserva numerador y denominador cuando corresponda;
+8. distingue `VALIDO`, `CERO_MEDIDO`, `SIN_OBSERVACIONES`, `NO_DISPONIBLE`, `PROVISIONAL`, `RECONSTRUIDA` y `NO_APLICA`;
+9. define la traducción determinista entre condición de captura y resultado del gate;
+10. impide convertir ausencia en cero;
+11. impide convertir falta de datos en `NO_APLICA`;
+12. preserva estados previos no numéricos;
+13. exige corte previo a exposición;
+14. define contaminación;
+15. define cambios que obligan a recapturar o versionar;
+16. congela la referencia después de la exposición;
+17. obliga a preservar historial de supersesiones;
+18. identifica reconstrucciones y sus limitaciones;
+19. permite `PASS` de una reconstrucción solo cuando su comparabilidad está demostrada;
+20. exige comparabilidad semántica, temporal y poblacional;
+21. conserva segmentación material;
+22. registra factores de confusión;
+23. define evidencia aceptable;
+24. define evidencia insuficiente;
+25. exige trazabilidad y reproducibilidad;
+26. protege seguridad, privacidad y minimización;
+27. define condiciones explícitas de `FAIL`;
+28. define condiciones explícitas de `BLOQUEADO`;
+29. exige propietario, tarea responsable y condición de salida para cada bloqueo;
+30. obliga a reconciliar `TOTAL_ESPERADO` contra los cuatro resultados permitidos;
+31. exige cero faltantes, cero duplicados y cero identificadores no resolubles para `PASS`;
+32. impide promediar o compensar resultados;
+33. define `baseline_manifest::<package_id>`;
+34. exige que el manifiesto incluya el universo completo y conteos de integridad;
+35. identifica `SHELL-CI-021` como consumidor posterior;
+36. mantiene separadas `READY-GATE-014` y `READY-GATE-015`;
+37. no ejecuta piloto, despliegues, migraciones, DDL/DML, backfills, cambios físicos ni operaciones sobre Supabase;
+38. crea cero requisitos de prueba y modifica cero requisitos existentes;
+39. mantiene `READY-GATE-014` únicamente reservada.
+
+---
+
+#### 30. Estado del resultado documental
+
+| Resultado                                  | Estado                                                                                  |
+| ------------------------------------------ | --------------------------------------------------------------------------------------- |
+| definición de línea base                   | `ESPECIFICADO`                                                                          |
+| `required_baseline_set::<package_id>`      | `ESPECIFICADO` como contrato; su población real corresponde a cada paquete implementado |
+| contrato de identidad por elemento         | `ESPECIFICADO`                                                                          |
+| contrato de captura por indicador o estado | `ESPECIFICADO`                                                                          |
+| condiciones de calidad                     | `ESPECIFICADO`                                                                          |
+| traducción condición → resultado           | `ESPECIFICADO`                                                                          |
+| condiciones de `FAIL`                      | `ESPECIFICADO`                                                                          |
+| condiciones de `BLOQUEADO`                 | `ESPECIFICADO`                                                                          |
+| handoff obligatorio de bloqueos            | `ESPECIFICADO`                                                                          |
+| reconciliación cuantitativa                | `ESPECIFICADO`                                                                          |
+| cálculo agregado                           | `ESPECIFICADO`                                                                          |
+| `baseline_manifest::<package_id>`          | `ESPECIFICADO`                                                                          |
+| captura real de línea base                 | `PENDIENTE_DE_EVIDENCIA` hasta la ejecución autorizada de cada paquete                  |
+| valores reales de métricas o estados       | `PENDIENTE_DE_EVIDENCIA`                                                                |
+| ejecución del piloto                       | `FUERA_DE_ALCANCE`                                                                      |
+| resultado del piloto                       | `FUERA_DE_ALCANCE`                                                                      |
+| aceptación de riesgos                      | `FUERA_DE_ALCANCE` de esta tarea; corresponde a `READY-GATE-014`                        |
+| autorización final de entrada              | `FUERA_DE_ALCANCE` de esta tarea; corresponde a `READY-GATE-015`                        |
+
+La especificación documental no se presenta como captura ejecutada ni como evidencia operativa real.
+
+---
+
+#### 31. Secuencia preservada
+
+La tarea conserva la secuencia operativa aprobada por paquete:
+
+```text
+E5-GATE-008::<package_id>
+→ SHELL-CI-020::<package_id>
+→ BLOQUE R Y TAREAS FÍSICAS APLICABLES
+→ SHELL-CI-021::<package_id>
+→ SHELL-CI-022::<package_id>
+```
+
+`READY-GATE-013` diseña una de las comprobaciones que consumirá `SHELL-CI-021`.
+
+No adelanta cutover, piloto, hypercare, aceptación de riesgos ni cierre.
+
+---
+
+#### 32. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados`
+
+TAREA ACTUAL APROBADA
+`READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto`
+
+SIGUIENTE TAREA RESERVADA
+`READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión`
 
 
-### [ ] READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión
+### ✅ READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión
+
+**Estado:** APROBADA  
+**Tarea anterior:** `READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto` — APROBADA  
+**Tarea siguiente:** `READY-GATE-015 — Definir autoridad y criterio para aprobar la entrada al piloto operativo` — RESERVADA  
+**Tipo de tarea:** documental — definición normativa y materialización del contrato de readiness por paquete para identificar, disponer, aceptar de forma acotada y auditable riesgos residuales, y para declarar las condiciones que invalidan su aceptación y obligan a suspender o reevaluar la exposición antes de continuar; sin ejecutar piloto, cutover, reversión, despliegues, migraciones, DDL/DML, backfills, cambios físicos, configuración productiva ni operaciones sobre Supabase.  
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+
+---
+
+#### 1. Resultado sustantivo
+
+`READY-GATE-014` define la evaluación futura `READY-GATE-014::<package_id>` que deberá consumir `SHELL-CI-021::<package_id>` después de la implementación física autorizada y antes de que `READY-GATE-015` pueda decidir la entrada al piloto.
+
+El resultado documental queda materializado mediante cuatro piezas obligatorias y separadas:
+
+1. `required_risk_review_set::<package_id>` — universo exhaustivo de riesgos, limitaciones y condiciones que deben recibir una disposición explícita antes del piloto;
+2. `accepted_risk_register::<package_id>` — subconjunto de riesgos residuales cuya aceptación está vigente, acotada, autorizada, evidenciada y vinculada con condiciones de pérdida de validez;
+3. `suspension_condition_set::<package_id>` — conjunto de condiciones observables o eventos verificables que obligan a suspender la exposición o a impedir su continuación hasta una reevaluación autorizada;
+4. `risk_readiness_manifest::<package_id>` — manifiesto futuro que reconcilia universo, disposiciones, aceptaciones, vigencias, condiciones de suspensión, propietarios, referencias y resultado agregado.
+
+La aceptación de riesgo no es un mecanismo de excepción para convertir en aceptable un incumplimiento de una puerta previa. Un `FAIL` o `BLOQUEADO` obligatorio conserva su semántica y no puede transformarse en `PASS` mediante una firma, comentario, aprobación informal o registro de riesgo.
+
+---
+
+#### 2. Propósito
+
+Definir el método canónico mediante el cual cada paquete candidato a piloto deberá demostrar, antes de la decisión final de entrada, que:
+
+- los riesgos conocidos y aplicables fueron identificados desde fuentes canónicas;
+- cada riesgo recibió una disposición explícita;
+- toda aceptación residual tiene autoridad válida, alcance preciso, justificación, controles, vigencia y evidencia;
+- la aceptación no contradice requisitos, puertas, restricciones o criterios obligatorios;
+- ninguna limitación material quedó ocultada como supuesto, comentario o pendiente narrativo;
+- cada riesgo aceptado conserva una condición verificable que determine cuándo deja de ser aceptable;
+- las condiciones de suspensión pueden ser observadas mediante fuentes ya gobernadas;
+- la pérdida de una fuente crítica para evaluar una condición no se interpreta como normalidad;
+- la aceptación se invalida cuando cambian materialmente candidato, ambiente, alcance, controles o exposición;
+- y `READY-GATE-015` recibe un expediente completo sin tener que inferir riesgo residual, autoridad o condiciones de suspensión.
+
+Esta tarea diseña el gate. No acepta riesgos reales de un paquete todavía no ejecutado, no autoriza por sí misma la entrada al piloto y no ejecuta una suspensión.
+
+---
+
+#### 3. Invariantes de gobierno
+
+Se adoptan las siguientes separaciones obligatorias:
+
+```text
+RIESGO IDENTIFICADO
+≠ RIESGO ACEPTADO
+
+RIESGO ACEPTADO
+≠ INCUMPLIMIENTO PERDONADO
+
+ACEPTACIÓN DE RIESGO
+≠ PASS DE UNA PUERTA PREVIA
+
+CONDICIÓN DE SUSPENSIÓN
+≠ ALERTA
+
+ALERTA
+≠ INCIDENTE
+
+SUSPENSIÓN
+≠ ROLLBACK
+
+SUSPENSIÓN
+≠ CIERRE DEL PILOTO
+
+ACEPTACIÓN DE RIESGO
+≠ AUTORIZACIÓN FINAL DE ENTRADA AL PILOTO
+```
+
+Reglas:
+
+1. aceptar riesgo no modifica la evidencia de origen;
+2. aceptar riesgo no cambia el resultado de `READY-GATE-001..013`;
+3. aceptar riesgo no cambia un requisito `TREQ-*`;
+4. aceptar riesgo no modifica un criterio de aceptación;
+5. aceptar riesgo no reduce el universo del piloto;
+6. aceptar riesgo no autoriza acceso, migración, cambio de configuración o despliegue;
+7. suspender no implica automáticamente rollback;
+8. reanudar después de una suspensión exige reevaluación conforme al contrato aplicable;
+9. continuar por ausencia de señal no es válido cuando la fuente necesaria está indisponible;
+10. el silencio de un propietario o aprobador nunca equivale a aceptación.
+
+---
+
+#### 4. Entradas canónicas y frontera con contratos adyacentes
+
+`READY-GATE-014` consume, sin redefinir su autoridad:
+
+1. el dossier aprobado del paquete y sus dependencias;
+2. el contrato de rollout y segmentación aplicable;
+3. el diseño del piloto, población, cohortes, sedes, dispositivos, exclusiones y salvaguardas;
+4. los criterios de aceptación y sus fuentes de evidencia;
+5. `READY-GATE-001..013` y sus resultados por paquete;
+6. `READY-GATE-008` para procedimientos, contingencias, handoff y suspensión segura;
+7. `READY-GATE-010` para mesa de soporte, responsables y escalamiento;
+8. `READY-GATE-011` para monitoreo, métricas, alertas y fuentes observables;
+9. `READY-GATE-012` para respaldo, restauración y rollback probados;
+10. `READY-GATE-013` para línea base previa al piloto y sus bloqueos o limitaciones;
+11. requisitos `TREQ-*` aplicables cuyo estado o contrato exija justificación de riesgo, tarea responsable y puerta de resolución;
+12. hallazgos, limitaciones, incidentes conocidos, dependencias externas y evidencias materializadas durante la implementación del paquete.
+
+La frontera con las tareas posteriores permanece intacta:
+
+- `READY-GATE-015` define la autoridad y el criterio final de entrada al piloto;
+- `CUTOVER-OPS-006` definirá la mecánica operativa de pausa, reversión o continuación durante cutover y piloto;
+- `CUTOVER-OPS-007` diseñará el registro operativo de incidentes, decisiones y cambios de alcance durante la ejecución;
+- `SHELL-CI-022::<package_id>` ejecutará cutover y piloto conforme al plan aprobado.
+
+`READY-GATE-014` prepara las condiciones y el expediente que esas tareas consumen; no ejecuta sus decisiones.
+
+---
+
+#### 5. Fuentes obligatorias del universo de revisión de riesgo
+
+`required_risk_review_set::<package_id>` deberá derivarse, cuando aplique, de:
+
+- limitaciones expresamente documentadas en el dossier del paquete;
+- resultados `PASS` de puertas previas que conserven una limitación residual declarada;
+- hallazgos conocidos que no constituyan un `FAIL` o `BLOQUEADO` obligatorio;
+- dependencias externas o condiciones de terceros que permanezcan dentro del alcance autorizado;
+- riesgos propios del rollout o de la segmentación seleccionada;
+- riesgos de disponibilidad, rendimiento, datos, integraciones, seguridad, privacidad, autorización, hardware, red, operación, soporte, recuperación, observabilidad y adopción que ya estén documentados por sus contratos propietarios;
+- desviaciones temporales expresamente permitidas por un contrato canónico;
+- requisitos `TREQ-*` aplicables en estado `DIFERIDO` cuando su propia trazabilidad exija riesgo aceptado, tarea responsable y puerta de resolución;
+- factores de confusión o limitaciones de baseline materializados por `READY-GATE-013`;
+- condiciones conocidas de soporte, monitoreo, rollback o contingencia que permanezcan como riesgo residual sin invalidar su puerta propietaria;
+- cambios de alcance aprobados que introduzcan una nueva exposición antes de la decisión final.
+
+No se inventarán riesgos para completar categorías y no se eliminarán riesgos porque resulten incómodos para la decisión.
+
+---
+
+#### 6. Dimensiones mínimas de revisión
+
+La revisión del universo deberá comprobar si existen riesgos materiales en las dimensiones que resulten aplicables al paquete:
+
+- comportamiento funcional;
+- autorización y acceso;
+- seguridad y privacidad;
+- integridad, consistencia o pérdida de datos;
+- migración y compatibilidad;
+- disponibilidad y rendimiento;
+- integración y dependencia externa;
+- observabilidad y capacidad de detección;
+- respaldo, restauración y rollback;
+- operación normal y contingencia;
+- soporte y escalamiento;
+- hardware, red y periféricos;
+- población, cohorte, sede y alcance;
+- adopción, capacitación y material de apoyo;
+- línea base y calidad de la comparación;
+- continuidad empresarial;
+- exposición de terceros;
+- cualquier otra dimensión material ya identificada por el expediente del paquete.
+
+Estas dimensiones son un checklist de cobertura, no una taxonomía que sustituya clasificaciones propietarias existentes.
+
+---
+
+#### 7. Construcción obligatoria de `required_risk_review_set`
+
+Antes de emitir el resultado de `READY-GATE-014::<package_id>` deberá construirse el universo de revisión.
+
+Cada elemento deberá conservar, como mínimo y cuando aplique:
+
+| Campo                           | Regla                                                                             |
+| ------------------------------- | --------------------------------------------------------------------------------- |
+| `package_id`                    | paquete exacto evaluado                                                           |
+| `risk_review_set_version`       | versión inmutable del universo                                                    |
+| `risk_id`                       | identidad estable del riesgo; se reutiliza la identidad propietaria cuando exista |
+| `source_ref`                    | tarea, contrato, hallazgo, requisito o evidencia que origina el riesgo            |
+| `candidate_ref`                 | candidato, release, revisión o artefacto al que aplica                            |
+| `environment_ref`               | ambiente exacto                                                                   |
+| `scope_ref`                     | capacidad, proceso, sede, cohorte, población, dispositivo o integración afectada  |
+| `risk_statement`                | condición incierta y consecuencia material claramente separadas                   |
+| `cause_or_driver`               | causa, dependencia o factor que produce la exposición                             |
+| `affected_objective_or_control` | objetivo, criterio o control que podría verse afectado                            |
+| `existing_controls`             | controles ya existentes y realmente disponibles                                   |
+| `residual_condition`            | exposición que permanece después de controles                                     |
+| `assessment_method_ref`         | método o escala propietaria utilizada, cuando exista                              |
+| `assessment_result`             | resultado de valoración sin inventar una escala universal                         |
+| `disposition`                   | `ACEPTADO`, `CERRADO`, `BLOQUEADO` o `NO_APLICA`                                  |
+| `disposition_evidence_ref`      | evidencia que soporta la disposición                                              |
+| `owner_ref`                     | propietario de seguimiento                                                        |
+| `blocking_task_ref`             | tarea responsable cuando la disposición sea `BLOQUEADO`                           |
+| `blocking_exit_condition`       | condición exacta de salida del bloqueo                                            |
+
+Cada riesgo esperado deberá aparecer exactamente una vez.
+
+---
+
+#### 8. Disposiciones permitidas del universo
+
+Cada elemento de `required_risk_review_set` recibirá exactamente una disposición:
+
+| Disposición | Semántica                                                                                                                                        |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ACEPTADO`  | existe riesgo residual real, permitido por el contrato, y la aceptación cumple íntegramente esta tarea                                           |
+| `CERRADO`   | la condición fue eliminada, mitigada o resuelta antes de la entrada y ya no requiere aceptación residual                                         |
+| `BLOQUEADO` | no puede aceptarse todavía porque falta resolución, autoridad, evidencia, control o porque la condición no es admisible bajo el contrato vigente |
+| `NO_APLICA` | el riesgo candidato no corresponde al paquete o alcance evaluado y existe evidencia trazable                                                     |
+
+Reglas:
+
+1. `CERRADO` exige evidencia de cierre; no basta con declarar mitigación planificada;
+2. `ACEPTADO` exige entrada correspondiente en `accepted_risk_register`;
+3. `BLOQUEADO` exige propietario, tarea responsable y condición de salida;
+4. `NO_APLICA` exige justificación basada en alcance;
+5. una aceptación expirada o revocada se trata como `BLOQUEADO` hasta nueva disposición válida;
+6. la ausencia de disposición impide `PASS`;
+7. una condición cuya materialización ya ocurrió y constituye defecto, incidente o incumplimiento no se transforma retrospectivamente en riesgo incierto.
+
+---
+
+#### 9. Condiciones de admisibilidad de una aceptación
+
+Un riesgo residual solo podrá tener disposición `ACEPTADO` cuando todas las siguientes condiciones sean verdaderas:
+
+1. el riesgo existe en `required_risk_review_set`;
+2. el riesgo no representa un `FAIL` o `BLOQUEADO` obligatorio de una puerta previa;
+3. su aceptación no contradice un requisito, autorización, restricción, criterio o política canónica obligatoria;
+4. el alcance exacto está identificado;
+5. el candidato y ambiente están identificados;
+6. la exposición residual está descrita sin ocultar su consecuencia;
+7. los controles existentes están realmente disponibles;
+8. existe propietario;
+9. existe autoridad válida para aceptar ese tipo y alcance de riesgo;
+10. la decisión de aceptación tiene evidencia;
+11. la aceptación tiene inicio de vigencia;
+12. tiene fecha límite o condición explícita de expiración/salida;
+13. define qué cambio obliga a revalidarla;
+14. tiene al menos una condición que invalida la continuación o exige reevaluación;
+15. esa condición puede observarse o verificarse con evidencia gobernada;
+16. no requiere una excepción silenciosa de seguridad, privacidad, autorización, integridad o cumplimiento;
+17. no depende de una promesa sin tarea responsable;
+18. no pretende sustituir una corrección obligatoria.
+
+Si cualquiera de estas condiciones falta, la aceptación no es válida.
+
+---
+
+#### 10. Prohibición de usar riesgo como waiver de readiness
+
+Queda prohibido utilizar `accepted_risk_register` para:
+
+- cambiar un `FAIL` previo a `PASS`;
+- cambiar un `BLOQUEADO` previo a `PASS`;
+- declarar `NO_APLICA` un control obligatorio;
+- ignorar evidencia faltante;
+- ignorar una identidad no resuelta;
+- ignorar una migración no validada;
+- ignorar una credencial o integración no lista;
+- ignorar una condición de autorización;
+- ignorar una prueba obligatoria no ejecutada;
+- ignorar un rollback no probado;
+- ignorar monitoreo obligatorio no disponible;
+- sustituir soporte requerido;
+- reducir un criterio de aceptación;
+- diferir un requisito sin tarea y puerta de resolución;
+- ampliar la cohorte autorizada;
+- extender una aceptación de otro paquete, ambiente o candidato.
+
+Una aceptación que intente producir cualquiera de esos efectos es inválida y constituye `FAIL` de esta puerta.
+
+---
+
+#### 11. Contrato de `accepted_risk_register::<package_id>`
+
+Cada riesgo aceptado deberá conservar:
+
+| Campo                            | Regla                                                                    |
+| -------------------------------- | ------------------------------------------------------------------------ |
+| `package_id`                     | paquete exacto                                                           |
+| `risk_id`                        | identidad correlacionada con `required_risk_review_set`                  |
+| `risk_statement`                 | exposición residual aceptada                                             |
+| `source_ref`                     | origen canónico                                                          |
+| `candidate_ref`                  | candidato exacto                                                         |
+| `environment_ref`                | ambiente exacto                                                          |
+| `scope_ref`                      | alcance máximo de la aceptación                                          |
+| `existing_controls`              | controles activos                                                        |
+| `residual_condition`             | condición que permanece                                                  |
+| `acceptance_rationale`           | justificación concreta de por qué la exposición residual puede tolerarse |
+| `acceptance_authority_ref`       | fuente que demuestra la autoridad aplicable                              |
+| `accepted_by_ref`                | actor o registro de aprobación autorizado                                |
+| `accepted_at`                    | momento de aceptación                                                    |
+| `valid_from`                     | inicio de vigencia                                                       |
+| `valid_until_or_exit_condition`  | expiración o condición de terminación                                    |
+| `owner_ref`                      | propietario de seguimiento                                               |
+| `monitoring_refs`                | señales o evidencias que permiten vigilar la condición                   |
+| `suspension_condition_refs`      | condiciones que invalidan la continuidad                                 |
+| `mitigation_or_containment_refs` | controles o mitigaciones existentes                                      |
+| `resolution_task_ref`            | tarea responsable cuando exista reducción o cierre posterior             |
+| `revalidation_triggers`          | cambios que obligan a revisar la aceptación                              |
+| `evidence_refs`                  | evidencia reproducible sin secretos                                      |
+| `acceptance_state`               | `VIGENTE`, `EXPIRADA`, `REVOCADA` o `SUPERSEDIDA`                        |
+
+Solo `VIGENTE` puede soportar `PASS`.
+
+---
+
+#### 12. Vigencia y alcance no transferible
+
+Toda aceptación deberá estar acotada como mínimo por:
+
+- `package_id`;
+- candidato o versión;
+- ambiente;
+- capacidad o proceso;
+- sede, población o cohorte cuando aplique;
+- ventana temporal o condición de salida;
+- controles existentes;
+- evidencia utilizada.
+
+Una aceptación no se hereda automáticamente:
+
+- a otro paquete;
+- a otro release;
+- a otro ambiente;
+- a otra sede;
+- a una cohorte mayor;
+- a una ventana posterior;
+- a un nuevo proveedor;
+- a un nuevo método de operación;
+- a una condición con mayor impacto.
+
+Cuando cualquiera de esas dimensiones cambie de manera material, la aceptación deberá reevaluarse.
+
+---
+
+#### 13. Autoridad de aceptación
+
+`READY-GATE-014` no inventa cargos ni modifica matrices de autorización.
+
+La autoridad válida deberá provenir del contrato canónico que gobierna el riesgo, el proceso, el dominio, el paquete o la decisión correspondiente.
+
+La evidencia deberá permitir resolver:
+
+- quién aceptó;
+- con qué autoridad;
+- para qué alcance;
+- durante qué vigencia;
+- respecto de qué riesgo exacto;
+- bajo qué controles;
+- con qué condición de suspensión;
+- y qué tarea o proceso será responsable de reducir o cerrar el riesgo cuando corresponda.
+
+Si la autoridad aplicable no puede demostrarse, el riesgo permanece `BLOQUEADO`.
+
+La autoridad de aceptar un riesgo no equivale a la autoridad final de entrada al piloto definida por `READY-GATE-015`.
+
+---
+
+#### 14. Aceptación y requisitos `TREQ-*`
+
+La aceptación de riesgo no cambia por sí misma el estado ni la semántica de un requisito de prueba.
+
+Cuando un `TREQ-*` aplicable esté en estado `DIFERIDO` y su trazabilidad dependa de riesgo aceptado:
+
+1. deberá conservar su identificador original;
+2. deberá conservar la justificación existente;
+3. deberá existir riesgo correlacionado en este universo;
+4. la aceptación deberá ser válida y acotada;
+5. deberá existir tarea responsable de resolución;
+6. deberá existir puerta o momento exacto de resolución;
+7. la aceptación no podrá presentarse como implementación o verificación de la prueba;
+8. una aceptación expirada invalida la continuidad basada en ese diferimiento.
+
+`READY-GATE-014` no difiere requisitos por inferencia ni crea estados nuevos dentro de `04A`.
+
+---
+
+#### 15. Definición de condición de suspensión
+
+Una `suspension_condition` es una condición observable o un evento verificable que demuestra que:
+
+- la hipótesis bajo la cual se aceptó un riesgo dejó de ser cierta;
+- un control necesario dejó de estar disponible;
+- la exposición excedió el límite autorizado;
+- apareció una condición prohibida por un contrato obligatorio;
+- o la evidencia necesaria para sostener la continuación ya no es confiable.
+
+Cuando una condición marcada como obligatoria se cumple, la aceptación asociada deja de soportar continuidad.
+
+La ejecución concreta de pausa, reversión o continuación será definida y ejecutada por las tareas de cutover correspondientes. Esta tarea define el contrato previo que deberán consumir.
+
+---
+
+#### 16. Construcción de `suspension_condition_set::<package_id>`
+
+El conjunto deberá derivarse, cuando aplique, de:
+
+- condiciones de pérdida de validez de cada riesgo aceptado;
+- criterios de aceptación y salvaguardas del piloto;
+- límites de rollout;
+- señales y alertas gobernadas por `READY-GATE-011`;
+- condiciones de contingencia y handoff de `READY-GATE-008`;
+- pérdida de disponibilidad de soporte crítico gobernado por `READY-GATE-010`;
+- pérdida de capacidad de recuperación o rollback gobernada por `READY-GATE-012`;
+- invalidez de baseline o comparabilidad gobernada por `READY-GATE-013`;
+- incidentes o condiciones expresamente declarados como no tolerables por contratos canónicos;
+- límites de exposición definidos por el paquete.
+
+No toda alerta es condición de suspensión y no toda condición de suspensión exige una métrica numérica.
+
+Una condición podrá ser:
+
+- basada en umbral medible;
+- basada en evento;
+- basada en estado;
+- basada en pérdida de un control;
+- basada en pérdida de evidencia o visibilidad necesaria;
+- basada en cambio de alcance o identidad.
+
+---
+
+#### 17. Identidad mínima de cada condición de suspensión
+
+Cada condición deberá conservar, como mínimo y cuando aplique:
+
+| Campo                      | Regla                                                              |
+| -------------------------- | ------------------------------------------------------------------ |
+| `package_id`               | paquete exacto                                                     |
+| `suspension_condition_id`  | identidad estable dentro del paquete                               |
+| `source_ref`               | contrato, criterio, riesgo o salvaguarda que origina la condición  |
+| `linked_risk_ids`          | riesgos aceptados relacionados, si existen                         |
+| `candidate_ref`            | candidato exacto                                                   |
+| `environment_ref`          | ambiente exacto                                                    |
+| `scope_ref`                | alcance sobre el que se evalúa                                     |
+| `signal_or_event_ref`      | señal, evento, estado o evidencia usada                            |
+| `authoritative_source_ref` | fuente propietaria                                                 |
+| `trigger_rule`             | predicado verificable que determina cumplimiento                   |
+| `evaluation_window`        | ventana cuando aplique                                             |
+| `required_dimensions`      | dimensiones necesarias para no ocultar el trigger                  |
+| `condition_mode`           | `SUSPENSION_OBLIGATORIA` o `REEVALUACION_OBLIGATORIA`              |
+| `owner_ref`                | propietario que debe recibir la condición                          |
+| `escalation_ref`           | ruta de escalamiento ya gobernada                                  |
+| `evidence_ref`             | evidencia de configuración o disponibilidad                        |
+| `armed_state`              | `ARMADA`, `NO_EVALUABLE` o `RETIRADA`                              |
+| `reentry_requirement_ref`  | condición que deberá demostrarse antes de reanudar, cuando aplique |
+
+Una condición que no pueda evaluarse con la fuente requerida no se considera armada.
+
+---
+
+#### 18. `SUSPENSION_OBLIGATORIA` y `REEVALUACION_OBLIGATORIA`
+
+Las dos modalidades se mantienen separadas:
+
+**`SUSPENSION_OBLIGATORIA`**
+
+Se utiliza cuando el contrato aplicable determina que el cumplimiento del trigger invalida la continuidad de la exposición bajo las condiciones autorizadas.
+
+**`REEVALUACION_OBLIGATORIA`**
+
+Se utiliza cuando el evento no ordena por sí solo suspender, pero obliga a detener cualquier decisión de ampliación o continuidad que dependa de una aceptación vigente hasta que la autoridad correspondiente reevalúe la condición.
+
+Reglas:
+
+1. la modalidad debe provenir del contrato o decisión autorizada;
+2. no se podrá degradar `SUSPENSION_OBLIGATORIA` a `REEVALUACION_OBLIGATORIA` durante el piloto sin una nueva decisión válida;
+3. una condición crítica no se transforma en simple alerta por ausencia de impacto observado;
+4. una alerta informativa no se eleva a suspensión sin regla aprobada;
+5. el detalle operacional de pausa, reversión o continuación pertenece a `CUTOVER-OPS-006`.
+
+---
+
+#### 19. Pérdida de observabilidad de una condición
+
+Si una condición de suspensión depende de una señal, consulta, fuente, alerta o mecanismo de observación y este deja de ser confiable:
+
+- no se asumirá que el trigger está en falso;
+- no se asumirá normalidad;
+- la condición pasará a `NO_EVALUABLE`;
+- deberá aplicarse la consecuencia definida por su contrato;
+- si esa pérdida impide demostrar que la exposición sigue dentro del límite aceptado, `READY-GATE-014` no puede soportar continuidad mediante esa aceptación.
+
+La indisponibilidad de monitoreo no es evidencia de ausencia de riesgo.
+
+---
+
+#### 20. Condiciones de revalidación de una aceptación
+
+Una aceptación `VIGENTE` deberá reevaluarse cuando ocurra, según aplique:
+
+- cambio de candidato o revisión;
+- cambio de ambiente;
+- ampliación de sedes, cohortes, población o dispositivos;
+- aumento de exposición;
+- cambio material de dependencia externa;
+- cambio de controles mitigantes;
+- pérdida o degradación de monitoreo;
+- cambio de criterio de aceptación;
+- cambio de baseline o de comparabilidad material;
+- incidente relacionado con el riesgo;
+- activación de una condición de suspensión;
+- cambio material en probabilidad, impacto o consecuencia;
+- expiración temporal;
+- modificación de autoridad;
+- cierre, modificación o supersesión de la tarea de resolución;
+- evidencia nueva que contradiga el fundamento de aceptación.
+
+La aceptación anterior deberá conservarse en historial; no se sobrescribe silenciosamente.
+
+---
+
+#### 21. Relación entre riesgo materializado, incidente y aceptación
+
+Cuando una condición incierta se materialice:
+
+1. el hecho observado deberá tratarse mediante el contrato de incidente, defecto o contingencia que corresponda;
+2. el riesgo original podrá conservarse como antecedente, pero no sustituye el registro del hecho;
+3. deberá evaluarse si la aceptación permanece vigente;
+4. deberán evaluarse las condiciones de suspensión relacionadas;
+5. no se permitirá justificar la continuidad diciendo únicamente que “el riesgo estaba aceptado”;
+6. la evidencia del incidente puede revocar o superseder la aceptación;
+7. la resolución del incidente no reactiva automáticamente la aceptación previa.
+
+---
+
+#### 22. Evidencia aceptable para una aceptación
+
+Podrán participar como evidencia, cuando correspondan al riesgo exacto:
+
+- decisión aprobada por actor autorizado;
+- registro de riesgo gobernado y versionado;
+- referencia a acta o decisión formal con identidad verificable;
+- evidencia de controles existentes;
+- evidencia de alcance y población;
+- evidencia de valoración conforme al método propietario;
+- evidencia de vigencia;
+- referencia a monitoreo;
+- referencia a condición de suspensión;
+- referencia a tarea de resolución;
+- evidencia de escalamiento;
+- evidencia de supersesión, revocación o cierre cuando aplique.
+
+La evidencia deberá permitir a un revisor autorizado llegar a la misma conclusión sin depender de memoria o conversación informal.
+
+---
+
+#### 23. Evidencia insuficiente por sí sola
+
+No constituye aceptación válida:
+
+- un “ok” en chat;
+- silencio de un aprobador;
+- asistencia a una reunión;
+- un comentario sin identidad de autoridad;
+- un ticket sin alcance ni decisión;
+- una firma sin riesgo exacto;
+- una aceptación de otro paquete;
+- una aceptación de otro ambiente;
+- una aceptación expirada;
+- una aceptación sin condición de salida;
+- una aceptación sin propietario;
+- una aceptación sin condición de suspensión o reevaluación;
+- una promesa de corregir después sin tarea responsable;
+- un `PASS` de otra puerta interpretado como aceptación;
+- una alerta silenciada;
+- una excepción técnica aplicada sin gobierno;
+- la continuación operativa de hecho;
+- la ausencia de incidentes;
+- una estimación sin método cuando el método sea requerido;
+- una captura sin contexto y sin trazabilidad.
+
+---
+
+#### 24. Evidencia aceptable para una condición de suspensión
+
+La condición deberá demostrar, cuando aplique:
+
+- identidad;
+- fuente autoritativa;
+- trigger exacto;
+- alcance;
+- ventana;
+- dimensiones;
+- modalidad;
+- propietario;
+- canal o escalamiento;
+- estado `ARMADA`;
+- relación con riesgo o criterio;
+- evidencia de que la fuente puede observar la condición;
+- condición requerida para reevaluar o reanudar.
+
+No se exige ejecutar un incidente real para probar la existencia de la condición durante esta tarea documental. La ejecución futura deberá comprobar que el mecanismo necesario está disponible conforme a las puertas propietarias.
+
+---
+
+#### 25. Condiciones de `FAIL`
+
+Producen `FAIL` de `READY-GATE-014`, entre otras condiciones materiales aplicables:
+
+1. un registro declara aceptado un riesgo que corresponde a un `FAIL` obligatorio de una puerta previa;
+2. un registro pretende convertir un `BLOQUEADO` previo en `PASS`;
+3. la aceptación contradice un requisito o restricción canónica obligatoria;
+4. la autoridad que aceptó no estaba autorizada y existe evidencia suficiente de ello;
+5. la aceptación está expirada pero se presenta como vigente;
+6. la aceptación pertenece a otro paquete, candidato, ambiente o alcance;
+7. se ocultó deliberadamente un riesgo material del universo;
+8. un riesgo aceptado no tiene límite de vigencia ni condición de salida;
+9. un riesgo aceptado no tiene ninguna condición que invalide su continuidad;
+10. una condición obligatoria fue degradada sin autorización;
+11. una fuente conocida como no autoritativa se usa para afirmar que un trigger no ocurrió;
+12. se presenta ausencia de señal como ausencia de riesgo cuando la fuente estaba caída;
+13. se amplió el alcance más allá de la aceptación vigente;
+14. se sobrescribió silenciosamente una aceptación o condición ya usada para readiness;
+15. se presenta un riesgo materializado como riesgo futuro para evitar tratar un incidente o defecto;
+16. se utiliza aceptación de riesgo para diferir una obligación sin tarea y puerta de resolución;
+17. se reduce un criterio de aceptación mediante el registro;
+18. se declara `NO_APLICA` sin fundamento para ocultar una exposición real;
+19. el expediente afirma cobertura completa pese a faltantes o duplicados demostrados;
+20. cualquier otra evidencia suficiente demuestra incumplimiento material del contrato de esta tarea.
+
+---
+
+#### 26. Condiciones de `BLOQUEADO`
+
+Producen `BLOQUEADO`, entre otras condiciones aplicables:
+
+1. autoridad de aceptación todavía no resoluble;
+2. evidencia de aceptación incompleta;
+3. propietario no definido;
+4. tarea de resolución obligatoria no identificada;
+5. condición de salida no definida;
+6. vigencia no demostrable;
+7. alcance ambiguo;
+8. identidad del candidato o ambiente ambigua;
+9. riesgo candidato pendiente de disposición;
+10. condición de suspensión requerida todavía no definida;
+11. trigger no observable con la evidencia disponible;
+12. fuente autoritativa inaccesible;
+13. condición en estado `NO_EVALUABLE`;
+14. valoración requerida por el contrato todavía pendiente;
+15. riesgo ligado a una puerta previa que permanece `BLOQUEADO`;
+16. referencia `TREQ-*` aplicable no resoluble;
+17. discrepancia entre universo esperado y registro materializado;
+18. duplicado no resuelto;
+19. aceptación pendiente de revalidación por cambio material;
+20. cualquier situación en la que todavía no exista evidencia suficiente para declarar `PASS` o `FAIL` sin falsear la decisión.
+
+`BLOQUEADO` exige siempre propietario, tarea responsable cuando corresponda y condición exacta de salida.
+
+---
+
+#### 27. Reconciliación cuantitativa del universo de riesgo
+
+Antes de calcular el resultado deberá demostrarse:
+
+```text
+TOTAL_RIESGOS_ESPERADOS
+= TOTAL_ACEPTADOS
++ TOTAL_CERRADOS
++ TOTAL_BLOQUEADOS
++ TOTAL_NO_APLICA
+```
+
+Y además:
+
+```text
+RIESGOS_FALTANTES = 0
+RIESGOS_DUPLICADOS = 0
+REFERENCIAS_NO_RESOLUBLES = 0
+ACEPTACIONES_EXPIRADAS_PRESENTADAS_COMO_VIGENTES = 0
+ACEPTACIONES_SIN_CONDICION = 0
+ACEPTACIONES_SIN_AUTORIDAD = 0
+```
+
+`TOTAL_ACEPTADOS` deberá coincidir exactamente con las entradas `VIGENTE` de `accepted_risk_register`.
+
+Un registro vacío de riesgos aceptados es válido cuando el universo completo fue revisado y todos los elementos resultaron `CERRADO` o `NO_APLICA`, sin bloqueos ni omisiones. “No aceptamos riesgos” no sustituye esa reconciliación.
+
+---
+
+#### 28. Reconciliación cuantitativa de condiciones de suspensión
+
+Para `PASS` deberá demostrarse, cuando el paquete vaya a piloto:
+
+```text
+TOTAL_CONDICIONES_REQUERIDAS
+= TOTAL_CONDICIONES_ARMADAS
++ TOTAL_CONDICIONES_RETIRADAS_JUSTIFICADAS
+```
+
+Y además:
+
+```text
+CONDICIONES_FALTANTES = 0
+CONDICIONES_DUPLICADAS = 0
+CONDICIONES_NO_EVALUABLES = 0
+RIESGOS_ACEPTADOS_SIN_CONDICION_VINCULADA = 0
+REFERENCIAS_DE_FUENTE_NO_RESOLUBLES = 0
+```
+
+Una condición `RETIRADA` solo puede excluirse del conjunto activo cuando el riesgo, criterio o alcance que la originaba dejó de aplicar mediante una decisión trazable.
+
+---
+
+#### 29. Resultado agregado por paquete
+
+La decisión se calcula de forma estricta:
+
+```text
+SI EXISTE AL MENOS UN FAIL DE ESTA PUERTA
+→ PACKAGE_RESULT = FAIL
+
+SI NO EXISTE FAIL
+Y EXISTE AL MENOS UN BLOQUEADO
+→ PACKAGE_RESULT = BLOQUEADO
+
+SI NO EXISTE FAIL NI BLOQUEADO
+Y EL UNIVERSO DE RIESGO ESTÁ RECONCILIADO
+Y TODA ACEPTACIÓN VIGENTE ES VÁLIDA
+Y TODAS LAS CONDICIONES REQUERIDAS ESTÁN ARMADAS
+Y NO EXISTEN REFERENCIAS IRRESOLUBLES
+→ PACKAGE_RESULT = PASS
+```
+
+Reglas adicionales:
+
+1. un paquete puede obtener `PASS` con cero riesgos aceptados;
+2. cero riesgos aceptados no significa cero riesgos revisados;
+3. un paquete que entrará a piloto no obtiene `NO_APLICA` solo porque no tenga riesgos residuales aceptados;
+4. `NO_APLICA` a nivel de la puerta solo será posible cuando el expediente demuestre que la instancia no entra a piloto y que este contrato no es aplicable a su cierre;
+5. un resultado favorable de `READY-GATE-014` no autoriza el piloto;
+6. `READY-GATE-015` deberá consumir este resultado como una entrada independiente.
+
+---
+
+#### 30. `risk_readiness_manifest::<package_id>`
+
+La ejecución futura de `SHELL-CI-021::<package_id>` deberá poder producir un manifiesto con:
+
+- `package_id`;
+- candidato;
+- ambiente;
+- versión del universo;
+- alcance del piloto;
+- fecha de evaluación;
+- `total_risk_candidates`;
+- `total_accepted`;
+- `total_closed`;
+- `total_blocked`;
+- `total_not_applicable`;
+- `risk_missing_count`;
+- `risk_duplicate_count`;
+- `unresolved_reference_count`;
+- lista completa de `risk_id`;
+- lista de riesgos aceptados vigentes;
+- autoridad y vigencia de cada aceptación;
+- tarea de resolución cuando corresponda;
+- total de condiciones requeridas;
+- total de condiciones armadas;
+- total de condiciones retiradas justificadas;
+- condiciones faltantes;
+- condiciones no evaluables;
+- riesgos aceptados sin condición vinculada;
+- referencias de monitoreo;
+- referencias de soporte y escalamiento;
+- referencias de rollback o recuperación cuando correspondan;
+- estado de revalidación;
+- evidencia;
+- resultado por elemento;
+- resultado agregado.
+
+El manifiesto referencia evidencia; no copia secretos, dumps o información personal innecesaria.
+
+---
+
+#### 31. Handoff obligatorio de bloqueos
+
+Todo elemento `BLOQUEADO` deberá conservar:
+
+- identidad;
+- causa concreta;
+- insumo faltante;
+- propietario;
+- tarea responsable;
+- condición exacta de salida;
+- evidencia requerida;
+- impacto sobre la aceptación;
+- impacto sobre las condiciones de suspensión;
+- impacto sobre el resultado agregado.
+
+No se admiten pendientes expresados únicamente como:
+
+- “por definir”;
+- “pendiente”;
+- “revisar después”;
+- “falta información”;
+- “TBD”;
+- “aceptar temporalmente”.
+
+Si no existe una tarea responsable válida para un pendiente que la requiere, la tarea documental no puede presentar el expediente como completo.
+
+---
+
+#### 32. Consumo por `SHELL-CI-021`, `READY-GATE-015` y cutover
+
+`SHELL-CI-021::<package_id>` deberá verificar:
+
+1. universo completo de riesgos;
+2. disposición exacta por riesgo;
+3. validez de cada aceptación;
+4. autoridad;
+5. vigencia;
+6. alcance;
+7. controles;
+8. tarea de resolución cuando aplique;
+9. condiciones de suspensión vinculadas;
+10. disponibilidad de las fuentes necesarias;
+11. reconciliación cuantitativa;
+12. resultado agregado.
+
+`READY-GATE-015` consumirá el resultado sin reinterpretarlo y definirá la autoridad final de entrada al piloto.
+
+Durante la ejecución posterior:
+
+- `SHELL-CI-022::<package_id>` operará el piloto;
+- `CUTOVER-OPS-006` definirá la mecánica de pausa, reversión o continuación;
+- `CUTOVER-OPS-007` gobernará el registro de incidentes, decisiones y cambios de alcance.
+
+La ocurrencia real de una condición de suspensión no se resuelve dentro de este documento.
+
+---
+
+#### 33. Condiciones que no resuelve esta tarea
+
+`READY-GATE-014` no:
+
+- define un apetito de riesgo empresarial universal;
+- inventa escalas de probabilidad o impacto;
+- crea cargos de aprobación;
+- modifica matrices de autoridad;
+- reduce criterios de aceptación;
+- cambia resultados de puertas previas;
+- modifica requisitos `TREQ-*`;
+- crea excepciones de seguridad o autorización;
+- autoriza entrada al piloto;
+- ejecuta cutover;
+- ejecuta una suspensión;
+- decide rollback;
+- ejecuta rollback;
+- define comandos de operación;
+- ejecuta incident response;
+- ejecuta migraciones;
+- ejecuta DDL/DML;
+- ejecuta backfills;
+- modifica Supabase;
+- altera población o cohortes;
+- ejecuta hypercare;
+- certifica cierre del paquete.
+
+---
+
+#### 34. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `READY-GATE-014` materializa el contrato documental de revisión, disposición, aceptación, vigencia, trazabilidad y suspensión de riesgos residuales que ya se originan en requisitos, controles, criterios, puertas, observabilidad, contingencias y decisiones existentes. No introduce comportamiento ejecutable nuevo del producto, no modifica reglas empresariales implementables y no altera la semántica de los requisitos de prueba existentes. Las condiciones reales que protegen comportamientos continúan cubiertas por sus requisitos `TREQ-*` propietarios; esta tarea gobierna si un riesgo residual puede acompañar una decisión de readiness y cuándo esa aceptación deja de ser válida.
+
+**Requisitos creados:** 0  
+**Requisitos modificados:** 0  
+**Fragmentos 04A afectados:** 0
+
+---
+
+#### 35. Criterios de aceptación
+
+`READY-GATE-014` queda documentalmente completa cuando:
+
+1. define `required_risk_review_set::<package_id>`;
+2. define `accepted_risk_register::<package_id>`;
+3. define `suspension_condition_set::<package_id>`;
+4. define `risk_readiness_manifest::<package_id>`;
+5. separa riesgo identificado de riesgo aceptado;
+6. impide usar aceptación como waiver de readiness;
+7. preserva resultados `FAIL` y `BLOQUEADO` previos;
+8. obliga a derivar el universo desde fuentes canónicas;
+9. exige una disposición por riesgo;
+10. define `ACEPTADO`, `CERRADO`, `BLOQUEADO` y `NO_APLICA`;
+11. exige evidencia para `CERRADO`;
+12. exige justificación para `NO_APLICA`;
+13. exige handoff completo para `BLOQUEADO`;
+14. define condiciones de admisibilidad de `ACEPTADO`;
+15. exige autoridad verificable;
+16. exige alcance exacto;
+17. exige vigencia o condición de salida;
+18. exige propietario;
+19. exige controles existentes;
+20. exige condición de pérdida de validez;
+21. impide transferir aceptaciones entre paquetes o ambientes;
+22. define revalidación por cambios materiales;
+23. conserva relación con `TREQ-*` sin modificar su semántica;
+24. define condición de suspensión;
+25. diferencia `SUSPENSION_OBLIGATORIA` de `REEVALUACION_OBLIGATORIA`;
+26. exige fuente autoritativa para evaluar cada condición;
+27. impide asumir normalidad por pérdida de observabilidad;
+28. define `ARMADA`, `NO_EVALUABLE` y `RETIRADA`;
+29. exige cero condiciones `NO_EVALUABLE` para `PASS`;
+30. define evidencia aceptable;
+31. define evidencia insuficiente;
+32. enumera condiciones de `FAIL`;
+33. enumera condiciones de `BLOQUEADO`;
+34. reconcilia cuantitativamente el universo de riesgos;
+35. reconcilia cuantitativamente las condiciones de suspensión;
+36. permite `PASS` con cero riesgos aceptados solo después de revisar el universo completo;
+37. exige que todo riesgo aceptado tenga condición vinculada;
+38. define cálculo agregado estricto;
+39. identifica `SHELL-CI-021` como ejecutor futuro del checklist;
+40. mantiene `READY-GATE-015` como autoridad final de entrada;
+41. mantiene `CUTOVER-OPS-006` como propietario de la mecánica operativa de pausa, reversión o continuación;
+42. no ejecuta piloto, cutover, rollback, migraciones, DDL/DML, backfills ni operaciones sobre Supabase;
+43. crea cero requisitos de prueba y modifica cero requisitos existentes;
+44. mantiene `READY-GATE-015` únicamente reservada.
+
+---
+
+#### 36. Estado del resultado documental
+
+| Resultado                                         | Estado                                                       |
+| ------------------------------------------------- | ------------------------------------------------------------ |
+| universo `required_risk_review_set::<package_id>` | `ESPECIFICADO` como contrato                                 |
+| disposiciones de riesgo                           | `ESPECIFICADO`                                               |
+| `accepted_risk_register::<package_id>`            | `ESPECIFICADO` como contrato                                 |
+| admisibilidad de aceptación                       | `ESPECIFICADO`                                               |
+| vigencia y revalidación                           | `ESPECIFICADO`                                               |
+| autoridad de aceptación                           | `ESPECIFICADO` como referencia al gobierno propietario       |
+| relación con `TREQ-*` diferidos                   | `ESPECIFICADO` sin modificar 04A                             |
+| `suspension_condition_set::<package_id>`          | `ESPECIFICADO` como contrato                                 |
+| modalidades de condición                          | `ESPECIFICADO`                                               |
+| pérdida de observabilidad                         | `ESPECIFICADO`                                               |
+| condiciones de `FAIL`                             | `ESPECIFICADO`                                               |
+| condiciones de `BLOQUEADO`                        | `ESPECIFICADO`                                               |
+| reconciliación cuantitativa                       | `ESPECIFICADO`                                               |
+| cálculo agregado                                  | `ESPECIFICADO`                                               |
+| `risk_readiness_manifest::<package_id>`           | `ESPECIFICADO`                                               |
+| riesgos reales de un paquete implementado         | `PENDIENTE_DE_EVIDENCIA`                                     |
+| aceptaciones reales                               | `PENDIENTE_DE_EVIDENCIA`                                     |
+| condiciones reales armadas                        | `PENDIENTE_DE_EVIDENCIA`                                     |
+| autoridad final de entrada                        | `FUERA_DE_ALCANCE`; corresponde a `READY-GATE-015`           |
+| ejecución de suspensión                           | `FUERA_DE_ALCANCE`; corresponde al ciclo de cutover y piloto |
+| mecánica de pausa, reversión o continuación       | `FUERA_DE_ALCANCE`; corresponde a `CUTOVER-OPS-006`          |
+
+La especificación documental no se presenta como aceptación real de ningún riesgo ni como autorización de operación.
+
+---
+
+#### 37. Secuencia preservada
+
+La secuencia por paquete permanece:
+
+```text
+E5-GATE-008::<package_id>
+→ SHELL-CI-020::<package_id>
+→ BLOQUE R Y TAREAS FÍSICAS APLICABLES
+→ SHELL-CI-021::<package_id>
+→ SHELL-CI-022::<package_id>
+→ SHELL-CI-023::<package_id>
+→ SHELL-CI-024::<package_id>
+```
+
+`READY-GATE-014` diseña una de las comprobaciones consumidas por `SHELL-CI-021`.
+
+No adelanta la decisión final de entrada, cutover, piloto, hypercare ni cierre.
+
+---
+
+#### 38. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto`
+
+TAREA ACTUAL APROBADA
+`READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión`
+
+SIGUIENTE TAREA RESERVADA
+`READY-GATE-015 — Definir autoridad y criterio para aprobar la entrada al piloto operativo`
+
+
 ### [ ] READY-GATE-015 — Definir autoridad y criterio para aprobar la entrada al piloto operativo
 
 Salida obligatoria:
