@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **851** |
+| Aprobadas | **852** |
 | En propuesta | **0** |
-| No iniciadas | **743** |
+| No iniciadas | **742** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **53.39% (851/1594)** |
+| Porcentaje de completamiento | **53.45% (852/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `READY-GATE-015` — Definir autoridad y criterio para aprobar la entrada al piloto operativo | ✅ APROBADA |
-| Tarea actual | `CUTOVER-OPS-001` — Definir criterio para seleccionar fecha, ventana y responsables del cutover | ⬜ NO INICIADA |
-| Siguiente reservada | `CUTOVER-OPS-002` — Definir secuencia de activación por sede, área, rol o proceso | ⬜ NO INICIADA |
+| Última aprobada | `CUTOVER-OPS-001` — Definir criterio para seleccionar fecha, ventana y responsables del cutover | ✅ APROBADA |
+| Tarea actual | `CUTOVER-OPS-002` — Definir secuencia de activación por sede, área, rol o proceso | ⬜ NO INICIADA |
+| Siguiente reservada | `CUTOVER-OPS-003` — Definir convivencia temporal con el proceso anterior | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -568,7 +568,7 @@
 | ✅ APROBADA | `READY-GATE-013` | Definir método y evidencia para capturar la línea base previa al piloto | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ✅ APROBADA | `READY-GATE-014` | Definir registro de riesgos aceptados y condiciones de suspensión | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ✅ APROBADA | `READY-GATE-015` | Definir autoridad y criterio para aprobar la entrada al piloto operativo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `CUTOVER-OPS-001` | Definir criterio para seleccionar fecha, ventana y responsables del cutover | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
+| ✅ APROBADA | `CUTOVER-OPS-001` | Definir criterio para seleccionar fecha, ventana y responsables del cutover | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ⬜ NO INICIADA | `CUTOVER-OPS-002` | Definir secuencia de activación por sede, área, rol o proceso | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ⬜ NO INICIADA | `CUTOVER-OPS-003` | Definir convivencia temporal con el proceso anterior | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ⬜ NO INICIADA | `CUTOVER-OPS-004` | Diseñar controles contra doble registro y doble efecto durante la transición | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
