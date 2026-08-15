@@ -2211,7 +2211,331 @@ E5-GATE-005 — Confirmar que el piloto tiene criterios medibles
 E5-GATE-006 — Confirmar que capacitación y soporte están planificados
 
 
-### [ ] E5-GATE-006 — Confirmar que capacitación y soporte están planificados
+### ✅ E5-GATE-006 — Confirmar que capacitación y soporte están planificados
+
+**Estado:** APROBADA  
+**Tarea anterior:** `E5-GATE-005 — Confirmar que el piloto tiene criterios medibles`  
+**Tarea siguiente:** `E5-GATE-007 — Confirmar trazabilidad desde cada requisito TREQ-* hasta su prueba, paquete y evidencia de cierre`  
+**Tipo de tarea:** documental — puerta de salida de E5 para confirmar, sobre las 207 raíces `GAP-PKG-*`, que la capacitación requerida y el modelo de soporte aplicable poseen planificación documental suficiente, con audiencia, contenido, propietario, versión, criterio de actualización, preparación de material, responsables, cobertura, suplencia, niveles de atención, escalamiento y transferencia posterior definidos; sin impartir capacitación, certificar competencia, publicar material, activar turnos, ejecutar soporte, probar escalamiento, transferir operación, ejecutar hypercare ni producir evidencia operativa posterior  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md`  
+**Cambios físicos autorizados:** ninguno  
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`E5-GATE-006` verifica si la salida documental de E5 conserva, para el universo completo de **207** raíces `GAP-PKG-001..207`, una planificación explícita y gobernada de:
+
+1. documentación operativa, procedimientos, runbooks y capacitación requerida;
+2. material de apoyo, población objetivo, competencia y evidencia que deberán comprobarse antes del piloto cuando sean aplicables;
+3. mesa de soporte, responsables, suplencia, cobertura, niveles de atención y escalamiento;
+4. continuidad de ownership durante hypercare y transferencia posterior hacia soporte ordinario.
+
+La puerta no exige que esas actividades ya hayan ocurrido. Su pregunta es estrictamente de **planificación E5**.
+
+---
+
+#### 2. Resultado de la comprobación
+
+La condición exigida por `E5-GATE-006` **ESTÁ SATISFECHA en la capa de planificación documental de E5**.
+
+La comprobación conserva cuatro planos distintos que no pueden confundirse:
+
+```text
+planificación documental
+→ existe contrato suficiente para ejecutar y verificar después
+
+ejecución
+→ la capacitación fue impartida o el soporte fue efectivamente activado
+
+evidencia
+→ existe prueba real de competencia, disponibilidad, cobertura y escalamiento
+
+transferencia
+→ soporte ordinario recibió formalmente la instancia ejecutada y su conocimiento vigente
+```
+
+`E5-GATE-006` confirma únicamente la planificación documental.
+
+| Componente                                                                      | Resultado documental vigente                           |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| raíces con expediente documental y de capacitación definido por `DELIV-PKG-021` | **207/207**                                            |
+| raíces con capacitación `PLANIFICADA_NO_EJECUTADA`                              | **189/207**                                            |
+| raíces con capacitación `DIFERIDA_POR_GATE`                                     | **18/207**                                             |
+| criterio de readiness para capacitación y material                              | **ESPECIFICADO** por `READY-GATE-009`                  |
+| criterio de readiness para mesa de soporte, responsables y escalamiento         | **ESPECIFICADO** por `READY-GATE-010`                  |
+| transferencia futura a soporte ordinario                                        | **ESPECIFICADA** por `HYPERCARE-OPS-008`; no ejecutada |
+| raíces evaluables para transferencia futura según hypercare                     | **189/207**                                            |
+| raíces que conservan gate heredado para esa transferencia                       | **18/207**                                             |
+| requisitos `TREQ-*` creados o modificados por esta puerta                       | **0**                                                  |
+
+Los **18** casos diferidos no representan ausencia de planificación. Conservan expediente documental, versión, reglas de actualización, audiencia y tratamiento previsto; lo bloqueado es la ejecución operativa mientras permanezca abierto su gate heredado.
+
+---
+
+#### 3. Fuentes canónicas y precedencia
+
+La puerta consume, sin redefinirlas:
+
+- `DELIV-PKG-021`, como fuente de documentación, runbooks, procedimientos, audiencia, propietario, versión, criterio de actualización y capacitación requerida por paquete;
+- `READY-GATE-009`, como contrato de evidencia futura para capacitación, competencia, vigencia, material de apoyo y alineación con el cambio implementado;
+- `READY-GATE-010`, como contrato de evidencia futura para mesa de soporte, responsables nominales, suplencia, cobertura, niveles de atención, escalamiento y continuidad del caso;
+- `HYPERCARE-OPS-002`, como resolución de responsabilidad funcional y técnica, cobertura, suplencia y escalamiento durante acompañamiento intensivo;
+- `HYPERCARE-OPS-008`, como criterio de transferencia posterior a soporte ordinario y documentación definitiva;
+- `DELIV-PKG-023`, como fuente posterior de criterios de aceptación y evidencia de cierre sin convertir evidencia planeada en evidencia ejecutada;
+- los principios de E5, que separan la aprobación de artefactos de planificación de la ejecución física posterior.
+
+Precedencia:
+
+```text
+DELIV-PKG-021
+→ READY-GATE-009 / READY-GATE-010
+→ HYPERCARE-OPS-002
+→ HYPERCARE-OPS-008
+→ E5-GATE-006
+```
+
+Una actividad futura de readiness o hypercare no puede utilizarse para afirmar que la capacitación, la cobertura o la transferencia ya ocurrieron durante E5.
+
+---
+
+#### 4. Capacitación planificada por paquete
+
+`DELIV-PKG-021` materializa un expediente documental obligatorio para cada una de las **207** raíces y fija una versión documental inicial `1.0.0`.
+
+La planificación conserva, según aplicabilidad:
+
+- audiencia objetivo;
+- contenido y procedimiento requerido;
+- propietario documental y operativo;
+- runbook y relación con diagnóstico, contención, rollout y rollback;
+- material de apoyo;
+- versión vigente;
+- criterio de actualización cuando cambien fuentes canónicas materiales;
+- estado de capacitación separado de la publicación del expediente.
+
+La semántica vigente es:
+
+- `ESPECIFICADO_NO_PUBLICADO`: el contenido obligatorio está definido sin afirmar publicación operativa;
+- `PLANIFICADA_NO_EJECUTADA`: la capacitación requerida está especificada pero no impartida;
+- `DIFERIDA_POR_GATE`: la capacitación operativa solo podrá ejecutarse después de cerrar el bloqueo heredado.
+
+La distribución queda reconciliada así:
+
+```text
+189 PLANIFICADA_NO_EJECUTADA
++ 18 DIFERIDA_POR_GATE
+= 207 raíces con planificación documental
+```
+
+---
+
+#### 5. Tratamiento de las 18 raíces con capacitación diferida
+
+Las **18** raíces con capacitación `DIFERIDA_POR_GATE` corresponden exactamente a:
+
+| Familia de bloqueo heredado   | Cantidad | Tratamiento                                                                    |
+| ----------------------------- | -------: | ------------------------------------------------------------------------------ |
+| AURA                          |   **14** | capacitación operativa diferida mientras persista su gate                      |
+| `EXT-GOV-001`                 |    **2** | capacitación operativa diferida mientras persista el gate externo              |
+| TALENTO fuera de línea actual |    **2** | capacitación operativa diferida mientras la línea funcional no esté habilitada |
+| **Total**                     |   **18** | planificación conservada; ejecución no afirmada                                |
+
+E5 no fabrica instrucciones ejecutables sobre una implementación inexistente ni convierte esos bloqueos en ausencia de diseño.
+
+---
+
+#### 6. Readiness de capacitación y material de apoyo
+
+`READY-GATE-009` deja especificado el contrato que `SHELL-CI-021::<package_id>` deberá ejecutar posteriormente.
+
+La preparación se separa en planos independientes que abarcan:
+
+- capacitación aplicable;
+- competencia y vigencia;
+- material de apoyo;
+- alineación entre paquete, candidato, procedimiento, versión formativa, material y población objetivo.
+
+La ejecución futura deberá poder reconciliar población objetivo, completada, aprobada, pendiente y vencida; controlar versión, propiedad, aprobación, vigencia y accesibilidad del material; y exigir simulacro, walkthrough o práctica cuando el riesgo o la contingencia lo requieran.
+
+Una capacitación programada, una invitación, una lista de asistencia, una presentación o un archivo publicado no constituyen por sí solos evidencia de competencia ni readiness.
+
+---
+
+#### 7. Soporte planificado
+
+`READY-GATE-010` deja especificado el modelo de comprobación que `SHELL-CI-021::<package_id>` deberá ejecutar antes del piloto.
+
+El soporte se gobierna mediante seis planos:
+
+1. `MESA_Y_ENTRADA`;
+2. `RESPONSABLES_NOMINALES`;
+3. `COBERTURA_Y_DISPONIBILIDAD`;
+4. `NIVELES_DE_ATENCION`;
+5. `ESCALAMIENTO`;
+6. `COMUNICACION_Y_CONTINUIDAD_DEL_CASO`.
+
+Para esos planos quedan definidos criterios `PASS`, `FAIL`, `BLOQUEADO` y `NO_APLICA`, junto con una agregación estricta que impide aprobar una muestra parcial o compensar una ausencia crítica con porcentajes agregados.
+
+La planificación incluye titular, suplente, alcance, segregación, cobertura por servicio/sede/ventana, receptor de cada nivel de atención, rutas de escalamiento y continuidad del owner durante handoffs y esperas.
+
+La existencia de esta definición no afirma todavía que las personas nominales estén configuradas, que la cobertura real esté vigente o que una prueba de escalamiento haya sido ejecutada. Esas evidencias permanecen `PENDIENTE_DE_EVIDENCIA` para `SHELL-CI-021::<package_id>`.
+
+---
+
+#### 8. Responsabilidad durante hypercare
+
+`HYPERCARE-OPS-002` conserva para cada paquete la separación entre:
+
+```text
+RESPONSABILIDAD FUNCIONAL
+≠ RESPONSABILIDAD TÉCNICA
+≠ EJECUTOR
+≠ SOPORTE ORDINARIO
+≠ AUTORIDAD FINAL DE CIERRE
+```
+
+La responsabilidad de hypercare hereda las fuentes canónicas de ownership, autoridad técnica, cobertura, suplencia y escalamiento, sin crear una organización paralela ni un owner ficticio de acompañamiento intensivo.
+
+Esta capa asegura que la planificación de soporte no termine en readiness: también existe un contrato explícito para sostener ownership durante estabilización y entregar posteriormente la operación al modelo ordinario.
+
+---
+
+#### 9. Transferencia posterior a soporte ordinario
+
+`HYPERCARE-OPS-008` define el gate documental de transferencia desde acompañamiento intensivo hacia soporte ordinario.
+
+La transferencia exige, según aplicabilidad:
+
+- documentación definitiva correspondiente a la instancia realmente ejecutada;
+- conocimiento y material de apoyo vigentes;
+- capacitación y competencia demostrables cuando sean requeridas;
+- observabilidad y escalamiento operables;
+- rollback, recovery y contingencias conocidas;
+- known errors, workarounds, deuda y trabajo posterior con propietario y destino;
+- handoff trazable sin pérdida de ownership.
+
+La reconciliación heredada conserva:
+
+```text
+189 raíces evaluables para transferencia futura
++ 18 raíces con gate heredado cerrado
+= 207 raíces
+```
+
+Todas permanecen en estado documental `ESPECIFICADO`; ninguna transferencia se presenta como ejecutada dentro de E5.
+
+---
+
+#### 10. Regla de decisión de `E5-GATE-006`
+
+La condición de esta puerta se considera satisfecha cuando, para el universo aplicable:
+
+1. existe planificación documental de capacitación con audiencia, contenido, propietario, versión y criterio de actualización;
+2. cualquier ejecución diferida conserva gate, causa y condición de salida explícitos;
+3. existe un criterio verificable para demostrar posteriormente capacitación, competencia, vigencia y material de apoyo;
+4. existe un modelo verificable de mesa de soporte, responsables, suplencia, cobertura, atención y escalamiento;
+5. existe continuidad de responsabilidad durante hypercare;
+6. existe criterio explícito de transferencia posterior hacia soporte ordinario;
+7. ninguna de esas definiciones se confunde con evidencia de ejecución real.
+
+Las siete condiciones están materializadas en las fuentes propietarias vigentes.
+
+**Resultado:** la condición de `E5-GATE-006` está satisfecha en la capa de planificación documental de E5.
+
+Este resultado no declara `PASS` de `READY-GATE-009`, `READY-GATE-010` ni `HYPERCARE-OPS-008` en ejecución.
+
+---
+
+#### 11. Límites de la aprobación
+
+`E5-GATE-006` **sí confirma**:
+
+- planificación de documentación, procedimientos, runbooks y capacitación para las 207 raíces;
+- tratamiento explícito de las 18 raíces cuya capacitación operativa está diferida por gate;
+- contrato de evidencia futura para capacitación y material de apoyo;
+- contrato de evidencia futura para mesa de soporte, responsables, cobertura y escalamiento;
+- continuidad de ownership durante hypercare;
+- criterio de transferencia posterior a soporte ordinario.
+
+`E5-GATE-006` **no confirma**:
+
+- que la capacitación haya sido impartida;
+- que la competencia haya sido aprobada;
+- que materiales estén publicados, accesibles o vigentes en el ambiente real;
+- que titulares y suplentes estén efectivamente disponibles;
+- que la cobertura de soporte esté activa;
+- que una escalación real haya sido probada;
+- que la instancia haya entrado o salido de hypercare;
+- que la transferencia a soporte ordinario haya ocurrido;
+- que los 18 gates heredados estén cerrados;
+- que un paquete esté autorizado para implementación física.
+
+---
+
+#### 12. Carryovers y propietarios
+
+No se crea ningún pendiente narrativo nuevo.
+
+- evidencia real de capacitación, competencia y material: `SHELL-CI-021::<package_id>` mediante `READY-GATE-009`;
+- evidencia real de mesa, responsables, cobertura y escalamiento: `SHELL-CI-021::<package_id>` mediante `READY-GATE-010`;
+- ownership funcional y técnico durante estabilización: `HYPERCARE-OPS-002` y `SHELL-CI-023::<package_id>`;
+- transferencia real a soporte ordinario y documentación definitiva: `HYPERCARE-OPS-008`, `SHELL-CI-023::<package_id>` y certificación posterior de `SHELL-CI-024::<package_id>`;
+- cierre de los **18** gates heredados: fuentes propietarias AURA, `EXT-GOV-001` y TALENTO, sin reasignación desde esta puerta;
+- autorización física final: `E5-GATE-008`.
+
+---
+
+#### 13. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0  
+**Requisitos modificados:** 0  
+**Fragmentos 04A afectados:** 0
+
+**Justificación:** `E5-GATE-006` reconcilia artefactos documentales ya aprobados de capacitación, soporte, readiness y hypercare. No introduce comportamiento funcional, autorización, transición de datos, integración, cálculo, SLA, algoritmo, umbral NFR ni mecanismo técnico nuevo. Las obligaciones verificables continúan protegidas por los requisitos y contratos existentes y su evidencia real pertenece a las fases de ejecución posteriores.
+
+---
+
+#### 14. Criterios de aceptación documental
+
+`E5-GATE-006` queda documentalmente completa cuando:
+
+1. [x] conserva `E5-GATE-005 → E5-GATE-006 → E5-GATE-007`;
+2. [x] evalúa exactamente las **207** raíces `GAP-PKG-001..207`;
+3. [x] confirma que las **207** poseen expediente documental y de capacitación definido por `DELIV-PKG-021`;
+4. [x] reconcilia **189** capacitaciones `PLANIFICADA_NO_EJECUTADA` y **18** `DIFERIDA_POR_GATE`;
+5. [x] reconcilia las 18 diferidas como **14 AURA + 2 EXT + 2 TALENTO**;
+6. [x] no trata una capacitación planificada como capacitación ejecutada;
+7. [x] conserva `READY-GATE-009` como propietario de la evidencia futura de capacitación, competencia y material;
+8. [x] conserva `READY-GATE-010` como propietario de la evidencia futura de mesa, responsables, cobertura y escalamiento;
+9. [x] conserva la segregación entre responsabilidad funcional, técnica, ejecución, soporte ordinario y cierre;
+10. [x] conserva `HYPERCARE-OPS-008` como propietario del criterio de transferencia a soporte ordinario;
+11. [x] reconcilia **189** raíces evaluables y **18** bloqueadas para transferencia futura, sin afirmar transferencia ejecutada;
+12. [x] mantiene evidencia real de readiness y hypercare fuera de E5;
+13. [x] no cierra ni modifica los gates heredados AURA, EXT o TALENTO;
+14. [x] no autoriza implementación física;
+15. [x] crea **0** requisitos `TREQ-*`, modifica **0** requisitos y afecta **0** fragmentos 04A;
+16. [x] no ejecuta capacitación, soporte, publicación, monitoreo, escalamiento, hypercare, transferencias, despliegues, migraciones, DDL/DML, cambios de datos, configuración remota ni operaciones sobre Supabase;
+17. [x] `E5-GATE-007` permanece exclusivamente reservada.
+
+---
+
+#### 15. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+E5-GATE-005 — Confirmar que el piloto tiene criterios medibles
+
+##### TAREA ACTUAL APROBADA
+E5-GATE-006 — Confirmar que capacitación y soporte están planificados
+
+##### SIGUIENTE TAREA RESERVADA
+E5-GATE-007 — Confirmar trazabilidad desde cada requisito TREQ-* hasta su prueba, paquete y evidencia de cierre
+
+
 ### [ ] E5-GATE-007 — Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre
 ### [ ] E5-GATE-008 — Aprobar entrada a implementación física por paquetes
 

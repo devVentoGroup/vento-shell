@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **876** |
+| Aprobadas | **877** |
 | En propuesta | **0** |
-| No iniciadas | **718** |
+| No iniciadas | **717** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **54.96% (876/1594)** |
+| Porcentaje de completamiento | **55.02% (877/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `E5-GATE-005` — Confirmar que el piloto tiene criterios medibles | ✅ APROBADA |
-| Tarea actual | `E5-GATE-006` — Confirmar que capacitación y soporte están planificados | ⬜ NO INICIADA |
-| Siguiente reservada | `E5-GATE-007` — Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre | ⬜ NO INICIADA |
+| Última aprobada | `E5-GATE-006` — Confirmar que capacitación y soporte están planificados | ✅ APROBADA |
+| Tarea actual | `E5-GATE-007` — Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre | ⬜ NO INICIADA |
+| Siguiente reservada | `E5-GATE-008` — Aprobar entrada a implementación física por paquetes | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -593,7 +593,7 @@
 | ✅ APROBADA | `E5-GATE-003` | Confirmar que los requisitos no funcionales están cubiertos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ✅ APROBADA | `E5-GATE-004` | Confirmar que rollout, rollback y contingencia son ejecutables | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ✅ APROBADA | `E5-GATE-005` | Confirmar que el piloto tiene criterios medibles | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
-| ⬜ NO INICIADA | `E5-GATE-006` | Confirmar que capacitación y soporte están planificados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
+| ✅ APROBADA | `E5-GATE-006` | Confirmar que capacitación y soporte están planificados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-007` | Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-008` | Aprobar entrada a implementación física por paquetes | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-001` | Confirmar turno publicado antes del check-in | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |

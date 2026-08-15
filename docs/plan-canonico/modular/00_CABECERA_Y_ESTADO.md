@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **876** |
+| Tareas aprobadas | **877** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **718** |
+| Tareas no iniciadas | **717** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **54.96% (876/1594)** |
+| Porcentaje de completamiento | **55.02% (877/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **E5-GATE-005 — Confirmar que el piloto tiene criterios medibles** |
-| Tarea actual | **E5-GATE-006 — Confirmar que capacitación y soporte están planificados** |
+| Última tarea aprobada | **E5-GATE-006 — Confirmar que capacitación y soporte están planificados** |
+| Tarea actual | **E5-GATE-007 — Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **E5-GATE-007 — Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre** |
+| Siguiente tarea | **E5-GATE-008 — Aprobar entrada a implementación física por paquetes** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 65 de 68 aprobadas; E5-GATE-006 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 66 de 68 aprobadas; E5-GATE-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `E5-GATE-005` — Confirmar que el piloto tiene criterios medibles |
-| Tarea actual | `E5-GATE-006` — Confirmar que capacitación y soporte están planificados — **NO INICIADA** |
-| Siguiente tarea | `E5-GATE-007` — Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre |
+| Última aprobada | `E5-GATE-006` — Confirmar que capacitación y soporte están planificados |
+| Tarea actual | `E5-GATE-007` — Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre — **NO INICIADA** |
+| Siguiente tarea | `E5-GATE-008` — Aprobar entrada a implementación física por paquetes |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 65 DE 68 APROBADAS — ACTUAL E5-GATE-006** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 66 DE 68 APROBADAS — ACTUAL E5-GATE-007** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-E5-GATE-005 — Confirmar que el piloto tiene criterios medibles
-        ↓
-TAREA ACTUAL
 E5-GATE-006 — Confirmar que capacitación y soporte están planificados
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 E5-GATE-007 — Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre
         ↓
+SIGUIENTE TAREA RESERVADA
+E5-GATE-008 — Aprobar entrada a implementación física por paquetes
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 65 de 68 tareas aprobadas
+BLOQUE E5 — 66 de 68 tareas aprobadas
 ```
