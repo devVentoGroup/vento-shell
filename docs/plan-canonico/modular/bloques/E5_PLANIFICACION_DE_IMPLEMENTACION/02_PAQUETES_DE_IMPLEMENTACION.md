@@ -9373,7 +9373,443 @@ SIGUIENTE TAREA RESERVADA
 `DELIV-PKG-021 — Definir documentación, procedimiento y capacitación`
 
 
-### [ ] DELIV-PKG-021 — Definir documentación, procedimiento y capacitación
+### ✅ DELIV-PKG-021 — Definir documentación, procedimiento y capacitación
+
+**Estado:** APROBADA
+**Tarea anterior:** `DELIV-PKG-020 — Definir rollback técnico, funcional y de datos`
+**Tarea siguiente:** `DELIV-PKG-022 — Definir alcance, actores, datos y duración del piloto`
+**Tipo de tarea:** documental — materialización del expediente documental, runbooks, procedimientos y capacitación requerida para las 207 raíces `GAP-PKG-*`, con audiencia, propietario, versión y criterio de actualización; sin ejecutar capacitación, publicar documentación operativa, certificar preparación de soporte, desplegar cambios ni alterar configuración o datos
+
+---
+
+#### 1. Resultado canónico
+
+`DELIV-PKG-021` define el contrato documental y de transferencia de conocimiento de las **207** raíces `GAP-PKG-001..207`.
+
+Cada raíz conserva sin modificación su identidad, repositorio, perfil `TP-*`, runtime, responsable `OWN-*` y gate materializados en `DELIV-PKG-016/017`. La fila homónima de `DELIV-PKG-017` es la referencia autoritativa para esos campos heredados; esta tarea no los duplica como una nueva fuente de verdad.
+
+Para cada paquete se exige un expediente documental versionado que permita comprender qué cambia, cómo se opera, cómo se diagnostica, cómo se activa o detiene de forma segura, cómo se revierte o recupera, qué evidencia debe conservarse y qué personas deben recibir capacitación antes de la preparación operativa.
+
+La aprobación documental de esta tarea **no significa** que los documentos operativos hayan sido publicados, que la capacitación haya sido impartida, que exista guardia o soporte preparado, ni que los procedimientos hayan sido practicados en un ambiente real.
+
+---
+
+#### 2. Límites obligatorios
+
+1. No se crean repositorios, archivos físicos, directorios, plataformas documentales ni canales de soporte por inferencia.
+2. No se crean roles nuevos: la propiedad de cada paquete permanece en el `OWN-*` heredado.
+3. No se sustituyen contratos técnicos por documentación narrativa; `DELIV-PKG-014..020` siguen siendo la fuente de las decisiones de implementación, pruebas, observabilidad, activación, rollout y rollback.
+4. Un runbook no puede declarar una acción ejecutable que el paquete mantenga bloqueada por identidad física, AURA, TALENTO o `EXT-GOV-001`.
+5. La capacitación se planifica en esta tarea, pero su ejecución y evidencia de asistencia o competencia no se declaran realizadas.
+6. La publicación operativa, la habilitación de soporte y la certificación de readiness quedan fuera de esta tarea.
+7. Ninguna guía puede contener secretos, credenciales, tokens, PIN, payloads sensibles, datos personales no necesarios ni datos productivos usados como ejemplo por conveniencia.
+8. Todo contenido que cambie una regla funcional, de seguridad, de datos, de rollout o de rollback exige primero una decisión en la tarea propietaria correspondiente; la documentación no autoriza el cambio por sí misma.
+
+---
+
+#### 3. Expediente documental mínimo por paquete
+
+Toda raíz deberá disponer, antes de su gate de preparación final, de los siguientes objetos lógicos. Esta tarea define su contenido mínimo, no su ubicación física:
+
+| Objeto documental                      | Contenido mínimo obligatorio                                                                                                                                   |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ficha de paquete                       | propósito, alcance, responsable `OWN-*`, repositorio o bloqueo heredado, dependencias, prerequisitos, comportamiento esperado, riesgos y referencias canónicas |
+| Guía funcional u operativa             | actores afectados, entradas, resultado esperado, restricciones, estados de error y comportamiento seguro                                                       |
+| Runbook de soporte y diagnóstico       | síntoma, señales de `DELIV-PKG-017`, primera acción segura, diagnóstico, escalamiento, contención, criterio de recuperación y evidencia                        |
+| Procedimiento de activación/cambio     | prerequisitos, default seguro y control de `DELIV-PKG-018`, secuencia de `DELIV-PKG-019`, pausas, autorización y criterio de detención                         |
+| Procedimiento de rollback/recuperación | disparadores, autoridad, objetivo seguro, rollback técnico/funcional/de datos y conciliación según `DELIV-PKG-020`                                             |
+| Guía de verificación                   | pruebas y evidencias de `DELIV-PKG-016`, escenarios negativos, resultado esperado y condición que impide promover                                              |
+| Plan de capacitación                   | audiencia, prerequisitos, objetivos, contenido, modalidad prevista, práctica requerida cuando aplique y evidencia futura de competencia                        |
+| Historial de versión                   | versión vigente, motivo del cambio, fuente canónica que lo origina, aprobador y contenido que debe revisarse                                                   |
+
+Cuando un objeto no sea ejecutable por un gate heredado, el expediente deberá conservar el **plan y los prerequisitos de desbloqueo**, sin presentar instrucciones operativas ficticias.
+
+---
+
+#### 4. Audiencias obligatorias por perfil heredado
+
+La audiencia se determina por el `TP-*` ya asignado a cada `package_id`. El responsable `OWN-*` de la fila homónima de `DELIV-PKG-017` es propietario de que el contenido exista, esté vigente y llegue a la audiencia aplicable; esto no convierte necesariamente al `OWN-*` en autor único del contenido.
+
+| Perfil heredado  | Audiencia mínima                                                                       | Especialización documental y de capacitación                                                                                                              |
+| ---------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TP-DB-001`      | ingeniería responsable, datos, seguridad, operación y soporte aplicables               | migración/contrato, RLS/RPC, integridad, reconciliación, restore/rollback, diagnóstico y evidencia                                                        |
+| `TP-SHARED-001`  | proveedor del contrato, consumidores, ingeniería y soporte                             | versionado, compatibilidad, deprecación, migración de consumidores, fallback y recuperación                                                               |
+| `TP-DOM-001`     | propietario funcional, operadores del proceso, ingeniería y soporte                    | reglas de negocio, transiciones, rechazos, corrección, resultado empresarial y recuperación                                                               |
+| `TP-AUTH-001`    | seguridad, administradores autorizados, ingeniería y soporte                           | allow/deny, contexto, revocación, bypass negativo, elevación, auditoría y retorno seguro                                                                  |
+| `TP-INT-001`     | responsables de integración, ingeniería, operación y soporte                           | contrato externo/interno, timeout, retry, idempotencia, duplicados, resultado incierto, conciliación y dependencia caída                                  |
+| `TP-UI-001`      | usuarios u operadores afectados, soporte, ingeniería y release                         | flujo visible, errores, offline/sync, accesibilidad, recuperación, cambio de release y resultado empresarial                                              |
+| `TP-CONTROL-001` | responsables de gobierno/control, revisores, operación aplicable y propietario `OWN-*` | ejecución del control, evidencia, drift, excepción, revisión, recuperación del control y criterio de cierre                                               |
+| `TP-AURA-001`    | propietario `OWN-*`, gobierno y futuros responsables operativos una vez desbloqueado   | expediente de bloqueo, prerequisitos y contenido objetivo; entrenamiento operativo diferido hasta confirmar repositorio/runtime/datos                     |
+| `TP-EXT-001`     | propietario `OWN-*`, gobierno, integración y soporte una vez activada la dependencia   | activación de `EXT-GOV-001`, contrato real, sandbox, fallos, conciliación y soporte; entrenamiento operativo diferido mientras el gate permanezca cerrado |
+| `TP-FUTURE-001`  | propietario `OWN-*`, gobierno y equipo futuro de TALENTO                               | documentación objetivo y plan de transferencia; entrenamiento operativo diferido hasta activación formal de la línea funcional                            |
+
+---
+
+#### 5. Contrato del runbook
+
+Todo runbook aplicable deberá responder de forma verificable y en este orden lógico:
+
+1. qué síntoma o evento inicia su uso;
+2. qué impacto empresarial o de seguridad puede existir;
+3. qué señales y evidencias deben consultarse según `DELIV-PKG-017`;
+4. cuál es la primera acción segura y qué acciones están prohibidas;
+5. quién tiene autoridad funcional y técnica para decidir;
+6. cómo contener exposición mediante el control de `DELIV-PKG-018` cuando aplique;
+7. qué condición detiene o pausa el rollout de `DELIV-PKG-019`;
+8. cuándo corresponde rollback técnico, rollback funcional, recuperación de datos, compensación o conciliación de `DELIV-PKG-020`;
+9. cómo verificar que el servicio y el resultado empresarial se recuperaron;
+10. qué evidencia debe conservarse para revisión y aceptación posterior.
+
+Un dashboard, alerta, comentario de incidente o conocimiento tácito de una persona no sustituye el runbook.
+
+---
+
+#### 6. Contrato de procedimiento
+
+Los procedimientos deberán ser deterministas para la decisión que gobiernan. Como mínimo deberán declarar:
+
+- prerequisitos y gate de entrada;
+- responsable y autoridad requerida;
+- estado inicial permitido;
+- pasos lógicos y puntos de decisión;
+- validaciones previas, durante y posteriores;
+- condición de pausa, aborto o escalamiento;
+- resultado seguro esperado;
+- tratamiento de errores, efectos inciertos y datos ya confirmados;
+- evidencia mínima y responsable de conservarla;
+- referencia al contrato de rollback o recuperación aplicable.
+
+No se permiten instrucciones que dependan exclusivamente de memoria tribal, mensajes temporales o acceso personal no gobernado.
+
+---
+
+#### 7. Contrato de capacitación
+
+Cada paquete deberá tener capacitación **planificada** antes de su preparación operativa. El plan deberá declarar:
+
+1. audiencia exacta según perfil y proceso afectado;
+2. prerequisitos de conocimiento y acceso;
+3. objetivos observables de aprendizaje;
+4. contenido mínimo derivado del expediente documental vigente;
+5. modalidad prevista: lectura guiada, sesión, laboratorio, simulación o práctica controlada según riesgo;
+6. escenario de error o recuperación que la audiencia debe comprender cuando aplique;
+7. evidencia futura requerida: asistencia, evaluación, ejercicio, demostración o aceptación del procedimiento según criticidad;
+8. criterio de reentrenamiento ante cambios materiales;
+9. propietario `OWN-*` responsable de asegurar vigencia y cobertura.
+
+No se declara una persona capacitada por haber recibido un enlace, por asistir a una reunión ni por existir una presentación. La evidencia de competencia, cuando sea requerida, deberá producirse en la fase que ejecute la capacitación.
+
+---
+
+#### 8. Versionado y criterio de actualización
+
+Todos los expedientes parten en **versión documental `1.0.0`** como definición inicial de E5.
+
+- cambio **mayor** (`X`): altera comportamiento operativo, autoridad, seguridad, recuperación, rollout, rollback, datos o audiencia crítica;
+- cambio **menor** (`Y`): agrega escenarios, soporte, explicación o procedimiento compatible sin invalidar el contrato vigente;
+- corrección **editorial** (`Z`): corrige claridad o forma sin cambiar decisión, secuencia ni significado.
+
+La versión se expresa como `X.Y.Z`; toda modificación publicada en el expediente incrementa al menos uno de esos componentes y conserva trazabilidad de la fuente que la originó.
+
+El expediente de un paquete deberá revisarse antes de readiness cuando cambie materialmente cualquiera de estas fuentes:
+
+- propiedad o responsabilidad aprobada del paquete;
+- inventario físico o repositorio de `DELIV-PKG-014`;
+- arquitectura, dependencia, toolchain o secuencia de `DELIV-PKG-015`;
+- pruebas, ambientes o evidencia de `DELIV-PKG-016`;
+- señales, alertas, auditoría o soporte de `DELIV-PKG-017`;
+- default, configuración, activación o kill switch de `DELIV-PKG-018`;
+- artefactos, cohortes, pausas o promoción de `DELIV-PKG-019`;
+- rollback, restore, recovery, compensación o conciliación de `DELIV-PKG-020`;
+- decisiones posteriores de piloto o aceptación que modifiquen audiencia, datos, salvaguardas, operación o evidencia.
+
+La revisión debe producir una nueva versión cuando el contenido operativo cambie; una fuente canónica modificada no puede dejar un runbook anterior presentado como vigente.
+
+---
+
+#### 9. Matriz materializada de las 207 raíces
+
+La referencia heredada de cada fila es **la fila con el mismo `package_id` en la matriz aprobada de `DELIV-PKG-017`**. De allí se conservan exactamente repositorio, perfil `TP-*`, runtime, `OWN-*` y gate. El expediente `021` es obligatorio para todas las raíces; la capacitación operativa de AURA, EXT y TALENTO permanece diferida por su gate.
+
+`ESPECIFICADO_NO_PUBLICADO` significa que el contenido obligatorio queda definido por esta tarea, sin afirmar publicación operativa. `PLANIFICADA_NO_EJECUTADA` significa que la capacitación requerida queda especificada pero no impartida. `DIFERIDA_POR_GATE` significa que la capacitación operativa solo podrá ejecutarse después de cerrar el bloqueo heredado.
+
+| `package_id`  | Herencia de repositorio/perfil/runtime/propietario/gate | Estado documental 021       | Versión inicial | Estado de capacitación     |
+| ------------- | ------------------------------------------------------- | --------------------------- | --------------- | -------------------------- |
+| `GAP-PKG-001` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-002` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-003` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-004` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-005` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-006` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-007` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-008` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-009` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-010` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-011` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-012` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-013` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-014` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-015` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-016` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-017` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-018` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-019` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-020` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-021` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-022` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-023` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-024` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-025` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-026` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-027` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-028` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-029` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-030` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-031` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-032` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-033` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-034` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-035` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-036` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-037` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-038` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-039` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-040` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-041` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-042` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-043` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-044` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-045` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-046` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-047` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-048` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-049` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-050` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-051` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-052` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-053` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-054` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-055` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-056` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-057` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-058` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-059` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-060` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-061` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-062` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-063` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-064` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-065` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-066` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-067` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-068` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-069` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-070` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-071` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-072` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-073` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-074` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-075` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-076` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-077` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-078` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-079` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-080` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-081` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-082` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-083` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-084` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-085` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-086` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-087` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-088` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-089` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-090` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-091` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-092` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-093` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-094` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-095` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-096` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-097` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-098` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-099` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-100` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-101` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-102` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-103` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-104` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-105` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-106` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-107` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-108` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-109` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-110` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-111` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-112` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-113` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-114` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-115` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-116` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-117` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-118` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-119` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-120` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-121` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-122` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-123` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-124` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-125` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-126` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-127` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-128` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-129` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-130` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-131` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-132` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-133` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-134` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-135` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-136` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-137` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-138` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-139` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-140` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-141` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-142` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-143` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-144` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-145` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-146` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-147` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-148` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-149` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-150` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-151` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-152` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-153` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-154` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-155` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-156` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-157` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-158` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-159` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-160` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-161` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-162` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-163` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-164` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-165` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-166` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-167` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-168` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-169` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-170` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-171` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-172` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-173` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-174` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-175` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-176` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-177` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-178` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-179` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-180` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-181` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-182` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-183` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-184` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-185` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-186` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-187` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-188` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-189` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-190` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-191` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-192` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-193` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-194` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-195` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-196` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-197` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `DIFERIDA_POR_GATE`        |
+| `GAP-PKG-198` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-199` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-200` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-201` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-202` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-203` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-204` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-205` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-206` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+| `GAP-PKG-207` | fila homónima de `DELIV-PKG-017`                        | `ESPECIFICADO_NO_PUBLICADO` | `1.0.0`         | `PLANIFICADA_NO_EJECUTADA` |
+
+La matriz no crea una segunda fuente de verdad para los atributos heredados. Cualquier cambio de repositorio, perfil, runtime, `OWN-*` o gate debe resolverse primero en la fuente canónica propietaria y luego disparar la actualización documental prevista en la sección 8.
+
+Los paquetes con capacitación `DIFERIDA_POR_GATE` son exactamente los 14 AURA, 2 `EXT-GOV-001` y 2 TALENTO ya bloqueados en la planificación precedente. El expediente documental sí se especifica ahora; lo diferido es la ejecución operativa de capacitación y cualquier instrucción que requiera una implementación inexistente.
+
+---
+
+#### 10. Gates documentales y de soporte
+
+Antes de que un paquete pueda alegar preparación documental en una fase posterior deberá demostrarse, según aplicabilidad:
+
+1. expediente vigente y coherente con las fuentes `DELIV-PKG-014..020`;
+2. responsable `OWN-*` identificable y audiencia definida;
+3. runbook accionable para incidentes o degradaciones relevantes;
+4. procedimiento de activación, pausa y rollback coherente con los contratos aprobados;
+5. ejemplos y material sin secretos ni datos sensibles indebidos;
+6. plan de capacitación vigente y no confundido con evidencia de ejecución;
+7. historial de versión y criterio de actualización aplicados;
+8. enlaces de referencia canónica suficientes para que soporte no dependa de conocimiento tribal;
+9. bloqueo explícito cuando AURA, EXT, TALENTO o identidad física impidan un procedimiento ejecutable;
+10. evidencia real de publicación, capacitación y preparación de soporte exigida únicamente cuando la fase propietaria las ejecute.
+
+`DELIV-PKG-023` podrá usar estos gates como entrada para definir criterios y evidencia de cierre, pero 021 no anticipa su aceptación.
+
+---
+
+#### 11. Requisitos de prueba
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+**Requisitos creados:** 0.
+**Requisitos modificados:** 0.
+
+Justificación: esta tarea define documentación, procedimientos, runbooks y capacitación planificada para obligaciones ya existentes. No introduce comportamiento funcional nuevo, contrato técnico nuevo, superficie nueva, operación de datos nueva ni criterio de prueba adicional. Las obligaciones verificables continúan gobernadas por los `TREQ-*` y perfiles de `DELIV-PKG-016`; 021 únicamente exige que el conocimiento operativo sea documentado y mantenido antes de readiness.
+
+---
+
+#### 12. Criterios de aceptación de `DELIV-PKG-021`
+
+`DELIV-PKG-021` queda aceptada cuando:
+
+1. las 207 raíces `GAP-PKG-001..207` aparecen exactamente una vez;
+2. cada raíz conserva por referencia exacta su repositorio, perfil `TP-*`, runtime, `OWN-*` y gate de `DELIV-PKG-017`;
+3. todas las raíces reciben expediente documental obligatorio y versión inicial `1.0.0`;
+4. la especialización de audiencia y contenido se determina exclusivamente por el perfil `TP-*` heredado;
+5. los runbooks enlazan diagnóstico `017`, contención `018`, rollout `019` y rollback/recuperación `020` sin redefinirlos;
+6. las 18 raíces AURA/EXT/TALENTO conservan capacitación operativa diferida y no reciben instrucciones ejecutables ficticias;
+7. la capacitación permanece planificada, no ejecutada;
+8. no se afirma publicación operativa ni preparación certificada del soporte;
+9. no se crean ubicaciones físicas, repositorios, secretos, infraestructura, configuración, despliegues ni cambios de datos;
+10. no se crean ni modifican requisitos `TREQ-*`;
+11. el criterio de actualización obliga a revisar documentación cuando cambie una fuente canónica material;
+12. la continuidad queda reservada exclusivamente en `DELIV-PKG-022`.
+
+---
+
+#### 13. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DELIV-PKG-020 — Definir rollback técnico, funcional y de datos`
+
+TAREA ACTUAL APROBADA
+`DELIV-PKG-021 — Definir documentación, procedimiento y capacitación`
+
+SIGUIENTE TAREA RESERVADA
+`DELIV-PKG-022 — Definir alcance, actores, datos y duración del piloto`
+
+
 ### [ ] DELIV-PKG-022 — Definir alcance, actores, datos y duración del piloto
 ### [ ] DELIV-PKG-023 — Definir criterios de aceptación y evidencia de cierre
 ### [ ] DELIV-PKG-024 — Vincular el paquete con el registro canónico de brechas

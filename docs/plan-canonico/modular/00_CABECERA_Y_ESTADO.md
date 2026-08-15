@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **831** |
+| Tareas aprobadas | **832** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **763** |
+| Tareas no iniciadas | **762** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **52.13% (831/1594)** |
+| Porcentaje de completamiento | **52.20% (832/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DELIV-PKG-020 — Definir rollback técnico, funcional y de datos** |
-| Tarea actual | **DELIV-PKG-021 — Definir documentación, procedimiento y capacitación** |
+| Última tarea aprobada | **DELIV-PKG-021 — Definir documentación, procedimiento y capacitación** |
+| Tarea actual | **DELIV-PKG-022 — Definir alcance, actores, datos y duración del piloto** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DELIV-PKG-022 — Definir alcance, actores, datos y duración del piloto** |
+| Siguiente tarea | **DELIV-PKG-023 — Definir criterios de aceptación y evidencia de cierre** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 20 de 68 aprobadas; DELIV-PKG-021 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 21 de 68 aprobadas; DELIV-PKG-022 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DELIV-PKG-020` — Definir rollback técnico, funcional y de datos |
-| Tarea actual | `DELIV-PKG-021` — Definir documentación, procedimiento y capacitación — **NO INICIADA** |
-| Siguiente tarea | `DELIV-PKG-022` — Definir alcance, actores, datos y duración del piloto |
+| Última aprobada | `DELIV-PKG-021` — Definir documentación, procedimiento y capacitación |
+| Tarea actual | `DELIV-PKG-022` — Definir alcance, actores, datos y duración del piloto — **NO INICIADA** |
+| Siguiente tarea | `DELIV-PKG-023` — Definir criterios de aceptación y evidencia de cierre |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 20 DE 68 APROBADAS — ACTUAL DELIV-PKG-021** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 21 DE 68 APROBADAS — ACTUAL DELIV-PKG-022** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DELIV-PKG-020 — Definir rollback técnico, funcional y de datos
-        ↓
-TAREA ACTUAL
 DELIV-PKG-021 — Definir documentación, procedimiento y capacitación
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DELIV-PKG-022 — Definir alcance, actores, datos y duración del piloto
         ↓
+SIGUIENTE TAREA RESERVADA
+DELIV-PKG-023 — Definir criterios de aceptación y evidencia de cierre
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 20 de 68 tareas aprobadas
+BLOQUE E5 — 21 de 68 tareas aprobadas
 ```
