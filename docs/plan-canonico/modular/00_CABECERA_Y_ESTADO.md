@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **878** |
+| Tareas aprobadas | **879** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **716** |
+| Tareas no iniciadas | **715** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **55.08% (878/1594)** |
+| Porcentaje de completamiento | **55.14% (879/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **E5-GATE-007 — Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre** |
-| Tarea actual | **E5-GATE-008 — Aprobar entrada a implementación física por paquetes** |
+| Última tarea aprobada | **SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas** |
+| Tarea actual | **SHELL-CON-001 — Crear @vento/contracts** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CON-001 — Crear @vento/contracts** |
-| Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 67 de 68 aprobadas; E5-GATE-008 pendiente** |
+| Siguiente tarea | **SHELL-CON-002 — Centralizar códigos de aplicaciones** |
+| Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
+| Progreso del bloque | **BLOQUE H: 29 de 109 aprobadas; SHELL-CON-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `E5-GATE-007` — Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre |
-| Tarea actual | `E5-GATE-008` — Aprobar entrada a implementación física por paquetes — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CON-001` — Crear @vento/contracts |
+| Última aprobada | `SHELL-PKG-008` — Evitar actualizaciones automáticas sin pruebas |
+| Tarea actual | `SHELL-CON-001` — Crear @vento/contracts — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CON-002` — Centralizar códigos de aplicaciones |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 67 DE 68 APROBADAS — ACTUAL E5-GATE-008** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 29 DE 109 APROBADAS — ACTUAL SHELL-CON-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-E5-GATE-007 — Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre
+SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas
         ↓
 TAREA ACTUAL
-E5-GATE-008 — Aprobar entrada a implementación física por paquetes
-        ↓
-SIGUIENTE TAREA RESERVADA
 SHELL-CON-001 — Crear @vento/contracts
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CON-002 — Centralizar códigos de aplicaciones
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 67 de 68 tareas aprobadas
+BLOQUE H — 29 de 109 tareas aprobadas
 ```

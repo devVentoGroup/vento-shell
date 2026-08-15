@@ -2,31 +2,66 @@
   "schema_version": 1,
   "generated_from": "execution-route.json",
   "route_id": "NORMAL-CANONICAL-FLOW-001",
-  "sequence_id": "PHASE-02-E5-IMPLEMENTATION-PLANNING",
-  "block_code": "BLOQUE E5",
-  "block_title": "Paquetes, readiness, cutover e hypercare",
-  "previous_task_id": "E5-GATE-007",
+  "sequence_id": "PHASE-03-H-SHARED-FOUNDATION",
+  "block_code": "BLOQUE H",
+  "block_title": "Fundación compartida de VENTO-SHELL",
+  "previous_task_id": "SHELL-PKG-008",
   "latest_treq_task_id": "NEXO-UX-025",
-  "handoff_task_id": "SHELL-CON-001",
-  "handoff_sequence_id": "PHASE-03-H-SHARED-FOUNDATION",
+  "handoff_task_id": "SHELL-CI-001",
+  "handoff_sequence_id": "PHASE-03-T-CI-FOUNDATION",
   "segments": [
     {
-      "prefix": "E5-GATE",
-      "from": 8,
+      "prefix": "SHELL-CON",
+      "from": 1,
+      "to": 24
+    },
+    {
+      "prefix": "SHELL-NORM",
+      "from": 1,
+      "to": 9
+    },
+    {
+      "prefix": "SHELL-DB",
+      "from": 1,
+      "to": 5
+    },
+    {
+      "prefix": "SHELL-UI",
+      "from": 1,
+      "to": 20
+    },
+    {
+      "prefix": "SHELL-MIG",
+      "from": 1,
       "to": 8
+    },
+    {
+      "prefix": "SHELL-NATIVE",
+      "from": 1,
+      "to": 3
+    },
+    {
+      "prefix": "SHELL-AUTH",
+      "from": 1,
+      "to": 5
+    },
+    {
+      "prefix": "SHELL-CTX",
+      "from": 1,
+      "to": 6
     }
   ],
   "block_progress": {
-    "total_tasks": 68,
-    "approved_tasks": 67,
-    "pending_tasks": 1
+    "total_tasks": 109,
+    "approved_tasks": 29,
+    "pending_tasks": 80
   },
   "route_progress": {
     "covered_tasks": 1594,
-    "pending_tasks": 716,
+    "pending_tasks": 715,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
-    "active_stage": 9
+    "active_stage": 10
   },
   "selected_route_id": "NORMAL-CANONICAL-FLOW-001"
 }
