@@ -6232,11 +6232,11 @@ Cobertura materializada:
 | Escenarios con decisión explícita                     |       24 |
 | Canales con respuesta explícita                       |       10 |
 | Aplicaciones canónicas reconciliadas                  |       10 |
-| Permisos canónicos evaluados por carril               |      112 |
-| Permisos sin carril operativo                         |       54 |
-| Permisos con carril operativo                         |       58 |
+| Permisos canónicos evaluados por carril               |      140 |
+| Permisos sin carril operativo                         |       68 |
+| Permisos con carril operativo                         |       72 |
 | Carriles operativos `T`                               |       19 |
-| Carriles operativos `T+C`                             |       39 |
+| Carriles operativos `T+C`                             |       53 |
 | Roles operativos canónicos consumibles                |       12 |
 | Roles operativos físicos activos observados           |       13 |
 | Sedes con habilitaciones activas observadas           |        5 |
@@ -6486,10 +6486,10 @@ La razón se evalúa únicamente si el permiso admite o exige carril operativo.
 
 | Clasificación                 | Cantidad | Efecto ante área incompatible                                  |
 | ----------------------------- | -------: | -------------------------------------------------------------- |
-| permisos sin carril operativo |       54 | no evalúan esta razón                                          |
+| permisos sin carril operativo |       68 | no evalúan esta razón                                          |
 | carriles operativos `T`       |       19 | evalúan área después de turno, rol y sede                      |
-| carriles operativos `T+C`     |       39 | evalúan área después de turno, check-in, rol y sede            |
-| total con carril operativo    |       58 | el carril operativo queda denegado si el área no es compatible |
+| carriles operativos `T+C`     |       53 | evalúan área después de turno, check-in, rol y sede            |
+| total con carril operativo    |       72 | el carril operativo queda denegado si el área no es compatible |
 
 Ninguna aplicación podrá convertir todos sus permisos en una única política de
 área. La unidad de decisión continúa siendo el permiso, su modalidad y el
@@ -7218,8 +7218,8 @@ a implementación ni a evidencia de ejecución.
 La implementación deberá probar al menos:
 
 1. código, estado, `403`, decisión de carril y cero efectos;
-2. aplicación exclusiva a los 58 carriles operativos;
-3. no afectación de los 54 permisos sin carril operativo;
+2. aplicación exclusiva a los 72 carriles operativos;
+3. no afectación de los 68 permisos sin carril operativo;
 4. independencia de `BASE_OR_OPERATIONAL`;
 5. rol, sede y área tomados de la misma revisión publicada;
 6. habilitación site-wide válida;
@@ -7289,8 +7289,8 @@ La tarea queda documentalmente completa cuando:
 4. el área debe existir, estar activa y pertenecer a la sede antes de evaluar compatibilidad;
 5. se prohíben fallbacks de cliente, perfil, check-in y dispositivo;
 6. asignación, sede, área, habilitación, grant y scope permanecen separados;
-7. los 112 permisos se reconcilian en distribución 54/19/39;
-8. los 58 carriles operativos evalúan compatibilidad de área;
+7. los 140 permisos se reconcilian en distribución 68/19/53;
+8. los 72 carriles operativos evalúan compatibilidad de área;
 9. las cuatro modalidades tienen decisión explícita;
 10. site-wide y area-scoped tienen semántica definida;
 11. multiárea no depende del orden ni de una primera coincidencia;
