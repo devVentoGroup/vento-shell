@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **841** |
+| Tareas aprobadas | **842** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **753** |
+| Tareas no iniciadas | **752** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **52.76% (841/1594)** |
+| Porcentaje de completamiento | **52.82% (842/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **READY-GATE-005 — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos** |
-| Tarea actual | **READY-GATE-006 — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente** |
+| Última tarea aprobada | **READY-GATE-006 — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente** |
+| Tarea actual | **READY-GATE-007 — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **READY-GATE-007 — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras** |
+| Siguiente tarea | **READY-GATE-008 — Definir criterio y evidencia para confirmar procedimientos operativos y contingencias** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 30 de 68 aprobadas; READY-GATE-006 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 31 de 68 aprobadas; READY-GATE-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `READY-GATE-005` — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos |
-| Tarea actual | `READY-GATE-006` — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente — **NO INICIADA** |
-| Siguiente tarea | `READY-GATE-007` — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras |
+| Última aprobada | `READY-GATE-006` — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente |
+| Tarea actual | `READY-GATE-007` — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras — **NO INICIADA** |
+| Siguiente tarea | `READY-GATE-008` — Definir criterio y evidencia para confirmar procedimientos operativos y contingencias |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 30 DE 68 APROBADAS — ACTUAL READY-GATE-006** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 31 DE 68 APROBADAS — ACTUAL READY-GATE-007** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-READY-GATE-005 — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos
-        ↓
-TAREA ACTUAL
 READY-GATE-006 — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 READY-GATE-007 — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras
         ↓
+SIGUIENTE TAREA RESERVADA
+READY-GATE-008 — Definir criterio y evidencia para confirmar procedimientos operativos y contingencias
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 30 de 68 tareas aprobadas
+BLOQUE E5 — 31 de 68 tareas aprobadas
 ```

@@ -1621,7 +1621,450 @@ Durante `SHELL-CI-021::<package_id>` se construirá el `required_master_set`, se
 `READY-GATE-006 — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente`
 
 
-### [ ] READY-GATE-006 — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente
+### ✅ READY-GATE-006 — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente
+
+**Estado:** APROBADA
+**Tarea anterior:** READY-GATE-005 — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos
+**Tarea siguiente:** READY-GATE-007 — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras
+**Tipo de tarea:** Documental — definición normativa del criterio de readiness y del expediente mínimo de evidencia para confirmar que las integraciones requeridas por un paquete están configuradas en el ambiente objetivo con contrato, binding, principal técnico y credenciales coherentes, segregadas y utilizables; sin crear, revelar, rotar o revocar credenciales, modificar proveedores, desplegar integraciones, ejecutar llamadas productivas con efecto, cambiar configuración remota ni modificar Supabase
+
+#### 1. Propósito
+
+Definir el criterio verificable y el expediente mínimo que `SHELL-CI-021::<package_id>` deberá ejecutar para confirmar, después de `SHELL-CI-020::<package_id>` y de las tareas de implementación aplicables, que las integraciones necesarias para operar el alcance del paquete durante el piloto:
+
+1. corresponden al contrato y al ambiente aprobados;
+2. usan la identidad técnica, binding, endpoint, canal, versión y estrategia de intercambio esperados;
+3. disponen del material de credencial o configuración que realmente corresponda a cada superficie, sin convertir todo `key`, `token`, `dsn` o `id` en un secreto genérico;
+4. conservan separación por ambiente, principal, binding, dirección y privilegio cuando aplique;
+5. no reutilizan material de credencial entre integraciones independientes;
+6. pueden demostrar autenticación, conectividad contractual y resultado técnico mediante evidencia reproducible y segura, sin exponer secretos ni confundir un `200`, ACK o health check con éxito empresarial;
+7. permanecen alineadas con los contratos de idempotencia, autenticidad, correlación, retry, conciliación y propiedad que el paquete ya haya declarado aplicables.
+
+`READY-GATE-006` diseña el gate. No crea cuentas, principals, credenciales, secretos, certificados, API keys, OAuth clients, webhooks, endpoints, topics, colas, proveedores ni proyectos. Tampoco rota o revoca material existente, modifica configuración remota, ejecuta DDL/DML, despliega funciones o cambia Supabase.
+
+#### 2. Alcance y frontera del gate
+
+`READY-GATE-006` responde exclusivamente a esta pregunta:
+
+> ¿Cada integración que el paquete necesita para entrar al piloto está materializada en el ambiente objetivo con identidad, contrato, configuración y credenciales verificables, y puede demostrar una interacción técnica controlada sin ampliar autoridad, cruzar ambientes, compartir material sensible ni presentar telemetría como resultado empresarial?
+
+El gate se evalúa por `package_id`, ambiente objetivo e integración requerida. Una misma integración puede tener varias superficies de credencial; cada una deberá evaluarse de forma independiente antes del resultado agregado.
+
+Este gate no sustituye ni anticipa:
+
+- `READY-GATE-001`: correlación del código desplegado;
+- `READY-GATE-002`: migraciones aplicadas, drift y validación de datos;
+- `READY-GATE-003`: permisos, matrices y configuración lógica de dispositivos;
+- `READY-GATE-004`: usuarios, roles, sedes, áreas y turnos;
+- `READY-GATE-005`: catálogos y datos maestros mínimos;
+- `READY-GATE-007`: hardware, red, escáneres e impresoras;
+- `READY-GATE-008`: procedimientos operativos y contingencias;
+- `READY-GATE-009`: capacitación y material de apoyo;
+- `READY-GATE-010`: mesa de soporte, responsables y escalamiento;
+- `READY-GATE-011`: monitoreo, métricas y alertas;
+- `READY-GATE-012`: respaldo y rollback probados;
+- `READY-GATE-013`: línea base previa al piloto;
+- `READY-GATE-014`: riesgos aceptados y condiciones de suspensión;
+- `READY-GATE-015`: autoridad y criterio final de entrada al piloto.
+
+La disponibilidad de red física o periféricos se conserva en `READY-GATE-007`. La observabilidad integral y las alertas se conservan en `READY-GATE-011`. La reversión y recuperación probadas se conservan en `READY-GATE-012`.
+
+#### 3. Fuentes vinculantes para determinar el conjunto esperado
+
+La ejecución futura deberá derivar el conjunto esperado de integraciones antes de observar el ambiente. Como mínimo deberá reconciliar, cuando apliquen:
+
+- `DELIV-PKG-010`, que define por paquete eventos, productores, consumidores, entrega, idempotencia, retry, trabajo asíncrono, colas, DLQ, compensación y conciliación;
+- `DELIV-PKG-011` cuando notificaciones, documentos o canales dependan de una integración o proveedor;
+- `DELIV-PKG-014` y `DELIV-PKG-015` para identidad física, archivos, componentes, dependencias, SDK, toolchain, precondiciones y orden;
+- `DELIV-PKG-016` para `TREQ-*`, niveles de prueba, fixtures, comandos, ambientes, responsables y evidencia esperada;
+- `DELIV-PKG-018` para configuración y feature flags, sin convertir valores secretos en configuración documental;
+- `DELIV-PKG-019` para ambiente, rollout y secuencia de promoción;
+- `DELIV-PKG-023` para criterios medibles de aceptación y manifiesto de evidencia;
+- `DELIV-PKG-025` para la decisión final del expediente;
+- `INT-APP-001..010` para contratos entre aplicaciones, propiedad, consumidoras, idempotencia, retry, compensación, auditoría, recuperación y prohibición de escrituras cruzadas sin contrato;
+- `INT-EXT-001..020` para inventario externo, principal técnico, procedencia de credenciales, autenticación, alcance, separación por ambiente, custodia, lifecycle, contratos externos, autenticidad, idempotencia, mapeo, retry, cuarentena, auditoría, contingencia, retiro y segregación de credenciales;
+- las tareas de implementación realmente incluidas en el mismo `package_id`.
+
+La lista observada de variables de entorno, secrets, webhooks, endpoints o cuentas no define el universo esperado. Primero se construye `required_integration_set` desde el expediente aprobado y después se reconcilia contra el ambiente.
+
+Si el expediente no permite determinar qué integración es necesaria, qué contrato consume, qué ambiente utiliza, quién es su principal técnico o qué superficie de credencial corresponde, el resultado será `BLOQUEADO`; el gate no completará esos datos por inferencia.
+
+#### 4. Universo canónico externo y regla de incorporación
+
+El baseline documental vigente de integraciones externas contiene **21 identidades `EXT-SYS-001` a `EXT-SYS-021`** dentro de `VENTO-EXTERNAL-SYSTEM-INVENTORY-001`.
+
+Esas 21 identidades son un inventario de sistemas y plataformas reconocidos, no una lista de integraciones obligatorias para todos los paquetes ni evidencia de disponibilidad productiva.
+
+Para una dependencia externa requerida por un paquete:
+
+1. deberá resolverse contra una identidad `EXT-SYS-*` ya aprobada o contra una identidad canónica posterior expresamente versionada;
+2. `BINDING_TECNICO_OBSERVADO`, `BINDING_CONDICIONAL_OBSERVADO` o `CONFIGURACION_OBSERVADA` son antecedentes documentales, no resultados de readiness;
+3. `DOCUMENTADO_SIN_BINDING_ACREDITADO` y `PROVEEDOR_NO_ACREDITADO` no pueden recibir `PASS` mientras el paquete dependa materialmente de esa integración;
+4. una plataforma nueva observada en código o configuración no se incorpora silenciosamente al inventario durante este gate; deberá volver a la tarea propietaria que gobierne su identidad y binding;
+5. un proveedor externo nunca adquiere propiedad del hecho empresarial por autenticar, transportar, recibir, enviar o confirmar una interacción técnica.
+
+#### 5. Dos planos obligatorios e independientes
+
+Toda integración requerida se evalúa mediante dos planos:
+
+| Plano                 | Pregunta de readiness                                                                                                                                                               | Regla                                                                                                                                                                                                     |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `INTEGRATION_BINDING` | ¿El contrato, binding, principal, ambiente, endpoint o canal y estrategia de intercambio observados corresponden exactamente a lo aprobado?                                         | Obligatorio para toda integración requerida.                                                                                                                                                              |
+| `CREDENTIAL_SURFACE`  | ¿Cada superficie de credencial, configuración publicable, referencia o identificador técnico está correctamente clasificada, custodiada, segregada, vigente y vinculada al binding? | Obligatorio cuando la integración posee una o más superficies; puede ser `NO_APLICA` únicamente si el canon demuestra `NO_SECRET_APPLICABLE` o ausencia real de material de credencial para esa frontera. |
+
+Un `PASS` en un plano no compensa `FAIL` o `BLOQUEADO` en el otro.
+
+La prueba conductual empresarial completa de la integración continúa en los `TREQ-*` y pruebas definidos por `DELIV-PKG-016`; este gate confirma que la frontera técnica necesaria para ejecutar esas pruebas está preparada y atribuible.
+
+#### 6. Contrato de evidencia de `INTEGRATION_BINDING`
+
+Cada integración requerida deberá conservar como mínimo:
+
+| Campo                              | Regla                                                                                            |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `package_id`                       | Identidad canónica exacta del paquete.                                                           |
+| `integration_requirement_ref`      | Referencia al contrato, evento, dependencia o decisión del expediente que obliga la integración. |
+| `external_system_id`               | `EXT-SYS-*` cuando la contraparte sea externa; no se inventa para una integración interna.       |
+| `integration_contract_ref`         | Contrato canónico que gobierna entrada, salida o intercambio.                                    |
+| `contract_version`                 | Versión esperada por el paquete cuando exista versionado.                                        |
+| `producer_or_caller_ref`           | Productor, emisor o iniciador técnico autorizado.                                                |
+| `consumer_or_destination_ref`      | Consumidor, receptor o destino aprobado.                                                         |
+| `technical_principal_ref`          | Principal técnico independiente que ejecuta el binding cuando aplique.                           |
+| `target_environment`               | Ambiente VENTO exacto que se está verificando.                                                   |
+| `expected_endpoint_or_channel_ref` | Referencia no sensible al endpoint, canal, webhook, SDK, función, cola o mecanismo esperado.     |
+| `observed_endpoint_or_channel_ref` | Fuente autoritativa read-only del binding observado.                                             |
+| `exchange_strategy`                | Webhook, polling, híbrida, request/response, evento, job o modalidad canónica aplicable.         |
+| `auth_profile_ref`                 | Mecanismo o perfil de autenticación/autenticidad aprobado cuando aplique.                        |
+| `idempotency_profile_ref`          | Contrato de idempotencia aplicable cuando exista efecto reintentable.                            |
+| `retry_profile_ref`                | Perfil de retry, rate limit o backoff aplicable cuando corresponda.                              |
+| `contract_probe_ref`               | Evidencia de una comprobación controlada de conectividad y contrato.                             |
+| `observed_at`                      | Momento verificable de la observación.                                                           |
+| `evidence_refs`                    | Referencias durables y sanitizadas.                                                              |
+| `result`                           | `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA`.                                                       |
+| `blocking_reason`                  | Motivo concreto cuando no exista `PASS`.                                                         |
+
+Los nombres de campos definen contenido mínimo del expediente; no obligan a una tabla, proveedor o tecnología física concreta.
+
+##### 6.1. Reglas obligatorias del binding
+
+Para `PASS`:
+
+1. la integración deberá estar justificada por el paquete y no aparecer únicamente porque exista configuración residual;
+2. el ambiente observado deberá coincidir con `target_environment`;
+3. el sistema, proveedor o contraparte deberán coincidir con la identidad aprobada;
+4. el contrato y su versión deberán ser compatibles con productor y consumidor;
+5. el principal técnico deberá corresponder al binding y no a una identidad humana, dispositivo o cuenta compartida impropia;
+6. el endpoint, canal o mecanismo observado deberá corresponder al contrato y al ambiente;
+7. una integración externa deberá conservar la frontera entre afirmación externa y hecho interno; el proveedor no se convierte en fuente de verdad VENTO por emitir un callback, receipt o status;
+8. cuando el intercambio sea reintentable o asíncrono, deberán existir las referencias a idempotencia, retry, autenticidad, conciliación y tratamiento de errores que el paquete haya declarado aplicables;
+9. una configuración manual observada no versionada o sin propietario no se vuelve canónica por funcionar;
+10. una integración adicional activa fuera del conjunto autorizado deberá producir `FAIL` cuando la evidencia demuestre que participa en el alcance del paquete.
+
+#### 7. Prueba controlada de preparación de la integración
+
+La ejecución futura de `SHELL-CI-021::<package_id>` deberá usar una prueba de readiness proporcional al contrato.
+
+Una prueba válida deberá:
+
+1. identificar paquete, ambiente, integración, contrato, principal técnico y candidato;
+2. comprobar resolución del destino o canal desde la superficie autorizada;
+3. comprobar autenticación o autenticidad sin revelar el material sensible;
+4. comprobar que la versión o contrato esperado es aceptado;
+5. producir un resultado técnico inequívoco y correlacionable;
+6. evitar efectos empresariales reales cuando exista una alternativa read-only, dry-run, sandbox o fixture controlado;
+7. cuando una prueba con efecto sea indispensable, ejecutarse únicamente en el ambiente, cuenta, dato y procedimiento expresamente autorizados por el paquete;
+8. conservar correlación, resultado, timestamp y evidencia sanitizada;
+9. no interpretar un health check genérico, DNS resuelto, socket abierto, `200`, ACK, span, log o dashboard verde como demostración del resultado empresarial de la integración.
+
+Esta tarea no ejecuta esa prueba. Solo define lo que la ejecución posterior deberá demostrar.
+
+#### 8. Taxonomía canónica de superficies de credencial
+
+`READY-GATE-006` preserva `VENTO-EXTERNAL-SECRET-CUSTODY-CONTRACT-001`. No se permite reducir todas las superficies a “secreto” ni tratar todo material visible en cliente como credencial universal.
+
+| Clase                             | Tratamiento de readiness                                                                                                                                               |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SECRET_STATIC_SERVER_SIDE`       | Debe existir referencia a custodia server-side autorizada, binding, ambiente, principal, lifecycle y alcance; el valor nunca aparece en evidencia.                     |
+| `SECRET_DYNAMIC_VERIFIER`         | Se verifica que el mecanismo use un verificador apropiado cuando no sea necesario recuperar el original y que el valor original no se conserve indebidamente.          |
+| `SECRET_DYNAMIC_RECOVERABLE`      | Debe existir custodia cifrada separada y referencia no sensible porque el mismo valor necesita recuperarse o presentarse nuevamente.                                   |
+| `PUBLIC_CREDENTIAL_RESTRICTED`    | Puede ser visible en cliente, pero debe demostrar restricciones por binding, ambiente, aplicación, dominio, bundle, API, cuota o controles equivalentes del proveedor. |
+| `PUBLIC_CONFIGURATION`            | Se trata como configuración versionable o publicable, no como secreto ocultable; debe coincidir con el binding y ambiente esperados.                                   |
+| `CREDENTIAL_REFERENCE`            | Es una referencia no sensible; deberá resolver al material correcto sin contenerlo ni cambiar silenciosamente según consumidor.                                        |
+| `DESTINATION_TOKEN_OR_IDENTIFIER` | Se trata según sensibilidad y privacidad; no se presenta como secreto que autentica a VENTO frente al proveedor.                                                       |
+| `NO_SECRET_APPLICABLE`            | El binding no requiere material secreto externo actual; no se inventa secret store ni credencial para cerrar el gate.                                                  |
+
+Una integración puede tener varias clases simultáneamente. Cada superficie materialmente distinta deberá tener su propia decisión.
+
+#### 9. Contrato de evidencia de `CREDENTIAL_SURFACE`
+
+Para cada superficie aplicable deberá registrarse, sin incluir el valor secreto:
+
+| Campo                           | Regla                                                                                                                                      |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `package_id`                    | Paquete evaluado.                                                                                                                          |
+| `binding_ref`                   | Binding exacto al que pertenece la superficie.                                                                                             |
+| `external_system_id`            | Identidad externa cuando aplique.                                                                                                          |
+| `technical_principal_ref`       | Principal técnico que consume o valida la credencial.                                                                                      |
+| `credential_reference`          | `ExternalCredentialId`, referencia de secret manager, identificador de proveedor o referencia equivalente cuando exista; nunca el secreto. |
+| `credential_class`              | Una de las clases aprobadas por la taxonomía vigente.                                                                                      |
+| `issuer_class`                  | Procedencia aprobada: proveedor, VENTO o condición documental equivalente ya definida; no se infiere.                                      |
+| `authentication_mechanism`      | API key, OAuth, HMAC, certificado u otro mecanismo aprobado; no se elige durante el gate.                                                  |
+| `target_environment`            | `development`, `staging`, `production` o ambiente VENTO canónico aplicable.                                                                |
+| `expected_scope_ref`            | Alcance mínimo aprobado para esa superficie.                                                                                               |
+| `custody_ref`                   | Referencia a custodia, configuración pública o mecanismo que corresponda a la clase.                                                       |
+| `provider_credential_id`        | Identidad no sensible emitida por el proveedor, key ID, client ID, certificate serial/fingerprint público o equivalente cuando exista.     |
+| `issued_or_activated_at`        | Momento conocido de emisión o activación cuando el proveedor lo exponga.                                                                   |
+| `expires_at`                    | Expiración cuando exista.                                                                                                                  |
+| `rotation_state`                | Estado del lifecycle aplicable y referencia a sucesor/predecesor si existe rotación controlada.                                            |
+| `revocation_state`              | Evidencia de que el material requerido no está revocado ni retirado.                                                                       |
+| `environment_separation_result` | Resultado de comprobar aislamiento entre ambientes.                                                                                        |
+| `scope_result`                  | Resultado de comprobar mínimo privilegio y ausencia de ampliación.                                                                         |
+| `binding_isolation_result`      | Resultado de comprobar que el material pertenece al binding esperado.                                                                      |
+| `shared_credential_result`      | Resultado de detectar o descartar compartición prohibida con evidencia suficiente.                                                         |
+| `secret_exposure_result`        | Resultado de comprobar que evidencia, repositorio, contratos y logs no exponen material secreto.                                           |
+| `authentication_probe_ref`      | Prueba controlada que demuestra usabilidad cuando sea necesaria.                                                                           |
+| `evidence_refs`                 | Referencias durables y sanitizadas.                                                                                                        |
+| `result`                        | `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA`.                                                                                                 |
+| `blocking_reason`               | Motivo concreto cuando no exista `PASS`.                                                                                                   |
+
+`ExternalCredentialId` es una referencia no sensible y no equivale al valor material. Dos referencias distintas no demuestran por sí solas que existan dos materiales distintos.
+
+#### 10. Segregación obligatoria de credenciales
+
+La ejecución futura deberá demostrar, cuando aplique:
+
+1. **ambiente:** `development`, `staging` y `production` usan material independiente;
+2. **binding:** el mismo material aceptado por la autoridad externa no se usa en dos bindings independientes;
+3. **principal técnico:** principals independientes no comparten un secreto por conveniencia;
+4. **dirección:** inbound, outbound, administración, firma y tokens de recurso permanecen separados cuando el contrato los diferencia;
+5. **privilegio:** una credencial read-only no se reutiliza como write y una credencial operativa no se usa para administración cuando existe una alternativa de menor privilegio;
+6. **proveedor externo:** `service_role` de Supabase no se entrega a proveedores externos ni clientes;
+7. **cuotas:** la separación de credenciales no se usa para evadir rate limits o cuotas del proveedor;
+8. **credencial publicable:** `PUBLIC_CREDENTIAL_RESTRICTED` conserva aislamiento de binding aunque el valor pueda ser inspeccionable en cliente;
+9. **referencias:** nombres de variables, aliases o dos `ExternalCredentialId` diferentes no son prueba concluyente de que el material esté aislado;
+10. **rotación:** predecesor y sucesor pueden coexistir temporalmente dentro del mismo binding si el lifecycle aprobado lo permite; ese solapamiento no constituye compartición entre integraciones;
+11. **retiro:** un material revocado no puede mantenerse como fallback silencioso;
+12. **compromiso:** una credencial comprometida o razonablemente no confiable no obtiene `PASS` por conservar continuidad operacional.
+
+Existe `SHARED_CREDENTIAL_DETECTED` cuando evidencia suficiente demuestra que el mismo material de credencial aceptado por la autoridad externa está siendo utilizado por más de un binding independiente.
+
+La comprobación de aislamiento deberá usar referencias, identificadores de proveedor, metadata de custodia o mecanismos controlados que permitan verificar igualdad o separación sin registrar valores secretos. No se exige ni se autoriza copiar secretos al expediente para compararlos.
+
+#### 11. Vigencia, rotación, expiración y revocación
+
+Para obtener `PASS`, una superficie que dependa de lifecycle deberá demostrar:
+
+1. material activo y no revocado para el ambiente y binding evaluados;
+2. expiración conocida cuando el proveedor la exponga, o evidencia del régimen de vigencia cuando no exista expiración automática;
+3. alcance temporal compatible con la ventana de readiness y entrada al piloto;
+4. rotación pendiente identificada antes de que convierta el material en inválido;
+5. sucesor y predecesor asociados al mismo binding durante un solapamiento autorizado;
+6. ausencia de fallback indefinido a material anterior;
+7. retiro y revocación coherentes con `INT-EXT-008`, `INT-EXT-019` e `INT-EXT-020`;
+8. si una integración se retira, ninguna credencial se revoca ciegamente cuando todavía exista otro consumidor autorizado que dependa de ella; primero deberá resolverse la compartición prohibida.
+
+Una credencial expirada, revocada, perteneciente a otro ambiente, principal o binding produce `FAIL` cuando la evidencia es suficiente. Si el proveedor o custodia no permiten determinar su vigencia de forma autorizada, el resultado será `BLOQUEADO`, no `PASS` por ausencia de error visible.
+
+#### 12. Autenticidad, contratos y datos intercambiados
+
+La disponibilidad de una credencial no certifica la integración completa.
+
+Cuando el contrato lo exija, el gate deberá confirmar que existen las precondiciones para ejecutar y evidenciar:
+
+- firma, MAC, origen, timestamp y protección contra replay;
+- `external_event_id`, `receipt_id` o identidad técnica estable;
+- payload original protegido o evidencia fuente controlada;
+- versión del contrato y transformación;
+- mapeo entre identificadores externos y canónicos;
+- idempotencia y deduplicación;
+- rate limit, retry, backoff y tratamiento de `Retry-After`;
+- cuarentena o dead-letter cuando corresponda;
+- conciliación y resultado desconocido;
+- separación entre ACK técnico y efecto empresarial.
+
+El gate no reimplementa esas políticas. Comprueba que el binding que entrará al piloto referencia las versiones y controles ya aprobados y que la prueba posterior puede ejecutarlos en el ambiente objetivo.
+
+#### 13. Reglas de decisión
+
+##### 13.1. Resultado de `INTEGRATION_BINDING`
+
+| Resultado   | Condición                                                                                                                                                                                                                                                 |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PASS`      | El conjunto esperado es inequívoco; sistema, contrato, versión, principal, ambiente, endpoint/canal y estrategia coinciden con fuentes autoritativas; la prueba controlada aplicable demuestra que la frontera técnica está utilizable y correlacionable. |
+| `FAIL`      | Existe evidencia suficiente de ambiente incorrecto, endpoint/canal distinto, contrato incompatible, principal incorrecto, proveedor no autorizado, binding residual activo, autenticidad incumplida o integración distinta de la aprobada.                |
+| `BLOQUEADO` | No puede determinarse el binding esperado u observado, falta identidad física, no existe acceso autorizado a la metadata necesaria, el proveedor/binding sigue no acreditado o la prueba requerida no puede realizarse de forma segura y autorizada.      |
+| `NO_APLICA` | El expediente aprobado demuestra que el paquete no requiere esa integración para el alcance evaluado.                                                                                                                                                     |
+
+##### 13.2. Resultado de `CREDENTIAL_SURFACE`
+
+| Resultado   | Condición                                                                                                                                                                                                                                                                                                   |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PASS`      | La clase es correcta, la referencia resuelve al binding esperado, ambiente, principal, mecanismo, alcance, custodia y lifecycle son coherentes, no existe compartición prohibida y la usabilidad puede demostrarse sin revelar el material.                                                                 |
+| `FAIL`      | Existe evidencia suficiente de credencial ausente cuando es obligatoria, expirada, revocada, de otro ambiente, alcance excesivo o insuficiente, custodia incompatible, clasificación errónea, secreto expuesto, material compartido, `service_role` entregada a tercero o restricción pública insuficiente. |
+| `BLOQUEADO` | La superficie esperada, referencia, material, custodia, lifecycle, aislamiento o restricciones del proveedor no pueden determinarse con evidencia autorizada y reproducible.                                                                                                                                |
+| `NO_APLICA` | La fuente canónica demuestra `NO_SECRET_APPLICABLE` o que esa frontera no requiere la superficie evaluada.                                                                                                                                                                                                  |
+
+#### 14. Resultado agregado por integración y por paquete
+
+##### 14.1. Por integración
+
+1. Toda integración requerida deberá aparecer exactamente una vez como identidad principal en `required_integration_set`.
+2. Todas sus superficies de credencial deberán estar enumeradas sin duplicar el mismo material como si fueran bindings independientes.
+3. Si `INTEGRATION_BINDING` obtiene `FAIL`, la integración obtiene `FAIL`.
+4. Si alguna superficie obligatoria obtiene `FAIL`, la integración obtiene `FAIL`.
+5. Si no existe `FAIL` pero algún plano o superficie obtiene `BLOQUEADO`, la integración obtiene `BLOQUEADO`.
+6. La integración obtiene `PASS` únicamente cuando el binding y todas las superficies aplicables obtienen `PASS` y todo `NO_APLICA` está sustentado.
+7. Una credencial válida no compensa un binding incorrecto; un binding correcto no compensa una credencial inválida.
+
+##### 14.2. Por paquete
+
+1. El conjunto esperado se deriva del expediente antes de consultar el ambiente.
+2. Si falta una integración obligatoria cuyo requerimiento está demostrado, el paquete obtiene `FAIL`.
+3. Si no puede determinarse el universo esperado, el paquete obtiene `BLOQUEADO`.
+4. Si cualquier integración obtiene `FAIL`, `READY-GATE-006::<package_id>` obtiene `FAIL`.
+5. Si no existe `FAIL` pero alguna integración obtiene `BLOQUEADO`, el paquete obtiene `BLOQUEADO`.
+6. El paquete obtiene `PASS` solo cuando todas las integraciones requeridas obtienen `PASS`.
+7. Un paquete sin integraciones para el alcance evaluado podrá obtener `NO_APLICA` únicamente cuando el expediente lo demuestre explícitamente.
+8. Una muestra parcial de integraciones, ambientes o credenciales nunca se redondea a `PASS`.
+
+#### 15. Evidencia aceptable
+
+La ejecución futura podrá utilizar, según la integración y sin revelar secretos:
+
+- manifiestos versionados de integración, contratos, schema versions y bindings;
+- metadata autoritativa de endpoint, webhook, client, aplicación, tenant, proyecto o canal;
+- identidad de principal técnico y su relación con el binding;
+- referencias de secret manager, vault o custodia equivalente sin valor material;
+- identificadores no sensibles emitidos por el proveedor, como client ID, key ID, serial o fingerprint de certificado público cuando corresponda;
+- metadata de expiración, activación, revocación y rotación;
+- configuración de restricciones de una `PUBLIC_CREDENTIAL_RESTRICTED`;
+- consultas o exportes read-only de configuración con ambiente y origen identificables;
+- pruebas contractuales, de integración o smoke controladas definidas por `DELIV-PKG-016`;
+- evidencia de firma/autenticidad, idempotencia, receipt, correlación o reconciliación cuando el contrato lo requiera;
+- resultados de validadores canónicos de la taxonomía y de contratos de integración;
+- referencias a evidencias del proveedor que permitan repetir la comprobación.
+
+Toda evidencia deberá identificar como mínimo paquete, ambiente, binding o integración, fecha u origen verificable, método, resultado y referencia durable.
+
+No deberá registrar valores de secretos, private keys, passwords, bearer tokens, service-role keys, refresh tokens, firmas completas, códigos de recuperación ni payloads sensibles completos cuando una referencia protegida sea suficiente.
+
+#### 16. Evidencia insuficiente por sí sola
+
+No constituye prueba suficiente de readiness:
+
+- que exista una variable de entorno con el nombre esperado;
+- que un secret esté enmascarado en una interfaz;
+- que dos variables tengan nombres distintos;
+- que exista un endpoint o webhook registrado;
+- que DNS resuelva o un puerto abra;
+- que un health check devuelva verde;
+- que una petición genérica devuelva `200`;
+- que un proveedor muestre la cuenta como activa;
+- que una credencial no esté expirada sin comprobar binding, ambiente y alcance;
+- que un dashboard muestre tráfico;
+- que un SDK esté instalado;
+- que una API key visible en cliente sea tratada como secreta sin comprobar las restricciones que realmente la protegen;
+- que dos `ExternalCredentialId` apunten a referencias distintas sin demostrar aislamiento del material;
+- un screenshot sin fuente reproducible;
+- un correo o mensaje del proveedor afirmando que “está listo” sin metadata correlacionable;
+- un resultado de development o staging para justificar production;
+- una prueba local para justificar el ambiente objetivo;
+- la aprobación documental de `INT-EXT-*`, `INT-APP-*` o `DELIV-PKG-*` sin evidencia del estado materializado;
+- la existencia de un ACK técnico como sustituto del efecto empresarial.
+
+#### 17. Casos especiales
+
+##### 17.1. Integración externa documentada pero sin binding acreditado
+
+Si el paquete depende de una identidad marcada `DOCUMENTADO_SIN_BINDING_ACREDITADO` o `PROVEEDOR_NO_ACREDITADO`, el resultado es `BLOQUEADO` hasta que la tarea propietaria materialice la identidad técnica necesaria. El gate no selecciona proveedor ni endpoint por conveniencia.
+
+##### 17.2. Credenciales publicables
+
+Para Sentry, Google Maps u otra superficie que el canon clasifique como publicable, readiness no depende de ocultar el valor. Depende de que la clase sea correcta y las restricciones de binding, ambiente, aplicación, dominio, bundle, APIs o cuota sean verificables. Una contraparte privada asociada conserva su propio binding y lifecycle.
+
+##### 17.3. OAuth o credenciales dinámicas
+
+El access token efímero no se trata automáticamente como identidad estable del binding. El expediente deberá conservar client/principal, issuer, audience, scopes, mecanismo de renovación y referencia de la credencial raíz o sesión técnica que corresponda, sin registrar tokens reutilizables.
+
+##### 17.4. Certificados y claves asimétricas
+
+Un certificado público, serial, key ID o fingerprint público puede servir como evidencia de identidad. La clave privada asociada permanece material secreto y no forma parte del expediente. Validez, cadena, ambiente y binding deberán ser coherentes con el contrato.
+
+##### 17.5. Webhooks inbound
+
+Un webhook registrado no obtiene `PASS` por existir. Deberá poder demostrar endpoint correcto, ambiente, contrato, autenticidad, replay protection cuando aplique, identidad externa, correlación y tratamiento idempotente previsto.
+
+##### 17.6. Supabase como sistema externo
+
+Cuando el binding use Supabase, `READY-GATE-006` conserva la separación entre `anon`/public configuration, principals, service-role y demás superficies aprobadas. `service_role` nunca se entrega a un proveedor externo ni cliente. Las migraciones y cambios de Supabase pertenecen a `vento-shell` y su aplicación se evalúa en `READY-GATE-002`; este gate solo comprueba que el binding y las credenciales que el paquete requiere están correctamente configurados y segregados.
+
+##### 17.7. AURA y otras dependencias diferidas
+
+Una integración definida pero diferida no se presenta como operativa. Cuando el paquete dependa de una superficie cuyo repositorio, binding o autorización permanezca bloqueado por su línea canónica, el resultado será `BLOQUEADO` hasta que la puerta propietaria se cierre.
+
+##### 17.8. Proveedor temporalmente indisponible
+
+La indisponibilidad temporal durante la ejecución no se convierte automáticamente en `FAIL` de configuración si el estado esperado, credenciales y binding son verificables y el contrato de contingencia lo clasifica de otra forma. Si la prueba necesaria no puede demostrar readiness dentro de la ventana exigida, el resultado permanece `BLOQUEADO`; la contingencia operativa pertenece a `READY-GATE-008` y los riesgos aceptados a `READY-GATE-014`.
+
+#### 18. Separación entre planificación y ejecución
+
+`READY-GATE-006` deja definido el contrato que `SHELL-CI-021::<package_id>` deberá ejecutar después de que `SHELL-CI-020::<package_id>` y las tareas de implementación aplicables hayan materializado bindings, principals, configuración y credenciales.
+
+La secuencia permanece:
+
+`E5-GATE-008::<package_id> -> SHELL-CI-020::<package_id> -> BLOQUE R aplicable -> SHELL-CI-021::<package_id> -> SHELL-CI-022::<package_id>`
+
+Durante `SHELL-CI-021::<package_id>` se observará el ambiente real, se ejecutarán las comprobaciones autorizadas y se emitirá el resultado operativo del gate. Esta tarea no afirma que una integración esté activa, que una credencial sea válida, que un proveedor responda ni que un paquete haya superado readiness.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `READY-GATE-006` define el criterio documental de evidencia para comprobar contratos, ambientes, autenticidad, idempotencia, trazabilidad, manejo seguro de secretos y segregación de credenciales que ya están protegidos por requisitos canónicos existentes. No introduce una nueva integración, credencial, regla empresarial, mecanismo de autenticación, permiso, contrato ejecutable ni comportamiento adicional; operacionaliza obligaciones existentes para su verificación futura por paquete.
+
+**Requisitos existentes consumidos:** `TREQ-INTEGRATION-001`, `TREQ-INTEGRATION-003`, `TREQ-INTEGRATION-004`, `TREQ-INTEGRATION-049`, `TREQ-INTEGRATION-051`, `TREQ-INTEGRATION-213`, `TREQ-INTEGRATION-218` y `TREQ-SHELL-009`, además de los `TREQ-*` específicos que `DELIV-PKG-016` vincule al `package_id` evaluado.
+
+**Requisitos TREQ-* creados:** 0
+**Requisitos TREQ-* modificados:** 0
+**Fragmentos 04A afectados:** 0
+
+#### 19. Criterios de aceptación documental
+
+`READY-GATE-006` queda documentalmente completo cuando:
+
+1. define cómo derivar `required_integration_set` desde el expediente aprobado antes de observar configuración del ambiente;
+2. preserva las 21 identidades `EXT-SYS-001..021` como baseline externo sin tratarlas como integraciones obligatorias para todos los paquetes;
+3. separa `INTEGRATION_BINDING` y `CREDENTIAL_SURFACE` como planos independientes;
+4. exige contrato, versión, principal técnico, ambiente, endpoint/canal, estrategia y evidencia reproducible para cada integración requerida;
+5. define una prueba controlada de preparación sin equiparar health check, `200`, ACK o telemetría con resultado empresarial;
+6. conserva las ocho clases de `VENTO-EXTERNAL-SECRET-CUSTODY-CONTRACT-001` y evita reclasificaciones genéricas;
+7. establece que `ExternalCredentialId` es referencia y no material secreto;
+8. exige separación de credenciales por ambiente, binding, principal, dirección y privilegio cuando aplique;
+9. prohíbe compartir el mismo material entre bindings independientes y permite únicamente el solapamiento controlado de rotación dentro del mismo binding;
+10. impide entregar `service_role` a proveedores externos o clientes;
+11. exige lifecycle verificable de vigencia, expiración, rotación y revocación cuando corresponda;
+12. protege credenciales publicables mediante restricciones reales en vez de fingir que son secretos ocultables;
+13. conserva autenticidad, idempotencia, mapeo, retry, cuarentena, conciliación y auditoría como contratos heredados que el binding debe poder ejecutar cuando apliquen;
+14. define `PASS`, `FAIL`, `BLOQUEADO` y `NO_APLICA` por integración, superficie y paquete sin `PASS` parcial;
+15. diferencia evidencia reproducible de señales insuficientes como variables presentes, secretos enmascarados, screenshots o endpoint alcanzable;
+16. mantiene hardware/red en `READY-GATE-007`, observabilidad en `READY-GATE-011`, rollback en `READY-GATE-012` y decisión final de piloto en `READY-GATE-015`;
+17. no crea, revela, rota, revoca ni mueve credenciales; no modifica proveedores, endpoints, proyectos, configuración remota, código, DDL/DML, migraciones ni Supabase;
+18. no crea ni modifica requisitos `TREQ-*` ni fragmentos del registro 04A;
+19. la ejecución real y la captura de evidencia permanecen en `SHELL-CI-021::<package_id>`;
+20. `READY-GATE-007` permanece reservada y no se desarrolla ni modifica.
+
+#### 20. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+READY-GATE-005 — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos
+
+##### TAREA ACTUAL APROBADA
+READY-GATE-006 — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente
+
+##### SIGUIENTE TAREA RESERVADA
+READY-GATE-007 — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras
+
+
 ### [ ] READY-GATE-007 — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras
 ### [ ] READY-GATE-008 — Definir criterio y evidencia para confirmar procedimientos operativos y contingencias
 ### [ ] READY-GATE-009 — Definir criterio y evidencia para confirmar capacitación y material de apoyo
