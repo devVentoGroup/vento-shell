@@ -7891,7 +7891,897 @@ SIGUIENTE TAREA RESERVADA
 `READY-GATE-015 — Definir autoridad y criterio para aprobar la entrada al piloto operativo`
 
 
-### [ ] READY-GATE-015 — Definir autoridad y criterio para aprobar la entrada al piloto operativo
+### ✅ READY-GATE-015 — Definir autoridad y criterio para aprobar la entrada al piloto operativo
+
+**Estado:** APROBADA  
+**Tarea anterior:** `READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión` — APROBADA  
+**Tarea siguiente:** `CUTOVER-OPS-001 — Definir criterio para seleccionar fecha, ventana y responsables del cutover` — RESERVADA  
+**Tipo de tarea:** documental — definición normativa y materialización del criterio final de readiness por paquete, de la autoridad responsable de decidir la entrada al piloto y del expediente mínimo que deberá demostrar que las puertas `READY-GATE-001..014` fueron resueltas de forma íntegra, coherente, vigente y atribuible antes de autorizar exposición; sin ejecutar cutover, piloto, despliegues, migraciones, DDL/DML, backfills, cambios físicos, configuración productiva ni operaciones sobre Supabase.  
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+
+---
+
+#### 1. Resultado sustantivo
+
+`READY-GATE-015` cierra documentalmente la puerta de readiness operativo mediante cuatro piezas obligatorias:
+
+1. `required_entry_gate_set::<package_id>` — conjunto fijo de las catorce puertas `READY-GATE-001..014` que deben quedar reconciliadas para el mismo paquete, candidato, ambiente y alcance;
+2. `pilot_entry_authority::<package_id>` — resolución de la autoridad final de entrada utilizando el `Responsable de decisión` ya asignado al paquete por los contratos E5, sin crear un rol nuevo ni reasignar propiedad;
+3. `pilot_entry_decision::<package_id>` — decisión final determinista `APROBAR_ENTRADA`, `DENEGAR_ENTRADA`, `BLOQUEAR_DECISION` o `NO_APLICA`;
+4. `pilot_entry_decision_manifest::<package_id>` — expediente futuro que deberá producir `SHELL-CI-021::<package_id>` para demostrar la reconciliación de puertas, autoridad, vigencia, integridad de evidencia y decisión final.
+
+La tarea no afirma que un paquete real esté listo para piloto. Define la regla final que deberá ejecutar `SHELL-CI-021::<package_id>` después de la implementación aplicable.
+
+---
+
+#### 2. Propósito
+
+Definir quién puede autorizar la entrada de un paquete al piloto operativo y bajo qué condiciones exactas esa autorización es válida.
+
+La puerta deberá impedir que la entrada al piloto dependa de:
+
+- una percepción general de readiness;
+- una reunión sin decisión trazable;
+- una mayoría informal de señales favorables;
+- un promedio entre puertas;
+- un riesgo aceptado utilizado como excepción a un fallo;
+- una evidencia perteneciente a otro candidato, ambiente o alcance;
+- una aprobación del ejecutor técnico sin autoridad de decisión;
+- una decisión emitida antes de completar las puertas obligatorias;
+- una decisión conservada después de que un cambio material haya vuelto obsoleta la evidencia.
+
+La salida deberá ser reproducible: otro revisor autorizado debe poder reconstruir qué puertas se evaluaron, con qué evidencia, quién tenía autoridad, qué decisión se emitió y por qué.
+
+---
+
+#### 3. Invariantes de decisión
+
+Se adoptan las siguientes separaciones obligatorias:
+
+```text
+EJECUTAR EL CHECKLIST
+≠ TENER AUTORIDAD PARA APROBAR
+
+PASS DE UNA PUERTA
+≠ APROBACIÓN FINAL DE ENTRADA
+
+RIESGO ACEPTADO
+≠ EXCEPCIÓN A UN FAIL O BLOQUEADO
+
+EVIDENCIA COMPLETA
+≠ DECISIÓN EMITIDA
+
+DECISIÓN APROBADA
+≠ EJECUCIÓN DEL CUTOVER
+
+APROBAR ENTRADA
+≠ AMPLIAR ALCANCE
+
+APROBAR ENTRADA
+≠ APROBAR SALIDA DEL PILOTO
+```
+
+Reglas:
+
+1. `SHELL-CI-021` ejecuta y consolida el checklist; la ejecución técnica no concede autoridad empresarial por sí sola;
+2. la autoridad final proviene del responsable de decisión ya materializado para el paquete;
+3. ninguna autoridad final puede sobreescribir un `FAIL` o `BLOQUEADO` de una puerta obligatoria;
+4. un riesgo aceptado conforme a `READY-GATE-014` conserva el riesgo, pero no cambia el resultado de otra puerta;
+5. la decisión se limita al paquete, candidato, ambiente, alcance y ventana evaluados;
+6. una aprobación no se hereda a otro paquete, release, ambiente, sede, cohorte o ampliación;
+7. un cambio material posterior invalida la reutilización automática de la decisión;
+8. `CUTOVER-OPS-001` y tareas posteriores gobiernan la planificación y ejecución del cutover, no esta puerta.
+
+---
+
+#### 4. Entradas canónicas obligatorias
+
+La evaluación futura de `READY-GATE-015::<package_id>` deberá consumir:
+
+1. identidad exacta de `package_id`;
+2. candidato, versión, revisión o artefacto que será expuesto;
+3. ambiente objetivo;
+4. alcance aprobado del piloto;
+5. `Responsable de decisión` del paquete ya definido por los contratos E5;
+6. resultados y evidencias de `READY-GATE-001::<package_id>` a `READY-GATE-014::<package_id>`;
+7. criterios de aceptación del paquete;
+8. alcance, cohortes y salvaguardas del piloto;
+9. evidencia de monitoreo, soporte, recuperación y línea base cuando sus puertas sean aplicables;
+10. `risk_readiness_manifest::<package_id>` de `READY-GATE-014`;
+11. cualquier condición de suspensión armada que deba estar disponible al comenzar la exposición;
+12. estado de los requisitos, dependencias y controles que las puertas previas hayan declarado como necesarios para readiness.
+
+La puerta no reabre ni redefine la semántica de las entradas. Las consume y reconcilia.
+
+---
+
+#### 5. Universo fijo `required_entry_gate_set::<package_id>`
+
+El conjunto esperado contiene exactamente catorce identidades:
+
+| Orden | `gate_id`        | Plano de decisión consumido                       |
+| ----: | ---------------- | ------------------------------------------------- |
+|     1 | `READY-GATE-001` | código desplegado en entorno objetivo             |
+|     2 | `READY-GATE-002` | migraciones aplicadas y datos validados           |
+|     3 | `READY-GATE-003` | permisos, matrices y dispositivos configurados    |
+|     4 | `READY-GATE-004` | usuarios, roles, sedes, áreas y turnos requeridos |
+|     5 | `READY-GATE-005` | catálogos y datos maestros mínimos                |
+|     6 | `READY-GATE-006` | integraciones y credenciales del ambiente         |
+|     7 | `READY-GATE-007` | hardware, red, escáneres e impresoras             |
+|     8 | `READY-GATE-008` | procedimientos operativos y contingencias         |
+|     9 | `READY-GATE-009` | capacitación y material de apoyo                  |
+|    10 | `READY-GATE-010` | mesa de soporte, responsables y escalamiento      |
+|    11 | `READY-GATE-011` | monitoreo, métricas y alertas                     |
+|    12 | `READY-GATE-012` | respaldo y rollback probados                      |
+|    13 | `READY-GATE-013` | línea base previa al piloto                       |
+|    14 | `READY-GATE-014` | riesgos aceptados y condiciones de suspensión     |
+
+Reglas:
+
+1. las catorce identidades se materializan exactamente una vez por paquete;
+2. una puerta no se elimina porque resulte `FAIL`;
+3. una puerta no se elimina porque resulte `BLOQUEADO`;
+4. una puerta no se elimina por presión de calendario;
+5. `NO_APLICA` solo se conserva cuando la propia puerta lo resolvió de forma válida y trazable;
+6. `READY-GATE-015` no reinterpreta `NO_APLICA`;
+7. la evidencia deberá corresponder al mismo contexto de decisión o demostrar compatibilidad explícita;
+8. una puerta faltante impide aprobar entrada.
+
+---
+
+#### 6. Registro mínimo por puerta
+
+Cada elemento de `required_entry_gate_set::<package_id>` deberá conservar:
+
+| Campo                        | Regla                                                       |
+| ---------------------------- | ----------------------------------------------------------- |
+| `package_id`                 | paquete exacto                                              |
+| `gate_id`                    | una de las catorce identidades permitidas                   |
+| `candidate_ref`              | candidato, versión o revisión evaluada                      |
+| `environment_ref`            | ambiente exacto                                             |
+| `scope_ref`                  | alcance, sede, cohorte o población material cuando aplique  |
+| `gate_result`                | `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA`                   |
+| `gate_evaluated_at`          | momento de la evaluación                                    |
+| `gate_evidence_ref`          | evidencia reproducible                                      |
+| `gate_manifest_ref`          | manifiesto específico cuando la puerta lo produzca          |
+| `applicability_evidence_ref` | evidencia de `NO_APLICA`, cuando corresponda                |
+| `freshness_state`            | `VIGENTE` u `OBSOLETO` para esta decisión                   |
+| `consistency_state`          | `CONSISTENTE` o `INCONSISTENTE` respecto del contexto final |
+| `blocking_reason`            | motivo cuando no pueda consumirse como apta                 |
+| `reevaluation_ref`           | puerta o tarea que debe volver a ejecutarse cuando aplique  |
+
+No se sustituirá evidencia de una puerta por una declaración de otra.
+
+---
+
+#### 7. Autoridad canónica de entrada
+
+`pilot_entry_authority::<package_id>` se resuelve a partir del `Responsable de decisión` ya asignado al paquete por los contratos E5 y utilizado por sus criterios de aceptación.
+
+La autoridad deberá conservar su identidad canónica `OWN-*` cuando esa sea la identidad vigente del expediente.
+
+`READY-GATE-015`:
+
+- no crea un nuevo rol;
+- no cambia el propietario del paquete;
+- no convierte a quien ejecuta CI en aprobador;
+- no convierte a soporte, seguridad, datos, producto u operaciones en aprobador universal por inferencia;
+- no reemplaza autoridades especializadas que hayan sido necesarias para aceptar riesgos, autorizaciones o controles previos.
+
+La autoridad final decide únicamente si el expediente de readiness permite entrar al piloto dentro del alcance exacto evaluado.
+
+---
+
+#### 8. Evidencia mínima de autoridad
+
+Para que `pilot_entry_authority::<package_id>` sea consumible deberán poder resolverse:
+
+- `package_id`;
+- `decision_owner_ref`;
+- fuente canónica que asigna ese responsable al paquete;
+- alcance de decisión;
+- candidato;
+- ambiente;
+- piloto o cohorte autorizable;
+- vigencia de la asignación cuando exista una restricción temporal;
+- evidencia que correlacione al actor que emite la decisión con la autoridad del expediente.
+
+Si la identidad `OWN-*` está definida pero no puede correlacionarse con un actor autorizado para emitir la decisión en el momento de ejecución, el resultado será `BLOQUEADO`.
+
+No se fabricará una identidad humana para cerrar esa ausencia.
+
+---
+
+#### 9. Separación entre autoridades
+
+La decisión final no sustituye otras decisiones propietarias:
+
+1. la autoridad de riesgo de `READY-GATE-014` acepta exclusivamente riesgo residual dentro de su ámbito;
+2. la autoridad de autorización o seguridad continúa gobernando accesos y permisos;
+3. los propietarios de datos continúan gobernando integridad, datos y migraciones;
+4. soporte continúa gobernando escalamiento;
+5. recuperación continúa gobernando restauración y rollback;
+6. el `Responsable de decisión` del paquete integra esos resultados para decidir entrada, pero no puede contradecirlos.
+
+Una firma final no sana una evidencia inválida.
+
+---
+
+#### 10. Resultado permitido por cada puerta
+
+Para `READY-GATE-015`:
+
+| Resultado previo | Efecto sobre la entrada                                                                   |
+| ---------------- | ----------------------------------------------------------------------------------------- |
+| `PASS`           | apto para ser consumido si sigue vigente y consistente                                    |
+| `NO_APLICA`      | apto únicamente si la puerta dejó justificación válida y sigue correspondiendo al alcance |
+| `FAIL`           | impide aprobar entrada                                                                    |
+| `BLOQUEADO`      | impide aprobar entrada                                                                    |
+
+Una puerta `PASS` que quedó `OBSOLETO` para el candidato, ambiente o alcance final deja de ser apta hasta ser reevaluada.
+
+Una puerta `PASS` con contexto `INCONSISTENTE` no puede contarse como satisfecha.
+
+---
+
+#### 11. Regla de vigencia de evidencia
+
+Una evidencia de readiness solo puede consumirse si continúa representando el estado que será expuesto.
+
+Deberá reevaluarse la puerta afectada cuando, después de su resultado, ocurra un cambio material en:
+
+- código o artefacto desplegado;
+- migración o estructura de datos;
+- datos cuya validez sea parte del gate;
+- permisos, matrices, roles o usuarios;
+- sede, área, turno o población;
+- catálogos o datos maestros;
+- integración, binding o credencial;
+- hardware, red o periféricos;
+- procedimiento o contingencia;
+- capacitación o material requerido;
+- mesa de soporte o escalamiento;
+- monitoreo, métrica, alerta o fuente;
+- respaldo, restauración o rollback;
+- baseline, corte o comparabilidad;
+- riesgos aceptados, vigencia o condiciones de suspensión;
+- candidato, ambiente o alcance del piloto.
+
+La reevaluación se limita a las puertas afectadas cuando pueda demostrarse que las demás conservan vigencia.
+
+---
+
+#### 12. Coherencia de candidato, ambiente y alcance
+
+Para aprobar entrada, todas las puertas aplicables deberán poder correlacionarse con:
+
+```text
+MISMO package_id
++ MISMO candidato material
++ MISMO ambiente objetivo
++ MISMO alcance autorizado
++ MISMA instancia de decisión
+```
+
+Cuando una puerta sea deliberadamente independiente de una dimensión concreta, esa independencia deberá provenir de su contrato y no de una inferencia de `READY-GATE-015`.
+
+Ejemplos de inconsistencia que impiden usar un resultado como vigente:
+
+- código verificado para una revisión distinta;
+- migración validada en otro ambiente;
+- usuarios configurados para otra sede;
+- integración probada con otra credencial o binding material;
+- hardware validado en otra estación cuando la equivalencia no esté demostrada;
+- baseline de otra cohorte;
+- riesgo aceptado para un alcance menor;
+- condiciones de suspensión que no cubren la población que se pretende exponer.
+
+---
+
+#### 13. Reconciliación cuantitativa de las catorce puertas
+
+Antes de emitir decisión deberá cumplirse:
+
+```text
+TOTAL_GATES_ESPERADOS = 14
+TOTAL_GATES_MATERIALIZADOS = 14
+```
+
+Y:
+
+```text
+14
+= TOTAL_PASS
++ TOTAL_FAIL
++ TOTAL_BLOQUEADO
++ TOTAL_NO_APLICA
+```
+
+Además:
+
+```text
+GATES_FALTANTES = 0
+GATES_DUPLICADOS = 0
+GATES_NO_RESOLUBLES = 0
+GATES_OBSOLETOS = 0
+GATES_INCONSISTENTES = 0
+```
+
+Ningún agregado favorable compensa una puerta faltante, obsoleta, inconsistente, `FAIL` o `BLOQUEADO`.
+
+---
+
+#### 14. Condición previa de `READY-GATE-014`
+
+Cuando `READY-GATE-014::<package_id>` resulte `PASS`, `READY-GATE-015` deberá comprobar además:
+
+- que el universo de riesgo continúa reconciliado;
+- que las aceptaciones utilizadas siguen `VIGENTE`;
+- que no apareció un cambio material que obligue a revalidarlas;
+- que las condiciones de suspensión requeridas continúan armadas;
+- que ninguna condición crítica requerida está `NO_EVALUABLE`;
+- que no existe una aceptación cuyo alcance sea menor al piloto propuesto.
+
+`READY-GATE-015` no vuelve a aceptar riesgos. Solo valida que el resultado consumido siga siendo apto.
+
+---
+
+#### 15. Condición previa de línea base
+
+Cuando el piloto requiera comparación contra línea base, el resultado consumido de `READY-GATE-013` deberá conservar:
+
+- candidato compatible;
+- ambiente;
+- alcance;
+- cohorte;
+- corte previo a exposición;
+- evidencia;
+- comparabilidad vigente.
+
+Si el alcance de entrada se amplía más allá de la línea base válida, la aprobación queda `BLOQUEADO` hasta resolver la cobertura.
+
+---
+
+#### 16. Regla de no exposición previa
+
+La decisión final deberá emitirse antes de la primera exposición que dependa de ella.
+
+Si existe evidencia suficiente de que el candidato ya fue expuesto al alcance que requería autorización sin una decisión válida de entrada:
+
+- la puerta resulta `FAIL`;
+- el hecho deberá conservarse como incidente, desviación o hallazgo conforme al contrato propietario;
+- una aprobación posterior no podrá retrotraer la autorización.
+
+No se permite reconstruir una aprobación después de la exposición.
+
+---
+
+#### 17. Estados de decisión final
+
+`pilot_entry_decision::<package_id>` utilizará exactamente:
+
+| Decisión            | Semántica                                                                                                                                                                           |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `APROBAR_ENTRADA`   | las catorce puertas están reconciliadas, no existe `FAIL` ni `BLOQUEADO`, todo `NO_APLICA` es válido, la evidencia está vigente y consistente, y la autoridad final está demostrada |
+| `DENEGAR_ENTRADA`   | existe evidencia suficiente de incumplimiento material que impide la entrada                                                                                                        |
+| `BLOQUEAR_DECISION` | todavía falta evidencia, autoridad, vigencia, coherencia o resolución suficiente para aprobar o denegar de manera fundada                                                           |
+| `NO_APLICA`         | el expediente aprobado demuestra que esa instancia no debe entrar a piloto y que la puerta final de entrada no corresponde a su cierre                                              |
+
+`NO_APLICA` no se usa para un paquete destinado a piloto que todavía no está listo.
+
+---
+
+#### 18. Regla determinista de decisión
+
+La decisión se calcula en este orden:
+
+```text
+SI EXISTE CUALQUIER GATE_RESULT = FAIL
+→ DENEGAR_ENTRADA
+
+SI NO EXISTE FAIL
+Y EXISTE CUALQUIER GATE_RESULT = BLOQUEADO
+→ BLOQUEAR_DECISION
+
+SI EXISTE GATE FALTANTE, DUPLICADO, NO RESOLUBLE,
+OBSOLETO O INCONSISTENTE
+→ BLOQUEAR_DECISION
+
+SI LA AUTORIDAD FINAL NO ES RESOLUBLE
+→ BLOQUEAR_DECISION
+
+SI LA AUTORIDAD DEMOSTRADAMENTE NO ESTÁ AUTORIZADA
+Y AUN ASÍ SE PRESENTA UNA APROBACIÓN COMO VÁLIDA
+→ DENEGAR_ENTRADA
+
+SI TODAS LAS PUERTAS APLICABLES SON PASS,
+TODO NO_APLICA ES VÁLIDO,
+LA RECONCILIACIÓN ES EXACTA,
+LA EVIDENCIA ES VIGENTE Y CONSISTENTE,
+READY-GATE-014 SIGUE APTO,
+Y LA AUTORIDAD FINAL ES VÁLIDA
+→ APROBAR_ENTRADA
+```
+
+No existe estado intermedio equivalente a “aprobar con pendientes”.
+
+Los riesgos residuales admitidos ya deben estar formalmente aceptados en `READY-GATE-014`.
+
+---
+
+#### 19. Condiciones obligatorias de `APROBAR_ENTRADA`
+
+La decisión solo puede emitirse si se cumplen simultáneamente:
+
+1. `TOTAL_GATES_ESPERADOS = 14`;
+2. `TOTAL_GATES_MATERIALIZADOS = 14`;
+3. `TOTAL_FAIL = 0`;
+4. `TOTAL_BLOQUEADO = 0`;
+5. `GATES_FALTANTES = 0`;
+6. `GATES_DUPLICADOS = 0`;
+7. `GATES_NO_RESOLUBLES = 0`;
+8. `GATES_OBSOLETOS = 0`;
+9. `GATES_INCONSISTENTES = 0`;
+10. todo `NO_APLICA` está respaldado por la puerta propietaria;
+11. candidato, ambiente y alcance son coherentes;
+12. el alcance aprobado no excede la cobertura de las evidencias;
+13. las aceptaciones de riesgo requeridas están vigentes;
+14. las condiciones de suspensión requeridas están armadas;
+15. la línea base requerida sigue siendo comparable;
+16. la autoridad final está resuelta;
+17. quien emite la decisión corresponde a esa autoridad;
+18. la decisión ocurre antes de la exposición;
+19. existe evidencia durable de la decisión;
+20. no ocurrió un cambio material entre la última reevaluación necesaria y la decisión.
+
+---
+
+#### 20. Condiciones de `DENEGAR_ENTRADA`
+
+Producen `DENEGAR_ENTRADA`, entre otras condiciones demostradas:
+
+1. cualquier puerta `READY-GATE-001..014` en `FAIL`;
+2. intento documentado de usar aceptación de riesgo para sobreescribir un `FAIL`;
+3. intento documentado de aprobar con una puerta obligatoria incumplida;
+4. aprobación emitida por un actor demostrablemente no autorizado presentada como válida;
+5. exposición previa sin autorización cuando la autorización era obligatoria;
+6. evidencia deliberadamente atribuida a otro candidato o ambiente;
+7. reducción deliberada del alcance de verificación para ocultar un incumplimiento mientras se mantiene mayor alcance de exposición;
+8. `NO_APLICA` falsamente atribuido para excluir una puerta aplicable;
+9. decisión manipulada después de observar resultados del piloto;
+10. evidencia suficiente de que el expediente de decisión fue alterado para aparentar readiness.
+
+La denegación no equivale a rollback ni define la acción correctiva; conserva el motivo y remite a la puerta o tarea propietaria de la corrección.
+
+---
+
+#### 21. Condiciones de `BLOQUEAR_DECISION`
+
+Producen `BLOQUEAR_DECISION`, entre otras:
+
+1. cualquier puerta en `BLOQUEADO`;
+2. puerta faltante;
+3. puerta duplicada;
+4. referencia irresoluble;
+5. evidencia obsoleta;
+6. inconsistencia de candidato;
+7. inconsistencia de ambiente;
+8. inconsistencia de alcance;
+9. autoridad final no resoluble;
+10. correlación entre `OWN-*` y actor de decisión no demostrable;
+11. aceptación de riesgo expirada o pendiente de revalidación;
+12. condición de suspensión obligatoria `NO_EVALUABLE`;
+13. baseline requerida que ya no cubre el alcance;
+14. cambio material pendiente de reevaluación;
+15. evidencia de decisión incompleta;
+16. hora de decisión no demostrable cuando sea necesaria para probar que ocurrió antes de exposición;
+17. dependencia necesaria para determinar readiness temporalmente inaccesible;
+18. cualquier situación en la que todavía no exista evidencia suficiente para decidir sin falsear el expediente.
+
+Todo bloqueo deberá conservar propietario, puerta o tarea responsable y condición verificable de salida.
+
+---
+
+#### 22. Handoff de fallos y bloqueos
+
+`READY-GATE-015` no crea una tarea genérica de corrección.
+
+Para cada impedimento deberá conservar:
+
+- `gate_id` o fuente exacta;
+- resultado;
+- motivo;
+- propietario ya definido por la puerta o paquete;
+- tarea responsable existente;
+- condición de salida;
+- evidencia requerida para reevaluación.
+
+Si el impedimento proviene de `READY-GATE-001..014`, la resolución pertenece a la puerta o dependencia propietaria que produjo el resultado.
+
+No se reasignan propietarios para acelerar la entrada.
+
+---
+
+#### 23. Prohibición de aprobación parcial
+
+No se permite:
+
+- aprobar una sede y registrar la decisión como aprobación de todas las sedes;
+- aprobar una cohorte y registrar la decisión como aprobación de toda la población;
+- aprobar un ambiente y reutilizar la decisión en otro;
+- aprobar un candidato y reutilizar la decisión para otro release;
+- aprobar solo las puertas técnicas y omitir las operativas;
+- aprobar solo las puertas operativas y omitir las técnicas;
+- ignorar una puerta porque “no parece relevante” sin `NO_APLICA` válido;
+- condicionar la corrección de un `FAIL` a “resolver durante el piloto”.
+
+Cuando el piloto permita exposición parcial, el `scope_ref` de la decisión deberá representar exactamente ese alcance y no uno mayor.
+
+---
+
+#### 24. Alcance autorizado
+
+Una `APROBAR_ENTRADA` deberá fijar expresamente:
+
+- `package_id`;
+- candidato;
+- ambiente;
+- sedes;
+- áreas;
+- población;
+- cohorte;
+- actores;
+- dispositivos;
+- capacidades;
+- integraciones;
+- ventana o vigencia de la decisión cuando corresponda;
+- cualquier limitación heredada del contrato de piloto.
+
+La ausencia de una dimensión que el paquete no utiliza es válida únicamente cuando el expediente lo demuestra.
+
+La decisión no puede ampliar el alcance definido por el diseño aprobado del piloto.
+
+---
+
+#### 25. Evidencia mínima de decisión
+
+Una aprobación válida deberá conservar:
+
+- `decision_id`;
+- `package_id`;
+- `candidate_ref`;
+- `environment_ref`;
+- `pilot_scope_ref`;
+- `decision_owner_ref`;
+- `decision_actor_ref`;
+- `authority_evidence_ref`;
+- versión de `required_entry_gate_set`;
+- conteos de reconciliación;
+- resultado de cada una de las catorce puertas;
+- evidencia de vigencia;
+- referencias de riesgo y suspensión;
+- `decision`;
+- motivo o síntesis de decisión;
+- `decided_at`;
+- evidencia durable de la aprobación;
+- referencia al handoff de cutover cuando posteriormente exista.
+
+No se exige copiar evidencias completas dentro del manifiesto cuando puedan conservarse mediante referencias íntegras y autorizadas.
+
+---
+
+#### 26. Evidencia aceptable
+
+Podrán participar, cuando correspondan:
+
+- manifiestos emitidos por cada puerta;
+- registros versionados de CI;
+- decisiones firmadas o registradas por actor autorizado;
+- evidencia de correlación de responsable `OWN-*`;
+- referencias a criterios de aceptación;
+- referencias a baseline;
+- referencias a risk readiness;
+- evidencia de despliegue, migración, datos, configuración, soporte, observabilidad y recuperación ya aceptada por sus puertas propietarias;
+- registros de fecha, candidato, ambiente y alcance;
+- evidencia de reevaluación cuando ocurrió un cambio material.
+
+La evidencia debe ser reproducible y atribuible al mismo expediente.
+
+---
+
+#### 27. Evidencia insuficiente por sí sola
+
+No demuestra aprobación válida:
+
+- un mensaje “listo”;
+- un “ok” sin autoridad;
+- una reunión celebrada;
+- un dashboard en verde;
+- una ausencia de alertas;
+- una captura sin trazabilidad;
+- un PR fusionado;
+- CI verde sin resultados de readiness;
+- una lista parcial de puertas;
+- un riesgo aceptado;
+- una firma sin alcance;
+- una aprobación anterior para otro candidato;
+- una decisión sin `decided_at`;
+- una decisión posterior a la exposición presentada como previa;
+- el hecho de que el piloto haya comenzado;
+- una mayoría de puertas favorables;
+- una recomendación técnica del ejecutor sin decisión del responsable autorizado.
+
+---
+
+#### 28. `pilot_entry_decision_manifest::<package_id>`
+
+El manifiesto futuro deberá incluir, como mínimo:
+
+- `package_id`;
+- candidato;
+- ambiente;
+- alcance;
+- versión del conjunto de puertas;
+- `expected_gate_count = 14`;
+- `materialized_gate_count`;
+- `pass_count`;
+- `fail_count`;
+- `blocked_count`;
+- `not_applicable_count`;
+- `missing_gate_count`;
+- `duplicate_gate_count`;
+- `unresolved_gate_count`;
+- `stale_gate_count`;
+- `inconsistent_gate_count`;
+- lista completa de `gate_id`;
+- resultado por puerta;
+- evidencia por puerta;
+- `baseline_manifest_ref` cuando aplique;
+- `risk_readiness_manifest_ref`;
+- autoridad final;
+- actor que decide;
+- evidencia de autoridad;
+- fecha de decisión;
+- estado de exposición al momento de decidir;
+- `pilot_entry_decision`;
+- motivo;
+- bloqueos y condiciones de salida cuando existan;
+- referencia futura de handoff al cutover cuando proceda.
+
+El manifiesto es el expediente mínimo de la decisión; no sustituye las evidencias propietarias de cada puerta.
+
+---
+
+#### 29. Regla de idempotencia documental de la decisión
+
+Para el mismo:
+
+```text
+package_id
++ candidato
++ ambiente
++ scope_ref
++ versión del gate set
+```
+
+una reevaluación con las mismas evidencias no deberá producir decisiones contradictorias.
+
+Si nueva evidencia cambia la decisión:
+
+- deberá crearse una nueva versión o evento de decisión;
+- deberá preservarse la decisión anterior;
+- deberá registrarse la causa del cambio;
+- no se sobrescribirá silenciosamente el historial.
+
+Una decisión anterior denegada o bloqueada puede ser sucedida por una aprobación únicamente después de que los impedimentos estén resueltos y las puertas afectadas se reevaluen.
+
+---
+
+#### 30. Expiración y revocación práctica de la aprobación
+
+La aprobación deja de ser utilizable para iniciar exposición cuando, antes del cutover:
+
+- cambia materialmente el candidato;
+- cambia el ambiente;
+- cambia el alcance;
+- expira una aceptación de riesgo necesaria;
+- una condición de suspensión deja de ser evaluable;
+- se detecta un nuevo `FAIL` o `BLOQUEADO`;
+- una puerta se vuelve obsoleta;
+- una autoridad deja de ser válida;
+- aparece evidencia nueva incompatible con el expediente aprobado.
+
+En ese caso no se “mantiene aprobada por historia”; deberá reevaluarse `READY-GATE-015::<package_id>` con las puertas afectadas actualizadas.
+
+---
+
+#### 31. Relación con `CUTOVER-OPS-001`
+
+Una decisión `APROBAR_ENTRADA` produce un handoff documental elegible hacia la planificación de cutover.
+
+`CUTOVER-OPS-001` seguirá siendo responsable de definir:
+
+- fecha;
+- ventana;
+- responsables del cutover.
+
+`READY-GATE-015` no decide esos valores.
+
+Si la decisión es `DENEGAR_ENTRADA` o `BLOQUEAR_DECISION`, no existe handoff válido de entrada al piloto para esa instancia.
+
+---
+
+#### 32. Relación con `SHELL-CI-021` y `SHELL-CI-022`
+
+`SHELL-CI-021::<package_id>` deberá:
+
+1. ejecutar las comprobaciones de las puertas `READY-GATE-001..015`;
+2. conservar evidencia;
+3. reconciliar los resultados;
+4. resolver la autoridad;
+5. materializar el `pilot_entry_decision_manifest`;
+6. impedir un `APROBAR_ENTRADA` cuando la regla determinista no se cumpla.
+
+`SHELL-CI-022::<package_id>` solo podrá ejecutar cutover y piloto cuando el expediente de readiness aplicable permita la entrada y el plan de cutover correspondiente esté aprobado.
+
+`READY-GATE-015` no ejecuta ninguna de esas tareas físicas.
+
+---
+
+#### 33. Separación con la salida del piloto
+
+La aprobación de entrada responde únicamente:
+
+> ¿Puede comenzar la exposición controlada definida por el piloto?
+
+No responde:
+
+- si el piloto fue exitoso;
+- si debe ampliarse a `FULL`;
+- si puede retirarse el proceso anterior;
+- si el paquete está estabilizado;
+- si puede cerrarse hypercare;
+- si el paquete puede transferirse definitivamente a soporte.
+
+Esas decisiones pertenecen a las tareas posteriores del bloque y al ciclo `SHELL-CI-022..024`.
+
+---
+
+#### 34. Seguridad, privacidad y segregación
+
+El expediente final deberá conservar:
+
+- mínimo acceso necesario;
+- ausencia de secretos en el manifiesto;
+- referencias a evidencia sensible en lugar de duplicarla cuando corresponda;
+- segregación entre ejecución del checklist y autoridad de decisión cuando los contratos así lo requieran;
+- trazabilidad de actor;
+- trazabilidad de tiempo;
+- integridad del expediente.
+
+La autoridad final no obtiene privilegios técnicos adicionales por emitir la decisión.
+
+---
+
+#### 35. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `READY-GATE-015` materializa el contrato documental de integración y decisión final sobre resultados de readiness ya gobernados por `READY-GATE-001..014`, criterios de aceptación, evidencias y requisitos existentes. No introduce una nueva conducta empresarial ejecutable, no modifica autorización efectiva, datos, runtime, contratos de integración, reglas de cálculo ni transiciones de estado del producto. La ejecución futura del checklist y del piloto continúa protegida por los requisitos de prueba de los contratos que originan cada puerta.
+
+**Requisitos creados:** 0  
+**Requisitos modificados:** 0  
+**Fragmentos 04A afectados:** 0
+
+---
+
+#### 36. Criterios de aceptación
+
+`READY-GATE-015` queda documentalmente completa cuando:
+
+1. define un universo fijo de exactamente catorce puertas previas;
+2. materializa `READY-GATE-001..014` exactamente una vez en el conjunto esperado;
+3. define los campos mínimos por puerta;
+4. exige resultado, evidencia, vigencia y consistencia;
+5. resuelve la autoridad desde el `Responsable de decisión` ya asignado al paquete;
+6. conserva la identidad `OWN-*` cuando sea la identidad canónica vigente;
+7. no crea un cargo universal nuevo;
+8. separa ejecución del checklist de autoridad final;
+9. impide que la autoridad final sobreescriba otra autoridad propietaria;
+10. impide transformar `FAIL` o `BLOQUEADO` mediante riesgo aceptado;
+11. define el efecto exacto de `PASS`, `FAIL`, `BLOQUEADO` y `NO_APLICA`;
+12. exige vigencia de evidencia;
+13. enumera cambios materiales que obligan a reevaluar;
+14. exige coherencia de candidato;
+15. exige coherencia de ambiente;
+16. exige coherencia de alcance;
+17. reconcilia `TOTAL_GATES_ESPERADOS = 14`;
+18. exige cero faltantes;
+19. exige cero duplicados;
+20. exige cero referencias irresolubles;
+21. exige cero puertas obsoletas para aprobación;
+22. exige cero puertas inconsistentes para aprobación;
+23. conserva `READY-GATE-014` como autoridad del riesgo residual;
+24. conserva `READY-GATE-013` como autoridad de baseline;
+25. prohíbe exposición previa a la autorización;
+26. define `APROBAR_ENTRADA`;
+27. define `DENEGAR_ENTRADA`;
+28. define `BLOQUEAR_DECISION`;
+29. define `NO_APLICA`;
+30. establece cálculo determinista;
+31. enumera condiciones de denegación;
+32. enumera condiciones de bloqueo;
+33. exige handoff con propietario, tarea y condición de salida;
+34. prohíbe aprobación parcial presentada como total;
+35. fija el alcance máximo autorizado;
+36. define evidencia mínima de decisión;
+37. diferencia evidencia aceptable e insuficiente;
+38. materializa `pilot_entry_decision_manifest::<package_id>`;
+39. preserva historial de reevaluaciones;
+40. invalida reutilización automática ante cambios materiales;
+41. separa la decisión de entrada de la planificación de cutover;
+42. mantiene `CUTOVER-OPS-001` como siguiente tarea reservada;
+43. separa entrada de salida del piloto;
+44. no ejecuta cutover, piloto, rollback, migraciones, DDL/DML, backfills ni operaciones sobre Supabase;
+45. crea cero requisitos de prueba y modifica cero requisitos existentes.
+
+---
+
+#### 37. Estado del resultado documental
+
+| Resultado                                                                     | Estado                                                                              |
+| ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `required_entry_gate_set::<package_id>`                                       | `ESPECIFICADO`                                                                      |
+| inventario fijo `READY-GATE-001..014`                                         | `MATERIALIZADO`                                                                     |
+| resolución de autoridad final                                                 | `ESPECIFICADO` desde autoridad existente del paquete                                |
+| separación ejecutor / decisor                                                 | `ESPECIFICADO`                                                                      |
+| reglas de vigencia                                                            | `ESPECIFICADO`                                                                      |
+| reconciliación cuantitativa                                                   | `ESPECIFICADO`                                                                      |
+| algoritmo final de decisión                                                   | `ESPECIFICADO`                                                                      |
+| condiciones de denegación                                                     | `ESPECIFICADO`                                                                      |
+| condiciones de bloqueo                                                        | `ESPECIFICADO`                                                                      |
+| `pilot_entry_decision_manifest::<package_id>`                                 | `ESPECIFICADO`                                                                      |
+| decisión real por paquete implementado                                        | `PENDIENTE_DE_EVIDENCIA`                                                            |
+| actor humano o técnico concreto detrás de cada `OWN-*` al momento de ejecutar | `PENDIENTE_DE_EVIDENCIA` de la instancia; debe resolverse desde el gobierno vigente |
+| ejecución del checklist                                                       | `FUERA_DE_ALCANCE`; corresponde a `SHELL-CI-021::<package_id>`                      |
+| selección de fecha y ventana de cutover                                       | `FUERA_DE_ALCANCE`; corresponde a `CUTOVER-OPS-001`                                 |
+| ejecución de cutover y piloto                                                 | `FUERA_DE_ALCANCE`; corresponde a `SHELL-CI-022::<package_id>`                      |
+
+La especificación documental no se presenta como autorización real de entrada para ningún paquete todavía no evaluado.
+
+---
+
+#### 38. Secuencia preservada
+
+La secuencia física por paquete permanece:
+
+```text
+E5-GATE-008::<package_id>
+→ SHELL-CI-020::<package_id>
+→ BLOQUE R Y TAREAS FÍSICAS APLICABLES
+→ SHELL-CI-021::<package_id>
+→ SHELL-CI-022::<package_id>
+→ SHELL-CI-023::<package_id>
+→ SHELL-CI-024::<package_id>
+```
+
+`READY-GATE-015` diseña la decisión final consumida por `SHELL-CI-021`.
+
+No ejecuta el siguiente paso.
+
+---
+
+#### 39. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión`
+
+TAREA ACTUAL APROBADA
+`READY-GATE-015 — Definir autoridad y criterio para aprobar la entrada al piloto operativo`
+
+SIGUIENTE TAREA RESERVADA
+`CUTOVER-OPS-001 — Definir criterio para seleccionar fecha, ventana y responsables del cutover`
+
 
 Salida obligatoria:
 
