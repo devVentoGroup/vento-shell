@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **852** |
+| Tareas aprobadas | **853** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **742** |
+| Tareas no iniciadas | **741** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **53.45% (852/1594)** |
+| Porcentaje de completamiento | **53.51% (853/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CUTOVER-OPS-001 — Definir criterio para seleccionar fecha, ventana y responsables del cutover** |
-| Tarea actual | **CUTOVER-OPS-002 — Definir secuencia de activación por sede, área, rol o proceso** |
+| Última tarea aprobada | **CUTOVER-OPS-002 — Definir secuencia de activación por sede, área, rol o proceso** |
+| Tarea actual | **CUTOVER-OPS-003 — Definir convivencia temporal con el proceso anterior** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CUTOVER-OPS-003 — Definir convivencia temporal con el proceso anterior** |
+| Siguiente tarea | **CUTOVER-OPS-004 — Diseñar controles contra doble registro y doble efecto durante la transición** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 41 de 68 aprobadas; CUTOVER-OPS-002 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 42 de 68 aprobadas; CUTOVER-OPS-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `CUTOVER-OPS-001` — Definir criterio para seleccionar fecha, ventana y responsables del cutover |
-| Tarea actual | `CUTOVER-OPS-002` — Definir secuencia de activación por sede, área, rol o proceso — **NO INICIADA** |
-| Siguiente tarea | `CUTOVER-OPS-003` — Definir convivencia temporal con el proceso anterior |
+| Última aprobada | `CUTOVER-OPS-002` — Definir secuencia de activación por sede, área, rol o proceso |
+| Tarea actual | `CUTOVER-OPS-003` — Definir convivencia temporal con el proceso anterior — **NO INICIADA** |
+| Siguiente tarea | `CUTOVER-OPS-004` — Diseñar controles contra doble registro y doble efecto durante la transición |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 41 DE 68 APROBADAS — ACTUAL CUTOVER-OPS-002** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 42 DE 68 APROBADAS — ACTUAL CUTOVER-OPS-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CUTOVER-OPS-001 — Definir criterio para seleccionar fecha, ventana y responsables del cutover
-        ↓
-TAREA ACTUAL
 CUTOVER-OPS-002 — Definir secuencia de activación por sede, área, rol o proceso
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CUTOVER-OPS-003 — Definir convivencia temporal con el proceso anterior
         ↓
+SIGUIENTE TAREA RESERVADA
+CUTOVER-OPS-004 — Diseñar controles contra doble registro y doble efecto durante la transición
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 41 de 68 tareas aprobadas
+BLOQUE E5 — 42 de 68 tareas aprobadas
 ```

@@ -509,7 +509,634 @@ CUTOVER-OPS-001 — Definir criterio para seleccionar fecha, ventana y responsab
 CUTOVER-OPS-002 — Definir secuencia de activación por sede, área, rol o proceso
 
 
-### [ ] CUTOVER-OPS-002 — Definir secuencia de activación por sede, área, rol o proceso
+### ✅ CUTOVER-OPS-002 — Definir secuencia de activación por sede, área, rol o proceso
+
+**Estado:** APROBADA  
+**Tarea anterior:** `CUTOVER-OPS-001 — Definir criterio para seleccionar fecha, ventana y responsables del cutover`  
+**Tarea siguiente:** `CUTOVER-OPS-003 — Definir convivencia temporal con el proceso anterior`  
+**Tipo de tarea:** documental — definición normativa y materialización de la secuencia de activación por paquete dentro de la ventana de cutover ya seleccionada, resolviendo unidades y olas por sede, área, rol, proceso o intersección aplicable sin ampliar el alcance autorizado ni ejecutar activaciones, promociones, despliegues, rollback, cambios de configuración, migraciones, DDL/DML, backfills, modificaciones de datos u operaciones sobre Supabase
+
+---
+
+#### 1. Propósito
+
+`CUTOVER-OPS-002` define el orden concreto que deberá seguir una instancia de paquete durante el cutover para exponer únicamente el alcance ya autorizado, dentro de la ventana seleccionada por `CUTOVER-OPS-001` y conforme a los contratos de rollout y piloto ya aprobados.
+
+La tarea responde exclusivamente a esta pregunta:
+
+```text
+DADO UN PAQUETE ELEGIBLE,
+CON CANDIDATO, AMBIENTE, ALCANCE Y VENTANA YA FIJADOS,
+¿QUÉ UNIDADES DEL ALCANCE PUEDEN ACTIVARSE,
+EN QUÉ ORDEN,
+CUÁLES PUEDEN COMPARTIR UNA MISMA OLA,
+Y QUÉ DEPENDENCIAS DEBEN PERMANECER CERRADAS
+ANTES DE PASAR A LA SIGUIENTE UNIDAD?
+```
+
+La tarea no selecciona nuevamente la fecha, no amplía la cohorte, no redefine porcentajes de rollout y no decide todavía cuándo pausar, revertir o continuar. Su resultado es una secuencia documental consumible que `SHELL-CI-022::<package_id>` podrá ejecutar únicamente después de que todos los contratos de cutover aplicables hayan quedado aprobados.
+
+---
+
+#### 2. Resultado sustantivo
+
+Por cada instancia ejecutable de `package_id`, la tarea materializa cuatro piezas:
+
+1. `activation_dimension_resolution::<package_id>` — decisión de qué dimensión o intersección de dimensiones puede aislar de forma válida la exposición: sede, área, rol, proceso o combinación aplicable;
+2. `activation_unit_set::<package_id>` — conjunto exhaustivo de unidades de activación dentro del alcance ya autorizado, sin agregar identidades externas;
+3. `activation_sequence_plan::<package_id>` — olas ordenadas, dependencias entre unidades, reglas de serialización o paralelismo y puntos obligatorios de decisión;
+4. `activation_sequence_manifest::<package_id>` — expediente reproducible que enlaza paquete, candidato, ambiente, alcance, ventana, modalidad de piloto, perfil de rollout, unidades, olas, responsables y contratos posteriores requeridos antes de la ejecución.
+
+El resultado documental de esta tarea es `ESPECIFICADO`. Ninguna unidad queda `IMPLEMENTADA`, `VALIDADA` ni efectivamente activada por aprobar este documento.
+
+---
+
+#### 3. Entradas obligatorias y frontera de autoridad
+
+`CUTOVER-OPS-002` consume, sin redefinirlos:
+
+- `CUTOVER-OPS-001`: paquete, candidato, ambiente, alcance, fecha, inicio, fin, zona horaria y responsables de la ventana;
+- `READY-GATE-015`: elegibilidad final de entrada para la misma instancia;
+- `DELIV-PKG-015`: dependencias y orden técnico consolidado del paquete;
+- `DELIV-PKG-018`: control de activación, estado seguro y especialización del perfil;
+- `DELIV-PKG-019`: etapas de rollout, cohortes, canary, pausas de evidencia y promoción;
+- `DELIV-PKG-020`: recuperación y rollback aplicables;
+- `DELIV-PKG-022`: modalidad y alcance exacto del piloto;
+- `READY-GATE-010..014`: soporte, observabilidad, rollback probado, línea base y riesgo vigentes.
+
+La tarea no sustituye:
+
+- `CUTOVER-OPS-003`, propietaria de la convivencia temporal con el proceso anterior;
+- `CUTOVER-OPS-004`, propietaria de los controles contra doble registro y doble efecto;
+- `CUTOVER-OPS-005`, propietaria de las conciliaciones durante el piloto;
+- `CUTOVER-OPS-006`, propietaria del criterio de pausa, reversión o continuación;
+- `CUTOVER-OPS-007`, propietaria del registro de incidentes, decisiones y cambios de alcance;
+- `CUTOVER-OPS-008`, propietaria de las métricas de tiempos, errores, adopción y resultado empresarial;
+- `CUTOVER-OPS-009`, propietaria de la salida del piloto;
+- `CUTOVER-OPS-010`, propietaria del retiro del proceso anterior.
+
+---
+
+#### 4. Precondición para construir una secuencia ejecutable
+
+Una secuencia solo puede quedar marcada como `SECUENCIADA` cuando existe una ventana `SELECCIONADA` y vigente en `CUTOVER-OPS-001` para exactamente:
+
+```text
+package_id
++
+candidate_ref
++
+environment
++
+authorized_scope_ref
++
+cutover_window_ref
+```
+
+La secuencia no puede:
+
+1. reutilizar una ventana perteneciente a otro candidato;
+2. incorporar una sede, área, rol, proceso, actor, dispositivo o dato fuera del alcance autorizado;
+3. cambiar el ambiente;
+4. cambiar la autoridad de decisión;
+5. reemplazar una ventana bloqueada por una secuencia teórica;
+6. convertir una instancia `NO_APLICA` en una activación directa.
+
+Si cualquiera de esas identidades cambia, la secuencia deja de ser ejecutable y debe recalcularse sobre una ventana válida.
+
+---
+
+#### 5. Universo territorial permitido
+
+Cuando la dimensión territorial aplique, la secuencia solo podrá utilizar sedes ya incluidas en el alcance aprobado.
+
+El universo territorial canónico disponible para `SITE-DIR-001` permanece limitado a:
+
+- `Oficina 1`;
+- `Centro de Producción`;
+- `Vento Café`;
+- `Saudo`;
+- `Molka`.
+
+La pertenencia de una sede a este universo no implica que deba participar en un paquete concreto. Cada instancia utilizará exclusivamente la intersección entre este universo y `authorized_scope_ref`.
+
+No se crea una sede nueva para facilitar una ola de activación.
+
+---
+
+#### 6. Dimensiones de secuenciación
+
+Las dimensiones admitidas son:
+
+| Dimensión   | Uso válido                                                                                                                                                 |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SEDE`      | separar exposición entre sedes o puntos ya autorizados cuando cada unidad pueda operar, observarse y recuperarse de forma independiente                    |
+| `AREA`      | separar una parte organizativa materializada dentro del alcance cuando su operación y ownership sean distinguibles sin romper el proceso                   |
+| `ROL`       | separar actores por rol o función ya autorizados cuando la exposición pueda gobernarse sin alterar permisos ni crear combinaciones inconsistentes          |
+| `PROCESO`   | preservar como unidad un flujo operativo cuando su estado, transacción, datos, autorización o integración deban permanecer coherentes de extremo a extremo |
+| `COMPUESTA` | usar la intersección de dos o más dimensiones cuando esa intersección sea la verdadera unidad aislable                                                     |
+| `UNICA`     | conservar todo el alcance autorizado como una sola unidad cuando dividirlo no sea seguro, material o demostrable                                           |
+
+No existe una jerarquía universal `SEDE → AREA → ROL → PROCESO` ni su inversa.
+
+---
+
+#### 7. Regla determinista para resolver la dimensión
+
+`activation_dimension_resolution::<package_id>` se resuelve en este orden lógico:
+
+1. identificar las dimensiones que realmente existen en `authorized_scope_ref`;
+2. descartar cualquier dimensión cuyo valor exacto no esté materializado por una fuente canónica;
+3. preservar las dependencias técnicas y funcionales de `DELIV-PKG-015/019`;
+4. determinar si el proceso exige atomicidad de extremo a extremo;
+5. determinar qué particiones pueden ser observadas y recuperadas de manera independiente con los contratos vigentes;
+6. elegir la menor unidad completa que reduzca exposición sin romper atomicidad, autorización, integridad de datos, integración ni ownership;
+7. si ninguna dimensión individual satisface la condición, utilizar `COMPUESTA`;
+8. si ninguna partición es demostrablemente segura o útil, utilizar `UNICA`.
+
+La atomicidad del proceso prevalece sobre el deseo de obtener una ola más pequeña.
+
+La ausencia de una dimensión no se interpreta como permiso para inventarla.
+
+---
+
+#### 8. Condiciones específicas por dimensión
+
+##### 8.1. Secuenciación por sede
+
+`SEDE` es válida cuando:
+
+- la sede está dentro del alcance aprobado;
+- el efecto empresarial puede limitarse territorialmente;
+- datos, dispositivos o integraciones no obligan a activar simultáneamente otra sede;
+- soporte, observabilidad y recuperación cubren la sede durante su exposición;
+- no existe una dependencia que haga inconsistente operar una sede nueva mientras otra autorizada permanece sin activar.
+
+Si dos sedes comparten un estado o efecto que no puede aislarse, no se separan artificialmente.
+
+##### 8.2. Secuenciación por área
+
+`AREA` es válida únicamente si el área:
+
+- posee identidad canónica materializada;
+- pertenece al alcance autorizado;
+- tiene frontera operativa distinguible;
+- puede exponerse sin dejar un proceso parcialmente incoherente;
+- conserva ownership, soporte y recuperación trazables.
+
+Un nombre informal de equipo o departamento no crea una unidad de activación.
+
+##### 8.3. Secuenciación por rol
+
+`ROL` es válida cuando:
+
+- el rol o función está materializado y autorizado;
+- la exposición no concede autoridad adicional;
+- los actores restantes pueden continuar en su estado seguro sin romper el proceso;
+- el servidor conserva la autorización autoritativa independientemente del estado de exposición;
+- no se crea una combinación de roles que haga imposible completar una operación.
+
+La secuenciación por rol controla exposición; no modifica RBAC, permisos, RLS ni alcance de autorización.
+
+##### 8.4. Secuenciación por proceso
+
+`PROCESO` es obligatoria como frontera atómica cuando dividir el flujo entre unidades produciría cualquiera de estos efectos:
+
+- transición de estado incompleta;
+- doble captura potencial del mismo hecho;
+- pérdida de identidad transaccional;
+- autorización inconsistente entre pasos;
+- efectos externos imposibles de atribuir a una sola unidad;
+- dependencia de datos que exija una activación coherente;
+- consumidor o productor incompatible durante una división.
+
+Esta tarea solo preserva la atomicidad. El tratamiento de convivencia, doble efecto y conciliación permanece reservado a `CUTOVER-OPS-003..005`.
+
+---
+
+#### 9. Unidad de activación
+
+Cada `activation_unit` deberá identificar como mínimo:
+
+| Campo                  | Regla                                                                   |
+| ---------------------- | ----------------------------------------------------------------------- |
+| `package_id`           | paquete canónico de la instancia                                        |
+| `candidate_ref`        | mismo candidato autorizado por la ventana                               |
+| `environment`          | mismo ambiente autorizado                                               |
+| `authorized_scope_ref` | alcance de origen                                                       |
+| `sequence_mode`        | modalidad de secuenciación aplicable                                    |
+| `dimension_type`       | `SEDE`, `AREA`, `ROL`, `PROCESO`, `COMPUESTA` o `UNICA`                 |
+| `site_ref`             | sede exacta cuando aplique                                              |
+| `area_ref`             | área exacta cuando aplique                                              |
+| `role_ref`             | rol o función exacta cuando aplique                                     |
+| `process_ref`          | proceso exacto cuando aplique                                           |
+| `dependency_layer`     | capa de precedencia heredada, cuando exista                             |
+| `responsible_ref`      | responsable ya resuelto para la unidad                                  |
+| `rollout_state_before` | estado seguro previo heredado de `DELIV-PKG-018/019`                    |
+| `target_rollout_state` | estado permitido por `DELIV-PKG-018/019`; no se inventa una etapa nueva |
+| `recovery_ref`         | referencia a recuperación aplicable                                     |
+| `observability_ref`    | señales aplicables a la unidad                                          |
+| `status`               | resultado documental de la unidad                                       |
+
+Una unidad es una partición del alcance autorizado, nunca una ampliación.
+
+---
+
+#### 10. Cobertura exhaustiva del alcance
+
+Para una instancia `DIRECT_ORDERED_ACTIVATION`, el conjunto de unidades debe cumplir simultáneamente:
+
+1. **cobertura completa:** toda identidad del alcance que deba activarse aparece al menos una vez;
+2. **sin ampliación:** ninguna identidad externa aparece;
+3. **sin duplicación efectiva:** una misma combinación de dimensiones no queda activa en dos unidades incompatibles;
+4. **sin huérfanos:** toda unidad tiene responsable, dependencias y referencias de control;
+5. **sin solapamiento ambiguo:** cuando dos unidades comparten una dimensión, la intersección está expresamente delimitada;
+6. **reconciliación exacta:** la unión de las unidades coincide con el alcance que realmente deberá activarse.
+
+Cuando el alcance autorizado contiene una sola unidad aislable, el resultado correcto es una secuencia de una sola unidad. No se divide artificialmente para aparentar progresividad.
+
+---
+
+#### 11. Modelo de olas
+
+`activation_sequence_plan::<package_id>` organiza las unidades en olas ordinales:
+
+```text
+WAVE-001
+→ checkpoint de decisión
+→ WAVE-002
+→ checkpoint de decisión
+→ ...
+→ última ola autorizada dentro del plan
+```
+
+Cada ola contiene una o más unidades.
+
+Dos unidades pueden pertenecer a la misma ola únicamente cuando se demuestra que:
+
+- no existe dependencia de precedencia entre ellas;
+- no comparten un estado cuya mutación exija orden;
+- su observabilidad puede atribuirse de manera suficiente;
+- su recuperación no depende de ejecutar primero la otra;
+- no compiten por una responsabilidad cuya cobertura obligue a serializarlas;
+- la exposición simultánea no rompe el aislamiento aprobado.
+
+Si la independencia no puede demostrarse, las unidades se serializan.
+
+El ordinal es monotónico y no se reutiliza dentro de la misma revisión del manifiesto.
+
+---
+
+#### 12. Orden entre olas
+
+El orden de las olas se construye aplicando esta precedencia:
+
+1. dependencias obligatorias del paquete;
+2. atomicidad de proceso;
+3. estado seguro y progresión permitida por `DELIV-PKG-018/019`;
+4. aislamiento de la cohorte definida por `DELIV-PKG-022`;
+5. capacidad de observación y recuperación de la unidad;
+6. menor exposición completa entre las alternativas que siguen siendo válidas;
+7. decisión atribuible del responsable vigente cuando persistan alternativas equivalentes.
+
+No se adelanta una unidad dependiente por conveniencia de calendario.
+
+No existe promoción automática por completar una ola.
+
+---
+
+#### 13. Punto de decisión entre olas
+
+Toda transición entre olas queda estructuralmente bloqueada por un `continuation_gate_ref`.
+
+`CUTOVER-OPS-002` define **dónde** existe ese punto de decisión, pero no define **qué umbrales producen continuar, pausar o revertir**.
+
+La semántica de esa decisión pertenece a `CUTOVER-OPS-006`.
+
+Por tanto:
+
+- una ola posterior puede quedar ordenada documentalmente;
+- su ejecución no queda autorizada por el mero orden;
+- `SHELL-CI-022::<package_id>` deberá consumir la decisión vigente de `CUTOVER-OPS-006` antes de avanzar cuando corresponda;
+- no se interpreta silencio, transcurso del tiempo o ausencia de incidente como autorización de continuación.
+
+---
+
+#### 14. Relación con los estados de rollout
+
+La secuencia de cutover conserva las máquinas de estado de `DELIV-PKG-018/019`.
+
+Para perfiles directos, la tarea no crea etapas entre:
+
+- `GATE`;
+- `BUILD_VERIFY`;
+- `STAGING`;
+- `PROD_SHADOW` o especialización equivalente;
+- `PILOT`;
+- las expansiones posteriores gobernadas por `DELIV-PKG-019`.
+
+`CUTOVER-OPS-002` ordena **las unidades dentro del alcance de activación aplicable**. No redefine `CANARY_5`, `LIMITED_25`, `LIMITED_50`, `FULL_100` ni las especializaciones de cada perfil.
+
+La secuencia por sede, área, rol o proceso tampoco sustituye la cohorte nominable de `DELIV-PKG-022` por un porcentaje.
+
+---
+
+#### 15. Especialización por perfil técnico
+
+| Perfil           | Tratamiento de `CUTOVER-OPS-002`                                                                                                                                 |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TP-DB-001`      | secuenciar la exposición del comportamiento o camino nuevo; no fragmentar una migración física solo para fabricar olas                                           |
+| `TP-DOM-001`     | secuenciar unidades del alcance funcional preservando hechos ya confirmados y atomicidad de dominio                                                              |
+| `TP-AUTH-001`    | secuenciar exposición sin alterar autoridad; `SHADOW_COMPARE` no concede permisos y una unidad nunca redefine roles                                              |
+| `TP-INT-001`     | secuenciar unidades de integración que puedan aislar efectos; una misma operación y sus reintentos no se dividen entre caminos incompatibles                     |
+| `TP-UI-001`      | secuenciar exposición de interfaz por alcance aprobado; distribución del build y visibilidad funcional permanecen conceptos distintos                            |
+| `TP-SHARED-001`  | no crear una activación independiente artificial; heredar la secuencia de consumidores directos compatibles                                                      |
+| `TP-CONTROL-001` | observar las olas que el control gobierna; solo secuenciar enforcement propio cuando exista una frontera ejecutable y el contrato de rollout permita segmentarla |
+| `TP-AURA-001`    | no producir secuencia ejecutable mientras persista el bloqueo AURA                                                                                               |
+| `TP-EXT-001`     | no producir secuencia ejecutable mientras el gate externo permanezca abierto                                                                                     |
+| `TP-FUTURE-001`  | mantener fuera de la línea funcional vigente                                                                                                                     |
+
+---
+
+#### 16. Reconciliación del universo de modalidades heredado
+
+`DELIV-PKG-022` conserva 207 raíces y `CUTOVER-OPS-002` no cambia esa clasificación.
+
+| Modalidad heredada            | Cantidad | Decisión de secuenciación                                                                                  |
+| ----------------------------- | -------: | ---------------------------------------------------------------------------------------------------------- |
+| `PILOT-DIRECT-001`            |  **160** | `DIRECT_ORDERED_ACTIVATION` cuando exista ventana seleccionada y vigente                                   |
+| `PILOT-SHARED-001`            |    **3** | `CONSUMER_DERIVED_ACTIVATION`; sin secuencia directa independiente                                         |
+| `PILOT-CONTROL-001`           |   **26** | `GOVERNED_OBSERVATION`; sin activación artificial, salvo enforcement ejecutable ya permitido por su perfil |
+| AURA bloqueada                |   **14** | `BLOCKED_NO_SEQUENCE` mientras persista su gate                                                            |
+| dependencia externa bloqueada |    **2** | `BLOCKED_NO_SEQUENCE` mientras persista el gate externo                                                    |
+| TALENTO fuera de línea actual |    **2** | `OUT_OF_CURRENT_LINE`                                                                                      |
+
+Reconciliación:
+
+```text
+160 + 3 + 26 + 14 + 2 + 2 = 207
+```
+
+Esta tabla materializa el tratamiento de las modalidades sin reasignar ninguna raíz ni cambiar su `package_id`.
+
+---
+
+#### 17. Modalidades sin activación directa
+
+##### 17.1. Contratos compartidos
+
+Una raíz `PILOT-SHARED-001`:
+
+- no recibe una ola propia ficticia;
+- referencia las secuencias de consumidores directos que realmente ejercen el contrato;
+- se considera observada durante esas olas;
+- no se promociona porque haya transcurrido una ola de un solo consumidor si su contrato exige cobertura adicional.
+
+##### 17.2. Controles
+
+Una raíz `PILOT-CONTROL-001`:
+
+- observa las olas de las capacidades que gobierna;
+- no recibe sede, área, rol o proceso propios por inferencia;
+- puede tener una unidad de enforcement solo si existe una frontera ejecutable materializada y el perfil aprobado permite segmentarla sin perder integridad;
+- conserva bloqueo físico cuando su fuente propietaria aún lo exija.
+
+##### 17.3. AURA, dependencias externas y línea futura
+
+Las raíces no ejecutables en la línea actual no reciben secuencias vacías presentadas como éxito.
+
+Su resultado permanece bloqueado o fuera de línea según la fuente propietaria. Solo una reapertura canónica que cierre el gate correspondiente y produzca posteriormente una ventana válida permitirá construir una secuencia ejecutable.
+
+---
+
+#### 18. Estados documentales de la secuencia
+
+`activation_sequence_plan::<package_id>` utilizará:
+
+| Estado              | Semántica                                                                                                                    |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `SECUENCIADA`       | existe ventana válida, dimensión resuelta, cobertura completa y orden reproducible de unidades                               |
+| `BLOQUEADA`         | falta una identidad, dependencia, frontera de aislamiento, responsable, evidencia o referencia obligatoria                   |
+| `NO_APLICA_DIRECTA` | la modalidad aprobada no posee activación directa independiente                                                              |
+| `FUERA_DE_LINEA`    | la raíz pertenece a una línea funcional que no puede ejecutarse en la fase actual                                            |
+| `INVALIDADA`        | una secuencia previamente especificada dejó de corresponder al candidato, ambiente, alcance, ventana o dependencias vigentes |
+
+`SECUENCIADA` no significa ejecutada.
+
+---
+
+#### 19. Contratos que deben quedar enlazados antes de ejecución
+
+El orden puede aprobarse documentalmente antes de desarrollar tareas posteriores del bloque, pero la ejecución física no podrá iniciar sin que cada referencia aplicable exista y esté vigente.
+
+| Necesidad                                               | Propietario       |
+| ------------------------------------------------------- | ----------------- |
+| convivencia con el proceso anterior por ola o unidad    | `CUTOVER-OPS-003` |
+| control contra doble registro o doble efecto            | `CUTOVER-OPS-004` |
+| conciliación exigible durante piloto                    | `CUTOVER-OPS-005` |
+| decisión entre continuar, pausar o revertir             | `CUTOVER-OPS-006` |
+| registro de incidentes, decisiones y cambios de alcance | `CUTOVER-OPS-007` |
+| métricas operativas del piloto                          | `CUTOVER-OPS-008` |
+| decisión de salida del piloto                           | `CUTOVER-OPS-009` |
+| retiro del proceso anterior                             | `CUTOVER-OPS-010` |
+
+La referencia pendiente a una de estas tareas tiene dueño documental exacto; no constituye autorización para improvisar su contenido durante la ejecución.
+
+---
+
+#### 20. Contenido mínimo de `activation_sequence_manifest::<package_id>`
+
+El manifiesto deberá conservar:
+
+1. `package_id`;
+2. `candidate_ref`;
+3. `environment`;
+4. `authorized_scope_ref`;
+5. `cutover_window_ref`;
+6. `pilot_entry_decision_ref`;
+7. `rollout_profile_ref`;
+8. `pilot_scope_ref`;
+9. `sequence_mode`;
+10. `dimension_resolution_ref`;
+11. total de unidades esperadas;
+12. total de unidades materializadas;
+13. total de olas;
+14. lista ordenada de olas;
+15. miembros exactos de cada ola;
+16. dimensiones y valores exactos de cada unidad;
+17. dependencias entre unidades;
+18. responsables aplicables;
+19. estado seguro previo y estado objetivo permitido;
+20. referencias de observabilidad y recuperación;
+21. `continuation_gate_ref` entre olas cuando aplique;
+22. referencias propietarias de `CUTOVER-OPS-003..010` exigibles antes de ejecución;
+23. estado documental global;
+24. causa, propietario y condición de salida de cualquier bloqueo;
+25. revisión del manifiesto y referencia de evidencia documental.
+
+Los conteos deben reconciliar exactamente el alcance materializado de la instancia.
+
+---
+
+#### 21. Regla de cambio e invalidación
+
+La secuencia se invalida cuando cambia materialmente cualquiera de estos elementos:
+
+- candidato;
+- ambiente;
+- alcance autorizado;
+- ventana;
+- modalidad de piloto;
+- dependencia obligatoria;
+- frontera de proceso;
+- autorización o rol aplicable;
+- responsable obligatorio;
+- estrategia de rollout;
+- capacidad de recuperación;
+- condición de riesgo que afecte la exposición.
+
+La corrección deberá realizarse en la fuente propietaria del elemento cambiado y luego recalcularse la secuencia.
+
+No se edita silenciosamente una ola histórica para aparentar que siempre correspondió al nuevo alcance.
+
+---
+
+#### 22. Tratamiento de bloqueos
+
+Todo `BLOQUEADA` deberá conservar:
+
+1. unidad o secuencia afectada;
+2. causa concreta;
+3. insumo faltante;
+4. propietario canónico;
+5. tarea propietaria cuando exista;
+6. condición objetiva de salida;
+7. olas dependientes afectadas;
+8. evidencia que deberá actualizarse.
+
+No se permite `TBD`, “por definir” ni un pendiente sin propietario.
+
+Una secuencia parcialmente construida no se redondea a `SECUENCIADA`.
+
+---
+
+#### 23. Handoff a `CUTOVER-OPS-003`
+
+`CUTOVER-OPS-002` entrega a `CUTOVER-OPS-003`:
+
+```text
+VENTANA VIGENTE
++
+ALCANCE AUTORIZADO
++
+UNIDADES DE ACTIVACIÓN
++
+OLAS ORDENADAS
++
+DEPENDENCIAS
++
+RESPONSABLES
++
+ESTADO SEGURO PREVIO Y ESTADO OBJETIVO PERMITIDO
+=
+FRONTERA EXACTA PARA DEFINIR LA CONVIVENCIA TEMPORAL
+```
+
+`CUTOVER-OPS-003` podrá definir la convivencia del proceso anterior dentro de esta secuencia, pero no podrá ampliar unidades, cambiar su orden por inferencia ni alterar candidato, ambiente o alcance sin invalidar y recalcular la fuente correspondiente.
+
+---
+
+#### 24. Separación entre planificación y ejecución
+
+La secuencia operativa permanece:
+
+```text
+SHELL-CI-021::<package_id>
+→ entrada aprobada
+→ CUTOVER-OPS-001 con ventana seleccionada
+→ CUTOVER-OPS-002 con secuencia especificada
+→ contratos restantes de CUTOVER aplicables
+→ SHELL-CI-022::<package_id>
+```
+
+`SHELL-CI-022::<package_id>` será quien materialice la ejecución real y conserve paquete, versión, ambiente, ventana, actor, decisión y evidencia.
+
+Esta tarea no:
+
+- activa sedes;
+- activa áreas;
+- activa roles;
+- activa procesos;
+- cambia feature flags;
+- despliega artefactos;
+- modifica datos;
+- ejecuta migraciones;
+- ejecuta rollback;
+- cambia permisos;
+- modifica Supabase.
+
+---
+
+#### 25. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `CUTOVER-OPS-002` materializa el orden documental de exposición para ejecutar posteriormente contratos de rollout, piloto, autorización, observabilidad y recuperación ya aprobados. No introduce un comportamiento empresarial nuevo, una transición de estado de negocio, una regla de autorización, un contrato de integración, una persistencia, un cálculo, un algoritmo runtime, un umbral de promoción ni un mecanismo nuevo de rollback. Los comportamientos ejecutables y sus pruebas permanecen gobernados por los requisitos y matrices ya vinculados a los paquetes; esta tarea únicamente organiza su ejecución futura dentro de un alcance previamente autorizado.
+
+**Requisitos TREQ-* creados:** 0  
+**Requisitos TREQ-* modificados:** 0  
+**Fragmentos 04A afectados:** 0
+
+---
+
+#### 26. Criterios de aceptación documental
+
+`CUTOVER-OPS-002` queda documentalmente completo cuando:
+
+1. conserva `CUTOVER-OPS-001 → CUTOVER-OPS-002 → CUTOVER-OPS-003`;
+2. solo secuencia instancias con ventana válida de `CUTOVER-OPS-001`;
+3. no cambia paquete, candidato, ambiente, alcance, fecha, ventana ni autoridad;
+4. define `activation_dimension_resolution`, `activation_unit_set`, `activation_sequence_plan` y `activation_sequence_manifest`;
+5. admite `SEDE`, `AREA`, `ROL`, `PROCESO`, `COMPUESTA` y `UNICA` sin imponer una jerarquía universal;
+6. preserva atomicidad de proceso antes de minimizar el tamaño de una unidad;
+7. toda dimensión usada existe en una fuente canónica y pertenece al alcance autorizado;
+8. las sedes se limitan al universo canónico y a la intersección aprobada para la instancia;
+9. las unidades reconcilian exactamente el alcance activable, sin faltantes, ampliaciones ni duplicaciones ambiguas;
+10. una instancia indivisible conserva una sola unidad y no fabrica progresividad;
+11. las olas poseen ordinal reproducible;
+12. el paralelismo exige independencia demostrable; en caso contrario se serializa;
+13. las dependencias heredadas prevalecen sobre conveniencia de calendario;
+14. cada transición entre olas conserva un punto de decisión sin anticipar el criterio de `CUTOVER-OPS-006`;
+15. no existe promoción automática por tiempo ni por completar una ola;
+16. se preservan los estados y perfiles de `DELIV-PKG-018/019`;
+17. la cohorte de piloto no se transforma en porcentaje;
+18. las 207 raíces quedan reconciliadas por modalidad como 160 directas, 3 shared, 26 control y 18 no ejecutables en la línea actual;
+19. shared no recibe una activación independiente ficticia;
+20. control no recibe una activación ficticia y conserva su tratamiento de observación o enforcement aplicable;
+21. AURA, dependencia externa y línea futura conservan sus gates;
+22. se definen `SECUENCIADA`, `BLOQUEADA`, `NO_APLICA_DIRECTA`, `FUERA_DE_LINEA` e `INVALIDADA`;
+23. todo bloqueo tiene causa, propietario y condición de salida;
+24. los contratos posteriores `CUTOVER-OPS-003..010` quedan vinculados por propietario sin anticipar sus decisiones;
+25. cambios materiales invalidan la secuencia y obligan a recalcularla desde fuentes vigentes;
+26. el manifiesto contiene conteos reconciliables de unidades y olas;
+27. la ejecución física permanece en `SHELL-CI-022::<package_id>`;
+28. no se ejecutan código, despliegues, activaciones, promociones, migraciones, DDL/DML, backfills, modificaciones de datos, configuración remota ni operaciones de Supabase;
+29. se crean cero requisitos `TREQ-*`, se modifican cero requisitos `TREQ-*` y se afectan cero fragmentos 04A.
+
+---
+
+#### 27. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+CUTOVER-OPS-001 — Definir criterio para seleccionar fecha, ventana y responsables del cutover
+
+##### TAREA ACTUAL APROBADA
+CUTOVER-OPS-002 — Definir secuencia de activación por sede, área, rol o proceso
+
+##### SIGUIENTE TAREA RESERVADA
+CUTOVER-OPS-003 — Definir convivencia temporal con el proceso anterior
+
+
 ### [ ] CUTOVER-OPS-003 — Definir convivencia temporal con el proceso anterior
 ### [ ] CUTOVER-OPS-004 — Diseñar controles contra doble registro y doble efecto durante la transición
 ### [ ] CUTOVER-OPS-005 — Definir conciliaciones durante el piloto
