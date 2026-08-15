@@ -3142,7 +3142,769 @@ CUTOVER-OPS-005 — Definir conciliaciones durante el piloto
 CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación
 
 
-### [ ] CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación
+### ✅ CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación
+
+**Estado:** APROBADA  
+**Tarea anterior:** `CUTOVER-OPS-005 — Definir conciliaciones durante el piloto`  
+**Tarea siguiente:** `CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de alcance`  
+**Tipo de tarea:** documental — definición normativa y materialización, por paquete y checkpoint de piloto, del criterio determinista para decidir continuidad, pausa o reversión a partir de señales, riesgos, conciliaciones, controles anti-duplicidad, evidencia, rollout y rollback ya aprobados; sin ejecutar piloto, promoción, pausa física, kill switch, rollback, restore, compensación, corrección, cambios de alcance, despliegues, migraciones, DDL/DML, backfills, cambios de configuración, modificaciones de datos ni operaciones sobre Supabase  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md`  
+**Ejecución posterior:** `SHELL-CI-022::<package_id>` después de `SHELL-CI-021::<package_id>` y de completar los contratos CUTOVER aplicables  
+**Cambios físicos autorizados:** ninguno  
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`CUTOVER-OPS-006` define cómo una instancia de piloto deberá resolver, en cada checkpoint aplicable, una de tres disposiciones operativas:
+
+```text
+CONTINUAR
+PAUSAR
+REVERTIR
+```
+
+La decisión se construye únicamente con evidencia y reglas ya aprobadas para el mismo paquete, candidato, ambiente, alcance, unidad y ola.
+
+La tarea responde exclusivamente a estas preguntas:
+
+```text
+¿LA IDENTIDAD Y EL ALCANCE EVALUADOS SIGUEN SIENDO LOS AUTORIZADOS?
++
+¿LAS SEÑALES, RIESGOS, CONTROLES, CONCILIACIONES Y EVIDENCIAS OBLIGATORIAS SIGUEN VIGENTES?
++
+¿EXISTE UNA CONDICIÓN QUE BLOQUEA EXPANSIÓN PERO PERMITE MANTENER UN ESTADO SEGURO?
++
+¿EXISTE UN DISPARADOR DE RECUPERACIÓN O ROLLBACK YA APROBADO QUE EXIGE RETIRAR EL CANDIDATO?
++
+¿LA AUTORIDAD CORRECTA PUEDE EMITIR LA DECISIÓN CON EVIDENCIA?
+=
+CONTINUAR, PAUSAR O REVERTIR SIN INFERENCIAS
+```
+
+006 no crea nuevos umbrales, severidades, tolerancias, tiempos, RTO, RPO, SLO, métricas, autoridades ni mecanismos de recuperación.
+
+---
+
+#### 2. Resultado sustantivo
+
+Por cada instancia aplicable de `package_id`, la tarea materializa cuatro piezas documentales:
+
+1. `pilot_decision_input_set::<package_id>` — conjunto de entradas vigentes que deben evaluarse en el checkpoint;
+2. `pilot_decision_rule_binding::<package_id>` — vínculo entre cada condición observable y su fuente propietaria, severidad, autoridad, tratamiento y evidencia;
+3. `pilot_decision_evaluation::<package_id>` — evaluación reproducible que resuelve `CONTINUAR`, `PAUSAR` o `REVERTIR` cuando la instancia es evaluable;
+4. `pilot_decision_manifest::<package_id>` — expediente consolidado de identidad, checkpoint, reglas aplicadas, evidencia, decisión, autoridad, bloqueos y handoff posterior.
+
+Estas piezas diseñan la decisión futura. No afirman que un piloto haya sido ejecutado ni que una disposición haya ocurrido.
+
+---
+
+#### 3. Entradas obligatorias
+
+006 consume, sin redefinirlas:
+
+- `CUTOVER-OPS-001`: candidato, ambiente, alcance, ventana y responsables vigentes;
+- `CUTOVER-OPS-002`: unidades, olas, dependencias y `continuation_gate_ref`;
+- `CUTOVER-OPS-003`: convivencia, autoridad entre proceso anterior y objetivo, trabajo en curso y recovery;
+- `CUTOVER-OPS-004`: operaciones, efectos, identidad estable, controles anti-duplicidad, resultados inciertos y evidencia;
+- `CUTOVER-OPS-005`: superficies de conciliación, fuente autoritativa, contraparte, correlación, reglas y resultados;
+- `READY-GATE-010`: soporte, responsables y escalamiento;
+- `READY-GATE-011`: monitoreo, métricas, alertas y fuentes observables;
+- `READY-GATE-012`: respaldo, restore, rollback y recuperación probados;
+- `READY-GATE-013`: línea base previa al piloto;
+- `READY-GATE-014`: riesgos aceptados y condiciones de suspensión;
+- `READY-GATE-015`: decisión vigente de entrada al piloto;
+- `DELIV-PKG-013`: umbrales y guardrails NFR aplicables;
+- `DELIV-PKG-016`: requisitos y evidencia de prueba aplicables;
+- `DELIV-PKG-017`: observabilidad, severidad, alertas, auditoría y propietarios;
+- `DELIV-PKG-018`: default seguro, targeting, autoridad de activación/suspensión/desactivación y kill switch;
+- `DELIV-PKG-019`: etapas, cohortes, pausas, promoción y gates de expansión;
+- `DELIV-PKG-020`: disparadores, autoridad, objetivo seguro, procedimiento y conciliación de rollback/recovery;
+- `DELIV-PKG-022`: modalidad, cohorte, alcance, duración y salvaguardas del piloto;
+- `DELIV-PKG-023`: criterios de aceptación y evidencia que serán relevantes para el cierre, sin anticipar la salida del piloto.
+
+Una entrada no vigente, contradictoria o correspondiente a otra revisión no se sustituye por una estimación local.
+
+---
+
+#### 4. Unidad mínima de decisión
+
+La unidad mínima de `pilot_decision_evaluation` es:
+
+```text
+package_id
++
+candidate_ref
++
+environment
++
+authorized_scope_ref
++
+cutover_window_ref
++
+activation_unit_ref
++
+wave_ref
++
+checkpoint_ref
+```
+
+Cuando una modalidad no tenga unidad u ola independiente, la decisión conserva la referencia de la raíz o consumidor que gobierna su exposición.
+
+Dos evaluaciones con candidato, ambiente, alcance, unidad, ola o checkpoint distintos son decisiones diferentes y no pueden mezclarse para obtener un resultado agregado.
+
+---
+
+#### 5. Dos capas que no pueden confundirse
+
+006 separa obligatoriamente:
+
+| Capa                        | Valores                                                                       | Semántica                                                                          |
+| --------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `decision_evaluation_state` | `EVALUABLE`, `BLOQUEADA`, `INVALIDADA`, `NO_APLICA_DIRECTA`, `FUERA_DE_LINEA` | indica si existe base suficiente y vigente para emitir una disposición             |
+| `operational_decision`      | `CONTINUAR`, `PAUSAR`, `REVERTIR`                                             | disposición que puede emitir la autoridad aplicable cuando la evaluación es válida |
+
+Una evaluación `BLOQUEADA` o `INVALIDADA` no se convierte en `CONTINUAR`.
+
+Si ya existe exposición activa y la evaluación queda `BLOQUEADA` o `INVALIDADA`, la disposición fail-closed es detener nueva expansión mediante `PAUSAR`, salvo que una regla propietaria de `DELIV-PKG-020` exija `REVERTIR`.
+
+Para una raíz que nunca entró en exposición por bloqueo AURA, EXT o fuera de línea TALENTO, no se fabrica una pausa operativa inexistente.
+
+---
+
+#### 6. Principio de precedencia
+
+La decisión sigue esta precedencia:
+
+```text
+IDENTIDAD Y VIGENCIA
+→ DISPARADORES DE ROLLBACK/RECOVERY
+→ CONDICIONES DE SUSPENSIÓN Y BLOQUEO
+→ GATES DE CONTINUACIÓN/PROMOCIÓN
+→ DECISIÓN EXPLÍCITA DE AUTORIDAD
+```
+
+Reglas:
+
+1. una identidad inválida impide continuar;
+2. un disparador aplicable de `DELIV-PKG-020` no se degrada a advertencia;
+3. una condición que exige suspensión impide expansión mientras permanezca activa;
+4. solo en ausencia de condiciones de reversión o pausa se evalúa continuidad;
+5. la decisión no se obtiene por votación ni por mayoría de señales;
+6. una señal de menor severidad no cancela una condición bloqueante;
+7. la ausencia de observación no equivale a evidencia positiva.
+
+---
+
+#### 7. Criterio de `CONTINUAR`
+
+`CONTINUAR` solo puede emitirse cuando todas las condiciones obligatorias aplicables al checkpoint sean verdaderas:
+
+1. `package_id`, candidato, ambiente, alcance, ventana, unidad y ola corresponden a la misma instancia autorizada;
+2. la autorización de entrada heredada de `READY-GATE-015` permanece vigente;
+3. ningún cambio material invalidó los contratos de cutover aplicables;
+4. los riesgos aceptados siguen dentro de alcance, vigencia y controles de `READY-GATE-014`;
+5. ninguna condición de suspensión vigente está materializada;
+6. las fuentes críticas de observabilidad requeridas por `READY-GATE-011` y `DELIV-PKG-017` están disponibles;
+7. soporte, escalamiento y responsables requeridos permanecen disponibles cuando el checkpoint los necesita;
+8. el control anti-duplicidad aplicable de `CUTOVER-OPS-004` no está bloqueado;
+9. toda conciliación exigible para el checkpoint está `CONCILIADA` o, cuando el contrato lo permita expresamente, `DIFERENCIA_ESPERADA` dentro de su condición de convergencia;
+10. no existe `DIFERENCIA_NO_RESUELTA`, `RESULTADO_INCIERTO` o `DUPLICIDAD_CONFIRMADA` pendiente que afecte la seguridad de la expansión;
+11. no existe violación de seguridad, autorización, privacidad o integridad con tolerancia contractual cero;
+12. no existe `OBS-P0`, `OBS-P1`, gap P0/P1, incompatibilidad crítica o bloqueo equivalente aplicable sin resolución;
+13. los umbrales y guardrails NFR aplicables permanecen satisfechos;
+14. el candidato conserva capacidad de retorno al default seguro y recovery conforme a sus contratos vigentes;
+15. si el checkpoint implica ampliar exposición, se cumplen además todos los gates de promoción de `DELIV-PKG-019`;
+16. la evidencia requerida es actual, atribuible y suficiente para la misma revisión;
+17. la autoridad aplicable emite la decisión de forma explícita.
+
+No existe continuidad automática por tiempo transcurrido, ausencia aparente de incidentes, baja utilización, silencio de alertas, finalización de una ventana o finalización de una ola.
+
+---
+
+#### 8. Degradaciones controladas
+
+Una condición `OBS-P2` o `OBS-P3` no obliga por sí sola a pausar cuando el contrato NFR aplicable permite operación degradada controlada.
+
+`CONTINUAR` en ese caso exige:
+
+- que la degradación esté dentro de la condición permitida por su fuente;
+- que no exista una condición de suspensión relacionada;
+- que el riesgo y su vigencia permanezcan gobernados;
+- que la observabilidad permita detectar empeoramiento;
+- que exista responsable y tratamiento;
+- que la decisión quede atribuida.
+
+006 no redefine qué degradaciones son tolerables.
+
+---
+
+#### 9. Criterio de `PAUSAR`
+
+`PAUSAR` significa detener toda nueva expansión, promoción, incorporación de unidad, actor, sede, dispositivo, tráfico o alcance mientras se conserva el estado seguro permitido por las fuentes propietarias.
+
+Debe emitirse cuando no exista todavía una obligación confirmada de reversión y ocurra al menos una condición aplicable como:
+
+1. `READY-GATE-014` materializa una condición de suspensión;
+2. se pierde una fuente crítica necesaria para evaluar seguridad, integridad o continuidad;
+3. una entrada obligatoria queda desactualizada, bloqueada o contradictoria;
+4. un checkpoint no dispone de evidencia suficiente;
+5. existe `DIFERENCIA_NO_RESUELTA`;
+6. existe `RESULTADO_INCIERTO`;
+7. existe `DUPLICIDAD_CONFIRMADA` mientras su disposición de recovery no haya sido determinada;
+8. una conciliación obligatoria está bloqueada;
+9. un control anti-duplicidad requerido está bloqueado o no puede demostrarse efectivo;
+10. existe `OBS-P0`, `OBS-P1`, gap P0/P1 o incompatibilidad crítica que bloquea expansión;
+11. existe una violación de tolerancia cero cuya disposición de rollback aún debe resolver la autoridad propietaria;
+12. se detecta un cambio material de candidato, ambiente, alcance, cohorte, autorización, datos, contrato o configuración;
+13. la autoridad requerida no está disponible o su identidad no puede resolverse;
+14. el soporte o escalamiento obligatorio para el periodo deja de estar disponible;
+15. la capacidad de recovery requerida deja de poder demostrarse vigente;
+16. aparece un defecto que impide satisfacer el gate de continuación;
+17. una condición de rollback se encuentra bajo evaluación y continuar aumentaría exposición antes de resolverla.
+
+`PAUSAR` es fail-closed frente a evidencia insuficiente. No equivale a rollback ni a aceptación de la situación observada.
+
+---
+
+#### 10. Efectos de `PAUSAR`
+
+Una pausa futura deberá producir documentalmente estos efectos:
+
+1. congelar la cohorte y el alcance;
+2. impedir la siguiente ola o promoción;
+3. mantener la autoridad y fronteras de escritura vigentes;
+4. preservar operaciones y efectos ya confirmados;
+5. impedir retries ciegos sobre resultados inciertos;
+6. conservar evidencia y correlación;
+7. activar únicamente la contención o default seguro que la fuente propietaria autorice;
+8. detener el cómputo de días activos del piloto cuando la pausa sea de seguridad bajo `DELIV-PKG-022`;
+9. entregar la condición observada al propietario correspondiente;
+10. exigir nueva evaluación antes de reanudar.
+
+Una pausa no reinicia por sí sola la duración del piloto. Un cambio material de candidato, contrato, datos, autorización o cohorte sí obliga a una nueva ventana para el alcance cambiado conforme a `DELIV-PKG-022`.
+
+---
+
+#### 11. Reanudación después de una pausa
+
+Eliminar la causa inmediata de una pausa no produce `CONTINUAR` automáticamente.
+
+Para reanudar deberán demostrarse nuevamente:
+
+- identidad y alcance vigentes;
+- cierre o disposición válida de la condición que originó la pausa;
+- restauración de señales y evidencia obligatorias;
+- vigencia de riesgos aceptados y condiciones de suspensión;
+- estado de conciliación requerido;
+- capacidad de recovery aplicable;
+- ausencia de disparador que exija reversión;
+- autoridad explícita para continuar.
+
+La reevaluación podrá limitarse a las fuentes afectadas únicamente cuando pueda demostrarse que las demás conservaron vigencia.
+
+---
+
+#### 12. Criterio de `REVERTIR`
+
+`REVERTIR` significa activar el camino de rollback/recovery ya definido por `DELIV-PKG-020` para retirar o neutralizar de forma gobernada la exposición del candidato en el alcance afectado.
+
+Solo puede emitirse cuando:
+
+1. existe un disparador de `DELIV-PKG-020` aplicable y demostrado;
+2. el disparador corresponde al mismo paquete, candidato, ambiente y alcance;
+3. la fuente propietaria determina que mantener la exposición no es la disposición segura;
+4. existe autoridad vigente para decidir el rollback/recovery aplicable;
+5. el objetivo seguro o estado de recuperación está identificado;
+6. el procedimiento aplicable es el vigente para esa revisión;
+7. se conocen las fronteras entre contención, rollback técnico, rollback funcional, restore, compensation, correction y reconciliation;
+8. la decisión conserva evidencia suficiente para iniciar la ejecución sin inventar pasos.
+
+006 no ejecuta ninguno de esos mecanismos.
+
+---
+
+#### 13. Disparadores de reversión heredados
+
+La evaluación deberá vincular, según aplicabilidad, los disparadores ya definidos en `DELIV-PKG-020`, entre ellos:
+
+- violación de seguridad, autorización o integridad con tolerancia contractual cero;
+- `OBS-P0`, `OBS-P1` o gap P0/P1 cuya contención requiera retirar el candidato;
+- incumplimiento de un umbral NFR aprobado;
+- incompatibilidad de contrato, runtime, dispositivo, migración, esquema o consumidor;
+- drift de release, configuración, migración, RLS/grants, tipos o procedencia que invalide el candidato;
+- conciliación fallida, duplicado material, estado empresarial incoherente o efecto externo desconocido que no pueda mantenerse expuesto con seguridad;
+- pérdida o corrupción de datos;
+- imposibilidad de demostrar un punto consistente recuperable;
+- incapacidad de demostrar artefacto, versión o configuración efectiva;
+- incumplimiento de objetivos de recuperación aprobados ante una interrupción real.
+
+La presencia de una señal abre la evaluación conforme al contrato propietario; 006 no convierte una señal genérica en rollback automático si `DELIV-PKG-020` exige una clasificación adicional.
+
+---
+
+#### 14. Cuando existe disparador pero la reversión no es ejecutable
+
+Si existe una condición que requiere evaluar reversión pero falta evidencia, autoridad, objetivo seguro o procedimiento ejecutable:
+
+1. `CONTINUAR` queda prohibido;
+2. la expansión se mantiene `PAUSAR`;
+3. se conserva la condición como bloqueo crítico;
+4. no se improvisa un rollback;
+5. se activa el escalamiento ya aprobado;
+6. la resolución operativa se entrega al propietario de `DELIV-PKG-020`;
+7. el hecho y la decisión deberán quedar registrados por `CUTOVER-OPS-007` durante la ejecución real.
+
+La incapacidad de ejecutar una reversión segura no transforma el riesgo en aceptable.
+
+---
+
+#### 15. Kill switch, contención y reversión
+
+El kill switch de `DELIV-PKG-018` no equivale a rollback completo.
+
+006 conserva estas fronteras:
+
+| Mecanismo                  | Decisión relacionada                                                       | Límite                                                                                              |
+| -------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| congelar cohorte           | `PAUSAR`                                                                   | impide expansión; no altera efectos ya confirmados                                                  |
+| kill switch/default seguro | `PAUSAR` o parte de una disposición de recovery cuando la fuente lo ordene | detiene exposición nueva; no deshace datos ni efectos externos                                      |
+| rollback técnico           | `REVERTIR`                                                                 | vuelve código, release, configuración, routing o contrato compatible; no restaura datos por sí solo |
+| rollback funcional         | `REVERTIR`                                                                 | retira comportamiento nuevo; conserva historia de hechos confirmados                                |
+| restore                    | `REVERTIR` cuando `DELIV-PKG-020` lo determine                             | exige aislamiento, compatibilidad, validación y reconciliación                                      |
+| compensation/correction    | tratamiento posterior gobernado                                            | no borra el hecho original y exige resultado conocido y autoridad                                   |
+| reconciliation             | soporte de decisión y cierre                                               | no es por sí sola una reversión                                                                     |
+
+006 no transforma una pausa en borrado, compensación o restore.
+
+---
+
+#### 16. Tratamiento de resultados de conciliación
+
+Los resultados de `CUTOVER-OPS-005` se consumen así:
+
+| Resultado 005            | Tratamiento mínimo en 006                                                                          |
+| ------------------------ | -------------------------------------------------------------------------------------------------- |
+| `CONCILIADA`             | puede satisfacer la condición de conciliación aplicable                                            |
+| `DIFERENCIA_ESPERADA`    | puede permitir continuidad únicamente dentro del contrato explícito y su condición de convergencia |
+| `DIFERENCIA_NO_RESUELTA` | `PAUSAR`; `REVERTIR` si además satisface un disparador de 020                                      |
+| `RESULTADO_INCIERTO`     | `PAUSAR`; no retry ciego; `REVERTIR` solo si 020 resuelve esa disposición                          |
+| `DUPLICIDAD_CONFIRMADA`  | `PAUSAR`; nunca se normaliza; `REVERTIR` si la condición de 020 lo exige                           |
+| `BLOQUEADA`              | `PAUSAR` durante exposición activa; sin continuidad                                                |
+| `INVALIDADA`             | evaluación de 006 `INVALIDADA`; durante exposición activa se detiene expansión hasta revalidar     |
+| `NO_APLICA`              | no crea un gate artificial de conciliación                                                         |
+
+Una conciliación positiva no cancela una alerta, un riesgo, un defecto o un disparador de recovery independiente.
+
+---
+
+#### 17. Defectos detectados durante la ejecución
+
+Cuando la ejecución real detecte un defecto:
+
+1. se clasifica contra el gate y severidad propietarios;
+2. la decisión de 006 no puede ignorarlo por falta de volumen;
+3. si bloquea el checkpoint, se emite `PAUSAR` o `REVERTIR` conforme al contrato aplicable;
+4. `CUTOVER-OPS-007` conservará el incidente y la decisión;
+5. deberá materializarse una tarea de corrección exacta y un requisito de regresión antes de continuar o cerrar cuando el defecto lo exija;
+6. 006 no inventa anticipadamente el identificador de esa tarea ni del requisito porque todavía no existe un defecto real observado.
+
+La corrección no se considera cerrada hasta que su fuente propietaria produzca la evidencia exigida.
+
+---
+
+#### 18. Checkpoints obligatorios
+
+`pilot_decision_evaluation` se ejecutará documentalmente en los puntos aplicables ya definidos por la secuencia:
+
+1. antes de iniciar la primera unidad u ola;
+2. antes de cada ola posterior;
+3. después de la verificación inmediata que la ola exija;
+4. cuando una señal materialice una condición de suspensión;
+5. cuando aparezca un resultado incierto, diferencia no resuelta o duplicidad;
+6. cuando se active una evaluación de rollback/recovery;
+7. después de resolver una pausa y antes de reanudar;
+8. antes de cualquier expansión o promoción gobernada por `DELIV-PKG-019`;
+9. cuando un cambio material invalide las entradas anteriores.
+
+No se define una frecuencia universal por minutos u horas.
+
+---
+
+#### 19. Matriz determinista de decisión
+
+La evaluación sigue esta matriz:
+
+| Condición agregada                                                                                           | Decisión                                                                                |
+| ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| trigger de 020 demostrado + disposición propietaria exige retiro + autoridad/objetivo/procedimiento vigentes | `REVERTIR`                                                                              |
+| condición de suspensión o bloqueo activa, sin obligación confirmada de reversión                             | `PAUSAR`                                                                                |
+| evaluación bloqueada o invalidada durante exposición activa                                                  | `PAUSAR`                                                                                |
+| evidencia crítica ausente o fuente crítica no disponible                                                     | `PAUSAR`                                                                                |
+| resultado incierto, diferencia no resuelta o duplicidad confirmada sin disposición de reversión cerrada      | `PAUSAR`                                                                                |
+| todos los gates aplicables satisfechos + sin condición de pausa/reversión + autoridad explícita              | `CONTINUAR`                                                                             |
+| raíz sin exposición directa por modalidad compartida/control                                                 | decisión derivada o de observación según la raíz gobernada; no se crea decisión directa |
+| raíz bloqueada antes de exposición o fuera de línea                                                          | no se fabrica `CONTINUAR`, `PAUSAR` o `REVERTIR` ejecutados                             |
+
+Cuando dos condiciones producen disposiciones distintas, `REVERTIR` prevalece sobre `PAUSAR` únicamente si la obligación de reversión ya está demostrada bajo `DELIV-PKG-020`. En cualquier otro conflicto no resuelto se conserva `PAUSAR` fail-closed.
+
+---
+
+#### 20. Autoridad de decisión
+
+006 no crea un “comité de cutover” universal ni una autoridad nueva.
+
+La autoridad se resuelve por operación:
+
+- promoción o expansión: propietario `OWN-*` y responsable técnico exigidos por `DELIV-PKG-019`;
+- activación, suspensión, desactivación o default seguro: autoridad definida por `DELIV-PKG-018` para el control aplicable;
+- riesgo residual y condición de suspensión: autoridad ya vinculada por `READY-GATE-014`;
+- rollback/recovery: autoridad funcional y técnica definida por `DELIV-PKG-020`;
+- soporte y escalamiento: responsables confirmados por `READY-GATE-010`;
+- decisión frente a señal operativa: propietario/routing definido por `DELIV-PKG-017`.
+
+Si la segregación exige más de una autoridad, ninguna aprobación parcial se convierte en decisión válida.
+
+Disponibilidad nominal no equivale a autoridad.
+
+---
+
+#### 21. Evidencia mínima de una decisión
+
+Toda decisión futura deberá permitir reconstruir:
+
+1. `package_id`;
+2. candidato y revisión;
+3. ambiente;
+4. alcance autorizado;
+5. ventana;
+6. unidad y ola;
+7. checkpoint;
+8. estado de evaluación;
+9. conjunto de entradas evaluadas;
+10. reglas y versiones aplicadas;
+11. señales relevantes;
+12. riesgos y condiciones de suspensión aplicables;
+13. resultados de conciliación aplicables;
+14. controles anti-duplicidad aplicables;
+15. disparadores de rollback evaluados;
+16. gates de promoción evaluados cuando corresponda;
+17. decisión emitida;
+18. autoridad o autoridades;
+19. momento efectivo;
+20. justificación basada en evidencia;
+21. referencias de evidencia;
+22. bloqueos y condición de salida cuando existan.
+
+Una captura aislada, una afirmación manual o el simple estado “verde” de un componente no sustituye el expediente.
+
+---
+
+#### 22. Duración del piloto y pausas
+
+006 conserva `DUR-DIR-001` de `DELIV-PKG-022`:
+
+- piloto directo: 14 días calendario activos y al menos un ciclo operativo completo;
+- un día pausado por seguridad no cuenta como día activo;
+- si el ciclo aplicable supera 14 días, se completa el primer ciclo íntegro iniciado bajo piloto;
+- reinicios técnicos sin cambio de cohorte ni candidato no reinician el reloj;
+- cambios materiales de candidato, contrato, datos, autorización o cohorte obligan a una nueva ventana para el alcance cambiado;
+- completar la duración no equivale a aceptación ni promoción.
+
+006 no usa la duración como autorización automática para `CONTINUAR`.
+
+---
+
+#### 23. Cohorte durante pausa o reversión
+
+Cuando se active `PAUSAR` o `REVERTIR`:
+
+- la cohorte queda congelada;
+- no se agregan actores;
+- no se agregan sedes;
+- no se agregan dispositivos;
+- no se agrega tráfico para compensar tiempo perdido;
+- no se amplían datos ni permisos;
+- los efectos reales ya confirmados se preservan;
+- cualquier recuperación o conciliación se rige por `DELIV-PKG-020`.
+
+La decisión no puede ampliar el alcance autorizado de `DELIV-PKG-022`.
+
+---
+
+#### 24. Aplicabilidad al universo heredado
+
+006 conserva las 207 raíces y su modalidad de `DELIV-PKG-022`:
+
+| Modalidad                     | Cantidad | Tratamiento 006                                                                                |
+| ----------------------------- | -------: | ---------------------------------------------------------------------------------------------- |
+| `PILOT-DIRECT-001`            |  **160** | evaluación directa por unidad/ola/checkpoint cuando la raíz haya entrado válidamente en piloto |
+| `PILOT-SHARED-001`            |    **3** | decisión derivada de consumidores directos; no se crea exposición o checkpoint independiente   |
+| `PILOT-CONTROL-001`           |   **26** | observa los pilotos gobernados y aporta señales/gates; no se fabrica una mutación propia       |
+| AURA bloqueada                |   **14** | `BLOQUEADA`; sin decisión operativa ejecutada mientras persista el gate                        |
+| dependencia externa bloqueada |    **2** | `BLOQUEADA`; sin decisión operativa ejecutada mientras persista `EXT-GOV-001`                  |
+| TALENTO fuera de línea actual |    **2** | `FUERA_DE_LINEA`; sin decisión operativa en esta línea                                         |
+
+Reconciliación:
+
+```text
+160 + 3 + 26 + 14 + 2 + 2 = 207
+```
+
+Las tres raíces compartidas siguen siendo `GAP-PKG-033`, `GAP-PKG-034` y `GAP-PKG-045`, conforme a `DELIV-PKG-022`.
+
+La clasificación exacta de cada raíz se hereda de la matriz homónima de `DELIV-PKG-022`; 006 no crea una segunda clasificación ni reasigna identidades.
+
+---
+
+#### 25. Reglas para modalidades compartidas y de control
+
+##### 25.1. `PILOT-SHARED-001`
+
+- no posee reloj de piloto independiente;
+- no recibe una ola artificial;
+- se observa a través de consumidores directos compatibles;
+- una condición propia del contrato compartido puede bloquear los consumidores afectados cuando su fuente así lo determine;
+- la reanudación exige verificar nuevamente el contrato compartido y las raíces consumidoras afectadas.
+
+##### 25.2. `PILOT-CONTROL-001`
+
+- no posee exposición empresarial independiente por el solo hecho de observar;
+- sus señales y gates pueden alimentar la decisión de las raíces gobernadas;
+- no recibe rollback de deploy ficticio cuando no existe cambio físico propio;
+- una condición bloqueante del control se aplica únicamente al alcance que su contrato gobierna;
+- no adquiere autoridad sobre las raíces observadas por ser un control.
+
+---
+
+#### 26. AURA, EXT y TALENTO
+
+##### 26.1. AURA
+
+Las 14 raíces AURA permanecen bloqueadas. 006 no emite una decisión de continuación, pausa o reversión de una exposición que no está autorizada.
+
+##### 26.2. EXT
+
+Las 2 raíces condicionadas por `EXT-GOV-001` permanecen bloqueadas hasta cumplir su gate. No se inventan proveedor, credencial, callback, señal, rollback ni decisión operativa.
+
+##### 26.3. TALENTO
+
+Las 2 raíces TALENTO permanecen fuera de la línea actual. 006 conserva el contrato futuro sin simular piloto o recovery productivo.
+
+---
+
+#### 27. Cambios materiales e invalidación
+
+`pilot_decision_manifest::<package_id>` queda `INVALIDADA` cuando cambia materialmente:
+
+- candidato;
+- commit, artefacto o release que define la revisión;
+- ambiente;
+- alcance;
+- ventana;
+- unidad u ola;
+- cohorte;
+- autoridad;
+- contrato de convivencia;
+- control anti-duplicidad;
+- fuente o regla de conciliación;
+- feature flag/configuración gobernada;
+- señal o contrato de observabilidad;
+- umbral/guardrail NFR;
+- estrategia de rollout;
+- disparador, objetivo o procedimiento de rollback/recovery;
+- requisito de prueba aplicable.
+
+La invalidación obliga a reevaluar con fuentes vigentes. No se reescribe una decisión histórica para aparentar que correspondía a otra revisión.
+
+---
+
+#### 28. Condiciones de bloqueo documental
+
+La evaluación queda `BLOQUEADA` cuando:
+
+1. falta una entrada obligatoria;
+2. dos fuentes vigentes se contradicen sobre autoridad, alcance o tratamiento;
+3. no puede demostrarse identidad del candidato;
+4. no puede demostrarse el ambiente;
+5. no puede demostrarse el alcance;
+6. falta una señal crítica requerida;
+7. falta una regla necesaria para clasificar una condición;
+8. existe un disparador potencial de rollback sin evidencia suficiente para resolver su disposición;
+9. la autoridad requerida no está identificada o disponible;
+10. el objetivo seguro o procedimiento de recovery requerido no está materializado;
+11. la conciliación necesaria está bloqueada;
+12. continuar exigiría inventar un umbral, tolerancia, permiso, alcance o excepción.
+
+Todo bloqueo conserva causa, insumo faltante, propietario canónico, fuente o tarea responsable y condición verificable de salida.
+
+---
+
+#### 29. Relación con `CUTOVER-OPS-007`
+
+006 define qué información debe producir una evaluación, pero no diseña el registro operativo de incidentes y decisiones.
+
+Durante la ejecución real, 007 será propietario del registro de:
+
+- incidentes;
+- decisiones de continuar, pausar o revertir;
+- cambios de alcance;
+- actores y timestamps;
+- razones;
+- evidencia;
+- relación con acciones de corrección, recovery o regresión.
+
+006 entrega a 007 la semántica de la decisión; 007 define su registro trazable.
+
+---
+
+#### 30. Frontera con `CUTOVER-OPS-008..010`
+
+006 no anticipa:
+
+- `CUTOVER-OPS-008`: definición de métricas de tiempos, errores, adopción y resultado empresarial;
+- `CUTOVER-OPS-009`: autoridad y criterio para aprobar salida del piloto o exigir correcciones;
+- `CUTOVER-OPS-010`: condiciones y evidencia para retirar el proceso anterior.
+
+En particular:
+
+- `CONTINUAR` dentro del piloto no equivale a aprobar salida;
+- completar 14 días activos no equivale a aprobar salida;
+- una decisión de `REVERTIR` no define por sí sola el retiro futuro del proceso objetivo o del anterior;
+- las métricas que 008 formalice no pueden aplicarse retroactivamente como umbrales inventados por 006.
+
+---
+
+#### 31. Handoff operativo
+
+006 entrega a la ejecución futura y a 007:
+
+```text
+IDENTIDAD VIGENTE
++
+CHECKPOINT
++
+ENTRADAS Y REGLAS APLICABLES
++
+SEÑALES Y RIESGOS
++
+CONCILIACIONES Y CONTROLES
++
+DISPARADORES DE ROLLBACK
++
+GATES DE PROMOCIÓN
++
+AUTORIDAD
++
+DECISIÓN CONTINUAR / PAUSAR / REVERTIR
++
+EVIDENCIA Y BLOQUEOS
+=
+DECISIÓN OPERATIVA TRAZABLE
+```
+
+`SHELL-CI-022::<package_id>` ejecutará el checklist y las acciones que correspondan. 006 no produce evidencia operativa anticipada.
+
+---
+
+#### 32. Separación entre planificación y ejecución
+
+006 es exclusivamente documental.
+
+No ejecuta:
+
+- activación o desactivación real;
+- promoción de cohortes;
+- expansión de tráfico;
+- pausa física;
+- kill switch;
+- rollback técnico o funcional;
+- restore;
+- recovery;
+- compensación;
+- corrección de datos;
+- retry;
+- conciliación;
+- despliegues;
+- migraciones;
+- DDL/DML;
+- backfills;
+- cambios de RLS/grants;
+- cambios de configuración remota;
+- operaciones sobre Supabase.
+
+Toda modificación futura de Supabase VENTO continúa perteneciendo a `vento-shell`.
+
+---
+
+#### 33. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0  
+**Requisitos modificados:** 0  
+**Fragmentos 04A afectados:** 0
+
+**Justificación:** 006 no introduce un nuevo comportamiento empresarial, umbral, severidad, métrica, algoritmo de recovery, mecanismo de rollback, estado de dominio, autorización ni tolerancia. Materializa la precedencia y el binding operativo entre condiciones ya definidas por readiness, NFR, observabilidad, rollout, rollback, controles anti-duplicidad y conciliación. Las obligaciones de rollback independiente, evidencia reproducible, idempotencia, resultado recuperable, conciliación y control de fuentes competidoras ya están protegidas por requisitos vigentes y vinculadas por `DELIV-PKG-016`. Si una decisión necesitara un criterio no existente en esas fuentes, la evaluación queda bloqueada en vez de crear una regla por inferencia.
+
+---
+
+#### 34. Criterios de aceptación documental
+
+`CUTOVER-OPS-006` queda documentalmente completo cuando:
+
+1. conserva `CUTOVER-OPS-005 → CUTOVER-OPS-006 → CUTOVER-OPS-007`;
+2. materializa `pilot_decision_input_set`, `pilot_decision_rule_binding`, `pilot_decision_evaluation` y `pilot_decision_manifest`;
+3. separa estado de evaluación de disposición operativa;
+4. limita las disposiciones operativas a `CONTINUAR`, `PAUSAR` y `REVERTIR`;
+5. define precedencia determinista entre reversión, pausa y continuidad;
+6. `CONTINUAR` exige evidencia positiva y decisión explícita;
+7. no existe continuidad automática por tiempo, silencio o ausencia aparente de incidentes;
+8. `PAUSAR` congela expansión sin fingir rollback;
+9. la pausa de seguridad no cuenta como día activo del piloto;
+10. la reanudación después de pausa exige nueva evaluación;
+11. `REVERTIR` consume únicamente disparadores y procedimientos vigentes de `DELIV-PKG-020`;
+12. un disparador potencial sin recovery ejecutable prohíbe continuar y mantiene pausa/escalamiento;
+13. kill switch, rollback técnico, rollback funcional, restore, compensation y reconciliation permanecen separados;
+14. `DIFERENCIA_NO_RESUELTA`, `RESULTADO_INCIERTO` y `DUPLICIDAD_CONFIRMADA` no autorizan continuidad;
+15. `DIFERENCIA_ESPERADA` solo puede permitir continuidad dentro de su contrato explícito;
+16. `OBS-P0/P1`, gaps P0/P1 y tolerancias cero bloquean expansión conforme a sus fuentes;
+17. `OBS-P2/P3` solo permiten continuidad si el contrato vigente permite degradación controlada;
+18. riesgos aceptados no justifican continuidad después de materializarse una condición de suspensión;
+19. pérdida de una fuente crítica no se interpreta como normalidad;
+20. la autoridad se hereda de 018, 019, 020, readiness y 017 sin crear roles nuevos;
+21. no se mezclan decisiones de paquetes, candidatos, ambientes, alcances, unidades, olas o checkpoints distintos;
+22. la cohorte queda congelada durante pausa o reversión;
+23. las 207 raíces conservan exactamente `160 + 3 + 26 + 14 + 2 + 2`;
+24. las 3 raíces shared conservan `GAP-PKG-033`, `GAP-PKG-034` y `GAP-PKG-045`;
+25. AURA, EXT y TALENTO conservan sus gates;
+26. un cambio material invalida la evaluación anterior;
+27. todo bloqueo conserva causa, propietario y condición de salida;
+28. los defectos reales futuros se entregan a 007 y a una corrección/regresión exacta antes de continuar o cerrar cuando corresponda;
+29. 007 recibe la semántica de decisión sin que 006 diseñe su registro;
+30. 008 conserva propiedad de las métricas;
+31. 009 conserva propiedad de la salida del piloto;
+32. 010 conserva propiedad del retiro del proceso anterior;
+33. la ejecución real permanece en `SHELL-CI-022::<package_id>`;
+34. no se ejecutan código, despliegues, configuración remota, rollback, restore, conciliación, migraciones, DDL/DML, backfills, cambios de datos ni operaciones de Supabase;
+35. se crean cero requisitos de prueba, se modifican cero requisitos de prueba y se afectan cero fragmentos 04A.
+
+---
+
+#### 35. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+CUTOVER-OPS-005 — Definir conciliaciones durante el piloto
+
+##### TAREA ACTUAL APROBADA
+CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación
+
+##### SIGUIENTE TAREA RESERVADA
+CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de alcance
+
+
 ### [ ] CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de alcance
 ### [ ] CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial
 ### [ ] CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones
