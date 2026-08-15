@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **861** |
+| Tareas aprobadas | **862** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **733** |
+| Tareas no iniciadas | **732** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **54.02% (861/1594)** |
+| Porcentaje de completamiento | **54.08% (862/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior** |
-| Tarea actual | **HYPERCARE-OPS-001 — Definir inicio, duración y salida del acompañamiento intensivo** |
+| Última tarea aprobada | **HYPERCARE-OPS-001 — Definir inicio, duración y salida del acompañamiento intensivo** |
+| Tarea actual | **HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos** |
+| Siguiente tarea | **HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 50 de 68 aprobadas; HYPERCARE-OPS-001 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 51 de 68 aprobadas; HYPERCARE-OPS-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `CUTOVER-OPS-010` — Definir condiciones y evidencia para retirar el proceso anterior |
-| Tarea actual | `HYPERCARE-OPS-001` — Definir inicio, duración y salida del acompañamiento intensivo — **NO INICIADA** |
-| Siguiente tarea | `HYPERCARE-OPS-002` — Definir responsables funcionales y técnicos |
+| Última aprobada | `HYPERCARE-OPS-001` — Definir inicio, duración y salida del acompañamiento intensivo |
+| Tarea actual | `HYPERCARE-OPS-002` — Definir responsables funcionales y técnicos — **NO INICIADA** |
+| Siguiente tarea | `HYPERCARE-OPS-003` — Definir monitoreo de errores, colas, integraciones y rendimiento |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 50 DE 68 APROBADAS — ACTUAL HYPERCARE-OPS-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 51 DE 68 APROBADAS — ACTUAL HYPERCARE-OPS-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior
-        ↓
-TAREA ACTUAL
 HYPERCARE-OPS-001 — Definir inicio, duración y salida del acompañamiento intensivo
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos
         ↓
+SIGUIENTE TAREA RESERVADA
+HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 50 de 68 tareas aprobadas
+BLOQUE E5 — 51 de 68 tareas aprobadas
 ```
