@@ -147,7 +147,7 @@ Una instancia directa solo puede entrar a hypercare cuando exista un handoff eje
 
 `EXIGIR_CORRECCIONES`, `BLOQUEAR_DECISION` o ausencia de una decisión válida de salida impiden iniciar hypercare directo sobre esa instancia.
 
-La existencia de superficies `RETIRO_BLOQUEADO` o equivalentes en el handoff de 010 no bloquea por sí sola el inicio de hypercare. Esas superficies entran como obligaciones abiertas con causa y propietario, siempre que la salida del piloto sea válida y la permanencia de dichas superficies sea compatible con el estado seguro aprobado.
+La existencia de superficies `RETIRO_BLOQUEADO` o equivalentes en el handoff de `CUTOVER-OPS-010` no bloquea por sí sola el inicio de hypercare. Esas superficies entran como obligaciones abiertas con causa y propietario, siempre que la salida del piloto sea válida y la permanencia de dichas superficies sea compatible con el estado seguro aprobado.
 
 ---
 
@@ -260,7 +260,7 @@ La instancia no puede convertirse en candidata de salida mientras exista al meno
 11. evidencia temporal mínima exigida por una fuente propietaria todavía incompleta;
 12. cambio material que invalide candidato, ambiente, alcance o contrato.
 
-La lista no define los criterios internos de 002..010; únicamente fija su efecto sobre el reloj y la salida de 001.
+La lista no define los criterios internos de `HYPERCARE-OPS-002..010`; únicamente fija su efecto sobre el reloj y la salida de `HYPERCARE-OPS-001`.
 
 ---
 
@@ -274,7 +274,7 @@ La lista no define los criterios internos de 002..010; únicamente fija su efect
 | `ACTIVA`             | hypercare comenzó y se encuentra reuniendo evidencia de estabilización                                                                          |
 | `SUSPENDIDA`         | la instancia sigue bajo ownership de hypercare, pero existe una condición que impide considerar el periodo como evidencia normal de estabilidad |
 | `EXTENDIDA`          | la ventana continúa porque una obligación aplicable sigue abierta o exige observación adicional                                                 |
-| `CANDIDATA_A_SALIDA` | se cumplieron las condiciones de 001 para presentar la instancia a la autoridad de cierre de 010                                                |
+| `CANDIDATA_A_SALIDA` | se cumplieron las condiciones de `HYPERCARE-OPS-001` para presentar la instancia a la autoridad de cierre de `HYPERCARE-OPS-010`                |
 | `INVALIDADA`         | un cambio material impide reutilizar la ventana y su evidencia como base de salida de la misma instancia                                        |
 | `NO_APLICA_DIRECTA`  | la modalidad no posee reloj independiente y su cobertura se deriva de consumidores o raíces gobernadas                                          |
 | `FUERA_DE_LINEA`     | la raíz no participa en la ejecución actual conforme a su gate canónico                                                                         |
@@ -368,7 +368,7 @@ Cumplir estas condiciones **solo habilita la candidatura**. La autoridad y evide
 
 ```text
 CANDIDATA_A_SALIDA
-→ condiciones temporales y de dependencia de 001 satisfechas
+→ condiciones temporales y de dependencia de HYPERCARE-OPS-001 satisfechas
 
 APROBACIÓN DE CIERRE HYPERCARE
 → decisión propietaria de HYPERCARE-OPS-010
@@ -384,7 +384,7 @@ No se permite:
 - cerrar deuda o incidentes por terminar hypercare;
 - retirar contingencias por inferencia;
 - considerar una superficie legacy físicamente retirada por haber quedado elegible;
-- presentar la aprobación documental de 010 como evidencia de certificación ejecutada por 024.
+- presentar la aprobación documental de `HYPERCARE-OPS-010` como evidencia de certificación ejecutada por `SHELL-CI-024`.
 
 ---
 
@@ -406,8 +406,8 @@ Reglas:
 1. `RETIRO_ELEGIBLE` no es precondición universal para iniciar hypercare;
 2. una superficie bloqueada puede permanecer durante hypercare si el bloqueo y su uso retenido son compatibles con el estado seguro aprobado;
 3. una dependencia legacy que siga siendo necesaria para recovery o soporte impide tratarla como retirada;
-4. el retiro lógico o físico posterior permanece fuera de 001;
-5. cualquier cambio material que invalide la decisión de 010 debe conservarse como obligación abierta y reevaluarse en su fuente propietaria.
+4. el retiro lógico o físico posterior permanece fuera de `HYPERCARE-OPS-001`;
+5. cualquier cambio material que invalide la decisión de `CUTOVER-OPS-010` debe conservarse como obligación abierta y reevaluarse en su fuente propietaria.
 
 ---
 
@@ -439,7 +439,7 @@ Si `SHELL-CI-023::<package_id>` detecta un defecto real:
 3. `HYPERCARE-OPS-007` gobierna únicamente deuda o trabajo posterior que pueda aceptarse conforme a sus reglas;
 4. cuando el defecto requiera protección contra regresión, deberá materializarse el requisito `TREQ-*` correspondiente antes o conjuntamente con su corrección, conforme al protocolo canónico;
 5. la ventana de hypercare se suspende o extiende cuando la fuente propietaria así lo exija;
-6. no se inventa en 001 un identificador de defecto, tarea correctiva o requisito de regresión para un hecho que todavía no existe.
+6. no se inventa en `HYPERCARE-OPS-001` un identificador de defecto, tarea correctiva o requisito de regresión para un hecho que todavía no existe.
 
 La ausencia actual de un defecto real es la razón por la que 001 no crea requisitos de regresión anticipados.
 
@@ -524,8 +524,8 @@ En E5 estos campos describen el formato esperado. No se rellenan con timestamps,
 El contrato temporal queda `BLOQUEADO` para futura ejecución cuando:
 
 1. no puede identificarse la misma instancia que terminó 022;
-2. falta la decisión de salida exigible de 009;
-3. el handoff de 010 es incompleto para una superficie legacy aplicable;
+2. falta la decisión de salida exigible de `CUTOVER-OPS-009`;
+3. el handoff de `CUTOVER-OPS-010` es incompleto para una superficie legacy aplicable;
 4. candidato, ambiente o alcance se contradicen entre fuentes;
 5. no puede resolverse qué obligaciones continúan abiertas;
 6. una fuente exige un periodo o ciclo específico y no existe forma de materializarlo sin inventar el valor;
@@ -534,7 +534,7 @@ El contrato temporal queda `BLOQUEADO` para futura ejecución cuando:
 9. una raíz bloqueada o fuera de línea se intenta presentar como ejecutada;
 10. la única forma de declarar salida sería usar tiempo transcurrido sin evidencia;
 11. una obligación se deja sin tarea propietaria exacta;
-12. la salida exigiría anticipar decisiones reservadas a 002..010.
+12. la salida exigiría anticipar decisiones reservadas a `HYPERCARE-OPS-002..010`.
 
 Todo bloqueo conserva causa, fuente propietaria, tarea responsable y condición objetiva de salida.
 
@@ -635,8 +635,8 @@ La ejecución de hypercare, conciliación, respuesta y estabilización correspon
 2. mantiene `SHELL-CI-022 → SHELL-CI-023 → SHELL-CI-024` como secuencia de ejecución;
 3. define `hypercare_entry_contract`, `hypercare_duration_profile`, `hypercare_temporal_state`, `hypercare_exit_candidate_gate` y `hypercare_temporal_manifest`;
 4. una instancia directa solo entra con handoff válido de 022 para el mismo paquete, candidato, ambiente y alcance;
-5. exige la decisión de salida de 009 cuando el piloto directo sea aplicable;
-6. exige el handoff de 010 sin convertir `RETIRO_ELEGIBLE` en requisito universal de entrada;
+5. exige la decisión de salida de `CUTOVER-OPS-009` cuando el piloto directo sea aplicable;
+6. exige el handoff de `CUTOVER-OPS-010` sin convertir `RETIRO_ELEGIBLE` en requisito universal de entrada;
 7. permite conservar superficies legacy bloqueadas únicamente como obligaciones explícitas y compatibles con el estado seguro;
 8. define `hypercare_start_at` de forma atribuible y posterior al handoff de 022;
 9. prohíbe inferir inicio por deploy, fin de cutover, `FULL_100`, calendario o ausencia de incidentes;
@@ -796,7 +796,7 @@ environment
 +
 authorized_scope_ref
 +
-hypercare_lifecycle_manifest_ref
+hypercare_temporal_manifest_ref
 ```
 
 Cuando el paquete tenga unidades físicas o repositorios múltiples, la resolución técnica conserva las unidades exactas y sus responsables; no colapsa varios repositorios bajo una persona o autoridad inferida.
@@ -1220,7 +1220,9 @@ Cada `package_id` aparece exactamente una vez. La matriz fija la fuente determin
 | `GAP-PKG-204` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
 | `GAP-PKG-205` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
 | `GAP-PKG-206` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
-| `GAP-PKG-207` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    | La matriz conserva **207/207** identidades, sin omisiones ni duplicaciones. La modalidad, gate y ejecutabilidad de cada fila continúan siendo los de su fila homónima en `DELIV-PKG-022` y `HYPERCARE-OPS-001`; 002 no los reclasifica. |
+| `GAP-PKG-207` | fila homónima de `DELIV-PKG-017` → `Responsable de decisión` `OWN-*` | fila homónima de `DELIV-PKG-020` → `technical_authority_ref`, resuelta desde `DELIV-PKG-014/015/019` | `READY-GATE-010`    | `HEREDAR_SIN_CREAR_AUTORIDAD` | `ESPECIFICADO`    |
+
+La matriz conserva **207/207** identidades, sin omisiones ni duplicaciones. La modalidad, gate y ejecutabilidad de cada fila continúan siendo los de su fila homónima en `DELIV-PKG-022` y `HYPERCARE-OPS-001`; 002 no los reclasifica.
 
 ---
 
@@ -1361,7 +1363,7 @@ La ejecución real de hypercare pertenece a `SHELL-CI-023::<package_id>`.
 
 1. conserva `HYPERCARE-OPS-001 → HYPERCARE-OPS-002 → HYPERCARE-OPS-003`;
 2. define `hypercare_responsibility_resolution`, `hypercare_functional_technical_map`, `hypercare_coverage_manifest` y `hypercare_responsibility_handoff`;
-3. la unidad de resolución conserva paquete, candidato, ambiente, alcance y manifiesto de lifecycle;
+3. la unidad de resolución conserva paquete, candidato, ambiente, alcance y `hypercare_temporal_manifest` de `HYPERCARE-OPS-001`;
 4. el responsable funcional se deriva del `OWN-*` exacto de la fila homónima de `DELIV-PKG-017`;
 5. el responsable técnico se deriva de `technical_authority_ref` y de los repositorios/unidades vigentes de `DELIV-PKG-014/015/019/020`;
 6. no se inventan nombres de personas, cargos, comités, repositorios ni autoridades;
@@ -1405,15 +1407,15 @@ HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendi
 
 ### ✅ HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento
 
-Estado: APROBADA
-Tarea anterior: `HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos`
-Tarea siguiente: `HYPERCARE-OPS-004 — Definir monitoreo de adopción, tiempos y desviaciones operativas`
-Tipo de tarea: documental — definición normativa y materialización por `package_id` del contrato técnico de monitoreo durante hypercare para errores, colas, integraciones y rendimiento, consumiendo la topología, observabilidad, requisitos no funcionales, ownership y evidencia ya aprobados; sin ejecutar monitoreo, instrumentación, consultas operativas, clasificación o corrección de incidentes, conciliaciones, despliegues, cambios de configuración, migraciones, DDL/DML, backfills, modificaciones de datos ni operaciones sobre Supabase
-Repositorio propietario: `vento-shell`
-Archivo propietario: `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md`
-Ejecución posterior: `SHELL-CI-023::<package_id>`
-Cambios físicos autorizados: ninguno
-Requisitos de prueba creados o modificados: 0
+**Estado:** APROBADA
+**Tarea anterior:** `HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos`
+**Tarea siguiente:** `HYPERCARE-OPS-004 — Definir monitoreo de adopción, tiempos y desviaciones operativas`
+**Tipo de tarea:** documental — definición normativa y materialización por `package_id` del contrato técnico de monitoreo durante hypercare para errores, colas, integraciones y rendimiento, consumiendo la topología, observabilidad, requisitos no funcionales, ownership y evidencia ya aprobados; sin ejecutar monitoreo, instrumentación, consultas operativas, clasificación o corrección de incidentes, conciliaciones, despliegues, cambios de configuración, migraciones, DDL/DML, backfills, modificaciones de datos ni operaciones sobre Supabase
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md`
+**Ejecución posterior:** `SHELL-CI-023::<package_id>`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
 
 ---
 
@@ -2026,6 +2028,8 @@ La interpretación y reacción futura se rigen por `HYPERCARE-OPS-002`:
 ---
 
 #### 22. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
 
 **Nuevos requisitos `TREQ-*`: 0.**
 
@@ -2731,13 +2735,13 @@ Tampoco podrá declararse una falla únicamente porque el tiempo o la adopción 
 
 #### 18. Continuidad canónica
 
-#### ÚLTIMA TAREA APROBADA
+##### ÚLTIMA TAREA APROBADA
 HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento
 
-#### TAREA ACTUAL APROBADA
+##### TAREA ACTUAL APROBADA
 HYPERCARE-OPS-004 — Definir monitoreo de adopción, tiempos y desviaciones operativas
 
-#### SIGUIENTE TAREA RESERVADA
+##### SIGUIENTE TAREA RESERVADA
 HYPERCARE-OPS-005 — Definir conciliaciones de datos y efectos entre dominios
 
 
@@ -3372,13 +3376,13 @@ Tampoco podrá declararse `FAIL` por una diferencia cuya semántica, corte, vers
 
 #### 20. Continuidad canónica
 
-#### ÚLTIMA TAREA APROBADA
+##### ÚLTIMA TAREA APROBADA
 HYPERCARE-OPS-004 — Definir monitoreo de adopción, tiempos y desviaciones operativas
 
-#### TAREA ACTUAL APROBADA
+##### TAREA ACTUAL APROBADA
 HYPERCARE-OPS-005 — Definir conciliaciones de datos y efectos entre dominios
 
-#### SIGUIENTE TAREA RESERVADA
+##### SIGUIENTE TAREA RESERVADA
 HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes
 
 
@@ -4086,10 +4090,10 @@ HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posterior
 
 ### ✅ HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores
 
-Estado: APROBADA
-Tarea anterior: HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes
-Tarea siguiente: HYPERCARE-OPS-008 — Definir transferencia a soporte y documentación operativa
-Tipo de tarea: Documental — gobierno de residuales, deuda aceptada y trabajo posterior de hypercare
+**Estado:** APROBADA
+**Tarea anterior:** `HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes`
+**Tarea siguiente:** `HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y documentación definitiva`
+**Tipo de tarea:** documental — gobierno de residuales, deuda aceptada y trabajo posterior de hypercare
 
 ---
 
@@ -4633,14 +4637,14 @@ La tarea queda documentalmente completa cuando:
 
 #### 20. Continuidad
 
-ÚLTIMA TAREA APROBADA
+##### ÚLTIMA TAREA APROBADA
 HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes
 
-TAREA ACTUAL APROBADA
+##### TAREA ACTUAL APROBADA
 HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores
 
-SIGUIENTE TAREA RESERVADA
-HYPERCARE-OPS-008 — Definir transferencia a soporte y documentación operativa
+##### SIGUIENTE TAREA RESERVADA
+HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y documentación definitiva
 
 
 ### ✅ HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y documentación definitiva
@@ -5235,17 +5239,17 @@ Las 160 + 3 + 26 identidades no bloqueadas por esas tres familias suman 189 y qu
 
 008 entrega únicamente:
 
-- a 009: la lista y estado de contingencias temporales todavía conocidas por soporte, sin decidir su retiro;
-- a 010: evidencia de que el criterio de transferencia y documentación fue satisfecho, bloqueado o invalidado, sin decidir el cierre global;
+- a `HYPERCARE-OPS-009`: la lista y estado de contingencias temporales todavía conocidas por soporte, sin decidir su retiro;
+- a `HYPERCARE-OPS-010`: evidencia de que el criterio de transferencia y documentación fue satisfecho, bloqueado o invalidado, sin decidir el cierre global;
 - a `SHELL-CI-024::<package_id>`: el expediente ejecutado de handoff, versión documental vigente, evidencia de soporte/conocimiento y referencias de obligaciones restantes para certificación material.
 
 La cadena permanece:
 
 ```text
 SHELL-CI-023::<package_id>
-→ evaluación y handoff definido por 008
-→ decisiones de contingencia de 009
-→ autoridad de cierre de 010
+→ evaluación y handoff definido por HYPERCARE-OPS-008
+→ decisiones de contingencia de HYPERCARE-OPS-009
+→ autoridad de cierre de HYPERCARE-OPS-010
 → certificación material de SHELL-CI-024::<package_id>
 ```
 
@@ -6632,7 +6636,7 @@ Durante la ejecución real, para cada instancia aplicable se deberá:
 
 ---
 
-#### Requisitos de prueba derivados
+#### 20. Requisitos de prueba derivados
 
 **Resultado:** NO GENERA REQUISITOS DE PRUEBA
 
@@ -6644,7 +6648,7 @@ Durante la ejecución real, para cada instancia aplicable se deberá:
 
 ---
 
-#### 20. Criterios de aceptación documental
+#### 21. Criterios de aceptación documental
 
 010 queda documentalmente completa cuando:
 
@@ -6671,7 +6675,7 @@ Durante la ejecución real, para cada instancia aplicable se deberá:
 
 ---
 
-#### 21. Cambios físicos
+#### 22. Cambios físicos
 
 Ninguno.
 
@@ -6688,7 +6692,7 @@ Ninguno.
 
 ---
 
-#### 22. Bloqueos y handoff documental
+#### 23. Bloqueos y handoff documental
 
 Toda condición que impida cierre conserva su destino exacto:
 
@@ -6707,7 +6711,7 @@ Toda condición que impida cierre conserva su destino exacto:
 
 ---
 
-#### 23. Continuidad
+#### 24. Continuidad
 
 ##### ÚLTIMA TAREA APROBADA
 

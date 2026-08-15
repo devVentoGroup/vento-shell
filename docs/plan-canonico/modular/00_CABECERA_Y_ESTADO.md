@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **871** |
+| Tareas aprobadas | **873** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **723** |
+| Tareas no iniciadas | **721** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **54.64% (871/1594)** |
+| Porcentaje de completamiento | **54.77% (873/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **HYPERCARE-OPS-010 — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo** |
-| Tarea actual | **E5-GATE-001 — Confirmar que cada capacidad priorizada tiene paquete aprobado** |
+| Última tarea aprobada | **E5-GATE-002 — Confirmar que cada brecha crítica tiene propietario y destino** |
+| Tarea actual | **E5-GATE-003 — Confirmar que los requisitos no funcionales están cubiertos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **E5-GATE-002 — Confirmar que cada brecha crítica tiene propietario y destino** |
+| Siguiente tarea | **E5-GATE-004 — Confirmar que rollout, rollback y contingencia son ejecutables** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 60 de 68 aprobadas; E5-GATE-001 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 62 de 68 aprobadas; E5-GATE-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `HYPERCARE-OPS-010` — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo |
-| Tarea actual | `E5-GATE-001` — Confirmar que cada capacidad priorizada tiene paquete aprobado — **NO INICIADA** |
-| Siguiente tarea | `E5-GATE-002` — Confirmar que cada brecha crítica tiene propietario y destino |
+| Última aprobada | `E5-GATE-002` — Confirmar que cada brecha crítica tiene propietario y destino |
+| Tarea actual | `E5-GATE-003` — Confirmar que los requisitos no funcionales están cubiertos — **NO INICIADA** |
+| Siguiente tarea | `E5-GATE-004` — Confirmar que rollout, rollback y contingencia son ejecutables |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 60 DE 68 APROBADAS — ACTUAL E5-GATE-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 62 DE 68 APROBADAS — ACTUAL E5-GATE-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-HYPERCARE-OPS-010 — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo
-        ↓
-TAREA ACTUAL
-E5-GATE-001 — Confirmar que cada capacidad priorizada tiene paquete aprobado
-        ↓
-SIGUIENTE TAREA RESERVADA
 E5-GATE-002 — Confirmar que cada brecha crítica tiene propietario y destino
         ↓
+TAREA ACTUAL
+E5-GATE-003 — Confirmar que los requisitos no funcionales están cubiertos
+        ↓
+SIGUIENTE TAREA RESERVADA
+E5-GATE-004 — Confirmar que rollout, rollback y contingencia son ejecutables
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 60 de 68 tareas aprobadas
+BLOQUE E5 — 62 de 68 tareas aprobadas
 ```
