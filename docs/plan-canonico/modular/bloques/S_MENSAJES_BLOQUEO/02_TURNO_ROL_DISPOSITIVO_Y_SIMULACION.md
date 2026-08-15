@@ -1359,7 +1359,7 @@ No se inicia ni modifica `AUTH-ERR-010` en esta tarea.
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md`
 **Artefactos producidos:** `SHIFT-WINDOW-BLOCKING-CONTRACT-001`, `SHIFT-WINDOW-TEMPORAL-DECISION-MATRIX-001`, `SHIFT-WINDOW-CHANNEL-RESPONSE-MATRIX-001`, `SHIFT-WINDOW-APPLICATION-COVERAGE-REGISTER-001` y `SHIFT-WINDOW-PHYSICAL-RECONCILIATION-001`
-**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001` a `AUTH-MOD-004`; `AUTH-MOD-006` a `AUTH-MOD-011`; `AUTH-MOD-018`; `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-012` a `AUTH-CAT-015`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-009` a `AUTH-CTX-017`; `AUTH-CTX-020`; `AUTH-CTX-024` a `AUTH-CTX-030`; `AUTH-ERR-001` a `AUTH-ERR-009`; contratos vigentes de identidad, aplicación, territorio, publicación, temporalidad, turno, check-in, rol, permiso, recurso, disponibilidad y precedencia; estado remoto y desplegado inspeccionado; contrato documental vigente
+**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001` a `AUTH-MOD-004`; `AUTH-MOD-006` a `AUTH-MOD-011`; `AUTH-MOD-018`; `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-012` a `AUTH-CAT-015`; `AUTH-CAT-022` a `AUTH-CAT-024`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-009` a `AUTH-CTX-017`; `AUTH-CTX-020`; `AUTH-CTX-024` a `AUTH-CTX-030`; `AUTH-ERR-001` a `AUTH-ERR-009`; contratos vigentes de identidad, aplicación, territorio, publicación, temporalidad, turno, check-in, rol, permiso, recurso, disponibilidad y precedencia; estado remoto y desplegado inspeccionado; contrato documental vigente
 **Cambios físicos autorizados:** ninguno; no modifica código, Supabase, Auth, RLS, RPC, Edge Functions, datos, migraciones, constraints, triggers, turnos, revisiones, publicaciones, horarios, empleados, sedes, áreas, roles, permisos, aplicaciones ni despliegues
 
 ---
@@ -1459,11 +1459,11 @@ Cobertura materializada:
 | Escenarios con decisión explícita                   |                   24 |
 | Canales con respuesta explícita                     |                   10 |
 | Aplicaciones canónicas reconciliadas                |                   10 |
-| Permisos canónicos evaluados por prerrequisito      |                  112 |
-| Permisos sin carril operativo                       |                   54 |
-| Permisos con carril operativo que exige turno       |                   58 |
+| Permisos canónicos evaluados por prerrequisito      |                  140 |
+| Permisos sin carril operativo                       |                   68 |
+| Permisos con carril operativo que exige turno       |                   72 |
 | Carriles operativos `T`                             |                   19 |
-| Carriles operativos `T+C`                           |                   39 |
+| Carriles operativos `T+C`                           |                   53 |
 | Turnos físicos observados                           |                 2844 |
 | Turnos publicados observados                        |                 2723 |
 | Turnos no publicados observados                     |                  121 |
@@ -1810,10 +1810,10 @@ Distribución canónica:
 
 | Clasificación                 | Cantidad | Efecto                                             |
 | ----------------------------- | -------: | -------------------------------------------------- |
-| permisos sin carril operativo |       54 | no se bloquean por temporalidad laboral            |
-| permisos con carril operativo |       58 | su carril operativo exige ventana vigente          |
+| permisos sin carril operativo |       68 | no se bloquean por temporalidad laboral            |
+| permisos con carril operativo |       72 | su carril operativo exige ventana vigente          |
 | carriles `T`                  |       19 | esta razón si la publicación está fuera de ventana |
-| carriles `T+C`                |       39 | esta razón precede al requisito de check-in        |
+| carriles `T+C`                |       53 | esta razón precede al requisito de check-in        |
 
 Una aplicación visible, dispositivo, simulación, rol o bypass local no puede
 degradar `T+C` a `T` ni `T` a `N`.
@@ -2410,11 +2410,11 @@ Reglas:
 | ANIMA      | acciones operativas futuras clasificadas `T` o `T+C` | consulta de horario propio, asistencia o documentación base  | conservar acceso al horario para recuperación      |
 | AURA       | una capacidad laboral operativa futura explícita     | acceso editorial diferido o capacidades sin carril operativo | no inventar turno                                  |
 | FOGO       | 5 carriles operativos `T` o `T+C`                    | recetario maestro base                                       | exigir ventana por permiso                         |
-| NEXO       | 47 carriles operativos `T` o `T+C`                   | 16 capacidades base exclusivas                               | aplicar temporalidad por carril, no por aplicación |
+| NEXO       | 51 carriles operativos `T` o `T+C`                   | 16 capacidades base exclusivas                               | aplicar temporalidad por carril, no por aplicación |
 | NUMERA     | ninguna capacidad operativa actual                   | acceso y analítica administrativa                            | no imponer turno                                   |
-| ORIGO      | 4 carriles operativos                                | revisión base del catálogo                                   | exigir ventana solo al carril operativo            |
+| ORIGO      | 5 carriles operativos                                | revisión base del catálogo                                   | exigir ventana solo al carril operativo            |
 | PASS       | ninguna capacidad laboral del cliente                | sesión, puntos y beneficios del cliente                      | no mezclar cliente con empleado                    |
-| PULSO      | 2 carriles operativos                                | procesos técnicos o de sistema con contrato propio           | exigir ventana al actor laboral efectivo           |
+| PULSO      | 11 carriles operativos                               | procesos técnicos o de sistema con contrato propio           | exigir ventana al actor laboral efectivo           |
 | VISO       | ninguna capacidad operativa actual                   | administración, horarios, auditoría y simulación             | no bloquear gestión administrativa por horario     |
 
 Cobertura cuantitativa total:
@@ -2425,13 +2425,13 @@ Cobertura cuantitativa total:
 | ANIMA      |               10 |                   0 |
 | AURA       |                1 |                   0 |
 | FOGO       |                6 |                   5 |
-| NEXO       |               63 |                  47 |
+| NEXO       |               67 |                  51 |
 | NUMERA     |                6 |                   0 |
-| ORIGO      |                5 |                   4 |
+| ORIGO      |                6 |                   5 |
 | PASS       |                1 |                   0 |
-| PULSO      |                2 |                   2 |
-| VISO       |               17 |                   0 |
-| **Total**  |          **112** |              **58** |
+| PULSO      |               11 |                  11 |
+| VISO       |               31 |                   0 |
+| **Total**  |          **140** |              **72** |
 
 La dependencia se determina por permiso, modalidad y carril. El nombre de la
 aplicación nunca basta.
@@ -2510,7 +2510,7 @@ No existe todavía un envelope compartido con
 | `SWG-05` | no existen causas internas antes de inicio y después de fin                      | BLOQUEADO              | `AUTH-DB-034`; `AUTH-ERR-020`                        | causas y auditoría implementadas                |
 | `SWG-06` | `order by ... limit 1` oculta candidatos solapados                               | BLOQUEADO              | `AUTH-DB-033`; `AUTH-DB-034`                         | ambigüedad fail closed                          |
 | `SWG-07` | estados terminales distintos de cancelación no están excluidos de forma uniforme | BLOQUEADO              | `AUTH-DB-033`                                        | catálogo de estados normalizado                 |
-| `SWG-08` | una política de aplicación NEXO sustituye la matriz por permiso                  | BLOQUEADO              | `AUTH-DB-020`; `AUTH-DB-031`; `AUTH-DB-034`          | 112 permisos y 54/19/39 materializados          |
+| `SWG-08` | una política de aplicación NEXO sustituye la matriz por permiso                  | BLOQUEADO              | `AUTH-DB-020`; `AUTH-DB-031`; `AUTH-DB-034`          | 140 permisos y 68/19/53 materializados          |
 | `SWG-09` | bypass por nombre de rol o permiso puede omitir temporalidad                     | BLOQUEADO              | `AUTH-DB-034`                                        | modalidad y grants evaluados sin bypass nominal |
 | `SWG-10` | NEXO usa texto libre y razón legacy                                              | BLOQUEADO              | `SHELL-AUTH-001`; `SHELL-AUTH-002`; `SHELL-AUTH-005` | SDK y mensaje compartido adoptados              |
 | `SWG-11` | no existe envelope público tipado con estado temporal                            | BLOQUEADO              | `SHELL-AUTH-001`; `AUTH-ERR-020`                     | contrato publicado y consumido                  |
@@ -2553,18 +2553,20 @@ ejecutarse desde `vento-shell`.
 
 **Resultado:** GENERA REQUISITOS DE PRUEBA
 
-| ID              | Regla protegida                                                                                                                                                                                                      | Tipo                                   | Prioridad | Momento de implementación            | Destino                                                                                                       |
-| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- | --------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| `TREQ-AUTH-219` | Una capacidad cuyo carril operativo exige turno vigente y resuelve una publicación fuera de `[starts_at, ends_at)` produce `AUTH_OUTSIDE_SHIFT_WINDOW`, `403`, deny y cero efectos.                                  | contractual + seguridad + temporalidad | crítica   | resolver y evaluador de turno        | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`                                                                  |
-| `TREQ-AUTH-220` | La vigencia usa `resolved_at` de servidor, timestamps absolutos, `America/Bogota` y el intervalo semiabierto; inicio exacto permite y fin exacto deniega.                                                            | temporal + fronteras + regresión       | crítica   | resolver temporal                    | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`                                                                  |
-| `TREQ-AUTH-221` | `PUBLISHED_SHIFT_NOT_STARTED` y `PUBLISHED_SHIFT_ENDED` conservan diagnóstico interno, pero comparten una respuesta pública que no revela horario ni dirección temporal.                                             | privacidad + auditoría + contrato      | alta      | catálogo de razones y observabilidad | `AUTH-ERR-020`; `AUTH-DB-034`; `SHELL-CI-016`                                                                 |
-| `TREQ-AUTH-222` | Ausencia de publicación, temporalidad, check-in, rol, configuración, permiso y fallo técnico conservan códigos y precedencia distintos sin convertir `active_shift = null` en una razón genérica.                    | integración + razones + seguridad      | crítica   | evaluador y catálogo de razones      | `AUTH-ERR-009`; `AUTH-ERR-011`; `AUTH-ERR-012`; `AUTH-ERR-017`; `AUTH-ERR-019`; `AUTH-DB-034`                 |
-| `TREQ-AUTH-223` | La temporalidad se aplica por permiso y carril: 54 permisos no operativos no se bloquean, mientras 19 `T` y 39 `T+C` exigen ventana vigente.                                                                         | contractual + catálogo + contexto      | crítica   | catálogo físico y evaluador          | `AUTH-CAT-012`; `AUTH-DB-020`; `AUTH-DB-031`; `SHELL-CI-016`                                                  |
-| `TREQ-AUTH-224` | Turnos nocturnos, filas iniciadas el día anterior, candidatos simultáneos, zonas y duraciones se resuelven con intervalos absolutos; la ambigüedad falla cerrado.                                                    | temporal + contexto + regresión        | crítica   | resolver de turno                    | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`; `SHELL-CI-018`                                                  |
-| `TREQ-AUTH-225` | Diez canales producen respuesta equivalente, conservan sesión, revalidan en fronteras y no generan datos, suscripciones ni efectos parciales.                                                                        | integración + E2E + concurrencia       | crítica   | SDK, adapters e invalidación         | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `AUTH-DB-035`; `SHELL-CI-016`; `SHELL-CI-018`                             |
-| `TREQ-AUTH-226` | Las diez aplicaciones aplican temporalidad por permiso, modalidad y actor; PASS cliente, procesos autónomos y capacidades base no reciben turno laboral sintético.                                                   | contractual + aplicación + identidad   | alta      | migración de consumidoras            | `SHELL-AUTH-001`; `SHELL-AUTH-005`; `SHELL-CI-016`                                                            |
-| `TREQ-AUTH-227` | Copy, recuperación, privacidad y accesibilidad conservan sesión, permiten revisar horario propio y no revelan inicio, fin, sede, área, rol, revisión, causa interna ni recurso.                                      | interfaz + privacidad + accesibilidad  | alta      | catálogo compartido de mensajes      | `AUTH-ERR-020`; `SHELL-AUTH-005`; `SHELL-CI-016`                                                              |
-| `TREQ-AUTH-228` | La regresión reconcilia 2844 turnos, distribución futura/finalizada, ausencia de nocturnos, 10 funciones, 5 referencias de publicación, razón legacy, política NEXO y catorce brechas sin alterar datos productivos. | regresión + RPC + RLS + seguridad      | crítica   | gates y evidencia E5                 | `AUTH-DB-031`; `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-AUTH-004`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019` |
+| ID              | Regla protegida                                                                                                                                                                                                               | Tipo                                   | Prioridad | Momento de implementación            | Destino                                                                                                       |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- | --------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `TREQ-AUTH-219` | Una capacidad cuyo carril operativo exige turno vigente y resuelve una publicación fuera de `[starts_at, ends_at)` produce `AUTH_OUTSIDE_SHIFT_WINDOW`, `403`, deny y cero efectos.                                           | contractual + seguridad + temporalidad | crítica   | resolver y evaluador de turno        | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`                                                                  |
+| `TREQ-AUTH-220` | La vigencia usa `resolved_at` de servidor, timestamps absolutos, `America/Bogota` y el intervalo semiabierto; inicio exacto permite y fin exacto deniega.                                                                     | temporal + fronteras + regresión       | crítica   | resolver temporal                    | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`                                                                  |
+| `TREQ-AUTH-221` | `PUBLISHED_SHIFT_NOT_STARTED` y `PUBLISHED_SHIFT_ENDED` conservan diagnóstico interno, pero comparten una respuesta pública que no revela horario ni dirección temporal.                                                      | privacidad + auditoría + contrato      | alta      | catálogo de razones y observabilidad | `AUTH-ERR-020`; `AUTH-DB-034`; `SHELL-CI-016`                                                                 |
+| `TREQ-AUTH-222` | Ausencia de publicación, temporalidad, check-in, rol, configuración, permiso y fallo técnico conservan códigos y precedencia distintos sin convertir `active_shift = null` en una razón genérica.                             | integración + razones + seguridad      | crítica   | evaluador y catálogo de razones      | `AUTH-ERR-009`; `AUTH-ERR-011`; `AUTH-ERR-012`; `AUTH-ERR-017`; `AUTH-ERR-019`; `AUTH-DB-034`                 |
+| `TREQ-AUTH-223` | La temporalidad se aplica por permiso y carril: 68 permisos no operativos no se bloquean, mientras 19 `T` y 53 `T+C` exigen ventana vigente.                                                                                  | contractual + catálogo + contexto      | crítica   | catálogo físico y evaluador          | `AUTH-CAT-012`; `AUTH-DB-020`; `AUTH-DB-031`; `SHELL-CI-016`                                                  |
+| `TREQ-AUTH-224` | Turnos nocturnos, filas iniciadas el día anterior, candidatos simultáneos, zonas y duraciones se resuelven con intervalos absolutos; la ambigüedad falla cerrado.                                                             | temporal + contexto + regresión        | crítica   | resolver de turno                    | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`; `SHELL-CI-018`                                                  |
+| `TREQ-AUTH-225` | Diez canales producen respuesta equivalente, conservan sesión, revalidan en fronteras y no generan datos, suscripciones ni efectos parciales.                                                                                 | integración + E2E + concurrencia       | crítica   | SDK, adapters e invalidación         | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `AUTH-DB-035`; `SHELL-CI-016`; `SHELL-CI-018`                             |
+| `TREQ-AUTH-226` | Las diez aplicaciones aplican temporalidad por permiso, modalidad y actor; PASS cliente, procesos autónomos y capacidades base no reciben turno laboral sintético; los 72 carriles operativos conservan dependencia temporal. | contractual + aplicación + identidad   | alta      | migración de consumidoras            | `SHELL-AUTH-001`; `SHELL-AUTH-005`; `SHELL-CI-016`                                                            |
+| `TREQ-AUTH-227` | Copy, recuperación, privacidad y accesibilidad conservan sesión, permiten revisar horario propio y no revelan inicio, fin, sede, área, rol, revisión, causa interna ni recurso.                                               | interfaz + privacidad + accesibilidad  | alta      | catálogo compartido de mensajes      | `AUTH-ERR-020`; `SHELL-AUTH-005`; `SHELL-CI-016`                                                              |
+| `TREQ-AUTH-228` | La regresión reconcilia 2844 turnos, distribución futura/finalizada, ausencia de nocturnos, 10 funciones, 5 referencias de publicación, razón legacy, política NEXO y catorce brechas sin alterar datos productivos.          | regresión + RPC + RLS + seguridad      | crítica   | gates y evidencia E5                 | `AUTH-DB-031`; `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-AUTH-004`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019` |
+
+La reconciliación con `AUTH-CAT-024` modifica los requisitos existentes `TREQ-AUTH-223` y `TREQ-AUTH-226`; no crea identificadores `TREQ-*` nuevos.
 
 ---
 
@@ -2635,7 +2637,7 @@ AUTH-ERR-010 no:
 - cambia horarios, tipos o zonas horarias;
 - crea revisiones físicas;
 - asigna empleados, sedes, áreas o roles;
-- cambia los conteos 54/19/39;
+- cambia los conteos 68/19/53;
 - reclasifica permisos;
 - registra check-in o check-out;
 - cierra sesiones residuales;
@@ -2686,10 +2688,10 @@ AUTH-ERR-010 no:
 29. Un check-in residual no permite operar.
 30. Una ventana vigente precede a la evaluación de check-in.
 31. Una ventana no vigente precede a `AUTH-ERR-011`.
-32. Los 54 permisos sin carril operativo no se bloquean por temporalidad.
-33. Los 58 permisos con carril operativo exigen ventana vigente.
+32. Los 68 permisos sin carril operativo no se bloquean por temporalidad.
+33. Los 72 permisos con carril operativo exigen ventana vigente.
 34. Los 19 carriles `T` no exigen check-in propio.
-35. Los 39 carriles `T+C` evalúan check-in después de la ventana.
+35. Los 53 carriles `T+C` evalúan check-in después de la ventana.
 36. `BASE_ONLY` no usa esta razón.
 37. `BASE_OR_OPERATIONAL` conserva independencia entre carriles.
 38. `BASE_AND_OPERATIONAL` conserva el requisito operativo.
