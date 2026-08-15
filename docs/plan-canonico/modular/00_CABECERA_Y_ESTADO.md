@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **859** |
+| Tareas aprobadas | **860** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **735** |
+| Tareas no iniciadas | **734** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **53.89% (859/1594)** |
+| Porcentaje de completamiento | **53.95% (860/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial** |
-| Tarea actual | **CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones** |
+| Última tarea aprobada | **CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones** |
+| Tarea actual | **CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior** |
+| Siguiente tarea | **HYPERCARE-OPS-001 — Definir inicio, duración y salida del acompañamiento intensivo** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 48 de 68 aprobadas; CUTOVER-OPS-009 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 49 de 68 aprobadas; CUTOVER-OPS-010 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `CUTOVER-OPS-008` — Definir métricas de tiempos, errores, adopción y resultado empresarial |
-| Tarea actual | `CUTOVER-OPS-009` — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones — **NO INICIADA** |
-| Siguiente tarea | `CUTOVER-OPS-010` — Definir condiciones y evidencia para retirar el proceso anterior |
+| Última aprobada | `CUTOVER-OPS-009` — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones |
+| Tarea actual | `CUTOVER-OPS-010` — Definir condiciones y evidencia para retirar el proceso anterior — **NO INICIADA** |
+| Siguiente tarea | `HYPERCARE-OPS-001` — Definir inicio, duración y salida del acompañamiento intensivo |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 48 DE 68 APROBADAS — ACTUAL CUTOVER-OPS-009** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 49 DE 68 APROBADAS — ACTUAL CUTOVER-OPS-010** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial
-        ↓
-TAREA ACTUAL
 CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior
         ↓
+SIGUIENTE TAREA RESERVADA
+HYPERCARE-OPS-001 — Definir inicio, duración y salida del acompañamiento intensivo
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 48 de 68 tareas aprobadas
+BLOQUE E5 — 49 de 68 tareas aprobadas
 ```

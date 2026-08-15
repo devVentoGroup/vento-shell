@@ -5973,7 +5973,930 @@ CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado
 CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones
 
 
-### [ ] CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones
+### ✅ CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones
+
+**Estado:** APROBADA  
+**Tarea anterior:** `CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial`  
+**Tarea siguiente:** `CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior`  
+**Tipo de tarea:** documental — definición normativa y materialización completa, por paquete y modalidad de piloto, de la autoridad final y del criterio determinista con el que la ejecución futura podrá aprobar la salida del piloto, exigir correcciones o bloquear la decisión cuando la evidencia sea insuficiente; sin ejecutar salida, promoción, correcciones, despliegues, rollback, retiro legacy, migraciones, DDL/DML, backfills, cambios de configuración, modificaciones de datos ni operaciones sobre Supabase  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md`  
+**Ejecución posterior:** `SHELL-CI-022::<package_id>` después de `SHELL-CI-021::<package_id>` y de los contratos CUTOVER aplicables  
+**Cambios físicos autorizados:** ninguno  
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`CUTOVER-OPS-009` cierra el gobierno documental de la decisión de salida del piloto.
+
+La tarea responde, para una instancia exacta de paquete, a estas preguntas:
+
+```text
+¿EL PAQUETE, CANDIDATO, AMBIENTE, ALCANCE Y VENTANA EVALUADOS SON LOS MISMOS QUE PRODUJERON LA EVIDENCIA?
++
+¿TODOS LOS CRITERIOS DE ACEPTACIÓN APLICABLES FUERON EJECUTADOS Y RESUELTOS?
++
+¿LAS MÉTRICAS Y GUARDRAILS QUE PARTICIPAN EN LA DECISIÓN TIENEN DEFINICIÓN, CALIDAD Y COMPARABILIDAD SUFICIENTES?
++
+¿EXISTEN DEFECTOS, INCIDENTES, RECOVERIES, CONCILIACIONES, BLOQUEOS O CAMBIOS DE ALCANCE ABIERTOS QUE IMPIDAN CERRAR?
++
+¿LA AUTORIDAD FINAL DEL PAQUETE ESTÁ RESUELTA Y VIGENTE?
+=
+DECISIÓN TRAZABLE DE SALIDA, CORRECCIÓN O BLOQUEO
+```
+
+La tarea no afirma que ningún paquete haya ejecutado ya el piloto ni que exista evidencia real de salida. Define el contrato que deberá utilizarse cuando esa evidencia exista.
+
+---
+
+#### 2. Resultado sustantivo
+
+La tarea materializa cinco piezas documentales por `package_id`:
+
+1. `required_pilot_exit_evidence_set::<package_id>` — conjunto completo de criterios, métricas decisionales, hechos operativos, bloqueos y evidencia que deben reconciliarse antes de decidir;
+2. `pilot_exit_authority::<package_id>` — resolución de la autoridad final usando el `Responsable de decisión` ya asignado a la raíz por `DELIV-PKG-017` y consumido por `DELIV-PKG-023`, sin crear una autoridad nueva;
+3. `pilot_exit_evaluation::<package_id>` — evaluación reproducible de identidad, criterios, evidencia, métricas, calidad, vigencia y bloqueos;
+4. `pilot_exit_decision::<package_id>` — decisión determinista `APROBAR_SALIDA`, `EXIGIR_CORRECCIONES`, `BLOQUEAR_DECISION` o `NO_APLICA`;
+5. `pilot_exit_decision_manifest::<package_id>` — expediente futuro que conservará la decisión, autoridad, evidencia utilizada, criterios evaluados, métricas decisionales, bloqueos, correcciones exigidas y referencias de continuidad.
+
+Ninguna de estas piezas ejecuta físicamente la salida ni modifica el estado de producción por sí sola.
+
+---
+
+#### 3. Entradas canónicas obligatorias
+
+009 consume sin redefinir:
+
+- `CUTOVER-OPS-001`: paquete, candidato, ambiente, alcance, ventana y responsables;
+- `CUTOVER-OPS-002`: unidades, olas, dependencias y checkpoints;
+- `CUTOVER-OPS-003`: convivencia y autoridad entre proceso anterior y objetivo;
+- `CUTOVER-OPS-004`: controles contra doble registro y doble efecto;
+- `CUTOVER-OPS-005`: conciliaciones, diferencias, duplicidades y resultados inciertos;
+- `CUTOVER-OPS-006`: decisiones operativas `CONTINUAR`, `PAUSAR` y `REVERTIR`;
+- `CUTOVER-OPS-007`: bitácora append-only de incidentes, decisiones y cambios de alcance;
+- `CUTOVER-OPS-008`: tiempos, errores, adopción, resultado empresarial, baseline, calidad y comparabilidad;
+- `DELIV-PKG-013`: umbrales y guardrails NFR aplicables;
+- `DELIV-PKG-016`: requisitos de prueba vinculados y evidencia esperada;
+- `DELIV-PKG-017`: observabilidad y `Responsable de decisión` de cada raíz;
+- `DELIV-PKG-019`: rollout, pausas y promoción posteriores;
+- `DELIV-PKG-020`: rollback, recovery, compensation y reconciliation;
+- `DELIV-PKG-021`: documentación, procedimientos, soporte y capacitación;
+- `DELIV-PKG-022`: modalidad, cohorte, alcance y duración del piloto;
+- `DELIV-PKG-023`: criterios medibles de aceptación y `EVID-CLOSE-001`;
+- `DELIV-PKG-024`: reconciliación de trazabilidad TREQ por paquete;
+- `READY-GATE-013`: baseline congelada y comparabilidad;
+- `READY-GATE-014`: riesgos aceptados y condiciones de suspensión;
+- `READY-GATE-015`: patrón de resolución de autoridad final a partir del responsable existente del paquete.
+
+Las obligaciones vigentes de definición y calidad de métricas, decisión de cierre o iteración e historial de incidentes continúan protegidas por los requisitos canónicos existentes de DATA y CONT. 009 no los redefine.
+
+---
+
+#### 4. Fronteras obligatorias
+
+009 no:
+
+- ejecuta la salida del piloto;
+- promueve `CANARY_5`, `LIMITED_25`, `LIMITED_50` o `FULL_100`;
+- modifica cohortes, targeting, flags o configuración;
+- realiza correcciones técnicas o funcionales;
+- ejecuta retests;
+- ejecuta rollback, restore, recovery, compensation o reconciliation;
+- crea un target empresarial por inferencia;
+- redefine severidades, NFR, criterios de aceptación o perfiles 023;
+- acepta evidencia planeada como evidencia ejecutada;
+- convierte una mejora de negocio en autorización para ignorar un guardrail;
+- retira el proceso anterior;
+- autoriza borrado de datos, objetos, código, rutas, contratos o infraestructura legacy;
+- ejecuta DDL, DML, migraciones, backfills, cambios de RLS/grants ni operaciones sobre Supabase.
+
+La promoción posterior continúa perteneciendo a `DELIV-PKG-019`. El retiro del proceso anterior pertenece exclusivamente a `CUTOVER-OPS-010`.
+
+---
+
+#### 5. Unidad mínima de decisión
+
+La unidad mínima de `pilot_exit_decision` es:
+
+```text
+package_id
++
+candidate_ref
++
+environment
++
+authorized_scope_ref
++
+pilot_window_ref
++
+modalidad_022
+```
+
+Cuando la modalidad tenga unidades, olas o checkpoints propios, la decisión agregada deberá poder reconciliar también esas dimensiones.
+
+No se combinan para una misma decisión:
+
+- candidatos distintos;
+- ambientes distintos;
+- alcances distintos;
+- ventanas separadas por un cambio material;
+- definiciones de métrica incompatibles;
+- cohortes cuya comparabilidad no esté demostrada.
+
+---
+
+#### 6. Autoridad canónica de salida
+
+`pilot_exit_authority::<package_id>` se resuelve desde el `Responsable de decisión` de la fila homónima de `DELIV-PKG-017`, utilizado además por los criterios de `DELIV-PKG-023`.
+
+Reglas:
+
+1. la identidad `OWN-*` vigente se preserva; 009 no crea un comité, rol o propietario universal;
+2. la persona o función que produce evidencia no adquiere por ello autoridad final;
+3. la autoridad final no puede cambiar un `FAIL`, `BLOQUEADO` o evidencia faltante a `PASS` por criterio discrecional;
+4. la autoridad final no sustituye la autoridad propietaria de rollback, riesgo, seguridad, incidentes, datos o autorización;
+5. un suplente solo puede decidir cuando la fuente canónica aplicable reconozca esa sustitución;
+6. la autoridad se evalúa para el alcance exacto de la decisión; una autoridad válida para otra raíz, sede, ambiente o dominio no se hereda;
+7. si las fuentes vigentes asignan autoridades incompatibles para la misma decisión, el resultado es `BLOQUEAR_DECISION` hasta resolver la contradicción en su fuente propietaria.
+
+---
+
+#### 7. Evidencia mínima de autoridad
+
+La decisión futura deberá conservar, como mínimo:
+
+- `package_id`;
+- `decision_owner_ref`;
+- fuente canónica que asigna ese responsable;
+- alcance de decisión;
+- vigencia o condición temporal aplicable;
+- actor real que emite la decisión;
+- mecanismo de sustitución cuando se utilice;
+- evidencia de autoridad;
+- momento de decisión.
+
+Una firma, comentario o presencia en una reunión sin autoridad demostrable no satisface esta sección.
+
+---
+
+#### 8. Estados permitidos de decisión
+
+`pilot_exit_decision::<package_id>` utiliza exactamente:
+
+| Decisión              | Semántica                                                                                                                                          |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `APROBAR_SALIDA`      | toda condición obligatoria aplicable está satisfecha con evidencia reproducible y la autoridad final es válida                                     |
+| `EXIGIR_CORRECCIONES` | existe evidencia suficiente de uno o más incumplimientos materiales corregibles que impiden aprobar la salida                                      |
+| `BLOQUEAR_DECISION`   | todavía falta evidencia, autoridad, vigencia, comparabilidad o resolución suficiente para aprobar la salida o exigir correcciones de forma fundada |
+| `NO_APLICA`           | la fuente canónica demuestra que esa instancia no tiene una salida de piloto evaluable bajo la línea actual                                        |
+
+No existe `APROBAR_CON_PENDIENTES`, `APROBAR_PARCIAL`, `APROBAR_POR_TIEMPO`, `APROBAR_POR_PROMEDIO` ni equivalente.
+
+---
+
+#### 9. Conjunto obligatorio de criterios de aceptación
+
+`required_pilot_exit_evidence_set::<package_id>` incorpora los criterios aplicables del perfil 023 de la raíz:
+
+1. `AC-TREQ-001`;
+2. `AC-NFR-001`;
+3. `AC-OBS-001`;
+4. `AC-PILOT-001`;
+5. `AC-ROLLBACK-001`;
+6. `AC-DOC-001`;
+7. `AC-DEFECT-001`;
+8. `AC-MANIFEST-001`.
+
+La aplicabilidad exacta se hereda de `ACC-DIRECT-001`, `ACC-SHARED-001`, `ACC-CONTROL-001`, `ACC-AURA-001`, `ACC-EXT-001` o `ACC-FUTURE-001` según la fila homónima de `DELIV-PKG-023`.
+
+Un criterio `NO_APLICA` solo puede excluirse cuando la propia fuente canónica demuestra su no aplicabilidad. Ausencia de evidencia no equivale a `NO_APLICA`.
+
+---
+
+#### 10. Entradas adicionales de decisión desde 008 y CUTOVER
+
+Además del perfil 023, la evaluación conserva:
+
+- métricas de tiempos aplicables;
+- tasa o conteo de errores elegible;
+- adopción según modalidad;
+- resultado empresarial y comparación contra baseline cuando existan;
+- calidad, cobertura, frescura y comparabilidad;
+- guardrails y targets ya existentes;
+- incidentes y decisiones de 007/006;
+- duplicidades, incertidumbres y conciliaciones de 004/005;
+- pausas, reversión y recovery;
+- cambios de alcance;
+- correcciones y retests ya ejecutados cuando existan.
+
+Estas entradas no crean un segundo catálogo de criterios. Se utilizan para demostrar, explicar o bloquear los criterios y decisiones que ya son aplicables.
+
+---
+
+#### 11. Regla determinista de `APROBAR_SALIDA`
+
+`APROBAR_SALIDA` solo puede emitirse cuando se cumplen simultáneamente todas las condiciones aplicables:
+
+1. la identidad de paquete, candidato, ambiente, alcance y ventana coincide en todo el expediente;
+2. el perfil 023 aplicable está resuelto para la misma instancia;
+3. todos los criterios aplicables de 023 están en `PASS`;
+4. no existe ningún criterio aplicable en `FAIL`, `BLOQUEADO` o `PENDIENTE_DE_EVIDENCIA`;
+5. todo `NO_APLICA` está respaldado por una fuente canónica;
+6. la duración exigida por 022 fue satisfecha cuando la modalidad posee duración directa;
+7. no existe una ampliación no autorizada de cohorte, sede, dispositivo, datos, tráfico o alcance;
+8. no permanece abierto un defecto bloqueante o mayor;
+9. no permanece abierto un recovery, rollback, compensation o reconciliation que el expediente exija cerrar;
+10. no permanece una duplicidad confirmada, resultado incierto o diferencia no resuelta que un criterio aplicable considere bloqueante;
+11. no existe una condición activa de pausa o reversión incompatible con declarar la salida;
+12. las señales obligatorias y la evidencia requerida estuvieron disponibles durante la ventana exigida;
+13. las métricas utilizadas como evidencia decisional tienen calidad y comparabilidad suficientes;
+14. todo target o guardrail que sea vinculante para salida y tenga fuente canónica está satisfecho;
+15. el manifiesto de evidencia está completo, consistente y referenciable;
+16. la autoridad final está resuelta, vigente y corresponde al alcance exacto;
+17. ningún cambio material posterior invalidó candidato, baseline, alcance, evidencia o decisión.
+
+La ausencia aparente de incidentes no autoriza salida si la cobertura de observabilidad es insuficiente.
+
+---
+
+#### 12. Regla determinista de `EXIGIR_CORRECCIONES`
+
+`EXIGIR_CORRECCIONES` se emite cuando existe evidencia suficiente de incumplimiento material corregible que impide `APROBAR_SALIDA`.
+
+Incluye, cuando aplique:
+
+- un criterio 023 en `FAIL`;
+- incumplimiento de un NFR o hard ceiling aplicable;
+- defecto bloqueante o mayor abierto;
+- falla de observabilidad que haya producido evidencia suficiente de incumplimiento material;
+- scope drift o ampliación no autorizada demostrada;
+- duplicidad confirmada;
+- conciliación fallida o diferencia material no resuelta;
+- recovery incompleto;
+- incompatibilidad de contrato o consumidor demostrada;
+- métrica decisional con target o guardrail canónico incumplido;
+- evidencia inconsistente que demuestre un resultado incorrecto, y no meramente ausencia de información.
+
+La decisión deberá identificar cada incumplimiento, su evidencia, la fuente propietaria, el alcance afectado y la corrección o reevaluación necesaria.
+
+---
+
+#### 13. `correction_requirement_set::<package_id>`
+
+Toda decisión `EXIGIR_CORRECCIONES` deberá producir un conjunto de obligaciones de corrección sin inventar identificadores futuros.
+
+Por cada incumplimiento real deberá conservarse:
+
+- criterio o guardrail afectado;
+- evidencia del incumplimiento;
+- fuente propietaria;
+- tarea exacta de corrección cuando haya sido creada por el flujo canónico correspondiente;
+- propietario de la corrección;
+- alcance afectado;
+- necesidad de detener, mantener pausa o revertir cuando la fuente propietaria así lo exija;
+- prueba o validación que deberá repetirse;
+- requisito de regresión una vez materializado cuando el defecto real lo exija;
+- baseline o ventana que deba recapturarse por cambio material;
+- criterios 023 que deberán reevaluarse;
+- métricas 008 que deberán recalcularse;
+- condición verificable para volver a presentar la instancia a 009.
+
+009 no crea por anticipado IDs de defectos, tareas de corrección o requisitos de regresión para fallos hipotéticos.
+
+---
+
+#### 14. Regla determinista de `BLOQUEAR_DECISION`
+
+Se utiliza `BLOQUEAR_DECISION` cuando no existe base suficiente para una decisión fundada.
+
+Entre otras condiciones:
+
+1. algún criterio aplicable está `BLOQUEADO` o `PENDIENTE_DE_EVIDENCIA`;
+2. la autoridad final no puede demostrarse;
+3. el candidato, ambiente, alcance o ventana no son coherentes entre fuentes;
+4. falta evidencia obligatoria;
+5. una métrica necesaria para una decisión está `SIN_OBSERVACIONES`, `NO_DISPONIBLE` o conserva una limitación que impide usarla;
+6. la baseline requerida no es comparable;
+7. dos fuentes vigentes se contradicen sobre la misma decisión;
+8. un cambio material exige nueva ventana o nueva baseline y todavía no existe evidencia suficiente;
+9. un consumidor obligatorio de una raíz shared no fue evaluado;
+10. un control obligatorio no cubrió todas las ventanas que gobierna;
+11. existe un resultado incierto cuyo tratamiento propietario todavía no permite clasificar el criterio;
+12. la evidencia disponible no permite distinguir incumplimiento material de falta de observación.
+
+Bloquear no equivale a aprobar ni a declarar defecto. Cada bloqueo deberá conservar la fuente responsable y la condición verificable de salida.
+
+---
+
+#### 15. Regla de `NO_APLICA`
+
+`NO_APLICA` solo se utiliza cuando la modalidad y estado canónicos demuestran que no existe una salida de piloto evaluable para esa instancia.
+
+No se utiliza para:
+
+- un piloto incompleto;
+- una raíz directa sin evidencia;
+- una raíz shared con consumidores pendientes;
+- un control pendiente de evidencia;
+- un paquete bloqueado que sí deberá pilotarse cuando cierre su gate.
+
+AURA, EXT y TALENTO conservan su estado propietario mientras no exista exposición autorizada; 009 no fabrica una decisión de salida sobre una ejecución inexistente.
+
+---
+
+#### 16. Métricas sin target explícito de salida
+
+Una métrica de 008 sin target o guardrail explícito de salida recibe este tratamiento determinista:
+
+1. si ninguna fuente canónica la declara vinculante para la aceptación, se conserva como evidencia diagnóstica y **no puede aprobar ni reprobar la salida por sí sola**;
+2. si una fuente canónica la declara vinculante y ya existe target o guardrail, se evalúa exactamente contra ese valor;
+3. si una fuente canónica exige usarla como criterio vinculante pero el target, regla de comparación o condición decisional necesaria no está materializado, el resultado es `BLOQUEAR_DECISION` para ese alcance;
+4. no se inventa un porcentaje, mejora mínima, tolerancia ni dirección favorable;
+5. una mejora aparente tampoco compensa un criterio de seguridad, integridad, NFR, observabilidad, defectos o conciliación incumplido.
+
+La evidencia deberá conservar la fuente exacta que hizo vinculante o meramente diagnóstica cada métrica.
+
+---
+
+#### 17. Riesgo residual y condiciones de suspensión
+
+Un riesgo residual aceptado en `READY-GATE-014` no equivale a un permiso para convertir un criterio fallido en `PASS`.
+
+Para la salida:
+
+- la aceptación de riesgo debe seguir vigente para el mismo candidato, ambiente y alcance;
+- una condición de suspensión activada prevalece hasta su resolución conforme a su fuente;
+- una excepción vencida o ampliada fuera de su alcance bloquea la decisión;
+- no se crea una excepción nueva dentro de 009;
+- una mejora empresarial no compensa una condición de suspensión activa.
+
+---
+
+#### 18. Pausas, reversión y recuperación
+
+La existencia histórica de una pausa o reversión no impide por sí sola una salida futura, pero exige demostrar el tratamiento completo correspondiente.
+
+Antes de `APROBAR_SALIDA`:
+
+- toda pausa debe conservar inicio, fin y decisión relacionada cuando existan;
+- una reanudación debe haber sido autorizada conforme a 006;
+- una reversión debe conservar evidencia de recovery conforme a 020;
+- cualquier conciliación obligatoria posterior debe estar resuelta;
+- el reloj activo debe respetar `DUR-DIR-001`;
+- una ventana materialmente reiniciada no se completa sumando exposición incompatible de la ventana anterior.
+
+---
+
+#### 19. Defectos y regresión
+
+Cuando el piloto real detecte un defecto:
+
+1. 007 conserva el hecho y su evidencia;
+2. 009 consume su clasificación y el criterio 023 afectado;
+3. si el defecto impide salida, la decisión es `EXIGIR_CORRECCIONES` cuando exista evidencia suficiente;
+4. la corrección pertenece a la tarea técnica o funcional exacta creada por el flujo canónico de corrección;
+5. cuando el defecto requiera protección de regresión, el requisito correspondiente se materializa en ese flujo y se vincula después al expediente;
+6. el retest debe producir evidencia nueva;
+7. la decisión previa no se reescribe: una nueva evaluación de 009 registra un nuevo resultado relacionado.
+
+No se marca como corregido un defecto por existir un commit, PR o plan de corrección sin evidencia del retest aplicable.
+
+---
+
+#### 20. Cambios materiales e invalidación
+
+Un cambio material posterior a la evidencia de salida puede invalidar la evaluación reutilizable.
+
+Incluye, cuando aplique:
+
+- candidato;
+- ambiente;
+- autorización;
+- alcance;
+- cohorte;
+- datos;
+- contrato;
+- configuración;
+- estrategia de rollout;
+- baseline;
+- definición de métrica;
+- requisito aplicable;
+- recovery o rollback;
+- consumidor obligatorio;
+- unidad u ola.
+
+La evaluación anterior permanece como historia. El alcance cambiado requiere la recaptura o reevaluación que sus fuentes propietarias determinen.
+
+---
+
+#### 21. Manifiesto futuro de decisión
+
+`pilot_exit_decision_manifest::<package_id>` deberá poder conservar, como mínimo:
+
+- `package_id`;
+- `candidate_ref`;
+- `environment`;
+- `authorized_scope_ref`;
+- `pilot_window_ref`;
+- modalidad 022;
+- perfil 023;
+- referencia a `EVID-CLOSE-001`;
+- resultado de cada criterio aplicable;
+- evidencia por criterio;
+- métricas decisionales de 008 y versión de definición;
+- baseline y comparabilidad cuando apliquen;
+- target o guardrail y fuente cuando exista;
+- incidentes, defectos, duplicidades y conciliaciones relevantes;
+- decisiones 006 relacionadas;
+- cambios de alcance;
+- bloqueos vigentes;
+- correcciones exigidas;
+- referencias de retest;
+- `decision_owner_ref`;
+- actor real de decisión;
+- evidencia de autoridad;
+- decisión final;
+- motivo reproducible;
+- momento de decisión;
+- decisión previa relacionada cuando exista;
+- handoff posterior permitido por la decisión.
+
+El manifiesto no sustituye la evidencia fuente y no contiene secretos por conveniencia.
+
+---
+
+#### 22. Semántica para `PILOT-DIRECT-001`
+
+Para las 160 raíces directas:
+
+- la salida se evalúa sobre la ventana propia de la raíz;
+- `ACC-DIRECT-001` exige los ocho criterios aplicables;
+- `DUR-DIR-001` debe estar completo;
+- el candidato y alcance deben coincidir con la evidencia de cierre;
+- no existe aprobación por completar únicamente el reloj;
+- cualquier `FAIL`, `BLOQUEADO` o `PENDIENTE_DE_EVIDENCIA` aplicable impide `APROBAR_SALIDA`.
+
+---
+
+#### 23. Semántica para `PILOT-SHARED-001`
+
+Para `GAP-PKG-033`, `GAP-PKG-034` y `GAP-PKG-045`:
+
+- no se crea un reloj de piloto propio;
+- la evaluación se deriva de todos los consumidores directos necesarios definidos por el contrato;
+- un consumidor obligatorio no evaluado bloquea la decisión;
+- la raíz shared conserva su propia autoridad de decisión y no absorbe la autoridad de sus consumidores;
+- la compatibilidad, pruebas, observabilidad, defectos y manifiesto propios deben estar resueltos;
+- el mismo hecho no se duplica entre consumidor y contrato shared para inflar evidencia.
+
+---
+
+#### 24. Semántica para `PILOT-CONTROL-001`
+
+Para las 26 raíces de control:
+
+- no se crea una salida de exposición empresarial ficticia;
+- la decisión evalúa el cierre del control respecto de todas las ventanas que realmente gobierna;
+- las 22 raíces `OBSERVE_SIN_DEPLOY_DIRECTO` no requieren un deploy ficticio;
+- `GAP-PKG-062`, `GAP-PKG-065`, `GAP-PKG-140` y `GAP-PKG-172` conservan bloqueo mientras su identidad física requerida no esté resuelta;
+- el `Responsable de decisión` del control no adquiere autoridad sobre los paquetes gobernados;
+- un control incompleto mantiene bloqueados únicamente los alcances que su contrato gobierna.
+
+---
+
+#### 25. AURA, EXT y TALENTO
+
+##### 25.1. AURA
+
+Las 14 raíces AURA permanecen bloqueadas. Mientras no exista exposición autorizada, no se fabrica una evaluación de salida ni evidencia de piloto.
+
+##### 25.2. Dependencias externas
+
+`GAP-PKG-027` y `GAP-PKG-157` conservan `BLOQUEADO_EXT_GOV_001`. No existe salida de un piloto externo que todavía no haya sido autorizado y ejecutado.
+
+##### 25.3. TALENTO
+
+`GAP-PKG-064` y `GAP-PKG-197` permanecen `FUERA_DE_LINEA_ACTUAL`. 009 conserva su contrato futuro sin simular una decisión de salida productiva.
+
+---
+
+#### 26. Matriz materializada de las 207 raíces
+
+Cada identidad aparece exactamente una vez. La matriz materializa **cómo deberá evaluarse la salida** cuando exista evidencia real; no emite una decisión operativa futura por anticipado.
+
+| `package_id`  | Modalidad 022          | Perfil 023        | Estado heredado 023         | Tratamiento 009                                                                         | Autoridad final                                                | Estado documental 009 | Condición vigente                                                                      |
+| ------------- | ---------------------- | ----------------- | --------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------- | --------------------- | -------------------------------------------------------------------------------------- |
+| `GAP-PKG-001` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-002` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-003` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-004` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-005` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-006` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | sin decisión de salida ejecutable mientras no exista piloto autorizado                  | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva bloqueo AURA propietario                                                      |
+| `GAP-PKG-007` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-008` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | sin decisión de salida ejecutable mientras no exista piloto autorizado                  | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva bloqueo AURA propietario                                                      |
+| `GAP-PKG-009` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-010` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-011` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-012` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-013` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-014` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-015` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-016` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-017` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-018` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-019` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-020` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-021` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-022` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-023` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-024` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-025` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-026` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-027` | `PILOT-BLOCK-EXT-001`  | `ACC-EXT-001`     | `BLOQUEADO_EXT_GOV`         | sin decisión de salida ejecutable mientras el gate externo permanezca cerrado           | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva `EXT-GOV-001`                                                                 |
+| `GAP-PKG-028` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-029` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-030` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-031` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-032` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-033` | `PILOT-SHARED-001`     | `ACC-SHARED-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación derivada de consumidores directos; sin reloj propio                          | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | todos los consumidores obligatorios y evidencia shared deben quedar resueltos          |
+| `GAP-PKG-034` | `PILOT-SHARED-001`     | `ACC-SHARED-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación derivada de consumidores directos; sin reloj propio                          | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | todos los consumidores obligatorios y evidencia shared deben quedar resueltos          |
+| `GAP-PKG-035` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-036` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-037` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-038` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-039` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-040` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-041` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-042` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-043` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-044` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-045` | `PILOT-SHARED-001`     | `ACC-SHARED-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación derivada de consumidores directos; sin reloj propio                          | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | todos los consumidores obligatorios y evidencia shared deben quedar resueltos          |
+| `GAP-PKG-046` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-047` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-048` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-049` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-050` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-051` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-052` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-053` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-054` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-055` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-056` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-057` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-058` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-059` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | sin decisión de salida ejecutable mientras no exista piloto autorizado                  | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva bloqueo AURA propietario                                                      |
+| `GAP-PKG-060` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-061` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-062` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `BLOQUEADO_014_Y_EVIDENCIA` | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva gate de identidad física pendiente de 022/023                                 |
+| `GAP-PKG-063` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-064` | `PILOT-FUTURE-001`     | `ACC-FUTURE-001`  | `FUERA_DE_LINEA_ACTUAL`     | sin decisión de salida en la línea funcional actual                                     | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `FUERA_DE_LINEA`      | requiere activación formal de TALENTO antes de cualquier piloto                        |
+| `GAP-PKG-065` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `BLOQUEADO_014_Y_EVIDENCIA` | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva gate de identidad física pendiente de 022/023                                 |
+| `GAP-PKG-066` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-067` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-068` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-069` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-070` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-071` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-072` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-073` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-074` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-075` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-076` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-077` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-078` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | sin decisión de salida ejecutable mientras no exista piloto autorizado                  | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva bloqueo AURA propietario                                                      |
+| `GAP-PKG-079` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-080` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | sin decisión de salida ejecutable mientras no exista piloto autorizado                  | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva bloqueo AURA propietario                                                      |
+| `GAP-PKG-081` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-082` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-083` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-084` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-085` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-086` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-087` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-088` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-089` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-090` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-091` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-092` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-093` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-094` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-095` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-096` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-097` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-098` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-099` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-100` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-101` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-102` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-103` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-104` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-105` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-106` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-107` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-108` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-109` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-110` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-111` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-112` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-113` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-114` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-115` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-116` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-117` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-118` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | sin decisión de salida ejecutable mientras no exista piloto autorizado                  | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva bloqueo AURA propietario                                                      |
+| `GAP-PKG-119` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-120` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-121` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-122` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-123` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-124` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-125` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-126` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-127` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-128` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-129` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-130` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-131` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-132` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-133` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-134` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-135` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-136` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-137` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-138` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-139` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-140` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `BLOQUEADO_014_Y_EVIDENCIA` | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva gate de identidad física pendiente de 022/023                                 |
+| `GAP-PKG-141` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-142` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-143` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-144` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | sin decisión de salida ejecutable mientras no exista piloto autorizado                  | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva bloqueo AURA propietario                                                      |
+| `GAP-PKG-145` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-146` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-147` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | sin decisión de salida ejecutable mientras no exista piloto autorizado                  | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva bloqueo AURA propietario                                                      |
+| `GAP-PKG-148` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | sin decisión de salida ejecutable mientras no exista piloto autorizado                  | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva bloqueo AURA propietario                                                      |
+| `GAP-PKG-149` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | sin decisión de salida ejecutable mientras no exista piloto autorizado                  | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva bloqueo AURA propietario                                                      |
+| `GAP-PKG-150` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-151` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-152` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-153` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-154` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-155` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-156` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-157` | `PILOT-BLOCK-EXT-001`  | `ACC-EXT-001`     | `BLOQUEADO_EXT_GOV`         | sin decisión de salida ejecutable mientras el gate externo permanezca cerrado           | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva `EXT-GOV-001`                                                                 |
+| `GAP-PKG-158` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-159` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-160` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-161` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-162` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-163` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-164` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-165` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-166` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-167` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-168` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-169` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-170` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-171` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-172` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `BLOQUEADO_014_Y_EVIDENCIA` | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva gate de identidad física pendiente de 022/023                                 |
+| `GAP-PKG-173` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-174` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-175` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-176` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-177` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-178` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-179` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-180` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-181` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-182` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-183` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-184` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-185` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-186` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-187` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | sin decisión de salida ejecutable mientras no exista piloto autorizado                  | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva bloqueo AURA propietario                                                      |
+| `GAP-PKG-188` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | sin decisión de salida ejecutable mientras no exista piloto autorizado                  | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva bloqueo AURA propietario                                                      |
+| `GAP-PKG-189` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | sin decisión de salida ejecutable mientras no exista piloto autorizado                  | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva bloqueo AURA propietario                                                      |
+| `GAP-PKG-190` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-191` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-192` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | sin decisión de salida ejecutable mientras no exista piloto autorizado                  | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `BLOQUEADO`           | conserva bloqueo AURA propietario                                                      |
+| `GAP-PKG-193` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-194` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-195` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-196` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-197` | `PILOT-FUTURE-001`     | `ACC-FUTURE-001`  | `FUERA_DE_LINEA_ACTUAL`     | sin decisión de salida en la línea funcional actual                                     | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `FUERA_DE_LINEA`      | requiere activación formal de TALENTO antes de cualquier piloto                        |
+| `GAP-PKG-198` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-199` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-200` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+| `GAP-PKG-201` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-202` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-203` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-204` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-205` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-206` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | evaluación directa de salida sobre su ventana propia                                    | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia ejecutada + criterios aplicables completos; sin salida automática por tiempo |
+| `GAP-PKG-207` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | cierre del control sobre todas las ventanas gobernadas; sin salida empresarial ficticia | Responsable de decisión de la fila homónima de `DELIV-PKG-017` | `ESPECIFICADO`        | evidencia de control requerida sobre todas las ventanas gobernadas                     |
+
+---
+
+#### 27. Reconciliación cuantitativa
+
+La matriz demuestra:
+
+```text
+RAÍCES ESPERADAS = 207
+RAÍCES MATERIALIZADAS = 207
+IDENTIFICADORES ÚNICOS = 207
+FALTANTES = 0
+DUPLICADOS = 0
+
+160 PILOT-DIRECT-001
++ 3 PILOT-SHARED-001
++ 26 PILOT-CONTROL-001
++ 14 PILOT-BLOCK-AURA-001
++ 2 PILOT-BLOCK-EXT-001
++ 2 PILOT-FUTURE-001
+= 207
+```
+
+Dentro de `PILOT-CONTROL-001`:
+
+```text
+22 controles sin deploy directo confirmado
++ 4 controles con gate físico pendiente
+= 26
+```
+
+Las tres raíces shared permanecen `GAP-PKG-033`, `GAP-PKG-034` y `GAP-PKG-045`.
+
+Los cuatro controles con gate físico pendiente permanecen `GAP-PKG-062`, `GAP-PKG-065`, `GAP-PKG-140` y `GAP-PKG-172`.
+
+Las 14 raíces AURA, las 2 EXT y las 2 TALENTO conservan exactamente su modalidad heredada.
+
+La distribución de estados heredados de `DELIV-PKG-023` también permanece intacta:
+
+```text
+167 BLOQUEADO_014_Y_EVIDENCIA
++ 22 PENDIENTE_DE_EVIDENCIA
++ 14 BLOQUEADO_AURA
++ 2 BLOQUEADO_EXT_GOV
++ 2 FUERA_DE_LINEA_ACTUAL
+= 207
+```
+
+009 no promueve ninguno de esos estados por aprobación documental.
+
+---
+
+#### 28. Relación con promoción posterior
+
+`APROBAR_SALIDA` significa únicamente que la instancia evaluada satisfizo el contrato de salida del piloto.
+
+No significa:
+
+- que una siguiente cohorte haya sido activada;
+- que exista autorización automática para `CANARY_5`, `LIMITED_25`, `LIMITED_50` o `FULL_100`;
+- que el candidato haya sido promovido;
+- que el feature flag haya cambiado;
+- que la ruta anterior haya sido deshabilitada;
+- que el proceso anterior pueda retirarse.
+
+Cualquier promoción posterior continúa bajo `DELIV-PKG-019` y las autorizaciones que su expediente exija.
+
+---
+
+#### 29. Handoff a `CUTOVER-OPS-010`
+
+Cuando exista una decisión real `APROBAR_SALIDA`, 009 podrá entregar a 010:
+
+```text
+PAQUETE / CANDIDATO / AMBIENTE / ALCANCE
++
+VENTANA Y MODALIDAD
++
+DECISIÓN APROBAR_SALIDA
++
+AUTORIDAD Y EVIDENCIA
++
+CRITERIOS 023 COMPLETOS
++
+MÉTRICAS Y GUARDRAILS DECISIONALES
++
+INCIDENTES / DEFECTOS / RECOVERIES / CONCILIACIONES RESUELTOS SEGÚN APLICABILIDAD
++
+HISTORIAL DE CAMBIOS Y CORRECCIONES
+=
+ENTRADA ELEGIBLE PARA EVALUAR CONDICIONES DE RETIRO DEL PROCESO ANTERIOR
+```
+
+Ese handoff **no autoriza el retiro**. 010 deberá definir y comprobar sus propias condiciones y evidencia de retiro legacy.
+
+`EXIGIR_CORRECCIONES`, `BLOQUEAR_DECISION` o ausencia de una decisión válida no producen elegibilidad de retiro.
+
+---
+
+#### 30. Separación entre planificación y ejecución
+
+009 es exclusivamente documental.
+
+No ejecuta:
+
+- decisiones reales de salida;
+- correcciones;
+- retests;
+- activaciones;
+- promociones;
+- cambios de targeting;
+- cambios de feature flags;
+- rollback, recovery o compensation;
+- conciliaciones;
+- retiro legacy;
+- eliminación de código, datos, objetos o rutas;
+- despliegues;
+- migraciones;
+- DDL/DML;
+- backfills;
+- cambios de RLS/grants;
+- configuración remota;
+- operaciones sobre Supabase.
+
+La evidencia real y la decisión futura pertenecen a la ejecución autorizada de `SHELL-CI-022::<package_id>` consumiendo los contratos aplicables.
+
+---
+
+#### 31. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0  
+**Requisitos modificados:** 0  
+**Fragmentos 04A afectados:** 0
+
+**Justificación:** 009 no introduce un comportamiento empresarial o técnico ejecutable nuevo, ni crea permisos, transiciones runtime, fórmulas, métricas, severidades, umbrales, mecanismos de recuperación o criterios de aceptación nuevos. Materializa el gobierno documental para resolver la autoridad final y combinar de forma determinista criterios, métricas y evidencia ya definidos por las fuentes canónicas de E5 y CUTOVER. Los comportamientos verificables subyacentes continúan protegidos por el registro canónico vigente; un defecto real futuro que requiera regresión se incorporará mediante su flujo de corrección propietario y no como requisito hipotético de esta tarea.
+
+---
+
+#### 32. Criterios de aceptación documental
+
+`CUTOVER-OPS-009` queda documentalmente completo cuando:
+
+1. conserva `CUTOVER-OPS-008 → CUTOVER-OPS-009 → CUTOVER-OPS-010`;
+2. resuelve la autoridad final por referencia a la fila homónima de `DELIV-PKG-017` sin crear un rol nuevo;
+3. distingue productor de evidencia, propietario de criterio y autoridad final;
+4. materializa `required_pilot_exit_evidence_set`;
+5. materializa `pilot_exit_authority`;
+6. materializa `pilot_exit_evaluation`;
+7. materializa `pilot_exit_decision`;
+8. materializa `pilot_exit_decision_manifest`;
+9. utiliza únicamente `APROBAR_SALIDA`, `EXIGIR_CORRECCIONES`, `BLOQUEAR_DECISION` y `NO_APLICA`;
+10. prohíbe aprobación con pendientes o por mero transcurso del tiempo;
+11. exige todos los criterios 023 aplicables en `PASS` para `APROBAR_SALIDA`;
+12. impide que `FAIL`, `BLOQUEADO` o `PENDIENTE_DE_EVIDENCIA` aplicable se redondee a aprobación;
+13. exige que todo `NO_APLICA` tenga fuente canónica;
+14. conserva los ocho criterios de aceptación de 023 sin redefinirlos;
+15. conserva la duración de 022 sin convertirla por sí sola en aprobación;
+16. conserva targets y hard ceilings de 013 sin inventar tolerancias;
+17. utiliza las métricas de 008 con su definición, calidad y comparabilidad;
+18. una métrica sin target de salida no aprueba ni reprueba por sí sola salvo que una fuente la haga vinculante;
+19. si una métrica vinculante carece de regla decisional necesaria, la decisión queda bloqueada y no se inventa un target;
+20. una mejora empresarial no compensa seguridad, integridad, NFR, observabilidad, defectos o conciliación incumplidos;
+21. `EXIGIR_CORRECCIONES` requiere evidencia suficiente de incumplimiento material;
+22. cada corrección real conserva fuente, propietario, retest y condición de nueva presentación;
+23. no se inventan IDs de corrección o regresión para fallos hipotéticos;
+24. la bitácora 007 permanece append-only y una nueva decisión no borra la anterior;
+25. pausas, reversión, recovery y conciliación quedan resueltos conforme a sus fuentes antes de aprobar cuando sean aplicables;
+26. cambios materiales invalidan únicamente el uso futuro de la evaluación afectada y no reescriben historia;
+27. shared se evalúa por consumidores obligatorios sin crear reloj propio;
+28. control se evalúa sobre ventanas gobernadas sin crear una exposición empresarial ficticia;
+29. las 4 raíces de control con identidad física pendiente conservan bloqueo;
+30. AURA conserva 14 raíces bloqueadas;
+31. EXT conserva `GAP-PKG-027` y `GAP-PKG-157` bloqueadas;
+32. TALENTO conserva `GAP-PKG-064` y `GAP-PKG-197` fuera de línea;
+33. las 207 raíces aparecen exactamente una vez;
+34. existen 207 identificadores únicos, 0 faltantes y 0 duplicados;
+35. la distribución reconcilia `160 + 3 + 26 + 14 + 2 + 2 = 207`;
+36. las tres shared continúan siendo 033, 034 y 045;
+37. los cuatro controles bloqueados continúan siendo 062, 065, 140 y 172;
+38. `APROBAR_SALIDA` no ejecuta promoción;
+39. `APROBAR_SALIDA` no autoriza retirar legacy;
+40. 010 conserva propiedad exclusiva de las condiciones y evidencia para retirar el proceso anterior;
+41. la ejecución real y captura de evidencia permanecen en `SHELL-CI-022::<package_id>`;
+42. no se ejecutan código, correcciones, retests, despliegues, configuración remota, rollback, recovery, conciliaciones, migraciones, DDL/DML, backfills, cambios de datos ni operaciones sobre Supabase;
+43. se crean cero requisitos de prueba, se modifican cero requisitos y se afectan cero fragmentos 04A.
+
+---
+
+#### 33. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial
+
+##### TAREA ACTUAL APROBADA
+CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones
+
+##### SIGUIENTE TAREA RESERVADA
+CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior
+
+
 ### [ ] CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior
 
 La ejecución real conservará paquete, versión, ambiente, ventana, actor,
