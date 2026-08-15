@@ -1340,7 +1340,7 @@ Los bloqueos y condiciones heredados no reducen la obligación NFR. Tampoco son 
 
 El registro canónico conserva los requisitos NFR aprobados y `DELIV-PKG-016` define planes de prueba y vínculos por paquete para las obligaciones aplicables. Esta puerta no cambia el estado vigente de ninguna fila ni convierte una prueba planificada en prueba ejecutada.
 
-La evaluación de que cada paquete tenga pruebas y aceptación pertenece a `E5-GATE-004`. Por tanto, `E5-GATE-003` no utiliza un resultado futuro de esa puerta como premisa para aprobar cobertura NFR.
+La trazabilidad final TREQ → prueba → paquete → evidencia corresponde a E5-GATE-007, y la aprobación de entrada a implementación física por paquetes corresponde a E5-GATE-008.
 
 ---
 
