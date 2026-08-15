@@ -905,7 +905,427 @@ READY-GATE-003 — Definir criterio y evidencia para confirmar permisos, matrice
 READY-GATE-004 — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos
 
 
-### [ ] READY-GATE-004 — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos
+### ✅ READY-GATE-004 — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos
+
+**Estado:** APROBADA
+**Tarea anterior:** READY-GATE-003 — Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados
+**Tarea siguiente:** READY-GATE-005 — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos
+**Tipo de tarea:** Documental — definición normativa del criterio de readiness y del expediente mínimo de evidencia para confirmar que los usuarios y actores humanos requeridos por un paquete existen, están correctamente vinculados con sus roles, sedes, áreas y turnos aplicables, y pueden entrar al piloto sin ambigüedad de identidad o contexto; sin crear usuarios, modificar asignaciones, publicar turnos, realizar check-in ni ejecutar cambios sobre ambientes remotos
+
+#### 1. Propósito
+
+Definir el criterio verificable y el formato mínimo de evidencia que `SHELL-CI-021::<package_id>` deberá ejecutar para confirmar, después de `SHELL-CI-020::<package_id>` y de las tareas de implementación aplicables, que todas las personas necesarias para operar, administrar o supervisar el alcance del paquete durante el piloto tienen una configuración de identidad y contexto coherente con el modelo canónico.
+
+El gate deberá demostrar, para cada actor requerido por el paquete, que:
+
+1. existe una identidad empresarial inequívoca;
+2. cuando el actor requiera autenticación interactiva, existe un principal autenticado válido y vinculado con ese actor sin confundir principal con actor;
+3. sus roles requeridos corresponden a códigos canónicos exactos y no a nombres libres, cargos, jerarquías o inferencias locales;
+4. sus sedes y áreas requeridas existen, están activas cuando corresponda y conservan una relación territorial coherente;
+5. todo rol operativo que deba ejercerse durante el piloto está respaldado por un turno publicado, atribuible y compatible con la ventana, sede y área requeridas;
+6. ninguna ausencia, multiplicidad o contradicción se transforma silenciosamente en autoridad más amplia.
+
+Esta tarea diseña el gate. No crea cuentas, invitaciones, trabajadores, roles, asignaciones territoriales, turnos, check-ins ni registros de operación y no afirma que ningún actor haya superado readiness.
+
+#### 2. Alcance y frontera del gate
+
+`READY-GATE-004` responde exclusivamente a esta pregunta:
+
+> ¿El conjunto completo de actores humanos que el paquete necesita para entrar al piloto está materializado con identidad, rol y contexto territorial y laboral suficientes para ejecutar su participación prevista, sin privilegios inferidos ni ambigüedades?
+
+El gate se evalúa por `package_id`, ambiente objetivo y actor requerido. Cuando un mismo actor participe en más de una función, sede, área o franja del piloto, cada combinación materialmente distinta deberá quedar representada en el expediente sin duplicar la identidad humana.
+
+Este gate no sustituye ni anticipa:
+
+- `READY-GATE-001`: correlación del código realmente desplegado;
+- `READY-GATE-002`: migraciones aplicadas y datos validados;
+- `READY-GATE-003`: permisos, matrices y dispositivos configurados;
+- `READY-GATE-005`: catálogos y datos maestros mínimos;
+- `READY-GATE-006`: integraciones y credenciales del ambiente;
+- `READY-GATE-007`: hardware, red, escáneres e impresoras;
+- `READY-GATE-008`: procedimientos operativos y contingencias;
+- `READY-GATE-009`: capacitación y material de apoyo;
+- `READY-GATE-010`: mesa de soporte, responsables y escalamiento;
+- `READY-GATE-011`: monitoreo, métricas y alertas;
+- `READY-GATE-012`: respaldo y rollback probados;
+- `READY-GATE-013`: línea base previa al piloto;
+- `READY-GATE-014`: riesgos aceptados y condiciones de suspensión;
+- `READY-GATE-015`: autoridad y criterio final de entrada al piloto.
+
+La existencia de una cuenta, una fila de trabajador, un rol visible en interfaz, una sede seleccionable, un área registrada o un turno en borrador no demuestra readiness por sí sola.
+
+#### 3. Fuentes vinculantes para determinar el roster esperado
+
+La ejecución futura deberá derivar el conjunto esperado de actores y configuraciones exclusivamente del expediente aprobado del paquete y de los contratos canónicos vigentes.
+
+Como mínimo deberá reconciliar, cuando apliquen:
+
+- el alcance y los actores del proceso que el paquete implementa;
+- los permisos y matrices ya validados por `READY-GATE-003`;
+- la decisión final y las dependencias del expediente `DELIV-PKG-001..025::<package_id>`;
+- el catálogo canónico de roles base y operativos;
+- el contrato de `AccessContext` y la separación entre principal autenticado y actor efectivo;
+- las asignaciones territoriales requeridas por los procesos incluidos;
+- los turnos publicados que materialicen los roles operativos requeridos para la ventana del piloto;
+- las denegaciones y restricciones vigentes que puedan impedir la participación prevista.
+
+La lista observada de usuarios del ambiente no define por sí sola el roster esperado. Primero deberá existir un conjunto requerido derivado del paquete y después deberá reconciliarse contra el estado observado.
+
+Si el paquete no permite determinar de forma exhaustiva quiénes deben participar o qué rol y territorio necesita cada actor, el gate será `BLOQUEADO`; no se completará el roster mediante inferencia.
+
+#### 4. Contrato del roster de readiness
+
+La ejecución futura deberá materializar exactamente una fila principal por actor requerido y las extensiones necesarias para representar participaciones distintas sin duplicar a la persona.
+
+##### 4.1. Campos mínimos por actor
+
+| Campo                       | Regla                                                                                                           |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `package_id`                | Identidad canónica exacta del expediente evaluado.                                                              |
+| `target_environment`        | Ambiente exacto contra el cual se realiza la comprobación.                                                      |
+| `actor_id`                  | Identidad empresarial estable del humano requerido.                                                             |
+| `principal_id`              | Principal autenticado vinculado cuando la participación exige autenticación interactiva; no sustituye al actor. |
+| `principal_requirement`     | Evidencia de si la participación requiere o no principal interactivo según el proceso y el paquete.             |
+| `identity_link_result`      | Resultado de comprobar vínculo inequívoco entre principal y actor cuando aplique.                               |
+| `base_role_expected`        | Rol base exacto requerido cuando corresponda.                                                                   |
+| `base_role_observed`        | Rol base efectivamente configurado y vigente.                                                                   |
+| `operational_role_expected` | Rol operativo exacto requerido cuando corresponda.                                                              |
+| `operational_role_observed` | Rol operativo resoluble para la participación prevista.                                                         |
+| `required_site_ids`         | Sede o conjunto de sedes que el paquete exige para la participación.                                            |
+| `observed_site_scope`       | Alcance territorial efectivamente configurado para el actor.                                                    |
+| `required_area_ids`         | Área o conjunto explícito de áreas requeridas cuando la operación depende de área.                              |
+| `observed_area_scope`       | Áreas efectivamente configuradas y compatibles con sus sedes.                                                   |
+| `shift_required`            | Indica si la participación exige turno operativo para la ventana del piloto.                                    |
+| `shift_id`                  | Identidad del turno publicado que sustenta la participación cuando aplique.                                     |
+| `shift_window`              | Ventana efectiva del turno comparada con la ventana requerida del piloto.                                       |
+| `shift_site_id`             | Sede del turno publicado.                                                                                       |
+| `shift_area_id`             | Área del turno cuando el contrato la exige.                                                                     |
+| `shift_operational_role`    | Rol operativo publicado para el turno.                                                                          |
+| `conflict_result`           | Resultado de detectar duplicidad, superposición o asignaciones incompatibles.                                   |
+| `evidence_refs`             | Referencias reproducibles a evidencia autorizada sin almacenar secretos ni datos personales innecesarios.       |
+| `result`                    | `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA`.                                                                      |
+| `blocking_reason`           | Motivo concreto cuando la fila no obtiene `PASS`.                                                               |
+
+Los nombres anteriores definen el contenido mínimo del expediente de evidencia; no obligan a una estructura física de base de datos concreta.
+
+##### 4.2. Exhaustividad del roster
+
+El roster será válido únicamente cuando:
+
+1. todos los actores requeridos por los pasos del paquete estén incluidos;
+2. cada actor aparezca una sola vez como identidad humana principal;
+3. sus participaciones adicionales estén vinculadas a la misma identidad y no creen personas duplicadas;
+4. toda ausencia tenga una causa verificable;
+5. ningún actor adicional se incluya para suplir silenciosamente un rol o una cobertura no aprobados;
+6. los conteos esperado, observado, conciliado, faltante, conflictivo y no aplicable sean reproducibles.
+
+No se declara una cantidad global de usuarios, sedes, áreas o turnos en esta tarea porque esas cantidades pertenecen a cada paquete y ambiente observado durante la ejecución futura.
+
+#### 5. Identidad humana y principal autenticado
+
+La comprobación deberá conservar la separación canónica:
+
+```text
+PRINCIPAL AUTENTICADO
+≠
+ACTOR HUMANO EFECTIVO
+≠
+ROL
+≠
+TURNO
+≠
+CHECK-IN
+≠
+DISPOSITIVO
+```
+
+Para obtener `PASS` en identidad:
+
+1. el `actor_id` esperado deberá existir y corresponder a la persona prevista por el expediente;
+2. si la participación exige autenticación interactiva, el principal deberá existir, ser utilizable en el ambiente objetivo y vincularse de forma inequívoca con ese actor;
+3. un principal técnico, cuenta de dispositivo, credencial de integración o identidad compartida no podrá utilizarse como actor humano;
+4. una invitación pendiente, expirada, consumida por otra identidad o con rol o sede no reconciliados no constituye por sí sola un usuario listo para el piloto;
+5. la metadata editable por el usuario no podrá sustituir la asignación empresarial protegida;
+6. una identidad desactivada, suspendida o no utilizable para la participación requerida no podrá recibir `PASS`;
+7. el vínculo deberá poder auditarse sin exponer contraseñas, tokens, secretos ni atributos personales innecesarios.
+
+Cuando el proceso aprobado demuestre que una participación no requiere principal interactivo, esa dimensión podrá marcarse `NO_APLICA`; el actor empresarial y las demás dimensiones requeridas siguen siendo obligatorios.
+
+#### 6. Catálogos de rol vinculantes
+
+`READY-GATE-004` no redefine roles. Comprueba que las asignaciones observadas correspondan a los catálogos canónicos ya aprobados.
+
+##### 6.1. Roles base vigentes
+
+Los siete códigos base que el gate reconoce en el snapshot vigente son:
+
+- `propietario`;
+- `gerente_general`;
+- `gerente`;
+- `contador`;
+- `marketing`;
+- `logistica`;
+- `auxiliar_administrativa`.
+
+El rol base representa autoridad administrativa o funcional independiente del turno cuando su modalidad lo permite. No se convertirá en rol operativo por coincidencia nominal, cargo, jerarquía o presencia física.
+
+##### 6.2. Roles operativos vigentes
+
+Los doce códigos operativos que el gate reconoce en el snapshot vigente son:
+
+- `cajero_satelite`;
+- `barista_satelite`;
+- `cocinero_satelite`;
+- `servicio_salon`;
+- `mostrador_satelite`;
+- `operador_integral_satelite`;
+- `produccion_cocina`;
+- `produccion_panaderia`;
+- `produccion_reposteria`;
+- `bodeguero`;
+- `conductor_logistica`;
+- `gerencia_operativa`.
+
+El rol operativo deberá provenir del contexto laboral vigente que corresponda al actor y al momento evaluado. No podrá derivarse de un `BaseRole`, de un nombre de cargo, de una ruta, de una pantalla, del dispositivo o de una asignación histórica.
+
+##### 6.3. Regla de correspondencia
+
+Para cada participación del roster:
+
+- el rol esperado deberá ser exacto y existir en el catálogo aplicable;
+- el rol observado deberá coincidir con la participación autorizada por el expediente;
+- una asignación adicional que amplíe materialmente la autoridad del actor fuera de lo aprobado deberá producir `FAIL` cuando la evidencia permita demostrarla;
+- si no puede determinarse cuál rol es autoritativo, el resultado será `BLOQUEADO`;
+- la ausencia de rol no se sustituye por un rol “parecido” ni por el más cercano jerárquicamente.
+
+La matriz de concesiones no se vuelve a diseñar aquí. `READY-GATE-003` ya gobierna su integridad; este gate verifica que los actores del paquete estén vinculados a los roles que esas matrices esperan.
+
+#### 7. Sedes y áreas requeridas
+
+Toda participación territorial deberá reconciliar identificadores canónicos, no etiquetas libres.
+
+##### 7.1. Sede
+
+Para `PASS`:
+
+1. cada `site_id` requerido deberá existir y ser el mismo que utiliza el expediente del paquete;
+2. cuando la participación dependa de una sede activa, esa sede deberá estar habilitada para el periodo evaluado;
+3. el alcance observado del actor deberá contener exactamente la cobertura necesaria para su participación, sin interpretar `null` como todas las sedes;
+4. un nombre, código visible, sede seleccionada en cliente, última sede usada o sede del dispositivo no podrá crear asignación del actor;
+5. una asignación conflictiva o no resoluble bloqueará la participación afectada.
+
+##### 7.2. Área
+
+Para `PASS`:
+
+1. cada `area_id` requerido deberá existir y pertenecer a una sede compatible con la participación;
+2. el conjunto observado deberá reconciliarse contra el conjunto requerido por el paquete;
+3. un área de otra sede produce `FAIL` cuando la relación es verificable;
+4. un área ausente o indeterminada no significa toda la sede;
+5. una etiqueta, tipo de área, orden visual o selección del cliente no crea membresía territorial.
+
+##### 7.3. Participaciones administrativas
+
+Una participación exclusivamente administrativa no deberá recibir artificialmente turno, check-in o área operativa para obtener readiness. El gate deberá comprobar el alcance administrativo que realmente exija el contrato y mantenerlo separado del contexto operacional.
+
+#### 8. Turnos requeridos para el piloto
+
+El turno es una condición operativa temporal y no una fuente de identidad o permisos.
+
+Para cada participación que requiera carril operativo durante el piloto, el gate deberá demostrar:
+
+1. existencia de un turno atribuible al mismo `actor_id`;
+2. estado publicado o equivalente canónico que lo haga laboralmente efectivo;
+3. ventana temporal que cubra la participación requerida del piloto;
+4. `site_id` compatible con la sede requerida;
+5. `area_id` compatible cuando el contrato del turno y de la operación lo exijan;
+6. `operational_role` exacto y compatible con la función requerida;
+7. ausencia de superposición que produzca dos roles operativos efectivos incompatibles para el mismo actor e instante;
+8. ausencia de selección por aproximación, “turno más cercano” o fallback histórico.
+
+Un turno en borrador, cancelado, fuera de ventana, de otra persona, sede, área o rol no satisface el gate.
+
+##### 8.1. Frontera con check-in
+
+`READY-GATE-004` confirma que los turnos necesarios están configurados y publicados para la ventana del piloto. No exige fabricar un check-in previo ni considerar que un actor ya está operando antes de iniciar su jornada.
+
+El check-in activo se evaluará cuando el flujo operativo realmente requiera resolver contexto durante la ejecución. Su ausencia antes del inicio de la jornada no convierte en inválido un turno futuro correctamente publicado ni afecta capacidades base que por contrato no dependan de check-in.
+
+#### 9. Reconciliación con matrices y permisos
+
+El gate deberá demostrar coherencia entre el roster y la configuración ya evaluada en `READY-GATE-003` sin repetir la auditoría completa de matrices.
+
+Controles mínimos:
+
+1. todo rol base observado deberá resolver contra el carril base correspondiente;
+2. todo rol operativo observado deberá resolver contra el carril operativo correspondiente;
+3. las participaciones operativas deberán usar contexto territorial y temporal compatible con sus filas `CTX-*`;
+4. un rol base no podrá heredar automáticamente las 240 concesiones operativas;
+5. un rol operativo no podrá heredar automáticamente las 499 concesiones base;
+6. una cuenta de dispositivo no podrá aparecer como beneficiario humano de una concesión;
+7. `null`, wildcard, nombre de rol o nombre de cargo no podrán ampliar alcance;
+8. una denegación vigente deberá seguir prevaleciendo sobre la mera existencia del usuario, rol o turno.
+
+La prueba de una acción concreta continúa perteneciendo a la autorización efectiva y a los requisitos `TREQ-*` aplicables. Este gate solo confirma que la configuración humana necesaria para llegar a esa evaluación existe y es coherente.
+
+#### 10. Reglas de decisión por dimensión
+
+Cada actor deberá obtener un resultado por dimensión antes del resultado agregado.
+
+| Dimensión     | `PASS`                                                                                                     | `FAIL`                                                                                               | `BLOQUEADO`                                                                | `NO_APLICA`                                                                                 |
+| ------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Identidad     | Actor y vínculo de principal requerido son inequívocos, vigentes y utilizables.                            | La evidencia demuestra identidad incorrecta, inactiva, duplicada o vínculo con otro actor.           | No puede resolverse de forma autoritativa el actor o su principal.         | La participación no requiere principal interactivo; el actor empresarial sigue validándose. |
+| Rol base      | Código esperado y asignación observada son coherentes.                                                     | Existe rol distinto o asignación adicional incompatible que cambia autoridad.                        | La fuente autoritativa o el rol esperado no pueden determinarse.           | La participación no requiere carril base.                                                   |
+| Rol operativo | Código esperado y rol operativo resoluble son coherentes.                                                  | El rol observado es distinto o incompatible.                                                         | No puede resolverse un rol operativo autoritativo.                         | La participación no requiere carril operativo.                                              |
+| Sede          | Cobertura requerida y observada son compatibles mediante IDs canónicos.                                    | Existe sede incorrecta, inactiva o expansión demostrada.                                             | La asignación o el catálogo territorial no pueden reconciliarse.           | El contrato demuestra que la dimensión territorial no aplica.                               |
+| Área          | Las áreas requeridas existen, pertenecen a la sede correcta y están cubiertas.                             | Existe área cross-site, no autorizada o incompatible.                                                | La pertenencia o asignación de área no puede resolverse.                   | El contrato demuestra que el área no aplica a esa participación.                            |
+| Turno         | Existe turno publicado, atribuible, temporal y territorialmente compatible con el rol operativo requerido. | El turno está ausente cuando es requerido, no publicado, fuera de ventana, duplicado o incompatible. | No puede determinarse de forma autoritativa el calendario o la asignación. | La participación no exige turno operativo.                                                  |
+
+`NO_APLICA` deberá estar sustentado por el proceso y el expediente del paquete. No puede utilizarse para ocultar un dato faltante.
+
+#### 11. Resultado agregado por actor y por paquete
+
+##### 11.1. Resultado por actor
+
+1. Si alguna dimensión obligatoria obtiene `FAIL`, el actor obtiene `FAIL`.
+2. Si no existe `FAIL` pero alguna dimensión obligatoria obtiene `BLOQUEADO`, el actor obtiene `BLOQUEADO`.
+3. El actor obtiene `PASS` únicamente cuando todas sus dimensiones requeridas obtienen `PASS` y todo `NO_APLICA` está sustentado.
+4. La existencia de una cuenta válida no compensa un rol, territorio o turno incorrecto.
+5. Un turno correcto no compensa una identidad o asignación inválida.
+6. Un actor administrativo puede obtener `PASS` sin turno operativo cuando el contrato demuestra que su participación es exclusivamente base.
+
+##### 11.2. Resultado por paquete
+
+1. Todo actor requerido deberá aparecer exactamente una vez como identidad principal del roster.
+2. Si falta un actor cuyo requerimiento está demostrado, el paquete obtiene `FAIL`.
+3. Si no puede determinarse el universo esperado de actores, el paquete obtiene `BLOQUEADO`.
+4. Si algún actor obtiene `FAIL`, el paquete obtiene `FAIL`.
+5. Si no existe `FAIL` pero algún actor obtiene `BLOQUEADO`, el paquete obtiene `BLOQUEADO`.
+6. El paquete obtiene `PASS` únicamente cuando todos los actores requeridos obtienen `PASS`.
+7. Un paquete que demuestre documentalmente que no requiere participación humana para la capacidad evaluada podrá obtener `NO_APLICA` en este gate; esa decisión no puede inferirse únicamente porque no existan usuarios observados.
+8. Un subconjunto de usuarios o una muestra representativa nunca se redondean a `PASS`.
+
+#### 12. Evidencia aceptable
+
+La ejecución futura deberá conservar evidencia suficiente para que otra persona autorizada pueda repetir la reconciliación y obtener el mismo resultado.
+
+Podrán utilizarse, cuando correspondan:
+
+- inventario del roster esperado derivado del paquete;
+- identificadores y estado del principal autenticado obtenidos de la fuente de identidad autorizada;
+- vínculo protegido entre principal y actor empresarial;
+- asignaciones canónicas de rol base;
+- asignaciones y elegibilidad de rol operativo;
+- catálogos y vínculos de sede y área;
+- calendario o fuente autoritativa de turnos publicados;
+- consultas read-only versionadas que comprueben unicidad, pertenencia territorial, vigencia y conflictos;
+- reportes reproducibles de faltantes, duplicados, superposiciones y asignaciones incompatibles;
+- resultados de pruebas vinculadas a los `TREQ-*` existentes;
+- referencias de evidencia emitidas por los sistemas propietarios.
+
+Toda evidencia deberá registrar como mínimo paquete, ambiente, fecha de observación, fuente, método, actor o conjunto evaluado, resultado y referencia durable.
+
+La evidencia no deberá conservar contraseñas, tokens, secretos, códigos de recuperación, datos biométricos ni atributos personales completos cuando un identificador o una referencia protegida sean suficientes.
+
+#### 13. Evidencia insuficiente por sí sola
+
+No constituye prueba suficiente de readiness:
+
+- una captura de una pantalla de usuarios;
+- que el correo de una persona exista en un proveedor de identidad;
+- que una invitación haya sido enviada;
+- que una fila de trabajador exista sin vínculo de identidad verificable;
+- que el nombre visible de un rol coincida con la función esperada;
+- que una persona pueda abrir una aplicación;
+- que un selector muestre una sede o un área;
+- que una sede o área exista sin demostrar la asignación del actor;
+- que un turno esté creado pero permanezca en borrador o fuera de la ventana del piloto;
+- un check-in histórico;
+- la presencia física del trabajador sin turno y contexto requeridos;
+- una asignación local, cacheada o enviada por el cliente;
+- una muestra parcial del roster;
+- la aprobación documental de un paquete sin evidencia del estado observado en el ambiente objetivo.
+
+#### 14. Casos especiales y manejo de discrepancias
+
+##### 14.1. Actor con múltiples funciones
+
+Una persona puede tener más de una participación aprobada sin duplicar su identidad. El expediente deberá separar cada participación por rol, territorio y ventana y comprobar que la combinación no crea simultaneidad incompatible ni expansión accidental de autoridad.
+
+##### 14.2. Actor multisede
+
+Una cobertura administrativa multisede deberá provenir de la asignación canónica correspondiente. Para operación, cada participación deberá resolver la sede y área efectivas exigidas por el turno y el recurso. La mera pertenencia administrativa a varias sedes no produce un contexto operativo global.
+
+##### 14.3. Actor exclusivamente administrativo
+
+Cuando la participación requiera solamente capacidades base, la ausencia de turno o check-in no será un defecto. Sí deberán verificarse identidad, rol base, cobertura administrativa y demás condiciones que el paquete exija.
+
+##### 14.4. Actor operativo sin turno válido
+
+Cuando el paquete requiera operación y no exista un turno publicado compatible con actor, rol, sede, área y ventana, el resultado será `FAIL` si la ausencia es verificable y `BLOQUEADO` si la fuente autoritativa no puede determinarse. No se utilizará un turno histórico o aproximado.
+
+##### 14.5. Dispositivo compartido
+
+El dispositivo no reemplaza al actor. Si la participación se realiza desde una estación compartida, este gate exigirá igualmente actor humano identificable y las dimensiones laborales que correspondan. La configuración del dispositivo permanece gobernada por `READY-GATE-003` y no concede roles, sedes, áreas ni turnos.
+
+##### 14.6. Identidad técnica o de integración
+
+Un principal de servicio, integración, automatización o dispositivo no se incorporará al roster como usuario humano. Si el paquete depende de una integración técnica, su readiness pertenece al gate correspondiente de integraciones y credenciales, no a una simulación de trabajador.
+
+#### 15. Separación entre planificación y ejecución
+
+`READY-GATE-004` deja definido el contrato que `SHELL-CI-021::<package_id>` deberá ejecutar después de que el paquete haya materializado las identidades, asignaciones y planificación laboral aplicables.
+
+La secuencia permanece:
+
+`E5-GATE-008::<package_id> -> SHELL-CI-020::<package_id> -> implementación aplicable -> SHELL-CI-021::<package_id> -> SHELL-CI-022::<package_id>`
+
+Durante `SHELL-CI-021::<package_id>` se capturará el roster real del ambiente objetivo, se reconciliarán sus dimensiones y se emitirá el resultado operativo de readiness. Esta tarea no crea ni modifica usuarios, roles, sedes, áreas, turnos o check-ins y no presenta evidencia planificada como evidencia ejecutada.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `READY-GATE-004` define el criterio documental de evidencia para comprobar reglas de identidad, rol, territorio, jornada y separación entre carriles que ya están protegidas por requisitos canónicos existentes. No introduce una nueva regla empresarial, modalidad de autorización, asignación, transición de estado o comportamiento ejecutable; operacionaliza esas obligaciones para la comprobación futura por paquete.
+
+**Requisitos existentes consumidos:** `TREQ-AUTH-001`, `TREQ-AUTH-005`, `TREQ-AUTH-007`, `TREQ-AUTH-008`, `TREQ-AUTH-009` y `TREQ-AUTH-010`.
+
+**Requisitos TREQ-* creados:** 0
+**Requisitos TREQ-* modificados:** 0
+**Fragmentos 04A afectados:** 0
+
+#### 16. Criterios de aceptación documental
+
+`READY-GATE-004` queda documentalmente completo cuando:
+
+1. define cómo derivar un roster exhaustivo de actores requeridos desde el expediente del paquete antes de observar usuarios del ambiente;
+2. separa de forma explícita principal autenticado, actor humano, rol, turno, check-in y dispositivo;
+3. exige vínculo inequívoco entre principal y actor cuando la participación requiere autenticación interactiva;
+4. conserva exactamente los siete roles base y doce roles operativos del snapshot canónico vigente sin inferencias por cargo o jerarquía;
+5. exige reconciliación de sede y área mediante identificadores canónicos y prohíbe interpretar `null` como cobertura global;
+6. exige turno publicado, atribuible, temporal y territorialmente compatible para toda participación operativa requerida durante el piloto;
+7. mantiene las capacidades administrativas independientes de turno y check-in cuando el contrato las define por carril base;
+8. no exige un check-in artificial antes del inicio real de la jornada y conserva su evaluación para el contexto operativo correspondiente;
+9. define `PASS`, `FAIL`, `BLOQUEADO` y `NO_APLICA` por dimensión, por actor y por paquete;
+10. impide aprobar una muestra parcial, un roster incompleto o una identidad técnica presentada como trabajador;
+11. diferencia evidencia reproducible de señales insuficientes como capturas, invitaciones enviadas, nombres visibles o turnos en borrador;
+12. conserva la separación con `READY-GATE-003` y no vuelve a diseñar permisos, matrices o dispositivos;
+13. no crea usuarios, invitaciones, trabajadores, roles, asignaciones, sedes, áreas, turnos, check-ins, DDL, DML, migraciones ni cambios remotos;
+14. no crea ni modifica requisitos `TREQ-*` ni fragmentos del registro 04A;
+15. `READY-GATE-005` permanece reservada y no se anticipa su criterio sobre catálogos y datos maestros.
+
+#### 17. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+READY-GATE-003 — Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados
+
+##### TAREA ACTUAL APROBADA
+READY-GATE-004 — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos
+
+##### SIGUIENTE TAREA RESERVADA
+READY-GATE-005 — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos
+
+
 ### [ ] READY-GATE-005 — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos
 ### [ ] READY-GATE-006 — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente
 ### [ ] READY-GATE-007 — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras
