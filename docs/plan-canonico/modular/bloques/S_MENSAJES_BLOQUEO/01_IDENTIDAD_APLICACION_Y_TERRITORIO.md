@@ -8385,7 +8385,7 @@ No se inicia ni modifica `AUTH-ERR-008` en esta tarea.
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md`
 **Artefactos producidos:** `ACTIVE-AREA-BLOCKING-CONTRACT-001`, `ACTIVE-AREA-DEPENDENCY-MATRIX-001`, `ACTIVE-AREA-CHANNEL-RESPONSE-MATRIX-001`, `ACTIVE-AREA-APPLICATION-COVERAGE-REGISTER-001` y `ACTIVE-AREA-PHYSICAL-RECONCILIATION-001`
-**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001` a `AUTH-MOD-004`; `AUTH-MOD-006` a `AUTH-MOD-010`; `AUTH-MOD-013` a `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-011` a `AUTH-CAT-013`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-009` a `AUTH-CTX-015`; `AUTH-CTX-017` a `AUTH-CTX-020`; `AUTH-CTX-025`; `AUTH-CTX-028`; `AUTH-CTX-029`; `AUTH-ERR-001` a `AUTH-ERR-007`; contratos vigentes de identidad, cobertura administrativa, turno, territorio, rol, recurso, autorización y disponibilidad; estado remoto y desplegado inspeccionado; contrato documental vigente
+**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001` a `AUTH-MOD-004`; `AUTH-MOD-006` a `AUTH-MOD-010`; `AUTH-MOD-013` a `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-011` a `AUTH-CAT-013`; `AUTH-CAT-022` a `AUTH-CAT-024`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-009` a `AUTH-CTX-015`; `AUTH-CTX-017` a `AUTH-CTX-020`; `AUTH-CTX-025`; `AUTH-CTX-028`; `AUTH-CTX-029`; `AUTH-ERR-001` a `AUTH-ERR-007`; contratos vigentes de identidad, cobertura administrativa, turno, territorio, rol, recurso, autorización y disponibilidad; estado remoto y desplegado inspeccionado; contrato documental vigente
 **Cambios físicos autorizados:** ninguno; no modifica código, Supabase, Auth, RLS, RPC, Edge Functions, datos, migraciones, constraints, triggers, áreas, sedes, turnos, check-ins, asignaciones, roles, permisos, aplicaciones ni despliegues
 
 ---
@@ -8480,10 +8480,10 @@ Cobertura materializada:
 | Escenarios con decisión explícita                       |                20 |
 | Canales con respuesta explícita                         |                10 |
 | Aplicaciones canónicas reconciliadas                    |                10 |
-| Permisos canónicos clasificados por área operativa      |               112 |
-| Permisos `REQUIRED`                                     |                31 |
-| Permisos `SITE_SUFFICIENT`                              |                27 |
-| Permisos `NOT_APPLICABLE`                               |                54 |
+| Permisos canónicos clasificados por área operativa      |               140 |
+| Permisos `REQUIRED`                                     |                38 |
+| Permisos `SITE_SUFFICIENT`                              |                34 |
+| Permisos `NOT_APPLICABLE`                               |                68 |
 | Empleados activos observados                            |                42 |
 | Áreas observadas                                        | 22, todas activas |
 | Áreas inactivas observadas                              |                 0 |
@@ -8718,13 +8718,27 @@ vacío. Un rol site-wide y un permiso que no exige área pueden operar con
 
 #### 9. Relación con `operational_area_requirement`
 
-La matriz aprobada de 112 permisos permanece intacta:
+La matriz vigente de `vento.authorization@1.0.0`, congelada por `AUTH-CAT-024`,
+contiene **140 permisos activos** y conserva la propiedad
+`operational_area_requirement` reconciliada así:
 
 | Clasificación     | Cantidad | Decisión ante área nula                                                            |
 | ----------------- | -------: | ---------------------------------------------------------------------------------- |
-| `REQUIRED`        |       31 | bloquear el carril operativo con esta razón después de validar turno y precedencia |
-| `SITE_SUFFICIENT` |       27 | continuar si el rol y el recurso también admiten nivel sede                        |
-| `NOT_APPLICABLE`  |       54 | no evaluar área operativa; conservar el carril base aplicable                      |
+| `REQUIRED`        |       38 | bloquear el carril operativo con esta razón después de validar turno y precedencia |
+| `SITE_SUFFICIENT` |       34 | continuar si el rol y el recurso también admiten nivel sede                        |
+| `NOT_APPLICABLE`  |       68 | no evaluar área operativa; conservar el carril base aplicable                      |
+
+La reconciliación conserva las clasificaciones aprobadas para las claves que
+permanecen activas, retira `nexo.inventory.remissions.dispatch` del conjunto
+activo e incorpora las claves aprobadas por `AUTH-CAT-022` con sus propiedades
+de área. El resultado contractual es exacto:
+
+```text
+REQUIRED = 38
+SITE_SUFFICIENT = 34
+NOT_APPLICABLE = 68
+TOTAL = 140
+```
 
 La propiedad no concede permiso, no amplía scope y no sustituye la validación
 del recurso. Un valor ausente o desconocido es configuración inválida y se
@@ -9250,8 +9264,8 @@ datos personales innecesarios.
 | `numera`   | reportes organizacionales no exigen área; cierres o transacciones locales la aplican por recurso                                          | ESPECIFICADO      |
 | `pass`     | el cliente final no usa área laboral; superficies internas aplican el contrato del actor correspondiente                                  | ESPECIFICADO      |
 
-La tabla no concede permisos, no modifica los 112 permisos y no crea
-excepciones por nombre de aplicación.
+La tabla no concede permisos, no modifica los 140 permisos activos de
+`vento.authorization@1.0.0` y no crea excepciones por nombre de aplicación.
 
 ---
 
@@ -9353,8 +9367,9 @@ referencian señales de área sin un contrato común de razón y actividad.
 
 `app_permissions` expone `is_operational` y
 `requires_active_work_context`, pero no materializa la propiedad canónica
-`operational_area_requirement`. La clasificación de 31, 27 y 54 permanece
-documental hasta su implementación versionada.
+`operational_area_requirement`. La clasificación de **38 `REQUIRED`, 34
+`SITE_SUFFICIENT` y 68 `NOT_APPLICABLE`** sobre los 140 permisos activos
+permanece documental hasta su implementación versionada.
 
 ---
 
@@ -9373,7 +9388,7 @@ documental hasta su implementación versionada.
 | `ACTIVE-AREA-GAP-009` | `get_effective_context_v1` puede usar área de dispositivo o simulación como efectiva                   | IDENTIFICADO           | `AUTH-DB-033`; `SHELL-AUTH-002`                               | contexto real, dispositivo y simulación permanecen separados                            |
 | `ACTIVE-AREA-GAP-010` | resolver de actor en dispositivo usa metadata, asistencia y legacy para el área                        | IDENTIFICADO           | `AUTH-DB-033`; `SHELL-AUTH-002`                               | actor, turno, dispositivo y área se validan por separado                                |
 | `ACTIVE-AREA-GAP-011` | `permission_scope_matches` y `has_permission` reducen contexto y causa a booleanos                     | IDENTIFICADO           | `AUTH-DB-034`; `SHELL-AUTH-001`                               | decisión discriminada conserva requisito, actividad, scope y razón                      |
-| `ACTIVE-AREA-GAP-012` | `app_permissions` no materializa `operational_area_requirement`                                        | IDENTIFICADO           | `AUTH-CAT-013`; `AUTH-DB-020`; `AUTH-DB-031`                  | catálogo físico versionado reproduce 31/27/54 sin deriva                                |
+| `ACTIVE-AREA-GAP-012` | `app_permissions` no materializa `operational_area_requirement`                                        | IDENTIFICADO           | `AUTH-CAT-013`; `AUTH-CAT-024`; `AUTH-DB-020`; `AUTH-DB-031`  | catálogo físico versionado reproduce 38/34/68 sin deriva                                |
 | `ACTIVE-AREA-GAP-013` | 21 funciones y 12 políticas sobre 8 tablas usan señales heterogéneas                                   | IDENTIFICADO           | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-CI-018`            | inventario completo queda migrado o justificado y gate estático activo                  |
 | `ACTIVE-AREA-GAP-014` | no existe contrato compartido de código, copy, recuperación, auditoría e invalidación                  | IDENTIFICADO           | `AUTH-ERR-020`; `AUTH-DB-035`; `SHELL-CI-016`; `SHELL-CI-019` | todos los canales consumen el contrato y aportan evidencia reproducible                 |
 
@@ -9499,7 +9514,7 @@ AUTH-ERR-008 no:
 - asigna empleados a áreas;
 - cambia roles o habilitaciones;
 - reclasifica permisos;
-- modifica los conteos 31/27/54;
+- modifica los conteos 38/34/68;
 - cambia scopes o grants;
 - corrige recursos;
 - cambia dispositivos;
@@ -9525,9 +9540,9 @@ AUTH-ERR-008 no:
 6. La dependencia debe ser explícita y derivada.
 7. Se definen exactamente cinco perfiles.
 8. `NO_ACTIVE_AREA_DEPENDENCY` no bloquea.
-9. Los 31 permisos `REQUIRED` exigen área operativa activa.
-10. Los 27 `SITE_SUFFICIENT` no la exigen por sí solos.
-11. Los 54 `NOT_APPLICABLE` no evalúan área operativa.
+9. Los 38 permisos `REQUIRED` exigen área operativa activa.
+10. Los 34 `SITE_SUFFICIENT` no la exigen por sí solos.
+11. Los 68 `NOT_APPLICABLE` no evalúan área operativa.
 12. Un rol area-bound puede añadir requisito de área.
 13. Un recurso puede añadir requisito de área.
 14. Un rol site-wide no recibe área sintética.
@@ -9583,20 +9598,17 @@ AUTH-ERR-008 no:
 
 ---
 
-#### 40. Cierre de tarea y continuidad
+#### 40. Continuidad
 
-| Tarea          | Estado      | Relación                  |
-| -------------- | ----------- | ------------------------- |
-| `AUTH-ERR-007` | APROBADA    | tarea anterior            |
-| `AUTH-ERR-008` | APROBADA    | tarea actual              |
-| `AUTH-ERR-009` | NO INICIADA | tarea siguiente reservada |
+##### ÚLTIMA TAREA APROBADA
 
-```text
-AUTH-ERR-007 — APROBADA
-        ↓
-AUTH-ERR-008 — APROBADA
-        ↓
-AUTH-ERR-009 — RESERVADA
-```
+AUTH-ERR-007 — Sin área asignada
 
-No se inicia ni modifica `AUTH-ERR-009` en esta tarea.
+##### TAREA ACTUAL APROBADA
+
+AUTH-ERR-008 — Sin área activa
+
+##### SIGUIENTE TAREA RESERVADA
+
+AUTH-ERR-009 — Sin turno publicado
+
