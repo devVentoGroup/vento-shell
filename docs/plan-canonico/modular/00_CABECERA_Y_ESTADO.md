@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **865** |
+| Tareas aprobadas | **866** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **729** |
+| Tareas no iniciadas | **728** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **54.27% (865/1594)** |
+| Porcentaje de completamiento | **54.33% (866/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **HYPERCARE-OPS-004 — Definir monitoreo de adopción, tiempos y desviaciones operativas** |
-| Tarea actual | **HYPERCARE-OPS-005 — Definir conciliaciones de datos y efectos entre dominios** |
+| Última tarea aprobada | **HYPERCARE-OPS-005 — Definir conciliaciones de datos y efectos entre dominios** |
+| Tarea actual | **HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes** |
+| Siguiente tarea | **HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 54 de 68 aprobadas; HYPERCARE-OPS-005 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 55 de 68 aprobadas; HYPERCARE-OPS-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `HYPERCARE-OPS-004` — Definir monitoreo de adopción, tiempos y desviaciones operativas |
-| Tarea actual | `HYPERCARE-OPS-005` — Definir conciliaciones de datos y efectos entre dominios — **NO INICIADA** |
-| Siguiente tarea | `HYPERCARE-OPS-006` — Definir clasificación, prioridad y procedimiento de corrección de incidentes |
+| Última aprobada | `HYPERCARE-OPS-005` — Definir conciliaciones de datos y efectos entre dominios |
+| Tarea actual | `HYPERCARE-OPS-006` — Definir clasificación, prioridad y procedimiento de corrección de incidentes — **NO INICIADA** |
+| Siguiente tarea | `HYPERCARE-OPS-007` — Definir registro y aprobación de deuda y tareas posteriores |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 54 DE 68 APROBADAS — ACTUAL HYPERCARE-OPS-005** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 55 DE 68 APROBADAS — ACTUAL HYPERCARE-OPS-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-HYPERCARE-OPS-004 — Definir monitoreo de adopción, tiempos y desviaciones operativas
-        ↓
-TAREA ACTUAL
 HYPERCARE-OPS-005 — Definir conciliaciones de datos y efectos entre dominios
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes
         ↓
+SIGUIENTE TAREA RESERVADA
+HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 54 de 68 tareas aprobadas
+BLOQUE E5 — 55 de 68 tareas aprobadas
 ```
