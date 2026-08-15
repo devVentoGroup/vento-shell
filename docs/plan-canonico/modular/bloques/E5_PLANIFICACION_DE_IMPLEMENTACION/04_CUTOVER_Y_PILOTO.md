@@ -78,7 +78,7 @@ En particular:
 - no diseña el registro de incidentes, decisiones o cambios de alcance, reservado a `CUTOVER-OPS-007`;
 - no redefine métricas del piloto, reservadas a `CUTOVER-OPS-008`;
 - no decide la salida del piloto, reservada a `CUTOVER-OPS-009`;
-- no define el retiro del proceso anterior, reservado a `CUTOVER-OPS-010`.
+- no define las condiciones ni la evidencia de elegibilidad para retirar el proceso anterior, reservadas a `CUTOVER-OPS-010`; el retiro lógico o físico permanece fuera de CUTOVER y solo podrá ejecutarse mediante sus tareas propietarias posteriores.
 
 La tarea selecciona **cuándo** puede ejecutarse el cutover y **qué responsables existentes deben cubrir esa ventana**. Las tareas siguientes conservan la propiedad de cómo se activa, cómo convive, cómo se controla, cómo se concilia y cómo se decide durante y después de la ejecución.
 
@@ -573,7 +573,7 @@ La tarea no sustituye:
 - `CUTOVER-OPS-007`, propietaria del registro de incidentes, decisiones y cambios de alcance;
 - `CUTOVER-OPS-008`, propietaria de las métricas de tiempos, errores, adopción y resultado empresarial;
 - `CUTOVER-OPS-009`, propietaria de la salida del piloto;
-- `CUTOVER-OPS-010`, propietaria del retiro del proceso anterior.
+- `CUTOVER-OPS-010`, propietaria de las condiciones, evidencia y decisión documental de elegibilidad para retirar el proceso anterior, sin ejecutar retiro lógico o físico.
 
 ---
 
@@ -938,7 +938,7 @@ El orden puede aprobarse documentalmente antes de desarrollar tareas posteriores
 | registro de incidentes, decisiones y cambios de alcance | `CUTOVER-OPS-007` |
 | métricas operativas del piloto                          | `CUTOVER-OPS-008` |
 | decisión de salida del piloto                           | `CUTOVER-OPS-009` |
-| retiro del proceso anterior                             | `CUTOVER-OPS-010` |
+| condiciones y evidencia de elegibilidad para retiro     | `CUTOVER-OPS-010` |
 
 La referencia pendiente a una de estas tareas tiene dueño documental exacto; no constituye autorización para improvisar su contenido durante la ejecución.
 
@@ -1500,7 +1500,7 @@ La convivencia deja de requerir operación normal del proceso anterior para una 
 3. ninguna compatibilidad temporal vigente exige mantener la ruta anterior como participante normal;
 4. cualquier retención restante corresponde exclusivamente a recuperación, soporte, evidencia o retiro posterior.
 
-Ese resultado no autoriza el retiro físico del proceso anterior. `CUTOVER-OPS-010` conserva la responsabilidad de definir y ejecutar documentalmente el retiro correspondiente.
+Ese resultado no autoriza el retiro lógico ni físico del proceso anterior. `CUTOVER-OPS-010` conserva únicamente la responsabilidad de definir las condiciones, la evidencia y la decisión documental de elegibilidad para retiro; cualquier retiro material posterior pertenece a su tarea de implementación propietaria.
 
 ---
 
@@ -1586,15 +1586,15 @@ Los conteos de unidades deberán reconciliar exactamente el universo recibido de
 
 `CUTOVER-OPS-003` fija la frontera que las tareas siguientes consumen, sin anticiparlas:
 
-| Tarea             | Responsabilidad reservada                                                                                         |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `CUTOVER-OPS-004` | diseñar los controles que impiden doble registro y doble efecto usando la autoridad y fronteras definidas por 003 |
-| `CUTOVER-OPS-005` | definir las conciliaciones exigibles durante el piloto                                                            |
-| `CUTOVER-OPS-006` | definir el criterio operativo de pausa, reversión o continuación entre puntos de decisión                         |
-| `CUTOVER-OPS-007` | diseñar el registro de incidentes, decisiones y cambios de alcance                                                |
-| `CUTOVER-OPS-008` | definir métricas de tiempos, errores, adopción y resultado empresarial                                            |
-| `CUTOVER-OPS-009` | definir criterio y evidencia para declarar salida del piloto                                                      |
-| `CUTOVER-OPS-010` | definir el retiro del proceso anterior y el cierre de la transición                                               |
+| Tarea             | Responsabilidad reservada                                                                                             |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `CUTOVER-OPS-004` | diseñar los controles que impiden doble registro y doble efecto usando la autoridad y fronteras definidas por 003     |
+| `CUTOVER-OPS-005` | definir las conciliaciones exigibles durante el piloto                                                                |
+| `CUTOVER-OPS-006` | definir el criterio operativo de pausa, reversión o continuación entre puntos de decisión                             |
+| `CUTOVER-OPS-007` | diseñar el registro de incidentes, decisiones y cambios de alcance                                                    |
+| `CUTOVER-OPS-008` | definir métricas de tiempos, errores, adopción y resultado empresarial                                                |
+| `CUTOVER-OPS-009` | definir criterio y evidencia para declarar salida del piloto                                                          |
+| `CUTOVER-OPS-010` | definir condiciones, evidencia y decisión documental de elegibilidad para retirar el proceso anterior, sin ejecutarlo |
 
 003 puede declarar que una referencia posterior será exigible antes de ejecución, pero no puede completar por anticipado la decisión de su propietario.
 
@@ -1696,7 +1696,7 @@ La ejecución futura corresponde a `SHELL-CI-022::<package_id>` dentro de la rut
 23. 003 no diseña todavía controles de doble registro o doble efecto;
 24. 003 no ejecuta conciliaciones;
 25. 003 no decide pausa, reversión o continuación;
-26. 003 no define métricas, salida del piloto ni retiro del proceso anterior;
+26. 003 no define métricas, salida del piloto ni condiciones de elegibilidad para retiro del proceso anterior, y tampoco ejecuta retiro lógico o físico;
 27. `CUTOVER-OPS-004` recibe una frontera de autoridad suficiente para diseñar los controles contra duplicidad sin reinterpretar alcance;
 28. la ejecución física permanece en `SHELL-CI-022::<package_id>`;
 29. no se ejecutan código, despliegues, activaciones, promociones, migraciones, DDL/DML, backfills, modificaciones de datos, configuración remota ni operaciones de Supabase;
@@ -2227,7 +2227,7 @@ SUPERFICIES QUE CUTOVER-OPS-005 DEBERÁ CONCILIAR CUANDO CORRESPONDA
 - `CUTOVER-OPS-007`: registro de incidentes, decisiones y cambios de alcance;
 - `CUTOVER-OPS-008`: métricas de tiempos, errores, adopción y resultado empresarial;
 - `CUTOVER-OPS-009`: autoridad y criterio de salida del piloto;
-- `CUTOVER-OPS-010`: retiro del proceso anterior.
+- `CUTOVER-OPS-010`: condiciones, evidencia y decisión documental de elegibilidad para retirar el proceso anterior, sin ejecutar retiro lógico o físico.
 
 Una señal de duplicidad podrá ser consumida posteriormente por esas tareas, pero 004 no define sus umbrales ni sus decisiones.
 
@@ -2784,7 +2784,7 @@ Cuando `DELIV-PKG-009` materialice una transición que exige conciliación:
 - un backfill no autoriza efectos empresariales secundarios que el contrato prohíbe;
 - la retirada legacy no se acelera por una conciliación parcial.
 
-El retiro físico sigue reservado a su tarea propietaria y a `CUTOVER-OPS-010`.
+El retiro físico permanece reservado exclusivamente a su tarea de implementación propietaria. `CUTOVER-OPS-010` solo define las condiciones, la evidencia y la decisión documental de elegibilidad para ese retiro.
 
 ---
 
@@ -3043,7 +3043,7 @@ Esta tarea no anticipa:
 - `CUTOVER-OPS-007`: registro de incidentes, decisiones y cambios de alcance;
 - `CUTOVER-OPS-008`: métricas de tiempos, errores, adopción y resultado empresarial;
 - `CUTOVER-OPS-009`: autoridad y criterio para aprobar salida del piloto o exigir correcciones;
-- `CUTOVER-OPS-010`: condiciones y evidencia para retirar el proceso anterior.
+- `CUTOVER-OPS-010`: condiciones, evidencia y decisión documental de elegibilidad para retirar el proceso anterior, sin ejecutar retiro lógico o físico.
 
 Una diferencia, incertidumbre o duplicidad puede convertirse en entrada de esas tareas, pero 005 no define sus umbrales, decisiones ni acciones.
 
@@ -3766,7 +3766,7 @@ Durante la ejecución real, 007 será propietario del registro de:
 
 - `CUTOVER-OPS-008`: definición de métricas de tiempos, errores, adopción y resultado empresarial;
 - `CUTOVER-OPS-009`: autoridad y criterio para aprobar salida del piloto o exigir correcciones;
-- `CUTOVER-OPS-010`: condiciones y evidencia para retirar el proceso anterior.
+- `CUTOVER-OPS-010`: condiciones, evidencia y decisión documental de elegibilidad para retirar el proceso anterior, sin ejecutar retiro lógico o físico.
 
 En particular:
 
@@ -3886,7 +3886,7 @@ Toda modificación futura de Supabase VENTO continúa perteneciendo a `vento-she
 29. 007 recibe la semántica de decisión sin que 006 diseñe su registro;
 30. 008 conserva propiedad de las métricas;
 31. 009 conserva propiedad de la salida del piloto;
-32. 010 conserva propiedad del retiro del proceso anterior;
+32. 010 conserva la propiedad de las condiciones, evidencia y decisión documental de elegibilidad para retiro del proceso anterior, sin ejecutar retiro lógico o físico;
 33. la ejecución real permanece en `SHELL-CI-022::<package_id>`;
 34. no se ejecutan código, despliegues, configuración remota, rollback, restore, conciliación, migraciones, DDL/DML, backfills, cambios de datos ni operaciones de Supabase;
 35. se crean cero requisitos de prueba, se modifican cero requisitos de prueba y se afectan cero fragmentos 04A.
@@ -4001,7 +4001,7 @@ El registro no reemplaza las fuentes propietarias de incidentes, autorización, 
 - una política nueva de retención;
 - una regla de compensación o conciliación;
 - una decisión de salida del piloto;
-- una decisión de retiro del proceso anterior.
+- una decisión documental de elegibilidad para retiro del proceso anterior, sin ejecutar dicho retiro.
 
 Cuando una fuente propietaria no resuelve una de esas materias, el registro conserva el bloqueo o la referencia pendiente; no crea una regla por inferencia.
 
@@ -4730,7 +4730,7 @@ FUENTE TRAZABLE PARA DEFINIR MÉTRICAS EN 008
 
 - `CUTOVER-OPS-008`: métricas de tiempos, errores, adopción y resultado empresarial;
 - `CUTOVER-OPS-009`: autoridad y criterio para aprobar salida del piloto o exigir correcciones;
-- `CUTOVER-OPS-010`: condiciones y evidencia para retirar el proceso anterior.
+- `CUTOVER-OPS-010`: condiciones, evidencia y decisión documental de elegibilidad para retirar el proceso anterior, sin ejecutar retiro lógico o físico.
 
 Registrar una decisión `CONTINUAR` dentro del piloto no equivale a aprobar salida.
 
@@ -4818,7 +4818,7 @@ La ejecución real y captura de evidencia corresponden a `SHELL-CI-022::<package
 32. 007 registra timestamps/fuentes para 008 sin definir métricas;
 33. 008 conserva propiedad exclusiva de las métricas;
 34. 009 conserva propiedad de la salida del piloto;
-35. 010 conserva propiedad del retiro del proceso anterior;
+35. 010 conserva la propiedad de las condiciones, evidencia y decisión documental de elegibilidad para retiro del proceso anterior, sin ejecutar retiro lógico o físico;
 36. la ejecución real permanece en `SHELL-CI-022::<package_id>`;
 37. no se ejecutan código, despliegues, cambios de configuración, rollback, restore, conciliación, migraciones, DDL/DML, backfills, cambios de datos ni operaciones sobre Supabase;
 38. se crean cero requisitos de prueba, se modifican cero requisitos de prueba y se afectan cero fragmentos 04A.
@@ -5854,7 +5854,7 @@ EXPEDIENTE DE MEDICIÓN PARA LA DECISIÓN DE SALIDA
 #### 29. Frontera con `CUTOVER-OPS-009` y `CUTOVER-OPS-010`
 
 - `CUTOVER-OPS-009` define autoridad y criterio de salida del piloto o correcciones.
-- `CUTOVER-OPS-010` define condiciones y evidencia para retirar el proceso anterior.
+- `CUTOVER-OPS-010` define condiciones, evidencia y decisión documental de elegibilidad para retirar el proceso anterior, sin ejecutar retiro lógico o físico.
 
 Una métrica favorable no retira legacy.
 
@@ -5954,7 +5954,7 @@ La captura real y el cálculo con evidencia ocurrirán durante la ejecución aut
 39. no se inventan valores observados ni evidencia de ejecución;
 40. no se inventan targets empresariales;
 41. 009 conserva propiedad exclusiva de autoridad y criterio de salida;
-42. 010 conserva propiedad exclusiva del retiro del proceso anterior;
+42. 010 conserva la propiedad exclusiva, dentro de CUTOVER, de las condiciones, evidencia y decisión documental de elegibilidad para retiro del proceso anterior; la ejecución material queda fuera de 010;
 43. la ejecución real permanece en `SHELL-CI-022::<package_id>`;
 44. no se ejecutan código, instrumentación, consultas productivas, despliegues, cambios de configuración, migraciones, DDL/DML, backfills, cambios de datos ni operaciones sobre Supabase;
 45. se crean cero requisitos de prueba, se modifican cero requisitos y se afectan cero fragmentos 04A.
@@ -6072,7 +6072,7 @@ Las obligaciones vigentes de definición y calidad de métricas, decisión de ci
 - autoriza borrado de datos, objetos, código, rutas, contratos o infraestructura legacy;
 - ejecuta DDL, DML, migraciones, backfills, cambios de RLS/grants ni operaciones sobre Supabase.
 
-La promoción posterior continúa perteneciendo a `DELIV-PKG-019`. El retiro del proceso anterior pertenece exclusivamente a `CUTOVER-OPS-010`.
+La promoción posterior continúa perteneciendo a `DELIV-PKG-019`. `CUTOVER-OPS-010` pertenece exclusivamente a la evaluación documental de elegibilidad para retirar el proceso anterior; el retiro lógico o físico posterior permanece en sus tareas de implementación propietarias.
 
 ---
 
