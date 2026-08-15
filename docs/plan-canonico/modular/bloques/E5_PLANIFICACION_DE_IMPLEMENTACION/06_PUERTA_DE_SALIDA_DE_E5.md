@@ -1700,7 +1700,517 @@ E5-GATE-004 — Confirmar que rollout, rollback y contingencia son ejecutables
 E5-GATE-005 — Confirmar que el piloto tiene criterios medibles
 
 
-### [ ] E5-GATE-005 — Confirmar que el piloto tiene criterios medibles
+### ✅ E5-GATE-005 — Confirmar que el piloto tiene criterios medibles
+
+**Estado:** APROBADA  
+**Tarea anterior:** `E5-GATE-004 — Confirmar que rollout, rollback y contingencia son ejecutables`  
+**Tarea siguiente:** `E5-GATE-006 — Confirmar que capacitación y soporte están planificados`  
+**Tipo de tarea:** documental — puerta de salida de E5 para confirmar, identidad por identidad, que el piloto previsto para las 207 raíces `GAP-PKG-*` posee criterios de aceptación medibles, un sistema reproducible de medición y una regla determinista de decisión; sin ejecutar piloto, mediciones, promoción, cutover, rollback, correcciones, despliegues, migraciones, DDL/DML, cambios de datos, configuración remota ni operaciones sobre Supabase  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md`  
+**Cambios físicos autorizados:** ninguno  
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`E5-GATE-005` comprueba si el piloto diseñado en E5 dispone de criterios que permitan evaluar posteriormente, con evidencia reproducible, si una instancia concreta de paquete satisface o no las condiciones de aceptación y salida.
+
+La puerta separa cuatro conceptos que no son equivalentes:
+
+```text
+CRITERIO DEFINIDO
+→ expresa qué debe cumplirse y con qué umbral o condición verificable
+
+MÉTRICA DEFINIDA
+→ expresa cómo medir, con fórmula, población, denominador, fuente, ventana y calidad
+
+EVIDENCIA EJECUTADA
+→ resultado real obtenido durante la ejecución posterior
+
+DECISIÓN DE SALIDA
+→ conclusión determinista basada en criterios y evidencia de la misma instancia
+```
+
+La existencia de criterios medibles puede confirmarse documentalmente antes de ejecutar el piloto. Esa confirmación no convierte ningún paquete en `PASS`, no demuestra una medición real y no autoriza salida, promoción ni implementación física.
+
+---
+
+#### 2. Resultado de la comprobación
+
+La condición documental exigida por `E5-GATE-005` **está satisfecha**.
+
+La comprobación encuentra una cadena completa y materializada para las **207/207** raíces:
+
+```text
+DELIV-PKG-022
+→ modalidad, alcance, cohorte y duración de piloto
+
+DELIV-PKG-023
+→ perfil de aceptación, ocho criterios universales, umbrales y manifiesto de evidencia
+
+DELIV-PKG-024
+→ reconciliación de trazabilidad necesaria para aplicar el criterio de requisitos sin crear relaciones por inferencia
+
+CUTOVER-OPS-008
+→ fórmulas, numeradores, denominadores, baseline, calidad, segmentación y estados de dato
+
+CUTOVER-OPS-009
+→ regla determinista para aprobar salida, exigir correcciones, bloquear decisión o declarar no aplicabilidad demostrada
+```
+
+Controles principales:
+
+| Control                                                           |   Resultado |
+| ----------------------------------------------------------------- | ----------: |
+| raíces esperadas                                                  |     **207** |
+| raíces materializadas con modalidad de piloto                     | **207/207** |
+| raíces materializadas con perfil de aceptación                    | **207/207** |
+| criterios universales de aceptación definidos                     |       **8** |
+| raíces cubiertas por el sistema de medición                       | **207/207** |
+| identificadores de paquete duplicados                             |       **0** |
+| identificadores de paquete faltantes                              |       **0** |
+| paquetes con `PASS` por evidencia ejecutada en la fase documental |   **0/207** |
+
+El valor **0/207 `PASS`** no contradice esta puerta: `PASS` exige ejecución y evidencia reproducible, mientras que `E5-GATE-005` confirma exclusivamente que el criterio previo para medir y decidir ya existe.
+
+---
+
+#### 3. Fuentes canónicas y precedencia
+
+La puerta consume sin redefinir:
+
+- `DELIV-PKG-022` como fuente de modalidad, alcance y duración del piloto por raíz;
+- `DELIV-PKG-023` como fuente de perfiles de aceptación, umbrales, estados de cierre y `EVID-CLOSE-001`;
+- `DELIV-PKG-024` como cierre documental de la reconciliación de trazabilidad que 023 había delegado;
+- `CUTOVER-OPS-008` como fuente del sistema reproducible de métricas de tiempos, errores, adopción y resultado empresarial;
+- `CUTOVER-OPS-009` como fuente de la regla determinista de decisión de salida;
+- los principios de E5, que separan planificación de ejecución física y reservan la evidencia real del piloto a la ejecución posterior;
+- la salida obligatoria de E5, que exige plan de cutover y piloto y criterios de evidencia, pero no un piloto ya ejecutado.
+
+Precedencia utilizada:
+
+```text
+DELIV-PKG-022
+→ DELIV-PKG-023
+→ DELIV-PKG-024
+→ CUTOVER-OPS-008
+→ CUTOVER-OPS-009
+→ E5-GATE-005
+```
+
+La puerta no redefine umbrales de otra fuente. Cuando un requisito no funcional posee un valor numérico propio, ese valor prevalece. Cuando una métrica empresarial no posee target canónico, se conserva como medición reproducible y no se inventa un umbral de salida.
+
+---
+
+#### 4. Regla de criterio medible
+
+Para esta puerta, un criterio se considera medible únicamente cuando el expediente permite determinar de forma reproducible:
+
+1. **qué identidad se evalúa:** paquete, candidato, ambiente, alcance y ventana;
+2. **qué condición debe cumplirse:** umbral numérico, guardrail o condición verificable aprobada;
+3. **cómo se observa:** fuente, fórmula o método de medición y evidencia mínima;
+4. **sobre qué población o unidad:** granularidad, cohorte y denominador elegible cuando exista una tasa;
+5. **durante qué ventana:** duración o periodo comparable correspondiente;
+6. **quién responde por la decisión:** propietario o autoridad ya asignada por la fuente canónica;
+7. **cómo se trata la calidad del dato:** cero real, ausencia de observaciones, dato no disponible, provisional, reconstruido o no aplicable sin mezclarlos;
+8. **cómo cambia el resultado:** `PASS`, `FAIL`, `BLOQUEADO`, `PENDIENTE_DE_EVIDENCIA` o `NO_APLICA` para criterios, y la decisión de salida definida por CUTOVER.
+
+Un conteo sin denominador cuando la métrica es una tasa, una ausencia de eventos con telemetría incompleta, un promedio que oculta un hard ceiling, una ventana incompleta o evidencia planeada no satisfacen esta regla.
+
+---
+
+#### 5. Criterios universales materializados
+
+`DELIV-PKG-023` aporta ocho criterios de aceptación verificables. La puerta conserva sus umbrales sin simplificarlos:
+
+| Criterio          | Regla medible confirmada                                                                                                                                                                               |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `AC-TREQ-001`     | **100 %** de requisitos aplicables ejecutados satisfactoriamente con evidencia reproducible; **0** fallos, bloqueos o evidencias faltantes entre los aplicables.                                       |
+| `AC-NFR-001`      | **100 %** de umbrales y guardrails no funcionales aplicables satisfechos; **0** incumplimientos abiertos.                                                                                              |
+| `AC-OBS-001`      | **100 %** de señales obligatorias disponibles durante la ventana; **0** alertas críticas o gaps bloqueantes sin resolver.                                                                              |
+| `AC-PILOT-001`    | alcance real coincidente con 022; para piloto directo, **14 días calendario activos y al menos un ciclo operativo completo**; **0** ampliaciones no autorizadas de cohorte, sede, dispositivo o datos. |
+| `AC-ROLLBACK-001` | **0** incidentes requeridos de rollback, recovery, compensation o reconciliation que permanezcan abiertos; el no disparo debe quedar demostrado cuando corresponda.                                    |
+| `AC-DOC-001`      | **100 %** de documentación, runbooks, soporte y capacitación obligatorios con evidencia real cuando la fase los exija; **0** artefactos obligatorios faltantes.                                        |
+| `AC-DEFECT-001`   | **0** defectos bloqueantes o mayores abiertos; **100 %** de defectos detectados clasificados, con propietario y disposición trazable.                                                                  |
+| `AC-MANIFEST-001` | **100 %** de campos obligatorios del manifiesto de cierre presentes, consistentes y referenciables; **0** evidencia fabricada, huérfana o sensible innecesaria.                                        |
+
+Estos criterios impiden una aprobación por tiempo transcurrido, promedio favorable, ausencia aparente de incidentes o evidencia incompleta.
+
+---
+
+#### 6. Sistema de medición del piloto
+
+`CUTOVER-OPS-008` completa la medibilidad mediante un contrato de métrica que exige, según aplicabilidad:
+
+- nombre y propósito de decisión;
+- propietario;
+- fórmula reproducible;
+- numerador y denominador explícitos para tasas;
+- granularidad, dimensiones y filtros;
+- unidad;
+- fuente y versión;
+- ventana y calendario;
+- baseline comparable;
+- reglas de calidad, cobertura, duplicados, datos tardíos y reconciliación.
+
+La semántica de datos conserva separados `VALIDO`, `CERO_MEDIDO`, `SIN_OBSERVACIONES`, `NO_DISPONIBLE`, `PROVISIONAL`, `RECONSTRUIDA` y `NO_APLICA`. Un denominador cero no se transforma en una tasa de cero y la ausencia de telemetría no se interpreta como ausencia de incidentes.
+
+La cobertura documental del sistema de medición alcanza las **207 raíces exactamente una vez**, con **0 faltantes y 0 duplicados**, y conserva la distribución heredada de modalidades.
+
+---
+
+#### 7. Distribución canónica de modalidades y perfiles
+
+| Modalidad / perfil                      | Cantidad | Tratamiento de medibilidad                                                                         |
+| --------------------------------------- | -------: | -------------------------------------------------------------------------------------------------- |
+| `PILOT-DIRECT-001` / `ACC-DIRECT-001`   |  **160** | ventana directa, ocho criterios aplicables y métricas sobre cohorte realmente expuesta             |
+| `PILOT-SHARED-001` / `ACC-SHARED-001`   |    **3** | medición derivada de consumidores directos y compatibilidad; sin piloto independiente ficticio     |
+| `PILOT-CONTROL-001` / `ACC-CONTROL-001` |   **26** | medición de control, observabilidad, evidencia y defectos; sin imponer exposición directa ficticia |
+| `PILOT-BLOCK-AURA-001` / `ACC-AURA-001` |   **14** | criterios definidos; medición ejecutada bloqueada mientras persistan los gates AURA                |
+| `PILOT-BLOCK-EXT-001` / `ACC-EXT-001`   |    **2** | criterios definidos; medición ejecutada bloqueada mientras persista el gate externo                |
+| `PILOT-FUTURE-001` / `ACC-FUTURE-001`   |    **2** | criterios definidos para activación formal; métricas fuera de línea en la línea actual             |
+| **Total**                               |  **207** | **207/207 con tratamiento explícito**                                                              |
+
+Dentro de las 26 raíces de control, **22** están `PENDIENTE_DE_EVIDENCIA` sin deploy directo y **4** conservan `BLOQUEADO_014_Y_EVIDENCIA` por identidad física.
+
+---
+
+#### 8. Estado actual de evidencia y medición
+
+La puerta preserva el estado real de cierre después de `DELIV-PKG-024`:
+
+| Estado de cierre actual     | Cantidad | Interpretación para esta puerta                                                            |
+| --------------------------- | -------: | ------------------------------------------------------------------------------------------ |
+| `BLOQUEADO_014_Y_EVIDENCIA` |  **167** | criterios medibles existentes; ejecución/evidencia todavía bloqueada                       |
+| `PENDIENTE_DE_EVIDENCIA`    |   **22** | criterios medibles existentes; falta evidencia ejecutada                                   |
+| `BLOQUEADO_AURA`            |   **14** | criterios definidos; no existe exposición ejecutable mientras el gate AURA siga cerrado    |
+| `BLOQUEADO_EXT_GOV`         |    **2** | criterios definidos; no existe exposición ejecutable mientras el gate externo siga cerrado |
+| `FUERA_DE_LINEA_ACTUAL`     |    **2** | perfil y tratamiento definidos; medición de piloto fuera de la línea funcional actual      |
+| `PASS`                      |    **0** | ningún paquete recibe aceptación por evidencia todavía inexistente                         |
+| **Total**                   |  **207** | **la ausencia de `PASS` no elimina la medibilidad del criterio**                           |
+
+La reconciliación de trazabilidad de `DELIV-PKG-024` resolvió documentalmente los 19 paquetes que 023 había enviado a reconciliación. Esa reconciliación permite aplicar el criterio correspondiente, pero no lo convierte en evidencia ejecutada ni en `PASS`.
+
+---
+
+#### 9. Matriz materializada de las 207 raíces
+
+Cada identidad aparece exactamente una vez. La última columna confirma únicamente **medibilidad documental**; no es una decisión de aceptación del paquete ni evidencia de piloto ejecutado.
+
+| `package_id`  | Modalidad 022          | Perfil 023        | Estado canónico actual      | Tratamiento de medición                                                        | Resultado E5-GATE-005           |
+| ------------- | ---------------------- | ----------------- | --------------------------- | ------------------------------------------------------------------------------ | ------------------------------- |
+| `GAP-PKG-001` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-002` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-003` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-004` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-005` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-006` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | criterios y métricas definidos; ejecución bloqueada por AURA                   | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-007` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-008` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | criterios y métricas definidos; ejecución bloqueada por AURA                   | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-009` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-010` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-011` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-012` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-013` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-014` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-015` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-016` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-017` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-018` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-019` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-020` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-021` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-022` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-023` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-024` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-025` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-026` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-027` | `PILOT-BLOCK-EXT-001`  | `ACC-EXT-001`     | `BLOQUEADO_EXT_GOV`         | criterios y métricas definidos; ejecución bloqueada por EXT-GOV-001            | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-028` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-029` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-030` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-031` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-032` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-033` | `PILOT-SHARED-001`     | `ACC-SHARED-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | medible por consumidores directos y compatibilidad; sin reloj de piloto propio | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-034` | `PILOT-SHARED-001`     | `ACC-SHARED-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | medible por consumidores directos y compatibilidad; sin reloj de piloto propio | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-035` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-036` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-037` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-038` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-039` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-040` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-041` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-042` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-043` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-044` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-045` | `PILOT-SHARED-001`     | `ACC-SHARED-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | medible por consumidores directos y compatibilidad; sin reloj de piloto propio | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-046` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-047` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-048` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-049` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-050` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-051` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-052` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-053` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-054` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-055` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-056` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-057` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-058` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-059` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | criterios y métricas definidos; ejecución bloqueada por AURA                   | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-060` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-061` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-062` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `BLOQUEADO_014_Y_EVIDENCIA` | medible como control; ejecución bloqueada por identidad física                 | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-063` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-064` | `PILOT-FUTURE-001`     | `ACC-FUTURE-001`  | `FUERA_DE_LINEA_ACTUAL`     | criterios definidos; métricas fuera de línea hasta activación formal           | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-065` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `BLOQUEADO_014_Y_EVIDENCIA` | medible como control; ejecución bloqueada por identidad física                 | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-066` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-067` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-068` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-069` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-070` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-071` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-072` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-073` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-074` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-075` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-076` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-077` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-078` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | criterios y métricas definidos; ejecución bloqueada por AURA                   | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-079` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-080` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | criterios y métricas definidos; ejecución bloqueada por AURA                   | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-081` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-082` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-083` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-084` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-085` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-086` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-087` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-088` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-089` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-090` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-091` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-092` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-093` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-094` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-095` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-096` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-097` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-098` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-099` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-100` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-101` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-102` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-103` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-104` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-105` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-106` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-107` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-108` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-109` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-110` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-111` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-112` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-113` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-114` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-115` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-116` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-117` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-118` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | criterios y métricas definidos; ejecución bloqueada por AURA                   | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-119` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-120` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-121` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-122` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-123` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-124` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-125` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-126` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-127` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-128` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-129` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-130` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-131` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-132` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-133` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-134` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-135` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-136` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-137` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-138` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-139` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-140` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `BLOQUEADO_014_Y_EVIDENCIA` | medible como control; ejecución bloqueada por identidad física                 | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-141` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-142` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-143` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-144` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | criterios y métricas definidos; ejecución bloqueada por AURA                   | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-145` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-146` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-147` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | criterios y métricas definidos; ejecución bloqueada por AURA                   | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-148` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | criterios y métricas definidos; ejecución bloqueada por AURA                   | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-149` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | criterios y métricas definidos; ejecución bloqueada por AURA                   | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-150` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-151` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-152` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-153` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-154` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-155` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-156` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-157` | `PILOT-BLOCK-EXT-001`  | `ACC-EXT-001`     | `BLOQUEADO_EXT_GOV`         | criterios y métricas definidos; ejecución bloqueada por EXT-GOV-001            | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-158` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-159` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-160` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-161` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-162` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-163` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-164` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-165` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-166` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-167` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-168` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-169` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-170` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-171` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-172` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `BLOQUEADO_014_Y_EVIDENCIA` | medible como control; ejecución bloqueada por identidad física                 | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-173` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-174` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-175` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-176` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-177` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-178` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-179` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-180` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-181` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-182` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-183` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-184` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-185` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-186` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-187` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | criterios y métricas definidos; ejecución bloqueada por AURA                   | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-188` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | criterios y métricas definidos; ejecución bloqueada por AURA                   | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-189` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | criterios y métricas definidos; ejecución bloqueada por AURA                   | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-190` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-191` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-192` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `BLOQUEADO_AURA`            | criterios y métricas definidos; ejecución bloqueada por AURA                   | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-193` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-194` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-195` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-196` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-197` | `PILOT-FUTURE-001`     | `ACC-FUTURE-001`  | `FUERA_DE_LINEA_ACTUAL`     | criterios definidos; métricas fuera de línea hasta activación formal           | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-198` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-199` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-200` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-201` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-202` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-203` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-204` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-205` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-206` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `BLOQUEADO_014_Y_EVIDENCIA` | 8 criterios universales + métricas 008; ventana directa definida               | **SÍ — medibilidad confirmada** |
+| `GAP-PKG-207` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `PENDIENTE_DE_EVIDENCIA`    | medible como control/observación; sin deploy directo ficticio                  | **SÍ — medibilidad confirmada** |
+
+---
+
+#### 10. Regla de decisión posterior
+
+`CUTOVER-OPS-009` impide convertir una medición parcial en aprobación. Una futura `APROBAR_SALIDA` exige simultáneamente, para la misma identidad de paquete, candidato, ambiente, alcance y ventana:
+
+- todos los criterios aplicables de 023 en `PASS`;
+- ningún criterio aplicable en `FAIL`, `BLOQUEADO` o `PENDIENTE_DE_EVIDENCIA`;
+- todo `NO_APLICA` respaldado por fuente canónica;
+- duración de 022 satisfecha cuando aplique;
+- ningún defecto bloqueante o mayor abierto;
+- ningún rollback, recovery, compensation, reconciliation, duplicidad o diferencia bloqueante pendiente;
+- señales y evidencia completas durante la ventana;
+- métricas decisionales con calidad y comparabilidad suficientes;
+- targets y guardrails canónicos satisfechos;
+- manifiesto de evidencia completo;
+- autoridad final vigente para el alcance exacto;
+- ausencia de cambios materiales posteriores que invaliden la evaluación.
+
+No existe aprobación por mero transcurso del tiempo, aprobación parcial ni compensación de un guardrail incumplido mediante una métrica empresarial favorable.
+
+---
+
+#### 11. Decisión de E5-GATE-005
+
+La puerta queda resuelta así:
+
+```text
+E5-GATE-005 = PASS
+
+CONDICIÓN EVALUADA
+el piloto posee criterios medibles
+
+RESULTADO
+SATISFECHA
+
+COBERTURA DOCUMENTAL
+207/207 raíces con modalidad, perfil de aceptación y tratamiento de medición
+
+CRITERIOS UNIVERSALES
+8 criterios medibles de aceptación
+
+SISTEMA DE MÉTRICAS
+fórmulas, denominadores, baseline, calidad y comparabilidad definidos
+
+REGLA DE SALIDA
+criterio determinista definido; no admite aprobación parcial ni por tiempo
+
+EVIDENCIA EJECUTADA
+0/207 paquetes en PASS; no corresponde producirla en esta fase
+```
+
+`E5-GATE-005` confirma la existencia y suficiencia documental del sistema de medición y decisión del piloto. No modifica el resultado independiente de `E5-GATE-004` ni concede autorización de implementación física.
+
+---
+
+#### 12. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0  
+**Requisitos modificados:** 0  
+**Fragmentos 04A afectados:** 0
+
+**Justificación:** la puerta reconcilia y confirma criterios, métricas, perfiles y reglas de decisión ya aprobados. No introduce comportamiento ejecutable, permiso, transformación de datos, contrato runtime, umbral no funcional nuevo ni regla de negocio adicional.
+
+---
+
+#### 13. Criterios de aceptación documental
+
+`E5-GATE-005` queda documentalmente completa cuando:
+
+1. se evalúan exactamente las **207** raíces `GAP-PKG-001..207`;
+2. cada identidad aparece una vez, sin faltantes ni duplicados;
+3. la distribución de modalidades reconcilia `160 + 3 + 26 + 14 + 2 + 2 = 207`;
+4. cada raíz conserva su modalidad 022, perfil 023 y estado vigente sin promoción artificial;
+5. se confirman los ocho criterios universales y sus umbrales o guardrails verificables;
+6. el piloto directo conserva **14 días calendario activos y al menos un ciclo operativo completo**;
+7. el sistema de métricas conserva fórmula, denominador, fuente, ventana, baseline, calidad y comparabilidad según aplicabilidad;
+8. cero medido, ausencia de observaciones y dato no disponible no se confunden;
+9. una métrica sin target empresarial canónico no recibe un umbral inventado;
+10. la regla de salida exige todos los criterios aplicables resueltos y prohíbe aprobación parcial o por tiempo;
+11. los estados actuales reconcilian `167 + 22 + 14 + 2 + 2 = 207` y se conservan **0** paquetes en `PASS`;
+12. la reconciliación previa de requisitos se consume sin convertirla en evidencia de ejecución;
+13. se crean **0** requisitos de prueba y se modifican **0** requisitos existentes;
+14. no se ejecutan piloto, mediciones productivas, promoción, rollback, cutover, despliegues, migraciones, DDL/DML, backfills, cambios de datos, configuración remota ni operaciones sobre Supabase;
+15. `E5-GATE-006` permanece reservada y no se desarrolla desde esta tarea.
+
+---
+
+#### 14. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+E5-GATE-004 — Confirmar que rollout, rollback y contingencia son ejecutables
+
+##### TAREA ACTUAL APROBADA
+E5-GATE-005 — Confirmar que el piloto tiene criterios medibles
+
+##### SIGUIENTE TAREA RESERVADA
+E5-GATE-006 — Confirmar que capacitación y soporte están planificados
+
+
 ### [ ] E5-GATE-006 — Confirmar que capacitación y soporte están planificados
 ### [ ] E5-GATE-007 — Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre
 ### [ ] E5-GATE-008 — Aprobar entrada a implementación física por paquetes
