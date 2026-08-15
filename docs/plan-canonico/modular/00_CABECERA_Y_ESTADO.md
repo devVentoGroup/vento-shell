@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **869** |
+| Tareas aprobadas | **870** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **725** |
+| Tareas no iniciadas | **724** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **54.52% (869/1594)** |
+| Porcentaje de completamiento | **54.58% (870/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y documentación definitiva** |
-| Tarea actual | **HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales** |
+| Última tarea aprobada | **HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales** |
+| Tarea actual | **HYPERCARE-OPS-010 — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **HYPERCARE-OPS-010 — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo** |
+| Siguiente tarea | **E5-GATE-001 — Confirmar que cada capacidad priorizada tiene paquete aprobado** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 58 de 68 aprobadas; HYPERCARE-OPS-009 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 59 de 68 aprobadas; HYPERCARE-OPS-010 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `HYPERCARE-OPS-008` — Definir criterio de transferencia a soporte ordinario y documentación definitiva |
-| Tarea actual | `HYPERCARE-OPS-009` — Definir criterio y evidencia para retirar contingencias temporales — **NO INICIADA** |
-| Siguiente tarea | `HYPERCARE-OPS-010` — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo |
+| Última aprobada | `HYPERCARE-OPS-009` — Definir criterio y evidencia para retirar contingencias temporales |
+| Tarea actual | `HYPERCARE-OPS-010` — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo — **NO INICIADA** |
+| Siguiente tarea | `E5-GATE-001` — Confirmar que cada capacidad priorizada tiene paquete aprobado |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 58 DE 68 APROBADAS — ACTUAL HYPERCARE-OPS-009** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 59 DE 68 APROBADAS — ACTUAL HYPERCARE-OPS-010** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y documentación definitiva
-        ↓
-TAREA ACTUAL
 HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 HYPERCARE-OPS-010 — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo
         ↓
+SIGUIENTE TAREA RESERVADA
+E5-GATE-001 — Confirmar que cada capacidad priorizada tiene paquete aprobado
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 58 de 68 tareas aprobadas
+BLOQUE E5 — 59 de 68 tareas aprobadas
 ```

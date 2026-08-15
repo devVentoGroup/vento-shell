@@ -5316,7 +5316,727 @@ HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y do
 HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales
 
 
-### [ ] HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales
+### ✅ HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales
+
+**Estado:** APROBADA
+**Tarea anterior:** `HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y documentación definitiva`
+**Tarea siguiente:** `HYPERCARE-OPS-010 — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo`
+**Tipo de tarea:** documental — definición normativa y materialización del criterio de elegibilidad, bloqueo y evidencia para retirar contingencias temporales por paquete durante hypercare, distinguiendo la desactivación de una contingencia temporal de la conservación de capacidades permanentes de recuperación, soporte, observabilidad, auditoría y retención; sin ejecutar desactivaciones, retiros lógicos o físicos, cambios de configuración, eliminación de flags, cambios de rutas, borrado de datos, despliegues, migraciones, DDL/DML, backfills, modificaciones remotas ni operaciones sobre Supabase
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md`
+**Ejecución posterior:** `SHELL-CI-023::<package_id>` para la estabilización y cualquier retiro material autorizado; `SHELL-CI-024::<package_id>` para la certificación posterior del cierre del paquete
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`HYPERCARE-OPS-009` define cuándo una contingencia temporal asociada a una instancia de paquete puede dejar de ser necesaria y qué evidencia deberá existir antes de permitir su retiro durante la ejecución posterior de hypercare.
+
+La tarea impide cinco cierres incorrectos:
+
+1. retirar una contingencia porque el camino principal parece estable sin demostrar que los efectos pendientes fueron reconciliados;
+2. confundir ausencia de uso observado con ausencia de necesidad;
+3. retirar una capacidad permanente de rollback, recovery, respaldo, kill switch, observabilidad o soporte solo porque una activación temporal terminó;
+4. convertir el retiro de una contingencia en autorización implícita para borrar datos, historia, evidencia, configuración, código o superficies legacy;
+5. usar el retiro de una contingencia como sustituto del cierre funcional, técnico y operativo reservado a `HYPERCARE-OPS-010` y `SHELL-CI-024::<package_id>`.
+
+El resultado es un contrato reproducible para que `SHELL-CI-023::<package_id>` evalúe cada contingencia real de la misma instancia, conserve los bloqueos vigentes y produzca evidencia verificable antes de cualquier acción material.
+
+---
+
+#### 2. Resultado sustantivo
+
+Por cada `package_id` se materializa un perfil documental de retiro que obliga a resolver, durante la ejecución futura, cuatro elementos:
+
+1. **inventario de contingencias temporales aplicables** — referencias exactas a modos, superficies o controles temporales realmente declarados por las fuentes propietarias;
+2. **criterio de elegibilidad por contingencia** — condiciones que deben satisfacerse antes de considerar su retiro;
+3. **decisión documental por contingencia** — `RETIRO_ELEGIBLE`, `RETIRO_BLOQUEADO`, `NO_APLICA` o `INVALIDADA`, sin confundir elegibilidad con ejecución material;
+4. **manifiesto de evidencia** — identidad, causa de activación o retención, reconciliación, dependencias, soporte, observabilidad, autoridad, disposición y evidencia posterior requerida.
+
+Las expresiones `contingency_retirement_profile::<package_id>` y `contingency_retirement_manifest::<package_id>` se utilizan únicamente como referencias documentales a la materialización homónima de esta tarea; no crean identificadores de tarea ni una segunda fuente de verdad.
+
+La aprobación documental de 009 no declara ninguna contingencia real retirada, desactivada ni eliminada.
+
+---
+
+#### 3. Entradas canónicas obligatorias
+
+009 consume, sin redefinirlas:
+
+- `CUTOVER-OPS-010::<package_id>`: superficies anteriores, disposición de retiro y dependencias retenidas entregadas a hypercare;
+- `READY-GATE-008::<package_id>`: procedimiento operativo, activación de contingencia, límites, criterio de abandono, retorno a operación normal, reincorporación y reconciliación;
+- `READY-GATE-012::<package_id>`: respaldo, restauración, rollback y reconciliación de efectos cuando sean requeridos por la instancia;
+- `READY-GATE-014::<package_id>`: riesgos residuales aceptados, condiciones de suspensión y vigencia de la aceptación;
+- `DELIV-PKG-018::<package_id>`: configuración, feature flags, defaults seguros, expiración y kill switch cuando una contingencia utilice alguno de esos mecanismos;
+- `DELIV-PKG-020::<package_id>`: rollback técnico, funcional y de datos, recovery, compensation, conciliación y efectos irreversibles;
+- `DELIV-PKG-021::<package_id>`: documentación, runbooks, procedimientos, audiencia, versión y actualización de conocimiento;
+- `HYPERCARE-OPS-001::<package_id>`: identidad temporal y vigencia de la instancia de hypercare;
+- `HYPERCARE-OPS-008::<package_id>`: transferencia a soporte, inventario de obligaciones abiertas y referencias `temporary_contingency_refs` que deban permanecer visibles;
+- `TREQ-CONT-002`: autoridad, sustitución, escalamiento, activación y cierre trazables de incidentes que afecten continuidad;
+- `TREQ-CONT-003`: modalidad de contingencia, límites, vigencia, custodia, seguridad y criterio de abandono sin segunda fuente de verdad;
+- `TREQ-CONT-005`: reincorporación idempotente, conciliación y ausencia de pendientes sin propietario;
+- `TREQ-CONT-006`: actualización posterior de dependencias, contactos, runbooks, métricas y capacitación;
+- `SHELL-CI-023::<package_id>` como ejecutor futuro de hypercare y de las acciones de estabilización autorizadas;
+- `SHELL-CI-024::<package_id>` como certificador posterior del cierre del paquete y transferencia a soporte.
+
+Una referencia perteneciente a otro candidato, ambiente, alcance o ejecución no puede reutilizarse para justificar retiro en la instancia actual.
+
+---
+
+#### 4. Fronteras obligatorias
+
+009 no redefine ni ejecuta:
+
+- el diseño del modo contingencia, propiedad de sus fuentes funcionales y de `READY-GATE-008`;
+- la estrategia de rollback o recovery, propiedad de `DELIV-PKG-020` y `READY-GATE-012`;
+- la aceptación de riesgo o deuda, propiedad de `READY-GATE-014` y `HYPERCARE-OPS-007`;
+- la transferencia a soporte ordinario, propiedad de `HYPERCARE-OPS-008`;
+- la autoridad y evidencia de cierre funcional, técnico y operativo, reservada a `HYPERCARE-OPS-010`;
+- la certificación material del cierre, reservada a `SHELL-CI-024::<package_id>`;
+- la eliminación física de código, configuración, infraestructura, datos, secretos, credenciales, rutas o superficies legacy.
+
+Una contingencia puede quedar elegible para dejar de operar y aun así requerir que su capacidad de recuperación, historia, evidencia o artefactos permanezcan conservados por otra fuente canónica.
+
+---
+
+#### 5. Qué se considera contingencia temporal
+
+Para 009, una contingencia temporal es una modalidad, superficie o control alterno cuya utilización está condicionada a una falla, transición, incertidumbre, degradación o riesgo acotado y cuya fuente propietaria define una salida hacia la operación normal.
+
+Puede corresponder, únicamente cuando la fuente canónica lo materialice, a:
+
+- procedimiento manual controlado;
+- borrador local, operación offline o cola pendiente;
+- ruta, superficie o proceso anterior retenido temporalmente como fallback;
+- proveedor, ubicación, red o canal alternativo temporal;
+- configuración, flag, safe mode o mecanismo de activación temporal;
+- workaround temporal ligado a un incidente o problema;
+- mecanismo de compensation, replay o recuperación utilizado transitoriamente para estabilizar un efecto.
+
+La enumeración anterior no crea contingencias para una raíz. La existencia y semántica de cada una se derivan únicamente de las fuentes propietarias de la instancia.
+
+No se considera automáticamente contingencia temporal:
+
+- una capacidad permanente de respaldo, restore, rollback o disaster recovery que deba seguir disponible;
+- un kill switch cuya conservación permanente sea exigida por el contrato del paquete;
+- la mesa de soporte ordinario;
+- observabilidad, alertas o auditoría permanentes;
+- un riesgo o deuda aceptados sin un mecanismo alterno temporal asociado;
+- historia, evidencia o datos retenidos por obligaciones de auditoría, seguridad o conservación;
+- una ruta alternativa que el diseño objetivo haya aprobado como modo ordinario permanente.
+
+---
+
+#### 6. Unidad mínima de evaluación
+
+La evaluación de una contingencia real se vincula como mínimo a:
+
+```text
+package_id
++ candidate_ref
++ environment
++ authorized_scope_ref
++ contingency_ref
+```
+
+Cuando exista una activación material se añade su referencia de ejecución o activación. Cuando la contingencia esté configurada pero nunca haya sido activada, esa ausencia de activación debe demostrarse mediante evidencia suficiente; no se infiere del silencio de telemetría.
+
+Una contingencia compartida puede tener una sola fuente material y afectar varias raíces. En ese caso no se duplica su fuente de verdad: cada `package_id` conserva únicamente su dependencia, alcance y decisión respecto de la contingencia compartida.
+
+---
+
+#### 7. Regla de descubrimiento y exhaustividad
+
+Antes de decidir cualquier retiro, `SHELL-CI-023::<package_id>` deberá construir el conjunto esperado de contingencias a partir de las fuentes vigentes de la misma instancia.
+
+La precedencia documental es:
+
+1. referencias de contingencia y obligaciones abiertas entregadas por `HYPERCARE-OPS-008`;
+2. procedimientos y modos alternos aprobados por `READY-GATE-008`;
+3. superficies anteriores y dependencias retenidas por `CUTOVER-OPS-010`;
+4. mecanismos temporales de configuración declarados por `DELIV-PKG-018`;
+5. mecanismos de recuperación, compensation o rollback de `DELIV-PKG-020`, únicamente cuando una activación temporal concreta deba cerrarse;
+6. incidentes, problemas, conciliaciones, residuales o deuda que las referencias de hypercare vinculen con una contingencia activa.
+
+Reglas:
+
+- una contingencia no puede omitirse porque no haya sido usada recientemente;
+- una contingencia no puede agregarse por analogía con otro paquete;
+- `NO_APLICA` exige evidencia positiva de que la fuente canónica no declara ni mantiene una contingencia temporal para la instancia evaluada;
+- una fuente contradictoria, incompleta o no correlacionable produce `RETIRO_BLOQUEADO` hasta su resolución en la fuente propietaria;
+- el inventario debe conservar las contingencias que estén activas, en reserva temporal, en proceso de drenaje, en reconciliación o pendientes de disposición.
+
+---
+
+#### 8. Distinción entre elegibilidad, desactivación y eliminación
+
+009 adopta una separación obligatoria:
+
+```text
+RETIRO_ELEGIBLE
+≠
+DESACTIVADA_MATERIALMENTE
+≠
+REMOVIDA_FISICAMENTE
+≠
+CIERRE_DE_HYPERCARE
+```
+
+`RETIRO_ELEGIBLE` solo significa que la evidencia vigente permite ejecutar, por la tarea autorizada, la salida del modo temporal.
+
+La desactivación material pertenece a `SHELL-CI-023::<package_id>` cuando esté autorizada dentro de la ejecución del paquete. La eliminación física posterior de código, configuración, infraestructura o superficies persistentes solo puede ocurrir mediante la tarea propietaria que tenga ese cambio físico expresamente autorizado.
+
+Una contingencia desactivada puede requerir observación posterior antes de considerarse estable. La duración de esa observación se toma de la fuente aplicable; 009 no inventa una ventana universal.
+
+---
+
+#### 9. Criterio acumulativo de elegibilidad para retiro
+
+Una contingencia temporal solo obtiene `RETIRO_ELEGIBLE` cuando todas las condiciones aplicables se encuentran demostradas para la misma identidad:
+
+1. **identidad:** `package_id`, candidato, ambiente, alcance y `contingency_ref` son inequívocos;
+2. **fuente propietaria:** existe una fuente canónica que define la contingencia, sus límites y su condición de salida;
+3. **operación principal:** el camino normal aplicable se encuentra operativo y estable según la evidencia exigida por hypercare, sin usar el tiempo transcurrido como sustituto de evidencia;
+4. **causa de activación o retención:** la condición que exigía mantener la contingencia ya no está activa o su fuente autoriza explícitamente la salida;
+5. **incidentes y recuperación:** no existe incidente, recovery, rollback, compensation o acción de estabilización abierta que requiera mantener esa contingencia;
+6. **reincorporación:** hechos, formularios, borradores, colas, documentos, mensajes u operaciones producidos bajo contingencia fueron incorporados o dispuestos de forma controlada;
+7. **conciliación:** no quedan efectos desconocidos, diferencias materiales o pendientes de conciliación que dependan de la contingencia para su resolución;
+8. **fuente de verdad:** la operación normal volvió a apoyarse en la fuente propietaria y no existe una segunda fuente de verdad activa creada por el modo alterno;
+9. **residuales y deuda:** ningún residual o deuda aprobados dependen de la contingencia como control temporal indispensable; si dependen de ella, la contingencia permanece activa hasta que la fuente responsable cambie esa disposición;
+10. **soporte:** el handoff aplicable de `HYPERCARE-OPS-008` permite que soporte ordinario atienda el camino normal y conozca cualquier obligación que siga abierta;
+11. **observabilidad:** existen señales y routing suficientes para detectar deterioro después de la salida del modo temporal; una falla del propio monitoreo bloquea el retiro cuando la señal es necesaria para demostrar estabilidad;
+12. **recuperación permanente:** respaldos, rollback, recovery, kill switch u otros controles permanentes exigidos por el paquete permanecen disponibles aunque finalice la contingencia temporal;
+13. **legacy:** cuando la contingencia use una superficie anterior, su disposición de `CUTOVER-OPS-010` permite la acción correspondiente y no existe dependencia material activa que la requiera;
+14. **riesgo:** la salida no contradice un riesgo aceptado vigente, condición de suspensión o control compensatorio todavía requerido;
+15. **documentación:** runbooks, procedimientos, material de soporte y conocimiento reflejan cuál es el camino normal después de la salida y cómo se actuará ante regresión;
+16. **autoridad:** la autoridad exigida por la fuente propietaria para abandonar o desactivar el modo temporal está identificada y vigente;
+17. **evidencia:** existe un expediente reproducible que permite a otra persona comprobar las condiciones anteriores sin depender de conocimiento oral;
+18. **retención:** la salida operativa no exige destruir historia, evidencia o datos que deban conservarse.
+
+Una sola condición aplicable incumplida, contradictoria o sin evidencia produce `RETIRO_BLOQUEADO`.
+
+---
+
+#### 10. Reglas específicas por clase de contingencia
+
+##### 10.1. Procedimiento manual, formulario o archivo temporal
+
+Antes de dejar de usarlo deberán demostrarse:
+
+- cierre de nuevas entradas por el canal temporal;
+- inventario de registros producidos;
+- correlación de cada registro con su resultado final;
+- reconciliación y resolución de duplicados o conflictos;
+- custodia y disposición conforme a retención y sensibilidad;
+- ausencia de pendientes sin propietario.
+
+Dejar de imprimir o dejar de abrir el archivo no demuestra cierre de la contingencia.
+
+##### 10.2. Offline, borrador local, cola o trabajo pendiente
+
+La conectividad recuperada no basta. Deberán demostrarse drenaje, receipts o resultados determinables, deduplicación, revalidación, resolución de conflictos y retorno de las proyecciones derivadas al estado coherente con la fuente propietaria.
+
+Un resultado desconocido impide repetir o descartar una operación hasta que la fuente correspondiente permita resolverlo de forma segura.
+
+##### 10.3. Superficie o proceso anterior retenido como fallback
+
+El retiro consume la disposición de `CUTOVER-OPS-010` y no crea una segunda lane de retiro legacy. Una superficie todavía necesaria para rollback, fallback o recovery permanece retenida.
+
+`RETIRO_ELEGIBLE` de CUTOVER significa elegibilidad documental y no demuestra que la superficie haya sido desactivada o removida.
+
+##### 10.4. Flag, safe mode o configuración temporal
+
+Debe distinguirse el valor o activación temporal de la existencia permanente del control. Si el contrato exige conservar el kill switch, 009 puede permitir salir del modo temporal sin autorizar la eliminación del mecanismo.
+
+La expiración de una flag o configuración no se presume por fecha si la fuente exige una condición de salida adicional.
+
+##### 10.5. Workaround temporal
+
+Un workaround puede dejar de utilizarse solo cuando el incidente, problema, error conocido o riesgo que lo hacía necesario tenga una disposición compatible. Retirar el workaround no declara causa raíz eliminada ni problema cerrado.
+
+##### 10.6. Proveedor, red, ubicación o canal alternativo
+
+La restauración del proveedor o canal primario no basta si existen operaciones pendientes, contratos de entrega desconocidos, mensajes en tránsito, credenciales temporales, datos locales o efectos que deban conciliarse.
+
+La revocación de accesos temporales y el tratamiento de credenciales pertenecen a sus autoridades propietarias y deberán quedar evidenciados cuando formen parte del retiro.
+
+---
+
+#### 11. Evidencia mínima del retiro elegible
+
+El manifiesto de cada contingencia evaluada deberá conservar, según aplicabilidad:
+
+| Campo                                | Regla                                                                           |
+| ------------------------------------ | ------------------------------------------------------------------------------- |
+| `package_id`                         | raíz canónica afectada                                                          |
+| `candidate_ref`                      | candidato exacto de hypercare                                                   |
+| `environment`                        | ambiente exacto                                                                 |
+| `authorized_scope_ref`               | alcance autorizado                                                              |
+| `contingency_ref`                    | referencia exacta a la contingencia de la fuente propietaria                    |
+| `contingency_source_ref`             | fuente que define activación, límites y salida                                  |
+| `activation_or_retention_reason_ref` | condición que justificó activarla o mantenerla disponible temporalmente         |
+| `activation_execution_ref`           | referencia de activación real cuando exista                                     |
+| `normal_path_evidence_ref`           | evidencia del camino normal estable                                             |
+| `incident_recovery_refs`             | incidentes, recovery, rollback o compensation relacionados cuando apliquen      |
+| `reincorporation_ref`                | evidencia de reincorporación de trabajo temporal cuando aplique                 |
+| `reconciliation_ref`                 | evidencia de conciliación y tratamiento de efectos                              |
+| `residual_debt_refs`                 | residuales o deuda relacionados y su dependencia respecto de la contingencia    |
+| `support_handoff_ref`                | handoff vigente de 008                                                          |
+| `observability_ref`                  | señales y routing usados para detectar deterioro                                |
+| `permanent_recovery_ref`             | control permanente que debe conservarse, cuando aplique                         |
+| `legacy_retirement_ref`              | disposición de CUTOVER-010 cuando exista superficie anterior                    |
+| `risk_suspension_ref`                | riesgo y condición de suspensión aplicables                                     |
+| `authority_ref`                      | autoridad vigente para abandonar o desactivar el modo temporal                  |
+| `documentation_version_ref`          | versión operativa que refleja la salida                                         |
+| `retention_disposition_ref`          | conservación o disposición de evidencia/datos temporales cuando aplique         |
+| `retirement_decision`                | decisión documental de la sección 13                                            |
+| `decision_at`                        | instante de la decisión ejecutada en el futuro                                  |
+| `evidence_refs`                      | referencias reproducibles y sanitizadas                                         |
+| `post_retirement_observation_ref`    | condición o ventana existente exigida después de la salida, sin crear una nueva |
+
+Una captura aislada, una afirmación de que “ya no se usa”, un ticket cerrado, una cola aparentemente vacía o la simple ausencia de alertas no constituyen evidencia suficiente por sí solos.
+
+---
+
+#### 12. Salud de la evidencia y observación posterior
+
+La ausencia de señal solo puede contribuir a la decisión cuando la capacidad de observación está demostrada como saludable.
+
+Antes y después de la salida, cuando la fuente aplicable lo exija, deberá poder distinguirse:
+
+- ausencia real de entradas al modo temporal;
+- pérdida de telemetría;
+- falla del productor de señales;
+- falta de tráfico o demanda representativa;
+- ruta primaria fuera de uso por otra causa;
+- datos todavía pendientes de reconciliación.
+
+No existe una duración universal de “cero uso” ni una ventana universal de observación posterior. Cuando `CUTOVER-OPS-010`, un NFR, un SLI/SLO, un runbook o la fuente propietaria defina una ventana, deberá usarse exactamente esa. Si no existe, la decisión se apoya en las condiciones de salida y evidencia aplicables sin inventar días u horas.
+
+---
+
+#### 13. Decisiones documentales permitidas
+
+Cada contingencia real evaluada obtiene exactamente una decisión:
+
+| Decisión           | Significado                                                                                                                                                                    |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `RETIRO_ELEGIBLE`  | todas las condiciones aplicables están demostradas y la acción material puede ser ejecutada por la autoridad/tarea propietaria                                                 |
+| `RETIRO_BLOQUEADO` | existe al menos una condición aplicable abierta, contradictoria o sin evidencia suficiente                                                                                     |
+| `NO_APLICA`        | la fuente canónica demuestra que no existe una contingencia temporal que deba retirarse para esa instancia o que el mecanismo es una capacidad permanente que debe conservarse |
+| `INVALIDADA`       | un cambio material de candidato, ambiente, alcance, contingencia, autoridad o fuente invalida la evaluación previa                                                             |
+
+009 no asigna `RETIRO_ELEGIBLE` a ninguna contingencia real durante su aprobación documental, porque todavía no existe la evidencia de ejecución de `SHELL-CI-023` para hacerlo.
+
+---
+
+#### 14. Condiciones mínimas de bloqueo
+
+La decisión queda `RETIRO_BLOQUEADO` cuando ocurra cualquiera de estas condiciones aplicables:
+
+1. no puede resolverse la identidad de la contingencia o su fuente propietaria;
+2. candidato, ambiente o alcance no coinciden con la instancia evaluada;
+3. la contingencia sigue siendo requisito explícito de operación segura;
+4. existe incidente, recovery, rollback, compensation o estabilización abierta que la necesita;
+5. existen operaciones, formularios, colas, documentos, mensajes o efectos producidos bajo contingencia sin reincorporación completa;
+6. existe diferencia de conciliación, `RESULT_UNKNOWN` o efecto material sin propietario;
+7. un residual o deuda aprobados dependen de la contingencia como control temporal;
+8. la transferencia a soporte aplicable está bloqueada o no conserva la obligación que debe conocer soporte;
+9. observabilidad o routing necesarios para detectar regresión no están disponibles;
+10. se intenta retirar junto con la contingencia una capacidad permanente de backup, restore, rollback, recovery, kill switch, auditoría o soporte exigida por el paquete;
+11. una superficie legacy permanece `RETIRO_BLOQUEADO`, `CONSERVAR` o equivalente en su fuente propietaria;
+12. una condición de suspensión o aceptación de riesgo exige mantener el control;
+13. documentación o runbook vigentes todavía instruyen usar la contingencia como camino requerido;
+14. no existe autoridad vigente para abandonar o desactivar el modo temporal;
+15. una obligación de retención, custodia o auditoría se intenta resolver mediante eliminación indebida de historia o evidencia;
+16. la supuesta ausencia de uso se basa en telemetría inexistente, degradada o no representativa;
+17. una fuente canónica relevante es contradictoria o no correlacionable.
+
+El bloqueo conserva la fuente que debe resolverlo y la condición de salida; 009 no reasigna propietarios por conveniencia.
+
+---
+
+#### 15. Procedimiento de ejecución futura
+
+Para cada contingencia real, `SHELL-CI-023::<package_id>` deberá aplicar esta secuencia lógica:
+
+1. reconstruir el conjunto esperado de contingencias de la instancia;
+2. confirmar identidad y vigencia de cada referencia;
+3. evaluar las dieciocho condiciones de elegibilidad de la sección 9 según aplicabilidad;
+4. emitir una decisión de la sección 13;
+5. mantener intacta toda contingencia `RETIRO_BLOQUEADO`;
+6. para `RETIRO_ELEGIBLE`, ejecutar únicamente la acción material autorizada por la fuente propietaria;
+7. preservar historia, evidencia y controles permanentes que no formen parte del modo temporal;
+8. reconciliar cualquier efecto producido durante la transición de salida;
+9. observar el camino normal conforme a la ventana o condición existente aplicable;
+10. si aparece regresión o una condición de suspensión, seguir la autoridad de incidente/recovery vigente sin inventar una reversión local;
+11. actualizar documentación, soporte y referencias de la instancia;
+12. entregar el resultado real a `HYPERCARE-OPS-010` y `SHELL-CI-024::<package_id>` como evidencia, no como aprobación automática de cierre.
+
+La secuencia no autoriza eliminación física posterior ni cambios fuera del alcance de `SHELL-CI-023`.
+
+---
+
+#### 16. Matriz materializada de las 207 raíces
+
+Cada raíz aparece exactamente una vez. La matriz define qué contrato deberá evaluarse en ejecución sin afirmar que una contingencia exista o que pueda retirarse hoy.
+
+Las referencias `::<package_id>` señalan la materialización o instancia homónima de la fuente indicada y no crean nuevos identificadores canónicos.
+
+| `package_id`  | Handoff de soporte               | Contingencia/readiness        | Legacy/retiro previo           | Recovery                     | Decisión documental 009             | Estado 009     |
+| ------------- | -------------------------------- | ----------------------------- | ------------------------------ | ---------------------------- | ----------------------------------- | -------------- |
+| `GAP-PKG-001` | `HYPERCARE-OPS-008::GAP-PKG-001` | `READY-GATE-008::GAP-PKG-001` | `CUTOVER-OPS-010::GAP-PKG-001` | `DELIV-PKG-020::GAP-PKG-001` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-002` | `HYPERCARE-OPS-008::GAP-PKG-002` | `READY-GATE-008::GAP-PKG-002` | `CUTOVER-OPS-010::GAP-PKG-002` | `DELIV-PKG-020::GAP-PKG-002` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-003` | `HYPERCARE-OPS-008::GAP-PKG-003` | `READY-GATE-008::GAP-PKG-003` | `CUTOVER-OPS-010::GAP-PKG-003` | `DELIV-PKG-020::GAP-PKG-003` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-004` | `HYPERCARE-OPS-008::GAP-PKG-004` | `READY-GATE-008::GAP-PKG-004` | `CUTOVER-OPS-010::GAP-PKG-004` | `DELIV-PKG-020::GAP-PKG-004` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-005` | `HYPERCARE-OPS-008::GAP-PKG-005` | `READY-GATE-008::GAP-PKG-005` | `CUTOVER-OPS-010::GAP-PKG-005` | `DELIV-PKG-020::GAP-PKG-005` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-006` | `HYPERCARE-OPS-008::GAP-PKG-006` | `READY-GATE-008::GAP-PKG-006` | `CUTOVER-OPS-010::GAP-PKG-006` | `DELIV-PKG-020::GAP-PKG-006` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-007` | `HYPERCARE-OPS-008::GAP-PKG-007` | `READY-GATE-008::GAP-PKG-007` | `CUTOVER-OPS-010::GAP-PKG-007` | `DELIV-PKG-020::GAP-PKG-007` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-008` | `HYPERCARE-OPS-008::GAP-PKG-008` | `READY-GATE-008::GAP-PKG-008` | `CUTOVER-OPS-010::GAP-PKG-008` | `DELIV-PKG-020::GAP-PKG-008` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-009` | `HYPERCARE-OPS-008::GAP-PKG-009` | `READY-GATE-008::GAP-PKG-009` | `CUTOVER-OPS-010::GAP-PKG-009` | `DELIV-PKG-020::GAP-PKG-009` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-010` | `HYPERCARE-OPS-008::GAP-PKG-010` | `READY-GATE-008::GAP-PKG-010` | `CUTOVER-OPS-010::GAP-PKG-010` | `DELIV-PKG-020::GAP-PKG-010` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-011` | `HYPERCARE-OPS-008::GAP-PKG-011` | `READY-GATE-008::GAP-PKG-011` | `CUTOVER-OPS-010::GAP-PKG-011` | `DELIV-PKG-020::GAP-PKG-011` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-012` | `HYPERCARE-OPS-008::GAP-PKG-012` | `READY-GATE-008::GAP-PKG-012` | `CUTOVER-OPS-010::GAP-PKG-012` | `DELIV-PKG-020::GAP-PKG-012` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-013` | `HYPERCARE-OPS-008::GAP-PKG-013` | `READY-GATE-008::GAP-PKG-013` | `CUTOVER-OPS-010::GAP-PKG-013` | `DELIV-PKG-020::GAP-PKG-013` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-014` | `HYPERCARE-OPS-008::GAP-PKG-014` | `READY-GATE-008::GAP-PKG-014` | `CUTOVER-OPS-010::GAP-PKG-014` | `DELIV-PKG-020::GAP-PKG-014` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-015` | `HYPERCARE-OPS-008::GAP-PKG-015` | `READY-GATE-008::GAP-PKG-015` | `CUTOVER-OPS-010::GAP-PKG-015` | `DELIV-PKG-020::GAP-PKG-015` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-016` | `HYPERCARE-OPS-008::GAP-PKG-016` | `READY-GATE-008::GAP-PKG-016` | `CUTOVER-OPS-010::GAP-PKG-016` | `DELIV-PKG-020::GAP-PKG-016` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-017` | `HYPERCARE-OPS-008::GAP-PKG-017` | `READY-GATE-008::GAP-PKG-017` | `CUTOVER-OPS-010::GAP-PKG-017` | `DELIV-PKG-020::GAP-PKG-017` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-018` | `HYPERCARE-OPS-008::GAP-PKG-018` | `READY-GATE-008::GAP-PKG-018` | `CUTOVER-OPS-010::GAP-PKG-018` | `DELIV-PKG-020::GAP-PKG-018` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-019` | `HYPERCARE-OPS-008::GAP-PKG-019` | `READY-GATE-008::GAP-PKG-019` | `CUTOVER-OPS-010::GAP-PKG-019` | `DELIV-PKG-020::GAP-PKG-019` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-020` | `HYPERCARE-OPS-008::GAP-PKG-020` | `READY-GATE-008::GAP-PKG-020` | `CUTOVER-OPS-010::GAP-PKG-020` | `DELIV-PKG-020::GAP-PKG-020` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-021` | `HYPERCARE-OPS-008::GAP-PKG-021` | `READY-GATE-008::GAP-PKG-021` | `CUTOVER-OPS-010::GAP-PKG-021` | `DELIV-PKG-020::GAP-PKG-021` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-022` | `HYPERCARE-OPS-008::GAP-PKG-022` | `READY-GATE-008::GAP-PKG-022` | `CUTOVER-OPS-010::GAP-PKG-022` | `DELIV-PKG-020::GAP-PKG-022` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-023` | `HYPERCARE-OPS-008::GAP-PKG-023` | `READY-GATE-008::GAP-PKG-023` | `CUTOVER-OPS-010::GAP-PKG-023` | `DELIV-PKG-020::GAP-PKG-023` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-024` | `HYPERCARE-OPS-008::GAP-PKG-024` | `READY-GATE-008::GAP-PKG-024` | `CUTOVER-OPS-010::GAP-PKG-024` | `DELIV-PKG-020::GAP-PKG-024` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-025` | `HYPERCARE-OPS-008::GAP-PKG-025` | `READY-GATE-008::GAP-PKG-025` | `CUTOVER-OPS-010::GAP-PKG-025` | `DELIV-PKG-020::GAP-PKG-025` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-026` | `HYPERCARE-OPS-008::GAP-PKG-026` | `READY-GATE-008::GAP-PKG-026` | `CUTOVER-OPS-010::GAP-PKG-026` | `DELIV-PKG-020::GAP-PKG-026` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-027` | `HYPERCARE-OPS-008::GAP-PKG-027` | `READY-GATE-008::GAP-PKG-027` | `CUTOVER-OPS-010::GAP-PKG-027` | `DELIV-PKG-020::GAP-PKG-027` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-028` | `HYPERCARE-OPS-008::GAP-PKG-028` | `READY-GATE-008::GAP-PKG-028` | `CUTOVER-OPS-010::GAP-PKG-028` | `DELIV-PKG-020::GAP-PKG-028` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-029` | `HYPERCARE-OPS-008::GAP-PKG-029` | `READY-GATE-008::GAP-PKG-029` | `CUTOVER-OPS-010::GAP-PKG-029` | `DELIV-PKG-020::GAP-PKG-029` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-030` | `HYPERCARE-OPS-008::GAP-PKG-030` | `READY-GATE-008::GAP-PKG-030` | `CUTOVER-OPS-010::GAP-PKG-030` | `DELIV-PKG-020::GAP-PKG-030` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-031` | `HYPERCARE-OPS-008::GAP-PKG-031` | `READY-GATE-008::GAP-PKG-031` | `CUTOVER-OPS-010::GAP-PKG-031` | `DELIV-PKG-020::GAP-PKG-031` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-032` | `HYPERCARE-OPS-008::GAP-PKG-032` | `READY-GATE-008::GAP-PKG-032` | `CUTOVER-OPS-010::GAP-PKG-032` | `DELIV-PKG-020::GAP-PKG-032` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-033` | `HYPERCARE-OPS-008::GAP-PKG-033` | `READY-GATE-008::GAP-PKG-033` | `CUTOVER-OPS-010::GAP-PKG-033` | `DELIV-PKG-020::GAP-PKG-033` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-034` | `HYPERCARE-OPS-008::GAP-PKG-034` | `READY-GATE-008::GAP-PKG-034` | `CUTOVER-OPS-010::GAP-PKG-034` | `DELIV-PKG-020::GAP-PKG-034` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-035` | `HYPERCARE-OPS-008::GAP-PKG-035` | `READY-GATE-008::GAP-PKG-035` | `CUTOVER-OPS-010::GAP-PKG-035` | `DELIV-PKG-020::GAP-PKG-035` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-036` | `HYPERCARE-OPS-008::GAP-PKG-036` | `READY-GATE-008::GAP-PKG-036` | `CUTOVER-OPS-010::GAP-PKG-036` | `DELIV-PKG-020::GAP-PKG-036` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-037` | `HYPERCARE-OPS-008::GAP-PKG-037` | `READY-GATE-008::GAP-PKG-037` | `CUTOVER-OPS-010::GAP-PKG-037` | `DELIV-PKG-020::GAP-PKG-037` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-038` | `HYPERCARE-OPS-008::GAP-PKG-038` | `READY-GATE-008::GAP-PKG-038` | `CUTOVER-OPS-010::GAP-PKG-038` | `DELIV-PKG-020::GAP-PKG-038` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-039` | `HYPERCARE-OPS-008::GAP-PKG-039` | `READY-GATE-008::GAP-PKG-039` | `CUTOVER-OPS-010::GAP-PKG-039` | `DELIV-PKG-020::GAP-PKG-039` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-040` | `HYPERCARE-OPS-008::GAP-PKG-040` | `READY-GATE-008::GAP-PKG-040` | `CUTOVER-OPS-010::GAP-PKG-040` | `DELIV-PKG-020::GAP-PKG-040` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-041` | `HYPERCARE-OPS-008::GAP-PKG-041` | `READY-GATE-008::GAP-PKG-041` | `CUTOVER-OPS-010::GAP-PKG-041` | `DELIV-PKG-020::GAP-PKG-041` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-042` | `HYPERCARE-OPS-008::GAP-PKG-042` | `READY-GATE-008::GAP-PKG-042` | `CUTOVER-OPS-010::GAP-PKG-042` | `DELIV-PKG-020::GAP-PKG-042` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-043` | `HYPERCARE-OPS-008::GAP-PKG-043` | `READY-GATE-008::GAP-PKG-043` | `CUTOVER-OPS-010::GAP-PKG-043` | `DELIV-PKG-020::GAP-PKG-043` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-044` | `HYPERCARE-OPS-008::GAP-PKG-044` | `READY-GATE-008::GAP-PKG-044` | `CUTOVER-OPS-010::GAP-PKG-044` | `DELIV-PKG-020::GAP-PKG-044` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-045` | `HYPERCARE-OPS-008::GAP-PKG-045` | `READY-GATE-008::GAP-PKG-045` | `CUTOVER-OPS-010::GAP-PKG-045` | `DELIV-PKG-020::GAP-PKG-045` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-046` | `HYPERCARE-OPS-008::GAP-PKG-046` | `READY-GATE-008::GAP-PKG-046` | `CUTOVER-OPS-010::GAP-PKG-046` | `DELIV-PKG-020::GAP-PKG-046` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-047` | `HYPERCARE-OPS-008::GAP-PKG-047` | `READY-GATE-008::GAP-PKG-047` | `CUTOVER-OPS-010::GAP-PKG-047` | `DELIV-PKG-020::GAP-PKG-047` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-048` | `HYPERCARE-OPS-008::GAP-PKG-048` | `READY-GATE-008::GAP-PKG-048` | `CUTOVER-OPS-010::GAP-PKG-048` | `DELIV-PKG-020::GAP-PKG-048` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-049` | `HYPERCARE-OPS-008::GAP-PKG-049` | `READY-GATE-008::GAP-PKG-049` | `CUTOVER-OPS-010::GAP-PKG-049` | `DELIV-PKG-020::GAP-PKG-049` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-050` | `HYPERCARE-OPS-008::GAP-PKG-050` | `READY-GATE-008::GAP-PKG-050` | `CUTOVER-OPS-010::GAP-PKG-050` | `DELIV-PKG-020::GAP-PKG-050` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-051` | `HYPERCARE-OPS-008::GAP-PKG-051` | `READY-GATE-008::GAP-PKG-051` | `CUTOVER-OPS-010::GAP-PKG-051` | `DELIV-PKG-020::GAP-PKG-051` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-052` | `HYPERCARE-OPS-008::GAP-PKG-052` | `READY-GATE-008::GAP-PKG-052` | `CUTOVER-OPS-010::GAP-PKG-052` | `DELIV-PKG-020::GAP-PKG-052` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-053` | `HYPERCARE-OPS-008::GAP-PKG-053` | `READY-GATE-008::GAP-PKG-053` | `CUTOVER-OPS-010::GAP-PKG-053` | `DELIV-PKG-020::GAP-PKG-053` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-054` | `HYPERCARE-OPS-008::GAP-PKG-054` | `READY-GATE-008::GAP-PKG-054` | `CUTOVER-OPS-010::GAP-PKG-054` | `DELIV-PKG-020::GAP-PKG-054` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-055` | `HYPERCARE-OPS-008::GAP-PKG-055` | `READY-GATE-008::GAP-PKG-055` | `CUTOVER-OPS-010::GAP-PKG-055` | `DELIV-PKG-020::GAP-PKG-055` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-056` | `HYPERCARE-OPS-008::GAP-PKG-056` | `READY-GATE-008::GAP-PKG-056` | `CUTOVER-OPS-010::GAP-PKG-056` | `DELIV-PKG-020::GAP-PKG-056` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-057` | `HYPERCARE-OPS-008::GAP-PKG-057` | `READY-GATE-008::GAP-PKG-057` | `CUTOVER-OPS-010::GAP-PKG-057` | `DELIV-PKG-020::GAP-PKG-057` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-058` | `HYPERCARE-OPS-008::GAP-PKG-058` | `READY-GATE-008::GAP-PKG-058` | `CUTOVER-OPS-010::GAP-PKG-058` | `DELIV-PKG-020::GAP-PKG-058` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-059` | `HYPERCARE-OPS-008::GAP-PKG-059` | `READY-GATE-008::GAP-PKG-059` | `CUTOVER-OPS-010::GAP-PKG-059` | `DELIV-PKG-020::GAP-PKG-059` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-060` | `HYPERCARE-OPS-008::GAP-PKG-060` | `READY-GATE-008::GAP-PKG-060` | `CUTOVER-OPS-010::GAP-PKG-060` | `DELIV-PKG-020::GAP-PKG-060` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-061` | `HYPERCARE-OPS-008::GAP-PKG-061` | `READY-GATE-008::GAP-PKG-061` | `CUTOVER-OPS-010::GAP-PKG-061` | `DELIV-PKG-020::GAP-PKG-061` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-062` | `HYPERCARE-OPS-008::GAP-PKG-062` | `READY-GATE-008::GAP-PKG-062` | `CUTOVER-OPS-010::GAP-PKG-062` | `DELIV-PKG-020::GAP-PKG-062` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-063` | `HYPERCARE-OPS-008::GAP-PKG-063` | `READY-GATE-008::GAP-PKG-063` | `CUTOVER-OPS-010::GAP-PKG-063` | `DELIV-PKG-020::GAP-PKG-063` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-064` | `HYPERCARE-OPS-008::GAP-PKG-064` | `READY-GATE-008::GAP-PKG-064` | `CUTOVER-OPS-010::GAP-PKG-064` | `DELIV-PKG-020::GAP-PKG-064` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-065` | `HYPERCARE-OPS-008::GAP-PKG-065` | `READY-GATE-008::GAP-PKG-065` | `CUTOVER-OPS-010::GAP-PKG-065` | `DELIV-PKG-020::GAP-PKG-065` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-066` | `HYPERCARE-OPS-008::GAP-PKG-066` | `READY-GATE-008::GAP-PKG-066` | `CUTOVER-OPS-010::GAP-PKG-066` | `DELIV-PKG-020::GAP-PKG-066` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-067` | `HYPERCARE-OPS-008::GAP-PKG-067` | `READY-GATE-008::GAP-PKG-067` | `CUTOVER-OPS-010::GAP-PKG-067` | `DELIV-PKG-020::GAP-PKG-067` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-068` | `HYPERCARE-OPS-008::GAP-PKG-068` | `READY-GATE-008::GAP-PKG-068` | `CUTOVER-OPS-010::GAP-PKG-068` | `DELIV-PKG-020::GAP-PKG-068` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-069` | `HYPERCARE-OPS-008::GAP-PKG-069` | `READY-GATE-008::GAP-PKG-069` | `CUTOVER-OPS-010::GAP-PKG-069` | `DELIV-PKG-020::GAP-PKG-069` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-070` | `HYPERCARE-OPS-008::GAP-PKG-070` | `READY-GATE-008::GAP-PKG-070` | `CUTOVER-OPS-010::GAP-PKG-070` | `DELIV-PKG-020::GAP-PKG-070` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-071` | `HYPERCARE-OPS-008::GAP-PKG-071` | `READY-GATE-008::GAP-PKG-071` | `CUTOVER-OPS-010::GAP-PKG-071` | `DELIV-PKG-020::GAP-PKG-071` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-072` | `HYPERCARE-OPS-008::GAP-PKG-072` | `READY-GATE-008::GAP-PKG-072` | `CUTOVER-OPS-010::GAP-PKG-072` | `DELIV-PKG-020::GAP-PKG-072` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-073` | `HYPERCARE-OPS-008::GAP-PKG-073` | `READY-GATE-008::GAP-PKG-073` | `CUTOVER-OPS-010::GAP-PKG-073` | `DELIV-PKG-020::GAP-PKG-073` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-074` | `HYPERCARE-OPS-008::GAP-PKG-074` | `READY-GATE-008::GAP-PKG-074` | `CUTOVER-OPS-010::GAP-PKG-074` | `DELIV-PKG-020::GAP-PKG-074` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-075` | `HYPERCARE-OPS-008::GAP-PKG-075` | `READY-GATE-008::GAP-PKG-075` | `CUTOVER-OPS-010::GAP-PKG-075` | `DELIV-PKG-020::GAP-PKG-075` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-076` | `HYPERCARE-OPS-008::GAP-PKG-076` | `READY-GATE-008::GAP-PKG-076` | `CUTOVER-OPS-010::GAP-PKG-076` | `DELIV-PKG-020::GAP-PKG-076` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-077` | `HYPERCARE-OPS-008::GAP-PKG-077` | `READY-GATE-008::GAP-PKG-077` | `CUTOVER-OPS-010::GAP-PKG-077` | `DELIV-PKG-020::GAP-PKG-077` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-078` | `HYPERCARE-OPS-008::GAP-PKG-078` | `READY-GATE-008::GAP-PKG-078` | `CUTOVER-OPS-010::GAP-PKG-078` | `DELIV-PKG-020::GAP-PKG-078` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-079` | `HYPERCARE-OPS-008::GAP-PKG-079` | `READY-GATE-008::GAP-PKG-079` | `CUTOVER-OPS-010::GAP-PKG-079` | `DELIV-PKG-020::GAP-PKG-079` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-080` | `HYPERCARE-OPS-008::GAP-PKG-080` | `READY-GATE-008::GAP-PKG-080` | `CUTOVER-OPS-010::GAP-PKG-080` | `DELIV-PKG-020::GAP-PKG-080` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-081` | `HYPERCARE-OPS-008::GAP-PKG-081` | `READY-GATE-008::GAP-PKG-081` | `CUTOVER-OPS-010::GAP-PKG-081` | `DELIV-PKG-020::GAP-PKG-081` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-082` | `HYPERCARE-OPS-008::GAP-PKG-082` | `READY-GATE-008::GAP-PKG-082` | `CUTOVER-OPS-010::GAP-PKG-082` | `DELIV-PKG-020::GAP-PKG-082` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-083` | `HYPERCARE-OPS-008::GAP-PKG-083` | `READY-GATE-008::GAP-PKG-083` | `CUTOVER-OPS-010::GAP-PKG-083` | `DELIV-PKG-020::GAP-PKG-083` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-084` | `HYPERCARE-OPS-008::GAP-PKG-084` | `READY-GATE-008::GAP-PKG-084` | `CUTOVER-OPS-010::GAP-PKG-084` | `DELIV-PKG-020::GAP-PKG-084` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-085` | `HYPERCARE-OPS-008::GAP-PKG-085` | `READY-GATE-008::GAP-PKG-085` | `CUTOVER-OPS-010::GAP-PKG-085` | `DELIV-PKG-020::GAP-PKG-085` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-086` | `HYPERCARE-OPS-008::GAP-PKG-086` | `READY-GATE-008::GAP-PKG-086` | `CUTOVER-OPS-010::GAP-PKG-086` | `DELIV-PKG-020::GAP-PKG-086` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-087` | `HYPERCARE-OPS-008::GAP-PKG-087` | `READY-GATE-008::GAP-PKG-087` | `CUTOVER-OPS-010::GAP-PKG-087` | `DELIV-PKG-020::GAP-PKG-087` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-088` | `HYPERCARE-OPS-008::GAP-PKG-088` | `READY-GATE-008::GAP-PKG-088` | `CUTOVER-OPS-010::GAP-PKG-088` | `DELIV-PKG-020::GAP-PKG-088` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-089` | `HYPERCARE-OPS-008::GAP-PKG-089` | `READY-GATE-008::GAP-PKG-089` | `CUTOVER-OPS-010::GAP-PKG-089` | `DELIV-PKG-020::GAP-PKG-089` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-090` | `HYPERCARE-OPS-008::GAP-PKG-090` | `READY-GATE-008::GAP-PKG-090` | `CUTOVER-OPS-010::GAP-PKG-090` | `DELIV-PKG-020::GAP-PKG-090` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-091` | `HYPERCARE-OPS-008::GAP-PKG-091` | `READY-GATE-008::GAP-PKG-091` | `CUTOVER-OPS-010::GAP-PKG-091` | `DELIV-PKG-020::GAP-PKG-091` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-092` | `HYPERCARE-OPS-008::GAP-PKG-092` | `READY-GATE-008::GAP-PKG-092` | `CUTOVER-OPS-010::GAP-PKG-092` | `DELIV-PKG-020::GAP-PKG-092` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-093` | `HYPERCARE-OPS-008::GAP-PKG-093` | `READY-GATE-008::GAP-PKG-093` | `CUTOVER-OPS-010::GAP-PKG-093` | `DELIV-PKG-020::GAP-PKG-093` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-094` | `HYPERCARE-OPS-008::GAP-PKG-094` | `READY-GATE-008::GAP-PKG-094` | `CUTOVER-OPS-010::GAP-PKG-094` | `DELIV-PKG-020::GAP-PKG-094` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-095` | `HYPERCARE-OPS-008::GAP-PKG-095` | `READY-GATE-008::GAP-PKG-095` | `CUTOVER-OPS-010::GAP-PKG-095` | `DELIV-PKG-020::GAP-PKG-095` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-096` | `HYPERCARE-OPS-008::GAP-PKG-096` | `READY-GATE-008::GAP-PKG-096` | `CUTOVER-OPS-010::GAP-PKG-096` | `DELIV-PKG-020::GAP-PKG-096` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-097` | `HYPERCARE-OPS-008::GAP-PKG-097` | `READY-GATE-008::GAP-PKG-097` | `CUTOVER-OPS-010::GAP-PKG-097` | `DELIV-PKG-020::GAP-PKG-097` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-098` | `HYPERCARE-OPS-008::GAP-PKG-098` | `READY-GATE-008::GAP-PKG-098` | `CUTOVER-OPS-010::GAP-PKG-098` | `DELIV-PKG-020::GAP-PKG-098` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-099` | `HYPERCARE-OPS-008::GAP-PKG-099` | `READY-GATE-008::GAP-PKG-099` | `CUTOVER-OPS-010::GAP-PKG-099` | `DELIV-PKG-020::GAP-PKG-099` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-100` | `HYPERCARE-OPS-008::GAP-PKG-100` | `READY-GATE-008::GAP-PKG-100` | `CUTOVER-OPS-010::GAP-PKG-100` | `DELIV-PKG-020::GAP-PKG-100` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-101` | `HYPERCARE-OPS-008::GAP-PKG-101` | `READY-GATE-008::GAP-PKG-101` | `CUTOVER-OPS-010::GAP-PKG-101` | `DELIV-PKG-020::GAP-PKG-101` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-102` | `HYPERCARE-OPS-008::GAP-PKG-102` | `READY-GATE-008::GAP-PKG-102` | `CUTOVER-OPS-010::GAP-PKG-102` | `DELIV-PKG-020::GAP-PKG-102` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-103` | `HYPERCARE-OPS-008::GAP-PKG-103` | `READY-GATE-008::GAP-PKG-103` | `CUTOVER-OPS-010::GAP-PKG-103` | `DELIV-PKG-020::GAP-PKG-103` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-104` | `HYPERCARE-OPS-008::GAP-PKG-104` | `READY-GATE-008::GAP-PKG-104` | `CUTOVER-OPS-010::GAP-PKG-104` | `DELIV-PKG-020::GAP-PKG-104` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-105` | `HYPERCARE-OPS-008::GAP-PKG-105` | `READY-GATE-008::GAP-PKG-105` | `CUTOVER-OPS-010::GAP-PKG-105` | `DELIV-PKG-020::GAP-PKG-105` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-106` | `HYPERCARE-OPS-008::GAP-PKG-106` | `READY-GATE-008::GAP-PKG-106` | `CUTOVER-OPS-010::GAP-PKG-106` | `DELIV-PKG-020::GAP-PKG-106` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-107` | `HYPERCARE-OPS-008::GAP-PKG-107` | `READY-GATE-008::GAP-PKG-107` | `CUTOVER-OPS-010::GAP-PKG-107` | `DELIV-PKG-020::GAP-PKG-107` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-108` | `HYPERCARE-OPS-008::GAP-PKG-108` | `READY-GATE-008::GAP-PKG-108` | `CUTOVER-OPS-010::GAP-PKG-108` | `DELIV-PKG-020::GAP-PKG-108` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-109` | `HYPERCARE-OPS-008::GAP-PKG-109` | `READY-GATE-008::GAP-PKG-109` | `CUTOVER-OPS-010::GAP-PKG-109` | `DELIV-PKG-020::GAP-PKG-109` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-110` | `HYPERCARE-OPS-008::GAP-PKG-110` | `READY-GATE-008::GAP-PKG-110` | `CUTOVER-OPS-010::GAP-PKG-110` | `DELIV-PKG-020::GAP-PKG-110` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-111` | `HYPERCARE-OPS-008::GAP-PKG-111` | `READY-GATE-008::GAP-PKG-111` | `CUTOVER-OPS-010::GAP-PKG-111` | `DELIV-PKG-020::GAP-PKG-111` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-112` | `HYPERCARE-OPS-008::GAP-PKG-112` | `READY-GATE-008::GAP-PKG-112` | `CUTOVER-OPS-010::GAP-PKG-112` | `DELIV-PKG-020::GAP-PKG-112` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-113` | `HYPERCARE-OPS-008::GAP-PKG-113` | `READY-GATE-008::GAP-PKG-113` | `CUTOVER-OPS-010::GAP-PKG-113` | `DELIV-PKG-020::GAP-PKG-113` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-114` | `HYPERCARE-OPS-008::GAP-PKG-114` | `READY-GATE-008::GAP-PKG-114` | `CUTOVER-OPS-010::GAP-PKG-114` | `DELIV-PKG-020::GAP-PKG-114` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-115` | `HYPERCARE-OPS-008::GAP-PKG-115` | `READY-GATE-008::GAP-PKG-115` | `CUTOVER-OPS-010::GAP-PKG-115` | `DELIV-PKG-020::GAP-PKG-115` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-116` | `HYPERCARE-OPS-008::GAP-PKG-116` | `READY-GATE-008::GAP-PKG-116` | `CUTOVER-OPS-010::GAP-PKG-116` | `DELIV-PKG-020::GAP-PKG-116` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-117` | `HYPERCARE-OPS-008::GAP-PKG-117` | `READY-GATE-008::GAP-PKG-117` | `CUTOVER-OPS-010::GAP-PKG-117` | `DELIV-PKG-020::GAP-PKG-117` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-118` | `HYPERCARE-OPS-008::GAP-PKG-118` | `READY-GATE-008::GAP-PKG-118` | `CUTOVER-OPS-010::GAP-PKG-118` | `DELIV-PKG-020::GAP-PKG-118` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-119` | `HYPERCARE-OPS-008::GAP-PKG-119` | `READY-GATE-008::GAP-PKG-119` | `CUTOVER-OPS-010::GAP-PKG-119` | `DELIV-PKG-020::GAP-PKG-119` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-120` | `HYPERCARE-OPS-008::GAP-PKG-120` | `READY-GATE-008::GAP-PKG-120` | `CUTOVER-OPS-010::GAP-PKG-120` | `DELIV-PKG-020::GAP-PKG-120` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-121` | `HYPERCARE-OPS-008::GAP-PKG-121` | `READY-GATE-008::GAP-PKG-121` | `CUTOVER-OPS-010::GAP-PKG-121` | `DELIV-PKG-020::GAP-PKG-121` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-122` | `HYPERCARE-OPS-008::GAP-PKG-122` | `READY-GATE-008::GAP-PKG-122` | `CUTOVER-OPS-010::GAP-PKG-122` | `DELIV-PKG-020::GAP-PKG-122` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-123` | `HYPERCARE-OPS-008::GAP-PKG-123` | `READY-GATE-008::GAP-PKG-123` | `CUTOVER-OPS-010::GAP-PKG-123` | `DELIV-PKG-020::GAP-PKG-123` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-124` | `HYPERCARE-OPS-008::GAP-PKG-124` | `READY-GATE-008::GAP-PKG-124` | `CUTOVER-OPS-010::GAP-PKG-124` | `DELIV-PKG-020::GAP-PKG-124` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-125` | `HYPERCARE-OPS-008::GAP-PKG-125` | `READY-GATE-008::GAP-PKG-125` | `CUTOVER-OPS-010::GAP-PKG-125` | `DELIV-PKG-020::GAP-PKG-125` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-126` | `HYPERCARE-OPS-008::GAP-PKG-126` | `READY-GATE-008::GAP-PKG-126` | `CUTOVER-OPS-010::GAP-PKG-126` | `DELIV-PKG-020::GAP-PKG-126` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-127` | `HYPERCARE-OPS-008::GAP-PKG-127` | `READY-GATE-008::GAP-PKG-127` | `CUTOVER-OPS-010::GAP-PKG-127` | `DELIV-PKG-020::GAP-PKG-127` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-128` | `HYPERCARE-OPS-008::GAP-PKG-128` | `READY-GATE-008::GAP-PKG-128` | `CUTOVER-OPS-010::GAP-PKG-128` | `DELIV-PKG-020::GAP-PKG-128` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-129` | `HYPERCARE-OPS-008::GAP-PKG-129` | `READY-GATE-008::GAP-PKG-129` | `CUTOVER-OPS-010::GAP-PKG-129` | `DELIV-PKG-020::GAP-PKG-129` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-130` | `HYPERCARE-OPS-008::GAP-PKG-130` | `READY-GATE-008::GAP-PKG-130` | `CUTOVER-OPS-010::GAP-PKG-130` | `DELIV-PKG-020::GAP-PKG-130` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-131` | `HYPERCARE-OPS-008::GAP-PKG-131` | `READY-GATE-008::GAP-PKG-131` | `CUTOVER-OPS-010::GAP-PKG-131` | `DELIV-PKG-020::GAP-PKG-131` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-132` | `HYPERCARE-OPS-008::GAP-PKG-132` | `READY-GATE-008::GAP-PKG-132` | `CUTOVER-OPS-010::GAP-PKG-132` | `DELIV-PKG-020::GAP-PKG-132` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-133` | `HYPERCARE-OPS-008::GAP-PKG-133` | `READY-GATE-008::GAP-PKG-133` | `CUTOVER-OPS-010::GAP-PKG-133` | `DELIV-PKG-020::GAP-PKG-133` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-134` | `HYPERCARE-OPS-008::GAP-PKG-134` | `READY-GATE-008::GAP-PKG-134` | `CUTOVER-OPS-010::GAP-PKG-134` | `DELIV-PKG-020::GAP-PKG-134` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-135` | `HYPERCARE-OPS-008::GAP-PKG-135` | `READY-GATE-008::GAP-PKG-135` | `CUTOVER-OPS-010::GAP-PKG-135` | `DELIV-PKG-020::GAP-PKG-135` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-136` | `HYPERCARE-OPS-008::GAP-PKG-136` | `READY-GATE-008::GAP-PKG-136` | `CUTOVER-OPS-010::GAP-PKG-136` | `DELIV-PKG-020::GAP-PKG-136` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-137` | `HYPERCARE-OPS-008::GAP-PKG-137` | `READY-GATE-008::GAP-PKG-137` | `CUTOVER-OPS-010::GAP-PKG-137` | `DELIV-PKG-020::GAP-PKG-137` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-138` | `HYPERCARE-OPS-008::GAP-PKG-138` | `READY-GATE-008::GAP-PKG-138` | `CUTOVER-OPS-010::GAP-PKG-138` | `DELIV-PKG-020::GAP-PKG-138` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-139` | `HYPERCARE-OPS-008::GAP-PKG-139` | `READY-GATE-008::GAP-PKG-139` | `CUTOVER-OPS-010::GAP-PKG-139` | `DELIV-PKG-020::GAP-PKG-139` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-140` | `HYPERCARE-OPS-008::GAP-PKG-140` | `READY-GATE-008::GAP-PKG-140` | `CUTOVER-OPS-010::GAP-PKG-140` | `DELIV-PKG-020::GAP-PKG-140` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-141` | `HYPERCARE-OPS-008::GAP-PKG-141` | `READY-GATE-008::GAP-PKG-141` | `CUTOVER-OPS-010::GAP-PKG-141` | `DELIV-PKG-020::GAP-PKG-141` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-142` | `HYPERCARE-OPS-008::GAP-PKG-142` | `READY-GATE-008::GAP-PKG-142` | `CUTOVER-OPS-010::GAP-PKG-142` | `DELIV-PKG-020::GAP-PKG-142` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-143` | `HYPERCARE-OPS-008::GAP-PKG-143` | `READY-GATE-008::GAP-PKG-143` | `CUTOVER-OPS-010::GAP-PKG-143` | `DELIV-PKG-020::GAP-PKG-143` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-144` | `HYPERCARE-OPS-008::GAP-PKG-144` | `READY-GATE-008::GAP-PKG-144` | `CUTOVER-OPS-010::GAP-PKG-144` | `DELIV-PKG-020::GAP-PKG-144` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-145` | `HYPERCARE-OPS-008::GAP-PKG-145` | `READY-GATE-008::GAP-PKG-145` | `CUTOVER-OPS-010::GAP-PKG-145` | `DELIV-PKG-020::GAP-PKG-145` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-146` | `HYPERCARE-OPS-008::GAP-PKG-146` | `READY-GATE-008::GAP-PKG-146` | `CUTOVER-OPS-010::GAP-PKG-146` | `DELIV-PKG-020::GAP-PKG-146` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-147` | `HYPERCARE-OPS-008::GAP-PKG-147` | `READY-GATE-008::GAP-PKG-147` | `CUTOVER-OPS-010::GAP-PKG-147` | `DELIV-PKG-020::GAP-PKG-147` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-148` | `HYPERCARE-OPS-008::GAP-PKG-148` | `READY-GATE-008::GAP-PKG-148` | `CUTOVER-OPS-010::GAP-PKG-148` | `DELIV-PKG-020::GAP-PKG-148` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-149` | `HYPERCARE-OPS-008::GAP-PKG-149` | `READY-GATE-008::GAP-PKG-149` | `CUTOVER-OPS-010::GAP-PKG-149` | `DELIV-PKG-020::GAP-PKG-149` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-150` | `HYPERCARE-OPS-008::GAP-PKG-150` | `READY-GATE-008::GAP-PKG-150` | `CUTOVER-OPS-010::GAP-PKG-150` | `DELIV-PKG-020::GAP-PKG-150` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-151` | `HYPERCARE-OPS-008::GAP-PKG-151` | `READY-GATE-008::GAP-PKG-151` | `CUTOVER-OPS-010::GAP-PKG-151` | `DELIV-PKG-020::GAP-PKG-151` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-152` | `HYPERCARE-OPS-008::GAP-PKG-152` | `READY-GATE-008::GAP-PKG-152` | `CUTOVER-OPS-010::GAP-PKG-152` | `DELIV-PKG-020::GAP-PKG-152` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-153` | `HYPERCARE-OPS-008::GAP-PKG-153` | `READY-GATE-008::GAP-PKG-153` | `CUTOVER-OPS-010::GAP-PKG-153` | `DELIV-PKG-020::GAP-PKG-153` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-154` | `HYPERCARE-OPS-008::GAP-PKG-154` | `READY-GATE-008::GAP-PKG-154` | `CUTOVER-OPS-010::GAP-PKG-154` | `DELIV-PKG-020::GAP-PKG-154` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-155` | `HYPERCARE-OPS-008::GAP-PKG-155` | `READY-GATE-008::GAP-PKG-155` | `CUTOVER-OPS-010::GAP-PKG-155` | `DELIV-PKG-020::GAP-PKG-155` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-156` | `HYPERCARE-OPS-008::GAP-PKG-156` | `READY-GATE-008::GAP-PKG-156` | `CUTOVER-OPS-010::GAP-PKG-156` | `DELIV-PKG-020::GAP-PKG-156` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-157` | `HYPERCARE-OPS-008::GAP-PKG-157` | `READY-GATE-008::GAP-PKG-157` | `CUTOVER-OPS-010::GAP-PKG-157` | `DELIV-PKG-020::GAP-PKG-157` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-158` | `HYPERCARE-OPS-008::GAP-PKG-158` | `READY-GATE-008::GAP-PKG-158` | `CUTOVER-OPS-010::GAP-PKG-158` | `DELIV-PKG-020::GAP-PKG-158` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-159` | `HYPERCARE-OPS-008::GAP-PKG-159` | `READY-GATE-008::GAP-PKG-159` | `CUTOVER-OPS-010::GAP-PKG-159` | `DELIV-PKG-020::GAP-PKG-159` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-160` | `HYPERCARE-OPS-008::GAP-PKG-160` | `READY-GATE-008::GAP-PKG-160` | `CUTOVER-OPS-010::GAP-PKG-160` | `DELIV-PKG-020::GAP-PKG-160` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-161` | `HYPERCARE-OPS-008::GAP-PKG-161` | `READY-GATE-008::GAP-PKG-161` | `CUTOVER-OPS-010::GAP-PKG-161` | `DELIV-PKG-020::GAP-PKG-161` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-162` | `HYPERCARE-OPS-008::GAP-PKG-162` | `READY-GATE-008::GAP-PKG-162` | `CUTOVER-OPS-010::GAP-PKG-162` | `DELIV-PKG-020::GAP-PKG-162` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-163` | `HYPERCARE-OPS-008::GAP-PKG-163` | `READY-GATE-008::GAP-PKG-163` | `CUTOVER-OPS-010::GAP-PKG-163` | `DELIV-PKG-020::GAP-PKG-163` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-164` | `HYPERCARE-OPS-008::GAP-PKG-164` | `READY-GATE-008::GAP-PKG-164` | `CUTOVER-OPS-010::GAP-PKG-164` | `DELIV-PKG-020::GAP-PKG-164` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-165` | `HYPERCARE-OPS-008::GAP-PKG-165` | `READY-GATE-008::GAP-PKG-165` | `CUTOVER-OPS-010::GAP-PKG-165` | `DELIV-PKG-020::GAP-PKG-165` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-166` | `HYPERCARE-OPS-008::GAP-PKG-166` | `READY-GATE-008::GAP-PKG-166` | `CUTOVER-OPS-010::GAP-PKG-166` | `DELIV-PKG-020::GAP-PKG-166` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-167` | `HYPERCARE-OPS-008::GAP-PKG-167` | `READY-GATE-008::GAP-PKG-167` | `CUTOVER-OPS-010::GAP-PKG-167` | `DELIV-PKG-020::GAP-PKG-167` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-168` | `HYPERCARE-OPS-008::GAP-PKG-168` | `READY-GATE-008::GAP-PKG-168` | `CUTOVER-OPS-010::GAP-PKG-168` | `DELIV-PKG-020::GAP-PKG-168` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-169` | `HYPERCARE-OPS-008::GAP-PKG-169` | `READY-GATE-008::GAP-PKG-169` | `CUTOVER-OPS-010::GAP-PKG-169` | `DELIV-PKG-020::GAP-PKG-169` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-170` | `HYPERCARE-OPS-008::GAP-PKG-170` | `READY-GATE-008::GAP-PKG-170` | `CUTOVER-OPS-010::GAP-PKG-170` | `DELIV-PKG-020::GAP-PKG-170` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-171` | `HYPERCARE-OPS-008::GAP-PKG-171` | `READY-GATE-008::GAP-PKG-171` | `CUTOVER-OPS-010::GAP-PKG-171` | `DELIV-PKG-020::GAP-PKG-171` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-172` | `HYPERCARE-OPS-008::GAP-PKG-172` | `READY-GATE-008::GAP-PKG-172` | `CUTOVER-OPS-010::GAP-PKG-172` | `DELIV-PKG-020::GAP-PKG-172` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-173` | `HYPERCARE-OPS-008::GAP-PKG-173` | `READY-GATE-008::GAP-PKG-173` | `CUTOVER-OPS-010::GAP-PKG-173` | `DELIV-PKG-020::GAP-PKG-173` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-174` | `HYPERCARE-OPS-008::GAP-PKG-174` | `READY-GATE-008::GAP-PKG-174` | `CUTOVER-OPS-010::GAP-PKG-174` | `DELIV-PKG-020::GAP-PKG-174` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-175` | `HYPERCARE-OPS-008::GAP-PKG-175` | `READY-GATE-008::GAP-PKG-175` | `CUTOVER-OPS-010::GAP-PKG-175` | `DELIV-PKG-020::GAP-PKG-175` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-176` | `HYPERCARE-OPS-008::GAP-PKG-176` | `READY-GATE-008::GAP-PKG-176` | `CUTOVER-OPS-010::GAP-PKG-176` | `DELIV-PKG-020::GAP-PKG-176` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-177` | `HYPERCARE-OPS-008::GAP-PKG-177` | `READY-GATE-008::GAP-PKG-177` | `CUTOVER-OPS-010::GAP-PKG-177` | `DELIV-PKG-020::GAP-PKG-177` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-178` | `HYPERCARE-OPS-008::GAP-PKG-178` | `READY-GATE-008::GAP-PKG-178` | `CUTOVER-OPS-010::GAP-PKG-178` | `DELIV-PKG-020::GAP-PKG-178` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-179` | `HYPERCARE-OPS-008::GAP-PKG-179` | `READY-GATE-008::GAP-PKG-179` | `CUTOVER-OPS-010::GAP-PKG-179` | `DELIV-PKG-020::GAP-PKG-179` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-180` | `HYPERCARE-OPS-008::GAP-PKG-180` | `READY-GATE-008::GAP-PKG-180` | `CUTOVER-OPS-010::GAP-PKG-180` | `DELIV-PKG-020::GAP-PKG-180` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-181` | `HYPERCARE-OPS-008::GAP-PKG-181` | `READY-GATE-008::GAP-PKG-181` | `CUTOVER-OPS-010::GAP-PKG-181` | `DELIV-PKG-020::GAP-PKG-181` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-182` | `HYPERCARE-OPS-008::GAP-PKG-182` | `READY-GATE-008::GAP-PKG-182` | `CUTOVER-OPS-010::GAP-PKG-182` | `DELIV-PKG-020::GAP-PKG-182` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-183` | `HYPERCARE-OPS-008::GAP-PKG-183` | `READY-GATE-008::GAP-PKG-183` | `CUTOVER-OPS-010::GAP-PKG-183` | `DELIV-PKG-020::GAP-PKG-183` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-184` | `HYPERCARE-OPS-008::GAP-PKG-184` | `READY-GATE-008::GAP-PKG-184` | `CUTOVER-OPS-010::GAP-PKG-184` | `DELIV-PKG-020::GAP-PKG-184` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-185` | `HYPERCARE-OPS-008::GAP-PKG-185` | `READY-GATE-008::GAP-PKG-185` | `CUTOVER-OPS-010::GAP-PKG-185` | `DELIV-PKG-020::GAP-PKG-185` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-186` | `HYPERCARE-OPS-008::GAP-PKG-186` | `READY-GATE-008::GAP-PKG-186` | `CUTOVER-OPS-010::GAP-PKG-186` | `DELIV-PKG-020::GAP-PKG-186` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-187` | `HYPERCARE-OPS-008::GAP-PKG-187` | `READY-GATE-008::GAP-PKG-187` | `CUTOVER-OPS-010::GAP-PKG-187` | `DELIV-PKG-020::GAP-PKG-187` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-188` | `HYPERCARE-OPS-008::GAP-PKG-188` | `READY-GATE-008::GAP-PKG-188` | `CUTOVER-OPS-010::GAP-PKG-188` | `DELIV-PKG-020::GAP-PKG-188` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-189` | `HYPERCARE-OPS-008::GAP-PKG-189` | `READY-GATE-008::GAP-PKG-189` | `CUTOVER-OPS-010::GAP-PKG-189` | `DELIV-PKG-020::GAP-PKG-189` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-190` | `HYPERCARE-OPS-008::GAP-PKG-190` | `READY-GATE-008::GAP-PKG-190` | `CUTOVER-OPS-010::GAP-PKG-190` | `DELIV-PKG-020::GAP-PKG-190` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-191` | `HYPERCARE-OPS-008::GAP-PKG-191` | `READY-GATE-008::GAP-PKG-191` | `CUTOVER-OPS-010::GAP-PKG-191` | `DELIV-PKG-020::GAP-PKG-191` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-192` | `HYPERCARE-OPS-008::GAP-PKG-192` | `READY-GATE-008::GAP-PKG-192` | `CUTOVER-OPS-010::GAP-PKG-192` | `DELIV-PKG-020::GAP-PKG-192` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-193` | `HYPERCARE-OPS-008::GAP-PKG-193` | `READY-GATE-008::GAP-PKG-193` | `CUTOVER-OPS-010::GAP-PKG-193` | `DELIV-PKG-020::GAP-PKG-193` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-194` | `HYPERCARE-OPS-008::GAP-PKG-194` | `READY-GATE-008::GAP-PKG-194` | `CUTOVER-OPS-010::GAP-PKG-194` | `DELIV-PKG-020::GAP-PKG-194` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-195` | `HYPERCARE-OPS-008::GAP-PKG-195` | `READY-GATE-008::GAP-PKG-195` | `CUTOVER-OPS-010::GAP-PKG-195` | `DELIV-PKG-020::GAP-PKG-195` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-196` | `HYPERCARE-OPS-008::GAP-PKG-196` | `READY-GATE-008::GAP-PKG-196` | `CUTOVER-OPS-010::GAP-PKG-196` | `DELIV-PKG-020::GAP-PKG-196` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-197` | `HYPERCARE-OPS-008::GAP-PKG-197` | `READY-GATE-008::GAP-PKG-197` | `CUTOVER-OPS-010::GAP-PKG-197` | `DELIV-PKG-020::GAP-PKG-197` | `BLOQUEADO_POR_GATE_HEREDADO`       | `BLOQUEADO`    |
+| `GAP-PKG-198` | `HYPERCARE-OPS-008::GAP-PKG-198` | `READY-GATE-008::GAP-PKG-198` | `CUTOVER-OPS-010::GAP-PKG-198` | `DELIV-PKG-020::GAP-PKG-198` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-199` | `HYPERCARE-OPS-008::GAP-PKG-199` | `READY-GATE-008::GAP-PKG-199` | `CUTOVER-OPS-010::GAP-PKG-199` | `DELIV-PKG-020::GAP-PKG-199` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-200` | `HYPERCARE-OPS-008::GAP-PKG-200` | `READY-GATE-008::GAP-PKG-200` | `CUTOVER-OPS-010::GAP-PKG-200` | `DELIV-PKG-020::GAP-PKG-200` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-201` | `HYPERCARE-OPS-008::GAP-PKG-201` | `READY-GATE-008::GAP-PKG-201` | `CUTOVER-OPS-010::GAP-PKG-201` | `DELIV-PKG-020::GAP-PKG-201` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-202` | `HYPERCARE-OPS-008::GAP-PKG-202` | `READY-GATE-008::GAP-PKG-202` | `CUTOVER-OPS-010::GAP-PKG-202` | `DELIV-PKG-020::GAP-PKG-202` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-203` | `HYPERCARE-OPS-008::GAP-PKG-203` | `READY-GATE-008::GAP-PKG-203` | `CUTOVER-OPS-010::GAP-PKG-203` | `DELIV-PKG-020::GAP-PKG-203` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-204` | `HYPERCARE-OPS-008::GAP-PKG-204` | `READY-GATE-008::GAP-PKG-204` | `CUTOVER-OPS-010::GAP-PKG-204` | `DELIV-PKG-020::GAP-PKG-204` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-205` | `HYPERCARE-OPS-008::GAP-PKG-205` | `READY-GATE-008::GAP-PKG-205` | `CUTOVER-OPS-010::GAP-PKG-205` | `DELIV-PKG-020::GAP-PKG-205` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-206` | `HYPERCARE-OPS-008::GAP-PKG-206` | `READY-GATE-008::GAP-PKG-206` | `CUTOVER-OPS-010::GAP-PKG-206` | `DELIV-PKG-020::GAP-PKG-206` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+| `GAP-PKG-207` | `HYPERCARE-OPS-008::GAP-PKG-207` | `READY-GATE-008::GAP-PKG-207` | `CUTOVER-OPS-010::GAP-PKG-207` | `DELIV-PKG-020::GAP-PKG-207` | `EVALUAR_SIN_PRESUMIR_CONTINGENCIA` | `ESPECIFICADO` |
+
+---
+
+#### 17. Reconciliación del universo
+
+La materialización conserva el universo vigente sin reidentificar raíces:
+
+| Modalidad heredada                         | Cantidad |
+| ------------------------------------------ | -------: |
+| cobertura directa heredada                 |      160 |
+| cobertura compartida heredada              |        3 |
+| controles heredados                        |       26 |
+| AURA bloqueadas heredadas                  |       14 |
+| dependencias externas bloqueadas heredadas |        2 |
+| TALENTO fuera de línea heredadas           |        2 |
+| **Total**                                  |  **207** |
+
+Resultado documental de 009:
+
+- raíces esperadas: **207**;
+- raíces materializadas: **207**;
+- faltantes: **0**;
+- duplicados: **0**;
+- raíces evaluables cuando exista evidencia real: **189**;
+- raíces bloqueadas por gate heredado: **18**;
+- contingencias reales declaradas como retiradas por esta tarea: **0**;
+- cambios de modalidad heredada: **0**;
+- cambios de propietario por esta tarea: **0**.
+
+Las 18 raíces bloqueadas conservan exactamente su bloqueo previo; 009 no crea una contingencia ficticia ni una decisión material de retiro para AURA, dependencias externas o TALENTO mientras el gate correspondiente permanezca cerrado.
+
+---
+
+#### 18. Relación con soporte, deuda, legacy y cierre
+
+- `HYPERCARE-OPS-008` conserva la propiedad de la transferencia a soporte. Una contingencia no se retira si soporte necesita conocerla y el handoff aplicable todavía está bloqueado.
+- `HYPERCARE-OPS-007` conserva la propiedad de la aprobación de deuda y trabajo posterior. Si una deuda necesita la contingencia como control compensatorio, 009 no puede retirarla hasta que cambie esa disposición en su fuente propietaria.
+- `CUTOVER-OPS-010` conserva la disposición de superficies anteriores. 009 no convierte una superficie legacy en contingencia ni reabre su lane de retiro.
+- `HYPERCARE-OPS-010` conserva la autoridad para aprobar cierre funcional, técnico y operativo. Haber retirado todas las contingencias aplicables es una entrada evaluable, no una aprobación de cierre.
+- `SHELL-CI-024::<package_id>` conserva la certificación material posterior del paquete y transferencia a soporte.
+
+---
+
+#### 19. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Fragmentos 04A afectados:** 0
+
+Justificación: 009 especializa para hypercare el momento y la evidencia de consumo de reglas ya protegidas. `TREQ-CONT-003` exige que toda contingencia aplicable tenga responsables, límites, vigencia, custodia, seguridad, criterio de abandono y retorno sin segunda fuente de verdad. `TREQ-CONT-005` exige reincorporación controlada, idempotente y reconciliable y prohíbe cerrar con pendientes sin propietario. `TREQ-CONT-006` exige actualizar dependencias, contactos, runbooks, métricas y capacitación después de incidentes o ejercicios. `TREQ-CONT-002` ya protege autoridad, sustitución, escalamiento, activación y cierre trazables de incidentes de continuidad.
+
+009 no introduce una nueva regla funcional, de datos, autorización, integración, continuidad o ejecución distinta de esas obligaciones; materializa cómo deben verificarse antes de retirar una contingencia temporal durante `SHELL-CI-023::<package_id>`.
+
+Si la ejecución futura descubre un defecto o regresión no cubierto por un requisito existente, el requisito de regresión deberá crearse entonces desde la tarea propietaria del hallazgo con evidencia real; no se inventa preventivamente en esta tarea documental.
+
+---
+
+#### 20. Criterios de aceptación
+
+009 queda documentalmente completa cuando se cumplen simultáneamente estas condiciones:
+
+1. distingue contingencia temporal de capacidad permanente de resiliencia;
+2. utiliza únicamente contingencias identificadas por fuentes canónicas de la misma instancia;
+3. `NO_APLICA` exige evidencia y no se infiere por ausencia de uso;
+4. mantiene separadas elegibilidad, desactivación material, eliminación física y cierre de hypercare;
+5. exige retorno demostrable al camino normal sin segunda fuente de verdad;
+6. exige reincorporación y conciliación antes del retiro cuando hubo trabajo temporal;
+7. impide retirar una contingencia requerida por incidente, recovery, rollback, residual, deuda o riesgo vigente;
+8. conserva backup, restore, rollback, recovery, kill switch, soporte, observabilidad y auditoría permanentes cuando sus contratos los exijan;
+9. consume `CUTOVER-OPS-010` sin crear una segunda lane de retiro legacy;
+10. exige soporte y observabilidad suficientes para detectar regresión posterior;
+11. no inventa una duración universal de cero uso u observación posterior;
+12. protege historia, evidencia, retención y custodia durante la salida;
+13. define decisiones inequívocas `RETIRO_ELEGIBLE`, `RETIRO_BLOQUEADO`, `NO_APLICA` e `INVALIDADA`;
+14. una sola condición aplicable abierta produce `RETIRO_BLOQUEADO`;
+15. materializa exactamente 207 raíces, sin faltantes ni duplicados;
+16. preserva la distribución 160 + 3 + 26 + 14 + 2 + 2 = 207;
+17. conserva 18 bloqueos heredados y no fabrica ejecución para esas raíces;
+18. no declara ninguna contingencia real retirada durante la aprobación documental;
+19. no crea ni modifica requisitos `TREQ-*`;
+20. no ejecuta cambios físicos ni operaciones sobre Supabase;
+21. deja `HYPERCARE-OPS-010` exclusivamente reservada.
+
+---
+
+#### 21. Cambios físicos
+
+Ninguno.
+
+009 no autoriza ni ejecuta:
+
+- desactivación de flags, safe modes, rutas, procedimientos o canales;
+- retiro lógico o físico de superficies legacy;
+- eliminación de código, archivos, infraestructura o configuración;
+- revocación material de credenciales o secretos;
+- eliminación o modificación de datos;
+- migraciones, DDL, DML o backfills;
+- despliegues, rollbacks, replay, compensation o recovery reales;
+- cambios sobre Supabase;
+- cierre de incidentes, problemas, deuda o hypercare.
+
+Toda acción material posterior deberá conservar la autoridad, alcance, segregación y evidencia de la fuente propietaria correspondiente.
+
+---
+
+#### 22. Bloqueos y handoff documental
+
+009 no introduce una brecha narrativa sin propietario.
+
+Cuando la ejecución futura no pueda resolver una condición:
+
+- identidad o definición de la contingencia: vuelve a la fuente propietaria que la materializó;
+- procedimiento, límites o retorno a operación normal: `READY-GATE-008` y la tarea funcional propietaria;
+- rollback, recovery o conciliación técnica: `DELIV-PKG-020` / `READY-GATE-012`;
+- riesgo o condición de suspensión: `READY-GATE-014`;
+- superficie anterior: `CUTOVER-OPS-010` y su fuente de disposición;
+- deuda o residual: `HYPERCARE-OPS-007`;
+- soporte o documentación definitiva: `HYPERCARE-OPS-008`;
+- decisión de cierre de hypercare: `HYPERCARE-OPS-010`.
+
+La ausencia de evidencia mantiene `RETIRO_BLOQUEADO`; no se sustituye por una decisión local de 009.
+
+---
+
+#### 23. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y documentación definitiva
+
+##### TAREA ACTUAL APROBADA
+
+HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales
+
+##### SIGUIENTE TAREA RESERVADA
+
+HYPERCARE-OPS-010 — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo
+
+
 ### [ ] HYPERCARE-OPS-010 — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo
 
 `SHELL-CI-023` ejecutará monitoreo, conciliación, respuesta y estabilización.
