@@ -19,7 +19,7 @@ Esta sección organiza **turno rol dispositivo y simulación** dentro de **S MEN
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md`
 **Artefactos producidos:** `PUBLISHED-SHIFT-BLOCKING-CONTRACT-001`, `PUBLISHED-SHIFT-DEPENDENCY-MATRIX-001`, `PUBLISHED-SHIFT-CHANNEL-RESPONSE-MATRIX-001`, `PUBLISHED-SHIFT-APPLICATION-COVERAGE-REGISTER-001` y `PUBLISHED-SHIFT-PHYSICAL-RECONCILIATION-001`
-**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001` a `AUTH-MOD-004`; `AUTH-MOD-006` a `AUTH-MOD-011`; `AUTH-MOD-018`; `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-012` a `AUTH-CAT-015`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-009` a `AUTH-CTX-017`; `AUTH-CTX-020`; `AUTH-CTX-024` a `AUTH-CTX-030`; `AUTH-ERR-001` a `AUTH-ERR-008`; contratos vigentes de identidad, aplicación, territorio, turno, check-in, rol, permiso, recurso, disponibilidad y precedencia; estado remoto y desplegado inspeccionado; contrato documental vigente
+**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001` a `AUTH-MOD-004`; `AUTH-MOD-006` a `AUTH-MOD-011`; `AUTH-MOD-018`; `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-012` a `AUTH-CAT-015`; `AUTH-CAT-022` a `AUTH-CAT-024`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-009` a `AUTH-CTX-017`; `AUTH-CTX-020`; `AUTH-CTX-024` a `AUTH-CTX-030`; `AUTH-ERR-001` a `AUTH-ERR-008`; contratos vigentes de identidad, aplicación, territorio, turno, check-in, rol, permiso, recurso, disponibilidad y precedencia; estado remoto y desplegado inspeccionado; contrato documental vigente
 **Cambios físicos autorizados:** ninguno; no modifica código, Supabase, Auth, RLS, RPC, Edge Functions, datos, migraciones, constraints, triggers, turnos, revisiones, publicaciones, empleados, sedes, áreas, roles, permisos, aplicaciones ni despliegues
 
 ---
@@ -120,11 +120,11 @@ Cobertura materializada:
 | Escenarios con decisión explícita              |                   20 |
 | Canales con respuesta explícita                |                   10 |
 | Aplicaciones canónicas reconciliadas           |                   10 |
-| Permisos canónicos evaluados por prerrequisito |                  112 |
-| Permisos sin carril operativo                  |                   54 |
-| Permisos con carril operativo que exige turno  |                   58 |
+| Permisos canónicos evaluados por prerrequisito |                  140 |
+| Permisos sin carril operativo                  |                   68 |
+| Permisos con carril operativo que exige turno  |                   72 |
 | Carriles operativos `T`                        |                   19 |
-| Carriles operativos `T+C`                      |                   39 |
+| Carriles operativos `T+C`                      |                   53 |
 | Turnos físicos observados                      |                 2844 |
 | Turnos publicados observados                   |                 2723 |
 | Turnos no publicados observados                |                  121 |
@@ -285,10 +285,10 @@ Distribución canónica:
 
 | Clasificación                 | Cantidad | Efecto ante ausencia de publicación                                               |
 | ----------------------------- | -------: | --------------------------------------------------------------------------------- |
-| permisos sin carril operativo |       54 | no aplica este bloqueo por el prerrequisito de turno                              |
-| permisos con carril operativo |       58 | el carril operativo no puede continuar                                            |
+| permisos sin carril operativo |       68 | no aplica este bloqueo por el prerrequisito de turno                              |
+| permisos con carril operativo |       72 | el carril operativo no puede continuar                                            |
 | carriles `T`                  |       19 | esta razón si falta publicación; `AUTH-ERR-010` si existe y está fuera de ventana |
-| carriles `T+C`                |       39 | esta razón si falta publicación; después se evalúan temporalidad y check-in       |
+| carriles `T+C`                |       53 | esta razón si falta publicación; después se evalúan temporalidad y check-in       |
 
 Un dispositivo, una simulación, el nombre del rol o una aplicación visible no
 pueden degradar `T+C` a `T` ni `T` a `N`.
@@ -951,7 +951,7 @@ sensibles, stack traces ni datos personales innecesarios.
 | `numera`   | capacidades financieras y analíticas base no exigen turno; una futura capacidad operativa deberá declararlo                              | ESPECIFICADO      |
 | `pass`     | el cliente final no usa turno laboral; superficies internas aplican el contrato del actor correspondiente                                | ESPECIFICADO      |
 
-La tabla no concede permisos, no cambia la matriz de 112 permisos y no crea
+La tabla no concede permisos, no cambia la matriz de 140 permisos y no crea
 excepciones por nombre de aplicación.
 
 ---
@@ -1051,7 +1051,7 @@ resultado sin publicar una causa tipada ni demostrar que no exista ambigüedad.
 
 `app_operation_policies` contiene una sola fila activa para `nexo`, con
 `requires_shift=true`, `requires_checkin=true` y un bypass. No materializa la
-clasificación canónica por permiso de 54 sin carril operativo, 19 `T` y 39
+clasificación canónica por permiso de 68 sin carril operativo, 19 `T` y 53
 `T+C`.
 
 ##### 32.5 Consumidor NEXO
@@ -1087,8 +1087,8 @@ materialice una cadena de republicaciones y retiros.
 | `PUBLISHED-SHIFT-GAP-005` | el resolver toma `limit 1` y no detecta solapamiento                              | IDENTIFICADO           | `AUTH-DB-033`; `AUTH-DB-034`; `AUTH-ERR-017`       | cero, uno y varios candidatos tienen decisiones tipadas y fail closed           |
 | `PUBLISHED-SHIFT-GAP-006` | existen bypasses por nombre de rol y permiso físico                               | IDENTIFICADO           | `AUTH-DB-034`; `SHELL-AUTH-001`                    | carriles y prerrequisitos se evalúan sin bypass implícito                       |
 | `PUBLISHED-SHIFT-GAP-007` | `resolve_attendance_shift_id` elige el candidato más cercano                      | IDENTIFICADO           | `AUTH-DB-033`; `AUTH-DB-034`                       | resolución de asistencia rechaza ambigüedad y conserva revisión publicada       |
-| `PUBLISHED-SHIFT-GAP-008` | `app_operation_policies` solo materializa `nexo`                                  | IDENTIFICADO           | `AUTH-DB-020`; `AUTH-DB-031`; `AUTH-DB-034`        | catálogo físico reproduce los 112 permisos y sus prerrequisitos sin deriva      |
-| `PUBLISHED-SHIFT-GAP-009` | la clasificación 54/19/39 permanece documental                                    | IDENTIFICADO           | `AUTH-CAT-012`; `AUTH-DB-020`; `AUTH-DB-031`       | snapshot versionado y gates reproducen conteos y claves exactas                 |
+| `PUBLISHED-SHIFT-GAP-008` | `app_operation_policies` solo materializa `nexo`                                  | IDENTIFICADO           | `AUTH-DB-020`; `AUTH-DB-031`; `AUTH-DB-034`        | catálogo físico reproduce los 140 permisos y sus prerrequisitos sin deriva      |
+| `PUBLISHED-SHIFT-GAP-009` | la clasificación 68/19/53 permanece documental                                    | IDENTIFICADO           | `AUTH-CAT-012`; `AUTH-DB-020`; `AUTH-DB-031`       | snapshot versionado y gates reproducen conteos y claves exactas                 |
 | `PUBLISHED-SHIFT-GAP-010` | el consumidor NEXO usa copy libre de fuera de turno                               | IDENTIFICADO           | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `AUTH-ERR-020` | consume razón pública, copy y recuperación compartidos                          |
 | `PUBLISHED-SHIFT-GAP-011` | no existe envelope compartido para ausencia de publicación                        | IDENTIFICADO           | `SHELL-AUTH-001`; `SHELL-AUTH-002`; `AUTH-ERR-020` | SDK y adapters publican el contrato en todos los canales                        |
 | `PUBLISHED-SHIFT-GAP-012` | RLS sobre turnos no aporta diagnóstico contractual                                | IDENTIFICADO           | `AUTH-DB-034`; `SHELL-CI-018`                      | servicio correlaciona decisión con RLS sin inferir causa desde cero filas       |
@@ -1150,18 +1150,20 @@ ejecutarse desde `vento-shell`.
 
 **Resultado:** GENERA REQUISITOS DE PRUEBA
 
-| ID              | Regla protegida                                                                                                                                           | Tipo                                  | Prioridad | Momento de implementación       | Destino                                                                                       |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | --------- | ------------------------------- | --------------------------------------------------------------------------------------------- |
-| `TREQ-AUTH-209` | Una capacidad cuyo carril operativo exige turno y no encuentra publicación laboral utilizable produce código, `403`, deny y cero efectos.                 | contractual + seguridad               | crítica   | resolver y evaluador de turno   | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`                                                  |
-| `TREQ-AUTH-210` | La dependencia se deriva por permiso y carril: 54 permisos no operativos no se bloquean, mientras 19 `T` y 39 `T+C` exigen publicación.                   | contractual + catálogo + contexto     | crítica   | catálogo físico y evaluador     | `AUTH-CAT-012`; `AUTH-DB-020`; `AUTH-DB-031`; `SHELL-CI-016`                                  |
-| `TREQ-AUTH-211` | Borrador, ausencia total, publicación cancelada o retirada y programación no laboral conservan las cuatro causas internas sin fabricar turno.             | publicación + contexto + regresión    | crítica   | resolver de revisión publicada  | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`                                                  |
-| `TREQ-AUTH-212` | Ausencia de publicación, turno fuera de ventana, check-in faltante, rol, configuración y fallo técnico conservan razones distintas y precedencia estable. | integración + razones + seguridad     | crítica   | evaluador y catálogo de razones | `AUTH-ERR-010`; `AUTH-ERR-011`; `AUTH-ERR-012`; `AUTH-ERR-017`; `AUTH-ERR-019`; `AUTH-DB-034` |
-| `TREQ-AUTH-213` | El servidor resuelve actor, ocurrencia y revisión; cliente, check-in, dispositivo, confirmación, perfil, selección o rol base no crean publicación.       | seguridad + contexto + dispositivo    | crítica   | resolver y adapters             | `AUTH-DB-033`; `SHELL-AUTH-002`; `SHELL-CI-016`                                               |
-| `TREQ-AUTH-214` | Diez canales producen respuesta equivalente, conservan sesión y no generan datos ni efectos parciales.                                                    | integración + E2E                     | crítica   | SDK y adapters                  | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-CI-016`; `SHELL-CI-018`                            |
-| `TREQ-AUTH-215` | Las diez aplicaciones aplican dependencia por permiso y carril, no por nombre; PASS cliente y capacidades base no reciben turno laboral sintético.        | contractual + aplicación              | alta      | migración de consumidoras       | `SHELL-AUTH-001`; `SHELL-AUTH-005`; `SHELL-CI-016`                                            |
-| `TREQ-AUTH-216` | Copy, privacidad y accesibilidad no filtran horario, borrador, cancelación, sede, área, rol, publicador ni causa interna.                                 | interfaz + privacidad + accesibilidad | alta      | catálogo de mensajes            | `AUTH-ERR-020`; `SHELL-AUTH-005`; `SHELL-CI-016`                                              |
-| `TREQ-AUTH-217` | Publicación, republicación, retiro, cancelación, cambio de actor o frontera temporal invalidan decisiones; offline y caché fuerzan nueva resolución.      | concurrencia + caché + auditoría      | crítica   | invalidación y observabilidad   | `AUTH-DB-035`; `SHELL-CI-018`; `SHELL-CI-019`                                                 |
-| `TREQ-AUTH-218` | Regresión reconcilia snapshot, 121 filas no publicadas, 10 funciones, 5 políticas, consumidor NEXO y catorce brechas sin alterar datos productivos.       | regresión + RPC + RLS + seguridad     | crítica   | gates y evidencia E5            | `AUTH-DB-031`; `SHELL-AUTH-004`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019`               |
+| ID              | Regla protegida                                                                                                                                                             | Tipo                                  | Prioridad | Momento de implementación       | Destino                                                                                       |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | --------- | ------------------------------- | --------------------------------------------------------------------------------------------- |
+| `TREQ-AUTH-209` | Una capacidad cuyo carril operativo exige turno y no encuentra publicación laboral utilizable produce código, `403`, deny y cero efectos.                                   | contractual + seguridad               | crítica   | resolver y evaluador de turno   | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`                                                  |
+| `TREQ-AUTH-210` | La dependencia se deriva por permiso y carril: 68 permisos no operativos no se bloquean, mientras 19 `T` y 53 `T+C` exigen publicación.                                     | contractual + catálogo + contexto     | crítica   | catálogo físico y evaluador     | `AUTH-CAT-012`; `AUTH-DB-020`; `AUTH-DB-031`; `SHELL-CI-016`                                  |
+| `TREQ-AUTH-211` | Borrador, ausencia total, publicación cancelada o retirada y programación no laboral conservan las cuatro causas internas sin fabricar turno.                               | publicación + contexto + regresión    | crítica   | resolver de revisión publicada  | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`                                                  |
+| `TREQ-AUTH-212` | Ausencia de publicación, turno fuera de ventana, check-in faltante, rol, configuración y fallo técnico conservan razones distintas y precedencia estable.                   | integración + razones + seguridad     | crítica   | evaluador y catálogo de razones | `AUTH-ERR-010`; `AUTH-ERR-011`; `AUTH-ERR-012`; `AUTH-ERR-017`; `AUTH-ERR-019`; `AUTH-DB-034` |
+| `TREQ-AUTH-213` | El servidor resuelve actor, ocurrencia y revisión; cliente, check-in, dispositivo, confirmación, perfil, selección o rol base no crean publicación.                         | seguridad + contexto + dispositivo    | crítica   | resolver y adapters             | `AUTH-DB-033`; `SHELL-AUTH-002`; `SHELL-CI-016`                                               |
+| `TREQ-AUTH-214` | Diez canales producen respuesta equivalente, conservan sesión y no generan datos ni efectos parciales.                                                                      | integración + E2E                     | crítica   | SDK y adapters                  | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-CI-016`; `SHELL-CI-018`                            |
+| `TREQ-AUTH-215` | Las diez aplicaciones aplican dependencia por permiso y carril, no por nombre; PASS cliente y capacidades base no reciben turno laboral sintético.                          | contractual + aplicación              | alta      | migración de consumidoras       | `SHELL-AUTH-001`; `SHELL-AUTH-005`; `SHELL-CI-016`                                            |
+| `TREQ-AUTH-216` | Copy, privacidad y accesibilidad no filtran horario, borrador, cancelación, sede, área, rol, publicador ni causa interna.                                                   | interfaz + privacidad + accesibilidad | alta      | catálogo de mensajes            | `AUTH-ERR-020`; `SHELL-AUTH-005`; `SHELL-CI-016`                                              |
+| `TREQ-AUTH-217` | Publicación, republicación, retiro, cancelación, cambio de actor o frontera temporal invalidan decisiones; offline y caché fuerzan nueva resolución.                        | concurrencia + caché + auditoría      | crítica   | invalidación y observabilidad   | `AUTH-DB-035`; `SHELL-CI-018`; `SHELL-CI-019`                                                 |
+| `TREQ-AUTH-218` | Regresión reconcilia snapshot, 121 filas no publicadas, clasificación 68/19/53, 10 funciones, 5 políticas, consumidor NEXO y catorce brechas sin alterar datos productivos. | regresión + RPC + RLS + seguridad     | crítica   | gates y evidencia E5            | `AUTH-DB-031`; `SHELL-AUTH-004`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019`               |
+
+La reconciliación con `AUTH-CAT-024` modifica los requisitos existentes `TREQ-AUTH-210` y `TREQ-AUTH-218`; no crea identificadores `TREQ-*` nuevos.
 
 ---
 
@@ -1175,7 +1177,7 @@ La implementación deberá probar, como mínimo:
 4. `BASE_OR_OPERATIONAL` con base denegado y operativo sin turno;
 5. `BASE_AND_OPERATIONAL` sin turno;
 6. los 19 carriles `T`;
-7. los 39 carriles `T+C`;
+7. los 53 carriles `T+C`;
 8. ausencia total de programación;
 9. borrador laboral dentro de horario;
 10. descanso publicado;
@@ -1232,7 +1234,7 @@ AUTH-ERR-009 no:
 - cambia horarios ni tipos de turno;
 - crea revisiones físicas;
 - asigna empleados, sedes, áreas o roles;
-- cambia los conteos 54/19/39;
+- cambia los conteos 68/19/53;
 - reclasifica permisos;
 - registra check-in o check-out;
 - corrige solapamientos;
@@ -1257,10 +1259,10 @@ AUTH-ERR-009 no:
 5. La decisión es `DENY`, `executable=false` y cero efectos.
 6. La dependencia debe estar declarada por permiso y carril.
 7. Se definen exactamente cinco perfiles.
-8. Los 54 permisos sin carril operativo no se bloquean por turno.
-9. Los 58 permisos con carril operativo exigen turno.
+8. Los 68 permisos sin carril operativo no se bloquean por turno.
+9. Los 72 permisos con carril operativo exigen turno.
 10. Los 19 carriles `T` exigen publicación y vigencia, no check-in propio.
-11. Los 39 carriles `T+C` exigen publicación, vigencia y check-in.
+11. Los 53 carriles `T+C` exigen publicación, vigencia y check-in.
 12. `BASE_ONLY` no evalúa esta razón.
 13. `OPERATIONAL_ONLY` no puede usar rol base como sustituto.
 14. `BASE_OR_OPERATIONAL` conserva carriles independientes.
