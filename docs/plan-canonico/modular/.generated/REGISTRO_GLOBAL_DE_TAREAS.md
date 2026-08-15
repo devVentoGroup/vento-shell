@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **868** |
+| Aprobadas | **869** |
 | En propuesta | **0** |
-| No iniciadas | **726** |
+| No iniciadas | **725** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **54.45% (868/1594)** |
+| Porcentaje de completamiento | **54.52% (869/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `HYPERCARE-OPS-007` — Definir registro y aprobación de deuda y tareas posteriores | ✅ APROBADA |
-| Tarea actual | `HYPERCARE-OPS-008` — Definir criterio de transferencia a soporte ordinario y documentación definitiva | ⬜ NO INICIADA |
-| Siguiente reservada | `HYPERCARE-OPS-009` — Definir criterio y evidencia para retirar contingencias temporales | ⬜ NO INICIADA |
+| Última aprobada | `HYPERCARE-OPS-008` — Definir criterio de transferencia a soporte ordinario y documentación definitiva | ✅ APROBADA |
+| Tarea actual | `HYPERCARE-OPS-009` — Definir criterio y evidencia para retirar contingencias temporales | ⬜ NO INICIADA |
+| Siguiente reservada | `HYPERCARE-OPS-010` — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -585,7 +585,7 @@
 | ✅ APROBADA | `HYPERCARE-OPS-005` | Definir conciliaciones de datos y efectos entre dominios | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ✅ APROBADA | `HYPERCARE-OPS-006` | Definir clasificación, prioridad y procedimiento de corrección de incidentes | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ✅ APROBADA | `HYPERCARE-OPS-007` | Definir registro y aprobación de deuda y tareas posteriores | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `HYPERCARE-OPS-008` | Definir criterio de transferencia a soporte ordinario y documentación definitiva | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
+| ✅ APROBADA | `HYPERCARE-OPS-008` | Definir criterio de transferencia a soporte ordinario y documentación definitiva | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ⬜ NO INICIADA | `HYPERCARE-OPS-009` | Definir criterio y evidencia para retirar contingencias temporales | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ⬜ NO INICIADA | `HYPERCARE-OPS-010` | Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ⬜ NO INICIADA | `E5-GATE-001` | Confirmar que cada capacidad priorizada tiene paquete aprobado | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |

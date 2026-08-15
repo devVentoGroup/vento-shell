@@ -4643,7 +4643,679 @@ SIGUIENTE TAREA RESERVADA
 HYPERCARE-OPS-008 — Definir transferencia a soporte y documentación operativa
 
 
-### [ ] HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y documentación definitiva
+### ✅ HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y documentación definitiva
+
+**Estado:** APROBADA
+**Tarea anterior:** HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores
+**Tarea siguiente:** HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales
+**Tipo de tarea:** documental — definición normativa y materialización del criterio de transferencia desde acompañamiento intensivo hacia soporte ordinario, del handoff operativo y de la documentación definitiva por paquete; sin ejecutar la transferencia, publicar evidencia inexistente, retirar contingencias, cerrar hypercare, desplegar cambios ni modificar código, datos o Supabase
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md`
+**Ejecución posterior:** `SHELL-CI-023::<package_id>` prepara y ejecuta el handoff; `SHELL-CI-024::<package_id>` certifica materialmente la transferencia y el cierre que corresponda
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cuándo una instancia que permanece en hypercare puede dejar de depender del acompañamiento intensivo y quedar operable por el modelo ordinario de soporte ya aprobado, sin crear una mesa paralela, sin degradar responsabilidades, sin perder conocimiento y sin confundir la transferencia con cierre automático de hypercare.
+
+La tarea fija además qué significa **documentación definitiva** para la instancia realmente ejecutada: el conjunto vigente, versionado y utilizable de información operativa que refleja el candidato, ambiente, alcance, procedimientos, monitoreo, recuperación, conocimiento, residuales y condiciones efectivas que soporte deberá conocer al asumir la operación ordinaria.
+
+La transferencia definida aquí es un gate documental para ejecución posterior. No demuestra que una instancia haya salido de hypercare, que soporte ya la haya aceptado, que la capacitación haya ocurrido o que la documentación haya sido publicada.
+
+---
+
+#### 2. Resultado sustantivo
+
+Para las 207 identidades `GAP-PKG-001..207`, 008 materializa:
+
+1. el criterio acumulativo de elegibilidad para transferencia a soporte ordinario;
+2. el contenido mínimo del handoff entre hypercare y soporte;
+3. la regla de resolución hacia el modelo ordinario existente de tecnología y soporte, sin crear una organización nueva;
+4. la definición de documentación definitiva y su regla de versionado;
+5. la integración de incidentes, problemas, known errors, workarounds, deuda aprobada y trabajo posterior que soporte deba conocer;
+6. la evidencia mínima de preparación de conocimiento, capacitación, observabilidad, escalamiento y recuperación;
+7. las condiciones que bloquean o invalidan una transferencia;
+8. una decisión documental explícita por cada `package_id`;
+9. un handoff delimitado hacia 009 para cualquier contingencia temporal todavía vigente;
+10. un handoff delimitado hacia 010 y `SHELL-CI-024::<package_id>` para la autoridad y certificación final de cierre.
+
+Ninguna fila declara hoy una transferencia ejecutada. Todas permanecen en estado documental `ESPECIFICADO`.
+
+---
+
+#### 3. Entradas canónicas obligatorias
+
+008 consume, sin redefinirlas:
+
+- `HYPERCARE-OPS-001::<package_id>`: identidad temporal, candidato, ambiente, alcance y condiciones de candidatura de salida;
+- `HYPERCARE-OPS-002::<package_id>`: responsabilidad funcional, responsabilidad técnica, cobertura, suplencia y escalamiento;
+- `HYPERCARE-OPS-003::<package_id>`: observación técnica y correlación de errores, colas, integraciones y rendimiento;
+- `HYPERCARE-OPS-004::<package_id>`: adopción, tiempos y desviaciones operativas;
+- `HYPERCARE-OPS-005::<package_id>`: conciliaciones y consistencia de efectos entre dominios;
+- `HYPERCARE-OPS-006::<package_id>`: incidentes, restauración, prioridad, corrección, problema y residual resultante;
+- `HYPERCARE-OPS-007::<package_id>`: deuda o trabajo posterior aprobables, destino, propietario, autoridad, control temporal y referencia de handoff a soporte;
+- `DELIV-PKG-017::<package_id>`: observabilidad, routing, alertas, propietarios y conservación;
+- `DELIV-PKG-020::<package_id>`: rollback, recovery, compensación y conciliación aplicables;
+- `DELIV-PKG-021::<package_id>`: expediente documental, runbooks, procedimientos, audiencia, propietario, versión y capacitación planificada;
+- `DELIV-PKG-023::<package_id>`: criterios de aceptación y `AC-DOC-001` para evidencia real de documentación, soporte y capacitación;
+- `READY-GATE-008::<package_id>`: procedimientos operativos y contingencias preparados;
+- `READY-GATE-009::<package_id>`: capacitación y material de apoyo preparados con evidencia;
+- `READY-GATE-010::<package_id>`: mesa de soporte, responsables nominales, cobertura y escalamiento;
+- `READY-GATE-011::<package_id>`: monitoreo, métricas y alertas habilitados;
+- `READY-GATE-012::<package_id>`: respaldo, rollback y recovery probados cuando apliquen;
+- `TI-DOM-001`: modelo operativo ordinario de tecnología y soporte, servicios `TI-SERVICE-*` y niveles `TI-ATTN-*`;
+- `TI-DOM-007`: caso tecnológico de `VPROC-0058`, impacto, urgencia, prioridad, SLA, escalamiento, comunicación, restauración, validación, cierre y reapertura;
+- `TI-DOM-008`: problema, causa raíz, error conocido, workaround, prevención de recurrencia y eficacia;
+- `TI-DOM-013`: base de conocimiento, capacitación, competencia, adopción y comunicación de cambios tecnológicos;
+- `TREQ-VISO-002`: protección del modelo de mesa de servicio y de la separación entre solicitud, incidente, problema, error conocido y cambio;
+- `TREQ-CONT-005`: prohibición de cerrar con conciliaciones o pendientes sin propietario;
+- `TREQ-CONT-006`: actualización de contactos, runbooks, métricas y capacitación después de incidentes o ejercicios;
+- `SHELL-CI-023::<package_id>` como ejecutor futuro del handoff de hypercare;
+- `SHELL-CI-024::<package_id>` como certificador futuro del cierre del paquete y de la transferencia a soporte.
+
+Una referencia de otro candidato, ambiente, alcance o revisión no puede utilizarse para completar la transferencia.
+
+---
+
+#### 4. Fronteras obligatorias
+
+008 no:
+
+- crea una mesa de soporte distinta de la gobernada por `TI-DOM-001` y `VPROC-0058`;
+- redefine `TI-SERVICE-*`, `TI-ATTN-*`, prioridades, SLA, severidades, niveles de escalamiento ni autoridades;
+- aprueba deuda nueva ni cambia la disposición de 007;
+- reclasifica incidentes, problemas, known errors o workarounds;
+- decide el retiro de contingencias temporales, reservado a 009;
+- decide el cierre funcional, técnico u operativo de hypercare, reservado a 010;
+- certifica materialmente la transferencia, reservada a `SHELL-CI-024::<package_id>`;
+- publica documentación, ejecuta capacitación, configura routing o instrumentación, cambia accesos, despliega artefactos o modifica datos;
+- convierte documentación planificada en evidencia de preparación real.
+
+---
+
+#### 5. Principio de transferencia
+
+La transferencia solo es válida cuando el soporte ordinario puede continuar la operación y gestionar sus fallos previsibles sin depender de conocimiento tribal ni de presencia permanente del equipo intensivo.
+
+Se adopta la regla:
+
+```text
+TRANSFERENCIA A SOPORTE ORDINARIO
+=
+IDENTIDAD CORRELACIONADA
++ SOPORTE REALMENTE DISPONIBLE
++ DOCUMENTACIÓN VIGENTE
++ CONOCIMIENTO Y CAPACITACIÓN EVIDENCIADOS
++ OBSERVABILIDAD Y ESCALAMIENTO UTILIZABLES
++ RESIDUALES EXPLÍCITOS
++ RECUPERACIÓN CONOCIDA
++ AUSENCIA DE BLOQUEOS INCOMPATIBLES
+```
+
+La presencia de un documento, una persona de contacto o una alerta aislada no satisface por sí sola esta regla.
+
+---
+
+#### 6. Criterios acumulativos de elegibilidad
+
+Una instancia solo puede presentarse como transferible cuando se demuestre, según aplicabilidad:
+
+1. identidad exacta de `package_id`, candidato, ambiente y alcance autorizado;
+2. continuidad válida desde la ejecución de `SHELL-CI-023::<package_id>` y ausencia de una invalidación material de la instancia;
+3. condiciones temporales de candidatura de salida de 001 satisfechas o explícitamente compatibles con el handoff;
+4. responsables funcional y técnico de 002 vigentes y correlacionables;
+5. cobertura ordinaria de soporte de `READY-GATE-010` realmente disponible, incluyendo responsable, suplencia, ventana de atención y escalamiento aplicables;
+6. nivel y servicio ordinarios resolubles mediante `TI-DOM-001` sin inventar una categoría de soporte específica de hypercare;
+7. observabilidad, routing y alertas necesarias disponibles y accionables conforme a 003, `DELIV-PKG-017` y `READY-GATE-011`;
+8. documentación de 021 actualizada desde su estado planificado hasta una versión que refleje la implementación y operación realmente observadas;
+9. runbooks practicables para los síntomas, incidentes, degradaciones y mecanismos de recovery materiales para la instancia;
+10. capacitación, conocimiento o competencia exigibles con evidencia real de `READY-GATE-009` y `AC-DOC-001`, sin equiparar lectura con competencia;
+11. incidentes y problemas conocidos identificados con su estado real, responsable, workaround y escalamiento cuando apliquen;
+12. conciliaciones obligatorias cerradas o en una disposición explícitamente compatible con la transferencia;
+13. deuda aprobada y trabajo posterior de 007 entregados a soporte cuando afecten operación, diagnóstico, monitoreo, documentación, escalamiento o seguimiento;
+14. rollback, recovery, compensation y reconciliation aplicables conocidos por la audiencia de soporte y referenciados sin duplicar sus contratos;
+15. contingencias aún activas documentadas como tales, sin presentarlas como retiradas;
+16. accesos requeridos para soporte disponibles mediante las autorizaciones vigentes, sin conceder privilegios por efecto de la transferencia;
+17. no existir un bloqueo de seguridad, integridad, autorización, cumplimiento, datos, continuidad o soporte que la fuente propietaria exija resolver antes de operar ordinariamente;
+18. existir evidencia reproducible suficiente para que `SHELL-CI-024::<package_id>` pueda comprobar posteriormente la transferencia.
+
+Si una condición aplicable falta, la instancia no se presenta como transferida.
+
+---
+
+#### 7. Modelo ordinario que recibe el handoff
+
+El destino de soporte se resuelve desde las fuentes vigentes y no desde una estructura paralela de 008:
+
+- el servicio primario se resuelve contra `TI-SERVICE-*` cuando la incidencia o solicitud sea tecnológica;
+- el caso ordinario utiliza `VPROC-0058` cuando corresponde a solicitud o incidente tecnológico;
+- los niveles de atención se resuelven contra `TI-ATTN-001..004` según capacidad técnica necesaria;
+- la gestión de problema y known error permanece en `TI-DOM-008`;
+- la base de conocimiento y capacitación permanecen en `TI-DOM-013`;
+- el propietario del proceso o dominio conserva la autoridad funcional que ya tenía;
+- el técnico, proveedor o ejecutor no adquiere autoridad empresarial ni de aceptación de riesgo por recibir el handoff;
+- las necesidades no tecnológicas continúan hacia su proceso propietario y no se fuerzan artificialmente dentro de la mesa de servicio tecnológica.
+
+La transferencia cambia el **modo de acompañamiento**, no la propiedad de las fuentes de verdad.
+
+---
+
+#### 8. Contenido mínimo del handoff operativo
+
+La evidencia de transferencia deberá poder reconstruir, como mínimo:
+
+| Campo o referencia                  | Regla                                                                 |
+| ----------------------------------- | --------------------------------------------------------------------- |
+| `package_id`                        | identidad estable exacta                                              |
+| `candidate_ref`                     | candidato realmente operado                                           |
+| `environment`                       | ambiente efectivo                                                     |
+| `authorized_scope_ref`              | alcance realmente transferido                                         |
+| `shell_ci_023_execution_ref`        | ejecución de hypercare que produce el handoff                         |
+| responsabilidad funcional           | referencia vigente de 002                                             |
+| responsabilidad técnica             | referencia vigente de 002                                             |
+| cobertura de soporte                | referencia ejecutada de `READY-GATE-010`                              |
+| servicio y nivel de atención        | referencias vigentes de `TI-DOM-001` cuando apliquen                  |
+| proceso de caso                     | `VPROC-0058` cuando aplique                                           |
+| observabilidad y routing            | 003 + `DELIV-PKG-017` + `READY-GATE-011`                              |
+| documentación vigente               | versión definitiva derivada de 021 para la instancia real             |
+| runbooks vigentes                   | referencias de procedimientos accionables                             |
+| evidencia de aprendizaje            | `READY-GATE-009` / `AC-DOC-001` cuando aplique                        |
+| incidentes y problemas conocidos    | referencias de 006 / `TI-DOM-007` / `TI-DOM-008`                      |
+| residuales aprobados                | referencias exactas de 007                                            |
+| recuperación                        | referencias de `DELIV-PKG-020` y `READY-GATE-012`                     |
+| contingencias activas               | estado vigente y propietario, sin decidir su retiro                   |
+| restricciones y acciones prohibidas | límites de autorización, seguridad, datos y operación                 |
+| evidencia de aceptación del handoff | evidencia futura de recepción por la autoridad de soporte aplicable   |
+| estado de transferencia             | resultado futuro sustentado por evidencia, no inferido por esta tarea |
+
+Una lista de contactos sin estas referencias no constituye handoff suficiente.
+
+---
+
+#### 9. Documentación definitiva
+
+##### 9.1. Significado
+
+“Definitiva” significa **versión operativa vigente y autoritativa para la instancia transferida**, no documento inmutable ni documentación final para siempre.
+
+Parte del expediente de `DELIV-PKG-021`, pero antes de transferir soporte deberá reflejar la realidad ejecutada de la instancia y no únicamente el diseño previo.
+
+##### 9.2. Contenido obligatorio
+
+Según aplicabilidad, la documentación definitiva deberá cubrir:
+
+1. identidad del paquete, candidato, versión, ambiente y alcance;
+2. propósito empresarial y superficies afectadas;
+3. dependencias, límites y modos soportados;
+4. operación normal y procedimientos que soporte deba comprender;
+5. síntomas conocidos, señales, dashboards o consultas autorizadas y criterios de interpretación;
+6. alertas, routing, responsables, suplentes y escalamiento;
+7. primera acción segura y acciones prohibidas;
+8. procedimiento de diagnóstico y evidencia mínima;
+9. rollback, recovery, compensation y reconciliation aplicables;
+10. known errors y workarounds vigentes con sus restricciones;
+11. incidentes recurrentes o patrones conocidos que deban correlacionarse;
+12. deuda aprobada y trabajo posterior de 007 que afecten el soporte ordinario;
+13. contingencias temporales todavía activas, su límite y propietario;
+14. criterios para reapertura, escalamiento y retorno temporal a acompañamiento intensivo cuando una fuente propietaria lo exija;
+15. datos sensibles, secretos, logs o diagnósticos que no pueden exponerse o copiarse;
+16. referencias de capacitación y material de apoyo para cada audiencia;
+17. historial de versiones, fecha de vigencia, propietario documental y fuentes canónicas;
+18. criterio de revisión y actualización ante cambios materiales.
+
+No se copian secretos, tokens, credenciales, PII innecesaria, dumps o topología sensible completa cuando una referencia protegida sea suficiente.
+
+##### 9.3. Regla de actualización
+
+Una versión presentada como vigente se invalida para transferencia cuando cambie materialmente cualquiera de estos elementos sin actualizarla:
+
+- candidato o revisión;
+- ambiente o alcance;
+- configuración o feature flag operacionalmente relevante;
+- señal, alerta, routing o propietario;
+- procedimiento normal o contingencia;
+- rollback, recovery, compensation o reconciliation;
+- dependencia o proveedor que altere operación;
+- known error o workaround;
+- deuda o trabajo posterior que soporte deba conocer;
+- autorización necesaria para diagnosticar o actuar;
+- audiencia o competencia requerida.
+
+La actualización conserva historial; no sobreescribe silenciosamente la versión utilizada por una transferencia anterior.
+
+---
+
+#### 10. Conocimiento, capacitación y competencia
+
+La transferencia no se basa en que “alguien leyó el documento”.
+
+Cuando una fuente exija capacitación o competencia, deberá existir evidencia ejecutada y correlacionable con la versión vigente, audiencia y alcance real. La evidencia puede provenir de los mecanismos autorizados por `READY-GATE-009`, `DELIV-PKG-021` y `TI-DOM-013`.
+
+Reglas:
+
+1. material obsoleto no acredita preparación;
+2. una sesión sin audiencia identificable no acredita cobertura;
+3. una asistencia sin demostrar la condición de competencia exigida no sustituye la evidencia requerida;
+4. cambios materiales posteriores pueden exigir reentrenamiento;
+5. soporte guiado debe usar conocimiento vigente;
+6. conocimiento tribal no sustituye un runbook ni una referencia canónica;
+7. las 18 identidades con capacitación operativa diferida por gate en 021 conservan ese bloqueo y no se presentan como transferidas mientras la condición siga cerrada.
+
+---
+
+#### 11. Incidentes, problemas, known errors y workarounds
+
+La transferencia puede coexistir con condiciones conocidas solo cuando la fuente aplicable lo permite y el soporte receptor recibe una vista operable y explícita.
+
+Se exige:
+
+- incidente: estado y autoridad conforme a `TI-DOM-007` y 006;
+- problema: estado, causa, acciones y eficacia conforme a `TI-DOM-008`;
+- known error: versión, restricciones, causa confirmada publicable e indicadores de obsolescencia;
+- workaround: alcance, primera acción segura, restricciones, condiciones de no uso y escalamiento;
+- recurrencia: criterio de correlación para no abrir casos desconectados ante el mismo patrón;
+- evidencia sensible: referencia controlada, no copia indiscriminada.
+
+La restauración no se convierte en eliminación de causa y el handoff no cierra los expedientes relacionados.
+
+---
+
+#### 12. Deuda y trabajo posterior recibidos de 007
+
+008 solo consume disposiciones ya gobernadas por 007.
+
+Cuando una deuda o trabajo posterior afecte soporte, la transferencia deberá entregar al menos:
+
+- condición residual y fuente;
+- impacto o riesgo residual;
+- propietario;
+- autoridad y decisión de aprobación cuando corresponda;
+- control temporal;
+- monitoreo asociado;
+- backlog o tarea canónica de destino;
+- puerta, fecha o condición de resolución;
+- evidencia requerida para cierre;
+- efecto esperado sobre soporte y escalamiento.
+
+008 no aprueba una deuda nueva, no cambia su prioridad y no transforma su existencia en evidencia de cierre.
+
+---
+
+#### 13. Contingencias temporales
+
+Una instancia puede llegar a la evaluación de transferencia con una contingencia todavía activa si las fuentes vigentes permiten operar así. En ese caso:
+
+1. la documentación definitiva identifica claramente la contingencia;
+2. soporte conoce cuándo usarla, cuándo no usarla y a quién escalar;
+3. el estado de contingencia no se presenta como operación normal permanente;
+4. la existencia del handoff no autoriza su retiro;
+5. la decisión y evidencia de retiro permanecen reservadas exclusivamente a 009;
+6. una contingencia incompatible con soporte ordinario bloquea la transferencia hasta resolver la condición propietaria.
+
+---
+
+#### 14. Condiciones de bloqueo
+
+La transferencia queda bloqueada cuando ocurra cualquiera de estas condiciones aplicables:
+
+- identidad del paquete, candidato, ambiente o alcance no correlacionable;
+- soporte ordinario sin responsable, suplente, cobertura o escalamiento utilizable;
+- servicio o proceso receptor no resoluble cuando resulte obligatorio;
+- observabilidad necesaria ausente, no accionable o sin routing;
+- documentación planificada pero no actualizada a la instancia real;
+- runbook obligatorio inexistente, obsoleto o impracticable;
+- capacitación o competencia exigida sin evidencia;
+- incidente o problema que la fuente aplicable exige mantener como bloqueo;
+- conciliación obligatoria pendiente;
+- residual relevante para soporte oculto, sin propietario o sin destino;
+- known error o workaround usado sin versión, restricción o propietario;
+- mecanismo de recovery necesario desconocido o no disponible para la cobertura requerida;
+- acceso de soporte que solo sería posible mediante privilegio no autorizado;
+- contingencia temporal incompatible con operación ordinaria;
+- evidencia sensible expuesta como mecanismo de handoff;
+- cambio material posterior que invalida documentación, entrenamiento o evidencia previa;
+- intento de usar la transferencia para declarar cierre de 009, 010 o `SHELL-CI-024`.
+
+---
+
+#### 15. Resultado futuro de la evaluación
+
+La ejecución posterior debe distinguir al menos estas situaciones sin convertirlas en una nueva máquina de estados de tickets o paquetes:
+
+- **evaluable para transferencia:** la identidad no conserva un gate previo que impida someterla a las condiciones de 008;
+- **bloqueada por condición heredada:** el expediente conserva una puerta previa que impide operación ordinaria;
+- **bloqueada por evidencia de soporte:** falta documentación, conocimiento, cobertura, observabilidad o evidencia aplicable;
+- **handoff ejecutado:** existe evidencia material de transferencia, pero esto no equivale a cierre de hypercare;
+- **invalidada:** un cambio material posterior obliga a repetir la evaluación con evidencia vigente.
+
+La tarea actual solo materializa el criterio y deja las filas en `ESPECIFICADO`.
+
+---
+
+#### 16. Matriz materializada por las 207 identidades
+
+Cada identidad aparece exactamente una vez. La documentación, responsabilidad, soporte, observabilidad y residuales se resuelven desde sus filas homónimas; esta matriz no crea una segunda fuente de verdad para esos atributos.
+
+| `package_id`  | documentación base           | responsabilidad y soporte                                        | observabilidad                                                   | residuales                       | decisión documental 008                                                                                | estado 008     |
+| ------------- | ---------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------- |
+| `GAP-PKG-001` | `DELIV-PKG-021::GAP-PKG-001` | `HYPERCARE-OPS-002::GAP-PKG-001` + `READY-GATE-010::GAP-PKG-001` | `HYPERCARE-OPS-003::GAP-PKG-001` + `READY-GATE-011::GAP-PKG-001` | `HYPERCARE-OPS-007::GAP-PKG-001` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-002` | `DELIV-PKG-021::GAP-PKG-002` | `HYPERCARE-OPS-002::GAP-PKG-002` + `READY-GATE-010::GAP-PKG-002` | `HYPERCARE-OPS-003::GAP-PKG-002` + `READY-GATE-011::GAP-PKG-002` | `HYPERCARE-OPS-007::GAP-PKG-002` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-003` | `DELIV-PKG-021::GAP-PKG-003` | `HYPERCARE-OPS-002::GAP-PKG-003` + `READY-GATE-010::GAP-PKG-003` | `HYPERCARE-OPS-003::GAP-PKG-003` + `READY-GATE-011::GAP-PKG-003` | `HYPERCARE-OPS-007::GAP-PKG-003` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-004` | `DELIV-PKG-021::GAP-PKG-004` | `HYPERCARE-OPS-002::GAP-PKG-004` + `READY-GATE-010::GAP-PKG-004` | `HYPERCARE-OPS-003::GAP-PKG-004` + `READY-GATE-011::GAP-PKG-004` | `HYPERCARE-OPS-007::GAP-PKG-004` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-005` | `DELIV-PKG-021::GAP-PKG-005` | `HYPERCARE-OPS-002::GAP-PKG-005` + `READY-GATE-010::GAP-PKG-005` | `HYPERCARE-OPS-003::GAP-PKG-005` + `READY-GATE-011::GAP-PKG-005` | `HYPERCARE-OPS-007::GAP-PKG-005` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-006` | `DELIV-PKG-021::GAP-PKG-006` | `HYPERCARE-OPS-002::GAP-PKG-006` + `READY-GATE-010::GAP-PKG-006` | `HYPERCARE-OPS-003::GAP-PKG-006` + `READY-GATE-011::GAP-PKG-006` | `HYPERCARE-OPS-007::GAP-PKG-006` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-007` | `DELIV-PKG-021::GAP-PKG-007` | `HYPERCARE-OPS-002::GAP-PKG-007` + `READY-GATE-010::GAP-PKG-007` | `HYPERCARE-OPS-003::GAP-PKG-007` + `READY-GATE-011::GAP-PKG-007` | `HYPERCARE-OPS-007::GAP-PKG-007` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-008` | `DELIV-PKG-021::GAP-PKG-008` | `HYPERCARE-OPS-002::GAP-PKG-008` + `READY-GATE-010::GAP-PKG-008` | `HYPERCARE-OPS-003::GAP-PKG-008` + `READY-GATE-011::GAP-PKG-008` | `HYPERCARE-OPS-007::GAP-PKG-008` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-009` | `DELIV-PKG-021::GAP-PKG-009` | `HYPERCARE-OPS-002::GAP-PKG-009` + `READY-GATE-010::GAP-PKG-009` | `HYPERCARE-OPS-003::GAP-PKG-009` + `READY-GATE-011::GAP-PKG-009` | `HYPERCARE-OPS-007::GAP-PKG-009` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-010` | `DELIV-PKG-021::GAP-PKG-010` | `HYPERCARE-OPS-002::GAP-PKG-010` + `READY-GATE-010::GAP-PKG-010` | `HYPERCARE-OPS-003::GAP-PKG-010` + `READY-GATE-011::GAP-PKG-010` | `HYPERCARE-OPS-007::GAP-PKG-010` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-011` | `DELIV-PKG-021::GAP-PKG-011` | `HYPERCARE-OPS-002::GAP-PKG-011` + `READY-GATE-010::GAP-PKG-011` | `HYPERCARE-OPS-003::GAP-PKG-011` + `READY-GATE-011::GAP-PKG-011` | `HYPERCARE-OPS-007::GAP-PKG-011` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-012` | `DELIV-PKG-021::GAP-PKG-012` | `HYPERCARE-OPS-002::GAP-PKG-012` + `READY-GATE-010::GAP-PKG-012` | `HYPERCARE-OPS-003::GAP-PKG-012` + `READY-GATE-011::GAP-PKG-012` | `HYPERCARE-OPS-007::GAP-PKG-012` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-013` | `DELIV-PKG-021::GAP-PKG-013` | `HYPERCARE-OPS-002::GAP-PKG-013` + `READY-GATE-010::GAP-PKG-013` | `HYPERCARE-OPS-003::GAP-PKG-013` + `READY-GATE-011::GAP-PKG-013` | `HYPERCARE-OPS-007::GAP-PKG-013` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-014` | `DELIV-PKG-021::GAP-PKG-014` | `HYPERCARE-OPS-002::GAP-PKG-014` + `READY-GATE-010::GAP-PKG-014` | `HYPERCARE-OPS-003::GAP-PKG-014` + `READY-GATE-011::GAP-PKG-014` | `HYPERCARE-OPS-007::GAP-PKG-014` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-015` | `DELIV-PKG-021::GAP-PKG-015` | `HYPERCARE-OPS-002::GAP-PKG-015` + `READY-GATE-010::GAP-PKG-015` | `HYPERCARE-OPS-003::GAP-PKG-015` + `READY-GATE-011::GAP-PKG-015` | `HYPERCARE-OPS-007::GAP-PKG-015` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-016` | `DELIV-PKG-021::GAP-PKG-016` | `HYPERCARE-OPS-002::GAP-PKG-016` + `READY-GATE-010::GAP-PKG-016` | `HYPERCARE-OPS-003::GAP-PKG-016` + `READY-GATE-011::GAP-PKG-016` | `HYPERCARE-OPS-007::GAP-PKG-016` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-017` | `DELIV-PKG-021::GAP-PKG-017` | `HYPERCARE-OPS-002::GAP-PKG-017` + `READY-GATE-010::GAP-PKG-017` | `HYPERCARE-OPS-003::GAP-PKG-017` + `READY-GATE-011::GAP-PKG-017` | `HYPERCARE-OPS-007::GAP-PKG-017` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-018` | `DELIV-PKG-021::GAP-PKG-018` | `HYPERCARE-OPS-002::GAP-PKG-018` + `READY-GATE-010::GAP-PKG-018` | `HYPERCARE-OPS-003::GAP-PKG-018` + `READY-GATE-011::GAP-PKG-018` | `HYPERCARE-OPS-007::GAP-PKG-018` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-019` | `DELIV-PKG-021::GAP-PKG-019` | `HYPERCARE-OPS-002::GAP-PKG-019` + `READY-GATE-010::GAP-PKG-019` | `HYPERCARE-OPS-003::GAP-PKG-019` + `READY-GATE-011::GAP-PKG-019` | `HYPERCARE-OPS-007::GAP-PKG-019` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-020` | `DELIV-PKG-021::GAP-PKG-020` | `HYPERCARE-OPS-002::GAP-PKG-020` + `READY-GATE-010::GAP-PKG-020` | `HYPERCARE-OPS-003::GAP-PKG-020` + `READY-GATE-011::GAP-PKG-020` | `HYPERCARE-OPS-007::GAP-PKG-020` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-021` | `DELIV-PKG-021::GAP-PKG-021` | `HYPERCARE-OPS-002::GAP-PKG-021` + `READY-GATE-010::GAP-PKG-021` | `HYPERCARE-OPS-003::GAP-PKG-021` + `READY-GATE-011::GAP-PKG-021` | `HYPERCARE-OPS-007::GAP-PKG-021` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-022` | `DELIV-PKG-021::GAP-PKG-022` | `HYPERCARE-OPS-002::GAP-PKG-022` + `READY-GATE-010::GAP-PKG-022` | `HYPERCARE-OPS-003::GAP-PKG-022` + `READY-GATE-011::GAP-PKG-022` | `HYPERCARE-OPS-007::GAP-PKG-022` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-023` | `DELIV-PKG-021::GAP-PKG-023` | `HYPERCARE-OPS-002::GAP-PKG-023` + `READY-GATE-010::GAP-PKG-023` | `HYPERCARE-OPS-003::GAP-PKG-023` + `READY-GATE-011::GAP-PKG-023` | `HYPERCARE-OPS-007::GAP-PKG-023` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-024` | `DELIV-PKG-021::GAP-PKG-024` | `HYPERCARE-OPS-002::GAP-PKG-024` + `READY-GATE-010::GAP-PKG-024` | `HYPERCARE-OPS-003::GAP-PKG-024` + `READY-GATE-011::GAP-PKG-024` | `HYPERCARE-OPS-007::GAP-PKG-024` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-025` | `DELIV-PKG-021::GAP-PKG-025` | `HYPERCARE-OPS-002::GAP-PKG-025` + `READY-GATE-010::GAP-PKG-025` | `HYPERCARE-OPS-003::GAP-PKG-025` + `READY-GATE-011::GAP-PKG-025` | `HYPERCARE-OPS-007::GAP-PKG-025` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-026` | `DELIV-PKG-021::GAP-PKG-026` | `HYPERCARE-OPS-002::GAP-PKG-026` + `READY-GATE-010::GAP-PKG-026` | `HYPERCARE-OPS-003::GAP-PKG-026` + `READY-GATE-011::GAP-PKG-026` | `HYPERCARE-OPS-007::GAP-PKG-026` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-027` | `DELIV-PKG-021::GAP-PKG-027` | `HYPERCARE-OPS-002::GAP-PKG-027` + `READY-GATE-010::GAP-PKG-027` | `HYPERCARE-OPS-003::GAP-PKG-027` + `READY-GATE-011::GAP-PKG-027` | `HYPERCARE-OPS-007::GAP-PKG-027` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-028` | `DELIV-PKG-021::GAP-PKG-028` | `HYPERCARE-OPS-002::GAP-PKG-028` + `READY-GATE-010::GAP-PKG-028` | `HYPERCARE-OPS-003::GAP-PKG-028` + `READY-GATE-011::GAP-PKG-028` | `HYPERCARE-OPS-007::GAP-PKG-028` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-029` | `DELIV-PKG-021::GAP-PKG-029` | `HYPERCARE-OPS-002::GAP-PKG-029` + `READY-GATE-010::GAP-PKG-029` | `HYPERCARE-OPS-003::GAP-PKG-029` + `READY-GATE-011::GAP-PKG-029` | `HYPERCARE-OPS-007::GAP-PKG-029` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-030` | `DELIV-PKG-021::GAP-PKG-030` | `HYPERCARE-OPS-002::GAP-PKG-030` + `READY-GATE-010::GAP-PKG-030` | `HYPERCARE-OPS-003::GAP-PKG-030` + `READY-GATE-011::GAP-PKG-030` | `HYPERCARE-OPS-007::GAP-PKG-030` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-031` | `DELIV-PKG-021::GAP-PKG-031` | `HYPERCARE-OPS-002::GAP-PKG-031` + `READY-GATE-010::GAP-PKG-031` | `HYPERCARE-OPS-003::GAP-PKG-031` + `READY-GATE-011::GAP-PKG-031` | `HYPERCARE-OPS-007::GAP-PKG-031` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-032` | `DELIV-PKG-021::GAP-PKG-032` | `HYPERCARE-OPS-002::GAP-PKG-032` + `READY-GATE-010::GAP-PKG-032` | `HYPERCARE-OPS-003::GAP-PKG-032` + `READY-GATE-011::GAP-PKG-032` | `HYPERCARE-OPS-007::GAP-PKG-032` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-033` | `DELIV-PKG-021::GAP-PKG-033` | `HYPERCARE-OPS-002::GAP-PKG-033` + `READY-GATE-010::GAP-PKG-033` | `HYPERCARE-OPS-003::GAP-PKG-033` + `READY-GATE-011::GAP-PKG-033` | `HYPERCARE-OPS-007::GAP-PKG-033` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-034` | `DELIV-PKG-021::GAP-PKG-034` | `HYPERCARE-OPS-002::GAP-PKG-034` + `READY-GATE-010::GAP-PKG-034` | `HYPERCARE-OPS-003::GAP-PKG-034` + `READY-GATE-011::GAP-PKG-034` | `HYPERCARE-OPS-007::GAP-PKG-034` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-035` | `DELIV-PKG-021::GAP-PKG-035` | `HYPERCARE-OPS-002::GAP-PKG-035` + `READY-GATE-010::GAP-PKG-035` | `HYPERCARE-OPS-003::GAP-PKG-035` + `READY-GATE-011::GAP-PKG-035` | `HYPERCARE-OPS-007::GAP-PKG-035` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-036` | `DELIV-PKG-021::GAP-PKG-036` | `HYPERCARE-OPS-002::GAP-PKG-036` + `READY-GATE-010::GAP-PKG-036` | `HYPERCARE-OPS-003::GAP-PKG-036` + `READY-GATE-011::GAP-PKG-036` | `HYPERCARE-OPS-007::GAP-PKG-036` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-037` | `DELIV-PKG-021::GAP-PKG-037` | `HYPERCARE-OPS-002::GAP-PKG-037` + `READY-GATE-010::GAP-PKG-037` | `HYPERCARE-OPS-003::GAP-PKG-037` + `READY-GATE-011::GAP-PKG-037` | `HYPERCARE-OPS-007::GAP-PKG-037` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-038` | `DELIV-PKG-021::GAP-PKG-038` | `HYPERCARE-OPS-002::GAP-PKG-038` + `READY-GATE-010::GAP-PKG-038` | `HYPERCARE-OPS-003::GAP-PKG-038` + `READY-GATE-011::GAP-PKG-038` | `HYPERCARE-OPS-007::GAP-PKG-038` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-039` | `DELIV-PKG-021::GAP-PKG-039` | `HYPERCARE-OPS-002::GAP-PKG-039` + `READY-GATE-010::GAP-PKG-039` | `HYPERCARE-OPS-003::GAP-PKG-039` + `READY-GATE-011::GAP-PKG-039` | `HYPERCARE-OPS-007::GAP-PKG-039` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-040` | `DELIV-PKG-021::GAP-PKG-040` | `HYPERCARE-OPS-002::GAP-PKG-040` + `READY-GATE-010::GAP-PKG-040` | `HYPERCARE-OPS-003::GAP-PKG-040` + `READY-GATE-011::GAP-PKG-040` | `HYPERCARE-OPS-007::GAP-PKG-040` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-041` | `DELIV-PKG-021::GAP-PKG-041` | `HYPERCARE-OPS-002::GAP-PKG-041` + `READY-GATE-010::GAP-PKG-041` | `HYPERCARE-OPS-003::GAP-PKG-041` + `READY-GATE-011::GAP-PKG-041` | `HYPERCARE-OPS-007::GAP-PKG-041` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-042` | `DELIV-PKG-021::GAP-PKG-042` | `HYPERCARE-OPS-002::GAP-PKG-042` + `READY-GATE-010::GAP-PKG-042` | `HYPERCARE-OPS-003::GAP-PKG-042` + `READY-GATE-011::GAP-PKG-042` | `HYPERCARE-OPS-007::GAP-PKG-042` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-043` | `DELIV-PKG-021::GAP-PKG-043` | `HYPERCARE-OPS-002::GAP-PKG-043` + `READY-GATE-010::GAP-PKG-043` | `HYPERCARE-OPS-003::GAP-PKG-043` + `READY-GATE-011::GAP-PKG-043` | `HYPERCARE-OPS-007::GAP-PKG-043` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-044` | `DELIV-PKG-021::GAP-PKG-044` | `HYPERCARE-OPS-002::GAP-PKG-044` + `READY-GATE-010::GAP-PKG-044` | `HYPERCARE-OPS-003::GAP-PKG-044` + `READY-GATE-011::GAP-PKG-044` | `HYPERCARE-OPS-007::GAP-PKG-044` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-045` | `DELIV-PKG-021::GAP-PKG-045` | `HYPERCARE-OPS-002::GAP-PKG-045` + `READY-GATE-010::GAP-PKG-045` | `HYPERCARE-OPS-003::GAP-PKG-045` + `READY-GATE-011::GAP-PKG-045` | `HYPERCARE-OPS-007::GAP-PKG-045` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-046` | `DELIV-PKG-021::GAP-PKG-046` | `HYPERCARE-OPS-002::GAP-PKG-046` + `READY-GATE-010::GAP-PKG-046` | `HYPERCARE-OPS-003::GAP-PKG-046` + `READY-GATE-011::GAP-PKG-046` | `HYPERCARE-OPS-007::GAP-PKG-046` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-047` | `DELIV-PKG-021::GAP-PKG-047` | `HYPERCARE-OPS-002::GAP-PKG-047` + `READY-GATE-010::GAP-PKG-047` | `HYPERCARE-OPS-003::GAP-PKG-047` + `READY-GATE-011::GAP-PKG-047` | `HYPERCARE-OPS-007::GAP-PKG-047` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-048` | `DELIV-PKG-021::GAP-PKG-048` | `HYPERCARE-OPS-002::GAP-PKG-048` + `READY-GATE-010::GAP-PKG-048` | `HYPERCARE-OPS-003::GAP-PKG-048` + `READY-GATE-011::GAP-PKG-048` | `HYPERCARE-OPS-007::GAP-PKG-048` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-049` | `DELIV-PKG-021::GAP-PKG-049` | `HYPERCARE-OPS-002::GAP-PKG-049` + `READY-GATE-010::GAP-PKG-049` | `HYPERCARE-OPS-003::GAP-PKG-049` + `READY-GATE-011::GAP-PKG-049` | `HYPERCARE-OPS-007::GAP-PKG-049` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-050` | `DELIV-PKG-021::GAP-PKG-050` | `HYPERCARE-OPS-002::GAP-PKG-050` + `READY-GATE-010::GAP-PKG-050` | `HYPERCARE-OPS-003::GAP-PKG-050` + `READY-GATE-011::GAP-PKG-050` | `HYPERCARE-OPS-007::GAP-PKG-050` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-051` | `DELIV-PKG-021::GAP-PKG-051` | `HYPERCARE-OPS-002::GAP-PKG-051` + `READY-GATE-010::GAP-PKG-051` | `HYPERCARE-OPS-003::GAP-PKG-051` + `READY-GATE-011::GAP-PKG-051` | `HYPERCARE-OPS-007::GAP-PKG-051` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-052` | `DELIV-PKG-021::GAP-PKG-052` | `HYPERCARE-OPS-002::GAP-PKG-052` + `READY-GATE-010::GAP-PKG-052` | `HYPERCARE-OPS-003::GAP-PKG-052` + `READY-GATE-011::GAP-PKG-052` | `HYPERCARE-OPS-007::GAP-PKG-052` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-053` | `DELIV-PKG-021::GAP-PKG-053` | `HYPERCARE-OPS-002::GAP-PKG-053` + `READY-GATE-010::GAP-PKG-053` | `HYPERCARE-OPS-003::GAP-PKG-053` + `READY-GATE-011::GAP-PKG-053` | `HYPERCARE-OPS-007::GAP-PKG-053` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-054` | `DELIV-PKG-021::GAP-PKG-054` | `HYPERCARE-OPS-002::GAP-PKG-054` + `READY-GATE-010::GAP-PKG-054` | `HYPERCARE-OPS-003::GAP-PKG-054` + `READY-GATE-011::GAP-PKG-054` | `HYPERCARE-OPS-007::GAP-PKG-054` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-055` | `DELIV-PKG-021::GAP-PKG-055` | `HYPERCARE-OPS-002::GAP-PKG-055` + `READY-GATE-010::GAP-PKG-055` | `HYPERCARE-OPS-003::GAP-PKG-055` + `READY-GATE-011::GAP-PKG-055` | `HYPERCARE-OPS-007::GAP-PKG-055` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-056` | `DELIV-PKG-021::GAP-PKG-056` | `HYPERCARE-OPS-002::GAP-PKG-056` + `READY-GATE-010::GAP-PKG-056` | `HYPERCARE-OPS-003::GAP-PKG-056` + `READY-GATE-011::GAP-PKG-056` | `HYPERCARE-OPS-007::GAP-PKG-056` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-057` | `DELIV-PKG-021::GAP-PKG-057` | `HYPERCARE-OPS-002::GAP-PKG-057` + `READY-GATE-010::GAP-PKG-057` | `HYPERCARE-OPS-003::GAP-PKG-057` + `READY-GATE-011::GAP-PKG-057` | `HYPERCARE-OPS-007::GAP-PKG-057` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-058` | `DELIV-PKG-021::GAP-PKG-058` | `HYPERCARE-OPS-002::GAP-PKG-058` + `READY-GATE-010::GAP-PKG-058` | `HYPERCARE-OPS-003::GAP-PKG-058` + `READY-GATE-011::GAP-PKG-058` | `HYPERCARE-OPS-007::GAP-PKG-058` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-059` | `DELIV-PKG-021::GAP-PKG-059` | `HYPERCARE-OPS-002::GAP-PKG-059` + `READY-GATE-010::GAP-PKG-059` | `HYPERCARE-OPS-003::GAP-PKG-059` + `READY-GATE-011::GAP-PKG-059` | `HYPERCARE-OPS-007::GAP-PKG-059` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-060` | `DELIV-PKG-021::GAP-PKG-060` | `HYPERCARE-OPS-002::GAP-PKG-060` + `READY-GATE-010::GAP-PKG-060` | `HYPERCARE-OPS-003::GAP-PKG-060` + `READY-GATE-011::GAP-PKG-060` | `HYPERCARE-OPS-007::GAP-PKG-060` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-061` | `DELIV-PKG-021::GAP-PKG-061` | `HYPERCARE-OPS-002::GAP-PKG-061` + `READY-GATE-010::GAP-PKG-061` | `HYPERCARE-OPS-003::GAP-PKG-061` + `READY-GATE-011::GAP-PKG-061` | `HYPERCARE-OPS-007::GAP-PKG-061` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-062` | `DELIV-PKG-021::GAP-PKG-062` | `HYPERCARE-OPS-002::GAP-PKG-062` + `READY-GATE-010::GAP-PKG-062` | `HYPERCARE-OPS-003::GAP-PKG-062` + `READY-GATE-011::GAP-PKG-062` | `HYPERCARE-OPS-007::GAP-PKG-062` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-063` | `DELIV-PKG-021::GAP-PKG-063` | `HYPERCARE-OPS-002::GAP-PKG-063` + `READY-GATE-010::GAP-PKG-063` | `HYPERCARE-OPS-003::GAP-PKG-063` + `READY-GATE-011::GAP-PKG-063` | `HYPERCARE-OPS-007::GAP-PKG-063` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-064` | `DELIV-PKG-021::GAP-PKG-064` | `HYPERCARE-OPS-002::GAP-PKG-064` + `READY-GATE-010::GAP-PKG-064` | `HYPERCARE-OPS-003::GAP-PKG-064` + `READY-GATE-011::GAP-PKG-064` | `HYPERCARE-OPS-007::GAP-PKG-064` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-065` | `DELIV-PKG-021::GAP-PKG-065` | `HYPERCARE-OPS-002::GAP-PKG-065` + `READY-GATE-010::GAP-PKG-065` | `HYPERCARE-OPS-003::GAP-PKG-065` + `READY-GATE-011::GAP-PKG-065` | `HYPERCARE-OPS-007::GAP-PKG-065` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-066` | `DELIV-PKG-021::GAP-PKG-066` | `HYPERCARE-OPS-002::GAP-PKG-066` + `READY-GATE-010::GAP-PKG-066` | `HYPERCARE-OPS-003::GAP-PKG-066` + `READY-GATE-011::GAP-PKG-066` | `HYPERCARE-OPS-007::GAP-PKG-066` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-067` | `DELIV-PKG-021::GAP-PKG-067` | `HYPERCARE-OPS-002::GAP-PKG-067` + `READY-GATE-010::GAP-PKG-067` | `HYPERCARE-OPS-003::GAP-PKG-067` + `READY-GATE-011::GAP-PKG-067` | `HYPERCARE-OPS-007::GAP-PKG-067` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-068` | `DELIV-PKG-021::GAP-PKG-068` | `HYPERCARE-OPS-002::GAP-PKG-068` + `READY-GATE-010::GAP-PKG-068` | `HYPERCARE-OPS-003::GAP-PKG-068` + `READY-GATE-011::GAP-PKG-068` | `HYPERCARE-OPS-007::GAP-PKG-068` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-069` | `DELIV-PKG-021::GAP-PKG-069` | `HYPERCARE-OPS-002::GAP-PKG-069` + `READY-GATE-010::GAP-PKG-069` | `HYPERCARE-OPS-003::GAP-PKG-069` + `READY-GATE-011::GAP-PKG-069` | `HYPERCARE-OPS-007::GAP-PKG-069` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-070` | `DELIV-PKG-021::GAP-PKG-070` | `HYPERCARE-OPS-002::GAP-PKG-070` + `READY-GATE-010::GAP-PKG-070` | `HYPERCARE-OPS-003::GAP-PKG-070` + `READY-GATE-011::GAP-PKG-070` | `HYPERCARE-OPS-007::GAP-PKG-070` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-071` | `DELIV-PKG-021::GAP-PKG-071` | `HYPERCARE-OPS-002::GAP-PKG-071` + `READY-GATE-010::GAP-PKG-071` | `HYPERCARE-OPS-003::GAP-PKG-071` + `READY-GATE-011::GAP-PKG-071` | `HYPERCARE-OPS-007::GAP-PKG-071` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-072` | `DELIV-PKG-021::GAP-PKG-072` | `HYPERCARE-OPS-002::GAP-PKG-072` + `READY-GATE-010::GAP-PKG-072` | `HYPERCARE-OPS-003::GAP-PKG-072` + `READY-GATE-011::GAP-PKG-072` | `HYPERCARE-OPS-007::GAP-PKG-072` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-073` | `DELIV-PKG-021::GAP-PKG-073` | `HYPERCARE-OPS-002::GAP-PKG-073` + `READY-GATE-010::GAP-PKG-073` | `HYPERCARE-OPS-003::GAP-PKG-073` + `READY-GATE-011::GAP-PKG-073` | `HYPERCARE-OPS-007::GAP-PKG-073` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-074` | `DELIV-PKG-021::GAP-PKG-074` | `HYPERCARE-OPS-002::GAP-PKG-074` + `READY-GATE-010::GAP-PKG-074` | `HYPERCARE-OPS-003::GAP-PKG-074` + `READY-GATE-011::GAP-PKG-074` | `HYPERCARE-OPS-007::GAP-PKG-074` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-075` | `DELIV-PKG-021::GAP-PKG-075` | `HYPERCARE-OPS-002::GAP-PKG-075` + `READY-GATE-010::GAP-PKG-075` | `HYPERCARE-OPS-003::GAP-PKG-075` + `READY-GATE-011::GAP-PKG-075` | `HYPERCARE-OPS-007::GAP-PKG-075` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-076` | `DELIV-PKG-021::GAP-PKG-076` | `HYPERCARE-OPS-002::GAP-PKG-076` + `READY-GATE-010::GAP-PKG-076` | `HYPERCARE-OPS-003::GAP-PKG-076` + `READY-GATE-011::GAP-PKG-076` | `HYPERCARE-OPS-007::GAP-PKG-076` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-077` | `DELIV-PKG-021::GAP-PKG-077` | `HYPERCARE-OPS-002::GAP-PKG-077` + `READY-GATE-010::GAP-PKG-077` | `HYPERCARE-OPS-003::GAP-PKG-077` + `READY-GATE-011::GAP-PKG-077` | `HYPERCARE-OPS-007::GAP-PKG-077` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-078` | `DELIV-PKG-021::GAP-PKG-078` | `HYPERCARE-OPS-002::GAP-PKG-078` + `READY-GATE-010::GAP-PKG-078` | `HYPERCARE-OPS-003::GAP-PKG-078` + `READY-GATE-011::GAP-PKG-078` | `HYPERCARE-OPS-007::GAP-PKG-078` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-079` | `DELIV-PKG-021::GAP-PKG-079` | `HYPERCARE-OPS-002::GAP-PKG-079` + `READY-GATE-010::GAP-PKG-079` | `HYPERCARE-OPS-003::GAP-PKG-079` + `READY-GATE-011::GAP-PKG-079` | `HYPERCARE-OPS-007::GAP-PKG-079` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-080` | `DELIV-PKG-021::GAP-PKG-080` | `HYPERCARE-OPS-002::GAP-PKG-080` + `READY-GATE-010::GAP-PKG-080` | `HYPERCARE-OPS-003::GAP-PKG-080` + `READY-GATE-011::GAP-PKG-080` | `HYPERCARE-OPS-007::GAP-PKG-080` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-081` | `DELIV-PKG-021::GAP-PKG-081` | `HYPERCARE-OPS-002::GAP-PKG-081` + `READY-GATE-010::GAP-PKG-081` | `HYPERCARE-OPS-003::GAP-PKG-081` + `READY-GATE-011::GAP-PKG-081` | `HYPERCARE-OPS-007::GAP-PKG-081` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-082` | `DELIV-PKG-021::GAP-PKG-082` | `HYPERCARE-OPS-002::GAP-PKG-082` + `READY-GATE-010::GAP-PKG-082` | `HYPERCARE-OPS-003::GAP-PKG-082` + `READY-GATE-011::GAP-PKG-082` | `HYPERCARE-OPS-007::GAP-PKG-082` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-083` | `DELIV-PKG-021::GAP-PKG-083` | `HYPERCARE-OPS-002::GAP-PKG-083` + `READY-GATE-010::GAP-PKG-083` | `HYPERCARE-OPS-003::GAP-PKG-083` + `READY-GATE-011::GAP-PKG-083` | `HYPERCARE-OPS-007::GAP-PKG-083` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-084` | `DELIV-PKG-021::GAP-PKG-084` | `HYPERCARE-OPS-002::GAP-PKG-084` + `READY-GATE-010::GAP-PKG-084` | `HYPERCARE-OPS-003::GAP-PKG-084` + `READY-GATE-011::GAP-PKG-084` | `HYPERCARE-OPS-007::GAP-PKG-084` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-085` | `DELIV-PKG-021::GAP-PKG-085` | `HYPERCARE-OPS-002::GAP-PKG-085` + `READY-GATE-010::GAP-PKG-085` | `HYPERCARE-OPS-003::GAP-PKG-085` + `READY-GATE-011::GAP-PKG-085` | `HYPERCARE-OPS-007::GAP-PKG-085` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-086` | `DELIV-PKG-021::GAP-PKG-086` | `HYPERCARE-OPS-002::GAP-PKG-086` + `READY-GATE-010::GAP-PKG-086` | `HYPERCARE-OPS-003::GAP-PKG-086` + `READY-GATE-011::GAP-PKG-086` | `HYPERCARE-OPS-007::GAP-PKG-086` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-087` | `DELIV-PKG-021::GAP-PKG-087` | `HYPERCARE-OPS-002::GAP-PKG-087` + `READY-GATE-010::GAP-PKG-087` | `HYPERCARE-OPS-003::GAP-PKG-087` + `READY-GATE-011::GAP-PKG-087` | `HYPERCARE-OPS-007::GAP-PKG-087` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-088` | `DELIV-PKG-021::GAP-PKG-088` | `HYPERCARE-OPS-002::GAP-PKG-088` + `READY-GATE-010::GAP-PKG-088` | `HYPERCARE-OPS-003::GAP-PKG-088` + `READY-GATE-011::GAP-PKG-088` | `HYPERCARE-OPS-007::GAP-PKG-088` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-089` | `DELIV-PKG-021::GAP-PKG-089` | `HYPERCARE-OPS-002::GAP-PKG-089` + `READY-GATE-010::GAP-PKG-089` | `HYPERCARE-OPS-003::GAP-PKG-089` + `READY-GATE-011::GAP-PKG-089` | `HYPERCARE-OPS-007::GAP-PKG-089` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-090` | `DELIV-PKG-021::GAP-PKG-090` | `HYPERCARE-OPS-002::GAP-PKG-090` + `READY-GATE-010::GAP-PKG-090` | `HYPERCARE-OPS-003::GAP-PKG-090` + `READY-GATE-011::GAP-PKG-090` | `HYPERCARE-OPS-007::GAP-PKG-090` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-091` | `DELIV-PKG-021::GAP-PKG-091` | `HYPERCARE-OPS-002::GAP-PKG-091` + `READY-GATE-010::GAP-PKG-091` | `HYPERCARE-OPS-003::GAP-PKG-091` + `READY-GATE-011::GAP-PKG-091` | `HYPERCARE-OPS-007::GAP-PKG-091` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-092` | `DELIV-PKG-021::GAP-PKG-092` | `HYPERCARE-OPS-002::GAP-PKG-092` + `READY-GATE-010::GAP-PKG-092` | `HYPERCARE-OPS-003::GAP-PKG-092` + `READY-GATE-011::GAP-PKG-092` | `HYPERCARE-OPS-007::GAP-PKG-092` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-093` | `DELIV-PKG-021::GAP-PKG-093` | `HYPERCARE-OPS-002::GAP-PKG-093` + `READY-GATE-010::GAP-PKG-093` | `HYPERCARE-OPS-003::GAP-PKG-093` + `READY-GATE-011::GAP-PKG-093` | `HYPERCARE-OPS-007::GAP-PKG-093` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-094` | `DELIV-PKG-021::GAP-PKG-094` | `HYPERCARE-OPS-002::GAP-PKG-094` + `READY-GATE-010::GAP-PKG-094` | `HYPERCARE-OPS-003::GAP-PKG-094` + `READY-GATE-011::GAP-PKG-094` | `HYPERCARE-OPS-007::GAP-PKG-094` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-095` | `DELIV-PKG-021::GAP-PKG-095` | `HYPERCARE-OPS-002::GAP-PKG-095` + `READY-GATE-010::GAP-PKG-095` | `HYPERCARE-OPS-003::GAP-PKG-095` + `READY-GATE-011::GAP-PKG-095` | `HYPERCARE-OPS-007::GAP-PKG-095` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-096` | `DELIV-PKG-021::GAP-PKG-096` | `HYPERCARE-OPS-002::GAP-PKG-096` + `READY-GATE-010::GAP-PKG-096` | `HYPERCARE-OPS-003::GAP-PKG-096` + `READY-GATE-011::GAP-PKG-096` | `HYPERCARE-OPS-007::GAP-PKG-096` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-097` | `DELIV-PKG-021::GAP-PKG-097` | `HYPERCARE-OPS-002::GAP-PKG-097` + `READY-GATE-010::GAP-PKG-097` | `HYPERCARE-OPS-003::GAP-PKG-097` + `READY-GATE-011::GAP-PKG-097` | `HYPERCARE-OPS-007::GAP-PKG-097` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-098` | `DELIV-PKG-021::GAP-PKG-098` | `HYPERCARE-OPS-002::GAP-PKG-098` + `READY-GATE-010::GAP-PKG-098` | `HYPERCARE-OPS-003::GAP-PKG-098` + `READY-GATE-011::GAP-PKG-098` | `HYPERCARE-OPS-007::GAP-PKG-098` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-099` | `DELIV-PKG-021::GAP-PKG-099` | `HYPERCARE-OPS-002::GAP-PKG-099` + `READY-GATE-010::GAP-PKG-099` | `HYPERCARE-OPS-003::GAP-PKG-099` + `READY-GATE-011::GAP-PKG-099` | `HYPERCARE-OPS-007::GAP-PKG-099` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-100` | `DELIV-PKG-021::GAP-PKG-100` | `HYPERCARE-OPS-002::GAP-PKG-100` + `READY-GATE-010::GAP-PKG-100` | `HYPERCARE-OPS-003::GAP-PKG-100` + `READY-GATE-011::GAP-PKG-100` | `HYPERCARE-OPS-007::GAP-PKG-100` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-101` | `DELIV-PKG-021::GAP-PKG-101` | `HYPERCARE-OPS-002::GAP-PKG-101` + `READY-GATE-010::GAP-PKG-101` | `HYPERCARE-OPS-003::GAP-PKG-101` + `READY-GATE-011::GAP-PKG-101` | `HYPERCARE-OPS-007::GAP-PKG-101` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-102` | `DELIV-PKG-021::GAP-PKG-102` | `HYPERCARE-OPS-002::GAP-PKG-102` + `READY-GATE-010::GAP-PKG-102` | `HYPERCARE-OPS-003::GAP-PKG-102` + `READY-GATE-011::GAP-PKG-102` | `HYPERCARE-OPS-007::GAP-PKG-102` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-103` | `DELIV-PKG-021::GAP-PKG-103` | `HYPERCARE-OPS-002::GAP-PKG-103` + `READY-GATE-010::GAP-PKG-103` | `HYPERCARE-OPS-003::GAP-PKG-103` + `READY-GATE-011::GAP-PKG-103` | `HYPERCARE-OPS-007::GAP-PKG-103` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-104` | `DELIV-PKG-021::GAP-PKG-104` | `HYPERCARE-OPS-002::GAP-PKG-104` + `READY-GATE-010::GAP-PKG-104` | `HYPERCARE-OPS-003::GAP-PKG-104` + `READY-GATE-011::GAP-PKG-104` | `HYPERCARE-OPS-007::GAP-PKG-104` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-105` | `DELIV-PKG-021::GAP-PKG-105` | `HYPERCARE-OPS-002::GAP-PKG-105` + `READY-GATE-010::GAP-PKG-105` | `HYPERCARE-OPS-003::GAP-PKG-105` + `READY-GATE-011::GAP-PKG-105` | `HYPERCARE-OPS-007::GAP-PKG-105` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-106` | `DELIV-PKG-021::GAP-PKG-106` | `HYPERCARE-OPS-002::GAP-PKG-106` + `READY-GATE-010::GAP-PKG-106` | `HYPERCARE-OPS-003::GAP-PKG-106` + `READY-GATE-011::GAP-PKG-106` | `HYPERCARE-OPS-007::GAP-PKG-106` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-107` | `DELIV-PKG-021::GAP-PKG-107` | `HYPERCARE-OPS-002::GAP-PKG-107` + `READY-GATE-010::GAP-PKG-107` | `HYPERCARE-OPS-003::GAP-PKG-107` + `READY-GATE-011::GAP-PKG-107` | `HYPERCARE-OPS-007::GAP-PKG-107` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-108` | `DELIV-PKG-021::GAP-PKG-108` | `HYPERCARE-OPS-002::GAP-PKG-108` + `READY-GATE-010::GAP-PKG-108` | `HYPERCARE-OPS-003::GAP-PKG-108` + `READY-GATE-011::GAP-PKG-108` | `HYPERCARE-OPS-007::GAP-PKG-108` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-109` | `DELIV-PKG-021::GAP-PKG-109` | `HYPERCARE-OPS-002::GAP-PKG-109` + `READY-GATE-010::GAP-PKG-109` | `HYPERCARE-OPS-003::GAP-PKG-109` + `READY-GATE-011::GAP-PKG-109` | `HYPERCARE-OPS-007::GAP-PKG-109` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-110` | `DELIV-PKG-021::GAP-PKG-110` | `HYPERCARE-OPS-002::GAP-PKG-110` + `READY-GATE-010::GAP-PKG-110` | `HYPERCARE-OPS-003::GAP-PKG-110` + `READY-GATE-011::GAP-PKG-110` | `HYPERCARE-OPS-007::GAP-PKG-110` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-111` | `DELIV-PKG-021::GAP-PKG-111` | `HYPERCARE-OPS-002::GAP-PKG-111` + `READY-GATE-010::GAP-PKG-111` | `HYPERCARE-OPS-003::GAP-PKG-111` + `READY-GATE-011::GAP-PKG-111` | `HYPERCARE-OPS-007::GAP-PKG-111` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-112` | `DELIV-PKG-021::GAP-PKG-112` | `HYPERCARE-OPS-002::GAP-PKG-112` + `READY-GATE-010::GAP-PKG-112` | `HYPERCARE-OPS-003::GAP-PKG-112` + `READY-GATE-011::GAP-PKG-112` | `HYPERCARE-OPS-007::GAP-PKG-112` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-113` | `DELIV-PKG-021::GAP-PKG-113` | `HYPERCARE-OPS-002::GAP-PKG-113` + `READY-GATE-010::GAP-PKG-113` | `HYPERCARE-OPS-003::GAP-PKG-113` + `READY-GATE-011::GAP-PKG-113` | `HYPERCARE-OPS-007::GAP-PKG-113` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-114` | `DELIV-PKG-021::GAP-PKG-114` | `HYPERCARE-OPS-002::GAP-PKG-114` + `READY-GATE-010::GAP-PKG-114` | `HYPERCARE-OPS-003::GAP-PKG-114` + `READY-GATE-011::GAP-PKG-114` | `HYPERCARE-OPS-007::GAP-PKG-114` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-115` | `DELIV-PKG-021::GAP-PKG-115` | `HYPERCARE-OPS-002::GAP-PKG-115` + `READY-GATE-010::GAP-PKG-115` | `HYPERCARE-OPS-003::GAP-PKG-115` + `READY-GATE-011::GAP-PKG-115` | `HYPERCARE-OPS-007::GAP-PKG-115` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-116` | `DELIV-PKG-021::GAP-PKG-116` | `HYPERCARE-OPS-002::GAP-PKG-116` + `READY-GATE-010::GAP-PKG-116` | `HYPERCARE-OPS-003::GAP-PKG-116` + `READY-GATE-011::GAP-PKG-116` | `HYPERCARE-OPS-007::GAP-PKG-116` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-117` | `DELIV-PKG-021::GAP-PKG-117` | `HYPERCARE-OPS-002::GAP-PKG-117` + `READY-GATE-010::GAP-PKG-117` | `HYPERCARE-OPS-003::GAP-PKG-117` + `READY-GATE-011::GAP-PKG-117` | `HYPERCARE-OPS-007::GAP-PKG-117` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-118` | `DELIV-PKG-021::GAP-PKG-118` | `HYPERCARE-OPS-002::GAP-PKG-118` + `READY-GATE-010::GAP-PKG-118` | `HYPERCARE-OPS-003::GAP-PKG-118` + `READY-GATE-011::GAP-PKG-118` | `HYPERCARE-OPS-007::GAP-PKG-118` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-119` | `DELIV-PKG-021::GAP-PKG-119` | `HYPERCARE-OPS-002::GAP-PKG-119` + `READY-GATE-010::GAP-PKG-119` | `HYPERCARE-OPS-003::GAP-PKG-119` + `READY-GATE-011::GAP-PKG-119` | `HYPERCARE-OPS-007::GAP-PKG-119` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-120` | `DELIV-PKG-021::GAP-PKG-120` | `HYPERCARE-OPS-002::GAP-PKG-120` + `READY-GATE-010::GAP-PKG-120` | `HYPERCARE-OPS-003::GAP-PKG-120` + `READY-GATE-011::GAP-PKG-120` | `HYPERCARE-OPS-007::GAP-PKG-120` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-121` | `DELIV-PKG-021::GAP-PKG-121` | `HYPERCARE-OPS-002::GAP-PKG-121` + `READY-GATE-010::GAP-PKG-121` | `HYPERCARE-OPS-003::GAP-PKG-121` + `READY-GATE-011::GAP-PKG-121` | `HYPERCARE-OPS-007::GAP-PKG-121` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-122` | `DELIV-PKG-021::GAP-PKG-122` | `HYPERCARE-OPS-002::GAP-PKG-122` + `READY-GATE-010::GAP-PKG-122` | `HYPERCARE-OPS-003::GAP-PKG-122` + `READY-GATE-011::GAP-PKG-122` | `HYPERCARE-OPS-007::GAP-PKG-122` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-123` | `DELIV-PKG-021::GAP-PKG-123` | `HYPERCARE-OPS-002::GAP-PKG-123` + `READY-GATE-010::GAP-PKG-123` | `HYPERCARE-OPS-003::GAP-PKG-123` + `READY-GATE-011::GAP-PKG-123` | `HYPERCARE-OPS-007::GAP-PKG-123` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-124` | `DELIV-PKG-021::GAP-PKG-124` | `HYPERCARE-OPS-002::GAP-PKG-124` + `READY-GATE-010::GAP-PKG-124` | `HYPERCARE-OPS-003::GAP-PKG-124` + `READY-GATE-011::GAP-PKG-124` | `HYPERCARE-OPS-007::GAP-PKG-124` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-125` | `DELIV-PKG-021::GAP-PKG-125` | `HYPERCARE-OPS-002::GAP-PKG-125` + `READY-GATE-010::GAP-PKG-125` | `HYPERCARE-OPS-003::GAP-PKG-125` + `READY-GATE-011::GAP-PKG-125` | `HYPERCARE-OPS-007::GAP-PKG-125` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-126` | `DELIV-PKG-021::GAP-PKG-126` | `HYPERCARE-OPS-002::GAP-PKG-126` + `READY-GATE-010::GAP-PKG-126` | `HYPERCARE-OPS-003::GAP-PKG-126` + `READY-GATE-011::GAP-PKG-126` | `HYPERCARE-OPS-007::GAP-PKG-126` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-127` | `DELIV-PKG-021::GAP-PKG-127` | `HYPERCARE-OPS-002::GAP-PKG-127` + `READY-GATE-010::GAP-PKG-127` | `HYPERCARE-OPS-003::GAP-PKG-127` + `READY-GATE-011::GAP-PKG-127` | `HYPERCARE-OPS-007::GAP-PKG-127` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-128` | `DELIV-PKG-021::GAP-PKG-128` | `HYPERCARE-OPS-002::GAP-PKG-128` + `READY-GATE-010::GAP-PKG-128` | `HYPERCARE-OPS-003::GAP-PKG-128` + `READY-GATE-011::GAP-PKG-128` | `HYPERCARE-OPS-007::GAP-PKG-128` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-129` | `DELIV-PKG-021::GAP-PKG-129` | `HYPERCARE-OPS-002::GAP-PKG-129` + `READY-GATE-010::GAP-PKG-129` | `HYPERCARE-OPS-003::GAP-PKG-129` + `READY-GATE-011::GAP-PKG-129` | `HYPERCARE-OPS-007::GAP-PKG-129` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-130` | `DELIV-PKG-021::GAP-PKG-130` | `HYPERCARE-OPS-002::GAP-PKG-130` + `READY-GATE-010::GAP-PKG-130` | `HYPERCARE-OPS-003::GAP-PKG-130` + `READY-GATE-011::GAP-PKG-130` | `HYPERCARE-OPS-007::GAP-PKG-130` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-131` | `DELIV-PKG-021::GAP-PKG-131` | `HYPERCARE-OPS-002::GAP-PKG-131` + `READY-GATE-010::GAP-PKG-131` | `HYPERCARE-OPS-003::GAP-PKG-131` + `READY-GATE-011::GAP-PKG-131` | `HYPERCARE-OPS-007::GAP-PKG-131` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-132` | `DELIV-PKG-021::GAP-PKG-132` | `HYPERCARE-OPS-002::GAP-PKG-132` + `READY-GATE-010::GAP-PKG-132` | `HYPERCARE-OPS-003::GAP-PKG-132` + `READY-GATE-011::GAP-PKG-132` | `HYPERCARE-OPS-007::GAP-PKG-132` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-133` | `DELIV-PKG-021::GAP-PKG-133` | `HYPERCARE-OPS-002::GAP-PKG-133` + `READY-GATE-010::GAP-PKG-133` | `HYPERCARE-OPS-003::GAP-PKG-133` + `READY-GATE-011::GAP-PKG-133` | `HYPERCARE-OPS-007::GAP-PKG-133` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-134` | `DELIV-PKG-021::GAP-PKG-134` | `HYPERCARE-OPS-002::GAP-PKG-134` + `READY-GATE-010::GAP-PKG-134` | `HYPERCARE-OPS-003::GAP-PKG-134` + `READY-GATE-011::GAP-PKG-134` | `HYPERCARE-OPS-007::GAP-PKG-134` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-135` | `DELIV-PKG-021::GAP-PKG-135` | `HYPERCARE-OPS-002::GAP-PKG-135` + `READY-GATE-010::GAP-PKG-135` | `HYPERCARE-OPS-003::GAP-PKG-135` + `READY-GATE-011::GAP-PKG-135` | `HYPERCARE-OPS-007::GAP-PKG-135` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-136` | `DELIV-PKG-021::GAP-PKG-136` | `HYPERCARE-OPS-002::GAP-PKG-136` + `READY-GATE-010::GAP-PKG-136` | `HYPERCARE-OPS-003::GAP-PKG-136` + `READY-GATE-011::GAP-PKG-136` | `HYPERCARE-OPS-007::GAP-PKG-136` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-137` | `DELIV-PKG-021::GAP-PKG-137` | `HYPERCARE-OPS-002::GAP-PKG-137` + `READY-GATE-010::GAP-PKG-137` | `HYPERCARE-OPS-003::GAP-PKG-137` + `READY-GATE-011::GAP-PKG-137` | `HYPERCARE-OPS-007::GAP-PKG-137` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-138` | `DELIV-PKG-021::GAP-PKG-138` | `HYPERCARE-OPS-002::GAP-PKG-138` + `READY-GATE-010::GAP-PKG-138` | `HYPERCARE-OPS-003::GAP-PKG-138` + `READY-GATE-011::GAP-PKG-138` | `HYPERCARE-OPS-007::GAP-PKG-138` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-139` | `DELIV-PKG-021::GAP-PKG-139` | `HYPERCARE-OPS-002::GAP-PKG-139` + `READY-GATE-010::GAP-PKG-139` | `HYPERCARE-OPS-003::GAP-PKG-139` + `READY-GATE-011::GAP-PKG-139` | `HYPERCARE-OPS-007::GAP-PKG-139` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-140` | `DELIV-PKG-021::GAP-PKG-140` | `HYPERCARE-OPS-002::GAP-PKG-140` + `READY-GATE-010::GAP-PKG-140` | `HYPERCARE-OPS-003::GAP-PKG-140` + `READY-GATE-011::GAP-PKG-140` | `HYPERCARE-OPS-007::GAP-PKG-140` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-141` | `DELIV-PKG-021::GAP-PKG-141` | `HYPERCARE-OPS-002::GAP-PKG-141` + `READY-GATE-010::GAP-PKG-141` | `HYPERCARE-OPS-003::GAP-PKG-141` + `READY-GATE-011::GAP-PKG-141` | `HYPERCARE-OPS-007::GAP-PKG-141` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-142` | `DELIV-PKG-021::GAP-PKG-142` | `HYPERCARE-OPS-002::GAP-PKG-142` + `READY-GATE-010::GAP-PKG-142` | `HYPERCARE-OPS-003::GAP-PKG-142` + `READY-GATE-011::GAP-PKG-142` | `HYPERCARE-OPS-007::GAP-PKG-142` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-143` | `DELIV-PKG-021::GAP-PKG-143` | `HYPERCARE-OPS-002::GAP-PKG-143` + `READY-GATE-010::GAP-PKG-143` | `HYPERCARE-OPS-003::GAP-PKG-143` + `READY-GATE-011::GAP-PKG-143` | `HYPERCARE-OPS-007::GAP-PKG-143` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-144` | `DELIV-PKG-021::GAP-PKG-144` | `HYPERCARE-OPS-002::GAP-PKG-144` + `READY-GATE-010::GAP-PKG-144` | `HYPERCARE-OPS-003::GAP-PKG-144` + `READY-GATE-011::GAP-PKG-144` | `HYPERCARE-OPS-007::GAP-PKG-144` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-145` | `DELIV-PKG-021::GAP-PKG-145` | `HYPERCARE-OPS-002::GAP-PKG-145` + `READY-GATE-010::GAP-PKG-145` | `HYPERCARE-OPS-003::GAP-PKG-145` + `READY-GATE-011::GAP-PKG-145` | `HYPERCARE-OPS-007::GAP-PKG-145` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-146` | `DELIV-PKG-021::GAP-PKG-146` | `HYPERCARE-OPS-002::GAP-PKG-146` + `READY-GATE-010::GAP-PKG-146` | `HYPERCARE-OPS-003::GAP-PKG-146` + `READY-GATE-011::GAP-PKG-146` | `HYPERCARE-OPS-007::GAP-PKG-146` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-147` | `DELIV-PKG-021::GAP-PKG-147` | `HYPERCARE-OPS-002::GAP-PKG-147` + `READY-GATE-010::GAP-PKG-147` | `HYPERCARE-OPS-003::GAP-PKG-147` + `READY-GATE-011::GAP-PKG-147` | `HYPERCARE-OPS-007::GAP-PKG-147` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-148` | `DELIV-PKG-021::GAP-PKG-148` | `HYPERCARE-OPS-002::GAP-PKG-148` + `READY-GATE-010::GAP-PKG-148` | `HYPERCARE-OPS-003::GAP-PKG-148` + `READY-GATE-011::GAP-PKG-148` | `HYPERCARE-OPS-007::GAP-PKG-148` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-149` | `DELIV-PKG-021::GAP-PKG-149` | `HYPERCARE-OPS-002::GAP-PKG-149` + `READY-GATE-010::GAP-PKG-149` | `HYPERCARE-OPS-003::GAP-PKG-149` + `READY-GATE-011::GAP-PKG-149` | `HYPERCARE-OPS-007::GAP-PKG-149` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-150` | `DELIV-PKG-021::GAP-PKG-150` | `HYPERCARE-OPS-002::GAP-PKG-150` + `READY-GATE-010::GAP-PKG-150` | `HYPERCARE-OPS-003::GAP-PKG-150` + `READY-GATE-011::GAP-PKG-150` | `HYPERCARE-OPS-007::GAP-PKG-150` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-151` | `DELIV-PKG-021::GAP-PKG-151` | `HYPERCARE-OPS-002::GAP-PKG-151` + `READY-GATE-010::GAP-PKG-151` | `HYPERCARE-OPS-003::GAP-PKG-151` + `READY-GATE-011::GAP-PKG-151` | `HYPERCARE-OPS-007::GAP-PKG-151` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-152` | `DELIV-PKG-021::GAP-PKG-152` | `HYPERCARE-OPS-002::GAP-PKG-152` + `READY-GATE-010::GAP-PKG-152` | `HYPERCARE-OPS-003::GAP-PKG-152` + `READY-GATE-011::GAP-PKG-152` | `HYPERCARE-OPS-007::GAP-PKG-152` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-153` | `DELIV-PKG-021::GAP-PKG-153` | `HYPERCARE-OPS-002::GAP-PKG-153` + `READY-GATE-010::GAP-PKG-153` | `HYPERCARE-OPS-003::GAP-PKG-153` + `READY-GATE-011::GAP-PKG-153` | `HYPERCARE-OPS-007::GAP-PKG-153` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-154` | `DELIV-PKG-021::GAP-PKG-154` | `HYPERCARE-OPS-002::GAP-PKG-154` + `READY-GATE-010::GAP-PKG-154` | `HYPERCARE-OPS-003::GAP-PKG-154` + `READY-GATE-011::GAP-PKG-154` | `HYPERCARE-OPS-007::GAP-PKG-154` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-155` | `DELIV-PKG-021::GAP-PKG-155` | `HYPERCARE-OPS-002::GAP-PKG-155` + `READY-GATE-010::GAP-PKG-155` | `HYPERCARE-OPS-003::GAP-PKG-155` + `READY-GATE-011::GAP-PKG-155` | `HYPERCARE-OPS-007::GAP-PKG-155` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-156` | `DELIV-PKG-021::GAP-PKG-156` | `HYPERCARE-OPS-002::GAP-PKG-156` + `READY-GATE-010::GAP-PKG-156` | `HYPERCARE-OPS-003::GAP-PKG-156` + `READY-GATE-011::GAP-PKG-156` | `HYPERCARE-OPS-007::GAP-PKG-156` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-157` | `DELIV-PKG-021::GAP-PKG-157` | `HYPERCARE-OPS-002::GAP-PKG-157` + `READY-GATE-010::GAP-PKG-157` | `HYPERCARE-OPS-003::GAP-PKG-157` + `READY-GATE-011::GAP-PKG-157` | `HYPERCARE-OPS-007::GAP-PKG-157` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-158` | `DELIV-PKG-021::GAP-PKG-158` | `HYPERCARE-OPS-002::GAP-PKG-158` + `READY-GATE-010::GAP-PKG-158` | `HYPERCARE-OPS-003::GAP-PKG-158` + `READY-GATE-011::GAP-PKG-158` | `HYPERCARE-OPS-007::GAP-PKG-158` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-159` | `DELIV-PKG-021::GAP-PKG-159` | `HYPERCARE-OPS-002::GAP-PKG-159` + `READY-GATE-010::GAP-PKG-159` | `HYPERCARE-OPS-003::GAP-PKG-159` + `READY-GATE-011::GAP-PKG-159` | `HYPERCARE-OPS-007::GAP-PKG-159` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-160` | `DELIV-PKG-021::GAP-PKG-160` | `HYPERCARE-OPS-002::GAP-PKG-160` + `READY-GATE-010::GAP-PKG-160` | `HYPERCARE-OPS-003::GAP-PKG-160` + `READY-GATE-011::GAP-PKG-160` | `HYPERCARE-OPS-007::GAP-PKG-160` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-161` | `DELIV-PKG-021::GAP-PKG-161` | `HYPERCARE-OPS-002::GAP-PKG-161` + `READY-GATE-010::GAP-PKG-161` | `HYPERCARE-OPS-003::GAP-PKG-161` + `READY-GATE-011::GAP-PKG-161` | `HYPERCARE-OPS-007::GAP-PKG-161` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-162` | `DELIV-PKG-021::GAP-PKG-162` | `HYPERCARE-OPS-002::GAP-PKG-162` + `READY-GATE-010::GAP-PKG-162` | `HYPERCARE-OPS-003::GAP-PKG-162` + `READY-GATE-011::GAP-PKG-162` | `HYPERCARE-OPS-007::GAP-PKG-162` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-163` | `DELIV-PKG-021::GAP-PKG-163` | `HYPERCARE-OPS-002::GAP-PKG-163` + `READY-GATE-010::GAP-PKG-163` | `HYPERCARE-OPS-003::GAP-PKG-163` + `READY-GATE-011::GAP-PKG-163` | `HYPERCARE-OPS-007::GAP-PKG-163` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-164` | `DELIV-PKG-021::GAP-PKG-164` | `HYPERCARE-OPS-002::GAP-PKG-164` + `READY-GATE-010::GAP-PKG-164` | `HYPERCARE-OPS-003::GAP-PKG-164` + `READY-GATE-011::GAP-PKG-164` | `HYPERCARE-OPS-007::GAP-PKG-164` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-165` | `DELIV-PKG-021::GAP-PKG-165` | `HYPERCARE-OPS-002::GAP-PKG-165` + `READY-GATE-010::GAP-PKG-165` | `HYPERCARE-OPS-003::GAP-PKG-165` + `READY-GATE-011::GAP-PKG-165` | `HYPERCARE-OPS-007::GAP-PKG-165` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-166` | `DELIV-PKG-021::GAP-PKG-166` | `HYPERCARE-OPS-002::GAP-PKG-166` + `READY-GATE-010::GAP-PKG-166` | `HYPERCARE-OPS-003::GAP-PKG-166` + `READY-GATE-011::GAP-PKG-166` | `HYPERCARE-OPS-007::GAP-PKG-166` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-167` | `DELIV-PKG-021::GAP-PKG-167` | `HYPERCARE-OPS-002::GAP-PKG-167` + `READY-GATE-010::GAP-PKG-167` | `HYPERCARE-OPS-003::GAP-PKG-167` + `READY-GATE-011::GAP-PKG-167` | `HYPERCARE-OPS-007::GAP-PKG-167` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-168` | `DELIV-PKG-021::GAP-PKG-168` | `HYPERCARE-OPS-002::GAP-PKG-168` + `READY-GATE-010::GAP-PKG-168` | `HYPERCARE-OPS-003::GAP-PKG-168` + `READY-GATE-011::GAP-PKG-168` | `HYPERCARE-OPS-007::GAP-PKG-168` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-169` | `DELIV-PKG-021::GAP-PKG-169` | `HYPERCARE-OPS-002::GAP-PKG-169` + `READY-GATE-010::GAP-PKG-169` | `HYPERCARE-OPS-003::GAP-PKG-169` + `READY-GATE-011::GAP-PKG-169` | `HYPERCARE-OPS-007::GAP-PKG-169` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-170` | `DELIV-PKG-021::GAP-PKG-170` | `HYPERCARE-OPS-002::GAP-PKG-170` + `READY-GATE-010::GAP-PKG-170` | `HYPERCARE-OPS-003::GAP-PKG-170` + `READY-GATE-011::GAP-PKG-170` | `HYPERCARE-OPS-007::GAP-PKG-170` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-171` | `DELIV-PKG-021::GAP-PKG-171` | `HYPERCARE-OPS-002::GAP-PKG-171` + `READY-GATE-010::GAP-PKG-171` | `HYPERCARE-OPS-003::GAP-PKG-171` + `READY-GATE-011::GAP-PKG-171` | `HYPERCARE-OPS-007::GAP-PKG-171` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-172` | `DELIV-PKG-021::GAP-PKG-172` | `HYPERCARE-OPS-002::GAP-PKG-172` + `READY-GATE-010::GAP-PKG-172` | `HYPERCARE-OPS-003::GAP-PKG-172` + `READY-GATE-011::GAP-PKG-172` | `HYPERCARE-OPS-007::GAP-PKG-172` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-173` | `DELIV-PKG-021::GAP-PKG-173` | `HYPERCARE-OPS-002::GAP-PKG-173` + `READY-GATE-010::GAP-PKG-173` | `HYPERCARE-OPS-003::GAP-PKG-173` + `READY-GATE-011::GAP-PKG-173` | `HYPERCARE-OPS-007::GAP-PKG-173` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-174` | `DELIV-PKG-021::GAP-PKG-174` | `HYPERCARE-OPS-002::GAP-PKG-174` + `READY-GATE-010::GAP-PKG-174` | `HYPERCARE-OPS-003::GAP-PKG-174` + `READY-GATE-011::GAP-PKG-174` | `HYPERCARE-OPS-007::GAP-PKG-174` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-175` | `DELIV-PKG-021::GAP-PKG-175` | `HYPERCARE-OPS-002::GAP-PKG-175` + `READY-GATE-010::GAP-PKG-175` | `HYPERCARE-OPS-003::GAP-PKG-175` + `READY-GATE-011::GAP-PKG-175` | `HYPERCARE-OPS-007::GAP-PKG-175` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-176` | `DELIV-PKG-021::GAP-PKG-176` | `HYPERCARE-OPS-002::GAP-PKG-176` + `READY-GATE-010::GAP-PKG-176` | `HYPERCARE-OPS-003::GAP-PKG-176` + `READY-GATE-011::GAP-PKG-176` | `HYPERCARE-OPS-007::GAP-PKG-176` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-177` | `DELIV-PKG-021::GAP-PKG-177` | `HYPERCARE-OPS-002::GAP-PKG-177` + `READY-GATE-010::GAP-PKG-177` | `HYPERCARE-OPS-003::GAP-PKG-177` + `READY-GATE-011::GAP-PKG-177` | `HYPERCARE-OPS-007::GAP-PKG-177` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-178` | `DELIV-PKG-021::GAP-PKG-178` | `HYPERCARE-OPS-002::GAP-PKG-178` + `READY-GATE-010::GAP-PKG-178` | `HYPERCARE-OPS-003::GAP-PKG-178` + `READY-GATE-011::GAP-PKG-178` | `HYPERCARE-OPS-007::GAP-PKG-178` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-179` | `DELIV-PKG-021::GAP-PKG-179` | `HYPERCARE-OPS-002::GAP-PKG-179` + `READY-GATE-010::GAP-PKG-179` | `HYPERCARE-OPS-003::GAP-PKG-179` + `READY-GATE-011::GAP-PKG-179` | `HYPERCARE-OPS-007::GAP-PKG-179` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-180` | `DELIV-PKG-021::GAP-PKG-180` | `HYPERCARE-OPS-002::GAP-PKG-180` + `READY-GATE-010::GAP-PKG-180` | `HYPERCARE-OPS-003::GAP-PKG-180` + `READY-GATE-011::GAP-PKG-180` | `HYPERCARE-OPS-007::GAP-PKG-180` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-181` | `DELIV-PKG-021::GAP-PKG-181` | `HYPERCARE-OPS-002::GAP-PKG-181` + `READY-GATE-010::GAP-PKG-181` | `HYPERCARE-OPS-003::GAP-PKG-181` + `READY-GATE-011::GAP-PKG-181` | `HYPERCARE-OPS-007::GAP-PKG-181` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-182` | `DELIV-PKG-021::GAP-PKG-182` | `HYPERCARE-OPS-002::GAP-PKG-182` + `READY-GATE-010::GAP-PKG-182` | `HYPERCARE-OPS-003::GAP-PKG-182` + `READY-GATE-011::GAP-PKG-182` | `HYPERCARE-OPS-007::GAP-PKG-182` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-183` | `DELIV-PKG-021::GAP-PKG-183` | `HYPERCARE-OPS-002::GAP-PKG-183` + `READY-GATE-010::GAP-PKG-183` | `HYPERCARE-OPS-003::GAP-PKG-183` + `READY-GATE-011::GAP-PKG-183` | `HYPERCARE-OPS-007::GAP-PKG-183` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-184` | `DELIV-PKG-021::GAP-PKG-184` | `HYPERCARE-OPS-002::GAP-PKG-184` + `READY-GATE-010::GAP-PKG-184` | `HYPERCARE-OPS-003::GAP-PKG-184` + `READY-GATE-011::GAP-PKG-184` | `HYPERCARE-OPS-007::GAP-PKG-184` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-185` | `DELIV-PKG-021::GAP-PKG-185` | `HYPERCARE-OPS-002::GAP-PKG-185` + `READY-GATE-010::GAP-PKG-185` | `HYPERCARE-OPS-003::GAP-PKG-185` + `READY-GATE-011::GAP-PKG-185` | `HYPERCARE-OPS-007::GAP-PKG-185` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-186` | `DELIV-PKG-021::GAP-PKG-186` | `HYPERCARE-OPS-002::GAP-PKG-186` + `READY-GATE-010::GAP-PKG-186` | `HYPERCARE-OPS-003::GAP-PKG-186` + `READY-GATE-011::GAP-PKG-186` | `HYPERCARE-OPS-007::GAP-PKG-186` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-187` | `DELIV-PKG-021::GAP-PKG-187` | `HYPERCARE-OPS-002::GAP-PKG-187` + `READY-GATE-010::GAP-PKG-187` | `HYPERCARE-OPS-003::GAP-PKG-187` + `READY-GATE-011::GAP-PKG-187` | `HYPERCARE-OPS-007::GAP-PKG-187` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-188` | `DELIV-PKG-021::GAP-PKG-188` | `HYPERCARE-OPS-002::GAP-PKG-188` + `READY-GATE-010::GAP-PKG-188` | `HYPERCARE-OPS-003::GAP-PKG-188` + `READY-GATE-011::GAP-PKG-188` | `HYPERCARE-OPS-007::GAP-PKG-188` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-189` | `DELIV-PKG-021::GAP-PKG-189` | `HYPERCARE-OPS-002::GAP-PKG-189` + `READY-GATE-010::GAP-PKG-189` | `HYPERCARE-OPS-003::GAP-PKG-189` + `READY-GATE-011::GAP-PKG-189` | `HYPERCARE-OPS-007::GAP-PKG-189` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-190` | `DELIV-PKG-021::GAP-PKG-190` | `HYPERCARE-OPS-002::GAP-PKG-190` + `READY-GATE-010::GAP-PKG-190` | `HYPERCARE-OPS-003::GAP-PKG-190` + `READY-GATE-011::GAP-PKG-190` | `HYPERCARE-OPS-007::GAP-PKG-190` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-191` | `DELIV-PKG-021::GAP-PKG-191` | `HYPERCARE-OPS-002::GAP-PKG-191` + `READY-GATE-010::GAP-PKG-191` | `HYPERCARE-OPS-003::GAP-PKG-191` + `READY-GATE-011::GAP-PKG-191` | `HYPERCARE-OPS-007::GAP-PKG-191` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-192` | `DELIV-PKG-021::GAP-PKG-192` | `HYPERCARE-OPS-002::GAP-PKG-192` + `READY-GATE-010::GAP-PKG-192` | `HYPERCARE-OPS-003::GAP-PKG-192` + `READY-GATE-011::GAP-PKG-192` | `HYPERCARE-OPS-007::GAP-PKG-192` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-193` | `DELIV-PKG-021::GAP-PKG-193` | `HYPERCARE-OPS-002::GAP-PKG-193` + `READY-GATE-010::GAP-PKG-193` | `HYPERCARE-OPS-003::GAP-PKG-193` + `READY-GATE-011::GAP-PKG-193` | `HYPERCARE-OPS-007::GAP-PKG-193` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-194` | `DELIV-PKG-021::GAP-PKG-194` | `HYPERCARE-OPS-002::GAP-PKG-194` + `READY-GATE-010::GAP-PKG-194` | `HYPERCARE-OPS-003::GAP-PKG-194` + `READY-GATE-011::GAP-PKG-194` | `HYPERCARE-OPS-007::GAP-PKG-194` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-195` | `DELIV-PKG-021::GAP-PKG-195` | `HYPERCARE-OPS-002::GAP-PKG-195` + `READY-GATE-010::GAP-PKG-195` | `HYPERCARE-OPS-003::GAP-PKG-195` + `READY-GATE-011::GAP-PKG-195` | `HYPERCARE-OPS-007::GAP-PKG-195` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-196` | `DELIV-PKG-021::GAP-PKG-196` | `HYPERCARE-OPS-002::GAP-PKG-196` + `READY-GATE-010::GAP-PKG-196` | `HYPERCARE-OPS-003::GAP-PKG-196` + `READY-GATE-011::GAP-PKG-196` | `HYPERCARE-OPS-007::GAP-PKG-196` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-197` | `DELIV-PKG-021::GAP-PKG-197` | `HYPERCARE-OPS-002::GAP-PKG-197` + `READY-GATE-010::GAP-PKG-197` | `HYPERCARE-OPS-003::GAP-PKG-197` + `READY-GATE-011::GAP-PKG-197` | `HYPERCARE-OPS-007::GAP-PKG-197` | BLOQUEADA POR GATE HEREDADO; no transferible a soporte ordinario hasta cerrar la condición propietaria | `ESPECIFICADO` |
+| `GAP-PKG-198` | `DELIV-PKG-021::GAP-PKG-198` | `HYPERCARE-OPS-002::GAP-PKG-198` + `READY-GATE-010::GAP-PKG-198` | `HYPERCARE-OPS-003::GAP-PKG-198` + `READY-GATE-011::GAP-PKG-198` | `HYPERCARE-OPS-007::GAP-PKG-198` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-199` | `DELIV-PKG-021::GAP-PKG-199` | `HYPERCARE-OPS-002::GAP-PKG-199` + `READY-GATE-010::GAP-PKG-199` | `HYPERCARE-OPS-003::GAP-PKG-199` + `READY-GATE-011::GAP-PKG-199` | `HYPERCARE-OPS-007::GAP-PKG-199` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-200` | `DELIV-PKG-021::GAP-PKG-200` | `HYPERCARE-OPS-002::GAP-PKG-200` + `READY-GATE-010::GAP-PKG-200` | `HYPERCARE-OPS-003::GAP-PKG-200` + `READY-GATE-011::GAP-PKG-200` | `HYPERCARE-OPS-007::GAP-PKG-200` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-201` | `DELIV-PKG-021::GAP-PKG-201` | `HYPERCARE-OPS-002::GAP-PKG-201` + `READY-GATE-010::GAP-PKG-201` | `HYPERCARE-OPS-003::GAP-PKG-201` + `READY-GATE-011::GAP-PKG-201` | `HYPERCARE-OPS-007::GAP-PKG-201` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-202` | `DELIV-PKG-021::GAP-PKG-202` | `HYPERCARE-OPS-002::GAP-PKG-202` + `READY-GATE-010::GAP-PKG-202` | `HYPERCARE-OPS-003::GAP-PKG-202` + `READY-GATE-011::GAP-PKG-202` | `HYPERCARE-OPS-007::GAP-PKG-202` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-203` | `DELIV-PKG-021::GAP-PKG-203` | `HYPERCARE-OPS-002::GAP-PKG-203` + `READY-GATE-010::GAP-PKG-203` | `HYPERCARE-OPS-003::GAP-PKG-203` + `READY-GATE-011::GAP-PKG-203` | `HYPERCARE-OPS-007::GAP-PKG-203` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-204` | `DELIV-PKG-021::GAP-PKG-204` | `HYPERCARE-OPS-002::GAP-PKG-204` + `READY-GATE-010::GAP-PKG-204` | `HYPERCARE-OPS-003::GAP-PKG-204` + `READY-GATE-011::GAP-PKG-204` | `HYPERCARE-OPS-007::GAP-PKG-204` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-205` | `DELIV-PKG-021::GAP-PKG-205` | `HYPERCARE-OPS-002::GAP-PKG-205` + `READY-GATE-010::GAP-PKG-205` | `HYPERCARE-OPS-003::GAP-PKG-205` + `READY-GATE-011::GAP-PKG-205` | `HYPERCARE-OPS-007::GAP-PKG-205` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-206` | `DELIV-PKG-021::GAP-PKG-206` | `HYPERCARE-OPS-002::GAP-PKG-206` + `READY-GATE-010::GAP-PKG-206` | `HYPERCARE-OPS-003::GAP-PKG-206` + `READY-GATE-011::GAP-PKG-206` | `HYPERCARE-OPS-007::GAP-PKG-206` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+| `GAP-PKG-207` | `DELIV-PKG-021::GAP-PKG-207` | `HYPERCARE-OPS-002::GAP-PKG-207` + `READY-GATE-010::GAP-PKG-207` | `HYPERCARE-OPS-003::GAP-PKG-207` + `READY-GATE-011::GAP-PKG-207` | `HYPERCARE-OPS-007::GAP-PKG-207` | EVALUAR TRANSFERENCIA CON EVIDENCIA REAL; directa o heredada según modalidad vigente                   | `ESPECIFICADO` |
+
+Las 18 filas con gate heredado cerrado corresponden exactamente a las identidades cuya capacitación operativa permanece `DIFERIDA_POR_GATE` en `DELIV-PKG-021`. La documentación objetivo continúa especificada, pero no se presenta como transferencia ejecutable mientras el gate siga cerrado.
+
+---
+
+#### 17. Reconciliación de cobertura
+
+008 conserva sin redistribución la composición heredada del universo de hypercare:
+
+| Modalidad heredada               | Cantidad |
+| -------------------------------- | -------: |
+| cobertura directa                |      160 |
+| cobertura compartida             |        3 |
+| controles                        |       26 |
+| AURA bloqueadas                  |       14 |
+| dependencias externas bloqueadas |        2 |
+| TALENTO fuera de línea           |        2 |
+| **Total**                        |  **207** |
+
+Las 160 + 3 + 26 identidades no bloqueadas por esas tres familias suman 189 y quedan **evaluables**, no transferidas. Las 14 + 2 + 2 identidades con gate heredado suman 18 y conservan el bloqueo. Ninguna modalidad cambia por esta tarea.
+
+---
+
+#### 18. Handoff hacia 009, 010 y `SHELL-CI-024`
+
+008 entrega únicamente:
+
+- a 009: la lista y estado de contingencias temporales todavía conocidas por soporte, sin decidir su retiro;
+- a 010: evidencia de que el criterio de transferencia y documentación fue satisfecho, bloqueado o invalidado, sin decidir el cierre global;
+- a `SHELL-CI-024::<package_id>`: el expediente ejecutado de handoff, versión documental vigente, evidencia de soporte/conocimiento y referencias de obligaciones restantes para certificación material.
+
+La cadena permanece:
+
+```text
+SHELL-CI-023::<package_id>
+→ evaluación y handoff definido por 008
+→ decisiones de contingencia de 009
+→ autoridad de cierre de 010
+→ certificación material de SHELL-CI-024::<package_id>
+```
+
+008 no adelanta ninguna de esas decisiones posteriores.
+
+---
+
+#### 19. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Fragmentos 04A afectados:** 0
+
+Justificación: 008 materializa un gate documental de transferencia y documentación sobre obligaciones ya protegidas por `TREQ-VISO-002`, `TREQ-CONT-005`, `TREQ-CONT-006`, los perfiles de prueba de `DELIV-PKG-016`, el expediente documental de `DELIV-PKG-021`, los criterios de `DELIV-PKG-023` y los gates `READY-GATE-009..012`. No introduce una regla empresarial, autorización, transición de datos, integración, algoritmo, SLA, prioridad o comportamiento ejecutable nuevo. La evidencia real de soporte, capacitación y operación continúa perteneciendo a las tareas de ejecución y a los requisitos ya vigentes.
+
+Si la ejecución real descubre una regresión o comportamiento no protegido, el requisito correspondiente deberá nacer desde la tarea propietaria del hallazgo con evidencia real; 008 no lo anticipa documentalmente.
+
+---
+
+#### 20. Criterios de aceptación
+
+`HYPERCARE-OPS-008` queda documentalmente completa cuando:
+
+1. la transferencia se define como cambio de modo de acompañamiento y no como cambio de propiedad de fuentes de verdad;
+2. el destino reutiliza `TI-DOM-001`, `VPROC-0058`, `TI-DOM-007`, `TI-DOM-008` y `TI-DOM-013` sin crear mesa paralela;
+3. los criterios acumulativos exigen soporte, documentación, conocimiento, observabilidad, escalamiento, recovery y residuales explícitos;
+4. documentación definitiva se define como versión operativa vigente para la instancia real y no como documento inmutable;
+5. la versión planificada de 021 no se confunde con publicación o preparación certificada;
+6. la capacitación no se considera ejecutada sin evidencia;
+7. known errors y workarounds mantienen versión, restricciones, propietario y escalamiento;
+8. deuda y trabajo posterior se consumen de 007 sin nueva aprobación ni duplicación de backlog;
+9. las contingencias activas quedan documentadas pero su retiro permanece reservado a 009;
+10. la autoridad de cierre permanece reservada a 010;
+11. la certificación material de transferencia permanece reservada a `SHELL-CI-024::<package_id>`;
+12. se materializan exactamente 207 identidades `GAP-PKG-001..207`, sin faltantes ni duplicados;
+13. exactamente 18 identidades conservan el gate heredado cerrado y 189 quedan evaluables sin afirmar transferencia ejecutada;
+14. se conserva la distribución 160 + 3 + 26 + 14 + 2 + 2 = 207;
+15. todas las filas permanecen `ESPECIFICADO` en esta fase documental;
+16. la tarea no ejecuta publicación, capacitación, cambios de acceso, configuración, código, migraciones, datos, despliegues ni operaciones Supabase;
+17. no se crean ni modifican requisitos `TREQ-*`.
+
+---
+
+#### 21. Cambios físicos
+
+Ninguno.
+
+La tarea no ejecuta cambios de código, configuración, despliegue, datos, migraciones, DDL, DML, backfills, accesos, routing, alertas, documentación publicada, capacitación, Supabase ni servicios remotos.
+
+---
+
+#### 22. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores
+
+##### TAREA ACTUAL APROBADA
+
+HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y documentación definitiva
+
+##### SIGUIENTE TAREA RESERVADA
+
+HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales
+
+
 ### [ ] HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales
 ### [ ] HYPERCARE-OPS-010 — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo
 
