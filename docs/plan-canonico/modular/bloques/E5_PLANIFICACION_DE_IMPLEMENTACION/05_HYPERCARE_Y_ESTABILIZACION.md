@@ -4084,7 +4084,565 @@ HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corre
 HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores
 
 
-### [ ] HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores
+### ✅ HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores
+
+Estado: APROBADA
+Tarea anterior: HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes
+Tarea siguiente: HYPERCARE-OPS-008 — Definir transferencia a soporte y documentación operativa
+Tipo de tarea: Documental — gobierno de residuales, deuda aceptada y trabajo posterior de hypercare
+
+---
+
+#### 1. Propósito
+
+Definir y materializar el gobierno documental mediante el cual una condición residual detectada durante hypercare puede registrarse, evaluarse, rechazarse como diferible, vincularse a backlog existente, aprobarse como deuda aceptada o transferirse como trabajo posterior, sin convertir esa decisión en cierre de incidente, cierre de problema, cierre de conciliación ni cierre de hypercare.
+
+La tarea conserva la trazabilidad completa desde la identidad del paquete y el candidato observado hasta el residual, el propietario, la autoridad que acepta el riesgo, el destino canónico, la puerta o fecha de resolución y la evidencia exigida para su cierre posterior.
+
+---
+
+#### 2. Resultado material
+
+Se establece el contrato documental `hypercare_residual_disposition::<package_id>` para las 207 identidades de paquete y se materializa una decisión documental por cada una.
+
+El resultado separa cuatro conceptos que no son equivalentes:
+
+1. condición residual: efecto, hallazgo o limitación que permanece después de la observación, corrección, conciliación o recuperación aplicable;
+2. deuda aceptada: residual que permanece de forma consciente bajo riesgo explícitamente aceptado, con propietario, autoridad, control, destino y puerta de resolución;
+3. trabajo posterior: acción necesaria que debe continuar en un destino canónico existente sin que su programación implique por sí misma aceptación de riesgo;
+4. backlog existente: registro canónico ya materializado, incluido `BKL-REPO-001` cuando corresponda, que debe reutilizarse en lugar de crear una segunda fuente de verdad.
+
+En la fase documental actual no se declaran deudas operativas reales, incidentes reales ni tareas posteriores reales derivadas de una ejecución inexistente. El contrato queda `ESPECIFICADO` y preparado para que la ejecución futura de hypercare registre evidencia real sin inferencias.
+
+---
+
+#### 3. Entradas canónicas
+
+La disposición de cada residual consume, según aplicabilidad, las siguientes fuentes vigentes:
+
+- `HYPERCARE-OPS-001::<package_id>`: identidad temporal, candidato, ambiente, alcance y permanencia de hypercare;
+- `HYPERCARE-OPS-002::<package_id>`: responsabilidad funcional, responsabilidad técnica, cobertura y autoridad aplicable;
+- `HYPERCARE-OPS-003::<package_id>`: hallazgos técnicos de errores, colas, integraciones y rendimiento;
+- `HYPERCARE-OPS-004::<package_id>`: adopción, tiempos y desviaciones operativas;
+- `HYPERCARE-OPS-005::<package_id>`: conciliaciones de datos y efectos entre dominios;
+- `HYPERCARE-OPS-006::<package_id>`: clasificación de incidente, impacto, urgencia, prioridad, corrección, verificación y residual resultante;
+- `BKL-REPO-001`: backlog funcional y técnico ya trazable por repositorio o superficie;
+- `TI-DOM-007`: política canónica de incidentes y condiciones de resolución;
+- `TI-DOM-008`: gestión de problemas, acciones correctivas y preventivas, eficacia y aceptación explícita de riesgo;
+- `TREQ-CONT-005`: prohibición de cerrar continuidad con pendientes sin propietario;
+- `TREQ-CONT-006`: acciones posteriores con responsable, fecha, eficacia y actualización de dependencias operativas;
+- gobierno vigente de `04A`: semántica de `DIFERIDO`, que exige justificación, riesgo aceptado, tarea y puerta de resolución.
+
+---
+
+#### 4. Invariantes de gobierno
+
+1. Un hallazgo no se convierte automáticamente en deuda.
+2. Una desviación operativa no se convierte automáticamente en deuda.
+3. Una diferencia de conciliación no se convierte automáticamente en deuda.
+4. Un incidente restaurado puede dejar una causa o residual pendiente, pero el residual requiere evaluación separada antes de cualquier diferimiento.
+5. `RESOLVED_WITH_PROBLEM` conserva el problema abierto; 007 no lo transforma en deuda ni lo cierra.
+6. `RISK_ACCEPTED` de gestión de problemas no significa eficacia correctiva y no autoriza a ocultar la condición causal.
+7. Una deuda aprobada no cierra por sí misma un incidente, problema, conciliación, requisito de prueba, paquete, cutover o hypercare.
+8. Un residual que afecte seguridad, integridad, dinero, inventario, identidad, cumplimiento, segregación o una puerta bloqueante no puede diferirse si la fuente canónica exige corrección previa.
+9. Ningún residual puede quedar sin propietario, autoridad, destino y condición de salida.
+10. 007 no crea una autoridad universal denominada líder de deuda, comité de deuda, dueño de hypercare o equivalente.
+11. La prioridad de incidente de `TI-DOM-007` y la prioridad `P0..P3` de `BKL-REPO-001` son taxonomías distintas y no se convierten una en otra por igualdad nominal.
+12. Un nuevo identificador de roadmap no puede inferirse desde un residual. Si no existe destino canónico autorizado, el diferimiento queda bloqueado hasta que exista uno por el mecanismo de planificación correspondiente.
+13. Las 207 identidades permanecen estables; esta tarea no cambia su modalidad, alcance, candidato, repositorio, propietario o estado de implementación.
+
+---
+
+#### 5. Unidad de registro
+
+La unidad mínima de disposición se identifica mediante:
+
+`package_id + candidate_ref + environment + authorized_scope_ref + residual_condition_ref`
+
+Cuando el residual provenga de un incidente o problema se agregan `incident_ref` y `problem_record_ref`. Cuando provenga de una conciliación se agrega `reconciliation_ref`. Si una misma condición afecta varios paquetes, cada paquete conserva su enlace a una referencia residual compartida sin duplicar la fuente causal.
+
+---
+
+#### 6. Condiciones de elegibilidad para diferimiento
+
+Un residual solo puede pasar a evaluación de deuda o trabajo posterior cuando, de forma acumulativa y según aplicabilidad:
+
+1. existe evidencia real del residual y una fuente de origen identificable;
+2. el candidato, ambiente y alcance coinciden con la ejecución que produjo la evidencia;
+3. la obligación inmediata de restauración o contención exigida por la fuente aplicable ya fue satisfecha o el estado conserva explícitamente el bloqueo;
+4. no se intenta usar 007 para cerrar un incidente que deba permanecer abierto;
+5. no se intenta usar 007 para cerrar un problema sin cumplir `TI-DOM-008`;
+6. no existe una conciliación obligatoria pendiente cuya ausencia impida aceptar el estado;
+7. el efecto residual y su riesgo están descritos mediante referencias verificables;
+8. existe propietario responsable de la remediación o seguimiento;
+9. existe autoridad vigente para aceptar el riesgo o aprobar el trabajo posterior dentro del alcance afectado;
+10. existe un destino canónico exacto: fila de backlog existente, tarea ya materializada o ambos;
+11. existe una fecha, ventana o puerta de resolución definida por una fuente canónica;
+12. existen controles temporales, monitoreo o condiciones de operación cuando el riesgo los exige;
+13. existe evidencia de salida requerida para demostrar posteriormente corrección, eficacia o cierre;
+14. el diferimiento no contradice requisitos de prueba, controles regulatorios, segregación o puertas de seguridad aplicables.
+
+Si una condición obligatoria falta, la disposición queda bloqueada y no se presume aceptación.
+
+---
+
+#### 7. Disposiciones permitidas
+
+Las disposiciones siguientes son resultados de gobierno de 007 y no sustituyen las máquinas de estado de incidentes, problemas, paquetes o backlog:
+
+| Disposición                   | Significado                                                                                                  | Efecto permitido                                                 |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| `NO_DIFERIBLE`                | la fuente exige resolución antes de la puerta aplicable                                                      | mantiene bloqueo; no crea deuda                                  |
+| `VINCULAR_BACKLOG_EXISTENTE`  | el residual ya está cubierto por una fila `BKL-*` vigente                                                    | agrega trazabilidad de hypercare sin duplicar backlog            |
+| `DEUDA_APROBABLE`             | el residual puede permanecer temporalmente bajo riesgo explícito y autoridad competente                      | permite someterlo a aprobación formal, no lo aprueba por sí solo |
+| `TRABAJO_POSTERIOR_APROBABLE` | existe trabajo posterior necesario con destino y propietario, sin implicar por sí mismo aceptación de riesgo | permite programar el handoff documental                          |
+| `BLOQUEADO_POR_AUTORIDAD`     | no existe autoridad vigente suficiente                                                                       | impide diferimiento                                              |
+| `BLOQUEADO_POR_DESTINO`       | no existe backlog o tarea canónica exacta                                                                    | impide diferimiento                                              |
+| `BLOQUEADO_POR_EVIDENCIA`     | falta evidencia o reconciliación exigible                                                                    | impide diferimiento                                              |
+
+La ejecución futura registrará además la decisión de aprobación como aceptada o rechazada usando la autoridad propia del dominio afectado. 007 no crea una jerarquía paralela de aprobadores.
+
+---
+
+#### 8. Contrato del registro de deuda o trabajo posterior
+
+Todo registro que resulte aceptado en ejecución deberá conservar como mínimo:
+
+| Campo                    | Regla                                                                       |
+| ------------------------ | --------------------------------------------------------------------------- |
+| `package_id`             | identidad canónica `GAP-PKG-*` afectada                                     |
+| `candidate_ref`          | candidato exacto de la ejecución                                            |
+| `environment`            | ambiente en el que se produjo la evidencia                                  |
+| `authorized_scope_ref`   | alcance autorizado de la observación                                        |
+| `source_hypercare_ref`   | referencia exacta a 003, 004, 005 o 006 que originó el residual             |
+| `residual_condition_ref` | evidencia o condición residual identificable                                |
+| `incident_ref`           | incidente relacionado cuando aplique                                        |
+| `problem_record_ref`     | problema relacionado cuando aplique                                         |
+| `reconciliation_ref`     | conciliación relacionada cuando aplique                                     |
+| `residual_disposition`   | disposición gobernada por la sección 7                                      |
+| `risk_or_impact_ref`     | impacto o riesgo residual sustentado por la fuente aplicable                |
+| `temporary_control_ref`  | control temporal o compensatorio ya autorizado cuando aplique               |
+| `monitoring_ref`         | monitoreo o señal que permite detectar deterioro mientras permanece abierto |
+| `owner_ref`              | propietario de seguimiento y resolución                                     |
+| `approval_authority_ref` | autoridad vigente que puede aceptar el riesgo o aprobar el destino          |
+| `approval_decision_ref`  | evidencia de aceptación o rechazo de la disposición                         |
+| `existing_backlog_ref`   | fila `BKL-*` aplicable cuando ya exista                                     |
+| `destination_task_ref`   | tarea canónica existente responsable de la resolución                       |
+| `target_gate_or_due_ref` | fecha, ventana o puerta canónica de resolución                              |
+| `closure_evidence_ref`   | evidencia futura exigida para retirar el residual                           |
+| `support_handoff_ref`    | referencia que 008 podrá consumir si el residual afecta soporte             |
+| `documentary_state`      | estado documental sin afirmar implementación ni verificación operativa      |
+
+El registro no duplica datos maestros de propietario, prioridad, repositorio o requisito cuando estos ya existen en una fuente canónica; conserva referencias exactas para evitar divergencia.
+
+---
+
+#### 9. Regla de aprobación
+
+La aprobación de una deuda o trabajo posterior exige una decisión explícita emitida por la autoridad competente del alcance afectado. La responsabilidad funcional, la responsabilidad técnica, el ejecutor y la autoridad de aceptación de riesgo permanecen diferenciados.
+
+Reglas:
+
+1. la responsabilidad funcional confirma impacto y aceptabilidad empresarial dentro de su autoridad;
+2. la responsabilidad técnica confirma la condición, el mecanismo de control y el destino técnico dentro de su autoridad;
+3. ninguna de las dos adquiere automáticamente autoridad de cierre o aceptación de riesgo fuera de su contrato;
+4. un proveedor, tercero o ejecutor no hereda autoridad de negocio por participar en la corrección;
+5. si `TI-DOM-008` aplica `RISK_ACCEPTED`, deben existir la aceptación, justificación y referencia de autoridad exigidas por esa política;
+6. una aprobación expirada, revocada o fuera de alcance no es utilizable;
+7. un conflicto entre autoridades bloquea el diferimiento hasta su resolución mediante el mecanismo canónico de escalamiento;
+8. la aprobación documental de deuda no certifica eficacia de una corrección ni satisfacción de un `TREQ-*`.
+
+---
+
+#### 10. Integración con `BKL-REPO-001`
+
+`BKL-REPO-001` permanece como backlog derivado de auditoría E1 y no se reemplaza por esta tarea.
+
+Cuando un residual de hypercare corresponda a una brecha ya representada en `BKL-REPO-001`:
+
+1. se referencia la fila `BKL-*` existente;
+2. se conserva su prioridad `P0..P3`, propietario, destino y evidencia de cierre;
+3. se agrega la referencia de evidencia de hypercare como nueva trazabilidad, no como un backlog duplicado;
+4. la prioridad de incidente no sobrescribe la prioridad del backlog;
+5. el estado de un incidente o problema no sobrescribe el estado de la fila `BKL-*`;
+6. el cierre futuro del residual debe respetar tanto la evidencia exigida por su fuente como la puerta de cierre del backlog cuando ambos apliquen.
+
+Cuando el residual no corresponda a una fila `BKL-*`, debe enlazarse a una tarea canónica existente. Si ninguna existe, `BLOQUEADO_POR_DESTINO` impide aprobar el diferimiento hasta que el mecanismo de planificación autorizado materialice el destino.
+
+---
+
+#### 11. Procedimiento de registro y disposición
+
+Para cada residual real producido por hypercare se aplica esta secuencia:
+
+1. capturar la referencia de origen en 003, 004, 005 o 006;
+2. confirmar `package_id`, candidato, ambiente y alcance;
+3. determinar si existe incidente, problema o conciliación relacionada;
+4. comprobar si la fuente obliga a resolver antes de cualquier diferimiento;
+5. comprobar si el residual ya está representado por `BKL-REPO-001` u otro destino canónico;
+6. identificar propietario, autoridad y controles temporales;
+7. documentar impacto o riesgo residual sin degradarlo por conveniencia de cierre;
+8. resolver una disposición de la sección 7;
+9. si la disposición es aprobable, obtener decisión explícita de la autoridad aplicable;
+10. fijar destino y puerta o fecha de resolución;
+11. fijar evidencia de salida y condiciones de monitoreo;
+12. entregar a 008 las obligaciones que deban ser conocidas por soporte;
+13. conservar el residual abierto hasta que la fuente responsable demuestre su salida;
+14. permitir que 010 evalúe el cierre de hypercare sin tratar la mera existencia de un registro de deuda como prueba suficiente de cierre.
+
+---
+
+#### 12. Condiciones que bloquean aprobación de deuda
+
+La deuda o trabajo posterior no puede aprobarse cuando ocurra cualquiera de estas condiciones aplicables:
+
+- incidente que la política vigente exige mantener abierto;
+- problema cuya gestión no cumple las condiciones de `TI-DOM-008`;
+- conciliación obligatoria pendiente o diferencia sin propietario;
+- ausencia de evidencia del residual;
+- candidato, ambiente o alcance no correlacionables;
+- propietario inexistente o ambiguo;
+- autoridad de aceptación inexistente, expirada o fuera de alcance;
+- destino canónico inexistente;
+- ausencia de puerta, fecha o condición de salida cuando sea exigible;
+- control temporal insuficiente para un riesgo que no puede permanecer expuesto;
+- intento de reinterpretar una prioridad, severidad o requisito para disminuir el bloqueo;
+- intento de presentar el diferimiento como corrección ejecutada, eficacia demostrada o requisito satisfecho;
+- incumplimiento de seguridad, cumplimiento, segregación o protección regulatoria no diferible.
+
+---
+
+#### 13. Relación con requisitos de prueba
+
+Un `TREQ-*` no se considera satisfecho, verificado ni descartado por existir deuda aprobada.
+
+Si un requisito vigente queda temporalmente diferido, conserva el gobierno de `04A`, incluida justificación, riesgo aceptado, tarea responsable y puerta de resolución. 007 solo enlaza la evidencia de hypercare con ese gobierno y no modifica por sí misma el estado del requisito.
+
+Un defecto o regresión real descubierto durante la ejecución futura que no esté protegido por un requisito existente deberá producir el requisito correspondiente en la tarea que materialice ese hallazgo, con evidencia real y sin anticiparlo documentalmente en 007.
+
+---
+
+#### 14. Relación con soporte, contingencia y cierre
+
+- `HYPERCARE-OPS-008` recibe las deudas y trabajos posteriores aprobados que afecten operación de soporte, documentación, runbooks, conocimiento, escalamiento o seguimiento; no obtiene por ello autoridad para aprobar nueva deuda.
+- `HYPERCARE-OPS-009` conserva la decisión sobre retiro o permanencia de mecanismos de contingencia; una deuda no autoriza retirar una contingencia necesaria.
+- `HYPERCARE-OPS-010` conserva la autoridad documental de cierre de hypercare; una deuda aprobada es una entrada evaluable, no una autorización automática de cierre.
+
+---
+
+#### 15. Matriz materializada de disposición por identidad
+
+Cada `package_id` aparece exactamente una vez. Las referencias `::<package_id>` apuntan a la fila homónima de la fuente indicada y no crean una segunda fuente de verdad para candidatos, propietarios, incidentes, conciliaciones o backlog.
+
+| `package_id`  | observación técnica              | desviación operativa             | conciliación                     | corrección y residual            | regla de destino                                                                          | decisión 007                          | estado documental |
+| ------------- | -------------------------------- | -------------------------------- | -------------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------- | ----------------- |
+| `GAP-PKG-001` | `HYPERCARE-OPS-003::GAP-PKG-001` | `HYPERCARE-OPS-004::GAP-PKG-001` | `HYPERCARE-OPS-005::GAP-PKG-001` | `HYPERCARE-OPS-006::GAP-PKG-001` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-002` | `HYPERCARE-OPS-003::GAP-PKG-002` | `HYPERCARE-OPS-004::GAP-PKG-002` | `HYPERCARE-OPS-005::GAP-PKG-002` | `HYPERCARE-OPS-006::GAP-PKG-002` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-003` | `HYPERCARE-OPS-003::GAP-PKG-003` | `HYPERCARE-OPS-004::GAP-PKG-003` | `HYPERCARE-OPS-005::GAP-PKG-003` | `HYPERCARE-OPS-006::GAP-PKG-003` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-004` | `HYPERCARE-OPS-003::GAP-PKG-004` | `HYPERCARE-OPS-004::GAP-PKG-004` | `HYPERCARE-OPS-005::GAP-PKG-004` | `HYPERCARE-OPS-006::GAP-PKG-004` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-005` | `HYPERCARE-OPS-003::GAP-PKG-005` | `HYPERCARE-OPS-004::GAP-PKG-005` | `HYPERCARE-OPS-005::GAP-PKG-005` | `HYPERCARE-OPS-006::GAP-PKG-005` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-006` | `HYPERCARE-OPS-003::GAP-PKG-006` | `HYPERCARE-OPS-004::GAP-PKG-006` | `HYPERCARE-OPS-005::GAP-PKG-006` | `HYPERCARE-OPS-006::GAP-PKG-006` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-007` | `HYPERCARE-OPS-003::GAP-PKG-007` | `HYPERCARE-OPS-004::GAP-PKG-007` | `HYPERCARE-OPS-005::GAP-PKG-007` | `HYPERCARE-OPS-006::GAP-PKG-007` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-008` | `HYPERCARE-OPS-003::GAP-PKG-008` | `HYPERCARE-OPS-004::GAP-PKG-008` | `HYPERCARE-OPS-005::GAP-PKG-008` | `HYPERCARE-OPS-006::GAP-PKG-008` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-009` | `HYPERCARE-OPS-003::GAP-PKG-009` | `HYPERCARE-OPS-004::GAP-PKG-009` | `HYPERCARE-OPS-005::GAP-PKG-009` | `HYPERCARE-OPS-006::GAP-PKG-009` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-010` | `HYPERCARE-OPS-003::GAP-PKG-010` | `HYPERCARE-OPS-004::GAP-PKG-010` | `HYPERCARE-OPS-005::GAP-PKG-010` | `HYPERCARE-OPS-006::GAP-PKG-010` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-011` | `HYPERCARE-OPS-003::GAP-PKG-011` | `HYPERCARE-OPS-004::GAP-PKG-011` | `HYPERCARE-OPS-005::GAP-PKG-011` | `HYPERCARE-OPS-006::GAP-PKG-011` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-012` | `HYPERCARE-OPS-003::GAP-PKG-012` | `HYPERCARE-OPS-004::GAP-PKG-012` | `HYPERCARE-OPS-005::GAP-PKG-012` | `HYPERCARE-OPS-006::GAP-PKG-012` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-013` | `HYPERCARE-OPS-003::GAP-PKG-013` | `HYPERCARE-OPS-004::GAP-PKG-013` | `HYPERCARE-OPS-005::GAP-PKG-013` | `HYPERCARE-OPS-006::GAP-PKG-013` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-014` | `HYPERCARE-OPS-003::GAP-PKG-014` | `HYPERCARE-OPS-004::GAP-PKG-014` | `HYPERCARE-OPS-005::GAP-PKG-014` | `HYPERCARE-OPS-006::GAP-PKG-014` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-015` | `HYPERCARE-OPS-003::GAP-PKG-015` | `HYPERCARE-OPS-004::GAP-PKG-015` | `HYPERCARE-OPS-005::GAP-PKG-015` | `HYPERCARE-OPS-006::GAP-PKG-015` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-016` | `HYPERCARE-OPS-003::GAP-PKG-016` | `HYPERCARE-OPS-004::GAP-PKG-016` | `HYPERCARE-OPS-005::GAP-PKG-016` | `HYPERCARE-OPS-006::GAP-PKG-016` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-017` | `HYPERCARE-OPS-003::GAP-PKG-017` | `HYPERCARE-OPS-004::GAP-PKG-017` | `HYPERCARE-OPS-005::GAP-PKG-017` | `HYPERCARE-OPS-006::GAP-PKG-017` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-018` | `HYPERCARE-OPS-003::GAP-PKG-018` | `HYPERCARE-OPS-004::GAP-PKG-018` | `HYPERCARE-OPS-005::GAP-PKG-018` | `HYPERCARE-OPS-006::GAP-PKG-018` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-019` | `HYPERCARE-OPS-003::GAP-PKG-019` | `HYPERCARE-OPS-004::GAP-PKG-019` | `HYPERCARE-OPS-005::GAP-PKG-019` | `HYPERCARE-OPS-006::GAP-PKG-019` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-020` | `HYPERCARE-OPS-003::GAP-PKG-020` | `HYPERCARE-OPS-004::GAP-PKG-020` | `HYPERCARE-OPS-005::GAP-PKG-020` | `HYPERCARE-OPS-006::GAP-PKG-020` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-021` | `HYPERCARE-OPS-003::GAP-PKG-021` | `HYPERCARE-OPS-004::GAP-PKG-021` | `HYPERCARE-OPS-005::GAP-PKG-021` | `HYPERCARE-OPS-006::GAP-PKG-021` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-022` | `HYPERCARE-OPS-003::GAP-PKG-022` | `HYPERCARE-OPS-004::GAP-PKG-022` | `HYPERCARE-OPS-005::GAP-PKG-022` | `HYPERCARE-OPS-006::GAP-PKG-022` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-023` | `HYPERCARE-OPS-003::GAP-PKG-023` | `HYPERCARE-OPS-004::GAP-PKG-023` | `HYPERCARE-OPS-005::GAP-PKG-023` | `HYPERCARE-OPS-006::GAP-PKG-023` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-024` | `HYPERCARE-OPS-003::GAP-PKG-024` | `HYPERCARE-OPS-004::GAP-PKG-024` | `HYPERCARE-OPS-005::GAP-PKG-024` | `HYPERCARE-OPS-006::GAP-PKG-024` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-025` | `HYPERCARE-OPS-003::GAP-PKG-025` | `HYPERCARE-OPS-004::GAP-PKG-025` | `HYPERCARE-OPS-005::GAP-PKG-025` | `HYPERCARE-OPS-006::GAP-PKG-025` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-026` | `HYPERCARE-OPS-003::GAP-PKG-026` | `HYPERCARE-OPS-004::GAP-PKG-026` | `HYPERCARE-OPS-005::GAP-PKG-026` | `HYPERCARE-OPS-006::GAP-PKG-026` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-027` | `HYPERCARE-OPS-003::GAP-PKG-027` | `HYPERCARE-OPS-004::GAP-PKG-027` | `HYPERCARE-OPS-005::GAP-PKG-027` | `HYPERCARE-OPS-006::GAP-PKG-027` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-028` | `HYPERCARE-OPS-003::GAP-PKG-028` | `HYPERCARE-OPS-004::GAP-PKG-028` | `HYPERCARE-OPS-005::GAP-PKG-028` | `HYPERCARE-OPS-006::GAP-PKG-028` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-029` | `HYPERCARE-OPS-003::GAP-PKG-029` | `HYPERCARE-OPS-004::GAP-PKG-029` | `HYPERCARE-OPS-005::GAP-PKG-029` | `HYPERCARE-OPS-006::GAP-PKG-029` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-030` | `HYPERCARE-OPS-003::GAP-PKG-030` | `HYPERCARE-OPS-004::GAP-PKG-030` | `HYPERCARE-OPS-005::GAP-PKG-030` | `HYPERCARE-OPS-006::GAP-PKG-030` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-031` | `HYPERCARE-OPS-003::GAP-PKG-031` | `HYPERCARE-OPS-004::GAP-PKG-031` | `HYPERCARE-OPS-005::GAP-PKG-031` | `HYPERCARE-OPS-006::GAP-PKG-031` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-032` | `HYPERCARE-OPS-003::GAP-PKG-032` | `HYPERCARE-OPS-004::GAP-PKG-032` | `HYPERCARE-OPS-005::GAP-PKG-032` | `HYPERCARE-OPS-006::GAP-PKG-032` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-033` | `HYPERCARE-OPS-003::GAP-PKG-033` | `HYPERCARE-OPS-004::GAP-PKG-033` | `HYPERCARE-OPS-005::GAP-PKG-033` | `HYPERCARE-OPS-006::GAP-PKG-033` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-034` | `HYPERCARE-OPS-003::GAP-PKG-034` | `HYPERCARE-OPS-004::GAP-PKG-034` | `HYPERCARE-OPS-005::GAP-PKG-034` | `HYPERCARE-OPS-006::GAP-PKG-034` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-035` | `HYPERCARE-OPS-003::GAP-PKG-035` | `HYPERCARE-OPS-004::GAP-PKG-035` | `HYPERCARE-OPS-005::GAP-PKG-035` | `HYPERCARE-OPS-006::GAP-PKG-035` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-036` | `HYPERCARE-OPS-003::GAP-PKG-036` | `HYPERCARE-OPS-004::GAP-PKG-036` | `HYPERCARE-OPS-005::GAP-PKG-036` | `HYPERCARE-OPS-006::GAP-PKG-036` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-037` | `HYPERCARE-OPS-003::GAP-PKG-037` | `HYPERCARE-OPS-004::GAP-PKG-037` | `HYPERCARE-OPS-005::GAP-PKG-037` | `HYPERCARE-OPS-006::GAP-PKG-037` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-038` | `HYPERCARE-OPS-003::GAP-PKG-038` | `HYPERCARE-OPS-004::GAP-PKG-038` | `HYPERCARE-OPS-005::GAP-PKG-038` | `HYPERCARE-OPS-006::GAP-PKG-038` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-039` | `HYPERCARE-OPS-003::GAP-PKG-039` | `HYPERCARE-OPS-004::GAP-PKG-039` | `HYPERCARE-OPS-005::GAP-PKG-039` | `HYPERCARE-OPS-006::GAP-PKG-039` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-040` | `HYPERCARE-OPS-003::GAP-PKG-040` | `HYPERCARE-OPS-004::GAP-PKG-040` | `HYPERCARE-OPS-005::GAP-PKG-040` | `HYPERCARE-OPS-006::GAP-PKG-040` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-041` | `HYPERCARE-OPS-003::GAP-PKG-041` | `HYPERCARE-OPS-004::GAP-PKG-041` | `HYPERCARE-OPS-005::GAP-PKG-041` | `HYPERCARE-OPS-006::GAP-PKG-041` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-042` | `HYPERCARE-OPS-003::GAP-PKG-042` | `HYPERCARE-OPS-004::GAP-PKG-042` | `HYPERCARE-OPS-005::GAP-PKG-042` | `HYPERCARE-OPS-006::GAP-PKG-042` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-043` | `HYPERCARE-OPS-003::GAP-PKG-043` | `HYPERCARE-OPS-004::GAP-PKG-043` | `HYPERCARE-OPS-005::GAP-PKG-043` | `HYPERCARE-OPS-006::GAP-PKG-043` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-044` | `HYPERCARE-OPS-003::GAP-PKG-044` | `HYPERCARE-OPS-004::GAP-PKG-044` | `HYPERCARE-OPS-005::GAP-PKG-044` | `HYPERCARE-OPS-006::GAP-PKG-044` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-045` | `HYPERCARE-OPS-003::GAP-PKG-045` | `HYPERCARE-OPS-004::GAP-PKG-045` | `HYPERCARE-OPS-005::GAP-PKG-045` | `HYPERCARE-OPS-006::GAP-PKG-045` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-046` | `HYPERCARE-OPS-003::GAP-PKG-046` | `HYPERCARE-OPS-004::GAP-PKG-046` | `HYPERCARE-OPS-005::GAP-PKG-046` | `HYPERCARE-OPS-006::GAP-PKG-046` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-047` | `HYPERCARE-OPS-003::GAP-PKG-047` | `HYPERCARE-OPS-004::GAP-PKG-047` | `HYPERCARE-OPS-005::GAP-PKG-047` | `HYPERCARE-OPS-006::GAP-PKG-047` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-048` | `HYPERCARE-OPS-003::GAP-PKG-048` | `HYPERCARE-OPS-004::GAP-PKG-048` | `HYPERCARE-OPS-005::GAP-PKG-048` | `HYPERCARE-OPS-006::GAP-PKG-048` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-049` | `HYPERCARE-OPS-003::GAP-PKG-049` | `HYPERCARE-OPS-004::GAP-PKG-049` | `HYPERCARE-OPS-005::GAP-PKG-049` | `HYPERCARE-OPS-006::GAP-PKG-049` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-050` | `HYPERCARE-OPS-003::GAP-PKG-050` | `HYPERCARE-OPS-004::GAP-PKG-050` | `HYPERCARE-OPS-005::GAP-PKG-050` | `HYPERCARE-OPS-006::GAP-PKG-050` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-051` | `HYPERCARE-OPS-003::GAP-PKG-051` | `HYPERCARE-OPS-004::GAP-PKG-051` | `HYPERCARE-OPS-005::GAP-PKG-051` | `HYPERCARE-OPS-006::GAP-PKG-051` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-052` | `HYPERCARE-OPS-003::GAP-PKG-052` | `HYPERCARE-OPS-004::GAP-PKG-052` | `HYPERCARE-OPS-005::GAP-PKG-052` | `HYPERCARE-OPS-006::GAP-PKG-052` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-053` | `HYPERCARE-OPS-003::GAP-PKG-053` | `HYPERCARE-OPS-004::GAP-PKG-053` | `HYPERCARE-OPS-005::GAP-PKG-053` | `HYPERCARE-OPS-006::GAP-PKG-053` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-054` | `HYPERCARE-OPS-003::GAP-PKG-054` | `HYPERCARE-OPS-004::GAP-PKG-054` | `HYPERCARE-OPS-005::GAP-PKG-054` | `HYPERCARE-OPS-006::GAP-PKG-054` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-055` | `HYPERCARE-OPS-003::GAP-PKG-055` | `HYPERCARE-OPS-004::GAP-PKG-055` | `HYPERCARE-OPS-005::GAP-PKG-055` | `HYPERCARE-OPS-006::GAP-PKG-055` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-056` | `HYPERCARE-OPS-003::GAP-PKG-056` | `HYPERCARE-OPS-004::GAP-PKG-056` | `HYPERCARE-OPS-005::GAP-PKG-056` | `HYPERCARE-OPS-006::GAP-PKG-056` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-057` | `HYPERCARE-OPS-003::GAP-PKG-057` | `HYPERCARE-OPS-004::GAP-PKG-057` | `HYPERCARE-OPS-005::GAP-PKG-057` | `HYPERCARE-OPS-006::GAP-PKG-057` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-058` | `HYPERCARE-OPS-003::GAP-PKG-058` | `HYPERCARE-OPS-004::GAP-PKG-058` | `HYPERCARE-OPS-005::GAP-PKG-058` | `HYPERCARE-OPS-006::GAP-PKG-058` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-059` | `HYPERCARE-OPS-003::GAP-PKG-059` | `HYPERCARE-OPS-004::GAP-PKG-059` | `HYPERCARE-OPS-005::GAP-PKG-059` | `HYPERCARE-OPS-006::GAP-PKG-059` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-060` | `HYPERCARE-OPS-003::GAP-PKG-060` | `HYPERCARE-OPS-004::GAP-PKG-060` | `HYPERCARE-OPS-005::GAP-PKG-060` | `HYPERCARE-OPS-006::GAP-PKG-060` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-061` | `HYPERCARE-OPS-003::GAP-PKG-061` | `HYPERCARE-OPS-004::GAP-PKG-061` | `HYPERCARE-OPS-005::GAP-PKG-061` | `HYPERCARE-OPS-006::GAP-PKG-061` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-062` | `HYPERCARE-OPS-003::GAP-PKG-062` | `HYPERCARE-OPS-004::GAP-PKG-062` | `HYPERCARE-OPS-005::GAP-PKG-062` | `HYPERCARE-OPS-006::GAP-PKG-062` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-063` | `HYPERCARE-OPS-003::GAP-PKG-063` | `HYPERCARE-OPS-004::GAP-PKG-063` | `HYPERCARE-OPS-005::GAP-PKG-063` | `HYPERCARE-OPS-006::GAP-PKG-063` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-064` | `HYPERCARE-OPS-003::GAP-PKG-064` | `HYPERCARE-OPS-004::GAP-PKG-064` | `HYPERCARE-OPS-005::GAP-PKG-064` | `HYPERCARE-OPS-006::GAP-PKG-064` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-065` | `HYPERCARE-OPS-003::GAP-PKG-065` | `HYPERCARE-OPS-004::GAP-PKG-065` | `HYPERCARE-OPS-005::GAP-PKG-065` | `HYPERCARE-OPS-006::GAP-PKG-065` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-066` | `HYPERCARE-OPS-003::GAP-PKG-066` | `HYPERCARE-OPS-004::GAP-PKG-066` | `HYPERCARE-OPS-005::GAP-PKG-066` | `HYPERCARE-OPS-006::GAP-PKG-066` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-067` | `HYPERCARE-OPS-003::GAP-PKG-067` | `HYPERCARE-OPS-004::GAP-PKG-067` | `HYPERCARE-OPS-005::GAP-PKG-067` | `HYPERCARE-OPS-006::GAP-PKG-067` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-068` | `HYPERCARE-OPS-003::GAP-PKG-068` | `HYPERCARE-OPS-004::GAP-PKG-068` | `HYPERCARE-OPS-005::GAP-PKG-068` | `HYPERCARE-OPS-006::GAP-PKG-068` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-069` | `HYPERCARE-OPS-003::GAP-PKG-069` | `HYPERCARE-OPS-004::GAP-PKG-069` | `HYPERCARE-OPS-005::GAP-PKG-069` | `HYPERCARE-OPS-006::GAP-PKG-069` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-070` | `HYPERCARE-OPS-003::GAP-PKG-070` | `HYPERCARE-OPS-004::GAP-PKG-070` | `HYPERCARE-OPS-005::GAP-PKG-070` | `HYPERCARE-OPS-006::GAP-PKG-070` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-071` | `HYPERCARE-OPS-003::GAP-PKG-071` | `HYPERCARE-OPS-004::GAP-PKG-071` | `HYPERCARE-OPS-005::GAP-PKG-071` | `HYPERCARE-OPS-006::GAP-PKG-071` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-072` | `HYPERCARE-OPS-003::GAP-PKG-072` | `HYPERCARE-OPS-004::GAP-PKG-072` | `HYPERCARE-OPS-005::GAP-PKG-072` | `HYPERCARE-OPS-006::GAP-PKG-072` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-073` | `HYPERCARE-OPS-003::GAP-PKG-073` | `HYPERCARE-OPS-004::GAP-PKG-073` | `HYPERCARE-OPS-005::GAP-PKG-073` | `HYPERCARE-OPS-006::GAP-PKG-073` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-074` | `HYPERCARE-OPS-003::GAP-PKG-074` | `HYPERCARE-OPS-004::GAP-PKG-074` | `HYPERCARE-OPS-005::GAP-PKG-074` | `HYPERCARE-OPS-006::GAP-PKG-074` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-075` | `HYPERCARE-OPS-003::GAP-PKG-075` | `HYPERCARE-OPS-004::GAP-PKG-075` | `HYPERCARE-OPS-005::GAP-PKG-075` | `HYPERCARE-OPS-006::GAP-PKG-075` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-076` | `HYPERCARE-OPS-003::GAP-PKG-076` | `HYPERCARE-OPS-004::GAP-PKG-076` | `HYPERCARE-OPS-005::GAP-PKG-076` | `HYPERCARE-OPS-006::GAP-PKG-076` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-077` | `HYPERCARE-OPS-003::GAP-PKG-077` | `HYPERCARE-OPS-004::GAP-PKG-077` | `HYPERCARE-OPS-005::GAP-PKG-077` | `HYPERCARE-OPS-006::GAP-PKG-077` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-078` | `HYPERCARE-OPS-003::GAP-PKG-078` | `HYPERCARE-OPS-004::GAP-PKG-078` | `HYPERCARE-OPS-005::GAP-PKG-078` | `HYPERCARE-OPS-006::GAP-PKG-078` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-079` | `HYPERCARE-OPS-003::GAP-PKG-079` | `HYPERCARE-OPS-004::GAP-PKG-079` | `HYPERCARE-OPS-005::GAP-PKG-079` | `HYPERCARE-OPS-006::GAP-PKG-079` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-080` | `HYPERCARE-OPS-003::GAP-PKG-080` | `HYPERCARE-OPS-004::GAP-PKG-080` | `HYPERCARE-OPS-005::GAP-PKG-080` | `HYPERCARE-OPS-006::GAP-PKG-080` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-081` | `HYPERCARE-OPS-003::GAP-PKG-081` | `HYPERCARE-OPS-004::GAP-PKG-081` | `HYPERCARE-OPS-005::GAP-PKG-081` | `HYPERCARE-OPS-006::GAP-PKG-081` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-082` | `HYPERCARE-OPS-003::GAP-PKG-082` | `HYPERCARE-OPS-004::GAP-PKG-082` | `HYPERCARE-OPS-005::GAP-PKG-082` | `HYPERCARE-OPS-006::GAP-PKG-082` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-083` | `HYPERCARE-OPS-003::GAP-PKG-083` | `HYPERCARE-OPS-004::GAP-PKG-083` | `HYPERCARE-OPS-005::GAP-PKG-083` | `HYPERCARE-OPS-006::GAP-PKG-083` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-084` | `HYPERCARE-OPS-003::GAP-PKG-084` | `HYPERCARE-OPS-004::GAP-PKG-084` | `HYPERCARE-OPS-005::GAP-PKG-084` | `HYPERCARE-OPS-006::GAP-PKG-084` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-085` | `HYPERCARE-OPS-003::GAP-PKG-085` | `HYPERCARE-OPS-004::GAP-PKG-085` | `HYPERCARE-OPS-005::GAP-PKG-085` | `HYPERCARE-OPS-006::GAP-PKG-085` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-086` | `HYPERCARE-OPS-003::GAP-PKG-086` | `HYPERCARE-OPS-004::GAP-PKG-086` | `HYPERCARE-OPS-005::GAP-PKG-086` | `HYPERCARE-OPS-006::GAP-PKG-086` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-087` | `HYPERCARE-OPS-003::GAP-PKG-087` | `HYPERCARE-OPS-004::GAP-PKG-087` | `HYPERCARE-OPS-005::GAP-PKG-087` | `HYPERCARE-OPS-006::GAP-PKG-087` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-088` | `HYPERCARE-OPS-003::GAP-PKG-088` | `HYPERCARE-OPS-004::GAP-PKG-088` | `HYPERCARE-OPS-005::GAP-PKG-088` | `HYPERCARE-OPS-006::GAP-PKG-088` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-089` | `HYPERCARE-OPS-003::GAP-PKG-089` | `HYPERCARE-OPS-004::GAP-PKG-089` | `HYPERCARE-OPS-005::GAP-PKG-089` | `HYPERCARE-OPS-006::GAP-PKG-089` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-090` | `HYPERCARE-OPS-003::GAP-PKG-090` | `HYPERCARE-OPS-004::GAP-PKG-090` | `HYPERCARE-OPS-005::GAP-PKG-090` | `HYPERCARE-OPS-006::GAP-PKG-090` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-091` | `HYPERCARE-OPS-003::GAP-PKG-091` | `HYPERCARE-OPS-004::GAP-PKG-091` | `HYPERCARE-OPS-005::GAP-PKG-091` | `HYPERCARE-OPS-006::GAP-PKG-091` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-092` | `HYPERCARE-OPS-003::GAP-PKG-092` | `HYPERCARE-OPS-004::GAP-PKG-092` | `HYPERCARE-OPS-005::GAP-PKG-092` | `HYPERCARE-OPS-006::GAP-PKG-092` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-093` | `HYPERCARE-OPS-003::GAP-PKG-093` | `HYPERCARE-OPS-004::GAP-PKG-093` | `HYPERCARE-OPS-005::GAP-PKG-093` | `HYPERCARE-OPS-006::GAP-PKG-093` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-094` | `HYPERCARE-OPS-003::GAP-PKG-094` | `HYPERCARE-OPS-004::GAP-PKG-094` | `HYPERCARE-OPS-005::GAP-PKG-094` | `HYPERCARE-OPS-006::GAP-PKG-094` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-095` | `HYPERCARE-OPS-003::GAP-PKG-095` | `HYPERCARE-OPS-004::GAP-PKG-095` | `HYPERCARE-OPS-005::GAP-PKG-095` | `HYPERCARE-OPS-006::GAP-PKG-095` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-096` | `HYPERCARE-OPS-003::GAP-PKG-096` | `HYPERCARE-OPS-004::GAP-PKG-096` | `HYPERCARE-OPS-005::GAP-PKG-096` | `HYPERCARE-OPS-006::GAP-PKG-096` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-097` | `HYPERCARE-OPS-003::GAP-PKG-097` | `HYPERCARE-OPS-004::GAP-PKG-097` | `HYPERCARE-OPS-005::GAP-PKG-097` | `HYPERCARE-OPS-006::GAP-PKG-097` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-098` | `HYPERCARE-OPS-003::GAP-PKG-098` | `HYPERCARE-OPS-004::GAP-PKG-098` | `HYPERCARE-OPS-005::GAP-PKG-098` | `HYPERCARE-OPS-006::GAP-PKG-098` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-099` | `HYPERCARE-OPS-003::GAP-PKG-099` | `HYPERCARE-OPS-004::GAP-PKG-099` | `HYPERCARE-OPS-005::GAP-PKG-099` | `HYPERCARE-OPS-006::GAP-PKG-099` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-100` | `HYPERCARE-OPS-003::GAP-PKG-100` | `HYPERCARE-OPS-004::GAP-PKG-100` | `HYPERCARE-OPS-005::GAP-PKG-100` | `HYPERCARE-OPS-006::GAP-PKG-100` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-101` | `HYPERCARE-OPS-003::GAP-PKG-101` | `HYPERCARE-OPS-004::GAP-PKG-101` | `HYPERCARE-OPS-005::GAP-PKG-101` | `HYPERCARE-OPS-006::GAP-PKG-101` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-102` | `HYPERCARE-OPS-003::GAP-PKG-102` | `HYPERCARE-OPS-004::GAP-PKG-102` | `HYPERCARE-OPS-005::GAP-PKG-102` | `HYPERCARE-OPS-006::GAP-PKG-102` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-103` | `HYPERCARE-OPS-003::GAP-PKG-103` | `HYPERCARE-OPS-004::GAP-PKG-103` | `HYPERCARE-OPS-005::GAP-PKG-103` | `HYPERCARE-OPS-006::GAP-PKG-103` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-104` | `HYPERCARE-OPS-003::GAP-PKG-104` | `HYPERCARE-OPS-004::GAP-PKG-104` | `HYPERCARE-OPS-005::GAP-PKG-104` | `HYPERCARE-OPS-006::GAP-PKG-104` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-105` | `HYPERCARE-OPS-003::GAP-PKG-105` | `HYPERCARE-OPS-004::GAP-PKG-105` | `HYPERCARE-OPS-005::GAP-PKG-105` | `HYPERCARE-OPS-006::GAP-PKG-105` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-106` | `HYPERCARE-OPS-003::GAP-PKG-106` | `HYPERCARE-OPS-004::GAP-PKG-106` | `HYPERCARE-OPS-005::GAP-PKG-106` | `HYPERCARE-OPS-006::GAP-PKG-106` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-107` | `HYPERCARE-OPS-003::GAP-PKG-107` | `HYPERCARE-OPS-004::GAP-PKG-107` | `HYPERCARE-OPS-005::GAP-PKG-107` | `HYPERCARE-OPS-006::GAP-PKG-107` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-108` | `HYPERCARE-OPS-003::GAP-PKG-108` | `HYPERCARE-OPS-004::GAP-PKG-108` | `HYPERCARE-OPS-005::GAP-PKG-108` | `HYPERCARE-OPS-006::GAP-PKG-108` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-109` | `HYPERCARE-OPS-003::GAP-PKG-109` | `HYPERCARE-OPS-004::GAP-PKG-109` | `HYPERCARE-OPS-005::GAP-PKG-109` | `HYPERCARE-OPS-006::GAP-PKG-109` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-110` | `HYPERCARE-OPS-003::GAP-PKG-110` | `HYPERCARE-OPS-004::GAP-PKG-110` | `HYPERCARE-OPS-005::GAP-PKG-110` | `HYPERCARE-OPS-006::GAP-PKG-110` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-111` | `HYPERCARE-OPS-003::GAP-PKG-111` | `HYPERCARE-OPS-004::GAP-PKG-111` | `HYPERCARE-OPS-005::GAP-PKG-111` | `HYPERCARE-OPS-006::GAP-PKG-111` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-112` | `HYPERCARE-OPS-003::GAP-PKG-112` | `HYPERCARE-OPS-004::GAP-PKG-112` | `HYPERCARE-OPS-005::GAP-PKG-112` | `HYPERCARE-OPS-006::GAP-PKG-112` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-113` | `HYPERCARE-OPS-003::GAP-PKG-113` | `HYPERCARE-OPS-004::GAP-PKG-113` | `HYPERCARE-OPS-005::GAP-PKG-113` | `HYPERCARE-OPS-006::GAP-PKG-113` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-114` | `HYPERCARE-OPS-003::GAP-PKG-114` | `HYPERCARE-OPS-004::GAP-PKG-114` | `HYPERCARE-OPS-005::GAP-PKG-114` | `HYPERCARE-OPS-006::GAP-PKG-114` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-115` | `HYPERCARE-OPS-003::GAP-PKG-115` | `HYPERCARE-OPS-004::GAP-PKG-115` | `HYPERCARE-OPS-005::GAP-PKG-115` | `HYPERCARE-OPS-006::GAP-PKG-115` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-116` | `HYPERCARE-OPS-003::GAP-PKG-116` | `HYPERCARE-OPS-004::GAP-PKG-116` | `HYPERCARE-OPS-005::GAP-PKG-116` | `HYPERCARE-OPS-006::GAP-PKG-116` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-117` | `HYPERCARE-OPS-003::GAP-PKG-117` | `HYPERCARE-OPS-004::GAP-PKG-117` | `HYPERCARE-OPS-005::GAP-PKG-117` | `HYPERCARE-OPS-006::GAP-PKG-117` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-118` | `HYPERCARE-OPS-003::GAP-PKG-118` | `HYPERCARE-OPS-004::GAP-PKG-118` | `HYPERCARE-OPS-005::GAP-PKG-118` | `HYPERCARE-OPS-006::GAP-PKG-118` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-119` | `HYPERCARE-OPS-003::GAP-PKG-119` | `HYPERCARE-OPS-004::GAP-PKG-119` | `HYPERCARE-OPS-005::GAP-PKG-119` | `HYPERCARE-OPS-006::GAP-PKG-119` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-120` | `HYPERCARE-OPS-003::GAP-PKG-120` | `HYPERCARE-OPS-004::GAP-PKG-120` | `HYPERCARE-OPS-005::GAP-PKG-120` | `HYPERCARE-OPS-006::GAP-PKG-120` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-121` | `HYPERCARE-OPS-003::GAP-PKG-121` | `HYPERCARE-OPS-004::GAP-PKG-121` | `HYPERCARE-OPS-005::GAP-PKG-121` | `HYPERCARE-OPS-006::GAP-PKG-121` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-122` | `HYPERCARE-OPS-003::GAP-PKG-122` | `HYPERCARE-OPS-004::GAP-PKG-122` | `HYPERCARE-OPS-005::GAP-PKG-122` | `HYPERCARE-OPS-006::GAP-PKG-122` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-123` | `HYPERCARE-OPS-003::GAP-PKG-123` | `HYPERCARE-OPS-004::GAP-PKG-123` | `HYPERCARE-OPS-005::GAP-PKG-123` | `HYPERCARE-OPS-006::GAP-PKG-123` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-124` | `HYPERCARE-OPS-003::GAP-PKG-124` | `HYPERCARE-OPS-004::GAP-PKG-124` | `HYPERCARE-OPS-005::GAP-PKG-124` | `HYPERCARE-OPS-006::GAP-PKG-124` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-125` | `HYPERCARE-OPS-003::GAP-PKG-125` | `HYPERCARE-OPS-004::GAP-PKG-125` | `HYPERCARE-OPS-005::GAP-PKG-125` | `HYPERCARE-OPS-006::GAP-PKG-125` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-126` | `HYPERCARE-OPS-003::GAP-PKG-126` | `HYPERCARE-OPS-004::GAP-PKG-126` | `HYPERCARE-OPS-005::GAP-PKG-126` | `HYPERCARE-OPS-006::GAP-PKG-126` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-127` | `HYPERCARE-OPS-003::GAP-PKG-127` | `HYPERCARE-OPS-004::GAP-PKG-127` | `HYPERCARE-OPS-005::GAP-PKG-127` | `HYPERCARE-OPS-006::GAP-PKG-127` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-128` | `HYPERCARE-OPS-003::GAP-PKG-128` | `HYPERCARE-OPS-004::GAP-PKG-128` | `HYPERCARE-OPS-005::GAP-PKG-128` | `HYPERCARE-OPS-006::GAP-PKG-128` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-129` | `HYPERCARE-OPS-003::GAP-PKG-129` | `HYPERCARE-OPS-004::GAP-PKG-129` | `HYPERCARE-OPS-005::GAP-PKG-129` | `HYPERCARE-OPS-006::GAP-PKG-129` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-130` | `HYPERCARE-OPS-003::GAP-PKG-130` | `HYPERCARE-OPS-004::GAP-PKG-130` | `HYPERCARE-OPS-005::GAP-PKG-130` | `HYPERCARE-OPS-006::GAP-PKG-130` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-131` | `HYPERCARE-OPS-003::GAP-PKG-131` | `HYPERCARE-OPS-004::GAP-PKG-131` | `HYPERCARE-OPS-005::GAP-PKG-131` | `HYPERCARE-OPS-006::GAP-PKG-131` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-132` | `HYPERCARE-OPS-003::GAP-PKG-132` | `HYPERCARE-OPS-004::GAP-PKG-132` | `HYPERCARE-OPS-005::GAP-PKG-132` | `HYPERCARE-OPS-006::GAP-PKG-132` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-133` | `HYPERCARE-OPS-003::GAP-PKG-133` | `HYPERCARE-OPS-004::GAP-PKG-133` | `HYPERCARE-OPS-005::GAP-PKG-133` | `HYPERCARE-OPS-006::GAP-PKG-133` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-134` | `HYPERCARE-OPS-003::GAP-PKG-134` | `HYPERCARE-OPS-004::GAP-PKG-134` | `HYPERCARE-OPS-005::GAP-PKG-134` | `HYPERCARE-OPS-006::GAP-PKG-134` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-135` | `HYPERCARE-OPS-003::GAP-PKG-135` | `HYPERCARE-OPS-004::GAP-PKG-135` | `HYPERCARE-OPS-005::GAP-PKG-135` | `HYPERCARE-OPS-006::GAP-PKG-135` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-136` | `HYPERCARE-OPS-003::GAP-PKG-136` | `HYPERCARE-OPS-004::GAP-PKG-136` | `HYPERCARE-OPS-005::GAP-PKG-136` | `HYPERCARE-OPS-006::GAP-PKG-136` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-137` | `HYPERCARE-OPS-003::GAP-PKG-137` | `HYPERCARE-OPS-004::GAP-PKG-137` | `HYPERCARE-OPS-005::GAP-PKG-137` | `HYPERCARE-OPS-006::GAP-PKG-137` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-138` | `HYPERCARE-OPS-003::GAP-PKG-138` | `HYPERCARE-OPS-004::GAP-PKG-138` | `HYPERCARE-OPS-005::GAP-PKG-138` | `HYPERCARE-OPS-006::GAP-PKG-138` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-139` | `HYPERCARE-OPS-003::GAP-PKG-139` | `HYPERCARE-OPS-004::GAP-PKG-139` | `HYPERCARE-OPS-005::GAP-PKG-139` | `HYPERCARE-OPS-006::GAP-PKG-139` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-140` | `HYPERCARE-OPS-003::GAP-PKG-140` | `HYPERCARE-OPS-004::GAP-PKG-140` | `HYPERCARE-OPS-005::GAP-PKG-140` | `HYPERCARE-OPS-006::GAP-PKG-140` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-141` | `HYPERCARE-OPS-003::GAP-PKG-141` | `HYPERCARE-OPS-004::GAP-PKG-141` | `HYPERCARE-OPS-005::GAP-PKG-141` | `HYPERCARE-OPS-006::GAP-PKG-141` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-142` | `HYPERCARE-OPS-003::GAP-PKG-142` | `HYPERCARE-OPS-004::GAP-PKG-142` | `HYPERCARE-OPS-005::GAP-PKG-142` | `HYPERCARE-OPS-006::GAP-PKG-142` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-143` | `HYPERCARE-OPS-003::GAP-PKG-143` | `HYPERCARE-OPS-004::GAP-PKG-143` | `HYPERCARE-OPS-005::GAP-PKG-143` | `HYPERCARE-OPS-006::GAP-PKG-143` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-144` | `HYPERCARE-OPS-003::GAP-PKG-144` | `HYPERCARE-OPS-004::GAP-PKG-144` | `HYPERCARE-OPS-005::GAP-PKG-144` | `HYPERCARE-OPS-006::GAP-PKG-144` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-145` | `HYPERCARE-OPS-003::GAP-PKG-145` | `HYPERCARE-OPS-004::GAP-PKG-145` | `HYPERCARE-OPS-005::GAP-PKG-145` | `HYPERCARE-OPS-006::GAP-PKG-145` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-146` | `HYPERCARE-OPS-003::GAP-PKG-146` | `HYPERCARE-OPS-004::GAP-PKG-146` | `HYPERCARE-OPS-005::GAP-PKG-146` | `HYPERCARE-OPS-006::GAP-PKG-146` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-147` | `HYPERCARE-OPS-003::GAP-PKG-147` | `HYPERCARE-OPS-004::GAP-PKG-147` | `HYPERCARE-OPS-005::GAP-PKG-147` | `HYPERCARE-OPS-006::GAP-PKG-147` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-148` | `HYPERCARE-OPS-003::GAP-PKG-148` | `HYPERCARE-OPS-004::GAP-PKG-148` | `HYPERCARE-OPS-005::GAP-PKG-148` | `HYPERCARE-OPS-006::GAP-PKG-148` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-149` | `HYPERCARE-OPS-003::GAP-PKG-149` | `HYPERCARE-OPS-004::GAP-PKG-149` | `HYPERCARE-OPS-005::GAP-PKG-149` | `HYPERCARE-OPS-006::GAP-PKG-149` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-150` | `HYPERCARE-OPS-003::GAP-PKG-150` | `HYPERCARE-OPS-004::GAP-PKG-150` | `HYPERCARE-OPS-005::GAP-PKG-150` | `HYPERCARE-OPS-006::GAP-PKG-150` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-151` | `HYPERCARE-OPS-003::GAP-PKG-151` | `HYPERCARE-OPS-004::GAP-PKG-151` | `HYPERCARE-OPS-005::GAP-PKG-151` | `HYPERCARE-OPS-006::GAP-PKG-151` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-152` | `HYPERCARE-OPS-003::GAP-PKG-152` | `HYPERCARE-OPS-004::GAP-PKG-152` | `HYPERCARE-OPS-005::GAP-PKG-152` | `HYPERCARE-OPS-006::GAP-PKG-152` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-153` | `HYPERCARE-OPS-003::GAP-PKG-153` | `HYPERCARE-OPS-004::GAP-PKG-153` | `HYPERCARE-OPS-005::GAP-PKG-153` | `HYPERCARE-OPS-006::GAP-PKG-153` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-154` | `HYPERCARE-OPS-003::GAP-PKG-154` | `HYPERCARE-OPS-004::GAP-PKG-154` | `HYPERCARE-OPS-005::GAP-PKG-154` | `HYPERCARE-OPS-006::GAP-PKG-154` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-155` | `HYPERCARE-OPS-003::GAP-PKG-155` | `HYPERCARE-OPS-004::GAP-PKG-155` | `HYPERCARE-OPS-005::GAP-PKG-155` | `HYPERCARE-OPS-006::GAP-PKG-155` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-156` | `HYPERCARE-OPS-003::GAP-PKG-156` | `HYPERCARE-OPS-004::GAP-PKG-156` | `HYPERCARE-OPS-005::GAP-PKG-156` | `HYPERCARE-OPS-006::GAP-PKG-156` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-157` | `HYPERCARE-OPS-003::GAP-PKG-157` | `HYPERCARE-OPS-004::GAP-PKG-157` | `HYPERCARE-OPS-005::GAP-PKG-157` | `HYPERCARE-OPS-006::GAP-PKG-157` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-158` | `HYPERCARE-OPS-003::GAP-PKG-158` | `HYPERCARE-OPS-004::GAP-PKG-158` | `HYPERCARE-OPS-005::GAP-PKG-158` | `HYPERCARE-OPS-006::GAP-PKG-158` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-159` | `HYPERCARE-OPS-003::GAP-PKG-159` | `HYPERCARE-OPS-004::GAP-PKG-159` | `HYPERCARE-OPS-005::GAP-PKG-159` | `HYPERCARE-OPS-006::GAP-PKG-159` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-160` | `HYPERCARE-OPS-003::GAP-PKG-160` | `HYPERCARE-OPS-004::GAP-PKG-160` | `HYPERCARE-OPS-005::GAP-PKG-160` | `HYPERCARE-OPS-006::GAP-PKG-160` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-161` | `HYPERCARE-OPS-003::GAP-PKG-161` | `HYPERCARE-OPS-004::GAP-PKG-161` | `HYPERCARE-OPS-005::GAP-PKG-161` | `HYPERCARE-OPS-006::GAP-PKG-161` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-162` | `HYPERCARE-OPS-003::GAP-PKG-162` | `HYPERCARE-OPS-004::GAP-PKG-162` | `HYPERCARE-OPS-005::GAP-PKG-162` | `HYPERCARE-OPS-006::GAP-PKG-162` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-163` | `HYPERCARE-OPS-003::GAP-PKG-163` | `HYPERCARE-OPS-004::GAP-PKG-163` | `HYPERCARE-OPS-005::GAP-PKG-163` | `HYPERCARE-OPS-006::GAP-PKG-163` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-164` | `HYPERCARE-OPS-003::GAP-PKG-164` | `HYPERCARE-OPS-004::GAP-PKG-164` | `HYPERCARE-OPS-005::GAP-PKG-164` | `HYPERCARE-OPS-006::GAP-PKG-164` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-165` | `HYPERCARE-OPS-003::GAP-PKG-165` | `HYPERCARE-OPS-004::GAP-PKG-165` | `HYPERCARE-OPS-005::GAP-PKG-165` | `HYPERCARE-OPS-006::GAP-PKG-165` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-166` | `HYPERCARE-OPS-003::GAP-PKG-166` | `HYPERCARE-OPS-004::GAP-PKG-166` | `HYPERCARE-OPS-005::GAP-PKG-166` | `HYPERCARE-OPS-006::GAP-PKG-166` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-167` | `HYPERCARE-OPS-003::GAP-PKG-167` | `HYPERCARE-OPS-004::GAP-PKG-167` | `HYPERCARE-OPS-005::GAP-PKG-167` | `HYPERCARE-OPS-006::GAP-PKG-167` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-168` | `HYPERCARE-OPS-003::GAP-PKG-168` | `HYPERCARE-OPS-004::GAP-PKG-168` | `HYPERCARE-OPS-005::GAP-PKG-168` | `HYPERCARE-OPS-006::GAP-PKG-168` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-169` | `HYPERCARE-OPS-003::GAP-PKG-169` | `HYPERCARE-OPS-004::GAP-PKG-169` | `HYPERCARE-OPS-005::GAP-PKG-169` | `HYPERCARE-OPS-006::GAP-PKG-169` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-170` | `HYPERCARE-OPS-003::GAP-PKG-170` | `HYPERCARE-OPS-004::GAP-PKG-170` | `HYPERCARE-OPS-005::GAP-PKG-170` | `HYPERCARE-OPS-006::GAP-PKG-170` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-171` | `HYPERCARE-OPS-003::GAP-PKG-171` | `HYPERCARE-OPS-004::GAP-PKG-171` | `HYPERCARE-OPS-005::GAP-PKG-171` | `HYPERCARE-OPS-006::GAP-PKG-171` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-172` | `HYPERCARE-OPS-003::GAP-PKG-172` | `HYPERCARE-OPS-004::GAP-PKG-172` | `HYPERCARE-OPS-005::GAP-PKG-172` | `HYPERCARE-OPS-006::GAP-PKG-172` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-173` | `HYPERCARE-OPS-003::GAP-PKG-173` | `HYPERCARE-OPS-004::GAP-PKG-173` | `HYPERCARE-OPS-005::GAP-PKG-173` | `HYPERCARE-OPS-006::GAP-PKG-173` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-174` | `HYPERCARE-OPS-003::GAP-PKG-174` | `HYPERCARE-OPS-004::GAP-PKG-174` | `HYPERCARE-OPS-005::GAP-PKG-174` | `HYPERCARE-OPS-006::GAP-PKG-174` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-175` | `HYPERCARE-OPS-003::GAP-PKG-175` | `HYPERCARE-OPS-004::GAP-PKG-175` | `HYPERCARE-OPS-005::GAP-PKG-175` | `HYPERCARE-OPS-006::GAP-PKG-175` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-176` | `HYPERCARE-OPS-003::GAP-PKG-176` | `HYPERCARE-OPS-004::GAP-PKG-176` | `HYPERCARE-OPS-005::GAP-PKG-176` | `HYPERCARE-OPS-006::GAP-PKG-176` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-177` | `HYPERCARE-OPS-003::GAP-PKG-177` | `HYPERCARE-OPS-004::GAP-PKG-177` | `HYPERCARE-OPS-005::GAP-PKG-177` | `HYPERCARE-OPS-006::GAP-PKG-177` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-178` | `HYPERCARE-OPS-003::GAP-PKG-178` | `HYPERCARE-OPS-004::GAP-PKG-178` | `HYPERCARE-OPS-005::GAP-PKG-178` | `HYPERCARE-OPS-006::GAP-PKG-178` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-179` | `HYPERCARE-OPS-003::GAP-PKG-179` | `HYPERCARE-OPS-004::GAP-PKG-179` | `HYPERCARE-OPS-005::GAP-PKG-179` | `HYPERCARE-OPS-006::GAP-PKG-179` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-180` | `HYPERCARE-OPS-003::GAP-PKG-180` | `HYPERCARE-OPS-004::GAP-PKG-180` | `HYPERCARE-OPS-005::GAP-PKG-180` | `HYPERCARE-OPS-006::GAP-PKG-180` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-181` | `HYPERCARE-OPS-003::GAP-PKG-181` | `HYPERCARE-OPS-004::GAP-PKG-181` | `HYPERCARE-OPS-005::GAP-PKG-181` | `HYPERCARE-OPS-006::GAP-PKG-181` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-182` | `HYPERCARE-OPS-003::GAP-PKG-182` | `HYPERCARE-OPS-004::GAP-PKG-182` | `HYPERCARE-OPS-005::GAP-PKG-182` | `HYPERCARE-OPS-006::GAP-PKG-182` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-183` | `HYPERCARE-OPS-003::GAP-PKG-183` | `HYPERCARE-OPS-004::GAP-PKG-183` | `HYPERCARE-OPS-005::GAP-PKG-183` | `HYPERCARE-OPS-006::GAP-PKG-183` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-184` | `HYPERCARE-OPS-003::GAP-PKG-184` | `HYPERCARE-OPS-004::GAP-PKG-184` | `HYPERCARE-OPS-005::GAP-PKG-184` | `HYPERCARE-OPS-006::GAP-PKG-184` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-185` | `HYPERCARE-OPS-003::GAP-PKG-185` | `HYPERCARE-OPS-004::GAP-PKG-185` | `HYPERCARE-OPS-005::GAP-PKG-185` | `HYPERCARE-OPS-006::GAP-PKG-185` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-186` | `HYPERCARE-OPS-003::GAP-PKG-186` | `HYPERCARE-OPS-004::GAP-PKG-186` | `HYPERCARE-OPS-005::GAP-PKG-186` | `HYPERCARE-OPS-006::GAP-PKG-186` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-187` | `HYPERCARE-OPS-003::GAP-PKG-187` | `HYPERCARE-OPS-004::GAP-PKG-187` | `HYPERCARE-OPS-005::GAP-PKG-187` | `HYPERCARE-OPS-006::GAP-PKG-187` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-188` | `HYPERCARE-OPS-003::GAP-PKG-188` | `HYPERCARE-OPS-004::GAP-PKG-188` | `HYPERCARE-OPS-005::GAP-PKG-188` | `HYPERCARE-OPS-006::GAP-PKG-188` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-189` | `HYPERCARE-OPS-003::GAP-PKG-189` | `HYPERCARE-OPS-004::GAP-PKG-189` | `HYPERCARE-OPS-005::GAP-PKG-189` | `HYPERCARE-OPS-006::GAP-PKG-189` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-190` | `HYPERCARE-OPS-003::GAP-PKG-190` | `HYPERCARE-OPS-004::GAP-PKG-190` | `HYPERCARE-OPS-005::GAP-PKG-190` | `HYPERCARE-OPS-006::GAP-PKG-190` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-191` | `HYPERCARE-OPS-003::GAP-PKG-191` | `HYPERCARE-OPS-004::GAP-PKG-191` | `HYPERCARE-OPS-005::GAP-PKG-191` | `HYPERCARE-OPS-006::GAP-PKG-191` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-192` | `HYPERCARE-OPS-003::GAP-PKG-192` | `HYPERCARE-OPS-004::GAP-PKG-192` | `HYPERCARE-OPS-005::GAP-PKG-192` | `HYPERCARE-OPS-006::GAP-PKG-192` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-193` | `HYPERCARE-OPS-003::GAP-PKG-193` | `HYPERCARE-OPS-004::GAP-PKG-193` | `HYPERCARE-OPS-005::GAP-PKG-193` | `HYPERCARE-OPS-006::GAP-PKG-193` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-194` | `HYPERCARE-OPS-003::GAP-PKG-194` | `HYPERCARE-OPS-004::GAP-PKG-194` | `HYPERCARE-OPS-005::GAP-PKG-194` | `HYPERCARE-OPS-006::GAP-PKG-194` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-195` | `HYPERCARE-OPS-003::GAP-PKG-195` | `HYPERCARE-OPS-004::GAP-PKG-195` | `HYPERCARE-OPS-005::GAP-PKG-195` | `HYPERCARE-OPS-006::GAP-PKG-195` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-196` | `HYPERCARE-OPS-003::GAP-PKG-196` | `HYPERCARE-OPS-004::GAP-PKG-196` | `HYPERCARE-OPS-005::GAP-PKG-196` | `HYPERCARE-OPS-006::GAP-PKG-196` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-197` | `HYPERCARE-OPS-003::GAP-PKG-197` | `HYPERCARE-OPS-004::GAP-PKG-197` | `HYPERCARE-OPS-005::GAP-PKG-197` | `HYPERCARE-OPS-006::GAP-PKG-197` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-198` | `HYPERCARE-OPS-003::GAP-PKG-198` | `HYPERCARE-OPS-004::GAP-PKG-198` | `HYPERCARE-OPS-005::GAP-PKG-198` | `HYPERCARE-OPS-006::GAP-PKG-198` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-199` | `HYPERCARE-OPS-003::GAP-PKG-199` | `HYPERCARE-OPS-004::GAP-PKG-199` | `HYPERCARE-OPS-005::GAP-PKG-199` | `HYPERCARE-OPS-006::GAP-PKG-199` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-200` | `HYPERCARE-OPS-003::GAP-PKG-200` | `HYPERCARE-OPS-004::GAP-PKG-200` | `HYPERCARE-OPS-005::GAP-PKG-200` | `HYPERCARE-OPS-006::GAP-PKG-200` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-201` | `HYPERCARE-OPS-003::GAP-PKG-201` | `HYPERCARE-OPS-004::GAP-PKG-201` | `HYPERCARE-OPS-005::GAP-PKG-201` | `HYPERCARE-OPS-006::GAP-PKG-201` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-202` | `HYPERCARE-OPS-003::GAP-PKG-202` | `HYPERCARE-OPS-004::GAP-PKG-202` | `HYPERCARE-OPS-005::GAP-PKG-202` | `HYPERCARE-OPS-006::GAP-PKG-202` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-203` | `HYPERCARE-OPS-003::GAP-PKG-203` | `HYPERCARE-OPS-004::GAP-PKG-203` | `HYPERCARE-OPS-005::GAP-PKG-203` | `HYPERCARE-OPS-006::GAP-PKG-203` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-204` | `HYPERCARE-OPS-003::GAP-PKG-204` | `HYPERCARE-OPS-004::GAP-PKG-204` | `HYPERCARE-OPS-005::GAP-PKG-204` | `HYPERCARE-OPS-006::GAP-PKG-204` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-205` | `HYPERCARE-OPS-003::GAP-PKG-205` | `HYPERCARE-OPS-004::GAP-PKG-205` | `HYPERCARE-OPS-005::GAP-PKG-205` | `HYPERCARE-OPS-006::GAP-PKG-205` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-206` | `HYPERCARE-OPS-003::GAP-PKG-206` | `HYPERCARE-OPS-004::GAP-PKG-206` | `HYPERCARE-OPS-005::GAP-PKG-206` | `HYPERCARE-OPS-006::GAP-PKG-206` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+| `GAP-PKG-207` | `HYPERCARE-OPS-003::GAP-PKG-207` | `HYPERCARE-OPS-004::GAP-PKG-207` | `HYPERCARE-OPS-005::GAP-PKG-207` | `HYPERCARE-OPS-006::GAP-PKG-207` | reutilizar `BKL-*` o tarea canónica existente aplicable; sin crear destino por inferencia | `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE` | `ESPECIFICADO`    |
+
+---
+
+#### 16. Reconciliación de cobertura
+
+La matriz conserva las 207 identidades heredadas sin cambiar su modalidad:
+
+| Modalidad heredada            | Cantidad | Tratamiento en 007                                                                       |
+| ----------------------------- | -------: | ---------------------------------------------------------------------------------------- |
+| directa                       |      160 | gobierno de residual por referencia homónima                                             |
+| compartida                    |        3 | conserva dependencias y autoridades compartidas                                          |
+| control                       |       26 | conserva su carácter de control; no se convierte en deuda funcional por inferencia       |
+| AURA bloqueada                |       14 | conserva bloqueo; 007 no activa AURA ni convierte ausencia de producto en deuda aceptada |
+| dependencia externa bloqueada |        2 | conserva dependencia y autoridad externa aplicable                                       |
+| TALENTO offline actual        |        2 | conserva estado actual; 007 no declara adopción ni implementación                        |
+| **Total**                     |  **207** | **207 decisiones documentales materializadas**                                           |
+
+Reglas de reconciliación:
+
+- esperadas: 207 identidades;
+- materializadas: 207 identidades;
+- toda decisión inicial es `EVALUAR_SIN_DIFERIR_AUTOMATICAMENTE`;
+- ninguna fila declara deuda real aprobada en ausencia de ejecución;
+- ninguna fila crea una tarea nueva del roadmap;
+- ninguna fila modifica la prioridad heredada de incidentes o backlog;
+- el estado `ESPECIFICADO` es documental y no equivale a `IMPLEMENTADO` ni a evidencia operativa.
+
+---
+
+#### 17. Handoff a HYPERCARE-OPS-008
+
+Cuando la ejecución futura produzca deuda o trabajo posterior aprobado, el handoff a 008 debe poder transportar, según aplicabilidad:
+
+- `package_id`;
+- `candidate_ref`;
+- `environment`;
+- `authorized_scope_ref`;
+- `residual_condition_ref`;
+- `incident_ref`;
+- `problem_record_ref`;
+- `reconciliation_ref`;
+- `residual_disposition`;
+- `existing_backlog_ref`;
+- `destination_task_ref`;
+- `owner_ref`;
+- `approval_authority_ref`;
+- `approval_decision_ref`;
+- `target_gate_or_due_ref`;
+- `temporary_control_ref`;
+- `monitoring_ref`;
+- `closure_evidence_ref`;
+- impacto sobre soporte, runbook, documentación, capacitación o escalamiento.
+
+008 consume este handoff para preparar transferencia y documentación operativa. No reabre la decisión de deuda ni crea una autoridad de aceptación distinta.
+
+---
+
+#### 18. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+- Creados: 0
+- Modificados: 0
+- Fragmentos 04A afectados: 0
+
+**Justificación:** 007 materializa la trazabilidad y el binding de reglas ya protegidas por el gobierno de `04A`, `TREQ-CONT-005`, `TREQ-CONT-006`, la política de incidentes `TI-DOM-007`, la gestión de problemas y riesgo aceptado de `TI-DOM-008` y el backlog `BKL-REPO-001`. No introduce una nueva regla ejecutable de negocio, autorización, integración, cálculo o transición; evita duplicar requisitos que ya protegen propietario, fecha, eficacia, riesgo, destino y evidencia de cierre.
+
+---
+
+#### 19. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+- existe una definición inequívoca de residual, deuda aceptada, trabajo posterior y backlog existente;
+- las condiciones de elegibilidad y bloqueo impiden diferir incidentes, problemas, conciliaciones o riesgos que deban permanecer bloqueantes;
+- la aprobación exige propietario, autoridad, riesgo, destino, puerta o fecha y evidencia de salida;
+- la integración con `BKL-REPO-001` evita duplicar backlog y evita convertir prioridades por coincidencia nominal;
+- un residual sin destino canónico queda bloqueado y no genera un identificador de roadmap por inferencia;
+- las 207 identidades `GAP-PKG-001` a `GAP-PKG-207` aparecen exactamente una vez;
+- la suma heredada 160 + 3 + 26 + 14 + 2 + 2 permanece en 207;
+- ninguna fila afirma deuda real, aprobación real o evidencia operativa inexistente;
+- el handoff a 008 conserva toda obligación aceptada que soporte deba conocer;
+- 009 y 010 conservan sus autoridades reservadas;
+- se declaran cero cambios `TREQ-*` con justificación concreta;
+- no se modifica código, configuración, datos, migraciones, despliegues ni Supabase.
+
+---
+
+#### 20. Continuidad
+
+ÚLTIMA TAREA APROBADA
+HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes
+
+TAREA ACTUAL APROBADA
+HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores
+
+SIGUIENTE TAREA RESERVADA
+HYPERCARE-OPS-008 — Definir transferencia a soporte y documentación operativa
+
+
 ### [ ] HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y documentación definitiva
 ### [ ] HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales
 ### [ ] HYPERCARE-OPS-010 — Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo

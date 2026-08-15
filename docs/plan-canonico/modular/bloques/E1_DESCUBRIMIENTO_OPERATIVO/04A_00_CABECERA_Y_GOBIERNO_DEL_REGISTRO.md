@@ -88,7 +88,7 @@ Dominios iniciales:
 | Filas con catorce columnas        | **7007 de 7007** |
 | Identificadores duplicados        |            **0** |
 | Relaciones `TREQ-*` no resolubles |            **0** |
-| Última tarea incorporada          |  `HYPERCARE-OPS-006` |
+| Última tarea incorporada          |  `HYPERCARE-OPS-007` |
 | Fecha de normalización            |     `2026-08-08` |
 
 Distribución vigente:

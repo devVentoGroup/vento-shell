@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **867** |
+| Tareas aprobadas | **868** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **727** |
+| Tareas no iniciadas | **726** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **54.39% (867/1594)** |
+| Porcentaje de completamiento | **54.45% (868/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes** |
-| Tarea actual | **HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores** |
+| Última tarea aprobada | **HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores** |
+| Tarea actual | **HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y documentación definitiva** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y documentación definitiva** |
+| Siguiente tarea | **HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 56 de 68 aprobadas; HYPERCARE-OPS-007 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 57 de 68 aprobadas; HYPERCARE-OPS-008 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `HYPERCARE-OPS-006` — Definir clasificación, prioridad y procedimiento de corrección de incidentes |
-| Tarea actual | `HYPERCARE-OPS-007` — Definir registro y aprobación de deuda y tareas posteriores — **NO INICIADA** |
-| Siguiente tarea | `HYPERCARE-OPS-008` — Definir criterio de transferencia a soporte ordinario y documentación definitiva |
+| Última aprobada | `HYPERCARE-OPS-007` — Definir registro y aprobación de deuda y tareas posteriores |
+| Tarea actual | `HYPERCARE-OPS-008` — Definir criterio de transferencia a soporte ordinario y documentación definitiva — **NO INICIADA** |
+| Siguiente tarea | `HYPERCARE-OPS-009` — Definir criterio y evidencia para retirar contingencias temporales |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 56 DE 68 APROBADAS — ACTUAL HYPERCARE-OPS-007** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 57 DE 68 APROBADAS — ACTUAL HYPERCARE-OPS-008** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes
-        ↓
-TAREA ACTUAL
 HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y documentación definitiva
         ↓
+SIGUIENTE TAREA RESERVADA
+HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 56 de 68 tareas aprobadas
+BLOQUE E5 — 57 de 68 tareas aprobadas
 ```
