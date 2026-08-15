@@ -4837,7 +4837,1142 @@ CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de 
 CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial
 
 
-### [ ] CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial
+### ✅ CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial
+
+**Estado:** APROBADA  
+**Tarea anterior:** `CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de alcance`  
+**Tarea siguiente:** `CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones`  
+**Tipo de tarea:** documental — definición normativa y materialización del sistema de medición del cutover y piloto para tiempos, errores, adopción y resultado empresarial por paquete, candidato, ambiente, alcance y ventana comparable, con fórmulas reproducibles, denominadores explícitos, vínculo a línea base, reglas de calidad y segmentación, y tratamiento completo de las 207 raíces; sin ejecutar mediciones, inventar valores observados, crear umbrales de salida, aprobar la salida del piloto, promover paquetes ni retirar el proceso anterior  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md`  
+**Ejecución posterior:** `SHELL-CI-022::<package_id>` después de `SHELL-CI-021::<package_id>` y de los contratos CUTOVER aplicables  
+**Cambios físicos autorizados:** ninguno  
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`CUTOVER-OPS-008` define cómo medir el comportamiento real del cutover y del piloto sin convertir una observación aislada, una métrica de vanidad o un agregado no comparable en evidencia de éxito.
+
+La tarea responde:
+
+```text
+¿CUÁNTO TIEMPO TOMÓ Y EN QUÉ PARTE DEL FLUJO?
++
+¿CUÁNTOS ERRORES OCURRIERON, SOBRE QUÉ DENOMINADOR Y CON QUÉ CLASIFICACIÓN?
++
+¿QUÉ PARTE DEL ALCANCE ELEGIBLE UTILIZÓ EFECTIVAMENTE EL CAMINO CANDIDATO?
++
+¿QUÉ RESULTADO EMPRESARIAL OBSERVABLE CAMBIÓ FRENTE A LA LÍNEA BASE COMPARABLE?
++
+¿LA FUENTE, DEFINICIÓN, VENTANA, CALIDAD Y SEGMENTACIÓN PERMITEN COMPARAR?
+=
+EXPEDIENTE DE MÉTRICAS REPRODUCIBLE PARA LA DECISIÓN POSTERIOR
+```
+
+008 define métricas y reglas de cálculo. No afirma valores reales porque la ejecución todavía no ha ocurrido y no fija por sí sola el criterio de salida reservado a `CUTOVER-OPS-009`.
+
+---
+
+#### 2. Resultado sustantivo
+
+Por cada `package_id`, 008 deja materializadas cinco piezas documentales:
+
+1. **alcance de medición** — identidad exacta de paquete, candidato, ambiente, alcance autorizado, modalidad, ventana y baseline aplicables;
+2. **catálogo de métricas** — métricas de tiempos, errores, adopción y resultado empresarial con fórmula, unidad, granularidad y fuentes;
+3. **vínculo de comparabilidad** — relación de cada métrica comparable con `baseline_manifest::<package_id>` de `READY-GATE-013`;
+4. **plan de medición** — fuentes, dimensiones, filtros, calidad, frescura, tratamiento de pausas, cambios materiales y datos faltantes;
+5. **manifiesto de métricas** — estructura que la ejecución futura deberá completar con valores, evidencia y estado de calidad sin alterar la definición después de observar resultados.
+
+Las cinco piezas son parte del mismo expediente y no crean una fuente paralela para señales ya gobernadas por `DELIV-PKG-017`, objetivos NFR de `DELIV-PKG-013` ni métricas empresariales ya gobernadas por el registro canónico de indicadores.
+
+---
+
+#### 3. Entradas canónicas obligatorias
+
+008 consume sin redefinir:
+
+- `CUTOVER-OPS-001`: candidato, ambiente, alcance, ventana y responsables;
+- `CUTOVER-OPS-002`: unidades, olas y checkpoints;
+- `CUTOVER-OPS-003`: autoridad temporal entre proceso anterior y objetivo;
+- `CUTOVER-OPS-004`: controles anti-duplicidad y resultados inciertos;
+- `CUTOVER-OPS-005`: conciliaciones, diferencias, duplicidades y evidencia;
+- `CUTOVER-OPS-006`: evaluaciones y decisiones `CONTINUAR`, `PAUSAR` y `REVERTIR`;
+- `CUTOVER-OPS-007`: timestamps reales, incidentes, decisiones, pausas, reanudaciones, reversión, cambios de alcance, evidencia y correlación;
+- `DELIV-PKG-013`: umbrales NFR, hard ceilings, objetivos cuantitativos y fuentes de medición;
+- `DELIV-PKG-017`: métricas, logs, trazas, alertas, auditoría, perfiles `TP-*`, propietarios y resultado empresarial observable;
+- `DELIV-PKG-022`: modalidad, cohorte, actores, sedes, datos, dispositivos, ambiente y `DUR-DIR-001`;
+- `DELIV-PKG-023`: criterios medibles de aceptación y tratamiento de defectos;
+- `READY-GATE-011`: disponibilidad real de monitoreo, métricas, SLI/SLO, alertas y metamonitoreo;
+- `READY-GATE-013`: línea base previa al piloto, definición, fuente, ventana, corte, segmentación, calidad y comparabilidad;
+- `TREQ-DATA-002`, `TREQ-DATA-003` y `TREQ-DATA-005`: contrato canónico ya vigente para definición, cálculo, calidad, baseline, guardrails, comparación y uso decisional de métricas;
+- `TREQ-CONT-002`: clasificación y cronología de incidentes.
+
+Una métrica no puede obtener una definición más conveniente en 008 que la que ya posea en su fuente canónica.
+
+---
+
+#### 4. Fronteras obligatorias
+
+008 no:
+
+- crea una autorización de piloto;
+- amplía cohorte, sede, dato, dispositivo, consumidor, proceso o ambiente;
+- redefine severidades de incidentes;
+- convierte un rechazo empresarial válido en error técnico por conveniencia;
+- reduce hard ceilings o guardrails NFR;
+- inventa un target empresarial no sustentado;
+- promedia versiones o poblaciones no comparables;
+- interpreta correlación como causalidad demostrada;
+- decide `CONTINUAR`, `PAUSAR` o `REVERTIR`;
+- aprueba salida del piloto;
+- exige correcciones como decisión final de salida;
+- promueve a `CANARY_5`, `LIMITED_25`, `LIMITED_50` o `FULL_100`;
+- decide retiro legacy.
+
+La autoridad y el criterio final para usar estas métricas en la salida pertenecen a `CUTOVER-OPS-009`.
+
+---
+
+#### 5. Contrato común de toda métrica
+
+Toda definición materializada por 008 deberá conservar los campos exigidos por la semántica vigente de `TREQ-DATA-002`:
+
+| Campo lógico            | Regla                                                                                        |
+| ----------------------- | -------------------------------------------------------------------------------------------- |
+| nombre empresarial      | describe la señal sin depender del nombre de una tabla o dashboard                           |
+| propósito de decisión   | explica qué pregunta del piloto ayuda a responder                                            |
+| propietario             | referencia al propietario vigente de la métrica o al `OWN-*` aplicable; no crea un rol nuevo |
+| fórmula                 | operación reproducible, sin cálculo local alternativo                                        |
+| numerador               | explícito cuando la métrica sea una tasa o razón                                             |
+| denominador             | explícito y elegible; no puede variar silenciosamente                                        |
+| granularidad            | evento, operación, actor, consumidor, proceso, unidad, ola, día o periodo según definición   |
+| dimensiones             | solo dimensiones aprobadas necesarias para interpretar el resultado                          |
+| filtros                 | reglas que determinan inclusión y exclusión                                                  |
+| unidad                  | segundos, minutos, horas, días, porcentaje, conteo, moneda, cantidad u otra unidad canónica  |
+| zona horaria/calendario | los de la fuente y ventana aprobadas                                                         |
+| fuente                  | telemetría, bitácora 007, conciliación 005, baseline 013 u otra fuente propietaria           |
+| frescura                | condición bajo la cual el dato todavía representa la ventana evaluada                        |
+| calidad                 | cobertura, completitud, duplicados, reconciliación y comparabilidad                          |
+| versión                 | definición congelada para la ventana evaluada                                                |
+| estado de certificación | no se presenta como certificado antes de evidencia válida                                    |
+| drill-down              | referencia autorizada hasta hechos fuente sin exponer secretos                               |
+| regla de comparación    | baseline, periodo y dimensiones comparables                                                  |
+| target o guardrail      | referencia a una fuente aprobada; nunca número inventado por 008                             |
+
+Una misma versión y contexto debe producir el mismo resultado independientemente de la vista que lo presente.
+
+---
+
+#### 6. Unidad de medición del piloto
+
+Toda medición se vincula como mínimo a:
+
+```text
+package_id
++
+candidate_ref
++
+environment
++
+authorized_scope_ref
++
+pilot_modality
++
+measurement_window
++
+metric_definition_version
+```
+
+Cuando corresponda, agrega:
+
+```text
+activation_unit_ref
++
+wave_ref
++
+checkpoint_ref
++
+baseline_manifest_ref
++
+process_or_operation_ref
++
+cohort_ref
+```
+
+Un valor agregado que mezcle candidatos, ambientes, alcances o definiciones distintas no es una medición válida de 008.
+
+---
+
+#### 7. Familia de tiempos
+
+La familia de tiempos distingue tiempos operativos de cutover, tiempos de respuesta a incidentes y tiempos de producto ya gobernados por NFR.
+
+##### 7.1. Tiempo activo de piloto
+
+**Pregunta:** ¿cuánto tiempo válido de exposición ha transcurrido bajo la misma cohorte, candidato, alcance y definición?
+
+```text
+tiempo_activo_piloto
+=
+duración calificada como activa por DUR-DIR-001
+```
+
+Reglas:
+
+- en modalidad directa, usa los días que `DELIV-PKG-022` califica como activos;
+- un día pausado por seguridad no cuenta como día activo;
+- un cambio material que obliga a nueva ventana no se mezcla con la ventana anterior;
+- completar 14 días activos y un ciclo operativo es una condición heredada de 022, no una decisión de salida de 008;
+- shared y control no crean un reloj directo: observan las ventanas de consumidores o pilotos gobernados;
+- AURA, EXT y FUTURE no acumulan tiempo de piloto mientras permanezcan sin exposición autorizada.
+
+##### 7.2. Tiempo de detección
+
+Cuando `occurred_at` y `detected_at` de 007 sean comparables:
+
+```text
+tiempo_deteccion
+=
+detected_at - occurred_at
+```
+
+Si el momento del hecho no puede demostrarse, la métrica queda `NO_DISPONIBLE` para ese incidente; no se sustituye por cero.
+
+##### 7.3. Tiempo de decisión
+
+Cuando exista un evento causal que abre evaluación y una decisión 006 correlacionada:
+
+```text
+tiempo_decision
+=
+decision_at - evaluation_opened_at
+```
+
+La cercanía temporal sin vínculo causal no autoriza emparejar eventos.
+
+##### 7.4. Tiempo de recuperación
+
+Cuando exista una pausa, reversión o recovery real:
+
+```text
+tiempo_recuperacion
+=
+recovery_confirmed_at - recovery_started_at
+```
+
+Si no hubo recovery porque no existió disparador, el resultado es `NO_APLICA`, no `0`.
+
+##### 7.5. Latencias funcionales y técnicas
+
+Las latencias de interacción, navegación, foreground, async, sincronización y demás clases NFR conservan exactamente la fórmula, percentil, ventana y hard ceiling de `DELIV-PKG-013`.
+
+008 las incorpora como guardrails diagnósticos y no crea un percentil nuevo para sustituir el aprobado.
+
+---
+
+#### 8. Familia de errores
+
+La familia de errores evita usar un conteo bruto sin exposición.
+
+##### 8.1. Tasa de error elegible
+
+```text
+tasa_error_elegible
+=
+errores_elegibles
+/
+intentos_elegibles
+× 100
+```
+
+**Numerador:** resultados que la fuente propietaria clasifica como error para la operación, contrato, proceso o perfil correspondiente.
+
+**Denominador:** intentos realmente elegibles y observados dentro del mismo paquete, candidato, ambiente, alcance, ventana, operación y definición.
+
+Reglas:
+
+1. un `deny` correcto de autorización no es error por el solo hecho de ser negativo;
+2. una validación empresarial correctamente rechazada no es error técnico salvo que la fuente la clasifique así;
+3. un retry correlacionado no se cuenta como una nueva operación lógica cuando el contrato de idempotencia conserva la misma identidad;
+4. `SHADOW` no se mezcla con efectos productivos como si fuera exposición equivalente;
+5. intentos fuera de cohorte no entran al denominador del piloto;
+6. datos duplicados por instrumentación se corrigen en calidad, no se convierten en “más tráfico”;
+7. un denominador cero produce `SIN_OBSERVACIONES`, no una tasa de 0 %.
+
+##### 8.2. Incidentes por severidad
+
+```text
+incidentes_por_severidad
+=
+conteo de incidentes 007
+agrupado por clasificación propietaria
+```
+
+Se conserva además el número de incidentes abiertos y cerrados sin que 008 redefina severidades.
+
+##### 8.3. Defectos bloqueantes o mayores abiertos
+
+008 consume el criterio vigente de `DELIV-PKG-023`:
+
+```text
+defectos_bloqueantes_o_mayores_abiertos
+=
+conteo de defectos aplicables aún abiertos
+```
+
+El guardrail heredado para cierre es `0`, pero la decisión de salida de piloto sigue perteneciendo a 009.
+
+##### 8.4. Duplicidad, incertidumbre y conciliación
+
+Como diagnósticos obligatorios cuando apliquen:
+
+- duplicidades confirmadas de 004/005;
+- resultados inciertos;
+- conciliaciones fallidas;
+- diferencias no resueltas;
+- efectos externos desconocidos.
+
+No se suman categorías incompatibles en una “tasa de error total” que oculte la naturaleza del riesgo.
+
+---
+
+#### 9. Familia de adopción
+
+Adopción significa uso efectivo del camino candidato por la población o unidad elegible realmente expuesta; no significa mera disponibilidad de código, existencia de un flag ni pertenencia nominal a la cohorte.
+
+##### 9.1. Unidad de adopción
+
+La unidad se resuelve desde la modalidad y el perfil canónicos:
+
+- actor o unidad operativa cuando el flujo directo sea ejercido por personas;
+- proceso u operación cuando el resultado sea operacional y no tenga sentido medir personas;
+- consumidor cuando se trate de integración o contrato;
+- contrato compartido mediante sus consumidores directos;
+- `NO_APLICA_DIRECTA` para controles sin exposición empresarial independiente.
+
+No se fuerza una métrica “usuarios activos” a DB, integración, control o contrato compartido cuando esa unidad no representa su adopción real.
+
+##### 9.2. Tasa de adopción elegible
+
+Para una unidad de adopción válida:
+
+```text
+tasa_adopcion_elegible
+=
+unidades_elegibles_expuestas_con_al_menos_un_uso_candidato_exitoso
+/
+unidades_elegibles_realmente_expuestas
+× 100
+```
+
+El denominador no es “todos los empleados”, “todos los clientes” ni “todos los usuarios potenciales”. Solo incluye unidades que la evidencia demuestra elegibles y realmente expuestas dentro del alcance autorizado.
+
+Un denominador cero produce `SIN_OBSERVACIONES`.
+
+##### 9.3. Participación de operaciones candidatas
+
+Cuando el proceso pueda ejecutarse por más de un camino durante la convivencia y la población sea comparable:
+
+```text
+participacion_operaciones_candidatas
+=
+operaciones_logicas_exitosas_por_camino_candidato
+/
+operaciones_logicas_elegibles_exitosas_por_cualquier_camino_autorizado
+× 100
+```
+
+No aplica si el contrato exige switch atómico sin caminos simultáneamente elegibles.
+
+##### 9.4. Profundidad de uso
+
+Como diagnóstico, cuando exista una unidad de adopción repetible:
+
+```text
+operaciones_candidatas_por_unidad_adoptante
+=
+operaciones_candidatas_exitosas
+/
+unidades_con_adopcion_confirmada
+```
+
+Esta métrica no sustituye la tasa de adopción y no se usa para compensar una cobertura baja con mucha actividad de pocos actores.
+
+---
+
+#### 10. Familia de resultado empresarial
+
+008 no crea un “score de éxito” universal.
+
+Cada paquete usa la métrica o indicador empresarial canónico que su expediente, proceso, baseline o señal de `DELIV-PKG-017` identifique como efecto empresarial observable. La definición debe conservar la versión de `TREQ-DATA-002`.
+
+##### 10.1. Valor durante piloto
+
+```text
+valor_resultado_piloto
+=
+cálculo de la métrica empresarial canónica
+sobre la población, periodo, dimensiones y filtros de la ventana de piloto
+```
+
+##### 10.2. Cambio absoluto frente a baseline
+
+Cuando la comparación sea válida:
+
+```text
+cambio_absoluto
+=
+valor_resultado_piloto - valor_baseline_comparable
+```
+
+##### 10.3. Cambio relativo
+
+Solo cuando el baseline sea distinto de cero y la definición permita una razón:
+
+```text
+cambio_relativo_pct
+=
+(valor_resultado_piloto - valor_baseline_comparable)
+/
+abs(valor_baseline_comparable)
+× 100
+```
+
+Cuando el baseline sea cero, el cambio relativo queda `NO_APLICA`; se conserva el cambio absoluto u otra comparación autorizada por la definición canónica.
+
+##### 10.4. Tipos de resultado
+
+La métrica empresarial puede ser, según su fuente:
+
+- tasa o proporción;
+- duración;
+- cantidad;
+- valor monetario;
+- estado o cumplimiento;
+- calidad;
+- productividad;
+- volumen;
+- otro indicador canónico ya versionado.
+
+008 no transforma tipos distintos en un índice compuesto sin una fuente canónica que lo autorice.
+
+---
+
+#### 11. Vínculo obligatorio con línea base
+
+Toda métrica que pretenda demostrar cambio debe vincularse con el elemento comparable de `baseline_manifest::<package_id>`.
+
+La comparación exige conservar:
+
+- misma definición o una regla explícita de compatibilidad entre versiones;
+- misma unidad;
+- mismo calendario y zona horaria;
+- dimensiones comparables;
+- población o regla de cobertura comparable;
+- fuente o linaje compatible;
+- corte previo a exposición;
+- calidad suficiente;
+- segmentación necesaria para no ocultar deterioros.
+
+Una baseline `CERO_MEDIDO` es un cero real. `SIN_OBSERVACIONES`, `NO_DISPONIBLE`, `PROVISIONAL` y `RECONSTRUIDA` conservan exactamente la semántica de `READY-GATE-013`.
+
+---
+
+#### 12. Ventanas de medición
+
+Se distinguen tres ventanas:
+
+1. **baseline** — congelada por `READY-GATE-013`;
+2. **exposición piloto** — intervalos en los que el alcance candidato estuvo efectivamente expuesto;
+3. **respuesta operativa** — intervalos de incidente, pausa, reversión, recovery o conciliación que pueden extenderse fuera de la exposición normal.
+
+No se mezclan:
+
+- datos posteriores al cambio material con la ventana anterior;
+- periodos pausados con exposición activa para métricas de adopción;
+- datos de `SHADOW` con efectos productivos;
+- consumidores fuera de alcance con la cohorte;
+- staging/CI con producción salvo que una métrica sea explícitamente de readiness y no de piloto.
+
+---
+
+#### 13. Cambios materiales y versionado
+
+Un cambio material de candidato, contrato, autorización, datos, cohorte, ambiente o alcance:
+
+1. cierra la recolección de la definición/ventana anterior sin borrar su historia;
+2. conserva los valores anteriores como evidencia del periodo previo;
+3. invalida su reutilización cuando la fuente determine pérdida de comparabilidad;
+4. exige nueva referencia de baseline cuando `READY-GATE-013` o 022 así lo requieran;
+5. abre una nueva versión de medición para el alcance cambiado;
+6. impide combinar ambos periodos como si fueran una sola experiencia homogénea.
+
+El cambio de definición nunca se aplica retroactivamente a valores ya usados.
+
+---
+
+#### 14. Calidad y estados de dato
+
+Para métricas de 008 se conservan estados distintos:
+
+| Estado              | Semántica                                                                           |
+| ------------------- | ----------------------------------------------------------------------------------- |
+| `VALIDO`            | fuente, definición, población, ventana, calidad y comparabilidad suficientes        |
+| `CERO_MEDIDO`       | la consulta válida produjo cero                                                     |
+| `SIN_OBSERVACIONES` | el denominador o ventana aplicable no contiene observaciones suficientes            |
+| `NO_DISPONIBLE`     | no existe dato confiable para calcular                                              |
+| `PROVISIONAL`       | existe valor con limitación explícita aún aceptable solo donde su fuente lo permita |
+| `RECONSTRUIDA`      | cálculo posterior desde historia autoritativa, identificado como reconstrucción     |
+| `NO_APLICA`         | la modalidad o semántica demuestra que la métrica no corresponde                    |
+
+`0`, `null`, ausencia, no disponible y no aplica no son equivalentes.
+
+---
+
+#### 15. Cobertura, duplicados y datos tardíos
+
+Antes de presentar una métrica como válida se verifica:
+
+- cobertura del periodo esperado;
+- completitud de eventos requeridos;
+- duplicados de telemetría;
+- correlación de reintentos;
+- eventos tardíos;
+- orden cuando sea relevante;
+- reconciliación con hechos autoritativos;
+- cambios de esquema;
+- calidad de dimensiones;
+- exclusiones documentadas.
+
+Un valor puede estar matemáticamente calculado y aun así quedar `NO_DISPONIBLE`, `PROVISIONAL` o bloqueado para decisión por calidad insuficiente.
+
+---
+
+#### 16. Segmentación obligatoria
+
+La vista agregada debe permitir segmentar, únicamente cuando sea canónicamente aplicable, por:
+
+- `package_id`;
+- candidato o revisión;
+- ambiente;
+- alcance autorizado;
+- modalidad;
+- unidad;
+- ola;
+- checkpoint;
+- proceso u operación;
+- cohorte;
+- sede;
+- área;
+- rol;
+- dispositivo o clase de dispositivo;
+- consumidor;
+- severidad;
+- camino anterior/objetivo cuando la convivencia lo permita.
+
+No se introduce alta cardinalidad por persona en observabilidad agregada cuando no sea necesaria ni autorizada.
+
+Un promedio global no puede ocultar un hard ceiling, una sede degradada, un consumidor incompatible o una cohorte con resultado materialmente peor.
+
+---
+
+#### 17. Propietarios y segregación
+
+Toda métrica conserva:
+
+- propietario de definición desde su fuente canónica;
+- productor técnico de evidencia cuando corresponda;
+- `OWN-*` de la raíz según `DELIV-PKG-017`;
+- responsable operativo de cohorte cuando aplique;
+- autoridad de incidentes o recovery únicamente para sus decisiones propietarias.
+
+El productor del dato no se convierte automáticamente en autoridad de salida del piloto.
+
+009 deberá consumir estas responsabilidades sin que 008 cree una autoridad nueva.
+
+---
+
+#### 18. Guardrails heredados
+
+Las métricas de 008 deben presentarse junto con los guardrails aplicables de `DELIV-PKG-013` y `DELIV-PKG-023`.
+
+Entre otros, cuando correspondan:
+
+- hard ceilings de interacción, navegación, foreground, async y sincronización;
+- cero efectos duplicados por retry;
+- cero confirmaciones locales falsas;
+- cero violaciones de privacidad definidas;
+- cero incumplimientos críticos abiertos;
+- `AC-NFR-001`;
+- `AC-OBS-001`;
+- `AC-PILOT-001`;
+- `AC-ROLLBACK-001`;
+- `AC-DEFECT-001`.
+
+Una mejora de adopción o resultado empresarial no compensa un guardrail crítico incumplido.
+
+---
+
+#### 19. Relación con incidentes, defectos y decisiones
+
+Cada valor o cambio relevante puede enlazar, cuando corresponda:
+
+- incidente de 007;
+- decisión 006;
+- pausa o reanudación;
+- reversión;
+- recovery;
+- diferencia/conciliación de 005;
+- control anti-duplicidad de 004;
+- defecto y corrección;
+- requisito de regresión materializado después de un defecto real.
+
+El cálculo no altera la bitácora append-only de 007.
+
+---
+
+#### 20. Pausas y reversión
+
+Durante una pausa:
+
+- el reloj activo se trata conforme a `DUR-DIR-001`;
+- la adopción no incorpora exposición que no ocurrió;
+- los errores e incidentes reales continúan en su cronología;
+- el tiempo de recuperación puede seguir avanzando si el recovery está activo;
+- una reanudación no borra la pausa;
+- una reversión no convierte automáticamente métricas previas en inválidas: permanecen como historia de la ventana que efectivamente ocurrió.
+
+---
+
+#### 21. Métricas shared
+
+Para `PILOT-SHARED-001`:
+
+- no existe reloj humano propio;
+- tiempos y errores se miden sobre el contrato compartido y las ventanas de consumidores directos;
+- adopción se expresa como **consumo del contrato por consumidores directos elegibles**, no como actores ficticios;
+- resultado empresarial se deriva de los consumidores afectados y conserva la identidad del contrato compartido;
+- un mismo evento no se duplica para inflar métricas de raíz shared y consumidor;
+- la observación termina cuando finalice la última ventana directa requerida por 022.
+
+---
+
+#### 22. Métricas de control
+
+Para `PILOT-CONTROL-001`:
+
+- no existe adopción empresarial directa;
+- `adopción directa = NO_APLICA`;
+- se conserva como diagnóstico la cobertura del control sobre los pilotos gobernados;
+- tiempos se refieren a detección, evaluación, decisión o cobertura cuando la fuente los produzca;
+- errores se refieren a fallos del control o a condiciones gobernadas sin duplicar el error de la raíz consumidora;
+- resultado empresarial directo es `NO_APLICA` cuando el control no produce un efecto empresarial independiente;
+- cuando el control gobierna un resultado de consumidores, la evidencia se deriva con referencia a esas raíces, sin apropiarse del resultado.
+
+Los cuatro controles con identidad física pendiente continúan bloqueados conforme a 022.
+
+---
+
+#### 23. AURA, EXT y TALENTO
+
+##### 23.1. AURA
+
+Las 14 raíces AURA permanecen `BLOQUEADO_AURA`. No se fabrican baseline productiva, exposición, adopción, errores de piloto ni resultado empresarial observado.
+
+##### 23.2. Dependencias externas
+
+`GAP-PKG-027` y `GAP-PKG-157` permanecen `BLOQUEADO_EXT_GOV_001`. No se mide piloto externo hasta que exista activación formal y alcance ejecutable.
+
+##### 23.3. TALENTO
+
+`GAP-PKG-064` y `GAP-PKG-197` permanecen `FUERA_DE_LINEA_ACTUAL`. Sus métricas de piloto quedan fuera de línea, no en cero.
+
+---
+
+#### 24. Matriz materializada de las 207 raíces
+
+La matriz conserva exactamente la modalidad y el estado de `DELIV-PKG-022` y añade una decisión explícita de aplicabilidad por familia de métricas.
+
+Semántica:
+
+- `DIRECTA`: la familia se calcula sobre exposición propia válida;
+- `DIRECTA_CON_BASELINE`: se calcula sobre el resultado empresarial canónico y baseline comparable;
+- `DERIVADA_CONSUMIDORES`: se obtiene desde consumidores directos sin duplicar hechos;
+- `CONSUMO_CONTRATO`: adopción como consumo del contrato shared;
+- `COBERTURA_GOBERNADA`: tiempos de los pilotos o decisiones que el control gobierna;
+- `CONTROL_GOBERNADO`: errores o fallos de control sin duplicar errores de consumidores;
+- `DERIVADA_ALCANCE_GOBERNADO`: resultado empresarial únicamente mediante las raíces gobernadas;
+- `NO_APLICA_DIRECTA`: no existe adopción o resultado empresarial independiente;
+- `BLOQUEADA`: no se fabrican valores mientras persiste el gate;
+- `FUERA_DE_LINEA`: no existe medición de piloto en la línea actual.
+
+| `package_id`  | Modalidad 022          | Alcance   | Estado heredado                    | Tiempos                 | Errores                 | Adopción            | Resultado empresarial        | Estado 008       |
+| ------------- | ---------------------- | --------- | ---------------------------------- | ----------------------- | ----------------------- | ------------------- | ---------------------------- | ---------------- |
+| `GAP-PKG-001` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-002` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-003` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-004` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-005` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-006` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-007` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-008` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-009` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-010` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-011` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-012` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-013` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-014` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-015` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-016` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-018` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-019` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-020` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-021` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-022` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-023` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-024` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-025` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-026` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-027` | `PILOT-BLOCK-EXT-001`  | `EXT`     | `BLOQUEADO_EXT_GOV_001`            | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-028` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-029` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-030` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-031` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-032` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-033` | `PILOT-SHARED-001`     | `SHARED`  | `SIN_PILOTO_DIRECTO_BLOQUEADO_014` | `DERIVADA_CONSUMIDORES` | `DERIVADA_CONSUMIDORES` | `CONSUMO_CONTRATO`  | `DERIVADA_CONSUMIDORES`      | `ESPECIFICADO`   |
+| `GAP-PKG-034` | `PILOT-SHARED-001`     | `SHARED`  | `SIN_PILOTO_DIRECTO_BLOQUEADO_014` | `DERIVADA_CONSUMIDORES` | `DERIVADA_CONSUMIDORES` | `CONSUMO_CONTRATO`  | `DERIVADA_CONSUMIDORES`      | `ESPECIFICADO`   |
+| `GAP-PKG-035` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-036` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-037` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-038` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-039` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-040` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-041` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-042` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-043` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-044` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-045` | `PILOT-SHARED-001`     | `SHARED`  | `SIN_PILOTO_DIRECTO_BLOQUEADO_014` | `DERIVADA_CONSUMIDORES` | `DERIVADA_CONSUMIDORES` | `CONSUMO_CONTRATO`  | `DERIVADA_CONSUMIDORES`      | `ESPECIFICADO`   |
+| `GAP-PKG-046` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-047` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-048` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-049` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-050` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-051` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-052` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-053` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-054` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-055` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-056` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-057` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-058` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-059` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-060` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-061` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-062` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_BLOQUEADO_014`            | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-063` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-064` | `PILOT-FUTURE-001`     | `FUTURE`  | `FUERA_DE_LINEA_ACTUAL`            | `FUERA_DE_LINEA`        | `FUERA_DE_LINEA`        | `FUERA_DE_LINEA`    | `FUERA_DE_LINEA`             | `FUERA_DE_LINEA` |
+| `GAP-PKG-065` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_BLOQUEADO_014`            | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-066` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-067` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-068` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-069` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-070` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-071` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-072` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-073` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-074` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-075` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-076` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-077` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-078` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-079` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-080` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-081` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-082` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-083` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-084` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-085` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-086` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-087` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-088` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-089` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-090` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-091` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-092` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-093` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-094` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-095` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-096` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-097` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-098` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-099` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-100` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-101` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-102` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-103` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-104` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-105` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-106` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-107` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-108` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-109` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-110` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-111` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-112` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-113` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-114` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-115` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-116` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-117` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-118` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-119` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-120` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-121` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-122` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-123` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-124` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-125` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-126` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-127` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-128` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-129` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-130` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-131` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-132` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-133` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-134` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-135` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-136` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-137` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-138` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-139` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-140` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_BLOQUEADO_014`            | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-141` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-142` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-143` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-144` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-145` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-146` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-147` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-148` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-149` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-150` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-151` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-152` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-153` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-154` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-155` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-156` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-157` | `PILOT-BLOCK-EXT-001`  | `EXT`     | `BLOQUEADO_EXT_GOV_001`            | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-158` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-159` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-160` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-161` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-162` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-163` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-164` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-165` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-166` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-167` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-168` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-169` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-170` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-171` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-172` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_BLOQUEADO_014`            | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-173` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-174` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-175` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-176` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-177` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-178` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-179` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-180` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-181` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-182` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-183` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-184` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-185` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-186` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-187` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-188` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-189` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-190` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-191` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-192` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   | `BLOQUEADA`             | `BLOQUEADA`             | `BLOQUEADA`         | `BLOQUEADA`                  | `BLOQUEADO`      |
+| `GAP-PKG-193` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-194` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-195` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-196` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-197` | `PILOT-FUTURE-001`     | `FUTURE`  | `FUERA_DE_LINEA_ACTUAL`            | `FUERA_DE_LINEA`        | `FUERA_DE_LINEA`        | `FUERA_DE_LINEA`    | `FUERA_DE_LINEA`             | `FUERA_DE_LINEA` |
+| `GAP-PKG-198` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-199` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-200` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+| `GAP-PKG-201` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-202` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-203` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-204` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-205` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-206` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       | `DIRECTA`               | `DIRECTA`               | `DIRECTA`           | `DIRECTA_CON_BASELINE`       | `ESPECIFICADO`   |
+| `GAP-PKG-207` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       | `COBERTURA_GOBERNADA`   | `CONTROL_GOBERNADO`     | `NO_APLICA_DIRECTA` | `DERIVADA_ALCANCE_GOBERNADO` | `ESPECIFICADO`   |
+
+---
+
+#### 25. Reconciliación cuantitativa
+
+```text
+RAÍCES ESPERADAS = 207
+RAÍCES MATERIALIZADAS = 207
+IDENTIFICADORES ÚNICOS = 207
+FALTANTES = 0
+DUPLICADOS = 0
+
+160 PILOT-DIRECT-001
++ 3 PILOT-SHARED-001
++ 26 PILOT-CONTROL-001
++ 14 PILOT-BLOCK-AURA-001
++ 2 PILOT-BLOCK-EXT-001
++ 2 PILOT-FUTURE-001
+= 207
+```
+
+Dentro de control:
+
+```text
+22 OBSERVE_SIN_DEPLOY_DIRECTO
++ 4 OBSERVE_BLOQUEADO_014
+= 26
+```
+
+Las tres raíces shared siguen siendo `GAP-PKG-033`, `GAP-PKG-034` y `GAP-PKG-045`.
+
+Los cuatro controles con gate físico abierto pendiente siguen siendo `GAP-PKG-062`, `GAP-PKG-065`, `GAP-PKG-140` y `GAP-PKG-172`.
+
+---
+
+#### 26. Manifiesto futuro de métricas
+
+La ejecución posterior deberá poder completar, por métrica aplicable:
+
+- `package_id`;
+- candidato;
+- ambiente;
+- alcance;
+- modalidad;
+- definición/version de métrica;
+- propósito;
+- propietario;
+- fórmula;
+- numerador y denominador cuando apliquen;
+- unidad;
+- granularidad;
+- dimensiones y filtros;
+- ventana;
+- baseline de comparación;
+- fuente;
+- valor observado;
+- estado de calidad;
+- cobertura;
+- frescura;
+- comparabilidad;
+- target/guardrail de fuente cuando exista;
+- evidencia;
+- incidentes/decisiones relacionados;
+- cambios materiales;
+- observaciones de interpretación.
+
+Un manifiesto sin valor real durante esta fase no se presenta como evidencia ejecutada.
+
+---
+
+#### 27. Reglas contra métricas engañosas
+
+Queda prohibido interpretar como éxito:
+
+1. código desplegado sin uso efectivo;
+2. flag habilitado sin exposición;
+3. número bruto de eventos sin denominador;
+4. porcentaje con denominador cambiante;
+5. promedio que oculta hard ceiling o segmento crítico;
+6. ausencia de incidentes cuando la telemetría está incompleta;
+7. cero calculado a partir de datos ausentes;
+8. adopción calculada sobre población no elegible;
+9. actividad de pocos usuarios como sustituto de cobertura;
+10. resultado empresarial comparado con baseline contaminada;
+11. mejora empresarial que ignora guardrails críticos;
+12. cambio de definición aplicado retroactivamente;
+13. datos de staging presentados como resultado productivo;
+14. una correlación temporal presentada como causa demostrada;
+15. valores de ventanas distintas agregados después de un cambio material.
+
+---
+
+#### 28. Handoff a `CUTOVER-OPS-009`
+
+008 entrega a 009, por paquete y ventana válida:
+
+```text
+IDENTIDAD DE PAQUETE / CANDIDATO / AMBIENTE / ALCANCE
++
+MODALIDAD Y VENTANA
++
+DEFINICIONES VERSIONADAS
++
+VALORES FUTUROS DE TIEMPOS
++
+VALORES FUTUROS DE ERRORES
++
+VALORES FUTUROS DE ADOPCIÓN
++
+RESULTADO EMPRESARIAL Y DELTA CONTRA BASELINE
++
+GUARDRAILS Y NFR HEREDADOS
++
+CALIDAD / COBERTURA / COMPARABILIDAD
++
+INCIDENTES / DECISIONES / CAMBIOS DE ALCANCE
++
+EVIDENCIA
+=
+EXPEDIENTE DE MEDICIÓN PARA LA DECISIÓN DE SALIDA
+```
+
+009 es propietario de:
+
+- quién puede aprobar la salida;
+- qué combinación de evidencia permite aprobar;
+- qué condición obliga a exigir correcciones;
+- cómo se trata una métrica sin target de salida explícito;
+- qué evidencia adicional es necesaria antes de decidir.
+
+008 no emite `APROBAR_SALIDA`, `EXIGIR_CORRECCIONES` ni equivalente.
+
+---
+
+#### 29. Frontera con `CUTOVER-OPS-009` y `CUTOVER-OPS-010`
+
+- `CUTOVER-OPS-009` define autoridad y criterio de salida del piloto o correcciones.
+- `CUTOVER-OPS-010` define condiciones y evidencia para retirar el proceso anterior.
+
+Una métrica favorable no retira legacy.
+
+Un piloto con 14 días activos cumplidos no aprueba salida automáticamente.
+
+Un resultado empresarial mejor no permite ignorar defectos, seguridad, integridad, NFR, observabilidad o conciliación.
+
+---
+
+#### 30. Separación entre planificación y ejecución
+
+008 es exclusivamente documental.
+
+No ejecuta:
+
+- instrumentación;
+- consultas productivas;
+- dashboards;
+- alertas;
+- creación de datos;
+- activación de flags;
+- cambios de cohorte;
+- promociones;
+- rollback;
+- recovery;
+- compensaciones;
+- conciliaciones;
+- correcciones;
+- despliegues;
+- migraciones;
+- DDL/DML;
+- backfills;
+- cambios de RLS/grants;
+- cambios remotos;
+- operaciones sobre Supabase.
+
+La captura real y el cálculo con evidencia ocurrirán durante la ejecución autorizada de `SHELL-CI-022::<package_id>` utilizando las fuentes materializadas por readiness y observabilidad.
+
+---
+
+#### 31. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0  
+**Requisitos modificados:** 0  
+**Fragmentos 04A afectados:** 0
+
+**Requisitos existentes consumidos:** `TREQ-DATA-002`, `TREQ-DATA-003`, `TREQ-DATA-005`, `TREQ-CONT-002`.
+
+**Justificación:** 008 materializa fórmulas, denominadores, granularidad, dimensiones, baseline, calidad, comparabilidad y uso decisional del piloto dentro de obligaciones ya registradas. `TREQ-DATA-002` protege expresamente la definición versionada de toda métrica, su fórmula, numerador, denominador, granularidad, dimensiones, filtros, unidad, fuente y comparación; `TREQ-DATA-003` protege calidad, cobertura, duplicados, datos tardíos, reconciliación y linaje; `TREQ-DATA-005` protege baseline, target, métrica principal, drivers, guardrails, ventana, segmentos, resultado y cambios de definición. 008 no modifica esas reglas ni introduce un comportamiento runtime nuevo que requiera una fila adicional.
+
+---
+
+#### 32. Criterios de aceptación documental
+
+`CUTOVER-OPS-008` queda documentalmente completo cuando:
+
+1. conserva `CUTOVER-OPS-007 → CUTOVER-OPS-008 → CUTOVER-OPS-009`;
+2. define un contrato común compatible con `TREQ-DATA-002`;
+3. toda métrica tiene propósito de decisión, propietario, fórmula, granularidad, fuente y versión;
+4. toda tasa tiene numerador y denominador explícitos;
+5. cero, ausencia, no disponible y no aplica permanecen separados;
+6. la familia de tiempos distingue tiempo activo, detección, decisión, recovery y latencias NFR;
+7. las latencias NFR conservan targets y hard ceilings de 013;
+8. tiempo activo usa `DUR-DIR-001` sin inventar un reloj alternativo;
+9. la familia de errores usa un denominador elegible;
+10. rechazos válidos no se convierten automáticamente en errores;
+11. retries correlacionados no inflan intentos lógicos;
+12. incidentes conservan severidad propietaria;
+13. defectos abiertos consumen el criterio de 023;
+14. duplicidades e incertidumbres conservan evidencia de 004/005;
+15. la unidad de adopción se resuelve por modalidad y perfil;
+16. adopción no se calcula sobre población total no expuesta;
+17. shared mide consumo de contrato, no actores ficticios;
+18. control declara adopción directa no aplicable;
+19. resultado empresarial usa una definición canónica, no un score universal;
+20. cambio absoluto se calcula solo contra baseline comparable;
+21. cambio relativo no divide por baseline cero;
+22. baseline conserva definición, población, ventana, calidad y dimensiones comparables;
+23. una baseline contaminada por exposición no puede usarse;
+24. cambios materiales abren una nueva versión/ventana y no reescriben historia;
+25. una pausa no se cuenta como exposición activa para adopción;
+26. eventos de incidente/recovery conservan su cronología aun durante pausa;
+27. la calidad controla cobertura, duplicados, datos tardíos y reconciliación;
+28. la segmentación no permite que promedios oculten un hard ceiling o segmento crítico;
+29. propietarios de definición, evidencia y decisión permanecen separados;
+30. guardrails de 013 y criterios de 023 no se compensan con adopción o resultado empresarial;
+31. las 207 raíces aparecen exactamente una vez;
+32. existen 207 identificadores únicos, 0 faltantes y 0 duplicados;
+33. la distribución reconcilia `160 + 3 + 26 + 14 + 2 + 2 = 207`;
+34. las 3 shared siguen siendo 033, 034 y 045;
+35. los 4 controles bloqueados siguen siendo 062, 065, 140 y 172;
+36. AURA conserva 14 raíces bloqueadas;
+37. EXT conserva exactamente 027 y 157 bloqueadas;
+38. TALENTO conserva exactamente 064 y 197 fuera de línea;
+39. no se inventan valores observados ni evidencia de ejecución;
+40. no se inventan targets empresariales;
+41. 009 conserva propiedad exclusiva de autoridad y criterio de salida;
+42. 010 conserva propiedad exclusiva del retiro del proceso anterior;
+43. la ejecución real permanece en `SHELL-CI-022::<package_id>`;
+44. no se ejecutan código, instrumentación, consultas productivas, despliegues, cambios de configuración, migraciones, DDL/DML, backfills, cambios de datos ni operaciones sobre Supabase;
+45. se crean cero requisitos de prueba, se modifican cero requisitos y se afectan cero fragmentos 04A.
+
+---
+
+#### 33. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de alcance
+
+##### TAREA ACTUAL APROBADA
+CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial
+
+##### SIGUIENTE TAREA RESERVADA
+CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones
+
+
 ### [ ] CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones
 ### [ ] CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior
 

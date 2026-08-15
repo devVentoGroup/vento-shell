@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **858** |
+| Tareas aprobadas | **859** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **736** |
+| Tareas no iniciadas | **735** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **53.83% (858/1594)** |
+| Porcentaje de completamiento | **53.89% (859/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de alcance** |
-| Tarea actual | **CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial** |
+| Última tarea aprobada | **CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial** |
+| Tarea actual | **CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones** |
+| Siguiente tarea | **CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 47 de 68 aprobadas; CUTOVER-OPS-008 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 48 de 68 aprobadas; CUTOVER-OPS-009 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `CUTOVER-OPS-007` — Diseñar el registro de incidentes, decisiones y cambios de alcance |
-| Tarea actual | `CUTOVER-OPS-008` — Definir métricas de tiempos, errores, adopción y resultado empresarial — **NO INICIADA** |
-| Siguiente tarea | `CUTOVER-OPS-009` — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones |
+| Última aprobada | `CUTOVER-OPS-008` — Definir métricas de tiempos, errores, adopción y resultado empresarial |
+| Tarea actual | `CUTOVER-OPS-009` — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones — **NO INICIADA** |
+| Siguiente tarea | `CUTOVER-OPS-010` — Definir condiciones y evidencia para retirar el proceso anterior |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 47 DE 68 APROBADAS — ACTUAL CUTOVER-OPS-008** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 48 DE 68 APROBADAS — ACTUAL CUTOVER-OPS-009** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de alcance
-        ↓
-TAREA ACTUAL
 CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CUTOVER-OPS-009 — Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones
         ↓
+SIGUIENTE TAREA RESERVADA
+CUTOVER-OPS-010 — Definir condiciones y evidencia para retirar el proceso anterior
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 47 de 68 tareas aprobadas
+BLOQUE E5 — 48 de 68 tareas aprobadas
 ```
