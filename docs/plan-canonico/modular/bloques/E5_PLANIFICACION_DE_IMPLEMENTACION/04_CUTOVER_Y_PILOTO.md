@@ -2379,7 +2379,769 @@ CUTOVER-OPS-004 — Diseñar controles contra doble registro y doble efecto dura
 CUTOVER-OPS-005 — Definir conciliaciones durante el piloto
 
 
-### [ ] CUTOVER-OPS-005 — Definir conciliaciones durante el piloto
+### ✅ CUTOVER-OPS-005 — Definir conciliaciones durante el piloto
+
+**Estado:** APROBADA  
+**Tarea anterior:** `CUTOVER-OPS-004 — Diseñar controles contra doble registro y doble efecto durante la transición`  
+**Tarea siguiente:** `CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación`  
+**Tipo de tarea:** documental — definición normativa y materialización del plan de conciliación durante el piloto sobre las unidades, olas, operaciones, efectos, identidades, fuentes autoritativas, resultados inciertos y controles anti-duplicidad ya definidos, vinculando reglas canónicas existentes de correlación, comparación, idempotencia, fuentes de verdad, recuperación, compensación, observabilidad y evidencia; sin ejecutar conciliaciones, corregir datos, reintentar operaciones, compensar efectos, modificar autoridad, decidir pausa/reversión/continuación, registrar incidentes, retirar legacy, desplegar código, ejecutar migraciones, DDL/DML, backfills, cambios remotos ni operaciones sobre Supabase  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md`  
+**Ejecución posterior:** `SHELL-CI-022::<package_id>` después de `SHELL-CI-021::<package_id>` y de completar los contratos CUTOVER aplicables  
+**Cambios físicos autorizados:** ninguno  
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`CUTOVER-OPS-005` define cómo deberá demostrarse durante el piloto que las representaciones, efectos y resultados que deban converger permanecen coherentes con su fuente autoritativa y con los contratos aprobados del paquete.
+
+La tarea parte de la superficie entregada por `CUTOVER-OPS-004` y responde exclusivamente a estas preguntas:
+
+```text
+¿QUÉ UNIDAD, OLA, OPERACIÓN O EFECTO REQUIERE CONCILIACIÓN?
++
+¿CUÁL ES LA FUENTE AUTORITATIVA QUE DEFINE EL RESULTADO ESPERADO?
++
+¿QUÉ IDENTIDAD O CORRELACIÓN PERMITE COMPARAR EL MISMO HECHO?
++
+¿QUÉ CONTRAPARTE OBSERVADA DEBE CONTRASTARSE?
++
+¿QUÉ REGLA DE COMPARACIÓN YA APROBADA DETERMINA COINCIDENCIA O DIFERENCIA?
++
+¿LA DIFERENCIA ESTÁ EXPLÍCITAMENTE PERMITIDA, SIGUE INCIERTA O CONSTITUYE UNA ANOMALÍA?
++
+¿QUÉ EVIDENCIA Y PROPIETARIO CONSERVAN EL RESULTADO?
+=
+CONCILIACIÓN DEL PILOTO DEFINIDA SIN INVENTAR FUENTES, TOLERANCIAS NI CORRECCIONES
+```
+
+Esta tarea no ejecuta la conciliación ni corrige una diferencia. Materializa el contrato que la ejecución posterior deberá consumir.
+
+---
+
+#### 2. Definiciones de trabajo
+
+Para esta tarea:
+
+- **conciliación**: comparación trazable entre una fuente autoritativa y una o más representaciones, entregas, efectos o resultados relacionados, usando identidad y regla de comparación ya aprobadas;
+- **fuente autoritativa**: fuente de verdad, productora empresarial, ledger, estado de dominio, sistema externo contractual o referencia explícitamente gobernada por la fuente propietaria;
+- **contraparte observada**: proyección, consumidor, integración, efecto externo, registro compatible, resultado técnico o representación derivada que debe concordar con la fuente autoritativa según el contrato aplicable;
+- **clave de conciliación**: identidad estable, clave empresarial, `event_id`, `operation_id`, `correlation_id`, clave de efecto, versión o combinación explícitamente aprobada que permite asegurar que se compara el mismo hecho;
+- **regla de comparación**: contrato vigente que define qué campos, estados, cantidades, versiones, relaciones o efectos deben coincidir y qué divergencias temporales, si existen, son admisibles;
+- **resultado incierto**: caso en el que existe posibilidad de efecto o mutación, pero la evidencia disponible todavía no permite clasificarlo como aplicado o no aplicado;
+- **diferencia esperada**: divergencia temporal admitida expresamente por una fuente canónica, con condición de convergencia o cierre identificable;
+- **diferencia no resuelta**: divergencia no autorizada o todavía no explicada por el contrato aplicable.
+
+La conciliación no equivale a promedio, mayoría, copia bidireccional, sobrescritura, reparación automática ni elección de la fuente con el dato “más reciente”.
+
+---
+
+#### 3. Resultado sustantivo
+
+Por cada instancia aplicable de `package_id`, la tarea materializa cuatro piezas documentales:
+
+1. `pilot_reconciliation_surface::<package_id>` — conjunto de superficies que requieren o pueden requerir conciliación durante el piloto;
+2. `pilot_reconciliation_rule_binding::<package_id>` — vínculo de cada superficie con su fuente autoritativa, contraparte, clave de correlación, regla de comparación, requisitos existentes, propietario y evidencia;
+3. `pilot_reconciliation_plan::<package_id>` — orden y momento documental en que deberán evaluarse las conciliaciones aplicables dentro de la secuencia ya aprobada;
+4. `pilot_reconciliation_manifest::<package_id>` — expediente consolidado de unidades, olas, superficies, reglas, resultados posibles, bloqueos, responsables y handoff a `CUTOVER-OPS-006`.
+
+Estas piezas no constituyen evidencia de ejecución. Un plan `DEFINIDO` no implica que una conciliación haya sido corrida ni que una diferencia haya sido resuelta.
+
+---
+
+#### 4. Entradas obligatorias
+
+`CUTOVER-OPS-005` consume, sin redefinirlas:
+
+- `CUTOVER-OPS-001`: ventana, candidato, ambiente, alcance y responsables vigentes;
+- `CUTOVER-OPS-002`: unidades, olas, orden, dependencias, estado seguro y puntos de decisión;
+- `CUTOVER-OPS-003`: ruta anterior, ruta objetivo, autoridad antes/después, trabajo en curso, compatibilidad temporal y recovery;
+- `CUTOVER-OPS-004`: operaciones y efectos, identidad estable, control anti-duplicidad, resultados inciertos, repeticiones reconocidas, señales y evidencia esperada;
+- `DELIV-PKG-009`: migraciones, backfills, compatibilidad temporal y retiro legacy;
+- `DELIV-PKG-010`: eventos, productoras, consumidoras, entrega, idempotencia, retry, colas, aislamiento, compensación y conciliación;
+- `DELIV-PKG-012`: autorización y frontera autoritativa de servidor;
+- `DELIV-PKG-015`: dependencias, bloqueos y orden técnico;
+- `DELIV-PKG-016`: requisitos de prueba, niveles, fixtures, entornos, responsables y evidencia esperada;
+- `DELIV-PKG-017`: logs, métricas, trazas, alertas, correlación y auditoría;
+- `DELIV-PKG-018`: estado seguro, targeting, activación y kill switch;
+- `DELIV-PKG-019`: rollout, shadow, cohortes, pausas y promoción;
+- `DELIV-PKG-020`: rollback, recovery, compensation, efectos irreversibles y conciliación;
+- `DELIV-PKG-022`: alcance y cohorte de piloto;
+- `READY-GATE-010..015`: soporte, observabilidad, recuperación, línea base, riesgos y autorización final de entrada.
+
+Si una entrada necesaria no permite identificar una fuente autoritativa, clave de conciliación o regla de comparación sin inferencia, la superficie queda `BLOQUEADA`.
+
+---
+
+#### 5. Invariante principal
+
+Toda conciliación ejecutable deberá respetar:
+
+```text
+MISMO HECHO U OPERACIÓN
++
+IDENTIDAD / CORRELACIÓN ESTABLE
++
+FUENTE AUTORITATIVA EXPLÍCITA
++
+CONTRAPARTE IDENTIFICADA
++
+REGLA DE COMPARACIÓN VIGENTE
++
+EVIDENCIA REPRODUCIBLE
+=
+RESULTADO DE CONCILIACIÓN ATRIBUIBLE
+```
+
+Se prohíbe:
+
+1. conciliar por semejanza de texto, timestamp aproximado o posición visual cuando la identidad canónica exige otra clave;
+2. escoger como fuente de verdad el valor mayor, menor, más reciente o mayoritario sin contrato explícito;
+3. considerar que dos valores iguales prueban por sí solos que corresponden al mismo hecho;
+4. convertir una diferencia en corrección automática;
+5. interpretar ausencia de registro, log, callback o ACK como ausencia de efecto;
+6. aceptar una duplicación confirmada como “diferencia tolerable”;
+7. reejecutar una operación para intentar hacer coincidir las fuentes;
+8. sobrescribir historia para eliminar la evidencia de una diferencia.
+
+---
+
+#### 6. Unidad mínima de conciliación
+
+La unidad mínima documental es:
+
+```text
+package_id
++
+candidate_ref
++
+environment
++
+authorized_scope_ref
++
+activation_unit_ref
++
+wave_ref
++
+reconciliation_subject_ref
+```
+
+`reconciliation_subject_ref` identifica el hecho, operación, efecto, entidad, proyección, entrega o relación concreta que debe compararse.
+
+Una unidad de activación puede producir cero, una o varias superficies de conciliación. No se crea una conciliación artificial para completar una cantidad predeterminada.
+
+---
+
+#### 7. Superficies que deben evaluarse
+
+`pilot_reconciliation_surface::<package_id>` deberá revisar, cuando apliquen según las fuentes del paquete:
+
+| Superficie                                    | Conciliación exigible                                                                                       |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| resultado `RESULT_UNKNOWN` o equivalente      | confirmar si el efecto ocurrió antes de permitir cualquier tratamiento posterior                            |
+| retry o repetición reconocida                 | comprobar que la operación conserva un único resultado o efecto conforme a su contrato                      |
+| productor → consumidor                        | comparar hecho fuente, identidad, versión, audiencia y proyección cuando el contrato exige convergencia     |
+| outbox/inbox/cola/job                         | correlacionar operación, intento, entrega, resultado y estado durable                                       |
+| webhook/callback externo                      | correlacionar solicitud, respuesta, callback, estado externo y estado interno gobernado                     |
+| inventario/ledger/costo                       | comprobar representaciones que el contrato exige mantener atómicas o reconciliables                         |
+| migración/backfill                            | comprobar cobertura, identidad, procedencia y resultado cuando el plan de transición exige conciliación     |
+| offline/móvil                                 | correlacionar trabajo local pendiente con el resultado autoritativo después de sincronización               |
+| ruta anterior/ruta objetivo                   | verificar que la transición no dejó fuentes competidoras cuando la compatibilidad exige una sola autoridad  |
+| proyección/Realtime/cache                     | comprobar convergencia solo cuando el contrato la trata como representación derivada                        |
+| reporte/analítica                             | comprobar cobertura, duplicados, frescura, linaje y reconciliación cuando el paquete incluye esa superficie |
+| efecto irreversible o parcialmente reversible | conservar evidencia y tratamiento de `DELIV-PKG-020` sin simular reversibilidad                             |
+
+Una superficie solo entra al plan cuando una fuente aprobada demuestra que debe existir relación de coherencia o convergencia.
+
+---
+
+#### 8. Determinación de la fuente autoritativa
+
+La fuente autoritativa se resuelve por precedencia contractual:
+
+1. fuente primaria de dominio o sistema propietario ya aprobada;
+2. productora empresarial definida por el contrato de eventos;
+3. ledger o registro autoritativo expresamente definido;
+4. fuente externa cuando el contrato aprobado le atribuye autoridad sobre ese hecho;
+5. otra fuente expresamente materializada por la tarea propietaria.
+
+No son fuentes autoritativas por sí mismas:
+
+- una pantalla;
+- una copia local;
+- una caché;
+- una proyección;
+- Realtime;
+- un log;
+- una métrica;
+- una tabla por ser técnicamente accesible;
+- una Edge Function por ejecutar código;
+- un webhook por transportar un mensaje;
+- una aplicación consumidora;
+- la ruta anterior después de perder autoridad;
+- la ruta objetivo antes de recibirla.
+
+Si dos fuentes reclaman autoridad sobre el mismo hecho y ninguna precedencia canónica lo resuelve, la conciliación queda `BLOQUEADA`.
+
+---
+
+#### 9. Identidad y correlación
+
+Toda comparación deberá usar la identidad aprobada para la superficie.
+
+Según aplicabilidad, podrá incluir:
+
+- identificador empresarial estable;
+- `event_id`;
+- `operation_id`;
+- `idempotency_key`;
+- `correlation_id`;
+- `causation_id`;
+- clave de efecto;
+- versión de agregado o recurso;
+- identificador externo contractual;
+- clave compuesta aprobada.
+
+Reglas:
+
+1. un retry conserva la identidad de la operación que el contrato exige;
+2. una redelivery conserva la identidad del evento;
+3. una operación externa conserva correlación suficiente para consultar su resultado;
+4. una clave de conciliación no se reconstruye por coincidencia de nombre o descripción;
+5. si la identidad se perdió y no existe contrato seguro para reconstruirla, el caso queda `BLOQUEADA`;
+6. la conciliación no crea un identificador retroactivo para aparentar que dos registros siempre fueron el mismo hecho.
+
+---
+
+#### 10. Regla de comparación
+
+Cada `pilot_reconciliation_rule_binding` deberá referenciar una regla ya aprobada que determine qué comparar.
+
+La regla puede exigir, según la superficie:
+
+- existencia;
+- identidad;
+- versión;
+- estado;
+- cantidad;
+- unidad;
+- importe;
+- moneda;
+- recurso;
+- propietario;
+- actor o principal;
+- alcance;
+- orden causal;
+- conteo de efectos;
+- estado externo;
+- timestamp semántico;
+- cobertura;
+- frescura;
+- integridad referencial;
+- linaje.
+
+No existe una lista universal de campos obligatorios para todas las conciliaciones.
+
+Si una comparación requiere tolerancia numérica, ventana temporal, rounding, timezone, orden, cardinalidad o equivalencia semántica, ese criterio debe provenir de una fuente canónica. 005 no inventa tolerancias por conveniencia.
+
+---
+
+#### 11. Momento de conciliación
+
+`pilot_reconciliation_plan::<package_id>` deberá ubicar cada conciliación en uno o más momentos ya permitidos por el contrato aplicable:
+
+- después de una operación o efecto cuando el resultado debe verificarse inmediatamente;
+- antes de reintentar un `RESULT_UNKNOWN`;
+- después de recibir callback o confirmación externa;
+- al cerrar un lote o trabajo asíncrono cuando el contrato lo exige;
+- antes de un checkpoint entre olas;
+- al finalizar una ola cuando la evidencia del paquete lo requiere;
+- antes de una decisión de recovery o compensation cuando la reversibilidad depende del estado real;
+- al cierre del periodo de piloto cuando una fuente exige convergencia acumulada.
+
+La tarea no fija una frecuencia universal ni un intervalo por defecto.
+
+`CUTOVER-OPS-006` conserva la propiedad de decidir qué resultado de conciliación obliga a continuar, pausar o revertir.
+
+---
+
+#### 12. Clasificación documental de resultados
+
+Cada ejecución futura deberá poder materializar uno de estos resultados documentales:
+
+| Estado                   | Semántica                                                                                                               |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `CONCILIADA`             | la comparación ejecutada coincide con la regla aplicable y existe evidencia reproducible                                |
+| `DIFERENCIA_ESPERADA`    | existe divergencia explícitamente permitida por un contrato vigente y su condición de convergencia sigue abierta        |
+| `DIFERENCIA_NO_RESUELTA` | existe divergencia no explicada o no permitida por la regla vigente                                                     |
+| `RESULTADO_INCIERTO`     | no existe evidencia suficiente para determinar el estado o efecto real                                                  |
+| `DUPLICIDAD_CONFIRMADA`  | la evidencia demuestra más de un registro o efecto donde el contrato exige unicidad                                     |
+| `NO_APLICA`              | la superficie no requiere conciliación bajo el contrato vigente                                                         |
+| `BLOQUEADA`              | no puede construirse o ejecutarse de forma segura por falta de fuente, identidad, regla, acceso o evidencia obligatoria |
+| `INVALIDADA`             | el binding dejó de corresponder a candidato, ambiente, unidad, fuente, contrato o implementación vigentes               |
+
+En el artefacto de planificación, estos valores describen el espacio de resultados permitido. No se asigna `CONCILIADA` sin ejecución real.
+
+---
+
+#### 13. Diferencias esperadas
+
+`DIFERENCIA_ESPERADA` solo puede usarse cuando la fuente propietaria define explícitamente:
+
+1. qué representaciones pueden divergir;
+2. por qué esa divergencia es válida;
+3. desde qué evento o frontera comienza;
+4. cuál es su condición objetiva de convergencia o cierre;
+5. qué evidencia permite demostrar que sigue dentro del contrato.
+
+No se convierte latencia desconocida, dato faltante, error silencioso o duplicación en diferencia esperada.
+
+Una divergencia cuyo periodo permitido venció pasa al tratamiento que corresponda según la regla propietaria y no conserva automáticamente `DIFERENCIA_ESPERADA`.
+
+---
+
+#### 14. Resultados inciertos
+
+Un `RESULTADO_INCIERTO` se conserva como incertidumbre hasta obtener evidencia suficiente.
+
+Reglas:
+
+- no se presume éxito;
+- no se presume fallo;
+- no se reejecuta por otra ruta para “comprobar”;
+- se consulta o reconcilia conforme al contrato de integración y recovery;
+- conserva identidad, intentos, timestamps semánticos y evidencia disponible;
+- si la incertidumbre no puede resolverse dentro de la capacidad aprobada del paquete, queda explícitamente entregada a la decisión de `CUTOVER-OPS-006`;
+- cualquier incidente o decisión derivada se registrará mediante `CUTOVER-OPS-007`.
+
+005 no define el umbral temporal que transforma la incertidumbre en una decisión de pausa o reversión.
+
+---
+
+#### 15. Duplicidad confirmada
+
+La conciliación puede detectar una duplicidad, pero no la normaliza.
+
+Ante `DUPLICIDAD_CONFIRMADA`:
+
+1. se preservan todas las identidades y efectos observados;
+2. no se elimina ni fusiona historia para ocultar la repetición;
+3. se referencia el binding de `CUTOVER-OPS-004` que debía impedirla;
+4. se conserva la fuente autoritativa;
+5. se preserva la evidencia necesaria para diagnóstico y tratamiento;
+6. la decisión de continuar, pausar o revertir pertenece a `CUTOVER-OPS-006`;
+7. el registro del incidente pertenece a `CUTOVER-OPS-007`;
+8. correction, compensation, reverse, refund, adjust, restate u otra acción solo se ejecuta mediante el contrato propietario correspondiente.
+
+Una duplicidad confirmada nunca puede clasificarse como `CONCILIADA`.
+
+---
+
+#### 16. Integraciones, eventos y trabajo asíncrono
+
+Para superficies gobernadas por `DELIV-PKG-010`:
+
+- un evento empresarial y un evento técnico no se comparan como si fueran la misma identidad;
+- el `event_id` permanece estable en redelivery;
+- un retry crea nuevo intento, no nueva operación empresarial;
+- un timeout posterior a una posible frontera de efecto exige consulta o conciliación antes de reejecución;
+- `DEAD_LETTER`, `QUARANTINE` y `RECONCILIATION` conservan sus semánticas técnicas y no se convierten en estados empresariales;
+- una consumidora puede tener estado técnico diferente sin cambiar el hecho confirmado por la productora;
+- una proyección se concilia contra la fuente propietaria cuando el contrato exige convergencia;
+- un coordinador de compensación no adquiere autoridad para escribir la fuente privada de otra aplicación.
+
+005 no crea eventos, colas, workers, DLQ, compensaciones ni políticas de retry.
+
+---
+
+#### 17. Datos, ledger e inventario
+
+Cuando una superficie afecte ledger, stock, costos u otras representaciones relacionadas:
+
+1. se identifica la fuente o conjunto autoritativo definido por el contrato;
+2. se utiliza la identidad empresarial o transaccional aprobada;
+3. se comparan las representaciones que deben permanecer atómicas o reconciliables;
+4. un fallo parcial conserva evidencia de cada efecto conocido;
+5. una diferencia no se corrige sobrescribiendo historia;
+6. una reejecución no sustituye la conciliación;
+7. correction, adjust, reverse, compensate u otra operación posterior conserva su propia identidad y autorización.
+
+La tarea no ejecuta DML ni modifica valores.
+
+---
+
+#### 18. Migraciones, backfills y compatibilidad
+
+Cuando `DELIV-PKG-009` materialice una transición que exige conciliación:
+
+- origen y destino se correlacionan por la identidad definida por el plan;
+- se conserva procedencia;
+- se valida cobertura cuando corresponda;
+- se distinguen dato ausente, nulo, no aplicable, desconocido y pendiente cuando el contrato lo exige;
+- una diferencia de esquema o representación no se considera diferencia empresarial si la regla de transición define equivalencia explícita;
+- un backfill no autoriza efectos empresariales secundarios que el contrato prohíbe;
+- la retirada legacy no se acelera por una conciliación parcial.
+
+El retiro físico sigue reservado a su tarea propietaria y a `CUTOVER-OPS-010`.
+
+---
+
+#### 19. Offline, móvil y trabajo diferido
+
+Los elementos pendientes originados antes o durante la activación deberán conciliarse con su identidad original.
+
+Aplican estas reglas:
+
+- reconexión no crea una segunda identidad;
+- un outbox pendiente se compara con el resultado autoritativo antes de decidir tratamiento cuando exista incertidumbre;
+- una operación local no se declara “perdida” por no aparecer todavía en una proyección;
+- una sincronización repetida no convierte una representación derivada en fuente de verdad;
+- si el cliente antiguo y el nuevo producen representaciones que no pueden correlacionarse con seguridad, la superficie queda `BLOQUEADA`.
+
+005 no define una nueva estrategia offline.
+
+---
+
+#### 20. Proyecciones, Realtime, cache y reporting
+
+Una representación derivada se concilia de acuerdo con su contrato y nunca adquiere autoridad por coincidencia.
+
+En particular:
+
+- Realtime permanece mecanismo de sincronización cuando así está definido;
+- una caché puede quedar temporalmente rezagada únicamente si el contrato lo permite;
+- una proyección no corrige el hecho fuente;
+- un reporte no se considera certificado si su fuente está vencida, incompleta, degradada o sin reconciliar cuando la regla aplicable lo exige;
+- cero, nulo, no aplica, desconocido, no recibido y pendiente no se colapsan en un único valor si el contrato los distingue;
+- un dashboard coincidente no prueba integridad del dato fuente por sí solo.
+
+---
+
+#### 21. Conciliación manual controlada
+
+Una intervención manual solo puede formar parte del plan cuando el procedimiento propietario ya la contempla.
+
+Debe conservar, como mínimo:
+
+- identidad del caso;
+- fuente autoritativa;
+- contraparte;
+- regla utilizada;
+- actor autorizado;
+- antes y después cuando exista una acción posterior;
+- motivo;
+- evidencia;
+- relación con incidente o recovery cuando aplique.
+
+La tarea no crea una excepción de autorización para “arreglar” conciliaciones manualmente.
+
+---
+
+#### 22. Observabilidad y evidencia
+
+`DELIV-PKG-017` sigue siendo propietario de señales, logs, métricas, trazas, alertas y auditoría.
+
+Para 005, la evidencia mínima de una conciliación deberá permitir reconstruir:
+
+1. paquete, candidato y ambiente;
+2. unidad y ola;
+3. sujeto conciliado;
+4. fuente autoritativa;
+5. contraparte;
+6. identidad o correlación;
+7. regla de comparación y versión;
+8. instante o periodo evaluado;
+9. resultado;
+10. diferencia observada cuando exista;
+11. responsable;
+12. referencias de evidencia;
+13. relación con control anti-duplicidad, recovery o incidente cuando aplique.
+
+No se registran secretos completos, credenciales ni payloads sensibles por conveniencia de diagnóstico.
+
+---
+
+#### 23. Aplicabilidad al universo heredado
+
+`CUTOVER-OPS-005` conserva las 207 raíces y las modalidades de piloto de `DELIV-PKG-022`:
+
+| Modalidad heredada            | Cantidad | Tratamiento de conciliación                                                                                      |
+| ----------------------------- | -------: | ---------------------------------------------------------------------------------------------------------------- |
+| `PILOT-DIRECT-001`            |  **160** | evaluar todas las superficies de sus unidades efectivamente pilotadas que tengan regla de conciliación aplicable |
+| `PILOT-SHARED-001`            |    **3** | conciliar mediante consumidores directos y contratos compartidos; no crear un piloto independiente               |
+| `PILOT-CONTROL-001`           |   **26** | observar y conciliar únicamente las superficies gobernadas que el control deba verificar; no inventar mutaciones |
+| AURA bloqueada                |   **14** | conservar el bloqueo; no ejecutar ni simular conciliaciones productivas                                          |
+| dependencia externa bloqueada |    **2** | conservar el gate externo; no inventar contraparte o resultado                                                   |
+| TALENTO fuera de línea actual |    **2** | mantener fuera de ejecución en esta línea                                                                        |
+
+Reconciliación del universo:
+
+```text
+160 + 3 + 26 + 14 + 2 + 2 = 207
+```
+
+Esta tarea no reasigna `package_id`, perfil, modalidad, alcance ni estado heredado.
+
+---
+
+#### 24. Cobertura por unidad
+
+Para toda instancia que llegue desde `CUTOVER-OPS-004`, el manifiesto deberá demostrar:
+
+1. total de unidades recibidas;
+2. total de unidades evaluadas;
+3. total de superficies identificadas;
+4. total con conciliación requerida;
+5. total `NO_APLICA` con fundamento;
+6. total `BLOQUEADA`;
+7. ausencia de unidades huérfanas;
+8. ausencia de superficies duplicadas por la misma identidad y regla;
+9. trazabilidad de cada superficie a su fuente propietaria;
+10. reconciliación exacta entre inventario de entrada y tratamiento de salida.
+
+Una unidad sin superficie conciliable no se convierte artificialmente en una conciliación vacía; queda cubierta mediante `NO_APLICA` documentado.
+
+---
+
+#### 25. Condiciones de bloqueo
+
+Una superficie queda `BLOQUEADA` cuando ocurra al menos una de estas condiciones:
+
+1. no existe fuente autoritativa identificable;
+2. dos fuentes reclaman autoridad sin precedencia resuelta;
+3. falta identidad o correlación suficiente;
+4. no existe contraparte identificable cuando el contrato exige comparación;
+5. la regla de comparación no está materializada;
+6. se necesitaría inventar tolerancia, rounding, timezone, equivalencia o ventana;
+7. un resultado incierto no puede consultarse ni correlacionarse de forma segura;
+8. falta evidencia u observabilidad obligatoria;
+9. el control anti-duplicidad de 004 está bloqueado para la misma superficie;
+10. la implementación física requerida no corresponde al candidato o ambiente;
+11. la superficie depende de un gate todavía abierto;
+12. conciliar exigiría ampliar alcance, permisos, cohorte, sede, rol, dato, dispositivo o ambiente;
+13. la única forma disponible de “conciliar” sería modificar o borrar historia sin contrato aprobado.
+
+Todo bloqueo conserva causa, insumo faltante, propietario canónico, fuente o tarea propietaria y condición verificable de salida.
+
+---
+
+#### 26. Invalidación y revalidación
+
+`pilot_reconciliation_manifest::<package_id>` queda `INVALIDADA` cuando cambia materialmente:
+
+- candidato;
+- ambiente;
+- alcance;
+- ventana;
+- unidad u ola;
+- autoridad de `CUTOVER-OPS-003`;
+- superficie o control de `CUTOVER-OPS-004`;
+- fuente autoritativa;
+- identidad o correlación;
+- regla de comparación;
+- contrato de integración;
+- modelo de datos;
+- estrategia de transición;
+- rollout;
+- recovery/rollback;
+- observabilidad;
+- requisito de prueba aplicable.
+
+La revalidación parte de las fuentes vigentes. Una conciliación histórica permanece como evidencia de la revisión que realmente evaluó y no se reescribe para corresponder a una revisión posterior.
+
+---
+
+#### 27. Contenido mínimo del manifiesto
+
+`pilot_reconciliation_manifest::<package_id>` deberá conservar como mínimo:
+
+1. `package_id`;
+2. `candidate_ref`;
+3. `environment`;
+4. `authorized_scope_ref`;
+5. `cutover_window_ref`;
+6. `activation_sequence_ref`;
+7. `coexistence_manifest_ref`;
+8. `duplicate_control_manifest_ref`;
+9. total de unidades recibidas;
+10. total de unidades evaluadas;
+11. `activation_unit_ref`;
+12. `wave_ref`;
+13. `reconciliation_subject_ref`;
+14. `authoritative_source_ref`;
+15. `observed_counterpart_ref`;
+16. `correlation_key_ref`;
+17. `comparison_rule_ref`;
+18. momento o trigger documental de conciliación;
+19. referencias de requisitos y prueba ya vinculadas por el paquete;
+20. referencias de observabilidad;
+21. responsable;
+22. espacio de resultado aplicable;
+23. bloqueos, propietario y condición de salida;
+24. revisión documental;
+25. referencias de evidencia.
+
+El manifiesto de planificación no almacena un resultado ejecutado inexistente.
+
+---
+
+#### 28. Relación con requisitos vigentes
+
+005 reutiliza, según la superficie concreta y la matriz de `DELIV-PKG-016`, requisitos existentes que ya protegen:
+
+- identidad estable, resultado recuperable, idempotencia y conciliación de trabajo reintentable;
+- trazabilidad de intentos y efectos;
+- captura única y resolución de fuentes competidoras;
+- atomicidad o mecanismo idempotente y reconciliable para representaciones relacionadas;
+- calidad, duplicados, frescura, backfills, reconciliación y linaje de datos;
+- compatibilidad legacy y recuperación;
+- contratos específicos de dominio vinculados a cada paquete.
+
+La presencia de una referencia existente no significa que aplique a todas las raíces. Cada binding conserva únicamente los requisitos que `DELIV-PKG-016` y las fuentes propietarias vinculen a la superficie real.
+
+---
+
+#### 29. Handoff a `CUTOVER-OPS-006`
+
+`CUTOVER-OPS-005` entrega a `CUTOVER-OPS-006`:
+
+```text
+UNIDADES Y OLAS VIGENTES
++
+SUPERFICIES DE CONCILIACIÓN
++
+FUENTE AUTORITATIVA Y CONTRAPARTE
++
+IDENTIDAD / CORRELACIÓN
++
+REGLA DE COMPARACIÓN
++
+ESPACIO DE RESULTADOS
++
+DIFERENCIAS NO RESUELTAS
++
+RESULTADOS INCIERTOS
++
+DUPLICIDADES CONFIRMADAS
++
+BLOQUEOS Y EVIDENCIA
+=
+ENTRADAS TRAZABLES PARA DEFINIR CONTINUAR, PAUSAR O REVERTIR
+```
+
+005 no decide qué combinación de resultados autoriza continuar, obliga a pausar o exige revertir. Esa semántica pertenece exclusivamente a `CUTOVER-OPS-006`.
+
+---
+
+#### 30. Frontera con las tareas posteriores
+
+Esta tarea no anticipa:
+
+- `CUTOVER-OPS-006`: criterio de pausa, reversión o continuación;
+- `CUTOVER-OPS-007`: registro de incidentes, decisiones y cambios de alcance;
+- `CUTOVER-OPS-008`: métricas de tiempos, errores, adopción y resultado empresarial;
+- `CUTOVER-OPS-009`: autoridad y criterio para aprobar salida del piloto o exigir correcciones;
+- `CUTOVER-OPS-010`: condiciones y evidencia para retirar el proceso anterior.
+
+Una diferencia, incertidumbre o duplicidad puede convertirse en entrada de esas tareas, pero 005 no define sus umbrales, decisiones ni acciones.
+
+---
+
+#### 31. Separación entre planificación y ejecución
+
+`CUTOVER-OPS-005` es exclusivamente documental.
+
+No ejecuta:
+
+- queries de conciliación;
+- scripts de comparación;
+- reintentos;
+- correcciones;
+- compensaciones;
+- refunds;
+- reversas;
+- ajustes;
+- restatements;
+- escrituras;
+- migraciones;
+- DDL/DML;
+- backfills;
+- cambios de RLS;
+- cambios de feature flags;
+- despliegues;
+- operaciones remotas;
+- operaciones sobre Supabase.
+
+La ejecución de cutover y piloto corresponde a `SHELL-CI-022::<package_id>` consumiendo los contratos aplicables. Las acciones correctivas pertenecen a sus fuentes técnicas y funcionales propietarias.
+
+---
+
+#### 32. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0  
+**Requisitos modificados:** 0  
+**Fragmentos 04A afectados:** 0
+
+**Justificación:** `CUTOVER-OPS-005` no introduce una nueva regla ejecutable, algoritmo de comparación, tolerancia, transición de estado empresarial, fuente de verdad, mecanismo de idempotencia, retry, compensación o recuperación. Materializa dentro de la frontera concreta del piloto cuándo y contra qué fuentes deberán aplicarse obligaciones de conciliación ya existentes y ya vinculadas a los paquetes. Cuando una fuente no define identidad, comparación, tolerancia o tratamiento suficiente, esta tarea bloquea la superficie en lugar de crear una semántica nueva.
+
+---
+
+#### 33. Criterios de aceptación documental
+
+`CUTOVER-OPS-005` queda documentalmente completo cuando:
+
+1. conserva `CUTOVER-OPS-004 → CUTOVER-OPS-005 → CUTOVER-OPS-006`;
+2. usa únicamente unidades, olas, operaciones, efectos y controles recibidos de las tareas anteriores;
+3. define `pilot_reconciliation_surface`, `pilot_reconciliation_rule_binding`, `pilot_reconciliation_plan` y `pilot_reconciliation_manifest`;
+4. toda superficie de conciliación identifica el mismo paquete, candidato, ambiente y alcance;
+5. toda conciliación aplicable identifica fuente autoritativa;
+6. toda conciliación aplicable identifica contraparte;
+7. toda conciliación aplicable usa identidad o correlación estable;
+8. toda conciliación aplicable referencia una regla vigente de comparación;
+9. no se inventan tolerancias, ventanas, rounding, timezone o equivalencias;
+10. no se elige fuente autoritativa por mayoría, recencia o conveniencia;
+11. un resultado incierto no se presume exitoso ni fallido;
+12. un resultado incierto no se reejecuta para intentar resolverlo;
+13. una duplicidad confirmada nunca se clasifica como conciliada;
+14. una diferencia esperada requiere contrato explícito y condición de convergencia;
+15. una diferencia no resuelta conserva evidencia y propietario;
+16. no se sobrescribe historia para ocultar divergencias;
+17. eventos empresariales y eventos técnicos conservan identidades y semánticas distintas;
+18. un retry conserva la identidad de la operación que su contrato exige;
+19. Realtime, cache, UI, logs y métricas no adquieren autoridad por ser observables;
+20. inventario, ledger y costos usan las reglas de atomicidad o conciliación ya aprobadas cuando aplican;
+21. migraciones y backfills conservan procedencia e identidad cuando requieren conciliación;
+22. offline y trabajo diferido preservan identidad a través de la reconexión;
+23. conciliación manual no amplía autorización;
+24. evidencia permite reconstruir fuente, contraparte, identidad, regla y resultado;
+25. las 207 raíces conservan la distribución `160 + 3 + 26 + 14 + 2 + 2`;
+26. todas las unidades recibidas quedan cubiertas mediante conciliación aplicable o `NO_APLICA` fundamentado;
+27. todo bloqueo conserva causa, insumo, propietario y condición de salida;
+28. cambios materiales invalidan el manifiesto y obligan a revalidar;
+29. 006 recibe entradas de conciliación sin que 005 decida continuar, pausar o revertir;
+30. 005 no registra incidentes, define métricas, aprueba salida ni retira legacy;
+31. la ejecución física permanece en `SHELL-CI-022::<package_id>` y en las tareas técnicas propietarias;
+32. no se ejecutan código, queries, scripts, despliegues, migraciones, DDL/DML, backfills, cambios de datos, configuración remota ni operaciones de Supabase;
+33. se crean cero requisitos de prueba, se modifican cero requisitos de prueba y se afectan cero fragmentos 04A.
+
+---
+
+#### 34. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+CUTOVER-OPS-004 — Diseñar controles contra doble registro y doble efecto durante la transición
+
+##### TAREA ACTUAL APROBADA
+CUTOVER-OPS-005 — Definir conciliaciones durante el piloto
+
+##### SIGUIENTE TAREA RESERVADA
+CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación
+
+
 ### [ ] CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación
 ### [ ] CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de alcance
 ### [ ] CUTOVER-OPS-008 — Definir métricas de tiempos, errores, adopción y resultado empresarial

@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **855** |
+| Tareas aprobadas | **856** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **739** |
+| Tareas no iniciadas | **738** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **53.64% (855/1594)** |
+| Porcentaje de completamiento | **53.70% (856/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CUTOVER-OPS-004 — Diseñar controles contra doble registro y doble efecto durante la transición** |
-| Tarea actual | **CUTOVER-OPS-005 — Definir conciliaciones durante el piloto** |
+| Última tarea aprobada | **CUTOVER-OPS-005 — Definir conciliaciones durante el piloto** |
+| Tarea actual | **CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación** |
+| Siguiente tarea | **CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de alcance** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 44 de 68 aprobadas; CUTOVER-OPS-005 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 45 de 68 aprobadas; CUTOVER-OPS-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `CUTOVER-OPS-004` — Diseñar controles contra doble registro y doble efecto durante la transición |
-| Tarea actual | `CUTOVER-OPS-005` — Definir conciliaciones durante el piloto — **NO INICIADA** |
-| Siguiente tarea | `CUTOVER-OPS-006` — Definir criterio de pausa, reversión o continuación |
+| Última aprobada | `CUTOVER-OPS-005` — Definir conciliaciones durante el piloto |
+| Tarea actual | `CUTOVER-OPS-006` — Definir criterio de pausa, reversión o continuación — **NO INICIADA** |
+| Siguiente tarea | `CUTOVER-OPS-007` — Diseñar el registro de incidentes, decisiones y cambios de alcance |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 44 DE 68 APROBADAS — ACTUAL CUTOVER-OPS-005** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 45 DE 68 APROBADAS — ACTUAL CUTOVER-OPS-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CUTOVER-OPS-004 — Diseñar controles contra doble registro y doble efecto durante la transición
-        ↓
-TAREA ACTUAL
 CUTOVER-OPS-005 — Definir conciliaciones durante el piloto
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación
         ↓
+SIGUIENTE TAREA RESERVADA
+CUTOVER-OPS-007 — Diseñar el registro de incidentes, decisiones y cambios de alcance
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 44 de 68 tareas aprobadas
+BLOQUE E5 — 45 de 68 tareas aprobadas
 ```
