@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **840** |
+| Aprobadas | **841** |
 | En propuesta | **0** |
-| No iniciadas | **754** |
+| No iniciadas | **753** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **52.70% (840/1594)** |
+| Porcentaje de completamiento | **52.76% (841/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `READY-GATE-004` — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos | ✅ APROBADA |
-| Tarea actual | `READY-GATE-005` — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos | ⬜ NO INICIADA |
-| Siguiente reservada | `READY-GATE-006` — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente | ⬜ NO INICIADA |
+| Última aprobada | `READY-GATE-005` — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos | ✅ APROBADA |
+| Tarea actual | `READY-GATE-006` — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente | ⬜ NO INICIADA |
+| Siguiente reservada | `READY-GATE-007` — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -557,7 +557,7 @@
 | ✅ APROBADA | `READY-GATE-002` | Definir criterio y evidencia para confirmar migraciones aplicadas y datos validados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ✅ APROBADA | `READY-GATE-003` | Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ✅ APROBADA | `READY-GATE-004` | Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-005` | Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ✅ APROBADA | `READY-GATE-005` | Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ⬜ NO INICIADA | `READY-GATE-006` | Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ⬜ NO INICIADA | `READY-GATE-007` | Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ⬜ NO INICIADA | `READY-GATE-008` | Definir criterio y evidencia para confirmar procedimientos operativos y contingencias | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |

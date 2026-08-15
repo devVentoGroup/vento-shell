@@ -1326,7 +1326,301 @@ READY-GATE-004 — Definir criterio y evidencia para confirmar usuarios, roles, 
 READY-GATE-005 — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos
 
 
-### [ ] READY-GATE-005 — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos
+### ✅ READY-GATE-005 — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos
+
+**Estado:** APROBADA  
+**Tarea anterior:** READY-GATE-004 — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos  
+**Tarea siguiente:** READY-GATE-006 — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente  
+**Tipo de tarea:** Documental — definición del gate de readiness que permitirá confirmar, por paquete y ambiente objetivo, que los catálogos, maestros, referencias y homologaciones mínimas requeridas para la operación autorizada existen, son identificables, están gobernadas por una fuente de verdad y cumplen integridad suficiente antes del piloto; sin crear datos, ejecutar seeds, migraciones, backfills, cambios Supabase, configuración, despliegues ni validación operativa real.
+
+#### 1. Propósito y resultado canónico
+
+`READY-GATE-005::<package_id>` define el criterio documental que deberá ejecutar posteriormente `SHELL-CI-021::<package_id>` para determinar si el paquete dispone de la línea base mínima de catálogos y datos maestros que necesita en el ambiente objetivo.
+
+El gate responde una pregunta concreta:
+
+> ¿Todas las identidades maestras, catálogos, referencias y homologaciones que el paquete necesita para operar dentro de su alcance aprobado existen en la fuente de verdad correcta, con claves canónicas, cobertura mínima, vigencia e integridad verificables?
+
+La tarea no afirma que esa condición ya se cumpla para ningún paquete. Define qué deberá comprobarse, qué evidencia será suficiente y cómo se resolverá el resultado.
+
+#### 2. Alcance y frontera del gate
+
+El gate cubre exclusivamente datos de referencia o persistencia relativamente estable que condicionan la operación del paquete, por ejemplo cuando apliquen:
+
+- catálogos funcionales;
+- entidades maestras;
+- valores de referencia;
+- diccionarios o taxonomías controladas;
+- relaciones de homologación entre identificadores canónicos y fuentes legacy o externas;
+- parámetros de negocio persistentes que sean datos gobernados y no secretos ni variables de despliegue;
+- registros maestros mínimos exigidos por contratos, procesos, integraciones o `TREQ-*` del paquete.
+
+La aplicabilidad se determina desde el expediente aprobado del paquete. Ninguna categoría se considera obligatoria para todos los paquetes por el solo hecho de existir en Vento OS.
+
+Este gate no sustituye ni reabre:
+
+1. `READY-GATE-002`, que confirma migraciones aplicadas, transformaciones de datos y reconciliación de cambios existentes;
+2. `READY-GATE-004`, que confirma usuarios, roles, sedes, áreas y turnos requeridos;
+3. `READY-GATE-006`, que confirmará integraciones y credenciales del ambiente;
+4. los gates posteriores de dispositivos, conectividad, observabilidad, backup, soporte o aceptación;
+5. las pruebas funcionales o de autorización completas del paquete.
+
+Los registros transaccionales que deben nacer durante la operación ordinaria del piloto —por ejemplo ventas, órdenes, check-ins, movimientos, eventos o evidencias generadas por el flujo— no se convierten en maestros solo para satisfacer este gate.
+
+#### 3. Determinación del universo mínimo requerido
+
+Para cada `package_id`, `SHELL-CI-021` deberá construir un conjunto exhaustivo denominado `required_master_set` a partir únicamente de fuentes ya aprobadas y aplicables al paquete.
+
+La derivación seguirá esta precedencia:
+
+1. `TREQ-*` vinculados al paquete y sus precondiciones de datos;
+2. contratos canónicos de dominio, datos, integración, autorización y proceso consumidos por el paquete;
+3. decisiones aprobadas del expediente `DELIV-PKG` que identifiquen datos, fixtures, entornos, dependencias, cohortes o precondiciones;
+4. alcance de datos del piloto aprobado para el paquete;
+5. fuente de verdad y reglas de identidad ya materializadas durante implementación, cuando la ejecución futura del gate disponga de ellas.
+
+No se permite derivar el universo desde "lo que ya existe" en una base de datos y tratar esa observación como definición del mínimo esperado. El estado observado se compara contra el conjunto esperado; no lo define.
+
+Cada identidad requerida aparecerá exactamente una vez en el dossier del paquete. Si dos fuentes describen la misma identidad con nombres distintos, deberán reconciliarse mediante su clave canónica o mediante una homologación explícita antes de emitir `PASS`.
+
+#### 4. Clasificación mínima de cada identidad
+
+Cada elemento de `required_master_set` se clasificará en una sola de estas clases semánticas:
+
+| Clase          | Uso                                                                                                                               |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `CATALOGO`     | Lista controlada de valores permitidos o categorías consumidas por el paquete.                                                    |
+| `MAESTRO`      | Entidad estable o relativamente estable que actúa como referencia operativa de otros datos o procesos.                            |
+| `REFERENCIA`   | Valor o conjunto auxiliar que condiciona reglas, relaciones o interpretación sin constituir por sí mismo un maestro principal.    |
+| `HOMOLOGACION` | Mapeo explícito entre identificadores canónicos VENTO y claves legacy, externas o de otro sistema cuando el contrato lo requiera. |
+
+La clasificación no modifica el modelo de datos ni crea nuevas entidades. Sirve únicamente para impedir que una evidencia ambigua mezcle maestros, transacciones, configuración o fixtures.
+
+#### 5. Dossier mínimo por identidad
+
+Cada identidad requerida deberá conservar como mínimo:
+
+| Campo                   | Regla                                                                                                            |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `package_id`            | Paquete al que pertenece la comprobación.                                                                        |
+| `master_requirement_id` | Identificador estable del requerimiento de readiness dentro del dossier del paquete.                             |
+| `logical_identity`      | Nombre canónico o referencia inequívoca del catálogo, maestro, referencia u homologación.                        |
+| `data_class`            | `CATALOGO`, `MAESTRO`, `REFERENCIA` o `HOMOLOGACION`.                                                            |
+| `required_by`           | Referencias canónicas que hacen obligatoria la identidad: `TREQ-*`, contrato, proceso o decisión aprobada.       |
+| `source_of_truth`       | Sistema, repositorio lógico o servicio autoritativo que gobierna la identidad.                                   |
+| `canonical_key_rule`    | Clave interna, clave canónica o regla de identidad que permite distinguir registros sin depender de texto libre. |
+| `owner`                 | Propietario funcional o técnico definido por las fuentes aplicables.                                             |
+| `target_environment`    | Ambiente exacto al que corresponde la evidencia.                                                                 |
+| `required_scope`        | Cobertura mínima esperada: claves, registros, categorías, relaciones o subconjunto exigido por el paquete.       |
+| `observed_scope`        | Cobertura observada durante la ejecución futura del gate.                                                        |
+| `vigency_rule`          | Regla aplicable de activo, vigencia, estado o versión cuando exista.                                             |
+| `integrity_checks`      | Controles de unicidad, completitud, consistencia, referencia u homologación que apliquen.                        |
+| `evidence_refs`         | Referencias reproducibles a consultas, reportes, endpoints, manifiestos o salidas autoritativas.                 |
+| `result`                | `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA`.                                                                       |
+| `blocking_reason`       | Causa concreta cuando el resultado no sea `PASS`.                                                                |
+
+El dossier no debe almacenar secretos, credenciales, tokens, datos personales completos ni volcados productivos innecesarios. La evidencia deberá minimizar valores sensibles y conservar únicamente lo necesario para probar identidad, cobertura e integridad.
+
+#### 6. Criterio de `PASS` por identidad
+
+Una identidad puede recibir `PASS` únicamente cuando existe evidencia reproducible de que:
+
+1. pertenece efectivamente al `required_master_set` del paquete;
+2. existe en la fuente de verdad aprobada para el ambiente objetivo;
+3. puede identificarse mediante su clave o regla canónica;
+4. la cobertura observada satisface completamente el `required_scope`;
+5. los registros o valores requeridos están activos, vigentes o en el estado esperado cuando exista esa dimensión;
+6. no existen duplicados incompatibles con la regla de identidad;
+7. las referencias obligatorias resuelven sin huérfanos dentro del alcance evaluado;
+8. la completitud y consistencia exigidas por el paquete se satisfacen;
+9. toda homologación requerida entre claves canónicas y legacy/externas está completa para el alcance del paquete;
+10. la evidencia identifica de forma inequívoca el ambiente, la fuente autoritativa, el momento de observación y el método utilizado.
+
+La existencia física de una tabla, colección, archivo o endpoint no demuestra por sí sola que el maestro requerido esté listo.
+
+#### 7. Criterio de `FAIL`
+
+Una identidad recibe `FAIL` cuando existe evidencia suficiente de cualquiera de estas condiciones:
+
+- falta un catálogo, maestro, referencia u homologación requerido;
+- falta uno o más registros o valores que forman parte del mínimo obligatorio;
+- la información está en una fuente distinta de la fuente de verdad aprobada sin contrato de sincronización u homologación que lo justifique;
+- existe una colisión, duplicidad o clave ambigua contraria a la identidad canónica;
+- hay referencias huérfanas dentro del alcance requerido;
+- la cobertura es menor que la exigida por el paquete;
+- valores críticos están inactivos, vencidos o en un estado incompatible con la ventana de operación;
+- una homologación requerida es parcial, contradictoria o no permite resolver una clave de forma determinista;
+- el paquete depende de texto libre o de una clave legacy no homologada cuando la fuente canónica exige identificadores VENTO;
+- datos creados únicamente para prueba se presentan como si fueran la línea base maestra productiva de un piloto real;
+- la evidencia corresponde a otro ambiente, otra fuente de verdad o un alcance distinto del aprobado.
+
+#### 8. Criterio de `BLOQUEADO`
+
+Una identidad recibe `BLOQUEADO` cuando no existe evidencia suficiente para concluir `PASS` o `FAIL`, incluyendo:
+
+- no está resuelta la fuente de verdad;
+- no puede determinarse el conjunto mínimo esperado desde fuentes aprobadas;
+- la identidad física, repositorio, runtime o frontera de datos del paquete continúa sin confirmar;
+- el ambiente objetivo no es accesible mediante un mecanismo autorizado de comprobación;
+- la evidencia disponible no permite diferenciar producción, staging, sandbox u otro ambiente;
+- existe dependencia de una fuente externa todavía no activada o no demostrada;
+- faltan claves canónicas o reglas de homologación necesarias para comparar esperado contra observado;
+- el owner requerido no está definido en las fuentes que gobiernan esa identidad;
+- la cobertura observada es parcial y no permite determinar el estado del universo requerido.
+
+Un bloqueo no puede convertirse en `PASS` por ausencia de incidentes, por una muestra favorable ni por inferencia desde otro ambiente.
+
+#### 9. Criterio de `NO_APLICA`
+
+`NO_APLICA` solo es válido cuando el expediente aprobado demuestra expresamente que el paquete no requiere catálogos, maestros, referencias ni homologaciones dentro del alcance evaluado, o que una identidad inicialmente considerada queda fuera de alcance por una decisión canónica ya aprobada.
+
+No son suficientes para declarar `NO_APLICA`:
+
+- que no se hayan encontrado registros;
+- que el paquete sea documental o de control sin revisar sus dependencias;
+- que un `TREQ-*` no nombre explícitamente una tabla;
+- que el ambiente todavía no esté disponible;
+- que la implementación aún no haya materializado la fuente de verdad.
+
+La ausencia de evidencia cuando la aplicabilidad es incierta produce `BLOQUEADO`, no `NO_APLICA`.
+
+#### 10. Regla agregada por paquete
+
+El resultado de `READY-GATE-005::<package_id>` se calcula de forma estricta:
+
+1. cada identidad del `required_master_set` aparece exactamente una vez;
+2. cualquier `FAIL` produce `FAIL` del paquete;
+3. si no existe `FAIL` pero al menos una identidad está `BLOQUEADO`, el paquete queda `BLOQUEADO`;
+4. el paquete obtiene `PASS` únicamente cuando todas las identidades aplicables están `PASS` y cualquier `NO_APLICA` está justificado;
+5. un paquete sin identidades aplicables obtiene `NO_APLICA` solo con evidencia de alcance suficiente;
+6. una muestra parcial, un subconjunto de categorías o un muestreo manual no representativo nunca se redondean a `PASS`;
+7. el conteo de identidades evaluadas deberá reconciliarse con el conteo de identidades esperadas del `required_master_set`.
+
+#### 11. Evidencia aceptable
+
+La ejecución futura podrá utilizar evidencia autoritativa y reproducible, entre otros mecanismos:
+
+- consultas read-only versionadas sobre la fuente de verdad;
+- reportes de catálogo o maestro emitidos por el sistema autoritativo;
+- respuestas de API o servicios internos que expongan identidad canónica y alcance sin revelar secretos;
+- manifiestos de seed o carga inicial solo cuando correspondan al ambiente evaluado y exista trazabilidad hasta el estado observado;
+- conteos y listados de claves canónicas esperadas frente a observadas;
+- comprobaciones de unicidad, completitud, consistencia e integridad referencial;
+- comprobaciones de vigencia o estado activo cuando sean parte del contrato;
+- reportes de homologación entre claves canónicas y legacy/externas;
+- evidencia de pipeline o procedimiento controlado que identifique paquete, ambiente, fuente, candidato y resultado;
+- referencias durables a la salida de validadores o pruebas vinculadas a `TREQ-*`.
+
+La evidencia deberá registrar como mínimo ambiente, fuente de verdad, momento de observación, método, universo esperado, universo observado, resultado y referencias durables.
+
+#### 12. Evidencia insuficiente por sí sola
+
+No constituye prueba suficiente:
+
+- una captura de pantalla sin identidad reproducible de ambiente y fuente;
+- que una tabla o colección exista;
+- que un seed o fixture exista en el repositorio;
+- que una migración haya terminado correctamente;
+- que un pipeline esté verde sin demostrar contenido y cobertura del maestro;
+- una fila de ejemplo;
+- un conteo sin definición del universo esperado;
+- una exportación sin fecha, fuente o ambiente;
+- una consulta manual no conservada ni reproducible;
+- una lista de nombres sin claves canónicas cuando estas sean obligatorias;
+- asumir que un valor legacy equivale al canónico sin homologación demostrada;
+- datos sintéticos, sanitizados o de prueba usados como sustituto de la línea base productiva requerida para el piloto;
+- la planificación documental de `DELIV-PKG-016` o `DELIV-PKG-022` sin evidencia del estado materializado.
+
+#### 13. Política por ambiente y datos de prueba
+
+En CI, local, staging o sandbox pueden utilizarse fixtures deterministas, sintéticos o sanitizados cuando el contrato de pruebas del paquete lo autorice. Esos datos pueden demostrar que el software soporta un catálogo o maestro, pero no prueban por sí solos que la línea base del ambiente productivo o del piloto esté preparada.
+
+Para un piloto productivo:
+
+1. los maestros o referencias exigidos deberán corresponder a datos legítimos y aprobados para la operación ordinaria;
+2. no se sembrarán datos productivos únicamente para obtener un `PASS` de readiness;
+3. los datos transaccionales que el flujo empresarial deba crear durante el piloto nacerán mediante dicho flujo y no se precrearán como evidencia artificial;
+4. un backfill, seed productivo o corrección necesaria para disponer de un maestro deberá tener su propia autorización, trazabilidad y gate aplicable; `READY-GATE-005` no autoriza esa ejecución;
+5. el gate puede consumir el estado resultante de una operación ya autorizada y ejecutada, pero no sustituye la evidencia de `READY-GATE-002` cuando esa operación haya modificado datos existentes.
+
+#### 14. Casos especiales
+
+##### 14.1. Paquetes AURA con identidad física no resuelta
+
+Si repositorio, runtime, fuente de datos o identidad física continúan `NO_CONFIRMADO`, el gate permanece `BLOQUEADO`. No se inventan catálogos, tablas, seeds, owners ni fuentes de verdad para cerrar el expediente.
+
+##### 14.2. Paquetes TALENTO fuera de la línea actual
+
+Un paquete TALENTO que continúe formalmente fuera de la línea de ejecución actual no obtiene `PASS` por anticipación. Puede recibir `NO_APLICA` para la línea actual únicamente cuando el expediente demuestre que no participa en el piloto vigente; su readiness material se evaluará en la activación autorizada correspondiente.
+
+##### 14.3. Dependencias externas condicionadas
+
+Cuando el maestro dependa de una fuente externa gobernada por una condición de activación, el gate queda `BLOQUEADO` hasta demostrar la activación y la identidad de la fuente. No se sustituye con una copia manual o un dataset local no autorizado.
+
+##### 14.4. Paquetes sin cambio físico directo
+
+Un paquete identificado canónicamente como sin cambio físico directo puede recibir `NO_APLICA` solo si su expediente demuestra además que no introduce ni consume un mínimo maestro adicional para la operación evaluada. Esa condición no se presume por el tipo de paquete.
+
+##### 14.5. Homologaciones legacy o externas
+
+Cuando la operación autorizada dependa de claves legacy o de terceros, el gate no exige reemplazarlas físicamente si el contrato aprobado conserva esa fuente, pero sí exige una relación inequívoca con la identidad canónica cuando `TREQ-DATA-001` lo requiera. Una homologación parcial para el universo del piloto bloquea o falla según la evidencia disponible.
+
+#### 15. Separación entre planificación y ejecución
+
+`READY-GATE-005` deja definido el contrato que `SHELL-CI-021::<package_id>` deberá ejecutar después de que `SHELL-CI-020::<package_id>` y las tareas de implementación aplicables hayan materializado las fuentes, datos y contratos requeridos.
+
+La secuencia permanece:
+
+`E5-GATE-008::<package_id> -> SHELL-CI-020::<package_id> -> BLOQUE R aplicable -> SHELL-CI-021::<package_id> -> SHELL-CI-022::<package_id>`
+
+Durante `SHELL-CI-021::<package_id>` se construirá el `required_master_set`, se recopilará la evidencia real del ambiente objetivo y se emitirá el resultado. Esta tarea no crea, carga, corrige ni valida físicamente ningún catálogo o maestro.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `READY-GATE-005` operacionaliza para readiness obligaciones ya registradas sobre catálogo único de datos maestros, claves canónicas, fuente de verdad, vigencia, integridad, completitud, consistencia y homologación. No introduce una nueva regla empresarial, una entidad adicional ni un comportamiento ejecutable distinto; define qué evidencia deberá demostrar posteriormente el cumplimiento de requisitos existentes por paquete.
+
+**Requisitos existentes consumidos:** `TREQ-DATA-001` y `TREQ-DATA-003`.
+
+**Requisitos TREQ-* creados:** 0  
+**Requisitos TREQ-* modificados:** 0  
+**Fragmentos 04A afectados:** 0
+
+#### 16. Criterios de aceptación documental
+
+`READY-GATE-005` queda documentalmente completo cuando:
+
+1. define cómo derivar el universo exhaustivo de catálogos y datos maestros mínimos por paquete desde fuentes aprobadas;
+2. impide usar el estado observado del ambiente como sustituto de la definición del universo esperado;
+3. clasifica de forma inequívoca catálogos, maestros, referencias y homologaciones sin mezclar transacciones, secretos o fixtures;
+4. establece un dossier mínimo trazable por identidad con fuente de verdad, clave canónica, owner, ambiente, cobertura, vigencia, integridad, evidencia y resultado;
+5. define `PASS`, `FAIL`, `BLOQUEADO` y `NO_APLICA` sin permitir cierre por muestra parcial o inferencia;
+6. exige reconciliar el número de identidades esperadas contra las evaluadas;
+7. cubre unicidad, completitud, consistencia, referencias, vigencia y homologación cuando apliquen;
+8. diferencia evidencia reproducible de señales insuficientes como tabla existente, seed presente, screenshot o pipeline verde;
+9. separa expresamente fixtures de prueba de la línea base maestra requerida para un piloto productivo;
+10. conserva `READY-GATE-002`, `READY-GATE-004` y `READY-GATE-006` como fronteras independientes;
+11. mantiene AURA y dependencias externas bloqueadas cuando su identidad o fuente de verdad no estén confirmadas;
+12. genera cero cambios `TREQ-*` y no requiere actualización del registro 04A;
+13. no ejecuta cambios de datos, Supabase, configuración, despliegue ni validación operativa;
+14. reserva exclusivamente `READY-GATE-006` como siguiente tarea.
+
+#### 17. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+
+`READY-GATE-004 — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos`
+
+##### TAREA ACTUAL APROBADA
+
+`READY-GATE-005 — Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos`
+
+##### SIGUIENTE TAREA RESERVADA
+
+`READY-GATE-006 — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente`
+
+
 ### [ ] READY-GATE-006 — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente
 ### [ ] READY-GATE-007 — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras
 ### [ ] READY-GATE-008 — Definir criterio y evidencia para confirmar procedimientos operativos y contingencias
