@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **832** |
+| Aprobadas | **834** |
 | En propuesta | **0** |
-| No iniciadas | **762** |
+| No iniciadas | **760** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **52.20% (832/1594)** |
+| Porcentaje de completamiento | **52.32% (834/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DELIV-PKG-021` — Definir documentación, procedimiento y capacitación | ✅ APROBADA |
-| Tarea actual | `DELIV-PKG-022` — Definir alcance, actores, datos y duración del piloto | ⬜ NO INICIADA |
-| Siguiente reservada | `DELIV-PKG-023` — Definir criterios de aceptación y evidencia de cierre | ⬜ NO INICIADA |
+| Última aprobada | `DELIV-PKG-023` — Definir criterios de aceptación y evidencia de cierre | ✅ APROBADA |
+| Tarea actual | `DELIV-PKG-024` — Vincular el paquete con el registro canónico de brechas | ⬜ NO INICIADA |
+| Siguiente reservada | `DELIV-PKG-025` — Aprobar el paquete antes de iniciar implementación física | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -549,8 +549,8 @@
 | ✅ APROBADA | `DELIV-PKG-019` | Definir estrategia de despliegue y rollout | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-020` | Definir rollback técnico, funcional y de datos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-021` | Definir documentación, procedimiento y capacitación | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
-| ⬜ NO INICIADA | `DELIV-PKG-022` | Definir alcance, actores, datos y duración del piloto | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
-| ⬜ NO INICIADA | `DELIV-PKG-023` | Definir criterios de aceptación y evidencia de cierre | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
+| ✅ APROBADA | `DELIV-PKG-022` | Definir alcance, actores, datos y duración del piloto | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
+| ✅ APROBADA | `DELIV-PKG-023` | Definir criterios de aceptación y evidencia de cierre | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-024` | Vincular el paquete con el registro canónico de brechas | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-025` | Aprobar el paquete antes de iniciar implementación física | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `READY-GATE-001` | Definir criterio y evidencia para confirmar código desplegado en el entorno objetivo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |

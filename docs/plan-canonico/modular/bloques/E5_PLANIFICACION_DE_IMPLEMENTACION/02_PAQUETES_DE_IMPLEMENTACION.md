@@ -9810,8 +9810,1022 @@ SIGUIENTE TAREA RESERVADA
 `DELIV-PKG-022 — Definir alcance, actores, datos y duración del piloto`
 
 
-### [ ] DELIV-PKG-022 — Definir alcance, actores, datos y duración del piloto
-### [ ] DELIV-PKG-023 — Definir criterios de aceptación y evidencia de cierre
+### ✅ DELIV-PKG-022 — Definir alcance, actores, datos y duración del piloto
+
+**Estado:** APROBADA
+**Tarea anterior:** `DELIV-PKG-021 — Definir documentación, procedimiento y capacitación`
+**Tarea siguiente:** `DELIV-PKG-023 — Definir criterios de aceptación y evidencia de cierre`
+**Tipo de tarea:** documental — materialización del contrato de piloto para las 207 raíces `GAP-PKG-*`, con alcance, actores, sedes, datos, dispositivos, entorno, duración, cohortes, exclusiones y salvaguardas por identidad; sin ejecutar pilotos, habilitar paquetes, ampliar permisos, modificar datos o configuración, desplegar cambios ni avanzar continuidad
+
+---
+
+#### 1. Resultado canónico
+
+`DELIV-PKG-022` define el alcance de piloto de las **207** raíces `GAP-PKG-001..207` sin ejecutar ninguna de ellas.
+
+La decisión queda separada en cuatro modalidades coherentes con `DELIV-PKG-018..020`:
+
+1. **160 raíces de piloto directo** — perfiles `TP-DB-001`, `TP-DOM-001`, `TP-AUTH-001`, `TP-INT-001` y `TP-UI-001`: reciben cohorte de producción limitada mediante `PILOT-DIRECT-001`, pero conservan el bloqueo de identidad física de `DELIV-PKG-014` hasta que el paquete materialice repositorio/archivo, actores, sede o contexto, dispositivos y demás identidad ejecutable exigida por su gate.
+2. **3 raíces de contrato compartido** — `TP-SHARED-001`: no reciben un estado `PILOT` artificial; se observan a través de los consumidores directos que entren en piloto mediante `PILOT-SHARED-001`.
+3. **26 raíces de control** — `TP-CONTROL-001`: no reciben un estado `PILOT` artificial; operan conceptualmente en `OBSERVE` durante los pilotos que gobiernan mediante `PILOT-CONTROL-001`. Veintidós no tienen cambio físico directo confirmado y cuatro conservan bloqueo físico de `DELIV-PKG-014`.
+4. **18 raíces no ejecutables en la línea actual** — 14 AURA, 2 `EXT-GOV-001` y 2 TALENTO: conservan sus gates heredados y no reciben actores, sedes, datos o dispositivos ejecutables por inferencia.
+
+El piloto es una **cohorte nominable y auditable**, no un porcentaje de tráfico. `CANARY_5`, `LIMITED_25`, `LIMITED_50` y `FULL_100` continúan perteneciendo a `DELIV-PKG-019` y solo pueden ocurrir después del cierre del piloto aplicable.
+
+La aprobación documental de esta tarea no demuestra que exista una cohorte físicamente habilitada, que el piloto haya iniciado, que haya producido evidencia, que se hayan satisfecho sus gates o que un paquete pueda promoverse.
+
+---
+
+#### 2. Límites obligatorios
+
+1. No se ejecuta el piloto ni se habilita producción desde esta tarea.
+2. No se crean personas, cuentas, sedes, estaciones, dispositivos, datasets, secretos, repositorios, archivos físicos, flags o dependencias por inferencia.
+3. La pertenencia a una cohorte nunca concede permisos nuevos; cada actor conserva únicamente autorizaciones ya aprobadas.
+4. Ningún paquete bloqueado por `DELIV-PKG-014`, AURA, `EXT-GOV-001` o TALENTO puede entrar materialmente al piloto hasta cerrar su gate propietario.
+5. La entrada al piloto exige conservar las decisiones de pruebas, señales, activación, rollout, rollback y documentación de `DELIV-PKG-016..021`; 022 no las redefine.
+6. El piloto no autoriza DDL, DML, backfills, copias masivas, cargas productivas de prueba, rotación de secretos ni cambios de Supabase. Toda futura modificación Supabase perteneciente a VENTO seguirá ejecutándose exclusivamente desde `vento-shell`.
+7. No se utilizan porcentajes de usuarios como sustituto de la cohorte del piloto.
+8. El transcurso del tiempo no promueve automáticamente un paquete ni constituye aceptación.
+9. Las condiciones de pausa, contención y reversa consumen señales y contratos ya aprobados; 022 no crea umbrales NFR nuevos.
+10. La evidencia de cierre y la decisión de aceptación pertenecen a `DELIV-PKG-023`.
+
+---
+
+#### 3. Gate de entrada al piloto
+
+Una raíz de modalidad directa solo puede iniciar `PILOT` cuando se demuestre simultáneamente:
+
+- identidad física exacta y gate de implementación abierto conforme a `DELIV-PKG-014`;
+- dependencias, secuencia y compatibilidad satisfechas conforme a `DELIV-PKG-015`;
+- pruebas aplicables de `DELIV-PKG-016` ejecutadas con evidencia suficiente para el candidato que se pretende pilotar;
+- señales, auditoría, soporte y diagnóstico de `DELIV-PKG-017` disponibles para la exposición real;
+- default seguro, targeting, kill switch y autoridad de `DELIV-PKG-018` materializados;
+- candidato y secuencia de rollout de `DELIV-PKG-019` identificados;
+- rollback, recuperación, compensación o conciliación aplicables de `DELIV-PKG-020` practicables para el alcance expuesto;
+- expediente y transferencia de conocimiento de `DELIV-PKG-021` vigentes para la audiencia requerida;
+- NFR y gates previos aplicables, incluidos los de `DELIV-PKG-013`, sin bloqueo abierto que impida exposición real.
+
+Si falta cualquiera de estos elementos, el estado del paquete permanece `BLOQUEADO` o en el estado seguro anterior definido por `DELIV-PKG-018`; no se sustituye el faltante con una cohorte ficticia.
+
+---
+
+#### 4. Contratos de alcance reutilizables
+
+##### 4.1. `ACT-DIR-001` — actores de la cohorte directa
+
+Para cada raíz directa:
+
+- solo participan identidades reales que ya estén autorizadas para la función que ejecutarán;
+- se toma como catálogo de funciones y responsabilidades la fuente canónica de actores/procesos vigente; no se inventan títulos ni roles;
+- por cada rol humano aplicable y sede aplicable se admite **mínimo 1 y máximo 2 actores** dentro de la cohorte inicial; el segundo actor actúa como cobertura/relevo, no como ampliación automática de alcance;
+- una identidad no se añade únicamente por pertenecer al equipo propietario `OWN-*`;
+- identidades técnicas o de servicio solo reciben tráfico originado por la cohorte aprobada o por el camino técnico estrictamente necesario para completarlo;
+- cualquier actor adicional requiere una decisión posterior de ampliación conforme a `DELIV-PKG-019`; no se incorpora silenciosamente al piloto.
+
+La identidad nominal exacta se materializa al abrir el gate físico de `DELIV-PKG-014`; mientras ese gate permanezca cerrado, 022 fija el tamaño, elegibilidad y regla de selección, pero no inventa nombres.
+
+##### 4.2. `SITE-DIR-001` — sedes y puntos de trabajo
+
+El universo territorial autorizado para un piloto VENTO queda limitado a las cinco sedes físicas canónicas existentes:
+
+- `Oficina 1`;
+- `Centro de Producción`;
+- `Vento Café`;
+- `Saudo`;
+- `Molka`.
+
+`Centro de Distribución` queda expresamente excluido porque no existe como sede física canónica.
+
+Para una raíz ligada a operación física:
+
+- participa como máximo **un punto/estación por perfil de estación aplicable en cada sede donde ese proceso exista canónicamente**;
+- no se crea una estación nueva para hacer posible el piloto;
+- la instancia física exacta debe quedar confirmada al cerrar el gate de `DELIV-PKG-014`;
+- una sede donde el proceso no aplica no se fuerza al piloto y se registra como `NO_APLICA_SEDE_DIRECTA` para esa raíz.
+
+Para raíces sin dependencia de una estación física, la sede es `NO_APLICA_SEDE_DIRECTA`; su exposición queda acotada por actores, consumidores, datos y targeting, no por una sede artificial.
+
+##### 4.3. `DATA-DIR-001` — datos del piloto
+
+La política de datos distingue obligatoriamente preproducción y producción:
+
+| Momento                      | Datos permitidos                                                                                                                            | Datos prohibidos                                                                                                                                               |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CI, local, staging o sandbox | fixtures deterministas, sintéticos o sanitizados de `DELIV-PKG-016` y datos mínimos creados para la prueba autorizada                       | secretos, credenciales, copias indiscriminadas de producción, datos personales no necesarios, datos de pago no requeridos                                      |
+| `PILOT` productivo           | únicamente datos reales que la cohorte aprobada cree, consulte o modifique mediante el flujo empresarial ordinario y autorizado del paquete | datos productivos sembrados para “probar”, backfills por conveniencia, exportaciones masivas, bypass de RLS/autorización, manipulación ajena al flujo aprobado |
+
+Todo dato confirmado durante el piloto se trata como hecho real. Una pausa, flag o rollback técnico no autoriza a borrarlo. Corrección, compensación, restore, recovery o conciliación siguen `DELIV-PKG-020`.
+
+El piloto conserva minimización, finalidad, retención y evidencia sanitizada ya exigidas por los contratos propietarios; 022 no amplía el propósito de tratamiento.
+
+##### 4.4. `DEV-DIR-001` — dispositivos
+
+- una raíz UI/AUTH ligada a puesto físico usa **un dispositivo principal administrado o reconocido por la política vigente por cada punto/estación incluido**, sin incorporar dispositivos personales o desconocidos por conveniencia;
+- un dispositivo de respaldo puede permanecer disponible, pero no aumenta la cohorte activa mientras el principal funcione;
+- en móvil, la evidencia previa usa el entorno representativo de `ENV-MOBILE-CI-STAGING-DEVICE`; la instancia productiva exacta requiere confirmación física antes de `PILOT`;
+- en web, se usa el endpoint administrado o contexto de navegador autorizado del actor de cohorte;
+- DB, DOM, INT y contratos sin superficie de dispositivo no reciben una lista de equipos artificial: heredan únicamente el contexto de dispositivo del consumidor cuando sea relevante.
+
+Registro lógico, plantilla o presencia en una base de datos no prueban por sí solos la existencia física del dispositivo.
+
+##### 4.5. `ENV-DIR-001` — entorno y preestado
+
+La entrada a producción respeta el perfil heredado:
+
+| Perfil heredado | Evidencia previa mínima de ambiente                                                                       | Estado seguro inmediatamente anterior a `PILOT`                            |
+| --------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `TP-DB-001`     | `ENV-SUPABASE-LOCAL-CI-STAGING`                                                                           | `SHADOW` o equivalente sin nueva exposición efectiva según `DELIV-PKG-018` |
+| `TP-DOM-001`    | `ENV-WEB-CI-STAGING`                                                                                      | `SHADOW`                                                                   |
+| `TP-AUTH-001`   | `ENV-WEB-CI-STAGING` o `ENV-MOBILE-CI-STAGING-DEVICE` según runtime                                       | `SHADOW_COMPARE`                                                           |
+| `TP-INT-001`    | `ENV-INTEGRATION-CI-STAGING-SANDBOX` o ambiente móvil heredado cuando el consumidor propietario sea móvil | `SHADOW` / `SANDBOX`                                                       |
+| `TP-UI-001`     | `ENV-WEB-CI-STAGING` o `ENV-MOBILE-CI-STAGING-DEVICE` según runtime                                       | `INTERNAL`                                                                 |
+
+La tabla no crea un ambiente nuevo. El runtime y ambiente exactos de cada fila continúan siendo los heredados de `DELIV-PKG-016/017`.
+
+##### 4.6. `DUR-DIR-001` — duración
+
+La ventana de piloto directo se fija en:
+
+**14 días calendario activos de piloto y, además, al menos un ciclo operativo completo del proceso aplicable.**
+
+Reglas:
+
+1. el reloj inicia con el primer evento productivo exitoso atribuible a la cohorte después de entrar formalmente en `PILOT`;
+2. un día con el piloto pausado por seguridad no cuenta como día activo;
+3. si el ciclo operativo canónico aplicable excede 14 días, la ventana continúa hasta completar el primer ciclo íntegro iniciado bajo piloto;
+4. si no existe un ciclo distinto materializado para ese proceso, rigen los 14 días activos;
+5. reinicios técnicos que no cambian cohorte ni candidato no reinician el reloj; un cambio material de candidato, contrato, datos, autorización o cohorte obliga a iniciar una nueva ventana para el alcance cambiado;
+6. completar la duración solo habilita la revisión de `DELIV-PKG-023`; no equivale a aceptación ni promoción.
+
+---
+
+#### 5. Modalidades sin `PILOT` directo
+
+##### 5.1. `PILOT-SHARED-001`
+
+Aplica exactamente a `GAP-PKG-033`, `GAP-PKG-034` y `GAP-PKG-045`.
+
+- **Actores:** los de las cohortes directas de consumidores que ejercen el contrato; no se crea una cohorte humana propia.
+- **Sedes:** las de esos consumidores; no se crea una sede propia.
+- **Datos:** únicamente los que atraviesan el contrato desde consumidores en alcance.
+- **Dispositivos:** los de consumidores cuando sean relevantes; no se asignan equipos propios al contrato.
+- **Entorno:** conserva `CURRENT → SHADOW → LIMITED → FULL` de `DELIV-PKG-018`; el contrato se observa durante los `PILOT` de consumidores compatibles.
+- **Duración:** no tiene reloj independiente; su ventana de observación comienza con el primer consumidor relevante en `PILOT` y termina cuando concluye la última ventana directa requerida para cubrir sus consumidores en alcance.
+- **Salida:** no puede pasar a `LIMITED` por mero transcurso del tiempo; requiere la evidencia y decisión posteriores aplicables.
+
+##### 5.2. `PILOT-CONTROL-001`
+
+Aplica exactamente a las 26 raíces `TP-CONTROL-001`.
+
+- **Actores:** propietario/revisor del control y los actores ya incluidos en los pilotos gobernados; no crea autorizaciones nuevas.
+- **Sedes, datos y dispositivos:** heredan únicamente el alcance de las cohortes directas que el control observa.
+- **Entorno:** `ENV-DOC-CI` para evidencia contractual previa y `OBSERVE` para exposición operativa cuando exista control ejecutable.
+- **Duración:** cubre completa cada ventana `DUR-DIR-001` que el control gobierne; no existe reloj `PILOT` propio.
+- **22 raíces sin cambio físico directo confirmado:** pueden conservar `OBSERVE_SIN_DEPLOY_DIRECTO`; su evidencia sigue siendo contractual/operativa según aplicabilidad.
+- **4 raíces con identidad física no confirmada:** `GAP-PKG-062`, `GAP-PKG-065`, `GAP-PKG-140` y `GAP-PKG-172` permanecen `OBSERVE_BLOQUEADO_014` hasta cerrar el gate físico correspondiente.
+
+##### 5.3. `PILOT-BLOCK-AURA-001`
+
+Aplica a 14 raíces AURA. Actores, sedes, datos, dispositivos, entorno productivo y reloj de piloto permanecen **no ejecutables** mientras el repositorio/runtime/datos/identidad física AURA no estén confirmados. Una futura activación deberá utilizar los contratos de alcance de 022 que correspondan a su perfil real una vez materializado, sin inventarlos por anticipado.
+
+##### 5.4. `PILOT-BLOCK-EXT-001`
+
+Aplica a `GAP-PKG-027` y `GAP-PKG-157`. No existe piloto externo mientras `EXT-GOV-001` permanezca cerrado. Tras activación formal, sandbox, actores externos/internos, datos, soporte y reconciliación deberán quedar materializados antes de iniciar cualquier reloj productivo.
+
+##### 5.5. `PILOT-FUTURE-001`
+
+Aplica a `GAP-PKG-064` y `GAP-PKG-197`. TALENTO permanece fuera de la línea funcional actual; no se inicia cohorte, sede, datos, dispositivos, ambiente ni duración de piloto hasta su activación formal.
+
+---
+
+#### 6. Cohorte, targeting y aislamiento
+
+`PILOT-DIRECT-001` se materializa por `package_id` y no por porcentaje.
+
+La cohorte efectiva de una raíz es la intersección de:
+
+```text
+package_id habilitado
+∩ actor autorizado incluido en ACT-DIR-001
+∩ sede/punto permitido por SITE-DIR-001 cuando aplique
+∩ dispositivo permitido por DEV-DIR-001 cuando aplique
+∩ datos originados por el flujo ordinario de DATA-DIR-001
+∩ candidato/configuración autorizado por DELIV-PKG-018/019
+```
+
+Si cualquiera de esas dimensiones no puede resolverse de forma verificable, la raíz no entra en `PILOT`.
+
+No se permite ampliar exposición porque una dependencia, contrato compartido, servicio o dato sea utilizado también por usuarios fuera de cohorte. El targeting debe mantener el comportamiento seguro anterior para todo sujeto no incluido.
+
+---
+
+#### 7. Exclusiones obligatorias
+
+Quedan fuera del piloto inicial de cualquier raíz, salvo decisión canónica posterior que modifique expresamente el alcance:
+
+- actores no incluidos o sin autorización vigente;
+- sedes físicas distintas de las cinco canónicas;
+- estaciones o puntos no confirmados cuando la raíz dependa de identidad física;
+- dispositivos personales, desconocidos, no administrados o no verificables usados solo por conveniencia;
+- datos creados artificialmente en producción para obtener evidencia;
+- bulk operations, backfills, migraciones o transformaciones no pertenecientes al flujo ordinario de la cohorte;
+- secretos, credenciales, PIN, tokens y datos sensibles no necesarios;
+- paquetes AURA mientras su gate permanezca cerrado;
+- dependencias `EXT-GOV-001` mientras su gate permanezca cerrado;
+- TALENTO mientras continúe fuera de la línea funcional actual;
+- tráfico, clientes, usuarios o consumidores no incluidos por el targeting de la raíz;
+- promoción `CANARY_5`, `LIMITED_25`, `LIMITED_50` o `FULL_100`, que no forman parte del piloto.
+
+---
+
+#### 8. Salvaguardas y pausa
+
+Durante una futura ejecución del piloto deberán permanecer activas, según aplicabilidad:
+
+1. observabilidad y auditoría de `DELIV-PKG-017` para distinguir exposición de cohorte y baseline;
+2. default seguro, targeting y kill switch de `DELIV-PKG-018`;
+3. pausas y autoridad de promoción de `DELIV-PKG-019`;
+4. rollback técnico/funcional, recovery, compensation y reconciliation de `DELIV-PKG-020`;
+5. runbook y audiencia de soporte de `DELIV-PKG-021`;
+6. todos los gates de pruebas y NFR ya aprobados.
+
+Ante una condición que active una pausa o reversa ya definida, se congela la cohorte: no se añaden actores, sedes, dispositivos o tráfico para “compensar” el tiempo perdido. Los efectos reales ya confirmados se preservan y reconcilian conforme a `DELIV-PKG-020`.
+
+---
+
+#### 9. Matriz materializada de las 207 raíces
+
+La fila homónima de `DELIV-PKG-017` conserva repositorio, perfil `TP-*`, runtime, propietario `OWN-*` y gate. `DELIV-PKG-022` añade únicamente la modalidad y el alcance de piloto; no crea una segunda fuente de verdad para los atributos heredados.
+
+Los identificadores de alcance usados en la matriz significan:
+
+- `DIR`: `ACT-DIR-001` + `SITE-DIR-001` + `DATA-DIR-001` + `DEV-DIR-001` + `ENV-DIR-001` + `DUR-DIR-001`;
+- `SHARED`: `PILOT-SHARED-001`;
+- `CONTROL`: `PILOT-CONTROL-001`;
+- `AURA`: `PILOT-BLOCK-AURA-001`;
+- `EXT`: `PILOT-BLOCK-EXT-001`;
+- `FUTURE`: `PILOT-FUTURE-001`.
+
+| `package_id`  | Herencia                         | Modalidad 022          | Alcance   | Estado 022                         |
+| ------------- | -------------------------------- | ---------------------- | --------- | ---------------------------------- |
+| `GAP-PKG-001` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-002` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-003` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-004` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-005` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-006` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   |
+| `GAP-PKG-007` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-008` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   |
+| `GAP-PKG-009` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-010` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-011` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-012` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-013` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-014` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-015` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-016` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-017` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-018` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-019` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-020` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-021` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-022` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-023` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-024` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-025` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-026` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-027` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-EXT-001`  | `EXT`     | `BLOQUEADO_EXT_GOV_001`            |
+| `GAP-PKG-028` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-029` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-030` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-031` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-032` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-033` | fila homónima de `DELIV-PKG-017` | `PILOT-SHARED-001`     | `SHARED`  | `SIN_PILOTO_DIRECTO_BLOQUEADO_014` |
+| `GAP-PKG-034` | fila homónima de `DELIV-PKG-017` | `PILOT-SHARED-001`     | `SHARED`  | `SIN_PILOTO_DIRECTO_BLOQUEADO_014` |
+| `GAP-PKG-035` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-036` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-037` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-038` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-039` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-040` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-041` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-042` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-043` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-044` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-045` | fila homónima de `DELIV-PKG-017` | `PILOT-SHARED-001`     | `SHARED`  | `SIN_PILOTO_DIRECTO_BLOQUEADO_014` |
+| `GAP-PKG-046` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-047` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-048` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-049` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-050` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-051` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-052` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-053` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-054` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-055` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-056` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-057` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-058` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-059` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   |
+| `GAP-PKG-060` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-061` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-062` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_BLOQUEADO_014`            |
+| `GAP-PKG-063` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-064` | fila homónima de `DELIV-PKG-017` | `PILOT-FUTURE-001`     | `FUTURE`  | `FUERA_DE_LINEA_ACTUAL`            |
+| `GAP-PKG-065` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_BLOQUEADO_014`            |
+| `GAP-PKG-066` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-067` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-068` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-069` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-070` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-071` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-072` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-073` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-074` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-075` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-076` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-077` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-078` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   |
+| `GAP-PKG-079` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-080` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   |
+| `GAP-PKG-081` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-082` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-083` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-084` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-085` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-086` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-087` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-088` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-089` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-090` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-091` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-092` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-093` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-094` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-095` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-096` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-097` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-098` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-099` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-100` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-101` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-102` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-103` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-104` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-105` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-106` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-107` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-108` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-109` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-110` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-111` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-112` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-113` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-114` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-115` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-116` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-117` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-118` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   |
+| `GAP-PKG-119` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-120` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-121` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-122` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-123` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-124` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-125` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-126` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-127` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-128` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-129` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-130` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-131` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-132` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-133` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-134` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-135` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-136` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-137` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-138` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-139` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-140` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_BLOQUEADO_014`            |
+| `GAP-PKG-141` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-142` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-143` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-144` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   |
+| `GAP-PKG-145` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-146` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-147` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   |
+| `GAP-PKG-148` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   |
+| `GAP-PKG-149` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   |
+| `GAP-PKG-150` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-151` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-152` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-153` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-154` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-155` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-156` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-157` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-EXT-001`  | `EXT`     | `BLOQUEADO_EXT_GOV_001`            |
+| `GAP-PKG-158` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-159` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-160` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-161` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-162` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-163` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-164` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-165` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-166` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-167` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-168` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-169` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-170` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-171` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-172` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_BLOQUEADO_014`            |
+| `GAP-PKG-173` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-174` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-175` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-176` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-177` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-178` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-179` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-180` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-181` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-182` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-183` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-184` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-185` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-186` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-187` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   |
+| `GAP-PKG-188` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   |
+| `GAP-PKG-189` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   |
+| `GAP-PKG-190` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-191` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-192` | fila homónima de `DELIV-PKG-017` | `PILOT-BLOCK-AURA-001` | `AURA`    | `BLOQUEADO_AURA`                   |
+| `GAP-PKG-193` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-194` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-195` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-196` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-197` | fila homónima de `DELIV-PKG-017` | `PILOT-FUTURE-001`     | `FUTURE`  | `FUERA_DE_LINEA_ACTUAL`            |
+| `GAP-PKG-198` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-199` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-200` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+| `GAP-PKG-201` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-202` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-203` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-204` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-205` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-206` | fila homónima de `DELIV-PKG-017` | `PILOT-DIRECT-001`     | `DIR`     | `ESPECIFICADO_BLOQUEADO_014`       |
+| `GAP-PKG-207` | fila homónima de `DELIV-PKG-017` | `PILOT-CONTROL-001`    | `CONTROL` | `OBSERVE_SIN_DEPLOY_DIRECTO`       |
+
+#### 10. Reconciliación cuantitativa
+
+| Control                                  | Resultado |
+| ---------------------------------------- | --------: |
+| Raíces totales                           |   **207** |
+| `PILOT-DIRECT-001`                       |   **160** |
+| `PILOT-SHARED-001`                       |     **3** |
+| `PILOT-CONTROL-001`                      |    **26** |
+| — controles `OBSERVE_SIN_DEPLOY_DIRECTO` |    **22** |
+| — controles `OBSERVE_BLOQUEADO_014`      |     **4** |
+| `PILOT-BLOCK-AURA-001`                   |    **14** |
+| `PILOT-BLOCK-EXT-001`                    |     **2** |
+| `PILOT-FUTURE-001`                       |     **2** |
+| Duplicados de `package_id`               |     **0** |
+| Faltantes de `GAP-PKG-001..207`          |     **0** |
+
+La suma de modalidades es `160 + 3 + 26 + 14 + 2 + 2 = 207`.
+
+---
+
+#### 11. Handoff de evidencia y aceptación
+
+`DELIV-PKG-023` recibe de 022, para cada raíz que llegue a ejecución:
+
+- `package_id` y modalidad de piloto;
+- manifiesto real de actores de cohorte;
+- sedes/puntos y dispositivos físicamente confirmados cuando apliquen;
+- ventana real de inicio, pausas y final de `DUR-DIR-001`;
+- candidato/configuración efectivamente pilotado;
+- clasificación de datos utilizada y evidencia sanitizada;
+- señales de `DELIV-PKG-017`, decisiones de pausa/promoción y cualquier rollback/conciliación de `DELIV-PKG-020`;
+- cobertura de contratos compartidos y controles observados durante la cohorte.
+
+Ese handoff no existe todavía como evidencia ejecutada: esta tarea define su estructura y procedencia.
+
+Los **19** paquetes sin vínculo `TREQ-*` fuerte en `DELIV-PKG-016` conservan exactamente su situación actual: `GAP-PKG-008`, `GAP-PKG-011`, `GAP-PKG-015`, `GAP-PKG-027`, `GAP-PKG-032`, `GAP-PKG-040`, `GAP-PKG-042`, `GAP-PKG-069`, `GAP-PKG-073`, `GAP-PKG-081`, `GAP-PKG-085`, `GAP-PKG-101`, `GAP-PKG-132`, `GAP-PKG-137`, `GAP-PKG-147`, `GAP-PKG-157`, `GAP-PKG-186`, `GAP-PKG-198` y `GAP-PKG-200`. Su reconciliación de requisitos permanece propiedad de `DELIV-PKG-024`; 022 no crea TREQ para cerrarla por inferencia.
+
+---
+
+#### 12. Requisitos de prueba
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+**Requisitos creados:** 0.
+**Requisitos modificados:** 0.
+
+Justificación: 022 limita quién, dónde, con qué datos, dispositivos, entorno y duración podrá exponerse a comportamientos ya especificados; no crea comportamiento funcional, contrato técnico, permiso, transformación de datos, umbral NFR ni criterio de aceptación nuevo. Las obligaciones verificables continúan gobernadas por los `TREQ-*` vinculados en `DELIV-PKG-016` y por el registro 04A vigente. La evidencia y aceptación del piloto pertenecen a `DELIV-PKG-023`, y la reconciliación de los 19 paquetes sin vínculo fuerte pertenece a `DELIV-PKG-024`.
+
+---
+
+#### 13. Criterios de aceptación de `DELIV-PKG-022`
+
+`DELIV-PKG-022` queda aceptada cuando:
+
+1. las 207 raíces `GAP-PKG-001..207` aparecen exactamente una vez;
+2. las modalidades reconcilian exactamente **160 directas + 3 compartidas + 26 controles + 14 AURA + 2 EXT + 2 TALENTO**;
+3. cada raíz conserva por referencia su repositorio, perfil, runtime, `OWN-*` y gate de `DELIV-PKG-017`;
+4. las raíces directas usan una cohorte nominalizable, no un porcentaje, y nunca amplían permisos;
+5. el universo territorial queda limitado a las cinco sedes físicas canónicas y ninguna estación inexistente se inventa;
+6. actores y dispositivos físicos exactos permanecen bloqueados hasta la confirmación requerida por `DELIV-PKG-014` cuando aplique;
+7. preproducción usa datos deterministas/sintéticos o sanitizados y producción solo usa datos ordinarios de la cohorte autorizada;
+8. la duración queda fijada en 14 días activos y al menos un ciclo operativo completo, sin promoción automática por tiempo;
+9. `TP-SHARED-001` y `TP-CONTROL-001` no reciben un estado `PILOT` artificial;
+10. las 18 raíces AURA/EXT/TALENTO conservan sus gates sin exposición ejecutable;
+11. las salvaguardas consumen `DELIV-PKG-017..021` sin crear umbrales ni mecanismos ficticios;
+12. no se ejecutan pilotos, despliegues, cambios de datos, cambios de Supabase ni ampliaciones de cohorte desde esta tarea;
+13. se crean **0** requisitos `TREQ-*` y se modifican **0** requisitos existentes;
+14. `DELIV-PKG-023` queda únicamente reservada como propietaria de criterios de aceptación y evidencia de cierre.
+
+---
+
+#### 14. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DELIV-PKG-021 — Definir documentación, procedimiento y capacitación`
+
+TAREA ACTUAL APROBADA
+`DELIV-PKG-022 — Definir alcance, actores, datos y duración del piloto`
+
+SIGUIENTE TAREA RESERVADA
+`DELIV-PKG-023 — Definir criterios de aceptación y evidencia de cierre`
+
+
+### ✅ DELIV-PKG-023 — Definir criterios de aceptación y evidencia de cierre
+
+**Estado:** APROBADA
+**Tarea anterior:** `DELIV-PKG-022 — Definir alcance, actores, datos y duración del piloto`
+**Tarea siguiente:** `DELIV-PKG-024 — Vincular el paquete con el registro canónico de brechas`
+**Tipo de tarea:** documental — materialización de criterios medibles de aceptación, estados de cierre, tratamiento de defectos y manifiesto de evidencia para las 207 raíces `GAP-PKG-*`; sin certificar ejecución, aceptar paquetes por evidencia planeada, desplegar cambios, modificar datos o configuración, alterar Supabase ni avanzar continuidad
+
+---
+
+#### 1. Resultado canónico
+
+`DELIV-PKG-023` define el contrato de cierre de las **207** raíces `GAP-PKG-001..207` y materializa una decisión documental por identidad.
+
+La tarea **no certifica** que un paquete haya sido implementado, probado, pilotado, promovido, revertido, capacitado o cerrado. Ninguna raíz recibe `PASS` en esta fase porque la evidencia ejecutada requerida todavía no existe como expediente de cierre. La aceptación solo puede declararse posteriormente cuando el manifiesto de evidencia de la raíz esté completo y todos los criterios aplicables hayan sido evaluados con evidencia reproducible.
+
+La evaluación conserva sin redefinir:
+
+- requisitos no funcionales y umbrales de `DELIV-PKG-013`;
+- planes y vínculos `TREQ-*` de `DELIV-PKG-016`;
+- señales, alertas, auditoría y conservación de `DELIV-PKG-017`;
+- defaults seguros, targeting y kill switch de `DELIV-PKG-018`;
+- rollout, pausas y promoción de `DELIV-PKG-019`;
+- rollback, recovery, compensation y reconciliation de `DELIV-PKG-020`;
+- documentación, runbooks, soporte y capacitación de `DELIV-PKG-021`;
+- cohorte, sedes, datos, dispositivos y duración de piloto de `DELIV-PKG-022`.
+
+---
+
+#### 2. Estados de resultado de cierre
+
+Cada criterio y cada paquete usa únicamente los siguientes estados de cierre:
+
+| Estado                   | Uso                                                                                                                                             |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PASS`                   | el criterio fue ejecutado y su umbral fue satisfecho con evidencia reproducible                                                                 |
+| `FAIL`                   | el criterio fue ejecutado y su umbral no fue satisfecho                                                                                         |
+| `BLOQUEADO`              | falta una precondición canónica, una identidad, un vínculo de requisito o una dependencia que impide evaluar correctamente                      |
+| `PENDIENTE_DE_EVIDENCIA` | el criterio está definido pero la ejecución/evidencia todavía no existe                                                                         |
+| `NO_APLICA`              | solo se permite para un criterio individual cuando la no aplicabilidad está demostrada por una fuente canónica; nunca por ausencia de evidencia |
+
+Reglas:
+
+1. un paquete solo puede obtener resultado final `PASS` cuando **todos** sus criterios aplicables estén en `PASS` y ninguno esté en `FAIL`, `BLOQUEADO` o `PENDIENTE_DE_EVIDENCIA`;
+2. un criterio sin evidencia suficiente se clasifica `PENDIENTE_DE_EVIDENCIA` o `BLOQUEADO`, nunca `PASS`;
+3. una prueba planeada, un dashboard diseñado, un runbook redactado o un rollback definido no constituyen evidencia de ejecución;
+4. `NO_APLICA` exige fuente, responsable y justificación verificable;
+5. el cierre documental de 023 no autoriza promoción, cutover ni implementación física.
+
+---
+
+#### 3. Criterios universales de aceptación
+
+Los siguientes criterios se evalúan por cada raíz cuando sean aplicables:
+
+| Criterio          | Umbral medible                                                                                                                                                                                                       | Evidencia mínima                                                                                                            | Responsable                                                                                                              |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `AC-TREQ-001`     | **100 %** de los `TREQ-*` vinculados por `DELIV-PKG-016` para la raíz ejecutados con resultado satisfactorio y evidencia reproducible; **0** fallos, bloqueos o evidencias faltantes entre los requisitos aplicables | resultados de prueba por TREQ, artefactos y trazas definidos en 016, estado verificable del requisito                       | responsable de decisión `OWN-*` heredado de la fila homónima de 017; productor técnico según repositorio/ambiente de 016 |
+| `AC-NFR-001`      | **100 %** de los umbrales/guardrails NFR aplicables de 013 satisfechos durante la ventana exigida; **0** incumplimientos abiertos                                                                                    | medición con método y entorno previstos por 013, incluyendo evidencia de hard ceilings cuando existan                       | `OWN-*` heredado de 017 con soporte del propietario técnico                                                              |
+| `AC-OBS-001`      | **100 %** de las señales obligatorias de 017 disponibles durante la ventana de evaluación; **0** alertas críticas o gaps bloqueantes sin resolución                                                                  | logs, métricas, trazas, auditoría y alertas sanitizadas de 017                                                              | `OWN-*` heredado de 017                                                                                                  |
+| `AC-PILOT-001`    | alcance real coincide con 022; para piloto directo se completan **14 días calendario activos y al menos un ciclo operativo completo**; **0** ampliaciones no autorizadas de cohorte, sede, dispositivo o datos       | manifiesto real de cohorte, ventana, candidato, targeting, sedes/dispositivos cuando apliquen y cobertura de shared/control | `OWN-*` heredado de 017 y responsable operativo de la cohorte materializada                                              |
+| `AC-ROLLBACK-001` | **0** incidentes de rollback/recovery/compensation/reconciliation requeridos que permanezcan abiertos; si no hubo disparador, se conserva evidencia de que no se ejecutó por no aplicar, sin fingir prueba           | evidencia de 020 para cualquier disparador ocurrido, conciliación final y efectos preservados                               | autoridad de rollback definida en 020 + `OWN-*` de 017                                                                   |
+| `AC-DOC-001`      | **100 %** de documentación, runbooks, soporte y capacitación obligatorios de 021 con evidencia real cuando la fase de ejecución los requiera; **0** artefactos obligatorios faltantes                                | versión publicada/vigente, audiencia, evidencia de capacitación o preparación de soporte cuando corresponda                 | propietario documental/operativo de 021 + `OWN-*` de 017                                                                 |
+| `AC-DEFECT-001`   | **0** defectos bloqueantes o mayores abiertos; **100 %** de defectos detectados clasificados, con propietario y disposición trazable                                                                                 | registro real de defectos, relación con criterio afectado, retest y evidencia de cierre cuando aplique                      | `OWN-*` de 017 y propietario técnico de la corrección                                                                    |
+| `AC-MANIFEST-001` | **100 %** de campos obligatorios de `EVID-CLOSE-001` presentes, consistentes y referenciables; **0** evidencia fabricada, huérfana o sensible innecesaria                                                            | manifiesto de cierre completo y referencias a fuentes de evidencia                                                          | `OWN-*` de 017                                                                                                           |
+
+Cuando 013 defina un umbral numérico específico, ese valor prevalece; 023 no lo sustituye por una tolerancia genérica. Cuando un NFR no tenga objetivo numérico canónico, 023 exige exactamente el guardrail/condición documentada en 013 y no inventa un SLO.
+
+---
+
+#### 4. Tratamiento de defectos
+
+Todo defecto observado durante pruebas, piloto, rollout controlado o validación se clasifica por impacto de aceptación, no por conveniencia de calendario:
+
+| Clase                | Definición                                                                                                                                                                                                                 | Tratamiento de cierre                                                                                                                                                                                                |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DEFECTO_BLOQUEANTE` | viola seguridad/autorización, integridad o confidencialidad de datos, un TREQ obligatorio, un NFR/guardrail bloqueante, produce efecto externo no contenido, impide rollback/reconciliación requerida o invalida evidencia | resultado del criterio afectado = `FAIL`; promoción prohibida; corregir y repetir toda evidencia afectada antes de nueva evaluación                                                                                  |
+| `DEFECTO_MAYOR`      | el flujo empresarial, contrato, control o resultado TO-BE materialmente esperado es incorrecto aunque no alcance la categoría bloqueante                                                                                   | resultado del criterio afectado = `FAIL`; requiere corrección, retest y cierre antes de `PASS`                                                                                                                       |
+| `DEFECTO_MENOR`      | no viola TREQ, NFR, seguridad, autorización, integridad, privacidad, continuidad ni resultado material; su impacto es no bloqueante y demostrable                                                                          | puede permanecer abierto únicamente con propietario, descripción, destino trazable de corrección y evidencia de que ningún criterio obligatorio queda incumplido; si falta cualquiera, se trata como `DEFECTO_MAYOR` |
+| `NO_CLASIFICADO`     | impacto aún no determinado                                                                                                                                                                                                 | se trata como bloqueante hasta clasificarlo con evidencia                                                                                                                                                            |
+
+No existe aceptación por waiver implícito. Cambiar un criterio, excluir un requisito o declarar no aplicabilidad requiere una modificación canónica de su fuente propietaria antes de reevaluar el paquete.
+
+---
+
+#### 5. Manifiesto de evidencia `EVID-CLOSE-001`
+
+Cada raíz que llegue a evaluación de cierre deberá materializar un manifiesto único con, como mínimo:
+
+1. `package_id`, revisión/candidato evaluado y perfil de aceptación 023;
+2. repositorio(s), ambiente(s) y configuración/candidato efectivamente evaluados;
+3. responsable de decisión `OWN-*` heredado de 017 y responsables técnicos/operativos que produjeron evidencia;
+4. ventana real de evaluación, incluidas pausas y reinicios de ventana cuando 022 lo exija;
+5. cohorte, sedes/puntos, dispositivos y clasificación de datos efectivamente usados cuando apliquen;
+6. resultado y referencia de evidencia para cada criterio `AC-*` aplicable;
+7. lista completa de `TREQ-*` aplicables de 016 y su resultado ejecutado;
+8. NFR aplicables de 013, mediciones y comparación contra su umbral/guardrail;
+9. señales, alertas, auditoría y gaps de 017 durante toda la ventana relevante;
+10. decisiones de targeting/pausa/promoción de 018/019 que afectaron la evaluación;
+11. rollback/recovery/compensation/reconciliation de 020 ejecutados o justificación verificable de no disparo;
+12. documentación, soporte y capacitación de 021 exigibles para la fase;
+13. manifiesto de defectos con clase, criterio afectado, responsable, estado, retest y disposición;
+14. resultado global calculado según la sección 2 y referencias suficientes para reproducir la decisión.
+
+El manifiesto no almacena secretos, credenciales, PIN, tokens, datos de pago ni información personal innecesaria. Cuando la evidencia de origen sea sensible, conserva una referencia sanitizada y controlada, no una copia indiscriminada.
+
+---
+
+#### 6. Perfiles de aceptación por modalidad
+
+##### 6.1. `ACC-DIRECT-001`
+
+Aplica a las **160** raíces `PILOT-DIRECT-001`.
+
+Requiere `AC-TREQ-001`, `AC-NFR-001`, `AC-OBS-001`, `AC-PILOT-001`, `AC-ROLLBACK-001`, `AC-DOC-001`, `AC-DEFECT-001` y `AC-MANIFEST-001`. El piloto debe cubrir `DUR-DIR-001` completo y el candidato evaluado debe ser el mismo cuya evidencia alimenta el cierre. Cualquier cambio material de candidato, contrato, autorización, datos o cohorte que obligue a reiniciar la ventana en 022 invalida el cierre anterior para el alcance cambiado.
+
+##### 6.2. `ACC-SHARED-001`
+
+Aplica a `GAP-PKG-033`, `GAP-PKG-034` y `GAP-PKG-045`.
+
+No crea un reloj de piloto propio. Exige evidencia satisfactoria de todos los consumidores directos necesarios para demostrar compatibilidad del contrato compartido durante sus ventanas, cobertura de pruebas contractuales/integración de 016, señales de 017, ausencia de defecto de compatibilidad abierto y manifiesto completo. Un consumidor relevante no evaluado mantiene la raíz compartida en `PENDIENTE_DE_EVIDENCIA`.
+
+##### 6.3. `ACC-CONTROL-001`
+
+Aplica a las **26** raíces `PILOT-CONTROL-001`.
+
+Exige pruebas/validaciones de control de 016, observabilidad/auditoría de 017, evidencia del comportamiento del control durante todas las ventanas que gobierne, documentación de 021, tratamiento de defectos y manifiesto completo. Las 22 raíces `OBSERVE_SIN_DEPLOY_DIRECTO` no necesitan un deploy ficticio; las 4 raíces `OBSERVE_BLOQUEADO_014` permanecen bloqueadas hasta resolver su identidad física.
+
+##### 6.4. `ACC-AURA-001`
+
+Aplica a **14** raíces AURA. Los criterios quedan definidos, pero su resultado global permanece `BLOQUEADO` hasta confirmar repositorio, runtime, datos e identidad física mediante las tareas AURA propietarias. No se fabrica evidencia ni se reasigna repositorio para obtener cierre.
+
+##### 6.5. `ACC-EXT-001`
+
+Aplica a `GAP-PKG-027` y `GAP-PKG-157`. Permanece `BLOQUEADO` mientras `EXT-GOV-001` esté cerrado. Tras activación formal, la evaluación deberá incluir evidencia del sandbox/entorno real aplicable, efectos externos, idempotencia/retry/compensación y reconciliación exigidos por los contratos propietarios.
+
+##### 6.6. `ACC-FUTURE-001`
+
+Aplica a `GAP-PKG-064` y `GAP-PKG-197`. Permanece `FUERA_DE_LINEA_ACTUAL` hasta activación formal de TALENTO. No recibe `PASS`, `FAIL` ni evidencia ejecutada en la línea funcional actual.
+
+---
+
+#### 7. Gate especial de requisitos para 19 raíces
+
+Los siguientes **19** paquetes no tienen vínculo `TREQ-*` fuerte en `DELIV-PKG-016`:
+
+`GAP-PKG-008`, `GAP-PKG-011`, `GAP-PKG-015`, `GAP-PKG-027`, `GAP-PKG-032`, `GAP-PKG-040`, `GAP-PKG-042`, `GAP-PKG-069`, `GAP-PKG-073`, `GAP-PKG-081`, `GAP-PKG-085`, `GAP-PKG-101`, `GAP-PKG-132`, `GAP-PKG-137`, `GAP-PKG-147`, `GAP-PKG-157`, `GAP-PKG-186`, `GAP-PKG-198` y `GAP-PKG-200`.
+
+Para ellas, `AC-TREQ-001` queda `BLOQUEADO` con código `TREQ_RECONCILIATION_024` hasta que `DELIV-PKG-024` resuelva, por identidad, una de estas salidas canónicas:
+
+- vinculación con requisitos existentes suficientes;
+- creación de requisitos mediante una tarea autorizada que modifique coordinadamente 04A;
+- demostración canónica de que la raíz no implementa comportamiento verificable autónomo y que su cobertura queda satisfecha por controles/contratos propietarios.
+
+023 no elige por anticipado ninguna de esas salidas y no crea TREQ para eliminar el bloqueo.
+
+---
+
+#### 8. Matriz materializada de las 207 raíces
+
+La matriz conserva la modalidad y estado de 022. El responsable de decisión de cada fila es el `OWN-*` de la fila homónima de `DELIV-PKG-017`; el productor técnico de evidencia es el repositorio/ambiente de la fila homónima de `DELIV-PKG-016`. Estas referencias son normativas y evitan duplicar identidades que continúan gobernadas por sus fuentes propietarias.
+
+| `package_id`  | Modalidad 022          | Perfil 023        | Responsable    | Estado de cierre inicial    | Gate TREQ                 |
+| ------------- | ---------------------- | ----------------- | -------------- | --------------------------- | ------------------------- |
+| `GAP-PKG-001` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-002` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-003` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-004` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-005` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-006` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `OWN-*` de 017 | `BLOQUEADO_AURA`            | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-007` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-008` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `OWN-*` de 017 | `BLOQUEADO_AURA`            | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-009` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-010` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-011` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-012` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-013` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-014` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-015` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-016` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-017` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-018` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-019` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-020` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-021` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-022` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-023` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-024` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-025` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-026` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-027` | `PILOT-BLOCK-EXT-001`  | `ACC-EXT-001`     | `OWN-*` de 017 | `BLOQUEADO_EXT_GOV`         | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-028` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-029` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-030` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-031` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-032` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-033` | `PILOT-SHARED-001`     | `ACC-SHARED-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-034` | `PILOT-SHARED-001`     | `ACC-SHARED-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-035` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-036` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-037` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-038` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-039` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-040` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-041` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-042` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-043` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-044` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-045` | `PILOT-SHARED-001`     | `ACC-SHARED-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-046` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-047` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-048` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-049` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-050` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-051` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-052` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-053` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-054` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-055` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-056` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-057` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-058` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-059` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `OWN-*` de 017 | `BLOQUEADO_AURA`            | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-060` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-061` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-062` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-063` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-064` | `PILOT-FUTURE-001`     | `ACC-FUTURE-001`  | `OWN-*` de 017 | `FUERA_DE_LINEA_ACTUAL`     | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-065` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-066` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-067` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-068` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-069` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-070` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-071` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-072` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-073` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-074` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-075` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-076` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-077` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-078` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `OWN-*` de 017 | `BLOQUEADO_AURA`            | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-079` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-080` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `OWN-*` de 017 | `BLOQUEADO_AURA`            | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-081` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-082` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-083` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-084` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-085` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-086` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-087` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-088` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-089` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-090` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-091` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-092` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-093` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-094` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-095` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-096` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-097` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-098` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-099` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-100` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-101` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-102` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-103` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-104` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-105` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-106` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-107` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-108` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-109` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-110` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-111` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-112` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-113` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-114` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-115` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-116` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-117` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-118` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `OWN-*` de 017 | `BLOQUEADO_AURA`            | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-119` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-120` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-121` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-122` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-123` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-124` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-125` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-126` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-127` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-128` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-129` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-130` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-131` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-132` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-133` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-134` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-135` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-136` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-137` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-138` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-139` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-140` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-141` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-142` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-143` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-144` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `OWN-*` de 017 | `BLOQUEADO_AURA`            | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-145` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-146` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-147` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `OWN-*` de 017 | `BLOQUEADO_AURA`            | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-148` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `OWN-*` de 017 | `BLOQUEADO_AURA`            | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-149` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `OWN-*` de 017 | `BLOQUEADO_AURA`            | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-150` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-151` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-152` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-153` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-154` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-155` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-156` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-157` | `PILOT-BLOCK-EXT-001`  | `ACC-EXT-001`     | `OWN-*` de 017 | `BLOQUEADO_EXT_GOV`         | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-158` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-159` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-160` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-161` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-162` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-163` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-164` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-165` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-166` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-167` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-168` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-169` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-170` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-171` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-172` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-173` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-174` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-175` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-176` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-177` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-178` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-179` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-180` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-181` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-182` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-183` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-184` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-185` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-186` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-187` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `OWN-*` de 017 | `BLOQUEADO_AURA`            | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-188` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `OWN-*` de 017 | `BLOQUEADO_AURA`            | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-189` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `OWN-*` de 017 | `BLOQUEADO_AURA`            | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-190` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-191` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-192` | `PILOT-BLOCK-AURA-001` | `ACC-AURA-001`    | `OWN-*` de 017 | `BLOQUEADO_AURA`            | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-193` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-194` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-195` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-196` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-197` | `PILOT-FUTURE-001`     | `ACC-FUTURE-001`  | `OWN-*` de 017 | `FUERA_DE_LINEA_ACTUAL`     | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-198` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-199` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-200` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_RECONCILIATION_024` |
+| `GAP-PKG-201` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-202` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-203` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-204` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-205` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-206` | `PILOT-DIRECT-001`     | `ACC-DIRECT-001`  | `OWN-*` de 017 | `BLOQUEADO_014_Y_EVIDENCIA` | `TREQ_016_VINCULADO`      |
+| `GAP-PKG-207` | `PILOT-CONTROL-001`    | `ACC-CONTROL-001` | `OWN-*` de 017 | `PENDIENTE_DE_EVIDENCIA`    | `TREQ_016_VINCULADO`      |
+
+#### 9. Reconciliación cuantitativa
+
+| Control                                           | Resultado |
+| ------------------------------------------------- | --------: |
+| raíces esperadas                                  |   **207** |
+| raíces materializadas                             |   **207** |
+| `ACC-DIRECT-001`                                  |   **160** |
+| `ACC-SHARED-001`                                  |     **3** |
+| `ACC-CONTROL-001`                                 |    **26** |
+| `ACC-AURA-001`                                    |    **14** |
+| `ACC-EXT-001`                                     |     **2** |
+| `ACC-FUTURE-001`                                  |     **2** |
+| paquetes con `TREQ_RECONCILIATION_024`            |    **19** |
+| duplicados de `package_id`                        |     **0** |
+| faltantes de `GAP-PKG-001..207`                   |     **0** |
+| paquetes en `PASS` por evidencia ejecutada en 023 |     **0** |
+
+La suma de perfiles es `160 + 3 + 26 + 14 + 2 + 2 = 207`. La ausencia de `PASS` es deliberada: 023 define el criterio y el manifiesto, pero no certifica evidencia futura.
+
+---
+
+#### 10. Regla de decisión final del paquete
+
+Cuando exista evidencia ejecutada, el resultado global se calcula así:
+
+1. si existe cualquier criterio aplicable en `FAIL`, el paquete = `FAIL`;
+2. si no hay `FAIL` pero existe cualquier criterio aplicable en `BLOQUEADO`, el paquete = `BLOQUEADO`;
+3. si no hay `FAIL` ni `BLOQUEADO` pero existe cualquier criterio aplicable en `PENDIENTE_DE_EVIDENCIA`, el paquete = `PENDIENTE_DE_EVIDENCIA`;
+4. solo si todos los criterios aplicables están en `PASS` o en `NO_APLICA` canónicamente demostrado, el paquete = `PASS`;
+5. un `PASS` de 023 habilita únicamente la decisión posterior que corresponda; no ejecuta promoción ni equivale a la aprobación final del expediente de `DELIV-PKG-025`.
+
+Una corrección posterior a un `FAIL` debe repetir toda evidencia afectada. No se conserva el `PASS` de una medición invalidada por cambio material del candidato, contrato, configuración, autorización, esquema, dato, cohorte o dependencia.
+
+---
+
+#### 11. Handoff a trazabilidad de `DELIV-PKG-024`
+
+023 entrega a 024, por cada raíz:
+
+- perfil de aceptación 023;
+- estado inicial de cierre;
+- código de gate TREQ;
+- criterios universales aplicables por referencia;
+- regla de responsable heredado;
+- estructura `EVID-CLOSE-001`;
+- bloqueo específico cuando falta vínculo fuerte de requisito.
+
+024 deberá reconciliar la trazabilidad hacia brechas, capacidades, procesos, tareas y `TREQ-*` sin modificar silenciosamente la decisión de aceptación definida aquí.
+
+---
+
+#### 12. Requisitos de prueba
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+**Requisitos creados:** 0.
+**Requisitos modificados:** 0.
+
+Justificación: 023 define gates documentales de aceptación y la estructura de evidencia para comportamientos, NFR y pruebas ya gobernados por 013, 016 y el registro 04A. No introduce comportamiento ejecutable, permiso, contrato runtime, transformación de datos ni umbral NFR nuevo. Los 19 paquetes sin vínculo fuerte permanecen explícitamente bloqueados para reconciliación en 024; no se crean requisitos por inferencia.
+
+---
+
+#### 13. Criterios de aceptación de `DELIV-PKG-023`
+
+`DELIV-PKG-023` queda documentalmente completa cuando:
+
+1. existen exactamente **207** filas, una por `GAP-PKG-001..207`, sin duplicados ni faltantes;
+2. los perfiles reconcilian exactamente **160 directos + 3 compartidos + 26 controles + 14 AURA + 2 EXT + 2 TALENTO**;
+3. cada raíz tiene perfil 023, responsable por referencia canónica, estado inicial y gate TREQ;
+4. se definen estados `PASS`, `FAIL`, `BLOQUEADO`, `PENDIENTE_DE_EVIDENCIA` y `NO_APLICA` sin declarar ejecución inexistente;
+5. `AC-TREQ-001` exige 100 % de requisitos aplicables con evidencia satisfactoria y 0 fallos/bloqueos/faltantes;
+6. `AC-NFR-001` hereda exactamente los umbrales y guardrails de 013 sin inventar SLO;
+7. `AC-PILOT-001` conserva 14 días activos y al menos un ciclo operativo completo para las raíces directas;
+8. shared y control no reciben un piloto artificial y se evalúan por las ventanas/consumidores que realmente cubren;
+9. el manifiesto `EVID-CLOSE-001` exige evidencia reproducible de pruebas, NFR, observabilidad, piloto, rollback/reconciliación, documentación y defectos;
+10. existen 0 defectos bloqueantes o mayores abiertos para un eventual `PASS`;
+11. los 19 paquetes sin vínculo fuerte permanecen `TREQ_RECONCILIATION_024` y no son cerrados por inferencia;
+12. AURA, EXT y TALENTO conservan sus gates sin evidencia ficticia;
+13. se crean **0** requisitos `TREQ-*` y se modifican **0** requisitos existentes;
+14. no se ejecuta piloto, deploy, promoción, rollback, DDL, DML, backfill, cambio de Supabase ni certificación desde esta tarea;
+15. `DELIV-PKG-024` queda únicamente reservada.
+
+---
+
+#### 14. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DELIV-PKG-022 — Definir alcance, actores, datos y duración del piloto`
+
+TAREA ACTUAL APROBADA
+`DELIV-PKG-023 — Definir criterios de aceptación y evidencia de cierre`
+
+SIGUIENTE TAREA RESERVADA
+`DELIV-PKG-024 — Vincular el paquete con el registro canónico de brechas`
+
+
 ### [ ] DELIV-PKG-024 — Vincular el paquete con el registro canónico de brechas
 ### [ ] DELIV-PKG-025 — Aprobar el paquete antes de iniciar implementación física
 
