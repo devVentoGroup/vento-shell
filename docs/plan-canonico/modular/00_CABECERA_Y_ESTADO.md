@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **834** |
+| Tareas aprobadas | **835** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **760** |
+| Tareas no iniciadas | **759** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **52.32% (834/1594)** |
+| Porcentaje de completamiento | **52.38% (835/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DELIV-PKG-023 — Definir criterios de aceptación y evidencia de cierre** |
-| Tarea actual | **DELIV-PKG-024 — Vincular el paquete con el registro canónico de brechas** |
+| Última tarea aprobada | **DELIV-PKG-024 — Vincular el paquete con el registro canónico de brechas** |
+| Tarea actual | **DELIV-PKG-025 — Aprobar el paquete antes de iniciar implementación física** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DELIV-PKG-025 — Aprobar el paquete antes de iniciar implementación física** |
+| Siguiente tarea | **READY-GATE-001 — Definir criterio y evidencia para confirmar código desplegado en el entorno objetivo** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 23 de 68 aprobadas; DELIV-PKG-024 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 24 de 68 aprobadas; DELIV-PKG-025 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DELIV-PKG-023` — Definir criterios de aceptación y evidencia de cierre |
-| Tarea actual | `DELIV-PKG-024` — Vincular el paquete con el registro canónico de brechas — **NO INICIADA** |
-| Siguiente tarea | `DELIV-PKG-025` — Aprobar el paquete antes de iniciar implementación física |
+| Última aprobada | `DELIV-PKG-024` — Vincular el paquete con el registro canónico de brechas |
+| Tarea actual | `DELIV-PKG-025` — Aprobar el paquete antes de iniciar implementación física — **NO INICIADA** |
+| Siguiente tarea | `READY-GATE-001` — Definir criterio y evidencia para confirmar código desplegado en el entorno objetivo |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 23 DE 68 APROBADAS — ACTUAL DELIV-PKG-024** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 24 DE 68 APROBADAS — ACTUAL DELIV-PKG-025** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DELIV-PKG-023 — Definir criterios de aceptación y evidencia de cierre
-        ↓
-TAREA ACTUAL
 DELIV-PKG-024 — Vincular el paquete con el registro canónico de brechas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DELIV-PKG-025 — Aprobar el paquete antes de iniciar implementación física
         ↓
+SIGUIENTE TAREA RESERVADA
+READY-GATE-001 — Definir criterio y evidencia para confirmar código desplegado en el entorno objetivo
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 23 de 68 tareas aprobadas
+BLOQUE E5 — 24 de 68 tareas aprobadas
 ```
