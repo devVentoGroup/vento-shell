@@ -1127,18 +1127,18 @@ TEXTO EXTERNO O LEGACY
 
 #### 2. Resultado canónico
 
-Queda centralizado un conjunto inicial de **112 permisos canónicos activos y únicos**.
+Queda centralizado el conjunto contractual vigente de **140 permisos canónicos activos y únicos** de `vento.authorization@1.0.0`.
 
 La conciliación documental es:
 
-| Categoría                                            | Cantidad | Tratamiento contractual                                                           |
-| ---------------------------------------------------- | -------: | --------------------------------------------------------------------------------- |
-| permisos canónicos activos                           |  **112** | miembros de `PermissionKey`                                                       |
-| permisos legacy amplios pendientes de descomposición |   **21** | separados en `legacy-permissions.json`; no asignables como capacidades nuevas     |
-| permisos técnicos retirados                          |   **14** | separados en `retired-permissions.json`; no autorizan                             |
-| familias semánticas de duplicados ya consolidadas    |   **20** | una clave canónica por capacidad; referencias anteriores solo como compatibilidad |
+| Categoría                                         | Cantidad | Tratamiento contractual                                                           |
+| ------------------------------------------------- | -------: | --------------------------------------------------------------------------------- |
+| permisos canónicos activos                        |  **140** | miembros de `PermissionKey`                                                       |
+| permisos legacy bloqueados o por descomposición   |   **22** | separados en `legacy-permissions.json`; no asignables como capacidades nuevas     |
+| permisos técnicos retirados                       |   **14** | separados en `retired-permissions.json`; no autorizan                             |
+| familias semánticas de duplicados ya consolidadas |   **20** | una clave canónica por capacidad; referencias anteriores solo como compatibilidad |
 
-Los aliases existentes permanecen en `aliases.json` y no forman parte de los 112 permisos activos.
+Los aliases existentes permanecen en `aliases.json` y no forman parte de los 140 permisos activos.
 
 ---
 
@@ -1149,7 +1149,7 @@ Esta tarea conserva sin reabrir las decisiones aprobadas que definen:
 1. la convención `<app>.access` o `<app>.<module>.<resource>.<action>`;
 2. la resolución documental de los 177 permisos legacy;
 3. las 20 familias semánticas de duplicados;
-4. las 112 claves canónicas activas con metadata humana;
+4. las 140 claves canónicas activas congeladas en `vento.authorization@1.0.0` con metadata contractual;
 5. la estructura versionada de `@vento/contracts/authorization`;
 6. la generación de `PermissionKey` desde el catálogo publicado;
 7. la prohibición de cadenas manuales como fuente de verdad;
@@ -1160,6 +1160,7 @@ Precedencia aplicable:
 ```text
 AUTH-CAT-003..005
 → AUTH-CAT-017..019
+→ AUTH-CAT-020..024
 → SHELL-CON-001
 → SHELL-CON-002
 → SHELL-CON-003
@@ -1167,6 +1168,8 @@ AUTH-CAT-003..005
 → gates contra consumidores legacy
 → migración multi-repositorio
 ```
+
+`AUTH-CAT-024` constituye la autoridad del snapshot contractual vigente: `vento.authorization@1.0.0`, 140 permisos activos, 10 aplicaciones y `contract_release_hash = sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe`.
 
 Una clave observada en código, SQL, una ruta, una tabla o una configuración no se convierte en permiso canónico por existir físicamente.
 
@@ -1234,122 +1237,150 @@ Una clave desconocida no se corrige, completa ni aproxima por heurística.
 
 #### 7. Matriz completa de permisos canónicos activos
 
-La siguiente matriz materializa las **112 de 112** identidades activas que componen el corte contractual vigente.
+La siguiente matriz materializa las **140 de 140** identidades activas que componen `vento.authorization@1.0.0`.
 
-|    # | Aplicación | `permission_key`                              | Forma                        | Estado             |
-| ---: | ---------- | --------------------------------------------- | ---------------------------- | ------------------ |
-|    1 | `shell`    | `shell.access`                                | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
-|    2 | `anima`    | `anima.access`                                | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
-|    3 | `anima`    | `anima.workforce.employee_documents.view`     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|    4 | `anima`    | `anima.workforce.employee_documents.upload`   | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|    5 | `anima`    | `anima.workforce.employee_documents.delete`   | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|    6 | `anima`    | `anima.workforce.employee_photos.upload`      | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|    7 | `anima`    | `anima.workforce.team_members.view`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|    8 | `anima`    | `anima.workforce.staff_invitations.create`    | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|    9 | `anima`    | `anima.attendance.shifts.create`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   10 | `anima`    | `anima.attendance.shifts.update`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   11 | `anima`    | `anima.attendance.shifts.cancel`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   12 | `aura`     | `aura.access`                                 | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
-|   13 | `fogo`     | `fogo.access`                                 | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
-|   14 | `fogo`     | `fogo.production.batches.view`                | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   15 | `fogo`     | `fogo.production.batches.create`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   16 | `fogo`     | `fogo.production.orders.view`                 | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   17 | `fogo`     | `fogo.production.recipe_book.view`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   18 | `fogo`     | `fogo.production.recipes.view`                | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   19 | `nexo`     | `nexo.access`                                 | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
-|   20 | `nexo`     | `nexo.catalog.products.view`                  | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   21 | `nexo`     | `nexo.catalog.products.create`                | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   22 | `nexo`     | `nexo.catalog.presentations.view`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   23 | `nexo`     | `nexo.catalog.request_policies.view`          | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   24 | `nexo`     | `nexo.catalog.categories.view`                | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   25 | `nexo`     | `nexo.catalog.units.view`                     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   26 | `nexo`     | `nexo.assets.items.view`                      | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   27 | `nexo`     | `nexo.assets.items.create`                    | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   28 | `nexo`     | `nexo.assets.groups.view`                     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   29 | `nexo`     | `nexo.assets.counts.view`                     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   30 | `nexo`     | `nexo.inventory.adjustments.view`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   31 | `nexo`     | `nexo.inventory.adjustments.register`         | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   32 | `nexo`     | `nexo.inventory.entries.view`                 | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   33 | `nexo`     | `nexo.inventory.entries.register`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   34 | `nexo`     | `nexo.inventory.entries.override`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   35 | `nexo`     | `nexo.inventory.locations.view`               | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   36 | `nexo`     | `nexo.inventory.location_assignments.assign`  | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   37 | `nexo`     | `nexo.inventory.location_catalog.update`      | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   38 | `nexo`     | `nexo.inventory.lpns.view`                    | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   39 | `nexo`     | `nexo.inventory.movements.view`               | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   40 | `nexo`     | `nexo.inventory.stock.view`                   | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   41 | `nexo`     | `nexo.inventory.production_batches.view`      | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   42 | `nexo`     | `nexo.inventory.transfers.view`               | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   43 | `nexo`     | `nexo.inventory.transfers.create`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   44 | `nexo`     | `nexo.inventory.withdrawals.view`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   45 | `nexo`     | `nexo.inventory.withdrawals.register`         | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   46 | `nexo`     | `nexo.inventory.zones.view`                   | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   47 | `nexo`     | `nexo.inventory.storage_positions.view`       | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   48 | `nexo`     | `nexo.inventory.warehouse_operations.view`    | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   49 | `nexo`     | `nexo.inventory.stock_validations.perform`    | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   50 | `nexo`     | `nexo.inventory.stock_counts.view`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   51 | `nexo`     | `nexo.inventory.stock_counts.perform`         | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   52 | `nexo`     | `nexo.inventory.initial_counts.view`          | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   53 | `nexo`     | `nexo.inventory.remissions.view`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   54 | `nexo`     | `nexo.inventory.remissions.update`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   55 | `nexo`     | `nexo.inventory.remissions.request`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   56 | `nexo`     | `nexo.inventory.remissions.prepare`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   57 | `nexo`     | `nexo.inventory.remissions.dispatch`          | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   58 | `nexo`     | `nexo.inventory.remissions.receive`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   59 | `nexo`     | `nexo.inventory.remissions.cancel`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   60 | `nexo`     | `nexo.logistics.operations_board.view`        | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   61 | `nexo`     | `nexo.logistics.operations.view`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   62 | `nexo`     | `nexo.logistics.driver_operations.view`       | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   63 | `nexo`     | `nexo.logistics.fulfillment.view`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   64 | `nexo`     | `nexo.logistics.fulfillment_routes.view`      | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   65 | `nexo`     | `nexo.logistics.supply_routes.view`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   66 | `nexo`     | `nexo.finance.internal_invoices.view`         | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   67 | `nexo`     | `nexo.finance.internal_invoices.generate`     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   68 | `nexo`     | `nexo.finance.internal_invoices.issue`        | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   69 | `nexo`     | `nexo.finance.internal_invoices.cancel`       | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   70 | `nexo`     | `nexo.finance.internal_invoice_amounts.view`  | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   71 | `nexo`     | `nexo.finance.internal_prices.view`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   72 | `nexo`     | `nexo.finance.internal_variances.view`        | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   73 | `nexo`     | `nexo.finance.internal_variances.approve`     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   74 | `nexo`     | `nexo.finance.internal_variances.resolve`     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   75 | `nexo`     | `nexo.finance.cost_centers.view`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   76 | `nexo`     | `nexo.analytics.internal_reports.view`        | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   77 | `nexo`     | `nexo.analytics.margin_reports.view`          | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   78 | `nexo`     | `nexo.printing.templates.update`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   79 | `nexo`     | `nexo.printing.jobs.view`                     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   80 | `nexo`     | `nexo.settings.sites.view`                    | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   81 | `nexo`     | `nexo.settings.remission_policies.view`       | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   82 | `numera`   | `numera.access`                               | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
-|   83 | `numera`   | `numera.finance.cost_centers.view`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   84 | `numera`   | `numera.finance.expenses.view`                | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   85 | `numera`   | `numera.analytics.break_even.view`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   86 | `numera`   | `numera.analytics.profitability.view`         | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   87 | `numera`   | `numera.analytics.financial_reports.view`     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   88 | `origo`    | `origo.access`                                | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
-|   89 | `origo`    | `origo.procurement.purchase_orders.view`      | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   90 | `origo`    | `origo.procurement.receipts.view`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   91 | `origo`    | `origo.procurement.suppliers.view`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   92 | `origo`    | `origo.catalog.product_reviews.view`          | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   93 | `pass`     | `pass.access`                                 | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
-|   94 | `pulso`    | `pulso.access`                                | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
-|   95 | `pulso`    | `pulso.delivery.deliveries.override`          | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   96 | `viso`     | `viso.access`                                 | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
-|   97 | `viso`     | `viso.platform.app_updates.view`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   98 | `viso`     | `viso.organization.businesses.view`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|   99 | `viso`     | `viso.workforce.employees.view`               | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|  100 | `viso`     | `viso.workforce.staff_calendar.view`          | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|  101 | `viso`     | `viso.workforce.schedules.view`               | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|  102 | `viso`     | `viso.workforce.vacancies.view`               | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|  103 | `viso`     | `viso.authorization.context_simulations.view` | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|  104 | `viso`     | `viso.authorization.audit_logs.view`          | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|  105 | `viso`     | `viso.catalog.commercial_categories.view`     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|  106 | `viso`     | `viso.content.content_blocks.view`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|  107 | `viso`     | `viso.content.menu.view`                      | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|  108 | `viso`     | `viso.content.website_content.view`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|  109 | `viso`     | `viso.finance.accounting.view`                | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|  110 | `viso`     | `viso.delivery.rates.view`                    | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|  111 | `viso`     | `viso.loyalty.products.view`                  | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
-|  112 | `viso`     | `viso.loyalty.customers.view`                 | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|    # | Aplicación | `permission_key`                                | Forma                        | Estado             |
+| ---: | ---------- | ----------------------------------------------- | ---------------------------- | ------------------ |
+|    1 | `shell`    | `shell.access`                                  | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
+|    2 | `anima`    | `anima.access`                                  | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
+|    3 | `anima`    | `anima.workforce.employee_documents.view`       | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|    4 | `anima`    | `anima.workforce.employee_documents.upload`     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|    5 | `anima`    | `anima.workforce.employee_documents.delete`     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|    6 | `anima`    | `anima.workforce.employee_photos.upload`        | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|    7 | `anima`    | `anima.workforce.team_members.view`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|    8 | `anima`    | `anima.workforce.staff_invitations.create`      | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|    9 | `anima`    | `anima.attendance.shifts.create`                | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   10 | `anima`    | `anima.attendance.shifts.update`                | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   11 | `anima`    | `anima.attendance.shifts.cancel`                | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   12 | `aura`     | `aura.access`                                   | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
+|   13 | `fogo`     | `fogo.access`                                   | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
+|   14 | `fogo`     | `fogo.production.batches.view`                  | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   15 | `fogo`     | `fogo.production.batches.create`                | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   16 | `fogo`     | `fogo.production.orders.view`                   | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   17 | `fogo`     | `fogo.production.recipe_book.view`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   18 | `fogo`     | `fogo.production.recipes.view`                  | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   19 | `nexo`     | `nexo.access`                                   | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
+|   20 | `nexo`     | `nexo.catalog.products.view`                    | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   21 | `nexo`     | `nexo.catalog.products.create`                  | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   22 | `nexo`     | `nexo.catalog.presentations.view`               | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   23 | `nexo`     | `nexo.catalog.request_policies.view`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   24 | `nexo`     | `nexo.catalog.categories.view`                  | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   25 | `nexo`     | `nexo.catalog.units.view`                       | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   26 | `nexo`     | `nexo.assets.items.view`                        | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   27 | `nexo`     | `nexo.assets.items.create`                      | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   28 | `nexo`     | `nexo.assets.groups.view`                       | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   29 | `nexo`     | `nexo.assets.counts.view`                       | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   30 | `nexo`     | `nexo.inventory.adjustments.view`               | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   31 | `nexo`     | `nexo.inventory.adjustments.register`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   32 | `nexo`     | `nexo.inventory.entries.view`                   | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   33 | `nexo`     | `nexo.inventory.entries.register`               | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   34 | `nexo`     | `nexo.inventory.entries.override`               | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   35 | `nexo`     | `nexo.inventory.locations.view`                 | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   36 | `nexo`     | `nexo.inventory.location_assignments.assign`    | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   37 | `nexo`     | `nexo.inventory.location_catalog.update`        | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   38 | `nexo`     | `nexo.inventory.lpns.view`                      | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   39 | `nexo`     | `nexo.inventory.movements.view`                 | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   40 | `nexo`     | `nexo.inventory.stock.view`                     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   41 | `nexo`     | `nexo.inventory.production_batches.view`        | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   42 | `nexo`     | `nexo.inventory.transfers.view`                 | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   43 | `nexo`     | `nexo.inventory.transfers.create`               | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   44 | `nexo`     | `nexo.inventory.withdrawals.view`               | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   45 | `nexo`     | `nexo.inventory.withdrawals.register`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   46 | `nexo`     | `nexo.inventory.zones.view`                     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   47 | `nexo`     | `nexo.inventory.storage_positions.view`         | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   48 | `nexo`     | `nexo.inventory.warehouse_operations.view`      | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   49 | `nexo`     | `nexo.inventory.stock_validations.perform`      | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   50 | `nexo`     | `nexo.inventory.stock_counts.view`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   51 | `nexo`     | `nexo.inventory.stock_counts.perform`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   52 | `nexo`     | `nexo.inventory.stock_count_variances.approve`  | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   53 | `nexo`     | `nexo.inventory.stock_count_variances.resolve`  | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   54 | `nexo`     | `nexo.inventory.initial_counts.view`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   55 | `nexo`     | `nexo.inventory.remissions.view`                | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   56 | `nexo`     | `nexo.inventory.remissions.update`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   57 | `nexo`     | `nexo.inventory.remissions.request`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   58 | `nexo`     | `nexo.inventory.remissions.prepare`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   59 | `nexo`     | `nexo.inventory.remissions.accept_custody`      | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   60 | `nexo`     | `nexo.inventory.remissions.start_transit`       | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   61 | `nexo`     | `nexo.inventory.remissions.deliver`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   62 | `nexo`     | `nexo.inventory.remissions.receive`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   63 | `nexo`     | `nexo.inventory.remissions.cancel`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   64 | `nexo`     | `nexo.logistics.operations_board.view`          | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   65 | `nexo`     | `nexo.logistics.operations.view`                | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   66 | `nexo`     | `nexo.logistics.driver_operations.view`         | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   67 | `nexo`     | `nexo.logistics.fulfillment.view`               | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   68 | `nexo`     | `nexo.logistics.fulfillment_routes.view`        | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   69 | `nexo`     | `nexo.logistics.supply_routes.view`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   70 | `nexo`     | `nexo.finance.internal_invoices.view`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   71 | `nexo`     | `nexo.finance.internal_invoices.generate`       | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   72 | `nexo`     | `nexo.finance.internal_invoices.issue`          | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   73 | `nexo`     | `nexo.finance.internal_invoices.cancel`         | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   74 | `nexo`     | `nexo.finance.internal_invoice_amounts.view`    | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   75 | `nexo`     | `nexo.finance.internal_prices.view`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   76 | `nexo`     | `nexo.finance.internal_variances.view`          | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   77 | `nexo`     | `nexo.finance.internal_variances.approve`       | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   78 | `nexo`     | `nexo.finance.internal_variances.resolve`       | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   79 | `nexo`     | `nexo.finance.cost_centers.view`                | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   80 | `nexo`     | `nexo.analytics.internal_reports.view`          | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   81 | `nexo`     | `nexo.analytics.margin_reports.view`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   82 | `nexo`     | `nexo.printing.templates.update`                | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   83 | `nexo`     | `nexo.printing.jobs.view`                       | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   84 | `nexo`     | `nexo.settings.sites.view`                      | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   85 | `nexo`     | `nexo.settings.remission_policies.view`         | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   86 | `numera`   | `numera.access`                                 | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
+|   87 | `numera`   | `numera.finance.cost_centers.view`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   88 | `numera`   | `numera.finance.expenses.view`                  | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   89 | `numera`   | `numera.analytics.break_even.view`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   90 | `numera`   | `numera.analytics.profitability.view`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   91 | `numera`   | `numera.analytics.financial_reports.view`       | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   92 | `origo`    | `origo.access`                                  | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
+|   93 | `origo`    | `origo.procurement.purchase_orders.view`        | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   94 | `origo`    | `origo.procurement.receipts.view`               | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   95 | `origo`    | `origo.procurement.receipts.register`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   96 | `origo`    | `origo.procurement.suppliers.view`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   97 | `origo`    | `origo.catalog.product_reviews.view`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|   98 | `pass`     | `pass.access`                                   | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
+|   99 | `pulso`    | `pulso.access`                                  | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
+|  100 | `pulso`    | `pulso.delivery.deliveries.override`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  101 | `pulso`    | `pulso.sales.orders.create`                     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  102 | `pulso`    | `pulso.payments.transactions.collect`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  103 | `pulso`    | `pulso.payments.transactions.reverse`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  104 | `pulso`    | `pulso.cash.sessions.start`                     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  105 | `pulso`    | `pulso.cash.sessions.close`                     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  106 | `pulso`    | `pulso.sales.orders.cancel`                     | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  107 | `pulso`    | `pulso.sales.returns.create`                    | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  108 | `pulso`    | `pulso.payments.transactions.refund`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  109 | `pulso`    | `pulso.sales.discounts.apply`                   | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  110 | `viso`     | `viso.access`                                   | `APP_ACCESS`                 | `ACTIVE_CANONICAL` |
+|  111 | `viso`     | `viso.platform.app_updates.view`                | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  112 | `viso`     | `viso.organization.businesses.view`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  113 | `viso`     | `viso.workforce.employees.view`                 | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  114 | `viso`     | `viso.workforce.staff_calendar.view`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  115 | `viso`     | `viso.workforce.schedules.view`                 | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  116 | `viso`     | `viso.workforce.vacancies.view`                 | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  117 | `viso`     | `viso.authorization.context_simulations.view`   | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  118 | `viso`     | `viso.authorization.audit_logs.view`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  119 | `viso`     | `viso.authorization.base_grants.view`           | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  120 | `viso`     | `viso.authorization.base_grants.create`         | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  121 | `viso`     | `viso.authorization.base_grants.approve`        | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  122 | `viso`     | `viso.authorization.base_grants.suspend`        | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  123 | `viso`     | `viso.authorization.base_grants.revoke`         | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  124 | `viso`     | `viso.authorization.operational_grants.view`    | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  125 | `viso`     | `viso.authorization.operational_grants.create`  | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  126 | `viso`     | `viso.authorization.operational_grants.approve` | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  127 | `viso`     | `viso.authorization.operational_grants.suspend` | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  128 | `viso`     | `viso.authorization.operational_grants.revoke`  | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  129 | `viso`     | `viso.authorization.denials.view`               | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  130 | `viso`     | `viso.authorization.denials.create`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  131 | `viso`     | `viso.authorization.denials.approve`            | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  132 | `viso`     | `viso.authorization.denials.revoke`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  133 | `viso`     | `viso.catalog.commercial_categories.view`       | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  134 | `viso`     | `viso.content.content_blocks.view`              | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  135 | `viso`     | `viso.content.menu.view`                        | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  136 | `viso`     | `viso.content.website_content.view`             | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  137 | `viso`     | `viso.finance.accounting.view`                  | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  138 | `viso`     | `viso.delivery.rates.view`                      | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  139 | `viso`     | `viso.loyalty.products.view`                    | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
+|  140 | `viso`     | `viso.loyalty.customers.view`                   | `APP_MODULE_RESOURCE_ACTION` | `ACTIVE_CANONICAL` |
 
 ---
 
@@ -1361,52 +1392,53 @@ La siguiente matriz materializa las **112 de 112** identidades activas que compo
 | `anima`    |        10 |             10 | **CONCILIADO** |
 | `aura`     |         1 |              1 | **CONCILIADO** |
 | `fogo`     |         6 |              6 | **CONCILIADO** |
-| `nexo`     |        63 |             63 | **CONCILIADO** |
+| `nexo`     |        67 |             67 | **CONCILIADO** |
 | `numera`   |         6 |              6 | **CONCILIADO** |
-| `origo`    |         5 |              5 | **CONCILIADO** |
+| `origo`    |         6 |              6 | **CONCILIADO** |
 | `pass`     |         1 |              1 | **CONCILIADO** |
-| `pulso`    |         2 |              2 | **CONCILIADO** |
-| `viso`     |        17 |             17 | **CONCILIADO** |
-| **Total**  |   **112** |        **112** | **CONCILIADO** |
+| `pulso`    |        11 |             11 | **CONCILIADO** |
+| `viso`     |        31 |             31 | **CONCILIADO** |
+| **Total**  |   **140** |        **140** | **CONCILIADO** |
 
 Resultado adicional:
 
-- claves activas únicas: **112 de 112**;
+- claves activas únicas: **140 de 140**;
 - faltantes: **0**;
 - duplicados activos: **0**;
 - aplicaciones representadas: **10 de 10**.
 
 ---
 
-#### 9. Permisos legacy amplios separados del contrato activo
+#### 9. Permisos legacy bloqueados separados del contrato activo
 
-Los siguientes **21** códigos permanecen explícitamente fuera de `PermissionKey`. Son permisos amplios previamente clasificados como `DECOMPOSE_REQUIRED`; no deberán transformarse automáticamente en varias concesiones atómicas ni utilizarse para nuevas asignaciones.
+Los siguientes **22** códigos permanecen explícitamente fuera de `PermissionKey`. Incluyen permisos amplios previamente clasificados como `DECOMPOSE_REQUIRED` y la clave sustituida `nexo.inventory.remissions.dispatch`; no deberán transformarse automáticamente en varias concesiones atómicas ni utilizarse para nuevas asignaciones.
 
-|    # | Aplicación | Código legacy                               | Estado                      | Decisión                                                       |
-| ---: | ---------- | ------------------------------------------- | --------------------------- | -------------------------------------------------------------- |
-|    1 | `fogo`     | `fogo.production.recipes.manage`            | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|    2 | `nexo`     | `nexo.settings.categories.manage`           | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|    3 | `nexo`     | `nexo.settings.units.manage`                | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|    4 | `nexo`     | `nexo.settings.supply_routes.manage`        | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|    5 | `nexo`     | `nexo.internal_prices.manage`               | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|    6 | `nexo`     | `nexo.cost_centers.manage`                  | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|    7 | `nexo`     | `nexo.settings.sites.manage`                | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|    8 | `nexo`     | `nexo.settings.remissions.manage`           | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|    9 | `numera`   | `numera.cost_centers.manage`                | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|   10 | `numera`   | `numera.expenses.manage`                    | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|   11 | `origo`    | `origo.suppliers.manage`                    | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|   12 | `pulso`    | `pulso.pos.main`                            | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|   13 | `viso`     | `viso.app_navigation.manage`                | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|   14 | `viso`     | `viso.employee_operational_profiles.manage` | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|   15 | `viso`     | `viso.menu.images.manage`                   | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|   16 | `viso`     | `viso.operational_points.manage`            | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|   17 | `viso`     | `viso.site_operational_roles.manage`        | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|   18 | `viso`     | `viso.staff.documents.manage`               | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|   19 | `viso`     | `viso.staff.employee_photos.manage`         | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|   20 | `viso`     | `viso.staff.manage`                         | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
-|   21 | `viso`     | `viso.staff.permissions.manage`             | `LEGACY_DECOMPOSE_REQUIRED` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas |
+|    # | Aplicación | Código legacy                               | Estado                               | Decisión                                                                                                                                                      |
+| ---: | ---------- | ------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | `fogo`     | `fogo.production.recipes.manage`            | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|    2 | `nexo`     | `nexo.settings.categories.manage`           | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|    3 | `nexo`     | `nexo.settings.units.manage`                | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|    4 | `nexo`     | `nexo.settings.supply_routes.manage`        | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|    5 | `nexo`     | `nexo.internal_prices.manage`               | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|    6 | `nexo`     | `nexo.cost_centers.manage`                  | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|    7 | `nexo`     | `nexo.settings.sites.manage`                | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|    8 | `nexo`     | `nexo.settings.remissions.manage`           | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|    9 | `nexo`     | `nexo.inventory.remissions.dispatch`        | `deprecated_split_pending_migration` | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas; sustituido por `accept_custody` + `start_transit`, con `deliver` como capacidad independiente |
+|   10 | `numera`   | `numera.cost_centers.manage`                | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|   11 | `numera`   | `numera.expenses.manage`                    | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|   12 | `origo`    | `origo.suppliers.manage`                    | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|   13 | `pulso`    | `pulso.pos.main`                            | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|   14 | `viso`     | `viso.app_navigation.manage`                | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|   15 | `viso`     | `viso.employee_operational_profiles.manage` | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|   16 | `viso`     | `viso.menu.images.manage`                   | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|   17 | `viso`     | `viso.operational_points.manage`            | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|   18 | `viso`     | `viso.site_operational_roles.manage`        | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|   19 | `viso`     | `viso.staff.documents.manage`               | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|   20 | `viso`     | `viso.staff.employee_photos.manage`         | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|   21 | `viso`     | `viso.staff.manage`                         | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
+|   22 | `viso`     | `viso.staff.permissions.manage`             | `LEGACY_DECOMPOSE_REQUIRED`          | no pertenece a `PermissionKey`; nuevas asignaciones bloqueadas                                                                                                |
 
-Su presencia histórica no cambia el universo activo de 112 claves.
+Su presencia histórica no cambia el universo activo de 140 claves.
 
 ---
 
@@ -1473,7 +1505,7 @@ La fuente técnica objetivo permanece dentro del catálogo versionado ya definid
 
 `permissions.json` contendrá exactamente un objeto por permiso canónico activo y no mezclará aliases, legacy amplios ni retirados.
 
-La primera versión física, cuando sea autorizada y publicada, deberá conservar la identidad contractual ya aprobada de 112 permisos activos y 10 aplicaciones, junto con su schema, manifest, checksums y metadata de compatibilidad.
+La primera versión física, cuando sea autorizada y publicada, deberá implementar exactamente el snapshot contractual `vento.authorization@1.0.0`: **140 permisos activos**, **10 aplicaciones**, `schema_version = 1.0.0` y `contract_release_hash = sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe`, junto con su schema, manifest, checksums y metadata de compatibilidad. El conjunto intermedio de 112 permisos se conserva únicamente como antecedente histórico y no constituye una primera publicación física previa.
 
 ---
 
@@ -1626,7 +1658,7 @@ El estado canónico vigente mantiene esta fase como exclusivamente documental. E
 ```text
 SHELL-CON-003
 → contrato completo de identidades de permiso
-→ 112 claves activas materializadas documentalmente
+→ 140 claves activas materializadas documentalmente
 → 0 cambios físicos
 → 0 migraciones
 → 0 publicaciones
@@ -1639,10 +1671,10 @@ No se crean `permissions.json`, tipos, constantes, parsers, lint, CI, migracione
 
 #### 20. Decisiones vinculantes
 
-1. el corte vigente contiene exactamente **112** permisos canónicos activos;
-2. las 112 claves activas son únicas y pertenecen a las diez aplicaciones aprobadas;
+1. el corte vigente contiene exactamente **140** permisos canónicos activos en `vento.authorization@1.0.0`;
+2. las 140 claves activas son únicas y pertenecen a las diez aplicaciones aprobadas;
 3. `PermissionKey` contiene solo claves activas publicadas;
-4. los 21 permisos legacy amplios quedan fuera de `PermissionKey`;
+4. los 22 permisos legacy bloqueados quedan fuera de `PermissionKey`;
 5. los 14 permisos técnicos retirados quedan fuera de `PermissionKey`;
 6. aliases quedan separados y nunca crean otra capacidad;
 7. la fuente técnica objetivo es `permissions.json` dentro de `@vento/contracts/authorization`;
@@ -1668,15 +1700,16 @@ No se crean `permissions.json`, tipos, constantes, parsers, lint, CI, migracione
 
 #### 21. Hallazgos y destinos exactos
 
-| Hallazgo                                                                      | Estado                      | Destino exacto                                                                                                                                         |
-| ----------------------------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| helpers actuales aceptan `string` y concatenan `appId.code`                   | `LEGACY_ACTIVO`             | `SHELL-AUTH-004`; `SHELL-AUTH-005`                                                                                                                     |
-| `PermissionKey` no existe todavía como tipo runtime canónico materializado    | `DEFINIDO_NO_MATERIALIZADO` | generación física conforme a `AUTH-CAT-018` dentro del ciclo de implementación autorizado                                                              |
-| cadenas manuales y construcción dinámica permanecen en consumidores           | `LEGACY_ACTIVO`             | `AUTH-CAT-019`; `SHELL-AUTH-004`; `SHELL-AUTH-005`                                                                                                     |
-| aliases requieren frontera explícita y telemetría                             | `CONTRATO_DEFINIDO`         | `AUTH-CAT-019`; `SHELL-MIG-003`                                                                                                                        |
-| 21 permisos amplios no pueden incorporarse a `PermissionKey`                  | `LEGACY_DECOMPOSE_REQUIRED` | conservar en `legacy-permissions.json`; su resolución funcional permanece gobernada por las decisiones de catálogo y tareas propietarias de aplicación |
-| 14 claves técnicas no pueden reactivarse como capacidades                     | `RETIRED_TECHNICAL`         | conservar en `retired-permissions.json`; migración de superficies mediante permisos funcionales y retiro en `SHELL-MIG-008`                            |
-| códigos de error para referencias inválidas pertenecen a otra responsabilidad | `RESERVADO_POR_SECUENCIA`   | `SHELL-CON-008`                                                                                                                                        |
+| Hallazgo                                                                        | Estado                               | Destino exacto                                                                                                                                         |
+| ------------------------------------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| helpers actuales aceptan `string` y concatenan `appId.code`                     | `LEGACY_ACTIVO`                      | `SHELL-AUTH-004`; `SHELL-AUTH-005`                                                                                                                     |
+| `PermissionKey` no existe todavía como tipo runtime canónico materializado      | `DEFINIDO_NO_MATERIALIZADO`          | generación física conforme a `AUTH-CAT-018` dentro del ciclo de implementación autorizado                                                              |
+| cadenas manuales y construcción dinámica permanecen en consumidores             | `LEGACY_ACTIVO`                      | `AUTH-CAT-019`; `SHELL-AUTH-004`; `SHELL-AUTH-005`                                                                                                     |
+| aliases requieren frontera explícita y telemetría                               | `CONTRATO_DEFINIDO`                  | `AUTH-CAT-019`; `SHELL-MIG-003`                                                                                                                        |
+| 21 permisos amplios no pueden incorporarse a `PermissionKey`                    | `LEGACY_DECOMPOSE_REQUIRED`          | conservar en `legacy-permissions.json`; su resolución funcional permanece gobernada por las decisiones de catálogo y tareas propietarias de aplicación |
+| `nexo.inventory.remissions.dispatch` sale del conjunto activo y queda bloqueado | `deprecated_split_pending_migration` | conservar en `legacy-permissions.json`; sustitución contractual por `accept_custody` + `start_transit`, con `deliver` como capacidad independiente     |
+| 14 claves técnicas no pueden reactivarse como capacidades                       | `RETIRED_TECHNICAL`                  | conservar en `retired-permissions.json`; migración de superficies mediante permisos funcionales y retiro en `SHELL-MIG-008`                            |
+| códigos de error para referencias inválidas pertenecen a otra responsabilidad   | `RESERVADO_POR_SECUENCIA`            | `SHELL-CON-008`                                                                                                                                        |
 
 No se crea ninguna tarea nueva: los hallazgos tienen destinos canónicos existentes.
 
@@ -1702,11 +1735,11 @@ No se crea ninguna tarea nueva: los hallazgos tienen destinos canónicos existen
 
 `SHELL-CON-003` queda materialmente completa porque:
 
-- enumera las **112 de 112** claves canónicas activas;
-- verifica 112 claves únicas, 0 faltantes y 0 duplicados activos;
+- enumera las **140 de 140** claves canónicas activas;
+- verifica 140 claves únicas, 0 faltantes y 0 duplicados activos;
 - concilia la distribución exacta por las diez aplicaciones;
 - conserva la convención aprobada de identidad;
-- separa 21 permisos legacy amplios de las capacidades activas;
+- separa 22 permisos legacy bloqueados de las capacidades activas;
 - separa 14 permisos técnicos retirados de las capacidades activas;
 - mantiene aliases como compatibilidad y no como capacidades independientes;
 - fija `permissions.json` como fuente técnica objetivo dentro del catálogo existente;
