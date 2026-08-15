@@ -2896,7 +2896,442 @@ READY-GATE-008 — Definir criterio y evidencia para confirmar procedimientos op
 READY-GATE-009 — Definir criterio y evidencia para confirmar capacitación y material de apoyo
 
 
-### [ ] READY-GATE-009 — Definir criterio y evidencia para confirmar capacitación y material de apoyo
+### ✅ READY-GATE-009 — Definir criterio y evidencia para confirmar capacitación y material de apoyo
+
+**Estado:** APROBADA
+
+**Tarea anterior:** READY-GATE-008 — Definir criterio y evidencia para confirmar procedimientos operativos y contingencias
+
+**Tarea siguiente:** READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento
+
+**Tipo de tarea:** Documental de readiness operativo. Define el criterio verificable y la evidencia que `SHELL-CI-021` deberá ejecutar después de `SHELL-CI-020` y de la implementación aplicable. No ejecuta capacitaciones, evaluaciones, certificaciones, simulacros, accesos, cambios de código, migraciones, configuración de Supabase ni modificaciones remotas.
+
+#### 1. Propósito
+
+Definir una puerta reproducible para determinar si las personas que participarán en el piloto o en la operación afectada por un paquete implementado:
+
+1. recibieron la capacitación aplicable en la versión correcta;
+2. demostraron la competencia exigida cuando el riesgo o el proceso lo requiere;
+3. mantienen vigentes las certificaciones, renovaciones o habilitaciones formativas aplicables;
+4. disponen de material de apoyo vigente, aprobado, accesible y utilizable en el contexto real de trabajo;
+5. conocen y pueden ejecutar de forma segura los procedimientos normales y de contingencia que les corresponden;
+6. fueron preparados contra la misma versión del cambio que será sometida al readiness;
+7. pueden ser verificados mediante evidencia controlada sin confundir asistencia, acceso a documentos o antigüedad con competencia demostrada.
+
+La pregunta de control de esta tarea es:
+
+> ¿La población operativa aplicable está preparada para ejecutar el cambio y dispone de ayudas vigentes y utilizables, con evidencia suficiente para que `SHELL-CI-021` pueda aceptar o bloquear el readiness sin inferencias?
+
+#### 2. Frontera de responsabilidad
+
+Esta tarea gobierna exclusivamente **preparación de personas y disponibilidad/usabilidad del material de apoyo**.
+
+No sustituye ni reabre:
+
+- `READY-GATE-008`, que gobierna la corrección y ejecutabilidad de procedimientos operativos y contingencias;
+- `READY-GATE-010`, que gobernará mesa de soporte, responsables y escalamiento;
+- `READY-GATE-011`, que gobernará monitoreo, métricas y alertas;
+- `READY-GATE-012`, que gobernará respaldo y rollback probados;
+- `READY-GATE-013`, que gobernará la línea base previa al piloto;
+- `READY-GATE-014`, que gobernará riesgos aceptados y condiciones de suspensión;
+- `READY-GATE-015`, que gobernará la autoridad final de entrada al piloto;
+- la evaluación del período de prueba laboral, que no equivale a capacitación;
+- la salud física o técnica del hardware, que ya pertenece a `READY-GATE-007`;
+- la existencia o validez de credenciales e integraciones, que ya pertenece a `READY-GATE-006`.
+
+Una capacitación puede usar un procedimiento aprobado como contenido; no convierte por ello esa capacitación en evidencia de que el procedimiento quedó correctamente diseñado. De forma simétrica, un procedimiento aprobado no prueba que las personas aplicables hayan sido capacitadas.
+
+#### 3. Fuentes vinculantes del gate
+
+`SHELL-CI-021` deberá resolver este gate usando únicamente fuentes versionadas y trazables que correspondan al paquete y candidato evaluados. Como mínimo:
+
+- la definición aprobada de la capacidad de capacitación y conocimiento operativo;
+- el paquete E5 aplicable y su alcance aprobado;
+- los procedimientos normales y de contingencia aprobados que resulten aplicables;
+- las implementaciones efectivamente incluidas en el candidato;
+- el inventario de roles, procesos, sedes, áreas, aplicaciones, dispositivos o equipos afectados por el paquete;
+- los catálogos, asignaciones, sesiones, evaluaciones, certificaciones y vigencias de capacitación que sean fuente autorizada;
+- el catálogo o repositorio controlado de material de apoyo;
+- la evidencia producida por el ambiente y la población objetivo del readiness.
+
+La mera existencia de una presentación, curso, archivo, enlace, correo, sesión o registro de asistencia no lo convierte en evidencia suficiente.
+
+#### 4. Planos independientes de decisión
+
+Cada paquete deberá clasificar exactamente una vez los siguientes cuatro planos:
+
+| Plano                             | Pregunta obligatoria                                                                                                     | Resultado permitido                      |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
+| `CAPACITACION`                    | ¿Todas las capacitaciones aplicables fueron asignadas y completadas sobre la versión correcta por la población objetivo? | `PASS`, `FAIL`, `BLOQUEADO`, `NO_APLICA` |
+| `COMPETENCIA_Y_VIGENCIA`          | ¿La competencia, evaluación, certificación o renovación exigida está demostrada y vigente?                               | `PASS`, `FAIL`, `BLOQUEADO`, `NO_APLICA` |
+| `MATERIAL_DE_APOYO`               | ¿El material requerido está aprobado, vigente, accesible y utilizable en el contexto operativo?                          | `PASS`, `FAIL`, `BLOQUEADO`, `NO_APLICA` |
+| `ALINEACION_CON_CAMBIO_Y_HANDOFF` | ¿Capacitación y ayudas corresponden al candidato, procedimiento y contingencia que realmente serán usados?               | `PASS`, `FAIL`, `BLOQUEADO`, `NO_APLICA` |
+
+Un `PASS` en un plano no compensa `FAIL` o `BLOQUEADO` en otro.
+
+#### 5. Clasificación obligatoria de capacitación
+
+Para cada paquete se deberá evaluar la aplicabilidad de las siete clases canónicas de formación. Ninguna podrá omitirse por silencio:
+
+1. `INDUCCION` — inducción necesaria para incorporarse al contexto o cambio operativo aplicable;
+2. `PROCEDIMIENTO_OPERATIVO` — capacitación sobre el procedimiento normal que la persona deberá ejecutar;
+3. `MANEJO_DE_EQUIPO` — entrenamiento requerido para operar equipo, periférico o dispositivo involucrado;
+4. `SEGURIDAD` — formación de seguridad cuando el proceso, equipo, instalación o riesgo la exija;
+5. `INOCUIDAD` — formación de inocuidad cuando el proceso o responsabilidad la exija;
+6. `CERTIFICACION` — certificación formal cuando exista un requisito de competencia, vigencia o habilitación;
+7. `CAMBIO_DE_PROCESO` — entrenamiento específico cuando el paquete modifica un flujo, regla, interfaz, responsabilidad, dispositivo o modo de contingencia previamente conocido.
+
+Cada clase deberá quedar en `APLICA` o `NO_APLICA`, con razón controlada. La inexistencia de una clase en un paquete no permite inferir automáticamente `NO_APLICA`.
+
+#### 6. Unidad mínima de evidencia de capacitación
+
+Para cada capacitación aplicable, la evidencia de readiness deberá poder reconstruir al menos:
+
+- `package_id`;
+- identificador y versión del candidato evaluado;
+- `training_id` estable;
+- clase de capacitación;
+- `training_version` exacta;
+- propietario responsable del contenido;
+- proceso, actividad o cambio protegido;
+- roles y población objetivo;
+- sede, área, aplicación, dispositivo o equipo cuando restrinjan aplicabilidad;
+- prerrequisitos;
+- fecha o ventana de la sesión;
+- versión del procedimiento o material utilizado;
+- método de impartición cuando afecte la capacidad de demostrar competencia;
+- método de evaluación cuando aplique;
+- umbral o condición de aprobación cuando aplique;
+- cantidad objetivo;
+- cantidad completada;
+- cantidad aprobada;
+- cantidad pendiente;
+- cantidad vencida;
+- referencia controlada a la evidencia;
+- resultado `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA`;
+- bloqueo concreto y propietario cuando el resultado no sea `PASS`.
+
+La evidencia podrá usar identificadores controlados o agregados verificables para evitar exponer datos personales innecesarios. El gate no exige publicar información personal en el artefacto de readiness.
+
+#### 7. Criterio de cobertura de población
+
+La población objetivo deberá derivarse del alcance real del paquete y no de listas informales.
+
+Como mínimo, la reconciliación deberá demostrar:
+
+```text
+POBLACION_OBJETIVO_APLICABLE
+= ACTORES_DEL_PROCESO_AFECTADO
+∩ ROLES_APLICABLES
+∩ CONTEXTO_OPERATIVO_DEL_PILOTO
+∩ VIGENCIA_OPERATIVA_REQUERIDA
+```
+
+Para cada capacitación aplicable:
+
+```text
+PENDIENTES = OBJETIVO - COMPLETADA_VIGENTE
+```
+
+Y, cuando exista evaluación o certificación obligatoria:
+
+```text
+HABILITADA_POR_FORMACION
+= COMPLETADA_VIGENTE
+∩ EVALUACION_APROBADA
+∩ CERTIFICACION_VIGENTE_SI_APLICA
+```
+
+La puerta no podrá usar porcentajes agregados para ocultar una persona obligatoria pendiente. Si el paquete exige cobertura total para una función crítica, una sola identidad objetivo sin evidencia suficiente impide `PASS` para esa función.
+
+#### 8. Competencia, evaluación y vigencia
+
+La terminación de un contenido no equivale automáticamente a competencia.
+
+`COMPETENCIA_Y_VIGENCIA` exigirá, cuando aplique:
+
+1. evaluación ligada a la versión impartida;
+2. criterio de aprobación definido antes de ejecutar la evaluación;
+3. resultado individual o agregado reconciliable con la población objetivo;
+4. vigencia y fecha de expiración cuando exista;
+5. regla de renovación o recertificación cuando corresponda;
+6. evidencia de aprobación de excepciones, si el contrato canónico permite alguna;
+7. bloqueo de la actividad cuando la competencia o certificación requerida esté vencida o no demostrada.
+
+Un período de prueba laboral favorable, antigüedad, experiencia previa declarada o posesión de un rol no sustituye la evidencia formativa exigida por el cambio actual.
+
+#### 9. Material de apoyo requerido
+
+El material de apoyo aplicable deberá estar gobernado como contenido operativo, no como archivo informal.
+
+Cada elemento deberá declarar como mínimo:
+
+- `material_id` estable;
+- tipo de material;
+- título;
+- versión;
+- propietario;
+- estado de aprobación;
+- fecha de vigencia;
+- expiración o condición de revisión, cuando aplique;
+- audiencia objetivo;
+- proceso, paso o situación cubierta;
+- aplicación, dispositivo, equipo, sede o área cuando restrinjan su uso;
+- aplicabilidad a operación normal o contingencia;
+- clasificación o sensibilidad de acceso cuando corresponda;
+- punto controlado de publicación o distribución;
+- referencia de integridad o versión que permita demostrar que se consultó el contenido correcto;
+- alternativa de acceso cuando la contingencia aplicable pueda dejar indisponible el canal primario;
+- resultado de disponibilidad y usabilidad;
+- bloqueo concreto y propietario cuando no sea utilizable.
+
+El material puede adoptar la forma de guía, manual, ayuda rápida, instrucción visual, contenido formativo o apoyo equivalente, siempre que conserve control de versión, propiedad, audiencia y vigencia.
+
+#### 10. Criterio de disponibilidad y usabilidad
+
+`MATERIAL_DE_APOYO = PASS` requiere demostrar simultáneamente que el contenido:
+
+1. existe en la versión exigida;
+2. está aprobado y vigente;
+3. es accesible para la audiencia objetivo con sus permisos reales;
+4. puede localizarse desde el contexto en el que será necesario;
+5. es legible y utilizable en el dispositivo o medio previsto;
+6. no exige credenciales, herramientas o conectividad que el escenario de contingencia declarado no tendrá disponibles;
+7. coincide con el procedimiento y candidato actuales;
+8. no contiene instrucciones obsoletas o contradictorias;
+9. identifica con claridad cuándo aplica y cuándo debe abandonarse una contingencia, si esa es su función;
+10. puede ser distinguido de versiones retiradas.
+
+Una captura de pantalla, una URL aislada o un archivo presente en almacenamiento no prueban por sí solos accesibilidad, vigencia ni usabilidad.
+
+#### 11. Alineación con el cambio implementado
+
+La capacitación y el material deberán vincularse al mismo cambio sometido al readiness.
+
+Para cada elemento aplicable deberá ser posible reconstruir:
+
+```text
+PAQUETE
+→ CANDIDATO IMPLEMENTADO
+→ PROCESO / PROCEDIMIENTO AFECTADO
+→ VERSION DE CAPACITACION
+→ VERSION DE MATERIAL
+→ POBLACION OBJETIVO
+→ EVIDENCIA DE COMPLETITUD / COMPETENCIA / DISPONIBILIDAD
+```
+
+Será `FAIL` si la capacitación se impartió sobre una versión que ya no corresponde al candidato o si el material describe una operación distinta a la aprobada.
+
+Cuando el cambio posterior sea únicamente editorial y no altere comportamiento, el propietario deberá demostrar esa equivalencia; no podrá asumirse por similitud de nombre.
+
+#### 12. Simulacros, walkthroughs y práctica controlada
+
+Cuando la competencia no pueda demostrarse de forma suficiente mediante evaluación teórica o cuando exista contingencia, equipo, seguridad o secuencia operativa crítica, el gate podrá exigir práctica controlada, walkthrough o simulacro seguro.
+
+La evidencia deberá registrar:
+
+- escenario;
+- objetivo;
+- versión del procedimiento;
+- población o roles participantes;
+- condiciones de inicio;
+- pasos críticos observados;
+- desviaciones;
+- criterio de éxito;
+- resultado;
+- acciones correctivas y propietario cuando existan;
+- referencia a la evidencia.
+
+El readiness documental no autoriza simulaciones destructivas, exposición de datos productivos, activación real de contingencias, fallos deliberados en producción ni acciones físicas inseguras. `SHELL-CI-021` solo podrá usar ejercicios compatibles con el ambiente y las autorizaciones vigentes.
+
+#### 13. Regla de decisión por plano
+
+##### `PASS`
+
+Se utiliza únicamente cuando toda la evidencia aplicable está completa, vigente, reconciliada con el alcance y libre de contradicciones materiales.
+
+##### `FAIL`
+
+Se utiliza cuando existe evidencia suficiente para demostrar incumplimiento, por ejemplo:
+
+- capacitación requerida no completada;
+- evaluación obligatoria fallida;
+- certificación vencida;
+- población objetivo incompleta;
+- entrenamiento impartido sobre versión incorrecta;
+- material obsoleto o contradictorio;
+- material inaccesible para la audiencia objetivo;
+- procedimiento de contingencia requerido sin práctica suficiente cuando esta es obligatoria;
+- contenido que induce una acción no autorizada o insegura;
+- capacitación usada indebidamente como sustituto de autorización, permiso o validación funcional.
+
+##### `BLOQUEADO`
+
+Se utiliza cuando falta un insumo obligatorio para decidir y no existe evidencia suficiente para afirmar cumplimiento o incumplimiento. Debe registrar el insumo faltante, su propietario y la condición de salida.
+
+##### `NO_APLICA`
+
+Solo procede mediante una justificación positiva basada en el alcance del paquete. No se obtiene por ausencia de datos, por falta de una sesión, por inexistencia actual de material o porque el cambio parezca pequeño.
+
+#### 14. Agregación estricta del gate
+
+Los cuatro planos se agregan así:
+
+1. cada plano se clasifica exactamente una vez;
+2. cualquier `FAIL` produce `FAIL` agregado;
+3. si no existe `FAIL` pero existe al menos un `BLOQUEADO`, el resultado agregado es `BLOQUEADO`;
+4. el gate solo puede producir `PASS` cuando todos los planos aplicables están en `PASS` y cada `NO_APLICA` está justificado;
+5. el gate completo solo puede ser `NO_APLICA` cuando los cuatro planos están justificadamente fuera del alcance del paquete;
+6. no existe aprobación parcial ni promedio ponderado;
+7. un porcentaje alto de capacitación no compensa una función crítica sin preparación demostrada.
+
+#### 15. Evidencia aceptable
+
+Según aplicabilidad, `SHELL-CI-021` podrá aceptar combinaciones reproducibles de:
+
+- catálogo versionado de capacitaciones;
+- asignaciones controladas por rol, proceso o cambio;
+- registros de sesión o terminación ligados a versión;
+- evaluaciones con criterio y resultado trazable;
+- certificaciones y vigencias;
+- reconciliación objetivo/completado/aprobado/pendiente/vencido;
+- evidencia de renovación cuando aplique;
+- catálogo versionado de material de apoyo;
+- contenido aprobado con propietario, audiencia y vigencia;
+- referencias de integridad o versión del material;
+- comprobaciones de acceso de solo lectura desde el contexto objetivo;
+- walkthroughs de localización y uso del material;
+- simulacros o práctica controlada autorizada;
+- matriz que vincule paquete, candidato, procedimiento, capacitación, material y población objetivo;
+- evidencia de corrección de brechas detectadas y nueva verificación.
+
+La evidencia deberá permitir reproducir la decisión sin depender de conocimiento oral del equipo que la produjo.
+
+#### 16. Evidencia insuficiente
+
+No bastan, por sí solos:
+
+- una capacitación programada pero no realizada;
+- una invitación enviada;
+- una lista de asistencia cuando se exige competencia;
+- un curso marcado como completado sin versión;
+- una evaluación sin criterio de aprobación;
+- una certificación vencida;
+- una declaración verbal de experiencia previa;
+- antigüedad o período de prueba laboral;
+- un archivo cargado sin propietario, aprobación o vigencia;
+- una presentación o PDF sin control de versión;
+- una captura de pantalla;
+- un enlace accesible solo al autor o mantenedor;
+- documentación genérica que no corresponde al paquete;
+- material que solo describe el estado anterior al cambio;
+- la aprobación de `READY-GATE-008` por sí sola;
+- la existencia de un rol o permiso;
+- el hecho de que una persona haya podido ejecutar una acción una vez;
+- una demostración del instructor sin evidencia de que la población objetivo pueda ejecutar lo requerido.
+
+#### 17. Casos especiales
+
+##### 17.1 Cambio sin capacitación nueva
+
+Un paquete puede no requerir una capacitación nueva, pero deberá justificarlo. Si depende de una competencia preexistente, se verificará que la competencia siga vigente y que la versión previa continúe siendo compatible con el cambio.
+
+##### 17.2 Material sin cambio de contenido
+
+Si un material existente continúa aplicando, deberá probarse su vigencia, accesibilidad y correspondencia con el candidato. La ausencia de edición reciente no es evidencia de obsolescencia, pero tampoco de vigencia.
+
+##### 17.3 Población variable o rotativa
+
+Cuando la población cambie por turnos, altas, rotación o sustituciones, el gate deberá usar una fuente controlada con instante o ventana de corte. Toda incorporación posterior que entre al alcance del piloto deberá satisfacer el mismo contrato antes de ejecutar la función protegida.
+
+##### 17.4 Equipos y dispositivos
+
+La capacitación de manejo puede ser requisito de esta puerta. La verificación de que el equipo, periférico, red, escáner o impresora funciona pertenece a `READY-GATE-007` y no se duplica aquí.
+
+##### 17.5 Contingencia
+
+Cuando `READY-GATE-008` determine que un modo de contingencia es aplicable, `READY-GATE-009` deberá verificar que las personas aplicables conocen su activación, límites, operación y salida, y que cuentan con ayudas utilizables bajo las restricciones reales de ese modo.
+
+##### 17.6 Formación y autorización
+
+La capacitación nunca crea autoridad, rol, permiso, asignación laboral ni excepción de seguridad. Si una función exige además autorización, ambos contratos deben cumplirse de manera independiente.
+
+#### 18. Registro mínimo de resultado de `SHELL-CI-021`
+
+La ejecución posterior deberá producir un registro con, al menos:
+
+- `package_id`;
+- candidato evaluado;
+- ambiente;
+- instante de evaluación;
+- población objetivo o referencia a su snapshot controlado;
+- resultados de los cuatro planos;
+- resumen cuantitativo de capacitaciones aplicables;
+- resumen cuantitativo de población objetivo, completada, aprobada, pendiente y vencida;
+- materiales aplicables y sus versiones;
+- simulacros o prácticas exigidos y su resultado;
+- brechas detectadas;
+- propietario de cada bloqueo;
+- evidencia asociada;
+- resultado agregado;
+- condición de reevaluación cuando no exista `PASS`.
+
+El registro debe excluir secretos y minimizar datos personales.
+
+#### 19. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea no introduce un comportamiento ejecutable nuevo. Especializa la puerta documental con la que `SHELL-CI-021` deberá demostrar preparación de personas, competencia, vigencia y material de apoyo sobre contratos canónicos ya definidos. La ejecución, las evaluaciones y la evidencia física corresponden a la fase posterior de readiness.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+#### 20. Criterios de aceptación
+
+`READY-GATE-009` se considera documentalmente completa únicamente si:
+
+1. separa capacitación, competencia/vigencia, material de apoyo y alineación con el cambio;
+2. conserva los cuatro planos como decisiones independientes;
+3. clasifica las siete clases canónicas de capacitación por aplicabilidad;
+4. exige versión exacta de capacitación y del candidato evaluado;
+5. exige población objetivo derivada del alcance real del paquete;
+6. reconcilia objetivo, completado, aprobado, pendiente y vencido;
+7. impide ocultar una identidad crítica pendiente mediante porcentajes agregados;
+8. diferencia asistencia de competencia demostrada;
+9. exige evaluación cuando el contrato de riesgo o proceso la requiera;
+10. exige vigencia y renovación cuando correspondan;
+11. bloquea la función protegida cuando la formación obligatoria esté vencida o no demostrada;
+12. gobierna material con identidad, versión, propietario, aprobación, audiencia y vigencia;
+13. exige disponibilidad con permisos reales de la audiencia objetivo;
+14. exige usabilidad en el dispositivo, medio y contexto previstos;
+15. contempla acceso alternativo cuando una contingencia aplicable inutilice el canal primario;
+16. exige coherencia entre paquete, candidato, procedimiento, capacitación y material;
+17. contempla simulacro, práctica o walkthrough cuando el riesgo lo exija;
+18. impide confundir capacitación con autorización o permiso;
+19. impide confundir capacitación con período de prueba laboral;
+20. impide usar `READY-GATE-008` como evidencia automática de preparación de personas;
+21. define evidencia aceptable e insuficiente;
+22. define `PASS`, `FAIL`, `BLOQUEADO` y `NO_APLICA` sin aprobación parcial;
+23. exige propietario y condición de salida para todo bloqueo;
+24. preserva minimización de datos personales y exclusión de secretos;
+25. crea cero y modifica cero requisitos de prueba;
+26. no ejecuta capacitación, evaluación, certificación, cambios de acceso ni acciones físicas;
+27. mantiene `READY-GATE-010` exclusivamente reservada como siguiente tarea.
+
+#### 21. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+READY-GATE-008 — Definir criterio y evidencia para confirmar procedimientos operativos y contingencias
+
+##### TAREA ACTUAL APROBADA
+READY-GATE-009 — Definir criterio y evidencia para confirmar capacitación y material de apoyo
+
+##### SIGUIENTE TAREA RESERVADA
+READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento
+
+
 ### [ ] READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento
 ### [ ] READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas
 ### [ ] READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados
