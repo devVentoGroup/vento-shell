@@ -5036,7 +5036,948 @@ SIGUIENTE TAREA RESERVADA
 `READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados`
 
 
-### [ ] READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados
+### ✅ READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados
+
+**Estado:** APROBADA
+**Tarea anterior:** `READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas` — APROBADA
+**Tarea siguiente:** `READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto` — RESERVADA
+**Tipo de tarea:** documental — definición normativa y materialización del criterio de readiness por paquete para confirmar cobertura de respaldo, restauración verificable, rollback probado, reconciliación de efectos y objetivos de recuperación mediante evidencia real; sin ejecutar respaldos, restauraciones, rollback, migraciones, DDL/DML, despliegues ni cambios remotos
+
+---
+
+#### 1. Resultado sustantivo
+
+`READY-GATE-012` define la evaluación futura `READY-GATE-012::<package_id>` que deberá consumir `SHELL-CI-021::<package_id>` después de la implementación física autorizada y antes del avance del paquete hacia el siguiente gate aplicable.
+
+El resultado queda materializado mediante seis planos independientes de readiness:
+
+1. `BACKUP_COVERAGE` — cobertura, identidad, política y estado verificable de los objetos que deban poder recuperarse;
+2. `RESTORE_PROOF` — demostración real de restaurabilidad mediante ejecución controlada, integridad, compatibilidad y validación;
+3. `ROLLBACK_PROOF` — demostración real del mecanismo de retorno, compensación o corrección segura que corresponda al cambio;
+4. `DATA_EFFECT_RECONCILIATION` — consistencia de datos, colas, trabajo offline, Storage, integraciones y efectos externos después de restaurar o revertir;
+5. `RECOVERY_OBJECTIVES` — comparación contra objetivos canónicos aprobados cuando existan y bloqueo explícito cuando un objetivo obligatorio no esté resuelto;
+6. `RUNBOOK_AUTHORITY_EVIDENCE` — disponibilidad, vigencia, autoridad, secuencia, observabilidad y evidencia del procedimiento utilizado para probar recuperación o rollback.
+
+La puerta no crea una política nueva de respaldo ni una estrategia nueva de rollback. Comprueba que las decisiones ya aprobadas para el paquete hayan sido materializadas y probadas con evidencia real suficiente.
+
+---
+
+#### 2. Propósito de la puerta
+
+La pregunta que resuelve esta tarea es:
+
+```text
+¿EL PAQUETE PUEDE DEMOSTRAR, CON EVIDENCIA DEL MISMO RELEASE Y AMBIENTE,
+QUE SUS OBJETOS RECUPERABLES PUEDEN RESTAURARSE Y QUE SUS CAMBIOS
+MATERIALES PUEDEN RETORNARSE, COMPENSARSE O RECUPERARSE DE FORMA
+CONTROLADA SIN PERDER INTEGRIDAD, AUTORIDAD, TRAZABILIDAD NI EFECTOS
+EMPRESARIALES PENDIENTES?
+```
+
+No basta con demostrar que:
+
+- existe una tarea de backup;
+- existe una réplica;
+- existe un snapshot;
+- existe una versión anterior del software;
+- existe un procedimiento escrito;
+- un despliegue puede volver a compilarse;
+- una base restaurada abre conexión;
+- un servicio responde a health check;
+- un proveedor declara una capacidad de recuperación;
+- el equipo conoce verbalmente cómo regresar.
+
+La puerta exige correspondencia entre obligación, mecanismo, ejecución, resultado, evidencia y reconciliación.
+
+---
+
+#### 3. Entradas canónicas conservadas
+
+La evaluación consume, sin redefinir su autoridad:
+
+1. el expediente aprobado del paquete y su `package_id`;
+2. `DELIV-PKG-009` para migraciones, DDL/DML previstas, backfills, compatibilidad temporal y retiro legacy;
+3. `DELIV-PKG-010` para eventos, colas, idempotencia, reintentos, dead-letter y conciliación;
+4. `DELIV-PKG-013` para requisitos no funcionales y objetivos ya aprobados;
+5. `DELIV-PKG-014` y `DELIV-PKG-015` para identidad física, repositorios, archivos, símbolos, dependencias, versiones y orden de actualización;
+6. `DELIV-PKG-016` para pruebas, ambientes, responsables y evidencia esperada;
+7. `DELIV-PKG-017` para observabilidad requerida durante respaldo, restauración y rollback;
+8. `DELIV-PKG-018` para flags, configuración, valores y kill switch cuando sean parte del mecanismo de contención;
+9. `DELIV-PKG-019` para rollout, cohortes, pausas, promoción y evidencia de despliegue;
+10. `DELIV-PKG-020` para rollback técnico, funcional y de datos, disparadores, autoridad, objetivo, efectos irreversibles y conciliación;
+11. `DELIV-PKG-021` para procedimientos, runbooks y conocimiento aplicables;
+12. `DELIV-PKG-022` para alcance de piloto, ambientes, actores, sedes, datos y dispositivos;
+13. `DELIV-PKG-023` para criterios medibles de aceptación y manifiesto de evidencia;
+14. `DELIV-PKG-025` como decisión documental previa a la implementación física;
+15. `NFR-BACKUP-RECOVERY-CONTRACT-001` y sus matrices de objetos, perfiles, objetivos, políticas, runbooks, ejercicios y excepciones;
+16. `TI-DOM-009` para gobierno del cambio y separación entre plan, ejecución, validación, rollback y revisión posterior;
+17. `TI-DOM-010` para observabilidad, salud, señales y evidencia durante la prueba;
+18. `TI-DOM-011` y `TI-BACKUP-RESTORE-GATE-CONTRACT-001` para la puerta técnica de restaurabilidad;
+19. QUEUE-ARC para estado asíncrono, reintentos, deduplicación, dead-letter y replay;
+20. EVID-ARC para evidencia durable;
+21. PRINT-ARC, Storage, Supabase, integraciones, dispositivos y demás autoridades propietarias cuando el paquete las consuma;
+22. las decisiones de continuidad empresarial únicamente como fuente de objetivos y validación empresarial cuando correspondan.
+
+Una decisión documental planeada no se transforma en evidencia ejecutada por aparecer en estas entradas.
+
+---
+
+#### 4. Separaciones obligatorias
+
+La puerta conserva las separaciones canónicas:
+
+```text
+BACKUP
+≠ REPLICA
+≠ SNAPSHOT
+≠ ARCHIVE
+≠ EXPORT
+≠ ROLLBACK
+≠ COMPENSATION
+≠ FORWARD_FIX
+≠ FAILOVER
+≠ RESTORE
+≠ TECHNICAL_RECOVERY
+≠ BUSINESS_RECOVERY
+≠ BUSINESS_CONTINUITY
+```
+
+Y conserva además:
+
+```text
+PLAN DE ROLLBACK
+≠ ROLLBACK PROBADO
+≠ ROLLBACK EJECUTADO EN UNA AFECTACIÓN REAL
+```
+
+```text
+BACKUP COMPLETADO
+≠ BACKUP VERIFICADO
+≠ RESTAURACIÓN PROBADA
+```
+
+```text
+RESTAURACIÓN TÉCNICA
+≠ SERVICIO MÍNIMO EMPRESARIAL RECUPERADO
+≠ CONCILIACIÓN COMPLETA
+≠ NORMALIZACIÓN TOTAL
+```
+
+Consecuencias:
+
+1. `COMPLETED_UNVERIFIED` no satisface `RESTORE_PROOF`;
+2. una réplica saludable no satisface `BACKUP_COVERAGE` por sí sola;
+3. un `git revert`, una imagen anterior o un artefacto desplegable no satisfacen `ROLLBACK_PROOF` sin ejercicio y validación;
+4. rollback de aplicación no sustituye restauración de datos;
+5. restauración de datos no sustituye rollback de contrato, configuración o routing;
+6. un failover no demuestra que el estado empresarial sea correcto;
+7. un forward-fix puede ser el mecanismo correcto cuando revertir sea más peligroso, pero deberá haber sido definido, probado y evidenciado como la estrategia aprobada;
+8. la validación técnica no autoriza por sí sola a declarar recuperación empresarial.
+
+---
+
+#### 5. Construcción previa del universo requerido
+
+Antes de observar resultados del ambiente se deberá construir `required_recovery_evidence_set` para el paquete.
+
+La lista se deriva exclusivamente del dossier aprobado y deberá incluir toda obligación material de recuperación o retorno identificada por:
+
+- fuentes de verdad y objetos persistentes modificados;
+- tablas, esquemas, RLS, funciones, triggers, Storage o configuración material;
+- migraciones, backfills, transformaciones o retiros de estructuras;
+- eventos, outbox, inbox, colas, jobs, checkpoints y dead-letter;
+- estado local u offline pendiente;
+- archivos, documentos y evidencia;
+- configuración y secretos cuya recuperación sea necesaria sin exponer su valor;
+- artefactos, contratos, plantillas y versiones requeridas para reconstruir una versión compatible;
+- dependencias externas con efectos o estado que deban conciliarse;
+- operaciones físicas o periféricas que puedan dejar resultados desconocidos o repetibles;
+- cambios de routing, bindings, feature flags o configuración con mecanismo de retorno;
+- efectos empresariales irreversibles, compensables o reconciliables;
+- objetos clasificados como reconstruibles que deban demostrar reconstruibilidad real;
+- objetivos de recuperación aplicables ya aprobados;
+- ejercicios de restauración o rollback exigidos por criticidad, política o aceptación;
+- brechas y excepciones de recuperación vigentes.
+
+La evaluación no puede reducir este universo después de ver que una evidencia falta.
+
+---
+
+#### 6. Identidad mínima de cada obligación
+
+Cada elemento de `required_recovery_evidence_set` deberá conservar como mínimo, cuando aplique:
+
+| Campo                    | Regla                                                                          |
+| ------------------------ | ------------------------------------------------------------------------------ |
+| `package_id`             | paquete evaluado                                                               |
+| `implementation_unit_id` | unidad física correspondiente cuando exista                                    |
+| `release_or_change_ref`  | release, cambio, migración o configuración que origina la obligación           |
+| `environment_id`         | ambiente exacto de la prueba                                                   |
+| `site_or_scope_ref`      | sede, ámbito o dominio material cuando cambie la validez                       |
+| `recovery_class`         | uno de los seis planos de esta tarea                                           |
+| `object_or_effect_ref`   | objeto, grupo consistente, cambio o efecto protegido                           |
+| `recovery_profile_ref`   | perfil aprobado cuando exista                                                  |
+| `policy_ref`             | política o contrato aplicable                                                  |
+| `approved_objective_ref` | objetivo canónico aprobado, si corresponde                                     |
+| `mechanism_ref`          | backup, restore, rollback, compensación, forward-fix u otro mecanismo aprobado |
+| `runbook_ref`            | procedimiento versionado aplicable                                             |
+| `authority_ref`          | actor o autoridad que puede ejecutar o aprobar la acción                       |
+| `execution_ref`          | prueba o ejercicio real utilizado como evidencia                               |
+| `result_ref`             | resultado técnico y empresarial cuando corresponda                             |
+| `evidence_ref`           | soporte durable de la conclusión                                               |
+| `blocking_reason`        | motivo exacto cuando no pueda decidirse PASS                                   |
+
+La evidencia de otro paquete, release, ambiente, punto temporal, configuración o conjunto de datos no se reutiliza por semejanza.
+
+---
+
+#### 7. Plano `BACKUP_COVERAGE`
+
+Este plano confirma que todo objeto que deba recuperarse posee protección identificable y verificable.
+
+Un elemento alcanza `PASS` únicamente cuando, según aplique, se demuestra:
+
+1. identidad estable del objeto o grupo consistente;
+2. fuente autoritativa y alcance exacto;
+3. política vigente y propietaria;
+4. punto temporal o mecanismo de captura identificable;
+5. estado compatible con la política;
+6. integridad comprobable;
+7. cadena completa cuando el mecanismo dependa de múltiples piezas;
+8. aislamiento suficiente frente al dominio de falla que deba cubrirse;
+9. cifrado y procedimiento recuperable de llave cuando aplique;
+10. formato y versión reconocibles;
+11. retención vigente;
+12. disponibilidad del método de restauración;
+13. evidencia de que la cobertura incluye metadatos, permisos, relaciones y objetos asociados que sean materialmente necesarios;
+14. observabilidad de fallos, antigüedad, expiración o degradación de la protección cuando la política lo requiera.
+
+No alcanza `PASS` por:
+
+- una réplica bajo la misma autoridad;
+- un snapshot sin alcance o consistencia demostrados;
+- una exportación sin método de restauración;
+- un job con estado verde sin integridad ni restauración;
+- una fila de inventario;
+- la promesa del proveedor;
+- la sola existencia de PITR o versionado sin evidencia de que cubra el objeto y periodo requeridos.
+
+---
+
+#### 8. Plano `RESTORE_PROOF`
+
+Este plano confirma restaurabilidad real.
+
+Un elemento alcanza `PASS` únicamente cuando existe una ejecución controlada que permita demostrar, según aplique:
+
+1. selección explícita del punto de recuperación;
+2. cadena completa y utilizable;
+3. acceso a llaves y material técnico necesario sin exponer secretos;
+4. destino autorizado y suficientemente aislado para la prueba;
+5. restauración del contenido y metadatos necesarios;
+6. compatibilidad entre datos, esquema, aplicación, contratos, configuración y artefactos;
+7. integridad del objeto restaurado;
+8. consistencia entre objetos que representan el mismo hecho;
+9. tratamiento seguro de eventos, outbox, inbox, colas, jobs y dead-letter;
+10. contención de notificaciones, pagos, movimientos, impresiones, integraciones u otros efectos reales no deseados;
+11. validación técnica definida por el propietario;
+12. validación del servicio mínimo empresarial cuando sea parte del criterio aplicable;
+13. medición del ejercicio cuando exista un objetivo aprobado;
+14. evidencia durable de inicio, final, resultado, defectos, reconciliación y decisión;
+15. vigencia suficiente de la prueba frente al objeto, política, release y criticidad evaluados.
+
+Una prueba parcial de un objeto integrante de un grupo consistente no prueba el grupo completo.
+
+---
+
+#### 9. Estado `COMPLETED_UNVERIFIED`
+
+Se fija una regla expresa:
+
+```text
+COMPLETED_UNVERIFIED
+→ NO PUEDE PRODUCIR PASS
+```
+
+Si la única evidencia disponible es que la copia terminó o fue creada, el resultado será:
+
+- `BLOQUEADO` cuando todavía falte ejecutar o reunir la verificación requerida;
+- `FAIL` cuando exista evidencia de que la copia, cadena, integridad, llave, formato o restauración no cumple.
+
+No se promoverá un resultado por antigüedad del backup, ausencia de incidentes o reputación del proveedor.
+
+---
+
+#### 10. Plano `ROLLBACK_PROOF`
+
+Este plano confirma que el paquete puede abandonar de manera controlada un cambio material cuando el mecanismo aprobado lo permita.
+
+Cada obligación de rollback deberá identificar:
+
+- estado objetivo;
+- mecanismo aprobado;
+- autoridad para ejecutarlo;
+- disparador;
+- punto de no retorno cuando exista;
+- dependencias;
+- orden;
+- efectos sobre datos;
+- efectos sobre contratos e integraciones;
+- efectos externos;
+- compatibilidad temporal;
+- efectos irreversibles;
+- conciliación requerida;
+- observabilidad durante la prueba;
+- criterio de validación posterior.
+
+Un elemento alcanza `PASS` únicamente si el mecanismo aplicable fue realmente ejercitado en un entorno y alcance válidos y produjo el estado esperado sin dejar efectos desconocidos no gobernados.
+
+La prueba deberá demostrar, según aplique:
+
+1. que el disparador puede reconocerse;
+2. que la autoridad puede actuar dentro del flujo definido;
+3. que el mecanismo se ejecuta en el orden previsto;
+4. que dependencias y contratos permanecen compatibles;
+5. que no se duplican efectos por reintento o repetición;
+6. que el estado final coincide con el objetivo de retorno;
+7. que datos y efectos residuales son identificables;
+8. que la validación posterior distingue recuperación puntual de estabilidad;
+9. que la reconciliación requerida puede completarse;
+10. que la evidencia permite reconstruir lo ocurrido.
+
+---
+
+#### 11. Estrategias distintas del rollback literal
+
+No todo cambio admite un retorno literal seguro.
+
+Cuando el dossier aprobado determine que el mecanismo correcto es compensación, forward-fix, restauración desde una fuente recuperable, desactivación controlada, cambio de routing o una combinación, `READY-GATE-012` evaluará ese mecanismo y no impondrá un rollback ficticio.
+
+Para alcanzar `PASS` deberá existir evidencia real de que la estrategia aprobada:
+
+- es ejecutable;
+- contiene el riesgo que pretende controlar;
+- preserva integridad y autoridad;
+- trata efectos irreversibles de manera explícita;
+- posee validación y reconciliación;
+- no deja un estado `FAILED_OR_UNKNOWN` presentado como recuperación.
+
+La imposibilidad de rollback literal no constituye por sí sola un fallo si la alternativa aprobada es materialmente segura y fue probada.
+
+---
+
+#### 12. Cambios de datos, migraciones y backfills
+
+Para cambios que modifiquen datos o estructuras, la prueba no se reduce al artefacto de aplicación.
+
+Deberá determinarse, según el paquete:
+
+- qué datos se transformaron;
+- si la transformación es reversible, compensable o solo forward-fix;
+- qué versión de esquema requiere cada versión de aplicación;
+- qué periodo de compatibilidad existe;
+- qué hechos creados después del cambio no pueden perderse al retornar;
+- cómo se preserva causalidad e identidad;
+- cómo se evita resucitar datos eliminados, permisos retirados o disposiciones posteriores;
+- cómo se reconcilian filas, archivos, eventos y proyecciones;
+- qué validación prueba que el estado de datos sigue siendo empresarialmente coherente.
+
+Un rollback de código que deja datos incompatibles produce `FAIL`.
+
+Una restauración que descarta hechos posteriores sin una decisión y conciliación aprobadas produce `FAIL`.
+
+Un diseño cuya reversibilidad aún no puede demostrarse produce `BLOQUEADO` hasta que la evidencia requerida exista.
+
+---
+
+#### 13. Colas, jobs, eventos y trabajo offline
+
+Cuando existan efectos asíncronos o locales, la prueba deberá conservar como mínimo:
+
+- intentos pendientes;
+- operaciones confirmadas;
+- resultados desconocidos;
+- reintentos;
+- deduplicación;
+- orden;
+- checkpoints;
+- dead-letter;
+- expiración;
+- autoridad vigente;
+- backlog;
+- conciliación con la fuente de verdad.
+
+Después de restaurar o revertir no se permite:
+
+- reemitir ciegamente efectos externos;
+- duplicar pagos, mensajes, movimientos, impresiones o notificaciones;
+- perder trabajo local pendiente;
+- sincronizar una acción cuya autoridad expiró sin revalidación;
+- cerrar la prueba mientras existan resultados desconocidos materiales sin tratamiento.
+
+La existencia de una cola vacía después del ejercicio no demuestra por sí sola que el trabajo haya sido procesado correctamente.
+
+---
+
+#### 14. Storage, documentos y evidencia
+
+Cuando el paquete dependa de archivos, documentos o evidencia, `RESTORE_PROOF` deberá verificar coherencia entre:
+
+- contenido;
+- hash o integridad equivalente;
+- metadatos;
+- versión;
+- clasificación;
+- referencia empresarial;
+- retención;
+- hold cuando aplique;
+- permisos;
+- relación con registros estructurados.
+
+Archivo sin referencia o referencia sin archivo no se considera recuperación completa.
+
+La prueba no utilizará datos productivos en un entorno no autorizado ni convertirá la restauración en una vía de sobreexposición.
+
+---
+
+#### 15. Dependencias y proveedores externos
+
+Cuando una recuperación dependa de un proveedor externo, deberá existir evidencia suficiente sobre:
+
+- objeto o estado bajo control del proveedor;
+- formato o capacidad de exportación;
+- retención;
+- mecanismo de recuperación;
+- dependencia de credenciales o llaves;
+- evidencia disponible;
+- conciliación interna;
+- alternativa o salida aplicable;
+- limitaciones conocidas.
+
+Una garantía comercial, SLA del proveedor, página de estado o documentación pública no sustituyen una restauración o reconciliación propia cuando el riesgo del paquete exige prueba.
+
+---
+
+#### 16. Plano `DATA_EFFECT_RECONCILIATION`
+
+Este plano impide cerrar la puerta únicamente porque el componente técnico volvió a responder.
+
+Se deberá demostrar, según aplique:
+
+1. consistencia de fuentes de verdad y proyecciones;
+2. ausencia de duplicados materiales no controlados;
+3. ausencia de pérdidas no aceptadas;
+4. estado de archivos y evidencia;
+5. estado de colas, jobs y pendientes;
+6. estado de operaciones offline;
+7. estado de efectos externos;
+8. autorizaciones, consentimientos y disposiciones posteriores al punto restaurado;
+9. backlog generado durante la afectación o ejercicio;
+10. trabajo manual de contingencia pendiente de incorporar;
+11. excepciones y defectos abiertos;
+12. confirmación de qué hechos permanecen desconocidos.
+
+`PASS` requiere que cada pendiente material esté conciliado o tenga un handoff aprobado que no oculte un resultado todavía capaz de producir efecto empresarial.
+
+---
+
+#### 17. Plano `RECOVERY_OBJECTIVES`
+
+La puerta consume objetivos ya aprobados; no los crea.
+
+Cuando exista un objetivo canónico aplicable, la evidencia deberá conservar:
+
+- identificador o referencia del objetivo;
+- alcance;
+- población o conjunto afectado;
+- punto inicial y punto final de medición;
+- resultado medido;
+- exclusiones autorizadas;
+- evidencia de integridad de la medición;
+- decisión de cumplimiento.
+
+Se mantienen separados:
+
+- MTPD;
+- MBCO;
+- RTO;
+- RPO;
+- WRT;
+- tiempo de normalización total.
+
+Reglas:
+
+1. una programación nominal de backup no demuestra RPO;
+2. una aplicación que responde no demuestra RTO empresarial;
+3. el tiempo de reconciliación no desaparece por ocurrir después del restore técnico;
+4. un objetivo desconocido que sea obligatorio produce `BLOQUEADO`;
+5. una cifra estimada o banda cualitativa no se presenta como medición real;
+6. esta tarea no inventa minutos, horas, porcentajes ni tolerancias nuevas;
+7. si el objetivo no aplica, `NO_APLICA` exige justificación aprobada de la no aplicabilidad.
+
+---
+
+#### 18. Plano `RUNBOOK_AUTHORITY_EVIDENCE`
+
+Una prueba válida deberá ejecutarse dentro de un procedimiento y una autoridad reconocibles.
+
+Se comprobará, cuando aplique:
+
+- runbook versionado;
+- relación con el objeto y mecanismo exactos;
+- precondiciones;
+- verificaciones previas;
+- autoridad para iniciar;
+- autoridad para ejecutar;
+- segregación entre ejecutar y validar cuando corresponda;
+- manejo de credenciales sin incorporar secretos al expediente;
+- secuencia y dependencias;
+- punto de abortar;
+- criterios de éxito y fallo;
+- observabilidad requerida;
+- comunicación aplicable;
+- validación posterior;
+- conciliación;
+- escalamiento;
+- evidencia de la práctica o ejercicio.
+
+Un procedimiento correcto pero nunca practicado no satisface una obligación que requiera prueba real.
+
+---
+
+#### 19. Relación con observabilidad
+
+`READY-GATE-011` y `READY-GATE-012` permanecen separados.
+
+La observabilidad necesaria para probar recuperación deberá demostrar, según aplique:
+
+- inicio del ejercicio;
+- versión y ambiente;
+- estado de dependencias;
+- fallos y resultados desconocidos;
+- progreso de restauración o retorno;
+- backlog;
+- reintentos;
+- salud después de la acción;
+- evidencia de estabilidad suficiente;
+- correlación con el cambio o ejercicio.
+
+Un dashboard verde no prueba restaurabilidad.
+
+Una restauración aparentemente exitosa sin evidencia suficiente para reconstruir lo ocurrido produce `BLOQUEADO` cuando la política exige esa evidencia.
+
+---
+
+#### 20. Evidencia aceptable
+
+Podrán participar como evidencia, cuando correspondan al elemento exacto evaluado:
+
+- manifiesto de backup con identidad, alcance, punto, cadena, integridad, cifrado, retención y estado;
+- registro de una restauración controlada;
+- evidencia del destino aislado o de los guardrails aplicados;
+- prueba de descifrado o disponibilidad de llave conforme a política, sin exponer el secreto;
+- evidencia de compatibilidad entre esquema, aplicación, configuración y contratos;
+- resultados de validación técnica;
+- resultados de servicio mínimo empresarial cuando sean aplicables;
+- mediciones reales frente a un objetivo previamente aprobado;
+- registro de ejercicio de rollback, compensación o forward-fix;
+- comparación antes/después del estado objetivo;
+- evidencia de colas, idempotencia, deduplicación y conciliación;
+- evidencia de Storage, documentos y metadatos recuperados;
+- evidencia de efectos externos contenidos o reconciliados;
+- runbook versionado y registro de su práctica;
+- telemetría y logs seguros del ejercicio;
+- defectos, excepciones y decisiones resultantes;
+- firma o aprobación de los actores definidos por el contrato de aceptación.
+
+La evidencia debe permitir resolver identidad, alcance, tiempo, ambiente, versión, resultado y autoridad.
+
+---
+
+#### 21. Evidencia insuficiente por sí sola
+
+No constituyen prueba suficiente de readiness, aisladamente:
+
+- “backup habilitado”;
+- “PITR habilitado”;
+- snapshot existente;
+- réplica saludable;
+- job de backup verde;
+- estado `COMPLETED_UNVERIFIED`;
+- archivo exportado sin restauración;
+- documentación del proveedor;
+- plan de rollback;
+- existencia de un kill switch;
+- capacidad teórica de `git revert`;
+- disponibilidad de una versión anterior;
+- migración inversa no ejercitada;
+- base de datos que abre conexión después de restaurar;
+- health check verde;
+- build, typecheck o CI exitosos;
+- test unitario que no ejercita el mecanismo de recuperación;
+- captura de pantalla sin identidad suficiente;
+- declaración humana sin registro del ejercicio;
+- prueba hecha sobre otro release, ambiente, sede, punto temporal o dataset;
+- ausencia de incidentes históricos;
+- ausencia de alertas cuando el monitoreo no fue verificado.
+
+---
+
+#### 22. Estados de decisión
+
+Cada elemento aplicable deberá terminar exactamente en uno de estos estados:
+
+| Estado      | Regla                                                                                                                         |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `PASS`      | toda la evidencia requerida está presente, vigente, correlacionada y demuestra el resultado esperado                          |
+| `FAIL`      | existe evidencia suficiente de incumplimiento material del criterio                                                           |
+| `BLOQUEADO` | la decisión requiere evidencia, objetivo, autoridad, acceso o ejecución que todavía no está disponible o no puede demostrarse |
+| `NO_APLICA` | el dossier aprobado demuestra explícitamente que el criterio no aplica al elemento o paquete                                  |
+
+No se utiliza `NO_APLICA` para:
+
+- una prueba no ejecutada;
+- un backup faltante;
+- un objetivo desconocido;
+- un rollback no demostrado;
+- una llave no disponible;
+- una evidencia ambigua;
+- un proveedor que no permite comprobar la capacidad;
+- un objeto reconstruible sin prueba de reconstrucción;
+- una brecha pendiente.
+
+---
+
+#### 23. Condiciones de `FAIL`
+
+Producen `FAIL`, entre otras condiciones materiales aplicables:
+
+1. objeto crítico requerido sin protección válida;
+2. cadena de backup rota;
+3. integridad inválida;
+4. llave necesaria irrecuperable;
+5. restauración requerida ejecutada y fallida;
+6. restauración que produce un grupo inconsistente;
+7. datos, documentos o evidencia perdidos fuera de la tolerancia aprobada;
+8. aplicación y esquema incompatibles después de restaurar o revertir;
+9. rollback requerido ejecutado y fallido;
+10. retorno a un estado distinto del objetivo aprobado;
+11. duplicación de efectos por replay, retry o rollback;
+12. pérdida de trabajo offline o asíncrono no autorizada;
+13. reemisión no controlada de pagos, movimientos, mensajes, impresiones o notificaciones;
+14. recuperación que resucita autorizaciones, datos o disposiciones posteriores de forma inválida;
+15. objetivo aprobado medido y materialmente incumplido;
+16. ejercicio que deja backlog o efectos residuales materiales sin tratamiento válido;
+17. evidencia que demuestra que el runbook u orden es incorrecto;
+18. restauración o rollback que expone datos o secretos fuera de autorización;
+19. evidencia perteneciente a otro objeto o ambiente utilizada para afirmar el resultado actual;
+20. `REC-GAP-P0` o `REC-GAP-P1` cuya condición material ya demuestra incumplimiento y no posee control aprobado suficiente.
+
+---
+
+#### 24. Condiciones de `BLOQUEADO`
+
+Producen `BLOQUEADO`, entre otras condiciones aplicables:
+
+1. objetivo obligatorio aún no aprobado o `UNKNOWN_BLOCKING`;
+2. restauración exigida todavía no ejecutada;
+3. rollback o estrategia alternativa exigida todavía no ejercitada;
+4. única copia disponible en estado `COMPLETED_UNVERIFIED`;
+5. identidad o alcance del backup ambiguos;
+6. punto recuperable no demostrable;
+7. disponibilidad de llave o procedimiento no comprobables;
+8. target aislado o guardrails requeridos no disponibles para ejecutar la prueba;
+9. autoridad necesaria no disponible o no demostrada;
+10. runbook requerido inexistente, vencido o no aplicable al objeto actual;
+11. evidencia incompleta o sin correlación con release/ambiente;
+12. ejercicio vencido frente a una política que exige vigencia;
+13. dependencia necesaria para probar la recuperación no disponible;
+14. grupo consistente sin evidencia de todos sus componentes;
+15. resultado técnico disponible pero validación empresarial requerida pendiente;
+16. conciliación todavía no ejecutada o resultado residual desconocido;
+17. `REC-GAP-P0` o `REC-GAP-P1` abierta sin control vigente y evidencia suficiente para decidir cumplimiento;
+18. proveedor crítico cuya capacidad requerida no puede demostrarse todavía.
+
+`BLOQUEADO` no se redondea a `PASS` por presión de calendario o porque el camino feliz funcione.
+
+---
+
+#### 25. Tratamiento de perfiles `RC0..RC4`
+
+Los cinco perfiles cualitativos de recuperación se conservan sin reinterpretación:
+
+- `RC0_SAFETY_INTEGRITY`;
+- `RC1_CRITICAL_OPERATION`;
+- `RC2_IMPORTANT_OPERATION`;
+- `RC3_SUPPORTING`;
+- `RC4_RECONSTRUCTIBLE`.
+
+Reglas:
+
+1. el perfil determina criticidad y tipo de obligación, no una duración numérica implícita;
+2. `RC4_RECONSTRUCTIBLE` no significa “sin prueba”: exige demostrar fuente, versión de regla, dependencias, capacidad, tiempo, costo e integridad de la reconstrucción según el contrato aplicable;
+3. un objeto de soporte puede elevar criticidad cuando habilita una dependencia crítica;
+4. un perfil no se reduce para evitar una prueba requerida;
+5. el gate consume el perfil vigente del dossier y no lo recalcula por resultado observado.
+
+---
+
+#### 26. Excepciones y brechas de recuperación
+
+Las excepciones no convierten un requisito incumplido en inexistente.
+
+Toda excepción aceptada que pretenda permitir avance deberá identificar:
+
+- obligación afectada;
+- riesgo;
+- alcance;
+- criticidad;
+- control compensatorio;
+- propietario;
+- aprobador autorizado;
+- vigencia;
+- fecha o condición de revisión;
+- evidencia del control;
+- criterio de salida.
+
+Una excepción vencida, ambigua o sin evidencia no habilita `PASS`.
+
+La puerta conserva como bloqueantes las brechas críticas o altas de recuperación que no tengan tratamiento válido conforme al contrato de recuperación.
+
+---
+
+#### 27. Cálculo agregado del paquete
+
+La decisión `READY-GATE-012::<package_id>` se calcula de forma estricta:
+
+```text
+SI EXISTE AL MENOS UN FAIL
+→ PACKAGE_RESULT = FAIL
+
+SI NO EXISTE FAIL Y EXISTE AL MENOS UN BLOQUEADO
+→ PACKAGE_RESULT = BLOQUEADO
+
+SI TODOS LOS ELEMENTOS APLICABLES SON PASS
+Y TODO NO_APLICA ESTÁ JUSTIFICADO
+→ PACKAGE_RESULT = PASS
+```
+
+Además:
+
+1. cada elemento esperado aparece exactamente una vez;
+2. no se omiten elementos por falta de evidencia;
+3. no se promedian resultados;
+4. no se compensa un fallo crítico con múltiples pruebas verdes;
+5. no se certifica por muestra cuando el universo aprobado exige cobertura completa;
+6. una prueba en laboratorio no sustituye automáticamente la prueba del ambiente objetivo cuando las diferencias son materiales;
+7. una prueba de un release no se hereda a otro si cambió el mecanismo, objeto, esquema, configuración, contrato o dependencia relevante;
+8. una misma evidencia puede respaldar varios elementos solo cuando la relación sea explícita y materialmente válida.
+
+---
+
+#### 28. Manifiesto de evidencia del gate
+
+La salida futura de `SHELL-CI-021::<package_id>` para esta puerta deberá poder producir un manifiesto con:
+
+- `package_id`;
+- release/cambio evaluado;
+- ambiente;
+- fecha del corte;
+- lista completa de `required_recovery_evidence_set`;
+- estado por elemento;
+- referencia a objeto o efecto;
+- política/perfil aplicable;
+- mecanismo evaluado;
+- ejecución utilizada;
+- evidencia utilizada;
+- resultado medido cuando aplique;
+- objetivo aprobado de comparación cuando aplique;
+- defectos;
+- brechas/excepciones;
+- pendientes de conciliación;
+- actor ejecutor;
+- actor validador cuando corresponda;
+- decisión agregada;
+- motivo exacto de cada `FAIL`, `BLOQUEADO` o `NO_APLICA`.
+
+El manifiesto referencia evidencia; no copia secretos, payloads sensibles ni dumps completos.
+
+---
+
+#### 29. Frontera con continuidad empresarial
+
+`READY-GATE-012` no redefine continuidad empresarial.
+
+Puede comprobar que:
+
+- un objetivo aprobado existe y fue medido;
+- un servicio mínimo empresarial requerido fue validado;
+- una reconciliación fue completada;
+- una prueba técnica produjo evidencia suficiente para el handoff.
+
+No puede:
+
+- inventar MTPD, MBCO, RTO, RPO o WRT;
+- activar continuidad empresarial;
+- declarar cierre de una crisis por recuperación técnica;
+- cambiar prioridades de procesos;
+- sustituir la aprobación del propietario empresarial.
+
+Cuando la validación empresarial sea obligatoria y aún no exista, el resultado permanece `BLOQUEADO`.
+
+---
+
+#### 30. Frontera con cambio y rollback
+
+`TI-DOM-009` conserva autoridad sobre el cambio tecnológico.
+
+`READY-GATE-012` únicamente decide si la evidencia de reversibilidad/recuperación requerida para el paquete está lista.
+
+No ejecuta:
+
+- cambio;
+- deployment;
+- rollback;
+- forward-fix;
+- compensación;
+- restore;
+- failover;
+- modificación de configuración;
+- migración;
+- DDL/DML;
+- backfill;
+- operación remota.
+
+La prueba real que alimenta este gate pertenece a la fase de implementación y ejercicio autorizados.
+
+---
+
+#### 31. Frontera con Supabase y datos VENTO
+
+Toda migración, configuración o modificación de Supabase perteneciente a VENTO continúa bajo `vento-shell`.
+
+Esta tarea no ejecuta operaciones Supabase ni presume capacidades no demostradas.
+
+Cuando un paquete dependa de Supabase, la evidencia futura deberá distinguir, según aplique:
+
+- historial y versión de migración;
+- fuente de verdad;
+- esquema y datos;
+- RLS, funciones y triggers;
+- Storage;
+- Realtime;
+- Edge Functions;
+- cron/jobs;
+- colas o estado pendiente;
+- secretos y llaves sin exponer sus valores;
+- compatibilidad de aplicación;
+- punto recuperable;
+- restauración y reconciliación.
+
+La existencia de la plataforma o de una configuración activa no prueba recuperación.
+
+---
+
+#### 32. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `READY-GATE-012` especializa en una puerta de readiness condiciones de respaldo, restauración, rollback, objetivos, consistencia y reconciliación que ya están protegidas por el registro canónico. No introduce una conducta ejecutable nueva ni modifica la semántica de las pruebas existentes; define cómo deben reunirse y decidirse sus evidencias reales por paquete después de la implementación aplicable.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Fragmentos 04A afectados:** 0
+
+Se consumen sin modificación, principalmente:
+
+- `TREQ-PROC-501` a `TREQ-PROC-540`;
+- `TREQ-PROC-1527`;
+- `TREQ-PROC-1528`;
+- `TREQ-PROC-1540`.
+
+---
+
+#### 33. Criterios de aceptación
+
+`READY-GATE-012` queda documentalmente completa cuando:
+
+1. define exactamente seis planos independientes de readiness de recuperación y rollback;
+2. obliga a construir `required_recovery_evidence_set` antes de observar resultados;
+3. conserva identidad de paquete, release/cambio, ambiente, objeto y mecanismo en cada obligación;
+4. separa backup, réplica, snapshot, exportación, rollback, restore, failover, recuperación técnica y recuperación empresarial;
+5. impide que `COMPLETED_UNVERIFIED` produzca `PASS`;
+6. exige prueba real de restauración cuando la política o criticidad la requiere;
+7. exige prueba real del rollback o estrategia alternativa aprobada cuando sea materialmente aplicable;
+8. no fuerza rollback literal cuando la alternativa aprobada es más segura, pero exige que esa alternativa esté probada;
+9. protege compatibilidad de aplicación, esquema, configuración, contratos y dependencias;
+10. protege consistencia de datos, archivos, colas, jobs, eventos y estado offline;
+11. protege contra duplicación o reemisión no controlada de efectos externos;
+12. exige reconciliar efectos residuales, backlog y trabajo manual aplicable;
+13. consume objetivos aprobados sin inventar cifras;
+14. trata un objetivo obligatorio no resuelto como `BLOQUEADO`;
+15. conserva MTPD, MBCO, RTO, RPO, WRT y normalización total como conceptos distintos;
+16. exige runbook, autoridad y evidencia de práctica cuando sean requeridos;
+17. reconoce `PASS`, `FAIL`, `BLOQUEADO` y `NO_APLICA` con semántica estricta;
+18. impide utilizar `NO_APLICA` para una prueba faltante o no ejecutada;
+19. aplica agregación estricta sin promedios ni redondeo de muestras parciales;
+20. exige evidencia correspondiente al mismo paquete, release, ambiente y alcance material;
+21. conserva el handoff hacia continuidad empresarial sin reemplazar su autoridad;
+22. no ejecuta backup, restore, rollback, migraciones, DDL/DML, backfills, despliegues ni cambios remotos;
+23. crea cero requisitos de prueba y modifica cero requisitos existentes;
+24. mantiene `READY-GATE-013` únicamente reservada.
+
+---
+
+#### 34. Estado del resultado documental
+
+| Resultado                                | Estado                                                                                  |
+| ---------------------------------------- | --------------------------------------------------------------------------------------- |
+| criterio de `BACKUP_COVERAGE`            | `ESPECIFICADO`                                                                          |
+| criterio de `RESTORE_PROOF`              | `ESPECIFICADO`                                                                          |
+| criterio de `ROLLBACK_PROOF`             | `ESPECIFICADO`                                                                          |
+| criterio de `DATA_EFFECT_RECONCILIATION` | `ESPECIFICADO`                                                                          |
+| criterio de `RECOVERY_OBJECTIVES`        | `ESPECIFICADO`                                                                          |
+| criterio de `RUNBOOK_AUTHORITY_EVIDENCE` | `ESPECIFICADO`                                                                          |
+| `required_recovery_evidence_set`         | `ESPECIFICADO` como contrato; su población real corresponde a cada paquete implementado |
+| manifiesto futuro de evidencia           | `ESPECIFICADO`                                                                          |
+| respaldos o restores reales              | `FUERA_DE_ALCANCE` de esta tarea documental                                             |
+| rollback o compensaciones reales         | `FUERA_DE_ALCANCE` de esta tarea documental                                             |
+| evidencia operativa futura               | `PENDIENTE_DE_EVIDENCIA` hasta la ejecución autorizada correspondiente                  |
+
+La especificación documental no se presenta como prueba ejecutada.
+
+---
+
+#### 35. Secuencia preservada
+
+La tarea conserva la secuencia operativa aprobada por paquete:
+
+```text
+E5-GATE-008::<package_id>
+→ SHELL-CI-020::<package_id>
+→ BLOQUE R Y TAREAS FÍSICAS APLICABLES
+→ SHELL-CI-021::<package_id>
+→ SHELL-CI-022::<package_id>
+```
+
+`READY-GATE-012` diseña una de las comprobaciones que consumirá `SHELL-CI-021`. No adelanta cutover, piloto, hypercare ni cierre.
+
+---
+
+#### 36. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas`
+
+TAREA ACTUAL APROBADA
+`READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados`
+
+SIGUIENTE TAREA RESERVADA
+`READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto`
+
+
 ### [ ] READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto
 ### [ ] READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión
 ### [ ] READY-GATE-015 — Definir autoridad y criterio para aprobar la entrada al piloto operativo

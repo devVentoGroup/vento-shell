@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **847** |
+| Tareas aprobadas | **848** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **747** |
+| Tareas no iniciadas | **746** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **53.14% (847/1594)** |
+| Porcentaje de completamiento | **53.20% (848/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas** |
-| Tarea actual | **READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados** |
+| Última tarea aprobada | **READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados** |
+| Tarea actual | **READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto** |
+| Siguiente tarea | **READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 36 de 68 aprobadas; READY-GATE-012 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 37 de 68 aprobadas; READY-GATE-013 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `READY-GATE-011` — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas |
-| Tarea actual | `READY-GATE-012` — Definir criterio y evidencia para confirmar respaldo y rollback probados — **NO INICIADA** |
-| Siguiente tarea | `READY-GATE-013` — Definir método y evidencia para capturar la línea base previa al piloto |
+| Última aprobada | `READY-GATE-012` — Definir criterio y evidencia para confirmar respaldo y rollback probados |
+| Tarea actual | `READY-GATE-013` — Definir método y evidencia para capturar la línea base previa al piloto — **NO INICIADA** |
+| Siguiente tarea | `READY-GATE-014` — Definir registro de riesgos aceptados y condiciones de suspensión |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 36 DE 68 APROBADAS — ACTUAL READY-GATE-012** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 37 DE 68 APROBADAS — ACTUAL READY-GATE-013** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-READY-GATE-011 — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas
-        ↓
-TAREA ACTUAL
 READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto
         ↓
+SIGUIENTE TAREA RESERVADA
+READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 36 de 68 tareas aprobadas
+BLOQUE E5 — 37 de 68 tareas aprobadas
 ```

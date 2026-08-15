@@ -5,14 +5,14 @@
   "sequence_id": "PHASE-02-E5-IMPLEMENTATION-PLANNING",
   "block_code": "BLOQUE E5",
   "block_title": "Paquetes, readiness, cutover e hypercare",
-  "previous_task_id": "READY-GATE-011",
+  "previous_task_id": "READY-GATE-012",
   "latest_treq_task_id": "NEXO-UX-025",
   "handoff_task_id": "SHELL-CON-001",
   "handoff_sequence_id": "PHASE-03-H-SHARED-FOUNDATION",
   "segments": [
     {
       "prefix": "READY-GATE",
-      "from": 12,
+      "from": 13,
       "to": 15
     },
     {
@@ -33,12 +33,12 @@
   ],
   "block_progress": {
     "total_tasks": 68,
-    "approved_tasks": 36,
-    "pending_tasks": 32
+    "approved_tasks": 37,
+    "pending_tasks": 31
   },
   "route_progress": {
     "covered_tasks": 1594,
-    "pending_tasks": 747,
+    "pending_tasks": 746,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
     "active_stage": 9

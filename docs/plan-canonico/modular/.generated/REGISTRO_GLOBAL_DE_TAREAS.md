@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **847** |
+| Aprobadas | **848** |
 | En propuesta | **0** |
-| No iniciadas | **747** |
+| No iniciadas | **746** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **53.14% (847/1594)** |
+| Porcentaje de completamiento | **53.20% (848/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `READY-GATE-011` — Definir criterio y evidencia para confirmar monitoreo, métricas y alertas | ✅ APROBADA |
-| Tarea actual | `READY-GATE-012` — Definir criterio y evidencia para confirmar respaldo y rollback probados | ⬜ NO INICIADA |
-| Siguiente reservada | `READY-GATE-013` — Definir método y evidencia para capturar la línea base previa al piloto | ⬜ NO INICIADA |
+| Última aprobada | `READY-GATE-012` — Definir criterio y evidencia para confirmar respaldo y rollback probados | ✅ APROBADA |
+| Tarea actual | `READY-GATE-013` — Definir método y evidencia para capturar la línea base previa al piloto | ⬜ NO INICIADA |
+| Siguiente reservada | `READY-GATE-014` — Definir registro de riesgos aceptados y condiciones de suspensión | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -564,7 +564,7 @@
 | ✅ APROBADA | `READY-GATE-009` | Definir criterio y evidencia para confirmar capacitación y material de apoyo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ✅ APROBADA | `READY-GATE-010` | Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ✅ APROBADA | `READY-GATE-011` | Definir criterio y evidencia para confirmar monitoreo, métricas y alertas | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-012` | Definir criterio y evidencia para confirmar respaldo y rollback probados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ✅ APROBADA | `READY-GATE-012` | Definir criterio y evidencia para confirmar respaldo y rollback probados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ⬜ NO INICIADA | `READY-GATE-013` | Definir método y evidencia para capturar la línea base previa al piloto | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ⬜ NO INICIADA | `READY-GATE-014` | Definir registro de riesgos aceptados y condiciones de suspensión | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ⬜ NO INICIADA | `READY-GATE-015` | Definir autoridad y criterio para aprobar la entrada al piloto operativo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
