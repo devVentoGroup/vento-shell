@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **837** |
+| Aprobadas | **838** |
 | En propuesta | **0** |
-| No iniciadas | **757** |
+| No iniciadas | **756** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **52.51% (837/1594)** |
+| Porcentaje de completamiento | **52.57% (838/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `READY-GATE-001` — Definir criterio y evidencia para confirmar código desplegado en el entorno objetivo | ✅ APROBADA |
-| Tarea actual | `READY-GATE-002` — Definir criterio y evidencia para confirmar migraciones aplicadas y datos validados | ⬜ NO INICIADA |
-| Siguiente reservada | `READY-GATE-003` — Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados | ⬜ NO INICIADA |
+| Última aprobada | `READY-GATE-002` — Definir criterio y evidencia para confirmar migraciones aplicadas y datos validados | ✅ APROBADA |
+| Tarea actual | `READY-GATE-003` — Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados | ⬜ NO INICIADA |
+| Siguiente reservada | `READY-GATE-004` — Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -554,7 +554,7 @@
 | ✅ APROBADA | `DELIV-PKG-024` | Vincular el paquete con el registro canónico de brechas | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-025` | Aprobar el paquete antes de iniciar implementación física | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `READY-GATE-001` | Definir criterio y evidencia para confirmar código desplegado en el entorno objetivo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-002` | Definir criterio y evidencia para confirmar migraciones aplicadas y datos validados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ✅ APROBADA | `READY-GATE-002` | Definir criterio y evidencia para confirmar migraciones aplicadas y datos validados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ⬜ NO INICIADA | `READY-GATE-003` | Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ⬜ NO INICIADA | `READY-GATE-004` | Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ⬜ NO INICIADA | `READY-GATE-005` | Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
