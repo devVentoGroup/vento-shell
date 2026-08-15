@@ -5,14 +5,14 @@
   "sequence_id": "PHASE-02-E5-IMPLEMENTATION-PLANNING",
   "block_code": "BLOQUE E5",
   "block_title": "Paquetes, readiness, cutover e hypercare",
-  "previous_task_id": "HYPERCARE-OPS-005",
+  "previous_task_id": "HYPERCARE-OPS-006",
   "latest_treq_task_id": "NEXO-UX-025",
   "handoff_task_id": "SHELL-CON-001",
   "handoff_sequence_id": "PHASE-03-H-SHARED-FOUNDATION",
   "segments": [
     {
       "prefix": "HYPERCARE-OPS",
-      "from": 6,
+      "from": 7,
       "to": 10
     },
     {
@@ -23,12 +23,12 @@
   ],
   "block_progress": {
     "total_tasks": 68,
-    "approved_tasks": 55,
-    "pending_tasks": 13
+    "approved_tasks": 56,
+    "pending_tasks": 12
   },
   "route_progress": {
     "covered_tasks": 1594,
-    "pending_tasks": 728,
+    "pending_tasks": 727,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
     "active_stage": 9

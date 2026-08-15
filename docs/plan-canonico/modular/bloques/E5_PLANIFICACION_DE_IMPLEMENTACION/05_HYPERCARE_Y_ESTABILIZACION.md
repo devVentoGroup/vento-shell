@@ -3382,7 +3382,708 @@ HYPERCARE-OPS-005 — Definir conciliaciones de datos y efectos entre dominios
 HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes
 
 
-### [ ] HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes
+### ✅ HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes
+
+**Estado:** APROBADA
+**Tarea anterior:** `HYPERCARE-OPS-005 — Definir conciliaciones de datos y efectos entre dominios`
+**Tarea siguiente:** `HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores`
+**Tipo de tarea:** documental — definición normativa y materialización del binding de clasificación, prioridad y corrección de incidentes durante hypercare para las 207 identidades `GAP-PKG-*`, reutilizando el modelo canónico de soporte de `TI-DOM-007 / VPROC-0058`, las responsabilidades de `HYPERCARE-OPS-002` y la evidencia de `HYPERCARE-OPS-003` a `HYPERCARE-OPS-005`; sin ejecutar correcciones, cambios de código, DDL/DML, backfills, migraciones, despliegues, modificaciones de datos, operaciones sobre Supabase ni cierre de hypercare
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md`
+**Ejecución posterior:** `SHELL-CI-023` por instancia de paquete, antes de la certificación de `SHELL-CI-024`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`HYPERCARE-OPS-006` define cómo una señal observada durante hypercare pasa, cuando corresponda, de hallazgo o desviación a caso formal, cómo obtiene clasificación y prioridad deterministas y cómo se gobierna su corrección hasta una resolución verificable.
+
+La tarea no crea una taxonomía paralela de incidentes. Adopta como autoridad transversal el modelo ya aprobado de `TI-DOM-007 / VPROC-0058` y lo vincula a cada una de las 207 identidades de paquete de hypercare.
+
+```text
+HALLAZGO TECNICO HYPERCARE-OPS-003
++ DESVIACION OPERATIVA HYPERCARE-OPS-004
++ DIFERENCIA / EFECTO NO CONCILIADO HYPERCARE-OPS-005
+        |
+        v
+TRIAGE SOBRE EL MISMO CASO CANONICO TI-DOM-007 / VPROC-0058
+        |
+        +--> INCIDENT
+        +--> SERVICE_REQUEST
+        `--> UNCLASSIFIED_TRIAGE hasta disponer de evidencia suficiente
+        |
+        v
+IMPACTO I1..I4 + URGENCIA U1..U4
+        |
+        v
+PRIORIDAD DETERMINISTA P1..P4
+        |
+        v
+CONTENCION / RESTAURACION / DIAGNOSTICO / CORRECCION / VALIDACION
+        |
+        v
+RESOLUCION Y CIERRE DEL CASO TECNICO
+        |
+        v
+HYPERCARE CONTINUA HASTA SUS PROPIAS CONDICIONES DE SALIDA Y CIERRE
+```
+
+#### 2. Fuentes y contratos consumidos
+
+| Fuente                    | Decisión consumida por `HYPERCARE-OPS-006`                                                                                            |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `HYPERCARE-OPS-002`       | autoridad funcional, autoridad técnica, cobertura y continuidad de responsables por paquete                                           |
+| `HYPERCARE-OPS-003`       | hallazgos técnicos de errores, colas, integraciones, rendimiento y observabilidad; un hallazgo no es por sí mismo incidente           |
+| `HYPERCARE-OPS-004`       | desviaciones de adopción, tiempos y operación; una desviación no es por sí misma incidente                                            |
+| `HYPERCARE-OPS-005`       | diferencias de datos y efectos, estados desconocidos, parcialidad y conciliación; una diferencia no autoriza corrección destructiva   |
+| `TI-DOM-007 / VPROC-0058` | clasificación del caso, impacto, urgencia, prioridad, SLA de referencia, ciclo de resolución, cierre y reapertura                     |
+| `DELIV-PKG-020`           | rollback, recuperación y conciliación aprobados para el paquete                                                                       |
+| `TREQ-VISO-046`           | prioridad determinista por matriz impacto × urgencia y trazabilidad de cambios de prioridad                                           |
+| `TREQ-CONT-002`           | clasificación y expediente cronológico del incidente de continuidad, con autoridad explícita                                          |
+| `TREQ-CONT-005`           | reincorporación y conciliación idempotentes; no cerrar con pendientes aplicables sin propietario                                      |
+| `TREQ-CONT-006`           | revisión posterior, acciones, responsables, eficacia y actualización de conocimiento cuando aplique                                   |
+| `TREQ-PROC-004`           | corrección sin sobrescritura destructiva; preservación del hecho original y del antes/después                                         |
+| `TREQ-PROC-237`           | parcialidad, resultado desconocido, backlog o conciliación pendiente no equivalen a disponibilidad plena                              |
+| `TREQ-PROC-241`           | observabilidad orientada al resultado empresarial y a su contexto de proceso                                                          |
+| `TREQ-PROC-245`           | prioridad derivada de impacto, alcance, urgencia, propagación, ventana y workaround; criticidad como entrada, no como resultado único |
+| `TREQ-INTEGRATION-003`    | identidad estable, idempotencia, resultado recuperable, conflicto y recuperación controlada                                           |
+| `TREQ-INTEGRATION-004`    | reconstrucción de causa, actor, recurso, intento, resultado, error y efecto final                                                     |
+| `TREQ-INTEGRATION-142`    | un resultado desconocido debe consultarse antes de reejecutar y, si no puede resolverse, queda en conciliación                        |
+| `TREQ-INTEGRATION-160`    | agotamiento de retry termina en estado explícito de intervención o terminal, nunca en pendiente silencioso                            |
+| `TREQ-INTEGRATION-161`    | agotar retries no autoriza compensar, revertir, cancelar, corregir ni escribir cruzado automáticamente                                |
+
+Ninguna de estas decisiones se redefine. `HYPERCARE-OPS-006` las combina exclusivamente para el periodo de estabilización.
+
+#### 3. Resultado documental materializado
+
+Para cada `GAP-PKG-*` se establece un binding documental compuesto por:
+
+```text
+hypercare_incident_intake::<GAP-PKG-*>
+hypercare_incident_classification::<GAP-PKG-*>
+hypercare_incident_priority_binding::<GAP-PKG-*>
+hypercare_correction_plan::<GAP-PKG-*>
+hypercare_incident_handoff::<GAP-PKG-*>
+```
+
+Cada binding resuelve, por referencia canónica y no por duplicación:
+
+1. evidencia de entrada desde `HYPERCARE-OPS-003`, `004` y `005`;
+2. identidad y ciclo del caso de `TI-DOM-007 / VPROC-0058`;
+3. impacto y urgencia vigentes;
+4. prioridad calculada;
+5. perfil SLA de referencia ya aprobado;
+6. autoridad funcional y técnica de `HYPERCARE-OPS-002`;
+7. plan de contención, restauración, corrección y validación aplicable;
+8. evidencias de resultado y conciliación;
+9. estado de resolución y cierre del caso técnico;
+10. handoff hacia deuda, soporte o cierre de hypercare cuando corresponda, sin sustituir a sus tareas propietarias.
+
+#### 4. Regla de entrada: señal no equivale a incidente
+
+La existencia de una señal no permite asignar automáticamente la clase `INCIDENT`.
+
+| Entrada                                     | Tratamiento obligatorio                                                                                   |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| hallazgo técnico de `HYPERCARE-OPS-003`     | triage con evidencia técnica y efecto empresarial observado o potencial                                   |
+| desviación operativa de `HYPERCARE-OPS-004` | triage funcional; puede ser adopción, procedimiento, capacidad, configuración, solicitud o incidente      |
+| diferencia de `HYPERCARE-OPS-005`           | triage manteniendo fuente de verdad, estado de conciliación y efecto observado; no corregir por intuición |
+| alerta o métrica aislada                    | conservar como evidencia; no demuestra por sí sola falla empresarial                                      |
+| reporte de usuario                          | conservar relato, contexto y momento; validar contra servicio esperado y evidencia disponible             |
+
+Si la evidencia aún no permite decidir entre incidente y solicitud, el caso conserva `UNCLASSIFIED_TRIAGE`. Esa incertidumbre no autoriza prioridad manual, cierre ni mutación correctiva.
+
+#### 5. Clasificación canónica del caso
+
+La clasificación usa exactamente el contrato vigente de `TI-DOM-007`:
+
+| `opened_mode`         | Aplicación durante hypercare                                                                                         |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `INCIDENT`            | el servicio esperado está detenido, degradado, incorrecto, con resultado desconocido o requiere restauración urgente |
+| `SERVICE_REQUEST`     | existe una necesidad o solicitud, pero no una falla activa del servicio esperado                                     |
+| `UNCLASSIFIED_TRIAGE` | la evidencia aún no permite una clasificación final segura                                                           |
+
+Reglas:
+
+- existe una sola clasificación vigente por caso;
+- reclasificar conserva la misma identidad del caso, historial y evidencia;
+- incidentes laborales, SST, seguridad de información, continuidad y tecnología pueden relacionarse, pero sus expedientes no se fusionan ni sustituyen;
+- no se crea una escala paralela de severidad en hypercare;
+- un problema, known error, cambio, deuda o tarea posterior no sustituye la identidad del incidente que los originó.
+
+#### 6. Impacto vigente
+
+Se reutilizan sin cambios los cuatro niveles aprobados:
+
+| Código | Nombre canónico                     |
+| ------ | ----------------------------------- |
+| `I1`   | `ENTERPRISE_OR_MULTI_SITE_CRITICAL` |
+| `I2`   | `SITE_OR_CRITICAL_PROCESS`          |
+| `I3`   | `AREA_OR_MULTI_USER`                |
+| `I4`   | `SINGLE_USER_OR_LIMITED`            |
+
+El impacto se determina con evidencia actual de alcance y resultado empresarial. Una criticidad teórica no reemplaza el impacto realmente observado.
+
+#### 7. Urgencia vigente
+
+Se reutilizan sin cambios los cuatro niveles aprobados:
+
+| Código | Nombre canónico |
+| ------ | --------------- |
+| `U1`   | `IMMEDIATE`     |
+| `U2`   | `CURRENT_CYCLE` |
+| `U3`   | `NEXT_WINDOW`   |
+| `U4`   | `PLANNED`       |
+
+Un workaround seguro y demostrado puede modificar la urgencia conforme al contrato vigente; no reduce por sí solo el impacto ni borra la afectación ocurrida.
+
+#### 8. Prioridad determinista
+
+La prioridad se calcula exclusivamente mediante:
+
+```text
+priority_code = impact_urgency_matrix[impact_code][urgency_code]
+```
+
+| Impacto \ Urgencia | `U1` | `U2` | `U3` | `U4` |
+| ------------------ | ---- | ---- | ---- | ---- |
+| `I1`               | `P1` | `P1` | `P2` | `P3` |
+| `I2`               | `P1` | `P2` | `P2` | `P3` |
+| `I3`               | `P2` | `P2` | `P3` | `P4` |
+| `I4`               | `P2` | `P3` | `P4` | `P4` |
+
+Nombres vigentes:
+
+| Prioridad | Nombre           | Perfil SLA de referencia |
+| --------- | ---------------- | ------------------------ |
+| `P1`      | `CRITICAL_MAJOR` | `SLA-INC-P1-V1`          |
+| `P2`      | `HIGH`           | `SLA-INC-P2-V1`          |
+| `P3`      | `MEDIUM`         | `SLA-INC-P3-V1`          |
+| `P4`      | `LOW`            | `SLA-INC-P4-V1`          |
+
+`HYPERCARE-OPS-006` no inventa tiempos SLA. Utiliza la referencia versionada aplicable.
+
+Todo cambio posterior de impacto, urgencia o prioridad debe conservar al menos estado anterior y nuevo, motivo, evidencia, actor, versión contractual y fechas objetivo recalculadas cuando correspondan. El riesgo aceptado no reescribe la historia.
+
+#### 9. Autoridad y responsabilidad
+
+La asignación de responsables se resuelve por la instancia correspondiente de `HYPERCARE-OPS-002`.
+
+| Responsabilidad                  | Regla                                                                                                                    |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| autoridad funcional              | valida afectación empresarial, resultado esperado, restauración funcional y evidencia de uso                             |
+| autoridad técnica                | dirige diagnóstico técnico, selección de tratamiento y evidencia técnica dentro de contratos aprobados                   |
+| ejecutor                         | aplica en fase posterior la acción autorizada en el repositorio o dominio propietario; no obtiene autoridad por ejecutar |
+| conciliador                      | confirma diferencias y efectos conforme a `HYPERCARE-OPS-005`; no reemplaza a la fuente de verdad                        |
+| soporte ordinario                | recibe handoff cuando corresponda; no cierra hypercare por recibir el caso                                               |
+| autoridad de cierre de hypercare | permanece fuera de 006 y se resuelve en `HYPERCARE-OPS-010`                                                              |
+
+La ausencia de una autoridad requerida bloquea la acción que depende de ella; no se sustituye por consentimiento implícito ni por quien tenga acceso técnico.
+
+#### 10. Procedimiento canónico de corrección
+
+##### 10.1. Capturar la entrada
+
+Vincular el caso con:
+
+- `GAP-PKG-*` exacto;
+- candidato, ambiente y alcance autorizados del paquete;
+- evidencia originada en `HYPERCARE-OPS-003`, `004` y/o `005`;
+- proceso, servicio, sede, área, canal o dependencia afectados cuando aplique;
+- momento de detección y estado observado;
+- referencias de correlación, operación, evento, intento, dato o efecto cuando existan.
+
+##### 10.2. Clasificar el caso
+
+Aplicar `INCIDENT`, `SERVICE_REQUEST` o `UNCLASSIFIED_TRIAGE` según `TI-DOM-007`. Si un expediente de continuidad, seguridad, SST u otro dominio también aplica, relacionarlo sin reemplazar identidades.
+
+##### 10.3. Determinar impacto y urgencia
+
+Determinar `I1..I4` y `U1..U4` usando evidencia vigente. No copiar la prioridad de otro caso ni elevarla o reducirla por conveniencia operativa.
+
+##### 10.4. Calcular prioridad y perfil SLA
+
+Aplicar la matriz 4 × 4 aprobada y resolver `SLA-INC-P1-V1` a `SLA-INC-P4-V1` según la prioridad calculada. Los tiempos concretos pertenecen al contrato SLA vigente y no se redefinen aquí.
+
+##### 10.5. Asignar autoridades
+
+Resolver autoridad funcional, técnica, ejecutor y sustitutos aplicables mediante `HYPERCARE-OPS-002`. Toda escalación mantiene el mismo caso y su cronología.
+
+##### 10.6. Contener sin falsificar resolución
+
+Cuando sea necesario proteger la operación, pueden utilizarse exclusivamente mecanismos ya aprobados para el paquete, por ejemplo fallback, feature flag, rollback, aislamiento, recuperación o contingencia aplicables.
+
+La contención o restauración del servicio no demuestra por sí sola que la causa fue corregida.
+
+##### 10.7. Diagnosticar
+
+Reconstruir de forma trazable:
+
+```text
+SINTOMA OBSERVADO
++ RESULTADO EMPRESARIAL AFECTADO
++ ALCANCE REAL
++ SECUENCIA TEMPORAL
++ CAMBIOS / DEPENDENCIAS / INTENTOS
++ ESTADO DE COLAS E INTEGRACIONES
++ ESTADO DE DATOS Y EFECTOS
++ HIPOTESIS O CAUSA CONFIRMADA
+```
+
+Una hipótesis permanece diferenciada de una causa demostrada.
+
+##### 10.8. Diseñar la corrección
+
+La corrección debe pertenecer al dominio y repositorio propietarios, conservar compatibilidad y utilizar mecanismos ya aprobados. No se permiten como atajo:
+
+- sobrescritura destructiva del hecho original;
+- borrado silencioso para ocultar la inconsistencia;
+- escritura cruzada fuera de contrato;
+- repetición de una operación cuyo resultado siga desconocido;
+- compensación, reversión o replay automáticos por el solo agotamiento de retries;
+- parche manual de datos sin identidad, autoridad, antes/después y evidencia;
+- cambio de fuente de verdad para hacer coincidir dos resultados.
+
+Cuando la corrección cambie un hecho empresarial, deberá preservar el hecho original y materializar la acción sucesora, inversa, compensatoria o correctiva que el contrato propietario permita.
+
+##### 10.9. Resolver resultados desconocidos antes de repetir
+
+`RESULT_UNKNOWN` obliga a consultar resultado autoritativo mediante las identidades disponibles. Si no puede demostrarse que el efecto no ocurrió y que repetir es seguro, la operación permanece en `RECONCILIATION_REQUIRED` o intervención equivalente del contrato propietario.
+
+##### 10.10. Ejecutar en la fase propietaria
+
+Esta tarea no ejecuta la corrección. La ejecución material ocurre posteriormente bajo `SHELL-CI-023` y los repositorios propietarios, con los controles de autorización, rollback, pruebas y evidencia aplicables.
+
+##### 10.11. Validar la corrección
+
+La validación debe demostrar, según aplique:
+
+- restauración del resultado empresarial esperado;
+- ausencia de duplicación o pérdida de efectos;
+- colas, reintentos, integraciones y dependencias en estado compatible;
+- datos y efectos conciliados;
+- comportamiento correcto en la ruta que originó el incidente;
+- controles de regresión aplicables;
+- evidencia funcional y técnica suficiente para la fase de resolución.
+
+Un defecto o regresión real descubierto durante la futura ejecución de `SHELL-CI-023` que necesite protección recurrente deberá generar su requisito de regresión en ese momento, con evidencia real.
+
+##### 10.12. Resolver el caso
+
+El ciclo de `TI-DOM-007 / VPROC-0058` conserva la diferencia entre:
+
+```text
+SERVICE_RESTORED
+!= INCIDENT_RESOLVED
+!= PROBLEM_RESOLVED
+```
+
+`PROBLEM_KNOWN_ERROR` puede coexistir con un incidente resuelto. Fallback, workaround o rollback pueden restaurar el servicio sin demostrar resolución causal.
+
+##### 10.13. Solicitar cierre
+
+`CLOSE-REQUESTED` solo es admisible cuando el estado final es coherente, la evidencia aplicable está enlazada, la validación funcional o su excepción está documentada y no quedan efectos o conciliaciones aplicables sin tratamiento y propietario.
+
+##### 10.14. Cerrar o reabrir
+
+`CLOSED` exige las reglas vigentes de `TI-DOM-007`. `REOPENED` crea un nuevo ciclo de resolución conservando el ciclo anterior, motivo y evidencia.
+
+Cerrar el caso técnico no cierra el paquete de hypercare.
+
+#### 11. Registro mínimo de resolución consumido
+
+El procedimiento reutiliza, sin renombrar ni reducir, los campos de resolución vigentes cuando apliquen:
+
+```text
+resolution_cycle
+restoration_status
+corrective_action_status
+validation_status
+user_validation_status
+fallback_or_workaround_active
+problem_ref
+known_error_ref
+change_ref
+kb_ref
+resolved_by
+resolved_reason
+resolved_at
+reopened_from_cycle
+reopen_reason
+closure_exception_reason
+```
+
+Las referencias a problema, known error, cambio o conocimiento no permiten eliminar el incidente ni su evidencia histórica.
+
+#### 12. Evidencia mínima de la corrección
+
+Toda instancia que llegue a corrección deberá permitir reconstruir:
+
+1. caso y paquete afectados;
+2. clasificación vigente y sus reclasificaciones;
+3. impacto, urgencia, prioridad y cambios posteriores;
+4. responsable funcional y técnico;
+5. señal original y evidencias correlacionadas;
+6. diagnóstico y causa o hipótesis vigente;
+7. contención o restauración aplicada;
+8. corrección autorizada y ejecutor;
+9. referencias a cambio, rollback, compensación, replay o conciliación cuando correspondan;
+10. resultado de validación;
+11. estado final de datos, efectos, colas e integraciones aplicables;
+12. residuales, problema, known error, deuda candidata o tarea posterior, con propietario explícito;
+13. decisión de resolución, cierre o reapertura y su autoridad.
+
+#### 13. Frontera con deuda y tareas posteriores
+
+`HYPERCARE-OPS-006` puede identificar un residual que, después de restaurar y validar el servicio, sea candidato a deuda o tarea posterior. No puede:
+
+- declarar aprobada esa deuda;
+- convertir un incidente no resuelto en deuda para permitir cierre;
+- omitir una conciliación pendiente;
+- transferir un riesgo sin propietario;
+- cerrar un caso porque exista un futuro ticket.
+
+La decisión documental de registro y aprobación de deuda pertenece exclusivamente a `HYPERCARE-OPS-007`.
+
+#### 14. Frontera con cierre de hypercare
+
+La cadena de autoridad permanece:
+
+```text
+HYPERCARE-OPS-006
+clasifica / prioriza / define procedimiento de correccion de incidentes
+        |
+        v
+HYPERCARE-OPS-007
+registra y aprueba deuda y tareas posteriores cuando aplique
+        |
+        v
+HYPERCARE-OPS-008 / 009
+transferencia y retiro de contingencias segun sus contratos
+        |
+        v
+HYPERCARE-OPS-010
+autoridad y evidencia de cierre de hypercare
+        |
+        v
+SHELL-CI-024
+certificacion material posterior del cierre del paquete
+```
+
+Ningún `CLOSED` de incidente equivale por sí solo a salida, cierre o certificación del paquete.
+
+#### 15. Matriz materializada por identidad de paquete
+
+La siguiente matriz vincula el procedimiento a las 207 identidades canónicas. No afirma que exista un incidente activo en cada paquete; define de forma explícita qué contrato se aplicará si una señal de esa identidad requiere tratamiento de incidente durante `SHELL-CI-023`.
+
+| Paquete       | Entradas de hypercare                                                                                  | Modelo de caso y prioridad                                                                                                    | Responsabilidad                  | Ejecución de corrección                                                                                    | Modalidad                                    | Estado documental |
+| ------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------- | ----------------- |
+| `GAP-PKG-001` | `HYPERCARE-OPS-003::GAP-PKG-001` + `HYPERCARE-OPS-004::GAP-PKG-001` + `HYPERCARE-OPS-005::GAP-PKG-001` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-001` | `SHELL-CI-023::GAP-PKG-001` + `DELIV-PKG-020::GAP-PKG-001` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-001` | heredada de `HYPERCARE-OPS-005::GAP-PKG-001` | `ESPECIFICADO`    |
+| `GAP-PKG-002` | `HYPERCARE-OPS-003::GAP-PKG-002` + `HYPERCARE-OPS-004::GAP-PKG-002` + `HYPERCARE-OPS-005::GAP-PKG-002` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-002` | `SHELL-CI-023::GAP-PKG-002` + `DELIV-PKG-020::GAP-PKG-002` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-002` | heredada de `HYPERCARE-OPS-005::GAP-PKG-002` | `ESPECIFICADO`    |
+| `GAP-PKG-003` | `HYPERCARE-OPS-003::GAP-PKG-003` + `HYPERCARE-OPS-004::GAP-PKG-003` + `HYPERCARE-OPS-005::GAP-PKG-003` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-003` | `SHELL-CI-023::GAP-PKG-003` + `DELIV-PKG-020::GAP-PKG-003` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-003` | heredada de `HYPERCARE-OPS-005::GAP-PKG-003` | `ESPECIFICADO`    |
+| `GAP-PKG-004` | `HYPERCARE-OPS-003::GAP-PKG-004` + `HYPERCARE-OPS-004::GAP-PKG-004` + `HYPERCARE-OPS-005::GAP-PKG-004` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-004` | `SHELL-CI-023::GAP-PKG-004` + `DELIV-PKG-020::GAP-PKG-004` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-004` | heredada de `HYPERCARE-OPS-005::GAP-PKG-004` | `ESPECIFICADO`    |
+| `GAP-PKG-005` | `HYPERCARE-OPS-003::GAP-PKG-005` + `HYPERCARE-OPS-004::GAP-PKG-005` + `HYPERCARE-OPS-005::GAP-PKG-005` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-005` | `SHELL-CI-023::GAP-PKG-005` + `DELIV-PKG-020::GAP-PKG-005` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-005` | heredada de `HYPERCARE-OPS-005::GAP-PKG-005` | `ESPECIFICADO`    |
+| `GAP-PKG-006` | `HYPERCARE-OPS-003::GAP-PKG-006` + `HYPERCARE-OPS-004::GAP-PKG-006` + `HYPERCARE-OPS-005::GAP-PKG-006` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-006` | `SHELL-CI-023::GAP-PKG-006` + `DELIV-PKG-020::GAP-PKG-006` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-006` | heredada de `HYPERCARE-OPS-005::GAP-PKG-006` | `ESPECIFICADO`    |
+| `GAP-PKG-007` | `HYPERCARE-OPS-003::GAP-PKG-007` + `HYPERCARE-OPS-004::GAP-PKG-007` + `HYPERCARE-OPS-005::GAP-PKG-007` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-007` | `SHELL-CI-023::GAP-PKG-007` + `DELIV-PKG-020::GAP-PKG-007` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-007` | heredada de `HYPERCARE-OPS-005::GAP-PKG-007` | `ESPECIFICADO`    |
+| `GAP-PKG-008` | `HYPERCARE-OPS-003::GAP-PKG-008` + `HYPERCARE-OPS-004::GAP-PKG-008` + `HYPERCARE-OPS-005::GAP-PKG-008` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-008` | `SHELL-CI-023::GAP-PKG-008` + `DELIV-PKG-020::GAP-PKG-008` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-008` | heredada de `HYPERCARE-OPS-005::GAP-PKG-008` | `ESPECIFICADO`    |
+| `GAP-PKG-009` | `HYPERCARE-OPS-003::GAP-PKG-009` + `HYPERCARE-OPS-004::GAP-PKG-009` + `HYPERCARE-OPS-005::GAP-PKG-009` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-009` | `SHELL-CI-023::GAP-PKG-009` + `DELIV-PKG-020::GAP-PKG-009` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-009` | heredada de `HYPERCARE-OPS-005::GAP-PKG-009` | `ESPECIFICADO`    |
+| `GAP-PKG-010` | `HYPERCARE-OPS-003::GAP-PKG-010` + `HYPERCARE-OPS-004::GAP-PKG-010` + `HYPERCARE-OPS-005::GAP-PKG-010` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-010` | `SHELL-CI-023::GAP-PKG-010` + `DELIV-PKG-020::GAP-PKG-010` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-010` | heredada de `HYPERCARE-OPS-005::GAP-PKG-010` | `ESPECIFICADO`    |
+| `GAP-PKG-011` | `HYPERCARE-OPS-003::GAP-PKG-011` + `HYPERCARE-OPS-004::GAP-PKG-011` + `HYPERCARE-OPS-005::GAP-PKG-011` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-011` | `SHELL-CI-023::GAP-PKG-011` + `DELIV-PKG-020::GAP-PKG-011` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-011` | heredada de `HYPERCARE-OPS-005::GAP-PKG-011` | `ESPECIFICADO`    |
+| `GAP-PKG-012` | `HYPERCARE-OPS-003::GAP-PKG-012` + `HYPERCARE-OPS-004::GAP-PKG-012` + `HYPERCARE-OPS-005::GAP-PKG-012` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-012` | `SHELL-CI-023::GAP-PKG-012` + `DELIV-PKG-020::GAP-PKG-012` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-012` | heredada de `HYPERCARE-OPS-005::GAP-PKG-012` | `ESPECIFICADO`    |
+| `GAP-PKG-013` | `HYPERCARE-OPS-003::GAP-PKG-013` + `HYPERCARE-OPS-004::GAP-PKG-013` + `HYPERCARE-OPS-005::GAP-PKG-013` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-013` | `SHELL-CI-023::GAP-PKG-013` + `DELIV-PKG-020::GAP-PKG-013` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-013` | heredada de `HYPERCARE-OPS-005::GAP-PKG-013` | `ESPECIFICADO`    |
+| `GAP-PKG-014` | `HYPERCARE-OPS-003::GAP-PKG-014` + `HYPERCARE-OPS-004::GAP-PKG-014` + `HYPERCARE-OPS-005::GAP-PKG-014` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-014` | `SHELL-CI-023::GAP-PKG-014` + `DELIV-PKG-020::GAP-PKG-014` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-014` | heredada de `HYPERCARE-OPS-005::GAP-PKG-014` | `ESPECIFICADO`    |
+| `GAP-PKG-015` | `HYPERCARE-OPS-003::GAP-PKG-015` + `HYPERCARE-OPS-004::GAP-PKG-015` + `HYPERCARE-OPS-005::GAP-PKG-015` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-015` | `SHELL-CI-023::GAP-PKG-015` + `DELIV-PKG-020::GAP-PKG-015` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-015` | heredada de `HYPERCARE-OPS-005::GAP-PKG-015` | `ESPECIFICADO`    |
+| `GAP-PKG-016` | `HYPERCARE-OPS-003::GAP-PKG-016` + `HYPERCARE-OPS-004::GAP-PKG-016` + `HYPERCARE-OPS-005::GAP-PKG-016` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-016` | `SHELL-CI-023::GAP-PKG-016` + `DELIV-PKG-020::GAP-PKG-016` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-016` | heredada de `HYPERCARE-OPS-005::GAP-PKG-016` | `ESPECIFICADO`    |
+| `GAP-PKG-017` | `HYPERCARE-OPS-003::GAP-PKG-017` + `HYPERCARE-OPS-004::GAP-PKG-017` + `HYPERCARE-OPS-005::GAP-PKG-017` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-017` | `SHELL-CI-023::GAP-PKG-017` + `DELIV-PKG-020::GAP-PKG-017` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-017` | heredada de `HYPERCARE-OPS-005::GAP-PKG-017` | `ESPECIFICADO`    |
+| `GAP-PKG-018` | `HYPERCARE-OPS-003::GAP-PKG-018` + `HYPERCARE-OPS-004::GAP-PKG-018` + `HYPERCARE-OPS-005::GAP-PKG-018` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-018` | `SHELL-CI-023::GAP-PKG-018` + `DELIV-PKG-020::GAP-PKG-018` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-018` | heredada de `HYPERCARE-OPS-005::GAP-PKG-018` | `ESPECIFICADO`    |
+| `GAP-PKG-019` | `HYPERCARE-OPS-003::GAP-PKG-019` + `HYPERCARE-OPS-004::GAP-PKG-019` + `HYPERCARE-OPS-005::GAP-PKG-019` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-019` | `SHELL-CI-023::GAP-PKG-019` + `DELIV-PKG-020::GAP-PKG-019` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-019` | heredada de `HYPERCARE-OPS-005::GAP-PKG-019` | `ESPECIFICADO`    |
+| `GAP-PKG-020` | `HYPERCARE-OPS-003::GAP-PKG-020` + `HYPERCARE-OPS-004::GAP-PKG-020` + `HYPERCARE-OPS-005::GAP-PKG-020` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-020` | `SHELL-CI-023::GAP-PKG-020` + `DELIV-PKG-020::GAP-PKG-020` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-020` | heredada de `HYPERCARE-OPS-005::GAP-PKG-020` | `ESPECIFICADO`    |
+| `GAP-PKG-021` | `HYPERCARE-OPS-003::GAP-PKG-021` + `HYPERCARE-OPS-004::GAP-PKG-021` + `HYPERCARE-OPS-005::GAP-PKG-021` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-021` | `SHELL-CI-023::GAP-PKG-021` + `DELIV-PKG-020::GAP-PKG-021` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-021` | heredada de `HYPERCARE-OPS-005::GAP-PKG-021` | `ESPECIFICADO`    |
+| `GAP-PKG-022` | `HYPERCARE-OPS-003::GAP-PKG-022` + `HYPERCARE-OPS-004::GAP-PKG-022` + `HYPERCARE-OPS-005::GAP-PKG-022` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-022` | `SHELL-CI-023::GAP-PKG-022` + `DELIV-PKG-020::GAP-PKG-022` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-022` | heredada de `HYPERCARE-OPS-005::GAP-PKG-022` | `ESPECIFICADO`    |
+| `GAP-PKG-023` | `HYPERCARE-OPS-003::GAP-PKG-023` + `HYPERCARE-OPS-004::GAP-PKG-023` + `HYPERCARE-OPS-005::GAP-PKG-023` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-023` | `SHELL-CI-023::GAP-PKG-023` + `DELIV-PKG-020::GAP-PKG-023` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-023` | heredada de `HYPERCARE-OPS-005::GAP-PKG-023` | `ESPECIFICADO`    |
+| `GAP-PKG-024` | `HYPERCARE-OPS-003::GAP-PKG-024` + `HYPERCARE-OPS-004::GAP-PKG-024` + `HYPERCARE-OPS-005::GAP-PKG-024` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-024` | `SHELL-CI-023::GAP-PKG-024` + `DELIV-PKG-020::GAP-PKG-024` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-024` | heredada de `HYPERCARE-OPS-005::GAP-PKG-024` | `ESPECIFICADO`    |
+| `GAP-PKG-025` | `HYPERCARE-OPS-003::GAP-PKG-025` + `HYPERCARE-OPS-004::GAP-PKG-025` + `HYPERCARE-OPS-005::GAP-PKG-025` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-025` | `SHELL-CI-023::GAP-PKG-025` + `DELIV-PKG-020::GAP-PKG-025` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-025` | heredada de `HYPERCARE-OPS-005::GAP-PKG-025` | `ESPECIFICADO`    |
+| `GAP-PKG-026` | `HYPERCARE-OPS-003::GAP-PKG-026` + `HYPERCARE-OPS-004::GAP-PKG-026` + `HYPERCARE-OPS-005::GAP-PKG-026` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-026` | `SHELL-CI-023::GAP-PKG-026` + `DELIV-PKG-020::GAP-PKG-026` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-026` | heredada de `HYPERCARE-OPS-005::GAP-PKG-026` | `ESPECIFICADO`    |
+| `GAP-PKG-027` | `HYPERCARE-OPS-003::GAP-PKG-027` + `HYPERCARE-OPS-004::GAP-PKG-027` + `HYPERCARE-OPS-005::GAP-PKG-027` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-027` | `SHELL-CI-023::GAP-PKG-027` + `DELIV-PKG-020::GAP-PKG-027` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-027` | heredada de `HYPERCARE-OPS-005::GAP-PKG-027` | `ESPECIFICADO`    |
+| `GAP-PKG-028` | `HYPERCARE-OPS-003::GAP-PKG-028` + `HYPERCARE-OPS-004::GAP-PKG-028` + `HYPERCARE-OPS-005::GAP-PKG-028` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-028` | `SHELL-CI-023::GAP-PKG-028` + `DELIV-PKG-020::GAP-PKG-028` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-028` | heredada de `HYPERCARE-OPS-005::GAP-PKG-028` | `ESPECIFICADO`    |
+| `GAP-PKG-029` | `HYPERCARE-OPS-003::GAP-PKG-029` + `HYPERCARE-OPS-004::GAP-PKG-029` + `HYPERCARE-OPS-005::GAP-PKG-029` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-029` | `SHELL-CI-023::GAP-PKG-029` + `DELIV-PKG-020::GAP-PKG-029` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-029` | heredada de `HYPERCARE-OPS-005::GAP-PKG-029` | `ESPECIFICADO`    |
+| `GAP-PKG-030` | `HYPERCARE-OPS-003::GAP-PKG-030` + `HYPERCARE-OPS-004::GAP-PKG-030` + `HYPERCARE-OPS-005::GAP-PKG-030` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-030` | `SHELL-CI-023::GAP-PKG-030` + `DELIV-PKG-020::GAP-PKG-030` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-030` | heredada de `HYPERCARE-OPS-005::GAP-PKG-030` | `ESPECIFICADO`    |
+| `GAP-PKG-031` | `HYPERCARE-OPS-003::GAP-PKG-031` + `HYPERCARE-OPS-004::GAP-PKG-031` + `HYPERCARE-OPS-005::GAP-PKG-031` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-031` | `SHELL-CI-023::GAP-PKG-031` + `DELIV-PKG-020::GAP-PKG-031` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-031` | heredada de `HYPERCARE-OPS-005::GAP-PKG-031` | `ESPECIFICADO`    |
+| `GAP-PKG-032` | `HYPERCARE-OPS-003::GAP-PKG-032` + `HYPERCARE-OPS-004::GAP-PKG-032` + `HYPERCARE-OPS-005::GAP-PKG-032` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-032` | `SHELL-CI-023::GAP-PKG-032` + `DELIV-PKG-020::GAP-PKG-032` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-032` | heredada de `HYPERCARE-OPS-005::GAP-PKG-032` | `ESPECIFICADO`    |
+| `GAP-PKG-033` | `HYPERCARE-OPS-003::GAP-PKG-033` + `HYPERCARE-OPS-004::GAP-PKG-033` + `HYPERCARE-OPS-005::GAP-PKG-033` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-033` | `SHELL-CI-023::GAP-PKG-033` + `DELIV-PKG-020::GAP-PKG-033` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-033` | heredada de `HYPERCARE-OPS-005::GAP-PKG-033` | `ESPECIFICADO`    |
+| `GAP-PKG-034` | `HYPERCARE-OPS-003::GAP-PKG-034` + `HYPERCARE-OPS-004::GAP-PKG-034` + `HYPERCARE-OPS-005::GAP-PKG-034` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-034` | `SHELL-CI-023::GAP-PKG-034` + `DELIV-PKG-020::GAP-PKG-034` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-034` | heredada de `HYPERCARE-OPS-005::GAP-PKG-034` | `ESPECIFICADO`    |
+| `GAP-PKG-035` | `HYPERCARE-OPS-003::GAP-PKG-035` + `HYPERCARE-OPS-004::GAP-PKG-035` + `HYPERCARE-OPS-005::GAP-PKG-035` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-035` | `SHELL-CI-023::GAP-PKG-035` + `DELIV-PKG-020::GAP-PKG-035` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-035` | heredada de `HYPERCARE-OPS-005::GAP-PKG-035` | `ESPECIFICADO`    |
+| `GAP-PKG-036` | `HYPERCARE-OPS-003::GAP-PKG-036` + `HYPERCARE-OPS-004::GAP-PKG-036` + `HYPERCARE-OPS-005::GAP-PKG-036` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-036` | `SHELL-CI-023::GAP-PKG-036` + `DELIV-PKG-020::GAP-PKG-036` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-036` | heredada de `HYPERCARE-OPS-005::GAP-PKG-036` | `ESPECIFICADO`    |
+| `GAP-PKG-037` | `HYPERCARE-OPS-003::GAP-PKG-037` + `HYPERCARE-OPS-004::GAP-PKG-037` + `HYPERCARE-OPS-005::GAP-PKG-037` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-037` | `SHELL-CI-023::GAP-PKG-037` + `DELIV-PKG-020::GAP-PKG-037` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-037` | heredada de `HYPERCARE-OPS-005::GAP-PKG-037` | `ESPECIFICADO`    |
+| `GAP-PKG-038` | `HYPERCARE-OPS-003::GAP-PKG-038` + `HYPERCARE-OPS-004::GAP-PKG-038` + `HYPERCARE-OPS-005::GAP-PKG-038` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-038` | `SHELL-CI-023::GAP-PKG-038` + `DELIV-PKG-020::GAP-PKG-038` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-038` | heredada de `HYPERCARE-OPS-005::GAP-PKG-038` | `ESPECIFICADO`    |
+| `GAP-PKG-039` | `HYPERCARE-OPS-003::GAP-PKG-039` + `HYPERCARE-OPS-004::GAP-PKG-039` + `HYPERCARE-OPS-005::GAP-PKG-039` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-039` | `SHELL-CI-023::GAP-PKG-039` + `DELIV-PKG-020::GAP-PKG-039` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-039` | heredada de `HYPERCARE-OPS-005::GAP-PKG-039` | `ESPECIFICADO`    |
+| `GAP-PKG-040` | `HYPERCARE-OPS-003::GAP-PKG-040` + `HYPERCARE-OPS-004::GAP-PKG-040` + `HYPERCARE-OPS-005::GAP-PKG-040` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-040` | `SHELL-CI-023::GAP-PKG-040` + `DELIV-PKG-020::GAP-PKG-040` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-040` | heredada de `HYPERCARE-OPS-005::GAP-PKG-040` | `ESPECIFICADO`    |
+| `GAP-PKG-041` | `HYPERCARE-OPS-003::GAP-PKG-041` + `HYPERCARE-OPS-004::GAP-PKG-041` + `HYPERCARE-OPS-005::GAP-PKG-041` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-041` | `SHELL-CI-023::GAP-PKG-041` + `DELIV-PKG-020::GAP-PKG-041` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-041` | heredada de `HYPERCARE-OPS-005::GAP-PKG-041` | `ESPECIFICADO`    |
+| `GAP-PKG-042` | `HYPERCARE-OPS-003::GAP-PKG-042` + `HYPERCARE-OPS-004::GAP-PKG-042` + `HYPERCARE-OPS-005::GAP-PKG-042` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-042` | `SHELL-CI-023::GAP-PKG-042` + `DELIV-PKG-020::GAP-PKG-042` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-042` | heredada de `HYPERCARE-OPS-005::GAP-PKG-042` | `ESPECIFICADO`    |
+| `GAP-PKG-043` | `HYPERCARE-OPS-003::GAP-PKG-043` + `HYPERCARE-OPS-004::GAP-PKG-043` + `HYPERCARE-OPS-005::GAP-PKG-043` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-043` | `SHELL-CI-023::GAP-PKG-043` + `DELIV-PKG-020::GAP-PKG-043` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-043` | heredada de `HYPERCARE-OPS-005::GAP-PKG-043` | `ESPECIFICADO`    |
+| `GAP-PKG-044` | `HYPERCARE-OPS-003::GAP-PKG-044` + `HYPERCARE-OPS-004::GAP-PKG-044` + `HYPERCARE-OPS-005::GAP-PKG-044` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-044` | `SHELL-CI-023::GAP-PKG-044` + `DELIV-PKG-020::GAP-PKG-044` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-044` | heredada de `HYPERCARE-OPS-005::GAP-PKG-044` | `ESPECIFICADO`    |
+| `GAP-PKG-045` | `HYPERCARE-OPS-003::GAP-PKG-045` + `HYPERCARE-OPS-004::GAP-PKG-045` + `HYPERCARE-OPS-005::GAP-PKG-045` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-045` | `SHELL-CI-023::GAP-PKG-045` + `DELIV-PKG-020::GAP-PKG-045` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-045` | heredada de `HYPERCARE-OPS-005::GAP-PKG-045` | `ESPECIFICADO`    |
+| `GAP-PKG-046` | `HYPERCARE-OPS-003::GAP-PKG-046` + `HYPERCARE-OPS-004::GAP-PKG-046` + `HYPERCARE-OPS-005::GAP-PKG-046` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-046` | `SHELL-CI-023::GAP-PKG-046` + `DELIV-PKG-020::GAP-PKG-046` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-046` | heredada de `HYPERCARE-OPS-005::GAP-PKG-046` | `ESPECIFICADO`    |
+| `GAP-PKG-047` | `HYPERCARE-OPS-003::GAP-PKG-047` + `HYPERCARE-OPS-004::GAP-PKG-047` + `HYPERCARE-OPS-005::GAP-PKG-047` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-047` | `SHELL-CI-023::GAP-PKG-047` + `DELIV-PKG-020::GAP-PKG-047` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-047` | heredada de `HYPERCARE-OPS-005::GAP-PKG-047` | `ESPECIFICADO`    |
+| `GAP-PKG-048` | `HYPERCARE-OPS-003::GAP-PKG-048` + `HYPERCARE-OPS-004::GAP-PKG-048` + `HYPERCARE-OPS-005::GAP-PKG-048` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-048` | `SHELL-CI-023::GAP-PKG-048` + `DELIV-PKG-020::GAP-PKG-048` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-048` | heredada de `HYPERCARE-OPS-005::GAP-PKG-048` | `ESPECIFICADO`    |
+| `GAP-PKG-049` | `HYPERCARE-OPS-003::GAP-PKG-049` + `HYPERCARE-OPS-004::GAP-PKG-049` + `HYPERCARE-OPS-005::GAP-PKG-049` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-049` | `SHELL-CI-023::GAP-PKG-049` + `DELIV-PKG-020::GAP-PKG-049` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-049` | heredada de `HYPERCARE-OPS-005::GAP-PKG-049` | `ESPECIFICADO`    |
+| `GAP-PKG-050` | `HYPERCARE-OPS-003::GAP-PKG-050` + `HYPERCARE-OPS-004::GAP-PKG-050` + `HYPERCARE-OPS-005::GAP-PKG-050` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-050` | `SHELL-CI-023::GAP-PKG-050` + `DELIV-PKG-020::GAP-PKG-050` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-050` | heredada de `HYPERCARE-OPS-005::GAP-PKG-050` | `ESPECIFICADO`    |
+| `GAP-PKG-051` | `HYPERCARE-OPS-003::GAP-PKG-051` + `HYPERCARE-OPS-004::GAP-PKG-051` + `HYPERCARE-OPS-005::GAP-PKG-051` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-051` | `SHELL-CI-023::GAP-PKG-051` + `DELIV-PKG-020::GAP-PKG-051` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-051` | heredada de `HYPERCARE-OPS-005::GAP-PKG-051` | `ESPECIFICADO`    |
+| `GAP-PKG-052` | `HYPERCARE-OPS-003::GAP-PKG-052` + `HYPERCARE-OPS-004::GAP-PKG-052` + `HYPERCARE-OPS-005::GAP-PKG-052` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-052` | `SHELL-CI-023::GAP-PKG-052` + `DELIV-PKG-020::GAP-PKG-052` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-052` | heredada de `HYPERCARE-OPS-005::GAP-PKG-052` | `ESPECIFICADO`    |
+| `GAP-PKG-053` | `HYPERCARE-OPS-003::GAP-PKG-053` + `HYPERCARE-OPS-004::GAP-PKG-053` + `HYPERCARE-OPS-005::GAP-PKG-053` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-053` | `SHELL-CI-023::GAP-PKG-053` + `DELIV-PKG-020::GAP-PKG-053` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-053` | heredada de `HYPERCARE-OPS-005::GAP-PKG-053` | `ESPECIFICADO`    |
+| `GAP-PKG-054` | `HYPERCARE-OPS-003::GAP-PKG-054` + `HYPERCARE-OPS-004::GAP-PKG-054` + `HYPERCARE-OPS-005::GAP-PKG-054` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-054` | `SHELL-CI-023::GAP-PKG-054` + `DELIV-PKG-020::GAP-PKG-054` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-054` | heredada de `HYPERCARE-OPS-005::GAP-PKG-054` | `ESPECIFICADO`    |
+| `GAP-PKG-055` | `HYPERCARE-OPS-003::GAP-PKG-055` + `HYPERCARE-OPS-004::GAP-PKG-055` + `HYPERCARE-OPS-005::GAP-PKG-055` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-055` | `SHELL-CI-023::GAP-PKG-055` + `DELIV-PKG-020::GAP-PKG-055` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-055` | heredada de `HYPERCARE-OPS-005::GAP-PKG-055` | `ESPECIFICADO`    |
+| `GAP-PKG-056` | `HYPERCARE-OPS-003::GAP-PKG-056` + `HYPERCARE-OPS-004::GAP-PKG-056` + `HYPERCARE-OPS-005::GAP-PKG-056` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-056` | `SHELL-CI-023::GAP-PKG-056` + `DELIV-PKG-020::GAP-PKG-056` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-056` | heredada de `HYPERCARE-OPS-005::GAP-PKG-056` | `ESPECIFICADO`    |
+| `GAP-PKG-057` | `HYPERCARE-OPS-003::GAP-PKG-057` + `HYPERCARE-OPS-004::GAP-PKG-057` + `HYPERCARE-OPS-005::GAP-PKG-057` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-057` | `SHELL-CI-023::GAP-PKG-057` + `DELIV-PKG-020::GAP-PKG-057` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-057` | heredada de `HYPERCARE-OPS-005::GAP-PKG-057` | `ESPECIFICADO`    |
+| `GAP-PKG-058` | `HYPERCARE-OPS-003::GAP-PKG-058` + `HYPERCARE-OPS-004::GAP-PKG-058` + `HYPERCARE-OPS-005::GAP-PKG-058` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-058` | `SHELL-CI-023::GAP-PKG-058` + `DELIV-PKG-020::GAP-PKG-058` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-058` | heredada de `HYPERCARE-OPS-005::GAP-PKG-058` | `ESPECIFICADO`    |
+| `GAP-PKG-059` | `HYPERCARE-OPS-003::GAP-PKG-059` + `HYPERCARE-OPS-004::GAP-PKG-059` + `HYPERCARE-OPS-005::GAP-PKG-059` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-059` | `SHELL-CI-023::GAP-PKG-059` + `DELIV-PKG-020::GAP-PKG-059` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-059` | heredada de `HYPERCARE-OPS-005::GAP-PKG-059` | `ESPECIFICADO`    |
+| `GAP-PKG-060` | `HYPERCARE-OPS-003::GAP-PKG-060` + `HYPERCARE-OPS-004::GAP-PKG-060` + `HYPERCARE-OPS-005::GAP-PKG-060` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-060` | `SHELL-CI-023::GAP-PKG-060` + `DELIV-PKG-020::GAP-PKG-060` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-060` | heredada de `HYPERCARE-OPS-005::GAP-PKG-060` | `ESPECIFICADO`    |
+| `GAP-PKG-061` | `HYPERCARE-OPS-003::GAP-PKG-061` + `HYPERCARE-OPS-004::GAP-PKG-061` + `HYPERCARE-OPS-005::GAP-PKG-061` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-061` | `SHELL-CI-023::GAP-PKG-061` + `DELIV-PKG-020::GAP-PKG-061` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-061` | heredada de `HYPERCARE-OPS-005::GAP-PKG-061` | `ESPECIFICADO`    |
+| `GAP-PKG-062` | `HYPERCARE-OPS-003::GAP-PKG-062` + `HYPERCARE-OPS-004::GAP-PKG-062` + `HYPERCARE-OPS-005::GAP-PKG-062` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-062` | `SHELL-CI-023::GAP-PKG-062` + `DELIV-PKG-020::GAP-PKG-062` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-062` | heredada de `HYPERCARE-OPS-005::GAP-PKG-062` | `ESPECIFICADO`    |
+| `GAP-PKG-063` | `HYPERCARE-OPS-003::GAP-PKG-063` + `HYPERCARE-OPS-004::GAP-PKG-063` + `HYPERCARE-OPS-005::GAP-PKG-063` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-063` | `SHELL-CI-023::GAP-PKG-063` + `DELIV-PKG-020::GAP-PKG-063` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-063` | heredada de `HYPERCARE-OPS-005::GAP-PKG-063` | `ESPECIFICADO`    |
+| `GAP-PKG-064` | `HYPERCARE-OPS-003::GAP-PKG-064` + `HYPERCARE-OPS-004::GAP-PKG-064` + `HYPERCARE-OPS-005::GAP-PKG-064` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-064` | `SHELL-CI-023::GAP-PKG-064` + `DELIV-PKG-020::GAP-PKG-064` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-064` | heredada de `HYPERCARE-OPS-005::GAP-PKG-064` | `ESPECIFICADO`    |
+| `GAP-PKG-065` | `HYPERCARE-OPS-003::GAP-PKG-065` + `HYPERCARE-OPS-004::GAP-PKG-065` + `HYPERCARE-OPS-005::GAP-PKG-065` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-065` | `SHELL-CI-023::GAP-PKG-065` + `DELIV-PKG-020::GAP-PKG-065` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-065` | heredada de `HYPERCARE-OPS-005::GAP-PKG-065` | `ESPECIFICADO`    |
+| `GAP-PKG-066` | `HYPERCARE-OPS-003::GAP-PKG-066` + `HYPERCARE-OPS-004::GAP-PKG-066` + `HYPERCARE-OPS-005::GAP-PKG-066` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-066` | `SHELL-CI-023::GAP-PKG-066` + `DELIV-PKG-020::GAP-PKG-066` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-066` | heredada de `HYPERCARE-OPS-005::GAP-PKG-066` | `ESPECIFICADO`    |
+| `GAP-PKG-067` | `HYPERCARE-OPS-003::GAP-PKG-067` + `HYPERCARE-OPS-004::GAP-PKG-067` + `HYPERCARE-OPS-005::GAP-PKG-067` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-067` | `SHELL-CI-023::GAP-PKG-067` + `DELIV-PKG-020::GAP-PKG-067` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-067` | heredada de `HYPERCARE-OPS-005::GAP-PKG-067` | `ESPECIFICADO`    |
+| `GAP-PKG-068` | `HYPERCARE-OPS-003::GAP-PKG-068` + `HYPERCARE-OPS-004::GAP-PKG-068` + `HYPERCARE-OPS-005::GAP-PKG-068` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-068` | `SHELL-CI-023::GAP-PKG-068` + `DELIV-PKG-020::GAP-PKG-068` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-068` | heredada de `HYPERCARE-OPS-005::GAP-PKG-068` | `ESPECIFICADO`    |
+| `GAP-PKG-069` | `HYPERCARE-OPS-003::GAP-PKG-069` + `HYPERCARE-OPS-004::GAP-PKG-069` + `HYPERCARE-OPS-005::GAP-PKG-069` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-069` | `SHELL-CI-023::GAP-PKG-069` + `DELIV-PKG-020::GAP-PKG-069` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-069` | heredada de `HYPERCARE-OPS-005::GAP-PKG-069` | `ESPECIFICADO`    |
+| `GAP-PKG-070` | `HYPERCARE-OPS-003::GAP-PKG-070` + `HYPERCARE-OPS-004::GAP-PKG-070` + `HYPERCARE-OPS-005::GAP-PKG-070` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-070` | `SHELL-CI-023::GAP-PKG-070` + `DELIV-PKG-020::GAP-PKG-070` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-070` | heredada de `HYPERCARE-OPS-005::GAP-PKG-070` | `ESPECIFICADO`    |
+| `GAP-PKG-071` | `HYPERCARE-OPS-003::GAP-PKG-071` + `HYPERCARE-OPS-004::GAP-PKG-071` + `HYPERCARE-OPS-005::GAP-PKG-071` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-071` | `SHELL-CI-023::GAP-PKG-071` + `DELIV-PKG-020::GAP-PKG-071` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-071` | heredada de `HYPERCARE-OPS-005::GAP-PKG-071` | `ESPECIFICADO`    |
+| `GAP-PKG-072` | `HYPERCARE-OPS-003::GAP-PKG-072` + `HYPERCARE-OPS-004::GAP-PKG-072` + `HYPERCARE-OPS-005::GAP-PKG-072` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-072` | `SHELL-CI-023::GAP-PKG-072` + `DELIV-PKG-020::GAP-PKG-072` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-072` | heredada de `HYPERCARE-OPS-005::GAP-PKG-072` | `ESPECIFICADO`    |
+| `GAP-PKG-073` | `HYPERCARE-OPS-003::GAP-PKG-073` + `HYPERCARE-OPS-004::GAP-PKG-073` + `HYPERCARE-OPS-005::GAP-PKG-073` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-073` | `SHELL-CI-023::GAP-PKG-073` + `DELIV-PKG-020::GAP-PKG-073` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-073` | heredada de `HYPERCARE-OPS-005::GAP-PKG-073` | `ESPECIFICADO`    |
+| `GAP-PKG-074` | `HYPERCARE-OPS-003::GAP-PKG-074` + `HYPERCARE-OPS-004::GAP-PKG-074` + `HYPERCARE-OPS-005::GAP-PKG-074` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-074` | `SHELL-CI-023::GAP-PKG-074` + `DELIV-PKG-020::GAP-PKG-074` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-074` | heredada de `HYPERCARE-OPS-005::GAP-PKG-074` | `ESPECIFICADO`    |
+| `GAP-PKG-075` | `HYPERCARE-OPS-003::GAP-PKG-075` + `HYPERCARE-OPS-004::GAP-PKG-075` + `HYPERCARE-OPS-005::GAP-PKG-075` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-075` | `SHELL-CI-023::GAP-PKG-075` + `DELIV-PKG-020::GAP-PKG-075` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-075` | heredada de `HYPERCARE-OPS-005::GAP-PKG-075` | `ESPECIFICADO`    |
+| `GAP-PKG-076` | `HYPERCARE-OPS-003::GAP-PKG-076` + `HYPERCARE-OPS-004::GAP-PKG-076` + `HYPERCARE-OPS-005::GAP-PKG-076` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-076` | `SHELL-CI-023::GAP-PKG-076` + `DELIV-PKG-020::GAP-PKG-076` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-076` | heredada de `HYPERCARE-OPS-005::GAP-PKG-076` | `ESPECIFICADO`    |
+| `GAP-PKG-077` | `HYPERCARE-OPS-003::GAP-PKG-077` + `HYPERCARE-OPS-004::GAP-PKG-077` + `HYPERCARE-OPS-005::GAP-PKG-077` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-077` | `SHELL-CI-023::GAP-PKG-077` + `DELIV-PKG-020::GAP-PKG-077` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-077` | heredada de `HYPERCARE-OPS-005::GAP-PKG-077` | `ESPECIFICADO`    |
+| `GAP-PKG-078` | `HYPERCARE-OPS-003::GAP-PKG-078` + `HYPERCARE-OPS-004::GAP-PKG-078` + `HYPERCARE-OPS-005::GAP-PKG-078` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-078` | `SHELL-CI-023::GAP-PKG-078` + `DELIV-PKG-020::GAP-PKG-078` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-078` | heredada de `HYPERCARE-OPS-005::GAP-PKG-078` | `ESPECIFICADO`    |
+| `GAP-PKG-079` | `HYPERCARE-OPS-003::GAP-PKG-079` + `HYPERCARE-OPS-004::GAP-PKG-079` + `HYPERCARE-OPS-005::GAP-PKG-079` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-079` | `SHELL-CI-023::GAP-PKG-079` + `DELIV-PKG-020::GAP-PKG-079` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-079` | heredada de `HYPERCARE-OPS-005::GAP-PKG-079` | `ESPECIFICADO`    |
+| `GAP-PKG-080` | `HYPERCARE-OPS-003::GAP-PKG-080` + `HYPERCARE-OPS-004::GAP-PKG-080` + `HYPERCARE-OPS-005::GAP-PKG-080` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-080` | `SHELL-CI-023::GAP-PKG-080` + `DELIV-PKG-020::GAP-PKG-080` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-080` | heredada de `HYPERCARE-OPS-005::GAP-PKG-080` | `ESPECIFICADO`    |
+| `GAP-PKG-081` | `HYPERCARE-OPS-003::GAP-PKG-081` + `HYPERCARE-OPS-004::GAP-PKG-081` + `HYPERCARE-OPS-005::GAP-PKG-081` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-081` | `SHELL-CI-023::GAP-PKG-081` + `DELIV-PKG-020::GAP-PKG-081` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-081` | heredada de `HYPERCARE-OPS-005::GAP-PKG-081` | `ESPECIFICADO`    |
+| `GAP-PKG-082` | `HYPERCARE-OPS-003::GAP-PKG-082` + `HYPERCARE-OPS-004::GAP-PKG-082` + `HYPERCARE-OPS-005::GAP-PKG-082` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-082` | `SHELL-CI-023::GAP-PKG-082` + `DELIV-PKG-020::GAP-PKG-082` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-082` | heredada de `HYPERCARE-OPS-005::GAP-PKG-082` | `ESPECIFICADO`    |
+| `GAP-PKG-083` | `HYPERCARE-OPS-003::GAP-PKG-083` + `HYPERCARE-OPS-004::GAP-PKG-083` + `HYPERCARE-OPS-005::GAP-PKG-083` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-083` | `SHELL-CI-023::GAP-PKG-083` + `DELIV-PKG-020::GAP-PKG-083` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-083` | heredada de `HYPERCARE-OPS-005::GAP-PKG-083` | `ESPECIFICADO`    |
+| `GAP-PKG-084` | `HYPERCARE-OPS-003::GAP-PKG-084` + `HYPERCARE-OPS-004::GAP-PKG-084` + `HYPERCARE-OPS-005::GAP-PKG-084` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-084` | `SHELL-CI-023::GAP-PKG-084` + `DELIV-PKG-020::GAP-PKG-084` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-084` | heredada de `HYPERCARE-OPS-005::GAP-PKG-084` | `ESPECIFICADO`    |
+| `GAP-PKG-085` | `HYPERCARE-OPS-003::GAP-PKG-085` + `HYPERCARE-OPS-004::GAP-PKG-085` + `HYPERCARE-OPS-005::GAP-PKG-085` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-085` | `SHELL-CI-023::GAP-PKG-085` + `DELIV-PKG-020::GAP-PKG-085` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-085` | heredada de `HYPERCARE-OPS-005::GAP-PKG-085` | `ESPECIFICADO`    |
+| `GAP-PKG-086` | `HYPERCARE-OPS-003::GAP-PKG-086` + `HYPERCARE-OPS-004::GAP-PKG-086` + `HYPERCARE-OPS-005::GAP-PKG-086` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-086` | `SHELL-CI-023::GAP-PKG-086` + `DELIV-PKG-020::GAP-PKG-086` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-086` | heredada de `HYPERCARE-OPS-005::GAP-PKG-086` | `ESPECIFICADO`    |
+| `GAP-PKG-087` | `HYPERCARE-OPS-003::GAP-PKG-087` + `HYPERCARE-OPS-004::GAP-PKG-087` + `HYPERCARE-OPS-005::GAP-PKG-087` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-087` | `SHELL-CI-023::GAP-PKG-087` + `DELIV-PKG-020::GAP-PKG-087` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-087` | heredada de `HYPERCARE-OPS-005::GAP-PKG-087` | `ESPECIFICADO`    |
+| `GAP-PKG-088` | `HYPERCARE-OPS-003::GAP-PKG-088` + `HYPERCARE-OPS-004::GAP-PKG-088` + `HYPERCARE-OPS-005::GAP-PKG-088` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-088` | `SHELL-CI-023::GAP-PKG-088` + `DELIV-PKG-020::GAP-PKG-088` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-088` | heredada de `HYPERCARE-OPS-005::GAP-PKG-088` | `ESPECIFICADO`    |
+| `GAP-PKG-089` | `HYPERCARE-OPS-003::GAP-PKG-089` + `HYPERCARE-OPS-004::GAP-PKG-089` + `HYPERCARE-OPS-005::GAP-PKG-089` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-089` | `SHELL-CI-023::GAP-PKG-089` + `DELIV-PKG-020::GAP-PKG-089` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-089` | heredada de `HYPERCARE-OPS-005::GAP-PKG-089` | `ESPECIFICADO`    |
+| `GAP-PKG-090` | `HYPERCARE-OPS-003::GAP-PKG-090` + `HYPERCARE-OPS-004::GAP-PKG-090` + `HYPERCARE-OPS-005::GAP-PKG-090` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-090` | `SHELL-CI-023::GAP-PKG-090` + `DELIV-PKG-020::GAP-PKG-090` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-090` | heredada de `HYPERCARE-OPS-005::GAP-PKG-090` | `ESPECIFICADO`    |
+| `GAP-PKG-091` | `HYPERCARE-OPS-003::GAP-PKG-091` + `HYPERCARE-OPS-004::GAP-PKG-091` + `HYPERCARE-OPS-005::GAP-PKG-091` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-091` | `SHELL-CI-023::GAP-PKG-091` + `DELIV-PKG-020::GAP-PKG-091` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-091` | heredada de `HYPERCARE-OPS-005::GAP-PKG-091` | `ESPECIFICADO`    |
+| `GAP-PKG-092` | `HYPERCARE-OPS-003::GAP-PKG-092` + `HYPERCARE-OPS-004::GAP-PKG-092` + `HYPERCARE-OPS-005::GAP-PKG-092` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-092` | `SHELL-CI-023::GAP-PKG-092` + `DELIV-PKG-020::GAP-PKG-092` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-092` | heredada de `HYPERCARE-OPS-005::GAP-PKG-092` | `ESPECIFICADO`    |
+| `GAP-PKG-093` | `HYPERCARE-OPS-003::GAP-PKG-093` + `HYPERCARE-OPS-004::GAP-PKG-093` + `HYPERCARE-OPS-005::GAP-PKG-093` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-093` | `SHELL-CI-023::GAP-PKG-093` + `DELIV-PKG-020::GAP-PKG-093` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-093` | heredada de `HYPERCARE-OPS-005::GAP-PKG-093` | `ESPECIFICADO`    |
+| `GAP-PKG-094` | `HYPERCARE-OPS-003::GAP-PKG-094` + `HYPERCARE-OPS-004::GAP-PKG-094` + `HYPERCARE-OPS-005::GAP-PKG-094` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-094` | `SHELL-CI-023::GAP-PKG-094` + `DELIV-PKG-020::GAP-PKG-094` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-094` | heredada de `HYPERCARE-OPS-005::GAP-PKG-094` | `ESPECIFICADO`    |
+| `GAP-PKG-095` | `HYPERCARE-OPS-003::GAP-PKG-095` + `HYPERCARE-OPS-004::GAP-PKG-095` + `HYPERCARE-OPS-005::GAP-PKG-095` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-095` | `SHELL-CI-023::GAP-PKG-095` + `DELIV-PKG-020::GAP-PKG-095` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-095` | heredada de `HYPERCARE-OPS-005::GAP-PKG-095` | `ESPECIFICADO`    |
+| `GAP-PKG-096` | `HYPERCARE-OPS-003::GAP-PKG-096` + `HYPERCARE-OPS-004::GAP-PKG-096` + `HYPERCARE-OPS-005::GAP-PKG-096` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-096` | `SHELL-CI-023::GAP-PKG-096` + `DELIV-PKG-020::GAP-PKG-096` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-096` | heredada de `HYPERCARE-OPS-005::GAP-PKG-096` | `ESPECIFICADO`    |
+| `GAP-PKG-097` | `HYPERCARE-OPS-003::GAP-PKG-097` + `HYPERCARE-OPS-004::GAP-PKG-097` + `HYPERCARE-OPS-005::GAP-PKG-097` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-097` | `SHELL-CI-023::GAP-PKG-097` + `DELIV-PKG-020::GAP-PKG-097` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-097` | heredada de `HYPERCARE-OPS-005::GAP-PKG-097` | `ESPECIFICADO`    |
+| `GAP-PKG-098` | `HYPERCARE-OPS-003::GAP-PKG-098` + `HYPERCARE-OPS-004::GAP-PKG-098` + `HYPERCARE-OPS-005::GAP-PKG-098` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-098` | `SHELL-CI-023::GAP-PKG-098` + `DELIV-PKG-020::GAP-PKG-098` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-098` | heredada de `HYPERCARE-OPS-005::GAP-PKG-098` | `ESPECIFICADO`    |
+| `GAP-PKG-099` | `HYPERCARE-OPS-003::GAP-PKG-099` + `HYPERCARE-OPS-004::GAP-PKG-099` + `HYPERCARE-OPS-005::GAP-PKG-099` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-099` | `SHELL-CI-023::GAP-PKG-099` + `DELIV-PKG-020::GAP-PKG-099` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-099` | heredada de `HYPERCARE-OPS-005::GAP-PKG-099` | `ESPECIFICADO`    |
+| `GAP-PKG-100` | `HYPERCARE-OPS-003::GAP-PKG-100` + `HYPERCARE-OPS-004::GAP-PKG-100` + `HYPERCARE-OPS-005::GAP-PKG-100` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-100` | `SHELL-CI-023::GAP-PKG-100` + `DELIV-PKG-020::GAP-PKG-100` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-100` | heredada de `HYPERCARE-OPS-005::GAP-PKG-100` | `ESPECIFICADO`    |
+| `GAP-PKG-101` | `HYPERCARE-OPS-003::GAP-PKG-101` + `HYPERCARE-OPS-004::GAP-PKG-101` + `HYPERCARE-OPS-005::GAP-PKG-101` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-101` | `SHELL-CI-023::GAP-PKG-101` + `DELIV-PKG-020::GAP-PKG-101` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-101` | heredada de `HYPERCARE-OPS-005::GAP-PKG-101` | `ESPECIFICADO`    |
+| `GAP-PKG-102` | `HYPERCARE-OPS-003::GAP-PKG-102` + `HYPERCARE-OPS-004::GAP-PKG-102` + `HYPERCARE-OPS-005::GAP-PKG-102` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-102` | `SHELL-CI-023::GAP-PKG-102` + `DELIV-PKG-020::GAP-PKG-102` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-102` | heredada de `HYPERCARE-OPS-005::GAP-PKG-102` | `ESPECIFICADO`    |
+| `GAP-PKG-103` | `HYPERCARE-OPS-003::GAP-PKG-103` + `HYPERCARE-OPS-004::GAP-PKG-103` + `HYPERCARE-OPS-005::GAP-PKG-103` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-103` | `SHELL-CI-023::GAP-PKG-103` + `DELIV-PKG-020::GAP-PKG-103` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-103` | heredada de `HYPERCARE-OPS-005::GAP-PKG-103` | `ESPECIFICADO`    |
+| `GAP-PKG-104` | `HYPERCARE-OPS-003::GAP-PKG-104` + `HYPERCARE-OPS-004::GAP-PKG-104` + `HYPERCARE-OPS-005::GAP-PKG-104` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-104` | `SHELL-CI-023::GAP-PKG-104` + `DELIV-PKG-020::GAP-PKG-104` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-104` | heredada de `HYPERCARE-OPS-005::GAP-PKG-104` | `ESPECIFICADO`    |
+| `GAP-PKG-105` | `HYPERCARE-OPS-003::GAP-PKG-105` + `HYPERCARE-OPS-004::GAP-PKG-105` + `HYPERCARE-OPS-005::GAP-PKG-105` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-105` | `SHELL-CI-023::GAP-PKG-105` + `DELIV-PKG-020::GAP-PKG-105` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-105` | heredada de `HYPERCARE-OPS-005::GAP-PKG-105` | `ESPECIFICADO`    |
+| `GAP-PKG-106` | `HYPERCARE-OPS-003::GAP-PKG-106` + `HYPERCARE-OPS-004::GAP-PKG-106` + `HYPERCARE-OPS-005::GAP-PKG-106` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-106` | `SHELL-CI-023::GAP-PKG-106` + `DELIV-PKG-020::GAP-PKG-106` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-106` | heredada de `HYPERCARE-OPS-005::GAP-PKG-106` | `ESPECIFICADO`    |
+| `GAP-PKG-107` | `HYPERCARE-OPS-003::GAP-PKG-107` + `HYPERCARE-OPS-004::GAP-PKG-107` + `HYPERCARE-OPS-005::GAP-PKG-107` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-107` | `SHELL-CI-023::GAP-PKG-107` + `DELIV-PKG-020::GAP-PKG-107` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-107` | heredada de `HYPERCARE-OPS-005::GAP-PKG-107` | `ESPECIFICADO`    |
+| `GAP-PKG-108` | `HYPERCARE-OPS-003::GAP-PKG-108` + `HYPERCARE-OPS-004::GAP-PKG-108` + `HYPERCARE-OPS-005::GAP-PKG-108` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-108` | `SHELL-CI-023::GAP-PKG-108` + `DELIV-PKG-020::GAP-PKG-108` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-108` | heredada de `HYPERCARE-OPS-005::GAP-PKG-108` | `ESPECIFICADO`    |
+| `GAP-PKG-109` | `HYPERCARE-OPS-003::GAP-PKG-109` + `HYPERCARE-OPS-004::GAP-PKG-109` + `HYPERCARE-OPS-005::GAP-PKG-109` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-109` | `SHELL-CI-023::GAP-PKG-109` + `DELIV-PKG-020::GAP-PKG-109` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-109` | heredada de `HYPERCARE-OPS-005::GAP-PKG-109` | `ESPECIFICADO`    |
+| `GAP-PKG-110` | `HYPERCARE-OPS-003::GAP-PKG-110` + `HYPERCARE-OPS-004::GAP-PKG-110` + `HYPERCARE-OPS-005::GAP-PKG-110` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-110` | `SHELL-CI-023::GAP-PKG-110` + `DELIV-PKG-020::GAP-PKG-110` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-110` | heredada de `HYPERCARE-OPS-005::GAP-PKG-110` | `ESPECIFICADO`    |
+| `GAP-PKG-111` | `HYPERCARE-OPS-003::GAP-PKG-111` + `HYPERCARE-OPS-004::GAP-PKG-111` + `HYPERCARE-OPS-005::GAP-PKG-111` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-111` | `SHELL-CI-023::GAP-PKG-111` + `DELIV-PKG-020::GAP-PKG-111` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-111` | heredada de `HYPERCARE-OPS-005::GAP-PKG-111` | `ESPECIFICADO`    |
+| `GAP-PKG-112` | `HYPERCARE-OPS-003::GAP-PKG-112` + `HYPERCARE-OPS-004::GAP-PKG-112` + `HYPERCARE-OPS-005::GAP-PKG-112` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-112` | `SHELL-CI-023::GAP-PKG-112` + `DELIV-PKG-020::GAP-PKG-112` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-112` | heredada de `HYPERCARE-OPS-005::GAP-PKG-112` | `ESPECIFICADO`    |
+| `GAP-PKG-113` | `HYPERCARE-OPS-003::GAP-PKG-113` + `HYPERCARE-OPS-004::GAP-PKG-113` + `HYPERCARE-OPS-005::GAP-PKG-113` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-113` | `SHELL-CI-023::GAP-PKG-113` + `DELIV-PKG-020::GAP-PKG-113` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-113` | heredada de `HYPERCARE-OPS-005::GAP-PKG-113` | `ESPECIFICADO`    |
+| `GAP-PKG-114` | `HYPERCARE-OPS-003::GAP-PKG-114` + `HYPERCARE-OPS-004::GAP-PKG-114` + `HYPERCARE-OPS-005::GAP-PKG-114` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-114` | `SHELL-CI-023::GAP-PKG-114` + `DELIV-PKG-020::GAP-PKG-114` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-114` | heredada de `HYPERCARE-OPS-005::GAP-PKG-114` | `ESPECIFICADO`    |
+| `GAP-PKG-115` | `HYPERCARE-OPS-003::GAP-PKG-115` + `HYPERCARE-OPS-004::GAP-PKG-115` + `HYPERCARE-OPS-005::GAP-PKG-115` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-115` | `SHELL-CI-023::GAP-PKG-115` + `DELIV-PKG-020::GAP-PKG-115` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-115` | heredada de `HYPERCARE-OPS-005::GAP-PKG-115` | `ESPECIFICADO`    |
+| `GAP-PKG-116` | `HYPERCARE-OPS-003::GAP-PKG-116` + `HYPERCARE-OPS-004::GAP-PKG-116` + `HYPERCARE-OPS-005::GAP-PKG-116` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-116` | `SHELL-CI-023::GAP-PKG-116` + `DELIV-PKG-020::GAP-PKG-116` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-116` | heredada de `HYPERCARE-OPS-005::GAP-PKG-116` | `ESPECIFICADO`    |
+| `GAP-PKG-117` | `HYPERCARE-OPS-003::GAP-PKG-117` + `HYPERCARE-OPS-004::GAP-PKG-117` + `HYPERCARE-OPS-005::GAP-PKG-117` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-117` | `SHELL-CI-023::GAP-PKG-117` + `DELIV-PKG-020::GAP-PKG-117` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-117` | heredada de `HYPERCARE-OPS-005::GAP-PKG-117` | `ESPECIFICADO`    |
+| `GAP-PKG-118` | `HYPERCARE-OPS-003::GAP-PKG-118` + `HYPERCARE-OPS-004::GAP-PKG-118` + `HYPERCARE-OPS-005::GAP-PKG-118` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-118` | `SHELL-CI-023::GAP-PKG-118` + `DELIV-PKG-020::GAP-PKG-118` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-118` | heredada de `HYPERCARE-OPS-005::GAP-PKG-118` | `ESPECIFICADO`    |
+| `GAP-PKG-119` | `HYPERCARE-OPS-003::GAP-PKG-119` + `HYPERCARE-OPS-004::GAP-PKG-119` + `HYPERCARE-OPS-005::GAP-PKG-119` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-119` | `SHELL-CI-023::GAP-PKG-119` + `DELIV-PKG-020::GAP-PKG-119` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-119` | heredada de `HYPERCARE-OPS-005::GAP-PKG-119` | `ESPECIFICADO`    |
+| `GAP-PKG-120` | `HYPERCARE-OPS-003::GAP-PKG-120` + `HYPERCARE-OPS-004::GAP-PKG-120` + `HYPERCARE-OPS-005::GAP-PKG-120` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-120` | `SHELL-CI-023::GAP-PKG-120` + `DELIV-PKG-020::GAP-PKG-120` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-120` | heredada de `HYPERCARE-OPS-005::GAP-PKG-120` | `ESPECIFICADO`    |
+| `GAP-PKG-121` | `HYPERCARE-OPS-003::GAP-PKG-121` + `HYPERCARE-OPS-004::GAP-PKG-121` + `HYPERCARE-OPS-005::GAP-PKG-121` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-121` | `SHELL-CI-023::GAP-PKG-121` + `DELIV-PKG-020::GAP-PKG-121` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-121` | heredada de `HYPERCARE-OPS-005::GAP-PKG-121` | `ESPECIFICADO`    |
+| `GAP-PKG-122` | `HYPERCARE-OPS-003::GAP-PKG-122` + `HYPERCARE-OPS-004::GAP-PKG-122` + `HYPERCARE-OPS-005::GAP-PKG-122` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-122` | `SHELL-CI-023::GAP-PKG-122` + `DELIV-PKG-020::GAP-PKG-122` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-122` | heredada de `HYPERCARE-OPS-005::GAP-PKG-122` | `ESPECIFICADO`    |
+| `GAP-PKG-123` | `HYPERCARE-OPS-003::GAP-PKG-123` + `HYPERCARE-OPS-004::GAP-PKG-123` + `HYPERCARE-OPS-005::GAP-PKG-123` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-123` | `SHELL-CI-023::GAP-PKG-123` + `DELIV-PKG-020::GAP-PKG-123` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-123` | heredada de `HYPERCARE-OPS-005::GAP-PKG-123` | `ESPECIFICADO`    |
+| `GAP-PKG-124` | `HYPERCARE-OPS-003::GAP-PKG-124` + `HYPERCARE-OPS-004::GAP-PKG-124` + `HYPERCARE-OPS-005::GAP-PKG-124` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-124` | `SHELL-CI-023::GAP-PKG-124` + `DELIV-PKG-020::GAP-PKG-124` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-124` | heredada de `HYPERCARE-OPS-005::GAP-PKG-124` | `ESPECIFICADO`    |
+| `GAP-PKG-125` | `HYPERCARE-OPS-003::GAP-PKG-125` + `HYPERCARE-OPS-004::GAP-PKG-125` + `HYPERCARE-OPS-005::GAP-PKG-125` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-125` | `SHELL-CI-023::GAP-PKG-125` + `DELIV-PKG-020::GAP-PKG-125` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-125` | heredada de `HYPERCARE-OPS-005::GAP-PKG-125` | `ESPECIFICADO`    |
+| `GAP-PKG-126` | `HYPERCARE-OPS-003::GAP-PKG-126` + `HYPERCARE-OPS-004::GAP-PKG-126` + `HYPERCARE-OPS-005::GAP-PKG-126` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-126` | `SHELL-CI-023::GAP-PKG-126` + `DELIV-PKG-020::GAP-PKG-126` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-126` | heredada de `HYPERCARE-OPS-005::GAP-PKG-126` | `ESPECIFICADO`    |
+| `GAP-PKG-127` | `HYPERCARE-OPS-003::GAP-PKG-127` + `HYPERCARE-OPS-004::GAP-PKG-127` + `HYPERCARE-OPS-005::GAP-PKG-127` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-127` | `SHELL-CI-023::GAP-PKG-127` + `DELIV-PKG-020::GAP-PKG-127` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-127` | heredada de `HYPERCARE-OPS-005::GAP-PKG-127` | `ESPECIFICADO`    |
+| `GAP-PKG-128` | `HYPERCARE-OPS-003::GAP-PKG-128` + `HYPERCARE-OPS-004::GAP-PKG-128` + `HYPERCARE-OPS-005::GAP-PKG-128` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-128` | `SHELL-CI-023::GAP-PKG-128` + `DELIV-PKG-020::GAP-PKG-128` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-128` | heredada de `HYPERCARE-OPS-005::GAP-PKG-128` | `ESPECIFICADO`    |
+| `GAP-PKG-129` | `HYPERCARE-OPS-003::GAP-PKG-129` + `HYPERCARE-OPS-004::GAP-PKG-129` + `HYPERCARE-OPS-005::GAP-PKG-129` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-129` | `SHELL-CI-023::GAP-PKG-129` + `DELIV-PKG-020::GAP-PKG-129` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-129` | heredada de `HYPERCARE-OPS-005::GAP-PKG-129` | `ESPECIFICADO`    |
+| `GAP-PKG-130` | `HYPERCARE-OPS-003::GAP-PKG-130` + `HYPERCARE-OPS-004::GAP-PKG-130` + `HYPERCARE-OPS-005::GAP-PKG-130` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-130` | `SHELL-CI-023::GAP-PKG-130` + `DELIV-PKG-020::GAP-PKG-130` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-130` | heredada de `HYPERCARE-OPS-005::GAP-PKG-130` | `ESPECIFICADO`    |
+| `GAP-PKG-131` | `HYPERCARE-OPS-003::GAP-PKG-131` + `HYPERCARE-OPS-004::GAP-PKG-131` + `HYPERCARE-OPS-005::GAP-PKG-131` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-131` | `SHELL-CI-023::GAP-PKG-131` + `DELIV-PKG-020::GAP-PKG-131` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-131` | heredada de `HYPERCARE-OPS-005::GAP-PKG-131` | `ESPECIFICADO`    |
+| `GAP-PKG-132` | `HYPERCARE-OPS-003::GAP-PKG-132` + `HYPERCARE-OPS-004::GAP-PKG-132` + `HYPERCARE-OPS-005::GAP-PKG-132` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-132` | `SHELL-CI-023::GAP-PKG-132` + `DELIV-PKG-020::GAP-PKG-132` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-132` | heredada de `HYPERCARE-OPS-005::GAP-PKG-132` | `ESPECIFICADO`    |
+| `GAP-PKG-133` | `HYPERCARE-OPS-003::GAP-PKG-133` + `HYPERCARE-OPS-004::GAP-PKG-133` + `HYPERCARE-OPS-005::GAP-PKG-133` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-133` | `SHELL-CI-023::GAP-PKG-133` + `DELIV-PKG-020::GAP-PKG-133` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-133` | heredada de `HYPERCARE-OPS-005::GAP-PKG-133` | `ESPECIFICADO`    |
+| `GAP-PKG-134` | `HYPERCARE-OPS-003::GAP-PKG-134` + `HYPERCARE-OPS-004::GAP-PKG-134` + `HYPERCARE-OPS-005::GAP-PKG-134` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-134` | `SHELL-CI-023::GAP-PKG-134` + `DELIV-PKG-020::GAP-PKG-134` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-134` | heredada de `HYPERCARE-OPS-005::GAP-PKG-134` | `ESPECIFICADO`    |
+| `GAP-PKG-135` | `HYPERCARE-OPS-003::GAP-PKG-135` + `HYPERCARE-OPS-004::GAP-PKG-135` + `HYPERCARE-OPS-005::GAP-PKG-135` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-135` | `SHELL-CI-023::GAP-PKG-135` + `DELIV-PKG-020::GAP-PKG-135` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-135` | heredada de `HYPERCARE-OPS-005::GAP-PKG-135` | `ESPECIFICADO`    |
+| `GAP-PKG-136` | `HYPERCARE-OPS-003::GAP-PKG-136` + `HYPERCARE-OPS-004::GAP-PKG-136` + `HYPERCARE-OPS-005::GAP-PKG-136` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-136` | `SHELL-CI-023::GAP-PKG-136` + `DELIV-PKG-020::GAP-PKG-136` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-136` | heredada de `HYPERCARE-OPS-005::GAP-PKG-136` | `ESPECIFICADO`    |
+| `GAP-PKG-137` | `HYPERCARE-OPS-003::GAP-PKG-137` + `HYPERCARE-OPS-004::GAP-PKG-137` + `HYPERCARE-OPS-005::GAP-PKG-137` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-137` | `SHELL-CI-023::GAP-PKG-137` + `DELIV-PKG-020::GAP-PKG-137` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-137` | heredada de `HYPERCARE-OPS-005::GAP-PKG-137` | `ESPECIFICADO`    |
+| `GAP-PKG-138` | `HYPERCARE-OPS-003::GAP-PKG-138` + `HYPERCARE-OPS-004::GAP-PKG-138` + `HYPERCARE-OPS-005::GAP-PKG-138` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-138` | `SHELL-CI-023::GAP-PKG-138` + `DELIV-PKG-020::GAP-PKG-138` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-138` | heredada de `HYPERCARE-OPS-005::GAP-PKG-138` | `ESPECIFICADO`    |
+| `GAP-PKG-139` | `HYPERCARE-OPS-003::GAP-PKG-139` + `HYPERCARE-OPS-004::GAP-PKG-139` + `HYPERCARE-OPS-005::GAP-PKG-139` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-139` | `SHELL-CI-023::GAP-PKG-139` + `DELIV-PKG-020::GAP-PKG-139` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-139` | heredada de `HYPERCARE-OPS-005::GAP-PKG-139` | `ESPECIFICADO`    |
+| `GAP-PKG-140` | `HYPERCARE-OPS-003::GAP-PKG-140` + `HYPERCARE-OPS-004::GAP-PKG-140` + `HYPERCARE-OPS-005::GAP-PKG-140` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-140` | `SHELL-CI-023::GAP-PKG-140` + `DELIV-PKG-020::GAP-PKG-140` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-140` | heredada de `HYPERCARE-OPS-005::GAP-PKG-140` | `ESPECIFICADO`    |
+| `GAP-PKG-141` | `HYPERCARE-OPS-003::GAP-PKG-141` + `HYPERCARE-OPS-004::GAP-PKG-141` + `HYPERCARE-OPS-005::GAP-PKG-141` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-141` | `SHELL-CI-023::GAP-PKG-141` + `DELIV-PKG-020::GAP-PKG-141` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-141` | heredada de `HYPERCARE-OPS-005::GAP-PKG-141` | `ESPECIFICADO`    |
+| `GAP-PKG-142` | `HYPERCARE-OPS-003::GAP-PKG-142` + `HYPERCARE-OPS-004::GAP-PKG-142` + `HYPERCARE-OPS-005::GAP-PKG-142` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-142` | `SHELL-CI-023::GAP-PKG-142` + `DELIV-PKG-020::GAP-PKG-142` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-142` | heredada de `HYPERCARE-OPS-005::GAP-PKG-142` | `ESPECIFICADO`    |
+| `GAP-PKG-143` | `HYPERCARE-OPS-003::GAP-PKG-143` + `HYPERCARE-OPS-004::GAP-PKG-143` + `HYPERCARE-OPS-005::GAP-PKG-143` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-143` | `SHELL-CI-023::GAP-PKG-143` + `DELIV-PKG-020::GAP-PKG-143` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-143` | heredada de `HYPERCARE-OPS-005::GAP-PKG-143` | `ESPECIFICADO`    |
+| `GAP-PKG-144` | `HYPERCARE-OPS-003::GAP-PKG-144` + `HYPERCARE-OPS-004::GAP-PKG-144` + `HYPERCARE-OPS-005::GAP-PKG-144` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-144` | `SHELL-CI-023::GAP-PKG-144` + `DELIV-PKG-020::GAP-PKG-144` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-144` | heredada de `HYPERCARE-OPS-005::GAP-PKG-144` | `ESPECIFICADO`    |
+| `GAP-PKG-145` | `HYPERCARE-OPS-003::GAP-PKG-145` + `HYPERCARE-OPS-004::GAP-PKG-145` + `HYPERCARE-OPS-005::GAP-PKG-145` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-145` | `SHELL-CI-023::GAP-PKG-145` + `DELIV-PKG-020::GAP-PKG-145` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-145` | heredada de `HYPERCARE-OPS-005::GAP-PKG-145` | `ESPECIFICADO`    |
+| `GAP-PKG-146` | `HYPERCARE-OPS-003::GAP-PKG-146` + `HYPERCARE-OPS-004::GAP-PKG-146` + `HYPERCARE-OPS-005::GAP-PKG-146` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-146` | `SHELL-CI-023::GAP-PKG-146` + `DELIV-PKG-020::GAP-PKG-146` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-146` | heredada de `HYPERCARE-OPS-005::GAP-PKG-146` | `ESPECIFICADO`    |
+| `GAP-PKG-147` | `HYPERCARE-OPS-003::GAP-PKG-147` + `HYPERCARE-OPS-004::GAP-PKG-147` + `HYPERCARE-OPS-005::GAP-PKG-147` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-147` | `SHELL-CI-023::GAP-PKG-147` + `DELIV-PKG-020::GAP-PKG-147` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-147` | heredada de `HYPERCARE-OPS-005::GAP-PKG-147` | `ESPECIFICADO`    |
+| `GAP-PKG-148` | `HYPERCARE-OPS-003::GAP-PKG-148` + `HYPERCARE-OPS-004::GAP-PKG-148` + `HYPERCARE-OPS-005::GAP-PKG-148` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-148` | `SHELL-CI-023::GAP-PKG-148` + `DELIV-PKG-020::GAP-PKG-148` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-148` | heredada de `HYPERCARE-OPS-005::GAP-PKG-148` | `ESPECIFICADO`    |
+| `GAP-PKG-149` | `HYPERCARE-OPS-003::GAP-PKG-149` + `HYPERCARE-OPS-004::GAP-PKG-149` + `HYPERCARE-OPS-005::GAP-PKG-149` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-149` | `SHELL-CI-023::GAP-PKG-149` + `DELIV-PKG-020::GAP-PKG-149` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-149` | heredada de `HYPERCARE-OPS-005::GAP-PKG-149` | `ESPECIFICADO`    |
+| `GAP-PKG-150` | `HYPERCARE-OPS-003::GAP-PKG-150` + `HYPERCARE-OPS-004::GAP-PKG-150` + `HYPERCARE-OPS-005::GAP-PKG-150` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-150` | `SHELL-CI-023::GAP-PKG-150` + `DELIV-PKG-020::GAP-PKG-150` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-150` | heredada de `HYPERCARE-OPS-005::GAP-PKG-150` | `ESPECIFICADO`    |
+| `GAP-PKG-151` | `HYPERCARE-OPS-003::GAP-PKG-151` + `HYPERCARE-OPS-004::GAP-PKG-151` + `HYPERCARE-OPS-005::GAP-PKG-151` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-151` | `SHELL-CI-023::GAP-PKG-151` + `DELIV-PKG-020::GAP-PKG-151` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-151` | heredada de `HYPERCARE-OPS-005::GAP-PKG-151` | `ESPECIFICADO`    |
+| `GAP-PKG-152` | `HYPERCARE-OPS-003::GAP-PKG-152` + `HYPERCARE-OPS-004::GAP-PKG-152` + `HYPERCARE-OPS-005::GAP-PKG-152` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-152` | `SHELL-CI-023::GAP-PKG-152` + `DELIV-PKG-020::GAP-PKG-152` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-152` | heredada de `HYPERCARE-OPS-005::GAP-PKG-152` | `ESPECIFICADO`    |
+| `GAP-PKG-153` | `HYPERCARE-OPS-003::GAP-PKG-153` + `HYPERCARE-OPS-004::GAP-PKG-153` + `HYPERCARE-OPS-005::GAP-PKG-153` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-153` | `SHELL-CI-023::GAP-PKG-153` + `DELIV-PKG-020::GAP-PKG-153` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-153` | heredada de `HYPERCARE-OPS-005::GAP-PKG-153` | `ESPECIFICADO`    |
+| `GAP-PKG-154` | `HYPERCARE-OPS-003::GAP-PKG-154` + `HYPERCARE-OPS-004::GAP-PKG-154` + `HYPERCARE-OPS-005::GAP-PKG-154` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-154` | `SHELL-CI-023::GAP-PKG-154` + `DELIV-PKG-020::GAP-PKG-154` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-154` | heredada de `HYPERCARE-OPS-005::GAP-PKG-154` | `ESPECIFICADO`    |
+| `GAP-PKG-155` | `HYPERCARE-OPS-003::GAP-PKG-155` + `HYPERCARE-OPS-004::GAP-PKG-155` + `HYPERCARE-OPS-005::GAP-PKG-155` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-155` | `SHELL-CI-023::GAP-PKG-155` + `DELIV-PKG-020::GAP-PKG-155` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-155` | heredada de `HYPERCARE-OPS-005::GAP-PKG-155` | `ESPECIFICADO`    |
+| `GAP-PKG-156` | `HYPERCARE-OPS-003::GAP-PKG-156` + `HYPERCARE-OPS-004::GAP-PKG-156` + `HYPERCARE-OPS-005::GAP-PKG-156` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-156` | `SHELL-CI-023::GAP-PKG-156` + `DELIV-PKG-020::GAP-PKG-156` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-156` | heredada de `HYPERCARE-OPS-005::GAP-PKG-156` | `ESPECIFICADO`    |
+| `GAP-PKG-157` | `HYPERCARE-OPS-003::GAP-PKG-157` + `HYPERCARE-OPS-004::GAP-PKG-157` + `HYPERCARE-OPS-005::GAP-PKG-157` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-157` | `SHELL-CI-023::GAP-PKG-157` + `DELIV-PKG-020::GAP-PKG-157` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-157` | heredada de `HYPERCARE-OPS-005::GAP-PKG-157` | `ESPECIFICADO`    |
+| `GAP-PKG-158` | `HYPERCARE-OPS-003::GAP-PKG-158` + `HYPERCARE-OPS-004::GAP-PKG-158` + `HYPERCARE-OPS-005::GAP-PKG-158` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-158` | `SHELL-CI-023::GAP-PKG-158` + `DELIV-PKG-020::GAP-PKG-158` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-158` | heredada de `HYPERCARE-OPS-005::GAP-PKG-158` | `ESPECIFICADO`    |
+| `GAP-PKG-159` | `HYPERCARE-OPS-003::GAP-PKG-159` + `HYPERCARE-OPS-004::GAP-PKG-159` + `HYPERCARE-OPS-005::GAP-PKG-159` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-159` | `SHELL-CI-023::GAP-PKG-159` + `DELIV-PKG-020::GAP-PKG-159` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-159` | heredada de `HYPERCARE-OPS-005::GAP-PKG-159` | `ESPECIFICADO`    |
+| `GAP-PKG-160` | `HYPERCARE-OPS-003::GAP-PKG-160` + `HYPERCARE-OPS-004::GAP-PKG-160` + `HYPERCARE-OPS-005::GAP-PKG-160` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-160` | `SHELL-CI-023::GAP-PKG-160` + `DELIV-PKG-020::GAP-PKG-160` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-160` | heredada de `HYPERCARE-OPS-005::GAP-PKG-160` | `ESPECIFICADO`    |
+| `GAP-PKG-161` | `HYPERCARE-OPS-003::GAP-PKG-161` + `HYPERCARE-OPS-004::GAP-PKG-161` + `HYPERCARE-OPS-005::GAP-PKG-161` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-161` | `SHELL-CI-023::GAP-PKG-161` + `DELIV-PKG-020::GAP-PKG-161` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-161` | heredada de `HYPERCARE-OPS-005::GAP-PKG-161` | `ESPECIFICADO`    |
+| `GAP-PKG-162` | `HYPERCARE-OPS-003::GAP-PKG-162` + `HYPERCARE-OPS-004::GAP-PKG-162` + `HYPERCARE-OPS-005::GAP-PKG-162` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-162` | `SHELL-CI-023::GAP-PKG-162` + `DELIV-PKG-020::GAP-PKG-162` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-162` | heredada de `HYPERCARE-OPS-005::GAP-PKG-162` | `ESPECIFICADO`    |
+| `GAP-PKG-163` | `HYPERCARE-OPS-003::GAP-PKG-163` + `HYPERCARE-OPS-004::GAP-PKG-163` + `HYPERCARE-OPS-005::GAP-PKG-163` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-163` | `SHELL-CI-023::GAP-PKG-163` + `DELIV-PKG-020::GAP-PKG-163` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-163` | heredada de `HYPERCARE-OPS-005::GAP-PKG-163` | `ESPECIFICADO`    |
+| `GAP-PKG-164` | `HYPERCARE-OPS-003::GAP-PKG-164` + `HYPERCARE-OPS-004::GAP-PKG-164` + `HYPERCARE-OPS-005::GAP-PKG-164` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-164` | `SHELL-CI-023::GAP-PKG-164` + `DELIV-PKG-020::GAP-PKG-164` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-164` | heredada de `HYPERCARE-OPS-005::GAP-PKG-164` | `ESPECIFICADO`    |
+| `GAP-PKG-165` | `HYPERCARE-OPS-003::GAP-PKG-165` + `HYPERCARE-OPS-004::GAP-PKG-165` + `HYPERCARE-OPS-005::GAP-PKG-165` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-165` | `SHELL-CI-023::GAP-PKG-165` + `DELIV-PKG-020::GAP-PKG-165` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-165` | heredada de `HYPERCARE-OPS-005::GAP-PKG-165` | `ESPECIFICADO`    |
+| `GAP-PKG-166` | `HYPERCARE-OPS-003::GAP-PKG-166` + `HYPERCARE-OPS-004::GAP-PKG-166` + `HYPERCARE-OPS-005::GAP-PKG-166` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-166` | `SHELL-CI-023::GAP-PKG-166` + `DELIV-PKG-020::GAP-PKG-166` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-166` | heredada de `HYPERCARE-OPS-005::GAP-PKG-166` | `ESPECIFICADO`    |
+| `GAP-PKG-167` | `HYPERCARE-OPS-003::GAP-PKG-167` + `HYPERCARE-OPS-004::GAP-PKG-167` + `HYPERCARE-OPS-005::GAP-PKG-167` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-167` | `SHELL-CI-023::GAP-PKG-167` + `DELIV-PKG-020::GAP-PKG-167` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-167` | heredada de `HYPERCARE-OPS-005::GAP-PKG-167` | `ESPECIFICADO`    |
+| `GAP-PKG-168` | `HYPERCARE-OPS-003::GAP-PKG-168` + `HYPERCARE-OPS-004::GAP-PKG-168` + `HYPERCARE-OPS-005::GAP-PKG-168` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-168` | `SHELL-CI-023::GAP-PKG-168` + `DELIV-PKG-020::GAP-PKG-168` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-168` | heredada de `HYPERCARE-OPS-005::GAP-PKG-168` | `ESPECIFICADO`    |
+| `GAP-PKG-169` | `HYPERCARE-OPS-003::GAP-PKG-169` + `HYPERCARE-OPS-004::GAP-PKG-169` + `HYPERCARE-OPS-005::GAP-PKG-169` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-169` | `SHELL-CI-023::GAP-PKG-169` + `DELIV-PKG-020::GAP-PKG-169` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-169` | heredada de `HYPERCARE-OPS-005::GAP-PKG-169` | `ESPECIFICADO`    |
+| `GAP-PKG-170` | `HYPERCARE-OPS-003::GAP-PKG-170` + `HYPERCARE-OPS-004::GAP-PKG-170` + `HYPERCARE-OPS-005::GAP-PKG-170` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-170` | `SHELL-CI-023::GAP-PKG-170` + `DELIV-PKG-020::GAP-PKG-170` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-170` | heredada de `HYPERCARE-OPS-005::GAP-PKG-170` | `ESPECIFICADO`    |
+| `GAP-PKG-171` | `HYPERCARE-OPS-003::GAP-PKG-171` + `HYPERCARE-OPS-004::GAP-PKG-171` + `HYPERCARE-OPS-005::GAP-PKG-171` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-171` | `SHELL-CI-023::GAP-PKG-171` + `DELIV-PKG-020::GAP-PKG-171` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-171` | heredada de `HYPERCARE-OPS-005::GAP-PKG-171` | `ESPECIFICADO`    |
+| `GAP-PKG-172` | `HYPERCARE-OPS-003::GAP-PKG-172` + `HYPERCARE-OPS-004::GAP-PKG-172` + `HYPERCARE-OPS-005::GAP-PKG-172` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-172` | `SHELL-CI-023::GAP-PKG-172` + `DELIV-PKG-020::GAP-PKG-172` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-172` | heredada de `HYPERCARE-OPS-005::GAP-PKG-172` | `ESPECIFICADO`    |
+| `GAP-PKG-173` | `HYPERCARE-OPS-003::GAP-PKG-173` + `HYPERCARE-OPS-004::GAP-PKG-173` + `HYPERCARE-OPS-005::GAP-PKG-173` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-173` | `SHELL-CI-023::GAP-PKG-173` + `DELIV-PKG-020::GAP-PKG-173` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-173` | heredada de `HYPERCARE-OPS-005::GAP-PKG-173` | `ESPECIFICADO`    |
+| `GAP-PKG-174` | `HYPERCARE-OPS-003::GAP-PKG-174` + `HYPERCARE-OPS-004::GAP-PKG-174` + `HYPERCARE-OPS-005::GAP-PKG-174` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-174` | `SHELL-CI-023::GAP-PKG-174` + `DELIV-PKG-020::GAP-PKG-174` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-174` | heredada de `HYPERCARE-OPS-005::GAP-PKG-174` | `ESPECIFICADO`    |
+| `GAP-PKG-175` | `HYPERCARE-OPS-003::GAP-PKG-175` + `HYPERCARE-OPS-004::GAP-PKG-175` + `HYPERCARE-OPS-005::GAP-PKG-175` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-175` | `SHELL-CI-023::GAP-PKG-175` + `DELIV-PKG-020::GAP-PKG-175` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-175` | heredada de `HYPERCARE-OPS-005::GAP-PKG-175` | `ESPECIFICADO`    |
+| `GAP-PKG-176` | `HYPERCARE-OPS-003::GAP-PKG-176` + `HYPERCARE-OPS-004::GAP-PKG-176` + `HYPERCARE-OPS-005::GAP-PKG-176` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-176` | `SHELL-CI-023::GAP-PKG-176` + `DELIV-PKG-020::GAP-PKG-176` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-176` | heredada de `HYPERCARE-OPS-005::GAP-PKG-176` | `ESPECIFICADO`    |
+| `GAP-PKG-177` | `HYPERCARE-OPS-003::GAP-PKG-177` + `HYPERCARE-OPS-004::GAP-PKG-177` + `HYPERCARE-OPS-005::GAP-PKG-177` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-177` | `SHELL-CI-023::GAP-PKG-177` + `DELIV-PKG-020::GAP-PKG-177` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-177` | heredada de `HYPERCARE-OPS-005::GAP-PKG-177` | `ESPECIFICADO`    |
+| `GAP-PKG-178` | `HYPERCARE-OPS-003::GAP-PKG-178` + `HYPERCARE-OPS-004::GAP-PKG-178` + `HYPERCARE-OPS-005::GAP-PKG-178` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-178` | `SHELL-CI-023::GAP-PKG-178` + `DELIV-PKG-020::GAP-PKG-178` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-178` | heredada de `HYPERCARE-OPS-005::GAP-PKG-178` | `ESPECIFICADO`    |
+| `GAP-PKG-179` | `HYPERCARE-OPS-003::GAP-PKG-179` + `HYPERCARE-OPS-004::GAP-PKG-179` + `HYPERCARE-OPS-005::GAP-PKG-179` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-179` | `SHELL-CI-023::GAP-PKG-179` + `DELIV-PKG-020::GAP-PKG-179` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-179` | heredada de `HYPERCARE-OPS-005::GAP-PKG-179` | `ESPECIFICADO`    |
+| `GAP-PKG-180` | `HYPERCARE-OPS-003::GAP-PKG-180` + `HYPERCARE-OPS-004::GAP-PKG-180` + `HYPERCARE-OPS-005::GAP-PKG-180` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-180` | `SHELL-CI-023::GAP-PKG-180` + `DELIV-PKG-020::GAP-PKG-180` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-180` | heredada de `HYPERCARE-OPS-005::GAP-PKG-180` | `ESPECIFICADO`    |
+| `GAP-PKG-181` | `HYPERCARE-OPS-003::GAP-PKG-181` + `HYPERCARE-OPS-004::GAP-PKG-181` + `HYPERCARE-OPS-005::GAP-PKG-181` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-181` | `SHELL-CI-023::GAP-PKG-181` + `DELIV-PKG-020::GAP-PKG-181` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-181` | heredada de `HYPERCARE-OPS-005::GAP-PKG-181` | `ESPECIFICADO`    |
+| `GAP-PKG-182` | `HYPERCARE-OPS-003::GAP-PKG-182` + `HYPERCARE-OPS-004::GAP-PKG-182` + `HYPERCARE-OPS-005::GAP-PKG-182` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-182` | `SHELL-CI-023::GAP-PKG-182` + `DELIV-PKG-020::GAP-PKG-182` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-182` | heredada de `HYPERCARE-OPS-005::GAP-PKG-182` | `ESPECIFICADO`    |
+| `GAP-PKG-183` | `HYPERCARE-OPS-003::GAP-PKG-183` + `HYPERCARE-OPS-004::GAP-PKG-183` + `HYPERCARE-OPS-005::GAP-PKG-183` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-183` | `SHELL-CI-023::GAP-PKG-183` + `DELIV-PKG-020::GAP-PKG-183` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-183` | heredada de `HYPERCARE-OPS-005::GAP-PKG-183` | `ESPECIFICADO`    |
+| `GAP-PKG-184` | `HYPERCARE-OPS-003::GAP-PKG-184` + `HYPERCARE-OPS-004::GAP-PKG-184` + `HYPERCARE-OPS-005::GAP-PKG-184` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-184` | `SHELL-CI-023::GAP-PKG-184` + `DELIV-PKG-020::GAP-PKG-184` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-184` | heredada de `HYPERCARE-OPS-005::GAP-PKG-184` | `ESPECIFICADO`    |
+| `GAP-PKG-185` | `HYPERCARE-OPS-003::GAP-PKG-185` + `HYPERCARE-OPS-004::GAP-PKG-185` + `HYPERCARE-OPS-005::GAP-PKG-185` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-185` | `SHELL-CI-023::GAP-PKG-185` + `DELIV-PKG-020::GAP-PKG-185` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-185` | heredada de `HYPERCARE-OPS-005::GAP-PKG-185` | `ESPECIFICADO`    |
+| `GAP-PKG-186` | `HYPERCARE-OPS-003::GAP-PKG-186` + `HYPERCARE-OPS-004::GAP-PKG-186` + `HYPERCARE-OPS-005::GAP-PKG-186` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-186` | `SHELL-CI-023::GAP-PKG-186` + `DELIV-PKG-020::GAP-PKG-186` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-186` | heredada de `HYPERCARE-OPS-005::GAP-PKG-186` | `ESPECIFICADO`    |
+| `GAP-PKG-187` | `HYPERCARE-OPS-003::GAP-PKG-187` + `HYPERCARE-OPS-004::GAP-PKG-187` + `HYPERCARE-OPS-005::GAP-PKG-187` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-187` | `SHELL-CI-023::GAP-PKG-187` + `DELIV-PKG-020::GAP-PKG-187` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-187` | heredada de `HYPERCARE-OPS-005::GAP-PKG-187` | `ESPECIFICADO`    |
+| `GAP-PKG-188` | `HYPERCARE-OPS-003::GAP-PKG-188` + `HYPERCARE-OPS-004::GAP-PKG-188` + `HYPERCARE-OPS-005::GAP-PKG-188` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-188` | `SHELL-CI-023::GAP-PKG-188` + `DELIV-PKG-020::GAP-PKG-188` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-188` | heredada de `HYPERCARE-OPS-005::GAP-PKG-188` | `ESPECIFICADO`    |
+| `GAP-PKG-189` | `HYPERCARE-OPS-003::GAP-PKG-189` + `HYPERCARE-OPS-004::GAP-PKG-189` + `HYPERCARE-OPS-005::GAP-PKG-189` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-189` | `SHELL-CI-023::GAP-PKG-189` + `DELIV-PKG-020::GAP-PKG-189` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-189` | heredada de `HYPERCARE-OPS-005::GAP-PKG-189` | `ESPECIFICADO`    |
+| `GAP-PKG-190` | `HYPERCARE-OPS-003::GAP-PKG-190` + `HYPERCARE-OPS-004::GAP-PKG-190` + `HYPERCARE-OPS-005::GAP-PKG-190` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-190` | `SHELL-CI-023::GAP-PKG-190` + `DELIV-PKG-020::GAP-PKG-190` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-190` | heredada de `HYPERCARE-OPS-005::GAP-PKG-190` | `ESPECIFICADO`    |
+| `GAP-PKG-191` | `HYPERCARE-OPS-003::GAP-PKG-191` + `HYPERCARE-OPS-004::GAP-PKG-191` + `HYPERCARE-OPS-005::GAP-PKG-191` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-191` | `SHELL-CI-023::GAP-PKG-191` + `DELIV-PKG-020::GAP-PKG-191` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-191` | heredada de `HYPERCARE-OPS-005::GAP-PKG-191` | `ESPECIFICADO`    |
+| `GAP-PKG-192` | `HYPERCARE-OPS-003::GAP-PKG-192` + `HYPERCARE-OPS-004::GAP-PKG-192` + `HYPERCARE-OPS-005::GAP-PKG-192` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-192` | `SHELL-CI-023::GAP-PKG-192` + `DELIV-PKG-020::GAP-PKG-192` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-192` | heredada de `HYPERCARE-OPS-005::GAP-PKG-192` | `ESPECIFICADO`    |
+| `GAP-PKG-193` | `HYPERCARE-OPS-003::GAP-PKG-193` + `HYPERCARE-OPS-004::GAP-PKG-193` + `HYPERCARE-OPS-005::GAP-PKG-193` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-193` | `SHELL-CI-023::GAP-PKG-193` + `DELIV-PKG-020::GAP-PKG-193` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-193` | heredada de `HYPERCARE-OPS-005::GAP-PKG-193` | `ESPECIFICADO`    |
+| `GAP-PKG-194` | `HYPERCARE-OPS-003::GAP-PKG-194` + `HYPERCARE-OPS-004::GAP-PKG-194` + `HYPERCARE-OPS-005::GAP-PKG-194` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-194` | `SHELL-CI-023::GAP-PKG-194` + `DELIV-PKG-020::GAP-PKG-194` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-194` | heredada de `HYPERCARE-OPS-005::GAP-PKG-194` | `ESPECIFICADO`    |
+| `GAP-PKG-195` | `HYPERCARE-OPS-003::GAP-PKG-195` + `HYPERCARE-OPS-004::GAP-PKG-195` + `HYPERCARE-OPS-005::GAP-PKG-195` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-195` | `SHELL-CI-023::GAP-PKG-195` + `DELIV-PKG-020::GAP-PKG-195` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-195` | heredada de `HYPERCARE-OPS-005::GAP-PKG-195` | `ESPECIFICADO`    |
+| `GAP-PKG-196` | `HYPERCARE-OPS-003::GAP-PKG-196` + `HYPERCARE-OPS-004::GAP-PKG-196` + `HYPERCARE-OPS-005::GAP-PKG-196` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-196` | `SHELL-CI-023::GAP-PKG-196` + `DELIV-PKG-020::GAP-PKG-196` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-196` | heredada de `HYPERCARE-OPS-005::GAP-PKG-196` | `ESPECIFICADO`    |
+| `GAP-PKG-197` | `HYPERCARE-OPS-003::GAP-PKG-197` + `HYPERCARE-OPS-004::GAP-PKG-197` + `HYPERCARE-OPS-005::GAP-PKG-197` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-197` | `SHELL-CI-023::GAP-PKG-197` + `DELIV-PKG-020::GAP-PKG-197` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-197` | heredada de `HYPERCARE-OPS-005::GAP-PKG-197` | `ESPECIFICADO`    |
+| `GAP-PKG-198` | `HYPERCARE-OPS-003::GAP-PKG-198` + `HYPERCARE-OPS-004::GAP-PKG-198` + `HYPERCARE-OPS-005::GAP-PKG-198` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-198` | `SHELL-CI-023::GAP-PKG-198` + `DELIV-PKG-020::GAP-PKG-198` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-198` | heredada de `HYPERCARE-OPS-005::GAP-PKG-198` | `ESPECIFICADO`    |
+| `GAP-PKG-199` | `HYPERCARE-OPS-003::GAP-PKG-199` + `HYPERCARE-OPS-004::GAP-PKG-199` + `HYPERCARE-OPS-005::GAP-PKG-199` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-199` | `SHELL-CI-023::GAP-PKG-199` + `DELIV-PKG-020::GAP-PKG-199` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-199` | heredada de `HYPERCARE-OPS-005::GAP-PKG-199` | `ESPECIFICADO`    |
+| `GAP-PKG-200` | `HYPERCARE-OPS-003::GAP-PKG-200` + `HYPERCARE-OPS-004::GAP-PKG-200` + `HYPERCARE-OPS-005::GAP-PKG-200` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-200` | `SHELL-CI-023::GAP-PKG-200` + `DELIV-PKG-020::GAP-PKG-200` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-200` | heredada de `HYPERCARE-OPS-005::GAP-PKG-200` | `ESPECIFICADO`    |
+| `GAP-PKG-201` | `HYPERCARE-OPS-003::GAP-PKG-201` + `HYPERCARE-OPS-004::GAP-PKG-201` + `HYPERCARE-OPS-005::GAP-PKG-201` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-201` | `SHELL-CI-023::GAP-PKG-201` + `DELIV-PKG-020::GAP-PKG-201` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-201` | heredada de `HYPERCARE-OPS-005::GAP-PKG-201` | `ESPECIFICADO`    |
+| `GAP-PKG-202` | `HYPERCARE-OPS-003::GAP-PKG-202` + `HYPERCARE-OPS-004::GAP-PKG-202` + `HYPERCARE-OPS-005::GAP-PKG-202` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-202` | `SHELL-CI-023::GAP-PKG-202` + `DELIV-PKG-020::GAP-PKG-202` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-202` | heredada de `HYPERCARE-OPS-005::GAP-PKG-202` | `ESPECIFICADO`    |
+| `GAP-PKG-203` | `HYPERCARE-OPS-003::GAP-PKG-203` + `HYPERCARE-OPS-004::GAP-PKG-203` + `HYPERCARE-OPS-005::GAP-PKG-203` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-203` | `SHELL-CI-023::GAP-PKG-203` + `DELIV-PKG-020::GAP-PKG-203` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-203` | heredada de `HYPERCARE-OPS-005::GAP-PKG-203` | `ESPECIFICADO`    |
+| `GAP-PKG-204` | `HYPERCARE-OPS-003::GAP-PKG-204` + `HYPERCARE-OPS-004::GAP-PKG-204` + `HYPERCARE-OPS-005::GAP-PKG-204` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-204` | `SHELL-CI-023::GAP-PKG-204` + `DELIV-PKG-020::GAP-PKG-204` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-204` | heredada de `HYPERCARE-OPS-005::GAP-PKG-204` | `ESPECIFICADO`    |
+| `GAP-PKG-205` | `HYPERCARE-OPS-003::GAP-PKG-205` + `HYPERCARE-OPS-004::GAP-PKG-205` + `HYPERCARE-OPS-005::GAP-PKG-205` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-205` | `SHELL-CI-023::GAP-PKG-205` + `DELIV-PKG-020::GAP-PKG-205` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-205` | heredada de `HYPERCARE-OPS-005::GAP-PKG-205` | `ESPECIFICADO`    |
+| `GAP-PKG-206` | `HYPERCARE-OPS-003::GAP-PKG-206` + `HYPERCARE-OPS-004::GAP-PKG-206` + `HYPERCARE-OPS-005::GAP-PKG-206` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-206` | `SHELL-CI-023::GAP-PKG-206` + `DELIV-PKG-020::GAP-PKG-206` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-206` | heredada de `HYPERCARE-OPS-005::GAP-PKG-206` | `ESPECIFICADO`    |
+| `GAP-PKG-207` | `HYPERCARE-OPS-003::GAP-PKG-207` + `HYPERCARE-OPS-004::GAP-PKG-207` + `HYPERCARE-OPS-005::GAP-PKG-207` | `TI-DOM-007 / VPROC-0058`; `I1..I4 x U1..U4 -> P1..P4`; `SLA-INC-P1-V1` / `SLA-INC-P2-V1` / `SLA-INC-P3-V1` / `SLA-INC-P4-V1` | `HYPERCARE-OPS-002::GAP-PKG-207` | `SHELL-CI-023::GAP-PKG-207` + `DELIV-PKG-020::GAP-PKG-207` + autoridad de `HYPERCARE-OPS-002::GAP-PKG-207` | heredada de `HYPERCARE-OPS-005::GAP-PKG-207` | `ESPECIFICADO`    |
+
+#### 16. Reconciliación de cobertura
+
+| Control                          | Resultado |
+| -------------------------------- | --------: |
+| identidades esperadas            |       207 |
+| identidades materializadas       |       207 |
+| identificadores únicos           |       207 |
+| faltantes                        |         0 |
+| duplicados                       |         0 |
+| cobertura directa heredada       |       160 |
+| cobertura compartida heredada    |         3 |
+| controles heredados              |        26 |
+| AURA bloqueadas heredadas        |        14 |
+| externas bloqueadas heredadas    |         2 |
+| TALENTO fuera de línea heredadas |         2 |
+| suma de distribución heredada    |       207 |
+
+La modalidad se conserva por referencia a `HYPERCARE-OPS-005` para no inventar ni redistribuir identidades en esta tarea.
+
+#### 17. Estados documentales y de ejecución
+
+- la matriz anterior está `ESPECIFICADO` como plan de hypercare;
+- no se declara ningún incidente real `IMPLEMENTADO`, `VALIDADO` o `CLOSED` por esta tarea;
+- los incidentes reales, si aparecen, existirán durante la ejecución posterior de `SHELL-CI-023`;
+- un paquete bloqueado, diferido o fuera de línea conserva su condición heredada y no obtiene un incidente ficticio;
+- un cambio material de alcance, candidato, ambiente o autorización se trata mediante sus tareas propietarias y no mediante reclasificación artificial del incidente.
+
+#### 18. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Fragmentos 04A afectados:** 0
+
+Justificación: `HYPERCARE-OPS-006` no crea una regla empresarial, de prioridad, continuidad, integración, corrección o cierre nueva. Materializa para las 207 identidades de hypercare el consumo coordinado de protecciones ya vigentes, entre ellas `TREQ-VISO-046`, `TREQ-CONT-002`, `TREQ-CONT-005`, `TREQ-CONT-006`, `TREQ-PROC-004`, `TREQ-PROC-237`, `TREQ-PROC-241`, `TREQ-PROC-245`, `TREQ-INTEGRATION-003`, `TREQ-INTEGRATION-004`, `TREQ-INTEGRATION-142`, `TREQ-INTEGRATION-160` y `TREQ-INTEGRATION-161`.
+
+Si durante la ejecución real de `SHELL-CI-023` aparece un defecto o regresión que requiera protección recurrente, el requisito de regresión se creará entonces con evidencia real y trazabilidad hacia el incidente correspondiente; no se inventa preventivamente en esta tarea documental.
+
+#### 19. Criterios de aceptación
+
+`HYPERCARE-OPS-006` queda documentalmente completa cuando se cumplen simultáneamente estas condiciones:
+
+1. se usa `TI-DOM-007 / VPROC-0058` como único modelo transversal de caso técnico aplicable, sin state machine paralelo de hypercare;
+2. `INCIDENT`, `SERVICE_REQUEST` y `UNCLASSIFIED_TRIAGE` conservan su significado vigente;
+3. se materializan exactamente los niveles `I1..I4` y `U1..U4` vigentes;
+4. la prioridad resulta exclusivamente de la matriz aprobada y no de selección manual;
+5. `P1..P4` mantienen sus nombres y referencias SLA vigentes, sin inventar tiempos;
+6. una señal de `HYPERCARE-OPS-003`, `004` o `005` no se convierte automáticamente en incidente;
+7. la corrección preserva fuente de verdad, historia, identidad, idempotencia, antes/después y conciliación;
+8. `RESULT_UNKNOWN` no permite repetición hasta demostrar que es segura;
+9. agotamiento de retry no dispara corrección, compensación o reversión automática;
+10. restauración del servicio, resolución del incidente y resolución del problema permanecen conceptos distintos;
+11. `CLOSED` del caso no equivale a cierre de hypercare;
+12. `HYPERCARE-OPS-007` conserva propiedad exclusiva sobre aprobación de deuda y tareas posteriores;
+13. `HYPERCARE-OPS-010` conserva propiedad exclusiva sobre autoridad y evidencia de cierre de hypercare;
+14. se materializan 207/207 identidades `GAP-PKG-*`, sin faltantes ni duplicados;
+15. no se modifica la distribución heredada 160 + 3 + 26 + 14 + 2 + 2 = 207;
+16. la tarea no ejecuta cambios físicos ni declara evidencia operativa inexistente;
+17. los defectos o regresiones reales que exijan protección recurrente quedan vinculados a requisitos de regresión creados con evidencia durante la ejecución posterior, no por anticipación documental.
+
+#### 20. Cambios físicos
+
+Ninguno.
+
+Esta tarea no autoriza ni ejecuta:
+
+- código;
+- migraciones;
+- DDL o DML;
+- backfills;
+- modificaciones de datos;
+- cambios de configuración;
+- despliegues;
+- ejecución de rollback o replay;
+- cambios sobre Supabase;
+- creación ficticia de incidentes;
+- cierre operativo de paquetes.
+
+#### 21. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+HYPERCARE-OPS-005 — Definir conciliaciones de datos y efectos entre dominios
+
+##### TAREA ACTUAL APROBADA
+
+HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes
+
+##### SIGUIENTE TAREA RESERVADA
+
+HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores
+
+
 ### [ ] HYPERCARE-OPS-007 — Definir registro y aprobación de deuda y tareas posteriores
 ### [ ] HYPERCARE-OPS-008 — Definir criterio de transferencia a soporte ordinario y documentación definitiva
 ### [ ] HYPERCARE-OPS-009 — Definir criterio y evidencia para retirar contingencias temporales
