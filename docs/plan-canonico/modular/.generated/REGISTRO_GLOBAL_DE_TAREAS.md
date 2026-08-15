@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **873** |
+| Aprobadas | **874** |
 | En propuesta | **0** |
-| No iniciadas | **721** |
+| No iniciadas | **720** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **54.77% (873/1594)** |
+| Porcentaje de completamiento | **54.83% (874/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `E5-GATE-002` — Confirmar que cada brecha crítica tiene propietario y destino | ✅ APROBADA |
-| Tarea actual | `E5-GATE-003` — Confirmar que los requisitos no funcionales están cubiertos | ⬜ NO INICIADA |
-| Siguiente reservada | `E5-GATE-004` — Confirmar que rollout, rollback y contingencia son ejecutables | ⬜ NO INICIADA |
+| Última aprobada | `E5-GATE-003` — Confirmar que los requisitos no funcionales están cubiertos | ✅ APROBADA |
+| Tarea actual | `E5-GATE-004` — Confirmar que rollout, rollback y contingencia son ejecutables | ⬜ NO INICIADA |
+| Siguiente reservada | `E5-GATE-005` — Confirmar que el piloto tiene criterios medibles | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -590,7 +590,7 @@
 | ✅ APROBADA | `HYPERCARE-OPS-010` | Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ✅ APROBADA | `E5-GATE-001` | Confirmar que cada capacidad priorizada tiene paquete aprobado | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ✅ APROBADA | `E5-GATE-002` | Confirmar que cada brecha crítica tiene propietario y destino | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
-| ⬜ NO INICIADA | `E5-GATE-003` | Confirmar que los requisitos no funcionales están cubiertos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
+| ✅ APROBADA | `E5-GATE-003` | Confirmar que los requisitos no funcionales están cubiertos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-004` | Confirmar que rollout, rollback y contingencia son ejecutables | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-005` | Confirmar que el piloto tiene criterios medibles | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-006` | Confirmar que capacitación y soporte están planificados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
