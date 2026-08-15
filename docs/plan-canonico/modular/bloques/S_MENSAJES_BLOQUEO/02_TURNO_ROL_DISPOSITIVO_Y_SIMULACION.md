@@ -5102,11 +5102,11 @@ Cobertura materializada:
 | Escenarios con decisión explícita                        |       24 |
 | Canales con respuesta explícita                          |       10 |
 | Aplicaciones canónicas reconciliadas                     |       10 |
-| Permisos canónicos evaluados por carril                  |      112 |
-| Permisos sin carril operativo                            |       54 |
-| Permisos con carril operativo                            |       58 |
+| Permisos canónicos evaluados por carril                  |      140 |
+| Permisos sin carril operativo                            |       68 |
+| Permisos con carril operativo                            |       72 |
 | Carriles operativos `T`                                  |       19 |
-| Carriles operativos `T+C`                                |       39 |
+| Carriles operativos `T+C`                                |       53 |
 | Roles operativos canónicos consumibles                   |       12 |
 | Roles operativos físicos activos observados              |       13 |
 | Sedes con habilitaciones activas observadas              |        5 |
@@ -5328,10 +5328,10 @@ operativo.
 
 | Distribución           | Cantidad | Evaluación de esta razón                                    |
 | ---------------------- | -------: | ----------------------------------------------------------- |
-| sin carril operativo   |       54 | no aplica                                                   |
+| sin carril operativo   |       68 | no aplica                                                   |
 | carril operativo `T`   |       19 | aplica después de turno, vigencia, rol y validez del código |
-| carril operativo `T+C` |       39 | aplica además después del check-in requerido                |
-| total de permisos      |      112 | reconciliado                                                |
+| carril operativo `T+C` |       53 | aplica además después del check-in requerido                |
+| total de permisos      |      140 | reconciliado                                                |
 
 No existe bloqueo global por aplicación. Una aplicación puede contener
 capacidades base y operativas con decisiones distintas.
@@ -5987,8 +5987,8 @@ a implementación ni a evidencia de ejecución.
 La implementación deberá probar al menos:
 
 1. código, estado, `403`, decisión de carril y cero efectos;
-2. aplicación exclusiva a los 58 carriles operativos;
-3. no afectación de los 54 permisos sin carril operativo;
+2. aplicación exclusiva a los 72 carriles operativos;
+3. no afectación de los 68 permisos sin carril operativo;
 4. independencia de `BASE_OR_OPERATIONAL`;
 5. par exacto de rol y sede del turno;
 6. relación inexistente, inactiva y retirada;
@@ -6058,8 +6058,8 @@ La tarea queda documentalmente completa cuando:
 3. rol y sede proceden de la misma revisión publicada;
 4. se prohíben fallbacks de cliente, perfil, check-in y dispositivo;
 5. asignación laboral, habilitación, área y grant permanecen separados;
-6. los 112 permisos se reconcilian en distribución 54/19/39;
-7. los 58 carriles operativos evalúan la habilitación;
+6. los 140 permisos se reconcilian en distribución 68/19/53;
+7. los 72 carriles operativos evalúan la habilitación;
 8. las cuatro modalidades tienen decisión explícita;
 9. la precedencia aprobada permanece inalterada;
 10. rol faltante queda en `AUTH-ERR-012`;
