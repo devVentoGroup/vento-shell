@@ -1425,7 +1425,281 @@ SIGUIENTE TAREA RESERVADA
 `E5-GATE-004 — Confirmar que rollout, rollback y contingencia son ejecutables`
 
 
-### [ ] E5-GATE-004 — Confirmar que rollout, rollback y contingencia son ejecutables
+### ✅ E5-GATE-004 — Confirmar que rollout, rollback y contingencia son ejecutables
+
+**Estado:** APROBADA  
+**Tarea anterior:** `E5-GATE-003 — Confirmar que los requisitos no funcionales están cubiertos`  
+**Tarea siguiente:** `E5-GATE-005 — Confirmar que el piloto tiene criterios medibles`  
+**Tipo de tarea:** documental — puerta de salida de E5 para comprobar si la estrategia de rollout, el rollback técnico/funcional/de datos y las contingencias operativas están definidos con suficiente concreción para poder ejecutarse sin improvisación cuando sus prerrequisitos físicos y de readiness estén satisfechos; sin ejecutar despliegues, promociones, rollback, restore, contingencias, piloto, migraciones, DDL/DML, cambios remotos ni operaciones sobre Supabase  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md`  
+**Cambios físicos autorizados:** ninguno  
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`E5-GATE-004` verifica si el universo vigente de paquetes posee una cadena documental de rollout, rollback y contingencia que pueda convertirse en ejecución controlada sin inventar artefactos, repositorios, procedimientos, autoridades, cohortes, estados seguros ni mecanismos de recuperación.
+
+La comprobación conserva tres niveles distintos:
+
+```text
+ESPECIFICADO
+→ existe contrato documental y disposición explícita
+
+EJECUTABLE
+→ existen además los prerrequisitos físicos y operativos necesarios para ejecutar ese contrato sin inventar piezas
+
+PROBADO
+→ existe evidencia real de ejecución o ensayo reproducible
+```
+
+`E5-GATE-004` no puede convertir un plan especificado en ejecutable cuando su propia fuente conserva un bloqueo de identidad física, repositorio, línea funcional o gobierno externo. Tampoco puede convertir un plan ejecutable en probado: la evidencia real pertenece a las tareas de implementación, readiness y CI posteriores.
+
+---
+
+#### 2. Resultado de la comprobación
+
+La puerta evalúa las **207 raíces `GAP-PKG-*`** vigentes.
+
+| Control                                                                          |   Resultado |
+| -------------------------------------------------------------------------------- | ----------: |
+| raíces de paquete evaluadas                                                      |     **207** |
+| raíces con disposición de rollout materializada en `DELIV-PKG-019`               | **207/207** |
+| raíces con disposición de rollback materializada en `DELIV-PKG-020`              | **207/207** |
+| raíces con identidad física no confirmada                                        |     **167** |
+| raíces AURA bloqueadas por repositorio/runtime/datos/identidad física            |      **14** |
+| raíces condicionadas por `EXT-GOV-001`                                           |       **2** |
+| raíces TALENTO fuera de la línea funcional actual                                |       **2** |
+| raíces sin cambio físico directo confirmado                                      |      **22** |
+| raíces con ejecución física o activación todavía bloqueada                       | **185/207** |
+| raíces sin deploy directo al que pueda atribuirse rollout/rollback físico propio |  **22/207** |
+
+La reconciliación es cerrada:
+
+```text
+167 + 14 + 2 + 2 + 22 = 207
+185 bloqueadas para ejecución/activación + 22 sin deploy directo = 207
+```
+
+**Conclusión:** la condición exigida por `E5-GATE-004` **NO ESTÁ SATISFECHA** en el corte canónico actual.
+
+Los contratos de rollout y rollback están materializados para las 207 raíces y la contingencia posee criterio de readiness definido, pero las fuentes canónicas impiden afirmar que esas tres dimensiones sean actualmente ejecutables para el universo completo. En particular, las 185 raíces sujetas a ejecución o activación conservan un bloqueo físico, de AURA, externo o de línea funcional; las 22 restantes no poseen deploy directo y no pueden utilizarse para fabricar una ejecución física inexistente.
+
+---
+
+#### 3. Fuentes canónicas y precedencia
+
+La comprobación consume, sin redefinirlas:
+
+- `DELIV-PKG-014` como fuente de la identidad física, inventario de cambios y bloqueos que impiden inventar artefactos ejecutables;
+- `DELIV-PKG-015` como consolidación de arquitectura, dependencias, bloqueos y orden de actualización;
+- `DELIV-PKG-018` como contrato de default seguro, activación progresiva y kill switch;
+- `DELIV-PKG-019` como fuente de la estrategia de rollout por paquete;
+- `DELIV-PKG-020` como fuente del rollback técnico, funcional y de datos por paquete;
+- `DELIV-PKG-021` como fuente de runbooks y procedimientos requeridos por paquete;
+- `READY-GATE-008` como criterio futuro para confirmar procedimientos operativos y contingencias mediante evidencia de readiness;
+- `READY-GATE-012` como criterio futuro para confirmar respaldo, restauración y rollback probados mediante evidencia real;
+- `CUTOVER-OPS-006` como criterio posterior de pausa, reversión o continuación durante el piloto;
+- los principios obligatorios de E5, que separan planificación preimplementación de ejecución física y evidencia real;
+- la salida obligatoria de E5, que exige rollback, contingencia y vínculo ejecutable con la implementación posterior, sin afirmar despliegue, piloto o cierre real.
+
+Precedencia de interpretación:
+
+```text
+identidad física y bloqueos
+→ control de activación
+→ rollout
+→ rollback
+→ procedimientos y contingencias
+→ readiness con evidencia real
+→ cutover/piloto
+→ ejecución posterior
+```
+
+Una disposición `ESPECIFICADO` no elimina un bloqueo heredado ni constituye evidencia de ejecución.
+
+---
+
+#### 4. Criterio de ejecutabilidad de rollout
+
+Para esta puerta, un rollout solo puede confirmarse como ejecutable cuando la misma raíz dispone, como mínimo, de:
+
+1. identidad de paquete vigente;
+2. repositorio y frontera física suficientes para materializar el artefacto aplicable;
+3. propietario y perfil `TP-*` definidos;
+4. ambiente y orden de promoción definidos;
+5. artefacto o unidad sobre la cual pueda actuar la estrategia, sin inventarla;
+6. secuencia de stages aplicable;
+7. cohortes o unidad discreta de promoción cuando la segmentación sea segura;
+8. pausas, gates de promoción y reglas de detención;
+9. observabilidad y evidencia previstas;
+10. default seguro y mecanismo de contención o kill switch cuando aplique.
+
+`DELIV-PKG-019` materializa la estrategia para las 207 raíces, pero conserva expresamente los bloqueos heredados. En consecuencia:
+
+- las **167** raíces con identidad física no confirmada poseen rollout especificado, pero no un release ejecutable que pueda promoverse hoy;
+- las **14** raíces AURA permanecen no ejecutables mientras no se confirmen repositorio, runtime, datos e identidad física;
+- las **2** raíces `EXT` permanecen bloqueadas hasta satisfacer `EXT-GOV-001`;
+- las **2** raíces TALENTO permanecen fuera de la línea funcional actual;
+- las **22** raíces sin cambio físico directo no reciben un deploy ficticio y conservan rollout de control/evidencia según aplicabilidad.
+
+La existencia de una secuencia `5% → 25% → 50% → 100%`, de una regla de cohortes o de un gate de promoción no convierte por sí sola una raíz bloqueada en ejecutable.
+
+---
+
+#### 5. Criterio de ejecutabilidad de rollback
+
+`DELIV-PKG-020` materializa una disposición de rollback para las 207 raíces y define, según perfil, disparadores, autoridad, detención de promoción, estado técnico seguro, estado funcional seguro, tratamiento de datos, efectos externos, irreversibilidad, conciliación y evidencia futura.
+
+La puerta preserva las siguientes reglas:
+
+1. rollback técnico, rollback funcional, rollback de datos, kill switch, compensación, restore, recovery, failover y conciliación no son sinónimos;
+2. un kill switch puede detener exposición nueva, pero no borra hechos empresariales ni revierte datos por sí solo;
+3. un rollback de datos no puede destruir historia válida ni deshacer hechos confirmados de manera silenciosa;
+4. una reversa contractual no demuestra que exista hoy el comando, archivo, migración, release o artefacto físico para ejecutarla;
+5. una reversa planificada no puede declararse probada sin evidencia real.
+
+Por ello, las **167** raíces con identidad física no confirmada continúan sin artefacto ejecutable; AURA, EXT y TALENTO conservan sus respectivos gates; y las **22** raíces sin cambio físico directo no reciben un rollback de deploy inventado.
+
+`DELIV-PKG-020` queda reconocido como diseño de rollback completo, pero ese hecho no satisface por sí solo la condición de ejecutabilidad global de `E5-GATE-004`.
+
+---
+
+#### 6. Criterio de ejecutabilidad de contingencia
+
+La contingencia operativa no se reduce a “hacer rollback”. Debe permitir que un operador autorizado responda a una condición anómala mediante un procedimiento vigente, identificable y reproducible, con:
+
+- condición de entrada;
+- límites y alcance;
+- autoridad y escalamiento;
+- acción segura y mecanismo de contención;
+- evidencia que debe conservarse;
+- condición de suspensión;
+- criterio de reincorporación;
+- retorno gobernado a la operación normal.
+
+`READY-GATE-008` define precisamente el criterio y la evidencia que deberán utilizarse para confirmar esa capacidad durante readiness. La propia fuente establece que E5 **no afirma que los procedimientos hayan sido ejecutados, ensayados o certificados en el ambiente objetivo**.
+
+Por tanto, `E5-GATE-004` reconoce que el contrato de contingencia está diseñado, pero no presenta la futura comprobación de readiness como evidencia presente de ejecutabilidad real.
+
+---
+
+#### 7. Frontera con la evidencia posterior
+
+La separación obligatoria es:
+
+```text
+E5
+→ define rollout, rollback, contingencia, gates y evidencia esperada
+
+IMPLEMENTACIÓN FÍSICA
+→ materializa artefactos y cambios autorizados
+
+SHELL-CI-021 / READINESS
+→ obtiene evidencia real, incluida la comprobación de contingencias y rollback aplicables
+
+CUTOVER / PILOTO
+→ aplica los criterios de pausa, reversión o continuación sobre evidencia real
+```
+
+`READY-GATE-012` existe precisamente para exigir respaldo, restauración y rollback probados mediante evidencia real. Esa prueba no puede anticiparse documentalmente desde `E5-GATE-004`.
+
+---
+
+#### 8. Reconciliación de estados de ejecutabilidad
+
+| Clase canónica                       |  Raíces | Rollout                                         | Rollback                                                      | Contingencia / readiness                            | Resultado E5-GATE-004              |
+| ------------------------------------ | ------: | ----------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------- | ---------------------------------- |
+| identidad física no confirmada       | **167** | especificado, sin release ejecutable confirmado | especificado, sin artefacto físico confirmado para la reversa | criterio futuro aplicable                           | `NO_CONFIRMABLE_COMO_EJECUTABLE`   |
+| AURA bloqueada                       |  **14** | bloqueado                                       | bloqueado                                                     | no ejecutable mientras persista el bloqueo AURA     | `NO_CONFIRMABLE_COMO_EJECUTABLE`   |
+| dependencia `EXT-GOV-001`            |   **2** | bloqueado                                       | condicionado                                                  | condicionado al gate externo                        | `NO_CONFIRMABLE_COMO_EJECUTABLE`   |
+| TALENTO fuera de línea actual        |   **2** | fuera de línea                                  | fuera de línea                                                | no ejecutable en la línea actual                    | `NO_CONFIRMABLE_COMO_EJECUTABLE`   |
+| sin cambio físico directo confirmado |  **22** | sin deploy directo; control/evidencia posterior | sin rollback de deploy propio                                 | evidencia contractual/operativa según aplicabilidad | `NO_APLICA_DEPLOY_DIRECTO`         |
+| **Total**                            | **207** |                                                 |                                                               |                                                     | **condición global no satisfecha** |
+
+No existe en el corte actual una clase adicional que pueda utilizarse para promover estas raíces a `EJECUTABLE` por inferencia.
+
+---
+
+#### 9. Relación con las demás puertas de E5
+
+Esta tarea no reescribe el resultado de las puertas anteriores:
+
+- `E5-GATE-001` conserva su conclusión propia sobre capacidades y paquetes aprobados;
+- `E5-GATE-002` conserva su conclusión propia sobre propietario y destino de brechas críticas;
+- `E5-GATE-003` conserva su conclusión propia sobre cobertura de requisitos no funcionales.
+
+Tampoco anticipa las materias reservadas posteriores:
+
+- `E5-GATE-005` evaluará si el piloto posee criterios medibles;
+- `E5-GATE-006` evaluará capacitación y soporte;
+- `E5-GATE-007` evaluará trazabilidad de `TREQ-*` hacia prueba, paquete y evidencia de cierre;
+- `E5-GATE-008` resolverá la entrada a implementación física por paquete usando el conjunto de puertas y bloqueos vigentes.
+
+El resultado `NO ESTÁ SATISFECHA` de esta puerta debe permanecer visible para `E5-GATE-008`; no autoriza implementación física y no se corrige por inferencia dentro de `E5-GATE-004`.
+
+---
+
+#### 10. Decisiones y pendientes preservados
+
+`E5-GATE-004` no crea una nueva brecha ni reasigna los bloqueos existentes. Conserva sus destinos canónicos:
+
+- la identidad física y el inventario ejecutable permanecen gobernados por `DELIV-PKG-014` y su trazabilidad posterior;
+- AURA conserva sus condiciones canónicas de repositorio, runtime, datos e identidad física;
+- las raíces externas conservan `EXT-GOV-001` como condición previa;
+- TALENTO conserva su estado fuera de la línea funcional actual hasta su activación canónica;
+- las raíces sin cambio físico directo permanecen como controles/evidencia y no reciben deploy o rollback ficticios;
+- la comprobación real de contingencias corresponde a `READY-GATE-008` durante readiness;
+- la evidencia real de respaldo, restore y rollback probado corresponde a `READY-GATE-012` durante readiness.
+
+Ningún bloqueo se considera cerrado por el hecho de haber sido enumerado en esta puerta.
+
+---
+
+#### 11. Criterios de aceptación documental
+
+`E5-GATE-004` queda documentalmente completa cuando:
+
+1. evalúa las 207 raíces sin excluir identidades bloqueadas o sin deploy directo;
+2. distingue `ESPECIFICADO`, `EJECUTABLE` y `PROBADO`;
+3. conserva la reconciliación **167 + 14 + 2 + 2 + 22 = 207**;
+4. no presenta rollout especificado como release ejecutable cuando la identidad física sigue abierta;
+5. no presenta rollback planificado como rollback probado;
+6. no presenta el criterio futuro de contingencia como evidencia ya ejecutada;
+7. conserva AURA, `EXT-GOV-001`, TALENTO y los controles sin cambio físico directo sin inventar excepciones;
+8. deja explícito que la condición global de `E5-GATE-004` no está satisfecha;
+9. no crea ni modifica código, migraciones, datos, configuración remota ni operaciones sobre Supabase;
+10. no crea ni modifica requisitos de prueba ni fragmentos del registro 04A;
+11. mantiene `E5-GATE-005` como siguiente tarea reservada.
+
+---
+
+#### 12. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta puerta reconcilia contratos documentales ya aprobados de rollout, rollback, contingencia y evidencia futura. No introduce comportamiento ejecutable nuevo, no modifica una regla de negocio, autorización, dato, integración, algoritmo, transición de estado ni requisito de prueba existente. La ejecución y evidencia real permanecen en las tareas propietarias de implementación y readiness.
+
+**Requisitos TREQ-* creados:** 0  
+**Requisitos TREQ-* modificados:** 0  
+**Fragmentos 04A afectados:** 0
+
+---
+
+#### 13. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+E5-GATE-003 — Confirmar que los requisitos no funcionales están cubiertos
+
+##### TAREA ACTUAL APROBADA
+E5-GATE-004 — Confirmar que rollout, rollback y contingencia son ejecutables
+
+##### SIGUIENTE TAREA RESERVADA
+E5-GATE-005 — Confirmar que el piloto tiene criterios medibles
+
+
 ### [ ] E5-GATE-005 — Confirmar que el piloto tiene criterios medibles
 ### [ ] E5-GATE-006 — Confirmar que capacitación y soporte están planificados
 ### [ ] E5-GATE-007 — Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre

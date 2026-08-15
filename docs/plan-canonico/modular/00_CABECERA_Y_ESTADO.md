@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **874** |
+| Tareas aprobadas | **875** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **720** |
+| Tareas no iniciadas | **719** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **54.83% (874/1594)** |
+| Porcentaje de completamiento | **54.89% (875/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **E5-GATE-003 — Confirmar que los requisitos no funcionales están cubiertos** |
-| Tarea actual | **E5-GATE-004 — Confirmar que rollout, rollback y contingencia son ejecutables** |
+| Última tarea aprobada | **E5-GATE-004 — Confirmar que rollout, rollback y contingencia son ejecutables** |
+| Tarea actual | **E5-GATE-005 — Confirmar que el piloto tiene criterios medibles** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **E5-GATE-005 — Confirmar que el piloto tiene criterios medibles** |
+| Siguiente tarea | **E5-GATE-006 — Confirmar que capacitación y soporte están planificados** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 63 de 68 aprobadas; E5-GATE-004 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 64 de 68 aprobadas; E5-GATE-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `E5-GATE-003` — Confirmar que los requisitos no funcionales están cubiertos |
-| Tarea actual | `E5-GATE-004` — Confirmar que rollout, rollback y contingencia son ejecutables — **NO INICIADA** |
-| Siguiente tarea | `E5-GATE-005` — Confirmar que el piloto tiene criterios medibles |
+| Última aprobada | `E5-GATE-004` — Confirmar que rollout, rollback y contingencia son ejecutables |
+| Tarea actual | `E5-GATE-005` — Confirmar que el piloto tiene criterios medibles — **NO INICIADA** |
+| Siguiente tarea | `E5-GATE-006` — Confirmar que capacitación y soporte están planificados |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 63 DE 68 APROBADAS — ACTUAL E5-GATE-004** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 64 DE 68 APROBADAS — ACTUAL E5-GATE-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-E5-GATE-003 — Confirmar que los requisitos no funcionales están cubiertos
-        ↓
-TAREA ACTUAL
 E5-GATE-004 — Confirmar que rollout, rollback y contingencia son ejecutables
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 E5-GATE-005 — Confirmar que el piloto tiene criterios medibles
         ↓
+SIGUIENTE TAREA RESERVADA
+E5-GATE-006 — Confirmar que capacitación y soporte están planificados
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 63 de 68 tareas aprobadas
+BLOQUE E5 — 64 de 68 tareas aprobadas
 ```
