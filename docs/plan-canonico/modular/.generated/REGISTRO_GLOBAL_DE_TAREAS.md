@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **864** |
+| Aprobadas | **865** |
 | En propuesta | **0** |
-| No iniciadas | **730** |
+| No iniciadas | **729** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **54.20% (864/1594)** |
+| Porcentaje de completamiento | **54.27% (865/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `HYPERCARE-OPS-003` — Definir monitoreo de errores, colas, integraciones y rendimiento | ✅ APROBADA |
-| Tarea actual | `HYPERCARE-OPS-004` — Definir monitoreo de adopción, tiempos y desviaciones operativas | ⬜ NO INICIADA |
-| Siguiente reservada | `HYPERCARE-OPS-005` — Definir conciliaciones de datos y efectos entre dominios | ⬜ NO INICIADA |
+| Última aprobada | `HYPERCARE-OPS-004` — Definir monitoreo de adopción, tiempos y desviaciones operativas | ✅ APROBADA |
+| Tarea actual | `HYPERCARE-OPS-005` — Definir conciliaciones de datos y efectos entre dominios | ⬜ NO INICIADA |
+| Siguiente reservada | `HYPERCARE-OPS-006` — Definir clasificación, prioridad y procedimiento de corrección de incidentes | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -581,7 +581,7 @@
 | ✅ APROBADA | `HYPERCARE-OPS-001` | Definir inicio, duración y salida del acompañamiento intensivo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ✅ APROBADA | `HYPERCARE-OPS-002` | Definir responsables funcionales y técnicos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ✅ APROBADA | `HYPERCARE-OPS-003` | Definir monitoreo de errores, colas, integraciones y rendimiento | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `HYPERCARE-OPS-004` | Definir monitoreo de adopción, tiempos y desviaciones operativas | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
+| ✅ APROBADA | `HYPERCARE-OPS-004` | Definir monitoreo de adopción, tiempos y desviaciones operativas | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ⬜ NO INICIADA | `HYPERCARE-OPS-005` | Definir conciliaciones de datos y efectos entre dominios | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ⬜ NO INICIADA | `HYPERCARE-OPS-006` | Definir clasificación, prioridad y procedimiento de corrección de incidentes | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ⬜ NO INICIADA | `HYPERCARE-OPS-007` | Definir registro y aprobación de deuda y tareas posteriores | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
