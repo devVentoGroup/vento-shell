@@ -3883,7 +3883,7 @@ No se inicia ni modifica `AUTH-ERR-012` en esta tarea.
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md`
 **Artefactos producidos:** `OPERATIONAL-ROLE-REQUIRED-BLOCKING-CONTRACT-001`, `OPERATIONAL-ROLE-STATE-DECISION-MATRIX-001`, `OPERATIONAL-ROLE-CHANNEL-RESPONSE-MATRIX-001`, `OPERATIONAL-ROLE-APPLICATION-COVERAGE-REGISTER-001` y `OPERATIONAL-ROLE-PHYSICAL-RECONCILIATION-001`
-**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001` a `AUTH-MOD-006`; `AUTH-MOD-009`; `AUTH-MOD-010`; `AUTH-MOD-018`; `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-007`; `AUTH-CAT-012` a `AUTH-CAT-015`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-008` a `AUTH-CTX-017`; `AUTH-CTX-020`; `AUTH-CTX-024` a `AUTH-CTX-030`; `AUTH-ERR-001` a `AUTH-ERR-011`; contratos vigentes de identidad, aplicación, turno, check-in, rol base, rol operativo, territorio, permiso, recurso, disponibilidad, simulación y precedencia; estado remoto y desplegado inspeccionado; contrato documental vigente
+**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001` a `AUTH-MOD-006`; `AUTH-MOD-009`; `AUTH-MOD-010`; `AUTH-MOD-018`; `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-007`; `AUTH-CAT-012` a `AUTH-CAT-015`; `AUTH-CAT-022` a `AUTH-CAT-024`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-008` a `AUTH-CTX-017`; `AUTH-CTX-020`; `AUTH-CTX-024` a `AUTH-CTX-030`; `AUTH-ERR-001` a `AUTH-ERR-011`; contratos vigentes de identidad, aplicación, turno, check-in, rol base, rol operativo, territorio, permiso, recurso, disponibilidad, simulación y precedencia; estado remoto y desplegado inspeccionado; contrato documental vigente
 **Cambios físicos autorizados:** ninguno; no modifica código, Supabase, Auth, RLS, RPC, Edge Functions, datos, migraciones, constraints, índices, triggers, turnos, catálogos, perfiles, matrices, sedes, áreas, roles, permisos, aplicaciones ni despliegues
 
 ---
@@ -3985,11 +3985,11 @@ Cobertura materializada:
 | Escenarios con decisión explícita                            |       24 |
 | Canales con respuesta explícita                              |       10 |
 | Aplicaciones canónicas reconciliadas                         |       10 |
-| Permisos canónicos evaluados por carril                      |      112 |
-| Permisos sin carril operativo                                |       54 |
-| Permisos con carril operativo                                |       58 |
+| Permisos canónicos evaluados por carril                      |      140 |
+| Permisos sin carril operativo                                |       68 |
+| Permisos con carril operativo                                |       72 |
 | Carriles operativos `T`                                      |       19 |
-| Carriles operativos `T+C`                                    |       39 |
+| Carriles operativos `T+C`                                    |       53 |
 | Roles operativos físicos observados                          |       13 |
 | Roles físicos activos observados                             |       13 |
 | Turnos físicos observados                                    |     2844 |
@@ -4196,10 +4196,10 @@ Distribución canónica:
 
 | Clasificación                 | Cantidad | Efecto ante rol faltante                           |
 | ----------------------------- | -------: | -------------------------------------------------- |
-| permisos sin carril operativo |       54 | no evalúan esta razón                              |
+| permisos sin carril operativo |       68 | no evalúan esta razón                              |
 | carriles operativos `T`       |       19 | requieren rol después de resolver turno vigente    |
-| carriles operativos `T+C`     |       39 | requieren rol después de resolver turno y check-in |
-| total con carril operativo    |       58 | el carril operativo queda denegado si falta rol    |
+| carriles operativos `T+C`     |       53 | requieren rol después de resolver turno y check-in |
+| total con carril operativo    |       72 | el carril operativo queda denegado si falta rol    |
 
 Ninguna aplicación podrá convertir todos sus permisos en una única política de
 rol. La unidad de decisión continúa siendo el permiso, su modalidad y el
@@ -4857,6 +4857,9 @@ Esta tarea crea diez requisitos:
 Los diez quedan en estado `IDENTIFICADO`. La definición documental no equivale
 a implementación ni a evidencia de ejecución.
 
+La reconciliación con `AUTH-CAT-024` modifica el requisito existente
+`TREQ-AUTH-240`; no crea identificadores `TREQ-*` nuevos.
+
 ---
 
 #### 36. Validaciones documentales definidas
@@ -4864,8 +4867,8 @@ a implementación ni a evidencia de ejecución.
 La implementación deberá probar al menos:
 
 1. código, estado, `403`, decisión de carril y cero efectos;
-2. aplicación exclusiva a los 58 carriles operativos;
-3. no afectación de 54 permisos sin carril operativo;
+2. aplicación exclusiva a los 72 carriles operativos;
+3. no afectación de 68 permisos sin carril operativo;
 4. independencia de `BASE_OR_OPERATIONAL`;
 5. ausencia `null`, vacía y omitida;
 6. prohibición de fallback desde rol base, perfil, historial, dispositivo,
@@ -4936,8 +4939,8 @@ La tarea queda documentalmente completa cuando:
 3. la fuente exclusiva es el rol de la revisión publicada del turno;
 4. se prohíben todos los fallbacks no autoritativos;
 5. se preserva la separación entre rol base y operativo;
-6. los 112 permisos se reconcilian en distribución 54/19/39;
-7. los 58 carriles operativos requieren rol;
+6. los 140 permisos se reconcilian en distribución 68/19/53;
+7. los 72 carriles operativos requieren rol;
 8. las cuatro modalidades tienen decisión explícita;
 9. la precedencia con turno y check-in es inequívoca;
 10. sede y área permanecen en `AUTH-ERR-013` y `AUTH-ERR-014`;
