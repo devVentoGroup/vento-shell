@@ -1403,7 +1403,720 @@ HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos
 HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento
 
 
-### [ ] HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento
+### ✅ HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento
+
+Estado: APROBADA
+Tarea anterior: `HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos`
+Tarea siguiente: `HYPERCARE-OPS-004 — Definir monitoreo de adopción, tiempos y desviaciones operativas`
+Tipo de tarea: documental — definición normativa y materialización por `package_id` del contrato técnico de monitoreo durante hypercare para errores, colas, integraciones y rendimiento, consumiendo la topología, observabilidad, requisitos no funcionales, ownership y evidencia ya aprobados; sin ejecutar monitoreo, instrumentación, consultas operativas, clasificación o corrección de incidentes, conciliaciones, despliegues, cambios de configuración, migraciones, DDL/DML, backfills, modificaciones de datos ni operaciones sobre Supabase
+Repositorio propietario: `vento-shell`
+Archivo propietario: `docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md`
+Ejecución posterior: `SHELL-CI-023::<package_id>`
+Cambios físicos autorizados: ninguno
+Requisitos de prueba creados o modificados: 0
+
+---
+
+#### 1. Propósito
+
+`HYPERCARE-OPS-003` define cómo deberá observarse técnicamente una instancia durante `SHELL-CI-023::<package_id>` para detectar degradaciones, fallos y pérdida de estabilidad sin confundir ausencia de señales con salud ni crear métricas, umbrales o fuentes de verdad paralelas.
+
+La tarea cubre exclusivamente cuatro familias técnicas:
+
+1. errores y resultados técnicos fallidos o desconocidos;
+2. colas, outbox, inbox y jobs cuando sean aplicables;
+3. integraciones internas, externas y dependencias técnicas cuando sean aplicables;
+4. rendimiento técnico, capacidad y comportamiento temporal medible del sistema.
+
+El monitoreo aquí definido es un contrato para la ejecución futura. Esta tarea no afirma que una señal exista físicamente, que un dashboard esté activo, que una alerta haya disparado ni que una instancia esté sana.
+
+---
+
+#### 2. Resultado sustantivo
+
+Para cada una de las **207 raíces `GAP-PKG-001..207`**, 003 materializa una decisión documental individual que fija:
+
+- la identidad temporal exacta proveniente de `HYPERCARE-OPS-001`;
+- la responsabilidad funcional y técnica proveniente de `HYPERCARE-OPS-002`;
+- la topología y las dependencias que determinan aplicabilidad desde `DELIV-PKG-015`;
+- el perfil de observabilidad y responsable de decisión desde `DELIV-PKG-017`;
+- los requisitos no funcionales, SLI, presupuestos y referencias aplicables desde `DELIV-PKG-013` y `NFR-REQ-009`;
+- las obligaciones de prueba y evidencia desde `DELIV-PKG-016` y el registro `04A`;
+- qué debe observarse en errores, colas, integraciones y rendimiento;
+- qué ausencia de señal bloquea interpretar la instancia como estable;
+- qué hallazgos se transfieren a las tareas propietarias posteriores sin clasificarlos o resolverlos en 003.
+
+El resultado documental de cada fila es `ESPECIFICADO`. Ese estado significa únicamente que el contrato de monitoreo está resuelto por referencia canónica; no equivale a `IMPLEMENTADO`, `VALIDADO` ni a evidencia de una ejecución real de hypercare.
+
+---
+
+#### 3. Entradas canónicas obligatorias
+
+003 consume sin redefinir:
+
+- `HYPERCARE-OPS-001`: identidad de la instancia, entrada a hypercare, permanencia, suspensión, extensión e invalidación;
+- `HYPERCARE-OPS-002`: responsable funcional, responsable técnico, cobertura, suplencia, escalamiento y segregación;
+- `DELIV-PKG-013`: requisitos no funcionales, objetivos, presupuestos y referencias aplicables por paquete;
+- `DELIV-PKG-015`: topología real planificada, dependencias, fronteras técnicas y superficies que determinan si existen colas o integraciones aplicables;
+- `DELIV-PKG-016`: requisitos `TREQ-*`, nivel de prueba, ambiente, evidencia esperada y gate por paquete;
+- `DELIV-PKG-017`: señales, métricas, alertas, runtime, repositorio, propietario de decisión y contrato de conservación por paquete;
+- `DELIV-PKG-018`: estados seguros, suspensión, desactivación y kill switch aplicables;
+- `DELIV-PKG-019`: release, rollout, cohortes, pausas y promoción que deben poder correlacionarse con una degradación;
+- `DELIV-PKG-020`: rollback, recovery, compensación y tratamiento de resultados desconocidos o efectos irreversibles;
+- `READY-GATE-011`: observabilidad y enrutamiento vigentes exigibles antes de ejecución;
+- `NFR-REQ-009`: contrato transversal de observabilidad, soporte y alertas;
+- `TREQ-PROC-461..500`: requisitos ya existentes derivados de `NFR-REQ-009`;
+- `TREQ-INTEGRATION-003` y `TREQ-INTEGRATION-004`: idempotencia, reintentos, observabilidad y reconstrucción de cadenas asíncronas;
+- `TREQ-CONT-002`: trazabilidad y autoridad de incidentes cuando una observación llegue a esa categoría;
+- `SHELL-CI-023::<package_id>`: ejecutor futuro del monitoreo y estabilización;
+- `SHELL-CI-024::<package_id>`: certificador futuro de salida y evidencia final.
+
+Si una fuente aplicable falta, pertenece a otra revisión, contradice otra fuente vigente o no resuelve un dato obligatorio, 003 no la sustituye mediante estimación.
+
+---
+
+#### 4. Fronteras de responsabilidad
+
+003 no define ni ejecuta:
+
+- adopción, tiempos de operación humana o desviaciones del proceso, reservados a `HYPERCARE-OPS-004`;
+- conciliación de datos, documentos, saldos o efectos entre dominios, reservada a `HYPERCARE-OPS-005`;
+- severidad del incidente, prioridad, procedimiento de corrección, mitigación o cierre, reservados a `HYPERCARE-OPS-006`;
+- aceptación de deuda o creación de trabajo posterior, reservados a `HYPERCARE-OPS-007`;
+- transferencia a soporte ordinario, reservada a `HYPERCARE-OPS-008`;
+- retiro de contingencias temporales, reservado a `HYPERCARE-OPS-009`;
+- autoridad de cierre funcional, técnico u operativo, reservada a `HYPERCARE-OPS-010`;
+- certificación material de salida, reservada a `SHELL-CI-024::<package_id>`.
+
+Un hallazgo técnico puede alimentar esas tareas, pero 003 no altera su propiedad.
+
+---
+
+#### 5. Unidad de observación
+
+Toda evidencia futura deberá pertenecer a la misma instancia definida por 001:
+
+```text
+package_id
++
+candidate_ref
++
+environment
++
+authorized_scope_ref
++
+shell_ci_023_execution_ref
+```
+
+No se pueden mezclar señales de:
+
+- candidatos distintos;
+- ambientes distintos;
+- alcances incompatibles;
+- releases no pertenecientes a la instancia;
+- ejecuciones separadas de hypercare;
+- raíces independientes solo porque compartan repositorio o aplicación.
+
+La correlación con un cambio reciente no demuestra causalidad por sí sola.
+
+---
+
+#### 6. Regla de precedencia del monitoreo
+
+Para cada `package_id`, la resolución se realiza en este orden:
+
+1. `DELIV-PKG-015` determina qué componentes, dependencias, colas, integraciones y superficies existen en el alcance;
+2. `DELIV-PKG-017` determina qué señales, métricas, alertas, runtime y ownership corresponden a esa topología;
+3. `DELIV-PKG-013` y `NFR-REQ-009` aportan SLI, presupuestos y reglas no funcionales ya aprobadas;
+4. `DELIV-PKG-016` determina cómo se prueba y qué evidencia se exige;
+5. `HYPERCARE-OPS-002` determina quién interpreta, recibe y escala la observación;
+6. `HYPERCARE-OPS-001` determina qué instancia y qué intervalo de hypercare pueden consumir la evidencia.
+
+003 **no crea porcentajes, ventanas, tiempos máximos, tasas tolerables ni umbrales numéricos nuevos**. Cuando exista una referencia aprobada se hereda exactamente. Cuando un objetivo obligatorio todavía no esté resuelto, se puede observar la señal, pero no declarar cumplimiento contra un objetivo inexistente.
+
+---
+
+#### 7. Monitoreo de errores
+
+Toda superficie aplicable deberá conservar observación suficiente para distinguir como mínimo:
+
+- demanda o cantidad de operaciones observadas;
+- operaciones exitosas y fallidas;
+- error rápido y operación lenta que termina en error;
+- clase y código estable del error;
+- error controlado, no controlado y resultado técnico desconocido;
+- reintento, fallback o recuperación automática cuando exista;
+- componente, dependencia, runtime, release y ambiente;
+- proporción o tasa solo cuando la fuente aprobada defina población y unidad;
+- correlación con comando, solicitud, job, cola o integración cuando aplique;
+- afectación a una ruta crítica sin convertirla todavía en severidad de incidente.
+
+Los logs relevantes deberán ser estructurados y no depender exclusivamente de texto libre o stack trace. El nivel `ERROR` o `FATAL` de un log no determina por sí mismo la prioridad de un incidente.
+
+La ausencia de errores observados solo puede interpretarse cuando el canal de monitoreo que debía producir esa evidencia está comprobablemente disponible. Un pipeline sin señales no equivale a una instancia saludable.
+
+---
+
+#### 8. Monitoreo de colas, outbox, inbox y jobs
+
+Esta familia aplica únicamente cuando `DELIV-PKG-015` y `DELIV-PKG-017` declaren una cola, outbox, inbox, trabajo diferido, sincronización o job dentro de la topología aplicable.
+
+Cuando aplique, la observación deberá permitir determinar:
+
+- trabajo recibido;
+- pendiente;
+- activo o en procesamiento;
+- completado;
+- fallido;
+- reintentado y próximo intento cuando exista;
+- deduplicado;
+- descartado;
+- enviado a dead-letter, cuarentena o tratamiento equivalente cuando exista;
+- edad del elemento más antiguo;
+- tiempo de procesamiento;
+- capacidad y backpressure;
+- partición o dependencia relevante;
+- última ejecución exitosa y ausencia de ejecución esperada para jobs programados;
+- resultado empresarial todavía pendiente o desconocido, sin resolver su conciliación en 003.
+
+Una cola vacía no se declara saludable si la fuente productora dejó de generar trabajo que debía existir. Un backlog pequeño tampoco se declara saludable si su elemento más antiguo incumple un presupuesto aprobado.
+
+`NO_APLICA` solo puede utilizarse cuando la topología aprobada demuestre que la familia no existe para esa instancia; no se infiere por falta de telemetría.
+
+---
+
+#### 9. Monitoreo de integraciones y dependencias
+
+Para toda integración interna o externa aplicable deberá poder observarse:
+
+- solicitudes, comandos o mensajes emitidos y recibidos;
+- éxito, rechazo, timeout y resultado desconocido;
+- duración medida en el punto definido por el contrato;
+- reintentos, deduplicación e idempotencia;
+- backlog y dead-letter cuando exista asincronía;
+- versión contractual y compatibilidad relevante;
+- autenticación o autorización técnica fallida sin exponer secretos;
+- estado de red y dependencia;
+- disponibilidad del proveedor cuando corresponda;
+- error de configuración, contrato o dato diferenciable del error del proveedor;
+- acuse técnico separado del efecto empresarial;
+- correlación con la instancia, release y cambio reciente aplicables.
+
+Un HTTP exitoso, acuse de proveedor, mensaje aceptado o adaptador disponible no prueba por sí mismo el efecto empresarial final. La conciliación de ese efecto pertenece a 005.
+
+---
+
+#### 10. Monitoreo de rendimiento técnico
+
+El rendimiento técnico deberá observarse conforme a los presupuestos y SLI ya aprobados. Cuando aplique, cubrirá:
+
+- demanda, concurrencia y throughput en la unidad definida por la fuente;
+- latencia de éxito y de error por separado;
+- percentiles o agregaciones únicamente cuando estén definidos por el perfil aplicable;
+- saturación de recursos y proximidad a límites;
+- capacidad disponible y backpressure;
+- tiempos de procesamiento de colas y jobs;
+- latencia de dependencias e integraciones;
+- rendimiento de base de datos, RPC, funciones o servicios utilizados;
+- crecimiento de backlog y tiempo de drenaje;
+- frescura y atraso de trabajos programados cuando formen parte de la topología;
+- degradación correlacionada con release, configuración, migración, feature flag o cambio de infraestructura aplicable.
+
+003 no convierte estas mediciones técnicas en tiempos de adopción, tiempos de ejecución humana o desviaciones operativas; esos indicadores pertenecen a 004.
+
+La ausencia de un SLO final no impide medir una señal, pero sí impide declarar que el objetivo se cumple. Ninguna banda cualitativa o estimación documental se presenta como medición real.
+
+---
+
+#### 11. Correlación y contexto mínimo
+
+La evidencia futura deberá conservar, cuando sea aplicable y permitido por privacidad:
+
+- `package_id`;
+- candidato, ambiente, alcance y release;
+- repositorio, componente o unidad técnica;
+- timestamp de ocurrencia y observación;
+- código de error o resultado estable;
+- identificadores técnicos de correlación aprobados;
+- referencia a cola, job, integración o dependencia;
+- punto de medición y unidad;
+- referencia al SLI, presupuesto o umbral heredado cuando exista;
+- referencia de ownership y enrutamiento de 002/017;
+- cambio reciente aplicable sin afirmar causalidad automática.
+
+No se usarán secretos, tokens, documentos, payloads completos ni identificadores personales de alta cardinalidad como dimensión ordinaria de monitoreo.
+
+---
+
+#### 12. Salud del propio monitoreo
+
+Antes de interpretar una ausencia de síntomas como estabilidad, `SHELL-CI-023` deberá poder demostrar que las fuentes aplicables de observación están funcionando.
+
+La comprobación deberá distinguir:
+
+- productor de señal activo;
+- recepción de señal;
+- atraso o pérdida;
+- capacidad de consulta;
+- evaluación de reglas aplicables;
+- entrega al responsable cuando exista alerta;
+- sincronización temporal suficiente para correlacionar evidencia.
+
+Una falla del pipeline de observabilidad se registra como pérdida de capacidad de observación; no como cero errores, cero backlog o cero degradación.
+
+---
+
+#### 13. Estados documentales y tratamiento de evidencia
+
+Para 003 se conservan los estados ya admitidos por el protocolo:
+
+| Estado                   | Uso en este contrato                                                                                                      |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `ESPECIFICADO`           | la fila resuelve fuentes, aplicabilidad y ownership documental; no existe afirmación de ejecución                         |
+| `PENDIENTE_DE_EVIDENCIA` | durante ejecución futura, la señal exigible todavía no tiene evidencia suficiente para sostener una conclusión            |
+| `BLOQUEADO`              | falta una fuente, señal, ownership, aplicabilidad o referencia obligatoria y no existe control compensatorio aprobado     |
+| `NO_APLICA`              | la topología y el perfil aprobados demuestran que una familia concreta no corresponde a la instancia                      |
+| `VALIDADO`               | solo puede provenir de evidencia real producida y aceptada por la ejecución o certificación propietaria; 003 no lo asigna |
+
+`NO_APLICA` no se usa como equivalente a “no instrumentado”. `PENDIENTE_DE_EVIDENCIA` no se interpreta como PASS.
+
+---
+
+#### 14. Condiciones que bloquean interpretar estabilidad técnica
+
+La instancia no podrá presentar evidencia técnica suficiente de estabilidad cuando ocurra cualquiera de estas condiciones aplicables:
+
+1. no se resuelve la fila homónima de `DELIV-PKG-017`;
+2. la topología 015 exige una cola o integración y no existe señal o control compensatorio aprobado para observarla;
+3. falta el responsable o enrutamiento exigible por 002/017;
+4. una señal obligatoria pertenece a candidato, ambiente o alcance distinto;
+5. una referencia de SLI o presupuesto exigible está ausente o contradictoria y se pretende declarar cumplimiento;
+6. el pipeline de monitoreo está caído o su pérdida de señales no puede cuantificarse;
+7. existe backlog, resultado desconocido, error o degradación que requiere evaluación y no tiene propietario;
+8. una señal crítica se basa en texto libre o evidencia no reproducible cuando el contrato exige código o estructura estable;
+9. la privacidad o autorización impiden obtener la evidencia de forma aprobada y no existe control compensatorio;
+10. dos fuentes canónicas vigentes atribuyen semántica incompatible a la misma señal o criterio.
+
+Estas condiciones no asignan severidad de incidente; determinan únicamente que 003 no permite inferir estabilidad técnica con evidencia insuficiente.
+
+---
+
+#### 15. Handoffs obligatorios
+
+Los hallazgos de 003 se transfieren sin cambiar de propiedad:
+
+| Hallazgo                                                                                           | Destino propietario                                               |
+| -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| error, degradación, timeout, backlog o integración anómala que requiere clasificación o corrección | `HYPERCARE-OPS-006`                                               |
+| divergencia de datos, efecto empresarial pendiente o resultado que requiere conciliación           | `HYPERCARE-OPS-005`                                               |
+| adopción, tiempo humano, abandono o desviación del proceso                                         | `HYPERCARE-OPS-004`                                               |
+| trabajo aceptado como deuda posterior                                                              | `HYPERCARE-OPS-007`                                               |
+| evidencia necesaria para transferencia a soporte ordinario                                         | `HYPERCARE-OPS-008`                                               |
+| condición asociada a una contingencia temporal                                                     | `HYPERCARE-OPS-009`                                               |
+| evidencia agregada para decidir cierre                                                             | `HYPERCARE-OPS-010` y posteriormente `SHELL-CI-024::<package_id>` |
+
+003 puede detectar y describir el síntoma técnico. No clasifica prioridad, no aprueba mitigación y no cierra el expediente propietario.
+
+---
+
+#### 16. Tratamiento por modalidad heredada
+
+003 conserva sin reasignar la distribución aprobada por 001 y 002:
+
+| Modalidad heredada            | Cantidad | Tratamiento de monitoreo                                                                                                             |
+| ----------------------------- | -------: | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `PILOT-DIRECT-001`            |  **160** | el contrato se ejecutará directamente durante la instancia de `SHELL-CI-023::<package_id>` cuando esta entre válidamente a hypercare |
+| `PILOT-SHARED-001`            |    **3** | no crea monitoreo independiente ficticio; se observa mediante las instancias consumidoras que ejercen el contrato compartido         |
+| `PILOT-CONTROL-001`           |   **26** | conserva observación del control y de las raíces gobernadas según su frontera real; no transfiere ownership                          |
+| AURA bloqueada                |   **14** | el contrato queda especificado, pero no simula monitoreo de hypercare activo mientras persista el gate                               |
+| dependencia externa bloqueada |    **2** | conserva observabilidad y ownership internos aplicables, sin atribuir al proveedor autoridad empresarial                             |
+| TALENTO fuera de línea actual |    **2** | conserva el contrato documental sin simular ejecución en la línea vigente                                                            |
+
+Reconciliación:
+
+```text
+160 + 3 + 26 + 14 + 2 + 2 = 207
+```
+
+---
+
+#### 17. Matriz materializada de monitoreo para las 207 raíces
+
+Cada `package_id` aparece exactamente una vez. Las referencias `::<package_id>` identifican la fila homónima de la fuente indicada y no crean un identificador canónico nuevo.
+
+| `package_id`  | identidad temporal               | responsabilidad                  | topología                    | observabilidad               | errores                                            | colas/jobs                                                            | integraciones                                                         | rendimiento                                                         | estado documental |
+| ------------- | -------------------------------- | -------------------------------- | ---------------------------- | ---------------------------- | -------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------- | ----------------- |
+| `GAP-PKG-001` | `HYPERCARE-OPS-001::GAP-PKG-001` | `HYPERCARE-OPS-002::GAP-PKG-001` | `DELIV-PKG-015::GAP-PKG-001` | `DELIV-PKG-017::GAP-PKG-001` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-002` | `HYPERCARE-OPS-001::GAP-PKG-002` | `HYPERCARE-OPS-002::GAP-PKG-002` | `DELIV-PKG-015::GAP-PKG-002` | `DELIV-PKG-017::GAP-PKG-002` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-003` | `HYPERCARE-OPS-001::GAP-PKG-003` | `HYPERCARE-OPS-002::GAP-PKG-003` | `DELIV-PKG-015::GAP-PKG-003` | `DELIV-PKG-017::GAP-PKG-003` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-004` | `HYPERCARE-OPS-001::GAP-PKG-004` | `HYPERCARE-OPS-002::GAP-PKG-004` | `DELIV-PKG-015::GAP-PKG-004` | `DELIV-PKG-017::GAP-PKG-004` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-005` | `HYPERCARE-OPS-001::GAP-PKG-005` | `HYPERCARE-OPS-002::GAP-PKG-005` | `DELIV-PKG-015::GAP-PKG-005` | `DELIV-PKG-017::GAP-PKG-005` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-006` | `HYPERCARE-OPS-001::GAP-PKG-006` | `HYPERCARE-OPS-002::GAP-PKG-006` | `DELIV-PKG-015::GAP-PKG-006` | `DELIV-PKG-017::GAP-PKG-006` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-007` | `HYPERCARE-OPS-001::GAP-PKG-007` | `HYPERCARE-OPS-002::GAP-PKG-007` | `DELIV-PKG-015::GAP-PKG-007` | `DELIV-PKG-017::GAP-PKG-007` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-008` | `HYPERCARE-OPS-001::GAP-PKG-008` | `HYPERCARE-OPS-002::GAP-PKG-008` | `DELIV-PKG-015::GAP-PKG-008` | `DELIV-PKG-017::GAP-PKG-008` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-009` | `HYPERCARE-OPS-001::GAP-PKG-009` | `HYPERCARE-OPS-002::GAP-PKG-009` | `DELIV-PKG-015::GAP-PKG-009` | `DELIV-PKG-017::GAP-PKG-009` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-010` | `HYPERCARE-OPS-001::GAP-PKG-010` | `HYPERCARE-OPS-002::GAP-PKG-010` | `DELIV-PKG-015::GAP-PKG-010` | `DELIV-PKG-017::GAP-PKG-010` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-011` | `HYPERCARE-OPS-001::GAP-PKG-011` | `HYPERCARE-OPS-002::GAP-PKG-011` | `DELIV-PKG-015::GAP-PKG-011` | `DELIV-PKG-017::GAP-PKG-011` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-012` | `HYPERCARE-OPS-001::GAP-PKG-012` | `HYPERCARE-OPS-002::GAP-PKG-012` | `DELIV-PKG-015::GAP-PKG-012` | `DELIV-PKG-017::GAP-PKG-012` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-013` | `HYPERCARE-OPS-001::GAP-PKG-013` | `HYPERCARE-OPS-002::GAP-PKG-013` | `DELIV-PKG-015::GAP-PKG-013` | `DELIV-PKG-017::GAP-PKG-013` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-014` | `HYPERCARE-OPS-001::GAP-PKG-014` | `HYPERCARE-OPS-002::GAP-PKG-014` | `DELIV-PKG-015::GAP-PKG-014` | `DELIV-PKG-017::GAP-PKG-014` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-015` | `HYPERCARE-OPS-001::GAP-PKG-015` | `HYPERCARE-OPS-002::GAP-PKG-015` | `DELIV-PKG-015::GAP-PKG-015` | `DELIV-PKG-017::GAP-PKG-015` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-016` | `HYPERCARE-OPS-001::GAP-PKG-016` | `HYPERCARE-OPS-002::GAP-PKG-016` | `DELIV-PKG-015::GAP-PKG-016` | `DELIV-PKG-017::GAP-PKG-016` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-017` | `HYPERCARE-OPS-001::GAP-PKG-017` | `HYPERCARE-OPS-002::GAP-PKG-017` | `DELIV-PKG-015::GAP-PKG-017` | `DELIV-PKG-017::GAP-PKG-017` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-018` | `HYPERCARE-OPS-001::GAP-PKG-018` | `HYPERCARE-OPS-002::GAP-PKG-018` | `DELIV-PKG-015::GAP-PKG-018` | `DELIV-PKG-017::GAP-PKG-018` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-019` | `HYPERCARE-OPS-001::GAP-PKG-019` | `HYPERCARE-OPS-002::GAP-PKG-019` | `DELIV-PKG-015::GAP-PKG-019` | `DELIV-PKG-017::GAP-PKG-019` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-020` | `HYPERCARE-OPS-001::GAP-PKG-020` | `HYPERCARE-OPS-002::GAP-PKG-020` | `DELIV-PKG-015::GAP-PKG-020` | `DELIV-PKG-017::GAP-PKG-020` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-021` | `HYPERCARE-OPS-001::GAP-PKG-021` | `HYPERCARE-OPS-002::GAP-PKG-021` | `DELIV-PKG-015::GAP-PKG-021` | `DELIV-PKG-017::GAP-PKG-021` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-022` | `HYPERCARE-OPS-001::GAP-PKG-022` | `HYPERCARE-OPS-002::GAP-PKG-022` | `DELIV-PKG-015::GAP-PKG-022` | `DELIV-PKG-017::GAP-PKG-022` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-023` | `HYPERCARE-OPS-001::GAP-PKG-023` | `HYPERCARE-OPS-002::GAP-PKG-023` | `DELIV-PKG-015::GAP-PKG-023` | `DELIV-PKG-017::GAP-PKG-023` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-024` | `HYPERCARE-OPS-001::GAP-PKG-024` | `HYPERCARE-OPS-002::GAP-PKG-024` | `DELIV-PKG-015::GAP-PKG-024` | `DELIV-PKG-017::GAP-PKG-024` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-025` | `HYPERCARE-OPS-001::GAP-PKG-025` | `HYPERCARE-OPS-002::GAP-PKG-025` | `DELIV-PKG-015::GAP-PKG-025` | `DELIV-PKG-017::GAP-PKG-025` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-026` | `HYPERCARE-OPS-001::GAP-PKG-026` | `HYPERCARE-OPS-002::GAP-PKG-026` | `DELIV-PKG-015::GAP-PKG-026` | `DELIV-PKG-017::GAP-PKG-026` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-027` | `HYPERCARE-OPS-001::GAP-PKG-027` | `HYPERCARE-OPS-002::GAP-PKG-027` | `DELIV-PKG-015::GAP-PKG-027` | `DELIV-PKG-017::GAP-PKG-027` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-028` | `HYPERCARE-OPS-001::GAP-PKG-028` | `HYPERCARE-OPS-002::GAP-PKG-028` | `DELIV-PKG-015::GAP-PKG-028` | `DELIV-PKG-017::GAP-PKG-028` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-029` | `HYPERCARE-OPS-001::GAP-PKG-029` | `HYPERCARE-OPS-002::GAP-PKG-029` | `DELIV-PKG-015::GAP-PKG-029` | `DELIV-PKG-017::GAP-PKG-029` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-030` | `HYPERCARE-OPS-001::GAP-PKG-030` | `HYPERCARE-OPS-002::GAP-PKG-030` | `DELIV-PKG-015::GAP-PKG-030` | `DELIV-PKG-017::GAP-PKG-030` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-031` | `HYPERCARE-OPS-001::GAP-PKG-031` | `HYPERCARE-OPS-002::GAP-PKG-031` | `DELIV-PKG-015::GAP-PKG-031` | `DELIV-PKG-017::GAP-PKG-031` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-032` | `HYPERCARE-OPS-001::GAP-PKG-032` | `HYPERCARE-OPS-002::GAP-PKG-032` | `DELIV-PKG-015::GAP-PKG-032` | `DELIV-PKG-017::GAP-PKG-032` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-033` | `HYPERCARE-OPS-001::GAP-PKG-033` | `HYPERCARE-OPS-002::GAP-PKG-033` | `DELIV-PKG-015::GAP-PKG-033` | `DELIV-PKG-017::GAP-PKG-033` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-034` | `HYPERCARE-OPS-001::GAP-PKG-034` | `HYPERCARE-OPS-002::GAP-PKG-034` | `DELIV-PKG-015::GAP-PKG-034` | `DELIV-PKG-017::GAP-PKG-034` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-035` | `HYPERCARE-OPS-001::GAP-PKG-035` | `HYPERCARE-OPS-002::GAP-PKG-035` | `DELIV-PKG-015::GAP-PKG-035` | `DELIV-PKG-017::GAP-PKG-035` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-036` | `HYPERCARE-OPS-001::GAP-PKG-036` | `HYPERCARE-OPS-002::GAP-PKG-036` | `DELIV-PKG-015::GAP-PKG-036` | `DELIV-PKG-017::GAP-PKG-036` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-037` | `HYPERCARE-OPS-001::GAP-PKG-037` | `HYPERCARE-OPS-002::GAP-PKG-037` | `DELIV-PKG-015::GAP-PKG-037` | `DELIV-PKG-017::GAP-PKG-037` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-038` | `HYPERCARE-OPS-001::GAP-PKG-038` | `HYPERCARE-OPS-002::GAP-PKG-038` | `DELIV-PKG-015::GAP-PKG-038` | `DELIV-PKG-017::GAP-PKG-038` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-039` | `HYPERCARE-OPS-001::GAP-PKG-039` | `HYPERCARE-OPS-002::GAP-PKG-039` | `DELIV-PKG-015::GAP-PKG-039` | `DELIV-PKG-017::GAP-PKG-039` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-040` | `HYPERCARE-OPS-001::GAP-PKG-040` | `HYPERCARE-OPS-002::GAP-PKG-040` | `DELIV-PKG-015::GAP-PKG-040` | `DELIV-PKG-017::GAP-PKG-040` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-041` | `HYPERCARE-OPS-001::GAP-PKG-041` | `HYPERCARE-OPS-002::GAP-PKG-041` | `DELIV-PKG-015::GAP-PKG-041` | `DELIV-PKG-017::GAP-PKG-041` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-042` | `HYPERCARE-OPS-001::GAP-PKG-042` | `HYPERCARE-OPS-002::GAP-PKG-042` | `DELIV-PKG-015::GAP-PKG-042` | `DELIV-PKG-017::GAP-PKG-042` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-043` | `HYPERCARE-OPS-001::GAP-PKG-043` | `HYPERCARE-OPS-002::GAP-PKG-043` | `DELIV-PKG-015::GAP-PKG-043` | `DELIV-PKG-017::GAP-PKG-043` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-044` | `HYPERCARE-OPS-001::GAP-PKG-044` | `HYPERCARE-OPS-002::GAP-PKG-044` | `DELIV-PKG-015::GAP-PKG-044` | `DELIV-PKG-017::GAP-PKG-044` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-045` | `HYPERCARE-OPS-001::GAP-PKG-045` | `HYPERCARE-OPS-002::GAP-PKG-045` | `DELIV-PKG-015::GAP-PKG-045` | `DELIV-PKG-017::GAP-PKG-045` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-046` | `HYPERCARE-OPS-001::GAP-PKG-046` | `HYPERCARE-OPS-002::GAP-PKG-046` | `DELIV-PKG-015::GAP-PKG-046` | `DELIV-PKG-017::GAP-PKG-046` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-047` | `HYPERCARE-OPS-001::GAP-PKG-047` | `HYPERCARE-OPS-002::GAP-PKG-047` | `DELIV-PKG-015::GAP-PKG-047` | `DELIV-PKG-017::GAP-PKG-047` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-048` | `HYPERCARE-OPS-001::GAP-PKG-048` | `HYPERCARE-OPS-002::GAP-PKG-048` | `DELIV-PKG-015::GAP-PKG-048` | `DELIV-PKG-017::GAP-PKG-048` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-049` | `HYPERCARE-OPS-001::GAP-PKG-049` | `HYPERCARE-OPS-002::GAP-PKG-049` | `DELIV-PKG-015::GAP-PKG-049` | `DELIV-PKG-017::GAP-PKG-049` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-050` | `HYPERCARE-OPS-001::GAP-PKG-050` | `HYPERCARE-OPS-002::GAP-PKG-050` | `DELIV-PKG-015::GAP-PKG-050` | `DELIV-PKG-017::GAP-PKG-050` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-051` | `HYPERCARE-OPS-001::GAP-PKG-051` | `HYPERCARE-OPS-002::GAP-PKG-051` | `DELIV-PKG-015::GAP-PKG-051` | `DELIV-PKG-017::GAP-PKG-051` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-052` | `HYPERCARE-OPS-001::GAP-PKG-052` | `HYPERCARE-OPS-002::GAP-PKG-052` | `DELIV-PKG-015::GAP-PKG-052` | `DELIV-PKG-017::GAP-PKG-052` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-053` | `HYPERCARE-OPS-001::GAP-PKG-053` | `HYPERCARE-OPS-002::GAP-PKG-053` | `DELIV-PKG-015::GAP-PKG-053` | `DELIV-PKG-017::GAP-PKG-053` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-054` | `HYPERCARE-OPS-001::GAP-PKG-054` | `HYPERCARE-OPS-002::GAP-PKG-054` | `DELIV-PKG-015::GAP-PKG-054` | `DELIV-PKG-017::GAP-PKG-054` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-055` | `HYPERCARE-OPS-001::GAP-PKG-055` | `HYPERCARE-OPS-002::GAP-PKG-055` | `DELIV-PKG-015::GAP-PKG-055` | `DELIV-PKG-017::GAP-PKG-055` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-056` | `HYPERCARE-OPS-001::GAP-PKG-056` | `HYPERCARE-OPS-002::GAP-PKG-056` | `DELIV-PKG-015::GAP-PKG-056` | `DELIV-PKG-017::GAP-PKG-056` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-057` | `HYPERCARE-OPS-001::GAP-PKG-057` | `HYPERCARE-OPS-002::GAP-PKG-057` | `DELIV-PKG-015::GAP-PKG-057` | `DELIV-PKG-017::GAP-PKG-057` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-058` | `HYPERCARE-OPS-001::GAP-PKG-058` | `HYPERCARE-OPS-002::GAP-PKG-058` | `DELIV-PKG-015::GAP-PKG-058` | `DELIV-PKG-017::GAP-PKG-058` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-059` | `HYPERCARE-OPS-001::GAP-PKG-059` | `HYPERCARE-OPS-002::GAP-PKG-059` | `DELIV-PKG-015::GAP-PKG-059` | `DELIV-PKG-017::GAP-PKG-059` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-060` | `HYPERCARE-OPS-001::GAP-PKG-060` | `HYPERCARE-OPS-002::GAP-PKG-060` | `DELIV-PKG-015::GAP-PKG-060` | `DELIV-PKG-017::GAP-PKG-060` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-061` | `HYPERCARE-OPS-001::GAP-PKG-061` | `HYPERCARE-OPS-002::GAP-PKG-061` | `DELIV-PKG-015::GAP-PKG-061` | `DELIV-PKG-017::GAP-PKG-061` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-062` | `HYPERCARE-OPS-001::GAP-PKG-062` | `HYPERCARE-OPS-002::GAP-PKG-062` | `DELIV-PKG-015::GAP-PKG-062` | `DELIV-PKG-017::GAP-PKG-062` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-063` | `HYPERCARE-OPS-001::GAP-PKG-063` | `HYPERCARE-OPS-002::GAP-PKG-063` | `DELIV-PKG-015::GAP-PKG-063` | `DELIV-PKG-017::GAP-PKG-063` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-064` | `HYPERCARE-OPS-001::GAP-PKG-064` | `HYPERCARE-OPS-002::GAP-PKG-064` | `DELIV-PKG-015::GAP-PKG-064` | `DELIV-PKG-017::GAP-PKG-064` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-065` | `HYPERCARE-OPS-001::GAP-PKG-065` | `HYPERCARE-OPS-002::GAP-PKG-065` | `DELIV-PKG-015::GAP-PKG-065` | `DELIV-PKG-017::GAP-PKG-065` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-066` | `HYPERCARE-OPS-001::GAP-PKG-066` | `HYPERCARE-OPS-002::GAP-PKG-066` | `DELIV-PKG-015::GAP-PKG-066` | `DELIV-PKG-017::GAP-PKG-066` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-067` | `HYPERCARE-OPS-001::GAP-PKG-067` | `HYPERCARE-OPS-002::GAP-PKG-067` | `DELIV-PKG-015::GAP-PKG-067` | `DELIV-PKG-017::GAP-PKG-067` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-068` | `HYPERCARE-OPS-001::GAP-PKG-068` | `HYPERCARE-OPS-002::GAP-PKG-068` | `DELIV-PKG-015::GAP-PKG-068` | `DELIV-PKG-017::GAP-PKG-068` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-069` | `HYPERCARE-OPS-001::GAP-PKG-069` | `HYPERCARE-OPS-002::GAP-PKG-069` | `DELIV-PKG-015::GAP-PKG-069` | `DELIV-PKG-017::GAP-PKG-069` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-070` | `HYPERCARE-OPS-001::GAP-PKG-070` | `HYPERCARE-OPS-002::GAP-PKG-070` | `DELIV-PKG-015::GAP-PKG-070` | `DELIV-PKG-017::GAP-PKG-070` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-071` | `HYPERCARE-OPS-001::GAP-PKG-071` | `HYPERCARE-OPS-002::GAP-PKG-071` | `DELIV-PKG-015::GAP-PKG-071` | `DELIV-PKG-017::GAP-PKG-071` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-072` | `HYPERCARE-OPS-001::GAP-PKG-072` | `HYPERCARE-OPS-002::GAP-PKG-072` | `DELIV-PKG-015::GAP-PKG-072` | `DELIV-PKG-017::GAP-PKG-072` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-073` | `HYPERCARE-OPS-001::GAP-PKG-073` | `HYPERCARE-OPS-002::GAP-PKG-073` | `DELIV-PKG-015::GAP-PKG-073` | `DELIV-PKG-017::GAP-PKG-073` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-074` | `HYPERCARE-OPS-001::GAP-PKG-074` | `HYPERCARE-OPS-002::GAP-PKG-074` | `DELIV-PKG-015::GAP-PKG-074` | `DELIV-PKG-017::GAP-PKG-074` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-075` | `HYPERCARE-OPS-001::GAP-PKG-075` | `HYPERCARE-OPS-002::GAP-PKG-075` | `DELIV-PKG-015::GAP-PKG-075` | `DELIV-PKG-017::GAP-PKG-075` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-076` | `HYPERCARE-OPS-001::GAP-PKG-076` | `HYPERCARE-OPS-002::GAP-PKG-076` | `DELIV-PKG-015::GAP-PKG-076` | `DELIV-PKG-017::GAP-PKG-076` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-077` | `HYPERCARE-OPS-001::GAP-PKG-077` | `HYPERCARE-OPS-002::GAP-PKG-077` | `DELIV-PKG-015::GAP-PKG-077` | `DELIV-PKG-017::GAP-PKG-077` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-078` | `HYPERCARE-OPS-001::GAP-PKG-078` | `HYPERCARE-OPS-002::GAP-PKG-078` | `DELIV-PKG-015::GAP-PKG-078` | `DELIV-PKG-017::GAP-PKG-078` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-079` | `HYPERCARE-OPS-001::GAP-PKG-079` | `HYPERCARE-OPS-002::GAP-PKG-079` | `DELIV-PKG-015::GAP-PKG-079` | `DELIV-PKG-017::GAP-PKG-079` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-080` | `HYPERCARE-OPS-001::GAP-PKG-080` | `HYPERCARE-OPS-002::GAP-PKG-080` | `DELIV-PKG-015::GAP-PKG-080` | `DELIV-PKG-017::GAP-PKG-080` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-081` | `HYPERCARE-OPS-001::GAP-PKG-081` | `HYPERCARE-OPS-002::GAP-PKG-081` | `DELIV-PKG-015::GAP-PKG-081` | `DELIV-PKG-017::GAP-PKG-081` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-082` | `HYPERCARE-OPS-001::GAP-PKG-082` | `HYPERCARE-OPS-002::GAP-PKG-082` | `DELIV-PKG-015::GAP-PKG-082` | `DELIV-PKG-017::GAP-PKG-082` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-083` | `HYPERCARE-OPS-001::GAP-PKG-083` | `HYPERCARE-OPS-002::GAP-PKG-083` | `DELIV-PKG-015::GAP-PKG-083` | `DELIV-PKG-017::GAP-PKG-083` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-084` | `HYPERCARE-OPS-001::GAP-PKG-084` | `HYPERCARE-OPS-002::GAP-PKG-084` | `DELIV-PKG-015::GAP-PKG-084` | `DELIV-PKG-017::GAP-PKG-084` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-085` | `HYPERCARE-OPS-001::GAP-PKG-085` | `HYPERCARE-OPS-002::GAP-PKG-085` | `DELIV-PKG-015::GAP-PKG-085` | `DELIV-PKG-017::GAP-PKG-085` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-086` | `HYPERCARE-OPS-001::GAP-PKG-086` | `HYPERCARE-OPS-002::GAP-PKG-086` | `DELIV-PKG-015::GAP-PKG-086` | `DELIV-PKG-017::GAP-PKG-086` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-087` | `HYPERCARE-OPS-001::GAP-PKG-087` | `HYPERCARE-OPS-002::GAP-PKG-087` | `DELIV-PKG-015::GAP-PKG-087` | `DELIV-PKG-017::GAP-PKG-087` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-088` | `HYPERCARE-OPS-001::GAP-PKG-088` | `HYPERCARE-OPS-002::GAP-PKG-088` | `DELIV-PKG-015::GAP-PKG-088` | `DELIV-PKG-017::GAP-PKG-088` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-089` | `HYPERCARE-OPS-001::GAP-PKG-089` | `HYPERCARE-OPS-002::GAP-PKG-089` | `DELIV-PKG-015::GAP-PKG-089` | `DELIV-PKG-017::GAP-PKG-089` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-090` | `HYPERCARE-OPS-001::GAP-PKG-090` | `HYPERCARE-OPS-002::GAP-PKG-090` | `DELIV-PKG-015::GAP-PKG-090` | `DELIV-PKG-017::GAP-PKG-090` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-091` | `HYPERCARE-OPS-001::GAP-PKG-091` | `HYPERCARE-OPS-002::GAP-PKG-091` | `DELIV-PKG-015::GAP-PKG-091` | `DELIV-PKG-017::GAP-PKG-091` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-092` | `HYPERCARE-OPS-001::GAP-PKG-092` | `HYPERCARE-OPS-002::GAP-PKG-092` | `DELIV-PKG-015::GAP-PKG-092` | `DELIV-PKG-017::GAP-PKG-092` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-093` | `HYPERCARE-OPS-001::GAP-PKG-093` | `HYPERCARE-OPS-002::GAP-PKG-093` | `DELIV-PKG-015::GAP-PKG-093` | `DELIV-PKG-017::GAP-PKG-093` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-094` | `HYPERCARE-OPS-001::GAP-PKG-094` | `HYPERCARE-OPS-002::GAP-PKG-094` | `DELIV-PKG-015::GAP-PKG-094` | `DELIV-PKG-017::GAP-PKG-094` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-095` | `HYPERCARE-OPS-001::GAP-PKG-095` | `HYPERCARE-OPS-002::GAP-PKG-095` | `DELIV-PKG-015::GAP-PKG-095` | `DELIV-PKG-017::GAP-PKG-095` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-096` | `HYPERCARE-OPS-001::GAP-PKG-096` | `HYPERCARE-OPS-002::GAP-PKG-096` | `DELIV-PKG-015::GAP-PKG-096` | `DELIV-PKG-017::GAP-PKG-096` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-097` | `HYPERCARE-OPS-001::GAP-PKG-097` | `HYPERCARE-OPS-002::GAP-PKG-097` | `DELIV-PKG-015::GAP-PKG-097` | `DELIV-PKG-017::GAP-PKG-097` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-098` | `HYPERCARE-OPS-001::GAP-PKG-098` | `HYPERCARE-OPS-002::GAP-PKG-098` | `DELIV-PKG-015::GAP-PKG-098` | `DELIV-PKG-017::GAP-PKG-098` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-099` | `HYPERCARE-OPS-001::GAP-PKG-099` | `HYPERCARE-OPS-002::GAP-PKG-099` | `DELIV-PKG-015::GAP-PKG-099` | `DELIV-PKG-017::GAP-PKG-099` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-100` | `HYPERCARE-OPS-001::GAP-PKG-100` | `HYPERCARE-OPS-002::GAP-PKG-100` | `DELIV-PKG-015::GAP-PKG-100` | `DELIV-PKG-017::GAP-PKG-100` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-101` | `HYPERCARE-OPS-001::GAP-PKG-101` | `HYPERCARE-OPS-002::GAP-PKG-101` | `DELIV-PKG-015::GAP-PKG-101` | `DELIV-PKG-017::GAP-PKG-101` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-102` | `HYPERCARE-OPS-001::GAP-PKG-102` | `HYPERCARE-OPS-002::GAP-PKG-102` | `DELIV-PKG-015::GAP-PKG-102` | `DELIV-PKG-017::GAP-PKG-102` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-103` | `HYPERCARE-OPS-001::GAP-PKG-103` | `HYPERCARE-OPS-002::GAP-PKG-103` | `DELIV-PKG-015::GAP-PKG-103` | `DELIV-PKG-017::GAP-PKG-103` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-104` | `HYPERCARE-OPS-001::GAP-PKG-104` | `HYPERCARE-OPS-002::GAP-PKG-104` | `DELIV-PKG-015::GAP-PKG-104` | `DELIV-PKG-017::GAP-PKG-104` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-105` | `HYPERCARE-OPS-001::GAP-PKG-105` | `HYPERCARE-OPS-002::GAP-PKG-105` | `DELIV-PKG-015::GAP-PKG-105` | `DELIV-PKG-017::GAP-PKG-105` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-106` | `HYPERCARE-OPS-001::GAP-PKG-106` | `HYPERCARE-OPS-002::GAP-PKG-106` | `DELIV-PKG-015::GAP-PKG-106` | `DELIV-PKG-017::GAP-PKG-106` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-107` | `HYPERCARE-OPS-001::GAP-PKG-107` | `HYPERCARE-OPS-002::GAP-PKG-107` | `DELIV-PKG-015::GAP-PKG-107` | `DELIV-PKG-017::GAP-PKG-107` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-108` | `HYPERCARE-OPS-001::GAP-PKG-108` | `HYPERCARE-OPS-002::GAP-PKG-108` | `DELIV-PKG-015::GAP-PKG-108` | `DELIV-PKG-017::GAP-PKG-108` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-109` | `HYPERCARE-OPS-001::GAP-PKG-109` | `HYPERCARE-OPS-002::GAP-PKG-109` | `DELIV-PKG-015::GAP-PKG-109` | `DELIV-PKG-017::GAP-PKG-109` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-110` | `HYPERCARE-OPS-001::GAP-PKG-110` | `HYPERCARE-OPS-002::GAP-PKG-110` | `DELIV-PKG-015::GAP-PKG-110` | `DELIV-PKG-017::GAP-PKG-110` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-111` | `HYPERCARE-OPS-001::GAP-PKG-111` | `HYPERCARE-OPS-002::GAP-PKG-111` | `DELIV-PKG-015::GAP-PKG-111` | `DELIV-PKG-017::GAP-PKG-111` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-112` | `HYPERCARE-OPS-001::GAP-PKG-112` | `HYPERCARE-OPS-002::GAP-PKG-112` | `DELIV-PKG-015::GAP-PKG-112` | `DELIV-PKG-017::GAP-PKG-112` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-113` | `HYPERCARE-OPS-001::GAP-PKG-113` | `HYPERCARE-OPS-002::GAP-PKG-113` | `DELIV-PKG-015::GAP-PKG-113` | `DELIV-PKG-017::GAP-PKG-113` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-114` | `HYPERCARE-OPS-001::GAP-PKG-114` | `HYPERCARE-OPS-002::GAP-PKG-114` | `DELIV-PKG-015::GAP-PKG-114` | `DELIV-PKG-017::GAP-PKG-114` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-115` | `HYPERCARE-OPS-001::GAP-PKG-115` | `HYPERCARE-OPS-002::GAP-PKG-115` | `DELIV-PKG-015::GAP-PKG-115` | `DELIV-PKG-017::GAP-PKG-115` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-116` | `HYPERCARE-OPS-001::GAP-PKG-116` | `HYPERCARE-OPS-002::GAP-PKG-116` | `DELIV-PKG-015::GAP-PKG-116` | `DELIV-PKG-017::GAP-PKG-116` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-117` | `HYPERCARE-OPS-001::GAP-PKG-117` | `HYPERCARE-OPS-002::GAP-PKG-117` | `DELIV-PKG-015::GAP-PKG-117` | `DELIV-PKG-017::GAP-PKG-117` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-118` | `HYPERCARE-OPS-001::GAP-PKG-118` | `HYPERCARE-OPS-002::GAP-PKG-118` | `DELIV-PKG-015::GAP-PKG-118` | `DELIV-PKG-017::GAP-PKG-118` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-119` | `HYPERCARE-OPS-001::GAP-PKG-119` | `HYPERCARE-OPS-002::GAP-PKG-119` | `DELIV-PKG-015::GAP-PKG-119` | `DELIV-PKG-017::GAP-PKG-119` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-120` | `HYPERCARE-OPS-001::GAP-PKG-120` | `HYPERCARE-OPS-002::GAP-PKG-120` | `DELIV-PKG-015::GAP-PKG-120` | `DELIV-PKG-017::GAP-PKG-120` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-121` | `HYPERCARE-OPS-001::GAP-PKG-121` | `HYPERCARE-OPS-002::GAP-PKG-121` | `DELIV-PKG-015::GAP-PKG-121` | `DELIV-PKG-017::GAP-PKG-121` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-122` | `HYPERCARE-OPS-001::GAP-PKG-122` | `HYPERCARE-OPS-002::GAP-PKG-122` | `DELIV-PKG-015::GAP-PKG-122` | `DELIV-PKG-017::GAP-PKG-122` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-123` | `HYPERCARE-OPS-001::GAP-PKG-123` | `HYPERCARE-OPS-002::GAP-PKG-123` | `DELIV-PKG-015::GAP-PKG-123` | `DELIV-PKG-017::GAP-PKG-123` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-124` | `HYPERCARE-OPS-001::GAP-PKG-124` | `HYPERCARE-OPS-002::GAP-PKG-124` | `DELIV-PKG-015::GAP-PKG-124` | `DELIV-PKG-017::GAP-PKG-124` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-125` | `HYPERCARE-OPS-001::GAP-PKG-125` | `HYPERCARE-OPS-002::GAP-PKG-125` | `DELIV-PKG-015::GAP-PKG-125` | `DELIV-PKG-017::GAP-PKG-125` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-126` | `HYPERCARE-OPS-001::GAP-PKG-126` | `HYPERCARE-OPS-002::GAP-PKG-126` | `DELIV-PKG-015::GAP-PKG-126` | `DELIV-PKG-017::GAP-PKG-126` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-127` | `HYPERCARE-OPS-001::GAP-PKG-127` | `HYPERCARE-OPS-002::GAP-PKG-127` | `DELIV-PKG-015::GAP-PKG-127` | `DELIV-PKG-017::GAP-PKG-127` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-128` | `HYPERCARE-OPS-001::GAP-PKG-128` | `HYPERCARE-OPS-002::GAP-PKG-128` | `DELIV-PKG-015::GAP-PKG-128` | `DELIV-PKG-017::GAP-PKG-128` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-129` | `HYPERCARE-OPS-001::GAP-PKG-129` | `HYPERCARE-OPS-002::GAP-PKG-129` | `DELIV-PKG-015::GAP-PKG-129` | `DELIV-PKG-017::GAP-PKG-129` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-130` | `HYPERCARE-OPS-001::GAP-PKG-130` | `HYPERCARE-OPS-002::GAP-PKG-130` | `DELIV-PKG-015::GAP-PKG-130` | `DELIV-PKG-017::GAP-PKG-130` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-131` | `HYPERCARE-OPS-001::GAP-PKG-131` | `HYPERCARE-OPS-002::GAP-PKG-131` | `DELIV-PKG-015::GAP-PKG-131` | `DELIV-PKG-017::GAP-PKG-131` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-132` | `HYPERCARE-OPS-001::GAP-PKG-132` | `HYPERCARE-OPS-002::GAP-PKG-132` | `DELIV-PKG-015::GAP-PKG-132` | `DELIV-PKG-017::GAP-PKG-132` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-133` | `HYPERCARE-OPS-001::GAP-PKG-133` | `HYPERCARE-OPS-002::GAP-PKG-133` | `DELIV-PKG-015::GAP-PKG-133` | `DELIV-PKG-017::GAP-PKG-133` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-134` | `HYPERCARE-OPS-001::GAP-PKG-134` | `HYPERCARE-OPS-002::GAP-PKG-134` | `DELIV-PKG-015::GAP-PKG-134` | `DELIV-PKG-017::GAP-PKG-134` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-135` | `HYPERCARE-OPS-001::GAP-PKG-135` | `HYPERCARE-OPS-002::GAP-PKG-135` | `DELIV-PKG-015::GAP-PKG-135` | `DELIV-PKG-017::GAP-PKG-135` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-136` | `HYPERCARE-OPS-001::GAP-PKG-136` | `HYPERCARE-OPS-002::GAP-PKG-136` | `DELIV-PKG-015::GAP-PKG-136` | `DELIV-PKG-017::GAP-PKG-136` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-137` | `HYPERCARE-OPS-001::GAP-PKG-137` | `HYPERCARE-OPS-002::GAP-PKG-137` | `DELIV-PKG-015::GAP-PKG-137` | `DELIV-PKG-017::GAP-PKG-137` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-138` | `HYPERCARE-OPS-001::GAP-PKG-138` | `HYPERCARE-OPS-002::GAP-PKG-138` | `DELIV-PKG-015::GAP-PKG-138` | `DELIV-PKG-017::GAP-PKG-138` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-139` | `HYPERCARE-OPS-001::GAP-PKG-139` | `HYPERCARE-OPS-002::GAP-PKG-139` | `DELIV-PKG-015::GAP-PKG-139` | `DELIV-PKG-017::GAP-PKG-139` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-140` | `HYPERCARE-OPS-001::GAP-PKG-140` | `HYPERCARE-OPS-002::GAP-PKG-140` | `DELIV-PKG-015::GAP-PKG-140` | `DELIV-PKG-017::GAP-PKG-140` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-141` | `HYPERCARE-OPS-001::GAP-PKG-141` | `HYPERCARE-OPS-002::GAP-PKG-141` | `DELIV-PKG-015::GAP-PKG-141` | `DELIV-PKG-017::GAP-PKG-141` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-142` | `HYPERCARE-OPS-001::GAP-PKG-142` | `HYPERCARE-OPS-002::GAP-PKG-142` | `DELIV-PKG-015::GAP-PKG-142` | `DELIV-PKG-017::GAP-PKG-142` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-143` | `HYPERCARE-OPS-001::GAP-PKG-143` | `HYPERCARE-OPS-002::GAP-PKG-143` | `DELIV-PKG-015::GAP-PKG-143` | `DELIV-PKG-017::GAP-PKG-143` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-144` | `HYPERCARE-OPS-001::GAP-PKG-144` | `HYPERCARE-OPS-002::GAP-PKG-144` | `DELIV-PKG-015::GAP-PKG-144` | `DELIV-PKG-017::GAP-PKG-144` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-145` | `HYPERCARE-OPS-001::GAP-PKG-145` | `HYPERCARE-OPS-002::GAP-PKG-145` | `DELIV-PKG-015::GAP-PKG-145` | `DELIV-PKG-017::GAP-PKG-145` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-146` | `HYPERCARE-OPS-001::GAP-PKG-146` | `HYPERCARE-OPS-002::GAP-PKG-146` | `DELIV-PKG-015::GAP-PKG-146` | `DELIV-PKG-017::GAP-PKG-146` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-147` | `HYPERCARE-OPS-001::GAP-PKG-147` | `HYPERCARE-OPS-002::GAP-PKG-147` | `DELIV-PKG-015::GAP-PKG-147` | `DELIV-PKG-017::GAP-PKG-147` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-148` | `HYPERCARE-OPS-001::GAP-PKG-148` | `HYPERCARE-OPS-002::GAP-PKG-148` | `DELIV-PKG-015::GAP-PKG-148` | `DELIV-PKG-017::GAP-PKG-148` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-149` | `HYPERCARE-OPS-001::GAP-PKG-149` | `HYPERCARE-OPS-002::GAP-PKG-149` | `DELIV-PKG-015::GAP-PKG-149` | `DELIV-PKG-017::GAP-PKG-149` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-150` | `HYPERCARE-OPS-001::GAP-PKG-150` | `HYPERCARE-OPS-002::GAP-PKG-150` | `DELIV-PKG-015::GAP-PKG-150` | `DELIV-PKG-017::GAP-PKG-150` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-151` | `HYPERCARE-OPS-001::GAP-PKG-151` | `HYPERCARE-OPS-002::GAP-PKG-151` | `DELIV-PKG-015::GAP-PKG-151` | `DELIV-PKG-017::GAP-PKG-151` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-152` | `HYPERCARE-OPS-001::GAP-PKG-152` | `HYPERCARE-OPS-002::GAP-PKG-152` | `DELIV-PKG-015::GAP-PKG-152` | `DELIV-PKG-017::GAP-PKG-152` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-153` | `HYPERCARE-OPS-001::GAP-PKG-153` | `HYPERCARE-OPS-002::GAP-PKG-153` | `DELIV-PKG-015::GAP-PKG-153` | `DELIV-PKG-017::GAP-PKG-153` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-154` | `HYPERCARE-OPS-001::GAP-PKG-154` | `HYPERCARE-OPS-002::GAP-PKG-154` | `DELIV-PKG-015::GAP-PKG-154` | `DELIV-PKG-017::GAP-PKG-154` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-155` | `HYPERCARE-OPS-001::GAP-PKG-155` | `HYPERCARE-OPS-002::GAP-PKG-155` | `DELIV-PKG-015::GAP-PKG-155` | `DELIV-PKG-017::GAP-PKG-155` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-156` | `HYPERCARE-OPS-001::GAP-PKG-156` | `HYPERCARE-OPS-002::GAP-PKG-156` | `DELIV-PKG-015::GAP-PKG-156` | `DELIV-PKG-017::GAP-PKG-156` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-157` | `HYPERCARE-OPS-001::GAP-PKG-157` | `HYPERCARE-OPS-002::GAP-PKG-157` | `DELIV-PKG-015::GAP-PKG-157` | `DELIV-PKG-017::GAP-PKG-157` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-158` | `HYPERCARE-OPS-001::GAP-PKG-158` | `HYPERCARE-OPS-002::GAP-PKG-158` | `DELIV-PKG-015::GAP-PKG-158` | `DELIV-PKG-017::GAP-PKG-158` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-159` | `HYPERCARE-OPS-001::GAP-PKG-159` | `HYPERCARE-OPS-002::GAP-PKG-159` | `DELIV-PKG-015::GAP-PKG-159` | `DELIV-PKG-017::GAP-PKG-159` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-160` | `HYPERCARE-OPS-001::GAP-PKG-160` | `HYPERCARE-OPS-002::GAP-PKG-160` | `DELIV-PKG-015::GAP-PKG-160` | `DELIV-PKG-017::GAP-PKG-160` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-161` | `HYPERCARE-OPS-001::GAP-PKG-161` | `HYPERCARE-OPS-002::GAP-PKG-161` | `DELIV-PKG-015::GAP-PKG-161` | `DELIV-PKG-017::GAP-PKG-161` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-162` | `HYPERCARE-OPS-001::GAP-PKG-162` | `HYPERCARE-OPS-002::GAP-PKG-162` | `DELIV-PKG-015::GAP-PKG-162` | `DELIV-PKG-017::GAP-PKG-162` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-163` | `HYPERCARE-OPS-001::GAP-PKG-163` | `HYPERCARE-OPS-002::GAP-PKG-163` | `DELIV-PKG-015::GAP-PKG-163` | `DELIV-PKG-017::GAP-PKG-163` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-164` | `HYPERCARE-OPS-001::GAP-PKG-164` | `HYPERCARE-OPS-002::GAP-PKG-164` | `DELIV-PKG-015::GAP-PKG-164` | `DELIV-PKG-017::GAP-PKG-164` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-165` | `HYPERCARE-OPS-001::GAP-PKG-165` | `HYPERCARE-OPS-002::GAP-PKG-165` | `DELIV-PKG-015::GAP-PKG-165` | `DELIV-PKG-017::GAP-PKG-165` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-166` | `HYPERCARE-OPS-001::GAP-PKG-166` | `HYPERCARE-OPS-002::GAP-PKG-166` | `DELIV-PKG-015::GAP-PKG-166` | `DELIV-PKG-017::GAP-PKG-166` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-167` | `HYPERCARE-OPS-001::GAP-PKG-167` | `HYPERCARE-OPS-002::GAP-PKG-167` | `DELIV-PKG-015::GAP-PKG-167` | `DELIV-PKG-017::GAP-PKG-167` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-168` | `HYPERCARE-OPS-001::GAP-PKG-168` | `HYPERCARE-OPS-002::GAP-PKG-168` | `DELIV-PKG-015::GAP-PKG-168` | `DELIV-PKG-017::GAP-PKG-168` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-169` | `HYPERCARE-OPS-001::GAP-PKG-169` | `HYPERCARE-OPS-002::GAP-PKG-169` | `DELIV-PKG-015::GAP-PKG-169` | `DELIV-PKG-017::GAP-PKG-169` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-170` | `HYPERCARE-OPS-001::GAP-PKG-170` | `HYPERCARE-OPS-002::GAP-PKG-170` | `DELIV-PKG-015::GAP-PKG-170` | `DELIV-PKG-017::GAP-PKG-170` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-171` | `HYPERCARE-OPS-001::GAP-PKG-171` | `HYPERCARE-OPS-002::GAP-PKG-171` | `DELIV-PKG-015::GAP-PKG-171` | `DELIV-PKG-017::GAP-PKG-171` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-172` | `HYPERCARE-OPS-001::GAP-PKG-172` | `HYPERCARE-OPS-002::GAP-PKG-172` | `DELIV-PKG-015::GAP-PKG-172` | `DELIV-PKG-017::GAP-PKG-172` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-173` | `HYPERCARE-OPS-001::GAP-PKG-173` | `HYPERCARE-OPS-002::GAP-PKG-173` | `DELIV-PKG-015::GAP-PKG-173` | `DELIV-PKG-017::GAP-PKG-173` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-174` | `HYPERCARE-OPS-001::GAP-PKG-174` | `HYPERCARE-OPS-002::GAP-PKG-174` | `DELIV-PKG-015::GAP-PKG-174` | `DELIV-PKG-017::GAP-PKG-174` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-175` | `HYPERCARE-OPS-001::GAP-PKG-175` | `HYPERCARE-OPS-002::GAP-PKG-175` | `DELIV-PKG-015::GAP-PKG-175` | `DELIV-PKG-017::GAP-PKG-175` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-176` | `HYPERCARE-OPS-001::GAP-PKG-176` | `HYPERCARE-OPS-002::GAP-PKG-176` | `DELIV-PKG-015::GAP-PKG-176` | `DELIV-PKG-017::GAP-PKG-176` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-177` | `HYPERCARE-OPS-001::GAP-PKG-177` | `HYPERCARE-OPS-002::GAP-PKG-177` | `DELIV-PKG-015::GAP-PKG-177` | `DELIV-PKG-017::GAP-PKG-177` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-178` | `HYPERCARE-OPS-001::GAP-PKG-178` | `HYPERCARE-OPS-002::GAP-PKG-178` | `DELIV-PKG-015::GAP-PKG-178` | `DELIV-PKG-017::GAP-PKG-178` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-179` | `HYPERCARE-OPS-001::GAP-PKG-179` | `HYPERCARE-OPS-002::GAP-PKG-179` | `DELIV-PKG-015::GAP-PKG-179` | `DELIV-PKG-017::GAP-PKG-179` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-180` | `HYPERCARE-OPS-001::GAP-PKG-180` | `HYPERCARE-OPS-002::GAP-PKG-180` | `DELIV-PKG-015::GAP-PKG-180` | `DELIV-PKG-017::GAP-PKG-180` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-181` | `HYPERCARE-OPS-001::GAP-PKG-181` | `HYPERCARE-OPS-002::GAP-PKG-181` | `DELIV-PKG-015::GAP-PKG-181` | `DELIV-PKG-017::GAP-PKG-181` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-182` | `HYPERCARE-OPS-001::GAP-PKG-182` | `HYPERCARE-OPS-002::GAP-PKG-182` | `DELIV-PKG-015::GAP-PKG-182` | `DELIV-PKG-017::GAP-PKG-182` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-183` | `HYPERCARE-OPS-001::GAP-PKG-183` | `HYPERCARE-OPS-002::GAP-PKG-183` | `DELIV-PKG-015::GAP-PKG-183` | `DELIV-PKG-017::GAP-PKG-183` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-184` | `HYPERCARE-OPS-001::GAP-PKG-184` | `HYPERCARE-OPS-002::GAP-PKG-184` | `DELIV-PKG-015::GAP-PKG-184` | `DELIV-PKG-017::GAP-PKG-184` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-185` | `HYPERCARE-OPS-001::GAP-PKG-185` | `HYPERCARE-OPS-002::GAP-PKG-185` | `DELIV-PKG-015::GAP-PKG-185` | `DELIV-PKG-017::GAP-PKG-185` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-186` | `HYPERCARE-OPS-001::GAP-PKG-186` | `HYPERCARE-OPS-002::GAP-PKG-186` | `DELIV-PKG-015::GAP-PKG-186` | `DELIV-PKG-017::GAP-PKG-186` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-187` | `HYPERCARE-OPS-001::GAP-PKG-187` | `HYPERCARE-OPS-002::GAP-PKG-187` | `DELIV-PKG-015::GAP-PKG-187` | `DELIV-PKG-017::GAP-PKG-187` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-188` | `HYPERCARE-OPS-001::GAP-PKG-188` | `HYPERCARE-OPS-002::GAP-PKG-188` | `DELIV-PKG-015::GAP-PKG-188` | `DELIV-PKG-017::GAP-PKG-188` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-189` | `HYPERCARE-OPS-001::GAP-PKG-189` | `HYPERCARE-OPS-002::GAP-PKG-189` | `DELIV-PKG-015::GAP-PKG-189` | `DELIV-PKG-017::GAP-PKG-189` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-190` | `HYPERCARE-OPS-001::GAP-PKG-190` | `HYPERCARE-OPS-002::GAP-PKG-190` | `DELIV-PKG-015::GAP-PKG-190` | `DELIV-PKG-017::GAP-PKG-190` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-191` | `HYPERCARE-OPS-001::GAP-PKG-191` | `HYPERCARE-OPS-002::GAP-PKG-191` | `DELIV-PKG-015::GAP-PKG-191` | `DELIV-PKG-017::GAP-PKG-191` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-192` | `HYPERCARE-OPS-001::GAP-PKG-192` | `HYPERCARE-OPS-002::GAP-PKG-192` | `DELIV-PKG-015::GAP-PKG-192` | `DELIV-PKG-017::GAP-PKG-192` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-193` | `HYPERCARE-OPS-001::GAP-PKG-193` | `HYPERCARE-OPS-002::GAP-PKG-193` | `DELIV-PKG-015::GAP-PKG-193` | `DELIV-PKG-017::GAP-PKG-193` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-194` | `HYPERCARE-OPS-001::GAP-PKG-194` | `HYPERCARE-OPS-002::GAP-PKG-194` | `DELIV-PKG-015::GAP-PKG-194` | `DELIV-PKG-017::GAP-PKG-194` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-195` | `HYPERCARE-OPS-001::GAP-PKG-195` | `HYPERCARE-OPS-002::GAP-PKG-195` | `DELIV-PKG-015::GAP-PKG-195` | `DELIV-PKG-017::GAP-PKG-195` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-196` | `HYPERCARE-OPS-001::GAP-PKG-196` | `HYPERCARE-OPS-002::GAP-PKG-196` | `DELIV-PKG-015::GAP-PKG-196` | `DELIV-PKG-017::GAP-PKG-196` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-197` | `HYPERCARE-OPS-001::GAP-PKG-197` | `HYPERCARE-OPS-002::GAP-PKG-197` | `DELIV-PKG-015::GAP-PKG-197` | `DELIV-PKG-017::GAP-PKG-197` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-198` | `HYPERCARE-OPS-001::GAP-PKG-198` | `HYPERCARE-OPS-002::GAP-PKG-198` | `DELIV-PKG-015::GAP-PKG-198` | `DELIV-PKG-017::GAP-PKG-198` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-199` | `HYPERCARE-OPS-001::GAP-PKG-199` | `HYPERCARE-OPS-002::GAP-PKG-199` | `DELIV-PKG-015::GAP-PKG-199` | `DELIV-PKG-017::GAP-PKG-199` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-200` | `HYPERCARE-OPS-001::GAP-PKG-200` | `HYPERCARE-OPS-002::GAP-PKG-200` | `DELIV-PKG-015::GAP-PKG-200` | `DELIV-PKG-017::GAP-PKG-200` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-201` | `HYPERCARE-OPS-001::GAP-PKG-201` | `HYPERCARE-OPS-002::GAP-PKG-201` | `DELIV-PKG-015::GAP-PKG-201` | `DELIV-PKG-017::GAP-PKG-201` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-202` | `HYPERCARE-OPS-001::GAP-PKG-202` | `HYPERCARE-OPS-002::GAP-PKG-202` | `DELIV-PKG-015::GAP-PKG-202` | `DELIV-PKG-017::GAP-PKG-202` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-203` | `HYPERCARE-OPS-001::GAP-PKG-203` | `HYPERCARE-OPS-002::GAP-PKG-203` | `DELIV-PKG-015::GAP-PKG-203` | `DELIV-PKG-017::GAP-PKG-203` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-204` | `HYPERCARE-OPS-001::GAP-PKG-204` | `HYPERCARE-OPS-002::GAP-PKG-204` | `DELIV-PKG-015::GAP-PKG-204` | `DELIV-PKG-017::GAP-PKG-204` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-205` | `HYPERCARE-OPS-001::GAP-PKG-205` | `HYPERCARE-OPS-002::GAP-PKG-205` | `DELIV-PKG-015::GAP-PKG-205` | `DELIV-PKG-017::GAP-PKG-205` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-206` | `HYPERCARE-OPS-001::GAP-PKG-206` | `HYPERCARE-OPS-002::GAP-PKG-206` | `DELIV-PKG-015::GAP-PKG-206` | `DELIV-PKG-017::GAP-PKG-206` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+| `GAP-PKG-207` | `HYPERCARE-OPS-001::GAP-PKG-207` | `HYPERCARE-OPS-002::GAP-PKG-207` | `DELIV-PKG-015::GAP-PKG-207` | `DELIV-PKG-017::GAP-PKG-207` | hereda señales, códigos y criterios del perfil 017 | aplica solo si la topología 015/017 declara cola, outbox, inbox o job | aplica solo si la topología 015/017 declara integración o dependencia | hereda SLI, presupuesto y referencias de 013/017 sin crear umbrales | `ESPECIFICADO`    |
+
+---
+
+#### 18. Reconciliación de cobertura
+
+La matriz cumple simultáneamente:
+
+- universo esperado: **207** raíces;
+- universo materializado: **207** filas;
+- rango: `GAP-PKG-001..207`;
+- faltantes permitidos: **0**;
+- duplicados permitidos: **0**;
+- reasignaciones de `package_id`: **0**;
+- cambios de modalidad heredada: **0**;
+- cambios de ownership heredado: **0**;
+- umbrales numéricos nuevos: **0**;
+- ejecuciones de monitoreo afirmadas: **0**.
+
+La aplicabilidad concreta de colas e integraciones se resuelve por la topología y el perfil observacional de la fila homónima; no por ausencia aparente de datos.
+
+---
+
+#### 19. Dependencias y entradas de ejecución
+
+Antes de que `SHELL-CI-023::<package_id>` use este contrato, la instancia deberá conservar:
+
+1. handoff válido y misma identidad de 001;
+2. responsabilidad y cobertura resueltas por 002;
+3. topología aplicable de 015;
+4. perfil de observabilidad aplicable de 017;
+5. referencias no funcionales y SLI aplicables de 013/NFR-REQ-009;
+6. requisitos y evidencia esperada de 016;
+7. release, rollout y cambios correlacionables de 019;
+8. rollback/recovery aplicable de 020;
+9. observabilidad/routing de readiness aplicable;
+10. mecanismos autorizados para obtener evidencia sin vulnerar privacidad o segregación.
+
+Una dependencia bloqueada conserva su bloqueo. Esta tarea no lo convierte en una ejecución exitosa.
+
+---
+
+#### 20. Entregables canónicos de la tarea
+
+003 deja definidos y materializados:
+
+- contrato común de monitoreo técnico para hypercare;
+- reglas específicas para errores;
+- reglas específicas para colas, outbox, inbox y jobs;
+- reglas específicas para integraciones y dependencias;
+- reglas específicas para rendimiento técnico;
+- regla de salud del propio monitoreo;
+- estados documentales y bloqueos de evidencia;
+- handoffs hacia 004, 005, 006, 007, 008, 009 y 010;
+- matriz completa de **207** raíces;
+- reconciliación de cobertura y modalidades heredadas;
+- decisión explícita de **cero cambios TREQ**.
+
+---
+
+#### 21. Responsable
+
+La interpretación y reacción futura se rigen por `HYPERCARE-OPS-002`:
+
+- responsable funcional: `functional_owner_ref` heredado de la fila homónima de `DELIV-PKG-017`;
+- responsable técnico: `technical_owner_ref` heredado de la fila homónima de `DELIV-PKG-020` y sus fuentes `DELIV-PKG-014/015/019`;
+- cobertura y suplencia: `READY-GATE-010`;
+- ownership y enrutamiento de observabilidad: `DELIV-PKG-017` y `READY-GATE-011`.
+
+003 no crea personas, cargos, guardias, canales ni autoridades nuevas.
+
+---
+
+#### 22. Requisitos de prueba derivados
+
+**Nuevos requisitos `TREQ-*`: 0.**
+
+**Requisitos `TREQ-*` modificados: 0.**
+
+**Fragmentos 04A afectados: 0.**
+
+Justificación: las reglas verificables de esta tarea ya están protegidas por requisitos vigentes, particularmente:
+
+- `TREQ-PROC-461`: perfil de observabilidad por servicio, proceso, integración o dependencia;
+- `TREQ-PROC-463..465`: correlación, semántica de señales, errores, latencia, saturación y resultado;
+- `TREQ-PROC-467..472`: logs estructurados, privacidad, trazas, salud y black-box;
+- `TREQ-PROC-473..480`: cliente, dispositivo, offline, integraciones, Supabase, colas, periféricos y jobs;
+- `TREQ-PROC-481..484`: correlación con releases, SLI/SLO, dashboards y alertas;
+- `TREQ-PROC-1532`, `TREQ-PROC-1533` y `TREQ-PROC-1539`: carga/backlog, tiempos/resultados diferenciados y correlación extremo a extremo;
+- `TREQ-INTEGRATION-003` y `TREQ-INTEGRATION-004`: idempotencia, reintentos, observabilidad y trazabilidad de cadenas asíncronas;
+- `TREQ-CONT-002`: autoridad y trazabilidad de incidentes cuando un hallazgo sea posteriormente clasificado como tal.
+
+003 especializa el momento y la identidad de consumo de esas reglas durante hypercare; no introduce una regla empresarial o técnica nueva que justifique duplicar el registro.
+
+---
+
+#### 23. Evidencia y trazabilidad
+
+La ejecución futura deberá poder vincular cada conclusión técnica con:
+
+- fila exacta del `package_id`;
+- identidad temporal de 001;
+- responsabilidad de 002;
+- topología 015;
+- perfil 017;
+- candidato, release, ambiente y alcance;
+- señal observada y su semántica versionada;
+- periodo y punto de medición;
+- referencia de SLI, presupuesto o condición cuando exista;
+- estado del pipeline de monitoreo;
+- hallazgo y tarea propietaria de seguimiento cuando exista.
+
+Una captura aislada, un mensaje de texto libre o una ausencia de alertas no constituyen por sí solos evidencia suficiente de estabilidad.
+
+---
+
+#### 24. Criterios de aceptación
+
+003 queda documentalmente cerrada únicamente cuando se cumplen simultáneamente:
+
+- [x] se separan errores, colas/jobs, integraciones y rendimiento técnico;
+- [x] el contrato conserva la misma identidad `package_id + candidate_ref + environment + authorized_scope_ref` de 001;
+- [x] ownership y escalamiento se heredan de 002 sin autoridad paralela;
+- [x] topología y aplicabilidad se heredan de 015;
+- [x] señales, métricas y alertas se heredan de 017;
+- [x] SLI, presupuestos y objetivos se heredan de fuentes aprobadas sin inventar umbrales;
+- [x] errores exigen códigos o semántica estable y no se clasifican por texto libre;
+- [x] ausencia de errores solo se interpreta con pipeline de observación disponible;
+- [x] colas observan estado, edad, procesamiento, reintento, dead-letter, capacidad y backpressure cuando aplican;
+- [x] una cola vacía no se considera saludable si dejó de recibir trabajo esperado;
+- [x] integraciones separan acuse técnico, timeout, resultado desconocido y efecto empresarial;
+- [x] rendimiento separa demanda, latencia, saturación, capacidad y backlog conforme al perfil aplicable;
+- [x] no se confunde rendimiento técnico con tiempos o adopción operativa de 004;
+- [x] una ausencia de SLO final no se presenta como cumplimiento;
+- [x] se preserva privacidad y minimización de telemetría;
+- [x] se define la salud del propio monitoreo antes de interpretar ausencia de síntomas;
+- [x] los hallazgos tienen handoff exacto hacia 004..010 sin invadir esas tareas;
+- [x] las **207** raíces aparecen exactamente una vez;
+- [x] se preserva la distribución `160 + 3 + 26 + 14 + 2 + 2 = 207`;
+- [x] AURA, dependencias externas bloqueadas y TALENTO no se presentan como hypercare ejecutado;
+- [x] se crean cero `TREQ-*`, se modifican cero `TREQ-*` y se afectan cero fragmentos 04A;
+- [x] no se ejecutan monitoreo, consultas, instrumentación, código, despliegues, migraciones, DDL/DML, backfills, cambios de datos, configuración remota ni operaciones sobre Supabase.
+
+---
+
+#### 25. Conflictos y brechas
+
+No se introduce una contradicción ni una brecha documental nueva dentro del alcance de 003. La aplicabilidad concreta de cada señal, cola, integración, dependencia o presupuesto permanece gobernada por la fila homónima vigente de sus fuentes propietarias y no puede resolverse por inferencia.
+
+No queda pendiente narrativo sin propietario: cualquier ausencia de señal o referencia obligatoria queda bloqueada por la fuente propietaria correspondiente; cualquier hallazgo observado se entrega a 004, 005, 006, 007, 008, 009 o 010 según la sección 15.
+
+---
+
+#### 26. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos
+
+##### TAREA ACTUAL APROBADA
+HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento
+
+##### SIGUIENTE TAREA RESERVADA
+HYPERCARE-OPS-004 — Definir monitoreo de adopción, tiempos y desviaciones operativas
+
+
 ### [ ] HYPERCARE-OPS-004 — Definir monitoreo de adopción, tiempos y desviaciones operativas
 ### [ ] HYPERCARE-OPS-005 — Definir conciliaciones de datos y efectos entre dominios
 ### [ ] HYPERCARE-OPS-006 — Definir clasificación, prioridad y procedimiento de corrección de incidentes

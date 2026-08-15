@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **863** |
+| Tareas aprobadas | **864** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **731** |
+| Tareas no iniciadas | **730** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **54.14% (863/1594)** |
+| Porcentaje de completamiento | **54.20% (864/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos** |
-| Tarea actual | **HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento** |
+| Última tarea aprobada | **HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento** |
+| Tarea actual | **HYPERCARE-OPS-004 — Definir monitoreo de adopción, tiempos y desviaciones operativas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **HYPERCARE-OPS-004 — Definir monitoreo de adopción, tiempos y desviaciones operativas** |
+| Siguiente tarea | **HYPERCARE-OPS-005 — Definir conciliaciones de datos y efectos entre dominios** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 52 de 68 aprobadas; HYPERCARE-OPS-003 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 53 de 68 aprobadas; HYPERCARE-OPS-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `HYPERCARE-OPS-002` — Definir responsables funcionales y técnicos |
-| Tarea actual | `HYPERCARE-OPS-003` — Definir monitoreo de errores, colas, integraciones y rendimiento — **NO INICIADA** |
-| Siguiente tarea | `HYPERCARE-OPS-004` — Definir monitoreo de adopción, tiempos y desviaciones operativas |
+| Última aprobada | `HYPERCARE-OPS-003` — Definir monitoreo de errores, colas, integraciones y rendimiento |
+| Tarea actual | `HYPERCARE-OPS-004` — Definir monitoreo de adopción, tiempos y desviaciones operativas — **NO INICIADA** |
+| Siguiente tarea | `HYPERCARE-OPS-005` — Definir conciliaciones de datos y efectos entre dominios |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 52 DE 68 APROBADAS — ACTUAL HYPERCARE-OPS-003** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 53 DE 68 APROBADAS — ACTUAL HYPERCARE-OPS-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos
-        ↓
-TAREA ACTUAL
 HYPERCARE-OPS-003 — Definir monitoreo de errores, colas, integraciones y rendimiento
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 HYPERCARE-OPS-004 — Definir monitoreo de adopción, tiempos y desviaciones operativas
         ↓
+SIGUIENTE TAREA RESERVADA
+HYPERCARE-OPS-005 — Definir conciliaciones de datos y efectos entre dominios
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 52 de 68 tareas aprobadas
+BLOQUE E5 — 53 de 68 tareas aprobadas
 ```
