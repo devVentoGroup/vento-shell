@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **848** |
+| Aprobadas | **849** |
 | En propuesta | **0** |
-| No iniciadas | **746** |
+| No iniciadas | **745** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **53.20% (848/1594)** |
+| Porcentaje de completamiento | **53.26% (849/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `READY-GATE-012` — Definir criterio y evidencia para confirmar respaldo y rollback probados | ✅ APROBADA |
-| Tarea actual | `READY-GATE-013` — Definir método y evidencia para capturar la línea base previa al piloto | ⬜ NO INICIADA |
-| Siguiente reservada | `READY-GATE-014` — Definir registro de riesgos aceptados y condiciones de suspensión | ⬜ NO INICIADA |
+| Última aprobada | `READY-GATE-013` — Definir método y evidencia para capturar la línea base previa al piloto | ✅ APROBADA |
+| Tarea actual | `READY-GATE-014` — Definir registro de riesgos aceptados y condiciones de suspensión | ⬜ NO INICIADA |
+| Siguiente reservada | `READY-GATE-015` — Definir autoridad y criterio para aprobar la entrada al piloto operativo | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -565,7 +565,7 @@
 | ✅ APROBADA | `READY-GATE-010` | Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ✅ APROBADA | `READY-GATE-011` | Definir criterio y evidencia para confirmar monitoreo, métricas y alertas | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ✅ APROBADA | `READY-GATE-012` | Definir criterio y evidencia para confirmar respaldo y rollback probados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-013` | Definir método y evidencia para capturar la línea base previa al piloto | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ✅ APROBADA | `READY-GATE-013` | Definir método y evidencia para capturar la línea base previa al piloto | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ⬜ NO INICIADA | `READY-GATE-014` | Definir registro de riesgos aceptados y condiciones de suspensión | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ⬜ NO INICIADA | `READY-GATE-015` | Definir autoridad y criterio para aprobar la entrada al piloto operativo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
 | ⬜ NO INICIADA | `CUTOVER-OPS-001` | Definir criterio para seleccionar fecha, ventana y responsables del cutover | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |

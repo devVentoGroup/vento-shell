@@ -5978,7 +5978,421 @@ SIGUIENTE TAREA RESERVADA
 `READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto`
 
 
-### [ ] READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto
+### ✅ READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto
+
+**Estado:** APROBADA  
+**Tarea anterior:** READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados — APROBADA  
+**Tarea siguiente:** READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión — RESERVADA  
+**Tipo de tarea:** documental — puerta de readiness operativo; definición del método, evidencia, integridad y criterio de aceptación de la línea base previa al piloto. No implementa código, despliegues, migraciones, configuración productiva, cambios físicos ni operaciones sobre Supabase.  
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+
+#### 1. Propósito
+
+Definir el contrato canónico mediante el cual la ejecución posterior de `SHELL-CI-021` deberá demostrar que cada paquete que vaya a entrar a piloto cuenta con una línea base previa, identificable, reproducible y comparable, suficiente para distinguir el estado existente antes de la exposición del piloto de los efectos observados durante o después de éste.
+
+La línea base deberá permitir responder, sin reconstrucción oportunista posterior, al menos:
+
+- qué paquete, capacidad y candidato se observaron;
+- en qué ambiente, sede, población, cohorte y alcance;
+- qué indicadores o estados previos eran aplicables;
+- cómo se definía cada indicador en ese momento;
+- qué fuente autoritativa produjo el dato;
+- qué ventana temporal y corte se utilizaron;
+- qué valor, distribución o estado previo quedó registrado;
+- qué faltantes, anomalías, incidentes o condiciones preexistentes podían afectar la interpretación;
+- qué evidencia permite reproducir o auditar la captura;
+- y si la referencia sigue siendo comparable con la medición que se realizará durante el piloto.
+
+Esta tarea define la puerta documental y el método de aceptación. La captura material de la línea base y la evidencia resultante corresponden a la ejecución posterior del readiness y del piloto sobre el paquete implementado.
+
+#### 2. Invariante de interpretación
+
+Se adopta la siguiente separación obligatoria:
+
+`LÍNEA BASE ≠ OBJETIVO ≠ UMBRAL DE ACEPTACIÓN ≠ TELEMETRÍA EN VIVO ≠ RESULTADO DEL PILOTO`
+
+La línea base es una referencia controlada del estado previo a la exposición del piloto. No constituye por sí misma un objetivo, un SLO, un umbral de aceptación, una garantía de desempeño ni evidencia de que el piloto haya producido una mejora o deterioro.
+
+Un valor objetivo o contractual no podrá sustituirse por una observación histórica. De igual forma, una observación histórica favorable no podrá relajar un umbral aprobado en `DELIV-PKG-023`, `NFR-REQ-009` o el contrato aplicable del paquete.
+
+#### 3. Frontera con tareas y contratos adyacentes
+
+`READY-GATE-013` consume, sin redefinirlos, los contratos canónicos ya aprobados que determinan qué debe medirse, sobre qué alcance y con qué evidencia:
+
+- `DELIV-PKG-013`: requisitos no funcionales y compatibilidad aplicables al paquete;
+- `DELIV-PKG-016`: vínculo entre requisitos de prueba, nivel, archivos, fixtures, ambientes, responsables y evidencia esperada;
+- `DELIV-PKG-017`: contrato de observabilidad por paquete y definición de métricas, logs, eventos, alertas y fuentes aplicables;
+- `DELIV-PKG-019`: estrategia de rollout y segmentación progresiva;
+- `DELIV-PKG-022`: población, actores, sedes, datos, dispositivos, ambiente, duración, cohortes, exclusiones y salvaguardas del piloto;
+- `DELIV-PKG-023`: criterios medibles de aceptación y evidencia;
+- `DELIV-PKG-025`: dossier de cierre documental previo a implementación física;
+- `NFR-REQ-009`: obligaciones no funcionales de observabilidad y evidencia;
+- `READY-GATE-011`: disponibilidad y aptitud de monitoreo, métricas y alertas;
+- `READY-GATE-012`: evidencia de respaldo, restauración y rollback aplicable.
+
+La frontera de las puertas siguientes permanece intacta:
+
+- `READY-GATE-014` gobierna los riesgos aceptados y las condiciones de suspensión;
+- `READY-GATE-015` gobierna la autoridad y el criterio final para autorizar la entrada al piloto.
+
+Por tanto, una línea base correctamente capturada no autoriza el piloto, no acepta riesgos, no demuestra rollback y no reemplaza la aprobación final de readiness.
+
+#### 4. Universo obligatorio de línea base
+
+Antes de observar los resultados deberá derivarse el universo de elementos que requieren referencia previa. No se permitirá seleccionar únicamente los indicadores que produzcan una comparación favorable.
+
+El universo deberá construirse, como mínimo, a partir de:
+
+1. indicadores, SLI, métricas, eventos o estados definidos por el contrato de observabilidad del paquete cuando sean pertinentes para el piloto;
+2. criterios de aceptación que requieran comparación antes/después, tendencia, distribución, tasa, proporción, volumen, duración, error, disponibilidad, calidad o referencia histórica;
+3. estados operativos preexistentes necesarios para interpretar correctamente el resultado del piloto;
+4. sedes, actores, roles, dispositivos, cohortes, poblaciones o segmentos que efectivamente estarán expuestos;
+5. dependencias, integraciones o condiciones de infraestructura cuyo estado preexistente pueda actuar como factor de confusión;
+6. colas, pendientes, backlog, incidencias o degradaciones existentes cuando puedan alterar el resultado observado;
+7. cualquier referencia previa declarada explícitamente por el contrato de aceptación, rollout o piloto.
+
+Cada elemento derivado deberá evaluarse exactamente una vez y quedar clasificado como `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA` conforme a esta tarea.
+
+La ausencia de una medición histórica no elimina automáticamente el elemento del universo. `NO_APLICA` exige una justificación basada en el contrato del paquete y no en la falta de datos.
+
+#### 5. Identidad mínima de la línea base
+
+Toda línea base aceptable deberá poseer una identidad estable que permita relacionarla inequívocamente con el piloto posterior. Como mínimo deberá conservar:
+
+- identificador o referencia estable de la línea base;
+- paquete y capacidad observados;
+- candidato exacto, versión, revisión, artefacto o commit cuando resulte aplicable;
+- ambiente de ejecución;
+- sede, área, población, cohorte o segmento cubierto cuando resulte aplicable;
+- alcance funcional y técnico;
+- referencia al rollout y al contrato de piloto aplicables;
+- fecha y hora de corte;
+- zona horaria utilizada;
+- inicio y fin de la ventana de observación;
+- versión del conjunto de métricas o definiciones utilizadas;
+- fuente o sistema propietario de cada dato;
+- responsable de la captura o del proceso que la genera;
+- referencia a la evidencia preservada.
+
+Dos capturas con distinto candidato, ambiente, cohorte, definición métrica o alcance no deberán tratarse como la misma línea base salvo que exista una regla de equivalencia explícita y auditable que preserve la comparabilidad.
+
+#### 6. Registro mínimo por indicador o estado medido
+
+Cada elemento cuantitativo o cualitativo de la línea base deberá conservar, según aplique:
+
+- identificador estable del indicador o estado;
+- nombre y significado técnico u operativo;
+- unidad de medida;
+- fuente autoritativa;
+- referencia o versión de la consulta, extracción, cálculo o instrumento de medición;
+- numerador y denominador cuando se trate de tasas, porcentajes o proporciones;
+- filtros, inclusiones y exclusiones;
+- regla de agregación;
+- dimensiones o segmentos relevantes;
+- regla de muestreo, si existe;
+- ventana temporal;
+- cobertura y frescura de los datos;
+- valor, distribución, estado o clasificación obtenidos;
+- condición de calidad de la captura;
+- anomalías o limitaciones materiales conocidas;
+- referencia a evidencia suficiente para auditar el resultado.
+
+No será suficiente registrar únicamente un número final sin conservar la semántica y el alcance que permiten reproducirlo o compararlo.
+
+#### 7. Distinción obligatoria entre cero, ausencia y no aplicabilidad
+
+La línea base deberá distinguir expresamente, sin equivalencias implícitas, al menos las siguientes condiciones:
+
+- `CERO_MEDIDO`: la fuente autoritativa fue consultada correctamente y el valor observado fue cero;
+- `SIN_OBSERVACIONES`: la métrica es aplicable pero la ventana no contiene observaciones suficientes;
+- `NO_DISPONIBLE`: la fuente o extracción requerida no pudo producir un dato confiable;
+- `NO_APLICA`: el indicador o estado no pertenece al alcance del paquete o piloto, con justificación;
+- `PROVISIONAL`: la captura existe pero presenta una limitación explícita de cobertura, frescura o completitud que debe evaluarse frente al contrato de aceptación;
+- `VALIDO`: la captura satisface identidad, fuente, ventana, cobertura e integridad requeridas.
+
+Un dato ausente nunca deberá convertirse silenciosamente en cero. Un dato provisional tampoco podrá presentarse como definitivo.
+
+`PROVISIONAL` es una condición de la evidencia y no un resultado adicional de la puerta. Un elemento provisional solo podrá resultar `PASS` si el contrato de aceptación aplicable permite explícitamente esa limitación y ésta no invalida la comparación prevista; en caso contrario deberá resultar `BLOQUEADO` o `FAIL` según la causa.
+
+#### 8. Estados previos no numéricos
+
+Cuando la interpretación del piloto dependa de condiciones que no sean una métrica escalar, la línea base deberá preservar la referencia previa correspondiente. Podrán incluir, según el paquete:
+
+- backlog, colas o trabajos pendientes;
+- operaciones con resultado pendiente o desconocido;
+- incidentes, problemas, cambios o degradaciones abiertas que afecten materialmente el alcance;
+- configuración o estado funcional relevante, sin copiar secretos;
+- membresía efectiva de cohortes o poblaciones;
+- versión o referencia de datos utilizados para el piloto;
+- estado de integraciones o dependencias externas;
+- estado de dispositivos, red o periféricos relevantes para el alcance;
+- disponibilidad o salud previa de servicios;
+- condiciones operativas excepcionales vigentes antes del piloto.
+
+Estos estados deberán referenciar su sistema propietario y no crear una segunda fuente de verdad. La evidencia de línea base podrá fijar una referencia, instantánea controlada o identificador de versión, pero no sustituirá al sistema canónico que gobierna el dato.
+
+#### 9. Método temporal de captura
+
+La ventana de línea base deberá terminar antes de la primera exposición del piloto capaz de modificar directa o indirectamente el indicador o estado que se pretende comparar.
+
+La duración de la ventana no será un número universal. Deberá justificarse con base en:
+
+- comportamiento y frecuencia del indicador;
+- ciclo operativo o de negocio;
+- volumen mínimo necesario para una comparación útil;
+- variabilidad conocida;
+- criterio de aceptación que utilizará la referencia;
+- estacionalidad, calendario o periodicidad material;
+- disponibilidad histórica de la fuente.
+
+La captura deberá registrar cualquier evento material dentro de la ventana, como mantenimientos planificados, cierres, festivos, campañas, incidentes, cambios de volumen o condiciones extraordinarias, cuando puedan distorsionar la comparación.
+
+No se permitirá ampliar retroactivamente la ventana después de observar el resultado del piloto para obtener una referencia más favorable.
+
+#### 10. Corte previo a exposición y contaminación
+
+Se considera contaminada una línea base cuando incluye observaciones producidas después de que una persona, cohorte, sede, dispositivo, integración o proceso haya sido expuesto al candidato o a una intervención del piloto capaz de alterar el resultado medido.
+
+Para evitar contaminación, la evidencia deberá conservar el corte temporal y, cuando el rollout sea progresivo, distinguir los segmentos todavía no expuestos de los ya expuestos.
+
+Una cohorte expuesta no podrá seguir alimentando su propia línea base prepiloto. Si distintas cohortes inician en momentos diferentes, cada referencia deberá permanecer atribuible al corte aplicable a la cohorte correspondiente o a una referencia común capturada antes de la primera exposición, cuando el diseño aprobado lo permita.
+
+#### 11. Cambios que obligan a recapturar o versionar
+
+Antes de la exposición, la línea base deberá recapturarse o declararse sustituida cuando ocurra un cambio material que invalide su comparabilidad, incluyendo cuando aplique:
+
+- cambio del candidato o versión que altera el comportamiento observado;
+- cambio de ambiente;
+- modificación del alcance funcional o técnico;
+- modificación material de sede, población o cohorte;
+- cambio de definición, unidad, denominador, filtro, agregación o fuente de una métrica;
+- cambio de configuración que altere el comportamiento de referencia;
+- modificación material de una dependencia;
+- corrección de datos que cambie de forma relevante el valor previo;
+- cambio del diseño de piloto o del criterio de aceptación.
+
+Después de iniciada la exposición, la línea base original deberá quedar congelada. Una corrección posterior solo podrá incorporarse mediante una versión sucesora o una reconstrucción identificada, preservando la referencia original, el motivo, el método, el responsable y el impacto sobre la comparabilidad.
+
+No se permitirá editar retrospectivamente la línea base original para hacerla coincidir con el resultado observado.
+
+#### 12. Reconstrucción y backfill
+
+Cuando por una causa justificada no exista captura original suficiente y sea técnicamente posible reconstruir una referencia histórica desde fuentes autoritativas, la evidencia deberá identificarla expresamente como `RECONSTRUIDA`.
+
+Una reconstrucción deberá conservar:
+
+- fuente utilizada;
+- período reconstruido;
+- fecha de reconstrucción;
+- método y versión de cálculo;
+- diferencias frente al método que habría sido usado en tiempo real;
+- datos faltantes o supuestos;
+- limitaciones conocidas;
+- responsable;
+- impacto sobre la comparabilidad y el criterio de aceptación.
+
+Una línea base reconstruida nunca podrá presentarse como si hubiese sido capturada originalmente antes del piloto. Si la reconstrucción no preserva comparabilidad suficiente, el elemento deberá quedar `BLOQUEADO` o `FAIL` y no podrá resolverse mediante una estimación informal.
+
+#### 13. Comparabilidad obligatoria
+
+Una comparación válida entre línea base y piloto exige preservar, salvo transformación explícitamente documentada y aprobada:
+
+- definición del indicador;
+- unidad;
+- fuente o semántica equivalente demostrable;
+- población y denominador;
+- filtros;
+- agregación;
+- dimensiones relevantes;
+- ventana o regla temporal comparable;
+- método de cálculo;
+- tratamiento de datos faltantes;
+- estado de exposición de la cohorte.
+
+Si la definición cambia durante el piloto, deberá existir una regla de mapeo o normalización que permita demostrar equivalencia. Sin esa demostración, la comparación directa queda invalidada y deberá utilizarse una nueva referencia o declararse el bloqueo correspondiente.
+
+Un delta entre dos valores no prueba causalidad. La evaluación deberá conservar factores de confusión materiales —por ejemplo, incidentes previos, diferencias de volumen, cambios de configuración, dependencia degradada, estacionalidad o cambios de población— para impedir que un cambio coincidente se atribuya automáticamente al piloto.
+
+#### 14. Segmentación y cobertura
+
+La línea base deberá cubrir el mismo universo sobre el que se pretende afirmar un resultado del piloto o una segmentación suficientemente equivalente y explícita.
+
+No se permitirá:
+
+- extrapolar una sede a todas las sedes sin una regla aprobada;
+- extrapolar una cohorte a toda la población cuando existan diferencias materiales;
+- mezclar segmentos con comportamientos distintos hasta ocultar un deterioro relevante;
+- declarar cobertura completa a partir de una muestra sin justificar el método;
+- comparar un agregado prepiloto con un segmento pospiloto como si fueran equivalentes.
+
+Cuando una métrica deba segmentarse por sede, dispositivo, rol, cohorte, canal u otra dimensión prevista por `DELIV-PKG-017` o `DELIV-PKG-022`, la línea base deberá conservar esa dimensión con cardinalidad y tratamiento compatibles con el contrato aprobado.
+
+#### 15. Evidencia aceptable
+
+La evidencia podrá adoptar uno o varios de los siguientes soportes, siempre que conserve identidad, fuente, corte temporal y trazabilidad suficientes:
+
+- manifiesto versionado de línea base;
+- exportación controlada y fechada de una fuente autoritativa;
+- instantánea de panel o reporte vinculada al identificador de la métrica, fuente y ventana;
+- definición o referencia versionada de la consulta o extracción utilizada;
+- referencia a evidencia bruta controlada cuando sea necesaria para reproducibilidad;
+- instantánea controlada de alcance, cohorte o población;
+- registro previo de backlog, colas o pendientes;
+- evidencia prepiloto de SLI, métricas o estados operativos;
+- reporte de línea base que clasifique explícitamente faltantes, provisionales y no aplicables;
+- referencia a incidentes, cambios o condiciones preexistentes que afecten interpretación;
+- evidencia de responsable, fecha y versión cuando el contrato aplicable lo exija.
+
+Una captura visual podrá formar parte de la evidencia, pero no será suficiente por sí sola si no permite identificar la fuente, definición, alcance y ventana de la medición.
+
+#### 16. Evidencia insuficiente por sí sola
+
+No se considerarán prueba suficiente de línea base, de manera aislada:
+
+- un número copiado manualmente sin fuente autoritativa;
+- una captura sin métrica, definición, alcance o ventana identificables;
+- un enlace mutable a un panel sin fijar el corte o la versión de la consulta;
+- una estimación basada en memoria del operador;
+- una reconstrucción posterior presentada como captura original;
+- un dato sin asociación con paquete, ambiente, sede, cohorte o población cuando esas dimensiones sean materiales;
+- la sustitución de un valor ausente por cero;
+- un objetivo, SLO o umbral de aceptación usado como si fuera observación previa;
+- una muestra parcial extrapolada sin método documentado;
+- un agregado que oculte segmentos materialmente diferentes;
+- un punto aislado cuando el criterio exige una ventana, tendencia o distribución;
+- un valor calculado con una definición distinta a la que se utilizará durante el piloto sin mapeo explícito;
+- telemetría emitida por el propio piloto después del corte presentada como referencia prepiloto.
+
+#### 17. Integridad, trazabilidad y reproducibilidad
+
+La evidencia deberá permitir a un revisor autorizado reconstruir cómo se obtuvo la línea base sin depender de conocimiento tácito del autor.
+
+Como mínimo, deberá ser posible relacionar:
+
+`paquete → candidato → piloto/rollout → elemento de baseline → definición → fuente → ventana → resultado → evidencia`
+
+Cuando la captura provenga de una consulta, script, panel o transformación versionable, deberá conservarse una referencia estable a la versión utilizada. Cuando la fuente sea externa y no permita versionado, deberá fijarse al menos el identificador disponible, ventana, parámetros, fecha de extracción y evidencia suficiente para reconstruir la operación.
+
+La corrección de una línea base deberá preservar historial. No se admitirán sobrescrituras silenciosas de evidencias ya utilizadas para una decisión de readiness.
+
+#### 18. Seguridad, privacidad y minimización
+
+La captura de línea base no autoriza ampliar acceso ni copiar información sensible fuera de sus repositorios o sistemas propietarios.
+
+Deberán aplicarse, según corresponda:
+
+- minimización de datos personales;
+- agregación o desidentificación cuando el detalle individual no sea necesario;
+- control de acceso a evidencia sensible;
+- exclusión de secretos, tokens, credenciales y claves;
+- referencia a datos canónicos en lugar de duplicación cuando la copia no sea necesaria;
+- preservación de clasificación, retención y auditoría aplicables.
+
+Una necesidad analítica de comparación no convierte por sí misma datos restringidos en datos de libre uso.
+
+#### 19. Resultado por elemento
+
+Cada elemento del universo deberá recibir exactamente uno de estos resultados:
+
+- `PASS`: existe una referencia previa suficiente, atribuible, íntegra y comparable para el uso previsto;
+- `FAIL`: la referencia existe o pudo obtenerse, pero incumple una condición obligatoria y la deficiencia invalida la decisión o comparación;
+- `BLOQUEADO`: una dependencia, fuente, historia, acceso autorizado o condición externa impide completar una referencia necesaria sin falsear el resultado;
+- `NO_APLICA`: el elemento no corresponde al paquete o al diseño del piloto y existe una justificación trazable basada en el contrato aplicable.
+
+La falta de evidencia nunca equivale a `PASS` ni a `NO_APLICA`.
+
+#### 20. Resultado agregado por paquete
+
+La puerta se evaluará de forma estricta por paquete:
+
+- si existe al menos un elemento `FAIL`, el resultado del paquete será `FAIL`;
+- si no existen elementos `FAIL` pero existe al menos un `BLOQUEADO`, el resultado será `BLOQUEADO`;
+- el paquete podrá resultar `PASS` únicamente cuando todos los elementos aplicables resulten `PASS` y todo `NO_APLICA` esté justificado;
+- no se permitirá compensar un fallo de baseline con resultados favorables en otros indicadores;
+- no se permitirá inferir cobertura completa desde una fracción del universo sin una regla de muestreo o equivalencia previamente aprobada.
+
+Un `NO_APLICA` a nivel de paquete solo será admisible cuando el diseño aprobado no contenga ningún criterio de aceptación, estado operativo, población, dependencia o indicador que requiera referencia previa. La justificación deberá ser explícita y trazable.
+
+#### 21. Consumo por `SHELL-CI-021`
+
+Durante la ejecución futura del checklist de readiness, `SHELL-CI-021` deberá usar este contrato para verificar, por cada paquete candidato a piloto:
+
+1. que el universo de baseline fue derivado antes de evaluar resultados;
+2. que el corte ocurrió antes de la exposición aplicable;
+3. que la identidad de candidato, ambiente, alcance y cohorte es inequívoca;
+4. que cada indicador conserva definición, fuente, ventana y evidencia;
+5. que cero, ausencia, no disponibilidad, no aplicabilidad y provisionalidad están diferenciados;
+6. que los estados previos no numéricos relevantes fueron preservados;
+7. que la comparación prevista con el piloto es semántica y temporalmente válida;
+8. que los factores de confusión materiales están identificados;
+9. que cualquier reconstrucción o supersesión está declarada y versionada;
+10. que cada elemento tiene un resultado permitido;
+11. que el resultado agregado se calcula sin excepciones implícitas;
+12. y que la evidencia puede ser auditada sin depender de conocimiento tácito.
+
+`SHELL-CI-021` no deberá reinterpretar una falta de baseline como aprobación tácita. Cuando la referencia necesaria no pueda obtenerse de manera válida, deberá conservar el bloqueo o fallo correspondiente para que las puertas siguientes actúen sobre un estado explícito.
+
+#### 22. Condiciones que no resuelve esta tarea
+
+`READY-GATE-013` no:
+
+- define nuevos SLI, SLO, métricas o alertas;
+- modifica los umbrales de aceptación aprobados;
+- decide qué riesgos pueden aceptarse;
+- autoriza una condición de suspensión;
+- declara que soporte, monitoreo, respaldo o rollback estén disponibles;
+- ejecuta el piloto;
+- atribuye causalidad a cambios observados;
+- autoriza despliegues, accesos privilegiados, cambios de configuración o migraciones;
+- sustituye la evidencia de pruebas funcionales o no funcionales;
+- convierte una fuente analítica en fuente de verdad operativa.
+
+Su alcance termina en definir cuándo la referencia previa puede considerarse apta para una comparación posterior controlada.
+
+#### 23. Criterios de aceptación de `READY-GATE-013`
+
+La tarea se considera documentalmente completa cuando quedan definidos de forma inequívoca los siguientes criterios:
+
+1. existe una definición explícita de línea base distinta de objetivo, umbral y resultado del piloto;
+2. el universo de elementos se deriva de contratos previos y no de los resultados observados;
+3. cada baseline queda asociada a paquete, candidato, ambiente, alcance y piloto/rollout aplicables;
+4. el corte temporal ocurre antes de la exposición capaz de contaminar la referencia;
+5. la duración de la ventana debe justificarse según la naturaleza de la medición;
+6. cada indicador conserva semántica, unidad, fuente, cálculo, filtros, agregación y ventana cuando corresponda;
+7. tasas y proporciones conservan numerador y denominador;
+8. las dimensiones relevantes de sede, cohorte, población, dispositivo o canal permanecen comparables;
+9. cero medido, ausencia, no disponibilidad, provisionalidad y no aplicabilidad se distinguen explícitamente;
+10. los estados preexistentes no numéricos que puedan alterar la interpretación quedan referenciados;
+11. las fuentes autoritativas continúan siendo propietarias de sus datos y la baseline no crea una fuente paralela;
+12. existe una regla expresa contra contaminación posterior a la exposición;
+13. están definidos los cambios materiales que obligan a recapturar o versionar;
+14. una reconstrucción posterior queda identificada como tal y conserva sus limitaciones;
+15. la comparabilidad exige preservar definición, población, denominador, fuente y regla temporal o demostrar equivalencia;
+16. se registran factores de confusión materiales que impiden una atribución simplista de causalidad;
+17. la evidencia mantiene trazabilidad y reproducibilidad suficientes;
+18. la captura respeta seguridad, privacidad, minimización y control de acceso;
+19. cada elemento recibe exactamente `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA`;
+20. el agregado por paquete es estricto y no permite compensar fallos;
+21. la ausencia de evidencia no puede convertirse en aprobación;
+22. `SHELL-CI-021` queda identificado como consumidor posterior del contrato;
+23. las fronteras con `READY-GATE-011`, `READY-GATE-012`, `READY-GATE-014` y `READY-GATE-015` permanecen separadas;
+24. la tarea no introduce comportamiento ejecutable nuevo ni redefine los requisitos de prueba existentes.
+
+#### 24. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA  
+**Requisitos creados:** 0  
+**Requisitos modificados:** 0
+
+La tarea formaliza el método documental con el que una ejecución futura deberá capturar y aceptar la referencia previa al piloto. No incorpora una nueva conducta ejecutable del producto ni modifica la semántica de los requisitos ya protegidos por los contratos funcionales, no funcionales, de observabilidad, prueba, rollout y piloto. Las conductas medibles continúan siendo verificadas mediante sus requisitos de prueba existentes.
+
+#### 25. Continuidad canónica
+
+**ÚLTIMA TAREA APROBADA:** `READY-GATE-012 — Definir criterio y evidencia para confirmar respaldo y rollback probados`  
+**TAREA ACTUAL APROBADA:** `READY-GATE-013 — Definir método y evidencia para capturar la línea base previa al piloto`  
+**SIGUIENTE TAREA RESERVADA:** `READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión`
+
+
 ### [ ] READY-GATE-014 — Definir registro de riesgos aceptados y condiciones de suspensión
 ### [ ] READY-GATE-015 — Definir autoridad y criterio para aprobar la entrada al piloto operativo
 
