@@ -2065,7 +2065,406 @@ READY-GATE-006 — Definir criterio y evidencia para confirmar integraciones y c
 READY-GATE-007 — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras
 
 
-### [ ] READY-GATE-007 — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras
+### ✅ READY-GATE-007 — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras
+
+**Estado:** APROBADA
+**Tarea anterior:** `READY-GATE-006 — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente`
+**Tarea siguiente:** `READY-GATE-008 — Definir criterio y evidencia para confirmar procedimientos operativos y contingencias`
+**Tipo de tarea:** documental — definición del gate de readiness que permitirá confirmar, por paquete y ambiente objetivo, que el hardware, la conectividad de red, las capacidades de escaneo y las impresoras físicas exigidas por la operación existen, están identificadas, vinculadas al sitio y contexto correctos, son compatibles con la implementación aprobada y superan comprobaciones físicas controladas; sin instalar, reparar, mover, configurar, enrolar, cablear, imprimir, escanear ni modificar infraestructura.
+
+#### 1. Propósito y resultado canónico
+
+`READY-GATE-007::<package_id>` define el criterio documental que deberá ejecutar posteriormente `SHELL-CI-021::<package_id>` para determinar si las dependencias físicas del paquete están realmente preparadas en el ambiente y la sede objetivo.
+
+El gate responde una pregunta concreta:
+
+> ¿El paquete dispone de todos los equipos físicos, caminos de red, capacidades de captura y dispositivos de impresión que necesita para operar, con identidad verificable, binding correcto, compatibilidad demostrada y una prueba controlada que confirme el resultado esperado?
+
+La tarea no afirma que esa condición ya se cumpla para ningún paquete, sede, dispositivo o impresora. Define el universo que deberá comprobarse, la evidencia aceptable y la regla de decisión.
+
+#### 2. Alcance y frontera del gate
+
+El gate cubre cuatro clases de dependencia física cuando sean requeridas por el paquete:
+
+1. `HARDWARE_ENDPOINT`: computador, terminal, tableta, móvil, kiosco, host, bridge o dispositivo compartido cuya presencia física y capacidad sean necesarias;
+2. `NETWORK_PATH`: enlace, router, switch, punto de acceso, segmento, SSID, reserva o camino de conectividad requerido para que el componente alcance su destino autorizado;
+3. `SCANNER_CAPTURE`: cámara, lector tipo teclado, escáner dedicado u otro canal físico de captura requerido por el flujo;
+4. `PRINTER_OUTPUT`: impresora, host, canal, bridge, cola, medio y binding físico necesarios para producir una salida impresa requerida.
+
+La aplicabilidad se deriva del expediente aprobado del paquete. Una clase no se vuelve obligatoria para todos los paquetes por existir en Vento OS.
+
+Este gate no sustituye ni reabre:
+
+- `READY-GATE-003`, que confirma configuración lógica de permisos, matrices y dispositivos; una fila registral no demuestra que el equipo físico exista o funcione;
+- `READY-GATE-006`, que confirma integraciones externas y credenciales del ambiente;
+- `READY-GATE-008`, que confirmará procedimientos operativos y contingencias;
+- `READY-GATE-011`, que confirmará monitoreo, logs, alertas y dashboards;
+- `READY-GATE-012`, que confirmará backup, restore y rollback;
+- las pruebas funcionales completas del paquete ni la aceptación empresarial del piloto.
+
+#### 3. Fuentes vinculantes de aplicabilidad
+
+Para cada `package_id`, el universo esperado se deriva antes de observar el ambiente y se reconcilia, cuando corresponda, con:
+
+- `DELIV-PKG-013` para requisitos no funcionales y compatibilidad medible;
+- `DELIV-PKG-014` y `DELIV-PKG-015` para topología, archivos, dependencias, SDK, adaptadores, toolchain y prerequisitos;
+- `DELIV-PKG-016` para `TREQ-*`, niveles de prueba, fixtures, ambientes, responsables y evidencia;
+- `DELIV-PKG-017` para señales de salud requeridas, sin adelantar el gate de observabilidad;
+- `DELIV-PKG-018` para configuración o flags que condicionen el uso de un dispositivo;
+- `DELIV-PKG-019` y `DELIV-PKG-020` para rollout y rollback cuando el hardware forme parte del cambio;
+- `DELIV-PKG-022` para sede, cohorte, dispositivos y salvaguardas del piloto;
+- `DELIV-PKG-023` y `DELIV-PKG-025` para criterios de aceptación, expediente final y bloqueos;
+- `READY-GATE-003` para identidad lógica y binding registral de dispositivos;
+- `TI-DOM-002`, `TI-DOM-003`, `TI-DOM-004` y `TI-DOM-005` para identidad tecnológica, endpoints, red e impresoras/periféricos;
+- `PRINT-ARC-001..020` para inventario, capacidades, routing, health, adapters, job, receipt, contingencia y piloto de impresión;
+- `NEXO-UX-020` y sus requisitos de captura cuando el paquete use escaneo;
+- las tareas físicas de implementación que materialicen el paquete antes de la ejecución de `SHELL-CI-021`.
+
+Si las fuentes aprobadas no permiten determinar el conjunto físico esperado, el resultado es `BLOQUEADO`; no se consulta el ambiente para inventar el alcance.
+
+#### 4. Conjunto físico requerido
+
+`SHELL-CI-021::<package_id>` deberá construir `required_physical_dependency_set` con una fila por dependencia material exigida.
+
+Cada fila deberá pertenecer exactamente a una de las cuatro clases del gate y conservar una identidad estable dentro del dossier. El conjunto deberá reconciliar:
+
+- cantidad esperada;
+- cantidad observada;
+- faltantes;
+- duplicados;
+- dependencias sustitutas expresamente aprobadas;
+- dependencias retiradas o fuera de alcance con decisión canónica;
+- sede, área, punto de operación y ambiente correctos.
+
+La existencia de hardware adicional no compensa una dependencia obligatoria faltante ni autoriza una sustitución por similitud.
+
+#### 5. Dossier mínimo por dependencia
+
+Cada dependencia deberá conservar como mínimo:
+
+| Campo                     | Regla                                                                                                     |
+| ------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `package_id`              | paquete evaluado                                                                                          |
+| `physical_requirement_id` | identidad estable dentro del dossier                                                                      |
+| `dependency_class`        | una de las cuatro clases de este gate                                                                     |
+| `required_by`             | `TREQ-*`, contrato, paquete, proceso o decisión que la hace obligatoria                                   |
+| `target_environment`      | ambiente exacto                                                                                           |
+| `site_id`                 | sede requerida cuando aplique                                                                             |
+| `area_id`                 | área requerida cuando aplique                                                                             |
+| `physical_point`          | punto o estación material cuando sea relevante                                                            |
+| `expected_identity`       | activo, endpoint, impresora, lector, cámara, nodo o relación esperada                                     |
+| `observed_identity`       | identidad física observada sin inventarla                                                                 |
+| `asset_or_inventory_ref`  | referencia a la autoridad física cuando exista                                                            |
+| `model_or_class`          | modelo o clase demostrados cuando sean requisito de compatibilidad                                        |
+| `serial_or_hardware_ref`  | identificador físico verificable cuando exista y sea apropiado                                            |
+| `binding_ref`             | binding con endpoint, red, host, adapter, canal o tarea aplicable                                         |
+| `compatibility_state`     | `SUPPORTED`, `SUPPORTED_WITH_CONDITIONS`, `DEGRADED_SUPPORTED` o bloqueo equivalente heredado del paquete |
+| `health_or_condition`     | condición física observada y suficiente para la ventana evaluada                                          |
+| `controlled_test_ref`     | prueba controlada correspondiente                                                                         |
+| `observed_result`         | resultado real de la prueba futura                                                                        |
+| `evidence_refs`           | evidencia reproducible y minimizada                                                                       |
+| `result`                  | `PASS`, `FAIL`, `BLOQUEADO` o `NO_APLICA`                                                                 |
+| `blocking_reason`         | causa concreta cuando no exista `PASS`                                                                    |
+
+Una fotografía puede complementar la identidad física, pero no sustituye los identificadores, la configuración observable, el binding y la prueba controlada cuando esos elementos sean exigibles.
+
+#### 6. Criterio para `HARDWARE_ENDPOINT`
+
+Un endpoint o equipo físico obtiene `PASS` solo cuando se demuestra que:
+
+1. corresponde a la identidad o clase requerida por el paquete;
+2. está presente en la sede y punto previstos;
+3. puede reconciliarse con su activo o inventario físico cuando exista esa autoridad;
+4. su binding con el dispositivo lógico de `READY-GATE-003` es inequívoco cuando el flujo lo requiere;
+5. el estado físico permite operar durante la ventana evaluada;
+6. sistema, navegador, firmware, drivers, interfaces o capacidades relevantes cumplen el perfil aprobado;
+7. los periféricos obligatorios pueden ser detectados o utilizados desde ese host;
+8. una prueba controlada de la capacidad que el paquete necesita completa el resultado esperado sin depender de una simulación.
+
+Un registro de activo, hostname, etiqueta de inventario o fila de dispositivo compartido sin reconciliación física no produce `PASS`.
+
+#### 7. Criterio para `NETWORK_PATH`
+
+La red se evalúa por el camino que el paquete realmente necesita, no por la existencia genérica de Wi-Fi o acceso a Internet.
+
+El dossier deberá poder demostrar, según aplique:
+
+- identidad de enlace o nodo;
+- sede y alcance;
+- interfaces y terminaciones;
+- segmento o finalidad;
+- SSID y su mapping a segmento cuando sea Wi-Fi;
+- direccionamiento o reserva gobernados cuando sean requeridos;
+- camino entre origen y destino autorizados;
+- resolución y puertos/protocolos requeridos por la implementación;
+- separación y restricciones esperadas;
+- ausencia de un camino alterno no autorizado usado para aparentar éxito;
+- resultado de una comprobación de conectividad ejecutada desde el punto y ambiente correctos.
+
+`PASS` exige que el camino requerido sea alcanzable y compatible con el contrato del paquete. Ver un SSID, obtener una IP, hacer ping a un nodo distinto o navegar Internet no demuestra por sí solo que el camino requerido esté listo.
+
+La línea base documental vigente de `TI-DOM-004` conserva siete subtipos de red (`NETWORK_LINK`, `ROUTER`, `SWITCH`, `ACCESS_POINT`, `SEGMENT`, `SSID`, `ADDRESS_RESERVATION`) sin instancias físicas `VALIDADO`. Esta tarea no cambia ese estado: obliga a aportar la evidencia correspondiente cuando el paquete dependa de una de esas instancias.
+
+#### 8. Criterio para `SCANNER_CAPTURE`
+
+El gate no presupone que escáner signifique un único dispositivo dedicado. El contrato vigente de NEXO admite como canales de captura, según el flujo, cámara, lector tipo teclado, ingreso manual, deep link, búsqueda asistida o selección táctil; solo las dependencias físicas requeridas entran en esta clase.
+
+Una capacidad física de escaneo obtiene `PASS` solo cuando:
+
+1. el host o dispositivo requerido está identificado y disponible;
+2. el canal físico exigido por el paquete está presente y puede ser detectado;
+3. el secure context, permiso de cámara, foco, teclado o interfaz necesaria funcionan cuando apliquen;
+4. la captura se ejecuta bajo un `scan_context_id` o contexto propietario vigente cuando el contrato del flujo lo exija;
+5. la lectura produce el mismo sobre contractual esperado por el canal y conserva el valor crudo, la resolución y el receipt de captura;
+6. se demuestran al menos un caso legible y, cuando el paquete lo requiera, los casos de no-match, ambigüedad o duplicado relevantes;
+7. la captura no ejecuta por sí sola una mutación empresarial;
+8. existe fallback aprobado cuando la capacidad primaria no está disponible y el expediente lo exige.
+
+La presencia de la ruta `/scanner`, un botón de cámara, una librería, un lector conectado o una lectura aislada fuera del flujo no acreditan readiness físico.
+
+#### 9. Criterio para `PRINTER_OUTPUT`
+
+Para cada salida impresa requerida, el gate deberá reconciliar:
+
+```text
+NECESIDAD DEL PAQUETE
+-> OUTPUT / TEMPLATE / VERSION
+-> ROUTE / TARGET
+-> IMPRESORA FISICA
+-> ACTIVO / SEDE / PUNTO
+-> ENDPOINT, RED O BRIDGE
+-> DRIVER / ADAPTER / LENGUAJE
+-> MEDIO O CONSUMIBLE COMPATIBLE
+-> JOB CONTROLADO
+-> RECEIPT Y SALIDA FISICA
+```
+
+Una impresora obtiene `PASS` para una necesidad concreta solo cuando:
+
+1. la identidad `PRN-*` o su binding aprobado se reconcilia con el activo físico correcto;
+2. modelo, variante e interfaz relevantes están demostrados;
+3. serial, referencia de hardware u otra identidad suficiente evitan confundir dos unidades similares cuando la operación lo requiere;
+4. la conexión real coincide con el canal aprobado: USB, LAN, Wi-Fi, bridge u otro contrato vigente;
+5. IP, MAC, puerto, cola, driver, firmware o adapter se acreditan solo cuando aplican al canal usado;
+6. el lenguaje o driver requerido es compatible con la salida: por ejemplo ZPL/EPL/XML, ESC/POS o controlador Epson según la unidad;
+7. el medio cargado y las dimensiones son compatibles con la salida requerida;
+8. el estado administrativo, la condición del activo, el health del target y el estado del job no se confunden entre sí;
+9. un job controlado produce receipt y resultado físico verificable;
+10. la muestra física satisface los criterios relevantes de legibilidad, dimensiones, corte o contenido definidos por el paquete.
+
+La capacidad nominal de fabricante, una preview, una página de prueba del driver o un `printer online` aislado no sustituyen la prueba del recorrido VENTO requerido.
+
+#### 10. Línea base de impresión que deberá preservarse
+
+La línea canónica vigente contiene nueve unidades documentadas:
+
+- 1 Zebra ZD230;
+- 1 Epson EcoTank L5590;
+- 1 Epson EcoTank L4260;
+- 6 Digital POS DIG-E200I.
+
+Distribución operativa heredada:
+
+- 7 unidades documentadas como operativas;
+- 1 Zebra almacenada y no desplegada;
+- 1 Epson L5590 que requiere mantenimiento y no puede presentarse como disponible hasta reparación y validación;
+- Epson L4260 administrativa con USB y Wi-Fi observados;
+- DIG-E200I de Molka, Saudo y caja de Vento Café conectadas por USB;
+- DIG-E200I de barra, bar y cocina de Vento Café conectadas por red local, con identidad de cableado, IP, MAC, puerto, modo de direccionamiento, firmware y prueba todavía sujetas a evidencia física.
+
+Estas nueve unidades son inventario documental, no nueve `PASS`. Una unidad almacenada, en mantenimiento, no reconciliada o sin evidencia del recorrido requerido conserva su estado real hasta que la ejecución futura del gate lo demuestre.
+
+#### 11. Reglas de `PASS`, `FAIL`, `BLOQUEADO` y `NO_APLICA`
+
+##### 11.1. `PASS`
+
+Una dependencia obtiene `PASS` solo si identidad, ubicación, binding, condición, compatibilidad y prueba aplicables están acreditados con evidencia reproducible para el ambiente correcto.
+
+##### 11.2. `FAIL`
+
+Obtiene `FAIL` cuando existe evidencia suficiente de cualquiera de estas condiciones:
+
+- falta una unidad obligatoria;
+- el equipo observado no corresponde al activo, modelo, sede o punto requerido;
+- el hardware está averiado o fuera de servicio y no existe sustitución aprobada;
+- el camino de red requerido no es alcanzable o usa una ruta no autorizada;
+- una impresora no puede producir la salida requerida con el canal, medio o adapter aprobados;
+- el escáner o canal físico requerido no puede capturar de forma compatible;
+- la variante, firmware, driver, interfaz o versión es incompatible con el perfil aprobado;
+- existe binding con el equipo equivocado;
+- una prueba controlada demuestra resultado incorrecto, incompleto o inestable;
+- una dependencia física requerida fue reemplazada por otra sin decisión aprobada.
+
+##### 11.3. `BLOQUEADO`
+
+Obtiene `BLOQUEADO` cuando no existe evidencia suficiente para concluir `PASS` o `FAIL`, incluyendo:
+
+- identidad física no resuelta;
+- serial, activo, endpoint, impresora, nodo o binding ambiguos cuando son necesarios para distinguir la unidad;
+- topología o camino de red no demostrables;
+- variante o interfaz de hardware no confirmada;
+- ausencia de acceso autorizado para observar el dispositivo o ejecutar la prueba;
+- driver, firmware, adapter, puerto o configuración material desconocidos y necesarios para decidir compatibilidad;
+- prueba física no ejecutada;
+- ambiente, sede o punto de operación no diferenciables en la evidencia;
+- inventario grupal que no permite reconciliar unidades individuales cuando el paquete necesita esa distinción.
+
+##### 11.4. `NO_APLICA`
+
+`NO_APLICA` solo procede cuando el expediente aprobado demuestra que la clase o dependencia no es necesaria para el alcance del paquete. Falta de evidencia, equipo ausente, dispositivo roto o red no comprobada no son `NO_APLICA`.
+
+#### 12. Regla agregada por paquete
+
+El resultado de `READY-GATE-007::<package_id>` se calcula de forma estricta:
+
+1. cada dependencia de `required_physical_dependency_set` aparece exactamente una vez;
+2. cualquier `FAIL` produce `FAIL` del paquete;
+3. si no existe `FAIL` pero al menos una dependencia está `BLOQUEADO`, el paquete queda `BLOQUEADO`;
+4. el paquete obtiene `PASS` solo cuando todas las dependencias aplicables están `PASS` y todo `NO_APLICA` está justificado;
+5. un paquete sin dependencias físicas aplicables obtiene `NO_APLICA` solo cuando el expediente lo demuestra;
+6. el conteo observado debe reconciliar con el esperado por clase y por punto operativo;
+7. una muestra parcial, una sede distinta, un dispositivo de laboratorio o una impresora sustituta no se redondean a `PASS`;
+8. una dependencia compartida por varios paquetes debe demostrar capacidad y binding para cada uso material, sin multiplicar artificialmente su identidad física.
+
+#### 13. Evidencia aceptable
+
+Son ejemplos de evidencia aceptable cuando correspondan al control evaluado:
+
+- inventario físico o activo con identificador verificable y ubicación;
+- lectura controlada del sistema operativo, firmware o administración local que demuestre identidad o interfaz;
+- enumeración de dispositivo o periférico desde el host correcto;
+- evidencia de binding entre activo, endpoint, dispositivo compartido, impresora o red;
+- configuración de red observada mediante mecanismo autorizado, minimizando datos sensibles;
+- pruebas de camino o protocolo desde el origen real hacia el destino requerido;
+- resultado de escaneo con contexto, canal, receipt y resolución correlacionables;
+- job de impresión, target, adapter, receipt y salida física correlacionables;
+- evidencia de modelo, variante, driver, firmware o versión cuando condicionen compatibilidad;
+- evidencia de medio, etiqueta, papel, ribbon, tinta o consumible requerido para la prueba;
+- resultados de `TREQ-*` y matrices de `DELIV-PKG-016` que correspondan exactamente al hardware y ambiente evaluados.
+
+La evidencia deberá conservar fuente, momento, ambiente, sede, identidad de prueba y resultado. No deberá exponer contraseñas Wi-Fi, secretos de administración, tokens, llaves, credenciales completas ni datos personales innecesarios.
+
+#### 14. Evidencia insuficiente por sí sola
+
+No bastan por sí solos:
+
+- una fila de inventario o CMDB;
+- una etiqueta pegada al dispositivo;
+- una fotografía sin identidad correlacionable;
+- un modelo listado en documentación del fabricante;
+- una fila de `shared_operational_devices`;
+- un SSID visible;
+- tener dirección IP;
+- acceso genérico a Internet;
+- un ping que no recorra el camino material requerido;
+- una ruta `/scanner` o un botón de cámara;
+- una lectura de código ejecutada fuera del flujo propietario;
+- una impresora que responda `online`;
+- una preview o PDF correcto;
+- la página de prueba del fabricante o del sistema operativo;
+- la mera existencia de BrowserPrint, ESC/POS, un driver o una librería;
+- ausencia de incidentes reportados;
+- una prueba realizada en otro equipo, sede, red o ambiente.
+
+#### 15. Casos especiales
+
+##### 15.1. Equipo compartido
+
+El equipo compartido conserva simultáneamente identidad física, endpoint o dispositivo lógico, sesión humana y contexto operativo. El `PASS` físico no concede permisos al actor y el `PASS` de `READY-GATE-003` no acredita condición física.
+
+##### 15.2. Sustitución temporal
+
+Una sustitución solo puede utilizarse si el expediente aprobado permite equivalencia o fallback y la unidad sustituta supera sus propios controles de identidad, compatibilidad y prueba. El descubrimiento casual de un periférico disponible no crea fallback.
+
+##### 15.3. Equipo en mantenimiento o almacenado
+
+Un equipo `REQUIERE_MANTENIMIENTO`, almacenado, retirado o no desplegado no obtiene `PASS` para una capacidad productiva por conservar capacidad nominal. Su retorno exige estado físico adecuado y la prueba aplicable.
+
+##### 15.4. Red degradada
+
+Un camino degradado puede ser `SUPPORTED_WITH_CONDITIONS` o `DEGRADED_SUPPORTED` solo si esa condición está aprobada para el paquete y se cumplen sus límites. La existencia de una estrategia de contingencia no demuestra que la alternativa esté disponible; la operación del procedimiento corresponde a `READY-GATE-008`.
+
+##### 15.5. Captura por cámara o lector
+
+La cámara y el lector tipo teclado son canales distintos que deben converger al mismo contrato de captura cuando ambos sean soportados. Certificar uno no certifica el otro si el paquete exige ambos.
+
+##### 15.6. Impresión por USB y por red
+
+USB, LAN, Wi-Fi o bridge son bindings materiales distintos. Un job exitoso por USB no demuestra readiness de una ruta LAN, y una impresora visible por red no demuestra el adapter o el flujo VENTO correspondiente.
+
+#### 16. Planificación frente a ejecución
+
+La secuencia de responsabilidad se mantiene:
+
+```text
+E5-GATE-008::<package_id>
+-> SHELL-CI-020::<package_id>
+-> BLOQUE R y tareas fisicas aplicables
+-> SHELL-CI-021::<package_id>
+-> SHELL-CI-022::<package_id>
+```
+
+`READY-GATE-007` define el criterio. La evidencia real de hardware, red, escaneo e impresión se obtiene después de la implementación correspondiente y se evalúa en `SHELL-CI-021`. Esta tarea no instala drivers, no cambia firmware, no configura routers o AP, no cablea, no repara equipos, no enrola endpoints, no mueve impresoras, no ejecuta trabajos de impresión ni pruebas de escaneo sobre operación real.
+
+#### 17. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `READY-GATE-007` no introduce un comportamiento empresarial ni una capacidad técnica nueva; especializa como criterio de readiness controles ya registrados para hardware, dispositivos, red, captura e impresión. La cobertura vigente ya exige validación física, compatibilidad, binding, captura contextual, idempotencia, salida impresa, correlación tecnológica y evidencia reproducible.
+
+Requisitos existentes consumidos, entre otros según aplicabilidad del paquete:
+
+- `TREQ-NEXO-003` y `TREQ-NEXO-005` para salida física, preview, job y trazabilidad de impresión;
+- `TREQ-NEXO-060` y `TREQ-NEXO-088` para atribución y uso contextual de escaneo, impresión y dispositivo compartido;
+- `TREQ-NEXO-168` y `TREQ-NEXO-172` para identidad física y fallos de dispositivo o red dentro de operación;
+- `TREQ-NEXO-231..244` para contexto, canales, capabilities, fallback, seguridad y certificación física del escaneo;
+- `TREQ-SHELL-010` para separación y administración verificable de endpoint, dispositivo y sesión;
+- `TREQ-INTEGRATION-003` para efectos enviados a periféricos con idempotencia y resultado recuperable;
+- `TREQ-INTEGRATION-020` para correlación entre activos, redes, impresoras, endpoints y operación tecnológica.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Fragmentos 04A afectados:** 0
+
+#### 18. Criterios de aceptación
+
+`READY-GATE-007` queda documentalmente completa cuando:
+
+1. define un `required_physical_dependency_set` exhaustivo por paquete antes de observar el ambiente;
+2. separa `HARDWARE_ENDPOINT`, `NETWORK_PATH`, `SCANNER_CAPTURE` y `PRINTER_OUTPUT`;
+3. impide usar configuración lógica de `READY-GATE-003` como prueba de existencia o funcionamiento físico;
+4. exige identidad, sede, punto, binding, compatibilidad, condición y prueba según aplicabilidad;
+5. conserva los siete subtipos de red de `TI-DOM-004` y no inventa instancias validadas;
+6. distingue conectividad genérica del camino de red material que el paquete necesita;
+7. conserva la semántica de captura de `NEXO-UX-020` y no convierte escaneo en mutación;
+8. exige que el canal físico de escaneo requerido sea detectable y probado desde el host correcto;
+9. conserva las nueve impresoras documentadas y sus estados sin convertir inventario en readiness;
+10. conserva la Zebra almacenada y la Epson L5590 en mantenimiento como no disponibles para una capacidad productiva mientras no exista evidencia posterior suficiente;
+11. exige para impresión el recorrido salida -> target -> impresora -> binding -> job -> receipt -> resultado físico;
+12. distingue USB, LAN, Wi-Fi y bridge como bindings materiales diferentes;
+13. define evidencia suficiente e insuficiente sin exponer secretos o credenciales;
+14. define `PASS`, `FAIL`, `BLOQUEADO` y `NO_APLICA` por dependencia;
+15. agrega el resultado de forma estricta por paquete sin redondear muestras parciales;
+16. conserva sustituciones y modos degradados solo cuando están aprobados y probados;
+17. no invade `READY-GATE-008`, `READY-GATE-011` ni `READY-GATE-012`;
+18. no ejecuta instalación, reparación, cableado, configuración, impresión, escaneo ni cambios remotos;
+19. crea 0 y modifica 0 requisitos `TREQ-*`;
+20. mantiene `READY-GATE-008` exclusivamente reservada como siguiente tarea.
+
+#### 19. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+READY-GATE-006 — Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente
+
+##### TAREA ACTUAL APROBADA
+READY-GATE-007 — Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras
+
+##### SIGUIENTE TAREA RESERVADA
+READY-GATE-008 — Definir criterio y evidencia para confirmar procedimientos operativos y contingencias
+
+
 ### [ ] READY-GATE-008 — Definir criterio y evidencia para confirmar procedimientos operativos y contingencias
 ### [ ] READY-GATE-009 — Definir criterio y evidencia para confirmar capacitación y material de apoyo
 ### [ ] READY-GATE-010 — Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento
