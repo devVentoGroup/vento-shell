@@ -6841,7 +6841,692 @@ SHELL-CON-009 — Centralizar identificadores de procesos
 SHELL-CON-010 — Centralizar estados de procesos
 
 
-### [ ] SHELL-CON-010 — Centralizar estados de procesos
+### ✅ SHELL-CON-010 — Centralizar estados de procesos
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CON-009 — Centralizar identificadores de procesos
+**Tarea siguiente:** SHELL-CON-011 — Centralizar identificadores de pantallas
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Estado físico resultante:** `CONTRATO_DE_ESTADOS_DE_PROCESO_DEFINIDO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-010` centraliza la identidad contractual de los estados principales normales de los 69 procesos canónicos de Vento OS, preservando exactamente los estados aprobados en `PROC-CAT-009`, `PROC-CAT-010` y `PROC-CAT-011` y la reconciliación de cobertura de `PROC-CAT-012`.
+
+La decisión vinculante es:
+
+```text
+REGISTROS CANÓNICOS DE ESTADO DE PROCESO
+→ 69 estados iniciales
+→ 454 estados intermedios
+→ 69 estados finales normales
+→ 592 identidades de estado
+
+@vento/contracts/processes
+→ proyección compartida, tipada y validable
+
+consumidores
+→ referencian ProcessStateId
+→ no inventan estados, no mezclan acciones y no redefinen semántica
+```
+
+La tarea no crea estados nuevos, no altera grafos de transición, no convierte condiciones transversales en estados principales y no materializa código, package, migraciones ni cambios en Supabase.
+
+---
+
+#### 2. Resultado canónico
+
+El universo compartido vigente queda compuesto por exactamente **592 estados principales normales**:
+
+| Clase          | Cantidad | Fuente semántica propietaria                            |
+| -------------- | -------: | ------------------------------------------------------- |
+| `INITIAL`      |   **69** | `PROC-PROCESS-INITIAL-STATE-REGISTRY-001`               |
+| `INTERMEDIATE` |  **454** | `PROC-PROCESS-INTERMEDIATE-STATE-REGISTRY-001`          |
+| `FINAL_NORMAL` |   **69** | `PROC-PROCESS-FINAL-STATE-REGISTRY-001`                 |
+| **Total**      |  **592** | reconciliado por `PROC-PROCESS-TRANSITION-REGISTRY-001` |
+
+Conciliación heredada y preservada:
+
+```text
+procesos cubiertos             = 69
+estados iniciales              = 69
+estados intermedios            = 454
+estados finales normales       = 69
+estados principales normales   = 592
+transiciones normales          = 590
+faltantes de proceso           = 0
+duplicados de identidad plena  = 0
+```
+
+Las **590 transiciones normales** no son miembros de `ProcessStateId`; permanecen relaciones gobernadas por `PROC-CAT-012`.
+
+---
+
+#### 3. Fuentes y precedencia
+
+Esta tarea conserva sin reabrir las decisiones aprobadas de:
+
+| Fuente                                               | Uso vinculante                                                                         |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`         | continuidad, fase documental, trazabilidad y requisitos de prueba                      |
+| `docs/plan-canonico/modular/delivery-contract.json`  | estructura del artefacto documental                                                    |
+| `docs/plan-canonico/modular/active-sequence.json`    | `SHELL-CON-010` como tarea vigente y `SHELL-CON-011` como siguiente tarea              |
+| `SHELL-CON-001`                                      | raíz única `@vento/contracts` y materialización posterior                              |
+| `SHELL-CON-009`                                      | `ProcessId`, conjunto `VPROC-0001..0069` y subpath lógico `@vento/contracts/processes` |
+| `PROC-CAT-009`                                       | 69 estados iniciales y sus condiciones de nacimiento                                   |
+| `PROC-CAT-010`                                       | 454 estados intermedios, fases y verdades mínimas                                      |
+| `PROC-CAT-011`                                       | 69 estados finales normales, tipos terminales y criterios de cierre                    |
+| `PROC-CAT-012`                                       | reconciliación de 592 estados contractuales y 590 transiciones normales                |
+| `PROC-CAT-013`                                       | acciones excepcionales separadas del estado principal normal                           |
+| `PROC-CAT-014`                                       | cancelación, anulación, reversión, compensación y corrección como acciones separadas   |
+| `TREQ-PROC-038` a `TREQ-PROC-052`                    | identidad, unicidad, estados, terminalidad, transición, migración y cierre             |
+| `TREQ-SHELL-002`, `TREQ-SHELL-006`, `TREQ-SHELL-008` | fuente compartida, compatibilidad y validación documental                              |
+
+Precedencia específica:
+
+```text
+PROC-CAT-009 / 010 / 011
+→ gobiernan identidad y semántica de los estados
+
+PROC-CAT-012
+→ reconcilia cobertura y grafo normal
+
+SHELL-CON-009
+→ fija ProcessId compartido
+
+SHELL-CON-010
+→ centraliza ProcessStateId y metadatos derivados
+→ no redefine la semántica funcional
+```
+
+---
+
+#### 4. Línea base verificable
+
+El estado previo a la materialización queda:
+
+| Elemento                          | Estado                       | Disposición                                       |
+| --------------------------------- | ---------------------------- | ------------------------------------------------- |
+| `ProcessId` documental compartido | definido por `SHELL-CON-009` | se reutiliza sin cambios                          |
+| 69 estados iniciales              | aprobados                    | centralizar identidad                             |
+| 454 estados intermedios           | aprobados                    | centralizar identidad y clasificación             |
+| 69 estados finales normales       | aprobados                    | centralizar identidad y terminalidad              |
+| 592 estados contractuales         | reconciliados                | conjunto exacto de esta tarea                     |
+| 590 transiciones normales         | aprobadas                    | permanecen fuera de `ProcessStateId`              |
+| `packages/contracts`              | no materializado físicamente | materialización posterior                         |
+| `@vento/contracts/processes`      | definido documentalmente     | se amplía documentalmente, sin publicación física |
+| cambios físicos en esta tarea     | no autorizados               | ninguno                                           |
+
+---
+
+#### 5. Namespace contractual y propiedad
+
+`SHELL-CON-010` amplía el mismo dominio lógico definido por `SHELL-CON-009`:
+
+```text
+@vento/contracts/processes
+```
+
+No se crea otro package ni otro subpath competidor para estados.
+
+La frontera de propiedad queda:
+
+```text
+PROC-PROCESS-INITIAL-STATE-REGISTRY-001
+PROC-PROCESS-INTERMEDIATE-STATE-REGISTRY-001
+PROC-PROCESS-FINAL-STATE-REGISTRY-001
+→ autoridad semántica
+
+PROC-PROCESS-TRANSITION-REGISTRY-001
+→ autoridad del grafo normal y reconciliación
+
+@vento/contracts/processes
+→ autoridad técnica compartida de la proyección tipada/validable
+
+consumidores
+→ consumen la proyección
+→ no crean estados locales equivalentes
+```
+
+---
+
+#### 6. Identidad contractual de estado
+
+Cada estado principal normal se identifica mediante la composición exacta:
+
+```text
+<ProcessId>.<STATE_CODE>
+```
+
+Forma léxica:
+
+```text
+VPROC-####.<UPPER_SNAKE_CASE>
+```
+
+Patrón sintáctico:
+
+```text
+^VPROC-[0-9]{4}\.[A-Z][A-Z0-9_]*$
+```
+
+Reglas:
+
+1. el prefijo `VPROC-####` debe ser un `ProcessId` vigente;
+2. `STATE_CODE` se conserva exactamente como fue aprobado en su registro propietario;
+3. satisfacer el patrón no demuestra pertenencia;
+4. la identidad completa debe existir entre las 592 publicadas para el proceso indicado;
+5. un código desnudo como `UNDER_REVIEW` no es identidad global de estado;
+6. dos procesos pueden reutilizar el mismo `STATE_CODE` sin colisión porque la identidad plena incluye `ProcessId`;
+7. un consumidor no puede agregar prefijos, sufijos, aliases, traducciones o normalizaciones locales;
+8. la serialización pública de la identidad plena permanece como string exacto.
+
+---
+
+#### 7. Taxonomía cerrada
+
+La clasificación primaria queda:
+
+```text
+ProcessStateKind
+→ INITIAL
+→ INTERMEDIATE
+→ FINAL_NORMAL
+```
+
+Los estados `INTERMEDIATE` conservan exactamente las diez fases semánticas aprobadas:
+
+```text
+VALIDACION
+ANALISIS
+REVISION
+APROBACION
+PREPARACION
+EJECUCION
+HANDOFF
+VERIFICACION
+RECONCILIACION
+ACTIVO
+```
+
+Distribución aprobada de los 454 intermedios:
+
+| Fase             | Cantidad |
+| ---------------- | -------: |
+| `VALIDACION`     |   **29** |
+| `ANALISIS`       |   **44** |
+| `REVISION`       |   **36** |
+| `APROBACION`     |   **44** |
+| `PREPARACION`    |   **69** |
+| `EJECUCION`      |   **72** |
+| `HANDOFF`        |   **65** |
+| `VERIFICACION`   |   **35** |
+| `RECONCILIACION` |   **34** |
+| `ACTIVO`         |   **26** |
+| **Total**        |  **454** |
+
+Los 69 estados `FINAL_NORMAL` conservan exactamente ocho tipos terminales:
+
+| Tipo terminal  | Cantidad |
+| -------------- | -------: |
+| `CERRADO`      |   **28** |
+| `RECONCILIADO` |   **21** |
+| `LIBERADO`     |    **4** |
+| `CUMPLIDO`     |    **4** |
+| `VERIFICADO`   |    **6** |
+| `LIQUIDADO`    |    **2** |
+| `EVALUADO`     |    **3** |
+| `FORMALIZADO`  |    **1** |
+| **Total**      |   **69** |
+
+Las fases intermedias y los tipos terminales son clasificaciones semánticas; no son estados independientes ni sustituyen `ProcessStateId`.
+
+---
+
+#### 8. Matriz completa de identidades de estado
+
+La siguiente matriz materializa las **592 de 592** identidades principales normales. En cada proceso, la primera identidad es `INITIAL`, la última es `FINAL_NORMAL` y todas las identidades ubicadas entre ambas son `INTERMEDIATE`.
+
+| Proceso      | Estado inicial                                 | Estados intermedios                                                                                                                                                                                                                                                                                            | Estado final normal                          |  Total |
+| ------------ | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | -----: |
+| `VPROC-0001` | `VPROC-0001.DECISION_DRAFT`                    | `VPROC-0001.UNDER_ANALYSIS`<br>`VPROC-0001.PENDING_APPROVAL`<br>`VPROC-0001.APPROVED_FOR_EXECUTION`<br>`VPROC-0001.IN_FOLLOW_UP`                                                                                                                                                                               | `VPROC-0001.DECISION_CLOSED`                 |  **6** |
+| `VPROC-0002` | `VPROC-0002.STRUCTURE_CHANGE_REQUESTED`        | `VPROC-0002.UNDER_VALIDATION`<br>`VPROC-0002.CHANGE_DESIGNED`<br>`VPROC-0002.PENDING_APPROVAL`<br>`VPROC-0002.APPROVED_FOR_IMPLEMENTATION`<br>`VPROC-0002.IN_IMPLEMENTATION`<br>`VPROC-0002.PENDING_VERIFICATION`                                                                                              | `VPROC-0002.STRUCTURE_CHANGE_VERIFIED`       |  **8** |
+| `VPROC-0003` | `VPROC-0003.POLICY_DRAFT`                      | `VPROC-0003.UNDER_REVIEW`<br>`VPROC-0003.PENDING_APPROVAL`<br>`VPROC-0003.APPROVED`<br>`VPROC-0003.PUBLISHED`<br>`VPROC-0003.IN_FORCE`<br>`VPROC-0003.REVISION_IN_PROGRESS`                                                                                                                                    | `VPROC-0003.POLICY_GOVERNANCE_COMPLETED`     |  **8** |
+| `VPROC-0004` | `VPROC-0004.COMMITMENT_REGISTERED`             | `VPROC-0004.PENDING_ACCEPTANCE`<br>`VPROC-0004.ACCEPTED`<br>`VPROC-0004.IN_PROGRESS`<br>`VPROC-0004.PENDING_VERIFICATION`<br>`VPROC-0004.FOLLOW_UP_REQUIRED`                                                                                                                                                   | `VPROC-0004.COMMITMENT_CLOSED`               |  **7** |
+| `VPROC-0005` | `VPROC-0005.STAFFING_NEED_REGISTERED`          | `VPROC-0005.NEED_UNDER_REVIEW`<br>`VPROC-0005.VACANCY_APPROVED`<br>`VPROC-0005.RECRUITMENT_OPEN`<br>`VPROC-0005.CANDIDATES_UNDER_EVALUATION`<br>`VPROC-0005.SELECTION_DECISION_PENDING`<br>`VPROC-0005.CANDIDATE_SELECTED`<br>`VPROC-0005.ONBOARDING_HANDOFF_PENDING`                                          | `VPROC-0005.SELECTION_HANDOFF_COMPLETED`     |  **9** |
+| `VPROC-0006` | `VPROC-0006.ONBOARDING_CASE_OPENED`            | `VPROC-0006.DOCUMENTS_PENDING`<br>`VPROC-0006.IDENTITY_VALIDATED`<br>`VPROC-0006.LABOR_SETUP_IN_PROGRESS`<br>`VPROC-0006.ACCESS_PROVISIONING_IN_PROGRESS`<br>`VPROC-0006.INDUCTION_IN_PROGRESS`<br>`VPROC-0006.READINESS_REVIEW_PENDING`                                                                       | `VPROC-0006.ONBOARDING_COMPLETED`            |  **8** |
+| `VPROC-0007` | `VPROC-0007.SCHEDULE_DRAFT`                    | `VPROC-0007.UNDER_REVIEW`<br>`VPROC-0007.PENDING_PUBLICATION`<br>`VPROC-0007.PUBLISHED`<br>`VPROC-0007.IN_EXECUTION`<br>`VPROC-0007.CHANGE_UNDER_REVIEW`<br>`VPROC-0007.PERIOD_RECONCILIATION_PENDING`                                                                                                         | `VPROC-0007.SCHEDULE_PERIOD_CLOSED`          |  **8** |
+| `VPROC-0008` | `VPROC-0008.ATTENDANCE_EVENT_RECEIVED`         | `VPROC-0008.VALIDATION_IN_PROGRESS`<br>`VPROC-0008.MATCHED_TO_CONTEXT`<br>`VPROC-0008.ACCEPTED_FOR_RECONCILIATION`<br>`VPROC-0008.CORRECTION_UNDER_REVIEW`<br>`VPROC-0008.CORRECTION_APPROVED`                                                                                                                 | `VPROC-0008.ATTENDANCE_EVENT_RECONCILED`     |  **7** |
+| `VPROC-0009` | `VPROC-0009.LABOR_CASE_SUBMITTED`              | `VPROC-0009.UNDER_REVIEW`<br>`VPROC-0009.INFORMATION_PENDING`<br>`VPROC-0009.PENDING_DECISION`<br>`VPROC-0009.APPROVED_FOR_APPLICATION`<br>`VPROC-0009.IMPLEMENTATION_IN_PROGRESS`<br>`VPROC-0009.PENDING_RECONCILIATION`                                                                                      | `VPROC-0009.LABOR_CASE_RECONCILED`           |  **8** |
+| `VPROC-0010` | `VPROC-0010.PAYROLL_CYCLE_OPENED`              | `VPROC-0010.INPUTS_COLLECTING`<br>`VPROC-0010.PRELIMINARY_CALCULATION`<br>`VPROC-0010.UNDER_REVIEW`<br>`VPROC-0010.PENDING_APPROVAL`<br>`VPROC-0010.APPROVED_FOR_PAYMENT`<br>`VPROC-0010.PAYMENT_PROCESSING`<br>`VPROC-0010.RECONCILIATION_IN_PROGRESS`                                                        | `VPROC-0010.PAYROLL_CYCLE_RECONCILED`        |  **9** |
+| `VPROC-0011` | `VPROC-0011.OFFBOARDING_CASE_OPENED`           | `VPROC-0011.UNDER_REVIEW`<br>`VPROC-0011.EXIT_PLAN_APPROVED`<br>`VPROC-0011.REVOCATION_IN_PROGRESS`<br>`VPROC-0011.RETURNS_PENDING`<br>`VPROC-0011.LABOR_RECONCILIATION_PENDING`<br>`VPROC-0011.DOCUMENTAL_CLOSE_PENDING`                                                                                      | `VPROC-0011.OFFBOARDING_COMPLETED`           |  **8** |
+| `VPROC-0012` | `VPROC-0012.RISK_IDENTIFIED`                   | `VPROC-0012.UNDER_ASSESSMENT`<br>`VPROC-0012.TREATMENT_PLANNED`<br>`VPROC-0012.TREATMENT_PENDING_APPROVAL`<br>`VPROC-0012.CONTROLS_IN_IMPLEMENTATION`<br>`VPROC-0012.MONITORING`<br>`VPROC-0012.REVIEW_PENDING`                                                                                                | `VPROC-0012.SST_RISK_CYCLE_CLOSED`           |  **8** |
+| `VPROC-0013` | `VPROC-0013.INCIDENT_REPORTED`                 | `VPROC-0013.RESPONSE_IN_PROGRESS`<br>`VPROC-0013.STABILIZED`<br>`VPROC-0013.UNDER_INVESTIGATION`<br>`VPROC-0013.CORRECTIVE_ACTIONS_PLANNED`<br>`VPROC-0013.ACTIONS_IN_PROGRESS`<br>`VPROC-0013.CLOSURE_REVIEW_PENDING`                                                                                         | `VPROC-0013.INCIDENT_CASE_CLOSED`            |  **8** |
+| `VPROC-0014` | `VPROC-0014.CONTROL_EXECUTION_PLANNED`         | `VPROC-0014.READY_FOR_EXECUTION`<br>`VPROC-0014.IN_EXECUTION`<br>`VPROC-0014.RESULTS_UNDER_REVIEW`<br>`VPROC-0014.ACTION_REQUIRED`<br>`VPROC-0014.ACTION_IN_PROGRESS`<br>`VPROC-0014.VERIFICATION_PENDING`                                                                                                     | `VPROC-0014.CONTROL_CYCLE_VERIFIED`          |  **8** |
+| `VPROC-0015` | `VPROC-0015.PRODUCT_CHANGE_DRAFT`              | `VPROC-0015.UNDER_VALIDATION`<br>`VPROC-0015.PENDING_APPROVAL`<br>`VPROC-0015.APPROVED`<br>`VPROC-0015.PUBLISHED`<br>`VPROC-0015.CHANGE_IN_PROGRESS`                                                                                                                                                           | `VPROC-0015.PRODUCT_CHANGE_VERIFIED`         |  **7** |
+| `VPROC-0016` | `VPROC-0016.RECIPE_DRAFT`                      | `VPROC-0016.IN_DEVELOPMENT`<br>`VPROC-0016.IN_TESTING`<br>`VPROC-0016.UNDER_TECHNICAL_REVIEW`<br>`VPROC-0016.PENDING_APPROVAL`<br>`VPROC-0016.APPROVED`<br>`VPROC-0016.PUBLISHED`                                                                                                                              | `VPROC-0016.RECIPE_VERSION_RELEASED`         |  **8** |
+| `VPROC-0017` | `VPROC-0017.OFFER_DRAFT`                       | `VPROC-0017.UNDER_VALIDATION`<br>`VPROC-0017.PENDING_APPROVAL`<br>`VPROC-0017.APPROVED`<br>`VPROC-0017.SCHEDULED`<br>`VPROC-0017.PUBLISHED`<br>`VPROC-0017.ACTIVE`                                                                                                                                             | `VPROC-0017.OFFER_PUBLICATION_VERIFIED`      |  **8** |
+| `VPROC-0018` | `VPROC-0018.SPECIFICATION_DRAFT`               | `VPROC-0018.UNDER_DEFINITION`<br>`VPROC-0018.UNDER_TECHNICAL_REVIEW`<br>`VPROC-0018.PENDING_APPROVAL`<br>`VPROC-0018.APPROVED`<br>`VPROC-0018.IN_FORCE`<br>`VPROC-0018.REVISION_IN_PROGRESS`                                                                                                                   | `VPROC-0018.SPECIFICATION_VERSION_RELEASED`  |  **8** |
+| `VPROC-0019` | `VPROC-0019.PURCHASE_NEED_SUBMITTED`           | `VPROC-0019.UNDER_VALIDATION`<br>`VPROC-0019.PRIORITIZED`<br>`VPROC-0019.APPROVED_FOR_SOURCING`<br>`VPROC-0019.SOURCING_REQUESTED`<br>`VPROC-0019.CONSOLIDATION_PENDING`                                                                                                                                       | `VPROC-0019.PURCHASE_NEED_HANDOFF_COMPLETED` |  **7** |
+| `VPROC-0020` | `VPROC-0020.SOURCING_CASE_OPENED`              | `VPROC-0020.MARKET_REVIEW_IN_PROGRESS`<br>`VPROC-0020.QUOTES_PENDING`<br>`VPROC-0020.COMPARISON_IN_PROGRESS`<br>`VPROC-0020.RECOMMENDATION_PREPARED`<br>`VPROC-0020.DECISION_PENDING`<br>`VPROC-0020.SUPPLIER_SELECTED`                                                                                        | `VPROC-0020.SOURCING_DECISION_COMPLETED`     |  **8** |
+| `VPROC-0021` | `VPROC-0021.PURCHASE_REQUEST_PENDING_APPROVAL` | `VPROC-0021.UNDER_REVIEW`<br>`VPROC-0021.PENDING_APPROVAL`<br>`VPROC-0021.APPROVED`<br>`VPROC-0021.ORDER_PREPARING`<br>`VPROC-0021.ORDER_ISSUED`<br>`VPROC-0021.SUPPLIER_ACK_PENDING`                                                                                                                          | `VPROC-0021.PURCHASE_COMMITMENT_FORMALIZED`  |  **8** |
+| `VPROC-0022` | `VPROC-0022.RECEIPT_EXPECTED`                  | `VPROC-0022.ARRIVAL_REGISTERED`<br>`VPROC-0022.PHYSICAL_CHECK_IN_PROGRESS`<br>`VPROC-0022.DOCUMENT_CHECK_IN_PROGRESS`<br>`VPROC-0022.DIFFERENCE_UNDER_REVIEW`<br>`VPROC-0022.ACCEPTANCE_PENDING`<br>`VPROC-0022.PUTAWAY_PENDING`<br>`VPROC-0022.ECONOMIC_RECONCILIATION_PENDING`                               | `VPROC-0022.RECEIPT_RECONCILED`              |  **9** |
+| `VPROC-0023` | `VPROC-0023.LOCATION_CHANGE_DRAFT`             | `VPROC-0023.UNDER_VALIDATION`<br>`VPROC-0023.DESIGN_APPROVED`<br>`VPROC-0023.IMPLEMENTATION_IN_PROGRESS`<br>`VPROC-0023.READY_FOR_VERIFICATION`<br>`VPROC-0023.ACTIVE`<br>`VPROC-0023.CHANGE_IN_PROGRESS`                                                                                                      | `VPROC-0023.LOCATION_CHANGE_VERIFIED`        |  **8** |
+| `VPROC-0024` | `VPROC-0024.INBOUND_MOVEMENT_REQUESTED`        | `VPROC-0024.VALIDATION_IN_PROGRESS`<br>`VPROC-0024.READY_FOR_PHYSICAL_EXECUTION`<br>`VPROC-0024.IN_EXECUTION`<br>`VPROC-0024.PENDING_CONFIRMATION`<br>`VPROC-0024.PUTAWAY_PENDING`<br>`VPROC-0024.POSTING_PENDING`                                                                                             | `VPROC-0024.INBOUND_MOVEMENT_RECONCILED`     |  **8** |
+| `VPROC-0025` | `VPROC-0025.STOCK_OPERATION_REQUESTED`         | `VPROC-0025.VALIDATION_IN_PROGRESS`<br>`VPROC-0025.RESERVED`<br>`VPROC-0025.READY_FOR_EXECUTION`<br>`VPROC-0025.IN_EXECUTION`<br>`VPROC-0025.DESTINATION_CONFIRMATION_PENDING`<br>`VPROC-0025.POSTING_PENDING`                                                                                                 | `VPROC-0025.STOCK_OPERATION_RECONCILED`      |  **8** |
+| `VPROC-0026` | `VPROC-0026.COUNT_SESSION_OPENED`              | `VPROC-0026.IN_CAPTURE`<br>`VPROC-0026.CAPTURE_COMPLETE`<br>`VPROC-0026.DIFFERENCES_DETECTED`<br>`VPROC-0026.UNDER_INVESTIGATION`<br>`VPROC-0026.ADJUSTMENT_DECISION_PENDING`<br>`VPROC-0026.ADJUSTMENT_APPROVED`<br>`VPROC-0026.RECONCILIATION_PENDING`                                                       | `VPROC-0026.COUNT_RECONCILED`                |  **9** |
+| `VPROC-0027` | `VPROC-0027.CONDITION_EVENT_DETECTED`          | `VPROC-0027.UNDER_ASSESSMENT`<br>`VPROC-0027.QUARANTINED`<br>`VPROC-0027.DISPOSITION_DECISION_PENDING`<br>`VPROC-0027.ACTION_IN_PROGRESS`<br>`VPROC-0027.VERIFICATION_PENDING`                                                                                                                                 | `VPROC-0027.CONDITION_CASE_RESOLVED`         |  **7** |
+| `VPROC-0028` | `VPROC-0028.REPLENISHMENT_REQUESTED`           | `VPROC-0028.UNDER_VALIDATION`<br>`VPROC-0028.APPROVED`<br>`VPROC-0028.IN_PREPARATION`<br>`VPROC-0028.READY_FOR_DISPATCH`<br>`VPROC-0028.IN_TRANSIT`<br>`VPROC-0028.RECEIPT_PENDING`<br>`VPROC-0028.DIFFERENCE_UNDER_REVIEW`<br>`VPROC-0028.RECONCILIATION_PENDING`                                             | `VPROC-0028.REPLENISHMENT_RECONCILED`        | **10** |
+| `VPROC-0029` | `VPROC-0029.ASSET_REGISTRATION_PENDING`        | `VPROC-0029.UNDER_VALIDATION`<br>`VPROC-0029.REGISTERED`<br>`VPROC-0029.LABELING_PENDING`<br>`VPROC-0029.ASSIGNMENT_PENDING`<br>`VPROC-0029.IN_CUSTODY`<br>`VPROC-0029.TRANSFER_PENDING`<br>`VPROC-0029.RETURN_UNDER_VERIFICATION`                                                                             | `VPROC-0029.ASSET_CUSTODY_CYCLE_RECONCILED`  |  **9** |
+| `VPROC-0030` | `VPROC-0030.MAINTENANCE_REQUESTED`             | `VPROC-0030.UNDER_TRIAGE`<br>`VPROC-0030.DIAGNOSIS_IN_PROGRESS`<br>`VPROC-0030.WORK_PENDING_APPROVAL`<br>`VPROC-0030.PARTS_OR_SERVICE_PENDING`<br>`VPROC-0030.IN_REPAIR`<br>`VPROC-0030.TESTING`<br>`VPROC-0030.RELEASE_PENDING`                                                                               | `VPROC-0030.MAINTENANCE_CASE_CLOSED`         |  **9** |
+| `VPROC-0031` | `VPROC-0031.VEHICLE_REVIEW_OPENED`             | `VPROC-0031.UNDER_INSPECTION`<br>`VPROC-0031.READY_FOR_ASSIGNMENT`<br>`VPROC-0031.ASSIGNMENT_PENDING`<br>`VPROC-0031.ASSIGNED`<br>`VPROC-0031.IN_OPERATION`<br>`VPROC-0031.POST_OPERATION_REVIEW_PENDING`                                                                                                      | `VPROC-0031.VEHICLE_OPERATION_RECONCILED`    |  **8** |
+| `VPROC-0032` | `VPROC-0032.REUSABLE_HANDOFF_REQUESTED`        | `VPROC-0032.PREPARING_HANDOFF`<br>`VPROC-0032.HANDOFF_PENDING_ACCEPTANCE`<br>`VPROC-0032.IN_CUSTODY`<br>`VPROC-0032.RETURN_REQUESTED`<br>`VPROC-0032.RETURN_IN_PROGRESS`<br>`VPROC-0032.RETURN_UNDER_VERIFICATION`<br>`VPROC-0032.DIFFERENCE_UNDER_REVIEW`                                                     | `VPROC-0032.REUSABLE_CYCLE_RECONCILED`       |  **9** |
+| `VPROC-0033` | `VPROC-0033.PRODUCTION_PLAN_DRAFT`             | `VPROC-0033.DEMAND_CONSOLIDATING`<br>`VPROC-0033.CAPACITY_VALIDATING`<br>`VPROC-0033.PLAN_UNDER_REVIEW`<br>`VPROC-0033.PENDING_APPROVAL`<br>`VPROC-0033.PUBLISHED`<br>`VPROC-0033.REVISION_IN_PROGRESS`                                                                                                        | `VPROC-0033.PRODUCTION_PLAN_RELEASED`        |  **8** |
+| `VPROC-0034` | `VPROC-0034.PRODUCTION_ORDER_READY`            | `VPROC-0034.MATERIALS_RESERVING`<br>`VPROC-0034.MATERIALS_READY`<br>`VPROC-0034.IN_PRODUCTION`<br>`VPROC-0034.OUTPUT_REPORTED`<br>`VPROC-0034.CONSUMPTION_RECONCILIATION_PENDING`<br>`VPROC-0034.READY_FOR_QUALITY`                                                                                            | `VPROC-0034.PRODUCTION_EXECUTION_COMPLETED`  |  **8** |
+| `VPROC-0035` | `VPROC-0035.QUALITY_INSPECTION_PENDING`        | `VPROC-0035.IN_INSPECTION`<br>`VPROC-0035.RESULTS_RECORDED`<br>`VPROC-0035.UNDER_TECHNICAL_REVIEW`<br>`VPROC-0035.DISPOSITION_PENDING`<br>`VPROC-0035.DISPOSITION_DECIDED`<br>`VPROC-0035.EXECUTION_VERIFICATION_PENDING`                                                                                      | `VPROC-0035.QUALITY_DISPOSITION_VERIFIED`    |  **8** |
+| `VPROC-0036` | `VPROC-0036.PACKAGING_WORK_PENDING`            | `VPROC-0036.MATERIALS_PREPARED`<br>`VPROC-0036.IN_PACKAGING`<br>`VPROC-0036.LABEL_VERIFICATION_PENDING`<br>`VPROC-0036.PACKAGED_OUTPUT_RECORDED`<br>`VPROC-0036.STORAGE_TRANSFER_PENDING`<br>`VPROC-0036.RECONCILIATION_PENDING`                                                                               | `VPROC-0036.PACKAGING_CYCLE_RECONCILED`      |  **8** |
+| `VPROC-0037` | `VPROC-0037.PRODUCTION_CLOSEOUT_OPENED`        | `VPROC-0037.DATA_COLLECTING`<br>`VPROC-0037.YIELD_RECONCILIATION_IN_PROGRESS`<br>`VPROC-0037.VARIANCE_UNDER_REVIEW`<br>`VPROC-0037.REWORK_PLAN_PENDING`<br>`VPROC-0037.REWORK_IN_PROGRESS`<br>`VPROC-0037.INVENTORY_EFFECTS_PENDING`<br>`VPROC-0037.CLOSURE_REVIEW_PENDING`                                    | `VPROC-0037.PRODUCTION_CLOSEOUT_APPROVED`    |  **9** |
+| `VPROC-0038` | `VPROC-0038.TABLE_SERVICE_OPENED`              | `VPROC-0038.ORDERING`<br>`VPROC-0038.PREPARATION_IN_PROGRESS`<br>`VPROC-0038.PARTIALLY_SERVED`<br>`VPROC-0038.SERVED`<br>`VPROC-0038.PAYMENT_PENDING`<br>`VPROC-0038.PAYMENT_CONFIRMED`<br>`VPROC-0038.TABLE_CLOSE_PENDING`                                                                                    | `VPROC-0038.TABLE_SERVICE_CLOSED`            |  **9** |
+| `VPROC-0039` | `VPROC-0039.COUNTER_SALE_OPENED`               | `VPROC-0039.ITEMS_SELECTED`<br>`VPROC-0039.PREPARATION_IN_PROGRESS`<br>`VPROC-0039.READY_FOR_HANDOFF`<br>`VPROC-0039.PAYMENT_PENDING`<br>`VPROC-0039.PAYMENT_CONFIRMED`<br>`VPROC-0039.HANDOFF_PENDING`<br>`VPROC-0039.SALE_RECONCILIATION_PENDING`                                                            | `VPROC-0039.COUNTER_SALE_CLOSED`             |  **9** |
+| `VPROC-0040` | `VPROC-0040.EXTERNAL_ORDER_RECEIVED`           | `VPROC-0040.VALIDATION_IN_PROGRESS`<br>`VPROC-0040.MAPPED_TO_INTERNAL_ORDER`<br>`VPROC-0040.ACCEPTANCE_PENDING`<br>`VPROC-0040.ACCEPTED`<br>`VPROC-0040.IN_FULFILLMENT`<br>`VPROC-0040.CHANNEL_RECONCILIATION_PENDING`                                                                                         | `VPROC-0040.EXTERNAL_ORDER_RECONCILED`       |  **8** |
+| `VPROC-0041` | `VPROC-0041.COMMERCIAL_REQUEST_RECEIVED`       | `VPROC-0041.REQUIREMENTS_UNDER_REVIEW`<br>`VPROC-0041.QUOTATION_PREPARING`<br>`VPROC-0041.QUOTATION_PENDING_APPROVAL`<br>`VPROC-0041.QUOTATION_SENT`<br>`VPROC-0041.CUSTOMER_ACCEPTANCE_PENDING`<br>`VPROC-0041.CAPACITY_RESERVED`<br>`VPROC-0041.IN_FULFILLMENT`<br>`VPROC-0041.DELIVERY_AND_BILLING_PENDING` | `VPROC-0041.COMMERCIAL_COMMITMENT_CLOSED`    | **10** |
+| `VPROC-0042` | `VPROC-0042.ORDER_CHANGE_REQUESTED`            | `VPROC-0042.UNDER_VALIDATION`<br>`VPROC-0042.IMPACT_ASSESSMENT`<br>`VPROC-0042.AUTHORIZATION_PENDING`<br>`VPROC-0042.APPROVED_FOR_APPLICATION`<br>`VPROC-0042.APPLYING_CHANGES`<br>`VPROC-0042.RECONCILIATION_PENDING`                                                                                         | `VPROC-0042.COMMERCIAL_CHANGE_RECONCILED`    |  **8** |
+| `VPROC-0043` | `VPROC-0043.PAYMENT_PENDING`                   | `VPROC-0043.METHOD_SELECTED`<br>`VPROC-0043.AUTHORIZATION_IN_PROGRESS`<br>`VPROC-0043.AUTHORIZED`<br>`VPROC-0043.CAPTURE_PENDING`<br>`VPROC-0043.CAPTURED`<br>`VPROC-0043.FISCAL_DOCUMENT_PENDING`<br>`VPROC-0043.RECONCILIATION_PENDING`                                                                      | `VPROC-0043.PAYMENT_RECONCILED`              |  **9** |
+| `VPROC-0044` | `VPROC-0044.CASH_CLOSE_OPENED`                 | `VPROC-0044.COUNTING`<br>`VPROC-0044.SALES_RECONCILIATION_IN_PROGRESS`<br>`VPROC-0044.DIFFERENCE_UNDER_REVIEW`<br>`VPROC-0044.SUPERVISOR_APPROVAL_PENDING`<br>`VPROC-0044.DEPOSIT_PREPARING`<br>`VPROC-0044.FINANCIAL_RECONCILIATION_PENDING`                                                                  | `VPROC-0044.CASH_SESSION_CLOSED`             |  **8** |
+| `VPROC-0045` | `VPROC-0045.LOYALTY_INTERACTION_OPENED`        | `VPROC-0045.IDENTITY_VALIDATING`<br>`VPROC-0045.ELIGIBILITY_CHECKING`<br>`VPROC-0045.ACTION_AUTHORIZATION_PENDING`<br>`VPROC-0045.MOVEMENT_PENDING`<br>`VPROC-0045.MOVEMENT_RECORDED`<br>`VPROC-0045.CONSENT_UPDATE_PENDING`<br>`VPROC-0045.RECONCILIATION_PENDING`                                            | `VPROC-0045.LOYALTY_INTERACTION_RECONCILED`  |  **9** |
+| `VPROC-0046` | `VPROC-0046.CLAIM_RECEIVED`                    | `VPROC-0046.TRIAGE_IN_PROGRESS`<br>`VPROC-0046.EVIDENCE_PENDING`<br>`VPROC-0046.UNDER_INVESTIGATION`<br>`VPROC-0046.RESOLUTION_PROPOSED`<br>`VPROC-0046.AUTHORIZATION_PENDING`<br>`VPROC-0046.REMEDY_IN_PROGRESS`<br>`VPROC-0046.CAUSE_ACTION_PENDING`<br>`VPROC-0046.CUSTOMER_VALIDATION_PENDING`             | `VPROC-0046.CLAIM_CASE_CLOSED`               | **10** |
+| `VPROC-0047` | `VPROC-0047.RESERVATION_REQUESTED`             | `VPROC-0047.AVAILABILITY_CHECKING`<br>`VPROC-0047.TERMS_PROPOSED`<br>`VPROC-0047.CUSTOMER_CONFIRMATION_PENDING`<br>`VPROC-0047.DEPOSIT_PENDING`<br>`VPROC-0047.CONFIRMED`<br>`VPROC-0047.PREPARATION_IN_PROGRESS`<br>`VPROC-0047.SERVICE_PENDING`                                                              | `VPROC-0047.RESERVATION_SERVICE_COMPLETED`   |  **9** |
+| `VPROC-0048` | `VPROC-0048.ROUTE_PLAN_DRAFT`                  | `VPROC-0048.DEMAND_CONSOLIDATING`<br>`VPROC-0048.CAPACITY_VALIDATING`<br>`VPROC-0048.ROUTE_OPTIMIZING`<br>`VPROC-0048.ASSIGNMENT_PENDING`<br>`VPROC-0048.PLAN_UNDER_REVIEW`<br>`VPROC-0048.PUBLISHED`                                                                                                          | `VPROC-0048.ROUTE_PLAN_RELEASED`             |  **8** |
+| `VPROC-0049` | `VPROC-0049.TRIP_READY_FOR_DISPATCH`           | `VPROC-0049.LOAD_VALIDATION_IN_PROGRESS`<br>`VPROC-0049.CUSTODY_TRANSFER_PENDING`<br>`VPROC-0049.IN_TRANSIT`<br>`VPROC-0049.AT_STOP`<br>`VPROC-0049.DELIVERY_CONFIRMATION_PENDING`<br>`VPROC-0049.RETURN_IN_PROGRESS`<br>`VPROC-0049.TRIP_RECONCILIATION_PENDING`                                              | `VPROC-0049.TRIP_RECONCILED`                 |  **9** |
+| `VPROC-0050` | `VPROC-0050.THIRD_PARTY_DELIVERY_REQUESTED`    | `VPROC-0050.PROVIDER_ACCEPTANCE_PENDING`<br>`VPROC-0050.ACCEPTED_BY_PROVIDER`<br>`VPROC-0050.PICKUP_PENDING`<br>`VPROC-0050.IN_TRANSIT`<br>`VPROC-0050.DELIVERY_PROOF_PENDING`<br>`VPROC-0050.INCIDENT_UNDER_REVIEW`<br>`VPROC-0050.RECONCILIATION_PENDING`                                                    | `VPROC-0050.THIRD_PARTY_DELIVERY_RECONCILED` |  **9** |
+| `VPROC-0051` | `VPROC-0051.ECONOMIC_EVENT_RECEIVED`           | `VPROC-0051.VALIDATION_IN_PROGRESS`<br>`VPROC-0051.CLASSIFICATION_PENDING`<br>`VPROC-0051.CLASSIFIED`<br>`VPROC-0051.POSTING_PENDING`<br>`VPROC-0051.POSTED`<br>`VPROC-0051.ALLOCATION_PENDING`<br>`VPROC-0051.RECONCILIATION_PENDING`                                                                         | `VPROC-0051.ECONOMIC_EVENT_RECONCILED`       |  **9** |
+| `VPROC-0052` | `VPROC-0052.PAYABLE_REGISTERED`                | `VPROC-0052.DOCUMENT_VALIDATING`<br>`VPROC-0052.UNDER_APPROVAL`<br>`VPROC-0052.APPROVED_FOR_SCHEDULING`<br>`VPROC-0052.SCHEDULED_FOR_PAYMENT`<br>`VPROC-0052.PAYMENT_IN_PROGRESS`<br>`VPROC-0052.PAYMENT_RECORDED`<br>`VPROC-0052.BANK_RECONCILIATION_PENDING`                                                 | `VPROC-0052.PAYABLE_SETTLED`                 |  **9** |
+| `VPROC-0053` | `VPROC-0053.RECEIVABLE_REGISTERED`             | `VPROC-0053.VALIDATION_IN_PROGRESS`<br>`VPROC-0053.COLLECTION_SCHEDULED`<br>`VPROC-0053.COLLECTION_IN_PROGRESS`<br>`VPROC-0053.PAYMENT_RECEIVED`<br>`VPROC-0053.APPLICATION_PENDING`<br>`VPROC-0053.DIFFERENCE_UNDER_REVIEW`<br>`VPROC-0053.RECONCILIATION_PENDING`                                            | `VPROC-0053.RECEIVABLE_SETTLED`              |  **9** |
+| `VPROC-0054` | `VPROC-0054.COSTING_CYCLE_OPENED`              | `VPROC-0054.INPUTS_COLLECTING`<br>`VPROC-0054.CALCULATION_IN_PROGRESS`<br>`VPROC-0054.VARIANCE_ANALYSIS`<br>`VPROC-0054.UNDER_REVIEW`<br>`VPROC-0054.PENDING_APPROVAL`<br>`VPROC-0054.PUBLISHED`<br>`VPROC-0054.CLOSE_RECONCILIATION_PENDING`                                                                  | `VPROC-0054.COSTING_CYCLE_CLOSED`            |  **9** |
+| `VPROC-0055` | `VPROC-0055.FACILITY_CASE_OPENED`              | `VPROC-0055.TRIAGED`<br>`VPROC-0055.WORK_PLANNED`<br>`VPROC-0055.RESOURCES_PENDING`<br>`VPROC-0055.IN_EXECUTION`<br>`VPROC-0055.VERIFICATION_PENDING`<br>`VPROC-0055.RELEASE_PENDING`                                                                                                                          | `VPROC-0055.FACILITY_CASE_CLOSED`            |  **8** |
+| `VPROC-0056` | `VPROC-0056.CONTENT_REQUESTED`                 | `VPROC-0056.BRIEF_UNDER_REVIEW`<br>`VPROC-0056.IN_CREATION`<br>`VPROC-0056.UNDER_REVIEW`<br>`VPROC-0056.PENDING_APPROVAL`<br>`VPROC-0056.APPROVED`<br>`VPROC-0056.SCHEDULED`<br>`VPROC-0056.PUBLISHED`<br>`VPROC-0056.PERFORMANCE_REVIEW`                                                                      | `VPROC-0056.CONTENT_CYCLE_REVIEWED`          | **10** |
+| `VPROC-0057` | `VPROC-0057.DIGITAL_INQUIRY_RECEIVED`          | `VPROC-0057.TRIAGED`<br>`VPROC-0057.QUALIFICATION_PENDING`<br>`VPROC-0057.QUALIFIED`<br>`VPROC-0057.ASSIGNED`<br>`VPROC-0057.RESPONSE_IN_PROGRESS`<br>`VPROC-0057.COMMERCIAL_HANDOFF_PENDING`<br>`VPROC-0057.FOLLOW_UP_IN_PROGRESS`                                                                            | `VPROC-0057.DIGITAL_INQUIRY_RESOLVED`        |  **9** |
+| `VPROC-0058` | `VPROC-0058.TECH_CASE_REPORTED`                | `VPROC-0058.TRIAGE_IN_PROGRESS`<br>`VPROC-0058.PRIORITIZED`<br>`VPROC-0058.DIAGNOSIS_IN_PROGRESS`<br>`VPROC-0058.WORKAROUND_APPLIED`<br>`VPROC-0058.RESOLUTION_IN_PROGRESS`<br>`VPROC-0058.USER_VALIDATION_PENDING`<br>`VPROC-0058.KNOWLEDGE_CAPTURE_PENDING`                                                  | `VPROC-0058.TECH_CASE_CLOSED`                |  **9** |
+| `VPROC-0059` | `VPROC-0059.ACCESS_REQUESTED`                  | `VPROC-0059.IDENTITY_VALIDATING`<br>`VPROC-0059.OWNER_APPROVAL_PENDING`<br>`VPROC-0059.SECURITY_REVIEW_PENDING`<br>`VPROC-0059.APPROVED`<br>`VPROC-0059.PROVISIONING_IN_PROGRESS`<br>`VPROC-0059.ACCESS_ACTIVE`<br>`VPROC-0059.PERIODIC_REVIEW_PENDING`<br>`VPROC-0059.DEPROVISIONING_IN_PROGRESS`             | `VPROC-0059.ACCESS_LIFECYCLE_CLOSED`         | **10** |
+| `VPROC-0060` | `VPROC-0060.DOCUMENT_ITEM_REGISTERED`          | `VPROC-0060.METADATA_VALIDATING`<br>`VPROC-0060.UNDER_REVIEW`<br>`VPROC-0060.APPROVAL_PENDING`<br>`VPROC-0060.APPROVED`<br>`VPROC-0060.SIGNATURE_PENDING`<br>`VPROC-0060.IN_FORCE`<br>`VPROC-0060.SUPERSESSION_PENDING`<br>`VPROC-0060.DISPOSITION_REVIEW_PENDING`                                             | `VPROC-0060.DOCUMENT_LIFECYCLE_CLOSED`       | **10** |
+| `VPROC-0061` | `VPROC-0061.MEASUREMENT_CYCLE_OPENED`          | `VPROC-0061.DATA_COLLECTING`<br>`VPROC-0061.DATA_VALIDATING`<br>`VPROC-0061.ANALYSIS_IN_PROGRESS`<br>`VPROC-0061.FINDINGS_UNDER_REVIEW`<br>`VPROC-0061.IMPROVEMENT_DECISION_PENDING`<br>`VPROC-0061.IMPROVEMENT_IN_PROGRESS`<br>`VPROC-0061.EFFECTIVENESS_CHECK_PENDING`                                       | `VPROC-0061.IMPROVEMENT_CYCLE_EVALUATED`     |  **9** |
+| `VPROC-0062` | `VPROC-0062.CONTINUITY_EVENT_DETECTED`         | `VPROC-0062.IMPACT_ASSESSMENT`<br>`VPROC-0062.RESPONSE_ACTIVATION_PENDING`<br>`VPROC-0062.CONTINGENCY_ACTIVE`<br>`VPROC-0062.MINIMUM_OPERATION_ACTIVE`<br>`VPROC-0062.RECOVERY_IN_PROGRESS`<br>`VPROC-0062.SERVICE_RESTORED_PENDING_RECONCILIATION`<br>`VPROC-0062.POST_EVENT_REVIEW`                          | `VPROC-0062.CONTINUITY_EVENT_CLOSED`         |  **9** |
+| `VPROC-0063` | `VPROC-0063.ENTERPRISE_RISK_IDENTIFIED`        | `VPROC-0063.UNDER_ASSESSMENT`<br>`VPROC-0063.TREATMENT_PLANNING`<br>`VPROC-0063.TREATMENT_APPROVAL_PENDING`<br>`VPROC-0063.TREATMENT_IN_PROGRESS`<br>`VPROC-0063.MONITORING`<br>`VPROC-0063.REVIEW_PENDING`                                                                                                    | `VPROC-0063.ENTERPRISE_RISK_CYCLE_CLOSED`    |  **8** |
+| `VPROC-0064` | `VPROC-0064.EXTERNAL_REQUIREMENT_RECEIVED`     | `VPROC-0064.TRIAGED`<br>`VPROC-0064.RESPONSIBILITY_ASSIGNED`<br>`VPROC-0064.RESPONSE_PREPARING`<br>`VPROC-0064.INTERNAL_REVIEW`<br>`VPROC-0064.AUTHORIZATION_PENDING`<br>`VPROC-0064.SUBMITTED`<br>`VPROC-0064.FOLLOW_UP_PENDING`<br>`VPROC-0064.COMPLIANCE_VERIFICATION_PENDING`                              | `VPROC-0064.EXTERNAL_REQUIREMENT_FULFILLED`  | **10** |
+| `VPROC-0065` | `VPROC-0065.DEVELOPMENT_CYCLE_OPENED`          | `VPROC-0065.OBJECTIVES_DRAFT`<br>`VPROC-0065.OBJECTIVES_AGREED`<br>`VPROC-0065.FOLLOW_UP_IN_PROGRESS`<br>`VPROC-0065.FEEDBACK_PENDING`<br>`VPROC-0065.REVIEW_IN_PROGRESS`<br>`VPROC-0065.DEVELOPMENT_ACTIONS_IN_PROGRESS`<br>`VPROC-0065.DECISION_REVIEW_PENDING`                                              | `VPROC-0065.DEVELOPMENT_CYCLE_CLOSED`        |  **9** |
+| `VPROC-0066` | `VPROC-0066.PPE_NEED_IDENTIFIED`               | `VPROC-0066.REQUIREMENT_VALIDATING`<br>`VPROC-0066.ITEM_RESERVED`<br>`VPROC-0066.DELIVERY_PENDING`<br>`VPROC-0066.DELIVERED_PENDING_ACCEPTANCE`<br>`VPROC-0066.IN_USE`<br>`VPROC-0066.REPLACEMENT_DUE`<br>`VPROC-0066.RETURN_PENDING`<br>`VPROC-0066.CONDITION_REVIEW`                                         | `VPROC-0066.PPE_CYCLE_RECONCILED`            | **10** |
+| `VPROC-0067` | `VPROC-0067.KIT_DEFINITION_DRAFT`              | `VPROC-0067.DEFINITION_UNDER_REVIEW`<br>`VPROC-0067.DEFINITION_APPROVED`<br>`VPROC-0067.INSTANCE_ASSEMBLING`<br>`VPROC-0067.COMPLETENESS_CHECK`<br>`VPROC-0067.AVAILABLE`<br>`VPROC-0067.ASSIGNED`<br>`VPROC-0067.IN_USE`<br>`VPROC-0067.RETURN_UNDER_VERIFICATION`                                            | `VPROC-0067.KIT_CYCLE_RECONCILED`            | **10** |
+| `VPROC-0068` | `VPROC-0068.SATISFACTION_MEASUREMENT_DRAFT`    | `VPROC-0068.INSTRUMENT_UNDER_REVIEW`<br>`VPROC-0068.SAMPLE_PREPARING`<br>`VPROC-0068.PENDING_PUBLICATION`<br>`VPROC-0068.COLLECTING_RESPONSES`<br>`VPROC-0068.DATA_VALIDATING`<br>`VPROC-0068.ANALYSIS_IN_PROGRESS`<br>`VPROC-0068.RESULTS_UNDER_REVIEW`<br>`VPROC-0068.IMPROVEMENT_HANDOFF_PENDING`           | `VPROC-0068.SATISFACTION_CYCLE_CLOSED`       | **10** |
+| `VPROC-0069` | `VPROC-0069.BUDGET_DRAFT`                      | `VPROC-0069.ASSUMPTIONS_COLLECTING`<br>`VPROC-0069.CONSOLIDATING`<br>`VPROC-0069.UNDER_REVIEW`<br>`VPROC-0069.PENDING_APPROVAL`<br>`VPROC-0069.APPROVED`<br>`VPROC-0069.IN_FORCE`<br>`VPROC-0069.CONSUMPTION_MONITORING`<br>`VPROC-0069.FORECAST_REVISION_IN_PROGRESS`<br>`VPROC-0069.VARIANCE_REVIEW`         | `VPROC-0069.BUDGET_CYCLE_CLOSED`             | **11** |
+---
+
+#### 9. Reconciliación cuantitativa
+
+La matriz anterior deberá mantener simultáneamente:
+
+```text
+69 procesos
+69 filas de proceso
+69 estados INITIAL
+454 estados INTERMEDIATE
+69 estados FINAL_NORMAL
+592 ProcessStateId únicos
+0 ProcessId faltantes
+0 estados sin proceso propietario
+0 identidades plenas duplicadas
+```
+
+Distribución por cantidad total de estados por proceso:
+
+- mínimo observado: **6** estados principales normales;
+- máximo observado: **11** estados principales normales;
+- todos los procesos poseen exactamente un inicial y exactamente un final normal;
+- cada proceso posee un conjunto no vacío de estados intermedios.
+
+La suma de los estados por fila debe reproducir exactamente **592**.
+
+---
+
+#### 10. Proyección compartida derivada
+
+La futura proyección TypeScript deberá derivarse de los registros canónicos y ser equivalente conceptualmente a:
+
+```text
+const PROCESS_STATE_IDS = <colección derivada de 592 identidades> as const;
+
+type ProcessStateId = (typeof PROCESS_STATE_IDS)[number];
+
+type ProcessStateKind =
+  | "INITIAL"
+  | "INTERMEDIATE"
+  | "FINAL_NORMAL";
+```
+
+Además, la proyección deberá permitir resolver de forma determinista:
+
+```text
+ProcessStateId
+→ ProcessId
+→ STATE_CODE
+→ ProcessStateKind
+→ metadatos semánticos aprobados del registro propietario
+```
+
+Los metadatos semánticos no se duplican como una segunda fuente. La proyección deberá conservar, según corresponda, la etiqueta humana, condición de nacimiento, fase, verdad mínima, criterio terminal, tipo terminal y demás propiedades ya aprobadas por `PROC-CAT-009..011`.
+
+---
+
+#### 11. Estados iniciales
+
+Cada proceso conserva exactamente un `INITIAL`.
+
+Reglas vinculantes:
+
+1. el inicial representa el nacimiento válido de una instancia;
+2. no demuestra aprobación, pago, publicación, entrega, liberación, conciliación ni cierre;
+3. no puede utilizarse como sentinel técnico genérico para una instancia inexistente;
+4. el nacimiento debe conservar la condición aprobada en `PROC-CAT-009`;
+5. una creación automática, externa u offline mantiene los requisitos de idempotencia y trazabilidad ya protegidos por `TREQ-PROC-038..042`;
+6. un consumidor no puede sustituir el inicial por un valor local como `NEW`, `DRAFT` o `PENDING` si ese valor no es la identidad aprobada para el proceso.
+
+---
+
+#### 12. Estados intermedios
+
+Los 454 `INTERMEDIATE` representan verdades empresariales persistentes no terminales.
+
+Invariantes:
+
+1. cada instancia mantiene una sola posición principal vigente dentro de su ciclo normal;
+2. bloqueo, atraso, riesgo, SLA, trabajo offline o atención requerida permanecen condiciones transversales y no crean estados principales competidores;
+3. un estado intermedio no implica efectos que todavía requieran una transición propia;
+4. un estado intermedio no se interpreta como final, cancelación, rechazo, reversión o eliminación;
+5. cada identidad conserva la fase y verdad mínima aprobadas por `PROC-CAT-010`;
+6. el mismo `STATE_CODE` en dos procesos no permite intercambiar semántica entre ellos;
+7. una transición hacia o desde un intermedio solo es válida si existe en el grafo normal o en el mecanismo excepcional autorizado correspondiente.
+
+---
+
+#### 13. Estados finales normales
+
+Los 69 `FINAL_NORMAL` representan terminación normal del proceso.
+
+Reglas:
+
+1. existe exactamente uno por cada `ProcessId` vigente;
+2. su criterio de cierre y verdad terminal proceden de `PROC-CAT-011`;
+3. alcanzar el estado final normal exige que los efectos, obligaciones, conciliaciones y evidencias requeridos estén satisfechos conforme al contrato del proceso;
+4. el final normal es terminal dentro del grafo normal;
+5. no se sobrescribe para aparentar reapertura;
+6. una reapertura autorizada crea una revisión, ciclo o instancia vinculada y conserva el cierre original;
+7. cerrar el proceso no implica retirar o eliminar una entidad persistente que sobreviva al proceso.
+
+---
+
+#### 14. Separación de namespaces y conceptos
+
+No pertenecen a `ProcessStateId`:
+
+```text
+ProcessId
+process_instance_id
+transition_id
+step_id
+screen_id
+action_id
+event_id
+command_id
+exception_action_id
+cancellation_action_id
+reversal_action_id
+correction_action_id
+condition_code
+error_code
+```
+
+En particular:
+
+- las **590** transiciones normales de `PROC-CAT-012` son relaciones entre estados, no estados;
+- las **276** acciones excepcionales de `PROC-CAT-013` son acciones `VPROC-####.EX-###`, no `ProcessStateId`;
+- las **276** acciones de cancelación, anulación, reversión, compensación y corrección de `PROC-CAT-014` son acciones gobernadas, no estados principales;
+- resultados como `CONDITION_ONLY`, `LINKED_REVIEW`, `TEMPORARY_CONTROL`, `ROUTE_CHANGE` o `EXCEPTIONAL_TERMINAL` clasifican efectos de acciones excepcionales y no se incorporan al conjunto de 592 identidades normales;
+- condiciones transversales no sustituyen la posición principal de la instancia.
+
+No se inventan estados excepcionales nuevos para convertir esas acciones en una lista de estados.
+
+---
+
+#### 15. Coherencia proceso-estado
+
+Una identidad válida debe satisfacer simultáneamente:
+
+```text
+ProcessId válido
+AND
+ProcessStateId publicado
+AND
+prefijo del estado = ProcessId de la instancia
+```
+
+Casos normativos:
+
+```text
+VPROC-0001.DECISION_DRAFT
+→ miembro válido para VPROC-0001
+
+VPROC-0002.DECISION_DRAFT
+→ sintaxis válida
+→ no publicado para VPROC-0002
+→ inválido
+
+VPROC-0070.CUALQUIER_ESTADO
+→ proceso no asignado en el corte vigente
+→ inválido
+
+UNDER_REVIEW
+→ código desnudo
+→ no es ProcessStateId
+```
+
+Un estado reconocido para otro proceso no puede reutilizarse mediante cast o comparación textual.
+
+---
+
+#### 16. Validación de entradas externas y legado
+
+Toda entrada proveniente de JSON, Supabase, RPC, eventos, integraciones, URL, almacenamiento local, configuración o datos legacy se considera no confiable hasta validación.
+
+La secuencia conceptual es:
+
+```text
+valor externo
+→ validar forma
+→ validar ProcessId
+→ validar identidad plena en el conjunto publicado
+→ validar correspondencia con el proceso de la instancia
+→ ProcessStateId o rechazo
+```
+
+Reglas de legado:
+
+1. una aplicación puede conservar temporalmente un estado legacy únicamente mediante una matriz explícita `legacy → canónico`;
+2. el mapeo debe distinguir estado principal, condición transversal, acción, error técnico, final o excepción;
+3. un valor ambiguo no se migra automáticamente;
+4. no se infiere estado desde rutas, botones, colores, timestamps o presencia aislada de campos;
+5. un estado histórico no mapeable conserva su valor original y evidencia hasta la decisión propietaria;
+6. toda modificación física posterior de Supabase deberá crearse, versionarse y documentarse en `vento-shell`.
+
+---
+
+#### 17. Inmutabilidad, evolución y versionado
+
+Una identidad de estado aprobada no se cambia silenciosamente en consumidores.
+
+Reglas:
+
+1. renombrar o reinterpretar un `STATE_CODE` publicado es un cambio contractual;
+2. agregar un estado requiere primero una decisión aprobada en la fuente semántica propietaria y la reconciliación del grafo aplicable;
+3. retirar un estado exige inventario de consumidores, compatibilidad, migración, evidencia y preservación histórica;
+4. una versión publicada de `@vento/contracts` permanece inmutable;
+5. un consumidor que no reconoce una identidad nueva debe tratarla como incompatibilidad contractual, no como fallback a un estado conocido;
+6. la procedencia de la proyección deberá permitir identificar la versión de los registros de proceso que la originaron;
+7. esta tarea no asigna un número de versión, tag, release o hash a una publicación física todavía inexistente.
+
+---
+
+#### 18. Compatibilidad de consumidores
+
+La adopción física posterior deberá conservar:
+
+```text
+fuente canónica de estados
+→ proyección compartida publicada
+→ inventario de consumidores
+→ adapters legacy explícitos
+→ migración por lotes reversibles
+→ validación de paridad
+→ retiro de copias locales
+```
+
+Un consumidor podrá restringir más su comportamiento, pero no:
+
+- ampliar el conjunto de estados;
+- aceptar estados de otro proceso;
+- inventar aliases silenciosos;
+- convertir acciones en estados;
+- tratar condiciones transversales como estado principal;
+- redefinir terminalidad;
+- reabrir un final normal mediante overwrite;
+- usar strings libres como autoridad contractual.
+
+La migración no exige actualizar simultáneamente todos los repositorios si la matriz de compatibilidad demuestra interoperabilidad segura.
+
+---
+
+#### 19. Estado de materialización física
+
+En el corte vigente:
+
+```text
+SHELL-CON-010
+→ 592 identidades de estado centralizadas documentalmente
+→ 69 matrices de proceso reconciliadas
+→ 0 estados nuevos
+→ 0 cambios de transición
+→ 0 cambios físicos
+→ 0 migraciones
+→ 0 cambios en Supabase
+→ 0 adopciones de consumidor
+```
+
+La futura materialización de `@vento/contracts/processes` y la adopción de consumidores permanecen sujetas a la puerta física aplicable, al gobierno de packages compartidos y a las tareas de CI/migración ya existentes.
+
+---
+
+#### 20. Hallazgos y destinos exactos
+
+| Hallazgo                                                                     | Estado                    | Destino existente / condición de salida                                                     |
+| ---------------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------- |
+| `packages/contracts` todavía no está materializado                           | esperado por fase         | ciclo físico de `@vento/contracts`, `E5-GATE-008::<package_id>` y `SHELL-CI-020`            |
+| `ProcessStateId` compartido no existe físicamente                            | definido no materializado | materialización del contrato de procesos cuando la puerta física sea autorizada             |
+| consumidores pueden conservar estados como strings o enums locales           | legacy potencial          | `SHELL-MIG-001` a `SHELL-MIG-008` y matriz de compatibilidad del consumidor afectado        |
+| 590 transiciones normales requieren seguir separadas del catálogo de estados | contrato preservado       | `PROC-CAT-012`; validación transversal en `SHELL-CI-018`                                    |
+| 276 acciones excepcionales no son estados                                    | contrato preservado       | `PROC-CAT-013`; consumidores deberán referenciar el namespace de acciones correspondiente   |
+| 276 acciones CCR no son estados                                              | contrato preservado       | `PROC-CAT-014`; implementación física en sus tareas propietarias                            |
+| estados legacy ambiguos no admiten migración automática                      | bloqueo controlado        | E3, BLOQUE R y paquetes E5 aplicables, con migraciones siempre versionadas en `vento-shell` |
+| identificadores de pantallas permanecen fuera de esta tarea                  | reservado por secuencia   | `SHELL-CON-011`                                                                             |
+
+No se crea ningún identificador de tarea nuevo: todos los pendientes conservan destino documental existente.
+
+---
+
+#### 21. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** `SHELL-CON-010` centraliza documentalmente las mismas identidades, clasificaciones y restricciones de estado ya protegidas por `TREQ-PROC-038` a `TREQ-PROC-052`, junto con la cobertura transversal de fuente compartida, compatibilidad y validación de `TREQ-SHELL-002`, `TREQ-SHELL-006` y `TREQ-SHELL-008`. No crea estados, transiciones ni comportamiento ejecutable nuevo; generar un requisito adicional duplicaría cobertura existente.
+
+El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 22. Decisiones vinculantes
+
+1. el universo compartido contiene exactamente **592** estados principales normales;
+2. existen exactamente **69 `INITIAL`**, **454 `INTERMEDIATE`** y **69 `FINAL_NORMAL`**;
+3. los 592 estados pertenecen exactamente a `VPROC-0001..VPROC-0069`;
+4. cada proceso posee un único estado inicial y un único estado final normal;
+5. cada proceso posee al menos un estado intermedio;
+6. `ProcessStateId` usa la identidad plena `VPROC-####.<STATE_CODE>`;
+7. el patrón sintáctico no sustituye comprobación de pertenencia;
+8. un `STATE_CODE` desnudo no es identidad global;
+9. el mismo código puede existir en procesos distintos sin fusionar semántica;
+10. las diez fases intermedias permanecen clasificaciones y no estados adicionales;
+11. los ocho tipos terminales permanecen clasificaciones y no estados adicionales;
+12. las 590 transiciones normales permanecen fuera de `ProcessStateId`;
+13. las 276 acciones excepcionales permanecen fuera de `ProcessStateId`;
+14. las 276 acciones de cancelación, anulación, reversión, compensación y corrección permanecen fuera de `ProcessStateId`;
+15. condiciones transversales no se convierten en estado principal;
+16. una instancia conserva una sola posición principal normal vigente;
+17. un final normal es terminal para el grafo normal y no se sobrescribe para reabrir;
+18. entradas externas requieren validación de forma, proceso, pertenencia y correspondencia;
+19. estados legacy ambiguos no se migran por heurística;
+20. los registros `PROC-CAT-009..011` conservan autoridad semántica;
+21. `PROC-CAT-012` conserva autoridad del grafo normal y reconciliación;
+22. `@vento/contracts/processes` conserva la proyección técnica compartida;
+23. no se crea package, código, migración, Supabase, dato, release ni adopción física;
+24. no se crean ni modifican requisitos `TREQ-*`;
+25. `SHELL-CON-011` permanece exclusivamente reservada.
+
+---
+
+#### 23. Criterios de aceptación
+
+`SHELL-CON-010` queda documentalmente completa cuando:
+
+- estén materializadas las 69 filas de proceso y las 592 identidades principales normales;
+- la reconciliación produzca 69 iniciales, 454 intermedios y 69 finales normales;
+- existan cero `ProcessId` faltantes y cero identidades plenas duplicadas;
+- la identidad de cada estado conserve el prefijo de su proceso propietario;
+- `ProcessStateId` se derive de una colección única y no de listas manuales competidoras;
+- la proyección preserve los metadatos semánticos aprobados sin convertirse en una segunda fuente;
+- se conserven las diez fases intermedias y sus 454 ocurrencias;
+- se conserven los ocho tipos terminales y sus 69 ocurrencias;
+- transiciones, acciones excepcionales, acciones CCR y condiciones transversales permanezcan fuera del conjunto de estados;
+- un código desnudo no se acepte como identidad global;
+- las entradas externas fallen cerradas ante proceso desconocido, estado desconocido o incompatibilidad proceso-estado;
+- los estados legacy ambiguos no se migren automáticamente;
+- `@vento/contracts/processes` permanezca como superficie documental sin materialización física;
+- no se creen ni modifiquen requisitos de prueba;
+- no se ejecuten cambios físicos;
+- la continuidad reserve exclusivamente `SHELL-CON-011`.
+
+---
+
+#### 24. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-CON-009 — Centralizar identificadores de procesos
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-CON-010 — Centralizar estados de procesos
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-CON-011 — Centralizar identificadores de pantallas
+
+
 ### [ ] SHELL-CON-011 — Centralizar identificadores de pantallas
 ### [ ] SHELL-CON-012 — Crear contrato de acciones funcionales
 ### [ ] SHELL-CON-013 — Crear contrato de eventos empresariales

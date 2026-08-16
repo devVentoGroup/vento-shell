@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **888** |
+| Aprobadas | **889** |
 | En propuesta | **0** |
-| No iniciadas | **706** |
+| No iniciadas | **705** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **55.71% (888/1594)** |
+| Porcentaje de completamiento | **55.77% (889/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CON-009` — Centralizar identificadores de procesos | ✅ APROBADA |
-| Tarea actual | `SHELL-CON-010` — Centralizar estados de procesos | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CON-011` — Centralizar identificadores de pantallas | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CON-010` — Centralizar estados de procesos | ✅ APROBADA |
+| Tarea actual | `SHELL-CON-011` — Centralizar identificadores de pantallas | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CON-012` — Crear contrato de acciones funcionales | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -715,7 +715,7 @@
 | ✅ APROBADA | `SHELL-CON-007` | Centralizar tipos de contexto | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CON-008` | Centralizar códigos de error | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CON-009` | Centralizar identificadores de procesos | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-CON-010` | Centralizar estados de procesos | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-CON-010` | Centralizar estados de procesos | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-011` | Centralizar identificadores de pantallas | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-012` | Crear contrato de acciones funcionales | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-013` | Crear contrato de eventos empresariales | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |

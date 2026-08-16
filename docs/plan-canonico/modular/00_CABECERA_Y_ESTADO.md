@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **888** |
+| Tareas aprobadas | **889** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **706** |
+| Tareas no iniciadas | **705** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **55.71% (888/1594)** |
+| Porcentaje de completamiento | **55.77% (889/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-CON-009 — Centralizar identificadores de procesos** |
-| Tarea actual | **SHELL-CON-010 — Centralizar estados de procesos** |
+| Última tarea aprobada | **SHELL-CON-010 — Centralizar estados de procesos** |
+| Tarea actual | **SHELL-CON-011 — Centralizar identificadores de pantallas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CON-011 — Centralizar identificadores de pantallas** |
+| Siguiente tarea | **SHELL-CON-012 — Crear contrato de acciones funcionales** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 38 de 109 aprobadas; SHELL-CON-010 pendiente** |
+| Progreso del bloque | **BLOQUE H: 39 de 109 aprobadas; SHELL-CON-011 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-CON-009` — Centralizar identificadores de procesos |
-| Tarea actual | `SHELL-CON-010` — Centralizar estados de procesos — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CON-011` — Centralizar identificadores de pantallas |
+| Última aprobada | `SHELL-CON-010` — Centralizar estados de procesos |
+| Tarea actual | `SHELL-CON-011` — Centralizar identificadores de pantallas — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CON-012` — Crear contrato de acciones funcionales |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 38 DE 109 APROBADAS — ACTUAL SHELL-CON-010** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 39 DE 109 APROBADAS — ACTUAL SHELL-CON-011** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-CON-009 — Centralizar identificadores de procesos
-        ↓
-TAREA ACTUAL
 SHELL-CON-010 — Centralizar estados de procesos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-CON-011 — Centralizar identificadores de pantallas
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CON-012 — Crear contrato de acciones funcionales
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 38 de 109 tareas aprobadas
+BLOQUE H — 39 de 109 tareas aprobadas
 ```
