@@ -4436,6 +4436,1020 @@ SHELL-CON-021 — Crear contrato canónico de línea de venta
 SHELL-CON-022 — Crear contrato de mapeo de identificadores externos
 
 
-### [ ] SHELL-CON-022 — Crear contrato de mapeo de identificadores externos
+### ✅ SHELL-CON-022 — Crear contrato de mapeo de identificadores externos
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CON-021 — Crear contrato canónico de línea de venta
+**Tarea siguiente:** SHELL-CON-023 — Crear contrato de idempotencia y conciliación
+**Tipo de tarea:** Documental; definición normativa y materializada del contrato compartido de mapeo de identificadores externos, con referencias tipadas, namespaces, clases de identificador, relaciones, estados de resolución, versionado, vigencia, evidencia y trazabilidad, preservando la semántica de `INT-EXT-013`, las especializaciones posteriores `INT-POS` y la separación frente a autenticidad, idempotencia, autorización, propiedad empresarial y efectos, sin implementar código, persistencia, migraciones ni cambios en Supabase
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md`
+**Superficie lógica objetivo:** `@vento/contracts/integrations`
+**Estado físico resultante:** `CONTRATO_COMPARTIDO_DE_MAPEO_DE_IDENTIFICADORES_EXTERNOS_DEFINIDO_NO_MATERIALIZADO`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, Storage, Edge Functions, endpoints, colas, workers, secretos, credenciales, proveedores, datos, configuración remota o despliegues:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-022` centraliza en la fundación compartida de Vento OS la forma consumible y estática del mapeo entre identificadores externos y recursos canónicos VENTO ya definido normativamente por `INT-EXT-013`, sin convertir coincidencias de valor en identidad y sin crear una segunda fuente de verdad sobre mappings propietarios de producto, sede, terminal, caja, venta, línea, impresora, pago, usuario u otros recursos.
+
+La regla central es:
+
+```text
+REFERENCIA EXTERNA TIPADA
++
+NAMESPACE Y AMBIENTE
++
+RELACIÓN ACREDITADA
++
+RECURSO CANÓNICO EXACTO CUANDO APLIQUE
++
+ESTADO, VERSIÓN Y EVIDENCIA
+=
+MAPEO TRAZABLE
+```
+
+Y permanece estrictamente separado de:
+
+```text
+COINCIDENCIA DE TEXTO O UUID
+AUTENTICIDAD DE LA ENTRADA
+AUTORIZACIÓN EMPRESARIAL
+CLAVE IDEMPOTENTE
+CORRELACIÓN SIN EQUIVALENCIA
+CREDENCIAL O SECRETO
+PROPIEDAD DEL HECHO
+EFECTO EMPRESARIAL
+```
+
+La tarea materializa el handoff explícito dejado por `INT-EXT-013`, `SHELL-CON-019`, `SHELL-CON-020` y `SHELL-CON-021`: las referencias `mapping_refs[]` pasan a disponer de una semántica compartida tipada sin adelantar idempotencia, conciliación, cuarentena, rechazo o compensación.
+
+---
+
+#### 2. Resultado canónico
+
+Quedan definidos dentro de `@vento/contracts/integrations` los siguientes artefactos lógicos compartidos:
+
+1. `ExternalIdentifierMappingId`, identidad estable, opaca y no secreta de una relación de mapping materializada;
+2. `ExternalIdentifierRef`, referencia externa tipada y delimitada por sistema, ambiente, superficie, namespace y clase de identificador;
+3. `ExternalIdentifierMapping`, relación compartida, versionada y trazable entre una referencia externa y un recurso canónico cuando la semántica lo permita;
+4. `ExternalIdentifierMappingRef`, referencia mínima e inmutable hacia un mapping identificado, destinada a sustituir referencias genéricas no tipadas en contratos consumidores cuando exista materialización física;
+5. `ExternalIdentifierClass`, vocabulario lógico de clasificación del identificador o referencia recibida;
+6. `ExternalIdentifierRelationKind`, vocabulario lógico de significado de la relación;
+7. `ExternalIdentifierMappingState`, vocabulario lógico de estado compartido de resolución.
+
+La superficie compartida queda preparada conceptualmente para que:
+
+```text
+ExternalReceivedEvent.mapping_refs[]
+→ ExternalIdentifierMappingRef[]
+```
+
+```text
+CanonicalSaleLine.mapping_refs[]
+→ ExternalIdentifierMappingRef[]
+```
+
+cuando el package físico sea materializado y adoptado mediante su ciclo autorizado.
+
+Esta tarea no crea archivos TypeScript, exports, JSON Schema, tablas, registros físicos, mappings operativos ni consumidores migrados.
+
+---
+
+#### 3. Fuentes y precedencia
+
+`SHELL-CON-022` consume y conserva sin redefinir:
+
+| Fuente                                    | Uso vinculante                                                                                                                      |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-CON-001`                           | autoridad estática de `@vento/contracts`, sin runtime, red, secretos ni persistencia                                                |
+| `SHELL-CON-017`                           | `IntegrationPrincipal`, identidad técnica separada del identificador externo y del recurso empresarial                              |
+| `SHELL-CON-018`                           | referencia de credencial separada de identidad, mapping y valor secreto                                                             |
+| `SHELL-CON-019`                           | `ExternalReceivedEvent` y `mapping_refs[]` como referencias hacia una forma compartida posterior                                    |
+| `SHELL-CON-020`                           | `CanonicalSale`, procedencia y correlación sin equiparar identidad de fuente con identidad canónica                                 |
+| `SHELL-CON-021`                           | `CanonicalSaleLine`, `mapping_refs[]`, estabilidad de línea y prohibición de usar producto, fila o hash como identidad de línea     |
+| `INT-EXT-013`                             | `VENTO-EXTERNAL-ID-MAPPING-CONTRACT-001`, vocabularios, namespaces, relaciones, estados, matriz 21/21 y prohibiciones de inferencia |
+| `INT-POS-010`                             | mapping contextual de empresa, sede, terminal y caja con vigencia e historia                                                        |
+| `INT-POS-011`                             | mapping de producto, presentación y receta con estados propietarios de resolución                                                   |
+| `INT-POS-013`                             | separación entre identidad de venta/línea, recepción, fila, hash, mapping e idempotencia                                            |
+| `INT-DB-004`                              | destino físico posterior para crear mapeos de identificadores externos y canónicos                                                  |
+| Registro Canónico de Requisitos de Prueba | cobertura vigente de integración, equivalencia, mapping, trazabilidad, fuente única y bloqueo de efectos no resolubles              |
+
+Precedencia aplicable:
+
+```text
+INT-EXT-013
+→ semántica propietaria y matriz de evidencia del mapping externo
+
+INT-POS-010 / INT-POS-011 / INT-POS-013
+→ especializaciones posteriores del POS donde corresponda
+
+SHELL-CON-022
+→ contrato compartido consumible de la semántica vigente
+
+INT-DB-004
+→ persistencia física posterior, únicamente dentro de implementación autorizada
+```
+
+Una decisión posterior y más específica aprobada no se degrada para reproducir un estado histórico anterior de evidencia.
+
+---
+
+#### 4. Frontera exacta de la tarea
+
+La tarea incluye:
+
+- identidad lógica de un mapping compartido;
+- referencia externa tipada;
+- vocabulario compartido de clases de identificador;
+- vocabulario compartido de tipos de relación;
+- vocabulario compartido de estados de mapping;
+- delimitación obligatoria por sistema, ambiente, superficie y namespace;
+- referencia al recurso canónico cuando la relación lo requiera;
+- contrato de evidencia y procedencia por referencia;
+- vigencia, retiro y sucesión conceptual;
+- cardinalidad y unicidad semántica;
+- compatibilidad con los mappings específicos de POS;
+- compatibilidad con `ExternalReceivedEvent` y `CanonicalSaleLine`;
+- reglas de fallo cerrado para efectos que dependen de una resolución exacta;
+- adopción explícita del inventario `EXT-SYS-001` a `EXT-SYS-021` sin fabricar mappings nuevos.
+
+La tarea no incluye:
+
+- resolución física de mappings;
+- tabla o índice de mapping;
+- algoritmo de consulta;
+- caché;
+- endpoint;
+- RPC;
+- trigger;
+- worker;
+- secreto o credencial;
+- autenticidad de proveedor;
+- política de idempotencia;
+- conciliación de resultados;
+- cuarentena, dead-letter, rechazo o compensación;
+- creación automática de recursos empresariales;
+- fusión automática de identidades;
+- migración de datos;
+- cambios Supabase;
+- implementación de `INT-DB-004`;
+- desarrollo de `SHELL-CON-023` o `SHELL-CON-024`.
+
+---
+
+#### 5. Identidad de `ExternalIdentifierMappingId`
+
+`ExternalIdentifierMappingId` identifica una relación de mapping materializada y no el objeto externo ni el recurso canónico relacionado.
+
+Invariantes:
+
+1. es estable, opaco y no secreto;
+2. no se deriva del valor de una API key, token, certificado o credencial;
+3. no se deriva automáticamente de `external_id_value`;
+4. no se deriva automáticamente de `canonical_id`;
+5. no es `ExternalIdentifierRef`;
+6. no es `CanonicalSaleId` ni `CanonicalSaleLineId`;
+7. no es `IntegrationPrincipalId`;
+8. no es una idempotency key;
+9. no es event ID, receipt ID ni correlation ID;
+10. una sucesión que cambie de forma material el target, namespace, relación o semántica no reescribe la relación histórica;
+11. esta tarea no fija UUID, prefijo, secuencia, slug ni otro formato físico;
+12. esta tarea crea cero valores físicos de `ExternalIdentifierMappingId`.
+
+---
+
+#### 6. Forma lógica de `ExternalIdentifierRef`
+
+La referencia externa compartida conserva como mínimo:
+
+```text
+ExternalIdentifierRef = {
+  external_system_id
+  environment
+  surface
+  external_namespace
+  external_id_class
+  external_id_kind
+  external_id_value
+}
+```
+
+Semántica:
+
+- `external_system_id` identifica la frontera externa inventariada, no el objeto;
+- `environment` impide reutilización cruzada entre ambientes;
+- `surface` identifica el contrato, interfaz o superficie material que da significado al identificador;
+- `external_namespace` delimita el espacio de identidad del emisor o plataforma;
+- `external_id_class` clasifica la naturaleza del identificador o referencia;
+- `external_id_kind` conserva la clase específica declarada por el contrato de la fuente;
+- `external_id_value` conserva el valor normalizado solo en la medida permitida por el namespace y sin reinterpretar su significado.
+
+Reglas de normalización:
+
+1. no se aplica `trim`, case-folding, eliminación de prefijos, conversión numérica, canonicalización de UUID u otra transformación si el contrato del namespace no la autoriza;
+2. una normalización permitida debe ser determinista y no puede fusionar dos valores externos semánticamente distintos;
+3. la evidencia fuente o procedencia debe permitir reconstruir de dónde provino el valor;
+4. la referencia no contiene secretos ni credenciales;
+5. la misma cadena puede representar objetos diferentes en namespaces diferentes sin colisión contractual.
+
+---
+
+#### 7. Vocabulario `ExternalIdentifierClass`
+
+Se adopta sin renombrar la taxonomía definida por `INT-EXT-013`:
+
+| Clase                      | Significado compartido                                                                                                                 |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXTERNAL_OBJECT_ID`       | identificador emitido o administrado por el sistema externo para un objeto, evento, transacción, dispositivo o recurso de su namespace |
+| `CANONICAL_VENTO_ID`       | identificador propietario de VENTO para un recurso canónico                                                                            |
+| `PROPAGATED_CANONICAL_ID`  | identificador canónico VENTO enviado deliberadamente al tercero y devuelto bajo un contrato aprobado                                   |
+| `EXTERNAL_ROUTING_REF`     | referencia externa de destino o routing que no equivale a identidad empresarial                                                        |
+| `IDEMPOTENCY_REF`          | referencia de operación estable; protege repetición, no identidad del recurso                                                          |
+| `CORRELATION_REF`          | referencia que enlaza artefactos o intercambios sin declarar equivalencia de identidad                                                 |
+| `DISPLAY_SEARCH_ATTRIBUTE` | atributo de búsqueda o presentación que nunca constituye equivalencia por sí solo                                                      |
+| `TECHNICAL_NAMESPACE_ID`   | identificador de proyecto, class, pass type, aplicación, tenant, bridge u otro namespace técnico                                       |
+| `EXTERNAL_ALIAS`           | alias externo que no autoriza fusión de identidades VENTO                                                                              |
+| `MAPPING_RECORD`           | relación versionada y trazable que representa un mapping materializado                                                                 |
+
+La clasificación describe semántica. No convierte automáticamente un valor en registro de mapping.
+
+---
+
+#### 8. Forma lógica de `ExternalIdentifierMapping`
+
+La forma normativa objetivo es:
+
+```text
+ExternalIdentifierMapping = {
+  mapping_id
+  contract_version
+
+  external_ref {
+    external_system_id
+    environment
+    surface
+    external_namespace
+    external_id_class
+    external_id_kind
+    external_id_value
+  }
+
+  relation_kind
+
+  canonical_resource_type
+  canonical_id
+
+  mapping_state
+  resolution_detail
+
+  evidence_refs[]
+  correlation_refs[]
+
+  valid_from
+  retired_at
+  predecessor_mapping_ref
+  successor_mapping_ref
+}
+```
+
+Esta notación es lógica. No fija:
+
+- lenguaje de implementación;
+- nombres físicos de archivos;
+- tipos escalares;
+- representación JSON definitiva;
+- enum TypeScript;
+- esquema de base de datos;
+- índice de unicidad;
+- estrategia de caché;
+- formato de timestamps;
+- algoritmo de resolución;
+- persistencia física de evidencia.
+
+`canonical_resource_type` y `canonical_id` son obligatorios únicamente cuando la relación y el estado afirman una asociación con un recurso canónico concreto. No se fabrican para `NO_EQUIVALENCE`, `NOT_APPLICABLE`, `BLOCKED` o una referencia todavía no resoluble.
+
+---
+
+#### 9. `ExternalIdentifierRelationKind`
+
+El vocabulario compartido conserva exactamente los significados aprobados por `INT-EXT-013`:
+
+| Relación                        | Semántica                                                                                                           |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `EXTERNAL_TO_CANONICAL`         | un identificador de objeto externo se asocia con un recurso canónico VENTO                                          |
+| `CANONICAL_PROPAGATED_EXTERNAL` | VENTO propagó su ID canónico al tercero y el valor regresó; la identidad sigue siendo VENTO                         |
+| `EXTERNAL_ROUTE_TO_OWNER`       | una referencia técnica de destino se vincula con el registro técnico y propietario canónico que la administra       |
+| `EXTERNAL_EVENT_TO_RECEIPT`     | un identificador de evento externo se vincula con el receipt interno y no con el hecho empresarial por equivalencia |
+| `EXTERNAL_NAMESPACE_BINDING`    | un namespace técnico se vincula con una frontera VENTO sin afirmar equivalencia empresarial                         |
+| `CORRELATION_ONLY`              | referencias relacionadas para reconstrucción o búsqueda sin declarar que representan el mismo objeto                |
+| `NO_EQUIVALENCE`                | la referencia se conserva deliberadamente sin afirmar identidad canónica                                            |
+
+Reglas:
+
+1. una relación `CORRELATION_ONLY` no se promociona a `EXTERNAL_TO_CANONICAL` sin nueva evidencia y decisión acreditada;
+2. `NO_EQUIVALENCE` es una decisión explícita, no un fallback silencioso;
+3. el tipo de relación no concede permiso ni propiedad empresarial;
+4. cambiar de tipo de relación de forma material exige una nueva relación/sucesión y conserva historia.
+
+---
+
+#### 10. `ExternalIdentifierMappingState`
+
+El estado compartido adopta el vocabulario general de `INT-EXT-013`:
+
+| Estado               | Significado                                                                                                   |
+| -------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `RESOLVED`           | existe una relación única y acreditada dentro del namespace, ambiente y contrato aplicables                   |
+| `PARTIALLY_RESOLVED` | parte de las relaciones de la superficie están acreditadas y otras permanecen no resolubles                   |
+| `UNRESOLVED`         | existe referencia externa pero no evidencia suficiente para vincularla a un recurso canónico exacto           |
+| `AMBIGUOUS`          | más de un candidato canónico permanece plausible sin evidencia suficiente para escoger uno                    |
+| `CONFLICT`           | la referencia o nueva evidencia contradice una relación vigente o pretende reutilizarla de forma incompatible |
+| `RETIRED`            | una relación histórica dejó de estar activa y conserva trazabilidad                                           |
+| `NOT_APPLICABLE`     | el intercambio no requiere relación externo↔canónico en el alcance vigente                                    |
+| `BLOCKED`            | falta proveedor, binding, namespace o contrato suficiente para materializar una decisión concreta             |
+
+Reglas:
+
+1. `UNRESOLVED`, `AMBIGUOUS`, `CONFLICT` y `BLOCKED` nunca se degradan silenciosamente a `RESOLVED`;
+2. `NOT_APPLICABLE` exige fundamento contractual y no equivale a `null`;
+3. `PARTIALLY_RESOLVED` no autoriza usar como resueltas las dimensiones faltantes;
+4. `RETIRED` conserva historia y no libera el identificador para reinterpretarlo como si nunca hubiera existido la relación anterior;
+5. el estado compartido representa la relación de mapping, no el estado empresarial del recurso.
+
+---
+
+#### 11. Compatibilidad con estados propietarios de `INT-POS-011`
+
+`INT-POS-011` conserva su vocabulario propietario para producto, presentación y receta:
+
+```text
+RESOLVED
+NOT_APPLICABLE
+PENDING_EVIDENCE
+NOT_PROVIDED
+AMBIGUOUS
+CONFLICT
+INACTIVE
+```
+
+`SHELL-CON-022` no lo sustituye ni crea una segunda autoridad sobre la decisión propietaria.
+
+Cuando una relación POS se proyecte al contrato compartido:
+
+| Estado propietario | Proyección compartida permitida                                                         | Regla                                              |
+| ------------------ | --------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `RESOLVED`         | `RESOLVED`                                                                              | únicamente con una relación exacta acreditada      |
+| `NOT_APPLICABLE`   | `NOT_APPLICABLE`                                                                        | conserva fundamento explícito                      |
+| `AMBIGUOUS`        | `AMBIGUOUS`                                                                             | ningún candidato se elige por orden o semejanza    |
+| `CONFLICT`         | `CONFLICT`                                                                              | no se sobrescribe la relación incompatible         |
+| `PENDING_EVIDENCE` | `UNRESOLVED` cuando exista una referencia que deba seguirse                             | `resolution_detail` conserva el estado propietario |
+| `NOT_PROVIDED`     | `UNRESOLVED` cuando el mapping sea requerido                                            | no se fabrica identificador de fuente              |
+| `INACTIVE`         | `RETIRED` solo cuando el contrato propietario confirme retiro de la relación compartida | no existe equivalencia automática por nombre       |
+
+`resolution_detail` permite conservar el estado especializado sin ampliar el vocabulario compartido ni perder semántica propietaria.
+
+---
+
+#### 12. Namespace, ambiente y superficie
+
+El namespace mínimo de resolución es:
+
+```text
+external_system_id
++
+environment
++
+surface
++
+external_namespace
++
+external_id_kind
+```
+
+Invariantes:
+
+1. un identificador externo no es globalmente único fuera de su namespace acreditado;
+2. la misma cadena puede existir en dos proveedores, ambientes o clases sin representar el mismo objeto;
+3. `DEVELOPMENT`, `STAGING` y `PRODUCTION` no comparten mappings por conveniencia;
+4. un ID de otro tenant, proyecto, pass type, store, terminal o instancia no se reutiliza por semejanza;
+5. `surface` aporta el contrato que da significado al valor y no puede omitirse si su ausencia produce ambigüedad;
+6. un namespace técnico no se convierte en recurso empresarial;
+7. resolver un canonical ID de forma inversa no implica que exista un único proveedor, binding o external ID.
+
+---
+
+#### 13. Cardinalidad y unicidad semántica
+
+Reglas:
+
+1. una relación activa de identidad exacta `EXTERNAL_TO_CANONICAL` resuelve como máximo a un recurso canónico dentro de su namespace;
+2. varias referencias externas pueden apuntar al mismo recurso canónico cuando el contrato lo permita y cada relación esté tipada;
+3. un recurso puede tener múltiples destinos técnicos sin que cada destino se convierta en su identidad;
+4. una relación many-to-many solo existe cuando el contrato propietario la define explícitamente;
+5. la cardinalidad no se infiere de conteos actuales de datos;
+6. la ausencia de duplicados observados no prueba cardinalidad uno-a-uno;
+7. un external ID reutilizado o reasignado por el proveedor requiere retiro de la relación anterior y nueva relación acreditada;
+8. una colisión de external ID dentro del mismo namespace produce `CONFLICT` hasta resolución autorizada.
+
+---
+
+#### 14. Prohibición de equivalencia heurística
+
+No constituyen prueba suficiente de mapping:
+
+- UUID textual coincidente sin prueba contractual de propagación;
+- correo;
+- teléfono;
+- nombre o razón social;
+- `display_name`;
+- dirección;
+- coordenadas;
+- alias;
+- estado;
+- monto o moneda;
+- timestamp;
+- IP;
+- nombre de producto;
+- código o categoría de producto;
+- posición en un archivo;
+- `source_row_number`;
+- hash de archivo o payload;
+- UID visible sin namespace;
+- referencia encontrada en otra integración;
+- parecido estructural de un payload.
+
+Cuando un atributo participe como evidencia auxiliar, la decisión exacta sigue requiriendo un vínculo contractual suficiente y autoridad del dominio propietario.
+
+---
+
+#### 15. Identificadores canónicos propagados
+
+Un ID VENTO enviado a un tercero y retornado después conserva la clase `PROPAGATED_CANONICAL_ID`.
+
+Reglas:
+
+1. se valida contra el tipo de recurso esperado;
+2. se valida contra el ambiente correcto;
+3. se valida contra superficie, contrato y propietario esperados;
+4. la forma UUID no demuestra procedencia VENTO;
+5. el tercero no adquiere propiedad del identificador;
+6. una contradicción con otro identificador externo autenticado produce `CONFLICT`;
+7. autenticidad del mensaje se valida de forma independiente;
+8. autorización sobre el recurso se revalida de forma independiente;
+9. el ID propagado no se reetiqueta como `EXTERNAL_OBJECT_ID` por haber atravesado un proveedor.
+
+---
+
+#### 16. Evidencia, procedencia y correlación
+
+Todo mapping que afirme una relación exacta debe ser reconstruible mediante referencias de evidencia suficientes.
+
+`evidence_refs[]` puede relacionar, según el contrato propietario:
+
+- recepción externa gobernada por `SHELL-CON-019`;
+- evidencia fuente protegida;
+- mapping propietario de POS;
+- respuesta o receipt del proveedor;
+- registro de configuración autorizado;
+- inventario técnico acreditado;
+- otra evidencia canónica identificable.
+
+Reglas:
+
+1. la evidencia no se copia íntegramente dentro del mapping cuando una referencia protegida sea suficiente;
+2. un payload completo no es la identidad del mapping;
+3. un hash puede proteger integridad o conflicto, pero no sustituye la relación;
+4. `correlation_refs[]` enlaza hechos sin convertir correlación en equivalencia;
+5. perder evidencia suficiente puede degradar la capacidad de resolver o reconciliar la relación; no autoriza mantener `RESOLVED` por costumbre;
+6. secretos y credenciales nunca se incorporan como evidencia embebida.
+
+---
+
+#### 17. Vigencia, retiro y sucesión
+
+Cuando la temporalidad sea material, la relación conserva:
+
+- `valid_from`;
+- `retired_at`;
+- `predecessor_mapping_ref`;
+- `successor_mapping_ref`.
+
+Reglas:
+
+1. una relación histórica no se sobrescribe para aparentar que siempre apuntó al target nuevo;
+2. reasignar un external ID a otro recurso exige una relación sucesora y preservación de la anterior;
+3. una fusión de recursos VENTO no se ejecuta porque dos external IDs converjan;
+4. dividir un recurso no reparte aliases o external IDs por heurística;
+5. cambios incompatibles de namespace, emisor o significado requieren nueva relación y clasificación de compatibilidad;
+6. cuando el contrato propietario defina vigencia temporal, la resolución histórica usa el instante empresarial o de fuente aplicable y no `received_at` por conveniencia;
+7. retiro de un mapping no borra receipts, eventos, ventas, líneas ni efectos históricos que lo referencien.
+
+---
+
+#### 18. Relación con `ExternalReceivedEvent`
+
+`SHELL-CON-019` conserva la recepción externa antes del hecho empresarial.
+
+La relación queda:
+
+```text
+ExternalReceivedEvent
+→ external identifiers / normalized assertion
+→ ExternalIdentifierMappingRef[]
+→ VALIDACIÓN POR DOMINIO PROPIETARIO
+→ hecho canónico cuando corresponda
+```
+
+Reglas:
+
+1. un evento puede existir con cero mappings resueltos si su conservación como evidencia es válida;
+2. `mapping_refs[]` solo referencia mappings materializados o decisiones trazables, no candidatos heurísticos;
+3. event ID, receipt ID y mapping ID permanecen identidades distintas;
+4. `EXTERNAL_EVENT_TO_RECEIPT` vincula evento con receipt sin convertir el event ID en ID del recurso empresarial;
+5. una entrada `UNRESOLVED` puede conservarse, pero no habilita un efecto que requiera conocer un recurso exacto.
+
+---
+
+#### 19. Relación con `CanonicalSale` y `CanonicalSaleLine`
+
+`SHELL-CON-020` y `SHELL-CON-021` preservan identidad de venta y línea independientemente del mapping.
+
+Para una línea:
+
+```text
+CanonicalSaleLineId
+≠ external product id
+≠ external line id
+≠ product_ref
+≠ mapping_id
+```
+
+Reglas:
+
+1. cambiar mapping de producto no cambia `CanonicalSaleLineId`;
+2. resolver presentación o receta posteriormente no crea otra línea;
+3. `product_ref`, `presentation_ref` y `recipe_ref` permanecen referencias propietarias del dominio;
+4. `mapping_refs[]` explica cómo se acreditó una correspondencia, no reemplaza el recurso resuelto;
+5. una línea estructural puede conservarse con mapping pendiente;
+6. un efecto dependiente de producto exige resolución suficiente conforme a `INT-POS-011` y sus puertas propietarias;
+7. `source_row_number` no se convierte en external line ID ni mapping ID;
+8. el flujo agregado `makos_excel` no obtiene identidad de venta o línea individual mediante este contrato.
+
+---
+
+#### 20. Separación frente a idempotencia
+
+```text
+MAPPING
+→ qué recurso representa o con qué recurso se relaciona una referencia
+```
+
+```text
+IDEMPOTENCIA
+→ si una operación ya fue reclamada y qué resultado debe recuperarse
+```
+
+Consecuencias:
+
+1. `mapping_id` no es idempotency key;
+2. `external_id_value` no es idempotency key por defecto;
+3. una idempotency key puede existir sin identificar un recurso empresarial;
+4. un mapping resuelto no demuestra que una operación sea nueva;
+5. una redelivery conserva la identidad idempotente aunque el mapping ya esté resuelto;
+6. una revisión de mapping no autoriza repetir un efecto ya producido;
+7. `SHELL-CON-023` conserva en exclusiva el contrato compartido de idempotencia y conciliación.
+
+---
+
+#### 21. Separación frente a autenticidad y autorización
+
+El orden conceptual para una entrada que necesita mapping es:
+
+```text
+AUTENTICAR / VALIDAR ORIGEN
+→ CLASIFICAR IDENTIFICADOR
+→ RESOLVER NAMESPACE Y AMBIENTE
+→ CONSULTAR RELACIÓN ACREDITADA
+→ CLASIFICAR ESTADO DE MAPPING
+→ VALIDAR RECURSO EN SU DOMINIO PROPIETARIO
+→ REVALIDAR AUTORIZACIÓN Y ESTADO
+→ APLICAR O RECHAZAR EL EFECTO
+```
+
+Reglas:
+
+1. autenticidad válida no implica mapping resuelto;
+2. mapping `RESOLVED` no implica autorización;
+3. `IntegrationPrincipal` conocido no implica equivalencia de recursos;
+4. una `ExternalCredentialRef` válida no concede autoridad empresarial;
+5. el dominio propietario conserva la decisión de existencia, estado y uso del recurso canónico;
+6. `@vento/contracts` describe la relación y nunca ejecuta el efecto.
+
+---
+
+#### 22. Política de fallo cerrado
+
+Cuando un efecto dependa de conocer un recurso exacto:
+
+- `RESOLVED` permite continuar únicamente a las demás puertas aplicables;
+- `PARTIALLY_RESOLVED` permite usar solo dimensiones explícitamente resueltas;
+- `UNRESOLVED` bloquea el efecto dependiente de esa identidad;
+- `AMBIGUOUS` bloquea el efecto y prohíbe elegir el primer candidato;
+- `CONFLICT` bloquea el efecto y conserva ambas evidencias para tratamiento propietario;
+- `BLOCKED` impide materializar una relación ficticia;
+- `NOT_APPLICABLE` no inventa un recurso para satisfacer un esquema;
+- `RETIRED` no se usa para nuevas operaciones fuera de su vigencia.
+
+Bloquear un efecto dependiente del mapping no exige descartar la recepción, la evidencia o el hecho estructural que pueda conservarse válidamente sin ese efecto.
+
+La disposición de entradas incompatibles o no procesables permanece bajo `SHELL-CON-024` y las tareas externas propietarias aplicables.
+
+---
+
+#### 23. Adopción de las veintiuna identidades externas
+
+`SHELL-CON-022` preserva exactamente `EXT-SYS-001` a `EXT-SYS-021`. No crea una identidad adicional ni elimina una existente.
+
+La unidad de la matriz siguiente es la **decisión de adopción del contrato compartido**, no un registro físico de mapping por sistema.
+
+| ID            | Sistema / plataforma                     | Decisión de adopción compartida                                                                                                                                                   |
+| ------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | no crear mapping empresarial global por pertenecer a infraestructura; los IDs empresariales conservan dominio propietario                                                         |
+| `EXT-SYS-002` | Wompi                                    | admitir mappings tipados para transaction ID, canonical ID propagado y event→receipt, preservando `reference` como correlación/idempotencia según su contrato                     |
+| `EXT-SYS-003` | RevenueCat                               | admitir mappings tipados por plataforma/store y canonical IDs propagados; `original_transaction_id` y aliases no se fusionan con identidad VENTO sin relación acreditada          |
+| `EXT-SYS-004` | Resend                                   | no inventar provider message ID; correo permanece dirección/atributo y los IDs internos continúan canónicos VENTO                                                                 |
+| `EXT-SYS-005` | Expo / EAS Update                        | conservar IDs de proyecto, channel, profile y runtime como referencias técnicas, sin mapping empresarial universal                                                                |
+| `EXT-SYS-006` | Expo Push Service                        | modelar push token como routing ref vinculado a registro técnico/owner; no convertirlo en employee ID                                                                             |
+| `EXT-SYS-007` | Sentry                                   | conservar referencias de observabilidad como técnicas/correlacionales mientras no exista mapping empresarial acreditado                                                           |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | conservar `place_id` como referencia externa; cualquier asociación durable con recurso VENTO exige mapping explícito                                                              |
+| `EXT-SYS-009` | Apple Wallet / PassKit y APNs            | separar serial, pass type, device library ID, push token y canonical owner; usar relación tipada por cada plano                                                                   |
+| `EXT-SYS-010` | Vercel                                   | mantener project/deployment/domain como referencias técnicas sin equivalencia empresarial universal                                                                               |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | exigir relación explícita entre `device.uid` y la identidad canónica de impresora antes de usarlo como binding durable                                                            |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | conservar modelo de `id`/`classId` sin declarar mapping remoto hasta acreditar binding y recurso relacionado                                                                      |
+| `EXT-SYS-013` | POS externo vigente                      | consumir las especializaciones aprobadas posteriormente en `INT-POS-010`, `INT-POS-011` y `INT-POS-013`; no fabricar venta/línea desde `makos_excel`, fila, hash, nombre o código |
+| `EXT-SYS-014` | Shopify / comercio electrónico           | no instanciar mappings mientras no exista binding autorizado y namespace acreditado                                                                                               |
+| `EXT-SYS-015` | Rappi / marketplace                      | no instanciar order/store/courier mappings sin binding y contrato reales                                                                                                          |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | no instanciar subscriber/contact/flow mappings sin binding acreditado                                                                                                             |
+| `EXT-SYS-017` | WhatsApp                                 | no convertir número, contacto o conversación en persona/caso canónico sin proveedor, namespace y contrato acreditados                                                             |
+| `EXT-SYS-018` | Instagram / social                       | no convertir handle, profile o message ID en identidad empresarial sin binding y relación aprobados                                                                               |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | no equiparar mailbox, correo o alias con persona, expediente o proveedor canónico por coincidencia                                                                                |
+| `EXT-SYS-020` | Telefonía / voz                          | permanecer sin mapping material hasta que `TI-INT-003` acredite operador, cuenta, interfaz, IDs y semántica; caller ID no basta                                                   |
+| `EXT-SYS-021` | Transporte externo                       | no convertir tracking, guía, conductor o referencia de envío en salida/entrega canónica sin binding y contrato acreditados                                                        |
+
+Control de cobertura:
+
+```text
+identidades esperadas = 21
+identidades adoptadas = 21
+faltantes = 0
+duplicados = 0
+identificadores EXT-SYS únicos = 21
+```
+
+La matriz de `INT-EXT-013` sigue siendo la fuente de evidencia y clasificación histórica de esas identidades. Esta tarea no la duplica como registro editable ni presenta como diagnóstico vigente un bloqueo que una especialización posterior ya haya refinado.
+
+---
+
+#### 24. Casos de interoperabilidad materializados
+
+| Caso                                         | Clase / relación compartida                                                          | Decisión                                                                                        |
+| -------------------------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| Wompi `transaction.id` → transacción VENTO   | `EXTERNAL_OBJECT_ID` + `EXTERNAL_TO_CANONICAL`                                       | relación exacta scoped por proveedor/ambiente; `provider_reference` no se convierte en order ID |
+| Wompi event ID → receipt interno             | `EXTERNAL_OBJECT_ID` + `EXTERNAL_EVENT_TO_RECEIPT`                                   | event ID y transaction ID permanecen distintos                                                  |
+| RevenueCat `app_user_id` propagado por VENTO | `PROPAGATED_CANONICAL_ID` + `CANONICAL_PROPAGATED_EXTERNAL`                          | validar tipo, ambiente y contrato; no clasificar como ID nativo del proveedor                   |
+| Expo push token → registro técnico/owner     | `EXTERNAL_ROUTING_REF` + `EXTERNAL_ROUTE_TO_OWNER`                                   | token no es identidad del trabajador                                                            |
+| Google `place_id` sin asociación durable     | `EXTERNAL_OBJECT_ID` + `NO_EQUIVALENCE` o `CORRELATION_ONLY` según el flujo          | no convertir en `site_id`                                                                       |
+| PassKit `deviceLibraryIdentifier`            | `EXTERNAL_OBJECT_ID`                                                                 | no convertir en user ID                                                                         |
+| PassKit push token                           | `EXTERNAL_ROUTING_REF`                                                               | cambio de token no cambia identidad del usuario o pase                                          |
+| Zebra `device.uid`                           | identificador técnico externo + `EXTERNAL_TO_CANONICAL` únicamente tras acreditación | nombre/modelo/orden de enumeración no sustituyen el vínculo                                     |
+| POS `source_row_number`                      | no elegible como external line ID                                                    | permanece localizador técnico de la recepción                                                   |
+| correo/teléfono/nombre                       | `DISPLAY_SEARCH_ATTRIBUTE`                                                           | nunca mapping exacto por sí solo                                                                |
+
+Estos casos demuestran la semántica del contrato; no crean registros físicos.
+
+---
+
+#### 25. Versionado y compatibilidad
+
+`ExternalIdentifierMapping` hereda el gobierno SemVer de `@vento/contracts`.
+
+Reglas:
+
+1. la superficie lógica permanece en `@vento/contracts/integrations`;
+2. cambiar el significado de una clase, relación o estado es cambio contractual material;
+3. agregar un campo opcional solo es compatible si un consumidor anterior puede ignorarlo sin alterar la semántica existente;
+4. cambiar una relación de `CORRELATION_ONLY` a identidad exacta no se resuelve con un cambio silencioso de datos;
+5. una nueva versión de contrato no reinterpreta mappings históricos por defecto;
+6. `contract_version` identifica la semántica con que se interpretó la relación;
+7. la sucesión de una relación y la versión del contrato son conceptos distintos;
+8. esta tarea no declara una release física ni un número de package publicado inexistente.
+
+---
+
+#### 26. Seguridad, privacidad y contenido prohibido
+
+El contrato de mapping nunca contiene como contenido ordinario:
+
+- API keys;
+- client secrets;
+- passwords;
+- access tokens;
+- refresh tokens;
+- private keys;
+- service-role keys;
+- certificados privados;
+- firmas completas cuando una referencia sea suficiente;
+- credenciales de proveedor;
+- URLs firmadas persistentes;
+- payloads fuente completos cuando una referencia protegida sea suficiente.
+
+Además:
+
+1. un identificador externo no se trata como secreto por defecto, pero su exposición se limita según sensibilidad y finalidad del recurso;
+2. conocer un `mapping_id` no concede lectura del recurso canónico;
+3. conocer un `canonical_id` no concede acceso al proveedor;
+4. mappings de personas, dispositivos o destinos no autorizan exponer email, teléfono u otros atributos auxiliares;
+5. logs y errores deberán poder referenciar mapping/namespace sin copiar material sensible innecesario cuando la implementación física sea autorizada.
+
+---
+
+#### 27. Propiedad y autoridad
+
+`@vento/contracts/integrations` es autoridad sobre la **forma compartida** del mapping, no sobre el hecho empresarial ni sobre la persistencia de cada dominio.
+
+Reglas:
+
+1. el dominio propietario conserva el identificador canónico y la semántica del recurso;
+2. el proveedor conserva sus identificadores externos sin convertirse en propietario del recurso VENTO;
+3. un adapter puede resolver mappings sin adquirir propiedad funcional;
+4. `vento-shell` conserva la propiedad técnica de la futura infraestructura Supabase de integración bajo las tareas de BLOQUE R;
+5. `INT-DB-004` materializará la persistencia física cuando corresponda y exista autorización;
+6. ninguna consumidora crea una tabla o enum local incompatible para redefinir esta semántica compartida una vez publicada la superficie física.
+
+---
+
+#### 28. Estado de materialización física
+
+En el corte documental actual:
+
+```text
+SHELL-CON-022
+→ ExternalIdentifierMappingId definido lógicamente
+→ ExternalIdentifierRef definido lógicamente
+→ ExternalIdentifierMapping definido lógicamente
+→ ExternalIdentifierMappingRef definido lógicamente
+→ ExternalIdentifierClass preservado desde INT-EXT-013
+→ ExternalIdentifierRelationKind preservado desde INT-EXT-013
+→ ExternalIdentifierMappingState preservado desde INT-EXT-013
+→ compatibilidad con estados propietarios INT-POS-011 definida
+→ EXT-SYS-001..021 adoptados 21/21
+→ mapping_refs[] obtiene semántica compartida objetivo
+→ 0 valores físicos de mapping_id creados
+→ 0 mappings operativos creados
+→ 0 tipos TypeScript creados
+→ 0 schemas ejecutables creados
+→ 0 tablas creadas
+→ 0 índices creados
+→ 0 RPC creadas
+→ 0 migraciones creadas
+→ 0 cambios Supabase
+→ 0 consumidores migrados
+```
+
+La aprobación documental no acredita implementación física, publicación del package, persistencia de mappings, backfill, adopción por consumidores ni validación E2E.
+
+---
+
+#### 29. Handoffs exactos
+
+| Trabajo posterior                                  | Estado desde esta tarea             | Propietario / tarea | Condición de salida                                                                                                                                            |
+| -------------------------------------------------- | ----------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| idempotencia y conciliación compartidas            | `FUERA_DE_ALCANCE`                  | `SHELL-CON-023`     | operación, clave, huella, resultado recuperable y conciliación quedan tipados sin reutilizar mapping ID como identidad operacional                             |
+| cuarentena, rechazo y compensación compartidos     | `FUERA_DE_ALCANCE`                  | `SHELL-CON-024`     | entradas `UNRESOLVED`, `AMBIGUOUS`, `CONFLICT` o incompatibles reciben disposición explícita sin efecto silencioso                                             |
+| persistencia física de mappings externos/canónicos | `DEFINIDO_NO_MATERIALIZADO`         | `INT-DB-004`        | se crea infraestructura autorizada con compatibilidad, constraints, RLS/grants, backfill, reconciliación, tipos, pruebas y rollback según el orden de BLOQUE R |
+| mapping contextual POS                             | preservado por contrato propietario | `INT-POS-010`       | empresa, sede, terminal y caja se resuelven con contexto, vigencia e historia acreditados                                                                      |
+| mapping producto/presentación/receta POS           | preservado por contrato propietario | `INT-POS-011`       | los planos obligatorios alcanzan resolución suficiente sin heurísticas y conservan su estado propietario                                                       |
+| identidad/idempotencia POS                         | preservada por contrato propietario | `INT-POS-013`       | venta, línea, recepción, revisión, payload, transporte y efecto permanecen identidades distintas                                                               |
+| disposición externa no resoluble                   | preservada por contrato propietario | `INT-EXT-016`       | entradas sin mapping suficiente reciben cuarentena/dead-letter o tratamiento autorizado sin efecto empresarial silencioso                                      |
+| auditoría y reconciliación externa de mappings     | preservada por contrato propietario | `INT-EXT-017`       | cambios, conflictos, relaciones retiradas y resoluciones manuales quedan reconstruibles                                                                        |
+| binding de telefonía/voz                           | `BLOQUEADO_POR_EVIDENCIA`           | `TI-INT-003`        | operador, cuenta, interfaz, namespaces, IDs y semántica quedan acreditados antes de materializar mappings                                                      |
+
+Todos los pendientes poseen tarea propietaria y condición de salida explícita.
+
+---
+
+#### 30. Cobertura de prueba preexistente
+
+La semántica centralizada por `SHELL-CON-022` ya está protegida por requisitos canónicos vigentes, entre ellos:
+
+- `TREQ-INTEGRATION-001`, que exige coherencia de ambiente y contrato en superficies externas;
+- `TREQ-INTEGRATION-006`, que exige fuente empresarial única y resolución de fuentes competidoras sin sobrescribir historia;
+- `TREQ-INTEGRATION-009`, que exige mapping explícito de identificadores externos hacia producto, presentación y receta cuando aplique y bloquea efectos automáticos de una línea no mapeada;
+- `TREQ-INTEGRATION-046`, que prohíbe mapear material legacy a una definición canónica por simple semejanza de nombre o payload;
+- `TREQ-INTEGRATION-049`, que exige conservar proveedor, identificador externo, autenticidad, evidencia fuente y correlación antes de producir un hecho interno;
+- la cobertura de `INT-EXT-013`, que ya materializó reglas de namespace, relación, estado, equivalencia, historia y resolución para las veintiuna identidades externas;
+- la cobertura PULSO e INTEGRATION ya consumida por `SHELL-CON-021` para estabilidad de venta/línea y efectos dependientes de mapping.
+
+`SHELL-CON-022` no introduce un comportamiento operacional nuevo. Centraliza como contrato compartido estático la representación que las reglas vigentes ya exigen.
+
+---
+
+#### 31. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** `SHELL-CON-022` materializa documentalmente en `@vento/contracts/integrations` la forma compartida de un mapping ya definido y protegido por `INT-EXT-013`, `INT-POS-010`, `INT-POS-011`, `INT-POS-013` y requisitos vigentes. No introduce una operación ejecutable, una fuente nueva, un proveedor nuevo, un algoritmo de resolución nuevo, una autorización nueva, una regla de negocio nueva, una persistencia, un endpoint, una política de idempotencia, una disposición, una migración ni un cambio Supabase. El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 32. Criterios de aceptación
+
+`SHELL-CON-022` queda documentalmente completa cuando se cumplen simultáneamente estos criterios:
+
+1. existe exactamente una forma compartida lógica `ExternalIdentifierMapping`;
+2. existe una identidad lógica `ExternalIdentifierMappingId` estable, opaca y no secreta;
+3. existe `ExternalIdentifierRef` con sistema, ambiente, superficie, namespace, clase, kind y valor;
+4. existe `ExternalIdentifierMappingRef` como referencia tipada para contratos consumidores;
+5. la superficie permanece en `@vento/contracts/integrations`;
+6. no se fija un formato físico de `mapping_id`;
+7. se preservan las diez clases de identificador definidas por `INT-EXT-013`;
+8. se preservan los siete tipos de relación definidos por `INT-EXT-013`;
+9. se preservan los ocho estados compartidos de mapping definidos por `INT-EXT-013`;
+10. los estados propietarios de `INT-POS-011` no se sustituyen ni pierden semántica;
+11. `PENDING_EVIDENCE` y `NOT_PROVIDED` no se convierten en `RESOLVED`;
+12. `INACTIVE` no se convierte automáticamente en `RETIRED` sin decisión propietaria;
+13. el namespace mínimo incluye sistema, ambiente, superficie, namespace externo y kind;
+14. un external ID no se presume globalmente único;
+15. una relación exacta activa resuelve como máximo a un recurso canónico dentro de su namespace;
+16. múltiples referencias externas hacia un mismo recurso requieren relaciones explícitas;
+17. many-to-many no se infiere;
+18. mappings no cruzan ambientes por conveniencia;
+19. coincidencia de UUID no prueba identidad;
+20. correo, teléfono, nombre, dirección, coordenadas, alias y texto visible no prueban identidad;
+21. código, categoría o nombre de producto no prueban mapping por sí solos;
+22. fila, `source_row_number`, hash y timestamp no se convierten en identidad;
+23. un ID VENTO propagado conserva `PROPAGATED_CANONICAL_ID` al regresar;
+24. un ID propagado se valida por tipo, ambiente, contrato y propietario;
+25. mapping `RESOLVED` no concede autorización;
+26. autenticidad no sustituye mapping;
+27. `IntegrationPrincipal` no sustituye mapping;
+28. credencial no sustituye mapping;
+29. mapping no sustituye idempotencia;
+30. mapping no sustituye correlación ni receipt;
+31. un evento externo puede conservarse con mapping no resuelto sin producir el efecto dependiente;
+32. `UNRESOLVED`, `AMBIGUOUS`, `CONFLICT` y `BLOCKED` fallan cerrados para efectos que requieren identidad exacta;
+33. una relación retirada conserva historia;
+34. una reasignación de external ID no sobrescribe el mapping anterior;
+35. `contract_version` y sucesión de mapping permanecen conceptos distintos;
+36. se preserva compatibilidad con `ExternalReceivedEvent.mapping_refs[]`;
+37. se preserva compatibilidad con `CanonicalSaleLine.mapping_refs[]`;
+38. cambiar mapping no cambia `CanonicalSaleLineId`;
+39. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+40. identidades adoptadas = 21 de 21;
+41. faltantes = 0;
+42. duplicados = 0;
+43. POS externo consume las especializaciones posteriores `INT-POS` sin restaurar un diagnóstico histórico obsoleto;
+44. Wompi separa transaction ID, reference, canonical ID propagado y event ID;
+45. RevenueCat separa `app_user_id`, product mapping, original transaction y aliases;
+46. push token Expo no se convierte en employee ID;
+47. `place_id` no se convierte en `site_id`;
+48. PassKit separa serial, pass type, device library ID, push token y owner;
+49. Zebra UID requiere vínculo acreditado con impresora canónica;
+50. sistemas sin binding no reciben mappings ficticios;
+51. `INT-DB-004` conserva en exclusiva la persistencia física posterior;
+52. `SHELL-CON-023` no se adelanta;
+53. `SHELL-CON-024` no se adelanta;
+54. no se crean mappings físicos;
+55. no se crean tipos TypeScript ni schemas ejecutables;
+56. no se crean tablas, índices, RPC, RLS o migraciones;
+57. no se modifica Supabase;
+58. no se modifica código;
+59. se crean cero requisitos de prueba;
+60. se modifican cero requisitos de prueba;
+61. la continuidad reserva exclusivamente `SHELL-CON-023`.
+
+---
+
+#### 33. Decisiones vinculantes
+
+1. `ExternalIdentifierMappingId` identifica la relación de mapping y no el recurso externo o canónico.
+2. `ExternalIdentifierRef` conserva sistema, ambiente, superficie, namespace, clase, kind y valor.
+3. `ExternalIdentifierMapping` es el contrato compartido estático de mapping externo↔canónico.
+4. `ExternalIdentifierMappingRef` es la referencia tipada objetivo para `mapping_refs[]`.
+5. La superficie lógica permanece `@vento/contracts/integrations`.
+6. `ExternalIdentifierClass` conserva las diez clases de `INT-EXT-013`.
+7. `ExternalIdentifierRelationKind` conserva las siete relaciones de `INT-EXT-013`.
+8. `ExternalIdentifierMappingState` conserva los ocho estados generales de `INT-EXT-013`.
+9. Los estados especializados `INT-POS-011` permanecen autoridad propietaria y se proyectan sin pérdida de detalle.
+10. La misma cadena no implica la misma identidad fuera de su namespace.
+11. Un external ID no es un canonical ID por coincidencia de formato.
+12. Un canonical ID propagado sigue siendo VENTO.
+13. Un routing ref no es identidad del owner.
+14. Una idempotency ref no es identidad del recurso.
+15. Una correlation ref no declara equivalencia.
+16. Un atributo de búsqueda o presentación no declara equivalencia.
+17. Un namespace técnico no es un recurso empresarial.
+18. `CORRELATION_ONLY` no se promociona silenciosamente a identidad exacta.
+19. `NO_EQUIVALENCE` es una decisión explícita.
+20. `UNRESOLVED`, `AMBIGUOUS`, `CONFLICT` y `BLOCKED` no producen efecto dependiente de identidad exacta.
+21. `PARTIALLY_RESOLVED` solo habilita dimensiones expresamente resueltas.
+22. `NOT_APPLICABLE` no se infiere desde ausencia.
+23. `RETIRED` conserva historia.
+24. Un mapping resuelto no concede autorización.
+25. Un principal técnico no concede mapping.
+26. Una credencial no concede mapping.
+27. Mapping e idempotencia permanecen contratos distintos.
+28. Mapping y payload original permanecen contratos distintos.
+29. Mapping y conciliación permanecen responsabilidades distintas.
+30. `ExternalReceivedEvent` puede referenciar mappings sin convertir al proveedor en productor empresarial.
+31. `CanonicalSaleLine` conserva identidad propia aunque cambie un mapping.
+32. `source_row_number` no es external line ID.
+33. `makos_excel` no adquiere granularidad individual por este contrato.
+34. Los 21 `EXT-SYS-*` quedan adoptados 21/21.
+35. `EXT-SYS-013` consume las decisiones posteriores `INT-POS` y no restaura el bloqueo histórico de `INT-EXT-013` como si fuera diagnóstico vigente.
+36. `EXT-SYS-020` conserva su bloqueo hasta la evidencia propietaria de `TI-INT-003`.
+37. Sistemas sin binding no reciben IDs o mappings inventados.
+38. `INT-DB-004` es el propietario de la futura infraestructura física de mapping.
+39. Esta tarea crea cero mappings operativos.
+40. Esta tarea crea cero valores físicos de `ExternalIdentifierMappingId`.
+41. Esta tarea no crea código, tablas, índices, migraciones, RLS, RPC, secretos ni cambios Supabase.
+42. Esta tarea crea cero requisitos de prueba y modifica cero requisitos existentes.
+43. `SHELL-CON-023` permanece como única continuidad reservada.
+
+---
+
+#### 34. Hallazgos y destinos exactos
+
+| Hallazgo                                                                                                               | Estado                       | Destino                                                                                                           |
+| ---------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `mapping_refs[]` existía como referencia genérica en contratos compartidos previos                                     | resuelto documentalmente     | `SHELL-CON-022` define `ExternalIdentifierMappingRef` y la forma compartida del mapping                           |
+| la semántica compartida de mapping estaba definida en BLOQUE X pero no centralizada en `@vento/contracts/integrations` | resuelto documentalmente     | `SHELL-CON-022`                                                                                                   |
+| los estados generales de mapping y los estados especializados del POS no son vocabularios idénticos                    | reconciliado sin renombrar   | estado compartido conserva `INT-EXT-013`; detalle propietario conserva `INT-POS-011` mediante `resolution_detail` |
+| `EXT-SYS-013` fue clasificado históricamente antes de completarse las tareas `INT-POS` posteriores                     | reconciliado por precedencia | consumir `INT-POS-010`, `INT-POS-011` y `INT-POS-013` para el POS; no restaurar el diagnóstico anterior           |
+| la persistencia física de mappings compartidos todavía no existe                                                       | esperado por fase            | `INT-DB-004`                                                                                                      |
+| idempotencia y conciliación compartidas todavía no están materializadas en BLOQUE H                                    | reservado                    | `SHELL-CON-023`                                                                                                   |
+| disposición compartida de entradas incompatibles todavía no está materializada en BLOQUE H                             | reservado                    | `SHELL-CON-024`                                                                                                   |
+| telefonía/voz carece de binding acreditado suficiente                                                                  | `BLOQUEADO_POR_EVIDENCIA`    | `TI-INT-003`                                                                                                      |
+
+No queda un pendiente narrativo sin propietario y condición de salida.
+
+---
+
+#### 35. Límites de la tarea
+
+`SHELL-CON-022` no:
+
+- implementa `@vento/contracts`;
+- crea archivos TypeScript;
+- publica un package;
+- crea JSON Schema ejecutable;
+- crea tablas de mapping;
+- crea índices de unicidad;
+- crea migraciones;
+- crea RLS, grants, RPC o funciones;
+- modifica Supabase;
+- ejecuta backfill;
+- crea mappings para datos existentes;
+- fusiona identidades;
+- crea recursos empresariales;
+- elige candidatos ambiguos;
+- resuelve conflictos físicos;
+- almacena payloads;
+- valida firmas;
+- crea principals técnicos;
+- crea credenciales;
+- define idempotencia compartida;
+- ejecuta conciliación;
+- crea cuarentena;
+- ejecuta compensaciones;
+- cambia decisiones propietarias de `INT-POS-010`, `INT-POS-011` o `INT-POS-013`;
+- cambia la ruta canónica;
+- desarrolla `SHELL-CON-023`.
+
+---
+
+#### 36. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-CON-021 — Crear contrato canónico de línea de venta
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-CON-022 — Crear contrato de mapeo de identificadores externos
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-CON-023 — Crear contrato de idempotencia y conciliación
+
+
 ### [ ] SHELL-CON-023 — Crear contrato de idempotencia y conciliación
 ### [ ] SHELL-CON-024 — Crear contrato de cuarentena, rechazo y compensación

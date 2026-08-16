@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **900** |
+| Tareas aprobadas | **901** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **694** |
+| Tareas no iniciadas | **693** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **56.46% (900/1594)** |
+| Porcentaje de completamiento | **56.52% (901/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-CON-021 — Crear contrato canónico de línea de venta** |
-| Tarea actual | **SHELL-CON-022 — Crear contrato de mapeo de identificadores externos** |
+| Última tarea aprobada | **SHELL-CON-022 — Crear contrato de mapeo de identificadores externos** |
+| Tarea actual | **SHELL-CON-023 — Crear contrato de idempotencia y conciliación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CON-023 — Crear contrato de idempotencia y conciliación** |
+| Siguiente tarea | **SHELL-CON-024 — Crear contrato de cuarentena, rechazo y compensación** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 50 de 109 aprobadas; SHELL-CON-022 pendiente** |
+| Progreso del bloque | **BLOQUE H: 51 de 109 aprobadas; SHELL-CON-023 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-CON-021` — Crear contrato canónico de línea de venta |
-| Tarea actual | `SHELL-CON-022` — Crear contrato de mapeo de identificadores externos — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CON-023` — Crear contrato de idempotencia y conciliación |
+| Última aprobada | `SHELL-CON-022` — Crear contrato de mapeo de identificadores externos |
+| Tarea actual | `SHELL-CON-023` — Crear contrato de idempotencia y conciliación — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CON-024` — Crear contrato de cuarentena, rechazo y compensación |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 50 DE 109 APROBADAS — ACTUAL SHELL-CON-022** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 51 DE 109 APROBADAS — ACTUAL SHELL-CON-023** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-CON-021 — Crear contrato canónico de línea de venta
-        ↓
-TAREA ACTUAL
 SHELL-CON-022 — Crear contrato de mapeo de identificadores externos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-CON-023 — Crear contrato de idempotencia y conciliación
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CON-024 — Crear contrato de cuarentena, rechazo y compensación
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 50 de 109 tareas aprobadas
+BLOQUE H — 51 de 109 tareas aprobadas
 ```

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **900** |
+| Aprobadas | **901** |
 | En propuesta | **0** |
-| No iniciadas | **694** |
+| No iniciadas | **693** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **56.46% (900/1594)** |
+| Porcentaje de completamiento | **56.52% (901/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CON-021` — Crear contrato canónico de línea de venta | ✅ APROBADA |
-| Tarea actual | `SHELL-CON-022` — Crear contrato de mapeo de identificadores externos | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CON-023` — Crear contrato de idempotencia y conciliación | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CON-022` — Crear contrato de mapeo de identificadores externos | ✅ APROBADA |
+| Tarea actual | `SHELL-CON-023` — Crear contrato de idempotencia y conciliación | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CON-024` — Crear contrato de cuarentena, rechazo y compensación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -727,7 +727,7 @@
 | ✅ APROBADA | `SHELL-CON-019` | Crear contrato de evento externo recibido | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
 | ✅ APROBADA | `SHELL-CON-020` | Crear contrato canónico de venta | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
 | ✅ APROBADA | `SHELL-CON-021` | Crear contrato canónico de línea de venta | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
-| ⬜ NO INICIADA | `SHELL-CON-022` | Crear contrato de mapeo de identificadores externos | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
+| ✅ APROBADA | `SHELL-CON-022` | Crear contrato de mapeo de identificadores externos | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-023` | Crear contrato de idempotencia y conciliación | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-024` | Crear contrato de cuarentena, rechazo y compensación | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `SHELL-NORM-001` | Crear `@vento/data-normalization` | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
