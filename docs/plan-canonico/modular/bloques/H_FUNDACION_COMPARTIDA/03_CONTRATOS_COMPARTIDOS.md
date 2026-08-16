@@ -438,16 +438,16 @@ Esta tarea no cambia el estado de ningún `package_id`, no convierte un expedien
 
 #### 18. Hallazgos y destinos exactos
 
-| Hallazgo                                                                                                                 | Estado                            | Destino                                                                                                        |
-| ------------------------------------------------------------------------------------------------------------------------ | --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `@vento/contracts` no existe físicamente                                                                                 | esperado en el estado actual      | materialización únicamente dentro del ciclo físico autorizado por `E5-GATE-008::<package_id>` y `SHELL-CI-020` |
-| `@vento/contracts/authorization` ya posee contrato normativo                                                             | aprobado                          | conservar en `AUTH-CAT-017`, `AUTH-CAT-018` y su implementación posterior                                      |
-| códigos de aplicaciones todavía divergen entre consumidores                                                              | pendiente de la secuencia vigente | `SHELL-CON-002`                                                                                                |
-| códigos de permisos requieren fuente única y tipos derivados                                                             | pendiente de la secuencia vigente | `SHELL-CON-003`; `AUTH-CAT-018`; `AUTH-CAT-019`                                                                |
-| roles y scopes permanecen separados por responsabilidad                                                                  | pendiente de la secuencia vigente | `SHELL-CON-004` a `SHELL-CON-006`                                                                              |
-| contexto, errores, procesos, pantallas, acciones, eventos, traspasos, pendientes y ownership requieren contratos propios | pendiente de la secuencia vigente | `SHELL-CON-007` a `SHELL-CON-016`                                                                              |
-| `@vento/os-context` existe como implementación parcial transitoria                                                       | conservado, no sustituto          | `SHELL-AUTH-001`; `SHELL-CTX-001`                                                                              |
-| outputs derivados de Supabase requieren generación propietaria                                                           | pendiente de implementación       | `SHELL-DB-002`; `SHELL-DB-003`                                                                                 |
+| Hallazgo                                                                                                                 | Estado                            | Destino                                                                                                                                                   |
+| ------------------------------------------------------------------------------------------------------------------------ | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@vento/contracts` no existe físicamente                                                                                 | esperado en el estado actual      | materialización únicamente dentro del ciclo físico autorizado por `E5-GATE-008::<package_id>` y `SHELL-CI-020`                                            |
+| `@vento/contracts/authorization` ya posee contrato normativo                                                             | aprobado                          | conservar en `AUTH-CAT-017` y `AUTH-CAT-018`; materialización física en `SHELL-CI-020` después de `E5-GATE-008`; publicación versionada en `SHELL-CI-003` |
+| códigos de aplicaciones todavía divergen entre consumidores                                                              | pendiente de la secuencia vigente | `SHELL-CON-002`                                                                                                                                           |
+| códigos de permisos requieren fuente única y tipos derivados                                                             | pendiente de la secuencia vigente | `SHELL-CON-003`; `AUTH-CAT-018`; `AUTH-CAT-019`                                                                                                           |
+| roles y scopes permanecen separados por responsabilidad                                                                  | pendiente de la secuencia vigente | `SHELL-CON-004` a `SHELL-CON-006`                                                                                                                         |
+| contexto, errores, procesos, pantallas, acciones, eventos, traspasos, pendientes y ownership requieren contratos propios | pendiente de la secuencia vigente | `SHELL-CON-007` a `SHELL-CON-016`                                                                                                                         |
+| `@vento/os-context` existe como implementación parcial transitoria                                                       | conservado, no sustituto          | `SHELL-AUTH-001`; `SHELL-CTX-001`                                                                                                                         |
+| outputs derivados de Supabase requieren generación propietaria                                                           | pendiente de implementación       | `SHELL-DB-002`; `SHELL-DB-003`                                                                                                                            |
 
 Todos los elementos tienen propietario documental identificado y ninguno exige crear un identificador de tarea nuevo.
 
@@ -1011,7 +1011,7 @@ La materialización del catálogo, los tipos generados y la migración de consum
 19. presentación, destino y disponibilidad deben referenciar `AppCode` sin redefinirlo;
 20. entradas externas desconocidas no se convierten en aplicaciones por inferencia;
 21. `public.apps` permanece como runtime transitorio hasta la materialización y migración autorizadas, sin convertirse en fuente semántica competidora;
-22. la migración física se realiza gradualmente mediante las tareas `SHELL-MIG-*` propietarias;
+22. la migración física se realiza gradualmente mediante `SHELL-MIG-001`, `SHELL-MIG-002`, `SHELL-MIG-003`, `SHELL-MIG-004`, `SHELL-MIG-005`, `SHELL-MIG-006`, `SHELL-MIG-007` y `SHELL-MIG-008`;
 23. esta tarea no modifica código, package, consumidores, Supabase, CI, releases ni continuidad;
 24. `SHELL-CON-003` permanece como única tarea siguiente reservada.
 
@@ -1019,18 +1019,18 @@ La materialización del catálogo, los tipos generados y la migración de consum
 
 #### 20. Hallazgos y destinos exactos
 
-| Hallazgo                                                                           | Estado                      | Destino exacto / condición de salida                                                                              |
-| ---------------------------------------------------------------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `@vento/contracts` aún no está materializado físicamente                           | esperado por fase           | implementación solo después de la puerta física aplicable                                                         |
-| SHELL mantiene una lista local de cinco aplicaciones                               | `LEGACY_ACTIVO`             | `SHELL-MIG-001`, `SHELL-MIG-002`, `SHELL-MIG-003` y lote de migración aplicable                                   |
-| consumidores mantienen `AppSwitcherItem.id: string`                                | `LEGACY_ACTIVO`             | `SHELL-MIG-001`, `SHELL-MIG-003`, `SHELL-MIG-005` y pruebas de paridad en `SHELL-MIG-007`                         |
-| `hub` aparece como identidad local de presentación                                 | `NO_CANONICO_COMO_APP_CODE` | converger a referencia canónica `shell` durante el lote propietario; retiro legacy en `SHELL-MIG-008`             |
-| `default` aparece como sentinel en configuración local                             | `NO_CANONICO_COMO_APP_CODE` | resolverlo antes de una frontera `AppCode` durante `SHELL-MIG-003`; retirar propagación legacy en `SHELL-MIG-008` |
-| VISO mantiene una unión local que no representa el universo completo               | `LEGACY_ACTIVO`             | reemplazo por tipo derivado dentro del lote de consumidor definido en `SHELL-MIG-002` y `SHELL-MIG-003`           |
-| campos de dispositivo para aplicación permanecen como strings                      | `LEGACY_ACTIVO`             | tipado/validación al adoptar contratos; integración mediante `SHELL-MIG-003` y tareas de dispositivo propietarias |
-| repositorio AURA no está confirmado                                                | `PENDIENTE_DE_EVIDENCIA`    | `AURA-AUD-010`; no altera el código canónico `aura`                                                               |
-| códigos de permisos completos todavía no se centralizan                            | `RESERVADO_POR_SECUENCIA`   | `SHELL-CON-003`                                                                                                   |
-| errores/diagnósticos específicos para código desconocido todavía no se centralizan | `RESERVADO_POR_SECUENCIA`   | `SHELL-CON-008`                                                                                                   |
+| Hallazgo                                                                           | Estado                      | Destino exacto / condición de salida                                                                                                           |
+| ---------------------------------------------------------------------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@vento/contracts` aún no está materializado físicamente                           | esperado por fase           | `E5-GATE-008` → `SHELL-CI-020`; build independiente en `SHELL-CI-002`, release versionada en `SHELL-CI-003` y compatibilidad en `SHELL-CI-005` |
+| SHELL mantiene una lista local de cinco aplicaciones                               | `LEGACY_ACTIVO`             | `SHELL-MIG-001`, `SHELL-MIG-002`, `SHELL-MIG-003` y lote de migración aplicable                                                                |
+| consumidores mantienen `AppSwitcherItem.id: string`                                | `LEGACY_ACTIVO`             | `SHELL-MIG-001`, `SHELL-MIG-003`, `SHELL-MIG-005` y pruebas de paridad en `SHELL-MIG-007`                                                      |
+| `hub` aparece como identidad local de presentación                                 | `NO_CANONICO_COMO_APP_CODE` | converger a referencia canónica `shell` durante el lote propietario; retiro legacy en `SHELL-MIG-008`                                          |
+| `default` aparece como sentinel en configuración local                             | `NO_CANONICO_COMO_APP_CODE` | resolverlo antes de una frontera `AppCode` durante `SHELL-MIG-003`; retirar propagación legacy en `SHELL-MIG-008`                              |
+| VISO mantiene una unión local que no representa el universo completo               | `LEGACY_ACTIVO`             | reemplazo por tipo derivado dentro del lote de consumidor definido en `SHELL-MIG-002` y `SHELL-MIG-003`                                        |
+| campos de dispositivo para aplicación permanecen como strings                      | `LEGACY_ACTIVO`             | tipado/validación al adoptar contratos; integración mediante `SHELL-MIG-003` y tareas de dispositivo propietarias                              |
+| repositorio AURA no está confirmado                                                | `PENDIENTE_DE_EVIDENCIA`    | `AURA-AUD-010`; no altera el código canónico `aura`                                                                                            |
+| códigos de permisos completos todavía no se centralizan                            | `RESERVADO_POR_SECUENCIA`   | `SHELL-CON-003`                                                                                                                                |
+| errores/diagnósticos específicos para código desconocido todavía no se centralizan | `RESERVADO_POR_SECUENCIA`   | `SHELL-CON-008`                                                                                                                                |
 
 No se crea ninguna tarea nueva: todos los hallazgos poseen propietario existente y condición de salida.
 
@@ -1700,16 +1700,16 @@ No se crean `permissions.json`, tipos, constantes, parsers, lint, CI, migracione
 
 #### 21. Hallazgos y destinos exactos
 
-| Hallazgo                                                                        | Estado                               | Destino exacto                                                                                                                                         |
-| ------------------------------------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| helpers actuales aceptan `string` y concatenan `appId.code`                     | `LEGACY_ACTIVO`                      | `SHELL-AUTH-004`; `SHELL-AUTH-005`                                                                                                                     |
-| `PermissionKey` no existe todavía como tipo runtime canónico materializado      | `DEFINIDO_NO_MATERIALIZADO`          | generación física conforme a `AUTH-CAT-018` dentro del ciclo de implementación autorizado                                                              |
-| cadenas manuales y construcción dinámica permanecen en consumidores             | `LEGACY_ACTIVO`                      | `AUTH-CAT-019`; `SHELL-AUTH-004`; `SHELL-AUTH-005`                                                                                                     |
-| aliases requieren frontera explícita y telemetría                               | `CONTRATO_DEFINIDO`                  | `AUTH-CAT-019`; `SHELL-MIG-003`                                                                                                                        |
-| 21 permisos amplios no pueden incorporarse a `PermissionKey`                    | `LEGACY_DECOMPOSE_REQUIRED`          | conservar en `legacy-permissions.json`; su resolución funcional permanece gobernada por las decisiones de catálogo y tareas propietarias de aplicación |
-| `nexo.inventory.remissions.dispatch` sale del conjunto activo y queda bloqueado | `deprecated_split_pending_migration` | conservar en `legacy-permissions.json`; sustitución contractual por `accept_custody` + `start_transit`, con `deliver` como capacidad independiente     |
-| 14 claves técnicas no pueden reactivarse como capacidades                       | `RETIRED_TECHNICAL`                  | conservar en `retired-permissions.json`; migración de superficies mediante permisos funcionales y retiro en `SHELL-MIG-008`                            |
-| códigos de error para referencias inválidas pertenecen a otra responsabilidad   | `RESERVADO_POR_SECUENCIA`            | `SHELL-CON-008`                                                                                                                                        |
+| Hallazgo                                                                        | Estado                               | Destino exacto                                                                                                                                               |
+| ------------------------------------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| helpers actuales aceptan `string` y concatenan `appId.code`                     | `LEGACY_ACTIVO`                      | `SHELL-AUTH-004`; `SHELL-AUTH-005`                                                                                                                           |
+| `PermissionKey` no existe todavía como tipo runtime canónico materializado      | `DEFINIDO_NO_MATERIALIZADO`          | generación conforme a `AUTH-CAT-018`; materialización física en `SHELL-CI-020` después de `E5-GATE-008`; publicación en `SHELL-CI-003`                       |
+| cadenas manuales y construcción dinámica permanecen en consumidores             | `LEGACY_ACTIVO`                      | `AUTH-CAT-019`; `SHELL-AUTH-004`; `SHELL-AUTH-005`                                                                                                           |
+| aliases requieren frontera explícita y telemetría                               | `CONTRATO_DEFINIDO`                  | `AUTH-CAT-019`; `SHELL-MIG-003`                                                                                                                              |
+| 21 permisos amplios no pueden incorporarse a `PermissionKey`                    | `LEGACY_DECOMPOSE_REQUIRED`          | conservar en `legacy-permissions.json`; resolución y bloqueo en `AUTH-CAT-019`, `SHELL-AUTH-004`, `SHELL-AUTH-005`, `SHELL-MIG-003` y `SHELL-MIG-008`        |
+| `nexo.inventory.remissions.dispatch` sale del conjunto activo y queda bloqueado | `deprecated_split_pending_migration` | conservar en `legacy-permissions.json`; sustitución gobernada por `AUTH-CAT-019`, migración en `SHELL-AUTH-005` y `SHELL-MIG-003`, retiro en `SHELL-MIG-008` |
+| 14 claves técnicas no pueden reactivarse como capacidades                       | `RETIRED_TECHNICAL`                  | conservar en `retired-permissions.json`; migración de superficies mediante permisos funcionales y retiro en `SHELL-MIG-008`                                  |
+| códigos de error para referencias inválidas pertenecen a otra responsabilidad   | `RESERVADO_POR_SECUENCIA`            | `SHELL-CON-008`                                                                                                                                              |
 
 No se crea ninguna tarea nueva: los hallazgos tienen destinos canónicos existentes.
 
@@ -2340,7 +2340,7 @@ Queda prohibido:
 - agregar miembros localmente;
 - permitir un valor desconocido como fallback.
 
-Los consumidores se migrarán de forma gradual y reversible mediante las tareas `SHELL-AUTH-*`, `SHELL-CTX-*` y `SHELL-MIG-*` propietarias, sin exigir un corte simultáneo de todos los repositorios.
+Los consumidores se migrarán de forma gradual y reversible mediante `SHELL-AUTH-001`, `SHELL-AUTH-002`, `SHELL-AUTH-003`, `SHELL-AUTH-004`, `SHELL-AUTH-005`, `SHELL-CTX-001`, `SHELL-CTX-002`, `SHELL-CTX-003`, `SHELL-CTX-004`, `SHELL-CTX-005`, `SHELL-CTX-006`, `SHELL-MIG-001`, `SHELL-MIG-002`, `SHELL-MIG-003`, `SHELL-MIG-004`, `SHELL-MIG-005`, `SHELL-MIG-006`, `SHELL-MIG-007` y `SHELL-MIG-008`, sin exigir un corte simultáneo de todos los repositorios.
 
 ---
 
@@ -4002,14 +4002,14 @@ Una versión publicada nunca se corrige silenciosamente en sitio.
 
 #### 26. Estado físico, hallazgos y destinos
 
-| Hallazgo verificable                                                           | Disposición documental                                                                                   |
-| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| `packages/contracts` aún no existe físicamente                                 | materialización posterior bajo la familia compartida ya reservada; esta tarea no crea archivos de código |
-| `@vento/contracts/authorization` no está publicado físicamente                 | su publicación sigue sujeta a implementación, pruebas contractuales y CI                                 |
-| `packages/os-context` existe y contiene tipos de contexto parciales            | no se convierte en fuente alternativa de scopes; `SHELL-CON-007` centraliza los tipos de contexto        |
-| strings externos pueden transportar códigos de scope                           | deberán validarse contra el contrato compartido antes de convertirse en valor canónico                   |
-| perfiles como `SITE-READ` o `INTERSECT` aparecen en documentación del catálogo | permanecen perfiles de política y no miembros de `PermissionScopeCode`                                   |
-| los 140 permisos ya poseen contrato de catálogo congelado                      | no se reclasifican durante `SHELL-CON-006`                                                               |
+| Hallazgo verificable                                                           | Disposición documental                                                                                                                                       |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `packages/contracts` aún no existe físicamente                                 | `E5-GATE-008` → `SHELL-CI-020`; build en `SHELL-CI-002`, release en `SHELL-CI-003` y compatibilidad en `SHELL-CI-005`; esta tarea no crea archivos de código |
+| `@vento/contracts/authorization` no está publicado físicamente                 | materialización en `SHELL-CI-020`; pruebas en `SHELL-CI-001`, build en `SHELL-CI-002`, release en `SHELL-CI-003` y compatibilidad en `SHELL-CI-005`          |
+| `packages/os-context` existe y contiene tipos de contexto parciales            | no se convierte en fuente alternativa de scopes; `SHELL-CON-007` centraliza los tipos de contexto                                                            |
+| strings externos pueden transportar códigos de scope                           | deberán validarse contra el contrato compartido antes de convertirse en valor canónico                                                                       |
+| perfiles como `SITE-READ` o `INTERSECT` aparecen en documentación del catálogo | permanecen perfiles de política y no miembros de `PermissionScopeCode`                                                                                       |
+| los 140 permisos ya poseen contrato de catálogo congelado                      | no se reclasifican durante `SHELL-CON-006`                                                                                                                   |
 
 Ninguno de estos hallazgos autoriza código, SQL, migraciones, publicación de packages o cambios remotos durante esta tarea documental.
 
@@ -4235,17 +4235,17 @@ No se crea una segunda versión de `AccessContext` únicamente para incorporar e
 
 El estado físico actual queda clasificado así:
 
-| Elemento                                       | Estado actual                                                  | Disposición                                                      |
-| ---------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `vento.authorization.response-contracts@1.0.0` | publicación contractual documental                             | conservar inmutable                                              |
-| `@vento/contracts/authorization`               | no publicado físicamente como fuente completa de los contratos | materialización posterior                                        |
-| `@vento/os-context@0.1.0`                      | package físico parcial existente                               | conservar como implementación parcial hasta migración controlada |
-| `EffectiveContext`                             | tipo físico plano y parcial                                    | compatibilidad temporal; no fuente semántica canónica            |
-| `EffectiveContextSource`                       | clasificación física existente                                 | no promover a discriminante canónico de `AccessContext`          |
-| `ContextSimulationInput`                       | entrada física de simulación existente                         | no confundir con `SimulationContext@1.0.0`                       |
-| RPC `get_effective_context_v1`                 | consumidor físico actual                                       | migración posterior mediante las tareas propietarias             |
-| RPC `has_effective_permission_v1`              | devuelve booleano físico actual                                | no define la forma de `AuthorizationDecision`                    |
-| cambios físicos en esta tarea                  | no autorizados                                                 | ninguno                                                          |
+| Elemento                                       | Estado actual                                                  | Disposición                                                                                                                                                        |
+| ---------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `vento.authorization.response-contracts@1.0.0` | publicación contractual documental                             | conservar inmutable                                                                                                                                                |
+| `@vento/contracts/authorization`               | no publicado físicamente como fuente completa de los contratos | `E5-GATE-008` → `SHELL-CI-020`; release en `SHELL-CI-003` y compatibilidad en `SHELL-CI-005`                                                                       |
+| `@vento/os-context@0.1.0`                      | package físico parcial existente                               | conservar como implementación parcial hasta migración controlada                                                                                                   |
+| `EffectiveContext`                             | tipo físico plano y parcial                                    | compatibilidad temporal; no fuente semántica canónica                                                                                                              |
+| `EffectiveContextSource`                       | clasificación física existente                                 | no promover a discriminante canónico de `AccessContext`                                                                                                            |
+| `ContextSimulationInput`                       | entrada física de simulación existente                         | no confundir con `SimulationContext@1.0.0`                                                                                                                         |
+| RPC `get_effective_context_v1`                 | consumidor físico actual                                       | adaptación en `SHELL-CTX-001`, `SHELL-CTX-002` y `SHELL-AUTH-002`; migración/certificación en `SHELL-AUTH-005`, `SHELL-MIG-003`, `SHELL-MIG-007` y `SHELL-MIG-008` |
+| RPC `has_effective_permission_v1`              | devuelve booleano físico actual                                | no define la forma de `AuthorizationDecision`                                                                                                                      |
+| cambios físicos en esta tarea                  | no autorizados                                                 | ninguno                                                                                                                                                            |
 
 La existencia del package parcial no invierte la fuente de verdad:
 
@@ -5253,16 +5253,16 @@ SHELL-CON-008
 
 El estado físico actual no satisface todavía la centralización:
 
-| Elemento                                      | Estado observado                                                    | Disposición                                          |
-| --------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------- |
-| `@vento/contracts/authorization`              | no existe físicamente como package publicado en el workspace actual | materialización posterior                            |
-| `@vento/os-context@0.1.0`                     | existe como package parcial                                         | consumidor/adaptador posterior                       |
-| `EffectiveContext.blocked_reasons`            | `string[]`                                                          | compatibilidad temporal; no vocabulario canónico     |
-| `StructuralIssue.issue_code` documental       | `string`                                                            | se restringe conceptualmente a `StructuralIssueCode` |
-| `LaneReadiness.reason_codes` documental       | `string[]`                                                          | se restringe conceptualmente a `LaneReasonCode[]`    |
-| catálogo `vento.authorization.messages@1.0.0` | definido documentalmente                                            | publicación física posterior                         |
-| reason codes en código compartido             | no observados como export canónico físico                           | materialización posterior                            |
-| cambios físicos en `SHELL-CON-008`            | no autorizados                                                      | ninguno                                              |
+| Elemento                                      | Estado observado                                                    | Disposición                                                                                                           |
+| --------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `@vento/contracts/authorization`              | no existe físicamente como package publicado en el workspace actual | `E5-GATE-008` → `SHELL-CI-020`; build en `SHELL-CI-002`, release en `SHELL-CI-003` y compatibilidad en `SHELL-CI-005` |
+| `@vento/os-context@0.1.0`                     | existe como package parcial                                         | consumidor/adaptador posterior                                                                                        |
+| `EffectiveContext.blocked_reasons`            | `string[]`                                                          | compatibilidad temporal; no vocabulario canónico                                                                      |
+| `StructuralIssue.issue_code` documental       | `string`                                                            | se restringe conceptualmente a `StructuralIssueCode`                                                                  |
+| `LaneReadiness.reason_codes` documental       | `string[]`                                                          | se restringe conceptualmente a `LaneReasonCode[]`                                                                     |
+| catálogo `vento.authorization.messages@1.0.0` | definido documentalmente                                            | materialización en `SHELL-CI-020` y publicación versionada en `SHELL-CI-003`                                          |
+| reason codes en código compartido             | no observados como export canónico físico                           | exports/materialización en `SHELL-AUTH-001` y `SHELL-CI-020`; compatibilidad en `SHELL-CI-018`                        |
+| cambios físicos en `SHELL-CON-008`            | no autorizados                                                      | ninguno                                                                                                               |
 
 La forma física parcial no redefine los contratos.
 
@@ -6135,9 +6135,9 @@ No se inicia ninguna de estas tareas.
 
 Se crea `TREQ-SHELL-044`.
 
-| ID               | Regla protegida                                                                                                                                                                          | Riesgo                                                                                                                          | Destino de implementación                                                                                                                            |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TREQ-SHELL-044` | Exponer y validar como namespaces separados exactamente 20 `AuthorizationReasonCode`, 100 `StructuralIssueCode`, 10 `LaneAvailabilityReasonCode` y `LaneReasonCode = StructuralIssueCode | LaneAvailabilityReasonCode`, preservando metadata estructural y rechazando aliases, extensiones locales y valores desconocidos. | Mezcla de semánticas, razón pública incorrecta, contradicción degradada a ausencia, código local aceptado, cast inseguro o drift entre consumidores. | `SHELL-CON-008`; `SHELL-AUTH-001`; `SHELL-CTX-001`; `SHELL-CTX-004`; `SHELL-CTX-005`; `SHELL-AUTH-004`; `SHELL-CI-016`; `SHELL-CI-018` |
+| ID               | Regla protegida                                                                                                                                                                                                                                                                                                             | Riesgo                                                                                                                                               | Destino de implementación                                                                                                              |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `TREQ-SHELL-044` | Exponer y validar como namespaces separados exactamente 20 `AuthorizationReasonCode`, 100 `StructuralIssueCode`, 10 `LaneAvailabilityReasonCode` y `LaneReasonCode = StructuralIssueCode \| LaneAvailabilityReasonCode`, preservando metadata estructural y rechazando aliases, extensiones locales y valores desconocidos. | Mezcla de semánticas, razón pública incorrecta, contradicción degradada a ausencia, código local aceptado, cast inseguro o drift entre consumidores. | `SHELL-CON-008`; `SHELL-AUTH-001`; `SHELL-CTX-001`; `SHELL-CTX-004`; `SHELL-CTX-005`; `SHELL-AUTH-004`; `SHELL-CI-016`; `SHELL-CI-018` |
 
 El detalle operativo del requisito permanece en el Registro Canónico de Requisitos de Prueba.
 
@@ -6340,16 +6340,16 @@ No se detecta una decisión aprobada en `SHELL-CON-001..008` que requiera correc
 
 El estado físico actual permanece anterior a la materialización contractual:
 
-| Elemento                                        | Estado observado          | Disposición                                                    |
-| ----------------------------------------------- | ------------------------- | -------------------------------------------------------------- |
-| workspace `packages/*`                          | existe                    | conserva la fundación compartida                               |
-| `packages/os-context`                           | existe                    | no es propietario del namespace de procesos                    |
-| `packages/contracts`                            | no materializado          | materialización posterior                                      |
-| `@vento/contracts` publicado                    | no confirmado físicamente | no se presume release                                          |
-| subpath público de procesos                     | no observado físicamente  | se define documentalmente en esta tarea                        |
-| `PROC-CANONICAL-ID-REGISTRY-001`                | aprobado documentalmente  | fuente de identidad                                            |
-| referencias `VPROC-*` en documentación canónica | existentes                | consumidores documentales, no package compartido materializado |
-| cambios físicos en `SHELL-CON-009`              | no autorizados            | ninguno                                                        |
+| Elemento                                        | Estado observado          | Disposición                                                                                                           |
+| ----------------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| workspace `packages/*`                          | existe                    | conserva la fundación compartida                                                                                      |
+| `packages/os-context`                           | existe                    | no es propietario del namespace de procesos                                                                           |
+| `packages/contracts`                            | no materializado          | `E5-GATE-008` → `SHELL-CI-020`; build en `SHELL-CI-002`, release en `SHELL-CI-003` y compatibilidad en `SHELL-CI-005` |
+| `@vento/contracts` publicado                    | no confirmado físicamente | no se presume release                                                                                                 |
+| subpath público de procesos                     | no observado físicamente  | se define documentalmente en esta tarea                                                                               |
+| `PROC-CANONICAL-ID-REGISTRY-001`                | aprobado documentalmente  | fuente de identidad                                                                                                   |
+| referencias `VPROC-*` en documentación canónica | existentes                | consumidores documentales, no package compartido materializado                                                        |
+| cambios físicos en `SHELL-CON-009`              | no autorizados            | ninguno                                                                                                               |
 
 La presencia de `VPROC-*` en documentos, matrices, auditoría o integraciones no constituye por sí sola una API compartida implementada.
 
@@ -6951,17 +6951,17 @@ SHELL-CON-010
 
 El estado previo a la materialización queda:
 
-| Elemento                          | Estado                       | Disposición                                       |
-| --------------------------------- | ---------------------------- | ------------------------------------------------- |
-| `ProcessId` documental compartido | definido por `SHELL-CON-009` | se reutiliza sin cambios                          |
-| 69 estados iniciales              | aprobados                    | centralizar identidad                             |
-| 454 estados intermedios           | aprobados                    | centralizar identidad y clasificación             |
-| 69 estados finales normales       | aprobados                    | centralizar identidad y terminalidad              |
-| 592 estados contractuales         | reconciliados                | conjunto exacto de esta tarea                     |
-| 590 transiciones normales         | aprobadas                    | permanecen fuera de `ProcessStateId`              |
-| `packages/contracts`              | no materializado físicamente | materialización posterior                         |
-| `@vento/contracts/processes`      | definido documentalmente     | se amplía documentalmente, sin publicación física |
-| cambios físicos en esta tarea     | no autorizados               | ninguno                                           |
+| Elemento                          | Estado                       | Disposición                                                                                                           |
+| --------------------------------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `ProcessId` documental compartido | definido por `SHELL-CON-009` | se reutiliza sin cambios                                                                                              |
+| 69 estados iniciales              | aprobados                    | centralizar identidad                                                                                                 |
+| 454 estados intermedios           | aprobados                    | centralizar identidad y clasificación                                                                                 |
+| 69 estados finales normales       | aprobados                    | centralizar identidad y terminalidad                                                                                  |
+| 592 estados contractuales         | reconciliados                | conjunto exacto de esta tarea                                                                                         |
+| 590 transiciones normales         | aprobadas                    | permanecen fuera de `ProcessStateId`                                                                                  |
+| `packages/contracts`              | no materializado físicamente | `E5-GATE-008` → `SHELL-CI-020`; build en `SHELL-CI-002`, release en `SHELL-CI-003` y compatibilidad en `SHELL-CI-005` |
+| `@vento/contracts/processes`      | definido documentalmente     | se amplía documentalmente, sin publicación física                                                                     |
+| cambios físicos en esta tarea     | no autorizados               | ninguno                                                                                                               |
 
 ---
 
@@ -7425,22 +7425,22 @@ SHELL-CON-010
 → 0 adopciones de consumidor
 ```
 
-La futura materialización de `@vento/contracts/processes` y la adopción de consumidores permanecen sujetas a la puerta física aplicable, al gobierno de packages compartidos y a las tareas de CI/migración ya existentes.
+La futura materialización de `@vento/contracts/processes` queda asignada a `E5-GATE-008`, `SHELL-CI-020`, `SHELL-CI-001`, `SHELL-CI-002`, `SHELL-CI-003` y `SHELL-CI-005`; la adopción y retiro de copias locales corresponde a `SHELL-CI-006`, `SHELL-MIG-001`, `SHELL-MIG-002`, `SHELL-MIG-003`, `SHELL-MIG-007` y `SHELL-MIG-008`.
 
 ---
 
 #### 20. Hallazgos y destinos exactos
 
-| Hallazgo                                                                     | Estado                    | Destino existente / condición de salida                                                     |
-| ---------------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------- |
-| `packages/contracts` todavía no está materializado                           | esperado por fase         | ciclo físico de `@vento/contracts`, `E5-GATE-008::<package_id>` y `SHELL-CI-020`            |
-| `ProcessStateId` compartido no existe físicamente                            | definido no materializado | materialización del contrato de procesos cuando la puerta física sea autorizada             |
-| consumidores pueden conservar estados como strings o enums locales           | legacy potencial          | `SHELL-MIG-001` a `SHELL-MIG-008` y matriz de compatibilidad del consumidor afectado        |
-| 590 transiciones normales requieren seguir separadas del catálogo de estados | contrato preservado       | `PROC-CAT-012`; validación transversal en `SHELL-CI-018`                                    |
-| 276 acciones excepcionales no son estados                                    | contrato preservado       | `PROC-CAT-013`; consumidores deberán referenciar el namespace de acciones correspondiente   |
-| 276 acciones CCR no son estados                                              | contrato preservado       | `PROC-CAT-014`; implementación física en sus tareas propietarias                            |
-| estados legacy ambiguos no admiten migración automática                      | bloqueo controlado        | E3, BLOQUE R y paquetes E5 aplicables, con migraciones siempre versionadas en `vento-shell` |
-| identificadores de pantallas permanecen fuera de esta tarea                  | reservado por secuencia   | `SHELL-CON-011`                                                                             |
+| Hallazgo                                                                     | Estado                    | Destino existente / condición de salida                                                                                                                                                                                                                                                                                        |
+| ---------------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `packages/contracts` todavía no está materializado                           | esperado por fase         | ciclo físico de `@vento/contracts`, `E5-GATE-008::<package_id>` y `SHELL-CI-020`                                                                                                                                                                                                                                               |
+| `ProcessStateId` compartido no existe físicamente                            | definido no materializado | `E5-GATE-008` → `SHELL-CI-020`; pruebas en `SHELL-CI-001`, build en `SHELL-CI-002`, release en `SHELL-CI-003` y compatibilidad en `SHELL-CI-005`                                                                                                                                                                               |
+| consumidores pueden conservar estados como strings o enums locales           | legacy potencial          | `SHELL-MIG-001` a `SHELL-MIG-008` y matriz de compatibilidad del consumidor afectado                                                                                                                                                                                                                                           |
+| 590 transiciones normales requieren seguir separadas del catálogo de estados | contrato preservado       | `PROC-CAT-012`; validación transversal en `SHELL-CI-018`                                                                                                                                                                                                                                                                       |
+| 276 acciones excepcionales no son estados                                    | contrato preservado       | `PROC-CAT-013`; consumidores deberán referenciar el namespace de acciones correspondiente                                                                                                                                                                                                                                      |
+| 276 acciones CCR no son estados                                              | contrato preservado       | `PROC-CAT-014`; contrato compartido en `SHELL-CON-012`; materialización física en `SHELL-CI-020` después de `E5-GATE-008`                                                                                                                                                                                                      |
+| estados legacy ambiguos no admiten migración automática                      | bloqueo controlado        | consumidores en `SUPA-TRANS-007`; pruebas en `SUPA-TRANS-009`; rollback en `SUPA-TRANS-011`; tipos/contratos en `SUPA-TRANS-014`; gate en `SUPA-TRANS-015`; migración en `SHELL-MIG-001`, `SHELL-MIG-002`, `SHELL-MIG-003`, `SHELL-MIG-007`, `SHELL-MIG-008`; cambio físico solo desde `SHELL-CI-020` después de `E5-GATE-008` |
+| identificadores de pantallas permanecen fuera de esta tarea                  | reservado por secuencia   | `SHELL-CON-011`                                                                                                                                                                                                                                                                                                                |
 
 No se crea ningún identificador de tarea nuevo: todos los pendientes conservan destino documental existente.
 
@@ -8242,14 +8242,14 @@ No se anticipan tag, release, manifiesto físico ni hash de publicación.
 
 La tarea no crea responsabilidades nuevas de implementación.
 
-| Resultado pendiente de fase física                                 | Destino existente                                                                                             |
-| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| materializar la raíz `@vento/contracts` y sus superficies públicas | ciclo físico gobernado por `SHELL-CON-001`, `SHELL-PKG-001..008`, la puerta física aplicable y `SHELL-CI-020` |
-| generar tipos, constantes y validadores técnicos de pantallas      | paquetes de implementación E5 y tareas técnicas propietarias ya previstas por `PROC-SCREEN-001`               |
-| validar catálogo, secuencia y cobertura de pantallas               | validadores documentales de pantallas existentes y `SHELL-CI-017`                                             |
-| validar compatibilidad transversal de consumidores                 | `SHELL-CI-018`                                                                                                |
-| migrar referencias legacy y consumidores                           | tareas de migración y `PROC-SCREEN-026` según el tipo de referencia                                           |
-| validar pantallas con operación real                               | `UX-QA-020`, tareas `UX-QA-*` por aplicación y pilotos E5                                                     |
+| Resultado pendiente de fase física                                 | Destino existente                                                                                                                                |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| materializar la raíz `@vento/contracts` y sus superficies públicas | `E5-GATE-008` → `SHELL-CI-020`; pruebas en `SHELL-CI-001`, build en `SHELL-CI-002`, release en `SHELL-CI-003` y compatibilidad en `SHELL-CI-005` |
+| generar tipos, constantes y validadores técnicos de pantallas      | `PROC-SCREEN-001`; implementación física en `SHELL-CI-020`; pruebas de package en `SHELL-CI-001` y compatibilidad en `SHELL-CI-005`              |
+| validar catálogo, secuencia y cobertura de pantallas               | validadores documentales de pantallas existentes y `SHELL-CI-017`                                                                                |
+| validar compatibilidad transversal de consumidores                 | `SHELL-CI-018`                                                                                                                                   |
+| migrar referencias legacy y consumidores                           | `PROC-SCREEN-026`; `SHELL-MIG-001`, `SHELL-MIG-003`, `SHELL-MIG-007` y `SHELL-MIG-008`                                                           |
+| validar pantallas con operación real                               | `UX-QA-020`; readiness/piloto/hypercare/cierre en `SHELL-CI-021`, `SHELL-CI-022`, `SHELL-CI-023` y `SHELL-CI-024`                                |
 
 Ninguno de esos trabajos físicos se inicia en `SHELL-CON-011`.
 
@@ -8852,7 +8852,7 @@ No se crean ni modifican:
 - datos operativos;
 - integraciones o despliegues.
 
-La materializacion fisica solo puede ocurrir en la fase y tarea tecnica que la secuencia canonica autorice.
+La materializacion fisica queda asignada a `E5-GATE-008` y `SHELL-CI-020`, con pruebas en `SHELL-CI-001`, build en `SHELL-CI-002`, release en `SHELL-CI-003`, compatibilidad en `SHELL-CI-005` y adopcion de consumidores en `SHELL-CI-006`.
 
 ---
 
@@ -9672,7 +9672,7 @@ No se crean ni modifican:
 - datos operativos;
 - despliegues o integraciones físicas.
 
-La materialización física corresponde a la fase técnica que la secuencia canónica autorice.
+La materialización física queda asignada a `E5-GATE-008` y `SHELL-CI-020`, con pruebas en `SHELL-CI-001`, build en `SHELL-CI-002`, release en `SHELL-CI-003`, compatibilidad en `SHELL-CI-005` y adopción de consumidores en `SHELL-CI-006`.
 
 ---
 
@@ -10288,7 +10288,7 @@ SHELL-CON-014
 → 0 productores o consumidores implementados
 ```
 
-La tarea no demuestra que las 49 relaciones estén físicamente implementadas ni operativas. Define el contrato que deberá respetarse cuando la fase técnica propietaria las materialice.
+La tarea no demuestra que las 49 relaciones estén físicamente implementadas ni operativas. Su materialización queda asignada a `E5-GATE-008` y `SHELL-CI-020`; pruebas, build, release, compatibilidad y adopción corresponden respectivamente a `SHELL-CI-001`, `SHELL-CI-002`, `SHELL-CI-003`, `SHELL-CI-005` y `SHELL-CI-006`.
 
 ---
 
@@ -10841,7 +10841,7 @@ No se crean ni modifican:
 - componentes de UI;
 - configuración de despliegue.
 
-La materialización física futura deberá preservar las decisiones de esta tarea y las autoridades previas sin convertir el contrato compartido en motor de negocio o autorización.
+La materialización física queda asignada a `E5-GATE-008` y `SHELL-CI-020`; `SHELL-CI-001`, `SHELL-CI-002`, `SHELL-CI-003`, `SHELL-CI-005` y `SHELL-CI-006` deberán preservar estas decisiones sin convertir el contrato compartido en motor de negocio o autorización.
 
 #### 26. Criterios de aceptación
 
@@ -11484,7 +11484,7 @@ ANIMA
 
 Esta tarea clasifica la situación como deuda preexistente de materialización y no ejecuta una migración, cambio de permisos, cambio de RLS, eliminación de endpoint ni modificación de datos.
 
-El estado técnico actual puede conservar propietarios o mecanismos transitorios hasta que las tareas de transición propietarias materialicen la arquitectura objetivo. Esa observación no reabre la decisión funcional.
+El estado técnico actual puede conservar mecanismos transitorios hasta ejecutar la transición funcional de `INT-WORK-001` y `INT-WORK-002`, adaptar consumidoras en `SUPA-TRANS-007`, resolver writers y doble escritura en `SUPA-TRANS-008`, probar en `SUPA-TRANS-009`, cerrar seguridad en `SUPA-TRANS-010`, asegurar rollback en `SUPA-TRANS-011`, fijar tipos/contratos en `SUPA-TRANS-014`, materializar el gate en `SUPA-TRANS-015` y abrir cualquier cambio físico únicamente mediante `SHELL-CI-020` después de `E5-GATE-008`. Esa observación no reabre la decisión funcional.
 
 #### 25. Tratamiento de fuente sombra
 
@@ -11613,7 +11613,7 @@ No se crean ni modifican:
 - consumidores;
 - despliegues.
 
-La futura materialización deberá derivar sus proyecciones desde las autoridades aprobadas y preservar compatibilidad con consumidores que se actualicen en momentos diferentes.
+La materialización queda asignada a `E5-GATE-008` y `SHELL-CI-020`; pruebas, build, release, compatibilidad y actualización de consumidores corresponden a `SHELL-CI-001`, `SHELL-CI-002`, `SHELL-CI-003`, `SHELL-CI-005` y `SHELL-CI-006`, preservando las autoridades aprobadas.
 
 #### 33. Criterios de aceptación
 

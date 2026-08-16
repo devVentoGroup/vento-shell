@@ -335,7 +335,7 @@ Artefactos lógicos públicos reservados por esta tarea:
 Reglas:
 
 1. estos nombres representan contrato compartido y no implementación runtime;
-2. la forma física TypeScript, JSON Schema o generación exacta se decidirá al materializar el package bajo las puertas aplicables;
+2. la forma física TypeScript, JSON Schema o generación exacta solo podrá materializarse mediante `SHELL-CI-020::<package_id>` después de aprobar `E5-GATE-008::<package_id>` y satisfacer las etapas previas obligatorias del paquete;
 3. ningún consumidor podrá definir una versión semánticamente distinta bajo los mismos nombres;
 4. no se autoriza importar rutas internas no publicadas;
 5. la raíz `@vento/contracts` no se usa como exportación genérica para ocultar el subpath;
@@ -671,7 +671,7 @@ SHELL-CON-017
 → 0 consumidores migrados
 ```
 
-La materialización física queda condicionada por las puertas de implementación aplicables y por las tareas propietarias de package, datos, integración y consumidores.
+La materialización física del registro de sistemas, bindings y principals corresponde a `INT-DB-001`; cualquier implementación del contrato compartido solo puede abrirse tras `E5-GATE-008::<package_id>` mediante `SHELL-CI-020::<package_id>`, una vez satisfechas las etapas previas obligatorias del paquete.
 
 Esta tarea no cambia el estado de ningún expediente E5 ni autoriza implementación fuera del ciclo aprobado.
 
@@ -679,22 +679,23 @@ Esta tarea no cambia el estado de ningún expediente E5 ni autoriza implementaci
 
 #### 25. Handoffs exactos
 
-| Pendiente                                         | Propietario existente                                       | Condición de salida                                                         |
-| ------------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------- |
-| referencia compartida de credencial sin secreto   | `SHELL-CON-018`                                             | contrato lógico aprobado y posteriormente materializado sin exponer secreto |
-| evento externo recibido                           | `SHELL-CON-019`                                             | sobre y semántica de recepción definidos                                    |
-| contrato canónico de venta                        | `SHELL-CON-020`                                             | venta compartida definida sin doble fuente                                  |
-| contrato canónico de línea de venta               | `SHELL-CON-021`                                             | línea compartida y correlacionable definida                                 |
-| mapeo de identificadores externos                 | `SHELL-CON-022`                                             | referencias externas/canónicas gobernadas sin equivalencias heurísticas     |
-| idempotencia y conciliación                       | `SHELL-CON-023`                                             | identidad de operación, resultado y reconciliación definidos                |
-| cuarentena, rechazo y compensación                | `SHELL-CON-024`                                             | tratamiento de entrada inválida o efecto fallido definido                   |
-| procedencia de credenciales                       | `INT-EXT-003`                                               | cada superficie aplicable clasificada                                       |
-| mecanismo de autenticación                        | `INT-EXT-004`                                               | mecanismo por integración aprobado                                          |
-| least privilege técnico                           | `INT-EXT-005`                                               | alcance mínimo definido                                                     |
-| separación de ambientes                           | `INT-EXT-006`                                               | aislamiento aplicable definido                                              |
-| almacenamiento, rotación y revocación de secretos | `INT-EXT-007` / `INT-EXT-008`                               | ciclo de credencial definido                                                |
-| persistencia física                               | `INT-DB-001` a `INT-DB-008` cuando corresponda              | infraestructura autorizada materializa identidad y auditoría                |
-| adopción compartida                               | tareas `SHELL-MIG-*`, `SHELL-CI-*` y paquetes E5 aplicables | consumidores migrados y certificados                                        |
+| Pendiente                                                 | Propietario existente                                      | Condición de salida                                                                                                                      |
+| --------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| referencia compartida de credencial sin secreto           | `SHELL-CON-018`                                            | contrato lógico aprobado y posteriormente materializado sin exponer secreto                                                              |
+| evento externo recibido                                   | `SHELL-CON-019`                                            | sobre y semántica de recepción definidos                                                                                                 |
+| contrato canónico de venta                                | `SHELL-CON-020`                                            | venta compartida definida sin doble fuente                                                                                               |
+| contrato canónico de línea de venta                       | `SHELL-CON-021`                                            | línea compartida y correlacionable definida                                                                                              |
+| mapeo de identificadores externos                         | `SHELL-CON-022`                                            | referencias externas/canónicas gobernadas sin equivalencias heurísticas                                                                  |
+| idempotencia y conciliación                               | `SHELL-CON-023`                                            | identidad de operación, resultado y reconciliación definidos                                                                             |
+| cuarentena, rechazo y compensación                        | `SHELL-CON-024`                                            | tratamiento de entrada inválida o efecto fallido definido                                                                                |
+| procedencia de credenciales                               | `INT-EXT-003`                                              | cada superficie aplicable clasificada                                                                                                    |
+| mecanismo de autenticación                                | `INT-EXT-004`                                              | mecanismo por integración aprobado                                                                                                       |
+| least privilege técnico                                   | `INT-EXT-005`                                              | alcance mínimo definido                                                                                                                  |
+| separación de ambientes                                   | `INT-EXT-006`                                              | aislamiento aplicable definido                                                                                                           |
+| almacenamiento, rotación y revocación de secretos         | `INT-EXT-007` / `INT-EXT-008`                              | ciclo de credencial definido                                                                                                             |
+| registro físico de sistemas, bindings y principal técnico | `INT-DB-001`                                               | infraestructura autorizada materializa identidad, binding y auditoría de integración sin convertir el principal en credencial ni permiso |
+| materialización física del contrato compartido            | `SHELL-CI-020::<package_id>`                               | se abre solo tras `E5-GATE-008::<package_id>` y con las etapas previas obligatorias del paquete satisfechas                              |
+| adopción compartida                                       | `SHELL-CI-006`; `SHELL-MIG-001..008` para consumidores web | cada consumidor se actualiza mediante PR; los consumidores web además migran por lotes reversibles y certifican retiro legacy            |
 
 No se crea un identificador de tarea nuevo porque los pendientes poseen propietario canónico existente.
 
@@ -756,15 +757,15 @@ Justificación: `SHELL-CON-017` centraliza y hace compartida una semántica ya a
 
 #### 29. Hallazgos y destinos exactos
 
-| Hallazgo                                                                                                              | Estado                                  | Destino                                                                               |
-| --------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------- |
-| el contrato semántico de principal técnico ya existe en `INT-EXT-002` pero no está centralizado en `@vento/contracts` | resuelto documentalmente por esta tarea | `SHELL-CON-017`                                                                       |
-| no existen valores físicos acreditados de `IntegrationPrincipalId` para las 21 identidades                            | esperado por fase                       | materialización autorizada por binding y tareas físicas propietarias                  |
-| 11 identidades poseen binding/configuración observados pero principal físico no acreditado                            | `PENDIENTE_DE_EVIDENCIA` heredado       | propietarios definidos en `INT-EXT-002`                                               |
-| 10 identidades no poseen binding acreditado                                                                           | `NO_APLICA` actualmente                 | adoptar principal antes de activar un binding futuro                                  |
-| referencia contractual de credencial aún no está centralizada                                                         | reservado                               | `SHELL-CON-018`                                                                       |
-| `PrincipalContext.SYSTEM_SERVICE` ya existe y puede solaparse operativamente con una integración                      | conciliado conceptualmente              | conservar separación `SYSTEM_SERVICE` / `IntegrationPrincipal` en runtime y contratos |
-| persistencia física del registro de integración no existe como resultado de esta tarea                                | fuera de alcance                        | `INT-DB-001` a `INT-DB-008` cuando corresponda                                        |
+| Hallazgo                                                                                                              | Estado                                  | Destino                                                                                                                                  |
+| --------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| el contrato semántico de principal técnico ya existe en `INT-EXT-002` pero no está centralizado en `@vento/contracts` | resuelto documentalmente por esta tarea | `SHELL-CON-017`                                                                                                                          |
+| no existen valores físicos acreditados de `IntegrationPrincipalId` para las 21 identidades                            | esperado por fase                       | `INT-DB-001`, exclusivamente dentro de un paquete autorizado tras `E5-GATE-008::<package_id>` y abierto por `SHELL-CI-020::<package_id>` |
+| 11 identidades poseen binding/configuración observados pero principal físico no acreditado                            | `PENDIENTE_DE_EVIDENCIA` heredado       | `INT-EXT-002` conserva la decisión documental; `INT-DB-001` es el propietario de la materialización física posterior                     |
+| 10 identidades no poseen binding acreditado                                                                           | `NO_APLICA` actualmente                 | `INT-EXT-002` conserva la no materialización; `INT-DB-001` solo aplica después de acreditar un binding real                              |
+| referencia contractual de credencial aún no está centralizada                                                         | reservado                               | `SHELL-CON-018`                                                                                                                          |
+| `PrincipalContext.SYSTEM_SERVICE` ya existe y puede solaparse operativamente con una integración                      | conciliado conceptualmente              | conservar separación `SYSTEM_SERVICE` / `IntegrationPrincipal` en runtime y contratos                                                    |
+| persistencia física del registro de integración no existe como resultado de esta tarea                                | fuera de alcance                        | `INT-DB-001`                                                                                                                             |
 
 Todos los pendientes tienen propietario o condición de materialización identificados.
 
@@ -1494,23 +1495,25 @@ SHELL-CON-018
 → 0 cambios en Supabase
 ```
 
-La tarea no cambia el estado de paquetes E5 ni autoriza implementación física fuera de las puertas aplicables.
+La tarea no cambia el estado de ningún paquete ni autoriza implementación física antes de `E5-GATE-008::<package_id>` ni fuera de `SHELL-CI-020::<package_id>`.
 
 ---
 
 #### 26. Handoffs exactos
 
-| Pendiente                                    | Propietario existente                                           | Condición de salida                                                                   |
-| -------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| evento externo recibido                      | `SHELL-CON-019`                                                 | contrato compartido de recepción externa definido sin convertir credencial en payload |
-| contrato canónico de venta                   | `SHELL-CON-020`                                                 | venta compartida definida sin doble fuente                                            |
-| contrato canónico de línea de venta          | `SHELL-CON-021`                                                 | línea compartida y correlacionable definida                                           |
-| mapeo de identificadores externos            | `SHELL-CON-022`                                                 | equivalencias gobernadas sin heurísticas                                              |
-| idempotencia y conciliación                  | `SHELL-CON-023`                                                 | identidad de operación y reconciliación definidas                                     |
-| cuarentena, rechazo y compensación           | `SHELL-CON-024`                                                 | tratamiento de entrada inválida o efecto fallido definido                             |
-| binding y persistencia física de integración | `INT-DB-001` a `INT-DB-008` cuando corresponda                  | infraestructura autorizada materializa referencias y auditoría sin secretos           |
-| resolución runtime de credenciales           | packages y adapters propietarios bajo implementación autorizada | `ExternalCredentialRef` se resuelve solo en runtime autorizado y por ambiente         |
-| adopción y compatibilidad                    | tareas `SHELL-MIG-*`, `SHELL-CI-*` y paquetes E5 aplicables     | consumidores migrados, probados y certificados                                        |
+| Pendiente                                        | Propietario existente                                                      | Condición de salida                                                                                                                  |
+| ------------------------------------------------ | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| evento externo recibido                          | `SHELL-CON-019`                                                            | contrato compartido de recepción externa definido sin convertir credencial en payload                                                |
+| contrato canónico de venta                       | `SHELL-CON-020`                                                            | venta compartida definida sin doble fuente                                                                                           |
+| contrato canónico de línea de venta              | `SHELL-CON-021`                                                            | línea compartida y correlacionable definida                                                                                          |
+| mapeo de identificadores externos                | `SHELL-CON-022`                                                            | equivalencias gobernadas sin heurísticas                                                                                             |
+| idempotencia y conciliación                      | `SHELL-CON-023`                                                            | identidad de operación y reconciliación definidas                                                                                    |
+| cuarentena, rechazo y compensación               | `SHELL-CON-024`                                                            | tratamiento de entrada inválida o efecto fallido definido                                                                            |
+| registro físico de sistemas y bindings           | `INT-DB-001`                                                               | infraestructura autorizada materializa el sistema y binding sin almacenar secretos                                                   |
+| referencias físicas de credenciales sin secretos | `INT-DB-002`                                                               | referencias no sensibles quedan materializadas sin exponer ni duplicar el valor de la credencial                                     |
+| resolución runtime de credenciales               | `INT-EXT-007`; `INT-EXT-008`; `SHELL-CI-020::<package_id>`                 | la custodia y lifecycle aprobados se implementan solo tras `E5-GATE-008::<package_id>` y sin trasladar secretos a `@vento/contracts` |
+| materialización física del contrato compartido   | `SHELL-CI-020::<package_id>`                                               | el contrato físico se abre solo tras `E5-GATE-008::<package_id>` y con las etapas previas obligatorias del paquete satisfechas       |
+| adopción y compatibilidad                        | `SHELL-CI-005`; `SHELL-CI-006`; `SHELL-MIG-001..008` para consumidores web | la matriz de compatibilidad se valida antes de actualizar por PR; los consumidores web además migran por lotes reversibles           |
 
 No se crea una tarea nueva porque los pendientes poseen propietario canónico existente.
 
@@ -1585,16 +1588,16 @@ Justificación: `SHELL-CON-018` centraliza en `@vento/contracts/integrations` un
 
 #### 30. Hallazgos y destinos exactos
 
-| Hallazgo                                                                                                                | Estado                                                                    | Destino                                                                        |
-| ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| la semántica de referencia de credencial estaba distribuida entre `INT-EXT-003..008`                                    | resuelto documentalmente                                                  | `SHELL-CON-018`                                                                |
-| no existen valores físicos canónicos acreditados de `ExternalCredentialId` como resultado de esta fase                  | `PENDIENTE_DE_EVIDENCIA` cuando existe credencial/configuración relevante | implementación propietaria autorizada por binding                              |
-| siete identidades poseen superficies de credencial observadas, pero la referencia física canónica no está materializada | `PENDIENTE_DE_EVIDENCIA`                                                  | implementación propietaria bajo contratos `INT-EXT-*` y gates aplicables       |
-| dos plataformas tienen configuración observada sin credencial administrativa acreditada                                 | `PENDIENTE_DE_EVIDENCIA`                                                  | acreditar credencial real antes de crear referencia física                     |
-| Expo Push y Zebra BrowserPrint no presentan credencial externa de cliente en el binding observado                       | `NO_APLICA`                                                               | crear referencia solo si un binding futuro introduce credencial real           |
-| Google Wallet tiene modelo documentado sin binding acreditado                                                           | `NO_APLICA_ACTUAL`                                                        | acreditar binding antes de materializar referencia                             |
-| nueve identidades restantes carecen de binding/credencial acreditados                                                   | `NO_APLICA_ACTUAL`                                                        | adoptar referencia antes de activación futura cuando el mecanismo la requiera  |
-| Apple Wallet / PassKit y APNs conserva brechas de custodia/lifecycle ya documentadas                                    | no resuelto por esta tarea                                                | propietarios de `INT-EXT-007`, `INT-EXT-008` e implementación física aplicable |
+| Hallazgo                                                                                                                | Estado                                                                    | Destino                                                                                                                                     |
+| ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| la semántica de referencia de credencial estaba distribuida entre `INT-EXT-003..008`                                    | resuelto documentalmente                                                  | `SHELL-CON-018`                                                                                                                             |
+| no existen valores físicos canónicos acreditados de `ExternalCredentialId` como resultado de esta fase                  | `PENDIENTE_DE_EVIDENCIA` cuando existe credencial/configuración relevante | `INT-DB-002`, exclusivamente dentro de un paquete autorizado tras `E5-GATE-008::<package_id>` y abierto por `SHELL-CI-020::<package_id>`    |
+| siete identidades poseen superficies de credencial observadas, pero la referencia física canónica no está materializada | `PENDIENTE_DE_EVIDENCIA`                                                  | `INT-EXT-003..008` conservan procedencia, mecanismo, alcance, ambiente, custodia y lifecycle; `INT-DB-002` materializa la referencia física |
+| dos plataformas tienen configuración observada sin credencial administrativa acreditada                                 | `PENDIENTE_DE_EVIDENCIA`                                                  | `INT-EXT-003` debe acreditar la procedencia/material aplicable antes de que `INT-DB-002` pueda materializar una referencia                  |
+| Expo Push y Zebra BrowserPrint no presentan credencial externa de cliente en el binding observado                       | `NO_APLICA`                                                               | crear referencia solo si un binding futuro introduce credencial real                                                                        |
+| Google Wallet tiene modelo documentado sin binding acreditado                                                           | `NO_APLICA_ACTUAL`                                                        | acreditar binding antes de materializar referencia                                                                                          |
+| nueve identidades restantes carecen de binding/credencial acreditados                                                   | `NO_APLICA_ACTUAL`                                                        | adoptar referencia antes de activación futura cuando el mecanismo la requiera                                                               |
+| Apple Wallet / PassKit y APNs conserva brechas de custodia/lifecycle ya documentadas                                    | no resuelto por esta tarea                                                | `INT-EXT-007`; `INT-EXT-008`; materialización física posterior en `INT-DB-002` bajo el paquete autorizado                                   |
 
 Todos los pendientes conservan propietario o condición objetiva de salida.
 
@@ -1655,17 +1658,17 @@ SHELL-CON-019 — Crear contrato de evento externo recibido
 
 ### ✅ SHELL-CON-019 — Crear contrato de evento externo recibido
 
-**Estado:** APROBADA  
-**Tarea anterior:** `SHELL-CON-018 — Crear contrato de referencia de credencial externa sin incluir el secreto` — APROBADA  
-**Tarea siguiente:** `SHELL-CON-020 — Crear contrato canónico de venta` — RESERVADA  
-**Tipo de tarea:** Documental; definición normativa y materializada del contrato compartido de evento externo recibido, con sobre estable, versión, identidad de recepción, referencia de autenticidad, evidencia fuente protegida, afirmación normalizada, referencias de mapping, idempotencia y correlación, sin convertir al tercero en fuente empresarial ni implementar código, persistencia, endpoints o transporte  
-**Bloque:** H — Fundación compartida de VENTO-SHELL  
-**Repositorio propietario:** `devVentoGroup/vento-shell`  
-**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md`  
-**Superficie lógica objetivo:** `@vento/contracts/integrations`  
-**Estado físico resultante:** `DEFINIDO_NO_MATERIALIZADO`  
-**Implementación física autorizada:** ninguna  
-**Cambios de código, DDL, DML, migraciones, RLS, RPC, Storage, Edge Functions, secretos, credenciales, endpoints, proveedores, configuración remota, despliegues o datos:** ninguno  
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CON-018 — Crear contrato de referencia de credencial externa sin incluir el secreto
+**Tarea siguiente:** SHELL-CON-020 — Crear contrato canónico de venta
+**Tipo de tarea:** Documental; definición normativa documental del contrato compartido de evento externo recibido, con sobre estable, versión, identidad de recepción, referencia de autenticidad, evidencia fuente protegida, afirmación normalizada, referencias de mapping, idempotencia y correlación, sin convertir al tercero en fuente empresarial ni implementar código, persistencia, endpoints o transporte
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md`
+**Superficie lógica objetivo:** `@vento/contracts/integrations`
+**Estado físico resultante:** `DEFINIDO_NO_MATERIALIZADO`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, Storage, Edge Functions, secretos, credenciales, endpoints, proveedores, configuración remota, despliegues o datos:** ninguno
 **Requisitos de prueba creados o modificados:** 0
 
 ---
@@ -2249,7 +2252,7 @@ Reglas adicionales:
 3. cambiar el contrato VENTO no modifica retrospectivamente recepciones históricas;
 4. una recepción conserva la versión con la que fue interpretada;
 5. un parser nuevo no puede reinterpretar silenciosamente historia sin dejar evidencia de la nueva derivación;
-6. la publicación física de versiones permanece sujeta al ciclo de package y release aprobado para `@vento/contracts`.
+6. la publicación física de versiones permanece sujeta a `SHELL-CI-001..019`, a la aprobación de `E5-GATE-008::<package_id>` y a la apertura de `SHELL-CI-020::<package_id>` para el paquete aplicable.
 
 ---
 
@@ -2286,14 +2289,14 @@ La minimización se aplica tanto a `normalized_assertion` como a metadata, audit
 
 `SHELL-CON-019` deja definidos estos límites sin desarrollar las tareas posteriores:
 
-| Trabajo posterior                       | Estado desde esta tarea     | Propietario / tarea                              | Condición de salida                                                                                                                                                            |
-| --------------------------------------- | --------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| contrato canónico de venta              | `FUERA_DE_ALCANCE`          | `SHELL-CON-020`                                  | la afirmación externa que corresponda a una venta puede convertirse por la propietaria en contrato canónico de venta sin conservar semántica del proveedor como fuente interna |
-| contrato canónico de línea de venta     | `FUERA_DE_ALCANCE`          | `SHELL-CON-021`                                  | las líneas quedan representadas por identidad y semántica canónicas sin depender del payload nativo externo                                                                    |
-| mapping compartido de identificadores   | `FUERA_DE_ALCANCE`          | `SHELL-CON-022`                                  | `mapping_refs` puede apuntar a una representación compartida tipada y sin heurísticas de identidad                                                                             |
-| idempotencia y conciliación compartidas | `FUERA_DE_ALCANCE`          | `SHELL-CON-023`                                  | `idempotency_ref` y resultados recuperables usan el contrato compartido aprobado sin fusionar evento, receipt y efecto                                                         |
-| cuarentena, rechazo y compensación      | `FUERA_DE_ALCANCE`          | `SHELL-CON-024`                                  | autenticidad fallida, incompatibilidad, mapping irresoluble, conflicto o entrada no procesable tienen disposición explícita sin efecto silencioso                              |
-| implementación física de la superficie  | `DEFINIDO_NO_MATERIALIZADO` | ciclo de package y release de `@vento/contracts` | existe habilitación física del expediente de package correspondiente y se materializa la superficie sin alterar este contrato documental                                       |
+| Trabajo posterior                       | Estado desde esta tarea     | Propietario / tarea          | Condición de salida                                                                                                                                                            |
+| --------------------------------------- | --------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| contrato canónico de venta              | `FUERA_DE_ALCANCE`          | `SHELL-CON-020`              | la afirmación externa que corresponda a una venta puede convertirse por la propietaria en contrato canónico de venta sin conservar semántica del proveedor como fuente interna |
+| contrato canónico de línea de venta     | `FUERA_DE_ALCANCE`          | `SHELL-CON-021`              | las líneas quedan representadas por identidad y semántica canónicas sin depender del payload nativo externo                                                                    |
+| mapping compartido de identificadores   | `FUERA_DE_ALCANCE`          | `SHELL-CON-022`              | `mapping_refs` puede apuntar a una representación compartida tipada y sin heurísticas de identidad                                                                             |
+| idempotencia y conciliación compartidas | `FUERA_DE_ALCANCE`          | `SHELL-CON-023`              | `idempotency_ref` y resultados recuperables usan el contrato compartido aprobado sin fusionar evento, receipt y efecto                                                         |
+| cuarentena, rechazo y compensación      | `FUERA_DE_ALCANCE`          | `SHELL-CON-024`              | autenticidad fallida, incompatibilidad, mapping irresoluble, conflicto o entrada no procesable tienen disposición explícita sin efecto silencioso                              |
+| implementación física de la superficie  | `DEFINIDO_NO_MATERIALIZADO` | `SHELL-CI-020::<package_id>` | se abre solo después de completar las etapas previas del paquete y aprobar `E5-GATE-008::<package_id>`, preservando este contrato documental                                   |
 
 Ningún handoff autoriza a anticipar el contenido de las tareas `SHELL-CON-020` a `SHELL-CON-024`.
 
@@ -2330,10 +2333,10 @@ Justificación:
 - las diecinueve identidades restantes no reciben eventos, endpoints ni bindings ficticios;
 - no se implementa código ni se modifica Supabase.
 
-**Requisitos creados:** 0  
-**Requisitos modificados:** 0  
-**Requisitos diferidos:** 0  
-**Requisitos descartados:** 0  
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+**Requisitos diferidos:** 0
+**Requisitos descartados:** 0
 **Requisitos obsoletos:** 0
 
 El registro canónico de requisitos permanece sin cambios.
@@ -2431,15 +2434,15 @@ El registro canónico de requisitos permanece sin cambios.
 
 #### 23. Continuidad
 
-ÚLTIMA TAREA APROBADA
+##### ÚLTIMA TAREA APROBADA
 
 `SHELL-CON-018 — Crear contrato de referencia de credencial externa sin incluir el secreto`
 
-TAREA ACTUAL APROBADA
+##### TAREA ACTUAL APROBADA
 
 `SHELL-CON-019 — Crear contrato de evento externo recibido`
 
-SIGUIENTE TAREA RESERVADA
+##### SIGUIENTE TAREA RESERVADA
 
 `SHELL-CON-020 — Crear contrato canónico de venta`
 
@@ -2447,9 +2450,9 @@ SIGUIENTE TAREA RESERVADA
 ### ✅ SHELL-CON-020 — Crear contrato canónico de venta
 
 **Estado:** APROBADA
-**Tarea anterior:** `SHELL-CON-019 — Crear contrato de evento externo recibido` — APROBADA
-**Tarea siguiente:** `SHELL-CON-021 — Crear contrato canónico de línea de venta` — RESERVADA
-**Tipo de tarea:** Documental; definición normativa y materializada del contrato técnico compartido de venta canónica, preservando identidad, fuente empresarial, revisión, contexto de origen, temporalidad, estado comercial, componentes monetarios, relaciones con pedido, cliente, pago y documento fiscal, asociación obligatoria con líneas, procedencia, correlación y auditoría, sin definir todavía el contrato compartido de línea, sin emitir eventos, sin aplicar efectos en NEXO, NUMERA o PASS y sin implementar código, persistencia, migraciones o Supabase
+**Tarea anterior:** SHELL-CON-019 — Crear contrato de evento externo recibido
+**Tarea siguiente:** SHELL-CON-021 — Crear contrato canónico de línea de venta
+**Tipo de tarea:** Documental; definición normativa documental del contrato técnico compartido de venta canónica, preservando identidad, fuente empresarial, revisión, contexto de origen, temporalidad, estado comercial, componentes monetarios, relaciones con pedido, cliente, pago y documento fiscal, asociación obligatoria con líneas, procedencia, correlación y auditoría, sin definir todavía el contrato compartido de línea, sin emitir eventos, sin aplicar efectos en NEXO, NUMERA o PASS y sin implementar código, persistencia, migraciones o Supabase
 **Bloque:** H — Fundación compartida de VENTO-SHELL
 **Repositorio propietario:** `devVentoGroup/vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md`
@@ -3196,17 +3199,17 @@ La aprobación documental de esta tarea no acredita implementación física, pub
 
 #### 25. Handoffs exactos
 
-| Trabajo posterior                              | Estado desde esta tarea             | Propietario / tarea                                    | Condición de salida                                                                                              |
-| ---------------------------------------------- | ----------------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| contrato compartido de línea de venta          | `FUERA_DE_ALCANCE`                  | `SHELL-CON-021`                                        | la línea obtiene identidad y forma compartidas compatibles con `CanonicalSale<TSaleLine>` sin redefinir la venta |
-| mapping compartido de identificadores externos | `FUERA_DE_ALCANCE`                  | `SHELL-CON-022`                                        | referencias de fuente, venta y recursos se relacionan sin equivalencias heurísticas                              |
-| idempotencia y conciliación compartidas        | `FUERA_DE_ALCANCE`                  | `SHELL-CON-023`                                        | operación, identidad, huella, resultado recuperable y conciliación se materializan sin fusionarse con `sale_id`  |
-| cuarentena, rechazo y compensación             | `FUERA_DE_ALCANCE`                  | `SHELL-CON-024`                                        | entradas incompatibles, conflictos o efectos fallidos reciben disposición explícita sin borrar la venta original |
-| emisión empresarial desde PULSO                | preservada por contrato propietario | `INT-SALES-002`                                        | una venta durable produce únicamente las definiciones de evento aprobadas y no un evento genérico paralelo       |
-| salida física de inventario                    | preservada por contrato propietario | `INT-SALES-003` / NEXO                                 | líneas elegibles producen el movimiento físico exactamente una vez bajo la autoridad de NEXO                     |
-| hecho económico                                | preservada por contrato propietario | `INT-SALES-004` / NUMERA                               | NUMERA consume el hecho correlacionado sin escritura cruzada                                                     |
-| fidelización                                   | preservada por contrato propietario | `INT-SALES-005` / `INT-SALES-006` / PASS               | PASS aplica su ledger con identidad y autoridad propias                                                          |
-| materialización física de `@vento/contracts`   | `DEFINIDO_NO_MATERIALIZADO`         | ciclo de package, CI, release y paquetes E5 aplicables | existe autorización física, implementación, compatibilidad, pruebas y adopción verificadas                       |
+| Trabajo posterior                              | Estado desde esta tarea             | Propietario / tarea                      | Condición de salida                                                                                              |
+| ---------------------------------------------- | ----------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| contrato compartido de línea de venta          | `FUERA_DE_ALCANCE`                  | `SHELL-CON-021`                          | la línea obtiene identidad y forma compartidas compatibles con `CanonicalSale<TSaleLine>` sin redefinir la venta |
+| mapping compartido de identificadores externos | `FUERA_DE_ALCANCE`                  | `SHELL-CON-022`                          | referencias de fuente, venta y recursos se relacionan sin equivalencias heurísticas                              |
+| idempotencia y conciliación compartidas        | `FUERA_DE_ALCANCE`                  | `SHELL-CON-023`                          | operación, identidad, huella, resultado recuperable y conciliación se materializan sin fusionarse con `sale_id`  |
+| cuarentena, rechazo y compensación             | `FUERA_DE_ALCANCE`                  | `SHELL-CON-024`                          | entradas incompatibles, conflictos o efectos fallidos reciben disposición explícita sin borrar la venta original |
+| emisión empresarial desde PULSO                | preservada por contrato propietario | `INT-SALES-002`                          | una venta durable produce únicamente las definiciones de evento aprobadas y no un evento genérico paralelo       |
+| salida física de inventario                    | preservada por contrato propietario | `INT-SALES-003` / NEXO                   | líneas elegibles producen el movimiento físico exactamente una vez bajo la autoridad de NEXO                     |
+| hecho económico                                | preservada por contrato propietario | `INT-SALES-004` / NUMERA                 | NUMERA consume el hecho correlacionado sin escritura cruzada                                                     |
+| fidelización                                   | preservada por contrato propietario | `INT-SALES-005` / `INT-SALES-006` / PASS | PASS aplica su ledger con identidad y autoridad propias                                                          |
+| materialización física de `@vento/contracts`   | `DEFINIDO_NO_MATERIALIZADO`         | `SHELL-CI-020::<package_id>`             | se abre solo tras `E5-GATE-008::<package_id>` y con `SHELL-CI-001..019` certificados para el paquete aplicable   |
 
 Todos los pendientes quedan vinculados a propietarios existentes; esta tarea no crea un identificador de tarea adicional.
 
@@ -3364,15 +3367,15 @@ Justificación: la tarea materializa como contrato compartido estático la semá
 
 #### 31. Continuidad
 
-***ÚLTIMA TAREA APROBADA***
+##### ÚLTIMA TAREA APROBADA
 
 `SHELL-CON-019 — Crear contrato de evento externo recibido`
 
-***TAREA ACTUAL APROBADA***
+##### TAREA ACTUAL APROBADA
 
 `SHELL-CON-020 — Crear contrato canónico de venta`
 
-***SIGUIENTE TAREA RESERVADA***
+##### SIGUIENTE TAREA RESERVADA
 
 `SHELL-CON-021 — Crear contrato canónico de línea de venta`
 
@@ -4219,17 +4222,17 @@ La aprobación documental de esta tarea no acredita publicación del package, ad
 
 #### 27. Handoffs exactos
 
-| Trabajo posterior                              | Estado desde esta tarea             | Propietario / tarea                                    | Condición de salida                                                                                                            |
-| ---------------------------------------------- | ----------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| mapping compartido de identificadores externos | `FUERA_DE_ALCANCE`                  | `SHELL-CON-022`                                        | identidades externas, canónicas y namespaces se relacionan mediante equivalencias explícitas, versionadas y no heurísticas     |
-| idempotencia y conciliación compartidas        | `FUERA_DE_ALCANCE`                  | `SHELL-CON-023`                                        | venta y línea conservan identidades estables, huella, resultado recuperable y conciliación sin fusionarlas con claves técnicas |
-| cuarentena, rechazo y compensación             | `FUERA_DE_ALCANCE`                  | `SHELL-CON-024`                                        | entradas o líneas incompatibles reciben disposición explícita sin borrar identidad ni historia                                 |
-| salida física de inventario                    | preservada por contrato propietario | `INT-SALES-003` / NEXO                                 | una línea elegible produce el movimiento físico exactamente una vez bajo autoridad NEXO                                        |
-| hecho económico                                | preservado por contrato propietario | `INT-SALES-004` / NUMERA                               | NUMERA consume el hecho correlacionado sin escritura cruzada ni reinterpretación de identidad                                  |
-| fidelización                                   | preservada por contrato propietario | `INT-SALES-005` / `INT-SALES-006` / PASS               | PASS evalúa acumulación o redención bajo su ledger e identidad propias                                                         |
-| control permanente de retry                    | preservado por contrato propietario | `INT-SALES-007`                                        | reintentos recuperan resultados sin duplicar venta, línea ni efectos                                                           |
-| convivencia y fuente única                     | preservada por contrato propietario | `INT-SALES-008` a `INT-SALES-010`                      | Makos y PULSO no producen dos líneas para el mismo hecho por doble fuente                                                      |
-| materialización física de `@vento/contracts`   | `DEFINIDO_NO_MATERIALIZADO`         | ciclo de package, CI, release y paquetes E5 aplicables | existe autorización física, implementación, compatibilidad, pruebas y adopción verificadas                                     |
+| Trabajo posterior                              | Estado desde esta tarea             | Propietario / tarea                      | Condición de salida                                                                                                            |
+| ---------------------------------------------- | ----------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| mapping compartido de identificadores externos | `FUERA_DE_ALCANCE`                  | `SHELL-CON-022`                          | identidades externas, canónicas y namespaces se relacionan mediante equivalencias explícitas, versionadas y no heurísticas     |
+| idempotencia y conciliación compartidas        | `FUERA_DE_ALCANCE`                  | `SHELL-CON-023`                          | venta y línea conservan identidades estables, huella, resultado recuperable y conciliación sin fusionarlas con claves técnicas |
+| cuarentena, rechazo y compensación             | `FUERA_DE_ALCANCE`                  | `SHELL-CON-024`                          | entradas o líneas incompatibles reciben disposición explícita sin borrar identidad ni historia                                 |
+| salida física de inventario                    | preservada por contrato propietario | `INT-SALES-003` / NEXO                   | una línea elegible produce el movimiento físico exactamente una vez bajo autoridad NEXO                                        |
+| hecho económico                                | preservado por contrato propietario | `INT-SALES-004` / NUMERA                 | NUMERA consume el hecho correlacionado sin escritura cruzada ni reinterpretación de identidad                                  |
+| fidelización                                   | preservada por contrato propietario | `INT-SALES-005` / `INT-SALES-006` / PASS | PASS evalúa acumulación o redención bajo su ledger e identidad propias                                                         |
+| control permanente de retry                    | preservado por contrato propietario | `INT-SALES-007`                          | reintentos recuperan resultados sin duplicar venta, línea ni efectos                                                           |
+| convivencia y fuente única                     | preservada por contrato propietario | `INT-SALES-008` a `INT-SALES-010`        | Makos y PULSO no producen dos líneas para el mismo hecho por doble fuente                                                      |
+| materialización física de `@vento/contracts`   | `DEFINIDO_NO_MATERIALIZADO`         | `SHELL-CI-020::<package_id>`             | se abre solo tras `E5-GATE-008::<package_id>` y con `SHELL-CI-001..019` certificados para el paquete aplicable                 |
 
 Todos los pendientes poseen propietario canónico existente. Esta tarea no crea un identificador de tarea adicional.
 
@@ -4315,16 +4318,16 @@ La semántica centralizada por `SHELL-CON-021` ya se encuentra protegida por cob
 
 #### 31. Hallazgos y destinos exactos
 
-| Hallazgo                                                                            | Estado                                                | Destino                                                                            |
-| ----------------------------------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `CanonicalSale<TSaleLine>` requería una forma compartida concreta para `TSaleLine`  | resuelto documentalmente                              | `SHELL-CON-021`                                                                    |
-| la semántica de línea estaba distribuida entre `INT-POS-005..013` e `INT-SALES-001` | resuelto documentalmente                              | `SHELL-CON-021` centraliza sin cambiar decisiones propietarias                     |
-| el mapping compartido de identidades aún no está definido en BLOQUE H               | reservado                                             | `SHELL-CON-022`                                                                    |
-| la forma compartida de idempotencia y conciliación aún no está definida             | reservado                                             | `SHELL-CON-023`                                                                    |
-| la forma compartida de cuarentena, rechazo y compensación aún no está definida      | reservado                                             | `SHELL-CON-024`                                                                    |
-| `makos_excel` no acredita granularidad de venta y línea individual                  | brecha física preservada, no corregida por inferencia | evidencia y pilotos propietarios `INT-POS-021` / `INT-POS-022`; no fabricar líneas |
-| los efectos de inventario dependen de mapping suficiente                            | frontera preservada                                   | `INT-SALES-003` / NEXO y contratos propietarios de mapping                         |
-| la materialización física de `CanonicalSaleLine` todavía no existe                  | esperado por fase                                     | ciclo autorizado de package, CI, release y paquetes E5 aplicables                  |
+| Hallazgo                                                                            | Estado                                                | Destino                                                                                                                         |
+| ----------------------------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `CanonicalSale<TSaleLine>` requería una forma compartida concreta para `TSaleLine`  | resuelto documentalmente                              | `SHELL-CON-021`                                                                                                                 |
+| la semántica de línea estaba distribuida entre `INT-POS-005..013` e `INT-SALES-001` | resuelto documentalmente                              | `SHELL-CON-021` centraliza sin cambiar decisiones propietarias                                                                  |
+| el mapping compartido de identidades aún no está definido en BLOQUE H               | reservado                                             | `SHELL-CON-022`                                                                                                                 |
+| la forma compartida de idempotencia y conciliación aún no está definida             | reservado                                             | `SHELL-CON-023`                                                                                                                 |
+| la forma compartida de cuarentena, rechazo y compensación aún no está definida      | reservado                                             | `SHELL-CON-024`                                                                                                                 |
+| `makos_excel` no acredita granularidad de venta y línea individual                  | brecha física preservada, no corregida por inferencia | evidencia y pilotos propietarios `INT-POS-021` / `INT-POS-022`; no fabricar líneas                                              |
+| los efectos de inventario dependen de mapping suficiente                            | frontera preservada                                   | `SHELL-CON-022` para el contrato compartido; `INT-POS-011` para la resolución POS; `INT-SALES-003` / NEXO para el efecto físico |
+| la materialización física de `CanonicalSaleLine` todavía no existe                  | esperado por fase                                     | `SHELL-CI-020::<package_id>`, solo tras `E5-GATE-008::<package_id>` y con la fundación CI previa certificada                    |
 
 No queda un pendiente narrativo sin propietario o condición de salida.
 
@@ -4441,7 +4444,7 @@ SHELL-CON-022 — Crear contrato de mapeo de identificadores externos
 **Estado:** APROBADA
 **Tarea anterior:** SHELL-CON-021 — Crear contrato canónico de línea de venta
 **Tarea siguiente:** SHELL-CON-023 — Crear contrato de idempotencia y conciliación
-**Tipo de tarea:** Documental; definición normativa y materializada del contrato compartido de mapeo de identificadores externos, con referencias tipadas, namespaces, clases de identificador, relaciones, estados de resolución, versionado, vigencia, evidencia y trazabilidad, preservando la semántica de `INT-EXT-013`, las especializaciones posteriores `INT-POS` y la separación frente a autenticidad, idempotencia, autorización, propiedad empresarial y efectos, sin implementar código, persistencia, migraciones ni cambios en Supabase
+**Tipo de tarea:** Documental; definición normativa documental del contrato compartido de mapeo de identificadores externos, con referencias tipadas, namespaces, clases de identificador, relaciones, estados de resolución, versionado, vigencia, evidencia y trazabilidad, preservando la semántica de `INT-EXT-013`, las especializaciones posteriores `INT-POS` y la separación frente a autenticidad, idempotencia, autorización, propiedad empresarial y efectos, sin implementar código, persistencia, migraciones ni cambios en Supabase
 **Bloque:** H — Fundación compartida de VENTO-SHELL
 **Repositorio propietario:** `devVentoGroup/vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md`
@@ -5067,7 +5070,7 @@ Cuando un efecto dependa de conocer un recurso exacto:
 
 Bloquear un efecto dependiente del mapping no exige descartar la recepción, la evidencia o el hecho estructural que pueda conservarse válidamente sin ese efecto.
 
-La disposición de entradas incompatibles o no procesables permanece bajo `SHELL-CON-024` y las tareas externas propietarias aplicables.
+La disposición compartida permanece bajo `SHELL-CON-024`; la especialización externa permanece bajo `INT-EXT-016` y la especialización de líneas POS bajo `INT-POS-012`.
 
 ---
 
@@ -5188,7 +5191,7 @@ Reglas:
 2. el proveedor conserva sus identificadores externos sin convertirse en propietario del recurso VENTO;
 3. un adapter puede resolver mappings sin adquirir propiedad funcional;
 4. `vento-shell` conserva la propiedad técnica de la futura infraestructura Supabase de integración bajo las tareas de BLOQUE R;
-5. `INT-DB-004` materializará la persistencia física cuando corresponda y exista autorización;
+5. `INT-DB-004` materializará la persistencia física exclusivamente dentro de un `package_id` autorizado por `E5-GATE-008::<package_id>` y abierto mediante `SHELL-CI-020::<package_id>`;
 6. ninguna consumidora crea una tabla o enum local incompatible para redefinir esta semántica compartida una vez publicada la superficie física.
 
 ---
@@ -5227,17 +5230,18 @@ La aprobación documental no acredita implementación física, publicación del 
 
 #### 29. Handoffs exactos
 
-| Trabajo posterior                                  | Estado desde esta tarea             | Propietario / tarea | Condición de salida                                                                                                                                            |
-| -------------------------------------------------- | ----------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| idempotencia y conciliación compartidas            | `FUERA_DE_ALCANCE`                  | `SHELL-CON-023`     | operación, clave, huella, resultado recuperable y conciliación quedan tipados sin reutilizar mapping ID como identidad operacional                             |
-| cuarentena, rechazo y compensación compartidos     | `FUERA_DE_ALCANCE`                  | `SHELL-CON-024`     | entradas `UNRESOLVED`, `AMBIGUOUS`, `CONFLICT` o incompatibles reciben disposición explícita sin efecto silencioso                                             |
-| persistencia física de mappings externos/canónicos | `DEFINIDO_NO_MATERIALIZADO`         | `INT-DB-004`        | se crea infraestructura autorizada con compatibilidad, constraints, RLS/grants, backfill, reconciliación, tipos, pruebas y rollback según el orden de BLOQUE R |
-| mapping contextual POS                             | preservado por contrato propietario | `INT-POS-010`       | empresa, sede, terminal y caja se resuelven con contexto, vigencia e historia acreditados                                                                      |
-| mapping producto/presentación/receta POS           | preservado por contrato propietario | `INT-POS-011`       | los planos obligatorios alcanzan resolución suficiente sin heurísticas y conservan su estado propietario                                                       |
-| identidad/idempotencia POS                         | preservada por contrato propietario | `INT-POS-013`       | venta, línea, recepción, revisión, payload, transporte y efecto permanecen identidades distintas                                                               |
-| disposición externa no resoluble                   | preservada por contrato propietario | `INT-EXT-016`       | entradas sin mapping suficiente reciben cuarentena/dead-letter o tratamiento autorizado sin efecto empresarial silencioso                                      |
-| auditoría y reconciliación externa de mappings     | preservada por contrato propietario | `INT-EXT-017`       | cambios, conflictos, relaciones retiradas y resoluciones manuales quedan reconstruibles                                                                        |
-| binding de telefonía/voz                           | `BLOQUEADO_POR_EVIDENCIA`           | `TI-INT-003`        | operador, cuenta, interfaz, namespaces, IDs y semántica quedan acreditados antes de materializar mappings                                                      |
+| Trabajo posterior                                  | Estado desde esta tarea             | Propietario / tarea          | Condición de salida                                                                                                                                            |
+| -------------------------------------------------- | ----------------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| idempotencia y conciliación compartidas            | `FUERA_DE_ALCANCE`                  | `SHELL-CON-023`              | operación, clave, huella, resultado recuperable y conciliación quedan tipados sin reutilizar mapping ID como identidad operacional                             |
+| cuarentena, rechazo y compensación compartidos     | `FUERA_DE_ALCANCE`                  | `SHELL-CON-024`              | entradas `UNRESOLVED`, `AMBIGUOUS`, `CONFLICT` o incompatibles reciben disposición explícita sin efecto silencioso                                             |
+| persistencia física de mappings externos/canónicos | `DEFINIDO_NO_MATERIALIZADO`         | `INT-DB-004`                 | se crea infraestructura autorizada con compatibilidad, constraints, RLS/grants, backfill, reconciliación, tipos, pruebas y rollback según el orden de BLOQUE R |
+| mapping contextual POS                             | preservado por contrato propietario | `INT-POS-010`                | empresa, sede, terminal y caja se resuelven con contexto, vigencia e historia acreditados                                                                      |
+| mapping producto/presentación/receta POS           | preservado por contrato propietario | `INT-POS-011`                | los planos obligatorios alcanzan resolución suficiente sin heurísticas y conservan su estado propietario                                                       |
+| identidad/idempotencia POS                         | preservada por contrato propietario | `INT-POS-013`                | venta, línea, recepción, revisión, payload, transporte y efecto permanecen identidades distintas                                                               |
+| disposición externa no resoluble                   | preservada por contrato propietario | `INT-EXT-016`                | entradas sin mapping suficiente reciben cuarentena/dead-letter o tratamiento autorizado sin efecto empresarial silencioso                                      |
+| auditoría y reconciliación externa de mappings     | preservada por contrato propietario | `INT-EXT-017`                | cambios, conflictos, relaciones retiradas y resoluciones manuales quedan reconstruibles                                                                        |
+| binding de telefonía/voz                           | `BLOQUEADO_POR_EVIDENCIA`           | `TI-INT-003`                 | operador, cuenta, interfaz, namespaces, IDs y semántica quedan acreditados antes de materializar mappings                                                      |
+| materialización física del contrato compartido     | `DEFINIDO_NO_MATERIALIZADO`         | `SHELL-CI-020::<package_id>` | el package se implementa solo tras `E5-GATE-008::<package_id>` y con la fundación CI previa certificada                                                        |
 
 Todos los pendientes poseen tarea propietaria y condición de salida explícita.
 
@@ -5456,7 +5460,7 @@ SHELL-CON-023 — Crear contrato de idempotencia y conciliación
 **Estado:** APROBADA
 **Tarea anterior:** SHELL-CON-022 — Crear contrato de mapeo de identificadores externos
 **Tarea siguiente:** SHELL-CON-024 — Crear contrato de cuarentena, rechazo y compensación
-**Tipo de tarea:** Documental; definición normativa y materializada del contrato compartido de idempotencia y conciliación para fronteras de integración, preservando los alcances, identidades, huellas, resultados recuperables, claims, incertidumbre, fuentes autoritativas, residuales y cierres ya aprobados en BLOQUE X, sin crear una clave global, una transacción distribuida, una política de retry paralela, código, persistencia, migraciones ni cambios en Supabase
+**Tipo de tarea:** Documental; definición normativa documental del contrato compartido de idempotencia y conciliación para fronteras de integración, preservando los alcances, identidades, huellas, resultados recuperables, claims, incertidumbre, fuentes autoritativas, residuales y cierres ya aprobados en BLOQUE X, sin crear una clave global, una transacción distribuida, una política de retry paralela, código, persistencia, migraciones ni cambios en Supabase
 **Bloque:** H — Fundación compartida de VENTO-SHELL
 **Repositorio propietario:** `devVentoGroup/vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md`
@@ -5866,7 +5870,7 @@ Invariantes:
 5. el efecto no puede quedar confirmado sin un resultado o referencia recuperable suficiente;
 6. un lease vencido no demuestra ausencia de commit;
 7. adquirir un nuevo lease no habilita repetir un efecto incierto;
-8. la primitiva física concreta pertenece a `INT-DB-005` y a la implementación propietaria aplicable.
+8. la primitiva transversal de restricción e índice pertenece a `INT-DB-005`; cualquier efecto empresarial conserva la tarea propietaria ya declarada por el contrato consumidor y no se ejecuta desde `SHELL-CON-023`.
 
 ---
 
@@ -6367,6 +6371,7 @@ Reglas:
 | infraestructura de retry y recuperación                      | `FUERA_DE_ALCANCE`                  | `QUEUE-ARC-006`; `QUEUE-ARC-008`; `QUEUE-ARC-011`; `QUEUE-ARC-012` | los perfiles, fallos, métricas e intervención autorizada quedan materializados sin alterar identidad ni ownership                         |
 | especialización POS                                          | preservada por contrato propietario | `INT-POS-013`; `INT-POS-020`                                       | venta/línea y sus diferencias usan identidades acreditadas y conciliación sin heurísticas                                                 |
 | control permanente de ventas                                 | preservado por contrato propietario | `INT-SALES-007`; `INT-SALES-008`                                   | retries y convivencia recuperan solo el alcance pendiente y conservan fuentes históricas                                                  |
+| materialización física del contrato compartido               | `DEFINIDO_NO_MATERIALIZADO`         | `SHELL-CI-020::<package_id>`                                       | el package se implementa solo tras `E5-GATE-008::<package_id>` y con la fundación CI previa certificada                                   |
 
 No queda un pendiente sustantivo sin propietario y condición de salida.
 
@@ -6462,7 +6467,7 @@ La tarea no altera identidad, texto, estado, relación, propietaria, evidencia n
 | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | `idempotency_ref` existía como referencia genérica en `ExternalReceivedEvent`                                                         | resuelto documentalmente   | `SHELL-CON-023` define `IntegrationIdempotencyRef` y el contrato compartido asociado                            |
 | los siete alcances idempotentes estaban definidos transversalmente pero no centralizados en la superficie compartida de integraciones | resuelto documentalmente   | `SHELL-CON-023`                                                                                                 |
-| el contrato externo de claim usa `OUTCOME_UNKNOWN` mientras la máquina transversal usa `RESULT_UNKNOWN`                               | reconciliado sin renombrar | ambos conceptos se conservan por capa y convergen en conciliación cuando corresponda                            |
+| el contrato externo de claim usa `OUTCOME_UNKNOWN` mientras la máquina transversal usa `RESULT_UNKNOWN`                               | reconciliado sin renombrar | `SHELL-CON-023` conserva ambos conceptos por capa; `INT-DB-008` materializa la conciliación física posterior    |
 | la conciliación externa y la conciliación permanente de ventas comparten invariantes pero mantienen propietarias y unidades distintas | reconciliado               | contrato compartido define forma común sin crear una máquina global                                             |
 | la persistencia física de restricciones idempotentes todavía no existe                                                                | esperado por fase          | `INT-DB-005`                                                                                                    |
 | la persistencia física de mecanismos de conciliación todavía no existe                                                                | esperado por fase          | `INT-DB-008`                                                                                                    |
@@ -6601,8 +6606,8 @@ SHELL-CON-024 — Crear contrato de cuarentena, rechazo y compensación
 
 **Estado:** APROBADA
 **Tarea anterior:** SHELL-CON-023 — Crear contrato de idempotencia y conciliación
-**Tarea siguiente:** SHELL-NORM-001 — Crear @vento/data-normalization
-**Tipo de tarea:** Documental; definición normativa y materializada del contrato compartido de cuarentena, rechazo y compensación para integraciones, preservando los vocabularios transversales de error parcial, idempotencia, conciliación y compensación, las especializaciones externas y POS ya aprobadas y las fronteras de propiedad, sin implementar código, persistencia, colas, workers, migraciones ni cambios en Supabase
+**Tarea siguiente:** SHELL-NORM-001 — Crear `@vento/data-normalization`
+**Tipo de tarea:** Documental; definición normativa documental del contrato compartido de cuarentena, rechazo y compensación para integraciones, preservando los vocabularios transversales de error parcial, idempotencia, conciliación y compensación, las especializaciones externas y POS ya aprobadas y las fronteras de propiedad, sin implementar código, persistencia, colas, workers, migraciones ni cambios en Supabase
 **Bloque:** H — Fundación compartida de VENTO-SHELL
 **Repositorio propietario:** `devVentoGroup/vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md`
@@ -6752,7 +6757,7 @@ La tarea incluye:
 - enlace con la política transversal de compensación;
 - preservación de historial, evidencia, ownership, sensibilidad, auditoría y residuales;
 - adopción explícita para las veintiuna identidades externas vigentes;
-- handoffs a las tareas físicas propietarias.
+- handoffs a `INT-DB-006`, `INT-DB-007`, `INT-DB-008`, `QUEUE-ARC-008`, `QUEUE-ARC-009`, `QUEUE-ARC-011`, `QUEUE-ARC-012`, `SHELL-CI-020::<package_id>`, `SHELL-CI-006` y, para consumidores web, `SHELL-MIG-001..008`, según la responsabilidad exacta.
 
 Quedan fuera:
 
@@ -7661,17 +7666,17 @@ Las referencias no implican que todos los objetos existan para toda operación.
 
 #### 39. Handoffs físicos y condiciones de salida
 
-| Trabajo posterior                                           | Estado desde esta tarea     | Propietario / tarea                                             | Condición de salida                                                                                 |
-| ----------------------------------------------------------- | --------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| persistencia de cuarentena y errores no procesables         | `DEFINIDO_NO_MATERIALIZADO` | `INT-DB-006`                                                    | infraestructura autorizada preserva identidad, evidencia, razón, disposición, ownership y lifecycle |
-| auditoría física de procesamiento, retries y compensaciones | `DEFINIDO_NO_MATERIALIZADO` | `INT-DB-007`                                                    | intentos, decisiones, autoridad, resultados y compensaciones quedan reconstruibles                  |
-| conciliación física por integración                         | `DEFINIDO_NO_MATERIALIZADO` | `INT-DB-008`                                                    | casos, fuentes comparadas, outcomes y residuales quedan persistidos y operables                     |
-| cola de fallos y recuperación manual                        | `DEFINIDO_NO_MATERIALIZADO` | `QUEUE-ARC-008`                                                 | aislamiento durable y recuperación controlada cumplen este contrato                                 |
-| exclusión/concurrencia de reproceso                         | `DEFINIDO_NO_MATERIALIZADO` | `QUEUE-ARC-009`                                                 | un mismo caso no produce reprocesos concurrentes incompatibles                                      |
-| métricas de espera, error y recuperación                    | `DEFINIDO_NO_MATERIALIZADO` | `QUEUE-ARC-011`                                                 | observabilidad usa proyecciones sin sustituir el estado propietario                                 |
-| autorización de retry o reprocess                           | `DEFINIDO_NO_MATERIALIZADO` | `QUEUE-ARC-012`                                                 | acciones manuales revalidan autoridad y quedan auditadas                                            |
-| package físico de contratos compartidos                     | `DEFINIDO_NO_MATERIALIZADO` | ciclo autorizado de package, CI y release de `@vento/contracts` | tipos y exports implementan la semántica sin cambiarla                                              |
-| adopción por consumidoras                                   | `DEFINIDO_NO_MATERIALIZADO` | paquetes E5 y tareas de migración aplicables                    | adaptadores y aplicaciones consumen la versión aprobada y pasan pruebas de compatibilidad           |
+| Trabajo posterior                                           | Estado desde esta tarea     | Propietario / tarea                                        | Condición de salida                                                                                                            |
+| ----------------------------------------------------------- | --------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| persistencia de cuarentena y errores no procesables         | `DEFINIDO_NO_MATERIALIZADO` | `INT-DB-006`                                               | infraestructura autorizada preserva identidad, evidencia, razón, disposición, ownership y lifecycle                            |
+| auditoría física de procesamiento, retries y compensaciones | `DEFINIDO_NO_MATERIALIZADO` | `INT-DB-007`                                               | intentos, decisiones, autoridad, resultados y compensaciones quedan reconstruibles                                             |
+| conciliación física por integración                         | `DEFINIDO_NO_MATERIALIZADO` | `INT-DB-008`                                               | casos, fuentes comparadas, outcomes y residuales quedan persistidos y operables                                                |
+| cola de fallos y recuperación manual                        | `DEFINIDO_NO_MATERIALIZADO` | `QUEUE-ARC-008`                                            | aislamiento durable y recuperación controlada cumplen este contrato                                                            |
+| exclusión/concurrencia de reproceso                         | `DEFINIDO_NO_MATERIALIZADO` | `QUEUE-ARC-009`                                            | un mismo caso no produce reprocesos concurrentes incompatibles                                                                 |
+| métricas de espera, error y recuperación                    | `DEFINIDO_NO_MATERIALIZADO` | `QUEUE-ARC-011`                                            | observabilidad usa proyecciones sin sustituir el estado propietario                                                            |
+| autorización de retry o reprocess                           | `DEFINIDO_NO_MATERIALIZADO` | `QUEUE-ARC-012`                                            | acciones manuales revalidan autoridad y quedan auditadas                                                                       |
+| package físico de contratos compartidos                     | `DEFINIDO_NO_MATERIALIZADO` | `SHELL-CI-020::<package_id>`                               | la implementación se abre solo tras `E5-GATE-008::<package_id>` y representa la semántica aprobada sin modificarla             |
+| adopción por consumidoras                                   | `DEFINIDO_NO_MATERIALIZADO` | `SHELL-CI-006`; `SHELL-MIG-001..008` para consumidores web | cada consumidora se actualiza mediante PR después de la versión física autorizada; las web además migran por lotes reversibles |
 
 No queda un pendiente material de esta tarea sin propietario y condición de salida.
 
@@ -7882,5 +7887,5 @@ SHELL-CON-024 — Crear contrato de cuarentena, rechazo y compensación
 
 ##### SIGUIENTE TAREA RESERVADA
 
-SHELL-NORM-001 — Crear @vento/data-normalization
+SHELL-NORM-001 — Crear `@vento/data-normalization`
 
