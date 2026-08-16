@@ -2125,7 +2125,1053 @@ Ningún handoff modifica la continuidad inmediata del plan.
 **SIGUIENTE TAREA RESERVADA:** `SHELL-UI-003 — Compartir Button`
 
 
-### [ ] SHELL-UI-003 — Compartir Button
+### ✅ SHELL-UI-003 — Compartir Button
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-002 — Compartir Alert
+**Tarea siguiente:** SHELL-UI-004 — Compartir Card
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-UI-003` define y reconcilia el contrato canónico del componente visual compartido `Button` que deberá pertenecer a `@vento/ui-web`.
+
+La tarea parte de implementaciones actuales que comparten la misma intención general pero no el mismo contrato observable. La implementación local de SHELL y la familia histórica `vento/standard` coinciden en el elemento HTML base, los tamaños `sm | md | lg` y parte de las variantes, pero divergen en variantes, estado de carga, ancho, estilos y boundary de cliente.
+
+La tarea no adopta una copia por precedencia accidental. Materializa documentalmente una única decisión común:
+
+```text
+INTENCIÓN DE ACCIÓN YA DETERMINADA POR EL PROPIETARIO FUNCIONAL
++
+ESTADO DE INTERACCIÓN YA RESUELTO
++
+JERARQUÍA VISUAL EXPLÍCITA
++
+SEMÁNTICA NATIVA DE BUTTON
+→
+Button DE @vento/ui-web
+→
+INTERACCIÓN WEB CONSISTENTE, ACCESIBLE Y REUTILIZABLE
+```
+
+`Button` representa y dispara una interacción entregada por el consumidor. No decide qué acciones existen, quién puede ejecutarlas, qué operación empresarial corresponde ni si una mutación quedó confirmada.
+
+---
+
+#### 2. Resultado canónico
+
+Se aprueba `Button` como componente compartido de `@vento/ui-web` con las siguientes propiedades vinculantes:
+
+1. identidad pública funcional única: `Button`;
+2. variantes canónicas `primary`, `secondary`, `outline`, `ghost` y `danger`;
+3. variante por defecto `primary`;
+4. tamaños canónicos `sm`, `md` y `lg`;
+5. tamaño por defecto `md`;
+6. elemento semántico nativo `button`;
+7. `type="button"` como comportamiento por defecto cuando el consumidor no declara otro tipo;
+8. soporte de atributos nativos compatibles de `HTMLButtonElement`;
+9. soporte de estado `disabled` nativo;
+10. soporte de estado visual e interactivo `loading` sin transformar la carga en resultado empresarial;
+11. preservación del nombre accesible durante `loading`;
+12. ausencia de una propiedad pública específica `fullWidth`;
+13. ausencia de polimorfismo de enlace o navegación en esta tarea;
+14. ausencia de autorización, contexto, datos, RPC o lógica empresarial dentro del componente;
+15. compatibilidad conceptual con renderizado server-safe sin imponer un boundary cliente a todo el módulo;
+16. adopción y retiro legacy posteriores, por consumidor y con rollback;
+17. cero cambios físicos y cero consumidores migrados por esta tarea.
+
+El estado resultante queda:
+
+```text
+Button compartido
+→ DEFINIDO
+
+API conceptual
+→ DEFINIDA
+
+implementación física en @vento/ui-web
+→ NO MATERIALIZADA
+
+consumidores migrados
+→ 0
+
+implementaciones legacy retiradas
+→ 0
+```
+
+---
+
+#### 3. Fuentes y precedencia
+
+La especificación conserva las decisiones vigentes de las siguientes fuentes:
+
+| Fuente                                                                             | Uso vinculante                                                                                          |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`                                       | continuidad, trazabilidad, separación entre especificación e implementación y tratamiento de requisitos |
+| `docs/plan-canonico/modular/delivery-contract.json`                                | forma del artefacto documental                                                                          |
+| `docs/plan-canonico/modular/active-sequence.json`                                  | continuidad `SHELL-UI-002 → SHELL-UI-003 → SHELL-UI-004`                                                |
+| `07_COMPONENTES_WEB_COMPARTIDOS.md`                                                | propietario del mini-bloque y secuencia `SHELL-UI-*`                                                    |
+| `SHELL-UI-001`                                                                     | identidad, fronteras y estado no materializado de `@vento/ui-web`                                       |
+| `SHELL-UI-002`                                                                     | patrón precedente para contratos de componentes compartidos y separación entre presentación y autoridad |
+| `01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md`                                       | clasificación de la familia de primitivas como duplicación mixta que exige reconciliación               |
+| `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`                                        | distribución, SemVer, compatibilidad, adopción y rollback de packages compartidos                       |
+| `03_CONTRATOS_COMPARTIDOS.md`                                                      | frontera entre contratos, contexto, datos e implementación visual                                       |
+| `src/components/ui/Button.tsx` de SHELL                                            | candidato local con variantes, tamaños, `loading`, `fullWidth` y semántica HTML actual                  |
+| `templates/app-shell-standard/src/components/vento/standard/ui.tsx`                | fuente histórica con variante `brand`, tamaños y estilo de la familia estándar                          |
+| copias actuales `src/components/vento/standard/ui.tsx` localizadas en consumidores | evidencia de duplicación runtime de la familia histórica                                                |
+| Registro Canónico de Requisitos de Prueba — dominio SHELL                          | reconciliación, package, release, compatibilidad y retiro ya cubiertos                                  |
+| Registro Canónico de Requisitos de Prueba — dominio UX                             | accesibilidad, controles bloqueados, acciones sensibles y semántica de interacción ya cubiertas         |
+
+Precedencia:
+
+```text
+contratos canónicos aprobados
+→ frontera de @vento/ui-web
+→ contrato de Button
+→ implementación física futura
+→ adopción por consumidor
+→ retiro de duplicados con evidencia
+```
+
+La existencia previa de una implementación no la convierte por sí sola en contrato compartido.
+
+---
+
+#### 4. Línea base verificable
+
+La reconciliación parte de las siguientes instancias verificadas:
+
+| Instancia                                                                       | Estado                                                                                             | Familia                  |
+| ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------ |
+| `vento-shell/src/components/ui/Button.tsx`                                      | implementación local actual                                                                        | candidato SHELL          |
+| `vento-shell/templates/app-shell-standard/src/components/vento/standard/ui.tsx` | fuente histórica del template                                                                      | estándar histórico       |
+| `vento-nexo/src/components/vento/standard/ui.tsx`                               | copia runtime localizada                                                                           | estándar histórico       |
+| `vento-fogo/src/components/vento/standard/ui.tsx`                               | copia runtime localizada                                                                           | estándar histórico       |
+| `vento-origo/src/components/vento/standard/ui.tsx`                              | copia runtime localizada                                                                           | estándar histórico       |
+| `vento-viso/src/components/vento/standard/ui.tsx`                               | copia runtime localizada                                                                           | estándar histórico       |
+| `vento-pulso/src/components/vento/standard/ui.tsx`                              | copia runtime localizada                                                                           | estándar histórico       |
+| `vento-numera`                                                                  | no se localizó una implementación `Button` equivalente mediante la búsqueda actual del repositorio | sin instancia confirmada |
+
+Conteo verificable utilizado por esta tarea:
+
+```text
+implementaciones runtime/locales localizadas = 6
+fuentes históricas de template localizadas    = 1
+Button compartidos materializados             = 0
+consumidores migrados                         = 0
+```
+
+La ausencia de una instancia localizada en NUMERA no se interpreta como prueba global de inexistencia futura o histórica; únicamente impide inventar una migración concreta para ese repositorio en esta tarea.
+
+---
+
+#### 5. Divergencias actuales que deben reconciliarse
+
+Las dos familias principales no son equivalentes:
+
+| Dimensión              | SHELL local                               | familia `vento/standard`             | Decisión canónica                                |
+| ---------------------- | ----------------------------------------- | ------------------------------------ | ------------------------------------------------ |
+| elemento               | `button`                                  | `button`                             | conservar `button` nativo                        |
+| variante por defecto   | `primary`                                 | `primary`                            | `primary`                                        |
+| variantes comunes      | `primary`, `secondary`, `ghost`           | `primary`, `secondary`, `ghost`      | conservar                                        |
+| variantes solo SHELL   | `outline`, `danger`                       | —                                    | incorporar al contrato común                     |
+| variante solo estándar | —                                         | `brand`                              | no incorporar como variante canónica             |
+| tamaños                | `sm`, `md`, `lg`                          | `sm`, `md`, `lg`                     | conservar los tres                               |
+| tamaño por defecto     | `md`                                      | `md`                                 | `md`                                             |
+| `fullWidth`            | sí                                        | no                                   | no incorporar como prop pública específica       |
+| `loading`              | sí                                        | no                                   | incorporar, corrigiendo semántica                |
+| `aria-busy`            | sí durante carga                          | no aplica                            | conservar obligación durante carga               |
+| etiqueta durante carga | sustituida por `Cargando...`              | no aplica                            | no sustituir automáticamente el nombre accesible |
+| `type` por defecto     | `button`                                  | depende del HTML si no se declara    | fijar `button` por defecto                       |
+| `className`            | heredado por atributos, sin uso principal | composición explícita                | admitir personalización acotada                  |
+| `style`                | heredado y mezclado al final              | heredado por props                   | conservar atributos nativos compatibles          |
+| boundary de cliente    | archivo marcado `use client`              | módulo completo marcado `use client` | no imponerlo por contrato al componente puro     |
+
+Esta reconciliación es sustantiva: ningún lado se adopta íntegramente.
+
+---
+
+#### 6. Identidad pública
+
+La superficie conceptual introducida por `SHELL-UI-003` queda compuesta por:
+
+```text
+Button
+ButtonProps
+ButtonVariant
+ButtonSize
+```
+
+Estos nombres describen el contrato lógico de la superficie. La tarea no inventa una ruta física de archivo, subpath npm, barrel, mapa de `exports` ni layout interno del package.
+
+La materialización física deberá preservar esta semántica sin convertir la estructura interna futura en parte pública accidental.
+
+---
+
+#### 7. Contrato conceptual mínimo
+
+La API conceptual mínima queda:
+
+```text
+Button
+  variant?   = primary | secondary | outline | ghost | danger
+  size?      = sm | md | lg
+  loading?   = boolean
+  disabled?  = boolean nativo
+  type?      = button | submit | reset
+  children   = contenido de la acción
+  className? = extensión visual acotada
+  ...props   = atributos compatibles de HTMLButtonElement
+```
+
+Valores por defecto:
+
+```text
+variant = primary
+size    = md
+type    = button
+loading = false
+```
+
+No se incorporan en esta tarea propiedades públicas específicas para:
+
+- `fullWidth`;
+- `brand`;
+- `success`;
+- `asChild`;
+- `href`;
+- `to`;
+- navegación de router;
+- confirmación sensible;
+- autorización;
+- permisos;
+- reintento remoto;
+- recibos empresariales;
+- iconos izquierda/derecha;
+- tooltips;
+- analítica de dominio.
+
+---
+
+#### 8. Variantes canónicas
+
+Se congelan cinco variantes:
+
+| Variante    | Intención visual                                                            | Límite                                                                    |
+| ----------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `primary`   | acción ordinaria de mayor énfasis dentro de una región o decisión local     | no implica autoridad ni prioridad global del proceso                      |
+| `secondary` | acción ordinaria de apoyo o alternativa de énfasis medio                    | no equivale a acción opcional desde el dominio                            |
+| `outline`   | alternativa de menor énfasis con límite visual explícito                    | no introduce semántica de permiso o estado                                |
+| `ghost`     | acción terciaria o de chrome con énfasis mínimo                             | debe conservar affordance, foco y accesibilidad                           |
+| `danger`    | intención visual de riesgo o efecto destructivo conocido por el propietario | no sustituye confirmación, step-up, autorización, receipt ni idempotencia |
+
+`primary` es el valor por defecto del componente, no una regla que obligue a que toda pantalla tenga un botón `primary` ni que permita más de una acción dominante sin criterio de UX.
+
+La selección de variante corresponde al consumidor o componente compuesto propietario, no a `Button` mediante inferencia de texto, endpoint, ruta o permiso.
+
+---
+
+#### 9. Decisión sobre `brand`
+
+La variante histórica `brand` no se incorpora al contrato canónico.
+
+Razones:
+
+1. aparece en la familia histórica `vento/standard`, no en el candidato local de SHELL;
+2. expresa principalmente una elección cromática de marca, no una jerarquía de interacción estable;
+3. el contrato de marca pertenece a `@vento/ui-web` y no necesita convertirse en una intención funcional adicional del control;
+4. la búsqueda actual no confirmó usos concretos `variant="brand"` que obliguen a perpetuar esa API por compatibilidad inmediata;
+5. conservarla como variante pública crearía dos ejes mezclados: jerarquía de acción y selección cromática.
+
+Durante la migración, cada uso real de `brand` deberá clasificarse por intención y mapearse a la variante canónica correspondiente. No se autoriza una sustitución global ciega.
+
+---
+
+#### 10. Decisión sobre `outline`
+
+`outline` sí se incorpora al contrato común porque representa una jerarquía visual distinta ya materializada en el candidato local de SHELL y compatible con la responsabilidad del componente compartido.
+
+No se define como sinónimo de `secondary`:
+
+```text
+secondary
+→ superficie de apoyo con tratamiento visual propio
+
+outline
+→ superficie esencialmente transparente con borde explícito
+```
+
+La implementación física futura deberá preservar una diferencia perceptible y accesible entre ambas sin depender de un único valor cromático.
+
+---
+
+#### 11. Decisión sobre `danger`
+
+`danger` se incorpora exclusivamente como intención visual.
+
+Regla vinculante:
+
+```text
+variant="danger"
+≠ permiso para ejecutar
+≠ confirmación suficiente
+≠ step-up
+≠ validación de recurso
+≠ idempotencia
+≠ receipt
+≠ auditoría
+```
+
+Una acción sensible, destructiva, financiera, de custodia, publicación, acceso o excepción conserva sus controles propietarios aunque utilice `Button variant="danger"`.
+
+`SHELL-UI-014 — Compartir confirmaciones de acciones sensibles` conserva la propiedad del patrón compuesto de confirmación. `SHELL-UI-003` no lo anticipa ni lo sustituye.
+
+---
+
+#### 12. Tamaños canónicos
+
+Los tamaños comunes quedan congelados como:
+
+```text
+sm
+md
+lg
+```
+
+`md` es el valor por defecto.
+
+Los tres nombres se conservan porque aparecen en ambas familias principales y representan una dimensión legítima de densidad y contexto de uso.
+
+La tarea no fija valores físicos de altura, padding, tipografía o breakpoints. Esos valores pertenecen a la materialización visual de `@vento/ui-web` y deberán cumplir el contrato de accesibilidad, densidad, reflow y dispositivos aplicable.
+
+El tamaño no altera:
+
+- semántica;
+- permiso;
+- prioridad empresarial;
+- tipo HTML;
+- confirmación requerida;
+- área táctil mínima exigida por la superficie aplicable.
+
+---
+
+#### 13. Elemento HTML y tipo
+
+`Button` renderiza conceptualmente un elemento HTML nativo:
+
+```html
+<button></button>
+```
+
+Reglas:
+
+1. si el consumidor no declara `type`, el componente utiliza `type="button"`;
+2. `type="submit"` se utiliza únicamente cuando el consumidor necesita semántica real de envío de formulario;
+3. `type="reset"` permanece disponible por compatibilidad con el elemento nativo cuando sea semánticamente válido;
+4. el componente no infiere `submit` por ubicación dentro de un formulario;
+5. el componente no convierte automáticamente una acción en navegación.
+
+La decisión explícita `type="button"` por defecto evita submits accidentales por la semántica implícita del HTML.
+
+---
+
+#### 14. Button no es Link
+
+Esta tarea no crea un botón polimórfico para enlaces.
+
+Cuando la intención primaria sea navegación, la superficie propietaria deberá utilizar la semántica de enlace o navegación que corresponda. Aplicar apariencia de botón a un enlace, si se requiere, deberá resolverse sin convertir `Button` en router, owner de hrefs o mecanismo de deep link.
+
+Por tanto `Button` no incorpora:
+
+- `href`;
+- `to`;
+- `replace`;
+- `prefetch`;
+- route names;
+- deep-link contracts;
+- navegación cross-app.
+
+La separación evita mezclar activación de una acción con navegación y conserva las fronteras de `SHELL-UI-011` y `SHELL-UI-020`.
+
+---
+
+#### 15. Estado `disabled`
+
+`disabled` conserva semántica nativa de `button`.
+
+El componente:
+
+- refleja el booleano resuelto por el consumidor;
+- impide activación mediante el mecanismo nativo cuando está deshabilitado;
+- presenta el estado de forma perceptible sin depender únicamente de opacidad o color;
+- conserva una representación coherente con foco y tecnologías de asistencia según la semántica nativa aplicable.
+
+El componente no decide por qué una acción está deshabilitada.
+
+Si un control relevante requiere explicación perceptible, la superficie propietaria debe asociar o presentar esa explicación conforme a los requisitos UX. `Button` no inventa reason codes ni copy de bloqueo.
+
+---
+
+#### 16. Frontera entre `disabled` y autorización
+
+Queda prohibida la equivalencia:
+
+```text
+disabled = false
+→ autorizado
+```
+
+La capacidad de activar visualmente un `Button` no constituye autorización.
+
+La autorización efectiva permanece en las capas propietarias y debe revalidarse donde corresponda. Del mismo modo:
+
+```text
+disabled = true
+```
+
+puede representar indisponibilidad contextual o de UX, pero no modifica el estado autoritativo del recurso.
+
+Un consumidor no puede utilizar la presencia, ausencia o estado visual del componente como único control de acceso.
+
+---
+
+#### 17. Estado `loading`
+
+Se conserva `loading?: boolean` como parte del contrato canónico porque representa un estado interactivo reutilizable ya existente en el candidato SHELL.
+
+Durante `loading = true`:
+
+1. el control debe impedir activaciones repetidas equivalentes;
+2. el control debe exponer estado ocupado mediante semántica accesible equivalente a `aria-busy="true"`;
+3. la acción debe conservar una identidad perceptible;
+4. el nombre accesible de la acción no debe desaparecer o convertirse automáticamente en una palabra genérica;
+5. el estado visual puede incorporar un indicador de progreso indeterminado si la implementación futura lo decide;
+6. el control no declara éxito, fallo, confirmación de servidor ni resultado empresarial;
+7. salir del estado de carga corresponde al estado que entregue el propietario funcional.
+
+`loading` es estado de interacción, no receipt.
+
+---
+
+#### 18. Corrección del literal `Cargando...`
+
+El candidato local de SHELL sustituye actualmente `children` por el literal `Cargando...` cuando `loading` está activo.
+
+Ese comportamiento no se incorpora al contrato compartido como regla canónica.
+
+Motivos:
+
+- elimina el nombre visible específico de la acción;
+- homogeneiza acciones diferentes bajo un texto genérico;
+- dificulta localización y contenido contextual;
+- puede alterar el nombre accesible sin necesidad;
+- confunde presentación de progreso con definición del copy.
+
+La implementación futura deberá preservar la identidad de la acción y permitir un indicador de carga sin imponer un texto global hardcodeado.
+
+Esta tarea no define una propiedad `loadingLabel`, porque no existe evidencia canónica suficiente para abrir esa API adicional.
+
+---
+
+#### 19. Decisión sobre `fullWidth`
+
+`fullWidth` no se incorpora como prop pública específica de `Button`.
+
+La evidencia actual muestra `fullWidth` en el candidato local de SHELL, pero no en la familia estándar y no se confirmó un uso consumidor que obligue a mantenerlo como API específica.
+
+La ocupación de ancho se clasifica como responsabilidad de layout o composición:
+
+```text
+ancho del control
+→ contenedor / layout / className / estilo permitido
+
+semántica del control
+→ Button
+```
+
+No se elimina código legacy en esta tarea. La migración posterior deberá sustituir cualquier uso real de `fullWidth` por la composición de layout aprobada, verificando paridad antes de retirar la implementación anterior.
+
+---
+
+#### 20. Contenido e iconos
+
+`children` representa el contenido del control y puede incluir texto e iconografía compuesta por el consumidor.
+
+No se crean props específicas `iconLeft`, `iconRight`, `leadingIcon` o `trailingIcon` en esta tarea.
+
+Reglas:
+
+- un icono decorativo no sustituye el nombre de la acción;
+- un botón de solo icono requiere nombre accesible explícito;
+- el orden visual de icono y texto no puede alterar el orden semántico de forma engañosa;
+- el contenido no debe introducir controles interactivos anidados;
+- texto largo debe permitir reflow razonable sin truncar información crítica por contrato.
+
+La futura política transversal de iconos no se define desde `Button`.
+
+---
+
+#### 21. Atributos nativos y eventos
+
+`Button` admite atributos compatibles de `HTMLButtonElement`, incluyendo los de accesibilidad, formularios, datos y eventos que sean semánticamente válidos.
+
+La transferencia de eventos no concede al componente responsabilidad sobre la operación ejecutada.
+
+Ejemplos conceptuales:
+
+```text
+onClick
+onFocus
+onBlur
+aria-*
+data-*
+name
+value
+form
+```
+
+El consumidor sigue siendo propietario de:
+
+- efectos;
+- comandos;
+- navegación externa;
+- mutaciones;
+- validación de negocio;
+- idempotencia;
+- reintento;
+- telemetría de dominio.
+
+---
+
+#### 22. `className`, `style` y personalización
+
+Los atributos nativos de presentación pueden transferirse al elemento cuando el contrato físico futuro los admita.
+
+La personalización es aditiva y no autoriza romper invariantes del componente.
+
+Un consumidor no debe utilizar `className` o `style` para:
+
+- eliminar un indicador de foco necesario;
+- hacer imperceptible `disabled`;
+- ocultar el nombre de una acción sin alternativa accesible;
+- fabricar una variante de autorización;
+- convertir una acción ordinaria en una confirmación sensible;
+- invalidar contraste o tamaño táctil aplicable;
+- ocultar controles para simular seguridad.
+
+Las necesidades repetidas que no puedan expresarse sin romper el contrato deberán evaluarse como evolución versionada del package, no como forks visuales silenciosos.
+
+---
+
+#### 23. Accesibilidad mínima
+
+La implementación futura de `Button` deberá conservar como mínimo:
+
+1. semántica nativa de botón;
+2. operación por teclado conforme al elemento nativo;
+3. foco visible y distinguible;
+4. nombre accesible;
+5. estado `disabled` perceptible;
+6. estado `loading` perceptible y ocupado sin perder identidad;
+7. significado no dependiente únicamente del color;
+8. contraste aplicable;
+9. reflow sin pérdida del control;
+10. objetivos táctiles compatibles con la superficie y dispositivo aplicables;
+11. ausencia de gestos ocultos como único mecanismo;
+12. atributos ARIA únicamente cuando complementen, y no contradigan, la semántica nativa.
+
+No se reemplaza la semántica nativa por `div`, `span` o elementos con `role="button"` cuando un `button` real es aplicable.
+
+---
+
+#### 24. Teclado, puntero y tacto
+
+La activación ordinaria debe conservar los mecanismos nativos del botón.
+
+La tarea prohíbe que una función material dependa exclusivamente de:
+
+- hover;
+- doble toque;
+- pulsación larga;
+- swipe;
+- arrastre;
+- gesto oculto.
+
+La implementación visual podrá reaccionar a hover o active como retroalimentación, pero esos estados no pueden contener la única explicación de la acción ni ser requisito para ejecutarla.
+
+En tablet y kiosco, el tamaño seleccionado no exime a la superficie propietaria de cumplir el objetivo táctil aplicable.
+
+---
+
+#### 25. Foco
+
+El componente compartido debe disponer de un tratamiento de foco visible consistente con el contrato visual de `@vento/ui-web`.
+
+Ni la variante ni `className` deben eliminarlo como comportamiento ordinario.
+
+`Button` no mueve foco automáticamente después de activarse. El movimiento de foco tras modales, errores, confirmaciones, cambios de pantalla o recuperación pertenece al patrón compuesto propietario.
+
+El componente tampoco roba foco al entrar en `loading`.
+
+---
+
+#### 26. Frontera de cliente y servidor
+
+La lógica conceptual de `Button` no requiere por sí misma:
+
+- estado React interno;
+- efectos;
+- acceso a `window`;
+- acceso a `document`;
+- storage;
+- timers;
+- red;
+- router;
+- sesión.
+
+Por ello el contrato no exige que toda la superficie del package sea `client-only`.
+
+Una aplicación cliente puede entregar handlers interactivos cuando su composición lo requiera. Esa necesidad no autoriza marcar todo `@vento/ui-web` ni todos sus componentes como cliente de forma indiscriminada.
+
+Los marcadores `"use client"` observados en las implementaciones actuales se consideran una propiedad de esos archivos concretos, no una obligación pública de `Button`.
+
+---
+
+#### 27. Frontera de autoridad
+
+`Button` es presentación e interacción, no control de seguridad.
+
+Queda fuera de su responsabilidad:
+
+```text
+resolver identidad
+resolver rol
+resolver sede o área
+resolver turno o check-in
+resolver permisos
+consultar Supabase
+invocar RPC por contrato interno
+interpretar RLS
+resolver navegación autorizada
+validar recurso
+confirmar custodia
+confirmar operación empresarial
+generar receipt
+auditar por sí mismo
+```
+
+El componente recibe estados y handlers ya determinados por capas propietarias.
+
+Ningún consumidor podrá argumentar que una acción es segura únicamente porque el botón esté oculto, deshabilitado, sea `danger` o se renderice bajo cierto contexto visual.
+
+---
+
+#### 28. Dependencias permitidas y prohibidas
+
+La implementación física futura podrá depender de utilidades internas puramente visuales de `@vento/ui-web` cuando existan y sean compatibles con su arquitectura.
+
+No se autoriza dependencia directa desde `Button` hacia:
+
+- `@vento/supabase`;
+- clientes Supabase;
+- RPCs;
+- repositorios de aplicación;
+- hooks de autenticación;
+- resolvers de permisos;
+- cookies de sesión;
+- router de una aplicación concreta;
+- variables secretas;
+- servicios de red;
+- lógica de negocio.
+
+Si una superficie necesita resolver cualquiera de esas capacidades, lo hace fuera de `Button` y entrega al componente únicamente el estado de presentación e interacción resultante.
+
+---
+
+#### 29. Relación con formularios
+
+`Button` preserva la semántica HTML de formularios sin apropiarse de la validación de dominio.
+
+Reglas:
+
+1. `type="submit"` puede participar en un formulario real;
+2. el componente no ejecuta `preventDefault` universalmente;
+3. el componente no intercepta submit para convertirlo en RPC;
+4. el componente no serializa formularios;
+5. `loading` no demuestra que el formulario haya sido aceptado;
+6. `disabled` no sustituye validación del lado servidor;
+7. errores de formulario pertenecen al formulario o patrón de error propietario.
+
+El consumidor conserva control sobre `form`, `name`, `value` y demás atributos nativos compatibles cuando sean necesarios.
+
+---
+
+#### 30. Relación con acciones sensibles
+
+Las acciones sensibles requieren un patrón de mayor nivel cuando el riesgo lo exija.
+
+`Button` puede ser la superficie final de activación, pero no define:
+
+- copy de confirmación;
+- recurso afectado;
+- efecto esperado;
+- step-up;
+- doble validación;
+- motivo obligatorio;
+- receipt;
+- protección idempotente;
+- separación física respecto a CTA ordinarios.
+
+La tarea propietaria del patrón compartido es:
+
+```text
+SHELL-UI-014 — Compartir confirmaciones de acciones sensibles
+```
+
+Esta asignación evita convertir `danger` en un atajo de seguridad.
+
+---
+
+#### 31. Relación con paneles y recuperación
+
+`Button` podrá ser consumido posteriormente por componentes y patrones compuestos sin apropiarse de sus reglas.
+
+Handoffs relevantes:
+
+| Tarea          | Responsabilidad conservada                                                |
+| -------------- | ------------------------------------------------------------------------- |
+| `SHELL-UI-013` | panel de acción principal y jerarquía del CTA dentro del patrón compuesto |
+| `SHELL-UI-014` | confirmaciones de acciones sensibles                                      |
+| `SHELL-UI-016` | estados de error recuperable y acciones de recuperación                   |
+| `SHELL-UI-017` | adaptación de patrones para tablet                                        |
+| `SHELL-UI-018` | adaptación de patrones para kiosco                                        |
+| `SHELL-UI-019` | proceso interrumpido y continuidad de acciones                            |
+| `SHELL-UI-020` | traspaso entre aplicaciones                                               |
+
+`SHELL-UI-003` define el control base; no adelanta contratos de esos patrones.
+
+---
+
+#### 32. Reconciliación del candidato local de SHELL
+
+La implementación `src/components/ui/Button.tsx` de SHELL se clasifica como `CANDIDATO_RECONCILIADO`, no como implementación canónica adoptada íntegramente.
+
+Decisión por rasgo:
+
+| Rasgo actual                | Decisión                                   |
+| --------------------------- | ------------------------------------------ |
+| `button` nativo             | conservar                                  |
+| `primary`                   | conservar                                  |
+| `secondary`                 | conservar                                  |
+| `outline`                   | conservar                                  |
+| `ghost`                     | conservar                                  |
+| `danger`                    | conservar                                  |
+| `sm                         | md                                         | lg` | conservar |
+| default `md`                | conservar                                  |
+| default `type="button"`     | conservar                                  |
+| `loading`                   | conservar con corrección semántica         |
+| `aria-busy` en loading      | conservar obligación                       |
+| reemplazo por `Cargando...` | no incorporar                              |
+| `fullWidth`                 | no incorporar como prop pública específica |
+| estilos inline concretos    | no convertir en API                        |
+| `"use client"` de archivo   | no convertir en obligación del contrato    |
+
+La copia local permanece intacta hasta su migración controlada. Esta tarea no la modifica ni la elimina.
+
+---
+
+#### 33. Reconciliación de la familia `vento/standard`
+
+La implementación de `templates/app-shell-standard/src/components/vento/standard/ui.tsx` y las copias runtime localizadas se clasifican como `LEGACY_ESTANDAR_A_MIGRAR`.
+
+Decisión por rasgo:
+
+| Rasgo actual                     | Decisión                                                                  |
+| -------------------------------- | ------------------------------------------------------------------------- |
+| `button` nativo                  | conservar                                                                 |
+| `primary`                        | conservar                                                                 |
+| `secondary`                      | conservar                                                                 |
+| `ghost`                          | conservar                                                                 |
+| `brand`                          | no incorporar al contrato; requiere clasificación por intención al migrar |
+| `sm                              | md                                                                        | lg` | conservar |
+| default `md`                     | conservar                                                                 |
+| clases/tokens concretos          | fuente de compatibilidad visual, no API perpetua                          |
+| `"use client"` del módulo        | no heredar como obligación de `Button`                                    |
+| ausencia de `loading`            | queda superada por el contrato común                                      |
+| ausencia de `danger` y `outline` | queda superada por el contrato común                                      |
+
+La tarea no modifica el template ni las copias runtime.
+
+---
+
+#### 34. Estrategia de migración
+
+La migración física no ocurre en `SHELL-UI-003`.
+
+Cuando el bloque de migración correspondiente la habilite, cada consumidor deberá:
+
+1. inventariar usos reales de Button y botones equivalentes;
+2. identificar variante, tamaño, tipo HTML, estado de carga y layout;
+3. clasificar usos `brand` por intención antes de mapearlos;
+4. identificar cualquier uso real de `fullWidth` y resolverlo mediante layout compatible;
+5. verificar comportamiento de submit y formularios;
+6. verificar estados disabled/loading;
+7. verificar accesibilidad y foco;
+8. mantener rollback al componente anterior;
+9. retirar la copia legacy únicamente después de demostrar ausencia de consumidores residuales.
+
+No se autoriza un reemplazo masivo basado únicamente en coincidencia de nombre `Button`.
+
+---
+
+#### 35. Compatibilidad y versionado
+
+La materialización futura del contrato deberá respetar el gobierno SemVer del package.
+
+Cambios que pueden afectar compatibilidad incluyen, entre otros:
+
+- retirar o renombrar una variante;
+- retirar o renombrar un tamaño;
+- cambiar el tipo HTML por defecto;
+- cambiar semántica de `loading`;
+- cambiar forwarding de atributos o eventos;
+- modificar requisitos de `children`;
+- modificar comportamiento de `disabled`;
+- cambiar condiciones de renderizado server/client;
+- cambiar el contrato accesible observable.
+
+No se modifica silenciosamente la API para acomodar un consumidor particular.
+
+La compatibilidad visual no se mide únicamente por coincidencia de píxeles: también incluye jerarquía, interacción, accesibilidad, formularios y estados.
+
+---
+
+#### 36. Contrato de prueba futuro
+
+La implementación física y su adopción deberán demostrar, como mínimo:
+
+1. renderizado con defaults `primary`, `md` y `type="button"`;
+2. renderizado de `primary`;
+3. renderizado de `secondary`;
+4. renderizado de `outline`;
+5. renderizado de `ghost`;
+6. renderizado de `danger`;
+7. tamaños `sm`, `md` y `lg`;
+8. `type="submit"` explícito dentro de formulario;
+9. `type="reset"` cuando sea aplicable;
+10. forwarding de atributos nativos compatibles;
+11. forwarding de atributos `aria-*` y `data-*`;
+12. forwarding de eventos compatibles;
+13. estado `disabled` sin activación;
+14. estado `loading` sin doble activación equivalente;
+15. semántica busy durante loading;
+16. conservación de identidad/nombre accesible durante loading;
+17. teclado mediante semántica nativa;
+18. foco visible;
+19. botón de solo icono con nombre accesible aportado por consumidor;
+20. reflow con contenido razonablemente largo;
+21. contraste y señales no dependientes solo de color;
+22. composición `className` sin romper invariantes;
+23. renderizado server-safe de la superficie pura;
+24. ausencia de dependencia directa de Supabase;
+25. ausencia de autorización dentro del componente;
+26. `danger` sin asumir confirmación o permiso;
+27. paridad por consumidor antes de retirar su copia legacy;
+28. rollback verificable durante migración.
+
+Esta sección especifica evidencia futura; no declara ninguna de estas pruebas como ejecutada por `SHELL-UI-003`.
+
+---
+
+#### 37. Requisitos de prueba derivados
+
+`SHELL-UI-003` crea **0** requisitos `TREQ-*` y modifica **0** requisitos existentes.
+
+La cobertura existente ya protege las obligaciones materiales de esta tarea:
+
+- `TREQ-SHELL-029` impide tratar el template como runtime compartido por su sola existencia;
+- `TREQ-SHELL-032` exige reconciliar las primitivas locales y el kit histórico antes de adopción o retiro;
+- `TREQ-SHELL-035` protege texto y significado consistente de superficies compartidas;
+- `TREQ-SHELL-036..039` gobiernan release, identidad, compatibilidad, deprecación y retiro del package;
+- los requisitos UX vigentes ya cubren controles deshabilitados perceptibles, foco y navegación accesible, mecanismos de interacción, acciones sensibles y protección frente a semántica puramente visual.
+
+`SHELL-UI-003` especializa cómo esas obligaciones se aplican a `Button` sin introducir una obligación transversal nueva.
+
+Por ello no se modifica ningún fragmento modular 04A.
+
+---
+
+#### 38. Estado de materialización física
+
+Al cierre documental de `SHELL-UI-003`:
+
+```text
+IDENTIDAD Button                           = ESPECIFICADA
+ButtonProps                                = ESPECIFICADO CONCEPTUALMENTE
+ButtonVariant                              = 5 VALORES ESPECIFICADOS
+ButtonSize                                 = 3 VALORES ESPECIFICADOS
+SEMÁNTICA HTML                             = ESPECIFICADA
+DISABLED                                   = ESPECIFICADO
+LOADING                                    = ESPECIFICADO
+ACCESIBILIDAD                              = ESPECIFICADA DOCUMENTALMENTE
+FRONTERA DE AUTORIDAD                      = ESPECIFICADA
+RECONCILIACIÓN SHELL                       = CERRADA DOCUMENTALMENTE
+RECONCILIACIÓN VENTO/STANDARD              = CERRADA DOCUMENTALMENTE
+PACKAGE FÍSICO                             = NO MATERIALIZADO
+COMPONENTE FÍSICO COMPARTIDO               = NO MATERIALIZADO
+CONSUMIDORES MIGRADOS                      = 0
+IMPLEMENTACIONES LEGACY RETIRADAS          = 0
+CAMBIOS TREQ                               = 0
+```
+
+La definición documental no implica publicación, instalación ni ejecución del package.
+
+---
+
+#### 39. Decisiones vinculantes
+
+1. El componente compartido se denomina `Button`.
+2. `Button` pertenece a `@vento/ui-web`.
+3. La tarea es documental y no materializa código.
+4. Los símbolos conceptuales son `Button`, `ButtonProps`, `ButtonVariant` y `ButtonSize`.
+5. No se inventa un subpath físico ni mapa de exports.
+6. Las variantes canónicas son `primary`, `secondary`, `outline`, `ghost` y `danger`.
+7. `primary` es la variante por defecto.
+8. `brand` no forma parte del contrato canónico.
+9. No existe una variante `success` de Button.
+10. Los tamaños canónicos son `sm`, `md` y `lg`.
+11. `md` es el tamaño por defecto.
+12. El elemento base es `button` nativo.
+13. El tipo por defecto es `button`.
+14. `submit` y `reset` requieren selección explícita del consumidor cuando correspondan.
+15. Button no es un Link ni incorpora router.
+16. `disabled` utiliza semántica nativa.
+17. `disabled` no equivale a autorización.
+18. `loading` forma parte del contrato compartido.
+19. `loading` impide activaciones repetidas equivalentes.
+20. `loading` expone estado busy accesible.
+21. `loading` no sustituye automáticamente el nombre de la acción por `Cargando...`.
+22. No se crea `loadingLabel` en esta tarea.
+23. `fullWidth` no forma parte de la API pública específica.
+24. El ancho pertenece al layout o composición compatible.
+25. No se crean props específicas de iconos.
+26. Un botón de solo icono requiere nombre accesible.
+27. Los atributos nativos compatibles se conservan.
+28. Los eventos nativos compatibles se transfieren sin mover lógica empresarial al componente.
+29. `className` y `style` no autorizan romper invariantes de accesibilidad o seguridad.
+30. El componente conserva foco visible.
+31. La función material no puede depender de un gesto oculto.
+32. El contrato no exige `use client` por sí mismo.
+33. `Button` no depende directamente de Supabase.
+34. `Button` no resuelve permisos, rol, sede, área, turno ni contexto.
+35. `Button` no decide navegación autorizada.
+36. `Button` no genera receipts ni auditoría empresarial.
+37. `danger` es presentación, no confirmación ni step-up.
+38. `SHELL-UI-014` conserva la propiedad del patrón de confirmación sensible.
+39. La implementación local de SHELL queda reconciliada, no adoptada íntegramente.
+40. La familia `vento/standard` queda reconciliada como legacy a migrar.
+41. Las copias actuales no se eliminan en esta tarea.
+42. NUMERA no recibe una migración inventada sin una instancia actual confirmada.
+43. La migración se realiza por consumidor y con rollback.
+44. El retiro legacy exige evidencia de ausencia de consumidores residuales.
+45. Se crean 0 requisitos `TREQ-*` y se modifican 0.
+46. `SHELL-UI-004` permanece reservada y no se desarrolla aquí.
+
+---
+
+#### 40. Criterios de aceptación documental
+
+`SHELL-UI-003` queda documentalmente cerrada únicamente si se cumplen simultáneamente:
+
+- [x] la continuidad real apunta de `SHELL-UI-002` a `SHELL-UI-003`;
+- [x] se conserva `SHELL-UI-004` como siguiente tarea;
+- [x] el componente tiene identidad única;
+- [x] se reconcilian las dos familias principales sin adoptar una copia ciegamente;
+- [x] se materializa una decisión para cada divergencia observable relevante;
+- [x] se fijan cinco variantes canónicas;
+- [x] se fija el tratamiento explícito de `brand`;
+- [x] se fijan tres tamaños canónicos;
+- [x] se fija `type="button"` por defecto;
+- [x] se preserva semántica nativa;
+- [x] se define `disabled` sin confundirlo con autorización;
+- [x] se define `loading` sin confundirlo con confirmación empresarial;
+- [x] se corrige documentalmente el problema del literal genérico de carga;
+- [x] se decide no propagar `fullWidth` como prop específica;
+- [x] se separa Button de Link y navegación;
+- [x] se separa `danger` de confirmación sensible;
+- [x] se preservan fronteras con contratos, contexto, datos y negocio;
+- [x] se especifica accesibilidad mínima;
+- [x] se especifica contrato futuro de prueba;
+- [x] se asignan migración y retiro a sus tareas propietarias;
+- [x] no se modifican consumidores ni implementaciones actuales;
+- [x] no se ejecutan cambios físicos;
+- [x] se declaran 0 cambios TREQ con justificación concreta;
+- [x] no queda un pendiente material sin propietario documental.
+
+Resultado:
+
+```text
+BUTTON COMPARTIDO                   = ESPECIFICADO
+VARIANTES                           = 5 CERRADAS
+TAMAÑOS                             = 3 CERRADOS
+SEMÁNTICA HTML                      = CERRADA
+LOADING                             = CERRADO DOCUMENTALMENTE
+DISABLED                            = CERRADO DOCUMENTALMENTE
+RECONCILIACIÓN DE DUPLICADOS        = CERRADA DOCUMENTALMENTE
+IMPLEMENTACIÓN FÍSICA               = NO MATERIALIZADA
+MIGRACIÓN                           = NO EJECUTADA
+CAMBIOS TREQ                        = 0
+SIGUIENTE TAREA                     = SHELL-UI-004
+```
+
+---
+
+#### 41. Límites
+
+Esta tarea no autoriza:
+
+- crear o modificar el package físico `@vento/ui-web`;
+- crear archivos TypeScript del package;
+- cambiar `src/components/ui/Button.tsx`;
+- cambiar copias `src/components/vento/standard/ui.tsx`;
+- cambiar el template;
+- borrar implementaciones legacy;
+- publicar una versión;
+- configurar registry;
+- crear workflows;
+- migrar consumidores;
+- modificar rutas;
+- modificar autenticación o autorización;
+- introducir Supabase en UI;
+- cambiar contratos empresariales;
+- crear confirmaciones sensibles;
+- modificar formularios de aplicación;
+- ejecutar cambios de datos;
+- crear migraciones SQL;
+- modificar requisitos de prueba;
+- iniciar `SHELL-UI-004`.
+
+---
+
+#### 42. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `SHELL-UI-002 — Compartir Alert`
+
+**TAREA ACTUAL APROBADA:** `SHELL-UI-003 — Compartir Button`
+
+**SIGUIENTE TAREA RESERVADA:** `SHELL-UI-004 — Compartir Card`
+
+No se inicia `SHELL-UI-004` sin aprobación de `SHELL-UI-003`.
+
+
 ### [ ] SHELL-UI-004 — Compartir Card
 ### [ ] SHELL-UI-005 — Compartir EmptyState
 ### [ ] SHELL-UI-006 — Compartir indicador de contexto

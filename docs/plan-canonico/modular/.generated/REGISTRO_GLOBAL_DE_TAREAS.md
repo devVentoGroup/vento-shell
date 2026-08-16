@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **919** |
+| Aprobadas | **920** |
 | En propuesta | **0** |
-| No iniciadas | **675** |
+| No iniciadas | **674** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **57.65% (919/1594)** |
+| Porcentaje de completamiento | **57.72% (920/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-UI-002` — Compartir Alert | ✅ APROBADA |
-| Tarea actual | `SHELL-UI-003` — Compartir Button | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-UI-004` — Compartir Card | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-UI-003` — Compartir Button | ✅ APROBADA |
+| Tarea actual | `SHELL-UI-004` — Compartir Card | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-UI-005` — Compartir EmptyState | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -746,7 +746,7 @@
 | ✅ APROBADA | `SHELL-DB-005` | Separar cliente server, browser y native | `bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md` |
 | ✅ APROBADA | `SHELL-UI-001` | Crear @vento/ui-web | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-UI-002` | Compartir Alert | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-UI-003` | Compartir Button | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-UI-003` | Compartir Button | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-004` | Compartir Card | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-005` | Compartir EmptyState | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-006` | Compartir indicador de contexto | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |

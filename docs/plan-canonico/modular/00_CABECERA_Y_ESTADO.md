@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **919** |
+| Tareas aprobadas | **920** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **675** |
+| Tareas no iniciadas | **674** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **57.65% (919/1594)** |
+| Porcentaje de completamiento | **57.72% (920/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-UI-002 — Compartir Alert** |
-| Tarea actual | **SHELL-UI-003 — Compartir Button** |
+| Última tarea aprobada | **SHELL-UI-003 — Compartir Button** |
+| Tarea actual | **SHELL-UI-004 — Compartir Card** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-UI-004 — Compartir Card** |
+| Siguiente tarea | **SHELL-UI-005 — Compartir EmptyState** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 69 de 109 aprobadas; SHELL-UI-003 pendiente** |
+| Progreso del bloque | **BLOQUE H: 70 de 109 aprobadas; SHELL-UI-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-UI-002` — Compartir Alert |
-| Tarea actual | `SHELL-UI-003` — Compartir Button — **NO INICIADA** |
-| Siguiente tarea | `SHELL-UI-004` — Compartir Card |
+| Última aprobada | `SHELL-UI-003` — Compartir Button |
+| Tarea actual | `SHELL-UI-004` — Compartir Card — **NO INICIADA** |
+| Siguiente tarea | `SHELL-UI-005` — Compartir EmptyState |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 69 DE 109 APROBADAS — ACTUAL SHELL-UI-003** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 70 DE 109 APROBADAS — ACTUAL SHELL-UI-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-UI-002 — Compartir Alert
-        ↓
-TAREA ACTUAL
 SHELL-UI-003 — Compartir Button
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-UI-004 — Compartir Card
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-UI-005 — Compartir EmptyState
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 69 de 109 tareas aprobadas
+BLOQUE H — 70 de 109 tareas aprobadas
 ```
