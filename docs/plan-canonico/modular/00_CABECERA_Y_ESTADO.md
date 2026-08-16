@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **906** |
+| Tareas aprobadas | **907** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **688** |
+| Tareas no iniciadas | **687** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **56.84% (906/1594)** |
+| Porcentaje de completamiento | **56.90% (907/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-NORM-003 — Centralizar reglas de espacios, Unicode y capitalización** |
-| Tarea actual | **SHELL-NORM-004 — Centralizar conectores y excepciones** |
+| Última tarea aprobada | **SHELL-NORM-004 — Centralizar conectores y excepciones** |
+| Tarea actual | **SHELL-NORM-005 — Centralizar diccionarios ortográficos versionados** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-NORM-005 — Centralizar diccionarios ortográficos versionados** |
+| Siguiente tarea | **SHELL-NORM-006 — Crear normalización de búsqueda y comparación** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 56 de 109 aprobadas; SHELL-NORM-004 pendiente** |
+| Progreso del bloque | **BLOQUE H: 57 de 109 aprobadas; SHELL-NORM-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-NORM-003` — Centralizar reglas de espacios, Unicode y capitalización |
-| Tarea actual | `SHELL-NORM-004` — Centralizar conectores y excepciones — **NO INICIADA** |
-| Siguiente tarea | `SHELL-NORM-005` — Centralizar diccionarios ortográficos versionados |
+| Última aprobada | `SHELL-NORM-004` — Centralizar conectores y excepciones |
+| Tarea actual | `SHELL-NORM-005` — Centralizar diccionarios ortográficos versionados — **NO INICIADA** |
+| Siguiente tarea | `SHELL-NORM-006` — Crear normalización de búsqueda y comparación |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 56 DE 109 APROBADAS — ACTUAL SHELL-NORM-004** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 57 DE 109 APROBADAS — ACTUAL SHELL-NORM-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-NORM-003 — Centralizar reglas de espacios, Unicode y capitalización
-        ↓
-TAREA ACTUAL
 SHELL-NORM-004 — Centralizar conectores y excepciones
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-NORM-005 — Centralizar diccionarios ortográficos versionados
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-NORM-006 — Crear normalización de búsqueda y comparación
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 56 de 109 tareas aprobadas
+BLOQUE H — 57 de 109 tareas aprobadas
 ```

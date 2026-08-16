@@ -2954,7 +2954,1234 @@ SHELL-NORM-003 — Centralizar reglas de espacios, Unicode y capitalización
 SHELL-NORM-004 — Centralizar conectores y excepciones
 
 
-### [ ] SHELL-NORM-004 — Centralizar conectores y excepciones
+### ✅ SHELL-NORM-004 — Centralizar conectores y excepciones
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-NORM-003 — Centralizar reglas de espacios, Unicode y capitalización
+**Tarea siguiente:** SHELL-NORM-005 — Centralizar diccionarios ortográficos versionados
+**Tipo de tarea:** Documental; centralización normativa de los catálogos compartidos de conectores y excepciones oficiales dentro de `@vento/data-normalization`, materializando sin reinterpretación `VENTO_COMMERCIAL_CONNECTOR_CATALOG_ES_CO@1.0.0` y `VENTO_OFFICIAL_TEXT_EXCEPTION_CATALOG@1.0.0`, su precedencia, alcance, versiones, resultados, formas aprobadas y candidatos no activables, sin crear código, package físico, exports TypeScript, entradas de diccionario, persistencia, migraciones ni cambios en Supabase
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md`
+**Estado físico resultante:** ESPECIFICADO; NO MATERIALIZADO
+**Implementación física autorizada:** ninguna
+**Cambios de código, packages físicos, archivos TypeScript, configuración npm, registry, workflows, DDL, DML, migraciones, RLS, RPC, triggers, datos, secretos, configuración remota o despliegues:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-NORM-004` centraliza dentro de la frontera documental de `@vento/data-normalization` los dos catálogos ya aprobados que gobiernan la clasificación de conectores y la protección o emisión de formas oficiales:
+
+```text
+VENTO_COMMERCIAL_CONNECTOR_CATALOG_ES_CO@1.0.0
++
+VENTO_OFFICIAL_TEXT_EXCEPTION_CATALOG@1.0.0
+        ↓
+SUPERFICIE COMPARTIDA DE CATÁLOGOS VERSIONADOS
+        ↓
+MISMAS ENTRADAS
++ MISMA PRECEDENCIA
++ MISMO ALCANCE
++ MISMAS VERSIONES
++ MISMOS BLOQUEOS
+EN TODA CAPA AUTORIZADA
+```
+
+La tarea no crea un catálogo alternativo ni amplía los catálogos de BLOQUE E3. Su función es fijar qué contenido deberá compartir el futuro package y qué decisiones quedan prohibidas para consumidores locales.
+
+La regla central es:
+
+```text
+CENTRALIZAR
+≠ REINTERPRETAR
+≠ AMPLIAR
+≠ APRENDER
+≠ INFERIR
+≠ CORREGIR ORTOGRAFÍA
+≠ CREAR IDENTIDAD
+```
+
+---
+
+#### 2. Resultado material de la tarea
+
+Quedan centralizados documentalmente dos artefactos canónicos preexistentes:
+
+1. `VENTO_COMMERCIAL_CONNECTOR_CATALOG_ES_CO@1.0.0`;
+2. `VENTO_OFFICIAL_TEXT_EXCEPTION_CATALOG@1.0.0`.
+
+La centralización materializa en esta tarea:
+
+- las 18 entradas definitivas del catálogo de conectores;
+- sus 3 familias lingüísticas descriptivas;
+- sus 3 posiciones normativas;
+- sus 5 resultados cerrados de evaluación;
+- las 4 familias canónicas de excepción;
+- los 23 atributos mínimos del contrato lógico de una excepción;
+- los 4 alcances cerrados de coincidencia;
+- los 3 modos cerrados de coincidencia;
+- los 4 modos cerrados de aplicación;
+- los 7 resultados cerrados de evaluación de excepciones;
+- los 5 tipos de autoridad aprobados;
+- los 3 estados de ciclo de vida del catálogo de excepciones;
+- las 28 formas normativas iniciales del catálogo de excepciones, reconciliadas como 22 formas con emisión canónica o validación técnica y 6 protecciones contextuales de sufijo legal;
+- la precedencia conjunta entre excepciones, protecciones técnicas, conectores, palabras ordinarias y ambigüedad;
+- las formas observadas que permanecen fuera de las entradas activas por falta de autoridad, contexto o resolución suficiente;
+- las fronteras frente a diccionario, búsqueda, identidad, persistencia y datos externos.
+
+No se crea una versión nueva de ninguno de los dos catálogos.
+
+---
+
+#### 3. Fuentes normativas y precedencia
+
+| Fuente               | Decisión preservada por `SHELL-NORM-004`                                                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `SHELL-NORM-001`     | identidad de `@vento/data-normalization`, pureza, determinismo, ausencia de I/O y prohibición de convertir el package en fuente empresarial o capa de persistencia |
+| `SHELL-NORM-002`     | clases semánticas, representaciones, fuentes, modos y operaciones compartidas que delimitan la elegibilidad de conectores y excepciones                            |
+| `SHELL-NORM-003`     | perfil `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0`, tokenización, fronteras, precedencia y handoff exacto de conectores y excepciones                            |
+| `DATA-NORM-ARC-001`  | política por dominio, entidad, campo, representación, fuente y versión; ausencia de transformación universal y fallo cerrado                                       |
+| `DATA-NORM-ARC-002`  | tipos cerrados y operaciones `CONNECTOR_CASE_POLICY` y `OFFICIAL_EXCEPTION_APPLICATION` dentro del sistema de normalización                                        |
+| `DATA-NORM-ARC-003`  | capitalización empresarial, precedencia de tokens y dependencia obligatoria de conectores y excepciones versionados                                                |
+| `DATA-NORM-ARC-004`  | contenido completo de `VENTO_COMMERCIAL_CONNECTOR_CATALOG_ES_CO@1.0.0`                                                                                             |
+| `DATA-NORM-ARC-005`  | contenido completo de `VENTO_OFFICIAL_TEXT_EXCEPTION_CATALOG@1.0.0`                                                                                                |
+| `DATA-NORM-ARC-006`  | corrección ortográfica y tildes mediante diccionario, expresamente fuera de esta tarea                                                                             |
+| `DATA-NORM-ARC-007`  | revisión humana de candidatos y ambigüedades que no pueden activarse por inferencia                                                                                |
+| `DATA-NORM-ARC-008`  | búsqueda y comparación separadas de los catálogos de forma visible                                                                                                 |
+| `DATA-NORM-ARC-009`  | versiones explícitas, vigencia, reproducibilidad, determinismo, idempotencia e historia aditiva                                                                    |
+| `DATA-NORM-ARC-010`  | identidad, unicidad, colisiones y fusiones separadas de coincidencias textuales                                                                                    |
+| `DATA-NORM-ARC-011`  | servicio de dominio como autoridad semántica y RPC como frontera de commit; ninguna lista local adquiere autoridad                                                 |
+| `DATA-NORM-ARC-012`  | preservación de originales externos, evidencia, encoding y procedencia                                                                                             |
+| `SHELL-PKG-001..008` | distribución, compatibilidad, versionado, deprecación, rollback y adopción cuando el package exista físicamente                                                    |
+
+Precedencia normativa:
+
+```text
+POLÍTICA DEL CAMPO
+        ↓
+TIPOS Y ELEGIBILIDAD SHELL-NORM-002
+        ↓
+REGLAS DE FORMA SHELL-NORM-003
+        ↓
+EXCEPCIONES OFICIALES SHELL-NORM-004
+        ↓
+PROTECCIONES TÉCNICAS SHELL-NORM-004
+        ↓
+CONECTORES SHELL-NORM-004
+        ↓
+PALABRA ORDINARIA ELEGIBLE
+        ↓
+PRESERVACIÓN / REVISIÓN / BLOQUEO
+```
+
+Esta secuencia no autoriza ejecutar una operación si clase, representación, fuente, política o versiones la prohíben.
+
+---
+
+#### 4. Frontera exacta
+
+Esta tarea centraliza exclusivamente:
+
+- las entradas y reglas del catálogo de conectores aprobado;
+- las familias, entradas iniciales, protecciones, modos y reglas del catálogo de excepciones aprobado;
+- la relación de ambos catálogos con `COMMERCIAL_CAPITALIZATION`;
+- la operación tipada `CONNECTOR_CASE_POLICY` como decisión posicional de conectores;
+- la operación tipada `OFFICIAL_EXCEPTION_APPLICATION` como aplicación contractual de formas oficiales;
+- la precedencia entre excepciones, formas técnicas protegidas, conectores y palabras ordinarias;
+- los límites de coincidencia exacta y de aliases explícitos;
+- las restricciones de fuente y representación;
+- los estados de vigencia del catálogo de excepciones;
+- la conducta ante versiones faltantes, retiradas, suspendidas, ambiguas o conflictivas;
+- el inventario de candidatos que no forman parte de entradas activas;
+- los handoffs hacia diccionario, búsqueda, preview, auditoría, pruebas e implementación física.
+
+Esta tarea no centraliza ni decide:
+
+- entradas del diccionario ortográfico;
+- correcciones de `maiz`, `frio`, `clasico`, `Botellla` u otras formas léxicas;
+- inferencia de nuevas marcas, siglas, códigos, unidades o aliases;
+- traducción, transliteración, stemming o lematización;
+- búsqueda, ranking, similitud o generación de slug;
+- identidad, unicidad, deduplicación, fusión o selección de sobreviviente;
+- workflow físico de revisión humana;
+- persistencia de catálogos;
+- API TypeScript definitiva;
+- schemas runtime;
+- SQL, RPC, trigger, índice, constraint, migración o backfill;
+- adopción por consumidores;
+- cambios en Supabase.
+
+---
+
+#### 5. Conciliación de inventarios heredados
+
+##### 5.1 Catálogo de conectores
+
+| Familia               | Esperado por E3 | Materializado aquí | Faltantes | Duplicados |
+| --------------------- | --------------: | -----------------: | --------: | ---------: |
+| entradas definitivas  |              18 |                 18 |         0 |          0 |
+| familias descriptivas |               3 |                  3 |         0 |          0 |
+| posiciones normativas |               3 |                  3 |         0 |          0 |
+| resultados cerrados   |               5 |                  5 |         0 |          0 |
+
+Las familias descriptivas no crean gramática ni añaden entradas; solo agrupan las 18 identidades existentes.
+
+##### 5.2 Catálogo de excepciones
+
+| Familia                                   | Esperado por E3 | Materializado aquí | Faltantes | Duplicados |
+| ----------------------------------------- | --------------: | -----------------: | --------: | ---------: |
+| familias de excepción                     |               4 |                  4 |         0 |          0 |
+| atributos mínimos de entrada              |              23 |                 23 |         0 |          0 |
+| alcances de coincidencia                  |               4 |                  4 |         0 |          0 |
+| modos de coincidencia                     |               3 |                  3 |         0 |          0 |
+| modos de aplicación                       |               4 |                  4 |         0 |          0 |
+| resultados cerrados                       |               7 |                  7 |         0 |          0 |
+| tipos de autoridad                        |               5 |                  5 |         0 |          0 |
+| estados de ciclo de vida                  |               3 |                  3 |         0 |          0 |
+| formas normativas iniciales               |              28 |                 28 |         0 |          0 |
+| formas con emisión o validación           |              22 |                 22 |         0 |          0 |
+| protecciones contextuales de sufijo legal |               6 |                  6 |         0 |          0 |
+
+Relación de las formas iniciales:
+
+```text
+3 marcas
++ 10 siglas o códigos controlados
++ 9 unidades o familias técnicas
+= 22 formas con emisión canónica o validación técnica
+
+22
++ 6 protecciones contextuales de sufijo legal
+= 28 formas normativas iniciales
+```
+
+Las 6 protecciones legales no se interpretan como aliases entre sí ni como nombres legales completos.
+
+---
+
+#### 6. Identidad del catálogo de conectores
+
+La identidad se conserva exactamente:
+
+```text
+VENTO_COMMERCIAL_CONNECTOR_CATALOG_ES_CO@1.0.0
+```
+
+Invariantes:
+
+1. el catálogo es cerrado;
+2. aplica exclusivamente bajo el perfil `es-CO` declarado;
+3. no se activa por detección automática de idioma;
+4. no se extiende por frecuencia, semejanza o gramática inferida;
+5. no contiene aliases implícitos;
+6. su versión forma parte de la reproducibilidad;
+7. una lista local no puede complementar ni reemplazar la versión canónica;
+8. una versión posterior deberá ser una decisión explícita y no una mutación silenciosa de `1.0.0`.
+
+---
+
+#### 7. Las 18 entradas definitivas de conectores
+
+| Orden | Entrada | Familia descriptiva           | Regla base                           |
+| ----: | ------- | ----------------------------- | ------------------------------------ |
+|    01 | `a`     | preposiciones y contracciones | forma exacta del catálogo            |
+|    02 | `al`    | preposiciones y contracciones | entrada atómica; no expandir         |
+|    03 | `con`   | preposiciones y contracciones | forma exacta del catálogo            |
+|    04 | `de`    | preposiciones y contracciones | forma exacta del catálogo            |
+|    05 | `del`   | preposiciones y contracciones | entrada atómica; no expandir         |
+|    06 | `e`     | conjunciones coordinantes     | no sustituir automáticamente por `y` |
+|    07 | `el`    | artículos                     | forma exacta del catálogo            |
+|    08 | `en`    | preposiciones y contracciones | forma exacta del catálogo            |
+|    09 | `la`    | artículos                     | forma exacta del catálogo            |
+|    10 | `las`   | artículos                     | forma exacta del catálogo            |
+|    11 | `lo`    | artículos                     | forma exacta del catálogo            |
+|    12 | `los`   | artículos                     | forma exacta del catálogo            |
+|    13 | `o`     | conjunciones coordinantes     | no sustituir automáticamente por `u` |
+|    14 | `para`  | preposiciones y contracciones | forma exacta del catálogo            |
+|    15 | `por`   | preposiciones y contracciones | forma exacta del catálogo            |
+|    16 | `sin`   | preposiciones y contracciones | forma exacta del catálogo            |
+|    17 | `u`     | conjunciones coordinantes     | no sustituir automáticamente por `o` |
+|    18 | `y`     | conjunciones coordinantes     | no sustituir automáticamente por `e` |
+
+Conciliación:
+
+```text
+entradas esperadas = 18
+entradas materializadas = 18
+faltantes = 0
+duplicados = 0
+```
+
+No se incorporan otras preposiciones, artículos, conjunciones, contracciones, abreviaturas o variantes.
+
+---
+
+#### 8. Familias descriptivas de conectores
+
+| Familia descriptiva           | Entradas                                                  |
+| ----------------------------- | --------------------------------------------------------- |
+| preposiciones y contracciones | `a`, `al`, `con`, `de`, `del`, `en`, `para`, `por`, `sin` |
+| artículos                     | `el`, `la`, `las`, `lo`, `los`                            |
+| conjunciones coordinantes     | `e`, `o`, `u`, `y`                                        |
+
+Estas familias no autorizan:
+
+- concordancia gramatical;
+- sustitución fonológica;
+- contracción automática;
+- expansión automática;
+- traducción;
+- análisis sintáctico completo;
+- incorporación de palabras equivalentes.
+
+---
+
+#### 9. Puerta de activación del catálogo de conectores
+
+Un conector solo participa en una evaluación cuando se cumplen simultáneamente:
+
+1. la clase semántica es `COMMERCIAL_NAME`;
+2. la evaluación forma parte de `COMMERCIAL_CAPITALIZATION` y su decisión de conector corresponde a `CONNECTOR_CASE_POLICY`;
+3. la representación y el rol de fuente permiten la operación;
+4. el perfil lingüístico es `es-CO` explícito;
+5. la versión de capitalización es compatible;
+6. `VENTO_COMMERCIAL_CONNECTOR_CATALOG_ES_CO@1.0.0` está activa para la evaluación;
+7. la segmentación produjo un token lexical completo y no ambiguo;
+8. no existe una excepción oficial o protección de mayor precedencia;
+9. la posición normativa puede resolverse sin heurística;
+10. las versiones y la decisión pueden atribuirse en la traza lógica.
+
+La falta o conflicto de cualquiera de estas condiciones impide usar el catálogo como fallback permisivo.
+
+---
+
+#### 10. Reconocimiento exacto de conectores
+
+Un token coincide con una entrada solo si:
+
+- es un token lexical completo;
+- la comparación de caja del perfil `es-CO` produce coincidencia exacta con una entrada activa;
+- no contiene caracteres adicionales;
+- no pertenece a una excepción oficial de frase o token;
+- no fue clasificado como sigla, unidad, código, marca, modelo, referencia o token ambiguo.
+
+Matriz de conformidad:
+
+| Token recibido | Entrada resuelta | Decisión                                   |
+| -------------- | ---------------- | ------------------------------------------ |
+| `DE`           | `de`             | coincide por caja bajo el perfil explícito |
+| `Del`          | `del`            | coincide por caja bajo el perfil explícito |
+| `de`           | `de`             | coincide exactamente                       |
+| `deluxe`       | ninguna          | `del` es subcadena y no aplica             |
+| `paraíso`      | ninguna          | `para` es subcadena y no aplica            |
+| `y/o`          | ninguna          | forma compuesta no catalogada              |
+| `de-la`        | ninguna          | forma con signo no es una entrada exacta   |
+| `eCommerce`    | ninguna          | capitalización interna protegida o ambigua |
+
+La comparación no elimina tildes, signos, guiones, apóstrofos ni caracteres.
+
+---
+
+#### 11. Posiciones normativas de conectores
+
+Las posiciones del catálogo son exactamente:
+
+| Posición                 | Significado                                                           | Resultado de forma                       |
+| ------------------------ | --------------------------------------------------------------------- | ---------------------------------------- |
+| `NAME_START`             | primer token lexical del valor                                        | aplicar regla inicial del perfil         |
+| `DECLARED_SEGMENT_START` | primer token lexical tras frontera que reinicia posición por política | aplicar regla inicial del perfil         |
+| `INTERNAL`               | cualquier posición lexical restante                                   | emitir la entrada minúscula del catálogo |
+
+Estas posiciones se concilian con las fronteras de `SHELL-NORM-003` así:
+
+```text
+frontera NAME_START
+→ posición de conector NAME_START
+
+frontera DECLARED_SEGMENT_START
+→ posición de conector DECLARED_SEGMENT_START
+
+frontera NO_SEGMENT_RESET
+→ no reinicia la posición;
+  el conector posterior permanece INTERNAL cuando ya existe token lexical previo
+```
+
+`INTERNAL` es una posición de conector; no sustituye ni renombra la frontera `NO_SEGMENT_RESET`.
+
+---
+
+#### 12. Resultados cerrados del catálogo de conectores
+
+| Resultado                          | Significado                                                                              |
+| ---------------------------------- | ---------------------------------------------------------------------------------------- |
+| `CONNECTOR_INITIAL_CAPITALIZED`    | conector reconocido al inicio de nombre o segmento y emitido con inicial según perfil    |
+| `CONNECTOR_INTERNAL_LOWERCASED`    | conector reconocido en posición interna y emitido en su forma minúscula aprobada         |
+| `CONNECTOR_PRESERVED_BY_EXCEPTION` | una excepción oficial de mayor precedencia determinó la forma                            |
+| `CONNECTOR_PRESERVED_AMBIGUOUS`    | el valor se conserva porque el contexto no permite resolución automática                 |
+| `CONNECTOR_POLICY_BLOCKED`         | no existe mutación por falta, retiro, incompatibilidad o conflicto de política o versión |
+
+Un token que ya presenta la forma esperada no se confunde con un resultado bloqueado o ambiguo.
+
+---
+
+#### 13. Reglas especiales de conectores
+
+1. `al` y `del` son entradas atómicas.
+2. La política no expande `al` a `a el`.
+3. La política no expande `del` a `de el`.
+4. La política no contrae `a el` a `al`.
+5. La política no contrae `de el` a `del`.
+6. `e` y `y` permanecen entradas independientes.
+7. `o` y `u` permanecen entradas independientes.
+8. La política no sustituye `y` por `e` según sonido o palabra siguiente.
+9. La política no sustituye `o` por `u` según sonido o palabra siguiente.
+10. `y/o` no se interpreta automáticamente como dos conectores.
+11. Espacios, comillas, paréntesis y signos de apertura anteriores al primer token lexical no consumen `NAME_START`.
+12. Un código o token protegido previo sí participa en la posición lexical y puede hacer que el conector siguiente sea `INTERNAL`.
+13. La puntuación no se modifica mediante el catálogo.
+14. La lista no se extiende desde una biblioteca lingüística general.
+
+---
+
+#### 14. Precedencia antes de aplicar un conector
+
+La clasificación conjunta conserva este orden estricto:
+
+```text
+1. excepción oficial FULL_VALUE compatible
+2. excepción oficial PHRASE compatible más larga
+3. excepción oficial TOKEN compatible
+4. protección STRUCTURED_COMPONENT o técnica compatible
+5. conector exacto del catálogo
+6. palabra ordinaria elegible
+7. preservación ambigua o bloqueo
+```
+
+Consecuencias:
+
+- una forma oficial de marca puede contener una palabra del catálogo sin ser reescrita por la regla de conector;
+- una sigla o unidad de una letra no se convierte en conector por coincidencia textual;
+- una excepción suspendida o retirada no participa como regla vigente;
+- un conflicto no se resuelve escogiendo la primera coincidencia;
+- el orden físico de un catálogo no modifica la precedencia.
+
+---
+
+#### 15. Identidad del catálogo de excepciones
+
+La identidad se conserva exactamente:
+
+```text
+VENTO_OFFICIAL_TEXT_EXCEPTION_CATALOG@1.0.0
+```
+
+El catálogo protege o emite formas oficiales de marcas, siglas, unidades y nombres legales sin convertir apariencia, frecuencia o coincidencia parcial en autoridad.
+
+Invariantes:
+
+1. toda excepción es explícita, versionada y acotada;
+2. una forma observada no se vuelve oficial por frecuencia;
+3. una entrada exige autoridad, evidencia, owner y alcance;
+4. una excepción no amplía una clase, representación o fuente incompatible;
+5. una coincidencia no crea identidad ni duplicidad;
+6. los originales protegidos no se sobrescriben;
+7. los aliases se declaran explícitamente;
+8. las entradas candidatas no son ejecutables hasta una decisión canónica aprobada.
+
+---
+
+#### 16. Familias canónicas de excepción
+
+| Familia                         | Contexto primario                                                             | Propósito                                    | Frontera                                   |
+| ------------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------ |
+| `OFFICIAL_BRAND_EXCEPTION`      | `OFFICIAL_BRAND_FORM` o fragmento protegido de `COMMERCIAL_NAME`              | preservar o emitir forma oficial de marca    | forma exacta, alcance y frase completa     |
+| `CONTROLLED_ACRONYM_EXCEPTION`  | vocabulario, aplicación, código empresarial, moneda o abreviatura contractual | preservar o emitir sigla o código controlado | token completo y contexto                  |
+| `MEASUREMENT_UNIT_EXCEPTION`    | `MEASUREMENT_OR_UNIT_CODE` o componente estructurado                          | validar o emitir código técnico de unidad    | contexto dimensional y componente resuelto |
+| `OFFICIAL_LEGAL_NAME_EXCEPTION` | `OFFICIAL_LEGAL_NAME`                                                         | preservar nombre legal completo respaldado   | valor completo, procedencia y vigencia     |
+
+Las cuatro familias son cerradas para la versión `1.0.0`.
+
+---
+
+#### 17. Contrato lógico mínimo de una excepción
+
+Toda entrada deberá poder expresar como mínimo:
+
+```text
+exception_key
+family
+canonical_form
+scope_kind
+domain_scope
+entity_scope
+field_scope
+semantic_class
+representation_role
+source_role
+language_profile
+match_mode
+accepted_variants
+application_mode
+authority_type
+authority_owner
+evidence_reference
+status
+valid_from
+valid_to
+catalog_version
+supersedes
+reason
+```
+
+Conciliación:
+
+```text
+atributos mínimos esperados = 23
+atributos materializados = 23
+faltantes = 0
+duplicados = 0
+```
+
+Reglas:
+
+1. `exception_key` es estable y no depende de la forma visible.
+2. `canonical_form` preserva Unicode, caja, tildes, signos, separación y puntuación aprobados.
+3. `accepted_variants` vacío no habilita comparación flexible.
+4. clase, representación y fuente deben ser compatibles con el descriptor del campo.
+5. `catalog_version` es explícita.
+6. una entrada incompleta no es ejecutable.
+7. un consumidor no rellena atributos ausentes mediante heurística.
+
+---
+
+#### 18. Alcances cerrados de coincidencia
+
+| Alcance                | Definición                                 | Uso principal                                      |
+| ---------------------- | ------------------------------------------ | -------------------------------------------------- |
+| `FULL_VALUE`           | la entrada cubre todo el valor             | nombres legales y formas oficiales completas       |
+| `PHRASE`               | secuencia contigua con fronteras completas | marcas compuestas y denominaciones embebidas       |
+| `TOKEN`                | token lexical completo                     | siglas, códigos y marcas de un token               |
+| `STRUCTURED_COMPONENT` | componente previamente interpretado        | unidades, monedas y códigos técnicos estructurados |
+
+`PHRASE` y `TOKEN` nunca coinciden como subcadena de otra palabra, código, URL, correo, ruta o identificador.
+
+---
+
+#### 19. Modos cerrados de coincidencia
+
+| Modo             | Regla                                                                                 | Prohibiciones                                                  |
+| ---------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `EXACT`          | coincidencia exacta con forma o variante registrada                                   | no modificar caja, tildes, signos o espacios para forzar match |
+| `CASEFOLD_EXACT` | comparar caja conservando caracteres, diacríticos, puntuación, separación y fronteras | no `unaccent`, transliteración, compactación ni similitud      |
+| `EXPLICIT_ALIAS` | coincidencia exacta con alias expresamente aprobado                                   | no generar aliases automáticamente                             |
+
+No existen matchers de distancia de edición, fonética, prefijo, sufijo, subcadena, token parcial o búsqueda tolerante dentro de este catálogo.
+
+---
+
+#### 20. Modos cerrados de aplicación
+
+| Modo                    | Conducta                                                                        |
+| ----------------------- | ------------------------------------------------------------------------------- |
+| `PRESERVE_MATCHED_FORM` | conservar exactamente la forma recibida cuando no se permite reescritura        |
+| `EMIT_CANONICAL_FORM`   | emitir la forma oficial desde una variante autorizada en una coordenada mutable |
+| `VALIDATE_ONLY`         | validar pertenencia al catálogo sin reescribir                                  |
+| `DERIVE_ONLY`           | producir una representación separada sin modificar el origen                    |
+
+`EMIT_CANONICAL_FORM` solo puede modificar:
+
+```text
+PRIMARY_VALUE + AUTHORITATIVE_SOURCE
+```
+
+o, dentro de alcance explícito:
+
+```text
+DISPLAY_OVERRIDE + APPROVED_OVERRIDE
+```
+
+Una representación externa, histórica, probatoria o una copia no autoritativa conserva sus restricciones.
+
+---
+
+#### 21. Resultados cerrados de evaluación de excepciones
+
+| Resultado                        | Significado                                                                                    |
+| -------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `EXCEPTION_CANONICAL_EMITTED`    | una variante aprobada produjo la forma canónica dentro de un alcance mutable                   |
+| `EXCEPTION_PRESERVED_OFFICIAL`   | se conservó una forma oficial u original protegido                                             |
+| `EXCEPTION_VALIDATED_NO_REWRITE` | se validó un código o componente sin reescribirlo                                              |
+| `EXCEPTION_DERIVATION_ONLY`      | se produjo una representación separada y vinculada                                             |
+| `EXCEPTION_NOT_APPLICABLE`       | no existe entrada compatible con la coordenada                                                 |
+| `EXCEPTION_AMBIGUOUS_REVIEW`     | existe evidencia insuficiente o más de una interpretación válida                               |
+| `EXCEPTION_POLICY_BLOCKED`       | falta o entra en conflicto una versión, fuente, clase, alcance, estado o evidencia obligatoria |
+
+Los siete resultados no son estados de commit ni de persistencia.
+
+---
+
+#### 22. Tipos de autoridad
+
+| Tipo de autoridad                       | Puede respaldar                                                  | Restricción                                              |
+| --------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------- |
+| `INTERNAL_CANONICAL_OWNER`              | marcas propias, aplicaciones, códigos y vocabularios de Vento OS | owner empresarial y alcance explícitos                   |
+| `BRAND_OWNER_OR_MANUFACTURER`           | grafía de marca externa y aliases aceptados                      | no mezclar marca con descripción o modelo                |
+| `LEGAL_OR_REGULATORY_SOURCE`            | nombre legal completo y vigencia                                 | conservar jurisdicción, fecha y procedencia              |
+| `CONTROLLED_STANDARD_OR_DOMAIN_CATALOG` | unidades, monedas y códigos técnicos                             | declarar significado, contexto y versión                 |
+| `APPROVED_EXTERNAL_EVIDENCE`            | original recibido y posible mapping interno                      | no convierte el original en autoridad empresarial global |
+
+No constituyen autoridad suficiente por sí solos:
+
+- frecuencia de una forma;
+- valor más reciente;
+- caja observada;
+- uso en una interfaz;
+- nombre de tabla o columna;
+- resultado de búsqueda no incorporado como evidencia aprobada;
+- inferencia del desarrollador o consumidor.
+
+---
+
+#### 23. Ciclo de vida de entradas de excepción
+
+Los estados de ejecución se conservan exactamente:
+
+| Estado      | Conducta                                                                                         |
+| ----------- | ------------------------------------------------------------------------------------------------ |
+| `ACTIVE`    | participa en decisiones nuevas dentro de su versión y alcance                                    |
+| `SUSPENDED` | no participa en decisiones nuevas; conserva historia y provoca bloqueo o revisión según contexto |
+| `RETIRED`   | no participa en decisiones nuevas; permanece para reconstrucción histórica                       |
+
+Una versión nueva no reactiva silenciosamente una entrada retirada ni reinterpreta decisiones históricas.
+
+---
+
+#### 24. Precedencia y especificidad de excepciones
+
+Precedencia por tipo de coincidencia:
+
+```text
+FULL_VALUE compatible
+        ↓
+PHRASE compatible más larga
+        ↓
+TOKEN compatible
+        ↓
+STRUCTURED_COMPONENT compatible
+        ↓
+conector exacto
+        ↓
+palabra ordinaria
+        ↓
+preservación / revisión / bloqueo
+```
+
+Dentro del mismo nivel, la especificidad se resuelve:
+
+```text
+campo
+→ entidad
+→ dominio
+→ política transversal
+```
+
+Reglas:
+
+1. una coordenada más específica no atraviesa una clase incompatible;
+2. una frase válida más larga prevalece sobre sus tokens internos;
+3. dos entradas activas incompatibles con igual especificidad bloquean la mutación;
+4. un alias no prevalece sobre una forma oficial más específica;
+5. `SUSPENDED` y `RETIRED` no participan en decisiones nuevas;
+6. la resolución no depende de fecha de inserción, orden de consulta o primer resultado.
+
+---
+
+#### 25. Formas normativas iniciales de marca
+
+Las formas aprobadas son exactamente:
+
+| Forma canónica | Alcance compatible      | Coincidencia     | Regla principal                                                            |
+| -------------- | ----------------------- | ---------------- | -------------------------------------------------------------------------- |
+| `3M`           | `TOKEN` o `FULL_VALUE`  | `CASEFOLD_EXACT` | preservar o emitir forma oficial; no coincidir dentro de modelos o códigos |
+| `iPhone`       | `TOKEN` o `PHRASE`      | `CASEFOLD_EXACT` | conservar capitalización interna                                           |
+| `Coca-Cola`    | `PHRASE` o `FULL_VALUE` | `CASEFOLD_EXACT` | conservar guion; `Coca Cola` no es alias implícito                         |
+
+Conciliación:
+
+```text
+marcas esperadas = 3
+marcas materializadas = 3
+faltantes = 0
+duplicados = 0
+```
+
+Estas entradas demuestran forma contractual; no afirman por sí mismas existencia actual de producto, proveedor o relación comercial.
+
+---
+
+#### 26. Formas normativas iniciales de siglas y códigos controlados
+
+| Grupo                 | Formas canónicas                                   | Alcance principal                                             |
+| --------------------- | -------------------------------------------------- | ------------------------------------------------------------- |
+| aplicaciones Vento OS | `NEXO`, `VISO`, `ORIGO`, `NUMERA`, `FOGO`, `PULSO` | token contextual; preservar o emitir forma contractual        |
+| códigos empresariales | `VGR`, `SAU`, `VCF`                                | token contextual; validación o emisión técnica según campo    |
+| moneda                | `COP`                                              | token o componente estructurado; validación o emisión técnica |
+
+Conciliación:
+
+```text
+formas esperadas = 10
+formas materializadas = 10
+faltantes = 0
+duplicados = 0
+```
+
+Una secuencia en mayúsculas no se convierte en sigla por apariencia.
+
+---
+
+#### 27. Formas normativas iniciales de unidades y familias técnicas
+
+| Grupo              | Formas canónicas          | Regla                                                         |
+| ------------------ | ------------------------- | ------------------------------------------------------------- |
+| símbolos de medida | `g`, `kg`, `ml`, `l`      | evaluar solo como unidad o componente estructurado compatible |
+| códigos de conteo  | `un`, `dz`                | evaluar solo como unidad o componente estructurado compatible |
+| familias técnicas  | `count`, `mass`, `volume` | `VALIDATE_ONLY` salvo contrato técnico posterior              |
+
+Conciliación:
+
+```text
+formas esperadas = 9
+formas materializadas = 9
+faltantes = 0
+duplicados = 0
+```
+
+La aplicación del catálogo no cambia magnitudes, factores de conversión, dimensiones o cantidades.
+
+---
+
+#### 28. Protecciones contextuales de sufijo legal
+
+Dentro de `OFFICIAL_LEGAL_NAME` se protegen exactamente:
+
+```text
+SAS
+S.A.S.
+SA
+S.A.
+LTDA
+CIA
+```
+
+Reglas:
+
+1. cada forma se conserva como token exacto dentro del nombre legal completo;
+2. las seis formas no son aliases entre sí;
+3. no se agregan ni eliminan puntos;
+4. no se expanden ni contraen;
+5. no se inserta un sufijo ausente;
+6. el sufijo aislado no determina identidad ni naturaleza jurídica;
+7. conectores, ampersands, guiones y demás signos del nombre legal se preservan según su fuente autorizada;
+8. una forma distinta requiere evidencia propia y no se infiere por equivalencia visual.
+
+Conciliación:
+
+```text
+protecciones esperadas = 6
+protecciones materializadas = 6
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 29. Reconciliación exacta de las 28 formas iniciales
+
+| Grupo                              | Cantidad | Formas                                                                         |
+| ---------------------------------- | -------: | ------------------------------------------------------------------------------ |
+| marcas                             |        3 | `3M`, `iPhone`, `Coca-Cola`                                                    |
+| aplicaciones y códigos controlados |       10 | `NEXO`, `VISO`, `ORIGO`, `NUMERA`, `FOGO`, `PULSO`, `VGR`, `SAU`, `VCF`, `COP` |
+| unidades y familias técnicas       |        9 | `g`, `kg`, `ml`, `l`, `un`, `dz`, `count`, `mass`, `volume`                    |
+| protecciones contextuales legales  |        6 | `SAS`, `S.A.S.`, `SA`, `S.A.`, `LTDA`, `CIA`                                   |
+| **Total**                          |   **28** | **28 formas normativas iniciales**                                             |
+
+Verificación documental:
+
+```text
+formas esperadas = 28
+formas materializadas = 28
+faltantes = 0
+duplicados = 0
+```
+
+La pertenencia a este inventario no elimina los requisitos de alcance, fuente, representación, estado, evidencia y versión de cada entrada.
+
+---
+
+#### 30. Candidatos que no se activan por esta tarea
+
+Los siguientes casos permanecen fuera de las entradas `ACTIVE` porque la evidencia aprobada no permite promoverlos por inferencia:
+
+##### 30.1 Marcas, grafías o mezclas ambiguas
+
+- `Oster` / `oster`;
+- `Wellmix` / `Welmix`;
+- `Volnic` / `VOLNIC PALLOMARO`;
+- `Daza` / `acero daza`;
+- `MODELO DUC 72 R`;
+- `TORNADO MODELO (TH33M.110.)`;
+- `Hatsu`;
+- `Vento`;
+- `Molka`;
+- `Saudo`;
+- `Nutella`;
+- `Klim`;
+- `Kraft`;
+- `Kinder Bueno`.
+
+Decisión conservada: preservar o someter a la decisión de revisión ya gobernada por `DATA-NORM-ARC-007`; cuando afecte identidad o duplicidad, se conserva además la frontera de `DATA-NORM-ARC-010`.
+
+##### 30.2 Siglas y códigos contextuales no activados
+
+- `BBQ`;
+- `HIT`;
+- `AA`;
+- `CMS`;
+- `PAM`;
+- `REF`;
+- `T26`;
+- `WIP`;
+- `AVSA`;
+- `FC`;
+- `SVV`.
+
+Decisión conservada: mayúsculas, longitud o frecuencia no bastan para clasificarlos como sigla ejecutable.
+
+##### 30.3 Formas estructurales o léxicas fuera del catálogo de excepciones
+
+- `Botellla`;
+- `Costo`;
+- `1`;
+- `presentacion`;
+- `piezas`;
+- `bolsas`;
+- `Six Pack`;
+- `six_pack`;
+- `Bolsa 1 kg`.
+
+Decisión conservada: no se convierten en aliases, unidades o correcciones por similitud. La ortografía pertenece a `SHELL-NORM-005`; la estructura, identidad o revisión permanecen en sus contratos propietarios cuando correspondan.
+
+Ningún candidato anterior se añade a las 28 formas normativas iniciales.
+
+---
+
+#### 31. Aliases explícitos y prohibición de extensiones locales
+
+1. Un alias pertenece a una sola entrada compatible dentro de una coordenada resoluble.
+2. Todo alias requiere motivo, fuente, alcance, vigencia y versión.
+3. `CASEFOLD_EXACT` no crea aliases persistidos.
+4. Caja, `unaccent`, eliminación de signos, compactación, frecuencia o similitud no generan aliases.
+5. Una variante de puntuación o separación requiere `EXPLICIT_ALIAS` si llega a aprobarse.
+6. Una variante ortográfica que cambia letras no se absorbe como alias por conveniencia.
+7. Un consumidor no mantiene un suplemento local del catálogo.
+8. Un cliente no puede convertir un candidato de revisión en entrada activa.
+9. Una nueva forma oficial exige evolución canónica del catálogo correspondiente.
+
+---
+
+#### 32. Separación frente al diccionario ortográfico
+
+`SHELL-NORM-004` no resuelve correcciones ortográficas ordinarias.
+
+```text
+EXCEPCIÓN OFICIAL
+≠ CORRECCIÓN ORTOGRÁFICA
+```
+
+Por tanto:
+
+- `3M`, `iPhone` y `Coca-Cola` se gobiernan como formas oficiales;
+- una sigla o unidad se gobierna por catálogo contextual;
+- un nombre legal se preserva por autoridad documental;
+- una falta ortográfica aprobada para corrección pertenece al diccionario de `SHELL-NORM-005`;
+- un término ambiguo se conserva hasta revisión;
+- una excepción oficial tiene precedencia sobre una corrección ortográfica ordinaria cuando ambas pudieran coincidir.
+
+`SHELL-NORM-005` permanece como único propietario de la centralización del diccionario ortográfico versionado.
+
+---
+
+#### 33. Representaciones, fuentes y preservación
+
+| Coordenada                                   | Conducta                                                                      |
+| -------------------------------------------- | ----------------------------------------------------------------------------- |
+| `PRIMARY_VALUE` + `AUTHORITATIVE_SOURCE`     | puede emitir forma oficial si política, clase, alcance y versión lo autorizan |
+| `DISPLAY_OVERRIDE` + `APPROVED_OVERRIDE`     | puede emitir forma oficial dentro del alcance del override                    |
+| `EXTERNAL_ORIGINAL` + `EXTERNAL_EVIDENCE`    | preservar forma y procedencia; derivación interna separada                    |
+| `HISTORICAL_SNAPSHOT` + `IMMUTABLE_SNAPSHOT` | no reinterpretar ni resincronizar por nueva versión                           |
+| `AUDIT_EVIDENCE`                             | preservar evidencia; correcciones posteriores son aditivas                    |
+| `OUTPUT_PROJECTION` + `OUTPUT_ONLY`          | puede derivar forma autorizada sin retroalimentar la fuente                   |
+| cualquier `SYNCHRONIZED_COPY`                | no mantener catálogo propio ni originar corrección independiente              |
+
+Material firmado, secretos, checksums y firmas permanecen bajo `PRESERVE_EXACT`; un catálogo textual no autoriza alterarlos.
+
+---
+
+#### 34. Determinismo, versionado e idempotencia
+
+Para conectores, la misma entrada, coordenada y conjunto de versiones debe resolver:
+
+- el mismo token reconocido;
+- la misma posición;
+- la misma entrada de catálogo;
+- la misma forma emitida;
+- la misma precedencia;
+- la misma ambigüedad o bloqueo.
+
+Para excepciones, debe resolver:
+
+- la misma entrada compatible;
+- el mismo alcance;
+- el mismo modo de coincidencia;
+- la misma forma emitida o preservada;
+- el mismo resultado;
+- el mismo conflicto o bloqueo.
+
+Invariantes:
+
+```text
+apply_connectors(apply_connectors(value, context), context)
+=
+apply_connectors(value, context)
+
+apply_exception(apply_exception(value, context), context)
+=
+apply_exception(value, context)
+```
+
+si entrada, contexto y versiones son los mismos.
+
+No se permite:
+
+- `latest` implícito;
+- locale implícito;
+- catálogo mutable no versionado;
+- prioridad por orden físico;
+- fallback a lista local;
+- selección por primer resultado;
+- reinterpretación silenciosa de snapshots o evidencia histórica.
+
+---
+
+#### 35. Frontera frente a búsqueda, identidad y unicidad
+
+Los dos catálogos permanecen fuera de la autoridad estructural.
+
+```text
+misma forma oficial
+≠ misma entidad
+
+mismo resultado de conector
+≠ misma entidad
+
+misma excepción
+≠ duplicado confirmado
+```
+
+Por tanto:
+
+1. no crean claves empresariales;
+2. no activan constraints de unicidad;
+3. no seleccionan sobrevivientes;
+4. no desactivan registros;
+5. no reasignan relaciones;
+6. no convierten `SEARCH_DERIVATION` en identidad;
+7. no usan similitud o ranking para elegir una forma oficial;
+8. cualquier decisión de identidad continúa bajo `DATA-NORM-ARC-010`.
+
+---
+
+#### 36. VITAL
+
+VITAL permanece fuera de los catálogos transversales de Vento OS.
+
+Compartir infraestructura, tipos o un futuro package no autoriza:
+
+- aplicar los 18 conectores a campos de VITAL;
+- aplicar las 28 formas normativas iniciales a VITAL;
+- importar excepciones de Vento como autoridad de VITAL;
+- asumir que una coincidencia de forma entre productos transfiere semántica.
+
+Una eventual adopción requerirá contrato propio y aprobación explícita de su frontera.
+
+---
+
+#### 37. Estado de materialización física
+
+| Elemento                                              | Estado                                                 |
+| ----------------------------------------------------- | ------------------------------------------------------ |
+| `@vento/data-normalization`                           | `ESPECIFICADO`; package físico no materializado        |
+| tipos compartidos de `SHELL-NORM-002`                 | `ESPECIFICADOS`                                        |
+| reglas de `SHELL-NORM-003`                            | `ESPECIFICADAS`                                        |
+| `VENTO_COMMERCIAL_CONNECTOR_CATALOG_ES_CO@1.0.0`      | centralizado documentalmente; runtime no materializado |
+| 18 conectores                                         | `ESPECIFICADOS`                                        |
+| 3 posiciones y 5 resultados de conectores             | `ESPECIFICADOS`                                        |
+| `VENTO_OFFICIAL_TEXT_EXCEPTION_CATALOG@1.0.0`         | centralizado documentalmente; runtime no materializado |
+| 4 familias de excepción                               | `ESPECIFICADAS`                                        |
+| 4 alcances, 3 matchers, 4 aplicaciones y 7 resultados | `ESPECIFICADOS`                                        |
+| 28 formas normativas iniciales                        | `ESPECIFICADAS`                                        |
+| candidatos no activables                              | preservados fuera de entradas activas                  |
+| diccionario ortográfico                               | no desarrollado aquí; `SHELL-NORM-005`                 |
+| archivos TypeScript                                   | `NO IMPLEMENTADOS`                                     |
+| schemas runtime                                       | `NO IMPLEMENTADOS`                                     |
+| consumidores migrados                                 | `0` por esta tarea                                     |
+| cambios Supabase                                      | `0`                                                    |
+| requisitos de prueba creados o modificados            | `0`                                                    |
+
+`ESPECIFICADO` no equivale a `IMPLEMENTADO` ni a `VALIDADO` en runtime.
+
+---
+
+#### 38. Handoffs exactos
+
+| Materia fuera de esta tarea                                               | Propietario exacto                                          | Condición de salida                                                                  |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| diccionario ortográfico versionado                                        | `SHELL-NORM-005`                                            | correcciones léxicas cerradas permanecen separadas de excepciones oficiales          |
+| búsqueda y comparación                                                    | `SHELL-NORM-006`                                            | derivaciones tolerantes no modifican el valor mostrado ni definen identidad          |
+| previsualización                                                          | `SHELL-NORM-007`                                            | preview consume versiones exactas sin adquirir autoridad de commit                   |
+| metadata de versión y auditoría                                           | `SHELL-NORM-008`                                            | cada evaluación queda atribuible a versiones, entrada, resultado y contexto          |
+| pruebas de idempotencia y conservación semántica                          | `SHELL-NORM-009`                                            | corpus demuestra paridad, repetición estable y protección de formas                  |
+| materialización física del package                                        | `SHELL-CI-020::<package_id>` después de la puerta aplicable | crear y desplegar únicamente el package autorizado                                   |
+| persistencia, backfills, constraints, índices y triggers de normalización | `DATA-NORM-DB-001..010`                                     | ejecutar solo dentro del package autorizado cuando el alcance incluya BLOQUE R       |
+| candidatos ambiguos de marca, sigla, unidad o forma oficial               | `DATA-NORM-ARC-007`                                         | conservar la decisión de revisión y evidencia aprobada antes de cualquier activación |
+| identidad o duplicidad asociada a candidatos                              | `DATA-NORM-ARC-010`                                         | resolver estructura y relaciones sin inferir identidad desde texto                   |
+
+No se crea un identificador de tarea adicional.
+
+---
+
+#### 39. Cobertura de prueba vigente no modificada
+
+La conducta centralizada ya está protegida por requisitos canónicos vigentes.
+
+Cobertura principal:
+
+- `TREQ-DATA-054` a `TREQ-DATA-068`: catálogo cerrado de 18 conectores, matching lexical, posición, fronteras, secuencias, atomicidad, conjunciones, precedencia, separación de operaciones, fuentes, paridad, idempotencia y corpus;
+- `TREQ-DATA-069` a `TREQ-DATA-086`: cuatro familias de excepción, contrato de entrada, scopes y matchers cerrados, precedencia, marcas, candidatos, siglas, unidades, nombres legales, sufijos, aliases, vigencia, fuentes, paridad, separación de operaciones y corpus;
+- `TREQ-DATA-037` a `TREQ-DATA-053`: perfil de capitalización, tokenización, precedencia y fronteras que consumen ambos catálogos;
+- `TREQ-DATA-158`: prohibición de dependencias semánticas implícitas;
+- `TREQ-DATA-203` y `TREQ-DATA-204`: colocación autorizada de normalización determinista y reglas léxicas;
+- `TREQ-SHELL-002`: implementación compartida frente a copias locales;
+- `TREQ-SHELL-006`: pruebas propias y compatibilidad de packages antes de adopción.
+
+`SHELL-NORM-004` no cambia ninguna regla protegida por esos requisitos; fija su proyección compartida dentro de la futura superficie de `@vento/data-normalization`.
+
+---
+
+#### 40. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** `SHELL-NORM-004` centraliza sin ampliar dos catálogos, sus entradas, modos, precedencias, protecciones, candidatos y reglas ya aprobados y ya protegidos por requisitos canónicos vigentes. No introduce una entrada nueva, un alias nuevo, una familia nueva, un modo nuevo, un algoritmo nuevo, una regla de negocio nueva, una autorización, una persistencia, una migración, un cambio de datos ni un cambio en Supabase. El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 41. Decisiones vinculantes
+
+1. El catálogo de conectores compartido es exactamente `VENTO_COMMERCIAL_CONNECTOR_CATALOG_ES_CO@1.0.0`.
+2. El catálogo contiene exactamente 18 entradas.
+3. Las 18 entradas son `a`, `al`, `con`, `de`, `del`, `e`, `el`, `en`, `la`, `las`, `lo`, `los`, `o`, `para`, `por`, `sin`, `u` y `y`.
+4. Las tres familias de conectores son descriptivas y no constituyen gramática ejecutable.
+5. Los conectores se reconocen únicamente como tokens lexicales completos.
+6. No existe coincidencia por subcadena.
+7. `al` y `del` son atómicos.
+8. No se contraen ni expanden expresiones.
+9. No se ejecutan sustituciones `y`/`e` ni `o`/`u`.
+10. Las posiciones de conector son `NAME_START`, `DECLARED_SEGMENT_START` e `INTERNAL`.
+11. `INTERNAL` es posición de conector y no renombra `NO_SEGMENT_RESET`.
+12. Existen exactamente cinco resultados cerrados de conector.
+13. El catálogo de excepciones compartido es exactamente `VENTO_OFFICIAL_TEXT_EXCEPTION_CATALOG@1.0.0`.
+14. Las familias de excepción son exactamente cuatro.
+15. El contrato lógico de entrada conserva 23 atributos mínimos.
+16. Los alcances de coincidencia son exactamente `FULL_VALUE`, `PHRASE`, `TOKEN` y `STRUCTURED_COMPONENT`.
+17. Los matchers son exactamente `EXACT`, `CASEFOLD_EXACT` y `EXPLICIT_ALIAS`.
+18. No existe matching difuso dentro del catálogo de excepciones.
+19. Los modos de aplicación son exactamente cuatro.
+20. Los resultados cerrados de excepción son exactamente siete.
+21. Los tipos de autoridad materializados son exactamente cinco.
+22. Los estados ejecutables del catálogo de excepciones son `ACTIVE`, `SUSPENDED` y `RETIRED`.
+23. Solo `ACTIVE` participa en decisiones nuevas.
+24. La precedencia es `FULL_VALUE` → frase compatible más larga → `TOKEN` → `STRUCTURED_COMPONENT` → conector → palabra ordinaria → preservación o bloqueo.
+25. La especificidad dentro de un nivel es campo → entidad → dominio → política transversal.
+26. Un conflicto de igual especificidad bloquea la mutación.
+27. Las formas iniciales de marca son exactamente `3M`, `iPhone` y `Coca-Cola`.
+28. Las formas iniciales de aplicaciones y códigos son exactamente `NEXO`, `VISO`, `ORIGO`, `NUMERA`, `FOGO`, `PULSO`, `VGR`, `SAU`, `VCF` y `COP`.
+29. Las formas iniciales de unidades y familias técnicas son exactamente `g`, `kg`, `ml`, `l`, `un`, `dz`, `count`, `mass` y `volume`.
+30. Las protecciones contextuales de sufijo legal son exactamente `SAS`, `S.A.S.`, `SA`, `S.A.`, `LTDA` y `CIA`.
+31. Las seis protecciones legales no son aliases entre sí.
+32. El total de formas normativas iniciales es 28: 22 de emisión o validación y 6 protecciones legales contextuales.
+33. Los candidatos sin autoridad suficiente permanecen fuera de entradas activas.
+34. Una palabra en mayúsculas no se clasifica automáticamente como sigla.
+35. Una unidad solo se evalúa en contexto unitario o componente estructurado resuelto.
+36. Un nombre legal se preserva como valor completo respaldado, no se reconstruye desde tokens.
+37. Todo alias es explícito, acotado, versionado y respaldado.
+38. Las excepciones oficiales no ejecutan corrección ortográfica.
+39. El diccionario ortográfico pertenece a `SHELL-NORM-005`.
+40. La búsqueda pertenece a `SHELL-NORM-006`.
+41. Los originales externos, snapshots y evidencia conservan su frontera de preservación.
+42. Los catálogos no crean identidad, unicidad, deduplicación ni fusión.
+43. VITAL no hereda estos catálogos.
+44. No se crea package físico, TypeScript, SQL, RPC, trigger, índice, constraint, migración o backfill.
+45. No se modifica Supabase.
+46. Esta tarea crea cero requisitos de prueba y modifica cero requisitos existentes.
+47. `SHELL-NORM-005` queda como única continuidad reservada.
+
+---
+
+#### 42. Hallazgos y destinos exactos
+
+| Hallazgo                                                                                  | Resultado de `SHELL-NORM-004`                  | Destino exacto                                              |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------- |
+| los conectores ya estaban definidos en E3 pero no centralizados en la familia SHELL-NORM  | catálogo completo centralizado documentalmente | `SHELL-NORM-004`                                            |
+| las excepciones ya estaban definidas en E3 pero no centralizadas en la familia SHELL-NORM | catálogo completo centralizado documentalmente | `SHELL-NORM-004`                                            |
+| existen candidatos de marca, sigla y forma oficial sin autoridad suficiente               | permanecen sin activación automática           | `DATA-NORM-ARC-007`                                         |
+| algunos candidatos pueden implicar identidad o duplicidad                                 | ninguna coincidencia textual decide estructura | `DATA-NORM-ARC-010`                                         |
+| las correcciones ortográficas no pertenecen al catálogo de excepciones                    | frontera preservada                            | `SHELL-NORM-005`                                            |
+| búsqueda tolerante, aliases de búsqueda y similitud permanecen separados                  | frontera preservada                            | `SHELL-NORM-006`                                            |
+| el package compartido aún no está materializado físicamente                               | especificación completa; ejecución no iniciada | `SHELL-CI-020::<package_id>` después de la puerta aplicable |
+| persistencia y enforcement de normalización pertenecen a BLOQUE R                         | sin cambio físico                              | `DATA-NORM-DB-001..010`                                     |
+
+No queda un pendiente narrativo sin propietario documental exacto.
+
+---
+
+#### 43. Criterios de aceptación
+
+`SHELL-NORM-004` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. se centralizan exactamente los dos catálogos aprobados por E3;
+2. no se crea una tercera fuente de catálogos;
+3. el catálogo de conectores conserva identidad y versión exactas;
+4. las 18 entradas aparecen exactamente una vez;
+5. faltantes de conectores = 0;
+6. duplicados de conectores = 0;
+7. las tres familias descriptivas no amplían el catálogo;
+8. se preservan las tres posiciones normativas;
+9. `INTERNAL` no se confunde con `NO_SEGMENT_RESET`;
+10. se preservan los cinco resultados cerrados de conectores;
+11. el reconocimiento se limita a token lexical completo;
+12. subcadenas y formas con signos no se aceptan como conectores;
+13. `al` y `del` permanecen atómicos;
+14. no existen contracciones ni expansiones automáticas;
+15. no existen sustituciones automáticas entre conjunciones;
+16. las excepciones preceden a los conectores;
+17. el catálogo de excepciones conserva identidad y versión exactas;
+18. se materializan las cuatro familias de excepción;
+19. se materializan los 23 atributos mínimos de entrada;
+20. se materializan los cuatro alcances de coincidencia;
+21. se materializan los tres matchers;
+22. se materializan los cuatro modos de aplicación;
+23. se materializan los siete resultados de excepción;
+24. se materializan los cinco tipos de autoridad;
+25. se materializan los tres estados de ciclo de vida;
+26. solo `ACTIVE` participa en decisiones nuevas;
+27. la precedencia de excepciones está completa y ordenada;
+28. la especificidad campo-entidad-dominio-transversal está preservada;
+29. conflictos de igual especificidad fallan cerrados;
+30. las 3 formas de marca están completas;
+31. las 10 formas de siglas y códigos están completas;
+32. las 9 formas de unidades y familias técnicas están completas;
+33. las 6 protecciones legales están completas;
+34. el total de formas normativas iniciales es 28;
+35. faltantes de formas iniciales = 0;
+36. duplicados de formas iniciales = 0;
+37. las 6 protecciones legales no son aliases entre sí;
+38. los candidatos sin autoridad no son promovidos;
+39. no se crean aliases implícitos;
+40. no se usa frecuencia, caja o similitud como autoridad;
+41. no se introduce corrección ortográfica;
+42. no se introduce búsqueda tolerante;
+43. no se introduce identidad, unicidad ni fusión;
+44. representaciones y fuentes protegidas no se reescriben;
+45. mismas entradas, contexto y versiones producen mismo resultado lógico;
+46. las evaluaciones son idempotentes bajo las mismas versiones;
+47. no existe `latest` implícito;
+48. no existe fallback a lista local;
+49. VITAL permanece separado;
+50. no se crea código ni package físico;
+51. no se modifica Supabase;
+52. no se crean ni modifican requisitos de prueba;
+53. todos los carryovers tienen propietario exacto;
+54. la siguiente tarea permanece únicamente reservada.
+
+---
+
+#### 44. Límites
+
+`SHELL-NORM-004` no:
+
+- crea físicamente `@vento/data-normalization`;
+- crea `package.json`;
+- crea archivos `.ts` o `.tsx`;
+- define exports físicos;
+- selecciona librerías runtime;
+- crea schemas Zod, JSON Schema u otros schemas serializados;
+- modifica `VENTO_COMMERCIAL_CONNECTOR_CATALOG_ES_CO@1.0.0`;
+- modifica `VENTO_OFFICIAL_TEXT_EXCEPTION_CATALOG@1.0.0`;
+- agrega conectores;
+- agrega familias de excepción;
+- agrega formas oficiales;
+- activa candidatos ambiguos;
+- genera aliases desde heurísticas;
+- corrige ortografía;
+- agrega tildes;
+- traduce;
+- translitera;
+- expande siglas;
+- convierte unidades;
+- modifica cantidades o factores;
+- reconstruye nombres legales;
+- implementa búsqueda;
+- implementa similitud;
+- implementa preview;
+- implementa auditoría física;
+- persiste catálogos;
+- transforma datos existentes;
+- crea SQL;
+- crea RPC;
+- crea triggers;
+- crea índices;
+- crea constraints;
+- ejecuta backfills;
+- modifica RLS;
+- modifica Supabase;
+- migra consumidores;
+- redefine `DATA-NORM-ARC-001..012`;
+- desarrolla `SHELL-NORM-005`.
+
+---
+
+#### 45. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-NORM-003 — Centralizar reglas de espacios, Unicode y capitalización
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-NORM-004 — Centralizar conectores y excepciones
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-NORM-005 — Centralizar diccionarios ortográficos versionados
+
+
 ### [ ] SHELL-NORM-005 — Centralizar diccionarios ortográficos versionados
 ### [ ] SHELL-NORM-006 — Crear normalización de búsqueda y comparación
 ### [ ] SHELL-NORM-007 — Crear previsualización de transformaciones
