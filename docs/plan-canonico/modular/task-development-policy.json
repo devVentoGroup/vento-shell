@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "policy_id": "CANONICAL-TASK-DEVELOPMENT-QUALITY-001",
+  "effective_from_task_id": "SHELL-UI-012",
+  "historical_policy": "PRESERVE_BEFORE_BOUNDARY",
+  "draft_enforcement": "WARNING",
+  "approved_enforcement": "ERROR",
+  "required_header_fields": [
+    "Estado",
+    "Tarea anterior",
+    "Tarea siguiente",
+    "Tipo de tarea",
+    "Bloque",
+    "Repositorio propietario",
+    "Archivo propietario",
+    "Estado físico resultante",
+    "Cambios físicos autorizados",
+    "Requisitos de prueba creados o modificados"
+  ],
+  "required_section_groups": [
+    { "label": "propósito", "pattern": "Propósito|Objetivo" },
+    { "label": "pruebas", "pattern": "Requisitos de prueba derivados" },
+    { "label": "evidencia", "pattern": "Evidencia de validación" },
+    { "label": "aceptación", "pattern": "Criterios de aceptación" },
+    { "label": "límites", "pattern": "Límites" },
+    { "label": "continuidad", "pattern": "Continuidad" }
+  ],
+  "forbidden_placeholder_pattern": "\\[PENDIENTE[^\\]]*\\]|<[A-Z][A-Z0-9_-]*>",
+  "required_evidence_classes": [
+    "BUILD",
+    "LOCAL",
+    "REMOTA",
+    "OPERATIVA",
+    "FÍSICA"
+  ],
+  "allowed_evidence_statuses": [
+    "PASS",
+    "FAIL",
+    "NOT_EXECUTED",
+    "NOT_APPLICABLE"
+  ]
+}

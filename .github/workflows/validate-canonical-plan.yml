@@ -33,6 +33,8 @@ jobs:
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
@@ -42,6 +44,22 @@ jobs:
 
       - name: Instalar dependencias bloqueadas
         run: npm ci
+
+      - name: Verificar aislamiento de commits en pull request
+        if: github.event_name == 'pull_request'
+        run: npm run docs:commit-scope:check -- --range "${{ github.event.pull_request.base.sha }}..${{ github.sha }}"
+
+      - name: Verificar aislamiento de commits en push
+        if: github.event_name == 'push'
+        run: npm run docs:commit-scope:check -- --range "${{ github.event.before }}..${{ github.sha }}"
+
+      - name: Impedir nueva deuda de lint en pull request
+        if: github.event_name == 'pull_request'
+        run: npm run quality:lint:ratchet -- --range "${{ github.event.pull_request.base.sha }}..${{ github.sha }}"
+
+      - name: Impedir nueva deuda de lint en push
+        if: github.event_name == 'push'
+        run: npm run quality:lint:ratchet -- --range "${{ github.event.before }}..${{ github.sha }}"
 
       - name: Verificar fuentes y derivados versionados antes de compilar
         run: npm run docs:plan:check

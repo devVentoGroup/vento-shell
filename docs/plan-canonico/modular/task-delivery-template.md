@@ -25,6 +25,18 @@
 
 ---
 
+#### N. Evidencia de validación
+
+| Clase     | Estado             | Evidencia            |
+| --------- | ------------------ | -------------------- |
+| BUILD     | <BUILD_STATUS>     | <BUILD_EVIDENCE>     |
+| LOCAL     | <LOCAL_STATUS>     | <LOCAL_EVIDENCE>     |
+| REMOTA    | <REMOTE_STATUS>    | <REMOTE_EVIDENCE>    |
+| OPERATIVA | <OPERATION_STATUS> | <OPERATION_EVIDENCE> |
+| FÍSICA    | <PHYSICAL_STATUS>  | <PHYSICAL_EVIDENCE>  |
+
+---
+
 #### N. Criterios de aceptación
 
 ...

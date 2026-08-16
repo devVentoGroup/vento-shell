@@ -229,8 +229,12 @@ function repositoryMentions(block) {
 
 function renderBrief({ semantic, current, previous, evidence, scope, lineNumber }) {
   const findings = [...semantic.errors, ...semantic.warnings];
-  const references = [...new Set(current.block.match(TASK_REFERENCE) ?? [])].sort();
-  const inherited = previous ? sectionBullets(previous.block, 'Decisiones vinculantes', 12) : [];
+  const references = [...new Set(current.block.match(TASK_REFERENCE) ?? [])]
+    .filter((taskId) => taskId !== current.id)
+    .sort();
+  const inherited = previous
+    ? sectionBullets(previous.block, 'Decisiones (?:vinculantes|consolidadas)', 12)
+    : [];
   const restrictions = sectionBullets(current.block, 'Límites', 20);
   const canonicalEvidence = extractValidationEvidence(current.block);
   return `# Brief automático de la tarea actual
@@ -321,8 +325,7 @@ export function writeCurrentTaskDevelopmentArtifacts({
     semantic.preflight,
     buildSucceeded,
   );
-  const ownerSource = fs.readFileSync(current.filePath, 'utf8');
-  const lineNumber = ownerSource.slice(0, current.index).split(/\r?\n/u).length;
+  const lineNumber = current.index + 1;
   const scope = analyzeCommitScope(worktreePaths());
   const brief = renderBrief({ semantic, current, previous, evidence, scope, lineNumber });
   fs.writeFileSync(path.join(deliveryDir, 'current-task-brief.md'), brief, 'utf8');

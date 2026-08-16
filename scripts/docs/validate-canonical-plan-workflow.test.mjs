@@ -57,6 +57,9 @@ test('verifica fuentes antes del build y publica el compilado regenerado', () =>
   assert.match(workflow, /uses: actions\/upload-artifact@v4/u);
   assert.match(workflow, /PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO\.md/u);
   assert.match(workflow, /retention-days: 7/u);
+  assert.match(workflow, /fetch-depth: 0/u);
+  assert.match(workflow, /docs:commit-scope:check/u);
+  assert.match(workflow, /quality:lint:ratchet/u);
 });
 
 test('el watcher regenera y valida también la guía de tareas pendientes', () => {
@@ -82,6 +85,8 @@ test('el watcher regenera y valida también la guía de tareas pendientes', () =
   assert.match(watcher, /releaseWatcherLock/u);
   assert.match(watcher, /publishStatus\("COMPILANDO"\)/u);
   assert.match(watcher, /publishStatus\("VIGILANDO"\)/u);
+  assert.match(watcher, /writeCurrentTaskDevelopmentArtifacts/u);
+  assert.match(watcher, /publishTaskArtifacts\(true\)/u);
 });
 
 test('el build prepara formato sin iniciar tareas vacías', () => {
@@ -100,6 +105,7 @@ test('el build publica un estado local legible sin volverlo canónico', () => {
   assert.match(buildWrapper, /writePlanWatchStatus/u);
   assert.match(buildWrapper, /state: 'COMPILACIÓN COMPLETADA'/u);
   assert.match(buildWrapper, /derivePreflight/u);
+  assert.match(buildWrapper, /writeCurrentTaskDevelopmentArtifacts/u);
 });
 
 test('INT-PROD conserva decidir, ejecutar y verificar sin dependencia circular', () => {

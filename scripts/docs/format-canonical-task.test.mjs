@@ -39,7 +39,7 @@ test('crea un scaffold explícito solo para una tarea no iniciada y vacía', () 
   });
   assert.match(result.source, /\*\*Estado:\*\* NO INICIADA/u);
   assert.match(result.source, /#### 1\. Propósito/u);
-  assert.match(result.source, /#### 7\. Continuidad/u);
+  assert.match(result.source, /#### 8\. Continuidad/u);
   assert.match(result.source, /\[PENDIENTE_DE_DESARROLLO\]/u);
 });
 

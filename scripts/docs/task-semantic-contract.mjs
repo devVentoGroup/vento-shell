@@ -77,6 +77,38 @@ function physicalContradiction(metadata) {
   return /NO_MATERIALIZADO|NO MATERIALIZADO/iu.test(state) && !/^ninguno$/iu.test(changes);
 }
 
+export function validateTaskDevelopmentPolicy(policy) {
+  const errors = [];
+  if (policy?.schema_version !== 1) errors.push('schema_version debe ser 1.');
+  if (!/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3}$/u.test(policy?.effective_from_task_id ?? '')) {
+    errors.push('effective_from_task_id debe ser un ID canónico válido.');
+  }
+  if (policy?.historical_policy !== 'PRESERVE_BEFORE_BOUNDARY') {
+    errors.push('historical_policy debe preservar las tareas anteriores.');
+  }
+  if (policy?.draft_enforcement !== 'WARNING' || policy?.approved_enforcement !== 'ERROR') {
+    errors.push('la política debe advertir en borrador y bloquear únicamente aprobaciones.');
+  }
+  for (const key of [
+    'required_header_fields',
+    'required_section_groups',
+    'required_evidence_classes',
+    'allowed_evidence_statuses',
+  ]) {
+    if (!Array.isArray(policy?.[key]) || policy[key].length === 0) errors.push(`${key} debe ser un arreglo no vacío.`);
+  }
+  if (typeof policy?.forbidden_placeholder_pattern !== 'string') {
+    errors.push('forbidden_placeholder_pattern debe ser un string.');
+  } else {
+    try {
+      new RegExp(policy.forbidden_placeholder_pattern, 'iu');
+    } catch {
+      errors.push('forbidden_placeholder_pattern no es una expresión regular válida.');
+    }
+  }
+  return errors;
+}
+
 export function validateTaskSemanticContract({
   block,
   task,
@@ -177,7 +209,10 @@ export function validateProspectiveTaskSemantics({ root = process.cwd(), taskId 
   const preflight = derivePreflight({ root, requestedTaskId: taskId });
   const policyPath = path.join(root, 'docs', 'plan-canonico', 'modular', 'task-development-policy.json');
   const policy = JSON.parse(fs.readFileSync(policyPath, 'utf8'));
-  if (policy.schema_version !== 1) throw new Error('task-development-policy.json requiere schema_version 1.');
+  const policyErrors = validateTaskDevelopmentPolicy(policy);
+  if (policyErrors.length > 0) {
+    throw new Error(`task-development-policy.json inválida:\n- ${policyErrors.join('\n- ')}`);
+  }
   const boundary = derivePreflight({ root, requestedTaskId: policy.effective_from_task_id });
   if (preflight.task.canonical_order < boundary.task.canonical_order) {
     return { skipped: true, errors: [], warnings: [], evidence: [], preflight };

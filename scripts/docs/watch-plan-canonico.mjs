@@ -3,6 +3,7 @@ import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { derivePreflight } from "./canonical-task-preflight.mjs";
+import { writeCurrentTaskDevelopmentArtifacts } from "./task-development-artifacts.mjs";
 import {
   acquireWatcherLock,
   releaseWatcherLock,
@@ -143,6 +144,19 @@ function publishStatus(state, overrides = {}) {
   });
 }
 
+function publishTaskArtifacts(buildSucceeded = false) {
+  try {
+    writeCurrentTaskDevelopmentArtifacts({
+      root: repositoryRoot,
+      buildSucceeded,
+    });
+  } catch (error) {
+    console.warn(
+      `[PLAN CANÓNICO] Brief/diff no disponible: ${error instanceof Error ? error.message : String(error)}`
+    );
+  }
+}
+
 function normalizeRelativePath(filename) {
   return String(filename ?? "").replaceAll("\\", "/");
 }
@@ -235,6 +249,7 @@ async function rebuild(reason) {
     message: "Compilando y validando fuentes canónicas.",
   };
   publishStatus("COMPILANDO");
+  publishTaskArtifacts(false);
 
   try {
     await runNodeScript(
@@ -285,6 +300,7 @@ async function rebuild(reason) {
       message: "Compilado actualizado y validado.",
     };
     publishStatus("VIGILANDO");
+    publishTaskArtifacts(true);
   } catch (error) {
     console.error(
       `\n[PLAN CANÓNICO] ❌ Compilación #${buildId} fallida:`
@@ -297,6 +313,7 @@ async function rebuild(reason) {
       message: error instanceof Error ? error.message : String(error),
     };
     publishStatus("VIGILANDO");
+    publishTaskArtifacts(false);
   } finally {
     buildRunning = false;
 
@@ -344,6 +361,7 @@ console.log("[PLAN CANÓNICO] Vigilancia automática iniciada.");
 console.log(`[PLAN CANÓNICO] Carpeta: ${watchedDirectory}`);
 console.log("[PLAN CANÓNICO] Esperando cambios...");
 publishStatus("VIGILANDO");
+publishTaskArtifacts(false);
 
 const watcher = watch(
   watchedDirectory,

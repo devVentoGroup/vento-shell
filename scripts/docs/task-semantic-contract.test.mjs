@@ -1,7 +1,13 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { validateTaskSemanticContract } from './task-semantic-contract.mjs';
+import fs from 'node:fs';
+import path from 'node:path';
+
+import {
+  validateTaskDevelopmentPolicy,
+  validateTaskSemanticContract,
+} from './task-semantic-contract.mjs';
 
 const policy = {
   required_header_fields: [
@@ -81,6 +87,14 @@ const inventory = new Map([
   ['TEST-SEM-011', {}],
   ['TEST-SEM-012', {}],
 ]);
+
+test('la política material prospectiva es válida', () => {
+  const materialPolicy = JSON.parse(fs.readFileSync(
+    path.resolve('docs/plan-canonico/modular/task-development-policy.json'),
+    'utf8',
+  ));
+  assert.deepEqual(validateTaskDevelopmentPolicy(materialPolicy), []);
+});
 
 test('acepta una tarea aprobada completa y con evidencia tipada', () => {
   const result = validateTaskSemanticContract({

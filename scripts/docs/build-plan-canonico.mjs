@@ -5,6 +5,7 @@ syncPendingTaskContext();
 try {
   const path = await import('node:path');
   const { derivePreflight } = await import('./canonical-task-preflight.mjs');
+  const { writeCurrentTaskDevelopmentArtifacts } = await import('./task-development-artifacts.mjs');
   const { writePlanWatchStatus } = await import('./plan-watch-runtime.mjs');
   const root = process.cwd();
   const completedAt = new Date().toISOString();
@@ -18,6 +19,7 @@ try {
     message: 'Fuentes canónicas compiladas y contexto pendiente sincronizado.',
     preflight: derivePreflight({ root }),
   });
+  writeCurrentTaskDevelopmentArtifacts({ root, buildSucceeded: true });
 } catch (error) {
   console.warn(
     `[PLAN CANÓNICO] No se pudo actualizar .delivery/plan-status.md: ${error instanceof Error ? error.message : String(error)}`,

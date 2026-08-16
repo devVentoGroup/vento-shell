@@ -65,6 +65,15 @@ Comandos desde la raíz de vento-shell:
    por lo que una plantilla antigua o divergente bloquea el build antes de
    propagarse a una tarea.
 
+   Desde SHELL-UI-012, task-development-policy.json añade un gate semántico:
+   advierte durante borrador y bloquea únicamente una aprobación incompleta. El
+   watcher genera current-task-brief.md, current-task-semantic-diff.md, baselines
+   y evidencia tipada bajo .delivery/ sin convertirlos en fuentes canónicas.
+
+   Para una inspección explícita, aunque no es necesaria durante el flujo normal:
+
+   npm run docs:task:quality
+
 10. Inventariar deriva multi-repositorio sin escribir:
 
     npm run docs:repos:drift
@@ -156,6 +165,10 @@ Organización:
   .delivery/plan-watch.lock.json, recupera locks obsoletos y publica en
   .delivery/plan-status.md un resumen legible de salud, continuidad y última
   compilación. Ambos archivos son locales y no son fuentes canónicas.
+- commit-scope impide mezclar en un mismo commit una tarea canónica y cambios de
+  infraestructura transversal. El ratchet de lint acepta la deuda histórica
+  registrada, impide aumentos y exige archivos tocados limpios. Ambos controles
+  se ejecutan automáticamente en CI.
 - docs:repos:drift inventaría branch/upstream, estado local, manifiestos,
   rutas, componentes, contratos, migraciones y consumidores Supabase de los
   doce repositorios VENTO. No ejecuta Supabase ni escribe salvo

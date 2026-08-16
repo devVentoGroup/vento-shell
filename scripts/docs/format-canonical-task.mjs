@@ -34,6 +34,7 @@ const SCAFFOLD_SECTIONS = [
   'Resultado canónico',
   'Decisiones',
   'Requisitos de prueba derivados',
+  'Evidencia de validación',
   'Criterios de aceptación',
   'Continuidad',
 ];
@@ -277,6 +278,16 @@ function addScaffold(block, task) {
     lines.push('', `#### ${index + 1}. ${title}`, '');
     if (title === 'Requisitos de prueba derivados') {
       lines.push('**Resultado:** [PENDIENTE_DE_CLASIFICAR]');
+    } else if (title === 'Evidencia de validación') {
+      lines.push(
+        '| Clase | Estado | Evidencia |',
+        '| --- | --- | --- |',
+        '| BUILD | NOT_EXECUTED | [PENDIENTE_DE_EVIDENCIA] |',
+        '| LOCAL | NOT_EXECUTED | [PENDIENTE_DE_EVIDENCIA] |',
+        '| REMOTA | NOT_EXECUTED | [PENDIENTE_DE_EVIDENCIA] |',
+        '| OPERATIVA | NOT_EXECUTED | [PENDIENTE_DE_EVIDENCIA] |',
+        '| FÍSICA | NOT_EXECUTED | [PENDIENTE_DE_EVIDENCIA] |',
+      );
     } else if (title === 'Continuidad') {
       lines.push(
         '**ÚLTIMA TAREA APROBADA**',

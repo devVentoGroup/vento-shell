@@ -9,6 +9,7 @@ import {
   validateTaskPresentation,
 } from './format-canonical-task.mjs';
 import { validateTaskFormatPolicy } from './task-format-policy.mjs';
+import { validateProspectiveTaskSemantics } from './task-semantic-contract.mjs';
 
 function fail(message) {
   throw new Error(message);
@@ -41,6 +42,7 @@ export function autoPrepareCanonicalTask({
   const changed = [];
   const checked = [];
   const skipped = [];
+  const semanticWarnings = [];
 
   for (const taskId of automaticTaskIds(currentPreflight)) {
     let preflight;
@@ -63,6 +65,8 @@ export function autoPrepareCanonicalTask({
     }
 
     if (preflight.task.structure === 'EMPTY_DRAFT') {
+      const semantic = validateProspectiveTaskSemantics({ root, taskId });
+      semanticWarnings.push(...semantic.warnings.map((warning) => ({ taskId, ...warning })));
       skipped.push({ taskId, reason: 'EMPTY_DRAFT_NO_AUTO_SCAFFOLD' });
       continue;
     }
@@ -86,6 +90,14 @@ export function autoPrepareCanonicalTask({
       writePreservingEol(ownerPath, raw, result.source);
       changed.push(taskId);
     }
+    const semantic = validateProspectiveTaskSemantics({ root, taskId });
+    semanticWarnings.push(...semantic.warnings.map((warning) => ({ taskId, ...warning })));
+    if (semantic.errors.length > 0) {
+      fail(
+        `${taskId} incumple task-development-policy.json:\n- `
+        + semantic.errors.map(({ code, message }) => `${code}: ${message}`).join('\n- '),
+      );
+    }
   }
 
   console.log(
@@ -100,6 +112,9 @@ export function autoPrepareCanonicalTask({
     } else {
       console.warn(`[PLAN CANÓNICO] ${taskId}: preparación omitida: ${reason}`);
     }
+  }
+  for (const { taskId, code, message } of semanticWarnings) {
+    console.warn(`[PLAN CANÓNICO] ${taskId}: advertencia semántica ${code}: ${message}`);
   }
 
   return { currentPreflight, checked, changed, skipped };

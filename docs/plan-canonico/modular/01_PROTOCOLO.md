@@ -989,3 +989,38 @@ No se usarán bloques `text` ni una frase posterior que repita que la tarea
 siguiente no se inicia. La reserva ya expresa ese límite. El formateo no cambia
 marcadores ni estados, no aprueba tareas y no crea automáticamente el desarrollo
 de un borrador vacío.
+
+## Calidad prospectiva del desarrollo de tareas
+
+La política `task-development-policy.json` se aplica desde `SHELL-UI-012`,
+incluida. Las tareas anteriores conservan su contrato histórico.
+
+Durante un borrador, los hallazgos semánticos serán advertencias y no
+materializarán contenido. Cuando una tarea use marcador aprobado, los mismos
+hallazgos serán errores bloqueantes. Una tarea aprobada deberá:
+
+- completar la cabecera propietaria y las secciones de propósito, requisitos de
+  prueba, evidencia, criterios de aceptación, límites y continuidad;
+- resolver todos sus placeholders;
+- referenciar únicamente tareas canónicas existentes;
+- mantener coherencia entre resultado físico, cambios autorizados y TREQ;
+- clasificar exactamente una vez la evidencia `BUILD`, `LOCAL`, `REMOTA`,
+  `OPERATIVA` y `FÍSICA`;
+- usar únicamente `PASS`, `FAIL`, `NOT_EXECUTED` o `NOT_APPLICABLE` y aportar
+  evidencia concreta para cada `PASS`.
+
+El watcher y el build generarán fuera de las fuentes canónicas:
+
+- `.delivery/current-task-brief.md`;
+- `.delivery/current-task-semantic-diff.md`;
+- `.delivery/task-baselines/<TASK-ID>.md`;
+- `.delivery/task-diffs/<TASK-ID>.md`;
+- `.delivery/task-evidence/<TASK-ID>.json`.
+
+Estos artefactos son ayuda de desarrollo de solo lectura. No aprueban tareas,
+no sustituyen evidencia remota, operativa o física y no autorizan cambios.
+
+Los commits de desarrollo canónico y los de infraestructura transversal deberán
+permanecer separados. El ratchet de lint impedirá nueva deuda y exigirá que cada
+archivo tocado quede sin hallazgos, aunque la deuda histórica continúe registrada
+en `quality/lint-debt-baseline.json`.
