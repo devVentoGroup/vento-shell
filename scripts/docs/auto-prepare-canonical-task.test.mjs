@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { automaticTaskIds } from './auto-prepare-canonical-task.mjs';
+import {
+  automaticTaskIds,
+  isTaskCoveredByPresentationPolicy,
+} from './auto-prepare-canonical-task.mjs';
 
 test('prepara únicamente la última aprobada y la tarea actual', () => {
   assert.deepEqual(
@@ -21,4 +24,10 @@ test('no duplica una tarea terminal', () => {
     automaticTaskIds({ continuity: { previous: 'FINAL-001', current: 'FINAL-001' } }),
     ['FINAL-001'],
   );
+});
+
+test('preserva tareas anteriores y aplica el formato desde la frontera incluida', () => {
+  assert.equal(isTaskCoveredByPresentationPolicy(8, 9), false);
+  assert.equal(isTaskCoveredByPresentationPolicy(9, 9), true);
+  assert.equal(isTaskCoveredByPresentationPolicy(10, 9), true);
 });

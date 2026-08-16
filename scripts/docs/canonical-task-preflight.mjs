@@ -75,6 +75,10 @@ export function derivePreflight({ root = process.cwd(), requestedTaskId = null }
   if (!taskId) fail('la ruta está completa y no existe una tarea actual.');
   const task = taskMap.get(taskId);
   if (!task) fail(`${taskId} no es una tarea canónica física disponible para preflight.`);
+  const orderedTasks = [...taskMap.values()].sort(
+    (left, right) => left.fileIndex - right.fileIndex || left.taskIndex - right.taskIndex,
+  );
+  const canonicalOrder = orderedTasks.findIndex(({ id }) => id === taskId) + 1;
 
   const ownerPath = path.join(baseDir, task.relativePath);
   const ownerSource = fs.readFileSync(ownerPath, 'utf8');
@@ -120,6 +124,7 @@ export function derivePreflight({ root = process.cwd(), requestedTaskId = null }
       title: task.title,
       state: task.state,
       owner: task.relativePath.replace(/\\/gu, '/'),
+      canonical_order: canonicalOrder,
       current: task.id === currentTaskId,
       section_count: sectionCount,
       structure: sectionCount === 0 ? 'EMPTY_DRAFT' : 'DEVELOPED',

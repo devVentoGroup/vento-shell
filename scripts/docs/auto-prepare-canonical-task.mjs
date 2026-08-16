@@ -3,7 +3,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { derivePreflight } from './canonical-task-preflight.mjs';
-import { formatTaskFileSource } from './format-canonical-task.mjs';
+import {
+  formatTaskFileSource,
+  parseTaskBlocks,
+  validateTaskPresentation,
+} from './format-canonical-task.mjs';
 
 function fail(message) {
   throw new Error(message);
@@ -14,6 +18,10 @@ export function automaticTaskIds(preflight) {
     preflight.continuity.previous,
     preflight.continuity.current,
   ].filter(Boolean))];
+}
+
+export function isTaskCoveredByPresentationPolicy(taskOrder, boundaryOrder) {
+  return taskOrder >= boundaryOrder;
 }
 
 function writePreservingEol(filePath, raw, normalized) {
@@ -27,6 +35,12 @@ export function autoPrepareCanonicalTask({
 } = {}) {
   const currentPreflight = derivePreflight({ root });
   const baseDir = path.join(root, 'docs', 'plan-canonico', 'modular');
+  const policyPath = path.join(baseDir, 'task-format-policy.json');
+  const policy = JSON.parse(fs.readFileSync(policyPath, 'utf8'));
+  if (policy.schema_version !== 1 || policy.historical_policy !== 'PRESERVE_BEFORE_BOUNDARY') {
+    fail('task-format-policy.json no contiene una política prospectiva soportada.');
+  }
+  const boundary = derivePreflight({ root, requestedTaskId: policy.effective_from_task_id });
   const changed = [];
   const checked = [];
   const skipped = [];
@@ -43,6 +57,14 @@ export function autoPrepareCanonicalTask({
       continue;
     }
 
+    if (!isTaskCoveredByPresentationPolicy(
+      preflight.task.canonical_order,
+      boundary.task.canonical_order,
+    )) {
+      skipped.push({ taskId, reason: 'HISTORICAL_STYLE_PRESERVED' });
+      continue;
+    }
+
     if (preflight.task.structure === 'EMPTY_DRAFT') {
       skipped.push({ taskId, reason: 'EMPTY_DRAFT_NO_AUTO_SCAFFOLD' });
       continue;
@@ -52,12 +74,21 @@ export function autoPrepareCanonicalTask({
     const raw = fs.readFileSync(ownerPath, 'utf8');
     const result = formatTaskFileSource(raw, { taskId });
     checked.push(taskId);
-    if (result.changedTaskIds.length === 0) continue;
-    if (checkOnly) {
+    if (result.changedTaskIds.length > 0 && checkOnly) {
       fail(`${taskId} requiere formato canónico; ejecute docs:plan:build para aplicarlo.`);
     }
-    writePreservingEol(ownerPath, raw, result.source);
-    changed.push(taskId);
+    const effectiveSource = result.source;
+    const [formattedTask] = parseTaskBlocks(effectiveSource).filter(({ id }) => id === taskId);
+    const presentationErrors = formattedTask ? validateTaskPresentation(formattedTask.block) : [
+      `${taskId} no se pudo aislar después del formateo.`,
+    ];
+    if (presentationErrors.length > 0) {
+      fail(`${taskId} incumple task-format-policy.json:\n- ${presentationErrors.join('\n- ')}`);
+    }
+    if (result.changedTaskIds.length > 0) {
+      writePreservingEol(ownerPath, raw, result.source);
+      changed.push(taskId);
+    }
   }
 
   console.log(
@@ -67,6 +98,8 @@ export function autoPrepareCanonicalTask({
   for (const { taskId, reason } of skipped) {
     if (reason === 'EMPTY_DRAFT_NO_AUTO_SCAFFOLD') {
       console.log(`[PLAN CANÓNICO] ${taskId}: borrador vacío preservado; no se inicia automáticamente.`);
+    } else if (reason === 'HISTORICAL_STYLE_PRESERVED') {
+      console.log(`[PLAN CANÓNICO] ${taskId}: formato histórico preservado por la frontera prospectiva.`);
     } else {
       console.warn(`[PLAN CANÓNICO] ${taskId}: preparación omitida: ${reason}`);
     }

@@ -5,6 +5,11 @@ import { fileURLToPath } from 'node:url';
 const TASK_HEADING = /^###\s+(?<marker>\[[ x~]\]|[✅🟡❌])\s+(?<id>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3})\b(?:\s+[—-]\s+(?<title>[^\n]+))?$/u;
 const SECTION_HEADING = /^####(?:\s+\d+\.)?\s+\S.*$/u;
 const METADATA = /^\*\*(?<label>[^*\n]+):\*\*\s*(?<value>.*)$/u;
+const CONTINUITY_LABELS = [
+  'ÚLTIMA TAREA APROBADA',
+  'TAREA ACTUAL APROBADA',
+  'SIGUIENTE TAREA RESERVADA',
+];
 
 const METADATA_ORDER = [
   'Estado',
@@ -30,7 +35,7 @@ const SCAFFOLD_SECTIONS = [
   'Decisiones',
   'Requisitos de prueba derivados',
   'Criterios de aceptación',
-  'Resultado y continuidad',
+  'Continuidad',
 ];
 
 function fail(message) {
@@ -74,17 +79,113 @@ function metadataEntries(lines) {
   return entries;
 }
 
+function normalizeMetadataLine(line) {
+  const match = line.match(METADATA);
+  if (!match) return line;
+  const label = match.groups.label.trim();
+  let value = match.groups.value.trim();
+  if (['Tarea anterior', 'Dependencia anterior', 'Tarea siguiente', 'Continuidad reservada'].includes(label)) {
+    const inlineCode = value.match(/^`([^`]+)`$/u);
+    if (inlineCode) value = inlineCode[1];
+  }
+  return `**${label}:**${value ? ` ${value}` : ''}`;
+}
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+}
+
+function extractContinuityValue(section, label) {
+  const escaped = escapeRegex(label);
+  const patterns = [
+    new RegExp(`\\*\\*${escaped}:?\\*\\*\\s*\\n+\\s*\\x60\\x60\\x60text\\s*\\n([^\\n]+)\\n\\x60\\x60\\x60`, 'u'),
+    new RegExp(`\\*\\*${escaped}:?\\*\\*\\s*\\n+\\s*\\x60([^\\n\\x60]+)\\x60`, 'u'),
+    new RegExp(`\\*\\*${escaped}:?\\*\\*\\s*\\x60([^\\n\\x60]+)\\x60`, 'u'),
+  ];
+  for (const pattern of patterns) {
+    const match = section.match(pattern);
+    if (match) return match[1].trim();
+  }
+  return null;
+}
+
+function normalizeContinuitySection(block) {
+  const match = block.match(/^####(?:\s+\d+\.)?\s+Continuidad\s*$/mu);
+  if (!match || match.index === undefined) return block;
+  const before = block.slice(0, match.index);
+  const section = block.slice(match.index);
+  const values = CONTINUITY_LABELS.map((label) => extractContinuityValue(section, label));
+  if (values.some((value) => !value)) return block;
+
+  const heading = match[0].trim();
+  const rendered = [heading, ''];
+  CONTINUITY_LABELS.forEach((label, index) => {
+    rendered.push(`**${label}**`, `\`${values[index]}\``);
+    if (index < CONTINUITY_LABELS.length - 1) rendered.push('');
+  });
+  return `${before}${rendered.join('\n')}`;
+}
+
 function semanticFingerprint(block) {
   const lines = normalizeSource(block).split('\n');
   const heading = lines.shift()?.replace(/\s+/gu, ' ').trim() ?? '';
   while (lines[0] === '') lines.shift();
   const metadataLines = [];
-  while (lines[0]?.match(METADATA)) metadataLines.push(lines.shift());
+  while (lines.length > 0) {
+    if (lines[0]?.match(METADATA)) {
+      metadataLines.push(normalizeMetadataLine(lines.shift()));
+      continue;
+    }
+    if (lines[0]?.trim() === '' && lines.slice(1).find((line) => line.trim() !== '')?.match(METADATA)) {
+      lines.shift();
+      continue;
+    }
+    break;
+  }
   const metadata = metadataEntries(metadataLines)
     .map(({ label, value }) => `${label.replace(/\s+/gu, ' ')}:${value.replace(/\s+/gu, ' ')}`)
     .sort((left, right) => left.localeCompare(right, 'es'));
   const body = lines.join('\n').replace(/\s+/gu, '');
   return JSON.stringify({ heading, metadata, body });
+}
+
+function taskIdentityFromBlock(block) {
+  const [heading] = parseTaskBlocks(block);
+  if (!heading) return null;
+  const metadata = new Map();
+  for (const line of normalizeSource(block).split('\n').slice(1)) {
+    const match = line.match(METADATA);
+    if (match) metadata.set(match.groups.label.trim(), match.groups.value.trim().replace(/^`|`$/gu, ''));
+    else if (line.trim() === '' || metadata.size === 0) continue;
+    else break;
+  }
+  return {
+    current: `${heading.id} — ${heading.title}`,
+    previous: metadata.get('Tarea anterior') ?? metadata.get('Dependencia anterior') ?? null,
+    next: metadata.get('Tarea siguiente') ?? metadata.get('Continuidad reservada') ?? null,
+  };
+}
+
+function ensureContinuitySection(block) {
+  if (/^####(?:\s+\d+\.)?\s+Continuidad\s*$/mu.test(block)) return block;
+  if (!/^####\s+/mu.test(block)) return block;
+  const identity = taskIdentityFromBlock(block);
+  if (!identity?.previous || !identity.next) return block;
+  const numbers = [...block.matchAll(/^####\s+(\d+)\./gmu)].map((match) => Number(match[1]));
+  const nextNumber = numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
+  const continuity = [
+    `#### ${nextNumber}. Continuidad`,
+    '',
+    '**ÚLTIMA TAREA APROBADA**',
+    `\`${identity.previous}\``,
+    '',
+    '**TAREA ACTUAL APROBADA**',
+    `\`${identity.current}\``,
+    '',
+    '**SIGUIENTE TAREA RESERVADA**',
+    `\`${identity.next}\``,
+  ].join('\n');
+  return `${block.replace(/\n+$/u, '')}\n\n---\n\n${continuity}\n`;
 }
 
 function normalizeStructuralSpacing(lines) {
@@ -136,8 +237,15 @@ function addScaffold(block, task) {
     lines.push(
       '',
       '**Estado:** NO INICIADA',
+      '**Tarea anterior:** [PENDIENTE_DE_DEFINIR]',
+      '**Tarea siguiente:** [PENDIENTE_DE_DEFINIR]',
       '**Tipo de tarea:** [PENDIENTE_DE_DEFINIR]',
+      '**Bloque:** [PENDIENTE_DE_DEFINIR]',
+      '**Repositorio propietario:** `devVentoGroup/vento-shell`',
+      '**Archivo propietario:** [PENDIENTE_DE_DEFINIR]',
+      '**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`',
       '**Cambios físicos autorizados:** ninguno',
+      '**Requisitos de prueba creados o modificados:** [PENDIENTE_DE_CLASIFICAR]',
     );
   }
   lines.push('', '---');
@@ -145,6 +253,17 @@ function addScaffold(block, task) {
     lines.push('', `#### ${index + 1}. ${title}`, '');
     if (title === 'Requisitos de prueba derivados') {
       lines.push('**Resultado:** [PENDIENTE_DE_CLASIFICAR]');
+    } else if (title === 'Continuidad') {
+      lines.push(
+        '**ÚLTIMA TAREA APROBADA**',
+        '`[PENDIENTE_DE_DEFINIR]`',
+        '',
+        '**TAREA ACTUAL APROBADA**',
+        '`[PENDIENTE_DE_DEFINIR]`',
+        '',
+        '**SIGUIENTE TAREA RESERVADA**',
+        '`[PENDIENTE_DE_DEFINIR]`',
+      );
     } else {
       lines.push('[PENDIENTE_DE_DESARROLLO]');
     }
@@ -191,6 +310,8 @@ export function formatTaskBlock(block, { scaffold = false } = {}) {
   }
   const task = parsed[0];
   if (scaffold) candidate = addScaffold(candidate, task);
+  candidate = ensureContinuitySection(candidate);
+  candidate = normalizeContinuitySection(candidate);
 
   const beforeFingerprint = semanticFingerprint(candidate);
   const lines = candidate.split('\n');
@@ -198,7 +319,17 @@ export function formatTaskBlock(block, { scaffold = false } = {}) {
   while (lines[0]?.trim() === '') lines.shift();
 
   const metadataLines = [];
-  while (lines[0]?.match(METADATA)) metadataLines.push(lines.shift());
+  while (lines.length > 0) {
+    if (lines[0]?.match(METADATA)) {
+      metadataLines.push(normalizeMetadataLine(lines.shift()));
+      continue;
+    }
+    if (lines[0]?.trim() === '' && lines.slice(1).find((line) => line.trim() !== '')?.match(METADATA)) {
+      lines.shift();
+      continue;
+    }
+    break;
+  }
   const metadata = metadataEntries(metadataLines)
     .sort((left, right) => {
       const rankDelta = metadataRank(left.line, left.index) - metadataRank(right.line, right.index);
@@ -218,6 +349,94 @@ export function formatTaskBlock(block, { scaffold = false } = {}) {
     fail(`el formateo de ${task.id} intentó cambiar contenido no estructural.`);
   }
   return formatted;
+}
+
+export function validateTaskPresentation(block) {
+  const errors = [];
+  const normalized = normalizeSource(block).replace(/\n+$/u, '');
+  const tasks = parseTaskBlocks(normalized);
+  if (tasks.length !== 1 || tasks[0].index !== 0) {
+    return ['el bloque debe contener exactamente una tarea canónica.'];
+  }
+  const task = tasks[0];
+  const lines = normalized.split('\n');
+  let index = 1;
+  if (lines[index] !== '') errors.push('la cabecera requiere una línea vacía después del título.');
+  while (lines[index] === '') index += 1;
+
+  const metadata = new Map();
+  let metadataEnded = false;
+  for (; index < lines.length; index += 1) {
+    const line = lines[index];
+    const match = line.match(METADATA);
+    if (match && !metadataEnded) {
+      const label = match.groups.label.trim();
+      const value = match.groups.value.trim();
+      metadata.set(label, value);
+      if (['Tarea anterior', 'Dependencia anterior', 'Tarea siguiente', 'Continuidad reservada'].includes(label)
+        && /^`.*`$/u.test(value)) {
+        errors.push(`${label} debe usar texto directo como SHELL-UI-005, no código inline.`);
+      }
+      continue;
+    }
+    if (line === '') {
+      const laterMetadata = lines.slice(index + 1).find((candidate) => candidate.trim() !== '');
+      if (laterMetadata?.match(METADATA)) {
+        errors.push('la metadata de cabecera debe ser compacta, sin líneas vacías entre campos.');
+      }
+    }
+    metadataEnded = true;
+    if (line.trim() !== '') break;
+  }
+
+  for (const label of ['Estado', 'Tarea anterior', 'Tarea siguiente', 'Tipo de tarea', 'Bloque']) {
+    if (!metadata.has(label)) errors.push(`falta el campo obligatorio de cabecera: ${label}.`);
+  }
+  if (lines[index]?.trim() !== '---') errors.push('la cabecera debe cerrar con un separador --- como SHELL-UI-005.');
+
+  const continuityMatch = normalized.match(/^####(?:\s+\d+\.)?\s+Continuidad\s*$/gmu) ?? [];
+  if (continuityMatch.length !== 1) {
+    errors.push(`debe existir exactamente una sección Continuidad; encontradas ${continuityMatch.length}.`);
+    return errors;
+  }
+  const continuityIndex = normalized.search(/^####(?:\s+\d+\.)?\s+Continuidad\s*$/mu);
+  const continuity = normalized.slice(continuityIndex);
+  if (/```text/u.test(continuity)) errors.push('Continuidad no puede usar bloques fenced text.');
+  if (/No se inicia|permanece reservada y no se desarrolla/iu.test(continuity)) {
+    errors.push('Continuidad no debe repetir una frase de no inicio después de SIGUIENTE TAREA RESERVADA.');
+  }
+
+  const values = new Map();
+  for (const label of CONTINUITY_LABELS) {
+    const pattern = new RegExp(`\\*\\*${escapeRegex(label)}\\*\\*\\n\\x60([^\\n\\x60]+)\\x60`, 'u');
+    const match = continuity.match(pattern);
+    if (!match) errors.push(`${label} debe ocupar una línea y su valor la siguiente en código inline.`);
+    else values.set(label, match[1].trim());
+  }
+
+  const identity = taskIdentityFromBlock(normalized);
+  if (values.get('TAREA ACTUAL APROBADA') !== identity?.current) {
+    errors.push('TAREA ACTUAL APROBADA no coincide con el encabezado de la tarea.');
+  }
+  if (values.get('ÚLTIMA TAREA APROBADA') !== identity?.previous) {
+    errors.push('ÚLTIMA TAREA APROBADA no coincide con Tarea anterior.');
+  }
+  if (values.get('SIGUIENTE TAREA RESERVADA') !== identity?.next) {
+    errors.push('SIGUIENTE TAREA RESERVADA no coincide con Tarea siguiente.');
+  }
+  const finalValue = values.get('SIGUIENTE TAREA RESERVADA');
+  if (finalValue) {
+    const finalPattern = new RegExp(
+      `\\*\\*SIGUIENTE TAREA RESERVADA\\*\\*\\n\\x60${escapeRegex(finalValue)}\\x60`,
+      'u',
+    );
+    const finalMatch = finalPattern.exec(continuity);
+    const trailing = finalMatch
+      ? continuity.slice((finalMatch.index ?? 0) + finalMatch[0].length).trim()
+      : '';
+    if (trailing) errors.push('Continuidad debe terminar después de SIGUIENTE TAREA RESERVADA.');
+  }
+  return errors;
 }
 
 export function formatTaskFileSource(source, {

@@ -954,3 +954,38 @@ Reglas obligatorias:
 - una sección monolítica podrá dividirse cuando contenga responsabilidades documentales distintas;
 - no se dividirá una tarea internamente entre varios archivos;
 - toda reorganización deberá preservar orden, contenido e inventario de identificadores.
+
+## Presentación prospectiva de tareas canónicas
+
+La política estructurada `task-format-policy.json` gobierna la presentación de
+las tareas desde `SHELL-UI-009`, incluida. Las tareas anteriores conservan su
+formato histórico y no deberán modificarse solo para adoptar esta convención.
+
+La cabecera prospectiva deberá seguir el estilo compacto de `SHELL-UI-005`:
+
+- una línea vacía después del título;
+- campos de metadata consecutivos, sin líneas vacías intermedias;
+- `Tarea anterior` y `Tarea siguiente` como texto directo, sin código inline;
+- cierre de la cabecera con `---`;
+- como mínimo: `Estado`, `Tarea anterior`, `Tarea siguiente`, `Tipo de tarea` y
+  `Bloque`.
+
+La sección final deberá llamarse `Continuidad` y usar exactamente esta forma:
+
+```md
+#### N. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`TASK-ID — Título`
+
+**TAREA ACTUAL APROBADA**
+`TASK-ID — Título`
+
+**SIGUIENTE TAREA RESERVADA**
+`TASK-ID — Título`
+```
+
+No se usarán bloques `text` ni una frase posterior que repita que la tarea
+siguiente no se inicia. La reserva ya expresa ese límite. El formateo no cambia
+marcadores ni estados, no aprueba tareas y no crea automáticamente el desarrollo
+de un borrador vacío.

@@ -56,6 +56,12 @@ Comandos desde la raíz de vento-shell:
    desde el preflight. El formateador no cambia IDs, títulos, estados, prosa,
    tablas ni bloques de código; ante una transformación no estructural falla.
 
+   task-format-policy.json fija una frontera prospectiva desde SHELL-UI-009.
+   Las tareas anteriores conservan su presentación histórica. En la frontera y
+   las tareas posteriores, el build exige cabecera compacta tipo SHELL-UI-005 y
+   una sección Continuidad con etiquetas apiladas y valores en código inline.
+   Los borradores vacíos siguen sin iniciarse ni recibir scaffold automático.
+
 10. Inventariar deriva multi-repositorio sin escribir:
 
     npm run docs:repos:drift
@@ -140,8 +146,9 @@ Organización:
   fuentes reales, comprueba contrato, formato, continuidad y estado Git local,
   y enumera validadores proporcionales sin modificar archivos.
 - safe-build-plan-canonico ejecuta auto-prepare-canonical-task antes de compilar.
-  Solo normaliza estructura de la tarea actual y su predecesora desarrollada;
-  no cambia estados, no crea scaffolds y no inicia continuidad.
+  Solo normaliza estructura de las tareas cubiertas por la frontera prospectiva;
+  preserva las anteriores, no cambia estados, no crea scaffolds y no inicia
+  continuidad.
 - docs:repos:drift inventaría branch/upstream, estado local, manifiestos,
   rutas, componentes, contratos, migraciones y consumidores Supabase de los
   doce repositorios VENTO. No ejecuta Supabase ni escribe salvo

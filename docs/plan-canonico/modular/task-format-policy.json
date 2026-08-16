@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "policy_id": "CANONICAL-TASK-PRESENTATION-001",
+  "effective_from_task_id": "SHELL-UI-009",
+  "historical_policy": "PRESERVE_BEFORE_BOUNDARY",
+  "header_style": "COMPACT_METADATA_LIKE_SHELL_UI_005",
+  "continuity_style": "STACKED_INLINE_CODE",
+  "remove_redundant_no_start_sentence": true,
+  "automatic_scaffold": false
+}
