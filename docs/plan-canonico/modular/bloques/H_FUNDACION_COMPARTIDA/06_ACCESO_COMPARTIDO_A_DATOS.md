@@ -3133,7 +3133,1253 @@ SHELL-DB-003 — Crear y actualizar wrappers tipados para RPC canónicas
 SHELL-DB-004 — Normalizar errores de Supabase
 
 
-### [ ] SHELL-DB-004 — Normalizar errores de Supabase
+### ✅ SHELL-DB-004 — Normalizar errores de Supabase
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-DB-003 — Crear y actualizar wrappers tipados para RPC canónicas
+**Tarea siguiente:** SHELL-DB-005 — Separar cliente server, browser y native
+**Tipo de tarea:** Documental; definición y centralización canónica de la normalización de errores técnicos de acceso a datos y de proveedor dentro de `@vento/supabase`, preservando los códigos y outcomes empresariales, de autorización y de contrato de sus propietarios, con semántica determinista de retry, resultado desconocido, redacción, correlación y diagnóstico protegido, sin materializar código, package físico, exports, clientes, wrappers, RPC, migraciones, DDL, DML, cambios de datos ni modificaciones en Supabase
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md`
+**Estado físico resultante:** ESPECIFICADO; NORMALIZADOR Y PACKAGE FÍSICO NO MATERIALIZADOS
+**Implementación física autorizada:** ninguna
+**Cambios de código, packages físicos, configuración npm, registry, CI, despliegues, SQL, migraciones, RLS, RPC, triggers, índices, constraints, datos, secretos o configuración remota:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-DB-004` define la frontera compartida con la que `@vento/supabase` deberá normalizar fallos técnicos provenientes de Supabase, PostgreSQL, PostgREST, transporte y adaptadores de acceso a datos sin crear una segunda taxonomía empresarial ni permitir que detalles nativos de infraestructura gobiernen el comportamiento de los consumidores.
+
+La cadena canónica queda:
+
+```text
+ERROR / OUTCOME DE CONTRATO, SI EXISTE
+        +
+DIAGNÓSTICO TÉCNICO DEL PROVEEDOR
+        +
+OPERACIÓN Y VERSIÓN
+        +
+CERTEZA DEL EFECTO
+        +
+POLÍTICA DE RETRY / RECONCILIACIÓN
+        ↓
+NORMALIZACIÓN TÉCNICA @vento/supabase
+        ↓
+RESULTADO CONTRACTUAL PRESERVADO
+        +
+DIAGNÓSTICO SEGURO
+        +
+METADATA OPERATIVA MÍNIMA
+        ↓
+CONSUMIDOR AUTORIZADO
+```
+
+Nunca:
+
+```text
+Error.message
+→ lógica de cliente
+
+SQLSTATE
+→ código empresarial público
+
+HTTP status
+→ razón de autorización por inferencia
+
+error nativo
+→ null / [] / false / éxito
+
+timeout de comando
+→ retry ciego
+
+detalle de constraint
+→ mensaje público
+
+fallo de proveedor
+→ cambio de semántica del contrato
+```
+
+---
+
+#### 2. Resultado material
+
+Queda definida documentalmente una política única de normalización técnica de errores para la futura superficie de `@vento/supabase`.
+
+La política materializa:
+
+- separación estricta entre diagnóstico técnico, outcome contractual, autorización y mensaje público;
+- preservación de códigos empresariales canónicos cuando ya existen;
+- once familias semánticas mínimas de error/outcome heredadas de E3;
+- reglas de clasificación por fuente técnica;
+- reglas para red, timeout, desconexión y resultado desconocido;
+- reglas para PostgreSQL y detalles de constraints;
+- reglas para PostgREST y códigos nativos de proveedor;
+- reglas para Auth, Storage, Realtime y Edge únicamente cuando una superficie aprobada de `@vento/supabase` los consuma;
+- relación entre HTTP y semántica contractual;
+- tratamiento de consultas y comandos;
+- retry, backoff, idempotencia y reconciliación;
+- concurrencia, deadlock, serialización y lock timeout;
+- redacción y minimización;
+- correlación y diagnóstico protegido;
+- fallback cerrado para errores desconocidos;
+- paridad semántica entre runtimes;
+- versionado del mapping;
+- compatibilidad, observabilidad y pruebas posteriores.
+
+No se crea un `ErrorCode` universal ni un catálogo paralelo de errores de dominio.
+
+---
+
+#### 3. Fuentes normativas y precedencia
+
+| Fuente               | Decisión preservada                                                                                                                       |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-DB-001`       | `@vento/supabase` posee la normalización de errores de acceso a datos como una de sus cuatro responsabilidades exactas                    |
+| `SHELL-DB-002`       | tipos físicos generados no definen errores empresariales ni autorización                                                                  |
+| `SHELL-DB-003`       | wrappers preservan código, categoría, retryability y contexto contractual; la taxonomía técnica transversal pertenece a `SHELL-DB-004`    |
+| `SHELL-CON-008`      | los códigos compartidos de autorización/contexto no incluyen SQLSTATE, códigos nativos de Supabase, exception names ni `Error.message`    |
+| `SUPA-ARC-013`       | un error no puede convertirse en éxito y la propagación/códigos se gobiernan en la capa contractual                                       |
+| `SUPA-ARC-014`       | errores de superficies `SECURITY DEFINER` deben conservar seguridad, redacción y pruebas negativas                                        |
+| `SUPA-ARC-015`       | grants, RLS, exposición y mínimo privilegio permanecen fuera de la normalización técnica                                                  |
+| `SUPA-ARC-016`       | catálogo cerrado de códigos machine-readable, once familias semánticas mínimas, retry, idempotencia, concurrencia y resultado desconocido |
+| `SUPA-ARC-017`       | coordinación multi-owner preserva fallos parciales, compensación y reconciliación                                                         |
+| `SUPA-ARC-023`       | consumers no derivan lógica de mensajes humanos, SQLSTATE ni stack traces                                                                 |
+| `SUPA-TRANS-014`     | tipos, contracts, errors, consumers, compatibilidad y documentación evolucionan de manera coordinada                                      |
+| `AUTH-ERR-*`         | copy y experiencia de bloqueo o indisponibilidad técnica pertenecen a su capa propietaria                                                 |
+| registro 04A vigente | requisitos existentes sobre error codes, redacción, retry, outcome, tipos y contratos                                                     |
+| `SHELL-DB-005`       | separación física posterior de clientes server, browser y native                                                                          |
+| `SHELL-CI-*`         | materialización de pruebas, compatibilidad, publicación y evidencia posteriores                                                           |
+
+Precedencia obligatoria:
+
+```text
+CONTRATO EMPRESARIAL / AUTORIZACIÓN
+        ↓
+OUTCOME O CÓDIGO CANÓNICO
+        ↓
+NORMALIZACIÓN TÉCNICA DE ACCESO
+        ↓
+ADAPTACIÓN DEL CONSUMIDOR
+        ↓
+COPY / EXPERIENCIA DE USUARIO
+```
+
+Un detalle técnico nunca asciende de forma implícita para convertirse en autoridad empresarial.
+
+---
+
+#### 4. Las cuatro capas semánticas que no se mezclan
+
+Toda falla se interpreta manteniendo separadas estas cuatro capas:
+
+| Capa                  | Contenido                                                                       | Propietario                    |
+| --------------------- | ------------------------------------------------------------------------------- | ------------------------------ |
+| diagnóstico nativo    | error de proveedor, transporte, runtime o base de datos                         | infraestructura/proveedor      |
+| normalización técnica | clasificación estable de acceso, certeza, retry, redacción y diagnóstico seguro | `@vento/supabase`              |
+| outcome contractual   | código estable de dominio, autorización, conflicto, invariantes o resultado     | contrato propietario           |
+| mensaje público       | copy, instrucción, recuperación y experiencia                                   | capa UX/Auth/Error propietaria |
+
+Invariantes:
+
+1. la normalización técnica no reemplaza un outcome contractual ya resuelto;
+2. un outcome contractual no necesita exponer el diagnóstico nativo;
+3. un mensaje público no sirve como identificador técnico;
+4. un diagnóstico nativo no sirve como código empresarial;
+5. el mismo incidente puede conservar información en varias capas sin colapsarlas;
+6. cada capa puede aplicar redacción distinta según autorización.
+
+---
+
+#### 5. No existe un `ErrorCode` universal
+
+`SHELL-DB-004` no crea un enum transversal capaz de mezclar:
+
+- autorización;
+- contexto;
+- negocio;
+- HTTP;
+- SQLSTATE;
+- PostgREST;
+- Supabase Auth;
+- Storage;
+- Realtime;
+- Edge Functions;
+- errores de red;
+- excepciones JavaScript;
+- códigos de dominio.
+
+Los vocabularios canónicos existentes conservan sus propietarios.
+
+En particular:
+
+```text
+AuthorizationReasonCode
+≠ código nativo Supabase
+≠ SQLSTATE
+≠ HTTP status
+≠ clase técnica normalizada
+```
+
+La normalización compartida trabaja como adapter técnico, no como catálogo empresarial universal.
+
+---
+
+#### 6. Once familias semánticas mínimas heredadas
+
+Los contratos de E3 deben poder distinguir al menos estas once familias semánticas:
+
+|    # | Familia semántica                     | Lectura contractual                                               |
+| ---: | ------------------------------------- | ----------------------------------------------------------------- |
+|    1 | validación de request                 | input incumple el contrato antes de producir el efecto solicitado |
+|    2 | autenticación ausente o inválida      | no existe identidad autenticada utilizable según contrato         |
+|    3 | autorización denegada                 | identidad conocida carece de autorización efectiva                |
+|    4 | recurso inexistente o no visible      | el contrato no expone un recurso al caller                        |
+|    5 | conflicto de versión o estado         | precondición, versión o estado esperado no coincide               |
+|    6 | idempotencia duplicada o incompatible | la clave representa resultado previo o payload incompatible       |
+|    7 | invariante de negocio                 | una regla empresarial impide la operación                         |
+|    8 | límite, tasa o capacidad              | una cuota, límite o capacidad contractual impide continuar        |
+|    9 | dependencia pendiente o fallida       | una dependencia necesaria no está disponible o confirmada         |
+|   10 | resultado desconocido                 | no puede determinarse con seguridad si un efecto fue confirmado   |
+|   11 | error interno no divulgado            | fallo técnico que no debe revelar internals al consumidor         |
+
+Reglas:
+
+1. la tabla define familias semánticas, no nuevos literales públicos;
+2. el código machine-readable concreto pertenece al contrato propietario;
+3. un proveedor no selecciona por sí mismo una de estas familias;
+4. un mapping explícito y versionado puede relacionar un diagnóstico técnico con un outcome;
+5. ante ambigüedad se conserva la semántica más segura y no se adivina un outcome empresarial.
+
+---
+
+#### 7. Preservación prioritaria del outcome contractual
+
+Si la RPC, endpoint o capa autoritativa ya devolvió un outcome contractual válido:
+
+```text
+OUTCOME CONTRACTUAL VÁLIDO
+        ↓
+SE PRESERVA
+        ↓
+LA NORMALIZACIÓN SOLO ADJUNTA O REDACTA METADATA TÉCNICA
+```
+
+Queda prohibido:
+
+- sustituirlo por un HTTP status;
+- sustituirlo por SQLSTATE;
+- sustituirlo por `PGRST*`;
+- sustituirlo por un nombre de excepción;
+- sustituirlo por una cadena humana;
+- degradarlo a “unknown error” si el contrato ya es inequívoco;
+- elevar un error técnico por encima del outcome autoritativo.
+
+---
+
+#### 8. Orden determinista de decisión
+
+La normalización seguirá este orden lógico:
+
+1. identificar operación y contrato;
+2. comprobar si existe outcome contractual machine-readable válido;
+3. preservar ese outcome;
+4. determinar si existe certeza sobre el efecto;
+5. clasificar la fuente técnica;
+6. aplicar únicamente mappings aprobados y versionados;
+7. resolver retry/reconciliación según el contrato de la operación;
+8. redactar información no autorizada;
+9. adjuntar correlación y diagnóstico técnico seguro;
+10. devolver una representación estable al consumidor.
+
+Cuando no exista un mapping aprobado:
+
+```text
+NO MAPPING
+→ NO INFERENCIA EMPRESARIAL
+→ ERROR TÉCNICO CERRADO
+→ DIAGNÓSTICO PROTEGIDO
+→ RETRY / RECONCILIACIÓN SOLO SI EL CONTRATO LO PERMITE
+```
+
+---
+
+#### 9. Determinismo
+
+Para la misma combinación de:
+
+```text
+fuente técnica relevante
++ operación
++ contrato y versión
++ mapping de normalización y versión
++ certeza del efecto
++ contexto explícito requerido
+```
+
+debe obtenerse la misma clasificación lógica.
+
+No son dependencias válidas:
+
+- idioma de `Error.message`;
+- texto humano del proveedor;
+- stack trace;
+- orden incidental de propiedades;
+- heurística de nombre;
+- timestamp local;
+- primer match;
+- status HTTP aislado;
+- comportamiento de un runtime no declarado.
+
+---
+
+#### 10. Mensajes humanos no gobiernan lógica
+
+`Error.message`, `hint`, `details` o texto equivalente pueden conservar valor diagnóstico protegido, pero no son la fuente primaria de branching.
+
+Queda prohibido:
+
+```text
+message.includes(...)
+regex sobre texto humano
+prefijo textual no versionado
+traducción del mensaje
+copy visible
+```
+
+como mecanismo canónico para decidir:
+
+- autorización;
+- conflicto;
+- retry;
+- idempotencia;
+- inexistencia;
+- invariante;
+- rate limit;
+- resultado desconocido.
+
+Una excepción solo puede existir si el contrato propietario define expresamente un parser versionado y probado; esa excepción no se presume aquí.
+
+---
+
+#### 11. HTTP no es semántica empresarial
+
+Un status HTTP se conserva como metadata técnica cuando sea útil, pero no decide por sí solo el outcome.
+
+Ejemplos de prohibición:
+
+| Señal | Inferencia prohibida                                                           |
+| ----- | ------------------------------------------------------------------------------ |
+| `401` | seleccionar automáticamente un reason code de autorización                     |
+| `403` | asumir la causa empresarial exacta de la denegación                            |
+| `404` | afirmar existencia física o inexistencia cuando el contrato oculta visibilidad |
+| `409` | asumir conflicto de versión sin contrato                                       |
+| `429` | asumir qué cuota o capacidad fue excedida                                      |
+| `5xx` | inventar un código de dominio                                                  |
+
+El contrato autoritativo define la semántica; HTTP es transporte.
+
+---
+
+#### 12. PostgreSQL y SQLSTATE
+
+SQLSTATE y metadata PostgreSQL son diagnósticos técnicos protegidos.
+
+La normalización puede usarlos internamente cuando exista mapping aprobado, pero:
+
+1. no se exponen como código empresarial público;
+2. no se usan directamente para copy de UI;
+3. no se publican nombres de schema, tabla, función o constraint;
+4. una violación de constraint no se transforma automáticamente en una invariante empresarial específica;
+5. un conflicto de concurrencia se interpreta conforme al contrato de retry;
+6. una falla de privilegio no reemplaza el sistema canónico de autorización;
+7. el SQL original no se propaga al consumer;
+8. stack, context y detalles del servidor se mantienen fuera de superficies no privilegiadas.
+
+---
+
+#### 13. Constraints y datos estructurales
+
+Una señal de:
+
+- unicidad;
+- foreign key;
+- check;
+- not-null;
+- exclusión;
+- constraint deferrable;
+- constraint interna;
+
+solo puede convertirse en outcome contractual específico cuando exista mapping aprobado entre:
+
+```text
+IDENTIDAD TÉCNICA PROTEGIDA
+→ CONTRATO Y VERSIÓN
+→ CÓDIGO EMPRESARIAL ESTABLE
+```
+
+Sin mapping:
+
+```text
+CONSTRAINT ERROR
+→ FALLO TÉCNICO / CONTRACTUAL NO ESPECIFICADO
+→ SIN FILTRAR NOMBRE DEL CONSTRAINT
+```
+
+No se deriva semántica empresarial del nombre del constraint.
+
+---
+
+#### 14. PostgREST
+
+Los códigos y estructuras nativas de PostgREST pertenecen a la capa técnica.
+
+Reglas:
+
+1. un código nativo no se convierte automáticamente en código público;
+2. mappings utilizados por `@vento/supabase` deberán ser explícitos, versionados y probados;
+3. un cambio del proveedor que deje un código sin mapping utiliza fallback cerrado;
+4. error nativo y outcome contractual pueden coexistir en diagnóstico protegido;
+5. el consumidor no ramifica directamente sobre el código nativo salvo que su contrato propietario lo autorice expresamente;
+6. detalles de SQL o schema no pasan a superficies de cliente.
+
+---
+
+#### 15. Supabase Auth
+
+Los fallos de Supabase Auth conservan frontera separada.
+
+`SHELL-DB-004` puede normalizar forma técnica de transporte únicamente cuando una superficie aprobada de `@vento/supabase` consuma ese proveedor, pero no:
+
+- crea `AuthorizationReasonCode`;
+- decide permisos;
+- decide contexto;
+- reinterpreta una denegación;
+- transforma automáticamente un error nativo de Auth en una razón pública;
+- crea copy de login o sesión;
+- sustituye la arquitectura de autenticación.
+
+La semántica de autenticación y autorización permanece en sus contratos propietarios.
+
+---
+
+#### 16. Storage, Realtime y Edge Functions
+
+Cuando una superficie aprobada de acceso utilice Storage, Realtime o Edge Functions, podrá aplicar la misma disciplina técnica:
+
+```text
+diagnóstico nativo
+→ normalización técnica
+→ outcome contractual propietario
+```
+
+Esto no amplía la autoridad de `@vento/supabase`.
+
+En particular:
+
+1. Storage conserva contratos de archivo y autorización propios;
+2. Realtime conserva semántica de conexión, evento y consistencia propia;
+3. Edge Functions conservan contratos HTTP/RPC/worker propietarios;
+4. una falla técnica no inventa un outcome empresarial;
+5. no se unifican todos los proveedores en un código público universal.
+
+---
+
+#### 17. Fallos de red antes de despacho
+
+Cuando exista evidencia suficiente de que la solicitud no alcanzó la frontera autoritativa:
+
+- se clasifica como falla técnica de disponibilidad/transporte;
+- no se afirma un efecto empresarial;
+- una query podrá reintentarse solo según su contrato;
+- un command podrá reintentarse únicamente si su contrato lo permite;
+- se preservan correlación, intento y diagnóstico técnico cuando existan.
+
+La ausencia de respuesta no constituye por sí sola prueba de no despacho.
+
+---
+
+#### 18. Desconexión o timeout después de despacho
+
+Para una operación mutante:
+
+```text
+SOLICITUD DESPACHADA
++ SIN CONFIRMACIÓN SUFICIENTE DEL RESULTADO
+=
+POSIBLE RESULTADO DESCONOCIDO
+```
+
+Consecuencias:
+
+1. no se declara éxito;
+2. no se declara fallo empresarial definitivo por inferencia;
+3. no se repite ciegamente;
+4. si existe idempotencia contractual, se consulta o recupera el resultado previo según contrato;
+5. si existe query de reconciliación, se utiliza en la capa propietaria;
+6. una nueva clave idempotente no se crea para repetir el mismo intent sin comprobar el estado anterior;
+7. el consumidor recibe una representación estable de incertidumbre cuando el contrato así lo defina.
+
+---
+
+#### 19. Resultado desconocido
+
+`resultado desconocido` es una familia semántica explícita y no una excepción genérica.
+
+Debe preservarse cuando no sea posible afirmar con seguridad si:
+
+- la transacción confirmó;
+- el job fue aceptado;
+- la mutación produjo efecto;
+- una dependencia terminó;
+- la respuesta se perdió después del commit.
+
+No debe traducirse a:
+
+- éxito;
+- fallo final;
+- null;
+- arreglo vacío;
+- “intenta otra vez” sin política;
+- duplicación de operación.
+
+La salida operativa es reconciliar o recuperar un resultado idempotente cuando el contrato lo permita.
+
+---
+
+#### 20. Queries
+
+Para `QUERY_RPC` y consultas equivalentes:
+
+1. un fallo técnico no se convierte en colección vacía;
+2. un `not found/not visible` contractual no se confunde con fallo de red;
+3. retry puede ser seguro solo cuando el contrato y la sensibilidad lo permiten;
+4. cursor, versión y consistency contract se conservan;
+5. un timeout no autoriza cambiar filtros o scope;
+6. una query reintentada mantiene correlación cuando corresponda;
+7. una respuesta parcial no se presenta como completa.
+
+---
+
+#### 21. Commands
+
+Para `COMMAND_RPC` y mutaciones equivalentes:
+
+1. error técnico no implica cero efectos;
+2. timeout después de despacho puede requerir outcome desconocido;
+3. retry requiere política explícita;
+4. si existe idempotency key, se conserva para el mismo intent;
+5. conflicto de payload con la misma clave no se reintenta como operación nueva;
+6. expected version se conserva;
+7. un conflicto no se traduce a éxito;
+8. una denegación no se traduce a fallo de transporte;
+9. una invariante empresarial no se oculta con un error técnico genérico;
+10. la confirmación del efecto pertenece a la capa autoritativa.
+
+---
+
+#### 22. Idempotencia y retry
+
+La normalización no crea idempotencia.
+
+Cuando el contrato la defina:
+
+```text
+mismo intent
++ misma clave
++ payload compatible
+→ recuperar resultado anterior o continuar conforme al contrato
+```
+
+y:
+
+```text
+misma clave
++ payload incompatible
+→ conflicto explícito
+```
+
+Retry:
+
+- nunca es una propiedad inferida del texto del error;
+- nunca usa un nuevo identificador para ocultar un resultado incierto;
+- nunca cambia versión esperada silenciosamente;
+- nunca altera el payload para “hacer que funcione”;
+- puede ser bounded únicamente cuando el contrato lo autorice.
+
+---
+
+#### 23. Concurrencia, deadlock, serialización y locks
+
+Los fallos de concurrencia no se colapsan en error interno genérico cuando el contrato define recuperación.
+
+La normalización deberá conservar:
+
+- operación;
+- precondición;
+- expected version cuando exista;
+- retryability;
+- número o identidad de intento cuando corresponda;
+- necesidad de reevaluación;
+- estado de resultado desconocido si aplica.
+
+Una política bounded de retry podrá aplicarse únicamente desde la capa autorizada y con el mismo intent contractual.
+
+No existe last-writer-wins implícito.
+
+---
+
+#### 24. Rate limit, capacidad y dependencia
+
+Una señal técnica de throttling o saturación no identifica automáticamente la regla empresarial afectada.
+
+Se distingue:
+
+```text
+RATE / CAPACITY CONTRACTUAL
+```
+
+de:
+
+```text
+SATURACIÓN / DISPONIBILIDAD TÉCNICA
+```
+
+Cuando exista información segura de espera o recuperación:
+
+- puede conservarse como metadata;
+- no se convierte en política de negocio;
+- no obliga a retry automático;
+- no se expone si revela infraestructura sensible.
+
+Dependencias pendientes/fallidas conservan el owner y contrato de la dependencia.
+
+---
+
+#### 25. Autenticación, autorización y fallo técnico
+
+Estas tres situaciones permanecen separadas:
+
+| Situación                                          | Lectura                                   |
+| -------------------------------------------------- | ----------------------------------------- |
+| autenticación inválida                             | identidad no utilizable según contrato    |
+| autorización denegada                              | identidad conocida sin permiso efectivo   |
+| evaluación/autorización técnicamente no disponible | no existe una decisión de política válida |
+
+Regla central:
+
+```text
+FALLO TÉCNICO DE AUTORIZACIÓN
+≠ DENEGACIÓN DE POLÍTICA
+```
+
+La normalización no fabrica una denegación para fallar cerrado en UX; la capa propietaria decide cómo bloquear sin falsificar el reason code.
+
+---
+
+#### 26. Recurso inexistente o no visible
+
+La familia contractual `recurso inexistente o no visible` protege contra filtración de existencia.
+
+El normalizador:
+
+1. conserva el outcome contractual emitido por la capa autoritativa;
+2. no inspecciona internals para decir al cliente si el registro sí existe;
+3. no cambia el resultado según permisos locales;
+4. no traduce automáticamente un `404` a inexistencia física;
+5. no expone IDs alternos, nombres internos o relaciones que revelen el objeto;
+6. no usa diferencia de mensajes como side channel.
+
+---
+
+#### 27. Error convertido a éxito: prohibido
+
+Quedan prohibidas transformaciones como:
+
+```text
+error → null
+error → []
+error → false
+error → objeto vacío
+error → "ok"
+timeout → éxito asumido
+denegación → resultado inexistente no contractual
+conflicto → no-op silencioso
+```
+
+Solo un contrato que defina explícitamente un outcome negativo como dato puede representarlo como tal.
+
+Un fallback técnico no puede aparentar éxito.
+
+---
+
+#### 28. Información lógica mínima preservada
+
+La representación normalizada deberá conservar, cuando aplique y exista autoridad para ello:
+
+- fuente técnica;
+- operación;
+- contrato y versión;
+- código contractual machine-readable si fue emitido;
+- familia semántica;
+- certeza o incertidumbre del efecto;
+- política de retry aplicable;
+- necesidad de reconciliación;
+- correlación;
+- referencia de operación o intento;
+- contexto seguro mínimo;
+- diagnóstico público redactado;
+- referencia protegida al diagnóstico técnico;
+- causa técnica encadenada cuando el runtime la soporte;
+- estado de redacción/minimización.
+
+Estos son atributos lógicos. Esta tarea no asigna nombres de propiedades TypeScript, interfaces, clases ni exports físicos.
+
+---
+
+#### 29. Diagnóstico protegido
+
+La implementación futura deberá permitir investigación técnica sin ampliar exposición.
+
+El diagnóstico protegido puede conservar, según política:
+
+- código nativo;
+- status;
+- SQLSTATE;
+- detalles de proveedor;
+- stack;
+- causa;
+- endpoint lógico;
+- runtime;
+- versión de SDK;
+- correlation ID;
+- attempt ID;
+- timestamps operativos;
+- metadata necesaria para soporte.
+
+Pero esa información no es automáticamente consumible por browser/mobile ni se incorpora completa a logs generales.
+
+---
+
+#### 30. Redacción obligatoria
+
+Las superficies no privilegiadas no expondrán, salvo contrato explícito y seguro:
+
+- SQLSTATE;
+- stack traces;
+- SQL;
+- nombres físicos de tablas;
+- nombres de schemas internos;
+- nombres de constraints;
+- nombres de funciones internas;
+- `search_path`;
+- ACL;
+- roles PostgreSQL;
+- owners;
+- service-role;
+- tokens;
+- secrets;
+- firmas;
+- credenciales;
+- URLs privadas;
+- payloads sensibles completos;
+- PII innecesaria;
+- existencia de registros no autorizados.
+
+El normalizador debe poder perder detalle público sin perder trazabilidad protegida.
+
+---
+
+#### 31. Correlación
+
+Una falla normalizada conserva correlación suficiente para enlazar, cuando exista:
+
+```text
+request
+→ wrapper
+→ RPC / adapter
+→ operación lógica
+→ intento
+→ efecto o outcome
+→ diagnóstico
+```
+
+La correlación:
+
+- no sustituye auditoría;
+- no sustituye idempotencia;
+- no contiene secretos;
+- no se reutiliza como autorización;
+- puede exponerse de forma segura como referencia de soporte cuando el contrato lo permita.
+
+---
+
+#### 32. Cause y errores encadenados
+
+Cuando el runtime soporte causa:
+
+1. la cadena técnica puede preservarse server-side;
+2. la causa no se serializa completa hacia cliente por defecto;
+3. una causa nativa no reemplaza el código contractual;
+4. múltiples causas no autorizan a elegir arbitrariamente la primera;
+5. la clasificación se realiza sobre la fuente y contrato relevantes;
+6. el stack no forma parte del contrato público.
+
+---
+
+#### 33. Error desconocido o no mapeado
+
+Un error no reconocido no se clasifica por semejanza textual.
+
+Regla:
+
+```text
+UNKNOWN NATIVE FAILURE
+→ FAIL CLOSED
+→ INTERNAL / TECHNICAL UNDISCLOSED SEMANTICS
+→ PROTECTED DIAGNOSTIC
+→ NO BUSINESS GUESS
+```
+
+Si la operación puede haber producido efecto:
+
+```text
+UNKNOWN NATIVE FAILURE
++ UNCERTAIN MUTATION
+→ resultado desconocido / reconciliación según contrato
+```
+
+Un nuevo código del proveedor debe provocar revisión del mapping, no adaptación silenciosa basada en mensajes.
+
+---
+
+#### 34. Versionado del mapping
+
+Todo mapping entre fuente técnica y representación normalizada deberá ser reproducible.
+
+Debe poder conocerse:
+
+- proveedor;
+- versión relevante;
+- contrato;
+- versión contractual;
+- mapping aplicable;
+- versión del mapping;
+- comportamiento de redacción;
+- política de retry;
+- compatibilidad.
+
+La identidad física de esa versión se asignará durante materialización; esta tarea no inventa un número de versión ni nombre de export.
+
+Cambiar un mapping que altera comportamiento visible requiere clasificación de compatibilidad y pruebas de consumidores.
+
+---
+
+#### 35. Paridad entre runtimes
+
+`SHELL-DB-004` define semántica runtime-neutral.
+
+Para una misma falla contractual:
+
+```text
+server diagnostic
+browser diagnostic
+native diagnostic
+```
+
+pueden contener señales nativas distintas, pero deberán converger en la misma semántica normalizada cuando consuman el mismo contrato y mapping.
+
+Reglas:
+
+1. browser no recibe detalle server-only;
+2. native no recibe credenciales o internals privilegiados;
+3. server puede conservar diagnóstico adicional protegido;
+4. la diferencia de runtime no cambia el código empresarial;
+5. la separación física de factories y clientes pertenece a `SHELL-DB-005`.
+
+---
+
+#### 36. Compatibilidad con consumers
+
+Una actualización del normalizador se clasifica junto con:
+
+- versión de `@vento/supabase`;
+- versión del SDK de Supabase;
+- runtimes consumidores;
+- contratos consumidos;
+- mappings;
+- errores/outcomes visibles;
+- retryability;
+- redacción;
+- observabilidad.
+
+Una modificación es incompatible si obliga al consumer a reinterpretar un outcome, cambia branching contractual o expone/retira una señal sin transición.
+
+Compilar TypeScript no basta para declarar compatibilidad.
+
+---
+
+#### 37. Observabilidad
+
+La normalización deberá permitir medir, sin ampliar exposición:
+
+- volumen por familia técnica;
+- outcome contractual cuando sea seguro;
+- operación;
+- runtime;
+- retry;
+- resultado desconocido;
+- reconciliaciones;
+- latency bucket o duración permitida;
+- errores no mapeados;
+- mapping version;
+- correlación;
+- degradaciones.
+
+No se registran por defecto payloads completos, secrets, tokens, SQL ni PII innecesaria.
+
+Métrica agregada no sustituye evidencia individual cuando el contrato exige trazabilidad.
+
+---
+
+#### 38. Pruebas futuras obligatorias
+
+La futura implementación deberá cubrir, como mínimo:
+
+1. preservación de un código contractual ya válido;
+2. las once familias semánticas;
+3. error técnico sin mapping;
+4. código nativo desconocido;
+5. ausencia de branching por `Error.message`;
+6. SQLSTATE no expuesto;
+7. constraint name no expuesto;
+8. stack no expuesto;
+9. SQL no expuesto;
+10. 401/403 sin inferencia automática de reason code;
+11. 404 sin filtración de existencia;
+12. 409 sin inferencia automática de versión;
+13. 429 sin inferencia automática de cuota empresarial;
+14. query fallida que no se convierte en arreglo vacío;
+15. command fallido que no se convierte en éxito;
+16. timeout antes de certeza de despacho;
+17. timeout después de despacho;
+18. resultado desconocido;
+19. retry permitido;
+20. retry prohibido;
+21. idempotency key preservada;
+22. idempotency payload conflictivo;
+23. expected version obsoleto;
+24. deadlock/serialización/lock timeout con política bounded aprobada;
+25. autenticación inválida;
+26. autorización denegada;
+27. autorización técnicamente no disponible;
+28. resource not visible;
+29. rate/capacity contractual frente a saturación técnica;
+30. redacción de diagnóstico;
+31. correlación;
+32. cause protegida;
+33. paridad server/browser/native;
+34. consumer compatibility;
+35. exclusión VITAL;
+36. cero error-to-success silencioso.
+
+Esta sección especifica cobertura posterior; no declara pruebas runtime ejecutadas.
+
+---
+
+#### 39. Frontera VITAL
+
+VITAL permanece separado.
+
+`SHELL-DB-004` no:
+
+- absorbe códigos VITAL;
+- crea mappings VITAL;
+- traduce errores VITAL al catálogo de Vento OS;
+- registra diagnósticos VITAL dentro de observabilidad ordinaria de Vento OS;
+- expone internals VITAL;
+- usa coexistencia física como autorización.
+
+Una integración futura deberá usar contratos explícitos de la arquitectura propietaria de VITAL.
+
+---
+
+#### 40. Estado de materialización física
+
+| Elemento                            | Estado                       |
+| ----------------------------------- | ---------------------------- |
+| separación diagnóstico/outcome/copy | `ESPECIFICADA`               |
+| once familias semánticas            | `PRESERVADAS`                |
+| preservación de código contractual  | `ESPECIFICADA`               |
+| normalización de HTTP               | `ESPECIFICADA`               |
+| normalización PostgreSQL/SQLSTATE   | `ESPECIFICADA`               |
+| normalización PostgREST             | `ESPECIFICADA`               |
+| frontera Auth                       | `ESPECIFICADA`               |
+| frontera Storage/Realtime/Edge      | `ESPECIFICADA`               |
+| red/timeout                         | `ESPECIFICADOS`              |
+| resultado desconocido               | `ESPECIFICADO`               |
+| retry/idempotencia                  | `ESPECIFICADOS` por contrato |
+| concurrencia                        | `ESPECIFICADA` por contrato  |
+| redacción                           | `ESPECIFICADA`               |
+| diagnóstico protegido               | `ESPECIFICADO`               |
+| correlación                         | `ESPECIFICADA`               |
+| fallback cerrado                    | `ESPECIFICADO`               |
+| versionado de mapping               | `ESPECIFICADO`               |
+| paridad runtime                     | `ESPECIFICADA`               |
+| VITAL                               | `EXCLUIDO`                   |
+| normalizador físico                 | `NO MATERIALIZADO`           |
+| interfaces TypeScript               | `NO ASIGNADAS`               |
+| exports                             | `NO ASIGNADOS`               |
+| versión npm                         | `NO ASIGNADA`                |
+| consumers migrados                  | `0`                          |
+| cambios Supabase                    | `0`                          |
+| cambios de datos                    | `0`                          |
+| requisitos creados                  | `0`                          |
+| requisitos modificados              | `0`                          |
+
+---
+
+#### 41. Handoffs exactos
+
+| Materia fuera de esta tarea                                             | Propietario exacto                                                  | Condición de salida                                 |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------- |
+| separación física de cliente server, browser y native                   | `SHELL-DB-005`                                                      | factories, secretos y superficies runtime aislados  |
+| códigos compartidos de autorización/contexto                            | `SHELL-CON-008`                                                     | vocabularios estáticos separados de códigos nativos |
+| experiencia y copy de denegación/indisponibilidad                       | tareas `AUTH-ERR-*` propietarias                                    | mensaje público desde outcome estable               |
+| generación/publicación incremental del package tras package DB aprobado | `AUTH-DB-026`                                                       | artefacto generado bajo gates y compatibilidad      |
+| materialización física de `@vento/supabase`                             | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` | implementación únicamente para package autorizado   |
+| pruebas del package y contract tests                                    | `SHELL-CI-001` y tareas CI aplicables                               | suite ejecutable y evidencia                        |
+| compatibilidad de consumidores                                          | `SHELL-CI-005` y tareas de adopción aplicables                      | matriz real por consumer                            |
+| seguridad `SECURITY DEFINER`                                            | `SUPA-ARC-014` y tareas BLOQUE R aplicables                         | gates y pruebas negativas                           |
+| grants, RLS y exposición                                                | `SUPA-ARC-015` y tareas BLOQUE R aplicables                         | autoridad y mínimo privilegio verificados           |
+| contratos de dominio y códigos empresariales                            | `SUPA-ARC-016` y tareas propietarias por dominio                    | machine codes y outcomes versionados                |
+| coordinación multi-owner                                                | `SUPA-ARC-017` y tareas de transición aplicables                    | compensación, reconciliación y ownership definidos  |
+| evolución conjunta de tipos, errores y consumers                        | `SUPA-TRANS-014`                                                    | cambio contractual sincronizado                     |
+
+No queda un pendiente narrativo sin propietario documental exacto.
+
+---
+
+#### 42. Cobertura de prueba vigente no modificada
+
+La conducta centralizada ya está protegida por requisitos canónicos vigentes que cubren, entre otros:
+
+- códigos estables de error en RPC;
+- prohibición de exponer SQLSTATE, stack, SQL, objetos físicos y secretos;
+- correlación y señal de fallo segura;
+- redacción de errores `SECURITY DEFINER`;
+- minimización de secretos y payloads;
+- outcomes, estado, versión y correlación;
+- catálogo cerrado de errores machine-readable;
+- distinción de validación, autenticación, autorización, inexistencia/no visibilidad, conflicto, idempotencia, invariantes, límites, dependencia, resultado desconocido e interno;
+- bounded retry para deadlock, serialización, lock timeout y desconexión;
+- tipos estables para outcome codes;
+- responses discriminadas y versionadas;
+- prohibición de lógica de consumer basada en mensajes humanos, SQLSTATE o stacks;
+- compatibilidad, consumers y gates transversales.
+
+`SHELL-DB-004` consolida esas obligaciones en la responsabilidad documental de normalización técnica de `@vento/supabase`; no crea un comportamiento verificable nuevo sin cobertura.
+
+---
+
+#### 43. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** la tarea centraliza dentro de `@vento/supabase` reglas ya aprobadas sobre errores machine-readable, redacción, preservación de outcomes, retry, resultado desconocido, concurrencia, idempotencia, correlación y separación frente a autorización y mensajes públicos. No introduce un nuevo código empresarial, una nueva familia de outcome, una nueva política de autorización, un nuevo mecanismo de retry, una nueva operación de datos ni un efecto runtime adicional.
+
+---
+
+#### 44. Decisiones vinculantes
+
+1. `@vento/supabase` normaliza errores técnicos de acceso, no errores empresariales universales.
+2. Diagnóstico nativo, normalización técnica, outcome contractual y mensaje público permanecen separados.
+3. No se crea un `ErrorCode` universal.
+4. `AuthorizationReasonCode` no absorbe SQLSTATE ni códigos nativos de Supabase.
+5. Se preservan las once familias semánticas mínimas de E3.
+6. Esta tarea no inventa literales públicos para esas once familias.
+7. El código machine-readable concreto pertenece al contrato propietario.
+8. Un outcome contractual válido tiene precedencia sobre el diagnóstico técnico.
+9. HTTP status no decide semántica empresarial por sí solo.
+10. SQLSTATE no es código empresarial público.
+11. Nombres de constraints no son API.
+12. `PGRST*` o códigos equivalentes permanecen metadata técnica salvo mapping aprobado.
+13. Errores de Auth no se convierten automáticamente en reason codes de autorización.
+14. Storage, Realtime y Edge conservan contratos propietarios.
+15. `Error.message` no gobierna branching.
+16. Stack trace no gobierna branching.
+17. Texto humano del proveedor no gobierna branching.
+18. Mapping técnico debe ser explícito y versionado.
+19. Error desconocido utiliza fallback cerrado.
+20. No se adivina un outcome empresarial ante código nuevo del proveedor.
+21. Error no se convierte silenciosamente en `null`.
+22. Error no se convierte silenciosamente en arreglo vacío.
+23. Error no se convierte silenciosamente en `false`.
+24. Error no se convierte silenciosamente en éxito.
+25. Query fallida no aparenta cero resultados.
+26. Command fallido no implica cero efectos.
+27. Timeout después de despacho puede requerir resultado desconocido.
+28. Resultado desconocido no equivale a fallo definitivo.
+29. Resultado desconocido no equivale a éxito.
+30. Retry requiere contrato.
+31. Retry de un mismo intent conserva idempotency key cuando corresponda.
+32. Idempotencia no se crea en el cliente.
+33. Expected version no se elimina para facilitar retry.
+34. No existe last-writer-wins implícito.
+35. Deadlock, serialización y lock timeout siguen política bounded solo cuando está aprobada.
+36. Rate limit contractual y saturación técnica permanecen distinguibles.
+37. Fallo técnico de autorización no se presenta como denegación de política.
+38. Resource not visible no revela existencia física.
+39. Diagnóstico público se redacta.
+40. Diagnóstico protegido puede conservar detalle adicional bajo autorización.
+41. SQL no se expone.
+42. `search_path` no se expone.
+43. ACL, owner y roles PostgreSQL no se exponen.
+44. Tokens, secretos y service-role no se exponen.
+45. PII innecesaria no se registra ni expone.
+46. Correlación no sustituye auditoría.
+47. Correlación no sustituye idempotencia.
+48. Cause técnica no sustituye código contractual.
+49. El mapping debe ser determinista.
+50. El mapping debe ser reproducible.
+51. Cambiar semántica visible requiere clasificación de compatibilidad.
+52. Paridad semántica debe mantenerse entre server, browser y native.
+53. Detalle privilegiado server-side no fluye a browser/native.
+54. La separación física de runtimes pertenece a `SHELL-DB-005`.
+55. VITAL permanece separado.
+56. La futura implementación debe probar redacción, fallback, retry y resultado desconocido.
+57. No se crean interfaces TypeScript en esta tarea.
+58. No se asignan exports.
+59. No se asigna versión npm.
+60. No se crea package físico.
+61. No se modifica Supabase.
+62. No se modifican datos.
+63. No se crean ni modifican requisitos de prueba.
+64. `SHELL-DB-005` queda únicamente reservada.
+
+---
+
+#### 45. Criterios de aceptación documental
+
+`SHELL-DB-004` queda documentalmente satisfecha cuando:
+
+1. existe una frontera única de normalización técnica;
+2. no crea un catálogo empresarial universal;
+3. separa cuatro capas semánticas;
+4. preserva las once familias de E3;
+5. preserva códigos contractuales emitidos;
+6. prohíbe branching por mensajes humanos;
+7. prohíbe SQLSTATE como código público;
+8. prohíbe inferir negocio desde HTTP aislado;
+9. define tratamiento PostgreSQL;
+10. define tratamiento de constraints;
+11. define tratamiento PostgREST;
+12. conserva frontera Auth;
+13. conserva frontera Storage/Realtime/Edge;
+14. define fallo de red;
+15. define timeout posterior a despacho;
+16. conserva resultado desconocido;
+17. diferencia query y command;
+18. define relación con idempotencia;
+19. define relación con retry;
+20. define relación con concurrencia;
+21. diferencia rate contractual de saturación técnica;
+22. diferencia denegación de fallo técnico de autorización;
+23. protege existencia de recursos no visibles;
+24. prohíbe error-to-success;
+25. materializa información lógica mínima;
+26. define diagnóstico protegido;
+27. define redacción;
+28. define correlación;
+29. define cause;
+30. define fallback de errores desconocidos;
+31. define versionado del mapping;
+32. define paridad entre runtimes;
+33. define compatibilidad de consumers;
+34. define observabilidad segura;
+35. define cobertura futura de pruebas;
+36. excluye VITAL;
+37. declara correctamente el estado no materializado;
+38. asigna handoffs exactos;
+39. no crea código;
+40. no crea package físico;
+41. no crea interfaces ni exports;
+42. no modifica Supabase;
+43. no modifica datos;
+44. no crea ni modifica requisitos de prueba;
+45. la siguiente tarea permanece únicamente reservada.
+
+---
+
+#### 46. Límites
+
+`SHELL-DB-004` no:
+
+- crea físicamente `@vento/supabase`;
+- crea clases de error TypeScript;
+- crea interfaces;
+- crea enums;
+- crea códigos empresariales;
+- crea códigos de autorización;
+- crea exports;
+- asigna subpaths;
+- asigna root físico;
+- asigna versión npm;
+- publica package;
+- modifica wrappers;
+- modifica tipos generados;
+- ejecuta codegen;
+- cambia `Database`;
+- crea runtime validators;
+- crea copy de UI;
+- crea mensajes de bloqueo;
+- cambia grants;
+- cambia RLS;
+- cambia `SECURITY DEFINER`;
+- cambia `search_path`;
+- crea RPC;
+- modifica RPC;
+- crea funciones PostgreSQL;
+- crea triggers;
+- modifica triggers;
+- crea tablas;
+- crea columnas;
+- crea constraints;
+- ejecuta DDL;
+- ejecuta DML;
+- ejecuta migraciones;
+- ejecuta backfills;
+- modifica datos;
+- ejecuta mutaciones remotas;
+- rota secretos;
+- cambia Storage;
+- cambia Realtime;
+- despliega Edge Functions;
+- modifica VITAL;
+- desarrolla `SHELL-DB-005`.
+
+---
+
+#### 47. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-DB-003 — Crear y actualizar wrappers tipados para RPC canónicas
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-DB-004 — Normalizar errores de Supabase
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-DB-005 — Separar cliente server, browser y native
+
+
 ### [ ] SHELL-DB-005 — Separar cliente server, browser y native
 
 Regla de sincronización con BLOQUE R

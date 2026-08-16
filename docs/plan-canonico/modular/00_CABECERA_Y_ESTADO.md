@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **915** |
+| Tareas aprobadas | **916** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **679** |
+| Tareas no iniciadas | **678** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **57.40% (915/1594)** |
+| Porcentaje de completamiento | **57.47% (916/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-DB-003 — Crear y actualizar wrappers tipados para RPC canónicas** |
-| Tarea actual | **SHELL-DB-004 — Normalizar errores de Supabase** |
+| Última tarea aprobada | **SHELL-DB-004 — Normalizar errores de Supabase** |
+| Tarea actual | **SHELL-DB-005 — Separar cliente server, browser y native** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-DB-005 — Separar cliente server, browser y native** |
+| Siguiente tarea | **SHELL-UI-001 — Crear @vento/ui-web** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 65 de 109 aprobadas; SHELL-DB-004 pendiente** |
+| Progreso del bloque | **BLOQUE H: 66 de 109 aprobadas; SHELL-DB-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-DB-003` — Crear y actualizar wrappers tipados para RPC canónicas |
-| Tarea actual | `SHELL-DB-004` — Normalizar errores de Supabase — **NO INICIADA** |
-| Siguiente tarea | `SHELL-DB-005` — Separar cliente server, browser y native |
+| Última aprobada | `SHELL-DB-004` — Normalizar errores de Supabase |
+| Tarea actual | `SHELL-DB-005` — Separar cliente server, browser y native — **NO INICIADA** |
+| Siguiente tarea | `SHELL-UI-001` — Crear @vento/ui-web |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 65 DE 109 APROBADAS — ACTUAL SHELL-DB-004** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 66 DE 109 APROBADAS — ACTUAL SHELL-DB-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-DB-003 — Crear y actualizar wrappers tipados para RPC canónicas
-        ↓
-TAREA ACTUAL
 SHELL-DB-004 — Normalizar errores de Supabase
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-DB-005 — Separar cliente server, browser y native
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-UI-001 — Crear @vento/ui-web
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 65 de 109 tareas aprobadas
+BLOQUE H — 66 de 109 tareas aprobadas
 ```
