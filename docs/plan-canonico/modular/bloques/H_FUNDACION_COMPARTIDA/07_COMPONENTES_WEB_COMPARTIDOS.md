@@ -12543,7 +12543,1372 @@ Esta tarea no autoriza:
 `SHELL-UI-010 — Evaluar AppShell compartido`
 
 
-### [ ] SHELL-UI-010 — Evaluar AppShell compartido
+### ✅ SHELL-UI-010 — Evaluar AppShell compartido
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-009 — Compartir aviso de rol simulado
+**Tarea siguiente:** SHELL-UI-011 — Compartir navegación orientada a tareas
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida
+**Paquete propietario:** `@vento/ui-web`
+**Naturaleza:** evaluación y decisión canónica sobre la compartición del marco AppShell web, su contrato composicional, fronteras de responsabilidad, consumidores, adopción y handoffs posteriores, sin materializar package físico, migrar consumidoras, alterar autorización, modificar Supabase, publicar releases ni desplegar cambios.
+
+---
+
+#### 1. Propósito
+
+Resolver de forma explícita si Vento OS debe compartir un AppShell web entre aplicaciones y, en caso afirmativo, definir qué parte de la familia histórica `VentoShell` / `VentoChrome` pertenece realmente a una superficie compartida.
+
+La tarea evita dos extremos incompatibles:
+
+1. mantener copias locales completas de shell que continúen derivando entre repositorios;
+2. trasladar a `@vento/ui-web` autenticación, permisos, contexto, navegación empresarial o lógica de dominio que no pertenece a una capa presentacional.
+
+El resultado debe permitir una futura adopción progresiva por consumidor sin imponer despliegue simultáneo ni convertir la UI en autoridad.
+
+---
+
+#### 2. Pregunta evaluada
+
+La pregunta canónica es:
+
+```text
+¿DEBE EXISTIR UN APPSHELL WEB COMPARTIDO?
+```
+
+La respuesta aprobada es:
+
+```text
+SÍ
+```
+
+con una condición estructural obligatoria:
+
+```text
+APPSHELL COMPARTIDO
+=
+MARCO VISUAL + COMPOSICIÓN + LANDMARKS + RESPONSIVE + INTERACCIÓN LOCAL DE CHROME
+
+APPSHELL COMPARTIDO
+≠
+AUTENTICACIÓN + AUTORIZACIÓN + CONTEXTO + DATOS + NAVEGACIÓN EMPRESARIAL + GATING
+```
+
+---
+
+#### 3. Base documental consumida
+
+La decisión conserva las fronteras ya aprobadas para `@vento/ui-web`:
+
+- propiedad de UI presentacional web reutilizable;
+- ausencia de dependencia directa de `@vento/supabase`;
+- autorización de servidor fuera de la UI;
+- lógica empresarial específica de cada aplicación fuera del package;
+- adopción independiente de los siete consumidores previstos;
+- distinción entre componentes server-safe e interactivos;
+- compatibilidad, deprecación y rollback antes de retirar copias legacy.
+
+También conserva las decisiones previas de los componentes de contexto, sede, área y simulación: el AppShell puede componerlos, pero no absorbe su autoridad ni redefine su contrato.
+
+---
+
+#### 4. Base técnica inspeccionada
+
+La evaluación utiliza como evidencia técnica actual:
+
+- el AppShell histórico de `vento-shell` bajo `templates/app-shell-standard`;
+- el runtime actual de `vento-shell` como launcher propio;
+- las implementaciones actuales de `VentoShell` y `VentoChrome` en NEXO;
+- las implementaciones actuales de `VentoShell` y `VentoChrome` en FOGO;
+- las implementaciones actuales de `VentoShell` y `VentoChrome` en ORIGO;
+- las implementaciones actuales de `VentoShell` y `VentoChrome` en VISO;
+- las implementaciones actuales de `VentoShell` y `VentoChrome` en PULSO;
+- las implementaciones actuales de `VentoShell` y `VentoChrome` en NUMERA;
+- la ausencia actual de un package físico `@vento/ui-web` dentro de `packages/`.
+
+La evidencia confirma una familia visual repetida, pero también una mezcla sustantiva de responsabilidades de aplicación que impide adoptar cualquiera de las copias actuales como API compartida íntegra.
+
+---
+
+#### 5. Resultado documental
+
+Se aprueba el componente conceptual:
+
+```text
+AppShell
+```
+
+como parte futura de:
+
+```text
+@vento/ui-web
+```
+
+Su responsabilidad es proporcionar el marco estructural y presentacional de una aplicación web Vento OS mediante composición de slots ya preparados por el consumidor.
+
+No se aprueba como implementación canónica ninguna copia actual de `VentoShell` ni `VentoChrome`.
+
+---
+
+#### 6. Decisión principal
+
+El AppShell compartido será un **componente de composición**, no un orquestador de aplicación.
+
+La dirección aprobada es:
+
+```text
+CAPAS PROPIETARIAS DE LA APLICACIÓN
+        ↓
+RESUELVEN IDENTIDAD, AUTORIZACIÓN, CONTEXTO, DATOS Y NAVEGACIÓN
+        ↓
+PREPARAN PIEZAS PRESENTACIONALES
+        ↓
+AppShell
+        ↓
+COMPONE CHROME Y CONTENIDO
+```
+
+Queda prohibida la dirección inversa:
+
+```text
+AppShell
+        ✕
+RESOLVER AUTORIDAD
+        ✕
+CONSULTAR DATOS DE DOMINIO
+        ✕
+INFERIR CONTEXTO
+        ✕
+DECIDIR NAVEGACIÓN PERMITIDA
+```
+
+---
+
+#### 7. Definición canónica de AppShell
+
+`AppShell` es el marco visual superior que organiza, cuando existan:
+
+- identidad de aplicación;
+- navegación suministrada por el consumidor;
+- contexto visible suministrado por el consumidor;
+- avisos persistentes suministrados por el consumidor;
+- acciones utilitarias de cabecera;
+- contenido principal de la aplicación.
+
+No es una pantalla empresarial, un guard, un middleware, un resolver de contexto ni un proveedor de datos.
+
+---
+
+#### 8. Lo que AppShell no representa
+
+No se utilizará `AppShell` como sinónimo de:
+
+- sesión autenticada;
+- autorización efectiva;
+- `AccessContext`;
+- `EffectiveContext` legacy;
+- menú de permisos;
+- router empresarial;
+- selector de sede;
+- selector de área;
+- simulador de roles;
+- AppSwitcher;
+- ProfileMenu;
+- página de bloqueo;
+- layout específico de kiosco;
+- proceso empresarial.
+
+Cualquiera de esas piezas podrá coexistir dentro o alrededor del AppShell cuando su propietario la haya resuelto y su contrato lo permita.
+
+---
+
+#### 9. Identidad pública conceptual
+
+La superficie conceptual queda formada por:
+
+```text
+AppShell
+AppShellProps
+```
+
+Esta tarea no fija:
+
+- subpath físico de exportación;
+- archivo fuente definitivo;
+- nombre de entrypoint npm;
+- versión SemVer inicial;
+- clases CSS públicas concretas;
+- implementación del package;
+- migración automática de consumidoras.
+
+---
+
+#### 10. Superficie conceptual de props
+
+La API conceptual mínima queda definida como:
+
+```ts
+type AppShellProps = {
+  children: React.ReactNode;
+  brand: React.ReactNode;
+  navigation?: React.ReactNode;
+  navigationLabel?: string;
+  context?: React.ReactNode;
+  notices?: React.ReactNode;
+  headerActions?: React.ReactNode;
+};
+```
+
+Regla semántica adicional:
+
+```text
+navigation presente
+→ navigationLabel perceptible obligatorio
+```
+
+La materialización física podrá expresar esta relación mediante tipos más estrictos sin alterar su significado.
+
+---
+
+#### 11. Slot `brand`
+
+`brand` identifica visualmente la aplicación actual.
+
+Puede contener:
+
+- marca Vento OS;
+- nombre de la aplicación;
+- icono o logotipo;
+- descripción corta de la superficie.
+
+No debe determinar por sí mismo:
+
+- `AppCode` autoritativo;
+- permiso de acceso;
+- dominio productivo;
+- contexto;
+- disponibilidad operacional.
+
+La identidad presentada deberá provenir de información ya gobernada por el consumidor.
+
+---
+
+#### 12. Slot `navigation`
+
+`navigation` recibe una superficie de navegación ya preparada.
+
+`AppShell` se limita a ubicarla y controlar su presentación responsive.
+
+No recibe ni interpreta como contrato propio:
+
+- `permissionCode`;
+- `required`;
+- `anyOf`;
+- `navGroups`;
+- matrices de rol;
+- rutas permitidas;
+- acciones empresariales.
+
+La ausencia de `navigation` es válida para superficies cuyo modelo no requiera navegación lateral persistente.
+
+---
+
+#### 13. `navigationLabel`
+
+Cuando exista navegación, `navigationLabel` proporciona el nombre humano y accesible de la región y de sus controles de apertura o cierre cuando corresponda.
+
+No se fija una etiqueta española universal dentro del package.
+
+Reglas:
+
+- deberá ser texto humano;
+- deberá ser localizable por el consumidor;
+- no deberá contener códigos técnicos de permiso;
+- no deberá derivarse del nombre de ruta;
+- deberá conservar significado entre desktop y móvil.
+
+---
+
+#### 14. Slot `context`
+
+`context` recibe exclusivamente una proyección visual ya preparada.
+
+La composición esperada podrá incluir piezas como:
+
+```text
+ContextIndicator
+SiteSelector
+AreaSelector
+```
+
+cuando la superficie y la autoridad resuelta lo permitan.
+
+`AppShell` no decide cuál sede, área, turno, rol, actor o dispositivo está activo y no convierte una selección en contexto confirmado.
+
+---
+
+#### 15. Slot `notices`
+
+`notices` aloja avisos persistentes o contextuales que deban permanecer perceptibles dentro del chrome.
+
+Puede incluir, según el caso:
+
+```text
+SimulatedRoleNotice
+Alert
+```
+
+La presencia de un aviso no autoriza al AppShell a:
+
+- resolver su causa;
+- cerrarlo por decisión empresarial;
+- iniciar o terminar una simulación;
+- ejecutar recuperación;
+- cambiar permisos.
+
+---
+
+#### 16. Slot `headerActions`
+
+`headerActions` aloja acciones utilitarias preparadas por la aplicación, por ejemplo:
+
+- cambio de aplicación ya gobernado;
+- perfil;
+- sesión;
+- ayuda;
+- controles auxiliares no empresariales.
+
+El slot no presupone que `AppSwitcher` o `ProfileMenu` formen parte integral del AppShell.
+
+La capa propietaria conserva:
+
+- datos de perfil;
+- cierre de sesión;
+- catálogo de aplicaciones;
+- disponibilidad;
+- enlaces;
+- autorización.
+
+---
+
+#### 17. Slot `children`
+
+`children` contiene la superficie principal de proceso o aplicación.
+
+`AppShell` no inspecciona sus acciones ni decide:
+
+- proceso;
+- etapa;
+- recurso;
+- permiso;
+- estado empresarial;
+- idempotencia;
+- confirmación;
+- persistencia.
+
+Su función es proporcionar un contenedor principal consistente y accesible.
+
+---
+
+#### 18. Contrato estructural de layout
+
+La estructura conceptual ordinaria es:
+
+```text
+AppShell
+├─ brand
+├─ navigation
+├─ context
+├─ notices
+├─ headerActions
+└─ main
+   └─ children
+```
+
+El orden visual podrá adaptarse por breakpoint, pero no deberá romper el orden semántico ni ocultar información material necesaria para actuar con seguridad.
+
+---
+
+#### 19. Landmarks semánticos
+
+La implementación compartida deberá conservar landmarks comprensibles:
+
+- cabecera;
+- navegación, cuando exista;
+- contenido principal;
+- regiones auxiliares únicamente cuando aporten semántica real.
+
+Reglas:
+
+1. debe existir un único contenido principal del AppShell;
+2. el usuario debe poder saltar al contenido principal;
+3. una navegación colapsada no debe permanecer interactiva de forma invisible;
+4. los controles de apertura deberán comunicar estado expandido;
+5. no se crearán landmarks redundantes por decoración.
+
+---
+
+#### 20. Responsividad
+
+La responsabilidad compartida incluye el reflow del marco general entre anchos ordinarios de escritorio y móvil.
+
+El AppShell deberá permitir:
+
+- navegación lateral en ancho suficiente;
+- navegación temporal o disclosure en ancho reducido;
+- cabecera que refluya sin solapar controles;
+- contexto y avisos visibles o inmediatamente perceptibles;
+- contenido principal sin scroll horizontal estructural ordinario;
+- zoom sin pérdida de contenido esencial.
+
+La responsividad no autoriza a esconder contexto material únicamente dentro de un menú de perfil.
+
+---
+
+#### 21. Disclosure de navegación móvil
+
+Cuando exista `navigation`, el AppShell puede ser propietario del estado local de presentación necesario para abrir y cerrar la navegación en móvil.
+
+Ese estado es exclusivamente visual.
+
+Puede controlar:
+
+- abierto / cerrado;
+- overlay;
+- retorno de foco;
+- cierre al activar la navegación cuando la composición lo solicite de manera presentacional.
+
+No puede controlar:
+
+- qué rutas existen;
+- qué ruta está autorizada;
+- qué acción debe ejecutarse;
+- qué contexto debe activarse.
+
+---
+
+#### 22. Navegación en escritorio
+
+En escritorio el AppShell puede proporcionar un contenedor lateral persistente y, si la implementación futura lo decide, una preferencia visual de expansión o compactación.
+
+La compactación:
+
+- no cambia permisos;
+- no elimina elementos de la navegación propietaria;
+- no cambia el contexto;
+- no transforma un item oculto visualmente en item no autorizado;
+- debe conservar nombres accesibles para controles visibles.
+
+---
+
+#### 23. Persistencia de preferencias visuales
+
+La persistencia de un estado puramente visual como sidebar expandido o compacto **no forma parte del contrato obligatorio** de `AppShell`.
+
+Si una implementación posterior conserva una preferencia local, deberá cumplir:
+
+```text
+PREFERENCIA VISUAL
+≠
+AUTORIDAD
+≠
+CONTEXTO
+≠
+PERMISO
+```
+
+Por tanto no se canoniza el uso actual de `localStorage` observado en copias runtime como requisito del componente.
+
+---
+
+#### 24. Cabecera compartida
+
+El AppShell define la región de cabecera, pero no su contenido empresarial.
+
+La cabecera puede componer:
+
+- identidad de aplicación;
+- contexto compacto cuando la jerarquía lo requiera;
+- avisos que deban permanecer perceptibles;
+- acciones utilitarias.
+
+No debe convertirse en repositorio de todos los estados de aplicación ni sustituir superficies especializadas.
+
+---
+
+#### 25. Contenido principal
+
+El área principal deberá:
+
+- ocupar el espacio disponible sin imponer anchura empresarial única;
+- permitir que cada aplicación gestione densidad y layout interno;
+- conservar foco y lectura coherentes después de abrir o cerrar navegación;
+- no interceptar acciones de dominio;
+- no introducir padding irreversible que impida patrones de pantalla completa cuando el consumidor lo necesite.
+
+La implementación física deberá permitir una estrategia de espaciado compatible con los consumidores sin convertir cada necesidad local en una variante global.
+
+---
+
+#### 26. Visibilidad de contexto material
+
+El AppShell es responsable de **reservar una ubicación composicional estable** para el contexto material, no de producirlo.
+
+Cuando la superficie requiera contexto visible:
+
+- no se ocultará exclusivamente dentro de `headerActions`;
+- la compactación de navegación no lo eliminará;
+- el cambio de breakpoint no lo convertirá en información solo por hover;
+- un aviso de inconsistencia no dependerá únicamente de color;
+- el contenido principal no deberá desplazarlo de forma que la persona pierda referencia durante acciones materiales ordinarias.
+
+---
+
+#### 27. Relación con simulación visible
+
+El AppShell no integra una variante propia `simulated`.
+
+La composición correcta es:
+
+```text
+AppShell.notices
+        ↓
+SimulatedRoleNotice
+```
+
+La capa propietaria decide cuándo existe una simulación presentable y mantiene el aviso según su ciclo de vida autoritativo.
+
+El AppShell únicamente asegura que la región de avisos pueda permanecer visible en su estructura.
+
+---
+
+#### 28. Relación con selectores de sede y área
+
+Los selectores no se incorporan como props especializadas del AppShell.
+
+La composición aprobada permite:
+
+```text
+AppShell.context
+        ↓
+ContextIndicator
++
+SiteSelector
++
+AreaSelector
+```
+
+La capa propietaria conserva solicitud, elegibilidad, confirmación, receipt, error y actualización del contexto.
+
+El AppShell no lee query parameters, cookies o storage para decidir sede o área.
+
+---
+
+#### 29. Relación con AppSwitcher y ProfileMenu
+
+Los patrones actuales `AppSwitcher` y `ProfileMenu` aparecen dentro de las copias de chrome, pero no se convierten por esa evidencia en componentes obligatorios del AppShell.
+
+Decisión:
+
+| Patrón                            | Decisión dentro de UI010                                                    |
+| --------------------------------- | --------------------------------------------------------------------------- |
+| AppSwitcher                       | contenido candidato de `headerActions`; contrato propio fuera de esta tarea |
+| ProfileMenu                       | contenido candidato de `headerActions`; datos y sesión permanecen fuera     |
+| selector de sede dentro de perfil | no pertenece al AppShell                                                    |
+| role override dentro de perfil    | no pertenece al AppShell                                                    |
+
+---
+
+#### 30. Frontera de navegación empresarial
+
+Esta tarea **no define el modelo de navegación orientada a tareas**.
+
+El AppShell solo aprueba el slot y el contenedor visual necesarios para recibir una navegación ya preparada.
+
+La tarea reservada indicada en la cabecera conserva la propiedad sobre:
+
+- modelo de items;
+- agrupación;
+- estados;
+- rutas;
+- descubribilidad;
+- vínculo con tareas y procesos;
+- reglas de presentación de navegación.
+
+El AppShell no adelanta esas decisiones.
+
+---
+
+#### 31. Frontera de autorización
+
+`AppShell` no constituye una frontera de seguridad.
+
+Queda prohibido utilizarlo para:
+
+- conceder acceso porque un item se renderiza;
+- denegar acceso porque un item se oculta;
+- resolver permisos por nombre de rol;
+- aceptar `canOperate` como autoridad;
+- confiar en un booleano de interfaz para una mutación;
+- omitir protección de servidor, RPC o RLS.
+
+La visibilidad presentacional debe corresponder a decisiones ya resueltas, pero nunca las sustituye.
+
+---
+
+#### 32. Frontera de contexto
+
+`AppShell` no recibe como requisito público un objeto canónico completo de contexto.
+
+No se incorpora como prop:
+
+```text
+accessContext
+simulationContext
+effectiveContext
+isSimulated
+siteId
+areaId
+shiftId
+role
+```
+
+La capa propietaria transforma el contexto autoritativo en componentes o textos presentacionales seguros antes de componer el AppShell.
+
+---
+
+#### 33. Frontera de datos y Supabase
+
+Queda prohibido que el AppShell:
+
+- cree un cliente Supabase;
+- invoque RPC;
+- consulte tablas;
+- escriba preferencias empresariales;
+- lea Auth;
+- resuelva empleados;
+- consulte sedes;
+- consulte áreas;
+- resuelva dispositivos compartidos.
+
+El patrón histórico que realiza estas operaciones dentro de `VentoShell` o `VentoChrome` se clasifica como lógica a extraer de la futura superficie compartida.
+
+---
+
+#### 34. Frontera de gating empresarial
+
+`OperatingGate` y sus equivalentes locales no forman parte del contrato de `AppShell`.
+
+El AppShell puede renderizar el contenido que la aplicación propietaria decida mostrar, incluidos estados de bloqueo ya preparados, pero no determina:
+
+- si una jornada es obligatoria;
+- si existe turno;
+- si existe check-in;
+- si un dispositivo está autorizado;
+- si un rol privilegiado puede entrar;
+- si una acción está permitida.
+
+Los gates continúan en sus contratos de autorización y experiencia propietarios.
+
+---
+
+#### 35. Frontera de rutas y router
+
+La API pública del AppShell no depende de:
+
+- `usePathname`;
+- `useSearchParams`;
+- query parameters;
+- nombre de ruta;
+- router global;
+- rutas hardcodeadas de una aplicación.
+
+Un componente de navegación compuesto puede utilizar integración de router conforme a su contrato, pero el AppShell no la necesita para decidir autoridad, contexto o estructura empresarial.
+
+---
+
+#### 36. Frontera de framework
+
+`AppShell` pertenece al runtime web React previsto para `@vento/ui-web`.
+
+La implementación compartida puede integrarse con aplicaciones Next.js, pero su contrato conceptual no exige:
+
+- App Router;
+- Pages Router;
+- Server Actions;
+- middleware;
+- un proveedor Supabase;
+- una ruta concreta.
+
+Las bandas exactas de compatibilidad pertenecen al gobierno de packages y a la matriz de consumidores.
+
+---
+
+#### 37. Frontera server/client
+
+A diferencia de primitivas puramente server-safe, el AppShell puede necesitar interacción cliente para:
+
+- abrir o cerrar navegación móvil;
+- mantener disclosure visual;
+- gestionar foco asociado a ese disclosure;
+- gestionar una compactación visual local.
+
+Por tanto se clasifica conceptualmente como **superficie interactiva**.
+
+Esta clasificación no convierte a `@vento/ui-web` completo en client-only y no autoriza introducir dentro del AppShell:
+
+- red;
+- Auth;
+- permisos;
+- Supabase;
+- lógica empresarial.
+
+Los slots pueden recibir contenido ya renderizado por capas propietarias compatibles con el modelo de composición React.
+
+---
+
+#### 38. Identidad de aplicación
+
+El AppShell debe permitir que cada consumidor conserve su identidad visual sin bifurcar el componente.
+
+La identidad se aporta mediante `brand`.
+
+Quedan fuera del núcleo compartido:
+
+- arrays locales de aplicaciones;
+- `APP_CODE` inferido por nombre de repositorio;
+- URLs de producción hardcodeadas;
+- colores de negocio codificados dentro del componente;
+- slogans fijos de una aplicación.
+
+La superficie común compone identidad; no mantiene un segundo catálogo de aplicaciones.
+
+---
+
+#### 39. Tema y tokens
+
+El AppShell utilizará el contrato visual compartido aprobado para UI web.
+
+Deberá poder integrarse con:
+
+- temas soportados;
+- tokens de superficie, borde, texto, foco y elevación;
+- densidades compatibles;
+- componentes compartidos del mismo package.
+
+No se copiarán dentro del componente estilos específicos de NEXO, FOGO, ORIGO, VISO, PULSO o NUMERA como estándar transversal.
+
+---
+
+#### 40. Accesibilidad
+
+La responsabilidad compartida incluye:
+
+- orden semántico;
+- landmarks;
+- nombre accesible de navegación;
+- skip link o mecanismo equivalente hacia contenido principal;
+- foco visible;
+- apertura y cierre accesibles de navegación móvil;
+- retorno de foco cuando corresponda;
+- ausencia de contenido interactivo oculto en tab order;
+- reflow y zoom;
+- contraste conforme al contrato visual aplicable;
+- señales que no dependan solo de color.
+
+La aplicación continúa siendo responsable de la accesibilidad del contenido que inyecta en cada slot.
+
+---
+
+#### 41. Teclado y foco
+
+El AppShell deberá permitir operación completa de su chrome sin ratón.
+
+Como mínimo:
+
+1. el control de navegación móvil debe ser alcanzable y operable;
+2. su estado expandido debe ser perceptible;
+3. cerrar el disclosure debe devolver foco de manera predecible;
+4. el overlay no debe capturar foco fuera del patrón esperado;
+5. la navegación oculta no debe quedar en tab order;
+6. el contenido principal debe ser alcanzable directamente;
+7. compactar sidebar no debe eliminar el nombre accesible de controles visibles.
+
+---
+
+#### 42. Movimiento y transición
+
+Las transiciones del chrome serán presentacionales y respetarán preferencias de movimiento reducido.
+
+No se utilizará animación para:
+
+- retrasar un bloqueo;
+- ocultar un cambio de contexto;
+- comunicar autoridad;
+- sustituir un estado textual;
+- impedir interacción necesaria.
+
+Una transición puede mejorar orientación espacial, pero no es evidencia de éxito empresarial.
+
+---
+
+#### 43. Privacidad y minimización
+
+El AppShell no necesita conocer identidades empresariales completas.
+
+Las capas propietarias deberán minimizar lo que colocan en `brand`, `context`, `notices` y `headerActions`.
+
+No se utilizarán como contenido ordinario del marco:
+
+- tokens;
+- IDs de sesión;
+- documento personal;
+- secretos;
+- payloads de autorización;
+- detalles RLS;
+- razones internas sensibles;
+- datos del actor anterior en dispositivo compartido.
+
+---
+
+#### 44. Loading, error y ausencia
+
+`AppShell` no crea un estado empresarial global `loading`, `error` o `blocked` como sustituto de los contratos propietarios.
+
+Puede renderizar slots vacíos u omitir regiones opcionales cuando la capa propietaria todavía no dispone de contenido presentable.
+
+Reglas:
+
+- ausencia de `context` no implica contexto válido ni inválido;
+- ausencia de `notices` no prueba inexistencia de incidentes;
+- ausencia de `navigation` no prueba falta de permisos;
+- `children` conserva la responsabilidad de mostrar estados de la superficie propietaria.
+
+---
+
+#### 45. Modo sin navegación persistente
+
+El AppShell deberá soportar composición sin `navigation`.
+
+Este modo permite consumidores como el launcher de SHELL, una superficie de acceso o una experiencia que no necesite sidebar.
+
+En ese caso:
+
+- no se renderiza un control móvil de menú vacío;
+- no se reserva espacio lateral artificial;
+- `brand`, `context`, `notices`, `headerActions` y `children` continúan disponibles según necesidad;
+- no se inventa una navegación para uniformar visualmente aplicaciones distintas.
+
+---
+
+#### 46. Tablet y kiosco
+
+Esta tarea no define variantes físicas `tablet` o `kiosk` dentro de `AppShellProps`.
+
+La estructura compartida debe ser suficientemente composable para que los patrones propietarios posteriores puedan:
+
+- reducir chrome;
+- mantener contexto material visible;
+- omitir navegación cuando no corresponda;
+- conservar actor y estado de estación;
+- adaptar targets y densidad.
+
+No se canoniza como contrato del AppShell la detección actual de kiosco mediante query parameter.
+
+---
+
+#### 47. Traspaso entre aplicaciones
+
+`AppShell` no transporta autoridad entre aplicaciones.
+
+Un enlace o selector compuesto dentro de `headerActions` puede iniciar navegación, pero:
+
+- la aplicación destino reconstruye contexto;
+- revalida sesión y permiso;
+- no confía en props del AppShell;
+- no recibe roles o permisos como autoridad desde URL;
+- no interpreta el origen visual como receipt.
+
+El patrón compartido de traspaso mantiene su tarea propietaria posterior.
+
+---
+
+#### 48. Diagnóstico de contexto
+
+El AppShell no incluye una consola o panel de diagnóstico.
+
+Cuando una capa propietaria necesite mostrar diagnóstico seguro, podrá componer la superficie correspondiente dentro de su contenido o región adecuada.
+
+No pertenecen al AppShell:
+
+- reason codes internos completos;
+- traces;
+- stack;
+- SQL;
+- RLS;
+- principal técnico;
+- payloads de sesión.
+
+La tarea específica de diagnóstico compartido conserva esa responsabilidad.
+
+---
+
+#### 49. Estados de proceso, acción principal y confirmaciones
+
+El AppShell no incorpora por defecto:
+
+- línea de estados de proceso;
+- panel de acción principal;
+- confirmaciones sensibles;
+- error recuperable;
+- patrón de tablet;
+- patrón de kiosco.
+
+Esas superficies conservan sus propietarios documentales dentro de la misma familia `SHELL-UI`.
+
+El AppShell solo proporciona un marco en el que puedan componerse cuando corresponda.
+
+---
+
+#### 50. Evaluación de `VentoShell` histórico
+
+El archivo histórico de `templates/app-shell-standard` resuelve actualmente, entre otras cosas:
+
+- sesión de Supabase;
+- usuario;
+- empleado;
+- rol;
+- sedes asignadas;
+- sede activa;
+- consulta de catálogo territorial;
+- props hacia `VentoChrome`.
+
+Decisión:
+
+```text
+VentoShell histórico
+→ FUENTE DE EVIDENCIA
+→ NO ADOPTAR COMO AppShell COMPARTIDO
+```
+
+La causa es estructural: combina resolución de datos y contexto con presentación.
+
+---
+
+#### 51. Evaluación de `VentoChrome` histórico
+
+El `VentoChrome` histórico contiene:
+
+- navegación NEXO hardcodeada;
+- permisos NEXO;
+- llamadas cliente a Supabase RPC;
+- lectura de pathname y query parameters;
+- sede derivada de parámetros;
+- AppSwitcher;
+- ProfileMenu;
+- sidebar y header;
+- responsive shell.
+
+Decisión por responsabilidad:
+
+| Responsabilidad                | Disposición                                        |
+| ------------------------------ | -------------------------------------------------- |
+| estructura header/sidebar/main | conservar intención dentro del AppShell compartido |
+| responsive y disclosure local  | compartir como comportamiento presentacional       |
+| navegación NEXO                | excluir                                            |
+| RPC de permisos                | excluir                                            |
+| resolución de sede             | excluir                                            |
+| AppSwitcher                    | componer externamente                              |
+| ProfileMenu                    | componer externamente                              |
+| rutas hardcodeadas             | excluir                                            |
+
+---
+
+#### 52. Familia runtime duplicada
+
+La inspección vigente confirma copias actuales de la familia `VentoShell` / `VentoChrome` en seis repositorios de aplicaciones:
+
+```text
+vento-nexo
+vento-fogo
+vento-origo
+vento-viso
+vento-pulso
+vento-numera
+```
+
+Las seis comparten una arquitectura reconocible:
+
+- `VentoShell` server-side con resolución local;
+- `VentoChrome` client-side;
+- AppSwitcher;
+- ProfileMenu;
+- navegación local;
+- contexto visible;
+- operating gate local;
+- app identity local;
+- responsive sidebar/header.
+
+Esta repetición es evidencia suficiente para compartir la **estructura**, pero la divergencia interna impide copiar una de las seis como estándar sin reconciliación.
+
+---
+
+#### 53. Deriva runtime observada
+
+La misma intención de contexto llega actualmente con nombres distintos:
+
+| Consumidor | Props observadas de contexto en `VentoChrome`              |
+| ---------- | ---------------------------------------------------------- |
+| NEXO       | `activeWorkContextLabel`, `activeWorkContextDescription`   |
+| FOGO       | `activeContextLabel`, `activeContextDetail`                |
+| ORIGO      | `activeWorkContextLabel`, `activeWorkContextDescription`   |
+| VISO       | `activeContextLabel`, `activeContextDescription`           |
+| PULSO      | `operationalContextLabel`, `operationalContextDescription` |
+| NUMERA     | `activeWorkContextLabel`, `activeWorkContextDescription`   |
+
+Además varían:
+
+- conjuntos de iconos;
+- taglines;
+- rutas;
+- códigos de aplicación;
+- navegación;
+- integración de query parameters;
+- lógica de shell server-side.
+
+La API de `AppShell` elimina esa deriva del marco al recibir `context` como composición, sin inventar una nueva firma propietaria de contexto.
+
+---
+
+#### 54. Evaluación del runtime de SHELL
+
+`vento-shell` no utiliza actualmente la misma copia runtime que las seis aplicaciones.
+
+Su raíz contiene un launcher propio que:
+
+- autentica;
+- resuelve acceso a aplicaciones;
+- muestra tarjetas de aplicaciones;
+- ofrece sesión y perfil en su propio header;
+- no necesita obligatoriamente navegación lateral de aplicación.
+
+Decisión:
+
+```text
+SHELL
+→ CONSUMIDOR CONCEPTUAL DE AppShell
+→ COMPOSICIÓN SIN NAVEGACIÓN LATERAL OBLIGATORIA
+→ NO FORZAR LA FORMA DE LAS SEIS APPS
+```
+
+---
+
+#### 55. Matriz materializada de consumidores
+
+Se evalúan exactamente los siete consumidores web previstos por la definición de `@vento/ui-web`:
+
+| Consumidor     | Estado actual observado                     | Decisión de AppShell                          | Migración física en esta tarea |
+| -------------- | ------------------------------------------- | --------------------------------------------- | -----------------------------: |
+| `vento-shell`  | launcher propio, sin copia estándar runtime | elegible por composición; navegación opcional |                              0 |
+| `vento-nexo`   | familia `VentoShell` / `VentoChrome` local  | elegible mediante reconciliación              |                              0 |
+| `vento-fogo`   | familia `VentoShell` / `VentoChrome` local  | elegible mediante reconciliación              |                              0 |
+| `vento-origo`  | familia `VentoShell` / `VentoChrome` local  | elegible mediante reconciliación              |                              0 |
+| `vento-viso`   | familia `VentoShell` / `VentoChrome` local  | elegible mediante reconciliación              |                              0 |
+| `vento-pulso`  | familia `VentoShell` / `VentoChrome` local  | elegible mediante reconciliación              |                              0 |
+| `vento-numera` | familia `VentoShell` / `VentoChrome` local  | elegible mediante reconciliación              |                              0 |
+
+Reconciliación cuantitativa:
+
+```text
+consumidores evaluados = 7
+consumidores conceptualmente elegibles = 7
+consumidores con familia estándar duplicada a reconciliar = 6
+consumidores con composición launcher diferenciada = 1
+consumidores migrados por UI010 = 0
+consumidores certificados por UI010 = 0
+```
+
+---
+
+#### 56. Disposición de adopción
+
+La decisión de elegibilidad **no equivale a adopción actual**.
+
+Estados documentales resultantes:
+
+```text
+@vento/ui-web AppShell
+→ ESPECIFICADO DOCUMENTALMENTE
+
+7 consumidores
+→ ELEGIBLES PARA ADOPCIÓN POSTERIOR
+
+6 copias runtime estándar
+→ REQUIEREN RECONCILIACIÓN
+
+1 launcher SHELL
+→ REQUIERE COMPOSICIÓN, NO CLONACIÓN DEL SIDEBAR
+
+migración física
+→ NO EJECUTADA
+```
+
+Ningún consumidor se declara compatible, migrado o certificado por esta tarea.
+
+---
+
+#### 57. Estrategia de migración posterior
+
+La adopción deberá ejecutarse por lotes reversibles y separar primero las responsabilidades mezcladas.
+
+Secuencia conceptual:
+
+```text
+INVENTARIAR CONSUMIDOR
+→ SEPARAR ORQUESTACIÓN DE PRESENTACIÓN
+→ PREPARAR SLOTS
+→ ADOPTAR AppShell
+→ VERIFICAR PARIDAD
+→ OBSERVAR
+→ ENSAYAR ROLLBACK
+→ RETIRAR COPIA LEGACY SOLO CON GATE
+```
+
+No se autoriza sustitución textual masiva de `VentoShell` o `VentoChrome`.
+
+---
+
+#### 58. Handoff al scaffold versionado
+
+La futura sustitución del template histórico deberá utilizar la decisión de esta tarea para impedir que nuevos consumidores sigan copiando:
+
+- resolución Supabase dentro del shell visual;
+- navegación hardcodeada;
+- role override cliente;
+- selección territorial autoritativa desde cliente;
+- listas locales de aplicaciones;
+- gating empresarial dentro del chrome.
+
+El scaffold deberá apuntar a dependencias compartidas versionadas y mantener configuración del consumidor explícita.
+
+---
+
+#### 59. Handoff a migración coordinada
+
+La migración de componentes y chrome por aplicación deberá:
+
+1. conservar navegación legítima de cada consumidor;
+2. mapear identidad a `brand`;
+3. mapear navegación preparada a `navigation`;
+4. mapear contexto visual a `context`;
+5. mapear avisos a `notices`;
+6. mapear utilidades a `headerActions`;
+7. mantener lógica de autorización y datos fuera del AppShell;
+8. demostrar paridad antes de retirar el chrome local;
+9. conservar rollback por repositorio.
+
+La tarea actual no inicia ninguno de esos lotes.
+
+---
+
+#### 60. Handoff a calidad y releases
+
+La futura materialización del AppShell deberá entrar en el gobierno existente de packages compartidos:
+
+- pruebas propias del package;
+- build independiente;
+- release versionado;
+- changelog;
+- matriz de compatibilidad;
+- actualización controlada de consumidores.
+
+La especificación documental no constituye release ni certificación de compatibilidad.
+
+---
+
+#### 61. Deprecación y rollback
+
+Ninguna copia `VentoShell` / `VentoChrome` actual queda deprecada o autorizada para retiro por esta tarea.
+
+Para retirar una copia deberán existir, como mínimo:
+
+- adopción del AppShell compartido en ese consumidor;
+- equivalencia de comportamiento necesaria;
+- pruebas del consumidor;
+- compatibilidad de versión;
+- observabilidad suficiente;
+- rollback reproducible;
+- ausencia de uso residual del artefacto retirado.
+
+La coexistencia temporal entre AppShell compartido y chrome legacy es válida durante migración controlada.
+
+---
+
+#### 62. Estado físico actual
+
+Al cierre documental de esta tarea:
+
+```text
+package físico @vento/ui-web = NO MATERIALIZADO
+AppShell compartido físico = NO MATERIALIZADO
+exports npm de AppShell = NO MATERIALIZADOS
+consumidores migrados = 0/7
+copias legacy retiradas = 0
+releases publicadas por UI010 = 0
+cambios Supabase por UI010 = 0
+```
+
+La única existencia aprobada en esta fase es el contrato documental.
+
+---
+
+#### 63. Cambios físicos fuera de alcance
+
+Esta tarea no autoriza:
+
+- crear archivos de componente;
+- modificar `packages/`;
+- editar las seis aplicaciones consumidoras;
+- modificar el launcher de SHELL;
+- modificar el template histórico;
+- crear migraciones;
+- ejecutar SQL;
+- cambiar RLS;
+- modificar RPC;
+- desplegar;
+- publicar npm;
+- crear tags o releases;
+- retirar archivos legacy.
+
+Cada cambio físico conserva su fase y tarea propietaria.
+
+---
+
+#### 64. Contrato futuro de prueba
+
+La implementación y adopción deberán demostrar, como mínimo:
+
+1. render con `brand` y `children`;
+2. render sin navegación;
+3. render con navegación y nombre accesible;
+4. apertura y cierre de navegación móvil;
+5. retorno de foco correcto;
+6. navegación oculta fuera de tab order;
+7. skip hacia contenido principal;
+8. `context` perceptible;
+9. `notices` perceptibles;
+10. `headerActions` composables;
+11. reflow sin pérdida de contenido esencial;
+12. zoom sin recorte estructural;
+13. movimiento reducido;
+14. tema compatible;
+15. ausencia de dependencia directa de Supabase;
+16. ausencia de RPC dentro del AppShell;
+17. ausencia de lectura de Auth;
+18. ausencia de inferencia de contexto desde URL;
+19. ausencia de inferencia de contexto desde cookie;
+20. ausencia de inferencia de autoridad desde storage;
+21. ausencia de rutas específicas de una aplicación dentro del componente;
+22. ausencia de catálogo local de aplicaciones dentro del componente;
+23. ausencia de `OperatingGate` como autoridad interna;
+24. composición con indicador de contexto;
+25. composición con selectores sin activación optimista del contexto;
+26. composición con aviso de simulación;
+27. composición con navegación preparada externamente;
+28. contenido principal sin dependencia de sidebar;
+29. launcher SHELL sin navegación lateral obligatoria;
+30. paridad por consumidor antes de retirar chrome legacy;
+31. rollback del consumidor hacia combinación soportada;
+32. compatibilidad entre versiones del package y consumidor;
+33. cero expansión de permisos por presentación;
+34. cero mutaciones empresariales iniciadas por el AppShell.
+
+Esta lista define evidencia futura y no declara implementación ni ejecución en UI010.
+
+---
+
+#### 65. Cobertura de requisitos existente
+
+No se introduce una obligación transversal nueva porque el registro vigente ya protege las reglas que esta evaluación organiza, entre ellas:
+
+- compartición, paridad y clasificación de AppShell y copias: `TREQ-SHELL-002`;
+- catálogo único de aplicaciones: `TREQ-SHELL-003`;
+- compatibilidad de packages y consumidores: `TREQ-SHELL-006`;
+- rollback antes de release y retiro: `TREQ-SHELL-007`;
+- template como fuente y no runtime por existencia: `TREQ-SHELL-029`;
+- navegación y chrome sin autoridad propia: `TREQ-SHELL-030`;
+- separación de role override, sede y autoridad real: `TREQ-SHELL-031`;
+- reconciliación de componentes y copias: `TREQ-SHELL-032`;
+- coherencia de textos y estado de template: `TREQ-SHELL-035`;
+- release, compatibilidad, deprecación y retiro: `TREQ-SHELL-036` a `TREQ-SHELL-039`;
+- contexto persistente autoritativo: `TREQ-UX-077`;
+- separación de selección y contexto activo: `TREQ-UX-078`;
+- resumen humano de contexto: `TREQ-UX-079`;
+- separación y visibilidad de simulación y roles: `TREQ-UX-080`;
+- transición autoritativa de contexto: `TREQ-UX-083`;
+- reconstrucción de contexto cross-app: `TREQ-UX-089`;
+- persistencia responsive del contexto: `TREQ-UX-090`;
+- accesibilidad del contexto: `TREQ-UX-091`;
+- frescura contextual: `TREQ-UX-092`;
+- minimización: `TREQ-UX-093`;
+- estados de contexto no resuelto: `TREQ-UX-094`;
+- información material siempre visible: `TREQ-UX-183`;
+- contexto visible en tablets y kioscos: `TREQ-UX-216`;
+- lenguaje humano de rol y contexto: `TREQ-UX-308`.
+
+La tarea asigna esas obligaciones a una frontera composicional concreta sin cambiar su significado ni sus destinos de implementación.
+
+---
+
+#### 66. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** la tarea evalúa y fija la propiedad presentacional y el contrato composicional del AppShell, mientras las obligaciones ejecutables de compartición, contexto, accesibilidad, autorización, compatibilidad, migración y rollback ya están registradas. No introduce una regla de negocio, autorización, integridad, cálculo, transición o integración adicional que requiera una identidad de prueba nueva.
+
+---
+
+#### 67. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando se cumple todo lo siguiente:
+
+- [x] se responde explícitamente si AppShell debe compartirse;
+- [x] se aprueba `AppShell` como superficie conceptual de `@vento/ui-web`;
+- [x] se define una API mínima por slots;
+- [x] se separa composición de autorización y contexto;
+- [x] se prohíbe dependencia directa de Supabase;
+- [x] se excluyen RPC y resolución de permisos;
+- [x] se excluye navegación empresarial del contrato de AppShell;
+- [x] se preserva el espacio composicional para contexto y avisos;
+- [x] se clasifica el AppShell como superficie interactiva sin volver client-only todo el package;
+- [x] se define comportamiento responsive y accesible del chrome;
+- [x] se evita canonizar query parameters o `localStorage` como contexto;
+- [x] se evalúan los siete consumidores previstos;
+- [x] se reconcilian seis copias runtime como candidatos de migración y no como API canónica;
+- [x] se conserva SHELL como consumidor por composición sin sidebar obligatorio;
+- [x] se clasifica el template histórico como evidencia, no implementación canónica;
+- [x] se preserva la migración posterior por lotes reversibles;
+- [x] se preserva rollback antes del retiro legacy;
+- [x] no se ejecutan cambios físicos en esta fase;
+- [x] no se crean ni modifican requisitos de prueba.
+
+---
+
+#### 68. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-UI-009 — Compartir aviso de rol simulado`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-UI-010 — Evaluar AppShell compartido`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-UI-011 — Compartir navegación orientada a tareas`
+
 
 ### [ ] SHELL-UI-011 — Compartir navegación orientada a tareas
 ### [ ] SHELL-UI-012 — Compartir línea de estados de proceso
