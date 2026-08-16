@@ -104,7 +104,7 @@ function requireString(object, key, label, errors) {
   }
 }
 
-function validateContract(contract) {
+export function validateContract(contract) {
   const errors = [];
 
   if (!isPlainObject(contract)) {
@@ -343,7 +343,7 @@ function extractDeclaredCount(section, label) {
   return match ? Number(match[1]) : 0;
 }
 
-function validateTask({ taskPath, contract }) {
+export function validateTask({ taskPath, contract }) {
   const errors = [];
   const source = readUtf8(taskPath, 'Tarea');
   const fileName = path.basename(taskPath);
@@ -815,7 +815,7 @@ function validateRegistryFragments({
   };
 }
 
-function main() {
+export function main() {
   const args = parseArgs(process.argv.slice(2));
 
   if (args.help) {

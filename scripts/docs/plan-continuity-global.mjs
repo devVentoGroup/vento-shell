@@ -62,7 +62,7 @@ export function expandSequenceSegments(segments) {
   return ids;
 }
 
-function readActiveSequenceConfig(baseDir) {
+export function readActiveSequenceConfig(baseDir) {
   const configPath = path.join(baseDir, ACTIVE_SEQUENCE_CONFIG);
   if (!fs.existsSync(configPath)) {
     fail(`no existe ${path.relative(baseDir, configPath)}; debe definirse el bloque activo.`);
@@ -95,7 +95,7 @@ function readActiveSequenceConfig(baseDir) {
   return { ...config, taskIds };
 }
 
-function buildExecutionSequence(activeConfig) {
+export function buildExecutionSequence(activeConfig) {
   return [activeConfig.previous_task_id, ...activeConfig.taskIds];
 }
 
@@ -115,7 +115,7 @@ function stateIcon(state) {
   return '⚠️';
 }
 
-function readGlobalTaskRegistry(baseDir, manifest) {
+export function readGlobalTaskRegistry(baseDir, manifest) {
   const taskMap = new Map();
   const missingTitles = [];
 
@@ -172,7 +172,7 @@ export function calculateCompletionPercentage(approved, total) {
   return Number(((approved / total) * 100).toFixed(2));
 }
 
-function summarizeRegistry(taskMap) {
+export function summarizeRegistry(taskMap) {
   const tasks = [...taskMap.values()];
   const count = (state) => tasks.filter((task) => task.state === state).length;
   const approved = count('APROBADA');

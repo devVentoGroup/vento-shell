@@ -7669,7 +7669,1678 @@ Esta tarea no autoriza:
 No se inicia `SHELL-UI-007` sin aprobación de `SHELL-UI-006`.
 
 
-### [ ] SHELL-UI-007 — Compartir selector de sede
+### ✅ SHELL-UI-007 — Compartir selector de sede
+
+**Estado:** APROBADA
+
+**Tarea anterior:** `SHELL-UI-006 — Compartir indicador de contexto`
+
+**Tarea siguiente:** `SHELL-UI-008 — Compartir selector de área`
+
+**Tipo de tarea:** Documental
+
+**Bloque:** H — Fundación compartida
+
+**Paquete propietario:** `@vento/ui-web`
+
+**Naturaleza:** definición documental de un control compartido para solicitar un cambio de sede sin convertir la selección visual, una cookie, una preferencia o un valor del cliente en contexto operativo autoritativo. No materializa código, no ejecuta cambios de contexto, no modifica Supabase y no migra consumidores.
+
+---
+
+#### 1. Propósito
+
+Definir el contrato canónico del selector de sede compartido para que las superficies web de Vento OS puedan ofrecer una forma consistente, accesible y segura de solicitar un cambio de sede cuando la capa propietaria determine que esa transición está disponible.
+
+La regla central es:
+
+```text
+SEDE CONFIRMADA POR CONTEXTO AUTORITATIVO
+        ↓
+SiteSelector
+        ↓
+PERSONA SOLICITA OTRA SEDE
+        ↓
+INTENCIÓN DE CAMBIO
+        ↓
+CAPA PROPIETARIA VALIDA Y CONFIRMA
+        ↓
+NUEVO CONTEXTO RESUELTO EN SERVIDOR
+        ↓
+ContextIndicator PUBLICA LA NUEVA SEDE ACTIVA
+```
+
+Queda prohibida esta interpretación:
+
+```text
+persona selecciona opción
+        ↓
+frontend cambia activeSiteId
+        ↓
+cookie / query / preferencia
+        ↓
+SEDE ACTIVA AUTORITATIVA
+```
+
+`SiteSelector` solicita una transición. No produce autoridad.
+
+---
+
+#### 2. Posición dentro de la secuencia compartida
+
+`SHELL-UI-007` define exclusivamente el control compartido de solicitud de sede.
+
+Las responsabilidades vecinas permanecen separadas:
+
+| Tarea          | Responsabilidad conservada                                                    |
+| -------------- | ----------------------------------------------------------------------------- |
+| `SHELL-UI-006` | representar el contexto ya confirmado                                         |
+| `SHELL-UI-008` | compartir selector de área                                                    |
+| `SHELL-UI-009` | compartir aviso de rol simulado                                               |
+| `SHELL-UI-010` | evaluar AppShell compartido y composición sistémica del chrome                |
+| `SHELL-UI-014` | compartir confirmaciones de acciones sensibles cuando el proceso las requiera |
+| `SHELL-UI-015` | compartir diagnóstico de contexto                                             |
+| `SHELL-UI-016` | compartir estados de error recuperable                                        |
+| `SHELL-UI-017` | compartir patrón para tablet                                                  |
+| `SHELL-UI-018` | compartir patrón para kiosco                                                  |
+| `SHELL-UI-020` | compartir patrón de traspaso entre aplicaciones                               |
+
+La existencia de `SiteSelector` no adelanta ni sustituye ninguna de esas tareas.
+
+---
+
+#### 3. Dependencias documentales consumidas
+
+La definición consume, sin reemplazar:
+
+- `SHELL-UI-001 — Crear @vento/ui-web`;
+- `SHELL-UI-002 — Compartir Alert`;
+- `SHELL-UI-003 — Compartir Button`;
+- `SHELL-UI-006 — Compartir indicador de contexto`;
+- `UX-BASE-005 — Mantener visible sede, área, turno y rol activos`;
+- las reglas vigentes de contexto, autorización, territorialidad y dispositivos compartidos;
+- las reglas vigentes de accesibilidad, privacidad, reflow, concurrencia y recuperación;
+- el gobierno de paquetes compartidos, compatibilidad, deprecación y retiro;
+- la estrategia posterior de migración coordinada de consumidores web.
+
+`SHELL-UI-007` no redefine cómo se calcula una sede efectiva. Define cómo una persona solicita otra sede desde una superficie visual compartida sin romper la separación entre selección y autoridad.
+
+---
+
+#### 4. Naturaleza de la tarea
+
+La tarea es documental.
+
+Al cierre se define:
+
+1. identidad del componente;
+2. responsabilidad y límites;
+3. superficie pública conceptual;
+4. identidad de una opción de sede;
+5. separación entre sede confirmada y sede solicitada;
+6. estado de solicitud pendiente;
+7. contrato del callback de cambio;
+8. relación con validación autoritativa;
+9. relación con `ContextIndicator`;
+10. frontera con filtros administrativos;
+11. frontera con selector de área;
+12. semántica de ausencia de sede;
+13. semántica HTML;
+14. accesibilidad y teclado;
+15. comportamiento responsive y táctil;
+16. frontera client/server;
+17. dependencias permitidas y prohibidas;
+18. reconciliación del patrón legacy observado;
+19. estrategia posterior de migración;
+20. contrato futuro de pruebas;
+21. cobertura de requisitos existente.
+
+No se crea el componente físico en esta tarea.
+
+---
+
+#### 5. Resultado documental
+
+Se aprueba el componente conceptual:
+
+```text
+SiteSelector
+```
+
+como parte de:
+
+```text
+@vento/ui-web
+```
+
+Su función es permitir que una persona elija una sede candidata y emita una solicitud de cambio hacia la capa propietaria.
+
+No es:
+
+- fuente de verdad de la sede activa;
+- resolver de contexto;
+- evaluador de elegibilidad;
+- guard de autorización;
+- selector administrativo genérico de filtros;
+- selector de área;
+- selector de rol;
+- selector de turno;
+- persistencia de preferencias;
+- cliente Supabase;
+- router;
+- mecanismo de simulación;
+- menú de perfil;
+- AppShell.
+
+---
+
+#### 6. Identidad pública conceptual
+
+La superficie conceptual queda formada por:
+
+```text
+SiteSelector
+SiteSelectorProps
+SiteSelectorOption
+```
+
+No se crea un `SiteSelectorState` público porque los estados necesarios pueden expresarse sin una taxonomía paralela mediante:
+
+```text
+confirmedSiteId
+requestedSiteId
+pending
+disabled
+```
+
+Esta tarea no fija:
+
+- subpath físico de exportación;
+- estructura de carpetas del package;
+- mapa de exports;
+- nombre de archivo TypeScript;
+- herramienta de estilos;
+- framework de documentación visual;
+- implementación interna.
+
+---
+
+#### 7. Superficie conceptual de props
+
+La API conceptual mínima queda cerrada como:
+
+```text
+label: string
+confirmedSiteId: string | null
+requestedSiteId?: string
+options: readonly SiteSelectorOption[]
+onRequestChange: (siteId: string) => void
+pending?: boolean
+pendingLabel?: string
+disabled?: boolean
+placeholderLabel?: string
+```
+
+Además podrá conservar atributos nativos compatibles del control y su contenedor, con las restricciones definidas en esta tarea.
+
+No se incorporan como props públicas:
+
+```text
+defaultSiteId
+primarySiteId
+lastSiteId
+activeSiteId
+canSwitchRole
+canOperate
+permissionCode
+role
+siteCookie
+queryParam
+supabaseClient
+employeeId
+```
+
+La ausencia de esas props es intencional.
+
+---
+
+#### 8. `SiteSelectorOption`
+
+Cada opción se define conceptualmente como:
+
+```text
+id: string
+label: string
+```
+
+`id` es un identificador estable utilizado para emitir la intención de cambio.
+
+`label` es el nombre humano que puede mostrarse a la persona.
+
+El identificador:
+
+- no se presenta como texto ordinario cuando existe etiqueta humana;
+- no demuestra que la sede esté activa;
+- no concede autorización;
+- no sustituye revalidación de servidor;
+- no debe derivarse del índice visual de la lista.
+
+No se abre metadata genérica dentro de cada opción para evitar convertir el componente en un contenedor de reglas de negocio, roles, permisos o scopes.
+
+---
+
+#### 9. Significado de `options`
+
+`options` contiene únicamente sedes que la capa propietaria decidió que pueden mostrarse como candidatas en esa superficie y momento.
+
+Su presencia significa:
+
+```text
+VISIBLE COMO CANDIDATA DE CAMBIO
+```
+
+No significa:
+
+```text
+AUTORIZADA PARA TODA ACCIÓN
+CAMBIO GARANTIZADO
+SEDE OPERATIVA YA ACTIVA
+PERMISO CONCEDIDO
+```
+
+La capa propietaria puede construir la colección utilizando asignaciones, contexto, dispositivo, proceso y reglas de divulgación aplicables.
+
+El servidor o servicio autoritativo revalida la transición al ejecutarla porque elegibilidad, turnos, permisos, claims, custodia o configuración pueden haber cambiado después de renderizar la lista.
+
+---
+
+#### 10. Privacidad de las opciones
+
+El selector no deberá recibir sedes que la persona no deba conocer.
+
+La capa propietaria aplica antes del render:
+
+- autorización de divulgación;
+- minimización;
+- territorialidad;
+- restricciones de dispositivo;
+- restricciones de proceso;
+- masking cuando corresponda.
+
+Ocultar una opción en la UI no reemplaza la autorización del servidor, y mostrar una opción tampoco concede autoridad.
+
+No se utiliza una lista global de sedes seguida de deshabilitación visual como mecanismo de seguridad.
+
+---
+
+#### 11. `confirmedSiteId`
+
+`confirmedSiteId` representa exclusivamente la sede que la capa propietaria entrega como confirmada para la semántica del selector.
+
+Reglas:
+
+1. no se infiere desde la URL;
+2. no se infiere desde una cookie;
+3. no se infiere desde `localStorage`;
+4. no se infiere desde `employee_settings.selected_site_id`;
+5. no se infiere desde la primera opción;
+6. no se infiere desde la sede primaria;
+7. no se infiere desde la última sede utilizada;
+8. no se infiere desde el nombre de la aplicación;
+9. no se infiere desde un rol privilegiado;
+10. no se transforma en autorización por estar seleccionado visualmente.
+
+Cuando sea `null`, significa únicamente que el consumidor no entregó una sede confirmada para el control. No autoriza a escoger silenciosamente una alternativa.
+
+---
+
+#### 12. `requestedSiteId`
+
+`requestedSiteId` representa una sede elegida cuya transición todavía no debe tratarse como confirmada.
+
+La separación obligatoria es:
+
+```text
+confirmedSiteId = contexto confirmado
+requestedSiteId = destino solicitado todavía pendiente
+```
+
+Por tanto:
+
+```text
+requestedSiteId
+≠
+active site autoritativo
+```
+
+Durante una solicitud en curso, el control puede mostrar la opción candidata seleccionada siempre que su estado pendiente permanezca perceptible y `ContextIndicator` continúe reflejando la sede confirmada o el estado `changing` según la composición propietaria.
+
+---
+
+#### 13. Relación entre valor confirmado y valor solicitado
+
+La representación controlada sigue esta regla conceptual:
+
+```text
+pending = false
+→ el control representa confirmedSiteId
+
+pending = true + requestedSiteId presente
+→ el control puede representar requestedSiteId como solicitud en curso
+→ la sede confirmada permanece siendo confirmedSiteId hasta receipt autoritativo
+```
+
+Cuando el cambio se confirma:
+
+```text
+confirmedSiteId = nueva sede confirmada
+requestedSiteId = ausente
+pending = false
+```
+
+Cuando el cambio se rechaza:
+
+```text
+confirmedSiteId = sede anterior o contexto resuelto vigente
+requestedSiteId = ausente
+pending = false
+```
+
+La capa propietaria es responsable de producir esos nuevos props.
+
+---
+
+#### 14. `onRequestChange`
+
+`onRequestChange(siteId)` comunica una intención de cambio.
+
+No significa:
+
+```text
+site changed
+context changed
+authorized
+confirmed
+saved
+```
+
+El callback no recibe ni devuelve autoridad.
+
+El componente no exige que retorne `Promise`, receipt, decisión de autorización ni contexto completo. La capa propietaria coordina la transición y actualiza los props cuando exista resultado.
+
+La elección del nombre `onRequestChange` es vinculante conceptualmente porque evita que `onChange` sea interpretado como confirmación de la sede activa.
+
+---
+
+#### 15. Secuencia autoritativa de cambio
+
+La integración de `SiteSelector` debe respetar la secuencia canónica:
+
+```text
+SOLICITAR CAMBIO
+→ VALIDAR ELEGIBILIDAD
+→ REVISAR TRABAJO Y CUSTODIA PENDIENTES
+→ CONFIRMAR EFECTO
+→ RESOLVER NUEVO CONTEXTO EN SERVIDOR
+→ INVALIDAR PROYECCIONES ANTERIORES
+→ MOSTRAR NUEVO CONTEXTO
+→ REANUDAR O REDIRIGIR
+```
+
+`SiteSelector` participa únicamente en:
+
+```text
+SOLICITAR CAMBIO
+```
+
+y en la presentación controlada de que esa solicitud está pendiente.
+
+No implementa las etapas restantes.
+
+---
+
+#### 16. Prohibición de cambio optimista de autoridad
+
+Queda prohibido que el componente convierta una selección local en sede confirmada antes del resultado autoritativo.
+
+No se acepta este patrón:
+
+```text
+onRequestChange(next)
+→ setActiveSiteId(next)
+→ render "Sede activa: next"
+→ luego intentar validar servidor
+```
+
+La forma válida es:
+
+```text
+onRequestChange(next)
+→ marcar solicitud pendiente
+→ conservar sede confirmada
+→ resolver transición fuera del componente
+→ publicar nueva sede solo después de confirmación
+```
+
+La interfaz puede mostrar el destino solicitado, pero no llamarlo activo antes del receipt.
+
+---
+
+#### 17. `pending`
+
+`pending` expresa únicamente que existe una solicitud de cambio aún no resuelta.
+
+No equivale a:
+
+- contexto `ACTIVE`;
+- autorización `ALLOW`;
+- error;
+- denegación;
+- carga genérica de toda la pantalla;
+- modo offline;
+- simulación.
+
+Cuando `pending=true`:
+
+- debe existir una señal textual perceptible;
+- `pendingLabel` deberá ser aportado cuando sea necesario para hacer comprensible el estado;
+- no se emiten solicitudes equivalentes duplicadas desde el mismo control;
+- el control no afirma que `requestedSiteId` sea la sede activa;
+- la composición puede utilizar `ContextIndicator state="changing"`;
+- las acciones incompatibles se gestionan fuera del componente.
+
+---
+
+#### 18. `pendingLabel`
+
+`pendingLabel` expresa en lenguaje humano que existe una solicitud en curso.
+
+No se congela un único copy global.
+
+Ejemplos de intención, no de literal obligatorio:
+
+```text
+Cambio de sede en curso
+Validando nueva sede
+Esperando confirmación del contexto
+```
+
+El texto no debe afirmar éxito antes de que exista confirmación.
+
+El componente no genera por sí mismo una causa técnica, razón de denegación ni mensaje de soporte.
+
+---
+
+#### 19. `disabled`
+
+`disabled` representa indisponibilidad interactiva decidida por la capa propietaria o por el propio estado `pending` según la implementación física.
+
+No significa:
+
+```text
+DENY
+sin permisos
+sin asignación
+usuario inactivo
+sede inválida
+```
+
+El componente no deduce la causa.
+
+Cuando la causa necesite explicación, la composición usa el patrón de mensaje, bloqueo o diagnóstico correspondiente.
+
+Un control deshabilitado nunca sustituye enforcement de servidor.
+
+---
+
+#### 20. Ausencia de una opción universal `Sin sede`
+
+No se crea una opción canónica automática:
+
+```text
+Sin sede
+```
+
+como destino seleccionable.
+
+Motivos:
+
+1. una superficie operativa puede exigir sede obligatoria;
+2. `null` puede significar contexto todavía no resuelto, no una elección válida;
+3. un contexto administrativo sin sede operativa no es equivalente a limpiar una sede activa;
+4. una opción de vaciado podría convertirse en bypass territorial;
+5. el patrón legacy actual no demuestra que ese destino sea válido contractualmente.
+
+`placeholderLabel` puede explicar que todavía no existe un valor confirmado, pero no genera una operación para limpiar el contexto.
+
+---
+
+#### 21. `placeholderLabel`
+
+`placeholderLabel` sirve únicamente para representar de forma humana la ausencia de una selección confirmada disponible para mostrar en el control.
+
+La implementación conceptual lo trata como placeholder no accionable, no como `SiteSelectorOption` ordinaria.
+
+No se utiliza para:
+
+- fabricar una sede;
+- representar error;
+- representar denegación;
+- borrar contexto;
+- seleccionar todas las sedes;
+- crear un filtro administrativo global.
+
+---
+
+#### 22. Prohibición de `defaultSiteId`
+
+No existe `defaultSiteId` en la API.
+
+Tampoco se permite que el componente seleccione automáticamente:
+
+- sede primaria;
+- primera sede de `options`;
+- última sede usada;
+- sede del dispositivo;
+- sede de la URL;
+- sede recordada localmente.
+
+Un default visual no puede crear contexto operativo.
+
+Si una capa propietaria resuelve autoritativamente una sede inicial, debe entregarla como `confirmedSiteId`.
+
+---
+
+#### 23. Una sola opción
+
+Cuando `options` contiene una sola sede:
+
+- su unicidad no la convierte automáticamente en sede activa;
+- la capa propietaria puede decidir que no se necesita mostrar el selector;
+- si se muestra, el control conserva la misma semántica de solicitud;
+- no se autoemite `onRequestChange` al montar;
+- no se autoriza una transición sin interacción o decisión propietaria explícita.
+
+La ausencia de elección no se resuelve simulando una selección automática.
+
+---
+
+#### 24. Cero opciones
+
+Cuando `options` está vacío:
+
+- el componente no inventa una opción;
+- no usa `confirmedSiteId` como opción nueva si la capa propietaria no la incluyó;
+- no interpreta el vacío como falta de permiso;
+- no interpreta el vacío como falta de sedes en la empresa;
+- no muestra información de sedes ocultas;
+- no transforma el estado en `EmptyState` empresarial.
+
+La capa propietaria decide si el selector se omite, se deshabilita o se acompaña con una explicación segura.
+
+---
+
+#### 25. Orden de las opciones
+
+`SiteSelector` conserva el orden entregado por la capa propietaria.
+
+No ordena por:
+
+- ID;
+- tipo de sede;
+- supuesta prioridad;
+- sede primaria;
+- recencia;
+- frecuencia de uso;
+- nombre de aplicación.
+
+El orden puede responder a criterios funcionales ya resueltos externamente.
+
+El componente no los infiere.
+
+---
+
+#### 26. Frontera con `ContextIndicator`
+
+`ContextIndicator` y `SiteSelector` se complementan sin compartir autoridad.
+
+```text
+ContextIndicator
+→ qué sede está confirmada y cuál es el estado del contexto
+
+SiteSelector
+→ qué cambio de sede desea solicitar la persona
+```
+
+Durante una transición:
+
+```text
+ContextIndicator.state = changing
+ContextIndicator muestra sede confirmada o contexto anterior según composición
+SiteSelector.requestedSiteId = sede solicitada
+SiteSelector.pending = true
+```
+
+La nueva sede se incorpora al contexto visible como activa únicamente después de confirmación.
+
+---
+
+#### 27. Frontera con selector de área
+
+`SiteSelector` no contiene ni resuelve área.
+
+La selección de área pertenece a:
+
+```text
+SHELL-UI-008 — Compartir selector de área
+```
+
+Un cambio de sede puede invalidar el área anterior, pero esa consecuencia se resuelve fuera de `SiteSelector` mediante el contrato de contexto y la transición propietaria.
+
+No se incorpora una prop `areaId` para intentar mantener consistencia dentro del componente.
+
+---
+
+#### 28. Frontera con filtros administrativos
+
+`SiteSelector` no es el filtro administrativo genérico de una tabla, reporte o dashboard.
+
+La diferencia semántica es:
+
+```text
+SiteSelector
+→ solicitar cambio de sede de contexto
+
+filtro administrativo de sede
+→ limitar el conjunto consultado sin cambiar contexto operativo
+```
+
+Una superficie administrativa que necesite filtrar por sede debe etiquetar el control como filtro o alcance de consulta y no reutilizar la semántica de sede activa.
+
+Cambiar un filtro administrativo no debe:
+
+- modificar turno;
+- modificar check-in;
+- modificar rol operativo;
+- modificar actor;
+- modificar permiso;
+- cambiar `ContextIndicator` a otra sede activa.
+
+---
+
+#### 29. Frontera con simulación
+
+El selector no contiene lógica de simulación.
+
+No incorpora:
+
+```text
+roleOverride
+simulationRole
+isSimulated
+startSimulation
+stopSimulation
+```
+
+La advertencia de simulación pertenece a `SHELL-UI-009` y los contratos de simulación permanecen separados de la autoridad real.
+
+Una sesión simulada no puede usar `SiteSelector` para fabricar autoridad territorial real.
+
+---
+
+#### 30. Frontera con autorización
+
+`SiteSelector` no decide si un cambio está permitido.
+
+No interpreta:
+
+- roles;
+- scopes;
+- grants;
+- denies;
+- reason codes;
+- claims;
+- `canOperate`;
+- `administrative_bypass`;
+- metadata de permisos;
+- nombre del cargo;
+- allowlist de dispositivo como autoridad humana.
+
+La visibilidad y las opciones se preparan fuera del componente y la transición se revalida autoritativamente.
+
+---
+
+#### 31. Frontera con diagnóstico y recuperación
+
+Si el cambio no puede realizarse, `SiteSelector` no inventa una explicación.
+
+La capa propietaria distingue, según corresponda:
+
+- bloqueo;
+- denegación;
+- conflicto;
+- validación requerida;
+- error técnico;
+- contexto inválido;
+- contexto no disponible;
+- solicitud obsoleta.
+
+`SHELL-UI-015` conserva el diagnóstico compartido de contexto y `SHELL-UI-016` los estados de error recuperable.
+
+El selector vuelve a representar el valor confirmado que entregue la capa propietaria.
+
+---
+
+#### 32. Confirmaciones y trabajo pendiente
+
+Elegir una sede no equivale necesariamente a ejecutar el cambio inmediatamente.
+
+Antes de confirmar pueden existir:
+
+- tarea en ejecución;
+- claim o lease;
+- borrador;
+- custodia;
+- formulario sensible;
+- operación offline pendiente;
+- aprobación abierta;
+- sesión simulada;
+- transición de actor;
+- restricción de dispositivo.
+
+La revisión y confirmación de esas condiciones pertenece al proceso propietario.
+
+`SiteSelector` puede iniciar la intención, pero no reemplaza la confirmación requerida ni la protección de acciones sensibles.
+
+---
+
+#### 33. Dispositivos compartidos
+
+En un dispositivo compartido, la sede de estación, la sede del actor y la sede solicitada no se fusionan automáticamente.
+
+Reglas:
+
+1. una estación puede tener territorio fijo;
+2. el actor humano conserva identidad separada;
+3. la presencia de una sede en el dispositivo no concede autoridad al actor;
+4. el selector solo recibe opciones seguras preparadas externamente;
+5. la transición se revalida contra actor, dispositivo, turno, permiso y proceso;
+6. un actor nuevo no hereda la selección pendiente del actor anterior;
+7. la capa propietaria limpia cualquier estado personal incompatible al cambiar de actor.
+
+El componente no persiste selecciones entre actores.
+
+---
+
+#### 34. Semántica HTML
+
+La implementación conceptual utiliza un control de selección nativo cuando la cantidad y naturaleza de opciones no exijan una interacción especializada.
+
+La estructura esperada es equivalente a:
+
+```text
+label
+select
+  option
+  option
+estado pendiente asociado cuando aplique
+```
+
+El control base no se implementa como un conjunto de `div` con comportamiento de select recreado manualmente.
+
+El uso de semántica nativa reduce complejidad de teclado, foco y lector de pantalla.
+
+---
+
+#### 35. Razón para no congelar un combobox buscable
+
+Esta tarea no incorpora búsqueda, autocomplete o combobox personalizado.
+
+Razones:
+
+1. no existe evidencia canónica de que el volumen de sedes exija búsqueda dentro del control compartido;
+2. la implementación actual utiliza selectores simples;
+3. un combobox incrementaría estados de foco, filtrado, navegación y anuncios accesibles;
+4. filtrar opciones dentro del control puede confundirse con elegibilidad si no se diseña separadamente;
+5. una necesidad futura puede evolucionar la API con evidencia real de volumen y uso.
+
+La ausencia de búsqueda no impide que una versión futura la incorpore mediante evolución gobernada.
+
+---
+
+#### 36. Atributos nativos compatibles
+
+La implementación física podrá conservar atributos compatibles de un `HTMLSelectElement` cuando no contradigan el contrato.
+
+Podrán incluir, según integración:
+
+- `id`;
+- `name`;
+- `form`;
+- `aria-*`;
+- `data-*`;
+- `className`;
+- atributos de identificación accesible.
+
+El componente mantiene control propio sobre las capacidades que definen su semántica:
+
+```text
+value
+defaultValue
+onChange
+disabled
+multiple
+children
+```
+
+No se permite usar atributos nativos para crear una segunda API de autoridad o bypass.
+
+---
+
+#### 37. Accesibilidad mínima
+
+La implementación futura deberá conservar como mínimo:
+
+1. etiqueta textual asociada al control;
+2. nombre humano de cada sede visible;
+3. estado pendiente perceptible cuando exista;
+4. navegación completa por teclado mediante semántica nativa;
+5. foco visible;
+6. contraste suficiente;
+7. no depender únicamente de color o icono;
+8. ausencia de sedes técnicas mostradas solo como UUID;
+9. orden de lectura lógico;
+10. reflow sin pérdida de etiqueta, valor o estado;
+11. zoom sin solapamiento crítico;
+12. estado deshabilitado comprensible mediante composición cuando necesite explicación;
+13. ausencia de mensajes críticos únicamente en tooltip o hover;
+14. no mover foco por una confirmación ordinaria de servidor;
+15. permitir que la composición anuncie cambios materiales con prioridad apropiada.
+
+---
+
+#### 38. Teclado y foco
+
+El selector conserva el comportamiento de teclado del control nativo.
+
+No introduce por contrato:
+
+- atajos globales;
+- captura de teclas fuera del control;
+- apertura automática al montar;
+- foco automático al resolver contexto;
+- movimiento de foco al cambiar `confirmedSiteId`;
+- cierre de menús globales como efecto oculto;
+- listeners de documento.
+
+Si una denegación o incompatibilidad material requiere foco hacia una explicación, esa decisión pertenece al patrón de recuperación, no al selector base.
+
+---
+
+#### 39. Táctil y responsive
+
+El componente debe poder utilizarse en escritorio, tablet y superficies táctiles sin crear una variante funcional distinta.
+
+La implementación futura deberá:
+
+- mantener un objetivo táctil adecuado;
+- evitar texto truncado que vuelva indistinguibles las sedes;
+- admitir reflow;
+- no exigir hover;
+- evitar scroll horizontal ordinario para comprender el control;
+- mantener visible el estado pendiente;
+- conservar el label aun cuando la composición sea compacta.
+
+Los valores físicos exactos pertenecen al sistema visual y a los patrones de tablet/kiosco posteriores.
+
+---
+
+#### 40. Frontera client/server
+
+A diferencia de `ContextIndicator`, `SiteSelector` es conceptualmente interactivo.
+
+La implementación física requiere una frontera cliente para capturar la selección y emitir `onRequestChange`.
+
+Esto no autoriza al componente a:
+
+- consultar red;
+- resolver contexto;
+- abrir cliente Supabase;
+- persistir preferencias;
+- navegar;
+- mutar cookies.
+
+La arquitectura recomendada es una hoja interactiva pequeña dentro de una composición que puede seguir resolviendo datos y contexto en capas server-side.
+
+La existencia de una frontera cliente no convierte al cliente en fuente de autoridad.
+
+---
+
+#### 41. Dependencias prohibidas
+
+`SiteSelector` no dependerá directamente de:
+
+- `@vento/supabase`;
+- cliente Supabase;
+- tablas o schemas;
+- RPC;
+- Edge Functions;
+- RLS;
+- `employee_settings`;
+- router de Next.js;
+- `useSearchParams`;
+- `usePathname`;
+- cookies;
+- `localStorage`;
+- `sessionStorage`;
+- variables secretas;
+- repositorios de aplicación;
+- APIs de negocio;
+- resolvers de permisos;
+- lógica de simulación.
+
+Tampoco ejecutará mutaciones empresariales.
+
+---
+
+#### 42. Prohibición de persistencia local como autoridad
+
+El componente no guarda la sede solicitada o confirmada en:
+
+- cookie;
+- storage;
+- IndexedDB;
+- query parameter;
+- estado global persistente del navegador.
+
+Una aplicación puede conservar preferencias no autoritativas cuando otro contrato lo permita, pero esa persistencia ocurre fuera de `SiteSelector` y nunca sustituye el contexto resuelto.
+
+La API compartida no expone helpers para esa persistencia.
+
+---
+
+#### 43. Prohibición de navegación como confirmación
+
+El componente no usa la navegación para afirmar que un cambio fue aceptado.
+
+Queda fuera del contrato:
+
+```text
+router.push(?site_id=...)
+router.replace(...)
+location.href = ...
+```
+
+como mecanismo de cambio de contexto.
+
+Una navegación posterior puede formar parte de la transición propietaria una vez resuelto el nuevo contexto, pero no es responsabilidad del selector.
+
+Los deep links tampoco transportan autoridad territorial.
+
+---
+
+#### 44. Prohibición de escritura directa de `employee_settings`
+
+La implementación compartida no escribe directamente:
+
+```text
+employee_settings.selected_site_id
+```
+
+La tabla o preferencia observada en el patrón legacy no se adopta como fuente canónica de sede activa.
+
+Si una preferencia de experiencia continúa siendo válida en una fase posterior, deberá permanecer semánticamente separada del contexto operativo y ser gestionada por su propietario autorizado.
+
+`SiteSelector` no conoce la tabla.
+
+---
+
+#### 45. Evidencia del template histórico
+
+El template AppShell histórico contiene un selector de sede dentro de `ProfileMenu`.
+
+Se observaron las siguientes características:
+
+```text
+sites
+activeSiteId
+SITE_OVERRIDE_COOKIE = app_site_override_id
+query parameter site_id
+employee_settings.selected_site_id
+label "Sede activa"
+option "Sin sede"
+```
+
+El flujo actual escribe una cookie, realiza un `upsert` cliente de preferencia y modifica la URL.
+
+Clasificación:
+
+```text
+EVIDENCIA LEGACY DE INTERACCIÓN
+≠
+IMPLEMENTACIÓN CANÓNICA DE SiteSelector
+```
+
+La existencia del template no demuestra que sus efectos laterales sean válidos para el componente compartido.
+
+---
+
+#### 46. Evidencia runtime en consumidores web
+
+Se verificaron seis copias runtime de `ProfileMenu` con selector de sede en consumidores web existentes:
+
+```text
+NEXO
+FOGO
+ORIGO
+VISO
+PULSO
+NUMERA
+```
+
+Las seis comparten el mismo patrón general:
+
+1. reciben `sites` y `activeSiteId`;
+2. pueden tomar `site_id` desde query params;
+3. escriben una cookie local por aplicación;
+4. abren cliente Supabase en navegador;
+5. realizan `upsert` de `selected_site_id`;
+6. actualizan el query parameter `site_id`;
+7. muestran el control como `Sede activa`;
+8. incluyen `Sin sede` como opción;
+9. mezclan el selector dentro del menú de perfil;
+10. condicionan su visibilidad mediante lógica local de rol.
+
+La repetición confirma la necesidad de un componente compartido, pero no valida su modelo de autoridad.
+
+---
+
+#### 47. Cookies legacy observadas
+
+Se observaron las siguientes identidades de cookie dentro de la familia revisada:
+
+| Fuente   | Cookie legacy             |
+| -------- | ------------------------- |
+| template | `app_site_override_id`    |
+| NEXO     | `nexo_site_override_id`   |
+| FOGO     | `fogo_site_override_id`   |
+| ORIGO    | `origo_site_override_id`  |
+| VISO     | `viso_site_override_id`   |
+| PULSO    | `pulso_site_override_id`  |
+| NUMERA   | `numera_site_override_id` |
+
+Estas cookies son evidencia de persistencia local existente.
+
+No se incorporan a `SiteSelectorProps` y no pueden ser fuente de autoridad para `confirmedSiteId`.
+
+Su disposición física futura pertenece al inventario y migración coordinada.
+
+---
+
+#### 48. Reconciliación del patrón legacy
+
+| Rasgo observado                                    | Decisión canónica de UI007                                                     |
+| -------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `sites`                                            | conservar intención como `options` preparadas externamente                     |
+| `activeSiteId` ambiguo                             | separar en `confirmedSiteId` y `requestedSiteId`                               |
+| `onChange` con efectos laterales                   | sustituir conceptualmente por `onRequestChange`                                |
+| cookie por aplicación                              | no pertenece al componente compartido                                          |
+| `employee_settings.selected_site_id` desde cliente | no pertenece al componente compartido                                          |
+| query param `site_id` como valor preferente        | no se acepta como fuente de sede confirmada                                    |
+| label `Sede activa` sobre control mutable          | no se hardcodea; contexto activo pertenece a `ContextIndicator`                |
+| opción universal `Sin sede`                        | no se incorpora como destino canónico                                          |
+| gating por `canSwitchRole`                         | no se incorpora; visibilidad y disponibilidad se resuelven externamente        |
+| selector embebido en `ProfileMenu`                 | no se congela como ubicación; AppShell se evalúa en UI010                      |
+| role simulation y site selection en el mismo menú  | responsabilidades separadas; simulación permanece en UI009 y contratos propios |
+| cierre del menú después de selección               | comportamiento de la composición, no del selector base                         |
+
+---
+
+#### 49. `canSwitchRole` no forma parte de la API
+
+La familia legacy condiciona el selector mediante una lógica local de rol o privilegio.
+
+UI007 no adopta:
+
+```text
+canSwitchRole
+isOwner
+isGeneralManager
+isAdmin
+```
+
+como contrato del componente.
+
+Razones:
+
+1. la capacidad de solicitar cambio de sede no debe inferirse de un nombre de rol visual;
+2. diferentes superficies pueden aplicar reglas distintas;
+3. una lista visible no sustituye autorización;
+4. la revalidación pertenece a la capa propietaria y servidor;
+5. acoplar el componente a roles concretos rompería su reutilización y separación de responsabilidades.
+
+La capa propietaria decide si el selector se muestra y qué opciones entrega.
+
+---
+
+#### 50. La etiqueta `Sede activa` no se hardcodea
+
+El selector legacy se presenta con la etiqueta `Sede activa` aunque el mismo control modifica una selección local.
+
+UI007 evita esa ambigüedad.
+
+`label` es obligatorio y lo aporta la composición.
+
+Ejemplos de intención admisible según el flujo:
+
+```text
+Cambiar sede
+Seleccionar sede para continuar
+Sede solicitada
+```
+
+El contexto confirmado se identifica en `ContextIndicator` o en la composición correspondiente.
+
+El texto exacto se gobierna por terminología y localización, no por un literal interno fijo.
+
+---
+
+#### 51. Rechazo y recuperación
+
+Si la solicitud es rechazada o no puede confirmarse:
+
+- `SiteSelector` no conserva el destino como activo;
+- la capa propietaria retira `requestedSiteId` cuando corresponda;
+- `confirmedSiteId` refleja el contexto que continúe siendo válido;
+- la causa se muestra mediante el patrón apropiado;
+- no se reintenta automáticamente una mutación de cambio;
+- no se usa la cookie o preferencia local como fallback;
+- no se intenta otra sede automáticamente.
+
+Un rechazo no convierte el componente en `EmptyState`.
+
+---
+
+#### 52. Concurrencia y contexto obsoleto
+
+Entre el render de `options` y la solicitud pueden cambiar:
+
+- asignaciones;
+- rol;
+- turno;
+- check-in;
+- permisos;
+- habilitación territorial;
+- dispositivo;
+- custodia;
+- claims;
+- estado de la sede;
+- simulación.
+
+Por ello `options` es una proyección para interacción, no una garantía de aceptación.
+
+Toda transición real debe revalidarse con estado fresco antes de publicar el nuevo contexto.
+
+El componente no mantiene un cache autoritativo de elegibilidad.
+
+---
+
+#### 53. Conectividad y offline
+
+`SiteSelector` no convierte una solicitud local offline en cambio confirmado.
+
+Reglas:
+
+- `pending` no significa sincronizado;
+- una selección capturada localmente no prolonga permiso o turno;
+- el componente no encola por sí mismo cambios de contexto;
+- no reintenta automáticamente al recuperar red;
+- no conserva autoridad desde caché;
+- la política offline pertenece a la capa propietaria de contexto y resiliencia.
+
+Si la transición exige confirmación online, la interfaz debe conservar la sede confirmada anterior o un estado contextual seguro hasta obtener resultado.
+
+---
+
+#### 54. Composición con `Alert`, `Button` y otros patrones
+
+`SiteSelector` puede componerse con piezas compartidas sin absorber sus responsabilidades.
+
+Ejemplos:
+
+```text
+ContextIndicator + SiteSelector
+SiteSelector + Alert
+SiteSelector + Button de confirmación cuando el proceso propietario lo exija
+SiteSelector + diagnóstico seguro
+```
+
+El selector no crea internamente una confirmación universal.
+
+Una acción sensible o con consecuencias materiales conserva su patrón de confirmación y autorización correspondiente.
+
+---
+
+#### 55. `className`, estilos y layout
+
+La implementación podrá aceptar extensiones visuales compatibles sin permitir que cada consumidor cree una variante funcional paralela.
+
+No se introducen props públicas:
+
+```text
+variant
+tone
+size
+fullWidth
+compact
+kiosk
+admin
+operational
+```
+
+como taxonomía funcional del selector.
+
+La anchura, densidad y posición pertenecen al layout y a los patrones de dispositivo.
+
+Los estilos no pueden ocultar el estado pendiente ni convertir una selección solicitada en apariencia de contexto confirmado.
+
+---
+
+#### 56. Compatibilidad y versionado
+
+La futura superficie pública deberá gobernarse con SemVer.
+
+Cambios potencialmente incompatibles incluyen:
+
+- cambiar significado de `confirmedSiteId`;
+- cambiar significado de `requestedSiteId`;
+- hacer que `onRequestChange` confirme autoridad;
+- incorporar persistencia o red dentro del componente;
+- retirar la separación entre valor confirmado y solicitado;
+- convertir `null` en una opción seleccionable implícita;
+- introducir autoelección de primera sede;
+- cambiar la semántica HTML del control;
+- alterar comportamiento de teclado o foco;
+- introducir dependencia directa de Supabase o router;
+- convertir `options` en catálogo global de sedes.
+
+Una necesidad local no se incorpora silenciosamente a la API común.
+
+---
+
+#### 57. Estrategia posterior de migración
+
+La migración física no ocurre en `SHELL-UI-007`.
+
+Los propietarios posteriores deberán:
+
+1. consolidar el inventario ejecutable de selectores, cookies, query params, preferencias y consumidores;
+2. separar usos que realmente cambian contexto de los que solo filtran información;
+3. definir lotes reversibles por repositorio;
+4. bloquear nuevas copias del patrón legacy;
+5. impedir que el scaffold histórico siga generando el flujo antiguo;
+6. adoptar el componente compartido y adapters propietarios por aplicación;
+7. validar accesibilidad, tema, responsive y semántica de transición;
+8. demostrar paridad y ausencia de autoridad desde cliente;
+9. retirar cookies, efectos laterales o copias únicamente cuando exista disposición aprobada y rollback.
+
+No se adelanta ninguno de esos cambios.
+
+---
+
+#### 58. Handoff a migración coordinada
+
+| Tarea           | Handoff de `SiteSelector`                                                                  |
+| --------------- | ------------------------------------------------------------------------------------------ |
+| `SHELL-MIG-001` | inventariar selectores reales, cookies, query params, escrituras y filtros                 |
+| `SHELL-MIG-002` | formar lotes reversibles por consumidor                                                    |
+| `SHELL-MIG-003` | definir compatibilidad temporal y bloquear nuevos consumidores legacy                      |
+| `SHELL-MIG-004` | impedir que el scaffold replique el selector con autoridad cliente                         |
+| `SHELL-MIG-005` | adoptar `SiteSelector` y la integración propietaria por aplicación                         |
+| `SHELL-MIG-006` | verificar accesibilidad, tema, foco, teclado, reflow y dispositivos                        |
+| `SHELL-MIG-007` | demostrar paridad, transición autoritativa y ausencia de efectos no gobernados             |
+| `SHELL-MIG-008` | retirar únicamente artefactos legacy sin consumidores residuales y con rollback demostrado |
+
+El inventario de UI007 es evidencia de diseño, no reemplaza el inventario ejecutable completo de `SHELL-MIG-001`.
+
+---
+
+#### 59. Handoff a calidad y releases
+
+La materialización futura conserva los propietarios ya definidos para paquetes compartidos:
+
+| Tarea          | Responsabilidad                                      |
+| -------------- | ---------------------------------------------------- |
+| `SHELL-CI-001` | pruebas propias del package                          |
+| `SHELL-CI-002` | build independiente                                  |
+| `SHELL-CI-003` | releases versionados                                 |
+| `SHELL-CI-004` | changelog                                            |
+| `SHELL-CI-005` | matriz de compatibilidad                             |
+| `SHELL-CI-006` | actualización controlada de consumidores mediante PR |
+
+`SHELL-UI-007` define el contrato del componente; no publica una versión.
+
+---
+
+#### 60. Contrato futuro de prueba
+
+La implementación física y su adopción deberán demostrar, como mínimo:
+
+1. renderizado con una sede confirmada;
+2. renderizado sin sede confirmada y placeholder no accionable;
+3. renderizado con varias opciones;
+4. renderizado con una sola opción sin autoemisión;
+5. renderizado con cero opciones sin inventar contexto;
+6. preservación del orden recibido;
+7. labels humanos de opciones;
+8. ID interno no mostrado como sustituto del nombre;
+9. `onRequestChange` emite la sede elegida;
+10. `onRequestChange` no cambia autoridad por sí mismo;
+11. ausencia de `defaultSiteId`;
+12. ausencia de autoelección de primera opción;
+13. ausencia de fallback a sede primaria;
+14. ausencia de fallback a última sede;
+15. separación entre `confirmedSiteId` y `requestedSiteId`;
+16. solicitud pendiente sin presentar destino como activo;
+17. confirmación propietaria que actualiza `confirmedSiteId`;
+18. rechazo propietario que conserva o restaura contexto válido;
+19. supresión de solicitudes equivalentes duplicadas mientras existe una transición pendiente;
+20. estado pendiente perceptible por texto;
+21. control deshabilitado sin convertirlo en autorización;
+22. ausencia de opción universal seleccionable `Sin sede`;
+23. ausencia de cookie dentro del componente;
+24. ausencia de `localStorage` y `sessionStorage`;
+25. ausencia de lectura de query param `site_id`;
+26. ausencia de router dentro del componente;
+27. ausencia de escritura de `employee_settings`;
+28. ausencia de cliente Supabase;
+29. ausencia de RPC o llamada de red;
+30. ausencia de lógica de roles o permisos;
+31. ausencia de `canSwitchRole` como fuente de capacidad;
+32. ausencia de simulación dentro del componente;
+33. separación frente a filtro administrativo;
+34. separación frente a selector de área;
+35. composición con `ContextIndicator state="changing"`;
+36. revalidación server-side antes de publicar nuevo contexto;
+37. invalidación del contexto anterior después del cambio según capa propietaria;
+38. manejo de concurrencia sin cache de elegibilidad autoritativa;
+39. teclado nativo;
+40. foco visible;
+41. label asociado;
+42. contraste;
+43. reflow;
+44. zoom;
+45. objetivo táctil adecuado;
+46. ausencia de dependencia de hover;
+47. client boundary aislada;
+48. ausencia de listeners globales no necesarios;
+49. paridad por consumidor antes de retirar el patrón legacy;
+50. rollback por lote antes del retiro.
+
+Esta lista define evidencia futura. No declara implementación ni ejecución de pruebas en `SHELL-UI-007`.
+
+---
+
+#### 61. Cobertura de requisitos existente
+
+La tarea no necesita introducir una obligación transversal nueva porque el registro vigente ya cubre específicamente:
+
+- separación entre sede asignada, primaria, seleccionada, filtrada, operativa y del recurso: `TREQ-UX-078`;
+- transición autoritativa de cambio y prohibición de presentar el destino como activo antes del receipt: `TREQ-UX-083`;
+- invalidación de acciones y controles ante cambios materiales: `TREQ-UX-084`;
+- separación entre filtro administrativo y contexto operativo: `TREQ-UX-086`;
+- singularidad del contexto activo frente a varias opciones elegibles: `TREQ-UX-087`;
+- accesibilidad y perceptibilidad del contexto: `TREQ-UX-090`, `TREQ-UX-091`;
+- estados de frescura y cambio: `TREQ-UX-092`;
+- trazabilidad del cambio: `TREQ-UX-095`;
+- inventario y migración de selectores, fallbacks, cookies y deep links: `TREQ-UX-096`;
+- derivación autoritativa de sede y prohibición de que una selección reemplace contexto resuelto: `TREQ-UX-122`;
+- prohibición de defaults que simulen autoridad, incluida última sede: `TREQ-UX-135`;
+- resolución de un contexto nuevo al cambiar sede y prohibición de selectores visuales como fallback: `TREQ-UX-286`;
+- separación entre selección de sede del template y autoridad real, incluida prohibición de cookies o escrituras cliente como autoridad: `TREQ-SHELL-031`;
+- responsabilidades compartidas y reconciliación de copias: `TREQ-SHELL-002`, `TREQ-SHELL-032`;
+- compatibilidad, versionado, deprecación y retiro: `TREQ-SHELL-036` a `TREQ-SHELL-039`;
+- contexto territorial no resoluble sin convertir selección en autoridad: `TREQ-AUTH-163`;
+- asignación de sede requerida para acciones territoriales: `TREQ-AUTH-169`;
+- rol y sede reales no creados por sede seleccionada, sede primaria, cookie o cliente: `TREQ-AUTH-251`;
+- eliminación de autoridad derivada de cookies, overrides y sede seleccionada en consumidores: `TREQ-AUTH-255`;
+- invalidación de snapshots ante cambio de sede: `TREQ-AUTH-257`;
+- frontera de propiedad donde `@vento/ui-web` renderiza sin decidir autorización: `TREQ-AUTH-321`.
+
+`SHELL-UI-007` especializa esas obligaciones en una API visual compartida sin introducir una regla material nueva.
+
+---
+
+#### 62. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+La cobertura vigente ya exige separación entre selección y autoridad, transición autoritativa, revalidación, accesibilidad, privacidad, migración y eliminación de persistencias cliente como fuente de contexto. UI007 únicamente fija cómo esas reglas se expresan en el componente compartido.
+
+---
+
+#### 63. Estado de materialización física
+
+Al cierre documental de `SHELL-UI-007`:
+
+```text
+IDENTIDAD SiteSelector                    = ESPECIFICADA
+SiteSelectorProps                         = ESPECIFICADO CONCEPTUALMENTE
+SiteSelectorOption                        = ESPECIFICADO CONCEPTUALMENTE
+SEDE CONFIRMADA / SOLICITADA              = SEPARADAS
+CALLBACK DE SOLICITUD                     = CERRADO
+TRANSICIÓN AUTORITATIVA                   = FUERA DEL COMPONENTE Y CERRADA CONTRACTUALMENTE
+FALLBACKS DE SEDE                         = PROHIBIDOS
+PERSISTENCIA CLIENTE COMO AUTORIDAD       = PROHIBIDA
+FRONTERA SELECTOR / FILTRO ADMINISTRATIVO = CERRADA
+FRONTERA SELECTOR / INDICADOR             = CERRADA
+FRONTERA SELECTOR / ÁREA                  = CERRADA
+FRONTERA SELECTOR / SIMULACIÓN            = CERRADA
+ACCESIBILIDAD                             = ESPECIFICADA DOCUMENTALMENTE
+CLIENT BOUNDARY                           = ESPECIFICADA
+RECONCILIACIÓN LEGACY                     = CERRADA DOCUMENTALMENTE
+TEMPLATE REVISADO                         = 1
+COPIAS RUNTIME REVISADAS                  = 6
+PATRONES LEGACY REVISADOS                 = 7
+PACKAGE @vento/ui-web FÍSICO              = NO MATERIALIZADO
+COMPONENTE FÍSICO                         = NO MATERIALIZADO
+CONSUMIDORES MIGRADOS                     = 0
+IMPLEMENTACIONES LEGACY RETIRADAS         = 0
+CAMBIOS TREQ                              = 0
+```
+
+La definición documental no implica publicación, instalación ni adopción runtime.
+
+---
+
+#### 64. Decisiones vinculantes
+
+1. El componente compartido se denomina `SiteSelector`.
+2. Pertenece conceptualmente a `@vento/ui-web`.
+3. La tarea es documental y no materializa código.
+4. La superficie conceptual incluye `SiteSelector`, `SiteSelectorProps` y `SiteSelectorOption`.
+5. No se crea un `SiteSelectorState` público.
+6. `label` es obligatorio.
+7. `confirmedSiteId` representa la sede confirmada que entrega la capa propietaria.
+8. `requestedSiteId` representa únicamente una sede solicitada todavía no confirmada.
+9. `options` contiene candidatas visibles preparadas externamente.
+10. Cada opción contiene `id` y `label`.
+11. La presencia de una opción no concede permiso ni garantiza el cambio.
+12. El servidor revalida toda transición real.
+13. `onRequestChange` comunica intención; no confirma resultado.
+14. El callback no retorna autoridad ni exige un `Promise` contractual.
+15. `pending` expresa solicitud en curso, no contexto activo.
+16. La sede solicitada no se presenta como activa antes del receipt.
+17. `pendingLabel` permite expresar el estado humano de la solicitud.
+18. `disabled` no equivale a denegación.
+19. No existe opción canónica universal seleccionable `Sin sede`.
+20. `placeholderLabel` no es una opción de borrado de contexto.
+21. No existe `defaultSiteId`.
+22. No existe `primarySiteId` como fallback.
+23. No existe `lastSiteId` como fallback.
+24. El componente no autoelige la primera opción.
+25. Una única opción no se autoaplica.
+26. Cero opciones no significa falta de permiso ni inexistencia de sedes.
+27. El componente conserva el orden recibido.
+28. `ContextIndicator` conserva la propiedad de mostrar la sede confirmada y estado del contexto.
+29. UI008 conserva la propiedad del selector de área.
+30. UI009 conserva la propiedad del aviso de simulación.
+31. UI015 conserva la propiedad del diagnóstico de contexto.
+32. UI016 conserva la propiedad de error recuperable.
+33. El selector no es un filtro administrativo genérico.
+34. Un filtro administrativo no cambia contexto operativo.
+35. El componente no contiene lógica de roles, scopes, grants o reason codes.
+36. No existe `canSwitchRole` como prop pública.
+37. No existe `isAdmin` como prop pública.
+38. No existe `canOperate` como prop pública.
+39. Las opciones que no deban revelarse no se entregan al componente.
+40. El componente no usa una lista global deshabilitada como mecanismo de seguridad.
+41. La semántica base prioriza un `<select>` nativo.
+42. No se congela un combobox buscable en esta tarea.
+43. La implementación futura debe mantener label asociado, foco, teclado, contraste y reflow.
+44. El componente es interactivo y requiere una frontera cliente aislada.
+45. La frontera cliente no resuelve autoridad.
+46. El componente no depende de `@vento/supabase`.
+47. El componente no abre cliente Supabase.
+48. El componente no conoce `employee_settings`.
+49. El componente no escribe `selected_site_id`.
+50. El componente no lee ni escribe cookies.
+51. El componente no lee ni escribe storage.
+52. El componente no consume `site_id` de query params.
+53. El componente no usa router para confirmar un cambio.
+54. El componente no hace llamadas de red.
+55. El componente no ejecuta RPC ni mutaciones empresariales.
+56. El template actual es evidencia histórica, no implementación canónica.
+57. Las seis copias runtime revisadas son evidencia legacy a migrar.
+58. Se observaron siete patrones de selector entre template y consumidores revisados.
+59. Las siete identidades de cookie observadas no forman parte de la API compartida.
+60. El label legacy `Sede activa` no se hardcodea en el selector compartido.
+61. La migración física se realiza posteriormente por lotes reversibles.
+62. El inventario ejecutable completo pertenece a `SHELL-MIG-001`.
+63. El retiro de copias y persistencias legacy requiere evidencia y rollback.
+64. Las pruebas, build, release y compatibilidad quedan bajo `SHELL-CI-*`.
+65. Se crean 0 requisitos de prueba y se modifican 0.
+66. `SHELL-UI-008` permanece reservada y no se desarrolla en esta tarea.
+
+---
+
+#### 65. Criterios de aceptación documental
+
+`SHELL-UI-007` queda documentalmente cerrada únicamente si se cumplen simultáneamente:
+
+- [x] la continuidad vigente apunta de `SHELL-UI-006` a `SHELL-UI-007`;
+- [x] `SHELL-UI-008` permanece reservada;
+- [x] existe una identidad única para el componente;
+- [x] se fija su pertenencia conceptual a `@vento/ui-web`;
+- [x] se separa sede confirmada de sede solicitada;
+- [x] se fija una API conceptual mínima;
+- [x] se define una identidad mínima de opción;
+- [x] se define `onRequestChange` como intención y no confirmación;
+- [x] se define el estado pendiente sin convertirlo en autoridad;
+- [x] se prohíbe cambio optimista de sede activa;
+- [x] se conserva la transición autoritativa fuera del componente;
+- [x] se prohíbe `defaultSiteId` y fallbacks equivalentes;
+- [x] se prohíbe autoelección de primera opción;
+- [x] se rechaza una opción universal de vaciado `Sin sede`;
+- [x] se separa placeholder de opción accionable;
+- [x] se separa selector de sede de filtro administrativo;
+- [x] se separa selector de sede de selector de área;
+- [x] se separa selector de sede de simulación;
+- [x] se separa selector de sede de diagnóstico y error;
+- [x] se define privacidad de la lista de candidatas;
+- [x] se evita que opciones visibles se conviertan en grants;
+- [x] se especifica semántica HTML nativa;
+- [x] se especifica accesibilidad mínima;
+- [x] se especifica teclado y foco;
+- [x] se especifica comportamiento táctil y responsive;
+- [x] se especifica frontera cliente aislada;
+- [x] se prohíbe red y Supabase dentro del componente;
+- [x] se prohíben cookies y storage dentro del componente;
+- [x] se prohíbe usar query params como autoridad;
+- [x] se prohíbe escritura directa de `employee_settings`;
+- [x] se reconcilia el template histórico;
+- [x] se reconcilian seis copias runtime observadas;
+- [x] se clasifican siete cookies legacy observadas como fuera de la API;
+- [x] se separa el gating local de rol del contrato del componente;
+- [x] se asigna la migración a tareas propietarias posteriores;
+- [x] se asignan pruebas, build, release y compatibilidad a tareas propietarias;
+- [x] no se modifica código, Supabase, consumidores o configuración;
+- [x] se declaran 0 cambios TREQ con cobertura existente concreta;
+- [x] no queda una decisión material de esta tarea sin propietario.
+
+Resultado documental:
+
+```text
+SELECTOR DE SEDE COMPARTIDO                 = ESPECIFICADO
+API CONCEPTUAL                              = CERRADA
+SEDE CONFIRMADA / SOLICITADA                = SEPARADAS
+TRANSICIÓN AUTORITATIVA                     = PRESERVADA
+AUTORIDAD DESDE COOKIE / QUERY / CLIENTE    = PROHIBIDA
+PERSISTENCIA CLIENTE DENTRO DEL COMPONENTE  = PROHIBIDA
+FILTRO ADMINISTRATIVO                       = SEPARADO
+SELECTOR DE ÁREA                            = RESERVADO A UI008
+IMPLEMENTACIÓN FÍSICA                       = NO INICIADA
+CAMBIOS TREQ                                = 0
+```
+
+---
+
+#### 66. Límites de la tarea
+
+`SHELL-UI-007` no autoriza:
+
+- crear físicamente `SiteSelector`;
+- crear físicamente `@vento/ui-web`;
+- modificar los seis `ProfileMenu` runtime revisados;
+- modificar el template AppShell;
+- eliminar cookies legacy;
+- modificar `employee_settings`;
+- crear o cambiar tablas;
+- crear migraciones;
+- ejecutar SQL;
+- cambiar RLS;
+- cambiar RPC;
+- modificar `@vento/os-context`;
+- crear un nuevo resolver de contexto;
+- crear un comando de cambio de sede no definido por su propietario;
+- cambiar flujos de turno o check-in;
+- cambiar simulación;
+- migrar consumidores;
+- publicar paquetes;
+- retirar componentes legacy;
+- iniciar `SHELL-UI-008`.
+
+---
+
+#### 67. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+
+```text
+SHELL-UI-006 — Compartir indicador de contexto
+```
+
+**TAREA ACTUAL APROBADA**
+
+```text
+SHELL-UI-007 — Compartir selector de sede
+```
+
+**SIGUIENTE TAREA RESERVADA**
+
+```text
+SHELL-UI-008 — Compartir selector de área
+```
+
+`SHELL-UI-008` permanece reservada y no se desarrolla en esta tarea.
+
 ### [ ] SHELL-UI-008 — Compartir selector de área
 ### [ ] SHELL-UI-009 — Compartir aviso de rol simulado
 ### [ ] SHELL-UI-010 — Evaluar AppShell compartido
