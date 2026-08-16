@@ -3798,24 +3798,24 @@ aplicaciones autorizadas con fuente obligatoria indisponible = 0
 
 El estado desplegado inspeccionado muestra:
 
-| Elemento                                                      |          Resultado observado |
-| ------------------------------------------------------------- | ---------------------------: |
-| funciones relevantes de contexto y permiso                    |                            8 |
-| funciones con resultado booleano directo o incluido           |                            8 |
-| funciones con handler de excepción contractual                |                            0 |
-| funciones que emiten estado técnico explícito                 |                            0 |
-| funciones que emiten `PERMISSION_NOT_FOUND` explícito         |                            0 |
-| funciones ejecutables por `authenticated`                     |                            8 |
-| funciones ejecutables por `anon` y `PUBLIC`                   |                            2 |
-| funciones `SECURITY DEFINER`                                  |                            7 |
-| helpers de aplicaciones que convierten error RPC en `false`   |                            5 |
-| repositorio adicional que convierte error de lote en ausencia |                     1, ANIMA |
-| guards server-side inspeccionados                             |                            5 |
-| guards que fusionan error y resultado negativo                |                            5 |
-| middleware de SHELL inspeccionado                             |                            1 |
-| middleware que dirige falta de configuración a login          |                            1 |
-| middleware que limpia cookies ante excepción de Auth          |                            1 |
-| unión compartida `DECIDED                                     | TECHNICAL_FAILURE` observada | 0 |
+| Elemento                                                      | Resultado observado |
+| ------------------------------------------------------------- | ------------------: |
+| funciones relevantes de contexto y permiso                    |                   8 |
+| funciones con resultado booleano directo o incluido           |                   8 |
+| funciones con handler de excepción contractual                |                   0 |
+| funciones que emiten estado técnico explícito                 |                   0 |
+| funciones que emiten `PERMISSION_NOT_FOUND` explícito         |                   0 |
+| funciones ejecutables por `authenticated`                     |                   8 |
+| funciones ejecutables por `anon` y `PUBLIC`                   |                   2 |
+| funciones `SECURITY DEFINER`                                  |                   7 |
+| helpers de aplicaciones que convierten error RPC en `false`   |                   5 |
+| repositorio adicional que convierte error de lote en ausencia |            1, ANIMA |
+| guards server-side inspeccionados                             |                   5 |
+| guards que fusionan error y resultado negativo                |                   5 |
+| middleware de SHELL inspeccionado                             |                   1 |
+| middleware que dirige falta de configuración a login          |                   1 |
+| middleware que limpia cookies ante excepción de Auth          |                   1 |
+| unión compartida `DECIDED \| TECHNICAL_FAILURE` observada     |                   0 |
 
 Comportamientos observados:
 
@@ -3851,7 +3851,7 @@ Comportamientos observados:
 |    9 | SHELL redirige falta de configuración técnica a login                                                                   | `BLOQUEADO`                          | login loop y falsa pérdida de sesión                                | `SHELL-AUTH-002`; `SHELL-AUTH-003`; `AUTH-ERR-020`                                           |
 |   10 | SHELL limpia cookies ante una excepción de Auth no clasificada                                                          | `BLOQUEADO`                          | sesión válida destruida por indisponibilidad temporal               | `SHELL-AUTH-002`; `SHELL-AUTH-004`; `SHELL-CI-019`                                           |
 |   11 | RLS y Data API no disponen de una explicación autoritativa diferenciada por sí solas                                    | `PENDIENTE_DE_IMPLEMENTACION`        | cero filas tratado como deny, ausencia o éxito vacío                | `AUTH-DB-021`; `AUTH-DB-027`; `AUTH-DB-034`                                                  |
-|   12 | no existe una unión compartida `DECIDED                                                                                 | TECHNICAL_FAILURE`                   | `PENDIENTE_DE_IMPLEMENTACION`                                       | cada consumidor inventa fallback y semántica                                                 | `AUTH-CTX-026`; `AUTH-ERR-020`; `SHELL-AUTH-001`; `SHELL-AUTH-002` |
+|   12 | no existe una unión compartida `DECIDED \| TECHNICAL_FAILURE`                                                           | `PENDIENTE_DE_IMPLEMENTACION`        | cada consumidor inventa fallback y semántica                        | `AUTH-CTX-026`; `AUTH-ERR-020`; `SHELL-AUTH-001`; `SHELL-AUTH-002`                           |
 |   13 | denegaciones y fallos técnicos no tienen streams métricos y auditorías claramente separados                             | `PENDIENTE_DE_IMPLEMENTACION`        | tasa de deny contaminada, alertas equivocadas y atribución al actor | `AUTH-CTX-024`; `AUTH-DB-032`; `AUTH-DB-034`; `SHELL-CI-019`                                 |
 |   14 | no existe certificación multicanal de timeout, RPC error, 503, retry, sesión, cero efectos y ausencia de decisión falsa | `PENDIENTE_DE_EVIDENCIA`             | regresión silenciosa y adopción parcial                             | `AUTH-CTX-030`; `AUTH-DB-027`; `AUTH-QA-019`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019` |
 
