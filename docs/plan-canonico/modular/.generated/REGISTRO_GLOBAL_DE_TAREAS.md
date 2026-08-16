@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **935** |
+| Aprobadas | **936** |
 | En propuesta | **0** |
-| No iniciadas | **659** |
+| No iniciadas | **658** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **58.66% (935/1594)** |
+| Porcentaje de completamiento | **58.72% (936/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-UI-018` — Compartir patrón para kiosco | ✅ APROBADA |
-| Tarea actual | `SHELL-UI-019` — Compartir patrón de proceso interrumpido | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-UI-020` — Compartir patrón de traspaso entre aplicaciones | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-UI-019` — Compartir patrón de proceso interrumpido | ✅ APROBADA |
+| Tarea actual | `SHELL-UI-020` — Compartir patrón de traspaso entre aplicaciones | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-MIG-001` — Consolidar inventario ejecutable de consumidores | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -762,7 +762,7 @@
 | ✅ APROBADA | `SHELL-UI-016` | Compartir estados de error recuperable | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-UI-017` | Compartir patrón para tablet | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-UI-018` | Compartir patrón para kiosco | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-UI-019` | Compartir patrón de proceso interrumpido | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-UI-019` | Compartir patrón de proceso interrumpido | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-020` | Compartir patrón de traspaso entre aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-MIG-001` | Consolidar inventario ejecutable de consumidores | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ⬜ NO INICIADA | `SHELL-MIG-002` | Definir lotes reversibles por repositorio | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |

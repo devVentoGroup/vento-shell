@@ -26091,5 +26091,1717 @@ Esta tarea no autoriza:
 `SHELL-UI-019 — Compartir patrón de proceso interrumpido`
 
 
-### [ ] SHELL-UI-019 — Compartir patrón de proceso interrumpido
+### ✅ SHELL-UI-019 — Compartir patrón de proceso interrumpido
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-018 — Compartir patrón para kiosco
+**Tarea siguiente:** SHELL-UI-020 — Compartir patrón de traspaso entre aplicaciones
+**Tipo de tarea:** Documental; definición canónica del patrón web compartido para presentar y conducir de forma segura un proceso interrumpido dentro de `@vento/ui-web`, consumiendo una clasificación de reanudación ya resuelta y preservando actor, contexto, checkpoint, trabajo guardado, cambios concurrentes, claims, custodia, resultados pendientes, privacidad, accesibilidad y fronteras de autoridad, sin materializar package, código ejecutable, almacenamiento, colas, checkpoints físicos, consumidores, SQL, migraciones, cambios de Supabase, releases ni despliegues.
+**Bloque:** H — Fundación compartida
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md`
+**Estado físico resultante:** `ESPECIFICADO`; patrón físico no materializado; consumidores migrados: 0.
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+**Paquete propietario conceptual:** `@vento/ui-web`
+
+---
+
+#### 1. Propósito
+
+Definir el patrón web compartido que presenta a una persona el punto seguro de retorno de un proceso interrumpido después de que la aplicación propietaria haya reconstruido y revalidado el estado real del trabajo.
+
+La regla central queda:
+
+```text
+INTERRUPCIÓN
+        ↓
+RECONSTRUCCIÓN AUTORITATIVA EXTERNA
+        ↓
+CLASIFICACIÓN DE REANUDACIÓN EXTERNA
+        ↓
+InterruptedProcessState
+        ↓
+RESUMEN HUMANO + SALIDA SEGURA
+```
+
+Nunca:
+
+```text
+última URL
+=
+punto autoritativo de retorno
+
+estado React anterior
+=
+checkpoint
+
+borrador local
+=
+efecto empresarial confirmado
+
+botón Continuar visible
+=
+autorización vigente
+
+sesión anterior
+=
+autoridad restaurable
+```
+
+UI019 comparte la presentación de continuidad; no crea el motor que decide si un proceso puede continuar.
+
+---
+
+#### 2. Continuidad material de entrada
+
+`SHELL-UI-019` consume como base inmediata `SHELL-UI-018`, ya aprobada.
+
+La continuidad vigente ubica:
+
+```text
+BASE INMEDIATA APROBADA = SHELL-UI-018
+TAREA ACTUAL             = SHELL-UI-019
+SIGUIENTE RESERVADA      = SHELL-UI-020
+```
+
+UI019 desarrolla únicamente el patrón de proceso interrumpido. No modifica `active-sequence.json` ni materializa el patrón de traspaso entre aplicaciones.
+
+---
+
+#### 3. Naturaleza de la tarea
+
+`SHELL-UI-019` es documental.
+
+Al cierre queda definido:
+
+1. el patrón conceptual de proceso interrumpido;
+2. su identidad pública conceptual;
+3. el contrato de productor y consumidor;
+4. la reutilización exacta de los estados canónicos de reanudación;
+5. la proyección mínima que puede recibir el patrón;
+6. la relación con los siete slots semánticos de composición operativa;
+7. la separación entre checkpoint y presentación;
+8. la separación entre borrador, checkpoint, operación pendiente, receipt y estado empresarial;
+9. las reglas de reanudación directa;
+10. las reglas de reanudación con revisión;
+11. el tratamiento de resultados desconocidos;
+12. el tratamiento de claims, leases y custodia;
+13. el tratamiento de cambio de actor, contexto o dispositivo;
+14. el tratamiento de recursos modificados, cerrados, cancelados o sustituidos;
+15. el tratamiento de reinicio, actualización y cambio de dispositivo;
+16. el tratamiento de acciones sensibles;
+17. el tratamiento de dependencias, archivos y periféricos;
+18. privacidad, retención y limpieza presentacional;
+19. accesibilidad y foco;
+20. composición con patrones UI ya aprobados;
+21. fronteras con recuperación inmediata y traspaso entre aplicaciones;
+22. estado técnico actual de SHELL;
+23. matriz explícita de los siete consumidores web;
+24. handoff a migración y calidad;
+25. contrato futuro de pruebas;
+26. cobertura `TREQ-*` vigente.
+
+No se crea código ejecutable, persistencia, checkpoint físico ni cambio en una aplicación consumidora.
+
+---
+
+#### 4. Fuentes normativas consumidas
+
+La definición consume y no reemplaza:
+
+- `SHELL-UI-001 — Crear @vento/ui-web`;
+- `SHELL-UI-002..018`, como primitivas, patrones y fronteras ya propietarias;
+- `UX-BASE-013 — Definir comportamiento con conectividad inestable`;
+- `UX-BASE-014 — Definir reanudación del proceso después de interrupciones`;
+- `UX-STATION-010 — Definir gramática de interacción operativa de lectura mínima`;
+- `UX-STATION-011 — Diseñar bandeja contextual de trabajo y siguiente acción`;
+- `UX-STATION-012 — Definir composición dinámica de pasos mediante componentes operativos aprobados`;
+- los contratos vigentes de actor, contexto, autorización, dispositivo, idempotencia, claims, custodia, privacidad y evidencia;
+- `QUEUE-ARC-001..012`, como propietarios posteriores de colas y entrega confiable;
+- `INT-APP-001..010`, como propietarios posteriores de integración entre aplicaciones;
+- el gobierno `SHELL-MIG-001..008` para adopción reversible;
+- el gobierno `SHELL-CI-001..006` para pruebas, build, publicación y compatibilidad;
+- la cobertura vigente del Registro Canónico de Requisitos de Prueba.
+
+UI019 especializa presentación web. No redefine `UX-PROCESS-RESUMPTION-CONTRACT-001`, no crea otra taxonomía de interrupciones y no sustituye al propietario del proceso.
+
+---
+
+#### 5. Resultado documental
+
+Se aprueba el patrón conceptual:
+
+```text
+InterruptedProcessState
+```
+
+como parte futura de:
+
+```text
+@vento/ui-web
+```
+
+Su función es recibir una **proyección de reanudación ya clasificada** y presentar de forma comprensible:
+
+- qué trabajo fue interrumpido;
+- bajo qué contexto se está evaluando ahora;
+- cuál fue el último avance conocido;
+- qué trabajo se conserva;
+- qué cambió desde la interrupción;
+- si existen operaciones pendientes o resultados desconocidos;
+- si claim, custodia, contexto o versión requieren revisión;
+- cuál es la salida segura disponible;
+- qué no puede continuarse todavía.
+
+No persiste checkpoints, no consulta receipts, no renueva claims, no transfiere custodia, no resuelve `AccessContext`, no reautoriza y no ejecuta reintentos.
+
+---
+
+#### 6. Identidad pública conceptual
+
+La superficie conceptual queda formada por:
+
+```text
+InterruptedProcessState
+InterruptedProcessStateProps
+InterruptedProcessStatus
+InterruptedProcessSummary
+```
+
+`InterruptedProcessStatus` no crea una taxonomía paralela. Reutiliza exactamente los estados de reanudación aprobados por `UX-BASE-014`.
+
+`InterruptedProcessSummary` representa una proyección humana del checkpoint y de la comparación ya resuelta. No equivale a `ProcessCheckpoint` ni permite reconstruir autoridad desde el frontend.
+
+---
+
+#### 7. Contrato de productor y consumidor
+
+**Contrato:** `INTERRUPTED-PROCESS-PRESENTATION-CONTRACT-001`
+
+**Productor:** aplicación o controlador propietario que ya identificó actor y dispositivo, resolvió un contexto nuevo, localizó tarea y recurso autoritativos, consultó checkpoint, borradores, receipts y operaciones pendientes, comparó versiones, claim y custodia y clasificó el estado de reanudación.
+
+**Consumidor:** `@vento/ui-web / InterruptedProcessState`.
+
+**Campos requeridos:** `status`, `ariaLabel`, `persistentContext`, `workIdentity` e `interruptionSummary`.
+
+**Campos condicionales:** `blockingState`, `primaryAction`, `secondarySupport` y `resultAndReceipt`.
+
+**Invariantes:** estado canónico ya resuelto, contexto perceptible, trabajo inequívoco, ausencia de autoridad derivada del checkpoint, una sola acción primaria cuando exista, no continuar antes de clasificar y no fabricar éxito, ownership o custodia.
+
+**Condiciones inválidas:** estado no canónico, checkpoint crudo como prop pública, URL usada como autoridad, actor implícito, permiso congelado, más de una acción primaria, retry antes de resolver un resultado desconocido, transferencia silenciosa de trabajo o restauración de datos sensibles del actor anterior.
+
+---
+
+#### 8. Estados canónicos reutilizados
+
+UI019 acepta exactamente:
+
+```text
+NO_CHECKPOINT
+DRAFT_ONLY
+CHECKPOINT_AVAILABLE
+VALIDATING
+RESUMABLE
+RESUMABLE_WITH_REVIEW
+WAITING_FOR_DEPENDENCY
+HANDOFF_REQUIRED
+REASSIGNMENT_REQUIRED
+CONFLICT
+RESULT_UNKNOWN
+REAUTH_REQUIRED
+RECONCILIATION_REQUIRED
+SUPERSEDED
+COMPLETED
+EXPIRED
+INVALID
+```
+
+No se crean alias como:
+
+```text
+READY_TO_RESUME
+PAUSED
+RESTORABLE
+STALE_DRAFT
+AUTO_RESUME
+RETRYABLE_INTERRUPTION
+```
+
+Un cambio en este conjunto exige primero modificar el contrato canónico propietario de reanudación.
+
+---
+
+#### 9. Matriz de presentación por estado
+
+| Estado | Presentación obligatoria | Acción primaria admisible |
+| --- | --- | --- |
+| `NO_CHECKPOINT` | indicar que no existe punto recuperable cuando sea necesario explicarlo | ninguna acción de reanudación |
+| `DRAFT_ONLY` | distinguir borrador recuperable de estado empresarial | revisar o gestionar borrador, solo si el propietario lo autoriza |
+| `CHECKPOINT_AVAILABLE` | informar existencia de punto recuperable todavía no validado | ninguna acción empresarial de continuación |
+| `VALIDATING` | mostrar que el sistema está comprobando vigencia, contexto y resultados | ninguna acción empresarial de continuación |
+| `RESUMABLE` | mostrar punto exacto y condiciones ya revalidadas | continuar, suministrado por el propietario |
+| `RESUMABLE_WITH_REVIEW` | mostrar diferencias y trabajo conservado | revisar o comparar antes de continuar |
+| `WAITING_FOR_DEPENDENCY` | mostrar evento esperado, responsable, antigüedad y vencimiento | solo salida segura definida por el propietario |
+| `HANDOFF_REQUIRED` | explicar que la responsabilidad necesita transferencia formal | acción hacia el contrato propietario de handoff, si existe |
+| `REASSIGNMENT_REQUIRED` | explicar que el actor actual no puede continuar directamente | gestionar reasignación mediante propietario |
+| `CONFLICT` | mostrar conflicto y estado preservado | resolver o escalar mediante patrón propietario |
+| `RESULT_UNKNOWN` | indicar que una intención previa no tiene resultado suficiente | ninguna repetición ciega |
+| `REAUTH_REQUIRED` | explicar que la preparación puede conservarse pero la autoridad debe renovarse | iniciar reautenticación propietaria |
+| `RECONCILIATION_REQUIRED` | mostrar diferencias que requieren conciliación | conciliar o escalar mediante propietario |
+| `SUPERSEDED` | explicar que el punto anterior dejó de ser vigente | navegar al trabajo vigente solo si el propietario lo aporta |
+| `COMPLETED` | mostrar resultado ya confirmado y referencia | ninguna acción de reanudación |
+| `EXPIRED` | explicar vencimiento y conservación permitida | salida segura, no continuar el punto vencido |
+| `INVALID` | explicar que el checkpoint no puede utilizarse de forma segura | recuperación o soporte, sin continuar |
+
+La matriz gobierna presentación. La elegibilidad real de cada acción sigue fuera del componente.
+
+---
+
+#### 10. API conceptual mínima
+
+La API conceptual queda:
+
+```text
+status: InterruptedProcessStatus
+ariaLabel: string
+persistentContext: React.ReactNode
+workIdentity: React.ReactNode
+interruptionSummary: InterruptedProcessSummary
+blockingState?: React.ReactNode
+primaryAction?: React.ReactNode
+secondarySupport?: React.ReactNode
+resultAndReceipt?: React.ReactNode
+```
+
+Los nombres expresan semántica y no coordenadas visuales.
+
+La implementación futura podrá admitir atributos HTML compatibles del contenedor raíz, siempre que no creen una segunda fuente de estado, autoridad o persistencia.
+
+---
+
+#### 11. Resumen conceptual mínimo
+
+`InterruptedProcessSummary` debe poder representar, cuando apliquen:
+
+```text
+lastProgress
+preservedWork
+changesSinceInterruption
+pendingOrUnknownResults
+claimAndCustodySummary
+expiryOrDependencySummary
+```
+
+Cada campo es una proyección presentacional producida externamente.
+
+No se incluyen identificadores técnicos o payloads completos solo para que el componente los interprete.
+
+---
+
+#### 12. Campos deliberadamente excluidos
+
+La API base no recibe como autoridad:
+
+```text
+checkpointId
+processInstanceId
+actorId
+principalId
+deviceId
+contextId
+siteId
+areaId
+shiftId
+checkinId
+claimId
+custodyRef
+draftRef
+pendingOperationIds
+permissionCode
+roleCode
+idempotencyKey
+receiptId
+resourceVersion
+canResume
+isAuthorized
+resumeUrl
+returnTo
+```
+
+Estos datos pueden existir en el dominio propietario, pero no son inputs visuales necesarios para decidir autoridad dentro de UI019.
+
+La presentación recibe el resultado humano ya resuelto, no un objeto técnico para reinterpretarlo.
+
+---
+
+#### 13. Siete zonas semánticas preservadas
+
+UI019 se integra en el orden conceptual aprobado por `UX-STATION-012`:
+
+```text
+1. PERSISTENT_CONTEXT
+2. BLOCKING_STATE
+3. WORK_IDENTITY
+4. STEP_CONTENT
+5. PRIMARY_ACTION
+6. SECONDARY_SUPPORT
+7. RESULT_AND_RECEIPT
+```
+
+Correspondencia:
+
+| Slot canónico | Proyección UI019 | Regla |
+| --- | --- | --- |
+| `PERSISTENT_CONTEXT` | `persistentContext` | contexto actual revalidado, no el contexto congelado del checkpoint |
+| `BLOCKING_STATE` | `blockingState` | conflicto, reauth, conciliación u otra condición ya clasificada |
+| `WORK_IDENTITY` | `workIdentity` | objeto, proceso, paso y estado que se están reconstruyendo |
+| `STEP_CONTENT` | `interruptionSummary` | último avance, preservado, cambios y condiciones de retorno |
+| `PRIMARY_ACTION` | `primaryAction` | máximo una salida segura ya elegible |
+| `SECONDARY_SUPPORT` | `secondarySupport` | posponer, descartar permitido, escalar, comparar o ayuda según contrato |
+| `RESULT_AND_RECEIPT` | `resultAndReceipt` | resultado confirmado, receipt o cierre cuando corresponda |
+
+UI019 no crea un octavo slot para checkpoint técnico.
+
+---
+
+#### 14. Checkpoint frente a presentación
+
+UI019 no es propietario del checkpoint.
+
+Regla:
+
+```text
+ProcessCheckpoint
+→ dominio y arquitectura propietarios
+→ validación y comparación
+→ proyección humana segura
+→ InterruptedProcessState
+```
+
+Nunca:
+
+```text
+ProcessCheckpoint crudo
+→ componente visual
+→ decisión de si puede continuar
+```
+
+La UI no debe reconstruir permisos, claims, custodia o estado empresarial a partir de los campos observados originalmente.
+
+---
+
+#### 15. URL, historial y estado cliente
+
+No constituyen continuidad autoritativa:
+
+- la última URL visitada;
+- `returnTo`;
+- historial del navegador;
+- query parameters;
+- hash de ruta;
+- estado React preservado;
+- estado de un modal;
+- `sessionStorage`;
+- `localStorage`;
+- un snapshot visual;
+- una pestaña todavía abierta.
+
+Pueden participar en ergonomía o navegación bajo contratos propietarios, pero nunca reemplazan checkpoint, estado de proceso o revalidación.
+
+---
+
+#### 16. Borrador, checkpoint, operación, receipt y estado empresarial
+
+UI019 preserva la separación:
+
+```text
+BORRADOR
+≠ CHECKPOINT
+≠ OPERACIÓN PENDIENTE
+≠ RECEIPT
+≠ ESTADO EMPRESARIAL
+```
+
+La presentación debe permitir que la persona entienda cuál de esas categorías existe sin afirmar que una sustituye a otra.
+
+Un borrador puede seguir disponible aunque ya no pueda aplicarse automáticamente.
+
+---
+
+#### 17. Último avance
+
+`interruptionSummary` puede mostrar el último avance conocido en lenguaje humano.
+
+Debe distinguir entre:
+
+- paso confirmado;
+- dato guardado como borrador;
+- operación enviada;
+- operación confirmada;
+- elemento pendiente;
+- resultado desconocido.
+
+Una marca de tiempo no demuestra por sí sola que el estado siga vigente.
+
+---
+
+#### 18. Trabajo preservado
+
+La superficie puede indicar qué se conserva, por ejemplo:
+
+- cantidades ya confirmadas;
+- observaciones todavía en borrador;
+- evidencia vinculada;
+- elementos pendientes;
+- campos recuperables;
+- resultados confirmados del lote.
+
+No expone datos sensibles innecesarios ni promete que todo contenido local está disponible en otro dispositivo.
+
+---
+
+#### 19. Cambios desde la interrupción
+
+Cuando el estado sea `RESUMABLE_WITH_REVIEW`, `CONFLICT`, `SUPERSEDED` o equivalente, la superficie debe poder explicar qué cambió.
+
+La presentación distingue, según la proyección recibida:
+
+```text
+SIN CAMBIOS
+CAMBIOS NO SUPERPUESTOS
+CAMBIOS SUPERPUESTOS
+RECURSO CERRADO
+RECURSO CANCELADO
+RECURSO SUSTITUIDO
+ESQUEMA INCOMPATIBLE
+```
+
+UI019 no ejecuta merge ni `last write wins`.
+
+---
+
+#### 20. Reanudación directa
+
+`RESUMABLE` solo puede llegar al componente después de que el propietario haya comprobado las condiciones canónicas de actor, sesión, dispositivo, contexto, turno, check-in, tarea, recurso, versión, claim, custodia, resultado y permiso.
+
+UI019 entonces puede presentar una única acción primaria de continuación suministrada externamente.
+
+La acción debe expresar el punto semántico, no un verbo genérico sin contexto.
+
+Ejemplos de lenguaje admitido por la composición propietaria:
+
+```text
+Continuar conteo de Congelados
+Retomar recepción OC-2026-00418
+Continuar lote de torta de chocolate
+```
+
+UI019 no genera esas etiquetas a partir de IDs técnicos.
+
+---
+
+#### 21. Reanudación con revisión
+
+`RESUMABLE_WITH_REVIEW` no se presenta como retorno automático.
+
+La superficie debe poder mostrar:
+
+- qué cambió;
+- qué se conserva;
+- quién mantiene la tarea;
+- qué dato necesita revisión;
+- qué parte puede reaplicarse;
+- qué parte dejó de ser compatible.
+
+La acción primaria debe conducir a revisión o comparación cuando la política propietaria todavía no permite continuar directamente.
+
+---
+
+#### 22. Resultado desconocido
+
+`RESULT_UNKNOWN` bloquea la repetición ciega.
+
+La superficie puede explicar que una intención previa fue enviada pero todavía no existe evidencia suficiente de su resultado.
+
+UI019 no ofrece por sí mismo:
+
+- reintento;
+- duplicación de intención;
+- nueva idempotency key;
+- reversa;
+- supuesto de fallo.
+
+El propietario debe consultar intención original, receipt y estado del recurso antes de producir otra salida.
+
+---
+
+#### 23. Claims y leases
+
+UI019 presenta únicamente la conclusión humana ya resuelta sobre claim o lease.
+
+Puede representar estados como:
+
+```text
+CLAIM_VALID
+CLAIM_RENEWED
+CLAIM_EXPIRED_AVAILABLE
+CLAIM_HELD_BY_OTHER
+TAKEOVER_REQUIRES_APPROVAL
+TASK_ALREADY_COMPLETED
+CLAIM_CONFLICT
+```
+
+No renueva, libera, toma o fuerza un claim.
+
+Un claim visible anteriormente no se presume vigente después de la interrupción.
+
+---
+
+#### 24. Custodia
+
+Cuando el trabajo implique custodia, UI019 debe ser capaz de mostrar una proyección que distinga:
+
+- última custodia confirmada;
+- hecho físico observado;
+- handoff digital;
+- discrepancia pendiente;
+- necesidad de conciliación.
+
+La superficie no deduce custodia desde una pantalla abierta ni desde un borrador.
+
+Una inconsistencia de custodia impide presentar una continuación ordinaria hasta que el propietario la resuelva o clasifique.
+
+---
+
+#### 25. Cambio de actor
+
+Un checkpoint pertenece al actor que produjo el trabajo salvo transferencia formal.
+
+UI019 no permite interpretar:
+
+```text
+CAMBIO DE ACTOR
+=
+TRANSFERENCIA DE BORRADOR
+=
+TRANSFERENCIA DE CLAIM
+=
+TRANSFERENCIA DE CUSTODIA
+=
+TRANSFERENCIA DE AUTORIDAD
+```
+
+Después de identificar un actor diferente, la aplicación propietaria debe resolver contexto nuevo y filtrar qué trabajo puede aceptar ese actor antes de construir la superficie.
+
+---
+
+#### 26. Cambio de contexto
+
+Todo cambio material de:
+
+- sede;
+- área;
+- turno;
+- check-in;
+- rol operativo;
+- delegación;
+- simulación;
+- dispositivo;
+
+requiere `AccessContext` nuevo fuera de UI019.
+
+La presentación recibe únicamente la conclusión:
+
+```text
+COMPATIBLE Y REAUTORIZADO
+o
+REVISIÓN / REASIGNACIÓN / HANDOFF / BLOQUEO
+```
+
+El último contexto observado del checkpoint nunca se usa como fallback de autoridad.
+
+---
+
+#### 27. Cambio de dispositivo
+
+UI019 puede presentarse en otro dispositivo únicamente después de que el propietario confirme que existe un checkpoint sincronizado o una transferencia segura y que el nuevo equipo admite la aplicación y capacidades necesarias.
+
+La interfaz no afirma que un borrador local exclusivo del equipo anterior esté disponible en el nuevo dispositivo.
+
+Tablet y kiosco conservan sus patrones especializados UI017 y UI018 alrededor de esta composición.
+
+---
+
+#### 28. Reinicio, suspensión y actualización
+
+Después de recarga, cierre accidental, suspensión, reinicio, pérdida breve de energía o actualización compatible:
+
+- UI019 no ejecuta acciones en segundo plano automáticamente;
+- no restaura autoridad obsoleta;
+- no muestra datos del actor anterior antes de resolver identidad;
+- no procesa operaciones pendientes solo porque la interfaz volvió a montar;
+- no interpreta una versión antigua de borrador como compatible sin validación.
+
+La recuperación empieza en el propietario y termina en una proyección segura para UI019.
+
+---
+
+#### 29. Acciones sensibles
+
+Aprobaciones, anulaciones, reversas, pagos, reembolsos, cambios de permiso, publicaciones, exportaciones sensibles, overrides y lotes materiales no se reanudan directamente cuando la política exige reautorización.
+
+UI019 puede preservar la preparación visible, pero la acción final conserva:
+
+- datos actuales;
+- reautorización vigente;
+- resumen del efecto;
+- confirmación proporcional;
+- contrato propietario de `SHELL-UI-014` cuando corresponda.
+
+La superficie no reutiliza una confirmación anterior como autorización futura.
+
+---
+
+#### 30. Espera por dependencia
+
+`WAITING_FOR_DEPENDENCY` puede mostrar:
+
+- evento esperado;
+- responsable actual;
+- última actualización;
+- vencimiento;
+- si la dependencia ya ocurrió;
+- si la tarea fue reasignada;
+- siguiente acción segura.
+
+Una notificación recibida no equivale por sí sola a que el trabajo pueda continuar.
+
+---
+
+#### 31. Archivos y evidencia
+
+La presentación conserva diferencias como:
+
+```text
+ARCHIVO SOLO LOCAL
+ARCHIVO SUBIDO SIN VINCULAR
+ARCHIVO VINCULADO Y CONFIRMADO
+```
+
+Encontrar un archivo local no cierra el proceso ni demuestra evidencia empresarial válida.
+
+UI019 no sube, vincula, elimina ni valida archivos por sí mismo.
+
+---
+
+#### 32. Periféricos
+
+Para impresoras, básculas, escáneres, datáfonos, cámaras u otros periféricos, la superficie puede mostrar:
+
+```text
+COMANDO ENVIADO
+EJECUCIÓN FÍSICA CONFIRMADA
+RESULTADO DESCONOCIDO
+```
+
+Un comando enviado no demuestra ejecución física.
+
+Un resultado desconocido no activa retry universal.
+
+---
+
+#### 33. Tareas repetitivas y lotes
+
+En una secuencia de elementos, UI019 debe poder presentar:
+
+```text
+ELEMENTOS CONFIRMADOS
+ELEMENTO ACTUAL
+ELEMENTOS PENDIENTES
+ELEMENTOS FALLIDOS
+ELEMENTOS EN CONFLICTO
+```
+
+La composición no vuelve a promover elementos confirmados como pendientes por reconstruir la pantalla.
+
+La decisión de recalcular y excluir elementos pertenece al propietario.
+
+---
+
+#### 34. Prioridad al regresar
+
+Cuando una aplicación muestre varios trabajos recuperables, el orden canónico de atención permanece fuera del componente individual, pero debe respetar la prioridad aprobada:
+
+```text
+1. RESULTADOS DESCONOCIDOS O CONCILIACIONES
+2. CUSTODIAS Y HANDOFFS PENDIENTES
+3. TAREAS CON CLAIM VIGENTE
+4. BORRADORES RECUPERABLES
+5. TAREAS PRÓXIMAS A VENCER
+6. COLA ORDINARIA
+```
+
+UI019 no reemplaza `TaskNavigation` ni la bandeja de `UX-STATION-011`.
+
+---
+
+#### 35. Composición con `TaskNavigation`
+
+`TaskNavigation` conserva la navegación entre elementos de trabajo.
+
+UI019 presenta el estado de un proceso interrumpido seleccionado o una unidad recuperable concreta.
+
+La navegación no puede saltar una conciliación, transferir claim o descartar borrador por cambiar de tarjeta.
+
+---
+
+#### 36. Composición con `ProcessStatusLine`
+
+`ProcessStatusLine` conserva la representación del avance del proceso.
+
+UI019 puede componerla para mostrar el paso vigente o el punto de retorno, pero no altera el estado empresarial ni inventa una transición de vuelta.
+
+Una etapa anterior visible no se reabre por seleccionarla.
+
+---
+
+#### 37. Composición con `ContextDiagnostic`
+
+Cuando la reconstrucción detecte contexto ausente, cambiante, vencido o incompatible, UI019 puede componer `ContextDiagnostic` dentro de `blockingState`.
+
+`ContextDiagnostic` explica la condición contextual.
+
+UI019 explica cómo afecta esa condición a la continuidad del trabajo.
+
+Ninguno concede permiso ni fabrica un `AccessContext`.
+
+---
+
+#### 38. Composición con `RecoverableErrorState`
+
+UI016 sigue siendo propietario de recuperación frente a un fallo observado.
+
+UI019 lo puede componer si la validación o recuperación del punto de trabajo falla técnicamente.
+
+Regla:
+
+```text
+fallo recuperable en la condición actual
+→ RecoverableErrorState
+
+interrupción que exige reconstruir trabajo
+→ InterruptedProcessState
+```
+
+Un error recuperable puede conducir a UI019, y UI019 puede contener una recuperación, sin fusionar ambos contratos.
+
+---
+
+#### 39. Composición con `PrimaryActionPanel`
+
+`PrimaryActionPanel` conserva la jerarquía de la acción principal.
+
+UI019 suministra como máximo una acción primaria ya resuelta para el estado de reanudación.
+
+No promociona una acción secundaria porque `Continuar` esté bloqueado.
+
+La ausencia de acción primaria es válida y obligatoria en varios estados.
+
+---
+
+#### 40. Composición con confirmaciones sensibles
+
+`SHELL-UI-014` conserva la confirmación reforzada de acciones sensibles.
+
+UI019 no usa la interrupción como justificación para omitir confirmación ni para repetirla innecesariamente.
+
+La decisión de confirmar se calcula con el estado actual, no con la política que existía antes de la interrupción.
+
+---
+
+#### 41. Composición con tablet y kiosco
+
+UI019 es independiente de la clase física de superficie.
+
+Puede componerse dentro de:
+
+- `TabletTaskSurface`, cuando UI017 aplique;
+- `KioskTaskSurface`, cuando UI018 aplique;
+- una superficie web ordinaria propietaria.
+
+La composición conserva las reglas específicas de privacidad, tacto, actor y montaje del patrón exterior.
+
+UI019 no detecta el dispositivo por viewport, touch o `userAgent`.
+
+---
+
+#### 42. Frontera con traspaso entre aplicaciones
+
+`SHELL-UI-020` conserva el patrón de traspaso entre aplicaciones.
+
+UI019 puede presentar que la siguiente salida segura requiere continuar en otra aplicación, pero no:
+
+- crea deep links;
+- transporta autoridad;
+- decide destino cross-app;
+- construye `returnTo` autoritativo;
+- firma handoffs;
+- atribuye aceptación al receptor;
+- implementa retorno entre aplicaciones.
+
+Cuando la acción requiera un traspaso cross-app, el control suministrado debe provenir del contrato propietario de UI020 y de integración.
+
+---
+
+#### 43. Handoff frente a proceso interrumpido
+
+UI019 puede representar `HANDOFF_REQUIRED`, pero no ejecuta el handoff.
+
+```text
+INTERRUPCIÓN
+→ puede requerir handoff
+
+HANDOFF
+→ exige oferta, aceptación y propiedad explícitas
+```
+
+La existencia de una persona nueva frente a la pantalla no equivale a aceptación del trabajo.
+
+UI020 permanece propietario de la experiencia compartida de traspaso entre aplicaciones; los contratos de proceso e integración permanecen propietarios del efecto empresarial.
+
+---
+
+#### 44. Privacidad en dispositivos compartidos
+
+Antes de identificar al actor, la superficie no debe revelar detalles sensibles del checkpoint.
+
+Después de un cambio de actor:
+
+- no se presenta automáticamente el trabajo privado del actor anterior;
+- no se muestran borradores personales heredados;
+- no se muestran filtros o búsquedas privadas anteriores;
+- no se exponen claims o recursos que el nuevo actor no puede conocer;
+- el soporte técnico no recibe payload empresarial completo por defecto.
+
+La aplicación filtra la lista recuperable antes de construir UI019.
+
+---
+
+#### 45. Retención y expiración
+
+UI019 presenta el efecto de una política de vigencia ya resuelta.
+
+Todo checkpoint conserva externamente reglas de:
+
+```text
+VIGENCIA
+RETENCIÓN
+EXPIRACIÓN
+CANCELACIÓN
+SUPERSESIÓN
+BORRADO SEGURO
+PRESERVACIÓN POR AUDITORÍA
+```
+
+La superficie no implementa timers autoritativos ni decide borrado.
+
+`EXPIRED` y `SUPERSEDED` impiden continuar el punto anterior como si todavía fuera vigente.
+
+---
+
+#### 46. Descartar trabajo
+
+Una acción de descarte solo puede mostrarse si la capa propietaria determinó qué se descarta y qué evidencia debe conservarse.
+
+Cerrar la superficie no equivale a descartar:
+
+- borrador;
+- checkpoint;
+- operación pendiente;
+- evidencia;
+- receipt;
+- claim;
+- custodia.
+
+Un descarte irreversible o sensible conserva confirmación proporcional.
+
+---
+
+#### 47. Guardar para después
+
+Guardar para después no significa congelar autoridad.
+
+Puede conservar checkpoint o borrador según contrato, pero una futura reanudación deberá volver a validar:
+
+- actor;
+- contexto;
+- autorización;
+- recurso;
+- versión;
+- claim;
+- custodia;
+- resultados pendientes.
+
+UI019 no genera persistencia por sí mismo.
+
+---
+
+#### 48. Lenguaje visible
+
+La superficie utiliza lenguaje de trabajo, no infraestructura.
+
+Debe favorecer expresiones como:
+
+```text
+Tarea interrumpida
+Último avance
+Trabajo guardado
+Cambió desde tu pausa
+Necesita revisión
+Esperando confirmación
+No sabemos todavía si la acción terminó
+```
+
+No utiliza como copy ordinario:
+
+```text
+checkpoint hydration failed
+HTTP 409
+stale cache
+idempotency lookup
+lease heartbeat timeout
+schema mismatch
+```
+
+El detalle técnico, cuando sea necesario para soporte autorizado, permanece fuera de la explicación ordinaria.
+
+---
+
+#### 49. Semántica HTML
+
+`InterruptedProcessState` es conceptualmente una región de estado y continuidad con acciones asociadas.
+
+No impone:
+
+- `role="alert"` universal;
+- `aria-live` sobre toda la superficie;
+- `role="application"`;
+- foco forzado en cada actualización.
+
+Las regiones de alerta, diálogo, navegación, estado y resultado conservan la semántica de sus componentes propietarios.
+
+`ariaLabel` identifica la región cuando la composición necesita un nombre accesible explícito.
+
+---
+
+#### 50. Foco y teclado
+
+La implementación futura deberá:
+
+- anunciar de forma proporcionada que existe trabajo recuperable;
+- permitir llegar al resumen de cambios;
+- conservar orden lógico de foco;
+- no robar foco en cada actualización de validación;
+- mantener una acción primaria única cuando exista;
+- permitir revisar diferencias por teclado;
+- devolver foco de forma predecible después de una resolución;
+- no atrapar al usuario dentro del patrón;
+- permitir posponer o salir cuando el contrato lo admita.
+
+Un cambio asíncrono no desplaza una acción sensible bajo el foco o puntero activo.
+
+---
+
+#### 51. Accesibilidad
+
+La materialización futura deberá conservar:
+
+1. identificación accesible del trabajo;
+2. estado de reanudación comprensible;
+3. último avance perceptible;
+4. trabajo preservado perceptible;
+5. cambios posteriores descritos por texto;
+6. claim o custodia explicados cuando sean materiales;
+7. acciones con nombres inequívocos;
+8. foco visible;
+9. navegación por teclado;
+10. compatibilidad táctil;
+11. lector de pantalla;
+12. reflow;
+13. zoom y texto aumentado;
+14. ausencia de significado exclusivo por color;
+15. ausencia de hover como acceso único;
+16. tiempo suficiente para revisar conflictos;
+17. privacidad de contenido oculto;
+18. ausencia de modales repetitivos por cada navegación.
+
+---
+
+#### 52. Responsive
+
+UI019 conserva su jerarquía en escritorio, tablet y kiosco.
+
+No desaparecen por compactación:
+
+- estado de reanudación;
+- work identity;
+- último avance;
+- trabajo preservado material;
+- cambio relevante;
+- bloqueo;
+- siguiente acción segura.
+
+Los detalles secundarios pueden reorganizarse, pero el contenido mínimo no exige scroll horizontal ordinario.
+
+---
+
+#### 53. Compatibilidad server/client
+
+La estructura base de UI019 no requiere por sí misma:
+
+- `window`;
+- `document`;
+- router;
+- storage;
+- timers;
+- red;
+- Supabase;
+- listeners globales;
+- APIs de hardware;
+- Service Worker.
+
+Por tanto, la superficie base es conceptualmente server-safe.
+
+Los controles suministrados por el productor pueden requerir cliente sin convertir al patrón en propietario de sus efectos.
+
+---
+
+#### 54. Dependencias prohibidas
+
+`InterruptedProcessState` no dependerá directamente de:
+
+- `@vento/supabase`;
+- clientes Supabase;
+- tablas;
+- RPC;
+- Edge Functions;
+- Storage;
+- Realtime;
+- APIs de dominio;
+- queues;
+- Service Workers;
+- drivers de periféricos;
+- stores internos de aplicaciones;
+- módulos internos de rutas;
+- catálogos locales de permisos;
+- claves de idempotencia;
+- secretos;
+- heurísticas de dispositivo.
+
+---
+
+#### 55. Estado técnico actual de SHELL
+
+El estado remoto verificable conserva bajo `packages/` únicamente:
+
+```text
+os-context
+```
+
+No existe todavía un package físico `@vento/ui-web`.
+
+`src/components/ui` conserva:
+
+```text
+Button
+Card
+Chip
+Input
+Modal
+```
+
+más el barrel `index.ts`.
+
+No existe una implementación física `InterruptedProcessState`.
+
+Resultado:
+
+```text
+CONTRATO UI019                    = ESPECIFICADO DOCUMENTALMENTE
+PATRÓN FÍSICO                     = NO MATERIALIZADO
+PACKAGE @vento/ui-web             = NO MATERIALIZADO
+CHECKPOINT FÍSICO POR UI019       = NO MATERIALIZADO
+ALMACENAMIENTO POR UI019          = NO MATERIALIZADO
+ADOPCIÓN RUNTIME                  = 0
+CAMBIOS SUPABASE                  = 0
+```
+
+---
+
+#### 56. Reconciliación de primitivas locales
+
+| Primitiva local | Decisión frente a UI019 |
+| --- | --- |
+| `Button` | control potencial para una salida ya elegible; no decide reanudación |
+| `Card` | agrupación potencial; no representa checkpoint ni estado empresarial |
+| `Chip` | señal compacta potencial; no explica por sí sola una interrupción |
+| `Input` | captura potencial durante revisión; no persiste borrador ni recupera contexto |
+| `Modal` | diálogo potencial; no es mecanismo universal de restauración de sesión |
+
+Ninguna de las cinco primitivas equivale a `InterruptedProcessState`.
+
+No se retira ni adopta código local en esta tarea.
+
+---
+
+#### 57. Matriz materializada de consumidores
+
+Se conserva el conjunto canónico de siete consumidores web compartidos.
+
+| Consumidor | Decisión UI019 | Implementación en esta tarea |
+| --- | --- | ---: |
+| SHELL | `ELEGIBILIDAD_CONDICIONADA_A_REANUDACION_RESUELTA` | 0 |
+| NEXO | `CANDIDATO_OPERATIVO_PARA_REANUDACION` | 0 |
+| FOGO | `CANDIDATO_OPERATIVO_PARA_REANUDACION` | 0 |
+| ORIGO | `CANDIDATO_OPERATIVO_PARA_REANUDACION` | 0 |
+| VISO | `CANDIDATO_ADMINISTRATIVO_PARA_REANUDACION_CONTROLADA` | 0 |
+| PULSO | `CANDIDATO_OPERATIVO_PARA_REANUDACION` | 0 |
+| NUMERA | `CANDIDATO_ADMINISTRATIVO_PARA_REANUDACION_CONTROLADA` | 0 |
+
+Reconciliación:
+
+```text
+TOTAL ESPERADO      = 7
+TOTAL MATERIALIZADO = 7
+FALTANTES           = 0
+DUPLICADOS          = 0
+ADOPCIONES FÍSICAS  = 0
+```
+
+La matriz no afirma que esos repositorios tengan hoy checkpoints o reanudación implementados. Define su disposición frente al patrón futuro cuando su proceso propietario produzca una clasificación canónica válida.
+
+---
+
+#### 58. Decisión por consumidor: SHELL
+
+SHELL puede alojar UI019 cuando actúe como superficie de composición y reciba desde el propietario una reanudación ya clasificada.
+
+No usa historial del launcher, URL de retorno ni sesión del chrome como checkpoint.
+
+Decisión:
+
+```text
+ELEGIBILIDAD_CONDICIONADA_A_REANUDACION_RESUELTA
+```
+
+---
+
+#### 59. Decisión por consumidor: NEXO
+
+NEXO es candidato operativo para recepción, conteo, picking, carga, transporte, custodia y otras tareas que pueden quedar interrumpidas.
+
+UI019 no absorbe lógica de inventario, LOC, LPN, claim, custodia o remisión.
+
+Decisión:
+
+```text
+CANDIDATO_OPERATIVO_PARA_REANUDACION
+```
+
+---
+
+#### 60. Decisión por consumidor: FOGO
+
+FOGO es candidato operativo para lotes, recetas, cantidades, controles y estaciones multiárea.
+
+Cada checkpoint conserva externamente área, receta, versión, lote, actor y pendientes. UI019 solo presenta la proyección segura después de revalidar contexto.
+
+Decisión:
+
+```text
+CANDIDATO_OPERATIVO_PARA_REANUDACION
+```
+
+---
+
+#### 61. Decisión por consumidor: ORIGO
+
+ORIGO es candidato operativo para recepciones, diferencias, evidencia y tareas parciales.
+
+Una orden cambiada exige revisión o conflicto; UI019 no sobrescribe la versión vigente con un borrador anterior.
+
+Decisión:
+
+```text
+CANDIDATO_OPERATIVO_PARA_REANUDACION
+```
+
+---
+
+#### 62. Decisión por consumidor: VISO
+
+VISO puede utilizar UI019 para trabajo administrativo recuperable, siempre que la acción final sensible o masiva vuelva a validar datos, versión, permiso y contexto.
+
+La reanudación no reactiva automáticamente una aprobación, publicación o operación masiva anterior.
+
+Decisión:
+
+```text
+CANDIDATO_ADMINISTRATIVO_PARA_REANUDACION_CONTROLADA
+```
+
+---
+
+#### 63. Decisión por consumidor: PULSO
+
+PULSO es candidato operativo para pedidos, atención, entrega y flujos con periféricos o pagos.
+
+Un resultado desconocido de pago o datáfono bloquea repetición ciega y exige resolución propietaria antes de ofrecer otra intención.
+
+Decisión:
+
+```text
+CANDIDATO_OPERATIVO_PARA_REANUDACION
+```
+
+---
+
+#### 64. Decisión por consumidor: NUMERA
+
+NUMERA puede utilizar UI019 para trabajo administrativo recuperable, con especial cuidado sobre periodo, versión, conciliación, exportación y operaciones materiales.
+
+Un snapshot antiguo no reabre autoridad ni permite continuar una acción sensible sin revalidación.
+
+Decisión:
+
+```text
+CANDIDATO_ADMINISTRATIVO_PARA_REANUDACION_CONTROLADA
+```
+
+---
+
+#### 65. Estrategia posterior de migración
+
+La adopción física queda fuera de UI019.
+
+El gobierno `SHELL-MIG-*` deberá:
+
+1. inventariar restauraciones actuales basadas en URL, storage, estado de componente o modales genéricos;
+2. localizar borradores sin actor, recurso, versión o vigencia;
+3. identificar reintentos después de timeout sin consulta de receipt;
+4. detectar claims o custodias presumidos por mantener una pantalla abierta;
+5. detectar datos del actor anterior visibles en dispositivos compartidos;
+6. clasificar flujos que requieren checkpoint, borrador durable, reautorización, comparación, handoff, claim o conciliación;
+7. crear adapters de proyección sin mover autoridad a `@vento/ui-web`;
+8. migrar por lotes reversibles;
+9. validar interrupciones reales, privacidad, accesibilidad y recuperación;
+10. demostrar paridad y rollback antes de retirar patrones legacy.
+
+---
+
+#### 66. Handoff a migración coordinada
+
+| Tarea | Handoff de UI019 |
+| --- | --- |
+| `SHELL-MIG-001` | inventariar restauraciones, borradores, checkpoints, reintentos y estados de continuidad existentes |
+| `SHELL-MIG-002` | agrupar adopción por consumidor, proceso, riesgo e interrupción |
+| `SHELL-MIG-003` | fijar compatibilidad temporal y bloquear nuevas restauraciones divergentes |
+| `SHELL-MIG-004` | impedir que scaffolds usen URL o estado React como continuidad autoritativa |
+| `SHELL-MIG-005` | adoptar `InterruptedProcessState` sobre una proyección de reanudación ya resuelta |
+| `SHELL-MIG-006` | validar estados, actor, contexto, privacidad, accesibilidad, restart y dispositivo compartido |
+| `SHELL-MIG-007` | demostrar paridad de trabajo preservado, cambios, claims, resultados y siguiente salida |
+| `SHELL-MIG-008` | retirar únicamente patrones legacy sin uso residual y con rollback |
+
+---
+
+#### 67. Handoff a calidad y releases
+
+| Tarea | Responsabilidad |
+| --- | --- |
+| `SHELL-CI-001` | pruebas propias del package |
+| `SHELL-CI-002` | build independiente |
+| `SHELL-CI-003` | release versionado |
+| `SHELL-CI-004` | changelog |
+| `SHELL-CI-005` | matriz de compatibilidad por consumidor |
+| `SHELL-CI-006` | actualización controlada de consumidores |
+
+La aprobación documental no constituye implementación, persistencia de checkpoints ni compatibilidad certificada.
+
+---
+
+#### 68. Contrato futuro de prueba
+
+La materialización y adopción deberán demostrar, como mínimo:
+
+1. aceptación exclusiva de los diecisiete estados canónicos;
+2. rechazo de estados inventados por el componente;
+3. ausencia de autoridad derivada de URL;
+4. ausencia de autoridad derivada de historial del navegador;
+5. ausencia de autoridad derivada de estado React;
+6. ausencia de `ProcessCheckpoint` crudo como decisión visual;
+7. separación entre borrador, checkpoint, operación pendiente, receipt y estado empresarial;
+8. presencia de contexto actual revalidado;
+9. presencia de work identity;
+10. presencia de resumen de interrupción;
+11. máximo una acción primaria;
+12. ausencia de `Continuar` en `VALIDATING`;
+13. ausencia de `Continuar` en `CHECKPOINT_AVAILABLE` antes de validación;
+14. `RESUMABLE` solo después de elegibilidad externa;
+15. `RESUMABLE_WITH_REVIEW` con cambios visibles;
+16. ausencia de `last write wins` silencioso;
+17. `WAITING_FOR_DEPENDENCY` con evento y responsable perceptibles;
+18. `HANDOFF_REQUIRED` sin transferencia silenciosa;
+19. `REASSIGNMENT_REQUIRED` sin atribuir trabajo al actor actual;
+20. `CONFLICT` sin sobrescritura automática;
+21. `RESULT_UNKNOWN` sin retry ciego;
+22. `REAUTH_REQUIRED` sin conservar autoridad anterior;
+23. `RECONCILIATION_REQUIRED` sin presentar éxito;
+24. `SUPERSEDED` sin reabrir el punto antiguo;
+25. `COMPLETED` sin acción de reanudación;
+26. `EXPIRED` sin continuar el checkpoint vencido;
+27. `INVALID` sin fallback permisivo;
+28. último avance diferenciado de resultado confirmado;
+29. trabajo guardado diferenciado de efecto empresarial;
+30. cambios posteriores explicados en lenguaje humano;
+31. claim anterior no presumido vigente;
+32. custodia no inferida de la pantalla;
+33. actor nuevo sin borrador heredado;
+34. actor nuevo sin claim heredado;
+35. actor nuevo sin autoridad heredada;
+36. cambio de contexto con decisión externa nueva;
+37. cambio de dispositivo sin prometer datos local-only inexistentes;
+38. reinicio sin ejecución automática de pendientes;
+39. actualización sin restaurar esquema incompatible;
+40. acción sensible con reautorización cuando corresponda;
+41. confirmación sensible delegada a UI014;
+42. resultado desconocido delegado a resolución propietaria antes de repetir;
+43. error recuperable compuesto con UI016 sin fusionar contratos;
+44. contexto inválido compuesto con UI015 sin crear autoridad;
+45. TaskNavigation preservada como propietaria de navegación;
+46. ProcessStatusLine preservada como propietaria del avance;
+47. tablet especializada por UI017;
+48. kiosco especializado por UI018;
+49. traspaso cross-app delegado a UI020;
+50. deep link sin autoridad dentro de UI019;
+51. archivos locales separados de evidencia confirmada;
+52. comando periférico separado de ejecución física;
+53. lote sin repetir elementos confirmados;
+54. privacidad en dispositivo compartido;
+55. checkpoint del actor anterior no expuesto antes de identificar al nuevo;
+56. retención y expiración presentadas sin timers autoritativos internos;
+57. cerrar UI sin descartar trabajo implícitamente;
+58. guardar para después sin congelar autoridad;
+59. lenguaje humano sin códigos de infraestructura;
+60. semántica HTML sin `role="application"` universal;
+61. ausencia de `aria-live` universal;
+62. foco lógico durante validación y comparación;
+63. navegación por teclado;
+64. compatibilidad táctil;
+65. lector de pantalla;
+66. zoom y reflow;
+67. contenido mínimo sin scroll horizontal ordinario;
+68. ausencia de dependencia directa de Supabase;
+69. ausencia de storage, queues o Service Worker dentro del patrón base;
+70. estructura base server-safe;
+71. siete decisiones de consumidor materializadas;
+72. cero faltantes y cero duplicados en la matriz;
+73. migración reversible por consumidor;
+74. pruebas de recarga, background, reinicio y energía;
+75. pruebas de expiración, revocación y cambio de actor;
+76. pruebas de cambio de área y dispositivo;
+77. pruebas de claim tomado y recurso cambiado;
+78. pruebas de resultado desconocido;
+79. pruebas de esquema anterior y actualización;
+80. pruebas de archivo local y periférico incierto;
+81. pruebas de handoff y custodia;
+82. pruebas de lotes parciales y concurrencia entre dispositivos;
+83. pruebas de accesibilidad y privacidad.
+
+Esta lista define evidencia futura y no declara ejecución física dentro de UI019.
+
+---
+
+#### 69. Cobertura de requisitos vigente
+
+UI019 no necesita crear una obligación transversal nueva porque el Registro Canónico vigente ya protege, entre otras, las siguientes materias:
+
+- checkpoint semántico versionado y prohibición de usar URL o estado completo del componente como autoridad: `TREQ-UX-274`;
+- taxonomía de interrupciones sin reanudación automática: `TREQ-UX-275`;
+- algoritmo autoritativo de reanudación y resumen humano: `TREQ-UX-276`;
+- conjunto canónico de estados y prohibición de `Continuar` prematuro: `TREQ-UX-277`;
+- reanudación directa con actor, contexto, recurso, claim, custodia y permiso revalidados: `TREQ-UX-278`;
+- revisión y comparación sin `last write wins`: `TREQ-UX-279`;
+- separación entre borrador, checkpoint, operación pendiente, receipt y estado empresarial: `TREQ-UX-280`;
+- resolución de resultado desconocido antes de reintentar: `TREQ-UX-281`;
+- aislamiento por actor y prohibición de transferencia implícita: `TREQ-UX-282`;
+- handoff con oferta y aceptación trazables: `TREQ-UX-283`;
+- claims, leases, renovación y takeover: `TREQ-UX-284`;
+- custodia física y conciliación digital: `TREQ-UX-285`;
+- revalidación completa ante cambio de contexto: `TREQ-UX-286`;
+- comparación de versiones y recursos cerrados, cancelados, sustituidos o incompatibles: `TREQ-UX-287`;
+- recarga, reinicio y actualización sin autoridad stale ni ejecución automática: `TREQ-UX-288`;
+- continuidad segura entre dispositivos: `TREQ-UX-289`;
+- continuidad entre aplicaciones mediante checkpoint y deep link opaco sin autoridad: `TREQ-UX-290`;
+- checkpoints multiárea de FOGO: `TREQ-UX-291`;
+- tareas repetitivas y lotes parciales: `TREQ-UX-292`;
+- reautorización de acciones sensibles y excepciones: `TREQ-UX-293`;
+- dependencias, archivos, evidencia y periféricos: `TREQ-UX-294`;
+- superficie de reanudación, accesibilidad, privacidad y retención: `TREQ-UX-295`;
+- certificación adversarial, migración y métricas de recuperación: `TREQ-UX-296`;
+- responsabilidad compartida, compatibilidad y rollback de packages: `TREQ-SHELL-002`, `TREQ-SHELL-006` y `TREQ-SHELL-007`;
+- validación automática del registro: `TREQ-SHELL-008`;
+- reconciliación de primitivas locales antes de adopción o retiro: `TREQ-SHELL-032`;
+- identidad de release, deprecación y retiro de superficies públicas: `TREQ-SHELL-036..039`.
+
+UI019 especializa la presentación compartida de esas obligaciones sin introducir una nueva regla empresarial, de autorización, integridad, persistencia o continuidad.
+
+---
+
+#### 70. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+**Justificación:** la cobertura vigente ya define checkpoint, taxonomía de interrupciones, algoritmo de reanudación, estados visibles, actor, contexto, claims, custodia, cambios concurrentes, resultados desconocidos, handoffs, dispositivos, acciones sensibles, privacidad, accesibilidad, retención, migración y certificación. UI019 fija únicamente su patrón presentacional compartido dentro de `@vento/ui-web`.
+
+---
+
+#### 71. Estado de materialización física
+
+Al cierre documental de UI019:
+
+```text
+IDENTIDAD InterruptedProcessState                    = ESPECIFICADA
+InterruptedProcessStateProps                         = ESPECIFICADO CONCEPTUALMENTE
+InterruptedProcessStatus                             = 17 ESTADOS CANÓNICOS REUTILIZADOS
+InterruptedProcessSummary                            = ESPECIFICADO CONCEPTUALMENTE
+CONTRATO INTERRUPTED-PROCESS-PRESENTATION-CONTRACT-001 = ESPECIFICADO
+SLOTS SEMÁNTICOS                                     = 7 PRESERVADOS
+FRONTERA CHECKPOINT / PRESENTACIÓN                   = CERRADA
+FRONTERA BORRADOR / ESTADO EMPRESARIAL              = CERRADA
+FRONTERA RESULTADO DESCONOCIDO / RETRY               = CERRADA
+FRONTERA ACTOR / TRANSFERENCIA                       = CERRADA
+FRONTERA CLAIM / PRESENTACIÓN                        = CERRADA
+FRONTERA CUSTODIA / PRESENTACIÓN                     = CERRADA
+FRONTERA REANUDACIÓN / AUTORIZACIÓN                  = CERRADA
+FRONTERA UI016 / UI019                               = CERRADA
+FRONTERA UI019 / UI020                               = CERRADA
+PRIVACIDAD                                           = ESPECIFICADA DOCUMENTALMENTE
+ACCESIBILIDAD                                        = ESPECIFICADA DOCUMENTALMENTE
+CONSUMIDORES RECONCILIADOS                           = 7/7
+FALTANTES                                            = 0
+DUPLICADOS                                           = 0
+PACKAGE @vento/ui-web                                = NO MATERIALIZADO
+PATRÓN FÍSICO                                        = NO MATERIALIZADO
+CHECKPOINT FÍSICO                                    = NO MATERIALIZADO POR UI019
+CONSUMIDORES MIGRADOS                                = 0
+CAMBIOS SUPABASE                                     = 0
+CAMBIOS TREQ                                         = 0
+```
+
+---
+
+#### 72. Decisiones vinculantes
+
+1. El patrón conceptual se denomina `InterruptedProcessState`.
+2. Pertenece conceptualmente a `@vento/ui-web`.
+3. UI019 es documental y no materializa código.
+4. El contrato se denomina `INTERRUPTED-PROCESS-PRESENTATION-CONTRACT-001`.
+5. UI019 reutiliza exactamente diecisiete estados canónicos de reanudación.
+6. UI019 no crea una taxonomía paralela.
+7. La reanudación se resuelve fuera del componente.
+8. UI019 recibe una proyección humana ya clasificada.
+9. UI019 no recibe `ProcessCheckpoint` crudo como fuente de autoridad.
+10. URL, historial y estado React no constituyen checkpoint.
+11. Borrador, checkpoint, operación pendiente, receipt y estado empresarial permanecen separados.
+12. La API conceptual conserva siete slots semánticos.
+13. `persistentContext`, `workIdentity` e `interruptionSummary` son obligatorios.
+14. `blockingState`, `primaryAction`, `secondarySupport` y `resultAndReceipt` son condicionales.
+15. Puede existir como máximo una acción primaria.
+16. `VALIDATING` no ofrece continuación empresarial.
+17. `CHECKPOINT_AVAILABLE` no implica que el trabajo sea todavía reanudable.
+18. `RESUMABLE` solo llega después de revalidación externa completa.
+19. `RESUMABLE_WITH_REVIEW` muestra diferencias antes de continuar.
+20. UI019 no aplica `last write wins`.
+21. `RESULT_UNKNOWN` prohíbe retry ciego.
+22. UI019 no genera idempotency keys.
+23. UI019 no consulta receipts.
+24. UI019 no renueva claims.
+25. UI019 no toma ownership de tareas.
+26. UI019 no transfiere custodia.
+27. Cambiar actor no transfiere borrador, claim, custodia ni autoridad.
+28. Cambiar contexto exige resolución externa nueva.
+29. Cambiar dispositivo no garantiza disponibilidad del borrador local.
+30. Reiniciar la UI no ejecuta operaciones pendientes automáticamente.
+31. Una actualización no restaura autoridad stale.
+32. Acciones sensibles conservan reautorización y confirmación vigentes.
+33. `WAITING_FOR_DEPENDENCY` no interpreta notificación como cumplimiento.
+34. Archivo local no equivale a evidencia vinculada.
+35. Comando de periférico no equivale a resultado físico.
+36. Lotes no repiten elementos ya confirmados por reconstruir la pantalla.
+37. `TaskNavigation` conserva navegación de trabajo.
+38. `ProcessStatusLine` conserva avance del proceso.
+39. `ContextDiagnostic` conserva diagnóstico de contexto.
+40. `RecoverableErrorState` conserva recuperación frente a fallo observado.
+41. `PrimaryActionPanel` conserva jerarquía de la acción principal.
+42. `SHELL-UI-014` conserva confirmación sensible.
+43. UI017 conserva especialización de tablet.
+44. UI018 conserva especialización de kiosco.
+45. UI020 conserva traspaso entre aplicaciones.
+46. UI019 no crea deep links ni transporta autoridad cross-app.
+47. Un handoff requerido no equivale a handoff aceptado.
+48. La lista recuperable se filtra por actor antes de mostrar datos sensibles.
+49. UI019 no administra retención ni borrado.
+50. Cerrar la superficie no descarta trabajo implícitamente.
+51. Guardar para después no congela autoridad.
+52. El copy ordinario utiliza lenguaje empresarial, no infraestructura.
+53. La semántica HTML no impone `role="application"`.
+54. No existe `aria-live` universal.
+55. La estructura base es conceptualmente server-safe.
+56. No existe dependencia directa de Supabase.
+57. No existe storage, queue o Service Worker dentro de la superficie base.
+58. El package físico `@vento/ui-web` continúa no materializado.
+59. `InterruptedProcessState` no existe físicamente en el estado remoto verificado.
+60. Los siete consumidores tienen una decisión explícita.
+61. La matriz contiene 7/7 consumidores, con cero faltantes y cero duplicados.
+62. La adopción física queda en `SHELL-MIG-*`.
+63. Pruebas, build, release y compatibilidad quedan en `SHELL-CI-*`.
+64. UI019 crea cero requisitos `TREQ-*` y modifica cero.
+65. UI019 produce cero cambios de Supabase.
+66. UI020 permanece únicamente reservada.
+
+---
+
+#### 73. Criterios de aceptación documental
+
+UI019 queda documentalmente cerrada si se cumplen simultáneamente:
+
+- [x] la continuidad vigente identifica UI018 como anterior y UI019 como actual;
+- [x] UI020 permanece reservada;
+- [x] existe una identidad única `InterruptedProcessState`;
+- [x] se define `INTERRUPTED-PROCESS-PRESENTATION-CONTRACT-001`;
+- [x] se fija pertenencia conceptual a `@vento/ui-web`;
+- [x] se reutilizan exactamente los diecisiete estados canónicos;
+- [x] no se crea taxonomía paralela;
+- [x] se define el contrato productor-consumidor;
+- [x] se define una API conceptual mínima sin checkpoint crudo;
+- [x] se preservan siete slots semánticos;
+- [x] se separan checkpoint y presentación;
+- [x] se separan borrador, checkpoint, operación, receipt y estado empresarial;
+- [x] URL, historial y estado React quedan fuera de autoridad;
+- [x] se prohíbe `Continuar` antes de clasificación suficiente;
+- [x] se define `RESUMABLE` con elegibilidad externa;
+- [x] se define `RESUMABLE_WITH_REVIEW` con comparación visible;
+- [x] se prohíbe `last write wins` silencioso;
+- [x] se trata `RESULT_UNKNOWN` sin retry ciego;
+- [x] se preserva idempotencia fuera del componente;
+- [x] se preservan claims y leases fuera del componente;
+- [x] se preserva custodia fuera del componente;
+- [x] se protege cambio de actor sin transferencia implícita;
+- [x] se protege cambio de contexto con nueva resolución;
+- [x] se protege cambio de dispositivo sin falsa continuidad local;
+- [x] se cubren restart, suspensión y actualización;
+- [x] se preserva reautorización de acciones sensibles;
+- [x] se cubren dependencias, archivos y periféricos;
+- [x] se cubren tareas repetitivas y lotes parciales;
+- [x] se define prioridad de recuperación sin absorber bandeja;
+- [x] se integra `TaskNavigation` sin absorberla;
+- [x] se integra `ProcessStatusLine` sin absorberla;
+- [x] se integra `ContextDiagnostic` sin crear autoridad;
+- [x] se integra `RecoverableErrorState` sin fusionar recuperación y reanudación;
+- [x] se integra `PrimaryActionPanel` manteniendo una sola acción primaria;
+- [x] se conserva UI014 para confirmaciones sensibles;
+- [x] se conservan UI017 y UI018 como especializaciones de superficie;
+- [x] se cierra frontera con UI020;
+- [x] UI019 no crea deep links ni traspaso cross-app;
+- [x] se protege privacidad en dispositivos compartidos;
+- [x] se define retención como política externa;
+- [x] cerrar UI no descarta trabajo;
+- [x] guardar para después no congela autoridad;
+- [x] se define lenguaje humano;
+- [x] se define semántica HTML y foco;
+- [x] se define accesibilidad;
+- [x] se define responsive;
+- [x] se define compatibilidad server/client;
+- [x] se reconcilia el estado físico actual de `packages/`;
+- [x] se reconcilia `src/components/ui`;
+- [x] se materializan decisiones para los siete consumidores;
+- [x] faltantes y duplicados son cero;
+- [x] adopciones físicas son cero;
+- [x] se define handoff a migración y calidad;
+- [x] se declaran cero cambios `TREQ-*` con cobertura concreta;
+- [x] se declaran cero cambios de Supabase;
+- [x] no queda una decisión material de UI019 sin propietario documental.
+
+---
+
+#### 74. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | `NOT_EXECUTED` | No existe en este entorno un checkout local actualizado que incorpore el artefacto UI019 para ejecutar el build documental del repositorio. |
+| LOCAL | `NOT_EXECUTED` | No se ejecutaron scripts del repositorio ni `git diff --check` contra un checkout actualizado; el artefacto transitorio se verificó estructuralmente de forma aislada. |
+| REMOTA | `PASS` | Se verificaron por GitHub la secuencia activa, protocolo, archivo propietario, UI018, contrato de entrega, políticas de tarea, `package.json`, validadores aplicables, `UX-BASE-014`, composición de `UX-STATION-012`, fragmentos 04A relevantes, `packages/` y `src/components/ui`. |
+| OPERATIVA | `NOT_APPLICABLE` | UI019 no modifica runtime, procesos empresariales, autorización, checkpoints persistidos, colas, periféricos, sesiones ni servicios desplegados. |
+| FÍSICA | `NOT_EXECUTED` | La certificación futura exige escenarios reales de recarga, reinicio, dispositivo compartido, cambio de actor y periféricos; UI019 no materializa todavía un patrón físico ni consumidor sobre el cual ejecutar esas pruebas. |
+
+La evidencia documental no sustituye las pruebas adversariales y operativas exigidas para una implementación futura.
+
+---
+
+#### 75. Límites
+
+Esta tarea no autoriza:
+
+- crear `packages/ui-web`;
+- crear archivos TypeScript de `InterruptedProcessState`;
+- modificar `src/components/ui`;
+- modificar aplicaciones consumidoras;
+- crear tablas de checkpoints;
+- crear storage local o remoto;
+- crear queues;
+- crear Service Workers;
+- persistir borradores;
+- consultar receipts;
+- implementar idempotencia;
+- renovar claims o leases;
+- transferir ownership;
+- transferir custodia;
+- implementar handoffs;
+- crear deep links;
+- modificar AppShell;
+- cambiar rutas;
+- resolver permisos o contexto;
+- implementar reautenticación;
+- cambiar políticas de retención;
+- gestionar archivos o periféricos;
+- publicar paquetes;
+- ejecutar SQL;
+- crear o ejecutar migraciones;
+- modificar Supabase;
+- desplegar;
+- declarar certificación operativa de reanudación;
+- iniciar UI020.
+
+---
+
+#### 76. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-UI-018 — Compartir patrón para kiosco`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-UI-019 — Compartir patrón de proceso interrumpido`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-UI-020 — Compartir patrón de traspaso entre aplicaciones`
+
 ### [ ] SHELL-UI-020 — Compartir patrón de traspaso entre aplicaciones
