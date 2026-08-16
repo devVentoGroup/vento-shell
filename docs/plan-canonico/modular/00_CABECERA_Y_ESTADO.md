@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **893** |
+| Tareas aprobadas | **894** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **701** |
+| Tareas no iniciadas | **700** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **56.02% (893/1594)** |
+| Porcentaje de completamiento | **56.09% (894/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-CON-014 — Crear contrato de traspasos entre aplicaciones** |
-| Tarea actual | **SHELL-CON-015 — Crear contrato de tareas pendientes** |
+| Última tarea aprobada | **SHELL-CON-015 — Crear contrato de tareas pendientes** |
+| Tarea actual | **SHELL-CON-016 — Crear contrato de propiedad funcional** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CON-016 — Crear contrato de propiedad funcional** |
+| Siguiente tarea | **SHELL-CON-017 — Crear contrato de principal técnico de integración** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 43 de 109 aprobadas; SHELL-CON-015 pendiente** |
+| Progreso del bloque | **BLOQUE H: 44 de 109 aprobadas; SHELL-CON-016 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-CON-014` — Crear contrato de traspasos entre aplicaciones |
-| Tarea actual | `SHELL-CON-015` — Crear contrato de tareas pendientes — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CON-016` — Crear contrato de propiedad funcional |
+| Última aprobada | `SHELL-CON-015` — Crear contrato de tareas pendientes |
+| Tarea actual | `SHELL-CON-016` — Crear contrato de propiedad funcional — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CON-017` — Crear contrato de principal técnico de integración |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 43 DE 109 APROBADAS — ACTUAL SHELL-CON-015** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 44 DE 109 APROBADAS — ACTUAL SHELL-CON-016** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-CON-014 — Crear contrato de traspasos entre aplicaciones
-        ↓
-TAREA ACTUAL
 SHELL-CON-015 — Crear contrato de tareas pendientes
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-CON-016 — Crear contrato de propiedad funcional
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CON-017 — Crear contrato de principal técnico de integración
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 43 de 109 tareas aprobadas
+BLOQUE H — 44 de 109 tareas aprobadas
 ```

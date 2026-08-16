@@ -10373,5 +10373,522 @@ SHELL-CON-014 — Crear contrato de traspasos entre aplicaciones
 SHELL-CON-015 — Crear contrato de tareas pendientes
 
 
-### [ ] SHELL-CON-015 — Crear contrato de tareas pendientes
+### ✅ SHELL-CON-015 — Crear contrato de tareas pendientes
+
+**Estado:** APROBADA
+**Tarea anterior:** `SHELL-CON-014 — Crear contrato de traspasos entre aplicaciones`
+**Tarea siguiente:** `SHELL-CON-016 — Crear contrato de propiedad funcional`
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Estado físico:** `DEFINIDO_NO_MATERIALIZADO`
+**Cambios físicos:** ninguno
+**Resultado TREQ:** `NO GENERA REQUISITOS DE PRUEBA`
+
+#### 1. Propósito
+
+Centralizar el contrato compartido de los ítems de trabajo que representan tareas actuales o pendientes en Vento OS, de forma que SHELL y las aplicaciones consumidoras puedan proyectar foco, cola, estado, prioridad, bloqueo, asignación y continuidad sin crear una fuente de verdad paralela ni transportar autoridad.
+
+El contrato fija la unidad mínima, las separaciones de identidad, los vocabularios conceptuales aprobados y las reglas transversales de elegibilidad, ejecutabilidad, priorización, concurrencia, handoff, sincronización y proyección cross-app.
+
+La tarea no inventa instancias runtime. Un ítem de trabajo existe únicamente cuando una fuente empresarial canónica produce una obligación concreta y trazable.
+
+#### 2. Autoridades consumidas y precedencia
+
+La tarea consume y preserva, sin sustituirlas:
+
+- `SHELL-CON-001`, como autoridad de la raíz compartida `@vento/contracts` y de sus fronteras de pureza contractual;
+- `SHELL-CON-002`, como autoridad compartida de `AppCode`;
+- `SHELL-CON-009`, como autoridad compartida de `ProcessId`;
+- `SHELL-CON-010`, como autoridad compartida de `ProcessStateId`;
+- `SHELL-CON-012`, como autoridad compartida de `FunctionalActionId`;
+- `SHELL-CON-013`, como autoridad compartida de `BusinessEventId` y de la separación entre definición de evento y ocurrencia runtime;
+- `SHELL-CON-014`, como autoridad compartida de handoffs entre aplicaciones y de la preservación de `work_item_id` cuando aplique;
+- `UX-BASE-002`, como autoridad de la semántica de tarea actual, ítem de trabajo, clases, estados, readiness, prioridad, colas, claim, interrupción, handoff, offline y recuperación;
+- la arquitectura de contexto, autorización y procesos vigente, que decide si una acción puede ejecutarse;
+- `SHELL-APP-008`, como tarea posterior propietaria de la proyección de pendientes transversales en SHELL, sin convertir a SHELL en propietario del trabajo empresarial.
+
+Ante una diferencia entre una proyección de SHELL y la fuente propietaria, prevalece la fuente propietaria y la proyección se considera obsoleta hasta su reconciliación.
+
+#### 3. Alcance del contrato
+
+El contrato cubre:
+
+1. identidad de la obligación concreta;
+2. vínculo con proceso, instancia, etapa y aplicación propietaria;
+3. fuente empresarial y recurso afectado;
+4. clase y carril de trabajo;
+5. ciclo de vida del ítem;
+6. readiness para foco y ejecución;
+7. elegibilidad, asignación, oferta, claim y ejecución;
+8. contexto, permiso, ubicación y dependencias requeridas;
+9. prioridad determinista y explicable;
+10. bloqueo, espera, pausa y recuperación;
+11. concurrencia, versión, lease e idempotencia;
+12. continuidad offline y sincronización pendiente;
+13. siguiente acción funcional;
+14. handoff y proyección cross-app;
+15. eventos correlacionados del ciclo de trabajo;
+16. separación entre fuente de verdad, proyección, navegación y autoridad.
+
+Quedan fuera de esta tarea:
+
+- crear tablas, schemas, columnas, API, RPC, colas, workers o migraciones;
+- definir una serialización física obligatoria para `work_item_id`;
+- crear instancias reales de trabajo;
+- decidir permisos, scopes o autorización efectiva;
+- decidir rutas, labels, componentes o diseño visual final;
+- implementar la bandeja o el foco de SHELL;
+- crear eventos empresariales nuevos o renumerar los existentes;
+- crear un nuevo modelo de handoff distinto del aprobado en `SHELL-CON-014`.
+
+#### 4. Namespace y propiedad
+
+La superficie lógica compartida de esta tarea es:
+
+```text
+@vento/contracts/work-items
+```
+
+Su propiedad documental queda en `vento-shell` bajo la autoridad de `@vento/contracts`.
+
+El namespace representa contratos y vocabularios compartidos. No ejecuta mutaciones, no resuelve autorización, no accede directamente a datos, no adjudica tareas y no actúa como scheduler o motor de workflow.
+
+Durante esta fase no se crea paquete, directorio de código, publicación, API ni persistencia física.
+
+#### 5. Unidad contractual e identidad
+
+La unidad contractual es el **ítem de trabajo** identificado por `work_item_id`.
+
+`work_item_id` identifica una obligación runtime concreta. Su valor se trata como referencia opaca: los consumidores no inferirán desde su forma el proceso, aplicación, actor, permiso, prioridad, territorio ni estado.
+
+La identidad del ítem no se sustituye por su estado, asignación, claim, lease, prioridad o proyección de foco. Los cambios de esos atributos se expresan mediante versión y ciclo de vida, no mediante reinterpretación de la identidad.
+
+Separaciones obligatorias:
+
+```text
+work_item_id != ProcessId
+work_item_id != process_instance_id
+work_item_id != ProcessStateId
+work_item_id != FunctionalActionId
+work_item_id != BusinessEventId
+work_item_id != PermissionId
+work_item_id != ScreenId
+work_item_id != navigation_id
+work_item_id != claim_or_lease_ref
+work_item_id != handoff_relation
+work_item_id != alert_or_notification_id
+```
+
+Consecuencias:
+
+- conocer `work_item_id` no autoriza a ver, reclamar, iniciar, completar o cancelar la obligación;
+- presentar una tarjeta o abrir un destino no equivale a asignar, reclamar o iniciar;
+- una alerta, notificación, mensaje, menú o registro reciente no es un ítem de trabajo si no existe una obligación y una fuente canónicas;
+- un handoff puede transportar la referencia del mismo `work_item_id` cuando corresponda, pero no cambia por sí solo su autoridad ni su estado de ejecución.
+
+#### 6. Unidad mínima materializada del contrato
+
+La superficie compartida deberá poder representar los **29 campos contractuales mínimos** aprobados en `UX-BASE-002`:
+
+|    # | Campo                     | Semántica contractual                                                           |
+| ---: | ------------------------- | ------------------------------------------------------------------------------- |
+|    1 | `work_item_id`            | Identidad opaca de la obligación concreta.                                      |
+|    2 | `process_id`              | Referencia al proceso canónico que origina o contiene el trabajo.               |
+|    3 | `process_instance_id`     | Referencia a la instancia empresarial concreta.                                 |
+|    4 | `process_step`            | Etapa o paso vigente al que pertenece la obligación.                            |
+|    5 | `owner_app_code`          | Aplicación propietaria de la fuente y ejecución empresarial.                    |
+|    6 | `source_ref`              | Referencia a la fuente canónica de la obligación.                               |
+|    7 | `work_item_type`          | Clase contractual del ítem de trabajo.                                          |
+|    8 | `work_lane`               | Carril de trabajo aplicable; no concede autoridad por sí mismo.                 |
+|    9 | `status`                  | Estado conceptual del ciclo de vida del ítem.                                   |
+|   10 | `readiness_status`        | Estado de readiness usado para decidir proyección y ejecutabilidad.             |
+|   11 | `assignment_mode`         | Modalidad de asignación vigente sin inferir actor autorizado.                   |
+|   12 | `assigned_actor_ref`      | Actor o responsable asignado cuando exista asignación directa.                  |
+|   13 | `eligible_actor_set_ref`  | Conjunto resoluble de actores potencialmente elegibles.                         |
+|   14 | `queue_ref`               | Cola autorizada que puede contener u ofrecer el trabajo.                        |
+|   15 | `required_context_ref`    | Contexto requerido para poder actuar.                                           |
+|   16 | `required_permission_ref` | Permiso requerido; la referencia no equivale a concesión.                       |
+|   17 | `resource_ref`            | Recurso empresarial al que aplica la obligación.                                |
+|   18 | `location_ref`            | Territorio, sede, área, estación o ubicación relevante cuando aplique.          |
+|   19 | `available_at`            | Instante desde el que la obligación puede quedar disponible.                    |
+|   20 | `due_at`                  | Vencimiento o ventana temporal relevante cuando exista.                         |
+|   21 | `priority_class`          | Nivel o clase de prioridad resuelta por política vigente.                       |
+|   22 | `priority_policy_version` | Versión de la política con la que se resolvió la prioridad.                     |
+|   23 | `blocking_refs`           | Referencias a impedimentos o dependencias que afectan la ejecución.             |
+|   24 | `next_action_code`        | Referencia a la siguiente acción funcional aplicable; no autoriza su ejecución. |
+|   25 | `work_item_version`       | Versión utilizada para frescura, concurrencia y detección de estado obsoleto.   |
+|   26 | `claim_or_lease_ref`      | Reserva o lease vigente cuando la clase de trabajo lo requiera.                 |
+|   27 | `idempotency_scope`       | Alcance necesario para evitar toma, inicio o efecto duplicados.                 |
+|   28 | `created_at`              | Momento de creación de la obligación.                                           |
+|   29 | `updated_at`              | Momento de la última actualización vigente de su proyección contractual.        |
+
+Esta lista define semántica mínima. No fija todavía nombres de tabla, columnas físicas, schema, endpoint, payload de red ni forma de almacenamiento.
+
+#### 7. Clases canónicas de ítems de trabajo
+
+El contrato centraliza exactamente las **8 clases** aprobadas:
+
+| Clase                  | Regla contractual                                                                                           |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `EXECUTE_STEP`         | Ejecuta un paso operativo y exige el hecho y la evidencia correspondientes.                                 |
+| `VERIFY_STEP`          | Verifica una condición o resultado; verificar no equivale a aprobar.                                        |
+| `HANDOFF_ACCEPTANCE`   | Acepta custodia o recepción; la responsabilidad cambia únicamente mediante el hecho válido correspondiente. |
+| `PERSONAL_OBLIGATION`  | Representa una obligación sobre la propia relación del actor.                                               |
+| `SUPERVISORY_RESPONSE` | Resuelve un bloqueo o intervención operativa autorizada sin otorgar administración universal.               |
+| `SAFETY_RESPONSE`      | Atiende una condición crítica de seguridad y puede desplazar el foco ordinario conforme a política.         |
+| `FOLLOW_UP`            | Reabre atención después de una espera y requiere fecha o condición de reactivación.                         |
+| `RECOVERY`             | Reconcilia una operación pendiente o conflicto sin repetir el efecto original.                              |
+
+Ningún consumidor podrá convertir una clase en permiso, rol, prioridad o estado de proceso.
+
+#### 8. Estados canónicos del ciclo de vida
+
+El contrato centraliza exactamente **16 estados conceptuales**:
+
+| Estado                    | Significado contractual                                                      |
+| ------------------------- | ---------------------------------------------------------------------------- |
+| `NOT_READY`               | Existe obligación futura, pero faltan dependencias.                          |
+| `AVAILABLE`               | Puede ser tomada por un actor elegible.                                      |
+| `OFFERED`                 | Fue presentada a actor o estación sin asignación definitiva.                 |
+| `ASSIGNED`                | Tiene responsable o equipo definido.                                         |
+| `CLAIMED`                 | Existe reserva activa para un actor.                                         |
+| `IN_PROGRESS`             | La ejecución ya comenzó.                                                     |
+| `WAITING`                 | Depende de tiempo, tercero o evento externo esperado.                        |
+| `BLOCKED`                 | Existe impedimento que requiere tratamiento.                                 |
+| `PAUSED`                  | Existe interrupción controlada con punto de reanudación.                     |
+| `COMPLETION_PENDING_SYNC` | El dispositivo conserva evidencia de finalización pendiente de confirmación. |
+| `COMPLETED`               | El resultado fue confirmado por la fuente canónica.                          |
+| `CANCELLED`               | La obligación fue retirada válidamente.                                      |
+| `SUPERSEDED`              | Otra versión u obligación la reemplazó.                                      |
+| `EXPIRED`                 | Perdió vigencia sin considerarse completada.                                 |
+| `CONFLICT`                | Existe una versión o actor competidor que impide continuar normalmente.      |
+| `RECONCILIATION_REQUIRED` | El efecto y la vista no coinciden y requieren reparación.                    |
+
+La implementación podrá especializar estados sin colapsar distinciones empresariales. En particular, `WAITING`, `BLOCKED`, `COMPLETED` y `COMPLETION_PENDING_SYNC` no podrán convertirse en un único estado ambiguo.
+
+#### 9. Estados de readiness para foco y ejecución
+
+La proyección compartida distingue exactamente **7 estados de readiness**:
+
+| Readiness                      | Regla                                                             |
+| ------------------------------ | ----------------------------------------------------------------- |
+| `EXECUTABLE_NOW`               | El ítem satisface las condiciones vigentes para actuar ahora.     |
+| `VISIBLE_NOT_EXECUTABLE`       | Debe ser visible, pero no puede ejecutarse en el contexto actual. |
+| `WAITING_EXTERNAL`             | Está a la espera de tiempo, tercero o evento externo.             |
+| `BLOCKED_RECOVERABLE`          | Existe bloqueo cuya recuperación corresponde al flujo permitido.  |
+| `BLOCKED_REQUIRES_OTHER_ACTOR` | La resolución depende de otro actor o autoridad.                  |
+| `STALE_REQUIRES_REFRESH`       | La proyección perdió frescura y debe revalidarse.                 |
+| `NOT_ELIGIBLE`                 | El actor o contexto actual no son elegibles para actuar.          |
+
+Una tarea visible pero no ejecutable no ocupa el foco principal salvo cuando resolver, escalar o gestionar esa condición sea la única obligación válida del trabajador.
+
+#### 10. Elegibilidad, asignación, oferta, claim y ejecución
+
+Estas condiciones permanecen separadas:
+
+- **elegibilidad** responde quién podría realizar el trabajo bajo las reglas vigentes;
+- **oferta** presenta el trabajo a un actor, equipo o estación sin convertirlo automáticamente en responsable;
+- **asignación** define responsable o equipo cuando la política lo exige;
+- **claim** reserva temporalmente una obligación para un actor cuando el trabajo es excluyente;
+- **ejecución** comienza únicamente cuando existe una acción empresarial válida y autorizada.
+
+Abrir, visualizar, navegar, recibir una notificación o aparecer como candidato no produce claim ni inicio.
+
+La ejecución se atribuye al actor humano efectivo cuando el trabajo sea humano. Una estación o sesión técnica no se convierte en actor por contener una cola.
+
+#### 11. Condiciones acumulativas de ejecutabilidad
+
+Una tarea será ejecutable únicamente cuando satisfaga conjuntamente:
+
+```text
+ACTOR EFECTIVO VÁLIDO
++ RELACIÓN LABORAL O PERSONAL VIGENTE
++ ROL Y PERMISO REQUERIDOS
++ TURNO Y CHECK-IN CUANDO APLIQUEN
++ SEDE Y ÁREA COMPATIBLES
++ DISPOSITIVO O ESTACIÓN COMPATIBLE
++ RECURSO Y VERSIÓN VIGENTES
++ DEPENDENCIAS COMPLETAS
++ ESTADO QUE ADMITE LA ACCIÓN
++ NO CONFLICTO EXCLUYENTE
+```
+
+El contrato de work items transporta referencias necesarias para resolver estas condiciones, pero no sustituye los motores canónicos de contexto, autorización, estado o concurrencia.
+
+#### 12. Política canónica de foco y prioridad
+
+La selección del foco será determinista, versionada y explicable. No se admite una suma opaca de puntos como fuente autoritativa de prioridad.
+
+Orden conceptual por niveles:
+
+| Nivel | Precedencia                                                     |
+| ----: | --------------------------------------------------------------- |
+|     0 | Seguridad, emergencia o custodia crítica.                       |
+|     1 | Trabajo ya en ejecución que debe continuar.                     |
+|     2 | Compromiso inmediato con cliente, producción, entrega o cadena. |
+|     3 | Tarea asignada con vencimiento o bloqueo de terceros.           |
+|     4 | Tarea disponible priorizada por política.                       |
+|     5 | Mantenimiento, seguimiento o trabajo sin urgencia.              |
+
+Dentro de la política podrán intervenir, cuando correspondan:
+
+- fecha requerida y ventana válida;
+- SLA;
+- secuencia del proceso;
+- trabajo ya iniciado;
+- asignación directa;
+- antigüedad y prevención de starvation;
+- proximidad física o compatibilidad de estación;
+- agrupación razonable por lote, ruta o ubicación;
+- disponibilidad del recurso;
+- coste de cambio de contexto;
+- carga del actor o equipo;
+- prioridad autorizada y su motivo.
+
+No constituyen prioridad autoritativa por sí solos:
+
+- posición manual en una lista sin evento;
+- `created_at desc` como regla universal;
+- nombre del rol;
+- jerarquía de quien envió un mensaje;
+- valor económico aislado;
+- clasificación de un cliente como importante sin política vigente.
+
+`priority_policy_version` debe permitir explicar con qué política se obtuvo el resultado mostrado.
+
+#### 13. Foco principal y cola secundaria
+
+La experiencia operativa proyecta un **foco principal** y una **cola secundaria** diferenciada conceptualmente en:
+
+- Ahora;
+- Después;
+- En espera;
+- Bloqueadas.
+
+La cola no altera la fuente de verdad ni la autorización. Su orden es una proyección derivada de estado, readiness y política de prioridad.
+
+Las obligaciones restantes pueden permanecer visibles sin competir visual ni semánticamente con la tarea actual y sin ocultar vencimientos, bloqueos o incompatibilidades de contexto.
+
+`SHELL-APP-008` podrá consumir esta proyección para mostrar pendientes transversales. Esa proyección no convierte a SHELL en propietario, ejecutor o autorizador universal.
+
+#### 14. Bloqueo, espera, pausa y recuperación
+
+`WAITING`, `BLOCKED` y `PAUSED` representan situaciones distintas.
+
+Un bloqueo deberá conservar, mediante las referencias empresariales correspondientes:
+
+- causa;
+- datos o trabajo preservados;
+- responsable de resolver;
+- siguiente acción posible;
+- escalamiento cuando aplique;
+- condición o momento de revisión;
+- efecto sobre custodia y continuidad.
+
+Una espera deberá conservar su condición de reactivación. No ocupa el foco principal salvo que el seguimiento de esa espera sea la obligación actual.
+
+Una pausa conserva un punto seguro de reanudación. Una recuperación utiliza `RECOVERY` cuando deba reconciliar o reparar sin repetir el efecto empresarial original.
+
+#### 15. Claim, concurrencia, versión e idempotencia
+
+Para trabajo excluyente:
+
+- el claim será atómico e idempotente;
+- cuando aplique, tendrá lease;
+- dos actores o dispositivos no podrán iniciar o completar la misma obligación simultáneamente;
+- `work_item_version` permitirá detectar proyecciones y comandos obsoletos;
+- cancelación, supersesión o cambio de versión invalidarán acciones tardías cuando corresponda;
+- `idempotency_scope` impedirá que un reintento replique toma, inicio o efecto empresarial.
+
+Un claim vencido o inválido no concede continuidad por el hecho de que la UI aún muestre el ítem.
+
+#### 16. Offline, frescura y sincronización pendiente
+
+La proyección del ítem deberá declarar suficiente frescura para que el consumidor pueda distinguir una vista vigente de una obsoleta.
+
+Una tarea crítica no podrá reclamarse offline sin la política o lease que lo permita. Una finalización realizada bajo modalidad offline compatible permanecerá en `COMPLETION_PENDING_SYNC` hasta que la fuente canónica confirme el resultado.
+
+Al reconectar o reanudar se revalidarán, según aplique:
+
+- versión del ítem y del recurso;
+- actor;
+- contexto;
+- claim o lease;
+- permiso;
+- estado y dependencias.
+
+La reconciliación no utilizará last-write-wins destructivo para ocultar un conflicto empresarial.
+
+#### 17. Integración con handoffs
+
+`SHELL-CON-014` conserva autoridad sobre los traspasos entre aplicaciones.
+
+Cuando un handoff corresponda al mismo trabajo:
+
+- puede conservar `work_item_id` como referencia no secreta;
+- conserva proceso e instancia;
+- conserva recurso, contexto y correlación necesarios;
+- enviar u ofrecer no equivale a aceptación;
+- el actor saliente conserva la responsabilidad hasta el punto de transferencia aprobado;
+- el receptor no queda `IN_PROGRESS` por recibir el handoff;
+- la aplicación receptora revalida contexto, autorización, estado y versión antes de actuar.
+
+El handoff no crea una segunda identidad de trabajo salvo que la fuente empresarial produzca realmente una obligación distinta.
+
+#### 18. Integración con acciones y eventos
+
+`next_action_code` identifica la siguiente acción funcional aplicable y, cuando pertenezca al catálogo compartido, se resuelve contra la autoridad de `FunctionalActionId` definida por `SHELL-CON-012`.
+
+La presencia de una acción en el ítem no concede permiso ni garantiza que continúe ejecutable al momento del comando. El propietario revalida estado, versión, actor, contexto y autorización.
+
+`SHELL-CON-013` conserva autoridad sobre `BusinessEventId`. Los eventos de disponibilidad, asignación, claim, inicio, pausa, bloqueo, espera, repriorización, handoff, sincronización pendiente, completion, cancelación y cambios de foco deben permanecer correlacionables con el ítem cuando correspondan, sin convertir el evento en la identidad del ítem.
+
+Presentar o abrir el foco no equivale a iniciar la tarea.
+
+#### 19. Propiedad cross-app y proyección en SHELL
+
+La aplicación indicada por `owner_app_code` conserva la propiedad empresarial de la obligación y de su ejecución.
+
+SHELL y otras consumidoras pueden:
+
+- mostrar una proyección mínima autorizada;
+- ordenar una cola derivada;
+- explicar por qué una tarea aparece primero;
+- abrir un destino o deep link seguro;
+- conservar retorno y correlación.
+
+SHELL y otras consumidoras no pueden, por la sola proyección:
+
+- reescribir estado privado de la propietaria;
+- adjudicar autoridad;
+- fabricar asignación o claim;
+- marcar completion;
+- imponer prioridad efectiva;
+- transportar tokens, permisos, actor autoritativo o estado objetivo mediante navegación.
+
+La aplicación propietaria revalida antes de ejecutar.
+
+#### 20. Seguridad, minimización y estaciones compartidas
+
+Una cola o foco se minimiza según actor, contexto y necesidad. El contrato no exige exponer payloads empresariales completos para poder priorizar o navegar.
+
+En estaciones compartidas permanecen separados:
+
+- cola de estación;
+- actor humano;
+- foco del actor;
+- sesión técnica.
+
+Al cambiar de actor deberán recalcularse elegibilidad y foco. Tareas, datos personales, borradores, claims o autoridad del actor anterior no se heredan por la sesión del dispositivo.
+
+La mera visibilidad de un ítem nunca constituye permiso, elegibilidad, assignment o posibilidad de actuar.
+
+#### 21. Versionado y compatibilidad
+
+Las consumidoras deberán tratar el contrato como una superficie versionable y compatible con despliegues independientes.
+
+Reglas:
+
+1. campos o vocabularios nuevos no podrán reinterpretar silenciosamente valores existentes;
+2. un consumidor que no comprenda una versión crítica no inventará estados ni autoridad;
+3. las identidades de fuente, proceso, instancia, trabajo, acción y evento permanecen separadas;
+4. una proyección obsoleta se refresca o bloquea antes de ejecutar;
+5. los cambios físicos futuros deberán conservar compatibilidad con consumidores que permanezcan temporalmente en versiones distintas.
+
+#### 22. Reconciliación de la superficie estática
+
+| Conjunto contractual              | Esperado | Materializado | Faltantes | Duplicados |
+| --------------------------------- | -------: | ------------: | --------: | ---------: |
+| Campos mínimos                    |       29 |            29 |         0 |          0 |
+| Clases de ítem de trabajo         |        8 |             8 |         0 |          0 |
+| Estados conceptuales              |       16 |            16 |         0 |          0 |
+| Estados de readiness              |        7 |             7 |         0 |          0 |
+| Niveles conceptuales de prioridad |        6 |             6 |         0 |          0 |
+
+No se materializa una matriz de instancias runtime porque las tareas pendientes son obligaciones dinámicas producidas por fuentes empresariales. Inventar filas de trabajo actuales sin esas fuentes crearía datos ficticios y una segunda fuente de verdad.
+
+#### 23. Cobertura de prueba vigente no modificada
+
+La semántica centralizada por esta tarea ya está protegida por el bloque vigente `TREQ-UX-024..TREQ-UX-040`, que cubre identidad y fuente del ítem, elegibilidad y claim, prioridad, seguridad, continuidad de trabajo iniciado, foco y colas, acción siguiente, bloqueo y espera, handoff, estaciones compartidas, proyección cross-app, concurrencia, offline, estados sin foco, accesibilidad, métricas y eventos del ciclo de trabajo.
+
+También permanecen aplicables, sin modificación, las coberturas transversales existentes de contratos compartidos, compatibilidad, autorización, integración, procesos y contexto.
+
+La centralización documental de esta tarea no crea comportamiento ejecutable nuevo ni altera una regla protegida existente.
+
+#### 24. Requisitos de prueba derivados
+
+`NO GENERA REQUISITOS DE PRUEBA`
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+Justificación: el contrato centraliza sin cambiar la semántica ya aprobada para ítems de trabajo y tareas actuales; no añade una obligación verificable nueva, no modifica criterios existentes y no materializa implementación física.
+
+#### 25. Estado de materialización física
+
+Queda **ESPECIFICADO** el contrato documental lógico de `@vento/contracts/work-items` y permanece **NO MATERIALIZADO** como código o paquete ejecutable.
+
+No se crean ni modifican:
+
+- código fuente;
+- paquetes físicos;
+- tipos TypeScript;
+- tablas o migraciones;
+- RLS, RPC, funciones o triggers;
+- colas o workers;
+- endpoints;
+- componentes de UI;
+- configuración de despliegue.
+
+La materialización física futura deberá preservar las decisiones de esta tarea y las autoridades previas sin convertir el contrato compartido en motor de negocio o autorización.
+
+#### 26. Criterios de aceptación
+
+La tarea se considera documentalmente completa cuando:
+
+1. existe una unidad inequívoca de trabajo basada en `work_item_id`;
+2. las identidades de proceso, instancia, acción, evento, permiso, pantalla, navegación, claim y handoff permanecen separadas;
+3. los 29 campos mínimos están representados sin omisiones ni duplicados;
+4. las 8 clases de trabajo están representadas sin omisiones ni duplicados;
+5. los 16 estados conceptuales están representados sin omisiones ni duplicados;
+6. los 7 estados de readiness están representados sin omisiones ni duplicados;
+7. los 6 niveles conceptuales de prioridad están representados y su orden es explícito;
+8. prioridad, assignment, claim, ejecución y completion no se infieren desde UI o navegación;
+9. quedan definidas las condiciones acumulativas de ejecutabilidad;
+10. quedan definidos bloqueo, espera, pausa, recuperación, concurrencia y offline;
+11. queda preservada la autoridad de la aplicación propietaria en escenarios cross-app;
+12. handoffs, acciones y eventos se integran por referencias sin colisionar identidades;
+13. no se inventan instancias runtime ni datos empresariales;
+14. no se realiza materialización física;
+15. se declaran cero cambios a requisitos de prueba porque la cobertura vigente ya protege la semántica centralizada.
+
+#### 27. Decisiones aprobadas
+
+1. El nombre canónico de la unidad compartida es **ítem de trabajo** y su identidad runtime es `work_item_id`.
+2. `@vento/contracts/work-items` es el namespace lógico reservado para este contrato.
+3. `work_item_id` se trata como referencia opaca y no transporta autoridad semántica por su forma.
+4. La superficie mínima contiene exactamente 29 campos contractuales.
+5. El vocabulario contiene exactamente 8 clases de trabajo.
+6. El ciclo conceptual contiene exactamente 16 estados.
+7. La proyección de readiness contiene exactamente 7 estados.
+8. La prioridad conserva exactamente 6 niveles conceptuales y debe ser determinista, versionada y explicable.
+9. Visibilidad, elegibilidad, oferta, asignación, claim, ejecución y completion son conceptos distintos.
+10. SHELL puede proyectar y navegar trabajo, pero la aplicación propietaria conserva ejecución y fuente de verdad.
+11. `SHELL-CON-014` conserva autoridad sobre handoffs, `SHELL-CON-012` sobre acciones y `SHELL-CON-013` sobre eventos.
+12. Las instancias runtime no forman un catálogo estático y no se inventan en esta tarea documental.
+13. No se crea implementación física ni se modifican requisitos `TREQ-*`.
+
+#### 28. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CON-014 — Crear contrato de traspasos entre aplicaciones`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CON-015 — Crear contrato de tareas pendientes`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CON-016 — Crear contrato de propiedad funcional`
+
+
 ### [ ] SHELL-CON-016 — Crear contrato de propiedad funcional
