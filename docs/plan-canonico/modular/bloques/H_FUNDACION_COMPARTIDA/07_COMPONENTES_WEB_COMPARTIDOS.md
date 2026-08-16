@@ -1180,7 +1180,951 @@ SHELL-UI-002 — Compartir Alert
 No se inicia `SHELL-UI-002` sin aprobación de `SHELL-UI-001`.
 
 
-### [ ] SHELL-UI-002 — Compartir Alert
+### ✅ SHELL-UI-002 — Compartir Alert
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-001 — Crear @vento/ui-web
+**Tarea siguiente:** SHELL-UI-003 — Compartir Button
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-UI-002` define el contrato canónico del componente visual compartido `Alert` que deberá pertenecer a `@vento/ui-web` y ser reutilizable por las aplicaciones web de Vento OS sin duplicar estilos, semántica visual ni reglas básicas de accesibilidad.
+
+La tarea transforma el patrón visual legacy `ui-alert` observado en distintos consumidores en una especificación única de componente compartido, pero no materializa todavía el package, no migra consumidores y no retira CSS existente.
+
+La regla raíz queda:
+
+```text
+ESTADO O MENSAJE YA DETERMINADO POR EL PROPIETARIO FUNCIONAL
++
+INTENCIÓN VISUAL EXPLÍCITA
++
+CONTENIDO HUMANO
+→
+Alert DE @vento/ui-web
+→
+PRESENTACIÓN VISUAL CONSISTENTE Y ACCESIBLE
+```
+
+`Alert` presenta información. No determina el hecho empresarial, no calcula autorización, no clasifica por sí mismo un error técnico y no convierte un mensaje en fuente de verdad.
+
+---
+
+#### 2. Resultado canónico
+
+Se aprueba `Alert` como componente visual compartido de `@vento/ui-web` con las siguientes propiedades vinculantes:
+
+1. una única identidad funcional compartida: `Alert`;
+2. cuatro variantes visuales: `neutral`, `success`, `warning` y `danger`;
+3. variante por defecto: `neutral`;
+4. contenido textual o estructurado aportado por el consumidor;
+5. icono opcional;
+6. atributos HTML y ARIA transferibles al contenedor;
+7. ausencia de estado interno obligatorio;
+8. ausencia de dependencia directa de Supabase;
+9. ausencia de dependencia de sesión, navegación o autorización;
+10. compatibilidad con renderizado de servidor y cliente;
+11. separación estricta entre apariencia visual y semántica de anuncio accesible;
+12. separación estricta entre `Alert` y los patrones de notificación temporal tipo toast;
+13. migración posterior por consumidor, no retiro inmediato del patrón legacy;
+14. uso del contrato visual de `@vento/ui-web` sin crear un sistema de tokens o tema paralelo; su materialización física queda dentro del handoff de package a `SHELL-CI-*` aplicables.
+
+El estado resultante es documental:
+
+```text
+Alert
+→ DEFINIDO
+
+implementación dentro de @vento/ui-web
+→ NO MATERIALIZADA
+
+consumidores migrados
+→ 0 CONFIRMADOS POR ESTA TAREA
+
+CSS legacy retirado
+→ 0
+```
+
+---
+
+#### 3. Fuentes y precedencia
+
+La especificación conserva las decisiones vigentes de las siguientes fuentes canónicas y técnicas:
+
+| Fuente                                                              | Uso vinculante                                                                                                |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`                        | continuidad, trazabilidad, separación entre definición e implementación y tratamiento de requisitos de prueba |
+| `docs/plan-canonico/modular/delivery-contract.json`                 | forma del artefacto documental                                                                                |
+| `docs/plan-canonico/modular/active-sequence.json`                   | continuidad `SHELL-UI-001 → SHELL-UI-002 → SHELL-UI-003`                                                      |
+| `07_COMPONENTES_WEB_COMPARTIDOS.md`                                 | propietario del mini-bloque y secuencia `SHELL-UI-*`                                                          |
+| `SHELL-UI-001`                                                      | identidad, fronteras y estado no materializado de `@vento/ui-web`                                             |
+| `01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md`                        | origen de la normalización de superficies compartidas                                                         |
+| `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`                         | distribución, versionado independiente y compatibilidad de packages                                           |
+| Registro Canónico de Requisitos de Prueba — dominio SHELL           | paridad, compatibilidad, seguridad visual, migración y gobierno de packages ya cubiertos                      |
+| Registro Canónico de Requisitos de Prueba — dominio UX              | lenguaje humano, relevancia, accesibilidad, privacidad, deduplicación y migración de mensajes ya cubiertos    |
+| `templates/app-shell-standard/src/app/globals.css`                  | evidencia del patrón visual legacy `ui-alert` y sus variantes                                                 |
+| `templates/app-shell-standard/src/components/vento/standard/ui.tsx` | evidencia de que el template no materializa actualmente un componente React `Alert`                           |
+| `src/components/ui/*` de `vento-shell`                              | evidencia de primitivas locales existentes que no incluyen `Alert`                                            |
+| estilos y usos `ui-alert` observados en repositorios consumidores   | evidencia de duplicación del patrón visual actual                                                             |
+
+Precedencia aplicable:
+
+```text
+contrato canónico aprobado
+→ contrato de @vento/ui-web
+→ contrato de Alert
+→ implementación futura del package
+→ migración controlada de consumidores
+→ retiro del legado con evidencia
+```
+
+Una clase CSS existente, una copia de template o una implementación local no sustituye este contrato.
+
+---
+
+#### 4. Línea base verificable
+
+La línea base actual presenta cuatro hechos distintos que deben reconciliarse sin confundirlos:
+
+| Superficie                                                          | Estado actual                                          | Decisión de esta tarea                                            |
+| ------------------------------------------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------- |
+| `@vento/ui-web`                                                     | definido documentalmente, no materializado físicamente | conserva estado; `Alert` queda como superficie futura del package |
+| `templates/app-shell-standard/src/app/globals.css`                  | contiene patrón `.ui-alert`                            | fuente de compatibilidad visual, no API pública definitiva        |
+| `templates/app-shell-standard/src/components/vento/standard/ui.tsx` | no contiene componente React `Alert`                   | no se trata como implementación del componente compartido         |
+| `src/components/ui` de `vento-shell`                                | contiene otras primitivas locales, no `Alert`          | no se altera                                                      |
+| consumidores con `.ui-alert` y/o usos equivalentes                  | duplicación física legacy                              | se conserva hasta migración validada                              |
+
+El patrón CSS observado establece actualmente una familia visual reconocible:
+
+```text
+.ui-alert
+.ui-alert--neutral
+.ui-alert--success
+.ui-alert--warning
+.ui-alert--danger
+.ui-alert__icon
+.ui-alert__text
+```
+
+La repetición de esa familia en consumidores confirma una oportunidad real de compartir la superficie, pero no convierte los nombres de clase legacy en contrato público perpetuo.
+
+---
+
+#### 5. Alcance exacto
+
+Esta tarea define:
+
+1. identidad del componente;
+2. responsabilidad funcional;
+3. variantes visuales;
+4. variante por defecto;
+5. composición mínima;
+6. contrato lógico de propiedades;
+7. reglas de contenido;
+8. reglas de iconografía;
+9. reglas de accesibilidad;
+10. tratamiento de regiones vivas y anuncios;
+11. frontera con autorización y lógica empresarial;
+12. frontera con errores técnicos;
+13. frontera con navegación y acciones;
+14. frontera con toasts y notificaciones temporales;
+15. frontera con tema y tokens;
+16. comportamiento de renderizado;
+17. compatibilidad y migración legacy;
+18. pruebas mínimas futuras;
+19. rollback conceptual por consumidor;
+20. handoffs exactos para implementación y adopción posteriores.
+
+Esta tarea no define ni implementa:
+
+| Materia                                                 | Propietario                                                                                                              |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| implementación física de `@vento/ui-web`                | pipeline de package habilitado por su gate aplicable                                                                     |
+| `Button`                                                | `SHELL-UI-003`                                                                                                           |
+| `Card`                                                  | `SHELL-UI-004`                                                                                                           |
+| `EmptyState`                                            | `SHELL-UI-005`                                                                                                           |
+| indicador de contexto                                   | `SHELL-UI-006`                                                                                                           |
+| selector de sede                                        | `SHELL-UI-007`                                                                                                           |
+| selector de área                                        | `SHELL-UI-008`                                                                                                           |
+| aviso de rol simulado                                   | `SHELL-UI-009`                                                                                                           |
+| evaluación del AppShell compartido                      | `SHELL-UI-010`                                                                                                           |
+| navegación orientada a tareas                           | `SHELL-UI-011`                                                                                                           |
+| línea de estados de proceso                             | `SHELL-UI-012`                                                                                                           |
+| panel de acción principal                               | `SHELL-UI-013`                                                                                                           |
+| confirmaciones de acciones sensibles                    | `SHELL-UI-014`                                                                                                           |
+| diagnóstico de contexto                                 | `SHELL-UI-015`                                                                                                           |
+| estados de error recuperable como patrón compuesto      | `SHELL-UI-016`                                                                                                           |
+| patrón para tablet                                      | `SHELL-UI-017`                                                                                                           |
+| patrón para kiosco                                      | `SHELL-UI-018`                                                                                                           |
+| patrón de proceso interrumpido                          | `SHELL-UI-019`                                                                                                           |
+| patrón de traspaso entre aplicaciones                   | `SHELL-UI-020`                                                                                                           |
+| migración física de consumidores                        | `SHELL-MIG-001..008`                                                                                                     |
+| taxonomía funcional de errores, bloqueos o reason codes | tareas propietarias de cada dominio y contratos canónicos correspondientes                                               |
+| determinación de permisos                               | fundación de autorización y servidor propietario                                                                         |
+| notificación temporal tipo toast                        | fuera del contrato de `Alert` en esta tarea; el legado permanece inventariable y migrable sin fusionarse automáticamente |
+
+---
+
+#### 6. Identidad y responsabilidad del componente
+
+La identidad canónica queda:
+
+| Propiedad                  | Decisión                                                                                  |
+| -------------------------- | ----------------------------------------------------------------------------------------- |
+| nombre de componente       | `Alert`                                                                                   |
+| package lógico propietario | `@vento/ui-web`                                                                           |
+| tipo                       | componente visual web compartido                                                          |
+| responsabilidad            | presentar un mensaje o estado aportado por el consumidor con jerarquía visual consistente |
+| autoridad de datos         | ninguna                                                                                   |
+| autoridad de autorización  | ninguna                                                                                   |
+| efectos remotos            | ninguno por defecto                                                                       |
+| estado interno obligatorio | ninguno                                                                                   |
+| dependencia de Supabase    | prohibida                                                                                 |
+| dependencia de router      | prohibida como requisito del componente base                                              |
+| entorno                    | React web compatible con renderizado de servidor y cliente                                |
+
+Regla vinculante:
+
+```text
+Alert(state)
+NO RESUELVE state
+NO AUTORIZA state
+NO PERSISTE state
+NO NAVEGA POR state
+SOLO REPRESENTA state
+```
+
+---
+
+#### 7. Variantes visuales canónicas
+
+Se congelan cuatro variantes y su propósito visual mínimo:
+
+| Variante  | Propósito visual                                                    | Uso permitido                                                   |
+| --------- | ------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `neutral` | información contextual sin connotación de éxito, precaución o fallo | avisos informativos, contexto, instrucciones o estado ordinario |
+| `success` | resultado positivo ya determinado por el propietario                | confirmación visual de un estado realmente confirmado           |
+| `warning` | precaución, degradación o condición que requiere atención           | advertencia sin afirmar por sí sola fallo definitivo            |
+| `danger`  | fallo, bloqueo o condición crítica ya determinada                   | representar visualmente una condición negativa conocida         |
+
+`neutral` es la variante por defecto.
+
+Las variantes son **intención de presentación**, no categorías de dominio.
+
+Por tanto:
+
+- `success` no prueba que una transacción haya sido confirmada por servidor;
+- `warning` no decide si una acción puede continuar;
+- `danger` no equivale automáticamente a denegación de autorización;
+- `neutral` no implica baja prioridad empresarial;
+- ninguna variante reemplaza códigos de estado, reason codes, receipts o datos autoritativos.
+
+El consumidor debe mapear explícitamente su estado de dominio a una variante visual.
+
+---
+
+#### 8. Contrato lógico de propiedades
+
+La API conceptual mínima queda definida así:
+
+```text
+Alert
+  variant?   = neutral | success | warning | danger
+  children   = contenido visible requerido
+  icon?      = contenido visual opcional
+  className? = extensión visual acotada
+  ...props   = atributos compatibles del contenedor HTML
+```
+
+Semántica vinculante:
+
+| Propiedad        | Regla                                                                                                                          |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `variant`        | opcional; valor por defecto `neutral`; no acepta valores abiertos silenciosamente                                              |
+| `children`       | requerido como contenido visible y comprensible; puede contener texto y estructura inline/semántica razonable                  |
+| `icon`           | opcional; nunca sustituye el mensaje textual                                                                                   |
+| `className`      | opcional; no puede utilizarse para romper invariantes de accesibilidad, ocultar el contenido o fabricar autoridad              |
+| atributos HTML   | se transfieren al elemento raíz cuando sean compatibles                                                                        |
+| atributos ARIA   | se transfieren sin imponer una región viva universal                                                                           |
+| eventos estándar | pueden transferirse cuando sean semánticamente válidos, pero no convierten el componente en un control interactivo por defecto |
+
+El contenedor base conceptual será un elemento de bloque no interactivo equivalente a `div`.
+
+No se define en esta tarea un subpath público adicional para `Alert`; esa decisión debe permanecer coherente con el mapa de exports físico que adopte `@vento/ui-web` cuando sea materializado.
+
+---
+
+#### 9. Composición estructural
+
+La estructura lógica mínima es:
+
+```text
+Alert
+├─ icon?      → apoyo visual opcional
+└─ content    → mensaje visible obligatorio
+```
+
+La implementación futura podrá introducir wrappers internos siempre que no cambie el contrato observable sin el tratamiento de compatibilidad correspondiente.
+
+No se exige:
+
+- título separado;
+- botón de cierre;
+- temporizador;
+- portal;
+- overlay;
+- cola global;
+- persistencia;
+- almacenamiento;
+- navegación;
+- acción primaria propia.
+
+Si un consumidor necesita acciones dentro del mensaje, estas deberán provenir del contenido compuesto o de un componente propietario de mayor nivel. `Alert` no se convierte por ello en dueño de la operación.
+
+---
+
+#### 10. Contrato visual
+
+La familia visual futura deberá conservar la intención del patrón legacy sin fijar sus clases históricas como API perpetua.
+
+Invariantes:
+
+1. contenedor perceptible como unidad;
+2. separación visual clara respecto al contenido adyacente;
+3. variante distinguible mediante más de una señal cuando el significado sea relevante;
+4. icono y texto alineados sin desplazar el orden de lectura;
+5. texto legible en reflow y zoom;
+6. sin ancho fijo que obligue scroll horizontal ordinario;
+7. sin altura fija que recorte mensajes extensos;
+8. sin depender de hover para revelar información esencial;
+9. sin usar únicamente color para comunicar significado;
+10. compatibilidad con el contrato visual de `@vento/ui-web`, sin fijar en esta tarea tokens físicos todavía no materializados.
+
+Las clases `.ui-alert*` se consideran **compatibilidad legacy**, no contrato público definitivo del package.
+
+---
+
+#### 11. Contrato de contenido humano
+
+`Alert` no genera copy de dominio. El consumidor aporta un mensaje previamente resuelto por la fuente propietaria.
+
+El contenido presentado deberá respetar los contratos UX vigentes:
+
+- explicar el estado en lenguaje humano;
+- no exponer SQL, stack traces, tokens, payloads o detalles internos sensibles;
+- no culpar al trabajador por fallos técnicos o de configuración;
+- no afirmar éxito antes de confirmación autoritativa cuando esta sea necesaria;
+- no afirmar ausencia de información cuando la causa real sea un fallo de carga;
+- no revelar información a un actor que no deba conocerla;
+- conservar una ruta de recuperación cuando el dominio la requiera;
+- evitar alertas duplicadas que representen el mismo hecho sin necesidad.
+
+Estas obligaciones pertenecen al mensaje y al dominio; `Alert` ofrece el contenedor visual para expresarlas de forma consistente.
+
+---
+
+#### 12. Accesibilidad y semántica de anuncio
+
+La regla principal es:
+
+```text
+APARIENCIA DE ALERTA
+≠
+REGIÓN VIVA OBLIGATORIA
+```
+
+No toda instancia de `Alert` debe usar `role="alert"`.
+
+Forzar ese rol en cada render generaría anuncios innecesarios, duplicados o disruptivos para tecnologías de asistencia, especialmente cuando el contenido ya está presente al cargar la página.
+
+Por tanto:
+
+1. el componente base no impone `role="alert"` universal;
+2. el componente base no impone `aria-live` universal;
+3. el consumidor puede aportar `role`, `aria-live`, `aria-atomic` y demás atributos ARIA cuando el comportamiento dinámico lo requiera;
+4. un mensaje crítico insertado dinámicamente puede usar una semántica de anuncio urgente definida por su propietario;
+5. un estado informativo dinámico puede usar una semántica menos intrusiva cuando corresponda;
+6. contenido estático no debe transformarse artificialmente en anuncio repetitivo;
+7. el texto significativo debe permanecer en el árbol accesible;
+8. un icono meramente decorativo debe quedar fuera de la lectura accesible;
+9. un icono con significado no expresado en el texto requiere nombre accesible o contenido equivalente;
+10. el componente no debe capturar ni mover foco por defecto;
+11. mover foco ante un bloqueo crítico corresponde al flujo propietario que conoce la interacción, no al componente visual genérico;
+12. la variante no debe ser perceptible únicamente por color.
+
+La tarea no sustituye las obligaciones transversales de accesibilidad ya registradas ni su validación mediante las tareas `UX-QA-*` aplicables y las pruebas del package y de sus consumidores.
+
+---
+
+#### 13. Iconografía
+
+El slot `icon` es opcional.
+
+Reglas:
+
+1. no existe icono obligatorio para que un Alert sea válido;
+2. un icono decorativo no debe duplicar verbalmente el mensaje para lector de pantalla;
+3. el icono no define la variante;
+4. la variante no se infiere de la identidad del icono;
+5. el componente no incorpora una biblioteca de iconos como autoridad propia;
+6. esta tarea no define ni selecciona un catálogo transversal de iconos;
+7. un consumidor puede omitir icono sin perder significado funcional.
+
+---
+
+#### 14. Frontera con autorización
+
+`Alert` nunca concede, niega ni deriva permisos.
+
+Queda prohibido que el componente:
+
+- consulte permisos;
+- inspeccione roles;
+- resuelva sede, área, turno o check-in;
+- lea cookies de autorización;
+- interprete una clase visual como autorización;
+- oculte una acción como único mecanismo de seguridad;
+- transforme una condición visual en decisión de servidor.
+
+La secuencia correcta es:
+
+```text
+servidor / propietario autoritativo
+→ decisión o estado
+→ proyección segura para el actor
+→ mensaje humano
+→ variante visual
+→ Alert
+```
+
+La secuencia prohibida es:
+
+```text
+Alert danger
+→ asumir DENY
+```
+
+También queda prohibido:
+
+```text
+Alert success
+→ asumir operación confirmada
+```
+
+---
+
+#### 15. Frontera con errores técnicos
+
+`Alert` no consume ni normaliza directamente objetos de error de Supabase, excepciones de framework o stack traces.
+
+La capa propietaria debe convertir primero el resultado técnico al contrato público y humano aplicable.
+
+Secuencia:
+
+```text
+error técnico
+→ normalización propietaria
+→ estado / razón pública segura
+→ copy humano
+→ variante visual
+→ Alert
+```
+
+Esto conserva la separación entre `@vento/supabase`, contratos de errores y `@vento/ui-web`.
+
+---
+
+#### 16. Frontera con estados de negocio
+
+El componente no define qué significa:
+
+- completado;
+- confirmado;
+- pendiente;
+- bloqueado;
+- conflicto;
+- rechazado;
+- requiere intervención;
+- offline;
+- sincronizando;
+- aprobado;
+- denegado.
+
+Esos estados pertenecen a sus contratos funcionales.
+
+`Alert` únicamente representa el mensaje que una capa propietaria decidió mostrar.
+
+La misma variante puede ser utilizada por dominios diferentes sin unificar sus estados empresariales.
+
+---
+
+#### 17. Frontera con Toast y notificaciones temporales
+
+El patrón legacy `ui-toast` no se absorbe en `Alert`.
+
+Diferencia vinculante:
+
+| Superficie   | Naturaleza                                                   |
+| ------------ | ------------------------------------------------------------ |
+| `Alert`      | región de mensaje integrada en el flujo normal del documento |
+| toast legacy | notificación temporal o superpuesta con ciclo de vida propio |
+
+Esta tarea no crea una API `Toast`, no define duración, cola, portal, posición, cierre automático ni prioridad de notificaciones.
+
+Los toasts existentes permanecen sin modificación y deberán ser inventariados y tratados por el proceso de migración correspondiente antes de cualquier retiro.
+
+---
+
+#### 18. Frontera con navegación y acciones
+
+El componente base no depende de router ni resuelve destinos.
+
+Puede contener enlaces o controles aportados por el consumidor siempre que:
+
+1. el consumidor sea propietario de su destino y autorización;
+2. la acción sea comprensible sin depender del color del Alert;
+3. el control conserve semántica HTML correcta;
+4. no se anide interacción inválida;
+5. el Alert no transforme el destino en autorizado;
+6. los deep links y handoffs sean revalidados por el destino cuando corresponda.
+
+`Alert` tampoco decide cuándo mostrar una acción de reintento. Esa decisión pertenece al propietario que conoce idempotencia, estado remoto y posibilidad real de recuperación.
+
+---
+
+#### 19. Tema, tokens y CSS
+
+`Alert` consumirá el contrato visual compartido de `@vento/ui-web` y no definirá un sistema de tema paralelo.
+
+Reglas:
+
+1. las variantes deberán poder expresarse mediante tokens compartidos;
+2. el componente no dependerá de colores hardcodeados específicos de una aplicación como contrato público;
+3. claro y oscuro deberán conservar significado, legibilidad y contraste;
+4. esta tarea no renombra, crea ni sustituye el contrato general de tokens y CSS ya reservado por la arquitectura de `@vento/ui-web`;
+5. el componente podrá tener estilos propios internos, pero no exigirá que cada consumidor copie manualmente bloques `.ui-alert`;
+6. la migración deberá eliminar duplicación únicamente después de demostrar paridad.
+
+Las variables actuales del template son evidencia de diseño, no el contrato final de tokens que esta tarea pueda renombrar por anticipado.
+
+---
+
+#### 20. Renderizado y frontera server/client
+
+`Alert` no requiere por contrato estado React, efectos, acceso al navegador ni APIs cliente.
+
+Por tanto:
+
+- debe ser compatible con renderizado de servidor;
+- debe ser compatible con composición desde componentes cliente;
+- no debe requerir la directiva de cliente únicamente por existir;
+- no debe leer `window`, `document`, localStorage o cookies;
+- no debe crear suscripciones;
+- no debe iniciar temporizadores;
+- no debe registrar listeners globales;
+- no debe mutar estado externo.
+
+Si un consumidor necesita comportamiento interactivo alrededor del Alert, ese comportamiento debe vivir en una capa propietaria o composición explícita.
+
+---
+
+#### 21. Contrato de extensibilidad
+
+La extensibilidad queda limitada para proteger consistencia sin bloquear composición legítima.
+
+Permitido:
+
+- contenido compuesto;
+- icono opcional;
+- atributos HTML compatibles;
+- atributos ARIA;
+- `className` adicional;
+- identificadores para pruebas o asociación semántica;
+- enlaces y controles semánticamente válidos como contenido del consumidor.
+
+No permitido como extensión silenciosa:
+
+- nuevas variantes no canónicas sin cambio contractual;
+- convertir `variant` en un string abierto;
+- esconder contenido obligatorio por CSS;
+- añadir lógica de autorización dentro del componente;
+- añadir llamadas de red;
+- añadir dependencia directa de una aplicación;
+- añadir timers o autodescartado al componente base;
+- convertirlo en toast mediante props ad hoc;
+- usar props visuales para transmitir permisos.
+
+---
+
+#### 22. Compatibilidad legacy
+
+La migración debe preservar la intención de los usos actuales antes de retirar el patrón legacy.
+
+Matriz de correspondencia mínima:
+
+| Legacy                      | Contrato futuro                |
+| --------------------------- | ------------------------------ |
+| `.ui-alert` sin modificador | `Alert variant="neutral"`      |
+| `.ui-alert--neutral`        | `Alert variant="neutral"`      |
+| `.ui-alert--success`        | `Alert variant="success"`      |
+| `.ui-alert--warning`        | `Alert variant="warning"`      |
+| `.ui-alert--danger`         | `Alert variant="danger"`       |
+| `.ui-alert__icon`           | `icon`                         |
+| `.ui-alert__text`           | `children` / contenido visible |
+
+Esta correspondencia sirve para migración, no obliga a conservar estructura DOM o clases internas idénticas después de certificar paridad.
+
+Un consumidor con comportamiento adicional alrededor del CSS legacy deberá ser clasificado antes de migrar; no se descartará ese comportamiento por asumir que dos clases iguales representan el mismo contrato completo.
+
+---
+
+#### 23. Estrategia de migración futura
+
+La adopción será progresiva y reversible.
+
+Secuencia mínima:
+
+```text
+inventario de usos reales
+→ clasificación por consumidor
+→ identificación de variantes y comportamiento adicional
+→ package físicamente habilitado
+→ implementación de Alert
+→ pruebas del package
+→ lote de migración por consumidor
+→ paridad funcional y visual
+→ accesibilidad
+→ observación
+→ retiro del CSS legacy únicamente con evidencia
+```
+
+Handoffs de migración:
+
+| Necesidad                                              | Tarea propietaria    |
+| ------------------------------------------------------ | -------------------- |
+| inventario ejecutable de consumidores                  | `SHELL-MIG-001`      |
+| lotes reversibles por repositorio                      | `SHELL-MIG-002`      |
+| compatibilidad y bloqueo de nuevos consumidores legacy | `SHELL-MIG-003`      |
+| migración progresiva                                   | `SHELL-MIG-003..007` |
+| pruebas de paridad por consumidor                      | `SHELL-MIG-007`      |
+| retiro de copias legacy                                | `SHELL-MIG-008`      |
+
+No se autoriza retirar CSS de un consumidor por el solo hecho de que exista el componente compartido.
+
+---
+
+#### 24. Rollback conceptual
+
+Cada consumidor deberá poder revertir su adopción sin revertir a los demás.
+
+Rollback permitido:
+
+```text
+versión / cambio del consumidor con Alert compartido
+→ revert del manifiesto y lockfile cuando aplique
+→ restauración del uso legacy previamente conocido
+→ nueva validación
+```
+
+El rollback no debe:
+
+- modificar datos;
+- alterar permisos;
+- borrar mensajes históricos;
+- cambiar reason codes;
+- reintroducir secretos;
+- afectar otros consumidores;
+- requerir sobrescribir una versión publicada del package.
+
+La migración no retirará su fallback legacy hasta superar el gate de retiro aplicable.
+
+---
+
+#### 25. Seguridad y privacidad
+
+`Alert` es una superficie de presentación y, por ello, puede convertirse en canal de fuga si recibe contenido indebido.
+
+Reglas:
+
+1. el componente no consulta datos sensibles;
+2. el componente no redacciona automáticamente datos porque no conoce su semántica;
+3. el propietario debe enviar únicamente contenido permitido para el actor;
+4. mensajes no deben contener tokens, credenciales, cookies, SQL, stacks ni payloads internos;
+5. el icono no debe cargar URLs sensibles ni transportar secretos;
+6. IDs de soporte visibles deberán ser referencias seguras;
+7. un Alert oculto por CSS no constituye protección de datos;
+8. desmontar u ocultar una instancia no revoca autorización ni invalida el estado autoritativo;
+9. el componente no persiste el mensaje;
+10. el componente no registra telemetría propia del contenido por defecto.
+
+---
+
+#### 26. Internacionalización y longitud
+
+`Alert` no fija idioma ni catálogo de traducciones.
+
+Debe soportar contenido variable sin depender de una longitud corta.
+
+Reglas:
+
+- no truncar mensajes esenciales por defecto;
+- permitir salto de línea y reflow;
+- evitar layouts que fallen con textos más largos;
+- no construir significado concatenando fragmentos inaccesibles;
+- no asumir que una variante corresponde a una palabra fija;
+- el copy y su localización permanecen bajo contratos de contenido y dominio.
+
+---
+
+#### 27. Comportamiento ante contenido ausente o inválido
+
+El contrato exige contenido visible significativo.
+
+La implementación futura deberá tratar como defecto de desarrollo una instancia que carezca de contenido útil.
+
+No se autoriza que el componente invente mensajes de fallback como:
+
+```text
+Ocurrió un error
+```
+
+si el propietario no proporcionó contenido.
+
+Un fallback genérico ocultaría la responsabilidad de producir un mensaje correcto y una ruta de recuperación.
+
+---
+
+#### 28. Relación con el Registro Canónico de Requisitos de Prueba
+
+Esta tarea **no crea ni modifica requisitos de prueba**.
+
+Justificación concreta:
+
+1. el registro vigente ya exige lenguaje humano y recuperación para errores y bloqueos;
+2. ya exige relevancia de alertas y notificaciones para el actor correcto;
+3. ya prohíbe que información visual sustituya autorización;
+4. ya exige que estados y bloqueos no dependan solo de color o icono;
+5. ya exige anuncios accesibles de cambios materiales sin ruido constante;
+6. ya exige privacidad y minimización en notificaciones;
+7. ya exige deduplicación y ciclo de vida de mensajes;
+8. ya exige inventariar y migrar mensajes, toasts, banners y superficies legacy antes de retirarlas;
+9. las obligaciones nuevas de esta tarea son una especialización del componente que implementará esa cobertura existente, no una nueva regla de riesgo no registrada.
+
+Resultado:
+
+```text
+REQUISITOS CREADOS: 0
+REQUISITOS MODIFICADOS: 0
+REQUISITOS DIFERIDOS: 0
+REQUISITOS DESCARTADOS: 0
+```
+
+No se genera fragmento adicional del registro.
+
+---
+
+#### 29. Pruebas mínimas futuras del componente
+
+Cuando la implementación física sea habilitada, la suite del package deberá cubrir como mínimo:
+
+1. render de `neutral`;
+2. render de `success`;
+3. render de `warning`;
+4. render de `danger`;
+5. `neutral` como valor por defecto;
+6. rechazo de variante inválida en el contrato tipado;
+7. render de contenido textual;
+8. render de contenido compuesto;
+9. render sin icono;
+10. render con icono;
+11. icono decorativo fuera del nombre accesible cuando corresponda;
+12. atributos HTML transferidos al root;
+13. `className` adicional sin eliminar estilos base;
+14. `role` transferible;
+15. `aria-live` transferible;
+16. `aria-atomic` transferible;
+17. ausencia de `role="alert"` forzado por defecto;
+18. ausencia de `aria-live` forzado por defecto;
+19. ausencia de captura de foco por defecto;
+20. mensaje visible sin depender del icono;
+21. variante perceptible sin depender únicamente del color;
+22. reflow con contenido largo;
+23. zoom sin recorte esencial;
+24. SSR sin acceso a APIs del navegador;
+25. composición dentro de un componente cliente;
+26. ausencia de import directo de Supabase;
+27. ausencia de import de router como dependencia del componente base;
+28. ausencia de llamadas de red;
+29. ausencia de timers/autodescartado;
+30. ausencia de estado global propio;
+31. compatibilidad con tokens de tema;
+32. tema claro;
+33. tema oscuro;
+34. paridad visual con `ui-alert--neutral` en consumidor de referencia;
+35. paridad visual con `ui-alert--success`;
+36. paridad visual con `ui-alert--warning`;
+37. paridad visual con `ui-alert--danger`;
+38. migración de icono legacy;
+39. migración de texto legacy;
+40. no absorción del patrón toast;
+41. contenido con link semántico;
+42. contenido con control permitido por el consumidor;
+43. no interpretación de `danger` como autorización denegada;
+44. no interpretación de `success` como confirmación remota;
+45. snapshots o pruebas visuales bajo la estrategia futura del package;
+46. pruebas de contraste y accesibilidad bajo la certificación transversal;
+47. compatibilidad por consumidor antes del retiro del CSS legacy;
+48. rollback de un consumidor sin alterar otro;
+49. no exposición de detalles técnicos mediante fixtures de error normalizado;
+50. conservación de contenido y semántica al cambiar únicamente la variante.
+
+Estas pruebas son obligaciones de implementación futura; esta tarea no afirma su ejecución.
+
+---
+
+#### 30. Criterios de aceptación documental
+
+`SHELL-UI-002` se considera documentalmente completa cuando se verifica que:
+
+1. existe una única identidad `Alert`;
+2. pertenece lógicamente a `@vento/ui-web`;
+3. conserva las cuatro variantes legacy relevantes;
+4. `neutral` queda como variante por defecto;
+5. el componente no genera copy de dominio;
+6. el componente no normaliza errores técnicos;
+7. el componente no consulta Supabase;
+8. el componente no evalúa autorización;
+9. el componente no decide navegación;
+10. el componente no exige estado cliente;
+11. el componente no fuerza región viva universal;
+12. ARIA puede transferirse explícitamente;
+13. el icono es opcional;
+14. el contenido visible es obligatorio;
+15. no depende solo de color;
+16. no absorbe Toast;
+17. no cambia el sistema de tema;
+18. no crea nuevos exports físicos;
+19. no materializa package ni componente;
+20. no migra consumidores;
+21. no retira CSS legacy;
+22. conserva rollback por consumidor;
+23. asigna migración a tareas existentes;
+24. conserva la tarea siguiente sin desarrollar;
+25. genera cero cambios en requisitos de prueba con justificación concreta.
+
+---
+
+#### 31. Estado físico posterior a la tarea
+
+| Elemento                                   | Estado              |
+| ------------------------------------------ | ------------------- |
+| contrato documental de `Alert`             | `ESPECIFICADO`      |
+| package físico `@vento/ui-web`             | `NO_MATERIALIZADO`  |
+| archivo físico del componente `Alert`      | `NO_MATERIALIZADO`  |
+| export físico de `Alert`                   | `NO_MATERIALIZADO`  |
+| estilos físicos nuevos del package         | `NO_MATERIALIZADOS` |
+| consumidores migrados por esta tarea       | `0`                 |
+| CSS legacy retirado por esta tarea         | `0`                 |
+| cambios de Supabase                        | `0`                 |
+| migraciones SQL                            | `0`                 |
+| cambios de datos                           | `0`                 |
+| cambios de configuración remota            | `0`                 |
+| requisitos de prueba creados o modificados | `0`                 |
+
+---
+
+#### 32. Handoffs obligatorios
+
+Los siguientes trabajos quedan asignados, sin ejecutarse en esta tarea:
+
+| Handoff                                                          | Propietario                                                                      | Condición de salida                                                                          |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| materialización física de `@vento/ui-web`, `Alert` y sus exports | `SHELL-CI-*` aplicables, cuando el gate correspondiente habilite materialización | package construido y componente implementado conforme a los contratos documentales aprobados |
+| build, publicación, compatibilidad y release                     | `SHELL-CI-*` aplicables                                                          | artefacto versionado y verificable conforme al gobierno de packages                          |
+| accesibilidad del componente en package y consumidores           | `UX-QA-*` aplicables y pruebas de package/consumidor                             | semántica, anuncio, color, reflow y tecnologías de asistencia validadas según el escenario   |
+| inventario de consumidores legacy                                | `SHELL-MIG-001`                                                                  | todos los usos aplicables clasificados                                                       |
+| lotes reversibles                                                | `SHELL-MIG-002`                                                                  | cada consumidor asignado a un lote con rollback                                              |
+| compatibilidad y no nuevos legacy                                | `SHELL-MIG-003`                                                                  | guardrail y estrategia compatibles definidos                                                 |
+| paridad por consumidor                                           | `SHELL-MIG-007`                                                                  | evidencia funcional, visual y de accesibilidad por lote                                      |
+| retiro del legado                                                | `SHELL-MIG-008`                                                                  | ausencia de consumidores residuales y rollback disponible                                    |
+
+Ningún handoff modifica la continuidad inmediata del plan.
+
+---
+
+#### 33. Decisiones vinculantes
+
+1. El componente compartido se denomina `Alert`.
+2. `Alert` pertenece a `@vento/ui-web`.
+3. La tarea es documental y no materializa código.
+4. El patrón legacy observado es evidencia de migración, no API pública perpetua.
+5. Las variantes canónicas son `neutral`, `success`, `warning` y `danger`.
+6. `neutral` es la variante por defecto.
+7. `variant` expresa presentación, no autoridad ni estado empresarial canónico.
+8. El consumidor aporta el contenido.
+9. El contenido visible es obligatorio.
+10. El icono es opcional.
+11. El icono no sustituye el mensaje textual.
+12. El componente admite atributos HTML compatibles.
+13. El componente admite atributos ARIA explícitos.
+14. No se fuerza `role="alert"` universal.
+15. No se fuerza `aria-live` universal.
+16. El componente no mueve foco por defecto.
+17. El componente no depende de Supabase.
+18. El componente no depende de sesión.
+19. El componente no evalúa permisos.
+20. El componente no resuelve contexto operativo.
+21. El componente no normaliza errores técnicos.
+22. El componente no genera reason codes.
+23. El componente no genera copy de dominio.
+24. El componente no decide reintentos.
+25. El componente no decide navegación.
+26. El componente no ejecuta efectos remotos.
+27. El componente no persiste mensajes.
+28. El componente no crea timers.
+29. El componente no exige renderizado cliente.
+30. El componente debe funcionar en SSR.
+31. La variante no puede depender únicamente del color para comunicar significado.
+32. El contenido debe soportar reflow y longitud variable.
+33. El componente no crea un sistema de tema paralelo.
+34. Esta tarea no crea ni renombra el contrato general de tokens de `@vento/ui-web`.
+35. Esta tarea no define un catálogo transversal de iconos.
+36. La accesibilidad sigue siendo obligación propia de `Alert` y se valida con la cobertura UX y las pruebas del package y consumidores aplicables.
+37. Toast no se fusiona con Alert.
+38. Los toasts legacy no se retiran en esta tarea.
+39. Los consumidores actuales no se modifican.
+40. El CSS legacy no se retira.
+41. La migración será progresiva por consumidor.
+42. Cada consumidor conserva rollback independiente.
+43. El retiro exige evidencia de ausencia de uso residual.
+44. El componente no convierte UI en control de seguridad.
+45. Ocultar el Alert no modifica el estado autoritativo.
+46. El package no expone secretos a través del componente.
+47. No se crean cambios de Supabase.
+48. No se crean cambios de datos.
+49. No se crean ni modifican requisitos de prueba.
+50. `SHELL-UI-003` permanece reservada y no se desarrolla aquí.
+
+---
+
+#### 34. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `SHELL-UI-001 — Crear @vento/ui-web`
+
+**TAREA ACTUAL APROBADA:** `SHELL-UI-002 — Compartir Alert`
+
+**SIGUIENTE TAREA RESERVADA:** `SHELL-UI-003 — Compartir Button`
+
+
 ### [ ] SHELL-UI-003 — Compartir Button
 ### [ ] SHELL-UI-004 — Compartir Card
 ### [ ] SHELL-UI-005 — Compartir EmptyState
