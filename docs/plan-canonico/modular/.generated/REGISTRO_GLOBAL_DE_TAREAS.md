@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **892** |
+| Aprobadas | **893** |
 | En propuesta | **0** |
-| No iniciadas | **702** |
+| No iniciadas | **701** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **55.96% (892/1594)** |
+| Porcentaje de completamiento | **56.02% (893/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CON-013` — Crear contrato de eventos empresariales | ✅ APROBADA |
-| Tarea actual | `SHELL-CON-014` — Crear contrato de traspasos entre aplicaciones | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CON-015` — Crear contrato de tareas pendientes | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CON-014` — Crear contrato de traspasos entre aplicaciones | ✅ APROBADA |
+| Tarea actual | `SHELL-CON-015` — Crear contrato de tareas pendientes | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CON-016` — Crear contrato de propiedad funcional | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -719,7 +719,7 @@
 | ✅ APROBADA | `SHELL-CON-011` | Centralizar identificadores de pantallas | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CON-012` | Crear contrato de acciones funcionales | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CON-013` | Crear contrato de eventos empresariales | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-CON-014` | Crear contrato de traspasos entre aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-CON-014` | Crear contrato de traspasos entre aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-015` | Crear contrato de tareas pendientes | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-016` | Crear contrato de propiedad funcional | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-017` | Crear contrato de principal técnico de integración | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |

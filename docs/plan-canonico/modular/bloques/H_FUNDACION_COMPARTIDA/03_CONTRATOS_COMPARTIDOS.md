@@ -9745,6 +9745,633 @@ SHELL-CON-013 — Crear contrato de eventos empresariales
 SHELL-CON-014 — Crear contrato de traspasos entre aplicaciones
 
 
-### [ ] SHELL-CON-014 — Crear contrato de traspasos entre aplicaciones
+### ✅ SHELL-CON-014 — Crear contrato de traspasos entre aplicaciones
+
+**Estado:** APROBADA
+
+**Tarea anterior:** SHELL-CON-013 — Crear contrato de eventos empresariales
+
+**Tarea siguiente:** SHELL-CON-015 — Crear contrato de tareas pendientes
+
+**Tipo de tarea:** Documental
+
+**Bloque:** H — Fundación compartida
+
+**Repositorio propietario:** `vento-shell`
+
+**Estado físico resultante:** `CONTRATO_DE_TRASPASOS_ENTRE_APLICACIONES_DEFINIDO_NO_MATERIALIZADO`
+
+**Cambios físicos autorizados:** ninguno
+
+**Requisitos TREQ creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-014` centraliza el contrato compartido de traspasos entre aplicaciones de Vento OS sin crear nuevas relaciones funcionales, cambiar la aplicación propietaria de un proceso ni convertir cualquier consumo de eventos en un handoff.
+
+La regla central es:
+
+```text
+RELACIÓN INTERAPLICACIÓN APROBADA PARA HANDOFF
++
+MISMA INSTANCIA DE PROCESO
++
+CONTEXTO Y RECURSO PRESERVADOS
++
+REVALIDACIÓN DE AUTORIDAD EN LA RECEPTORA
++
+ACEPTACIÓN O RESULTADO CORRELACIONADO
+=
+CONTINUIDAD ENTRE APLICACIONES SIN DUPLICAR EL PROCESO
+```
+
+El contrato cubre tanto la solicitud que cruza una frontera de aplicación como la transferencia controlada de trabajo, responsabilidad o custodia y su resultado correlacionado. No autoriza escritura cruzada directa ni modifica por sí mismo el estado propietario.
+
+---
+
+#### 2. Fuentes canónicas consumidas
+
+La tarea consume y preserva, sin sustituirlas:
+
+- `SHELL-CON-001`, como autoridad de la raíz `@vento/contracts`;
+- `SHELL-CON-002`, como autoridad compartida de `AppCode`;
+- `SHELL-CON-009`, como autoridad compartida de `ProcessId`;
+- `SHELL-CON-010`, como autoridad compartida de `ProcessStateId`;
+- `SHELL-CON-012`, como autoridad compartida de `FunctionalActionId` cuando una acción pendiente ya pertenece a ese catálogo;
+- `SHELL-CON-013`, como autoridad compartida de eventos empresariales y su separación respecto de una solicitud de handoff;
+- `PROC-CAT-005`, como autoridad de la propietaria de cada proceso;
+- `PROC-CAT-006`, como autoridad de consumidoras directas, consumidoras condicionales y modalidad de intercambio;
+- `PROC-CAT-008`, como autoridad de continuidad, aceptación y preservación de identidad durante un traspaso;
+- `PROC-CAT-017`, como autoridad de eventos empresariales y del hecho `HANDOFF_FACT` cuando corresponda;
+- `INT-APP-003`, como autoridad del perfil `HANDOFF_PROJECTION`;
+- `INT-APP-004`, como autoridad de idempotencia de consumo y efecto para handoffs;
+- `INT-APP-010`, como autoridad de la familia `HANDOFF_REQUEST` y de la prohibición de escrituras cruzadas sin contrato;
+- el Registro Canónico de Requisitos de Prueba vigente, especialmente `TREQ-PROC-023` a `TREQ-PROC-027`, `TREQ-PROC-033` a `TREQ-PROC-037`, `TREQ-INTEGRATION-003` y `TREQ-INTEGRATION-005`.
+
+Precedencia aplicable:
+
+```text
+propiedad del proceso
+→ relación de consumo aprobada
+→ modalidad SOLICITUD_HANDOFF_Y_EVENTO
+→ contrato compartido de handoff
+→ perfil HANDOFF_PROJECTION / familia HANDOFF_REQUEST
+→ implementación física posterior
+```
+
+---
+
+#### 3. Definición contractual de traspaso entre aplicaciones
+
+Un traspaso entre aplicaciones es una continuidad controlada de la misma instancia empresarial a través de una frontera de aplicación. Puede transportar una solicitud, transferir trabajo, responsabilidad o custodia, o devolver un resultado correlacionado, pero siempre conserva la autoridad funcional de la propietaria del proceso.
+
+Un handoff válido debe preservar como mínimo, cuando sean aplicables al proceso y recurso:
+
+- `ProcessId`;
+- identidad de la instancia de proceso;
+- referencia del recurso;
+- aplicación propietaria;
+- aplicación participante;
+- actor emisor;
+- actor receptor o función receptora;
+- sede;
+- área;
+- estado vigente;
+- acción o trabajo pendiente;
+- destino de retorno;
+- correlación y causalidad;
+- momento del traspaso;
+- pendientes y evidencia;
+- aceptación o resultado del receptor;
+- idempotencia suficiente para evitar doble efecto.
+
+La ausencia de un valor no aplicable no se interpreta como wildcard, autorización global o permiso para reconstruirlo desde el cliente.
+
+---
+
+#### 4. Universo finito reconciliado
+
+`PROC-CAT-006` contiene múltiples modalidades de consumo interaplicación. `SHELL-CON-014` incluye únicamente las relaciones pertenecientes a procesos cuya modalidad dominante vigente es:
+
+```text
+SOLICITUD_HANDOFF_Y_EVENTO
+```
+
+Su significado aprobado es iniciar una solicitud o transferencia controlada y recibir su resultado.
+
+La reconciliación vigente es:
+
+| Dimensión                                                        |      Resultado |
+| ---------------------------------------------------------------- | -------------: |
+| Procesos canónicos totales evaluados                             |         **69** |
+| Procesos con modalidad `SOLICITUD_HANDOFF_Y_EVENTO`              |          **8** |
+| Procesos sin esa modalidad                                       |         **61** |
+| Relaciones interaplicación de handoff                            |         **49** |
+| Relaciones directas                                              |         **27** |
+| Relaciones condicionales                                         |         **22** |
+| Aplicaciones propietarias representadas en este subconjunto      | **1 — `viso`** |
+| Aplicaciones participantes distintas de la propietaria           |          **9** |
+| Relaciones duplicadas por tupla proceso/propietaria/participante |          **0** |
+| Relaciones sin `ProcessId`                                       |          **0** |
+| Relaciones cuya propietaria aparece también como participante    |          **0** |
+
+No se convierten en handoff las restantes relaciones de consumo solo porque intercambien eventos, proyecciones, referencias, efectos, señales, conciliaciones o análisis.
+
+---
+
+#### 5. Namespace lógico y propiedad
+
+Se define la superficie lógica:
+
+```text
+@vento/contracts/handoffs
+```
+
+Su propiedad documental queda en `vento-shell` bajo `@vento/contracts`.
+
+La superficie representa contratos estáticos y validables para:
+
+- relaciones interaplicación admitidas para handoff;
+- contexto mínimo que debe preservarse;
+- reglas de emisión, recepción, aceptación y retorno;
+- referencias a identidades compartidas ya aprobadas;
+- validación de pertenencia de una relación;
+- separación entre handoff, evento, navegación, autorización y escritura propietaria.
+
+No se crea físicamente un package, subpath, archivo de código, schema ejecutable, endpoint, deep link, cola, topic, tabla, RPC ni integración durante esta tarea.
+
+---
+
+#### 6. Identidad de una relación de handoff
+
+Esta tarea no inventa un identificador serializado paralelo. La identidad estática de una relación se resuelve por la tupla exacta:
+
+```text
+(ProcessId, owner_application, participant_application)
+```
+
+La tupla solo pertenece al contrato cuando existe en la matriz de esta tarea y su proceso conserva la modalidad `SOLICITUD_HANDOFF_Y_EVENTO` en `PROC-CAT-006`.
+
+Invariantes:
+
+1. `ProcessId` debe pertenecer al catálogo canónico vigente;
+2. `owner_application` debe coincidir con la propietaria aprobada en `PROC-CAT-005`;
+3. `participant_application` debe pertenecer a las consumidoras directas o condicionales aprobadas en `PROC-CAT-006`;
+4. propietaria y participante deben ser distintas;
+5. una relación directa y una relación condicional no pueden coexistir para la misma tupla;
+6. la sintaxis válida de los componentes no demuestra pertenencia a la matriz;
+7. incorporar, retirar o reclasificar una relación exige primero modificar su fuente propietaria y conservar compatibilidad e historial.
+
+---
+
+#### 7. Contrato estático de relación
+
+La proyección compartida deberá poder representar conceptualmente, sin crear una segunda fuente de verdad:
+
+```text
+ApplicationHandoffRelation
+→ process_id: ProcessId
+→ owner_application: AppCode
+→ participant_application: AppCode
+→ participation_class: DIRECTA | CONDICIONAL
+→ consumer_mode: SOLICITUD_HANDOFF_Y_EVENTO
+→ integration_profile: HANDOFF_PROJECTION
+→ exchange_family: HANDOFF_REQUEST
+```
+
+`DIRECTA` y `CONDICIONAL` son proyecciones de las listas aprobadas en `PROC-CAT-006`; no sustituyen sus condiciones funcionales.
+
+Una relación `CONDICIONAL` existe documentalmente, pero no queda habilitada por defecto. Su activación exige que se cumpla la condición propietaria aplicable, además de disponibilidad, autorización, contrato y readiness.
+
+---
+
+#### 8. Contrato dinámico de continuidad
+
+Una materialización posterior deberá transportar únicamente el contexto necesario para que la aplicación participante continúe o acepte el trabajo sin reconstruir la instancia desde información visual o parámetros no confiables.
+
+Campos semánticos obligatorios:
+
+| Campo conceptual  | Regla                                                                                 |
+| ----------------- | ------------------------------------------------------------------------------------- |
+| proceso           | conserva el mismo `ProcessId`                                                         |
+| instancia         | conserva la misma instancia; el handoff no crea otra                                  |
+| recurso           | identifica el recurso empresarial exacto sobre el que continúa el trabajo             |
+| propietaria       | conserva la aplicación con autoridad sobre el proceso                                 |
+| participante      | identifica la aplicación que solicita, recibe, ejecuta su efecto o devuelve resultado |
+| actor emisor      | conserva quién origina el traspaso                                                    |
+| actor receptor    | identifica actor o función que debe continuar o aceptar                               |
+| territorio        | conserva sede y área aplicables sin ampliación implícita                              |
+| estado            | conserva la posición vigente aplicable del proceso                                    |
+| trabajo pendiente | identifica lo que falta y no lo marca como completado por el envío                    |
+| retorno           | conserva el destino contractual para volver sin reiniciar ni desviar el proceso       |
+| correlación       | relaciona solicitud, handoff, eventos y resultado                                     |
+| idempotencia      | impide doble aceptación o doble efecto                                                |
+| evidencia         | preserva referencias necesarias para aceptación, auditoría y conciliación             |
+| tiempos           | distingue emisión, recepción, aceptación y resultado cuando apliquen                  |
+
+Cuando un valor corresponda inequívocamente a un contrato compartido ya aprobado, la implementación deberá reutilizar ese contrato en lugar de una unión local equivalente.
+
+---
+
+#### 9. Solicitud, transferencia, aceptación y resultado
+
+La secuencia lógica es:
+
+```text
+ACTOR AUTORIZADO
+→ SOLICITA O EMITE HANDOFF
+→ SE VALIDA RELACIÓN CANÓNICA
+→ SE PRESERVA CONTEXTO
+→ RECEPTORA REVALIDA CONTRATO Y AUTORIDAD
+→ ACEPTA O RECHAZA DE FORMA EXPLÍCITA
+→ EJECUTA ÚNICAMENTE SU RESPONSABILIDAD
+→ DEVUELVE RESULTADO CORRELACIONADO
+→ PROPIETARIA CONSERVA SU VERDAD Y CONTINUIDAD
+```
+
+Reglas:
+
+1. enviar un handoff no equivale a aceptación;
+2. recibirlo no concede autorización;
+3. la receptora vuelve a validar actor, contexto, recurso, estado y permiso aplicables;
+4. la etapa siguiente no se marca completada por el solo despacho;
+5. cuando exista autoaceptación segura, deberá estar expresamente permitida por el contrato propietario; no se infiere;
+6. rechazo, expiración o imposibilidad de aceptar conserva la instancia y responsabilidad trazable;
+7. un resultado técnico no se interpreta como resultado empresarial sin la confirmación propietaria correspondiente.
+
+---
+
+#### 10. Frontera entre propietaria y participante
+
+La relación de handoff no transfiere la propiedad canónica del proceso.
+
+```text
+owner_application
+→ gobierna registro principal, reglas, estado, corrección y cierre
+
+participant_application
+→ solicita, recibe, continúa o ejecuta únicamente el efecto que su contrato permite
+```
+
+Queda prohibido:
+
+- escribir directamente el estado privado de otra aplicación;
+- mantener una copia mutable competidora del resultado propietario;
+- corregir o cerrar el proceso desde una consumidora por conveniencia técnica;
+- asumir que recibir contexto concede permiso;
+- convertir una proyección en fuente de verdad;
+- actualizar dos fuentes para simular un handoff;
+- usar la navegación entre aplicaciones como mecanismo de autorización.
+
+La familia `HANDOFF_REQUEST` solo permite que cada propietaria modifique su propio estado después de las validaciones correspondientes.
+
+---
+
+#### 11. Relación con eventos empresariales
+
+`SHELL-CON-013` y `SHELL-CON-014` permanecen separados:
+
+```text
+BusinessEventId
+→ identifica una definición estable de hecho empresarial
+
+HANDOFF_REQUEST
+→ solicita transferencia o continuidad
+
+HANDOFF_PROJECTION
+→ transporta la proyección mínima del traspaso y su resultado
+
+HANDOFF_FACT
+→ puede describir un hecho durable de transferencia ya ocurrido
+```
+
+Por tanto:
+
+- una solicitud de handoff no es un evento empresarial confirmado;
+- un `HANDOFF_FACT` no crea por sí solo una nueva relación entre aplicaciones;
+- una relación admitida no obliga a emitir todos los eventos del proceso a esa aplicación;
+- la emisión y el consumo continúan sujetos al catálogo de eventos, audiencia y sensibilidad aprobados;
+- la correlación entre solicitud, resultado y evento no fusiona sus identidades.
+
+---
+
+#### 12. Idempotencia, duplicados y reintentos
+
+Para `HANDOFF_PROJECTION`, la política aprobada exige inbox del consumidor y una clave de efecto del consumidor para aceptación o handoff, con un único resultado por alcance de efecto.
+
+La materialización posterior deberá impedir:
+
+- aceptar dos veces el mismo traspaso;
+- ejecutar dos veces el mismo efecto por retry;
+- crear dos instancias por la misma solicitud;
+- sobrescribir un resultado anterior con un replay fuera de orden;
+- cambiar el contenido lógico bajo la misma clave de operación;
+- considerar timeout como rechazo o éxito sin reconciliación;
+- perder el resultado recuperable de una operación ya aplicada.
+
+Los mecanismos físicos de outbox, inbox, colas, locks, retries o persistencia se definen e implementan en sus tareas técnicas propietarias; esta tarea fija únicamente la obligación contractual.
+
+---
+
+#### 13. Navegación, deep links y destino de retorno
+
+Un traspaso puede requerir abrir otra aplicación o superficie, pero la navegación es transporte de continuidad y no autoridad.
+
+El contrato deberá conservar:
+
+- aplicación destino;
+- referencia de proceso e instancia;
+- recurso exacto;
+- contexto territorial aplicable;
+- estado y trabajo pendiente;
+- destino de retorno;
+- correlación suficiente para continuar la misma intención.
+
+Reglas:
+
+1. la receptora no confía en parámetros de URL como prueba de autorización;
+2. el contexto recibido se valida de nuevo contra fuentes confiables;
+3. una ruta renombrada o reemplazada no puede desviar silenciosamente el proceso;
+4. deep links compatibles deberán conservar transición controlada durante su ventana de soporte;
+5. regresar a la aplicación anterior no crea una instancia nueva;
+6. un retorno inválido, obsoleto o no autorizado falla cerrado y conserva un destino seguro conforme al contrato de navegación aplicable;
+7. esta tarea no define rutas concretas, URLs ni dominios que no estén aprobados por sus propietarios.
+
+---
+
+#### 14. Relaciones directas y condicionales
+
+Una relación `DIRECTA` significa que la aplicación está declarada como consumidora directa del proceso. No significa que todo actor pueda activar el handoff ni que toda instancia deba usarlo.
+
+Una relación `CONDICIONAL` significa que la aplicación puede participar únicamente cuando se cumplan las condiciones del proceso y del consumo aprobado. No se promueve a directa por frecuencia de uso, existencia de una ruta o disponibilidad técnica.
+
+En ambos casos siguen siendo obligatorios:
+
+- autorización;
+- estado compatible;
+- recurso compatible;
+- finalidad aprobada;
+- minimización;
+- idempotencia;
+- disponibilidad real;
+- compatibilidad de versión;
+- aceptación cuando corresponda.
+
+---
+
+#### 15. Matriz completa de relaciones vigentes
+
+|    # | `ProcessId`  | Propietaria | Aplicación participante | Relación      | Modalidad canónica           | Perfil de integración | Familia de intercambio | Decisión                            | Resultado                     | Estado         | Bloqueo     |
+| ---: | ------------ | ----------- | ----------------------- | ------------- | ---------------------------- | --------------------- | ---------------------- | ----------------------------------- | ----------------------------- | -------------- | ----------- |
+|    1 | `VPROC-0005` | `viso`      | `anima`                 | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|    2 | `VPROC-0005` | `viso`      | `numera`                | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|    3 | `VPROC-0006` | `viso`      | `anima`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|    4 | `VPROC-0006` | `viso`      | `shell`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|    5 | `VPROC-0006` | `viso`      | `nexo`                  | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|    6 | `VPROC-0006` | `viso`      | `fogo`                  | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|    7 | `VPROC-0006` | `viso`      | `origo`                 | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|    8 | `VPROC-0006` | `viso`      | `pulso`                 | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|    9 | `VPROC-0006` | `viso`      | `numera`                | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   10 | `VPROC-0006` | `viso`      | `aura`                  | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   11 | `VPROC-0007` | `viso`      | `anima`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   12 | `VPROC-0007` | `viso`      | `shell`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   13 | `VPROC-0007` | `viso`      | `nexo`                  | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   14 | `VPROC-0007` | `viso`      | `fogo`                  | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   15 | `VPROC-0007` | `viso`      | `origo`                 | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   16 | `VPROC-0007` | `viso`      | `pulso`                 | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   17 | `VPROC-0007` | `viso`      | `numera`                | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   18 | `VPROC-0009` | `viso`      | `anima`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   19 | `VPROC-0009` | `viso`      | `shell`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   20 | `VPROC-0009` | `viso`      | `nexo`                  | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   21 | `VPROC-0009` | `viso`      | `fogo`                  | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   22 | `VPROC-0009` | `viso`      | `origo`                 | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   23 | `VPROC-0009` | `viso`      | `pulso`                 | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   24 | `VPROC-0009` | `viso`      | `numera`                | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   25 | `VPROC-0011` | `viso`      | `shell`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   26 | `VPROC-0011` | `viso`      | `anima`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   27 | `VPROC-0011` | `viso`      | `nexo`                  | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   28 | `VPROC-0011` | `viso`      | `fogo`                  | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   29 | `VPROC-0011` | `viso`      | `origo`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   30 | `VPROC-0011` | `viso`      | `pulso`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   31 | `VPROC-0011` | `viso`      | `numera`                | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   32 | `VPROC-0011` | `viso`      | `aura`                  | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   33 | `VPROC-0059` | `viso`      | `shell`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   34 | `VPROC-0059` | `viso`      | `anima`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   35 | `VPROC-0059` | `viso`      | `nexo`                  | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   36 | `VPROC-0059` | `viso`      | `fogo`                  | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   37 | `VPROC-0059` | `viso`      | `origo`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   38 | `VPROC-0059` | `viso`      | `pulso`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   39 | `VPROC-0059` | `viso`      | `numera`                | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   40 | `VPROC-0059` | `viso`      | `aura`                  | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   41 | `VPROC-0059` | `viso`      | `pass`                  | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   42 | `VPROC-0065` | `viso`      | `anima`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   43 | `VPROC-0065` | `viso`      | `numera`                | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   44 | `VPROC-0066` | `viso`      | `anima`                 | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   45 | `VPROC-0066` | `viso`      | `nexo`                  | `DIRECTA`     | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   46 | `VPROC-0066` | `viso`      | `fogo`                  | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   47 | `VPROC-0066` | `viso`      | `origo`                 | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   48 | `VPROC-0066` | `viso`      | `pulso`                 | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+|   49 | `VPROC-0066` | `viso`      | `shell`                 | `CONDICIONAL` | `SOLICITUD_HANDOFF_Y_EVENTO` | `HANDOFF_PROJECTION`  | `HANDOFF_REQUEST`      | `CENTRALIZAR_SIN_CAMBIAR_PROPIEDAD` | `INCLUIDA_EN_CONTRATO_LOGICO` | `ESPECIFICADO` | `NO_APLICA` |
+
+---
+
+#### 16. Reconciliación por proceso
+
+| `ProcessId`  | Propietaria | Directas | Condicionales |  Total |
+| ------------ | ----------- | -------: | ------------: | -----: |
+| `VPROC-0005` | `viso`      |        0 |             2 |      2 |
+| `VPROC-0006` | `viso`      |        2 |             6 |      8 |
+| `VPROC-0007` | `viso`      |        2 |             5 |      7 |
+| `VPROC-0009` | `viso`      |        2 |             5 |      7 |
+| `VPROC-0011` | `viso`      |        8 |             0 |      8 |
+| `VPROC-0059` | `viso`      |        9 |             0 |      9 |
+| `VPROC-0065` | `viso`      |        2 |             0 |      2 |
+| `VPROC-0066` | `viso`      |        2 |             4 |      6 |
+| **Total**    | —           |   **27** |        **22** | **49** |
+
+Todos los ocho procesos conservan `viso` como propietaria en el corte vigente. Esta concentración es un hecho del catálogo actual y no una regla que reserve los handoffs futuros a VISO.
+
+---
+
+#### 17. Reconciliación por aplicación participante
+
+| Aplicación | Directas | Condicionales |  Total |
+| ---------- | -------: | ------------: | -----: |
+| `shell`    |        5 |             1 |      6 |
+| `anima`    |        7 |             1 |      8 |
+| `nexo`     |        3 |             3 |      6 |
+| `fogo`     |        2 |             4 |      6 |
+| `origo`    |        2 |             4 |      6 |
+| `pulso`    |        2 |             4 |      6 |
+| `numera`   |        3 |             4 |      7 |
+| `aura`     |        2 |             1 |      3 |
+| `pass`     |        1 |             0 |      1 |
+| **Total**  |   **27** |        **22** | **49** |
+
+Las nueve aplicaciones distintas de `viso` aparecen al menos una vez como participantes del subconjunto vigente.
+
+`aura` conserva relaciones documentales aprobadas, pero su participación física continúa sujeta a readiness, cobertura, despliegue y pruebas; la existencia de la relación no la presenta como operativa.
+
+---
+
+#### 18. Relaciones expresamente excluidas
+
+No pertenecen al universo de 49 por el solo hecho de existir en `PROC-CAT-006`:
+
+- `REFERENCIA_CANONICA` / `REFERENCE_PROJECTION`;
+- `REFERENCIA_Y_EVENTO` / `VERSIONED_REFERENCE_PROJECTION`;
+- `PROYECCION_Y_EVENTO` / `LIFECYCLE_PROJECTION`;
+- `HECHO_Y_PROYECCION` / `IMMUTABLE_FACT_PROJECTION`;
+- `SOLICITUD_EFECTO_Y_EVENTO` / `EFFECT_CONFIRMATION_PROJECTION`;
+- `SEÑAL_EFECTO_Y_EVENTO` / `EXECUTION_SIGNAL_PROJECTION`;
+- `EVENTO_CONCILIACION_Y_PROYECCION` / `RECONCILIATION_PROJECTION`;
+- modalidades de análisis y marketing aprobadas por BLOQUE X.
+
+Una señal de ejecución puede contener un handoff operativo dentro de su flujo y un evento puede pertenecer a la clase `HANDOFF_FACT`; ninguno de esos hechos reclasifica automáticamente la relación interaplicación como `SOLICITUD_HANDOFF_Y_EVENTO`.
+
+---
+
+#### 19. Seguridad, privacidad y autoridad
+
+Todo handoff deberá aplicar minimización y finalidad. Solo se transporta el contexto necesario para que la receptora valide y ejecute su responsabilidad.
+
+Queda prohibido incluir por conveniencia:
+
+- credenciales;
+- secretos;
+- tokens reutilizables como identidad empresarial;
+- payloads completos cuando basta una referencia protegida;
+- permisos derivados por el cliente;
+- datos personales, laborales, médicos o financieros fuera de finalidad;
+- información de otras sedes, áreas o recursos que no corresponda al alcance efectivo.
+
+La receptora no hereda autoridad de la emisora. Cada aplicación y backend resuelve nuevamente la decisión aplicable con sus fuentes confiables.
+
+---
+
+#### 20. Evolución y compatibilidad
+
+Una evolución de las relaciones exige preservar identidad y continuidad histórica.
+
+Reglas:
+
+1. cambiar una participante directa a condicional o viceversa es un cambio contractual;
+2. agregar o retirar una participante requiere actualizar primero la fuente propietaria;
+3. cambiar la propietaria de un proceso no se resuelve editando esta matriz de forma aislada;
+4. una relación retirada conserva trazabilidad de handoffs ya emitidos;
+5. solicitudes y resultados pendientes deben reconciliarse antes de retirar un consumidor;
+6. los consumidores deberán soportar una ventana de compatibilidad cuando exista tráfico pendiente o versiones coexistentes;
+7. un contrato desconocido o incompatible falla cerrado;
+8. deep links y destinos de retorno se migran sin perder la intención o el proceso en curso;
+9. no se recicla una relación histórica para representar otra semántica sin actualización de sus fuentes.
+
+---
+
+#### 21. Estado de materialización física
+
+En el corte vigente:
+
+```text
+SHELL-CON-014
+→ contrato documental completo
+→ 49 relaciones de handoff reconciliadas
+→ 27 directas
+→ 22 condicionales
+→ 8 procesos
+→ 9 aplicaciones participantes
+→ 0 cambios físicos
+→ 0 migraciones
+→ 0 cambios Supabase
+→ 0 rutas o deep links creados
+→ 0 productores o consumidores implementados
+```
+
+La tarea no demuestra que las 49 relaciones estén físicamente implementadas ni operativas. Define el contrato que deberá respetarse cuando la fase técnica propietaria las materialice.
+
+---
+
+#### 22. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** `SHELL-CON-014` centraliza relaciones y reglas ya protegidas por requisitos vigentes. `TREQ-INTEGRATION-005` asigna expresamente a esta tarea la preservación de proceso, recurso, actor, sede, área, estado, acción pendiente y destino de retorno, así como la revalidación en la receptora. `TREQ-INTEGRATION-001` protege la compatibilidad de esquemas, dominios y destinos técnicos cuando intervienen enlaces entre aplicaciones; `TREQ-INTEGRATION-003` protege idempotencia y resultado recuperable. `TREQ-PROC-023` a `TREQ-PROC-027` protegen propiedad y consumidoras. `TREQ-PROC-034` protege específicamente que todo traspaso conserve la misma instancia, actores, contexto, territorio, pendientes, evidencia y aceptación; el resto de `TREQ-PROC-033` a `TREQ-PROC-037` cubre continuadores, autoridad, participantes externos y reasignación. No se introduce una relación nueva ni una regla observable distinta que justifique duplicar cobertura.
+
+El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 23. Decisiones aprobadas
+
+1. `@vento/contracts/handoffs` es el namespace lógico reservado para este contrato.
+2. La identidad estática de una relación usa la tupla `ProcessId + propietaria + aplicación participante`; no se inventa un ID serializado paralelo.
+3. El corte vigente contiene exactamente 49 relaciones de handoff.
+4. Las 49 relaciones pertenecen a exactamente ocho procesos con modalidad `SOLICITUD_HANDOFF_Y_EVENTO`.
+5. Existen 27 relaciones directas y 22 condicionales.
+6. Las 49 relaciones son únicas por proceso, propietaria y participante.
+7. En el corte vigente los ocho procesos de handoff tienen `viso` como propietaria.
+8. Las nueve aplicaciones restantes aparecen como participantes al menos una vez.
+9. Una relación directa no concede autoridad ni obliga a usar el handoff en toda instancia.
+10. Una relación condicional no queda habilitada hasta satisfacer su condición propietaria y readiness.
+11. Un handoff conserva el mismo proceso y la misma instancia.
+12. Un handoff preserva recurso, actores, contexto, territorio, estado, trabajo pendiente, retorno, evidencia y tiempos aplicables.
+13. La receptora vuelve a validar contrato y autoridad.
+14. Enviar no equivale a aceptar y recibir no equivale a autorizar.
+15. La etapa siguiente no se marca completada por el solo despacho.
+16. La aplicación propietaria conserva registro principal, reglas, estado, corrección y cierre.
+17. Una participante no escribe directamente el estado privado de la propietaria.
+18. `HANDOFF_REQUEST`, `HANDOFF_PROJECTION`, `HANDOFF_FACT` y `BusinessEventId` conservan identidades y responsabilidades separadas.
+19. La idempotencia impide doble aceptación, doble efecto y creación paralela de instancia.
+20. Deep links y navegación no son autoridad y deben preservar continuidad y retorno.
+21. AURA puede aparecer como participante documental sin quedar operativa antes de readiness y pruebas.
+22. Las restantes modalidades de consumo no se reclasifican como handoff.
+23. Esta tarea no materializa código, package, URL, route, broker, cola, tabla, RPC, Supabase ni consumidor.
+24. No se crean ni modifican requisitos `TREQ-*`.
+25. `SHELL-CON-015` permanece exclusivamente reservada.
+
+---
+
+#### 24. Criterios de aceptación
+
+- [x] Se identifican exactamente los ocho procesos con modalidad `SOLICITUD_HANDOFF_Y_EVENTO`.
+- [x] Se materializan las 49 relaciones interaplicación vigentes.
+- [x] Se concilian 27 relaciones directas y 22 condicionales.
+- [x] Se comprueban 49 tuplas únicas, cero faltantes y cero duplicados dentro del subconjunto aprobado.
+- [x] Cada relación conserva decisión, resultado, estado y bloqueo explícitos.
+- [x] La propietaria permanece separada de la aplicación participante.
+- [x] Se preserva la diferencia entre relación directa y condicional.
+- [x] Se preserva la misma instancia de proceso durante el handoff.
+- [x] Se preservan contexto, recurso, territorio, estado, pendiente, retorno, evidencia y aceptación aplicables.
+- [x] Se exige revalidación de autoridad en la receptora.
+- [x] Se prohíben escrituras cruzadas directas y fuentes competidoras.
+- [x] Se separan solicitud, proyección, hecho empresarial y navegación.
+- [x] Se conserva idempotencia y resultado recuperable.
+- [x] Se preserva la condición diferida de AURA.
+- [x] Se reutiliza cobertura `TREQ-*` vigente sin crear ni modificar requisitos.
+- [x] No se ejecutan cambios físicos.
+- [x] No se desarrolla `SHELL-CON-015`.
+
+---
+
+#### 25. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-CON-013 — Crear contrato de eventos empresariales
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-CON-014 — Crear contrato de traspasos entre aplicaciones
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-CON-015 — Crear contrato de tareas pendientes
+
+
 ### [ ] SHELL-CON-015 — Crear contrato de tareas pendientes
 ### [ ] SHELL-CON-016 — Crear contrato de propiedad funcional
