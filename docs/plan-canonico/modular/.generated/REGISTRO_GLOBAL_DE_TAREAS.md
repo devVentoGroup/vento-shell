@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **912** |
+| Aprobadas | **913** |
 | En propuesta | **0** |
-| No iniciadas | **682** |
+| No iniciadas | **681** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **57.21% (912/1594)** |
+| Porcentaje de completamiento | **57.28% (913/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-NORM-009` — Probar idempotencia y conservación semántica | ✅ APROBADA |
-| Tarea actual | `SHELL-DB-001` — Crear @vento/supabase | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-DB-002` — Centralizar tipos generados por cada paquete de base de datos aprobado | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-DB-001` — Crear @vento/supabase | ✅ APROBADA |
+| Tarea actual | `SHELL-DB-002` — Centralizar tipos generados por cada paquete de base de datos aprobado | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-DB-003` — Crear y actualizar wrappers tipados para RPC canónicas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -739,7 +739,7 @@
 | ✅ APROBADA | `SHELL-NORM-007` | Crear previsualización de transformaciones | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ✅ APROBADA | `SHELL-NORM-008` | Crear metadatos de versión y auditoría de reglas | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ✅ APROBADA | `SHELL-NORM-009` | Probar idempotencia y conservación semántica | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
-| ⬜ NO INICIADA | `SHELL-DB-001` | Crear @vento/supabase | `bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md` |
+| ✅ APROBADA | `SHELL-DB-001` | Crear @vento/supabase | `bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md` |
 | ⬜ NO INICIADA | `SHELL-DB-002` | Centralizar tipos generados por cada paquete de base de datos aprobado | `bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md` |
 | ⬜ NO INICIADA | `SHELL-DB-003` | Crear y actualizar wrappers tipados para RPC canónicas | `bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md` |
 | ⬜ NO INICIADA | `SHELL-DB-004` | Normalizar errores de Supabase | `bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md` |

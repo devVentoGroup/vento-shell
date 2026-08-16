@@ -166,7 +166,7 @@ La tarea incluye únicamente:
 La tarea no incluye:
 
 - definir el catálogo de tipos de campo normalizable;
-- definir algoritmos concretos de espacios, Unicode o capitalización;
+- definir algoritmos concretos de espacios, Unicode, puntuación de prosa o capitalización;
 - materializar el catálogo de conectores;
 - materializar excepciones oficiales;
 - materializar el diccionario ortográfico;
@@ -256,17 +256,17 @@ La regla propietaria del mini-bloque permite cuatro familias de contenido:
 
 Su incorporación material queda escalonada:
 
-| Familia de contenido                             | Estado en esta tarea       | Propietario de especialización |
-| ------------------------------------------------ | -------------------------- | ------------------------------ |
-| identidad y envelope del package                 | `DEFINIDO_DOCUMENTALMENTE` | `SHELL-NORM-001`               |
-| tipos de campo normalizable                      | `RESERVADO`                | `SHELL-NORM-002`               |
-| espacios, Unicode y capitalización               | `RESERVADO`                | `SHELL-NORM-003`               |
-| conectores y excepciones                         | `RESERVADO`                | `SHELL-NORM-004`               |
-| diccionarios ortográficos versionados            | `RESERVADO`                | `SHELL-NORM-005`               |
-| búsqueda y comparación                           | `RESERVADO`                | `SHELL-NORM-006`               |
-| previsualización de transformaciones             | `RESERVADO`                | `SHELL-NORM-007`               |
-| metadatos de versión y auditoría                 | `RESERVADO`                | `SHELL-NORM-008`               |
-| pruebas de idempotencia y conservación semántica | `RESERVADO`                | `SHELL-NORM-009`               |
+| Familia de contenido                                    | Estado en esta tarea       | Propietario de especialización |
+| ------------------------------------------------------- | -------------------------- | ------------------------------ |
+| identidad y envelope del package                        | `DEFINIDO_DOCUMENTALMENTE` | `SHELL-NORM-001`               |
+| tipos de campo normalizable                             | `RESERVADO`                | `SHELL-NORM-002`               |
+| espacios, Unicode, puntuación de prosa y capitalización | `RESERVADO`                | `SHELL-NORM-003`               |
+| conectores y excepciones                                | `RESERVADO`                | `SHELL-NORM-004`               |
+| diccionarios ortográficos versionados                   | `RESERVADO`                | `SHELL-NORM-005`               |
+| búsqueda y comparación                                  | `RESERVADO`                | `SHELL-NORM-006`               |
+| previsualización de transformaciones                    | `RESERVADO`                | `SHELL-NORM-007`               |
+| metadatos de versión y auditoría                        | `RESERVADO`                | `SHELL-NORM-008`               |
+| pruebas de idempotencia y conservación semántica        | `RESERVADO`                | `SHELL-NORM-009`               |
 
 `RESERVADO` significa que esta tarea reconoce el destino exacto pero no anticipa su API, algoritmo, catálogo ni implementación.
 
@@ -682,16 +682,16 @@ SHELL-CI-024::<package_id>
 
 #### 24. Handoffs exactos dentro de `SHELL-NORM`
 
-| Trabajo                               | Propietario exacto | Condición de salida                                                                             |
-| ------------------------------------- | ------------------ | ----------------------------------------------------------------------------------------------- |
-| tipos de campo normalizable           | `SHELL-NORM-002`   | tipos compartidos alineados con clasificación semántica, representación y fuente aprobadas      |
-| espacios, Unicode y capitalización    | `SHELL-NORM-003`   | reglas deterministas delimitadas sin Title Case universal ni corrección ortográfica implícita   |
-| conectores y excepciones              | `SHELL-NORM-004`   | catálogos y precedencia coherentes con E3, sin extensiones locales no versionadas               |
-| diccionarios ortográficos             | `SHELL-NORM-005`   | entradas cerradas, versionadas, direccionales y gobernadas                                      |
-| búsqueda y comparación                | `SHELL-NORM-006`   | derivaciones separadas de identidad, unicidad y valor mostrado                                  |
-| previsualización                      | `SHELL-NORM-007`   | preview reproducible y no vinculante, con divergencia revalidable antes de commit               |
-| metadatos de versión y auditoría      | `SHELL-NORM-008`   | resultados atribuibles a versiones, contexto y evidencia sin convertir logs en fuente de verdad |
-| idempotencia y conservación semántica | `SHELL-NORM-009`   | corpus y pruebas demuestran repetición estable, paridad y ausencia de degradación semántica     |
+| Trabajo                                                 | Propietario exacto | Condición de salida                                                                                                                         |
+| ------------------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| tipos de campo normalizable                             | `SHELL-NORM-002`   | tipos compartidos alineados con clasificación semántica, representación y fuente aprobadas                                                  |
+| espacios, Unicode, puntuación de prosa y capitalización | `SHELL-NORM-003`   | reglas deterministas delimitadas, puntuación fail closed por política y ausencia de Title Case universal o corrección ortográfica implícita |
+| conectores y excepciones                                | `SHELL-NORM-004`   | catálogos y precedencia coherentes con E3, sin extensiones locales no versionadas                                                           |
+| diccionarios ortográficos                               | `SHELL-NORM-005`   | entradas cerradas, versionadas, direccionales y gobernadas                                                                                  |
+| búsqueda y comparación                                  | `SHELL-NORM-006`   | derivaciones separadas de identidad, unicidad y valor mostrado                                                                              |
+| previsualización                                        | `SHELL-NORM-007`   | preview reproducible y no vinculante, con divergencia revalidable antes de commit                                                           |
+| metadatos de versión y auditoría                        | `SHELL-NORM-008`   | resultados atribuibles a versiones, contexto y evidencia sin convertir logs en fuente de verdad                                             |
+| idempotencia y conservación semántica                   | `SHELL-NORM-009`   | corpus y pruebas demuestran repetición estable, paridad y ausencia de degradación semántica                                                 |
 
 No se adelanta el contenido sustantivo de estas ocho tareas.
 
@@ -830,19 +830,19 @@ Al cierre documental de esta tarea:
 
 #### 30. Hallazgos y destinos exactos
 
-| Hallazgo                                                                                                       | Estado                                                                      | Destino exacto                                                                                         |
-| -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| el mini-bloque exige un package compartido de normalización y el corte físico actual no acredita su existencia | resuelto documentalmente en cuanto a identidad y frontera; físico pendiente | `SHELL-NORM-001`; futura ejecución mediante `E5-GATE-008::<package_id>` → `SHELL-CI-020::<package_id>` |
-| los tipos de campo normalizable aún no están centralizados en la familia SHELL-NORM                            | reservado                                                                   | `SHELL-NORM-002`                                                                                       |
-| las reglas de espacios, Unicode y capitalización requieren superficie compartida específica                    | reservado                                                                   | `SHELL-NORM-003`                                                                                       |
-| conectores y excepciones requieren materialización compartida sin catálogos locales                            | reservado                                                                   | `SHELL-NORM-004`                                                                                       |
-| el diccionario ortográfico requiere materialización compartida versionada                                      | reservado                                                                   | `SHELL-NORM-005`                                                                                       |
-| búsqueda y comparación requieren implementación compartida sin convertirse en identidad                        | reservado                                                                   | `SHELL-NORM-006`                                                                                       |
-| preview debe materializarse sin adquirir autoridad de commit                                                   | reservado                                                                   | `SHELL-NORM-007`                                                                                       |
-| versión y auditoría del motor compartido deben quedar atribuibles                                              | reservado                                                                   | `SHELL-NORM-008`                                                                                       |
-| idempotencia, paridad y conservación semántica requieren certificación del package                             | reservado                                                                   | `SHELL-NORM-009`                                                                                       |
-| almacenamiento, funciones SQL, derivaciones, backfills, constraints, índices y triggers pertenecen a BLOQUE R  | fuera del alcance                                                           | `DATA-NORM-DB-001..010`                                                                                |
-| pruebas, build, release, compatibilidad y actualización de consumidores pertenecen a BLOQUE T                  | fuera del alcance                                                           | `SHELL-CI-001`; `SHELL-CI-002`; `SHELL-CI-003`; `SHELL-CI-005`; `SHELL-CI-006`                         |
+| Hallazgo                                                                                                         | Estado                                                                      | Destino exacto                                                                                         |
+| ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| el mini-bloque exige un package compartido de normalización y el corte físico actual no acredita su existencia   | resuelto documentalmente en cuanto a identidad y frontera; físico pendiente | `SHELL-NORM-001`; futura ejecución mediante `E5-GATE-008::<package_id>` → `SHELL-CI-020::<package_id>` |
+| los tipos de campo normalizable aún no están centralizados en la familia SHELL-NORM                              | reservado                                                                   | `SHELL-NORM-002`                                                                                       |
+| las reglas de espacios, Unicode, puntuación de prosa y capitalización requieren superficie compartida específica | reservado                                                                   | `SHELL-NORM-003`                                                                                       |
+| conectores y excepciones requieren materialización compartida sin catálogos locales                              | reservado                                                                   | `SHELL-NORM-004`                                                                                       |
+| el diccionario ortográfico requiere materialización compartida versionada                                        | reservado                                                                   | `SHELL-NORM-005`                                                                                       |
+| búsqueda y comparación requieren implementación compartida sin convertirse en identidad                          | reservado                                                                   | `SHELL-NORM-006`                                                                                       |
+| preview debe materializarse sin adquirir autoridad de commit                                                     | reservado                                                                   | `SHELL-NORM-007`                                                                                       |
+| versión y auditoría del motor compartido deben quedar atribuibles                                                | reservado                                                                   | `SHELL-NORM-008`                                                                                       |
+| idempotencia, paridad y conservación semántica requieren certificación del package                               | reservado                                                                   | `SHELL-NORM-009`                                                                                       |
+| almacenamiento, funciones SQL, derivaciones, backfills, constraints, índices y triggers pertenecen a BLOQUE R    | fuera del alcance                                                           | `DATA-NORM-DB-001..010`                                                                                |
+| pruebas, build, release, compatibilidad y actualización de consumidores pertenecen a BLOQUE T                    | fuera del alcance                                                           | `SHELL-CI-001`; `SHELL-CI-002`; `SHELL-CI-003`; `SHELL-CI-005`; `SHELL-CI-006`                         |
 
 Todos los pendientes quedan vinculados a una tarea o instancia canónica exacta; no se crea un identificador adicional.
 
@@ -1063,7 +1063,7 @@ Esta tarea centraliza exclusivamente:
 
 Esta tarea no centraliza ni decide:
 
-- algoritmo de espacios, Unicode o capitalización;
+- algoritmo de espacios, Unicode, puntuación de prosa o capitalización;
 - tokens o reglas de conectores;
 - catálogo de excepciones;
 - entradas de diccionario;
@@ -1581,17 +1581,17 @@ Al cierre de esta tarea:
 
 #### 25. Handoffs exactos
 
-| Materia no desarrollada aquí                                                                         | Propietario exacto                                          | Condición de salida                                                                      |
-| ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| espacios, Unicode y capitalización                                                                   | `SHELL-NORM-003`                                            | algoritmos compartidos respetan los tipos y las exclusiones sin Title Case universal     |
-| conectores y excepciones                                                                             | `SHELL-NORM-004`                                            | catálogos compartidos consumen clase, representación y fuente sin extensiones locales    |
-| diccionarios ortográficos                                                                            | `SHELL-NORM-005`                                            | entradas versionadas operan solo sobre coordenadas tipadas elegibles                     |
-| búsqueda y comparación                                                                               | `SHELL-NORM-006`                                            | derivaciones tipadas permanecen separadas de identidad y valor mostrado                  |
-| previsualización                                                                                     | `SHELL-NORM-007`                                            | preview usa descriptores y modos compartidos sin adquirir autoridad de commit            |
-| versión y auditoría                                                                                  | `SHELL-NORM-008`                                            | decisiones pueden atribuir tipos, versiones y contexto sin reinterpretación local        |
-| pruebas de idempotencia y conservación semántica                                                     | `SHELL-NORM-009`                                            | corpus certifica taxonomías, repetición estable y ausencia de degradación semántica      |
-| materialización física del package                                                                   | `SHELL-CI-020::<package_id>` después de la puerta aplicable | crear y desplegar únicamente el package aprobado                                         |
-| almacenamiento, SQL, búsqueda física, backfills, constraints, índices, triggers y auditoría de datos | `DATA-NORM-DB-001..010`                                     | ejecutar exclusivamente dentro del package autorizado cuando el alcance incluya BLOQUE R |
+| Materia no desarrollada aquí                                                                         | Propietario exacto                                          | Condición de salida                                                                                           |
+| ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| espacios, Unicode, puntuación de prosa y capitalización                                              | `SHELL-NORM-003`                                            | contratos compartidos respetan tipos, exclusiones, política de campo y fallo cerrado sin Title Case universal |
+| conectores y excepciones                                                                             | `SHELL-NORM-004`                                            | catálogos compartidos consumen clase, representación y fuente sin extensiones locales                         |
+| diccionarios ortográficos                                                                            | `SHELL-NORM-005`                                            | entradas versionadas operan solo sobre coordenadas tipadas elegibles                                          |
+| búsqueda y comparación                                                                               | `SHELL-NORM-006`                                            | derivaciones tipadas permanecen separadas de identidad y valor mostrado                                       |
+| previsualización                                                                                     | `SHELL-NORM-007`                                            | preview usa descriptores y modos compartidos sin adquirir autoridad de commit                                 |
+| versión y auditoría                                                                                  | `SHELL-NORM-008`                                            | decisiones pueden atribuir tipos, versiones y contexto sin reinterpretación local                             |
+| pruebas de idempotencia y conservación semántica                                                     | `SHELL-NORM-009`                                            | corpus certifica taxonomías, repetición estable y ausencia de degradación semántica                           |
+| materialización física del package                                                                   | `SHELL-CI-020::<package_id>` después de la puerta aplicable | crear y desplegar únicamente el package aprobado                                                              |
+| almacenamiento, SQL, búsqueda física, backfills, constraints, índices, triggers y auditoría de datos | `DATA-NORM-DB-001..010`                                     | ejecutar exclusivamente dentro del package autorizado cuando el alcance incluya BLOQUE R                      |
 
 No se crea una tarea nueva ni se modifica el alcance de las tareas listadas.
 
@@ -1695,7 +1695,7 @@ Esta tarea no agrega una regla semántica, una clase, un rol, un modo, una opera
 23. ninguna clase autoriza fusión;
 24. fuentes externas preservan original y procedencia;
 25. VITAL permanece separado;
-26. no se crea algoritmo de espacios, Unicode o capitalización;
+26. no se crea algoritmo de espacios, Unicode, puntuación de prosa o capitalización;
 27. no se crean conectores, excepciones ni diccionario;
 28. no se define búsqueda física ni preview;
 29. no se define persistencia ni auditoría física;
@@ -1755,7 +1755,7 @@ SHELL-NORM-003 — Centralizar reglas de espacios, Unicode y capitalización
 **Estado:** APROBADA
 **Tarea anterior:** SHELL-NORM-002 — Centralizar tipos de campo normalizable
 **Tarea siguiente:** SHELL-NORM-004 — Centralizar conectores y excepciones
-**Tipo de tarea:** Documental; centralización normativa de las reglas deterministas compartidas de composición Unicode, espacios y capitalización empresarial dentro de `@vento/data-normalization`, preservando literalmente los tipos, perfiles, operaciones, exclusiones, precedencias, resultados y fronteras ya aprobados por BLOQUE E3, sin crear código, package físico, exports TypeScript, catálogos de conectores o excepciones, diccionarios, persistencia, migraciones ni cambios en Supabase
+**Tipo de tarea:** Documental; centralización normativa de las reglas deterministas compartidas de composición Unicode, espacios, puntuación de prosa y capitalización empresarial dentro de `@vento/data-normalization`, preservando literalmente los tipos, perfiles, operaciones, exclusiones, precedencias, resultados y fronteras ya aprobados por BLOQUE E3, sin crear código, package físico, exports TypeScript, catálogos de conectores o excepciones, diccionarios, persistencia, migraciones ni cambios en Supabase
 **Bloque:** H — Fundación compartida de VENTO-SHELL
 **Repositorio propietario:** `devVentoGroup/vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md`
@@ -1773,9 +1773,10 @@ SHELL-NORM-003 — Centralizar reglas de espacios, Unicode y capitalización
 - composición Unicode;
 - recorte de espacios de borde;
 - compactación de espacios internos accidentales;
+- espaciado alrededor de puntuación de prosa únicamente bajo política explícita del campo;
 - capitalización empresarial de campos `COMMERCIAL_NAME` bajo el perfil `es-CO`.
 
-La tarea no crea una política lingüística paralela. Su función es trasladar de forma consumible y sin pérdida semántica las decisiones de `DATA-NORM-ARC-001..003`, usando los tipos cerrados de `SHELL-NORM-002` y conservando las dependencias posteriores que siguen perteneciendo a `SHELL-NORM-004..009`.
+La tarea no crea una política lingüística paralela. Su función es trasladar de forma consumible y sin pérdida semántica las decisiones de `DATA-NORM-ARC-001..003`, incluida la operación `PROSE_PUNCTUATION_SPACING` tipada por `DATA-NORM-ARC-002`, usando los tipos cerrados de `SHELL-NORM-002` y conservando las dependencias posteriores que siguen perteneciendo a `SHELL-NORM-004..009`.
 
 Resultado conceptual:
 
@@ -1784,7 +1785,7 @@ POLÍTICA DE CAMPO + TIPOS COMPARTIDOS
         ↓
 OPERACIÓN EXPLÍCITA + VERSIONES EXPLÍCITAS
         ↓
-UNICODE / ESPACIOS / CAPITALIZACIÓN
+UNICODE / ESPACIOS / PUNTUACIÓN DE PROSA / CAPITALIZACIÓN
 COMO ETAPAS SEPARADAS Y TRAZABLES
         ↓
 RESULTADO DETERMINISTA O PRESERVACIÓN / BLOQUEO
@@ -1815,11 +1816,12 @@ Queda centralizada documentalmente una superficie compartida de reglas que reuti
 1. `UNICODE_CANONICALIZATION`;
 2. `EDGE_WHITESPACE_TRIM`;
 3. `INTERNAL_WHITESPACE_COMPACTION`;
-4. `COMMERCIAL_CAPITALIZATION`;
-5. `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0`;
-6. las nueve clases de token de capitalización;
-7. los seis resultados de token permitidos;
-8. las tres fronteras de segmento.
+4. `PROSE_PUNCTUATION_SPACING`;
+5. `COMMERCIAL_CAPITALIZATION`;
+6. `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0`;
+7. las nueve clases de token de capitalización;
+8. los seis resultados de token permitidos;
+9. las tres fronteras de segmento.
 
 La tarea define para esas reglas:
 
@@ -1830,6 +1832,7 @@ La tarea define para esas reglas:
 - preservación de originales y separadores significativos;
 - semántica Unicode explícita;
 - tratamiento de espacios autorizado por política;
+- contrato compartido de `PROSE_PUNCTUATION_SPACING`, restringido al delta de espaciado que una política de campo declare explícitamente;
 - secuencia normativa de capitalización;
 - clasificación y precedencia de tokens;
 - conducta de caja ordinaria;
@@ -1843,23 +1846,23 @@ No se crean nuevos literales de operación, clases, resultados, fronteras, estad
 
 #### 3. Fuentes normativas y precedencia
 
-| Fuente               | Decisión preservada por esta tarea                                                                                                                       |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SHELL-NORM-001`     | identidad y frontera de `@vento/data-normalization`; funciones puras, determinismo, ausencia de I/O y separación frente a persistencia                   |
-| `SHELL-NORM-002`     | 14 clases semánticas, 7 roles de representación, 6 roles de fuente, 8 modos, 13 operaciones y descriptores lógicos compartidos                           |
-| `DATA-NORM-ARC-001`  | política por dominio, entidad, campo, representación, fuente y versión; ausencia de regla universal y comportamiento cerrado                             |
-| `DATA-NORM-ARC-002`  | operaciones `UNICODE_CANONICALIZATION`, `EDGE_WHITESPACE_TRIM`, `INTERNAL_WHITESPACE_COMPACTION` y `COMMERCIAL_CAPITALIZATION`; intersección restrictiva |
-| `DATA-NORM-ARC-003`  | perfil `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0`, algoritmo de caja, tokenización, precedencia, fronteras, exclusiones e idempotencia                |
-| `DATA-NORM-ARC-004`  | catálogo definitivo de conectores y su conducta posicional, consumido pero no materializado por esta tarea                                               |
-| `DATA-NORM-ARC-005`  | excepciones oficiales y formas protegidas, consumidas como precedencia pero no materializadas por esta tarea                                             |
-| `DATA-NORM-ARC-006`  | corrección ortográfica y tildes mediante diccionario; permanece estrictamente separada de capitalización                                                 |
-| `DATA-NORM-ARC-007`  | revisión humana de ambigüedades y conflictos; esta tarea solo conserva el resultado de revisión requerida                                                |
-| `DATA-NORM-ARC-008`  | búsqueda y comparación; conserva separación entre normalización de valor mostrado y derivaciones de búsqueda                                             |
-| `DATA-NORM-ARC-009`  | versiones explícitas, reproducibilidad, determinismo, idempotencia y prohibición de dependencias implícitas                                              |
-| `DATA-NORM-ARC-010`  | identidad, unicidad y duplicidad separadas de cualquier equivalencia textual                                                                             |
-| `DATA-NORM-ARC-011`  | servicio de dominio como autoridad semántica y RPC como frontera de commit; aplicación y trigger no sustituyen esas autoridades                          |
-| `DATA-NORM-ARC-012`  | preservación de originales externos, encoding, Unicode, locale y semánticas de ausencia                                                                  |
-| `SHELL-PKG-001..008` | distribución, versionado, compatibilidad, deprecación, rollback y adopción del package cuando exista físicamente                                         |
+| Fuente               | Decisión preservada por esta tarea                                                                                                                                                    |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-NORM-001`     | identidad y frontera de `@vento/data-normalization`; funciones puras, determinismo, ausencia de I/O y separación frente a persistencia                                                |
+| `SHELL-NORM-002`     | 14 clases semánticas, 7 roles de representación, 6 roles de fuente, 8 modos, 13 operaciones y descriptores lógicos compartidos                                                        |
+| `DATA-NORM-ARC-001`  | política por dominio, entidad, campo, representación, fuente y versión; reglas de prosa solo por política explícita; ausencia de regla universal y comportamiento cerrado             |
+| `DATA-NORM-ARC-002`  | operaciones `UNICODE_CANONICALIZATION`, `EDGE_WHITESPACE_TRIM`, `INTERNAL_WHITESPACE_COMPACTION`, `PROSE_PUNCTUATION_SPACING` y `COMMERCIAL_CAPITALIZATION`; intersección restrictiva |
+| `DATA-NORM-ARC-003`  | perfil `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0`, algoritmo de caja, tokenización, precedencia, fronteras, exclusiones e idempotencia                                             |
+| `DATA-NORM-ARC-004`  | catálogo definitivo de conectores y su conducta posicional, consumido pero no materializado por esta tarea                                                                            |
+| `DATA-NORM-ARC-005`  | excepciones oficiales y formas protegidas, consumidas como precedencia pero no materializadas por esta tarea                                                                          |
+| `DATA-NORM-ARC-006`  | corrección ortográfica y tildes mediante diccionario; permanece estrictamente separada de capitalización                                                                              |
+| `DATA-NORM-ARC-007`  | revisión humana de ambigüedades y conflictos; esta tarea solo conserva el resultado de revisión requerida                                                                             |
+| `DATA-NORM-ARC-008`  | búsqueda y comparación; conserva separación entre normalización de valor mostrado y derivaciones de búsqueda                                                                          |
+| `DATA-NORM-ARC-009`  | versiones explícitas, reproducibilidad, determinismo, idempotencia y prohibición de dependencias implícitas                                                                           |
+| `DATA-NORM-ARC-010`  | identidad, unicidad y duplicidad separadas de cualquier equivalencia textual                                                                                                          |
+| `DATA-NORM-ARC-011`  | servicio de dominio como autoridad semántica y RPC como frontera de commit; aplicación y trigger no sustituyen esas autoridades                                                       |
+| `DATA-NORM-ARC-012`  | preservación de originales externos, encoding, Unicode, locale y semánticas de ausencia                                                                                               |
+| `SHELL-PKG-001..008` | distribución, versionado, compatibilidad, deprecación, rollback y adopción del package cuando exista físicamente                                                                      |
 
 Precedencia:
 
@@ -1886,6 +1889,7 @@ Esta tarea centraliza exclusivamente:
 - composición Unicode canónica cuando la política la autoriza;
 - recorte de espacios de borde cuando la política los declara no significativos;
 - compactación de separadores internos clasificados como espacios accidentales;
+- contrato compartido de `PROSE_PUNCTUATION_SPACING` para espaciado alrededor de puntuación de prosa únicamente cuando la política del campo lo autoriza;
 - capitalización empresarial de `COMMERCIAL_NAME` bajo el perfil aprobado `es-CO`;
 - tokenización y recomposición propias de capitalización;
 - clases y resultados de token heredados de `DATA-NORM-ARC-003`;
@@ -1896,7 +1900,7 @@ Esta tarea centraliza exclusivamente:
 
 Esta tarea no centraliza ni decide:
 
-- `PROSE_PUNCTUATION_SPACING` como algoritmo de puntuación;
+- una gramática universal de puntuación, una lista global de signos transformables ni reglas de prosa no declaradas por la política del campo;
 - el listado de conectores;
 - el catálogo de excepciones oficiales;
 - entradas de diccionario;
@@ -1921,20 +1925,21 @@ La tarea consume un conjunto finito de identidades ya aprobado y lo materializa 
 
 | Familia                                 | Esperado | Materializado | Faltantes | Duplicados |
 | --------------------------------------- | -------: | ------------: | --------: | ---------: |
-| operaciones deterministas de esta tarea |        4 |             4 |         0 |          0 |
+| operaciones deterministas de esta tarea |        5 |             5 |         0 |          0 |
 | clases de token de capitalización       |        9 |             9 |         0 |          0 |
 | resultados de token                     |        6 |             6 |         0 |          0 |
 | fronteras de segmento                   |        3 |             3 |         0 |          0 |
-| **Total de literales gobernados**       |   **22** |        **22** |     **0** |      **0** |
+| **Total de literales gobernados**       |   **23** |        **23** |     **0** |      **0** |
 
-Las cuatro operaciones son exactamente:
+Las cinco operaciones son exactamente:
 
 1. `UNICODE_CANONICALIZATION`;
 2. `EDGE_WHITESPACE_TRIM`;
 3. `INTERNAL_WHITESPACE_COMPACTION`;
-4. `COMMERCIAL_CAPITALIZATION`.
+4. `PROSE_PUNCTUATION_SPACING`;
+5. `COMMERCIAL_CAPITALIZATION`.
 
-`PROSE_PUNCTUATION_SPACING` permanece como familia separada de operación y no se agrega al conteo de esta tarea.
+`PROSE_PUNCTUATION_SPACING` conserva identidad propia frente a recorte, compactación y capitalización, pero su contrato compartido sí pertenece a `SHELL-NORM-003`.
 
 ---
 
@@ -1970,25 +1975,27 @@ Reglas:
 
 #### 7. Separación obligatoria entre etapas
 
-Las cuatro operaciones de esta tarea son independientes.
+Las cinco operaciones de esta tarea son independientes.
 
 ```text
 UNICODE_CANONICALIZATION
 ≠ EDGE_WHITESPACE_TRIM
 ≠ INTERNAL_WHITESPACE_COMPACTION
+≠ PROSE_PUNCTUATION_SPACING
 ≠ COMMERCIAL_CAPITALIZATION
 ```
 
 Por tanto:
 
-1. habilitar Unicode no habilita espacios;
-2. habilitar espacios no habilita capitalización;
-3. habilitar capitalización no autoriza tocar espacios ni composición Unicode;
-4. una sola función física futura podrá orquestar varias etapas únicamente si conserva resultados y versiones distinguibles;
-5. el orden de etapas habilitadas deberá formar parte del perfil o política efectiva cuando más de una operación participe;
-6. si el orden requerido no puede resolverse de manera explícita, la evaluación se bloquea;
-7. la salida de una etapa puede ser entrada de otra solo como una transición explícita y trazable;
-8. la capitalización nunca oculta que su entrada fue modificada previamente por otra etapa.
+1. habilitar Unicode no habilita espacios ni puntuación;
+2. habilitar recorte o compactación no habilita `PROSE_PUNCTUATION_SPACING`;
+3. habilitar `PROSE_PUNCTUATION_SPACING` no habilita capitalización, Unicode, recorte ni compactación;
+4. habilitar capitalización no autoriza tocar espacios, puntuación ni composición Unicode;
+5. una sola función física futura podrá orquestar varias etapas únicamente si conserva resultados y versiones distinguibles;
+6. el orden de etapas habilitadas deberá formar parte del perfil o política efectiva cuando más de una operación participe;
+7. si el orden requerido no puede resolverse de manera explícita, la evaluación se bloquea;
+8. la salida de una etapa puede ser entrada de otra solo como una transición explícita y trazable;
+9. la capitalización nunca oculta que su entrada fue modificada previamente por otra etapa.
 
 No se impone una cadena universal sobre todos los campos. Cada campo ejecuta únicamente las operaciones que su política autoriza.
 
@@ -2162,9 +2169,37 @@ Una política de `FREE_TEXT`, `HUMAN_LABEL`, dirección, identificador técnico 
 
 ---
 
-#### 15. Puntuación y espacios permanecen separados
+#### 15. `PROSE_PUNCTUATION_SPACING` y separación frente a espacios
 
-`PROSE_PUNCTUATION_SPACING` no se fusiona con las dos operaciones de espacios de esta tarea.
+`PROSE_PUNCTUATION_SPACING` queda centralizada por `SHELL-NORM-003` como la quinta operación determinista compartida de esta tarea. Su responsabilidad es estrictamente el **espaciado alrededor de puntuación de prosa** que una política de campo haya autorizado de forma explícita.
+
+La propiedad documental queda cerrada así:
+
+| Materia                                                                    | Propietario exacto                       | Responsabilidad                                                                                   |
+| -------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| elegibilidad por dominio, entidad, campo, representación, fuente y versión | `DATA-NORM-ARC-001`; `DATA-NORM-ARC-002` | decidir si la coordenada puede usar la operación y con qué modo efectivo                          |
+| contrato compartido de `PROSE_PUNCTUATION_SPACING`                         | `SHELL-NORM-003`                         | fijar delta permitido, preservaciones, fallo cerrado, determinismo e idempotencia                 |
+| colocación de una mutación autorizada                                      | `DATA-NORM-ARC-011`                      | servicio de dominio decide; RPC confirma; aplicación solo previsualiza; trigger no inventa reglas |
+
+La operación no crea una gramática universal ni un catálogo global de signos. Solo puede ejecutarse cuando la política efectiva declare suficientemente el tratamiento de prosa aplicable a la coordenada.
+
+Reglas obligatorias:
+
+1. `PROSE_PUNCTUATION_SPACING` no se fusiona con `EDGE_WHITESPACE_TRIM` ni con `INTERNAL_WHITESPACE_COMPACTION`;
+2. el único delta textual permitido es el espaciado inmediatamente relacionado con la puntuación que la política de campo haya declarado elegible;
+3. la operación no agrega, elimina, sustituye ni reordena signos de puntuación;
+4. la operación no cambia palabras, tildes, caja, Unicode, conectores, ortografía, estructura o identidad;
+5. `FREE_TEXT` solo resulta elegible cuando su política declara reglas de prosa y estas no alteran autoría, evidencia, plantillas, Markdown, saltos de línea ni formatos significativos;
+6. `HUMAN_LABEL`, `ADDRESS_OR_LOCATION_TEXT`, identificadores técnicos, formatos numéricos, URLs, códigos y estructuras compuestas no heredan una regla de puntuación por semejanza visual;
+7. `EXTERNAL_ORIGINAL`, `HISTORICAL_SNAPSHOT`, `AUDIT_EVIDENCE`, `EXTERNAL_EVIDENCE`, `IMMUTABLE_SNAPSHOT` y material firmado conservan sus restricciones de preservación;
+8. si la política no declara de forma suficiente qué espaciado es transformable, el valor se preserva y la automatización queda bloqueada o en revisión según el modo efectivo;
+9. una observación como espacio antes de un signo o ausencia de espacio posterior constituye evidencia de auditoría, no permiso de corrección;
+10. una política local, helper, regex o preferencia visual del consumidor no puede sustituir la política propietaria;
+11. la misma entrada, coordenada, política y versiones debe producir el mismo resultado lógico;
+12. reaplicar la operación sobre su propia salida bajo el mismo contrato no produce un segundo cambio;
+13. el resultado de esta operación no crea búsqueda, alias, identidad, unicidad, deduplicación, fusión ni autoridad de commit.
+
+Separación exacta:
 
 ```text
 EDGE_WHITESPACE_TRIM
@@ -2174,16 +2209,13 @@ INTERNAL_WHITESPACE_COMPACTION
 → separadores internos accidentales autorizados
 
 PROSE_PUNCTUATION_SPACING
-→ regla propia de espaciado alrededor de puntuación
+→ espaciado de puntuación de prosa autorizado por política explícita
+
+COMMERCIAL_CAPITALIZATION
+→ caja de tokens elegibles sin alterar puntuación ni espacios
 ```
 
-En consecuencia:
-
-1. compactar espacios internos no mueve signos;
-2. recortar bordes no reescribe puntuación;
-3. capitalización preserva signos y separadores recibidos;
-4. una corrección de espacios alrededor de coma, punto u otro signo requiere la operación y política propietarias correspondientes;
-5. la existencia de una salida visualmente más limpia no autoriza combinar etapas.
+No queda pendiente una tarea adicional para definir la propiedad compartida de `PROSE_PUNCTUATION_SPACING`: la operación pertenece a `SHELL-NORM-003`; su elegibilidad permanece gobernada por `DATA-NORM-ARC-001` y `DATA-NORM-ARC-002`, y su eventual confirmación física conserva la colocación de `DATA-NORM-ARC-011`.
 
 ---
 
@@ -2616,6 +2648,16 @@ compact_rule(compact_rule(value)) = compact_rule(value)
 
 para la misma clasificación de separadores y versión.
 
+Puntuación de prosa:
+
+```text
+punctuation_spacing_rule(punctuation_spacing_rule(value, policy), policy)
+=
+punctuation_spacing_rule(value, policy)
+```
+
+para la misma política de campo, alcance y versión; la operación no introduce ni retira signos y no actúa si el delta de espaciado no está explícitamente resuelto.
+
 Capitalización:
 
 ```text
@@ -2727,6 +2769,7 @@ Al cierre documental de esta tarea:
 | `UNICODE_CANONICALIZATION`                           | regla compartida `ESPECIFICADA`; código no materializado             |
 | `EDGE_WHITESPACE_TRIM`                               | regla compartida `ESPECIFICADA`; código no materializado             |
 | `INTERNAL_WHITESPACE_COMPACTION`                     | regla compartida `ESPECIFICADA`; código no materializado             |
+| `PROSE_PUNCTUATION_SPACING`                          | contrato compartido `ESPECIFICADO`; código no materializado          |
 | `COMMERCIAL_CAPITALIZATION`                          | regla compartida `ESPECIFICADA`; código no materializado             |
 | perfil `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0` | centralizado documentalmente; sin implementación runtime             |
 | 9 clases de token                                    | centralizadas documentalmente                                        |
@@ -2785,7 +2828,7 @@ Cobertura principal:
 - `TREQ-DATA-053`: corpus de conformidad;
 - `TREQ-DATA-126`: NFC y espacios gobernados dentro de la derivación de forma de búsqueda, sin convertirlos en corrección del original;
 - `TREQ-DATA-158`: eliminación de dependencias implícitas de locale, Unicode, runtime, tiempo, orden o configuración;
-- `TREQ-DATA-203`: colocación autorizada de recorte, espacios, Unicode y capitalización en la arquitectura de ejecución;
+- `TREQ-DATA-203`: colocación autorizada de recorte, espacios, Unicode, capitalización y puntuación en la arquitectura de ejecución;
 - `TREQ-DATA-232`: locale, Unicode y encoding explícitos y versionados;
 - `TREQ-SHELL-002`: implementación compartida y paridad frente a copias locales;
 - `TREQ-SHELL-006`: pruebas propias y compatibilidad del package antes de publicación o adopción.
@@ -2801,14 +2844,14 @@ La tarea no amplía ninguna de esas obligaciones. Las centraliza en la futura su
 **Requisitos creados:** 0
 **Requisitos modificados:** 0
 
-**Justificación:** `SHELL-NORM-003` traslada al contrato compartido reglas de Unicode, espacios y capitalización ya aprobadas y ya cubiertas por requisitos canónicos vigentes. No crea una operación nueva, un algoritmo lingüístico nuevo, una clase nueva, un perfil nuevo, un catálogo nuevo, una regla de búsqueda, una autorización, una persistencia, una migración ni un cambio de datos. El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+**Justificación:** `SHELL-NORM-003` traslada al contrato compartido reglas de Unicode, espacios, puntuación de prosa y capitalización ya aprobadas y ya cubiertas por requisitos canónicos vigentes. No crea una operación nueva, un algoritmo lingüístico nuevo, una clase nueva, un perfil nuevo, un catálogo nuevo, una regla de búsqueda, una autorización, una persistencia, una migración ni un cambio de datos. El Registro Canónico de Requisitos de Prueba permanece sin cambios.
 
 ---
 
 #### 40. Decisiones vinculantes
 
-1. Las operaciones centralizadas son exactamente `UNICODE_CANONICALIZATION`, `EDGE_WHITESPACE_TRIM`, `INTERNAL_WHITESPACE_COMPACTION` y `COMMERCIAL_CAPITALIZATION`.
-2. Las cuatro operaciones permanecen independientes.
+1. Las operaciones centralizadas son exactamente `UNICODE_CANONICALIZATION`, `EDGE_WHITESPACE_TRIM`, `INTERNAL_WHITESPACE_COMPACTION`, `PROSE_PUNCTUATION_SPACING` y `COMMERCIAL_CAPITALIZATION`.
+2. Las cinco operaciones permanecen independientes.
 3. No existe pipeline universal para todos los campos.
 4. Más de una etapa solo puede combinarse con orden explícito y versionado.
 5. La composición Unicode aprobada cuando se habilita es NFC.
@@ -2819,7 +2862,7 @@ La tarea no amplía ninguna de esas obligaciones. Las centraliza en la futura su
 10. `INTERNAL_WHITESPACE_COMPACTION` solo actúa sobre separadores declarados accidentales por política.
 11. No existe una regla universal `\s+` sobre todos los textos.
 12. Saltos de línea, tabulaciones, NBSP, Markdown, plantillas y formato significativo se preservan por defecto.
-13. `PROSE_PUNCTUATION_SPACING` permanece como operación separada.
+13. `PROSE_PUNCTUATION_SPACING` queda centralizada por `SHELL-NORM-003` como operación separada, fail closed y sin gramática universal; su elegibilidad permanece en la política de campo de `DATA-NORM-ARC-001` y `DATA-NORM-ARC-002`.
 14. El perfil de capitalización es exactamente `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0`.
 15. El perfil lingüístico es `es-CO` explícito.
 16. Solo `COMMERCIAL_NAME` puede resultar elegible para `COMMERCIAL_CAPITALIZATION`.
@@ -2832,7 +2875,7 @@ La tarea no amplía ninguna de esas obligaciones. Las centraliza en la futura su
 23. La capitalización centraliza exactamente nueve clases de token.
 24. La capitalización centraliza exactamente seis resultados de token.
 25. La capitalización centraliza exactamente tres fronteras de segmento.
-26. El inventario total gobernado por esta tarea es de 22 literales, con 0 faltantes y 0 duplicados.
+26. El inventario total gobernado por esta tarea es de 23 literales, con 0 faltantes y 0 duplicados.
 27. La precedencia de token conserva frase oficial, token oficial, protección técnica, conector, palabra ordinaria y ambigüedad en ese orden.
 28. Una palabra ordinaria mayusculiza el primer grafema con caja y minúsculiza los restantes bajo el perfil explícito.
 29. Tildes, `ñ`, marcas combinantes y grafemas sin caja se conservan.
@@ -2855,16 +2898,16 @@ La tarea no amplía ninguna de esas obligaciones. Las centraliza en la futura su
 
 `SHELL-NORM-003` queda documentalmente completa cuando se cumplen simultáneamente:
 
-1. las cuatro operaciones propietarias están identificadas sin aliases;
-2. el inventario de cuatro operaciones está completo;
+1. las cinco operaciones propietarias están identificadas sin aliases;
+2. el inventario de cinco operaciones está completo;
 3. las nueve clases de token están completas;
 4. los seis resultados de token están completos;
 5. las tres fronteras de segmento están completas;
-6. el total conciliado es 22 literales;
+6. el total conciliado es 23 literales;
 7. faltantes = 0;
 8. duplicados = 0;
 9. cada operación exige política y versión explícitas;
-10. Unicode, espacios y capitalización permanecen como etapas separadas;
+10. Unicode, espacios, puntuación de prosa y capitalización permanecen como etapas separadas;
 11. no existe orden implícito cuando varias etapas participan;
 12. la composición Unicode autorizada se limita a NFC;
 13. no se introducen formas de compatibilidad Unicode;
@@ -2873,7 +2916,7 @@ La tarea no amplía ninguna de esas obligaciones. Las centraliza en la futura su
 16. edge trim se restringe a bordes declarados no significativos;
 17. compaction se restringe a separadores declarados accidentales;
 18. formato significativo permanece protegido por defecto;
-19. puntuación no se corrige mediante las operaciones de espacios;
+19. `PROSE_PUNCTUATION_SPACING` tiene propietario exacto en `SHELL-NORM-003`, exige política explícita y nunca se sustituye por recorte, compactación o una regla universal;
 20. `COMMERCIAL_CAPITALIZATION` usa exclusivamente `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0`;
 21. `COMMERCIAL_NAME` es la única clase condicionalmente elegible;
 22. las trece clases restantes están materializadas como excluidas;
@@ -2888,7 +2931,7 @@ La tarea no amplía ninguna de esas obligaciones. Las centraliza en la futura su
 31. una forma ambigua se preserva y requiere revisión;
 32. `NAME_START`, `DECLARED_SEGMENT_START` y `NO_SEGMENT_RESET` conservan su significado;
 33. capitalización no cambia búsqueda, slug, SKU, código o identidad;
-34. Unicode y espacios no crean identidad;
+34. Unicode, espacios y puntuación de prosa no crean identidad;
 35. la misma entrada, contexto y versiones producen el mismo resultado lógico;
 36. cada operación es idempotente bajo la misma versión;
 37. no existe locale implícito;
@@ -2912,6 +2955,7 @@ La tarea no amplía ninguna de esas obligaciones. Las centraliza en la futura su
 - selecciona una librería Unicode;
 - selecciona una librería de segmentación;
 - selecciona una librería de validación runtime;
+- crea una gramática universal de puntuación o una lista global de signos transformables;
 - crea un catálogo local de conectores;
 - crea excepciones de marcas, siglas, unidades o nombres legales;
 - crea entradas de diccionario;
@@ -5121,7 +5165,7 @@ La conducta centralizada ya está protegida por requisitos canónicos vigentes:
 38. `SYNCHRONIZED_COPY` no ejecuta una autoridad ortográfica independiente.
 39. La misma entrada, coordenada y versiones producen el mismo resultado lógico en todas las capas.
 40. La evaluación es idempotente bajo las mismas versiones.
-41. El diccionario no ejecuta espacios, Unicode, capitalización, conectores, excepciones, búsqueda, transliteración, identidad o fusión como efectos implícitos.
+41. El diccionario no ejecuta espacios, Unicode, puntuación de prosa, capitalización, conectores, excepciones, búsqueda, transliteración, identidad o fusión como efectos implícitos.
 42. Una convergencia ortográfica no crea identidad ni unicidad.
 43. VITAL no hereda el diccionario transversal.
 44. No se crea package físico, TypeScript, SQL, RPC, trigger, índice, constraint, migración o backfill.
@@ -6365,7 +6409,7 @@ No se crea un identificador nuevo de política, catálogo, tarea, estado o requi
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | `SHELL-NORM-001`      | identidad de `@vento/data-normalization`, pureza, determinismo, ausencia de I/O y separación entre evaluación, preview y commit         |
 | `SHELL-NORM-002`      | clase semántica, representación, fuente, tratamiento y descriptor tipado de la entrada                                                  |
-| `SHELL-NORM-003`      | operaciones deterministas de espacios, Unicode y capitalización, con orden y exclusiones explícitas                                     |
+| `SHELL-NORM-003`      | operaciones deterministas de espacios, Unicode, puntuación de prosa y capitalización, con orden, política y exclusiones explícitas      |
 | `SHELL-NORM-004`      | conectores, excepciones oficiales, precedencia, fuentes y formas protegidas                                                             |
 | `SHELL-NORM-005`      | diccionario ortográfico versionado, resultados cerrados y separación frente a revisión                                                  |
 | `SHELL-NORM-006`      | entrada, derivaciones, coincidencias, explicación, perfiles y versiones de búsqueda/comparación                                         |
@@ -6632,7 +6676,7 @@ La clase, representación y fuente mostradas o explicadas deberán corresponder 
 
 #### 13. Integración con `SHELL-NORM-003`
 
-Para espacios, Unicode y capitalización, la previsualización deberá:
+Para espacios, Unicode, puntuación de prosa y capitalización, la previsualización deberá:
 
 - consumir exactamente el orden y las operaciones autorizadas;
 - mostrar la salida producida sin volver a ejecutar una variante local;
@@ -7062,7 +7106,7 @@ No queda un pendiente narrativo sin propietario documental exacto.
 21. una divergencia material no se aplica silenciosamente;
 22. un valor ya canónico se distingue de un bloqueo;
 23. un fallo técnico se distingue de una no operación;
-24. preview de espacios, Unicode y capitalización conserva `SHELL-NORM-003`;
+24. preview de espacios, Unicode, puntuación de prosa y capitalización conserva `SHELL-NORM-003`;
 25. preview de conectores y excepciones conserva `SHELL-NORM-004`;
 26. preview de diccionario conserva `SHELL-NORM-005`;
 27. preview de búsqueda conserva `SHELL-NORM-006`;
@@ -8512,23 +8556,23 @@ Estos 89 escenarios no se renombran, no se duplican y no se declaran ejecutados 
 
 #### 3. Fuentes normativas y precedencia
 
-| Fuente                   | Decisión consumida                                                                                                     |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| `SHELL-NORM-001`         | identidad del package, pureza, determinismo, ausencia de I/O, side effects y autoridad empresarial                     |
-| `SHELL-NORM-002`         | 14 clases, 7 roles de representación, 6 roles de fuente, 8 modos de tratamiento, 13 operaciones y descriptores         |
-| `SHELL-NORM-003`         | Unicode, espacios, capitalización, perfil `es-CO`, tokenización, fronteras, exclusiones y separación de operaciones    |
-| `SHELL-NORM-004`         | 18 conectores, excepciones oficiales, scopes, matchers, precedencia, resultados y formas protegidas                    |
-| `SHELL-NORM-005`         | diccionario ortográfico versionado, tres entradas iniciales, `expresso` fuera de corrección automática y fallo cerrado |
-| `SHELL-NORM-006`         | siete representaciones de búsqueda, seis perfiles, nueve modos, ranking, explicación, privacidad e identidad separada  |
-| `SHELL-NORM-007`         | preview no vinculante, 21 atributos de descriptor, seis dimensiones de divergencia y reevaluación previa al commit     |
-| `SHELL-NORM-008`         | versiones, digests, estados, auditoría lógica, idempotencia, concurrencia, replay y procedencia                        |
-| `DATA-NORM-ARC-001..012` | autoridad semántica original y requisitos de conformidad ya aprobados                                                  |
-| `DATA-NORM-TRANS-002`    | replay documental de 89 escenarios y 25 unidades analíticas sin motor físico                                           |
-| `DATA-NORM-TRANS-009`    | separación entre `PASS_DOCUMENTAL` y evidencia operacional por ambiente                                                |
-| registro 04A vigente     | requisitos existentes que ya protegen idempotencia, paridad, corpus y conservación                                     |
-| `SHELL-CI-001`           | futura materialización de pruebas de packages compartidos                                                              |
-| `SHELL-CI-005`           | futura matriz de compatibilidad entre package y consumidores                                                           |
-| `DATA-NORM-DB-010`       | prueba física de idempotencia, rollback y ausencia de cambios semánticos en la capa de datos                           |
+| Fuente                   | Decisión consumida                                                                                                                       |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-NORM-001`         | identidad del package, pureza, determinismo, ausencia de I/O, side effects y autoridad empresarial                                       |
+| `SHELL-NORM-002`         | 14 clases, 7 roles de representación, 6 roles de fuente, 8 modos de tratamiento, 13 operaciones y descriptores                           |
+| `SHELL-NORM-003`         | Unicode, espacios, puntuación de prosa, capitalización, perfil `es-CO`, tokenización, fronteras, exclusiones y separación de operaciones |
+| `SHELL-NORM-004`         | 18 conectores, excepciones oficiales, scopes, matchers, precedencia, resultados y formas protegidas                                      |
+| `SHELL-NORM-005`         | diccionario ortográfico versionado, tres entradas iniciales, `expresso` fuera de corrección automática y fallo cerrado                   |
+| `SHELL-NORM-006`         | siete representaciones de búsqueda, seis perfiles, nueve modos, ranking, explicación, privacidad e identidad separada                    |
+| `SHELL-NORM-007`         | preview no vinculante, 21 atributos de descriptor, seis dimensiones de divergencia y reevaluación previa al commit                       |
+| `SHELL-NORM-008`         | versiones, digests, estados, auditoría lógica, idempotencia, concurrencia, replay y procedencia                                          |
+| `DATA-NORM-ARC-001..012` | autoridad semántica original y requisitos de conformidad ya aprobados                                                                    |
+| `DATA-NORM-TRANS-002`    | replay documental de 89 escenarios y 25 unidades analíticas sin motor físico                                                             |
+| `DATA-NORM-TRANS-009`    | separación entre `PASS_DOCUMENTAL` y evidencia operacional por ambiente                                                                  |
+| registro 04A vigente     | requisitos existentes que ya protegen idempotencia, paridad, corpus y conservación                                                       |
+| `SHELL-CI-001`           | futura materialización de pruebas de packages compartidos                                                                                |
+| `SHELL-CI-005`           | futura matriz de compatibilidad entre package y consumidores                                                                             |
+| `DATA-NORM-DB-010`       | prueba física de idempotencia, rollback y ausencia de cambios semánticos en la capa de datos                                             |
 
 Precedencia obligatoria:
 
@@ -8799,24 +8843,42 @@ duplicados = 0
 
 ---
 
-#### 14. Unicode y espacios
+#### 14. Unicode, espacios y puntuación de prosa
 
 La suite deberá cubrir como mínimo:
 
-| Caso | Entrada o condición                                       | Oráculo                                                            |
-| ---: | --------------------------------------------------------- | ------------------------------------------------------------------ |
-|    1 | forma descompuesta equivalente y operación NFC autorizada | salida NFC; segunda aplicación idéntica                            |
-|    2 | valor ya NFC                                              | `NO_CHANGE_ALREADY_CANONICAL` o resultado equivalente sin mutación |
-|    3 | tilde, diéresis o `ñ` significativas                      | no se eliminan por canonicalización                                |
-|    4 | espacio de borde declarado no significativo               | se recorta una vez; segunda aplicación estable                     |
-|    5 | espacio de borde significativo                            | se preserva                                                        |
-|    6 | separadores internos accidentales autorizados             | compactación estable                                               |
-|    7 | salto de línea significativo                              | se preserva                                                        |
-|    8 | tabulación significativa                                  | se preserva                                                        |
-|    9 | NBSP o espacio especial con semántica no resuelta         | se preserva o bloquea; no se convierte por conveniencia            |
-|   10 | descriptor incompleto                                     | fail closed; sin transformación                                    |
+| Caso | Entrada o condición                                                                                           | Oráculo                                                                                                                                   |
+| ---: | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | forma descompuesta equivalente y operación NFC autorizada                                                     | salida NFC; segunda aplicación idéntica                                                                                                   |
+|    2 | valor ya NFC                                                                                                  | `NO_CHANGE_ALREADY_CANONICAL` o resultado equivalente sin mutación                                                                        |
+|    3 | tilde, diéresis o `ñ` significativas                                                                          | no se eliminan por canonicalización                                                                                                       |
+|    4 | espacio de borde declarado no significativo                                                                   | se recorta una vez; segunda aplicación estable                                                                                            |
+|    5 | espacio de borde significativo                                                                                | se preserva                                                                                                                               |
+|    6 | separadores internos accidentales autorizados                                                                 | compactación estable                                                                                                                      |
+|    7 | salto de línea significativo                                                                                  | se preserva                                                                                                                               |
+|    8 | tabulación significativa                                                                                      | se preserva                                                                                                                               |
+|    9 | NBSP o espacio especial con semántica no resuelta                                                             | se preserva o bloquea; no se convierte por conveniencia                                                                                   |
+|   10 | descriptor incompleto                                                                                         | fail closed; sin transformación                                                                                                           |
+|   11 | `PROSE_PUNCTUATION_SPACING` solicitado sin política de prosa suficiente                                       | preservar o bloquear; no aplicar regex o preferencia visual local                                                                         |
+|   12 | política explícita autoriza un delta de espaciado alrededor de puntuación                                     | cambia únicamente el espaciado declarado; signos, palabras, caja, Unicode y estructura permanecen invariantes; segunda aplicación estable |
+|   13 | Markdown, plantilla, salto de línea, formato técnico, numérico o estructura cuyo espaciado no está autorizado | preservar; no inferir una regla de prosa por apariencia                                                                                   |
 
-No existe un oráculo transversal que autorice `trim`, `\s+`, `lower`, `unaccent` o transliteración sobre todo texto.
+La propiedad de la operación queda probada contra la misma separación aprobada:
+
+```text
+DATA-NORM-ARC-001 / DATA-NORM-ARC-002
+→ elegibilidad y tratamiento efectivo por coordenada
+
+SHELL-NORM-003
+→ contrato compartido de PROSE_PUNCTUATION_SPACING
+
+DATA-NORM-ARC-011
+→ servicio decide y RPC confirma una mutación autorizada
+```
+
+Los oráculos de puntuación se aplican sobre el corpus y las unidades analíticas ya heredadas; no crean un segundo corpus ni alteran el conteo contractual de 89 escenarios. La evidencia de auditoría sobre espacios alrededor de signos se utiliza como señal de conformidad, nunca como permiso universal de corrección.
+
+No existe un oráculo transversal que autorice `trim`, `\s+`, `lower`, `unaccent`, transliteración o una regla universal de puntuación sobre todo texto.
 
 ---
 
@@ -9380,7 +9442,7 @@ No se asigna `package_id` desde esta tarea documental.
 **Requisitos creados:** 0
 **Requisitos modificados:** 0
 
-**Justificación:** la tarea no introduce comportamiento ejecutable nuevo ni modifica una regla protegida. Materializa el corpus y los oráculos de conformidad para comportamientos de idempotencia, determinismo, paridad, preservación, fallo cerrado, búsqueda, preview, versionado y frontera de identidad ya registrados por tareas `DATA-NORM-ARC-*` y por los requisitos vigentes del registro canónico. La implementación de esas pruebas permanece en sus tareas propietarias ya existentes.
+**Justificación:** la tarea no introduce comportamiento ejecutable nuevo ni modifica una regla protegida. Materializa el corpus y los oráculos de conformidad para comportamientos de idempotencia, determinismo, paridad, preservación, Unicode, espacios, `PROSE_PUNCTUATION_SPACING`, fallo cerrado, búsqueda, preview, versionado y frontera de identidad ya registrados por tareas `DATA-NORM-ARC-*` y por los requisitos vigentes del registro canónico. La implementación de esas pruebas permanece en sus tareas propietarias ya existentes.
 
 ---
 
@@ -9405,62 +9467,64 @@ No se asigna `package_id` desde esta tarea documental.
 17. Se cubren 8/8 modos de tratamiento.
 18. Unicode no elimina tildes, `ñ` ni significado.
 19. Espacios no se normalizan mediante regla universal.
-20. Capitalización no corrige ortografía ni estructura.
-21. Solo `COMMERCIAL_NAME` puede usar la capitalización comercial vigente.
-22. Conectores se reconocen como tokens completos.
-23. `al` y `del` permanecen atómicos.
-24. `e`, `u`, `o` y `y` no se sustituyen por heurística fonológica.
-25. Excepciones no usan fuzzy matching ni aliases inferidos.
-26. El diccionario conserva exactamente tres correcciones iniciales.
-27. `expresso` no se corrige automáticamente.
-28. Una corrección de diccionario no crea identidad ni alias de búsqueda.
-29. `SEARCH_DERIVATION` nunca sustituye el valor mostrado.
-30. `ñ` no se pliega globalmente a `n`.
-31. Transliteración continúa deshabilitada por defecto.
-32. Similitud continúa deshabilitada por defecto.
-33. Preview continúa no vinculante.
-34. Preview repetido no crea lock, reserva ni commit.
-35. Una divergencia en valor, scope, política, versiones, unicidad o relaciones exige reevaluación.
-36. `resolved_version_set` y `version_set_digest` permanecen explícitos.
-37. No existe `latest` implícito.
-38. Una versión no activa no adquiere autoridad por fallback.
-39. Un cambio de versión no reinterpreta historia.
-40. El motor puro no inventa actor, autorización, timestamp ni identidad de evento.
-41. El motor puro no consulta red, base de datos, secretos, filesystem ni estado mutable para decidir semántica.
-42. Un resultado visual correcto no basta si viola estructura, procedencia o autoridad.
-43. Una coincidencia no crea identidad.
-44. Una coincidencia no activa unicidad.
-45. Una coincidencia no selecciona sobreviviente.
-46. Una coincidencia no fusiona registros.
-47. Originales externos permanecen separados.
-48. Snapshots históricos permanecen inmutables.
-49. Evidencia de auditoría no se reescribe.
-50. Secretos y material firmado permanecen fuera de normalización general.
-51. VITAL permanece fuera de la política transversal.
-52. La suite futura del package pertenece a `SHELL-CI-001`.
-53. La compatibilidad futura pertenece a `SHELL-CI-005`.
-54. La prueba física de datos pertenece a `DATA-NORM-DB-010`.
-55. No se crea código.
-56. No se crea package físico.
-57. No se modifica Supabase.
-58. No se crean ni modifican requisitos de prueba.
-59. Todos los elementos pendientes tienen propietario exacto.
-60. `SHELL-DB-001` queda únicamente reservada.
+20. `PROSE_PUNCTUATION_SPACING` pertenece a `SHELL-NORM-003`, exige política explícita por coordenada, cambia únicamente el espaciado autorizado y falla cerrada ante alcance insuficiente.
+21. Capitalización no corrige ortografía ni estructura.
+22. Solo `COMMERCIAL_NAME` puede usar la capitalización comercial vigente.
+23. Conectores se reconocen como tokens completos.
+24. `al` y `del` permanecen atómicos.
+25. `e`, `u`, `o` y `y` no se sustituyen por heurística fonológica.
+26. Excepciones no usan fuzzy matching ni aliases inferidos.
+27. El diccionario conserva exactamente tres correcciones iniciales.
+28. `expresso` no se corrige automáticamente.
+29. Una corrección de diccionario no crea identidad ni alias de búsqueda.
+30. `SEARCH_DERIVATION` nunca sustituye el valor mostrado.
+31. `ñ` no se pliega globalmente a `n`.
+32. Transliteración continúa deshabilitada por defecto.
+33. Similitud continúa deshabilitada por defecto.
+34. Preview continúa no vinculante.
+35. Preview repetido no crea lock, reserva ni commit.
+36. Una divergencia en valor, scope, política, versiones, unicidad o relaciones exige reevaluación.
+37. `resolved_version_set` y `version_set_digest` permanecen explícitos.
+38. No existe `latest` implícito.
+39. Una versión no activa no adquiere autoridad por fallback.
+40. Un cambio de versión no reinterpreta historia.
+41. El motor puro no inventa actor, autorización, timestamp ni identidad de evento.
+42. El motor puro no consulta red, base de datos, secretos, filesystem ni estado mutable para decidir semántica.
+43. Un resultado visual correcto no basta si viola estructura, procedencia o autoridad.
+44. Una coincidencia no crea identidad.
+45. Una coincidencia no activa unicidad.
+46. Una coincidencia no selecciona sobreviviente.
+47. Una coincidencia no fusiona registros.
+48. Originales externos permanecen separados.
+49. Snapshots históricos permanecen inmutables.
+50. Evidencia de auditoría no se reescribe.
+51. Secretos y material firmado permanecen fuera de normalización general.
+52. VITAL permanece fuera de la política transversal.
+53. La suite futura del package pertenece a `SHELL-CI-001`.
+54. La compatibilidad futura pertenece a `SHELL-CI-005`.
+55. La prueba física de datos pertenece a `DATA-NORM-DB-010`.
+56. No se crea código.
+57. No se crea package físico.
+58. No se modifica Supabase.
+59. No se crean ni modifican requisitos de prueba.
+60. Todos los elementos pendientes tienen propietario exacto.
+61. `SHELL-DB-001` queda únicamente reservada.
 
 ---
 
 #### 36. Hallazgos y destinos exactos
 
-| Hallazgo                                                        | Resultado de `SHELL-NORM-009`                                       | Destino exacto                                                      |
-| --------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| el package todavía no existe físicamente                        | no se simula ejecución runtime                                      | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` |
-| existían 89 escenarios contractuales ya reconciliados           | se fijan como corpus base heredado de la suite                      | `SHELL-CI-001`                                                      |
-| idempotencia podía confundirse con efecto único                 | se separan determinismo/reaplicación de deduplicación transaccional | `SHELL-CI-001`; `DATA-NORM-DB-010`                                  |
-| una salida textual igual podía ocultar cambio semántico         | se materializa oráculo de conservación de diez dimensiones          | `SHELL-CI-001`; `SUPA-TRANS-009`                                    |
-| operaciones stateful no pueden certificarse desde un motor puro | se limita la prueba pura y se conserva su handoff                   | `DATA-NORM-DB-010`; `DATA-NORM-TRANS-009`                           |
-| consumidores pueden divergir aun con package correcto           | paridad por consumidor queda fuera de la prueba aislada             | `SHELL-CI-005`; `SHELL-CI-006`                                      |
-| evidencia documental no equivale a evidencia operacional        | estados quedan separados explícitamente                             | `DATA-NORM-TRANS-009`                                               |
-| cierre de SHELL-NORM no autoriza implementación                 | siguiente continuidad documental permanece independiente            | `SHELL-DB-001`                                                      |
+| Hallazgo                                                                                               | Resultado de `SHELL-NORM-009`                                                                                                      | Destino exacto                                                                  |
+| ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| el package todavía no existe físicamente                                                               | no se simula ejecución runtime                                                                                                     | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>`             |
+| existían 89 escenarios contractuales ya reconciliados                                                  | se fijan como corpus base heredado de la suite                                                                                     | `SHELL-CI-001`                                                                  |
+| idempotencia podía confundirse con efecto único                                                        | se separan determinismo/reaplicación de deduplicación transaccional                                                                | `SHELL-CI-001`; `DATA-NORM-DB-010`                                              |
+| una salida textual igual podía ocultar cambio semántico                                                | se materializa oráculo de conservación de diez dimensiones                                                                         | `SHELL-CI-001`; `SUPA-TRANS-009`                                                |
+| operaciones stateful no pueden certificarse desde un motor puro                                        | se limita la prueba pura y se conserva su handoff                                                                                  | `DATA-NORM-DB-010`; `DATA-NORM-TRANS-009`                                       |
+| consumidores pueden divergir aun con package correcto                                                  | paridad por consumidor queda fuera de la prueba aislada                                                                            | `SHELL-CI-005`; `SHELL-CI-006`                                                  |
+| evidencia documental no equivale a evidencia operacional                                               | estados quedan separados explícitamente                                                                                            | `DATA-NORM-TRANS-009`                                                           |
+| `PROSE_PUNCTUATION_SPACING` estaba tipada pero sin propiedad compartida explícita dentro de SHELL-NORM | se concilia su contrato en `SHELL-NORM-003`; la elegibilidad sigue gobernada por política de campo y la ejecución por servicio/RPC | `SHELL-NORM-003`; `DATA-NORM-ARC-001`; `DATA-NORM-ARC-002`; `DATA-NORM-ARC-011` |
+| cierre de SHELL-NORM no autoriza implementación                                                        | siguiente continuidad documental permanece independiente                                                                           | `SHELL-DB-001`                                                                  |
 
 No queda un pendiente narrativo sin propietario documental exacto.
 
@@ -9488,38 +9552,39 @@ No queda un pendiente narrativo sin propietario documental exacto.
 16. cubre 8/8 modos de tratamiento;
 17. conserva Unicode y tildes bajo las reglas aprobadas;
 18. conserva espacios significativos;
-19. prohíbe Title Case universal;
-20. preserva las nueve clases de token y tres fronteras de capitalización;
-21. cubre las 18 entradas de conectores por su corpus propietario;
-22. conserva atomicidad de `al` y `del`;
-23. prohíbe sustitución fonológica de conjunciones;
-24. conserva las excepciones oficiales sin fuzzy matching;
-25. conserva las tres entradas de diccionario;
-26. mantiene `expresso` fuera de corrección automática;
-27. preserva búsqueda como derivación;
-28. preserva `ñ` frente a `n`;
-29. mantiene transliteración y similitud deshabilitadas;
-30. conserva los seis perfiles y nueve modos de búsqueda;
-31. preserva preview no vinculante;
-32. cubre seis dimensiones de divergencia pre-commit;
-33. conserva versionado explícito y ausencia de `latest`;
-34. prueba documentalmente fallo cerrado;
-35. prueba documentalmente ausencia de side effects autorizados en el motor puro;
-36. preserva estructura de presentaciones;
-37. preserva originales, snapshots y evidencia;
-38. preserva frontera frente a identidad, unicidad y fusión;
-39. preserva frontera VITAL;
-40. distingue evidencia contractual heredada de evidencia runtime;
-41. asigna suite ejecutable a `SHELL-CI-001`;
-42. asigna compatibilidad a `SHELL-CI-005`;
-43. asigna pruebas físicas a `DATA-NORM-DB-010`;
-44. no inventa `package_id`;
-45. no crea código;
-46. no crea package físico;
-47. no modifica Supabase;
-48. no crea ni modifica requisitos de prueba;
-49. todos los handoffs tienen propietario exacto;
-50. la siguiente tarea permanece únicamente reservada.
+19. cubre `PROSE_PUNCTUATION_SPACING` con propietario exacto, política explícita, delta acotado, preservación de signos y oráculo idempotente;
+20. prohíbe Title Case universal;
+21. preserva las nueve clases de token y tres fronteras de capitalización;
+22. cubre las 18 entradas de conectores por su corpus propietario;
+23. conserva atomicidad de `al` y `del`;
+24. prohíbe sustitución fonológica de conjunciones;
+25. conserva las excepciones oficiales sin fuzzy matching;
+26. conserva las tres entradas de diccionario;
+27. mantiene `expresso` fuera de corrección automática;
+28. preserva búsqueda como derivación;
+29. preserva `ñ` frente a `n`;
+30. mantiene transliteración y similitud deshabilitadas;
+31. conserva los seis perfiles y nueve modos de búsqueda;
+32. preserva preview no vinculante;
+33. cubre seis dimensiones de divergencia pre-commit;
+34. conserva versionado explícito y ausencia de `latest`;
+35. prueba documentalmente fallo cerrado;
+36. prueba documentalmente ausencia de side effects autorizados en el motor puro;
+37. preserva estructura de presentaciones;
+38. preserva originales, snapshots y evidencia;
+39. preserva frontera frente a identidad, unicidad y fusión;
+40. preserva frontera VITAL;
+41. distingue evidencia contractual heredada de evidencia runtime;
+42. asigna suite ejecutable a `SHELL-CI-001`;
+43. asigna compatibilidad a `SHELL-CI-005`;
+44. asigna pruebas físicas a `DATA-NORM-DB-010`;
+45. no inventa `package_id`;
+46. no crea código;
+47. no crea package físico;
+48. no modifica Supabase;
+49. no crea ni modifica requisitos de prueba;
+50. todos los handoffs tienen propietario exacto;
+51. la siguiente tarea permanece únicamente reservada.
 
 ---
 
