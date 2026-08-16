@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **905** |
+| Aprobadas | **906** |
 | En propuesta | **0** |
-| No iniciadas | **689** |
+| No iniciadas | **688** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **56.78% (905/1594)** |
+| Porcentaje de completamiento | **56.84% (906/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-NORM-002` — Centralizar tipos de campo normalizable | ✅ APROBADA |
-| Tarea actual | `SHELL-NORM-003` — Centralizar reglas de espacios, Unicode y capitalización | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-NORM-004` — Centralizar conectores y excepciones | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-NORM-003` — Centralizar reglas de espacios, Unicode y capitalización | ✅ APROBADA |
+| Tarea actual | `SHELL-NORM-004` — Centralizar conectores y excepciones | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-NORM-005` — Centralizar diccionarios ortográficos versionados | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -732,7 +732,7 @@
 | ✅ APROBADA | `SHELL-CON-024` | Crear contrato de cuarentena, rechazo y compensación | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
 | ✅ APROBADA | `SHELL-NORM-001` | Crear `@vento/data-normalization` | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ✅ APROBADA | `SHELL-NORM-002` | Centralizar tipos de campo normalizable | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
-| ⬜ NO INICIADA | `SHELL-NORM-003` | Centralizar reglas de espacios, Unicode y capitalización | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
+| ✅ APROBADA | `SHELL-NORM-003` | Centralizar reglas de espacios, Unicode y capitalización | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ⬜ NO INICIADA | `SHELL-NORM-004` | Centralizar conectores y excepciones | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ⬜ NO INICIADA | `SHELL-NORM-005` | Centralizar diccionarios ortográficos versionados | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ⬜ NO INICIADA | `SHELL-NORM-006` | Crear normalización de búsqueda y comparación | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |

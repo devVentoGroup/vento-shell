@@ -1750,7 +1750,1210 @@ SHELL-NORM-002 — Centralizar tipos de campo normalizable
 SHELL-NORM-003 — Centralizar reglas de espacios, Unicode y capitalización
 
 
-### [ ] SHELL-NORM-003 — Centralizar reglas de espacios, Unicode y capitalización
+### ✅ SHELL-NORM-003 — Centralizar reglas de espacios, Unicode y capitalización
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-NORM-002 — Centralizar tipos de campo normalizable
+**Tarea siguiente:** SHELL-NORM-004 — Centralizar conectores y excepciones
+**Tipo de tarea:** Documental; centralización normativa de las reglas deterministas compartidas de composición Unicode, espacios y capitalización empresarial dentro de `@vento/data-normalization`, preservando literalmente los tipos, perfiles, operaciones, exclusiones, precedencias, resultados y fronteras ya aprobados por BLOQUE E3, sin crear código, package físico, exports TypeScript, catálogos de conectores o excepciones, diccionarios, persistencia, migraciones ni cambios en Supabase
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md`
+**Estado físico resultante:** ESPECIFICADO; NO MATERIALIZADO
+**Implementación física autorizada:** ninguna
+**Cambios de código, packages físicos, archivos TypeScript, configuración npm, registry, workflows, DDL, DML, migraciones, RLS, RPC, triggers, datos, secretos, configuración remota o despliegues:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-NORM-003` centraliza dentro de la futura superficie compartida de `@vento/data-normalization` las reglas deterministas ya aprobadas para:
+
+- composición Unicode;
+- recorte de espacios de borde;
+- compactación de espacios internos accidentales;
+- capitalización empresarial de campos `COMMERCIAL_NAME` bajo el perfil `es-CO`.
+
+La tarea no crea una política lingüística paralela. Su función es trasladar de forma consumible y sin pérdida semántica las decisiones de `DATA-NORM-ARC-001..003`, usando los tipos cerrados de `SHELL-NORM-002` y conservando las dependencias posteriores que siguen perteneciendo a `SHELL-NORM-004..009`.
+
+Resultado conceptual:
+
+```text
+POLÍTICA DE CAMPO + TIPOS COMPARTIDOS
+        ↓
+OPERACIÓN EXPLÍCITA + VERSIONES EXPLÍCITAS
+        ↓
+UNICODE / ESPACIOS / CAPITALIZACIÓN
+COMO ETAPAS SEPARADAS Y TRAZABLES
+        ↓
+RESULTADO DETERMINISTA O PRESERVACIÓN / BLOQUEO
+        ↓
+SIN IDENTIDAD, SIN FUSIÓN, SIN COMMIT IMPLÍCITO
+```
+
+La regla central es:
+
+```text
+MISMA ENTRADA LÓGICA
++ MISMO DESCRIPTOR
++ MISMA POLÍTICA
++ MISMO ORDEN DE ETAPAS AUTORIZADAS
++ MISMAS VERSIONES
+=
+MISMO RESULTADO LÓGICO
+```
+
+Ninguna de estas reglas se activa por el simple hecho de recibir un `string`.
+
+---
+
+#### 2. Resultado material de la tarea
+
+Queda centralizada documentalmente una superficie compartida de reglas que reutiliza, sin renombrarlos, los siguientes identificadores canónicos ya aprobados:
+
+1. `UNICODE_CANONICALIZATION`;
+2. `EDGE_WHITESPACE_TRIM`;
+3. `INTERNAL_WHITESPACE_COMPACTION`;
+4. `COMMERCIAL_CAPITALIZATION`;
+5. `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0`;
+6. las nueve clases de token de capitalización;
+7. los seis resultados de token permitidos;
+8. las tres fronteras de segmento.
+
+La tarea define para esas reglas:
+
+- precondiciones de aplicación;
+- conducta determinista;
+- límites por clase, representación y fuente;
+- separación entre operaciones;
+- preservación de originales y separadores significativos;
+- semántica Unicode explícita;
+- tratamiento de espacios autorizado por política;
+- secuencia normativa de capitalización;
+- clasificación y precedencia de tokens;
+- conducta de caja ordinaria;
+- relación con conectores y excepciones sin materializar sus catálogos;
+- conducta ante ambigüedad, conflicto o contexto incompleto;
+- invariantes de idempotencia, reproducibilidad y compatibilidad.
+
+No se crean nuevos literales de operación, clases, resultados, fronteras, estados de negocio o identificadores de catálogo.
+
+---
+
+#### 3. Fuentes normativas y precedencia
+
+| Fuente               | Decisión preservada por esta tarea                                                                                                                       |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-NORM-001`     | identidad y frontera de `@vento/data-normalization`; funciones puras, determinismo, ausencia de I/O y separación frente a persistencia                   |
+| `SHELL-NORM-002`     | 14 clases semánticas, 7 roles de representación, 6 roles de fuente, 8 modos, 13 operaciones y descriptores lógicos compartidos                           |
+| `DATA-NORM-ARC-001`  | política por dominio, entidad, campo, representación, fuente y versión; ausencia de regla universal y comportamiento cerrado                             |
+| `DATA-NORM-ARC-002`  | operaciones `UNICODE_CANONICALIZATION`, `EDGE_WHITESPACE_TRIM`, `INTERNAL_WHITESPACE_COMPACTION` y `COMMERCIAL_CAPITALIZATION`; intersección restrictiva |
+| `DATA-NORM-ARC-003`  | perfil `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0`, algoritmo de caja, tokenización, precedencia, fronteras, exclusiones e idempotencia                |
+| `DATA-NORM-ARC-004`  | catálogo definitivo de conectores y su conducta posicional, consumido pero no materializado por esta tarea                                               |
+| `DATA-NORM-ARC-005`  | excepciones oficiales y formas protegidas, consumidas como precedencia pero no materializadas por esta tarea                                             |
+| `DATA-NORM-ARC-006`  | corrección ortográfica y tildes mediante diccionario; permanece estrictamente separada de capitalización                                                 |
+| `DATA-NORM-ARC-007`  | revisión humana de ambigüedades y conflictos; esta tarea solo conserva el resultado de revisión requerida                                                |
+| `DATA-NORM-ARC-008`  | búsqueda y comparación; conserva separación entre normalización de valor mostrado y derivaciones de búsqueda                                             |
+| `DATA-NORM-ARC-009`  | versiones explícitas, reproducibilidad, determinismo, idempotencia y prohibición de dependencias implícitas                                              |
+| `DATA-NORM-ARC-010`  | identidad, unicidad y duplicidad separadas de cualquier equivalencia textual                                                                             |
+| `DATA-NORM-ARC-011`  | servicio de dominio como autoridad semántica y RPC como frontera de commit; aplicación y trigger no sustituyen esas autoridades                          |
+| `DATA-NORM-ARC-012`  | preservación de originales externos, encoding, Unicode, locale y semánticas de ausencia                                                                  |
+| `SHELL-PKG-001..008` | distribución, versionado, compatibilidad, deprecación, rollback y adopción del package cuando exista físicamente                                         |
+
+Precedencia:
+
+```text
+GOBIERNO E3
+        ↓
+TIPOS SHELL-NORM-002
+        ↓
+REGLAS SHELL-NORM-003
+        ↓
+CATÁLOGOS SHELL-NORM-004 / 005 CUANDO APLIQUEN
+        ↓
+BÚSQUEDA / PREVIEW / AUDITORÍA / PRUEBAS EN SUS TAREAS PROPIETARIAS
+```
+
+`SHELL-NORM-003` no puede ampliar una política de campo, convertir una clase excluida en elegible ni sustituir una versión faltante por comportamiento local.
+
+---
+
+#### 4. Frontera exacta
+
+Esta tarea centraliza exclusivamente:
+
+- composición Unicode canónica cuando la política la autoriza;
+- recorte de espacios de borde cuando la política los declara no significativos;
+- compactación de separadores internos clasificados como espacios accidentales;
+- capitalización empresarial de `COMMERCIAL_NAME` bajo el perfil aprobado `es-CO`;
+- tokenización y recomposición propias de capitalización;
+- clases y resultados de token heredados de `DATA-NORM-ARC-003`;
+- fronteras de segmento heredadas de `DATA-NORM-ARC-003`;
+- reglas de preservación, bloqueo, ambigüedad y conflicto propias de esas operaciones;
+- invariantes de determinismo, idempotencia y versión;
+- relación exacta con los tipos centralizados por `SHELL-NORM-002`.
+
+Esta tarea no centraliza ni decide:
+
+- `PROSE_PUNCTUATION_SPACING` como algoritmo de puntuación;
+- el listado de conectores;
+- el catálogo de excepciones oficiales;
+- entradas de diccionario;
+- correcciones ortográficas;
+- adición o retiro de tildes;
+- transliteración;
+- traducción;
+- singularización o pluralización;
+- unión o división de palabras;
+- búsqueda, ranking, aliases o similitud;
+- identidad, unicidad, deduplicación o fusión;
+- experiencia de preview;
+- estructura física de auditoría;
+- persistencia o propagación física;
+- código, SQL, RPC, trigger, migración o backfill.
+
+---
+
+#### 5. Conciliación del inventario cerrado
+
+La tarea consume un conjunto finito de identidades ya aprobado y lo materializa completamente.
+
+| Familia                                 | Esperado | Materializado | Faltantes | Duplicados |
+| --------------------------------------- | -------: | ------------: | --------: | ---------: |
+| operaciones deterministas de esta tarea |        4 |             4 |         0 |          0 |
+| clases de token de capitalización       |        9 |             9 |         0 |          0 |
+| resultados de token                     |        6 |             6 |         0 |          0 |
+| fronteras de segmento                   |        3 |             3 |         0 |          0 |
+| **Total de literales gobernados**       |   **22** |        **22** |     **0** |      **0** |
+
+Las cuatro operaciones son exactamente:
+
+1. `UNICODE_CANONICALIZATION`;
+2. `EDGE_WHITESPACE_TRIM`;
+3. `INTERNAL_WHITESPACE_COMPACTION`;
+4. `COMMERCIAL_CAPITALIZATION`.
+
+`PROSE_PUNCTUATION_SPACING` permanece como familia separada de operación y no se agrega al conteo de esta tarea.
+
+---
+
+#### 6. Regla común de activación
+
+Ninguna operación de esta tarea se ejecuta automáticamente por tipo físico, nombre de columna, ubicación, aplicación o apariencia del valor.
+
+Toda evaluación requiere como mínimo:
+
+```text
+NormalizableFieldDescriptor completo
++ operation_kind explícito
++ política del campo
++ versión de política
++ versiones específicas requeridas por la operación
++ entrada lógica
+```
+
+Reglas:
+
+1. el descriptor debe resolver clase semántica, representación, fuente y versión;
+2. la operación solicitada debe estar permitida por la política efectiva;
+3. la intersección de clase, representación, fuente, operación, excepciones y versión no puede resolverse de forma más permisiva que `SHELL-NORM-002`;
+4. la ausencia de una condición obligatoria conserva el valor y bloquea automatización;
+5. una capa consumidora puede restringir más, nunca ampliar el modo resuelto;
+6. no existe fallback a una regla local;
+7. no existe selección implícita de `latest`;
+8. no existe locale implícito;
+9. no existe reparación silenciosa de una entrada no interpretable bajo el contrato declarado;
+10. cada etapa autorizada conserva su identidad, versión, entrada y resultado lógico por separado.
+
+---
+
+#### 7. Separación obligatoria entre etapas
+
+Las cuatro operaciones de esta tarea son independientes.
+
+```text
+UNICODE_CANONICALIZATION
+≠ EDGE_WHITESPACE_TRIM
+≠ INTERNAL_WHITESPACE_COMPACTION
+≠ COMMERCIAL_CAPITALIZATION
+```
+
+Por tanto:
+
+1. habilitar Unicode no habilita espacios;
+2. habilitar espacios no habilita capitalización;
+3. habilitar capitalización no autoriza tocar espacios ni composición Unicode;
+4. una sola función física futura podrá orquestar varias etapas únicamente si conserva resultados y versiones distinguibles;
+5. el orden de etapas habilitadas deberá formar parte del perfil o política efectiva cuando más de una operación participe;
+6. si el orden requerido no puede resolverse de manera explícita, la evaluación se bloquea;
+7. la salida de una etapa puede ser entrada de otra solo como una transición explícita y trazable;
+8. la capitalización nunca oculta que su entrada fue modificada previamente por otra etapa.
+
+No se impone una cadena universal sobre todos los campos. Cada campo ejecuta únicamente las operaciones que su política autoriza.
+
+---
+
+#### 8. `UNICODE_CANONICALIZATION`
+
+La operación `UNICODE_CANONICALIZATION` centraliza composición Unicode canónica sin corrección lingüística ni equivalencia empresarial.
+
+Regla aprobada cuando la operación está habilitada:
+
+```text
+entrada Unicode válida
++ política que permite canonicalización
++ semántica Unicode versionada
+        ↓
+composición canónica NFC
+        ↓
+misma secuencia semántica bajo la composición aprobada
+```
+
+Decisiones vinculantes:
+
+1. la forma de composición aprobada para esta operación es **NFC**;
+2. no se introduce NFKC, NFKD ni otra forma de compatibilidad como sustituto;
+3. NFC no elimina tildes;
+4. NFC no convierte `ñ` en `n`;
+5. NFC no translitera alfabetos;
+6. NFC no cambia palabras, conectores, signos o estructura por intención lingüística;
+7. NFC no aplica casefold;
+8. NFC no ejecuta capitalización;
+9. NFC no ejecuta diccionario;
+10. NFC no crea aliases ni claves de identidad;
+11. cambiar la semántica o versión Unicode utilizada constituye un cambio versionado de política;
+12. una entrada que no pueda evaluarse bajo la semántica declarada no se repara mediante reemplazos heurísticos.
+
+---
+
+#### 9. Unicode, grafemas y conservación semántica
+
+Las reglas compartidas deberán operar de forma compatible con el modelo aprobado de grafemas.
+
+Invariantes:
+
+1. capitalización y segmentación razonan sobre caracteres Unicode y fronteras de grafema, no sobre bytes;
+2. no se parte deliberadamente un grafema para decidir caja;
+3. las marcas combinantes se conservan;
+4. los grafemas sin caja permanecen sin transformación de caja;
+5. las letras acentuadas conservan su diacrítico durante la operación de caja;
+6. `ñ` permanece distinta de `n`;
+7. un cambio de representación canónicamente equivalente no constituye corrección ortográfica;
+8. la igualdad canónica Unicode no constituye identidad empresarial;
+9. la normalización Unicode de una derivación no autoriza sobrescribir el original que deba preservarse.
+
+---
+
+#### 10. Representaciones que preservan el original frente a Unicode
+
+La composición Unicode no convierte una representación protegida en una fuente mutable.
+
+| Representación / fuente                  | Conducta                                                                                  |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `PRIMARY_VALUE` + `AUTHORITATIVE_SOURCE` | puede recibir canonicalización solo si la política del campo la autoriza                  |
+| `DISPLAY_OVERRIDE` + `APPROVED_OVERRIDE` | puede recibir canonicalización dentro de su alcance aprobado                              |
+| `EXTERNAL_ORIGINAL`                      | preservar la forma original; cualquier representación canónica interna permanece separada |
+| `HISTORICAL_SNAPSHOT`                    | preservar la forma histórica salvo contrato explícito distinto que no reescriba historia  |
+| `AUDIT_EVIDENCE`                         | preservar evidencia; rectificaciones son aditivas                                         |
+| `EXTERNAL_EVIDENCE`                      | preservar procedencia y forma recibida                                                    |
+| `IMMUTABLE_SNAPSHOT`                     | no reinterpretar ni resincronizar por una versión nueva                                   |
+| `OUTPUT_PROJECTION` + `OUTPUT_ONLY`      | puede derivar una forma autorizada sin retroalimentar la fuente                           |
+
+Material firmado, secretos, hashes, firmas, checksums y valores cuya integridad depende de bytes o representación contractual permanecen protegidos por `SECRET_OR_SIGNATURE_MATERIAL` y `PRESERVE_EXACT`.
+
+---
+
+#### 11. `EDGE_WHITESPACE_TRIM`
+
+`EDGE_WHITESPACE_TRIM` elimina únicamente separadores de borde que la política del campo haya declarado no significativos y elegibles para recorte.
+
+Reglas:
+
+1. no existe `trim` universal para todos los campos textuales;
+2. la política debe autorizar la operación para la coordenada concreta;
+3. los caracteres de borde solo se retiran cuando pertenecen a la clase de separadores permitida por esa política;
+4. una representación externa, histórica, probatoria o firmada no se modifica por conveniencia;
+5. un secreto o material de firma no admite recorte;
+6. recortar no capitaliza;
+7. recortar no normaliza Unicode por sí mismo;
+8. recortar no corrige puntuación;
+9. recortar no convierte un valor en identidad, alias o clave de búsqueda;
+10. si la política no puede determinar si el borde es significativo, el valor se conserva;
+11. la operación deberá ser idempotente para la misma política y versión;
+12. el resultado debe seguir distinguiéndose de la entrada original cuando la trazabilidad lo requiera.
+
+---
+
+#### 12. Semántica de vacío y espacios de borde
+
+`EDGE_WHITESPACE_TRIM` no puede utilizarse para borrar diferencias contractuales entre ausencia y contenido.
+
+Deben permanecer conceptualmente distinguibles cuando el contrato propietario las distinga:
+
+```text
+campo ausente
+null explícito
+cadena vacía
+cadena compuesta solo por espacios
+clear explícito
+desconocido
+no aplicable
+valor parcial
+```
+
+Por tanto:
+
+1. una regla de recorte no convierte por sí sola una ausencia en cadena vacía;
+2. una regla de recorte no convierte `null` en texto;
+3. una cadena compuesta solo por separadores no se interpreta automáticamente como dato ausente;
+4. si el resultado de recorte cruzaría una frontera semántica definida por el contrato del campo, prevalece la política propietaria y no una utilidad genérica;
+5. los imports e integraciones conservan la semántica de ausencia definida por sus contratos.
+
+---
+
+#### 13. `INTERNAL_WHITESPACE_COMPACTION`
+
+`INTERNAL_WHITESPACE_COMPACTION` compacta únicamente separadores internos clasificados como **espacios accidentales** por la política del campo.
+
+Reglas:
+
+1. no existe una sustitución universal equivalente a “todo whitespace → un espacio”;
+2. la política debe identificar qué clase de separador es accidental;
+3. la política debe declarar la forma canónica de salida para esa clase cuando autorice la compactación;
+4. el orden de los tokens no cambia;
+5. no se eliminan palabras;
+6. no se unen palabras que el contrato mantiene separadas;
+7. no se dividen palabras;
+8. la compactación no ejecuta puntuación de prosa;
+9. la compactación no ejecuta Unicode por sí sola;
+10. la compactación no capitaliza;
+11. la compactación no corrige ortografía;
+12. la compactación debe ser idempotente para la misma política y versión.
+
+Ejemplo condicionado:
+
+```text
+"Harina   de maiz"
+```
+
+puede compactar los espacios ASCII internos solo cuando la política del campo los clasifique expresamente como accidentales. La existencia de espacios repetidos no es por sí sola permiso suficiente.
+
+---
+
+#### 14. Separadores preservados por defecto
+
+La compactación interna no debe destruir estructura o formato significativo.
+
+Se preservan por defecto, salvo contrato específico explícito que autorice otra operación:
+
+- saltos de línea;
+- tabulaciones;
+- espacios no separables;
+- separación significativa de plantillas;
+- Markdown;
+- formatos preformateados;
+- delimitadores estructurales;
+- separación usada como evidencia;
+- espaciado incluido en material firmado o protegido;
+- cualquier separador cuya función no esté resuelta por la política.
+
+Una política de `FREE_TEXT`, `HUMAN_LABEL`, dirección, identificador técnico o estructura compuesta no hereda compactación comercial por semejanza visual.
+
+---
+
+#### 15. Puntuación y espacios permanecen separados
+
+`PROSE_PUNCTUATION_SPACING` no se fusiona con las dos operaciones de espacios de esta tarea.
+
+```text
+EDGE_WHITESPACE_TRIM
+→ bordes autorizados
+
+INTERNAL_WHITESPACE_COMPACTION
+→ separadores internos accidentales autorizados
+
+PROSE_PUNCTUATION_SPACING
+→ regla propia de espaciado alrededor de puntuación
+```
+
+En consecuencia:
+
+1. compactar espacios internos no mueve signos;
+2. recortar bordes no reescribe puntuación;
+3. capitalización preserva signos y separadores recibidos;
+4. una corrección de espacios alrededor de coma, punto u otro signo requiere la operación y política propietarias correspondientes;
+5. la existencia de una salida visualmente más limpia no autoriza combinar etapas.
+
+---
+
+#### 16. Perfil compartido de capitalización
+
+La capitalización empresarial centralizada conserva exactamente la identidad lógica aprobada:
+
+```text
+VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0
+```
+
+No se crea otra versión, alias o perfil equivalente.
+
+El perfil aplica únicamente a la operación:
+
+```text
+COMMERCIAL_CAPITALIZATION
+```
+
+Y su finalidad es exclusivamente producir la caja empresarial autorizada de palabras ordinarias elegibles dentro de un valor `COMMERCIAL_NAME`, sin corregir ortografía, tildes, puntuación, espacios, estructura, identidad o búsqueda.
+
+---
+
+#### 17. Puerta de activación de `COMMERCIAL_CAPITALIZATION`
+
+La mutación determinista solo puede resultar elegible cuando se cumplen simultáneamente estas diez condiciones:
+
+1. `semantic_class = COMMERCIAL_NAME`;
+2. `representation_role = PRIMARY_VALUE` o `DISPLAY_OVERRIDE` expresamente autorizado;
+3. `source_role = AUTHORITATIVE_SOURCE` o `APPROVED_OVERRIDE` según corresponda;
+4. la política del campo permite `COMMERCIAL_CAPITALIZATION`;
+5. el perfil lingüístico está declarado explícitamente;
+6. existe una versión activa del catálogo de conectores propietario de `SHELL-NORM-004`;
+7. existe una versión activa del catálogo de excepciones propietario de `SHELL-NORM-004`;
+8. no existe conflicto entre política, excepción, fuente o representación;
+9. la entrada no contiene un caso que obligue revisión humana sin resolución;
+10. puede atribuirse el resultado a las versiones exactas utilizadas.
+
+La falta de una sola condición conserva el valor y evita una mutación automática.
+
+---
+
+#### 18. Entrada y salida lógica de capitalización
+
+La evaluación consume como mínimo:
+
+```text
+valor de entrada
+NormalizableFieldDescriptor
+perfil lingüístico
+versión de capitalización
+versión de conectores
+versión de excepciones
+política efectiva del campo
+```
+
+El resultado lógico debe poder distinguir:
+
+```text
+valor resultante o preservado
+decisión global
+clasificación de cada token
+resultado de cada token
+posición o frontera aplicable
+versiones utilizadas
+bloqueos o revisión requerida
+```
+
+Esta definición es lógica. No prescribe una interfaz TypeScript, tabla, RPC, payload, schema serializado ni formato físico.
+
+---
+
+#### 19. Secuencia normativa de capitalización
+
+La evaluación de `COMMERCIAL_CAPITALIZATION` conserva exactamente esta secuencia:
+
+```text
+1. resolver la coordenada y política del campo
+        ↓
+2. conservar la entrada lógica evaluada
+        ↓
+3. comprobar clase, representación, fuente y versiones requeridas
+        ↓
+4. segmentar sin perder separadores ni posiciones
+        ↓
+5. aplicar excepciones oficiales por frase y token
+        ↓
+6. clasificar conectores usando el catálogo vigente
+        ↓
+7. clasificar tokens ordinarios, técnicos, numéricos o ambiguos
+        ↓
+8. aplicar caja solo a tokens elegibles
+        ↓
+9. recomponer preservando separadores y estructura
+        ↓
+10. comprobar idempotencia y producir un resultado atribuible a versiones
+```
+
+Si una operación previa autorizada de Unicode o espacios produjo la entrada de capitalización, dicha entrada se considera una etapa distinta y trazable. La capitalización no vuelve a ejecutar esas operaciones de forma implícita.
+
+---
+
+#### 20. Clases de token de capitalización
+
+Las nueve clases quedan centralizadas una vez cada una:
+
+| Orden | Literal                       | Definición                                                                      | Conducta basal                                                     |
+| ----: | ----------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+|    01 | `ORDINARY_LEXICAL_TOKEN`      | palabra formada por letras y marcas combinantes sin forma protegida             | candidata a regla ordinaria de caja                                |
+|    02 | `CONNECTOR_TOKEN`             | token reconocido por el catálogo versionado de conectores                       | consume conducta posicional; catálogo pertenece a `SHELL-NORM-004` |
+|    03 | `OFFICIAL_EXCEPTION_TOKEN`    | token o frase cubierta por excepción oficial                                    | preservar o emitir exactamente la forma oficial aprobada           |
+|    04 | `CONTROLLED_ACRONYM_TOKEN`    | sigla o abreviatura confirmada por catálogo                                     | preservar forma contractual                                        |
+|    05 | `MEASUREMENT_OR_UNIT_TOKEN`   | símbolo, código o denominación de unidad confirmada                             | preservar forma aprobada; no tratar como palabra ordinaria         |
+|    06 | `NUMERIC_TOKEN`               | número entero, decimal, fracción, rango o cantidad                              | preservar exactamente durante capitalización                       |
+|    07 | `ALPHANUMERIC_OR_MODEL_TOKEN` | combinación de letras, números o signos con función posible técnica o comercial | preservar y revisar salvo contrato explícito                       |
+|    08 | `PUNCTUATION_OR_SEPARATOR`    | signo, espacio o separador entre tokens                                         | preservar exactamente dentro de capitalización                     |
+|    09 | `AMBIGUOUS_TOKEN`             | token cuya clase o forma oficial no puede resolverse                            | preservar y producir revisión requerida                            |
+
+Conciliación:
+
+```text
+esperadas = 9
+materializadas = 9
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 21. Resultados de token permitidos
+
+Los seis resultados quedan centralizados sin aliases:
+
+| Orden | Literal                        | Significado                                                                |
+| ----: | ------------------------------ | -------------------------------------------------------------------------- |
+|    01 | `CAPITALIZED_ORDINARY`         | se aplicó la regla ordinaria de caja                                       |
+|    02 | `LOWERCASED_CONNECTOR`         | se emitió un conector interno según el catálogo vigente                    |
+|    03 | `PRESERVED_OFFICIAL_EXCEPTION` | se conservó o emitió la forma oficial aprobada                             |
+|    04 | `PRESERVED_NON_CASED`          | se conservó número, signo, separador, unidad u otro token no sujeto a caja |
+|    05 | `PRESERVED_AMBIGUOUS`          | se conservó el token y el resultado global requiere revisión humana        |
+|    06 | `BLOCKED_CONFLICT`             | no se produjo mutación por conflicto de política, catálogo o versión       |
+
+Conciliación:
+
+```text
+esperados = 6
+materializados = 6
+faltantes = 0
+duplicados = 0
+```
+
+Los resultados describen la evaluación de capitalización; no son estados de persistencia, aprobación empresarial o commit.
+
+---
+
+#### 22. Precedencia de clasificación de tokens
+
+La precedencia es estricta:
+
+```text
+1. excepción oficial de frase — coincidencia válida más larga
+2. excepción oficial de token
+3. sigla, unidad, código o forma técnica protegida
+4. conector aprobado
+5. palabra ordinaria elegible
+6. token ambiguo
+```
+
+Reglas:
+
+1. una excepción de frase prevalece sobre reglas palabra por palabra;
+2. una excepción no se infiere por frecuencia, caja observada o apariencia;
+3. una coincidencia parcial no permite modificar el resto del token;
+4. una excepción aplica solo dentro de su alcance y vigencia;
+5. dos reglas incompatibles de igual precedencia bloquean la mutación;
+6. la ausencia de una excepción no demuestra que un token técnico o mixto sea palabra ordinaria;
+7. el consumidor no puede alterar el orden de precedencia.
+
+---
+
+#### 23. Algoritmo ordinario de caja
+
+Un `ORDINARY_LEXICAL_TOKEN` elegible se transforma únicamente en caja:
+
+```text
+primer grafema con caja
+→ mayúscula según el perfil lingüístico explícito
+
+restantes grafemas con caja
+→ minúscula según el mismo perfil
+
+marcas, tildes y grafemas sin caja
+→ se conservan
+```
+
+Ejemplos exclusivos de esta operación:
+
+```text
+americano → Americano
+CAFÉ → Café
+árbol → Árbol
+ÑAME → Ñame
+FRIO → Frio
+maiz → Maiz
+```
+
+`Frio` y `Maiz` son resultados correctos de **caja solamente**. Las formas `Frío` y `Maíz` requieren una decisión distinta de diccionario o revisión y no pueden producirse por `COMMERCIAL_CAPITALIZATION`.
+
+---
+
+#### 24. Formas ordinarias, protegidas y ambiguas
+
+| Forma observada                       | Ejemplo                          | Conducta                                                                   |
+| ------------------------------------- | -------------------------------- | -------------------------------------------------------------------------- |
+| minúsculas completas                  | `americano`                      | regla ordinaria si no existe protección                                    |
+| mayúsculas completas                  | `LATTE`                          | regla ordinaria solo después de descartar sigla, marca, unidad o código    |
+| primera mayúscula y resto minúscula   | `Americano`                      | conservar; ya satisface la regla ordinaria                                 |
+| capitalización interna                | `iPhone`, `eCommerce`            | preservar por excepción o revisar; no aplanar por defecto                  |
+| letras y números                      | `3M`, `T26`, `REF7071`           | preservar y clasificar por catálogo o contrato técnico                     |
+| puntos, guiones o apóstrofos internos | `S.A.S.`, `Coca-Cola`, `O'Neill` | no descomponer por defecto; excepción o revisión                           |
+| una letra                             | `A`, `x`                         | resolver como conector, sigla o ambigüedad antes de aplicar caja ordinaria |
+| forma no resoluble                    | cualquier token conflictivo      | preservar y producir revisión requerida                                    |
+
+Mayúsculas completas no equivalen a sigla y minúsculas completas no equivalen automáticamente a palabra ordinaria.
+
+---
+
+#### 25. Fronteras de segmento
+
+Las tres fronteras aprobadas quedan centralizadas:
+
+| Orden | Literal                  | Efecto                                                                               |
+| ----: | ------------------------ | ------------------------------------------------------------------------------------ |
+|    01 | `NAME_START`             | inicia el valor; la primera palabra lexical o conector elegible recibe regla inicial |
+|    02 | `DECLARED_SEGMENT_START` | reinicia la regla posicional únicamente por una frontera habilitada y versionada     |
+|    03 | `NO_SEGMENT_RESET`       | conserva la posición interna                                                         |
+
+Conciliación:
+
+```text
+esperadas = 3
+materializadas = 3
+faltantes = 0
+duplicados = 0
+```
+
+Reglas predeterminadas heredadas:
+
+1. el inicio del valor es `NAME_START`;
+2. dos puntos y raya larga o corta rodeada por espacios pueden actuar como `DECLARED_SEGMENT_START` cuando la política del campo lo habilite;
+3. coma, punto, ampersand, signo más, barra, paréntesis, guion interno y apóstrofo no reinician segmentos por defecto;
+4. los signos se conservan exactamente durante capitalización;
+5. una frontera no declarada se trata como `NO_SEGMENT_RESET`;
+6. una abreviatura con puntos no se interpreta como varias palabras.
+
+---
+
+#### 26. Dependencia de conectores sin anticipar `SHELL-NORM-004`
+
+`SHELL-NORM-003` centraliza la conducta de consumo del catálogo, pero no su contenido.
+
+Reglas:
+
+1. un conector solo existe para esta operación cuando el catálogo versionado de `SHELL-NORM-004` lo reconoce;
+2. un conector en `NAME_START` recibe la regla inicial correspondiente;
+3. un conector en `DECLARED_SEGMENT_START` recibe la regla inicial correspondiente;
+4. un conector en posición interna usa la forma definida por el catálogo;
+5. una excepción oficial de frase prevalece sobre la regla de conector;
+6. no se permite una lista local;
+7. no se permite coincidencia aproximada;
+8. no se permite inferencia por idioma observado;
+9. no se materializa en esta tarea ninguna entrada concreta del catálogo;
+10. la versión del catálogo utilizada debe formar parte de la reproducibilidad del resultado.
+
+La lista definitiva de conectores y las excepciones oficiales permanecen íntegramente en `SHELL-NORM-004`.
+
+---
+
+#### 27. Compuestos, guiones, apóstrofos y puntuación
+
+La capitalización no utiliza puntuación como excusa para reestructurar el valor.
+
+Reglas:
+
+1. un token con guion o apóstrofo interno no se divide automáticamente;
+2. una forma oficial compuesta se resuelve mediante excepción aprobada;
+3. una gramática de compuesto solo puede operar si su contrato declara delimitador, idioma, alcance, excepciones y versión;
+4. sin contrato suficiente, el token se preserva y pasa a revisión cuando corresponda;
+5. capitalización no une palabras separadas;
+6. capitalización no divide una palabra existente;
+7. capitalización no inserta ni retira espacios alrededor de signos;
+8. `Choco Bites` y `Chocobites` permanecen como cadenas distintas;
+9. la coincidencia de su salida visual no establece identidad ni duplicidad.
+
+---
+
+#### 28. Clases excluidas de `COMMERCIAL_CAPITALIZATION`
+
+La matriz completa conserva una sola clase elegible y trece clases excluidas por defecto.
+
+| Clase semántica                | Capitalización empresarial | Regla                                                                             |
+| ------------------------------ | -------------------------- | --------------------------------------------------------------------------------- |
+| `COMMERCIAL_NAME`              | condicionadamente elegible | solo tras superar política, representación, fuente, perfil y versiones requeridas |
+| `STRUCTURED_PRESENTATION_NAME` | excluida                   | preservar estructura, cantidad, unidad, multiplicador y contexto                  |
+| `HUMAN_LABEL`                  | excluida                   | no hereda política comercial por ser visible                                      |
+| `OFFICIAL_LEGAL_NAME`          | excluida                   | preservar forma legal u oficial                                                   |
+| `OFFICIAL_BRAND_FORM`          | excluida                   | preservar grafía oficial mediante catálogo o fuente autorizada                    |
+| `PERSON_OR_ACTOR_NAME`         | excluida                   | preservar identidad declarada; política propia                                    |
+| `ADDRESS_OR_LOCATION_TEXT`     | excluida                   | preservar números, orden, abreviaturas y signos                                   |
+| `FREE_TEXT`                    | excluida                   | solo reglas propias de prosa libre                                                |
+| `CONTROLLED_VOCABULARY_CODE`   | excluida                   | validar por catálogo contractual                                                  |
+| `MEASUREMENT_OR_UNIT_CODE`     | excluida                   | validar por catálogo técnico de unidades                                          |
+| `TECHNICAL_IDENTIFIER`         | excluida                   | solo canonicalización técnica específica                                          |
+| `CONTACT_IDENTIFIER`           | excluida                   | solo contrato específico del canal o estándar                                     |
+| `SECRET_OR_SIGNATURE_MATERIAL` | excluida                   | `PRESERVE_EXACT`                                                                  |
+| `UNCLASSIFIED_PRESERVE`        | excluida                   | preservar y bloquear automatización                                               |
+
+Conciliación:
+
+```text
+clases esperadas = 14
+filas materializadas = 14
+COMMERCIAL_NAME elegible = 1
+clases excluidas por defecto = 13
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 29. Fuentes y representaciones autorizadas
+
+La mutación directa de capitalización queda limitada a:
+
+```text
+PRIMARY_VALUE + AUTHORITATIVE_SOURCE
+```
+
+o, dentro de alcance explícito:
+
+```text
+DISPLAY_OVERRIDE + APPROVED_OVERRIDE
+```
+
+Las demás combinaciones conservan las restricciones de `SHELL-NORM-002`.
+
+| Caso                                | Conducta                                                                   |
+| ----------------------------------- | -------------------------------------------------------------------------- |
+| `EXTERNAL_ORIGINAL`                 | preservar original; una forma interna se deriva por separado               |
+| `HISTORICAL_SNAPSHOT`               | no reinterpretar por una política nueva                                    |
+| `AUDIT_EVIDENCE`                    | preservar evidencia                                                        |
+| `SEARCH_DERIVATION`                 | no usar capitalización como identidad ni como sustituto del valor mostrado |
+| `OUTPUT_PROJECTION` + `OUTPUT_ONLY` | puede derivar una forma autorizada sin retroalimentar origen               |
+| `SYNCHRONIZED_COPY`                 | no corregir independientemente; recibe propagación gobernada               |
+| `IMMUTABLE_SNAPSHOT`                | no resincronizar por corrección posterior                                  |
+| `EXTERNAL_EVIDENCE`                 | preservar forma y procedencia externa                                      |
+
+Un `APPROVED_OVERRIDE` conserva su alcance propio y no se convierte en fuente universal.
+
+---
+
+#### 30. Perfil lingüístico y determinismo
+
+El perfil de capitalización es explícitamente:
+
+```text
+es-CO
+```
+
+Reglas:
+
+1. no se usa el locale del sistema operativo;
+2. no se usa el locale del navegador;
+3. no se usa el locale del proceso;
+4. no se usa el locale de la base de datos;
+5. la semántica Unicode y de caja debe quedar fijada por versión;
+6. una versión de runtime no puede cambiar silenciosamente el resultado contractual;
+7. las letras acentuadas y `ñ` conservan diacríticos bajo el mapeo de caja;
+8. no se transliteran caracteres;
+9. un valor de otro perfil lingüístico se preserva o requiere revisión hasta existir política explícita;
+10. cambiar versión lingüística o Unicode requiere análisis de compatibilidad y una nueva decisión versionada.
+
+---
+
+#### 31. Ejemplos canónicos de comportamiento
+
+La centralización conserva los ejemplos de `DATA-NORM-ARC-003` sin convertirlos en reglas adicionales.
+
+| Entrada y contexto                 | Resultado de capitalización                | Conducta posterior separada                     |
+| ---------------------------------- | ------------------------------------------ | ----------------------------------------------- |
+| `americano` como `COMMERCIAL_NAME` | `Americano`                                | ninguna corrección ortográfica adicional        |
+| `pan masa madre clasico`           | `Pan Masa Madre Clasico`                   | `Clásico` solo mediante diccionario aprobado    |
+| `harina de maiz`                   | `Harina de Maiz`                           | `Maíz` solo mediante diccionario aprobado       |
+| `jugo de naranja y mango`          | `Jugo de Naranja y Mango`                  | conectores según catálogo vigente               |
+| `LATTE FRIO`                       | `Latte Frio`                               | `Frío` solo mediante diccionario aprobado       |
+| `Bebidas calientes`                | `Bebidas Calientes`                        | conservar si ya satisface la regla              |
+| `3M` dentro de nombre              | `3M`                                       | forma protegida                                 |
+| `iPhone` dentro de nombre          | `iPhone`                                   | forma protegida                                 |
+| `Coca-Cola` dentro de nombre       | `Coca-Cola`                                | excepción oficial de token o frase              |
+| `BBQ` dentro de nombre             | preservar o revisar                        | no producir `Bbq` sin catálogo                  |
+| `expresso` con ambigüedad activa   | conservar `expresso`                       | revisión humana; no corregir ortografía         |
+| `500 g` como presentación          | conservar                                  | clase excluida y estructura preservada          |
+| `COMERCIALIZADORA ABC S.A.S.`      | conservar                                  | `OFFICIAL_LEGAL_NAME` excluido                  |
+| `Carlos Ibarra`                    | conservar                                  | `PERSON_OR_ACTOR_NAME` excluido                 |
+| `NEXO`                             | conservar                                  | vocabulario o identificador controlado excluido |
+| `Choco Bites` / `Chocobites`       | capitalizar cada forma solo si es elegible | no unir, dividir ni fusionar registros          |
+
+Los ejemplos no autorizan a inferir marcas, conectores, excepciones o correcciones no registradas por sus catálogos propietarios.
+
+---
+
+#### 32. Idempotencia y estabilidad por operación
+
+Cada operación deberá ser idempotente para la misma entrada lógica, contexto y versiones.
+
+Unicode:
+
+```text
+NFC(NFC(value)) = NFC(value)
+```
+
+cuando `UNICODE_CANONICALIZATION` está autorizada bajo la misma semántica versionada.
+
+Espacios:
+
+```text
+trim_rule(trim_rule(value)) = trim_rule(value)
+compact_rule(compact_rule(value)) = compact_rule(value)
+```
+
+para la misma clasificación de separadores y versión.
+
+Capitalización:
+
+```text
+capitalize(capitalize(value, context), context)
+=
+capitalize(value, context)
+```
+
+La estabilidad de capitalización cubre:
+
+- valor resultante;
+- decisión global;
+- clasificación de tokens;
+- resultados de token;
+- precedencia;
+- fronteras de segmento;
+- conectores y excepciones resueltos por sus versiones;
+- casos de revisión;
+- conjunto de versiones.
+
+Un retry no crea una nueva corrección lingüística, no cambia el orden de etapas y no autoriza efectos empresariales adicionales.
+
+---
+
+#### 33. Prohibiciones de transformación implícita
+
+Las reglas compartidas no pueden ejecutar silenciosamente:
+
+- casefold sobre el valor mostrado como sustituto de capitalización;
+- unaccent;
+- eliminación de diacríticos;
+- `ñ → n`;
+- NFKC o NFKD;
+- transliteración;
+- traducción;
+- corrección ortográfica;
+- adición o retiro de tildes;
+- singularización;
+- pluralización;
+- stemming;
+- lematización;
+- stopwords;
+- aliases automáticos;
+- similitud;
+- unión de palabras;
+- división de palabras;
+- cambio de puntuación;
+- conversión de unidades;
+- cambio de cantidades;
+- generación de slug, SKU o identificador;
+- deduplicación;
+- fusión;
+- selección de sobreviviente.
+
+Cada responsabilidad permanece en su contrato propietario o está expresamente prohibida.
+
+---
+
+#### 34. Relación con búsqueda
+
+La normalización de esta tarea no sustituye `SHELL-NORM-006`.
+
+En particular:
+
+1. una forma capitalizada es una representación mostrada, no una clave de búsqueda;
+2. `SEARCH_FORM_KEY` pertenece al contrato de búsqueda y puede usar NFC, casefold y tratamiento de espacios autorizado sin cambiar el original;
+3. casefold de búsqueda no autoriza persistir el valor fuente en minúsculas;
+4. `SEARCH_ACCENT_KEY` es una derivación separada y no autoriza retirar diacríticos del valor mostrado;
+5. una coincidencia de búsqueda no confirma identidad;
+6. los helpers de búsqueda futuros deberán consumir las mismas versiones y tipos, pero no modificar las reglas de esta tarea.
+
+---
+
+#### 35. Relación con identidad y unicidad
+
+Ninguna salida de esta tarea crea identidad.
+
+```text
+NFC igual
+≠ misma entidad
+
+espacios normalizados iguales
+≠ misma entidad
+
+capitalización igual
+≠ misma entidad
+```
+
+Por tanto:
+
+1. no se activan constraints por equivalencia textual;
+2. no se selecciona registro sobreviviente;
+3. no se desactiva ningún registro;
+4. no se reasignan relaciones;
+5. no se modifican claves empresariales;
+6. no se interpretan dos nombres visualmente iguales como duplicado confirmado;
+7. toda acción estructural sigue perteneciendo a `DATA-NORM-ARC-010` y sus transiciones.
+
+---
+
+#### 36. Estado de materialización física
+
+Al cierre documental de esta tarea:
+
+| Elemento                                             | Estado                                                               |
+| ---------------------------------------------------- | -------------------------------------------------------------------- |
+| `@vento/data-normalization`                          | `ESPECIFICADO`; package físico no materializado                      |
+| tipos de `SHELL-NORM-002`                            | `ESPECIFICADOS`                                                      |
+| `UNICODE_CANONICALIZATION`                           | regla compartida `ESPECIFICADA`; código no materializado             |
+| `EDGE_WHITESPACE_TRIM`                               | regla compartida `ESPECIFICADA`; código no materializado             |
+| `INTERNAL_WHITESPACE_COMPACTION`                     | regla compartida `ESPECIFICADA`; código no materializado             |
+| `COMMERCIAL_CAPITALIZATION`                          | regla compartida `ESPECIFICADA`; código no materializado             |
+| perfil `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0` | centralizado documentalmente; sin implementación runtime             |
+| 9 clases de token                                    | centralizadas documentalmente                                        |
+| 6 resultados de token                                | centralizados documentalmente                                        |
+| 3 fronteras de segmento                              | centralizadas documentalmente                                        |
+| catálogo de conectores                               | no desarrollado aquí; `SHELL-NORM-004`                               |
+| catálogo de excepciones                              | no desarrollado aquí; `SHELL-NORM-004`                               |
+| diccionario ortográfico                              | no desarrollado aquí; `SHELL-NORM-005`                               |
+| búsqueda                                             | no desarrollada aquí; `SHELL-NORM-006`                               |
+| preview                                              | no desarrollado aquí; `SHELL-NORM-007`                               |
+| metadata de versión y auditoría                      | no desarrollada aquí; `SHELL-NORM-008`                               |
+| pruebas físicas                                      | no desarrolladas aquí; `SHELL-NORM-009` y BLOQUE T según corresponda |
+| archivos TypeScript                                  | `NO IMPLEMENTADOS`                                                   |
+| consumidores migrados                                | `0` por esta tarea                                                   |
+| cambios Supabase                                     | `0`                                                                  |
+| requisitos de prueba creados o modificados           | `0`                                                                  |
+
+`ESPECIFICADO` no equivale a `IMPLEMENTADO` ni a `VALIDADO` en runtime.
+
+---
+
+#### 37. Handoffs exactos
+
+| Materia fuera de esta tarea                                                        | Propietario exacto                                          | Condición de salida                                                                              |
+| ---------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| conectores y excepciones                                                           | `SHELL-NORM-004`                                            | catálogos compartidos consumen clase, representación, fuente y versiones sin extensiones locales |
+| diccionario ortográfico                                                            | `SHELL-NORM-005`                                            | correcciones cerradas y versionadas permanecen separadas de caja                                 |
+| búsqueda y comparación                                                             | `SHELL-NORM-006`                                            | derivaciones de búsqueda usan sus perfiles sin alterar valor mostrado ni identidad               |
+| previsualización                                                                   | `SHELL-NORM-007`                                            | preview reproduce las reglas sin adquirir autoridad de commit                                    |
+| metadatos de versión y auditoría                                                   | `SHELL-NORM-008`                                            | cada evaluación queda atribuible a política, reglas y versiones exactas                          |
+| pruebas de idempotencia y conservación semántica                                   | `SHELL-NORM-009`                                            | corpus certifica repetición estable y ausencia de degradación semántica                          |
+| materialización física del package                                                 | `SHELL-CI-020::<package_id>` después de la puerta aplicable | crear y desplegar únicamente el package aprobado                                                 |
+| persistencia, funciones SQL, backfills, constraints, índices y triggers defensivos | `DATA-NORM-DB-001..010`                                     | ejecutar únicamente dentro del package autorizado cuando su alcance incluya BLOQUE R             |
+
+No se crea una tarea nueva ni se modifica el alcance de los handoffs existentes.
+
+---
+
+#### 38. Cobertura de prueba vigente no modificada
+
+Las reglas centralizadas por esta tarea ya están protegidas por requisitos canónicos vigentes.
+
+Cobertura principal:
+
+- `TREQ-DATA-037` y `TREQ-DATA-038`: puerta de capitalización y prohibición de Title Case universal;
+- `TREQ-DATA-039`: separación de capitalización frente a espacios, Unicode, puntuación, diccionario y otras transformaciones;
+- `TREQ-DATA-040` y `TREQ-DATA-041`: segmentación Unicode, preservación de separadores y algoritmo ordinario de caja;
+- `TREQ-DATA-042`: perfil `es-CO` y semántica Unicode explícita;
+- `TREQ-DATA-043` y `TREQ-DATA-044`: dependencia de conectores y precedencia de excepciones;
+- `TREQ-DATA-045` y `TREQ-DATA-046`: ambigüedad, compuestos, puntuación y fronteras;
+- `TREQ-DATA-047` y `TREQ-DATA-048`: exclusiones por clase y preservación de cantidades, unidades y estructura;
+- `TREQ-DATA-049`: caja separada de ortografía y tildes;
+- `TREQ-DATA-050`: fuentes, representaciones y propagación;
+- `TREQ-DATA-051`: determinismo e idempotencia;
+- `TREQ-DATA-052`: separación frente a búsqueda, identidad y unicidad;
+- `TREQ-DATA-053`: corpus de conformidad;
+- `TREQ-DATA-126`: NFC y espacios gobernados dentro de la derivación de forma de búsqueda, sin convertirlos en corrección del original;
+- `TREQ-DATA-158`: eliminación de dependencias implícitas de locale, Unicode, runtime, tiempo, orden o configuración;
+- `TREQ-DATA-203`: colocación autorizada de recorte, espacios, Unicode y capitalización en la arquitectura de ejecución;
+- `TREQ-DATA-232`: locale, Unicode y encoding explícitos y versionados;
+- `TREQ-SHELL-002`: implementación compartida y paridad frente a copias locales;
+- `TREQ-SHELL-006`: pruebas propias y compatibilidad del package antes de publicación o adopción.
+
+La tarea no amplía ninguna de esas obligaciones. Las centraliza en la futura superficie compartida sin introducir comportamiento ejecutable nuevo.
+
+---
+
+#### 39. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** `SHELL-NORM-003` traslada al contrato compartido reglas de Unicode, espacios y capitalización ya aprobadas y ya cubiertas por requisitos canónicos vigentes. No crea una operación nueva, un algoritmo lingüístico nuevo, una clase nueva, un perfil nuevo, un catálogo nuevo, una regla de búsqueda, una autorización, una persistencia, una migración ni un cambio de datos. El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 40. Decisiones vinculantes
+
+1. Las operaciones centralizadas son exactamente `UNICODE_CANONICALIZATION`, `EDGE_WHITESPACE_TRIM`, `INTERNAL_WHITESPACE_COMPACTION` y `COMMERCIAL_CAPITALIZATION`.
+2. Las cuatro operaciones permanecen independientes.
+3. No existe pipeline universal para todos los campos.
+4. Más de una etapa solo puede combinarse con orden explícito y versionado.
+5. La composición Unicode aprobada cuando se habilita es NFC.
+6. No se introduce NFKC ni NFKD.
+7. Unicode no retira diacríticos ni translitera.
+8. Unicode no aplica casefold sobre el valor mostrado.
+9. `EDGE_WHITESPACE_TRIM` solo actúa sobre bordes declarados no significativos por política.
+10. `INTERNAL_WHITESPACE_COMPACTION` solo actúa sobre separadores declarados accidentales por política.
+11. No existe una regla universal `\s+` sobre todos los textos.
+12. Saltos de línea, tabulaciones, NBSP, Markdown, plantillas y formato significativo se preservan por defecto.
+13. `PROSE_PUNCTUATION_SPACING` permanece como operación separada.
+14. El perfil de capitalización es exactamente `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0`.
+15. El perfil lingüístico es `es-CO` explícito.
+16. Solo `COMMERCIAL_NAME` puede resultar elegible para `COMMERCIAL_CAPITALIZATION`.
+17. Las otras trece clases quedan excluidas por defecto.
+18. La mutación de capitalización exige representación y fuente autorizadas.
+19. La capitalización no ejecuta espacios ni Unicode implícitamente.
+20. La capitalización no corrige ortografía ni tildes.
+21. La capitalización no modifica puntuación.
+22. La capitalización no une ni divide palabras.
+23. La capitalización centraliza exactamente nueve clases de token.
+24. La capitalización centraliza exactamente seis resultados de token.
+25. La capitalización centraliza exactamente tres fronteras de segmento.
+26. El inventario total gobernado por esta tarea es de 22 literales, con 0 faltantes y 0 duplicados.
+27. La precedencia de token conserva frase oficial, token oficial, protección técnica, conector, palabra ordinaria y ambigüedad en ese orden.
+28. Una palabra ordinaria mayusculiza el primer grafema con caja y minúsculiza los restantes bajo el perfil explícito.
+29. Tildes, `ñ`, marcas combinantes y grafemas sin caja se conservan.
+30. Una capitalización interna desconocida no se aplana automáticamente.
+31. Los conectores y excepciones se consumen por versión pero su contenido pertenece a `SHELL-NORM-004`.
+32. El diccionario pertenece a `SHELL-NORM-005`.
+33. La búsqueda pertenece a `SHELL-NORM-006`.
+34. Preview, auditoría y corpus físico permanecen en sus tareas propietarias.
+35. Una salida textual equivalente no crea identidad, unicidad ni duplicidad confirmada.
+36. Originales externos, snapshots, evidencia y material firmado conservan su frontera de preservación.
+37. VITAL no hereda estas reglas por compartir infraestructura o tipos.
+38. No se crea package físico, archivo TypeScript, export, función SQL, RPC, trigger o migración.
+39. No se modifica Supabase.
+40. Esta tarea crea cero requisitos de prueba y modifica cero requisitos existentes.
+41. `SHELL-NORM-004` queda como única continuidad reservada.
+
+---
+
+#### 41. Criterios de aceptación
+
+`SHELL-NORM-003` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. las cuatro operaciones propietarias están identificadas sin aliases;
+2. el inventario de cuatro operaciones está completo;
+3. las nueve clases de token están completas;
+4. los seis resultados de token están completos;
+5. las tres fronteras de segmento están completas;
+6. el total conciliado es 22 literales;
+7. faltantes = 0;
+8. duplicados = 0;
+9. cada operación exige política y versión explícitas;
+10. Unicode, espacios y capitalización permanecen como etapas separadas;
+11. no existe orden implícito cuando varias etapas participan;
+12. la composición Unicode autorizada se limita a NFC;
+13. no se introducen formas de compatibilidad Unicode;
+14. se conservan diacríticos y `ñ`;
+15. no existe transliteración implícita;
+16. edge trim se restringe a bordes declarados no significativos;
+17. compaction se restringe a separadores declarados accidentales;
+18. formato significativo permanece protegido por defecto;
+19. puntuación no se corrige mediante las operaciones de espacios;
+20. `COMMERCIAL_CAPITALIZATION` usa exclusivamente `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0`;
+21. `COMMERCIAL_NAME` es la única clase condicionalmente elegible;
+22. las trece clases restantes están materializadas como excluidas;
+23. representación y fuente se revalidan antes de permitir capitalización;
+24. las diez condiciones de activación están preservadas;
+25. la tokenización conserva grafemas, signos y separadores;
+26. la precedencia de tokens está materializada en orden exacto;
+27. el algoritmo de palabra ordinaria solo cambia caja;
+28. `Frio` y `Maiz` permanecen ejemplos de caja, no corrección ortográfica;
+29. conectores y excepciones no se materializan dentro de esta tarea;
+30. compuestos no se dividen por heurística;
+31. una forma ambigua se preserva y requiere revisión;
+32. `NAME_START`, `DECLARED_SEGMENT_START` y `NO_SEGMENT_RESET` conservan su significado;
+33. capitalización no cambia búsqueda, slug, SKU, código o identidad;
+34. Unicode y espacios no crean identidad;
+35. la misma entrada, contexto y versiones producen el mismo resultado lógico;
+36. cada operación es idempotente bajo la misma versión;
+37. no existe locale implícito;
+38. no existe dependencia de runtime como fuente silenciosa de semántica;
+39. no se crea código ni package físico;
+40. no se modifica Supabase;
+41. no se crean ni modifican requisitos de prueba;
+42. todos los pendientes quedan vinculados con propietario exacto;
+43. la continuidad reserva exclusivamente `SHELL-NORM-004`.
+
+---
+
+#### 42. Límites
+
+`SHELL-NORM-003` no:
+
+- crea físicamente `@vento/data-normalization`;
+- crea `package.json`;
+- crea archivos `.ts` o `.tsx`;
+- define exports físicos;
+- selecciona una librería Unicode;
+- selecciona una librería de segmentación;
+- selecciona una librería de validación runtime;
+- crea un catálogo local de conectores;
+- crea excepciones de marcas, siglas, unidades o nombres legales;
+- crea entradas de diccionario;
+- corrige `maiz`, `frio`, `clasico` u otra palabra ortográficamente;
+- aplica unaccent;
+- aplica transliteración;
+- implementa búsqueda;
+- implementa similitud;
+- genera aliases;
+- implementa preview;
+- implementa auditoría física;
+- ejecuta normalización sobre datos;
+- modifica valores persistidos;
+- crea funciones SQL;
+- crea RPC;
+- crea triggers;
+- crea índices;
+- crea constraints;
+- ejecuta backfills;
+- modifica RLS;
+- modifica Supabase;
+- migra consumidores;
+- redefine `DATA-NORM-ARC-001..012`;
+- desarrolla `SHELL-NORM-004`.
+
+---
+
+#### 43. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-NORM-002 — Centralizar tipos de campo normalizable
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-NORM-003 — Centralizar reglas de espacios, Unicode y capitalización
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-NORM-004 — Centralizar conectores y excepciones
+
+
 ### [ ] SHELL-NORM-004 — Centralizar conectores y excepciones
 ### [ ] SHELL-NORM-005 — Centralizar diccionarios ortográficos versionados
 ### [ ] SHELL-NORM-006 — Crear normalización de búsqueda y comparación
