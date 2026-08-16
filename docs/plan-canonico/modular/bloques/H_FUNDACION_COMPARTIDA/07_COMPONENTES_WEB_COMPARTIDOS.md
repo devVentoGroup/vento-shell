@@ -3172,8 +3172,2863 @@ Esta tarea no autoriza:
 No se inicia `SHELL-UI-004` sin aprobación de `SHELL-UI-003`.
 
 
-### [ ] SHELL-UI-004 — Compartir Card
-### [ ] SHELL-UI-005 — Compartir EmptyState
+### ✅ SHELL-UI-004 — Compartir Card
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-003 — Compartir Button
+**Tarea siguiente:** SHELL-UI-005 — Compartir EmptyState
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-UI-004` define y reconcilia el contrato canónico del componente visual compartido `Card` que deberá pertenecer a `@vento/ui-web`.
+
+La tarea parte de dos familias actuales con la misma intención general de contenedor visual, pero con contratos diferentes:
+
+- el candidato local de SHELL expone variantes `surface | soft | raised` y padding `sm | md | lg`;
+- la familia histórica `vento/standard` expone una única apariencia fija con superficie, borde, sombra, padding y blur.
+
+La tarea no adopta ninguna copia por precedencia accidental. Cierra una superficie compartida neutral y composable:
+
+```text
+CONTENIDO DEL CONSUMIDOR
++
+JERARQUÍA VISUAL DE SUPERFICIE
++
+DENSIDAD EXPLÍCITA
+→
+Card DE @vento/ui-web
+→
+CONTENEDOR WEB CONSISTENTE Y REUTILIZABLE
+```
+
+`Card` organiza y presenta contenido. No determina estado empresarial, no concede autoridad, no ejecuta operaciones, no navega por sí misma y no convierte cualquier componente cuyo nombre termine en `Card` en una primitiva compartida.
+
+---
+
+#### 2. Resultado canónico
+
+Se aprueba `Card` como componente visual compartido de `@vento/ui-web` con las siguientes propiedades vinculantes:
+
+1. identidad pública funcional única: `Card`;
+2. variantes canónicas `surface`, `soft` y `raised`;
+3. variante por defecto `surface`;
+4. densidades de padding canónicas `sm`, `md` y `lg`;
+5. padding por defecto `md`;
+6. elemento raíz conceptual `div` no interactivo;
+7. soporte de atributos compatibles de `HTMLDivElement`;
+8. contenido compuesto aportado por el consumidor mediante `children`;
+9. ausencia de subcomponentes obligatorios `CardHeader`, `CardTitle`, `CardContent` o `CardFooter` en este corte;
+10. ausencia de estados visuales de negocio como `success`, `warning`, `danger`, `selected` o `disabled` dentro del contrato base;
+11. ausencia de navegación, `href`, router o activación de tarjeta completa dentro del contrato base;
+12. ausencia de estado interno obligatorio;
+13. ausencia de dependencia directa de Supabase;
+14. ausencia de dependencia de autorización, sesión o contexto operativo;
+15. compatibilidad conceptual con renderizado de servidor;
+16. `backdrop-blur`, valores físicos de padding, radios, sombras y nombres de tokens actuales tratados como detalles de implementación y compatibilidad, no como API pública;
+17. reconciliación explícita del candidato local de SHELL y la familia histórica `vento/standard`;
+18. migración posterior por consumidor, con paridad, accesibilidad y rollback;
+19. cero cambios físicos y cero consumidores migrados por esta tarea.
+
+Estado resultante:
+
+```text
+Card compartida
+→ DEFINIDA
+
+API conceptual
+→ DEFINIDA
+
+implementación física en @vento/ui-web
+→ NO MATERIALIZADA
+
+consumidores migrados
+→ 0
+
+implementaciones legacy retiradas
+→ 0
+```
+
+---
+
+#### 3. Fuentes y precedencia
+
+La especificación conserva las decisiones vigentes de las siguientes fuentes:
+
+| Fuente                                                                 | Uso vinculante                                                                                             |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`                           | continuidad, trazabilidad, separación entre especificación e implementación y tratamiento de requisitos    |
+| `docs/plan-canonico/modular/delivery-contract.json`                    | forma del artefacto documental                                                                             |
+| `docs/plan-canonico/modular/active-sequence.json`                      | continuidad `SHELL-UI-003 → SHELL-UI-004 → SHELL-UI-005`                                                   |
+| `07_COMPONENTES_WEB_COMPARTIDOS.md`                                    | propietario del mini-bloque y secuencia `SHELL-UI-*`                                                       |
+| `SHELL-UI-001`                                                         | identidad, fronteras y estado no materializado de `@vento/ui-web`                                          |
+| `SHELL-UI-002`                                                         | separación entre presentación, estados de dominio y anuncios visuales                                      |
+| `SHELL-UI-003`                                                         | patrón precedente de reconciliación de una primitiva compartida y separación entre interacción y autoridad |
+| `01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md`                           | clasificación histórica de `src/components/vento/standard/ui.tsx` como duplicación mixta                   |
+| `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`                            | distribución npm privada, SemVer, compatibilidad, adopción y rollback                                      |
+| `03_CONTRATOS_COMPARTIDOS.md`                                          | frontera entre contratos, contexto, datos e implementación visual                                          |
+| `src/components/ui/Card.tsx` de SHELL                                  | candidato local con variantes, padding y atributos HTML actuales                                           |
+| `src/components/ui/index.ts` de SHELL                                  | evidencia de export local actual de `Card` dentro del barrel local                                         |
+| `templates/app-shell-standard/src/components/vento/standard/ui.tsx`    | fuente histórica con una Card fija de la familia estándar                                                  |
+| copias actuales `src/components/vento/standard/ui.tsx` de consumidores | evidencia de duplicación runtime de la familia histórica                                                   |
+| Registro Canónico de Requisitos de Prueba — dominios SHELL y UX        | reconciliación, compatibilidad, rollback, densidad y gobierno de superficies ya cubiertos                  |
+| `07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md`                    | inventario, lotes, adopción, accesibilidad, paridad y retiro legacy posteriores                            |
+| `T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md`      | pruebas, build, release, changelog, compatibilidad y PR de consumidores posteriores                        |
+
+Precedencia:
+
+```text
+contratos canónicos aprobados
+→ frontera de @vento/ui-web
+→ contrato de Card
+→ implementación física futura
+→ adopción por consumidor
+→ paridad y accesibilidad
+→ retiro de duplicados con evidencia
+```
+
+La existencia de una implementación local, una clase CSS, un nombre `Card` de dominio o una copia de template no constituye por sí sola una API compartida.
+
+---
+
+#### 4. Línea base verificable
+
+El corte técnico actual presenta las siguientes instancias relevantes:
+
+| Instancia                                                                       | Estado                        | Familia            |
+| ------------------------------------------------------------------------------- | ----------------------------- | ------------------ |
+| `vento-shell/src/components/ui/Card.tsx`                                        | implementación local actual   | candidato SHELL    |
+| `vento-shell/templates/app-shell-standard/src/components/vento/standard/ui.tsx` | fuente histórica del template | estándar histórico |
+| `vento-nexo/src/components/vento/standard/ui.tsx`                               | copia runtime localizada      | estándar histórico |
+| `vento-fogo/src/components/vento/standard/ui.tsx`                               | copia runtime localizada      | estándar histórico |
+| `vento-origo/src/components/vento/standard/ui.tsx`                              | copia runtime localizada      | estándar histórico |
+| `vento-viso/src/components/vento/standard/ui.tsx`                               | copia runtime localizada      | estándar histórico |
+| `vento-pulso/src/components/vento/standard/ui.tsx`                              | copia runtime localizada      | estándar histórico |
+| `vento-numera/src/components/vento/standard/ui.tsx`                             | copia runtime localizada      | estándar histórico |
+
+Conteo utilizado por esta tarea:
+
+```text
+implementaciones runtime/locales Card localizadas = 7
+fuentes históricas de template localizadas         = 1
+Card compartidas materializadas                    = 0
+consumidores migrados                              = 0
+```
+
+Las siete implementaciones runtime/locales corresponden a:
+
+```text
+1 candidato local de SHELL
++
+6 copias runtime de la familia vento/standard
+=
+7
+```
+
+La fuente histórica del template se contabiliza por separado porque no es una superficie runtime de SHELL.
+
+La existencia de componentes de dominio como `*ProductCard`, `*DetailCard`, `*HeroCard` o equivalentes no los incorpora a esta matriz: compartir una primitiva de contenedor no convierte componentes empresariales especializados en duplicados de `Card`.
+
+---
+
+#### 5. Divergencias actuales que deben reconciliarse
+
+Las dos familias principales no son equivalentes:
+
+| Dimensión            | SHELL local                    | familia `vento/standard`             | Decisión canónica                                                                     |
+| -------------------- | ------------------------------ | ------------------------------------ | ------------------------------------------------------------------------------------- |
+| elemento raíz        | `div`                          | `div`                                | conservar `div` no interactivo                                                        |
+| variante por defecto | `surface`                      | apariencia única fija                | `surface`                                                                             |
+| variantes            | `surface`, `soft`, `raised`    | ninguna prop de variante             | conservar las tres del contrato común                                                 |
+| padding              | `sm`, `md`, `lg`               | padding fijo                         | conservar los tres tamaños; no convertir el valor fijo histórico en una cuarta opción |
+| padding por defecto  | `md`                           | fijo                                 | `md`                                                                                  |
+| borde                | presente en las tres variantes | presente                             | conservar intención de separación visual sin congelar la clase actual                 |
+| sombra               | solo `raised`                  | presente siempre                     | reservar elevación a `raised`                                                         |
+| blur de fondo        | no                             | `backdrop-blur-xl`                   | no incorporar como requisito contractual                                              |
+| radio                | token local concreto           | token histórico concreto             | no congelar nombre físico de token en esta tarea                                      |
+| `className`          | heredado por atributos         | composición explícita                | admitir extensión acotada                                                             |
+| `style`              | heredado y aplicado al final   | heredado por props                   | conservar atributos nativos compatibles sin convertir overrides en variantes públicas |
+| estado interno       | ninguno                        | ninguno                              | ninguno                                                                               |
+| boundary de cliente  | archivo marcado `use client`   | módulo completo marcado `use client` | no imponerlo por contrato a `Card`                                                    |
+
+La reconciliación adopta la semántica común y descarta diferencias accidentales de implementación.
+
+---
+
+#### 6. Identidad pública
+
+La superficie conceptual introducida por `SHELL-UI-004` queda compuesta por:
+
+```text
+Card
+CardProps
+CardVariant
+CardPadding
+```
+
+Estos nombres describen el contrato lógico de la superficie.
+
+La tarea no define:
+
+- ruta física del archivo dentro del futuro package;
+- subpath npm específico;
+- barrel físico;
+- mapa `exports`;
+- nombre de hoja CSS;
+- estructura interna de estilos;
+- nombre de clase pública;
+- dependencia de una librería CSS concreta.
+
+La futura materialización deberá preservar la semántica sin convertir la organización interna del package en API accidental.
+
+---
+
+#### 7. Contrato conceptual mínimo
+
+La API conceptual mínima queda:
+
+```text
+Card
+  variant?   = surface | soft | raised
+  padding?   = sm | md | lg
+  children?  = contenido React del consumidor
+  className? = extensión visual acotada
+  ...props   = atributos compatibles de HTMLDivElement
+```
+
+Valores por defecto:
+
+```text
+variant = surface
+padding = md
+```
+
+No se incorporan en esta tarea propiedades públicas específicas para:
+
+- `interactive`;
+- `clickable`;
+- `selected`;
+- `disabled`;
+- `loading`;
+- `success`;
+- `warning`;
+- `danger`;
+- `brand`;
+- `href`;
+- `to`;
+- `as`;
+- `asChild`;
+- `header`;
+- `footer`;
+- `title`;
+- `actions`;
+- `collapsible`;
+- `elevation` numérica;
+- `blur`;
+- autorización;
+- permisos;
+- navegación;
+- consultas de datos.
+
+---
+
+#### 8. Variantes canónicas
+
+Se congelan tres variantes de intención visual:
+
+| Variante  | Intención                                                                      | Límite                                                              |
+| --------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| `surface` | contenedor ordinario sobre la superficie base                                  | no implica selección, foco, disponibilidad ni prioridad empresarial |
+| `soft`    | agrupación de contraste más suave o superficie secundaria                      | no equivale a disabled, draft, pending o menor autoridad            |
+| `raised`  | contenedor con mayor separación/elevación visual respecto al plano circundante | no implica modal, interactividad, prioridad ni estado crítico       |
+
+`surface` es la variante por defecto.
+
+Las variantes describen tratamiento visual de una superficie, no estados de negocio.
+
+Por tanto:
+
+```text
+variant="raised"
+≠ elemento clicable
+≠ prioridad empresarial alta
+
+variant="soft"
+≠ disabled
+≠ pendiente
+
+variant="surface"
+≠ estado confirmado
+```
+
+El consumidor o patrón compuesto propietario elige la variante por necesidad de jerarquía visual, no por permiso, endpoint, estado de datos o código empresarial.
+
+---
+
+#### 9. Variante `surface`
+
+`surface` representa la superficie ordinaria compartida.
+
+Invariantes conceptuales:
+
+1. separa visualmente el contenido del entorno inmediato;
+2. utiliza el contrato visual común de `@vento/ui-web`;
+3. no añade por sí sola una semántica interactiva;
+4. no comunica un estado empresarial;
+5. no exige sombra como señal principal;
+6. no redefine tema ni tokens;
+7. debe conservar legibilidad y contraste con su entorno.
+
+El nombre `surface` expresa jerarquía visual, no una variable CSS concreta.
+
+---
+
+#### 10. Variante `soft`
+
+`soft` representa una superficie secundaria o de contraste reducido respecto a `surface`.
+
+Reglas:
+
+1. su diferencia debe ser perceptible sin depender de un único matiz difícil de distinguir;
+2. no puede utilizarse como sustituto visual de `disabled`;
+3. no comunica menor autorización ni menor validez del contenido;
+4. no implica estado de borrador, pendiente o informativo;
+5. conserva la misma semántica estructural de `Card`;
+6. debe mantener contraste suficiente para contenido y controles compuestos.
+
+El significado de los datos dentro de la tarjeta permanece en el dominio consumidor.
+
+---
+
+#### 11. Variante `raised`
+
+`raised` representa mayor separación visual del plano circundante.
+
+La elevación puede materializarse mediante el contrato visual futuro, pero el contrato público no se define como una cantidad arbitraria de sombra.
+
+Reglas:
+
+1. la elevación no convierte el contenedor en diálogo ni overlay;
+2. la elevación no convierte el contenedor en control;
+3. la elevación no implica prioridad empresarial;
+4. la elevación no exige `backdrop-filter`;
+5. la implementación puede utilizar sombra o señales equivalentes aprobadas siempre que conserve contraste y jerarquía;
+6. los consumidores no deben depender de una sombra física concreta como API estable.
+
+La Card fija histórica de `vento/standard` se clasifica conceptualmente dentro de esta intención de superficie elevada para efectos de migración, sin afirmar equivalencia pixel a pixel.
+
+---
+
+#### 12. Padding canónico
+
+La dimensión de densidad se conserva como:
+
+```text
+sm
+md
+lg
+```
+
+`md` es el valor por defecto.
+
+Los nombres se conservan porque el candidato local ya los materializa como un eje explícito y reutilizable.
+
+La tarea no congela:
+
+- `12px`;
+- `16px`;
+- `20px`;
+- `p-6`;
+- otra unidad física concreta.
+
+Los valores físicos deberán provenir del contrato visual normalizado de `@vento/ui-web` al materializarse.
+
+El padding no altera:
+
+- semántica del contenido;
+- permisos;
+- prioridad empresarial;
+- tipo de superficie;
+- requisitos de accesibilidad de controles internos;
+- breakpoint;
+- identidad de dispositivo.
+
+La Card histórica con `p-6` no crea un cuarto valor de padding. Su correspondencia concreta se verificará durante migración por paridad visual.
+
+---
+
+#### 13. Elemento raíz y semántica estructural
+
+`Card` renderiza conceptualmente un contenedor HTML neutro equivalente a:
+
+```html
+<div></div>
+```
+
+La decisión es vinculante para el componente base porque las implementaciones actuales coinciden en un `div` y no existe evidencia suficiente para abrir polimorfismo estructural.
+
+Reglas:
+
+1. `Card` no impone `role="group"`;
+2. `Card` no impone `role="region"`;
+3. `Card` no impone nombre accesible;
+4. el consumidor puede aportar atributos ARIA compatibles cuando la composición concreta lo requiera;
+5. una sección semántica, artículo, navegación o formulario debe conservar el elemento y estructura apropiados en la composición propietaria;
+6. la apariencia de Card no sustituye encabezados, landmarks ni jerarquía de documento.
+
+No se introduce `as` ni `asChild` en este corte.
+
+---
+
+#### 14. Card no es un control interactivo
+
+La primitiva base es un contenedor visual, no un botón ni un enlace.
+
+Queda fuera del contrato canónico utilizar `Card` como sustituto de un control completo basado únicamente en:
+
+```text
+<div onClick=...>
+```
+
+cuando la intención real sea activar una acción o navegar.
+
+Para una tarjeta completamente activable:
+
+- la superficie propietaria debe componer semántica nativa de enlace o botón;
+- debe existir operación por teclado equivalente;
+- debe existir foco visible cuando corresponda;
+- el destino o acción permanece bajo responsabilidad del consumidor;
+- la apariencia de Card puede envolver o acompañar la composición, pero no crea semántica interactiva por sí sola.
+
+La transferencia de eventos nativos compatibles no convierte el patrón `div onClick` en la opción canónica para una acción primaria.
+
+---
+
+#### 15. Contenido y composición
+
+`Card` recibe contenido del consumidor mediante `children` y no interpreta su significado.
+
+Puede contener, cuando la composición sea semánticamente válida:
+
+- texto;
+- encabezados;
+- listas;
+- formularios;
+- tablas;
+- imágenes;
+- `Alert`;
+- `Button`;
+- otros componentes visuales;
+- composiciones específicas de dominio.
+
+`Card` no decide:
+
+- orden de campos de negocio;
+- copy;
+- título obligatorio;
+- acción principal;
+- permiso para mostrar una acción;
+- consulta de datos;
+- resultado de una operación;
+- estado vacío;
+- error recuperable;
+- navegación.
+
+Esas responsabilidades permanecen en sus patrones o dominios propietarios.
+
+---
+
+#### 16. No se crean subcomponentes estructurales obligatorios
+
+La evidencia actual no justifica abrir en esta tarea una familia pública adicional como:
+
+```text
+CardHeader
+CardTitle
+CardDescription
+CardContent
+CardFooter
+CardAction
+```
+
+Por tanto:
+
+1. `SHELL-UI-004` no aprueba esos símbolos;
+2. la composición interna permanece libre mediante HTML semántico y componentes existentes;
+3. una necesidad repetida futura requerirá decisión canónica versionada antes de convertirse en API compartida;
+4. no se inventa una API inspirada únicamente en librerías externas o convenciones comunes del ecosistema.
+
+Esto mantiene el contrato mínimo respaldado por la evidencia VENTO actual.
+
+---
+
+#### 17. Atributos HTML y eventos
+
+`Card` admite atributos compatibles de `HTMLDivElement` cuando sean semánticamente válidos.
+
+Incluye conceptualmente:
+
+```text
+id
+className
+style
+aria-*
+data-*
+onMouseEnter
+onMouseLeave
+onFocus
+onBlur
+```
+
+La transferencia de un evento no convierte la primitiva en propietaria de una interacción empresarial.
+
+Un consumidor sigue siendo responsable de:
+
+- semántica interactiva;
+- navegación;
+- efectos;
+- autorización;
+- telemetría de dominio;
+- mutaciones;
+- lógica de selección;
+- gestión de foco de patrones compuestos.
+
+Un handler no cambia la naturaleza base de `Card` como contenedor no interactivo.
+
+---
+
+#### 18. `className`, `style` y personalización
+
+La personalización permitida es aditiva y acotada.
+
+`className` y atributos de estilo no constituyen una vía para crear en silencio nuevas variantes globales.
+
+Un consumidor no debe utilizarlos para:
+
+- fabricar una variante empresarial `success`, `warning` o `danger` que luego se trate como estándar;
+- simular selección o autorización sin semántica propietaria;
+- eliminar separación visual necesaria hasta hacer indistinguible la agrupación;
+- introducir contraste insuficiente;
+- recortar contenido esencial;
+- convertir el contenedor en una interacción no accesible;
+- acoplar la Card compartida a tokens privados de una sola aplicación como requisito global;
+- depender de clases internas no publicadas del package.
+
+Una personalización repetida entre consumidores debe tratarse como posible evolución versionada, no como fork silencioso del componente.
+
+---
+
+#### 19. Contrato visual
+
+La futura implementación debe conservar los siguientes invariantes:
+
+1. borde, contraste de superficie u otra señal aprobada permiten reconocer la agrupación cuando sea necesario;
+2. el radio visual proviene del sistema compartido y no de un valor hardcodeado por consumidor;
+3. `surface`, `soft` y `raised` son distinguibles sin alterar semántica del contenido;
+4. `raised` presenta mayor separación visual que las variantes planas;
+5. el contenido conserva legibilidad en tema claro y oscuro;
+6. el componente admite contenido de longitud variable;
+7. no existe altura fija contractual que recorte información;
+8. no existe ancho fijo contractual que fuerce overflow ordinario;
+9. la Card no depende de hover para revelar información esencial;
+10. el componente no crea un fondo o blur que reduzca ilegiblemente el contraste del contenido.
+
+Los detalles físicos permanecen sujetos al contrato CSS compartido y a las pruebas futuras del package.
+
+---
+
+#### 20. Sombra, borde y `backdrop-blur`
+
+Las implementaciones actuales contienen decisiones físicas distintas que no deben confundirse con la API pública.
+
+Clasificación:
+
+| Rasgo                              | Decisión                                                |
+| ---------------------------------- | ------------------------------------------------------- |
+| separación por superficie          | conservar como intención visual                         |
+| borde histórico/local              | evidencia de implementación; no nombre de clase público |
+| sombra local en `raised`           | conservar como intención de elevación                   |
+| sombra fija del estándar histórico | mapear a intención `raised` durante migración           |
+| `backdrop-blur-xl` histórico       | no incorporar como obligación contractual               |
+| radios concretos actuales          | no congelar como API                                    |
+| nombres concretos de variables CSS | no congelar desde esta tarea                            |
+
+La futura implementación puede modificar la técnica visual siempre que conserve el contrato observable, compatibilidad y accesibilidad aprobados.
+
+---
+
+#### 21. Accesibilidad mínima
+
+`Card` no añade semántica accesible artificial por el solo hecho de verse como tarjeta.
+
+La implementación futura deberá conservar:
+
+1. contenido legible y disponible en el árbol accesible;
+2. orden DOM coherente con el orden de lectura;
+3. no depender únicamente de color, sombra o elevación para comunicar significado funcional;
+4. no truncar contenido esencial por altura fija;
+5. reflow sin scroll horizontal ordinario causado por el contenedor base;
+6. zoom sin pérdida de contenido;
+7. contraste suficiente entre contenido y superficie;
+8. compatibilidad con controles internos que mantengan su propio foco visible;
+9. ausencia de `role`, `tabIndex` o nombre accesible inventados por defecto;
+10. ausencia de foco artificial en una Card meramente visual;
+11. semántica interactiva nativa cuando un patrón superior haga la superficie activable;
+12. densidad compatible con la tarea y dispositivo aplicables.
+
+`Card` no corrige automáticamente markup semánticamente inválido que el consumidor inserte dentro de `children`.
+
+---
+
+#### 22. Foco y activación
+
+Una `Card` base no participa en la secuencia de tabulación por defecto.
+
+Por tanto:
+
+- no recibe `tabIndex=0` automáticamente;
+- no muestra tratamiento de foco interactivo por defecto;
+- no responde a Enter o Space como si fuera un botón;
+- no captura foco al renderizarse;
+- no mueve foco al cambiar de variante;
+- no crea selección interna.
+
+Si una composición requiere activación completa de la tarjeta, la superficie propietaria deberá introducir el elemento interactivo adecuado y su tratamiento de foco.
+
+La sombra de `raised` no se interpreta como affordance interactiva obligatoria.
+
+---
+
+#### 23. Frontera server/client
+
+La lógica conceptual de `Card` no requiere:
+
+- estado React interno;
+- efectos;
+- `window`;
+- `document`;
+- storage;
+- timers;
+- router;
+- red;
+- sesión;
+- suscripciones.
+
+Por tanto, el contrato no exige `"use client"`.
+
+Los marcadores de cliente observados actualmente pertenecen a los archivos concretos donde vive la implementación local o la familia estándar; no se heredan como requisito público de la primitiva.
+
+La futura `Card` debe poder participar en renderizado de servidor y también componerse dentro de componentes cliente.
+
+---
+
+#### 24. Frontera con autoridad, contexto y datos
+
+`Card` no tiene autoridad propia.
+
+Queda fuera de su responsabilidad:
+
+```text
+resolver usuario
+resolver rol
+resolver permisos
+resolver sede o área
+resolver turno o check-in
+resolver contexto operativo
+leer cookies de sesión
+consultar Supabase
+invocar RPC
+consultar tablas
+persistir datos
+normalizar errores de proveedor
+validar operaciones empresariales
+```
+
+La secuencia correcta es:
+
+```text
+aplicación / controlador / servidor propietario
+→ resuelve datos, contexto y autorización
+→ entrega contenido seguro
+→ Card organiza visualmente ese contenido
+```
+
+La presencia, variante, sombra o ausencia de una Card nunca constituye un control de seguridad.
+
+---
+
+#### 25. Frontera con estados, Alert y EmptyState
+
+`Card` no incorpora variantes de estado empresarial.
+
+Por tanto no se crean:
+
+```text
+Card success
+Card warning
+Card danger
+Card error
+Card empty
+Card loading
+```
+
+cuando lo que se necesita es representar un estado con contrato propio.
+
+Relaciones:
+
+| Superficie                   | Propiedad                                                |
+| ---------------------------- | -------------------------------------------------------- |
+| `Alert`                      | `SHELL-UI-002`; comunica mensaje o estado ya determinado |
+| `Card`                       | `SHELL-UI-004`; agrupa contenido visualmente             |
+| `EmptyState`                 | `SHELL-UI-005`; permanece reservado y no se define aquí  |
+| estados de error recuperable | `SHELL-UI-016`; patrón compuesto posterior               |
+
+Una Card puede contener esas superficies cuando estén aprobadas, pero no absorbe sus contratos.
+
+---
+
+#### 26. Responsividad, reflow y densidad
+
+La Card base debe ser neutral respecto al layout del consumidor.
+
+Reglas:
+
+1. no impone un ancho fijo global;
+2. no impone un número de columnas;
+3. no define breakpoints propios de aplicación;
+4. no presupone escritorio, tablet o kiosco;
+5. el contenido puede envolver y crecer verticalmente;
+6. la densidad se expresa mediante `padding`, no mediante una identidad de dispositivo;
+7. una superficie tablet o kiosco puede exigir una densidad concreta desde su patrón propietario, pero `Card` no detecta el dispositivo;
+8. controles internos conservan sus propios objetivos táctiles y reglas de interacción;
+9. grids y stacks pertenecen al layout consumidor o a patrones de composición aprobados.
+
+Los patrones específicos para tablet y kiosco permanecen en `SHELL-UI-017` y `SHELL-UI-018`.
+
+---
+
+#### 27. Tema, tokens y CSS
+
+`Card` consume el contrato visual de `@vento/ui-web`.
+
+No crea un sistema paralelo de:
+
+- colores;
+- superficies;
+- radios;
+- sombras;
+- spacing;
+- blur;
+- breakpoints;
+- tema claro/oscuro.
+
+Reglas:
+
+1. variantes y padding se materializan mediante decisiones normalizadas del package;
+2. los nombres actuales `--color-surface-*`, `--ui-surface`, `--radius-lg`, `--ui-radius-card`, `--shadow-1` y `--ui-shadow-1` son evidencia técnica del legado actual, no nombres públicos congelados por esta tarea;
+3. un consumidor no debe copiar manualmente estilos internos para usar el componente compartido;
+4. claro y oscuro deben preservar legibilidad y jerarquía;
+5. un cambio del contrato CSS público futuro deberá seguir compatibilidad y SemVer.
+
+Esta tarea no crea un CSS entrypoint físico.
+
+---
+
+#### 28. Componentes de dominio cuyo nombre contiene `Card`
+
+El nombre `Card` aparece también como parte de componentes empresariales o compuestos en repositorios consumidores.
+
+La coincidencia nominal no implica equivalencia contractual.
+
+Regla vinculante:
+
+```text
+componente *Card de dominio
+≠
+primitiva Card compartida
+```
+
+Un componente de dominio permanece local cuando incorpora, por ejemplo:
+
+- consultas;
+- decisiones de negocio;
+- formularios;
+- estados específicos;
+- navegación de proceso;
+- mutaciones;
+- permisos;
+- copy especializado;
+- layouts propios;
+- acciones de un recurso concreto.
+
+Durante migración, un componente especializado puede adoptar `Card` internamente como primitiva visual sin dejar de pertenecer a su dominio.
+
+No se crea una obligación de renombrar componentes de dominio por esta tarea.
+
+---
+
+#### 29. Reconciliación del candidato local de SHELL
+
+La implementación `src/components/ui/Card.tsx` de SHELL se clasifica como `CANDIDATO_RECONCILIADO`, no como implementación canónica adoptada íntegramente.
+
+Decisión por rasgo:
+
+| Rasgo actual                          | Decisión                                                                    |
+| ------------------------------------- | --------------------------------------------------------------------------- |
+| `div` nativo                          | conservar                                                                   |
+| `surface`                             | conservar                                                                   |
+| `soft`                                | conservar                                                                   |
+| `raised`                              | conservar                                                                   |
+| default `surface`                     | conservar                                                                   |
+| `sm`                                  | conservar                                                                   |
+| `md`                                  | conservar                                                                   |
+| `lg`                                  | conservar                                                                   |
+| default `md`                          | conservar                                                                   |
+| atributos `HTMLDivElement`            | conservar conceptualmente                                                   |
+| `style` transferible                  | conservar como atributo nativo, sin convertir overrides en API de variantes |
+| valores físicos `12/16/20`            | no convertir en contrato público                                            |
+| token `--radius-lg`                   | no convertir en contrato público                                            |
+| tokens concretos de superficie/sombra | no convertir en API pública                                                 |
+| `"use client"` del archivo            | no convertir en obligación de Card                                          |
+
+El archivo local permanece intacto hasta una migración controlada. Esta tarea no lo modifica ni lo elimina.
+
+El barrel local `src/components/ui/index.ts` continúa siendo una superficie local de SHELL y no se transforma por esta tarea en el mapa de exports de `@vento/ui-web`.
+
+---
+
+#### 30. Reconciliación de la familia `vento/standard`
+
+La implementación de `templates/app-shell-standard/src/components/vento/standard/ui.tsx` y sus copias runtime se clasifica como `LEGACY_ESTANDAR_A_MIGRAR` para la primitiva Card.
+
+Decisión por rasgo:
+
+| Rasgo actual                 | Decisión                                                          |
+| ---------------------------- | ----------------------------------------------------------------- |
+| `div` nativo                 | conservar                                                         |
+| superficie con borde         | conservar como evidencia de jerarquía visual                      |
+| sombra permanente            | mapear conceptualmente a `raised`, no imponerla a todas las Cards |
+| padding fijo `p-6`           | no crear una cuarta densidad; resolver por paridad en migración   |
+| `backdrop-blur-xl`           | no incorporar como obligación contractual                         |
+| token `--ui-radius-card`     | no congelar como API                                              |
+| token `--ui-surface`         | no congelar como API                                              |
+| token `--ui-shadow-1`        | no congelar como API                                              |
+| `className` compuesto        | conservar capacidad de extensión acotada                          |
+| ausencia de variantes        | queda superada por el contrato común                              |
+| ausencia de `padding` tipado | queda superada por el contrato común                              |
+| `"use client"` del módulo    | no heredar como obligación de Card                                |
+
+La tarea no modifica el template ni las copias runtime.
+
+---
+
+#### 31. Inventario de instancias actuales y estado de consumo
+
+La tarea distingue **existencia de implementación** de **uso confirmado**.
+
+Inventario físico localizado:
+
+```text
+SHELL local                         1
+NEXO vento/standard                 1
+FOGO vento/standard                 1
+ORIGO vento/standard                1
+VISO vento/standard                 1
+PULSO vento/standard                1
+NUMERA vento/standard               1
+-------------------------------------
+runtime/local                       7
+
+template histórico SHELL           1
+```
+
+La existencia física de estas implementaciones no demuestra por sí sola su consumo actual. Esta tarea no convierte resultados de búsqueda, snippets ni presencia de archivo en prueba de uso o de ausencia de uso.
+
+El inventario ejecutable de imports, aliases, usos dinámicos, composición y consumidores pertenece a `SHELL-MIG-001`; cualquier retiro exige además el gate de `SHELL-MIG-008`.
+
+La migración deberá separar:
+
+- archivo presente y consumido;
+- archivo presente pero sin uso confirmado;
+- componente de dominio distinto;
+- template histórico;
+- implementación local de SHELL.
+
+---
+
+#### 32. Estrategia de migración futura
+
+La migración física no ocurre en `SHELL-UI-004`.
+
+Secuencia futura:
+
+```text
+inventario ejecutable de consumidores
+→ lotes reversibles
+→ compatibilidad y bloqueo de nuevo legacy
+→ scaffold sin copias desfasadas
+→ adopción de Card compartida por aplicación
+→ accesibilidad, tema y densidad
+→ paridad por consumidor
+→ retiro de copias legacy con evidencia
+```
+
+Propietarios exactos:
+
+| Trabajo                                                | Tarea           |
+| ------------------------------------------------------ | --------------- |
+| inventario ejecutable de usos y consumidores           | `SHELL-MIG-001` |
+| lotes reversibles por repositorio                      | `SHELL-MIG-002` |
+| compatibilidad y bloqueo de nuevos consumidores legacy | `SHELL-MIG-003` |
+| eliminación de copia futura desde scaffold histórico   | `SHELL-MIG-004` |
+| adopción de componentes y estilos por aplicación       | `SHELL-MIG-005` |
+| accesibilidad, tema, movimiento y densidad             | `SHELL-MIG-006` |
+| pruebas de paridad por consumidor                      | `SHELL-MIG-007` |
+| retiro de copias legacy y certificación                | `SHELL-MIG-008` |
+
+No se autoriza reemplazo masivo basado únicamente en que dos funciones se llamen `Card`.
+
+---
+
+#### 33. Compatibilidad y versionado
+
+La futura superficie de `Card` queda bajo el gobierno SemVer de `@vento/ui-web`.
+
+Cambios con potencial impacto de compatibilidad incluyen:
+
+- retirar o renombrar una variante;
+- retirar o renombrar un padding;
+- cambiar valores por defecto;
+- transformar el elemento raíz observable;
+- introducir semántica interactiva;
+- dejar de transferir atributos nativos admitidos;
+- cambiar comportamiento de `className` o `style` de forma incompatible;
+- modificar el DOM de forma que rompa accesibilidad o CSS público aprobado;
+- cambiar el contrato server-safe;
+- convertir un detalle interno de tokens o clases en requisito del consumidor;
+- retirar la exportación pública futura.
+
+La futura cadena de package queda asignada a:
+
+| Necesidad                                 | Tarea          |
+| ----------------------------------------- | -------------- |
+| pruebas propias del package               | `SHELL-CI-001` |
+| build independiente                       | `SHELL-CI-002` |
+| release versionado                        | `SHELL-CI-003` |
+| changelog                                 | `SHELL-CI-004` |
+| matriz de compatibilidad                  | `SHELL-CI-005` |
+| actualización de consumidores mediante PR | `SHELL-CI-006` |
+
+La compatibilidad visual no se reduce a coincidencia de píxeles: también incluye composición, semántica, reflow, densidad, tema y accesibilidad.
+
+---
+
+#### 34. Cobertura TREQ vigente consumida sin modificación
+
+La tarea se apoya en cobertura ya existente del Registro Canónico de Requisitos de Prueba:
+
+- `TREQ-SHELL-002` protege la procedencia de responsabilidades compartidas y la clasificación explícita de copias locales;
+- `TREQ-SHELL-006` exige pruebas propias y matriz de compatibilidad de cada package compartido antes de publicación o adopción;
+- `TREQ-SHELL-007` exige rollback independiente antes de release;
+- `TREQ-SHELL-029` mantiene el template como fuente histórica hasta adopción/versionado/validación explícitos;
+- `TREQ-SHELL-032` exige reconciliar las primitivas locales y kits del template antes de adopción o retiro;
+- `TREQ-SHELL-035` protege texto, etiquetas y significado consistente de superficies compartidas;
+- `TREQ-SHELL-036` a `TREQ-SHELL-039` gobiernan identidad de release, cortes coordinados, deprecación y retiro;
+- `TREQ-UX-001` protege jerarquía y acción principal de las superficies;
+- `TREQ-UX-003` protege densidad adecuada a actor y tarea;
+- `TREQ-UX-004` protege objetivos táctiles y validación en dispositivos cuando existan controles interactivos aplicables;
+- `TREQ-UX-007` exige validación controlada con actores, dispositivos y escenarios reales antes de ampliar despliegue.
+
+`SHELL-UI-004` especializa esas obligaciones para una primitiva visual y no altera sus filas, estados, propietarios, paquetes o evidencias.
+
+---
+
+#### 35. Contrato de prueba futuro
+
+Cuando exista implementación física y una adopción autorizada, la evidencia deberá cubrir como mínimo:
+
+1. render con defaults `surface` y `md`;
+2. render de `surface`;
+3. render de `soft`;
+4. render de `raised`;
+5. padding `sm`;
+6. padding `md`;
+7. padding `lg`;
+8. rechazo tipado de variantes no canónicas;
+9. rechazo tipado de paddings no canónicos;
+10. contenido textual;
+11. contenido compuesto;
+12. Card sin contenido sin introducir markup o fallback inventado;
+13. forwarding de `id`;
+14. forwarding de `data-*`;
+15. forwarding de atributos ARIA compatibles;
+16. composición de `className`;
+17. transferencia de `style` sin convertir overrides en variante pública;
+18. root no interactivo por defecto;
+19. ausencia de `role` forzado;
+20. ausencia de `tabIndex` forzado;
+21. ausencia de foco automático;
+22. ausencia de keyboard handlers inventados;
+23. ausencia de navegación propia;
+24. ausencia de router;
+25. ausencia de llamadas de red;
+26. ausencia de dependencia directa de `@vento/supabase`;
+27. ausencia de lectura de sesión o permisos;
+28. render server-safe de la superficie pura;
+29. composición dentro de componente cliente;
+30. reflow con contenido largo;
+31. zoom sin recorte esencial;
+32. tema claro;
+33. tema oscuro;
+34. contraste de contenido y superficie;
+35. diferencia perceptible entre variantes;
+36. `raised` sin convertirse en affordance interactiva por defecto;
+37. `soft` sin utilizarse como estado disabled implícito;
+38. Card con `Alert` compuesto sin fusionar responsabilidades;
+39. Card con `Button` compuesto preservando semántica del botón;
+40. composición con heading semántico definido por el consumidor;
+41. composición de tarjeta activable mediante control nativo propietario, no `div` interactivo como contrato base;
+42. paridad visual del candidato SHELL antes de retiro;
+43. paridad de la apariencia histórica estándar antes de retiro;
+44. clasificación del padding fijo histórico durante migración;
+45. ausencia de dependencia contractual de `backdrop-blur`;
+46. ausencia de subcomponentes públicos no aprobados;
+47. compatibilidad por consumidor afectado;
+48. rollback de un consumidor sin alterar los demás;
+49. no absorción automática de componentes `*Card` de dominio;
+50. retiro legacy únicamente después de evidencia de uso residual cero o migración certificada.
+
+Esta sección define evidencia futura; no declara su ejecución en `SHELL-UI-004`.
+
+---
+
+#### 36. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+Justificación:
+
+- la reconciliación de primitivas y template ya está protegida por requisitos vigentes;
+- las pruebas propias, compatibilidad y rollback de packages compartidos ya están protegidos transversalmente;
+- release, deprecación y retiro legacy ya tienen gates registrados;
+- densidad, jerarquía, accesibilidad y validación por dispositivo ya tienen cobertura UX vigente;
+- la tarea no introduce un nuevo riesgo transversal ni una operación ejecutable independiente que requiera un identificador adicional;
+- la tarea no modifica el significado, estado, propietario, paquete, evidencia ni relación de ningún requisito existente.
+
+No se modifica ningún fragmento modular del registro.
+
+---
+
+#### 37. Estado de materialización física
+
+Al cierre documental de `SHELL-UI-004`:
+
+```text
+IDENTIDAD Card                           = ESPECIFICADA
+CardProps                                = ESPECIFICADO CONCEPTUALMENTE
+CardVariant                              = 3 VALORES ESPECIFICADOS
+CardPadding                              = 3 VALORES ESPECIFICADOS
+ELEMENTO RAÍZ                            = DIV NO INTERACTIVO ESPECIFICADO
+COMPOSICIÓN                              = ESPECIFICADA
+ACCESIBILIDAD                            = ESPECIFICADA DOCUMENTALMENTE
+SERVER-SAFE                              = ESPECIFICADO
+FRONTERA DE AUTORIDAD                    = ESPECIFICADA
+RECONCILIACIÓN SHELL                     = CERRADA DOCUMENTALMENTE
+RECONCILIACIÓN VENTO/STANDARD            = CERRADA DOCUMENTALMENTE
+INSTANCIAS RUNTIME/LOCALES LOCALIZADAS   = 7
+FUENTES HISTÓRICAS DE TEMPLATE           = 1
+PACKAGE FÍSICO                           = NO MATERIALIZADO
+COMPONENTE FÍSICO COMPARTIDO             = NO MATERIALIZADO
+CONSUMIDORES MIGRADOS                    = 0
+IMPLEMENTACIONES LEGACY RETIRADAS        = 0
+CAMBIOS TREQ                             = 0
+```
+
+La definición documental no implica publicación, instalación ni ejecución del package.
+
+---
+
+#### 38. Handoffs obligatorios
+
+Los trabajos posteriores quedan asignados sin ejecutarse:
+
+| Handoff                                | Propietario     | Condición de salida                                                             |
+| -------------------------------------- | --------------- | ------------------------------------------------------------------------------- |
+| pruebas del package para Card          | `SHELL-CI-001`  | suite de la primitiva ejecutable y trazable                                     |
+| build independiente de `@vento/ui-web` | `SHELL-CI-002`  | artefacto construible sin dependencia accidental de consumidores                |
+| release versionado                     | `SHELL-CI-003`  | versión inmutable y trazable                                                    |
+| changelog de evolución pública         | `SHELL-CI-004`  | cambios públicos clasificados                                                   |
+| matriz de compatibilidad               | `SHELL-CI-005`  | combinaciones soportadas demostradas                                            |
+| actualización de consumidores          | `SHELL-CI-006`  | PR explícito por consumidor afectado                                            |
+| inventario ejecutable de usos          | `SHELL-MIG-001` | cada uso real clasificado                                                       |
+| lotes reversibles                      | `SHELL-MIG-002` | cada consumidor con cambio y rollback                                           |
+| compatibilidad legacy                  | `SHELL-MIG-003` | no aparecen nuevos consumidores de copias no gobernadas                         |
+| sustitución del scaffold histórico     | `SHELL-MIG-004` | la plantilla deja de propagar la copia legacy cuando el package esté habilitado |
+| adopción de Card por aplicación        | `SHELL-MIG-005` | uso compartido con extensiones locales declaradas                               |
+| accesibilidad, tema y densidad         | `SHELL-MIG-006` | paridad visual y accesible por aplicación                                       |
+| paridad de consumidor                  | `SHELL-MIG-007` | evidencia antes/después y rollback ensayado                                     |
+| retiro de copias legacy                | `SHELL-MIG-008` | ausencia de consumo residual o migración certificada                            |
+| contrato de EmptyState                 | `SHELL-UI-005`  | definición independiente de estado vacío; no se ejecuta en esta tarea           |
+
+No queda un pendiente material sin propietario documental.
+
+---
+
+#### 39. Decisiones vinculantes
+
+1. El componente compartido se denomina `Card`.
+2. `Card` pertenece a `@vento/ui-web`.
+3. La tarea es documental y no materializa código.
+4. Los símbolos conceptuales son `Card`, `CardProps`, `CardVariant` y `CardPadding`.
+5. No se inventa un subpath físico ni mapa de exports.
+6. Las variantes canónicas son `surface`, `soft` y `raised`.
+7. `surface` es la variante por defecto.
+8. Los paddings canónicos son `sm`, `md` y `lg`.
+9. `md` es el padding por defecto.
+10. Los valores físicos actuales de padding no forman parte de la API contractual.
+11. El elemento raíz base es `div`.
+12. Card es un contenedor no interactivo por defecto.
+13. Card no impone `role`, `tabIndex` ni nombre accesible.
+14. Card no es Button.
+15. Card no es Link.
+16. Card no incorpora router.
+17. Card no crea `interactive` ni `clickable` como variantes.
+18. Una tarjeta activable requiere semántica interactiva nativa en la composición propietaria.
+19. Card no incorpora `selected` como estado base.
+20. Card no incorpora `disabled` como estado base.
+21. Card no incorpora `loading` como estado base.
+22. Card no incorpora variantes empresariales `success`, `warning` o `danger`.
+23. Card puede contener otras superficies sin absorber sus contratos.
+24. `EmptyState` permanece propiedad de `SHELL-UI-005`.
+25. No se crean `CardHeader`, `CardTitle`, `CardContent` ni `CardFooter` en este corte.
+26. Los atributos compatibles de `HTMLDivElement` se conservan conceptualmente.
+27. `className` y `style` no crean variantes globales silenciosas.
+28. El contrato no exige `use client`.
+29. Card debe poder renderizarse en una superficie server-safe.
+30. Card no depende directamente de Supabase.
+31. Card no resuelve sesión, permisos, contexto ni autorización.
+32. Card no ejecuta efectos empresariales.
+33. `raised` expresa elevación visual, no interactividad ni prioridad empresarial.
+34. `soft` expresa superficie secundaria, no disabled ni pendiente.
+35. La sombra fija de la familia estándar no se extiende a todas las Cards.
+36. `backdrop-blur-xl` histórico no forma parte del contrato canónico.
+37. Los nombres actuales de tokens y variables CSS no se congelan como API desde esta tarea.
+38. La implementación local de SHELL queda reconciliada, no adoptada íntegramente.
+39. La familia `vento/standard` queda reconciliada como legacy a migrar.
+40. Se localizan siete implementaciones runtime/locales y una fuente histórica de template para la reconciliación actual.
+41. La presencia de una función Card no demuestra consumo de esa función.
+42. Los componentes `*Card` de dominio no se absorben por coincidencia nominal.
+43. Las implementaciones actuales no se eliminan en esta tarea.
+44. La migración será progresiva y reversible por consumidor.
+45. La accesibilidad y paridad se prueban antes de retirar una copia.
+46. El retiro legacy exige evidencia de ausencia de uso residual o migración certificada.
+47. No se realizan cambios de Supabase, SQL, datos o configuración remota.
+48. Se crean 0 requisitos `TREQ-*` y se modifican 0.
+49. `SHELL-UI-005` permanece reservada y no se desarrolla aquí.
+
+---
+
+#### 40. Criterios de aceptación documental
+
+`SHELL-UI-004` queda documentalmente cerrada únicamente si se cumplen simultáneamente:
+
+- [x] la continuidad real apunta de `SHELL-UI-003` a `SHELL-UI-004`;
+- [x] `SHELL-UI-005` permanece como única siguiente tarea;
+- [x] `Card` tiene identidad funcional única;
+- [x] se reconcilian el candidato local de SHELL y la familia histórica sin adoptar una copia ciegamente;
+- [x] se localizan y contabilizan siete implementaciones runtime/locales actuales más una fuente histórica de template;
+- [x] se distinguen existencia física y uso confirmado;
+- [x] se fijan tres variantes canónicas;
+- [x] se fija `surface` como variante por defecto;
+- [x] se fijan tres paddings canónicos;
+- [x] se fija `md` como padding por defecto;
+- [x] no se perpetúan valores físicos de padding como contrato público;
+- [x] se fija `div` como elemento raíz base;
+- [x] se preserva Card como contenedor no interactivo;
+- [x] no se crea polimorfismo de elemento sin evidencia;
+- [x] no se crean subcomponentes estructurales sin evidencia;
+- [x] `backdrop-blur` histórico queda fuera del contrato público;
+- [x] la sombra permanente histórica se reconcilia bajo la intención `raised`;
+- [x] los tokens actuales se tratan como evidencia, no como API congelada;
+- [x] se preserva frontera server-safe;
+- [x] se preserva frontera con contratos, contexto, datos y lógica empresarial;
+- [x] se separa Card de Alert y EmptyState;
+- [x] se separa la primitiva de componentes `*Card` de dominio;
+- [x] se especifica accesibilidad mínima;
+- [x] se especifica contrato futuro de prueba;
+- [x] migración, accesibilidad, paridad y retiro tienen propietarios exactos;
+- [x] no se modifican consumidores ni implementaciones actuales;
+- [x] no se ejecutan cambios físicos;
+- [x] se declaran 0 cambios TREQ con justificación concreta;
+- [x] no queda un pendiente material sin propietario documental.
+
+Resultado:
+
+```text
+CARD COMPARTIDA                      = ESPECIFICADA
+VARIANTES                            = 3 CERRADAS
+PADDINGS                             = 3 CERRADOS
+SEMÁNTICA ESTRUCTURAL                = CERRADA
+INTERACTIVIDAD BASE                  = NO APLICA
+RECONCILIACIÓN DE DUPLICADOS         = CERRADA DOCUMENTALMENTE
+IMPLEMENTACIÓN FÍSICA                = NO MATERIALIZADA
+MIGRACIÓN                            = NO EJECUTADA
+CAMBIOS TREQ                         = 0
+SIGUIENTE TAREA                      = SHELL-UI-005
+```
+
+---
+
+#### 41. Límites
+
+Esta tarea no autoriza:
+
+- crear o modificar el package físico `@vento/ui-web`;
+- crear archivos TypeScript del package;
+- cambiar `src/components/ui/Card.tsx`;
+- cambiar `src/components/ui/index.ts`;
+- cambiar copias `src/components/vento/standard/ui.tsx`;
+- cambiar el template;
+- borrar implementaciones legacy;
+- migrar consumidores;
+- publicar una versión;
+- configurar registry;
+- crear workflows;
+- crear una API polimórfica para Card;
+- convertir Card en Link o Button;
+- crear `CardHeader`, `CardTitle`, `CardContent` o `CardFooter`;
+- definir `EmptyState` antes de su tarea propietaria;
+- absorber componentes de dominio cuyo nombre contenga `Card`;
+- modificar rutas;
+- modificar autenticación o autorización;
+- introducir Supabase en Card;
+- cambiar contratos empresariales;
+- cambiar datos;
+- crear migraciones SQL;
+- modificar requisitos de prueba;
+- iniciar `SHELL-UI-005`.
+
+---
+
+#### 42. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+
+```text
+SHELL-UI-003 — Compartir Button
+```
+
+**TAREA ACTUAL APROBADA**
+
+```text
+SHELL-UI-004 — Compartir Card
+```
+
+**SIGUIENTE TAREA RESERVADA**
+
+```text
+SHELL-UI-005 — Compartir EmptyState
+```
+
+No se inicia `SHELL-UI-005` en esta tarea.
+
+
+### ✅ SHELL-UI-005 — Compartir EmptyState
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-004 — Compartir Card
+**Tarea siguiente:** SHELL-UI-006 — Compartir indicador de contexto
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-UI-005` define y reconcilia el contrato canónico del componente visual compartido `EmptyState` que deberá pertenecer a `@vento/ui-web`.
+
+La tarea parte de patrones actuales distribuidos entre aplicaciones web que comunican ausencia de contenido mediante clases como `.ui-empty` y `.ui-empty-state`, además de una implementación local `EmptyState` localizada en NEXO. La evidencia demuestra reutilización visual real, pero también mezcla semántica: algunos usos representan ausencia real de contenido, otros filtros sin coincidencias, otros ausencia de trabajo inmediato y otros casos que en realidad corresponden a falta de permiso o contexto requerido.
+
+La tarea no perpetúa esa mezcla. Cierra una única primitiva visual para representar **ausencia confirmada dentro de un alcance ya resuelto**, sin convertir el componente en fuente de verdad sobre por qué no hay contenido.
+
+Regla raíz:
+
+```text
+ALCANCE AUTORIZADO Y RESUELTO
++
+CONSULTA / INICIALIZACIÓN EXITOSA Y SUFICIENTE
++
+PERFIL VACÍO DETERMINADO POR EL PROPIETARIO
++
+MENSAJE HUMANO COHERENTE CON ESE PERFIL
+→
+EmptyState DE @vento/ui-web
+→
+PRESENTACIÓN VISUAL CONSISTENTE DEL VACÍO
+```
+
+Nunca:
+
+```text
+error de carga
+→ EmptyState
+
+denegación de permiso
+→ EmptyState
+
+contexto operativo obligatorio irresuelto
+→ EmptyState
+
+consulta parcial u obsoleta
+→ afirmar que no existen registros
+
+0 elementos visibles por masking
+→ revelar que existen elementos ocultos
+```
+
+`EmptyState` presenta un vacío ya resuelto. No determina autorización, no ejecuta consultas, no infiere filtros, no decide que una cola está despejada y no genera trabajo nuevo.
+
+---
+
+#### 2. Resultado canónico
+
+Se aprueba `EmptyState` como componente visual compartido de `@vento/ui-web` con las siguientes propiedades vinculantes:
+
+1. identidad pública funcional única: `EmptyState`;
+2. mensaje principal visible obligatorio mediante `title`;
+3. descripción visible opcional mediante `description`;
+4. icono o ilustración ligera opcional mediante `icon`;
+5. acción opcional compuesta por el consumidor mediante `action`;
+6. ausencia de propiedades públicas propias `cta`, `href`, `to` o integración con router;
+7. ausencia de `variant`, `kind`, `status` o taxonomía paralela de causas de vacío;
+8. elemento raíz conceptual no interactivo equivalente a `div`;
+9. atributos HTML y ARIA compatibles transferibles al elemento raíz;
+10. ausencia de `role`, `aria-live`, captura de foco o anuncio universal por defecto;
+11. ausencia de estado interno obligatorio;
+12. ausencia de consultas, red, temporizadores, persistencia o suscripciones;
+13. ausencia de dependencia directa de Supabase;
+14. ausencia de dependencia de sesión, permisos, contexto o router;
+15. compatibilidad conceptual con renderizado de servidor;
+16. compatibilidad con composición dentro de superficies cliente cuando el consumidor aporte controles interactivos;
+17. independencia respecto de `Card`, `Alert`, tablas, paneles y layouts concretos;
+18. tratamiento de `.ui-empty` y `.ui-empty-state` como evidencia legacy a clasificar, no como API pública perpetua;
+19. migración posterior por consumidor, con paridad semántica, visual, accesible y rollback;
+20. cero cambios físicos y cero consumidores migrados por esta tarea.
+
+Estado resultante:
+
+```text
+EmptyState compartido
+→ DEFINIDO
+
+API conceptual
+→ DEFINIDA
+
+perfil semántico de vacío
+→ PROVIENE DEL CONTRATO PROPIETARIO, NO DEL COMPONENTE
+
+implementación física en @vento/ui-web
+→ NO MATERIALIZADA
+
+consumidores migrados
+→ 0
+
+legacy retirado
+→ 0
+```
+
+---
+
+#### 3. Fuentes y precedencia
+
+La especificación conserva las decisiones vigentes de las siguientes fuentes:
+
+| Fuente                                                            | Uso vinculante                                                                                                    |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`                      | continuidad, trazabilidad, separación entre definición e implementación y tratamiento de requisitos               |
+| `docs/plan-canonico/modular/delivery-contract.json`               | forma del artefacto documental                                                                                    |
+| `docs/plan-canonico/modular/active-sequence.json`                 | proyección remota de continuidad; actualmente retrasada respecto de la aprobación local de `SHELL-UI-004`         |
+| `docs/plan-canonico/modular/continuity-route.json`                | orden normal del bloque H y secuencia `SHELL-UI-*`                                                                |
+| `07_COMPONENTES_WEB_COMPARTIDOS.md`                               | propietario del mini-bloque y reserva explícita de `SHELL-UI-005` para `EmptyState`                               |
+| `SHELL-UI-001`                                                    | identidad, fronteras y estado no materializado de `@vento/ui-web`                                                 |
+| `SHELL-UI-002`                                                    | frontera entre presentación informativa, errores y autoridad                                                      |
+| `SHELL-UI-003`                                                    | contrato de `Button` como primitiva de acción sin autoridad propia                                                |
+| `SHELL-UI-004`                                                    | `Card` como contenedor independiente y handoff explícito de `EmptyState`                                          |
+| Registro Canónico de Requisitos de Prueba — dominio UX            | taxonomía de vacío, privacidad, accesibilidad, filtros, cola despejada y fronteras con error/bloqueo ya cubiertas |
+| Registro Canónico de Requisitos de Prueba — dominio SHELL         | reconciliación, packages, compatibilidad, rollback y retiro legacy ya cubiertos                                   |
+| `vento-nexo/src/app/page.tsx`                                     | implementación local `EmptyState` y evidencia de usos semánticamente heterogéneos                                 |
+| `vento-nexo/src/app/globals.css`                                  | contrato CSS legacy `.ui-empty` / `.ui-empty-state`                                                               |
+| `vento-fogo/src/features/recipes/recipe-steps-editor.tsx`         | uso simple de `.ui-empty-state` para una colección local vacía                                                    |
+| `vento-fogo/src/app/globals.css`                                  | copia runtime del patrón CSS de vacío                                                                             |
+| `vento-origo/src/app/purchase-orders/page.tsx`                    | vacío de colección con acción de creación y filtros activos posibles                                              |
+| `vento-origo/src/app/suppliers/page.tsx`                          | diferenciación actual entre ausencia base y filtros sin resultados                                                |
+| `vento-origo/src/app/globals.css`                                 | copia runtime del patrón CSS de vacío                                                                             |
+| superficies VISO que usan `.ui-empty`                             | evidencia de variante textual ligera del patrón legacy                                                            |
+| `07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md`               | inventario, lotes, adopción, accesibilidad, paridad y retiro posteriores                                          |
+| `T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` | pruebas, build, release, compatibilidad y actualización de consumidores posteriores                               |
+
+Precedencia:
+
+```text
+contrato de pantalla / dominio
+→ autorización y contexto resueltos
+→ resultado de consulta o inicialización
+→ perfil semántico de vacío
+→ copy y acción permitida
+→ EmptyState
+→ implementación física futura
+→ migración controlada
+```
+
+Una clase CSS, un `rows.length === 0`, una función local o un texto `Sin ...` no constituyen por sí solos prueba suficiente de que el estado sea semánticamente vacío.
+
+---
+
+#### 4. Reconciliación de continuidad
+
+El estado remoto consultado conserva todavía:
+
+```text
+previous_task_id = SHELL-UI-003
+pending SHELL-UI = 004..020
+```
+
+Ese estado remoto no incorpora aún la aprobación expresa del usuario sobre `SHELL-UI-004`.
+
+La base inmediata válida para esta tarea es el último artefacto local expresamente aprobado:
+
+```text
+SHELL-UI-004 — Compartir Card
+→ APROBADA POR EL USUARIO
+→ siguiente reservada: SHELL-UI-005 — Compartir EmptyState
+```
+
+La ruta normal y el archivo propietario coinciden en que `SHELL-UI-005` sigue a `SHELL-UI-004`.
+
+Por tanto:
+
+```text
+DRIFT REMOTO = 1 TAREA
+CONTRADICCIÓN SUSTANTIVA = NO
+BLOQUEO PARA DESARROLLAR UI005 = NO
+EDICIÓN MANUAL DE active-sequence.json = PROHIBIDA
+```
+
+La tarea no modifica la proyección derivada ni realiza escrituras remotas.
+
+---
+
+#### 5. Línea base física y documental
+
+El estado actual relevante queda clasificado así:
+
+| Superficie                        | Estado observado                                         | Decisión de UI005                                      |
+| --------------------------------- | -------------------------------------------------------- | ------------------------------------------------------ |
+| `@vento/ui-web`                   | definido documentalmente; no materializado               | conserva estado no materializado                       |
+| `vento-shell/src/components/ui`   | primitivas locales conocidas sin `EmptyState` compartido | no se modifica                                         |
+| `vento-nexo/src/app/page.tsx`     | función local `EmptyState`                               | candidato de reconciliación; no se adopta íntegramente |
+| `.ui-empty-state` en consumidores | patrón CSS runtime repetido                              | compatibilidad legacy, no API perpetua                 |
+| `.ui-empty` en consumidores       | patrón textual ligero repetido                           | requiere clasificación semántica antes de migrar       |
+| ORIGO proveedores                 | distingue `Sin proveedores` y `Sin resultados`           | evidencia positiva de dos causas diferentes            |
+| ORIGO órdenes de compra           | usa un único mensaje de vacío aunque existan filtros     | requiere clasificación durante migración               |
+| FOGO pasos de receta              | muestra `Sin pasos definidos.`                           | vacío local simple compatible con el contrato          |
+| NEXO página principal             | mezcla vacío, permiso y contexto en una función          | la mezcla no se incorpora al contrato compartido       |
+
+No se declara un conteo exhaustivo de instancias de vacío en todos los repositorios porque ese inventario ejecutable pertenece a `SHELL-MIG-001` y debe resolver usos estáticos, dinámicos y variantes locales antes de retiro.
+
+La evidencia actual sí es suficiente para demostrar:
+
+1. existe repetición real del patrón;
+2. existen al menos dos formas visuales legacy (`.ui-empty` y `.ui-empty-state`);
+3. existen vacíos simples, vacíos con descripción, vacíos con acción y vacíos filtrados;
+4. existen usos incorrectamente mezclados con permiso y contexto;
+5. una API compartida necesita conservar composición sin incorporar semántica falsa.
+
+---
+
+#### 6. Identidad pública
+
+La superficie conceptual introducida por esta tarea queda compuesta por:
+
+```text
+EmptyState
+EmptyStateProps
+```
+
+No se crean símbolos públicos adicionales como:
+
+```text
+EmptyStateVariant
+EmptyStateKind
+EmptyStateStatus
+EmptyStateAction
+EmptyStateIcon
+EmptyStateProvider
+EmptyStateContext
+```
+
+La taxonomía de causas de vacío ya pertenece a contratos de pantalla y dominio. Duplicarla dentro de la primitiva generaría una segunda fuente de verdad.
+
+La tarea no inventa:
+
+- ruta física de archivo;
+- subpath npm;
+- barrel;
+- mapa de `exports`;
+- archivo CSS público;
+- nombre de token;
+- provider global.
+
+---
+
+#### 7. Contrato conceptual mínimo
+
+La API conceptual queda:
+
+```text
+EmptyState
+  title        = contenido visible principal requerido
+  description? = contenido explicativo visible opcional
+  icon?        = apoyo visual opcional
+  action?      = acción o navegación compuesta por el consumidor
+  className?   = extensión visual acotada
+  ...props     = atributos compatibles de HTMLDivElement
+```
+
+Semántica:
+
+| Propiedad      | Regla                                                                                           |
+| -------------- | ----------------------------------------------------------------------------------------------- |
+| `title`        | requerida; debe producir un mensaje visible comprensible y específico para el alcance mostrado  |
+| `description`  | opcional; explica causa comprobada, alcance o siguiente paso sin inventar hechos                |
+| `icon`         | opcional; apoyo visual, nunca fuente única de significado                                       |
+| `action`       | opcional; nodo compuesto por el consumidor únicamente cuando existe una acción permitida y útil |
+| `className`    | opcional; no puede romper invariantes de accesibilidad, privacidad o significado                |
+| atributos HTML | transferibles cuando sean compatibles con el contenedor raíz                                    |
+| atributos ARIA | transferibles explícitamente; no se impone región viva universal                                |
+
+`title` y `description` pueden componerse con contenido React compatible, pero el resultado debe conservar texto visible significativo.
+
+El componente no genera copy por defecto.
+
+---
+
+#### 8. Decisión sobre `cta` y `href`
+
+La implementación local localizada en NEXO expone:
+
+```text
+cta?: string
+href?: string
+```
+
+Ese acoplamiento no se incorpora al contrato canónico.
+
+Razones:
+
+1. acopla el componente base a navegación;
+2. presupone que toda acción es un enlace;
+3. no cubre acciones locales como limpiar filtros;
+4. no cubre botones que abran composición propietaria;
+5. obliga a `EmptyState` a conocer semántica de destino que no le pertenece;
+6. mezcla presentación con router;
+7. impide reutilizar la primitiva en contextos sin Next.js;
+8. la semántica de `Button` y Link ya tiene propietarios distintos.
+
+La sustitución canónica es:
+
+```text
+action?: ReactNode
+```
+
+El consumidor decide si ese nodo es:
+
+- un `Button`;
+- un enlace;
+- una acción local para limpiar filtros;
+- otro control semánticamente válido;
+- o nada.
+
+`EmptyState` no ejecuta la acción y no determina su autorización.
+
+---
+
+#### 9. Decisión sobre icono
+
+La implementación local de NEXO fija un icono `sparkles`, mientras otras superficies actuales muestran estados vacíos sin icono.
+
+Por tanto:
+
+```text
+icon = OPCIONAL
+icon por defecto global = NINGUNO
+```
+
+Reglas:
+
+1. no existe un icono obligatorio para que el estado sea comprensible;
+2. `sparkles` no se convierte en icono canónico del vacío;
+3. el componente no crea ni gobierna un catálogo transversal de iconos;
+4. un icono decorativo queda fuera del nombre accesible;
+5. un icono con información no expresada en texto necesita equivalente accesible;
+6. el icono no determina si el vacío es base, filtrado, cola despejada o ausencia de selección;
+7. no se comunica permiso, error o severidad solo mediante iconografía.
+
+---
+
+#### 10. Ausencia deliberada de `variant` o `kind`
+
+`EmptyState` no introduce una propiedad pública que replique la taxonomía de pantalla.
+
+No se aprueba:
+
+```text
+variant="empty"
+variant="filtered"
+variant="unauthorized"
+variant="error"
+kind="no-work"
+kind="no-selection"
+kind="first-use"
+```
+
+Motivo:
+
+```text
+causa semántica
+→ contrato de pantalla / dominio
+
+representación visual del vacío ya resuelto
+→ EmptyState
+```
+
+El componente no debe convertir una enumeración visual en una segunda máquina de estados.
+
+Las diferencias entre vacío base, filtrado, ausencia de selección o cola despejada se expresan mediante el estado propietario, el mensaje, el contexto visible y la acción compuesta, no mediante una taxonomía paralela inventada en UI.
+
+---
+
+#### 11. Condición de entrada obligatoria
+
+`EmptyState` solo puede utilizarse como representación de ausencia cuando la capa propietaria ya haya demostrado suficiente certeza.
+
+Condición mínima:
+
+```text
+AUTORIZACIÓN APLICABLE RESUELTA
+AND
+CONTEXTO REQUERIDO RESUELTO O PERFIL EXPLÍCITO DE NO-SELECCIÓN VÁLIDO
+AND
+CONSULTA / INICIALIZACIÓN EXITOSA
+AND
+ALCANCE CONOCIDO
+AND
+RESULTADO COMPLETO PARA ESE ALCANCE
+AND
+AUSENCIA CONFIRMADA SEGÚN EL PERFIL PROPIETARIO
+```
+
+Si cualquiera de esas condiciones no está demostrada, el consumidor debe representar el estado correspondiente y no afirmar un vacío material inexistente.
+
+---
+
+#### 12. Vacío base o primer registro
+
+El vacío base representa que una colección o región autorizada existe, fue resuelta correctamente y contiene cero elementos para el alcance mostrado.
+
+Ejemplos conceptuales válidos:
+
+```text
+Sin proveedores
+Sin órdenes todavía
+Sin pasos definidos
+```
+
+Reglas:
+
+1. solo se afirma ausencia dentro del alcance realmente consultado;
+2. una acción de creación puede aparecer únicamente si el actor puede ejecutarla;
+3. la acción no se muestra como bypass de una condición previa;
+4. el copy no promete que el sistema esté vacío globalmente si la consulta está acotada;
+5. el componente no sabe si es el primer registro; recibe el mensaje ya determinado.
+
+---
+
+#### 13. Vacío filtrado
+
+Un conjunto autorizado puede contener elementos y aun así producir cero coincidencias después de aplicar filtros o búsqueda.
+
+En ese caso:
+
+```text
+resultado filtrado = 0
+≠
+colección global = 0
+```
+
+El consumidor deberá conservar o hacer comprensible:
+
+- filtros activos;
+- búsqueda activa;
+- periodo;
+- territorio o población aplicable;
+- alcance autorizado relevante.
+
+El mensaje debe describir el resultado filtrado, por ejemplo una intención equivalente a:
+
+```text
+Sin resultados para estos filtros
+```
+
+No debe afirmar:
+
+```text
+No existen proveedores
+```
+
+si existen proveedores fuera del filtro.
+
+Una acción para limpiar o ajustar filtros puede componerse mediante `action`, pero la lógica del filtro permanece fuera de `EmptyState`.
+
+---
+
+#### 14. Ausencia de selección válida
+
+La ausencia de selección puede utilizar `EmptyState` cuando represente una región cuyo contenido depende legítimamente de que la persona elija un elemento dentro de una pantalla ya autorizada y correctamente inicializada.
+
+Ejemplo conceptual:
+
+```text
+Selecciona un registro para ver el detalle
+```
+
+Eso es distinto de contexto operativo obligatorio irresuelto.
+
+Nunca debe utilizarse `EmptyState` para presentar como mera selección pendiente:
+
+- sede efectiva requerida para operar;
+- área efectiva requerida;
+- turno requerido;
+- check-in requerido;
+- actor no resuelto;
+- permiso faltante;
+- recurso fuera de alcance.
+
+Esos estados conservan sus propietarios de contexto, bloqueo, autorización o recuperación.
+
+---
+
+#### 15. Cola despejada
+
+Una cola puede mostrarse vacía o despejada únicamente cuando su propietario haya demostrado que la consulta relevante está:
+
+- autorizada;
+- completa;
+- suficientemente fresca;
+- no parcial;
+- no degradada a una caché que impida afirmar ausencia;
+- y contiene cero pendientes reales para el alcance mostrado.
+
+`EmptyState` no determina frescura ni consulta la cola.
+
+La capa propietaria decide cuándo puede presentar un mensaje como:
+
+```text
+No hay tareas pendientes
+```
+
+El componente solo lo representa.
+
+---
+
+#### 16. Ausencia de trabajo para el actor
+
+Un actor puede tener cero trabajo elegible o asignado sin que el sistema carezca de trabajo global.
+
+Regla:
+
+```text
+trabajo visible/elegible para actor = 0
+≠
+trabajo global = 0
+```
+
+El mensaje deberá reflejar el alcance real.
+
+`EmptyState` no puede ofrecer automáticamente:
+
+- autoasignarse trabajo;
+- crear órdenes;
+- ampliar sede;
+- ampliar área;
+- cambiar turno;
+- alterar ruta;
+- elevar permisos;
+- tomar trabajo fuera de custodia.
+
+Una acción solo se compone cuando el contrato propietario ya la autoriza.
+
+---
+
+#### 17. Error de carga no es vacío
+
+Una consulta que falla no demuestra ausencia.
+
+Secuencia prohibida:
+
+```text
+error
+→ rows = []
+→ EmptyState "No hay registros"
+```
+
+Secuencia correcta:
+
+```text
+error
+→ estado de error propietario
+→ explicación / recuperación aplicable
+```
+
+`SHELL-UI-016 — Compartir estados de error recuperable` conserva la propiedad del patrón compuesto de recuperación.
+
+`Alert` puede utilizarse cuando corresponda a un mensaje informativo o de error ya resuelto, pero `EmptyState` no absorbe ese contrato.
+
+---
+
+#### 18. Loading, parcialidad y resultado desconocido
+
+`EmptyState` no representa:
+
+- carga inicial;
+- skeleton;
+- consulta en progreso;
+- página parcial;
+- streaming incompleto;
+- sincronización pendiente;
+- resultado desconocido;
+- timeout sin conciliación;
+- operación offline sin certeza suficiente;
+- caché stale que no permita afirmar ausencia.
+
+Mientras la existencia real del contenido sea desconocida, el componente no debe comunicar ausencia confirmada.
+
+---
+
+#### 19. Denegación y falta de visibilidad
+
+Una colección o recurso no autorizado no se convierte en vacío para simplificar la UI.
+
+Regla:
+
+```text
+no autorizado
+≠
+0 resultados
+```
+
+También:
+
+```text
+0 elementos después de aplicar masking
+≠
+permiso para revelar que existen elementos ocultos
+```
+
+El mensaje vacío no puede revelar:
+
+- existencia de objetos ocultos;
+- cantidades restringidas;
+- identidad de registros;
+- nombres sensibles;
+- estados internos de elementos fuera del alcance;
+- pistas que permitan enumeración indirecta.
+
+La capa propietaria envía únicamente el contenido que el actor puede conocer.
+
+---
+
+#### 20. Recurso inexistente, eliminado o fuera de alcance
+
+`EmptyState` es principalmente una primitiva de ausencia de contenido dentro de una región o colección resuelta; no reemplaza el tratamiento de detalle inválido.
+
+Un identificador de recurso que resulte:
+
+- inexistente;
+- eliminado;
+- fuera de alcance;
+- no autorizado;
+- stale;
+- superseded;
+- o desconocido por fallo de consulta
+
+requiere el tratamiento de error, recuperación, seguridad o navegación propietario.
+
+No se autoriza convertir una pantalla de detalle no resoluble en una tarjeta genérica de `No hay datos`.
+
+---
+
+#### 21. Contenido y copy
+
+`EmptyState` no genera textos de dominio.
+
+El propietario funcional debe entregar un mensaje que:
+
+1. describa lo que realmente se sabe;
+2. sea específico para el alcance mostrado;
+3. no confunda ausencia local con global;
+4. no culpe a la persona;
+5. no exponga códigos técnicos como mensaje principal;
+6. no oculte un fallo bajo lenguaje de vacío;
+7. no prometa una acción que el actor no puede completar;
+8. no presente configuración como relleno cuando no hay trabajo;
+9. sea localizable;
+10. soporte longitud variable y reflow.
+
+El componente no inventa fallback como:
+
+```text
+No hay datos
+```
+
+cuando el consumidor omite `title`.
+
+La ausencia de mensaje principal significativo es un defecto de desarrollo.
+
+---
+
+#### 22. Acción opcional
+
+`action` es opcional y pertenece al consumidor.
+
+Una acción es válida cuando:
+
+- existe una siguiente acción real;
+- el actor puede intentarla legítimamente;
+- no fabrica autoridad;
+- no salta una condición de entrada;
+- no transforma un error en creación;
+- no crea registros duplicados por asumir ausencia global;
+- utiliza semántica de `Button` o enlace según su intención real.
+
+Ejemplos conceptuales:
+
+| Perfil resuelto           | Acción potencial                                                                        |
+| ------------------------- | --------------------------------------------------------------------------------------- |
+| primer registro           | crear, solo si está autorizado                                                          |
+| filtros sin coincidencias | limpiar o ajustar filtros                                                               |
+| cola despejada            | ninguna, refrescar o navegar solo si aporta valor real                                  |
+| ausencia de selección     | seleccionar mediante la superficie propietaria, no necesariamente dentro del EmptyState |
+| sin trabajo asignado      | normalmente ninguna acción de creación o autoasignación salvo contrato explícito        |
+
+`EmptyState` no añade automáticamente un CTA.
+
+---
+
+#### 23. Semántica de acción y Button
+
+Cuando `action` contenga una acción ejecutable, la composición deberá conservar el contrato de `SHELL-UI-003`.
+
+Por tanto:
+
+```text
+EmptyState
+→ puede contener Button
+→ no se convierte en Button
+```
+
+La presencia de un botón visible no concede autorización.
+
+Cuando la intención sea navegación:
+
+```text
+EmptyState
+→ puede contener enlace apropiado
+→ no se convierte en router
+```
+
+No se añaden propiedades `href`, `to`, `replace`, `prefetch` o destinos cross-app al componente base.
+
+---
+
+#### 24. Relación con Card
+
+`EmptyState` y `Card` son superficies independientes.
+
+```text
+Card
+→ contenedor visual genérico
+
+EmptyState
+→ representación de ausencia confirmada
+```
+
+`EmptyState` puede aparecer:
+
+- dentro de una Card;
+- dentro de un panel;
+- dentro de una celda de tabla que abarque la región vacía;
+- dentro de una región de contenido;
+- sin Card externa.
+
+No se incorpora `Card` internamente como dependencia obligatoria.
+
+Esto evita doble borde, doble padding, composición rígida y acoplamiento accidental del componente a un layout único.
+
+---
+
+#### 25. Relación con Alert
+
+`Alert` y `EmptyState` no son sustitutos.
+
+| Superficie   | Responsabilidad                                                                                   |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+| `Alert`      | comunicar un mensaje o estado ya determinado dentro del flujo                                     |
+| `EmptyState` | presentar que una región o colección resuelta carece de contenido para el alcance correspondiente |
+
+Un error de consulta puede producir un Alert o patrón de recuperación, pero no un EmptyState de ausencia falsa.
+
+Un EmptyState puede coexistir con información adicional cuando la semántica lo justifique, pero no utiliza Alert para fabricar la causa del vacío.
+
+---
+
+#### 26. Relación con contexto
+
+Los patrones de contexto conservan propiedad separada:
+
+| Necesidad               | Tarea propietaria |
+| ----------------------- | ----------------- |
+| indicador de contexto   | `SHELL-UI-006`    |
+| selector de sede        | `SHELL-UI-007`    |
+| selector de área        | `SHELL-UI-008`    |
+| aviso de rol simulado   | `SHELL-UI-009`    |
+| diagnóstico de contexto | `SHELL-UI-015`    |
+
+Por tanto, un caso como:
+
+```text
+No hay sede activa
+```
+
+no se transforma automáticamente en EmptyState.
+
+Cuando la sede o área es condición material de operación, el propietario de contexto debe resolverla o explicar el bloqueo conforme a su contrato.
+
+---
+
+#### 27. Accesibilidad
+
+La implementación futura deberá cumplir como mínimo:
+
+1. `title` visible y presente en el árbol accesible;
+2. `description`, cuando exista, asociada de forma comprensible al mensaje principal;
+3. icono decorativo fuera del nombre accesible;
+4. significado no dependiente de icono, color, ilustración o posición;
+5. acción con semántica nativa correcta;
+6. foco visible en controles contenidos;
+7. ausencia de foco añadido al contenedor por defecto;
+8. ausencia de movimiento de foco automático por aparecer;
+9. ausencia de `role="alert"` universal;
+10. ausencia de `aria-live` universal;
+11. atributos ARIA explícitos transferibles cuando el cambio dinámico deba anunciarse;
+12. reflow con zoom y texto largo;
+13. lectura comprensible sin CSS;
+14. orden DOM coherente: mensaje, explicación y acción;
+15. no ocultar información esencial detrás de hover o tooltip.
+
+Si un estado vacío aparece como resultado inmediato de una búsqueda dinámica y debe anunciarse, la semántica de anuncio corresponde al propietario que conoce la interacción. El componente base no impone una región viva a todas las instancias.
+
+---
+
+#### 28. Estructura lógica
+
+La estructura conceptual mínima es:
+
+```text
+EmptyState
+├─ icon?        apoyo visual opcional
+├─ title        mensaje principal obligatorio
+├─ description? explicación opcional
+└─ action?      control compuesto opcional
+```
+
+La implementación física podrá introducir wrappers internos siempre que no convierta su estructura interna en API accidental ni altere el orden semántico observable sin tratamiento de compatibilidad.
+
+No se crean slots adicionales para:
+
+- eyebrow;
+- badge;
+- footer;
+- secondaryAction;
+- tertiaryAction;
+- dismiss;
+- help link;
+- telemetry metadata;
+- diagnostics;
+- filters;
+- pagination.
+
+Si un patrón compuesto necesita esas regiones, su tarea propietaria debe definirlas.
+
+---
+
+#### 29. Contrato visual
+
+La evidencia legacy comparte una intención visual centrada y de baja jerarquía:
+
+- columna vertical;
+- alineación centrada;
+- separación entre piezas;
+- padding interno;
+- texto secundario atenuado;
+- icono pequeño opcional en algunas superficies.
+
+La implementación futura deberá conservar:
+
+1. reconocimiento claro de la región vacía;
+2. jerarquía inferior a una alerta crítica;
+3. legibilidad y contraste;
+4. espacio suficiente sin desperdiciar pantalla operativa;
+5. reflow sin anchuras rígidas;
+6. soporte de texto largo;
+7. acción claramente diferenciada del mensaje;
+8. ausencia de ilustración obligatoria;
+9. ausencia de animación obligatoria;
+10. compatibilidad con el contrato visual de `@vento/ui-web`.
+
+No se congelan como API:
+
+- `padding: 24px`;
+- `gap: 8px`;
+- icono de `28px`;
+- color de marca actual;
+- clases `.ui-empty*`;
+- tokens concretos de consumidores.
+
+---
+
+#### 30. Densidad y superficies compactas
+
+Un EmptyState puede vivir en una tabla administrativa, una región operativa enfocada o un panel amplio.
+
+La tarea no introduce un prop `size` o `density` porque no existe evidencia suficiente para convertir esa diferencia de composición en API propia.
+
+El layout propietario conserva responsabilidad sobre:
+
+- espacio disponible;
+- densidad de la pantalla;
+- ancho de la región;
+- padding externo;
+- colocación dentro de tabla o grid;
+- responsive.
+
+El componente debe adaptarse sin fijar una altura mínima excesiva que convierta una tabla compacta en una pantalla vacía de gran tamaño.
+
+---
+
+#### 31. Frontera server/client
+
+El contrato base de `EmptyState` no requiere:
+
+- estado React interno;
+- hooks;
+- efectos;
+- `window`;
+- `document`;
+- storage;
+- timers;
+- listeners;
+- red;
+- router;
+- sesión.
+
+Por tanto:
+
+```text
+EmptyState puro
+→ SERVER-SAFE conceptualmente
+```
+
+Un consumidor puede pasar dentro de `action` un control interactivo compatible con su propia frontera de cliente.
+
+Esa composición no convierte automáticamente todo `@vento/ui-web` en client-only.
+
+---
+
+#### 32. Frontera con datos y Supabase
+
+`EmptyState` no consulta datos.
+
+Quedan prohibidos dentro del componente base:
+
+- `.from(...)`;
+- `.rpc(...)`;
+- `.auth`;
+- clientes Supabase;
+- hooks de fetch;
+- lectura de caché de dominio;
+- interpretación de errores del proveedor;
+- conteos remotos;
+- detección de filtros mediante URL;
+- lectura de cookies;
+- resolución de RLS.
+
+La secuencia correcta es:
+
+```text
+propietario de datos
+→ consulta y valida alcance
+→ clasifica resultado
+→ determina perfil vacío
+→ produce copy seguro
+→ compone acción autorizada
+→ EmptyState
+```
+
+---
+
+#### 33. Frontera de autorización
+
+`EmptyState` no decide:
+
+- quién puede ver una colección;
+- quién puede crear;
+- quién puede limpiar una restricción;
+- quién puede autoasignarse trabajo;
+- qué sede puede consultar;
+- qué área aplica;
+- qué recurso existe;
+- si una denegación debe revelar existencia.
+
+El componente recibe únicamente la proyección que la capa propietaria ya decidió mostrar.
+
+Ocultar una acción dentro de EmptyState tampoco constituye protección de servidor.
+
+---
+
+#### 34. Seguridad y privacidad
+
+El estado vacío puede convertirse en canal lateral si revela hechos sobre información no visible.
+
+Reglas:
+
+1. no mostrar conteos de elementos ocultos;
+2. no decir `No tienes acceso a 4 registros` salvo contrato explícito que autorice revelar el conteo;
+3. no distinguir `existe pero no puedes verlo` cuando esa existencia sea sensible;
+4. no incluir IDs internos, SQL, payloads o errores técnicos;
+5. no inferir ausencia global desde una proyección minimizada;
+6. no usar diferencias visuales para revelar que existe contenido detrás del masking;
+7. no registrar automáticamente el contenido visible en telemetría desde el componente base;
+8. no transportar secretos en acciones o iconos;
+9. no usar CSS oculto como mecanismo de privacidad;
+10. no convertir un `0` derivado de permisos en hecho empresarial global.
+
+---
+
+#### 35. Reconciliación del EmptyState local de NEXO
+
+La función local localizada en `vento-nexo/src/app/page.tsx` se clasifica como `CANDIDATO_LOCAL_A_MIGRAR`, no como API compartida adoptada íntegramente.
+
+Decisión por rasgo:
+
+| Rasgo actual                                       | Decisión canónica                                                                            |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `title` requerido                                  | conservar                                                                                    |
+| `description` requerida localmente                 | convertir en opcional                                                                        |
+| icono `sparkles` fijo                              | no conservar como default; convertir en `icon?`                                              |
+| `cta?: string`                                     | no incorporar                                                                                |
+| `href?: string`                                    | no incorporar                                                                                |
+| Link interno                                       | no incorporar al componente base                                                             |
+| `action?` genérico                                 | incorporar como composición                                                                  |
+| `.ui-empty-state`                                  | compatibilidad legacy, no API pública                                                        |
+| uso para ausencia real                             | elegible para migración                                                                      |
+| uso para `Sin permiso de abastecimiento`           | no migrar como vacío sin reclasificar                                                        |
+| uso para `Selecciona una sede` operativa requerida | no migrar como vacío sin reclasificar                                                        |
+| uso para `Sin movimientos recientes`               | elegible si consulta y alcance están confirmados                                             |
+| uso para `No hay acciones inmediatas`              | elegible únicamente si el propietario demuestra cero acciones reales para ese actor/contexto |
+
+La tarea no modifica NEXO.
+
+---
+
+#### 36. Reconciliación de `.ui-empty-state`
+
+La clase legacy `.ui-empty-state` aparece como patrón visual distribuido.
+
+Su estructura CSS actual no se convierte en contrato estable.
+
+Correspondencia conceptual de migración:
+
+| Legacy                                   | Contrato futuro                                             |
+| ---------------------------------------- | ----------------------------------------------------------- |
+| bloque `.ui-empty-state` con texto único | `EmptyState title={...}` si la semántica es realmente vacío |
+| heading + texto secundario               | `title` + `description`                                     |
+| SVG decorativo                           | `icon` opcional                                             |
+| enlace/botón adyacente                   | `action` compuesto                                          |
+| clase de padding/gap/color               | implementación visual interna futura                        |
+
+No se autoriza reemplazo masivo por coincidencia de clase. Cada uso debe clasificarse primero por causa semántica.
+
+---
+
+#### 37. Reconciliación de `.ui-empty`
+
+La clase `.ui-empty` representa una variante legacy más ligera, normalmente texto centrado sin la composición completa.
+
+No se crea un segundo componente `EmptyText`.
+
+Decisión:
+
+```text
+.ui-empty
+→ CANDIDATO A EmptyState title-only
+→ solo después de clasificar semántica y contexto
+```
+
+Algunos usos pueden permanecer como texto local si su región no amerita una superficie compartida completa. La migración no debe inflar visualmente todos los mensajes mínimos por obligación.
+
+La decisión final por uso pertenece al inventario y lotes de `SHELL-MIG-*`.
+
+---
+
+#### 38. Reconciliación ORIGO
+
+La evidencia actual aporta dos casos relevantes.
+
+##### 38.1. Proveedores
+
+La superficie distingue:
+
+```text
+allRows.length === 0
+→ "Sin proveedores"
+
+allRows.length > 0 AND filtered.length === 0
+→ "Sin resultados"
+```
+
+Esta distinción es coherente con el contrato canónico de causa de vacío.
+
+La acción `Nuevo proveedor` solo aparece cuando la colección base está vacía y el actor tiene capacidad de gestión, lo cual constituye evidencia positiva para la regla de acción opcional ya autorizada.
+
+##### 38.2. Órdenes de compra
+
+La superficie aplica filtros antes de obtener `orders`, pero cuando `orders.length === 0` utiliza un único mensaje equivalente a ausencia base y ofrece crear una orden.
+
+Ese uso no se adopta como contrato compartido porque un filtro puede producir cero resultados sin demostrar que la colección global esté vacía.
+
+Durante migración deberá clasificarse:
+
+```text
+sin filtros + colección realmente vacía
+→ vacío base
+
+filtros activos + cero resultados
+→ vacío filtrado
+```
+
+UI005 documenta la diferencia; no modifica ORIGO.
+
+---
+
+#### 39. Reconciliación FOGO
+
+El editor de pasos de receta utiliza actualmente:
+
+```text
+.ui-empty-state
+→ "Sin pasos definidos."
+```
+
+Ese caso representa una colección local resuelta y puede mapearse conceptualmente a:
+
+```text
+EmptyState
+  title="Sin pasos definidos."
+```
+
+No demuestra necesidad de:
+
+- icono obligatorio;
+- descripción obligatoria;
+- acción obligatoria;
+- variante específica;
+- router.
+
+Por ello refuerza la decisión de mantener mínima la API.
+
+La tarea no modifica FOGO.
+
+---
+
+#### 40. Reconciliación VISO
+
+VISO contiene múltiples usos del patrón ligero `.ui-empty` para regiones administrativas y conserva estilos legacy de la familia compartida.
+
+Un ejemplo actual de colección vacía utiliza un mensaje equivalente a:
+
+```text
+No hay negocios configurados.
+```
+
+mientras los errores de consulta se muestran mediante una superficie de error separada.
+
+Esto confirma que:
+
+1. un EmptyState puede ser title-only;
+2. error y vacío deben permanecer separados;
+3. no toda ausencia necesita icono, descripción o acción;
+4. el patrón compartido debe poder integrarse en superficies administrativas densas sin imponer composición excesiva.
+
+La tarea no modifica VISO.
+
+---
+
+#### 41. Migración futura
+
+La adopción física pertenece a `SHELL-MIG-001..008`.
+
+Secuencia mínima:
+
+```text
+inventariar usos .ui-empty y .ui-empty-state
+→ localizar componentes locales equivalentes
+→ clasificar causa semántica de cada uso
+→ separar error, bloqueo, permiso y contexto
+→ confirmar perfil vacío propietario
+→ materializar EmptyState en @vento/ui-web
+→ probar package
+→ migrar por consumidor
+→ validar copy, privacidad, filtros y accesibilidad
+→ demostrar paridad
+→ retirar legacy únicamente con evidencia
+```
+
+Cada uso deberá registrar al menos:
+
+- repositorio;
+- superficie;
+- estado actual;
+- causa real;
+- alcance;
+- si existe filtro;
+- si existe acción;
+- si esa acción está autorizada;
+- si el vacío puede revelarse al actor;
+- componente/clase actual;
+- destino de migración;
+- prueba de paridad;
+- rollback.
+
+---
+
+#### 42. Handoffs exactos de migración
+
+| Necesidad                                                   | Propietario     |
+| ----------------------------------------------------------- | --------------- |
+| inventario ejecutable de usos y componentes                 | `SHELL-MIG-001` |
+| lotes reversibles por repositorio                           | `SHELL-MIG-002` |
+| compatibilidad temporal y bloqueo de nuevos legacy          | `SHELL-MIG-003` |
+| evitar que el scaffold siga propagando clases/código legacy | `SHELL-MIG-004` |
+| adopción del componente compartido                          | `SHELL-MIG-005` |
+| accesibilidad, tema y comportamiento responsive             | `SHELL-MIG-006` |
+| paridad por consumidor                                      | `SHELL-MIG-007` |
+| retiro de clases, funciones y copias legacy                 | `SHELL-MIG-008` |
+
+No se elimina ninguna clase, función ni uso actual en esta tarea.
+
+---
+
+#### 43. Compatibilidad y versionado
+
+La materialización futura de `EmptyState` deberá respetar SemVer y la matriz de compatibilidad de `@vento/ui-web`.
+
+Cambios potencialmente incompatibles incluyen:
+
+- hacer obligatoria una propiedad antes opcional;
+- retirar `title` o cambiar su semántica;
+- cambiar el tipo aceptado por `action`;
+- imponer router o runtime cliente;
+- introducir un rol ARIA universal;
+- cambiar el orden semántico de contenido de forma material;
+- cambiar el tratamiento de atributos HTML;
+- convertir icono opcional en obligatorio;
+- introducir una taxonomía paralela que cambie qué estados se consideran válidos;
+- cambiar CSS público si en el futuro se expone como contrato versionado.
+
+La paridad semántica tiene precedencia sobre copiar píxeles de las clases legacy.
+
+---
+
+#### 44. Contrato futuro de prueba
+
+Cuando exista implementación física, las pruebas del package y consumidores deberán demostrar como mínimo:
+
+1. render con `title` solamente;
+2. render con `title` y `description`;
+3. render sin icono;
+4. render con icono;
+5. render sin acción;
+6. render con acción compuesta;
+7. acción Button conservando semántica propia;
+8. acción Link conservando semántica de navegación;
+9. atributos HTML compatibles transferidos;
+10. atributos ARIA compatibles transferidos;
+11. `className` aditivo;
+12. ausencia de fallback textual inventado;
+13. ausencia de `role="alert"` por defecto;
+14. ausencia de `aria-live` por defecto;
+15. ausencia de foco en el contenedor por defecto;
+16. ausencia de movimiento de foco automático;
+17. icono decorativo fuera del nombre accesible;
+18. significado comprensible sin icono;
+19. reflow con texto largo;
+20. zoom sin recorte esencial;
+21. SSR sin APIs de navegador;
+22. composición dentro de cliente sin convertir la primitiva base en estado global;
+23. ausencia de dependencia directa de Supabase;
+24. ausencia de router dentro del componente base;
+25. ausencia de llamadas de red;
+26. ausencia de timers;
+27. ausencia de persistencia;
+28. ausencia de inferencia de permisos;
+29. ausencia de inferencia de filtros;
+30. vacío base únicamente después de resultado exitoso;
+31. vacío filtrado sin afirmar ausencia global;
+32. filtros visibles o comprensibles en la superficie propietaria;
+33. error de consulta no convertido en EmptyState;
+34. loading no convertido en EmptyState;
+35. resultado parcial no convertido en EmptyState;
+36. falta de permiso no convertida en colección vacía engañosa;
+37. masking sin fuga de existencia o conteo;
+38. ausencia de selección válida distinguida de contexto operativo obligatorio;
+39. cola despejada únicamente con consulta completa y suficientemente fresca;
+40. sin trabajo asignado sin creación o autoasignación no autorizada;
+41. acción de primer registro solo para actor elegible;
+42. migración de un uso `.ui-empty-state` verdadero;
+43. migración de un uso `.ui-empty` title-only;
+44. reclasificación de un uso legacy que en realidad sea error;
+45. reclasificación de un uso legacy que en realidad sea permiso/contexto;
+46. ORIGO proveedores conserva diferencia entre vacío base y filtrado;
+47. ORIGO órdenes de compra no afirma ausencia global cuando hay filtros activos;
+48. FOGO pasos conserva el estado simple sin icono obligatorio;
+49. paridad de consumidor antes de retiro legacy;
+50. rollback independiente de un consumidor sin afectar a los demás.
+
+Esta sección define obligaciones futuras. No declara ejecución de esas pruebas dentro de `SHELL-UI-005`.
+
+---
+
+#### 45. Cobertura TREQ vigente consumida sin modificación
+
+La tarea encuentra cobertura directa y suficiente en el Registro Canónico de Requisitos de Prueba vigente.
+
+Coberturas materiales ya existentes incluyen:
+
+- `TREQ-UX-037`: distingue sin tareas, bloqueos, permiso insuficiente, contexto y otros estados sin foco;
+- `TREQ-UX-069`: prohíbe que estados vacíos revelen existencia, volumen o identidad de elementos ocultos;
+- `TREQ-UX-072`: obliga a distinguir ausencia real, ausencia de trabajo para el actor, contexto faltante, falta de visibilidad, error de carga y proyección obsoleta;
+- `TREQ-UX-074`: protege foco, árbol accesible y señales no dependientes de color/icono;
+- `TREQ-UX-117`: exige inventariar y migrar estados vacíos y demás superficies legacy con rollback;
+- `TREQ-UX-209`: exige reflow y conservación de contenido en superficies táctiles;
+- `TREQ-UX-231`: exige estados de carga y vacío explícitos en tablas/grids;
+- `TREQ-UX-379`: obliga a distinguir ausencia real, restricción de permiso, filtro activo y error de consulta en búsqueda;
+- `TREQ-UX-961`: diferencia una colección autorizada sin resultados de una denegación o recurso fuera de alcance;
+- `TREQ-UX-1007`: exige perfil vacío base por pantalla;
+- `TREQ-UX-1008`: permite vacío solo tras consulta o inicialización autorizada y exitosa;
+- `TREQ-UX-1009`: distingue vacío base, filtros sin coincidencias, ausencia de selección y cola despejada;
+- `TREQ-UX-1010`: exige que el vacío filtrado conserve alcance/filtros y no afirme inexistencia global;
+- `TREQ-UX-1011`: restringe el mensaje de cola despejada a una consulta completa, fresca y realmente sin pendientes;
+- `TREQ-UX-1012`: impide usar ausencia de trabajo para autoasignación o ampliación de alcance;
+- `TREQ-UX-1013`: restringe acciones de primer registro/configuración a acciones ya aprobadas;
+- `TREQ-UX-1014`: separa ausencia de selección de recurso inexistente, eliminado o no autorizado;
+- `TREQ-SHELL-002`: protege responsabilidades compartidas frente a copias manuales divergentes;
+- `TREQ-SHELL-006`: exige pruebas del package y compatibilidad por consumidor;
+- `TREQ-SHELL-007`: exige rollback independiente;
+- `TREQ-SHELL-032`: exige reconciliar primitivas y kits antes de adopción o retiro;
+- `TREQ-SHELL-035`: protege textos, etiquetas y significado consistente;
+- `TREQ-SHELL-036` a `TREQ-SHELL-039`: gobiernan release, deprecación, compatibilidad y retiro de superficies públicas.
+
+`SHELL-UI-005` especializa la implementación visual futura de obligaciones ya registradas. No detecta una obligación verificable nueva sin cobertura.
+
+---
+
+#### 46. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+**Justificación:** el registro vigente ya cubre de forma explícita la activación válida de un estado vacío, sus diferencias frente a error, bloqueo, falta de visibilidad, filtros, ausencia de selección, cola despejada, ausencia de trabajo, acciones de primer registro, privacidad, accesibilidad, migración, compatibilidad y rollback. Esta tarea define la primitiva visual que deberá materializar esas obligaciones sin crear una regla de riesgo transversal adicional.
+
+No corresponde modificar el registro modular en este corte.
+
+---
+
+#### 47. Estado de materialización física
+
+Al cierre documental de `SHELL-UI-005`:
+
+```text
+IDENTIDAD EmptyState                         = ESPECIFICADA
+EmptyStateProps                              = ESPECIFICADO CONCEPTUALMENTE
+title                                        = REQUERIDO
+description                                  = OPCIONAL
+icon                                         = OPCIONAL
+action                                       = OPCIONAL Y COMPUESTO POR CONSUMIDOR
+variant / kind                               = NO CREADOS
+cta / href propios                           = NO CREADOS
+SEMÁNTICA DE VACÍO                           = PROPIEDAD DEL CONTRATO DE PANTALLA/DOMINIO
+ERROR / BLOQUEO / PERMISO                    = FUERA DEL CONTRATO BASE
+CONTEXTO OPERATIVO REQUERIDO                 = FUERA DEL CONTRATO BASE
+ACCESIBILIDAD                                = ESPECIFICADA DOCUMENTALMENTE
+FRONTERA SERVER/CLIENT                       = ESPECIFICADA
+RECONCILIACIÓN LEGACY                        = CERRADA DOCUMENTALMENTE
+PACKAGE FÍSICO                               = NO MATERIALIZADO
+COMPONENTE FÍSICO COMPARTIDO                 = NO MATERIALIZADO
+CONSUMIDORES MIGRADOS                        = 0
+LEGACY RETIRADO                              = 0
+CAMBIOS SUPABASE / SQL / DATOS               = 0
+CAMBIOS TREQ                                 = 0
+```
+
+La definición documental no implica publicación, instalación ni adopción runtime.
+
+---
+
+#### 48. Handoffs obligatorios
+
+| Handoff                             | Propietario                                          | Condición de salida                                                    |
+| ----------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------- |
+| implementación física de EmptyState | `SHELL-CI-*` aplicables bajo el gate correspondiente | componente materializado conforme al contrato aprobado                 |
+| pruebas del package                 | `SHELL-CI-001`                                       | suite ejecutable de la primitiva                                       |
+| build independiente                 | `SHELL-CI-002`                                       | artefacto construible sin acoplamiento accidental                      |
+| release versionado                  | `SHELL-CI-003`                                       | versión inmutable y trazable                                           |
+| matriz de compatibilidad            | `SHELL-CI-005`                                       | consumidores afectados demostrados                                     |
+| actualización por PR                | `SHELL-CI-006`                                       | adopción explícita por repositorio                                     |
+| inventario de usos legacy           | `SHELL-MIG-001`                                      | `.ui-empty`, `.ui-empty-state` y componentes equivalentes clasificados |
+| lotes reversibles                   | `SHELL-MIG-002`                                      | rollback por consumidor                                                |
+| compatibilidad legacy               | `SHELL-MIG-003`                                      | nuevos usos no gobernados bloqueados                                   |
+| scaffold sin copia legacy           | `SHELL-MIG-004`                                      | plantilla deja de propagar implementación duplicada                    |
+| migración por aplicación            | `SHELL-MIG-005`                                      | EmptyState compartido adoptado donde corresponda                       |
+| accesibilidad y tema                | `SHELL-MIG-006`                                      | experiencia validada por aplicación                                    |
+| paridad                             | `SHELL-MIG-007`                                      | semántica, visual, filtros, acciones y accesibilidad demostradas       |
+| retiro legacy                       | `SHELL-MIG-008`                                      | cero usos residuales aprobados para retiro y rollback disponible       |
+| indicador de contexto               | `SHELL-UI-006`                                       | mantiene contexto visible sin convertirlo en EmptyState                |
+| selector de sede                    | `SHELL-UI-007`                                       | selección contextual mantiene autoridad fuera de EmptyState            |
+| selector de área                    | `SHELL-UI-008`                                       | selección contextual mantiene autoridad fuera de EmptyState            |
+| diagnóstico de contexto             | `SHELL-UI-015`                                       | contexto faltante o inválido tiene tratamiento propietario             |
+| error recuperable                   | `SHELL-UI-016`                                       | fallos de carga y recuperación permanecen separados del vacío          |
+
+No queda un pendiente material sin propietario documental.
+
+---
+
+#### 49. Decisiones vinculantes
+
+1. El componente compartido se denomina `EmptyState`.
+2. `EmptyState` pertenece a `@vento/ui-web`.
+3. La tarea es documental y no materializa código.
+4. Los símbolos conceptuales son `EmptyState` y `EmptyStateProps`.
+5. No se inventa subpath físico ni mapa de exports.
+6. `title` es requerido.
+7. `description` es opcional.
+8. `icon` es opcional.
+9. No existe icono global obligatorio.
+10. `sparkles` no se convierte en default canónico.
+11. `action` es opcional y se compone por el consumidor.
+12. No se incorporan `cta` ni `href` como props propias.
+13. EmptyState no incorpora router.
+14. EmptyState no incorpora `variant`, `kind` ni `status`.
+15. La causa semántica de vacío pertenece al contrato propietario.
+16. EmptyState no deduce la causa desde `length === 0`.
+17. Un vacío base requiere ausencia confirmada dentro del alcance resuelto.
+18. Un vacío filtrado no afirma inexistencia global.
+19. Los filtros y alcance permanecen comprensibles en la superficie propietaria.
+20. Ausencia de selección puede ser vacío solo cuando sea una selección legítima de contenido dentro de una pantalla ya resuelta.
+21. Sede, área, turno, check-in, actor o permiso faltantes no se convierten automáticamente en EmptyState.
+22. Una cola solo se declara despejada con consulta completa y suficientemente fresca.
+23. Ausencia de trabajo del actor no significa ausencia global.
+24. EmptyState no crea ni autoasigna trabajo.
+25. Error de carga no es EmptyState.
+26. Loading no es EmptyState.
+27. Resultado parcial no es EmptyState.
+28. Resultado desconocido no es EmptyState.
+29. Denegación de permiso no es colección vacía.
+30. Recurso fuera de alcance no se presenta como vacío engañoso.
+31. El componente no revela existencia o conteo de elementos ocultos.
+32. El componente no genera copy de dominio.
+33. No se inventa texto fallback cuando falta `title`.
+34. El root es no interactivo por defecto.
+35. No se fuerza `role="alert"`.
+36. No se fuerza `aria-live`.
+37. No se mueve foco por defecto.
+38. Atributos HTML y ARIA compatibles pueden transferirse.
+39. El contrato no exige `use client`.
+40. EmptyState debe poder renderizarse server-safe.
+41. El componente no depende directamente de Supabase.
+42. El componente no consulta datos ni permisos.
+43. El componente no persiste estado ni crea timers.
+44. EmptyState puede componerse dentro de Card sin depender de Card.
+45. EmptyState puede contener Button sin absorber su contrato.
+46. EmptyState y Alert mantienen responsabilidades distintas.
+47. `.ui-empty-state` es legacy a clasificar y migrar, no API pública perpetua.
+48. `.ui-empty` es candidato ligero y no crea un segundo componente compartido.
+49. La implementación local de NEXO queda reconciliada, no adoptada íntegramente.
+50. Los usos NEXO de permiso y sede requieren reclasificación antes de migrar.
+51. ORIGO proveedores aporta una distinción válida entre vacío base y filtrado.
+52. ORIGO órdenes requiere distinguir filtros antes de afirmar ausencia base durante migración.
+53. FOGO demuestra que title-only es un caso válido.
+54. VISO demuestra que superficies administrativas pueden necesitar una representación compacta.
+55. No se eliminan clases ni componentes legacy en esta tarea.
+56. La migración será progresiva y reversible.
+57. La paridad exigirá semántica correcta, no solo similitud visual.
+58. No se realizan cambios de Supabase, SQL, datos, configuración o repositorios consumidores.
+59. Se crean 0 requisitos de prueba y se modifican 0.
+60. `SHELL-UI-006` permanece reservada y no se desarrolla aquí.
+
+---
+
+#### 50. Criterios de aceptación documental
+
+`SHELL-UI-005` queda documentalmente cerrada únicamente si se cumplen simultáneamente:
+
+- [x] la aprobación local de `SHELL-UI-004` se reconoce como base inmediata frente al drift remoto de una tarea;
+- [x] la ruta normal confirma que `SHELL-UI-005` sigue a `SHELL-UI-004`;
+- [x] `SHELL-UI-006` permanece como única siguiente tarea;
+- [x] `EmptyState` tiene identidad única;
+- [x] se define una API conceptual mínima sin acoplamiento a router;
+- [x] `title` queda requerido;
+- [x] `description`, `icon` y `action` quedan opcionales;
+- [x] se eliminan del contrato compartido `cta` y `href` específicos del candidato NEXO;
+- [x] no se inventa un enum paralelo de causas de vacío;
+- [x] se establece una condición de entrada que exige resolución exitosa suficiente;
+- [x] se distingue vacío base de vacío filtrado;
+- [x] se distingue ausencia de selección válida de contexto operativo requerido;
+- [x] se distingue cola despejada de resultado parcial, stale o desconocido;
+- [x] se distingue ausencia de trabajo del actor de ausencia global;
+- [x] error, loading, bloqueo y denegación quedan fuera del contrato base;
+- [x] se evita revelar existencia de información oculta mediante el estado vacío;
+- [x] se conserva una acción opcional solo cuando sea real y autorizada;
+- [x] se separan EmptyState, Card, Alert, Button y patrones de contexto/error;
+- [x] se reconcilian el componente NEXO, `.ui-empty-state` y `.ui-empty`;
+- [x] se materializa la decisión sobre los usos NEXO semánticamente mezclados;
+- [x] se materializa la diferencia ORIGO entre vacío base y filtrado;
+- [x] se preserva un caso simple title-only como FOGO/VISO;
+- [x] se especifica accesibilidad mínima;
+- [x] se especifica contrato futuro de prueba;
+- [x] migración, paridad, compatibilidad y retiro tienen propietarios exactos;
+- [x] no se modifican aplicaciones ni estilos actuales;
+- [x] no se ejecutan cambios físicos;
+- [x] el registro vigente ya cubre de forma explícita los riesgos de EmptyState;
+- [x] se declaran 0 cambios de requisitos con justificación concreta;
+- [x] no queda un pendiente material sin propietario documental.
+
+Resultado:
+
+```text
+EMPTYSTATE COMPARTIDO                  = ESPECIFICADO
+API CONCEPTUAL                         = CERRADA
+TITLE                                  = REQUERIDO
+DESCRIPTION / ICON / ACTION            = OPCIONALES
+ROUTER PROPIO                          = NO
+TAXONOMÍA PARALELA DE VACÍO            = NO
+FRONTERA VACÍO VS ERROR/BLOQUEO        = CERRADA
+FRONTERA VACÍO VS CONTEXTO/PERMISO     = CERRADA
+PRIVACIDAD DEL ESTADO VACÍO            = CERRADA
+RECONCILIACIÓN LEGACY                  = CERRADA DOCUMENTALMENTE
+IMPLEMENTACIÓN FÍSICA                  = NO MATERIALIZADA
+MIGRACIÓN                              = NO EJECUTADA
+CAMBIOS TREQ                           = 0
+SIGUIENTE TAREA                        = SHELL-UI-006
+```
+
+---
+
+#### 51. Límites
+
+Esta tarea no autoriza:
+
+- crear o modificar el package físico `@vento/ui-web`;
+- crear archivos TypeScript del package;
+- crear un componente runtime en SHELL;
+- modificar NEXO, FOGO, ORIGO, VISO, PULSO o NUMERA;
+- cambiar `globals.css` de consumidores;
+- retirar `.ui-empty` o `.ui-empty-state`;
+- retirar la función local `EmptyState` de NEXO;
+- cambiar mensajes de dominio en consumidores;
+- cambiar filtros o queries;
+- modificar permisos;
+- modificar autenticación;
+- resolver contexto de sede o área;
+- implementar el indicador de contexto;
+- implementar selectores de sede o área;
+- implementar diagnóstico de contexto;
+- implementar estados de error recuperable;
+- crear un router dentro de EmptyState;
+- crear taxonomía paralela de perfiles vacíos;
+- crear un sistema de iconos;
+- publicar una versión;
+- configurar registry;
+- crear workflows;
+- ejecutar cambios de Supabase;
+- ejecutar SQL o migraciones;
+- modificar datos;
+- modificar requisitos de prueba;
+- iniciar `SHELL-UI-006`.
+
+---
+
+#### 52. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+
+```text
+SHELL-UI-004 — Compartir Card
+```
+
+**TAREA ACTUAL APROBADA**
+
+```text
+SHELL-UI-005 — Compartir EmptyState
+```
+
+**SIGUIENTE TAREA RESERVADA**
+
+```text
+SHELL-UI-006 — Compartir indicador de contexto
+```
+
+No se inicia `SHELL-UI-006` en esta tarea.
+
+
 ### [ ] SHELL-UI-006 — Compartir indicador de contexto
 ### [ ] SHELL-UI-007 — Compartir selector de sede
 ### [ ] SHELL-UI-008 — Compartir selector de área

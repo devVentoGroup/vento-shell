@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **920** |
+| Aprobadas | **922** |
 | En propuesta | **0** |
-| No iniciadas | **674** |
+| No iniciadas | **672** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **57.72% (920/1594)** |
+| Porcentaje de completamiento | **57.84% (922/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-UI-003` — Compartir Button | ✅ APROBADA |
-| Tarea actual | `SHELL-UI-004` — Compartir Card | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-UI-005` — Compartir EmptyState | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-UI-005` — Compartir EmptyState | ✅ APROBADA |
+| Tarea actual | `SHELL-UI-006` — Compartir indicador de contexto | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-UI-007` — Compartir selector de sede | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -747,8 +747,8 @@
 | ✅ APROBADA | `SHELL-UI-001` | Crear @vento/ui-web | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-UI-002` | Compartir Alert | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-UI-003` | Compartir Button | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-UI-004` | Compartir Card | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-UI-005` | Compartir EmptyState | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-UI-004` | Compartir Card | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-UI-005` | Compartir EmptyState | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-006` | Compartir indicador de contexto | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-007` | Compartir selector de sede | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-008` | Compartir selector de área | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
