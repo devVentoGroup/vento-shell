@@ -7435,7 +7435,7 @@ Se aprueban seis artefactos documentales completos:
    el alcance para las diez aplicaciones canónicas sin autorizar por nombre de
    aplicación;
 5. `SHARED-DEVICE-AUTHORIZATION-PHYSICAL-RECONCILIATION-001`, que registra el
-   snapshot físico de solo lectura y catorce brechas con destino documental
+   snapshot físico de solo lectura y quince brechas con destino documental
    explícito;
 6. `SHARED-DEVICE-AUXILIARY-INTERACTION-STATE-REGISTER-001`, que separa
    identificación de actor y reautenticación fuerte de las razones públicas
@@ -7452,16 +7452,16 @@ Cobertura materializada:
 | Escenarios con decisión explícita                |       24 |
 | Canales con respuesta explícita                  |       10 |
 | Aplicaciones canónicas reconciliadas             |       10 |
-| Permisos canónicos evaluados                     |      112 |
-| Permisos `STANDARD_ACTOR_SESSION`                |       52 |
-| Permisos `STRONG_REAUTH_REQUIRED`                |       40 |
+| Permisos canónicos evaluados                     |      140 |
+| Permisos `STANDARD_ACTOR_SESSION`                |       59 |
+| Permisos `STRONG_REAUTH_REQUIRED`                |       61 |
 | Permisos `NOT_ALLOWED`                           |       20 |
-| Claves únicas presentes en algún paquete         |       83 |
+| Claves únicas presentes en algún paquete         |      111 |
 | Claves ausentes de todos los paquetes            |       29 |
 | Paquetes documentales exactos                    |        9 |
-| Membresías documentales de paquete               |      177 |
+| Membresías documentales de paquete               |      219 |
 | Plantillas objetivo                              |       14 |
-| Asociaciones máximas plantilla–permiso           |      266 |
+| Asociaciones máximas plantilla–permiso           |      308 |
 | Instancias físicas configuradas observadas       |        2 |
 | Observaciones físicas sin identidad autoritativa |        2 |
 | Plantillas físicas registradas                   |        6 |
@@ -7474,8 +7474,8 @@ Cobertura materializada:
 | Instancias con `last_seen_at`                    |        0 |
 | Rutinas físicas relacionadas identificadas       |       11 |
 | Políticas RLS físicas relacionadas observadas    |        8 |
-| Brechas físicas registradas                      |       14 |
-| Requisitos de prueba derivados                   |       10 |
+| Brechas físicas registradas                      |       15 |
+| Requisitos de prueba derivados                   |       11 |
 
 Las cifras físicas representan un snapshot de solo lectura. No certifican que
 las instancias estén listas para operación canónica, no exponen credenciales y
@@ -7766,12 +7766,12 @@ configuración, pero no para ejecutar una acción empresarial.
 
 #### 11. Compatibilidad del permiso
 
-Los 112 permisos conservan exactamente una clasificación:
+Los 140 permisos conservan exactamente una clasificación:
 
 | Clasificación            | Cantidad | Regla                                                                    |
 | ------------------------ | -------: | ------------------------------------------------------------------------ |
-| `STANDARD_ACTOR_SESSION` |       52 | requiere dispositivo autorizado y sesión ordinaria de actor válida       |
-| `STRONG_REAUTH_REQUIRED` |       40 | requiere además reautenticación fuerte personal válida                   |
+| `STANDARD_ACTOR_SESSION` |       59 | requiere dispositivo autorizado y sesión ordinaria de actor válida       |
+| `STRONG_REAUTH_REQUIRED` |       61 | requiere además reautenticación fuerte personal válida                   |
 | `NOT_ALLOWED`            |       20 | exige sesión personal y no puede ejecutarse desde dispositivo compartido |
 
 Casos:
@@ -8370,18 +8370,18 @@ No se registrarán en logs ordinarios:
 
 #### 31. `SHARED-DEVICE-AUTHORIZATION-APPLICATION-COVERAGE-REGISTER-001`
 
-| Aplicación | Compatibilidad documental                                                        | Decisión de `AUTH-ERR-015`                                                              |
-| ---------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| SHELL      | `shell.access` es `STANDARD`; la superficie previa se controla por configuración | bloquear app o acción no incluida; no conceder por launcher                             |
-| ANIMA      | sus 10 permisos son `NOT_ALLOWED`                                                | exigir sesión personal; la asistencia no usa actor ligero                               |
-| AURA       | `aura.access` es `NOT_ALLOWED` y la aplicación permanece diferida                | bloquear desde dispositivo compartido                                                   |
-| FOGO       | 5 permisos `STANDARD`, 1 `NOT_ALLOWED`                                           | admitir solo claves exactas del paquete y área de producción compatibles                |
-| NEXO       | mezcla de `STANDARD`, `STRONG` y `NOT_ALLOWED`                                   | aplicar paquete, actor, territorio, recurso y soporte fuerte por acción                 |
-| NUMERA     | 6 permisos `STRONG`                                                              | solo terminal y paquete aprobados con reautenticación fuerte; de lo contrario bloquear  |
-| ORIGO      | 4 permisos compartibles y 1 `STRONG`                                             | aplicar app, paquete, recepción y soporte fuerte exactos                                |
-| PASS       | `pass.access` es `NOT_ALLOWED`                                                   | conservar sesión de cliente separada; bloquear identidad técnica laboral                |
-| PULSO      | 1 `STANDARD` y 1 `STRONG`                                                        | admitir POS autorizado; override exige soporte y evidencia fuerte                       |
-| VISO       | 17 permisos `STRONG`                                                             | únicamente terminal administrativa aprobada y sesión personal fuerte; no bypass por rol |
+| Aplicación | Compatibilidad documental                                 | Decisión de `AUTH-ERR-015`                                                              |
+| ---------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| SHELL      | 1 permiso `STANDARD`                                      | bloquear app o acción no incluida; no conceder por launcher                             |
+| ANIMA      | 10 permisos `NOT_ALLOWED`                                 | exigir sesión personal; la asistencia no usa actor ligero                               |
+| AURA       | 1 permiso `NOT_ALLOWED`; la aplicación permanece diferida | bloquear desde dispositivo compartido                                                   |
+| FOGO       | 5 permisos `STANDARD`, 1 `NOT_ALLOWED`                    | admitir solo claves exactas del paquete y área de producción compatibles                |
+| NEXO       | 43 permisos `STANDARD`, 17 `STRONG` y 7 `NOT_ALLOWED`     | aplicar paquete, actor, territorio, recurso y soporte fuerte por acción                 |
+| NUMERA     | 6 permisos `STRONG`                                       | solo terminal y paquete aprobados con reautenticación fuerte; de lo contrario bloquear  |
+| ORIGO      | 5 permisos `STANDARD` y 1 `STRONG`                        | aplicar app, paquete, recepción y soporte fuerte exactos                                |
+| PASS       | 1 permiso `NOT_ALLOWED`                                   | conservar sesión de cliente separada; bloquear identidad técnica laboral                |
+| PULSO      | 5 permisos `STANDARD` y 6 `STRONG`                        | admitir POS autorizado; override exige soporte y evidencia fuerte                       |
+| VISO       | 31 permisos `STRONG`                                      | únicamente terminal administrativa aprobada y sesión personal fuerte; no bypass por rol |
 
 La cobertura no asigna aplicaciones ni permisos a instancias concretas. Consume
 las clasificaciones y paquetes aprobados y define la respuesta cuando una
@@ -8527,7 +8527,7 @@ Cobertura:
 | `269` | contrato público, `403`, cero efectos y recuperación                                                            |
 | `270` | separación principal, instancia, actor y sesión personal                                                        |
 | `271` | identidad, estado, plantilla, versión, apps y configuración                                                     |
-| `272` | clasificación de 112 permisos, paquete y techo exacto                                                           |
+| `272` | clasificación de 140 permisos, paquete y techo exacto                                                           |
 | `273` | actor session, política, territorio y soporte fuerte                                                            |
 | `274` | causas, fronteras y precedencia                                                                                 |
 | `275` | equivalencia de diez canales                                                                                    |
@@ -8632,7 +8632,7 @@ AUTH-ERR-015 no:
 - [x] Se definieron aplicaciones efectivas por intersección.
 - [x] Se prohibió convertir app visible en grant.
 - [x] Se definió paquete efectivo y clave exacta.
-- [x] Se conservaron 52 `STANDARD`, 40 `STRONG` y 20 `NOT_ALLOWED`.
+- [x] Se conservaron 59 `STANDARD`, 61 `STRONG` y 20 `NOT_ALLOWED`.
 - [x] Se prohibió degradar `STRONG`.
 - [x] Se definió recuperación mediante dispositivo autorizado o sesión personal.
 - [x] Se definieron dieciocho causas internas en ocho familias.
@@ -8643,8 +8643,8 @@ AUTH-ERR-015 no:
 - [x] Se reconciliaron diez aplicaciones.
 - [x] Se preservaron diecinueve claves documentales de dispositivo.
 - [x] Se registró el snapshot físico sin presentarlo como validación operativa.
-- [x] Se registraron catorce brechas con destino exacto.
-- [x] Se derivaron `TREQ-AUTH-269` a `TREQ-AUTH-278`.
+- [x] Se registraron quince brechas con destino exacto.
+- [x] Se derivaron `TREQ-AUTH-269` a `TREQ-AUTH-278` y `TREQ-AUTH-331`.
 - [x] No se modificó código, Supabase, migraciones, configuración, datos ni dispositivos.
 - [x] `AUTH-ERR-016` permanece únicamente reservada.
 
