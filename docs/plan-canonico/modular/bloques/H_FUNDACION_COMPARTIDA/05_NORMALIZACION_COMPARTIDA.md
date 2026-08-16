@@ -7140,7 +7140,1319 @@ SHELL-NORM-007 — Crear previsualización de transformaciones
 SHELL-NORM-008 — Crear metadatos de versión y auditoría de reglas
 
 
-### [ ] SHELL-NORM-008 — Crear metadatos de versión y auditoría de reglas
+### ✅ SHELL-NORM-008 — Crear metadatos de versión y auditoría de reglas
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-NORM-007 — Crear previsualización de transformaciones
+**Tarea siguiente:** SHELL-NORM-009 — Probar idempotencia y conservación semántica
+**Tipo de tarea:** Documental; centralización dentro de `@vento/data-normalization` de los metadatos canónicos de versión, procedencia, auditoría lógica, correlación, idempotencia y reproducibilidad ya aprobados, preservando la inmutabilidad de reglas, el conjunto efectivo de versiones, la separación entre evaluación y efecto persistido y las fronteras de autoridad de BLOQUE E3, sin materializar código, package físico, almacenamiento, API, RPC, SQL, migraciones ni cambios en Supabase
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md`
+**Estado físico resultante:** NO MATERIALIZADO
+**Implementación física autorizada:** ninguna
+**Cambios de código, packages físicos, archivos TypeScript, configuración npm, registry, workflows, DDL, DML, migraciones, RLS, RPC, triggers, índices, constraints, datos, secretos, configuración remota o despliegues:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-NORM-008` centraliza para la futura superficie compartida de `@vento/data-normalization` los metadatos de versión, procedencia, auditoría lógica, correlación, idempotencia y reproducibilidad definidos por `DATA-NORM-ARC-009`, sin convertir el package en almacén de auditoría, sistema de identidad, frontera transaccional ni fuente alternativa de gobierno.
+
+La tarea hace consumible la siguiente relación documental:
+
+```text
+REGLA / CATÁLOGO / POLÍTICA VERSIONADA
+        ↓
+CONJUNTO EFECTIVO DE VERSIONES
+        ↓
+EVALUACIÓN SEMÁNTICA PURA
+        ↓
+METADATOS REPRODUCIBLES
+        ↓
+REGISTRO LÓGICO CORRESPONDIENTE
+        ↓
+PERSISTENCIA O EFECTO SOLO EN LA CAPA PROPIETARIA
+```
+
+La regla central es:
+
+```text
+METADATOS COMPARTIDOS
+≠ AUDITORÍA PERSISTIDA
+≠ AUTORIZACIÓN
+≠ COMMIT
+≠ EFECTO EMPRESARIAL
+```
+
+El package podrá producir o validar información lógica determinista a partir de entradas explícitas, pero no inventará actor, tiempo, autorización, identidad de evento, estado persistido ni evidencia externa ausente.
+
+---
+
+#### 2. Resultado material de la tarea
+
+Queda centralizada documentalmente, sin cambiar identidad ni versión, la proyección compartida de:
+
+```text
+VENTO_TEXT_RULE_AUDIT_VERSION_AND_IDEMPOTENCY_POLICY@1.0.0
+```
+
+La centralización materializa exactamente:
+
+- 6 familias cerradas de registro lógico;
+- 13 atributos de identidad estable de regla y versión;
+- 11 dependencias posibles del `resolved_version_set`;
+- 8 estados unificados de ciclo de vida;
+- 7 metadatos de aprobación, vigencia y activación;
+- 5 modos cerrados de compatibilidad y coexistencia;
+- 11 atributos de procedencia de algoritmo;
+- 12 clases cerradas de evento de auditoría;
+- 30 atributos del contrato lógico mínimo de auditoría;
+- 10 resultados cerrados de evaluación;
+- 5 clases de retención lógica;
+- 3 niveles de reproducibilidad;
+- 7 tiempos semánticamente distintos;
+- 9 componentes de la clave lógica de idempotencia;
+- 6 clases de operación idempotente;
+- 4 expectativas de concurrencia y estado;
+- 9 atributos del contrato de replay controlado.
+
+No se crea un contrato semántico alternativo ni una versión nueva de la política E3.
+
+---
+
+#### 3. Fuentes normativas y precedencia
+
+| Fuente                     | Decisión preservada por `SHELL-NORM-008`                                                                                                   |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `SHELL-NORM-001`           | identidad de `@vento/data-normalization`, pureza, determinismo, ausencia de I/O y separación frente a persistencia y auditoría propietaria |
+| `SHELL-NORM-002`           | clases semánticas, representaciones, fuentes y operaciones que forman parte de la coordenada evaluada                                      |
+| `SHELL-NORM-003`           | reglas deterministas y dependencias lingüísticas explícitas                                                                                |
+| `SHELL-NORM-004`           | catálogos de conectores y excepciones con identidad, versión, estado y autoridad                                                           |
+| `SHELL-NORM-005`           | diccionario ortográfico versionado, ciclo de vida, evidencia y resultados cerrados                                                         |
+| `SHELL-NORM-006`           | política de búsqueda y comparación, algoritmos, ranking y versiones compatibles                                                            |
+| `SHELL-NORM-007`           | preview no vinculante, `resolved_version_set`, `version_set_digest` y separación absoluta frente al commit                                 |
+| `DATA-NORM-ARC-009`        | autoridad completa sobre auditoría, versionado, procedencia, idempotencia, replay y reproducibilidad                                       |
+| `DATA-NORM-ARC-010`        | frontera frente a identidad, unicidad, duplicidad y fusión                                                                                 |
+| `DATA-NORM-ARC-011`        | distribución de autoridad entre aplicación, servicio, RPC y trigger, incluida la propiedad del registro raíz de una mutación               |
+| `DATA-NORM-ARC-012`        | preservación, procedencia y minimización de originales externos                                                                            |
+| `DATA-NORM-TRANS-004..009` | coexistencia, materialización, activación, validación, rollback y evidencia de transición                                                  |
+| `SUPA-TRANS-006..014`      | compatibilidad, consumidores, paridad, rendimiento, rollback, ambientes y artefactos desplegados                                           |
+
+Precedencia obligatoria:
+
+```text
+POLÍTICA Y CATÁLOGOS CANÓNICOS
+        ↓
+IDENTIDADES Y VERSIONES INMUTABLES
+        ↓
+RESOLVED_VERSION_SET + VERSION_SET_DIGEST
+        ↓
+EVALUACIÓN SEMÁNTICA
+        ↓
+METADATOS LÓGICOS COMPARTIDOS
+        ↓
+CAPA PROPIETARIA DE PERSISTENCIA, COMMIT O EVIDENCIA
+```
+
+`SHELL-NORM-008` no puede utilizar metadata para reinterpretar una decisión semántica ya resuelta.
+
+---
+
+#### 4. Frontera exacta
+
+Esta tarea centraliza documentalmente:
+
+- identidad estable de regla y versión;
+- digest de contenido;
+- conjunto efectivo de versiones;
+- estados y transición de ciclo de vida;
+- aprobación, vigencia y activación;
+- compatibilidad y coexistencia;
+- procedencia de algoritmo y artefacto;
+- familias lógicas de registro;
+- clases de evento;
+- contrato mínimo de auditoría;
+- resultados cerrados;
+- retención lógica;
+- reproducibilidad;
+- tiempos semánticos;
+- correlación y causación;
+- metadata de idempotencia;
+- expectativas de concurrencia;
+- metadata de replay;
+- minimización de evidencia sensible;
+- paridad de metadata entre capas;
+- relación entre preview, evaluación y commit.
+
+Esta tarea no:
+
+- crea tablas o columnas de auditoría;
+- crea un ledger físico;
+- crea funciones SQL;
+- crea RPC;
+- crea triggers;
+- crea endpoints;
+- define formato de serialización físico;
+- define schemas runtime;
+- genera UUID, timestamps o identidades usando aleatoriedad o reloj implícitos;
+- decide quién está autorizado;
+- persiste eventos;
+- activa versiones;
+- modifica reglas;
+- ejecuta transiciones;
+- ejecuta replay;
+- aplica rollback;
+- ejecuta compensaciones;
+- modifica datos;
+- modifica Supabase.
+
+---
+
+#### 5. Identidad canónica de la política
+
+La política compartida es exactamente:
+
+```text
+VENTO_TEXT_RULE_AUDIT_VERSION_AND_IDEMPOTENCY_POLICY@1.0.0
+```
+
+Invariantes:
+
+1. el nombre y versión no se renombran dentro del package;
+2. la versión de esta política es distinta de la futura versión npm de `@vento/data-normalization`;
+3. una actualización del package no cambia por sí sola la versión normativa;
+4. una nueva versión normativa exige decisión canónica propia;
+5. el package no selecciona una versión mediante `latest`;
+6. el package no considera equivalente una versión por nombre humano, número visible o posición en una lista;
+7. la misma identidad normativa debe corresponder al mismo contenido verificable en todos los ambientes.
+
+---
+
+#### 6. Las seis familias cerradas de registro lógico
+
+| Orden | Familia                             | Finalidad                                                                                   |
+| ----: | ----------------------------------- | ------------------------------------------------------------------------------------------- |
+|    01 | `RULE_GOVERNANCE_RECORD`            | representar identidad, contenido, aprobación, estado, vigencia y supersesión de una versión |
+|    02 | `RULE_EVALUATION_RECORD`            | representar una decisión semántica producida por evaluación sin afirmar persistencia        |
+|    03 | `PERSISTED_MUTATION_RECORD`         | representar un efecto confirmado sobre un valor persistido                                  |
+|    04 | `DERIVATION_MATERIALIZATION_RECORD` | representar creación o renovación confirmada de una derivación                              |
+|    05 | `REVIEW_DECISION_RECORD`            | representar una decisión humana inmutable sobre ambigüedad o conflicto                      |
+|    06 | `PROPAGATION_OR_TRANSITION_RECORD`  | representar propagación, transición, compensación o resultado parcial posterior             |
+
+Reglas:
+
+1. las seis familias conservan significado distinto;
+2. `RULE_EVALUATION_RECORD` puede existir sin mutación;
+3. una evaluación exitosa no se promociona a `PERSISTED_MUTATION_RECORD` sin confirmación de la capa transaccional;
+4. una decisión de revisión no equivale a activación ni materialización;
+5. una propagación hija no sustituye el registro raíz de una mutación;
+6. una implementación física podrá compartir almacenamiento, pero no fusionar semánticas.
+
+Conciliación:
+
+```text
+familias esperadas = 6
+familias centralizadas = 6
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 7. Identidad estable de regla y versión
+
+Cada regla conserva exactamente estos 13 atributos lógicos:
+
+```text
+rule_key
+rule_version_id
+rule_family
+policy_coordinate
+semantic_class
+operation_kind
+language_profile
+version_number
+content_digest
+status
+effective_from
+effective_to
+supersedes_rule_version_id
+```
+
+Reglas:
+
+1. `rule_key` identifica el concepto estable;
+2. `rule_version_id` identifica una definición inmutable;
+3. `version_number` no sustituye `rule_version_id`;
+4. un número de versión no se reutiliza con contenido distinto;
+5. `content_digest` cubre definición normativa ejecutable, scope, precedencia, exclusiones y dependencias;
+6. una edición que cambie el digest crea otra versión;
+7. una rectificación administrativa no destructiva es aditiva;
+8. el mismo identificador no puede representar contenidos diferentes entre ambientes;
+9. un nombre visible no se usa como identidad técnica.
+
+Conciliación:
+
+```text
+atributos esperados = 13
+atributos centralizados = 13
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 8. Conjunto efectivo de versiones
+
+Toda evaluación deberá conservar:
+
+```text
+resolved_version_set
+version_set_digest
+```
+
+El conjunto puede incluir exactamente estas 11 dependencias cuando correspondan:
+
+```text
+field_policy_version
+field_class_catalog_version
+capitalization_policy_version
+connector_catalog_version
+official_exception_catalog_version
+orthographic_dictionary_version
+review_decision_version
+search_policy_version
+language_and_unicode_profile_version
+algorithm_artifact_version
+external_mapping_version
+```
+
+Reglas:
+
+1. solo se incluyen dependencias realmente consumidas;
+2. una dependencia no aplicable se declara `NOT_APPLICABLE`;
+3. no se selecciona por hora actual, caché, orden de carga o configuración local no registrada;
+4. el mismo `version_set_digest` representa el mismo conjunto compatible;
+5. una dependencia ausente, suspendida, incompatible o fuera de vigencia bloquea la evaluación correspondiente;
+6. no existe fallback silencioso;
+7. la traza histórica conserva el conjunto utilizado;
+8. una capa no reemplaza una dependencia por otra parecida;
+9. preview, evaluación autoritativa y operaciones posteriores conservan el digest requerido por sus contratos.
+
+Conciliación:
+
+```text
+dependencias esperadas = 11
+dependencias centralizadas = 11
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 9. Los ocho estados unificados de ciclo de vida
+
+| Estado                        | Ejecutable para decisiones nuevas | Significado                                                         |
+| ----------------------------- | --------------------------------- | ------------------------------------------------------------------- |
+| `DRAFT`                       | no                                | definición incompleta o pendiente de revisión                       |
+| `APPROVED_PENDING_ACTIVATION` | no                                | contenido aprobado todavía sin vigencia operativa                   |
+| `ACTIVE`                      | sí                                | versión vigente dentro de coordenada, ambiente y ventana declarados |
+| `SUSPENDED`                   | no                                | versión temporalmente bloqueada                                     |
+| `SUPERSEDED`                  | no                                | versión reemplazada por otra explícita para decisiones nuevas       |
+| `RETIRED`                     | no                                | versión retirada, conservada para interpretación histórica          |
+| `REJECTED`                    | no                                | propuesta descartada con motivo y evidencia                         |
+| `INVALIDATED`                 | no                                | versión cuya integridad, autoridad o contenido quedó comprometido   |
+
+Reglas:
+
+1. únicamente `ACTIVE` participa en decisiones nuevas;
+2. los nombres específicos de estado ya aprobados en catálogos conservan su semántica histórica;
+3. un mapeo hacia el estado unificado no reescribe la evidencia original;
+4. ausencia de una versión en caché no cambia su estado;
+5. un estado no se infiere por ausencia de fecha.
+
+---
+
+#### 10. Transiciones cerradas de ciclo de vida
+
+```text
+DRAFT
+→ APPROVED_PENDING_ACTIVATION | REJECTED
+
+APPROVED_PENDING_ACTIVATION
+→ ACTIVE | SUSPENDED | REJECTED
+
+ACTIVE
+→ SUSPENDED | SUPERSEDED | RETIRED | INVALIDATED
+
+SUSPENDED
+→ ACTIVE | SUPERSEDED | RETIRED | INVALIDATED
+```
+
+Reglas:
+
+1. `SUPERSEDED`, `RETIRED`, `REJECTED` e `INVALIDATED` son terminales para esa versión;
+2. una definición terminal solo puede volver a uso mediante otra versión con procedencia;
+3. toda transición valida estado esperado y autoridad;
+4. la repetición idempotente de la misma transición devuelve el resultado registrado;
+5. una transición incompatible no se corrige por orden de llegada;
+6. activar una versión no modifica registros históricos;
+7. invalidar bloquea nuevas decisiones pero no borra efectos previos.
+
+---
+
+#### 11. Metadatos de aprobación, vigencia y activación
+
+Toda versión ejecutable conserva exactamente:
+
+```text
+approved_at
+approved_by_authority
+effective_from
+effective_to
+activation_scope
+activation_environment
+activation_event_id
+```
+
+Reglas:
+
+1. aprobación y activación son decisiones distintas;
+2. una fecha futura no activa por sí sola una versión;
+3. activación debe cambiar atómicamente el conjunto efectivo de una coordenada;
+4. no se mezclan dependencias del conjunto anterior y del nuevo;
+5. operaciones en curso conservan el conjunto fijado o son canceladas y reevaluadas por la capa propietaria;
+6. `effective_to` no reinterpreta historia;
+7. la vigencia normativa usa UTC;
+8. el package no consulta el reloj para decidir activación: recibe contexto temporal explícito y validado.
+
+Conciliación:
+
+```text
+atributos esperados = 7
+atributos centralizados = 7
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 12. Los cinco modos de compatibilidad y coexistencia
+
+| Modo                     | Conducta                                                           |
+| ------------------------ | ------------------------------------------------------------------ |
+| `ACTIVE_ONLY`            | una sola versión atiende decisiones nuevas y derivaciones vigentes |
+| `DUAL_EVALUATION_SHADOW` | una candidata evalúa en sombra sin mutar ni alterar respuestas     |
+| `HISTORICAL_READ_ONLY`   | una versión anterior interpreta resultados o snapshots históricos  |
+| `REPLAY_ONLY`            | una versión se usa únicamente en replay controlado                 |
+| `INCOMPATIBLE_BLOCKED`   | mezcla o continuación bloqueada hasta resolver compatibilidad      |
+
+Invariantes:
+
+1. no existe dual write implícito;
+2. shadow no emite efecto empresarial;
+3. shadow no cambia la respuesta activa;
+4. una versión histórica no recupera autoridad por disponibilidad accidental;
+5. coexistencia debe conservar inicio, fin, owner, corpus, métricas y puerta de salida;
+6. el package valida el modo recibido, pero no decide el cutover físico.
+
+Conciliación:
+
+```text
+modos esperados = 5
+modos centralizados = 5
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 13. Procedencia del algoritmo
+
+Toda evaluación deberá poder atribuirse mediante estos 11 atributos:
+
+```text
+algorithm_key
+algorithm_version
+artifact_identity
+artifact_digest
+source_revision_or_commit
+runtime_contract_version
+language_profile
+unicode_version
+tokenizer_version
+catalog_version_set
+configuration_digest
+```
+
+Reglas:
+
+1. un mismo `algorithm_version` no representa artefactos con digests distintos;
+2. locale, Unicode, tokenizer, catálogos, ranking y configuración forman parte de la procedencia cuando afecten el resultado;
+3. defaults ambientales no cambian semántica;
+4. una dependencia externa mutable requiere versión o evidencia inmutable;
+5. una salida no determinista sin contrato versionado no se presenta como algoritmo canónico;
+6. la metadata deberá permitir demostrar qué artefacto produjo el resultado;
+7. el package no consulta Git, registry, entorno o despliegue para completar estos datos: los recibe o deriva de entradas canónicas explícitas.
+
+Conciliación:
+
+```text
+atributos esperados = 11
+atributos centralizados = 11
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 14. Las doce clases cerradas de evento de auditoría
+
+| Orden | Evento                                   |
+| ----: | ---------------------------------------- |
+|    01 | `RULE_VERSION_PROPOSED`                  |
+|    02 | `RULE_VERSION_APPROVED`                  |
+|    03 | `RULE_VERSION_ACTIVATED`                 |
+|    04 | `RULE_VERSION_SUSPENDED`                 |
+|    05 | `RULE_VERSION_SUPERSEDED`                |
+|    06 | `RULE_VERSION_RETIRED`                   |
+|    07 | `RULE_EVALUATED`                         |
+|    08 | `RULE_MUTATION_COMMITTED`                |
+|    09 | `RULE_DERIVATION_MATERIALIZED`           |
+|    10 | `RULE_BLOCK_OR_REVIEW_EMITTED`           |
+|    11 | `RULE_REPLAY_OR_RECONCILIATION_RECORDED` |
+|    12 | `RULE_COMPENSATION_OR_ROLLBACK_RECORDED` |
+
+Reglas:
+
+1. cada evento conserva su semántica;
+2. varios eventos pueden pertenecer a una misma operación lógica;
+3. una implementación puede persistirlos dentro de una transacción común sin colapsarlos;
+4. `RULE_EVALUATED` no afirma commit;
+5. `RULE_MUTATION_COMMITTED` requiere confirmación transaccional;
+6. `RULE_BLOCK_OR_REVIEW_EMITTED` no representa una corrección aplicada;
+7. compensación y rollback conservan el evento y efecto originales.
+
+Conciliación:
+
+```text
+eventos esperados = 12
+eventos centralizados = 12
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 15. Contrato lógico mínimo de auditoría
+
+Se conservan exactamente estos 30 atributos:
+
+```text
+audit_event_id
+logical_operation_id
+attempt_id
+correlation_id
+causation_id
+event_kind
+event_time
+recorded_at
+actor_or_service_identity
+authorization_context
+reason_code
+policy_coordinate
+entity_type
+entity_id
+source_field_coordinate
+source_value_version_or_hash
+before_value_reference_or_hash
+after_value_reference_or_hash
+requested_operation
+resolved_version_set
+version_set_digest
+algorithm_provenance
+idempotency_key
+idempotency_payload_digest
+expected_source_version_or_hash
+outcome
+outcome_reason
+review_case_or_decision_reference
+propagation_or_transition_reference
+environment
+```
+
+Reglas:
+
+1. los atributos no aplicables se declaran explícitamente;
+2. `logical_operation_id` permanece estable entre reintentos;
+3. `attempt_id` distingue intentos técnicos;
+4. `correlation_id` agrupa el proceso de extremo a extremo;
+5. `causation_id` conserva la causa inmediata;
+6. `recorded_at` no reemplaza el momento efectivo del hecho;
+7. una mutación conserva la expectativa de fuente usada para concurrencia;
+8. evidencia sensible se representa mediante referencias protegidas o huellas cuando corresponda;
+9. el package puede validar y proyectar este contrato lógico, pero no genera por sí mismo identidad de evento, actor, tiempo o autorización;
+10. la ausencia de metadata obligatoria no se rellena mediante defaults ambientales.
+
+Conciliación:
+
+```text
+atributos esperados = 30
+atributos centralizados = 30
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 16. Los diez resultados cerrados de evaluación
+
+| Resultado                     | Significado                                                                             |
+| ----------------------------- | --------------------------------------------------------------------------------------- |
+| `APPLIED_CHANGE`              | una operación autorizada produjo y confirmó un cambio                                   |
+| `NO_CHANGE_ALREADY_CANONICAL` | la entrada ya satisfacía la versión efectiva                                            |
+| `DERIVED`                     | se produjo una representación separada sin modificar la fuente                          |
+| `PRESERVED`                   | la política ordenó conservar el valor                                                   |
+| `NOT_APPLICABLE`              | la regla no corresponde a la coordenada                                                 |
+| `BLOCKED_POLICY`              | falta política, versión, autoridad, vigencia, clase, fuente o representación compatible |
+| `BLOCKED_CONFLICT`            | existen decisiones o dependencias incompatibles                                         |
+| `REVIEW_REQUIRED`             | el valor se conserva y requiere revisión humana                                         |
+| `ESCALATED_STRUCTURAL`        | el problema pertenece a estructura, identidad, unicidad, integración o transición       |
+| `FAILED_TECHNICAL`            | la ejecución no pudo completar el efecto                                                |
+
+Reglas:
+
+1. la ausencia de cambio no colapsa resultados distintos;
+2. un preview puede portar el resultado de evaluación sin convertirlo en efecto confirmado;
+3. `APPLIED_CHANGE` solo se usa cuando la capa propietaria confirmó el cambio;
+4. `FAILED_TECHNICAL` no se presenta como éxito empresarial;
+5. reintentar un fallo no autoriza cambiar versiones.
+
+Conciliación:
+
+```text
+resultados esperados = 10
+resultados centralizados = 10
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 17. Las cinco clases de retención lógica
+
+| Clase                        | Contenido                                                                                  |
+| ---------------------------- | ------------------------------------------------------------------------------------------ |
+| `GOVERNANCE_IMMUTABLE`       | versiones, aprobaciones, estados, supersesiones, invalidaciones y decisiones humanas       |
+| `MUTATION_EVIDENCE`          | antes, después, motivo, actor, expectativa, resultado y reversibilidad                     |
+| `DERIVATION_REPRODUCIBILITY` | fuente o hash, versión, algoritmo y huella de una derivación                               |
+| `OPERATIONAL_DIAGNOSTIC`     | intentos, latencia, error, retry y metadata técnica                                        |
+| `SENSITIVE_REFERENCE`        | referencias protegidas a datos personales, legales, externos, secretos, firmas o evidencia |
+
+Reglas:
+
+1. la clase es lógica y no define todavía almacenamiento físico;
+2. la duración final, archivo y eliminación física quedan fuera del package;
+3. `OPERATIONAL_DIAGNOSTIC` no se convierte en autoridad canónica;
+4. `SENSITIVE_REFERENCE` exige minimización y acceso restringido;
+5. ausencia de plazo físico no autoriza eliminación de evidencia necesaria ni retención indefinida de datos sensibles.
+
+---
+
+#### 18. Los tres niveles de reproducibilidad
+
+| Nivel                      | Condición                                                                                           |
+| -------------------------- | --------------------------------------------------------------------------------------------------- |
+| `FULL_REPLAYABLE`          | entrada, contexto, versiones, algoritmo y dependencias pueden reproducirse en un entorno controlado |
+| `REFERENCE_REPLAYABLE`     | entrada completa preservada mediante referencia protegida e inmutable                               |
+| `DECISION_RECONSTRUCTABLE` | hashes, contexto y versiones permiten explicar la decisión sin conservar la entrada completa        |
+
+Reglas:
+
+1. cada familia aplicable declara su nivel;
+2. `DECISION_RECONSTRUCTABLE` no se presenta como replay exacto;
+3. una mutación crítica debe alcanzar `FULL_REPLAYABLE` o `REFERENCE_REPLAYABLE` salvo prohibición documentada;
+4. secretos no se exponen para hacerlos replayables;
+5. un hash sin contexto y algoritmo no demuestra reproducibilidad;
+6. una degradación de nivel conserva motivo, autoridad y fecha.
+
+---
+
+#### 19. Los siete tiempos semánticos
+
+Se preservan exactamente:
+
+```text
+observed_at
+requested_at
+evaluated_at
+effect_committed_at
+effective_from
+effective_to
+recorded_at
+```
+
+Semántica:
+
+| Tiempo                | Significado                                                        |
+| --------------------- | ------------------------------------------------------------------ |
+| `observed_at`         | momento en que se observó entrada o señal                          |
+| `requested_at`        | inicio de la operación lógica                                      |
+| `evaluated_at`        | momento en que se resolvió el conjunto de versiones                |
+| `effect_committed_at` | momento de confirmación del efecto; solo existe cuando hubo commit |
+| `effective_from`      | inicio de vigencia normativa                                       |
+| `effective_to`        | fin de vigencia normativa para nuevas decisiones                   |
+| `recorded_at`         | momento de incorporación de la evidencia al registro               |
+
+Reglas:
+
+1. no se colapsan en una única fecha;
+2. vigencia se expresa en UTC;
+3. zona original se conserva cuando sea relevante;
+4. una evidencia tardía no cambia la hora efectiva del hecho;
+5. el motor puro no obtiene estos tiempos desde el reloj del runtime: se proporcionan como contexto cuando son necesarios.
+
+Conciliación:
+
+```text
+tiempos esperados = 7
+tiempos centralizados = 7
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 20. Modelo de idempotencia
+
+La metadata compartida conserva dos garantías distintas:
+
+```text
+same logical input
++ same policy coordinate
++ same resolved version set
++ same requested operation
+=
+same logical outcome
+```
+
+y:
+
+```text
+reapply an already committed logical operation
+=
+return prior committed outcome without a second business effect
+```
+
+La primera garantía pertenece al determinismo de la evaluación. La segunda requiere estado de operación y confirmación de efecto en la capa propietaria.
+
+`@vento/data-normalization` podrá producir resultados puros que satisfagan la primera, pero no podrá declarar por sí solo que un efecto persistido ya ocurrió.
+
+---
+
+#### 21. Los nueve componentes de la clave lógica de idempotencia
+
+La clave conserva o vincula:
+
+```text
+operation_kind
+actor_or_service_scope
+target_entity_type
+target_entity_id
+source_field_coordinate
+source_value_version_or_hash
+requested_operation
+version_set_digest
+business_correlation_or_command_id
+```
+
+Reglas:
+
+1. la clave no se deriva únicamente del valor textual;
+2. payload y precondiciones producen un `idempotency_payload_digest` independiente;
+3. misma clave y mismo digest reutilizan el resultado previo cuando la capa propietaria dispone de ese estado;
+4. misma clave con digest distinto produce `BLOCKED_CONFLICT`;
+5. el motivo canónico es `IDEMPOTENCY_PAYLOAD_CONFLICT`;
+6. una nueva fuente o conjunto de versiones exige reevaluación;
+7. una clave no mezcla entidades o scopes;
+8. la expiración física de una clave no elimina la obligación de detectar un efecto empresarial ya confirmado;
+9. el package no persiste ni consulta el estado de claves.
+
+Conciliación:
+
+```text
+componentes esperados = 9
+componentes centralizados = 9
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 22. Las seis clases de operación idempotente
+
+| Clase                               | Garantía                                                                              |
+| ----------------------------------- | ------------------------------------------------------------------------------------- |
+| `PURE_EVALUATION`                   | misma entrada y versiones producen mismo resultado y huella sin efectos               |
+| `PERSISTED_MUTATION`                | un solo cambio confirmado; retry devuelve resultado previo o no operación verificable |
+| `DERIVATION_MATERIALIZATION`        | una derivación vigente por fuente, representación y versión                           |
+| `RULE_LIFECYCLE_TRANSITION`         | una transición ocurre una vez sobre el estado esperado                                |
+| `REVIEW_DECISION_RECORDING`         | una resolución lógica inmutable no se duplica                                         |
+| `PROPAGATION_OR_TRANSITION_COMMAND` | cada destino conserva efecto individual y reanudable                                  |
+
+Reglas:
+
+1. una operación compuesta conserva una raíz y efectos hijos;
+2. éxito parcial es explícito;
+3. reanudación omite efectos confirmados;
+4. `PURE_EVALUATION` es la única clase cuyo cumplimiento puede demostrarse exclusivamente dentro del motor puro;
+5. las demás necesitan evidencia de la capa que posee estado o commit.
+
+Conciliación:
+
+```text
+clases esperadas = 6
+clases centralizadas = 6
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 23. Las cuatro expectativas de concurrencia y estado
+
+Toda mutación o materialización futura deberá conservar:
+
+```text
+expected_source_version_or_hash
+expected_policy_coordinate
+expected_version_set_digest
+expected_current_state
+```
+
+Reglas:
+
+1. una fuente cambiada bloquea el efecto y exige reevaluación;
+2. un conjunto de versiones cambiado exige nueva evaluación;
+3. dos operaciones concurrentes no se resuelven por último escritor;
+4. una transición de regla valida el estado esperado;
+5. un caso de revisión obsoleto no se cierra con otra versión por conveniencia;
+6. una derivación vieja no sobrescribe otra de fuente más reciente;
+7. el package puede validar coherencia interna de estas expectativas, pero no puede comprobar estado persistido sin la capa propietaria.
+
+Conciliación:
+
+```text
+expectativas esperadas = 4
+expectativas centralizadas = 4
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 24. Fuentes de no determinismo prohibidas
+
+No pueden actuar como dependencias implícitas:
+
+- locale del sistema operativo, navegador, proceso o base de datos;
+- versión Unicode no declarada;
+- orden físico de filas o catálogos;
+- hora actual para seleccionar una regla sin vigencia registrada;
+- aleatoriedad no fijada;
+- respuesta mutable de proveedor sin versión o evidencia;
+- caché no identificada;
+- configuración local fuera del digest;
+- orden de concurrencia para resolver conflictos;
+- modelo lingüístico o heurística sin contrato y versión;
+- primer resultado de búsqueda usado como verdad.
+
+Cuando una dependencia necesaria no puede fijarse, la evaluación falla de forma cerrada según el contrato aplicable.
+
+---
+
+#### 25. Contrato de replay controlado
+
+Se conservan exactamente estos 9 atributos:
+
+```text
+replay_id
+source_event_or_decision_set
+source_snapshot_or_reference
+version_set_digest
+algorithm_provenance
+replay_environment
+expected_outcomes
+actual_outcomes
+difference_classification
+```
+
+Reglas:
+
+1. replay no modifica producción;
+2. una versión `REPLAY_ONLY` no participa en decisiones nuevas;
+3. las diferencias se clasifican, no se ocultan;
+4. igualdad de salida con procedencia distinta no demuestra paridad completa;
+5. reconciliación no sobrescribe evidencia;
+6. la ejecución de replay pertenece a los propietarios de transición y pruebas;
+7. `@vento/data-normalization` podrá evaluar determinísticamente fixtures suministrados, pero no seleccionará fuentes ni ambientes de replay por sí mismo.
+
+Conciliación:
+
+```text
+atributos esperados = 9
+atributos centralizados = 9
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 26. Integridad aditiva y rectificación
+
+1. versiones, aprobaciones, decisiones y efectos no se editan para ocultar errores;
+2. suspensión, retiro, supersesión e invalidación son eventos adicionales;
+3. una rectificación administrativa conserva antes, después, actor, motivo y relación con el registro rectificado;
+4. compensación conserva efecto original y efecto compensatorio;
+5. rollback normativo y rollback de código son conceptos distintos;
+6. un digest discrepante produce bloqueo, invalidación o reconciliación propietaria;
+7. métricas agregadas no sustituyen evidencia individual cuando el contrato exige esta última;
+8. el package no elimina evidencia ni decide retención física.
+
+---
+
+#### 27. Minimización y evidencia sensible
+
+1. valores personales, legales, externos, secretos, firmas, tokens y consultas sensibles no se incluyen completos por defecto;
+2. referencias protegidas, hashes contextualizados o metadata mínima se usan cuando el contenido completo no es necesario;
+3. una huella declara algoritmo y tratamiento previo permitido;
+4. no se crea una huella enumerable de secretos de baja entropía;
+5. consultas sensibles no se registran completas por defecto;
+6. masking no debe impedir distinguir eventos;
+7. la auditoría no amplía visibilidad frente a la autorización;
+8. el package no lee secretos para producir metadata;
+9. VITAL conserva política y almacenamiento propios.
+
+---
+
+#### 28. Autoridad por capa
+
+| Capa                        | Metadata que puede producir u observar                                                                      | Autoridad que no adquiere                               |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| aplicación                  | intención, referencia observada, correlación cliente, presentación de preview                               | no crea auditoría de commit ni selecciona versiones     |
+| servicio de dominio         | evaluación semántica, versiones, digest, resultado, procedencia lógica y `RULE_EVALUATION_RECORD`           | no confirma persistencia                                |
+| RPC                         | operación lógica, autorización revalidada, idempotencia, concurrencia y registro raíz del efecto confirmado | no redefine semántica                                   |
+| trigger defensivo           | evidencia hija cuando interviene, rechaza o materializa una derivación acotada                              | no crea otra auditoría raíz                             |
+| job o adaptador             | correlación, causación, intentos y efectos hijos bajo contrato                                              | no mantiene política paralela                           |
+| `@vento/data-normalization` | constructores y validadores lógicos puros de metadata y resultados                                          | no persiste, autoriza, consulta estado ni afirma commit |
+
+Reglas:
+
+1. una mutación tiene una sola auditoría raíz;
+2. telemetría cliente no sustituye esa raíz;
+3. logs técnicos no sustituyen evidencia contractual;
+4. el mismo `logical_operation_id` se conserva entre capas;
+5. intentos técnicos se distinguen mediante `attempt_id`;
+6. efectos hijos conservan `causation_id`;
+7. una capa no rellena metadata desconocida inventando defaults.
+
+---
+
+#### 29. Relación con `SHELL-NORM-007`
+
+Una previsualización conserva, cuando corresponda:
+
+```text
+resolved_version_set
+version_set_digest
+source_value_version_or_hash
+algorithm_provenance
+outcome
+outcome_reason
+```
+
+pero continúa siendo:
+
+```text
+NO VINCULANTE
+```
+
+Por tanto:
+
+1. metadata de preview no es metadata de commit;
+2. `RULE_EVALUATION_RECORD` no se convierte en `PERSISTED_MUTATION_RECORD`;
+3. el momento de preview no es `effect_committed_at`;
+4. una propuesta no constituye evidencia de persistencia;
+5. la RPC reevalúa fuente, versiones, scope y estado antes de confirmar;
+6. una divergencia produce nueva evidencia de evaluación o conflicto conforme al contrato propietario;
+7. una respuesta de preview no se reutiliza para otro registro, scope o versión.
+
+---
+
+#### 30. Auditoría de búsqueda y comparación
+
+La metadata compartida conserva, según finalidad y minimización:
+
+- consulta protegida o huella compatible;
+- perfil y locale;
+- versión;
+- scope y filtros;
+- representaciones consultadas;
+- modo principal de coincidencia;
+- motivos secundarios;
+- tupla y versión de ranking;
+- fuente o snapshot del resultado;
+- condición histórica;
+- versión del corpus o índice;
+- degradación o bloqueo declarado.
+
+Reglas:
+
+1. la clave de búsqueda completa no se registra si permite reconstruir datos protegidos;
+2. cambio de ranking exige otra versión;
+3. cursor conserva el mismo conjunto de versiones;
+4. cursor obsoleto falla o reinicia explícitamente;
+5. auditoría de búsqueda no crea identidad, unicidad ni corrección;
+6. la capa servidor sigue siendo autoridad sobre búsqueda.
+
+---
+
+#### 31. Auditoría de revisión humana
+
+1. cada revisión conserva caso, evidencia, asignaciones, estados, SLA, decisión y relaciones de supersesión;
+2. la resolución cerrada es inmutable;
+3. decisión humana no activa una entrada por sí sola;
+4. incorporación a catálogo crea versión y evento separados;
+5. materialización sobre datos crea otra operación;
+6. rechazo, preservación, solicitud de evidencia y escalamiento también son auditablemente distinguibles;
+7. retry del mismo cierre reutiliza decisión compatible;
+8. un cierre distinto produce conflicto;
+9. actores se identifican por identidad estable y función ejercida.
+
+---
+
+#### 32. Fuentes, copias, snapshots y externos
+
+1. fuente y copia conservan versiones de valor distintas;
+2. mutación de fuente no se confunde con propagación;
+3. cada destino conserva estado, entrada esperada, resultado, intento y causalidad;
+4. snapshot inmutable no recibe propagación retroactiva;
+5. copia sincronizable no ejecuta una versión local distinta;
+6. override conserva vigencia y versión;
+7. propagación parcial no se presenta como completada;
+8. original externo conserva payload o referencia, procedencia, emisor, momento y versión contractual;
+9. mapping externo conserva versión propia;
+10. metadata interna no sobrescribe el original.
+
+---
+
+#### 33. Paridad entre capas
+
+Para la misma operación lógica, entrada, coordenada y versiones, las capas autorizadas deberán coincidir en:
+
+- regla y versión seleccionadas;
+- conjunto efectivo y digest;
+- clasificación aplicable;
+- resultado cerrado;
+- valor o huella de salida;
+- bloqueo, revisión o escalamiento;
+- clave idempotente y payload digest cuando correspondan;
+- expectativa de concurrencia;
+- correlación y causación;
+- ausencia de efectos duplicados.
+
+Queda prohibido:
+
+- fallback local de versión;
+- crear otra operación lógica por retry;
+- ocultar una falta de commit como éxito;
+- duplicar auditoría raíz;
+- reconstruir datos sensibles desde logs;
+- editar evidencia para ocultar deriva;
+- aplicar metadata o reglas de Vento OS a VITAL.
+
+---
+
+#### 34. Estado de materialización física
+
+| Elemento                                                              | Estado                                          |
+| --------------------------------------------------------------------- | ----------------------------------------------- |
+| `@vento/data-normalization`                                           | `ESPECIFICADO`; package físico no materializado |
+| política `VENTO_TEXT_RULE_AUDIT_VERSION_AND_IDEMPOTENCY_POLICY@1.0.0` | centralizada documentalmente                    |
+| 6 familias de registro                                                | `ESPECIFICADAS`                                 |
+| 13 atributos de regla/versión                                         | `ESPECIFICADOS`                                 |
+| 11 dependencias de versión                                            | `ESPECIFICADAS`                                 |
+| 8 estados de ciclo de vida                                            | `ESPECIFICADOS`                                 |
+| 5 modos de compatibilidad                                             | `ESPECIFICADOS`                                 |
+| 11 atributos de procedencia                                           | `ESPECIFICADOS`                                 |
+| 12 eventos de auditoría                                               | `ESPECIFICADOS`                                 |
+| 30 atributos de auditoría                                             | `ESPECIFICADOS`                                 |
+| 10 resultados                                                         | `ESPECIFICADOS`                                 |
+| 5 clases de retención                                                 | `ESPECIFICADAS`                                 |
+| 3 niveles de reproducibilidad                                         | `ESPECIFICADOS`                                 |
+| 6 clases idempotentes                                                 | `ESPECIFICADAS`                                 |
+| almacenamiento de versiones                                           | `NO IMPLEMENTADO`                               |
+| persistencia de auditoría                                             | `NO IMPLEMENTADA`                               |
+| API o schemas runtime                                                 | `NO IMPLEMENTADOS`                              |
+| cambios Supabase                                                      | `0`                                             |
+| requisitos de prueba creados o modificados                            | `0`                                             |
+
+`ESPECIFICADO` no equivale a `IMPLEMENTADO`, `PERSISTIDO` ni `VERIFICADO`.
+
+---
+
+#### 35. Handoffs exactos
+
+| Materia fuera de esta tarea                                              | Propietario exacto                                                  | Condición de salida                                                                      |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| corpus y pruebas compartidas de idempotencia y conservación semántica    | `SHELL-NORM-009`                                                    | demostrar determinismo, idempotencia y conservación sobre los contratos ya centralizados |
+| almacenamiento físico de versiones de reglas y diccionarios              | `DATA-NORM-DB-001`                                                  | persistir versiones únicamente dentro de un package autorizado                           |
+| registro físico de valor previo, resultado y versión de regla            | `DATA-NORM-DB-009`                                                  | conservar evidencia de efectos confirmados bajo la arquitectura autorizada               |
+| prueba física de idempotencia, rollback y ausencia de cambios semánticos | `DATA-NORM-DB-010`                                                  | certificar el comportamiento del almacenamiento y efectos físicos                        |
+| coexistencia técnica de versiones                                        | `SUPA-TRANS-006`; `DATA-NORM-TRANS-004`                             | mantener compatibilidad explícita y no mezclar conjuntos                                 |
+| activación y materialización de cambios                                  | `DATA-NORM-TRANS-005`                                               | revalidar estado y aplicar únicamente dentro de la transición autorizada                 |
+| pruebas de paridad, concurrencia e idempotencia                          | `SUPA-TRANS-009`; `DATA-NORM-TRANS-009`                             | producir evidencia reproducible antes del cierre aplicable                               |
+| rollback operativo y restauración                                        | `SUPA-TRANS-011`; `DATA-NORM-TRANS-008`                             | conservar historia y efecto compensatorio                                                |
+| paridad ambiental y procedencia del artefacto desplegado                 | `SUPA-TRANS-013`; `SUPA-TRANS-014`                                  | demostrar que identidad, digest, configuración y consumidores corresponden al despliegue |
+| materialización física de `@vento/data-normalization`                    | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` | abrir implementación únicamente para el package explícitamente autorizado                |
+
+No queda un pendiente narrativo sin propietario documental exacto.
+
+---
+
+#### 36. Cobertura de prueba vigente no modificada
+
+La conducta centralizada ya se encuentra protegida por los requisitos canónicos creados por `DATA-NORM-ARC-009`, incluidos los que cubren:
+
+- identidad estable de regla y versión;
+- conjunto efectivo y digest;
+- ciclo de vida y activación;
+- compatibilidad;
+- procedencia;
+- familias y eventos de auditoría;
+- integridad aditiva;
+- resultados cerrados;
+- minimización de datos;
+- semántica temporal;
+- idempotencia;
+- concurrencia;
+- determinismo;
+- replay;
+- rollback;
+- auditoría de búsqueda y revisión;
+- correlación y paridad;
+- corpus integral.
+
+`SHELL-NORM-008` no agrega una conducta verificable distinta: hace consumible esa misma semántica dentro de la futura superficie compartida.
+
+---
+
+#### 37. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** la tarea centraliza en `@vento/data-normalization` metadatos y contratos lógicos ya aprobados y protegidos por el gobierno canónico de normalización. No introduce un estado, transición, evento, resultado, algoritmo, versión, política de retención, regla de idempotencia, comportamiento de concurrencia, mecanismo de persistencia ni efecto ejecutable nuevo o modificado.
+
+---
+
+#### 38. Decisiones vinculantes
+
+1. La política centralizada es exactamente `VENTO_TEXT_RULE_AUDIT_VERSION_AND_IDEMPOTENCY_POLICY@1.0.0`.
+2. Existen exactamente seis familias cerradas de registro lógico.
+3. Una evaluación lógica no afirma persistencia.
+4. Una mutación confirmada se distingue de evaluación y preview.
+5. Cada regla tiene `rule_key` estable.
+6. Cada definición tiene `rule_version_id` inmutable.
+7. El contrato de identidad de versión conserva 13 atributos.
+8. Un cambio de contenido que altera digest crea otra versión.
+9. No existe `latest` implícito.
+10. `resolved_version_set` conserva 11 dependencias posibles y explicita las no aplicables.
+11. `version_set_digest` identifica el conjunto compatible realmente usado.
+12. Existen exactamente ocho estados unificados.
+13. Solo `ACTIVE` ejecuta decisiones nuevas.
+14. Los cuatro estados terminales no se reactivan como la misma versión.
+15. Aprobación y activación permanecen separadas.
+16. Los metadatos de activación conservan siete atributos.
+17. Existen exactamente cinco modos de compatibilidad.
+18. `DUAL_EVALUATION_SHADOW` no implica dual write.
+19. Una versión histórica no recupera autoridad por disponibilidad accidental.
+20. Procedencia de algoritmo conserva 11 atributos.
+21. Un mismo algoritmo y versión no representan artefactos con digests distintos.
+22. Existen exactamente doce eventos de auditoría.
+23. El contrato mínimo de auditoría conserva 30 atributos.
+24. `logical_operation_id`, `attempt_id`, `correlation_id` y `causation_id` permanecen conceptos distintos.
+25. Existen exactamente diez resultados de evaluación.
+26. Ausencia de cambio, preservación, bloqueo, revisión y fallo técnico no se colapsan.
+27. Existen exactamente cinco clases de retención lógica.
+28. Existen exactamente tres niveles de reproducibilidad.
+29. Existen exactamente siete tiempos semánticos.
+30. El motor puro no obtiene tiempo desde reloj implícito.
+31. La idempotencia conserva determinismo y efecto único como garantías distintas.
+32. La clave lógica de idempotencia conserva nueve componentes.
+33. Misma clave con payload incompatible produce `BLOCKED_CONFLICT` y `IDEMPOTENCY_PAYLOAD_CONFLICT`.
+34. Existen exactamente seis clases de operación idempotente.
+35. Solo `PURE_EVALUATION` puede demostrarse exclusivamente dentro del motor puro.
+36. Las cuatro expectativas de concurrencia permanecen explícitas.
+37. No existe last-writer-wins como resolución semántica.
+38. El replay conserva nueve atributos.
+39. Replay no modifica producción.
+40. La integridad es aditiva.
+41. Rectificación y compensación no borran historia.
+42. Evidencia sensible se minimiza.
+43. El package no genera por sí solo actor, autorización, identidad de evento o timestamp.
+44. El package no persiste auditoría.
+45. La RPC conserva propiedad del registro raíz de una mutación futura.
+46. El preview conserva metadata de evaluación, nunca metadata falsa de commit.
+47. Búsqueda y revisión conservan auditoría específica sin convertirse en identidad.
+48. Copias, snapshots y externos conservan procedencia y versiones independientes.
+49. Todas las capas deben conservar paridad.
+50. VITAL permanece separado.
+51. No se crea código, package físico, SQL, API, RPC, trigger, tabla, índice, constraint, migración o backfill.
+52. No se modifica Supabase.
+53. Esta tarea crea cero requisitos de prueba y modifica cero requisitos existentes.
+54. `SHELL-NORM-009` queda como única continuidad reservada.
+
+---
+
+#### 39. Hallazgos y destinos exactos
+
+| Hallazgo                                                                                     | Resultado de `SHELL-NORM-008`                                              | Destino exacto                                                      |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| metadatos de versión y auditoría estaban definidos en E3 pero no centralizados en SHELL-NORM | contrato completo centralizado documentalmente                             | `SHELL-NORM-008`                                                    |
+| preview necesita versionado y procedencia sin convertirse en commit                          | metadata de evaluación separada de efecto persistido                       | `SHELL-NORM-007`; `SHELL-NORM-008`                                  |
+| package puro no puede crear actor, tiempo, autorización o evidencia persistida               | esos datos deben recibirse de contexto propietario                         | `DATA-NORM-ARC-011`; `DATA-NORM-DB-009`                             |
+| almacenamiento físico de versiones aún no existe                                             | metadata lógica no se confunde con persistencia                            | `DATA-NORM-DB-001`                                                  |
+| registro físico de antes, después y versión aún no existe                                    | responsabilidad preservada fuera del package puro                          | `DATA-NORM-DB-009`                                                  |
+| coexistencia y activación requieren estado y evidencia operacional                           | cinco modos y metadatos de activación quedan especificados sin ejecutarlos | `SUPA-TRANS-006`; `DATA-NORM-TRANS-004`; `DATA-NORM-TRANS-005`      |
+| paridad, idempotencia y replay requieren certificación                                       | contratos quedan listos para corpus y pruebas                              | `SHELL-NORM-009`; `SUPA-TRANS-009`; `DATA-NORM-TRANS-009`           |
+| rollback físico no puede inferirse desde rollback normativo                                  | ambos permanecen separados                                                 | `SUPA-TRANS-011`; `DATA-NORM-TRANS-008`                             |
+| procedencia desplegada requiere demostrar ambiente y artefacto                               | metadata define identidad y digest; evidencia queda en transición          | `SUPA-TRANS-013`; `SUPA-TRANS-014`                                  |
+| package compartido todavía no está materializado                                             | especificación documental completa                                         | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` |
+
+No queda un pendiente narrativo sin propietario documental exacto.
+
+---
+
+#### 40. Criterios de aceptación
+
+`SHELL-NORM-008` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. centraliza exactamente `VENTO_TEXT_RULE_AUDIT_VERSION_AND_IDEMPOTENCY_POLICY@1.0.0`;
+2. no crea una segunda autoridad normativa;
+3. centraliza 6/6 familias de registro;
+4. centraliza 13/13 atributos de regla y versión;
+5. centraliza 11/11 dependencias del conjunto efectivo;
+6. conserva `resolved_version_set` y `version_set_digest`;
+7. prohíbe `latest` y fallback implícitos;
+8. centraliza 8/8 estados;
+9. conserva las transiciones cerradas;
+10. mantiene terminalidad de versiones;
+11. centraliza 7/7 atributos de activación;
+12. mantiene aprobación separada de activación;
+13. centraliza 5/5 modos de compatibilidad;
+14. shadow no implica dual write;
+15. centraliza 11/11 atributos de procedencia;
+16. centraliza 12/12 eventos;
+17. centraliza 30/30 atributos del contrato de auditoría;
+18. distingue operación, intento, correlación y causación;
+19. centraliza 10/10 resultados;
+20. distingue no cambio, preservación, bloqueo, revisión y fallo técnico;
+21. centraliza 5/5 clases de retención;
+22. centraliza 3/3 niveles de reproducibilidad;
+23. centraliza 7/7 tiempos semánticos;
+24. no usa reloj implícito;
+25. centraliza 9/9 componentes de idempotencia;
+26. centraliza 6/6 clases idempotentes;
+27. centraliza 4/4 expectativas de concurrencia;
+28. centraliza 9/9 atributos de replay;
+29. replay no muta producción;
+30. conserva integridad aditiva;
+31. conserva minimización de evidencia sensible;
+32. mantiene preview separado de commit;
+33. mantiene auditoría de búsqueda separada de identidad;
+34. mantiene revisión separada de activación y materialización;
+35. mantiene copias, snapshots y externos con procedencia separada;
+36. exige paridad entre capas;
+37. VITAL permanece separado;
+38. no crea código;
+39. no crea package físico;
+40. no crea almacenamiento de auditoría;
+41. no crea API o schemas runtime;
+42. no crea SQL, RPC o triggers;
+43. no ejecuta DDL, DML o backfills;
+44. no modifica Supabase;
+45. no crea ni modifica requisitos de prueba;
+46. todos los carryovers tienen propietario exacto;
+47. la siguiente tarea permanece únicamente reservada.
+
+---
+
+#### 41. Límites
+
+`SHELL-NORM-008` no:
+
+- crea físicamente `@vento/data-normalization`;
+- crea `package.json`;
+- crea archivos `.ts` o `.tsx`;
+- define exports físicos;
+- crea schemas Zod o JSON Schema;
+- crea tablas de reglas o auditoría;
+- crea ledger;
+- crea índices;
+- crea constraints;
+- crea funciones SQL;
+- crea RPC;
+- crea triggers;
+- modifica RLS;
+- ejecuta DDL;
+- ejecuta DML;
+- ejecuta backfills;
+- modifica datos existentes;
+- genera timestamps desde el reloj del runtime;
+- genera identificadores aleatorios como parte de la decisión semántica;
+- resuelve autorización;
+- persiste eventos;
+- activa reglas;
+- suspende reglas;
+- supersede reglas;
+- retira reglas;
+- invalida reglas;
+- ejecuta replay;
+- aplica compensaciones;
+- ejecuta rollback;
+- selecciona retención física;
+- modifica diccionarios o catálogos;
+- cambia búsqueda;
+- decide identidad;
+- activa unicidad;
+- fusiona registros;
+- migra consumidores;
+- modifica Supabase;
+- redefine `DATA-NORM-ARC-001..012`;
+- desarrolla `SHELL-NORM-009`.
+
+---
+
+#### 42. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-NORM-007 — Crear previsualización de transformaciones
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-NORM-008 — Crear metadatos de versión y auditoría de reglas
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-NORM-009 — Probar idempotencia y conservación semántica
+
+
 ### [ ] SHELL-NORM-009 — Probar idempotencia y conservación semántica
 
 Regla:
