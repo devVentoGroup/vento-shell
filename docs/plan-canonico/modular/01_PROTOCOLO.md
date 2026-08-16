@@ -1034,6 +1034,24 @@ El watcher y el build generarán fuera de las fuentes canónicas:
 - `.delivery/task-diffs/<TASK-ID>.md`;
 - `.delivery/task-evidence/<TASK-ID>.json`.
 
+La preparación para la fase futura de implementación también se deriva de los
+catálogos canónicos, sin duplicarlos como fuente de autoridad:
+
+- `.delivery/application-readiness-matrix.md` resume cobertura documental base
+  por aplicación a partir del catálogo de aplicaciones, `PROC-CAT-005`,
+  `PROC-CAT-006` y `PROC-SCREEN-002`;
+- `.delivery/current-implementation-handoff.md` reúne la identidad, referencias,
+  decisiones, límites y una instrucción copiable para continuar el análisis;
+- `.delivery/current-implementation-progress.md` presenta el corte observable;
+- `.delivery/implementation-progress/<TASK-ID>.json` conserva localmente los
+  estados y evidencia de cada corte futuro.
+
+Estos artefactos obedecen `implementation-readiness-policy.json` y permanecen en
+modo `PLANNING_ONLY`. Todo corte nuevo inicia en `NOT_STARTED`; el watcher puede
+crear cortes faltantes y regenerar sus vistas, pero no avanzará estados, no
+autorizará implementación, no alterará marcadores canónicos ni inferirá evidencia.
+Los estados `IMPLEMENTED` y `VERIFIED` exigirán evidencia local explícita.
+
 Estos artefactos son ayuda de desarrollo de solo lectura. No aprueban tareas,
 no sustituyen evidencia remota, operativa o física y no autorizan cambios.
 La consola resume las advertencias prospectivas en una línea; el archivo local

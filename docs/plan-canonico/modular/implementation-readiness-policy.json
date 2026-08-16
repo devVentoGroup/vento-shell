@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "policy_id": "DOCUMENTARY-IMPLEMENTATION-READINESS-001",
+  "mode": "PLANNING_ONLY",
+  "automatic_state_changes": false,
+  "implementation_authorized": false,
+  "application_readiness_statuses": [
+    "BASE_COVERED",
+    "PARTIAL",
+    "DEFERRED"
+  ],
+  "handoff_statuses": [
+    "PENDING_TASK_DEVELOPMENT",
+    "REVIEW_REQUIRED",
+    "BLOCKED_BY_CONTRADICTION",
+    "DOCUMENTED_FOR_FUTURE_IMPLEMENTATION"
+  ],
+  "slice_statuses": [
+    "NOT_STARTED",
+    "PLANNED",
+    "IN_PROGRESS",
+    "IMPLEMENTED",
+    "VERIFIED",
+    "BLOCKED"
+  ],
+  "initial_slice_status": "NOT_STARTED",
+  "slices": [
+    {
+      "id": "contract",
+      "title": "Contrato, tipos y decisiones"
+    },
+    {
+      "id": "surfaces",
+      "title": "Superficies y experiencia"
+    },
+    {
+      "id": "data-integrations",
+      "title": "Datos e integraciones"
+    },
+    {
+      "id": "guards-failures",
+      "title": "Autorización, errores y operación degradada"
+    },
+    {
+      "id": "tests-evidence",
+      "title": "Pruebas y evidencia"
+    }
+  ],
+  "outputs": {
+    "application_matrix": ".delivery/application-readiness-matrix.md",
+    "current_handoff": ".delivery/current-implementation-handoff.md",
+    "current_progress": ".delivery/current-implementation-progress.md",
+    "progress_directory": ".delivery/implementation-progress"
+  }
+}

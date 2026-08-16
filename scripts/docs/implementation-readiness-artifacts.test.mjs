@@ -1,0 +1,157 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import test from 'node:test';
+
+import {
+  buildApplicationReadiness,
+  extractImplementationReferences,
+  mergeProgress,
+  parseApplications,
+  parseProcessRelationships,
+  parseScreens,
+  prepareImplementationReadinessArtifacts,
+} from './implementation-readiness-artifacts.mjs';
+
+const policy = {
+  mode: 'PLANNING_ONLY',
+  initial_slice_status: 'NOT_STARTED',
+  slice_statuses: ['NOT_STARTED', 'PLANNED', 'IN_PROGRESS', 'IMPLEMENTED', 'VERIFIED', 'BLOCKED'],
+  slices: [
+    { id: 'contract', title: 'Contrato' },
+    { id: 'tests', title: 'Pruebas' },
+  ],
+};
+
+test('extrae catálogos y clasifica cobertura sin afirmar implementación', () => {
+  const applications = parseApplications(`#### 11. Catálogo canónico aprobado
+
+| Código | Nombre canónico | Tipo | Dominio de identidad | Alcance del roadmap |
+| --- | --- | --- | --- | --- |
+| shell | Vento OS | Hub | Laboral | Núcleo |
+| aura | AURA | Administrativa | Laboral | Diferido |
+
+#### 12. Tipos
+`);
+  const relationships = parseProcessRelationships(`### ✅ PROC-CAT-005 — Propiedad
+
+| ID | Nombre | Dominio | Propietaria | Regla | Evidencia | Nota |
+| --- | --- | --- | --- | --- | --- | --- |
+| \`VPROC-0001\` | Entrada | Base | \`shell\` | regla | evidencia | nota |
+
+### ✅ PROC-CAT-006 — Consumo
+
+| ID | Propietaria | Directas | Condicionales | Motivo | Nota |
+| --- | --- | --- | --- | --- | --- |
+| \`VPROC-0001\` | \`shell\` | — | — | motivo | nota |
+
+### ✅ PROC-CAT-007 — Actores
+`);
+  const screens = parseScreens(`### ✅ PROC-SCREEN-002 — Pantallas
+
+| ID | Nombre | Aplicación | Tipo | Estado | Nota |
+| --- | --- | --- | --- | --- | --- |
+| \`VSCREEN-0001\` | Inicio | \`shell\` | hub | vigente | nota |
+
+### ✅ PROC-SCREEN-003 — Procesos
+`);
+  const rows = buildApplicationReadiness(applications, relationships, screens);
+  assert.equal(rows.find(({ code }) => code === 'shell').status, 'BASE_COVERED');
+  assert.equal(rows.find(({ code }) => code === 'aura').status, 'DEFERRED');
+  assert.ok(rows.every(({ status }) => !['IMPLEMENTED', 'VERIFIED'].includes(status)));
+});
+
+test('el relevo deriva aplicaciones solo desde identidades y relaciones canónicas', () => {
+  const catalogs = {
+    applications: [
+      { code: 'shell' },
+      { code: 'nexo' },
+      { code: 'viso' },
+    ],
+    screens: new Map([['VSCREEN-0001', { app: 'nexo' }]]),
+    relationships: {
+      owners: new Map([['VPROC-0001', 'viso']]),
+      consumers: new Map([['VPROC-0001', { direct: ['nexo'], conditional: [] }]]),
+    },
+  };
+  const references = extractImplementationReferences(
+    'SHELL-UI-015 usa VSCREEN-0001, VPROC-0001, TREQ-UX-2001, SHELL-UI-014 y DELIV-PKG-VCTRL_001.',
+    'SHELL-UI-015',
+    catalogs,
+  );
+  assert.deepEqual(references.applications, ['nexo', 'shell', 'viso']);
+  assert.deepEqual(references.screens, ['VSCREEN-0001']);
+  assert.deepEqual(references.processes, ['VPROC-0001']);
+  assert.deepEqual(references.treq, ['TREQ-UX-2001']);
+  assert.deepEqual(references.tasks, ['DELIV-PKG-VCTRL_001', 'SHELL-UI-014']);
+});
+
+test('los cortes nacen NOT_STARTED y el generador conserva avances explícitos', () => {
+  const initial = mergeProgress(null, {
+    taskId: 'SHELL-UI-015',
+    taskTitle: 'Diagnóstico',
+    policy,
+    repositories: ['vento-shell'],
+  });
+  assert.deepEqual(initial.slices.map(({ status }) => status), ['NOT_STARTED', 'NOT_STARTED']);
+  initial.slices[0].status = 'PLANNED';
+  initial.slices[0].notes = 'Corte revisado manualmente.';
+  const merged = mergeProgress(initial, {
+    taskId: 'SHELL-UI-015',
+    taskTitle: 'Diagnóstico de contexto',
+    policy,
+    repositories: [],
+  });
+  assert.equal(merged.slices[0].status, 'PLANNED');
+  assert.equal(merged.slices[0].notes, 'Corte revisado manualmente.');
+  assert.equal(merged.implementation_authorized, false);
+});
+
+test('rechaza estados materiales sin evidencia', () => {
+  const existing = {
+    schema_version: 1,
+    task_id: 'SHELL-UI-015',
+    task_title: 'Diagnóstico',
+    mode: 'PLANNING_ONLY',
+    implementation_authorized: false,
+    slices: [
+      {
+        id: 'contract',
+        title: 'Contrato',
+        status: 'IMPLEMENTED',
+        target_repositories: ['vento-shell'],
+        evidence: [],
+        notes: null,
+      },
+    ],
+  };
+  assert.throws(() => mergeProgress(existing, {
+    taskId: 'SHELL-UI-015',
+    taskTitle: 'Diagnóstico',
+    policy,
+    repositories: [],
+  }), /IMPLEMENTED sin evidencia/u);
+});
+
+test('los catálogos reales generan preparación completa sin escrituras', () => {
+  const result = prepareImplementationReadinessArtifacts({ write: false });
+  assert.equal(result.applicationRows.length, 10);
+  assert.equal(result.applicationRows.reduce((sum, row) => sum + row.ownedProcesses, 0), 69);
+  assert.equal(result.applicationRows.reduce((sum, row) => sum + row.screenCount, 0), 177);
+  assert.ok(result.handoff.includes('PLANNING_ONLY'));
+  assert.equal(result.progress.implementation_authorized, false);
+  assert.equal(result.progress.slices.length, 5);
+});
+
+test('el build y el check mantienen la preparación automática conectada', () => {
+  const buildSource = fs.readFileSync('scripts/docs/build-plan-canonico.mjs', 'utf8');
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert.match(buildSource, /prepareImplementationReadinessArtifacts\(\{ root, write: true \}\)/u);
+  assert.match(
+    packageJson.scripts['docs:plan:check'],
+    /implementation-readiness-artifacts\.mjs --check/u,
+  );
+  assert.equal(
+    packageJson.scripts['docs:implementation:prepare'],
+    'node scripts/docs/implementation-readiness-artifacts.mjs',
+  );
+});

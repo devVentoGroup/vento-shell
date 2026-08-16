@@ -5,6 +5,7 @@ syncPendingTaskContext();
 try {
   const path = await import('node:path');
   const { derivePreflight } = await import('./canonical-task-preflight.mjs');
+  const { prepareImplementationReadinessArtifacts } = await import('./implementation-readiness-artifacts.mjs');
   const { writeCurrentTaskDevelopmentArtifacts } = await import('./task-development-artifacts.mjs');
   const { writePlanWatchStatus } = await import('./plan-watch-runtime.mjs');
   const root = process.cwd();
@@ -20,8 +21,9 @@ try {
     preflight: derivePreflight({ root }),
   });
   writeCurrentTaskDevelopmentArtifacts({ root, buildSucceeded: true });
+  prepareImplementationReadinessArtifacts({ root, write: true });
 } catch (error) {
   console.warn(
-    `[PLAN CANÓNICO] No se pudo actualizar .delivery/plan-status.md: ${error instanceof Error ? error.message : String(error)}`,
+    `[PLAN CANÓNICO] No se pudieron actualizar todos los artefactos locales: ${error instanceof Error ? error.message : String(error)}`,
   );
 }

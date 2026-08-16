@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 const TRANSVERSAL_PLAN_FILES = new Set([
   'docs/plan-canonico/modular/01_PROTOCOLO.md',
   'docs/plan-canonico/modular/delivery-contract.json',
+  'docs/plan-canonico/modular/implementation-handoff-template.md',
+  'docs/plan-canonico/modular/implementation-readiness-policy.json',
   'docs/plan-canonico/modular/task-delivery-template.md',
   'docs/plan-canonico/modular/task-development-policy.json',
   'docs/plan-canonico/modular/task-format-policy.json',
