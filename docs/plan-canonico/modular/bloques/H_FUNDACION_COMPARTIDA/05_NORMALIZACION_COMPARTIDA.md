@@ -8453,7 +8453,1141 @@ SHELL-NORM-008 — Crear metadatos de versión y auditoría de reglas
 SHELL-NORM-009 — Probar idempotencia y conservación semántica
 
 
-### [ ] SHELL-NORM-009 — Probar idempotencia y conservación semántica
+### ✅ SHELL-NORM-009 — Probar idempotencia y conservación semántica
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-NORM-008 — Crear metadatos de versión y auditoría de reglas
+**Tarea siguiente:** SHELL-DB-001 — Crear @vento/supabase
+**Tipo de tarea:** Documental; materialización y reconciliación del corpus, oráculos, matrices y criterios de conformidad que deberán demostrar idempotencia, determinismo y conservación semántica de `@vento/data-normalization`, reutilizando la evidencia contractual aprobada y los requisitos de prueba vigentes, sin materializar código, package físico, tests runtime, persistencia, migraciones ni cambios en Supabase
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md`
+**Estado físico resultante:** ESPECIFICADO; PACKAGE Y SUITE EJECUTABLE NO MATERIALIZADOS
+**Implementación física autorizada:** ninguna
+**Cambios de código, packages físicos, archivos TypeScript, configuración npm, registry, workflows, DDL, DML, migraciones, RLS, RPC, triggers, índices, constraints, datos, secretos, configuración remota o despliegues:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-NORM-009` cierra documentalmente el mini-bloque `SHELL-NORM-001..009` mediante una definición material y verificable de cómo deberá demostrarse que la futura implementación de `@vento/data-normalization`:
+
+1. produce el mismo resultado lógico para la misma entrada, coordenada, contexto y conjunto efectivo de versiones;
+2. no deriva progresivamente cuando su propia salida vuelve a evaluarse bajo el mismo contrato;
+3. conserva significado, estructura, procedencia, identidad y fronteras que la operación solicitada no está autorizada a cambiar;
+4. permanece fail closed ante contexto, política, versión, autoridad o evidencia insuficientes;
+5. no introduce efectos empresariales desde funciones puras;
+6. no convierte búsqueda, preview, auditoría, clasificación o coincidencia en identidad, unicidad, fusión o commit;
+7. conserva la frontera independiente de VITAL;
+8. puede ser certificada posteriormente mediante pruebas ejecutables sin reinterpretar los contratos documentales de `SHELL-NORM-001..008`.
+
+La tarea no sustituye la ejecución futura de pruebas del package. Materializa el corpus y los oráculos que esa ejecución deberá implementar y enlaza la evidencia documental ya existente sin presentarla como prueba de un motor que todavía no existe.
+
+---
+
+#### 2. Resultado material
+
+Queda definido el **corpus canónico compartido de idempotencia y conservación semántica de `@vento/data-normalization`**, compuesto por cuatro piezas inseparables:
+
+1. **corpus base heredado:** 89 escenarios explícitos ya reconciliados documentalmente por `DATA-NORM-TRANS-002`;
+2. **oráculo de repetición:** protocolo uniforme para verificar determinismo e idempotencia sin confundirlos con efecto único transaccional;
+3. **oráculo de conservación semántica:** matriz que limita exactamente qué dimensiones puede alterar cada operación y cuáles debe preservar;
+4. **matriz de evidencia y handoff:** separación entre evidencia documental disponible, pruebas ejecutables pendientes y pruebas físicas de base de datos o integración que pertenecen a otras tareas.
+
+Conciliación del corpus base heredado:
+
+| Familia propietaria                | Escenarios explícitos | Resultado documental heredado        |
+| ---------------------------------- | --------------------: | ------------------------------------ |
+| capitalización `DATA-NORM-ARC-003` |                    16 | 16 reconciliados                     |
+| conectores `DATA-NORM-ARC-004`     |                    20 | 20 reconciliados                     |
+| excepciones `DATA-NORM-ARC-005`    |                    21 | 21 reconciliados                     |
+| diccionario `DATA-NORM-ARC-006`    |                    15 | 15 reconciliados                     |
+| búsqueda `DATA-NORM-ARC-008`       |                    17 | 17 reconciliados                     |
+| **Total**                          |                **89** | **89 reconciliados documentalmente** |
+
+Estos 89 escenarios no se renombran, no se duplican y no se declaran ejecutados contra `@vento/data-normalization`. Constituyen el baseline contractual que deberá reutilizar la futura suite del package.
+
+---
+
+#### 3. Fuentes normativas y precedencia
+
+| Fuente                   | Decisión consumida                                                                                                     |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-NORM-001`         | identidad del package, pureza, determinismo, ausencia de I/O, side effects y autoridad empresarial                     |
+| `SHELL-NORM-002`         | 14 clases, 7 roles de representación, 6 roles de fuente, 8 modos de tratamiento, 13 operaciones y descriptores         |
+| `SHELL-NORM-003`         | Unicode, espacios, capitalización, perfil `es-CO`, tokenización, fronteras, exclusiones y separación de operaciones    |
+| `SHELL-NORM-004`         | 18 conectores, excepciones oficiales, scopes, matchers, precedencia, resultados y formas protegidas                    |
+| `SHELL-NORM-005`         | diccionario ortográfico versionado, tres entradas iniciales, `expresso` fuera de corrección automática y fallo cerrado |
+| `SHELL-NORM-006`         | siete representaciones de búsqueda, seis perfiles, nueve modos, ranking, explicación, privacidad e identidad separada  |
+| `SHELL-NORM-007`         | preview no vinculante, 21 atributos de descriptor, seis dimensiones de divergencia y reevaluación previa al commit     |
+| `SHELL-NORM-008`         | versiones, digests, estados, auditoría lógica, idempotencia, concurrencia, replay y procedencia                        |
+| `DATA-NORM-ARC-001..012` | autoridad semántica original y requisitos de conformidad ya aprobados                                                  |
+| `DATA-NORM-TRANS-002`    | replay documental de 89 escenarios y 25 unidades analíticas sin motor físico                                           |
+| `DATA-NORM-TRANS-009`    | separación entre `PASS_DOCUMENTAL` y evidencia operacional por ambiente                                                |
+| registro 04A vigente     | requisitos existentes que ya protegen idempotencia, paridad, corpus y conservación                                     |
+| `SHELL-CI-001`           | futura materialización de pruebas de packages compartidos                                                              |
+| `SHELL-CI-005`           | futura matriz de compatibilidad entre package y consumidores                                                           |
+| `DATA-NORM-DB-010`       | prueba física de idempotencia, rollback y ausencia de cambios semánticos en la capa de datos                           |
+
+Precedencia obligatoria:
+
+```text
+CONTRATOS DATA-NORM-ARC
+        ↓
+CENTRALIZACIÓN SHELL-NORM-001..008
+        ↓
+CORPUS + ORÁCULOS SHELL-NORM-009
+        ↓
+PRUEBAS EJECUTABLES DEL PACKAGE EN SHELL-CI-001
+        ↓
+PARIDAD / COMPATIBILIDAD / TRANSICIÓN
+        ↓
+PRUEBAS FÍSICAS DE BLOQUE R CUANDO APLIQUEN
+```
+
+Una prueba futura podrá implementar este contrato, pero no cambiar sus resultados esperados para hacer pasar una implementación divergente.
+
+---
+
+#### 4. Estado verificable y frontera de la tarea
+
+Estado observado al desarrollar esta tarea:
+
+| Elemento                             | Estado                                              |
+| ------------------------------------ | --------------------------------------------------- |
+| especificación `SHELL-NORM-001..008` | aprobada documentalmente                            |
+| `SHELL-NORM-009`                     | tarea documental actual                             |
+| `@vento/data-normalization` físico   | no materializado                                    |
+| suite runtime del package            | no materializada                                    |
+| ejecución contra package físico      | no disponible                                       |
+| corpus contractual E3                | disponible                                          |
+| replay documental de 89 escenarios   | disponible y reconciliado por `DATA-NORM-TRANS-002` |
+| cambios de datos                     | no autorizados                                      |
+| cambios Supabase                     | no autorizados                                      |
+| cambios de código                    | no autorizados                                      |
+| siguiente tarea                      | reservada; no iniciada                              |
+
+Por tanto, `SHELL-NORM-009` **prueba documentalmente la completitud y coherencia de los oráculos**, pero no afirma que exista una implementación runtime certificada.
+
+---
+
+#### 5. Las cuatro dimensiones de prueba
+
+Toda futura ejecución deberá distinguir exactamente estas cuatro dimensiones:
+
+| Dimensión                          | Pregunta que responde                                                    | Criterio de conformidad                                     |
+| ---------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| determinismo                       | ¿la misma entrada lógica y mismas versiones producen el mismo resultado? | resultado, salida, bloqueo y huellas lógicas equivalentes   |
+| idempotencia de evaluación         | ¿reevaluar la salida bajo el mismo contrato evita deriva?                | segunda aplicación no introduce otro cambio semántico       |
+| conservación semántica             | ¿solo cambió aquello que la operación permite cambiar?                   | todas las dimensiones protegidas permanecen invariantes     |
+| ausencia de efectos no autorizados | ¿la evaluación pura evitó persistencia, identidad y side effects?        | cero efectos empresariales fuera de la frontera propietaria |
+
+Ninguna dimensión sustituye a otra. Dos ejecuciones con la misma cadena visible pueden fallar conservación si cambian procedencia, estructura, autoridad o representación.
+
+---
+
+#### 6. Protocolo de repetición A/B/C
+
+Cada caso determinista deberá poder ejecutarse mediante tres observaciones lógicas:
+
+```text
+A = evaluate(source, descriptor, operation, resolved_version_set, explicit_context)
+
+B = evaluate(source, descriptor, operation, resolved_version_set, explicit_context)
+
+C = evaluate(output_of_A_when_reapplicable,
+             descriptor,
+             operation,
+             resolved_version_set,
+             explicit_context)
+```
+
+Oráculos:
+
+1. **A = B en resultado lógico.**
+2. A y B seleccionan la misma política, regla, catálogo, entrada, precedencia y versión.
+3. A y B producen la misma salida o la misma preservación.
+4. A y B producen el mismo conjunto de derivaciones deterministas.
+5. A y B producen el mismo bloqueo, revisión o escalamiento cuando corresponda.
+6. C no introduce un segundo cambio semántico.
+7. C no crea otra corrección cuando A ya produjo forma canónica.
+8. C no convierte `PRESERVED` en mutación.
+9. C no convierte `REVIEW_REQUIRED` en corrección automática.
+10. C no convierte `BLOCKED_POLICY` o `BLOCKED_CONFLICT` en éxito.
+11. C no convierte una derivación de búsqueda en valor fuente.
+12. A/B/C no producen persistencia, red, DDL, DML, RPC, identidad, fusión ni side effects desde el motor puro.
+
+La comparación debe usar resultados lógicos y metadata determinista. Identificadores de intento, timestamps de infraestructura u otros valores generados por capas propietarias no forman parte del oráculo de igualdad del motor puro salvo que se suministren explícitamente como entrada contractual.
+
+---
+
+#### 7. Dos garantías de idempotencia que no se confunden
+
+Se conservan las dos garantías aprobadas:
+
+```text
+MISMA ENTRADA LÓGICA
++ MISMA COORDENADA
++ MISMO CONJUNTO DE VERSIONES
++ MISMA OPERACIÓN
+=
+MISMO RESULTADO LÓGICO
+```
+
+y:
+
+```text
+REAPLICAR UNA OPERACIÓN EMPRESARIAL YA CONFIRMADA
+=
+RECUPERAR EL RESULTADO PREVIO
+SIN SEGUNDO EFECTO EMPRESARIAL
+```
+
+`SHELL-NORM-009` puede especificar y certificar documentalmente la primera para el motor puro.
+
+La segunda requiere estado persistido, idempotency keys, concurrencia y confirmación de commit; su ejecución física permanece en la RPC, CI, transición y BLOQUE R correspondientes.
+
+---
+
+#### 8. Oráculo de conservación semántica
+
+Toda prueba deberá evaluar, cuando aplique, estas diez dimensiones:
+
+| Dimensión protegida  | Regla                                                                                          |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| coordenada           | dominio, entidad y campo semántico no cambian por transformación textual                       |
+| clase semántica      | la operación no reclasifica el campo por apariencia del valor                                  |
+| representación       | una derivación no se convierte en fuente ni sustituye el valor mostrado                        |
+| rol de fuente        | una copia, snapshot, externo u output no adquiere autoridad por transformación                 |
+| estructura           | cantidades, unidades, multiplicadores, componentes, signos y fronteras protegidas permanecen   |
+| forma protegida      | marcas, siglas, nombres legales, identificadores, secretos y excepciones conservan su contrato |
+| procedencia          | original, versión, evidencia y vínculo con la fuente no se pierden                             |
+| identidad            | ninguna coincidencia o corrección crea identidad, unicidad, sobreviviente o fusión             |
+| historia             | snapshots, auditoría y resultados históricos no se reinterpretan retroactivamente              |
+| frontera de producto | VITAL no recibe reglas transversales de Vento OS                                               |
+
+Una operación es no conforme si obtiene la cadena visual esperada pero viola cualquiera de estas dimensiones.
+
+---
+
+#### 9. Matriz de conformidad de las 13 operaciones
+
+| Operación                        | Delta permitido                                     | Invariantes obligatorios                                              | Resultado ante falta de contrato                |
+| -------------------------------- | --------------------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------- |
+| `UNICODE_CANONICALIZATION`       | composición Unicode autorizada                      | significado, grafemas, signos, tildes, `ñ`, identidad y fuente        | preservar o bloquear                            |
+| `EDGE_WHITESPACE_TRIM`           | retirar bordes declarados no significativos         | contenido interno y formato significativo                             | preservar o bloquear                            |
+| `INTERNAL_WHITESPACE_COMPACTION` | compactar separadores declarados accidentales       | palabras, saltos, tabs, NBSP y estructura protegida                   | preservar o bloquear                            |
+| `PROSE_PUNCTUATION_SPACING`      | solo lo permitido por política específica           | puntuación, contenido y autoría fuera del delta                       | preservar o bloquear                            |
+| `COMMERCIAL_CAPITALIZATION`      | caja de tokens elegibles                            | ortografía, tildes, signos, fronteras, estructura y formas protegidas | bloquear                                        |
+| `CONNECTOR_CASE_POLICY`          | caja posicional de conector exacto                  | token, léxico, signos, contracciones y significado                    | preservar o bloquear                            |
+| `APPROVED_DICTIONARY_CORRECTION` | reemplazo exacto y direccional aprobado             | scope, fronteras, estructura, identidad y original cuando aplique     | preservar, revisar o bloquear                   |
+| `OFFICIAL_EXCEPTION_APPLICATION` | preservar o emitir forma oficial autorizada         | scope, evidencia, clase, fuente y significado                         | preservar, revisar o bloquear                   |
+| `TECHNICAL_CANONICALIZATION`     | únicamente formato técnico del contrato aportado    | semántica técnica, checksum, identidad y material protegido           | bloquear                                        |
+| `SEARCH_KEY_DERIVATION`          | crear representación derivada                       | valor fuente, valor mostrado, identidad y persistencia                | bloquear o no aplicar                           |
+| `STRUCTURED_PARSE_OR_RENDER`     | interpretar o renderizar componentes declarados     | cantidad, unidad, multiplicador, orden y relaciones estructurales     | resolución estructural o bloqueo                |
+| `SOURCE_PROPAGATION_OR_RESYNC`   | ninguna propagación como side effect del motor puro | fuente, autoridad, causalidad y snapshot                              | resolución estructural; sin efecto              |
+| `IDENTITY_OR_RECORD_ACTION`      | ningún cambio textual autorizante                   | identidad, relaciones, unicidad y registros                           | `STRUCTURAL_RESOLUTION_REQUIRED` o `PROHIBITED` |
+
+Conciliación:
+
+```text
+operaciones esperadas = 13
+operaciones cubiertas = 13
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 10. Matriz de las 14 clases semánticas
+
+| Clase                          | Prueba mínima de conservación                                             | Operación que nunca se infiere     |
+| ------------------------------ | ------------------------------------------------------------------------- | ---------------------------------- |
+| `COMMERCIAL_NAME`              | conservar ortografía, estructura y excepciones fuera del delta autorizado | identidad o fusión                 |
+| `STRUCTURED_PRESENTATION_NAME` | conservar cantidad, unidad, multiplicador, empaque y contexto             | equivalencia por etiqueta          |
+| `HUMAN_LABEL`                  | no heredar estilo comercial por visibilidad                               | capitalización comercial universal |
+| `OFFICIAL_LEGAL_NAME`          | preservar forma oficial completa y procedencia                            | reconstrucción por tokens          |
+| `OFFICIAL_BRAND_FORM`          | preservar grafía oficial, signos y capitalización interna                 | Title Case genérico                |
+| `PERSON_OR_ACTOR_NAME`         | conservar identidad declarada y no inferir corrección                     | deduplicación por nombre           |
+| `ADDRESS_OR_LOCATION_TEXT`     | conservar números, orden, abreviaturas y signos bajo contrato             | corrección comercial               |
+| `FREE_TEXT`                    | conservar autoría, historia y contenido fuera de reglas explícitas        | corrección destructiva silenciosa  |
+| `CONTROLLED_VOCABULARY_CODE`   | conservar código salvo contrato técnico                                   | diccionario ortográfico            |
+| `MEASUREMENT_OR_UNIT_CODE`     | conservar código y significado dimensional                                | expansión o traducción implícita   |
+| `TECHNICAL_IDENTIFIER`         | conservar estabilidad y formato contractual                               | capitalización comercial           |
+| `CONTACT_IDENTIFIER`           | aplicar solo estándar o contrato específico                               | regla de nombre comercial          |
+| `SECRET_OR_SIGNATURE_MATERIAL` | preservación exacta y ausencia de derivación general                      | cualquier normalización textual    |
+| `UNCLASSIFIED_PRESERVE`        | preservación exacta y automatización bloqueada                            | auto-detección de política         |
+
+Conciliación:
+
+```text
+clases esperadas = 14
+clases cubiertas = 14
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 11. Matriz de los siete roles de representación
+
+| Rol                   | Invariante de prueba                                                            |
+| --------------------- | ------------------------------------------------------------------------------- |
+| `PRIMARY_VALUE`       | solo cambia si clase, fuente, operación, política y versiones permiten mutación |
+| `DISPLAY_OVERRIDE`    | no retroalimenta automáticamente el principal                                   |
+| `SEARCH_DERIVATION`   | nunca sustituye el valor mostrado ni crea identidad                             |
+| `EXTERNAL_ORIGINAL`   | conserva forma y procedencia; una forma interna permanece separada              |
+| `HISTORICAL_SNAPSHOT` | no se resincroniza ni reinterpreta con reglas nuevas                            |
+| `OUTPUT_PROJECTION`   | adapta salida sin adquirir autoridad sobre la fuente                            |
+| `AUDIT_EVIDENCE`      | permanece inmutable; rectificación es aditiva                                   |
+
+Conciliación:
+
+```text
+roles esperados = 7
+roles cubiertos = 7
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 12. Matriz de los seis roles de fuente
+
+| Rol                    | Invariante de prueba                                                           |
+| ---------------------- | ------------------------------------------------------------------------------ |
+| `AUTHORITATIVE_SOURCE` | puede originar una corrección solo si todas las otras dimensiones la autorizan |
+| `APPROVED_OVERRIDE`    | conserva scope propio y nunca amplía permisos de clase                         |
+| `SYNCHRONIZED_COPY`    | no decide una corrección canónica de manera independiente                      |
+| `IMMUTABLE_SNAPSHOT`   | no cambia por una nueva versión de la fuente                                   |
+| `EXTERNAL_EVIDENCE`    | preserva original y no se convierte en autoridad interna automática            |
+| `OUTPUT_ONLY`          | no retroalimenta ni modifica la fuente                                         |
+
+Conciliación:
+
+```text
+roles esperados = 6
+roles cubiertos = 6
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 13. Matriz de los ocho modos de tratamiento
+
+| Modo                             | Oráculo idempotente                                                                |
+| -------------------------------- | ---------------------------------------------------------------------------------- |
+| `DETERMINISTIC_MUTATION_ALLOWED` | la primera transformación produce forma estable; reaplicación no cambia            |
+| `DICTIONARY_MUTATION_ALLOWED`    | el reemplazo aprobado no vuelve a reemplazarse ni crea otra entrada                |
+| `DERIVATION_ONLY`                | la derivación es estable y la fuente permanece idéntica                            |
+| `VALIDATION_ONLY`                | revalidar no altera el valor                                                       |
+| `HUMAN_REVIEW_REQUIRED`          | repetir conserva el original y el estado de necesidad de revisión                  |
+| `PRESERVE_EXACT`                 | salida equivale exactamente a entrada dentro del contrato                          |
+| `STRUCTURAL_RESOLUTION_REQUIRED` | repetir no introduce corrección textual ni efecto estructural                      |
+| `PROHIBITED`                     | repetir continúa bloqueado; ausencia de permiso nunca se convierte en autorización |
+
+Conciliación:
+
+```text
+modos esperados = 8
+modos cubiertos = 8
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 14. Unicode y espacios
+
+La suite deberá cubrir como mínimo:
+
+| Caso | Entrada o condición                                       | Oráculo                                                            |
+| ---: | --------------------------------------------------------- | ------------------------------------------------------------------ |
+|    1 | forma descompuesta equivalente y operación NFC autorizada | salida NFC; segunda aplicación idéntica                            |
+|    2 | valor ya NFC                                              | `NO_CHANGE_ALREADY_CANONICAL` o resultado equivalente sin mutación |
+|    3 | tilde, diéresis o `ñ` significativas                      | no se eliminan por canonicalización                                |
+|    4 | espacio de borde declarado no significativo               | se recorta una vez; segunda aplicación estable                     |
+|    5 | espacio de borde significativo                            | se preserva                                                        |
+|    6 | separadores internos accidentales autorizados             | compactación estable                                               |
+|    7 | salto de línea significativo                              | se preserva                                                        |
+|    8 | tabulación significativa                                  | se preserva                                                        |
+|    9 | NBSP o espacio especial con semántica no resuelta         | se preserva o bloquea; no se convierte por conveniencia            |
+|   10 | descriptor incompleto                                     | fail closed; sin transformación                                    |
+
+No existe un oráculo transversal que autorice `trim`, `\s+`, `lower`, `unaccent` o transliteración sobre todo texto.
+
+---
+
+#### 15. Capitalización empresarial
+
+La prueba de `COMMERCIAL_CAPITALIZATION` conserva:
+
+1. perfil exacto `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0`;
+2. locale `es-CO` explícito;
+3. elegibilidad exclusiva de `COMMERCIAL_NAME`;
+4. representación y fuente autorizadas;
+5. nueve clases de token;
+6. seis resultados de token;
+7. tres fronteras de segmento;
+8. separación frente a Unicode, espacios, diccionario y puntuación;
+9. precedencia de conectores y excepciones;
+10. idempotencia de la forma final.
+
+Casos negativos obligatorios:
+
+| Condición                       | Resultado esperado                      |
+| ------------------------------- | --------------------------------------- |
+| `OFFICIAL_BRAND_FORM`           | no aplicar estilo comercial genérico    |
+| `OFFICIAL_LEGAL_NAME`           | preservar forma oficial                 |
+| `PERSON_OR_ACTOR_NAME`          | no aplicar política comercial universal |
+| identificador técnico           | no capitalizar comercialmente           |
+| secreto o firma                 | preservar exactamente                   |
+| `UNCLASSIFIED_PRESERVE`         | bloquear automatización                 |
+| locale ausente o incompatible   | bloquear                                |
+| versión faltante o incompatible | bloquear                                |
+| VITAL                           | fuera de la política transversal        |
+
+---
+
+#### 16. Conectores
+
+Se conserva el catálogo exacto de 18 entradas:
+
+```text
+a
+al
+con
+de
+del
+e
+el
+en
+la
+las
+lo
+los
+o
+para
+por
+sin
+u
+y
+```
+
+Cada entrada deberá ser cubierta en los contextos normativos `NAME_START`, `DECLARED_SEGMENT_START` e `INTERNAL` según el corpus propietario.
+
+Oráculos obligatorios:
+
+1. coincidencia únicamente por token lexical completo;
+2. `al` y `del` permanecen atómicos;
+3. no se expande `al` a `a el`;
+4. no se expande `del` a `de el`;
+5. no se contrae `a el` ni `de el`;
+6. `e`, `u`, `o` y `y` conservan el lexema recibido; solo cambia caja posicional;
+7. no existe sustitución fonológica automática `y ↔ e` ni `o ↔ u`;
+8. `y/o`, `o/u`, `de-la` u otras formas compuestas no se infieren como entradas;
+9. una excepción oficial de mayor precedencia prevalece;
+10. repetir el resultado no altera token, posición ni forma.
+
+---
+
+#### 17. Excepciones oficiales
+
+La suite consume sin ampliar:
+
+- 4 familias de excepción;
+- 4 scopes;
+- 3 matchers;
+- 4 modos de aplicación;
+- 7 resultados;
+- 28 formas activas de conformidad presentes en el corpus aprobado.
+
+Anclas explícitas de preservación incluyen, cuando el scope sea compatible:
+
+```text
+3M
+iPhone
+Coca-Cola
+NEXO
+VISO
+ORIGO
+NUMERA
+FOGO
+PULSO
+VGR
+SAU
+VCF
+COP
+g
+kg
+ml
+l
+un
+dz
+SAS
+S.A.S.
+SA
+S.A.
+LTDA
+CIA
+```
+
+Las formas se evalúan bajo su familia, alcance, matcher, fuente, versión y evidencia; la lista visible no autoriza tratarlas todas como equivalentes ni como tokens intercambiables.
+
+Oráculos:
+
+1. una forma oficial ya correcta permanece estable;
+2. emitir una forma oficial autorizada y reevaluarla no produce otro cambio;
+3. la coincidencia no escapa de su scope;
+4. no se activa matching difuso;
+5. no se elimina puntuación para forzar coincidencia;
+6. no se crean aliases por frecuencia;
+7. sufijos legales puntuados y no puntuados no se declaran equivalentes por inferencia;
+8. una excepción no crea identidad ni unicidad;
+9. candidatos sin autoridad permanecen preservados, bloqueados o en revisión.
+
+---
+
+#### 18. Diccionario ortográfico
+
+La suite conserva exactamente las tres correcciones iniciales:
+
+| Forma de origen | Forma canónica | Oráculo                                                                 |
+| --------------- | -------------- | ----------------------------------------------------------------------- |
+| `maiz`          | `maíz`         | corrección exacta en scope elegible; `maíz` reaplicado permanece `maíz` |
+| `clasico`       | `clásico`      | corrección exacta; segunda aplicación sin cambio                        |
+| `frio`          | `frío`         | corrección exacta; segunda aplicación sin cambio                        |
+
+`expresso` permanece fuera de las correcciones automáticas de la versión vigente.
+
+Oráculos obligatorios:
+
+1. matching direccional y exacto;
+2. fronteras completas de valor, frase o token;
+3. no se usa similitud, distancia de edición, fonética ni inferencia;
+4. la forma canónica no se vuelve origen de una corrección inversa implícita;
+5. la proyección de caja no ejecuta capitalización completa;
+6. excepción oficial de mayor precedencia se conserva;
+7. conflicto de igual especificidad bloquea;
+8. entrada inactiva no actúa como fallback;
+9. original externo o snapshot permanece separado;
+10. corrección textual no crea alias de búsqueda, identidad ni fusión.
+
+---
+
+#### 19. Búsqueda y comparación
+
+La prueba de búsqueda cubre las siete representaciones aprobadas y conserva las siguientes fronteras:
+
+1. `SEARCH_FORM_KEY` aplica únicamente las transformaciones aprobadas para esa derivación;
+2. `SEARCH_ACCENT_KEY` bajo `es-CO` conserva `ñ` frente a `n`;
+3. `SEARCH_TOKEN_STREAM` respeta grafemas y fronteras;
+4. aliases solo participan si son explícitos, activos, acotados y versionados;
+5. transliteración permanece deshabilitada por defecto;
+6. similitud permanece deshabilitada por defecto;
+7. existen seis perfiles cerrados;
+8. existen nueve modos de coincidencia con precedencia absoluta;
+9. ranking y desempate deben ser deterministas;
+10. fuente y valor mostrado permanecen separados;
+11. una coincidencia no autoriza identidad, selección, unicidad o fusión.
+
+Casos de conservación obligatorios:
+
+| Caso                                          | Oráculo                                              |
+| --------------------------------------------- | ---------------------------------------------------- |
+| `año` frente a `ano`                          | no convergen por regla transversal                   |
+| valor con tilde frente a derivación tolerante | la derivación no modifica el valor mostrado          |
+| alias ausente                                 | no se inventa por frecuencia o similitud             |
+| transliteración deshabilitada                 | no produce salida alternativa                        |
+| similitud deshabilitada                       | no produce candidato fuzzy                           |
+| misma consulta, scope, corpus y versiones     | mismo orden y explicación                            |
+| versión de ranking distinta                   | no se mezcla silenciosamente dentro del mismo cursor |
+
+---
+
+#### 20. Previsualización
+
+El corpus de preview deberá demostrar:
+
+1. `PREVIEW_AND_GUIDANCE` continúa separado de `AUTHORITATIVE_SEMANTIC_EVALUATION`;
+2. `NORMALIZATION_EVALUATION_QUERY` no muta;
+3. los 21 atributos del descriptor permanecen coherentes;
+4. el preview devuelve la misma evaluación semántica para la misma entrada y versiones;
+5. la repetición del preview no reserva filas ni crea locks;
+6. la repetición no crea auditoría falsa de commit;
+7. la propuesta no se convierte en `APPLIED_CHANGE` por ser mostrada;
+8. la fuente observada permanece distinguible de la propuesta;
+9. una coincidencia de búsqueda continúa siendo no vinculante;
+10. un resultado de revisión continúa siendo revisión.
+
+Las seis dimensiones de divergencia que obligan a reevaluar antes de un commit posterior permanecen:
+
+```text
+valor
+scope
+política
+versiones
+unicidad
+relaciones
+```
+
+Una previsualización solo es reutilizable como evidencia de lo observado; nunca como permiso de commit.
+
+---
+
+#### 21. Versionado y metadata
+
+La suite deberá comprobar coherencia lógica de:
+
+- 6 familias de registro;
+- 13 atributos de identidad de regla y versión;
+- 11 dependencias posibles del `resolved_version_set`;
+- 8 estados de ciclo de vida;
+- 7 atributos de activación;
+- 5 modos de compatibilidad;
+- 11 atributos de procedencia de algoritmo;
+- 12 eventos de auditoría;
+- 30 atributos del contrato lógico mínimo;
+- 10 resultados de evaluación;
+- 5 clases de retención;
+- 3 niveles de reproducibilidad;
+- 7 tiempos semánticos;
+- 9 componentes de clave lógica de idempotencia;
+- 6 clases de operación idempotente;
+- 4 expectativas de concurrencia;
+- 9 atributos de replay.
+
+El oráculo de igualdad del motor puro incluye únicamente metadata derivable de entradas explícitas y versiones fijadas. Actor, autorización, timestamp, identidad de evento, estado persistido o resultado de commit no pueden inventarse para completar una prueba.
+
+---
+
+#### 22. Estados, versiones y compatibilidad
+
+Casos mínimos:
+
+| Condición                                       | Resultado esperado                                                  |
+| ----------------------------------------------- | ------------------------------------------------------------------- |
+| misma regla, misma versión y mismo digest       | misma evaluación                                                    |
+| mismo `rule_version_id` con digest distinto     | inconsistencia bloqueante                                           |
+| versión `ACTIVE` compatible                     | elegible según coordenada y demás reglas                            |
+| versión `DRAFT`                                 | no ejecutable para decisión nueva                                   |
+| `SUSPENDED`                                     | bloqueada                                                           |
+| `SUPERSEDED`                                    | solo interpretación histórica donde corresponda                     |
+| `RETIRED`                                       | no ejecutable para decisión nueva                                   |
+| `REJECTED`                                      | no ejecutable                                                       |
+| `INVALIDATED`                                   | bloqueo inmediato para nuevas decisiones                            |
+| dependencia faltante del `resolved_version_set` | `BLOCKED_POLICY` o bloqueo equivalente                              |
+| dependencia incompatible                        | bloqueo; sin fallback                                               |
+| `DUAL_EVALUATION_SHADOW`                        | evaluación candidata sin mutación ni alteración de respuesta activa |
+| `HISTORICAL_READ_ONLY`                          | interpretación histórica, sin autoridad nueva                       |
+| `REPLAY_ONLY`                                   | replay aislado                                                      |
+| `INCOMPATIBLE_BLOCKED`                          | no mezclar ni continuar                                             |
+
+No existe `latest` implícito.
+
+---
+
+#### 23. Propiedades de pureza y ausencia de side effects
+
+La futura suite del package deberá poder detectar y fallar si una función semántica:
+
+- muta el objeto de entrada;
+- escribe archivo o almacenamiento;
+- ejecuta DDL o DML;
+- ejecuta RPC o consulta;
+- hace requests de red;
+- lee secretos;
+- usa variable de entorno para decidir semántica;
+- usa reloj actual no suministrado;
+- usa aleatoriedad no fijada;
+- usa locale del runtime;
+- depende del orden físico de objetos o catálogos;
+- utiliza caché mutable como fuente de verdad;
+- usa logs como auditoría canónica;
+- confirma efectos empresariales;
+- asigna identidad o fusiona registros.
+
+Oráculo:
+
+```text
+same explicit input
+→ same explicit output
+→ zero hidden semantic dependencies
+→ zero unauthorized side effects
+```
+
+---
+
+#### 24. Cambios de versión no se tratan como fallo de idempotencia
+
+La idempotencia se evalúa dentro del mismo conjunto efectivo de versiones.
+
+Si una versión cambia:
+
+1. la evaluación nueva pertenece a otro corte contractual;
+2. la diferencia esperada se atribuye a la nueva versión;
+3. el resultado anterior conserva su interpretación histórica;
+4. no se reevalúa retrospectivamente un snapshot para hacerlo coincidir;
+5. un retry de una operación anterior no adopta silenciosamente la versión nueva;
+6. un replay declara explícitamente la versión que intenta reproducir;
+7. igualdad de salida con procedencia distinta no demuestra paridad completa.
+
+Así se evita exigir falsamente que dos versiones distintas produzcan siempre la misma salida.
+
+---
+
+#### 25. Fallo cerrado
+
+La suite debe producir casos negativos para:
+
+- descriptor incompleto;
+- clase faltante;
+- representación faltante;
+- fuente faltante;
+- versión faltante;
+- política ausente;
+- dependencia suspendida;
+- versiones incompatibles;
+- conflicto entre reglas de igual precedencia;
+- excepción ambigua;
+- diccionario ambiguo;
+- scope incompleto;
+- fuente obsoleta;
+- estado esperado distinto;
+- contexto de autorización no aportado por la capa propietaria;
+- estructura no resuelta;
+- operación de identidad solicitada dentro del motor textual.
+
+Regla:
+
+```text
+FALTA DE INFORMACIÓN
+≠ DEFAULT PERMISIVO
+
+CONFLICTO
+≠ PRIMERA REGLA QUE COINCIDA
+
+FALLO TÉCNICO
+≠ SIN CAMBIOS
+```
+
+---
+
+#### 26. Conservación de estructura
+
+Para `STRUCTURED_PRESENTATION_NAME` y `STRUCTURED_PARSE_OR_RENDER`, la prueba deberá conservar individualmente:
+
+```text
+cantidad
+unidad
+multiplicador
+empaque
+etiqueta
+código
+factor de conversión
+contexto de uso
+orden cuando sea semántico
+procedencia
+versión
+```
+
+Casos como `Six Pack`, `six_pack`, `Pote x 2`, `pote`, `Unidad`, `UNIDAD` o `Bolsa 1 kg` no se convierten en aliases ni identidades por similitud textual.
+
+Un cambio de caja o etiqueta no puede modificar cantidad, unidad, multiplicador o factor de conversión.
+
+---
+
+#### 27. Conservación de originales, snapshots y evidencia
+
+Oráculos:
+
+1. `EXTERNAL_ORIGINAL` conserva el valor recibido y su procedencia;
+2. una derivación interna se mantiene separada;
+3. `HISTORICAL_SNAPSHOT` no se resincroniza por una nueva regla;
+4. `AUDIT_EVIDENCE` no se modifica para reflejar el valor actual;
+5. una rectificación de evidencia es aditiva;
+6. una nueva versión no reinterpreta silenciosamente historia;
+7. una firma, token, hash o material protegido no ingresa a transformaciones generales;
+8. una búsqueda o preview no sobrescribe originales.
+
+---
+
+#### 28. Frontera frente a identidad, unicidad y fusión
+
+Cada caso de corpus deberá comprobar que ninguna de estas señales produce efectos estructurales:
+
+```text
+mismo valor visible
+misma forma normalizada
+misma clave de búsqueda
+misma clave tolerante
+mismo alias
+misma corrección ortográfica
+mismo ranking
+mismo primer resultado
+misma excepción oficial
+mismo nombre después de capitalización
+```
+
+Todos ellos pueden producir, según contrato:
+
+- igualdad textual;
+- coincidencia;
+- candidato;
+- derivación;
+- corrección visible;
+- preservación;
+- revisión.
+
+Ninguno autoriza por sí mismo:
+
+- crear identidad;
+- confirmar duplicado;
+- activar constraint;
+- seleccionar sobreviviente;
+- desactivar registro;
+- reasignar relaciones;
+- fusionar registros.
+
+---
+
+#### 29. Frontera VITAL
+
+Toda prueba transversal deberá incluir un negativo de producto:
+
+```text
+product_boundary = VITAL
+→ política transversal Vento OS no aplicable
+→ no transformación
+→ no búsqueda derivada transversal
+→ no diccionario transversal
+→ no catálogo transversal
+→ no propagación
+```
+
+La coexistencia física dentro del mismo proyecto no altera esta regla.
+
+---
+
+#### 30. Reconciliación con las 25 unidades analíticas de `DATA-NORM-TRANS-002`
+
+Las 25 unidades del dry-run se consumen como evidencia histórica y contractual, no como test runtime del package.
+
+| Grupo             | Cobertura heredada                                          | Uso en esta tarea                                      |
+| ----------------- | ----------------------------------------------------------- | ------------------------------------------------------ |
+| forma y espacios  | recorte, compactación, NFC, espacios Unicode, puntuación    | fijar oráculos de cambio permitido y preservación      |
+| capitalización    | perfil comercial y corpus                                   | fijar idempotencia de caja y exclusiones               |
+| conectores        | 18 entradas y posiciones                                    | fijar token, posición, precedencia e idempotencia      |
+| excepciones       | formas activas y candidatos                                 | fijar preservación, emisión, bloqueo y revisión        |
+| diccionario       | tres correcciones y `expresso`                              | fijar reemplazo direccional y fallo cerrado            |
+| búsqueda          | claves, tokens, aliases, transliteración y similitud        | fijar derivación separada y capacidades deshabilitadas |
+| estructura        | perfiles y candidatos estructurales                         | fijar conservación de componentes                      |
+| clases protegidas | texto libre, personas, identificadores, externos y secretos | fijar ausencia de transformación indebida              |
+
+No se suman las poblaciones históricas de workloads porque se solapan.
+
+---
+
+#### 31. Cobertura de requisitos de prueba vigente
+
+`SHELL-NORM-009` consume requisitos ya existentes sin modificarlos.
+
+Cobertura principal de idempotencia, determinismo y paridad:
+
+- `TREQ-DATA-016`;
+- `TREQ-DATA-067`;
+- `TREQ-DATA-084`;
+- `TREQ-DATA-102`;
+- `TREQ-DATA-120`;
+- `TREQ-DATA-124`;
+- `TREQ-DATA-139`;
+- `TREQ-DATA-154` a `TREQ-DATA-159`;
+- `TREQ-DATA-163`;
+- `TREQ-DATA-193`.
+
+Cobertura de corpus y conservación semántica:
+
+- `TREQ-DATA-053`;
+- `TREQ-DATA-068`;
+- `TREQ-DATA-086`;
+- `TREQ-DATA-103`;
+- `TREQ-DATA-142`;
+- `TREQ-DATA-164`;
+- `TREQ-DATA-190`;
+- `TREQ-DATA-214`;
+- `TREQ-DATA-240`.
+
+Cobertura transversal de packages compartidos:
+
+- `TREQ-SHELL-002`;
+- `TREQ-SHELL-005`;
+- `TREQ-SHELL-006`;
+- `TREQ-SHELL-007`;
+- `TREQ-SHELL-008`.
+
+La tarea no cambia regla protegida, riesgo, tipo, responsable, paquete, estado ni relación de ninguna de estas filas.
+
+---
+
+#### 32. Matriz de evidencia
+
+| Evidencia                                 | Estado en esta tarea         | Lectura permitida                                 |
+| ----------------------------------------- | ---------------------------- | ------------------------------------------------- |
+| contratos `SHELL-NORM-001..008`           | `ESPECIFICADO`               | base normativa completa                           |
+| 89 escenarios E3                          | replay contractual heredado  | coherencia documental demostrada; no motor físico |
+| 25 unidades analíticas                    | evidencia histórica heredada | señal y baseline; no test runtime del package     |
+| oráculo A/B/C                             | `ESPECIFICADO`               | listo para materialización futura                 |
+| oráculo de conservación de 10 dimensiones | `ESPECIFICADO`               | listo para materialización futura                 |
+| cobertura 13 operaciones                  | `ESPECIFICADO`               | 13/13                                             |
+| cobertura 14 clases                       | `ESPECIFICADO`               | 14/14                                             |
+| cobertura 7 representaciones              | `ESPECIFICADO`               | 7/7                                               |
+| cobertura 6 fuentes                       | `ESPECIFICADO`               | 6/6                                               |
+| cobertura 8 modos                         | `ESPECIFICADO`               | 8/8                                               |
+| suite ejecutable del package              | `PENDIENTE_DE_EVIDENCIA`     | requiere materialización física                   |
+| ejecución CI del package                  | `PENDIENTE_DE_EVIDENCIA`     | pertenece a `SHELL-CI-001`                        |
+| matriz de compatibilidad de consumidores  | `PENDIENTE_DE_EVIDENCIA`     | pertenece a `SHELL-CI-005`                        |
+| idempotencia transaccional                | `PENDIENTE_DE_EVIDENCIA`     | requiere RPC y estado                             |
+| idempotencia/rollback en datos            | `PENDIENTE_DE_EVIDENCIA`     | pertenece a `DATA-NORM-DB-010`                    |
+| evidencia por ambiente                    | `PENDIENTE_DE_EVIDENCIA`     | pertenece a transición y gates autorizados        |
+
+No se declara evidencia operacional inexistente.
+
+---
+
+#### 33. Handoffs exactos
+
+| Trabajo posterior                                                        | Propietario exacto                                                  | Condición de salida                                                         |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| crear pruebas ejecutables del package compartido                         | `SHELL-CI-001`                                                      | materializar los oráculos y corpus definidos aquí sobre el package real     |
+| comprobar build aislado del package                                      | `SHELL-CI-002`                                                      | demostrar que la suite y el package no dependen de un consumidor accidental |
+| certificar compatibilidad por consumidor                                 | `SHELL-CI-005`                                                      | ejecutar matriz contra versiones consumidoras soportadas                    |
+| adaptación de consumidores                                               | `SHELL-CI-006`                                                      | adoptar mediante PR después de pruebas y compatibilidad                     |
+| almacenamiento de reglas y versiones                                     | `DATA-NORM-DB-001`                                                  | persistir únicamente dentro de un package autorizado                        |
+| pruebas físicas de idempotencia, rollback y ausencia de cambio semántico | `DATA-NORM-DB-010`                                                  | ejecutar sobre almacenamiento y efectos físicos autorizados                 |
+| paridad, concurrencia e idempotencia de transición                       | `SUPA-TRANS-009`; `DATA-NORM-TRANS-009`                             | producir evidencia reproducible por ambiente                                |
+| materialización física de `@vento/data-normalization`                    | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` | abrir implementación para una instancia explícitamente autorizada           |
+
+No se asigna `package_id` desde esta tarea documental.
+
+---
+
+#### 34. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** la tarea no introduce comportamiento ejecutable nuevo ni modifica una regla protegida. Materializa el corpus y los oráculos de conformidad para comportamientos de idempotencia, determinismo, paridad, preservación, fallo cerrado, búsqueda, preview, versionado y frontera de identidad ya registrados por tareas `DATA-NORM-ARC-*` y por los requisitos vigentes del registro canónico. La implementación de esas pruebas permanece en sus tareas propietarias ya existentes.
+
+---
+
+#### 35. Decisiones vinculantes
+
+1. `SHELL-NORM-009` cierra documentalmente la especificación de pruebas del mini-bloque `SHELL-NORM`.
+2. El package físico continúa no materializado.
+3. Esta tarea no declara ejecución runtime inexistente.
+4. Se reutilizan exactamente 89 escenarios explícitos del corpus contractual E3.
+5. Los 89 escenarios se distribuyen 16 + 20 + 21 + 15 + 17.
+6. No se crean escenarios canónicos alternativos que compitan con esos 89.
+7. El protocolo A/B/C es obligatorio para operaciones deterministas re-aplicables.
+8. A y B deben producir el mismo resultado lógico para la misma entrada y versiones.
+9. C no puede introducir deriva sobre la salida canónica de A.
+10. Bloqueo, revisión, preservación y no aplicabilidad también deben ser estables.
+11. Idempotencia de evaluación y efecto único transaccional permanecen garantías distintas.
+12. La conservación semántica se evalúa en diez dimensiones.
+13. Se cubren 13/13 familias de operación.
+14. Se cubren 14/14 clases semánticas.
+15. Se cubren 7/7 roles de representación.
+16. Se cubren 6/6 roles de fuente.
+17. Se cubren 8/8 modos de tratamiento.
+18. Unicode no elimina tildes, `ñ` ni significado.
+19. Espacios no se normalizan mediante regla universal.
+20. Capitalización no corrige ortografía ni estructura.
+21. Solo `COMMERCIAL_NAME` puede usar la capitalización comercial vigente.
+22. Conectores se reconocen como tokens completos.
+23. `al` y `del` permanecen atómicos.
+24. `e`, `u`, `o` y `y` no se sustituyen por heurística fonológica.
+25. Excepciones no usan fuzzy matching ni aliases inferidos.
+26. El diccionario conserva exactamente tres correcciones iniciales.
+27. `expresso` no se corrige automáticamente.
+28. Una corrección de diccionario no crea identidad ni alias de búsqueda.
+29. `SEARCH_DERIVATION` nunca sustituye el valor mostrado.
+30. `ñ` no se pliega globalmente a `n`.
+31. Transliteración continúa deshabilitada por defecto.
+32. Similitud continúa deshabilitada por defecto.
+33. Preview continúa no vinculante.
+34. Preview repetido no crea lock, reserva ni commit.
+35. Una divergencia en valor, scope, política, versiones, unicidad o relaciones exige reevaluación.
+36. `resolved_version_set` y `version_set_digest` permanecen explícitos.
+37. No existe `latest` implícito.
+38. Una versión no activa no adquiere autoridad por fallback.
+39. Un cambio de versión no reinterpreta historia.
+40. El motor puro no inventa actor, autorización, timestamp ni identidad de evento.
+41. El motor puro no consulta red, base de datos, secretos, filesystem ni estado mutable para decidir semántica.
+42. Un resultado visual correcto no basta si viola estructura, procedencia o autoridad.
+43. Una coincidencia no crea identidad.
+44. Una coincidencia no activa unicidad.
+45. Una coincidencia no selecciona sobreviviente.
+46. Una coincidencia no fusiona registros.
+47. Originales externos permanecen separados.
+48. Snapshots históricos permanecen inmutables.
+49. Evidencia de auditoría no se reescribe.
+50. Secretos y material firmado permanecen fuera de normalización general.
+51. VITAL permanece fuera de la política transversal.
+52. La suite futura del package pertenece a `SHELL-CI-001`.
+53. La compatibilidad futura pertenece a `SHELL-CI-005`.
+54. La prueba física de datos pertenece a `DATA-NORM-DB-010`.
+55. No se crea código.
+56. No se crea package físico.
+57. No se modifica Supabase.
+58. No se crean ni modifican requisitos de prueba.
+59. Todos los elementos pendientes tienen propietario exacto.
+60. `SHELL-DB-001` queda únicamente reservada.
+
+---
+
+#### 36. Hallazgos y destinos exactos
+
+| Hallazgo                                                        | Resultado de `SHELL-NORM-009`                                       | Destino exacto                                                      |
+| --------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| el package todavía no existe físicamente                        | no se simula ejecución runtime                                      | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` |
+| existían 89 escenarios contractuales ya reconciliados           | se fijan como corpus base heredado de la suite                      | `SHELL-CI-001`                                                      |
+| idempotencia podía confundirse con efecto único                 | se separan determinismo/reaplicación de deduplicación transaccional | `SHELL-CI-001`; `DATA-NORM-DB-010`                                  |
+| una salida textual igual podía ocultar cambio semántico         | se materializa oráculo de conservación de diez dimensiones          | `SHELL-CI-001`; `SUPA-TRANS-009`                                    |
+| operaciones stateful no pueden certificarse desde un motor puro | se limita la prueba pura y se conserva su handoff                   | `DATA-NORM-DB-010`; `DATA-NORM-TRANS-009`                           |
+| consumidores pueden divergir aun con package correcto           | paridad por consumidor queda fuera de la prueba aislada             | `SHELL-CI-005`; `SHELL-CI-006`                                      |
+| evidencia documental no equivale a evidencia operacional        | estados quedan separados explícitamente                             | `DATA-NORM-TRANS-009`                                               |
+| cierre de SHELL-NORM no autoriza implementación                 | siguiente continuidad documental permanece independiente            | `SHELL-DB-001`                                                      |
+
+No queda un pendiente narrativo sin propietario documental exacto.
+
+---
+
+#### 37. Criterios de aceptación
+
+`SHELL-NORM-009` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. identifica correctamente que el package físico no existe todavía;
+2. no declara pruebas runtime como ejecutadas;
+3. reconcilia 89/89 escenarios contractuales heredados;
+4. preserva la distribución 16/20/21/15/17;
+5. define protocolo A/B/C;
+6. distingue determinismo de efecto único transaccional;
+7. materializa diez dimensiones de conservación semántica;
+8. cubre 13/13 familias de operación;
+9. faltantes de operaciones = 0;
+10. duplicados de operaciones = 0;
+11. cubre 14/14 clases semánticas;
+12. faltantes de clases = 0;
+13. duplicados de clases = 0;
+14. cubre 7/7 roles de representación;
+15. cubre 6/6 roles de fuente;
+16. cubre 8/8 modos de tratamiento;
+17. conserva Unicode y tildes bajo las reglas aprobadas;
+18. conserva espacios significativos;
+19. prohíbe Title Case universal;
+20. preserva las nueve clases de token y tres fronteras de capitalización;
+21. cubre las 18 entradas de conectores por su corpus propietario;
+22. conserva atomicidad de `al` y `del`;
+23. prohíbe sustitución fonológica de conjunciones;
+24. conserva las excepciones oficiales sin fuzzy matching;
+25. conserva las tres entradas de diccionario;
+26. mantiene `expresso` fuera de corrección automática;
+27. preserva búsqueda como derivación;
+28. preserva `ñ` frente a `n`;
+29. mantiene transliteración y similitud deshabilitadas;
+30. conserva los seis perfiles y nueve modos de búsqueda;
+31. preserva preview no vinculante;
+32. cubre seis dimensiones de divergencia pre-commit;
+33. conserva versionado explícito y ausencia de `latest`;
+34. prueba documentalmente fallo cerrado;
+35. prueba documentalmente ausencia de side effects autorizados en el motor puro;
+36. preserva estructura de presentaciones;
+37. preserva originales, snapshots y evidencia;
+38. preserva frontera frente a identidad, unicidad y fusión;
+39. preserva frontera VITAL;
+40. distingue evidencia contractual heredada de evidencia runtime;
+41. asigna suite ejecutable a `SHELL-CI-001`;
+42. asigna compatibilidad a `SHELL-CI-005`;
+43. asigna pruebas físicas a `DATA-NORM-DB-010`;
+44. no inventa `package_id`;
+45. no crea código;
+46. no crea package físico;
+47. no modifica Supabase;
+48. no crea ni modifica requisitos de prueba;
+49. todos los handoffs tienen propietario exacto;
+50. la siguiente tarea permanece únicamente reservada.
+
+---
+
+#### 38. Límites
+
+`SHELL-NORM-009` no:
+
+- crea físicamente `@vento/data-normalization`;
+- crea `package.json`;
+- crea archivos `.ts`, `.tsx`, `.js` o `.mjs`;
+- crea fixtures físicos;
+- crea tests ejecutables;
+- selecciona framework de pruebas;
+- define rutas de archivos fuente;
+- define exports físicos;
+- instala dependencias;
+- ejecuta npm tests del package inexistente;
+- ejecuta pruebas de consumidores;
+- ejecuta pruebas de base de datos;
+- crea tablas;
+- crea columnas;
+- crea índices;
+- crea constraints;
+- crea funciones SQL;
+- crea RPC;
+- crea triggers;
+- modifica RLS;
+- ejecuta DDL;
+- ejecuta DML;
+- ejecuta backfills;
+- modifica datos;
+- ejecuta replay contra producción;
+- crea auditoría persistida;
+- crea idempotency store;
+- activa reglas;
+- activa transliteración;
+- activa similitud;
+- agrega conectores;
+- agrega excepciones;
+- agrega entradas de diccionario;
+- crea aliases;
+- cambia ranking;
+- decide identidad;
+- activa unicidad;
+- fusiona registros;
+- selecciona sobrevivientes;
+- migra consumidores;
+- modifica VITAL;
+- modifica Supabase;
+- redefine `DATA-NORM-ARC-001..012`;
+- desarrolla `SHELL-DB-001`.
+
+---
+
+#### 39. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-NORM-008 — Crear metadatos de versión y auditoría de reglas
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-NORM-009 — Probar idempotencia y conservación semántica
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-DB-001 — Crear @vento/supabase
+
 
 Regla:
 

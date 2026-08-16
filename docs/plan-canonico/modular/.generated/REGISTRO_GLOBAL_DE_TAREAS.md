@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **911** |
+| Aprobadas | **912** |
 | En propuesta | **0** |
-| No iniciadas | **683** |
+| No iniciadas | **682** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **57.15% (911/1594)** |
+| Porcentaje de completamiento | **57.21% (912/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-NORM-008` — Crear metadatos de versión y auditoría de reglas | ✅ APROBADA |
-| Tarea actual | `SHELL-NORM-009` — Probar idempotencia y conservación semántica | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-DB-001` — Crear @vento/supabase | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-NORM-009` — Probar idempotencia y conservación semántica | ✅ APROBADA |
+| Tarea actual | `SHELL-DB-001` — Crear @vento/supabase | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-DB-002` — Centralizar tipos generados por cada paquete de base de datos aprobado | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -738,7 +738,7 @@
 | ✅ APROBADA | `SHELL-NORM-006` | Crear normalización de búsqueda y comparación | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ✅ APROBADA | `SHELL-NORM-007` | Crear previsualización de transformaciones | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ✅ APROBADA | `SHELL-NORM-008` | Crear metadatos de versión y auditoría de reglas | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
-| ⬜ NO INICIADA | `SHELL-NORM-009` | Probar idempotencia y conservación semántica | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
+| ✅ APROBADA | `SHELL-NORM-009` | Probar idempotencia y conservación semántica | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ⬜ NO INICIADA | `SHELL-DB-001` | Crear @vento/supabase | `bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md` |
 | ⬜ NO INICIADA | `SHELL-DB-002` | Centralizar tipos generados por cada paquete de base de datos aprobado | `bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md` |
 | ⬜ NO INICIADA | `SHELL-DB-003` | Crear y actualizar wrappers tipados para RPC canónicas | `bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md` |
