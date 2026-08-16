@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **922** |
+| Tareas aprobadas | **923** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **672** |
+| Tareas no iniciadas | **671** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **57.84% (922/1594)** |
+| Porcentaje de completamiento | **57.90% (923/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-UI-005 — Compartir EmptyState** |
-| Tarea actual | **SHELL-UI-006 — Compartir indicador de contexto** |
+| Última tarea aprobada | **SHELL-UI-006 — Compartir indicador de contexto** |
+| Tarea actual | **SHELL-UI-007 — Compartir selector de sede** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-UI-007 — Compartir selector de sede** |
+| Siguiente tarea | **SHELL-UI-008 — Compartir selector de área** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 72 de 109 aprobadas; SHELL-UI-006 pendiente** |
+| Progreso del bloque | **BLOQUE H: 73 de 109 aprobadas; SHELL-UI-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-UI-005` — Compartir EmptyState |
-| Tarea actual | `SHELL-UI-006` — Compartir indicador de contexto — **NO INICIADA** |
-| Siguiente tarea | `SHELL-UI-007` — Compartir selector de sede |
+| Última aprobada | `SHELL-UI-006` — Compartir indicador de contexto |
+| Tarea actual | `SHELL-UI-007` — Compartir selector de sede — **NO INICIADA** |
+| Siguiente tarea | `SHELL-UI-008` — Compartir selector de área |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 72 DE 109 APROBADAS — ACTUAL SHELL-UI-006** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 73 DE 109 APROBADAS — ACTUAL SHELL-UI-007** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-UI-005 — Compartir EmptyState
-        ↓
-TAREA ACTUAL
 SHELL-UI-006 — Compartir indicador de contexto
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-UI-007 — Compartir selector de sede
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-UI-008 — Compartir selector de área
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 72 de 109 tareas aprobadas
+BLOQUE H — 73 de 109 tareas aprobadas
 ```

@@ -6029,7 +6029,1646 @@ SHELL-UI-006 — Compartir indicador de contexto
 No se inicia `SHELL-UI-006` en esta tarea.
 
 
-### [ ] SHELL-UI-006 — Compartir indicador de contexto
+### ✅ SHELL-UI-006 — Compartir indicador de contexto
+
+**Estado:** APROBADA
+
+**Tarea anterior:** `SHELL-UI-005 — Compartir EmptyState`
+
+**Tarea siguiente:** `SHELL-UI-007 — Compartir selector de sede`
+
+**Tipo de tarea:** Documental
+
+**Bloque:** H — Fundación compartida
+
+**Paquete propietario:** `@vento/ui-web`
+
+**Naturaleza:** definición documental de un componente compartido de presentación para representar contexto ya resuelto. No materializa código, no resuelve autoridad, no cambia contexto y no migra consumidores.
+
+---
+
+#### 1. Propósito
+
+Definir el contrato canónico de un indicador de contexto compartido para que las superficies web de Vento OS puedan mostrar de forma consistente, compacta, perceptible y accesible el contexto efectivo que una capa propietaria ya resolvió.
+
+El componente deberá permitir que una persona pueda reconocer, cuando aplique a su superficie:
+
+- actor efectivo;
+- carril o alcance de trabajo;
+- aplicación;
+- sede activa o cobertura administrativa;
+- área activa;
+- turno o jornada;
+- check-in;
+- rol efectivo;
+- dispositivo o estación cuando afecten la interpretación;
+- estado de simulación cuando corresponda a la composición superior;
+- frescura o validez de la proyección;
+- territorio del recurso cuando deba compararse con el contexto activo.
+
+La regla central es:
+
+```text
+CONTEXTO AUTORITATIVO YA RESUELTO
+        ↓
+PROYECCIÓN HUMANA Y MINIMIZADA
+        ↓
+ContextIndicator
+        ↓
+REPRESENTACIÓN VISUAL
+```
+
+Y queda prohibida la dirección inversa:
+
+```text
+ContextIndicator
+        ✕
+RESOLVER CONTEXTO
+        ✕
+CREAR AUTORIDAD
+        ✕
+MODIFICAR SEDE, ÁREA, TURNO O ROL
+```
+
+---
+
+#### 2. Posición dentro de la secuencia compartida
+
+`SHELL-UI-006` define exclusivamente la representación compartida del contexto ya resuelto.
+
+Las responsabilidades vecinas permanecen separadas:
+
+| Tarea          | Responsabilidad conservada                                                   |
+| -------------- | ---------------------------------------------------------------------------- |
+| `SHELL-UI-007` | selección compartida de sede                                                 |
+| `SHELL-UI-008` | selección compartida de área                                                 |
+| `SHELL-UI-009` | aviso compartido de rol simulado                                             |
+| `SHELL-UI-010` | evaluación del AppShell compartido y ubicación sistémica de piezas de chrome |
+| `SHELL-UI-015` | diagnóstico compartido de contexto                                           |
+| `SHELL-UI-017` | patrón compartido para tablet                                                |
+| `SHELL-UI-018` | patrón compartido para kiosco                                                |
+| `SHELL-UI-020` | traspaso entre aplicaciones                                                  |
+
+La existencia de `ContextIndicator` no adelanta ni sustituye ninguna de esas tareas.
+
+---
+
+#### 3. Dependencias documentales consumidas
+
+La definición consume, sin reemplazar:
+
+- `SHELL-UI-001 — Crear @vento/ui-web`;
+- `SHELL-UI-002 — Compartir Alert`;
+- `SHELL-UI-003 — Compartir Button`;
+- `SHELL-UI-004 — Compartir Card`;
+- `SHELL-UI-005 — Compartir EmptyState`;
+- `UX-BASE-005 — Mantener visible sede, área, turno y rol activos`;
+- la arquitectura compartida de autorización y contexto;
+- los contratos compartidos de autorización vigentes;
+- la frontera vigente de `@vento/os-context`;
+- las reglas de accesibilidad, privacidad, reflow, contexto, simulación y dispositivos compartidos ya aprobadas;
+- el gobierno de paquetes compartidos, compatibilidad, deprecación y retiro;
+- la estrategia posterior de migración coordinada de consumidores web.
+
+Estas fuentes aportan la semántica del contexto. `SHELL-UI-006` aporta únicamente su representación visual reutilizable.
+
+---
+
+#### 4. Naturaleza de la tarea
+
+La tarea es documental.
+
+Al cierre se define:
+
+1. identidad del componente;
+2. responsabilidad y límites;
+3. superficie pública conceptual;
+4. estados visuales de contexto;
+5. forma de recibir contenido humano ya resuelto;
+6. relación con contexto operativo y alcance administrativo;
+7. frontera con selectores y cambios autoritativos;
+8. frontera con simulación y diagnóstico;
+9. semántica HTML y accesibilidad;
+10. comportamiento responsive;
+11. compatibilidad server/client;
+12. dependencias permitidas y prohibidas;
+13. reconciliación de evidencia runtime y template;
+14. estrategia posterior de adopción;
+15. contrato futuro de pruebas;
+16. cobertura de requisitos existente.
+
+No se crea el componente físico en esta tarea.
+
+---
+
+#### 5. Resultado documental
+
+Se aprueba el componente conceptual:
+
+```text
+ContextIndicator
+```
+
+como parte de:
+
+```text
+@vento/ui-web
+```
+
+Su función es representar un resumen compacto, humano y accesible de contexto efectivo o alcance aplicable ya calculado por capas propietarias.
+
+No es:
+
+- resolver de contexto;
+- selector de sede;
+- selector de área;
+- selector de rol;
+- selector de turno;
+- switcher de aplicación;
+- guard de autorización;
+- evaluador de permiso;
+- diagnóstico técnico;
+- alerta completa de contexto inválido;
+- mecanismo de simulación;
+- AppShell;
+- menú de perfil.
+
+---
+
+#### 6. Identidad pública conceptual
+
+La superficie conceptual queda formada por:
+
+```text
+ContextIndicator
+ContextIndicatorProps
+ContextIndicatorState
+ContextIndicatorItem
+```
+
+Esta tarea no fija:
+
+- subpath físico de exportación;
+- estructura de carpetas del package;
+- mapa de exports;
+- herramienta de estilos;
+- nombre de archivo TypeScript;
+- framework de documentación visual;
+- implementación interna.
+
+Esas decisiones pertenecen a la materialización física y gobierno del package.
+
+---
+
+#### 7. Frontera de presentación
+
+`ContextIndicator` recibe exclusivamente una proyección de presentación ya resuelta.
+
+Puede representar información que el consumidor haya determinado como segura y relevante, pero no puede averiguar por sí mismo:
+
+- quién es el actor;
+- cuál es la sede activa;
+- cuál es el área activa;
+- cuál es el turno efectivo;
+- si existe check-in;
+- cuál rol tiene autoridad;
+- si una simulación es válida;
+- si el dispositivo permite una operación;
+- si un permiso aplica;
+- si el contexto está dentro del territorio del recurso;
+- si una mutación debe habilitarse;
+- si un contexto puede cambiar.
+
+El componente presenta decisiones. No produce decisiones.
+
+---
+
+#### 8. Superficie conceptual de props
+
+La API conceptual mínima se congela como:
+
+```text
+state: ContextIndicatorState
+stateLabel: string
+items: readonly ContextIndicatorItem[]
+```
+
+Además podrá conservar atributos HTML compatibles del contenedor raíz, con las restricciones de accesibilidad y semántica definidas en esta tarea.
+
+No se abre una prop genérica `context`.
+
+No se abre una prop `effectiveContext`.
+
+No se abre una prop `accessContext` que convierta al componente visual en consumidor directo del contrato autoritativo.
+
+No se abre una colección de booleanos de autorización.
+
+---
+
+#### 9. `ContextIndicatorState`
+
+Los estados conceptuales quedan cerrados como:
+
+```text
+resolving
+active
+changing
+stale
+invalid
+unavailable
+```
+
+Correspondencia semántica:
+
+| Estado UI     | Estado conceptual de contexto | Intención de presentación                                                                                              |
+| ------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `resolving`   | `RESOLVING`                   | la proyección todavía se está resolviendo y no puede afirmarse como activa                                             |
+| `active`      | `ACTIVE`                      | la capa propietaria confirmó una proyección vigente para mostrar                                                       |
+| `changing`    | `CHANGING`                    | existe una transición de contexto en curso y el nuevo contexto aún no debe presentarse como confirmado                 |
+| `stale`       | `STALE`                       | la proyección conocida perdió frescura suficiente para requerir advertencia o limitación definida fuera del componente |
+| `invalid`     | `INVALID`                     | la proyección contiene una incompatibilidad o dimensión obligatoria inválida                                           |
+| `unavailable` | `UNAVAILABLE`                 | no puede obtenerse una proyección suficiente para la superficie                                                        |
+
+Los nombres son estados de presentación. No son permisos, receipts ni resultados empresariales.
+
+---
+
+#### 10. Estados que no pertenecen a `ContextIndicatorState`
+
+No se incorporan como estados del componente:
+
+```text
+success
+warning
+danger
+error
+blocked
+denied
+offline
+online
+simulated
+delegated
+admin
+operational
+shared_device
+loading
+```
+
+Razones:
+
+- `blocked` y `denied` corresponden a la semántica de impedimentos, no a la frescura del contexto;
+- conectividad es una dimensión independiente y no se reduce a la validez contextual;
+- simulación y delegación son condiciones del contexto, no estados de frescura;
+- carril administrativo u operativo describe intención y alcance, no salud del contexto;
+- `loading` es demasiado genérico frente a `resolving`;
+- `error` colapsaría `invalid` y `unavailable` en una única causa ambigua.
+
+---
+
+#### 11. `stateLabel`
+
+`stateLabel` es texto humano obligatorio aportado por el consumidor o capa de integración.
+
+Su función es impedir que el estado dependa solo de:
+
+- color;
+- icono;
+- borde;
+- animación;
+- opacidad;
+- posición.
+
+Ejemplos conceptuales admisibles, sin congelar copy literal global:
+
+```text
+active       → contexto vigente
+resolving    → contexto en resolución
+changing     → cambio en curso
+stale        → contexto pendiente de actualización
+invalid      → contexto inconsistente
+unavailable  → contexto no disponible
+```
+
+La implementación futura no deberá hardcodear una única frase no localizable como contrato universal.
+
+---
+
+#### 12. `ContextIndicatorItem`
+
+Cada elemento del resumen se define conceptualmente como:
+
+```text
+label: string
+value: string
+```
+
+`label` expresa la semántica humana de la dimensión.
+
+`value` expresa el valor ya resuelto y minimizado que puede mostrarse.
+
+Ejemplos válidos de intención:
+
+```text
+Sede activa        → Centro de Producción
+Área activa        → Repostería
+Rol operativo      → Bodeguero
+Turno              → Jornada vigente
+Check-in           → Iniciado
+Cobertura          → Región Centro
+Periodo            → Agosto 2026
+Aplicación         → NEXO
+```
+
+Los ejemplos ilustran forma, no obligan a que todas las superficies muestren todas las dimensiones.
+
+---
+
+#### 13. Decisión de no crear un enum de dimensiones
+
+No se crea una taxonomía pública paralela como:
+
+```text
+site
+area
+role
+shift
+checkin
+actor
+device
+scope
+```
+
+como requisito estructural dentro de `ContextIndicatorItem`.
+
+Motivo:
+
+1. la semántica autoritativa de cada dimensión ya pertenece a contratos de contexto y UX;
+2. un enum visual duplicado podría divergir de esos contratos;
+3. aplicaciones administrativas y operativas requieren combinaciones distintas;
+4. `NUMERA`, por ejemplo, necesita entidad, periodo y alcance financiero sin fabricar un contexto operativo;
+5. el componente debe ser presentación, no nuevo esquema transversal de autoridad.
+
+La capa propietaria conserva la responsabilidad de seleccionar las dimensiones correctas y etiquetarlas inequívocamente.
+
+---
+
+#### 14. Orden de los elementos
+
+`ContextIndicator` conserva el orden entregado por el consumidor.
+
+No reordena dimensiones por nombres, valores, tipos o heurísticas.
+
+La composición deberá aplicar la jerarquía aprobada para su superficie. Como regla general, cuando aplique a operación material, la prioridad conceptual es:
+
+1. inconsistencia o cambio de contexto;
+2. sede y área efectivas;
+3. rol efectivo;
+4. turno y check-in;
+5. actor, dispositivo o estación cuando sean necesarios;
+6. información secundaria de alcance o frescura.
+
+El componente no infiere esa prioridad a partir del contenido textual.
+
+---
+
+#### 15. Contenido seguro y humano
+
+Los valores ordinarios del indicador no utilizarán como contenido principal:
+
+- UUID;
+- identificadores internos de empleado;
+- códigos de permiso;
+- nombres de tablas;
+- nombres de schemas;
+- nombres de RPC;
+- nombres de columnas;
+- claves de cookie;
+- nombres de variables de entorno;
+- códigos técnicos de sesión;
+- identificadores de check-in sin traducción humana;
+- `navigation_role`;
+- `effective_role` como literal técnico;
+- `site_id` o `area_id` como sustituto del nombre humano cuando exista una etiqueta autorizada.
+
+Un identificador técnico necesario para soporte pertenece al diagnóstico restringido, no al resumen ordinario.
+
+---
+
+#### 16. Contexto operativo
+
+En una superficie operativa, el consumidor puede construir el resumen con las dimensiones que el proceso exija, por ejemplo:
+
+```text
+sede activa
+área activa
+rol operativo
+turno
+check-in
+estación
+actor
+territorio del recurso
+```
+
+Reglas:
+
+1. una sede asignada no se presenta como activa por el solo hecho de estar asignada;
+2. una sede primaria no se presenta como activa por defecto;
+3. un área elegible no se presenta como activa si no fue resuelta como tal;
+4. un turno programado no equivale a turno vigente;
+5. un horario publicado no equivale a check-in;
+6. un rol base no se transforma en rol operativo por presentación;
+7. un dispositivo no se presenta como actor humano;
+8. el indicador no habilita una acción por mostrar un contexto aparentemente válido.
+
+---
+
+#### 17. Alcance administrativo
+
+En una superficie administrativa, el indicador no fabricará contexto operativo.
+
+Puede representar, cuando corresponda:
+
+```text
+empresa o entidad
+cobertura administrativa
+periodo
+población
+rol base
+estado de la proyección
+```
+
+Un filtro administrativo debe identificarse como filtro o alcance de consulta cuando sea necesario para evitar confusión.
+
+Queda prohibido presentar:
+
+```text
+Filtro: Sede Norte
+```
+
+como si significara:
+
+```text
+Sede activa: Sede Norte
+```
+
+si la persona no está operando materialmente bajo esa sede.
+
+---
+
+#### 18. Sede y área
+
+`ContextIndicator` no posee props específicas `siteId`, `site`, `areaId` o `area`.
+
+La decisión evita que el componente:
+
+- resuelva nombres;
+- consulte maestros;
+- aplique fallbacks;
+- interprete una selección como autoridad;
+- convierta un filtro en contexto activo.
+
+La capa propietaria transforma el contexto autoritativo en pares humanos `label/value` antes de renderizar.
+
+La selección y cambio de sede permanecen en `SHELL-UI-007`.
+
+La selección y cambio de área permanecen en `SHELL-UI-008`.
+
+---
+
+#### 19. Rol
+
+El componente no recibe un único `role` ambiguo como contrato privilegiado.
+
+La capa propietaria decide qué rol es relevante y lo etiqueta humanamente como corresponda, diferenciando cuando aplique:
+
+- rol base;
+- rol operativo;
+- rol simulado;
+- delegación;
+- rol utilizado únicamente para navegación.
+
+El componente no decide cuál concede autoridad.
+
+No existe una prop `isAdmin`.
+
+No existe una prop `canOperate`.
+
+No existe una prop `bypassApplied`.
+
+---
+
+#### 20. Turno y check-in
+
+Turno y check-in permanecen dimensiones diferentes.
+
+El indicador no deriva una de la otra.
+
+No se incorporan props como:
+
+```text
+isOnShift
+isCheckedIn
+hasActiveWork
+```
+
+porque reducirían estados autoritativos distintos a booleanos visuales ambiguos.
+
+Si el turno o check-in son relevantes para la superficie, la capa propietaria aporta sus representaciones humanas como elementos independientes.
+
+---
+
+#### 21. Actor, dispositivo y estación
+
+La presentación debe distinguir actor humano, dispositivo técnico y estación cuando la superficie los necesite.
+
+Reglas:
+
+- el nombre técnico del dispositivo no sustituye al actor;
+- una estación compartida no hereda la identidad del actor anterior;
+- el actor no se muestra mediante correo, teléfono o documento como identificador ordinario;
+- el componente no conserva identidad entre renderizados por almacenamiento propio;
+- la limpieza de sesión y actor corresponde a las capas de identidad y dispositivo;
+- el indicador representa la proyección vigente que recibe.
+
+---
+
+#### 22. Simulación y delegación
+
+`ContextIndicator` no crea props booleanas `isSimulated` o `isDelegated` como sustituto del contrato autoritativo.
+
+Si una simulación o delegación modifica cómo debe interpretarse el contexto, la composición superior deberá mantenerla perceptible.
+
+La advertencia compartida especializada de rol simulado pertenece a:
+
+```text
+SHELL-UI-009 — Compartir aviso de rol simulado
+```
+
+`ContextIndicator` puede coexistir con ese aviso, pero no lo absorbe ni lo reemplaza.
+
+---
+
+#### 23. Frescura
+
+La frescura se representa mediante `state` y `stateLabel`, complementada por un elemento humano de última verificación únicamente cuando la capa propietaria determine que aporta información necesaria.
+
+El componente no:
+
+- inicia timers;
+- calcula expiración;
+- compara relojes;
+- consulta conectividad;
+- renueva sesión;
+- extiende turnos;
+- prolonga permisos;
+- convierte caché en autoridad.
+
+`stale` significa que la capa propietaria entregó una proyección marcada como obsoleta. No concede ni retira por sí mismo capacidad de acción.
+
+---
+
+#### 24. `resolving`
+
+Durante `state="resolving"`:
+
+- el estado textual permanece perceptible;
+- los elementos ya conocidos pueden conservarse si siguen siendo seguros para mostrar;
+- la ausencia de elementos no se interpreta como ausencia de contexto real;
+- no se inventan valores provisionales;
+- no se usa la última sede o rol como fallback visual autoritativo;
+- el componente no dispara una resolución de datos.
+
+La capa propietaria decide qué acciones quedan disponibles mientras resuelve.
+
+---
+
+#### 25. `active`
+
+`state="active"` solo representa que la capa propietaria declaró vigente la proyección suministrada.
+
+No implica:
+
+```text
+autorizado = true
+permiso = concedido
+recurso = editable
+mutación = permitida
+turno = abierto por inferencia
+check-in = válido por inferencia
+```
+
+Una acción material conserva su evaluación autoritativa en el servidor o capa propietaria correspondiente.
+
+---
+
+#### 26. `changing`
+
+`state="changing"` representa una transición autoritativa en curso.
+
+Regla vinculante:
+
+```text
+selección solicitada
+≠
+contexto nuevo confirmado
+```
+
+Mientras el cambio no tenga resultado autoritativo:
+
+- el componente no presenta el destino solicitado como nuevo contexto activo;
+- puede conservar el contexto anterior identificado como tal cuando la capa propietaria lo decida;
+- el estado de transición debe ser perceptible;
+- no se autoriza una actualización optimista que fabrique autoridad.
+
+---
+
+#### 27. `stale`
+
+`state="stale"` indica que la proyección conocida ya no cumple la frescura esperada.
+
+El componente:
+
+- la distingue visual y textualmente de `active`;
+- no la elimina automáticamente;
+- no la convierte en `unavailable` sin decisión externa;
+- no decide qué operaciones pueden continuar;
+- no renueva el contexto por sí mismo.
+
+La política de acción frente a contexto obsoleto pertenece a las capas propietarias de autorización, resiliencia y proceso.
+
+---
+
+#### 28. `invalid`
+
+`state="invalid"` representa una incompatibilidad o dimensión obligatoria inválida ya detectada externamente.
+
+El componente no calcula cuál dimensión falló.
+
+La superficie propietaria deberá acompañar el indicador con la explicación o diagnóstico aplicable cuando la persona necesite conocer:
+
+- qué dimensión es incompatible;
+- qué permanece válido;
+- qué acción queda bloqueada;
+- cómo corregir o escalar.
+
+La lógica detallada pertenece a las tareas de diagnóstico y recuperación, no a `ContextIndicator`.
+
+---
+
+#### 29. `unavailable`
+
+`state="unavailable"` representa imposibilidad de obtener una proyección suficiente.
+
+No equivale a:
+
+- “sin datos”;
+- “sin tareas”;
+- “sin permisos”;
+- “sin registros”;
+- “sin sede asignada”;
+- “usuario no autorizado”.
+
+El indicador no sustituye una causa desconocida por un mensaje de vacío.
+
+`EmptyState` permanece separado de esta semántica.
+
+---
+
+#### 30. Ausencia de fallbacks autoritativos
+
+Quedan fuera del componente todos los fallbacks que puedan convertir conveniencia visual en autoridad.
+
+No deberá inferir contexto desde:
+
+- query parameters;
+- URL;
+- nombre de aplicación;
+- último valor usado;
+- storage del navegador;
+- estado local no validado;
+- una cookie no resuelta por la capa autoritativa;
+- sede primaria;
+- primera sede de una lista;
+- área del dispositivo;
+- rol por texto;
+- presencia de un botón;
+- permisos visibles en frontend.
+
+El consumidor debe entregar valores ya resueltos.
+
+---
+
+#### 31. Decisión sobre `EffectiveContext`
+
+La implementación runtime actual de la fundación contiene un tipo `EffectiveContext` utilizado por la capa de contexto existente.
+
+`SHELL-UI-006` no lo adopta como prop pública de `ContextIndicator`.
+
+Razones:
+
+1. el componente visual no debe depender de la forma interna de un resolver;
+2. esa forma contiene campos que no deben transformarse en autoridad visual por sí solos;
+3. una presentación segura requiere minimización previa;
+4. el contexto autoritativo y su proyección humana tienen ciclos de evolución distintos;
+5. la fuente compartida de autorización vigente ya separa contratos canónicos, contexto runtime y decisión;
+6. una API visual basada directamente en `EffectiveContext` acoplaría `@vento/ui-web` a una estructura que no debe convertirse en fuente canónica de autoridad.
+
+Por tanto:
+
+```text
+EffectiveContext
+        ↓ adaptación propietaria
+ContextIndicatorItem[] + ContextIndicatorState
+        ↓
+ContextIndicator
+```
+
+No:
+
+```text
+ContextIndicator → interpretar EffectiveContext
+```
+
+---
+
+#### 32. Relación con `AccessContext` y contratos compartidos
+
+`ContextIndicator` tampoco reimplementa `AccessContext` ni `SimulationContext`.
+
+Si una aplicación consume contratos canónicos de autorización o contexto, deberá resolverlos fuera del componente y entregar al indicador únicamente la proyección humana necesaria.
+
+La API visual no crea una segunda fuente de verdad para:
+
+- roles;
+- scopes;
+- decisiones de autorización;
+- códigos de razón;
+- simulación;
+- dispositivo;
+- permisos;
+- territorialidad.
+
+---
+
+#### 33. Dependencia con `@vento/os-context`
+
+El contrato de `ContextIndicator` no exige una dependencia runtime directa hacia `@vento/os-context`.
+
+La integración esperada es:
+
+```text
+@vento/contracts/authorization
+        +
+@vento/os-context
+        +
+capa propietaria de aplicación
+        ↓
+proyección humana segura
+        ↓
+@vento/ui-web / ContextIndicator
+```
+
+Esto preserva la dirección de dependencias y permite que el componente permanezca puramente presentacional.
+
+Una materialización futura podrá reutilizar tipos compartidos solo si existe una identidad canónica aprobada y compatible, sin duplicar autoridad ni introducir acoplamiento circular.
+
+---
+
+#### 34. Dependencias prohibidas
+
+`ContextIndicator` no dependerá directamente de:
+
+- `@vento/supabase`;
+- cliente Supabase;
+- RPC;
+- tablas;
+- schemas;
+- cookies de autenticación;
+- resolvers de permisos;
+- APIs de negocio;
+- repositorios de aplicación;
+- router de una aplicación concreta;
+- variables secretas;
+- servicios de red;
+- observabilidad como fuente de render;
+- lógica de dominio.
+
+Tampoco ejecutará mutaciones.
+
+---
+
+#### 35. Semántica HTML
+
+El componente utiliza conceptualmente un contenedor no interactivo.
+
+La estructura recomendada es equivalente a:
+
+```text
+contenedor
+  estado humano
+  lista descriptiva
+    término
+    valor
+```
+
+Una implementación física podrá usar semántica equivalente a `div` y `dl/dt/dd` para relacionar etiquetas y valores cuando resulte apropiado.
+
+No se impone un landmark global por defecto.
+
+No se impone `role="status"` universalmente.
+
+No se impone `aria-live` universalmente.
+
+---
+
+#### 36. Razón para no imponer una live region universal
+
+Los cambios de contexto pueden ser materiales, pero no toda re-renderización del resumen debe producir un anuncio repetitivo.
+
+La tarea conserva dos obligaciones simultáneas:
+
+1. los cambios materiales deben poder anunciarse de forma accesible;
+2. la interfaz no debe generar ruido constante que impida continuar.
+
+Por ello `ContextIndicator` mantiene estructura y texto accesibles, mientras la composición propietaria decide cuándo un cambio necesita anuncio y con qué prioridad.
+
+Los bloqueos críticos y movimientos de foco pertenecen al patrón de diagnóstico o recuperación correspondiente.
+
+---
+
+#### 37. Foco y teclado
+
+`ContextIndicator` no es interactivo por defecto.
+
+Por tanto:
+
+- no entra automáticamente en el orden de tabulación;
+- no recibe `tabIndex=0` por contrato;
+- no roba foco cuando cambia el estado;
+- no mueve foco al renderizar;
+- no implementa atajos de teclado;
+- no convierte todo el resumen en botón;
+- no abre selectores al pulsarlo.
+
+Si una superficie necesita una acción para ampliar detalles o cambiar contexto, esa acción se compone mediante el control propietario correspondiente y conserva semántica de Button o Link.
+
+---
+
+#### 38. Accesibilidad mínima
+
+La implementación futura deberá conservar como mínimo:
+
+1. relación perceptible entre cada etiqueta y su valor;
+2. estado textual, no dependiente solo de color o icono;
+3. orden de lectura lógico;
+4. reflow sin pérdida de dimensiones relevantes;
+5. contraste suficiente;
+6. contenido legible con zoom;
+7. ausencia de foco artificial en contenido estático;
+8. compatibilidad con atributos `aria-*` válidos del contenedor cuando el consumidor necesite etiquetar la región;
+9. ausencia de información crítica únicamente en tooltip o hover;
+10. compatibilidad con lector de pantalla mediante estructura semántica ordinaria;
+11. posibilidad de que la composición superior anuncie cambios materiales;
+12. ausencia de datos técnicos o privados como sustituto del lenguaje humano.
+
+---
+
+#### 39. `className`, `style` y atributos nativos
+
+La superficie podrá conservar atributos compatibles de un `HTMLDivElement` cuando la implementación física los admita.
+
+`className` y `style` no autorizan:
+
+- ocultar el estado;
+- ocultar una dimensión obligatoria de la superficie;
+- convertir `stale` en apariencia equivalente a `active`;
+- hacer que `invalid` dependa únicamente del color;
+- fabricar un selector;
+- convertir el resumen entero en control interactivo;
+- ocultar una simulación obligatoria en la composición;
+- romper contraste, reflow o lectura accesible.
+
+Las extensiones repetidas que alteren el contrato deberán evaluarse como evolución del package.
+
+---
+
+#### 40. Decisión sobre `children`
+
+`children` no se utiliza como extensión libre del cuerpo de `ContextIndicator` en esta definición.
+
+El contenido principal se expresa mediante:
+
+```text
+state
+stateLabel
+items
+```
+
+La decisión evita que cada consumidor inserte estructuras incompatibles, selectores, botones o bloques de negocio dentro del componente y vuelva a fragmentar el patrón compartido.
+
+Controles o avisos adicionales se componen como hermanos o dentro del patrón superior correspondiente.
+
+---
+
+#### 41. Decisión sobre iconos
+
+No se crea una prop pública obligatoria de icono por dimensión ni por estado.
+
+La implementación física puede usar iconografía decorativa internamente si mejora percepción, pero:
+
+- el texto conserva significado completo;
+- el icono no sustituye `stateLabel`;
+- un icono de sede no demuestra que la sede esté activa;
+- un icono de advertencia no sustituye diagnóstico;
+- los consumidores no deberán acoplar lógica al icono renderizado.
+
+---
+
+#### 42. Decisión sobre variantes visuales
+
+No se crea una prop `variant` o `tone` independiente.
+
+La presentación de salud contextual deriva de `state`.
+
+No se admiten combinaciones como:
+
+```text
+state="active" + variant="danger"
+state="invalid" + variant="success"
+```
+
+que permitirían contradicciones semánticas.
+
+La marca, densidad y tokens pertenecen al sistema visual del package, no a una segunda taxonomía funcional.
+
+---
+
+#### 43. Responsive y persistencia
+
+El componente debe poder participar en una representación persistente de contexto sin asumir por sí mismo la posición final dentro del AppShell.
+
+Reglas de materialización:
+
+- en escritorio puede compactarse horizontalmente;
+- en tablet puede reorganizarse sin perder sede, área, rol o estado relevantes;
+- en móvil puede pasar a varias líneas o resumen compacto accesible;
+- en kiosco debe permitir una presentación permanente y legible del contexto exigido;
+- no debe exigir scroll horizontal ordinario para leer el contexto mínimo;
+- no debe depender de hover para revelar el valor principal;
+- no debe ocultarse exclusivamente dentro del menú de perfil.
+
+La decisión exacta de integración en chrome o AppShell permanece en `SHELL-UI-010`, y los patrones físicos de tablet/kiosco permanecen en `SHELL-UI-017` y `SHELL-UI-018`.
+
+---
+
+#### 44. Compatibilidad server/client
+
+La lógica conceptual de `ContextIndicator` no requiere:
+
+- estado React interno;
+- efectos;
+- `window`;
+- `document`;
+- storage;
+- timers;
+- router;
+- red;
+- sesión;
+- listeners globales.
+
+Por tanto el componente es conceptualmente server-safe.
+
+Una aplicación puede actualizar sus props cuando resuelva o cambie contexto. Esa actualización no convierte al componente en propietario de la resolución.
+
+No se exige `"use client"` como parte del contrato público.
+
+---
+
+#### 45. Relación con `Alert`
+
+`Alert` y `ContextIndicator` tienen responsabilidades distintas.
+
+```text
+ContextIndicator
+→ resumen persistente del contexto y su estado
+
+Alert
+→ mensaje contextual puntual o persistente de naturaleza informativa, éxito, advertencia o peligro
+```
+
+Una superficie puede componer ambos.
+
+`ContextIndicator state="invalid"` no sustituye una explicación completa de bloqueo si la persona necesita saber qué corregir.
+
+`Alert` tampoco debe reconstruir por sí mismo el contexto autoritativo.
+
+---
+
+#### 46. Relación con `EmptyState`
+
+`ContextIndicator` no debe convertirse en `EmptyState` cuando falta contexto.
+
+Separación:
+
+```text
+sin registros confirmados
+→ EmptyState cuando el contrato de pantalla lo determine
+
+contexto no resuelto / inválido / no disponible
+→ ContextIndicator + patrón de explicación o diagnóstico aplicable
+```
+
+Una falla contextual no demuestra que no existan datos o trabajo.
+
+---
+
+#### 47. Relación con selectores de sede y área
+
+El indicador no contiene selectores.
+
+La composición futura podrá presentar, según autoridad y diseño aprobados:
+
+```text
+ContextIndicator
++
+SiteSelector
++
+AreaSelector
+```
+
+pero la selección no cambia el valor mostrado como activo antes de la confirmación autoritativa.
+
+`SHELL-UI-007` y `SHELL-UI-008` deberán conservar esta frontera.
+
+---
+
+#### 48. Relación con aviso de rol simulado
+
+Una simulación material no debe desaparecer por compactación del contexto.
+
+Sin embargo, el aviso especializado pertenece a `SHELL-UI-009`.
+
+La composición prevista es:
+
+```text
+ContextIndicator
++
+SimulatedRoleNotice
+```
+
+cuando la superficie deba comunicar ambos.
+
+No se incorpora una variante `simulated` al indicador.
+
+---
+
+#### 49. Relación con diagnóstico de contexto
+
+`ContextIndicator` muestra el estado resumido.
+
+`SHELL-UI-015` conserva la propiedad del diagnóstico compartido de contexto.
+
+El indicador no expone:
+
+- reason codes técnicos completos;
+- causa interna;
+- árbol de resolución;
+- principal técnico;
+- SQL;
+- payload;
+- stack;
+- detalles de RLS;
+- reglas de antifraude;
+- permisos de terceros;
+- secretos.
+
+Cuando el contexto sea `invalid` o `unavailable`, el patrón superior decide si debe abrirse o mostrarse diagnóstico seguro.
+
+---
+
+#### 50. Relación con territorio del recurso
+
+Algunas operaciones legítimas requieren comparar el contexto activo con el territorio del recurso.
+
+`ContextIndicator` puede mostrar ambos valores si la capa propietaria ya determinó que son relevantes y seguros.
+
+No los concilia ni corrige.
+
+Ejemplo conceptual:
+
+```text
+Sede activa        → Satélite Norte
+Destino del recurso → Centro de Producción
+```
+
+La existencia de dos territorios visibles no implica conflicto por sí sola; la interpretación pertenece al proceso propietario.
+
+---
+
+#### 51. Privacidad y minimización
+
+El componente deberá recibir únicamente información necesaria para la finalidad de la superficie.
+
+No deberá utilizar como identidad ordinaria:
+
+- documento personal;
+- correo electrónico;
+- teléfono;
+- token;
+- identificador de sesión;
+- identificador secreto del dispositivo;
+- datos del actor anterior;
+- información sensible no requerida para comprender la tarea.
+
+La minimización ocurre antes de renderizar.
+
+`ContextIndicator` no se convierte en un componente de masking de datos arbitrarios; no debe recibir datos que la persona no esté autorizada a conocer.
+
+---
+
+#### 52. Estado técnico actual de SHELL
+
+El inventario directo del directorio local de primitivas de SHELL confirma cinco primitivas actuales:
+
+```text
+Button
+Card
+Chip
+Input
+Modal
+```
+
+No existe allí un candidato local dedicado denominado `ContextIndicator`.
+
+`Chip` no se adopta como sustituto automático del indicador, porque:
+
+- un chip es una primitiva visual genérica;
+- el indicador requiere composición de múltiples dimensiones;
+- el indicador tiene estados de frescura propios;
+- el indicador exige fronteras explícitas con autoridad y contexto;
+- una colección libre de chips no garantiza semántica, orden ni accesibilidad del resumen.
+
+---
+
+#### 53. Evidencia del template histórico
+
+El template AppShell histórico contiene presentación de sede y perfil dentro de piezas de chrome y menú.
+
+También mezcla responsabilidades que no deben trasladarse al componente compartido, entre ellas selección, navegación y lógica de contexto de aplicación.
+
+Clasificación:
+
+```text
+FUENTE HISTÓRICA DE EVIDENCIA
+≠
+IMPLEMENTACIÓN CANÓNICA DE ContextIndicator
+```
+
+La presencia del template no demuestra adopción runtime por sí misma.
+
+---
+
+#### 54. Evidencia runtime en consumidores web
+
+Se verificaron implementaciones actuales de `VentoChrome` en seis repositorios consumidores web existentes:
+
+```text
+NEXO
+FOGO
+ORIGO
+VISO
+PULSO
+NUMERA
+```
+
+Las firmas locales ya muestran deriva de nombres para conceptos semejantes:
+
+| Consumidor | Props observadas relacionadas con contexto                 |
+| ---------- | ---------------------------------------------------------- |
+| NEXO       | `activeWorkContextLabel`, `activeWorkContextDescription`   |
+| FOGO       | `activeContextLabel`, `activeContextDetail`                |
+| ORIGO      | `activeWorkContextLabel`, `activeWorkContextDescription`   |
+| VISO       | `activeContextLabel`, `activeContextDescription`           |
+| PULSO      | `operationalContextLabel`, `operationalContextDescription` |
+| NUMERA     | `activeWorkContextLabel`, `activeWorkContextDescription`   |
+
+Esta deriva confirma la necesidad de una superficie compartida estable, pero no autoriza adoptar ciegamente ninguna firma local.
+
+---
+
+#### 55. Reconciliación de patrones runtime
+
+La familia observada se clasifica como evidencia legacy a migrar, no como API canónica.
+
+| Rasgo observado                                 | Decisión                                              |
+| ----------------------------------------------- | ----------------------------------------------------- |
+| labels de contexto ya calculados                | conservar intención, normalizar mediante `items`      |
+| descripciones ad hoc                            | no convertir en prop obligatoria del indicador        |
+| sede activa dentro de chrome                    | conservar necesidad visual; autoridad permanece fuera |
+| selectores dentro del chrome/menu               | separar hacia UI007/UI008                             |
+| rol mostrado en perfil/chrome                   | conservar semántica humana; distinguir tipo de rol    |
+| simulación local                                | separar aviso especializado hacia UI009               |
+| `operatingGate` local                           | no incorporar al indicador                            |
+| permisos y navegación dentro del chrome         | fuera del indicador                                   |
+| query parameters usados en algunos consumidores | no aceptar como fuente autoritativa del indicador     |
+| estilos `ui-chip` o equivalentes                | evidencia visual, no API pública                      |
+
+---
+
+#### 56. Por qué no se comparte `VentoChrome` desde esta tarea
+
+`SHELL-UI-006` no comparte el chrome completo.
+
+`VentoChrome` contiene responsabilidades superiores como:
+
+- identidad de aplicación;
+- navegación;
+- app switcher;
+- menú de perfil;
+- selección de sede;
+- layout global;
+- permisos de navegación;
+- gating de operación;
+- responsive shell.
+
+La evaluación de AppShell pertenece a `SHELL-UI-010`.
+
+`ContextIndicator` debe poder existir dentro o fuera de una implementación futura de AppShell sin quedar acoplado a ella.
+
+---
+
+#### 57. Estrategia posterior de migración
+
+La migración física no ocurre en `SHELL-UI-006`.
+
+Los propietarios posteriores deberán:
+
+1. consolidar el inventario real de consumidores y variantes;
+2. asignar cada consumidor a un lote reversible;
+3. bloquear nuevas dependencias sobre firmas legacy;
+4. evitar que el scaffold histórico siga copiando implementaciones desfasadas;
+5. migrar componente, chrome y estilos por aplicación;
+6. verificar accesibilidad, tema, densidad y responsive;
+7. comparar comportamiento antes y después;
+8. retirar copias legacy solo después de demostrar ausencia de uso residual y rollback.
+
+La adopción no será un reemplazo textual masivo de props con nombres similares.
+
+---
+
+#### 58. Handoff a migración coordinada
+
+Responsabilidades de las tareas de migración:
+
+| Tarea           | Handoff de `ContextIndicator`                                                           |
+| --------------- | --------------------------------------------------------------------------------------- |
+| `SHELL-MIG-001` | inventariar usos reales de contexto visible, chrome, headers, chips, menús y selectores |
+| `SHELL-MIG-002` | crear lotes reversibles por repositorio                                                 |
+| `SHELL-MIG-003` | compatibilidad temporal y bloqueo de nuevos consumidores legacy                         |
+| `SHELL-MIG-004` | impedir que el scaffold replique el patrón histórico                                    |
+| `SHELL-MIG-005` | adoptar `ContextIndicator` y composición compartida por aplicación                      |
+| `SHELL-MIG-006` | verificar accesibilidad, tema, densidad, reflow y dispositivos                          |
+| `SHELL-MIG-007` | demostrar paridad y comportamiento contractual                                          |
+| `SHELL-MIG-008` | retirar únicamente copias sin consumidores residuales                                   |
+
+No se adelanta ninguno de esos cambios.
+
+---
+
+#### 59. Compatibilidad y versionado
+
+La futura superficie pública deberá gobernarse con SemVer.
+
+Cambios potencialmente incompatibles incluyen:
+
+- retirar un estado;
+- renombrar un estado;
+- cambiar significado de `active`, `stale`, `invalid` o `unavailable`;
+- cambiar obligatoriedad de `stateLabel`;
+- modificar la estructura de `ContextIndicatorItem`;
+- permitir o retirar contenido interactivo dentro del indicador;
+- cambiar la semántica HTML observable;
+- introducir una dependencia runtime que afecte consumidores;
+- cambiar el comportamiento accesible de los estados;
+- convertir el componente en selector o resolver.
+
+Una necesidad específica de un consumidor no se incorpora silenciosamente a la API común.
+
+---
+
+#### 60. Handoff a calidad y releases
+
+La materialización futura conserva los propietarios ya definidos para paquetes compartidos:
+
+| Tarea          | Responsabilidad                                      |
+| -------------- | ---------------------------------------------------- |
+| `SHELL-CI-001` | pruebas propias del package                          |
+| `SHELL-CI-002` | build independiente                                  |
+| `SHELL-CI-003` | releases versionados                                 |
+| `SHELL-CI-004` | changelog                                            |
+| `SHELL-CI-005` | matriz de compatibilidad                             |
+| `SHELL-CI-006` | actualización controlada de consumidores mediante PR |
+
+`SHELL-UI-006` define el contrato del componente; no publica una versión.
+
+---
+
+#### 61. Contrato futuro de prueba
+
+La implementación física y su adopción deberán demostrar, como mínimo:
+
+1. renderizado de `active`;
+2. renderizado de `resolving`;
+3. renderizado de `changing`;
+4. renderizado de `stale`;
+5. renderizado de `invalid`;
+6. renderizado de `unavailable`;
+7. `stateLabel` perceptible en todos los estados;
+8. relación semántica entre cada label y value;
+9. preservación del orden recibido;
+10. renderizado con cero elementos cuando el estado lo permita sin inventar contexto;
+11. renderizado con varias dimensiones;
+12. conservación de valores conocidos durante resolución cuando el consumidor los aporte;
+13. ausencia de fallback automático a sede primaria;
+14. ausencia de inferencia desde URL o query parameters;
+15. ausencia de inferencia desde storage;
+16. ausencia de inferencia desde nombre de aplicación;
+17. ausencia de dependencia directa de Supabase;
+18. ausencia de consulta de red dentro del componente;
+19. ausencia de autorización dentro del componente;
+20. ausencia de selectores embebidos;
+21. ausencia de `canOperate` como fuente de presentación autoritativa;
+22. separación entre rol base y operativo cuando el consumidor los muestre;
+23. separación entre sede activa y filtro administrativo;
+24. separación entre turno y check-in;
+25. separación entre actor humano y dispositivo;
+26. `changing` sin presentar el destino solicitado como confirmado antes del resultado propietario;
+27. `stale` distinguible de `active` sin depender solo de color;
+28. `invalid` distinguible de `unavailable`;
+29. ausencia de `role="status"` o live region universal no justificada;
+30. ausencia de foco automático en cambios ordinarios;
+31. reflow en ancho reducido;
+32. lectura con zoom;
+33. contraste aplicable;
+34. server rendering de la superficie pura;
+35. ausencia de estado React interno obligatorio;
+36. composición junto a Alert sin mezclar responsabilidades;
+37. composición junto a aviso de simulación sin absorberlo;
+38. composición junto a selectores sin que el valor solicitado se vuelva activo prematuramente;
+39. preservación de privacidad y minimización;
+40. paridad por consumidor antes de retirar su patrón legacy.
+
+Esta lista define evidencia futura. No declara implementación ni ejecución de pruebas en `SHELL-UI-006`.
+
+---
+
+#### 62. Cobertura de requisitos existente
+
+La tarea no necesita introducir una obligación transversal nueva porque el registro vigente ya cubre de forma específica:
+
+- persistencia de contexto efectivo y prohibición de derivarlo desde frontend: `TREQ-UX-077`;
+- separación entre asignación, selección, filtro, territorio y contexto activo: `TREQ-UX-078`;
+- contenido mínimo humano del resumen contextual: `TREQ-UX-079`;
+- separación de roles base, operativo, simulación, delegación y navegación: `TREQ-UX-080`;
+- separación entre turno, jornada y check-in: `TREQ-UX-081`;
+- tratamiento fail-closed cuando falta una dimensión: `TREQ-UX-082`;
+- transición autoritativa de cambio de contexto: `TREQ-UX-083`;
+- invalidación ante cambios materiales: `TREQ-UX-084`;
+- comparación con territorio del recurso: `TREQ-UX-085`;
+- separación de cobertura administrativa y contexto operativo: `TREQ-UX-086`;
+- singularidad del contexto activo: `TREQ-UX-087`;
+- dispositivos compartidos y actor humano: `TREQ-UX-088`;
+- reconstrucción y revalidación cross-app: `TREQ-UX-089`;
+- perceptibilidad persistente en distintos dispositivos: `TREQ-UX-090`;
+- accesibilidad del contexto: `TREQ-UX-091`;
+- estados de frescura: `TREQ-UX-092`;
+- minimización y privacidad: `TREQ-UX-093`;
+- tratamiento de contexto ausente, en resolución o inválido: `TREQ-UX-094`;
+- trazabilidad del cambio material: `TREQ-UX-095`;
+- migración y retiro de patrones legacy: `TREQ-UX-096`;
+- contexto visible en tablets y kioscos compartidos: `TREQ-UX-216`;
+- lenguaje humano diferenciado para contexto y roles: `TREQ-UX-308`;
+- permanencia visible de contexto, estado y frescura: `TREQ-UX-183`;
+- clasificación y reconciliación de componentes compartidos: `TREQ-SHELL-002`, `TREQ-SHELL-029`, `TREQ-SHELL-030`, `TREQ-SHELL-031`, `TREQ-SHELL-032` y `TREQ-SHELL-035`;
+- versionado, compatibilidad, deprecación y retiro: `TREQ-SHELL-036` a `TREQ-SHELL-039`;
+- separación entre contratos canónicos, contexto runtime y presentación: `TREQ-SHELL-043`.
+
+`SHELL-UI-006` especializa cómo estas obligaciones se aplican al componente de presentación sin crear una regla material nueva.
+
+---
+
+#### 63. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+La cobertura canónica vigente ya contempla la semántica, seguridad, accesibilidad, frescura, privacidad, migración y compatibilidad necesarias para el indicador de contexto. Esta tarea únicamente fija la API visual y sus fronteras dentro de esa cobertura existente.
+
+---
+
+#### 64. Estado de materialización física
+
+Al cierre documental de `SHELL-UI-006`:
+
+```text
+IDENTIDAD ContextIndicator                 = ESPECIFICADA
+ContextIndicatorProps                      = ESPECIFICADO CONCEPTUALMENTE
+ContextIndicatorState                      = 6 ESTADOS ESPECIFICADOS
+ContextIndicatorItem                       = ESPECIFICADO CONCEPTUALMENTE
+FRONTERA PRESENTACIÓN / AUTORIDAD           = CERRADA
+FRONTERA CONTEXTO OPERATIVO / ADMINISTRATIVO= CERRADA
+FRONTERA INDICADOR / SELECTORES             = CERRADA
+FRONTERA INDICADOR / SIMULACIÓN             = CERRADA
+FRONTERA INDICADOR / DIAGNÓSTICO            = CERRADA
+ACCESIBILIDAD                               = ESPECIFICADA DOCUMENTALMENTE
+COMPATIBILIDAD SERVER/CLIENT                = ESPECIFICADA
+RECONCILIACIÓN DE EVIDENCIA LEGACY          = CERRADA DOCUMENTALMENTE
+PACKAGE FÍSICO                              = NO MATERIALIZADO
+COMPONENTE FÍSICO                           = NO MATERIALIZADO
+CONSUMIDORES MIGRADOS                       = 0
+IMPLEMENTACIONES LEGACY RETIRADAS           = 0
+CAMBIOS TREQ                                = 0
+```
+
+La definición documental no implica publicación, instalación ni adopción runtime.
+
+---
+
+#### 65. Decisiones vinculantes
+
+1. El componente compartido se denomina `ContextIndicator`.
+2. Pertenece a `@vento/ui-web`.
+3. La tarea es documental y no materializa código.
+4. La superficie conceptual incluye `ContextIndicator`, `ContextIndicatorProps`, `ContextIndicatorState` y `ContextIndicatorItem`.
+5. No se fija un subpath físico ni mapa de exports.
+6. `ContextIndicator` representa contexto ya resuelto; no lo resuelve.
+7. `state` es obligatorio.
+8. `stateLabel` es obligatorio y humano.
+9. `items` contiene dimensiones ya resueltas y minimizadas.
+10. Cada item contiene `label` y `value` textuales.
+11. No se crea un enum visual paralelo de dimensiones de autoridad.
+12. El orden de items lo determina y conserva el consumidor.
+13. Los estados son `resolving`, `active`, `changing`, `stale`, `invalid` y `unavailable`.
+14. No se crea un estado `blocked` dentro del indicador.
+15. No se crea un estado `denied` dentro del indicador.
+16. No se crea un estado `offline` dentro del indicador.
+17. No se crea una variante `simulated` del indicador.
+18. No se crea una variante administrativa u operativa.
+19. No se crea una prop `variant` o `tone` independiente.
+20. El estado no depende únicamente del color o icono.
+21. El componente no recibe `siteId` o `areaId` como API específica.
+22. El componente no recibe un `role` ambiguo como fuente de autoridad.
+23. El componente no recibe `isOnShift`, `isCheckedIn` o `canOperate` como booleanos autoritativos.
+24. El componente no recibe `bypassApplied`.
+25. El componente no adopta `EffectiveContext` como prop pública.
+26. El componente no reimplementa `AccessContext` ni `SimulationContext`.
+27. El contrato no exige dependencia runtime directa de `@vento/os-context`.
+28. La proyección humana se construye antes de entrar a `@vento/ui-web`.
+29. El componente no depende directamente de `@vento/supabase`.
+30. El componente no consulta red, tablas, RPC ni storage.
+31. El componente no modifica sede, área, turno o rol.
+32. El componente no contiene selector de sede.
+33. El componente no contiene selector de área.
+34. El componente no contiene selector de rol.
+35. La selección solicitada no se presenta como contexto activo antes de confirmación propietaria.
+36. El componente distingue contexto operativo de alcance administrativo mediante el contenido humano aportado.
+37. Un filtro administrativo no se presenta como sede operativa activa.
+38. Turno y check-in permanecen dimensiones distintas.
+39. Actor, dispositivo y estación permanecen identidades distintas.
+40. La simulación material se mantiene visible mediante la composición propietaria y UI009.
+41. `stale` no prolonga permisos ni turnos.
+42. `invalid` no diagnostica la causa por sí mismo.
+43. `unavailable` no se convierte en EmptyState.
+44. El componente no usa fallbacks desde URL, query, storage, último valor, sede primaria o primera opción.
+45. La raíz es conceptualmente no interactiva.
+46. No se impone un landmark universal.
+47. No se impone `role="status"` universal.
+48. No se impone `aria-live` universal.
+49. El componente no entra al tab order por defecto.
+50. El componente no mueve foco por sí mismo.
+51. `children` no se usa como extensión libre del cuerpo.
+52. No se crea API obligatoria de iconos.
+53. El componente es conceptualmente server-safe.
+54. El contrato no exige `"use client"`.
+55. SHELL no posee actualmente un candidato dedicado `ContextIndicator` dentro de sus cinco primitivas locales inventariadas.
+56. `Chip` no se adopta como sustituto del indicador.
+57. El template es evidencia histórica, no implementación canónica.
+58. Las seis implementaciones `VentoChrome` runtime revisadas contienen deriva de nombres de contexto.
+59. Ninguna implementación local se adopta íntegramente como API común.
+60. La migración se realiza posteriormente por lotes reversibles y por consumidor.
+61. El retiro legacy exige evidencia de ausencia de uso residual.
+62. La calidad y release quedan bajo las tareas `SHELL-CI-*` propietarias.
+63. Se crean 0 requisitos de prueba y se modifican 0.
+64. `SHELL-UI-007` permanece reservada y no se desarrolla en esta tarea.
+
+---
+
+#### 66. Criterios de aceptación documental
+
+`SHELL-UI-006` queda documentalmente cerrada únicamente si se cumplen simultáneamente:
+
+- [x] la continuidad real apunta de `SHELL-UI-005` a `SHELL-UI-006`;
+- [x] `SHELL-UI-007` permanece reservada;
+- [x] existe una identidad única para el componente;
+- [x] se fija su pertenencia a `@vento/ui-web`;
+- [x] se separa presentación de resolución de contexto;
+- [x] se fija una API conceptual mínima;
+- [x] se fijan seis estados de presentación;
+- [x] se distingue frescura de bloqueo, denegación, conectividad y simulación;
+- [x] se evita adoptar `EffectiveContext` como autoridad visual;
+- [x] se evita duplicar `AccessContext` o `SimulationContext`;
+- [x] se separa sede activa de sede asignada, primaria, seleccionada o filtrada;
+- [x] se separa área activa de área elegible o filtrada;
+- [x] se separan turno y check-in;
+- [x] se separan rol base, rol operativo y simulación;
+- [x] se separan actor, dispositivo y estación;
+- [x] se prohíben fallbacks permisivos;
+- [x] se separa contexto operativo de alcance administrativo;
+- [x] se separa indicador de selectores;
+- [x] se separa indicador de aviso de simulación;
+- [x] se separa indicador de diagnóstico;
+- [x] se preserva privacidad y minimización;
+- [x] se especifica semántica HTML no interactiva;
+- [x] se especifica accesibilidad mínima;
+- [x] se evita una live region universal ruidosa;
+- [x] se especifica reflow y compatibilidad con dispositivos;
+- [x] se especifica server-safety;
+- [x] se reconcilia el estado local de primitivas de SHELL;
+- [x] se reconcilia la evidencia del template;
+- [x] se reconcilian seis implementaciones runtime observadas de `VentoChrome`;
+- [x] se asigna la migración a tareas propietarias posteriores;
+- [x] se asignan pruebas, build, release y compatibilidad a tareas propietarias;
+- [x] no se modifica código, Supabase, consumidores o configuración;
+- [x] se declaran 0 cambios TREQ con cobertura existente concreta;
+- [x] no queda una decisión material de esta tarea sin propietario.
+
+Resultado documental:
+
+```text
+INDICADOR DE CONTEXTO COMPARTIDO     = ESPECIFICADO
+ESTADOS DE PRESENTACIÓN              = 6 CERRADOS
+API CONCEPTUAL                       = CERRADA
+AUTORIDAD                            = FUERA DEL COMPONENTE
+SELECTORES                           = FUERA DEL COMPONENTE
+SIMULACIÓN                           = AVISO SEPARADO
+DIAGNÓSTICO                          = PATRÓN SEPARADO
+IMPLEMENTACIÓN FÍSICA                = NO MATERIALIZADA
+MIGRACIÓN                            = NO EJECUTADA
+CAMBIOS TREQ                         = 0
+SIGUIENTE TAREA                      = SHELL-UI-007
+```
+
+---
+
+#### 67. Límites
+
+Esta tarea no autoriza:
+
+- crear o modificar el package físico `@vento/ui-web`;
+- crear archivos TypeScript del componente;
+- modificar primitivas locales de SHELL;
+- modificar `VentoChrome` en consumidores;
+- modificar `ProfileMenu`;
+- modificar el template histórico;
+- retirar código legacy;
+- publicar una versión;
+- modificar `@vento/os-context`;
+- modificar contratos de autorización;
+- modificar resolución de contexto;
+- modificar autenticación o permisos;
+- modificar cookies;
+- modificar navegación;
+- modificar Supabase;
+- crear migraciones SQL;
+- modificar datos;
+- cambiar RLS;
+- crear selectores de sede o área;
+- crear el aviso de rol simulado;
+- crear diagnóstico de contexto;
+- iniciar migración de consumidores;
+- modificar requisitos de prueba;
+- iniciar `SHELL-UI-007`.
+
+---
+
+#### 68. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `SHELL-UI-005 — Compartir EmptyState`
+
+**TAREA ACTUAL APROBADA:** `SHELL-UI-006 — Compartir indicador de contexto`
+
+**SIGUIENTE TAREA RESERVADA:** `SHELL-UI-007 — Compartir selector de sede`
+
+No se inicia `SHELL-UI-007` sin aprobación de `SHELL-UI-006`.
+
+
 ### [ ] SHELL-UI-007 — Compartir selector de sede
 ### [ ] SHELL-UI-008 — Compartir selector de área
 ### [ ] SHELL-UI-009 — Compartir aviso de rol simulado
