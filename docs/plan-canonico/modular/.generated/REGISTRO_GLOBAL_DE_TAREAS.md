@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **889** |
+| Aprobadas | **890** |
 | En propuesta | **0** |
-| No iniciadas | **705** |
+| No iniciadas | **704** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **55.77% (889/1594)** |
+| Porcentaje de completamiento | **55.83% (890/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CON-010` — Centralizar estados de procesos | ✅ APROBADA |
-| Tarea actual | `SHELL-CON-011` — Centralizar identificadores de pantallas | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CON-012` — Crear contrato de acciones funcionales | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CON-011` — Centralizar identificadores de pantallas | ✅ APROBADA |
+| Tarea actual | `SHELL-CON-012` — Crear contrato de acciones funcionales | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CON-013` — Crear contrato de eventos empresariales | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -716,7 +716,7 @@
 | ✅ APROBADA | `SHELL-CON-008` | Centralizar códigos de error | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CON-009` | Centralizar identificadores de procesos | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CON-010` | Centralizar estados de procesos | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-CON-011` | Centralizar identificadores de pantallas | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-CON-011` | Centralizar identificadores de pantallas | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-012` | Crear contrato de acciones funcionales | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-013` | Crear contrato de eventos empresariales | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-014` | Crear contrato de traspasos entre aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |

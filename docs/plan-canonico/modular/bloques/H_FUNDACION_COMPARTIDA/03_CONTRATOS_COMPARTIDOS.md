@@ -7527,7 +7527,816 @@ SHELL-CON-010 — Centralizar estados de procesos
 SHELL-CON-011 — Centralizar identificadores de pantallas
 
 
-### [ ] SHELL-CON-011 — Centralizar identificadores de pantallas
+### ✅ SHELL-CON-011 — Centralizar identificadores de pantallas
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CON-010 — Centralizar estados de procesos
+**Tarea siguiente:** SHELL-CON-012 — Crear contrato de acciones funcionales
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Estado físico resultante:** `CONTRATO_DE_IDENTIDAD_DE_PANTALLAS_DEFINIDO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-011` centraliza la identidad técnica estable de las pantallas de Vento OS a partir del contrato aprobado por `PROC-SCREEN-001` y del catálogo materializado documentalmente por `PROC-SCREEN-002`, sin crear pantallas nuevas, renumerar identidades existentes, reinterpretar fronteras UX ni sustituir los vínculos aprobados con aplicaciones, procesos y pasos.
+
+La frontera contractual queda:
+
+```text
+PROC-SCREEN-001
+-> gobierna identidad, asignación, estabilidad y ciclo de vida de ScreenId
+
+SCREEN-CANONICAL-CATALOG-001
+-> contiene las identidades canónicas materializadas
+
+@vento/contracts/screens
+-> proyección compartida, tipada y validable de esas identidades
+
+consumidores
+-> referencian ScreenId
+-> no inventan, renombran ni reasignan VSCREEN-*
+```
+
+Un `ScreenId` identifica una superficie lógica canónica. No identifica una ruta web, archivo, componente, layout, paso, proceso, aplicación, permiso, estado visual, modal subordinado, dispositivo ni implementación técnica concreta.
+
+---
+
+#### 2. Resultado canónico
+
+El conjunto vigente queda compuesto por exactamente **177 identidades canónicas**:
+
+```text
+VSCREEN-0001 .. VSCREEN-0177
+```
+
+Conciliación:
+
+| Dimensión                                                      |      Resultado |
+| -------------------------------------------------------------- | -------------: |
+| pantallas canónicas esperadas                                  |        **177** |
+| identidades materializadas en esta tarea                       |        **177** |
+| identidades únicas                                             |        **177** |
+| faltantes dentro del conjunto vigente                          |          **0** |
+| duplicados                                                     |          **0** |
+| identidades actuales fuera de `VSCREEN-0001..VSCREEN-0177`     |          **0** |
+| registros con estado vigente `CANONICAL`                       |        **177** |
+| aplicaciones canónicas del catálogo general                    |         **10** |
+| aplicaciones con pantallas asignadas                           |          **9** |
+| aplicaciones canónicas con cero pantallas por decisión vigente | **1 (`aura`)** |
+
+`VSCREEN-0178` satisface la forma sintáctica mínima del namespace, pero no pertenece al conjunto canónico vigente y esta tarea no lo asigna.
+
+---
+
+#### 3. Fuentes y precedencia
+
+Esta tarea conserva, sin reabrirlas, las decisiones vigentes de las siguientes fuentes:
+
+| Fuente                                              | Uso vinculante                                                                                           |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`        | continuidad, alcance documental, trazabilidad y gobierno de requisitos de prueba                         |
+| `docs/plan-canonico/modular/delivery-contract.json` | forma del artefacto documental y límites de entrega                                                      |
+| `docs/plan-canonico/modular/active-sequence.json`   | `SHELL-CON-011` como tarea actual y `SHELL-CON-012` como siguiente tarea reservada                       |
+| `SHELL-CON-001`                                     | raíz contractual única `@vento/contracts` y reserva de subpaths especializados a sus tareas propietarias |
+| `SHELL-CON-009`                                     | patrón de centralización de identidades compartidas sin sustituir su registro semántico propietario      |
+| `SHELL-CON-010`                                     | continuidad inmediata y separación entre estado de proceso e identidad de pantalla                       |
+| `PROC-SCREEN-001`                                   | contrato de `ScreenId`, formato, opacidad, no reutilización, ciclo de vida y admisión futura             |
+| `PROC-SCREEN-002`                                   | `SCREEN-CANONICAL-CATALOG-001`, 177 identidades y aplicación primaria de cada pantalla                   |
+| `PROC-SCREEN-003`                                   | vínculo de las 177 pantallas con procesos sin alterar `ScreenId`                                         |
+| `PROC-SCREEN-004`                                   | vínculo de las 177 pantallas con pasos sin alterar `ScreenId`                                            |
+| validadores canónicos de pantallas                  | secuencia, unicidad, cobertura y ausencia de identificadores no registrados                              |
+| Registro Canónico de Requisitos de Prueba           | cobertura ya existente de identidad, estabilidad, catálogo y vínculos de pantalla                        |
+
+Precedencia específica:
+
+```text
+PROC-SCREEN-001
+-> define el contrato de identidad
+
+PROC-SCREEN-002 / SCREEN-CANONICAL-CATALOG-001
+-> materializan las 177 identidades vigentes
+
+PROC-SCREEN-003 y PROC-SCREEN-004
+-> agregan relaciones sin cambiar identidad
+
+SHELL-CON-011
+-> centraliza la proyección técnica compartida
+-> no redefine la semántica UX ni el catálogo propietario
+```
+
+---
+
+#### 4. Conciliación con el mini-bloque de contratos compartidos
+
+La continuidad del mini-bloque permanece coherente:
+
+```text
+SHELL-CON-001
+-> define la raíz contractual compartida
+
+SHELL-CON-002..010
+-> centralizan contratos anteriores sin redefinir ScreenId
+
+SHELL-CON-010
+-> reserva SHELL-CON-011
+
+SHELL-CON-011
+-> centraliza identificadores de pantallas
+
+SHELL-CON-012
+-> permanece reservada para acciones funcionales
+```
+
+No se identifica una decisión aprobada en `SHELL-CON-001..010` que deba corregirse para desarrollar esta tarea.
+
+---
+
+#### 5. Línea base verificable
+
+El estado técnico y documental previo a la materialización física queda:
+
+| Elemento                                               | Estado                   | Disposición                                                    |
+| ------------------------------------------------------ | ------------------------ | -------------------------------------------------------------- |
+| workspace `packages/*` en `vento-shell`                | existente                | conserva la fundación compartida                               |
+| `packages/contracts`                                   | no materializado         | no se crea en esta tarea                                       |
+| `@vento/contracts` publicado físicamente               | no confirmado            | no se presume release                                          |
+| subpath público de pantallas                           | no observado físicamente | se define documentalmente en esta tarea                        |
+| `SCREEN-CANONICAL-CATALOG-001`                         | aprobado documentalmente | fuente materializada de identidades de pantalla                |
+| referencias `VSCREEN-*` en documentación y validadores | existentes               | consumidores documentales, no package compartido materializado |
+| catálogo canónico de pantallas                         | 177 registros            | se conserva sin alta, baja o renumeración                      |
+| cambios físicos autorizados en `SHELL-CON-011`         | ninguno                  | fase exclusivamente documental                                 |
+
+La presencia de un `VSCREEN-*` en documentación, rutas, matrices, métricas o pruebas no constituye por sí sola una API compartida publicada.
+
+---
+
+#### 6. Namespace contractual compartido
+
+Esta tarea define el subpath lógico especializado:
+
+```text
+@vento/contracts/screens
+```
+
+Su responsabilidad pública queda limitada a contratos estáticos de identidad de pantalla y a artefactos determinísticamente derivados de la fuente canónica.
+
+Superficie conceptual mínima:
+
+```text
+@vento/contracts/screens
+-> ScreenId
+-> SCREEN_IDS
+-> validación de sintaxis y pertenencia
+-> metadata de procedencia del catálogo fuente
+```
+
+No se crea físicamente el subpath, no se publica una versión y no se define una huella de release en esta fase.
+
+El subpath no absorbe contratos de proceso, estados de proceso, acciones funcionales, eventos empresariales, autorización, navegación, UI runtime ni datos operativos.
+
+---
+
+#### 7. Forma canónica de `ScreenId`
+
+La forma contractual es:
+
+```text
+prefijo `VSCREEN-` seguido por una secuencia decimal global
+```
+
+Patrón sintáctico aprobado:
+
+```text
+^VSCREEN-[0-9]{4,}$
+```
+
+Reglas:
+
+1. el prefijo es exactamente `VSCREEN-`;
+2. la parte numérica contiene como mínimo cuatro dígitos;
+3. el allocator es global y monotónico;
+4. el identificador es opaco y no codifica aplicación, módulo, dominio, proceso, paso, rol, sede, ruta, dispositivo, versión ni entorno;
+5. una cadena que satisfaga el patrón no se convierte automáticamente en una identidad asignada;
+6. la pertenencia debe resolverse contra el conjunto publicado derivado del catálogo canónico;
+7. `VSCREEN-0000` no pertenece al conjunto asignado;
+8. `VSCREEN-0178` no pertenece al conjunto asignado vigente;
+9. no se admiten variantes por mayúsculas/minúsculas, espacios, prefijos de aplicación o sufijos semánticos;
+10. la serialización pública de la identidad permanece como string exacto `VSCREEN-*`.
+
+---
+
+#### 8. Matriz completa de centralización por identidad
+
+La siguiente matriz materializa una decisión explícita para las **177 de 177** identidades canónicas. La columna de bloqueo se refiere exclusivamente al cierre documental de `SHELL-CON-011`; no implica implementación física.
+
+| `ScreenId`     | Estado vigente | Decisión de centralización            | Bloqueo documental   |
+| -------------- | -------------- | ------------------------------------- | -------------------- |
+| `VSCREEN-0001` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0002` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0003` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0004` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0005` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0006` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0007` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0008` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0009` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0010` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0011` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0012` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0013` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0014` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0015` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0016` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0017` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0018` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0019` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0020` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0021` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0022` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0023` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0024` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0025` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0026` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0027` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0028` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0029` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0030` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0031` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0032` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0033` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0034` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0035` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0036` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0037` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0038` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0039` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0040` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0041` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0042` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0043` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0044` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0045` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0046` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0047` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0048` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0049` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0050` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0051` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0052` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0053` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0054` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0055` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0056` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0057` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0058` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0059` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0060` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0061` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0062` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0063` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0064` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0065` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0066` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0067` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0068` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0069` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0070` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0071` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0072` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0073` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0074` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0075` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0076` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0077` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0078` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0079` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0080` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0081` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0082` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0083` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0084` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0085` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0086` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0087` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0088` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0089` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0090` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0091` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0092` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0093` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0094` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0095` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0096` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0097` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0098` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0099` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0100` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0101` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0102` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0103` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0104` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0105` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0106` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0107` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0108` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0109` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0110` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0111` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0112` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0113` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0114` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0115` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0116` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0117` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0118` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0119` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0120` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0121` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0122` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0123` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0124` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0125` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0126` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0127` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0128` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0129` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0130` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0131` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0132` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0133` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0134` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0135` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0136` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0137` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0138` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0139` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0140` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0141` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0142` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0143` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0144` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0145` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0146` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0147` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0148` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0149` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0150` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0151` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0152` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0153` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0154` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0155` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0156` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0157` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0158` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0159` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0160` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0161` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0162` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0163` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0164` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0165` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0166` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0167` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0168` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0169` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0170` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0171` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0172` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0173` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0174` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0175` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0176` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+| `VSCREEN-0177` | `CANONICAL`    | `CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD` | `NINGUNO_DOCUMENTAL` |
+
+Conciliación de la matriz:
+
+```text
+filas esperadas = 177
+filas materializadas = 177
+ScreenId únicos = 177
+CANONICAL = 177
+CENTRALIZAR_SIN_CAMBIO_DE_IDENTIDAD = 177
+bloqueos documentales = 0
+faltantes = 0
+duplicados = 0
+```
+
+La matriz constituye la membresía vigente de `ScreenId` para esta tarea. No asigna identidades adicionales.
+
+---
+
+#### 9. Distribución heredada por aplicación
+
+`PROC-SCREEN-002` ya asignó una aplicación primaria a cada pantalla. `SHELL-CON-011` conserva esa relación sin utilizarla para derivar la identidad.
+
+| Aplicación | Pantallas canónicas |
+| ---------- | ------------------: |
+| `shell`    |               **7** |
+| `viso`     |              **31** |
+| `anima`    |              **14** |
+| `nexo`     |              **37** |
+| `fogo`     |              **15** |
+| `origo`    |              **14** |
+| `pulso`    |              **20** |
+| `numera`   |              **20** |
+| `pass`     |              **19** |
+| `aura`     |               **0** |
+| **Total**  |             **177** |
+
+Invariantes:
+
+1. cada una de las 177 pantallas conserva exactamente una aplicación primaria vigente;
+2. los rangos numéricos de `VSCREEN-*` no reservan bloques por aplicación;
+3. mover la aplicación propietaria de una pantalla no exige renumerar su `ScreenId` cuando la identidad funcional permanece;
+4. `aura` conserva cero pantallas por la decisión funcional vigente y no recibe identidades ficticias para completar una distribución;
+5. una aplicación no administra un namespace local paralelo de pantallas.
+
+---
+
+#### 10. Proyección TypeScript conceptual
+
+La colección literal publicada deberá derivarse del catálogo canónico y el tipo deberá obtenerse de esa misma colección:
+
+```text
+SCREEN_IDS
+-> colección inmutable derivada de los 177 valores canónicos
+
+ScreenId
+-> unión literal derivada de SCREEN_IDS
+```
+
+Reglas:
+
+1. la colección y el tipo son artefactos derivados, no una segunda fuente editable;
+2. `ScreenId` no se define como `string` abierto dentro de consumidores que ya hayan adoptado el contrato;
+3. los consumidores no agregan miembros localmente;
+4. una salida generada divergente del catálogo canónico es inválida;
+5. la regeneración conserva orden numérico ascendente por la parte secuencial del identificador.
+
+---
+
+#### 11. Validación runtime de fronteras
+
+Toda entrada procedente de JSON, base de datos, RPC, evento, query parameter, almacenamiento local, analítica, API, integración o consumidor legacy se considera no confiable hasta validación.
+
+La aceptación exige simultáneamente:
+
+```text
+sintaxis VSCREEN-* válida
+AND
+pertenencia al conjunto canónico publicado
+```
+
+Ejemplos:
+
+```text
+VSCREEN-0001
+-> sintaxis válida
+-> miembro vigente
+-> ScreenId válido
+
+VSCREEN-0177
+-> sintaxis válida
+-> miembro vigente
+-> ScreenId válido
+
+VSCREEN-0178
+-> sintaxis válida
+-> no pertenece al conjunto vigente
+-> referencia desconocida
+
+VSCREEN-9999
+-> sintaxis válida
+-> no pertenece al conjunto vigente
+-> referencia desconocida
+
+vscreen-0001
+-> sintaxis inválida
+```
+
+Un cast estático no sustituye la comprobación de pertenencia.
+
+---
+
+#### 12. Estabilidad, opacidad y no reutilización
+
+Se conservan las reglas de `PROC-SCREEN-001`:
+
+1. un `ScreenId` asignado no se reutiliza para otra pantalla;
+2. un cambio de nombre humano conserva el ID cuando la intención principal y el contrato material permanecen;
+3. un cambio de ruta o slug conserva el ID bajo la misma identidad funcional;
+4. un rediseño visual o refactor de componentes no crea por sí mismo otro ID;
+5. una adaptación responsive o de dispositivo puede conservar el ID cuando mantiene intención, objeto y contrato;
+6. un cambio de intención principal exige evaluar una identidad nueva conforme al gobierno de pantallas;
+7. la división, fusión o sustitución conserva linaje y no reescribe historia;
+8. retirar una pantalla no habilita reutilizar su número;
+9. el identificador no codifica semántica mutable;
+10. conocer un `ScreenId` no concede acceso ni permite inferir autorización.
+
+---
+
+#### 13. Nombres, rutas, slugs y componentes
+
+No son `ScreenId`:
+
+- nombre mostrado;
+- nombre interno;
+- título de página;
+- ruta web;
+- deep link;
+- slug;
+- clave de navegación;
+- nombre de archivo;
+- nombre de componente;
+- layout;
+- modal subordinado;
+- panel subordinado;
+- identificador legacy;
+- etiqueta analítica histórica.
+
+Estas referencias pueden resolver hacia una identidad canónica mediante mecanismos gobernados, pero no sustituyen `ScreenId` como clave contractual estable.
+
+La reutilización de un componente en varias pantallas no fusiona sus identidades.
+
+---
+
+#### 14. Separación frente a identidades relacionadas
+
+`ScreenId` permanece separado de:
+
+```text
+ProcessId
+process_instance_id
+step_id
+action_id
+event_id
+permission_key
+app_code
+route_id
+component_id
+request_id
+correlation_id
+audit_entry_id
+metric_id
+```
+
+En particular:
+
+```text
+ScreenId reconocido
+!= ProcessId
+!= step_id
+!= ruta
+!= permiso
+!= implementación
+```
+
+La presencia de una relación con una pantalla no convierte la identidad relacionada en parte del namespace `VSCREEN-*`.
+
+---
+
+#### 15. Reconciliación con procesos y pasos
+
+Las tareas posteriores de E2 añadieron relaciones sin modificar la identidad:
+
+```text
+PROC-SCREEN-003
+-> 177 pantallas reconciliadas con procesos canónicos
+-> cobertura de los 69 procesos canónicos
+-> 0 ScreenId nuevos por el vínculo
+
+PROC-SCREEN-004
+-> 177 pantallas reconciliadas con pasos compatibles
+-> 177 vínculos de paso
+-> 0 ScreenId nuevos por el vínculo
+```
+
+Reglas:
+
+1. `primary_process_id` no se deriva del número de `ScreenId`;
+2. un cambio de proceso relacionado no renumera automáticamente la pantalla;
+3. `step_id` no se incorpora al identificador;
+4. una pantalla puede conservar identidad aunque cambien relaciones funcionales autorizadas, siempre que la frontera lógica de pantalla permanezca;
+5. las relaciones con proceso y paso siguen gobernadas por sus registros propietarios.
+
+---
+
+#### 16. Reconciliación de `VSCREEN-0176` y `VSCREEN-0177`
+
+La corrección integral de `PROC-SCREEN-002` amplió el catálogo hasta 177 para representar dos fronteras funcionales que no debían confundirse con superficies históricas ya existentes.
+
+Se conserva la decisión aprobada:
+
+- `VSCREEN-0176` representa la definición reutilizable de kits/conjuntos y permanece separada de la operación histórica por instancia asociada a `VSCREEN-0135`;
+- `VSCREEN-0177` representa la configuración reutilizable de impresoras y permanece separada de la cola/trabajos históricos asociados a `VSCREEN-0144`;
+- `VSCREEN-0135` y `VSCREEN-0144` conservan su identidad histórica;
+- la ampliación no renumera ni elimina las 175 identidades anteriores.
+
+Estas decisiones son ejemplos del principio: separar fronteras materiales crea identidad nueva; compartir componentes o dominio no fusiona pantallas.
+
+---
+
+#### 17. Ciclo de vida
+
+Los estados de ciclo de vida aprobados para el registro de pantallas permanecen:
+
+```text
+PROPOSED
+CANONICAL
+SUPERSEDED
+MERGED
+SPLIT
+RETIRED
+LEGACY_MAPPED
+```
+
+Para el conjunto vigente materializado por `PROC-SCREEN-002`:
+
+```text
+CANONICAL = 177
+```
+
+Reglas:
+
+1. el estado de ciclo de vida no forma parte de `ScreenId`;
+2. cambiar el estado no permite reciclar el número;
+3. relaciones `supersedes` y `replaced_by` conservan trazabilidad cuando apliquen;
+4. referencias históricas continúan resolviendo hacia la identidad registrada;
+5. un consumidor no puede convertir una pantalla retirada en vigente por mantener una ruta o componente activo.
+
+---
+
+#### 18. Orden, generación y procedencia
+
+La colección derivada deberá conservar el orden global numérico:
+
+```text
+VSCREEN-0001
+VSCREEN-0002
+...
+VSCREEN-0177
+```
+
+No se utilizan como orden contractual:
+
+- aplicación primaria;
+- módulo;
+- nombre;
+- ruta;
+- proceso;
+- paso;
+- prioridad;
+- fecha de implementación;
+- orden de una consulta;
+- orden de imports.
+
+La salida derivada deberá permitir relacionar cada miembro con `SCREEN-CANONICAL-CATALOG-001` y regenerarse sin edición manual de identidades.
+
+---
+
+#### 19. Evolución del conjunto
+
+La incorporación futura de una pantalla sigue el gobierno de `PROC-SCREEN-001`:
+
+```text
+frontera lógica demostrada
+-> identity_statement
+-> comprobación de no duplicidad
+-> asignación atómica del siguiente número por el allocator propietario
+-> registro mínimo y ciclo de vida
+-> vínculo con decisiones de división, fusión o sustitución cuando aplique
+-> nueva proyección contractual
+```
+
+Una aplicación consumidora, una ruta, una migración, una tabla, un componente o un tipo TypeScript local no puede asignar unilateralmente un `ScreenId`.
+
+Esta tarea no admite ninguna identidad adicional al conjunto `VSCREEN-0001..VSCREEN-0177`.
+
+---
+
+#### 20. Versionado y compatibilidad
+
+`SHELL-CON-011` no asigna una versión publicada inexistente al subpath de pantallas.
+
+Cuando la superficie contractual sea materializada y publicada:
+
+1. `ScreenId` formará parte de una superficie versionada;
+2. una nueva identidad solo podrá aparecer después de su admisión en el registro propietario;
+3. los consumidores deberán usar una versión compatible con el conjunto que reciben;
+4. una referencia desconocida no se aproximará por nombre, ruta o semejanza;
+5. retirar o fusionar una pantalla conservará historia y compatibilidad conforme al ciclo de vida;
+6. una versión publicada no se modifica en sitio;
+7. la procedencia deberá relacionar la salida con el catálogo fuente y el commit aplicable.
+
+No se anticipan tag, release, manifiesto físico ni hash de publicación.
+
+---
+
+#### 21. Estado de materialización y destinos existentes
+
+La tarea no crea responsabilidades nuevas de implementación.
+
+| Resultado pendiente de fase física                                 | Destino existente                                                                                             |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| materializar la raíz `@vento/contracts` y sus superficies públicas | ciclo físico gobernado por `SHELL-CON-001`, `SHELL-PKG-001..008`, la puerta física aplicable y `SHELL-CI-020` |
+| generar tipos, constantes y validadores técnicos de pantallas      | paquetes de implementación E5 y tareas técnicas propietarias ya previstas por `PROC-SCREEN-001`               |
+| validar catálogo, secuencia y cobertura de pantallas               | validadores documentales de pantallas existentes y `SHELL-CI-017`                                             |
+| validar compatibilidad transversal de consumidores                 | `SHELL-CI-018`                                                                                                |
+| migrar referencias legacy y consumidores                           | tareas de migración y `PROC-SCREEN-026` según el tipo de referencia                                           |
+| validar pantallas con operación real                               | `UX-QA-020`, tareas `UX-QA-*` por aplicación y pilotos E5                                                     |
+
+Ninguno de esos trabajos físicos se inicia en `SHELL-CON-011`.
+
+---
+
+#### 22. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** `SHELL-CON-011` no crea identidades de pantalla, reglas de asignación, semántica de ciclo de vida, comportamiento de autorización, vínculos nuevos de aplicación/proceso/paso ni comportamiento físico. Centraliza una proyección documental de un contrato ya protegido por `TREQ-UX-481` a `TREQ-UX-508`, por los requisitos derivados de `PROC-SCREEN-002` para catálogo y aplicación, y por los requisitos posteriores que protegen los vínculos con procesos y pasos. La cobertura compartida de fuente única, compatibilidad y validación documental ya existe en el dominio SHELL. Crear un requisito equivalente duplicaría cobertura sin introducir una regla ejecutable nueva.
+
+El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 23. Decisiones vinculantes
+
+1. `ScreenId` utiliza el namespace `VSCREEN-*` con patrón contractual `^VSCREEN-[0-9]{4,}$`.
+2. El conjunto vigente contiene exactamente 177 identidades: `VSCREEN-0001` a `VSCREEN-0177`.
+3. Las 177 identidades de la matriz son únicas y permanecen `CANONICAL`.
+4. Existen cero faltantes y cero duplicados en el conjunto vigente.
+5. `VSCREEN-0000` no pertenece al conjunto asignado.
+6. `VSCREEN-0178` no pertenece al conjunto vigente y no se asigna en esta tarea.
+7. Cumplir el patrón sintáctico no demuestra pertenencia al catálogo.
+8. Los identificadores asignados no se reutilizan.
+9. El número no codifica aplicación, proceso, paso, ruta, módulo, rol, sede, dispositivo, versión ni entorno.
+10. Nombres, rutas, slugs, archivos, componentes y aliases no sustituyen `ScreenId`.
+11. La distribución vigente por aplicación suma exactamente 177 y `aura` conserva cero pantallas.
+12. Los rangos numéricos no pertenecen a una aplicación concreta.
+13. El vínculo con proceso no cambia `ScreenId`.
+14. El vínculo con paso no cambia `ScreenId`.
+15. Las 177 pantallas conservan cobertura de proceso y paso aprobada por sus tareas propietarias.
+16. `VSCREEN-0176` y `VSCREEN-0177` conservan las separaciones funcionales aprobadas sin eliminar `VSCREEN-0135` ni `VSCREEN-0144`.
+17. La fuente semántica de identidad permanece en el contrato y catálogo de `PROC-SCREEN-*`.
+18. La proyección compartida queda bajo `@vento/contracts/screens`.
+19. `@vento/contracts/screens` no se materializa ni publica en esta tarea.
+20. `SCREEN_IDS` y `ScreenId` son proyecciones derivadas, no fuentes editables.
+21. Entradas externas requieren validación de sintaxis y pertenencia.
+22. Un `ScreenId` reconocido no demuestra visibilidad, permiso, implementación ni disponibilidad.
+23. No se modifica código, Supabase, migraciones, datos, package físico, rutas ni consumidores.
+24. No se crean ni modifican requisitos `TREQ-*`.
+25. `SHELL-CON-012` permanece exclusivamente reservada.
+
+---
+
+#### 24. Criterios de aceptación
+
+`SHELL-CON-011` queda documentalmente completa porque:
+
+- materializa una decisión explícita para las 177 identidades vigentes;
+- concilia 177 esperadas, 177 materializadas, 177 únicas, cero faltantes y cero duplicados;
+- conserva `VSCREEN-0001..VSCREEN-0177` sin altas, bajas ni renumeración;
+- conserva las 177 identidades en estado `CANONICAL`;
+- preserva el patrón de cuatro o más dígitos y la validación adicional de pertenencia;
+- mantiene el identificador opaco y global;
+- separa `ScreenId` de ruta, componente, aplicación, proceso, paso, permiso e implementación;
+- conserva la distribución exacta por aplicación sin convertir rangos numéricos en namespaces locales;
+- conserva los vínculos aprobados de las 177 pantallas con procesos y pasos sin modificar identidad;
+- conserva las separaciones de `VSCREEN-0176` y `VSCREEN-0177` y las identidades históricas relacionadas;
+- define `@vento/contracts/screens` como superficie lógica propietaria de la proyección compartida;
+- define `SCREEN_IDS` y `ScreenId` como salidas derivadas de la fuente canónica;
+- exige validación runtime de sintaxis y membresía;
+- conserva el ciclo de vida, no reutilización y trazabilidad del contrato propietario;
+- no crea código, package, release, migración, Supabase, datos ni cambios en consumidores;
+- reutiliza requisitos vigentes y genera cero cambios `TREQ-*`;
+- deja `SHELL-CON-012` como única continuidad reservada.
+
+---
+
+#### 25. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-CON-010 — Centralizar estados de procesos
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-CON-011 — Centralizar identificadores de pantallas
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-CON-012 — Crear contrato de acciones funcionales
+
+
 ### [ ] SHELL-CON-012 — Crear contrato de acciones funcionales
 ### [ ] SHELL-CON-013 — Crear contrato de eventos empresariales
 ### [ ] SHELL-CON-014 — Crear contrato de traspasos entre aplicaciones
