@@ -24110,6 +24110,1986 @@ Esta tarea no autoriza:
 `SHELL-UI-018 — Compartir patrón para kiosco`
 
 
-### [ ] SHELL-UI-018 — Compartir patrón para kiosco
+### ✅ SHELL-UI-018 — Compartir patrón para kiosco
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-017 — Compartir patrón para tablet
+**Tarea siguiente:** SHELL-UI-019 — Compartir patrón de proceso interrumpido
+**Tipo de tarea:** Documental; definición canónica del patrón web compartido para componer superficies operativas en kioscos fijos dentro de `@vento/ui-web`, preservando contención de estación, actor humano, contexto, privacidad, ergonomía táctil, conectividad, accesibilidad y fronteras de administración del dispositivo, sin materializar package, código ejecutable, configuración de sistema operativo, MDM, consumidores, hardware, SQL, migraciones, cambios de Supabase, releases ni despliegues.
+**Bloque:** H — Fundación compartida
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md`
+**Estado físico resultante:** `ESPECIFICADO`; patrón físico no materializado; consumidores migrados: 0.
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+**Paquete propietario conceptual:** `@vento/ui-web`
+
+---
+
+#### 1. Propósito
+
+Definir el patrón web compartido que proyecta una composición operativa ya resuelta dentro de un kiosco fijo, de manera que la persona pueda identificar estación, actor, contexto, trabajo, estado, siguiente acción y resultado sin que la superficie visual se convierta en fuente de autoridad, administrador del dispositivo o mecanismo de bloqueo del sistema operativo.
+
+La regla central queda:
+
+```text
+PERFIL FIXED_KIOSK APROBADO
++
+DISPOSITIVO Y HOST GOBERNADOS EXTERNAMENTE
++
+ACTOR, CONTEXTO, AUTORIZACIÓN Y TRABAJO RESUELTOS
++
+COMPOSICIÓN OPERATIVA VERSIONADA
+        ↓
+KioskTaskSurface
+        ↓
+SUPERFICIE DE TAREA FIJA, TÁCTIL, MINIMIZADA Y RECUPERABLE
+```
+
+Nunca:
+
+```text
+fullscreen CSS
+=
+modo kiosco seguro
+
+PWA standalone
+=
+restricción de sistema operativo
+
+nombre del dispositivo
+=
+actor humano
+
+aplicación fijada al dispositivo
+=
+permiso empresarial
+
+control oculto
+=
+salida de mantenimiento gobernada
+```
+
+---
+
+#### 2. Continuidad material de entrada
+
+`SHELL-UI-018` consume como base inmediata `SHELL-UI-017`, ya aprobada.
+
+La continuidad vigente ubica:
+
+```text
+BASE INMEDIATA APROBADA = SHELL-UI-017
+TAREA ACTUAL             = SHELL-UI-018
+SIGUIENTE RESERVADA      = SHELL-UI-019
+```
+
+UI018 desarrolla únicamente la especialización de kiosco fijo. No altera `active-sequence.json` ni materializa la tarea siguiente.
+
+---
+
+#### 3. Naturaleza de la tarea
+
+`SHELL-UI-018` es documental.
+
+Al cierre queda definido:
+
+1. el patrón conceptual para kiosco fijo;
+2. su identidad pública conceptual;
+3. su elegibilidad exclusiva para `FIXED_KIOSK`;
+4. el contrato de productor y consumidor;
+5. las siete zonas semánticas heredadas;
+6. la frontera entre superficie visual, host de kiosco y administración del dispositivo;
+7. la contención de aplicaciones, navegación, enlaces, persistencia local de archivos y portapapeles como obligaciones externas al componente base;
+8. la salida autorizada de mantenimiento sin convertirla en acción operativa ordinaria;
+9. actor, sesión y cambio de trabajador;
+10. restricciones de autoridad fijadas por estación;
+11. privacidad y limpieza;
+12. densidad admisible;
+13. ergonomía, orientación y montaje;
+14. conectividad, frescura y modo degradado;
+15. periféricos y resultados físicos;
+16. accesibilidad;
+17. bloqueo, recuperación e inactividad;
+18. fronteras con tablet, AppShell, proceso interrumpido y traspaso entre aplicaciones;
+19. estado técnico actual de SHELL;
+20. matriz explícita de siete consumidores;
+21. handoff de migración y calidad;
+22. contrato futuro de pruebas;
+23. cobertura `TREQ-*` vigente.
+
+No se crea código ejecutable ni se modifica una aplicación consumidora.
+
+---
+
+#### 4. Fuentes normativas consumidas
+
+La definición consume y no reemplaza:
+
+- `SHELL-UI-001 — Crear @vento/ui-web`;
+- `SHELL-UI-002..017`, como primitivas, patrones y fronteras ya propietarias;
+- `UX-BASE-011 — Diseñar interfaces táctiles para tablets y kioscos`;
+- `UX-BASE-012 — Diseñar interfaces densas solo para administración`;
+- `UX-STATION-010 — Definir gramática de interacción operativa de lectura mínima`;
+- `UX-STATION-011 — Diseñar bandeja contextual de trabajo y siguiente acción`;
+- `UX-STATION-012 — Definir composición dinámica de pasos mediante componentes operativos aprobados`;
+- `AUTH-DEV-001..016`, como gobierno de identidad, límites, sesión, revocación y administración del dispositivo;
+- los contratos vigentes de actor, contexto, autorización, segregación, idempotencia, privacidad, conectividad y recuperación;
+- el gobierno `SHELL-MIG-001..008` para adopción reversible;
+- el gobierno `SHELL-CI-001..006` para pruebas, build, publicación y compatibilidad;
+- la cobertura vigente del Registro Canónico de Requisitos de Prueba.
+
+UI018 especializa presentación web para kiosco; no reabre la taxonomía de dispositivos ni la política de autorización.
+
+---
+
+#### 5. Resultado documental
+
+Se aprueba el patrón conceptual:
+
+```text
+KioskTaskSurface
+```
+
+como parte futura de:
+
+```text
+@vento/ui-web
+```
+
+Su función es recibir una composición semántica ya resuelta para una estación `FIXED_KIOSK` y proyectarla como superficie operativa que conserve:
+
+- identidad visible de estación;
+- actor humano cuando la acción lo requiera;
+- sede, área y contexto aplicables;
+- conectividad y frescura materiales;
+- identidad del trabajo;
+- bloqueo o condición de detención;
+- contenido del paso;
+- una única acción primaria cuando exista;
+- soporte secundario subordinado;
+- resultado y recibo cuando correspondan;
+- privacidad apropiada a una pantalla compartida y físicamente visible;
+- ergonomía táctil compatible con montaje fijo.
+
+No es un sistema MDM, un navegador bloqueado, un reemplazo de autorización, un shell de sistema operativo ni un mecanismo de administración remota.
+
+---
+
+#### 6. Identidad pública conceptual
+
+La superficie conceptual queda formada por:
+
+```text
+KioskTaskSurface
+KioskTaskSurfaceProps
+```
+
+UI018 no crea un enum paralelo de clases de dispositivo.
+
+La única clase de superficie aceptada por el contrato es la identidad canónica existente:
+
+```text
+FIXED_KIOSK
+```
+
+No se incorporan a UI018 como equivalentes:
+
+```text
+PERSONAL_TABLET
+SHARED_TABLET
+SEMI_FIXED_STATION
+COUNTER_TERMINAL
+PRODUCTION_DISPLAY
+MOBILE_COMPANION
+HYBRID_PERIPHERAL_STATION
+```
+
+Una tablet física administrada como estación fija y clasificada autoritativamente como `FIXED_KIOSK` utiliza UI018, no UI017.
+
+---
+
+#### 7. Regla de elegibilidad
+
+UI018 no detecta un kiosco mediante:
+
+- `userAgent`;
+- ancho o alto del viewport;
+- orientación;
+- presencia de touch;
+- ejecución en pantalla completa;
+- PWA standalone;
+- ocultamiento de barras del navegador;
+- sistema operativo;
+- URL;
+- nombre del dispositivo;
+- rol del actor;
+- permiso visible;
+- CSS;
+- local storage.
+
+La aplicación o capa de composición utiliza `KioskTaskSurface` únicamente después de resolver un perfil autorizado cuya clase sea `FIXED_KIOSK`.
+
+Una ventana de navegador en pantalla completa no adquiere por ello garantías de kiosco. Del mismo modo, un kiosco real no obtiene autoridad empresarial por estar físicamente fijado a una sede o área.
+
+---
+
+#### 8. Contrato de productor y consumidor
+
+**Contrato:** `KIOSK-TASK-SURFACE-CONTRACT-001`
+
+**Productor:** host o composición propietaria que ya resolvió proceso, paso, work item, actor, autorización, territorio, perfil `FIXED_KIOSK`, restricciones del dispositivo, aplicación permitida, capacidades, conectividad, privacidad y componentes aplicables.
+
+**Consumidor:** `@vento/ui-web / KioskTaskSurface`.
+
+**Campos requeridos:** `surfaceClass`, `ariaLabel`, `persistentContext`, `workIdentity` y `stepContent`.
+
+**Campos condicionales:** `blockingState`, `primaryAction`, `secondarySupport` y `resultAndReceipt`.
+
+**Invariantes:** `FIXED_KIOSK` previamente resuelto, una sola acción primaria, contexto perceptible, actor técnico separado del actor humano, restricciones de estación solo restrictivas, ausencia de administración técnica ordinaria, privacidad de dispositivo compartido y contención externa verificable.
+
+**Condiciones inválidas:** clase diferente de `FIXED_KIOSK`, kiosco inferido por viewport o fullscreen, aplicación o sede fija usada como permiso, actor implícito por dispositivo, controles técnicos mezclados con la tarea, más de una acción primaria o navegación que permita escapar del flujo por simple capacidad del navegador.
+
+**Compatibilidad:** la evolución puede reorganizar presentación, pero no cambiar el significado de los siete slots ni transformar el componente en autoridad, gestor de sistema operativo o administrador del dispositivo sin un cambio contractual versionado y una tarea propietaria distinta.
+
+---
+
+#### 9. API conceptual mínima
+
+La API conceptual queda:
+
+```text
+surfaceClass: "FIXED_KIOSK"
+ariaLabel: string
+persistentContext: React.ReactNode
+blockingState?: React.ReactNode
+workIdentity: React.ReactNode
+stepContent: React.ReactNode
+primaryAction?: React.ReactNode
+secondarySupport?: React.ReactNode
+resultAndReceipt?: React.ReactNode
+```
+
+Los nombres representan slots semánticos, no coordenadas físicas.
+
+La implementación futura puede admitir atributos HTML compatibles del contenedor raíz, siempre que no creen una segunda fuente de contexto, autorización o estado del dispositivo.
+
+---
+
+#### 10. Campos deliberadamente excluidos
+
+La API base no recibe:
+
+```text
+deviceId
+stationId
+actorId
+permissionCode
+roleCode
+siteId
+areaId
+shiftId
+checkinId
+canOperate
+canExecute
+isAuthorized
+isKioskMode
+isManaged
+isLockedDown
+allowedApps
+allowedDomains
+clipboardEnabled
+downloadEnabled
+maintenancePin
+adminToken
+userAgent
+```
+
+Motivos:
+
+1. el patrón no valida identidad técnica del dispositivo;
+2. el patrón no concede autoridad;
+3. el patrón no debe transportar secretos de mantenimiento;
+4. las capacidades del sistema operativo no son props visuales de seguridad;
+5. las restricciones se resuelven antes de construir la proyección;
+6. una señal del cliente no puede afirmar que el equipo está gestionado o bloqueado.
+
+---
+
+#### 11. Siete zonas semánticas preservadas
+
+UI018 conserva exactamente el orden conceptual aprobado en `UX-STATION-012`:
+
+```text
+1. PERSISTENT_CONTEXT
+2. BLOCKING_STATE
+3. WORK_IDENTITY
+4. STEP_CONTENT
+5. PRIMARY_ACTION
+6. SECONDARY_SUPPORT
+7. RESULT_AND_RECEIPT
+```
+
+Correspondencia:
+
+| Slot canónico        | Prop de UI018       | Regla                                                                 |
+| -------------------- | ------------------- | --------------------------------------------------------------------- |
+| `PERSISTENT_CONTEXT` | `persistentContext` | siempre presente; incluye estación y contexto humano necesario        |
+| `BLOCKING_STATE`     | `blockingState`     | aparece cuando una condición material detiene o limita la operación   |
+| `WORK_IDENTITY`      | `workIdentity`      | siempre presente; identifica objeto, tarea, paso y estado necesario   |
+| `STEP_CONTENT`       | `stepContent`       | siempre presente; captura, verificación o evidencia del paso          |
+| `PRIMARY_ACTION`     | `primaryAction`     | máximo una instancia; puede faltar si no existe una salida segura     |
+| `SECONDARY_SUPPORT`  | `secondarySupport`  | ayuda, corrección, pausa o escalamiento subordinados                  |
+| `RESULT_AND_RECEIPT` | `resultAndReceipt`  | resultado confirmado, referencia y siguiente paso cuando correspondan |
+
+La contención del sistema operativo y la salida de mantenimiento no crean un octavo slot operativo.
+
+---
+
+#### 12. Modelo de tres capas
+
+El patrón de kiosco se compone mediante tres capas separadas:
+
+```text
+CAPA 1 — DISPOSITIVO / SISTEMA OPERATIVO
+políticas, enrollment, bloqueo de aplicaciones, navegación de sistema,
+revocación, postura y administración remota
+        ↓
+CAPA 2 — HOST DE KIOSCO / APLICACIÓN
+catálogo permitido, destinos, enlaces externos, persistencia local de archivos, portapapeles,
+sesión, transición a mantenimiento y recuperación autorizada
+        ↓
+CAPA 3 — KioskTaskSurface
+contexto, trabajo, captura, acción, feedback, recuperación visual y resultado
+```
+
+Ninguna capa sustituye las decisiones autoritativas de servidor.
+
+`KioskTaskSurface` pertenece exclusivamente a la tercera capa.
+
+---
+
+#### 13. Frontera de seguridad del kiosco
+
+UI018 define una obligación explícita de contención, pero no la implementa dentro del componente.
+
+No constituyen una frontera de seguridad suficiente:
+
+- ocultar barras del navegador;
+- impedir scroll;
+- usar `position: fixed`;
+- entrar a Fullscreen API;
+- ocultar enlaces con CSS;
+- bloquear botones visualmente;
+- detectar touch;
+- deshabilitar menú contextual;
+- interceptar teclas desde JavaScript;
+- abrir la aplicación como PWA standalone.
+
+La garantía de estación gestionada pertenece a la capa de dispositivo y despliegue. El host solo presenta el flujo cuando esa capa le entrega un estado válido conforme al contrato vigente.
+
+---
+
+#### 14. Aplicaciones permitidas
+
+La estación puede tener una o más aplicaciones permitidas definidas por la política de dispositivo.
+
+Esa lista:
+
+- limita destinos;
+- no concede permisos empresariales;
+- no sustituye autorización de servidor;
+- no convierte una aplicación disponible en acción elegible;
+- no autoriza datos de todas las áreas de la estación;
+- no permite que la UI fabrique un AppSwitcher general.
+
+`KioskTaskSurface` no recibe ni administra el catálogo técnico de aplicaciones.
+
+---
+
+#### 15. Navegación del sistema
+
+La navegación del sistema operativo o navegador queda fuera del patrón base.
+
+El kiosco debe impedir salidas accidentales conforme a su política de dispositivo, pero UI018 no:
+
+- bloquea teclas del sistema;
+- modifica configuraciones del navegador;
+- controla launchers;
+- instala perfiles;
+- activa modo single-app;
+- desactiva multitarea;
+- gestiona ventanas externas.
+
+La accesibilidad de teclado dentro de la tarea permanece obligatoria y no se sacrifica para simular un bloqueo de sistema desde JavaScript.
+
+---
+
+#### 16. Enlaces externos
+
+Un enlace externo no se habilita por ser técnicamente navegable.
+
+Reglas:
+
+1. el destino debe estar permitido por el host y el contrato de la tarea;
+2. no se abren enlaces arbitrarios recibidos desde contenido no confiable;
+3. un enlace de ayuda no transporta autoridad;
+4. navegar fuera no confirma ni cancela trabajo empresarial;
+5. una salida hacia otra aplicación VENTO conserva la frontera de `SHELL-UI-020`;
+6. abrir una página externa no convierte al navegador en backoffice general.
+
+UI018 no contiene un navegador embebido genérico.
+
+---
+
+#### 17. Archivos, persistencia local y exportaciones
+
+La capacidad del navegador para persistir archivos recibidos no autoriza almacenamiento local desde el kiosco.
+
+En la superficie ordinaria:
+
+- no existe una acción genérica para guardar archivos localmente;
+- visualizar, imprimir y exportar siguen siendo capacidades distintas;
+- una exportación requiere contrato, permiso, finalidad, alcance, masking y retención propios;
+- un archivo necesario para la tarea debe utilizar el mecanismo empresarial aprobado;
+- la existencia de una URL de archivo no implica que el kiosco pueda persistirla localmente.
+
+UI018 no administra el sistema de archivos del dispositivo.
+
+---
+
+#### 18. Portapapeles
+
+Copiar y pegar no se consideran capacidades universales del kiosco.
+
+Cuando el host o la política del dispositivo restrinja portapapeles:
+
+- la tarea no dependerá de copiar secretos o identificadores técnicos;
+- una captura estructurada tendrá alternativa compatible;
+- no se almacenarán credenciales en el portapapeles;
+- la falta de portapapeles no justificará rebajar validaciones.
+
+Cuando copiar sea una capacidad empresarial legítima, deberá existir contrato explícito de finalidad y datos permitidos fuera de UI018.
+
+---
+
+#### 19. Configuración técnica
+
+La interfaz operativa ordinaria no muestra:
+
+- Wi-Fi administrativo;
+- configuración del sistema;
+- enrollment;
+- MDM;
+- certificados;
+- secrets;
+- perfiles de navegador;
+- parámetros de depuración;
+- consola técnica;
+- credenciales de soporte;
+- controles de revocación.
+
+El estado humano necesario puede decir, por ejemplo, que la estación no está disponible o necesita soporte, pero no expone controles técnicos para resolverlo desde la tarea ordinaria.
+
+---
+
+#### 20. Salida autorizada de mantenimiento
+
+Todo kiosco gestionado debe conservar una vía de mantenimiento, emergencia o recuperación autorizada y auditable.
+
+Esa vía:
+
+- existe fuera de la jerarquía ordinaria `PRIMARY_ACTION` / `SECONDARY_SUPPORT`;
+- no es un gesto secreto sin alternativa gobernada;
+- no usa un PIN embebido en el componente;
+- no se activa por una URL libre;
+- no reutiliza la sesión empresarial del trabajador como credencial técnica;
+- puede exigir autenticación o step-up definido por su propietario;
+- registra su entrada y salida cuando el contrato de dispositivo lo exija;
+- no elimina silenciosamente trabajo abierto.
+
+UI018 exige que la arquitectura host preserve esta salida, pero `KioskTaskSurface` no la ejecuta ni recibe credenciales de mantenimiento.
+
+---
+
+#### 21. Mantenimiento y trabajo empresarial
+
+Entrar a mantenimiento no concede autoridad para ejecutar tareas empresariales.
+
+El actor técnico y el actor operativo permanecen separados.
+
+Si una persona que realiza mantenimiento necesita ejecutar una acción empresarial, deberá identificarse además bajo el contrato empresarial correspondiente y superar su autorización normal.
+
+Un técnico no hereda:
+
+- rol operativo;
+- turno;
+- check-in;
+- sede activa;
+- área activa;
+- permisos de un trabajador;
+- claims;
+- borradores;
+- responsabilidad sobre recursos.
+
+---
+
+#### 22. Identidad de estación
+
+`persistentContext` debe mantener perceptible la estación cuando sea material para la tarea.
+
+La representación humana puede incluir:
+
+- nombre de estación;
+- sede;
+- área;
+- función del kiosco;
+- actor humano activo;
+- rol operativo cuando aplique;
+- turno y check-in cuando correspondan;
+- conectividad;
+- simulación o delegación;
+- trabajo o recurso actual.
+
+Los identificadores técnicos pueden permanecer en telemetría o diagnóstico autorizado, pero no sustituyen el nombre humano de la estación.
+
+---
+
+#### 23. Dispositivo técnico y actor humano
+
+Invariante vinculante:
+
+```text
+FIXED_KIOSK
+≠
+ACTOR HUMANO
+```
+
+La identidad técnica del dispositivo no recibe:
+
+- permisos empresariales;
+- roles humanos;
+- turnos;
+- check-ins;
+- firma;
+- responsabilidad sobre recursos.
+
+Cuando una acción requiere actor humano y no existe uno válido, la composición bloquea la mutación personal y explica la identificación necesaria mediante el patrón propietario.
+
+---
+
+#### 24. Restricciones fijadas por estación
+
+Una estación puede tener configurados externamente:
+
+- aplicación o conjunto de aplicaciones permitidas;
+- sede máxima;
+- áreas permitidas;
+- capacidad de cámara, escáner o impresión;
+- montaje y orientación;
+- política de privacidad;
+- modalidad de autenticación compatible.
+
+Estas propiedades solo pueden **restringir**.
+
+Nunca:
+
+```text
+sede configurada en dispositivo
+→ sede activa del trabajador
+
+área permitida en estación
+→ área operativa activa
+
+app permitida
+→ permiso empresarial
+
+periférico presente
+→ acción autorizada
+```
+
+La autorización y el contexto se resuelven de nuevo para cada acción protegida.
+
+---
+
+#### 25. Capacidades compartidas y decisión externa
+
+Las decisiones de dispositivo compartido permanecen en sus contratos propietarios.
+
+UI018 no decide si una acción corresponde a:
+
+```text
+STANDARD_ACTOR_SESSION
+STRONG_REAUTH_REQUIRED
+NOT_ALLOWED
+```
+
+Consecuencias:
+
+- una sesión estándar exige actor humano válido y revalidación de servidor;
+- una capacidad fuerte no queda satisfecha por un PIN ligero de identificación;
+- una acción no permitida no se degrada silenciosamente a lectura parcial;
+- el componente no infiere capacidad por botón, destino o rol.
+
+---
+
+#### 26. Sesión ordinaria de actor
+
+Cuando el kiosco admite trabajo personal, la sesión ordinaria debe llegar resuelta por el propietario.
+
+UI018 debe ser compatible con:
+
+- identificación del actor;
+- sesión vigente;
+- contexto laboral vigente;
+- autorización efectiva;
+- recurso compatible;
+- dispositivo activo;
+- aplicación permitida;
+- revalidación en servidor antes del efecto.
+
+La visibilidad de una acción no sustituye esa revalidación.
+
+---
+
+#### 27. Reautenticación fuerte
+
+Una acción que requiera autenticación fuerte conserva su contrato propietario.
+
+UI018 no acepta como sustituto:
+
+- presencia física frente al kiosco;
+- dispositivo confiable por sí solo;
+- PIN corto usado solo para identificación ordinaria;
+- sesión anterior de otro trabajador;
+- tarjeta o código no definido como credencial fuerte por la política vigente.
+
+La confirmación y step-up siguen perteneciendo a `SHELL-UI-014` y a las capas de autorización correspondientes.
+
+---
+
+#### 28. Cambio de trabajador
+
+UI018 debe ser compatible con la secuencia canónica:
+
+```text
+DETENER NUEVAS MUTACIONES
+→ RESOLVER TAREA, BORRADOR Y CUSTODIA
+→ CERRAR O TRANSFERIR SESIÓN DEL ACTOR
+→ LIMPIAR DATOS PERSONALES Y PREFERENCIAS
+→ IDENTIFICAR NUEVO ACTOR
+→ RESOLVER CONTEXTO NUEVO
+→ RECALCULAR TRABAJO Y CAPACIDADES
+```
+
+No se heredan:
+
+- permisos;
+- reautenticación fuerte;
+- PIN;
+- firma;
+- tareas privadas;
+- favoritos;
+- búsquedas;
+- borradores;
+- filtros;
+- datos sensibles;
+- acciones avanzadas expandidas;
+- selección de recurso incompatible.
+
+---
+
+#### 29. Inactividad y bloqueo de pantalla
+
+La inactividad no elimina silenciosamente trabajo.
+
+Cuando la política propietaria expire o bloquee la sesión:
+
+- se detienen nuevas acciones protegidas;
+- el contenido sensible deja de permanecer expuesto;
+- el estado empresarial confirmado no se altera por el bloqueo visual;
+- el borrador se conserva, cierra o invalida según su contrato propietario;
+- reanudar exige reconstruir actor, contexto y elegibilidad;
+- una acción que estaba visible antes del bloqueo no se presume todavía válida.
+
+La continuidad detallada de un proceso interrumpido permanece en `SHELL-UI-019`.
+
+---
+
+#### 30. Privacidad visual
+
+La superficie kiosco aplica minimización fuerte porque puede estar expuesta a trabajadores distintos, clientes o terceros.
+
+No muestra por conveniencia:
+
+- salarios;
+- salud;
+- finanzas personales;
+- permisos internos completos;
+- notas privadas;
+- secretos;
+- tokens;
+- datos de terceros;
+- previews sensibles de otros actores;
+- notificaciones con contenido privado no necesario para la tarea.
+
+El modo kiosco no convierte información protegida en información pública.
+
+---
+
+#### 31. Limpieza entre actores
+
+Después de cambio, cierre o expiración de actor, la presentación debe permitir eliminar del nuevo contexto:
+
+- nombre y datos personales del actor anterior;
+- filtros personales;
+- búsquedas;
+- favoritos;
+- selecciones privadas;
+- datos temporales sensibles;
+- previews;
+- expansión de detalles;
+- reautenticación fuerte;
+- información cacheada que no corresponda al nuevo actor.
+
+La limpieza visual no elimina hechos empresariales autoritativos ni receipts que deban conservarse en backend.
+
+---
+
+#### 32. Persistencia de credenciales
+
+`KioskTaskSurface` no almacena credenciales.
+
+Quedan fuera de su responsabilidad:
+
+- passwords;
+- OTP;
+- PIN;
+- tokens;
+- cookies de autenticación;
+- claves de sesión;
+- claves de mantenimiento;
+- secretos de dispositivo.
+
+La política host debe impedir persistencia indebida y limpiar credenciales según el ciclo de vida definido por autenticación y dispositivo.
+
+---
+
+#### 33. Densidad ordinaria de kiosco
+
+Los dispositivos compartidos utilizan ordinariamente superficies enfocadas.
+
+Para UI018:
+
+```text
+D0_FOCUSED      = ordinario
+D1_CONTEXTUAL   = ordinario cuando la tarea lo requiere
+D2_COMPARATIVE  = excepcional y limitado
+D3_ANALYTICAL   = fuera del flujo ordinario
+D4_SPECIALIZED  = fuera del flujo ordinario
+```
+
+Una pantalla grande o un PC táctil fijado a la estación no transforma el kiosco en backoffice.
+
+La densidad se resuelve por tarea, no por hardware.
+
+---
+
+#### 34. Administración temporal
+
+Una herramienta administrativa temporal en un dispositivo compartido no pertenece al flujo ordinario de `KioskTaskSurface`.
+
+Cuando otro contrato la autorice deberá exigir, según corresponda:
+
+- sesión personal;
+- step-up;
+- dispositivo confiable;
+- masking;
+- no persistencia de preferencias o datos sensibles;
+- cierre explícito;
+- auditoría.
+
+El retorno a la operación debe reconstruir el actor y contexto operativos; no hereda la sesión administrativa como autoridad de piso.
+
+---
+
+#### 35. Objetivos táctiles
+
+Los controles web operativos dentro de UI018 conservan la línea base táctil:
+
+- objetivo preferente equivalente a **48 × 48 unidades lógicas**;
+- piso web de **24 × 24 CSS px**;
+- hit areas no superpuestas;
+- icono visualmente menor permitido solo si el área activable cumple;
+- acciones incompatibles suficientemente separadas;
+- controles críticos pueden requerir targets mayores según guantes, montaje, presión y entorno.
+
+La validación física posterior determina si el tamaño lógico es suficiente en la estación real.
+
+---
+
+#### 36. Montaje, alcance y postura
+
+`FIXED_KIOSK` exige considerar el montaje real.
+
+La superficie no debe requerir:
+
+- mantener el brazo elevado durante todo el flujo;
+- alternar repetidamente entre extremos de la pantalla;
+- precisión fina sostenida;
+- abandonar la posición de trabajo para alcanzar controles;
+- bloquear la visión del producto, cliente o entorno;
+- escribir texto largo en una postura incompatible.
+
+Altura, inclinación, distancia y mano dominante se validan con la estación real; UI018 no congela una zona universal de alcance.
+
+---
+
+#### 37. Orientación fija
+
+A diferencia de una tablet portátil, un `FIXED_KIOSK` puede tener una orientación fijada por montaje.
+
+Esa orientación:
+
+- debe provenir del perfil de estación;
+- no se infiere desde CSS;
+- no se usa para conceder semántica;
+- conserva zoom, texto aumentado y reflow necesarios;
+- no justifica ocultar contexto o controles críticos;
+- debe impedirse físicamente o por la capa de dispositivo cuando una orientación incompatible resulte insegura.
+
+UI018 no configura la rotación del sistema operativo.
+
+---
+
+#### 38. Reflow y tamaño de ventana
+
+Aunque el kiosco tenga montaje fijo, la superficie no depende de una captura rígida de píxeles.
+
+Debe soportar cambios compatibles de:
+
+- zoom;
+- tamaño de texto;
+- chrome accesible;
+- teclado virtual cuando exista;
+- paneles de asistencia;
+- resolución dentro del perfil aprobado.
+
+El contenido operativo mínimo no requiere scroll horizontal ordinario.
+
+---
+
+#### 39. Estabilidad bajo el dedo
+
+Una actualización asíncrona no mueve una acción destructiva o sensible hacia la posición ya activada.
+
+Durante procesamiento:
+
+- el objetivo conserva identidad;
+- un segundo toque no crea otra intención cuando la capa propietaria ya controla duplicidad;
+- un control peligroso no aparece en el mismo punto por sustitución visual;
+- `PROCESANDO` no se convierte en `CONFIRMADO` sin resultado autoritativo;
+- un callback tardío no reemplaza un estado más reciente.
+
+La idempotencia empresarial permanece fuera de UI018.
+
+---
+
+#### 40. Gestos y entrada
+
+Ninguna función esencial depende exclusivamente de:
+
+- hover;
+- arrastre preciso;
+- swipe oculto;
+- pulsación prolongada;
+- doble toque;
+- pinza;
+- gesto de borde;
+- icono sin nombre accesible.
+
+La capa de dispositivo puede restringir atajos de sistema, pero la superficie conserva mecanismos accesibles por teclado, lector, switch access, mouse o stylus cuando sean compatibles con la estación.
+
+---
+
+#### 41. Captura y escritura
+
+La superficie favorece:
+
+- contexto resuelto;
+- escaneo;
+- listas cortas;
+- cantidades estructuradas;
+- valores derivados;
+- motivos catalogados;
+- captura automática validable;
+- teclado apropiado al dato.
+
+Texto libre solo se usa cuando aporta información nueva y su propietario conserva borrador, autoría y política de limpieza.
+
+UI018 no reemplaza reason codes, identidad del actor o cantidades estructuradas por texto libre.
+
+---
+
+#### 42. Periféricos
+
+Un kiosco puede integrar escáner, cámara, impresora, báscula, datáfono u otro periférico.
+
+La presentación conserva separados:
+
+```text
+CAPACIDAD DISPONIBLE
+→ COMANDO O CAPTURA EMITIDOS
+→ RECEPCIÓN
+→ EJECUCIÓN FÍSICA
+→ RESULTADO VERIFICADO
+```
+
+Un timeout no prueba que la acción física no ocurrió.
+
+UI018 no abre drivers, no administra emparejamiento, no reserva periféricos y no decide retry.
+
+---
+
+#### 43. NEXO y kiosco de bodega
+
+La línea base E2 identifica explícitamente el kiosco de bodega de NEXO como una superficie que no debe convertirse en backoffice general y que debe mostrar estado de impresión y periféricos.
+
+UI018 puede servir como patrón compartido de composición para ese caso sin absorber:
+
+- LOC;
+- LPN;
+- producto;
+- cantidad;
+- unidad;
+- recepción;
+- picking;
+- carga;
+- transporte;
+- custodia;
+- reglas de inventario.
+
+Esas semánticas permanecen en NEXO y sus procesos propietarios.
+
+---
+
+#### 44. Conectividad en dispositivo compartido
+
+El kiosco no oculta la pérdida o incertidumbre de conectividad.
+
+Además de la línea base táctil, se conserva la regla de dispositivo compartido:
+
+- sin conectividad verificable no se ejecutan mutaciones empresariales ni capacidades fuertes;
+- una vista cacheada no es autorización;
+- un snapshot stale no se presenta como actual;
+- una brecha queda en revalidación o `DEFAULT_DENY`;
+- reconectar exige revalidar contexto y elegibilidad antes de actuar.
+
+Un borrador local solo puede existir cuando su contrato propietario lo autorice y nunca se presenta como efecto empresarial confirmado.
+
+---
+
+#### 45. Frescura y último punto confirmado
+
+`persistentContext` o la composición propietaria mantienen perceptibles, cuando sean materiales:
+
+- estado de conexión;
+- frescura;
+- último punto confirmado;
+- elementos pendientes;
+- limitaciones actuales;
+- acción segura disponible.
+
+UI018 no calcula la frescura ni consulta servicios por sí mismo.
+
+---
+
+#### 46. Feedback
+
+Toda acción material reconoce la interacción sin simular éxito.
+
+La secuencia conceptual permanece:
+
+```text
+TOQUE RECONOCIDO
+→ PROCESANDO
+→ CONFIRMADO
+   o
+→ BLOQUEADO / PENDIENTE / CONFLICTO / RESULTADO DESCONOCIDO
+```
+
+Sonido y vibración pueden reforzar, pero siempre existe equivalente visual.
+
+En ambientes ruidosos, el audio no se usa como único canal.
+
+---
+
+#### 47. Bloqueo de dispositivo o estación
+
+Cuando la capa propietaria determina que el dispositivo está inactivo, revocado, incompatible o no confiable para la operación requerida:
+
+- la superficie ordinaria no mantiene mutaciones habilitadas;
+- no se usa el último contexto cacheado como autorización;
+- se muestra una explicación humana segura;
+- se ofrece únicamente una salida permitida de soporte, recuperación o identificación;
+- no se revelan detalles administrativos sensibles.
+
+UI018 no determina por sí misma el estado del dispositivo.
+
+---
+
+#### 48. Bloqueos de contexto y autorización
+
+`blockingState` puede componer `ContextDiagnostic` u otro patrón propietario ya resuelto.
+
+Una falta confirmada de:
+
+- actor;
+- sesión;
+- permiso;
+- sede;
+- área;
+- turno;
+- check-in;
+- recurso compatible;
+- dispositivo permitido;
+
+no se convierte en un error técnico reintentable.
+
+El kiosco no ofrece bypass por tratarse de una estación fija.
+
+---
+
+#### 49. Recuperación
+
+Cuando exista un fallo recuperable, UI018 puede componer `RecoverableErrorState` sin modificar su política.
+
+La superficie mantiene:
+
+- estado preservado;
+- siguiente paso;
+- acción segura;
+- resultado parcial o desconocido;
+- referencia de soporte cuando corresponda.
+
+No se añade un `Reintentar` universal por ser una estación operativa de uso frecuente.
+
+---
+
+#### 50. Estados vacíos
+
+`EmptyState` se utiliza únicamente ante ausencia confirmada.
+
+No se presenta vacío por:
+
+- fallo de consulta;
+- timeout;
+- bloqueo de dispositivo;
+- falta de actor;
+- falta de autorización;
+- respuesta parcial;
+- estado stale no verificable;
+- carga incompleta.
+
+Un kiosco sin datos confirmados no puede fabricar un conteo cero para mantener la pantalla limpia.
+
+---
+
+#### 51. Alertas y ruido visual
+
+`Alert` conserva su contrato de mensaje ya determinado.
+
+UI018 puede componer alertas sin permitir que una colección de banners o toasts oculte:
+
+- estación;
+- actor;
+- contexto;
+- trabajo;
+- bloqueo;
+- acción principal;
+- resultado.
+
+Una alerta técnica detallada no convierte al trabajador en operador de soporte.
+
+---
+
+#### 52. Acción principal y acciones sensibles
+
+`PrimaryActionPanel` conserva la jerarquía de la acción ordinaria.
+
+`SHELL-UI-014` conserva confirmaciones sensibles.
+
+UI018 garantiza alrededor de ellas:
+
+- target estable;
+- separación suficiente;
+- recurso y efecto perceptibles;
+- cancelación no colocada como vecino propenso a toque accidental;
+- foco predecible;
+- ausencia de doble ejecución por controles visuales solamente.
+
+El nivel de confirmación o step-up se decide externamente.
+
+---
+
+#### 53. Simulación y delegación
+
+Una simulación o delegación activa permanece perceptible cuando aplique.
+
+El kiosco no:
+
+- oculta el aviso para ahorrar espacio;
+- usa identidad técnica de estación como actor real;
+- convierte contexto simulado en permiso;
+- conserva una simulación del actor anterior;
+- usa modo kiosco para ampliar alcance.
+
+La autoridad real continúa perteneciendo a sus contratos propietarios.
+
+---
+
+#### 54. Relación con AppShell
+
+`KioskTaskSurface` no sustituye AppShell.
+
+AppShell o el host conservan, cuando correspondan:
+
+- sesión global;
+- catálogo de aplicaciones permitido;
+- navegación transversal autorizada;
+- chrome del producto;
+- identificación de host;
+- transición controlada hacia mantenimiento.
+
+UI018 organiza la superficie de trabajo interna y no fabrica un shell del sistema operativo.
+
+---
+
+#### 55. Relación con tablet
+
+`SHELL-UI-017` conserva `PERSONAL_TABLET` y `SHARED_TABLET`.
+
+UI018 conserva exclusivamente `FIXED_KIOSK`.
+
+La forma física del hardware no decide el patrón:
+
+```text
+tablet portátil bajo perfil tablet
+→ UI017
+
+tablet anclada y gobernada como FIXED_KIOSK
+→ UI018
+
+monitor táctil fijo sin perfil FIXED_KIOSK aprobado
+→ no se clasifica por inferencia como UI018
+```
+
+---
+
+#### 56. Relación con proceso interrumpido
+
+`SHELL-UI-019` conserva la propiedad de checkpoint, reconstrucción y reanudación de procesos interrumpidos.
+
+UI018 debe evitar destruir visualmente el trabajo ante bloqueo, inactividad, navegación o entrada a mantenimiento, pero no define:
+
+- checkpoint;
+- TTL de borradores;
+- takeover;
+- ownership de reanudación;
+- reanudación cross-device;
+- reconciliación completa de operaciones pendientes.
+
+---
+
+#### 57. Relación con traspaso entre aplicaciones
+
+`SHELL-UI-020` conserva el traspaso entre aplicaciones.
+
+UI018 no usa un enlace externo o AppSwitcher como handoff autoritativo.
+
+Cuando el kiosco deba pasar a otra aplicación permitida, la transición futura deberá conservar:
+
+- origen;
+- destino;
+- actor;
+- contexto;
+- objeto;
+- estado;
+- autorización revalidada.
+
+UI018 no adelanta ese contrato.
+
+---
+
+#### 58. Accesibilidad
+
+La materialización futura debe conservar:
+
+1. estación identificable;
+2. actor y contexto accesibles cuando sean materiales;
+3. orden lógico de foco;
+4. foco visible;
+5. operación por teclado;
+6. lector de pantalla;
+7. switch access cuando la estación lo soporte;
+8. zoom y tamaño de texto;
+9. contraste;
+10. reflow;
+11. alternativas a gesto, audio y color;
+12. tiempo suficiente;
+13. autenticación accesible en la superficie propietaria;
+14. targets ampliados que coincidan con el control anunciado;
+15. ausencia de áreas invisibles que capturen controles vecinos.
+
+La seguridad de kiosco no se implementa rompiendo tecnologías de asistencia.
+
+---
+
+#### 59. Orden de foco
+
+El foco sigue la gramática de la tarea, no las restricciones técnicas del host:
+
+```text
+CONTEXTO RELEVANTE
+→ BLOQUEO MATERIAL
+→ IDENTIDAD DEL TRABAJO
+→ CONTENIDO INTERACTIVO
+→ ACCIÓN PRIMARIA
+→ SOPORTE SECUNDARIO
+→ RESULTADO O SIGUIENTE PASO
+```
+
+Una actualización de fondo no roba foco.
+
+Entrar o salir de un diálogo de confirmación devuelve el foco de forma predecible.
+
+---
+
+#### 60. Semántica HTML
+
+`KioskTaskSurface` es conceptualmente un contenedor de trabajo con regiones semánticas internas.
+
+No impone:
+
+- `role="application"` universal;
+- `aria-live` sobre toda la pantalla;
+- traps de foco permanentes;
+- supresión global de teclado;
+- semántica de diálogo sobre la superficie completa.
+
+Los componentes propietarios conservan sus roles y anuncios.
+
+`ariaLabel` identifica la superficie cuando necesita un nombre accesible explícito.
+
+---
+
+#### 61. Compatibilidad server/client
+
+La estructura base de UI018 no requiere por sí misma:
+
+- `window`;
+- `document`;
+- storage;
+- timers;
+- red;
+- Supabase;
+- router;
+- Fullscreen API;
+- APIs de sistema operativo;
+- APIs MDM;
+- listeners globales;
+- APIs de hardware.
+
+Por tanto, la superficie base es conceptualmente server-safe.
+
+Los hijos interactivos pueden requerir cliente sin convertir a UI018 en propietario de sus efectos.
+
+---
+
+#### 62. Dependencias prohibidas
+
+`KioskTaskSurface` no dependerá directamente de:
+
+- `@vento/supabase`;
+- clientes Supabase;
+- tablas;
+- RPC;
+- Edge Functions;
+- Storage;
+- Realtime;
+- APIs de dominio;
+- drivers de periféricos;
+- SDK MDM;
+- APIs de administración del sistema operativo;
+- módulos internos de aplicaciones;
+- catálogos locales de permisos;
+- secretos de mantenimiento;
+- heurísticas de dispositivo como fuente de autoridad.
+
+---
+
+#### 63. Estado técnico actual de SHELL
+
+El estado remoto verificable mantiene bajo `packages/`:
+
+```text
+os-context
+```
+
+No existe todavía un package físico `@vento/ui-web`.
+
+`src/components/ui` conserva:
+
+```text
+Button
+Card
+Chip
+Input
+Modal
+```
+
+más el barrel `index.ts`.
+
+No existe una implementación física `KioskTaskSurface`.
+
+Resultado:
+
+```text
+CONTRATO UI018          = ESPECIFICADO DOCUMENTALMENTE
+PATRÓN FÍSICO           = NO MATERIALIZADO
+PACKAGE @vento/ui-web   = NO MATERIALIZADO
+CONFIGURACIÓN KIOSCO    = NO MATERIALIZADA POR ESTA TAREA
+ADOPCIÓN RUNTIME        = 0
+CAMBIOS SUPABASE        = 0
+```
+
+---
+
+#### 64. Reconciliación de primitivas locales
+
+| Primitiva local | Decisión frente a UI018                                                     |
+| --------------- | --------------------------------------------------------------------------- |
+| `Button`        | control potencial; no autorización ni bloqueo de sistema                    |
+| `Card`          | agrupación potencial; no patrón de kiosco                                   |
+| `Chip`          | señal compacta potencial; no identidad suficiente de estación o actor       |
+| `Input`         | captura potencial; no contrato de sesión, dispositivo ni teclado de sistema |
+| `Modal`         | diálogo potencial; no salida universal de mantenimiento                     |
+
+Ninguna de las cinco primitivas equivale a `KioskTaskSurface`.
+
+No se retira ni adopta código local en esta tarea.
+
+---
+
+#### 65. Matriz materializada de consumidores
+
+Se conserva el conjunto canónico de siete consumidores web compartidos.
+
+| Consumidor | Decisión UI018                                                        | Implementación en esta tarea |
+| ---------- | --------------------------------------------------------------------- | ---------------------------: |
+| SHELL      | `ELEGIBILIDAD_KIOSCO_CONDICIONADA_A_SUPERFICIE_Y_HOST_GOBERNADOS`     |                            0 |
+| NEXO       | `CANDIDATO_KIOSCO_BODEGA`                                             |                            0 |
+| FOGO       | `ELEGIBILIDAD_KIOSCO_CONDICIONADA_A_PROCESO_ESTACION_Y_SEGURIDAD`     |                            0 |
+| ORIGO      | `ELEGIBILIDAD_KIOSCO_CONDICIONADA_A_PROCESO_ESTACION_Y_SEGURIDAD`     |                            0 |
+| VISO       | `ELEGIBILIDAD_KIOSCO_SOLO_PARA_SUPERFICIE_D0_D1_APROBADA`             |                            0 |
+| PULSO      | `ELEGIBILIDAD_KIOSCO_CONDICIONADA_A_PRIVACIDAD_PERIFERICOS_Y_PROCESO` |                            0 |
+| NUMERA     | `ELEGIBILIDAD_KIOSCO_SOLO_PARA_SUPERFICIE_D0_D1_APROBADA`             |                            0 |
+
+Reconciliación:
+
+```text
+TOTAL ESPERADO      = 7
+TOTAL MATERIALIZADO = 7
+FALTANTES           = 0
+DUPLICADOS          = 0
+ADOPCIONES FÍSICAS  = 0
+```
+
+La matriz no afirma que los siete consumidores tengan hoy kioscos desplegados. Determina su disposición explícita frente al patrón futuro y conserva la necesidad de una superficie y estación aprobadas antes de adoptar.
+
+---
+
+#### 66. Decisión por consumidor: SHELL
+
+SHELL puede alojar o componer UI018 únicamente cuando exista una superficie clasificada como `FIXED_KIOSK` y un host gobernado.
+
+El launcher, login o backoffice general no se convierten en kiosco por fullscreen o tamaño de pantalla.
+
+Decisión:
+
+```text
+ELEGIBILIDAD_KIOSCO_CONDICIONADA_A_SUPERFICIE_Y_HOST_GOBERNADOS
+```
+
+---
+
+#### 67. Decisión por consumidor: NEXO
+
+La línea base transversal identifica expresamente un kiosco de bodega sin backoffice general.
+
+NEXO es candidato directo para UI018 en esa clase de superficie, preservando fuera del package toda semántica de inventario, ubicación, LPN, escaneo, picking, carga, recepción, impresión y custodia.
+
+Decisión:
+
+```text
+CANDIDATO_KIOSCO_BODEGA
+```
+
+---
+
+#### 68. Decisión por consumidor: FOGO
+
+FOGO solo adopta UI018 cuando el proceso y la estación fija hayan sido clasificados como compatibles con interacción segura frente a calor, humedad, harina, guantes, postura, limpieza y manos ocupadas.
+
+La existencia de un PC o monitor táctil no basta.
+
+Decisión:
+
+```text
+ELEGIBILIDAD_KIOSCO_CONDICIONADA_A_PROCESO_ESTACION_Y_SEGURIDAD
+```
+
+---
+
+#### 69. Decisión por consumidor: ORIGO
+
+ORIGO puede usar UI018 únicamente en una estación fija cuya tarea de recepción, conteo o verificación esté aprobada para esa modalidad.
+
+Escáner o cámara son apoyo y no convierten la captura en confirmación empresarial.
+
+Decisión:
+
+```text
+ELEGIBILIDAD_KIOSCO_CONDICIONADA_A_PROCESO_ESTACION_Y_SEGURIDAD
+```
+
+---
+
+#### 70. Decisión por consumidor: VISO
+
+VISO no transforma un workspace administrativo denso en kiosco por ejecutarlo en una pantalla compartida.
+
+Una adopción solo es elegible para una superficie enfocada `D0` o contextual `D1` específicamente aprobada.
+
+Decisión:
+
+```text
+ELEGIBILIDAD_KIOSCO_SOLO_PARA_SUPERFICIE_D0_D1_APROBADA
+```
+
+---
+
+#### 71. Decisión por consumidor: PULSO
+
+PULSO puede usar UI018 cuando el proceso de servicio, entrega o atención haya sido aprobado para estación fija y preserve privacidad frente al cliente, estado real de pago o periférico y separación de cancelación, devolución u override.
+
+UI018 no absorbe lógica POS, financiera, fiscal ni de datáfono.
+
+Decisión:
+
+```text
+ELEGIBILIDAD_KIOSCO_CONDICIONADA_A_PRIVACIDAD_PERIFERICOS_Y_PROCESO
+```
+
+---
+
+#### 72. Decisión por consumidor: NUMERA
+
+NUMERA no convierte una superficie analítica o administrativa densa en flujo de kiosco mediante responsive.
+
+Solo una superficie `D0` o `D1` aprobada para una tarea acotada puede ser candidata.
+
+Decisión:
+
+```text
+ELEGIBILIDAD_KIOSCO_SOLO_PARA_SUPERFICIE_D0_D1_APROBADA
+```
+
+---
+
+#### 73. Estrategia posterior de migración
+
+La adopción física queda fuera de UI018.
+
+El gobierno `SHELL-MIG-*` deberá:
+
+1. inventariar superficies que hoy funcionan o pretenden funcionar como kiosco;
+2. distinguir fullscreen, PWA y browser dedicado de un `FIXED_KIOSK` realmente gobernado;
+3. verificar políticas de aplicaciones, navegación, enlaces, persistencia local de archivos, portapapeles, credenciales, mantenimiento y recuperación;
+4. clasificar contexto oculto, actor implícito, backoffice expuesto, fuga entre trabajadores, targets pequeños, periféricos sin estado y offline ambiguo;
+5. crear adapters de composición sin mover autoridad al package visual;
+6. migrar por lotes reversibles;
+7. validar cambio de actor, privacidad, accesibilidad, montaje, periféricos y bloqueo de dispositivo;
+8. probar en estación representativa antes de ampliar despliegue;
+9. demostrar paridad y rollback antes de retirar patrones legacy.
+
+---
+
+#### 74. Handoff a migración coordinada
+
+| Tarea           | Handoff de UI018                                                                   |
+| --------------- | ---------------------------------------------------------------------------------- |
+| `SHELL-MIG-001` | inventariar superficies kiosco, fullscreen, PWA y estaciones fijas existentes      |
+| `SHELL-MIG-002` | agrupar adopción por consumidor, estación, actor y riesgo                          |
+| `SHELL-MIG-003` | fijar compatibilidad temporal y evitar nuevas variantes de kiosco divergentes      |
+| `SHELL-MIG-004` | impedir que scaffolds confundan fullscreen con contención de dispositivo           |
+| `SHELL-MIG-005` | adoptar `KioskTaskSurface` donde `FIXED_KIOSK` y el host ya estén aprobados        |
+| `SHELL-MIG-006` | validar accesibilidad, privacidad, targets, montaje, sesión, periféricos y bloqueo |
+| `SHELL-MIG-007` | demostrar paridad de tarea, contexto, actor, acción, resultado y recuperación      |
+| `SHELL-MIG-008` | retirar únicamente superficies legacy sin uso residual y con rollback              |
+
+---
+
+#### 75. Handoff a calidad y releases
+
+| Tarea          | Responsabilidad                          |
+| -------------- | ---------------------------------------- |
+| `SHELL-CI-001` | pruebas propias del package              |
+| `SHELL-CI-002` | build independiente                      |
+| `SHELL-CI-003` | release versionado                       |
+| `SHELL-CI-004` | changelog                                |
+| `SHELL-CI-005` | matriz de compatibilidad por consumidor  |
+| `SHELL-CI-006` | actualización controlada de consumidores |
+
+La aprobación documental no constituye release, deployment de kiosk mode ni compatibilidad certificada.
+
+---
+
+#### 76. Validación física posterior
+
+La futura adopción de UI018 deberá verificarse en una estación o clase representativa del kiosco real.
+
+La evidencia deberá cubrir, cuando aplique:
+
+- dispositivo y sistema operativo;
+- modo de gestión o contención;
+- aplicaciones permitidas;
+- navegación de sistema;
+- salida autorizada de mantenimiento;
+- montaje, altura e inclinación;
+- distancia de lectura;
+- orientación;
+- mano dominante;
+- guantes y condiciones ambientales;
+- iluminación y reflejos;
+- ruido;
+- periféricos;
+- conectividad degradada;
+- bloqueo y revocación del dispositivo;
+- cambio de actor;
+- expiración por inactividad;
+- privacidad frente a terceros;
+- interrupción y reanudación;
+- tecnologías de asistencia.
+
+Un navegador de escritorio en fullscreen no constituye evidencia física suficiente.
+
+---
+
+#### 77. Contrato futuro de prueba
+
+La materialización y adopción deberán demostrar, como mínimo:
+
+1. aceptación exclusiva de `FIXED_KIOSK`;
+2. rechazo conceptual de las clases tablet dentro de UI018;
+3. ausencia de detección canónica por `userAgent`;
+4. fullscreen no tratado como prueba de contención;
+5. PWA standalone no tratada como modo kiosco seguro;
+6. siete slots semánticos preservados;
+7. `persistentContext` presente;
+8. `workIdentity` presente;
+9. `stepContent` presente;
+10. máximo una acción primaria;
+11. ausencia de acción primaria cuando no exista salida segura;
+12. estación humana perceptible cuando corresponda;
+13. dispositivo técnico separado del actor;
+14. sede o área fijadas al dispositivo solo restrictivas;
+15. aplicación permitida no convertida en permiso;
+16. actor humano obligatorio para mutaciones personales;
+17. sesión estándar revalidada en servidor;
+18. PIN ligero no usado como strong reauth cuando no corresponda;
+19. `NOT_ALLOWED` sin degradación a lectura parcial;
+20. cambio de actor sin herencia de autoridad;
+21. cambio de actor sin herencia de borrador personal;
+22. limpieza de datos sensibles del actor anterior;
+23. credenciales ausentes de la API base;
+24. secretos de mantenimiento ausentes de la UI ordinaria;
+25. administración técnica ausente de la tarea ordinaria;
+26. vía de mantenimiento existente en la arquitectura host;
+27. mantenimiento fuera de `PRIMARY_ACTION`;
+28. mantenimiento fuera de `SECONDARY_SUPPORT` ordinario;
+29. salida de mantenimiento no basada en URL libre;
+30. salida de mantenimiento no basada en secreto embebido;
+31. técnico separado del actor empresarial;
+32. retorno de mantenimiento sin heredar autoridad administrativa;
+33. aplicaciones del dispositivo limitadas externamente;
+34. navegación del sistema gobernada fuera del componente;
+35. enlaces externos sometidos a allowlist o contrato propietario;
+36. navegación externa sin declarar trabajo completado;
+37. ausencia de persistencia local genérica por capacidad del navegador;
+38. exportación tratada como capacidad distinta;
+39. portapapeles no requerido para secretos;
+40. superficie ordinaria `D0` o `D1`;
+41. `D2` solo excepcional y limitado;
+42. ausencia de `D3`/`D4` en flujo ordinario;
+43. target operativo preferente de 48 × 48 unidades lógicas;
+44. piso web de 24 × 24 CSS px respetado;
+45. hit areas no superpuestas;
+46. acciones incompatibles separadas;
+47. objetivo estable bajo el dedo;
+48. doble toque sin duplicidad empresarial;
+49. orientación fijada solo por perfil de estación;
+50. reflow compatible con zoom y texto aumentado;
+51. contenido mínimo sin scroll horizontal ordinario;
+52. hover no requerido;
+53. gesto oculto no requerido;
+54. teclado y lector operables dentro de la tarea;
+55. bloqueo de sistema no implementado rompiendo accesibilidad;
+56. captura estructurada en lugar de texto libre innecesario;
+57. periférico visible con estado y alternativa;
+58. comando de periférico separado de resultado físico;
+59. timeout de periférico sin retry ciego;
+60. conectividad perceptible;
+61. ausencia de mutación empresarial sin conectividad verificable en dispositivo compartido;
+62. cache no usada como autorización;
+63. stale no presentado como actual;
+64. reconexión con revalidación propietaria;
+65. borrador local separado de confirmación empresarial;
+66. bloqueo o revocación del dispositivo sin mutaciones ordinarias;
+67. `ContextDiagnostic` compuesto sin crear autoridad;
+68. `RecoverableErrorState` compuesto sin cambiar política de retry;
+69. `EmptyState` solo ante ausencia confirmada;
+70. alertas sin ocultar trabajo o contexto;
+71. confirmación sensible con ergonomía adecuada;
+72. simulación perceptible cuando exista;
+73. privacidad frente a terceros;
+74. inactividad sin borrar silenciosamente trabajo;
+75. reanudación delegada a UI019 cuando requiera checkpoint;
+76. traspaso cross-app delegado a UI020;
+77. ausencia de dependencia directa de Supabase;
+78. estructura base server-safe;
+79. siete decisiones de consumidor materializadas;
+80. cero faltantes y cero duplicados en la matriz;
+81. migración reversible por consumidor;
+82. prueba en estación representativa antes de despliegue amplio.
+
+Esta lista define evidencia futura y no declara ejecución física dentro de UI018.
+
+---
+
+#### 78. Cobertura de requisitos vigente
+
+UI018 no necesita crear una obligación transversal nueva porque el Registro Canónico vigente ya protege específicamente:
+
+- perfil explícito de superficie y separación de `FIXED_KIOSK` frente a otras clases: `TREQ-UX-204`;
+- objetivos táctiles y hit areas: `TREQ-UX-205`;
+- separación de acciones incompatibles: `TREQ-UX-206`;
+- ubicación y estabilidad de acción principal: `TREQ-UX-207`;
+- postura y montaje reales: `TREQ-UX-208`;
+- orientación, reflow y conservación de estado: `TREQ-UX-209`;
+- alternativas a hover y gestos: `TREQ-UX-210`;
+- minimización de escritura: `TREQ-UX-211`;
+- cantidades y unidades: `TREQ-UX-212`;
+- periféricos y resultado físico: `TREQ-UX-213`;
+- ambiente e higiene: `TREQ-UX-214`;
+- seguridad física: `TREQ-UX-215`;
+- actor, contexto y atribución en dispositivo compartido: `TREQ-UX-216`;
+- cambio de trabajador y limpieza: `TREQ-UX-217`;
+- privacidad visual: `TREQ-UX-218`;
+- acciones sensibles: `TREQ-UX-219`;
+- doble toque, concurrencia e idempotencia: `TREQ-UX-220`;
+- feedback y resultado desconocido: `TREQ-UX-221`;
+- conectividad y límites offline: `TREQ-UX-222`;
+- accesibilidad táctil: `TREQ-UX-223`;
+- modo kiosco, limitación de aplicaciones, navegación, enlaces, persistencia local de archivos, portapapeles, configuración, credenciales, salida accidental y mantenimiento autorizado: `TREQ-UX-224`;
+- modalidad y prueba en dispositivo real: `TREQ-UX-225`;
+- migración, métricas y rollback: `TREQ-UX-226`;
+- exportación separada de visualización e impedimento de persistencia local por mera capacidad del navegador en dispositivos compartidos: `TREQ-UX-243`;
+- densidad ordinaria D0/D1, D2 excepcional y administración temporal gobernada: `TREQ-UX-245`;
+- estación compartida como restricción sin autoridad empresarial: `TREQ-UX-246`;
+- matriz de dispositivo compartido e identidad cerrada por acción: `TREQ-UX-2051` y `TREQ-UX-2052`;
+- dispositivo técnico separado del actor humano: `TREQ-UX-2053`;
+- sesión estándar con actor, dispositivo, permiso, contexto y revalidación: `TREQ-UX-2054`;
+- reautenticación fuerte: `TREQ-UX-2055`;
+- capacidades no permitidas sin degradación: `TREQ-UX-2056`;
+- atributos fijados al dispositivo solo restrictivos: `TREQ-UX-2057`;
+- limpieza e invalidación al cambiar actor: `TREQ-UX-2058`;
+- prohibición de mutaciones o capacidades fuertes sin conectividad verificable: `TREQ-UX-2059`;
+- responsabilidad compartida, compatibilidad y rollback de packages: `TREQ-SHELL-002`, `TREQ-SHELL-006` y `TREQ-SHELL-007`;
+- validación automática del registro: `TREQ-SHELL-008`;
+- reconciliación de primitivas locales antes de adopción o retiro: `TREQ-SHELL-032`;
+- identidad de release, deprecación y retiro de superficies públicas: `TREQ-SHELL-036..039`.
+
+UI018 especializa la composición compartida de esas obligaciones sin introducir una regla de negocio, autorización, transición, integridad o seguridad nueva que requiera otro identificador.
+
+---
+
+#### 79. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+**Justificación:** las obligaciones específicas de kiosco, dispositivo compartido, actor, contención, mantenimiento autorizado, privacidad, densidad, conectividad, accesibilidad, prueba física, migración, compatibilidad y rollback ya están protegidas por requisitos canónicos vigentes. UI018 fija su composición presentacional compartida sin cambiar el significado de esas obligaciones.
+
+---
+
+#### 80. Estado de materialización física
+
+Al cierre documental de UI018:
+
+```text
+IDENTIDAD KioskTaskSurface                 = ESPECIFICADA
+KioskTaskSurfaceProps                      = ESPECIFICADO CONCEPTUALMENTE
+CLASE FIXED_KIOSK                          = REUTILIZADA
+CONTRATO KIOSK-TASK-SURFACE-CONTRACT-001   = ESPECIFICADO
+SLOTS SEMÁNTICOS                           = 7 PRESERVADOS
+FRONTERA KIOSCO / TABLET                   = CERRADA
+FRONTERA KIOSCO / AUTORIZACIÓN             = CERRADA
+FRONTERA UI / BLOQUEO DE SISTEMA           = CERRADA
+FRONTERA UI / MANTENIMIENTO                = CERRADA
+FRONTERA DISPOSITIVO / ACTOR               = CERRADA
+FRONTERA KIOSCO / DENSIDAD                 = CERRADA
+FRONTERA KIOSCO / REANUDACIÓN              = CERRADA
+FRONTERA KIOSCO / HANDOFF CROSS-APP        = CERRADA
+ERGONOMÍA TÁCTIL                           = ESPECIFICADA DOCUMENTALMENTE
+PRIVACIDAD                                 = ESPECIFICADA DOCUMENTALMENTE
+ACCESIBILIDAD                              = ESPECIFICADA DOCUMENTALMENTE
+CONSUMIDORES RECONCILIADOS                 = 7/7
+FALTANTES                                  = 0
+DUPLICADOS                                 = 0
+PACKAGE @vento/ui-web                      = NO MATERIALIZADO
+PATRÓN FÍSICO                              = NO MATERIALIZADO
+CONFIGURACIÓN DE KIOSCO                    = NO MATERIALIZADA POR UI018
+CONSUMIDORES MIGRADOS                      = 0
+CAMBIOS SUPABASE                           = 0
+CAMBIOS TREQ                               = 0
+```
+
+---
+
+#### 81. Decisiones vinculantes
+
+1. El patrón conceptual se denomina `KioskTaskSurface`.
+2. Pertenece conceptualmente a `@vento/ui-web`.
+3. UI018 es documental y no materializa código.
+4. El contrato se denomina `KIOSK-TASK-SURFACE-CONTRACT-001`.
+5. UI018 acepta exclusivamente la clase canónica `FIXED_KIOSK`.
+6. UI018 no crea una taxonomía paralela de dispositivos.
+7. La elegibilidad del kiosco se resuelve fuera del componente.
+8. `userAgent`, viewport, touch, fullscreen, PWA, CSS y URL no prueban modo kiosco.
+9. La API conceptual conserva siete slots semánticos.
+10. `persistentContext`, `workIdentity` y `stepContent` son obligatorios.
+11. `blockingState`, `primaryAction`, `secondarySupport` y `resultAndReceipt` son condicionales.
+12. Puede existir como máximo una acción primaria.
+13. UI018 no decide la acción primaria.
+14. UI018 no decide permisos.
+15. UI018 no resuelve actor, sede, área, turno o check-in.
+16. UI018 no administra aplicaciones permitidas.
+17. UI018 no bloquea navegación de sistema.
+18. UI018 no implementa MDM.
+19. UI018 no gestiona configuración del sistema operativo.
+20. Fullscreen no es frontera de seguridad.
+21. PWA standalone no es frontera de seguridad.
+22. La contención del dispositivo pertenece a la capa de dispositivo y despliegue.
+23. El host conserva catálogo permitido, destinos, enlaces, persistencia local de archivos y transición a mantenimiento.
+24. La salida de mantenimiento existe fuera de la jerarquía operativa ordinaria.
+25. No existe PIN o token de mantenimiento en la API base.
+26. La administración técnica no aparece en el flujo ordinario.
+27. El actor técnico no hereda autoridad empresarial.
+28. `FIXED_KIOSK` no equivale a actor humano.
+29. Una acción personal requiere actor humano válido.
+30. Atributos fijados a la estación solo pueden restringir.
+31. Sede de dispositivo no equivale a sede activa del actor.
+32. Área permitida no equivale a área operativa activa.
+33. Aplicación permitida no equivale a permiso.
+34. Periférico presente no equivale a acción autorizada.
+35. UI018 no decide `STANDARD_ACTOR_SESSION`, `STRONG_REAUTH_REQUIRED` o `NOT_ALLOWED`.
+36. PIN ligero no satisface reautenticación fuerte por simple conveniencia.
+37. `NOT_ALLOWED` no se degrada a una vista parcial.
+38. Cambiar actor no transfiere permisos ni reautenticación.
+39. Cambiar actor no transfiere borradores personales.
+40. Inactividad bloquea nuevas mutaciones según política sin borrar silenciosamente trabajo.
+41. La privacidad se aplica por minimización y limpieza.
+42. Kiosco no convierte datos protegidos en públicos.
+43. Credenciales no pertenecen a `KioskTaskSurface`.
+44. D0 y D1 son los niveles ordinarios del dispositivo compartido.
+45. D2 es excepcional y limitado.
+46. D3 y D4 quedan fuera del flujo ordinario de kiosco.
+47. Administración temporal requiere un contrato separado y cierre gobernado.
+48. El objetivo táctil operativo preferente es 48 × 48 unidades lógicas.
+49. El piso web de 24 × 24 CSS px permanece obligatorio.
+50. Hit areas no se superponen.
+51. Acciones incompatibles mantienen separación.
+52. Montaje, alcance y postura se validan físicamente.
+53. Orientación fija solo proviene del perfil de estación.
+54. UI018 no configura rotación de sistema operativo.
+55. El contenido mínimo no exige scroll horizontal ordinario.
+56. Hover o gestos ocultos no son acceso único a funciones esenciales.
+57. La seguridad de kiosco no rompe accesibilidad.
+58. Captura periférica no equivale a resultado empresarial.
+59. Un timeout de periférico no autoriza retry ciego.
+60. NEXO conserva la semántica de su kiosco de bodega fuera del package compartido.
+61. Conectividad y frescura llegan ya resueltas.
+62. Sin conectividad verificable no se ejecutan mutaciones empresariales ni capacidades fuertes del dispositivo compartido.
+63. Cache no es autorización.
+64. Un borrador local no se presenta como confirmación de servidor.
+65. El dispositivo revocado o incompatible bloquea mutaciones mediante decisión propietaria.
+66. `ContextDiagnostic` conserva diagnóstico de contexto.
+67. `RecoverableErrorState` conserva recuperación.
+68. `EmptyState` conserva ausencia confirmada.
+69. `Alert` conserva mensaje genérico.
+70. `PrimaryActionPanel` conserva jerarquía de acción.
+71. `SHELL-UI-014` conserva confirmación sensible.
+72. AppShell o el host conservan chrome y navegación transversal cuando correspondan.
+73. UI017 conserva tablet.
+74. UI019 conserva proceso interrumpido.
+75. UI020 conserva traspaso entre aplicaciones.
+76. La estructura base es conceptualmente server-safe.
+77. No existe dependencia directa de Supabase.
+78. El package físico `@vento/ui-web` continúa no materializado.
+79. `KioskTaskSurface` no existe físicamente en el estado remoto verificado.
+80. Los siete consumidores tienen una decisión explícita.
+81. La matriz contiene 7/7 consumidores, con cero faltantes y cero duplicados.
+82. La adopción física queda en `SHELL-MIG-*`.
+83. Pruebas, build, release y compatibilidad quedan en `SHELL-CI-*`.
+84. La prueba física posterior sigue siendo obligatoria antes de ampliar despliegue.
+85. UI018 crea cero requisitos `TREQ-*` y modifica cero.
+86. UI018 produce cero cambios de Supabase.
+87. UI019 permanece únicamente reservada.
+
+---
+
+#### 82. Criterios de aceptación documental
+
+UI018 queda documentalmente cerrada si se cumplen simultáneamente:
+
+- [x] la continuidad vigente identifica UI017 como anterior y UI018 como actual;
+- [x] UI019 permanece reservada;
+- [x] existe una identidad única `KioskTaskSurface`;
+- [x] se define `KIOSK-TASK-SURFACE-CONTRACT-001`;
+- [x] se fija pertenencia conceptual a `@vento/ui-web`;
+- [x] se reutiliza exclusivamente `FIXED_KIOSK`;
+- [x] no se crea una taxonomía paralela;
+- [x] tablet permanece fuera de UI018;
+- [x] no existe detección canónica por `userAgent`, viewport, touch, fullscreen o PWA;
+- [x] se preservan siete slots semánticos;
+- [x] se define la API conceptual mínima;
+- [x] se preserva una única acción primaria;
+- [x] se separan dispositivo, host y superficie de tarea;
+- [x] se establece que fullscreen no es frontera de seguridad;
+- [x] se establece que PWA standalone no es frontera de seguridad;
+- [x] se separa bloqueo del sistema operativo de la UI compartida;
+- [x] se separa administración del dispositivo de la tarea ordinaria;
+- [x] se preserva una salida autorizada de mantenimiento fuera del flujo operativo;
+- [x] no existen secretos de mantenimiento en la API base;
+- [x] se separan técnico y actor empresarial;
+- [x] se define identidad visible de estación;
+- [x] se separan dispositivo técnico y actor humano;
+- [x] se fijan las restricciones del dispositivo como techo, no como autoridad;
+- [x] se conserva revalidación de servidor;
+- [x] se conservan reglas de reautenticación fuerte;
+- [x] se evita degradar capacidades no permitidas;
+- [x] se define cambio de trabajador sin herencia;
+- [x] se define inactividad sin pérdida silenciosa de trabajo;
+- [x] se protege privacidad y limpieza entre actores;
+- [x] se excluye persistencia de credenciales de la UI;
+- [x] se fija D0/D1 como densidad ordinaria y D2 como excepcional;
+- [x] D3/D4 quedan fuera del flujo ordinario;
+- [x] se fijan targets táctiles compatibles con la línea base;
+- [x] se cubren montaje, postura y orientación fija gobernada;
+- [x] se conserva reflow y accesibilidad;
+- [x] se prohíben gestos ocultos como único acceso;
+- [x] se conservan captura y periféricos sin fabricar resultados;
+- [x] se define el caso NEXO sin trasladar lógica de dominio;
+- [x] se define conectividad sin mutación empresarial offline en dispositivo compartido;
+- [x] se integran diagnóstico, recuperación, vacío y alertas sin absorber sus contratos;
+- [x] se cierra frontera con AppShell;
+- [x] se cierra frontera con UI017, UI019 y UI020;
+- [x] se define semántica HTML sin `role="application"` universal;
+- [x] se define compatibilidad server/client;
+- [x] se reconcilia el estado físico actual de `packages/`;
+- [x] se reconcilia `src/components/ui`;
+- [x] se materializan decisiones para los siete consumidores;
+- [x] faltantes y duplicados son cero;
+- [x] adopciones físicas son cero;
+- [x] se define handoff a migración y calidad;
+- [x] se declara validación física posterior;
+- [x] se declaran cero cambios `TREQ-*` con cobertura concreta;
+- [x] se declaran cero cambios de Supabase;
+- [x] no queda una decisión material de UI018 sin propietario documental.
+
+---
+
+#### 83. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                                                                                       |
+| --------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | No existe en este entorno un checkout local actualizado que incorpore el artefacto UI018 para ejecutar el build documental del repositorio.                                                                                                                                     |
+| LOCAL     | `NOT_EXECUTED`   | No se ejecutaron scripts del repositorio ni `git diff --check` contra un checkout actualizado; el artefacto transitorio se verificó estructuralmente de forma aislada.                                                                                                          |
+| REMOTA    | `PASS`           | Se verificaron por GitHub la secuencia activa, protocolo, archivo propietario, contrato de entrega, políticas de tarea, `package.json`, validadores aplicables, baseline táctil E2, gramática y slots semánticos, fragmentos 04A relevantes, `packages/` y `src/components/ui`. |
+| OPERATIVA | `NOT_APPLICABLE` | UI018 no modifica runtime, autorización, aplicaciones desplegadas, navegación de sistema, sesiones, periféricos ni servicios operativos.                                                                                                                                        |
+| FÍSICA    | `NOT_EXECUTED`   | La validación en kiosco real pertenece a adopción y certificación posteriores; UI018 no materializa hardware, modo kiosco, MDM ni un consumidor desplegado que pueda probarse físicamente.                                                                                      |
+
+La evidencia documental no sustituye la validación posterior del dispositivo, montaje, contención, privacidad, accesibilidad y operación real.
+
+---
+
+#### 84. Límites
+
+Esta tarea no autoriza:
+
+- crear `packages/ui-web`;
+- crear archivos TypeScript de `KioskTaskSurface`;
+- modificar `src/components/ui`;
+- modificar aplicaciones consumidoras;
+- configurar modo kiosco de navegador o sistema operativo;
+- instalar o cambiar MDM;
+- modificar perfiles de dispositivo;
+- cambiar aplicaciones permitidas;
+- bloquear teclas del sistema;
+- cambiar políticas de persistencia local de archivos o portapapeles;
+- crear credenciales de mantenimiento;
+- modificar autenticación;
+- cambiar políticas `AUTH-DEV-*`;
+- modificar AppShell;
+- cambiar perfiles de estación;
+- cambiar acciones principales;
+- resolver permisos o contexto;
+- implementar cambio de actor;
+- implementar strong reauth;
+- gestionar hardware o periféricos;
+- crear colas offline;
+- implementar checkpoints;
+- implementar handoffs cross-app;
+- publicar paquetes;
+- ejecutar SQL;
+- crear o ejecutar migraciones;
+- modificar Supabase;
+- desplegar;
+- aprobar un modelo físico concreto de kiosco;
+- declarar certificación de una estación real;
+- iniciar UI019.
+
+---
+
+#### 85. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-UI-017 — Compartir patrón para tablet`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-UI-018 — Compartir patrón para kiosco`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-UI-019 — Compartir patrón de proceso interrumpido`
+
+
 ### [ ] SHELL-UI-019 — Compartir patrón de proceso interrumpido
 ### [ ] SHELL-UI-020 — Compartir patrón de traspaso entre aplicaciones
