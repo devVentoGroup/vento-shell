@@ -5451,5 +5451,1150 @@ SHELL-CON-022 — Crear contrato de mapeo de identificadores externos
 SHELL-CON-023 — Crear contrato de idempotencia y conciliación
 
 
-### [ ] SHELL-CON-023 — Crear contrato de idempotencia y conciliación
+### ✅ SHELL-CON-023 — Crear contrato de idempotencia y conciliación
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CON-022 — Crear contrato de mapeo de identificadores externos
+**Tarea siguiente:** SHELL-CON-024 — Crear contrato de cuarentena, rechazo y compensación
+**Tipo de tarea:** Documental; definición normativa y materializada del contrato compartido de idempotencia y conciliación para fronteras de integración, preservando los alcances, identidades, huellas, resultados recuperables, claims, incertidumbre, fuentes autoritativas, residuales y cierres ya aprobados en BLOQUE X, sin crear una clave global, una transacción distribuida, una política de retry paralela, código, persistencia, migraciones ni cambios en Supabase
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md`
+**Superficie lógica objetivo:** `@vento/contracts/integrations`
+**Estado físico resultante:** `CONTRATO_COMPARTIDO_DE_IDEMPOTENCIA_Y_CONCILIACION_DEFINIDO_NO_MATERIALIZADO`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, Storage, Edge Functions, endpoints, colas, workers, secretos, credenciales, proveedores, datos, configuración remota o despliegues:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-023` centraliza en la fundación compartida de Vento OS la forma estática y consumible con la que una frontera de integración puede declarar:
+
+- qué alcance idempotente protege;
+- cuál es la identidad estable de la operación dentro de ese alcance;
+- qué huella lógica permite distinguir duplicado compatible de reutilización conflictiva;
+- qué resultado durable debe recuperarse ante retry, redelivery o replay;
+- cuándo una operación permanece en curso, rechazada, stale, fuera de orden o pendiente de conciliación;
+- qué fuentes y evidencias deben compararse cuando el resultado no puede determinarse de forma segura;
+- qué decisión, residual y siguiente acción permiten cerrar una conciliación sin reescribir historia ni transferir autoridad entre dominios.
+
+La regla central es:
+
+```text
+ALCANCE IDEMPOTENTE EXACTO
++
+IDENTIDAD ESTABLE ANTES DEL PRIMER EFECTO
++
+HUELLA LÓGICA VERSIONADA
++
+RESULTADO DURABLE
+=
+REPETICIÓN SEGURA SIN SEGUNDO EFECTO
+```
+
+Y, cuando el resultado no sea determinable:
+
+```text
+RESULTADO INCIERTO O DIVERGENCIA
++
+FUENTES AUTORITATIVAS
++
+EVIDENCIA Y CORRELACIÓN
++
+PROPIETARIA DE CADA EFECTO
+=
+CONCILIACIÓN TRAZABLE SIN REPETICIÓN CIEGA
+```
+
+La tarea no crea una clave universal de integración, no fusiona los alcances idempotentes existentes y no convierte conciliación en permiso para modificar otra fuente de verdad.
+
+---
+
+#### 2. Resultado canónico
+
+Quedan definidos dentro de `@vento/contracts/integrations` los siguientes artefactos lógicos compartidos:
+
+1. `IntegrationIdempotencyScope`, vocabulario compartido de los siete alcances idempotentes aprobados;
+2. `IntegrationIdempotencyRef`, referencia estable a la identidad idempotente de una operación dentro de su alcance;
+3. `IntegrationIdempotencyRecord`, representación estática de identidad, huella, claim, outcome y resultado recuperable;
+4. `IntegrationIdempotencyOutcome`, vocabulario compartido de los ocho resultados idempotentes ya aprobados;
+5. `ExternalIntegrationClaimState`, vocabulario específico de los siete estados de claim de una operación externa;
+6. `IntegrationReconciliationRef`, identidad estable, opaca y no secreta de un caso de conciliación;
+7. `IntegrationReconciliationCase`, representación compartida de fuentes comparadas, evidencia, diferencias, decisión, residuales y cierre;
+8. `IntegrationReconciliationClosureOutcome`, vocabulario compartido de los ocho cierres aprobados para conciliación externa.
+
+La superficie permite tipar conceptualmente referencias ya reservadas por contratos anteriores, en particular:
+
+```text
+ExternalReceivedEvent.idempotency_ref
+→ IntegrationIdempotencyRef | null
+```
+
+sin modificar físicamente `ExternalReceivedEvent` durante esta tarea.
+
+Los artefactos son contratos lógicos. Esta tarea no crea TypeScript, schemas ejecutables, tablas, índices, constraints, RPC, workers, colas, registros operativos ni datos.
+
+---
+
+#### 3. Fuentes y precedencia
+
+`SHELL-CON-023` consume y conserva sin redefinir:
+
+| Fuente                                    | Uso vinculante                                                                                      |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `SHELL-CON-001`                           | `@vento/contracts` como autoridad estática, versionada y sin runtime, red, secretos ni persistencia |
+| `SHELL-CON-017`                           | separación entre principal técnico, actor humano, permiso, credencial y autoridad empresarial       |
+| `SHELL-CON-019`                           | `ExternalReceivedEvent`, `idempotency_ref`, receipts, correlación y evidencia fuente                |
+| `SHELL-CON-020`                           | identidad de venta estable y separada de idempotency key, event ID, receipt y correlación           |
+| `SHELL-CON-021`                           | identidad de línea estable frente a retry, replay, mapping y sincronización tardía                  |
+| `SHELL-CON-022`                           | mapping externo/canónico separado de idempotencia, autenticidad y autorización                      |
+| `INT-APP-004`                             | `ENTERPRISE-EVENT-IDEMPOTENCY-REGISTRY-001`, siete alcances y garantías end-to-end                  |
+| `INT-APP-005`                             | política transversal de retry, clasificación, presupuesto y tratamiento de resultado desconocido    |
+| `INT-APP-007`                             | auditoría transversal y reconstrucción de intentos, resultados y efectos                            |
+| `INT-APP-008`                             | estados pendientes, `RESULT_UNKNOWN` y `RECONCILIATION_REQUIRED`                                    |
+| `INT-APP-009`                             | partialidad, residuales y tratamiento seguro de resultados mixtos                                   |
+| `INT-APP-010`                             | ownership, comandos propietarios y prohibición de escrituras cruzadas                               |
+| `INT-EXT-012`                             | idempotencia externa, namespace, operation key, huella, claim durable y `OUTCOME_UNKNOWN`           |
+| `INT-EXT-017`                             | conciliación externa, fuentes autoritativas, evidencia, residuales y cierres                        |
+| `INT-POS-013`                             | especialización por sistema, venta y línea externa, sin identidades heurísticas                     |
+| `INT-POS-020`                             | conciliación de ventas y efectos durante la transición del POS externo                              |
+| `INT-SALES-007`                           | control permanente contra efectos duplicados por retry y recuperación selectiva                     |
+| `INT-SALES-008`                           | conciliación de convivencia entre fuente externa y PULSO                                            |
+| `INT-DB-005`                              | destino físico posterior de restricciones e índices de idempotencia                                 |
+| `INT-DB-008`                              | destino físico posterior de mecanismos de conciliación por integración                              |
+| Registro Canónico de Requisitos de Prueba | cobertura vigente de idempotencia, retry, incertidumbre, conciliación, ownership y recuperación     |
+
+Precedencia aplicable:
+
+```text
+CONTRATOS PROPIETARIOS Y TRANSVERSALES DE BLOQUE X
+→ semántica normativa de identidad, retry, resultado y conciliación
+
+SHELL-CON-023
+→ forma compartida consumible de esa semántica
+
+INT-DB-005 / INT-DB-008
+→ materialización física posterior bajo implementación autorizada
+```
+
+Una implementación local, un hash existente, una restricción aislada o un `upsert` no redefine este contrato.
+
+---
+
+#### 4. Frontera exacta de la tarea
+
+La tarea incluye únicamente:
+
+- los siete alcances idempotentes compartidos;
+- la forma lógica de una referencia idempotente;
+- la forma lógica de un registro idempotente;
+- el uso de una huella lógica versionada;
+- la separación entre identidad, huella, intento, delivery, claim, resultado y correlación;
+- los ocho outcomes idempotentes ya aprobados;
+- los siete estados de claim externos ya aprobados;
+- la regla de un solo ganador empresarial bajo concurrencia;
+- recuperación de resultado previo sin repetir efecto;
+- conflicto determinista por reutilización incompatible;
+- tratamiento explícito de `OUTCOME_UNKNOWN` y `RESULT_UNKNOWN`;
+- forma lógica de referencia y caso de conciliación;
+- comparación de fuentes autoritativas sin reescritura histórica;
+- los ocho outcomes de cierre de conciliación ya aprobados;
+- adopción explícita de las veintiuna identidades `EXT-SYS-001` a `EXT-SYS-021`;
+- handoffs exactos hacia persistencia, conciliación física y tratamiento posterior.
+
+La tarea no incluye:
+
+- una política nueva de retry o backoff;
+- un nuevo catálogo de errores;
+- cuarentena o dead-letter;
+- rechazo compartido como disposición operativa;
+- ejecución de compensaciones;
+- un rollback global;
+- una transacción ACID entre aplicaciones;
+- elección de tablas, índices, constraints, locks o RPC;
+- retención física;
+- implementación de outbox o inbox;
+- materialización de claims;
+- dashboards o alertas;
+- cambios en Supabase;
+- desarrollo de `SHELL-CON-024`.
+
+---
+
+#### 5. Principio de identidad por alcance
+
+La idempotencia compartida protege equivalencias diferentes y, por tanto, conserva identidades distintas.
+
+```text
+REQUEST_ACCEPTANCE
+≠ OWNER_COMMAND
+≠ EVENT_EMISSION
+≠ CONSUMER_INBOX
+≠ CONSUMER_EFFECT
+≠ EXTERNAL_RECEIPT
+≠ REPLAY_BATCH
+```
+
+Una clave demasiado amplia puede suprimir efectos legítimos. Una clave demasiado estrecha puede permitir duplicados. Por ello:
+
+1. el alcance debe conocerse antes del primer efecto protegido;
+2. la propietaria del alcance conserva autoridad sobre el resultado;
+3. un identificador de un alcance no se reutiliza como identidad universal de otro;
+4. correlación entre alcances no equivale a identidad;
+5. una venta, línea, mapping, receipt o event ID no se convierte por sí solo en clave universal;
+6. cambiar materialmente la intención crea otra operación, no otro intento;
+7. retry, redelivery y replay compatibles conservan la identidad del alcance original.
+
+---
+
+#### 6. `IntegrationIdempotencyScope`
+
+El vocabulario compartido conserva exactamente los siete alcances aprobados:
+
+| Alcance              | Identidad mínima de referencia                                     | Protege                                           |
+| -------------------- | ------------------------------------------------------------------ | ------------------------------------------------- |
+| `REQUEST_ACCEPTANCE` | `request_id` o `client_event_id`                                   | la misma solicitud lógica                         |
+| `OWNER_COMMAND`      | `source_command_id`                                                | la misma mutación solicitada a la propietaria     |
+| `EVENT_EMISSION`     | `event_id`                                                         | la misma emisión empresarial                      |
+| `CONSUMER_INBOX`     | `consumer_application + event_id`                                  | la misma recepción por una consumidora            |
+| `CONSUMER_EFFECT`    | `consumer_application + event_id + effect_code`                    | el mismo efecto derivado dentro de la consumidora |
+| `EXTERNAL_RECEIPT`   | `source_system + external_event_id` dentro del namespace aplicable | la misma afirmación externa autenticada           |
+| `REPLAY_BATCH`       | `replay_request_id`                                                | la misma instrucción controlada de replay         |
+
+Reglas:
+
+1. el cuadro define semántica, no formato físico de serialización;
+2. la identidad mínima puede requerir namespace, ambiente o instancia adicional cuando el contrato propietario lo exija;
+3. el alcance no concede autorización empresarial;
+4. `CONSUMER_INBOX` no confirma `CONSUMER_EFFECT`;
+5. `EVENT_EMISSION` no confirma delivery ni consumo;
+6. `EXTERNAL_RECEIPT` no confirma un efecto interno;
+7. `REPLAY_BATCH` no autoriza efectos sensibles por el solo hecho de existir.
+
+---
+
+#### 7. `IntegrationIdempotencyRef`
+
+`IntegrationIdempotencyRef` identifica de forma estable una operación protegida dentro de un alcance concreto.
+
+Forma lógica mínima:
+
+```text
+IntegrationIdempotencyRef = {
+  scope
+  scope_owner_ref
+  namespace_ref
+  operation_key
+  generation
+  contract_version
+}
+```
+
+Invariantes:
+
+1. `operation_key` es estable dentro del alcance y se fija antes del primer efecto;
+2. `operation_key` no es secreto;
+3. `operation_key` no cambia por retry, redelivery, reinicio, worker, dispositivo, deployment o transporte;
+4. `generation` distingue una repetición intencional legítima cuando el contrato propietario permita una nueva intención;
+5. una nueva generación no se crea para ocultar un conflicto o un resultado incierto;
+6. `namespace_ref` delimita la identidad donde la misma cadena pueda repetirse legítimamente en otro sistema, ambiente, superficie o contrato;
+7. `scope_owner_ref` identifica la frontera propietaria del resultado y no concede autoridad fuera de ella;
+8. esta tarea no fija UUID, prefijo, slug, secuencia ni longitud física de `operation_key`.
+
+---
+
+#### 8. Namespace de operaciones externas
+
+Para operaciones externas, el namespace mínimo conserva la decisión de `INT-EXT-012`:
+
+```text
+external_system_id
++
+environment
++
+surface
++
+operation_kind
+```
+
+y añade `external_instance_id` cuando sea necesario para evitar colisiones entre tenants, cuentas, empresas, ambientes lógicos o espacios de numeración distintos.
+
+Reglas:
+
+1. el mismo valor recibido desde dos sistemas externos no implica la misma operación;
+2. `DEVELOPMENT`, `STAGING` y `PRODUCTION` no comparten deduplicación por conveniencia;
+3. checkout y webhook no comparten namespace únicamente porque puedan correlacionarse;
+4. dos clases de operación distintas no comparten clave por defecto;
+5. `external_system_id` no sustituye `operation_key`;
+6. `ExternalIdentifierMappingId` no sustituye `operation_key`;
+7. `IntegrationPrincipalId` no sustituye `operation_key`;
+8. una credencial o secreto nunca se usa como identidad idempotente.
+
+---
+
+#### 9. Reglas de `operation_key`
+
+Una clave idempotente válida podrá provenir de una identidad ya aprobada por el contrato propietario, por ejemplo:
+
+- una operación VENTO asignada antes del primer envío;
+- un `source_command_id`;
+- un `event_id`;
+- un identificador externo autenticado y estable cuando su semántica permita usarlo en el alcance correspondiente;
+- una identidad de transacción del proveedor cuando el contrato demuestre su estabilidad y alcance;
+- una composición determinista versionada solo cuando la fuente defina suficientes campos estables, inequívocos y no ambiguos.
+
+No constituyen por sí solos una clave idempotente válida:
+
+- timestamp de recepción;
+- UUID generado después de recibir una entrada no identificada;
+- nombre de archivo;
+- posición de fila;
+- `source_row_number`;
+- correo;
+- teléfono;
+- `site_id` aislado;
+- nombre de producto;
+- monto;
+- coordenadas;
+- IP;
+- retry count;
+- `attempt_id`;
+- `delivery_id`;
+- `trace_id`;
+- mapping ID;
+- valor secreto.
+
+---
+
+#### 10. Huella lógica versionada
+
+La identidad responde qué operación se está comparando. La huella responde si el contenido material de esa operación sigue siendo compatible.
+
+`IntegrationIdempotencyRecord` conserva:
+
+- `logical_content_hash`;
+- `logical_content_hash_version`.
+
+Reglas:
+
+1. misma referencia idempotente + misma huella compatible recupera el resultado anterior o un estado recuperable;
+2. misma referencia idempotente + huella material incompatible produce conflicto determinista;
+3. el segundo contenido incompatible no se aplica parcialmente;
+4. la huella usa únicamente campos materiales del contrato propietario;
+5. la huella excluye retry count, tiempos de entrega, trace, connection metadata y otros datos técnicos volátiles;
+6. la huella no incluye secretos ni material de credencial;
+7. cambiar la canonicalización exige versión identificable;
+8. una nueva versión de adapter o parser no reinterpreta silenciosamente huellas históricas;
+9. el algoritmo físico de digest queda para materialización autorizada, pero deberá ser identificable y compatible con el contrato de seguridad aplicable.
+
+---
+
+#### 11. `IntegrationIdempotencyRecord`
+
+La forma lógica compartida es:
+
+```text
+IntegrationIdempotencyRecord = {
+  idempotency_ref
+
+  logical_content_hash
+  logical_content_hash_version
+
+  resource_ref
+  claim_state
+  outcome
+  result_ref
+
+  external_system_id
+  external_instance_id
+  integration_principal_id
+  environment
+  surface
+  operation_kind
+  provider_ref
+
+  first_observed_at
+  last_observed_at
+  attempt_count
+  finalized_at
+
+  correlation_refs[]
+  audit_ref
+  reconciliation_ref
+}
+```
+
+La forma es conceptual y sus campos son condicionales según el alcance.
+
+Reglas:
+
+1. los campos externos no se exigen a una operación puramente interna;
+2. `claim_state` solo se usa cuando exista semántica de claim aplicable;
+3. `resource_ref` correlaciona el recurso sin convertirse en la identidad de todos sus efectos;
+4. `result_ref` apunta al resultado durable propietario y no a un ACK técnico salvo que el contrato propietario lo defina como resultado final;
+5. `attempt_count` describe intentos y no cambia la identidad;
+6. `correlation_refs[]` enlaza hechos distintos sin fusionarlos;
+7. `audit_ref` conserva trazabilidad sin convertir auditoría en fuente del estado empresarial;
+8. `reconciliation_ref` solo existe cuando la operación requiere un caso de conciliación asociado;
+9. el registro no contiene payload completo, secreto, token o credencial.
+
+---
+
+#### 12. Claim durable y un solo ganador
+
+Cuando un alcance requiera proteger un efecto mediante reclamación durable, el comportamiento lógico es:
+
+```text
+RESOLVER ALCANCE Y NAMESPACE
+→ FIJAR operation_key
+→ CALCULAR HUELLA VERSIONADA
+→ RECLAMAR LA MISMA IDENTIDAD DE FORMA ATÓMICA O EQUIVALENTE
+    ├── NUEVA + COMPATIBLE → UN GANADOR PUEDE CONTINUAR
+    ├── EXISTENTE + MISMA HUELLA → RECUPERAR ESTADO / RESULTADO
+    └── EXISTENTE + HUELLA DISTINTA → CONFLICTO
+→ PERSISTIR RESULTADO O INCERTIDUMBRE
+```
+
+Invariantes:
+
+1. dos ejecuciones concurrentes de la misma identidad producen un solo ganador empresarial;
+2. un `SELECT` previo seguido de efecto y registro posterior sin protección equivalente no satisface el contrato;
+3. un lock en memoria de una sola instancia no satisface la garantía distribuida;
+4. un `upsert` sin validación semántica de identidad y huella no satisface el contrato;
+5. el efecto no puede quedar confirmado sin un resultado o referencia recuperable suficiente;
+6. un lease vencido no demuestra ausencia de commit;
+7. adquirir un nuevo lease no habilita repetir un efecto incierto;
+8. la primitiva física concreta pertenece a `INT-DB-005` y a la implementación propietaria aplicable.
+
+---
+
+#### 13. `ExternalIntegrationClaimState`
+
+Para operaciones externas que usen claim, se conserva exactamente el vocabulario de `INT-EXT-012`:
+
+| Estado             | Significado contractual                                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| `CLAIMED`          | la identidad fue reclamada y existe procesamiento vigente o recuperable                                                  |
+| `SUCCEEDED`        | el efecto o resultado propietario quedó confirmado y es recuperable                                                      |
+| `FAILED_RETRYABLE` | la ausencia de efecto o condición transitoria permite retry bajo la política vigente                                     |
+| `FAILED_FINAL`     | el contrato demuestra cierre final sin retry automático de la misma operación                                            |
+| `OUTCOME_UNKNOWN`  | no puede determinarse si el efecto ocurrió; exige consulta o conciliación antes de repetir                               |
+| `CANCELLED`        | la operación fue cancelada conforme a su contrato sin reinterpretar historia                                             |
+| `EXPIRED`          | la operación alcanzó una condición de expiración contractual; no demuestra por sí sola que un efecto incierto no ocurrió |
+
+`ExternalIntegrationClaimState` no sustituye los estados de `ENTERPRISE-SYNC-PENDING-STATE-MACHINE-001`.
+
+En particular:
+
+```text
+OUTCOME_UNKNOWN
+≠ RESULT_UNKNOWN
+```
+
+Ambos representan incertidumbre en capas diferentes y pueden conducir a conciliación, pero no son aliases intercambiables.
+
+---
+
+#### 14. `IntegrationIdempotencyOutcome`
+
+Se conservan exactamente los ocho outcomes usados por la especialización de ventas y el registro transversal:
+
+| Outcome                     | Regla compartida                                                                                        |
+| --------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `APPLIED`                   | primera aplicación válida dentro del alcance; existe resultado durable                                  |
+| `DUPLICATE_RESULT_RETURNED` | misma identidad y huella compatible; se recupera el resultado previo sin nueva mutación                 |
+| `CONFLICTING_REUSE`         | misma identidad con contenido material incompatible; no se aplica el segundo contenido                  |
+| `IN_PROGRESS_RECOVERABLE`   | otra ejecución conserva la reclamación y el resultado deberá recuperarse                                |
+| `STALE_VERSION`             | una versión anterior no puede hacer retroceder una versión ya confirmada                                |
+| `OUT_OF_ORDER_DEFERRED`     | falta una dependencia o secuencia previa y la aplicación se difiere explícitamente                      |
+| `RECONCILIATION_REQUIRED`   | no existe evidencia suficiente para decidir aplicación, duplicado, ausencia o conflicto de forma segura |
+| `REJECTED`                  | el contrato, autenticidad, contexto, autorización o contenido no permiten aceptar la operación          |
+
+Reglas:
+
+1. un outcome no sustituye el estado empresarial del recurso;
+2. `DUPLICATE_RESULT_RETURNED` significa cero nueva mutación;
+3. `RECONCILIATION_REQUIRED` no autoriza retry;
+4. `REJECTED` no se usa para ocultar partialidad o efecto desconocido;
+5. `STALE_VERSION` no reescribe la versión vigente;
+6. `OUT_OF_ORDER_DEFERRED` conserva la identidad original hasta que exista el prerequisito verificable.
+
+---
+
+#### 15. Duplicado, retry, redelivery, replay y repetición intencional
+
+Los conceptos permanecen separados:
+
+| Caso                               | Identidad                                                  | Huella                              | Regla                                                      |
+| ---------------------------------- | ---------------------------------------------------------- | ----------------------------------- | ---------------------------------------------------------- |
+| duplicado / redelivery             | conserva la misma                                          | compatible                          | recuperar resultado o estado previo                        |
+| retry                              | conserva la misma                                          | compatible                          | nuevo intento técnico, mismo efecto lógico                 |
+| replay del mismo hecho histórico   | conserva identidad histórica                               | compatible con el hecho reproducido | no crea efecto sensible salvo autorización explícita       |
+| repetición empresarial intencional | nueva operación o generación cuando el contrato la permita | corresponde a la nueva intención    | se vincula al original cuando sea material                 |
+| corrección / compensación          | identidad propia                                           | describe su propio hecho            | referencia explícitamente el original y conserva ownership |
+
+Queda prohibido usar una nueva clave para transformar un retry en una operación nueva sin decisión empresarial real.
+
+---
+
+#### 16. Resultado desconocido y recuperación segura
+
+La ausencia de respuesta no demuestra ausencia de efecto.
+
+Para un `OUTCOME_UNKNOWN` externo o un `RESULT_UNKNOWN` de la máquina transversal:
+
+```text
+RESULTADO INCIERTO
+→ CONSULTAR IDENTIDAD ORIGINAL
+→ COMPARAR RESULTADO PROPIETARIO / RECEIPT / PROVEEDOR / LEDGER / FUENTE AUTORITATIVA
+    ├── EFECTO CONFIRMADO → RECUPERAR RESULTADO
+    ├── AUSENCIA DE EFECTO DEMOSTRADA + RETRY ELEGIBLE → RETRY MISMA IDENTIDAD
+    └── NO DETERMINABLE → RECONCILIATION_REQUIRED
+```
+
+Reglas:
+
+1. timeout no equivale a fallo confirmado;
+2. agotar presupuesto de retry no equivale a éxito ni fracaso;
+3. reiniciar worker o aplicación no limpia la incertidumbre;
+4. cambiar de tabla, RPC, proveedor, aplicación o endpoint no crea una vía alternativa para conseguir éxito con otra identidad;
+5. una operación incierta conserva propietaria, evidencia, residual y siguiente acción;
+6. la recuperación se dirige al alcance pendiente; no reabre efectos ya confirmados.
+
+---
+
+#### 17. Recuperación selectiva y ausencia de commit global
+
+La integración puede producir resultados independientes en varias propietarias.
+
+Ejemplo conceptual:
+
+```text
+VENTA / COMANDO      → CONFIRMADO
+EVENTO               → CONFIRMADO
+CONSUMIDORA A        → CONFIRMADA
+CONSUMIDORA B        → RESULT_UNKNOWN
+CONSUMIDORA C        → NO_APLICA
+```
+
+La recuperación correcta investiga o recupera la unidad de `CONSUMIDORA B`.
+
+No existe en este contrato:
+
+```text
+TODAS LAS PROPIETARIAS
+→ UNA ÚNICA TRANSACCIÓN ACID GLOBAL
+```
+
+La consistencia transversal se obtiene mediante:
+
+- commit durable en cada propietaria;
+- identidad por alcance;
+- resultado recuperable;
+- retry seguro;
+- compensación no destructiva cuando corresponda;
+- conciliación basada en evidencia.
+
+Un resultado mixto permanece explícito y no se presenta como éxito total.
+
+---
+
+#### 18. `IntegrationReconciliationRef`
+
+`IntegrationReconciliationRef` identifica un caso concreto de conciliación.
+
+Reglas:
+
+1. es estable, opaca y no secreta;
+2. no es la idempotency key;
+3. no es `event_id`, `receipt_id`, `mapping_id`, `sale_id` ni `effect_id`;
+4. puede correlacionar varias fuentes y efectos sin fusionar sus identidades;
+5. una nueva revisión de evidencia conserva el mismo caso cuando investiga la misma divergencia, salvo que el contrato propietario establezca un caso sucesor;
+6. un caso sucesor referencia el anterior y no borra decisiones ya tomadas;
+7. esta tarea no fija formato físico del identificador.
+
+---
+
+#### 19. `IntegrationReconciliationCase`
+
+La forma lógica compartida es:
+
+```text
+IntegrationReconciliationCase = {
+  reconciliation_ref
+  idempotency_ref
+  owner_ref
+
+  operation_ref
+  event_ref
+  receipt_ref
+  mapping_refs[]
+  correlation_refs[]
+
+  compared_source_refs[]
+  evidence_refs[]
+  attempt_refs[]
+  observed_difference_refs[]
+
+  owner_outcome_ref
+  external_claim_state
+
+  decision_ref
+  closure_outcome
+  residual_obligations[]
+  next_action_ref
+  responsible_owner_ref
+  reactivation_condition_ref
+
+  opened_at
+  updated_at
+  closed_at
+}
+```
+
+La forma es conceptual.
+
+Reglas:
+
+1. `idempotency_ref` puede ser nulo cuando la divergencia no pertenezca a una operación idempotente concreta;
+2. `owner_outcome_ref` conserva el vocabulario de la propietaria y no crea un outcome global nuevo;
+3. `external_claim_state` solo aplica a operaciones externas con claim;
+4. `compared_source_refs[]` referencia fuentes autoritativas o evidencia suficiente y no copias editables competidoras;
+5. `observed_difference_refs[]` describe divergencias sin permitir last-write-wins;
+6. `residual_obligations[]` nunca se omite para aparentar cierre limpio;
+7. `responsible_owner_ref` identifica quién debe resolver el residual sin transferir autoridad a la capa de conciliación;
+8. `closed_at` solo existe cuando existe un cierre contractual suficiente;
+9. la forma no contiene payload sensible completo, secretos o credenciales.
+
+---
+
+#### 20. Fuentes autoritativas y evidencia de conciliación
+
+La conciliación consulta las fuentes propietarias de cada hecho; no las sustituye.
+
+Puede comparar, según aplicabilidad:
+
+- resultado durable de una aplicación propietaria;
+- receipt externo acreditado;
+- estado consultable del proveedor;
+- ledger físico, económico o de fidelización de su propietaria;
+- evento y versión registrados;
+- inbox y resultado de efecto de una consumidora;
+- mapping acreditado;
+- evidencia fuente protegida;
+- auditoría correlacionada;
+- resultado de una compensación confirmada.
+
+Reglas:
+
+1. un log aislado no sustituye el resultado propietario;
+2. una métrica no sustituye un ledger;
+3. un ACK de transporte no sustituye un efecto empresarial;
+4. una fila de proyección no se usa como autoridad si existe una fuente propietaria distinta;
+5. similitud de monto, fecha, nombre, producto, terminal o timestamp no demuestra identidad;
+6. nueva evidencia no reescribe la evidencia usada por una revisión anterior;
+7. una diferencia confirmada se conserva hasta una resolución o residual explícito.
+
+---
+
+#### 21. Procedimiento lógico de conciliación
+
+Un caso de conciliación sigue este orden conceptual:
+
+```text
+IDENTIFICAR LA UNIDAD Y SU PROPIETARIA
+→ FIJAR LAS IDENTIDADES Y VERSIONES RELEVANTES
+→ REUNIR FUENTES AUTORITATIVAS Y EVIDENCIA
+→ COMPARAR RESULTADOS SIN REESCRIBIR HISTORIA
+→ CLASIFICAR DIFERENCIAS / INCERTIDUMBRE
+→ DECIDIR ACCIÓN SEGURA DENTRO DE LA PROPIETARIA
+→ RECUPERAR, REINTENTAR, RECHAZAR, CORREGIR, COMPENSAR O CONSERVAR RESIDUAL SEGÚN CONTRATO
+→ VERIFICAR RESULTADO
+→ CERRAR SOLO CON OUTCOME DE CIERRE PERMITIDO
+```
+
+Reglas:
+
+1. la conciliación no ejecuta directamente una mutación en otra propietaria;
+2. un retry solo se habilita cuando el contrato demuestra que es seguro;
+3. una corrección o compensación se solicita o ejecuta en la propietaria correspondiente;
+4. los efectos ya confirmados no se reaplican;
+5. un caso puede permanecer abierto con residual y siguiente acción;
+6. refrescar una interfaz no cambia el resultado;
+7. el paso del tiempo no cierra un resultado desconocido;
+8. no se inventan entradas retrospectivas para completar una historia faltante.
+
+---
+
+#### 22. `IntegrationReconciliationClosureOutcome`
+
+Se conservan exactamente los ocho cierres aprobados por la conciliación externa:
+
+| Outcome                           | Significado compartido                                                                                    |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `RESOLVED_CONFIRMED`              | la fuente autoritativa confirma el efecto o resultado esperado                                            |
+| `RESOLVED_NO_EFFECT`              | existe evidencia suficiente de que el efecto no ocurrió y la unidad queda cerrada sin fabricarlo          |
+| `RESOLVED_DUPLICATE_PRIOR_RESULT` | la aparente divergencia era repetición de una operación ya confirmada y se conserva el resultado anterior |
+| `RESOLVED_CORRECTED`              | la propietaria confirmó una corrección trazable sin editar destructivamente el original                   |
+| `RESOLVED_COMPENSATED`            | la propietaria confirmó una compensación enlazada al efecto original                                      |
+| `RESOLVED_WITH_ACCEPTED_RESIDUAL` | el residual queda explícitamente aceptado con propietaria, autoridad y evidencia suficientes              |
+| `PERMANENTLY_REJECTED`            | la unidad queda rechazada de forma definitiva con evidencia de que no debe aplicarse el efecto pretendido |
+| `SUPERSEDED_BY_SUCCESSOR`         | una operación o caso sucesor válido asume la continuidad sin reinterpretar el historial previo            |
+
+Reglas:
+
+1. no existe outcome de cierre `UNKNOWN`;
+2. `OUTCOME_UNKNOWN` y `RESULT_UNKNOWN` no pueden cerrar por sí solos un caso;
+3. `PERMANENTLY_REJECTED` no se usa cuando existe un efecto parcial o incierto sin resolver;
+4. `RESOLVED_CORRECTED` no autoriza edición destructiva del hecho original;
+5. `RESOLVED_COMPENSATED` exige referencia a la compensación confirmada;
+6. `RESOLVED_WITH_ACCEPTED_RESIDUAL` exige residual, responsable y autoridad explícitos;
+7. `SUPERSEDED_BY_SUCCESSOR` exige referencia al sucesor;
+8. ningún cierre se obtiene únicamente por edad, número de retries o ausencia de nuevas alertas.
+
+---
+
+#### 23. Separación entre mapping, idempotencia, correlación y conciliación
+
+Se conserva la siguiente separación:
+
+```text
+MAPPING
+→ qué recurso representa o con qué recurso se relaciona una referencia
+```
+
+```text
+IDEMPOTENCIA
+→ si esta operación ya fue reclamada y qué resultado debe recuperarse
+```
+
+```text
+CORRELACIÓN
+→ qué hechos distintos pertenecen al mismo contexto causal o investigativo
+```
+
+```text
+CONCILIACIÓN
+→ cómo se comparan fuentes y se resuelve una divergencia o incertidumbre sin repetir efectos ni reescribir historia
+```
+
+Consecuencias:
+
+1. `ExternalIdentifierMappingId` no es idempotency key;
+2. `correlation_id` no es idempotency key por definición universal;
+3. una operación puede ser idempotente aunque no identifique un recurso empresarial;
+4. un mapping `RESOLVED` no demuestra que una operación sea nueva;
+5. una correlación no demuestra equivalencia de objetos;
+6. una conciliación puede comparar varias operaciones sin fusionarlas;
+7. la resolución de mapping no autoriza retry ni efecto;
+8. el resultado idempotente no concede autorización empresarial.
+
+---
+
+#### 24. Relación con `ExternalReceivedEvent`
+
+`SHELL-CON-019` conserva recepción, procedencia, autenticidad y evidencia antes del hecho empresarial.
+
+La relación conceptual queda:
+
+```text
+ExternalReceivedEvent
+→ idempotency_ref: IntegrationIdempotencyRef | null
+→ mapping_refs[]
+→ correlation_refs[]
+→ owner_contract_ref
+```
+
+Reglas:
+
+1. un evento externo puede existir sin una clave idempotente empresarial si el contrato solo permite conservar evidencia;
+2. una recepción durable no se presenta como efecto confirmado;
+3. `external_event_id` solo participa como clave cuando su estabilidad y namespace están acreditados;
+4. una redelivery conserva la referencia idempotente aplicable;
+5. un evento con resultado incierto puede enlazar un `IntegrationReconciliationRef` sin cambiar su receipt o identidad externa;
+6. autenticidad, mapping e idempotencia permanecen controles independientes.
+
+---
+
+#### 25. Relación con venta, línea y efectos downstream
+
+`CanonicalSaleId` y `CanonicalSaleLineId` no son claves universales de todos los efectos.
+
+Para ventas externas o PULSO se conserva:
+
+```text
+VENTA
+≠ EVENTO
+≠ INBOX
+≠ EFECTO NEXO
+≠ EFECTO NUMERA
+≠ EFECTO PASS
+```
+
+Reglas:
+
+1. una misma venta puede producir varios eventos legítimos;
+2. cada consumidora conserva inbox independiente;
+3. cada efecto conserva su propia identidad por `effect_code` u otra semántica propietaria aprobada;
+4. una línea puede conservarse con mapping pendiente sin fabricar un efecto;
+5. el éxito NEXO no demuestra éxito NUMERA o PASS;
+6. el éxito NUMERA no demuestra éxito NEXO o PASS;
+7. el éxito PASS no demuestra éxito NEXO o NUMERA;
+8. la recuperación de un efecto pendiente no reemite una venta ni reabre efectos confirmados;
+9. una compensación no es retry del efecto original;
+10. la conciliación puede exponer un vector de resultados sin crear una máquina global nueva.
+
+---
+
+#### 26. Especialización del POS externo
+
+`INT-POS-013` conserva tres planos de idempotencia:
+
+```text
+SOURCE_SYSTEM_SCOPE
+EXTERNAL_SALE_SCOPE
+EXTERNAL_SALE_LINE_SCOPE
+```
+
+Y mantiene:
+
+```text
+EXTERNAL_SALE_KEY
+=
+source_system
++ source_instance_ref cuando aplique
++ external_sale_id
+```
+
+```text
+EXTERNAL_SALE_LINE_KEY
+=
+EXTERNAL_SALE_KEY
++ external_line_id
+```
+
+cuando la fuente acredite esos identificadores.
+
+Reglas:
+
+1. `source_row_number` no es identidad de línea;
+2. file hash no es identidad de venta;
+3. fecha, sede, total, producto o posición no forman una identidad heurística válida;
+4. una identidad de recepción puede permitir reproceso seguro de evidencia sin convertirse en external sale ID;
+5. `makos_excel` permanece como guardia técnica agregada y no demuestra idempotencia individual por venta o línea;
+6. `INT-POS-020` conserva la conciliación propietaria de ventas y efectos;
+7. `INT-SALES-007` y `INT-SALES-008` preservan las reglas permanentes después de la transición.
+
+---
+
+#### 27. Matriz de adopción de las veintiuna identidades externas
+
+La matriz adopta las veintiuna identidades existentes por referencia y decide cómo se aplica el contrato compartido en el corte vigente. No crea bindings, operaciones ni datos.
+
+| ID            | Sistema / plataforma                     | Clasificación `SHELL-CON-023`                        | Estado                   | Decisión / bloqueo                                                                                                                                                                                                            |
+| ------------- | ---------------------------------------- | ---------------------------------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | `GOBERNADA_POR_CONTRATO_INTERNO`                     | `ESPECIFICADO`           | Las operaciones VENTO usan sus alcances propietarios; compartir Supabase no crea una clave o conciliación global de plataforma.                                                                                               |
+| `EXT-SYS-002` | Wompi                                    | `APLICA_IDEMPOTENCIA_Y_CONCILIACION`                 | `ESPECIFICADO`           | Transacciones, webhooks y resultados inciertos conservan namespace, clave, huella, claim y consulta/conciliación antes de repetir un efecto.                                                                                  |
+| `EXT-SYS-003` | RevenueCat                               | `APLICA_IDEMPOTENCIA_Y_CONCILIACION`                 | `ESPECIFICADO`           | La identidad acreditada se conserva; una huella determinista versionada solo puede suplir ausencia de ID nativo bajo el contrato ya aprobado, sin fusionar usuarios o productos.                                              |
+| `EXT-SYS-004` | Resend                                   | `APLICA_IDEMPOTENCIA_Y_CONCILIACION`                 | `ESPECIFICADO`           | Retry conserva la misma operación; un reenvío empresarial intencional usa nueva generación. Un ACK no equivale a entrega empresarial confirmada.                                                                              |
+| `EXT-SYS-005` | Expo / EAS Update                        | `PLATAFORMA_TECNICA_SIN_EFECTO_EMPRESARIAL_EN_CORTE` | `NO_APLICA`              | Las referencias de release/configuración no se convierten en un ledger idempotente empresarial por esta tarea.                                                                                                                |
+| `EXT-SYS-006` | Expo Push Service                        | `APLICA_IDEMPOTENCIA_Y_CONCILIACION`                 | `ESPECIFICADO`           | La entrega lógica conserva identidad por anuncio/destino/generación según contrato; resultados por destino permanecen independientes.                                                                                         |
+| `EXT-SYS-007` | Sentry                                   | `SIN_LEDGER_DE_EFECTO_EMPRESARIAL`                   | `NO_APLICA`              | La observabilidad best-effort no se convierte en idempotencia empresarial ni en fuente de conciliación de hechos propietarios.                                                                                                |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | `SIN_LEDGER_DE_EFECTO_EMPRESARIAL`                   | `NO_APLICA`              | La lectura interactiva no recibe un ledger idempotente empresarial mientras no exista un efecto durable que lo requiera.                                                                                                      |
+| `EXT-SYS-009` | Apple Wallet / PassKit y APNs            | `APLICA_IDEMPOTENCIA_Y_CONCILIACION`                 | `ESPECIFICADO`           | Mutación de recurso y push son superficies distintas; un resultado físico/remoto incierto se consulta o concilia antes de repetir.                                                                                            |
+| `EXT-SYS-010` | Vercel                                   | `PLATAFORMA_TECNICA_SIN_EFECTO_EMPRESARIAL_EN_CORTE` | `NO_APLICA`              | Project/deployment/domain permanecen referencias técnicas y no originan una clave empresarial global.                                                                                                                         |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | `APLICA_IDEMPOTENCIA_Y_CONCILIACION`                 | `ESPECIFICADO`           | Un resultado físico incierto requiere verificación o conciliación antes de una nueva impresión; una reimpresión deliberada es nueva generación, no retry.                                                                     |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | `MODELO_SIN_BINDING_REMOTO`                          | `NO_APLICA`              | Existe modelo documental sin binding remoto acreditado; no se fabrican operación, claim, resultado ni conciliación runtime.                                                                                                   |
+| `EXT-SYS-013` | POS externo vigente                      | `APLICA_CON_ESPECIALIZACION_POS`                     | `PENDIENTE_DE_EVIDENCIA` | `INT-POS-013`, `INT-POS-020`, `INT-SALES-007` e `INT-SALES-008` gobiernan la especialización. `makos_excel` no acredita identidad individual de venta/línea; no se fabrican claves individuales mientras falte esa evidencia. |
+| `EXT-SYS-014` | Shopify / comercio electrónico           | `NO_APLICA_SIN_BINDING`                              | `NO_APLICA`              | No existe binding acreditado que permita instanciar una operación idempotente concreta en el corte vigente.                                                                                                                   |
+| `EXT-SYS-015` | Rappi / marketplace                      | `NO_APLICA_SIN_BINDING`                              | `NO_APLICA`              | No existe binding acreditado; no se inventan order/store/courier IDs, operaciones o conciliaciones.                                                                                                                           |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | `NO_APLICA_SIN_BINDING`                              | `NO_APLICA`              | No existe bot/API acreditado; no se inventan operaciones, subscriber IDs o resultados.                                                                                                                                        |
+| `EXT-SYS-017` | WhatsApp                                 | `NO_APLICA_SIN_BINDING`                              | `NO_APLICA`              | No existe proveedor/API/binding acreditado; número o conversación no crean una operación canónica por inferencia.                                                                                                             |
+| `EXT-SYS-018` | Instagram / social                       | `NO_APLICA_SIN_BINDING`                              | `NO_APLICA`              | No existe API/binding acreditado; no se inventan message IDs, claims o reconciliaciones.                                                                                                                                      |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | `NO_APLICA_SIN_BINDING`                              | `NO_APLICA`              | La existencia de correo o alias no acredita integración técnica ni operación idempotente.                                                                                                                                     |
+| `EXT-SYS-020` | Telefonía / voz                          | `BLOQUEADO_SIN_BINDING`                              | `BLOQUEADO`              | `TI-INT-003` debe acreditar operador, cuenta, interfaz, identificadores y semántica antes de instanciar este contrato.                                                                                                        |
+| `EXT-SYS-021` | Transporte externo                       | `NO_APLICA_SIN_BINDING`                              | `NO_APLICA`              | Sin proveedor e interfaz acreditados no se fabrican tracking, operación o reconciliación.                                                                                                                                     |
+
+Reconciliación de la matriz:
+
+```text
+GOBERNADA_POR_CONTRATO_INTERNO = 1
+APLICA_IDEMPOTENCIA_Y_CONCILIACION = 6
+SIN_LEDGER_DE_EFECTO_EMPRESARIAL = 2
+PLATAFORMA_TECNICA_SIN_EFECTO_EMPRESARIAL_EN_CORTE = 2
+MODELO_SIN_BINDING_REMOTO = 1
+APLICA_CON_ESPECIALIZACION_POS = 1
+NO_APLICA_SIN_BINDING = 7
+BLOQUEADO_SIN_BINDING = 1
+TOTAL = 21
+FALTANTES = 0
+DUPLICADOS = 0
+IDENTIFICADORES_UNICOS = 21
+```
+
+`EXT-SYS-013` consume las decisiones posteriores aprobadas del mini-bloque `INT-POS` y no restaura como diagnóstico vigente único una clasificación histórica anterior a esas tareas.
+
+---
+
+#### 28. Seguridad, autorización y minimización
+
+Idempotencia y conciliación no son mecanismos de autorización.
+
+Reglas:
+
+1. recuperar un resultado previo exige respetar visibilidad, sensibilidad y autorización actuales sin repetir el efecto;
+2. una clave idempotente no se expone como secreto ni se usa como permiso;
+3. `IntegrationPrincipalId` atribuye identidad técnica y no concede autoridad empresarial;
+4. una credencial válida no concede permiso para producir o conciliar un efecto;
+5. `service_role` no es permiso ni principal empresarial;
+6. payloads completos, tokens, firmas, passwords, API keys y material de credencial no se copian dentro del registro idempotente o del caso de conciliación;
+7. referencias protegidas y hashes se usan cuando sean suficientes;
+8. una conciliación no puede modificar directamente tablas, ledgers o estados de otra propietaria;
+9. toda acción correctiva conserva actor o principal, autorización, causa y evidencia según su contrato propietario.
+
+---
+
+#### 29. Handoffs físicos y contractuales
+
+| Trabajo posterior                                            | Estado desde esta tarea             | Propietario / tarea                                                | Condición de salida                                                                                                                       |
+| ------------------------------------------------------------ | ----------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| restricciones e índices de idempotencia                      | `DEFINIDO_NO_MATERIALIZADO`         | `INT-DB-005`                                                       | la persistencia física garantiza unicidad por alcance, claim seguro, huella compatible, resultado durable y recuperación sin doble efecto |
+| mecanismos de conciliación por integración                   | `DEFINIDO_NO_MATERIALIZADO`         | `INT-DB-008`                                                       | casos, fuentes, decisiones, residuales y cierres quedan persistidos y consultables sin reescribir fuentes propietarias                    |
+| auditoría de procesamiento y reintentos                      | `DEFINIDO_NO_MATERIALIZADO`         | `INT-DB-007`                                                       | intentos, outcomes, referencias y acciones quedan reconstruibles en la frontera física aplicable                                          |
+| tratamiento compartido de cuarentena, rechazo y compensación | `FUERA_DE_ALCANCE`                  | `SHELL-CON-024`                                                    | entradas incompatibles y efectos fallidos reciben disposición compartida sin fusionarla con idempotencia o conciliación                   |
+| infraestructura de retry y recuperación                      | `FUERA_DE_ALCANCE`                  | `QUEUE-ARC-006`; `QUEUE-ARC-008`; `QUEUE-ARC-011`; `QUEUE-ARC-012` | los perfiles, fallos, métricas e intervención autorizada quedan materializados sin alterar identidad ni ownership                         |
+| especialización POS                                          | preservada por contrato propietario | `INT-POS-013`; `INT-POS-020`                                       | venta/línea y sus diferencias usan identidades acreditadas y conciliación sin heurísticas                                                 |
+| control permanente de ventas                                 | preservado por contrato propietario | `INT-SALES-007`; `INT-SALES-008`                                   | retries y convivencia recuperan solo el alcance pendiente y conservan fuentes históricas                                                  |
+
+No queda un pendiente sustantivo sin propietario y condición de salida.
+
+---
+
+#### 30. Cobertura de prueba preexistente
+
+La semántica centralizada por `SHELL-CON-023` ya está protegida por el Registro Canónico de Requisitos de Prueba vigente, en particular:
+
+- `TREQ-INTEGRATION-003`, para clave estable, huella, resultado durable, retry, resultado desconocido, claim y conciliación;
+- `TREQ-INTEGRATION-004`, para reconstrucción de intentos, resultados, errores y efectos sin duplicación;
+- `TREQ-INTEGRATION-044`, para diferir, rechazar o conciliar eventos incompatibles o fuera de orden sin aplicación silenciosa;
+- `TREQ-INTEGRATION-049`, para procedencia y evidencia de hechos externos antes de producir un hecho interno;
+- `TREQ-INTEGRATION-108` a `TREQ-INTEGRATION-114`, para cobertura del registro, entrega al menos una vez, separación de identidades, replay de resultado, conflicto y huella lógica;
+- `TREQ-INTEGRATION-120` a `TREQ-INTEGRATION-122`, para concurrencia, recuperación después de respuesta perdida y atomicidad del resultado;
+- `TREQ-INTEGRATION-131` a `TREQ-INTEGRATION-134`, para replay, backfill, autorización al recuperar resultados y retención de deduplicación;
+- `TREQ-INTEGRATION-139` a `TREQ-INTEGRATION-143`, para conservación de identidad entre retries y tratamiento de `UNKNOWN_OUTCOME`;
+- `TREQ-INTEGRATION-235` a `TREQ-INTEGRATION-245`, para intento durable, confirmación, conflicto, `RESULT_UNKNOWN`, conciliación, cancelación y sucesión;
+- `TREQ-INTEGRATION-259` a `TREQ-INTEGRATION-265`, para partialidad, alcance, resultados independientes, residual y cierre seguro;
+- `TREQ-INTEGRATION-295` a `TREQ-INTEGRATION-306`, para comandos propietarios, ownership, retry, resultado incierto, corrección, replay y adaptadores externos.
+
+La tarea no altera identidad, texto, estado, relación, propietaria, evidencia ni secuencia de esos requisitos.
+
+---
+
+#### 31. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** `SHELL-CON-023` materializa como contrato compartido estático comportamientos ya definidos y protegidos por los contratos transversales y especializados de BLOQUE X: alcances idempotentes, identidad estable, huella lógica versionada, un solo ganador concurrente, replay del resultado previo, conflicto por reutilización incompatible, tratamiento de resultado desconocido, retry seguro, fuentes autoritativas, conciliación, residuales y cierre. No introduce una operación ejecutable, un nuevo outcome operativo, una transición nueva, una política de retry, una mutación, una persistencia, una autorización, una migración ni un cambio de Supabase. El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 32. Decisiones vinculantes
+
+1. La superficie lógica permanece en `@vento/contracts/integrations`.
+2. `IntegrationIdempotencyScope` conserva exactamente siete alcances.
+3. No existe una clave idempotente global de Vento OS ni de una venta.
+4. `IntegrationIdempotencyRef` identifica una operación dentro de un alcance y namespace concretos.
+5. `operation_key` se fija antes del primer efecto protegido.
+6. Retry, redelivery, restart, worker, dispositivo o transporte no cambian la identidad.
+7. `generation` solo representa una nueva intención legítima cuando el contrato propietario la permita.
+8. Mapping ID, event ID, receipt ID, sale ID, line ID, principal, credencial y correlation ref no son identidades universales intercambiables.
+9. El namespace externo incluye sistema, ambiente, superficie y tipo de operación, más instancia cuando sea necesaria.
+10. La huella lógica está versionada y excluye metadata técnica volátil y secretos.
+11. Misma identidad + huella compatible recupera resultado o estado previo.
+12. Misma identidad + huella incompatible produce `CONFLICTING_REUSE` y cero segunda aplicación.
+13. La concurrencia produce un solo ganador empresarial.
+14. Claim o lease vencido no prueba ausencia de commit.
+15. `ExternalIntegrationClaimState` conserva exactamente siete estados.
+16. `OUTCOME_UNKNOWN` y `RESULT_UNKNOWN` son conceptos de capas distintas y no aliases.
+17. `IntegrationIdempotencyOutcome` conserva exactamente ocho outcomes.
+18. `DUPLICATE_RESULT_RETURNED` produce cero nueva mutación.
+19. `RECONCILIATION_REQUIRED` bloquea repetición ciega.
+20. Retry conserva identidad, huella y presupuesto aplicable.
+21. Replay conserva identidad histórica y no activa efectos sensibles por inferencia.
+22. Backfill no crea efectos sensibles sin autorización explícita.
+23. Corrección y compensación tienen identidad propia y referencian el original.
+24. La recuperación es selectiva por alcance pendiente o incierto.
+25. No existe transacción ACID global entre propietarias.
+26. `IntegrationReconciliationRef` es identidad independiente de las operaciones comparadas.
+27. `IntegrationReconciliationCase` compara fuentes autoritativas y conserva evidencia append-only o referencias equivalentes.
+28. La conciliación no modifica directamente otra fuente propietaria.
+29. Resultado confirmado no se reaplica durante conciliación.
+30. El paso del tiempo no resuelve un resultado desconocido.
+31. `IntegrationReconciliationClosureOutcome` conserva exactamente ocho cierres.
+32. No existe cierre `UNKNOWN`.
+33. Un residual aceptado conserva responsable y autoridad.
+34. Un caso sucesor conserva referencia al caso previo.
+35. `ExternalReceivedEvent.idempotency_ref` queda conceptualmente tipable mediante `IntegrationIdempotencyRef`.
+36. `CanonicalSaleId` y `CanonicalSaleLineId` no son claves universales de efectos downstream.
+37. `source_row_number` y file hash no se elevan a identidad individual de venta o línea.
+38. `makos_excel` no acredita idempotencia individual por venta o línea.
+39. Se adoptan explícitamente 21/21 identidades `EXT-SYS-*`, con 0 faltantes y 0 duplicados.
+40. `EXT-SYS-013` consume las decisiones posteriores de `INT-POS` y mantiene pendiente la evidencia individual necesaria sin fabricar claves.
+41. `EXT-SYS-020` permanece bloqueada hasta la evidencia propietaria de `TI-INT-003`.
+42. `INT-DB-005` conserva la materialización física de idempotencia.
+43. `INT-DB-008` conserva la materialización física de conciliación.
+44. `SHELL-CON-024` conserva la responsabilidad exclusiva del contrato compartido de cuarentena, rechazo y compensación.
+45. Esta tarea crea cero objetos físicos y modifica cero objetos físicos.
+46. Esta tarea crea cero requisitos de prueba y modifica cero requisitos existentes.
+47. Esta tarea no modifica código, datos, Supabase, secretos, credenciales ni configuración remota.
+48. `SHELL-CON-024` permanece como única continuidad reservada.
+
+---
+
+#### 33. Hallazgos y destinos exactos
+
+| Hallazgo                                                                                                                              | Estado                     | Destino                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `idempotency_ref` existía como referencia genérica en `ExternalReceivedEvent`                                                         | resuelto documentalmente   | `SHELL-CON-023` define `IntegrationIdempotencyRef` y el contrato compartido asociado                            |
+| los siete alcances idempotentes estaban definidos transversalmente pero no centralizados en la superficie compartida de integraciones | resuelto documentalmente   | `SHELL-CON-023`                                                                                                 |
+| el contrato externo de claim usa `OUTCOME_UNKNOWN` mientras la máquina transversal usa `RESULT_UNKNOWN`                               | reconciliado sin renombrar | ambos conceptos se conservan por capa y convergen en conciliación cuando corresponda                            |
+| la conciliación externa y la conciliación permanente de ventas comparten invariantes pero mantienen propietarias y unidades distintas | reconciliado               | contrato compartido define forma común sin crear una máquina global                                             |
+| la persistencia física de restricciones idempotentes todavía no existe                                                                | esperado por fase          | `INT-DB-005`                                                                                                    |
+| la persistencia física de mecanismos de conciliación todavía no existe                                                                | esperado por fase          | `INT-DB-008`                                                                                                    |
+| la infraestructura física de auditoría de procesamiento y retries todavía pertenece a su fase de implementación                       | esperado por fase          | `INT-DB-007`                                                                                                    |
+| la disposición compartida de cuarentena, rechazo y compensación no forma parte de esta tarea                                          | reservado                  | `SHELL-CON-024`                                                                                                 |
+| el flujo `makos_excel` no demuestra identidad individual de venta/línea                                                               | `PENDIENTE_DE_EVIDENCIA`   | `INT-POS-021` / `INT-POS-022` para evidencia y piloto; `INT-POS-013` conserva la regla de no fabricar identidad |
+| telefonía/voz carece de binding acreditado suficiente                                                                                 | `BLOQUEADO`                | `TI-INT-003`                                                                                                    |
+
+No queda un pendiente narrativo sin propietario y condición de salida.
+
+---
+
+#### 34. Criterios de aceptación
+
+`SHELL-CON-023` queda documentalmente completa cuando se cumplen simultáneamente estos criterios:
+
+1. existe un contrato compartido lógico de idempotencia dentro de `@vento/contracts/integrations`;
+2. existe `IntegrationIdempotencyRef` sin definir un formato físico arbitrario;
+3. existen exactamente siete valores de `IntegrationIdempotencyScope`;
+4. no existe una clave global que fusione los siete alcances;
+5. solicitud, comando, evento, inbox, efecto, external receipt y replay batch conservan identidades distintas;
+6. la identidad de cada alcance se fija antes del primer efecto;
+7. retry conserva identidad;
+8. redelivery conserva identidad;
+9. restart conserva identidad;
+10. cambio de transporte conserva identidad empresarial;
+11. metadatos técnicos no crean una nueva operación;
+12. `generation` solo se usa para intención nueva legítima;
+13. el namespace externo distingue sistema, ambiente, superficie y operación;
+14. external instance se incorpora cuando sea necesaria para evitar colisiones;
+15. mapping, idempotencia, correlación y conciliación permanecen conceptos distintos;
+16. la huella lógica es versionada;
+17. la huella excluye secretos y metadata volátil;
+18. misma identidad y huella compatible recuperan resultado;
+19. misma identidad y huella incompatible producen conflicto;
+20. el segundo contenido incompatible no se aplica parcialmente;
+21. existe un solo ganador empresarial bajo concurrencia;
+22. claim o lease vencido no se usa como prueba de ausencia de commit;
+23. se conservan exactamente siete estados de claim externos;
+24. `OUTCOME_UNKNOWN` exige consulta o conciliación antes de repetir;
+25. `OUTCOME_UNKNOWN` no se renombra a `RESULT_UNKNOWN`;
+26. se conservan exactamente ocho outcomes idempotentes;
+27. duplicado devuelve resultado previo y cero nueva mutación;
+28. stale no retrocede estado confirmado;
+29. out-of-order queda diferido explícitamente;
+30. rechazo no oculta partialidad o incertidumbre;
+31. replay conserva identidades históricas;
+32. backfill no activa efectos sensibles por defecto;
+33. corrección y compensación conservan identidad propia;
+34. recuperación se dirige al alcance pendiente;
+35. un efecto confirmado no se reaplica por fallo de otro;
+36. no existe commit distribuido global;
+37. existe `IntegrationReconciliationRef` independiente de event, receipt, mapping y sale IDs;
+38. existe `IntegrationReconciliationCase` con fuentes, evidencia, diferencias, decisión, residuales, siguiente acción y responsable;
+39. conciliación consulta fuentes autoritativas y no las reemplaza;
+40. una métrica, log o ACK no sustituye el resultado propietario;
+41. nueva evidencia no reescribe una revisión previa;
+42. el paso del tiempo no cierra un resultado desconocido;
+43. se conservan exactamente ocho outcomes de cierre de conciliación;
+44. no existe outcome de cierre desconocido;
+45. cierre con residual exige responsable y autoridad;
+46. supersesión exige referencia al sucesor;
+47. `ExternalReceivedEvent.idempotency_ref` queda tipable conceptualmente mediante `IntegrationIdempotencyRef`;
+48. venta y línea no se convierten en claves universales de efectos;
+49. `source_row_number` no se convierte en identidad de línea;
+50. file hash no se convierte en identidad individual de venta;
+51. `makos_excel` continúa sin acreditar identidad individual de venta/línea;
+52. la matriz materializa exactamente 21 identidades externas;
+53. faltantes de la matriz = 0;
+54. duplicados de la matriz = 0;
+55. identificadores únicos de la matriz = 21;
+56. la distribución de clasificación reconcilia exactamente `1 + 6 + 2 + 2 + 1 + 1 + 7 + 1 = 21`;
+57. `EXT-SYS-013` usa la especialización vigente del POS sin restaurar un diagnóstico histórico anterior;
+58. `EXT-SYS-020` permanece bloqueada hasta `TI-INT-003`;
+59. `INT-DB-005` conserva la materialización física de idempotencia;
+60. `INT-DB-008` conserva la materialización física de conciliación;
+61. `INT-DB-007` conserva auditoría física de procesamiento y retries;
+62. `SHELL-CON-024` no se adelanta;
+63. no se crean tablas, índices, constraints, RPC, RLS, migraciones, colas, workers o datos;
+64. no se modifica Supabase;
+65. no se modifica código;
+66. se crean cero requisitos de prueba;
+67. se modifican cero requisitos de prueba;
+68. la continuidad reserva exclusivamente `SHELL-CON-024`.
+
+---
+
+#### 35. Límites de la tarea
+
+`SHELL-CON-023` no:
+
+- implementa `@vento/contracts`;
+- crea archivos TypeScript;
+- publica una versión de package;
+- crea schemas ejecutables;
+- crea tablas, columnas, índices o constraints;
+- crea migraciones;
+- crea RLS, grants, RPC o funciones;
+- crea endpoints, webhooks, colas, cron o workers;
+- materializa outbox o inbox;
+- ejecuta claims;
+- reintenta operaciones;
+- concilia datos reales;
+- modifica ventas, líneas, pagos, inventario, hechos económicos o puntos;
+- crea mappings;
+- ejecuta cuarentena;
+- ejecuta rechazos operativos;
+- ejecuta compensaciones;
+- cambia una fuente propietaria;
+- crea una transacción distribuida global;
+- inventa IDs de proveedor;
+- inventa resultados, receipts, evidencia o bindings;
+- modifica código;
+- modifica Supabase;
+- cambia la ruta canónica;
+- desarrolla `SHELL-CON-024`.
+
+---
+
+#### 36. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-CON-022 — Crear contrato de mapeo de identificadores externos
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-CON-023 — Crear contrato de idempotencia y conciliación
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-CON-024 — Crear contrato de cuarentena, rechazo y compensación
+
+
 ### [ ] SHELL-CON-024 — Crear contrato de cuarentena, rechazo y compensación

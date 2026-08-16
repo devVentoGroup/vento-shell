@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **901** |
+| Aprobadas | **902** |
 | En propuesta | **0** |
-| No iniciadas | **693** |
+| No iniciadas | **692** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **56.52% (901/1594)** |
+| Porcentaje de completamiento | **56.59% (902/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CON-022` — Crear contrato de mapeo de identificadores externos | ✅ APROBADA |
-| Tarea actual | `SHELL-CON-023` — Crear contrato de idempotencia y conciliación | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CON-024` — Crear contrato de cuarentena, rechazo y compensación | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CON-023` — Crear contrato de idempotencia y conciliación | ✅ APROBADA |
+| Tarea actual | `SHELL-CON-024` — Crear contrato de cuarentena, rechazo y compensación | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-NORM-001` — Crear `@vento/data-normalization` | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -728,7 +728,7 @@
 | ✅ APROBADA | `SHELL-CON-020` | Crear contrato canónico de venta | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
 | ✅ APROBADA | `SHELL-CON-021` | Crear contrato canónico de línea de venta | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
 | ✅ APROBADA | `SHELL-CON-022` | Crear contrato de mapeo de identificadores externos | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
-| ⬜ NO INICIADA | `SHELL-CON-023` | Crear contrato de idempotencia y conciliación | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
+| ✅ APROBADA | `SHELL-CON-023` | Crear contrato de idempotencia y conciliación | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-024` | Crear contrato de cuarentena, rechazo y compensación | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `SHELL-NORM-001` | Crear `@vento/data-normalization` | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ⬜ NO INICIADA | `SHELL-NORM-002` | Centralizar tipos de campo normalizable | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
