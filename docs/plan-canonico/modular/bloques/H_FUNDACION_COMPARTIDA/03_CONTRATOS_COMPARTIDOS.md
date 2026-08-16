@@ -4161,28 +4161,28 @@ sha256:782a216c4bbfdc3b3cec1bbd7239c05d93edd7fa34b4ce62cad48c1e6b9941cd
 
 La familia conserva cuatro contratos publicados e independientes:
 
-| Contrato | `contract_version` | `schema_version` | Disposición en esta tarea |
-| --- | --- | --- | --- |
-| `AccessContext` | `1.0.0` | `1.0.0` | centralizar tipos de contexto real |
-| `AuthorizationDecision` | `1.0.0` | `1.0.0` | conservar como contrato relacionado; no redefinir decisión |
-| `SimulationContext` | `1.0.0` | `1.0.0` | centralizar como contexto hipotético separado |
-| `SimulatedAuthorizationDecision` | `1.0.0` | `1.0.0` | conservar como decisión hipotética separada |
+| Contrato                         | `contract_version` | `schema_version` | Disposición en esta tarea                                  |
+| -------------------------------- | ------------------ | ---------------- | ---------------------------------------------------------- |
+| `AccessContext`                  | `1.0.0`            | `1.0.0`          | centralizar tipos de contexto real                         |
+| `AuthorizationDecision`          | `1.0.0`            | `1.0.0`          | conservar como contrato relacionado; no redefinir decisión |
+| `SimulationContext`              | `1.0.0`            | `1.0.0`          | centralizar como contexto hipotético separado              |
+| `SimulatedAuthorizationDecision` | `1.0.0`            | `1.0.0`          | conservar como decisión hipotética separada                |
 
 Conciliación:
 
-| Dimensión | Resultado |
-| --- | ---: |
-| Familias contractuales nuevas | **0** |
-| Contratos de respuesta nuevos | **0** |
-| Cambios de forma en `AccessContext@1.0.0` | **0** |
-| Cambios de forma en `SimulationContext@1.0.0` | **0** |
-| Cambios de `contract_version` | **0** |
-| Cambios de `schema_version` | **0** |
-| Cambios de huella de release | **0** |
-| Roles base admitidos por el tipo vigente | **8** |
-| Roles operativos admitidos por el tipo vigente | **12** |
-| Aplicaciones canónicas reutilizables como `AppCode` | **10** |
-| Cambios físicos autorizados | **0** |
+| Dimensión                                           | Resultado |
+| --------------------------------------------------- | --------: |
+| Familias contractuales nuevas                       |     **0** |
+| Contratos de respuesta nuevos                       |     **0** |
+| Cambios de forma en `AccessContext@1.0.0`           |     **0** |
+| Cambios de forma en `SimulationContext@1.0.0`       |     **0** |
+| Cambios de `contract_version`                       |     **0** |
+| Cambios de `schema_version`                         |     **0** |
+| Cambios de huella de release                        |     **0** |
+| Roles base admitidos por el tipo vigente            |     **8** |
+| Roles operativos admitidos por el tipo vigente      |    **12** |
+| Aplicaciones canónicas reutilizables como `AppCode` |    **10** |
+| Cambios físicos autorizados                         |     **0** |
 
 ---
 
@@ -4190,23 +4190,23 @@ Conciliación:
 
 Esta tarea conserva y reconcilia las siguientes decisiones aprobadas:
 
-| Fuente | Uso vinculante |
-| --- | --- |
-| `docs/plan-canonico/modular/01_PROTOCOLO.md` | continuidad, granularidad, trazabilidad y requisitos de prueba |
-| `docs/plan-canonico/modular/delivery-contract.json` | forma del artefacto documental y coordinación del registro de requisitos |
-| `docs/plan-canonico/modular/active-sequence.json` | continuidad vigente del BLOQUE H |
-| `AUTH-MOD-020` | arquitectura de identidad, contexto, autorización y presentación |
-| `AUTH-MOD-021` | octavo `BaseRoleCode`, `trabajador_operativo`, y obligación explícita de actualizar tipos de contexto sin cambiar `AccessContext@1.x` |
-| `AUTH-CTX-001` | forma raíz y principios de `AccessContext` |
-| `AUTH-CTX-002` | separación entre contexto y `AuthorizationDecision` |
-| `AUTH-CTX-003` | separación de `SimulationContext` y decisiones hipotéticas |
-| `AUTH-CTX-004` | versionado, metadatos comunes, serialización y huella de la familia de contratos |
-| `AUTH-CTX-005` a `AUTH-CTX-015` | formas y semántica de los nodos internos del contexto real |
-| `SHELL-CON-002` | `AppCode` canónico de diez aplicaciones |
-| `SHELL-CON-004` | `BaseRoleCode` canónico de ocho roles |
-| `SHELL-CON-005` | `OperationalRoleCode` canónico de doce roles |
-| `SHELL-CON-006` | `PermissionScopeCode` y separación entre alcance y contexto |
-| `SHELL-AUTH-001` y `SHELL-CTX-001` | destino de materialización compartida posterior |
+| Fuente                                              | Uso vinculante                                                                                                                        |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`        | continuidad, granularidad, trazabilidad y requisitos de prueba                                                                        |
+| `docs/plan-canonico/modular/delivery-contract.json` | forma del artefacto documental y coordinación del registro de requisitos                                                              |
+| `docs/plan-canonico/modular/active-sequence.json`   | continuidad vigente del BLOQUE H                                                                                                      |
+| `AUTH-MOD-020`                                      | arquitectura de identidad, contexto, autorización y presentación                                                                      |
+| `AUTH-MOD-021`                                      | octavo `BaseRoleCode`, `trabajador_operativo`, y obligación explícita de actualizar tipos de contexto sin cambiar `AccessContext@1.x` |
+| `AUTH-CTX-001`                                      | forma raíz y principios de `AccessContext`                                                                                            |
+| `AUTH-CTX-002`                                      | separación entre contexto y `AuthorizationDecision`                                                                                   |
+| `AUTH-CTX-003`                                      | separación de `SimulationContext` y decisiones hipotéticas                                                                            |
+| `AUTH-CTX-004`                                      | versionado, metadatos comunes, serialización y huella de la familia de contratos                                                      |
+| `AUTH-CTX-005` a `AUTH-CTX-015`                     | formas y semántica de los nodos internos del contexto real                                                                            |
+| `SHELL-CON-002`                                     | `AppCode` canónico de diez aplicaciones                                                                                               |
+| `SHELL-CON-004`                                     | `BaseRoleCode` canónico de ocho roles                                                                                                 |
+| `SHELL-CON-005`                                     | `OperationalRoleCode` canónico de doce roles                                                                                          |
+| `SHELL-CON-006`                                     | `PermissionScopeCode` y separación entre alcance y contexto                                                                           |
+| `SHELL-AUTH-001` y `SHELL-CTX-001`                  | destino de materialización compartida posterior                                                                                       |
 
 Precedencia específica para rol base:
 
@@ -4235,17 +4235,17 @@ No se crea una segunda versión de `AccessContext` únicamente para incorporar e
 
 El estado físico actual queda clasificado así:
 
-| Elemento | Estado actual | Disposición |
-| --- | --- | --- |
-| `vento.authorization.response-contracts@1.0.0` | publicación contractual documental | conservar inmutable |
-| `@vento/contracts/authorization` | no publicado físicamente como fuente completa de los contratos | materialización posterior |
-| `@vento/os-context@0.1.0` | package físico parcial existente | conservar como implementación parcial hasta migración controlada |
-| `EffectiveContext` | tipo físico plano y parcial | compatibilidad temporal; no fuente semántica canónica |
-| `EffectiveContextSource` | clasificación física existente | no promover a discriminante canónico de `AccessContext` |
-| `ContextSimulationInput` | entrada física de simulación existente | no confundir con `SimulationContext@1.0.0` |
-| RPC `get_effective_context_v1` | consumidor físico actual | migración posterior mediante las tareas propietarias |
-| RPC `has_effective_permission_v1` | devuelve booleano físico actual | no define la forma de `AuthorizationDecision` |
-| cambios físicos en esta tarea | no autorizados | ninguno |
+| Elemento                                       | Estado actual                                                  | Disposición                                                      |
+| ---------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `vento.authorization.response-contracts@1.0.0` | publicación contractual documental                             | conservar inmutable                                              |
+| `@vento/contracts/authorization`               | no publicado físicamente como fuente completa de los contratos | materialización posterior                                        |
+| `@vento/os-context@0.1.0`                      | package físico parcial existente                               | conservar como implementación parcial hasta migración controlada |
+| `EffectiveContext`                             | tipo físico plano y parcial                                    | compatibilidad temporal; no fuente semántica canónica            |
+| `EffectiveContextSource`                       | clasificación física existente                                 | no promover a discriminante canónico de `AccessContext`          |
+| `ContextSimulationInput`                       | entrada física de simulación existente                         | no confundir con `SimulationContext@1.0.0`                       |
+| RPC `get_effective_context_v1`                 | consumidor físico actual                                       | migración posterior mediante las tareas propietarias             |
+| RPC `has_effective_permission_v1`              | devuelve booleano físico actual                                | no define la forma de `AuthorizationDecision`                    |
+| cambios físicos en esta tarea                  | no autorizados                                                 | ninguno                                                          |
 
 La existencia del package parcial no invierte la fuente de verdad:
 
@@ -4381,25 +4381,25 @@ La centralización no agrega ni elimina propiedades.
 
 Cada identidad del contexto real recibe una disposición explícita:
 
-| Identidad contractual | Disposición | Regla principal |
-| --- | --- | --- |
-| `PrincipalContext` | CENTRALIZAR | representa el principal autenticado; no el actor empresarial |
-| `EffectiveActorContext` | CENTRALIZAR | representa el actor atribuible; no hereda identidad del dispositivo |
-| `DomainIdentityContext` | CENTRALIZAR | representa identidad laboral, cliente, dispositivo o sistema sin mezclarlas |
-| `EmployeeContext` | CENTRALIZAR | representa identidad laboral mínima; no permisos ni territorio operativo |
-| `BaseRoleContext` | CENTRALIZAR | usa el `BaseRoleCode` vigente y no concede por nombre de rol |
-| `AssignedSiteContext` | CENTRALIZAR | representa asignación laboral, no sede operativa |
-| `AssignedAreaContext` | CENTRALIZAR | representa asignación laboral, no área operativa |
-| `AdministrativeCoverageContext` | CENTRALIZAR | delimita cobertura del carril base; no permiso |
-| `ActiveShiftContext` | CENTRALIZAR | snapshot de turno publicado y vigente |
-| `ActiveCheckinContext` | CENTRALIZAR | sesión de asistencia activa y coherente; no turno |
-| `OperationalRoleContext` | CENTRALIZAR | usa `OperationalRoleCode` y deriva del turno vigente |
-| `OperationalSiteContext` | CENTRALIZAR | sede exacta del turno; no selector ni recurso |
-| `OperationalAreaContext` | CENTRALIZAR | área exacta del turno cuando aplica |
-| `DeviceContext` | CENTRALIZAR | restricción de dispositivo; nunca fuente de autoridad adicional |
-| `LaneReadiness` | CENTRALIZAR | preparación estructural del carril; nunca decisión final |
-| `StructuralIssue` | CENTRALIZAR FORMA | forma compartida; catálogo exacto de códigos queda reservado a `SHELL-CON-008` |
-| `ResolutionMetadata` | CENTRALIZAR | procedencia y versiones de resolución; no autorización |
+| Identidad contractual           | Disposición       | Regla principal                                                                |
+| ------------------------------- | ----------------- | ------------------------------------------------------------------------------ |
+| `PrincipalContext`              | CENTRALIZAR       | representa el principal autenticado; no el actor empresarial                   |
+| `EffectiveActorContext`         | CENTRALIZAR       | representa el actor atribuible; no hereda identidad del dispositivo            |
+| `DomainIdentityContext`         | CENTRALIZAR       | representa identidad laboral, cliente, dispositivo o sistema sin mezclarlas    |
+| `EmployeeContext`               | CENTRALIZAR       | representa identidad laboral mínima; no permisos ni territorio operativo       |
+| `BaseRoleContext`               | CENTRALIZAR       | usa el `BaseRoleCode` vigente y no concede por nombre de rol                   |
+| `AssignedSiteContext`           | CENTRALIZAR       | representa asignación laboral, no sede operativa                               |
+| `AssignedAreaContext`           | CENTRALIZAR       | representa asignación laboral, no área operativa                               |
+| `AdministrativeCoverageContext` | CENTRALIZAR       | delimita cobertura del carril base; no permiso                                 |
+| `ActiveShiftContext`            | CENTRALIZAR       | snapshot de turno publicado y vigente                                          |
+| `ActiveCheckinContext`          | CENTRALIZAR       | sesión de asistencia activa y coherente; no turno                              |
+| `OperationalRoleContext`        | CENTRALIZAR       | usa `OperationalRoleCode` y deriva del turno vigente                           |
+| `OperationalSiteContext`        | CENTRALIZAR       | sede exacta del turno; no selector ni recurso                                  |
+| `OperationalAreaContext`        | CENTRALIZAR       | área exacta del turno cuando aplica                                            |
+| `DeviceContext`                 | CENTRALIZAR       | restricción de dispositivo; nunca fuente de autoridad adicional                |
+| `LaneReadiness`                 | CENTRALIZAR       | preparación estructural del carril; nunca decisión final                       |
+| `StructuralIssue`               | CENTRALIZAR FORMA | forma compartida; catálogo exacto de códigos queda reservado a `SHELL-CON-008` |
+| `ResolutionMetadata`            | CENTRALIZAR       | procedencia y versiones de resolución; no autorización                         |
 
 El inventario contiene todos los nodos directos de `AccessContextV1` y conserva sus relaciones de nulabilidad y cardinalidad.
 
@@ -4890,13 +4890,13 @@ Los tipos de contexto pueden ser referenciados por los contratos de decisión, p
 
 Cuando un campo de contexto ya corresponde inequívocamente con un contrato compartido aprobado, la proyección TypeScript deberá reutilizarlo en lugar de declarar una unión local.
 
-| Campo contextual | Tipo compartido reutilizado | Regla |
-| --- | --- | --- |
-| `EmployeeContext.base_role_code` | `BaseRoleCode` | ocho miembros vigentes |
-| `BaseRoleContext.role_code` | `BaseRoleCode` | ocho miembros vigentes |
-| `ActiveShiftContext.operational_role_code` | `OperationalRoleCode` | doce miembros vigentes |
-| `OperationalRoleContext.role_code` | `OperationalRoleCode` | doce miembros vigentes |
-| `DeviceContext.allowed_application_codes[]` | `AppCode` | diez aplicaciones canónicas |
+| Campo contextual                            | Tipo compartido reutilizado | Regla                       |
+| ------------------------------------------- | --------------------------- | --------------------------- |
+| `EmployeeContext.base_role_code`            | `BaseRoleCode`              | ocho miembros vigentes      |
+| `BaseRoleContext.role_code`                 | `BaseRoleCode`              | ocho miembros vigentes      |
+| `ActiveShiftContext.operational_role_code`  | `OperationalRoleCode`       | doce miembros vigentes      |
+| `OperationalRoleContext.role_code`          | `OperationalRoleCode`       | doce miembros vigentes      |
+| `DeviceContext.allowed_application_codes[]` | `AppCode`                   | diez aplicaciones canónicas |
 
 `PermissionScopeCode` se reutilizará únicamente en campos o contratos que realmente representen un scope publicado. No se agrega artificialmente a `AccessContextV1` porque la raíz no contiene un campo de scope genérico.
 
@@ -4967,25 +4967,25 @@ El tipo físico actual no constituye la forma canónica de `AccessContextV1`.
 
 Disposición por campo o concepto:
 
-| Superficie actual | Disposición |
-| --- | --- |
-| `source: EffectiveContextSource` | COMPATIBILIDAD; no discriminante raíz canónico |
-| `session_mode` abierto con `string` | COMPATIBILIDAD; no se usa para reemplazar principal, actor o dispositivo |
-| `app_code` | no pertenece al snapshot raíz de `AccessContext`; la aplicación solicitada se evalúa posteriormente |
-| `user_id` | no reemplaza `principal`, `domain_identity`, `actor_effective` ni `employee` |
-| `real_administrative_role` | RETIRAR COMO FUENTE CANÓNICA; sustituido conceptualmente por `BaseRoleContext` |
-| `effective_administrative_role` | RETIRAR COMO FUENTE CANÓNICA; no existe rol administrativo efectivo alternativo |
-| `effective_operational_role` | COMPATIBILIDAD; debe converger en `OperationalRoleContext` |
-| `site_id`, `area_id`, `area_kind` planos | COMPATIBILIDAD; deben converger en nodos administrativos/operativos separados |
-| `shift_id` plano | COMPATIBILIDAD; debe converger en `ActiveShiftContext` y referencias dependientes |
-| `simulation_id` dentro del contexto real | NO CANÓNICO; la simulación pertenece a `SimulationContext` |
-| `shared_device_id` plano | COMPATIBILIDAD; debe converger en `DeviceContext` |
-| `is_simulation` | NO CANÓNICO en `AccessContextV1`; no se usa para mutar un contexto real |
-| `is_shared_device` | derivable del principal/dispositivo; no sustituye discriminantes publicados |
-| `bypass_applied` | PROHIBIDO COMO AUTORIDAD; ningún bypass forma parte del contexto canónico |
-| `can_operate` | PROHIBIDO COMO DECISIÓN; se reemplaza por `lane_readiness` y evaluación posterior |
-| `blocked_reasons` | COMPATIBILIDAD; no sustituye `structural_issues`, `reason_codes` ni razones de decisión |
-| `metadata: Record<string, unknown>` | no puede absorber propiedades contractuales omitidas |
+| Superficie actual                        | Disposición                                                                                         |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `source: EffectiveContextSource`         | COMPATIBILIDAD; no discriminante raíz canónico                                                      |
+| `session_mode` abierto con `string`      | COMPATIBILIDAD; no se usa para reemplazar principal, actor o dispositivo                            |
+| `app_code`                               | no pertenece al snapshot raíz de `AccessContext`; la aplicación solicitada se evalúa posteriormente |
+| `user_id`                                | no reemplaza `principal`, `domain_identity`, `actor_effective` ni `employee`                        |
+| `real_administrative_role`               | RETIRAR COMO FUENTE CANÓNICA; sustituido conceptualmente por `BaseRoleContext`                      |
+| `effective_administrative_role`          | RETIRAR COMO FUENTE CANÓNICA; no existe rol administrativo efectivo alternativo                     |
+| `effective_operational_role`             | COMPATIBILIDAD; debe converger en `OperationalRoleContext`                                          |
+| `site_id`, `area_id`, `area_kind` planos | COMPATIBILIDAD; deben converger en nodos administrativos/operativos separados                       |
+| `shift_id` plano                         | COMPATIBILIDAD; debe converger en `ActiveShiftContext` y referencias dependientes                   |
+| `simulation_id` dentro del contexto real | NO CANÓNICO; la simulación pertenece a `SimulationContext`                                          |
+| `shared_device_id` plano                 | COMPATIBILIDAD; debe converger en `DeviceContext`                                                   |
+| `is_simulation`                          | NO CANÓNICO en `AccessContextV1`; no se usa para mutar un contexto real                             |
+| `is_shared_device`                       | derivable del principal/dispositivo; no sustituye discriminantes publicados                         |
+| `bypass_applied`                         | PROHIBIDO COMO AUTORIDAD; ningún bypass forma parte del contexto canónico                           |
+| `can_operate`                            | PROHIBIDO COMO DECISIÓN; se reemplaza por `lane_readiness` y evaluación posterior                   |
+| `blocked_reasons`                        | COMPATIBILIDAD; no sustituye `structural_issues`, `reason_codes` ni razones de decisión             |
+| `metadata: Record<string, unknown>`      | no puede absorber propiedades contractuales omitidas                                                |
 
 La migración física de estas superficies no ocurre en `SHELL-CON-007`.
 
@@ -4995,22 +4995,22 @@ La migración física de estas superficies no ocurre en `SHELL-CON-007`.
 
 Las responsabilidades quedan asignadas sin pendientes narrativos:
 
-| Resultado físico futuro | Tarea propietaria |
-| --- | --- |
-| estructura, exports, versionado y compatibilidad del SDK único | `SHELL-AUTH-001` |
-| módulo contextual dentro de `@vento/os-context` | `SHELL-CTX-001` |
-| consumo canónico de turno y check-in | `SHELL-CTX-002` |
-| proyecciones seguras de sede y área | `SHELL-CTX-003` |
-| readiness sin booleanos de autorización | `SHELL-CTX-004` |
-| razones seguras de bloqueo contextual | `SHELL-CTX-005` |
-| caché compartida, single-flight y frescura | `SHELL-CTX-006` |
-| adapters de servidor/cliente y proyecciones seguras | `SHELL-AUTH-002` |
-| lint, métricas y gates contra consumidores legacy | `SHELL-AUTH-004` |
-| migración final de consumidores | `SHELL-AUTH-005` |
-| productor autoritativo de contexto en backend | `AUTH-DB-033` |
-| token/frescura e invalidación autoritativa | `AUTH-DB-035` |
-| productor de decisión autoritativa | `AUTH-DB-034` |
-| persistencia/backend compartido correspondiente | `AUTH-DB-032` |
+| Resultado físico futuro                                        | Tarea propietaria |
+| -------------------------------------------------------------- | ----------------- |
+| estructura, exports, versionado y compatibilidad del SDK único | `SHELL-AUTH-001`  |
+| módulo contextual dentro de `@vento/os-context`                | `SHELL-CTX-001`   |
+| consumo canónico de turno y check-in                           | `SHELL-CTX-002`   |
+| proyecciones seguras de sede y área                            | `SHELL-CTX-003`   |
+| readiness sin booleanos de autorización                        | `SHELL-CTX-004`   |
+| razones seguras de bloqueo contextual                          | `SHELL-CTX-005`   |
+| caché compartida, single-flight y frescura                     | `SHELL-CTX-006`   |
+| adapters de servidor/cliente y proyecciones seguras            | `SHELL-AUTH-002`  |
+| lint, métricas y gates contra consumidores legacy              | `SHELL-AUTH-004`  |
+| migración final de consumidores                                | `SHELL-AUTH-005`  |
+| productor autoritativo de contexto en backend                  | `AUTH-DB-033`     |
+| token/frescura e invalidación autoritativa                     | `AUTH-DB-035`     |
+| productor de decisión autoritativa                             | `AUTH-DB-034`     |
+| persistencia/backend compartido correspondiente                | `AUTH-DB-032`     |
 
 Esta asignación no modifica ni inicia ninguna de esas tareas.
 
@@ -5063,8 +5063,8 @@ Sí exigiría revisión contractual y versionado correspondiente:
 
 Se crea `TREQ-SHELL-043` para proteger la centralización de tipos de contexto y la separación entre contexto real, simulación, decisión y superficies legacy.
 
-| ID | Regla protegida | Riesgo | Destino de implementación |
-| --- | --- | --- | --- |
+| ID               | Regla protegida                                                                                                                                                                                                      | Riesgo                                                                                                                   | Destino de implementación                                                                            |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
 | `TREQ-SHELL-043` | Preservar la familia `response-contracts@1.0.0`, `AccessContext@1.0.0`, el uso de catálogos tipados vigentes y la separación estricta frente a `EffectiveContext`, simulación, bypasses y booleanos de autorización. | Deriva de tipos, autorización por booleano, mezcla real/simulado, rol legacy aceptado, bypass o consumidor incompatible. | `SHELL-CON-007`; `SHELL-AUTH-001`; `SHELL-CTX-001`; `SHELL-AUTH-004`; `SHELL-CI-017`; `SHELL-CI-018` |
 
 El detalle operativo del requisito permanece en el Registro Canónico de Requisitos de Prueba.
@@ -5139,7 +5139,1079 @@ SHELL-CON-007 — Centralizar tipos de contexto
 SHELL-CON-008 — Centralizar códigos de error
 
 
-### [ ] SHELL-CON-008 — Centralizar códigos de error
+### ✅ SHELL-CON-008 — Centralizar códigos de error
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CON-007 — Centralizar tipos de contexto
+**Tarea siguiente:** SHELL-CON-009 — Centralizar identificadores de procesos
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 1
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-008` centraliza los vocabularios contractuales cerrados que Vento OS utiliza para representar razones públicas de autorización, inconsistencias estructurales del contexto y razones normales de disponibilidad de carril.
+
+La tarea materializa una frontera compartida que evita mezclar tres conceptos distintos:
+
+```text
+AuthorizationReasonCode
+→ razón pública de una denegación o fallo técnico ya clasificado
+
+StructuralIssueCode
+→ contradicción o invalidez estructural detectada durante la resolución de AccessContext
+
+LaneAvailabilityReasonCode
+→ ausencia o estado válido que explica disponibilidad de un carril sin constituir StructuralIssue
+```
+
+Regla principal:
+
+```text
+CÓDIGO PÚBLICO
+≠ CÓDIGO ESTRUCTURAL
+≠ RAZÓN DE DISPONIBILIDAD
+≠ CÓDIGO HTTP
+≠ EXCEPCIÓN
+≠ SQLSTATE
+≠ ESTADO INTERACTIVO AUXILIAR
+```
+
+No se crea un tipo catch-all `ErrorCode`.
+
+---
+
+#### 2. Resultado canónico
+
+Se centralizan exactamente estas superficies:
+
+| Tipo compartido              | Cantidad | Fuente canónica                                         | Uso                              |
+| ---------------------------- | -------: | ------------------------------------------------------- | -------------------------------- |
+| `AuthorizationReasonCode`    |   **20** | `AUTH-ERR-020` / `vento.authorization.messages@1.0.0`   | respuesta pública y presentación |
+| `StructuralIssueCode`        |  **100** | `AUTH-CTX-015` / `AccessContext@1.0.0`                  | `StructuralIssue.issue_code`     |
+| `LaneAvailabilityReasonCode` |   **10** | `AUTH-CTX-015` / `AccessContext@1.0.0`                  | ausencia o disponibilidad normal |
+| `LaneReasonCode`             |  **110** | composición exacta de los dos vocabularios contextuales | `LaneReadiness.reason_codes`     |
+| `StructuralIssueSeverity`    |    **5** | `AUTH-CTX-015`                                          | severidad estructural            |
+| `StructuralIssueSubjectType` |   **17** | `AUTH-CTX-015`                                          | sujeto estructural               |
+| `StructuralIssueSource`      |   **15** | `AUTH-CTX-015`                                          | resolver propietario             |
+
+Conciliación:
+
+```text
+AuthorizationReasonCode      = 20
+StructuralIssueCode          = 100
+LaneAvailabilityReasonCode   = 10
+LaneReasonCode               = 100 + 10 = 110
+
+intersección StructuralIssueCode / LaneAvailabilityReasonCode = 0
+intersección AuthorizationReasonCode / LaneReasonCode = 0
+aliases nuevos = 0
+wildcards = 0
+códigos locales admitidos = 0
+```
+
+---
+
+#### 3. Fuentes y precedencia
+
+Esta tarea conserva las decisiones aprobadas de:
+
+| Fuente                                              | Uso vinculante                                                                                         |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`        | continuidad, granularidad y trazabilidad                                                               |
+| `docs/plan-canonico/modular/delivery-contract.json` | estructura documental y coordinación TREQ                                                              |
+| `docs/plan-canonico/modular/active-sequence.json`   | `SHELL-CON-008` como tarea vigente                                                                     |
+| `AUTH-CTX-001`                                      | forma raíz de `AccessContext`                                                                          |
+| `AUTH-CTX-004`                                      | versionado de `vento.authorization.response-contracts@1.0.0`                                           |
+| `AUTH-CTX-015`                                      | catálogo de 100 problemas estructurales, diez razones de disponibilidad y metadatos asociados          |
+| `AUTH-ERR-001` a `AUTH-ERR-019`                     | semántica causal de las razones públicas                                                               |
+| `AUTH-ERR-020`                                      | catálogo público de veinte `AuthorizationReasonCode` y distribución desde `vento-shell`                |
+| `SHELL-CON-007`                                     | formas `LaneReadiness` y `StructuralIssue` y reserva explícita de sus uniones cerradas para esta tarea |
+| `TREQ-AUTH-319` a `TREQ-AUTH-328`                   | protección existente del catálogo público, distribución, consumidores y gates                          |
+
+Precedencia:
+
+```text
+AUTH-CTX-015
+→ gobierna códigos y metadata estructural
+
+AUTH-ERR-020
+→ gobierna códigos públicos y mensajes
+
+SHELL-CON-008
+→ centraliza los tipos compartidos
+→ no redefine su semántica
+```
+
+---
+
+#### 4. Línea base verificable
+
+El estado físico actual no satisface todavía la centralización:
+
+| Elemento                                      | Estado observado                                                    | Disposición                                          |
+| --------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------- |
+| `@vento/contracts/authorization`              | no existe físicamente como package publicado en el workspace actual | materialización posterior                            |
+| `@vento/os-context@0.1.0`                     | existe como package parcial                                         | consumidor/adaptador posterior                       |
+| `EffectiveContext.blocked_reasons`            | `string[]`                                                          | compatibilidad temporal; no vocabulario canónico     |
+| `StructuralIssue.issue_code` documental       | `string`                                                            | se restringe conceptualmente a `StructuralIssueCode` |
+| `LaneReadiness.reason_codes` documental       | `string[]`                                                          | se restringe conceptualmente a `LaneReasonCode[]`    |
+| catálogo `vento.authorization.messages@1.0.0` | definido documentalmente                                            | publicación física posterior                         |
+| reason codes en código compartido             | no observados como export canónico físico                           | materialización posterior                            |
+| cambios físicos en `SHELL-CON-008`            | no autorizados                                                      | ninguno                                              |
+
+La forma física parcial no redefine los contratos.
+
+---
+
+#### 5. Frontera de propiedad
+
+La distribución futura conserva:
+
+```text
+@vento/contracts/authorization
+→ AuthorizationReasonCode
+→ StructuralIssueCode
+→ LaneAvailabilityReasonCode
+→ LaneReasonCode
+→ StructuralIssueSeverity
+→ StructuralIssueSubjectType
+→ StructuralIssueSource
+→ catálogos, schemas y validadores contractuales
+
+@vento/os-context
+→ consume los tipos
+→ produce contexto y razones seguras
+→ adapta superficies legacy
+→ no inventa códigos
+
+@vento/ui-web
+→ consume AuthorizationReasonCode y perfiles
+→ no inventa razones
+→ no decide autorización
+
+Supabase / evaluador
+→ produce hechos, contexto y decisión autoritativos
+→ no usa texto humano como protocolo
+```
+
+No se crea un segundo namespace paralelo de códigos.
+
+---
+
+#### 6. `AuthorizationReasonCode`
+
+La unión pública cerrada contiene exactamente veinte miembros:
+
+```text
+AUTH_NO_SESSION
+AUTH_USER_INACTIVE
+AUTH_APP_ACCESS_DENIED
+AUTH_ADMIN_PERMISSION_DENIED
+AUTH_OPERATIONAL_PERMISSION_DENIED
+AUTH_SITE_ASSIGNMENT_REQUIRED
+AUTH_ACTIVE_SITE_REQUIRED
+AUTH_AREA_ASSIGNMENT_REQUIRED
+AUTH_ACTIVE_AREA_REQUIRED
+AUTH_PUBLISHED_SHIFT_REQUIRED
+AUTH_OUTSIDE_SHIFT_WINDOW
+AUTH_CHECKIN_REQUIRED
+AUTH_OPERATIONAL_ROLE_REQUIRED
+AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE
+AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA
+AUTH_SHARED_DEVICE_NOT_AUTHORIZED
+AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION
+AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT
+AUTH_PERMISSION_NOT_REGISTERED
+AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE
+```
+
+Proyección TypeScript conceptual:
+
+```text
+type AuthorizationReasonCode =
+  | "AUTH_NO_SESSION"
+  | "AUTH_USER_INACTIVE"
+  | "AUTH_APP_ACCESS_DENIED"
+  | "AUTH_ADMIN_PERMISSION_DENIED"
+  | "AUTH_OPERATIONAL_PERMISSION_DENIED"
+  | "AUTH_SITE_ASSIGNMENT_REQUIRED"
+  | "AUTH_ACTIVE_SITE_REQUIRED"
+  | "AUTH_AREA_ASSIGNMENT_REQUIRED"
+  | "AUTH_ACTIVE_AREA_REQUIRED"
+  | "AUTH_PUBLISHED_SHIFT_REQUIRED"
+  | "AUTH_OUTSIDE_SHIFT_WINDOW"
+  | "AUTH_CHECKIN_REQUIRED"
+  | "AUTH_OPERATIONAL_ROLE_REQUIRED"
+  | "AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE"
+  | "AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA"
+  | "AUTH_SHARED_DEVICE_NOT_AUTHORIZED"
+  | "AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION"
+  | "AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT"
+  | "AUTH_PERMISSION_NOT_REGISTERED"
+  | "AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE";
+```
+
+Identidad del catálogo propietario:
+
+```text
+catalog_id = vento.authorization.messages
+catalog_version = 1.0.0
+schema_version = 1.0.0
+source_locale = es-CO
+reason_count = 20
+```
+
+Reglas:
+
+1. los veinte códigos son estables y únicos;
+2. no se traducen;
+3. no se normalizan por nombre;
+4. no admiten prefijos, patrones ni wildcards;
+5. un consumidor no puede agregar códigos locales;
+6. un código desconocido no se remapea silenciosamente a una razón conocida;
+7. el copy es presentación, no identidad;
+8. la razón pública no expone `StructuralIssueCode` automáticamente;
+9. un código HTTP no sustituye `AuthorizationReasonCode`;
+10. `AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE` conserva la semántica técnica definida por `AUTH-ERR-019` y no se usa como fallback genérico para cualquier valor desconocido.
+
+---
+
+#### 7. Estados interactivos excluidos
+
+Los estados:
+
+```text
+ACTOR_IDENTIFICATION_REQUIRED
+STRONG_REAUTHENTICATION_REQUIRED
+```
+
+permanecen fuera de `AuthorizationReasonCode`.
+
+Son estados interactivos auxiliares con contratos propietarios separados y no se convierten en denegaciones públicas por conveniencia de UI.
+
+Por tanto:
+
+```text
+auxiliary_interaction_state_count = 2
+AuthorizationReasonCode_count = 20
+intersección = 0
+```
+
+---
+
+#### 8. `StructuralIssueCode`
+
+`StructuralIssueCode` contiene exactamente cien miembros asociados a `AccessContext@1.0.0`.
+
+##### Autenticación, principal, identidad y actor
+
+```text
+AUTH_UNAUTHENTICATED
+PRINCIPAL_NOT_LINKED
+PRINCIPAL_AMBIGUOUS
+PRINCIPAL_INACTIVE
+PRINCIPAL_TYPE_INVALID
+PRINCIPAL_SUBJECT_MISMATCH
+DOMAIN_IDENTITY_AMBIGUOUS
+DOMAIN_IDENTITY_INACTIVE
+ACTOR_TYPE_INVALID
+ACTOR_ATTRIBUTION_INVALID
+ACTOR_PRINCIPAL_MISMATCH
+DELEGATION_INVALID
+```
+
+##### Identidad laboral y rol base
+
+```text
+EMPLOYEE_MISSING
+EMPLOYEE_AMBIGUOUS
+EMPLOYEE_ACTOR_MISMATCH
+EMPLOYEE_STATUS_INVALID
+BASE_ROLE_MISSING
+BASE_ROLE_AMBIGUOUS
+BASE_ROLE_UNKNOWN
+BASE_ROLE_INACTIVE
+BASE_ROLE_ACTOR_MISMATCH
+BASE_ROLE_LEGACY_UNMAPPED
+```
+
+##### Asignaciones y cobertura administrativa
+
+```text
+SITE_ASSIGNMENT_DUPLICATE_CONFLICT
+SITE_ASSIGNMENT_MULTIPLE_PRIMARY
+SITE_ASSIGNMENT_UNKNOWN_SITE
+AREA_ASSIGNMENT_DUPLICATE_CONFLICT
+AREA_ASSIGNMENT_MULTIPLE_PRIMARY
+AREA_ASSIGNMENT_UNKNOWN_AREA
+AREA_ASSIGNMENT_SITE_MISMATCH
+ADMIN_COVERAGE_MODE_INVALID
+ADMIN_COVERAGE_SOURCE_INVALID
+ADMIN_COVERAGE_SHAPE_INVALID
+ADMIN_COVERAGE_EXPANDS_ROLE
+ADMIN_COVERAGE_NONDETERMINISTIC
+```
+
+##### Turno publicado y vigente
+
+```text
+SHIFT_REVISION_AMBIGUOUS
+SHIFT_UNPUBLISHED_SELECTED
+SHIFT_KIND_INVALID
+SHIFT_TIME_RANGE_INVALID
+SHIFT_TIMEZONE_INVALID
+SHIFT_EMPLOYEE_MISMATCH
+SHIFT_SITE_INVALID
+SHIFT_AREA_SITE_MISMATCH
+SHIFT_OPERATIONAL_ROLE_MISSING
+SHIFT_STATUS_INVALID
+SHIFT_OVERLAP
+SHIFT_FIELDS_MIXED_REVISIONS
+SHIFT_CLIENT_SELECTED
+```
+
+##### Sesión de check-in
+
+```text
+CHECKIN_UNCONFIRMED_AS_ACTIVE
+CHECKIN_SESSION_ID_MISSING
+CHECKIN_ACTOR_MISMATCH
+CHECKIN_SHIFT_MISMATCH
+CHECKIN_SITE_MISMATCH
+CHECKIN_AREA_MISMATCH
+CHECKIN_TIME_INVALID
+CHECKIN_SESSION_AMBIGUOUS
+CHECKIN_EXPIRED_AS_ACTIVE
+CHECKIN_CLOSED_AS_ACTIVE
+CHECKIN_OUTLIVES_SHIFT
+CHECKIN_TERMINAL_LINK_INVALID
+CHECKIN_OFFLINE_PENDING_AS_ACTIVE
+```
+
+##### Rol y territorio operativos
+
+```text
+OPERATIONAL_ROLE_UNKNOWN
+OPERATIONAL_ROLE_INACTIVE
+OPERATIONAL_ROLE_DEPRECATED
+OPERATIONAL_ROLE_SHIFT_MISMATCH
+OPERATIONAL_ROLE_SITE_NOT_ENABLED
+OPERATIONAL_ROLE_AREA_NOT_ENABLED
+OPERATIONAL_ROLE_AREA_REQUIRED
+OPERATIONAL_ROLE_CONFIGURATION_CONFLICT
+OPERATIONAL_SITE_UNKNOWN
+OPERATIONAL_SITE_INACTIVE
+OPERATIONAL_SITE_ASSIGNMENT_INVALID
+OPERATIONAL_SITE_SOURCE_MISMATCH
+OPERATIONAL_AREA_UNKNOWN
+OPERATIONAL_AREA_INACTIVE
+OPERATIONAL_AREA_SITE_MISMATCH
+OPERATIONAL_AREA_ROLE_MISMATCH
+OPERATIONAL_AREA_SOURCE_INVALID
+```
+
+##### Dispositivo compartido
+
+```text
+DEVICE_UNRESOLVED
+DEVICE_AUTH_LINK_INVALID
+DEVICE_INACTIVE
+DEVICE_CONFIGURATION_INVALID
+DEVICE_TEMPLATE_INVALID
+DEVICE_INSTANCE_EXPANDS_TEMPLATE
+DEVICE_ACTOR_SESSION_AMBIGUOUS
+DEVICE_ACTOR_SESSION_EXPIRED_AS_ACTIVE
+DEVICE_ACTOR_MISMATCH
+DEVICE_APPLICATION_CONFIGURATION_INVALID
+DEVICE_CAPABILITY_PACKAGE_INVALID
+DEVICE_NOT_ALLOWED_PERMISSION_CONFIGURED
+DEVICE_TERRITORY_MISMATCH
+DEVICE_NAVIGATION_ROLE_USED_AS_AUTHORITY
+```
+
+##### Configuración, contrato y frescura
+
+```text
+STRUCTURAL_ISSUE_CODE_UNKNOWN
+STRUCTURAL_ISSUE_METADATA_INVALID
+RESOLVER_CONFIGURATION_MISSING
+RESOLVER_CONFIGURATION_AMBIGUOUS
+CONTRACT_VERSION_UNSUPPORTED
+SCHEMA_VERSION_UNSUPPORTED
+RESOLUTION_TIME_INVALID
+CONTEXT_SNAPSHOT_MIXED
+CONTEXT_STALE
+```
+
+Proyección TypeScript conceptual:
+
+```text
+type StructuralIssueCode =
+  | "AUTH_UNAUTHENTICATED"
+  | "PRINCIPAL_NOT_LINKED"
+  | "PRINCIPAL_AMBIGUOUS"
+  | "PRINCIPAL_INACTIVE"
+  | "PRINCIPAL_TYPE_INVALID"
+  | "PRINCIPAL_SUBJECT_MISMATCH"
+  | "DOMAIN_IDENTITY_AMBIGUOUS"
+  | "DOMAIN_IDENTITY_INACTIVE"
+  | "ACTOR_TYPE_INVALID"
+  | "ACTOR_ATTRIBUTION_INVALID"
+  | "ACTOR_PRINCIPAL_MISMATCH"
+  | "DELEGATION_INVALID"
+  | "EMPLOYEE_MISSING"
+  | "EMPLOYEE_AMBIGUOUS"
+  | "EMPLOYEE_ACTOR_MISMATCH"
+  | "EMPLOYEE_STATUS_INVALID"
+  | "BASE_ROLE_MISSING"
+  | "BASE_ROLE_AMBIGUOUS"
+  | "BASE_ROLE_UNKNOWN"
+  | "BASE_ROLE_INACTIVE"
+  | "BASE_ROLE_ACTOR_MISMATCH"
+  | "BASE_ROLE_LEGACY_UNMAPPED"
+  | "SITE_ASSIGNMENT_DUPLICATE_CONFLICT"
+  | "SITE_ASSIGNMENT_MULTIPLE_PRIMARY"
+  | "SITE_ASSIGNMENT_UNKNOWN_SITE"
+  | "AREA_ASSIGNMENT_DUPLICATE_CONFLICT"
+  | "AREA_ASSIGNMENT_MULTIPLE_PRIMARY"
+  | "AREA_ASSIGNMENT_UNKNOWN_AREA"
+  | "AREA_ASSIGNMENT_SITE_MISMATCH"
+  | "ADMIN_COVERAGE_MODE_INVALID"
+  | "ADMIN_COVERAGE_SOURCE_INVALID"
+  | "ADMIN_COVERAGE_SHAPE_INVALID"
+  | "ADMIN_COVERAGE_EXPANDS_ROLE"
+  | "ADMIN_COVERAGE_NONDETERMINISTIC"
+  | "SHIFT_REVISION_AMBIGUOUS"
+  | "SHIFT_UNPUBLISHED_SELECTED"
+  | "SHIFT_KIND_INVALID"
+  | "SHIFT_TIME_RANGE_INVALID"
+  | "SHIFT_TIMEZONE_INVALID"
+  | "SHIFT_EMPLOYEE_MISMATCH"
+  | "SHIFT_SITE_INVALID"
+  | "SHIFT_AREA_SITE_MISMATCH"
+  | "SHIFT_OPERATIONAL_ROLE_MISSING"
+  | "SHIFT_STATUS_INVALID"
+  | "SHIFT_OVERLAP"
+  | "SHIFT_FIELDS_MIXED_REVISIONS"
+  | "SHIFT_CLIENT_SELECTED"
+  | "CHECKIN_UNCONFIRMED_AS_ACTIVE"
+  | "CHECKIN_SESSION_ID_MISSING"
+  | "CHECKIN_ACTOR_MISMATCH"
+  | "CHECKIN_SHIFT_MISMATCH"
+  | "CHECKIN_SITE_MISMATCH"
+  | "CHECKIN_AREA_MISMATCH"
+  | "CHECKIN_TIME_INVALID"
+  | "CHECKIN_SESSION_AMBIGUOUS"
+  | "CHECKIN_EXPIRED_AS_ACTIVE"
+  | "CHECKIN_CLOSED_AS_ACTIVE"
+  | "CHECKIN_OUTLIVES_SHIFT"
+  | "CHECKIN_TERMINAL_LINK_INVALID"
+  | "CHECKIN_OFFLINE_PENDING_AS_ACTIVE"
+  | "OPERATIONAL_ROLE_UNKNOWN"
+  | "OPERATIONAL_ROLE_INACTIVE"
+  | "OPERATIONAL_ROLE_DEPRECATED"
+  | "OPERATIONAL_ROLE_SHIFT_MISMATCH"
+  | "OPERATIONAL_ROLE_SITE_NOT_ENABLED"
+  | "OPERATIONAL_ROLE_AREA_NOT_ENABLED"
+  | "OPERATIONAL_ROLE_AREA_REQUIRED"
+  | "OPERATIONAL_ROLE_CONFIGURATION_CONFLICT"
+  | "OPERATIONAL_SITE_UNKNOWN"
+  | "OPERATIONAL_SITE_INACTIVE"
+  | "OPERATIONAL_SITE_ASSIGNMENT_INVALID"
+  | "OPERATIONAL_SITE_SOURCE_MISMATCH"
+  | "OPERATIONAL_AREA_UNKNOWN"
+  | "OPERATIONAL_AREA_INACTIVE"
+  | "OPERATIONAL_AREA_SITE_MISMATCH"
+  | "OPERATIONAL_AREA_ROLE_MISMATCH"
+  | "OPERATIONAL_AREA_SOURCE_INVALID"
+  | "DEVICE_UNRESOLVED"
+  | "DEVICE_AUTH_LINK_INVALID"
+  | "DEVICE_INACTIVE"
+  | "DEVICE_CONFIGURATION_INVALID"
+  | "DEVICE_TEMPLATE_INVALID"
+  | "DEVICE_INSTANCE_EXPANDS_TEMPLATE"
+  | "DEVICE_ACTOR_SESSION_AMBIGUOUS"
+  | "DEVICE_ACTOR_SESSION_EXPIRED_AS_ACTIVE"
+  | "DEVICE_ACTOR_MISMATCH"
+  | "DEVICE_APPLICATION_CONFIGURATION_INVALID"
+  | "DEVICE_CAPABILITY_PACKAGE_INVALID"
+  | "DEVICE_NOT_ALLOWED_PERMISSION_CONFIGURED"
+  | "DEVICE_TERRITORY_MISMATCH"
+  | "DEVICE_NAVIGATION_ROLE_USED_AS_AUTHORITY"
+  | "STRUCTURAL_ISSUE_CODE_UNKNOWN"
+  | "STRUCTURAL_ISSUE_METADATA_INVALID"
+  | "RESOLVER_CONFIGURATION_MISSING"
+  | "RESOLVER_CONFIGURATION_AMBIGUOUS"
+  | "CONTRACT_VERSION_UNSUPPORTED"
+  | "SCHEMA_VERSION_UNSUPPORTED"
+  | "RESOLUTION_TIME_INVALID"
+  | "CONTEXT_SNAPSHOT_MIXED"
+  | "CONTEXT_STALE";
+```
+
+Reglas:
+
+1. todos los miembros usan `UPPER_SNAKE_CASE`;
+2. un código conserva significado, severidad, sujeto, fuente y mensaje seguro;
+3. no se construye dinámicamente;
+4. no se traduce;
+5. no se reutiliza con otra semántica;
+6. no se admite un código local dentro de `StructuralIssue`;
+7. `STRUCTURAL_ISSUE_CODE_UNKNOWN` representa la detección de un código no reconocido;
+8. `STRUCTURAL_ISSUE_METADATA_INVALID` representa metadata incompatible con el catálogo;
+9. ambas condiciones fallan cerradas;
+10. una ausencia ordinaria no se convierte en `StructuralIssueCode`.
+
+---
+
+#### 9. `StructuralIssueSeverity`
+
+La unión cerrada permanece:
+
+```text
+type StructuralIssueSeverity =
+  | "BLOCKING_ALL"
+  | "BLOCKING_BASE"
+  | "BLOCKING_OPERATIONAL"
+  | "WARNING"
+  | "INFO";
+```
+
+Precedencia:
+
+```text
+BLOCKING_ALL
+>
+BLOCKING_BASE / BLOCKING_OPERATIONAL
+>
+WARNING
+>
+INFO
+```
+
+`WARNING` e `INFO` no conceden autoridad ni pueden ocultar un bloqueo.
+
+---
+
+#### 10. `StructuralIssueSubjectType`
+
+Los tipos de sujeto permitidos son exactamente diecisiete:
+
+```text
+PRINCIPAL
+DOMAIN_IDENTITY
+ACTOR
+EMPLOYEE
+BASE_ROLE
+SITE_ASSIGNMENT
+AREA_ASSIGNMENT
+ADMINISTRATIVE_COVERAGE
+SHIFT
+CHECKIN_SESSION
+OPERATIONAL_ROLE
+OPERATIONAL_SITE
+OPERATIONAL_AREA
+DEVICE
+DEVICE_ACTOR_SESSION
+CONFIGURATION
+CONTEXT
+```
+
+Proyección:
+
+```text
+type StructuralIssueSubjectType =
+  | "PRINCIPAL"
+  | "DOMAIN_IDENTITY"
+  | "ACTOR"
+  | "EMPLOYEE"
+  | "BASE_ROLE"
+  | "SITE_ASSIGNMENT"
+  | "AREA_ASSIGNMENT"
+  | "ADMINISTRATIVE_COVERAGE"
+  | "SHIFT"
+  | "CHECKIN_SESSION"
+  | "OPERATIONAL_ROLE"
+  | "OPERATIONAL_SITE"
+  | "OPERATIONAL_AREA"
+  | "DEVICE"
+  | "DEVICE_ACTOR_SESSION"
+  | "CONFIGURATION"
+  | "CONTEXT";
+```
+
+No se sustituyen por nombres de tablas, nombres de aplicación ni tipos locales.
+
+---
+
+#### 11. `StructuralIssueSource`
+
+Las fuentes resolutoras permitidas son exactamente quince:
+
+```text
+PRINCIPAL_RESOLVER
+DOMAIN_IDENTITY_RESOLVER
+ACTOR_RESOLVER
+EMPLOYEE_RESOLVER
+BASE_ROLE_RESOLVER
+ASSIGNMENT_RESOLVER
+ADMINISTRATIVE_COVERAGE_RESOLVER
+SHIFT_RESOLVER
+CHECKIN_RESOLVER
+OPERATIONAL_ROLE_RESOLVER
+OPERATIONAL_TERRITORY_RESOLVER
+DEVICE_RESOLVER
+DEVICE_SESSION_RESOLVER
+CONTEXT_VALIDATOR
+FRESHNESS_RESOLVER
+```
+
+Proyección:
+
+```text
+type StructuralIssueSource =
+  | "PRINCIPAL_RESOLVER"
+  | "DOMAIN_IDENTITY_RESOLVER"
+  | "ACTOR_RESOLVER"
+  | "EMPLOYEE_RESOLVER"
+  | "BASE_ROLE_RESOLVER"
+  | "ASSIGNMENT_RESOLVER"
+  | "ADMINISTRATIVE_COVERAGE_RESOLVER"
+  | "SHIFT_RESOLVER"
+  | "CHECKIN_RESOLVER"
+  | "OPERATIONAL_ROLE_RESOLVER"
+  | "OPERATIONAL_TERRITORY_RESOLVER"
+  | "DEVICE_RESOLVER"
+  | "DEVICE_SESSION_RESOLVER"
+  | "CONTEXT_VALIDATOR"
+  | "FRESHNESS_RESOLVER";
+```
+
+Cada `StructuralIssueCode` conserva su fuente propietaria conforme a `AUTH-CTX-015`. Un resolver dependiente no debe duplicar el mismo problema con otra fuente.
+
+---
+
+#### 12. Forma tipada de `StructuralIssue`
+
+La forma serializada de `AccessContext@1.0.0` no cambia.
+
+La proyección estática pasa conceptualmente de strings genéricos a los tipos ya aprobados:
+
+```text
+type StructuralIssue = {
+  issue_code: StructuralIssueCode;
+  severity: StructuralIssueSeverity;
+  subject_type: StructuralIssueSubjectType;
+  subject_id: string | null;
+  source: StructuralIssueSource;
+  safe_message: string;
+};
+```
+
+`safe_message` continúa procediendo del catálogo canónico. No se construye desde excepciones, SQL, tablas, datos personales ni stack traces.
+
+La restricción de tipos no modifica nombres de campos, cardinalidad, nulabilidad ni serialización.
+
+---
+
+#### 13. `LaneAvailabilityReasonCode`
+
+Las ausencias o estados normales que pueden explicar disponibilidad de carril son exactamente diez:
+
+```text
+NON_LABOR_ACTOR
+DEVICE_ACTOR_SESSION_NOT_AVAILABLE
+EMPLOYEE_INACTIVE
+NO_ACTIVE_SHIFT
+NO_ACTIVE_CHECKIN
+NO_OPERATIONAL_AREA
+BASE_ROLE_NOT_AVAILABLE
+ADMINISTRATIVE_COVERAGE_NOT_AVAILABLE
+OPERATIONAL_ROLE_NOT_AVAILABLE
+OPERATIONAL_SITE_NOT_AVAILABLE
+```
+
+Proyección:
+
+```text
+type LaneAvailabilityReasonCode =
+  | "NON_LABOR_ACTOR"
+  | "DEVICE_ACTOR_SESSION_NOT_AVAILABLE"
+  | "EMPLOYEE_INACTIVE"
+  | "NO_ACTIVE_SHIFT"
+  | "NO_ACTIVE_CHECKIN"
+  | "NO_OPERATIONAL_AREA"
+  | "BASE_ROLE_NOT_AVAILABLE"
+  | "ADMINISTRATIVE_COVERAGE_NOT_AVAILABLE"
+  | "OPERATIONAL_ROLE_NOT_AVAILABLE"
+  | "OPERATIONAL_SITE_NOT_AVAILABLE";
+```
+
+Reglas:
+
+1. estos códigos no son `StructuralIssue`;
+2. no se agregan a `structural_issues`;
+3. no sustituyen un bloqueo estructural;
+4. no convierten una contradicción en `UNAVAILABLE`;
+5. pueden coexistir con `READY` únicamente bajo la semántica aprobada de `AUTH-CTX-015`;
+6. una lista vacía no significa `ALLOW`.
+
+---
+
+#### 14. `LaneReasonCode`
+
+`LaneReadiness.reason_codes` puede contener códigos estructurales aplicables al carril y razones normales de disponibilidad.
+
+La unión exacta queda:
+
+```text
+type LaneReasonCode =
+  | StructuralIssueCode
+  | LaneAvailabilityReasonCode;
+```
+
+Cardinalidad del vocabulario:
+
+```text
+100 + 10 = 110
+```
+
+La forma tipada de `LaneReadiness` queda conceptualmente:
+
+```text
+type LaneReadiness = {
+  status: "READY" | "UNAVAILABLE" | "INVALID" | "NOT_APPLICABLE";
+  reason_codes: LaneReasonCode[];
+};
+```
+
+La forma serializada permanece compatible con `AccessContext@1.0.0`.
+
+---
+
+#### 15. Orden y deduplicación
+
+Se conserva el orden canónico de `AUTH-CTX-015`.
+
+`structural_issues`:
+
+```text
+1. rango de severity
+2. issue_code
+3. subject_type
+4. subject_id, usando cadena vacía cuando sea null
+5. source
+```
+
+Rango:
+
+```text
+BLOCKING_ALL         = 1
+BLOCKING_BASE        = 2
+BLOCKING_OPERATIONAL = 3
+WARNING              = 4
+INFO                 = 5
+```
+
+`LaneReadiness.reason_codes`:
+
+```text
+1. StructuralIssueCode aplicables, en orden estructural canónico
+2. LaneAvailabilityReasonCode, alfabéticamente
+3. sin duplicados
+```
+
+No se utiliza el orden de llegada de filas, errores o promesas como criterio contractual.
+
+---
+
+#### 16. Separación frente a razones públicas
+
+No existe una conversión nominal automática:
+
+```text
+StructuralIssueCode
+-x-> AuthorizationReasonCode
+```
+
+Ni:
+
+```text
+LaneAvailabilityReasonCode
+-x-> AuthorizationReasonCode
+```
+
+La selección de una razón pública pertenece al evaluador de autorización y a las reglas de precedencia aprobadas en `AUTH-ERR-*`.
+
+Ejemplos de prohibiciones:
+
+- `NO_ACTIVE_CHECKIN` no se transforma por string matching;
+- `BASE_ROLE_UNKNOWN` no se publica automáticamente como texto estructural;
+- `CONTEXT_STALE` no se transforma automáticamente en indisponibilidad técnica;
+- `AUTH_CHECKIN_REQUIRED` no se inserta dentro de `structural_issues`;
+- `AUTH_PERMISSION_NOT_REGISTERED` no se utiliza como razón de readiness.
+
+La misma realidad puede participar en distintos niveles del pipeline, pero cada contrato conserva su propio namespace.
+
+---
+
+#### 17. Códigos expresamente fuera de alcance
+
+No forman parte de los tres vocabularios centralizados:
+
+- códigos HTTP como `401`, `403`, `409`, `500` o `503`;
+- SQLSTATE;
+- mensajes o códigos nativos de Supabase;
+- nombres de excepciones;
+- textos de `Error.message`;
+- familias privadas de fallo técnico;
+- `AuthorizationSourceStatus`;
+- códigos funcionales de otros dominios;
+- claves de UI;
+- rutas;
+- query parameters;
+- `returnTo`;
+- `message_code`;
+- `state` de un envelope técnico;
+- los dos estados interactivos auxiliares;
+- `blocked_reasons` legacy libres.
+
+Esos valores no se convierten en `AuthorizationReasonCode`, `StructuralIssueCode` ni `LaneAvailabilityReasonCode` mediante cast.
+
+---
+
+#### 18. Validación de entradas externas
+
+Datos provenientes de JSON, RPC, Supabase, eventos, APIs, almacenamiento local o consumidores legacy son no confiables hasta validación.
+
+Queda prohibido usar:
+
+```text
+value as AuthorizationReasonCode
+value as StructuralIssueCode
+value as LaneAvailabilityReasonCode
+```
+
+como sustituto de validación runtime.
+
+Comportamiento:
+
+```text
+código público desconocido
+→ incompatibilidad contractual
+→ no remap silencioso
+
+issue_code desconocido
+→ STRUCTURAL_ISSUE_CODE_UNKNOWN
+→ fail closed
+
+metadata estructural incompatible
+→ STRUCTURAL_ISSUE_METADATA_INVALID
+→ fail closed
+
+availability reason desconocida
+→ contexto no conforme
+→ fail closed
+```
+
+---
+
+#### 19. Relación con el catálogo público de mensajes
+
+`AuthorizationReasonCode` mantiene una relación 1:N con perfiles de presentación cuando el catálogo así lo define.
+
+La identidad de razón permanece separada de:
+
+- `profile_key`;
+- título;
+- mensaje;
+- acciones;
+- locale;
+- HTTP;
+- soporte;
+- retry;
+- presentación visual.
+
+`SHELL-CON-008` centraliza el tipo de código y su frontera contractual; no vuelve a definir los veinticinco perfiles ni altera el copy aprobado por `AUTH-ERR-020`.
+
+La futura publicación deberá conservar versión, hash del contenido, commit fuente y procedencia verificable conforme a `TREQ-AUTH-319`. Esta tarea no inventa una huella que todavía no haya sido publicada por la fase física correspondiente.
+
+---
+
+#### 20. Versionado
+
+Se mantienen sin cambio:
+
+```text
+vento.authorization.response-contracts@1.0.0
+AccessContext@1.0.0
+schema_version = 1.0.0
+release_hash = sha256:782a216c4bbfdc3b3cec1bbd7239c05d93edd7fa34b4ce62cad48c1e6b9941cd
+```
+
+Y para el catálogo público:
+
+```text
+vento.authorization.messages@1.0.0
+schema_version = 1.0.0
+source_locale = es-CO
+```
+
+La centralización de uniones literales no cambia el JSON publicado.
+
+Un cambio incompatible incluye:
+
+- retirar un código existente;
+- reutilizarlo con otro significado;
+- cambiar metadata estructural vinculante;
+- mover una razón de un namespace a otro;
+- convertir un estado auxiliar en razón pública;
+- permitir aliases equivalentes;
+- cambiar la forma serializada de los contratos.
+
+La adición futura de códigos deberá seguir el versionado y gobierno de su fuente propietaria.
+
+---
+
+#### 21. Reconciliación de `EffectiveContext.blocked_reasons`
+
+La superficie física actual:
+
+```text
+blocked_reasons: string[]
+```
+
+no constituye `LaneReasonCode[]` ni `AuthorizationReasonCode[]`.
+
+Disposición:
+
+| Estado legacy                             | Tratamiento                                                  |
+| ----------------------------------------- | ------------------------------------------------------------ |
+| string coincidente sin validación         | no canónico                                                  |
+| código local no catalogado                | incompatibilidad                                             |
+| razón pública dentro de `blocked_reasons` | no se promueve a readiness                                   |
+| código estructural válido                 | solo podrá proyectarse tras validación y adapter propietario |
+| availability reason válida                | solo podrá proyectarse tras validación y semántica de carril |
+| texto humano                              | nunca es código                                              |
+| valor desconocido                         | fail closed                                                  |
+
+La migración física corresponde a las tareas de SDK y contexto, no a esta tarea documental.
+
+---
+
+#### 22. Destinos de materialización
+
+Las responsabilidades posteriores quedan asignadas:
+
+| Resultado físico                                          | Tarea propietaria |
+| --------------------------------------------------------- | ----------------- |
+| exports, schemas, tipos y versionado en el SDK compartido | `SHELL-AUTH-001`  |
+| módulo contextual y consumo de los tipos                  | `SHELL-CTX-001`   |
+| readiness tipado                                          | `SHELL-CTX-004`   |
+| razones seguras de bloqueo contextual                     | `SHELL-CTX-005`   |
+| adapters y proyecciones seguras                           | `SHELL-AUTH-002`  |
+| gates contra códigos locales, casts y drift               | `SHELL-AUTH-004`  |
+| adopción final de consumidores                            | `SHELL-AUTH-005`  |
+| validador del catálogo público y perfiles                 | `SHELL-CI-016`    |
+| validaciones TREQ y documentación ejecutable              | `SHELL-CI-017`    |
+| compatibilidad e integración transversal                  | `SHELL-CI-018`    |
+| productor autoritativo de contexto                        | `AUTH-DB-033`     |
+| productor autoritativo de decisión                        | `AUTH-DB-034`     |
+
+No se inicia ninguna de estas tareas.
+
+---
+
+#### 23. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **1**
+**Requisitos modificados:** **0**
+
+Se crea `TREQ-SHELL-044`.
+
+| ID               | Regla protegida                                                                                                                                                                          | Riesgo                                                                                                                          | Destino de implementación                                                                                                                            |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TREQ-SHELL-044` | Exponer y validar como namespaces separados exactamente 20 `AuthorizationReasonCode`, 100 `StructuralIssueCode`, 10 `LaneAvailabilityReasonCode` y `LaneReasonCode = StructuralIssueCode | LaneAvailabilityReasonCode`, preservando metadata estructural y rechazando aliases, extensiones locales y valores desconocidos. | Mezcla de semánticas, razón pública incorrecta, contradicción degradada a ausencia, código local aceptado, cast inseguro o drift entre consumidores. | `SHELL-CON-008`; `SHELL-AUTH-001`; `SHELL-CTX-001`; `SHELL-CTX-004`; `SHELL-CTX-005`; `SHELL-AUTH-004`; `SHELL-CI-016`; `SHELL-CI-018` |
+
+El detalle operativo del requisito permanece en el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 24. Decisiones vinculantes
+
+1. No existe un `ErrorCode` genérico como autoridad contractual.
+2. `AuthorizationReasonCode` contiene exactamente veinte códigos públicos.
+3. `StructuralIssueCode` contiene exactamente cien códigos estructurales.
+4. `LaneAvailabilityReasonCode` contiene exactamente diez razones de disponibilidad.
+5. `LaneReasonCode` contiene exactamente 110 valores por composición de los dos vocabularios contextuales.
+6. Los tres namespaces primarios tienen intersección vacía.
+7. Los dos estados interactivos auxiliares no pertenecen a `AuthorizationReasonCode`.
+8. HTTP, SQLSTATE, excepciones, familias privadas y mensajes no pertenecen a estas uniones.
+9. `StructuralIssue.issue_code` se tipa conceptualmente con `StructuralIssueCode`.
+10. `LaneReadiness.reason_codes` se tipa conceptualmente con `LaneReasonCode[]`.
+11. `StructuralIssueSeverity` conserva cinco valores.
+12. `StructuralIssueSubjectType` conserva diecisiete valores.
+13. `StructuralIssueSource` conserva quince valores.
+14. La metadata estructural aprobada no se redefine.
+15. `safe_message` no es identidad de código.
+16. La selección de razón pública no se deriva por nombre de un código contextual.
+17. Códigos públicos desconocidos no reciben un fallback semántico.
+18. Códigos estructurales desconocidos producen `STRUCTURAL_ISSUE_CODE_UNKNOWN`.
+19. Metadata estructural incompatible produce `STRUCTURAL_ISSUE_METADATA_INVALID`.
+20. Razones de disponibilidad desconocidas no se aceptan como strings libres.
+21. `blocked_reasons: string[]` permanece legacy y no es fuente canónica.
+22. La centralización no cambia `AccessContext@1.0.0`.
+23. La centralización no cambia `vento.authorization.messages@1.0.0`.
+24. No se inventa hash para una publicación física todavía inexistente.
+25. No se modifica código, SQL, Supabase, migraciones, datos o packages físicos.
+26. La materialización queda vinculada a tareas propietarias ya existentes.
+27. `SHELL-CON-009` permanece exclusivamente reservada.
+
+---
+
+#### 25. Criterios de aceptación
+
+`SHELL-CON-008` queda documentalmente cerrada cuando:
+
+- estén enumerados exactamente los veinte códigos públicos;
+- estén enumerados exactamente los cien códigos estructurales;
+- estén enumeradas exactamente las diez razones de disponibilidad;
+- los tres conjuntos no contengan duplicados ni cruces;
+- `LaneReasonCode` sea únicamente la unión de 100 + 10;
+- se preserven cinco severidades, diecisiete sujetos y quince fuentes estructurales;
+- `StructuralIssue` y `LaneReadiness` conserven su forma serializada;
+- los estados interactivos auxiliares permanezcan excluidos;
+- no se incorporen HTTP, SQLSTATE, excepciones ni strings legacy;
+- no exista mapeo nominal automático hacia la razón pública;
+- los comportamientos de código desconocido fallen cerrados conforme a su contrato;
+- `@vento/contracts/authorization` permanezca como destino de propiedad contractual;
+- `@vento/os-context` permanezca como consumidor/adaptador y no como fuente alternativa;
+- no se ejecuten cambios físicos;
+- se incorpore exactamente `TREQ-SHELL-044`;
+- la continuidad reserve únicamente `SHELL-CON-009`.
+
+---
+
+#### 26. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-CON-007 — Centralizar tipos de contexto
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-CON-008 — Centralizar códigos de error
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-CON-009 — Centralizar identificadores de procesos
+
 
 ### [ ] SHELL-CON-009 — Centralizar identificadores de procesos
 ### [ ] SHELL-CON-010 — Centralizar estados de procesos
