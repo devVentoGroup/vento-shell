@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **913** |
+| Tareas aprobadas | **914** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **681** |
+| Tareas no iniciadas | **680** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **57.28% (913/1594)** |
+| Porcentaje de completamiento | **57.34% (914/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-DB-001 — Crear @vento/supabase** |
-| Tarea actual | **SHELL-DB-002 — Centralizar tipos generados por cada paquete de base de datos aprobado** |
+| Última tarea aprobada | **SHELL-DB-002 — Centralizar tipos generados por cada paquete de base de datos aprobado** |
+| Tarea actual | **SHELL-DB-003 — Crear y actualizar wrappers tipados para RPC canónicas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-DB-003 — Crear y actualizar wrappers tipados para RPC canónicas** |
+| Siguiente tarea | **SHELL-DB-004 — Normalizar errores de Supabase** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 63 de 109 aprobadas; SHELL-DB-002 pendiente** |
+| Progreso del bloque | **BLOQUE H: 64 de 109 aprobadas; SHELL-DB-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-DB-001` — Crear @vento/supabase |
-| Tarea actual | `SHELL-DB-002` — Centralizar tipos generados por cada paquete de base de datos aprobado — **NO INICIADA** |
-| Siguiente tarea | `SHELL-DB-003` — Crear y actualizar wrappers tipados para RPC canónicas |
+| Última aprobada | `SHELL-DB-002` — Centralizar tipos generados por cada paquete de base de datos aprobado |
+| Tarea actual | `SHELL-DB-003` — Crear y actualizar wrappers tipados para RPC canónicas — **NO INICIADA** |
+| Siguiente tarea | `SHELL-DB-004` — Normalizar errores de Supabase |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 63 DE 109 APROBADAS — ACTUAL SHELL-DB-002** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 64 DE 109 APROBADAS — ACTUAL SHELL-DB-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-DB-001 — Crear @vento/supabase
-        ↓
-TAREA ACTUAL
 SHELL-DB-002 — Centralizar tipos generados por cada paquete de base de datos aprobado
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-DB-003 — Crear y actualizar wrappers tipados para RPC canónicas
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-DB-004 — Normalizar errores de Supabase
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 63 de 109 tareas aprobadas
+BLOQUE H — 64 de 109 tareas aprobadas
 ```

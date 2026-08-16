@@ -829,7 +829,1030 @@ SHELL-DB-001 — Crear @vento/supabase
 SHELL-DB-002 — Centralizar tipos generados por cada paquete de base de datos aprobado
 
 
-### [ ] SHELL-DB-002 — Centralizar tipos generados por cada paquete de base de datos aprobado
+### ✅ SHELL-DB-002 — Centralizar tipos generados por cada paquete de base de datos aprobado
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-DB-001 — Crear @vento/supabase
+**Tarea siguiente:** SHELL-DB-003 — Crear y actualizar wrappers tipados para RPC canónicas
+**Tipo de tarea:** Documental; definición vinculante del gobierno, procedencia, generación determinista, recorte, versionado, compatibilidad y sincronización incremental de tipos generados de Supabase en `@vento/supabase`, sin ejecutar codegen, materializar el package físico, publicar versiones, modificar código, SQL, migraciones, datos, configuración remota ni Supabase
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md`
+**Estado físico resultante:** ESPECIFICADO; GENERACIÓN Y CENTRALIZACIÓN FÍSICA NO MATERIALIZADAS
+**Implementación física autorizada:** ninguna
+**Cambios de código, packages físicos, exports runtime, configuración npm, registry, CI, SQL, migraciones, RLS, RPC, triggers, índices, constraints, datos, secretos o configuración remota:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-DB-002` define cómo Vento OS centralizará los tipos derivados de Supabase dentro de la responsabilidad lógica de `@vento/supabase`, sin convertir un snapshot de base de datos en contrato empresarial ni autorizar todavía generación, publicación o adopción física.
+
+La tarea cierra documentalmente cuatro preguntas:
+
+1. cuál es la fuente autorizada para generar tipos;
+2. qué superficies pueden formar parte de cada recorte tipado;
+3. cómo se conserva procedencia, determinismo, compatibilidad, seguridad y rollback;
+4. cómo se actualiza el conjunto de tipos después de cada paquete de base de datos aprobado.
+
+La relación canónica queda expresada como:
+
+```text
+PAQUETE DE BASE DE DATOS APROBADO Y VERSIONADO
+        ↓
+CANDIDATE / MANIFEST / PARIDAD APLICABLE
+        ↓
+GENERACIÓN OFICIAL DE TIPOS SUPABASE
+        ↓
+RECORTES Y ARTEFACTOS TIPADOS GOBERNADOS
+        ↓
+@vento/supabase
+        ↓
+CONSUMIDORES COMPATIBLES SEGÚN RUNTIME Y TIER
+```
+
+Y nunca como:
+
+```text
+PRODUCCIÓN OBSERVADA CASUALMENTE
+        ↓
+CODEGEN DIRECTO SIN CANDIDATE
+        ↓
+DATABASE UNIVERSAL
+        ↓
+CUALQUIER CONSUMIDOR
+```
+
+---
+
+#### 2. Resultado material de la tarea
+
+Queda definido el contrato documental de centralización de tipos generados para `@vento/supabase` con estas decisiones vinculantes:
+
+- la generación parte exclusivamente de fuentes versionadas y aprobadas bajo gobierno de `vento-shell`;
+- el estado remoto observado no sustituye un candidate ni un paquete aprobado;
+- los tipos físicos se generan, no se editan manualmente;
+- cada corte conserva procedencia suficiente para reproducirse;
+- la selección de schemas y superficies es explícita;
+- `public` no se trata como raíz universal del modelo `Database`;
+- VITAL permanece fuera del bundle ordinario de Vento OS;
+- los artefactos se clasifican por tier de consumo;
+- los consumidores browser y mobile no reciben superficies internas o privilegiadas;
+- los consumidores server y Edge usan recortes mínimos, no un `Database` privilegiado universal;
+- los tipos físicos no sustituyen DTO de negocio, contratos empresariales, autorización, RLS ni validación runtime;
+- los cambios se clasifican y prueban antes de promoverse;
+- el rollback conserva versiones tipadas anteriores compatibles con el schema recuperado;
+- `SHELL-DB-002` se sincroniza incrementalmente con `AUTH-DB-026` y con cada paquete contractual de base de datos aprobado en BLOQUE R;
+- la generación y publicación física permanecen fuera de esta tarea documental.
+
+---
+
+#### 3. Naturaleza incremental de `SHELL-DB-002`
+
+`SHELL-DB-002` no representa una fotografía única y definitiva del esquema.
+
+Su resultado documental queda aprobado como regla permanente de centralización, pero la cobertura material de tipos se ampliará de forma incremental cuando BLOQUE R apruebe nuevos paquetes contractuales de base de datos.
+
+Reglas:
+
+1. cada paquete de base de datos aprobado puede introducir una nueva versión o ampliación de tipos;
+2. ninguna ampliación se incorpora por observación casual de producción, staging u otro remoto;
+3. la unidad de incorporación es un paquete o candidate versionado y aprobado;
+4. `AUTH-DB-026` es la tarea que genera y publica físicamente los tipos después de cada paquete aprobado;
+5. `SHELL-DB-002` conserva el contrato de gobierno que cada ejecución de `AUTH-DB-026` deberá obedecer;
+6. la especificación documental puede cerrarse ahora, pero la cobertura operativa completa no se considera final mientras falte el último paquete de base de datos exigido por la ruta canónica;
+7. una nueva ejecución no reinterpreta silenciosamente las versiones anteriores.
+
+---
+
+#### 4. Propiedad y fronteras
+
+La familia de tipos generados pertenece lógicamente a `@vento/supabase`.
+
+La propiedad no transfiere autoridad sobre el esquema, el negocio ni la autorización.
+
+| Materia                                                | Propietario canónico                 | Regla                                                        |
+| ------------------------------------------------------ | ------------------------------------ | ------------------------------------------------------------ |
+| migraciones y candidate versionado                     | `vento-shell`                        | fuente de cambio físico y de reproducción                    |
+| tablas, vistas, funciones, enums, RLS y persistencia   | Supabase bajo gobierno E3/BLOQUE R   | autoridad física                                             |
+| tipos físicos generados                                | `@vento/supabase`                    | proyección tipada derivada, no fuente de verdad              |
+| wrappers RPC                                           | `SHELL-DB-003` / `@vento/supabase`   | semántica de invocación y errores separada del codegen crudo |
+| errores normalizados                                   | `SHELL-DB-004` / `@vento/supabase`   | taxonomía técnica separada                                   |
+| factories por runtime                                  | `SHELL-DB-005` / `@vento/supabase`   | creación y aislamiento de clientes                           |
+| DTO, commands, queries, events y errores empresariales | contratos empresariales propietarios | no se derivan únicamente del schema físico                   |
+| autorización, permisos, scopes y contexto              | contratos y resolutores propietarios | un tipo no concede acceso                                    |
+| validación de entradas no confiables                   | contrato runtime propietario         | TypeScript no valida payloads externos                       |
+
+---
+
+#### 5. Capas contractuales y alcance de `SHELL-DB-002`
+
+Se preserva la separación de capas definida por la arquitectura de transición:
+
+| Capa | Contenido                                          | Relación con esta tarea                                                     |
+| ---- | -------------------------------------------------- | --------------------------------------------------------------------------- |
+| L0   | schema y migration manifest                        | fuente autorizada                                                           |
+| L1   | tipos físicos generados                            | alcance principal de `SHELL-DB-002`                                         |
+| L2   | adapters de persistencia                           | fuera de alcance                                                            |
+| L3   | DTO, commands, queries, events y errors de negocio | fuera de alcance                                                            |
+| L4   | REST, RPC, Edge, Storage y job contracts           | fuera de alcance salvo que aporten una fuente aprobada para derivar un tipo |
+| L5   | documentación y changelog                          | evidencia y trazabilidad de la evolución, no sustituto del artefacto tipado |
+
+`Row`, `Insert`, `Update`, `Args`, `Returns`, enums o composites generados pertenecen a L1. Su existencia no los convierte automáticamente en lenguaje empresarial público.
+
+---
+
+#### 6. Fuente autorizada de generación
+
+Un artefacto tipado solo podrá generarse desde una fuente que cumpla simultáneamente:
+
+1. pertenecer al repositorio o flujo versionado gobernado por `vento-shell`;
+2. corresponder a un paquete de base de datos aprobado o a un candidate explícitamente asociado a ese paquete;
+3. conservar identidad de commit o revisión reproducible;
+4. conservar la referencia de migraciones y manifests que componen el candidate cuando aplique;
+5. haber alcanzado la paridad o certificación exigida por la fase correspondiente antes de promoción;
+6. declarar de forma explícita qué schemas o superficies entran en la generación;
+7. utilizar una versión exacta y registrable de la herramienta de generación;
+8. impedir que una conexión incidental a producción se convierta en fuente contractual.
+
+Queda prohibido usar como autoridad suficiente:
+
+- un remoto no identificado;
+- el estado más reciente por conveniencia;
+- un dump sin procedencia;
+- un archivo generado antiguo sin candidate asociado;
+- la forma que compile en una sola aplicación;
+- un snapshot `public` asumido como base completa;
+- una copia manual mantenida por un consumidor.
+
+---
+
+#### 7. Procedencia mínima por corte de generación
+
+Cada corte tipado deberá poder reconstruirse sin adivinación.
+
+La evidencia de procedencia deberá identificar, como mínimo:
+
+1. el paquete de base de datos aprobado o candidate que origina el corte;
+2. la revisión o commit fuente;
+3. el digest del schema o candidate aplicable;
+4. el conjunto explícito de schemas y superficies incluidas;
+5. la versión exacta de la herramienta de generación;
+6. la instrucción reproducible utilizada para generar;
+7. el artefacto o bundle resultante;
+8. el digest del resultado;
+9. las referencias de migraciones o manifests aplicables;
+10. la clasificación de compatibilidad del cambio;
+11. la versión de package o release que incorpore el artefacto cuando exista físicamente;
+12. la relación con consumidores registrados cuando se promueva.
+
+No se fijan en esta tarea nombres físicos de archivos, carpetas, exports o campos de manifest que no estén ya aprobados por una fuente propietaria.
+
+---
+
+#### 8. Determinismo
+
+La generación será determinista respecto de sus entradas declaradas.
+
+Invariante:
+
+```text
+MISMO CANDIDATE
++ MISMO CONJUNTO DE SCHEMAS
++ MISMA VERSIÓN DE HERRAMIENTA
++ MISMAS OPCIONES DECLARADAS
+= MISMO RESULTADO LÓGICO Y MISMO DIGEST
+```
+
+Reglas:
+
+1. dos ejecuciones equivalentes no pueden producir diferencias no explicadas;
+2. el orden incidental de descubrimiento no puede cambiar la semántica del resultado;
+3. timestamps, rutas locales u otros datos ambientales no podrán introducir drift innecesario en el artefacto;
+4. un cambio de digest con entradas equivalentes es bloqueo de reproducibilidad;
+5. cualquier transformación posterior al codegen deberá ser declarada, determinista y verificable;
+6. una edición manual del resultado invalida la procedencia.
+
+---
+
+#### 9. Inmutabilidad del artefacto generado
+
+Los tipos generados son artefactos derivados de solo lectura.
+
+Reglas vinculantes:
+
+- no se corrige una discrepancia editando manualmente el resultado generado;
+- no se agrega un campo faltante mediante una modificación directa del archivo derivado;
+- no se cambia nullability por conveniencia del consumidor;
+- no se elimina una función del tipo porque un consumidor no la use;
+- no se renombra un enum localmente;
+- no se modifica una firma RPC generada para hacerla compilar;
+- no se usa un cast como sustituto de corregir la fuente o de registrar un override legítimo.
+
+Si la fuente física es incorrecta, se corrige mediante el paquete de base de datos propietario. Si el codegen es insuficiente para expresar semántica legítima, se utiliza una capa separada y gobernada.
+
+---
+
+#### 10. Selección explícita de schemas
+
+La generación no asumirá que `public` contiene toda la superficie de Vento OS.
+
+Cada corte deberá declarar qué schemas participan y con qué finalidad.
+
+Reglas:
+
+1. un schema no entra por existir;
+2. un schema no sale por no ser visible desde una aplicación concreta;
+3. la inclusión no concede `USAGE`, `SELECT`, `EXECUTE`, DML, RLS ni autorización;
+4. la disposición arquitectónica del schema gobierna el tier de consumo posible;
+5. `public` puede contener compatibilidad temporal y no se considera raíz universal del modelo `Database`;
+6. `app_private`, `audit`, owner schemas y otras superficies internas no se distribuyen a cliente por estar presentes en el candidate;
+7. schemas administrados por PostgreSQL, Supabase o extensiones se consumen mediante superficies soportadas, salvo decisión canónica específica;
+8. VITAL no se incorpora al bundle ordinario de Vento OS.
+
+---
+
+#### 11. Separación entre superficie física y contrato empresarial
+
+La centralización distingue dos conceptos:
+
+```text
+DATABASE_PHYSICAL
+≠
+API_BUSINESS_CONTRACTS
+```
+
+`DATABASE_PHYSICAL` representa la forma generada de la base y puede incluir relaciones, vistas, funciones, enums, composites y metadata tipable de schemas aprobados para tooling o servidor.
+
+`API_BUSINESS_CONTRACTS` representa únicamente contratos empresariales aprobados para consumo, derivados de superficies canónicas como vistas de lectura, consultas y comandos versionados.
+
+Reglas:
+
+1. un `Row` físico no es un DTO empresarial por defecto;
+2. una tabla no se convierte en API pública porque aparezca en `Database`;
+3. una función no se convierte en RPC aprobada por ser generable;
+4. una columna no se convierte en campo público por aparecer en TypeScript;
+5. los tipos de consumidor se recortan desde contratos y superficies autorizadas;
+6. los owner schemas no se publican como modelo empresarial universal.
+
+---
+
+#### 12. Tiers de distribución tipada
+
+Todo artefacto o recorte generado deberá pertenecer a exactamente uno de estos tiers canónicos:
+
+1. `CONSUMER_SAFE`
+2. `SERVER_ONLY`
+3. `PRIVILEGED_TOOLING`
+
+No se crea un cuarto tier por conveniencia.
+
+##### `CONSUMER_SAFE`
+
+Puede ser consumido por superficies browser o mobile únicamente cuando contiene contratos aprobados y no expone internals, owner schemas, `app_private`, `audit`, service-role ni estructura privilegiada.
+
+##### `SERVER_ONLY`
+
+Puede contener superficies necesarias para servicios, Edge o servidores, siempre con recorte mínimo por aplicación, contrato o función.
+
+##### `PRIVILEGED_TOOLING`
+
+Puede contener superficie física más amplia para generación, migración, clean-room, recuperación o herramientas segregadas. No puede convertirse en dependencia ordinaria de runtime.
+
+---
+
+#### 13. Regla de mínimo privilegio tipado
+
+El tipado también aplica mínimo privilegio.
+
+Reglas:
+
+1. browser y mobile no importarán owner schemas, `app_private`, `audit` ni tipos de clientes privilegiados;
+2. server y Edge no recibirán un `Database` universal privilegiado solo por conveniencia;
+3. cada consumidor usará el recorte mínimo compatible con su responsabilidad;
+4. un recorte más amplio requiere una justificación canónica, no solo una necesidad de compilación;
+5. la capacidad de importar un tipo no demuestra derecho de acceso al objeto correspondiente;
+6. la separación de tipos complementa, pero nunca sustituye, grants, RLS y autorización runtime.
+
+---
+
+#### 14. Relaciones y helpers físicos
+
+Para relaciones físicas autorizadas en el corte, la generación deberá conservar la semántica estructural que la fuente expresa.
+
+El modelo incluye, cuando corresponda:
+
+- `Row`;
+- `Insert`;
+- `Update`;
+- enums;
+- composite types;
+- relaciones y claves tipables;
+- columnas generadas;
+- defaults;
+- identity;
+- nullability física;
+- vistas y su shape generado;
+- funciones y sus firmas tipables.
+
+La capa generada deberá permitir helpers equivalentes a selección por tabla, inserción, actualización, enums, composites y funciones por schema allowlisted, sin exigir shapes manuales duplicados.
+
+---
+
+#### 15. Diferencia entre `Row`, `Insert` y `Update`
+
+`Row`, `Insert` y `Update` no son aliases intercambiables.
+
+Reglas:
+
+1. `Row` representa la forma legible resultante;
+2. `Insert` respeta campos generados, defaults, identity y obligatoriedad real de creación;
+3. `Update` respeta mutabilidad y opcionalidad de cambio;
+4. una columna server-owned no se hace escribible por conveniencia;
+5. una columna generada no se exige artificialmente al insertar;
+6. nullability física se conserva en la capa generada;
+7. nullability de negocio, cuando difiera, se resuelve fuera de L1 mediante contrato o adapter explícito;
+8. las pruebas de tipo deberán incluir casos negativos para impedir asignaciones inválidas.
+
+---
+
+#### 16. Vistas
+
+Las vistas generadas deberán conservar la forma que la fuente certificada exponga, incluyendo cuando sea derivable:
+
+- columnas;
+- tipos;
+- nullability;
+- relaciones;
+- cardinalidad;
+- procedencia estructural relevante.
+
+Un override sobre una vista requiere una razón explícita y una prueba que demuestre por qué el codegen no expresa correctamente la semántica necesaria.
+
+Un tipo de vista no demuestra por sí mismo que la vista respete RLS, seguridad invoker, security definer, grants o exposición correcta.
+
+---
+
+#### 17. Enums y vocabularios
+
+Los enums físicos se derivan de la fuente física aprobada.
+
+Reglas:
+
+1. no se mantiene un enum TypeScript paralelo como segunda fuente;
+2. no se inventa un literal adicional para hacer compilar un consumidor;
+3. agregar un valor puede ser compatible según el contrato, pero debe clasificarse;
+4. retirar o reinterpretar un valor es un cambio gobernado;
+5. un vocabulario empresarial que no sea un enum físico conserva su fuente contractual propia;
+6. el codegen no absorbe catálogos empresariales ajenos.
+
+---
+
+#### 18. JSON, dominios y tipos no suficientemente expresivos
+
+El tipo físico generado puede ser insuficiente para expresar semántica empresarial de:
+
+- JSONB estructurado;
+- metadata;
+- dominios PostgreSQL;
+- fechas con restricciones adicionales;
+- dinero;
+- unidades;
+- identificadores nominales;
+- payloads externos;
+- vistas con inferencia incompleta.
+
+Cuando ocurra:
+
+1. no se modifica manualmente el resultado generado;
+2. se crea una capa separada de override, adapter o contrato derivado;
+3. la capa declara por qué el codegen es insuficiente;
+4. la capa tiene owner y lifecycle;
+5. la capa tiene prueba;
+6. la capa no contradice silenciosamente la fuente física;
+7. si representa entrada no confiable, deberá existir validación runtime.
+
+---
+
+#### 19. Funciones y firmas generadas
+
+La capa L1 puede incluir tipos crudos generados para funciones cuando la fuente y el schema allowlisted los incluyan.
+
+Deben conservarse:
+
+- schema exacto;
+- nombre exacto;
+- argumentos;
+- tipos de argumentos;
+- retorno;
+- nullability tipable;
+- firma suficiente para distinguir variantes cuando exista legado sobrecargado.
+
+Reglas:
+
+1. los `Args` y `Returns` generados se derivan de la firma física;
+2. una sobrecarga legacy no se colapsa en un nombre ambiguo;
+3. una firma generada no autoriza invocación;
+4. una firma generada no expresa por sí sola errores, efectos, idempotencia, autorización o retry;
+5. la centralización de wrappers de invocación pertenece a `SHELL-DB-003`;
+6. `SHELL-DB-002` no crea wrappers ni decide nombres públicos de funciones TypeScript.
+
+---
+
+#### 20. Frontera con `SHELL-DB-003`
+
+La frontera exacta es:
+
+```text
+SHELL-DB-002
+→ tipos físicos generados
+→ Args / Returns crudos derivados de firma
+→ recortes y helpers tipados
+
+SHELL-DB-003
+→ wrappers canónicos
+→ contrato de llamada
+→ traducción de argumentos
+→ manejo de retorno
+→ errores normalizados aplicables
+→ política de compatibilidad de invocación
+```
+
+`SHELL-DB-002` no anticipa la API pública de los wrappers.
+
+---
+
+#### 21. DTO y contratos de negocio
+
+La capa generada no debe convertirse en segunda fuente de semántica empresarial.
+
+Reglas:
+
+1. DTO, commands, queries, events y errors conservan su contrato propietario;
+2. un DTO puede derivarse o mapearse desde tipos físicos sin duplicarlos ciegamente;
+3. un DTO de interfaz puede existir únicamente si no replica sin razón un `Row`, `Insert`, `Update`, enum, RPC o contrato ya gobernado;
+4. cualquier solapamiento se reconcilia explícitamente;
+5. nombres físicos de columnas no se convierten automáticamente en lenguaje de dominio externo;
+6. contratos externos no exponen internals solo porque el codegen los conozca.
+
+---
+
+#### 22. Autorización, grants y RLS
+
+El tipado no concede autoridad.
+
+Invariantes:
+
+1. incluir un objeto en `Database` no concede `USAGE`;
+2. incluir una tabla no concede `SELECT`, `INSERT`, `UPDATE` ni `DELETE`;
+3. incluir una función no concede `EXECUTE`;
+4. compilar un query no demuestra que RLS lo permita;
+5. compilar un wrapper no demuestra autorización empresarial;
+6. los tipos de autorización no se duplican dentro del bundle de Supabase si ya existe un contrato compartido propietario;
+7. pruebas de tipos y pruebas de seguridad son capas distintas y ambas pueden ser obligatorias.
+
+---
+
+#### 23. Validación runtime
+
+TypeScript no sustituye validación runtime de datos no confiables.
+
+Requieren contrato y validación runtime cuando corresponda:
+
+- JSONB empresarial;
+- webhooks;
+- callbacks de proveedores;
+- payloads de Edge Functions;
+- eventos externos;
+- Realtime;
+- metadata de Storage;
+- archivos;
+- datos importados;
+- cuerpos HTTP;
+- cualquier fuente no controlada por el compilador del consumidor.
+
+Un cast, `unknown` coercionado o `overrideTypes` no transforma un dato no confiable en dato validado.
+
+---
+
+#### 24. Escapes y overrides
+
+Todo escape del sistema de tipos deberá permanecer visible y gobernado.
+
+Se consideran escapes, entre otros:
+
+- `any`;
+- `as any`;
+- coerciones de `unknown` sin validación suficiente;
+- `overrideTypes` usados para contradecir la forma generada;
+- casts masivos;
+- shapes manuales que sustituyen el tipo generado.
+
+Cada escape legítimo deberá tener, como mínimo:
+
+- objeto o contrato afectado;
+- motivo;
+- owner;
+- prueba;
+- riesgo;
+- condición de retiro.
+
+La evolución de CI deberá reducir, no normalizar, estos escapes y bloquear ampliaciones no registradas.
+
+---
+
+#### 25. Versionado de tipos y package
+
+Los artefactos tipados evolucionan bajo el gobierno de package compartido y del contrato de datos.
+
+Clasificación semántica mínima:
+
+- `PATCH`: corrección documental o metadata que no cambia el consumo;
+- `MINOR`: adición compatible y opcional;
+- `MAJOR`: eliminación o cambio incompatible de significado, autorización, nullability, enum cerrado, ruta, firma, error u otra frontera de consumo.
+
+Reglas:
+
+1. cada versión publicada es inmutable;
+2. cada versión conserva digest;
+3. una versión nueva no reinterpreta una versión histórica;
+4. los consumidores registran la versión realmente resuelta;
+5. un rango de compatibilidad no sustituye la identidad exacta desplegada;
+6. el lockfile forma parte de la reproducibilidad del consumidor;
+7. la primera versión física de `@vento/supabase` no se asigna en esta tarea.
+
+---
+
+#### 26. Clasificación de diffs
+
+Todo cambio de tipos deberá clasificarse antes de promoción en una de estas cuatro clases:
+
+1. `NON_BREAKING`
+2. `REVIEW_REQUIRED`
+3. `BREAKING`
+4. `INVALID`
+
+La clasificación considera conjuntamente:
+
+- shape físico;
+- contrato empresarial;
+- runtime;
+- consumidores registrados;
+- seguridad;
+- compatibilidad de toolchain;
+- rollout y rollback.
+
+Un diff de TypeScript no puede clasificarse únicamente por si `tsc` termina correctamente.
+
+---
+
+#### 27. Ejemplos de cambios que requieren revisión o bloqueo
+
+Sin convertir esta lista en una taxonomía exhaustiva:
+
+| Cambio                                    | Tratamiento mínimo                                                    |
+| ----------------------------------------- | --------------------------------------------------------------------- |
+| columna aditiva nullable                  | verificar contrato y consumidores antes de clasificar como compatible |
+| columna nueva obligatoria sin default     | potencialmente breaking                                               |
+| cambio de nullability                     | revisión obligatoria y posible breaking                               |
+| retirada de columna                       | breaking y sujeta a gate de cero uso                                  |
+| enum con valor retirado o reinterpretado  | breaking                                                              |
+| nueva función aprobada                    | aditiva si su introducción no altera contratos existentes             |
+| cambio de argumentos o retorno de función | revisión obligatoria y normalmente breaking si afecta consumidores    |
+| cambio de schema de un objeto             | transición contractual, no simple rename de tipos                     |
+| override sin evidencia                    | invalid                                                               |
+| drift de digest con entradas equivalentes | invalid                                                               |
+| exposición de owner schema a browser      | invalid                                                               |
+| inclusión accidental de VITAL             | invalid                                                               |
+
+---
+
+#### 28. Pipeline lógico de generación
+
+La materialización posterior deberá respetar un pipeline cerrado que, como mínimo, cubra estas etapas lógicas:
+
+1. resolver la fuente aprobada;
+2. verificar identidad y procedencia;
+3. resolver schemas y superficies allowlisted;
+4. fijar toolchain;
+5. generar tipos;
+6. verificar determinismo e integridad;
+7. aplicar o validar capas derivadas separadas cuando estén aprobadas;
+8. clasificar el diff;
+9. probar consumidores y contratos aplicables;
+10. promover o bloquear con evidencia.
+
+No se asignan aquí nombres de scripts, workflows o archivos físicos no materializados.
+
+---
+
+#### 29. Compatibilidad transversal de consumidores
+
+Una versión candidata de tipos no se considera promovible únicamente porque compile dentro de `vento-shell`.
+
+Antes de promoción física deberán comprobarse los consumidores registrados aplicables.
+
+La matriz de compatibilidad deberá considerar, según el consumidor:
+
+- versión del package tipado;
+- versión de Supabase JS;
+- versión de `@supabase/ssr` cuando aplique;
+- versión de Supabase CLI utilizada en generación;
+- TypeScript;
+- Next.js;
+- Expo;
+- runtime server, browser, native o Edge;
+- contracts consumidos;
+- release efectivo;
+- ambiente.
+
+La validación transversal incluye typecheck y contract tests de los consumidores registrados, además de las pruebas semánticas y de seguridad que correspondan.
+
+---
+
+#### 30. Registro de consumidores
+
+Un consumidor no se incorpora por inferencia.
+
+Antes de adoptar tipos deberá registrarse, como mínimo:
+
+- repositorio;
+- aplicación o responsabilidad;
+- runtime;
+- tier o bundle consumido;
+- versión exacta resuelta;
+- contratos utilizados;
+- owner;
+- release o corte aplicable.
+
+La ausencia de un consumidor observado no autoriza automáticamente retirar un tipo. La existencia potencial de un consumidor futuro tampoco autoriza ampliar la superficie.
+
+---
+
+#### 31. Secuencia de rollout compatible
+
+Los cambios aditivos seguirán, cuando aplique, la secuencia:
+
+```text
+PUBLICAR TIPOS COMPATIBLES
+        ↓
+ADOPTAR EN CONSUMIDORES COMPATIBLES
+        ↓
+DESPLEGAR CAMBIO DE SCHEMA
+        ↓
+OBSERVAR Y CERTIFICAR
+```
+
+Los cambios destructivos o incompatibles utilizarán:
+
+```text
+SUCESOR COMPATIBLE
+        ↓
+MIGRACIÓN DE CONSUMIDORES
+        ↓
+DEPRECACIÓN
+        ↓
+OBSERVACIÓN DE CERO USO O SUSTITUCIÓN DESPLEGADA
+        ↓
+RETIRO
+```
+
+No se permite retirar una tabla, columna, enum, vista, RPC, función o alias tipado basándose únicamente en búsqueda de código incompleta.
+
+---
+
+#### 32. Rollback
+
+El rollback de schema y el rollback de tipos deben ser compatibles.
+
+Reglas:
+
+1. la versión anterior del package tipado permanece identificable;
+2. sus manifests y digests permanecen disponibles como evidencia;
+3. un rollback no regenera historia desde el estado `current`;
+4. la versión restaurada debe compilar contra el schema recuperado según su contrato;
+5. el rollback no introduce un bundle más privilegiado para solucionar una incompatibilidad;
+6. cambios empresariales confirmados no se revierten de forma destructiva por conveniencia de tipos;
+7. forward-fix puede ser la estrategia correcta cuando rollback físico no sea seguro, pero deberá estar gobernado por la tarea propietaria.
+
+---
+
+#### 33. Relación con migraciones
+
+Toda migración que altere un objeto tipado deberá mantener sincronía con el contrato de tipos.
+
+Cuando la fase de implementación lo exija, el mismo cambio gobernado deberá conectar:
+
+- fuente o migración;
+- candidate;
+- generación tipada candidata;
+- manifest;
+- pruebas;
+- clasificación de compatibilidad;
+- consumidores afectados;
+- rollout;
+- rollback.
+
+Queda prohibido promover schema y dejar la actualización tipada como ajuste manual posterior sin dueño.
+
+---
+
+#### 34. VITAL
+
+VITAL permanece separado de Vento OS para esta familia.
+
+Reglas:
+
+1. sus tipos no se mezclan en el bundle ordinario de `@vento/supabase` para Vento OS;
+2. su presencia física en una fuente o inventario no autoriza absorción;
+3. si requiere artefactos tipados, tendrá el recorte o package separado que corresponda a su arquitectura propietaria;
+4. un consumidor Vento OS no obtiene acceso tipado a VITAL por conveniencia;
+5. los validadores deberán detectar incorporación accidental.
+
+---
+
+#### 35. Estado técnico verificado y significado documental
+
+El estado técnico actual no demuestra todavía una implementación física de `@vento/supabase` ni una capa canónica compartida de tipos `Database` materializada en el repositorio propietario.
+
+Por tanto, el resultado de esta tarea es:
+
+```text
+GOBIERNO DE TIPOS = ESPECIFICADO
+FUENTE Y PROCEDENCIA = ESPECIFICADAS
+REGLA DE GENERACIÓN = ESPECIFICADA
+TIERS Y RECORTES = ESPECIFICADOS
+SINCRONIZACIÓN INCREMENTAL = ESPECIFICADA
+CODEGEN EJECUTADO = NO
+ARTEFACTO DATABASE CENTRALIZADO = NO MATERIALIZADO
+PACKAGE @vento/supabase FÍSICO = NO MATERIALIZADO
+PUBLICACIÓN = NO REALIZADA
+CONSUMIDORES MIGRADOS POR ESTA TAREA = 0
+CAMBIOS SUPABASE = 0
+```
+
+`ESPECIFICADO` no equivale a `IMPLEMENTADO`, `GENERATED_TYPES_PASS`, `PUBLICADO`, `ADOPTADO` ni `VALIDADO` en consumidores.
+
+---
+
+#### 36. Outcomes aplicables a la futura materialización
+
+La futura ejecución utilizará estados que permitan distinguir al menos:
+
+- generación o confirmación planificada todavía no implementada;
+- transición contractual planificada todavía no implementada;
+- tipos generados con verificación satisfactoria;
+- consumidores compatibles;
+- documentación vigente;
+- actualización contractual cerrada;
+- actualización incompleta;
+- cambio incompatible sin gobierno;
+- bloqueo de seguridad contractual;
+- rollback ejecutado.
+
+Esta tarea no atribuye ninguno de los outcomes de ejecución positiva porque no se ejecutó codegen ni se validaron consumidores.
+
+---
+
+#### 37. Handoff a `AUTH-DB-026`
+
+`AUTH-DB-026 — Generar y publicar tipos después de cada paquete aprobado` es el punto de ejecución incremental que materializará esta especificación conforme avance BLOQUE R.
+
+Cada ejecución deberá:
+
+1. recibir un paquete de base de datos aprobado;
+2. resolver la fuente versionada correspondiente;
+3. generar los artefactos aplicables siguiendo este gobierno;
+4. conservar procedencia y digest;
+5. clasificar el cambio;
+6. probar consumidores aplicables;
+7. publicar únicamente cuando las puertas correspondientes estén satisfechas;
+8. mantener la versión anterior disponible para rollback;
+9. actualizar la evidencia de sincronización del package compartido.
+
+`SHELL-DB-002` no ejecuta ninguna de estas acciones físicas.
+
+---
+
+#### 38. Handoffs exactos
+
+| Materia                                             | Tarea propietaria                 | Condición de salida                                                     |
+| --------------------------------------------------- | --------------------------------- | ----------------------------------------------------------------------- |
+| generación y publicación después de cada paquete DB | `AUTH-DB-026`                     | artefacto generado, procedencia, pruebas y publicación conforme a gates |
+| wrappers tipados de RPC                             | `SHELL-DB-003`                    | invocación tipada reconciliada con las RPC canónicas aprobadas          |
+| errores normalizados de Supabase                    | `SHELL-DB-004`                    | taxonomía técnica compartida sin mezclar dominio o autorización         |
+| separación server/browser/native/privileged         | `SHELL-DB-005`                    | factories y superficies runtime aisladas                                |
+| migraciones y cambios de schema                     | tareas E3/BLOQUE R propietarias   | cambio físico versionado desde `vento-shell`                            |
+| gates y validadores automáticos                     | tareas CI y de calidad aplicables | pruebas y evidencia automatizadas según la fase                         |
+| migración de consumidores                           | tareas de adopción propietarias   | paridad, compatibilidad y rollback por repositorio                      |
+
+---
+
+#### 39. Reglas de prohibición
+
+`SHELL-DB-002` no autoriza:
+
+- ejecutar Supabase codegen;
+- conectarse a producción para regenerar tipos;
+- crear el package físico `@vento/supabase`;
+- asignar una ruta física al package;
+- asignar versión npm;
+- definir exports públicos físicos;
+- publicar al registry;
+- modificar clientes Supabase existentes;
+- modificar `Database` manualmente;
+- crear wrappers RPC;
+- modificar RPC;
+- crear o modificar tablas;
+- crear o modificar vistas;
+- crear o modificar funciones;
+- crear o modificar enums;
+- crear o modificar RLS;
+- ejecutar DDL;
+- ejecutar DML;
+- ejecutar backfills;
+- cambiar datos;
+- migrar consumidores;
+- introducir VITAL en el bundle de Vento OS;
+- declarar seguridad satisfecha porque TypeScript compile;
+- declarar consumidores compatibles sin pruebas reales;
+- iniciar `SHELL-DB-003`.
+
+---
+
+#### 40. Cobertura de prueba vigente no modificada
+
+La arquitectura vigente de requisitos ya cubre las obligaciones sustantivas necesarias para esta tarea, entre ellas:
+
+- compilación transversal de tipos, firmas, enums, vistas, JSON y SDK antes de promover schema;
+- separación entre `public`, fuentes canónicas y contratos;
+- generación de tipos de consumidores únicamente desde superficies aprobadas;
+- exclusión de VITAL del bundle ordinario;
+- separación entre tipos físicos y contratos empresariales;
+- helpers generados para relaciones, inserts, updates, enums, composites y funciones;
+- conservación de generated columns, defaults, identity y nullability;
+- Args y Returns derivados por firma exacta;
+- tratamiento inequívoco de overloads;
+- gobernanza de vistas, enums, JSONB, IDs y DTOs;
+- tiers `CONSUMER_SAFE`, `SERVER_ONLY` y `PRIVILEGED_TOOLING`;
+- factories parametrizadas con `Database` o recortes compatibles;
+- prohibición de internals en browser/mobile;
+- mínimo privilegio de tipos server-side;
+- registro de consumidores y toolchain;
+- pinning exacto y lockfile;
+- ledger y presupuesto de escapes;
+- validación runtime independiente de TypeScript;
+- pipeline de generación;
+- pruebas transversales de consumidores;
+- clasificación de diffs;
+- sincronización migración-tipos;
+- rollout compatible;
+- retiro con cero uso o sustitución desplegada;
+- rollback versionado;
+- gate ambiental de contratos, tipos y consumidores.
+
+`SHELL-DB-002` centraliza esas obligaciones dentro de la responsabilidad documental de `@vento/supabase` y no introduce una obligación verificable nueva que requiera otro identificador.
+
+---
+
+#### 41. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** la tarea consolida para `@vento/supabase` reglas de generación, procedencia, aislamiento, compatibilidad, rollout, rollback y sincronización incremental que ya están cubiertas por requisitos canónicos vigentes de Supabase, datos, packages y consumidores. No crea un comportamiento runtime, un artefacto físico, un nuevo gate, una nueva superficie de acceso ni una nueva operación que carezca de requisito existente.
+
+---
+
+#### 42. Decisiones vinculantes
+
+1. Los tipos generados de Supabase pertenecen lógicamente a `@vento/supabase`.
+2. El schema y las migraciones permanecen como fuente física autoritativa bajo gobierno de `vento-shell`.
+3. Los tipos son derivados y nunca fuente alternativa de verdad.
+4. La generación parte de un paquete o candidate versionado y aprobado.
+5. El remoto observado no sustituye la fuente aprobada.
+6. La generación declara schemas y superficies explícitamente.
+7. `public` no es raíz universal del modelo `Database`.
+8. VITAL permanece fuera del bundle ordinario de Vento OS.
+9. Cada corte conserva procedencia reproducible.
+10. La versión de herramienta se fija por corte.
+11. La generación debe ser determinista.
+12. El resultado generado es de solo lectura.
+13. Las correcciones se realizan en la fuente o en capas separadas gobernadas, no editando el artefacto derivado.
+14. `DATABASE_PHYSICAL` y `API_BUSINESS_CONTRACTS` permanecen separados.
+15. `Row` no es DTO empresarial por defecto.
+16. `Insert` y `Update` conservan semánticas distintas.
+17. Los helpers físicos se derivan de schemas allowlisted.
+18. Las vistas conservan shape y nullability derivados; overrides requieren evidencia.
+19. Los enums se derivan de su fuente y no tienen catálogos TypeScript paralelos.
+20. JSONB y entradas no confiables requieren validación runtime cuando corresponda.
+21. La capa L1 puede contener `Args` y `Returns` crudos generados de funciones.
+22. Los wrappers RPC pertenecen a `SHELL-DB-003`.
+23. Las sobrecargas legacy se distinguen por firma y no por nombre ambiguo.
+24. Un tipo no concede permisos, grants, RLS ni autorización.
+25. Los artefactos se clasifican exactamente como `CONSUMER_SAFE`, `SERVER_ONLY` o `PRIVILEGED_TOOLING`.
+26. Browser y mobile no importan internals ni superficies privilegiadas.
+27. Server y Edge usan recortes mínimos.
+28. Los escapes del tipado permanecen registrados, probados y con retiro previsto.
+29. Cada versión publicada será inmutable y reproducible.
+30. Los consumidores registran versión exacta y lockfile.
+31. Todo diff se clasifica como `NON_BREAKING`, `REVIEW_REQUIRED`, `BREAKING` o `INVALID`.
+32. Compilar no basta para declarar compatibilidad.
+33. Cada candidato deberá probar consumidores registrados aplicables antes de promoción.
+34. Cambios aditivos siguen rollout compatible.
+35. Cambios destructivos requieren sucesor, migración, deprecación y evidencia de cero uso o sustitución desplegada.
+36. Rollback conserva la versión tipada anterior y sus manifests.
+37. No se regenera historia desde `current` durante rollback.
+38. Las migraciones que alteran objetos tipados mantienen sincronía con tipos y contratos.
+39. `SHELL-DB-002` se actualiza incrementalmente después de cada paquete contractual aprobado de BLOQUE R.
+40. `AUTH-DB-026` materializa la generación y publicación incremental.
+41. No se asigna root físico del package en esta tarea.
+42. No se asigna versión npm en esta tarea.
+43. No se inventan exports físicos en esta tarea.
+44. No se crea código en esta tarea.
+45. No se modifica Supabase en esta tarea.
+46. No se modifican datos en esta tarea.
+47. No se migran consumidores en esta tarea.
+48. No se crean ni modifican requisitos de prueba.
+49. `SHELL-DB-003` queda únicamente reservado.
+
+---
+
+#### 43. Criterios de aceptación documental
+
+`SHELL-DB-002` queda documentalmente satisfecha cuando:
+
+1. existe una única regla de autoridad para la fuente de generación;
+2. se define procedencia reproducible por corte;
+3. se define determinismo;
+4. se prohíbe edición manual del artefacto derivado;
+5. se separan tipos físicos de contratos empresariales;
+6. se define selección explícita de schemas;
+7. `public` no se trata como raíz universal;
+8. VITAL queda excluido del bundle ordinario;
+9. se definen los tres tiers de consumo;
+10. se define mínimo privilegio tipado por runtime;
+11. se definen `Row`, `Insert`, `Update`, enums, composites y firmas crudas dentro de la frontera L1;
+12. wrappers RPC quedan fuera de esta tarea;
+13. se define tratamiento de JSON, overrides y escapes;
+14. se define clasificación de cambios;
+15. se define compatibilidad transversal de consumidores;
+16. se define rollout y rollback;
+17. se vincula la actualización incremental con `AUTH-DB-026` y los paquetes aprobados de BLOQUE R;
+18. se declara correctamente el estado no materializado;
+19. se reconcilia que existen cero cambios de requisitos;
+20. `SHELL-DB-003` permanece sin iniciar.
+
+---
+
+#### 44. Estado de cierre documental
+
+| Elemento                        | Estado                           |
+| ------------------------------- | -------------------------------- |
+| gobierno de tipos               | `ESPECIFICADO`                   |
+| autoridad de fuente             | `ESPECIFICADA`                   |
+| procedencia                     | `ESPECIFICADA`                   |
+| determinismo                    | `ESPECIFICADO`                   |
+| selección de schemas            | `ESPECIFICADA`                   |
+| tiers de distribución           | `ESPECIFICADOS`                  |
+| mínimo privilegio tipado        | `ESPECIFICADO`                   |
+| frontera L1/L2/L3               | `ESPECIFICADA`                   |
+| tratamiento de funciones crudas | `ESPECIFICADO`                   |
+| frontera con wrappers RPC       | `ESPECIFICADA`                   |
+| clasificación de diffs          | `ESPECIFICADA`                   |
+| compatibilidad de consumidores  | `ESPECIFICADA`                   |
+| rollout                         | `ESPECIFICADO`                   |
+| rollback                        | `ESPECIFICADO`                   |
+| sincronización incremental      | `ESPECIFICADA`                   |
+| codegen físico                  | `NO IMPLEMENTADO POR ESTA TAREA` |
+| package físico                  | `NO MATERIALIZADO`               |
+| publicación                     | `NO REALIZADA`                   |
+| consumidores migrados           | `0`                              |
+| cambios Supabase                | `0`                              |
+| cambios de datos                | `0`                              |
+| requisitos creados              | `0`                              |
+| requisitos modificados          | `0`                              |
+
+---
+
+#### 45. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-DB-001 — Crear @vento/supabase
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-DB-002 — Centralizar tipos generados por cada paquete de base de datos aprobado
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-DB-003 — Crear y actualizar wrappers tipados para RPC canónicas
+
+
 ### [ ] SHELL-DB-003 — Crear y actualizar wrappers tipados para RPC canónicas
 ### [ ] SHELL-DB-004 — Normalizar errores de Supabase
 ### [ ] SHELL-DB-005 — Separar cliente server, browser y native
