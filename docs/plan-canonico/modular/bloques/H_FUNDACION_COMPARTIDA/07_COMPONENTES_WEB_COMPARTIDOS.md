@@ -19450,8 +19450,2984 @@ Quedan fijadas las siguientes decisiones vinculantes:
 `SHELL-UI-015 — Compartir diagnóstico de contexto`
 
 
-### [ ] SHELL-UI-015 — Compartir diagnóstico de contexto
-### [ ] SHELL-UI-016 — Compartir estados de error recuperable
+### ✅ SHELL-UI-015 — Compartir diagnóstico de contexto
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-014 — Compartir confirmaciones de acciones sensibles
+**Tarea siguiente:** SHELL-UI-016 — Compartir estados de error recuperable
+**Tipo de tarea:** Documental; definición canónica del diagnóstico compartido de contexto para `@vento/ui-web`, su identidad, API conceptual, estados admisibles, contenido humano mínimo, fronteras con contexto runtime, autorización, recuperación, accesibilidad, privacidad, consumidores y migración, sin materializar package, código, SQL, migraciones, cambios de Supabase, releases ni despliegues.
+**Bloque:** H — Fundación compartida
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md`
+**Estado físico resultante:** `ESPECIFICADO`; componente físico no materializado; consumidores migrados: 0.
+**Cambios físicos autorizados:** 0
+**Requisitos de prueba creados o modificados:** 0
+**Paquete propietario conceptual:** `@vento/ui-web`
+
+---
+
+#### 1. Propósito
+
+Definir una superficie compartida que explique de forma humana, segura, accesible y consistente por qué el contexto requerido por una pantalla, tarea o acción todavía no puede considerarse vigente, qué parte del contexto sí permanece válida, qué efecto tiene esa condición y cuál es el siguiente paso seguro.
+
+La regla central queda fijada como:
+
+```text
+CONTEXTO Y RAZONES YA RESUELTOS POR CAPAS PROPIETARIAS
+        ↓
+NORMALIZACIÓN SEGURA Y MINIMIZADA
+        ↓
+ContextDiagnostic
+        ↓
+EXPLICACIÓN HUMANA DEL ESTADO CONTEXTUAL
+```
+
+Queda prohibida la dirección inversa:
+
+```text
+ContextDiagnostic
+        ✕
+RESOLVER CONTEXTO
+        ✕
+CONCEDER O DENEGAR AUTORIDAD
+        ✕
+CAMBIAR SEDE, ÁREA, TURNO, ACTOR O ROL
+        ✕
+EJECUTAR RECUPERACIÓN O MUTACIONES
+```
+
+---
+
+#### 2. Posición dentro de la secuencia compartida
+
+`SHELL-UI-015` especializa la explicación estructurada de condiciones contextuales ya detectadas.
+
+Conserva separadas las responsabilidades vecinas:
+
+| Tarea          | Responsabilidad conservada                                                 |
+| -------------- | -------------------------------------------------------------------------- |
+| `SHELL-UI-006` | resumen persistente del contexto y su frescura mediante `ContextIndicator` |
+| `SHELL-UI-007` | selección compartida de sede                                               |
+| `SHELL-UI-008` | selección compartida de área                                               |
+| `SHELL-UI-009` | aviso compartido de rol simulado                                           |
+| `SHELL-UI-010` | AppShell y ubicación sistémica del chrome                                  |
+| `SHELL-UI-013` | panel de acción principal                                                  |
+| `SHELL-UI-014` | confirmación explícita de acciones sensibles                               |
+| `SHELL-UI-016` | estados y controles de error recuperable                                   |
+| `SHELL-UI-017` | patrón compartido para tablet                                              |
+| `SHELL-UI-018` | patrón compartido para kiosco                                              |
+| `SHELL-UI-020` | traspaso entre aplicaciones                                                |
+
+`SHELL-UI-015` no absorbe ninguna de esas tareas.
+
+---
+
+#### 3. Dependencias documentales y contractuales consumidas
+
+La definición consume sin reemplazar:
+
+- `SHELL-UI-001 — Crear @vento/ui-web`;
+- `SHELL-UI-002 — Compartir Alert`;
+- `SHELL-UI-003 — Compartir Button`;
+- `SHELL-UI-004 — Compartir Card`;
+- `SHELL-UI-005 — Compartir EmptyState`;
+- `SHELL-UI-006 — Compartir indicador de contexto`;
+- `SHELL-UI-007 — Compartir selector de sede`;
+- `SHELL-UI-008 — Compartir selector de área`;
+- `SHELL-UI-009 — Compartir aviso de rol simulado`;
+- `SHELL-UI-010 — Evaluar AppShell compartido`;
+- `SHELL-UI-013 — Compartir panel de acción principal`;
+- `SHELL-UI-014 — Compartir confirmaciones de acciones sensibles`;
+- la frontera vigente de `@vento/contracts`, `@vento/os-context` y `@vento/ui-web`;
+- los contratos canónicos de autorización, contexto, mensajes, accesibilidad, privacidad, dispositivos compartidos y simulación;
+- el gobierno `SHELL-MIG-*` para adopción reversible;
+- el gobierno `SHELL-CI-*` para pruebas, build, releases, changelog y compatibilidad.
+
+---
+
+#### 4. Naturaleza de la tarea
+
+La tarea es documental.
+
+Al cierre se define:
+
+1. identidad del patrón compartido;
+2. API conceptual;
+3. relación con los estados de `ContextIndicator`;
+4. anatomía de la explicación humana;
+5. tratamiento de contexto en resolución, cambio, obsolescencia, invalidez e indisponibilidad;
+6. representación de dimensiones afectadas y contexto preservado;
+7. impacto sobre acciones sin convertir la UI en evaluador de permiso;
+8. siguiente paso y referencia segura;
+9. frontera con `blocked_reasons`, `metadata` y reason codes runtime;
+10. frontera con denegación de autorización;
+11. frontera con recuperación y `SHELL-UI-016`;
+12. privacidad y divulgación progresiva;
+13. semántica HTML y accesibilidad;
+14. compatibilidad server/client;
+15. reconciliación del estado técnico actual;
+16. matriz materializada de siete consumidores;
+17. handoff de migración, calidad y release;
+18. contrato futuro de pruebas;
+19. cobertura `TREQ-*` existente.
+
+No se crea el componente físico en esta tarea.
+
+---
+
+#### 5. Resultado documental
+
+Se aprueba el componente conceptual:
+
+```text
+ContextDiagnostic
+```
+
+como parte de:
+
+```text
+@vento/ui-web
+```
+
+Su función es explicar una condición contextual ya resuelta y normalizada por una capa propietaria.
+
+No es:
+
+- resolver de contexto;
+- guard de autorización;
+- evaluador de permisos;
+- selector de sede o área;
+- selector de rol;
+- gestor de turno o check-in;
+- iniciador de simulación;
+- consola técnica;
+- visor de logs;
+- inspector de RLS;
+- mecanismo de reintento;
+- estado vacío;
+- AppShell;
+- pantalla de soporte especializada.
+
+---
+
+#### 6. Identidad pública conceptual
+
+La superficie conceptual queda formada por:
+
+```text
+ContextDiagnostic
+ContextDiagnosticProps
+ContextDiagnosticState
+ContextDiagnosticCondition
+ContextDiagnosticResolution
+```
+
+`ContextDiagnostic` podrá reutilizar `ContextIndicatorItem` para representar contexto preservado sin crear una segunda estructura de label/value.
+
+Esta tarea no fija:
+
+- subpath físico de exportación;
+- nombre de archivo TypeScript;
+- estructura de carpetas;
+- mapa de exports;
+- herramienta de estilos;
+- framework de documentación visual;
+- implementación interna;
+- contrato de telemetría runtime.
+
+---
+
+#### 7. Frontera de presentación
+
+`ContextDiagnostic` recibe exclusivamente una proyección humana ya resuelta y minimizada.
+
+No puede determinar por sí mismo:
+
+- quién es el actor efectivo;
+- cuál es la sede o área activa;
+- si existe turno válido;
+- si existe check-in;
+- cuál rol tiene autoridad;
+- si una simulación es válida;
+- si un dispositivo permite una operación;
+- si un permiso está concedido;
+- si un recurso pertenece al territorio correcto;
+- si una acción es ejecutable;
+- si una condición es recuperable;
+- si un reintento es seguro;
+- si un código técnico puede revelarse.
+
+El componente explica decisiones; no las produce.
+
+---
+
+#### 8. Flujo de integración aprobado
+
+La composición canónica queda definida así:
+
+```text
+@vento/contracts
+        +
+@vento/os-context
+        +
+AUTORIZACIÓN / SERVIDOR / CAPA PROPIETARIA
+        ↓
+resultado y razones estructuradas
+        ↓
+ADAPTER DE PRESENTACIÓN PROPIETARIO
+        ↓
+ContextDiagnosticProps
+        ↓
+@vento/ui-web / ContextDiagnostic
+```
+
+No se aprueba:
+
+```text
+EffectiveContext
+        ↓ directo
+ContextDiagnostic
+```
+
+ni:
+
+```text
+blocked_reasons
+        ↓ directo
+texto visible
+```
+
+---
+
+#### 9. Relación con `ContextIndicatorState`
+
+`SHELL-UI-006` ya cerró los estados de presentación de frescura contextual:
+
+```text
+resolving
+active
+changing
+stale
+invalid
+unavailable
+```
+
+`ContextDiagnostic` no crea una segunda taxonomía incompatible.
+
+`ContextDiagnosticState` queda definido conceptualmente como el subconjunto explicable:
+
+```text
+resolving
+changing
+stale
+invalid
+unavailable
+```
+
+`active` no genera por sí solo un diagnóstico.
+
+La implementación física futura deberá derivar o mantener compatibilidad explícita con `ContextIndicatorState` en lugar de duplicar un enum independiente sin vínculo.
+
+---
+
+#### 10. Estados que no pertenecen a `ContextDiagnosticState`
+
+No se incorporan como estados propios:
+
+```text
+blocked
+denied
+forbidden
+unauthorized
+offline
+online
+error
+warning
+danger
+simulated
+delegated
+admin
+operational
+retrying
+success
+```
+
+Motivos:
+
+- `blocked` describe impacto sobre una acción, no salud del contexto;
+- `denied`, `forbidden` y `unauthorized` pertenecen a autorización;
+- conectividad es una dimensión separada;
+- simulación y delegación son condiciones del contexto;
+- `error`, `warning` y `danger` son tonos demasiado genéricos;
+- `retrying` pertenece a recuperación;
+- `success` no describe diagnóstico contextual.
+
+---
+
+#### 11. Superficie conceptual de props
+
+La API conceptual mínima queda congelada como:
+
+```text
+state: ContextDiagnosticState
+title: string
+summary: string
+conditions: readonly ContextDiagnosticCondition[]
+preservedContext: readonly ContextIndicatorItem[]
+blockedActions: readonly string[]
+resolution: ContextDiagnosticResolution
+```
+
+Además podrá conservar atributos HTML compatibles del contenedor raíz cuando no alteren la semántica aprobada.
+
+No se abre una prop genérica `context`.
+
+No se abre una prop `effectiveContext`.
+
+No se abre una prop `metadata`.
+
+No se abre una prop `blockedReasons`.
+
+No se abre una prop `reasonCodes`.
+
+No se abre una prop `canOperate`.
+
+---
+
+#### 12. `ContextDiagnosticCondition`
+
+Cada condición humana se representa conceptualmente mediante:
+
+```text
+label: string
+message: string
+```
+
+`label` identifica una dimensión o condición con lenguaje humano.
+
+`message` explica de forma segura qué ocurre con esa dimensión.
+
+Ejemplos de intención válidos:
+
+```text
+Sede activa      → No hay una sede operativa confirmada para esta acción.
+Área activa      → El área anterior ya no está disponible para continuar.
+Turno            → La jornada programada todavía no ha comenzado.
+Check-in         → Esta operación requiere una entrada vigente.
+Contexto         → La información conocida necesita volver a validarse.
+```
+
+Estos textos son ejemplos de forma y no fijan copy global literal.
+
+---
+
+#### 13. No se crea un enum paralelo de dimensiones
+
+`ContextDiagnosticCondition` no incorpora un enum público propio para:
+
+```text
+site
+area
+shift
+checkin
+role
+actor
+device
+scope
+resource
+simulation
+```
+
+La semántica de cada dimensión pertenece a los contratos propietarios de contexto y autorización.
+
+El adapter de presentación aporta etiquetas humanas ya determinadas y seguras.
+
+---
+
+#### 14. `preservedContext`
+
+`preservedContext` utiliza elementos compatibles con `ContextIndicatorItem`:
+
+```text
+label: string
+value: string
+```
+
+Su objetivo es mostrar únicamente las partes del contexto que continúan confirmadas y relevantes.
+
+Ejemplos de intención:
+
+```text
+Actor             → Carlos Ibarra
+Sede confirmada   → Centro de Producción
+Aplicación        → NEXO
+Contexto anterior → Centro de Producción · Repostería
+```
+
+Reglas:
+
+1. no se fabrica un valor para completar la lista;
+2. un valor solicitado no se presenta como confirmado;
+3. un filtro administrativo no se presenta como sede operativa activa;
+4. un dispositivo no se presenta como actor humano;
+5. un rol base no se presenta como rol operativo efectivo;
+6. un dato obsoleto deberá identificarse como tal fuera del valor ordinario cuando siga siendo necesario mostrarlo.
+
+---
+
+#### 15. `blockedActions`
+
+`blockedActions` contiene exclusivamente nombres humanos de acciones afectadas que la capa propietaria ya determinó como bloqueadas por la condición contextual.
+
+Ejemplos de intención:
+
+```text
+Registrar recepción
+Confirmar producción
+Cerrar caja
+Enviar remisión
+```
+
+No contiene como contrato público:
+
+- permission keys;
+- action ids internos;
+- nombres de RPC;
+- nombres de tablas;
+- códigos de policy;
+- listas de permisos de terceros.
+
+Una lista vacía significa únicamente que el adapter no entregó acciones bloqueadas para mostrar. No significa autorización global.
+
+---
+
+#### 16. `ContextDiagnosticResolution`
+
+La resolución humana queda formada conceptualmente por:
+
+```text
+instruction: string
+ownerLabel?: string
+reviewCondition?: string
+supportReference?: string
+```
+
+Semántica:
+
+- `instruction`: siguiente paso seguro explicado en lenguaje humano;
+- `ownerLabel`: clase humana del responsable cuando la persona actual no puede resolver el bloqueo;
+- `reviewCondition`: condición o momento verificable para volver a revisar;
+- `supportReference`: referencia opaca y segura para correlacionar soporte cuando corresponda.
+
+`ContextDiagnosticResolution` no ejecuta la recuperación.
+
+No contiene callbacks empresariales, RPC, SQL, permisos ni mutaciones.
+
+---
+
+#### 17. Referencia segura
+
+`supportReference` debe ser:
+
+- opaca;
+- correlacionable por los sistemas autorizados;
+- no secreta;
+- no reutilizable como credencial;
+- incapaz de conceder autoridad;
+- segura para el actor al que se muestra.
+
+No debe ser sustituida automáticamente por:
+
+- UUID sensible de usuario;
+- token;
+- session id;
+- refresh token;
+- device secret;
+- SQLSTATE interno sin necesidad;
+- stack trace;
+- payload completo;
+- identificador de política que revele configuración sensible.
+
+---
+
+#### 18. Evidencia runtime actual de `@vento/os-context`
+
+El tipo runtime vigente `EffectiveContext` contiene, entre otros:
+
+```text
+source
+session_mode
+app_code
+user_id
+site_id
+area_id
+shift_id
+simulation_id
+shared_device_id
+can_operate
+blocked_reasons
+metadata
+```
+
+La existencia de esos campos no autoriza a `ContextDiagnostic` a consumirlos directamente.
+
+Decisiones:
+
+1. `can_operate` no se convierte en estado visual ni autorización final;
+2. `blocked_reasons` no se imprime directamente;
+3. `metadata` no se expande ni serializa en UI;
+4. identificadores internos no sustituyen etiquetas humanas;
+5. la capa propietaria debe traducir el resultado a la proyección mínima de UI015;
+6. el componente no llama por sí mismo `getEffectiveContext` ni RPC alguna.
+
+---
+
+#### 19. Reason codes y códigos técnicos
+
+Los reason codes canónicos pertenecen a los contratos y resolvers propietarios.
+
+`ContextDiagnostic` base no recibe reason codes como contenido público.
+
+La correspondencia correcta es:
+
+```text
+reason code / decisión estructurada
+        ↓
+adapter autorizado y versionado
+        ↓
+condición humana + impacto + siguiente paso
+```
+
+No:
+
+```text
+AUTH-ERR-XXX
+        ↓
+texto principal mostrado sin traducción
+```
+
+Los códigos técnicos completos solo podrán aparecer en una superficie diagnóstica especializada y autorizada que tenga contrato propio para esa divulgación. UI015 no convierte el componente base en consola técnica.
+
+---
+
+#### 20. `resolving`
+
+Para `state="resolving"`:
+
+- la interfaz comunica que la resolución continúa en curso;
+- solo identifica una dimensión faltante si la capa propietaria ya la conoce de forma segura;
+- no interpreta ausencia temporal como ausencia real;
+- no muestra la última sede, área o rol como fallback autoritativo;
+- puede mostrar contexto preservado cuando sigue vigente y es necesario;
+- `blockedActions` refleja únicamente impacto ya determinado externamente;
+- `resolution.instruction` explica esperar, volver a verificar o realizar el paso propietario aplicable sin inventar resultado.
+
+---
+
+#### 21. `changing`
+
+Para `state="changing"`:
+
+- el contexto solicitado todavía no se presenta como activo;
+- el contexto anterior puede mantenerse visible si la capa propietaria confirma que continúa siendo la referencia vigente;
+- la condición identifica la transición material relevante;
+- las acciones incompatibles pueden mostrarse como bloqueadas si ya existe esa decisión;
+- no se afirma que el cambio terminó antes del resultado autoritativo;
+- no se dispara un cambio de contexto desde `ContextDiagnostic`.
+
+La regla vinculante permanece:
+
+```text
+contexto solicitado
+≠
+contexto confirmado
+```
+
+---
+
+#### 22. `stale`
+
+Para `state="stale"`:
+
+- el componente explica que la proyección conocida perdió frescura suficiente;
+- puede mostrar qué información sigue conocida y cuándo fue verificada si el adapter la entrega como dato humano seguro;
+- no decide si todas las operaciones están bloqueadas;
+- no prolonga turno, permiso, sesión ni autoridad por caché;
+- no ofrece reintento automático;
+- no transforma `stale` en `active` por interacción visual.
+
+---
+
+#### 23. `invalid`
+
+Para `state="invalid"`:
+
+- se identifica la dimensión o incompatibilidad que la capa propietaria ya determinó;
+- se muestra qué contexto continúa confirmado cuando sea útil;
+- se explica el impacto humano sobre las acciones afectadas;
+- se indica el siguiente paso seguro;
+- no se revela la lógica interna de autorización necesaria para producir la decisión;
+- no se ofrece un bypass, cambio de rol o elevación de permisos como solución.
+
+---
+
+#### 24. `unavailable`
+
+Para `state="unavailable"`:
+
+- se comunica que no puede obtenerse una proyección suficiente;
+- no se sustituye esa condición por “sin permisos”, “sin trabajo”, “sin sede asignada” o “sin registros”;
+- no se usa un snapshot anterior como contexto activo sin decisión propietaria;
+- se conserva contexto previamente confirmado únicamente si la política externa permite mostrarlo como referencia y se identifica su estado;
+- la recuperación técnica o de conectividad queda separada hacia el patrón propietario aplicable.
+
+---
+
+#### 25. Contexto `active`
+
+`active` pertenece a `ContextIndicator` y no necesita `ContextDiagnostic` por sí mismo.
+
+Si una pantalla necesita explicar una condición diferente mientras el contexto general está activo, esa condición debe pertenecer al patrón propietario correspondiente, por ejemplo:
+
+- autorización;
+- validación de recurso;
+- conflicto concurrente;
+- conectividad;
+- error recuperable;
+- resultado desconocido;
+- excepción;
+- proceso interrumpido.
+
+No se fuerza todo bloqueo dentro de UI015.
+
+---
+
+#### 26. Bloqueo y denegación no equivalen a diagnóstico de contexto
+
+La capa propietaria debe diferenciar:
+
+```text
+contexto inválido o no disponible
+≠
+permiso denegado con contexto válido
+≠
+regla empresarial incumplida
+≠
+fallo técnico
+≠
+conflicto de versión
+```
+
+`ContextDiagnostic` explica exclusivamente la primera familia cuando esa sea la causa real.
+
+Una denegación de autorización no se reformula como contexto faltante para evitar mostrar que la persona carece de autoridad.
+
+---
+
+#### 27. Sede activa y contexto territorial
+
+Cuando la operación requiera sede activa, el diagnóstico puede explicar de forma humana una condición ya clasificada por las capas propietarias, por ejemplo:
+
+- no existe candidata activa compatible;
+- la sede operativa del turno no está disponible;
+- el recurso requiere otro territorio;
+- el contexto solicitado aún no fue confirmado.
+
+No puede:
+
+- elegir automáticamente la sede primaria;
+- seleccionar la primera sede disponible;
+- convertir una sede filtrada en sede activa;
+- revelar sedes o asignaciones no autorizadas;
+- sustituir códigos de autorización por copy inventado.
+
+---
+
+#### 28. Turno, check-in y actor
+
+El diagnóstico conserva separados:
+
+- turno programado;
+- turno vigente;
+- check-in;
+- actor humano;
+- rol operativo;
+- sesión técnica;
+- dispositivo compartido.
+
+La ausencia o incompatibilidad de una dimensión no permite inferir otra.
+
+Ejemplos de prohibiciones:
+
+```text
+hay turno → asumir check-in
+hay dispositivo → asumir actor
+hay sesión → asumir rol operativo
+hay rol base → asumir permiso material
+```
+
+---
+
+#### 29. Contexto administrativo
+
+En una superficie administrativa, UI015 no fabrica una narrativa operativa.
+
+Puede explicar problemas con:
+
+- alcance administrativo;
+- filtro o población seleccionada;
+- sede requerida por el recurso;
+- disponibilidad de una proyección;
+- incompatibilidad entre alcance y recurso.
+
+Debe etiquetar esas dimensiones como administrativas cuando corresponda.
+
+Un filtro no se presenta como sede activa de operación.
+
+---
+
+#### 30. Simulación y delegación
+
+Si simulación o delegación modifican la interpretación del contexto:
+
+- UI015 puede explicar una incompatibilidad ya detectada;
+- `SHELL-UI-009` mantiene la advertencia perceptible de rol simulado;
+- UI015 no inicia, prolonga, cambia ni termina una simulación;
+- UI015 no convierte una simulación en autoridad real;
+- UI015 no expone detalles de terceros que la persona no esté autorizada a conocer.
+
+---
+
+#### 31. Dispositivos compartidos
+
+En tablets, kioscos o estaciones compartidas:
+
+- actor humano, dispositivo y estación permanecen separados;
+- el diagnóstico no muestra datos del actor anterior;
+- una sesión técnica no se presenta como trabajador;
+- `supportReference` no contiene secretos del dispositivo;
+- la falta de actor puede explicarse como condición contextual solo cuando la capa propietaria ya la determinó;
+- la acción personal permanece bloqueada por la capa de autorización correspondiente, no por el componente visual.
+
+---
+
+#### 32. Relación con `ContextIndicator`
+
+La composición esperada es:
+
+```text
+ContextIndicator
+        → qué contexto está vigente y cuál es su frescura
+
+ContextDiagnostic
+        → por qué una condición contextual requiere atención y qué hacer después
+```
+
+`ContextDiagnostic` no duplica permanentemente todo el resumen del indicador.
+
+`preservedContext` se limita a la información necesaria para comprender el diagnóstico.
+
+---
+
+#### 33. Relación con `Alert`
+
+`Alert` es una primitiva genérica de mensaje.
+
+`ContextDiagnostic` es una estructura semántica especializada que conserva:
+
+- estado contextual;
+- condiciones;
+- contexto preservado;
+- impacto;
+- resolución;
+- referencia segura.
+
+Una implementación futura podrá componer estilos o primitivas de `Alert`, pero `Alert` no sustituye el contrato de UI015.
+
+---
+
+#### 34. Relación con `EmptyState`
+
+Una falla contextual no demuestra ausencia de datos ni trabajo.
+
+Separación obligatoria:
+
+```text
+ausencia real confirmada
+→ EmptyState cuando corresponda
+
+contexto faltante, cambiante, obsoleto, inválido o no disponible
+→ ContextDiagnostic
+```
+
+UI015 no mostrará mensajes equivalentes a “no hay tareas” cuando la resolución de contexto falló.
+
+---
+
+#### 35. Relación con selectores de sede y área
+
+UI015 puede explicar que una sede o área necesita resolverse, pero no contiene el selector como parte de su API base.
+
+La composición podrá ser:
+
+```text
+ContextDiagnostic
++
+SiteSelector
+```
+
+u:
+
+```text
+ContextDiagnostic
++
+AreaSelector
+```
+
+cuando la capa propietaria haya determinado que esa selección es una recuperación legítima y autorizada.
+
+El selector mantiene sus contratos propios.
+
+---
+
+#### 36. Relación con `PrimaryActionPanel`
+
+`PrimaryActionPanel` puede mostrar una acción no ejecutable según una decisión propietaria.
+
+UI015 puede explicar un bloqueo contextual ya determinado, pero:
+
+- no habilita o deshabilita el CTA;
+- no evalúa `canExecute`;
+- no convierte `blockedActions` en guards;
+- no ejecuta la acción cuando el contexto cambia;
+- no mantiene autoridad cacheada.
+
+---
+
+#### 37. Relación con confirmaciones sensibles
+
+Si una recuperación o cambio contextual exige una confirmación sensible, la composición utilizará `SHELL-UI-014` de forma separada.
+
+UI015 no incorpora:
+
+- `confirm`;
+- `onConfirm`;
+- `reauth`;
+- step-up;
+- aprobación;
+- doble control.
+
+Explicar una condición no equivale a consentir, confirmar ni autorizar su corrección.
+
+---
+
+#### 38. Relación con `SHELL-UI-016`
+
+`SHELL-UI-016` conserva la propiedad de estados de error recuperable y sus controles de recuperación.
+
+UI015 puede indicar textualmente el siguiente paso, pero no define:
+
+- política de retry;
+- backoff;
+- idempotencia de reintento;
+- spinner de recuperación;
+- botón universal “Reintentar”;
+- conciliación de resultado desconocido;
+- recuperación de dependencia externa;
+- estado terminal de error.
+
+Cuando una indisponibilidad contextual sea causada por un fallo técnico recuperable, la composición puede usar UI015 para explicar la consecuencia contextual y UI016 para la recuperación técnica.
+
+---
+
+#### 39. Diagnóstico técnico restringido
+
+El componente base no es una consola de diagnóstico técnico.
+
+No mostrará como contenido ordinario:
+
+- reason codes completos;
+- `blocked_reasons` crudos;
+- `metadata` cruda;
+- traces;
+- stack traces;
+- SQL;
+- nombres de tablas o schemas;
+- reglas RLS;
+- payloads completos;
+- cookies;
+- tokens;
+- secretos;
+- políticas antifraude;
+- permisos de terceros;
+- datos sensibles de asignaciones ajenas.
+
+Una superficie especializada de soporte o seguridad deberá aplicar autorización y minimización propias.
+
+---
+
+#### 40. Privacidad y minimización
+
+UI015 recibe únicamente los datos necesarios para que el actor comprenda y actúe con seguridad.
+
+Reglas:
+
+1. no usar documento, correo o teléfono como identidad ordinaria;
+2. no revelar alternativas territoriales no autorizadas;
+3. no enumerar permisos ausentes de terceros;
+4. no exponer la causa interna de una denegación sensible;
+5. no conservar datos del actor anterior;
+6. no ocultar datos sensibles mediante CSS después de haberlos descargado;
+7. no almacenar diagnósticos en storage por responsabilidad propia;
+8. no serializar objetos runtime completos para soporte.
+
+La minimización ocurre antes del render.
+
+---
+
+#### 41. Semántica HTML
+
+La raíz es conceptualmente una región informativa no interactiva.
+
+Una estructura apropiada puede equivaler a:
+
+```text
+section
+  heading
+  summary
+  lista de condiciones
+  contexto preservado
+  acciones afectadas
+  resolución
+  referencia segura
+```
+
+La implementación deberá conservar una jerarquía semántica equivalente.
+
+No se impone un `role="alert"` universal.
+
+No se impone `aria-live` universal.
+
+---
+
+#### 42. Foco, anuncios y teclado
+
+`ContextDiagnostic` no mueve foco automáticamente ante toda actualización.
+
+Reglas:
+
+- contenido estático no entra por defecto en el tab order;
+- cambios ordinarios de `resolving` no generan anuncios repetitivos;
+- un bloqueo crítico que aparezca como resultado directo de una acción deberá poder ser anunciado y enfocado por la composición propietaria cuando corresponda;
+- el orden de lectura coloca título y resumen antes de detalles secundarios;
+- ningún dato esencial depende de hover;
+- el acceso a recuperación compuesta debe ser operable por teclado mediante sus controles propietarios;
+- una referencia segura debe poder leerse sin depender de iconos.
+
+---
+
+#### 43. Divulgación progresiva
+
+La información esencial permanece visible:
+
+- qué ocurre;
+- qué dimensión está afectada cuando se conoce;
+- qué contexto sigue confirmado cuando sea material;
+- qué acción está afectada cuando corresponda;
+- qué hacer después.
+
+La información secundaria puede compactarse siempre que no elimine esas obligaciones.
+
+El detalle técnico restringido no forma parte del cuerpo base.
+
+---
+
+#### 44. Responsive
+
+La materialización futura deberá permitir:
+
+- escritorio: explicación estructurada sin ocupar innecesariamente todo el viewport;
+- tablet: lectura táctil clara, sin depender de hover;
+- móvil: reflow vertical sin truncar la causa ni el siguiente paso;
+- kiosco: texto legible a distancia operativa y sin exponer información privada innecesaria;
+- zoom y texto aumentado sin solapamiento;
+- ausencia de scroll horizontal para el contenido esencial.
+
+Los patrones físicos especializados de tablet y kiosco permanecen en UI017 y UI018.
+
+---
+
+#### 45. Compatibilidad server/client
+
+La lógica conceptual de UI015 no requiere:
+
+- estado React interno obligatorio;
+- `window`;
+- `document`;
+- router;
+- red;
+- Supabase;
+- cookies;
+- storage;
+- timers;
+- listeners globales;
+- observabilidad como fuente de render.
+
+El componente es conceptualmente server-safe.
+
+La actualización de props pertenece al consumidor.
+
+No se exige `"use client"` como parte del contrato público.
+
+---
+
+#### 46. Dependencias prohibidas
+
+`ContextDiagnostic` no dependerá directamente de:
+
+- `@vento/supabase`;
+- `SupabaseClient`;
+- RPC;
+- tablas o schemas;
+- clientes de autenticación;
+- APIs empresariales;
+- repositorios consumidores;
+- resolvers de autorización;
+- servicios de red;
+- variables secretas;
+- logs o trazas;
+- mutaciones de contexto;
+- librerías de observabilidad como fuente de semántica visible.
+
+---
+
+#### 47. Estado técnico actual de SHELL
+
+La inspección remota vigente confirma:
+
+```text
+packages/
+  os-context/
+```
+
+No existe actualmente un package físico `packages/ui-web` en `vento-shell`.
+
+El directorio runtime `src/components/ui` conserva las primitivas:
+
+```text
+Button
+Card
+Chip
+Input
+Modal
+```
+
+No existe allí una implementación dedicada denominada `ContextDiagnostic`.
+
+Por tanto:
+
+```text
+CONTRATO UI015 = ESPECIFICADO DOCUMENTALMENTE
+IMPLEMENTACIÓN FÍSICA = 0
+```
+
+---
+
+#### 48. Reconciliación de `@vento/os-context`
+
+El package runtime actual conserva `EffectiveContext` y funciones de acceso a RPC.
+
+Clasificación para UI015:
+
+| Evidencia runtime                   | Decisión UI015                                                             |
+| ----------------------------------- | -------------------------------------------------------------------------- |
+| `can_operate`                       | no usar como prop pública ni autorización visual                           |
+| `blocked_reasons`                   | normalizar fuera del componente; no mostrar crudo                          |
+| `metadata`                          | no renderizar ni expandir                                                  |
+| `site_id`, `area_id`, `shift_id`    | traducir fuera del componente cuando sea necesario mostrar valores humanos |
+| `simulation_id`, `shared_device_id` | no mostrar como identidad ordinaria                                        |
+| `source`                            | no convertir directamente en copy ni permiso                               |
+| `getEffectiveContext`               | permanece fuera de `@vento/ui-web`                                         |
+| `hasEffectivePermission`            | permanece fuera de `@vento/ui-web`                                         |
+
+La forma runtime actual es evidencia de integración, no API visual canónica.
+
+---
+
+#### 49. Matriz materializada de consumidores
+
+Se conserva el conjunto heredado de siete consumidores web compartidos.
+
+| Consumidor | Identidad heredada        | Decisión UI015                                         | Implementación en esta tarea |
+| ---------- | ------------------------- | ------------------------------------------------------ | ---------------------------: |
+| SHELL      | consumidor web compartido | `CANDIDATO_A_ADOPTAR_PARA_DIAGNOSTICO_CONTEXTO_SEGURO` |                            0 |
+| NEXO       | consumidor web compartido | `CANDIDATO_A_ADOPTAR_PARA_DIAGNOSTICO_CONTEXTO_SEGURO` |                            0 |
+| FOGO       | consumidor web compartido | `CANDIDATO_A_ADOPTAR_PARA_DIAGNOSTICO_CONTEXTO_SEGURO` |                            0 |
+| ORIGO      | consumidor web compartido | `CANDIDATO_A_ADOPTAR_PARA_DIAGNOSTICO_CONTEXTO_SEGURO` |                            0 |
+| VISO       | consumidor web compartido | `CANDIDATO_A_ADOPTAR_PARA_DIAGNOSTICO_CONTEXTO_SEGURO` |                            0 |
+| PULSO      | consumidor web compartido | `CANDIDATO_A_ADOPTAR_PARA_DIAGNOSTICO_CONTEXTO_SEGURO` |                            0 |
+| NUMERA     | consumidor web compartido | `CANDIDATO_A_ADOPTAR_PARA_DIAGNOSTICO_CONTEXTO_SEGURO` |                            0 |
+
+Reconciliación:
+
+```text
+TOTAL ESPERADO     = 7
+TOTAL MATERIALIZADO= 7
+FALTANTES          = 0
+DUPLICADOS         = 0
+ADOPCIONES FÍSICAS = 0
+```
+
+La decisión no afirma que los siete consumidores posean hoy un diagnóstico equivalente; únicamente fija su condición explícita frente al futuro patrón compartido.
+
+---
+
+#### 50. Estrategia posterior de migración
+
+La adopción física no ocurre en UI015.
+
+El gobierno `SHELL-MIG-*` deberá:
+
+1. inventariar mensajes, banners, guards, pantallas vacías y errores usados hoy para explicar fallos de contexto;
+2. identificar en cada consumidor qué fuente resuelve realmente la condición;
+3. separar diagnóstico de autorización, vacío, conectividad y error técnico;
+4. crear adapters de presentación por consumidor cuando sean necesarios;
+5. migrar por lotes reversibles;
+6. preservar copy y recuperación necesarios durante compatibilidad;
+7. validar accesibilidad y privacidad;
+8. demostrar paridad antes de retirar patrones legacy.
+
+No se adelanta ninguna migración en esta tarea.
+
+---
+
+#### 51. Handoff a migración coordinada
+
+| Tarea           | Handoff de UI015                                                    |
+| --------------- | ------------------------------------------------------------------- |
+| `SHELL-MIG-001` | inventariar diagnósticos de contexto, mensajes y fallbacks reales   |
+| `SHELL-MIG-002` | agrupar adopción por consumidor y riesgo                            |
+| `SHELL-MIG-003` | fijar compatibilidad temporal y bloquear nuevas variantes legacy    |
+| `SHELL-MIG-004` | impedir que scaffolds repliquen diagnósticos locales divergentes    |
+| `SHELL-MIG-005` | adoptar `ContextDiagnostic` y adapters propietarios                 |
+| `SHELL-MIG-006` | validar accesibilidad, privacidad, responsive y dispositivos        |
+| `SHELL-MIG-007` | demostrar paridad semántica y de recuperación                       |
+| `SHELL-MIG-008` | retirar únicamente implementaciones sin uso residual y con rollback |
+
+---
+
+#### 52. Handoff a calidad y releases
+
+| Tarea          | Responsabilidad                                      |
+| -------------- | ---------------------------------------------------- |
+| `SHELL-CI-001` | pruebas propias del package                          |
+| `SHELL-CI-002` | build independiente                                  |
+| `SHELL-CI-003` | releases versionados                                 |
+| `SHELL-CI-004` | changelog                                            |
+| `SHELL-CI-005` | matriz de compatibilidad                             |
+| `SHELL-CI-006` | actualización controlada de consumidores mediante PR |
+
+UI015 no publica una versión.
+
+---
+
+#### 53. Compatibilidad y versionado
+
+La futura superficie pública deberá gobernarse con SemVer.
+
+Cambios potencialmente incompatibles incluyen:
+
+- retirar un estado;
+- introducir un estado paralelo que contradiga `ContextIndicatorState`;
+- cambiar obligatoriedad de `title`, `summary`, `conditions`, `preservedContext`, `blockedActions` o `resolution`;
+- convertir `blockedActions` en permissions o ids técnicos;
+- exponer `EffectiveContext` directamente;
+- añadir `blocked_reasons` o `metadata` como props públicas;
+- ejecutar recuperación dentro del componente;
+- convertir `supportReference` en credencial o identificador sensible;
+- cambiar la semántica accesible de la región;
+- introducir dependencia runtime de Supabase o autorización.
+
+---
+
+#### 54. Contrato futuro de prueba
+
+La implementación física y la adopción deberán demostrar como mínimo:
+
+1. renderizado de `resolving`;
+2. renderizado de `changing`;
+3. renderizado de `stale`;
+4. renderizado de `invalid`;
+5. renderizado de `unavailable`;
+6. ausencia de `active` como diagnóstico por defecto;
+7. título y resumen perceptibles;
+8. condiciones humanas con label y message;
+9. preservación del orden de condiciones;
+10. contexto preservado con pares label/value;
+11. ausencia de fallbacks inventados;
+12. acciones bloqueadas mostradas solo cuando las aporta el adapter;
+13. lista vacía sin implicar autorización global;
+14. resolución humana obligatoria;
+15. owner y review condition opcionales sin inventarlos;
+16. referencia de soporte opaca y no secreta;
+17. ausencia de UUID sensibles como contenido principal;
+18. ausencia de reason codes crudos en el cuerpo base;
+19. ausencia de `blocked_reasons` crudos;
+20. ausencia de `metadata` serializada;
+21. ausencia de `can_operate` como guard visual;
+22. ausencia de consulta directa a `getEffectiveContext`;
+23. ausencia de consulta directa a `hasEffectivePermission`;
+24. ausencia de dependencia de Supabase;
+25. ausencia de RPC dentro del componente;
+26. separación de sede asignada, filtrada y activa;
+27. separación de turno y check-in;
+28. separación de actor y dispositivo;
+29. separación de rol base y rol operativo;
+30. simulación perceptible mediante su composición especializada;
+31. `resolving` sin afirmar ausencia real;
+32. `changing` sin presentar destino como activo;
+33. `stale` sin prolongar autoridad;
+34. `invalid` con dimensión segura y siguiente paso cuando estén disponibles;
+35. `unavailable` sin convertirse en EmptyState;
+36. denegación de permiso con contexto activo no clasificada como UI015;
+37. error técnico recuperable compuesto con UI016;
+38. selector de sede compuesto fuera de UI015;
+39. selector de área compuesto fuera de UI015;
+40. confirmación sensible compuesta fuera de UI015;
+41. raíz semántica no interactiva;
+42. ausencia de `role="alert"` universal;
+43. ausencia de `aria-live` universal;
+44. orden de lectura lógico;
+45. foco controlado por composición ante bloqueo crítico;
+46. operabilidad por teclado de controles externos;
+47. reflow en ancho reducido;
+48. zoom y texto aumentado;
+49. privacidad en kiosco o dispositivo compartido;
+50. server rendering de la superficie pura;
+51. cero estado React interno obligatorio;
+52. paridad por consumidor antes del retiro legacy;
+53. siete decisiones de consumidor materializadas;
+54. cero faltantes y cero duplicados en la matriz.
+
+Esta lista define evidencia futura. No declara ejecución de pruebas en UI015.
+
+---
+
+#### 55. Cobertura de requisitos existente
+
+UI015 no necesita crear una obligación transversal nueva porque el registro vigente ya cubre específicamente:
+
+- contexto autoritativo persistente y prohibición de inferencias frontend: `TREQ-UX-077`;
+- distinción entre sede asignada, seleccionada, filtrada y activa: `TREQ-UX-078`;
+- resumen contextual humano: `TREQ-UX-079`;
+- separación de roles: `TREQ-UX-080`;
+- separación de turno y check-in: `TREQ-UX-081`;
+- fail closed cuando falta una dimensión: `TREQ-UX-082`;
+- transición autoritativa de contexto: `TREQ-UX-083`;
+- invalidación por cambios materiales: `TREQ-UX-084`;
+- territorio del recurso: `TREQ-UX-085`;
+- alcance administrativo separado: `TREQ-UX-086`;
+- singularidad del contexto activo: `TREQ-UX-087`;
+- dispositivos compartidos y actor humano: `TREQ-UX-088`;
+- reconstrucción cross-app: `TREQ-UX-089`;
+- persistencia responsive: `TREQ-UX-090`;
+- accesibilidad del contexto: `TREQ-UX-091`;
+- estados de frescura: `TREQ-UX-092`;
+- minimización: `TREQ-UX-093`;
+- explicación de contexto ausente, cambiante, vencido o inconsistente: `TREQ-UX-094`;
+- anatomía mínima de explicación humana: `TREQ-UX-099`;
+- recuperación segura: `TREQ-UX-100`;
+- responsable y escalamiento: `TREQ-UX-102`;
+- denegaciones seguras: `TREQ-UX-103`;
+- bloqueos de actor, sede, área, turno, check-in, rol, dispositivo, delegación, simulación o frescura: `TREQ-UX-104`;
+- lenguaje directo y localizable: `TREQ-UX-115`;
+- lifecycle y deduplicación de explicaciones: `TREQ-UX-116`;
+- divulgación progresiva y diagnóstico técnico restringido: `TREQ-UX-182` a `TREQ-UX-185`;
+- contexto visible en tablets y kioscos: `TREQ-UX-216`;
+- lenguaje humano de actor, rol y contexto: `TREQ-UX-308`;
+- distinción de denegación, bloqueo, conflicto y fallo técnico: `TREQ-UX-309`;
+- gobierno de jerga técnica: `TREQ-UX-310`;
+- autorización segura y consistente: `TREQ-AUTH-008`, `TREQ-AUTH-009`, `TREQ-AUTH-013`, `TREQ-AUTH-014` y `TREQ-AUTH-015`;
+- sede activa ausente y equivalencia cross-channel: `TREQ-AUTH-179` a `TREQ-AUTH-187`;
+- clasificación, reconciliación y adopción compartida: `TREQ-SHELL-002`, `TREQ-SHELL-029` a `TREQ-SHELL-032` y `TREQ-SHELL-035`;
+- versionado, compatibilidad, deprecación y retiro: `TREQ-SHELL-036` a `TREQ-SHELL-039`.
+
+UI015 especializa la superficie visual bajo estas obligaciones sin crear una fuente normativa paralela.
+
+---
+
+#### 56. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+Justificación: el registro vigente ya define la explicación de estados contextuales, minimización, seguridad, accesibilidad, separación de autorización, recuperación, dispositivos, migración y compatibilidad. UI015 fija la API visual y las fronteras del patrón compartido dentro de esa cobertura existente.
+
+---
+
+#### 57. Estado de materialización física
+
+Al cierre documental de UI015:
+
+```text
+IDENTIDAD ContextDiagnostic                 = ESPECIFICADA
+ContextDiagnosticProps                      = ESPECIFICADO CONCEPTUALMENTE
+ContextDiagnosticState                      = 5 ESTADOS ESPECIFICADOS
+ContextDiagnosticCondition                  = ESPECIFICADO CONCEPTUALMENTE
+ContextDiagnosticResolution                 = ESPECIFICADO CONCEPTUALMENTE
+REUSO ContextIndicatorItem                  = DEFINIDO
+FRONTERA CONTEXTO / PRESENTACIÓN             = CERRADA
+FRONTERA DIAGNÓSTICO / AUTORIZACIÓN          = CERRADA
+FRONTERA DIAGNÓSTICO / RECUPERACIÓN          = CERRADA
+FRONTERA DIAGNÓSTICO / EMPTY STATE           = CERRADA
+FRONTERA DIAGNÓSTICO / DETALLE TÉCNICO       = CERRADA
+PRIVACIDAD Y MINIMIZACIÓN                    = ESPECIFICADAS
+ACCESIBILIDAD                                = ESPECIFICADA DOCUMENTALMENTE
+COMPATIBILIDAD SERVER/CLIENT                 = ESPECIFICADA
+CONSUMIDORES RECONCILIADOS                   = 7/7
+FALTANTES                                    = 0
+DUPLICADOS                                   = 0
+PACKAGE FÍSICO                               = NO MATERIALIZADO
+COMPONENTE FÍSICO                            = NO MATERIALIZADO
+CONSUMIDORES MIGRADOS                        = 0
+CAMBIOS SUPABASE                             = 0
+CAMBIOS TREQ                                 = 0
+```
+
+---
+
+#### 58. Decisiones vinculantes
+
+1. El componente conceptual se denomina `ContextDiagnostic`.
+2. Pertenece a `@vento/ui-web`.
+3. UI015 es documental y no materializa código.
+4. La superficie conceptual incluye `ContextDiagnostic`, `ContextDiagnosticProps`, `ContextDiagnosticState`, `ContextDiagnosticCondition` y `ContextDiagnosticResolution`.
+5. `ContextDiagnostic` reutiliza `ContextIndicatorItem` para contexto preservado cuando corresponda.
+6. Los estados son `resolving`, `changing`, `stale`, `invalid` y `unavailable`.
+7. Los estados mantienen compatibilidad semántica con `ContextIndicatorState`.
+8. `active` no genera diagnóstico por sí mismo.
+9. No se crean estados `blocked`, `denied`, `offline`, `error`, `warning` o `danger`.
+10. El componente recibe una proyección humana ya resuelta.
+11. El componente no recibe `EffectiveContext` directamente.
+12. El componente no recibe `metadata` cruda.
+13. El componente no recibe `blocked_reasons` crudos.
+14. El componente no recibe `reasonCodes` como API base.
+15. El componente no recibe `canOperate` como autoridad visual.
+16. `conditions` usa label y message humanos.
+17. No se crea un enum paralelo de dimensiones de autoridad.
+18. `preservedContext` no fabrica valores faltantes.
+19. `blockedActions` contiene nombres humanos ya decididos externamente.
+20. Una lista vacía de acciones no concede autorización.
+21. `resolution` siempre explica el siguiente paso seguro.
+22. `ownerLabel`, `reviewCondition` y `supportReference` son opcionales según el caso real.
+23. `supportReference` es opaca, segura y no secreta.
+24. UI015 no decide permiso ni ejecutabilidad.
+25. UI015 no cambia sede, área, turno, actor o rol.
+26. UI015 no inicia ni termina simulaciones.
+27. UI015 no contiene selectores como API base.
+28. UI015 no incorpora reintento universal.
+29. UI016 conserva la recuperación técnica.
+30. UI014 conserva las confirmaciones sensibles.
+31. UI013 conserva la acción principal.
+32. UI006 conserva el resumen persistente del contexto.
+33. UI005 conserva estados vacíos reales.
+34. UI002 conserva mensajes genéricos.
+35. Reason codes se transforman a una proyección segura antes del componente.
+36. `blocked_reasons` no se imprimen directamente.
+37. `metadata` no se serializa para soporte.
+38. No se muestran traces, stack, SQL, RLS ni secretos.
+39. Sede activa no se deriva de sede primaria, filtro, URL o último valor.
+40. Turno y check-in permanecen separados.
+41. Actor, dispositivo y estación permanecen separados.
+42. Rol base, operativo y simulado permanecen separados.
+43. Una denegación de permiso con contexto válido no se reclasifica como UI015.
+44. Un fallo técnico recuperable puede componer UI015 y UI016 sin fusionarlos.
+45. La raíz es informativa y no interactiva por defecto.
+46. No se impone `role="alert"` universal.
+47. No se impone `aria-live` universal.
+48. El foco ante un bloqueo crítico pertenece a la composición propietaria.
+49. El patrón es conceptualmente server-safe.
+50. No requiere dependencia runtime directa de Supabase.
+51. No requiere dependencia runtime directa de `@vento/os-context` dentro del componente.
+52. El package físico `@vento/ui-web` continúa no materializado en el estado remoto verificado.
+53. La implementación física de `ContextDiagnostic` es cero.
+54. SHELL, NEXO, FOGO, ORIGO, VISO, PULSO y NUMERA tienen decisión explícita.
+55. La matriz cubre 7/7 consumidores, con cero faltantes y cero duplicados.
+56. La adopción física queda en `SHELL-MIG-*`.
+57. Pruebas, build, release y compatibilidad quedan en `SHELL-CI-*`.
+58. UI015 crea cero requisitos `TREQ-*` y modifica cero.
+59. UI015 produce cero cambios de Supabase.
+60. `SHELL-UI-016` permanece únicamente reservada.
+
+---
+
+#### 59. Criterios de aceptación documental
+
+UI015 queda documentalmente cerrada únicamente si se cumplen simultáneamente:
+
+- [x] la continuidad remota ubica `SHELL-UI-014` como tarea anterior y el segmento pendiente comienza en UI015;
+- [x] UI016 permanece reservada;
+- [x] existe una identidad única `ContextDiagnostic`;
+- [x] se fija su pertenencia conceptual a `@vento/ui-web`;
+- [x] se separa diagnóstico de resolución de contexto;
+- [x] se separa diagnóstico de autorización;
+- [x] se separa diagnóstico de error recuperable;
+- [x] se separa diagnóstico de estado vacío;
+- [x] se separa diagnóstico de consola técnica;
+- [x] se conserva compatibilidad con los estados de UI006;
+- [x] se fijan cinco estados diagnósticos;
+- [x] se define la API conceptual mínima;
+- [x] se define condición humana por label/message;
+- [x] se reutiliza el formato label/value para contexto preservado;
+- [x] se define impacto por acciones humanas afectadas;
+- [x] se define resolución humana y referencia segura;
+- [x] se prohíbe consumir `EffectiveContext` directamente;
+- [x] se prohíbe imprimir `blocked_reasons`;
+- [x] se prohíbe serializar `metadata`;
+- [x] se prohíbe usar `can_operate` como autoridad visual;
+- [x] se prohíben fallbacks permisivos;
+- [x] se preservan diferencias entre actor, dispositivo, rol, sede, área, turno y check-in;
+- [x] se preserva privacidad y minimización;
+- [x] se define semántica HTML y accesibilidad;
+- [x] se define responsive;
+- [x] se define server-safety;
+- [x] se reconcilia el estado actual de `packages/`;
+- [x] se reconcilia `src/components/ui`;
+- [x] se reconcilia la forma runtime vigente de `@vento/os-context`;
+- [x] se materializan decisiones para siete consumidores;
+- [x] faltantes y duplicados son cero;
+- [x] adopciones físicas son cero;
+- [x] se define handoff a migración y CI;
+- [x] se declaran cero cambios `TREQ-*` con cobertura concreta;
+- [x] se declaran cero cambios de Supabase;
+- [x] no queda una decisión material de UI015 sin propietario.
+
+---
+
+#### 60. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                                                                                   |
+| --------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | No se ejecutó el build documental del repositorio porque esta elaboración no dispone de un checkout local actualizado de `vento-shell`.                                                                                                                                     |
+| LOCAL     | `NOT_EXECUTED`   | No se ejecutaron los scripts locales del repositorio ni `git diff --check` por ausencia de un checkout local actualizado e integrado con este artefacto.                                                                                                                    |
+| REMOTA    | `PASS`           | Se verificaron por lectura remota la secuencia activa, el archivo propietario, el contrato de entrega, la política de desarrollo, `package.json`, el estado de `packages/`, `src/components/ui`, `packages/os-context` y los fragmentos 04A relevantes de SHELL, AUTH y UX. |
+| OPERATIVA | `NOT_APPLICABLE` | La tarea es documental y no modifica runtime, flujos empresariales ni servicios desplegados.                                                                                                                                                                                |
+| FÍSICA    | `NOT_APPLICABLE` | La tarea no modifica tablets, kioscos, terminales, periféricos ni hardware.                                                                                                                                                                                                 |
+
+La comprobación estructural del artefacto transitorio no sustituye los comandos de validación del repositorio que deberán ejecutarse cuando el bloque se integre en un checkout actualizado.
+
+---
+
+#### 61. Límites
+
+Esta tarea no autoriza:
+
+- crear `packages/ui-web`;
+- crear archivos TypeScript de `ContextDiagnostic`;
+- modificar `packages/os-context`;
+- cambiar `EffectiveContext`;
+- modificar funciones RPC;
+- modificar `src/components/ui`;
+- modificar aplicaciones consumidoras;
+- crear adapters runtime;
+- publicar paquetes;
+- modificar permisos;
+- modificar autorización;
+- modificar catálogo de reason codes;
+- ejecutar SQL;
+- crear o ejecutar migraciones;
+- modificar Supabase;
+- desplegar servicios;
+- crear datos de prueba productivos;
+- iniciar UI016.
+
+---
+
+#### 62. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-UI-014 — Compartir confirmaciones de acciones sensibles`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-UI-015 — Compartir diagnóstico de contexto`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-UI-016 — Compartir estados de error recuperable`
+
+
+### ✅ SHELL-UI-016 — Compartir estados de error recuperable
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-015 — Compartir diagnóstico de contexto
+**Tarea siguiente:** SHELL-UI-017 — Compartir patrón para tablet
+**Tipo de tarea:** Documental; definición canónica del patrón compuesto compartido para presentar y operar recuperación segura frente a fallos ya clasificados, preservación de trabajo, conflicto, parcialidad y resultado desconocido en `@vento/ui-web`, sin materializar package, código, ejecutores, reintentos, autorización, SQL, migraciones, cambios de Supabase, releases ni despliegues.
+**Bloque:** H — Fundación compartida
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md`
+**Estado físico resultante:** `ESPECIFICADO`; patrón físico no materializado; consumidores migrados: 0.
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+**Paquete propietario conceptual:** `@vento/ui-web`
+
+---
+
+#### 1. Propósito
+
+Definir el patrón web compartido que presenta un fallo recuperable ya clasificado por capas propietarias, explica qué ocurrió sin fabricar causas, conserva de forma perceptible el estado que sigue siendo válido y ofrece únicamente las salidas de recuperación que esas capas hayan determinado como seguras.
+
+La regla central queda:
+
+```text
+FALLO / TIMEOUT / RECHAZO / PARCIALIDAD / CONFLICTO / RESULTADO DESCONOCIDO
+        ↓
+CLASIFICACIÓN Y POLÍTICA DE RECUPERACIÓN PROPIETARIAS
+        ↓
+PROYECCIÓN HUMANA, SEGURA Y MINIMIZADA
+        ↓
+RecoverableErrorState
+        ↓
+EXPLICACIÓN + ESTADO PRESERVADO + SIGUIENTE PASO + CONTROLES AUTORIZADOS
+```
+
+Queda prohibida la dirección inversa:
+
+```text
+RecoverableErrorState
+        ✕
+DECIDIR SI EL CASO ES RECUPERABLE
+        ✕
+DECIDIR SI UN RETRY ES SEGURO
+        ✕
+CREAR AUTORIDAD
+        ✕
+GENERAR IDEMPOTENCY KEYS
+        ✕
+EJECUTAR RPC, API, SUPABASE O EFECTOS EMPRESARIALES
+```
+
+---
+
+#### 2. Continuidad material de entrada
+
+La tarea consume como base inmediata `SHELL-UI-015`, aprobada antes de iniciar este desarrollo.
+
+El estado remoto consultado todavía proyecta una continuidad anterior. Conforme al protocolo canónico, cuando el remoto queda detrás de una tarea local ya aprobada, el último artefacto local aprobado conserva la continuidad inmediata sin alterar por inferencia `active-sequence.json`.
+
+Por tanto:
+
+```text
+BASE INMEDIATA APROBADA = SHELL-UI-015
+TAREA ACTUAL             = SHELL-UI-016
+SIGUIENTE RESERVADA      = SHELL-UI-017
+```
+
+La desalineación temporal del remoto no autoriza escrituras ni cambios de secuencia en esta tarea.
+
+---
+
+#### 3. Posición dentro de la secuencia compartida
+
+`SHELL-UI-016` es propietario únicamente del patrón compuesto de recuperación visual y de los controles ya autorizados para recuperar.
+
+Las responsabilidades vecinas permanecen separadas:
+
+| Tarea          | Responsabilidad conservada                                  |
+| -------------- | ----------------------------------------------------------- |
+| `SHELL-UI-002` | mensaje visual genérico mediante `Alert`                    |
+| `SHELL-UI-003` | control de interacción compartido mediante `Button`         |
+| `SHELL-UI-004` | agrupación visual mediante `Card`                           |
+| `SHELL-UI-005` | ausencia real confirmada mediante `EmptyState`              |
+| `SHELL-UI-006` | resumen persistente de contexto mediante `ContextIndicator` |
+| `SHELL-UI-013` | jerarquía de la acción principal empresarial                |
+| `SHELL-UI-014` | confirmación explícita de acciones sensibles                |
+| `SHELL-UI-015` | diagnóstico seguro de contexto                              |
+| `SHELL-UI-017` | adaptación de patrones a tablet                             |
+| `SHELL-UI-018` | adaptación de patrones a kiosco                             |
+| `SHELL-UI-019` | continuidad de proceso interrumpido                         |
+| `SHELL-UI-020` | traspaso entre aplicaciones                                 |
+
+UI016 puede componer piezas anteriores, pero no absorbe sus contratos.
+
+---
+
+#### 4. Dependencias documentales y contractuales consumidas
+
+La definición consume, sin reemplazar:
+
+- `SHELL-UI-001 — Crear @vento/ui-web`;
+- `SHELL-UI-002 — Compartir Alert`;
+- `SHELL-UI-003 — Compartir Button`;
+- `SHELL-UI-004 — Compartir Card`;
+- `SHELL-UI-005 — Compartir EmptyState`;
+- `SHELL-UI-006 — Compartir indicador de contexto`;
+- `SHELL-UI-013 — Compartir panel de acción principal`;
+- `SHELL-UI-014 — Compartir confirmaciones de acciones sensibles`;
+- `SHELL-UI-015 — Compartir diagnóstico de contexto`;
+- `UX-BASE-006 — Definir bloqueos, mensajes de error y recuperación comprensibles`;
+- `PROC-SCREEN-021 — Definir recuperación ante errores`;
+- los contratos de autorización, contexto, idempotencia, concurrencia, conectividad, privacidad, accesibilidad y observabilidad vigentes;
+- el gobierno `SHELL-MIG-*` para adopción reversible;
+- el gobierno `SHELL-CI-*` para pruebas, build, publicación y compatibilidad;
+- los requisitos `TREQ-UX-097..117` y `TREQ-UX-1097..1130` ya registrados;
+- los requisitos compartidos `TREQ-SHELL-002`, `TREQ-SHELL-006`, `TREQ-SHELL-007`, `TREQ-SHELL-008`, `TREQ-SHELL-032` y `TREQ-SHELL-036..039`.
+
+---
+
+#### 5. Naturaleza de la tarea
+
+La tarea es documental.
+
+Al cierre se define:
+
+1. identidad del patrón compartido;
+2. frontera entre clasificación y presentación;
+3. contrato de entrada de recuperación;
+4. categorías canónicas admitidas;
+5. preservación de estado;
+6. tratamiento de conflicto;
+7. tratamiento de parcialidad;
+8. tratamiento de resultado desconocido;
+9. política visual para retry seguro;
+10. escalamiento y abandono seguro;
+11. límites frente a autorización y contexto;
+12. límites frente a `EmptyState`, `Alert`, acción principal y confirmaciones;
+13. accesibilidad;
+14. privacidad y minimización;
+15. compatibilidad server/client;
+16. responsive;
+17. reconciliación del estado técnico actual de SHELL;
+18. matriz materializada de siete consumidores;
+19. handoff de migración y calidad;
+20. contrato futuro de pruebas;
+21. cobertura `TREQ-*` existente.
+
+No se crea el patrón físico en esta tarea.
+
+---
+
+#### 6. Resultado documental
+
+Se aprueba el patrón conceptual:
+
+```text
+RecoverableErrorState
+```
+
+como parte futura de:
+
+```text
+@vento/ui-web
+```
+
+Su función es representar una condición de recuperación ya resuelta externamente y mantener juntos:
+
+- explicación humana;
+- clase de recuperación aplicable;
+- estado preservado;
+- detalle seguro;
+- siguiente paso;
+- controles de recuperación ya autorizados;
+- referencia opaca de soporte cuando corresponda.
+
+No es:
+
+- clasificador de errores;
+- parser de excepciones;
+- guard de autorización;
+- policy engine de retry;
+- ejecutor de comandos;
+- cliente Supabase;
+- reconciliador de receipts;
+- generador de idempotencia;
+- monitor de red;
+- sistema de observabilidad;
+- `EmptyState`;
+- `ContextDiagnostic`;
+- `PrimaryActionPanel`;
+- confirmación de acción sensible;
+- consola técnica.
+
+---
+
+#### 7. Identidad pública conceptual
+
+La superficie conceptual queda formada por:
+
+```text
+RecoverableErrorState
+RecoverableErrorStateProps
+RecoverableErrorCategory
+RecoverableErrorDetail
+```
+
+`RecoverableErrorCategory` no crea una taxonomía nueva. Es una vista restringida de la clasificación ya aprobada en `UX-BASE-006`.
+
+Esta tarea no fija:
+
+- subdirectorio físico de exportación;
+- nombre de archivo TypeScript;
+- estructura de carpetas;
+- mapa de exports;
+- herramienta de estilos;
+- framework de documentación visual;
+- implementación interna;
+- contrato runtime de telemetría.
+
+---
+
+#### 8. Frontera de clasificación
+
+UI016 no decide cuándo entrar en recuperación.
+
+La entrada se produce únicamente cuando una capa propietaria haya determinado que existe un caso observado compatible con recuperación, por ejemplo:
+
+- fallo;
+- timeout;
+- rechazo recuperable;
+- resultado parcial;
+- conflicto;
+- resultado desconocido.
+
+Una condición conocida incumplida permanece en bloqueo y no se reclasifica como error para ofrecer un retry.
+
+La composición correcta es:
+
+```text
+RESULTADO ESTRUCTURADO
+        ↓
+CLASIFICACIÓN PROPIETARIA
+        ↓
+POLÍTICA DE RECUPERACIÓN
+        ↓
+ADAPTER DE PRESENTACIÓN
+        ↓
+RecoverableErrorStateProps
+        ↓
+RecoverableErrorState
+```
+
+---
+
+#### 9. Categorías admitidas
+
+`RecoverableErrorCategory` conserva exclusivamente las categorías canónicas de `UX-BASE-006` que pueden materializar la superficie de recuperación de UI016:
+
+```text
+CONFLICT
+TECHNICAL_FAILURE
+VALIDATION_REQUIRED
+```
+
+Estas cadenas conservan su significado canónico y no se redefinen dentro de `@vento/ui-web`.
+
+La categoría no se presenta automáticamente como texto visible. El copy humano proviene de la proyección propietaria.
+
+---
+
+#### 10. Categorías que no pertenecen al patrón raíz
+
+No se admiten como categoría raíz de `RecoverableErrorState`:
+
+```text
+BLOCKED
+DENIED
+WAITING
+WARNING
+INFO
+```
+
+Motivos:
+
+- `BLOCKED` representa una precondición conocida incumplida y conserva su patrón de bloqueo;
+- `DENIED` representa una decisión de autorización y no se resuelve reintentando;
+- `WAITING` representa espera legítima, no fallo;
+- `WARNING` e `INFO` son mensajes de estado y no justifican por sí solos una superficie de recuperación.
+
+Tampoco se crea una categoría genérica `ERROR`, porque colapsaría causas y salidas distintas.
+
+---
+
+#### 11. Superficie conceptual de props
+
+La API conceptual mínima queda:
+
+```text
+category: RecoverableErrorCategory
+title: string
+summary: string
+preservedState: "NONE" | "LOCAL" | "SERVER" | "PARTIAL" | "UNKNOWN"
+preservedStateLabel: string
+details: readonly RecoverableErrorDetail[]
+nextStep: string
+primaryRecoveryControl?: React.ReactNode
+secondaryRecoveryControls?: readonly React.ReactNode[]
+ownerLabel?: string
+supportReference?: string
+```
+
+Además podrá conservar atributos HTML compatibles del contenedor raíz cuando no contradigan accesibilidad, privacidad o semántica.
+
+Los cinco valores de `preservedState` son exactamente los definidos por `UX-BASE-006`; UI016 no crea un segundo vocabulario.
+
+---
+
+#### 12. `RecoverableErrorDetail`
+
+Cada detalle seguro queda conceptualmente formado por:
+
+```text
+label: string
+value: string
+```
+
+Su propósito es explicar hechos que la persona necesita para decidir cómo continuar.
+
+Ejemplos válidos de intención:
+
+```text
+Trabajo conservado  → Borrador guardado en este equipo
+Última confirmación → 16:42
+Resultado           → 8 de 10 elementos confirmados
+Siguiente paso      → Revisar las 2 líneas pendientes
+```
+
+Los ejemplos no congelan copy global ni autorizan revelar identificadores técnicos.
+
+---
+
+#### 13. Campos deliberadamente excluidos
+
+La API base no recibe:
+
+```text
+error
+exception
+stack
+sql
+sqlState
+statusCode
+reasonCode
+permissionKey
+roleCode
+rawResponse
+payload
+metadata
+correlationId
+idempotencyKey
+retryAfter
+canRetry
+isAuthorized
+isOffline
+```
+
+Motivos:
+
+1. la UI no debe parsear excepciones;
+2. el texto visible no es fuente de lógica;
+3. la seguridad de retry se decide fuera del componente;
+4. los identificadores operativos no deben convertirse en contenido ordinario;
+5. secretos o payloads no deben llegar al patrón visual por conveniencia;
+6. la autorización no se reduce a booleanos visuales;
+7. la conectividad no se infiere desde el error.
+
+Una referencia de soporte se entrega únicamente mediante `supportReference`, ya opaca y segura.
+
+---
+
+#### 14. Contrato de productor y consumidor
+
+**Contrato:** `RECOVERABLE-ERROR-PRESENTATION-CONTRACT-001`
+
+**Productor:** aplicación, controlador o adapter propietario que ya consumió las fuentes autoritativas y aplicó la clasificación y política de recuperación correspondientes.
+
+**Consumidor:** `@vento/ui-web / RecoverableErrorState`.
+
+**Campos requeridos:** `category`, `title`, `summary`, `preservedState`, `preservedStateLabel`, `details` y `nextStep`.
+
+**Campos condicionales:** controles de recuperación, `ownerLabel` y `supportReference`.
+
+**Invariantes:** clasificación previa, minimización, preservación explícita, ausencia de autoridad visual, ausencia de retry ciego y siguiente paso humano.
+
+**Condiciones inválidas:** categoría fuera del subconjunto permitido, copy derivado directamente de una excepción, retry presentado sin política segura, resultado desconocido tratado como no ejecutado, parcialidad presentada como éxito completo o control que presupone autoridad.
+
+**Compatibilidad:** la evolución debe conservar los vocabularios canónicos de categoría y preservación o realizar un cambio contractual versionado antes de alterar su significado.
+
+---
+
+#### 15. Preservación `NONE`
+
+`preservedState="NONE"` significa que la capa propietaria determinó que no existe trabajo recuperable que deba representarse como conservado.
+
+No significa automáticamente:
+
+- que la operación no se ejecutó;
+- que no exista estado en servidor;
+- que el usuario pueda repetir la acción;
+- que no haya un receipt;
+- que no haya un efecto externo.
+
+La seguridad del siguiente paso sigue siendo externa al componente.
+
+---
+
+#### 16. Preservación `LOCAL`
+
+`preservedState="LOCAL"` representa trabajo local conservado y todavía no confirmado como estado empresarial.
+
+Reglas:
+
+- el texto debe identificarlo como local;
+- no se muestra como guardado por servidor;
+- no se muestra como completado;
+- no se transfiere a otro actor por simple cambio de sesión;
+- el componente no lee storage;
+- el componente no persiste el borrador;
+- la capa propietaria conserva versionado, cifrado, retención y limpieza.
+
+---
+
+#### 17. Preservación `SERVER`
+
+`preservedState="SERVER"` representa un estado que la capa propietaria confirmó como persistido o aceptado por el servidor.
+
+No implica que todo el proceso haya terminado.
+
+Puede coexistir con:
+
+- un paso posterior fallido;
+- una entrega externa pendiente;
+- un periférico sin confirmación física;
+- un lote parcialmente procesado;
+- una acción siguiente todavía bloqueada.
+
+---
+
+#### 18. Preservación `PARTIAL`
+
+`preservedState="PARTIAL"` exige una representación inequívoca de parcialidad.
+
+Reglas:
+
+1. no se presenta el conjunto como completado;
+2. los elementos confirmados no se vuelven a ejecutar por defecto;
+3. los pendientes o fallidos se diferencian;
+4. un total parcial no se presenta como cobertura completa;
+5. la capa propietaria determina qué líneas pueden recuperarse de forma independiente;
+6. UI016 no calcula el porcentaje ni reconstruye la matriz de resultados.
+
+---
+
+#### 19. Preservación `UNKNOWN`
+
+`preservedState="UNKNOWN"` significa que el resultado empresarial todavía no puede afirmarse.
+
+Invariante vinculante:
+
+```text
+RESULTADO DESCONOCIDO
+≠
+OPERACIÓN NO EJECUTADA
+```
+
+Por tanto:
+
+- no se ofrece retry ciego;
+- no se presenta error como prueba de ausencia de efecto;
+- el control primario puede consultar, conciliar, abrir seguimiento o ejecutar otra salida propietaria segura;
+- una nueva intención empresarial no se crea hasta resolver la intención original cuando exista riesgo de duplicidad;
+- el componente no consulta receipts por sí mismo.
+
+---
+
+#### 20. Conflicto
+
+`category="CONFLICT"` representa un conflicto ya detectado externamente.
+
+La superficie debe poder comunicar:
+
+- qué recurso o aspecto cambió en términos seguros;
+- qué trabajo local se conserva;
+- qué versión o estado autoritativo debe revisarse en lenguaje humano;
+- cuál es la acción segura siguiente.
+
+No deberá:
+
+- sobrescribir silenciosamente;
+- elegir last-write-wins por conveniencia;
+- fabricar un merge;
+- reabrir recursos cerrados;
+- reatribuir un claim;
+- ejecutar una resolución de conflicto desde la presentación sin contrato propietario.
+
+---
+
+#### 21. Fallo técnico
+
+`category="TECHNICAL_FAILURE"` representa una indisponibilidad o fallo técnico ya clasificado.
+
+La presentación podrá diferenciar mediante copy seguro situaciones como:
+
+- fallo antes de enviar;
+- dependencia no disponible;
+- timeout;
+- sincronización parcial;
+- fallo terminal;
+- respuesta fuera de orden;
+- pérdida de conectividad relacionada.
+
+La clasificación exacta permanece fuera del componente.
+
+No se muestran nombres de servicios, endpoints o infraestructura salvo que exista una proyección humana expresamente aprobada.
+
+---
+
+#### 22. Validación requerida
+
+`category="VALIDATION_REQUIRED"` representa un rechazo corregible o una validación que requiere intervención antes de reintentar.
+
+La superficie debe indicar, cuando sea seguro:
+
+- qué dato, evidencia, estado o precondición puede corregirse;
+- qué parte del trabajo se conserva;
+- qué acción concreta habilita un nuevo intento.
+
+No se muestran errores de campos ocultos o no editables como instrucciones imposibles para el actor.
+
+Si la condición es en realidad una falta de permiso, contexto, turno, dispositivo o alcance confirmados, abandona UI016 y usa el patrón propietario de bloqueo o diagnóstico.
+
+---
+
+#### 23. Regla de retry
+
+UI016 no crea un botón universal `Reintentar`.
+
+Un control de retry solo puede llegar en `primaryRecoveryControl` o `secondaryRecoveryControls` cuando la capa propietaria ya demostró simultáneamente:
+
+1. causa compatible con repetición;
+2. operación segura o idempotente;
+3. resultado previo suficientemente conocido;
+4. misma intención empresarial;
+5. misma autoridad y recurso aplicables;
+6. política de reintento vigente;
+7. ausencia de una condición que obligue a reconciliar primero.
+
+El componente no genera ni rota claves de idempotencia.
+
+---
+
+#### 24. Retry de mutaciones
+
+Toda mutación reintentada conserva fuera de UI016:
+
+- intención empresarial original;
+- actor;
+- recurso;
+- payload material;
+- correlación;
+- idempotency key;
+- versión aplicable;
+- autorización vigente.
+
+`RecoverableErrorState` no recibe esos valores como props visuales y no puede alterarlos.
+
+---
+
+#### 25. Límite de intentos
+
+Después del límite aprobado de reintentos:
+
+- no existe ciclo automático infinito;
+- `nextStep` debe indicar una salida segura;
+- puede ofrecerse escalamiento, seguimiento o abandono seguro;
+- `ownerLabel` puede identificar la clase de responsable cuando sea útil;
+- `supportReference` puede facilitar continuidad sin exponer payloads o secretos.
+
+La cantidad de intentos y el backoff pertenecen a la política propietaria.
+
+---
+
+#### 26. Rate limiting
+
+Cuando una capa propietaria clasifique un rate limit como recuperación:
+
+- respeta la ventana segura definida externamente;
+- no revela reglas antiabuso;
+- no confirma existencia de cuentas o recursos sensibles;
+- no permite pulsaciones repetidas para evadir el límite;
+- no crea timers autoritativos dentro del componente.
+
+UI016 recibe únicamente el siguiente paso humano y los controles válidos en ese momento.
+
+---
+
+#### 27. Cierre, navegación y cancelación
+
+Cerrar la superficie, navegar fuera de ella o desmontar el componente no equivale a cancelar:
+
+- una operación de servidor;
+- una operación de proveedor;
+- un trabajo en cola;
+- una impresión;
+- una captura periférica;
+- una sincronización.
+
+Una cancelación real requiere contrato y confirmación propietaria de cancelación.
+
+UI016 no ejecuta cancelación implícita en un evento de cierre.
+
+---
+
+#### 28. Relación con autorización
+
+La recuperación no crea autoridad nueva.
+
+Toda acción de recuperación que ejecute o reintente un efecto protegido deberá volver a pasar por la autorización aplicable en la capa propietaria.
+
+Si se confirma:
+
+- sesión inválida;
+- permiso ausente;
+- contexto inválido;
+- actor cambiado;
+- dispositivo incompatible;
+- territorio fuera de alcance;
+
+la superficie abandona recuperación y pasa al patrón de bloqueo o diagnóstico correspondiente.
+
+UI016 no conserva una autorización visual anterior como permiso vigente.
+
+---
+
+#### 29. Relación con `ContextDiagnostic`
+
+`ContextDiagnostic` explica condiciones de contexto.
+
+`RecoverableErrorState` explica recuperación frente a un fallo observado.
+
+Pueden coexistir cuando, por ejemplo, un intento de resolver contexto falla técnicamente, pero sus responsabilidades permanecen separadas:
+
+```text
+ContextDiagnostic
+→ qué condición contextual existe
+
+RecoverableErrorState
+→ qué ocurrió en el intento y qué recuperación segura existe
+```
+
+Una causa contextual confirmada no se convierte en error técnico para ofrecer bypass.
+
+---
+
+#### 30. Relación con `EmptyState`
+
+Un fallo de consulta, un timeout, una respuesta parcial, un conflicto o un resultado desconocido no demuestran ausencia de registros.
+
+Por tanto:
+
+```text
+consulta confirmada sin resultados
+→ EmptyState cuando el contrato de pantalla lo permita
+
+consulta fallida o incompleta
+→ RecoverableErrorState
+```
+
+UI016 no presenta conteo cero como hecho si la consulta no pudo confirmarlo.
+
+---
+
+#### 31. Relación con `Alert`
+
+`Alert` comunica un mensaje o estado ya determinado.
+
+`RecoverableErrorState` es un patrón compuesto que además conserva:
+
+- estado preservado;
+- siguiente paso;
+- controles de recuperación;
+- referencia segura;
+- jerarquía de recuperación.
+
+Una materialización física puede componer `Alert`, pero `Alert` no absorbe el contrato de recuperación.
+
+---
+
+#### 32. Relación con `Button`
+
+Los controles de recuperación pueden materializarse mediante `Button` o un control compatible.
+
+La semántica del control se decide fuera de UI016.
+
+Un botón visible no demuestra:
+
+- autorización;
+- idempotencia;
+- elegibilidad;
+- ausencia de efectos previos;
+- resultado conocido.
+
+El componente solo ubica controles que el productor ya declaró seguros para la proyección vigente.
+
+---
+
+#### 33. Relación con `Card`
+
+`Card` puede participar como contenedor visual de la recuperación.
+
+No se convierte por ello en propietario de:
+
+- categoría;
+- preserved state;
+- retry;
+- conflicto;
+- soporte;
+- autorización.
+
+La composición física final queda abierta mientras conserve el contrato de UI016.
+
+---
+
+#### 34. Relación con `PrimaryActionPanel`
+
+Una acción de recuperación no se convierte automáticamente en la acción empresarial principal de la pantalla.
+
+`PrimaryActionPanel` conserva la jerarquía del proceso ordinario.
+
+Cuando la pantalla entra en recuperación, la composición propietaria puede suspender o reemplazar temporalmente la acción ordinaria visible, pero esa decisión no modifica `PrimaryActionSpec` ni convierte la recuperación en un nuevo comando empresarial canónico.
+
+---
+
+#### 35. Relación con confirmación sensible
+
+UI016 no decide si una acción de recuperación es sensible.
+
+Si el proceso propietario determina que una recuperación produce un efecto que exige confirmación reforzada, la composición utiliza `SHELL-UI-014`.
+
+No se deduce sensibilidad de:
+
+- categoría de error;
+- color;
+- cantidad de intentos;
+- texto del botón;
+- existencia de un conflicto.
+
+---
+
+#### 36. Relación con proceso interrumpido
+
+UI016 trata recuperación dentro de la condición actual.
+
+`SHELL-UI-019` conserva la propiedad de continuidad cuando la interrupción exige checkpoint, reanudación posterior, cambio de actor o dispositivo, handoff o reconstrucción de trabajo.
+
+Una recuperación puede conducir a UI019, pero no implementa su contrato.
+
+---
+
+#### 37. Resultado parcial y lotes
+
+Para operaciones por lote:
+
+- los elementos confirmados, pendientes, fallidos y conflictivos permanecen distinguibles;
+- no se repiten éxitos por defecto;
+- una falla parcial no convierte todo el lote en fracaso ni en éxito;
+- el resumen visible identifica el alcance incompleto;
+- la aplicación propietaria conserva la matriz por elemento y su reconciliación.
+
+UI016 puede presentar un resumen seguro, no reconstruir el lote desde el cliente.
+
+---
+
+#### 38. Datos stale y respuestas fuera de orden
+
+Una respuesta obsoleta o fuera de orden no reemplaza un estado confirmado más reciente.
+
+El componente no compara versiones ni cursores.
+
+El productor entrega únicamente la proyección que sigue siendo válida para presentar.
+
+Si el último dato confirmado puede mantenerse visible, deberá quedar identificado como tal y no como resultado nuevo del intento fallido.
+
+---
+
+#### 39. Offline y sincronización
+
+UI016 no crea un modo offline global.
+
+Cuando la recuperación provenga de sincronización:
+
+- cada hecho se reconcilia externamente;
+- guardado local y confirmado por servidor permanecen distintos;
+- una cola parcial no se presenta como completada;
+- una autorización vencida no se prolonga por caché;
+- el actor y contexto deben revalidarse cuando corresponda.
+
+El patrón puede explicar el estado, pero no administrar la cola.
+
+---
+
+#### 40. Periféricos y efectos físicos
+
+Para impresoras, escáneres, básculas, datáfonos u otros periféricos:
+
+```text
+COMANDO EMITIDO
+≠
+COMANDO RECIBIDO
+≠
+EJECUCIÓN FÍSICA
+≠
+RESULTADO VERIFICADO
+```
+
+Un timeout no demuestra que el periférico no ejecutó.
+
+UI016 no ofrece retry físico hasta que la capa propietaria pueda determinar que repetir no duplicará el efecto o que existe una política explícita de reconciliación.
+
+---
+
+#### 41. Archivos y evidencia
+
+La recuperación de archivos o evidencia debe conservar separados, cuando apliquen:
+
+- selección;
+- transferencia;
+- recepción;
+- checksum;
+- validación;
+- vínculo empresarial;
+- confirmación final.
+
+UI016 no presenta upload como evidencia canónica hasta que la capa propietaria lo confirme.
+
+---
+
+#### 42. Privacidad y minimización
+
+El patrón recibe únicamente la información necesaria para explicar la recuperación.
+
+No deberá recibir ni mostrar como contenido ordinario:
+
+- secretos;
+- tokens;
+- credenciales;
+- OTP o PIN;
+- payloads empresariales completos;
+- SQL;
+- stack traces;
+- reglas RLS;
+- nombres internos de tablas o RPC;
+- identificadores de otro actor;
+- recursos no autorizados;
+- reglas antifraude;
+- información sensible que no sea necesaria para la recuperación.
+
+`supportReference` debe ser opaca, segura y útil sin convertirse en secreto.
+
+---
+
+#### 43. Dispositivos compartidos
+
+En un dispositivo compartido:
+
+- el trabajo preservado de otro actor no se muestra al actor nuevo;
+- cambiar actor no transfiere borradores ni autoridad;
+- datos personales del actor anterior no permanecen en la superficie;
+- un error del dispositivo no se presenta como error del trabajador;
+- un bloqueo del actor no se presenta como fallo del dispositivo;
+- la salida de recuperación respeta las restricciones del dispositivo.
+
+UI016 no administra el ciclo de identidad del dispositivo.
+
+---
+
+#### 44. Semántica HTML
+
+El patrón es conceptualmente una región informativa con acciones asociadas.
+
+La estructura podrá equivaler a:
+
+```text
+región
+  título
+  resumen
+  estado preservado
+  detalles seguros
+  siguiente paso
+  controles de recuperación
+  referencia de soporte
+```
+
+No se impone `role="alert"` universal.
+
+No se impone `aria-live` universal.
+
+La composición propietaria decide el anuncio apropiado según urgencia y cambio material.
+
+---
+
+#### 45. Foco y teclado
+
+La implementación futura deberá:
+
+- conservar orden lógico de lectura;
+- mantener los controles en orden de tabulación coherente;
+- no robar foco por cada retry automático o actualización de fondo;
+- permitir llevar el foco al resumen de recuperación cuando la tarea queda interrumpida y esa transición necesita anuncio;
+- devolver o mover foco de forma predecible después de una recuperación exitosa;
+- no atrapar al usuario dentro del patrón;
+- permitir abandono seguro cuando el proceso lo admita.
+
+El foco no se usa como sustituto de la explicación textual.
+
+---
+
+#### 46. Accesibilidad mínima
+
+La materialización futura deberá demostrar como mínimo:
+
+1. título y resumen accesibles;
+2. preserved state perceptible por texto;
+3. ausencia de significado exclusivo por color;
+4. acciones con nombre inequívoco;
+5. foco visible;
+6. navegación completa por teclado;
+7. compatibilidad táctil;
+8. reflow sin pérdida de contenido esencial;
+9. zoom legible;
+10. movimiento reducido cuando exista animación;
+11. anuncios de cambios materiales sin ruido constante;
+12. ausencia de datos ocultos verbalizados por lector de pantalla;
+13. referencia de soporte legible cuando exista;
+14. estado parcial o desconocido inequívoco.
+
+---
+
+#### 47. Responsive
+
+El patrón debe conservar su jerarquía en escritorio, tablet, móvil y kiosco.
+
+Reglas:
+
+- el estado preservado y el siguiente paso no desaparecen por compactación;
+- los controles críticos no quedan solo en hover;
+- detalles secundarios pueden reorganizarse sin ocultar información necesaria para una decisión segura;
+- no se exige scroll horizontal ordinario para el contenido mínimo;
+- los controles mantienen tamaño táctil adecuado cuando el dispositivo lo requiera;
+- la adaptación especializada a tablet y kiosco permanece en UI017/UI018.
+
+---
+
+#### 48. Compatibilidad server/client
+
+La estructura visual conceptual de UI016 no requiere por sí misma:
+
+- `window`;
+- `document`;
+- storage;
+- timers;
+- red;
+- Supabase;
+- router;
+- listeners globales;
+- estado React interno obligatorio.
+
+Por tanto, la superficie base es conceptualmente server-safe.
+
+Los controles aportados por el consumidor pueden requerir interactividad cliente, pero esa necesidad no convierte al patrón en propietario de la operación que ejecutan.
+
+---
+
+#### 49. Dependencias prohibidas
+
+`RecoverableErrorState` no dependerá directamente de:
+
+- `@vento/supabase`;
+- clientes Supabase;
+- tablas;
+- schemas;
+- RPC;
+- Edge Functions;
+- Storage;
+- Realtime;
+- APIs de dominio;
+- servicios de proveedores;
+- observabilidad como fuente de render;
+- módulos internos de aplicaciones;
+- catálogos locales de permisos;
+- routers específicos de consumidores.
+
+---
+
+#### 50. Estado técnico actual de SHELL
+
+El estado remoto verificable de `src/components/ui` conserva:
+
+```text
+Button
+Card
+Chip
+Input
+Modal
+```
+
+y un barrel `index.ts`.
+
+No existe allí una implementación dedicada `RecoverableErrorState`.
+
+Tampoco existe todavía un package físico `@vento/ui-web` en `packages/`.
+
+Resultado:
+
+```text
+CONTRATO UI016       = ESPECIFICADO DOCUMENTALMENTE
+PATRÓN FÍSICO        = NO MATERIALIZADO
+ADOPCIÓN RUNTIME     = 0
+```
+
+---
+
+#### 51. Reconciliación de primitivas locales
+
+Las primitivas locales se clasifican para UI016 así:
+
+| Primitiva | Decisión frente a UI016                                                 |
+| --------- | ----------------------------------------------------------------------- |
+| `Button`  | insumo potencial para controles; no política de recuperación            |
+| `Card`    | contenedor potencial; no contrato de error                              |
+| `Chip`    | no sustituye estado preservado ni categoría                             |
+| `Input`   | puede participar en corrección propietaria; no pertenece al patrón base |
+| `Modal`   | no se adopta como contenedor universal de recuperación                  |
+
+Ninguna primitiva local equivale por sí sola a UI016.
+
+---
+
+#### 52. Matriz materializada de consumidores
+
+Se conserva el conjunto heredado de siete consumidores web compartidos.
+
+| Consumidor | Identidad heredada        | Decisión UI016                                      | Implementación en esta tarea |
+| ---------- | ------------------------- | --------------------------------------------------- | ---------------------------: |
+| SHELL      | consumidor web compartido | `CANDIDATO_A_ADOPTAR_PATRON_RECUPERACION_COMPUESTO` |                            0 |
+| NEXO       | consumidor web compartido | `CANDIDATO_A_ADOPTAR_PATRON_RECUPERACION_COMPUESTO` |                            0 |
+| FOGO       | consumidor web compartido | `CANDIDATO_A_ADOPTAR_PATRON_RECUPERACION_COMPUESTO` |                            0 |
+| ORIGO      | consumidor web compartido | `CANDIDATO_A_ADOPTAR_PATRON_RECUPERACION_COMPUESTO` |                            0 |
+| VISO       | consumidor web compartido | `CANDIDATO_A_ADOPTAR_PATRON_RECUPERACION_COMPUESTO` |                            0 |
+| PULSO      | consumidor web compartido | `CANDIDATO_A_ADOPTAR_PATRON_RECUPERACION_COMPUESTO` |                            0 |
+| NUMERA     | consumidor web compartido | `CANDIDATO_A_ADOPTAR_PATRON_RECUPERACION_COMPUESTO` |                            0 |
+
+Reconciliación:
+
+```text
+TOTAL ESPERADO      = 7
+TOTAL MATERIALIZADO = 7
+FALTANTES           = 0
+DUPLICADOS          = 0
+ADOPCIONES FÍSICAS  = 0
+```
+
+La decisión no afirma equivalencia de las implementaciones actuales de cada consumidor; fija su disposición futura frente al patrón compartido.
+
+---
+
+#### 53. Estrategia posterior de migración
+
+La adopción física no ocurre en UI016.
+
+El gobierno `SHELL-MIG-*` deberá:
+
+1. inventariar estados de error, páginas de error, toasts, banners, modales, retries y fallbacks reales;
+2. identificar qué capa clasifica hoy la causa y qué capa ejecuta la recuperación;
+3. separar bloqueos conocidos de fallos recuperables;
+4. separar empty states de consultas fallidas;
+5. identificar retries ciegos o no idempotentes;
+6. crear adapters de presentación por consumidor cuando sean necesarios;
+7. migrar por lotes reversibles;
+8. demostrar paridad, accesibilidad y ausencia de duplicidad antes de retirar legacy.
+
+---
+
+#### 54. Handoff a migración coordinada
+
+| Tarea           | Handoff de UI016                                                 |
+| --------------- | ---------------------------------------------------------------- |
+| `SHELL-MIG-001` | inventariar superficies y acciones reales de recuperación        |
+| `SHELL-MIG-002` | agrupar adopción por consumidor, criticidad y tipo de efecto     |
+| `SHELL-MIG-003` | fijar compatibilidad temporal y bloquear nuevas variantes legacy |
+| `SHELL-MIG-004` | impedir que scaffolds repliquen patrones locales divergentes     |
+| `SHELL-MIG-005` | adoptar `RecoverableErrorState` y adapters propietarios          |
+| `SHELL-MIG-006` | validar accesibilidad, responsive, privacidad y dispositivos     |
+| `SHELL-MIG-007` | demostrar paridad de recuperación, preservación y retry seguro   |
+| `SHELL-MIG-008` | retirar únicamente superficies sin uso residual y con rollback   |
+
+---
+
+#### 55. Handoff a calidad y releases
+
+| Tarea          | Responsabilidad                                      |
+| -------------- | ---------------------------------------------------- |
+| `SHELL-CI-001` | pruebas propias del package                          |
+| `SHELL-CI-002` | build independiente                                  |
+| `SHELL-CI-003` | releases versionados                                 |
+| `SHELL-CI-004` | changelog                                            |
+| `SHELL-CI-005` | matriz de compatibilidad                             |
+| `SHELL-CI-006` | actualización controlada de consumidores mediante PR |
+
+UI016 no publica una versión.
+
+---
+
+#### 56. Compatibilidad y versionado
+
+La futura superficie pública deberá gobernarse con SemVer.
+
+Son cambios potencialmente incompatibles:
+
+- alterar el significado de las categorías admitidas;
+- incorporar una categoría canónica excluida sin nueva decisión propietaria;
+- cambiar el significado de `NONE`, `LOCAL`, `SERVER`, `PARTIAL` o `UNKNOWN`;
+- retirar `preservedStateLabel` o `nextStep`;
+- convertir `supportReference` en identificador técnico sensible;
+- permitir retry directo desde el componente;
+- introducir acceso a red o Supabase;
+- convertir el patrón en clasificador de excepciones;
+- cambiar semántica accesible de preserved state o controles;
+- permitir que cierre visual cancele efectos remotos implícitamente.
+
+Una necesidad local no se incorpora silenciosamente al contrato común.
+
+---
+
+#### 57. Contrato futuro de prueba
+
+La materialización física y la adopción deberán demostrar, como mínimo:
+
+1. renderizado de `CONFLICT`;
+2. renderizado de `TECHNICAL_FAILURE`;
+3. renderizado de `VALIDATION_REQUIRED`;
+4. rechazo de categorías raíz no pertenecientes a UI016;
+5. `NONE` perceptible sin afirmar no ejecución;
+6. `LOCAL` diferenciado de confirmación de servidor;
+7. `SERVER` diferenciado de proceso completo;
+8. `PARTIAL` inequívoco;
+9. `UNKNOWN` inequívoco;
+10. resultado desconocido sin retry ciego;
+11. preservación de borrador cuando la capa propietaria lo entregue;
+12. ausencia de inferencia desde URL, storage o último valor;
+13. ausencia de parsing de `Error` o excepciones dentro del componente;
+14. ausencia de `reasonCode` crudo como copy;
+15. ausencia de stack, SQL, token o payload en render;
+16. `nextStep` presente y comprensible;
+17. control primario ausente cuando no exista acción segura inmediata;
+18. control primario presente solo cuando el productor lo suministre;
+19. controles secundarios sin crear autoridad;
+20. retry conservando la intención en la capa propietaria;
+21. retry mutable condicionado por idempotencia y resultado conocido;
+22. conflicto sin sobrescritura silenciosa;
+23. parcialidad sin presentar completitud;
+24. consulta fallida sin convertirse en `EmptyState`;
+25. pérdida confirmada de permiso/contexto saliendo de recuperación hacia bloqueo;
+26. composición con `ContextDiagnostic` sin fusionar semánticas;
+27. composición con `Alert` sin delegarle la política de recuperación;
+28. composición con `Button` sin usar visibilidad como autorización;
+29. composición con confirmación sensible únicamente por decisión propietaria;
+30. cierre o navegación sin cancelación remota implícita;
+31. rate limit sin bucle de pulsación;
+32. límite de intentos con escalamiento o salida segura;
+33. referencia de soporte opaca;
+34. foco estable durante retry automático;
+35. anuncio accesible de interrupción material;
+36. ausencia de color como único estado;
+37. navegación por teclado;
+38. reflow en ancho reducido;
+39. zoom legible;
+40. compatibilidad táctil;
+41. movimiento reducido;
+42. ausencia de datos del actor anterior en dispositivo compartido;
+43. preservación de privacidad en lector de pantalla;
+44. server rendering de la estructura pura;
+45. ausencia de dependencia directa de `@vento/supabase`;
+46. ausencia de consultas de red dentro del componente;
+47. ausencia de timers autoritativos dentro del componente;
+48. siete consumidores con decisión explícita antes de migración;
+49. paridad por consumidor antes de retiro legacy;
+50. rollback de adopción disponible antes de retirar la superficie anterior.
+
+Esta lista define evidencia futura. No declara implementación ni ejecución de esas pruebas en UI016.
+
+---
+
+#### 58. Cobertura de requisitos existente
+
+UI016 no introduce una obligación transversal nueva.
+
+La cobertura vigente ya contiene, entre otras:
+
+- taxonomía de ocho clases de explicación: `TREQ-UX-097`;
+- separación entre causa estructurada y copy: `TREQ-UX-098`;
+- anatomía humana de explicación: `TREQ-UX-099`;
+- acciones de recuperación concretas y retry seguro: `TREQ-UX-100`;
+- estado preservado y resultado desconocido: `TREQ-UX-101`;
+- escalamiento y referencia contextual: `TREQ-UX-102`;
+- separación de denegación y recuperación: `TREQ-UX-103`;
+- bloqueos de contexto sin fallback: `TREQ-UX-104`;
+- validación corregible: `TREQ-UX-105`;
+- espera legítima: `TREQ-UX-106`;
+- conflicto: `TREQ-UX-107`;
+- offline y sincronización: `TREQ-UX-108`;
+- fallos técnicos y conciliación previa a retry: `TREQ-UX-109`;
+- accesibilidad y contenido seguro de mensajes: `TREQ-UX-110..117`;
+- entrada canónica a recuperación: `TREQ-UX-1097`;
+- timeout de carga sin spinner infinito: `TREQ-UX-1098`;
+- dependencia configurada indisponible frente a bloqueo: `TREQ-UX-1099`;
+- consulta fallida no convertida en vacío: `TREQ-UX-1100`;
+- preservación de último dato confirmado y trabajo local: `TREQ-UX-1101..1102`;
+- contratos de retry, conflicto, parcialidad, unknown, realtime, offline, archivos y periféricos: `TREQ-UX-1103..1124`;
+- accesibilidad de recuperación: `TREQ-UX-1125`;
+- privacidad de mensajes y correlación segura: `TREQ-UX-1126`;
+- telemetría minimizada: `TREQ-UX-1127`;
+- límite de reintentos: `TREQ-UX-1128`;
+- cierre sin cancelación implícita: `TREQ-UX-1129`;
+- versionado de cambios de recuperación: `TREQ-UX-1130`;
+- protección frente a duplicidad en acciones: `TREQ-UX-1231..1232`;
+- requisitos compartidos de componentes, compatibilidad y retiro: `TREQ-SHELL-002`, `TREQ-SHELL-006`, `TREQ-SHELL-007`, `TREQ-SHELL-008`, `TREQ-SHELL-032`, `TREQ-SHELL-036..039`.
+
+UI016 especializa la forma compartida de presentación sin crear una regla material nueva.
+
+---
+
+#### 59. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+La cobertura canónica vigente ya protege clasificación, preservación, retry, conflicto, parcialidad, resultado desconocido, accesibilidad, privacidad, idempotencia, compatibilidad y migración. UI016 fija la API visual y sus fronteras dentro de esa cobertura.
+
+---
+
+#### 60. Estado de materialización física
+
+Al cierre documental de UI016:
+
+```text
+IDENTIDAD RecoverableErrorState                = ESPECIFICADA
+RecoverableErrorStateProps                     = ESPECIFICADO CONCEPTUALMENTE
+RecoverableErrorCategory                       = 3 CATEGORÍAS CANÓNICAS REUTILIZADAS
+RecoverableErrorDetail                         = ESPECIFICADO CONCEPTUALMENTE
+PRESERVED STATE                                = 5 VALORES CANÓNICOS REUTILIZADOS
+FRONTERA CLASIFICACIÓN / PRESENTACIÓN          = CERRADA
+FRONTERA RECUPERACIÓN / AUTORIZACIÓN           = CERRADA
+FRONTERA RECUPERACIÓN / CONTEXTO               = CERRADA
+FRONTERA RECUPERACIÓN / EMPTY STATE            = CERRADA
+FRONTERA RECUPERACIÓN / CONFIRMACIÓN SENSIBLE  = CERRADA
+RETRY CIEGO                                    = PROHIBIDO
+RESULTADO DESCONOCIDO COMO NO EJECUTADO        = PROHIBIDO
+ACCESIBILIDAD                                  = ESPECIFICADA DOCUMENTALMENTE
+PRIVACIDAD                                     = ESPECIFICADA DOCUMENTALMENTE
+CONSUMIDORES RECONCILIADOS                     = 7/7
+FALTANTES                                      = 0
+DUPLICADOS                                     = 0
+PACKAGE FÍSICO                                 = NO MATERIALIZADO
+PATRÓN FÍSICO                                  = NO MATERIALIZADO
+CONSUMIDORES MIGRADOS                          = 0
+CAMBIOS SUPABASE                               = 0
+CAMBIOS TREQ                                   = 0
+```
+
+---
+
+#### 61. Decisiones vinculantes
+
+1. El patrón conceptual se denomina `RecoverableErrorState`.
+2. Pertenece a `@vento/ui-web`.
+3. UI016 es documental y no materializa código.
+4. La superficie conceptual incluye `RecoverableErrorState`, `RecoverableErrorStateProps`, `RecoverableErrorCategory` y `RecoverableErrorDetail`.
+5. UI016 no clasifica excepciones ni decide recuperabilidad.
+6. La entrada exige un caso observado ya clasificado externamente.
+7. Las categorías admitidas son `CONFLICT`, `TECHNICAL_FAILURE` y `VALIDATION_REQUIRED`.
+8. Las categorías provienen de `UX-BASE-006` y no se redefinen.
+9. `BLOCKED` no pertenece a la raíz de UI016.
+10. `DENIED` no pertenece a la raíz de UI016.
+11. `WAITING` no pertenece a la raíz de UI016.
+12. `WARNING` e `INFO` no pertenecen a la raíz de UI016.
+13. No se crea una categoría genérica `ERROR`.
+14. Los preserved states son `NONE`, `LOCAL`, `SERVER`, `PARTIAL` y `UNKNOWN`.
+15. UI016 reutiliza esos cinco valores sin crear una taxonomía paralela.
+16. `title`, `summary`, `preservedStateLabel` y `nextStep` son humanos.
+17. `details` contiene únicamente label/value seguros.
+18. La API no recibe `Error`, excepción, stack o SQL.
+19. La API no recibe `reasonCode` como copy base.
+20. La API no recibe `permissionKey`, `roleCode` ni booleanos de autorización.
+21. La API no recibe `idempotencyKey` ni correlación operativa cruda.
+22. `supportReference` es opaca y segura.
+23. `NONE` no prueba que una operación no se ejecutó.
+24. `LOCAL` no equivale a confirmación de servidor.
+25. `SERVER` no equivale a proceso completo.
+26. `PARTIAL` nunca se presenta como completado total.
+27. `UNKNOWN` nunca se interpreta como no ejecutado.
+28. Un resultado desconocido no habilita retry ciego.
+29. UI016 no crea un botón universal `Reintentar`.
+30. Los controles de recuperación se suministran desde la capa propietaria.
+31. Un retry protegido conserva autorización y se revalida fuera del componente.
+32. Un retry mutable conserva intención e idempotencia fuera del componente.
+33. UI016 no genera idempotency keys.
+34. El límite de intentos impide bucles automáticos indefinidos.
+35. Rate limiting respeta política externa y no revela antiabuso.
+36. Cerrar o navegar no cancela una operación remota por inferencia.
+37. Una pérdida confirmada de autoridad abandona recuperación y entra al patrón de bloqueo correspondiente.
+38. UI015 conserva el diagnóstico de contexto.
+39. UI005 conserva estados vacíos reales.
+40. UI002 conserva mensajes genéricos.
+41. UI013 conserva la acción empresarial principal.
+42. UI014 conserva confirmaciones sensibles.
+43. UI019 conserva continuidad de proceso interrumpido.
+44. Conflicto no autoriza sobrescritura silenciosa.
+45. Resultados parciales conservan detalle de alcance incompleto.
+46. Respuestas stale no sustituyen estados más recientes.
+47. UI016 no administra colas offline.
+48. UI016 no administra periféricos.
+49. UI016 no administra uploads o evidencia.
+50. La API minimiza datos sensibles.
+51. No se muestran stack, SQL, tokens, payloads ni recursos ajenos.
+52. Cambiar actor en dispositivo compartido no transfiere trabajo ni autoridad.
+53. No se impone `role="alert"` universal.
+54. No se impone `aria-live` universal.
+55. La estructura base es conceptualmente server-safe.
+56. El componente no depende directamente de `@vento/supabase`.
+57. SHELL no posee actualmente un equivalente dedicado `RecoverableErrorState` en sus primitivas locales verificadas.
+58. Los siete consumidores tienen decisión explícita.
+59. La matriz cubre 7/7 consumidores con cero faltantes y cero duplicados.
+60. La adopción física queda en `SHELL-MIG-*`.
+61. Pruebas, build, release y compatibilidad quedan en `SHELL-CI-*`.
+62. UI016 crea cero requisitos `TREQ-*` y modifica cero.
+63. UI016 produce cero cambios de Supabase.
+64. `SHELL-UI-017` permanece únicamente reservada.
+
+---
+
+#### 62. Criterios de aceptación documental
+
+UI016 queda documentalmente cerrada únicamente si se cumplen simultáneamente:
+
+- [x] UI015 está aprobada y constituye la base inmediata;
+- [x] UI017 permanece reservada;
+- [x] existe una identidad única `RecoverableErrorState`;
+- [x] se fija su pertenencia conceptual a `@vento/ui-web`;
+- [x] se separa clasificación de presentación;
+- [x] se reutiliza la taxonomía de `UX-BASE-006` sin duplicarla;
+- [x] se limitan las categorías raíz a tres clases compatibles con recuperación;
+- [x] se separan bloqueo, denegación, espera, warning e info;
+- [x] se reutilizan los cinco preserved states canónicos;
+- [x] se define una API conceptual mínima;
+- [x] se prohíbe parsear excepciones en el componente;
+- [x] se prohíbe usar reason code como copy directo;
+- [x] se prohíbe transportar secretos o payloads por conveniencia;
+- [x] se define preserved state humano;
+- [x] se define tratamiento de parcialidad;
+- [x] se define tratamiento de resultado desconocido;
+- [x] se prohíbe retry ciego;
+- [x] se fija que retry e idempotencia permanecen fuera de UI;
+- [x] se define conflicto sin overwrite silencioso;
+- [x] se define límite de intentos y escalamiento;
+- [x] se define rate limiting sin bypass;
+- [x] se separa cierre visual de cancelación remota;
+- [x] se separa recuperación de autorización;
+- [x] se separa recuperación de contexto;
+- [x] se separa recuperación de EmptyState;
+- [x] se separa recuperación de acción principal;
+- [x] se separa recuperación de confirmación sensible;
+- [x] se separa recuperación de proceso interrumpido;
+- [x] se especifican lotes y parcialidad;
+- [x] se especifica offline sin modo global;
+- [x] se especifican periféricos sin retry físico ciego;
+- [x] se especifican archivos y evidencia;
+- [x] se preserva privacidad y minimización;
+- [x] se especifican dispositivos compartidos;
+- [x] se especifica semántica HTML;
+- [x] se especifican foco, teclado y anuncios;
+- [x] se especifica responsive;
+- [x] se especifica server-safety;
+- [x] se prohíben dependencias directas de datos y dominio;
+- [x] se reconcilia `src/components/ui`;
+- [x] se materializan decisiones para siete consumidores;
+- [x] faltantes y duplicados son cero;
+- [x] adopciones físicas son cero;
+- [x] se define handoff a migración y CI;
+- [x] se declaran cero cambios `TREQ-*` con cobertura concreta;
+- [x] se declaran cero cambios de Supabase;
+- [x] no queda una decisión material de UI016 sin propietario.
+
+---
+
+#### 63. Evidencia de validación
+
+La estructura del artefacto transitorio se valida de forma independiente antes de su entrega. Esa comprobación no sustituye los validadores globales del repositorio.
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                                                                           |
+| --------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | No se ejecutó el build documental del repositorio porque esta elaboración no dispone de un checkout local actualizado de `vento-shell` que incorpore UI015 y UI016.                                                                                                 |
+| LOCAL     | `NOT_EXECUTED`   | No se ejecutaron los scripts npm del repositorio ni `git diff --check` por ausencia de un checkout local actualizado e integrado con el artefacto.                                                                                                                  |
+| REMOTA    | `PASS`           | Se verificaron mediante lectura remota fijada el protocolo, contrato de entrega, secuencia, archivo propietario, políticas de tarea, `package.json`, `UX-BASE-006`, `PROC-SCREEN-021`, `04A_19_UX.md`, `04A_04_SHELL.md` y el estado actual de `src/components/ui`. |
+| OPERATIVA | `NOT_APPLICABLE` | La tarea es documental y no modifica runtime, procesos empresariales, ejecutores ni servicios desplegados.                                                                                                                                                          |
+| FÍSICA    | `NOT_APPLICABLE` | La tarea no modifica tablets, kioscos, terminales, periféricos ni hardware.                                                                                                                                                                                         |
+
+---
+
+#### 64. Límites
+
+Esta tarea no autoriza:
+
+- crear `packages/ui-web`;
+- crear archivos TypeScript de `RecoverableErrorState`;
+- modificar `src/components/ui`;
+- modificar aplicaciones consumidoras;
+- crear adapters runtime;
+- cambiar `UX-BASE-006`;
+- cambiar `PROC-SCREEN-021`;
+- cambiar categorías de error;
+- crear reason codes;
+- modificar permisos o autorización;
+- crear o modificar ejecutores;
+- crear retries automáticos;
+- crear idempotency keys;
+- modificar colas;
+- modificar observabilidad;
+- ejecutar SQL;
+- crear o ejecutar migraciones;
+- modificar Supabase;
+- desplegar servicios;
+- publicar paquetes;
+- modificar la continuidad remota por inferencia;
+- iniciar UI017.
+
+---
+
+#### 65. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-UI-015 — Compartir diagnóstico de contexto`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-UI-016 — Compartir estados de error recuperable`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-UI-017 — Compartir patrón para tablet`
+
+
 ### [ ] SHELL-UI-017 — Compartir patrón para tablet
 ### [ ] SHELL-UI-018 — Compartir patrón para kiosco
 ### [ ] SHELL-UI-019 — Compartir patrón de proceso interrumpido

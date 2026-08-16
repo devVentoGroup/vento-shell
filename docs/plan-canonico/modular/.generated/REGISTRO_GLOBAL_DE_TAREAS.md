@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **931** |
+| Aprobadas | **933** |
 | En propuesta | **0** |
-| No iniciadas | **663** |
+| No iniciadas | **661** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **58.41% (931/1594)** |
+| Porcentaje de completamiento | **58.53% (933/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-UI-014` — Compartir confirmaciones de acciones sensibles | ✅ APROBADA |
-| Tarea actual | `SHELL-UI-015` — Compartir diagnóstico de contexto | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-UI-016` — Compartir estados de error recuperable | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-UI-016` — Compartir estados de error recuperable | ✅ APROBADA |
+| Tarea actual | `SHELL-UI-017` — Compartir patrón para tablet | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-UI-018` — Compartir patrón para kiosco | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -758,8 +758,8 @@
 | ✅ APROBADA | `SHELL-UI-012` | Compartir línea de estados de proceso | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-UI-013` | Compartir panel de acción principal | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-UI-014` | Compartir confirmaciones de acciones sensibles | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-UI-015` | Compartir diagnóstico de contexto | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-UI-016` | Compartir estados de error recuperable | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-UI-015` | Compartir diagnóstico de contexto | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-UI-016` | Compartir estados de error recuperable | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-017` | Compartir patrón para tablet | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-018` | Compartir patrón para kiosco | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-019` | Compartir patrón de proceso interrumpido | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
