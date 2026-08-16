@@ -4380,7 +4380,1234 @@ SHELL-DB-004 — Normalizar errores de Supabase
 SHELL-DB-005 — Separar cliente server, browser y native
 
 
-### [ ] SHELL-DB-005 — Separar cliente server, browser y native
+### ✅ SHELL-DB-005 — Separar cliente server, browser y native
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-DB-004 — Normalizar errores de Supabase
+**Tarea siguiente:** SHELL-UI-001 — Crear @vento/ui-web
+**Tipo de tarea:** Documental; definición canónica de las fronteras runtime, superficies de importación, factories, ciclo de vida, configuración, cookies, almacenamiento nativo y aislamiento privilegiado del futuro `@vento/supabase`, preservando middleware y reglas de aplicación como responsabilidades locales y sin materializar código, package físico, exports npm, migraciones, DDL, DML, cambios de datos ni modificaciones remotas
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md`
+**Estado físico resultante:** ESPECIFICADO; FACTORIES, SUBPATHS Y PACKAGE FÍSICO NO MATERIALIZADOS
+**Implementación física autorizada:** ninguna
+**Cambios de código, packages físicos, configuración npm, registry, CI, despliegues, SQL, migraciones, RLS, RPC, triggers, índices, constraints, datos, secretos o configuración remota:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-DB-005` define la separación runtime que deberá gobernar la futura superficie de clientes Supabase de `@vento/supabase`.
+
+La tarea elimina como decisión arquitectónica la coexistencia de clientes web copiados con ciclos de vida, resolución de configuración, políticas de cookies y fronteras de privilegio diferentes.
+
+La topología canónica queda:
+
+```text
+BROWSER
+  ↓
+@vento/supabase/browser
+  ↓
+cliente de sesión pública para navegador
+
+SERVER CON SESIÓN DE USUARIO
+  ↓
+@vento/supabase/server
+  ↓
+cliente request-scoped con adapter explícito de cookies
+
+NATIVE
+  ↓
+@vento/supabase/native
+  ↓
+cliente de sesión pública con storage nativo inyectado
+
+BACKEND PRIVILEGIADO
+  ↓
+@vento/supabase/privileged
+  ↓
+cliente técnico server-only con credencial privilegiada
+
+MIDDLEWARE / PROXY / ROUTING
+  ↓
+permanece local en cada aplicación
+  ↓
+puede consumir la factory server cuando corresponda
+```
+
+Nunca:
+
+```text
+browser → service_role
+native → service_role
+server de sesión → service_role implícita
+middleware compartido → reglas locales de routing
+factory compartida → process.env como fuente canónica
+cliente server → singleton entre requests
+cliente native → cookies de Next.js
+root del package → reexport privilegiado accidental
+```
+
+---
+
+#### 2. Resultado material
+
+Quedan definidas documentalmente cuatro fronteras técnicas separadas para el futuro `@vento/supabase`:
+
+| Frontera         | Subpath canónico             | Factory canónica         | Runtime permitido                      |
+| ---------------- | ---------------------------- | ------------------------ | -------------------------------------- |
+| browser          | `@vento/supabase/browser`    | `createBrowserClient`    | navegador                              |
+| server de sesión | `@vento/supabase/server`     | `createServerClient`     | backend con contexto de request/sesión |
+| native           | `@vento/supabase/native`     | `createNativeClient`     | aplicación nativa                      |
+| privileged       | `@vento/supabase/privileged` | `createPrivilegedClient` | backend privilegiado únicamente        |
+
+La raíz `@vento/supabase` permanece runtime-neutral y no reexporta ninguna de estas cuatro factories.
+
+La tarea también materializa:
+
+- ciclo de vida exacto por runtime;
+- contrato lógico mínimo de configuración por factory;
+- política canónica de cookies para browser/server;
+- tratamiento explícito de host local y dominio compartido;
+- separación entre contextos server con y sin capacidad de escribir cookies;
+- contrato de almacenamiento para native;
+- aislamiento de `service_role`;
+- ausencia de lectura implícita de variables de entorno dentro de las factories;
+- separación entre cliente de sesión y cliente privilegiado;
+- reglas de importación y dependencias permitidas;
+- relación con wrappers tipados y normalización de errores;
+- disposición de las variantes web legacy auditadas;
+- reglas de compatibilidad, migración y rollback;
+- cobertura futura de pruebas.
+
+No se materializa todavía ninguna factory TypeScript.
+
+---
+
+#### 3. Fuentes normativas y decisiones heredadas
+
+| Fuente                               | Decisión preservada                                                                                                                                          |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `SHELL-AUD-008`                      | existe deriva real entre clientes browser, server, middleware/proxy y admin; la convergencia debe decidir ciclo de vida, cookies, configuración y privilegio |
+| `SHELL-AUD-010`                      | browser y server se comparten mediante factories configurables; middleware permanece local; admin se comparte únicamente como factory restringida            |
+| `SHELL-AUD-011`                      | variantes sin consumidor o legacy solo se retiran con evidencia y gate                                                                                       |
+| `SHELL-DB-001`                       | `@vento/supabase` posee factories, tipos generados, wrappers y normalización técnica; la configuración ambiental pertenece al consumidor                     |
+| `SHELL-DB-002`                       | el tipo generado no concede autoridad y deben preservarse fronteras `CONSUMER_SAFE`, `SERVER_ONLY` y `PRIVILEGED_TOOLING`                                    |
+| `SHELL-DB-003`                       | los wrappers reciben un cliente ya autorizado y no seleccionan por sí mismos runtime ni credenciales                                                         |
+| `SHELL-DB-004`                       | server, browser y native deben converger en semántica de error sin filtrar diagnóstico privilegiado                                                          |
+| `SHELL-MIG-001..008`                 | la adopción web será progresiva, reversible y con retiro legacy únicamente después de paridad                                                                |
+| cobertura de prueba canónica vigente | ya protege convergencia compartida, compatibilidad, rollback, secretos privilegiados y ausencia de uso público de `service_role`                             |
+
+Precedencia:
+
+```text
+RUNTIME
+→ FRONTERA DE IMPORTACIÓN
+→ CONFIGURACIÓN EXPLÍCITA
+→ CREDENCIAL PERMITIDA
+→ MECANISMO DE SESIÓN
+→ CLIENTE
+→ WRAPPER / OPERACIÓN
+→ NORMALIZACIÓN DE ERROR
+→ CONSUMIDOR
+```
+
+Una factory no decide autorización empresarial.
+
+---
+
+#### 4. Línea base auditada que debe converger
+
+La auditoría previa identificó las siguientes familias relacionadas directamente con esta tarea:
+
+| Familia                           | Estado auditado                                 | Disposición canónica                              |
+| --------------------------------- | ----------------------------------------------- | ------------------------------------------------- |
+| `FAM-014` — browser client        | 7 ocurrencias primarias, 3 variantes semánticas | `COMPARTIR` mediante factory browser configurable |
+| `FAM-015` — server client         | 7 ocurrencias, 3 variantes semánticas           | `COMPARTIR` mediante factory server configurable  |
+| `FAM-016` — middleware            | 6 ocurrencias, múltiples reglas locales         | `MANTENER LOCAL`                                  |
+| `FAM-017` — proxy                 | 3 ocurrencias, sin base canónica compartida     | `MANTENER LOCAL` hasta retiro autorizado          |
+| `FAM-024` — admin                 | 1 frontera privilegiada consumida               | `COMPARTIR SOLO COMO FACTORY RESTRINGIDA`         |
+| `FAM-026` — cliente alterno PULSO | variante alternativa sin consumidor confirmado  | `RETIRAR CON GATE`                                |
+
+Las siete aplicaciones web observadas son:
+
+```text
+SHELL
+VISO
+NEXO
+FOGO
+ORIGO
+PULSO
+NUMERA
+```
+
+`SHELL-DB-005` define el destino arquitectónico de esas variantes, pero no migra ni elimina archivos de consumidores.
+
+---
+
+#### 5. Regla central de separación
+
+La identidad de una factory depende del runtime y del tipo de credencial, no del nombre de la aplicación.
+
+Queda prohibido crear factories como:
+
+```text
+createNexoSupabaseClient
+createVisoSupabaseClient
+createPulsoSupabaseClient
+createAdminClientForApp
+```
+
+La variación legítima se expresa únicamente mediante configuración tipada o adapters.
+
+La regla es:
+
+```text
+MISMO RUNTIME
++ MISMA CLASE DE CREDENCIAL
++ MISMO CONTRATO DE SESIÓN
+=
+MISMA FACTORY CANÓNICA
+```
+
+Una aplicación no recibe una fork propia para resolver host, cookies, variables o errores.
+
+---
+
+#### 6. Superficie de imports canónica
+
+Los imports runtime-bound serán explícitos.
+
+```text
+@vento/supabase/browser
+@vento/supabase/server
+@vento/supabase/native
+@vento/supabase/privileged
+```
+
+Reglas:
+
+1. la raíz `@vento/supabase` no reexporta factories runtime-bound;
+2. `@vento/supabase/browser` no importa módulos server, native ni privileged;
+3. `@vento/supabase/server` no importa módulos browser, native ni privileged;
+4. `@vento/supabase/native` no importa módulos web, SSR, Next.js ni privileged;
+5. `@vento/supabase/privileged` no es dependencia transitiva de browser ni native;
+6. wrappers, tipos y errores runtime-neutral pueden ser consumidos por las fronteras que corresponda;
+7. la futura materialización deberá permitir detectar imports cruzados en build/CI;
+8. ningún barrel genérico puede volver accesible `privileged` desde un bundle cliente.
+
+---
+
+#### 7. Factory browser
+
+La factory canónica será:
+
+```text
+@vento/supabase/browser
+→ createBrowserClient
+```
+
+Contrato lógico mínimo de entrada:
+
+| Campo             | Regla                                                                   |
+| ----------------- | ----------------------------------------------------------------------- |
+| `url`             | obligatorio; URL Supabase ya resuelta y validada por el consumidor      |
+| `publicKey`       | obligatorio; clave pública/publishable compatible; nunca `service_role` |
+| `currentHost`     | obligatorio cuando exista política de cookie compartida                 |
+| `isSecureContext` | obligatorio para resolver política `Secure` de forma determinista       |
+| `cookiePolicy`    | política canónica definida en esta tarea                                |
+
+La factory:
+
+- no lee `process.env`;
+- no lee secretos server-only;
+- no acepta `serviceRoleKey`;
+- no contiene routing;
+- no contiene permisos empresariales;
+- no selecciona aplicación;
+- no decide sede;
+- no decide área;
+- no crea lógica de middleware;
+- no ejecuta RPC durante importación;
+- no tiene efectos laterales al importar el módulo.
+
+---
+
+#### 8. Ciclo de vida browser
+
+La decisión canónica es:
+
+```text
+FACTORY SIN CACHE GLOBAL INTERNA
+        +
+UNA INSTANCIA PROPIEDAD DE LA APLICACIÓN
+POR REALM DE NAVEGADOR Y CONFIGURACIÓN RESUELTA
+```
+
+Consecuencias:
+
+1. `createBrowserClient` construye un cliente al invocarse;
+2. el package no mantiene un singleton oculto global;
+3. el bootstrap o módulo propietario de cada aplicación crea una única instancia reutilizable para su realm normal;
+4. renderizar un componente no crea un cliente nuevo por render;
+5. cambiar la configuración exige crear una instancia distinta de forma explícita;
+6. pruebas pueden crear instancias aisladas sin limpiar estado global del package;
+7. dos aplicaciones o realms no comparten memoria por accidente;
+8. el consumidor no puede usar la diferencia singleton/per-call como variante empresarial.
+
+Esto reemplaza la deriva actual entre factories per-call y singletons implícitos de módulo.
+
+---
+
+#### 9. Factory server de sesión
+
+La factory canónica será:
+
+```text
+@vento/supabase/server
+→ createServerClient
+```
+
+Contrato lógico mínimo de entrada:
+
+| Campo             | Regla                                                   |
+| ----------------- | ------------------------------------------------------- |
+| `url`             | obligatorio; resuelto por el runtime propietario        |
+| `publicKey`       | obligatorio; clave pública de sesión, no `service_role` |
+| `cookies`         | adapter explícito de lectura/escritura                  |
+| `currentHost`     | host efectivo ya normalizado por el owner del request   |
+| `isSecureRequest` | indica si el request efectivo es seguro                 |
+| `cookiePolicy`    | política canónica definida en esta tarea                |
+| `cookieWriteMode` | `READ_WRITE` o `READ_ONLY`                              |
+
+La factory no importa directamente `next/headers`, no conoce layouts, route handlers, Server Components ni middleware concretos.
+
+Next.js u otro framework adapta su API de request/cookies al contrato compartido.
+
+---
+
+#### 10. Ciclo de vida server
+
+La decisión canónica es:
+
+```text
+UN CLIENTE SERVER DE SESIÓN
+POR REQUEST / CONTEXTO AUTORITATIVO EQUIVALENTE
+```
+
+Queda prohibido:
+
+- singleton server global con cookies de usuario;
+- reutilizar un cliente entre requests;
+- capturar el cookie store de un request y usarlo en otro;
+- conservar identidad de usuario en estado de módulo;
+- usar un cliente privileged como sustituto del cliente de sesión;
+- compartir contexto mutable de autenticación entre ejecuciones concurrentes.
+
+El cliente server puede reutilizar código y configuración inmutable, pero no estado de sesión request-scoped.
+
+---
+
+#### 11. Adapter canónico de cookies server
+
+El adapter lógico posee dos operaciones:
+
+```text
+getAll()
+setAll(cookies)
+```
+
+Reglas:
+
+1. `getAll()` devuelve el conjunto de cookies que el runtime autoriza a leer;
+2. `setAll()` aplica cambios únicamente cuando `cookieWriteMode = READ_WRITE`;
+3. `READ_ONLY` representa explícitamente un contexto que puede leer sesión pero no persistir refresh/cambios de cookie;
+4. un intento de escritura en `READ_ONLY` se registra como condición técnica observable y no como denegación empresarial;
+5. una excepción real de escritura en `READ_WRITE` no se silencia;
+6. el normalizador técnico de `SHELL-DB-004` recibe el diagnóstico aplicable;
+7. la imposibilidad de escribir cookies no convierte un error en éxito;
+8. el adapter no cambia names, values o expiraciones emitidas por la capa de sesión salvo la política canónica permitida.
+
+La implementación futura no conservará el patrón actual de `catch` vacío como semántica compartida.
+
+---
+
+#### 12. Política canónica de cookies
+
+La política compartida define:
+
+| Atributo              | Decisión                                                                                                   |
+| --------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `domain`              | host-only por defecto; dominio compartido solo mediante configuración explícita y válida                   |
+| `path`                | `/` para la sesión compartida salvo atributo más restrictivo emitido por el proveedor que deba preservarse |
+| `sameSite`            | `lax` como política ordinaria de sesión web                                                                |
+| `secure`              | `true` para contexto HTTPS; `false` solo en desarrollo HTTP explícitamente permitido                       |
+| expiración / `maxAge` | se preserva la semántica emitida por el proveedor                                                          |
+| eliminación           | utiliza el mismo scope efectivo de `domain` y `path` de la cookie que se retira                            |
+| `httpOnly`            | no se fuerza desde esta capa; se conserva el contrato compatible del proveedor y flujo de sesión           |
+| nombre                | propiedad del proveedor/contrato de sesión; no se renombra por aplicación                                  |
+
+La política no utiliza un dominio hardcodeado distinto por aplicación.
+
+---
+
+#### 13. Dominio compartido y host local
+
+Cuando el consumidor declare un dominio compartido:
+
+```text
+sharedDomain = D
+currentHost = H
+```
+
+solo se aplica `Domain=D` si:
+
+1. `D` es un dominio configurado explícitamente;
+2. `H` es exactamente `D` sin el punto de presentación o un subdominio válido de `D`;
+3. `H` no es localhost;
+4. `H` no es una dirección IP;
+5. el ambiente autoriza compartir sesión entre subdominios.
+
+En cualquier otro caso:
+
+```text
+Domain omitido
+→ cookie host-only
+```
+
+Esto preserva el comportamiento host-aware identificado en la auditoría y elimina forks por aplicación.
+
+No se infiere dominio compartido recortando segmentos de `Host`.
+
+---
+
+#### 14. Origen del host efectivo
+
+La factory no decide por sí sola si confiar en `Host` o `X-Forwarded-Host`.
+
+El owner del request entrega `currentHost` ya resuelto conforme a su frontera de proxy/despliegue.
+
+Reglas:
+
+- headers de forwarding no confiables no gobiernan cookies;
+- el package no crea una política de reverse proxy;
+- el host efectivo no concede autorización;
+- un host inválido impide aplicar dominio compartido;
+- host y dominio solo afectan scope técnico de sesión, no territorio empresarial.
+
+---
+
+#### 15. Factory native
+
+La factory canónica será:
+
+```text
+@vento/supabase/native
+→ createNativeClient
+```
+
+Contrato lógico mínimo de entrada:
+
+| Campo       | Regla                                                   |
+| ----------- | ------------------------------------------------------- |
+| `url`       | obligatorio; configuración pública                      |
+| `publicKey` | obligatorio; nunca credencial privilegiada              |
+| `storage`   | adapter persistente proporcionado por el runtime nativo |
+
+La frontera native:
+
+- usa primitivas compatibles con `@supabase/supabase-js`;
+- no depende de `@supabase/ssr`;
+- no importa Next.js;
+- no usa cookies web como almacenamiento de sesión;
+- no lee `process.env` de servidor;
+- no acepta `service_role`;
+- no comparte memoria con un runtime web;
+- no implementa UI React Native;
+- no decide deep links empresariales;
+- no decide permisos ni contexto operativo.
+
+---
+
+#### 16. Ciclo de vida native
+
+La decisión canónica es:
+
+```text
+UNA INSTANCIA PROPIEDAD DE LA APLICACIÓN
+POR RUNTIME NATIVO ACTIVO Y CONFIGURACIÓN
+        +
+STORAGE EXPLÍCITO
+```
+
+Reglas:
+
+1. la factory no mantiene cache global interna;
+2. la aplicación crea y conserva una instancia para su runtime normal;
+3. la sesión persistente usa exclusivamente el adapter de storage inyectado;
+4. refresh de sesión se habilita conforme al ciclo de vida nativo;
+5. detección web automática de sesión en URL permanece deshabilitada por defecto;
+6. intercambio OAuth/deep-link, si aplica, se resuelve mediante la capa nativa propietaria;
+7. reinicio de la aplicación puede reconstruir sesión únicamente desde el storage autorizado;
+8. storage ausente o inválido falla de forma explícita y no degrada a memoria silenciosamente.
+
+Esta tarea no selecciona una librería física de almacenamiento nativo.
+
+---
+
+#### 17. Factory privileged
+
+La frontera privilegiada se denomina `privileged`, no `admin`.
+
+La factory canónica será:
+
+```text
+@vento/supabase/privileged
+→ createPrivilegedClient
+```
+
+Contrato lógico mínimo de entrada:
+
+| Campo            | Regla                            |
+| ---------------- | -------------------------------- |
+| `url`            | obligatorio                      |
+| `serviceRoleKey` | obligatorio; secreto server-only |
+
+Reglas vinculantes:
+
+1. solo backend autorizado puede importar esta frontera;
+2. no existe cookie de usuario como fuente de identidad del cliente privileged;
+3. no se persiste sesión de usuario;
+4. no se habilita refresh de sesión de usuario;
+5. la factory no convierte `service_role` en autorización empresarial;
+6. cada operación privileged sigue necesitando propietario, contrato y autorización propios;
+7. el secreto nunca se serializa;
+8. el secreto nunca aparece en diagnóstico público;
+9. el secreto nunca se expone desde root, browser o native;
+10. la implementación futura deberá bloquear imports de esta frontera desde bundles de cliente.
+
+---
+
+#### 18. Ciclo de vida privileged
+
+El cliente privileged no es request-scoped por sesión de usuario porque no contiene sesión humana.
+
+Su ciclo canónico es:
+
+```text
+UNA INSTANCIA POR ISOLATE / PROCESO BACKEND
+Y CONFIGURACIÓN PRIVILEGIADA RESUELTA
+```
+
+La aplicación propietaria puede conservar esa instancia durante la vida del isolate backend.
+
+La factory no mantiene una cache global compartida entre aplicaciones ni resuelve secretos por sí misma.
+
+Rotar la credencial obliga a reconstruir la instancia.
+
+---
+
+#### 19. Configuración ambiental
+
+Las factories no poseen nombres de variables de entorno.
+
+El patrón canónico es:
+
+```text
+ENV / CONFIG DEL CONSUMIDOR
+        ↓
+VALIDACIÓN DEL CONSUMIDOR
+        ↓
+CONFIG LÓGICA EXPLÍCITA
+        ↓
+FACTORY @vento/supabase/<runtime>
+```
+
+Consecuencias:
+
+- no existe precedencia oculta `NEXT_PUBLIC_* → SUPABASE_*` dentro del package;
+- browser recibe únicamente valores seguros para exposición pública;
+- server de sesión recibe únicamente configuración de sesión pública;
+- native recibe únicamente configuración pública;
+- privileged recibe la credencial secreta desde un owner backend;
+- aliases ambientales legacy pueden mantenerse temporalmente en adapters de migración del consumidor, no en la factory canónica;
+- un valor ausente falla antes de construir el cliente;
+- una URL inválida falla antes de construir el cliente;
+- ninguna factory busca un fallback de credencial de otra clase.
+
+---
+
+#### 20. Claves públicas y compatibilidad `publishable` / `anon`
+
+La configuración compartida usa el concepto lógico `publicKey`.
+
+`publicKey` puede ser suministrada por el consumidor desde la credencial pública soportada por su versión de Supabase.
+
+La factory:
+
+- no decide nombres ambientales;
+- no prueba múltiples variables en cascada;
+- no confunde `anon` con `service_role`;
+- no expone qué alias legacy resolvió el consumidor;
+- no cambia automáticamente de credencial ante error.
+
+La retirada de aliases ambientales legacy pertenece al lote de migración del consumidor.
+
+---
+
+#### 21. Matriz de secretos y sesión
+
+| Señal / credencial     |        browser |   server sesión |        native |                                            privileged |
+| ---------------------- | -------------: | --------------: | ------------: | ----------------------------------------------------: |
+| URL Supabase           |             sí |              sí |            sí |                                                    sí |
+| clave pública          |             sí |              sí |            sí |                                          no requerida |
+| `service_role`         |             no |              no |            no |                                                    sí |
+| cookies web            |     sesión web | adapter request |            no |                                                    no |
+| storage nativo         |             no |              no |            sí |                                                    no |
+| identidad de usuario   | sesión pública |  sesión request | sesión nativa |                                          no implícita |
+| bypass RLS             |             no |              no |            no | posible por credencial, nunca autorización de negocio |
+| secretos serializables |             no |              no |            no |                                                    no |
+
+La presencia de `service_role` en un objeto destinado a browser, native o server de sesión constituye violación de frontera.
+
+---
+
+#### 22. Dependencias permitidas por runtime
+
+| Frontera   | Dependencias runtime permitidas                    | Dependencias prohibidas                                        |
+| ---------- | -------------------------------------------------- | -------------------------------------------------------------- |
+| browser    | `@supabase/ssr`, tipos/runtime-neutral del package | Next server APIs, storage nativo, privileged                   |
+| server     | `@supabase/ssr`, adapters runtime-neutral          | componentes browser, storage nativo, privileged implícito      |
+| native     | `@supabase/supabase-js`, adapter de storage        | `@supabase/ssr`, Next.js, cookies web, privileged              |
+| privileged | `@supabase/supabase-js`, utilidades server-safe    | browser APIs, React Native UI, sesión cookie como autorización |
+
+La versión exacta de dependencias y condiciones de exports se materializa durante implementación física y publicación, conservando esta frontera.
+
+---
+
+#### 23. Root runtime-neutral
+
+`@vento/supabase` no se convierte en un barrel de conveniencia para clientes.
+
+La raíz puede alojar o reexportar únicamente superficies que no arrastren un runtime incompatible, conforme a las tareas propietarias de tipos, wrappers y errores.
+
+Queda prohibido:
+
+```text
+import { createPrivilegedClient } from "@vento/supabase"
+import { createServerClient } from "@vento/supabase"
+import { createBrowserClient } from "@vento/supabase"
+import { createNativeClient } from "@vento/supabase"
+```
+
+Los cuatro clientes se importan únicamente desde su subpath.
+
+Esto convierte la ruta de importación en una señal verificable de frontera.
+
+---
+
+#### 24. Middleware y proxy permanecen locales
+
+`middleware.ts`, `proxy.ts` y entrypoints equivalentes no forman parte del package compartido.
+
+Pueden utilizar `@vento/supabase/server` cuando el runtime sea compatible, pero conservan localmente:
+
+- matcher;
+- exclusiones;
+- redirects;
+- rewrites;
+- reglas de login;
+- tratamiento de rutas públicas;
+- kiosco;
+- PDF;
+- assets;
+- health endpoints;
+- routing por aplicación;
+- integración específica con el framework.
+
+La factory server no conoce estas reglas.
+
+---
+
+#### 25. Sesión no equivale a autorización
+
+En los cuatro runtimes se preserva:
+
+```text
+SESIÓN SUPABASE VÁLIDA
+≠ PERMISO EMPRESARIAL
+≠ CONTEXTO OPERATIVO VÁLIDO
+≠ SCOPE AUTORIZADO
+```
+
+La factory:
+
+- no consulta permisos al construirse;
+- no concede sede;
+- no concede área;
+- no concede rol;
+- no decide actor efectivo;
+- no crea simulación;
+- no interpreta cookies de contexto como autoridad;
+- no convierte `service_role` en bypass empresarial aprobado.
+
+La autorización permanece en sus contratos propietarios.
+
+---
+
+#### 26. Integración con tipos generados
+
+Cuando la materialización de tipos esté disponible:
+
+- browser, server y native consumirán únicamente tipos compatibles con superficies consumidoras;
+- privileged puede consumir tooling server-only cuando su contrato lo requiera;
+- un tipo más amplio no amplía credenciales ni grants;
+- el mismo `Database` generado puede tipar operaciones con distinto runtime sin convertirlas en igualmente autorizadas;
+- ningún cast permite atravesar la frontera privileged;
+- la actualización incremental de tipos sigue su owner ya definido.
+
+`SHELL-DB-005` no ejecuta codegen.
+
+---
+
+#### 27. Integración con wrappers tipados
+
+Los wrappers definidos por `SHELL-DB-003` continúan recibiendo un cliente explícito.
+
+Nunca:
+
+```text
+wrapper()
+→ detecta runtime
+→ crea cliente oculto
+→ selecciona credencial
+```
+
+Siempre:
+
+```text
+factory runtime correcta
+→ cliente autorizado para esa capa
+→ wrapper tipado
+→ operación
+```
+
+Esto permite probar por separado creación de cliente y contrato de operación.
+
+---
+
+#### 28. Integración con normalización de errores
+
+`SHELL-DB-004` permanece transversal.
+
+La separación runtime modifica el detalle técnico disponible, no la semántica empresarial.
+
+Reglas:
+
+- browser no recibe stack, SQL, nombres físicos ni diagnóstico privileged;
+- native no recibe secretos ni internals server;
+- server puede conservar diagnóstico protegido adicional;
+- privileged puede conservar diagnóstico técnico protegido bajo su política;
+- el mismo outcome contractual conserva significado entre runtimes;
+- un fallo de cookie adapter no se presenta como denegación empresarial;
+- un fallo de storage native no se presenta como credencial inválida por inferencia.
+
+---
+
+#### 29. Paridad semántica entre runtimes
+
+Paridad no significa igualdad de mecanismo.
+
+```text
+BROWSER  → cookies / sesión web
+SERVER   → cookies request-scoped
+NATIVE   → storage persistente
+```
+
+pueden producir el mismo resultado contractual para una operación sin compartir:
+
+- lifecycle;
+- storage;
+- API de framework;
+- diagnóstico privilegiado;
+- credencial secreta.
+
+La paridad exigida es contractual y de outcomes, no de implementación interna.
+
+---
+
+#### 30. Extensiones locales permitidas
+
+Una aplicación puede mantener adapters locales cuando resuelvan una dependencia del framework o del ambiente.
+
+Ejemplos permitidos:
+
+- adapter de `cookies()` de Next hacia `getAll/setAll`;
+- resolución confiable de host detrás de proxy;
+- lectura y validación de variables ambientales;
+- adapter de storage nativo;
+- bootstrap que conserva la instancia browser;
+- bootstrap que conserva la instancia native.
+
+Esos adapters:
+
+- no duplican la factory;
+- no cambian la clase de credencial;
+- no cambian la política de errores;
+- no añaden autorización;
+- no crean una taxonomía de cookies distinta;
+- no reexportan privileged hacia cliente.
+
+---
+
+#### 31. Disposición de variantes legacy
+
+La convergencia queda definida así:
+
+| Identidad auditada                  | Destino                                                          |
+| ----------------------------------- | ---------------------------------------------------------------- |
+| browser client primario de cada web | adapter local mínimo + `@vento/supabase/browser`                 |
+| server client primario de cada web  | adapter local de request/cookies + `@vento/supabase/server`      |
+| middleware auth por aplicación      | permanece local; puede usar `@vento/supabase/server`             |
+| proxy no consumido                  | permanece hasta retiro autorizado                                |
+| admin client                        | migra a `@vento/supabase/privileged`                             |
+| cliente alterno PULSO               | se retira únicamente cuando su gate confirme ausencia de consumo |
+
+No se autoriza borrar ninguna variante en esta tarea.
+
+---
+
+#### 32. Migración de consumidores
+
+La adopción posterior seguirá lotes reversibles.
+
+Orden lógico:
+
+```text
+PACKAGE FÍSICO APROBADO
+→ INVENTARIO EJECUTABLE DE CONSUMIDORES
+→ LOTES POR REPOSITORIO
+→ COMPATIBILIDAD TEMPORAL SI ES NECESARIA
+→ MIGRACIÓN DE IMPORTS / ADAPTERS
+→ PRUEBAS DE PARIDAD
+→ OBSERVACIÓN
+→ RETIRO LEGACY CON GATE
+```
+
+No existe migración big-bang.
+
+Cada aplicación puede permanecer temporalmente en la versión legacy mientras su lote no haya iniciado, siempre que no cree nuevas variantes.
+
+---
+
+#### 33. Compatibilidad
+
+La implementación futura deberá demostrar compatibilidad por:
+
+- versión de `@vento/supabase`;
+- versión de `@supabase/ssr`;
+- versión de `@supabase/supabase-js`;
+- runtime browser;
+- runtime server;
+- runtime native;
+- framework consumidor;
+- cookie adapter;
+- host policy;
+- storage adapter;
+- wrappers consumidos;
+- tipos generados;
+- normalización de errores.
+
+Un build aislado del package no demuestra compatibilidad de consumidores.
+
+---
+
+#### 34. Rollback
+
+Todo lote posterior debe poder volver al cliente legacy del consumidor sin:
+
+- cambiar datos;
+- rotar secretos;
+- restaurar una credencial pública incorrecta;
+- perder cookies de sesión válidas;
+- borrar storage nativo;
+- convertir `service_role` en fallback;
+- reintroducir una variante retirada sin control.
+
+El rollback de package y el rollback de migración de consumidor se tratan como operaciones separadas.
+
+No existe rollback de esta tarea documental porque no materializa cambios runtime.
+
+---
+
+#### 35. Observabilidad
+
+La implementación futura debe permitir distinguir, sin registrar secretos:
+
+- runtime;
+- factory utilizada;
+- operación;
+- versión del package;
+- modo de cookie server;
+- aplicación de dominio compartido o host-only;
+- fallo de lectura/escritura de cookie;
+- fallo de storage native;
+- uso de frontera privileged;
+- error normalizado;
+- correlación.
+
+Queda prohibido registrar:
+
+- `serviceRoleKey`;
+- public key completa cuando no sea necesaria;
+- tokens de sesión;
+- refresh tokens;
+- cookies completas;
+- storage de sesión completo;
+- headers sensibles;
+- payloads completos por defecto.
+
+---
+
+#### 36. Pruebas futuras obligatorias
+
+La futura materialización deberá cubrir, como mínimo:
+
+1. import browser válido;
+2. import server válido;
+3. import native válido;
+4. import privileged válido únicamente en backend;
+5. root sin reexport de factories;
+6. browser sin dependencia server;
+7. server sin dependencia browser;
+8. native sin `@supabase/ssr`;
+9. native sin Next.js;
+10. privileged no alcanzable desde bundle browser;
+11. privileged no alcanzable desde bundle native;
+12. browser rechaza ausencia de URL;
+13. browser rechaza ausencia de public key;
+14. browser no acepta `service_role`;
+15. server de sesión no acepta `service_role`;
+16. native no acepta `service_role`;
+17. server crea cliente nuevo por request;
+18. server no comparte cookies entre requests;
+19. browser reutiliza una instancia propiedad de la aplicación;
+20. native reutiliza una instancia propiedad de la aplicación;
+21. native requiere storage persistente;
+22. native no degrada silenciosamente a storage en memoria;
+23. `READ_WRITE` aplica `setAll`;
+24. fallo real de `setAll` es observable;
+25. `READ_ONLY` no se presenta como denegación empresarial;
+26. host local produce cookie host-only;
+27. IP produce cookie host-only;
+28. host fuera del dominio configurado produce cookie host-only;
+29. subdominio válido aplica dominio compartido;
+30. `path=/` se conserva;
+31. `sameSite=lax` se conserva;
+32. `Secure` se activa en HTTPS;
+33. desarrollo HTTP explícito no fuerza cookie incompatible;
+34. expiración del proveedor se conserva;
+35. eliminación usa el mismo scope efectivo;
+36. browser no lee fallback server-only;
+37. package no lee variables ambientales implícitas;
+38. wrapper recibe cliente explícito;
+39. wrapper no crea cliente oculto;
+40. error de adapter conserva normalización técnica;
+41. outcome contractual es equivalente entre runtimes;
+42. diagnóstico privileged no fluye a browser/native;
+43. middleware local conserva matcher y routing;
+44. adapters locales no alteran credenciales;
+45. variante admin migra exclusivamente a privileged;
+46. cliente alterno PULSO no se retira sin gate;
+47. migración por consumidor conserva rollback;
+48. compatibilidad se prueba contra consumers;
+49. VITAL permanece fuera;
+50. cero secretos en logs y artefactos de cliente.
+
+Esta sección especifica cobertura posterior; no declara ejecución runtime.
+
+---
+
+#### 37. Frontera VITAL
+
+VITAL permanece separado.
+
+Esta tarea no:
+
+- importa clientes VITAL;
+- comparte credenciales VITAL;
+- crea adapters VITAL;
+- define cookies VITAL;
+- define storage VITAL;
+- crea un privileged client VITAL;
+- mezcla diagnósticos VITAL con Vento OS;
+- interpreta coexistencia de repositorios como autorización.
+
+Una integración futura requiere contrato propietario explícito.
+
+---
+
+#### 38. Estado de materialización física
+
+| Elemento                        | Estado              |
+| ------------------------------- | ------------------- |
+| frontera browser                | `ESPECIFICADA`      |
+| frontera server                 | `ESPECIFICADA`      |
+| frontera native                 | `ESPECIFICADA`      |
+| frontera privileged             | `ESPECIFICADA`      |
+| subpaths canónicos              | `ESPECIFICADOS`     |
+| nombres de factories            | `ESPECIFICADOS`     |
+| lifecycle browser               | `ESPECIFICADO`      |
+| lifecycle server                | `ESPECIFICADO`      |
+| lifecycle native                | `ESPECIFICADO`      |
+| lifecycle privileged            | `ESPECIFICADO`      |
+| config explícita                | `ESPECIFICADA`      |
+| política de cookies             | `ESPECIFICADA`      |
+| host local / dominio compartido | `ESPECIFICADOS`     |
+| adapter server de cookies       | `ESPECIFICADO`      |
+| adapter native de storage       | `ESPECIFICADO`      |
+| separación `service_role`       | `ESPECIFICADA`      |
+| middleware compartido           | `NO AUTORIZADO`     |
+| package físico                  | `NO MATERIALIZADO`  |
+| factories TypeScript            | `NO MATERIALIZADAS` |
+| exports npm físicos             | `NO MATERIALIZADOS` |
+| adapters de consumidores        | `NO MATERIALIZADOS` |
+| consumidores migrados           | `0`                 |
+| variantes legacy retiradas      | `0`                 |
+| cambios Supabase                | `0`                 |
+| migraciones Supabase            | `0`                 |
+| cambios de datos                | `0`                 |
+| requisitos creados              | `0`                 |
+| requisitos modificados          | `0`                 |
+
+---
+
+#### 39. Handoffs exactos
+
+| Materia fuera de esta tarea                                       | Propietario exacto                                                  | Condición de salida                                                        |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| materialización física de `@vento/supabase` y sus subpaths        | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` | package autorizado, factories implementadas y pruebas aplicables           |
+| inventario ejecutable de consumers legacy                         | `SHELL-MIG-001`                                                     | consumidor, identidad, owner, paquete, evidencia y rollback materializados |
+| lotes reversibles por repositorio                                 | `SHELL-MIG-002`                                                     | cada aplicación con lote y suspensión definidos                            |
+| compatibilidad temporal y bloqueo de nuevos legacy                | `SHELL-MIG-003`                                                     | adapters temporales versionados y gate contra nuevas copias                |
+| migración de consumidores web                                     | `SHELL-MIG-003` a `SHELL-MIG-007`                                   | imports/adapters migrados con paridad, compatibilidad y rollback           |
+| retiro de variantes web legacy                                    | `SHELL-MIG-008`                                                     | consumo residual cero o migración certificada                              |
+| publicación, contract tests y compatibilidad del package          | tareas `SHELL-CI-*` aplicables                                      | evidencia de package y consumers                                           |
+| actualización incremental de tipos/RPC desde paquetes de BLOQUE R | `AUTH-DB-026`                                                       | artefactos generados después de cada package contractual aprobado          |
+| evolución conjunta de tipos, errores y consumers                  | `SUPA-TRANS-014`                                                    | cambio coordinado y compatible                                             |
+| seguridad de `service_role`, grants y RLS                         | tareas propietarias de BLOQUE R y E3                                | uso privileged autorizado y superficie efectiva verificada                 |
+
+No se adelanta ninguna de estas tareas.
+
+---
+
+#### 40. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** la tarea materializa la decisión documental de separación runtime sobre obligaciones ya protegidas por la cobertura canónica vigente: responsabilidades compartidas sin forks, compatibilidad de paquetes y consumidores, rollback, aislamiento de credenciales privilegiadas, ausencia de `service_role` en clientes públicos y segregación de sesión frente a autorización. No introduce una nueva capacidad empresarial, una nueva operación de datos, una nueva política de autorización, un nuevo efecto remoto ni una nueva modificación de Supabase.
+
+---
+
+#### 41. Decisiones vinculantes
+
+1. existen cuatro fronteras técnicas: browser, server de sesión, native y privileged;
+2. privileged es una frontera server-only aunque el título funcional destaque server, browser y native;
+3. los subpaths canónicos son `@vento/supabase/browser`, `@vento/supabase/server`, `@vento/supabase/native` y `@vento/supabase/privileged`;
+4. las factories canónicas son `createBrowserClient`, `createServerClient`, `createNativeClient` y `createPrivilegedClient`;
+5. la raíz `@vento/supabase` no reexporta factories runtime-bound;
+6. una ruta de importación identifica explícitamente el runtime;
+7. browser usa únicamente configuración pública;
+8. server de sesión usa únicamente configuración pública más contexto request/cookies;
+9. native usa únicamente configuración pública más storage nativo;
+10. privileged es la única frontera que acepta `service_role`;
+11. `service_role` no fluye a browser;
+12. `service_role` no fluye a native;
+13. `service_role` no forma parte del server de sesión;
+14. privileged no equivale a autorización empresarial;
+15. las factories no leen `process.env`;
+16. las factories reciben configuración ya resuelta;
+17. no existe cascada ambiental oculta dentro del package;
+18. aliases ambientales legacy permanecen fuera de la factory;
+19. browser usa una instancia propiedad de la aplicación por realm normal;
+20. la factory browser no cachea globalmente;
+21. server crea un cliente por request;
+22. server no conserva sesión de usuario en un singleton;
+23. native usa una instancia propiedad de la aplicación por runtime;
+24. la factory native no cachea globalmente;
+25. native requiere storage explícito;
+26. native no usa cookies web;
+27. native no depende de Next.js;
+28. native no depende de `@supabase/ssr`;
+29. privileged puede reutilizarse por isolate backend y configuración;
+30. rotar el secreto exige reconstruir privileged;
+31. server usa adapter `getAll/setAll`;
+32. server distingue `READ_WRITE` y `READ_ONLY`;
+33. un fallo real de escritura no se silencia;
+34. un contexto read-only no se convierte en denegación empresarial;
+35. la cookie es host-only por defecto;
+36. dominio compartido requiere configuración explícita;
+37. localhost nunca recibe dominio compartido;
+38. una IP nunca recibe dominio compartido;
+39. un host fuera del dominio configurado nunca recibe dominio compartido;
+40. no se infiere parent domain recortando el hostname;
+41. la sesión compartida usa `path=/`;
+42. la política ordinaria usa `sameSite=lax`;
+43. `Secure` sigue el contexto HTTPS;
+44. desarrollo HTTP requiere condición explícita;
+45. expiración y `maxAge` del proveedor se preservan;
+46. eliminar una cookie conserva su scope efectivo;
+47. middleware permanece local;
+48. proxy permanece local hasta retiro autorizado;
+49. routing no entra en `@vento/supabase`;
+50. matchers no entran en `@vento/supabase`;
+51. wrappers reciben cliente explícito;
+52. wrappers no detectan runtime;
+53. wrappers no crean credenciales;
+54. error normalizado conserva semántica entre runtimes;
+55. diagnóstico privileged no fluye a cliente;
+56. typing no concede autoridad;
+57. adapters locales no son forks de factory;
+58. las variantes legacy no se eliminan en esta tarea;
+59. la migración web es progresiva por repositorio;
+60. no existe migración big-bang;
+61. el cliente alterno PULSO solo se retira con gate;
+62. la frontera admin legacy converge a privileged;
+63. cambios de package requieren compatibilidad de consumers;
+64. un build aislado no certifica compatibilidad;
+65. cada lote posterior conserva rollback;
+66. VITAL permanece separado;
+67. no se crea código en esta tarea;
+68. no se crea package físico;
+69. no se modifica Supabase;
+70. no se modifican datos;
+71. no se crean ni modifican requisitos de prueba;
+72. `SHELL-UI-001` queda únicamente reservada.
+
+---
+
+#### 42. Criterios de aceptación documental
+
+`SHELL-DB-005` queda documentalmente satisfecha cuando:
+
+1. browser, server, native y privileged tienen fronteras separadas;
+2. cada frontera tiene subpath canónico;
+3. cada frontera tiene factory canónica;
+4. root permanece runtime-neutral;
+5. browser no puede recibir `service_role`;
+6. server de sesión no puede recibir `service_role`;
+7. native no puede recibir `service_role`;
+8. privileged queda aislado;
+9. browser tiene lifecycle explícito;
+10. server tiene lifecycle request-scoped;
+11. native tiene lifecycle explícito;
+12. privileged tiene lifecycle explícito;
+13. la configuración se inyecta;
+14. las factories no poseen precedencia de env;
+15. la política de claves públicas está definida;
+16. el adapter server de cookies está definido;
+17. los modos read/write están definidos;
+18. la política de dominio está definida;
+19. localhost está resuelto;
+20. IP está resuelta;
+21. dominio no coincidente está resuelto;
+22. `path` está definido;
+23. `sameSite` está definido;
+24. `Secure` está definido;
+25. expiración y eliminación están definidas;
+26. native tiene storage explícito;
+27. native está separado de SSR/Next;
+28. privileged no usa sesión de usuario como autoridad;
+29. middleware permanece local;
+30. proxy permanece local hasta gate;
+31. wrappers reciben clientes explícitos;
+32. errores mantienen paridad semántica;
+33. tipos no amplían autoridad;
+34. variantes auditadas tienen disposición;
+35. consumidores no se migran en esta tarea;
+36. legacy no se elimina en esta tarea;
+37. migración posterior conserva lotes y rollback;
+38. cobertura futura de pruebas está especificada;
+39. VITAL está excluido;
+40. estado físico no materializado está declarado;
+41. no se crea código;
+42. no se crea package físico;
+43. no se ejecuta ninguna migración;
+44. no se modifica Supabase;
+45. no se modifican datos;
+46. no se crean ni modifican requisitos de prueba;
+47. la siguiente tarea permanece únicamente reservada.
+
+---
+
+#### 43. Límites
+
+`SHELL-DB-005` no:
+
+- crea físicamente `@vento/supabase`;
+- crea `package.json` del package;
+- crea archivos TypeScript;
+- crea las cuatro factories;
+- crea conditions de exports npm;
+- publica una versión;
+- crea un singleton browser físico;
+- crea un singleton native físico;
+- crea adapters Next.js;
+- crea adapters de storage nativo;
+- modifica variables de entorno;
+- rota claves;
+- crea secretos;
+- mueve secretos;
+- modifica cookies runtime;
+- migra sesiones activas;
+- migra consumidores;
+- elimina clientes legacy;
+- elimina proxies;
+- modifica middleware;
+- modifica route handlers;
+- modifica wrappers;
+- ejecuta codegen;
+- modifica tipos generados;
+- crea RPC;
+- modifica RPC;
+- crea funciones PostgreSQL;
+- modifica funciones PostgreSQL;
+- crea tablas;
+- modifica tablas;
+- cambia grants;
+- cambia RLS;
+- cambia Storage;
+- cambia Realtime;
+- despliega Edge Functions;
+- ejecuta DDL;
+- ejecuta DML;
+- ejecuta migraciones;
+- ejecuta backfills;
+- modifica datos;
+- cambia configuración remota;
+- modifica VITAL;
+- desarrolla `SHELL-UI-001`.
+
+---
+
+#### 44. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-DB-004 — Normalizar errores de Supabase
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-DB-005 — Separar cliente server, browser y native
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-UI-001 — Crear @vento/ui-web
+
 
 Regla de sincronización con BLOQUE R
 

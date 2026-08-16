@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **916** |
+| Aprobadas | **917** |
 | En propuesta | **0** |
-| No iniciadas | **678** |
+| No iniciadas | **677** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **57.47% (916/1594)** |
+| Porcentaje de completamiento | **57.53% (917/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-DB-004` — Normalizar errores de Supabase | ✅ APROBADA |
-| Tarea actual | `SHELL-DB-005` — Separar cliente server, browser y native | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-UI-001` — Crear @vento/ui-web | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-DB-005` — Separar cliente server, browser y native | ✅ APROBADA |
+| Tarea actual | `SHELL-UI-001` — Crear @vento/ui-web | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-UI-002` — Compartir Alert | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -743,7 +743,7 @@
 | ✅ APROBADA | `SHELL-DB-002` | Centralizar tipos generados por cada paquete de base de datos aprobado | `bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md` |
 | ✅ APROBADA | `SHELL-DB-003` | Crear y actualizar wrappers tipados para RPC canónicas | `bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md` |
 | ✅ APROBADA | `SHELL-DB-004` | Normalizar errores de Supabase | `bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md` |
-| ⬜ NO INICIADA | `SHELL-DB-005` | Separar cliente server, browser y native | `bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md` |
+| ✅ APROBADA | `SHELL-DB-005` | Separar cliente server, browser y native | `bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-001` | Crear @vento/ui-web | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-002` | Compartir Alert | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-003` | Compartir Button | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |

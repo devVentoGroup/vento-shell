@@ -5,16 +5,11 @@
   "sequence_id": "PHASE-03-H-SHARED-FOUNDATION",
   "block_code": "BLOQUE H",
   "block_title": "Fundación compartida de VENTO-SHELL",
-  "previous_task_id": "SHELL-DB-004",
+  "previous_task_id": "SHELL-DB-005",
   "latest_treq_task_id": "NEXO-UX-025",
   "handoff_task_id": "SHELL-CI-001",
   "handoff_sequence_id": "PHASE-03-T-CI-FOUNDATION",
   "segments": [
-    {
-      "prefix": "SHELL-DB",
-      "from": 5,
-      "to": 5
-    },
     {
       "prefix": "SHELL-UI",
       "from": 1,
@@ -43,12 +38,12 @@
   ],
   "block_progress": {
     "total_tasks": 109,
-    "approved_tasks": 66,
-    "pending_tasks": 43
+    "approved_tasks": 67,
+    "pending_tasks": 42
   },
   "route_progress": {
     "covered_tasks": 1594,
-    "pending_tasks": 678,
+    "pending_tasks": 677,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
     "active_stage": 10
