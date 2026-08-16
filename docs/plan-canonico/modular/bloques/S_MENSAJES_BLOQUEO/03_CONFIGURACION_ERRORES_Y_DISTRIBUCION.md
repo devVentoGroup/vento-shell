@@ -103,7 +103,7 @@ Se aprueban cinco artefactos documentales completos:
 4. `ADMINISTRATIVE-CONFIGURATION-APPLICATION-COVERAGE-REGISTER-001`, que
    decide el alcance para las diez aplicaciones canónicas;
 5. `ADMINISTRATIVE-CONFIGURATION-PHYSICAL-RECONCILIATION-001`, que registra el
-   snapshot desplegado de solo lectura y catorce brechas con destino canónico.
+   snapshot desplegado de solo lectura y dieciséis brechas con destino canónico.
 
 Cobertura materializada:
 
@@ -121,7 +121,7 @@ Cobertura materializada:
 | Aplicaciones canónicas reconciliadas                     |          10 |
 | Aplicaciones físicas activas observadas                  |          10 |
 | Permisos físicos activos observados                      |         179 |
-| Permisos canónicos documentales de referencia            |         112 |
+| Permisos canónicos documentales de referencia            |         140 |
 | Combinaciones legacy de flags contradictorias observadas |          14 |
 | Empleados físicos observados                             |          59 |
 | Asignaciones de sede observadas                          |          91 |
@@ -129,7 +129,7 @@ Cobertura materializada:
 | Habilitaciones de rol operativo observadas               |          16 |
 | Turnos físicos observados                                |       2.844 |
 | Turnos publicados observados                             |       2.723 |
-| Brechas físicas registradas                              |          14 |
+| Brechas físicas registradas                              |          16 |
 | Requisitos de prueba derivados                           |          10 |
 
 Las cifras físicas son un snapshot agregado de solo lectura. La ausencia de
@@ -1173,7 +1173,7 @@ versionado, contratos, consumidores ni comportamiento multicanal futuro.
 | ---: | ------------------------------------------------------------------------------------------------------------------------------ | ----------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 |    1 | `app_permissions` no materializa modalidad ni `authorization_requirement` canónicos                                            | `BLOQUEADO`                   | el evaluador infiere carril y prerrequisitos desde flags insuficientes                       | `AUTH-CAT-012`; `AUTH-CAT-017`; `AUTH-CTX-016`; `AUTH-CTX-017`; `AUTH-DB-034`                                                          |
 |    2 | catorce permisos tienen `requires_active_work_context=true` con `is_operational=false`                                         | `PENDIENTE_DE_RECONCILIACION` | clasificación legacy contradictoria y bloqueos administrativos falsos                        | `AUTH-CAT-012`; `AUTH-CTX-017`; `AUTH-DB-034`; `SHELL-CI-016`                                                                          |
-|    3 | el catálogo físico contiene 179 permisos y el snapshot documental base conserva 112 sin versión física de paridad              | `PENDIENTE_DE_RECONCILIACION` | deriva, claves nuevas sin contrato o cobertura incompleta                                    | `AUTH-CAT-017`; `AUTH-CTX-016`; `AUTH-DB-034`; `SHELL-CI-018`                                                                          |
+|    3 | el catálogo físico contiene 179 permisos y el snapshot documental base conserva 140 sin versión física de paridad              | `PENDIENTE_DE_RECONCILIACION` | deriva, claves nuevas sin contrato o cobertura incompleta                                    | `AUTH-CAT-017`; `AUTH-CTX-016`; `AUTH-DB-034`; `SHELL-CI-018`                                                                          |
 |    4 | los códigos físicos son sufijos por app y existen cinco grupos repetidos globalmente                                           | `BLOQUEADO`                   | consumidor que consulte solo `code` puede resolver una clave incorrecta                      | `AUTH-CTX-016`; `AUTH-DB-034`; `SHELL-AUTH-001`; `SHELL-AUTH-004`                                                                      |
 |    5 | middleware redirige `no-config` a login                                                                                        | `BLOQUEADO`                   | configuración ausente presentada como sesión perdida y posible loop                          | `AUTH-ERR-017`; `AUTH-ERR-019`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                                                                     |
 |    6 | middleware convierte excepción de Auth en login y limpia cookies                                                               | `BLOQUEADO`                   | fallo técnico destruye estado y oculta la causa                                              | `AUTH-ERR-001`; `AUTH-ERR-019`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                                                                     |
@@ -1221,7 +1221,7 @@ Se incorporan al registro canónico:
 | `295` | equivalencia de diez canales                                      |
 | `296` | cobertura de diez aplicaciones                                    |
 | `297` | UX, privacidad, auditoría, invalidación e idempotencia            |
-| `298` | reconciliación física y cierre de catorce brechas                 |
+| `298` | reconciliación física y cierre de dieciséis brechas               |
 
 Los requisitos permanecen `IDENTIFICADO` hasta que existan implementación y
 evidencia reproducibles.
@@ -1247,7 +1247,7 @@ El artefacto permite comprobar:
 13. diez canales equivalentes;
 14. diez aplicaciones reconciliadas;
 15. copy y recuperación seguros;
-16. catorce brechas con destino;
+16. dieciséis brechas con destino;
 17. diez requisitos nuevos únicos;
 18. 6.686 requisitos históricos preservados;
 19. 6.696 filas con catorce columnas;
@@ -1322,7 +1322,7 @@ AUTH-ERR-017 no:
 - [x] Se definieron diez canales equivalentes.
 - [x] Se reconciliaron diez aplicaciones.
 - [x] Se registró el snapshot físico sin presentarlo como conformidad.
-- [x] Se registraron catorce brechas con destino exacto.
+- [x] Se registraron dieciséis brechas con destino exacto.
 - [x] Se derivaron `TREQ-AUTH-289` a `TREQ-AUTH-298`.
 - [x] No se modificó código, Supabase, migraciones, configuración, datos ni aplicaciones.
 - [x] `AUTH-ERR-018` permanece únicamente reservada.
