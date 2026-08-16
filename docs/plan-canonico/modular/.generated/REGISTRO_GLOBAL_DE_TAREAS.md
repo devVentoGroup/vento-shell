@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **887** |
+| Aprobadas | **888** |
 | En propuesta | **0** |
-| No iniciadas | **707** |
+| No iniciadas | **706** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **55.65% (887/1594)** |
+| Porcentaje de completamiento | **55.71% (888/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CON-008` — Centralizar códigos de error | ✅ APROBADA |
-| Tarea actual | `SHELL-CON-009` — Centralizar identificadores de procesos | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CON-010` — Centralizar estados de procesos | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CON-009` — Centralizar identificadores de procesos | ✅ APROBADA |
+| Tarea actual | `SHELL-CON-010` — Centralizar estados de procesos | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CON-011` — Centralizar identificadores de pantallas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -714,7 +714,7 @@
 | ✅ APROBADA | `SHELL-CON-006` | Centralizar scopes | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CON-007` | Centralizar tipos de contexto | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CON-008` | Centralizar códigos de error | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-CON-009` | Centralizar identificadores de procesos | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-CON-009` | Centralizar identificadores de procesos | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-010` | Centralizar estados de procesos | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-011` | Centralizar identificadores de pantallas | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-012` | Crear contrato de acciones funcionales | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |

@@ -6213,7 +6213,634 @@ SHELL-CON-008 — Centralizar códigos de error
 SHELL-CON-009 — Centralizar identificadores de procesos
 
 
-### [ ] SHELL-CON-009 — Centralizar identificadores de procesos
+### ✅ SHELL-CON-009 — Centralizar identificadores de procesos
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CON-008 — Centralizar códigos de error
+**Tarea siguiente:** SHELL-CON-010 — Centralizar estados de procesos
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Estado físico resultante:** `CONTRATO_DE_IDENTIDAD_DE_PROCESOS_DEFINIDO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-009` centraliza la identidad técnica estable de los procesos de Vento OS a partir del registro canónico ya aprobado `PROC-CANONICAL-ID-REGISTRY-001`, sin crear procesos nuevos, renumerar identidades existentes ni sustituir la semántica definida por las tareas `PROC-CAT-*`.
+
+La frontera contractual queda:
+
+```text
+PROC-CANONICAL-ID-REGISTRY-001
+→ fuente canónica de identidades de proceso
+
+@vento/contracts
+→ proyección compartida, tipada y validable de esas identidades
+
+consumidores
+→ referencian ProcessId
+→ no inventan, renombran ni reasignan VPROC-####
+```
+
+Un `ProcessId` identifica un proceso empresarial canónico. No identifica una instancia, un paso, una pantalla, una acción, un evento, un estado, una aplicación propietaria, un permiso ni una implementación física.
+
+---
+
+#### 2. Resultado canónico
+
+El conjunto vigente queda compuesto por exactamente **69 identidades asignadas**:
+
+```text
+VPROC-0001 .. VPROC-0069
+```
+
+Conciliación heredada y preservada:
+
+```text
+identidades asignadas          = 69
+registry_status CANONICAL      = 69
+MERGED_ALIAS                   = 0
+SPLIT_PARENT                   = 0
+RETIRED                        = 0
+VOID                           = 0
+faltantes dentro de 0001..0069 = 0
+duplicados                     = 0
+siguiente identificador libre  = VPROC-0070
+```
+
+`VPROC-0070` no pertenece todavía al conjunto vigente y no puede consumirse como `ProcessId` hasta que una tarea propietaria de procesos lo asigne formalmente conforme al gobierno del registro.
+
+---
+
+#### 3. Fuentes y precedencia
+
+Esta tarea conserva las decisiones aprobadas de:
+
+| Fuente                                                | Uso vinculante                                                                                                 |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`          | continuidad, fase documental, trazabilidad y gobierno de requisitos de prueba                                  |
+| `docs/plan-canonico/modular/delivery-contract.json`   | estructura del artefacto documental                                                                            |
+| `docs/plan-canonico/modular/active-sequence.json`     | `SHELL-CON-009` como tarea vigente y `SHELL-CON-010` como siguiente tarea                                      |
+| `SHELL-CON-001`                                       | raíz única `@vento/contracts`, pureza contractual y materialización posterior                                  |
+| `SHELL-CON-008`                                       | continuidad inmediata hacia esta tarea y separación de namespaces contractuales                                |
+| `PROC-CAT-001`                                        | frontera conceptual de proceso y gobierno del catálogo                                                         |
+| `PROC-CAT-003`                                        | creación de `PROC-CANONICAL-ID-REGISTRY-001`, patrón `VPROC-####`, 69 asignaciones y regla de no reutilización |
+| `PROC-CAT-020`                                        | reconciliación final: 69 `CANONICAL`, cero fusiones, divisiones, retiros o `VOID`; `VPROC-0070` disponible     |
+| `TREQ-PROC-009` a `TREQ-PROC-013`                     | formato, unicidad, resolución, estabilidad, linaje y uso por consumidores                                      |
+| `TREQ-PROC-111` y `TREQ-PROC-118`                     | cierre de 69 procesos canónicos y detección de deriva/duplicidad contractual                                   |
+| `TREQ-SHELL-002`, `TREQ-SHELL-006` y `TREQ-SHELL-008` | fuente compartida, compatibilidad y validación documental                                                      |
+
+Precedencia:
+
+```text
+PROC-CAT-003 / PROC-CANONICAL-ID-REGISTRY-001
+→ gobiernan asignación e identidad
+
+PROC-CAT-020
+→ gobierna la reconciliación vigente del conjunto
+
+SHELL-CON-009
+→ centraliza la proyección compartida
+→ no redefine procesos ni su significado
+```
+
+---
+
+#### 4. Conciliación con el mini-bloque de contratos
+
+La continuidad del mini-bloque permanece coherente:
+
+```text
+SHELL-CON-001
+→ crea la raíz contractual compartida
+
+SHELL-CON-002..008
+→ centralizan contratos previos sin modificar la identidad de procesos
+
+SHELL-CON-008
+→ reserva SHELL-CON-009
+
+SHELL-CON-009
+→ centraliza ProcessId
+
+SHELL-CON-010
+→ queda reservada para estados de procesos
+```
+
+La secuencia específica de autorización que enlaza `SHELL-CON-001..008` con tareas `SHELL-AUTH-*` expresa dependencias del subdominio de autorización y no sustituye la continuidad global de `continuity-route.json` y `active-sequence.json`.
+
+No se detecta una decisión aprobada en `SHELL-CON-001..008` que requiera corrección para desarrollar esta tarea.
+
+---
+
+#### 5. Línea base verificable
+
+El estado físico actual permanece anterior a la materialización contractual:
+
+| Elemento                                        | Estado observado          | Disposición                                                    |
+| ----------------------------------------------- | ------------------------- | -------------------------------------------------------------- |
+| workspace `packages/*`                          | existe                    | conserva la fundación compartida                               |
+| `packages/os-context`                           | existe                    | no es propietario del namespace de procesos                    |
+| `packages/contracts`                            | no materializado          | materialización posterior                                      |
+| `@vento/contracts` publicado                    | no confirmado físicamente | no se presume release                                          |
+| subpath público de procesos                     | no observado físicamente  | se define documentalmente en esta tarea                        |
+| `PROC-CANONICAL-ID-REGISTRY-001`                | aprobado documentalmente  | fuente de identidad                                            |
+| referencias `VPROC-*` en documentación canónica | existentes                | consumidores documentales, no package compartido materializado |
+| cambios físicos en `SHELL-CON-009`              | no autorizados            | ninguno                                                        |
+
+La presencia de `VPROC-*` en documentos, matrices, auditoría o integraciones no constituye por sí sola una API compartida implementada.
+
+---
+
+#### 6. Namespace contractual compartido
+
+Esta tarea define el subpath lógico especializado:
+
+```text
+@vento/contracts/processes
+```
+
+Su responsabilidad pública queda limitada a contratos estáticos de identidad de procesos y a artefactos determinísticamente derivados de la fuente canónica.
+
+Superficie conceptual mínima:
+
+```text
+@vento/contracts/processes
+→ ProcessId
+→ PROCESS_IDS
+→ validación de formato y pertenencia
+→ metadata de procedencia del registro fuente
+```
+
+No se crea físicamente el subpath, no se publica una versión y no se inventa un hash de release en esta fase.
+
+`SHELL-CON-010` podrá ampliar este mismo dominio contractual con los estados que le correspondan, sin modificar la identidad fijada aquí.
+
+---
+
+#### 7. Forma canónica de `ProcessId`
+
+La forma léxica es:
+
+```text
+VPROC-####
+```
+
+Patrón sintáctico:
+
+```text
+^VPROC-[0-9]{4}$
+```
+
+Reglas:
+
+1. el prefijo es exactamente `VPROC-`;
+2. la parte numérica utiliza exactamente cuatro dígitos;
+3. `VPROC-0000` es inválido;
+4. una cadena que satisfaga el patrón no se convierte automáticamente en una identidad asignada;
+5. la pertenencia debe resolverse contra el conjunto publicado derivado del registro canónico;
+6. no se admiten variantes de mayúsculas/minúsculas;
+7. no se admiten espacios, prefijos de aplicación, sufijos, slugs ni aliases dentro de `ProcessId`;
+8. la serialización pública permanece como string exacto `VPROC-####`.
+
+---
+
+#### 8. Conjunto cerrado vigente
+
+La proyección estática vigente contiene exactamente:
+
+```text
+VPROC-0001
+VPROC-0002
+VPROC-0003
+VPROC-0004
+VPROC-0005
+VPROC-0006
+VPROC-0007
+VPROC-0008
+VPROC-0009
+VPROC-0010
+VPROC-0011
+VPROC-0012
+VPROC-0013
+VPROC-0014
+VPROC-0015
+VPROC-0016
+VPROC-0017
+VPROC-0018
+VPROC-0019
+VPROC-0020
+VPROC-0021
+VPROC-0022
+VPROC-0023
+VPROC-0024
+VPROC-0025
+VPROC-0026
+VPROC-0027
+VPROC-0028
+VPROC-0029
+VPROC-0030
+VPROC-0031
+VPROC-0032
+VPROC-0033
+VPROC-0034
+VPROC-0035
+VPROC-0036
+VPROC-0037
+VPROC-0038
+VPROC-0039
+VPROC-0040
+VPROC-0041
+VPROC-0042
+VPROC-0043
+VPROC-0044
+VPROC-0045
+VPROC-0046
+VPROC-0047
+VPROC-0048
+VPROC-0049
+VPROC-0050
+VPROC-0051
+VPROC-0052
+VPROC-0053
+VPROC-0054
+VPROC-0055
+VPROC-0056
+VPROC-0057
+VPROC-0058
+VPROC-0059
+VPROC-0060
+VPROC-0061
+VPROC-0062
+VPROC-0063
+VPROC-0064
+VPROC-0065
+VPROC-0066
+VPROC-0067
+VPROC-0068
+VPROC-0069
+```
+
+Conciliación:
+
+```text
+esperados = 69
+materializados documentalmente = 69
+únicos = 69
+faltantes = 0
+duplicados = 0
+fuera de rango = 0
+```
+
+---
+
+#### 9. Proyección TypeScript conceptual
+
+La colección literal publicada será el artefacto derivado de membresía y el tipo se obtendrá de esa misma colección, evitando mantener dos listas manuales independientes:
+
+```text
+const PROCESS_IDS = <colección derivada de los 69 valores canónicos> as const;
+
+type ProcessId = (typeof PROCESS_IDS)[number];
+```
+
+La colección y el tipo son derivados. Ninguno se convierte en una segunda fuente editable de identidad.
+
+---
+
+#### 10. Regla de validación runtime
+
+Toda entrada procedente de JSON, base de datos, RPC, evento, query parameter, almacenamiento local, API, integración o consumidor legacy se considera no confiable hasta validación.
+
+La aceptación exige dos condiciones:
+
+```text
+formato válido
+AND
+pertenencia al conjunto asignado de ProcessId
+```
+
+Por tanto:
+
+```text
+VPROC-0001
+→ formato válido
+→ miembro vigente
+→ ProcessId válido
+
+VPROC-0070
+→ formato válido
+→ no asignado en el corte vigente
+→ identidad desconocida
+
+VPROC-9999
+→ formato válido
+→ no asignado
+→ identidad desconocida
+
+vproc-0001
+→ formato inválido
+
+VPROC-0000
+→ reservado como inválido
+```
+
+Queda prohibido utilizar un cast estático como sustituto de la comprobación de pertenencia.
+
+---
+
+#### 11. Estabilidad e inmutabilidad de identidad
+
+Las reglas heredadas del registro permanecen:
+
+1. un `ProcessId` asignado no se renumera;
+2. un `ProcessId` asignado no se reutiliza para otro proceso;
+3. un cambio de nombre humano no cambia el identificador;
+4. un cambio de aplicación propietaria no cambia el identificador;
+5. un cambio de canal, sede, área, rol o dispositivo no crea por sí mismo otro identificador;
+6. una fusión futura conserva linaje y no recicla los identificadores absorbidos;
+7. una división futura conserva el identificador padre y registra los descendientes conforme al gobierno del registro;
+8. un retiro futuro conserva la identidad histórica y no habilita su reutilización;
+9. `VPROC-0070` es únicamente el siguiente valor disponible en el corte vigente, no una asignación anticipada.
+
+La semántica de los estados de registro y de los estados operativos de proceso no se redefine aquí.
+
+---
+
+#### 12. Separación frente a alias, nombres y slugs
+
+No son `ProcessId`:
+
+- códigos `ASIS-*`;
+- aliases históricos o provisionales;
+- nombre humano del proceso;
+- nombre abreviado;
+- slug;
+- ruta;
+- nombre de pantalla;
+- nombre de aplicación;
+- nombre de módulo;
+- nombre de tabla;
+- nombre de evento;
+- identificador de paquete.
+
+Regla:
+
+```text
+alias / nombre / slug
+→ puede resolver hacia un ProcessId mediante un adapter gobernado
+→ no sustituye ProcessId como clave primaria contractual
+```
+
+Un consumidor nuevo no puede crear una clave paralela porque el texto sea más legible.
+
+---
+
+#### 13. Separación frente a identidades relacionadas
+
+`ProcessId` permanece separado de:
+
+```text
+process_instance_id
+step_id
+screen_id
+action_id
+event_id
+command_id
+request_id
+correlation_id
+audit_entry_id
+audit_profile_id
+metric_id
+permission_key
+app_code
+```
+
+En particular:
+
+```text
+VPROC-0001
+→ ProcessId
+
+VPROC-0001.AUDIT
+→ perfil de auditoría asociado
+→ no es ProcessId
+```
+
+La presencia del prefijo `VPROC-####` dentro de otra identidad compuesta no convierte el valor completo en `ProcessId`.
+
+---
+
+#### 14. Separación frente a estado, implementación y autorización
+
+Una identidad canónica no demuestra:
+
+- que el proceso esté implementado;
+- que exista una pantalla;
+- que exista una API o tabla;
+- que una aplicación pueda ejecutarlo;
+- que un actor esté autorizado;
+- que exista una instancia activa;
+- que el proceso esté listo para operación;
+- que tenga evidencia de despliegue.
+
+Por tanto:
+
+```text
+ProcessId reconocido
+≠ proceso implementado
+≠ proceso disponible
+≠ proceso autorizado
+≠ instancia de proceso
+```
+
+Los estados de proceso quedan exclusivamente reservados a `SHELL-CON-010` y a sus fuentes propietarias.
+
+---
+
+#### 15. Propiedad y consumidores
+
+La frontera de propiedad queda:
+
+```text
+PROC-CANONICAL-ID-REGISTRY-001
+→ autoridad semántica de asignación y linaje
+
+@vento/contracts/processes
+→ autoridad técnica compartida de la proyección tipada/validable
+
+aplicaciones y packages consumidores
+→ referencian ProcessId
+→ no administran el namespace
+
+Supabase
+→ puede persistir/proyectar ProcessId
+→ no asigna significado alternativo por sí mismo
+```
+
+La aplicación propietaria de un proceso no adquiere propiedad sobre el namespace global `VPROC-*`.
+
+---
+
+#### 16. Orden y generación determinista
+
+La colección derivada deberá conservar orden numérico ascendente por la parte de cuatro dígitos:
+
+```text
+VPROC-0001
+VPROC-0002
+...
+VPROC-0069
+```
+
+No se utilizarán como orden contractual:
+
+- nombre humano;
+- aplicación propietaria;
+- prioridad;
+- fecha de implementación;
+- orden de llegada de filas;
+- orden de una consulta;
+- orden de imports.
+
+La salida derivada deberá poder regenerarse desde el registro fuente sin edición manual de miembros.
+
+---
+
+#### 17. Evolución del conjunto
+
+Una nueva identidad solo puede incorporarse cuando exista una asignación formal en el registro propietario de procesos.
+
+Secuencia conceptual:
+
+```text
+decisión de crear una nueva identidad de proceso
+→ asignación canónica en el registro propietario
+→ preservación de linaje y unicidad
+→ nueva proyección contractual
+→ nueva versión publicable del package cuando corresponda
+→ validación de consumidores
+```
+
+Una actualización de `ProcessId` no puede originarse únicamente desde una aplicación consumidora, una migración, una tabla, un evento o un tipo TypeScript local.
+
+La incorporación futura de `VPROC-0070` requerirá su asignación canónica previa; esta tarea no la anticipa.
+
+---
+
+#### 18. Versionado y compatibilidad
+
+`SHELL-CON-009` no asigna una versión publicada inexistente al subpath de procesos.
+
+Cuando `@vento/contracts` se materialice y publique:
+
+1. `ProcessId` formará parte de la superficie contractual versionada;
+2. la adición de una identidad asignada deberá conservar compatibilidad con el gobierno SemVer del package;
+3. retirar una identidad de la proyección histórica o reutilizarla con otra semántica será incompatible con el gobierno aprobado;
+4. los consumidores deberán usar una versión explícita compatible;
+5. un consumidor con una versión que no reconoce un identificador nuevo deberá tratarlo como incompatibilidad contractual, no inventar un fallback;
+6. la procedencia deberá permitir relacionar la salida publicada con el registro fuente que la generó.
+
+No se inventa hash, tag, release ni manifest físico antes de la fase de materialización autorizada.
+
+---
+
+#### 19. Destinos de materialización ya existentes
+
+La tarea no crea nuevas responsabilidades de implementación.
+
+| Resultado pendiente de fase física                                       | Destino existente                                                                                                                    |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| materializar la raíz/package compartido y su superficie pública          | ciclo físico de `@vento/contracts` gobernado por `SHELL-CON-001`, `SHELL-PKG-001..008`, `E5-GATE-008::<package_id>` y `SHELL-CI-020` |
+| validar contrato, requisitos y documentación ejecutable                  | `SHELL-CI-017`                                                                                                                       |
+| validar compatibilidad e integración transversal de consumidores         | `SHELL-CI-018`                                                                                                                       |
+| proteger uso de fuente compartida frente a copias divergentes            | `TREQ-SHELL-002` y su tarea responsable ya registrada                                                                                |
+| proteger formato, unicidad, resolución y no reutilización de `ProcessId` | `TREQ-PROC-009` a `TREQ-PROC-013`                                                                                                    |
+| proteger el cierre de 69 identidades y deriva futura                     | `TREQ-PROC-111` y `TREQ-PROC-118`                                                                                                    |
+
+No se inicia ninguno de esos trabajos físicos durante `SHELL-CON-009`.
+
+---
+
+#### 20. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** `SHELL-CON-009` no crea ni modifica identidades de proceso, reglas de asignación, linaje, formato o comportamiento ejecutable. Centraliza una proyección documental de reglas ya protegidas por `TREQ-PROC-009` a `TREQ-PROC-013`, `TREQ-PROC-111`, `TREQ-PROC-118`, `TREQ-SHELL-002`, `TREQ-SHELL-006` y `TREQ-SHELL-008`. Crear otro requisito con la misma regla produciría cobertura duplicada sin comportamiento nuevo.
+
+El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 21. Decisiones vinculantes
+
+1. `ProcessId` usa exactamente la forma `VPROC-####`.
+2. El conjunto vigente contiene exactamente 69 identidades: `VPROC-0001` a `VPROC-0069`.
+3. Las 69 identidades vigentes permanecen `CANONICAL` según la reconciliación propietaria.
+4. Existen cero `MERGED_ALIAS`, cero `SPLIT_PARENT`, cero `RETIRED` y cero `VOID` en el corte vigente.
+5. `VPROC-0070` es el siguiente identificador disponible y no pertenece todavía a `ProcessId`.
+6. `VPROC-0000` es inválido.
+7. Cumplir el regex no demuestra pertenencia al conjunto asignado.
+8. Los identificadores asignados no se renumeran ni reutilizan.
+9. Alias, nombres, slugs y referencias `ASIS-*` no sustituyen `ProcessId`.
+10. `process_instance_id` y demás identidades de ejecución permanecen separadas.
+11. Perfiles derivados como `VPROC-####.AUDIT` no son `ProcessId`.
+12. Una identidad reconocida no demuestra implementación, disponibilidad ni autorización.
+13. La autoridad semántica de asignación permanece en `PROC-CANONICAL-ID-REGISTRY-001`.
+14. La proyección compartida queda bajo `@vento/contracts/processes`.
+15. `@vento/contracts/processes` no se materializa ni publica en esta tarea.
+16. Un consumidor no puede ampliar localmente el conjunto.
+17. Entradas externas requieren validación de formato y pertenencia.
+18. La proyección se genera determinísticamente desde la fuente canónica.
+19. Los estados de proceso quedan reservados exclusivamente a `SHELL-CON-010`.
+20. No se modifica código, Supabase, migraciones, datos, package físico ni consumidor.
+21. No se crean ni modifican requisitos `TREQ-*`.
+22. `SHELL-CON-010` permanece exclusivamente reservada.
+
+---
+
+#### 22. Criterios de aceptación
+
+`SHELL-CON-009` queda documentalmente completa cuando:
+
+- el conjunto `VPROC-0001..VPROC-0069` esté reconocido como las 69 identidades asignadas vigentes;
+- los 69 valores estén enumerados una sola vez en la definición de membresía y sin duplicados;
+- `VPROC-0070` permanezca fuera del conjunto vigente;
+- `VPROC-0000` permanezca inválido;
+- `ProcessId` se separe de instancias, pasos, pantallas, acciones, eventos, auditorías, métricas, permisos y aplicaciones;
+- alias, nombres, slugs y referencias `ASIS-*` no sean aceptados como identidad primaria;
+- la validación exija sintaxis y pertenencia, no solo regex o cast;
+- se preserve la regla de no renumeración ni reutilización;
+- `PROC-CANONICAL-ID-REGISTRY-001` permanezca como fuente semántica propietaria;
+- `@vento/contracts/processes` quede definido como superficie compartida documental sin materialización física;
+- no se definan estados de procesos antes de `SHELL-CON-010`;
+- no se ejecuten cambios físicos;
+- se reutilice la cobertura `TREQ-*` existente sin generar duplicados;
+- la continuidad reserve únicamente `SHELL-CON-010`.
+
+---
+
+#### 23. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-CON-008 — Centralizar códigos de error
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-CON-009 — Centralizar identificadores de procesos
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-CON-010 — Centralizar estados de procesos
+
+
 ### [ ] SHELL-CON-010 — Centralizar estados de procesos
 ### [ ] SHELL-CON-011 — Centralizar identificadores de pantallas
 ### [ ] SHELL-CON-012 — Crear contrato de acciones funcionales
