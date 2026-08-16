@@ -12,6 +12,7 @@ import {
   resolveContinuity,
 } from './plan-continuity-global.mjs';
 import { formatTaskFileSource, parseTaskBlocks } from './format-canonical-task.mjs';
+import { readPendingTaskTitleAuthority } from './pending-task-title-authority.mjs';
 import { validateContract } from './validate-task-delivery.mjs';
 
 function fail(message) {
@@ -85,9 +86,10 @@ export function derivePreflight({ root = process.cwd(), requestedTaskId = null }
   const blocks = parseTaskBlocks(ownerSource).filter(({ id }) => id === taskId);
   if (blocks.length !== 1) fail(`${taskId} debe aparecer exactamente una vez en su archivo propietario.`);
   const sectionCount = blocks[0].block.match(/^####\s+/gmu)?.length ?? 0;
+  const canonicalTitles = readPendingTaskTitleAuthority(root);
   let formatState = 'OK';
   try {
-    const formatted = formatTaskFileSource(ownerSource, { taskId });
+    const formatted = formatTaskFileSource(ownerSource, { taskId, canonicalTitles });
     if (formatted.changedTaskIds.length > 0) formatState = 'NEEDS_FORMAT';
   } catch (error) {
     formatState = `ERROR: ${error instanceof Error ? error.message : String(error)}`;

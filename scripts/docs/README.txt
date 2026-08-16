@@ -65,6 +65,11 @@ Comandos desde la raíz de vento-shell:
    por lo que una plantilla antigua o divergente bloquea el build antes de
    propagarse a una tarea.
 
+   El título estructural de cada tarea pendiente se toma del snapshot previo de
+   REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md. El formateador corrige la
+   cabecera y Continuidad cuando un desarrollo cambia accidentalmente un título
+   sin cambiar el ID; nunca reescribe el texto narrativo de la tarea.
+
    Desde SHELL-UI-012, task-development-policy.json añade un gate semántico:
    bloquea en aprobaciones únicamente contradicciones e infracciones de
    integridad configuradas. La cabecera enriquecida, secciones nuevas y

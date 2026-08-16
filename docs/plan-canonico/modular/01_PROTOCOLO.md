@@ -990,6 +990,15 @@ siguiente no se inicia. La reserva ya expresa ese límite. El formateo no cambia
 marcadores ni estados, no aprueba tareas y no crea automáticamente el desarrollo
 de un borrador vacío.
 
+Durante el formateo, el título de cualquier identidad pendiente se resolverá
+desde el snapshot previo de
+`.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md`. Ese registro fija el
+título anterior al desarrollo: la cabecera y `Continuidad` se corrigen
+automáticamente cuando conservan el ID pero alteran su título. El texto narrativo
+del desarrollo no se reescribe. Después del formateo, el build regenera la guía;
+por tanto, el archivo derivado no se edita manualmente ni sustituye las fuentes
+modulares.
+
 ## Calidad prospectiva del desarrollo de tareas
 
 La política `task-development-policy.json` se aplica desde `SHELL-UI-012`,

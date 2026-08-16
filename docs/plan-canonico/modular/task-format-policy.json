@@ -5,6 +5,7 @@
   "historical_policy": "PRESERVE_BEFORE_BOUNDARY",
   "header_style": "COMPACT_METADATA_LIKE_SHELL_UI_005",
   "continuity_style": "STACKED_INLINE_CODE",
+  "identity_title_authority": "PENDING_TASK_CONTEXT_SNAPSHOT",
   "remove_redundant_no_start_sentence": true,
   "automatic_scaffold": false
 }

@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { readPendingTaskTitleAuthority } from './pending-task-title-authority.mjs';
+
 const TASK_HEADING = /^###\s+(?<marker>\[[ x~]\]|[✅🟡❌])\s+(?<id>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3})\b(?:\s+[—-]\s+(?<title>[^\n]+))?$/u;
 const SECTION_HEADING = /^####(?:\s+\d+\.)?\s+\S.*$/u;
 const METADATA = /^\*\*(?<label>[^*\n]+):\*\*\s*(?<value>.*)$/u;
@@ -9,6 +11,12 @@ const CONTINUITY_LABELS = [
   'ÚLTIMA TAREA APROBADA',
   'TAREA ACTUAL APROBADA',
   'SIGUIENTE TAREA RESERVADA',
+];
+const IDENTITY_METADATA_LABELS = [
+  'Tarea anterior',
+  'Dependencia anterior',
+  'Tarea siguiente',
+  'Continuidad reservada',
 ];
 
 const METADATA_ORDER = [
@@ -94,6 +102,41 @@ function normalizeMetadataLine(line) {
 
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+}
+
+function canonicalIdentity(value, canonicalTitles) {
+  const normalized = String(value ?? '').trim().replace(/^`|`$/gu, '');
+  const match = normalized.match(/^(?<id>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3})(?:\s+[—-]\s+.*)?$/u);
+  if (!match) return normalized;
+  const title = canonicalTitles.get(match.groups.id);
+  return title ? `${match.groups.id} — ${title}` : normalized;
+}
+
+function normalizeCanonicalIdentityTitles(block, canonicalTitles) {
+  if (!(canonicalTitles instanceof Map) || canonicalTitles.size === 0) return block;
+  const lines = normalizeSource(block).split('\n');
+  const heading = lines[0]?.match(TASK_HEADING);
+  if (heading) {
+    const title = canonicalTitles.get(heading.groups.id);
+    if (title) lines[0] = `### ${heading.groups.marker} ${heading.groups.id} — ${title}`;
+  }
+
+  for (let index = 1; index < lines.length; index += 1) {
+    const metadata = lines[index].match(METADATA);
+    if (!metadata) continue;
+    const label = metadata.groups.label.trim();
+    if (!IDENTITY_METADATA_LABELS.includes(label)) continue;
+    lines[index] = `**${label}:** ${canonicalIdentity(metadata.groups.value, canonicalTitles)}`;
+  }
+
+  let candidate = lines.join('\n');
+  for (const label of CONTINUITY_LABELS) {
+    const pattern = new RegExp(`(\\*\\*${escapeRegex(label)}:?\\*\\*\\s*\\n+\\s*\\x60)([^\\n\\x60]+)(\\x60)`, 'u');
+    candidate = candidate.replace(pattern, (full, prefix, value, suffix) => (
+      `${prefix}${canonicalIdentity(value, canonicalTitles)}${suffix}`
+    ));
+  }
+  return candidate;
 }
 
 function extractContinuityValue(section, label) {
@@ -337,7 +380,7 @@ export function parseTaskBlocks(source) {
   }));
 }
 
-export function formatTaskBlock(block, { scaffold = false } = {}) {
+export function formatTaskBlock(block, { scaffold = false, canonicalTitles = new Map() } = {}) {
   let candidate = normalizeSource(block);
   const parsed = parseTaskBlocks(candidate);
   if (parsed.length !== 1 || parsed[0].index !== 0) {
@@ -345,9 +388,11 @@ export function formatTaskBlock(block, { scaffold = false } = {}) {
   }
   const task = parsed[0];
   if (scaffold) candidate = addScaffold(candidate, task);
+  candidate = normalizeCanonicalIdentityTitles(candidate, canonicalTitles);
   candidate = ensureHeaderSeparator(candidate);
   candidate = ensureContinuitySection(candidate);
   candidate = normalizeContinuitySection(candidate);
+  candidate = normalizeCanonicalIdentityTitles(candidate, canonicalTitles);
 
   const beforeFingerprint = semanticFingerprint(candidate);
   const lines = candidate.split('\n');
@@ -387,7 +432,7 @@ export function formatTaskBlock(block, { scaffold = false } = {}) {
   return formatted;
 }
 
-export function validateTaskPresentation(block) {
+export function validateTaskPresentation(block, { canonicalTitles = new Map() } = {}) {
   const errors = [];
   const normalized = normalizeSource(block).replace(/\n+$/u, '');
   const tasks = parseTaskBlocks(normalized);
@@ -450,6 +495,18 @@ export function validateTaskPresentation(block) {
   }
 
   const identity = taskIdentityFromBlock(normalized);
+  const expectedCurrent = canonicalIdentity(identity?.current, canonicalTitles);
+  const expectedPrevious = canonicalIdentity(identity?.previous, canonicalTitles);
+  const expectedNext = canonicalIdentity(identity?.next, canonicalTitles);
+  if (identity?.current !== expectedCurrent) {
+    errors.push(`el título de ${tasks[0].id} no coincide con la guía de tareas pendientes.`);
+  }
+  if (identity?.previous !== expectedPrevious) {
+    errors.push('Tarea anterior no coincide con el título de la guía de tareas pendientes.');
+  }
+  if (identity?.next !== expectedNext) {
+    errors.push('Tarea siguiente no coincide con el título de la guía de tareas pendientes.');
+  }
   if (values.get('TAREA ACTUAL APROBADA') !== identity?.current) {
     errors.push('TAREA ACTUAL APROBADA no coincide con el encabezado de la tarea.');
   }
@@ -478,6 +535,7 @@ export function formatTaskFileSource(source, {
   taskId = null,
   all = false,
   scaffold = false,
+  canonicalTitles = new Map(),
 } = {}) {
   const normalized = normalizeSource(source);
   const tasks = parseTaskBlocks(normalized);
@@ -508,7 +566,7 @@ export function formatTaskFileSource(source, {
     if (!selectedIds.has(task.id)) {
       output.push(...lines.slice(task.index, task.endIndex));
     } else {
-      const formatted = formatTaskBlock(task.block, { scaffold });
+      const formatted = formatTaskBlock(task.block, { scaffold, canonicalTitles });
       const trailing = task.block.match(/\n+$/u)?.[0] ?? '';
       const formattedWithTrailing = `${formatted}${trailing}`;
       if (formattedWithTrailing !== task.block) changedTaskIds.push(task.id);
@@ -562,7 +620,8 @@ export function main(argv = process.argv.slice(2)) {
   if (!fs.existsSync(filePath)) fail(`no existe ${filePath}.`);
   const raw = fs.readFileSync(filePath, 'utf8');
   const eol = detectEol(raw);
-  const result = formatTaskFileSource(raw, args);
+  const canonicalTitles = readPendingTaskTitleAuthority(process.cwd());
+  const result = formatTaskFileSource(raw, { ...args, canonicalTitles });
   const next = eol === '\n' ? result.source : result.source.replace(/\n/gu, '\r\n');
 
   if (result.changedTaskIds.length === 0) {

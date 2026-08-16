@@ -152,3 +152,72 @@ Texto.
   assert.match(formatted, /\*\*Bloque:\*\* X — Prueba\n\n---\n\n#### 1\. Propósito/u);
   assert.deepEqual(validateTaskPresentation(formatted), []);
 });
+
+test('corrige títulos estructurales desde la guía de tareas pendientes', () => {
+  const canonicalTitles = new Map([
+    ['TEST-FMT-008', 'Título actual canónico'],
+    ['TEST-FMT-009', 'Próxima tarea canónica'],
+  ]);
+  const source = `### ✅ TEST-FMT-008 — Título cambiado durante el desarrollo
+
+**Estado:** APROBADA
+**Tarea anterior:** TEST-FMT-007 — Anterior histórica
+**Tarea siguiente:** TEST-FMT-009 — Próxima tarea renombrada por accidente
+**Tipo de tarea:** Documental
+**Bloque:** X — Prueba
+
+---
+
+#### 1. Propósito
+
+La narrativa conserva la frase TEST-FMT-009 — Próxima tarea renombrada por accidente.
+
+#### 2. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+\`TEST-FMT-007 — Anterior histórica\`
+
+**TAREA ACTUAL APROBADA**
+\`TEST-FMT-008 — Otro título incorrecto\`
+
+**SIGUIENTE TAREA RESERVADA**
+\`TEST-FMT-009 — Otro título incorrecto\`
+`;
+  const formatted = formatTaskBlock(source, { canonicalTitles });
+  assert.match(formatted, /^### ✅ TEST-FMT-008 — Título actual canónico$/mu);
+  assert.match(formatted, /^\*\*Tarea siguiente:\*\* TEST-FMT-009 — Próxima tarea canónica$/mu);
+  assert.match(formatted, /`TEST-FMT-008 — Título actual canónico`/u);
+  assert.match(formatted, /`TEST-FMT-009 — Próxima tarea canónica`/u);
+  assert.match(
+    formatted,
+    /La narrativa conserva la frase TEST-FMT-009 — Próxima tarea renombrada por accidente\./u,
+  );
+  assert.deepEqual(validateTaskPresentation(formatted, { canonicalTitles }), []);
+});
+
+test('detecta títulos estructurales distintos a la guía pendiente', () => {
+  const canonicalTitles = new Map([['TEST-FMT-008', 'Título actual canónico']]);
+  const source = `### ✅ TEST-FMT-008 — Título incorrecto
+
+**Estado:** APROBADA
+**Tarea anterior:** TEST-FMT-007 — Anterior
+**Tarea siguiente:** TEST-FMT-009 — Siguiente
+**Tipo de tarea:** Documental
+**Bloque:** X
+
+---
+
+#### 1. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+\`TEST-FMT-007 — Anterior\`
+
+**TAREA ACTUAL APROBADA**
+\`TEST-FMT-008 — Título incorrecto\`
+
+**SIGUIENTE TAREA RESERVADA**
+\`TEST-FMT-009 — Siguiente\`
+`;
+  assert.ok(validateTaskPresentation(source, { canonicalTitles })
+    .some((error) => /no coincide con la guía de tareas pendientes/u.test(error)));
+});

@@ -9,6 +9,7 @@ import {
   validateTaskPresentation,
 } from './format-canonical-task.mjs';
 import { validateTaskFormatPolicy } from './task-format-policy.mjs';
+import { readPendingTaskTitleAuthority } from './pending-task-title-authority.mjs';
 import { validateProspectiveTaskSemantics } from './task-semantic-contract.mjs';
 
 function fail(message) {
@@ -39,6 +40,7 @@ export function autoPrepareCanonicalTask({
   const baseDir = path.join(root, 'docs', 'plan-canonico', 'modular');
   const policy = validateTaskFormatPolicy({ root });
   const boundary = derivePreflight({ root, requestedTaskId: policy.effective_from_task_id });
+  const canonicalTitles = readPendingTaskTitleAuthority(root);
   const changed = [];
   const checked = [];
   const skipped = [];
@@ -73,16 +75,18 @@ export function autoPrepareCanonicalTask({
 
     const ownerPath = path.join(baseDir, preflight.task.owner);
     const raw = fs.readFileSync(ownerPath, 'utf8');
-    const result = formatTaskFileSource(raw, { taskId });
+    const result = formatTaskFileSource(raw, { taskId, canonicalTitles });
     checked.push(taskId);
     if (result.changedTaskIds.length > 0 && checkOnly) {
       fail(`${taskId} requiere formato canónico; ejecute docs:plan:build para aplicarlo.`);
     }
     const effectiveSource = result.source;
     const [formattedTask] = parseTaskBlocks(effectiveSource).filter(({ id }) => id === taskId);
-    const presentationErrors = formattedTask ? validateTaskPresentation(formattedTask.block) : [
+    const presentationErrors = formattedTask
+      ? validateTaskPresentation(formattedTask.block, { canonicalTitles })
+      : [
       `${taskId} no se pudo aislar después del formateo.`,
-    ];
+      ];
     if (presentationErrors.length > 0) {
       fail(`${taskId} incumple task-format-policy.json:\n- ${presentationErrors.join('\n- ')}`);
     }
