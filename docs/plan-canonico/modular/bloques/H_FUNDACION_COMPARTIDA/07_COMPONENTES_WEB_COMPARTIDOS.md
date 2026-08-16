@@ -16660,7 +16660,1531 @@ Quedan fijadas las siguientes decisiones vinculantes:
 `SHELL-UI-013 — Compartir panel de acción principal`
 
 
-### [ ] SHELL-UI-013 — Compartir panel de acción principal
+### ✅ SHELL-UI-013 — Compartir panel de acción principal
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-012 — Compartir línea de estados de proceso
+**Tarea siguiente:** SHELL-UI-014 — Compartir confirmaciones de acciones sensibles
+**Tipo de tarea:** Documental; definición canónica del panel compartido de acción principal para `@vento/ui-web`, su identidad, jerarquía, API conceptual, estados de presentación, composición con `Button`, fronteras de autorización y ejecución, accesibilidad, reconciliación de consumidores y handoff de migración, sin materializar package, comandos empresariales, permisos, mutaciones, cambios runtime, SQL, migraciones, releases ni despliegues
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md`
+**Estado físico resultante:** ESPECIFICADO; PACKAGE, EXPORTS Y PANEL COMPARTIDO NO MATERIALIZADOS
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+**Package propietario:** `@vento/ui-web`
+**Naturaleza:** patrón visual web compartido para presentar y componer una acción principal ya resuelta; no es resolver de autorización, catálogo de acciones, Server Action, endpoint, máquina de estados ni motor de confirmación
+
+---
+
+#### 1. Propósito
+
+`SHELL-UI-013` define `PrimaryActionPanel` como la superficie compartida de `@vento/ui-web` destinada a hacer inequívoca la acción principal ya resuelta para una superficie, caso o etapa de trabajo.
+
+El componente existe para conservar una jerarquía visual y semántica uniforme entre aplicaciones sin trasladar al package la decisión empresarial que determina cuál acción es principal, quién puede ejecutarla, bajo qué condiciones puede ejecutarse ni qué efecto produce.
+
+La regla raíz queda:
+
+```text
+CONTRATO PROPIETARIO DE LA SUPERFICIE
+        ↓
+ACCIÓN PRINCIPAL YA RESUELTA
+        ↓
+AUTORIZACIÓN + CONTEXTO + ESTADO YA EVALUADOS
+        ↓
+PROYECCIÓN PRESENTACIONAL
+        ↓
+PrimaryActionPanel
+        ↓
+CONTROL DE ACCIÓN COMPUESTO POR EL PROPIETARIO
+```
+
+Nunca:
+
+```text
+PrimaryActionPanel → selecciona la acción principal
+PrimaryActionPanel → concede permiso
+PrimaryActionPanel → decide una transición
+PrimaryActionPanel → ejecuta una mutación por sí mismo
+PrimaryActionPanel → declara éxito sin resultado autoritativo
+PrimaryActionPanel → convierte una acción secundaria en principal
+```
+
+---
+
+#### 2. Alcance de la tarea
+
+La tarea materializa documentalmente:
+
+- identidad conceptual del componente;
+- responsabilidad visual y semántica;
+- API conceptual mínima;
+- identidad estable de la acción;
+- copy humano de la acción;
+- estados presentacionales admitidos;
+- composición con `Button`;
+- regla de una sola acción principal;
+- tratamiento acotado de una acción secundaria adyacente;
+- separación entre presentación, autorización y ejecución;
+- separación entre acción, transición y resultado;
+- comportamiento durante espera de resultado;
+- tratamiento de concurrencia y reintento;
+- frontera con confirmaciones sensibles;
+- relación con `ProcessStatusLine`, `TaskNavigation` y AppShell;
+- accesibilidad, responsive, tablet y kiosco;
+- localización, telemetría y privacidad;
+- reconciliación de los siete consumidores web previstos;
+- handoff a migración, calidad, compatibilidad y releases;
+- cobertura de requisitos existente.
+
+No materializa código, package, export, callback empresarial, permiso, Server Action, RPC, SQL, migración, release ni despliegue.
+
+---
+
+#### 3. Dependencias documentales consumidas
+
+La definición conserva las decisiones ya aprobadas de:
+
+| Fuente                            | Decisión heredada                                                                                      |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `SHELL-UI-001`                    | `@vento/ui-web` es presentación web compartida y no fuente de autorización, datos o lógica empresarial |
+| `SHELL-UI-003`                    | `Button` conserva semántica nativa, variantes, disabled y loading sin declarar resultado empresarial   |
+| `SHELL-UI-010`                    | AppShell controla marco y composición, no el proceso ni la decisión empresarial                        |
+| `SHELL-UI-011`                    | `TaskNavigation` presenta destinos ya resueltos y no ejecuta acciones de negocio                       |
+| `SHELL-UI-012`                    | `ProcessStatusLine` presenta una posición de proceso ya resuelta y no ejecuta transiciones             |
+| `AUTH-UI-024`                     | cada superficie conserva una acción principal identificable, única y semánticamente gobernada          |
+| `SHELL-MIG-001` a `SHELL-MIG-008` | adopción física por lotes, con paridad, reversibilidad y retiro controlado                             |
+| `SHELL-CI-001` a `SHELL-CI-006`   | pruebas, build, versionado, changelog, compatibilidad y actualización controlada de consumidores       |
+
+UI013 no sustituye ninguno de esos propietarios.
+
+---
+
+#### 4. Evidencia técnica vigente
+
+El estado verificable de partida conserva:
+
+- workspace raíz compatible con `packages/*`;
+- `packages/os-context` materializado;
+- ausencia de package físico `@vento/ui-web`;
+- un `Button` local en SHELL con variantes y estado `loading`;
+- una familia local `Button` equivalente en NEXO, FOGO, ORIGO, VISO, PULSO y NUMERA;
+- variante `primary` en los seis consumidores de negocio inspeccionados;
+- ausencia de un `PrimaryActionPanel` transversal materializado;
+- launcher propio en SHELL, sin panel transversal equivalente;
+- contratos canónicos de acción principal ya definidos fuera de `@vento/ui-web`.
+
+La evidencia permite compartir la composición y jerarquía visual, pero no autoriza convertir una copia local existente en la implementación canónica.
+
+---
+
+#### 5. Resultado documental
+
+Queda especificada la superficie conceptual:
+
+```text
+PrimaryActionPanel
+PrimaryActionPanelProps
+PrimaryActionPresentationState
+```
+
+Resultado:
+
+```text
+IDENTIDAD DEL PANEL                      = ESPECIFICADA
+IDENTIDAD DE ACCIÓN                      = PRESERVADA
+JERARQUÍA PRINCIPAL                      = ESPECIFICADA
+ESTADOS PRESENTACIONALES                 = ESPECIFICADOS
+COMPOSICIÓN CON BUTTON                   = ESPECIFICADA
+AUTORIZACIÓN EN EL PANEL                 = PROHIBIDA
+MOTOR DE EJECUCIÓN EN EL PANEL           = PROHIBIDO
+MOTOR DE TRANSICIONES EN EL PANEL        = PROHIBIDO
+CONFIRMACIÓN SENSIBLE EN EL PANEL        = DIFERIDA A SU PROPIETARIO
+PACKAGE FÍSICO                           = NO MATERIALIZADO
+MIGRACIÓN DE CONSUMIDORES                = NO EJECUTADA
+```
+
+---
+
+#### 6. Identidad pública conceptual
+
+La identidad conceptual aprobada es:
+
+```text
+PrimaryActionPanel
+```
+
+No se crean identidades alternativas como:
+
+```text
+ActionBar
+PrimaryCTA
+SubmitPanel
+CommandPanel
+WorkflowAction
+ActionExecutor
+```
+
+El nombre describe una superficie de composición y jerarquía, no una autoridad de ejecución.
+
+---
+
+#### 7. Modelo conceptual general
+
+El modelo objetivo es:
+
+```text
+SUPERFICIE PROPIETARIA
+  ↓
+resuelve una única acción principal
+  ↓
+resuelve relevancia, autorización, estado y condiciones
+  ↓
+construye el control ejecutable apropiado
+  ↓
+PrimaryActionPanel presenta jerarquía y contexto
+```
+
+El panel recibe una proyección ya preparada.
+
+No consulta fuentes empresariales para reconstruirla.
+
+---
+
+#### 8. Superficie conceptual de props
+
+La API conceptual mínima queda:
+
+```ts
+type PrimaryActionPresentationState =
+  | "READY"
+  | "PENDING"
+  | "CONTEXTUAL_DISABLED"
+  | "REQUIRED_BLOCKED";
+
+type PrimaryActionPanelProps = {
+  ariaLabel: string;
+  actionId: string;
+  label: string;
+  description?: string;
+  state: PrimaryActionPresentationState;
+  statusLabel?: string;
+  primaryControl: React.ReactNode;
+  secondaryControl?: React.ReactNode;
+};
+```
+
+La forma es conceptual. UI013 no fija subpath npm, archivo TypeScript, barrel, mapa de exports ni layout interno del package.
+
+---
+
+#### 9. Identidad de acción principal
+
+`actionId` identifica de manera estable la acción principal que la superficie propietaria ya resolvió.
+
+Para superficies gobernadas por el registro canónico de acciones de vista, el valor debe corresponder a la identidad aprobada por ese contrato.
+
+`PrimaryActionPanel` no:
+
+- genera `actionId`;
+- concatena identificadores de vista;
+- interpreta segmentos del código;
+- deriva autorización desde el código;
+- usa el código como texto visible ordinario;
+- sustituye el registro propietario de acciones.
+
+Cambiar copy, layout o implementación del control no cambia por sí mismo la identidad empresarial de la acción.
+
+---
+
+#### 10. Fuente de la acción principal
+
+La acción principal llega resuelta desde la superficie propietaria.
+
+El panel no recibe una colección de candidatos para decidir entre ellos.
+
+Queda prohibido:
+
+```text
+acciones[]
+→ ordenar por prioridad visual
+→ escoger la primera habilitada
+→ promover una secundaria por viewport
+→ promover una secundaria por rol
+→ promover una secundaria por dispositivo
+→ inferir la principal por color o posición
+```
+
+La selección pertenece al contrato de la superficie y a sus propietarios canónicos.
+
+---
+
+#### 11. `label`
+
+`label` representa el nombre humano aprobado de la acción.
+
+Debe:
+
+- describir una acción concreta;
+- comenzar con una intención verbal comprensible cuando el contrato propietario así lo exige;
+- identificar el objeto o resultado empresarial;
+- ser localizable;
+- conservar significado consistente con `actionId`;
+- evitar códigos técnicos como copy ordinario.
+
+El panel no reemplaza automáticamente el label por textos genéricos como `Guardar`, `Aceptar`, `Continuar` o `Procesar`.
+
+---
+
+#### 12. `description`
+
+`description` explica contexto o efecto cuando sea útil para comprender qué ocurrirá al actuar.
+
+Puede aclarar:
+
+- objeto afectado;
+- resultado esperado;
+- alcance visible;
+- condición material previa;
+- consecuencia relevante no obvia.
+
+No debe convertirse en:
+
+- log técnico;
+- payload de autorización;
+- dump de servidor;
+- lista de permisos;
+- sustituto de una confirmación sensible;
+- lugar para ocultar consecuencias materiales que deban permanecer perceptibles.
+
+---
+
+#### 13. Estados de presentación
+
+`PrimaryActionPresentationState` contiene únicamente:
+
+```text
+READY
+PENDING
+CONTEXTUAL_DISABLED
+REQUIRED_BLOCKED
+```
+
+Estos estados describen cómo presentar una acción ya proyectada.
+
+No son estados del proceso, de una transición, de autorización ni de persistencia empresarial.
+
+---
+
+#### 14. `READY`
+
+`READY` significa que la proyección propietaria entrega la acción como disponible para interacción en la superficie actual.
+
+No significa:
+
+```text
+permiso garantizado hasta el commit
+transición válida sin revalidación
+recurso todavía vigente
+resultado ya confirmado
+servidor disponible
+operación idempotente por definición
+```
+
+El punto de ejecución conserva sus guards y validaciones autoritativas.
+
+---
+
+#### 15. `PENDING`
+
+`PENDING` representa una acción cuya ejecución equivalente ya fue iniciada por la composición propietaria y cuyo resultado autoritativo todavía no debe considerarse final.
+
+Durante ese estado:
+
+- la interfaz debe evitar activaciones equivalentes repetidas cuando corresponda;
+- la identidad de la acción debe permanecer comprensible;
+- el estado ocupado debe ser perceptible;
+- no se declara éxito;
+- no se declara fracaso sin resultado correspondiente;
+- no se fabrica un nuevo intento automáticamente;
+- no se convierte espera de red en una transición empresarial.
+
+Cuando el control usado sea `Button`, se reutiliza su contrato de `loading` en lugar de redefinirlo dentro del panel.
+
+---
+
+#### 16. `CONTEXTUAL_DISABLED`
+
+`CONTEXTUAL_DISABLED` significa que la acción sigue siendo relevante para comprender la superficie, pero una precondición contextual vigente impide actuar en ese momento.
+
+La causa debe llegar preparada desde el propietario cuando sea material.
+
+Ejemplos de categorías que pueden originar esta presentación, sin convertirlas en lógica del panel:
+
+- información obligatoria aún incompleta;
+- contexto operativo todavía no resuelto;
+- recurso temporalmente no elegible;
+- condición local de interacción aún no satisfecha.
+
+El panel no calcula la causa.
+
+---
+
+#### 17. `REQUIRED_BLOCKED`
+
+`REQUIRED_BLOCKED` representa una acción u obligación que debe permanecer visible porque forma parte del trabajo esperado, aunque actualmente no pueda ejecutarse.
+
+La presentación debe permitir comprender:
+
+- qué acción sigue siendo requerida;
+- que no puede ejecutarse ahora;
+- una explicación humana cuando esté disponible;
+- el camino de recuperación cuando corresponda y sea propiedad de la superficie.
+
+El panel no convierte un bloqueo en permiso, excepción ni bypass.
+
+---
+
+#### 18. Exclusión explícita de `HIDDEN`
+
+`HIDDEN` no forma parte del enum renderizable.
+
+Una acción que no debe revelarse se filtra antes de construir las props.
+
+Por tanto:
+
+```text
+HIDDEN
+→ no se pasa al componente
+→ no se renderiza
+→ no permanece en el DOM
+→ no entra al orden de foco
+→ no deja un control disabled como pista de capacidad
+```
+
+La ausencia de la acción tampoco demuestra ausencia de capacidad en servidor.
+
+---
+
+#### 19. `primaryControl`
+
+`primaryControl` contiene el control interactivo ya compuesto por la superficie propietaria.
+
+Puede ser, según el consumidor y el contrato de la acción:
+
+- un `Button` compartido;
+- un control de submit compatible;
+- una composición cliente propietaria;
+- una composición que invoque una Server Action en la capa adecuada;
+- otro control accesible que conserve la misma identidad y jerarquía.
+
+El panel no inspecciona el `ReactNode` para inferir permisos, payload, endpoint, transición o resultado.
+
+---
+
+#### 20. Composición con `Button`
+
+La opción ordinaria para una acción de botón será componer el `Button` definido por `SHELL-UI-003`.
+
+`PrimaryActionPanel` no redefine:
+
+- variantes de Button;
+- tamaños de Button;
+- semántica HTML del botón;
+- `disabled`;
+- `loading`;
+- `aria-busy`;
+- tipo nativo;
+- foco del control.
+
+Forma conceptual:
+
+```text
+PrimaryActionPanel
+└─ primaryControl
+   └─ Button variant="primary"
+```
+
+Una variante visual `danger` no determina por sí sola que una acción sea sensible o destructiva; esa clasificación pertenece al contrato propietario.
+
+---
+
+#### 21. Acción principal única
+
+Una superficie resuelta presenta exactamente una acción principal.
+
+El panel no admite dos `primaryControl` competidores.
+
+Si una interfaz parece requerir dos acciones igualmente dominantes, la solución no es duplicar el panel: debe revisarse la intención de la superficie, la jerarquía de acciones o la necesidad de separar el flujo.
+
+---
+
+#### 22. Acción principal no equivale a autorización
+
+La existencia de `PrimaryActionPanel` no concede autoridad.
+
+Nunca:
+
+```text
+visible = autorizado
+READY = autorizado irrevocablemente
+disabled = denegado por servidor
+oculto = permiso inexistente
+primary = permitido para cualquier actor
+```
+
+La autorización autoritativa permanece fuera de la primitiva visual.
+
+---
+
+#### 23. Acción principal no equivale a transición
+
+Una acción puede:
+
+- navegar;
+- consultar;
+- capturar un hecho;
+- solicitar una decisión;
+- ejecutar una operación;
+- preparar un cambio;
+- publicar una definición;
+- reconciliar una diferencia;
+- iniciar una integración.
+
+Por tanto, `PrimaryActionPanel` no interpreta toda acción como transición de proceso.
+
+Cuando exista transición, su validez pertenece al contrato y motor propietarios.
+
+---
+
+#### 24. Acción principal no equivale a resultado
+
+Activar el control no autoriza al panel a presentar automáticamente:
+
+```text
+completado
+aprobado
+pagado
+entregado
+publicado
+sincronizado
+confirmado
+```
+
+El resultado se presenta únicamente cuando la capa propietaria recibe la confirmación adecuada de la fuente de verdad correspondiente.
+
+---
+
+#### 25. Frontera de servidor
+
+Toda acción material conserva su frontera autoritativa.
+
+Según corresponda, la capa propietaria revalida:
+
+- actor;
+- permiso;
+- recurso;
+- propiedad o custodia;
+- sede;
+- área;
+- periodo;
+- estado;
+- transición;
+- vigencia;
+- idempotencia;
+- precondiciones de negocio.
+
+El panel no sustituye estas validaciones con estado visual.
+
+---
+
+#### 26. Frontera de permiso y contexto
+
+La API base no incorpora:
+
+```text
+permissionCode
+requiredPermissions
+anyOfPermissions
+roleCode
+allowedRoles
+canAccess
+canExecute
+canOperate
+AuthorizationDecision
+EffectiveContext
+```
+
+La superficie propietaria usa sus mecanismos canónicos y entrega únicamente una proyección presentacional ya minimizada.
+
+---
+
+#### 27. Frontera con Supabase
+
+`PrimaryActionPanel` no depende directamente de Supabase.
+
+No:
+
+- crea clientes;
+- consulta tablas;
+- ejecuta RPC;
+- maneja RLS;
+- lee sesión;
+- escribe estados;
+- escucha realtime;
+- interpreta errores de proveedor;
+- persiste payloads.
+
+La dirección permitida es:
+
+```text
+CAPA PROPIETARIA
+→ ejecuta o consulta mediante su infraestructura
+→ normaliza estado
+→ vuelve a renderizar la proyección
+→ PrimaryActionPanel
+```
+
+---
+
+#### 28. Frontera con router
+
+El panel no depende de pathname, query params, hash, history ni router.
+
+Una acción principal de navegación puede componer un control que navegue, pero esa navegación pertenece al control o a la aplicación propietaria.
+
+Abrir un destino no debe interpretarse automáticamente como aceptar, leer, claim, iniciar o resolver un caso.
+
+---
+
+#### 29. Jerarquía visual
+
+El panel debe hacer inequívoco cuál es la acción principal sin depender únicamente de color.
+
+La jerarquía puede usar de forma combinada:
+
+- posición;
+- tamaño;
+- espacio;
+- peso visual;
+- variante del control;
+- copy;
+- agrupación;
+- contexto explicativo.
+
+No puede presentar una colección indiferenciada de botones con la misma prioridad perceptiva.
+
+---
+
+#### 30. `secondaryControl`
+
+`secondaryControl` admite como máximo una acción secundaria convencional adyacente cuando la superficie propietaria determine que debe convivir visualmente con la principal.
+
+Su presencia no cambia la identidad de la acción principal.
+
+Debe mantenerse subordinada perceptivamente.
+
+No se utiliza para duplicar la misma intención con otro label.
+
+---
+
+#### 31. Acciones secundarias restantes
+
+El contrato de pantalla puede contener más acciones secundarias que las visibles dentro del panel.
+
+UI013 no intenta absorber todo el registro secundario.
+
+Las demás acciones pueden permanecer en:
+
+- enlaces contextuales;
+- menús;
+- zonas de resultado;
+- superficies especializadas;
+- rutas de excepción;
+- controles propios del contenido.
+
+El panel evita convertirse en una toolbar universal.
+
+---
+
+#### 32. Prohibición de promoción autónoma
+
+`PrimaryActionPanel` no cambia la jerarquía por:
+
+- ancho de pantalla;
+- rol;
+- dispositivo;
+- frecuencia de uso;
+- orden de props;
+- estado disabled;
+- disponibilidad momentánea;
+- telemetría;
+- personalización local.
+
+Una acción secundaria no se vuelve principal simplemente porque la principal esté bloqueada o no pueda ejecutarse.
+
+---
+
+#### 33. Estado de carga
+
+Cuando la acción utiliza `Button`, el estado `loading` de la primitiva conserva la prevención de doble activación equivalente y la semántica accesible de ocupado.
+
+El panel aporta únicamente el contexto general de `PENDING` cuando la superficie propietaria lo necesita.
+
+No se deben mantener dos fuentes de estado divergentes entre el panel y el control.
+
+La composición propietaria debe entregar una proyección coherente.
+
+---
+
+#### 34. Concurrencia y reintento
+
+El panel no implementa control de concurrencia.
+
+Ante una nueva activación, reintento o cambio de contexto, la capa propietaria conserva:
+
+- revalidación;
+- versión vigente;
+- actor vigente;
+- recurso vigente;
+- idempotency key cuando aplique;
+- correlación;
+- payload material;
+- resultado autoritativo.
+
+Un cambio de estado visual no constituye lock empresarial.
+
+---
+
+#### 35. Resultado incierto
+
+Si una operación material queda con resultado desconocido, el panel no vuelve automáticamente a `READY` para inducir repetición.
+
+La capa propietaria debe reconciliar el resultado antes de permitir un nuevo intento cuando exista riesgo de duplicar:
+
+- pagos;
+- inventario;
+- custodia;
+- entregas;
+- publicaciones;
+- impresiones;
+- integraciones externas;
+- otros efectos irreversibles o costosos.
+
+La presentación debe permanecer honesta respecto de lo que se conoce.
+
+---
+
+#### 36. Sensibilidad y destructividad
+
+UI013 no crea una taxonomía paralela de sensibilidad.
+
+Una acción sensible, destructiva, irreversible, financiera, privilegiada o de alto impacto conserva la clasificación de su propietario.
+
+El panel puede presentar el control preparado correspondiente, pero no decide:
+
+- si requiere confirmación;
+- si requiere reautenticación;
+- si requiere doble control;
+- si requiere reason code;
+- si requiere evidencia;
+- si requiere segregación;
+- si puede ejecutarse.
+
+---
+
+#### 37. Handoff a confirmaciones sensibles
+
+Las confirmaciones de acciones sensibles permanecen bajo su tarea propietaria posterior.
+
+UI013 fija únicamente esta frontera:
+
+```text
+PrimaryActionPanel
+→ puede contener una acción que requiera confirmación
+→ no implementa la política de confirmación
+→ no inventa un diálogo genérico
+→ no usa confirmación como permiso
+→ no declara éxito al confirmar intención
+```
+
+La confirmación no se adelanta desde esta tarea.
+
+---
+
+#### 38. Relación con `ProcessStatusLine`
+
+`ProcessStatusLine` y `PrimaryActionPanel` son piezas distintas.
+
+```text
+ProcessStatusLine = dónde está la instancia en su ciclo principal
+PrimaryActionPanel = cuál es la acción principal ya resuelta para esta superficie
+```
+
+El panel no cambia estados de la línea.
+
+La línea no escoge la acción del panel.
+
+Ambos pueden coexistir dentro de una superficie propietaria.
+
+---
+
+#### 39. Relación con `TaskNavigation`
+
+`TaskNavigation` presenta destinos de trabajo.
+
+`PrimaryActionPanel` presenta la acción dominante dentro de una superficie ya abierta.
+
+Nunca:
+
+```text
+seleccionar destino en TaskNavigation
+=
+ejecutar primary action
+```
+
+Una navegación puede llevar a una superficie con panel, pero no hereda autoridad de ejecución.
+
+---
+
+#### 40. Relación con AppShell
+
+AppShell mantiene el marco compartido.
+
+No se convierte en dueño global de la acción principal de cada página.
+
+La composición apropiada conserva:
+
+```text
+AppShell
+└─ superficie propietaria
+   ├─ ProcessStatusLine, cuando aplique
+   ├─ contenido de trabajo
+   └─ PrimaryActionPanel
+```
+
+La ubicación exacta depende de la superficie, no de un slot global obligatorio del shell.
+
+---
+
+#### 41. Posicionamiento junto al contenido afectado
+
+La acción principal debe permanecer próxima al contenido, objeto o decisión que modifica.
+
+No se desplaza a una zona remota únicamente para uniformar layouts entre aplicaciones.
+
+Cuando exista una barra persistente, la composición propietaria debe garantizar que no cubra:
+
+- campos;
+- errores;
+- mensajes materiales;
+- contenido requerido para comprender el efecto;
+- controles de recuperación.
+
+La persistencia visual no altera la semántica de la acción.
+
+---
+
+#### 42. Responsive y reflow
+
+El panel debe conservar jerarquía y comprensión en cambios de ancho y zoom.
+
+Puede:
+
+- pasar de composición horizontal a vertical;
+- apilar la secundaria bajo la principal;
+- ajustar espacio y densidad;
+- extender el control principal cuando el layout lo requiera.
+
+No puede:
+
+- invertir la jerarquía;
+- promover la secundaria;
+- ocultar una obligación bloqueada material;
+- depender de scroll horizontal ordinario para acceder a la acción;
+- perder el nombre accesible.
+
+---
+
+#### 43. Tablet
+
+UI013 conserva reglas transversales aplicables a tablet, pero no define todavía el patrón físico completo para esa clase de dispositivo.
+
+La composición futura deberá considerar:
+
+- objetivo táctil;
+- alcance de la mano;
+- postura;
+- teclado en pantalla;
+- orientación;
+- montaje;
+- contenido visible antes de confirmar.
+
+La especialización de tablet conserva su tarea propietaria posterior.
+
+---
+
+#### 44. Kiosco
+
+El panel no asume que un kiosco tiene actor humano vigente, permiso amplio ni el mismo patrón de una pantalla personal.
+
+La aplicación propietaria decide si existe una acción principal presentable bajo el contexto del dispositivo y del actor.
+
+UI013 no concede capacidad a partir del perfil del terminal.
+
+La especialización completa para kiosco conserva su tarea propietaria posterior.
+
+---
+
+#### 45. Teclado y foco
+
+El panel no crea tab stops propios si su contenido no los requiere.
+
+Los controles interactivos compuestos deben conservar:
+
+- operación por teclado;
+- foco visible;
+- orden coherente;
+- disabled real cuando corresponda;
+- ausencia de trampas de foco.
+
+El panel no roba foco cuando cambia de estado.
+
+Una acción que entra en `PENDING` no debe forzar foco a un indicador puramente visual.
+
+---
+
+#### 46. Lectores de pantalla y anuncios
+
+La región debe poder identificarse mediante `ariaLabel` cuando la composición requiera nombre explícito.
+
+La lectura debe permitir comprender:
+
+- propósito del área de acción;
+- nombre de la acción principal;
+- estado material de disponibilidad o espera;
+- explicación de bloqueo cuando sea necesaria;
+- acción secundaria adyacente cuando exista.
+
+No se anuncian códigos técnicos como sustituto del label humano.
+
+`PENDING` no exige por sí mismo un anuncio assertivo repetitivo en cada render.
+
+La superficie propietaria decide cuándo un resultado material necesita live region u otra estrategia de anuncio.
+
+---
+
+#### 47. Localización y terminología
+
+Son localizables:
+
+```text
+ariaLabel
+label
+description
+statusLabel
+```
+
+Cambiar idioma no cambia `actionId`.
+
+El panel no usa el texto traducido como clave de autorización, telemetría, transición o idempotencia.
+
+La terminología debe conservar el vocabulario empresarial aprobado de cada acción.
+
+---
+
+#### 48. Telemetría
+
+`PrimaryActionPanel` no necesita emitir por sí mismo eventos empresariales.
+
+`actionId` permite instrumentación estable desde la capa propietaria.
+
+La telemetría debe mantener diferenciados, cuando correspondan:
+
+```text
+presentación
+foco
+activación
+submit
+pending
+confirmación de intención
+resultado confirmado
+denegación
+error
+reintento
+```
+
+El label no se usa como identidad analítica estable.
+
+La telemetría nunca cambia automáticamente cuál acción es principal.
+
+---
+
+#### 49. Privacidad y minimización
+
+La API base no requiere:
+
+- documento personal;
+- correo;
+- teléfono;
+- token;
+- sesión;
+- payload completo de autorización;
+- detalle RLS;
+- secrets;
+- payload empresarial completo;
+- evidencia completa;
+- datos de terceros;
+- reason codes restringidos.
+
+La superficie propietaria entrega solo el contenido necesario para comprender y operar la acción.
+
+---
+
+#### 50. Evidencia de SHELL
+
+SHELL conserva una primitiva local `Button` con:
+
+- variante `primary`;
+- variantes adicionales aprobadas por su reconciliación;
+- estado `loading`;
+- semántica nativa de botón.
+
+Su home actual funciona como launcher de aplicaciones y no demuestra un `PrimaryActionPanel` transversal equivalente.
+
+Decisión:
+
+```text
+COMPOSICIÓN_ELEGIBLE_SIN_EQUIVALENTE_RUNTIME_ACTUAL
+```
+
+No se fuerza el launcher actual a adoptar el panel por esta tarea.
+
+---
+
+#### 51. Evidencia de NEXO
+
+NEXO conserva una copia local de la familia estándar `Button` con variante `primary`, tamaños compartidos históricamente y estilos propios del chrome local.
+
+La existencia de esa primitiva demuestra necesidad de jerarquía de acción, pero no un panel transversal ya materializado.
+
+Decisión:
+
+```text
+CANDIDATO_A_ADOPTAR
+```
+
+La adopción futura deberá mapear la acción principal aprobada de la superficie al panel sin trasladar reglas de NEXO al package.
+
+---
+
+#### 52. Evidencia de FOGO
+
+FOGO conserva la misma familia local de `Button` estándar con variante `primary`.
+
+Sus acciones empresariales de producción siguen perteneciendo a sus superficies y procesos.
+
+Decisión:
+
+```text
+CANDIDATO_A_ADOPTAR
+```
+
+El panel podrá presentar esas acciones sin conocer recetas, lotes, cantidades, unidades ni reglas de producción.
+
+---
+
+#### 53. Evidencia de ORIGO
+
+ORIGO conserva la familia local `Button` con variante `primary` y composición propia de sus superficies.
+
+Decisión:
+
+```text
+CANDIDATO_A_ADOPTAR
+```
+
+La adopción no convierte acciones de inventario, abastecimiento, recepción o configuración en semántica del componente compartido.
+
+---
+
+#### 54. Evidencia de VISO
+
+VISO conserva la familia local `Button` estándar con variante `primary`.
+
+Sus acciones administrativas, de revisión, planificación, aprobación y auditoría mantienen contratos propios.
+
+Decisión:
+
+```text
+CANDIDATO_A_ADOPTAR
+```
+
+El panel debe admitir jerarquía administrativa sin asumir que toda acción principal es una mutación operativa.
+
+---
+
+#### 55. Evidencia de PULSO
+
+PULSO conserva la familia local `Button` estándar con variante `primary` dentro de una aplicación con efectos financieros y operativos propios.
+
+Decisión:
+
+```text
+CANDIDATO_A_ADOPTAR
+```
+
+El panel no absorbe lógica POS, pagos, idempotencia ni confirmación de proveedor.
+
+---
+
+#### 56. Evidencia de NUMERA
+
+NUMERA conserva la familia local `Button` estándar con variante `primary` dentro de superficies analíticas y administrativas.
+
+Decisión:
+
+```text
+CANDIDATO_A_ADOPTAR
+```
+
+La acción principal puede ser consulta, revisión o decisión y no necesita convertirse en mutación para usar la misma jerarquía visual.
+
+---
+
+#### 57. Matriz materializada de consumidores
+
+| Consumidor | Evidencia relevante                                               | Decisión UI013                                        | Implementación en esta tarea |
+| ---------- | ----------------------------------------------------------------- | ----------------------------------------------------- | ---------------------------- |
+| SHELL      | `Button` local propio; launcher sin panel transversal equivalente | `COMPOSICIÓN_ELEGIBLE_SIN_EQUIVALENTE_RUNTIME_ACTUAL` | 0                            |
+| NEXO       | familia local `Button` con variante `primary`                     | `CANDIDATO_A_ADOPTAR`                                 | 0                            |
+| FOGO       | familia local `Button` con variante `primary`                     | `CANDIDATO_A_ADOPTAR`                                 | 0                            |
+| ORIGO      | familia local `Button` con variante `primary`                     | `CANDIDATO_A_ADOPTAR`                                 | 0                            |
+| VISO       | familia local `Button` con variante `primary`                     | `CANDIDATO_A_ADOPTAR`                                 | 0                            |
+| PULSO      | familia local `Button` con variante `primary`                     | `CANDIDATO_A_ADOPTAR`                                 | 0                            |
+| NUMERA     | familia local `Button` con variante `primary`                     | `CANDIDATO_A_ADOPTAR`                                 | 0                            |
+
+Control de cobertura:
+
+```text
+consumidores esperados: 7
+consumidores evaluados: 7
+faltantes: 0
+duplicados: 0
+adoptados físicamente: 0
+certificados: 0
+```
+
+---
+
+#### 58. Forma objetivo de adopción
+
+La adopción futura seguirá esta forma:
+
+```text
+CONTRATO DE SUPERFICIE
+        ↓
+ACCIÓN PRINCIPAL CANÓNICA
+        ↓
+AUTORIZACIÓN + CONTEXTO + ESTADO
+        ↓
+ADAPTER / COMPOSICIÓN DEL CONSUMIDOR
+        ↓
+primaryControl + props presentacionales
+        ↓
+PrimaryActionPanel
+```
+
+No se migra copiando un handler local al package.
+
+---
+
+#### 59. Adapter local permitido
+
+El consumidor puede conservar una capa pequeña para preparar la proyección.
+
+Puede:
+
+- resolver `actionId` desde su contrato de superficie;
+- preparar label localizado;
+- preparar description y statusLabel;
+- traducir estado propietario a un estado presentacional válido;
+- componer `primaryControl`;
+- componer una secundaria adyacente cuando corresponda;
+- conectar el control con la infraestructura empresarial propietaria.
+
+No puede usar el adapter para:
+
+- redefinir cuál acción es principal;
+- fabricar autoridad;
+- crear un catálogo alternativo de estados empresariales;
+- convertir un permiso en acción;
+- declarar éxito antes del resultado autoritativo;
+- cambiar una secundaria a principal por condiciones visuales.
+
+---
+
+#### 60. Handoff a migración coordinada
+
+La adopción física queda en el mini-bloque de migración coordinada.
+
+| Tarea           | Responsabilidad para UI013                                                        |
+| --------------- | --------------------------------------------------------------------------------- |
+| `SHELL-MIG-001` | inventariar paneles, barras, CTAs, handlers y jerarquías locales por consumidor   |
+| `SHELL-MIG-002` | ordenar adopción en lotes reversibles por repositorio                             |
+| `SHELL-MIG-003` | establecer compatibilidad temporal y evitar nuevas variantes legacy equivalentes  |
+| `SHELL-MIG-004` | evitar que el scaffold replique una composición antigua como estándar transversal |
+| `SHELL-MIG-005` | adoptar componentes y composición compartida por aplicación                       |
+| `SHELL-MIG-006` | validar accesibilidad, tema, densidad, responsive y movimiento                    |
+| `SHELL-MIG-007` | demostrar paridad de acción, estado y comportamiento antes del retiro             |
+| `SHELL-MIG-008` | retirar únicamente copias sin consumidores residuales                             |
+
+UI013 no ejecuta ninguno de estos cambios.
+
+---
+
+#### 61. Handoff a calidad, compatibilidad y releases
+
+La futura materialización debe entrar al gobierno de package compartido:
+
+| Tarea          | Responsabilidad                          |
+| -------------- | ---------------------------------------- |
+| `SHELL-CI-001` | pruebas propias del package              |
+| `SHELL-CI-002` | build independiente                      |
+| `SHELL-CI-003` | release versionado                       |
+| `SHELL-CI-004` | changelog                                |
+| `SHELL-CI-005` | matriz de compatibilidad por consumidor  |
+| `SHELL-CI-006` | actualización controlada de consumidores |
+
+La aprobación documental de la API conceptual no equivale a release, instalación ni compatibilidad certificada.
+
+---
+
+#### 62. Contrato futuro de prueba
+
+La materialización y adopción deberán demostrar, como mínimo:
+
+1. render de una única acción principal;
+2. identidad estable mediante `actionId`;
+3. cambio de label sin cambio automático de identidad;
+4. copy humano comprensible;
+5. ausencia de labels genéricos impuestos por el panel;
+6. `READY` no concede autorización;
+7. `PENDING` no declara resultado;
+8. `CONTEXTUAL_DISABLED` sigue siendo perceptible cuando es relevante;
+9. `REQUIRED_BLOCKED` mantiene visible la obligación;
+10. ausencia de variante renderizable `HIDDEN`;
+11. contenido oculto fuera del DOM y tab order;
+12. ausencia de `permissionCode` en la API base;
+13. ausencia de roles para autorizar;
+14. ausencia de `canExecute` o equivalentes;
+15. ausencia de cliente Supabase;
+16. ausencia de RPC en el panel;
+17. ausencia de router obligatorio;
+18. ausencia de motor de transiciones;
+19. ausencia de catálogo de acciones dentro del componente;
+20. ausencia de ordenamiento o selección autónoma de acciones;
+21. una sola acción secundaria adyacente como máximo;
+22. secundaria subordinada perceptivamente;
+23. secundaria no promovida cuando la principal se bloquea;
+24. composición compatible con `Button`;
+25. `Button.loading` conserva nombre accesible;
+26. activación repetida equivalente controlada durante pending cuando aplique;
+27. resultado incierto no induce reintento automático;
+28. resultado empresarial solo después de confirmación propietaria;
+29. una navegación no se interpreta como resolución empresarial;
+30. acción sensible no se define solo por variante visual;
+31. confirmación sensible permanece fuera del panel;
+32. `ProcessStatusLine` no es modificado por el panel;
+33. `TaskNavigation` no se convierte en ejecutor;
+34. AppShell no se convierte en propietario global de acciones;
+35. panel próximo al contenido afectado;
+36. responsive conserva jerarquía;
+37. reflow no promueve secundaria;
+38. zoom conserva control y contenido esencial;
+39. teclado completo en controles compuestos;
+40. foco visible;
+41. ausencia de robo de foco;
+42. lector identifica acción y estado material;
+43. significado no depende solo de color;
+44. localización sin cambiar `actionId`;
+45. telemetría usa identidad estable y no label como clave;
+46. datos sensibles ausentes de la API base;
+47. adopción NEXO con paridad antes de retirar composición equivalente;
+48. adopción FOGO sin trasladar lógica de producción;
+49. adopción ORIGO sin trasladar lógica de inventario o configuración;
+50. adopción VISO sin trasladar workflow administrativo;
+51. adopción PULSO sin trasladar lógica financiera;
+52. adopción NUMERA sin trasladar lógica analítica;
+53. SHELL solo adopta donde exista una acción principal legítima;
+54. rollback por consumidor;
+55. compatibilidad del package antes de ampliar adopción.
+
+Esta lista define evidencia futura y no declara ejecución física en UI013.
+
+---
+
+#### 63. Cobertura de requisitos vigente
+
+UI013 no necesita crear una obligación transversal nueva porque el registro canónico vigente ya cubre:
+
+- acción principal visible y distinguible en superficies operativas: `TREQ-UX-001`;
+- errores, bloqueos y recuperación en lenguaje humano: `TREQ-UX-002`;
+- relevancia, autorización y densidad adecuadas: `TREQ-UX-003`;
+- comportamiento táctil y validación física: `TREQ-UX-004`;
+- verdad confirmada frente a estado pendiente: `TREQ-UX-005`;
+- contingencia y estados pendientes ante fallos de conectividad: `TREQ-UX-006`;
+- separación entre autorización, relevancia, visibilidad, habilitación y posibilidad de actuar: `TREQ-UX-059`;
+- estados de presentación y tratamiento de obligaciones bloqueadas: `TREQ-UX-062`;
+- acción siguiente como contenido esencial de la superficie operativa: `TREQ-UX-063`;
+- jerarquía explícita de divulgación y acción necesaria: `TREQ-UX-182`;
+- permanencia visible de acción principal, estado y consecuencias materiales: `TREQ-UX-183`;
+- proximidad, estabilidad y alcance táctil de la acción principal: `TREQ-UX-207`;
+- exactamente una acción principal por pantalla: `TREQ-UX-887`;
+- identidad determinista de la acción principal: `TREQ-UX-888`;
+- label con verbo y objeto empresarial: `TREQ-UX-889`;
+- familia y efecto gobernados: `TREQ-UX-890`;
+- frontera de confirmación en servidor: `TREQ-UX-891`;
+- navegación separada de resolución del caso: `TREQ-UX-892`;
+- captura separada de corrección, aprobación y reversión: `TREQ-UX-893`;
+- auditoría sin mutar el hecho investigado: `TREQ-UX-894`;
+- supervisión sin ejecutar silenciosamente trabajo ajeno: `TREQ-UX-895`;
+- configuración separada de operación de instancias: `TREQ-UX-896`;
+- propiedad y sujeto resueltos autoritativamente: `TREQ-UX-897`, `TREQ-UX-898`;
+- identificación separada de autorización y transacción: `TREQ-UX-899`;
+- bandejas sin resolución automática: `TREQ-UX-900`;
+- preparación, recomendación, aprobación y publicación separadas: `TREQ-UX-901`;
+- confirmación financiera e idempotencia: `TREQ-UX-902`;
+- efectos externos reconciliados antes de declarar éxito: `TREQ-UX-913`;
+- gobierno de cambios de acción principal: `TREQ-UX-914`;
+- validación humana de visibilidad y jerarquía: `TREQ-UX-916`;
+- convivencia gobernada con acciones secundarias: `TREQ-UX-917`, `TREQ-UX-919`, `TREQ-UX-920`;
+- borrador separado de aprobación, publicación o ejecución: `TREQ-UX-924`;
+- reintento después de reconciliar resultado canónico: `TREQ-UX-931`;
+- dispositivo o rol sin promoción arbitraria de secundarias: `TREQ-UX-936`;
+- preservación de acción principal durante cambios secundarios: `TREQ-UX-945`, `TREQ-UX-946`;
+- preservación contractual de acciones principales y secundarias: `TREQ-UX-1233`, `TREQ-UX-1234`;
+- confirmación sin ampliación de permiso: `TREQ-UX-1235`;
+- revalidación de alcance, recurso, estado y transición: `TREQ-UX-1239`;
+- registro canónico transversal de acciones principales: `TREQ-UX-1819` a `TREQ-UX-1831`;
+- responsabilidad compartida clasificada y adopción segura: `TREQ-SHELL-002`, `TREQ-SHELL-006`, `TREQ-SHELL-007`;
+- template histórico separado de runtime compartido: `TREQ-SHELL-029`, `TREQ-SHELL-030`;
+- versionado, compatibilidad, deprecación y retiro de superficies compartidas: `TREQ-SHELL-036` a `TREQ-SHELL-039`.
+
+UI013 especializa esas obligaciones en una superficie visual común sin cambiar el significado de ninguna obligación vigente.
+
+---
+
+#### 64. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+La cobertura vigente ya exige identidad única de acción principal, jerarquía, copy humano, separación de secundarias, autorización independiente, confirmación autoritativa, idempotencia, accesibilidad, adaptación física, migración y compatibilidad. UI013 únicamente fija la composición presentacional compartida de una acción ya resuelta.
+
+---
+
+#### 65. Límites y fuera de alcance
+
+Quedan fuera de UI013:
+
+- materializar `@vento/ui-web`;
+- crear archivos TypeScript del package;
+- publicar exports;
+- modificar consumidores;
+- crear el registro de acciones principales;
+- cambiar acciones principales aprobadas;
+- cambiar acciones secundarias aprobadas;
+- resolver permisos;
+- resolver contexto autoritativo;
+- implementar Server Actions;
+- implementar endpoints;
+- implementar RPC;
+- implementar queries;
+- implementar mutaciones;
+- implementar máquina de estados;
+- implementar transiciones;
+- implementar idempotencia empresarial;
+- implementar reconciliación de proveedor;
+- implementar confirmaciones sensibles;
+- implementar offline o sincronización;
+- cambiar Supabase;
+- crear SQL o migraciones;
+- implementar telemetría empresarial;
+- publicar releases;
+- desplegar;
+- retirar código legacy.
+
+---
+
+#### 66. Evidencia de validación y criterios de aceptación documental
+
+| Clase     | Estado         | Evidencia                                                                                                                      |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | NOT_EXECUTED   | UI013 es una tarea documental y no materializa código ejecutable, package ni build.                                            |
+| LOCAL     | NOT_APPLICABLE | No existe una implementación física de `@vento/ui-web` que certificar localmente dentro de este corte documental.              |
+| REMOTA    | PASS           | La secuencia activa parte de UI012 y el archivo propietario reserva de forma coincidente UI013 como panel de acción principal. |
+| OPERATIVA | NOT_APPLICABLE | La tarea define presentación y composición sin ejecutar efectos empresariales ni flujo operativo.                              |
+| FÍSICA    | NOT_APPLICABLE | Los cambios físicos autorizados son ninguno; no se modifica package, consumidor, base de datos ni despliegue.                  |
+
+Criterios de aceptación documental:
+
+- [x] existe una identidad única `PrimaryActionPanel`;
+- [x] pertenece conceptualmente a `@vento/ui-web`;
+- [x] se define como superficie de presentación y composición;
+- [x] no selecciona la acción principal;
+- [x] la acción principal llega resuelta desde su propietario;
+- [x] existe `actionId` estable;
+- [x] existe label humano localizable;
+- [x] description es opcional y no oculta información material;
+- [x] se definen `READY`, `PENDING`, `CONTEXTUAL_DISABLED` y `REQUIRED_BLOCKED`;
+- [x] `HIDDEN` queda fuera de la API renderizable;
+- [x] existe exactamente un `primaryControl`;
+- [x] se conserva composición con `Button`;
+- [x] no se redefine `Button.loading`;
+- [x] no se confunde primary con autorización;
+- [x] no se confunde primary con transición;
+- [x] no se confunde activación con resultado;
+- [x] se conserva revalidación server-side;
+- [x] permisos y roles quedan fuera de la API base;
+- [x] Supabase queda fuera del componente;
+- [x] router queda fuera del componente base;
+- [x] la jerarquía no depende solo de color;
+- [x] existe como máximo una secundaria adyacente en el panel;
+- [x] las demás secundarias permanecen fuera de la primitiva;
+- [x] no existe promoción autónoma de secundaria;
+- [x] se trata pending sin declarar éxito;
+- [x] se conserva control propietario de concurrencia;
+- [x] resultado incierto no induce retry automático;
+- [x] sensibilidad no se infiere de variante visual;
+- [x] confirmaciones sensibles conservan propietario posterior;
+- [x] se separa de `ProcessStatusLine`;
+- [x] se separa de `TaskNavigation`;
+- [x] AppShell no se convierte en dueño global de acción;
+- [x] se exige proximidad al contenido afectado;
+- [x] responsive conserva jerarquía;
+- [x] tablet conserva especialización posterior;
+- [x] kiosco conserva especialización posterior;
+- [x] se cubren teclado y foco;
+- [x] se cubren lectores de pantalla;
+- [x] se cubre localización;
+- [x] se conserva identidad estable para telemetría;
+- [x] se minimizan datos;
+- [x] se reconcilia SHELL;
+- [x] se reconcilia NEXO;
+- [x] se reconcilia FOGO;
+- [x] se reconcilia ORIGO;
+- [x] se reconcilia VISO;
+- [x] se reconcilia PULSO;
+- [x] se reconcilia NUMERA;
+- [x] la matriz cubre siete de siete consumidores;
+- [x] faltantes y duplicados son cero;
+- [x] se define handoff de migración;
+- [x] se define handoff de calidad y releases;
+- [x] se define evidencia futura de prueba;
+- [x] la cobertura vigente evita crear requisitos duplicados;
+- [x] requisitos creados y modificados son cero;
+- [x] no se ejecuta implementación física;
+- [x] la siguiente tarea queda únicamente reservada.
+
+---
+
+#### 67. Decisiones consolidadas
+
+Quedan fijadas las siguientes decisiones vinculantes:
+
+1. La superficie conceptual se denomina `PrimaryActionPanel`.
+2. Pertenece conceptualmente a `@vento/ui-web`.
+3. Presenta una acción principal ya resuelta.
+4. No selecciona entre acciones candidatas.
+5. La API base incluye `ariaLabel`.
+6. La API base incluye `actionId`.
+7. La API base incluye `label`.
+8. `description` es opcional.
+9. `statusLabel` es opcional.
+10. Los estados base son `READY`, `PENDING`, `CONTEXTUAL_DISABLED` y `REQUIRED_BLOCKED`.
+11. `HIDDEN` no es renderizable.
+12. Una acción oculta se filtra upstream.
+13. `READY` no concede autoridad.
+14. `PENDING` no declara resultado.
+15. `CONTEXTUAL_DISABLED` representa relevancia sin accionabilidad contextual actual.
+16. `REQUIRED_BLOCKED` mantiene visible una obligación material bloqueada.
+17. Existe exactamente un `primaryControl`.
+18. El control lo compone la superficie propietaria.
+19. `Button` es la primitiva ordinaria reutilizable cuando corresponde.
+20. UI013 no redefine variantes de `Button`.
+21. UI013 no redefine loading de `Button`.
+22. La acción principal es única por superficie resuelta.
+23. Dos CTAs igualmente dominantes no son una solución admitida por el panel.
+24. `actionId` no es permiso.
+25. `actionId` no es endpoint.
+26. `actionId` no es transición.
+27. `label` no es identidad estable.
+28. El panel no recibe permisos.
+29. El panel no recibe roles para autorizar.
+30. El panel no recibe `canExecute`.
+31. El panel no consulta Supabase.
+32. El panel no ejecuta RPC.
+33. El panel no escribe estados empresariales.
+34. El panel no necesita router.
+35. Navegar no equivale a resolver.
+36. Activar no equivale a completar.
+37. Confirmar intención no equivale a confirmar resultado.
+38. El servidor conserva la frontera autoritativa.
+39. La superficie propietaria conserva guards y precondiciones.
+40. El panel puede contener una secundaria adyacente como máximo.
+41. La secundaria permanece visualmente subordinada.
+42. Las demás secundarias conservan sus superficies propietarias.
+43. Una secundaria no se promueve por viewport.
+44. Una secundaria no se promueve por rol.
+45. Una secundaria no se promueve porque la principal esté bloqueada.
+46. La variante `danger` no define por sí sola sensibilidad empresarial.
+47. Las confirmaciones sensibles conservan propietario separado.
+48. `ProcessStatusLine` conserva posición de ciclo y no acción.
+49. `TaskNavigation` conserva destinos y no ejecución.
+50. AppShell conserva marco y no acción global.
+51. El panel se ubica próximo al contenido afectado.
+52. Responsive puede reordenar layout físico sin cambiar jerarquía semántica.
+53. Tablet conserva especialización física posterior.
+54. Kiosco conserva especialización física posterior.
+55. Los controles conservan teclado y foco accesibles.
+56. El panel no roba foco.
+57. El significado no depende únicamente de color.
+58. El copy es localizable sin cambiar `actionId`.
+59. Telemetría puede usar `actionId` como identidad estable.
+60. La API base minimiza datos sensibles.
+61. NEXO queda `CANDIDATO_A_ADOPTAR`.
+62. FOGO queda `CANDIDATO_A_ADOPTAR`.
+63. ORIGO queda `CANDIDATO_A_ADOPTAR`.
+64. VISO queda `CANDIDATO_A_ADOPTAR`.
+65. PULSO queda `CANDIDATO_A_ADOPTAR`.
+66. NUMERA queda `CANDIDATO_A_ADOPTAR`.
+67. SHELL queda `COMPOSICIÓN_ELEGIBLE_SIN_EQUIVALENTE_RUNTIME_ACTUAL`.
+68. La matriz cubre siete de siete consumidores, sin faltantes ni duplicados.
+69. La adopción será progresiva, reversible y con paridad demostrada.
+70. UI013 crea cero requisitos de prueba y modifica cero.
+
+---
+
+#### 68. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-UI-012 — Compartir línea de estados de proceso`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-UI-013 — Compartir panel de acción principal`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-UI-014 — Compartir confirmaciones de acciones sensibles`
+
+
 ### [ ] SHELL-UI-014 — Compartir confirmaciones de acciones sensibles
 ### [ ] SHELL-UI-015 — Compartir diagnóstico de contexto
 ### [ ] SHELL-UI-016 — Compartir estados de error recuperable
