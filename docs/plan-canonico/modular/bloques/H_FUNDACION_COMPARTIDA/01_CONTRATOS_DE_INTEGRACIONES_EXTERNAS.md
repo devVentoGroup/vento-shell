@@ -2444,7 +2444,939 @@ SIGUIENTE TAREA RESERVADA
 `SHELL-CON-020 — Crear contrato canónico de venta`
 
 
-### [ ] SHELL-CON-020 — Crear contrato canónico de venta
+### ✅ SHELL-CON-020 — Crear contrato canónico de venta
+
+**Estado:** APROBADA
+**Tarea anterior:** `SHELL-CON-019 — Crear contrato de evento externo recibido` — APROBADA
+**Tarea siguiente:** `SHELL-CON-021 — Crear contrato canónico de línea de venta` — RESERVADA
+**Tipo de tarea:** Documental; definición normativa y materializada del contrato técnico compartido de venta canónica, preservando identidad, fuente empresarial, revisión, contexto de origen, temporalidad, estado comercial, componentes monetarios, relaciones con pedido, cliente, pago y documento fiscal, asociación obligatoria con líneas, procedencia, correlación y auditoría, sin definir todavía el contrato compartido de línea, sin emitir eventos, sin aplicar efectos en NEXO, NUMERA o PASS y sin implementar código, persistencia, migraciones o Supabase
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md`
+**Superficie lógica objetivo:** `@vento/contracts/integrations`
+**Estado físico resultante:** `CONTRATO_CANONICO_DE_VENTA_DEFINIDO_NO_MATERIALIZADO`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, Storage, Edge Functions, endpoints, colas, workers, datos, secretos, credenciales, configuración remota o despliegues:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-020` centraliza en la fundación compartida de Vento OS la representación técnica común de una **venta canónica individual**, de modo que la transición desde Makos y la operación posterior de PULSO converjan sobre una misma semántica consumible sin trasladar a los consumidores internos el modelo particular del proveedor, del transporte o de la persistencia propietaria.
+
+La tarea materializa el handoff explícito de `INT-POS-005` y `INT-SALES-001`:
+
+```text
+SEMÁNTICA CANÓNICA DE VENTA
+        ↓
+CONTRATO COMPARTIDO ESTÁTICO
+        ↓
+CONSUMO HOMOGÉNEO ENTRE FRONTERAS VENTO
+```
+
+sin convertir el contrato en fuente empresarial ni en ejecutor de efectos.
+
+La regla central es:
+
+```text
+VENTA CANÓNICA
+=
+HECHO COMERCIAL INDIVIDUAL IDENTIFICADO
++
+FUENTE EMPRESARIAL REAL
++
+CONTEXTO Y REVISIÓN
++
+MOMENTO Y ESTADO COMERCIAL
++
+SNAPSHOT MONETARIO
++
+AL MENOS UNA LÍNEA INDIVIDUAL VÁLIDA
++
+PROCEDENCIA Y CORRELACIÓN
+```
+
+Y permanece separada de:
+
+```text
+PEDIDO
+PAGO
+SESIÓN O MOVIMIENTO DE CAJA
+DOCUMENTO FISCAL
+MOVIMIENTO DE INVENTARIO
+MOVIMIENTO DE FIDELIZACIÓN
+HECHO ECONÓMICO
+ENTREGA
+EVENTO DE INTEGRACIÓN
+PAYLOAD DEL PROVEEDOR
+```
+
+---
+
+#### 2. Resultado canónico
+
+Quedan definidos dos artefactos públicos lógicos dentro de la superficie compartida ya aprobada `@vento/contracts/integrations`:
+
+1. `CanonicalSaleId`, como identidad canónica estable, opaca y no secreta de una venta individual;
+2. `CanonicalSale<TSaleLine>`, como contrato compartido de la venta y de su colección de líneas sin definir todavía la forma interna de `TSaleLine`.
+
+La genericidad de `TSaleLine` preserva la frontera con `SHELL-CON-021`: esta tarea exige que toda venta individual completa contenga o referencie líneas válidas, pero **no define los campos, identidad pública ni forma compartida de la línea de venta**.
+
+El contrato común debe permitir que:
+
+```text
+MAKOS DURANTE EL ALCANCE TRANSITORIO AUTORIZADO
+→ ADAPTADOR
+→ VENTA CANÓNICA
+
+PULSO COMO FUENTE AUTORIZADA
+→ REGISTRO DURABLE PROPIETARIO
+→ MISMA VENTA CANÓNICA
+```
+
+sin que NEXO, NUMERA, PASS u otra consumidora necesiten reinterpretar un DTO distinto por fuente.
+
+---
+
+#### 3. Fuentes y precedencia preservadas
+
+La tarea consume y conserva sin reabrir las decisiones aprobadas de:
+
+- `SHELL-CON-001`, que define `@vento/contracts` como autoridad estática, versionada, sin lógica operacional, secretos ni acceso a Supabase;
+- `SHELL-CON-016`, que preserva una única propiedad funcional por hecho empresarial y prohíbe que el contrato compartido adquiera esa propiedad;
+- `SHELL-CON-019`, que separa la afirmación externa recibida del hecho empresarial interno y entrega a esta tarea el handoff hacia la venta canónica;
+- `INT-POS-005`, que define la semántica obligatoria de venta y línea y asigna expresamente a `SHELL-CON-020` la materialización técnica compartida de la venta;
+- `INT-POS-006` a `INT-POS-020`, cuyas decisiones de estados, temporalidad, componentes monetarios, reversos, procedencia, mapping, idempotencia, adquisición, evento posterior, efectos, compensación y conciliación permanecen especializadas y no se redefinen aquí;
+- `INT-POS-023` y `INT-POS-024`, que preservan autoridad temporal de fuente, cutover y retiro sin reescribir ventas históricas;
+- `INT-SALES-001`, que convierte la misma semántica en regla permanente de registro durable de PULSO y confirma que el flujo agregado `makos_excel` no constituye por sí solo una venta individual canónica;
+- `INT-SALES-002`, como contrato aprobado de emisión posterior desde PULSO que reutiliza la misma semántica y no crea un DTO de venta alternativo;
+- los contratos transversales de propiedad, autorización, auditoría, idempotencia, retry, conciliación y ausencia de escritura cruzada ya aprobados;
+- la cobertura canónica de pruebas vigente para PULSO e integración comercial.
+
+Precedencia aplicable:
+
+```text
+INT-POS-005 / INT-SALES-001
+→ SEMÁNTICA EMPRESARIAL DE VENTA
+
+SHELL-CON-020
+→ REPRESENTACIÓN COMPARTIDA ESTÁTICA
+
+PULSO
+→ PROPIETARIA DEL REGISTRO OBJETIVO CUANDO LE CORRESPONDA
+
+CONSUMIDORAS
+→ USAN EL CONTRATO SIN REDEFINIR LA VENTA
+```
+
+Un tipo local, tabla, payload de proveedor o importación agregada no sustituye este contrato compartido.
+
+---
+
+#### 4. Frontera exacta de la tarea
+
+`SHELL-CON-020` incluye exclusivamente:
+
+- identidad lógica de la venta canónica;
+- forma lógica compartida de la venta;
+- fuente empresarial y procedencia;
+- identidad de la venta en su fuente;
+- revisión de fuente y versión del contrato;
+- contexto de sede, terminal y caja cuando aplique;
+- momento del hecho comercial;
+- estado comercial propio de la venta;
+- referencias opcionales a cliente y pedido;
+- referencia fiscal cuando aplique;
+- referencias de pago sin absorber el pago;
+- componentes monetarios de la venta como snapshot histórico;
+- obligación de contener o referenciar al menos una línea individual válida;
+- procedencia, correlación y atribución de registro;
+- reglas de revisión, compatibilidad y preservación histórica;
+- frontera entre venta externa adaptada y venta nativa de PULSO;
+- condiciones para considerar completa una instancia canónica.
+
+La tarea no incluye:
+
+- campos del contrato compartido de línea de venta;
+- identidad pública del contrato de línea;
+- mapping de producto, presentación o receta de cada línea;
+- endpoints, webhooks, polling o mecanismos de adquisición;
+- definición o emisión de eventos empresariales;
+- outbox, inbox, topic, broker, cola, worker, trigger o scheduler;
+- reglas físicas de idempotencia o conciliación;
+- cuarentena, rechazo o compensación compartidos;
+- aplicación de inventario en NEXO;
+- aplicación de hechos económicos en NUMERA;
+- acumulación o redención de puntos en PASS;
+- cobro, captura de pago o cierre de caja;
+- emisión fiscal;
+- tablas, columnas, RPC, RLS, migraciones o cambios Supabase;
+- implementación física de `@vento/contracts`;
+- migración de consumidores.
+
+---
+
+#### 5. Identidad pública del contrato
+
+La identidad lógica queda fijada así:
+
+| Propiedad                                     | Decisión                                                      |
+| --------------------------------------------- | ------------------------------------------------------------- |
+| identidad de venta                            | `CanonicalSaleId`                                             |
+| contrato de venta                             | `CanonicalSale<TSaleLine>`                                    |
+| package lógico                                | `@vento/contracts`                                            |
+| superficie lógica                             | `@vento/contracts/integrations`                               |
+| repositorio propietario del contrato          | `devVentoGroup/vento-shell`                                   |
+| propietaria empresarial del registro objetivo | `PULSO`, conforme a la autoridad y transición aprobadas       |
+| naturaleza                                    | contrato estático, versionado y no ejecutable                 |
+| línea de venta                                | parámetro contractual todavía no materializado por esta tarea |
+| persistencia                                  | fuera del alcance                                             |
+| transporte                                    | fuera del alcance                                             |
+| efectos downstream                            | fuera del alcance                                             |
+
+`CanonicalSaleId` identifica la venta y no se reutiliza como identidad de pedido, pago, documento fiscal, movimiento físico, movimiento de puntos, evento o hecho económico.
+
+Esta tarea no fija UUID, prefijo, secuencia, slug ni otro formato físico de `CanonicalSaleId`.
+
+---
+
+#### 6. Forma lógica de `CanonicalSale<TSaleLine>`
+
+La forma normativa objetivo es:
+
+```text
+CanonicalSale<TSaleLine> = {
+  sale_id
+  contract_version
+
+  source_system
+  source_instance_ref
+  source_sale_id
+  source_revision
+
+  site_ref
+  terminal_ref
+  cash_session_ref
+
+  occurred_at
+  commercial_state
+
+  customer_ref
+  order_ref
+  fiscal_document_ref
+  payment_refs[]
+
+  monetary_snapshot {
+    currency_ref
+    subtotal
+    discount_total
+    tax_total
+    tip_total
+    total
+  }
+
+  lines: TSaleLine[]
+
+  provenance_refs[]
+  correlation_refs[]
+
+  recorded_actor_ref
+  recorded_principal_ref
+  recorded_at
+}
+```
+
+Esta forma es lógica y normativa. No fija:
+
+- nombres físicos de archivos;
+- módulo interno del package;
+- representación JSON definitiva;
+- tipos escalares de dinero;
+- precisión decimal;
+- formato de timestamps;
+- algoritmo de serialización;
+- enum físico de estados;
+- formato de identificadores;
+- schema de base de datos;
+- mecanismo de validación runtime.
+
+La materialización física posterior deberá respetar estas semánticas sin convertir la notación anterior en una implementación implícitamente aprobada.
+
+---
+
+#### 7. Semántica de identidad, fuente y versión
+
+##### 7.1. `sale_id`
+
+`CanonicalSaleId` representa la misma venta a través de revisiones, reintentos, replay, backfill y consumidoras.
+
+Reglas:
+
+1. cambiar estado no crea otra venta;
+2. recibir una revisión posterior no crea otra venta;
+3. cambiar mapping no crea otra venta;
+4. sincronizar tarde no crea otra venta;
+5. reintentar no crea otra venta;
+6. la identidad no se deriva únicamente de total, fecha redondeada, cliente, terminal, producto, posición de archivo ni otra combinación mutable;
+7. un batch, archivo o hash de archivo no es `CanonicalSaleId`;
+8. una reutilización incompatible de identidad no sobrescribe la venta previa y requiere tratamiento de conflicto conforme a los contratos especializados.
+
+##### 7.2. `source_system`
+
+Conserva el sistema que originó realmente el hecho comercial dentro de la autoridad vigente.
+
+Durante la transición aprobada:
+
+- una venta Makos perteneciente al alcance transitorio conserva Makos como fuente;
+- una venta originada por PULSO dentro de un alcance donde PULSO tiene autoridad conserva PULSO como fuente;
+- recibir, importar o almacenar una venta en PULSO no cambia por sí solo su fuente histórica;
+- adaptador, Excel, API, webhook, staging, job o sincronización son mecanismos técnicos y no sustituyen `source_system`.
+
+##### 7.3. `source_instance_ref`
+
+Distingue instancia, tenant, empresa, ambiente u otra frontera de origen únicamente cuando sea necesario y exista una referencia acreditada.
+
+Su ausencia no autoriza a fusionar identidades potencialmente colisionables.
+
+##### 7.4. `source_sale_id`
+
+Conserva la identidad individual de la venta en la fuente.
+
+Reglas:
+
+1. no se sustituye por `CanonicalSaleId` para ocultar la procedencia;
+2. no se sustituye por total, fecha, fila o hash;
+3. una venta individual sin identidad de fuente suficiente no se fabrica desde un agregado;
+4. la estrategia física para resolver una fuente que no entregue identidad suficiente pertenece a los contratos propietarios de identidad e idempotencia y no se inventa aquí.
+
+##### 7.5. `source_revision`
+
+Conserva la revisión o versión de la fuente cuando exista.
+
+Si la fuente no la provee de manera acreditable, no se inventa `1`, `latest`, fecha ni secuencia artificial para simular una revisión externa.
+
+##### 7.6. `contract_version`
+
+Identifica la versión del contrato canónico con la que la instancia fue interpretada.
+
+La versión del contrato compartido y la revisión de la fuente permanecen conceptos distintos.
+
+---
+
+#### 8. Contexto de origen
+
+##### 8.1. `site_ref`
+
+La venta conserva la sede canónica aplicable antes de habilitar efectos que dependan de territorio o inventario.
+
+La sede no se deriva silenciosamente de terminal, caja, nombre de archivo o usuario cuando el mapping no sea inequívoco.
+
+##### 8.2. `terminal_ref`
+
+Se conserva cuando terminal o estación formen parte de la autoridad temporal, procedencia, auditoría o conciliación de la venta.
+
+Una terminal desconocida que sea necesaria para decidir autoridad de fuente bloquea la cadena posterior en lugar de completarse por inferencia.
+
+##### 8.3. `cash_session_ref`
+
+Puede relacionar la venta con una sesión de caja cuando exista.
+
+La relación no convierte la venta en movimiento de caja ni convierte el cierre de caja en modificación de la venta.
+
+---
+
+#### 9. Temporalidad y estado comercial
+
+##### 9.1. `occurred_at`
+
+Representa el momento del hecho comercial conforme a la semántica aprobada de la fuente.
+
+Reglas:
+
+1. no se sustituye por `recorded_at`;
+2. no se sustituye por tiempo de importación, recepción, replay o sincronización;
+3. una venta histórica recibida después del cutover conserva el momento original del hecho;
+4. el orden empresarial no se deriva únicamente de timestamps cuando existen revisión, causalidad o reglas de autoridad adicionales.
+
+##### 9.2. `commercial_state`
+
+Representa exclusivamente el estado comercial de la venta bajo el vocabulario canónico aplicable.
+
+No se deriva automáticamente de:
+
+- pago aprobado;
+- cierre de caja;
+- factura emitida;
+- movimiento de inventario;
+- movimiento PASS;
+- asiento o hecho NUMERA;
+- entrega completada.
+
+Esta tarea no redefine el vocabulario de estados aprobado por las tareas propietarias.
+
+---
+
+#### 10. Relaciones con otros hechos
+
+##### 10.1. `customer_ref`
+
+Es opcional.
+
+Una venta a consumidor final puede existir sin crear un cliente artificial. Cuando exista un cliente identificado, la venta conserva una referencia mínima y autorizada, no una copia completa de datos personales.
+
+##### 10.2. `order_ref`
+
+Relaciona la venta con un pedido cuando corresponda.
+
+La relación no permite:
+
+```text
+PEDIDO = VENTA
+```
+
+ni autoriza a reescribir una venta cuando el pedido cambie posteriormente.
+
+##### 10.3. `fiscal_document_ref`
+
+Relaciona la venta con el documento fiscal o su soporte cuando exista contrato aplicable.
+
+Registrar la venta no acredita que el documento haya sido emitido, aceptado o conciliado.
+
+##### 10.4. `payment_refs[]`
+
+Relaciona pagos o intentos de pago independientes con la venta.
+
+Reglas:
+
+1. la venta no absorbe la identidad del pago;
+2. un pago no reemplaza `sale_id`;
+3. una respuesta técnica del proveedor no cambia por sí sola `commercial_state`;
+4. un timeout no se interpreta como fracaso cierto;
+5. pagos parciales o combinados conservan identidades y resultados propios en sus contratos propietarios.
+
+---
+
+#### 11. Snapshot monetario
+
+`monetary_snapshot` conserva los componentes comerciales aplicados al hecho y no una recomputación desde el catálogo vigente.
+
+Debe poder representar, según aplicabilidad:
+
+- moneda o referencia monetaria inequívoca;
+- subtotal;
+- descuento total;
+- impuesto total;
+- propina total;
+- total de venta.
+
+Reglas:
+
+1. descuento, impuesto y propina permanecen componentes diferenciados;
+2. pago no se incorpora como componente del total por equivalencia;
+3. los valores históricos no se recalculan desde precios o reglas actuales para reescribir la venta;
+4. una diferencia entre encabezado y líneas se conserva como inconsistencia o materia de conciliación, no se corrige silenciosamente;
+5. esta tarea no fija precisión decimal, redondeo, moneda por defecto ni fórmula de reconciliación;
+6. la representación física futura deberá evitar ambigüedad de unidad monetaria.
+
+---
+
+#### 12. Frontera con las líneas de venta
+
+`lines` es una colección obligatoria para una venta individual completa, pero el contrato de cada elemento pertenece a `SHELL-CON-021`.
+
+Reglas vinculantes para esta tarea:
+
+1. una venta individual completa contiene o referencia al menos una línea individual válida;
+2. cada línea pertenece a exactamente una venta;
+3. la venta no usa un agregado diario por producto como sustituto de sus líneas individuales;
+4. el orden de una línea no constituye por sí solo su identidad;
+5. la venta no define aquí producto, presentación, receta, cantidad, unidad, precio de línea, mapping ni estado de línea;
+6. una línea no resuelta puede conservarse como evidencia o pendiente bajo su contrato propietario, pero no habilita efectos dependientes de producto por inferencia;
+7. la forma compartida de la línea y su identidad pública quedan exclusivamente reservadas a `SHELL-CON-021`.
+
+`TSaleLine` es, por tanto, un parámetro lógico de composición y no una definición anticipada del contrato siguiente.
+
+---
+
+#### 13. Procedencia, correlación y atribución
+
+##### 13.1. `provenance_refs[]`
+
+Permite reconstruir de dónde provino la representación sin copiar dentro del contrato el payload original completo.
+
+Puede enlazar, según el origen:
+
+- una recepción externa gobernada por `SHELL-CON-019`;
+- evidencia protegida de proveedor;
+- un comando o registro propietario de PULSO;
+- una revisión o importación autorizada;
+- otra referencia de procedencia aprobada.
+
+Reglas:
+
+1. una venta adaptada desde un tercero conserva la afirmación y evidencia externas por referencia;
+2. una venta nativa de PULSO no necesita inventar un proveedor externo para satisfacer procedencia;
+3. un payload externo no se convierte en el contrato canónico por simple copia;
+4. una corrección de parser o mapping no sobrescribe la fuente histórica.
+
+##### 13.2. `correlation_refs[]`
+
+Relaciona la venta con recepción, pedido, pagos, documento fiscal, evento posterior, efectos físicos, fidelización, hecho económico y conciliación sin declarar equivalencia entre esas identidades.
+
+Coincidencia de importe, fecha, email, teléfono, producto o texto libre no constituye correlación canónica suficiente por sí sola.
+
+##### 13.3. `recorded_actor_ref`, `recorded_principal_ref` y `recorded_at`
+
+Permiten atribuir el registro a un actor humano, principal técnico o ambos según el contrato de auditoría aplicable.
+
+Reglas:
+
+1. el actor y el principal técnico permanecen identidades distintas;
+2. `recorded_at` no reemplaza `occurred_at`;
+3. una importación técnica no convierte al adaptador en propietaria empresarial de la venta;
+4. una credencial o `service_role` no sustituye actor, principal ni permiso.
+
+---
+
+#### 14. Conversión desde `ExternalReceivedEvent`
+
+`SHELL-CON-019` y `SHELL-CON-020` se relacionan mediante una frontera de adaptación explícita:
+
+```text
+ExternalReceivedEvent<TNormalizedAssertion>
+        ↓
+VALIDACIÓN DE CONTRATO, AUTENTICIDAD, IDENTIDAD Y MAPPING
+        ↓
+FRONTERA PROPIETARIA
+        ↓
+CanonicalSale<TSaleLine>
+```
+
+La conversión está permitida únicamente cuando la afirmación externa aporta evidencia suficiente para demostrar el hecho comercial bajo las reglas propietarias.
+
+Reglas:
+
+1. un webhook, callback, archivo, API response o mensaje externo no es una venta por naturaleza;
+2. autenticidad válida no demuestra que exista una venta canónica completa;
+3. `external_event_id` no se convierte automáticamente en `sale_id`;
+4. `receipt_id` no se convierte automáticamente en `sale_id`;
+5. el ID de transacción de pago no se convierte automáticamente en `sale_id`;
+6. el payload del proveedor se adapta; no se publica como DTO empresarial interno;
+7. el proveedor externo no se convierte en `producer_application` de un evento empresarial VENTO;
+8. la aplicación propietaria valida y registra el hecho antes de cualquier emisión empresarial posterior;
+9. una entrada insuficiente puede permanecer como evidencia, pendiente, conflicto o materia de conciliación, pero no se eleva a venta completa por heurística.
+
+---
+
+#### 15. Fuente única y transición Makos → PULSO
+
+El contrato compartido es estable aunque cambie la fuente autorizada de nuevas ventas.
+
+```text
+ANTES DEL CORTE APLICABLE
+Makos = fuente empresarial del alcance autorizado
+PULSO = registro/adaptación interna conforme al contrato
+
+DESPUÉS DEL CORTE APLICABLE
+PULSO = fuente empresarial de nuevas ventas del alcance transferido
+```
+
+Reglas:
+
+1. una venta Makos ocurrida antes del corte conserva Makos como fuente aunque llegue después;
+2. una venta PULSO ocurrida después del corte conserva PULSO como fuente aunque sincronice tarde;
+3. una venta histórica Makos almacenada en PULSO no se reclasifica como PULSO;
+4. una misma venta no puede quedar activamente representada como venta nueva de dos fuentes;
+5. una contradicción de sede, terminal, momento o fuente se trata como conflicto y no como segunda venta silenciosa;
+6. el contrato compartido no ejecuta el cutover;
+7. el retiro del adaptador externo no elimina `source_system`, `source_sale_id`, revisión ni procedencia histórica.
+
+---
+
+#### 16. Granularidad y agregados
+
+La venta canónica es individual.
+
+Por tanto:
+
+```text
+LOTE DE IMPORTACIÓN
+≠ VENTA
+
+ARCHIVO XLSX
+≠ VENTA
+
+FILA AGREGADA POR PRODUCTO
+≠ VENTA
+
+TOTAL DIARIO
+≠ VENTA
+```
+
+El flujo `makos_excel` observado puede conservar valor como evidencia, conciliación agregada o contingencia según sus contratos propietarios, pero no satisface por sí solo `CanonicalSale<TSaleLine>` cuando no dispone de identidad individual de venta y líneas.
+
+Esta tarea no inventa ventas individuales para rellenar esa brecha de granularidad.
+
+---
+
+#### 17. Revisión, corrección y preservación histórica
+
+Una revisión válida de venta:
+
+- conserva `sale_id`;
+- conserva `source_system` real;
+- conserva `source_sale_id`;
+- incorpora la nueva revisión acreditada;
+- preserva la representación anterior como historia reconstruible;
+- no sobrescribe destructivamente la procedencia;
+- no permite que una revisión antigua reemplace silenciosamente una posterior.
+
+Anulación, devolución, reembolso, corrección y compensación no se modelan como borrado de la venta original.
+
+Una cantidad o importe negativo tampoco sustituye automáticamente la semántica de reversión cuando el hecho pueda clasificarse de forma explícita.
+
+Los contratos especializados continúan gobernando cada acción posterior.
+
+---
+
+#### 18. Identidad, retry e idempotencia
+
+Esta tarea fija únicamente las invariantes que el contrato de venta debe preservar:
+
+1. el mismo hecho comercial conserva `sale_id` a través de retry, replay y sincronización tardía;
+2. una redelivery no crea una venta nueva;
+3. misma identidad con contenido lógicamente incompatible produce conflicto;
+4. un timeout de cliente o worker no autoriza generar otra identidad;
+5. el resultado recuperable de un registro no se codifica dentro de `sale_id`;
+6. `sale_id`, identidad de fuente, idempotency key, event ID, receipt y correlation ref permanecen identidades distintas;
+7. el hash de contenido puede actuar como guardia de conflicto bajo el contrato especializado, pero no sustituye la identidad de venta.
+
+La forma compartida de idempotencia y conciliación pertenece a `SHELL-CON-023` y no se materializa en esta tarea.
+
+---
+
+#### 19. Fronteras de propiedad y efectos posteriores
+
+`CanonicalSale<TSaleLine>` describe la venta. No ejecuta efectos.
+
+| Frontera                         | Propiedad preservada                                       | Regla                                                             |
+| -------------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------- |
+| PULSO                            | registro y hecho comercial de venta dentro de su autoridad | la venta se registra durablemente antes de la emisión posterior   |
+| NEXO                             | movimiento físico e inventario                             | consume únicamente líneas elegibles y confirma su propio efecto   |
+| NUMERA                           | hecho económico, costo y conciliación financiera           | consume la venta sin apropiarse de su identidad ni reescribirla   |
+| PASS                             | fidelización                                               | evalúa acumulación o redención bajo su ledger y autoridad propios |
+| proveedor fiscal / POS aplicable | documento fiscal externo mientras corresponda              | la referencia fiscal no transfiere autoridad a la venta           |
+| servicios de eventos             | publicación y entrega técnica                              | no adquieren propiedad empresarial por transportar el contrato    |
+
+Reglas:
+
+1. un fallo downstream no borra la venta;
+2. una consumidora no modifica la venta para aparentar que su efecto ocurrió;
+3. un ACK de transporte no confirma inventario, puntos, costo ni documento fiscal;
+4. los efectos se correlacionan con la venta sin reutilizar `sale_id` como identidad universal;
+5. compartir almacenamiento o credenciales no habilita escritura cruzada.
+
+---
+
+#### 20. Completitud de una venta canónica individual
+
+Una instancia solo puede declararse venta canónica individual completa cuando, según aplicabilidad, se pueda demostrar simultáneamente:
+
+1. `sale_id` resuelto y estable;
+2. `source_system` resuelto;
+3. autoridad de fuente compatible con sede, terminal y momento conocidos;
+4. `source_sale_id` individual suficiente;
+5. `contract_version` resoluble;
+6. contexto de sede suficiente;
+7. terminal o caja cuando sean necesarias para autoridad o trazabilidad;
+8. `occurred_at` interpretable;
+9. `commercial_state` válido bajo el contrato aplicable;
+10. al menos una línea individual válida;
+11. snapshot monetario suficiente para la semántica aplicable;
+12. relaciones opcionales no fabricadas;
+13. procedencia reconstruible;
+14. correlación suficiente para seguir la cadena posterior;
+15. atribución de actor o principal según el contrato de auditoría;
+16. ausencia de una reutilización incompatible de identidad;
+17. ausencia de un bloqueo que impida tratar la evidencia como hecho comercial completo.
+
+Una entrada incompleta puede conservarse bajo el contrato técnico que corresponda, pero no se presenta como venta canónica completa para forzar efectos posteriores.
+
+---
+
+#### 21. Versionado y compatibilidad
+
+`CanonicalSale<TSaleLine>` hereda la política de `@vento/contracts`:
+
+1. el package conserva SemVer independiente;
+2. una publicación es inmutable;
+3. cambiar significado, obligatoriedad o cardinalidad material exige clasificación de compatibilidad apropiada;
+4. una nueva versión no reinterpreta silenciosamente ventas históricas;
+5. la instancia conserva la versión con la que fue interpretada;
+6. un campo aditivo opcional solo es compatible cuando un consumidor anterior puede ignorarlo sin alterar el significado previo;
+7. cambiar el proveedor o la fuente no obliga a crear un contrato de venta paralelo si la semántica canónica permanece compatible;
+8. retirar una superficie pública exige inventario de consumidores, migración, pruebas, ventana y rollback;
+9. la materialización de la línea en `SHELL-CON-021` deberá componer con esta venta sin cambiar retrospectivamente la semántica aprobada aquí.
+
+No se declara una release física ni un número de versión publicado que todavía no exista.
+
+---
+
+#### 22. Seguridad y privacidad
+
+La venta compartida aplica minimización por finalidad.
+
+No deberá incluir por defecto:
+
+- secretos;
+- API keys;
+- service-role keys;
+- access tokens o refresh tokens;
+- passwords;
+- credenciales de proveedor;
+- payload externo completo cuando una referencia protegida sea suficiente;
+- datos de tarjeta completos;
+- datos bancarios completos;
+- documento de identidad completo cuando una referencia autorizada sea suficiente;
+- perfil completo del cliente;
+- datos personales no necesarios para la finalidad de la consumidora;
+- logs o trazas embebidos como parte del hecho empresarial.
+
+Reglas:
+
+1. una referencia a cliente no concede lectura de su expediente;
+2. una referencia a pago no transporta la credencial o instrumento sensible;
+3. una referencia fiscal no copia el documento completo salvo que otro contrato lo requiera y autorice;
+4. procedencia y auditoría conservan referencias y evidencia mínima sin convertir el contrato en archivo documental;
+5. consumir la venta no concede permiso para ejecutar efectos ni consultar agregados sensibles adicionales.
+
+---
+
+#### 23. Matriz de escenarios materializados
+
+| Escenario                                                                                               | Estado en `SHELL-CON-020`       | Decisión                                                                                                        |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| venta individual Makos dentro del alcance transitorio autorizado, con identidad y evidencia suficientes | `APLICA_CONTRATO_CANONICO`      | se adapta a la misma venta compartida preservando Makos como fuente histórica                                   |
+| venta individual nativa PULSO dentro del alcance donde PULSO tiene autoridad                            | `APLICA_CONTRATO_CANONICO`      | se representa mediante el mismo contrato sin pasar por semántica de proveedor externo                           |
+| fila agregada o total del flujo `makos_excel` sin identidad individual de venta y líneas                | `NO_SATISFACE_VENTA_INDIVIDUAL` | permanece como evidencia o material de conciliación; no se fabrica una venta individual                         |
+| afirmación externa recibida sin validación empresarial suficiente                                       | `NO_ELEVAR_A_VENTA`             | conserva el contrato de recepción externa hasta resolver autenticidad, identidad, mapping y reglas propietarias |
+| pedido, pago, caja, documento fiscal, inventario, puntos, costo o entrega                               | `NO_EQUIVALE_A_VENTA`           | puede correlacionarse, pero no sustituye ni reidentifica la venta                                               |
+
+La matriz no crea fuentes nuevas ni autoriza una integración no acreditada.
+
+---
+
+#### 24. Estado de materialización física
+
+En el corte actual:
+
+```text
+SHELL-CON-020
+→ CanonicalSaleId definido lógicamente
+→ CanonicalSale<TSaleLine> definido lógicamente
+→ superficie @vento/contracts/integrations preservada
+→ semántica INT-POS-005 materializada como contrato compartido de venta
+→ semántica permanente INT-SALES-001 preservada
+→ línea compartida NO definida todavía
+→ 0 tipos físicos creados
+→ 0 schemas ejecutables creados
+→ 0 tablas creadas
+→ 0 RPC creadas
+→ 0 migraciones creadas
+→ 0 cambios Supabase
+→ 0 eventos emitidos
+→ 0 consumidores migrados
+→ 0 ventas operativas creadas o modificadas
+```
+
+La aprobación documental de esta tarea no acredita implementación física, publicación del package, adopción por consumidores ni validación E2E.
+
+---
+
+#### 25. Handoffs exactos
+
+| Trabajo posterior                              | Estado desde esta tarea             | Propietario / tarea                                    | Condición de salida                                                                                              |
+| ---------------------------------------------- | ----------------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| contrato compartido de línea de venta          | `FUERA_DE_ALCANCE`                  | `SHELL-CON-021`                                        | la línea obtiene identidad y forma compartidas compatibles con `CanonicalSale<TSaleLine>` sin redefinir la venta |
+| mapping compartido de identificadores externos | `FUERA_DE_ALCANCE`                  | `SHELL-CON-022`                                        | referencias de fuente, venta y recursos se relacionan sin equivalencias heurísticas                              |
+| idempotencia y conciliación compartidas        | `FUERA_DE_ALCANCE`                  | `SHELL-CON-023`                                        | operación, identidad, huella, resultado recuperable y conciliación se materializan sin fusionarse con `sale_id`  |
+| cuarentena, rechazo y compensación             | `FUERA_DE_ALCANCE`                  | `SHELL-CON-024`                                        | entradas incompatibles, conflictos o efectos fallidos reciben disposición explícita sin borrar la venta original |
+| emisión empresarial desde PULSO                | preservada por contrato propietario | `INT-SALES-002`                                        | una venta durable produce únicamente las definiciones de evento aprobadas y no un evento genérico paralelo       |
+| salida física de inventario                    | preservada por contrato propietario | `INT-SALES-003` / NEXO                                 | líneas elegibles producen el movimiento físico exactamente una vez bajo la autoridad de NEXO                     |
+| hecho económico                                | preservada por contrato propietario | `INT-SALES-004` / NUMERA                               | NUMERA consume el hecho correlacionado sin escritura cruzada                                                     |
+| fidelización                                   | preservada por contrato propietario | `INT-SALES-005` / `INT-SALES-006` / PASS               | PASS aplica su ledger con identidad y autoridad propias                                                          |
+| materialización física de `@vento/contracts`   | `DEFINIDO_NO_MATERIALIZADO`         | ciclo de package, CI, release y paquetes E5 aplicables | existe autorización física, implementación, compatibilidad, pruebas y adopción verificadas                       |
+
+Todos los pendientes quedan vinculados a propietarios existentes; esta tarea no crea un identificador de tarea adicional.
+
+---
+
+#### 26. Cobertura de prueba preexistente
+
+La semántica centralizada por `SHELL-CON-020` ya se encuentra protegida por cobertura canónica vigente, en particular por reglas que exigen:
+
+- demostrar el ciclo completo de venta y líneas antes de declarar operativo PULSO;
+- mantener separados pedido, venta, pago, caja, fiscalidad, inventario y fidelización;
+- usar acciones autorizadas y auditables para venta, pago, caja, reversos y cierre;
+- conservar una fuente empresarial única y resolver fuentes competidoras sin sobrescribir historia;
+- converger PULSO y el POS externo sobre contratos canónicos de pedido, venta y línea sin doble emisión;
+- impedir que retry, replay, eventos tardíos o fallos parciales dupliquen inventario, puntos, costos, pagos o comandas;
+- producir efectos físicos, económicos y de fidelización bajo la autoridad de sus aplicaciones propietarias;
+- conservar identidad, procedencia y correlación durante transición, cutover y retiro del adaptador.
+
+`SHELL-CON-020` no introduce un comportamiento operacional nuevo: centraliza la representación estática que esas reglas ya exigen.
+
+---
+
+#### 27. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA**
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+Justificación: la tarea materializa como contrato compartido estático la semántica de venta ya aprobada y protegida por la cobertura canónica vigente. No introduce una operación nueva, una fuente adicional, un estado empresarial nuevo, un mecanismo de pago, una regla de inventario, una política de fidelización, un evento nuevo, un transporte, una persistencia, un permiso, una migración, una modificación Supabase ni una excepción de seguridad. Por ello el registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 28. Decisiones vinculantes
+
+1. `CanonicalSaleId` es la identidad canónica compartida de una venta individual.
+2. `CanonicalSaleId` es estable, opaco y no secreto.
+3. Esta tarea no fija su formato físico.
+4. `CanonicalSale<TSaleLine>` es el contrato compartido estático de la venta.
+5. La superficie lógica permanece en `@vento/contracts/integrations`.
+6. El contrato no convierte `@vento/contracts` en fuente empresarial ni runtime operacional.
+7. La venta permanece distinta de pedido, pago, caja, documento fiscal, inventario, fidelización, hecho económico y entrega.
+8. La venta conserva `source_system` real y no el mecanismo técnico de transporte.
+9. Una venta Makos histórica no se reclasifica como PULSO por ser recibida o almacenada después.
+10. Una venta PULSO conserva PULSO como fuente únicamente dentro del alcance donde exista autoridad aprobada.
+11. La identidad en la fuente se conserva separada de `sale_id`.
+12. La revisión de fuente se conserva únicamente cuando exista y no se inventa.
+13. La versión del contrato y la revisión de fuente permanecen separadas.
+14. Sede, terminal y caja se conservan según aplicabilidad y no se infieren para ocultar una brecha.
+15. `occurred_at` representa el hecho comercial y no el momento de registro o sincronización.
+16. `commercial_state` no se deriva de pago, caja, fiscalidad, inventario, puntos, economía o entrega.
+17. Cliente es opcional y no se fabrica una identidad artificial.
+18. Pedido puede relacionarse con la venta sin convertirse en ella.
+19. Documento fiscal y pagos permanecen hechos independientes relacionados por referencias.
+20. El snapshot monetario conserva componentes históricos sin recalcular la venta desde reglas actuales.
+21. Una venta individual completa requiere al menos una línea individual válida.
+22. `TSaleLine` permanece abstracto hasta `SHELL-CON-021`.
+23. Esta tarea no define campos ni identidad pública de la línea compartida.
+24. Procedencia puede enlazar una recepción externa o un origen propietario PULSO sin copiar el payload completo.
+25. Una afirmación externa no se eleva a venta únicamente por autenticidad o recepción técnica.
+26. `external_event_id`, `receipt_id`, payment ID, order ID, fiscal ID y event ID no sustituyen `sale_id`.
+27. Retry, replay y sincronización tardía conservan la identidad de venta.
+28. Una identidad reutilizada con contenido incompatible produce conflicto, no sobrescritura.
+29. El flujo agregado `makos_excel` no constituye por sí solo una venta individual canónica.
+30. Un fallo de NEXO, NUMERA o PASS no borra la venta.
+31. Las consumidoras confirman sus propios efectos y no escriben la fuente privada de PULSO.
+32. La tarea no emite eventos ni crea definiciones de evento.
+33. La tarea no crea tipos físicos, schemas, tablas, migraciones, RLS, RPC, colas, workers ni endpoints.
+34. La tarea no modifica Supabase ni datos operativos.
+35. La tarea crea cero requisitos de prueba y modifica cero requisitos de prueba.
+36. `SHELL-CON-021` permanece como única continuidad reservada.
+
+---
+
+#### 29. Criterios de aceptación
+
+`SHELL-CON-020` queda documentalmente completa cuando se cumplen simultáneamente estos criterios:
+
+1. existe exactamente un contrato lógico compartido de venta `CanonicalSale<TSaleLine>`;
+2. existe una identidad lógica `CanonicalSaleId`;
+3. la superficie permanece dentro de `@vento/contracts/integrations`;
+4. no se inventa un formato físico de identificador;
+5. se conserva la semántica de venta aprobada por `INT-POS-005`;
+6. se conserva la regla permanente de registro de `INT-SALES-001`;
+7. se preserva PULSO como propietaria del registro objetivo donde corresponda;
+8. fuente empresarial y mecanismo técnico permanecen separados;
+9. una venta Makos histórica conserva Makos como fuente;
+10. una venta PULSO solo conserva PULSO como fuente bajo autoridad aprobada;
+11. `source_sale_id` permanece separado de `sale_id`;
+12. revisión de fuente y versión del contrato permanecen separadas;
+13. sede queda representada;
+14. terminal y caja se conservan cuando son materiales;
+15. `occurred_at` permanece separado de `recorded_at`;
+16. estado comercial permanece ortogonal a pago, caja, fiscalidad, inventario, fidelización y economía;
+17. cliente es opcional;
+18. pedido se conserva solo por referencia;
+19. documento fiscal se conserva solo por referencia contractual;
+20. pagos se conservan como referencias a hechos independientes;
+21. el snapshot monetario permite diferenciar subtotal, descuentos, impuestos, propina y total según aplicabilidad;
+22. no se recalcula historia desde precios actuales;
+23. la venta individual exige al menos una línea individual válida;
+24. la forma compartida de línea no se define en esta tarea;
+25. procedencia es reconstruible sin copiar el payload sensible como contrato de venta;
+26. correlación no implica equivalencia de identidades;
+27. actor y principal técnico permanecen separados;
+28. una afirmación externa debe atravesar validación propietaria antes de convertirse en venta;
+29. una entrada agregada no se eleva a venta individual ficticia;
+30. revisiones conservan historia y no sobrescriben destructivamente;
+31. retry, replay y offline no crean otra venta;
+32. una reutilización incompatible de identidad produce conflicto;
+33. un fallo downstream no elimina la venta;
+34. NEXO, NUMERA y PASS conservan autoridad sobre sus efectos;
+35. no se adelanta `SHELL-CON-021`;
+36. no se adelantan mapping, idempotencia, conciliación, cuarentena, rechazo o compensación compartidos;
+37. no se implementa código ni `@vento/contracts` físicamente;
+38. no se modifica Supabase;
+39. se crean cero requisitos de prueba;
+40. se modifican cero requisitos de prueba;
+41. la continuidad reserva exclusivamente `SHELL-CON-021`.
+
+---
+
+#### 30. Límites de la tarea
+
+`SHELL-CON-020` no:
+
+- implementa `@vento/contracts`;
+- crea archivos TypeScript del package;
+- crea schemas ejecutables;
+- crea tipos de base de datos;
+- crea tablas o columnas;
+- crea migraciones;
+- crea RLS o grants;
+- crea RPC o funciones;
+- crea endpoints;
+- crea webhooks;
+- crea colas o workers;
+- emite eventos;
+- crea ventas operativas;
+- modifica ventas existentes;
+- aplica inventario;
+- aplica costos o asientos;
+- aplica puntos;
+- cobra pagos;
+- emite documentos fiscales;
+- ejecuta cutover;
+- retira el adaptador externo;
+- materializa la línea compartida;
+- modifica código;
+- modifica Supabase;
+- cambia la ruta canónica;
+- desarrolla `SHELL-CON-021`.
+
+---
+
+#### 31. Continuidad
+
+***ÚLTIMA TAREA APROBADA***
+
+`SHELL-CON-019 — Crear contrato de evento externo recibido`
+
+***TAREA ACTUAL APROBADA***
+
+`SHELL-CON-020 — Crear contrato canónico de venta`
+
+***SIGUIENTE TAREA RESERVADA***
+
+`SHELL-CON-021 — Crear contrato canónico de línea de venta`
+
+
 ### [ ] SHELL-CON-021 — Crear contrato canónico de línea de venta
 ### [ ] SHELL-CON-022 — Crear contrato de mapeo de identificadores externos
 ### [ ] SHELL-CON-023 — Crear contrato de idempotencia y conciliación
