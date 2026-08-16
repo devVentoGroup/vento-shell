@@ -88,7 +88,7 @@ Dominios iniciales:
 | Filas con catorce columnas        | **7012 de 7012** |
 | Identificadores duplicados        |            **0** |
 | Relaciones `TREQ-*` no resolubles |            **0** |
-| Última tarea incorporada          |  `SHELL-CON-011` |
+| Última tarea incorporada          |  `NEXO-UX-025` |
 | Fecha de normalización            |     `2026-08-15` |
 
 Distribución vigente:
