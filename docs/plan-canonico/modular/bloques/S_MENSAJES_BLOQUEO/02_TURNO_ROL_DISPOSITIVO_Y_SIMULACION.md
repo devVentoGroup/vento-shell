@@ -8762,7 +8762,7 @@ Se aprueban cinco artefactos documentales completos:
 3. `SIMULATION-CHANNEL-RESPONSE-MATRIX-001`, que materializa diez canales con
    semántica equivalente;
 4. `SIMULATION-APPLICATION-COVERAGE-REGISTER-001`, que decide el alcance para
-   las diez aplicaciones canónicas y conserva la distribución de 112
+   las diez aplicaciones canónicas y conserva la distribución de 140
    permisos;
 5. `SIMULATION-EXECUTION-PHYSICAL-RECONCILIATION-001`, que registra el snapshot
    desplegado de solo lectura y catorce brechas con destino canónico.
@@ -8780,9 +8780,9 @@ Cobertura materializada:
 | Escenarios con decisión explícita                        |                                  24 |
 | Canales con respuesta explícita                          |                                  10 |
 | Aplicaciones canónicas reconciliadas                     |                                  10 |
-| Permisos canónicos evaluados                             |                                 112 |
-| Permisos `FULL_PREVIEW`                                  |                                  78 |
-| Permisos `DECISION_ONLY`                                 |                                  31 |
+| Permisos canónicos evaluados                             |                                 140 |
+| Permisos `FULL_PREVIEW`                                  |                                  85 |
+| Permisos `DECISION_ONLY`                                 |                                  52 |
 | Permisos `NOT_ALLOWED`                                   |                                   3 |
 | Superficies de mezcla heredadas                          |                                  16 |
 | Superficies que pueden aceptar autoridad simulada        |                                   0 |
@@ -8994,16 +8994,16 @@ un permiso alternativo.
 
 ---
 
-#### 9. Clasificación de los 112 permisos
+#### 9. Clasificación de los 140 permisos
 
-Se conserva exactamente la clasificación aprobada:
+Se conserva exactamente la clasificación canónica vigente:
 
 | `simulation_requirement` | Cantidad | Superficie permitida                                                 |
 | ------------------------ | -------: | -------------------------------------------------------------------- |
-| `FULL_PREVIEW`           |       78 | evaluación y representación inerte con datos permitidos              |
-| `DECISION_ONLY`          |       31 | resultado y razones; sin contenido protegido ni formulario operativo |
+| `FULL_PREVIEW`           |       85 | evaluación y representación inerte con datos permitidos              |
+| `DECISION_ONLY`          |       52 | resultado y razones; sin contenido protegido ni formulario operativo |
 | `NOT_ALLOWED`            |        3 | sin participación simulada                                           |
-| **Total**                |  **112** |                                                                      |
+| **Total**                |  **140** |                                                                      |
 
 Los tres permisos `NOT_ALLOWED` son:
 
@@ -9763,7 +9763,7 @@ Comportamiento observado:
 |    5 | `has_effective_permission_v1` devuelve booleano desde roles simulados                                                           | `BLOQUEADO`                          | `true` interpretado como permiso real           | `AUTH-DB-013`; `AUTH-SRV-015`                 |
 |    6 | `hasEffectivePermission` elimina procedencia en cliente                                                                         | `BLOQUEADO`                          | guard o UI consume booleano ambiguo             | `AUTH-SRV-015`; contratos compartidos         |
 |    7 | `EffectiveContext` mezcla fuentes reales, dispositivo y simulación                                                              | `BLOQUEADO`                          | tipos permiten ejecución accidental             | `AUTH-SRV-015`; contratos compartidos         |
-|    8 | el catálogo físico no materializa `simulation_requirement` y contiene 179 permisos activos frente al snapshot documental de 112 | `PENDIENTE_DE_RECONCILIACION`        | deriva entre catálogo y contrato                | `AUTH-CAT-015`; `AUTH-DB-013`; `AUTH-QA-019`  |
+|    8 | el catálogo físico no materializa `simulation_requirement` y contiene 179 permisos activos frente al snapshot documental de 140 | `PENDIENTE_DE_RECONCILIACION`        | deriva entre catálogo y contrato                | `AUTH-CAT-015`; `AUTH-DB-013`; `AUTH-QA-019`  |
 |    9 | `can_manage_context_simulation_v1` autoriza por nombre de rol                                                                   | `BLOQUEADO`                          | bypass de permiso exacto y alcance              | `AUTH-SIM-001`; `AUTH-DB-013`; `AUTH-SRV-015` |
 |   10 | la duración física admite 15 a 720 minutos y predetermina 240                                                                   | `PENDIENTE_DE_RECONCILIACION`        | sesión excesiva o divergente                    | `AUTH-DB-013`; `AUTH-SRV-015`                 |
 |   11 | no se identificó un gate físico uniforme por clase de efecto                                                                    | `PENDIENTE_DE_IMPLEMENTACION`        | mutación alcanza backend                        | `AUTH-SRV-015`; `SHELL-AUTH-004`              |
@@ -9797,7 +9797,7 @@ Se incorporan al registro canónico:
 | ----- | ------------------------------------------------------ |
 | `279` | contrato público, `403`, procedencia y cero efectos    |
 | `280` | separación de planos, resultados y autoridad real      |
-| `281` | distribución `78/31/3` y superficies permitidas        |
+| `281` | distribución `85/52/3` y superficies permitidas        |
 | `282` | bloqueo de acciones, datos y efectos externos          |
 | `283` | salida, solicitud real fresca y prohibición de replay  |
 | `284` | causas, fronteras, precedencia y ciclo de vida         |
@@ -9822,7 +9822,7 @@ El artefacto permite comprobar:
 5. cuatro planos separados;
 6. tres resultados hipotéticos y ningún `ALLOW` simulado;
 7. `executable = false` en toda simulación;
-8. distribución exacta `78/31/3`;
+8. distribución exacta `85/52/3`;
 9. tres permisos `NOT_ALLOWED` conservados;
 10. veinticuatro escenarios sin decisión nula;
 11. diez canales equivalentes;
@@ -9879,7 +9879,7 @@ AUTH-ERR-016 no:
 - [x] Se prohibió convertir `WOULD_ALLOW` en `ALLOW`.
 - [x] Se preservaron los tres resultados hipotéticos.
 - [x] Se definió la frontera entre evaluación, preview y ejecución.
-- [x] Se conservaron 78 `FULL_PREVIEW`, 31 `DECISION_ONLY` y 3 `NOT_ALLOWED`.
+- [x] Se conservaron 85 `FULL_PREVIEW`, 52 `DECISION_ONLY` y 3 `NOT_ALLOWED`.
 - [x] Se identificaron los tres permisos `NOT_ALLOWED`.
 - [x] Se bloquearon datos reales por autoridad simulada.
 - [x] Se protegieron RLS y Data API.
