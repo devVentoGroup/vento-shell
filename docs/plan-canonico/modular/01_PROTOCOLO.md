@@ -996,8 +996,15 @@ La política `task-development-policy.json` se aplica desde `SHELL-UI-012`,
 incluida. Las tareas anteriores conservan su contrato histórico.
 
 Durante un borrador, los hallazgos semánticos serán advertencias y no
-materializarán contenido. Cuando una tarea use marcador aprobado, los mismos
-hallazgos serán errores bloqueantes. Una tarea aprobada deberá:
+materializarán contenido. En una tarea aprobada solo serán bloqueantes las
+infracciones de integridad configuradas en `blocking_codes`: presentación
+canónica inválida, placeholders, referencias inexistentes, propietarios
+declarados incoherentes y contradicciones físicas, TREQ o de evidencia.
+
+La cabecera enriquecida, las secciones de evidencia y límites y la cardinalidad
+de sus clases son recomendaciones prospectivas mientras el proceso de autoría
+las adopta de forma consistente; su ausencia no impide compilar. El objetivo
+prospectivo sigue siendo que una tarea aprobada pueda:
 
 - completar la cabecera propietaria y las secciones de propósito, requisitos de
   prueba, evidencia, criterios de aceptación, límites y continuidad;

@@ -8,6 +8,21 @@ import { parseTaskBlocks, validateTaskPresentation } from './format-canonical-ta
 const TASK_REFERENCE = /\b[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3}(?!\d)\b/gu;
 const METADATA = /^\*\*(?<label>[^*\n]+):\*\*\s*(?<value>.*)$/u;
 const SECTION = /^####(?:\s+\d+\.)?\s+(?<title>.+)$/gmu;
+const FINDING_CODES = new Set([
+  'EMPTY_DRAFT',
+  'PRESENTATION',
+  'HEADER_FIELD_MISSING',
+  'OWNER_FILE_MISMATCH',
+  'OWNER_REPOSITORY_MISSING',
+  'PHYSICAL_SCOPE_CONTRADICTION',
+  'SECTION_MISSING',
+  'UNRESOLVED_PLACEHOLDER',
+  'UNKNOWN_TASK_REFERENCE',
+  'EVIDENCE_STATUS_INVALID',
+  'EVIDENCE_MISSING',
+  'EVIDENCE_CLASS_CARDINALITY',
+  'TREQ_COUNT_CONTRADICTION',
+]);
 
 function stripInline(value) {
   return String(value ?? '').trim().replace(/^`|`$/gu, '');
@@ -94,8 +109,13 @@ export function validateTaskDevelopmentPolicy(policy) {
     'required_section_groups',
     'required_evidence_classes',
     'allowed_evidence_statuses',
+    'blocking_codes',
   ]) {
     if (!Array.isArray(policy?.[key]) || policy[key].length === 0) errors.push(`${key} debe ser un arreglo no vacío.`);
+  }
+  const unknownBlockingCodes = (policy?.blocking_codes ?? []).filter((code) => !FINDING_CODES.has(code));
+  if (unknownBlockingCodes.length > 0) {
+    errors.push(`blocking_codes contiene códigos desconocidos: ${unknownBlockingCodes.join(', ')}.`);
   }
   if (typeof policy?.forbidden_placeholder_pattern !== 'string') {
     errors.push('forbidden_placeholder_pattern debe ser un string.');
@@ -119,8 +139,9 @@ export function validateTaskSemanticContract({
 }) {
   const findings = [];
   const approved = task.state === 'APROBADA';
+  const blockingCodes = new Set(policy.blocking_codes ?? []);
   const add = (code, message) => findings.push({
-    severity: approved ? 'ERROR' : 'WARNING',
+    severity: approved && blockingCodes.has(code) ? 'ERROR' : 'WARNING',
     code,
     message,
   });
@@ -189,12 +210,15 @@ export function validateTaskSemanticContract({
     if (rows.length !== 1) add('EVIDENCE_CLASS_CARDINALITY', `${evidenceClass} debe aparecer exactamente una vez.`);
   }
 
-  const treqCount = Number(metadata.get('Requisitos de prueba creados o modificados'));
+  const treqCountSource = metadata.get('Requisitos de prueba creados o modificados');
+  const treqCount = treqCountSource !== undefined && /^\d+$/u.test(treqCountSource)
+    ? Number(treqCountSource)
+    : null;
   const testSection = sectionSource(block, /Requisitos de prueba derivados/iu) ?? '';
-  if (/NO GENERA REQUISITOS DE PRUEBA/iu.test(testSection) && treqCount !== 0) {
+  if (/NO GENERA REQUISITOS DE PRUEBA/iu.test(testSection) && treqCount !== null && treqCount !== 0) {
     add('TREQ_COUNT_CONTRADICTION', 'la cabecera declara TREQ modificados, pero la sección declara que no genera requisitos.');
   }
-  if (/GENERA REQUISITOS DE PRUEBA/iu.test(testSection) && !/NO GENERA/iu.test(testSection) && treqCount === 0) {
+  if (/GENERA REQUISITOS DE PRUEBA/iu.test(testSection) && !/NO GENERA/iu.test(testSection) && treqCount !== null && treqCount === 0) {
     add('TREQ_COUNT_CONTRADICTION', 'la sección genera TREQ, pero la cabecera declara cero.');
   }
 

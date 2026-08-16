@@ -33,6 +33,18 @@ const policy = {
   forbidden_placeholder_pattern: '\\[PENDIENTE[^\\]]*\\]|<[A-Z][A-Z0-9_-]*>',
   required_evidence_classes: ['BUILD', 'LOCAL', 'REMOTA', 'OPERATIVA', 'FÍSICA'],
   allowed_evidence_statuses: ['PASS', 'FAIL', 'NOT_EXECUTED', 'NOT_APPLICABLE'],
+  blocking_codes: [
+    'EMPTY_DRAFT',
+    'PRESENTATION',
+    'OWNER_FILE_MISMATCH',
+    'OWNER_REPOSITORY_MISSING',
+    'PHYSICAL_SCOPE_CONTRADICTION',
+    'UNRESOLVED_PLACEHOLDER',
+    'UNKNOWN_TASK_REFERENCE',
+    'EVIDENCE_STATUS_INVALID',
+    'EVIDENCE_MISSING',
+    'TREQ_COUNT_CONTRADICTION',
+  ],
 };
 
 const validBlock = `### ✅ TEST-SEM-011 — Tarea válida
@@ -132,4 +144,39 @@ test('una tarea aprobada no puede conservar placeholders', () => {
     policy,
   });
   assert.ok(result.errors.some(({ code }) => code === 'UNRESOLVED_PLACEHOLDER'));
+});
+
+test('una tarea aprobada con formato histórico recibe recomendaciones sin bloquear', () => {
+  const historicalBlock = validBlock
+    .replace(/^\*\*(?:Repositorio propietario|Archivo propietario|Estado físico resultante|Cambios físicos autorizados|Requisitos de prueba creados o modificados):\*\*.*\n/gmu, '')
+    .replace(/\n#### 3\. Evidencia de validación[\s\S]*?(?=\n#### 4\.)/u, '')
+    .replace(/\n#### 5\. Límites[\s\S]*?(?=\n#### 6\.)/u, '');
+  const result = validateTaskSemanticContract({
+    block: historicalBlock,
+    task: { id: 'TEST-SEM-011', state: 'APROBADA' },
+    ownerRelativePath: 'bloques/X/test.md',
+    inventory,
+    policy,
+  });
+  assert.deepEqual(result.errors, []);
+  assert.ok(result.warnings.some(({ code }) => code === 'HEADER_FIELD_MISSING'));
+  assert.ok(result.warnings.some(({ code }) => code === 'SECTION_MISSING'));
+  assert.ok(result.warnings.some(({ code }) => code === 'EVIDENCE_CLASS_CARDINALITY'));
+  assert.ok(!result.warnings.some(({ code }) => code === 'TREQ_COUNT_CONTRADICTION'));
+});
+
+test('la ausencia del contador TREQ no se interpreta como contradicción', () => {
+  const blockWithoutCount = validBlock.replace(
+    /^\*\*Requisitos de prueba creados o modificados:\*\*.*\n/mu,
+    '',
+  );
+  const result = validateTaskSemanticContract({
+    block: blockWithoutCount,
+    task: { id: 'TEST-SEM-011', state: 'APROBADA' },
+    ownerRelativePath: 'bloques/X/test.md',
+    inventory,
+    policy,
+  });
+  assert.ok(![...result.errors, ...result.warnings]
+    .some(({ code }) => code === 'TREQ_COUNT_CONTRADICTION'));
 });

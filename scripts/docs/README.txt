@@ -66,9 +66,12 @@ Comandos desde la raíz de vento-shell:
    propagarse a una tarea.
 
    Desde SHELL-UI-012, task-development-policy.json añade un gate semántico:
-   advierte durante borrador y bloquea únicamente una aprobación incompleta. El
-   watcher genera current-task-brief.md, current-task-semantic-diff.md, baselines
-   y evidencia tipada bajo .delivery/ sin convertirlos en fuentes canónicas.
+   bloquea en aprobaciones únicamente contradicciones e infracciones de
+   integridad configuradas. La cabecera enriquecida, secciones nuevas y
+   cardinalidad de evidencia son recomendaciones y no detienen el compilador.
+   El watcher genera current-task-brief.md, current-task-semantic-diff.md,
+   baselines y evidencia tipada bajo .delivery/ sin convertirlos en fuentes
+   canónicas.
 
    Para una inspección explícita, aunque no es necesaria durante el flujo normal:
 

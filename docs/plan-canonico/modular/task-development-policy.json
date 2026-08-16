@@ -5,6 +5,18 @@
   "historical_policy": "PRESERVE_BEFORE_BOUNDARY",
   "draft_enforcement": "WARNING",
   "approved_enforcement": "ERROR",
+  "blocking_codes": [
+    "EMPTY_DRAFT",
+    "PRESENTATION",
+    "OWNER_FILE_MISMATCH",
+    "OWNER_REPOSITORY_MISSING",
+    "PHYSICAL_SCOPE_CONTRADICTION",
+    "UNRESOLVED_PLACEHOLDER",
+    "UNKNOWN_TASK_REFERENCE",
+    "EVIDENCE_STATUS_INVALID",
+    "EVIDENCE_MISSING",
+    "TREQ_COUNT_CONTRADICTION"
+  ],
   "required_header_fields": [
     "Estado",
     "Tarea anterior",
