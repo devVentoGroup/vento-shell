@@ -22428,7 +22428,1688 @@ Esta tarea no autoriza:
 `SHELL-UI-017 — Compartir patrón para tablet`
 
 
-### [ ] SHELL-UI-017 — Compartir patrón para tablet
+### ✅ SHELL-UI-017 — Compartir patrón para tablet
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-016 — Compartir estados de error recuperable
+**Tarea siguiente:** SHELL-UI-018 — Compartir patrón para kiosco
+**Tipo de tarea:** Documental; definición canónica del patrón web compartido para componer superficies de trabajo en tablet dentro de `@vento/ui-web`, preservando gramática operacional, contexto, ergonomía táctil, responsive, accesibilidad, privacidad, conectividad y fronteras de autoridad, sin materializar package, componentes ejecutables, consumidores, dispositivos, SQL, migraciones, cambios de Supabase, releases ni despliegues.
+**Bloque:** H — Fundación compartida
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md`
+**Estado físico resultante:** `ESPECIFICADO`; patrón físico no materializado; consumidores migrados: 0.
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+**Paquete propietario conceptual:** `@vento/ui-web`
+
+---
+
+#### 1. Propósito
+
+Definir el patrón web compartido que organiza una superficie de trabajo cuando una decisión externa ya determinó que el caso debe presentarse en una tablet personal o compartida.
+
+El patrón debe conservar la gramática operacional aprobada, mantener visible el contexto necesario, priorizar el trabajo y la siguiente acción, adaptar la composición al espacio táctil disponible y evitar que una tablet se convierta en un escritorio reducido o en una fuente de autoridad.
+
+La regla central queda:
+
+```text
+PROCESO + PASO + WORK ITEM
++ ACTOR + CONTEXTO + AUTORIZACIÓN
++ PERFIL DE ESTACIÓN + MODALIDAD
++ CAPACIDADES + CONECTIVIDAD
++ PRIVACIDAD + ACCESIBILIDAD
+        ↓
+COMPOSICIÓN SEMÁNTICA YA RESUELTA
+        ↓
+TabletTaskSurface
+        ↓
+PRESENTACIÓN TÁCTIL, REFLUIDA Y PREDECIBLE
+```
+
+Queda prohibida la dirección inversa:
+
+```text
+TabletTaskSurface
+        ✕
+DECIDIR ACTOR, PERMISO O TERRITORIO
+        ✕
+ELEGIR PROCESO O SIGUIENTE ACCIÓN
+        ✕
+DETECTAR AUTORIDAD DESDE EL DISPOSITIVO
+        ✕
+INVENTAR UNA COMPOSICIÓN POR TAMAÑO DE PANTALLA
+        ✕
+EJECUTAR EFECTOS EMPRESARIALES
+```
+
+---
+
+#### 2. Continuidad material de entrada
+
+La secuencia canónica vigente ubica `SHELL-UI-016` como tarea anterior y reserva `SHELL-UI-017` como primera tarea pendiente del segmento `SHELL-UI`.
+
+La continuidad de esta tarea queda:
+
+```text
+BASE INMEDIATA APROBADA = SHELL-UI-016
+TAREA ACTUAL             = SHELL-UI-017
+SIGUIENTE RESERVADA      = SHELL-UI-018
+```
+
+No se modifica la secuencia activa ni se adelanta el patrón de kiosco.
+
+---
+
+#### 3. Naturaleza de la tarea
+
+`SHELL-UI-017` es documental.
+
+Al cierre queda definido:
+
+1. el patrón conceptual de superficie para tablet;
+2. su identidad pública conceptual;
+3. las clases táctiles que admite;
+4. el contrato de productor y consumidor;
+5. las siete zonas semánticas que preserva;
+6. las reglas para retrato y paisaje sin crear otra semántica;
+7. ergonomía y objetivos táctiles;
+8. comportamiento ante teclado virtual y cambio de tamaño;
+9. reglas de entrada táctil, teclado, mouse, stylus y asistencia;
+10. contexto, identidad y cambio de actor en tablet compartida;
+11. privacidad y minimización;
+12. conectividad, frescura y estados degradados;
+13. composición con los patrones `SHELL-UI-002..016` ya definidos;
+14. frontera con kiosco, proceso interrumpido y traspaso entre aplicaciones;
+15. compatibilidad server/client;
+16. estado físico actual de SHELL;
+17. matriz explícita de los siete consumidores web;
+18. handoff de migración y calidad;
+19. contrato futuro de prueba;
+20. cobertura `TREQ-*` vigente.
+
+No se crea código ejecutable ni se modifica una aplicación consumidora.
+
+---
+
+#### 4. Fuentes normativas consumidas
+
+La definición consume y no reemplaza:
+
+- `SHELL-UI-001 — Crear @vento/ui-web`;
+- `SHELL-UI-002..016`, como piezas visuales y patrones ya propietarios;
+- `UX-BASE-011 — Diseñar interfaces táctiles para tablets y kioscos`;
+- `UX-BASE-012 — Diseñar interfaces densas solo para administración`;
+- `UX-STATION-010 — Definir gramática de interacción operativa de lectura mínima`;
+- `UX-STATION-011 — Diseñar bandeja contextual de trabajo y siguiente acción`;
+- `UX-STATION-012 — Definir composición dinámica de pasos mediante componentes operativos aprobados`;
+- el modelo vigente de actor efectivo, contexto, autorización, dispositivo, idempotencia, privacidad, conectividad y recuperación;
+- el gobierno `SHELL-MIG-001..008` para adopción reversible;
+- el gobierno `SHELL-CI-001..006` para pruebas, build, publicación y compatibilidad;
+- la cobertura táctil y de componentes registrada en el Registro Canónico de Requisitos de Prueba.
+
+UI017 especializa presentación web; no reabre las decisiones empresariales de E2.
+
+---
+
+#### 5. Resultado documental
+
+Se aprueba el patrón conceptual:
+
+```text
+TabletTaskSurface
+```
+
+como parte futura de:
+
+```text
+@vento/ui-web
+```
+
+Su función es recibir una composición semántica ya autorizada y proyectarla como una superficie táctil de tablet que conserve:
+
+- actor y contexto perceptibles;
+- identidad del trabajo;
+- estado y bloqueo material;
+- contenido del paso;
+- una única acción primaria cuando exista;
+- soporte secundario sin competir con la acción principal;
+- resultado y referencia cuando correspondan;
+- orden semántico estable;
+- reflow y accesibilidad;
+- prevención de toques accidentales;
+- privacidad apropiada al tipo de tablet.
+
+---
+
+#### 6. Identidad pública conceptual
+
+La superficie conceptual queda formada por:
+
+```text
+TabletTaskSurface
+TabletTaskSurfaceProps
+TabletSurfaceClass
+```
+
+`TabletSurfaceClass` no crea una nueva taxonomía. Reutiliza exclusivamente las dos clases de tablet ya aprobadas por `UX-BASE-011`:
+
+```text
+PERSONAL_TABLET
+SHARED_TABLET
+```
+
+No se incorporan a UI017:
+
+```text
+FIXED_KIOSK
+SEMI_FIXED_STATION
+COUNTER_TERMINAL
+PRODUCTION_DISPLAY
+MOBILE_COMPANION
+HYBRID_PERIPHERAL_STATION
+```
+
+La pertenencia física a una de esas clases se resuelve fuera del componente.
+
+---
+
+#### 7. Regla de elegibilidad
+
+UI017 no detecta que una superficie sea tablet mediante:
+
+- `userAgent`;
+- ancho de viewport aislado;
+- presencia de touch;
+- sistema operativo;
+- nombre del dispositivo;
+- rol del actor;
+- permiso visible;
+- ruta de la aplicación;
+- preferencia local.
+
+La aplicación o capa de composición utiliza `TabletTaskSurface` únicamente después de resolver un perfil autorizado cuyo tipo de superficie sea `PERSONAL_TABLET` o `SHARED_TABLET`.
+
+Un navegador estrecho en escritorio no convierte automáticamente la superficie en tablet. Una tablet física configurada como kiosco tampoco permanece bajo UI017: ese caso pertenece a UI018.
+
+---
+
+#### 8. Contrato de productor y consumidor
+
+**Contrato:** `TABLET-TASK-SURFACE-CONTRACT-001`
+
+**Productor:** aplicación o composición propietaria que ya resolvió proceso, paso, work item, actor, autorización, territorio, perfil de estación, modalidad, capacidades, conectividad, privacidad y componentes aplicables.
+
+**Consumidor:** `@vento/ui-web / TabletTaskSurface`.
+
+**Campos requeridos:** `surfaceClass`, `ariaLabel`, `persistentContext`, `workIdentity` y `stepContent`.
+
+**Campos condicionales:** `blockingState`, `primaryAction`, `secondarySupport` y `resultAndReceipt`.
+
+**Invariantes:** orden semántico estable, una sola acción primaria, contexto perceptible, ausencia de autoridad derivada del dispositivo, reflow sin pérdida de contenido crítico y controles táctiles compatibles con la política vigente.
+
+**Condiciones inválidas:** clase fuera de las dos clases de tablet, composición decidida por tamaño de pantalla, más de una acción primaria, contexto crítico oculto, control táctil incompatible, información sensible innecesaria o uso del patrón como autorización.
+
+**Compatibilidad:** una evolución podrá reorganizar presentación, pero no cambiar la semántica de los siete slots, la separación personal/compartida ni las fronteras de autorización sin una modificación contractual versionada.
+
+---
+
+#### 9. API conceptual mínima
+
+La API conceptual queda:
+
+```text
+surfaceClass: "PERSONAL_TABLET" | "SHARED_TABLET"
+ariaLabel: string
+persistentContext: React.ReactNode
+blockingState?: React.ReactNode
+workIdentity: React.ReactNode
+stepContent: React.ReactNode
+primaryAction?: React.ReactNode
+secondarySupport?: React.ReactNode
+resultAndReceipt?: React.ReactNode
+```
+
+Los nombres expresan slots semánticos, no posiciones absolutas.
+
+La implementación futura podrá admitir atributos HTML compatibles del contenedor raíz sin convertirlos en una segunda fuente de semántica.
+
+---
+
+#### 10. Campos deliberadamente excluidos
+
+La API base no recibe:
+
+```text
+deviceId
+actorId
+permissionCode
+roleCode
+siteId
+areaId
+shiftId
+checkinId
+canOperate
+canExecute
+isAuthorized
+isOffline
+orientation
+breakpoint
+viewportWidth
+userAgent
+```
+
+Las razones son vinculantes:
+
+1. el patrón no resuelve autoridad;
+2. los identificadores técnicos no son contenido visual ordinario;
+3. orientación y ancho no definen elegibilidad empresarial;
+4. conectividad se presenta mediante una proyección ya resuelta;
+5. el patrón no debe convertirse en un router de layouts por heurísticas del cliente.
+
+---
+
+#### 11. Siete zonas semánticas preservadas
+
+UI017 conserva exactamente el orden conceptual aprobado en `UX-STATION-012`:
+
+```text
+1. PERSISTENT_CONTEXT
+2. BLOCKING_STATE
+3. WORK_IDENTITY
+4. STEP_CONTENT
+5. PRIMARY_ACTION
+6. SECONDARY_SUPPORT
+7. RESULT_AND_RECEIPT
+```
+
+Correspondencia:
+
+| Slot canónico        | Prop de UI017       | Regla                                                                 |
+| -------------------- | ------------------- | --------------------------------------------------------------------- |
+| `PERSISTENT_CONTEXT` | `persistentContext` | siempre presente; proyecta el contexto humano aplicable               |
+| `BLOCKING_STATE`     | `blockingState`     | aparece cuando una condición material debe detener o limitar          |
+| `WORK_IDENTITY`      | `workIdentity`      | siempre presente; identifica objeto, tarea, paso y estado necesario   |
+| `STEP_CONTENT`       | `stepContent`       | siempre presente; contiene captura, verificación o evidencia del paso |
+| `PRIMARY_ACTION`     | `primaryAction`     | máximo una instancia; puede faltar si no existe una acción segura     |
+| `SECONDARY_SUPPORT`  | `secondarySupport`  | ayuda, corrección, pausa o escalamiento subordinados                  |
+| `RESULT_AND_RECEIPT` | `resultAndReceipt`  | resultado confirmado, referencia y siguiente paso cuando apliquen     |
+
+La adaptación visual puede mover regiones, pero no invertir silenciosamente su prioridad semántica.
+
+---
+
+#### 12. Contexto persistente
+
+`persistentContext` debe mantener perceptibles los datos humanos necesarios para saber bajo qué contexto se actúa.
+
+Puede componer, según el caso:
+
+- `ContextIndicator`;
+- aviso de simulación;
+- actor humano;
+- sede y área vigentes;
+- turno y check-in cuando aplican;
+- estación o condición de dispositivo cuando sea material;
+- conectividad y frescura;
+- delegación o simulación vigentes.
+
+No debe imprimir estructuras runtime, IDs técnicos o permisos como sustituto del lenguaje humano.
+
+La compactación no puede borrar el contexto cuando confundirlo alteraría atribución, autoridad, territorio o resultado.
+
+---
+
+#### 13. Identidad del trabajo
+
+`workIdentity` mantiene visible la unidad de trabajo que la persona está operando.
+
+Puede incluir:
+
+- objeto empresarial;
+- proceso y paso en lenguaje humano;
+- estado vigente;
+- prioridad explicada cuando sea material;
+- propietario o pool cuando afecte la acción;
+- frescura;
+- restricción o diferencia relevante.
+
+No convierte una tarjeta visual en fuente de verdad y no almacena por sí misma el work item completo.
+
+---
+
+#### 14. Contenido del paso
+
+`stepContent` contiene únicamente la información y captura necesarias para el paso actual.
+
+Reglas:
+
+1. no duplica backoffice general;
+2. no presenta catálogos maestros completos por conveniencia;
+3. no obliga a navegar por múltiples paneles para una decisión simple;
+4. no oculta cantidad, unidad, destino, restricción o evidencia cuando cambien la decisión;
+5. no convierte un dato derivable en captura manual obligatoria;
+6. conserva borradores y estado mediante el propietario, no mediante el layout;
+7. puede componer `Card`, `Input`, controles de cantidad, selección, escaneo, cámara o evidencia cuando sus contratos lo autoricen.
+
+---
+
+#### 15. Acción primaria
+
+`primaryAction` admite como máximo una acción primaria elegible.
+
+Puede componer `PrimaryActionPanel` y `Button`, pero UI017 no determina qué acción es primaria.
+
+Reglas:
+
+- permanece próxima al contenido que modifica;
+- conserva estabilidad perceptiva;
+- no se desplaza bajo el dedo por una actualización tardía;
+- no se promociona una acción secundaria cuando la primaria queda bloqueada;
+- no usa visibilidad o habilitación como autorización definitiva;
+- no declara éxito antes del resultado autoritativo;
+- puede estar ausente en bloqueo, espera, conflicto o resultado desconocido.
+
+---
+
+#### 16. Soporte secundario
+
+`secondarySupport` puede contener:
+
+- corrección;
+- pausa;
+- ayuda contextual;
+- escalamiento;
+- detalle autorizado;
+- salida segura;
+- selector contextual cuando el proceso lo permita.
+
+No debe competir en jerarquía con `primaryAction`.
+
+Acciones destructivas, excepcionales o sensibles conservan los contratos propietarios y no se colocan junto a la acción ordinaria de manera propensa a toque accidental.
+
+---
+
+#### 17. Resultado y recibo
+
+`resultAndReceipt` presenta un resultado ya confirmado o el estado material que deba conservarse después de la acción.
+
+No puede inferir éxito desde:
+
+- animación;
+- cierre de modal;
+- desaparición del botón;
+- respuesta parcial;
+- lectura de periférico;
+- timeout;
+- guardado local;
+- navegación a otra superficie.
+
+Cuando el resultado sea parcial, pendiente, desconocido o conflictivo, se compone el patrón propietario correspondiente y no un mensaje de éxito genérico.
+
+---
+
+#### 18. Regla para retrato
+
+En una disposición estrecha o vertical, la presentación prioriza una columna semántica principal:
+
+```text
+CONTEXTO
+→ BLOQUEO, SI EXISTE
+→ IDENTIDAD DEL TRABAJO
+→ CONTENIDO DEL PASO
+→ ACCIÓN PRIMARIA, SI EXISTE
+→ SOPORTE SECUNDARIO
+→ RESULTADO O RECIBO
+```
+
+Puede existir contenido fijo o persistente cuando sea seguro, pero ninguna barra debe cubrir:
+
+- el control enfocado;
+- la etiqueta del campo;
+- el error;
+- el dato crítico;
+- la confirmación;
+- el resultado.
+
+---
+
+#### 19. Regla para paisaje
+
+En espacio horizontal suficiente, la superficie puede distribuir contenido en más de una región visual.
+
+La reorganización no puede:
+
+- alterar el orden de lectura;
+- mover información crítica a una columna secundaria inaccesible;
+- duplicar la acción primaria;
+- crear dos superficies operativas competidoras;
+- ocultar contexto por asumir que existe más espacio;
+- convertir una tablet en backoffice denso por tamaño;
+- crear scroll bidimensional ordinario.
+
+La misma composición semántica debe seguir siendo reconocible tras rotación.
+
+---
+
+#### 20. Orientación
+
+UI017 no fija orientación mediante una prop contractual.
+
+La orientación normal debe ser adaptable. Una orientación forzada solo puede provenir de un perfil de estación que la justifique por montaje, seguridad o tarea.
+
+Rotar o cambiar tamaño no puede:
+
+- borrar borradores;
+- repetir comandos;
+- resetear selección útil sin explicación;
+- duplicar componentes;
+- mover una acción sensible bajo un puntero activo;
+- cambiar el actor o contexto;
+- crear una segunda intención empresarial.
+
+---
+
+#### 21. Reflow
+
+La superficie táctil debe refluir sin scroll horizontal ordinario para el contenido mínimo de operación.
+
+El reflow conserva:
+
+- contexto;
+- identidad del trabajo;
+- estado;
+- etiquetas;
+- datos críticos;
+- errores;
+- borradores visibles;
+- acción aplicable;
+- resultado.
+
+Una tabla administrativa que legítimamente requiera una estrategia distinta conserva el contrato de `UX-BASE-012` y no convierte UI017 en propietario de densidad.
+
+---
+
+#### 22. Densidad
+
+El dispositivo no determina la densidad.
+
+UI017 puede envolver una superficie cuya densidad ya fue aprobada externamente, pero no promueve `D0`, `D1`, `D2`, `D3` o `D4` por ancho, rol o aplicación.
+
+Reglas:
+
+- la operación ordinaria mantiene foco en tarea, recurso, contexto, evidencia y siguiente acción;
+- una vista administrativa densa requiere justificación propia;
+- una pantalla grande no autoriza más información sensible;
+- una tablet no convierte una tabla compleja en experiencia operativa;
+- un patrón responsive no sustituye la clasificación de carril.
+
+---
+
+#### 23. Objetivos táctiles web
+
+Para controles web operativos dentro de UI017:
+
+- el objetivo preferente es un área activable equivalente a **48 × 48 unidades lógicas**;
+- el piso web nunca puede incumplir **24 × 24 CSS px**;
+- el icono puede ser menor que el hit area;
+- áreas activables no se superponen;
+- una excepción al objetivo preferente necesita justificación y validación física posterior;
+- acciones incompatibles conservan separación suficiente para evitar activación vecina.
+
+El mínimo nativo de otras plataformas pertenece a sus implementaciones nativas y no altera este contrato web.
+
+---
+
+#### 24. Estabilidad bajo el dedo
+
+Una actualización asíncrona no puede mover repentinamente una acción destructiva o sensible hacia la posición donde la persona ya está tocando.
+
+Durante procesamiento:
+
+- el objetivo activado mantiene identidad;
+- no aparece un control peligroso en su lugar;
+- un segundo toque no crea otra intención cuando el propietario ya bloqueó duplicidad;
+- el estado perceptible distingue procesando de confirmado;
+- un callback tardío no reemplaza un estado más reciente.
+
+La idempotencia empresarial permanece fuera del patrón visual.
+
+---
+
+#### 25. Teclado virtual
+
+Cuando el teclado virtual aparece:
+
+- el campo enfocado permanece visible;
+- su etiqueta, unidad, validación y error siguen accesibles;
+- el contenido puede desplazarse verticalmente sin perder contexto esencial;
+- la acción principal permanece alcanzable sin superponerse al campo;
+- una barra persistente no cubre el teclado ni la zona de captura;
+- cerrar el teclado no confirma automáticamente el dato ni ejecuta la acción principal.
+
+UI017 no controla directamente el teclado del sistema.
+
+---
+
+#### 26. Minimización de escritura
+
+El patrón favorece:
+
+- contexto ya conocido;
+- escaneo;
+- selección breve;
+- cantidades estructuradas;
+- valores derivados;
+- motivos catalogados;
+- captura automática validable;
+- teclado apropiado al tipo de dato.
+
+El texto libre se utiliza cuando aporta información nueva y su propietario conserva el borrador.
+
+La reducción de escritura no autoriza inferir datos sensibles, cantidades físicas u observaciones que requieren captura real.
+
+---
+
+#### 27. Gestos y modalidades de entrada
+
+Ninguna función esencial depende exclusivamente de:
+
+- hover;
+- arrastre preciso;
+- swipe oculto;
+- pulsación prolongada;
+- doble toque;
+- pinza;
+- gesto de borde.
+
+Cuando exista una interacción gestual, debe existir una alternativa perceptible compatible con el contrato del paso.
+
+La implementación futura conserva operación con teclado, mouse, stylus, switch access y tecnologías de asistencia cuando el dispositivo y el navegador los soporten.
+
+---
+
+#### 28. Cantidades y unidades
+
+Cuando `stepContent` incluya captura numérica:
+
+- valor y unidad permanecen juntos;
+- presentación y límites se explican cuando afectan la decisión;
+- precisión y decimales se conservan;
+- controles de incremento tienen hit areas adecuados;
+- rangos grandes admiten entrada directa cuando corresponda;
+- cero, vacío y no observado permanecen diferenciados;
+- cambiar unidad o presentación no ocurre silenciosamente.
+
+UI017 no ejecuta conversiones empresariales.
+
+---
+
+#### 29. Escáner, cámara y periféricos
+
+El patrón puede componer controles propietarios de escáner, cámara, impresora, báscula, datáfono u otra capacidad.
+
+Debe preservar perceptibilidad de:
+
+```text
+CAPACIDAD DISPONIBLE
+→ CAPTURA O COMANDO
+→ RECEPCIÓN
+→ RESULTADO CONOCIDO O DESCONOCIDO
+→ ALTERNATIVA O CONTINGENCIA
+```
+
+Una lectura no equivale por sí misma a un movimiento, pago, recepción o confirmación.
+
+UI017 no abre hardware, administra drivers ni decide retries de periféricos.
+
+---
+
+#### 30. Ambiente y seguridad física
+
+El uso en tablet debe admitir que el perfil real incluya:
+
+- guantes;
+- humedad;
+- grasa;
+- harina o polvo;
+- frío;
+- reflejos;
+- ruido;
+- vibración;
+- movimiento;
+- limpieza frecuente;
+- manos ocupadas.
+
+UI017 no obliga a usar pantalla táctil si el perfil determina que tocarla es antihigiénico, inseguro o ineficiente.
+
+No se exige interacción en pantalla mientras la persona conduce, manipula cuchillos, calor, maquinaria, cargas o una tarea que requiere atención física incompatible.
+
+---
+
+#### 31. `PERSONAL_TABLET`
+
+`PERSONAL_TABLET` representa una tablet asignada a una experiencia personal o individual, no una concesión permanente de autoridad.
+
+Reglas:
+
+- el actor continúa siendo resuelto por la capa propietaria;
+- la sesión puede expirar;
+- contexto y permisos se revalidan;
+- una preferencia local no amplía alcance;
+- datos cacheados no sustituyen frescura ni autorización;
+- la superficie no presupone que el dispositivo pertenece para siempre a la misma persona.
+
+La clasificación personal reduce riesgo de relevo, pero no elimina las reglas de identidad, privacidad y cierre de sesión.
+
+---
+
+#### 32. `SHARED_TABLET`
+
+`SHARED_TABLET` exige especial cuidado de actor y limpieza.
+
+Mientras exista un actor activo, la superficie mantiene perceptible:
+
+- actor humano;
+- sede y área aplicables;
+- rol operativo cuando sea material;
+- turno y check-in cuando correspondan;
+- tarea o work item;
+- conectividad;
+- simulación o delegación cuando existan.
+
+El dispositivo técnico nunca se presenta como trabajador.
+
+Si no existe actor cuando una mutación personal lo requiere, la composición propietaria bloquea la mutación; UI017 no inventa un actor de estación.
+
+---
+
+#### 33. Cambio de actor en tablet compartida
+
+UI017 debe ser compatible con la secuencia propietaria de cambio de actor:
+
+```text
+DETENER NUEVAS MUTACIONES
+→ CLASIFICAR TRABAJO, BORRADOR Y CUSTODIA
+→ RESOLVER PENDIENTES
+→ CERRAR O TRANSFERIR SESIÓN SEGÚN CONTRATO
+→ LIMPIAR DATOS Y PREFERENCIAS PERSONALES
+→ IDENTIFICAR NUEVO ACTOR
+→ RESOLVER CONTEXTO NUEVO
+→ RECALCULAR TRABAJO Y ACCIONES
+```
+
+El patrón no transfiere automáticamente:
+
+- borradores;
+- claims;
+- permisos;
+- PIN;
+- firma;
+- búsquedas;
+- filtros privados;
+- favoritos;
+- datos sensibles;
+- estado avanzado de otro actor.
+
+---
+
+#### 34. Privacidad
+
+UI017 aplica minimización presentacional.
+
+No debe recibir por conveniencia:
+
+- secretos;
+- tokens;
+- credenciales;
+- payloads completos;
+- permisos internos completos;
+- datos personales ajenos;
+- datos sensibles no necesarios para el paso;
+- previews de otro actor;
+- diagnósticos técnicos restringidos.
+
+En `SHARED_TABLET`, el cambio de actor debe permitir limpiar contenido visual y estado sensible sin eliminar evidencia empresarial que pertenezca al backend o a un flujo de recuperación.
+
+---
+
+#### 35. Conectividad y frescura
+
+El patrón presenta conectividad y frescura ya resueltas cuando son materiales.
+
+Cada acción táctil conserva externamente una política equivalente a:
+
+```text
+ONLINE_REQUIRED
+OFFLINE_CAPTURE_ALLOWED
+OFFLINE_QUEUE_ALLOWED
+STALE_READ_ONLY
+MANUAL_CONTINGENCY
+```
+
+UI017 no calcula esa política.
+
+Reglas visuales:
+
+- guardado local no se presenta como confirmado por servidor;
+- offline no extiende permisos vencidos;
+- pendientes locales siguen perceptibles;
+- stale read-only no habilita mutaciones;
+- reconectar exige revalidación propietaria;
+- una lista vacía no se declara como cero confirmado si falló la consulta.
+
+---
+
+#### 36. Feedback táctil
+
+Toda activación material debe producir feedback perceptible sin fabricar éxito.
+
+La secuencia conceptual queda:
+
+```text
+TOQUE RECONOCIDO
+→ PROCESANDO
+→ CONFIRMADO
+   o
+→ BLOQUEADO / PENDIENTE / CONFLICTO / RESULTADO DESCONOCIDO
+```
+
+Sonido y vibración pueden reforzar, pero nunca son el único canal.
+
+UI017 no emite receipts empresariales ni determina resultados.
+
+---
+
+#### 37. Bloqueos y diagnóstico
+
+`blockingState` puede componer:
+
+- `ContextDiagnostic`;
+- un bloqueo de autorización ya proyectado de forma segura;
+- una condición de proceso;
+- una condición de dispositivo o capacidad;
+- una espera que deba detener la acción actual.
+
+El patrón no mezcla bloqueo con error técnico ni convierte falta de permiso en retry.
+
+Un bloqueo relevante debe explicar causa segura y condición de salida mediante su patrón propietario.
+
+---
+
+#### 38. Recuperación
+
+Cuando exista fallo recuperable, UI017 puede componer `RecoverableErrorState` dentro de la zona correspondiente sin cambiar su contrato.
+
+Debe conservar:
+
+- estado preservado;
+- siguiente paso;
+- acción segura;
+- resultado parcial o desconocido;
+- referencia de soporte cuando corresponda.
+
+La superficie tablet no agrega un retry por ser táctil ni por facilitar repetición rápida.
+
+---
+
+#### 39. Estados vacíos
+
+`EmptyState` se utiliza únicamente cuando la fuente propietaria confirmó una ausencia real.
+
+No se presenta vacío por:
+
+- timeout;
+- error de red;
+- fallo de autorización;
+- consulta parcial;
+- resultado stale no verificable;
+- carga sin terminar;
+- filtro cuya consulta falló.
+
+En tablet, reducir densidad no autoriza reemplazar una condición incompleta por una pantalla vacía simple.
+
+---
+
+#### 40. Alertas
+
+`Alert` conserva su función de mensaje o estado ya determinado.
+
+UI017 puede ubicar alertas dentro de la composición, pero una alerta no desplaza automáticamente:
+
+- contexto;
+- work identity;
+- acción primaria;
+- bloqueo material;
+- resultado.
+
+Alertas repetidas no deben convertir la parte superior de la tablet en un muro de mensajes que oculte la tarea.
+
+---
+
+#### 41. Navegación de tareas
+
+`TaskNavigation` conserva su contrato propietario.
+
+En tablet:
+
+- la navegación no sustituye work identity;
+- cambiar de elemento no se ejecuta mientras exista una condición que requiera preservar o resolver el trabajo actual;
+- la selección táctil mantiene targets adecuados;
+- listas y tabs no dependen de hover;
+- el patrón no crea rutas nuevas.
+
+---
+
+#### 42. Línea de estados de proceso
+
+`ProcessStatusLine` puede presentar el avance del proceso cuando ese contexto sea relevante.
+
+UI017 no convierte la línea de estados en control de transición.
+
+La compactación puede reducir detalle secundario, pero no puede ocultar el estado actual, un bloqueo material o el siguiente paso por falta de espacio.
+
+---
+
+#### 43. Acción sensible
+
+Una acción sensible sigue perteneciendo a `SHELL-UI-014`.
+
+UI017 únicamente asegura ergonomía adecuada alrededor de la confirmación:
+
+- recurso y efecto visibles;
+- target estable;
+- cancelación separada;
+- ausencia de activación accidental;
+- foco predecible;
+- reflow ante teclado o cambio de tamaño.
+
+El nivel de confirmación, step-up o doble control se decide externamente.
+
+---
+
+#### 44. Simulación
+
+Una simulación activa debe permanecer perceptible mediante el patrón propietario.
+
+UI017 no puede:
+
+- ocultar el aviso por falta de espacio;
+- convertir un actor simulado en actor real;
+- presentar contexto simulado como autoridad;
+- usar la tablet como justificación para simplificar la señal de simulación.
+
+La compactación nunca elimina una advertencia material de autoridad o contexto.
+
+---
+
+#### 45. Relación con AppShell
+
+`TabletTaskSurface` no sustituye AppShell.
+
+AppShell conserva chrome, catálogo, sesión y navegación global cuando correspondan.
+
+UI017 organiza la superficie de trabajo interna de tablet y no decide:
+
+- qué aplicación está disponible;
+- qué destino global puede abrirse;
+- qué usuario inició sesión;
+- qué permisos posee el actor;
+- qué menú global debe mostrarse.
+
+---
+
+#### 46. Frontera con kiosco
+
+`SHELL-UI-018` conserva exclusivamente la especialización de kiosco.
+
+Quedan fuera de UI017:
+
+- modo de aplicación bloqueada;
+- restricción del sistema operativo;
+- salida autorizada de kiosco;
+- mantenimiento técnico de estación fija;
+- restricciones de portapapeles o descargas propias de kiosco administrado;
+- recuperación de una terminal bloqueada;
+- perfil `FIXED_KIOSK`.
+
+Una tablet física configurada y operada como kiosco se trata por UI018, no por UI017.
+
+---
+
+#### 47. Frontera con proceso interrumpido
+
+`SHELL-UI-019` conserva checkpoint, reconstrucción y reanudación de procesos interrumpidos.
+
+UI017 garantiza que rotación, reflow o teclado no destruyan visualmente el estado que su propietario conserva, pero no define:
+
+- checkpoints;
+- TTL de borradores;
+- ownership de reanudación;
+- takeover;
+- reconciliación de operaciones pendientes;
+- restauración cross-device.
+
+---
+
+#### 48. Frontera con traspaso entre aplicaciones
+
+`SHELL-UI-020` conserva el handoff cross-app.
+
+UI017 puede mostrar una acción o resultado de handoff ya resuelto, pero no transporta autoridad por URL, no crea deep links autoritativos y no decide qué aplicación es propietaria del siguiente paso.
+
+---
+
+#### 49. Accesibilidad
+
+La materialización futura debe conservar:
+
+1. nombres y roles accesibles;
+2. orden lógico de foco;
+3. foco visible;
+4. operación por teclado;
+5. compatibilidad con lector de pantalla;
+6. switch access cuando el entorno lo soporte;
+7. zoom y tamaño de texto;
+8. contraste suficiente;
+9. reflow;
+10. alternativas a gestos;
+11. alternativa visual a sonido o vibración;
+12. tiempo suficiente;
+13. autenticación accesible en las superficies propietarias;
+14. hit areas que coinciden con el control anunciado;
+15. ausencia de targets invisibles que capturen controles vecinos.
+
+La superficie no depende de color como único significado.
+
+---
+
+#### 50. Orden de foco
+
+El orden de foco debe seguir el orden semántico de la tarea, no la geometría cambiante de retrato o paisaje.
+
+Regla general:
+
+```text
+CONTEXTO RELEVANTE
+→ BLOQUEO MATERIAL
+→ IDENTIDAD DEL TRABAJO
+→ CONTENIDO INTERACTIVO
+→ ACCIÓN PRIMARIA
+→ SOPORTE SECUNDARIO
+→ RESULTADO O SIGUIENTE PASO
+```
+
+Una rotación no reinicia el foco sin necesidad ni lo envía a una acción destructiva.
+
+Una actualización de fondo no roba foco.
+
+---
+
+#### 51. Lectores de pantalla
+
+La lectura asistiva debe conservar:
+
+- actor y contexto cuando sean materiales;
+- identidad del trabajo;
+- estado;
+- labels de captura;
+- unidad;
+- error;
+- acción y efecto;
+- resultado;
+- limitación de conectividad;
+- bloqueo o recuperación.
+
+No verbaliza datos ocultos, enmascarados o pertenecientes a otro actor.
+
+---
+
+#### 52. Semántica HTML
+
+`TabletTaskSurface` es conceptualmente un contenedor de trabajo con regiones semánticas internas.
+
+No impone una jerarquía de headings inválida ni usa `role="application"` como requisito universal.
+
+No impone `aria-live` sobre toda la superficie.
+
+Las regiones de alerta, estado, diálogo o navegación conservan la semántica de sus componentes propietarios.
+
+`ariaLabel` identifica la superficie cuando la composición necesita un nombre accesible explícito.
+
+---
+
+#### 53. Compatibilidad server/client
+
+La estructura base de UI017 no requiere por sí misma:
+
+- `window`;
+- `document`;
+- storage;
+- timers;
+- red;
+- Supabase;
+- router;
+- listeners globales;
+- APIs de hardware.
+
+Por tanto, la superficie base es conceptualmente server-safe.
+
+Los hijos interactivos pueden requerir cliente, pero su necesidad no convierte a `TabletTaskSurface` en propietario de sus efectos.
+
+---
+
+#### 54. Dependencias prohibidas
+
+`TabletTaskSurface` no dependerá directamente de:
+
+- `@vento/supabase`;
+- clientes Supabase;
+- tablas;
+- RPC;
+- Edge Functions;
+- Storage;
+- Realtime;
+- APIs de dominio;
+- drivers de periféricos;
+- módulos internos de una aplicación;
+- catálogos locales de permisos;
+- heurísticas de dispositivo como fuente de autoridad.
+
+---
+
+#### 55. Estado técnico actual de SHELL
+
+El estado remoto verificable mantiene un único workspace físico bajo `packages/`:
+
+```text
+os-context
+```
+
+No existe todavía un package físico `@vento/ui-web`.
+
+`src/components/ui` conserva:
+
+```text
+Button
+Card
+Chip
+Input
+Modal
+```
+
+más el barrel `index.ts`.
+
+No existe una implementación física `TabletTaskSurface`.
+
+Resultado:
+
+```text
+CONTRATO UI017          = ESPECIFICADO DOCUMENTALMENTE
+PATRÓN FÍSICO           = NO MATERIALIZADO
+PACKAGE @vento/ui-web   = NO MATERIALIZADO
+ADOPCIÓN RUNTIME        = 0
+CAMBIOS SUPABASE        = 0
+```
+
+---
+
+#### 56. Reconciliación de primitivas locales
+
+| Primitiva local | Decisión frente a UI017                                         |
+| --------------- | --------------------------------------------------------------- |
+| `Button`        | control potencial dentro de acciones; no layout de tablet       |
+| `Card`          | agrupación potencial; no patrón de dispositivo                  |
+| `Chip`          | señal compacta potencial; no contexto suficiente por sí sola    |
+| `Input`         | captura potencial; no contrato de teclado, proceso ni autoridad |
+| `Modal`         | diálogo potencial; no contenedor universal de tablet            |
+
+Ninguna de las cinco primitivas equivale a `TabletTaskSurface`.
+
+No se retira ni se adopta código local en esta tarea.
+
+---
+
+#### 57. Matriz materializada de consumidores
+
+Se conserva el conjunto canónico de siete consumidores web compartidos.
+
+| Consumidor | Decisión UI017                                            | Implementación en esta tarea |
+| ---------- | --------------------------------------------------------- | ---------------------------: |
+| SHELL      | `ELEGIBILIDAD_TABLET_CONDICIONADA_A_SUPERFICIE_Y_PERFIL`  |                            0 |
+| NEXO       | `CANDIDATO_OPERATIVO_TABLET`                              |                            0 |
+| FOGO       | `CANDIDATO_OPERATIVO_TABLET`                              |                            0 |
+| ORIGO      | `CANDIDATO_OPERATIVO_TABLET`                              |                            0 |
+| VISO       | `CANDIDATO_TABLET_ACOTADO_SIN_CONVERTIR_BACKOFFICE_DENSO` |                            0 |
+| PULSO      | `CANDIDATO_OPERATIVO_TABLET`                              |                            0 |
+| NUMERA     | `CANDIDATO_TABLET_ACOTADO_SIN_CONVERTIR_BACKOFFICE_DENSO` |                            0 |
+
+Reconciliación:
+
+```text
+TOTAL ESPERADO      = 7
+TOTAL MATERIALIZADO = 7
+FALTANTES           = 0
+DUPLICADOS          = 0
+ADOPCIONES FÍSICAS  = 0
+```
+
+La decisión no afirma que los siete consumidores tengan hoy una superficie tablet equivalente. Determina únicamente su disposición explícita frente al patrón compartido futuro.
+
+---
+
+#### 58. Decisión por consumidor: SHELL
+
+SHELL puede usar el patrón cuando una superficie interna haya sido clasificada legítimamente para tablet.
+
+No se convierte el launcher, login o backoffice completo en tablet por el solo tamaño del dispositivo.
+
+Decisión:
+
+```text
+ELEGIBILIDAD_TABLET_CONDICIONADA_A_SUPERFICIE_Y_PERFIL
+```
+
+---
+
+#### 59. Decisión por consumidor: NEXO
+
+Las operaciones móviles y de bodega pueden requerir objetivos amplios, escaneo, cantidades, contexto, feedback y continuidad táctil.
+
+UI017 es candidato de composición, sin trasladar reglas de inventario, recepción, picking, carga o custodia al package compartido.
+
+Decisión:
+
+```text
+CANDIDATO_OPERATIVO_TABLET
+```
+
+---
+
+#### 60. Decisión por consumidor: FOGO
+
+Las superficies de producción pueden usar tablet donde el perfil de estación permita interacción segura frente a guantes, humedad, harina, calor, manos ocupadas y puntos de interacción controlados.
+
+UI017 no decide receta, lote, cantidad, inocuidad o momento físico seguro.
+
+Decisión:
+
+```text
+CANDIDATO_OPERATIVO_TABLET
+```
+
+---
+
+#### 61. Decisión por consumidor: ORIGO
+
+Recepción, conteo, diferencias y consulta en movimiento pueden usar tablet con captura estructurada, cámara o escáner como apoyo.
+
+La lectura de un código o una imagen no confirma automáticamente recepción ni inventario.
+
+Decisión:
+
+```text
+CANDIDATO_OPERATIVO_TABLET
+```
+
+---
+
+#### 62. Decisión por consumidor: VISO
+
+VISO puede usar tablet para consulta o decisiones acotadas cuando el contrato de superficie lo justifique.
+
+UI017 no compacta automáticamente interfaces densas de planificación, conciliación, configuración o auditoría para hacerlas operativas.
+
+Decisión:
+
+```text
+CANDIDATO_TABLET_ACOTADO_SIN_CONVERTIR_BACKOFFICE_DENSO
+```
+
+---
+
+#### 63. Decisión por consumidor: PULSO
+
+PULSO puede usar tablet para flujos táctiles compatibles de venta, atención, entrega o consulta, preservando privacidad frente a cliente y confirmación real de pagos o periféricos.
+
+UI017 no absorbe lógica POS, financiera, fiscal o de datáfono.
+
+Decisión:
+
+```text
+CANDIDATO_OPERATIVO_TABLET
+```
+
+---
+
+#### 64. Decisión por consumidor: NUMERA
+
+NUMERA puede utilizar tablet para consulta o decisiones acotadas cuando la tarea, densidad y sensibilidad sean compatibles.
+
+UI017 no transforma por responsive una superficie analítica o administrativa densa en flujo táctil simplificado.
+
+Decisión:
+
+```text
+CANDIDATO_TABLET_ACOTADO_SIN_CONVERTIR_BACKOFFICE_DENSO
+```
+
+---
+
+#### 65. Estrategia posterior de migración
+
+La adopción física queda fuera de UI017.
+
+El gobierno `SHELL-MIG-*` deberá:
+
+1. inventariar superficies existentes que se usan o pretenden usar en tablet;
+2. clasificar cada una contra `PERSONAL_TABLET` o `SHARED_TABLET` cuando corresponda;
+3. identificar `DESKTOP_SHRUNK`, targets pequeños, hover, drag, teclado excesivo, contexto oculto, riesgos de privacidad, ausencia de offline y orientación insegura;
+4. crear adapters de composición sin mover autoridad al package visual;
+5. migrar por lotes reversibles;
+6. validar targets, reflow, foco, teclado virtual, accesibilidad, privacidad y cambios de actor;
+7. probar en dispositivo representativo antes de ampliar despliegue;
+8. demostrar paridad y rollback antes de retirar patrones legacy.
+
+---
+
+#### 66. Handoff a migración coordinada
+
+| Tarea           | Handoff de UI017                                                           |
+| --------------- | -------------------------------------------------------------------------- |
+| `SHELL-MIG-001` | inventariar superficies tablet, responsive legacy y composición actual     |
+| `SHELL-MIG-002` | agrupar adopción por consumidor, perfil y riesgo                           |
+| `SHELL-MIG-003` | fijar compatibilidad temporal y evitar nuevas variantes tablet divergentes |
+| `SHELL-MIG-004` | impedir que scaffolds conviertan desktop reducido en estándar táctil       |
+| `SHELL-MIG-005` | adoptar `TabletTaskSurface` donde el perfil ya esté aprobado               |
+| `SHELL-MIG-006` | validar targets, reflow, foco, accesibilidad, privacidad y dispositivo     |
+| `SHELL-MIG-007` | demostrar paridad de tarea, contexto, estado, acción y recuperación        |
+| `SHELL-MIG-008` | retirar únicamente superficies legacy sin uso residual y con rollback      |
+
+---
+
+#### 67. Handoff a calidad y releases
+
+| Tarea          | Responsabilidad                          |
+| -------------- | ---------------------------------------- |
+| `SHELL-CI-001` | pruebas propias del package              |
+| `SHELL-CI-002` | build independiente                      |
+| `SHELL-CI-003` | release versionado                       |
+| `SHELL-CI-004` | changelog                                |
+| `SHELL-CI-005` | matriz de compatibilidad por consumidor  |
+| `SHELL-CI-006` | actualización controlada de consumidores |
+
+La aprobación documental no constituye release ni compatibilidad certificada.
+
+---
+
+#### 68. Validación física posterior
+
+La futura adopción de UI017 deberá verificarse en un dispositivo o clase representativa del perfil real.
+
+La evidencia posterior deberá cubrir, cuando aplique:
+
+- orientación;
+- forma de sostener o montar la tablet;
+- distancia de lectura;
+- teclado virtual;
+- mano dominante;
+- guantes;
+- iluminación y reflejos;
+- ruido;
+- movilidad;
+- periféricos;
+- conectividad degradada;
+- cambio de actor;
+- interrupción y reanudación;
+- tecnologías de asistencia;
+- privacidad frente a terceros.
+
+La emulación de escritorio no es evidencia física suficiente para despliegue.
+
+---
+
+#### 69. Contrato futuro de prueba
+
+La materialización y adopción deberán demostrar, como mínimo:
+
+1. aceptación únicamente de `PERSONAL_TABLET` y `SHARED_TABLET`;
+2. rechazo conceptual de `FIXED_KIOSK` como clase de UI017;
+3. ausencia de detección de autoridad por dispositivo;
+4. ausencia de selección de patrón por `userAgent` como fuente canónica;
+5. ausencia de permiso derivado del ancho de pantalla;
+6. presencia de `persistentContext`;
+7. presencia de `workIdentity`;
+8. presencia de `stepContent`;
+9. máximo una acción primaria;
+10. ausencia de acción primaria cuando no existe salida segura;
+11. orden semántico de siete slots preservado;
+12. retrato en flujo legible de una columna cuando corresponda;
+13. paisaje sin cambiar semántica;
+14. rotación sin pérdida de borrador;
+15. rotación sin duplicación de comando;
+16. reflow sin scroll horizontal ordinario del contenido mínimo;
+17. contexto no oculto por compactación;
+18. estado no oculto por compactación;
+19. errores no cubiertos por barra persistente;
+20. acción primaria no cubierta por teclado virtual;
+21. campo enfocado visible con teclado virtual;
+22. target operativo preferente de 48 × 48 unidades lógicas;
+23. piso web de 24 × 24 CSS px respetado;
+24. hit areas no superpuestas;
+25. separación entre acciones incompatibles;
+26. objetivo estable bajo el dedo;
+27. doble toque sin duplicidad empresarial;
+28. feedback de procesamiento distinto de confirmación;
+29. hover no requerido;
+30. swipe oculto no requerido;
+31. drag preciso no requerido;
+32. alternativa a gesto disponible;
+33. teclado funcional;
+34. mouse y stylus compatibles cuando estén disponibles;
+35. lector de pantalla con orden lógico;
+36. foco visible;
+37. cambio de orientación sin robo de foco;
+38. zoom y aumento de texto sin pérdida de acción o contexto;
+39. significado no dependiente solo de color;
+40. sonido o vibración con alternativa visual;
+41. cantidades con unidad y precisión visibles;
+42. cero separado de vacío y no observado;
+43. captura periférica separada de resultado empresarial;
+44. timeout de periférico sin retry ciego;
+45. `PERSONAL_TABLET` sin autoridad permanente implícita;
+46. `SHARED_TABLET` con actor humano perceptible;
+47. dispositivo técnico separado del actor;
+48. cambio de actor sin heredar borradores o datos personales;
+49. ausencia de datos del actor anterior tras relevo;
+50. offline separado de confirmación de servidor;
+51. stale read-only sin mutaciones;
+52. pendientes locales perceptibles;
+53. contexto revalidado después de reconexión cuando aplique;
+54. `EmptyState` únicamente ante ausencia confirmada;
+55. `RecoverableErrorState` compuesto sin cambiar su política de retry;
+56. `ContextDiagnostic` compuesto sin convertirlo en autorización;
+57. confirmación sensible con separación táctil suficiente;
+58. simulación visible cuando exista;
+59. AppShell conservado como propietario del chrome global;
+60. UI018 conservado como propietario de kiosco;
+61. UI019 conservado como propietario de reanudación;
+62. UI020 conservado como propietario de handoff cross-app;
+63. ausencia de dependencia directa de Supabase;
+64. estructura base renderizable sin APIs exclusivas del navegador;
+65. siete decisiones de consumidor materializadas;
+66. cero faltantes y cero duplicados en la matriz;
+67. migración reversible por consumidor;
+68. prueba en dispositivo representativo antes de despliegue amplio.
+
+Esta lista define evidencia futura y no declara ejecución física dentro de UI017.
+
+---
+
+#### 70. Cobertura de requisitos vigente
+
+UI017 no necesita crear una obligación transversal nueva porque el Registro Canónico vigente ya protege, entre otras, las siguientes materias:
+
+- perfil explícito de superficie táctil y separación entre tablet, kiosco y otras estaciones: `TREQ-UX-204`;
+- objetivos táctiles, hit areas y pisos de accesibilidad: `TREQ-UX-205`;
+- espaciado y prevención de activación vecina: `TREQ-UX-206`;
+- proximidad, estabilidad y alcance de la acción principal: `TREQ-UX-207`;
+- postura, montaje y ergonomía reales: `TREQ-UX-208`;
+- orientación, reflow, teclado y conservación de estado: `TREQ-UX-209`;
+- alternativas a hover y gestos: `TREQ-UX-210`;
+- minimización de escritura: `TREQ-UX-211`;
+- cantidades, unidades y steppers: `TREQ-UX-212`;
+- escáner, cámara, periféricos y resultado físico: `TREQ-UX-213`;
+- ambiente, higiene y modalidad apropiada: `TREQ-UX-214`;
+- seguridad física y puntos seguros de interacción: `TREQ-UX-215`;
+- actor, contexto y atribución persistentes en tablet compartida: `TREQ-UX-216`;
+- cambio de trabajador y limpieza: `TREQ-UX-217`;
+- minimización y privacidad frente a terceros: `TREQ-UX-218`;
+- protección de acciones sensibles: `TREQ-UX-219`;
+- doble toque, concurrencia e idempotencia: `TREQ-UX-220`;
+- feedback, latencia y resultado desconocido: `TREQ-UX-221`;
+- conectividad y límites offline: `TREQ-UX-222`;
+- accesibilidad táctil: `TREQ-UX-223`;
+- selección de modalidad y prueba en dispositivo real: `TREQ-UX-225`;
+- migración, métricas y rollback: `TREQ-UX-226`;
+- responsabilidad compartida, compatibilidad y rollback de packages: `TREQ-SHELL-002`, `TREQ-SHELL-006` y `TREQ-SHELL-007`;
+- validación automatizada del registro: `TREQ-SHELL-008`;
+- reconciliación de primitivas locales antes de adopción o retiro: `TREQ-SHELL-032`;
+- identidad de release y gobierno de superficies compartidas: `TREQ-SHELL-036` a `TREQ-SHELL-039`.
+
+`TREQ-UX-224` conserva la obligación específica de modo kiosco y permanece fuera de la especialización de UI017.
+
+---
+
+#### 71. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+Justificación: la cobertura vigente ya define perfil de tablet, interacción táctil, ergonomía, reflow, identidad, privacidad, conectividad, accesibilidad, prueba física, migración, compatibilidad y rollback. UI017 especializa la composición compartida de esas obligaciones sin introducir una obligación nueva.
+
+---
+
+#### 72. Estado de materialización física
+
+Al cierre documental de UI017:
+
+```text
+IDENTIDAD TabletTaskSurface                 = ESPECIFICADA
+TabletTaskSurfaceProps                      = ESPECIFICADO CONCEPTUALMENTE
+TabletSurfaceClass                          = 2 CLASES REUTILIZADAS
+CONTRATO TABLET-TASK-SURFACE-CONTRACT-001   = ESPECIFICADO
+SLOTS SEMÁNTICOS                            = 7 PRESERVADOS
+FRONTERA TABLET / KIOSCO                    = CERRADA
+FRONTERA TABLET / AUTORIZACIÓN              = CERRADA
+FRONTERA TABLET / DENSIDAD                  = CERRADA
+FRONTERA TABLET / REANUDACIÓN               = CERRADA
+FRONTERA TABLET / HANDOFF CROSS-APP         = CERRADA
+ERGONOMÍA TÁCTIL                            = ESPECIFICADA DOCUMENTALMENTE
+REFLOW Y TECLADO                            = ESPECIFICADOS DOCUMENTALMENTE
+ACCESIBILIDAD                               = ESPECIFICADA DOCUMENTALMENTE
+PRIVACIDAD                                  = ESPECIFICADA DOCUMENTALMENTE
+CONSUMIDORES RECONCILIADOS                  = 7/7
+FALTANTES                                   = 0
+DUPLICADOS                                  = 0
+PACKAGE @vento/ui-web                       = NO MATERIALIZADO
+PATRÓN FÍSICO                               = NO MATERIALIZADO
+CONSUMIDORES MIGRADOS                       = 0
+CAMBIOS SUPABASE                            = 0
+CAMBIOS TREQ                                = 0
+```
+
+---
+
+#### 73. Decisiones vinculantes
+
+1. El patrón conceptual se denomina `TabletTaskSurface`.
+2. Pertenece conceptualmente a `@vento/ui-web`.
+3. UI017 es documental y no materializa código.
+4. El contrato se denomina `TABLET-TASK-SURFACE-CONTRACT-001`.
+5. UI017 reutiliza únicamente `PERSONAL_TABLET` y `SHARED_TABLET`.
+6. `FIXED_KIOSK` pertenece a UI018.
+7. La elegibilidad de tablet se resuelve fuera del componente.
+8. No se usa `userAgent` como fuente canónica de elegibilidad.
+9. Ancho de viewport no concede semántica, autoridad ni densidad.
+10. La API conceptual conserva siete slots semánticos heredados.
+11. `persistentContext`, `workIdentity` y `stepContent` son obligatorios.
+12. `blockingState`, `primaryAction`, `secondarySupport` y `resultAndReceipt` son condicionales.
+13. Puede existir como máximo una acción primaria.
+14. UI017 no decide la acción primaria.
+15. UI017 no decide permisos.
+16. UI017 no resuelve actor, sede, área, turno o check-in.
+17. UI017 no ejecuta efectos empresariales.
+18. UI017 no administra periféricos.
+19. UI017 no calcula política offline.
+20. UI017 no transforma guardado local en confirmación de servidor.
+21. Retrato y paisaje conservan el mismo orden semántico.
+22. Una rotación no crea una nueva intención empresarial.
+23. El contenido mínimo no requiere scroll horizontal ordinario.
+24. El patrón no convierte tablet en backoffice denso.
+25. La densidad permanece gobernada por el contrato propietario.
+26. El objetivo táctil operativo web preferente es 48 × 48 unidades lógicas.
+27. El piso web de 24 × 24 CSS px permanece obligatorio.
+28. Hit areas no se superponen.
+29. Acciones incompatibles mantienen separación.
+30. Una actualización no mueve un control sensible bajo el dedo.
+31. El teclado virtual no cubre el control activo ni su error.
+32. Cerrar teclado no confirma una operación.
+33. Hover no es obligatorio.
+34. Swipe, drag, long press o doble toque no son el único acceso a una función esencial.
+35. Teclado, mouse, stylus y asistencia conservan rutas equivalentes cuando aplican.
+36. Captura numérica conserva valor, unidad y precisión.
+37. Cero, vacío y no observado permanecen distintos.
+38. Captura periférica no equivale a resultado empresarial.
+39. El entorno físico puede impedir el uso de touch y exigir otra modalidad.
+40. La rapidez no prevalece sobre seguridad física o higiene.
+41. `PERSONAL_TABLET` no implica autoridad permanente.
+42. `SHARED_TABLET` mantiene actor humano perceptible.
+43. El dispositivo técnico no es el actor.
+44. El cambio de actor no transfiere borradores ni autoridad.
+45. UI017 no contiene un sistema propio de identidad de dispositivo.
+46. La privacidad se aplica por minimización y limpieza presentacional.
+47. Conectividad y frescura llegan ya resueltas.
+48. Reconexion exige revalidación propietaria cuando aplica.
+49. Feedback distingue procesamiento de confirmación.
+50. `ContextDiagnostic` conserva diagnóstico de contexto.
+51. `RecoverableErrorState` conserva recuperación.
+52. `EmptyState` conserva ausencia confirmada.
+53. `Alert` conserva mensaje genérico.
+54. `TaskNavigation` conserva navegación de tareas.
+55. `ProcessStatusLine` conserva estado de proceso.
+56. `PrimaryActionPanel` conserva jerarquía de acción.
+57. `SHELL-UI-014` conserva confirmación sensible.
+58. AppShell conserva chrome y navegación global.
+59. UI018 conserva especialización de kiosco.
+60. UI019 conserva proceso interrumpido.
+61. UI020 conserva traspaso entre aplicaciones.
+62. La superficie base es conceptualmente server-safe.
+63. No existe dependencia directa de Supabase.
+64. El package físico `@vento/ui-web` continúa no materializado.
+65. `TabletTaskSurface` no existe físicamente en el estado remoto verificado.
+66. Los siete consumidores tienen una decisión explícita.
+67. La matriz contiene 7/7 consumidores, con cero faltantes y cero duplicados.
+68. La adopción física queda en `SHELL-MIG-*`.
+69. Pruebas, build, release y compatibilidad quedan en `SHELL-CI-*`.
+70. La prueba física posterior sigue siendo obligatoria antes de ampliar despliegue.
+71. UI017 crea cero requisitos `TREQ-*` y modifica cero.
+72. UI017 produce cero cambios de Supabase.
+73. UI018 permanece únicamente reservada.
+
+---
+
+#### 74. Criterios de aceptación documental
+
+UI017 queda documentalmente cerrada si se cumplen simultáneamente:
+
+- [x] la secuencia vigente identifica UI016 como anterior y UI017 como actual;
+- [x] UI018 permanece reservada;
+- [x] existe una identidad única `TabletTaskSurface`;
+- [x] se define `TABLET-TASK-SURFACE-CONTRACT-001`;
+- [x] se fija pertenencia conceptual a `@vento/ui-web`;
+- [x] se reutilizan únicamente las dos clases tablet de la taxonomía vigente;
+- [x] kiosco permanece fuera de UI017;
+- [x] no existe detección de autoridad por dispositivo;
+- [x] no existe detección canónica por `userAgent` o ancho;
+- [x] se materializan siete slots semánticos;
+- [x] se define la API conceptual mínima;
+- [x] se preserva una única acción primaria;
+- [x] se definen retrato, paisaje y reflow;
+- [x] se define comportamiento ante teclado virtual;
+- [x] se fijan targets táctiles compatibles con la política vigente;
+- [x] se prohíben hit areas superpuestas;
+- [x] se preserva estabilidad bajo el dedo;
+- [x] se prohíben gestos ocultos como único acceso;
+- [x] se conserva teclado, mouse, stylus y asistencia cuando apliquen;
+- [x] se define tratamiento de cantidades y periféricos;
+- [x] se conserva seguridad física y ambiental;
+- [x] se separan `PERSONAL_TABLET` y `SHARED_TABLET`;
+- [x] se define cambio de actor sin herencia;
+- [x] se protege privacidad;
+- [x] se define conectividad y feedback sin fabricar confirmación;
+- [x] se integran los patrones UI002..UI016 sin absorber su propiedad;
+- [x] se cierra frontera con AppShell;
+- [x] se cierra frontera con UI018, UI019 y UI020;
+- [x] se define accesibilidad y orden de foco;
+- [x] se define semántica HTML sin `role="application"` universal;
+- [x] se define compatibilidad server/client;
+- [x] se reconcilia el estado físico actual de `packages/`;
+- [x] se reconcilia `src/components/ui`;
+- [x] se materializan decisiones para los siete consumidores;
+- [x] faltantes y duplicados son cero;
+- [x] adopciones físicas son cero;
+- [x] se define handoff a migración y calidad;
+- [x] se declara prueba física posterior;
+- [x] se declaran cero cambios `TREQ-*` con cobertura concreta;
+- [x] se declaran cero cambios de Supabase;
+- [x] no queda una decisión material de UI017 sin propietario documental.
+
+---
+
+#### 75. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                                                                                       |
+| --------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | No existe en este entorno un checkout local actualizado que incorpore el artefacto UI017 para ejecutar el build documental del repositorio.                                                                                                                                     |
+| LOCAL     | `NOT_EXECUTED`   | No se ejecutaron scripts del repositorio ni comprobaciones de diff contra un checkout actualizado; el artefacto transitorio se verificó estructuralmente de forma aislada.                                                                                                      |
+| REMOTA    | `PASS`           | Se verificaron por GitHub la secuencia activa, protocolo, archivo propietario, contrato de entrega, políticas de tarea, `package.json`, validadores aplicables, baseline táctil E2, gramática y slots semánticos, fragmentos 04A relevantes, `packages/` y `src/components/ui`. |
+| OPERATIVA | `NOT_APPLICABLE` | UI017 no modifica runtime, lógica empresarial, autorización, red, periféricos ni servicios desplegados.                                                                                                                                                                         |
+| FÍSICA    | `NOT_EXECUTED`   | La validación en tablet real pertenece a la adopción y certificación posteriores; en UI017 no existe patrón físico ni consumidor migrado que pueda probarse en dispositivo.                                                                                                     |
+
+La evidencia documental no se presenta como sustituto de las pruebas físicas que exige la adopción futura.
+
+---
+
+#### 76. Límites
+
+Esta tarea no autoriza:
+
+- crear `packages/ui-web`;
+- crear archivos TypeScript de `TabletTaskSurface`;
+- modificar `src/components/ui`;
+- modificar aplicaciones consumidoras;
+- convertir superficies existentes a tablet;
+- alterar AppShell;
+- cambiar perfiles de estación;
+- cambiar acciones principales;
+- resolver permisos o contexto;
+- implementar cambio de actor;
+- implementar sesión compartida;
+- gestionar hardware o periféricos;
+- crear política offline;
+- implementar checkpoints;
+- implementar handoffs cross-app;
+- implementar modo kiosco;
+- publicar paquetes;
+- ejecutar SQL;
+- crear o ejecutar migraciones;
+- modificar Supabase;
+- desplegar;
+- aprobar una clase de dispositivo físico concreta;
+- declarar certificación de una tablet real;
+- iniciar UI018.
+
+---
+
+#### 77. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-UI-016 — Compartir estados de error recuperable`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-UI-017 — Compartir patrón para tablet`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-UI-018 — Compartir patrón para kiosco`
+
+
 ### [ ] SHELL-UI-018 — Compartir patrón para kiosco
 ### [ ] SHELL-UI-019 — Compartir patrón de proceso interrumpido
 ### [ ] SHELL-UI-020 — Compartir patrón de traspaso entre aplicaciones

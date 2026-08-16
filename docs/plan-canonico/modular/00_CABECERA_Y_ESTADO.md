@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **933** |
+| Tareas aprobadas | **934** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **661** |
+| Tareas no iniciadas | **660** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **58.53% (933/1594)** |
+| Porcentaje de completamiento | **58.59% (934/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-UI-016 — Compartir estados de error recuperable** |
-| Tarea actual | **SHELL-UI-017 — Compartir patrón para tablet** |
+| Última tarea aprobada | **SHELL-UI-017 — Compartir patrón para tablet** |
+| Tarea actual | **SHELL-UI-018 — Compartir patrón para kiosco** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-UI-018 — Compartir patrón para kiosco** |
+| Siguiente tarea | **SHELL-UI-019 — Compartir patrón de proceso interrumpido** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 83 de 109 aprobadas; SHELL-UI-017 pendiente** |
+| Progreso del bloque | **BLOQUE H: 84 de 109 aprobadas; SHELL-UI-018 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-UI-016` — Compartir estados de error recuperable |
-| Tarea actual | `SHELL-UI-017` — Compartir patrón para tablet — **NO INICIADA** |
-| Siguiente tarea | `SHELL-UI-018` — Compartir patrón para kiosco |
+| Última aprobada | `SHELL-UI-017` — Compartir patrón para tablet |
+| Tarea actual | `SHELL-UI-018` — Compartir patrón para kiosco — **NO INICIADA** |
+| Siguiente tarea | `SHELL-UI-019` — Compartir patrón de proceso interrumpido |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 83 DE 109 APROBADAS — ACTUAL SHELL-UI-017** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 84 DE 109 APROBADAS — ACTUAL SHELL-UI-018** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-UI-016 — Compartir estados de error recuperable
-        ↓
-TAREA ACTUAL
 SHELL-UI-017 — Compartir patrón para tablet
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-UI-018 — Compartir patrón para kiosco
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-UI-019 — Compartir patrón de proceso interrumpido
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 83 de 109 tareas aprobadas
+BLOQUE H — 84 de 109 tareas aprobadas
 ```
