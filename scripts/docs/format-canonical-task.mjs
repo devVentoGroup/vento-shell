@@ -358,7 +358,6 @@ export function validateTaskPresentation(block) {
   if (tasks.length !== 1 || tasks[0].index !== 0) {
     return ['el bloque debe contener exactamente una tarea canónica.'];
   }
-  const task = tasks[0];
   const lines = normalized.split('\n');
   let index = 1;
   if (lines[index] !== '') errors.push('la cabecera requiere una línea vacía después del título.');

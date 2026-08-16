@@ -6,6 +6,7 @@ import test from 'node:test';
 const workflowPath = path.resolve('.github/workflows/validate-canonical-plan.yml');
 const watcherPath = path.resolve('scripts/docs/watch-plan-canonico.mjs');
 const safeBuildPath = path.resolve('scripts/docs/safe-build-plan-canonico.mjs');
+const buildWrapperPath = path.resolve('scripts/docs/build-plan-canonico.mjs');
 const productionIntegrationPath = path.resolve(
   'docs/plan-canonico/modular/bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md',
 );
@@ -91,6 +92,14 @@ test('el build prepara formato sin iniciar tareas vacías', () => {
   assert.ok(prepare >= 0, 'falta la preparación automática de tareas');
   assert.ok(continuity > prepare, 'el formato debe prepararse antes de sincronizar continuidad');
   assert.match(safeBuild, /checkOnly: process\.argv\.includes\('--check'\)/u);
+});
+
+test('el build publica un estado local legible sin volverlo canónico', () => {
+  const buildWrapper = fs.readFileSync(buildWrapperPath, 'utf8');
+  assert.match(buildWrapper, /"plan-status\.md"|'plan-status\.md'/u);
+  assert.match(buildWrapper, /writePlanWatchStatus/u);
+  assert.match(buildWrapper, /state: 'COMPILACIÓN COMPLETADA'/u);
+  assert.match(buildWrapper, /derivePreflight/u);
 });
 
 test('INT-PROD conserva decidir, ejecutar y verificar sin dependencia circular', () => {
