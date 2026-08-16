@@ -8910,7 +8910,841 @@ Justificacion: `SHELL-CON-012` centraliza sin alterar las 885 identidades y regl
 **SIGUIENTE TAREA RESERVADA:** `SHELL-CON-013 — Crear contrato de eventos empresariales`
 
 
-### [ ] SHELL-CON-013 — Crear contrato de eventos empresariales
+### ✅ SHELL-CON-013 — Crear contrato de eventos empresariales
+
+**Estado:** APROBADA
+
+**Tarea anterior:** SHELL-CON-012 — Crear contrato de acciones funcionales
+
+**Tarea siguiente:** SHELL-CON-014 — Crear contrato de traspasos entre aplicaciones
+
+**Tipo de tarea:** Documental
+
+**Bloque:** H — Fundación compartida
+
+**Repositorio propietario:** `vento-shell`
+
+**Materialización física:** no realizada
+
+**Cambios físicos autorizados:** ninguno
+
+**Requisitos TREQ creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato compartido y estable de identidad para las definiciones de eventos empresariales ya aprobadas en el catálogo de procesos, de forma que los consumidores de Vento OS puedan referirse a un mismo hecho empresarial sin confundir su identidad estable con una ocurrencia runtime, un comando, una acción funcional, una notificación, una integración, una entrada de auditoría o un detalle de transporte.
+
+La frontera contractual queda:
+
+```text
+PROC-CAT-017
+→ autoridad semántica de definiciones de eventos empresariales
+
+@vento/contracts/events
+→ proyección compartida, tipada y validable de sus identidades estables
+
+consumidores
+→ referencian BusinessEventId
+→ no inventan, renumeran ni reinterpretan VPROC-####.EVT-###
+```
+
+Esta tarea centraliza identidades existentes. No crea hechos empresariales nuevos, no modifica la emisión runtime y no materializa infraestructura de eventos.
+
+---
+
+#### 2. Resultado material
+
+- Se centralizan **395/395 definiciones normales de eventos empresariales**.
+- Se cubren **69/69 `ProcessId`** vigentes: `VPROC-0001..VPROC-0069`.
+- Se preserva la identidad estable `VPROC-####.EVT-###`.
+- Se materializan **395 identidades únicas**, con **0 faltantes** y **0 duplicados**.
+- La distribución vigente es: **4 procesos con 4 eventos**, **11 procesos con 5 eventos** y **54 procesos con 6 eventos**.
+- Se preservan **8 familias condicionales** separadas del inventario normal de 395 definiciones.
+- Cada identidad normal queda con decisión **Centralizar sin renumerar**, resultado **Incluido en contrato lógico**, estado **Definición normal vigente** y bloqueo **No aplica**.
+- La tarea no cambia clases, sensibilidades, tipos canónicos, condiciones fuente, hechos confirmados ni semántica de las definiciones propietarias.
+
+Conciliación matemática del inventario normal:
+
+```text
+4 × 4
++ 11 × 5
++ 54 × 6
+= 395
+```
+
+---
+
+#### 3. Fuentes canónicas consumidas
+
+La tarea consume y preserva, sin sustituirlas:
+
+- `SHELL-CON-001`, como autoridad de la raíz compartida `@vento/contracts` y de sus fronteras de pureza contractual;
+- `SHELL-CON-009`, como autoridad compartida de `ProcessId`;
+- `SHELL-CON-012`, como autoridad de `FunctionalActionId` y como antecedente que reserva `BusinessEventId` como identidad distinta;
+- `PROC-CAT-017`, como autoridad del catálogo de 395 definiciones normales, las clases, sensibilidades, semántica de emisión y ocho familias condicionales;
+- el contrato de integración vigente que consume el catálogo de procesos sin sustituirlo;
+- `TREQ-PROC-087..TREQ-PROC-094`, como cobertura vigente del catálogo y la emisión de eventos de proceso;
+- `TREQ-INTEGRATION-024..TREQ-INTEGRATION-053`, como cobertura vigente de integración y transporte relacionada;
+- el protocolo, la secuencia activa y el contrato de entrega vigentes de `vento-shell`.
+
+Precedencia específica:
+
+```text
+PROC-CAT-017
+→ gobierna identidad y semántica del evento empresarial
+
+SHELL-CON-013
+→ centraliza la identidad compartida
+→ no redefine la semántica propietaria
+
+integración y consumidores
+→ consumen el contrato
+→ no administran el namespace
+```
+
+---
+
+#### 4. Línea base reconciliada
+
+| Elemento                                           | Esperado | Materializado | Faltantes | Duplicados | Resultado |
+| -------------------------------------------------- | -------: | ------------: | --------: | ---------: | --------- |
+| Procesos vigentes                                  |       69 |            69 |         0 |          0 | Coincide  |
+| Definiciones normales                              |      395 |           395 |         0 |          0 | Coincide  |
+| Procesos con 4 definiciones                        |        4 |             4 |         0 |          0 | Coincide  |
+| Procesos con 5 definiciones                        |       11 |            11 |         0 |          0 | Coincide  |
+| Procesos con 6 definiciones                        |       54 |            54 |         0 |          0 | Coincide  |
+| Familias condicionales fuera del inventario normal |        8 |             8 |         0 |          0 | Coincide  |
+
+Distribución exacta por cardinalidad:
+
+- **4 definiciones:** `VPROC-0003`, `VPROC-0015`, `VPROC-0017`, `VPROC-0033`.
+- **5 definiciones:** `VPROC-0001`, `VPROC-0008`, `VPROC-0016`, `VPROC-0018`, `VPROC-0019`, `VPROC-0020`, `VPROC-0038`, `VPROC-0039`, `VPROC-0048`, `VPROC-0056`, `VPROC-0060`.
+- **6 definiciones:** los otros 54 `ProcessId` del conjunto `VPROC-0001..VPROC-0069`.
+
+---
+
+#### 5. Namespace y propiedad
+
+La superficie lógica compartida de esta tarea es:
+
+```text
+@vento/contracts/events
+```
+
+Su propiedad documental queda en `vento-shell` bajo la autoridad de `@vento/contracts`. Durante esta fase no se crea directorio, archivo de código, paquete compilado, publicación física ni consumidor.
+
+El namespace contiene contratos estáticos de identidad y pertenencia de eventos empresariales. No ejecuta emisión, persistencia, entrega, reintentos, deduplicación, autorización, acceso a datos, telemetría ni transporte.
+
+---
+
+#### 6. Identidad `BusinessEventId`
+
+Se adopta `BusinessEventId` como nombre conceptual de la identidad compartida de una **definición estable de evento empresarial**.
+
+Forma contractual:
+
+```text
+VPROC-####.EVT-###
+```
+
+Patrón estructural:
+
+```text
+^VPROC-[0-9]{4}\.EVT-[0-9]{3}$
+```
+
+Reglas:
+
+1. el prefijo `VPROC-####` debe corresponder a un `ProcessId` vigente;
+2. el ordinal `EVT-###` se conserva exactamente como fue aprobado por `PROC-CAT-017`;
+3. cumplir el patrón no demuestra pertenencia al inventario vigente;
+4. la pertenencia exige existir en la matriz completa de esta tarea;
+5. los ordinales son locales al proceso y no constituyen una secuencia global;
+6. una identidad publicada no se renumera ni se recicla para otro significado;
+7. nombre humano, `event_type`, aplicación, sede, actor, versión de despliegue o tecnología no forman parte de `BusinessEventId`;
+8. una identidad reconocida no demuestra que exista una emisión concreta.
+
+---
+
+#### 7. Definición estable y ocurrencia runtime
+
+El contrato conserva tres conceptos distintos:
+
+| Concepto          | Función                                                   | Regla                                      |
+| ----------------- | --------------------------------------------------------- | ------------------------------------------ |
+| `BusinessEventId` | identifica la definición empresarial estable              | pertenece al conjunto `VPROC-####.EVT-###` |
+| `event_id`        | identifica una emisión u ocurrencia concreta              | es único y no reutilizable por ocurrencia  |
+| `event_type`      | identifica el tipo semántico versionado que se transporta | conserva versión y significado publicados  |
+
+También permanecen separados `process_instance_id`, `correlation_id` y `causation_id`, que aportan contexto de ejecución y trazabilidad, pero no sustituyen la identidad estable de la definición.
+
+La relación conceptual es:
+
+```text
+BusinessEventId estable
++ instancia de proceso
++ ocurrencia runtime única
++ tipo semántico versionado
++ correlación y causalidad
+→ emisión trazable
+```
+
+---
+
+#### 8. Vocabularios semánticos preservados
+
+`SHELL-CON-013` no crea una taxonomía paralela. Preserva los valores vigentes utilizados por `PROC-CAT-017`.
+
+##### 8.1. Clases de evento
+
+- `PROCESS_STARTED`
+- `ANALYSIS_FACT`
+- `DECISION_FACT`
+- `VERIFICATION_FACT`
+- `PROCESS_COMPLETED`
+- `VALIDATION_FACT`
+- `EXECUTION_FACT`
+- `REVIEW_FACT`
+- `READINESS_FACT`
+- `HANDOFF_FACT`
+- `RECONCILIATION_FACT`
+- `ACTIVATION_FACT`
+
+Total: **12 clases**.
+
+##### 8.2. Sensibilidades
+
+- `INTERNAL_OPERATIONAL`
+- `RESTRICTED_PERSONAL`
+- `RESTRICTED_FINANCIAL`
+- `RESTRICTED_TECHNICAL`
+
+Total: **4 sensibilidades**.
+
+Las clases y sensibilidades siguen siendo metadata semántica gobernada por la fuente propietaria. Una futura proyección compartida podrá representarlas sin convertir esta tarea en una segunda fuente editable.
+
+---
+
+#### 9. Familias condicionales
+
+Las familias siguientes se preservan como eventos condicionales separados de las 395 definiciones normales:
+
+| Familia                              | Naturaleza | Tratamiento                        |
+| ------------------------------------ | ---------- | ---------------------------------- |
+| `PROC.FAMILY.CANCELLATION_REQUESTED` | `Pedido`   | Fuera del inventario normal de 395 |
+| `PROC.FAMILY.CANCELLATION_CONFIRMED` | `Hecho`    | Fuera del inventario normal de 395 |
+| `PROC.FAMILY.REVERSAL_REQUESTED`     | `Pedido`   | Fuera del inventario normal de 395 |
+| `PROC.FAMILY.REVERSAL_CONFIRMED`     | `Hecho`    | Fuera del inventario normal de 395 |
+| `PROC.FAMILY.COMPENSATION_REQUIRED`  | `Hecho`    | Fuera del inventario normal de 395 |
+| `PROC.FAMILY.EXCEPTION_OPENED`       | `Hecho`    | Fuera del inventario normal de 395 |
+| `PROC.FAMILY.EXCEPTION_RESOLVED`     | `Hecho`    | Fuera del inventario normal de 395 |
+| `PROC.FAMILY.LINKED_REVIEW_CREATED`  | `Hecho`    | Fuera del inventario normal de 395 |
+
+Estas ocho familias aparecen únicamente cuando existe el hecho excepcional correspondiente. Conservan el `process_id` propietario, el `process_instance_id`, la correlación, la causalidad y la referencia al registro excepcional que las origina. No se les asigna artificialmente una identidad base `VPROC-####.EVT-###` dentro de esta tarea.
+
+---
+
+#### 10. Matriz completa de identidades normales
+
+La matriz siguiente contiene las **395/395** identidades normales vigentes y materializa una decisión explícita por cada una.
+
+| `BusinessEventId`    | `ProcessId`  | Decisión                  | Resultado                   | Estado                    | Bloqueo   |
+| -------------------- | ------------ | ------------------------- | --------------------------- | ------------------------- | --------- |
+| `VPROC-0001.EVT-001` | `VPROC-0001` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0001.EVT-002` | `VPROC-0001` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0001.EVT-003` | `VPROC-0001` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0001.EVT-004` | `VPROC-0001` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0001.EVT-005` | `VPROC-0001` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0002.EVT-001` | `VPROC-0002` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0002.EVT-002` | `VPROC-0002` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0002.EVT-003` | `VPROC-0002` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0002.EVT-004` | `VPROC-0002` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0002.EVT-005` | `VPROC-0002` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0002.EVT-006` | `VPROC-0002` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0003.EVT-001` | `VPROC-0003` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0003.EVT-002` | `VPROC-0003` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0003.EVT-003` | `VPROC-0003` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0003.EVT-004` | `VPROC-0003` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0004.EVT-001` | `VPROC-0004` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0004.EVT-002` | `VPROC-0004` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0004.EVT-003` | `VPROC-0004` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0004.EVT-004` | `VPROC-0004` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0004.EVT-005` | `VPROC-0004` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0004.EVT-006` | `VPROC-0004` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0005.EVT-001` | `VPROC-0005` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0005.EVT-002` | `VPROC-0005` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0005.EVT-003` | `VPROC-0005` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0005.EVT-004` | `VPROC-0005` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0005.EVT-005` | `VPROC-0005` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0005.EVT-006` | `VPROC-0005` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0006.EVT-001` | `VPROC-0006` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0006.EVT-002` | `VPROC-0006` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0006.EVT-003` | `VPROC-0006` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0006.EVT-004` | `VPROC-0006` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0006.EVT-005` | `VPROC-0006` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0006.EVT-006` | `VPROC-0006` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0007.EVT-001` | `VPROC-0007` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0007.EVT-002` | `VPROC-0007` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0007.EVT-003` | `VPROC-0007` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0007.EVT-004` | `VPROC-0007` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0007.EVT-005` | `VPROC-0007` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0007.EVT-006` | `VPROC-0007` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0008.EVT-001` | `VPROC-0008` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0008.EVT-002` | `VPROC-0008` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0008.EVT-003` | `VPROC-0008` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0008.EVT-004` | `VPROC-0008` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0008.EVT-005` | `VPROC-0008` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0009.EVT-001` | `VPROC-0009` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0009.EVT-002` | `VPROC-0009` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0009.EVT-003` | `VPROC-0009` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0009.EVT-004` | `VPROC-0009` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0009.EVT-005` | `VPROC-0009` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0009.EVT-006` | `VPROC-0009` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0010.EVT-001` | `VPROC-0010` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0010.EVT-002` | `VPROC-0010` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0010.EVT-003` | `VPROC-0010` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0010.EVT-004` | `VPROC-0010` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0010.EVT-005` | `VPROC-0010` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0010.EVT-006` | `VPROC-0010` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0011.EVT-001` | `VPROC-0011` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0011.EVT-002` | `VPROC-0011` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0011.EVT-003` | `VPROC-0011` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0011.EVT-004` | `VPROC-0011` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0011.EVT-005` | `VPROC-0011` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0011.EVT-006` | `VPROC-0011` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0012.EVT-001` | `VPROC-0012` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0012.EVT-002` | `VPROC-0012` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0012.EVT-003` | `VPROC-0012` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0012.EVT-004` | `VPROC-0012` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0012.EVT-005` | `VPROC-0012` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0012.EVT-006` | `VPROC-0012` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0013.EVT-001` | `VPROC-0013` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0013.EVT-002` | `VPROC-0013` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0013.EVT-003` | `VPROC-0013` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0013.EVT-004` | `VPROC-0013` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0013.EVT-005` | `VPROC-0013` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0013.EVT-006` | `VPROC-0013` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0014.EVT-001` | `VPROC-0014` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0014.EVT-002` | `VPROC-0014` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0014.EVT-003` | `VPROC-0014` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0014.EVT-004` | `VPROC-0014` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0014.EVT-005` | `VPROC-0014` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0014.EVT-006` | `VPROC-0014` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0015.EVT-001` | `VPROC-0015` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0015.EVT-002` | `VPROC-0015` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0015.EVT-003` | `VPROC-0015` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0015.EVT-004` | `VPROC-0015` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0016.EVT-001` | `VPROC-0016` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0016.EVT-002` | `VPROC-0016` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0016.EVT-003` | `VPROC-0016` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0016.EVT-004` | `VPROC-0016` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0016.EVT-005` | `VPROC-0016` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0017.EVT-001` | `VPROC-0017` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0017.EVT-002` | `VPROC-0017` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0017.EVT-003` | `VPROC-0017` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0017.EVT-004` | `VPROC-0017` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0018.EVT-001` | `VPROC-0018` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0018.EVT-002` | `VPROC-0018` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0018.EVT-003` | `VPROC-0018` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0018.EVT-004` | `VPROC-0018` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0018.EVT-005` | `VPROC-0018` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0019.EVT-001` | `VPROC-0019` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0019.EVT-002` | `VPROC-0019` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0019.EVT-003` | `VPROC-0019` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0019.EVT-004` | `VPROC-0019` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0019.EVT-005` | `VPROC-0019` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0020.EVT-001` | `VPROC-0020` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0020.EVT-002` | `VPROC-0020` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0020.EVT-003` | `VPROC-0020` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0020.EVT-004` | `VPROC-0020` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0020.EVT-005` | `VPROC-0020` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0021.EVT-001` | `VPROC-0021` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0021.EVT-002` | `VPROC-0021` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0021.EVT-003` | `VPROC-0021` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0021.EVT-004` | `VPROC-0021` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0021.EVT-005` | `VPROC-0021` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0021.EVT-006` | `VPROC-0021` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0022.EVT-001` | `VPROC-0022` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0022.EVT-002` | `VPROC-0022` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0022.EVT-003` | `VPROC-0022` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0022.EVT-004` | `VPROC-0022` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0022.EVT-005` | `VPROC-0022` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0022.EVT-006` | `VPROC-0022` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0023.EVT-001` | `VPROC-0023` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0023.EVT-002` | `VPROC-0023` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0023.EVT-003` | `VPROC-0023` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0023.EVT-004` | `VPROC-0023` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0023.EVT-005` | `VPROC-0023` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0023.EVT-006` | `VPROC-0023` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0024.EVT-001` | `VPROC-0024` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0024.EVT-002` | `VPROC-0024` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0024.EVT-003` | `VPROC-0024` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0024.EVT-004` | `VPROC-0024` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0024.EVT-005` | `VPROC-0024` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0024.EVT-006` | `VPROC-0024` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0025.EVT-001` | `VPROC-0025` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0025.EVT-002` | `VPROC-0025` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0025.EVT-003` | `VPROC-0025` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0025.EVT-004` | `VPROC-0025` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0025.EVT-005` | `VPROC-0025` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0025.EVT-006` | `VPROC-0025` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0026.EVT-001` | `VPROC-0026` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0026.EVT-002` | `VPROC-0026` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0026.EVT-003` | `VPROC-0026` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0026.EVT-004` | `VPROC-0026` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0026.EVT-005` | `VPROC-0026` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0026.EVT-006` | `VPROC-0026` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0027.EVT-001` | `VPROC-0027` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0027.EVT-002` | `VPROC-0027` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0027.EVT-003` | `VPROC-0027` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0027.EVT-004` | `VPROC-0027` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0027.EVT-005` | `VPROC-0027` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0027.EVT-006` | `VPROC-0027` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0028.EVT-001` | `VPROC-0028` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0028.EVT-002` | `VPROC-0028` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0028.EVT-003` | `VPROC-0028` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0028.EVT-004` | `VPROC-0028` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0028.EVT-005` | `VPROC-0028` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0028.EVT-006` | `VPROC-0028` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0029.EVT-001` | `VPROC-0029` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0029.EVT-002` | `VPROC-0029` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0029.EVT-003` | `VPROC-0029` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0029.EVT-004` | `VPROC-0029` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0029.EVT-005` | `VPROC-0029` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0029.EVT-006` | `VPROC-0029` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0030.EVT-001` | `VPROC-0030` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0030.EVT-002` | `VPROC-0030` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0030.EVT-003` | `VPROC-0030` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0030.EVT-004` | `VPROC-0030` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0030.EVT-005` | `VPROC-0030` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0030.EVT-006` | `VPROC-0030` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0031.EVT-001` | `VPROC-0031` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0031.EVT-002` | `VPROC-0031` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0031.EVT-003` | `VPROC-0031` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0031.EVT-004` | `VPROC-0031` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0031.EVT-005` | `VPROC-0031` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0031.EVT-006` | `VPROC-0031` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0032.EVT-001` | `VPROC-0032` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0032.EVT-002` | `VPROC-0032` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0032.EVT-003` | `VPROC-0032` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0032.EVT-004` | `VPROC-0032` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0032.EVT-005` | `VPROC-0032` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0032.EVT-006` | `VPROC-0032` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0033.EVT-001` | `VPROC-0033` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0033.EVT-002` | `VPROC-0033` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0033.EVT-003` | `VPROC-0033` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0033.EVT-004` | `VPROC-0033` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0034.EVT-001` | `VPROC-0034` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0034.EVT-002` | `VPROC-0034` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0034.EVT-003` | `VPROC-0034` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0034.EVT-004` | `VPROC-0034` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0034.EVT-005` | `VPROC-0034` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0034.EVT-006` | `VPROC-0034` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0035.EVT-001` | `VPROC-0035` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0035.EVT-002` | `VPROC-0035` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0035.EVT-003` | `VPROC-0035` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0035.EVT-004` | `VPROC-0035` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0035.EVT-005` | `VPROC-0035` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0035.EVT-006` | `VPROC-0035` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0036.EVT-001` | `VPROC-0036` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0036.EVT-002` | `VPROC-0036` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0036.EVT-003` | `VPROC-0036` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0036.EVT-004` | `VPROC-0036` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0036.EVT-005` | `VPROC-0036` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0036.EVT-006` | `VPROC-0036` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0037.EVT-001` | `VPROC-0037` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0037.EVT-002` | `VPROC-0037` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0037.EVT-003` | `VPROC-0037` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0037.EVT-004` | `VPROC-0037` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0037.EVT-005` | `VPROC-0037` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0037.EVT-006` | `VPROC-0037` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0038.EVT-001` | `VPROC-0038` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0038.EVT-002` | `VPROC-0038` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0038.EVT-003` | `VPROC-0038` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0038.EVT-004` | `VPROC-0038` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0038.EVT-005` | `VPROC-0038` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0039.EVT-001` | `VPROC-0039` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0039.EVT-002` | `VPROC-0039` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0039.EVT-003` | `VPROC-0039` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0039.EVT-004` | `VPROC-0039` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0039.EVT-005` | `VPROC-0039` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0040.EVT-001` | `VPROC-0040` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0040.EVT-002` | `VPROC-0040` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0040.EVT-003` | `VPROC-0040` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0040.EVT-004` | `VPROC-0040` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0040.EVT-005` | `VPROC-0040` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0040.EVT-006` | `VPROC-0040` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0041.EVT-001` | `VPROC-0041` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0041.EVT-002` | `VPROC-0041` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0041.EVT-003` | `VPROC-0041` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0041.EVT-004` | `VPROC-0041` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0041.EVT-005` | `VPROC-0041` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0041.EVT-006` | `VPROC-0041` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0042.EVT-001` | `VPROC-0042` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0042.EVT-002` | `VPROC-0042` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0042.EVT-003` | `VPROC-0042` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0042.EVT-004` | `VPROC-0042` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0042.EVT-005` | `VPROC-0042` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0042.EVT-006` | `VPROC-0042` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0043.EVT-001` | `VPROC-0043` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0043.EVT-002` | `VPROC-0043` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0043.EVT-003` | `VPROC-0043` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0043.EVT-004` | `VPROC-0043` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0043.EVT-005` | `VPROC-0043` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0043.EVT-006` | `VPROC-0043` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0044.EVT-001` | `VPROC-0044` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0044.EVT-002` | `VPROC-0044` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0044.EVT-003` | `VPROC-0044` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0044.EVT-004` | `VPROC-0044` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0044.EVT-005` | `VPROC-0044` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0044.EVT-006` | `VPROC-0044` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0045.EVT-001` | `VPROC-0045` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0045.EVT-002` | `VPROC-0045` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0045.EVT-003` | `VPROC-0045` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0045.EVT-004` | `VPROC-0045` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0045.EVT-005` | `VPROC-0045` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0045.EVT-006` | `VPROC-0045` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0046.EVT-001` | `VPROC-0046` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0046.EVT-002` | `VPROC-0046` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0046.EVT-003` | `VPROC-0046` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0046.EVT-004` | `VPROC-0046` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0046.EVT-005` | `VPROC-0046` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0046.EVT-006` | `VPROC-0046` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0047.EVT-001` | `VPROC-0047` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0047.EVT-002` | `VPROC-0047` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0047.EVT-003` | `VPROC-0047` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0047.EVT-004` | `VPROC-0047` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0047.EVT-005` | `VPROC-0047` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0047.EVT-006` | `VPROC-0047` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0048.EVT-001` | `VPROC-0048` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0048.EVT-002` | `VPROC-0048` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0048.EVT-003` | `VPROC-0048` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0048.EVT-004` | `VPROC-0048` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0048.EVT-005` | `VPROC-0048` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0049.EVT-001` | `VPROC-0049` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0049.EVT-002` | `VPROC-0049` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0049.EVT-003` | `VPROC-0049` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0049.EVT-004` | `VPROC-0049` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0049.EVT-005` | `VPROC-0049` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0049.EVT-006` | `VPROC-0049` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0050.EVT-001` | `VPROC-0050` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0050.EVT-002` | `VPROC-0050` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0050.EVT-003` | `VPROC-0050` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0050.EVT-004` | `VPROC-0050` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0050.EVT-005` | `VPROC-0050` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0050.EVT-006` | `VPROC-0050` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0051.EVT-001` | `VPROC-0051` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0051.EVT-002` | `VPROC-0051` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0051.EVT-003` | `VPROC-0051` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0051.EVT-004` | `VPROC-0051` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0051.EVT-005` | `VPROC-0051` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0051.EVT-006` | `VPROC-0051` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0052.EVT-001` | `VPROC-0052` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0052.EVT-002` | `VPROC-0052` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0052.EVT-003` | `VPROC-0052` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0052.EVT-004` | `VPROC-0052` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0052.EVT-005` | `VPROC-0052` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0052.EVT-006` | `VPROC-0052` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0053.EVT-001` | `VPROC-0053` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0053.EVT-002` | `VPROC-0053` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0053.EVT-003` | `VPROC-0053` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0053.EVT-004` | `VPROC-0053` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0053.EVT-005` | `VPROC-0053` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0053.EVT-006` | `VPROC-0053` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0054.EVT-001` | `VPROC-0054` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0054.EVT-002` | `VPROC-0054` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0054.EVT-003` | `VPROC-0054` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0054.EVT-004` | `VPROC-0054` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0054.EVT-005` | `VPROC-0054` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0054.EVT-006` | `VPROC-0054` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0055.EVT-001` | `VPROC-0055` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0055.EVT-002` | `VPROC-0055` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0055.EVT-003` | `VPROC-0055` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0055.EVT-004` | `VPROC-0055` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0055.EVT-005` | `VPROC-0055` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0055.EVT-006` | `VPROC-0055` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0056.EVT-001` | `VPROC-0056` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0056.EVT-002` | `VPROC-0056` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0056.EVT-003` | `VPROC-0056` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0056.EVT-004` | `VPROC-0056` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0056.EVT-005` | `VPROC-0056` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0057.EVT-001` | `VPROC-0057` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0057.EVT-002` | `VPROC-0057` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0057.EVT-003` | `VPROC-0057` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0057.EVT-004` | `VPROC-0057` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0057.EVT-005` | `VPROC-0057` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0057.EVT-006` | `VPROC-0057` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0058.EVT-001` | `VPROC-0058` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0058.EVT-002` | `VPROC-0058` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0058.EVT-003` | `VPROC-0058` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0058.EVT-004` | `VPROC-0058` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0058.EVT-005` | `VPROC-0058` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0058.EVT-006` | `VPROC-0058` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0059.EVT-001` | `VPROC-0059` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0059.EVT-002` | `VPROC-0059` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0059.EVT-003` | `VPROC-0059` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0059.EVT-004` | `VPROC-0059` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0059.EVT-005` | `VPROC-0059` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0059.EVT-006` | `VPROC-0059` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0060.EVT-001` | `VPROC-0060` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0060.EVT-002` | `VPROC-0060` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0060.EVT-003` | `VPROC-0060` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0060.EVT-004` | `VPROC-0060` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0060.EVT-005` | `VPROC-0060` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0061.EVT-001` | `VPROC-0061` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0061.EVT-002` | `VPROC-0061` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0061.EVT-003` | `VPROC-0061` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0061.EVT-004` | `VPROC-0061` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0061.EVT-005` | `VPROC-0061` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0061.EVT-006` | `VPROC-0061` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0062.EVT-001` | `VPROC-0062` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0062.EVT-002` | `VPROC-0062` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0062.EVT-003` | `VPROC-0062` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0062.EVT-004` | `VPROC-0062` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0062.EVT-005` | `VPROC-0062` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0062.EVT-006` | `VPROC-0062` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0063.EVT-001` | `VPROC-0063` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0063.EVT-002` | `VPROC-0063` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0063.EVT-003` | `VPROC-0063` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0063.EVT-004` | `VPROC-0063` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0063.EVT-005` | `VPROC-0063` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0063.EVT-006` | `VPROC-0063` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0064.EVT-001` | `VPROC-0064` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0064.EVT-002` | `VPROC-0064` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0064.EVT-003` | `VPROC-0064` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0064.EVT-004` | `VPROC-0064` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0064.EVT-005` | `VPROC-0064` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0064.EVT-006` | `VPROC-0064` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0065.EVT-001` | `VPROC-0065` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0065.EVT-002` | `VPROC-0065` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0065.EVT-003` | `VPROC-0065` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0065.EVT-004` | `VPROC-0065` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0065.EVT-005` | `VPROC-0065` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0065.EVT-006` | `VPROC-0065` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0066.EVT-001` | `VPROC-0066` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0066.EVT-002` | `VPROC-0066` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0066.EVT-003` | `VPROC-0066` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0066.EVT-004` | `VPROC-0066` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0066.EVT-005` | `VPROC-0066` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0066.EVT-006` | `VPROC-0066` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0067.EVT-001` | `VPROC-0067` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0067.EVT-002` | `VPROC-0067` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0067.EVT-003` | `VPROC-0067` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0067.EVT-004` | `VPROC-0067` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0067.EVT-005` | `VPROC-0067` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0067.EVT-006` | `VPROC-0067` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0068.EVT-001` | `VPROC-0068` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0068.EVT-002` | `VPROC-0068` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0068.EVT-003` | `VPROC-0068` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0068.EVT-004` | `VPROC-0068` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0068.EVT-005` | `VPROC-0068` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0068.EVT-006` | `VPROC-0068` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0069.EVT-001` | `VPROC-0069` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0069.EVT-002` | `VPROC-0069` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0069.EVT-003` | `VPROC-0069` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0069.EVT-004` | `VPROC-0069` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0069.EVT-005` | `VPROC-0069` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+| `VPROC-0069.EVT-006` | `VPROC-0069` | Centralizar sin renumerar | Incluido en contrato lógico | Definición normal vigente | No aplica |
+
+---
+
+#### 11. Reconciliación de la matriz
+
+- Filas esperadas: **395**.
+- Filas materializadas: **395**.
+- `BusinessEventId` únicos: **395**.
+- `ProcessId` cubiertos: **69/69**.
+- Procesos con 4 miembros: **4**.
+- Procesos con 5 miembros: **11**.
+- Procesos con 6 miembros: **54**.
+- Identidades repetidas: **0**.
+- Huecos en las secuencias locales aprobadas: **0**.
+- Procesos sin definición normal: **0**.
+- Identidades normales adicionales no aprobadas: **0**.
+
+La matriz es exhaustiva para el corte canónico consumido por esta tarea.
+
+---
+
+#### 12. Pertenencia y validación contractual
+
+Una futura materialización del contrato deberá distinguir **sintaxis** de **pertenencia**.
+
+Una entrada solo puede tratarse como `BusinessEventId` vigente cuando:
+
+1. cumple la forma `VPROC-####.EVT-###`;
+2. su `ProcessId` propietario pertenece al conjunto vigente;
+3. la identidad completa existe entre las 395 definiciones normales publicadas;
+4. la referencia conserva el proceso propietario correcto;
+5. no corresponde a una familia condicional tratada como si fuera una definición normal.
+
+Ejemplos conceptuales:
+
+```text
+VPROC-0003.EVT-004
+→ forma válida
+→ miembro vigente
+
+VPROC-0003.EVT-005
+→ forma válida
+→ no pertenece al inventario vigente de VPROC-0003
+
+VPROC-0070.EVT-001
+→ forma válida
+→ ProcessId no asignado en el corte vigente
+
+vproc-0001.evt-001
+→ forma inválida
+```
+
+Un cast estático o una coincidencia de expresión regular no sustituyen la comprobación de pertenencia.
+
+---
+
+#### 13. Separaciones obligatorias
+
+```text
+BusinessEventId != event_id
+BusinessEventId != event_type
+BusinessEventId != ProcessId
+BusinessEventId != ProcessStateId
+BusinessEventId != ScreenId
+BusinessEventId != FunctionalActionId
+BusinessEventId != PermissionId
+BusinessEventId != correlation_id
+```
+
+Además:
+
+- un comando expresa una intención anterior a la confirmación del hecho; un evento empresarial expresa un hecho confirmado;
+- una acción funcional puede causar uno o varios eventos empresariales, pero no se convierte en su identidad;
+- una señal `TRACE_ONLY`, una entrada de auditoría o un log técnico no se promueven a evento empresarial;
+- una notificación o un acuse no sustituyen la definición empresarial;
+- un tópico, cola, outbox, webhook, API o RPC son mecanismos técnicos y no pertenecen al namespace de `BusinessEventId`.
+
+---
+
+#### 14. Frontera de producción, consumo y seguridad
+
+Se preservan como invariantes heredados del catálogo y de sus requisitos vigentes:
+
+1. la aplicación propietaria del proceso conserva la responsabilidad de producir sus eventos;
+2. un consumidor procesa el hecho dentro de su dominio y no adquiere autoridad para sobrescribir estado privado de la propietaria;
+3. la producción de un evento empresarial ocurre respecto de un hecho empresarial confirmado, no como sustituto de un comando;
+4. la emisión conserva correlación, causalidad e idempotencia conforme a los contratos vigentes;
+5. los payloads sensibles se minimizan y protegen según la sensibilidad aprobada;
+6. auditoría y observabilidad no convierten el payload sensible completo en material de logging;
+7. replay, backfill y compatibilidad legacy conservan significado, versión y trazabilidad y no reasignan una identidad estable a otro hecho.
+
+Estas reglas se preservan como fronteras ya existentes. `SHELL-CON-013` no implementa transporte ni introduce un nuevo comportamiento runtime.
+
+---
+
+#### 15. Evolución, estabilidad y compatibilidad
+
+1. Un `BusinessEventId` aprobado no se renumera ni se reutiliza para otra semántica.
+2. Cambiar nombre humano, aplicación técnica, serializador, broker o mecanismo de entrega no cambia por sí solo la identidad estable.
+3. Una nueva definición normal solo ingresa al contrato compartido después de existir en la fuente propietaria aprobada.
+4. Una definición retirada o reemplazada conserva trazabilidad histórica y no libera su identidad para reutilización.
+5. `event_type` conserva versionado semántico; una versión publicada no cambia significado silenciosamente.
+6. Un consumidor que no reconoce una identidad o versión no inventa equivalencias por semejanza textual.
+7. Las ocho familias condicionales continúan fuera del conteo normal salvo una decisión canónica que modifique explícitamente esa arquitectura.
+8. Los consumidores no mantienen un universo local divergente de `BusinessEventId`.
+
+---
+
+#### 16. Estado de materialización física
+
+En esta tarea queda definido documentalmente el contrato de `@vento/contracts/events`, pero no se materializa como paquete o código ejecutable.
+
+No se crean ni modifican:
+
+- código fuente;
+- packages o exports físicos;
+- tipos generados;
+- pruebas runtime;
+- productores o consumidores;
+- outbox, tópicos, colas, suscripciones o brokers;
+- endpoints, APIs, RPC o webhooks;
+- SQL, migraciones o configuración Supabase;
+- datos operativos;
+- despliegues o integraciones físicas.
+
+La materialización física corresponde a la fase técnica que la secuencia canónica autorice.
+
+---
+
+#### 17. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** `SHELL-CON-013` centraliza sin alterar las 395 definiciones normales, las ocho familias condicionales y las reglas de identidad y emisión ya protegidas por `TREQ-PROC-087..TREQ-PROC-094` y `TREQ-INTEGRATION-024..TREQ-INTEGRATION-053`. No agrega un evento empresarial, regla de emisión, transporte, autorización, integración, API, persistencia, comportamiento de runtime ni requisito de seguridad nuevo. Crear otro requisito para la misma pertenencia y las mismas fronteras duplicaría cobertura vigente.
+
+El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 18. Decisiones aprobadas
+
+1. `BusinessEventId` es el nombre conceptual de la identidad estable compartida de una definición de evento empresarial.
+2. `@vento/contracts/events` es el namespace lógico reservado por esta tarea.
+3. El conjunto normal vigente contiene exactamente **395** miembros.
+4. Los 395 miembros pertenecen a exactamente **69** procesos canónicos.
+5. La distribución es exactamente 4 procesos con 4 miembros, 11 con 5 y 54 con 6.
+6. Los identificadores existentes se centralizan sin renumeración.
+7. Sintaxis y pertenencia son comprobaciones distintas.
+8. `BusinessEventId`, runtime `event_id` y `event_type` son conceptos distintos.
+9. Las 12 clases vigentes se preservan sin crear una taxonomía paralela.
+10. Las 4 sensibilidades vigentes se preservan sin reinterpretación.
+11. Las 8 familias condicionales permanecen fuera del inventario normal de 395.
+12. Comandos, acciones funcionales, notificaciones, auditoría, logs e integraciones técnicas permanecen separados del evento empresarial.
+13. La aplicación propietaria conserva la producción del hecho y los consumidores no adquieren propiedad sobre su estado privado.
+14. La identidad compartida no concede autorización ni demuestra que exista una emisión runtime.
+15. Los consumidores no amplían localmente el conjunto ni crean aliases implícitos.
+16. La tarea permanece documental y sin materialización física.
+17. No se crean ni modifican requisitos `TREQ-*`.
+18. `SHELL-CON-014` permanece exclusivamente reservada.
+
+---
+
+#### 19. Criterios de aceptación
+
+- [x] Se materializan explícitamente las **395/395** identidades normales.
+- [x] Se cubren **69/69** procesos vigentes.
+- [x] Se verifican **395 identidades únicas**, **0 faltantes** y **0 duplicados**.
+- [x] Cada identidad tiene decisión, resultado, estado y bloqueo explícitos.
+- [x] Se conserva la distribución exacta de 4, 5 o 6 definiciones por proceso.
+- [x] Se separan las ocho familias condicionales del inventario normal.
+- [x] Se preservan las 12 clases y las 4 sensibilidades vigentes.
+- [x] Se diferencia definición estable, ocurrencia runtime y tipo semántico versionado.
+- [x] Se separan eventos empresariales de comandos, acciones, auditoría, logs e infraestructura de integración.
+- [x] Se define el namespace compartido sin implementarlo físicamente.
+- [x] Se declaran cero cambios TREQ con justificación concreta y cobertura existente.
+- [x] No se desarrolla `SHELL-CON-014`.
+
+---
+
+#### 20. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-CON-012 — Crear contrato de acciones funcionales
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-CON-013 — Crear contrato de eventos empresariales
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-CON-014 — Crear contrato de traspasos entre aplicaciones
+
+
 ### [ ] SHELL-CON-014 — Crear contrato de traspasos entre aplicaciones
 ### [ ] SHELL-CON-015 — Crear contrato de tareas pendientes
 ### [ ] SHELL-CON-016 — Crear contrato de propiedad funcional
