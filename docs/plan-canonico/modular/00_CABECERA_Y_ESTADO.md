@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **936** |
+| Tareas aprobadas | **937** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **658** |
+| Tareas no iniciadas | **657** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **58.72% (936/1594)** |
+| Porcentaje de completamiento | **58.78% (937/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-UI-019 — Compartir patrón de proceso interrumpido** |
-| Tarea actual | **SHELL-UI-020 — Compartir patrón de traspaso entre aplicaciones** |
+| Última tarea aprobada | **SHELL-UI-020 — Compartir patrón de traspaso entre aplicaciones** |
+| Tarea actual | **SHELL-MIG-001 — Consolidar inventario ejecutable de consumidores** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-MIG-001 — Consolidar inventario ejecutable de consumidores** |
+| Siguiente tarea | **SHELL-MIG-002 — Definir lotes reversibles por repositorio** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 86 de 109 aprobadas; SHELL-UI-020 pendiente** |
+| Progreso del bloque | **BLOQUE H: 87 de 109 aprobadas; SHELL-MIG-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-UI-019` — Compartir patrón de proceso interrumpido |
-| Tarea actual | `SHELL-UI-020` — Compartir patrón de traspaso entre aplicaciones — **NO INICIADA** |
-| Siguiente tarea | `SHELL-MIG-001` — Consolidar inventario ejecutable de consumidores |
+| Última aprobada | `SHELL-UI-020` — Compartir patrón de traspaso entre aplicaciones |
+| Tarea actual | `SHELL-MIG-001` — Consolidar inventario ejecutable de consumidores — **NO INICIADA** |
+| Siguiente tarea | `SHELL-MIG-002` — Definir lotes reversibles por repositorio |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 86 DE 109 APROBADAS — ACTUAL SHELL-UI-020** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 87 DE 109 APROBADAS — ACTUAL SHELL-MIG-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-UI-019 — Compartir patrón de proceso interrumpido
-        ↓
-TAREA ACTUAL
 SHELL-UI-020 — Compartir patrón de traspaso entre aplicaciones
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-MIG-001 — Consolidar inventario ejecutable de consumidores
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-MIG-002 — Definir lotes reversibles por repositorio
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 86 de 109 tareas aprobadas
+BLOQUE H — 87 de 109 tareas aprobadas
 ```

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **936** |
+| Aprobadas | **937** |
 | En propuesta | **0** |
-| No iniciadas | **658** |
+| No iniciadas | **657** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **58.72% (936/1594)** |
+| Porcentaje de completamiento | **58.78% (937/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-UI-019` — Compartir patrón de proceso interrumpido | ✅ APROBADA |
-| Tarea actual | `SHELL-UI-020` — Compartir patrón de traspaso entre aplicaciones | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-MIG-001` — Consolidar inventario ejecutable de consumidores | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-UI-020` — Compartir patrón de traspaso entre aplicaciones | ✅ APROBADA |
+| Tarea actual | `SHELL-MIG-001` — Consolidar inventario ejecutable de consumidores | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-MIG-002` — Definir lotes reversibles por repositorio | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -763,7 +763,7 @@
 | ✅ APROBADA | `SHELL-UI-017` | Compartir patrón para tablet | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-UI-018` | Compartir patrón para kiosco | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-UI-019` | Compartir patrón de proceso interrumpido | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-UI-020` | Compartir patrón de traspaso entre aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-UI-020` | Compartir patrón de traspaso entre aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-MIG-001` | Consolidar inventario ejecutable de consumidores | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ⬜ NO INICIADA | `SHELL-MIG-002` | Definir lotes reversibles por repositorio | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ⬜ NO INICIADA | `SHELL-MIG-003` | Preparar compatibilidad y bloqueo de nuevos consumidores legacy | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |

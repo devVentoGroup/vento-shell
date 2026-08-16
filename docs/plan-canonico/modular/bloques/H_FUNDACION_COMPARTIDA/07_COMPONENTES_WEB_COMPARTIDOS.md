@@ -26334,25 +26334,25 @@ Un cambio en este conjunto exige primero modificar el contrato canónico propiet
 
 #### 9. Matriz de presentación por estado
 
-| Estado | Presentación obligatoria | Acción primaria admisible |
-| --- | --- | --- |
-| `NO_CHECKPOINT` | indicar que no existe punto recuperable cuando sea necesario explicarlo | ninguna acción de reanudación |
-| `DRAFT_ONLY` | distinguir borrador recuperable de estado empresarial | revisar o gestionar borrador, solo si el propietario lo autoriza |
-| `CHECKPOINT_AVAILABLE` | informar existencia de punto recuperable todavía no validado | ninguna acción empresarial de continuación |
-| `VALIDATING` | mostrar que el sistema está comprobando vigencia, contexto y resultados | ninguna acción empresarial de continuación |
-| `RESUMABLE` | mostrar punto exacto y condiciones ya revalidadas | continuar, suministrado por el propietario |
-| `RESUMABLE_WITH_REVIEW` | mostrar diferencias y trabajo conservado | revisar o comparar antes de continuar |
-| `WAITING_FOR_DEPENDENCY` | mostrar evento esperado, responsable, antigüedad y vencimiento | solo salida segura definida por el propietario |
-| `HANDOFF_REQUIRED` | explicar que la responsabilidad necesita transferencia formal | acción hacia el contrato propietario de handoff, si existe |
-| `REASSIGNMENT_REQUIRED` | explicar que el actor actual no puede continuar directamente | gestionar reasignación mediante propietario |
-| `CONFLICT` | mostrar conflicto y estado preservado | resolver o escalar mediante patrón propietario |
-| `RESULT_UNKNOWN` | indicar que una intención previa no tiene resultado suficiente | ninguna repetición ciega |
-| `REAUTH_REQUIRED` | explicar que la preparación puede conservarse pero la autoridad debe renovarse | iniciar reautenticación propietaria |
-| `RECONCILIATION_REQUIRED` | mostrar diferencias que requieren conciliación | conciliar o escalar mediante propietario |
-| `SUPERSEDED` | explicar que el punto anterior dejó de ser vigente | navegar al trabajo vigente solo si el propietario lo aporta |
-| `COMPLETED` | mostrar resultado ya confirmado y referencia | ninguna acción de reanudación |
-| `EXPIRED` | explicar vencimiento y conservación permitida | salida segura, no continuar el punto vencido |
-| `INVALID` | explicar que el checkpoint no puede utilizarse de forma segura | recuperación o soporte, sin continuar |
+| Estado                    | Presentación obligatoria                                                       | Acción primaria admisible                                        |
+| ------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| `NO_CHECKPOINT`           | indicar que no existe punto recuperable cuando sea necesario explicarlo        | ninguna acción de reanudación                                    |
+| `DRAFT_ONLY`              | distinguir borrador recuperable de estado empresarial                          | revisar o gestionar borrador, solo si el propietario lo autoriza |
+| `CHECKPOINT_AVAILABLE`    | informar existencia de punto recuperable todavía no validado                   | ninguna acción empresarial de continuación                       |
+| `VALIDATING`              | mostrar que el sistema está comprobando vigencia, contexto y resultados        | ninguna acción empresarial de continuación                       |
+| `RESUMABLE`               | mostrar punto exacto y condiciones ya revalidadas                              | continuar, suministrado por el propietario                       |
+| `RESUMABLE_WITH_REVIEW`   | mostrar diferencias y trabajo conservado                                       | revisar o comparar antes de continuar                            |
+| `WAITING_FOR_DEPENDENCY`  | mostrar evento esperado, responsable, antigüedad y vencimiento                 | solo salida segura definida por el propietario                   |
+| `HANDOFF_REQUIRED`        | explicar que la responsabilidad necesita transferencia formal                  | acción hacia el contrato propietario de handoff, si existe       |
+| `REASSIGNMENT_REQUIRED`   | explicar que el actor actual no puede continuar directamente                   | gestionar reasignación mediante propietario                      |
+| `CONFLICT`                | mostrar conflicto y estado preservado                                          | resolver o escalar mediante patrón propietario                   |
+| `RESULT_UNKNOWN`          | indicar que una intención previa no tiene resultado suficiente                 | ninguna repetición ciega                                         |
+| `REAUTH_REQUIRED`         | explicar que la preparación puede conservarse pero la autoridad debe renovarse | iniciar reautenticación propietaria                              |
+| `RECONCILIATION_REQUIRED` | mostrar diferencias que requieren conciliación                                 | conciliar o escalar mediante propietario                         |
+| `SUPERSEDED`              | explicar que el punto anterior dejó de ser vigente                             | navegar al trabajo vigente solo si el propietario lo aporta      |
+| `COMPLETED`               | mostrar resultado ya confirmado y referencia                                   | ninguna acción de reanudación                                    |
+| `EXPIRED`                 | explicar vencimiento y conservación permitida                                  | salida segura, no continuar el punto vencido                     |
+| `INVALID`                 | explicar que el checkpoint no puede utilizarse de forma segura                 | recuperación o soporte, sin continuar                            |
 
 La matriz gobierna presentación. La elegibilidad real de cada acción sigue fuera del componente.
 
@@ -26451,15 +26451,15 @@ UI019 se integra en el orden conceptual aprobado por `UX-STATION-012`:
 
 Correspondencia:
 
-| Slot canónico | Proyección UI019 | Regla |
-| --- | --- | --- |
-| `PERSISTENT_CONTEXT` | `persistentContext` | contexto actual revalidado, no el contexto congelado del checkpoint |
-| `BLOCKING_STATE` | `blockingState` | conflicto, reauth, conciliación u otra condición ya clasificada |
-| `WORK_IDENTITY` | `workIdentity` | objeto, proceso, paso y estado que se están reconstruyendo |
-| `STEP_CONTENT` | `interruptionSummary` | último avance, preservado, cambios y condiciones de retorno |
-| `PRIMARY_ACTION` | `primaryAction` | máximo una salida segura ya elegible |
-| `SECONDARY_SUPPORT` | `secondarySupport` | posponer, descartar permitido, escalar, comparar o ayuda según contrato |
-| `RESULT_AND_RECEIPT` | `resultAndReceipt` | resultado confirmado, receipt o cierre cuando corresponda |
+| Slot canónico        | Proyección UI019      | Regla                                                                   |
+| -------------------- | --------------------- | ----------------------------------------------------------------------- |
+| `PERSISTENT_CONTEXT` | `persistentContext`   | contexto actual revalidado, no el contexto congelado del checkpoint     |
+| `BLOCKING_STATE`     | `blockingState`       | conflicto, reauth, conciliación u otra condición ya clasificada         |
+| `WORK_IDENTITY`      | `workIdentity`        | objeto, proceso, paso y estado que se están reconstruyendo              |
+| `STEP_CONTENT`       | `interruptionSummary` | último avance, preservado, cambios y condiciones de retorno             |
+| `PRIMARY_ACTION`     | `primaryAction`       | máximo una salida segura ya elegible                                    |
+| `SECONDARY_SUPPORT`  | `secondarySupport`    | posponer, descartar permitido, escalar, comparar o ayuda según contrato |
+| `RESULT_AND_RECEIPT` | `resultAndReceipt`    | resultado confirmado, receipt o cierre cuando corresponda               |
 
 UI019 no crea un octavo slot para checkpoint técnico.
 
@@ -27241,13 +27241,13 @@ CAMBIOS SUPABASE                  = 0
 
 #### 56. Reconciliación de primitivas locales
 
-| Primitiva local | Decisión frente a UI019 |
-| --- | --- |
-| `Button` | control potencial para una salida ya elegible; no decide reanudación |
-| `Card` | agrupación potencial; no representa checkpoint ni estado empresarial |
-| `Chip` | señal compacta potencial; no explica por sí sola una interrupción |
-| `Input` | captura potencial durante revisión; no persiste borrador ni recupera contexto |
-| `Modal` | diálogo potencial; no es mecanismo universal de restauración de sesión |
+| Primitiva local | Decisión frente a UI019                                                       |
+| --------------- | ----------------------------------------------------------------------------- |
+| `Button`        | control potencial para una salida ya elegible; no decide reanudación          |
+| `Card`          | agrupación potencial; no representa checkpoint ni estado empresarial          |
+| `Chip`          | señal compacta potencial; no explica por sí sola una interrupción             |
+| `Input`         | captura potencial durante revisión; no persiste borrador ni recupera contexto |
+| `Modal`         | diálogo potencial; no es mecanismo universal de restauración de sesión        |
 
 Ninguna de las cinco primitivas equivale a `InterruptedProcessState`.
 
@@ -27259,15 +27259,15 @@ No se retira ni adopta código local en esta tarea.
 
 Se conserva el conjunto canónico de siete consumidores web compartidos.
 
-| Consumidor | Decisión UI019 | Implementación en esta tarea |
-| --- | --- | ---: |
-| SHELL | `ELEGIBILIDAD_CONDICIONADA_A_REANUDACION_RESUELTA` | 0 |
-| NEXO | `CANDIDATO_OPERATIVO_PARA_REANUDACION` | 0 |
-| FOGO | `CANDIDATO_OPERATIVO_PARA_REANUDACION` | 0 |
-| ORIGO | `CANDIDATO_OPERATIVO_PARA_REANUDACION` | 0 |
-| VISO | `CANDIDATO_ADMINISTRATIVO_PARA_REANUDACION_CONTROLADA` | 0 |
-| PULSO | `CANDIDATO_OPERATIVO_PARA_REANUDACION` | 0 |
-| NUMERA | `CANDIDATO_ADMINISTRATIVO_PARA_REANUDACION_CONTROLADA` | 0 |
+| Consumidor | Decisión UI019                                         | Implementación en esta tarea |
+| ---------- | ------------------------------------------------------ | ---------------------------: |
+| SHELL      | `ELEGIBILIDAD_CONDICIONADA_A_REANUDACION_RESUELTA`     |                            0 |
+| NEXO       | `CANDIDATO_OPERATIVO_PARA_REANUDACION`                 |                            0 |
+| FOGO       | `CANDIDATO_OPERATIVO_PARA_REANUDACION`                 |                            0 |
+| ORIGO      | `CANDIDATO_OPERATIVO_PARA_REANUDACION`                 |                            0 |
+| VISO       | `CANDIDATO_ADMINISTRATIVO_PARA_REANUDACION_CONTROLADA` |                            0 |
+| PULSO      | `CANDIDATO_OPERATIVO_PARA_REANUDACION`                 |                            0 |
+| NUMERA     | `CANDIDATO_ADMINISTRATIVO_PARA_REANUDACION_CONTROLADA` |                            0 |
 
 Reconciliación:
 
@@ -27402,28 +27402,28 @@ El gobierno `SHELL-MIG-*` deberá:
 
 #### 66. Handoff a migración coordinada
 
-| Tarea | Handoff de UI019 |
-| --- | --- |
+| Tarea           | Handoff de UI019                                                                                    |
+| --------------- | --------------------------------------------------------------------------------------------------- |
 | `SHELL-MIG-001` | inventariar restauraciones, borradores, checkpoints, reintentos y estados de continuidad existentes |
-| `SHELL-MIG-002` | agrupar adopción por consumidor, proceso, riesgo e interrupción |
-| `SHELL-MIG-003` | fijar compatibilidad temporal y bloquear nuevas restauraciones divergentes |
-| `SHELL-MIG-004` | impedir que scaffolds usen URL o estado React como continuidad autoritativa |
-| `SHELL-MIG-005` | adoptar `InterruptedProcessState` sobre una proyección de reanudación ya resuelta |
-| `SHELL-MIG-006` | validar estados, actor, contexto, privacidad, accesibilidad, restart y dispositivo compartido |
-| `SHELL-MIG-007` | demostrar paridad de trabajo preservado, cambios, claims, resultados y siguiente salida |
-| `SHELL-MIG-008` | retirar únicamente patrones legacy sin uso residual y con rollback |
+| `SHELL-MIG-002` | agrupar adopción por consumidor, proceso, riesgo e interrupción                                     |
+| `SHELL-MIG-003` | fijar compatibilidad temporal y bloquear nuevas restauraciones divergentes                          |
+| `SHELL-MIG-004` | impedir que scaffolds usen URL o estado React como continuidad autoritativa                         |
+| `SHELL-MIG-005` | adoptar `InterruptedProcessState` sobre una proyección de reanudación ya resuelta                   |
+| `SHELL-MIG-006` | validar estados, actor, contexto, privacidad, accesibilidad, restart y dispositivo compartido       |
+| `SHELL-MIG-007` | demostrar paridad de trabajo preservado, cambios, claims, resultados y siguiente salida             |
+| `SHELL-MIG-008` | retirar únicamente patrones legacy sin uso residual y con rollback                                  |
 
 ---
 
 #### 67. Handoff a calidad y releases
 
-| Tarea | Responsabilidad |
-| --- | --- |
-| `SHELL-CI-001` | pruebas propias del package |
-| `SHELL-CI-002` | build independiente |
-| `SHELL-CI-003` | release versionado |
-| `SHELL-CI-004` | changelog |
-| `SHELL-CI-005` | matriz de compatibilidad por consumidor |
+| Tarea          | Responsabilidad                          |
+| -------------- | ---------------------------------------- |
+| `SHELL-CI-001` | pruebas propias del package              |
+| `SHELL-CI-002` | build independiente                      |
+| `SHELL-CI-003` | release versionado                       |
+| `SHELL-CI-004` | changelog                                |
+| `SHELL-CI-005` | matriz de compatibilidad por consumidor  |
 | `SHELL-CI-006` | actualización controlada de consumidores |
 
 La aprobación documental no constituye implementación, persistencia de checkpoints ni compatibilidad certificada.
@@ -27745,13 +27745,13 @@ UI019 queda documentalmente cerrada si se cumplen simultáneamente:
 
 #### 74. Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | `NOT_EXECUTED` | No existe en este entorno un checkout local actualizado que incorpore el artefacto UI019 para ejecutar el build documental del repositorio. |
-| LOCAL | `NOT_EXECUTED` | No se ejecutaron scripts del repositorio ni `git diff --check` contra un checkout actualizado; el artefacto transitorio se verificó estructuralmente de forma aislada. |
-| REMOTA | `PASS` | Se verificaron por GitHub la secuencia activa, protocolo, archivo propietario, UI018, contrato de entrega, políticas de tarea, `package.json`, validadores aplicables, `UX-BASE-014`, composición de `UX-STATION-012`, fragmentos 04A relevantes, `packages/` y `src/components/ui`. |
-| OPERATIVA | `NOT_APPLICABLE` | UI019 no modifica runtime, procesos empresariales, autorización, checkpoints persistidos, colas, periféricos, sesiones ni servicios desplegados. |
-| FÍSICA | `NOT_EXECUTED` | La certificación futura exige escenarios reales de recarga, reinicio, dispositivo compartido, cambio de actor y periféricos; UI019 no materializa todavía un patrón físico ni consumidor sobre el cual ejecutar esas pruebas. |
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                                                                                            |
+| --------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | `NOT_EXECUTED`   | No existe en este entorno un checkout local actualizado que incorpore el artefacto UI019 para ejecutar el build documental del repositorio.                                                                                                                                          |
+| LOCAL     | `NOT_EXECUTED`   | No se ejecutaron scripts del repositorio ni `git diff --check` contra un checkout actualizado; el artefacto transitorio se verificó estructuralmente de forma aislada.                                                                                                               |
+| REMOTA    | `PASS`           | Se verificaron por GitHub la secuencia activa, protocolo, archivo propietario, UI018, contrato de entrega, políticas de tarea, `package.json`, validadores aplicables, `UX-BASE-014`, composición de `UX-STATION-012`, fragmentos 04A relevantes, `packages/` y `src/components/ui`. |
+| OPERATIVA | `NOT_APPLICABLE` | UI019 no modifica runtime, procesos empresariales, autorización, checkpoints persistidos, colas, periféricos, sesiones ni servicios desplegados.                                                                                                                                     |
+| FÍSICA    | `NOT_EXECUTED`   | La certificación futura exige escenarios reales de recarga, reinicio, dispositivo compartido, cambio de actor y periféricos; UI019 no materializa todavía un patrón físico ni consumidor sobre el cual ejecutar esas pruebas.                                                        |
 
 La evidencia documental no sustituye las pruebas adversariales y operativas exigidas para una implementación futura.
 
@@ -27804,4 +27804,1813 @@ Esta tarea no autoriza:
 **SIGUIENTE TAREA RESERVADA**
 `SHELL-UI-020 — Compartir patrón de traspaso entre aplicaciones`
 
-### [ ] SHELL-UI-020 — Compartir patrón de traspaso entre aplicaciones
+### ✅ SHELL-UI-020 — Compartir patrón de traspaso entre aplicaciones
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-019 — Compartir patrón de proceso interrumpido
+**Tarea siguiente:** SHELL-MIG-001 — Consolidar inventario ejecutable de consumidores
+**Tipo de tarea:** Documental; definición canónica del patrón web compartido para presentar un traspaso entre aplicaciones ya resuelto por contratos propietarios, preservando identidad de proceso, contexto, aceptación explícita, retorno, privacidad, accesibilidad e idempotencia sin convertir navegación, enlaces o presentación en autoridad, escritura cruzada o efecto empresarial.
+**Bloque:** H — Fundación compartida
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md`
+**Estado físico resultante:** `ESPECIFICADO`; patrón físico no materializado; consumidores migrados: 0.
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+**Paquete propietario conceptual:** `@vento/ui-web`
+
+---
+
+#### 1. Propósito
+
+Definir el patrón web compartido que presenta un traspaso entre aplicaciones cuando la relación, la instancia, el recurso, el actor, el contexto, la aplicación propietaria, la participante, el estado y las acciones seguras ya fueron resueltos por sus contratos propietarios.
+
+La regla central queda:
+
+```text
+RELACIÓN DE HANDOFF CANÓNICA
++
+MISMA INSTANCIA EMPRESARIAL
++
+CHECKPOINT Y CONTEXTO VIGENTES
++
+RECEPTORA REVALIDA CONTRATO Y AUTORIDAD
++
+ESTADO DE HANDOFF RESUELTO
+        ↓
+CrossAppHandoff
+        ↓
+PRESENTACIÓN CLARA DE ORIGEN, DESTINO, PENDIENTE, ACEPTACIÓN, RESULTADO Y RETORNO
+```
+
+Nunca:
+
+```text
+abrir otra aplicación
+=
+aceptar el handoff
+
+navegar al destino
+=
+conceder autoridad
+
+respuesta técnica satisfactoria
+=
+efecto empresarial confirmado
+
+parámetro del navegador
+=
+contexto autoritativo
+
+volver a la aplicación de origen
+=
+crear una instancia nueva
+```
+
+---
+
+#### 2. Continuidad material de entrada
+
+`SHELL-UI-020` consume como base inmediata `SHELL-UI-019`, ya aprobada.
+
+La continuidad vigente ubica:
+
+```text
+BASE INMEDIATA APROBADA = SHELL-UI-019
+TAREA ACTUAL             = SHELL-UI-020
+SIGUIENTE RESERVADA      = SHELL-MIG-001
+```
+
+UI020 desarrolla únicamente el patrón compartido de presentación cross-app. No materializa la migración coordinada de consumidores.
+
+---
+
+#### 3. Naturaleza de la tarea
+
+`SHELL-UI-020` es documental.
+
+Al cierre queda definido:
+
+1. el patrón conceptual de traspaso entre aplicaciones;
+2. su identidad pública conceptual;
+3. su relación con `@vento/contracts/handoffs`;
+4. su relación con `OPC-HANDOFF-001`;
+5. los siete estados canónicos de handoff que puede presentar;
+6. los siete slots semánticos que conserva;
+7. la frontera entre navegación y autoridad;
+8. la frontera entre despacho, recepción, aceptación y efecto;
+9. la separación entre aplicación propietaria y participante;
+10. la revalidación obligatoria en la receptora;
+11. el tratamiento de retorno y continuidad;
+12. el tratamiento de idempotencia y resultado desconocido;
+13. el tratamiento de aceptación parcial y conciliación;
+14. el cambio de actor, dispositivo y contexto;
+15. privacidad, minimización y accesibilidad;
+16. conectividad y sincronización;
+17. relación con UI014, UI015, UI016 y UI019;
+18. frontera con AppShell y el `AppSwitcher` histórico;
+19. estado técnico actual de SHELL;
+20. matriz explícita de los siete consumidores web previstos;
+21. handoff a migración coordinada;
+22. contrato futuro de pruebas;
+23. cobertura `TREQ-*` vigente.
+
+No se crea código ejecutable ni se modifica una aplicación consumidora.
+
+---
+
+#### 4. Fuentes normativas consumidas
+
+La definición consume y no reemplaza:
+
+- `SHELL-UI-001 — Crear @vento/ui-web`;
+- `SHELL-UI-002..019`, como primitivas, patrones y fronteras ya propietarias;
+- `SHELL-CON-014 — Crear contrato de traspasos entre aplicaciones`;
+- `@vento/contracts/handoffs`, como namespace lógico del contrato estático de handoff;
+- `UX-BASE-014 — Definir reanudación del proceso después de interrupciones`;
+- `UX-STATION-012 — Definir composición dinámica de pasos mediante componentes operativos aprobados`;
+- `OPC-HANDOFF-001`, como componente semántico de transferencia, origen, destino, pendientes y aceptación;
+- `INT-APP-001..010`, como gobierno de eventos, consumidoras, idempotencia, estados distribuidos, errores parciales y escrituras cross-app;
+- los contratos vigentes de actor, contexto, autorización, segregación, privacidad, custodia, claims y evidencia;
+- `SHELL-MIG-001..008` para adopción reversible;
+- `SHELL-CI-001..006` para pruebas, build, publicación y compatibilidad;
+- la cobertura vigente del Registro Canónico de Requisitos de Prueba.
+
+UI020 especializa la proyección visual web de un handoff ya gobernado; no reabre las relaciones canónicas ni su propiedad funcional.
+
+---
+
+#### 5. Resultado documental
+
+Se aprueba el patrón conceptual:
+
+```text
+CrossAppHandoff
+```
+
+como parte futura de:
+
+```text
+@vento/ui-web
+```
+
+Su función es recibir una proyección ya resuelta y comunicar de manera estable:
+
+- de dónde proviene el trabajo;
+- a qué aplicación o responsabilidad debe continuar;
+- qué proceso, recurso y pendiente siguen siendo los mismos;
+- qué estado tiene el handoff;
+- qué cambió o debe revalidarse;
+- si existe una acción segura disponible;
+- qué resultado fue confirmado;
+- cómo continuar o volver cuando el contrato lo permita.
+
+No es un router, un generador de enlaces, una autoridad de autorización, un command bus, un orquestador empresarial ni una fuente de verdad de proceso.
+
+---
+
+#### 6. Identidad pública conceptual
+
+La superficie conceptual queda formada por:
+
+```text
+CrossAppHandoff
+CrossAppHandoffProps
+CrossAppHandoffState
+```
+
+`CrossAppHandoffState` no crea un vocabulario nuevo. Es la proyección web exacta de los siete estados de handoff ya aprobados por `UX-BASE-014`:
+
+```text
+OFFERED
+ACCEPTED
+REJECTED
+EXPIRED
+CANCELLED
+PARTIALLY_ACCEPTED
+RECONCILIATION_REQUIRED
+```
+
+No se añaden estados visuales paralelos como `OPENED`, `NAVIGATED`, `DELIVERED`, `SUCCESS` o `DONE` para sustituir el estado empresarial.
+
+---
+
+#### 7. Contrato de productor y consumidor
+
+**Contrato:** `CROSS-APP-HANDOFF-PRESENTATION-CONTRACT-001`
+
+**Productor:** aplicación, host o composición propietaria que ya resolvió la relación canónica de handoff, la instancia, el checkpoint, el recurso, actor, contexto, autorización, aplicación propietaria, participante, estado de handoff, resultado conocido y controles permitidos.
+
+**Consumidor:** `@vento/ui-web / CrossAppHandoff`.
+
+**Campos requeridos:** `state`, `ariaLabel`, `persistentContext`, `workIdentity` y `stepContent`.
+
+**Campos condicionales:** `blockingState`, `primaryAction`, `secondarySupport` y `resultAndReceipt`.
+
+**Invariantes:** relación válida resuelta externamente, misma instancia empresarial, revalidación de autoridad fuera del componente, estado canónico exacto, una sola acción primaria, no escritura cruzada, retorno controlado y ausencia de secretos.
+
+**Condiciones inválidas:** relación inventada por UI, destino deducido de texto o URL, autoridad heredada de la emisora, aceptación inferida por navegación, resultado confirmado por ACK técnico, más de una acción primaria o participante usada como propietaria por conveniencia.
+
+---
+
+#### 8. API conceptual mínima
+
+La API conceptual queda:
+
+```text
+state:
+  | "OFFERED"
+  | "ACCEPTED"
+  | "REJECTED"
+  | "EXPIRED"
+  | "CANCELLED"
+  | "PARTIALLY_ACCEPTED"
+  | "RECONCILIATION_REQUIRED"
+ariaLabel: string
+persistentContext: React.ReactNode
+blockingState?: React.ReactNode
+workIdentity: React.ReactNode
+stepContent: React.ReactNode
+primaryAction?: React.ReactNode
+secondarySupport?: React.ReactNode
+resultAndReceipt?: React.ReactNode
+```
+
+Los `ReactNode` representan proyecciones semánticas ya normalizadas. No transportan por sí mismos autoridad ni estado propietario.
+
+---
+
+#### 9. Campos deliberadamente excluidos
+
+La API base no recibe:
+
+```text
+href
+returnTo
+deepLink
+destinationUrl
+sourceUrl
+processId
+processInstanceId
+taskId
+resourceId
+actorId
+principalId
+permissionCode
+siteId
+areaId
+shiftId
+checkinId
+claimId
+custodyRef
+idempotencyKey
+accessToken
+refreshToken
+handoffSecret
+isAuthorized
+canAccept
+canWrite
+ownerAppCode
+participantAppCode
+```
+
+Motivos:
+
+1. el patrón no construye destinos técnicos;
+2. el patrón no resuelve autoridad;
+3. el patrón no debe transportar secretos o credenciales;
+4. la identidad empresarial debe provenir del contrato propietario;
+5. los identificadores técnicos no son contenido visual ordinario;
+6. una señal cliente no puede afirmar aceptación o permiso.
+
+---
+
+#### 10. Siete slots semánticos preservados
+
+UI020 conserva exactamente el orden conceptual aprobado en `UX-STATION-012`:
+
+```text
+1. PERSISTENT_CONTEXT
+2. BLOCKING_STATE
+3. WORK_IDENTITY
+4. STEP_CONTENT
+5. PRIMARY_ACTION
+6. SECONDARY_SUPPORT
+7. RESULT_AND_RECEIPT
+```
+
+Correspondencia:
+
+| Slot canónico        | Prop de UI020       | Regla                                                                     |
+| -------------------- | ------------------- | ------------------------------------------------------------------------- |
+| `PERSISTENT_CONTEXT` | `persistentContext` | actor, territorio, origen, destino y contexto humano necesarios           |
+| `BLOCKING_STATE`     | `blockingState`     | reautorización, expiración, conflicto o condición que impide continuar    |
+| `WORK_IDENTITY`      | `workIdentity`      | proceso, recurso, trabajo pendiente y continuidad perceptibles            |
+| `STEP_CONTENT`       | `stepContent`       | explicación, condiciones, evidencia y cambios necesarios para decidir     |
+| `PRIMARY_ACTION`     | `primaryAction`     | máximo una acción ya declarada segura por el productor                    |
+| `SECONDARY_SUPPORT`  | `secondarySupport`  | revisión, rechazo, posposición, ayuda o retorno cuando correspondan       |
+| `RESULT_AND_RECEIPT` | `resultAndReceipt`  | aceptación, rechazo, parcialidad, referencia y siguiente paso confirmados |
+
+La navegación técnica no crea un octavo slot empresarial.
+
+---
+
+#### 11. Modelo de capas
+
+El patrón conserva cuatro responsabilidades separadas:
+
+```text
+CAPA 1 — CONTRATO ESTÁTICO
+@vento/contracts/handoffs
+relación válida, propietaria, participante, modalidad y familia
+        ↓
+CAPA 2 — ESTADO Y AUTORIDAD
+aplicación propietaria / participante / servidor
+actor, contexto, permiso, recurso, checkpoint, estado y outcome
+        ↓
+CAPA 3 — TRANSPORTE DE CONTINUIDAD
+host de navegación e integración
+identificador opaco, destino permitido, compatibilidad y retorno
+        ↓
+CAPA 4 — CrossAppHandoff
+presentación, jerarquía, accesibilidad, privacidad y feedback
+```
+
+Ninguna capa inferior adquiere autoridad empresarial por renderizar o transportar información de otra.
+
+---
+
+#### 12. Handoff no equivale a navegación
+
+Abrir otra aplicación puede formar parte de un handoff, pero no lo completa.
+
+La interfaz deberá conservar perceptible que:
+
+```text
+ABIERTO EN DESTINO
+≠
+ACEPTADO
+
+NAVEGACIÓN COMPLETADA
+≠
+RESPONSABILIDAD TRANSFERIDA
+
+VENTANA CERRADA
+≠
+HANDOFF CANCELADO
+```
+
+La aceptación requiere el resultado propietario correspondiente.
+
+---
+
+#### 13. Navegación no concede autoridad
+
+La aplicación receptora no confía en:
+
+- parámetros de navegador;
+- fragmentos de URL;
+- un origen HTTP conocido;
+- referrer;
+- nombre de aplicación visible;
+- estado React de la emisora;
+- selección de sede de la emisora;
+- flags del cliente;
+- presencia de un botón habilitado.
+
+Antes de cualquier efecto protegido, la receptora vuelve a resolver actor, contexto, recurso, estado y permiso mediante sus fuentes confiables.
+
+---
+
+#### 14. Deep link opaco
+
+Cuando la arquitectura propietaria utilice un deep link, UI020 lo trata únicamente como transporte ya resuelto.
+
+El identificador podrá referenciar proceso, tarea, recurso y retorno de forma opaca, pero no transportará:
+
+- permiso;
+- rol efectivo;
+- autoridad;
+- actor autoritativo;
+- estado objetivo a imponer;
+- credenciales;
+- secreto reutilizable;
+- autorización para escribir otra fuente.
+
+`CrossAppHandoff` no genera, firma, analiza ni valida deep links.
+
+---
+
+#### 15. Destino y retorno
+
+El destino técnico y el retorno pertenecen al host o contrato de navegación.
+
+Reglas:
+
+1. el destino debe corresponder a una aplicación y relación vigentes;
+2. un cambio de destino no puede desviar silenciosamente la misma intención;
+3. un retorno válido conserva la instancia original;
+4. volver no crea una segunda tarea ni un segundo proceso;
+5. un retorno inválido, obsoleto o no autorizado falla cerrado;
+6. la UI no fabrica un destino alternativo a partir del historial del navegador.
+
+---
+
+#### 16. Propietaria y participante
+
+El patrón mantiene visible la diferencia semántica entre:
+
+```text
+APLICACIÓN PROPIETARIA
+→ gobierna registro principal, reglas, estado, corrección y cierre
+
+APLICACIÓN PARTICIPANTE
+→ solicita, recibe, acepta o ejecuta únicamente su responsabilidad permitida
+```
+
+La participante no adquiere propiedad por mostrar el proceso, recibir contexto o ejecutar un efecto propio.
+
+---
+
+#### 17. Escritura cruzada prohibida
+
+UI020 no ofrece una abstracción que permita editar directamente estado de otra aplicación.
+
+La presentación nunca convierte en acción válida:
+
+- escribir una tabla ajena;
+- invocar una mutación ajena sin contrato;
+- encadenar mutaciones de varias propietarias como una sola transacción cliente;
+- usar un esquema compartido como bypass;
+- usar triggers, workers o webhooks para alterar silenciosamente otra fuente;
+- corregir un dominio ajeno mediante edición directa;
+- usar SHELL como writer universal.
+
+Cada efecto permanece dentro de su propietaria.
+
+---
+
+#### 18. Evento, solicitud, proyección y hecho
+
+UI020 conserva separados:
+
+```text
+HANDOFF_REQUEST
+→ solicitud de continuidad o transferencia
+
+HANDOFF_PROJECTION
+→ proyección mínima para la participante
+
+HANDOFF_FACT
+→ hecho durable de transferencia cuando exista
+
+BusinessEventId
+→ identidad estable de un hecho empresarial
+```
+
+La correlación entre ellos no fusiona sus identidades.
+
+---
+
+#### 19. Solicitud y aceptación
+
+La secuencia conceptual permanece:
+
+```text
+SOLICITUD
+→ ENTREGA TÉCNICA
+→ REVALIDACIÓN EN RECEPTORA
+→ DECISIÓN DE ACEPTACIÓN
+→ EJECUCIÓN DE RESPONSABILIDAD PROPIA
+→ RESULTADO CORRELACIONADO
+→ CONTINUIDAD
+```
+
+Reglas:
+
+1. emitir no equivale a aceptar;
+2. recibir no equivale a aceptar;
+3. visualizar no equivale a aceptar;
+4. abrir el destino no equivale a aceptar;
+5. solo un resultado propietario puede afirmar aceptación;
+6. la autoaceptación solo existe cuando un contrato propietario la permite expresamente.
+
+---
+
+#### 20. Estado `OFFERED`
+
+`OFFERED` representa un handoff ofrecido cuya aceptación todavía no está confirmada.
+
+La superficie deberá poder mostrar:
+
+- origen y destino humanos;
+- trabajo y recurso involucrados;
+- condiciones relevantes;
+- momento de la oferta cuando sea material;
+- quién mantiene la responsabilidad actual;
+- acción segura siguiente.
+
+No mostrará el trabajo como transferido ni completado.
+
+---
+
+#### 21. Estado `ACCEPTED`
+
+`ACCEPTED` representa aceptación explícita confirmada por el contrato propietario.
+
+La superficie puede comunicar:
+
+- quién o qué función aceptó;
+- qué trabajo o custodia quedó aceptado;
+- momento y referencia aplicables;
+- siguiente paso seguro;
+- retorno disponible cuando corresponda.
+
+`ACCEPTED` no significa necesariamente que todo el proceso haya terminado ni que todos los efectos posteriores estén confirmados.
+
+---
+
+#### 22. Estado `REJECTED`
+
+`REJECTED` representa rechazo explícito del handoff.
+
+La presentación deberá distinguir:
+
+- rechazo de la transferencia;
+- motivo humano cuando el contrato permita mostrarlo;
+- trabajo todavía pendiente;
+- responsabilidad vigente;
+- siguiente salida segura.
+
+No transforma el rechazo en cancelación del proceso completo ni en error técnico genérico.
+
+---
+
+#### 23. Estado `EXPIRED`
+
+`EXPIRED` indica que la oferta o capacidad de aceptación dejó de ser vigente.
+
+La UI no reutiliza silenciosamente:
+
+- el mismo consentimiento;
+- una autorización anterior;
+- un claim vencido;
+- un enlace antiguo;
+- un destino técnico obsoleto;
+- una sesión anterior.
+
+Crear una nueva solicitud requiere decisión propietaria externa a UI020.
+
+---
+
+#### 24. Estado `CANCELLED`
+
+`CANCELLED` indica cancelación confirmada del handoff, no necesariamente del proceso empresarial completo.
+
+Cerrar el navegador, volver atrás o abandonar visualmente la superficie no produce este estado.
+
+La UI solo lo presenta después de recibir la decisión propietaria correspondiente.
+
+---
+
+#### 25. Estado `PARTIALLY_ACCEPTED`
+
+`PARTIALLY_ACCEPTED` conserva la parcialidad de forma explícita.
+
+La superficie deberá distinguir:
+
+- qué parte fue aceptada;
+- qué parte permanece pendiente;
+- qué parte fue rechazada o no pudo aplicarse;
+- qué responsabilidad conserva cada propietaria;
+- qué siguiente acción es segura.
+
+Nunca:
+
+```text
+ACEPTACIÓN PARCIAL
+=
+ÉXITO GLOBAL
+```
+
+La UI no resume varias unidades propietarias como un único verde de éxito.
+
+---
+
+#### 26. Estado `RECONCILIATION_REQUIRED`
+
+`RECONCILIATION_REQUIRED` representa una inconsistencia o incertidumbre que exige resolver evidencia antes de continuar.
+
+La superficie puede presentar:
+
+- qué hecho está confirmado;
+- qué resultado permanece incierto;
+- qué referencia debe revisarse;
+- quién puede resolver;
+- qué acciones quedan suspendidas.
+
+No ejecuta correcciones directas sobre una fuente ajena ni propone retry ciego.
+
+---
+
+#### 27. Resultado técnico frente a empresarial
+
+UI020 conserva las distinciones de integración:
+
+```text
+AUTHORIZED
+≠
+COMMITTED
+
+PUBLISHED
+≠
+DELIVERED
+
+DELIVERED
+≠
+APPLIED
+
+ACK TÉCNICO
+≠
+EFFECT_CONFIRMED
+```
+
+Una respuesta HTTP satisfactoria, entrega de mensaje, apertura del destino o recepción por inbox no constituyen por sí solas aceptación ni efecto empresarial.
+
+---
+
+#### 28. Outcomes propietarios
+
+Cuando una composición necesite explicar el resultado de un comando propietario relacionado con el handoff, conserva los significados vigentes:
+
+```text
+REJECTED_AUTHORIZATION
+REJECTED_CONTRACT
+REJECTED_BUSINESS
+ACCEPTED_PENDING
+EFFECT_CONFIRMED
+PRIOR_RESULT_REPLAYED
+CONFLICT
+RESULT_UNKNOWN
+PARTIALLY_APPLIED
+RECONCILIATION_REQUIRED
+```
+
+UI020 no redefine esos outcomes como estados de handoff. El productor traduce el resultado propietario a la proyección humana correspondiente sin perder su significado.
+
+---
+
+#### 29. `RESULT_UNKNOWN`
+
+Si una operación relacionada con el handoff queda en `RESULT_UNKNOWN`:
+
+1. se conserva la intención original;
+2. se consulta idempotencia y receipt;
+3. se consulta el estado propietario;
+4. se evita crear una nueva intención;
+5. se bloquea la repetición hasta clasificar el resultado;
+6. se presenta una salida segura de revisión o conciliación.
+
+`CrossAppHandoff` no genera una nueva clave de idempotencia ni decide retry.
+
+---
+
+#### 30. Idempotencia
+
+La materialización futura deberá ser compatible con:
+
+- inbox de la consumidora;
+- clave estable del efecto;
+- resultado recuperable;
+- replay del resultado previo;
+- deduplicación de aceptación;
+- deduplicación de efecto;
+- detección de contenido distinto bajo la misma identidad.
+
+UI020 presenta el resultado; no implementa almacenamiento, locks, outbox, inbox o colas.
+
+---
+
+#### 31. Cierre y desmontaje de la UI
+
+Cerrar el componente, navegar fuera, recargar o desmontar la superficie no equivale a:
+
+- rechazar;
+- cancelar;
+- aceptar;
+- completar;
+- liberar custodia;
+- confirmar un efecto;
+- abandonar una instancia empresarial.
+
+El ciclo de vida del handoff permanece en su propietario.
+
+---
+
+#### 32. Relación con checkpoint
+
+Cuando el traspaso continúa un proceso interrumpido, UI020 consume un checkpoint ya resuelto por la capa propietaria.
+
+No considera autoridad:
+
+- la última pantalla;
+- historial del navegador;
+- estado completo del componente;
+- una selección visual;
+- una cookie no gobernada;
+- almacenamiento local sin contrato.
+
+UI019 conserva la presentación de reconstrucción y reanudación; UI020 toma propiedad únicamente cuando el siguiente paso seguro exige cruzar una frontera de aplicación.
+
+---
+
+#### 33. Relación con `InterruptedProcessState`
+
+La separación queda:
+
+```text
+InterruptedProcessState
+→ explica por qué y cómo puede continuar un trabajo interrumpido
+
+CrossAppHandoff
+→ explica y presenta el cruce gobernado hacia otra aplicación
+```
+
+Un estado `HANDOFF_REQUIRED` de UI019 puede conducir a UI020 después de que el productor resuelva la relación canónica y el estado de transferencia.
+
+UI019 no construye el handoff y UI020 no reconstruye el checkpoint.
+
+---
+
+#### 34. Relación con `RecoverableErrorState`
+
+UI016 conserva recuperación frente a un fallo observado.
+
+UI020 puede componer `RecoverableErrorState` cuando el transporte o una dependencia técnica falla, pero mantiene separado:
+
+```text
+ESTADO DEL HANDOFF
+≠
+ESTADO DEL FALLO TÉCNICO
+```
+
+Un timeout de navegación o integración no convierte automáticamente un handoff en `REJECTED`, `EXPIRED` o `CANCELLED`.
+
+---
+
+#### 35. Relación con `ContextDiagnostic`
+
+UI015 conserva la explicación de actor, territorio, sesión, dispositivo o contexto inválidos.
+
+Si la receptora detecta contexto incompatible:
+
+- UI020 no ofrece bypass;
+- no hereda contexto de la emisora;
+- no reutiliza sede o área como permiso;
+- la composición puede mostrar `ContextDiagnostic`;
+- la aceptación permanece bloqueada hasta una nueva decisión autoritativa.
+
+---
+
+#### 36. Relación con confirmación sensible
+
+UI020 no decide que una aceptación, rechazo, cancelación o continuación sea sensible.
+
+Cuando el contrato propietario determine una acción sensible, la composición utiliza `SHELL-UI-014` antes del efecto correspondiente.
+
+La sensibilidad no se deduce del color, nombre de la aplicación, cantidad de datos o posición del botón.
+
+---
+
+#### 37. Una sola acción primaria
+
+La superficie contiene como máximo una acción primaria.
+
+Puede representar, según la decisión ya resuelta:
+
+- abrir el destino permitido;
+- aceptar y continuar;
+- revisar antes de aceptar;
+- volver al origen;
+- continuar después de aceptación;
+- iniciar conciliación.
+
+UI020 no escoge cuál corresponde. El productor entrega únicamente el control seguro vigente.
+
+---
+
+#### 38. Acciones secundarias
+
+Las acciones secundarias permanecen subordinadas y pueden incluir, cuando sus contratos lo permitan:
+
+- rechazar;
+- cancelar una oferta propia;
+- guardar para continuar luego;
+- revisar evidencia;
+- solicitar ayuda;
+- volver sin ejecutar un efecto;
+- abrir detalle seguro.
+
+No existe un control universal `Aceptar`, `Reintentar`, `Cancelar` o `Volver` válido para todos los estados.
+
+---
+
+#### 39. Actor emisor y receptor
+
+UI020 debe permitir mostrar identidades humanas necesarias sin convertirlas en autoridad cliente.
+
+Reglas:
+
+1. el actor emisor queda asociado a la intención según el contrato propietario;
+2. el actor receptor se identifica y revalida en la aplicación receptora;
+3. un rol o función esperada no equivale a una persona autenticada;
+4. un dispositivo compartido no actúa como actor humano;
+5. cambiar actor no transfiere borrador, claim, custodia ni aceptación;
+6. una nueva persona resuelve un contexto nuevo.
+
+---
+
+#### 40. Cambio de dispositivo
+
+Continuar el handoff en otro dispositivo exige que la capa propietaria confirme:
+
+- disponibilidad del checkpoint o transferencia segura;
+- dispositivo permitido;
+- actor identificado;
+- contexto compatible;
+- datos sensibles aptos para esa superficie;
+- claim o responsabilidad compatibles;
+- ausencia de trabajo exclusivo no sincronizado.
+
+UI020 no promete continuidad multi-dispositivo por existir un enlace accesible.
+
+---
+
+#### 41. Cambio de sede, área o turno
+
+Una variación material en sede, área, turno, check-in, rol operativo, delegación, simulación o dispositivo obliga a resolver un contexto nuevo.
+
+La recepción del handoff no preserva automáticamente la autoridad anterior.
+
+```text
+CONTEXTO NUEVO COMPATIBLE
+→ continuar después de revalidar
+
+CONTEXTO NUEVO INCOMPATIBLE
+→ bloquear, rechazar, reasignar o conciliar según propietario
+```
+
+---
+
+#### 42. Claims, leases y trabajo excluyente
+
+Un handoff no transfiere un claim o lease por simple navegación.
+
+La capa propietaria deberá comprobar, cuando aplique:
+
+- propietario;
+- recurso;
+- etapa;
+- vigencia;
+- dispositivo;
+- área;
+- estado;
+- renovación;
+- takeover permitido.
+
+UI020 presenta únicamente el resultado ya clasificado.
+
+---
+
+#### 43. Custodia física
+
+La transferencia visual no demuestra custodia física.
+
+Cuando el proceso involucre inventario, efectivo, activos, lotes, documentos u otros recursos custodiados:
+
+- la última custodia confirmada permanece diferenciada;
+- el hecho físico observado se conserva;
+- la aceptación digital se distingue de la entrega física;
+- una divergencia conduce a conciliación;
+- se impiden dobles aceptaciones.
+
+UI020 no atribuye custodia por un click.
+
+---
+
+#### 44. Evidencia
+
+La superficie puede presentar referencias de evidencia necesarias para decidir o confirmar el handoff.
+
+No confunde:
+
+```text
+ARCHIVO PRESENTE
+=
+EVIDENCIA VINCULADA
+
+TRANSFERENCIA COMPLETA
+=
+EVIDENCIA ACEPTADA
+
+COMANDO EMITIDO
+=
+RESULTADO VERIFICADO
+```
+
+Los mecanismos de evidencia, retención y auditoría permanecen en sus propietarios.
+
+---
+
+#### 45. Privacidad y minimización
+
+La proyección contiene solo información necesaria para la finalidad del handoff.
+
+No mostrará por conveniencia:
+
+- secretos;
+- tokens;
+- credenciales;
+- OTP o PIN;
+- payloads completos cuando basta una referencia humana;
+- permisos internos completos;
+- datos personales no relacionados;
+- información de otras sedes o áreas;
+- recursos no autorizados;
+- detalles técnicos del transporte.
+
+La aplicación receptora vuelve a aplicar sus propias reglas de acceso y masking.
+
+---
+
+#### 46. Dispositivos compartidos
+
+En tablet, kiosco o estación compartida:
+
+- la oferta de otro actor no aparece al siguiente trabajador sin autorización;
+- el contenido sensible se protege antes de identificar actor;
+- aceptar exige actor atribuible cuando corresponda;
+- logout o expiración no entregan automáticamente el handoff al siguiente usuario;
+- datos personales del actor anterior se limpian de la proyección;
+- la continuidad puede quedar bloqueada si el checkpoint no es transferible.
+
+UI017 y UI018 conservan la adaptación física de sus superficies.
+
+---
+
+#### 47. Conectividad
+
+UI020 no crea una política offline general.
+
+Cuando el handoff dependa de conectividad verificable:
+
+- una oferta local no se presenta como recibida por otra aplicación;
+- un mensaje en cola no se presenta como aceptado;
+- un ACK técnico no se presenta como efecto;
+- una vista cacheada no concede autoridad;
+- la reconexión revalida sesión, contexto, contrato y resultado antes de actuar.
+
+La política concreta pertenece a `UX-BASE-013`, colas e integración.
+
+---
+
+#### 48. Estados de sincronización
+
+Los estados distribuidos permanecen separados del lifecycle de handoff:
+
+```text
+LOCAL_DRAFT
+READY_TO_SYNC
+WAITING_FOR_DEPENDENCY
+REAUTH_REQUIRED
+SYNCING
+PENDING_CONFIRMATION
+REJECTED_RETRYABLE
+CONFLICT
+RESULT_UNKNOWN
+RECONCILIATION_REQUIRED
+ACKNOWLEDGED
+REJECTED_TERMINAL
+CANCELLED_LOCAL
+SUPERSEDED
+```
+
+UI020 no transforma `ACKNOWLEDGED` en `ACCEPTED` ni `SYNCING` en trabajo transferido.
+
+---
+
+#### 49. Accesibilidad
+
+La materialización futura deberá:
+
+1. anunciar el estado del handoff cuando cambie materialmente;
+2. identificar origen, destino, trabajo y estado por texto perceptible;
+3. no depender solo de color;
+4. mantener orden de lectura lógico;
+5. ofrecer acciones con nombre inequívoco;
+6. conservar foco visible;
+7. funcionar por teclado;
+8. funcionar por tacto cuando la superficie lo requiera;
+9. ser compatible con lector de pantalla;
+10. preservar reflow y zoom;
+11. no depender de hover o gesto oculto;
+12. evitar cambios de foco por actualizaciones técnicas de fondo;
+13. permitir revisar parcialidad y conciliación sin límite de tiempo arbitrario.
+
+---
+
+#### 50. Semántica HTML
+
+El patrón es conceptualmente una región de continuidad con estado y acciones asociadas.
+
+Puede equivaler a:
+
+```text
+región
+  contexto persistente
+  identidad del trabajo
+  estado del handoff
+  explicación y condiciones
+  acción primaria
+  soporte secundario
+  resultado y referencia
+```
+
+No se impone `role="alert"` universal ni `role="application"` universal.
+
+La composición decide anuncios live únicamente cuando el cambio material lo justifique.
+
+---
+
+#### 51. Responsive
+
+La jerarquía se conserva en escritorio, tablet y kiosco:
+
+- origen, destino y trabajo no desaparecen por compactación;
+- el estado de aceptación permanece perceptible;
+- la acción primaria no compite con controles secundarios;
+- la parcialidad no se oculta para ahorrar espacio;
+- el contenido mínimo no exige desplazamiento horizontal ordinario;
+- UI017 y UI018 conservan sus reglas táctiles y de estación.
+
+---
+
+#### 52. Compatibilidad server/client
+
+La estructura base de `CrossAppHandoff` no requiere por sí misma:
+
+- `window`;
+- `document`;
+- storage;
+- timers;
+- red;
+- Supabase;
+- router;
+- listeners globales;
+- estado React interno obligatorio.
+
+Por tanto, la superficie base es conceptualmente server-safe.
+
+Los controles aportados por el productor pueden requerir cliente y navegación sin convertir a UI020 en propietaria de esos efectos.
+
+---
+
+#### 53. Dependencias prohibidas
+
+`CrossAppHandoff` no dependerá directamente de:
+
+- `@vento/supabase`;
+- clientes Supabase;
+- tablas;
+- RPC;
+- Edge Functions;
+- Storage;
+- Realtime;
+- APIs internas de aplicaciones;
+- command handlers propietarios;
+- colas;
+- brokers;
+- drivers;
+- catálogos locales de permisos;
+- secretos;
+- credenciales;
+- listas hardcodeadas de aplicaciones;
+- heurísticas de URL como autoridad.
+
+---
+
+#### 54. Frontera con AppShell
+
+AppShell conserva navegación transversal, chrome y launcher cuando correspondan.
+
+UI020 no sustituye:
+
+- launcher de aplicaciones;
+- menú global;
+- selección ordinaria de aplicación;
+- navegación de backoffice;
+- breadcrumbs;
+- enlaces generales de ayuda.
+
+Un cambio voluntario de aplicación fuera de una continuidad empresarial no es un handoff.
+
+---
+
+#### 55. `AppSwitcher` histórico
+
+El template vigente conserva un `AppSwitcher` histórico con aplicaciones y destinos definidos localmente y navegación mediante enlaces ordinarios.
+
+Esa evidencia se clasifica así:
+
+```text
+AppSwitcher histórico
+→ launcher / navegación de template
+
+CrossAppHandoff
+→ continuidad empresarial gobernada entre aplicaciones
+```
+
+UI020 no adopta el `AppSwitcher` como contrato de handoff, no considera su lista local fuente canónica de aplicaciones y no interpreta un selector cliente de sede como contexto autoritativo.
+
+La reconciliación y eventual sustitución del template pertenecen a `SHELL-MIG-*`.
+
+---
+
+#### 56. Frontera con `@vento/contracts/handoffs`
+
+UI020 consume el contrato estático y no lo duplica.
+
+La relación canónica continúa identificándose por:
+
+```text
+(ProcessId, owner_application, participant_application)
+```
+
+La UI no crea un segundo `handoff_id` de relación, no reclasifica `DIRECTA`/`CONDICIONAL` y no inventa participantes.
+
+La pertenencia a la matriz contractual se resuelve antes del render.
+
+---
+
+#### 57. Universo contractual de handoff
+
+El corte vigente de `SHELL-CON-014` permanece externo a UI020 y conserva:
+
+```text
+PROCESOS CANÓNICOS EVALUADOS        = 69
+PROCESOS CON HANDOFF                = 8
+RELACIONES DE HANDOFF               = 49
+RELACIONES DIRECTAS                 = 27
+RELACIONES CONDICIONALES            = 22
+PROPIETARIA EN EL CORTE             = viso
+APLICACIONES PARTICIPANTES          = 9
+DUPLICADOS                          = 0
+RELACIONES SIN ProcessId            = 0
+```
+
+UI020 no copia esas 49 filas dentro de `@vento/ui-web`. Solo presenta una instancia cuya relación ya fue validada contra ese contrato.
+
+---
+
+#### 58. Relaciones condicionales
+
+Una relación `CONDICIONAL` no se vuelve activa por:
+
+- frecuencia de uso;
+- existencia de un botón;
+- presencia de un deep link;
+- disponibilidad del frontend;
+- pertenencia del actor a la aplicación;
+- haber funcionado anteriormente.
+
+El productor solo presenta una acción de handoff cuando la condición propietaria, disponibilidad, autorización, compatibilidad y readiness aplicables están satisfechos.
+
+---
+
+#### 59. AURA, ANIMA y PASS
+
+El contrato de handoffs vigente incluye participantes que no forman parte del conjunto de siete repositorios web previstos de `@vento/ui-web`.
+
+UI020 no crea relaciones package–consumidor para:
+
+```text
+ANIMA
+AURA
+PASS
+```
+
+Esto no elimina ni modifica sus relaciones contractuales. Simplemente conserva la frontera de `@vento/ui-web` como package web previsto para los siete consumidores ya aprobados.
+
+AURA continúa sujeta a sus puertas de readiness antes de cualquier materialización operativa.
+
+---
+
+#### 60. Estado técnico actual de SHELL
+
+La inspección remota vigente mantiene bajo `packages/`:
+
+```text
+os-context
+```
+
+No existe un package físico `@vento/ui-web`.
+
+`src/components/ui` conserva:
+
+```text
+Button
+Card
+Chip
+Input
+Modal
+```
+
+más el barrel `index.ts`.
+
+No existe allí una implementación física `CrossAppHandoff`.
+
+Resultado:
+
+```text
+CONTRATO UI020          = ESPECIFICADO DOCUMENTALMENTE
+PATRÓN FÍSICO           = NO MATERIALIZADO
+PACKAGE @vento/ui-web   = NO MATERIALIZADO
+DESTINOS CROSS-APP      = NO MATERIALIZADOS POR UI020
+CONSUMIDORES MIGRADOS   = 0
+CAMBIOS SUPABASE        = 0
+```
+
+---
+
+#### 61. Reconciliación de primitivas locales
+
+| Primitiva local | Decisión frente a UI020                                               |
+| --------------- | --------------------------------------------------------------------- |
+| `Button`        | control potencial; no aceptación, autorización ni efecto por sí mismo |
+| `Card`          | agrupación potencial; no contrato de handoff                          |
+| `Chip`          | estado visual potencial; no lifecycle autoritativo                    |
+| `Input`         | captura potencial; no identidad de transferencia                      |
+| `Modal`         | diálogo potencial; no aceptación universal ni continuidad cross-app   |
+
+Ninguna de las cinco primitivas equivale a `CrossAppHandoff`.
+
+No se retira ni adopta código local en esta tarea.
+
+---
+
+#### 62. Matriz materializada de consumidores web
+
+Se conserva el conjunto canónico de siete consumidores web previstos de `@vento/ui-web`.
+
+| Consumidor | Decisión UI020                                                      | Implementación en esta tarea |
+| ---------- | ------------------------------------------------------------------- | ---------------------------: |
+| SHELL      | `ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION`        |                            0 |
+| VISO       | `ELEGIBLE_COMO_PROPIETARIA_O_PARTICIPANTE_SIN_CEDER_AUTORIDAD_A_UI` |                            0 |
+| NEXO       | `ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION`        |                            0 |
+| FOGO       | `ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION`        |                            0 |
+| ORIGO      | `ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION`        |                            0 |
+| PULSO      | `ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION`        |                            0 |
+| NUMERA     | `ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION`        |                            0 |
+
+Reconciliación:
+
+```text
+TOTAL ESPERADO      = 7
+TOTAL MATERIALIZADO = 7
+FALTANTES           = 0
+DUPLICADOS          = 0
+ADOPCIONES FÍSICAS  = 0
+```
+
+La matriz expresa disposición frente al patrón compartido; no afirma que los siete consumidores tengan hoy una implementación cross-app migrada.
+
+---
+
+#### 63. Decisión por consumidor: SHELL
+
+SHELL puede presentar UI020 cuando actúe como participante o superficie técnica de continuidad definida por una relación canónica.
+
+SHELL no adquiere por ello propiedad del proceso ni se convierte en writer universal.
+
+Decisión:
+
+```text
+ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION
+```
+
+---
+
+#### 64. Decisión por consumidor: VISO
+
+El universo vigente de `SHELL-CON-014` conserva a VISO como propietaria de los ocho procesos y 49 relaciones actuales de handoff.
+
+UI020 puede presentar origen, oferta, estado, resultado o retorno de esas continuidades sin mover la autoridad de VISO al package visual.
+
+Decisión:
+
+```text
+ELEGIBLE_COMO_PROPIETARIA_O_PARTICIPANTE_SIN_CEDER_AUTORIDAD_A_UI
+```
+
+---
+
+#### 65. Decisión por consumidor: NEXO
+
+NEXO puede adoptar el patrón únicamente cuando exista una relación canónica y la responsabilidad de inventario, custodia, recepción, picking u otra semántica de dominio permanezca en sus propietarios.
+
+Decisión:
+
+```text
+ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION
+```
+
+---
+
+#### 66. Decisión por consumidor: FOGO
+
+FOGO puede presentar handoffs sin convertir una transferencia de trabajo en confirmación de producción, consumo, lote o inventario.
+
+Decisión:
+
+```text
+ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION
+```
+
+---
+
+#### 67. Decisión por consumidor: ORIGO
+
+ORIGO puede presentar handoffs de continuidad aprobada sin escribir directamente inventario, contabilidad u otra fuente ajena.
+
+Decisión:
+
+```text
+ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION
+```
+
+---
+
+#### 68. Decisión por consumidor: PULSO
+
+PULSO puede presentar handoffs relacionados con servicio, entrega, venta o continuidad únicamente con resultado propietario y sin inferir pago, aceptación o devolución por navegación.
+
+Decisión:
+
+```text
+ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION
+```
+
+---
+
+#### 69. Decisión por consumidor: NUMERA
+
+NUMERA puede presentar handoffs de revisión o continuidad sin transformar una proyección financiera o administrativa en fuente de verdad del proceso originario.
+
+Decisión:
+
+```text
+ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION
+```
+
+---
+
+#### 70. Handoff a migración coordinada
+
+La adopción física queda fuera de UI020.
+
+`SHELL-MIG-*` deberá:
+
+1. inventariar navegación, enlaces y patrones locales usados hoy como supuesto handoff;
+2. distinguir launcher ordinario de continuidad empresarial;
+3. identificar qué consumidor ya preserva proceso, recurso, actor, territorio, pendiente y retorno;
+4. detectar autoridad derivada de parámetros cliente;
+5. identificar duplicidad de aceptación, retry o escritura cross-app;
+6. crear adapters de presentación sin mover contratos a la UI;
+7. migrar por lotes reversibles;
+8. probar compatibilidad entre origen y destino;
+9. demostrar paridad y rollback antes de retirar variantes legacy.
+
+---
+
+#### 71. Handoff específico a `SHELL-MIG-001`
+
+UI020 entrega a la siguiente fase las identidades que deberán inventariarse físicamente:
+
+- consumidores de `@vento/ui-web`;
+- implementaciones locales de navegación cross-app;
+- uso del `AppSwitcher` histórico;
+- enlaces profundos existentes;
+- adapters de retorno;
+- pantallas que mezclen launcher y handoff;
+- callbacks que interpreten navegación como aceptación;
+- mutaciones cross-app disparadas desde UI;
+- patrones locales de parcialidad o conciliación;
+- superficies que no revaliden actor y contexto en destino.
+
+`SHELL-MIG-001` permanece reservada y no se materializa en UI020.
+
+---
+
+#### 72. Handoff a calidad y releases
+
+| Tarea          | Responsabilidad                          |
+| -------------- | ---------------------------------------- |
+| `SHELL-CI-001` | pruebas propias del package              |
+| `SHELL-CI-002` | build independiente                      |
+| `SHELL-CI-003` | release versionado                       |
+| `SHELL-CI-004` | changelog                                |
+| `SHELL-CI-005` | matriz de compatibilidad por consumidor  |
+| `SHELL-CI-006` | actualización controlada de consumidores |
+
+La aprobación documental no constituye release ni certificación de una continuidad cross-app real.
+
+---
+
+#### 73. Estrategia posterior de migración
+
+La adopción física deberá preservar simultáneamente:
+
+- identidad de relación contractual;
+- misma instancia de proceso;
+- actor y contexto revalidados;
+- propiedad de cada efecto;
+- idempotencia;
+- aceptación explícita;
+- resultado recuperable;
+- retorno compatible;
+- privacidad;
+- accesibilidad;
+- rollback por consumidor.
+
+No se retirará un patrón local hasta demostrar que el reemplazo cubre estado normal, rechazo, expiración, parcialidad, conciliación, error técnico y retorno.
+
+---
+
+#### 74. Contrato futuro de prueba
+
+La materialización y adopción deberán demostrar como mínimo:
+
+1. export conceptual único de `CrossAppHandoff`;
+2. siete estados canónicos exactos;
+3. rechazo de estados paralelos que confundan navegación con lifecycle;
+4. siete slots semánticos preservados;
+5. `persistentContext` presente;
+6. `workIdentity` presente;
+7. `stepContent` presente;
+8. máximo una acción primaria;
+9. ausencia de acción primaria cuando no exista salida segura;
+10. relación canónica resuelta antes del render;
+11. ausencia de relación inferida por URL;
+12. ausencia de propietaria inferida por componente;
+13. origen perceptible;
+14. destino perceptible;
+15. misma instancia empresarial preservada;
+16. recurso preservado;
+17. trabajo pendiente perceptible;
+18. actor emisor atribuible cuando aplique;
+19. actor receptor revalidado cuando aplique;
+20. sede y área preservadas sin ampliar autoridad;
+21. navegación sin concesión de permiso;
+22. deep link opaco sin autoridad;
+23. deep link sin actor autoritativo;
+24. deep link sin estado objetivo a imponer;
+25. destino permitido resuelto externamente;
+26. retorno válido preservando instancia;
+27. retorno inválido con fallo cerrado;
+28. apertura del destino sin aceptación implícita;
+29. entrega técnica sin aceptación implícita;
+30. ACK técnico sin `EFFECT_CONFIRMED` implícito;
+31. `OFFERED` sin responsabilidad transferida;
+32. `ACCEPTED` solo por resultado propietario;
+33. `REJECTED` sin cancelar todo el proceso por inferencia;
+34. `EXPIRED` sin reutilizar autorización vencida;
+35. `CANCELLED` sin derivarse del cierre visual;
+36. `PARTIALLY_ACCEPTED` sin éxito global;
+37. `RECONCILIATION_REQUIRED` sin corrección cross-app directa;
+38. resultado desconocido sin retry ciego;
+39. idempotencia estable fuera del componente;
+40. replay de resultado previo sin doble efecto;
+41. participante sin escribir estado privado de propietaria;
+42. SHELL sin writer universal;
+43. evento separado de comando y handoff;
+44. solicitud separada de `HANDOFF_FACT`;
+45. `HANDOFF_PROJECTION` sin convertirse en fuente de verdad;
+46. claim revalidado cuando aplique;
+47. custodia digital separada de custodia física;
+48. cambio de actor sin transferencia implícita;
+49. cambio de dispositivo con nueva validación;
+50. cambio territorial con nuevo contexto;
+51. sesión vencida sin aceptación;
+52. offline local sin afirmar recepción remota;
+53. mensaje en cola sin afirmar aceptación;
+54. reconexión con revalidación;
+55. evidencia presente sin confundirse con resultado;
+56. minimización de datos;
+57. ausencia de secretos y tokens;
+58. privacidad en dispositivo compartido;
+59. teclado operativo;
+60. lector de pantalla operativo;
+61. tacto compatible donde aplique;
+62. foco visible y estable;
+63. ausencia de significado exclusivo por color;
+64. reflow sin pérdida de información crítica;
+65. `AppSwitcher` histórico no tratado como handoff;
+66. launcher ordinario separado del traspaso empresarial;
+67. ausencia de dependencia directa de Supabase;
+68. estructura base server-safe;
+69. siete decisiones de consumidor materializadas;
+70. cero faltantes y cero duplicados en la matriz de consumidores;
+71. ANIMA, AURA y PASS no añadidos artificialmente al conjunto de siete consumidores web;
+72. universo contractual de 49 relaciones consumido sin duplicarlo en UI;
+73. compatibilidad de origen y destino probada antes de adopción;
+74. rollback disponible antes de retirar patrón legacy;
+75. retiro sin uso residual;
+76. ausencia de escritura cross-app prohibida en consumidores migrados.
+
+Esta lista define evidencia futura. No declara ejecución de pruebas físicas o de runtime en UI020.
+
+---
+
+#### 75. Cobertura de requisitos vigente
+
+UI020 no necesita crear una obligación transversal nueva porque el Registro Canónico ya protege específicamente:
+
+- handoff formal con oferta y aceptación separadas: `TREQ-UX-283`;
+- continuidad cross-app mediante checkpoint y deep link opaco sin autoridad: `TREQ-UX-290`;
+- resultado desconocido antes de retry: `TREQ-UX-281`;
+- cambio de actor sin transferencia implícita: `TREQ-UX-282`;
+- accesibilidad, privacidad y retención de continuidad: `TREQ-UX-295`;
+- escenarios adversariales de reanudación y handoff: `TREQ-UX-296`;
+- preservación de proceso, recurso, actor, sede, área, estado, pendiente y retorno: `TREQ-INTEGRATION-005`;
+- idempotencia y resultado recuperable: `TREQ-INTEGRATION-003`;
+- propiedad única por proceso y prohibición de fuente competidora: `TREQ-INTEGRATION-288`;
+- escritura propietaria exclusiva: `TREQ-INTEGRATION-289`;
+- contrato mínimo de comandos propietarios: `TREQ-INTEGRATION-295`;
+- revalidación de autoridad por la propietaria: `TREQ-INTEGRATION-296`;
+- outcomes propietarios inequívocos: `TREQ-INTEGRATION-297`;
+- evento como hecho y no comando inverso: `TREQ-INTEGRATION-298`;
+- retry conservando identidad e idempotencia: `TREQ-INTEGRATION-301`;
+- incertidumbre y parcialidad sin escritura correctiva ajena: `TREQ-INTEGRATION-302`;
+- SHELL y servicios transversales sin adquirir propiedad: `TREQ-INTEGRATION-307`;
+- detección en CI de escrituras cross-app prohibidas: `TREQ-INTEGRATION-315`;
+- responsabilidad compartida y adopción clasificada: `TREQ-SHELL-002`;
+- pruebas y compatibilidad por consumidor: `TREQ-SHELL-006`;
+- rollback independiente: `TREQ-SHELL-007`;
+- validación automática del registro: `TREQ-SHELL-008`;
+- reconciliación de primitivas locales y template: `TREQ-SHELL-032`;
+- identidad de release, coordinación, deprecación y retiro: `TREQ-SHELL-036..039`.
+
+UI020 fija la proyección web compartida de esas obligaciones sin cambiar su significado.
+
+---
+
+#### 76. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+**Justificación:** handoff, aceptación explícita, continuidad cross-app, retorno, revalidación, idempotencia, resultado desconocido, parcialidad, autoridad propietaria, privacidad, accesibilidad, compatibilidad y rollback ya cuentan con cobertura canónica vigente. UI020 especializa exclusivamente la presentación compartida dentro de `@vento/ui-web`.
+
+---
+
+#### 77. Estado de materialización física
+
+Al cierre documental de UI020:
+
+```text
+IDENTIDAD CrossAppHandoff                         = ESPECIFICADA
+CrossAppHandoffProps                              = ESPECIFICADO CONCEPTUALMENTE
+CrossAppHandoffState                              = 7 ESTADOS CANÓNICOS REUTILIZADOS
+CONTRATO CROSS-APP-HANDOFF-PRESENTATION-CONTRACT-001 = ESPECIFICADO
+SLOTS SEMÁNTICOS                                  = 7 PRESERVADOS
+FRONTERA HANDOFF / NAVEGACIÓN                     = CERRADA
+FRONTERA NAVEGACIÓN / AUTORIZACIÓN                = CERRADA
+FRONTERA ENTREGA / ACEPTACIÓN                     = CERRADA
+FRONTERA ACEPTACIÓN / EFECTO                      = CERRADA
+FRONTERA PROPIETARIA / PARTICIPANTE               = CERRADA
+FRONTERA UI / ESCRITURA CROSS-APP                 = CERRADA
+FRONTERA UI019 / UI020                             = CERRADA
+FRONTERA APPSHELL / UI020                         = CERRADA
+PRIVACIDAD                                        = ESPECIFICADA DOCUMENTALMENTE
+ACCESIBILIDAD                                     = ESPECIFICADA DOCUMENTALMENTE
+CONSUMIDORES WEB RECONCILIADOS                    = 7/7
+FALTANTES                                         = 0
+DUPLICADOS                                        = 0
+RELACIONES CONTRACTUALES CONSUMIDAS               = 49 SIN DUPLICAR
+PACKAGE @vento/ui-web                             = NO MATERIALIZADO
+PATRÓN FÍSICO                                     = NO MATERIALIZADO
+CONSUMIDORES MIGRADOS                             = 0
+CAMBIOS SUPABASE                                  = 0
+CAMBIOS TREQ                                      = 0
+```
+
+---
+
+#### 78. Decisiones vinculantes
+
+1. El patrón conceptual se denomina `CrossAppHandoff`.
+2. Pertenece conceptualmente a `@vento/ui-web`.
+3. UI020 es documental y no materializa código.
+4. El contrato se denomina `CROSS-APP-HANDOFF-PRESENTATION-CONTRACT-001`.
+5. `CrossAppHandoffState` reutiliza exactamente siete estados canónicos.
+6. Los estados son `OFFERED`, `ACCEPTED`, `REJECTED`, `EXPIRED`, `CANCELLED`, `PARTIALLY_ACCEPTED` y `RECONCILIATION_REQUIRED`.
+7. UI020 no crea estados paralelos para navegación o entrega técnica.
+8. La API conceptual conserva siete slots semánticos.
+9. `persistentContext`, `workIdentity` y `stepContent` son obligatorios.
+10. `blockingState`, `primaryAction`, `secondarySupport` y `resultAndReceipt` son condicionales.
+11. Puede existir como máximo una acción primaria.
+12. UI020 no decide la acción primaria.
+13. UI020 no decide permisos.
+14. UI020 no resuelve actor, sede, área, turno o check-in.
+15. UI020 no decide la pertenencia de una relación de handoff.
+16. La relación canónica se valida antes del render.
+17. La identidad estática permanece en `@vento/contracts/handoffs`.
+18. UI020 no crea un identificador paralelo de relación.
+19. El universo contractual vigente de 49 relaciones no se duplica dentro de UI020.
+20. El handoff conserva la misma instancia de proceso.
+21. La aplicación propietaria conserva su verdad y cierre.
+22. La participante ejecuta únicamente su responsabilidad permitida.
+23. Recibir contexto no concede autoridad.
+24. Navegar no concede autoridad.
+25. Abrir el destino no equivale a aceptar.
+26. Enviar no equivale a aceptar.
+27. Recibir técnicamente no equivale a aceptar.
+28. Un ACK técnico no equivale a efecto empresarial confirmado.
+29. `OFFERED` no transfiere responsabilidad por sí solo.
+30. `ACCEPTED` requiere resultado propietario.
+31. `REJECTED` no cancela el proceso completo por inferencia.
+32. `EXPIRED` no reutiliza autoridad vencida.
+33. `CANCELLED` no se deriva del cierre visual.
+34. `PARTIALLY_ACCEPTED` no se presenta como éxito global.
+35. `RECONCILIATION_REQUIRED` bloquea correcciones especulativas.
+36. `RESULT_UNKNOWN` se resuelve antes de reintentar.
+37. La UI no genera claves de idempotencia.
+38. La UI no implementa outbox, inbox, colas o locks.
+39. La UI no escribe estado privado de otra aplicación.
+40. SHELL no se convierte en writer universal.
+41. `HANDOFF_REQUEST`, `HANDOFF_PROJECTION`, `HANDOFF_FACT` y `BusinessEventId` permanecen separados.
+42. Deep links son transporte de continuidad, no autoridad.
+43. UI020 no genera, firma ni analiza deep links.
+44. La receptora revalida actor, contexto, recurso y permiso.
+45. El retorno no crea otra instancia.
+46. Un retorno inválido falla cerrado.
+47. Cerrar o desmontar la UI no cancela el handoff.
+48. UI019 conserva checkpoint y reanudación.
+49. UI020 conserva el cruce gobernado entre aplicaciones.
+50. UI016 conserva recuperación técnica.
+51. UI015 conserva diagnóstico de contexto.
+52. UI014 conserva confirmación sensible.
+53. AppShell conserva navegación transversal ordinaria.
+54. El `AppSwitcher` histórico no es un handoff.
+55. La lista local del `AppSwitcher` no es autoridad canónica.
+56. Un selector cliente de sede no es contexto autoritativo.
+57. Claims y leases se revalidan fuera del componente.
+58. Custodia digital y física permanecen separadas.
+59. Cambio de actor no transfiere borrador, claim, custodia ni aceptación.
+60. Cambio de dispositivo exige nueva validación cuando aplique.
+61. Cambio territorial exige nuevo contexto.
+62. Offline local no se presenta como recepción remota.
+63. Un mensaje en cola no se presenta como aceptación.
+64. La reconexión revalida antes de actuar.
+65. La superficie aplica minimización y privacidad.
+66. La implementación futura debe ser accesible por teclado y lector de pantalla.
+67. La estructura base es conceptualmente server-safe.
+68. No existe dependencia directa de Supabase.
+69. El package físico `@vento/ui-web` continúa no materializado.
+70. `CrossAppHandoff` no existe físicamente en el estado remoto verificado.
+71. Los siete consumidores web previstos tienen decisión explícita.
+72. La matriz contiene 7/7 consumidores, con cero faltantes y cero duplicados.
+73. ANIMA, AURA y PASS no se incorporan artificialmente al conjunto web de `@vento/ui-web`.
+74. AURA conserva sus puertas de readiness.
+75. La adopción física queda en `SHELL-MIG-*`.
+76. Pruebas, build, release y compatibilidad quedan en `SHELL-CI-*`.
+77. UI020 crea cero requisitos `TREQ-*` y modifica cero.
+78. UI020 produce cero cambios de Supabase.
+79. El mini-bloque `SHELL-UI-001..020` queda documentalmente cerrado con UI020.
+80. `SHELL-MIG-001` permanece únicamente reservada.
+
+---
+
+#### 79. Criterios de aceptación documental
+
+UI020 queda documentalmente cerrada si se cumplen simultáneamente:
+
+- [x] la continuidad vigente identifica UI019 como anterior y UI020 como actual;
+- [x] `SHELL-MIG-001` permanece reservada;
+- [x] existe una identidad única `CrossAppHandoff`;
+- [x] se define `CROSS-APP-HANDOFF-PRESENTATION-CONTRACT-001`;
+- [x] se fija pertenencia conceptual a `@vento/ui-web`;
+- [x] se reutilizan exactamente los siete estados canónicos de handoff;
+- [x] no se crea un lifecycle paralelo;
+- [x] se preservan siete slots semánticos;
+- [x] se define la API conceptual mínima;
+- [x] se preserva una única acción primaria;
+- [x] la relación canónica se resuelve fuera del componente;
+- [x] la identidad de relación permanece en `@vento/contracts/handoffs`;
+- [x] se conserva el universo externo de 49 relaciones sin duplicarlo;
+- [x] se preserva la misma instancia empresarial;
+- [x] se separan propietaria y participante;
+- [x] se separa navegación de autoridad;
+- [x] se separa entrega técnica de aceptación;
+- [x] se separa aceptación de efecto confirmado;
+- [x] se establece que abrir el destino no acepta el handoff;
+- [x] se establece que cerrar la UI no cancela el handoff;
+- [x] se protege el retorno sin crear otra instancia;
+- [x] se prohíbe usar parámetros cliente como autorización;
+- [x] se prohíbe escritura cross-app directa desde la UI;
+- [x] se conserva idempotencia fuera del componente;
+- [x] se conserva resultado desconocido sin retry ciego;
+- [x] se conserva aceptación parcial sin éxito global;
+- [x] se conserva conciliación sin corrección especulativa;
+- [x] se separan solicitud, proyección, hecho y evento empresarial;
+- [x] se conservan actor, contexto, claims y custodia en sus propietarios;
+- [x] se protege privacidad en dispositivos compartidos;
+- [x] se define accesibilidad y foco;
+- [x] se define compatibilidad server/client;
+- [x] se cierra frontera con UI014, UI015, UI016 y UI019;
+- [x] se cierra frontera con AppShell;
+- [x] se clasifica el `AppSwitcher` histórico como launcher, no handoff;
+- [x] se reconcilia el estado físico actual de `packages/`;
+- [x] se reconcilia `src/components/ui`;
+- [x] se materializan decisiones para los siete consumidores web;
+- [x] faltantes y duplicados son cero;
+- [x] adopciones físicas son cero;
+- [x] se asigna el inventario físico posterior a `SHELL-MIG-001`;
+- [x] se define handoff a calidad y releases;
+- [x] se declaran cero cambios `TREQ-*` con cobertura concreta;
+- [x] se declaran cero cambios de Supabase;
+- [x] no queda una decisión material de UI020 sin propietario documental.
+
+---
+
+#### 80. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                                                                                                                                                                 |
+| --------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | No existe en este entorno un checkout local actualizado que incorpore el artefacto UI020 para ejecutar el build documental del repositorio.                                                                                                                                                                                                               |
+| LOCAL     | `NOT_EXECUTED`   | No se ejecutaron scripts del repositorio ni comprobaciones de diff contra un checkout actualizado; la estructura del artefacto transitorio se comprobó de forma aislada.                                                                                                                                                                                  |
+| REMOTA    | `PASS`           | Se verificaron mediante GitHub el HEAD vigente, protocolo, secuencia activa, archivo propietario, contrato de entrega, políticas de tarea, `package.json`, validadores aplicables, UI019, `SHELL-CON-014`, `UX-BASE-014`, `UX-STATION-012`, `INT-APP-001..010`, fragmentos 04A relevantes, `packages/`, `src/components/ui` y el `AppSwitcher` histórico. |
+| OPERATIVA | `NOT_APPLICABLE` | UI020 no modifica runtime, navegación desplegada, autorización, integración, datos ni servicios operativos.                                                                                                                                                                                                                                               |
+| FÍSICA    | `NOT_EXECUTED`   | No existe una implementación física `CrossAppHandoff` ni consumidores migrados que permitan probar continuidad real entre aplicaciones en esta tarea documental.                                                                                                                                                                                          |
+
+La evidencia documental no sustituye las pruebas de integración, compatibilidad, seguridad, accesibilidad y operación que deberá ejecutar la adopción posterior.
+
+---
+
+#### 81. Límites
+
+Esta tarea no autoriza:
+
+- crear `packages/ui-web`;
+- crear archivos TypeScript de `CrossAppHandoff`;
+- modificar `src/components/ui`;
+- modificar el template histórico;
+- modificar aplicaciones consumidoras;
+- crear enlaces profundos;
+- crear destinos técnicos;
+- modificar dominios de aplicaciones;
+- cambiar AppShell;
+- cambiar el catálogo de aplicaciones;
+- cambiar las 49 relaciones de `SHELL-CON-014`;
+- agregar o retirar participantes;
+- cambiar propietaria de procesos;
+- crear command handlers;
+- crear outbox o inbox;
+- crear colas;
+- crear topics;
+- crear workers o cron;
+- implementar aceptación;
+- implementar retry;
+- implementar conciliación;
+- implementar claims o leases;
+- transferir custodia;
+- modificar autenticación;
+- modificar autorización;
+- cambiar contexto;
+- ejecutar SQL;
+- crear o ejecutar migraciones;
+- modificar Supabase;
+- desplegar;
+- publicar packages;
+- certificar consumidores;
+- retirar legacy;
+- iniciar `SHELL-MIG-001`.
+
+---
+
+#### 82. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-UI-019 — Compartir patrón de proceso interrumpido`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-UI-020 — Compartir patrón de traspaso entre aplicaciones`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-MIG-001 — Consolidar inventario ejecutable de consumidores`
