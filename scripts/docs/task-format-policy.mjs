@@ -47,6 +47,12 @@ export const TASK_DELIVERY_TEMPLATE = `### ✅ <TASK-ID> — <TASK-TITLE>
 
 ---
 
+#### N. Límites
+
+...
+
+---
+
 #### N. Continuidad
 
 **ÚLTIMA TAREA APROBADA**

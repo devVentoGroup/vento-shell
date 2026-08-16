@@ -75,8 +75,9 @@ Comandos desde la raíz de vento-shell:
    integridad configuradas. La cabecera enriquecida, secciones nuevas y
    cardinalidad de evidencia son recomendaciones y no detienen el compilador.
    El watcher genera current-task-brief.md, current-task-semantic-diff.md,
-   baselines y evidencia tipada bajo .delivery/ sin convertirlos en fuentes
-   canónicas.
+   canonical-task-semantic-warnings.md, baselines y evidencia tipada bajo
+   .delivery/ sin convertirlos en fuentes canónicas. La consola presenta una
+   sola línea de resumen y el archivo conserva cada advertencia por tarea.
 
    Para una inspección explícita, aunque no es necesaria durante el flujo normal:
 

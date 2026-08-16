@@ -4,6 +4,8 @@ import test from 'node:test';
 import {
   automaticTaskIds,
   isTaskCoveredByPresentationPolicy,
+  renderSemanticWarningsReport,
+  summarizeSemanticWarnings,
 } from './auto-prepare-canonical-task.mjs';
 
 test('prepara únicamente la última aprobada y la tarea actual', () => {
@@ -30,4 +32,18 @@ test('preserva tareas anteriores y aplica el formato desde la frontera incluida'
   assert.equal(isTaskCoveredByPresentationPolicy(8, 9), false);
   assert.equal(isTaskCoveredByPresentationPolicy(9, 9), true);
   assert.equal(isTaskCoveredByPresentationPolicy(10, 9), true);
+});
+
+test('resume advertencias por tarea y conserva el detalle en un reporte', () => {
+  const warnings = [
+    { taskId: 'TEST-WARN-001', code: 'HEADER_FIELD_MISSING', message: 'falta cabecera.' },
+    { taskId: 'TEST-WARN-001', code: 'SECTION_MISSING', message: 'falta sección.' },
+    { taskId: 'TEST-WARN-002', code: 'EMPTY_DRAFT', message: 'borrador vacío.' },
+  ];
+  assert.equal(summarizeSemanticWarnings(warnings), 'TEST-WARN-001 (2), TEST-WARN-002 (1)');
+  const report = renderSemanticWarningsReport(warnings);
+  assert.match(report, /\*\*Total:\*\* 3/u);
+  assert.match(report, /## TEST-WARN-001/u);
+  assert.match(report, /\| SECTION_MISSING \| falta sección\. \|/u);
+  assert.match(report, /## TEST-WARN-002/u);
 });

@@ -1029,12 +1029,16 @@ El watcher y el build generarán fuera de las fuentes canónicas:
 
 - `.delivery/current-task-brief.md`;
 - `.delivery/current-task-semantic-diff.md`;
+- `.delivery/canonical-task-semantic-warnings.md`;
 - `.delivery/task-baselines/<TASK-ID>.md`;
 - `.delivery/task-diffs/<TASK-ID>.md`;
 - `.delivery/task-evidence/<TASK-ID>.json`.
 
 Estos artefactos son ayuda de desarrollo de solo lectura. No aprueban tareas,
 no sustituyen evidencia remota, operativa o física y no autorizan cambios.
+La consola resume las advertencias prospectivas en una línea; el archivo local
+conserva el detalle completo por tarea para evitar ruido repetitivo sin ocultar
+hallazgos.
 
 Los commits de desarrollo canónico y los de infraestructura transversal deberán
 permanecer separados. El ratchet de lint impedirá nueva deuda y exigirá que cada

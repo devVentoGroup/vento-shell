@@ -32,6 +32,45 @@ function writePreservingEol(filePath, raw, normalized) {
   fs.writeFileSync(filePath, next, 'utf8');
 }
 
+export function summarizeSemanticWarnings(warnings) {
+  const counts = new Map();
+  for (const { taskId } of warnings) counts.set(taskId, (counts.get(taskId) ?? 0) + 1);
+  return [...counts.entries()].map(([taskId, count]) => `${taskId} (${count})`).join(', ');
+}
+
+export function renderSemanticWarningsReport(warnings) {
+  const lines = [
+    '# Advertencias semánticas del plan canónico',
+    '',
+    '> Artefacto local generado por el formateador. No es una fuente canónica ni bloquea la compilación.',
+    '',
+    `- **Total:** ${warnings.length}`,
+    `- **Tareas afectadas:** ${new Set(warnings.map(({ taskId }) => taskId)).size}`,
+  ];
+  if (warnings.length === 0) return `${lines.join('\n')}\n\nSin advertencias.\n`;
+
+  const grouped = new Map();
+  for (const warning of warnings) {
+    if (!grouped.has(warning.taskId)) grouped.set(warning.taskId, []);
+    grouped.get(warning.taskId).push(warning);
+  }
+  for (const [taskId, taskWarnings] of grouped) {
+    lines.push('', `## ${taskId}`, '', '| Código | Detalle |', '| --- | --- |');
+    for (const { code, message } of taskWarnings) {
+      lines.push(`| ${code} | ${message.replaceAll('|', '\\|')} |`);
+    }
+  }
+  return `${lines.join('\n')}\n`;
+}
+
+function writeSemanticWarningsReport(root, warnings) {
+  const relativePath = '.delivery/canonical-task-semantic-warnings.md';
+  const reportPath = path.join(root, ...relativePath.split('/'));
+  fs.mkdirSync(path.dirname(reportPath), { recursive: true });
+  fs.writeFileSync(reportPath, renderSemanticWarningsReport(warnings), 'utf8');
+  return relativePath;
+}
+
 export function autoPrepareCanonicalTask({
   root = process.cwd(),
   checkOnly = false,
@@ -117,11 +156,15 @@ export function autoPrepareCanonicalTask({
       console.warn(`[PLAN CANÓNICO] ${taskId}: preparación omitida: ${reason}`);
     }
   }
-  for (const { taskId, code, message } of semanticWarnings) {
-    console.warn(`[PLAN CANÓNICO] ${taskId}: advertencia semántica ${code}: ${message}`);
+  const warningReport = writeSemanticWarningsReport(root, semanticWarnings);
+  if (semanticWarnings.length > 0) {
+    console.warn(
+      `[PLAN CANÓNICO] Calidad prospectiva: ${semanticWarnings.length} advertencia(s) en `
+      + `${summarizeSemanticWarnings(semanticWarnings)}. Detalle: ${warningReport}.`,
+    );
   }
 
-  return { currentPreflight, checked, changed, skipped };
+  return { currentPreflight, checked, changed, skipped, semanticWarnings, warningReport };
 }
 
 function parseArgs(argv) {

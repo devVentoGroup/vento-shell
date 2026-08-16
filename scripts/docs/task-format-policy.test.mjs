@@ -24,6 +24,20 @@ test('la plantilla material coincide con la política prospectiva', () => {
   );
 });
 
+test('la plantilla cubre todas las secciones semánticas exigidas', () => {
+  const developmentPolicy = JSON.parse(fs.readFileSync(
+    path.resolve('docs/plan-canonico/modular/task-development-policy.json'),
+    'utf8',
+  ));
+  for (const { label, pattern } of developmentPolicy.required_section_groups) {
+    assert.match(
+      TASK_DELIVERY_TEMPLATE,
+      new RegExp(`^####(?:\\s+(?:\\d+|N)\\.)?\\s+(?:${pattern})`, 'imu'),
+      `la plantilla no cubre la sección semántica ${label}`,
+    );
+  }
+});
+
 test('rechaza reintroducir continuidad fenced en la plantilla', () => {
   const staleTemplate = TASK_DELIVERY_TEMPLATE.replace(
     '`<TASK-ID> — <TASK-TITLE>`',
