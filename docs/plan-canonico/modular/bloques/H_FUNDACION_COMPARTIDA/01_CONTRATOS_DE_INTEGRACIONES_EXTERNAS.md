@@ -815,7 +815,844 @@ SHELL-CON-017 — Crear contrato de principal técnico de integración
 SHELL-CON-018 — Crear contrato de referencia de credencial externa sin incluir el secreto
 
 
-### [ ] SHELL-CON-018 — Crear contrato de referencia de credencial externa sin incluir el secreto
+### ✅ SHELL-CON-018 — Crear contrato de referencia de credencial externa sin incluir el secreto
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CON-017 — Crear contrato de principal técnico de integración
+**Tarea siguiente:** SHELL-CON-019 — Crear contrato de evento externo recibido
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md`
+**Estado físico resultante:** `CONTRATO_DE_REFERENCIA_DE_CREDENCIAL_EXTERNA_DEFINIDO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-018` centraliza en la fundación compartida de Vento OS el contrato no sensible mediante el cual una integración puede identificar una credencial externa sin transportar, persistir ni revelar su valor operacional.
+
+La regla central es:
+
+```text
+EXTERNAL CREDENTIAL REF
+=
+identidad y metadata contractual no sensibles
+que permiten atribuir una credencial a su integración, superficie y ambiente
+sin contener el material que autentica o verifica
+```
+
+Y permanece separado de:
+
+```text
+VALOR SECRETO
+API KEY OPERACIONAL
+TOKEN OPERACIONAL
+PASSWORD
+PRIVATE KEY
+CERTIFICADO PRIVADO
+SERVICE ROLE KEY
+COOKIE O SESIÓN
+MATERIAL RECUPERABLE DE CREDENCIAL
+```
+
+La tarea convierte en contrato compartido las decisiones ya aprobadas en `INT-EXT-003` a `INT-EXT-008`, sin reabrir su procedencia, mecanismo, alcance, ambiente, custodia o lifecycle y sin crear valores físicos de `ExternalCredentialId`.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido el contrato lógico compartido de referencia de credencial externa con estas decisiones:
+
+1. existe un identificador contractual denominado `ExternalCredentialId`;
+2. existe una referencia contractual no sensible denominada `ExternalCredentialRef`;
+3. ambos pertenecen a la superficie lógica `@vento/contracts/integrations` ya reservada por `SHELL-CON-017`;
+4. `ExternalCredentialId` identifica una credencial gobernada o un verificador de credencial, no su valor;
+5. `ExternalCredentialRef` conserva únicamente identidad y metadata no sensibles necesarias para vincular la credencial con sistema externo, principal técnico, superficie, ambiente y contratos aplicables;
+6. una referencia no autoriza por sí sola a resolver el material secreto;
+7. una referencia no contiene una ruta operacional de secret store, variable de entorno funcional ni valor recuperable de credencial;
+8. una credencial materializada pertenece a un único ambiente VENTO;
+9. la misma plataforma puede tener varias referencias por superficies de credencial independientes;
+10. una rotación que sustituye el material por un sucesor independiente conserva el mismo `IntegrationPrincipal` cuando la frontera no cambia, pero el sucesor conserva identidad de credencial distinta y relación histórica con el predecesor;
+11. configuraciones públicas, identificadores de destino y bindings sin credencial externa no reciben un `ExternalCredentialId` ficticio;
+12. la referencia de una credencial publicable sigue sin convertir su valor en secreto ni en autoridad empresarial;
+13. se preservan las veintiuna identidades `EXT-SYS-001` a `EXT-SYS-021` con decisión explícita de aplicabilidad;
+14. no se crea ninguna instancia física de `ExternalCredentialId` en esta tarea.
+
+---
+
+#### 3. Fuentes y precedencia
+
+La tarea conserva y coordina las siguientes decisiones aprobadas:
+
+| Fuente                                    | Uso vinculante                                                                                                                         |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-CON-001`                           | `@vento/contracts` como autoridad estática, versionada y sin secretos ni resolución runtime                                            |
+| `SHELL-CON-017`                           | `IntegrationPrincipal`, `IntegrationPrincipalId`, superficie `@vento/contracts/integrations` y separación entre principal y credencial |
+| `INT-EXT-001`                             | inventario de veintiuna identidades externas y evidencia de binding                                                                    |
+| `INT-EXT-002`                             | separación entre principal técnico, actor, cuenta externa, `external_credential_id` y valor secreto                                    |
+| `INT-EXT-003`                             | procedencia de credenciales por superficie y separación entre emisor, custodio, presentador y validador                                |
+| `INT-EXT-004`                             | mecanismo técnico de autenticación o verificación por superficie                                                                       |
+| `INT-EXT-005`                             | `minimum_scope`, `scope_ceiling` y mínimo privilegio                                                                                   |
+| `INT-EXT-006`                             | separación obligatoria por `DEVELOPMENT`, `STAGING` y `PRODUCTION`                                                                     |
+| `INT-EXT-007`                             | clasificación de material, referencia no sensible y frontera con secret stores                                                         |
+| `INT-EXT-008`                             | lifecycle, predecesor, sucesor, expiración, revocación y retiro                                                                        |
+| `SHELL-PKG-001..008`                      | distribución, SemVer, compatibilidad, deprecación y rollback de packages compartidos                                                   |
+| Registro Canónico de Requisitos de Prueba | cobertura vigente de credenciales, secretos, autorización, integración y trazabilidad                                                  |
+
+Precedencia aplicable:
+
+```text
+INT-EXT-001..008
+→ decisiones propietarias de integración externa
+
+SHELL-CON-017
+→ identidad compartida del principal técnico
+
+SHELL-CON-018
+→ referencia compartida no sensible de credencial
+
+implementación física autorizada
+→ resolución runtime, secret store, consumers y evidencia
+```
+
+`SHELL-CON-018` no redefine el secret store ni el mecanismo de autenticación.
+
+---
+
+#### 4. Frontera exacta de la tarea
+
+La tarea incluye únicamente:
+
+- semántica de `ExternalCredentialId`;
+- semántica de `ExternalCredentialRef`;
+- dimensiones mínimas que una referencia debe preservar;
+- cardinalidad por superficie y ambiente;
+- relación con `IntegrationPrincipal`;
+- relación con procedencia, mecanismo y alcance ya aprobados;
+- relación con custodia sin exponer ubicación operacional ni valor secreto;
+- relación con lifecycle y sucesión de credenciales;
+- tratamiento de credenciales publicables;
+- política de fallo cerrado ante referencias ambiguas o incompletas;
+- decisiones de aplicabilidad para `EXT-SYS-001` a `EXT-SYS-021`;
+- superficie pública lógica dentro de `@vento/contracts/integrations`.
+
+La tarea no incluye:
+
+- valores de API keys, tokens, secretos, passwords o claves privadas;
+- material de certificados privados;
+- rutas físicas de secret stores;
+- nombres funcionales que permitan recuperar secretos;
+- creación o rotación de credenciales;
+- selección nueva de mecanismos;
+- ampliación de scopes;
+- creación de ambientes, cuentas, proyectos o instancias externas;
+- contratos de evento externo;
+- contratos de venta o línea de venta;
+- mapeo de identificadores externos;
+- idempotencia o conciliación;
+- cuarentena, rechazo o compensación;
+- tablas, DDL, DML, migraciones, RLS, RPC o cambios en Supabase;
+- implementación runtime o migración de consumidores.
+
+---
+
+#### 5. Definición canónica de `ExternalCredentialId`
+
+`ExternalCredentialId` es la identidad estable, opaca y no sensible de una credencial gobernada dentro de una frontera de integración.
+
+Reglas:
+
+1. identifica la credencial, no el secreto;
+2. no es una API key, token, password, private key, certificado privado ni valor derivable del secreto;
+3. no se deriva de `IntegrationPrincipalId`, `external_system_id`, `provider_account_ref`, endpoint, variable de entorno o nombre del proveedor;
+4. no se deriva de un hash reversible, truncamiento o representación parcial del valor secreto;
+5. no se usa como mecanismo de autenticación;
+6. conocer el identificador no concede capacidad para resolver ni usar la credencial;
+7. es único dentro del registro físico que lo materialice;
+8. no se reutiliza para una credencial sucesora distinta;
+9. no se reutiliza después de revocación o retiro para material diferente;
+10. permanece en la evidencia histórica aunque la credencial sea revocada, expirada o retirada;
+11. esta tarea no fija UUID, prefijo, slug, secuencia ni formato físico no aprobado por las fuentes;
+12. esta tarea crea cero valores físicos de `ExternalCredentialId`.
+
+---
+
+#### 6. Definición canónica de `ExternalCredentialRef`
+
+`ExternalCredentialRef` es la representación contractual no sensible que permite reconocer qué credencial corresponde a una interacción sin transportar el material que autentica o verifica.
+
+Debe poder responder, cuando exista evidencia:
+
+```text
+¿QUÉ CREDENCIAL CONTRACTUAL ES?
+¿A QUÉ SISTEMA Y BINDING PERTENECE?
+¿QUÉ PRINCIPAL TÉCNICO LA USA O VALIDA?
+¿EN QUÉ AMBIENTE PUEDE USARSE?
+¿QUÉ SUPERFICIE Y FINALIDAD CUBRE?
+¿QUIÉN LA EMITIÓ O ASIGNÓ SEGÚN LA EVIDENCIA?
+¿QUÉ MECANISMO LA CONSUME?
+¿CUÁL ES SU TECHO DE ALCANCE?
+¿QUÉ CLASE DE MATERIAL REPRESENTA?
+¿CUÁL ES SU ESTADO DE LIFECYCLE CUANDO ESTÁ MATERIALIZADA?
+```
+
+No debe poder responder:
+
+```text
+¿CUÁL ES EL VALOR DEL SECRETO?
+¿CUÁL ES LA PRIVATE KEY?
+¿CUÁL ES EL TOKEN OPERACIONAL?
+¿CUÁL ES EL PASSWORD?
+¿QUÉ TEXTO DEBO PRESENTAR PARA AUTENTICARME?
+```
+
+---
+
+#### 7. Dimensiones mínimas de la referencia
+
+Una materialización futura de `ExternalCredentialRef` deberá poder conservar, sin exponer el valor de la credencial, estas dimensiones:
+
+| Dimensión                  | Regla                                                                                  |
+| -------------------------- | -------------------------------------------------------------------------------------- |
+| `external_credential_id`   | identidad estable, opaca y no sensible de la credencial                                |
+| `external_system_id`       | identidad externa propietaria de la familia; no sustituye la credencial                |
+| `external_instance_id`     | instancia concreta únicamente cuando exista evidencia suficiente                       |
+| `integration_principal_id` | principal técnico al que la credencial está vinculada; no es la credencial             |
+| `provider_account_ref`     | cuenta o relación externa cuando exista; permanece separada de la credencial           |
+| superficie de credencial   | superficie exacta a la que aplica; no se inventa un formato global de ID               |
+| procedencia                | conserva la decisión acreditada por `INT-EXT-003`; no se infiere desde naming          |
+| mecanismo                  | conserva el mecanismo acreditado por `INT-EXT-004`; no lo selecciona esta tarea        |
+| `minimum_scope`            | operaciones y recursos mínimos aprobados por `INT-EXT-005`                             |
+| `scope_ceiling`            | techo que la credencial no puede superar                                               |
+| ambiente VENTO             | exactamente `DEVELOPMENT`, `STAGING` o `PRODUCTION` cuando la referencia física exista |
+| clase de material          | clasificación aplicable de `INT-EXT-007`                                               |
+| propietario funcional      | referencia al dueño de la finalidad o efecto empresarial, sin transferir autoridad     |
+| custodio técnico           | responsable técnico de la integración o superficie                                     |
+| estado de lifecycle        | estado aprobado por `INT-EXT-008` cuando exista materialización física                 |
+| predecesor / sucesor       | referencia no sensible cuando exista una rotación                                      |
+| fechas conocidas           | únicamente las acreditadas por emisor, política o evidencia; no se inventan            |
+| consumidores autorizados   | consumidores explícitamente admitidos cuando el contrato requiera material compartido  |
+
+No todos los campos condicionales deben estar poblados si la fuente propietaria declara que no aplican. Un dato obligatorio para la operación que no pueda resolverse bloquea la referencia en lugar de completarse por inferencia.
+
+---
+
+#### 8. Datos expresamente prohibidos dentro de la referencia
+
+`ExternalCredentialRef` no contendrá:
+
+- API key operacional;
+- secret key;
+- `service_role` key;
+- JWT completo;
+- access token;
+- refresh token;
+- webhook secret;
+- password;
+- client secret;
+- private key;
+- archivo P8;
+- archivo P12;
+- password de P12;
+- JSON privado de cuenta de servicio;
+- token opaco recuperable que autentique una operación;
+- cookie de sesión;
+- header de autenticación completo;
+- firma reutilizable como credencial;
+- material criptográfico recuperable;
+- copia parcial del secreto que permita reconstrucción o correlación insegura;
+- ruta operacional cuya publicación conceda acceso al material;
+- variable o instrucción runtime que funcione como mecanismo de recuperación del secreto.
+
+La referencia puede contener metadata no sensible aprobada, pero nunca debe convertirse en un sustituto encubierto del secreto.
+
+---
+
+#### 9. Frontera con `IntegrationPrincipal`
+
+La relación canónica es:
+
+```text
+IntegrationPrincipalId
+→ identifica QUIÉN ejecuta técnicamente la frontera VENTO
+
+ExternalCredentialId
+→ identifica QUÉ credencial gobernada se usa o valida
+
+ExternalCredentialRef
+→ describe la relación no sensible entre credencial, principal, superficie y ambiente
+```
+
+Reglas:
+
+1. un principal puede relacionarse con varias credenciales por superficie o ambiente;
+2. una credencial no concede autoridad empresarial al principal;
+3. compartir principal no permite compartir automáticamente credencial;
+4. compartir credencial legacy no demuestra que dos integraciones deban compartir principal;
+5. una rotación ordinaria puede conservar `IntegrationPrincipalId` y sustituir `ExternalCredentialId`;
+6. un cambio de principal no reescribe la identidad histórica de la credencial usada anteriormente;
+7. `service_role` permanece material de credencial privilegiado, no principal técnico.
+
+---
+
+#### 10. Cardinalidad por superficie
+
+La referencia se gobierna por superficie de credencial, no únicamente por proveedor.
+
+Por tanto:
+
+```text
+UN external_system_id
+PUEDE TENER
+VARIAS ExternalCredentialRef
+```
+
+cuando existan, por ejemplo:
+
+- credencial saliente y credencial entrante distintas;
+- API key de cliente y secreto server-side distintos;
+- credenciales distintas por plataforma móvil;
+- firma de artefacto y autenticación de API distintas;
+- credenciales distintas por cuenta, aplicación, issuer, topic o recurso;
+- credenciales sucesoras durante una rotación controlada.
+
+Reglas:
+
+1. dos superficies no se fusionan por compartir proveedor;
+2. dos materiales no se fusionan por compartir nombre de variable;
+3. una plataforma con varias direcciones de confianza puede requerir varias referencias;
+4. una misma referencia no cubre silenciosamente una superficie nueva;
+5. un uso nuevo exige decisión contractual de procedencia, mecanismo, alcance, ambiente y lifecycle antes de agregarse.
+
+---
+
+#### 11. Separación por ambiente
+
+Toda referencia física de credencial pertenece a un único ambiente VENTO:
+
+```text
+DEVELOPMENT
+STAGING
+PRODUCTION
+```
+
+Reglas:
+
+1. el ambiente se resuelve antes de seleccionar la referencia;
+2. una referencia productiva no puede seleccionarse desde desarrollo o staging;
+3. una referencia de staging no puede seleccionarse desde desarrollo o producción;
+4. una referencia de desarrollo no puede seleccionarse desde staging o producción;
+5. la igualdad del nombre lógico de una credencial entre ambientes no implica igualdad de `ExternalCredentialId` ni del material;
+6. si el proveedor no permite aislamiento suficiente, la referencia del ambiente afectado permanece bloqueada hasta materializar una instancia o separación compatible;
+7. una etiqueta `test`, `preview`, `development` o equivalente del proveedor no reemplaza la identidad de ambiente VENTO por inferencia.
+
+---
+
+#### 12. Procedencia de la credencial
+
+`ExternalCredentialRef` preserva la procedencia decidida por `INT-EXT-003` sin redefinirla.
+
+La referencia debe permitir distinguir, según evidencia:
+
+- material emitido o asignado por proveedor;
+- material emitido por VENTO;
+- material cuya procedencia no está acreditada;
+- ausencia actual de credencial externa en un binding observado;
+- ausencia de binding sobre el cual materializar una credencial.
+
+Reglas:
+
+1. la ubicación actual del valor no demuestra quién lo emitió;
+2. el nombre de una variable no demuestra procedencia;
+3. una credencial emitida por VENTO no se convierte en permiso empresarial;
+4. una credencial emitida por el proveedor no convierte al proveedor en actor VENTO;
+5. `ORIGEN_NO_ACREDITADO` permanece como incertidumbre explícita hasta disponer de evidencia suficiente;
+6. una referencia no puede convertir esa incertidumbre en una procedencia supuesta.
+
+---
+
+#### 13. Mecanismo, alcance y autoridad
+
+La referencia puede transportar metadata del mecanismo y alcance aprobados, pero no ejecuta autenticación ni autorización.
+
+```text
+ExternalCredentialRef
+→ IDENTIFICA METADATA CONTRACTUAL
+
+runtime autorizado
+→ RESUELVE MATERIAL
+→ EJECUTA MECANISMO
+→ REVALIDA AUTORIDAD EMPRESARIAL INDEPENDIENTE
+```
+
+Reglas:
+
+1. una API key sigue siendo API key aunque su referencia sea opaca;
+2. un secreto de webhook no puede reutilizarse como credencial outbound;
+3. un material de lectura no se amplía a escritura;
+4. `minimum_scope` y `scope_ceiling` no pueden ampliarse por una configuración runtime más permisiva;
+5. una credencial técnicamente válida no concede `PermissionKey`;
+6. el contrato compartido no contiene lógica para evaluar scopes del proveedor;
+7. el contrato compartido no llama al proveedor ni a Supabase para validar credenciales.
+
+---
+
+#### 14. Clase de material y custodia
+
+`INT-EXT-007` distingue material secreto, verificadores, credenciales publicables, configuración pública, referencias y destinos.
+
+`ExternalCredentialRef` se interpreta como `CREDENTIAL_REFERENCE`: una identidad no sensible que puede persistirse o versionarse sin contener el material autenticador.
+
+La referencia puede describir una credencial cuyo material sea, según la fuente propietaria:
+
+- `SECRET_STATIC_SERVER_SIDE`;
+- `SECRET_DYNAMIC_VERIFIER`;
+- `SECRET_DYNAMIC_RECOVERABLE`;
+- `PUBLIC_CREDENTIAL_RESTRICTED`.
+
+No se crea una `ExternalCredentialRef` únicamente porque exista:
+
+- `PUBLIC_CONFIGURATION` sin función de credencial;
+- `DESTINATION_TOKEN_OR_IDENTIFIER` que solo identifica destino;
+- `NO_SECRET_APPLICABLE` en una frontera sin credencial externa.
+
+Reglas:
+
+1. la referencia no contiene el secreto aunque el runtime pueda resolverlo;
+2. la referencia no expone un secret store físico como API pública de `@vento/contracts`;
+3. la resolución de material pertenece al runtime y custodia autorizados;
+4. un valor publicable puede estar disponible en configuración cliente, pero no se incorpora al package contractual como valor operacional por el solo hecho de ser público;
+5. el contrato compartido conserva clasificación y vínculo, no configuración viva del proveedor.
+
+---
+
+#### 15. Lifecycle y rotación
+
+La identidad de credencial conserva historia propia.
+
+Cuando una credencial se sustituye por otra:
+
+```text
+CREDENCIAL PREDECESORA
+→ ExternalCredentialId A
+
+CREDENCIAL SUCESORA INDEPENDIENTE
+→ ExternalCredentialId B
+```
+
+La rotación puede mantener el mismo `IntegrationPrincipalId` si no cambia la frontera técnica.
+
+Reglas:
+
+1. el sucesor no reutiliza `ExternalCredentialId` del predecesor;
+2. la relación predecesor/sucesor se conserva mediante referencias no sensibles;
+3. la revocación no borra la referencia histórica;
+4. la expiración no reescribe fechas conocidas;
+5. `REVOCADA`, `EXPIRADA` y `RETIRADA` no vuelven a `ACTIVA` mediante edición retrospectiva;
+6. `ROTACION_EN_CURSO` y `SOLAPAMIENTO_CONTROLADO` no autorizan fallback indefinido;
+7. una credencial de otro ambiente no puede actuar como sucesor temporal;
+8. el contrato no inventa una fecha de expiración cuando el emisor no la provee o la evidencia no la acredita.
+
+---
+
+#### 16. Credenciales publicables
+
+Una credencial diseñada para distribución en cliente puede ser referenciada sin reclasificarse como secreto.
+
+Reglas:
+
+1. `PUBLIC_CREDENTIAL_RESTRICTED` conserva su naturaleza publicable;
+2. ocultar una credencial publicable dentro de un bundle no crea confidencialidad;
+3. su seguridad depende de alcance mínimo, restricciones de aplicación/API/dominio/cuota, ambiente y controles server-side posteriores;
+4. el valor operacional publicable no se convierte en constante contractual de `@vento/contracts`;
+5. una contraparte privada asociada requiere una referencia y custodia separadas;
+6. una credencial publicable no prueba actor humano, principal técnico ni autoridad empresarial.
+
+---
+
+#### 17. Artefactos derivados y tokens efímeros
+
+No todo artefacto generado a partir de una credencial requiere una identidad persistente independiente.
+
+Reglas:
+
+1. una credencial raíz gobernada conserva su `ExternalCredentialId`;
+2. un artefacto efímero derivado, como un token firmado de corta vida, no crea automáticamente un nuevo `ExternalCredentialId` cuando su identidad y lifecycle dependen de la credencial raíz;
+3. la expiración del artefacto derivado no equivale a revocación de la credencial raíz;
+4. si una tarea propietaria determina que el artefacto derivado posee lifecycle y autoridad independientes, deberá recibir una referencia propia antes de tratarse como credencial gobernada separada;
+5. esta tarea no crea identificadores para artefactos efímeros observados.
+
+---
+
+#### 18. Resolución runtime
+
+`@vento/contracts` conserva únicamente el contrato estático.
+
+La resolución futura del material seguirá conceptualmente:
+
+```text
+ExternalCredentialRef
+→ validar sistema + principal + superficie + ambiente + estado
+→ resolver binding runtime privado
+→ comprobar autorización técnica para acceder al material
+→ obtener material desde custodia aprobada
+→ ejecutar mecanismo
+→ no exponer el valor
+```
+
+Reglas:
+
+1. `ExternalCredentialRef` no contiene una función de resolución;
+2. `@vento/contracts` no accede a secret stores;
+3. el runtime no puede usar el identificador como valor de autenticación;
+4. una referencia desconocida, retirada, de otro ambiente o incompatible con la superficie falla cerrada;
+5. la ausencia del material bloquea la operación que lo requiere;
+6. el fallo de resolución no autoriza fallback a una credencial global, legacy o de otro ambiente;
+7. logs y auditoría usan referencias no sensibles, nunca el valor resuelto.
+
+---
+
+#### 19. Auditoría y evidencia
+
+Una interacción que use credencial deberá poder conservar, cuando aplique:
+
+```text
+ExternalCredentialId
++
+IntegrationPrincipalId
++
+external_system_id
++
+external_instance_id
++
+ambiente
++
+superficie
++
+mecanismo
++
+referencia de contrato
++
+intento
++
+resultado técnico
++
+efecto empresarial
+```
+
+sin registrar el material de autenticación.
+
+La evidencia puede conservar identificador de credencial, versión o fingerprint no reversible únicamente cuando exista un mecanismo aprobado que no permita recuperar ni reutilizar el secreto.
+
+La auditoría histórica no se elimina cuando una credencial expira, se revoca o se retira.
+
+---
+
+#### 20. Fallo cerrado
+
+Una referencia no podrá considerarse utilizable cuando:
+
+- falta `external_credential_id` en una credencial que debe estar gobernada;
+- la referencia pertenece a otro sistema, principal, superficie o ambiente;
+- la procedencia obligatoria permanece irresoluble y el contrato exige acreditarla antes de operar;
+- el mecanismo no corresponde con la superficie;
+- el alcance solicitado excede `scope_ceiling`;
+- el ambiente es ambiguo;
+- el estado de lifecycle impide uso;
+- el material requerido no puede resolverse desde la custodia autorizada;
+- la única forma de continuar exige usar una credencial global, humana, legacy, de otro ambiente o no gobernada;
+- el dato faltante solo puede completarse por inferencia.
+
+El fallo de referencia no sustituye retry, conciliación, cuarentena o compensación, que permanecen bajo sus contratos propietarios.
+
+---
+
+#### 21. Decisión por las veintiuna identidades externas
+
+`SHELL-CON-018` preserva las decisiones de `INT-EXT-001..008` y materializa una decisión de aplicabilidad de referencia para cada identidad sin crear identificadores físicos.
+
+| `external_system_id` | Sistema / plataforma                     | Evidencia de credencial heredada                                 | Estado de referencia en SHELL-CON-018 | Decisión                                                                                                                                                 |
+| -------------------- | ---------------------------------------- | ---------------------------------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001`        | Supabase                                 | credenciales de proveedor acreditadas en binding                 | `PENDIENTE_DE_EVIDENCIA`              | requiere referencias separadas por superficie y ambiente; `service_role` permanece credencial privilegiada server-side y nunca se convierte en principal |
+| `EXT-SYS-002`        | Wompi                                    | credenciales de proveedor y secretos/checksums observados        | `PENDIENTE_DE_EVIDENCIA`              | requiere referencias por superficie; la procedencia no acreditada del secreto de eventos se conserva sin inferencia                                      |
+| `EXT-SYS-003`        | RevenueCat                               | API keys de SDK y secreto de webhook observados                  | `PENDIENTE_DE_EVIDENCIA`              | requiere referencias independientes por plataforma/superficie y ambiente; API key pública y secreto webhook no se fusionan                               |
+| `EXT-SYS-004`        | Resend                                   | API key server-side observada                                    | `PENDIENTE_DE_EVIDENCIA`              | requiere referencia no sensible vinculada al sender técnico, ambiente y alcance de correo aprobado                                                       |
+| `EXT-SYS-005`        | Expo / EAS Update                        | configuración observada sin credencial física acreditada         | `PENDIENTE_DE_EVIDENCIA`              | no se crea referencia física hasta acreditar la credencial administrativa realmente usada                                                                |
+| `EXT-SYS-006`        | Expo Push Service                        | binding observado sin credencial externa de cliente              | `NO_APLICA`                           | push token permanece identificador de destino; no se crea `ExternalCredentialId` ficticio                                                                |
+| `EXT-SYS-007`        | Sentry                                   | DSN de ingestión publicable/restringido observado                | `PENDIENTE_DE_EVIDENCIA`              | la credencial publicable puede tener referencia gobernada sin convertirse en secreto ni autoridad empresarial                                            |
+| `EXT-SYS-008`        | Google Maps / Google Reviews             | API key de Maps observada; enlaces públicos separados            | `PENDIENTE_DE_EVIDENCIA`              | la API key puede tener referencia gobernada; URLs, coordenadas y `place_id` no reciben referencia de credencial                                          |
+| `EXT-SYS-009`        | Apple Wallet / PassKit y APNs            | múltiples superficies proveedor/VENTO observadas                 | `PENDIENTE_DE_EVIDENCIA`              | cada superficie gobernada requiere referencia independiente; se preservan las brechas de custodia/lifecycle ya registradas sin cerrarlas documentalmente |
+| `EXT-SYS-010`        | Vercel                                   | configuración observada sin credencial administrativa acreditada | `PENDIENTE_DE_EVIDENCIA`              | no se crea referencia física hasta acreditar la credencial de despliegue o administración realmente usada                                                |
+| `EXT-SYS-011`        | Zebra BrowserPrint                       | bridge observado sin credencial externa                          | `NO_APLICA`                           | UID, nombre o dispositivo no se convierten en credencial ni reciben `ExternalCredentialId`                                                               |
+| `EXT-SYS-012`        | Google Wallet / Google Pay & Wallet      | modelo de cuenta de servicio documentado sin binding acreditado  | `NO_APLICA_ACTUAL`                    | el modelo no autoriza crear una referencia física hasta acreditar el binding y ambiente aplicables                                                       |
+| `EXT-SYS-013`        | POS externo vigente                      | proveedor, binding y credenciales no acreditados                 | `NO_APLICA_ACTUAL`                    | no se inventa credencial ni referencia antes de acreditar proveedor e interfaz                                                                           |
+| `EXT-SYS-014`        | Shopify / canal de comercio electrónico  | sin binding ni credencial acreditados                            | `NO_APLICA_ACTUAL`                    | una futura integración deberá adoptar referencia antes de activarse si su mecanismo usa credencial                                                       |
+| `EXT-SYS-015`        | Rappi / marketplace                      | sin binding ni credencial acreditados                            | `NO_APLICA_ACTUAL`                    | una futura integración deberá adoptar referencia antes de activarse si su mecanismo usa credencial                                                       |
+| `EXT-SYS-016`        | ManyChat / automatización conversacional | sin binding ni credencial acreditados                            | `NO_APLICA_ACTUAL`                    | no se presume token, API key, OAuth client ni referencia                                                                                                 |
+| `EXT-SYS-017`        | WhatsApp                                 | proveedor/API/binding no acreditados                             | `NO_APLICA_ACTUAL`                    | canal, número o cuenta no se convierten en referencia de credencial                                                                                      |
+| `EXT-SYS-018`        | Instagram / perfiles sociales            | API/binding no acreditados                                       | `NO_APLICA_ACTUAL`                    | perfil social o cuenta humana no se convierten en referencia de credencial                                                                               |
+| `EXT-SYS-019`        | Correo corporativo y alias funcionales   | proveedor e integración no acreditados                           | `NO_APLICA_ACTUAL`                    | buzón, dirección o alias no se convierten en credencial técnica                                                                                          |
+| `EXT-SYS-020`        | Telefonía / canal de voz                 | operador e integración no acreditados                            | `NO_APLICA_ACTUAL`                    | número, extensión o caller ID no se convierten en credencial técnica                                                                                     |
+| `EXT-SYS-021`        | Transporte externo                       | proveedor, tracking e interfaz no acreditados                    | `NO_APLICA_ACTUAL`                    | tracking, guía o portal no se convierten en credencial técnica                                                                                           |
+
+---
+
+#### 22. Reconciliación de cobertura
+
+La matriz anterior conserva exactamente las veintiuna identidades externas:
+
+```text
+21 IDENTIDADES
+=
+9 PENDIENTE_DE_EVIDENCIA
++
+2 NO_APLICA
++
+10 NO_APLICA_ACTUAL
+```
+
+Controles:
+
+| Control                                           |    Resultado |
+| ------------------------------------------------- | -----------: |
+| identidades esperadas                             |       **21** |
+| decisiones materializadas                         | **21 de 21** |
+| identificadores `EXT-SYS-*` únicos                |       **21** |
+| faltantes                                         |        **0** |
+| duplicados                                        |        **0** |
+| valores físicos de `ExternalCredentialId` creados |        **0** |
+| secretos creados, copiados, revelados o movidos   |        **0** |
+| mecanismos nuevos seleccionados                   |        **0** |
+| cambios de scope                                  |        **0** |
+| cambios de ambiente                               |        **0** |
+| cambios físicos de custodia o lifecycle           |        **0** |
+
+`PENDIENTE_DE_EVIDENCIA` no autoriza inventar un identificador. Indica que existe una credencial o configuración relevante, pero la referencia física canónica y todos sus vínculos obligatorios no están acreditados como materializados.
+
+---
+
+#### 23. Superficie compartida lógica
+
+La superficie pública lógica continúa siendo:
+
+```text
+@vento/contracts/integrations
+```
+
+Artefactos públicos lógicos definidos por esta tarea:
+
+- `ExternalCredentialId`;
+- `ExternalCredentialRef`.
+
+Reglas:
+
+1. no se crea un subpath paralelo para credenciales;
+2. no se agregan valores operacionales de credenciales al package;
+3. no se agrega una API runtime de secret resolution a `@vento/contracts`;
+4. ningún consumidor define localmente una semántica distinta bajo los mismos nombres;
+5. la forma física TypeScript, JSON Schema o generación exacta se materializará únicamente cuando la implementación del package sea autorizada;
+6. `SHELL-CON-019..024` podrán ampliar la misma familia de integración únicamente dentro de su propia tarea propietaria;
+7. esta tarea no define símbolos públicos de `SHELL-CON-019..024`.
+
+---
+
+#### 24. Compatibilidad, versionado y distribución
+
+La referencia hereda la política de `SHELL-PKG-001..008` y `SHELL-CON-001`:
+
+1. `@vento/contracts` conserva SemVer independiente;
+2. una versión publicada es inmutable;
+3. cambiar significado, obligatoriedad o relación de una dimensión pública exige clasificación SemVer apropiada;
+4. agregar un secreto o valor operacional a una referencia existente sería una violación contractual, no una extensión compatible;
+5. consumidores usan versiones exactas según la política aprobada;
+6. adopción requiere compatibilidad y pruebas antes de despliegue;
+7. deprecación o retiro conserva inventario de consumidores, migración, ventana y rollback;
+8. rotar una credencial no obliga por sí sola a publicar una nueva versión del contrato si su forma y semántica no cambian.
+
+---
+
+#### 25. Estado de materialización física
+
+En el corte actual:
+
+```text
+SHELL-CON-018
+→ contrato lógico completo
+→ ExternalCredentialId definido
+→ ExternalCredentialRef definido
+→ @vento/contracts/integrations preservado
+→ 21/21 identidades con decisión de aplicabilidad
+→ 0 ExternalCredentialId físicos creados
+→ 0 referencias físicas persistidas
+→ 0 valores de credencial incorporados al contrato
+→ 0 secretos creados o movidos
+→ 0 packages materializados por esta tarea
+→ 0 consumidores migrados
+→ 0 cambios en Supabase
+```
+
+La tarea no cambia el estado de paquetes E5 ni autoriza implementación física fuera de las puertas aplicables.
+
+---
+
+#### 26. Handoffs exactos
+
+| Pendiente                                    | Propietario existente                                           | Condición de salida                                                                   |
+| -------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| evento externo recibido                      | `SHELL-CON-019`                                                 | contrato compartido de recepción externa definido sin convertir credencial en payload |
+| contrato canónico de venta                   | `SHELL-CON-020`                                                 | venta compartida definida sin doble fuente                                            |
+| contrato canónico de línea de venta          | `SHELL-CON-021`                                                 | línea compartida y correlacionable definida                                           |
+| mapeo de identificadores externos            | `SHELL-CON-022`                                                 | equivalencias gobernadas sin heurísticas                                              |
+| idempotencia y conciliación                  | `SHELL-CON-023`                                                 | identidad de operación y reconciliación definidas                                     |
+| cuarentena, rechazo y compensación           | `SHELL-CON-024`                                                 | tratamiento de entrada inválida o efecto fallido definido                             |
+| binding y persistencia física de integración | `INT-DB-001` a `INT-DB-008` cuando corresponda                  | infraestructura autorizada materializa referencias y auditoría sin secretos           |
+| resolución runtime de credenciales           | packages y adapters propietarios bajo implementación autorizada | `ExternalCredentialRef` se resuelve solo en runtime autorizado y por ambiente         |
+| adopción y compatibilidad                    | tareas `SHELL-MIG-*`, `SHELL-CI-*` y paquetes E5 aplicables     | consumidores migrados, probados y certificados                                        |
+
+No se crea una tarea nueva porque los pendientes poseen propietario canónico existente.
+
+---
+
+#### 27. Cobertura de prueba vigente no modificada
+
+`SHELL-CON-018` centraliza reglas ya protegidas por el registro canónico y por las decisiones de `INT-EXT-003` a `INT-EXT-008`:
+
+- separación entre principal técnico, credencial y autoridad empresarial;
+- mínimo privilegio y prohibición de `service_role` como autoridad transversal;
+- referencias no sensibles y ausencia de secretos en metadata, logs, contratos o artefactos;
+- separación de credenciales por ambiente;
+- custodia server-side de material secreto;
+- tratamiento diferenciado de credenciales publicables;
+- rotación, expiración, revocación y conservación de historia;
+- fail-closed ante identidad, ambiente o credencial incompatibles.
+
+La tarea no introduce un comportamiento ejecutable adicional que requiera una fila nueva en el registro.
+
+---
+
+#### 28. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA**
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+Justificación: `SHELL-CON-018` centraliza en `@vento/contracts/integrations` una referencia no sensible sobre reglas ya materializadas documentalmente y ya cubiertas por requisitos vigentes. No crea una credencial física, secreto, mecanismo, permiso, endpoint, transporte, operación empresarial, almacenamiento, persistencia ni comportamiento runtime nuevo. El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 29. Decisiones vinculantes
+
+1. `ExternalCredentialId` identifica una credencial gobernada y nunca su valor.
+2. `ExternalCredentialRef` es una representación contractual no sensible.
+3. Ambos pertenecen a `@vento/contracts/integrations`.
+4. No se crea un formato serial físico de `ExternalCredentialId` en esta tarea.
+5. Conocer un `ExternalCredentialId` no permite autenticar ni resolver el secreto.
+6. Una referencia no contiene API key, token, password, private key, secret key ni material recuperable.
+7. Una referencia no contiene una API runtime para secret stores.
+8. La referencia conserva `external_system_id` y `integration_principal_id` como identidades distintas.
+9. `external_instance_id` y `provider_account_ref` solo se incorporan cuando existe evidencia.
+10. La procedencia conserva la decisión de `INT-EXT-003`.
+11. El mecanismo conserva la decisión de `INT-EXT-004`.
+12. `minimum_scope` y `scope_ceiling` conservan la decisión de `INT-EXT-005`.
+13. Una referencia física pertenece a un único ambiente VENTO conforme a `INT-EXT-006`.
+14. La clase de material conserva `INT-EXT-007`.
+15. `ExternalCredentialRef` se interpreta como `CREDENTIAL_REFERENCE` y no como secret store.
+16. `PUBLIC_CONFIGURATION`, `DESTINATION_TOKEN_OR_IDENTIFIER` y `NO_SECRET_APPLICABLE` no crean por sí solos una credencial ficticia.
+17. `PUBLIC_CREDENTIAL_RESTRICTED` puede tener referencia gobernada sin reclasificarse como secreto.
+18. Una plataforma puede requerir varias referencias por superficie.
+19. Una rotación de material crea identidad de credencial sucesora distinta cuando existe un sucesor independiente.
+20. La rotación no cambia por sí sola `IntegrationPrincipalId`.
+21. Predecesor y sucesor conservan trazabilidad histórica.
+22. Una credencial revocada, expirada o retirada no se elimina de la evidencia histórica.
+23. Un artefacto efímero derivado no crea automáticamente una credencial persistente nueva.
+24. La resolución runtime falla cerrada ante referencia desconocida, incompatible o de otro ambiente.
+25. No existe fallback autorizado a una credencial global, legacy o de otro ambiente.
+26. Las veintiuna identidades externas quedan reconciliadas 21/21.
+27. Nueve identidades quedan `PENDIENTE_DE_EVIDENCIA` para referencia física.
+28. Dos identidades quedan `NO_APLICA` por ausencia de credencial externa en el binding observado.
+29. Diez identidades quedan `NO_APLICA_ACTUAL` por ausencia de binding o credencial materializable actual.
+30. Se crean cero valores físicos de `ExternalCredentialId`.
+31. Se crean o modifican cero secretos y cero credenciales.
+32. No se modifica Supabase, código, package físico ni configuración remota.
+33. No se crean ni modifican requisitos `TREQ-*`.
+34. `SHELL-CON-019` permanece como única continuidad reservada.
+
+---
+
+#### 30. Hallazgos y destinos exactos
+
+| Hallazgo                                                                                                                | Estado                                                                    | Destino                                                                        |
+| ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| la semántica de referencia de credencial estaba distribuida entre `INT-EXT-003..008`                                    | resuelto documentalmente                                                  | `SHELL-CON-018`                                                                |
+| no existen valores físicos canónicos acreditados de `ExternalCredentialId` como resultado de esta fase                  | `PENDIENTE_DE_EVIDENCIA` cuando existe credencial/configuración relevante | implementación propietaria autorizada por binding                              |
+| siete identidades poseen superficies de credencial observadas, pero la referencia física canónica no está materializada | `PENDIENTE_DE_EVIDENCIA`                                                  | implementación propietaria bajo contratos `INT-EXT-*` y gates aplicables       |
+| dos plataformas tienen configuración observada sin credencial administrativa acreditada                                 | `PENDIENTE_DE_EVIDENCIA`                                                  | acreditar credencial real antes de crear referencia física                     |
+| Expo Push y Zebra BrowserPrint no presentan credencial externa de cliente en el binding observado                       | `NO_APLICA`                                                               | crear referencia solo si un binding futuro introduce credencial real           |
+| Google Wallet tiene modelo documentado sin binding acreditado                                                           | `NO_APLICA_ACTUAL`                                                        | acreditar binding antes de materializar referencia                             |
+| nueve identidades restantes carecen de binding/credencial acreditados                                                   | `NO_APLICA_ACTUAL`                                                        | adoptar referencia antes de activación futura cuando el mecanismo la requiera  |
+| Apple Wallet / PassKit y APNs conserva brechas de custodia/lifecycle ya documentadas                                    | no resuelto por esta tarea                                                | propietarios de `INT-EXT-007`, `INT-EXT-008` e implementación física aplicable |
+
+Todos los pendientes conservan propietario o condición objetiva de salida.
+
+---
+
+#### 31. Criterios de aceptación
+
+`SHELL-CON-018` queda documentalmente completa cuando:
+
+1. `ExternalCredentialId` queda definido como identidad no sensible y distinta del valor;
+2. `ExternalCredentialRef` queda definido como referencia contractual no sensible;
+3. no se inventa un formato físico de identificador;
+4. se preserva `@vento/contracts/integrations` como superficie compartida;
+5. la referencia no contiene secretos ni material recuperable;
+6. la referencia no contiene lógica runtime de resolución;
+7. principal técnico y credencial permanecen separados;
+8. sistema externo, instancia y cuenta externa permanecen separados de la credencial;
+9. la referencia preserva procedencia sin inferirla;
+10. la referencia preserva mecanismo sin redefinirlo;
+11. la referencia preserva mínimo privilegio y `scope_ceiling`;
+12. cada referencia física queda ligada a un único ambiente VENTO;
+13. se distingue credencial publicable de secreto confidencial;
+14. configuración pública y tokens de destino no se convierten en credenciales;
+15. una plataforma puede tener múltiples referencias por superficies independientes;
+16. una rotación mantiene historia predecesor/sucesor sin reutilizar identidad;
+17. un artefacto efímero derivado no se convierte automáticamente en credencial persistente;
+18. la resolución de una referencia incompatible falla cerrada;
+19. no existe fallback a credenciales globales, legacy o de otro ambiente;
+20. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+21. existen exactamente veintiuna decisiones de aplicabilidad;
+22. faltantes = 0;
+23. duplicados = 0;
+24. la reconciliación es 9 `PENDIENTE_DE_EVIDENCIA` + 2 `NO_APLICA` + 10 `NO_APLICA_ACTUAL` = 21;
+25. se crean cero valores físicos de `ExternalCredentialId`;
+26. se crean cero secretos y cero credenciales;
+27. no se modifica código, Supabase, datos, proveedores ni configuración remota;
+28. no se adelanta el contrato de evento externo de `SHELL-CON-019`;
+29. se crean cero requisitos de prueba;
+30. se modifican cero requisitos de prueba;
+31. la continuidad reserva exclusivamente `SHELL-CON-019`.
+
+---
+
+#### 32. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-CON-017 — Crear contrato de principal técnico de integración
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-CON-018 — Crear contrato de referencia de credencial externa sin incluir el secreto
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-CON-019 — Crear contrato de evento externo recibido
+
+
 ### [ ] SHELL-CON-019 — Crear contrato de evento externo recibido
 ### [ ] SHELL-CON-020 — Crear contrato canónico de venta
 ### [ ] SHELL-CON-021 — Crear contrato canónico de línea de venta
