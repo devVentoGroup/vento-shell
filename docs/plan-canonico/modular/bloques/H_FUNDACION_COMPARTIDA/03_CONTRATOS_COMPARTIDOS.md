@@ -3348,7 +3348,750 @@ SHELL-CON-005 — Centralizar roles operativos
 SHELL-CON-006 — Centralizar scopes
 
 
-### [ ] SHELL-CON-006 — Centralizar scopes
+### ✅ SHELL-CON-006 — Centralizar scopes
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CON-005 — Centralizar roles operativos
+**Tarea siguiente:** SHELL-CON-007 — Centralizar tipos de contexto
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 1
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-006` centraliza el vocabulario contractual de alcance que Vento OS utilizará para describir dónde puede ejercerse un permiso exacto, sin modificar los permisos, roles, concesiones, contextos ni contratos de recurso ya aprobados.
+
+La tarea fija simultáneamente:
+
+1. el conjunto exacto de trece `PermissionScopeCode` canónicos;
+2. la semántica vinculante de cada código;
+3. la separación entre código primitivo, perfil de alcance, carril de autorización, contexto operativo y contrato de recurso;
+4. el contrato compartido de `AllowedScopeSet` y `MaximumScope`;
+5. las reglas de composición para `BASE_OR_OPERATIONAL` y `BASE_AND_OPERATIONAL`;
+6. los límites de `G`, `CTX` y `OWN` para impedir ampliaciones implícitas;
+7. las reglas para recursos multilado y resultados agregados;
+8. el comportamiento cerrado ante códigos desconocidos, territorio irresoluble o combinaciones no publicadas;
+9. la compatibilidad con `vento.authorization@1.0.0`, sus 140 permisos activos y sus diez aplicaciones;
+10. los destinos canónicos de materialización, adopción y certificación sin ejecutar cambios físicos en esta fase.
+
+La regla central es:
+
+```text
+PERMISO EXACTO
++
+CARRIL APLICABLE
++
+SCOPE CANÓNICO ADMITIDO
++
+RECURSO RESUELTO
++
+CONTEXTO Y PRERREQUISITOS VÁLIDOS
++
+AUSENCIA DE DENEGACIÓN APLICABLE
+→ AUTORIZACIÓN POSIBLE
+
+SCOPE
+≠ PERMISO
+≠ ROL
+≠ CONTEXTO COMPLETO
+≠ BYPASS
+```
+
+---
+
+#### 2. Resultado canónico
+
+Se centralizan exactamente trece códigos primitivos:
+
+```text
+NT
+ORG
+G
+AS
+SS
+AST
+TST
+AA
+SA
+AAT
+ATW
+CTX
+OWN
+```
+
+Conciliación:
+
+| Dimensión                                               | Resultado |
+| ------------------------------------------------------- | --------: |
+| `PermissionScopeCode` canónicos                         |    **13** |
+| Códigos territoriales o contextuales nuevos             |     **0** |
+| Códigos retirados                                       |     **0** |
+| Permisos creados                                        |     **0** |
+| Permisos modificados                                    |     **0** |
+| Roles modificados                                       |     **0** |
+| Concesiones modificadas                                 |     **0** |
+| Versiones nuevas de `vento.authorization`               |     **0** |
+| Versiones nuevas de schema                              |     **0** |
+| Perfiles descriptivos convertidos en códigos primitivos |     **0** |
+
+La centralización fija una API conceptual compartida para un vocabulario ya aprobado. No cambia la autorización efectiva de ningún actor.
+
+---
+
+#### 3. Fuentes y precedencia
+
+Esta tarea conserva sin reinterpretar las siguientes fuentes aprobadas:
+
+| Fuente                                              | Uso vinculante                                                                                        |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`        | continuidad, granularidad, trazabilidad y requisitos de prueba                                        |
+| `docs/plan-canonico/modular/delivery-contract.json` | estructura del artefacto documental y coordinación del registro de requisitos                         |
+| `docs/plan-canonico/modular/active-sequence.json`   | secuencia vigente del BLOQUE H                                                                        |
+| `AUTH-MOD-013` a `AUTH-MOD-017`                     | significado territorial de globalidad, sedes, áreas y restricciones                                   |
+| `AUTH-CAT-011`                                      | taxonomía canónica de alcance, combinaciones admitidas y reglas por permiso                           |
+| `AUTH-CAT-017`                                      | `allowed_scopes`, `maximum_scope` y catálogo versionado de autorización                               |
+| `AUTH-CAT-018`                                      | tipos derivados `PermissionScopeCode`, `AllowedScopeSet`, `MaximumScope` y especializaciones de scope |
+| `AUTH-CAT-024`                                      | `vento.authorization@1.0.0`, 140 permisos activos, diez aplicaciones y huella contractual vigente     |
+| `SHELL-CON-001`                                     | frontera de la familia compartida de contratos                                                        |
+| `SHELL-CON-003`                                     | `PermissionKey` compartido y prohibición de identidades locales divergentes                           |
+| `SHELL-CON-004`                                     | `BaseRoleCode` compartido                                                                             |
+| `SHELL-CON-005`                                     | `OperationalRoleCode` compartido y separación entre rol y alcance                                     |
+| Registro Canónico de Requisitos de Prueba           | cobertura de contratos, compatibilidad, CI y adopción                                                 |
+
+Precedencia específica:
+
+```text
+AUTH-MOD-013..017
+→ significado territorial y límites
+
+AUTH-CAT-011
+→ trece códigos y reglas de uso
+
+AUTH-CAT-017 / AUTH-CAT-018
+→ representación contractual y tipos derivados
+
+AUTH-CAT-024
+→ catálogo vigente de 140 permisos
+
+SHELL-CON-006
+→ centraliza la superficie compartida
+→ no redefine el catálogo
+```
+
+Ninguna cadena local, label de interfaz, rol o campo físico de base de datos puede ampliar esta semántica.
+
+---
+
+#### 4. Línea base verificable
+
+El estado de partida queda clasificado así:
+
+| Elemento                                         | Estado documental                                                         |
+| ------------------------------------------------ | ------------------------------------------------------------------------- |
+| `vento.authorization@1.0.0`                      | publicación contractual vigente                                           |
+| Permisos activos del catálogo                    | 140                                                                       |
+| Aplicaciones registradas                         | 10                                                                        |
+| Huella contractual                               | `sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe` |
+| Catálogo físico `@vento/contracts/authorization` | no implementado ni publicado físicamente                                  |
+| `packages/contracts`                             | no materializado físicamente                                              |
+| `packages/os-context`                            | package físico parcial existente                                          |
+| `PermissionScopeCode` compartido                 | no materializado físicamente                                              |
+| Cambios físicos autorizados en esta tarea        | ninguno                                                                   |
+
+La ausencia de materialización física no permite crear una taxonomía alternativa. La implementación posterior deberá reproducir exactamente la decisión documental aprobada.
+
+---
+
+#### 5. Naturaleza de un scope
+
+Un scope responde al límite dentro del cual puede evaluarse un **permiso concreto** sobre un **recurso concreto**.
+
+```text
+PermissionKey
+→ define QUÉ capacidad se evalúa
+
+PermissionScopeCode
+→ define DÓNDE o bajo QUÉ delimitador puede aplicarse
+
+ResourceContract
+→ define QUÉ recurso real debe resolverse
+
+AuthorizationLane
+→ define QUÉ carril aporta la concesión
+
+AccessContext
+→ aporta actor y contexto efectivo
+```
+
+Un scope no concede capacidad por sí solo.
+
+Queda prohibido interpretar:
+
+```text
+G
+→ todos los permisos
+
+SS
+→ cualquier acción sobre la sede
+
+CTX
+→ operación autorizada sin turno/check-in
+
+OWN
+→ bypass de territorio o permiso
+```
+
+---
+
+#### 6. Catálogo exacto de trece scopes
+
+| Orden | Código | Clase contractual                                    | Semántica vinculante                                                                                                                                  |
+| ----- | ------ | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `NT`   | No territorial                                       | El permiso no admite dimensión territorial variable. La ausencia de sede o área no crea territorio implícito.                                         |
+| 2     | `ORG`  | Organizacional no territorial                        | El recurso queda limitado a la organización, unidad, catálogo, canal o dominio exacto definido por su contrato, sin fabricar una sede.                |
+| 3     | `G`    | Global organizacional ordinario                      | Autoriza el permiso exacto en el ámbito ordinario de la organización. No es universal, no cruza aplicaciones ni incorpora recursos aislados.          |
+| 4     | `AS`   | Sedes asignadas                                      | Conjunto de sedes activas asignadas al actor mediante la relación laboral autorizada.                                                                 |
+| 5     | `SS`   | Sede específica                                      | Una sede concreta autorizada para el permiso y recurso evaluados.                                                                                     |
+| 6     | `AST`  | Sedes asignadas por tipo                             | Subconjunto de sedes asignadas al actor que además coincide con un tipo de sede exacto.                                                               |
+| 7     | `TST`  | Todas las sedes de un tipo                           | Conjunto transversal de sedes ordinarias de un tipo exacto, únicamente mediante concesión explícita; nunca se infiere desde AST.                      |
+| 8     | `AA`   | Áreas asignadas                                      | Conjunto de áreas activas asignadas al actor dentro de sedes autorizadas.                                                                             |
+| 9     | `SA`   | Área específica                                      | Un área concreta dentro de una sede autorizada.                                                                                                       |
+| 10    | `AAT`  | Áreas asignadas por tipo                             | Subconjunto de áreas asignadas al actor que coincide con un tipo de área exacto.                                                                      |
+| 11    | `ATW`  | Todas las áreas de un tipo dentro de límite superior | Conjunto transversal de áreas de un tipo exacto, siempre acotado por una sede o conjunto superior de sedes autorizado.                                |
+| 12    | `CTX`  | Contexto operativo efectivo                          | Territorio efectivo resuelto por el carril operativo. No aporta por sí mismo turno, check-in ni área activa.                                          |
+| 13    | `OWN`  | Recurso propio                                       | Restricción o variante sobre recurso propio, creado o atribuido según el contrato del recurso. Puede combinarse con territorio, pero nunca ampliarlo. |
+
+El orden anterior es normativo para serialización y documentación deterministas cuando una salida necesite una colección ordenada. No introduce jerarquía de autoridad entre los códigos.
+
+---
+
+#### 7. Contrato derivado `PermissionScopeCode`
+
+La proyección TypeScript deberá ser equivalente a:
+
+```text
+type PermissionScopeCode =
+  | "NT"
+  | "ORG"
+  | "G"
+  | "AS"
+  | "SS"
+  | "AST"
+  | "TST"
+  | "AA"
+  | "SA"
+  | "AAT"
+  | "ATW"
+  | "CTX"
+  | "OWN";
+```
+
+Reglas:
+
+1. la unión deriva de las fuentes contractuales y no de listas manuales por aplicación;
+2. un `string` externo requiere validación exacta antes de considerarse canónico;
+3. la coincidencia parcial, prefijos, mayúsculas normalizadas o semejanza semántica no crean equivalencia;
+4. un código desconocido o no publicado falla cerrado;
+5. los consumidores no agregan miembros locales;
+6. el tipo no autoriza recursos, actores ni carriles;
+7. una representación serializada más descriptiva solo es admisible cuando existe correspondencia uno a uno, documentada y sin pérdida con estos trece valores.
+
+---
+
+#### 8. Código primitivo, perfil y expresión de alcance
+
+Los trece valores anteriores son el vocabulario primitivo. Nombres utilizados para describir **perfiles de política** no se convierten en `PermissionScopeCode` adicionales.
+
+Ejemplos de perfiles descriptivos existentes:
+
+```text
+NT-APP
+WF
+SITE-READ
+SITE-WRITE
+ORG-CONFIG-READ
+ORG-CONFIG-WRITE
+CONFIG-READ
+CONFIG-WRITE
+FIN-READ
+FIN-ACTION
+ANALYTICS
+MULTI-READ
+INTERSECT
+```
+
+Estos nombres pueden resumir combinaciones, máximos, recursos o reglas de resolución de un permiso, pero no amplían la unión de trece códigos.
+
+También se mantiene la separación:
+
+```text
+G(B)
+→ G evaluado en carril BASE
+
+CTX(O)
+→ CTX evaluado en carril OPERATIONAL
+
+(B) / (O)
+≠ parte del PermissionScopeCode
+```
+
+El carril se representa por su contrato propio y nunca mediante una nueva variante textual del scope.
+
+---
+
+#### 9. `NT` — ausencia de territorio variable
+
+`NT` se utiliza cuando el permiso no tiene una dimensión territorial asignable.
+
+Reglas vinculantes:
+
+- no requiere fabricar `site_id` o `area_id`;
+- no se convierte en `ORG` o `G` por ausencia de territorio;
+- no concede acceso a otros recursos no territoriales;
+- la aplicación y el recurso exactos continúan limitando la capacidad;
+- una interfaz podrá filtrar por contexto sin transformar ese filtro en autoridad territorial.
+
+Un permiso de entrada a aplicación puede ser `NT` y seguir sin conceder ninguna capacidad interna.
+
+---
+
+#### 10. `ORG` — recurso organizacional no territorial
+
+`ORG` representa un recurso delimitado por organización, unidad de negocio, catálogo, canal, campaña o dominio exacto cuando el contrato de recurso no depende primariamente de sede o área.
+
+Reglas:
+
+1. no se crea una sede ficticia para expresar el límite;
+2. no equivale a `G`;
+3. el recurso organizacional exacto debe poder identificarse;
+4. otras organizaciones, tenants futuros o dominios aislados permanecen fuera;
+5. filtros de sede por aplicabilidad no convierten el recurso en territorial por sí mismos.
+
+---
+
+#### 11. `G` — global organizacional ordinario
+
+`G` significa alcance organizacional ordinario para el permiso exacto evaluado.
+
+```text
+G
+=
+SIN RESTRICCIÓN TERRITORIAL ORDINARIA
+DENTRO DEL DOMINIO EXACTO DEL PERMISO
+```
+
+No significa:
+
+- wildcard de permisos;
+- acceso entre aplicaciones;
+- acceso universal a la base de datos;
+- acceso a otros tenants u organizaciones;
+- acceso automático a APP-REVIEW, demos, pruebas o espacios aislados;
+- bypass de reautenticación, denegaciones, estado, recurso o dispositivo;
+- autoridad operativa sin contexto.
+
+Un permiso nuevo tampoco se concede a un actor por existir otro permiso con `G`.
+
+---
+
+#### 12. Scopes de sede: `AS`, `SS`, `AST`, `TST`
+
+| Código | Regla de resolución                                                                   | Prohibición principal                                                         |
+| ------ | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `AS`   | todas las sedes activas asignadas al actor por la relación laboral autorizada         | no derivar desde una sola sede primaria                                       |
+| `SS`   | una sede específica y autorizada                                                      | no aceptar una sede enviada por cliente sin validar el recurso y la concesión |
+| `AST`  | sedes asignadas al actor que coinciden con un tipo exacto                             | no transformarlo en todas las sedes de ese tipo                               |
+| `TST`  | todas las sedes ordinarias de un tipo exacto mediante concesión transversal explícita | nunca inferirlo desde `AST` ni desde el nombre del rol                        |
+
+Una sede inactiva, aislada o fuera del límite empresarial aplicable no se incorpora por pertenecer nominalmente al mismo tipo.
+
+---
+
+#### 13. Scopes de área: `AA`, `SA`, `AAT`, `ATW`
+
+| Código | Regla de resolución                                                                | Prohibición principal                                           |
+| ------ | ---------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `AA`   | áreas activas asignadas al actor dentro de sedes autorizadas                       | no convertir asignación de área en autoridad sobre toda la sede |
+| `SA`   | un área específica dentro de una sede autorizada                                   | no aceptar área fuera de la sede superior válida                |
+| `AAT`  | áreas asignadas que coinciden con un tipo exacto                                   | no convertirlo en todas las áreas del tipo                      |
+| `ATW`  | todas las áreas de un tipo exacto dentro de un límite superior de sedes autorizado | nunca omitir ni ensanchar el límite superior                    |
+
+Los scopes de área no autorizan por implicación recursos cuyo contrato sea únicamente de sede, salvo que el permiso y el contrato de recurso definan expresamente esa relación.
+
+---
+
+#### 14. `CTX` — alcance del contexto operativo efectivo
+
+`CTX` representa el territorio que el carril operativo puede resolver desde el contexto laboral efectivo.
+
+`CTX` no sustituye:
+
+- turno publicado y vigente cuando sea requisito;
+- check-in válido cuando sea requisito;
+- área activa cuando el permiso la exija;
+- rol operativo compatible;
+- permiso exacto;
+- contrato del recurso;
+- estado del recurso;
+- controles del dispositivo;
+- denegaciones.
+
+Si el contexto operativo necesario no puede resolverse de forma inequívoca, el resultado es denegación segura; no se utiliza la sede seleccionada, primaria o enviada por cliente como fallback permisivo.
+
+---
+
+#### 15. `OWN` — recurso propio
+
+`OWN` es una restricción o variante de propiedad sobre el recurso exacto según su contrato.
+
+Puede representar, según el recurso:
+
+- expediente del propio trabajador;
+- documento propio cuando el contrato lo permita;
+- operación atribuida al actor;
+- simulación perteneciente al actor;
+- trabajo o solicitud creada por el actor bajo estados autorizados.
+
+Regla obligatoria:
+
+```text
+OWN
++
+TERRITORIO AUTORIZADO
+→ RECURSO PROPIO DENTRO DEL TERRITORIO
+
+OWN
+≠ AMPLIACIÓN DEL TERRITORIO
+```
+
+Crear, poseer o haber iniciado un recurso nunca concede automáticamente lectura, modificación, cancelación, eliminación o aprobación si el permiso exacto no las autoriza.
+
+---
+
+#### 16. Contrato `AllowedScopeSet`
+
+Cada `PermissionDefinition` deberá conservar un conjunto explícito de scopes admitidos.
+
+Invariantes:
+
+1. cada miembro pertenece a los trece `PermissionScopeCode`;
+2. no existen wildcards;
+3. el conjunto no se infiere del nombre de la aplicación, módulo, recurso, acción o rol;
+4. un scope ausente del conjunto se considera no permitido para ese permiso;
+5. `OWN` puede coexistir con scopes territoriales cuando el contrato lo admita;
+6. `CTX` solo puede actuar dentro del carril operativo aplicable;
+7. `NT` u `ORG` no obligan a inventar dimensión territorial;
+8. la presencia de `G` no transforma las demás capacidades del actor en globales;
+9. cambios reales al conjunto de un permiso pertenecen al versionado del catálogo, no a esta tarea de centralización.
+
+---
+
+#### 17. Contrato `MaximumScope`
+
+`MaximumScope` conserva el límite máximo aprobado **por permiso**.
+
+No se define una jerarquía universal simple como:
+
+```text
+G > SITE > AREA
+```
+
+porque `NT`, `ORG`, `CTX`, `OWN`, los conjuntos asignados, los tipos territoriales y los límites multilado no pertenecen a una sola escala numérica.
+
+El máximo debe interpretarse junto con:
+
+- `PermissionKey`;
+- `AllowedScopeSet`;
+- carril evaluado;
+- contrato de recurso;
+- sensibilidad;
+- lados requeridos;
+- contexto real;
+- concesión concreta.
+
+Un consumidor no podrá elevar un scope solicitado hasta el máximo por conveniencia ni utilizar `MaximumScope` como concesión automática.
+
+---
+
+#### 18. Especializaciones tipadas
+
+La superficie compartida deberá poder representar, sin duplicar la fuente:
+
+```text
+PermissionScopeCode
+AllowedScopeSet
+MaximumScope
+TerritorialScope
+NonTerritorialScope
+OwnershipScope
+OperationalContextScope
+```
+
+Estas categorías son proyecciones del vocabulario canónico. No crean códigos adicionales.
+
+Una implementación podrá utilizar uniones derivadas para evitar combinaciones imposibles, siempre que:
+
+- permanezca reproducible desde la fuente publicada;
+- no añada valores;
+- no elimine valores válidos;
+- no altere su significado;
+- valide runtime en fronteras externas.
+
+---
+
+#### 19. Carriles de autorización y composición
+
+##### 19.1 `BASE_ONLY`
+
+El scope efectivo proviene del carril base y de su concesión aplicable.
+
+##### 19.2 `OPERATIONAL_ONLY`
+
+El scope efectivo proviene del carril operativo, su contexto y los prerrequisitos definidos para el permiso.
+
+##### 19.3 `BASE_OR_OPERATIONAL`
+
+Los carriles se evalúan de forma independiente.
+
+```text
+BASE válido dentro de su scope
+O
+OPERATIONAL válido dentro de su scope
+→ carril correspondiente puede autorizar
+```
+
+El scope de un carril no se copia al otro.
+
+##### 19.4 `BASE_AND_OPERATIONAL`
+
+Ambos carriles deben satisfacerse para el mismo actor y el alcance efectivo se limita a su intersección aplicable.
+
+```text
+SCOPE_BASE
+∩
+SCOPE_OPERATIONAL
+∩
+RECURSO RESUELTO
+→ SCOPE EFECTIVO
+```
+
+Un componente amplio en un carril no ensancha el componente más estrecho del otro.
+
+---
+
+#### 20. Recursos multilado, transversales y agregados
+
+Cuando el recurso posee varios lados —por ejemplo origen y destino— la autorización no puede reducirse a un único `site_id` elegido por conveniencia.
+
+Reglas:
+
+1. se resuelven todos los lados obligatorios definidos por el contrato;
+2. cada lado conserva su territorio real;
+3. autorizar un lado no autoriza automáticamente los demás;
+4. una mutación transversal exige el patrón de cobertura aprobado para la acción exacta;
+5. una lectura por relación solo expone los lados y campos permitidos por su contrato;
+6. operaciones masivas resuelven cada miembro o conjunto según el contrato, no mediante un scope global ficticio;
+7. una agregación no puede incluir, revelar ni permitir inferir datos de territorios excluidos.
+
+---
+
+#### 21. Resolución cerrada y entradas no confiables
+
+Toda entrada externa de scope se considera no confiable hasta validarse.
+
+Casos que deben producir fallo cerrado:
+
+```text
+scope desconocido
+scope no publicado
+scope no admitido por PermissionDefinition
+scope incompatible con el carril
+territorio obligatorio irresoluble
+recurso aislado fuera de concesión
+límite superior de ATW ausente
+TST inferido desde AST
+OWN usado como bypass
+CTX sin prerrequisitos requeridos
+```
+
+No se admiten aliases permisivos, aproximación semántica, wildcard, prefijo o fallback territorial silencioso.
+
+---
+
+#### 22. Relación con `vento.authorization@1.0.0`
+
+La centralización no modifica el catálogo contractual vigente:
+
+| Propiedad          | Valor preservado                                                          |
+| ------------------ | ------------------------------------------------------------------------- |
+| `catalog_id`       | `vento.authorization`                                                     |
+| `catalog_version`  | `1.0.0`                                                                   |
+| `schema_version`   | `1.0.0`                                                                   |
+| Permisos activos   | **140**                                                                   |
+| Aplicaciones       | **10**                                                                    |
+| Huella contractual | `sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe` |
+
+`SHELL-CON-006` no reasigna `allowed_scopes`, no cambia `maximum_scope`, no reabre clasificaciones de los 140 permisos y no incorpora perfiles históricos como nuevos códigos.
+
+Cualquier modificación futura del significado o conjunto de scopes de un permiso deberá seguir el diff contractual y SemVer del catálogo.
+
+---
+
+#### 23. Superficie compartida objetivo
+
+La fuente técnica futura deberá pertenecer a la familia contractual compartida de `vento-shell` y ser consumida desde `@vento/contracts/authorization` cuando esa superficie sea materializada.
+
+La superficie deberá ofrecer, como mínimo, capacidad para:
+
+- obtener el conjunto exacto de trece códigos desde una fuente generada o validada;
+- derivar `PermissionScopeCode` sin lista manual paralela;
+- representar `AllowedScopeSet` y `MaximumScope`;
+- distinguir scopes territoriales, no territoriales, de propiedad y de contexto operativo;
+- validar entradas runtime antes de producir un valor canónico;
+- rechazar códigos desconocidos;
+- conservar versión y procedencia contractual.
+
+Esta tarea no fija nombres adicionales de helpers públicos que no hayan sido aprobados por una fuente anterior. La implementación podrá escoger nombres internos compatibles sin crear nuevas identidades contractuales.
+
+---
+
+#### 24. Consumidores y compatibilidad
+
+Los consumidores deberán tratar el contrato centralizado como fuente compartida y no mantener taxonomías divergentes.
+
+Aplican estas reglas:
+
+1. una aplicación puede restringir más su uso, pero no ampliar el conjunto canónico;
+2. un contrato local temporal deberá demostrar paridad antes de adopción y no convertirse en fuente normativa;
+3. tablas, RPC, eventos o formularios que transporten strings deberán validarlos en la frontera;
+4. tipos de Supabase no sustituyen `PermissionScopeCode`;
+5. contexto operativo y alcance del permiso se mantienen separados;
+6. la adopción por repositorio podrá ocurrir de forma gradual solo si la matriz de compatibilidad demuestra equivalencia;
+7. una versión de consumidor incompatible con la versión contractual debe fallar cerrado.
+
+---
+
+#### 25. Versionado e inmutabilidad
+
+La centralización de un vocabulario ya aprobado no genera una nueva `catalog_version` ni una nueva `schema_version` por sí sola.
+
+Se conserva:
+
+```text
+vento.authorization@1.0.0
+schema 1.0.0
+```
+
+Cambios posteriores se clasifican así:
+
+| Cambio                                          | Tratamiento                                                 |
+| ----------------------------------------------- | ----------------------------------------------------------- |
+| corregir presentación sin cambiar semántica     | seguir reglas de versión publicable aplicables              |
+| añadir un código de scope real y compatible     | nueva versión contractual conforme al diff aprobado         |
+| retirar o reinterpretar un código               | cambio incompatible; exige tratamiento MAJOR cuando aplique |
+| cambiar scopes admitidos o máximo de un permiso | cambio de contenido contractual del permiso                 |
+| crear alias de compatibilidad                   | explícito, no ampliatorio y gobernado; no se infiere        |
+
+Una versión publicada nunca se corrige silenciosamente en sitio.
+
+---
+
+#### 26. Estado físico, hallazgos y destinos
+
+| Hallazgo verificable                                                           | Disposición documental                                                                                   |
+| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| `packages/contracts` aún no existe físicamente                                 | materialización posterior bajo la familia compartida ya reservada; esta tarea no crea archivos de código |
+| `@vento/contracts/authorization` no está publicado físicamente                 | su publicación sigue sujeta a implementación, pruebas contractuales y CI                                 |
+| `packages/os-context` existe y contiene tipos de contexto parciales            | no se convierte en fuente alternativa de scopes; `SHELL-CON-007` centraliza los tipos de contexto        |
+| strings externos pueden transportar códigos de scope                           | deberán validarse contra el contrato compartido antes de convertirse en valor canónico                   |
+| perfiles como `SITE-READ` o `INTERSECT` aparecen en documentación del catálogo | permanecen perfiles de política y no miembros de `PermissionScopeCode`                                   |
+| los 140 permisos ya poseen contrato de catálogo congelado                      | no se reclasifican durante `SHELL-CON-006`                                                               |
+
+Ninguno de estos hallazgos autoriza código, SQL, migraciones, publicación de packages o cambios remotos durante esta tarea documental.
+
+---
+
+#### 27. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **1**
+**Requisitos modificados:** **0**
+
+Se crea `TREQ-SHELL-042` para proteger la centralización de la taxonomía y sus invariantes de seguridad.
+
+| ID               | Regla protegida                                                                                                                               | Riesgo                                                                                                                   | Destino de implementación                                         |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `TREQ-SHELL-042` | Exponer exactamente los trece `PermissionScopeCode` y preservar sus restricciones de resolución, carril, propiedad, contexto y fallo cerrado. | Escalación territorial, wildcard implícito, bypass por propiedad, globalidad operativa o divergencia entre consumidores. | `SHELL-CON-006`; `SHELL-AUTH-004`; `SHELL-CI-017`; `SHELL-CI-018` |
+
+El detalle operativo del requisito permanece en el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 28. Decisiones vinculantes
+
+1. `PermissionScopeCode` contiene exactamente trece miembros: `NT`, `ORG`, `G`, `AS`, `SS`, `AST`, `TST`, `AA`, `SA`, `AAT`, `ATW`, `CTX`, `OWN`.
+2. La unión no se reduce a `global | site | area`.
+3. Los perfiles descriptivos no son scopes primitivos.
+4. Los calificadores de carril no forman parte del código de scope.
+5. `G` es globalidad organizacional ordinaria del permiso exacto y nunca wildcard universal.
+6. `TST` requiere concesión explícita y nunca se deriva de `AST`.
+7. `ATW` exige conservar un límite superior de sedes autorizado.
+8. `CTX` no aporta por sí solo turno, check-in, área ni permiso.
+9. `OWN` puede restringir un recurso, pero nunca ampliar territorio o capacidad.
+10. `BASE_OR_OPERATIONAL` resuelve cada carril por separado.
+11. `BASE_AND_OPERATIONAL` utiliza la intersección de ambos carriles.
+12. Los recursos multilado resuelven todos los lados obligatorios.
+13. Las agregaciones no revelan territorios excluidos.
+14. Un territorio obligatorio irresoluble produce denegación segura.
+15. Un código desconocido o no publicado produce denegación segura.
+16. No se crean aliases, fallbacks ni wildcards implícitos.
+17. `AllowedScopeSet` y `MaximumScope` pertenecen a `PermissionDefinition`, no al nombre del rol.
+18. `MaximumScope` no es una jerarquía universal numérica ni una concesión automática.
+19. `vento.authorization@1.0.0` conserva 140 permisos, diez aplicaciones y su huella contractual.
+20. La tarea no crea una versión nueva del catálogo ni del schema.
+21. La tarea no modifica permisos, roles, grants, Supabase, RLS, RPC, migraciones, código o packages físicos.
+22. `SHELL-CON-007` permanece reservada y no se desarrolla aquí.
+
+---
+
+#### 29. Criterios de aceptación
+
+`SHELL-CON-006` queda documentalmente cerrada cuando se cumplan simultáneamente:
+
+- existe un único catálogo de trece `PermissionScopeCode`;
+- cada código conserva una semántica explícita y no ampliatoria;
+- `PermissionScopeCode`, `AllowedScopeSet` y `MaximumScope` quedan definidos como contratos compartidos derivados;
+- los perfiles descriptivos y los carriles permanecen separados del vocabulario primitivo;
+- quedan protegidas las diferencias entre `G`, `TST`, `ATW`, `CTX` y `OWN`;
+- las reglas de composición de las cuatro modalidades de autorización son explícitas;
+- la resolución de recursos multilado y agregaciones evita ampliaciones territoriales;
+- entradas desconocidas y territorio irresoluble fallan cerrado;
+- el catálogo contractual vigente de 140 permisos no cambia;
+- la materialización física se mantiene fuera del alcance de esta fase;
+- se incorpora exactamente `TREQ-SHELL-042` y ningún otro requisito;
+- la continuidad reserva exclusivamente `SHELL-CON-007`.
+
+---
+
+#### 30. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-CON-005 — Centralizar roles operativos
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-CON-006 — Centralizar scopes
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-CON-007 — Centralizar tipos de contexto
+
+
 ### [ ] SHELL-CON-007 — Centralizar tipos de contexto
 ### [ ] SHELL-CON-008 — Centralizar códigos de error
 

@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **884** |
+| Tareas aprobadas | **885** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **710** |
+| Tareas no iniciadas | **709** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **55.46% (884/1594)** |
+| Porcentaje de completamiento | **55.52% (885/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-CON-005 — Centralizar roles operativos** |
-| Tarea actual | **SHELL-CON-006 — Centralizar scopes** |
+| Última tarea aprobada | **SHELL-CON-006 — Centralizar scopes** |
+| Tarea actual | **SHELL-CON-007 — Centralizar tipos de contexto** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CON-007 — Centralizar tipos de contexto** |
+| Siguiente tarea | **SHELL-CON-008 — Centralizar códigos de error** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 34 de 109 aprobadas; SHELL-CON-006 pendiente** |
+| Progreso del bloque | **BLOQUE H: 35 de 109 aprobadas; SHELL-CON-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-CON-005` — Centralizar roles operativos |
-| Tarea actual | `SHELL-CON-006` — Centralizar scopes — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CON-007` — Centralizar tipos de contexto |
+| Última aprobada | `SHELL-CON-006` — Centralizar scopes |
+| Tarea actual | `SHELL-CON-007` — Centralizar tipos de contexto — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CON-008` — Centralizar códigos de error |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 34 DE 109 APROBADAS — ACTUAL SHELL-CON-006** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 35 DE 109 APROBADAS — ACTUAL SHELL-CON-007** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-CON-005 — Centralizar roles operativos
-        ↓
-TAREA ACTUAL
 SHELL-CON-006 — Centralizar scopes
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-CON-007 — Centralizar tipos de contexto
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CON-008 — Centralizar códigos de error
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 34 de 109 tareas aprobadas
+BLOQUE H — 35 de 109 tareas aprobadas
 ```
