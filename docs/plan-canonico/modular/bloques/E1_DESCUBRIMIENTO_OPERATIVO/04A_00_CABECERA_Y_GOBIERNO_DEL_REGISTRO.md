@@ -83,12 +83,12 @@ Dominios iniciales:
 
 | Métrica                           |        Resultado |
 | --------------------------------- | ---------------: |
-| Requisitos vigentes               |         **7008** |
+| Requisitos vigentes               |         **7009** |
 | Dominios con requisitos           |           **19** |
-| Filas con catorce columnas        | **7008 de 7008** |
+| Filas con catorce columnas        | **7009 de 7009** |
 | Identificadores duplicados        |            **0** |
 | Relaciones `TREQ-*` no resolubles |            **0** |
-| Última tarea incorporada          |    `SHELL-CON-004` |
+| Última tarea incorporada          |    `SHELL-CON-005` |
 | Fecha de normalización            |     `2026-08-15` |
 
 Distribución vigente:
@@ -98,7 +98,7 @@ Distribución vigente:
 | `AUTH`        | `TREQ-AUTH-001` a `TREQ-AUTH-331`               |      331 |
 | `GAP`         | `TREQ-GAP-001`                                  |        1 |
 | `PROC`        | `TREQ-PROC-001` a `TREQ-PROC-1560`              |     1560 |
-| `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-040`             |       40 |
+| `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-041`             |       41 |
 | `SUPABASE`    | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-1770`      |     1770 |
 | `ANIMA`       | `TREQ-ANIMA-001` a `TREQ-ANIMA-025`             |       25 |
 | `AURA`        | `TREQ-AURA-001` a `TREQ-AURA-027`               |       27 |

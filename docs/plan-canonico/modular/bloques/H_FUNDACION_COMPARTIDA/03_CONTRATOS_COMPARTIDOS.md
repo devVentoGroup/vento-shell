@@ -2495,7 +2495,859 @@ SHELL-CON-004 — Centralizar roles base
 SHELL-CON-005 — Centralizar roles operativos
 
 
-### [ ] SHELL-CON-005 — Centralizar roles operativos
+### ✅ SHELL-CON-005 — Centralizar roles operativos
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CON-004 — Centralizar roles base
+**Tarea siguiente:** SHELL-CON-006 — Centralizar scopes
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 1
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-005` centraliza la identidad contractual de los roles operativos de Vento OS sin modificar el catálogo operativo ni mutar el dataset aprobado `vento.authorization.operational-role-grants@1.0.0`.
+
+La tarea fija simultáneamente:
+
+1. el conjunto exacto de doce roles operativos canónicos;
+2. la unión derivada `OperationalRoleCode`;
+3. la separación entre rol operativo, rol base, aplicación, sede, área, turno, check-in, permiso y autoridad efectiva;
+4. la exclusión explícita de `propietario_admin`, roles base, códigos legacy, retirados o desconocidos;
+5. la relación exacta con `vento.authorization.operational-role-grants@1.0.0`;
+6. la preservación del snapshot de 240 concesiones y su huella contractual;
+7. las reglas de validación de entradas y de consumo compartido;
+8. las reglas de compatibilidad, adopción gradual y fallo cerrado;
+9. el tratamiento de colisiones textuales entre catálogos;
+10. los destinos existentes de materialización, adopción y certificación.
+
+La regla central es:
+
+```text
+CATÁLOGO CANÓNICO DE ROLES OPERATIVOS
+→ OperationalRoleCode derivado
+→ dataset versionado de concesiones operativas
+→ contexto operativo efectivo
+→ evaluadores / consumidores
+
+NOMBRE DE ROL OPERATIVO
+≠ permiso
+≠ turno
+≠ check-in
+≠ sede
+≠ área
+≠ autorización final
+```
+
+---
+
+#### 2. Resultado canónico
+
+Se centralizan exactamente doce identidades operativas canónicas:
+
+```text
+cajero_satelite
+barista_satelite
+cocinero_satelite
+servicio_salon
+mostrador_satelite
+operador_integral_satelite
+produccion_cocina
+produccion_panaderia
+produccion_reposteria
+bodeguero
+conductor_logistica
+gerencia_operativa
+```
+
+Conciliación:
+
+| Dimensión                                     | Resultado |
+| --------------------------------------------- | --------: |
+| Roles operativos canónicos                    |    **12** |
+| Roles nuevos creados por esta tarea           |     **0** |
+| Roles operativos retirados por esta tarea     |     **0** |
+| Roles base incorporados al catálogo operativo |     **0** |
+| Códigos legacy incorporados                   |     **0** |
+| Permisos nuevos                               |     **0** |
+| Concesiones nuevas                            |     **0** |
+| Concesiones modificadas                       |     **0** |
+| Dataset operativo nuevo                       |     **0** |
+| Snapshot operativo preservado                 |     **1** |
+
+La centralización cambia la forma de referenciar la identidad compartida. No cambia el significado ni la matriz aprobada de ninguno de los doce roles.
+
+---
+
+#### 3. Fuentes y precedencia
+
+Esta tarea conserva sin reinterpretar las siguientes fuentes aprobadas:
+
+| Fuente                                              | Uso vinculante                                                                                                |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`        | continuidad, granularidad, trazabilidad y requisitos de prueba                                                |
+| `docs/plan-canonico/modular/delivery-contract.json` | estructura del artefacto documental y del registro 04A                                                        |
+| `docs/plan-canonico/modular/active-sequence.json`   | secuencia vigente del BLOQUE H                                                                                |
+| `SHELL-CON-001`                                     | identidad y frontera de `@vento/contracts`                                                                    |
+| `SHELL-CON-002`                                     | catálogo compartido de aplicaciones                                                                           |
+| `SHELL-CON-003`                                     | `PermissionKey` y prohibición de claves locales como autoridad                                                |
+| `SHELL-CON-004`                                     | `BaseRoleCode`, separación de namespaces y catálogo de ocho roles base                                        |
+| `AUTH-MOD-020` / `ADR-AUTH-001`                     | separación canónica entre rol base y rol operativo; doce roles operativos; deprecación de `propietario_admin` |
+| `AUTH-RBAC-025`                                     | dataset `operational-role-grants@1.0.0`, esquema, conteos, serialización y hash                               |
+| `AUTH-RBAC-027`                                     | validación documental de ausencia de acceso global accidental y reconciliación de los 240 registros           |
+| `AUTH-CAT-024`                                      | catálogo activo `vento.authorization@1.0.0` de 140 permisos                                                   |
+| `SHELL-AUD-009`                                     | necesidad de tipos contractuales separados para roles base y operativos                                       |
+| `SHELL-AUD-010`                                     | disposición de centralización/generación de contratos compartidos                                             |
+| Registro Canónico de Requisitos de Prueba           | cobertura vigente de autorización, contratos, compatibilidad y CI                                             |
+
+Precedencia específica:
+
+```text
+ADR-AUTH-001
+→ define el catálogo operativo canónico
+
+AUTH-RBAC-025
+→ congela sus 240 concesiones en operational-role-grants@1.0.0
+
+AUTH-RBAC-027
+→ valida ausencia de globalidad accidental y coherencia del snapshot
+
+SHELL-CON-005
+→ centraliza la identidad OperationalRoleCode
+→ preserva el snapshot sin crear una versión artificial
+```
+
+Una lista local, una fila física heredada o un valor textual enviado por un cliente no sustituye estas fuentes.
+
+---
+
+#### 4. Línea base verificable
+
+El estado previo confirma:
+
+| Elemento                                   | Estado                                                     |
+| ------------------------------------------ | ---------------------------------------------------------- |
+| `packages/contracts`                       | no materializado físicamente                               |
+| `packages/os-context`                      | package físico parcial existente                           |
+| `@vento/contracts/authorization`           | definido documentalmente, no publicado físicamente         |
+| `OperationalRoleCode` compartido           | no materializado                                           |
+| `OperationalContext.roleId`                | string técnico parcial, no catálogo contractual compartido |
+| roles operativos físicos                   | existen mediante migraciones y tablas operativas           |
+| snapshot `operational-role-grants@1.0.0`   | aprobado documentalmente                                   |
+| `propietario_admin`                        | no canónico y en deprecación según ADR                     |
+| cambios físicos autorizados por esta tarea | ninguno                                                    |
+
+La existencia física de códigos en Supabase no los convierte en API contractual compartida. Esta tarea define la identidad que deberán consumir las implementaciones futuras sin modificar datos ni migraciones.
+
+---
+
+#### 5. Naturaleza de un rol operativo
+
+Un rol operativo representa una función temporal ejecutada dentro de un contexto operacional válido.
+
+```text
+EMPLEADO
++
+TURNO PUBLICADO Y VIGENTE
++
+CHECK-IN ACTIVO CUANDO APLIQUE
++
+ROL OPERATIVO EFECTIVO
++
+SEDE COMPATIBLE
++
+ÁREA COMPATIBLE
++
+PERMISO OPERATIVO
++
+RECURSO Y ALCANCE VÁLIDOS
++
+AUSENCIA DE DENEGACIONES
+→ AUTORIZACIÓN OPERATIVA POSIBLE
+```
+
+El rol operativo por sí solo no constituye autoridad.
+
+`OperationalRoleCode` no representa:
+
+- identidad laboral;
+- rol base;
+- sede;
+- área;
+- turno;
+- check-in;
+- dispositivo;
+- aplicación;
+- permiso;
+- scope;
+- decisión final;
+- rol de navegación;
+- simulación;
+- bypass administrativo.
+
+---
+
+#### 6. Catálogo exacto de doce roles
+
+|     Orden | `operational_role_code`      | Familia funcional      | Concesiones directas | Componentes operativos | Total lógico |
+| --------: | ---------------------------- | ---------------------- | -------------------: | ---------------------: | -----------: |
+|         1 | `cajero_satelite`            | operación satélite     |                   15 |                      5 |           20 |
+|         2 | `barista_satelite`           | operación satélite     |                   11 |                      0 |           11 |
+|         3 | `cocinero_satelite`          | operación satélite     |                   11 |                      0 |           11 |
+|         4 | `servicio_salon`             | operación satélite     |                   11 |                      0 |           11 |
+|         5 | `mostrador_satelite`         | operación satélite     |                   11 |                      0 |           11 |
+|         6 | `operador_integral_satelite` | operación satélite     |                   16 |                      5 |           21 |
+|         7 | `produccion_cocina`          | producción             |                   16 |                      0 |           16 |
+|         8 | `produccion_panaderia`       | producción             |                   16 |                      0 |           16 |
+|         9 | `produccion_reposteria`      | producción             |                   16 |                      0 |           16 |
+|        10 | `bodeguero`                  | logística              |                   36 |                      0 |           36 |
+|        11 | `conductor_logistica`        | logística              |                   16 |                      0 |           16 |
+|        12 | `gerencia_operativa`         | coordinación operativa |                   43 |                     12 |           55 |
+| **Total** | —                            | —                      |              **218** |                 **22** |      **240** |
+
+Estas familias son clasificación documental. No crean jerarquía, herencia ni permiso implícito entre roles.
+
+---
+
+#### 7. Contrato derivado `OperationalRoleCode`
+
+La proyección TypeScript deberá representar exactamente:
+
+```text
+type OperationalRoleCode =
+  | "cajero_satelite"
+  | "barista_satelite"
+  | "cocinero_satelite"
+  | "servicio_salon"
+  | "mostrador_satelite"
+  | "operador_integral_satelite"
+  | "produccion_cocina"
+  | "produccion_panaderia"
+  | "produccion_reposteria"
+  | "bodeguero"
+  | "conductor_logistica"
+  | "gerencia_operativa";
+```
+
+Reglas:
+
+1. la unión deriva del catálogo operativo canónico y no de una lista mantenida por cada aplicación;
+2. un `string` externo solo podrá convertirse en `OperationalRoleCode` después de validación exacta;
+3. mayúsculas, espacios, labels, traducciones o semejanza textual no crean equivalencia;
+4. un valor desconocido, inactivo, deprecado o perteneciente a otro catálogo falla cerrado;
+5. los consumidores no podrán agregar miembros localmente;
+6. una lista visual de roles no constituye la fuente del tipo;
+7. el tipo no transporta la matriz de permisos ni el contexto efectivo.
+
+---
+
+#### 8. Separación obligatoria de namespaces
+
+Se conserva:
+
+```text
+OperationalRoleCode
+≠ BaseRoleCode
+≠ NavigationRoleCode
+≠ SimulationRoleCode
+≠ PermissionKey
+≠ AppCode
+```
+
+Una colisión textual no fusiona identidades.
+
+Caso vinculante:
+
+```text
+BASE/bodeguero
+≠
+OPERATIONAL/bodeguero
+```
+
+El código base histórico `bodeguero` no es `BaseRoleCode` vigente. `OPERATIONAL/bodeguero` sí pertenece al catálogo operativo canónico cuando se resuelve dentro del carril y contexto correctos.
+
+Toda frontera que pueda recibir valores de más de un catálogo deberá conservar el `role_kind` o equivalente contractual suficiente para resolver la identidad sin ambigüedad.
+
+---
+
+#### 9. Exclusiones del catálogo operativo
+
+Quedan fuera de `OperationalRoleCode`:
+
+```text
+propietario_admin
+propietario
+gerente_general
+gerente
+supervisor
+auxiliar_administrativa
+contador
+marketing
+trabajador_operativo
+```
+
+También quedan fuera:
+
+- cualquier oficio base legacy tratado como rol base histórico;
+- códigos retirados o deprecados;
+- aliases visuales;
+- nombres humanos de cargo;
+- códigos futuros no aprobados;
+- valores desconocidos.
+
+Reglas:
+
+1. `propietario_admin` no recibe nuevos turnos ni nuevos permisos;
+2. ningún `BaseRoleCode` se convierte automáticamente en `OperationalRoleCode`;
+3. un rol base con responsabilidad administrativa puede además tener un rol operativo, pero son dos contextos distintos;
+4. no se crean roles híbridos como `gerente_cajero` o `supervisor_bodeguero`;
+5. una coincidencia de texto no autoriza migración ni alias.
+
+---
+
+#### 10. Dataset operativo canónico preservado
+
+La identidad de la matriz operativa permanece:
+
+```text
+dataset_id = vento.authorization.operational-role-grants
+dataset_version = 1.0.0
+dataset_schema_version = 1.0.0
+catalog_id = vento.authorization
+catalog_version = 1.0.0
+record_count = 240
+operational_role_count = 12
+direct_operational_count = 218
+operational_component_count = 22
+effect = ALLOW_ONLY
+dataset_hash = sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f
+```
+
+`SHELL-CON-005` no modifica una fila de este dataset.
+
+No se crea `1.1.0` porque:
+
+- no cambia el catálogo operativo;
+- no cambia una concesión;
+- no cambia el schema;
+- no cambia una modalidad;
+- no cambia la serialización;
+- no cambia el significado de un rol.
+
+Crear una versión nueva sin cambio distribuible produciría versionado artificial y rompería la regla de inmutabilidad y trazabilidad ya aprobada para packages y datasets.
+
+---
+
+#### 11. Esquema lógico de concesiones operativas
+
+El snapshot preserva el esquema aprobado:
+
+```text
+grant_id
+operational_role_code
+permission_key
+authorization_mode
+lane
+grant_type
+effect
+scope_expression
+condition_expression
+source_task
+```
+
+Invariantes:
+
+1. `lane = OPERATIONAL`;
+2. `effect = ALLOW` para las 240 filas;
+3. `grant_type` es `DIRECT_OPERATIONAL` u `OPERATIONAL_COMPONENT`;
+4. `OperationalRoleCode` identifica la plantilla; no reemplaza `PermissionKey`;
+5. `scope_expression` y `condition_expression` permanecen parte de la concesión y no se deducen del nombre del rol;
+6. el significado de las filas continúa gobernado por su versión y por el catálogo de permisos vigente.
+
+---
+
+#### 12. Conciliación cuantitativa del snapshot
+
+##### Por tipo de concesión
+
+| Tipo                    | Registros |
+| ----------------------- | --------: |
+| `DIRECT_OPERATIONAL`    |   **218** |
+| `OPERATIONAL_COMPONENT` |    **22** |
+| **Total**               |   **240** |
+
+##### Por modalidad
+
+| Modalidad              | Registros |
+| ---------------------- | --------: |
+| `BASE_OR_OPERATIONAL`  |   **174** |
+| `OPERATIONAL_ONLY`     |    **44** |
+| `BASE_AND_OPERATIONAL` |    **22** |
+| `BASE_ONLY`            |     **0** |
+| **Total**              |   **240** |
+
+##### Por aplicación
+
+| Aplicación | Registros operativos |
+| ---------- | -------------------: |
+| `fogo`     |               **19** |
+| `nexo`     |              **181** |
+| `origo`    |                **9** |
+| `pulso`    |               **31** |
+| **Total**  |              **240** |
+
+La suma de cada vista reproduce el mismo snapshot y no crea una fuente paralela.
+
+---
+
+#### 13. Componentes operativos
+
+Los 22 `OPERATIONAL_COMPONENT` permanecen asociados exclusivamente a permisos `BASE_AND_OPERATIONAL`.
+
+Distribución aprobada:
+
+```text
+gerencia_operativa heredado
+→ 5 componentes
+
+PULSO sensible
+→ cajero_satelite
+→ operador_integral_satelite
+→ gerencia_operativa
+→ 15 componentes
+
+NEXO variación de conteo
+→ gerencia_operativa
+→ 2 componentes
+
+TOTAL
+→ 22
+```
+
+Un componente operativo no es un segundo permiso ni un alias. Expresa una parte obligatoria de una decisión compuesta cuyo otro componente deberá resolverse en el carril correspondiente.
+
+---
+
+#### 14. Regla de autoridad contextual
+
+Una fila operativa representa una capacidad candidata, no una autorización ejecutable aislada.
+
+```text
+OperationalRoleCode válido
++
+concesión exacta
++
+actor efectivo
++
+turno publicado y vigente
++
+check-in cuando aplique
++
+sede compatible
++
+área compatible
++
+recurso real
++
+scope válido
++
+ausencia de denegaciones
+→ decisión operativa posible
+```
+
+Por tanto:
+
+```text
+OperationalRoleCode válido
++
+sin turno/contexto exigido
+→ DENY
+```
+
+```text
+OperationalRoleCode válido
++
+permiso no concedido al rol
+→ DEFAULT_DENY
+```
+
+```text
+rol operativo expirado o fuera de sede/área
+→ DENY
+```
+
+La autoridad operativa termina cuando termina el contexto operacional que la soporta.
+
+---
+
+#### 15. Prohibición de globalidad accidental
+
+`AUTH-RBAC-027` se conserva como validación vinculante.
+
+Ningún rol operativo obtiene por su código:
+
+- autoridad organizacional global;
+- cobertura de todas las sedes;
+- cobertura de todas las áreas;
+- todos los recursos;
+- todos los permisos de una aplicación;
+- bypass de turno;
+- bypass de check-in;
+- bypass de scope;
+- bypass de denegaciones.
+
+Marcadores de globalidad o equivalentes no se interpretan desde el nombre del rol.
+
+`gerencia_operativa` coordina operación; no se convierte en `gerente_general`, `propietario` ni administrador global.
+
+---
+
+#### 16. Legado de remisiones sin alias
+
+El snapshot aprobado retiró del rol `conductor_logistica` la clave legacy:
+
+```text
+nexo.inventory.remissions.dispatch
+```
+
+Su reemplazo funcional no constituye un alias uno-a-uno. La operación quedó descompuesta en capacidades explícitas de custodia, tránsito y entrega conforme al dataset aprobado.
+
+Reglas:
+
+1. `dispatch` no reaparece como `PermissionKey` de concesión operativa;
+2. no se transforma automáticamente en una de las nuevas claves;
+3. un consumidor que todavía use el identificador legacy deberá migrarse mediante su tarea propietaria;
+4. la ausencia del identificador legacy en el snapshot no autoriza fallback textual ni compatibilidad silenciosa.
+
+---
+
+#### 17. Relación con `PermissionKey`
+
+`OperationalRoleCode` y `PermissionKey` permanecen contratos ortogonales:
+
+```text
+OperationalRoleCode
+→ identifica plantilla operativa
+
+PermissionKey
+→ identifica capacidad empresarial
+```
+
+La relación válida procede exclusivamente de `operational-role-grants@1.0.0` o de una versión posterior aprobada.
+
+Queda prohibido:
+
+- inferir permisos por prefijo del rol;
+- inferir permisos por aplicación asociada visualmente;
+- construir claves desde el nombre del rol;
+- asumir que todos los roles de una familia comparten permisos;
+- convertir una lista local de navegación en matriz de autorización.
+
+El catálogo `vento.authorization@1.0.0` permanece sin cambio.
+
+---
+
+#### 18. Relación con `BaseRoleCode`
+
+Un mismo empleado puede conservar simultáneamente:
+
+```text
+exactamente un BaseRoleCode vigente
++
+cero o un OperationalRoleCode efectivo en un contexto dado
+```
+
+Esto no crea un rol híbrido.
+
+Ejemplos conceptuales válidos ya establecidos por la ADR:
+
+```text
+propietario + gerencia_operativa
+gerente_general + gerencia_operativa
+gerente + cajero_satelite
+supervisor + bodeguero
+auxiliar_administrativa + operador_integral_satelite
+```
+
+La matriz base y la matriz operativa se evalúan por carriles distintos y se combinan únicamente conforme a la modalidad exacta del permiso.
+
+---
+
+#### 19. Relación con sede, área, turno y check-in
+
+`OperationalRoleCode` no incorpora territorio ni estado temporal.
+
+```text
+OperationalRoleCode
+≠ site_id
+≠ area_id
+≠ shift_id
+≠ attendance/check-in
+```
+
+La elegibilidad y efectividad de un rol operativo deberán reconstruirse desde las fuentes de contexto aprobadas.
+
+Reglas:
+
+1. una sede seleccionada en UI no crea sede operativa;
+2. una sede primaria no crea autoridad operativa;
+3. un rol no determina por sí solo un área;
+4. un check-in aislado no sustituye un turno válido cuando este sea obligatorio;
+5. una rotación o cierre de turno obliga a recalcular la autoridad efectiva;
+6. el cliente no puede declarar que un rol está operativo mediante un campo local.
+
+`SHELL-CON-006` centralizará los scopes sin alterar la identidad de los doce roles definida aquí.
+
+---
+
+#### 20. Validación de entradas
+
+Toda frontera que reciba un rol operativo como texto deberá aplicar:
+
+```text
+valor externo
+→ identificar catálogo/carril
+→ validar código exacto
+→ validar estado y versión aplicables
+→ OperationalRoleCode o rechazo
+```
+
+Queda prohibido:
+
+- aceptar cualquier string no vacío;
+- convertir `propietario_admin` en `gerencia_operativa`;
+- convertir un `BaseRoleCode` en rol operativo;
+- convertir un oficio base legacy por semejanza;
+- usar `navigation_role` como rol efectivo;
+- tomar el primer rol coincidente;
+- tolerar un valor desconocido como fallback;
+- confiar en una lista enviada por el cliente como fuente de identidad.
+
+La validación contractual del código no sustituye la validación del contexto operacional completo.
+
+---
+
+#### 21. Superficie compartida objetivo
+
+`OperationalRoleCode` pertenece a la superficie contractual de autorización ya reservada dentro de `@vento/contracts`.
+
+La futura materialización deberá exponer, como mínimo, proyecciones derivadas equivalentes a:
+
+```text
+OperationalRoleCode
+OPERATIONAL_ROLE_CODES
+isOperationalRoleCode(value)
+```
+
+Estas proyecciones deberán generarse o verificarse contra la fuente canónica y no convertirse en una segunda fuente editable.
+
+Esta tarea no crea un subpath público nuevo. La ubicación pública sigue gobernada por la superficie `@vento/contracts/authorization` definida previamente.
+
+---
+
+#### 22. Compatibilidad de consumidores
+
+La adopción será gradual.
+
+Un consumidor antiguo podrá seguir recibiendo strings durante una ventana de migración, pero deberá validarlos en la frontera antes de tratarlos como identidad operativa.
+
+Un consumidor que adopte el contrato compartido deberá:
+
+1. aceptar exactamente los doce códigos;
+2. rechazar `propietario_admin` y valores ajenos al catálogo;
+3. no mantener una lista divergente;
+4. no asociar permisos localmente por nombre;
+5. preservar la separación base/operativa;
+6. resolver contexto, scope y autorización fuera del tipo de identidad;
+7. participar en la matriz de compatibilidad antes de una publicación estable.
+
+La actualización de un consumidor no exige actualización simultánea de todos los repositorios.
+
+---
+
+#### 23. Versionado e inmutabilidad
+
+Esta tarea no crea una nueva versión del dataset operativo.
+
+```text
+operational-role-grants@1.0.0
+→ permanece 1.0.0
+→ permanece inmutable
+```
+
+Una versión nueva solo será necesaria cuando cambie materialmente alguno de estos elementos:
+
+- catálogo de roles operativos;
+- concesiones;
+- modalidad;
+- scope o condición contractual;
+- schema;
+- serialización contractual;
+- semántica distribuida.
+
+Cambiar únicamente el lugar desde el cual se importa `OperationalRoleCode` no modifica el dataset.
+
+La huella preservada es:
+
+```text
+sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f
+```
+
+---
+
+#### 24. Validaciones contractuales obligatorias
+
+La futura materialización deberá comprobar como mínimo:
+
+1. exactamente 12 `OperationalRoleCode`;
+2. exactamente 240 concesiones;
+3. 240 pares únicos `operational_role_code + permission_key`;
+4. 218 `DIRECT_OPERATIONAL`;
+5. 22 `OPERATIONAL_COMPONENT`;
+6. 174 `BASE_OR_OPERATIONAL`;
+7. 44 `OPERATIONAL_ONLY`;
+8. 22 `BASE_AND_OPERATIONAL`;
+9. 0 `BASE_ONLY`;
+10. 0 filas `DENY` dentro del dataset positivo;
+11. 0 roles base dentro del dataset operativo;
+12. 0 `propietario_admin`;
+13. 0 claves legacy bloqueadas;
+14. 0 `nexo.inventory.remissions.dispatch`;
+15. todas las `permission_key` pertenecen al catálogo activo aplicable;
+16. todo `OPERATIONAL_COMPONENT` usa `BASE_AND_OPERATIONAL`;
+17. 0 wildcards o scopes globales inferidos;
+18. 0 aliases o fallbacks entre catálogos;
+19. la distribución por rol suma 240;
+20. la distribución por aplicación suma 240;
+21. la huella contractual permanece `sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f` mientras el snapshot sea `1.0.0`.
+
+---
+
+#### 25. Estado de materialización física
+
+En el corte vigente:
+
+```text
+SHELL-CON-005
+→ contrato completo
+→ identidad de 12 roles cerrada
+→ OperationalRoleCode cerrado
+→ snapshot operational-role-grants@1.0.0 preservado
+→ sin package @vento/contracts materializado
+→ sin tipo compartido publicado
+→ sin migración
+→ sin cambio de Supabase
+→ sin cambio de turnos
+→ sin cambio de permisos
+→ sin adopción de consumidores
+```
+
+La fila o presencia histórica de `propietario_admin` en artefactos físicos no modifica su estado no canónico ni autoriza su exposición en el contrato compartido.
+
+---
+
+#### 26. Hallazgos y destinos exactos
+
+| Hallazgo                                                                            | Estado                            | Destino existente / condición de salida                                     |
+| ----------------------------------------------------------------------------------- | --------------------------------- | --------------------------------------------------------------------------- |
+| `@vento/contracts` todavía no está materializado                                    | esperado por fase                 | `E5-GATE-008::<package_id>` y `SHELL-CI-020`                                |
+| `OperationalRoleCode` compartido no existe físicamente                              | pendiente de implementación       | `SHELL-AUTH-004`; `SHELL-CI-017`; `SHELL-CI-018`                            |
+| `packages/os-context` usa identidad operacional parcial basada en string/ID         | legacy técnico controlado         | `SHELL-CON-007`; `SHELL-CTX-001` a `SHELL-CTX-006`                          |
+| consumidores pueden conservar listas o strings locales                              | pendiente de adopción             | `SHELL-AUTH-004`; `SHELL-MIG-001` a `SHELL-MIG-008`                         |
+| `propietario_admin` permanece como identidad física/deprecada en fuentes históricas | bloqueado como código canónico    | `AUTH-RBAC-027`; su retiro físico permanece fuera del alcance de esta tarea |
+| scopes operativos todavía no están centralizados por esta secuencia                 | reservado                         | `SHELL-CON-006`                                                             |
+| snapshot de 240 concesiones requiere conservar integridad al materializarse         | pendiente de certificación física | `AUTH-QA-027`; `SHELL-CI-017`; `SHELL-CI-018`                               |
+
+No se crea ningún identificador de tarea adicional para estos pendientes.
+
+---
+
+#### 27. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se crea `TREQ-SHELL-041` para proteger la centralización exacta de los doce roles operativos y la integridad inmutable de `vento.authorization.operational-role-grants@1.0.0`.
+
+| ID               | Regla protegida                                                                                                                                                                                                                                                                                                              | Tipo                                                            | Prioridad | Momento de implementación                                                       | Destino                                                                          |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `TREQ-SHELL-041` | La fuente compartida deberá exponer exactamente doce `OperationalRoleCode`; `operational-role-grants@1.0.0` deberá conservar 240 registros —218 directos y 22 componentes— y su huella aprobada, con 0 `BASE_ONLY`, 0 roles base, 0 `propietario_admin`, 0 claves legacy bloqueadas y 0 aliases o fallbacks entre catálogos. | contractual + autorización + estática + integración + regresión | crítica   | materialización de `@vento/contracts`, adopción de consumidores y certificación | `SHELL-CON-005`; `SHELL-AUTH-004`; `AUTH-QA-027`; `SHELL-CI-017`; `SHELL-CI-018` |
+
+---
+
+#### 28. Decisiones vinculantes
+
+1. el catálogo operativo canónico contiene exactamente doce roles;
+2. `OperationalRoleCode` contiene exactamente esos doce códigos;
+3. el tipo se deriva de la fuente contractual y no de listas locales;
+4. rol operativo y rol base permanecen en namespaces distintos;
+5. `BASE/bodeguero` y `OPERATIONAL/bodeguero` son identidades distintas;
+6. `propietario_admin` queda fuera de `OperationalRoleCode`;
+7. ningún `BaseRoleCode` pertenece al catálogo operativo;
+8. no se crean roles híbridos;
+9. no existe herencia automática entre roles operativos;
+10. no existen aliases o fallbacks por semejanza textual;
+11. un valor desconocido, inactivo o deprecado falla cerrado;
+12. `OperationalRoleCode` no contiene sede, área, turno, check-in, permiso ni scope;
+13. un rol operativo válido no autoriza sin contexto suficiente;
+14. `gerencia_operativa` no crea autoridad organizacional global;
+15. `operational-role-grants@1.0.0` permanece inmutable;
+16. el snapshot conserva exactamente 240 registros;
+17. conserva 218 `DIRECT_OPERATIONAL` y 22 `OPERATIONAL_COMPONENT`;
+18. conserva 174 `BASE_OR_OPERATIONAL`, 44 `OPERATIONAL_ONLY`, 22 `BASE_AND_OPERATIONAL` y 0 `BASE_ONLY`;
+19. todo componente operativo permanece ligado a `BASE_AND_OPERATIONAL`;
+20. la distribución por aplicaciones permanece 19 FOGO, 181 NEXO, 9 ORIGO y 31 PULSO;
+21. `nexo.inventory.remissions.dispatch` permanece excluida sin alias automático;
+22. la huella del snapshot permanece `sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f`;
+23. no se crea una versión `1.1.0` sin cambio material;
+24. esta tarea no crea package, código, migración, Supabase, datos ni adopción física;
+25. se crea `TREQ-SHELL-041`;
+26. `SHELL-CON-006` permanece como única continuidad reservada.
+
+---
+
+#### 29. Criterios de aceptación
+
+`SHELL-CON-005` queda materialmente completa porque:
+
+- centraliza exactamente doce roles operativos;
+- materializa la unión contractual `OperationalRoleCode`;
+- conserva la clasificación funcional sin convertirla en jerarquía;
+- separa rol operativo de rol base, aplicación, permiso, sede, área, turno y check-in;
+- excluye `propietario_admin` y todos los `BaseRoleCode`;
+- conserva la colisión `bodeguero` resuelta por namespace/carril;
+- prohíbe aliases, fallbacks y conversión automática;
+- preserva sin cambios `operational-role-grants@1.0.0`;
+- conserva 240 concesiones, 218 directas y 22 componentes;
+- concilia 174 `BASE_OR_OPERATIONAL`, 44 `OPERATIONAL_ONLY`, 22 `BASE_AND_OPERATIONAL` y 0 `BASE_ONLY`;
+- concilia 19 FOGO, 181 NEXO, 9 ORIGO y 31 PULSO;
+- conserva la exclusión de la clave legacy `nexo.inventory.remissions.dispatch`;
+- conserva la huella contractual `sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f`;
+- evita versionado artificial del dataset;
+- define validación fail closed de códigos externos;
+- define la superficie compartida objetivo sin inventar un subpath nuevo;
+- asigna pendientes a tareas o etapas canónicas existentes;
+- crea únicamente `TREQ-SHELL-041` como requisito nuevo;
+- no implementa código, package, migración, Supabase, datos ni consumidores;
+- deja `SHELL-CON-006` como única tarea siguiente reservada.
+
+---
+
+#### 30. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+SHELL-CON-004 — Centralizar roles base
+
+##### TAREA ACTUAL APROBADA
+SHELL-CON-005 — Centralizar roles operativos
+
+##### SIGUIENTE TAREA RESERVADA
+SHELL-CON-006 — Centralizar scopes
+
+
 ### [ ] SHELL-CON-006 — Centralizar scopes
 ### [ ] SHELL-CON-007 — Centralizar tipos de contexto
 ### [ ] SHELL-CON-008 — Centralizar códigos de error
