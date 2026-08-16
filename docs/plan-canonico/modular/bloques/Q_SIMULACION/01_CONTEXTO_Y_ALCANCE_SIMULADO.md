@@ -26,7 +26,7 @@ Esta sección organiza **contexto y alcance simulado** dentro de **Q SIMULACIÓN
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md`
 **Artefactos producidos:** `SIMULATION-REQUESTER-ELIGIBILITY-CONTRACT-001` y `SIMULATION-REQUESTER-ELIGIBILITY-REGISTER-001`
-**Decisiones y contratos consumidos:** `AUTH-MOD-012`, `AUTH-CAT-010`, `AUTH-CAT-014`, `AUTH-RBAC-001`, `AUTH-RBAC-002`, `AUTH-RBAC-003`, `AUTH-RBAC-004`, matrices funcionales vigentes, `AUTH-CTX-003`, `AUTH-UI-037`, `AUTH-DEV-005` y `AUTH-DEV-006`
+**Decisiones y contratos consumidos:** `AUTH-MOD-012`, `AUTH-MOD-021`, `AUTH-CAT-010`, `AUTH-CAT-014`, `AUTH-RBAC-001`, `AUTH-RBAC-002`, `AUTH-RBAC-003`, `AUTH-RBAC-004`, matrices funcionales vigentes, `AUTH-CTX-003`, `AUTH-UI-037`, `AUTH-DEV-005` y `AUTH-DEV-006`
 **Cambios en código, Supabase, migraciones, RLS, RPC, configuración, datos, permisos desplegados, sesiones o usuarios:** no autorizados
 
 ---
@@ -71,11 +71,11 @@ Cobertura materializada:
 
 | Resultado                                                                | Cantidad |
 | ------------------------------------------------------------------------ | -------: |
-| Roles base con decisión explícita según matrices vigentes                |        9 |
+| Roles base con decisión explícita según matrices vigentes                |        8 |
 | Roles con asignación base del permiso de simulación                      |        2 |
-| Roles sin asignación base del permiso                                    |        7 |
+| Roles sin asignación base del permiso                                    |        6 |
 | Clases adicionales de actor o principal evaluadas                        |        7 |
-| Decisiones totales del registro de elegibilidad                          |       16 |
+| Decisiones totales del registro de elegibilidad                          |       15 |
 | Códigos de permiso exactos obligatorios para entrar a la superficie      |        2 |
 | Roles, principales o dispositivos habilitados por jerarquía o inferencia |        0 |
 | Contextos simulados que pueden autorizar su propia simulación            |        0 |
@@ -98,6 +98,8 @@ La tarea conserva las decisiones aprobadas en `AUTH-MOD-012`:
 - deberá distinguir permiso para simular roles base, roles operativos y recursos sensibles;
 - los casos de alto impacto podrán exigir reautenticación fuerte;
 - toda solicitud y resultado deberán quedar auditados.
+
+Por precedencia documental, `AUTH-MOD-021` actualiza el universo de roles base aplicable a esta tarea: el catálogo canónico vigente contiene ocho roles base e incorpora `trabajador_operativo` como octavo rol. `logistica` y `talento_humano` no forman parte de ese catálogo canónico. `trabajador_operativo` conserva exactamente sus cinco concesiones base aprobadas y no recibe `viso.authorization.context_simulations.view`, por lo que permanece en `DEFAULT_DENY` para iniciar simulaciones.
 
 También conserva:
 
@@ -258,11 +260,10 @@ Las matrices vigentes materializan:
 | `gerente_general`         | `ASSIGN`                                                          | `BASE_CANDIDATE`              | Puede aportar el permiso desde la matriz; no recibe alcance organizacional ilimitado por nombre de rol.                 |
 | `gerente`                 | `NOT_ASSIGN`                                                      | `DEFAULT_DENY`                | La jerarquía gerencial no crea el permiso.                                                                              |
 | `supervisor`              | `NOT_ASSIGN`                                                      | `DEFAULT_DENY`                | Supervisar operación no autoriza simulaciones.                                                                          |
+| `auxiliar_administrativa` | `NOT_ASSIGN`                                                      | `DEFAULT_DENY`                | Funciones administrativas no implican acceso al simulador.                                                              |
 | `contador`                | `NOT_ASSIGN`                                                      | `DEFAULT_DENY`                | Acceso financiero no implica acceso al simulador.                                                                       |
 | `marketing`               | `NOT_ASSIGN`                                                      | `DEFAULT_DENY`                | Acceso a contenidos o campañas no implica acceso al simulador.                                                          |
-| `logistica`               | `NOT_ASSIGN`                                                      | `DEFAULT_DENY`                | Coordinación logística no implica acceso al simulador.                                                                  |
-| `auxiliar_administrativa` | `NOT_ASSIGN`                                                      | `DEFAULT_DENY`                | Funciones administrativas no implican acceso al simulador.                                                              |
-| `talento_humano`          | `NOT_ASSIGN`                                                      | `DEFAULT_DENY`                | Acceso laboral o de personal no implica acceso al simulador.                                                            |
+| `trabajador_operativo`    | `NOT_ASSIGN`                                                      | `DEFAULT_DENY`                | Su matriz mínima no contiene el permiso de simulación; no obtiene acceso por ser fuerza laboral operativa.              |
 
 `BASE_CANDIDATE` no significa `ALLOW`. El permiso deberá estar activo en el catálogo y ser efectivo para la persona y la sesión reales.
 
@@ -518,7 +519,7 @@ La justificación no concede alcance ni sustituye autorización.
 | Actor con sesión revocada, expirada, conflictiva o no reconstruible              | `DENY`                          | La sesión real no puede producir elegibilidad.                                                                                     |
 | Actor o solicitud con simulación activa, denegación aplicable o alcance excedido | `DENY_FAIL_CLOSED`              | Debe regresar al contexto real, resolver el conflicto y satisfacer alcance y controles antes de crear una solicitud independiente. |
 
-Las siete clases complementan las nueve decisiones de rol y cubren intentos que no deben modelarse como roles humanos.
+Las siete clases complementan las ocho decisiones de rol y cubren intentos que no deben modelarse como roles humanos.
 
 ---
 
@@ -668,7 +669,7 @@ Queda prohibido usar como fallback:
 | `viso.access`                                 | Prerrequisito independiente de entrada a la aplicación.                                      | `ESPECIFICADO`                            |
 | Matriz de `propietario`                       | Aporta asignación base candidata; no produce autorización automática.                        | `ESPECIFICADO`                            |
 | Matriz de `gerente_general`                   | Aporta asignación base candidata; no produce alcance global implícito.                       | `ESPECIFICADO`                            |
-| Matrices de otros siete roles revisados       | Conservan `NOT_ASSIGN`; no reciben acceso por jerarquía.                                     | `ESPECIFICADO`                            |
+| Matrices de otros seis roles revisados        | Conservan `NOT_ASSIGN`; no reciben acceso por jerarquía.                                     | `ESPECIFICADO`                            |
 | Grants individuales y denegaciones            | Podrán modificar la efectividad para una persona cuando sean canónicos, vigentes y acotados. | `ESPECIFICADO`; materialización posterior |
 | Superficie o servicio de simulación           | No fue implementado por esta tarea.                                                          | `PENDIENTE_DE_IMPLEMENTACION`             |
 | Inicio desde dispositivo compartido           | Permanece denegado en el contrato actual.                                                    | `BLOQUEADO`                               |
@@ -766,18 +767,18 @@ Esta tarea no anticipa la lista de roles objetivo.
 
 Se incorporan `TREQ-AUTH-069` a `TREQ-AUTH-078` en el Registro Canónico de Requisitos de Prueba.
 
-| ID              | Regla protegida                                                                                                                                                                                                                                                                                                                                              | Tipo                                                       | Prioridad | Momento de implementación                         | Destino                                                        |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------- | --------- | ------------------------------------------------- | -------------------------------------------------------------- |
-| `TREQ-AUTH-069` | Una solicitud de simulación solo podrá iniciarse cuando exista actor humano efectivo, sesión personal real válida, `viso.access`, `viso.authorization.context_simulations.view`, carril base, alcance suficiente, justificación, reautenticación requerida y ausencia de denegaciones; un componente ausente o ambiguo producirá `DENY`.                     | seguridad + autorización + integración + E2E + regresión   | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SRV-015`; `AUTH-QA-019`; paquete E5 de simulación        |
-| `TREQ-AUTH-070` | Las matrices vigentes deberán conservar como candidatos base únicamente a `propietario` y `gerente_general`; `gerente`, `supervisor`, `contador`, `marketing`, `logistica`, `auxiliar_administrativa` y `talento_humano` permanecerán sin asignación base. Ningún rol o rango jerárquico podrá sustituir el permiso efectivo.                                | contractual + autorización + estática + regresión          | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-001`; `AUTH-DB-013`; `AUTH-QA-019`                   |
-| `TREQ-AUTH-071` | Un `INDIVIDUAL_GRANT` para simular deberá usar la clave exacta, ser vigente, acotado, auditable y compatible con el alcance real del actor; no podrá derivarse del cargo ni prevalecer sobre denegaciones estructurales, transversales, individuales o de carril.                                                                                            | seguridad + autorización + base de datos + regresión       | crítica   | Paquete que materialice el contrato de simulación | `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`                   |
-| `TREQ-AUTH-072` | Una simulación interactiva no podrá ser solicitada por principal técnico, dispositivo compartido, service role, integración, sesión anónima o cuenta compartida. El techo del dispositivo, una pantalla visible o un permiso técnico nunca crearán un simulador humano.                                                                                      | seguridad + identidad + integración + E2E + regresión      | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SRV-015`; `AUTH-DEV-008` a `AUTH-DEV-010`; `AUTH-QA-019` |
-| `TREQ-AUTH-073` | El alcance solicitado deberá ser subconjunto del alcance real autorizado del simulador sobre sujeto, organización, sede, área, permiso, acción y recurso. `OWN` no habilitará terceros, `THIRD_PARTY_EXPLICIT` exigirá cobertura concreta y valores desconocidos o `null` no significarán alcance global.                                                    | seguridad + autorización + integración + E2E + regresión   | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-002` a `AUTH-SIM-005`; `AUTH-SRV-015`; `AUTH-QA-019` |
-| `TREQ-AUTH-074` | La simulación de terceros, roles privilegiados, permisos sensibles o recursos financieros, personales, laborales, médicos, disciplinarios, de seguridad o autenticación deberá exigir reautenticación fuerte personal vinculada al actor, sesión, solicitud y objetivo; PIN ligero o evidencia transferida no serán válidos.                                 | seguridad + autenticación + autorización + E2E + regresión | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-008`; `AUTH-SRV-015`; `AUTH-QA-019`                  |
-| `TREQ-AUTH-075` | Una sesión revocada, expirada, conflictiva, no personal o incapaz de reconstruir el contexto real deberá denegar la solicitud. Una simulación activa no podrá iniciar, modificar, inspeccionar privilegiadamente ni cerrar otra simulación; deberá salirse al contexto real y reautorizarse.                                                                 | seguridad + sesión + contexto + E2E + regresión            | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-006` a `AUTH-SIM-010`; `AUTH-SRV-015`; `AUTH-QA-019` |
-| `TREQ-AUTH-076` | Autorizar una solicitud de simulación no podrá modificar sesión, actor, rol, asignaciones, turno, check-in, permisos ni contexto real; tampoco podrá crear tokens, ejecutar la acción simulada, producir mutaciones empresariales ni convertir el resultado en autoridad operativa.                                                                          | seguridad + autorización + integración + E2E + regresión   | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-006` a `AUTH-SIM-014`; `AUTH-SRV-015`; `AUTH-QA-019` |
-| `TREQ-AUTH-077` | Todo intento de simulación, permitido o denegado, deberá registrar actor y sesión reales, fuente del permiso, objetivo, alcance, justificación, denegaciones, reautenticación, versiones y razones estructuradas, minimizando secretos y datos sensibles.                                                                                                    | seguridad + auditoría + integración + regresión            | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-013`; `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`   |
-| `TREQ-AUTH-078` | El registro de elegibilidad deberá cubrir exactamente nueve decisiones de rol y siete clases adicionales de actor o principal, con dos roles `BASE_CANDIDATE`, siete roles `DEFAULT_DENY`, cero habilitaciones por jerarquía, cero principales técnicos elegibles y una decisión fail closed para cada condición incompleta, conflictiva o fuera de alcance. | contractual + estática + regresión                         | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-001`; `AUTH-QA-019`                                  |
+| ID              | Regla protegida                                                                                                                                                                                                                                                                                                                                            | Tipo                                                       | Prioridad | Momento de implementación                         | Destino                                                        |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | --------- | ------------------------------------------------- | -------------------------------------------------------------- |
+| `TREQ-AUTH-069` | Una solicitud de simulación solo podrá iniciarse cuando exista actor humano efectivo, sesión personal real válida, `viso.access`, `viso.authorization.context_simulations.view`, carril base, alcance suficiente, justificación, reautenticación requerida y ausencia de denegaciones; un componente ausente o ambiguo producirá `DENY`.                   | seguridad + autorización + integración + E2E + regresión   | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SRV-015`; `AUTH-QA-019`; paquete E5 de simulación        |
+| `TREQ-AUTH-070` | Las matrices vigentes deberán conservar como candidatos base únicamente a `propietario` y `gerente_general`; `gerente`, `supervisor`, `auxiliar_administrativa`, `contador`, `marketing` y `trabajador_operativo` permanecerán sin asignación base. Ningún rol o rango jerárquico podrá sustituir el permiso efectivo.                                     | contractual + autorización + estática + regresión          | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-001`; `AUTH-DB-013`; `AUTH-QA-019`                   |
+| `TREQ-AUTH-071` | Un `INDIVIDUAL_GRANT` para simular deberá usar la clave exacta, ser vigente, acotado, auditable y compatible con el alcance real del actor; no podrá derivarse del cargo ni prevalecer sobre denegaciones estructurales, transversales, individuales o de carril.                                                                                          | seguridad + autorización + base de datos + regresión       | crítica   | Paquete que materialice el contrato de simulación | `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`                   |
+| `TREQ-AUTH-072` | Una simulación interactiva no podrá ser solicitada por principal técnico, dispositivo compartido, service role, integración, sesión anónima o cuenta compartida. El techo del dispositivo, una pantalla visible o un permiso técnico nunca crearán un simulador humano.                                                                                    | seguridad + identidad + integración + E2E + regresión      | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SRV-015`; `AUTH-DEV-008` a `AUTH-DEV-010`; `AUTH-QA-019` |
+| `TREQ-AUTH-073` | El alcance solicitado deberá ser subconjunto del alcance real autorizado del simulador sobre sujeto, organización, sede, área, permiso, acción y recurso. `OWN` no habilitará terceros, `THIRD_PARTY_EXPLICIT` exigirá cobertura concreta y valores desconocidos o `null` no significarán alcance global.                                                  | seguridad + autorización + integración + E2E + regresión   | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-002` a `AUTH-SIM-005`; `AUTH-SRV-015`; `AUTH-QA-019` |
+| `TREQ-AUTH-074` | La simulación de terceros, roles privilegiados, permisos sensibles o recursos financieros, personales, laborales, médicos, disciplinarios, de seguridad o autenticación deberá exigir reautenticación fuerte personal vinculada al actor, sesión, solicitud y objetivo; PIN ligero o evidencia transferida no serán válidos.                               | seguridad + autenticación + autorización + E2E + regresión | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-008`; `AUTH-SRV-015`; `AUTH-QA-019`                  |
+| `TREQ-AUTH-075` | Una sesión revocada, expirada, conflictiva, no personal o incapaz de reconstruir el contexto real deberá denegar la solicitud. Una simulación activa no podrá iniciar, modificar, inspeccionar privilegiadamente ni cerrar otra simulación; deberá salirse al contexto real y reautorizarse.                                                               | seguridad + sesión + contexto + E2E + regresión            | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-006` a `AUTH-SIM-010`; `AUTH-SRV-015`; `AUTH-QA-019` |
+| `TREQ-AUTH-076` | Autorizar una solicitud de simulación no podrá modificar sesión, actor, rol, asignaciones, turno, check-in, permisos ni contexto real; tampoco podrá crear tokens, ejecutar la acción simulada, producir mutaciones empresariales ni convertir el resultado en autoridad operativa.                                                                        | seguridad + autorización + integración + E2E + regresión   | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-006` a `AUTH-SIM-014`; `AUTH-SRV-015`; `AUTH-QA-019` |
+| `TREQ-AUTH-077` | Todo intento de simulación, permitido o denegado, deberá registrar actor y sesión reales, fuente del permiso, objetivo, alcance, justificación, denegaciones, reautenticación, versiones y razones estructuradas, minimizando secretos y datos sensibles.                                                                                                  | seguridad + auditoría + integración + regresión            | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-013`; `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`   |
+| `TREQ-AUTH-078` | El registro de elegibilidad deberá cubrir exactamente ocho decisiones de rol y siete clases adicionales de actor o principal, con dos roles `BASE_CANDIDATE`, seis roles `DEFAULT_DENY`, cero habilitaciones por jerarquía, cero principales técnicos elegibles y una decisión fail closed para cada condición incompleta, conflictiva o fuera de alcance. | contractual + estática + regresión                         | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-001`; `AUTH-QA-019`                                  |
 
 ---
 
@@ -786,9 +787,9 @@ Se incorporan `TREQ-AUTH-069` a `TREQ-AUTH-078` en el Registro Canónico de Requ
 - [x] Se distinguió al solicitante real del actor, rol y contexto simulados.
 - [x] Se definió la fórmula completa de elegibilidad.
 - [x] Se exigieron `viso.access` y el permiso exacto de simulación.
-- [x] Se materializaron nueve decisiones actuales de rol.
+- [x] Se materializaron ocho decisiones actuales de rol.
 - [x] Solo `propietario` y `gerente_general` quedaron como candidatos base por matriz.
-- [x] Siete roles permanecieron en `DEFAULT_DENY`.
+- [x] Seis roles permanecieron en `DEFAULT_DENY`.
 - [x] Se prohibió inferir permiso por jerarquía, cargo, pantalla, rol operativo o navegación.
 - [x] Se definieron grants individuales exactos sin crear ninguno.
 - [x] Se definió sesión humana personal obligatoria.
@@ -830,7 +831,7 @@ Se incorporan `TREQ-AUTH-069` a `TREQ-AUTH-078` en el Registro Canónico de Requ
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md`
 **Artefactos producidos:** `SIMULATABLE-ROLE-CONTRACT-001`, `SIMULATABLE-ROLE-REGISTER-001` y `SIMULATABLE-ROLE-PHYSICAL-RECONCILIATION-001`
-**Decisiones y contratos consumidos:** `AUTH-MOD-002` a `AUTH-MOD-006`, `AUTH-MOD-012`, matrices canónicas vigentes, `AUTH-SIM-001`, catálogo documental de roles base, catálogo documental de roles operativos y estado físico observado de `public.roles` y `public.operational_roles`
+**Decisiones y contratos consumidos:** `AUTH-MOD-002` a `AUTH-MOD-006`, `AUTH-MOD-012`, `AUTH-MOD-021`, matrices canónicas vigentes, `AUTH-SIM-001`, catálogo documental de roles base, catálogo documental de roles operativos y estado físico observado de `public.roles` y `public.operational_roles`
 **Cambios en código, Supabase, migraciones, RLS, RPC, configuración, datos, catálogos desplegados, permisos, turnos, sesiones o usuarios:** no autorizados
 
 ---
@@ -876,13 +877,13 @@ Cobertura materializada:
 
 | Resultado                                                           | Cantidad |
 | ------------------------------------------------------------------- | -------: |
-| Roles base canónicos con decisión explícita                         |        9 |
+| Roles base canónicos con decisión explícita                         |        8 |
 | Roles operativos canónicos con decisión explícita                   |       12 |
-| Objetivos canónicos simulables                                      |       21 |
+| Objetivos canónicos simulables                                      |       20 |
 | Objetivos canónicos disponibles en el catálogo físico observado     |       18 |
-| Objetivos canónicos pendientes de materialización física            |        3 |
+| Objetivos canónicos pendientes de materialización física            |        2 |
 | Identidades físicas legacy o deprecadas expresamente bloqueadas     |       10 |
-| Identidades tipadas únicas cubiertas por la unión canónica y física |       31 |
+| Identidades tipadas únicas cubiertas por la unión canónica y física |       30 |
 | Filas físicas observadas en los dos catálogos                       |       28 |
 | Códigos bare distintos en esas filas físicas                        |       27 |
 | Colisiones bare entre catálogos                                     |        1 |
@@ -910,6 +911,8 @@ La tarea conserva íntegramente que:
 - los datos reales siguen protegidos exclusivamente por los permisos reales del solicitante;
 - una simulación activa no puede iniciar otra simulación;
 - toda selección y resultado quedan auditados.
+
+Por precedencia documental, `AUTH-MOD-021` actualiza el catálogo base aplicable a esta tarea: existen ocho roles base canónicos y `trabajador_operativo` reemplaza la cobertura documental obsoleta que trataba `logistica` y `talento_humano` como roles base canónicos. La inspección física continúa mostrando seis de esos ocho roles; `supervisor` y `trabajador_operativo` permanecen bloqueados hasta su materialización versionada. Los nueve oficios base legacy observados continúan siendo exclusiones físicas y no cambian de clasificación.
 
 ---
 
@@ -1057,23 +1060,22 @@ Aceptar el rol objetivo solo permite construir una evaluación hipotética. No s
 
 #### 8. Roles base canónicos simulables
 
-Los nueve roles base actuales reciben decisión explícita:
+Los ocho roles base actuales reciben decisión explícita:
 
-| Identidad tipada               | Clase                  | Decisión canónica | Estado físico observado    | Reautenticación del objetivo | Regla                                                                                                       |
-| ------------------------------ | ---------------------- | ----------------- | -------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `BASE/propietario`             | `PRIVILEGED`           | `SIMULABLE`       | `AVAILABLE`                | `REQUIRED`                   | Vista de gobierno y capacidades reservadas; nunca produce wildcard ni bypass.                               |
-| `BASE/gerente_general`         | `PRIVILEGED`           | `SIMULABLE`       | `AVAILABLE`                | `REQUIRED`                   | Vista ejecutiva global según matriz exacta; no hereda capacidades de propietario.                           |
-| `BASE/gerente`                 | `ADMINISTRATIVE`       | `SIMULABLE`       | `AVAILABLE`                | `REQUIRED`                   | Se evalúa con cobertura administrativa explícita; multisede no equivale a global.                           |
-| `BASE/supervisor`              | `ADMINISTRATIVE`       | `SIMULABLE`       | `BLOCKED_NOT_MATERIALIZED` | `REQUIRED`                   | Es objetivo canónico, pero la inspección física no encontró su fila; runtime deniega hasta materialización. |
-| `BASE/auxiliar_administrativa` | `FUNCTIONAL`           | `SIMULABLE`       | `AVAILABLE`                | `CONDITIONAL`                | Solo matriz funcional exacta; no se convierte en autoridad gerencial ni operativa.                          |
-| `BASE/contador`                | `FUNCTIONAL_SENSITIVE` | `SIMULABLE`       | `AVAILABLE`                | `CONDITIONAL_SENSITIVE`      | La vista podrá enmascarar datos y exigir STRONG según permiso, recurso o tercero.                           |
-| `BASE/marketing`               | `FUNCTIONAL`           | `SIMULABLE`       | `AVAILABLE`                | `CONDITIONAL`                | Se limita a capacidades asignadas; no crea administración global.                                           |
-| `BASE/logistica`               | `FUNCTIONAL`           | `SIMULABLE`       | `BLOCKED_NOT_MATERIALIZED` | `CONDITIONAL`                | Es objetivo documental vigente; runtime deniega hasta existir código y matriz físicos exactos.              |
-| `BASE/talento_humano`          | `FUNCTIONAL_SENSITIVE` | `SIMULABLE`       | `BLOCKED_NOT_MATERIALIZED` | `CONDITIONAL_SENSITIVE`      | Es objetivo documental vigente; datos laborales sensibles siguen controlados por el solicitante real.       |
+| Identidad tipada               | Clase                  | Decisión canónica | Estado físico observado    | Reautenticación del objetivo | Regla                                                                                                                          |
+| ------------------------------ | ---------------------- | ----------------- | -------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `BASE/propietario`             | `PRIVILEGED`           | `SIMULABLE`       | `AVAILABLE`                | `REQUIRED`                   | Vista de gobierno y capacidades reservadas; nunca produce wildcard ni bypass.                                                  |
+| `BASE/gerente_general`         | `PRIVILEGED`           | `SIMULABLE`       | `AVAILABLE`                | `REQUIRED`                   | Vista ejecutiva global según matriz exacta; no hereda capacidades de propietario.                                              |
+| `BASE/gerente`                 | `ADMINISTRATIVE`       | `SIMULABLE`       | `AVAILABLE`                | `REQUIRED`                   | Se evalúa con cobertura administrativa explícita; multisede no equivale a global.                                              |
+| `BASE/supervisor`              | `ADMINISTRATIVE`       | `SIMULABLE`       | `BLOCKED_NOT_MATERIALIZED` | `REQUIRED`                   | Es objetivo canónico, pero la inspección física no encontró su fila; runtime deniega hasta materialización.                    |
+| `BASE/auxiliar_administrativa` | `FUNCTIONAL`           | `SIMULABLE`       | `AVAILABLE`                | `CONDITIONAL`                | Solo matriz funcional exacta; no se convierte en autoridad gerencial ni operativa.                                             |
+| `BASE/contador`                | `FUNCTIONAL_SENSITIVE` | `SIMULABLE`       | `AVAILABLE`                | `CONDITIONAL_SENSITIVE`      | La vista podrá enmascarar datos y exigir STRONG según permiso, recurso o tercero.                                              |
+| `BASE/marketing`               | `FUNCTIONAL`           | `SIMULABLE`       | `AVAILABLE`                | `CONDITIONAL`                | Se limita a capacidades asignadas; no crea administración global.                                                              |
+| `BASE/trabajador_operativo`    | `FUNCTIONAL`           | `SIMULABLE`       | `BLOCKED_NOT_MATERIALIZED` | `CONDITIONAL`                | Rol base mínimo no privilegiado; conserva cinco grants base y cero autoridad operativa; runtime deniega hasta materialización. |
 
 `REQUIRED` significa reautenticación fuerte obligatoria para seleccionar o inspeccionar ese objetivo administrativo o privilegiado. `CONDITIONAL` y `CONDITIONAL_SENSITIVE` se resuelven conforme al permiso, recurso, tercero, sensibilidad y detalle solicitado; ante duda se exige STRONG o se minimiza el resultado.
 
-Los tres roles pendientes de materialización no se sustituyen por otro código ni se crean mediante esta tarea.
+Los dos roles pendientes de materialización no se sustituyen por otro código ni se crean mediante esta tarea.
 
 ---
 
@@ -1447,13 +1449,13 @@ La auditoría no almacenará secretos, tokens, códigos de reautenticación, pay
 
 La inspección de solo lectura del estado desplegado produjo:
 
-| Catálogo físico                   | Filas activas observadas | Decisión de esta tarea                                                                    |
-| --------------------------------- | -----------------------: | ----------------------------------------------------------------------------------------- |
-| `public.roles`                    |                       15 | 6 objetivos base canónicos disponibles y 9 identidades base legacy bloqueadas.            |
-| `public.operational_roles`        |                       13 | 12 objetivos operativos canónicos disponibles y `propietario_admin` bloqueado.            |
-| Unión de filas tipadas            |                       28 | Todas reciben decisión explícita.                                                         |
-| Códigos bare distintos            |                       27 | `bodeguero` aparece en ambos catálogos y exige `role_kind`.                               |
-| Roles base canónicos no presentes |                        3 | `supervisor`, `logistica` y `talento_humano` permanecen bloqueados hasta materialización. |
+| Catálogo físico                   | Filas activas observadas | Decisión de esta tarea                                                             |
+| --------------------------------- | -----------------------: | ---------------------------------------------------------------------------------- |
+| `public.roles`                    |                       15 | 6 objetivos base canónicos disponibles y 9 identidades base legacy bloqueadas.     |
+| `public.operational_roles`        |                       13 | 12 objetivos operativos canónicos disponibles y `propietario_admin` bloqueado.     |
+| Unión de filas tipadas            |                       28 | Todas reciben decisión explícita.                                                  |
+| Códigos bare distintos            |                       27 | `bodeguero` aparece en ambos catálogos y exige `role_kind`.                        |
+| Roles base canónicos no presentes |                        2 | `supervisor` y `trabajador_operativo` permanecen bloqueados hasta materialización. |
 
 Esta evidencia no modifica el estado desplegado ni afirma que el contrato ya esté implementado. Solo evita que la definición documental ignore brechas físicas actuales.
 
@@ -1461,15 +1463,15 @@ Esta evidencia no modifica el estado desplegado ni afirma que el contrato ya est
 
 #### 24. Registro materializado consolidado
 
-El registro cubre 31 identidades tipadas únicas:
+El registro cubre 30 identidades tipadas únicas:
 
 | Grupo                                  | Cantidad | Distribución                                 |
 | -------------------------------------- | -------: | -------------------------------------------- |
-| Roles base canónicos                   |        9 | 6 `AVAILABLE`; 3 `BLOCKED_NOT_MATERIALIZED`. |
+| Roles base canónicos                   |        8 | 6 `AVAILABLE`; 2 `BLOCKED_NOT_MATERIALIZED`. |
 | Roles operativos canónicos             |       12 | 12 `AVAILABLE`.                              |
 | Roles base físicos legacy no canónicos |        9 | 9 `BLOCKED_LEGACY`.                          |
 | Rol operativo físico deprecado         |        1 | 1 `BLOCKED_DEPRECATED`.                      |
-| Total unión canónica y física          |       31 | 21 simulables canónicos; 10 no simulables.   |
+| Total unión canónica y física          |       30 | 20 simulables canónicos; 10 no simulables.   |
 
 Comprobaciones normativas del registro:
 
@@ -1545,7 +1547,7 @@ AUTH-SIM-002 no define:
 - la interfaz final;
 - la persistencia física;
 - migraciones de catálogos legacy;
-- creación de `supervisor`, `logistica` o `talento_humano` en Supabase;
+- creación de `supervisor` o `trabajador_operativo` en Supabase;
 - eliminación física de `propietario_admin`;
 - actualización física de matrices;
 - ejecución de simulaciones;
@@ -1559,7 +1561,7 @@ Estas responsabilidades permanecen en sus tareas canónicas. Ninguna podrá camb
 
 `AUTH-SIM-003` deberá definir la sede simulada conservando:
 
-1. las 21 identidades de rol objetivo aprobadas aquí;
+1. las 20 identidades de rol objetivo aprobadas aquí;
 2. la identidad tipada `role_kind + role_code`;
 3. que una sede no convierte un rol bloqueado en simulable;
 4. que la sede objetivo no puede exceder el alcance real del solicitante;
@@ -1580,11 +1582,11 @@ Esta tarea no anticipa la matriz de sedes objetivo.
 2. Rol base y rol operativo son identidades diferentes.
 3. Un código bare no es autoritativo.
 4. `bodeguero` exige desambiguación por catálogo.
-5. Existen nueve roles base canónicos objetivo.
+5. Existen ocho roles base canónicos objetivo.
 6. Existen doce roles operativos canónicos objetivo.
-7. Los 21 objetivos canónicos son simulables conceptualmente.
+7. Los 20 objetivos canónicos son simulables conceptualmente.
 8. Solo 18 están disponibles en el catálogo físico observado.
-9. Tres roles base canónicos permanecen bloqueados hasta materialización.
+9. Dos roles base canónicos permanecen bloqueados hasta materialización.
 10. Nueve roles base legacy permanecen bloqueados.
 11. `propietario_admin` permanece bloqueado y deprecado.
 12. Ningún alias legacy se resuelve automáticamente.
@@ -1615,18 +1617,18 @@ Esta tarea no anticipa la matriz de sedes objetivo.
 
 Se incorporan `TREQ-AUTH-079` a `TREQ-AUTH-088` en el Registro Canónico de Requisitos de Prueba.
 
-| ID              | Regla protegida                                                                                                                                                                                                                                            | Tipo                                                           | Prioridad | Momento de implementación                                               | Destino                                                        |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | --------- | ----------------------------------------------------------------------- | -------------------------------------------------------------- |
-| `TREQ-AUTH-079` | Toda referencia de rol objetivo deberá declarar `role_kind`, `role_code`, versión de catálogo y versión de matriz; un código bare, etiqueta visual, alias o valor enviado por cliente no podrá resolver una identidad simulable.                           | seguridad + contractual + integración + regresión              | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`                   |
-| `TREQ-AUTH-080` | El registro base deberá cubrir exactamente nueve roles canónicos simulables: seis disponibles físicamente y tres bloqueados hasta materialización, sin sustituir los ausentes por otros códigos.                                                           | contractual + base de datos + estática + regresión             | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-SIM-002`; `AUTH-DB-013`; `AUTH-QA-019`                   |
-| `TREQ-AUTH-081` | El registro operativo deberá cubrir exactamente doce roles canónicos simulables y exigir contexto hipotético completo para evaluar acciones; el rol aislado no podrá producir `would_allow`.                                                               | autorización + contexto + integración + E2E + regresión        | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-SIM-003` a `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019` |
-| `TREQ-AUTH-082` | Los nueve roles base legacy observados deberán permanecer bloqueados y no podrán convertirse automáticamente en roles operativos mediante alias, semejanza textual, área, aplicación, empleado o fallback.                                                 | seguridad + migración + contractual + regresión                | crítica   | Paquete que materialice el contrato de simulación y transición de roles | `AUTH-DB-013`; tareas de transición de roles; `AUTH-QA-019`    |
-| `TREQ-AUTH-083` | `OPERATIONAL/propietario_admin`, todo rol deprecado, inactivo, retirado, desconocido o futuro no aprobado deberá fallar cerrado y no podrá recibir permisos ni autoridad simulada.                                                                         | seguridad + autorización + base de datos + regresión           | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`                   |
-| `TREQ-AUTH-084` | Las colisiones entre catálogos deberán resolverse por identidad tipada; `BASE/bodeguero` y `OPERATIONAL/bodeguero` producirán decisiones distintas y una referencia ambigua deberá denegarse.                                                              | contractual + seguridad + integración + regresión              | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-SRV-015`; contratos compartidos; `AUTH-QA-019`           |
-| `TREQ-AUTH-085` | Seleccionar un rol simulable no podrá modificar actor, sesión, rol real, permisos, RLS, asignaciones ni datos, ni conceder acceso a información que el solicitante real no pueda consultar.                                                                | seguridad + autorización + RLS + integración + E2E + regresión | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019`                  |
-| `TREQ-AUTH-086` | La vista de matriz o navegación deberá separarse de la evaluación de una acción concreta; cuando falten componentes obligatorios, el resultado será `indeterminate` con razón estructurada y nunca `would_allow`.                                          | contractual + contexto + interfaz + E2E + regresión            | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-SIM-003` a `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019` |
-| `TREQ-AUTH-087` | Los objetivos privilegiados, administrativos, de coordinación o sensibles deberán exigir cobertura real suficiente, minimización y reautenticación fuerte conforme al escenario; STRONG nunca ampliará alcance ni autoridad.                               | seguridad + autenticación + autorización + E2E + regresión     | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-SIM-008`; `AUTH-SRV-015`; `AUTH-QA-019`                  |
-| `TREQ-AUTH-088` | El registro consolidado deberá cubrir exactamente 31 identidades tipadas: 21 objetivos canónicos simulables y 10 exclusiones físicas no canónicas, conciliando 18 disponibles, tres pendientes, nueve legacy y una deprecada, sin faltantes ni duplicados. | contractual + estática + base de datos + regresión             | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-SIM-002`; `AUTH-DB-013`; `AUTH-QA-019`                   |
+| ID              | Regla protegida                                                                                                                                                                                                                                           | Tipo                                                           | Prioridad | Momento de implementación                                               | Destino                                                        |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | --------- | ----------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `TREQ-AUTH-079` | Toda referencia de rol objetivo deberá declarar `role_kind`, `role_code`, versión de catálogo y versión de matriz; un código bare, etiqueta visual, alias o valor enviado por cliente no podrá resolver una identidad simulable.                          | seguridad + contractual + integración + regresión              | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`                   |
+| `TREQ-AUTH-080` | El registro base deberá cubrir exactamente ocho roles canónicos simulables: seis disponibles físicamente y dos bloqueados hasta materialización, sin sustituir los ausentes por otros códigos.                                                            | contractual + base de datos + estática + regresión             | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-SIM-002`; `AUTH-DB-013`; `AUTH-QA-019`                   |
+| `TREQ-AUTH-081` | El registro operativo deberá cubrir exactamente doce roles canónicos simulables y exigir contexto hipotético completo para evaluar acciones; el rol aislado no podrá producir `would_allow`.                                                              | autorización + contexto + integración + E2E + regresión        | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-SIM-003` a `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019` |
+| `TREQ-AUTH-082` | Los nueve roles base legacy observados deberán permanecer bloqueados y no podrán convertirse automáticamente en roles operativos mediante alias, semejanza textual, área, aplicación, empleado o fallback.                                                | seguridad + migración + contractual + regresión                | crítica   | Paquete que materialice el contrato de simulación y transición de roles | `AUTH-DB-013`; tareas de transición de roles; `AUTH-QA-019`    |
+| `TREQ-AUTH-083` | `OPERATIONAL/propietario_admin`, todo rol deprecado, inactivo, retirado, desconocido o futuro no aprobado deberá fallar cerrado y no podrá recibir permisos ni autoridad simulada.                                                                        | seguridad + autorización + base de datos + regresión           | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`                   |
+| `TREQ-AUTH-084` | Las colisiones entre catálogos deberán resolverse por identidad tipada; `BASE/bodeguero` y `OPERATIONAL/bodeguero` producirán decisiones distintas y una referencia ambigua deberá denegarse.                                                             | contractual + seguridad + integración + regresión              | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-SRV-015`; contratos compartidos; `AUTH-QA-019`           |
+| `TREQ-AUTH-085` | Seleccionar un rol simulable no podrá modificar actor, sesión, rol real, permisos, RLS, asignaciones ni datos, ni conceder acceso a información que el solicitante real no pueda consultar.                                                               | seguridad + autorización + RLS + integración + E2E + regresión | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019`                  |
+| `TREQ-AUTH-086` | La vista de matriz o navegación deberá separarse de la evaluación de una acción concreta; cuando falten componentes obligatorios, el resultado será `indeterminate` con razón estructurada y nunca `would_allow`.                                         | contractual + contexto + interfaz + E2E + regresión            | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-SIM-003` a `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019` |
+| `TREQ-AUTH-087` | Los objetivos privilegiados, administrativos, de coordinación o sensibles deberán exigir cobertura real suficiente, minimización y reautenticación fuerte conforme al escenario; STRONG nunca ampliará alcance ni autoridad.                              | seguridad + autenticación + autorización + E2E + regresión     | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-SIM-008`; `AUTH-SRV-015`; `AUTH-QA-019`                  |
+| `TREQ-AUTH-088` | El registro consolidado deberá cubrir exactamente 30 identidades tipadas: 20 objetivos canónicos simulables y 10 exclusiones físicas no canónicas, conciliando 18 disponibles, dos pendientes, nueve legacy y una deprecada, sin faltantes ni duplicados. | contractual + estática + base de datos + regresión             | crítica   | Paquete que materialice el contrato de simulación                       | `AUTH-SIM-002`; `AUTH-DB-013`; `AUTH-QA-019`                   |
 
 ---
 
@@ -1635,13 +1637,13 @@ Se incorporan `TREQ-AUTH-079` a `TREQ-AUTH-088` en el Registro Canónico de Requ
 - [x] Se distinguió al solicitante real del rol objetivo.
 - [x] Se definió una identidad tipada obligatoria.
 - [x] Se exigieron versiones de catálogo y matriz.
-- [x] Se materializaron nueve decisiones de roles base canónicos.
+- [x] Se materializaron ocho decisiones de roles base canónicos.
 - [x] Se materializaron doce decisiones de roles operativos canónicos.
-- [x] Se aprobaron 21 objetivos canónicos simulables.
-- [x] Se distinguieron 18 objetivos disponibles y tres pendientes de materialización.
+- [x] Se aprobaron 20 objetivos canónicos simulables.
+- [x] Se distinguieron 18 objetivos disponibles y dos pendientes de materialización.
 - [x] Se materializaron nueve exclusiones de roles base legacy.
 - [x] Se bloqueó `OPERATIONAL/propietario_admin`.
-- [x] Se cubrieron 31 identidades tipadas únicas.
+- [x] Se cubrieron 30 identidades tipadas únicas.
 - [x] Se prohibieron aliases y conversiones automáticas.
 - [x] Se resolvió la colisión `bodeguero` mediante `role_kind`.
 - [x] Se separó vista de rol de evaluación de acción.
