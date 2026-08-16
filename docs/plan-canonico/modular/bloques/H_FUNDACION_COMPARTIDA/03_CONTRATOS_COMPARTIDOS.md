@@ -1766,7 +1766,735 @@ SHELL-CON-003 — Centralizar códigos de permisos
 SHELL-CON-004 — Centralizar roles base
 
 
-### [ ] SHELL-CON-004 — Centralizar roles base
+### ✅ SHELL-CON-004 — Centralizar roles base
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CON-003 — Centralizar códigos de permisos
+**Tarea siguiente:** SHELL-CON-005 — Centralizar roles operativos
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 1
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-004` centraliza la identidad contractual de los roles base de Vento OS y materializa documentalmente el sucesor lógico `vento.authorization.base-role-grants@1.1.0`, incorporando `trabajador_operativo` sin reabrir ni mutar el snapshot aprobado `1.0.0`.
+
+La tarea fija simultáneamente:
+
+1. el conjunto exacto de roles base canónicos;
+2. la unión derivada `BaseRoleCode`;
+3. la separación entre rol base, rol operativo, rol de navegación y rol simulado;
+4. la exclusión de oficios base legacy y códigos documentales ya desplazados;
+5. la matriz mínima exacta de `trabajador_operativo`;
+6. el manifiesto lógico del dataset sucesor `1.1.0`;
+7. las cinco filas nuevas y su serialización determinista;
+8. el hash contractual del dataset sucesor;
+9. las reglas de validación, compatibilidad, adopción y rollback;
+10. los destinos exactos de materialización física y migración.
+
+La regla central es:
+
+```text
+CATÁLOGO LÓGICO DE ROLES BASE 1.1.0
+→ BaseRoleCode derivado
+→ dataset versionado de concesiones base
+→ AccessContext / evaluadores / consumidores
+
+NOMBRE DE ROL
+≠ permiso
+≠ autoridad final
+≠ rol operativo
+≠ fallback
+```
+
+---
+
+#### 2. Resultado canónico
+
+El catálogo lógico objetivo de roles base pasa de siete a ocho identidades canónicas:
+
+```text
+propietario
+gerente_general
+gerente
+supervisor
+auxiliar_administrativa
+contador
+marketing
+trabajador_operativo
+```
+
+Conciliación:
+
+| Dimensión                                | Resultado |
+| ---------------------------------------- | --------: |
+| Roles base canónicos objetivo            |     **8** |
+| Roles existentes cuyo significado cambia |     **0** |
+| Roles nuevos                             |     **1** |
+| Roles retirados por esta tarea           |     **0** |
+| Oficios base legacy incorporados         |     **0** |
+| Permisos nuevos                          |     **0** |
+| Permisos retirados                       |     **0** |
+| Concesiones nuevas en matriz base        |     **5** |
+| Componentes base nuevos                  |     **0** |
+
+`trabajador_operativo` es una adición. No redefine el significado de `propietario`, `gerente_general`, `gerente`, `supervisor`, `auxiliar_administrativa`, `contador` ni `marketing`.
+
+---
+
+#### 3. Fuentes y precedencia
+
+Esta tarea conserva sin reinterpretar las siguientes fuentes aprobadas:
+
+| Fuente                                              | Uso vinculante                                                                                        |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`        | continuidad, granularidad, trazabilidad y requisitos de prueba                                        |
+| `docs/plan-canonico/modular/delivery-contract.json` | estructura del artefacto y del registro 04A                                                           |
+| `docs/plan-canonico/modular/active-sequence.json`   | continuidad vigente desde `SHELL-CON-003` hacia `SHELL-CON-004`                                       |
+| `SHELL-CON-001`                                     | identidad y frontera de `@vento/contracts`                                                            |
+| `SHELL-CON-002`                                     | aplicaciones canónicas y generación desde fuente única                                                |
+| `SHELL-CON-003`                                     | `PermissionKey`, catálogo `vento.authorization@1.0.0` y prohibición de strings locales como autoridad |
+| `AUTH-MOD-001..020` / `ADR-AUTH-001`                | separación entre identidad, rol base, rol operativo, contexto y autorización                          |
+| `AUTH-MOD-021`                                      | octavo rol base, cinco concesiones, versionado 1.1.0 y tratamiento del legado                         |
+| `AUTH-RBAC-001..007`                                | matrices base de los siete roles existentes                                                           |
+| `AUTH-RBAC-024`                                     | snapshot inmutable `base-role-grants@1.0.0`, esquema, serialización y hash                            |
+| `AUTH-CAT-024`                                      | catálogo de 140 permisos `vento.authorization@1.0.0` y huella contractual                             |
+| `SHELL-AUD-009`                                     | necesidad de `BaseRoleCode` separado de roles operativos, navegación y simulación                     |
+| `SHELL-AUD-010`                                     | disposición `GENERAR` para códigos y tipos de rol                                                     |
+| Registro Canónico de Requisitos de Prueba           | cobertura vigente de autorización, contratos, compatibilidad y CI                                     |
+
+Precedencia específica:
+
+```text
+AUTH-RBAC-024
+→ conserva inmutable 1.0.0
+
+AUTH-MOD-021
+→ introduce decisión aditiva posterior
+→ define 1.1.0 como sucesor lógico
+
+SHELL-CON-004
+→ centraliza identidad
+→ cierra serialización exacta del delta
+→ calcula hash de 1.1.0
+→ no muta 1.0.0
+```
+
+La existencia de una cadena en código, una fila legacy o una lista de interfaz no convierte un valor en `BaseRoleCode`.
+
+---
+
+#### 4. Línea base verificable
+
+El estado vigente confirma:
+
+| Elemento                                             | Estado                                                   |
+| ---------------------------------------------------- | -------------------------------------------------------- |
+| `packages/contracts`                                 | no materializado físicamente                             |
+| `packages/os-context`                                | único package presente bajo `packages/`                  |
+| `@vento/contracts/authorization`                     | definido documentalmente, no publicado físicamente       |
+| `BaseRoleCode` compartido y consumido                | no materializado                                         |
+| listas de roles locales / `ROLE_OPTIONS`             | legacy activo en consumidores auditados                  |
+| roles base y operativos                              | todavía representados como strings en varias superficies |
+| snapshot base `1.0.0`                                | aprobado, 499 registros, hash reproducible               |
+| `trabajador_operativo` en catálogo lógico            | aprobado por `AUTH-MOD-021`                              |
+| `trabajador_operativo` en catálogo físico desplegado | pendiente de materialización                             |
+| cambios físicos autorizados por esta tarea           | ninguno                                                  |
+
+La tarea resuelve el contrato. No crea todavía package, archivo de catálogo, tipos generados, migración, fila de Supabase ni adopción por consumidores.
+
+---
+
+#### 5. Identidad contractual de rol base
+
+Un rol base representa una responsabilidad laboral permanente y una plantilla de capacidades base potenciales.
+
+```text
+ROL BASE
+→ responsabilidad permanente
+→ puede aportar concesiones base explícitas
+→ no constituye autorización final
+```
+
+`BaseRoleCode` no representa:
+
+- identidad laboral;
+- cargo contractual completo;
+- oficio operativo del turno;
+- sede;
+- área;
+- aplicación;
+- permiso;
+- navegación;
+- simulación;
+- nivel jerárquico ejecutable;
+- bypass.
+
+Invariantes:
+
+1. un empleado activo tiene exactamente un rol base vigente;
+2. un rol base no crea turno ni check-in;
+3. un rol base no crea rol operativo;
+4. un rol base no amplía sedes o áreas por su nombre;
+5. toda capacidad requiere permiso exacto, modalidad, contexto, recurso, alcance y ausencia de denegaciones aplicables;
+6. ausencia de concesión continúa produciendo `DEFAULT_DENY`.
+
+---
+
+#### 6. Catálogo exacto de ocho roles
+
+| Orden contractual | `role_code`               | Clasificación permanente           | Concesiones directas en `1.1.0` | Componentes base en `1.1.0` | Total lógico |
+| ----------------: | ------------------------- | ---------------------------------- | ------------------------------: | --------------------------: | -----------: |
+|                 1 | `propietario`             | Gobierno organizacional            |                             109 |                          12 |          121 |
+|                 2 | `gerente_general`         | Gobierno organizacional            |                             107 |                          12 |          119 |
+|                 3 | `gerente`                 | Administración territorial         |                              81 |                          12 |           93 |
+|                 4 | `supervisor`              | Administración territorial         |                              58 |                           0 |           58 |
+|                 5 | `auxiliar_administrativa` | Función permanente especializada   |                              47 |                           0 |           47 |
+|                 6 | `contador`                | Función permanente especializada   |                              45 |                           0 |           45 |
+|                 7 | `marketing`               | Función permanente especializada   |                              16 |                           0 |           16 |
+|                 8 | `trabajador_operativo`    | Fuerza laboral puramente operativa |                               5 |                           0 |            5 |
+|         **Total** | —                         | —                                  |                         **468** |                      **36** |      **504** |
+
+No existe herencia entre estos roles.
+
+```text
+menos permisos
+≠ menor identidad
+≠ menor trazabilidad
+```
+
+---
+
+#### 7. Contrato derivado `BaseRoleCode`
+
+La proyección TypeScript deberá representar exactamente:
+
+```text
+type BaseRoleCode =
+  | "propietario"
+  | "gerente_general"
+  | "gerente"
+  | "supervisor"
+  | "auxiliar_administrativa"
+  | "contador"
+  | "marketing"
+  | "trabajador_operativo";
+```
+
+Reglas:
+
+1. la unión es derivada del catálogo lógico versionado, no una lista mantenida manualmente;
+2. un `string` externo solo se convierte en `BaseRoleCode` después de validación exacta contra la versión aplicable;
+3. mayúsculas, espacios, traducciones, labels o semejanza textual no crean equivalencia;
+4. un valor desconocido falla cerrado;
+5. un código legacy no se transforma silenciosamente;
+6. los consumidores no agregan miembros localmente;
+7. una versión nueva del catálogo deberá producir de forma determinista la unión derivada correspondiente.
+
+---
+
+#### 8. Separación obligatoria de namespaces
+
+Las siguientes identidades permanecen distintas:
+
+```text
+BaseRoleCode
+≠ OperationalRoleCode
+≠ NavigationRoleCode
+≠ SimulationRoleCode
+```
+
+Un valor textual compartido no permite mezclar catálogos.
+
+Caso normativo ya conocido:
+
+```text
+BASE/bodeguero
+≠
+OPERATIONAL/bodeguero
+```
+
+El primero corresponde a una asignación base legacy no canónica; el segundo puede identificar un rol operativo válido cuando el contexto operativo lo permite.
+
+Ningún parser podrá resolver una identidad de rol sin conocer su catálogo o `role_kind` cuando exista posibilidad de colisión.
+
+---
+
+#### 9. Códigos excluidos del catálogo base
+
+Los nueve oficios base legacy permanecen fuera de `BaseRoleCode`:
+
+```text
+barista
+bodeguero
+cajero
+cocinero
+conductor
+mesero
+panadero
+pastelero
+repostero
+```
+
+También permanecen fuera del catálogo objetivo de ocho roles los códigos documentales `logistica` y `talento_humano` que no forman parte de la decisión posterior de `AUTH-MOD-021`.
+
+Reglas:
+
+1. no se crea alias automático hacia `trabajador_operativo`;
+2. no se infiere rol base desde oficio histórico;
+3. no se copia la matriz legacy al nuevo rol;
+4. no se deriva rol operativo por semejanza textual;
+5. la migración se decide empleado por empleado;
+6. un código no canónico no obtiene permisos por aparecer en datos históricos;
+7. el valor anterior deberá conservarse como evidencia durante la futura migración.
+
+---
+
+#### 10. Relación con el catálogo de permisos
+
+La introducción del octavo rol no modifica:
+
+```text
+catalog_id = vento.authorization
+catalog_version = 1.0.0
+active_permission_count = 140
+```
+
+No se crea ninguna clave de permiso nueva.
+
+La relación es:
+
+```text
+BaseRoleCode
++
+PermissionKey activa
++
+fila exacta en dataset de concesiones
+→ candidato de allow base
+```
+
+No:
+
+```text
+BaseRoleCode
+→ todas las PermissionKey de una aplicación
+```
+
+Tampoco:
+
+```text
+prefijo parecido
+→ permiso implícito
+```
+
+---
+
+#### 11. Matriz mínima exacta de `trabajador_operativo`
+
+`trabajador_operativo` recibe exactamente cinco concesiones base directas:
+
+| `permission_key`                            | Modalidad   | `grant_type` lógico | Alcance  | Regla                                                                                              |
+| ------------------------------------------- | ----------- | ------------------- | -------- | -------------------------------------------------------------------------------------------------- |
+| `shell.access`                              | `BASE_ONLY` | `DIRECT_BASE`       | `NT-APP` | entrada al hub laboral; no concede otras aplicaciones ni capacidades internas                      |
+| `anima.access`                              | `BASE_ONLY` | `DIRECT_BASE`       | `NT-APP` | entrada a ANIMA antes del turno; no administra trabajadores ni turnos y no crea check-in           |
+| `anima.workforce.employee_documents.view`   | `BASE_ONLY` | `DIRECT_BASE`       | `OWN`    | únicamente documentos propios autorizados                                                          |
+| `anima.workforce.employee_documents.upload` | `BASE_ONLY` | `DIRECT_BASE`       | `OWN`    | únicamente documentos propios de tipos habilitados para autoservicio y con controles de integridad |
+| `anima.workforce.employee_photos.upload`    | `BASE_ONLY` | `DIRECT_BASE`       | `OWN`    | únicamente fotografía propia bajo el flujo aprobado                                                |
+
+Resultado sobre el catálogo de 140 permisos:
+
+```text
+5 filas presentes
+→ candidatos de allow base
+
+135 filas ausentes
+→ DEFAULT_DENY
+
+0 OPERATIONAL_ONLY
+0 BASE_COMPONENT
+```
+
+El rol no recibe por defecto capacidades de NEXO, FOGO, ORIGO, PULSO, VISO, NUMERA, AURA o PASS ni capacidades administrativas de ANIMA.
+
+---
+
+#### 12. Snapshot `1.0.0` preservado
+
+El dataset anterior permanece inmutable:
+
+```text
+vento.authorization.base-role-grants@1.0.0
+record_count = 499
+role_count = 7
+direct_base_count = 463
+base_component_count = 36
+dataset_hash = sha256:bcea5460dfea42ecd2491a550bfe511478faa5403d766166c9e731cb499214e1
+```
+
+La serialización canónica publicada por `AUTH-RBAC-024` reproduce exactamente esa huella.
+
+`SHELL-CON-004` no edita una línea de `1.0.0`.
+
+---
+
+#### 13. Manifiesto exacto del sucesor `1.1.0`
+
+El manifiesto lógico de `vento.authorization.base-role-grants@1.1.0` será:
+
+```json
+{"dataset_id":"vento.authorization.base-role-grants","dataset_version":"1.1.0","dataset_schema_version":"1.0.0","catalog_id":"vento.authorization","catalog_version":"1.0.0","catalog_schema_version":"1.0.0","contract_release_hash":"sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe","record_count":504,"role_count":8,"direct_base_count":468,"base_component_count":36,"effect":"ALLOW_ONLY"}
+```
+
+El esquema del dataset permanece `1.0.0` porque no cambia la forma de sus registros; cambia el contenido versionado mediante una adición compatible.
+
+---
+
+#### 14. Cinco registros nuevos serializados
+
+Las cinco filas nuevas son exactamente:
+
+```jsonl
+{"grant_id":"base-role-grant:trabajador_operativo:anima.access","role_code":"trabajador_operativo","permission_key":"anima.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a recursos ni amplía las capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. Permite abrir ANIMA antes del turno; no administra trabajadores ni turnos y no concede check-in.","source_task":"AUTH-MOD-021"}
+{"grant_id":"base-role-grant:trabajador_operativo:anima.workforce.employee_documents.upload","role_code":"trabajador_operativo","permission_key":"anima.workforce.employee_documents.upload","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"OWN — únicamente recursos cuyo target_employee_id coincide con actor_employee_id.","condition_expression":"Carril base. Solo tipos documentales de autoservicio para el propio actor, con validación de formato, tamaño, hash y destino y trazabilidad de creación; no aprueba, valida ni elimina documentos.","source_task":"AUTH-MOD-021"}
+{"grant_id":"base-role-grant:trabajador_operativo:anima.workforce.employee_documents.view","role_code":"trabajador_operativo","permission_key":"anima.workforce.employee_documents.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"OWN — únicamente recursos cuyo target_employee_id coincide con actor_employee_id.","condition_expression":"Carril base. Solo documentos propios cuya retención, sensibilidad y visibilidad permitan mostrarlos al empleado.","source_task":"AUTH-MOD-021"}
+{"grant_id":"base-role-grant:trabajador_operativo:anima.workforce.employee_photos.upload","role_code":"trabajador_operativo","permission_key":"anima.workforce.employee_photos.upload","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"OWN — únicamente la fotografía laboral del propio actor.","condition_expression":"Carril base. Solo fotografía propia con formato y tamaño aprobados, flujo de revisión cuando corresponda y trazabilidad del reemplazo; no concede acceso a fotografías de terceros.","source_task":"AUTH-MOD-021"}
+{"grant_id":"base-role-grant:trabajador_operativo:shell.access","role_code":"trabajador_operativo","permission_key":"shell.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a recursos ni amplía las capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. Permite ingresar al hub laboral; no concede acceso a otras aplicaciones ni capacidades internas.","source_task":"AUTH-MOD-021"}
+```
+
+El orden anterior corresponde a `permission_key ASC` dentro de `role_code = trabajador_operativo`.
+
+---
+
+#### 15. Derivación determinista de `1.1.0`
+
+El sucesor se deriva exclusivamente así:
+
+```text
+payload exacto de 1.0.0
++
+validación de hash bcea5460...
++
+actualización de los campos del manifiesto definidos en la sección 13
++
+cinco registros exactos de la sección 14
++
+orden role_code ASC, permission_key ASC
++
+serialización de AUTH-RBAC-024
+=
+payload 1.1.0
+```
+
+Se mantienen las reglas de serialización:
+
+- UTF-8 sin BOM;
+- LF;
+- manifiesto JSON compacto en la primera línea;
+- registros JSON compactos;
+- campos de registro en el mismo orden del schema `1.0.0`;
+- orden `role_code ASC`, `permission_key ASC`;
+- sin espacios finales;
+- un único LF final;
+- SHA-256 sobre todos los bytes;
+- estado de aprobación y timestamp fuera del payload.
+
+---
+
+#### 16. Hash contractual de `1.1.0`
+
+El resultado determinista es:
+
+```text
+dataset_hash = sha256:5fcde3858d5fc6ba1c210987962e32b3e2d535dc286b225b1ddb6ba4b0bb06d0
+```
+
+La huella corresponde a:
+
+```text
+504 registros
+8 roles
+468 DIRECT_BASE
+36 BASE_COMPONENT
+0 OPERATIONAL_ONLY
+0 DENY
+```
+
+Cualquier cambio en una de las cinco filas, en el manifiesto, en un registro heredado o en el orden/serialización deberá producir una versión distinta y una huella distinta.
+
+---
+
+#### 17. Conciliación cuantitativa de `1.1.0`
+
+##### Por modalidad
+
+| Modalidad              | Registros |
+| ---------------------- | --------: |
+| `BASE_ONLY`            |   **256** |
+| `BASE_OR_OPERATIONAL`  |   **212** |
+| `BASE_AND_OPERATIONAL` |    **36** |
+| `OPERATIONAL_ONLY`     |     **0** |
+| **Total**              |   **504** |
+
+##### Por aplicación
+
+| Aplicación | Registros base |
+| ---------- | -------------: |
+| `shell`    |          **8** |
+| `anima`    |         **52** |
+| `aura`     |          **3** |
+| `fogo`     |         **19** |
+| `nexo`     |        **251** |
+| `numera`   |         **27** |
+| `origo`    |         **31** |
+| `pass`     |          **2** |
+| `pulso`    |         **18** |
+| `viso`     |         **93** |
+| **Total**  |        **504** |
+
+Conciliación del delta:
+
+```text
+1 shell.access
++
+4 anima.*
+=
+5 registros nuevos
+```
+
+---
+
+#### 18. Validaciones contractuales obligatorias del dataset
+
+La futura materialización deberá comprobar como mínimo:
+
+1. `record_count = 504`;
+2. `role_count = 8`;
+3. 504 pares únicos `role_code + permission_key`;
+4. 468 `DIRECT_BASE`;
+5. 36 `BASE_COMPONENT`;
+6. 256 `BASE_ONLY`;
+7. 212 `BASE_OR_OPERATIONAL`;
+8. 36 `BASE_AND_OPERATIONAL`;
+9. 0 `OPERATIONAL_ONLY`;
+10. 0 `DENY`;
+11. exactamente cinco filas para `trabajador_operativo`;
+12. las cinco filas son las cinco claves aprobadas y ninguna otra;
+13. las 135 claves restantes están ausentes para ese rol;
+14. ninguna fila contiene un oficio base legacy;
+15. `logistica` y `talento_humano` no aparecen como `role_code` del catálogo objetivo;
+16. todas las `permission_key` existen entre las 140 claves activas;
+17. todo `BASE_COMPONENT` sigue correspondiendo a `BASE_AND_OPERATIONAL`;
+18. no existen wildcards;
+19. no se crea alias hacia `trabajador_operativo`;
+20. el hash es `sha256:5fcde3858d5fc6ba1c210987962e32b3e2d535dc286b225b1ddb6ba4b0bb06d0`.
+
+---
+
+#### 19. Integración con `AccessContext`
+
+`AccessContext@1.x` conserva su forma.
+
+Cuando la materialización física y la asignación explícita existan, el nodo base podrá representar:
+
+```text
+role_code = trabajador_operativo
+role_status = ACTIVE
+assignment_source = CANONICAL_EMPLOYEE_BASE_ROLE_ASSIGNMENT
+```
+
+Reglas:
+
+1. `employee.base_role_code` y `base_role.role_code` deberán coincidir;
+2. el nodo no transporta la matriz completa;
+3. el evaluador resuelve el snapshot versionado de concesiones;
+4. un código legacy no se proyecta como `trabajador_operativo` por inferencia;
+5. la ausencia de una fila produce `base_allow_not_found` o el diagnóstico equivalente aprobado por el evaluador;
+6. permisos `OPERATIONAL_ONLY` no obtienen allow desde este rol base;
+7. un turno válido puede aportar autoridad operativa únicamente por el carril operativo correspondiente.
+
+---
+
+#### 20. Validación de entradas y consumidores
+
+Toda frontera que reciba un rol base como texto deberá aplicar:
+
+```text
+valor externo
+→ resolver versión de catálogo
+→ validar pertenencia exacta
+→ BaseRoleCode o rechazo
+```
+
+Queda prohibido:
+
+- aceptar cualquier string no vacío;
+- usar labels humanos como código;
+- normalizar un oficio legacy hacia otro rol;
+- usar `ROLE_OPTIONS` de interfaz como autoridad de servidor;
+- derivar rol base desde `navigation_role`;
+- derivar rol base desde rol operativo;
+- agregar miembros localmente;
+- permitir un valor desconocido como fallback.
+
+Los consumidores se migrarán de forma gradual y reversible mediante las tareas `SHELL-AUTH-*`, `SHELL-CTX-*` y `SHELL-MIG-*` propietarias, sin exigir un corte simultáneo de todos los repositorios.
+
+---
+
+#### 21. Versionado y compatibilidad
+
+La evolución aprobada es aditiva:
+
+```text
+catálogo lógico de roles base 1.0.0
+→ 1.1.0
+
+dataset base-role-grants 1.0.0
+→ 1.1.0
+
+catálogo de permisos
+→ permanece vento.authorization@1.0.0
+```
+
+Reglas:
+
+1. `1.0.0` permanece disponible e inmutable mientras exista un consumidor soportado que lo requiera;
+2. ningún consumidor de `1.0.0` recibe `trabajador_operativo` por sorpresa;
+3. un consumidor que adopte `1.1.0` deberá aceptar el octavo código y las cinco filas exactas;
+4. no se muta una versión publicada;
+5. rollback selecciona una combinación soportada y no reescribe bytes históricos;
+6. el cambio de catálogo lógico y el cambio de dataset se coordinan sin alterar `PermissionKey`.
+
+---
+
+#### 22. Estado de materialización física
+
+En el corte vigente:
+
+```text
+SHELL-CON-004
+→ contrato completo
+→ identidad de 8 roles cerrada
+→ BaseRoleCode cerrado
+→ dataset 1.1.0 definido y hasheado
+→ sin archivo físico publicado
+→ sin package @vento/contracts materializado
+→ sin migración
+→ sin cambio de Supabase
+→ sin cambio de empleados
+→ sin adopción de consumidores
+```
+
+`trabajador_operativo` no se utilizará como rol base físico válido hasta completar la materialización, migración y validación correspondientes.
+
+---
+
+#### 23. Hallazgos y destinos exactos
+
+| Hallazgo                                                               | Estado                       | Destino exacto / condición de salida                                                         |
+| ---------------------------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------- |
+| `@vento/contracts` no existe físicamente                               | esperado por fase            | `E5-GATE-008::<package_id>` y `SHELL-CI-020`                                                 |
+| `BaseRoleCode` compartido no está materializado                        | pendiente de implementación  | `SHELL-AUTH-001`; `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-MIG-001` a `SHELL-MIG-008`      |
+| `trabajador_operativo` no está publicado físicamente                   | pendiente de materialización | `AUTH-DB-020`; `AUTH-DB-026`; `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CTX-001`                  |
+| empleados con oficios base legacy requieren reconciliación individual  | pendiente de migración       | `SUPA-TRANS-005`; `AUTH-DB-020`; retiro controlado en `AUTH-DB-030`                          |
+| consumers mantienen roles como strings y listas locales                | legacy activo                | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-MIG-001` a `SHELL-MIG-008`                        |
+| `AccessContext@1.x` debe resolver el nuevo código sin cambiar de forma | pendiente de implementación  | `SHELL-CON-007`; `SHELL-CTX-001`; `AUTH-DB-033`                                              |
+| las capacidades personales sin PermissionKey atómica siguen ausentes   | brecha preservada            | `GAP-CTRL-001`; `GAP-CTRL-003`; `GAP-CTRL-004`; `GAP-CTRL-006`; `AUTH-UI-030`; `AUTH-UI-031` |
+| dataset `1.1.0` requiere certificación física de hash y contenido      | pendiente de implementación  | `AUTH-DB-027`; `AUTH-QA-030`; `SHELL-CI-017`; `SHELL-CI-018`                                 |
+| roles operativos todavía no están centralizados por esta secuencia     | reservado                    | `SHELL-CON-005`                                                                              |
+
+No se crea ningún identificador de tarea nuevo. Todos los pendientes conservan propietario documental existente.
+
+---
+
+#### 24. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se crea `TREQ-SHELL-040` para proteger la centralización exacta de los ocho roles base, la ausencia de aliases/fallbacks legacy y la integridad determinista de `vento.authorization.base-role-grants@1.1.0`.
+
+| ID               | Regla protegida                                                                                                                                                                                                                                                                                                                                                       | Tipo                                                            | Prioridad | Momento de implementación                                                             | Destino                                                                           |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `TREQ-SHELL-040` | La fuente compartida deberá exponer exactamente los ocho `BaseRoleCode`; `trabajador_operativo` deberá aportar exclusivamente cinco concesiones `BASE_ONLY`, el dataset `1.1.0` deberá contener 504 registros —468 directos y 36 componentes— y reproducir la huella aprobada, sin oficios base legacy, aliases, fallbacks ni cambios en `vento.authorization@1.0.0`. | contractual + autorización + estática + integración + regresión | crítica   | materialización de `@vento/contracts`, SDK y dataset; certificación antes de adopción | `SHELL-CON-004`; `SHELL-AUTH-001`; `SHELL-AUTH-004`; `AUTH-DB-027`; `AUTH-QA-030` |
+
+---
+
+#### 25. Decisiones vinculantes
+
+1. el catálogo lógico objetivo contiene exactamente ocho roles base;
+2. `trabajador_operativo` es el octavo rol base canónico;
+3. `BaseRoleCode` contiene exactamente esos ocho códigos;
+4. `BaseRoleCode` se genera y no se mantiene mediante listas manuales;
+5. rol base y rol operativo permanecen en namespaces distintos;
+6. `logistica` y `talento_humano` no pertenecen al catálogo objetivo de ocho roles;
+7. los nueve oficios base legacy permanecen fuera de `BaseRoleCode`;
+8. no existe conversión automática de oficios legacy;
+9. no existe alias automático hacia `trabajador_operativo`;
+10. `trabajador_operativo` recibe exactamente cinco concesiones directas;
+11. las cinco concesiones son `BASE_ONLY`;
+12. el rol recibe cero permisos `OPERATIONAL_ONLY`;
+13. el rol recibe cero `BASE_COMPONENT`;
+14. las otras 135 claves permanecen ausentes y en `DEFAULT_DENY`;
+15. el catálogo `vento.authorization@1.0.0` no cambia;
+16. `base-role-grants@1.0.0` permanece inmutable con hash `bcea5460...`;
+17. `base-role-grants@1.1.0` contiene 504 registros;
+18. `1.1.0` contiene 468 `DIRECT_BASE` y 36 `BASE_COMPONENT`;
+19. el schema del dataset permanece `1.0.0`;
+20. el hash de `1.1.0` es `sha256:5fcde3858d5fc6ba1c210987962e32b3e2d535dc286b225b1ddb6ba4b0bb06d0`;
+21. `AccessContext@1.x` conserva su forma;
+22. `trabajador_operativo` solo será físicamente válido después de publicación y asignación explícita;
+23. esta tarea no crea package, código, migración, Supabase, asignaciones ni adopción;
+24. se crea `TREQ-SHELL-040`;
+25. `SHELL-CON-005` permanece como única continuidad reservada.
+
+---
+
+#### 26. Criterios de aceptación
+
+`SHELL-CON-004` queda materialmente completa porque:
+
+- concilia exactamente ocho roles base;
+- preserva sin cambio los siete roles existentes;
+- incorpora únicamente `trabajador_operativo`;
+- materializa la unión derivada exacta `BaseRoleCode`;
+- separa roles base, operativos, de navegación y simulación;
+- excluye los nueve oficios legacy;
+- excluye `logistica` y `talento_humano` del catálogo objetivo vigente;
+- prohíbe aliases, fallback y conversión automática;
+- conserva las 140 `PermissionKey` activas sin modificación;
+- fija las cinco concesiones exactas del nuevo rol;
+- concilia 5 grants, 0 componentes y 135 ausencias para `trabajador_operativo`;
+- conserva inmutable `base-role-grants@1.0.0`;
+- define el manifiesto exacto de `base-role-grants@1.1.0`;
+- define las cinco filas nuevas exactas y ordenadas;
+- conserva las reglas de serialización de `AUTH-RBAC-024`;
+- reproduce 504 registros, 468 directos y 36 componentes;
+- concilia 256 `BASE_ONLY`, 212 `BASE_OR_OPERATIONAL` y 36 `BASE_AND_OPERATIONAL`;
+- concilia la distribución por aplicaciones a 504 registros;
+- calcula la huella determinista `sha256:5fcde3858d5fc6ba1c210987962e32b3e2d535dc286b225b1ddb6ba4b0bb06d0`;
+- conserva `AccessContext@1.x` sin cambio de forma;
+- asigna todos los pendientes a tareas existentes;
+- crea únicamente `TREQ-SHELL-040` como requisito nuevo;
+- no implementa código, package, migración, Supabase, datos ni consumidores;
+- deja `SHELL-CON-005` como única tarea siguiente reservada.
+
+---
+
+#### 27. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+SHELL-CON-003 — Centralizar códigos de permisos
+
+##### TAREA ACTUAL APROBADA
+SHELL-CON-004 — Centralizar roles base
+
+##### SIGUIENTE TAREA RESERVADA
+SHELL-CON-005 — Centralizar roles operativos
+
+
 ### [ ] SHELL-CON-005 — Centralizar roles operativos
 ### [ ] SHELL-CON-006 — Centralizar scopes
 ### [ ] SHELL-CON-007 — Centralizar tipos de contexto
