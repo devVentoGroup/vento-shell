@@ -10891,4 +10891,793 @@ La tarea se considera documentalmente completa cuando:
 `SHELL-CON-016 — Crear contrato de propiedad funcional`
 
 
-### [ ] SHELL-CON-016 — Crear contrato de propiedad funcional
+### ✅ SHELL-CON-016 — Crear contrato de propiedad funcional
+
+**Estado:** APROBADA
+**Tarea anterior:** `SHELL-CON-015 — Crear contrato de tareas pendientes`
+**Tarea siguiente:** `SHELL-CON-017 — Crear contrato de principal técnico de integración`
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Estado físico:** `DEFINIDO_NO_MATERIALIZADO`
+**Cambios físicos:** ninguno
+**Resultado TREQ:** `NO GENERA REQUISITOS DE PRUEBA`
+
+#### 1. Propósito
+
+`SHELL-CON-016` centraliza el contrato compartido que permite identificar qué aplicación gobierna un resultado funcional, un hecho empresarial o una fuente autoritativa sin confundir propiedad con participación, ejecución humana, autorización, persistencia técnica, visualización o consumo.
+
+El contrato hace interoperable una decisión que ya existe en las autoridades funcionales de procesos, capacidades e información:
+
+```text
+UN RESULTADO FUNCIONAL ATÓMICO
+→ UNA RESPONSABILIDAD EMPRESARIAL IDENTIFICABLE
+→ UNA APLICACIÓN PROPIETARIA VIGENTE
+→ UNA FUENTE AUTORITATIVA
+→ CERO FUENTES MUTABLES COMPETIDORAS
+```
+
+La tarea no reasigna procesos ni subcapacidades. Adopta las decisiones propietarias aprobadas y define cómo deben ser referenciadas por contratos compartidos, proyecciones, eventos, handoffs, ítems de trabajo, integraciones y consumidores.
+
+#### 2. Autoridades consumidas y precedencia
+
+Esta tarea consume y preserva, sin sustituirlas:
+
+- `SHELL-CON-001`, como autoridad de la raíz compartida `@vento/contracts` y de su carácter contractual estático;
+- `SHELL-CON-002`, como autoridad de `AppCode` y del universo canónico de aplicaciones;
+- `SHELL-CON-009`, como autoridad compartida de `ProcessId`;
+- `SHELL-CON-012`, como autoridad compartida de `FunctionalActionId`;
+- `SHELL-CON-013`, como autoridad compartida de `BusinessEventId`;
+- `SHELL-CON-014`, como autoridad del contrato de handoffs entre aplicaciones;
+- `SHELL-CON-015`, como autoridad del contrato de ítems de trabajo y de `owner_app_code` en la obligación runtime;
+- `CAP-MAP-004`, como autoridad de propiedad candidata, consumidoras y fronteras por capacidad;
+- `CAP-MAP-008`, como autoridad de fuente actual, fuente objetivo y estado objetivo para las 217 subcapacidades;
+- `CAP-MAP-013`, como autoridad del análisis de duplicación y propiedad competidora;
+- `PROC-CAT-005`, mediante `PROC-APPLICATION-OWNERSHIP-REGISTRY-001`, como autoridad de la aplicación propietaria de cada uno de los 69 procesos;
+- `UX-BASE-007`, como autoridad de captura única, reutilización trazable y prohibición de recaptura sin razón empresarial;
+- `INT-APP-010`, como autoridad de escrituras cross-app, interacción con la propietaria y prohibiciones de mutación ajena;
+- los contratos vigentes de contexto y autorización, que deciden quién puede actuar y bajo qué alcance, sin transferir propiedad funcional.
+
+Regla de precedencia:
+
+```text
+REGISTRO FUNCIONAL PROPIETARIO
+→ decide quién gobierna el resultado
+
+@vento/contracts/ownership
+→ proyecta y valida la decisión compartida
+→ no crea otra decisión empresarial
+
+CONSUMIDOR
+→ usa la proyección
+→ no amplía ni sustituye la propiedad
+```
+
+Si una proyección compartida difiere de la autoridad funcional vigente, prevalece la autoridad funcional y la proyección queda obsoleta hasta su reconciliación.
+
+#### 3. Resultado canónico
+
+La tarea define la superficie lógica:
+
+```text
+@vento/contracts/ownership
+```
+
+Su función es exponer una representación compartida, versionable y validable de propiedad funcional sin convertir el package de contratos en motor de negocio, catálogo alternativo de capacidades o base de datos de operación.
+
+El resultado combina tres fuentes de decisión ya aprobadas:
+
+| Capa                    | Autoridad semántica                       | Cobertura adoptada | Uso dentro del contrato                                       |
+| ----------------------- | ----------------------------------------- | -----------------: | ------------------------------------------------------------- |
+| proceso                 | `PROC-APPLICATION-OWNERSHIP-REGISTRY-001` |        69 procesos | resolver propietaria del resultado principal del proceso      |
+| capacidad e información | `CAP-MAP-008`                             | 217 subcapacidades | resolver fuente objetivo, frontera y división de resultados   |
+| obligación runtime      | fuente empresarial + `SHELL-CON-015`      |           dinámica | transportar `owner_app_code` de un ítem existente sin crearlo |
+
+No se crea un cuarto registro editable con 69 o 217 filas copiadas. La centralización se materializa mediante referencias normativas y proyecciones deterministas de las autoridades anteriores.
+
+#### 4. Definición de propiedad funcional
+
+La **propiedad funcional** es la responsabilidad empresarial de gobernar el estado autoritativo de un resultado funcional atómico dentro de Vento OS.
+
+Gobernar implica, según aplique:
+
+1. crear o aceptar el registro principal del resultado;
+2. aplicar las reglas funcionales que determinan su estado válido;
+3. aceptar comandos o acciones autorizadas sobre ese resultado;
+4. permitir correcciones controladas;
+5. conservar estado y versión vigentes;
+6. conservar trazabilidad de cambios relevantes;
+7. confirmar los hechos durables que otras aplicaciones pueden consumir;
+8. explicar cuál es la referencia autoritativa cuando una proyección difiere;
+9. rechazar mutaciones provenientes de una frontera no autorizada;
+10. sostener la continuidad del resultado aunque cambie su implementación técnica.
+
+Propiedad funcional no significa que todo trabajo humano ocurra dentro de la aplicación propietaria ni que todos los datos relacionados deban residir físicamente en un mismo esquema.
+
+#### 5. Unidad mínima de propiedad
+
+La unidad mínima es el **resultado funcional atómico gobernable**.
+
+Un resultado es atómico para propiedad cuando puede responder de forma inequívoca:
+
+```text
+¿QUÉ HECHO O ESTADO EMPRESARIAL SE GOBIERNA?
+¿QUIÉN PUEDE CONFIRMAR SU ESTADO AUTORITATIVO?
+¿QUÉ APLICACIÓN CONSERVA SU HISTORIA Y CORRECCIÓN?
+¿QUÉ OTRAS APLICACIONES SOLO PARTICIPAN O CONSUMEN?
+```
+
+La propiedad no se asigna automáticamente a:
+
+- una aplicación completa por conveniencia;
+- una pantalla;
+- un módulo;
+- un repositorio;
+- una tabla;
+- una función técnica;
+- un dispositivo;
+- una sede;
+- un actor humano;
+- un rol;
+- un permiso;
+- un evento;
+- una cola;
+- una integración;
+- un documento o archivo.
+
+Cuando una subcapacidad contiene resultados independientes con fuentes distintas, la propiedad se divide por resultado. No se declaran dos propietarias simultáneas del mismo hecho autoritativo.
+
+#### 6. Identidad y ausencia de un identificador paralelo
+
+Esta tarea no crea un identificador serial universal de propiedad funcional.
+
+La identidad de una decisión se resuelve mediante la identidad canónica del sujeto y la autoridad que la define.
+
+Ejemplos:
+
+```text
+ProcessId
++ PROC-APPLICATION-OWNERSHIP-REGISTRY-001
+→ propietaria del resultado principal del proceso
+
+subcapacidad canónica
++ CAP-MAP-008
+→ fuente objetivo del resultado informativo
+
+work_item_id
++ fuente empresarial vigente
+→ propietaria de la obligación concreta
+```
+
+Por tanto:
+
+```text
+ownership_id nuevo = NO REQUERIDO
+```
+
+No se concatenarán `app_code`, nombres de módulo, tabla, repositorio o dominio para fabricar una identidad alternativa.
+
+#### 7. Universo de aplicaciones propietarias
+
+Toda referencia interna de aplicación utiliza `AppCode` conforme a `SHELL-CON-002`.
+
+El universo vigente contiene exactamente diez identidades canónicas:
+
+| Orden | `AppCode` |
+| ----: | --------- |
+|     1 | `shell`   |
+|     2 | `anima`   |
+|     3 | `viso`    |
+|     4 | `nexo`    |
+|     5 | `fogo`    |
+|     6 | `origo`   |
+|     7 | `pulso`   |
+|     8 | `numera`  |
+|     9 | `aura`    |
+|    10 | `pass`    |
+
+Reglas:
+
+1. un repositorio no es un `AppCode`;
+2. `hub` no es propietaria canónica: es una identidad local de presentación y no sustituye `shell`;
+3. `default` no es propietaria canónica: es un sentinel local y debe resolverse antes de cruzar una frontera contractual;
+4. plataforma, ambiente, dispositivo, sede, área, módulo o pantalla no crean aplicaciones propietarias nuevas;
+5. una aplicación del catálogo puede existir como identidad sin estar materializada o disponible operativamente;
+6. pertenecer al catálogo no concede propiedad sobre ningún resultado concreto.
+
+#### 8. Propiedad de procesos
+
+`PROC-APPLICATION-OWNERSHIP-REGISTRY-001` permanece como única autoridad semántica para la propietaria de proceso.
+
+La proyección compartida adopta exactamente:
+
+```text
+69 ProcessId
+VPROC-0001..VPROC-0069
+69 asignaciones de owner_app_code
+10 aplicaciones propietarias utilizadas
+1 propietaria por proceso
+0 procesos sin propietaria
+0 procesos con doble propietaria vigente
+```
+
+La adopción no reenumera procesos ni reproduce manualmente su matriz como otra fuente normativa.
+
+Para cada `ProcessId`, la proyección contractual debe poder responder:
+
+- `process_id`;
+- `owner_app_code`;
+- referencia de autoridad `PROC-CAT-005`;
+- versión o procedencia suficiente de la proyección;
+- estado de compatibilidad con la autoridad vigente.
+
+La propietaria del proceso gobierna el resultado principal del proceso. Esto no significa que sea propietaria de todos los hechos auxiliares, documentos externos, métricas derivadas o resultados independientes que el proceso consume.
+
+#### 9. Propiedad de capacidades e información
+
+`CAP-MAP-008` permanece como autoridad de fuente objetivo para las 217 subcapacidades.
+
+La proyección compartida adopta exactamente las 217 decisiones sin crear una segunda tabla editable.
+
+El vocabulario de estado objetivo conserva exactamente cinco valores:
+
+| Estado                  | Semántica preservada                                                                          |
+| ----------------------- | --------------------------------------------------------------------------------------------- |
+| `OBJETIVO_FUERTE`       | una aplicación coincide claramente con el resultado que debe gobernar                         |
+| `OBJETIVO_CON_FRONTERA` | una aplicación gobierna un resultado y debe respetar una frontera con otro resultado o fuente |
+| `OBJETIVO_DIVIDIDO`     | la subcapacidad contiene resultados independientes con propietarias distintas                 |
+| `OBJETIVO_DIFERIDO`     | la dirección propietaria está definida pero no habilita implementación actual                 |
+| `SIN_FUENTE_ADECUADA`   | ninguna aplicación actual puede gobernar limpiamente el resultado todavía                     |
+
+Interpretación obligatoria:
+
+```text
+OBJETIVO_DIVIDIDO
+≠ DOS PROPIETARIAS DEL MISMO HECHO
+
+OBJETIVO_DIVIDIDO
+= VARIOS RESULTADOS ATÓMICOS
++ UNA PROPIETARIA POR CADA RESULTADO
+```
+
+`SIN_FUENTE_ADECUADA` tampoco autoriza a SHELL, NUMERA, Supabase o un consumidor a apropiarse provisionalmente del dato.
+
+#### 10. Fronteras funcionales heredadas por familia
+
+La centralización preserva las fronteras ya aprobadas:
+
+| Familia  | Propiedad objetivo preservada                                                                                                          |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `CAP-01` | VISO gobierna estructura, políticas, riesgos, decisiones y seguimiento administrativo dentro de sus fronteras                          |
+| `CAP-02` | VISO gobierna administración laboral; ANIMA gobierna registros personales y asistencia según el resultado                              |
+| `CAP-03` | VISO gobierna el resultado interno sin absorber fuentes oficiales externas                                                             |
+| `CAP-04` | NEXO gobierna catálogo; FOGO recetas; PULSO oferta vendible                                                                            |
+| `CAP-05` | ORIGO gobierna compras y proveedores; NEXO consume el efecto aceptado sobre inventario                                                 |
+| `CAP-06` | NEXO gobierna inventario y movimientos; otros dominios originan hechos que producen efectos controlados                                |
+| `CAP-07` | NEXO gobierna activos; ejecución técnica externa no sustituye su registro interno                                                      |
+| `CAP-08` | FOGO gobierna producción; NEXO gobierna los movimientos de inventario derivados y aceptados                                            |
+| `CAP-09` | PULSO gobierna venta y servicio; canales externos permanecen orígenes externos cuando apliquen                                         |
+| `CAP-10` | PULSO gobierna relación operativa; PASS identidad y acciones directas del cliente                                                      |
+| `CAP-11` | NEXO gobierna traslado interno; PULSO entrega asociada a pedido                                                                        |
+| `CAP-12` | PULSO gobierna caja y pago de venta; NUMERA hechos económicos, costos y análisis propios                                               |
+| `CAP-13` | NEXO gobierna espacio, activo, novedad y estado internos; proveedor técnico no adquiere esa propiedad                                  |
+| `CAP-14` | AURA gobierna comunicación y campaña cuando se materialice; PULSO promociones aplicadas a ventas                                       |
+| `CAP-15` | VISO gobierna identidad y acceso; NEXO activos; cada aplicación su configuración; soporte transversal conserva su brecha donde aplique |
+| `CAP-16` | documentos y evidencia siguen a la aplicación propietaria del hecho respaldado                                                         |
+| `CAP-17` | aplicación de origen gobierna hechos; NUMERA gobierna indicadores, comparaciones y análisis derivados                                  |
+| `CAP-18` | aplicación afectada gobierna su incidente local; SHELL coordina sin adquirir propiedad universal                                       |
+
+La tabla conserva fronteras de alto nivel. El detalle por subcapacidad sigue perteneciendo a `CAP-MAP-008`.
+
+#### 11. Separaciones obligatorias
+
+La propiedad funcional es ortogonal a otras responsabilidades.
+
+| Concepto                    | Puede intervenir                                               | No adquiere por ello                              |
+| --------------------------- | -------------------------------------------------------------- | ------------------------------------------------- |
+| aplicación consumidora      | consulta, proyecta o usa un resultado                          | propiedad del original                            |
+| aplicación participante     | ejecuta una etapa propia del proceso                           | propiedad del resultado principal completo        |
+| actor humano                | ejecuta, verifica, solicita, aprueba o corrige según autoridad | propiedad de la fuente por su identidad personal  |
+| supervisor                  | observa o resuelve bloqueos autorizados                        | administración universal del dominio              |
+| aprobador                   | toma una decisión autorizada                                   | ejecución de todos los pasos ni propiedad técnica |
+| repositorio                 | contiene código o migraciones                                  | responsabilidad empresarial del hecho             |
+| Supabase                    | persiste o ejecuta mecanismos técnicos                         | propiedad funcional universal                     |
+| pantalla o navegación       | presenta o conduce hacia una acción                            | autoridad sobre el dato mostrado                  |
+| worker o publicador técnico | transporta o procesa efectos                                   | propiedad del proceso atendido                    |
+| proveedor externo           | ejecuta o informa una parte externa                            | propiedad automática del estado interno de Vento  |
+| documento o archivo         | conserva evidencia                                             | propiedad del hecho respaldado                    |
+| analítica                   | deriva indicador o comparación                                 | capacidad para reescribir el hecho fuente         |
+
+#### 12. Captura única y reutilización trazable
+
+Se preserva la regla de `UX-BASE-007`:
+
+```text
+UN HECHO EMPRESARIAL
+→ UNA FUENTE AUTORITATIVA
+→ UNA CAPTURA O PRODUCCIÓN ORIGINAL
+→ REUTILIZACIONES TRAZABLES
+```
+
+Una aplicación consumidora no solicitará nuevamente un valor únicamente porque no sea la propietaria.
+
+La reutilización podrá consistir, según la semántica ya aprobada, en:
+
+- reutilizar un hecho vigente;
+- precargar un valor editable cuando la corrección corresponda al flujo actual;
+- mostrar para confirmación;
+- mostrar solo como referencia;
+- exigir nueva captura cuando existe una nueva observación real;
+- exigir observación independiente cuando revelar el valor previo introduciría sesgo;
+- impedir reutilización por finalidad, vigencia, sensibilidad o semántica.
+
+Una segunda captura es válida cuando produce evidencia nueva. No es válida cuando solo replica manualmente un valor autoritativo entre aplicaciones.
+
+#### 13. Proyecciones, copias y caché
+
+Una aplicación no propietaria puede mantener una representación local solo si su naturaleza queda explícita.
+
+Clases conceptuales permitidas:
+
+```text
+REFERENCE
+PROJECTION
+CONTROLLED_CACHE
+DERIVED_RESULT
+EVIDENCE_COPY
+```
+
+Reglas:
+
+1. la proyección es reemplazable desde la fuente;
+2. la referencia apunta al original y no se convierte en otro maestro;
+3. el caché declara frescura suficiente para el uso que soporta;
+4. el resultado derivado declara sus fuentes y puede tener propiedad propia únicamente sobre la derivación;
+5. una copia de evidencia no adquiere autoridad sobre el hecho;
+6. una representación obsoleta no autoriza sobrescribir el original;
+7. una pantalla editable sobre una proyección debe enviar una intención o comando al dominio propietario, no convertir la copia en otra fuente mutable.
+
+Una copia que puede cambiar independientemente el mismo estado empresarial deja de ser una proyección controlada y se convierte en propiedad competidora.
+
+#### 14. Escrituras cross-app
+
+`INT-APP-010` conserva autoridad sobre la mutación entre aplicaciones.
+
+Regla principal:
+
+```text
+CONSUMIDOR
+→ NO ESCRIBE DIRECTAMENTE EL ESTADO PRIVADO DE LA PROPIETARIA
+
+CONSUMIDOR
+→ SOLICITA UNA ACCIÓN POR CONTRATO AUTORIZADO
+
+PROPIETARIA
+→ REVALIDA AUTORIDAD + ESTADO + VERSIÓN + CONTEXTO
+→ APLICA O RECHAZA
+→ CONFIRMA EL HECHO RESULTANTE
+```
+
+No transfieren propiedad:
+
+- disponibilidad temporal de otra aplicación;
+- acceso técnico a la misma base de datos;
+- `service_role`;
+- una migración;
+- retry;
+- replay;
+- backfill;
+- contingencia offline;
+- break-glass;
+- un evento recibido;
+- un handoff;
+- un deep link.
+
+La indisponibilidad de la propietaria tampoco crea una propietaria de respaldo por inferencia.
+
+#### 15. Corrección, reversión y conciliación
+
+La corrección de un hecho autoritativo ocurre dentro de la frontera propietaria o mediante un contrato que la propietaria evalúa.
+
+Toda corrección material deberá conservar cuando corresponda:
+
+- referencia al valor o estado anterior;
+- motivo;
+- actor efectivo;
+- autoridad de la acción;
+- momento;
+- versión;
+- evidencia;
+- relación con el proceso o recurso;
+- efecto sobre consumidoras.
+
+Una consumidora no corrige el original editando su proyección.
+
+Una reversión o compensación crea una operación nueva dentro del dominio que posee el efecto a corregir. No reescribe retrospectivamente un hecho ajeno.
+
+Cuando existan diferencias entre fuente y proyección, la conciliación debe identificar origen, propietaria, versión y resolución; no usar sobrescritura silenciosa como mecanismo de convergencia.
+
+#### 16. Integración con eventos empresariales
+
+`SHELL-CON-013` conserva autoridad sobre `BusinessEventId`.
+
+Un evento empresarial:
+
+- describe un hecho durable ya confirmado;
+- transporta la identidad de su productor o propietaria cuando aplique;
+- permite que consumidoras reaccionen sin recapturar;
+- no representa la totalidad de la fuente de verdad;
+- no concede permiso;
+- no ordena por sí solo una escritura retrospectiva sobre la emisora;
+- no cambia de propietaria porque cambie el broker, worker o publicador técnico.
+
+La aplicación productora de una definición de proceso se mantiene coherente con la propietaria funcional aprobada. Un cambio de propietaria debe resolverse primero en su autoridad funcional y después propagarse al contrato de eventos.
+
+#### 17. Integración con handoffs
+
+`SHELL-CON-014` conserva autoridad sobre los traspasos entre aplicaciones.
+
+Un handoff puede transferir:
+
+- trabajo;
+- custodia;
+- responsabilidad operativa sobre una etapa;
+- contexto necesario;
+- correlación;
+- referencia al recurso.
+
+No transfiere automáticamente la propiedad funcional del hecho o resultado gobernado.
+
+Cuando la aplicación receptora produce un resultado distinto y autónomo, puede gobernar ese nuevo resultado conforme a la frontera canónica. La recepción de una referencia no la vuelve propietaria del resultado de origen.
+
+#### 18. Integración con ítems de trabajo
+
+`SHELL-CON-015` conserva la semántica de `owner_app_code` dentro de un ítem de trabajo.
+
+La propiedad de una obligación runtime se resuelve desde la fuente empresarial que la creó. Por tanto:
+
+```text
+work_item.owner_app_code
+→ referencia a AppCode canónico
+→ coherente con la fuente que gobierna la obligación
+→ no se deriva de la aplicación que la está mostrando
+```
+
+SHELL puede proyectar la obligación, priorizar visualmente una cola derivada y abrir el destino autorizado sin convertirse en propietaria del trabajo.
+
+El claim, assignment, permiso, foco o actor efectivo tampoco cambian la aplicación propietaria.
+
+#### 19. SHELL como coordinador, no como propietario universal
+
+`shell` es una identidad canónica de aplicación, pero su papel transversal no le concede propiedad sobre los dominios que coordina.
+
+SHELL puede:
+
+- descubrir aplicaciones disponibles;
+- presentar navegación;
+- proyectar contexto permitido;
+- mostrar pendientes referenciados;
+- conservar correlación de navegación;
+- indicar cuál aplicación es propietaria;
+- dirigir al destino correcto.
+
+SHELL no puede, por esa coordinación:
+
+- convertirse en fuente principal de ventas, compras, inventario, producción, talento o finanzas;
+- corregir proyecciones ajenas como si fueran registros propios;
+- imponer estado empresarial a otra aplicación;
+- fabricar una propietaria para un resultado sin fuente adecuada;
+- convertir un dato agregado de varias aplicaciones en reemplazo de sus fuentes.
+
+#### 20. Sistemas externos
+
+Un sistema externo puede conservar propiedad sobre un **hecho externo** que solo ese sistema puede confirmar.
+
+Vento OS conserva, según corresponda:
+
+- referencia externa;
+- estado interno de integración;
+- decisión propia;
+- efecto empresarial interno;
+- evidencia necesaria;
+- correlación y conciliación.
+
+Ejemplos conceptuales:
+
+```text
+BANCO
+→ gobierna confirmación externa de su movimiento
+
+VENTO
+→ gobierna autorización interna, referencia y conciliación propia
+
+PROVEEDOR DE MENSAJERÍA
+→ gobierna sus eventos externos de transporte
+
+VENTO
+→ gobierna custodia, compromiso y estado interno de entrega
+```
+
+La existencia de un proveedor no elimina la responsabilidad interna de Vento ni lo convierte en propietaria de resultados internos.
+
+#### 21. Documentos, archivos y evidencia
+
+La propiedad documental sigue al hecho respaldado.
+
+```text
+ARCHIVO
+≠ FUENTE EMPRESARIAL POR SÍ MISMO
+```
+
+Un PDF, foto, firma, adjunto o archivo de Storage puede ser evidencia, copia cerrada o soporte. La ubicación física del archivo no redefine la aplicación que gobierna el hecho.
+
+Cuando un documento externo posee validez oficial propia, esa condición se conserva sin convertir la copia interna en la autoridad externa.
+
+#### 22. Datos derivados y analítica
+
+La propiedad de un hecho fuente y la propiedad de un resultado analítico se mantienen separadas.
+
+```text
+NEXO / FOGO / ORIGO / PULSO / VISO / OTRA FUENTE
+→ gobiernan hechos de origen
+
+NUMERA
+→ puede gobernar indicadores, comparaciones, modelos y análisis derivados
+→ no reescribe el hecho de origen para hacer coincidir el análisis
+```
+
+Un informe no sustituye los hechos con los que fue calculado.
+
+Una corrección de la fuente obliga a recalcular o invalidar la derivación según su contrato, no a conservar dos versiones mutuamente autoritativas del mismo hecho.
+
+#### 23. Cambio de propietaria y versionado
+
+La propiedad funcional no cambia de manera implícita por:
+
+- migrar una tabla;
+- mover código entre repositorios;
+- cambiar un publicador técnico;
+- rediseñar una pantalla;
+- desplegar otra aplicación;
+- introducir una vista agregada;
+- cambiar la aplicación desde la que una persona inicia la acción.
+
+Un cambio de propietaria de proceso requiere primero modificar la autoridad de `PROC-CAT-005` mediante el gobierno canónico correspondiente.
+
+Un cambio de fuente objetivo requiere modificar la autoridad funcional que gobierna esa decisión.
+
+La transición deberá conservar, cuando aplique:
+
+1. propietaria anterior;
+2. nueva propietaria;
+3. decisión canónica que autoriza el cambio;
+4. vigencia efectiva;
+5. compatibilidad de contratos;
+6. consumidores afectados;
+7. estrategia de lectura durante la transición;
+8. regla de escritura durante la transición;
+9. reconciliación de estados pendientes;
+10. evidencia de corte antes de retirar la fuente anterior.
+
+No se admite una ventana indefinida en la que dos aplicaciones puedan mutar el mismo estado como propietarias equivalentes.
+
+#### 24. Propiedad competidora confirmada en el AS-IS
+
+`CAP-MAP-013` conserva un único caso de propiedad funcional competidora confirmado en la línea base revisada:
+
+```text
+public.employee_shifts
+VISO + ANIMA con capacidad de edición en el AS-IS
+```
+
+La frontera objetivo ya aprobada es:
+
+```text
+VISO
+→ publica o corrige el turno
+
+ANIMA
+→ consulta el turno
+→ usa el turno dentro de su experiencia y contexto
+→ no mantiene una segunda edición independiente del mismo estado
+```
+
+Esta tarea clasifica la situación como deuda preexistente de materialización y no ejecuta una migración, cambio de permisos, cambio de RLS, eliminación de endpoint ni modificación de datos.
+
+El estado técnico actual puede conservar propietarios o mecanismos transitorios hasta que las tareas de transición propietarias materialicen la arquitectura objetivo. Esa observación no reabre la decisión funcional.
+
+#### 25. Tratamiento de fuente sombra
+
+Una fuente sombra existe cuando un medio secundario termina gobernando en la práctica un estado que debe tener una sola fuente.
+
+Pueden convertirse en fuente sombra si se usan como control paralelo:
+
+- Excel;
+- chat;
+- papel;
+- copia local;
+- hoja exportada;
+- base secundaria;
+- formulario independiente;
+- pantalla que escribe otra representación del mismo estado.
+
+Estos medios pueden seguir existiendo como evidencia, contingencia, referencia o herramienta temporal cuando su función esté explícitamente delimitada.
+
+No se promueve una fuente sombra a propietaria por el solo hecho de ser utilizada con frecuencia.
+
+#### 26. Contrato conceptual mínimo
+
+La proyección compartida deberá poder representar, como mínimo, estas dimensiones conceptuales cuando apliquen:
+
+| Dimensión           | Propósito                                                                |
+| ------------------- | ------------------------------------------------------------------------ |
+| `subject_kind`      | clase de sujeto cuya propiedad se resuelve                               |
+| `subject_ref`       | referencia canónica al proceso, subcapacidad, resultado o fuente runtime |
+| `owner_app_code`    | `AppCode` de la propietaria vigente                                      |
+| `authority_ref`     | autoridad canónica que tomó la decisión                                  |
+| `ownership_scope`   | resultado funcional concreto gobernado                                   |
+| `source_status`     | estado aplicable de la decisión de fuente cuando corresponda             |
+| `boundary_ref`      | referencia a la frontera con otros resultados o consumidoras             |
+| `effective_version` | versión o revisión suficiente para detectar proyección obsoleta          |
+| `supersedes_ref`    | relación con una decisión anterior cuando exista transición              |
+
+La tabla es una superficie conceptual. No fija schema físico, nombre de tabla, JSON definitivo, API, columna o formato de persistencia.
+
+No todos los sujetos usan todas las dimensiones. El contrato no rellenará valores ficticios para aparentar completitud.
+
+#### 27. Operaciones conceptuales de consulta
+
+La futura superficie compartida deberá permitir expresar semánticamente, sin ejecutar negocio:
+
+```text
+resolveProcessOwner(ProcessId)
+resolveCapabilitySource(capability_ref)
+isCanonicalOwner(AppCode, subject_ref)
+assertOwnershipProjectionFresh(subject_ref, effective_version)
+```
+
+Estas operaciones representan capacidad contractual de consulta o validación estática. No autorizan mutaciones, no leen directamente la base de datos empresarial y no sustituyen la evaluación runtime de contexto o permisos.
+
+Un consumidor no podrá implementar una tabla local de equivalencias como fuente paralela para resolver estas respuestas.
+
+#### 28. Fallo cerrado y estados no resueltos
+
+Cuando la propiedad no pueda resolverse de manera autoritativa:
+
+- no se infiere desde el nombre de la aplicación;
+- no se infiere desde el repositorio;
+- no se infiere desde la tabla;
+- no se infiere desde el permiso;
+- no se infiere desde la pantalla abierta;
+- no se infiere desde el último escritor observado;
+- no se asigna automáticamente a SHELL;
+- no se asigna automáticamente a NUMERA;
+- no se asigna automáticamente a Supabase.
+
+El consumidor debe conservar el estado irresuelto y remitirlo a la autoridad propietaria de la decisión.
+
+`SIN_FUENTE_ADECUADA` es un estado funcional explícito, no una invitación a elegir una aplicación por conveniencia.
+
+#### 29. Reconciliación estática
+
+La centralización produce la siguiente reconciliación:
+
+| Conjunto                                                         | Esperado |                 Adoptado o representado | Faltantes | Duplicados o fuente paralela |
+| ---------------------------------------------------------------- | -------: | --------------------------------------: | --------: | ---------------------------: |
+| asignaciones de propiedad de proceso                             |       69 |              69 por referencia canónica |         0 |                            0 |
+| aplicaciones propietarias usadas por el registro de procesos     |       10 |                                      10 |         0 |                            0 |
+| decisiones de fuente por subcapacidad                            |      217 |             217 por referencia canónica |         0 |                            0 |
+| estados de fuente objetivo                                       |        5 |                                       5 |         0 |                            0 |
+| casos confirmados de propiedad funcional competidora en el AS-IS |        1 | 1 preservado como hallazgo preexistente |         0 |                     0 nuevas |
+
+La ausencia de una copia fila por fila dentro de `SHELL-CON-016` es deliberada: las 286 decisiones ya poseen autoridad canónica y copiarlas crearía una segunda superficie susceptible de divergencia.
+
+#### 30. Cobertura de prueba vigente no modificada
+
+La semántica central de esta tarea ya está protegida directamente por:
+
+- `TREQ-INTEGRATION-006`, que exige captura única en la aplicación propietaria, propagación por contratos o eventos y resolución trazable de fuentes competidoras;
+- `TREQ-UX-005`, que exige hacer visible la fuente de verdad, el estado confirmado o pendiente y evitar copias mutables competidoras entre superficies.
+
+También permanecen aplicables las coberturas transversales vigentes de contratos compartidos, compatibilidad, procesos, autorización, contexto e integraciones.
+
+La tarea centraliza y hace consumible una semántica ya protegida; no introduce un comportamiento verificable adicional ni modifica criterios existentes.
+
+#### 31. Requisitos de prueba derivados
+
+`NO GENERA REQUISITOS DE PRUEBA`
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+Justificación: la propiedad por proceso, la fuente objetivo por subcapacidad, la captura única, la prohibición de fuentes competidoras y las fronteras de escritura ya poseen cobertura canónica vigente. Esta tarea no cambia esas obligaciones y no materializa comportamiento ejecutable nuevo.
+
+#### 32. Estado de materialización física
+
+Queda **ESPECIFICADO** el contrato documental lógico de `@vento/contracts/ownership` y permanece **NO MATERIALIZADO** como package, tipo o servicio ejecutable.
+
+No se crean ni modifican:
+
+- código fuente;
+- packages físicos;
+- tipos TypeScript;
+- tablas, vistas o columnas;
+- migraciones;
+- RLS;
+- RPC;
+- funciones o triggers;
+- datos;
+- colas, workers o cron;
+- endpoints;
+- componentes de interfaz;
+- consumidores;
+- despliegues.
+
+La futura materialización deberá derivar sus proyecciones desde las autoridades aprobadas y preservar compatibilidad con consumidores que se actualicen en momentos diferentes.
+
+#### 33. Criterios de aceptación
+
+`SHELL-CON-016` queda documentalmente completa cuando:
+
+1. propiedad funcional queda definida sobre un resultado atómico y no sobre una implementación accidental;
+2. `@vento/contracts/ownership` queda reservado como superficie lógica sin materialización física;
+3. las 69 asignaciones de propiedad de proceso se adoptan desde `PROC-APPLICATION-OWNERSHIP-REGISTRY-001` sin duplicarlas;
+4. las 217 decisiones de fuente objetivo se adoptan desde `CAP-MAP-008` sin duplicarlas;
+5. se conservan exactamente los diez `AppCode` vigentes como universo de identidad de aplicaciones;
+6. se conservan exactamente los cinco estados de fuente objetivo;
+7. `OBJETIVO_DIVIDIDO` se interpreta como resultados separados y no como doble propietaria del mismo hecho;
+8. propiedad permanece separada de actor, rol, permiso, aprobación, participación, consumo, repositorio, Supabase, almacenamiento, pantalla, navegación y publicador técnico;
+9. captura única y reutilización trazable quedan vinculadas a la fuente autoritativa;
+10. una proyección o caché no puede convertirse en fuente mutable competidora;
+11. corrección, reversión y conciliación preservan la frontera propietaria y la historia;
+12. eventos, handoffs e ítems de trabajo conservan sus identidades y responsabilidades separadas;
+13. sistemas externos conservan sus hechos externos sin apropiarse del estado interno de Vento;
+14. SHELL conserva coordinación y navegación sin propiedad universal;
+15. el caso competitivo de `employee_shifts` queda reconocido como deuda AS-IS con frontera objetivo preservada;
+16. un cambio de propietaria exige decisión canónica explícita y transición controlada;
+17. no se crea un `ownership_id` paralelo ni un registro editable duplicado;
+18. no se ejecutan cambios físicos;
+19. se declaran cero cambios de requisitos de prueba porque la cobertura vigente ya protege la semántica centralizada.
+
+#### 34. Decisiones aprobadas
+
+1. La unidad mínima de propiedad es el resultado funcional atómico gobernable.
+2. Cada resultado autoritativo tiene una sola aplicación propietaria vigente dentro de una versión efectiva.
+3. `@vento/contracts/ownership` es el namespace lógico reservado para la proyección compartida de propiedad funcional.
+4. La tarea no crea un identificador serial universal de ownership.
+5. `PROC-APPLICATION-OWNERSHIP-REGISTRY-001` conserva autoridad sobre las 69 propietarias de proceso.
+6. `CAP-MAP-008` conserva autoridad sobre las 217 decisiones de fuente objetivo por subcapacidad.
+7. La centralización adopta esas 286 decisiones por referencia y no crea otra matriz editable.
+8. El universo de aplicaciones sigue siendo exactamente el conjunto de diez `AppCode` aprobado.
+9. Los cinco estados de fuente objetivo se conservan sin reinterpretación.
+10. `OBJETIVO_DIVIDIDO` representa varios resultados independientes, no dos propietarias del mismo hecho.
+11. Propiedad funcional no equivale a autorización, rol, actor, aprobación, participación, consumo, persistencia, presentación ni ejecución técnica.
+12. Una proyección, referencia, caché o evidencia no adquiere propiedad del original.
+13. Un hecho empresarial se captura o produce una vez en su fuente autoritativa y se reutiliza de forma trazable.
+14. Una escritura cross-app se expresa mediante un contrato autorizado y es evaluada por la propietaria; no mediante mutación libre del estado ajeno.
+15. Eventos comunican hechos confirmados y no transfieren propiedad.
+16. Handoffs transfieren trabajo o custodia según su contrato y no transfieren propiedad funcional automáticamente.
+17. `work_item.owner_app_code` se resuelve desde la fuente empresarial de la obligación, no desde la aplicación que muestra la tarea.
+18. SHELL coordina, proyecta y navega sin convertirse en fuente empresarial universal.
+19. Sistemas externos pueden gobernar hechos externos; Vento gobierna sus referencias, decisiones y efectos internos.
+20. NUMERA puede gobernar resultados analíticos derivados sin reescribir hechos de origen.
+21. Documentos y evidencia siguen al hecho que respaldan y no se vuelven fuente autoritativa por ubicación física.
+22. El caso VISO/ANIMA sobre `employee_shifts` permanece como conflicto AS-IS preexistente; la frontera objetivo conserva a VISO para publicación/corrección del turno y a ANIMA como consumidora de ese estado.
+23. Cambiar repositorio, tabla, publicador, UI o tecnología no cambia propiedad funcional.
+24. Un cambio de propietaria exige una decisión canónica explícita, vigencia y transición controlada.
+25. No se modifica código, datos, Supabase, packages físicos ni requisitos de prueba.
+
+#### 35. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-CON-015 — Crear contrato de tareas pendientes
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-CON-016 — Crear contrato de propiedad funcional
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-CON-017 — Crear contrato de principal técnico de integración
+

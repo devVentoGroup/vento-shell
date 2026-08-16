@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **894** |
+| Aprobadas | **895** |
 | En propuesta | **0** |
-| No iniciadas | **700** |
+| No iniciadas | **699** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **56.09% (894/1594)** |
+| Porcentaje de completamiento | **56.15% (895/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CON-015` — Crear contrato de tareas pendientes | ✅ APROBADA |
-| Tarea actual | `SHELL-CON-016` — Crear contrato de propiedad funcional | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CON-017` — Crear contrato de principal técnico de integración | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CON-016` — Crear contrato de propiedad funcional | ✅ APROBADA |
+| Tarea actual | `SHELL-CON-017` — Crear contrato de principal técnico de integración | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CON-018` — Crear contrato de referencia de credencial externa sin incluir el secreto | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -721,7 +721,7 @@
 | ✅ APROBADA | `SHELL-CON-013` | Crear contrato de eventos empresariales | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CON-014` | Crear contrato de traspasos entre aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CON-015` | Crear contrato de tareas pendientes | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-CON-016` | Crear contrato de propiedad funcional | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-CON-016` | Crear contrato de propiedad funcional | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-017` | Crear contrato de principal técnico de integración | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-018` | Crear contrato de referencia de credencial externa sin incluir el secreto | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-019` | Crear contrato de evento externo recibido | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
