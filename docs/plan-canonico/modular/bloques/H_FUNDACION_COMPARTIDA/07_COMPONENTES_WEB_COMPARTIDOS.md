@@ -18185,7 +18185,1271 @@ Quedan fijadas las siguientes decisiones vinculantes:
 `SHELL-UI-014 — Compartir confirmaciones de acciones sensibles`
 
 
-### [ ] SHELL-UI-014 — Compartir confirmaciones de acciones sensibles
+### ✅ SHELL-UI-014 — Compartir confirmaciones de acciones sensibles
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-013 — Compartir panel de acción principal
+**Tarea siguiente:** SHELL-UI-015 — Compartir diagnóstico de contexto
+**Tipo de tarea:** Documental; definición canónica de la superficie compartida de confirmación explícita para acciones sensibles en `@vento/ui-web`, su identidad, contrato semántico, estados presentacionales, composición, accesibilidad, fronteras con autorización, reautenticación, ejecución, idempotencia y resultado autoritativo, reconciliación de consumidores y handoff de migración, sin materializar package, permisos, comandos empresariales, mutaciones, SQL, migraciones, releases ni despliegues
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md`
+**Estado físico resultante:** ESPECIFICADO; PACKAGE, EXPORTS Y SUPERFICIE COMPARTIDA NO MATERIALIZADOS
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+**Package propietario:** `@vento/ui-web`
+**Naturaleza:** patrón visual web compartido para confirmar de forma explícita una intención sensible ya clasificada por su contrato propietario; no es autoridad, clasificador de riesgo, reautenticador, motor de transición, ejecutor empresarial ni fuente de verdad del resultado
+
+---
+
+#### 1. Propósito
+
+`SHELL-UI-014` define `SensitiveActionConfirmation` como la superficie compartida de `@vento/ui-web` destinada a presentar, de forma inequívoca y accesible, una confirmación explícita cuando el contrato propietario de una acción ya haya determinado que esa confirmación es necesaria.
+
+La superficie preserva una frontera estricta entre intención humana, autoridad para actuar y resultado empresarial:
+
+```text
+ACCIÓN YA RESUELTA
+        ↓
+CLASIFICACIÓN Y POLÍTICA PROPIETARIAS
+        ↓
+AUTORIZACIÓN + CONTEXTO YA EVALUADOS
+        ↓
+NECESIDAD DE CONFIRMACIÓN YA RESUELTA
+        ↓
+SensitiveActionConfirmation
+        ↓
+INTENCIÓN EXPLÍCITA DEL ACTOR
+        ↓
+REVALIDACIÓN AUTORITATIVA + EJECUCIÓN PROPIETARIA
+        ↓
+RESULTADO AUTORITATIVO
+```
+
+Nunca:
+
+```text
+SensitiveActionConfirmation → decide que una acción es sensible
+SensitiveActionConfirmation → concede permiso
+SensitiveActionConfirmation → sustituye reautenticación
+SensitiveActionConfirmation → ejecuta una mutación por sí misma
+SensitiveActionConfirmation → convierte confirmación en aprobación
+SensitiveActionConfirmation → declara éxito por el clic de confirmar
+```
+
+---
+
+#### 2. Alcance de la tarea
+
+La tarea materializa documentalmente:
+
+- identidad conceptual de la superficie compartida;
+- contrato semántico mínimo;
+- API conceptual de presentación;
+- estados presentacionales admitidos;
+- invariantes de identidad de acción;
+- separación entre sensibilidad, autorización, reautenticación y confirmación;
+- tratamiento de confirmación explícita, razón obligatoria, revalidación de servidor y confirmación de resultado externo;
+- composición con controles compartidos;
+- reglas de apertura, cierre seguro y envío;
+- tratamiento de espera, concurrencia, resultado incierto y reintento;
+- límites de doble control y segregación;
+- relación con `PrimaryActionPanel`;
+- accesibilidad, foco y teclado;
+- responsive, tablet y kiosco;
+- localización, telemetría y minimización de datos;
+- reconciliación de los siete consumidores web heredados;
+- handoff de migración, calidad, compatibilidad y releases;
+- cobertura mediante requisitos de prueba ya vigentes.
+
+No materializa código, package, export, permiso, sesión, reautenticación, Server Action, endpoint, RPC, SQL, migración, release, despliegue ni efecto empresarial.
+
+---
+
+#### 3. Dependencias documentales consumidas
+
+| Fuente                                                   | Decisión heredada                                                                                                             |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-UI-001`                                           | `@vento/ui-web` es presentación compartida y no fuente de autorización, datos o lógica empresarial                            |
+| `SHELL-UI-003`                                           | `Button` conserva semántica nativa, estados interactivos y loading sin declarar resultado empresarial                         |
+| `SHELL-UI-013`                                           | la acción principal llega resuelta; `danger` no clasifica sensibilidad; confirmación no concede permiso ni confirma resultado |
+| `SHELL-CON-012`                                          | la identidad y semántica de la acción pertenecen al contrato compartido y a sus productores propietarios                      |
+| `PROC-SCREEN-024`                                        | la sensibilidad, protección y condiciones de confirmación se resuelven fuera de la capa visual compartida                     |
+| `AUTH-SRV-003`, `AUTH-SRV-004` y controles AUTH vigentes | la autorización autoritativa y la revalidación de contexto permanecen en servidor                                             |
+| `SHELL-MIG-001` a `SHELL-MIG-008`                        | adopción física progresiva, reversible y con paridad demostrada                                                               |
+| `SHELL-CI-001` a `SHELL-CI-006`                          | pruebas, build, versionado, changelog, compatibilidad y actualización controlada de consumidores                              |
+
+UI014 no sustituye ninguno de esos propietarios.
+
+---
+
+#### 4. Evidencia técnica vigente
+
+El estado verificable de partida conserva:
+
+- workspace de `vento-shell` compatible con `packages/*`;
+- ausencia de package físico `@vento/ui-web` materializado en este corte documental;
+- una primitiva local `Modal` en SHELL con apertura controlada, título, subtítulo, contenido y footer;
+- cierre del `Modal` local mediante `Escape`, backdrop y callback propietario;
+- ausencia de evidencia suficiente para tratar ese `Modal` local como implementación canónica de confirmación sensible;
+- contrato previo `PrimaryActionPanel` que difiere expresamente las confirmaciones sensibles a UI014;
+- modelo canónico de sensibilidad que distingue confirmación explícita, razón más confirmación, revalidación de servidor y confirmación de resultado externo;
+- requisitos UX y AUTH vigentes que ya separan confirmación, permiso, reautenticación, idempotencia y resultado autoritativo;
+- siete consumidores web reconciliados por la tarea anterior: SHELL, NEXO, FOGO, ORIGO, VISO, PULSO y NUMERA.
+
+La evidencia permite especificar un patrón común, pero no autoriza promover automáticamente una copia local existente como implementación compartida.
+
+---
+
+#### 5. Resultado documental
+
+Queda especificada la superficie conceptual:
+
+```text
+SensitiveActionConfirmation
+SensitiveActionConfirmationProps
+SensitiveActionConfirmationState
+```
+
+Resultado:
+
+```text
+IDENTIDAD DE SUPERFICIE                 = ESPECIFICADA
+CONTRATO SEMÁNTICO                      = ESPECIFICADO
+IDENTIDAD DE ACCIÓN                     = PRESERVADA
+CONFIRMACIÓN EXPLÍCITA                  = ESPECIFICADA
+RAZÓN PROPIETARIA                       = SOPORTADA SIN ABSORBER SU GOBIERNO
+REVALIDACIÓN DE SERVIDOR                = OBLIGATORIAMENTE EXTERNA
+REAUTENTICACIÓN                         = OBLIGATORIAMENTE EXTERNA
+RESULTADO AUTORITATIVO                  = OBLIGATORIAMENTE EXTERNO
+RESULTADO INCIERTO                      = ESPECIFICADO
+AUTORIZACIÓN EN LA SUPERFICIE           = PROHIBIDA
+CLASIFICACIÓN DE RIESGO EN LA SUPERFICIE = PROHIBIDA
+MOTOR DE EJECUCIÓN EN LA SUPERFICIE     = PROHIBIDO
+PACKAGE FÍSICO                          = NO MATERIALIZADO
+MIGRACIÓN DE CONSUMIDORES               = NO EJECUTADA
+```
+
+---
+
+#### 6. Identidad pública conceptual
+
+La identidad conceptual aprobada es:
+
+```text
+SensitiveActionConfirmation
+```
+
+No se crean identidades alternativas como:
+
+```text
+DangerDialog
+ConfirmDeleteModal
+ApprovalDialog
+SecureActionModal
+RiskPrompt
+AuthorizationDialog
+```
+
+El nombre describe la responsabilidad presentacional: confirmar una intención sensible ya clasificada. No describe una autoridad, una familia empresarial concreta ni un contenedor visual obligatorio.
+
+---
+
+#### 7. Contrato semántico materializado
+
+| Campo de gobierno    | Definición UI014                                                                                                                                                                                                                                                                  |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `contract_name`      | `SensitiveActionConfirmation`                                                                                                                                                                                                                                                     |
+| `producer`           | superficie o adapter propietario que ya resolvió identidad de acción, sensibilidad, necesidad de confirmación, contexto y precondiciones presentacionales                                                                                                                         |
+| `consumer`           | aplicaciones web que componen `@vento/ui-web` para presentar la confirmación sin trasladar su lógica empresarial al package                                                                                                                                                       |
+| `required_fields`    | `open`, `ariaLabel`, `actionId`, `title`, `description`, `consequence`, `state`, `confirmControl`, `cancelControl`                                                                                                                                                                |
+| `invariants`         | identidad estable; una única intención confirmable; confirmación distinta de autorización, reautenticación y resultado; consecuencia material perceptible; revalidación autoritativa fuera del componente                                                                         |
+| `invalid_conditions` | acción sin identidad estable; consecuencia material omitida; autorización calculada en la superficie; dos controles equivalentes de commit; resultado declarado por interacción local; datos sensibles innecesarios; cierre interpretado como cancelación de un efecto ya enviado |
+| `compatibility_rule` | una evolución no puede cambiar silenciosamente el significado de campos o estados; cambios incompatibles requieren versión y adopción coordinada por consumidores                                                                                                                 |
+
+---
+
+#### 8. Requisitos específicos de componente compartido
+
+| Campo exigido            | Materialización UI014                                                                                                                                                                |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `component_name`         | `SensitiveActionConfirmation`                                                                                                                                                        |
+| `semantic_api`           | recibe una proyección ya resuelta de la acción y compone controles propietarios sin inferir autoridad ni riesgo                                                                      |
+| `allowed_states`         | `READY`, `PENDING`, `BLOCKED`, `RESULT_UNKNOWN`                                                                                                                                      |
+| `forbidden_content`      | permisos, roles como sustituto de autorización, tokens, secretos, sesión, detalle RLS, payload empresarial completo, evidencia completa, credenciales, datos personales innecesarios |
+| `accessibility_contract` | nombre y descripción accesibles, foco seguro, teclado completo, retorno de foco, jerarquía no dependiente de color y estado material perceptible                                     |
+| `consumer_mapping`       | siete de siete consumidores web reconciliados con decisión explícita y cero adopción física en esta tarea                                                                            |
+| `migration_handoff`      | adopción futura mediante tareas `SHELL-MIG-*`, con paridad, reversibilidad y retiro controlado                                                                                       |
+
+---
+
+#### 9. Superficie conceptual de props
+
+La API conceptual mínima queda:
+
+```ts
+type SensitiveActionConfirmationState =
+  | "READY"
+  | "PENDING"
+  | "BLOCKED"
+  | "RESULT_UNKNOWN";
+
+type SensitiveActionConfirmationProps = {
+  open: boolean;
+  ariaLabel: string;
+  actionId: string;
+  title: string;
+  description: string;
+  consequence: string;
+  resourceLabel?: string;
+  contextSummary?: React.ReactNode;
+  state: SensitiveActionConfirmationState;
+  statusLabel?: string;
+  reasonControl?: React.ReactNode;
+  confirmControl: React.ReactNode;
+  cancelControl: React.ReactNode;
+};
+```
+
+La forma es conceptual. UI014 no fija subdirectorio npm, archivo TypeScript, barrel, mapa de exports ni implementación interna del package.
+
+---
+
+#### 10. Fuente de la necesidad de confirmación
+
+`SensitiveActionConfirmation` no decide si una acción necesita confirmación.
+
+La decisión llega resuelta desde el contrato propietario de la acción y su política de sensibilidad.
+
+Queda prohibido:
+
+```text
+variant="danger" → exigir confirmación
+texto contiene "eliminar" → exigir confirmación
+rol elevado → omitir confirmación
+dispositivo conocido → omitir confirmación
+monto alto inferido en UI → cambiar política
+acción disabled → cambiar política
+```
+
+La capa visual presenta una decisión ya tomada por propietarios canónicos.
+
+---
+
+#### 11. Matriz de tratamiento de políticas heredadas
+
+| Política propietaria ya resuelta     | Tratamiento UI014                                                                                          |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| sin confirmación explícita adicional | la superficie no se presenta por esa causa                                                                 |
+| `EXPLICIT_CONFIRMATION`              | presenta intención, objeto y consecuencia; exige activación explícita del control de confirmación          |
+| `REASON_AND_CONFIRMATION`            | presenta la confirmación y admite un `reasonControl` compuesto por el propietario                          |
+| `SERVER_REVALIDATION`                | no crea por sí sola un prompt; la revalidación se mantiene en la frontera autoritativa                     |
+| `EXTERNAL_RESULT_CONFIRMATION`       | no se confunde intención local con resultado externo; el resultado se confirma desde su fuente propietaria |
+
+UI014 no redefine esos valores ni crea una taxonomía alternativa.
+
+---
+
+#### 12. `EXPLICIT_CONFIRMATION`
+
+Cuando el contrato propietario exige `EXPLICIT_CONFIRMATION`, la superficie debe permitir que el actor comprenda antes de actuar:
+
+- qué acción va a confirmar;
+- sobre qué recurso u objeto aplica;
+- cuál es la consecuencia material relevante;
+- qué contexto material cambia su significado, cuando aplique;
+- cuál control confirma y cuál abandona la intención.
+
+La confirmación debe ser una acción deliberada. Abrir la superficie, navegar hasta ella, enfocar un control o cerrar el contenedor no constituye confirmación.
+
+---
+
+#### 13. `REASON_AND_CONFIRMATION`
+
+Cuando el contrato propietario exige una razón además de la confirmación, `reasonControl` permite componer el control adecuado sin trasladar al package:
+
+- catálogo de razones;
+- obligatoriedad empresarial;
+- reglas de validación;
+- permisos;
+- persistencia;
+- auditoría;
+- evidencia;
+- semántica del reason code.
+
+La capa propietaria conserva esas decisiones y entrega un control ya preparado.
+
+La existencia de una razón tampoco concede autoridad ni convierte una operación inválida en válida.
+
+---
+
+#### 14. `SERVER_REVALIDATION`
+
+`SERVER_REVALIDATION` pertenece a la frontera autoritativa y no debe transformarse automáticamente en una confirmación visual adicional.
+
+Al momento de ejecutar, la capa propietaria conserva, según corresponda, revalidación de:
+
+- actor y principal vigente;
+- permiso exacto;
+- recurso y propiedad;
+- sede, área o ámbito;
+- periodo;
+- estado vigente;
+- transición permitida;
+- versión o concurrencia;
+- idempotencia;
+- precondiciones empresariales.
+
+Una confirmación presentada correctamente no sustituye ninguna de esas validaciones.
+
+---
+
+#### 15. `EXTERNAL_RESULT_CONFIRMATION`
+
+Cuando el resultado depende de un proveedor, dispositivo, sistema financiero u otra fuente externa, la confirmación de intención y la confirmación de resultado son hechos distintos.
+
+Nunca:
+
+```text
+actor confirma intención
+=
+proveedor confirmó resultado
+```
+
+`SensitiveActionConfirmation` puede participar antes del envío, pero no declara por sí misma:
+
+```text
+pagado
+anulado
+entregado
+publicado
+sincronizado
+impreso
+confirmado externamente
+```
+
+El resultado final pertenece a la fuente autoritativa correspondiente.
+
+---
+
+#### 16. Sensibilidad no equivale a estilo visual
+
+Una variante visual como `danger` puede comunicar severidad cuando el propietario así la proyecta, pero no define sensibilidad empresarial.
+
+Por tanto:
+
+```text
+danger ≠ permiso
+danger ≠ clasificación de riesgo
+danger ≠ confirmación obligatoria
+danger ≠ irreversibilidad
+danger ≠ reautenticación
+```
+
+La clasificación permanece en su contrato propietario.
+
+---
+
+#### 17. `actionId`
+
+`actionId` conserva la identidad estable de la misma acción que originó la confirmación.
+
+La superficie no:
+
+- genera un identificador nuevo para la confirmación;
+- concatena textos traducidos;
+- deriva identidad desde el título;
+- usa el label como clave de autorización;
+- sustituye la identidad empresarial por una identidad de modal.
+
+La confirmación es una fase presentacional de una acción ya identificada, no una nueva acción empresarial paralela.
+
+---
+
+#### 18. `title`, `description` y `consequence`
+
+`title` nombra la decisión que el actor está a punto de confirmar.
+
+`description` aporta el contexto necesario para entender la acción.
+
+`consequence` expresa de forma visible el efecto material relevante, especialmente cuando sea destructivo, irreversible, financiero, privilegiado, de custodia, publicación o excepción.
+
+El copy debe evitar que una acción material dependa únicamente de textos genéricos como:
+
+```text
+Confirmar
+Aceptar
+Continuar
+Sí
+Procesar
+```
+
+cuando dichos textos no permitan distinguir objeto y consecuencia.
+
+---
+
+#### 19. `resourceLabel` y `contextSummary`
+
+`resourceLabel` permite identificar humanamente el objeto sobre el que se actuará cuando sea necesario para evitar ambigüedad.
+
+`contextSummary` permite presentar contexto material ya minimizado y preparado por el propietario, por ejemplo una diferencia relevante, periodo, sede, monto o alcance cuando forme parte de la decisión.
+
+La superficie no consulta fuentes empresariales para reconstruir ese contexto.
+
+---
+
+#### 20. Estados de presentación
+
+`SensitiveActionConfirmationState` contiene únicamente:
+
+```text
+READY
+PENDING
+BLOCKED
+RESULT_UNKNOWN
+```
+
+Son estados de presentación de la confirmación, no estados del proceso empresarial, de autorización ni de persistencia.
+
+---
+
+#### 21. `READY`
+
+`READY` significa que la proyección propietaria permite al actor revisar la información y emitir la intención de confirmar.
+
+No significa:
+
+```text
+permiso irrevocable
+reautenticación vigente hasta el commit
+recurso sin cambios concurrentes
+transición todavía válida
+resultado garantizado
+```
+
+El servidor conserva la última palabra al ejecutar.
+
+---
+
+#### 22. `PENDING`
+
+`PENDING` representa que la intención ya fue enviada o la operación equivalente está en curso y todavía no existe resultado autoritativo final.
+
+Durante ese estado:
+
+- se evita una activación equivalente repetida cuando corresponda;
+- se mantiene perceptible qué acción está en curso;
+- no se declara éxito ni fracaso sin evidencia;
+- cerrar visualmente la superficie no se interpreta como cancelación de la operación;
+- no se genera automáticamente un nuevo intento;
+- el control principal no vuelve a `READY` únicamente por timeout local.
+
+---
+
+#### 23. `BLOCKED`
+
+`BLOCKED` representa que la confirmación sigue siendo relevante para comprender la decisión, pero una condición vigente impide confirmarla en ese momento.
+
+La causa debe llegar preparada por la capa propietaria cuando sea material.
+
+Ejemplos de causas posibles, sin convertirlas en lógica del componente:
+
+- reautenticación requerida o vencida;
+- contexto material cambiado;
+- precondición pendiente;
+- recurso ya no elegible;
+- actor o sesión invalidados;
+- control obligatorio incompleto.
+
+El componente no resuelve ni corrige el bloqueo por sí mismo.
+
+---
+
+#### 24. `RESULT_UNKNOWN`
+
+`RESULT_UNKNOWN` representa una operación que pudo haber sido aceptada por la frontera propietaria, pero cuyo resultado final todavía no puede afirmarse.
+
+Este estado es obligatorio cuando un retorno inmediato a `READY` podría inducir duplicados o repetir efectos costosos o irreversibles.
+
+La salida exige reconciliación con la fuente de verdad correspondiente antes de habilitar un nuevo intento equivalente.
+
+---
+
+#### 25. `confirmControl`
+
+`confirmControl` contiene el control ejecutable ya compuesto por la superficie propietaria.
+
+Debe representar una sola intención de commit para la acción confirmada.
+
+Puede componer `Button` u otro control accesible compatible con el contrato de la acción.
+
+La superficie no inspecciona el `ReactNode` para inferir permisos, payload, endpoint, transición o resultado.
+
+---
+
+#### 26. `cancelControl`
+
+`cancelControl` representa la salida segura de la confirmación antes de comprometer una nueva intención.
+
+Debe permanecer perceptivamente subordinada al control de confirmación sin quedar oculta.
+
+Cancelar la superficie:
+
+- no revoca un efecto ya confirmado por servidor;
+- no cancela automáticamente una operación ya enviada;
+- no modifica el recurso empresarial por sí misma;
+- no registra una aprobación negativa salvo que el contrato propietario defina una acción empresarial separada para ello.
+
+---
+
+#### 27. `reasonControl`
+
+`reasonControl` es opcional y aparece únicamente cuando el contrato propietario requiere una entrada adicional asociada a la decisión.
+
+El package compartido no inventa reason codes, no almacena texto libre, no determina qué valores son válidos y no decide qué evidencia debe conservarse.
+
+La validación y persistencia pertenecen al propietario de la acción.
+
+---
+
+#### 28. Composición con `Button`
+
+La composición ordinaria puede reutilizar `Button` de `SHELL-UI-003`:
+
+```text
+SensitiveActionConfirmation
+├─ cancelControl
+│  └─ Button de salida segura
+└─ confirmControl
+   └─ Button de confirmación
+```
+
+UI014 no redefine:
+
+- variantes;
+- tamaños;
+- semántica HTML;
+- `disabled`;
+- `loading`;
+- foco del botón;
+- resultado empresarial.
+
+La variante visual del control se decide según el contrato presentacional, no como sustituto de la clasificación de sensibilidad.
+
+---
+
+#### 29. Confirmación exclusivamente explícita
+
+No cuentan como confirmación:
+
+```text
+abrir el diálogo
+hacer clic en el backdrop
+presionar Escape
+cerrar la superficie
+navegar hacia otra vista
+cambiar el foco
+hacer scroll
+transcurrir un timeout
+```
+
+La intención de confirmar debe producirse únicamente mediante el control de confirmación explícito compuesto para la acción.
+
+---
+
+#### 30. Cierre seguro antes del envío
+
+Antes del envío de la intención, el contenedor puede admitir cierre por mecanismos convencionales únicamente cuando la composición propietaria haya determinado que hacerlo es seguro y no ambiguo.
+
+El cierre debe equivaler a abandonar la confirmación, no a ejecutar la acción.
+
+Cuando exista riesgo de pérdida de información material, el propietario conserva la responsabilidad de prevenir una salida accidental o explicar su efecto.
+
+---
+
+#### 31. Cierre durante `PENDING`
+
+Una vez enviada una operación, el componente no debe permitir que un cierre genérico sea interpretado como cancelación de la operación remota.
+
+La composición propietaria debe mantener una presentación coherente hasta recibir un resultado, entrar en `RESULT_UNKNOWN` o ejecutar una capacidad real de cancelación definida por el dominio.
+
+Una capacidad real de cancelación es una acción empresarial separada y no se inventa dentro de UI014.
+
+---
+
+#### 32. Frontera con autorización
+
+La API base no incorpora:
+
+```text
+permissionCode
+requiredPermissions
+allowedRoles
+roleCode
+canAuthorize
+canExecute
+AuthorizationDecision
+```
+
+La existencia de la superficie no concede autoridad.
+
+Nunca:
+
+```text
+visible = autorizado
+READY = autorizado irrevocablemente
+confirmó = tiene permiso
+canceló = permiso denegado
+```
+
+La decisión autoritativa permanece fuera del componente.
+
+---
+
+#### 33. Frontera con reautenticación
+
+La reautenticación reforzada y la confirmación sensible son controles distintos.
+
+```text
+reautenticación exitosa ≠ permiso
+reautenticación exitosa ≠ confirmación de intención
+confirmación de intención ≠ reautenticación
+```
+
+Cuando la política propietaria exija step-up o reautenticación fuerte, esa capa debe completarse y permanecer vigente según su propio contrato.
+
+UI014 puede reflejar un bloqueo derivado de esa necesidad, pero no solicita credenciales ni valida identidad por sí misma.
+
+---
+
+#### 34. Invalidación por cambio de actor o contexto
+
+Un cambio material de actor, principal, sesión, dispositivo, sede, área, periodo, recurso o versión puede invalidar la proyección que originó la confirmación.
+
+Cuando el propietario detecte esa invalidación:
+
+- la confirmación antigua no debe reutilizarse como autoridad;
+- la información debe reconstruirse desde el estado vigente;
+- cualquier reautenticación vinculada a otro contexto conserva sus reglas propias;
+- la acción debe volver a sus guards autoritativos antes de ejecutar.
+
+La superficie visual no decide por sí sola si la proyección sigue vigente.
+
+---
+
+#### 35. Frontera con doble control y segregación
+
+Una segunda confirmación visual del mismo actor no constituye doble control.
+
+Cuando el dominio exija segregación, cuatro ojos o aprobación por actor distinto:
+
+- la identidad del segundo actor pertenece al sistema de autorización;
+- su decisión debe ser autoritativa y auditable;
+- no se simula con dos botones, dos modales o dos clics del mismo actor;
+- UI014 solo presenta la confirmación que corresponda a cada acción y actor legítimo.
+
+---
+
+#### 36. Concurrencia e idempotencia
+
+La superficie no implementa locks ni idempotencia empresarial.
+
+La capa propietaria conserva:
+
+- clave de idempotencia cuando aplique;
+- versión vigente;
+- correlación;
+- actor y recurso vigentes;
+- manejo de reintentos;
+- reconciliación de resultados.
+
+`PENDING` puede evitar activaciones equivalentes repetidas en la interfaz, pero no sustituye controles de servidor.
+
+---
+
+#### 37. Resultado y recibo
+
+Confirmar una intención no equivale a haber completado la operación.
+
+Los recibos, comprobantes, estados finales, referencias de proveedor y evidencia material se presentan únicamente después de recibir una confirmación autoritativa de la fuente propietaria.
+
+UI014 no fabrica receipts ni almacena evidencia empresarial.
+
+---
+
+#### 38. Relación con `PrimaryActionPanel`
+
+`PrimaryActionPanel` y `SensitiveActionConfirmation` son superficies distintas y complementarias.
+
+```text
+PrimaryActionPanel
+→ presenta la acción principal ya resuelta
+→ actor activa una acción que exige confirmación
+→ capa propietaria prepara la proyección sensible
+→ SensitiveActionConfirmation
+→ actor confirma intención
+→ capa propietaria revalida y ejecuta
+```
+
+Nunca:
+
+```text
+PrimaryActionPanel = confirmación sensible
+SensitiveActionConfirmation = nueva acción principal independiente
+```
+
+La identidad `actionId` debe permanecer estable a través de ambas superficies.
+
+---
+
+#### 39. Relación con AppShell y otras superficies compartidas
+
+AppShell conserva el marco global y no se convierte en motor de confirmación.
+
+`ProcessStatusLine` conserva la posición del proceso y no se modifica por el mero hecho de abrir una confirmación.
+
+`TaskNavigation` conserva destinos de trabajo y no confirma acciones por navegación.
+
+UI014 se compone desde la superficie propietaria que conoce la acción y su contexto minimizado.
+
+---
+
+#### 40. Contenedor visual adaptable
+
+`SensitiveActionConfirmation` define semántica de confirmación, no obliga a una única geometría.
+
+La materialización futura puede presentar la misma semántica mediante un diálogo, sheet u otra composición accesible adecuada al dispositivo, siempre que conserve:
+
+- identidad de acción;
+- objeto y consecuencia;
+- controles explícitos;
+- estados;
+- foco y navegación;
+- fronteras de autoridad;
+- comportamiento de cierre seguro.
+
+Cambiar el contenedor visual no cambia la política empresarial.
+
+---
+
+#### 41. Accesibilidad y foco
+
+La materialización futura debe garantizar:
+
+- nombre accesible de la superficie;
+- asociación perceptible entre título, descripción y consecuencia;
+- foco inicial seguro y coherente con el riesgo;
+- navegación completa por teclado;
+- foco visible;
+- ausencia de trampas no intencionadas;
+- contención de foco cuando la modalidad lo requiera;
+- retorno de foco al invocador cuando el flujo continúa en la misma superficie;
+- ausencia de confirmación accidental por foco inicial o tecla genérica;
+- estados `PENDING`, `BLOCKED` y `RESULT_UNKNOWN` perceptibles sin depender solo de color.
+
+El patrón no obliga a colocar foco inicial en el control destructivo.
+
+---
+
+#### 42. Lectores de pantalla y anuncios
+
+La lectura debe permitir comprender:
+
+- qué acción se confirma;
+- qué objeto o recurso será afectado cuando sea material;
+- cuál es la consecuencia relevante;
+- cuál es el estado actual;
+- cuál control confirma;
+- cuál control abandona la intención.
+
+Los cambios de estado importantes pueden requerir una estrategia de anuncio, pero la superficie no debe repetir mensajes assertivos en cada render ni usar códigos técnicos como texto humano.
+
+---
+
+#### 43. Responsive, tablet y kiosco
+
+La confirmación debe conservar contenido esencial y controles accesibles al cambiar ancho, zoom u orientación.
+
+Puede adaptar disposición física sin cambiar la semántica.
+
+En tablet y kiosco, la aplicación propietaria conserva además las reglas de actor vigente, dispositivo compartido, postura, objetivo táctil y reautenticación aplicables.
+
+UI014 no convierte un dispositivo conocido en autoridad ni elimina controles por conveniencia del layout.
+
+---
+
+#### 44. Localización y terminología
+
+Son localizables:
+
+```text
+ariaLabel
+title
+description
+consequence
+resourceLabel
+statusLabel
+```
+
+Cambiar idioma no cambia `actionId` ni la política propietaria.
+
+Los textos deben usar terminología empresarial aprobada y evitar convertir traducciones en claves de autorización, idempotencia, transición o analítica estable.
+
+---
+
+#### 45. Telemetría
+
+La capa propietaria puede instrumentar, cuando corresponda, eventos diferenciados de:
+
+```text
+presentación de confirmación
+abandono de confirmación
+intención confirmada
+submit
+pending
+bloqueo
+resultado desconocido
+resultado autoritativo
+reintento posterior a reconciliación
+```
+
+`actionId` permite correlación estable.
+
+La telemetría no concede permiso, no altera la política y no debe usar el label traducido como identidad principal.
+
+---
+
+#### 46. Privacidad y minimización
+
+La API base no requiere:
+
+- token;
+- cookie;
+- sesión completa;
+- credenciales;
+- secreto;
+- detalle RLS;
+- payload completo de autorización;
+- documento personal completo;
+- evidencia completa;
+- payload empresarial completo;
+- datos de terceros innecesarios.
+
+La capa propietaria entrega únicamente la información humana mínima para reconocer el objeto, comprender la consecuencia y confirmar con seguridad.
+
+---
+
+#### 47. Evidencia y decisión de SHELL
+
+SHELL conserva un `Modal` local genérico con soporte de título, subtítulo, contenido, footer y cierre convencional.
+
+Ese componente no constituye por sí solo evidencia suficiente de:
+
+- política de sensibilidad;
+- vínculo estable con `actionId`;
+- consecuencia material obligatoria;
+- razón gobernada;
+- bloqueo por reautenticación;
+- `RESULT_UNKNOWN`;
+- revalidación autoritativa;
+- idempotencia;
+- segregación;
+- manejo especializado de cierre durante `PENDING`.
+
+Decisión:
+
+```text
+CANDIDATO_A_ADOPTAR_CON_RECONCILIACION_DE_MODAL_LOCAL
+```
+
+No se promueve el `Modal` local como implementación canónica por esta tarea.
+
+---
+
+#### 48. Matriz materializada de consumidores
+
+| Consumidor | Identidad heredada        | Decisión UI014                                             | Implementación en esta tarea |
+| ---------- | ------------------------- | ---------------------------------------------------------- | ---------------------------- |
+| SHELL      | consumidor web compartido | `CANDIDATO_A_ADOPTAR_CON_RECONCILIACION_DE_MODAL_LOCAL`    | 0                            |
+| NEXO       | consumidor web compartido | `CANDIDATO_A_ADOPTAR_DONDE_EL_CONTRATO_EXIJA_CONFIRMACION` | 0                            |
+| FOGO       | consumidor web compartido | `CANDIDATO_A_ADOPTAR_DONDE_EL_CONTRATO_EXIJA_CONFIRMACION` | 0                            |
+| ORIGO      | consumidor web compartido | `CANDIDATO_A_ADOPTAR_DONDE_EL_CONTRATO_EXIJA_CONFIRMACION` | 0                            |
+| VISO       | consumidor web compartido | `CANDIDATO_A_ADOPTAR_DONDE_EL_CONTRATO_EXIJA_CONFIRMACION` | 0                            |
+| PULSO      | consumidor web compartido | `CANDIDATO_A_ADOPTAR_DONDE_EL_CONTRATO_EXIJA_CONFIRMACION` | 0                            |
+| NUMERA     | consumidor web compartido | `CANDIDATO_A_ADOPTAR_DONDE_EL_CONTRATO_EXIJA_CONFIRMACION` | 0                            |
+
+Control de cobertura:
+
+```text
+consumidores esperados: 7
+consumidores materializados: 7
+faltantes: 0
+duplicados: 0
+adoptados físicamente: 0
+certificados: 0
+```
+
+La decisión no afirma que todos los consumidores tengan hoy una acción sensible equivalente; establece cómo deben adoptar el patrón cuando un contrato propietario proyecte una necesidad de confirmación compatible.
+
+---
+
+#### 49. Forma objetivo de adopción
+
+La adopción futura seguirá esta forma:
+
+```text
+CONTRATO DE ACCIÓN
+        ↓
+SENSIBILIDAD Y POLÍTICA PROPIETARIAS
+        ↓
+AUTORIZACIÓN + CONTEXTO
+        ↓
+ADAPTER DEL CONSUMIDOR
+        ↓
+PROYECCIÓN MÍNIMA DE CONFIRMACIÓN
+        ↓
+SensitiveActionConfirmation
+        ↓
+confirmControl propietario
+        ↓
+REVALIDACIÓN + EJECUCIÓN AUTORITATIVAS
+```
+
+No se migra copiando permisos, handlers empresariales o reason codes al package visual.
+
+---
+
+#### 50. Adapter local permitido
+
+El consumidor puede conservar una capa pequeña para:
+
+- preservar `actionId`;
+- preparar textos localizados;
+- resumir recurso y contexto material;
+- traducir un estado propietario a un estado presentacional válido;
+- componer `reasonControl` cuando corresponda;
+- componer `confirmControl` y `cancelControl`;
+- conectar el control con la infraestructura empresarial propietaria.
+
+No puede usar el adapter para:
+
+- inventar sensibilidad;
+- ampliar permiso;
+- omitir reautenticación requerida;
+- convertir un resultado incierto en éxito;
+- alterar una política por viewport, rol o dispositivo;
+- crear un segundo catálogo empresarial de confirmaciones.
+
+---
+
+#### 51. Handoff a migración coordinada
+
+La adopción física queda en el mini-bloque de migración coordinada.
+
+| Tarea           | Responsabilidad para UI014                                                                           |
+| --------------- | ---------------------------------------------------------------------------------------------------- |
+| `SHELL-MIG-001` | inventariar prompts, modales, alerts, confirmaciones, razones y handlers equivalentes por consumidor |
+| `SHELL-MIG-002` | ordenar adopción en lotes reversibles por repositorio                                                |
+| `SHELL-MIG-003` | establecer compatibilidad temporal y evitar nuevas variantes legacy equivalentes                     |
+| `SHELL-MIG-004` | impedir que scaffolds repliquen patrones antiguos como estándar transversal                          |
+| `SHELL-MIG-005` | adoptar la superficie compartida donde exista contrato compatible                                    |
+| `SHELL-MIG-006` | validar accesibilidad, tema, densidad, responsive y movimiento                                       |
+| `SHELL-MIG-007` | demostrar paridad de identidad, copy, bloqueo, confirmación y resultado antes del retiro             |
+| `SHELL-MIG-008` | retirar únicamente copias sin consumidores residuales                                                |
+
+UI014 no ejecuta ninguno de esos cambios.
+
+---
+
+#### 52. Handoff a calidad, compatibilidad y releases
+
+La futura materialización entra al gobierno del package compartido:
+
+| Tarea          | Responsabilidad                          |
+| -------------- | ---------------------------------------- |
+| `SHELL-CI-001` | pruebas propias del package              |
+| `SHELL-CI-002` | build independiente                      |
+| `SHELL-CI-003` | release versionado                       |
+| `SHELL-CI-004` | changelog                                |
+| `SHELL-CI-005` | matriz de compatibilidad por consumidor  |
+| `SHELL-CI-006` | actualización controlada de consumidores |
+
+La aprobación documental de la API conceptual no equivale a release, instalación ni compatibilidad certificada.
+
+---
+
+#### 53. Contrato futuro de prueba
+
+La materialización y adopción deberán demostrar, como mínimo:
+
+1. una sola intención confirmable por instancia;
+2. identidad estable mediante `actionId`;
+3. cambio de copy sin cambiar automáticamente la identidad;
+4. consecuencia material perceptible antes del commit;
+5. objeto o recurso identificable cuando sea necesario;
+6. ausencia de clasificación de riesgo en la capa visual;
+7. `danger` no usado como fuente de sensibilidad;
+8. ausencia de permisos en la API base;
+9. ausencia de roles para autorizar;
+10. ausencia de cliente Supabase;
+11. ausencia de RPC en la superficie;
+12. confirmación explícita únicamente por su control dedicado;
+13. backdrop no confirma;
+14. `Escape` no confirma;
+15. cierre no confirma;
+16. `READY` no concede autoridad;
+17. `PENDING` no declara resultado;
+18. `BLOCKED` mantiene explicación humana cuando es material;
+19. `RESULT_UNKNOWN` no induce reintento automático;
+20. reintento posterior a reconciliación cuando exista riesgo de duplicado;
+21. `EXPLICIT_CONFIRMATION` preserva intención y consecuencia;
+22. `REASON_AND_CONFIRMATION` no traslada el catálogo de razones al package;
+23. `SERVER_REVALIDATION` permanece fuera de la UI;
+24. `EXTERNAL_RESULT_CONFIRMATION` no se confunde con confirmación local;
+25. reautenticación separada de confirmación;
+26. reautenticación separada de permiso;
+27. cambio material de actor o contexto invalida proyecciones según contrato propietario;
+28. doble control no simulado con dos clics del mismo actor;
+29. una sola acción de commit;
+30. cancelación visual separada de cancelación empresarial;
+31. cierre durante pending no se presenta como cancelación remota;
+32. idempotencia preservada en servidor;
+33. resultado empresarial presentado solo después de verdad autoritativa;
+34. composición compatible con `Button`;
+35. nombre accesible de la superficie;
+36. título, descripción y consecuencia asociados perceptiblemente;
+37. navegación completa por teclado;
+38. foco visible;
+39. foco inicial seguro;
+40. retorno de foco cuando corresponda;
+41. significado no dependiente solo de color;
+42. estados materiales perceptibles a lectores de pantalla;
+43. responsive conserva contenido esencial;
+44. cambio de contenedor visual no cambia semántica;
+45. localización no cambia `actionId`;
+46. datos sensibles innecesarios ausentes de la API base;
+47. telemetría separa intención de resultado;
+48. SHELL reconcilia su `Modal` local antes de adopción;
+49. NEXO adopta solo donde exista contrato compatible;
+50. FOGO adopta solo donde exista contrato compatible;
+51. ORIGO adopta solo donde exista contrato compatible;
+52. VISO adopta solo donde exista contrato compatible;
+53. PULSO adopta solo donde exista contrato compatible;
+54. NUMERA adopta solo donde exista contrato compatible;
+55. rollback por consumidor;
+56. compatibilidad del package antes de ampliar adopción.
+
+Esta lista define evidencia futura y no declara implementación física en UI014.
+
+---
+
+#### 54. Cobertura de requisitos vigente
+
+UI014 reutiliza obligaciones canónicas ya existentes, entre ellas:
+
+| Cobertura                                                   | Requisitos vigentes reutilizados                                                                            |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| confirmación proporcional al riesgo, objeto y consecuencia  | `TREQ-UX-121`, `TREQ-UX-145`, `TREQ-UX-161`, `TREQ-UX-192`, `TREQ-UX-207`, `TREQ-UX-219`                    |
+| copy inequívoco y efecto predecible                         | `TREQ-UX-304`, `TREQ-UX-305`                                                                                |
+| confirmación separada de permiso y reautenticación          | `TREQ-UX-1235`, `TREQ-UX-1236`, `TREQ-AUTH-013`, `TREQ-AUTH-014`, `TREQ-AUTH-063`                           |
+| cambio de actor, sesión o contexto                          | `TREQ-UX-293`, `TREQ-UX-1238`, `TREQ-UX-1239`, `TREQ-AUTH-014`, `TREQ-AUTH-054`                             |
+| prevención de duplicados, idempotencia y resultado incierto | `TREQ-UX-220`, `TREQ-UX-931`                                                                                |
+| acciones secundarias y autorización independiente           | `TREQ-UX-1233`, `TREQ-UX-1234`                                                                              |
+| dispositivos compartidos y step-up sensible                 | `TREQ-UX-174`, `TREQ-AUTH-063`, `TREQ-AUTH-074`                                                             |
+| accesibilidad y recuperación segura                         | `TREQ-UX-179`, `TREQ-UX-183`                                                                                |
+| evidencia correlacionable de acciones protegidas            | `TREQ-AUTH-015`                                                                                             |
+| adopción y gobierno de superficies compartidas              | `TREQ-SHELL-002`, `TREQ-SHELL-006`, `TREQ-SHELL-007`, `TREQ-SHELL-032`, `TREQ-SHELL-036` a `TREQ-SHELL-039` |
+
+La tarea especializa esas obligaciones en una superficie visual común sin alterar su significado.
+
+---
+
+#### 55. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+La cobertura vigente ya exige confirmación proporcional, consecuencia visible, separación de autorización y reautenticación, revalidación de servidor, prevención de duplicados, idempotencia, tratamiento de resultados no confirmados, accesibilidad, dispositivos compartidos, trazabilidad y adopción segura de componentes compartidos.
+
+UI014 define la composición visual común de esas obligaciones sin crear una obligación transversal nueva.
+
+---
+
+#### 56. Límites y fuera de alcance
+
+Quedan fuera de UI014:
+
+- materializar `@vento/ui-web`;
+- crear archivos TypeScript del package;
+- publicar exports;
+- modificar consumidores;
+- clasificar acciones sensibles;
+- crear una taxonomía de riesgo;
+- crear o cambiar permisos;
+- resolver autorización;
+- ejecutar reautenticación;
+- crear credenciales o sesiones;
+- crear reason codes;
+- persistir razones;
+- implementar doble control;
+- implementar Server Actions;
+- implementar endpoints;
+- implementar RPC;
+- implementar queries;
+- implementar mutaciones;
+- implementar máquinas de estados;
+- implementar idempotencia empresarial;
+- implementar reconciliación de proveedor;
+- crear SQL o migraciones;
+- modificar Supabase;
+- emitir recibos empresariales;
+- publicar releases;
+- desplegar;
+- retirar código legacy.
+
+---
+
+#### 57. Evidencia de validación y criterios de aceptación documental
+
+La aceptación documental exige que la definición cumpla simultáneamente:
+
+- [x] existe una identidad única `SensitiveActionConfirmation`;
+- [x] pertenece conceptualmente a `@vento/ui-web`;
+- [x] se define como superficie presentacional y no como autoridad;
+- [x] la necesidad de confirmación llega resuelta desde el propietario;
+- [x] no se crea una taxonomía paralela de sensibilidad;
+- [x] `danger` no clasifica riesgo por sí solo;
+- [x] se conserva `actionId` estable;
+- [x] existe copy explícito de título, descripción y consecuencia;
+- [x] existe un único control de commit;
+- [x] existe salida segura diferenciada;
+- [x] `reasonControl` no absorbe gobierno empresarial de razones;
+- [x] se definen `READY`, `PENDING`, `BLOCKED` y `RESULT_UNKNOWN`;
+- [x] `READY` no concede autoridad;
+- [x] `PENDING` no declara resultado;
+- [x] `RESULT_UNKNOWN` exige reconciliación antes de retry equivalente cuando aplique;
+- [x] backdrop, `Escape`, cierre y navegación no confirman;
+- [x] cierre durante pending no se interpreta como cancelación remota;
+- [x] autorización permanece fuera de la API base;
+- [x] reautenticación permanece separada;
+- [x] revalidación de servidor permanece separada;
+- [x] doble control no se simula con dos confirmaciones del mismo actor;
+- [x] idempotencia permanece en la capa propietaria;
+- [x] resultado externo permanece separado de intención local;
+- [x] se compone con `Button` cuando corresponde;
+- [x] se define un contenedor visual adaptable sin cambiar semántica;
+- [x] se cubren teclado, foco y lectores de pantalla;
+- [x] se cubren responsive, tablet y kiosco sin ampliar autoridad;
+- [x] se cubre localización sin cambiar identidad;
+- [x] se cubre telemetría sin convertirla en autoridad;
+- [x] se minimizan datos sensibles;
+- [x] SHELL queda reconciliado con decisión explícita;
+- [x] NEXO queda reconciliado con decisión explícita;
+- [x] FOGO queda reconciliado con decisión explícita;
+- [x] ORIGO queda reconciliado con decisión explícita;
+- [x] VISO queda reconciliado con decisión explícita;
+- [x] PULSO queda reconciliado con decisión explícita;
+- [x] NUMERA queda reconciliado con decisión explícita;
+- [x] la matriz cubre siete de siete consumidores;
+- [x] faltantes y duplicados son cero;
+- [x] adopción física es cero;
+- [x] se define handoff de migración;
+- [x] se define handoff de calidad y releases;
+- [x] la cobertura vigente evita crear requisitos duplicados;
+- [x] requisitos creados y modificados son cero;
+- [x] no se autoriza implementación física;
+- [x] la siguiente tarea queda únicamente reservada.
+
+---
+
+#### 58. Decisiones consolidadas
+
+Quedan fijadas las siguientes decisiones vinculantes:
+
+1. La superficie conceptual se denomina `SensitiveActionConfirmation`.
+2. Pertenece conceptualmente a `@vento/ui-web`.
+3. Presenta una confirmación sensible ya requerida por un contrato propietario.
+4. No clasifica sensibilidad.
+5. No deriva sensibilidad desde la variante `danger`.
+6. No concede autorización.
+7. No sustituye reautenticación.
+8. No sustituye revalidación de servidor.
+9. No ejecuta mutaciones por sí misma.
+10. No declara resultado empresarial por interacción local.
+11. `actionId` conserva la identidad de la acción original.
+12. La confirmación no crea una nueva identidad empresarial.
+13. La API base incluye `open`.
+14. La API base incluye `ariaLabel`.
+15. La API base incluye `actionId`.
+16. La API base incluye `title`.
+17. La API base incluye `description`.
+18. La API base incluye `consequence`.
+19. `resourceLabel` es opcional.
+20. `contextSummary` es opcional.
+21. `statusLabel` es opcional.
+22. `reasonControl` es opcional y gobernado por el propietario.
+23. Existe exactamente un `confirmControl`.
+24. Existe exactamente un `cancelControl`.
+25. Los estados base son `READY`, `PENDING`, `BLOCKED` y `RESULT_UNKNOWN`.
+26. `READY` no significa permiso irrevocable.
+27. `PENDING` no significa éxito.
+28. `BLOCKED` no otorga bypass.
+29. `RESULT_UNKNOWN` no vuelve automáticamente a `READY`.
+30. `EXPLICIT_CONFIRMATION` se presenta como intención explícita.
+31. `REASON_AND_CONFIRMATION` admite razón propietaria sin trasladar su catálogo al package.
+32. `SERVER_REVALIDATION` no crea por sí sola una confirmación visual adicional.
+33. `EXTERNAL_RESULT_CONFIRMATION` permanece separada de la confirmación de intención.
+34. Abrir la superficie no confirma.
+35. Backdrop no confirma.
+36. `Escape` no confirma.
+37. Cerrar no confirma.
+38. Navegar no confirma.
+39. El cierre previo al envío solo abandona la intención cuando sea seguro.
+40. El cierre durante pending no se presenta como cancelación de la operación.
+41. Una cancelación empresarial real requiere su propio contrato.
+42. La reautenticación fuerte no concede permiso.
+43. La reautenticación fuerte no equivale a confirmación.
+44. Cambios materiales de actor o contexto pueden invalidar la proyección propietaria.
+45. Doble control no se simula con dos clics del mismo actor.
+46. Idempotencia permanece fuera de la superficie visual.
+47. El resultado final proviene de una fuente autoritativa.
+48. `Button` puede componer controles sin absorber semántica empresarial.
+49. La geometría visual puede adaptarse sin cambiar semántica.
+50. La accesibilidad exige nombre, contexto, foco seguro y teclado completo.
+51. La API base minimiza datos sensibles.
+52. SHELL queda `CANDIDATO_A_ADOPTAR_CON_RECONCILIACION_DE_MODAL_LOCAL`.
+53. NEXO queda `CANDIDATO_A_ADOPTAR_DONDE_EL_CONTRATO_EXIJA_CONFIRMACION`.
+54. FOGO queda `CANDIDATO_A_ADOPTAR_DONDE_EL_CONTRATO_EXIJA_CONFIRMACION`.
+55. ORIGO queda `CANDIDATO_A_ADOPTAR_DONDE_EL_CONTRATO_EXIJA_CONFIRMACION`.
+56. VISO queda `CANDIDATO_A_ADOPTAR_DONDE_EL_CONTRATO_EXIJA_CONFIRMACION`.
+57. PULSO queda `CANDIDATO_A_ADOPTAR_DONDE_EL_CONTRATO_EXIJA_CONFIRMACION`.
+58. NUMERA queda `CANDIDATO_A_ADOPTAR_DONDE_EL_CONTRATO_EXIJA_CONFIRMACION`.
+59. La matriz cubre siete de siete consumidores, sin faltantes ni duplicados.
+60. La adopción física queda diferida al gobierno `SHELL-MIG-*` y `SHELL-CI-*`.
+61. UI014 crea cero requisitos de prueba y modifica cero.
+62. UI014 no produce cambios de Supabase.
+
+---
+
+#### 59. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-UI-013 — Compartir panel de acción principal`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-UI-014 — Compartir confirmaciones de acciones sensibles`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-UI-015 — Compartir diagnóstico de contexto`
+
+
 ### [ ] SHELL-UI-015 — Compartir diagnóstico de contexto
 ### [ ] SHELL-UI-016 — Compartir estados de error recuperable
 ### [ ] SHELL-UI-017 — Compartir patrón para tablet
