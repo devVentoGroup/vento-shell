@@ -6597,4 +6597,1290 @@ SHELL-CON-023 — Crear contrato de idempotencia y conciliación
 SHELL-CON-024 — Crear contrato de cuarentena, rechazo y compensación
 
 
-### [ ] SHELL-CON-024 — Crear contrato de cuarentena, rechazo y compensación
+### ✅ SHELL-CON-024 — Crear contrato de cuarentena, rechazo y compensación
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CON-023 — Crear contrato de idempotencia y conciliación
+**Tarea siguiente:** SHELL-NORM-001 — Crear @vento/data-normalization
+**Tipo de tarea:** Documental; definición normativa y materializada del contrato compartido de cuarentena, rechazo y compensación para integraciones, preservando los vocabularios transversales de error parcial, idempotencia, conciliación y compensación, las especializaciones externas y POS ya aprobadas y las fronteras de propiedad, sin implementar código, persistencia, colas, workers, migraciones ni cambios en Supabase
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md`
+**Superficie lógica objetivo:** `@vento/contracts/integrations`
+**Estado físico resultante:** `CONTRATO_COMPARTIDO_DE_CUARENTENA_RECHAZO_Y_COMPENSACION_DEFINIDO_NO_MATERIALIZADO`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, Storage, Edge Functions, colas, workers, endpoints, secretos, credenciales, proveedores, datos, configuración remota o despliegues:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-024` cierra la familia de contratos compartidos de integraciones externas definiendo una forma única y consumible para representar qué ocurre cuando una unidad de integración no puede continuar normalmente, debe aislarse, debe rechazarse de forma terminal, requiere intervención o debe enlazarse con una compensación de un efecto ya confirmado.
+
+La regla central es:
+
+```text
+FALLO O PARCIALIDAD IDENTIFICADOS
++
+UNIDAD Y PROPIETARIA IDENTIFICADAS
++
+IDENTIDAD E IDEMPOTENCIA PRESERVADAS
++
+EVIDENCIA PROTEGIDA
++
+DISPOSICIÓN EXPLÍCITA
++
+AUTORIDAD Y SIGUIENTE ACCIÓN
+=
+TRATAMIENTO TRAZABLE SIN FABRICAR RESULTADOS
+```
+
+Y se mantiene obligatoriamente:
+
+```text
+CUARENTENA
+≠
+DEAD-LETTER
+≠
+RECHAZO EMPRESARIAL
+≠
+RESULTADO DESCONOCIDO
+≠
+CONCILIACIÓN
+≠
+COMPENSACIÓN
+≠
+CONTINGENCIA
+```
+
+El contrato compartido no crea una máquina empresarial nueva. Centraliza en `@vento/contracts/integrations` la semántica ya aprobada por las políticas transversales y por las especializaciones de integraciones externas y POS, para que futuros adaptadores, colas, persistencia y consumidoras puedan usar referencias compatibles sin inventar taxonomías locales.
+
+---
+
+#### 2. Resultado canónico
+
+Quedan definidos lógicamente dentro de `@vento/contracts/integrations` los siguientes artefactos compartidos:
+
+1. `IntegrationDispositionCaseId`, identidad estable, opaca y no secreta de un caso de disposición materializado;
+2. `IntegrationDispositionCaseRef`, referencia mínima hacia un caso identificado;
+3. `IntegrationDispositionCase`, sobre lógico común que enlaza unidad afectada, parcialidad, disposición, evidencia, autoridad, siguiente acción y cierre;
+4. `IntegrationFailureScope`, adopción compartida de los ocho alcances cerrados de fallo;
+5. `IntegrationPartialityClass`, adopción compartida de las nueve clases cerradas de parcialidad;
+6. `IntegrationDisposition`, adopción compartida de las doce disposiciones cerradas;
+7. `IntegrationQuarantineReason`, adopción compartida de las ocho razones transversales de cuarentena;
+8. `IntegrationQuarantineRef`, referencia tipada a una materialización de cuarentena;
+9. `IntegrationDeadLetterGate`, adopción compartida de las siete puertas acumulativas de dead-letter;
+10. `IntegrationDeadLetterRef`, referencia tipada a una materialización dead-letter cuando todas sus puertas sean satisfechas;
+11. `IntegrationManualInterventionAction`, adopción compartida de las diez acciones manuales autorizables;
+12. `IntegrationCompensationPlanRef`, referencia tipada hacia un plan compensatorio gobernado por `ENTERPRISE-EVENT-COMPENSATION-POLICY-001`.
+
+El contrato reutiliza, sin duplicarlos:
+
+- `IntegrationIdempotencyRef` de `SHELL-CON-023`;
+- `IntegrationReconciliationRef` de `SHELL-CON-023`;
+- `IntegrationReconciliationClosureOutcome` de `SHELL-CON-023`;
+- `IntegrationPrincipalRef` de `SHELL-CON-017`;
+- `ExternalCredentialRef` de `SHELL-CON-018`;
+- `ExternalReceivedEvent` de `SHELL-CON-019`;
+- `ExternalIdentifierMappingRef` de `SHELL-CON-022`.
+
+Esta tarea no crea archivos TypeScript, exports, JSON Schema, tablas, índices, registros operativos, colas, workers, casos reales ni consumidores migrados.
+
+---
+
+#### 3. Fuentes y precedencia
+
+`SHELL-CON-024` consume y conserva sin redefinir:
+
+| Fuente                                    | Autoridad preservada                                                                                                    |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-CON-001`                           | `@vento/contracts` como superficie estática sin runtime, red, secretos ni persistencia                                  |
+| `SHELL-CON-017`                           | identidad del principal técnico separada de actor, credencial y efecto                                                  |
+| `SHELL-CON-018`                           | referencia de credencial sin secreto                                                                                    |
+| `SHELL-CON-019`                           | recepción externa, evidencia, receipt y referencias de procesamiento                                                    |
+| `SHELL-CON-022`                           | mappings externos tipados, estados de resolución y ausencia de equivalencias heurísticas                                |
+| `SHELL-CON-023`                           | identidad idempotente, claim externo, resultado recuperable y conciliación compartida                                   |
+| `INT-APP-006`                             | política transversal de compensación, reversibilidad, etapas, planes, idempotencia y resultados                         |
+| `INT-APP-009`                             | política transversal de error parcial, alcances, clases, disposiciones, cuarentena, dead-letter, intervención y cierres |
+| `INT-EXT-016`                             | especialización de cuarentena y dead-letter para el universo externo                                                    |
+| `INT-EXT-017`                             | auditoría, observabilidad y conciliación externa                                                                        |
+| `INT-POS-012`                             | especialización de cuarentena por línea de venta sin mapping suficiente                                                 |
+| `INT-POS-019`                             | compensaciones de reversos sin borrar la operación original                                                             |
+| `INT-POS-020`                             | conciliación de ventas y efectos internos durante la transición POS                                                     |
+| `INT-DB-006`                              | persistencia física posterior de cuarentena y errores no procesables                                                    |
+| `INT-DB-007`                              | auditoría física posterior de procesamiento, reintentos y compensaciones                                                |
+| `INT-DB-008`                              | mecanismos físicos posteriores de conciliación por integración                                                          |
+| Registro Canónico de Requisitos de Prueba | cobertura vigente de idempotencia, parcialidad, cuarentena, dead-letter, compensación, auditoría y conciliación         |
+
+Precedencia aplicable:
+
+```text
+POLÍTICAS TRANSVERSALES INT-APP
+→ vocabularios y garantías comunes
+
+ESPECIALIZACIONES INT-EXT / INT-POS
+→ decisiones propietarias por superficie o dominio
+
+SHELL-CON-024
+→ forma compartida consumible sin cambiar las decisiones propietarias
+
+INT-DB / QUEUE-ARC / paquetes de implementación
+→ materialización física posterior
+```
+
+Una especialización aprobada posterior conserva precedencia sobre un diagnóstico histórico anterior. En particular, `EXT-SYS-013` se trata con la especialización POS vigente y no se restaura a un estado de ausencia de binding ya superado documentalmente.
+
+---
+
+#### 4. Frontera exacta de la tarea
+
+La tarea incluye:
+
+- identidad lógica del caso compartido de disposición;
+- referencias compartidas a cuarentena, dead-letter y compensación;
+- los ocho alcances de fallo ya aprobados;
+- las nueve clases de parcialidad ya aprobadas;
+- las doce disposiciones ya aprobadas;
+- las ocho razones transversales de cuarentena ya aprobadas;
+- las siete puertas acumulativas de dead-letter ya aprobadas;
+- las diez acciones manuales autorizables ya aprobadas;
+- reglas de rechazo terminal seguro;
+- precedencia de resultado desconocido y conciliación;
+- reglas de reproceso sin cambio de identidad empresarial;
+- reglas de sucesión cuando cambia la intención o el contenido material;
+- enlace con la política transversal de compensación;
+- preservación de historial, evidencia, ownership, sensibilidad, auditoría y residuales;
+- adopción explícita para las veintiuna identidades externas vigentes;
+- handoffs a las tareas físicas propietarias.
+
+Quedan fuera:
+
+- persistencia física;
+- tablas, columnas, índices o constraints;
+- colas, topics, workers, cron o schedulers;
+- mecanismos de claim físicos;
+- APIs o endpoints;
+- implementación de retry o reprocess;
+- ejecución de compensaciones;
+- cambios de estados empresariales reales;
+- escritura sobre ledgers propietarios;
+- creación de payloads o casos operativos;
+- secretos y credenciales;
+- RLS, grants, RPC o funciones;
+- observabilidad desplegada;
+- cambios en Supabase;
+- cambios en proveedores o bindings;
+- definición de la siguiente familia `SHELL-NORM-*`.
+
+---
+
+#### 5. Separaciones semánticas obligatorias
+
+El contrato preserva estas desigualdades:
+
+```text
+CASO DE DISPOSICIÓN
+≠ OPERACIÓN EMPRESARIAL
+≠ EVENTO
+≠ RECEIPT
+≠ RESULTADO EMPRESARIAL
+≠ INTENTO TÉCNICO
+≠ CLAVE IDEMPOTENTE
+≠ CASO DE CONCILIACIÓN
+≠ PLAN DE COMPENSACIÓN
+```
+
+```text
+CUARENTENA
+→ aislamiento controlado de una unidad que no puede continuar de forma segura
+
+DEAD-LETTER
+→ disposición operacional posterior a puertas acumulativas satisfechas
+
+RECHAZO TERMINAL
+→ decisión de no aceptar o no aplicar la unidad cuando se demuestra ausencia de efecto y no existe incertidumbre
+
+COMPENSACIÓN
+→ efecto nuevo, propietario e idempotente que trata un efecto original confirmado
+```
+
+Ninguna de estas formas sustituye la otra por conveniencia técnica.
+
+---
+
+#### 6. Identidad de `IntegrationDispositionCaseId`
+
+`IntegrationDispositionCaseId` identifica un caso concreto de tratamiento y no la operación empresarial original.
+
+Reglas:
+
+1. es estable durante la vida del caso;
+2. es opaco y no secreto;
+3. no se deriva de payload, importe, fecha, correo, teléfono, producto, proveedor o texto de error;
+4. no reutiliza `event_id`, `receipt_id`, `attempt_id`, `delivery_id`, `mapping_id`, `sale_id`, `sale_line_id`, `correlation_id` o una idempotency key;
+5. un nuevo intento técnico del mismo caso no crea automáticamente otro caso;
+6. una nueva intención material puede requerir un caso sucesor enlazado, sin reinterpretar el caso anterior;
+7. cerrar un caso no libera su identidad para reutilización;
+8. esta tarea no fija UUID, prefijo, slug, longitud ni representación física.
+
+---
+
+#### 7. Alcances cerrados de fallo
+
+`IntegrationFailureScope` adopta exactamente los ocho alcances de `ENTERPRISE-PARTIAL-ERROR-HANDLING-POLICY-001`:
+
+```text
+REQUEST_OR_COMMAND
+OWNER_TRANSACTION
+EVENT_EMISSION
+DELIVERY
+CONSUMER_EFFECT
+BATCH_OR_BULK_ITEM
+EXTERNAL_EXCHANGE
+OFFLINE_OR_EVIDENCE
+```
+
+Reglas:
+
+1. cada caso tiene un alcance primario;
+2. puede enlazar alcances secundarios sin fusionar identidades;
+3. el alcance determina dónde ocurrió el problema, no quién puede corregirlo;
+4. un fallo de entrega no convierte automáticamente el hecho propietario en fallido;
+5. un fallo de consumidora no reabre el commit de la productora;
+6. un error externo no concede al adaptador autoridad sobre el dominio consumidor;
+7. un lote conserva resultado por unidad y no usa el resumen global como sustituto.
+
+---
+
+#### 8. Clases cerradas de parcialidad
+
+`IntegrationPartialityClass` adopta exactamente:
+
+```text
+NO_EFFECT_CONFIRMED
+SOME_EFFECTS_CONFIRMED
+SOME_EFFECTS_UNKNOWN
+ALL_EFFECTS_UNKNOWN
+DEPENDENCY_INCOMPLETE
+CONFLICTING_RESULTS
+UNTRUSTED_OR_TAMPERED_INPUT
+CONTRACT_OR_SCHEMA_INCOMPATIBLE
+EXTERNAL_STATE_DIVERGENCE
+```
+
+La clase no es una disposición. Por ejemplo:
+
+- `UNTRUSTED_OR_TAMPERED_INPUT` puede conducir a `QUARANTINE` o a rechazo según evidencia y contrato;
+- `SOME_EFFECTS_UNKNOWN` exige indagación o conciliación antes de decidir sobre efectos inciertos;
+- `SOME_EFFECTS_CONFIRMED` permite evaluar compensación únicamente para los efectos confirmados elegibles;
+- `EXTERNAL_STATE_DIVERGENCE` conduce ordinariamente a conciliación y no a sobrescritura automática.
+
+---
+
+#### 9. Disposiciones cerradas
+
+`IntegrationDisposition` adopta exactamente las doce disposiciones transversales:
+
+```text
+RETRY_SAME_OPERATION
+WAIT_FOR_DEPENDENCY
+QUERY_AUTHORITATIVE_RESULT
+RECONCILE
+QUARANTINE
+DEAD_LETTER_CANDIDATE
+MANUAL_INTERVENTION_REQUIRED
+PERMANENTLY_REJECT
+COMPENSATE_CONFIRMED_EFFECTS
+CREATE_CORRECTION_OR_SUCCESSOR
+CONTINUE_INDEPENDENT_UNITS
+BLOCK_DEPENDENT_UNITS
+```
+
+Reglas:
+
+1. la disposición se elige sobre evidencia y autoridad, no por texto libre de error;
+2. `RETRY_SAME_OPERATION` conserva identidad, huella e idempotencia;
+3. `QUERY_AUTHORITATIVE_RESULT` precede cualquier repetición cuando el efecto pueda haber ocurrido;
+4. `RECONCILE` no significa reprocess;
+5. `QUARANTINE` no significa rechazo;
+6. `DEAD_LETTER_CANDIDATE` no significa cierre;
+7. `PERMANENTLY_REJECT` exige certeza suficiente de ausencia de efecto incompatible;
+8. `COMPENSATE_CONFIRMED_EFFECTS` aplica solo a efectos confirmados y reversibles o compensables;
+9. `CREATE_CORRECTION_OR_SUCCESSOR` conserva el original;
+10. unidades independientes pueden continuar aunque otra quede bloqueada;
+11. dependientes no pueden continuar a través de una precondición irresuelta.
+
+---
+
+#### 10. Contrato de cuarentena
+
+Una unidad entra a cuarentena cuando debe preservarse pero no puede continuar de forma segura bajo el contrato vigente.
+
+La cuarentena compartida exige, cuando aplique:
+
+- identidad estable de la unidad;
+- alcance de fallo;
+- clase de parcialidad;
+- disposición `QUARANTINE`;
+- razón transversal;
+- referencia a evidencia protegida;
+- huella o integridad aplicable;
+- versión de schema o contrato relevante;
+- sistema, ambiente y superficie cuando sea externa;
+- propietaria del hecho;
+- responsable operativo;
+- siguiente acción;
+- referencia de autorización cuando exista intervención;
+- referencias de auditoría y conciliación;
+- política de retención y legal hold cuando corresponda.
+
+La cuarentena no modifica la fuente empresarial ni transforma la unidad en un nuevo hecho.
+
+---
+
+#### 11. Razones transversales de cuarentena
+
+`IntegrationQuarantineReason` adopta exactamente:
+
+```text
+UNTRUSTED_SIGNATURE_OR_AUTHENTICITY
+SCHEMA_OR_VERSION_UNSUPPORTED
+PAYLOAD_INTEGRITY_FAILED
+IDENTITY_OR_ROUTING_AMBIGUOUS
+SENSITIVITY_OR_POLICY_VIOLATION
+REPEATED_POISON_MESSAGE
+EVIDENCE_LINKAGE_INVALID
+MANUAL_HOLD_FOR_INVESTIGATION
+```
+
+Reglas:
+
+1. el vocabulario compartido no se amplía por conveniencia de proveedor;
+2. un detalle propietario puede conservarse por referencia o campo especializado sin crear otra taxonomía transversal;
+3. una razón no determina por sí sola terminalidad;
+4. un mensaje no confiable no se transforma en confiable por reprocesarlo;
+5. `MANUAL_HOLD_FOR_INVESTIGATION` requiere responsable y condición de salida;
+6. `REPEATED_POISON_MESSAGE` no reemplaza la clasificación original del fallo;
+7. una razón de cuarentena no es un estado empresarial de venta, pago, inventario, fidelización o documento.
+
+---
+
+#### 12. Especializaciones propietarias de cuarentena
+
+El contrato compartido permite una especialización propietaria sin sustituir el vocabulario transversal.
+
+Forma conceptual:
+
+```text
+IntegrationQuarantineRef
++
+shared_quarantine_reason
++
+owner_specialization_ref
++
+owner_resolution_detail
+```
+
+Reglas:
+
+1. `owner_specialization_ref` identifica el contrato propietario que explica la condición concreta;
+2. `owner_resolution_detail` conserva el detalle especializado sin convertirlo en enum global;
+3. la especialización no puede relajar seguridad, integridad, identidad o ownership compartidos;
+4. una razón propietaria no se promociona automáticamente a razón transversal;
+5. la proyección compartida debe conservar suficiente información para reconstruir la decisión propietaria.
+
+Para POS, `EXTERNAL-SALE-LINE-QUARANTINE-001` conserva sus razones especializadas y la línea de venta como unidad propietaria. `SHELL-CON-024` no cambia esa taxonomía ni convierte la venta completa, archivo o lote en la unidad de cuarentena POS.
+
+---
+
+#### 13. Estado de una unidad en cuarentena
+
+Una unidad en cuarentena conserva:
+
+```text
+IDENTIDAD ORIGINAL
++
+CONTENIDO O EVIDENCIA ORIGINAL PROTEGIDOS
++
+HUELLA / INTEGRIDAD
++
+CONTRATO Y VERSIÓN
++
+PROCEDENCIA
++
+RAZÓN
++
+PROPIETARIA
++
+RESPONSABLE
++
+SIGUIENTE ACCIÓN
+```
+
+Queda prohibido:
+
+- regenerar una identidad para hacer pasar la unidad como nueva;
+- editar el contenido original para eliminar la causa;
+- aplicar automáticamente el efecto empresarial;
+- liberar por antigüedad;
+- liberar por desaparición de una alerta;
+- asumir que el elemento no produjo efectos únicamente porque esté aislado;
+- usar cuarentena como almacén de secretos o payloads sensibles innecesarios.
+
+---
+
+#### 14. Contrato de dead-letter
+
+`IntegrationDeadLetterRef` referencia una unidad que alcanzó la disposición operacional de dead-letter conforme a todas las puertas requeridas.
+
+Dead-letter no es un fracaso empresarial terminal por definición. Representa que la automatización ordinaria ya no debe seguir repitiendo la unidad y que el caso conserva tratamiento explícito.
+
+La promoción desde cuarentena, retry agotado u otra condición hacia dead-letter exige evaluar las siete puertas y conservar el resultado de cada una.
+
+---
+
+#### 15. Siete puertas acumulativas de dead-letter
+
+`IntegrationDeadLetterGate` adopta exactamente:
+
+```text
+AUTOMATION_BUDGET_CLOSED
+ITEM_ISOLATED
+IDENTITY_AND_CONTENT_PRESERVED
+BUSINESS_OUTCOME_CLASSIFIED_OR_RECONCILIATION_OPEN
+OWNER_AND_NEXT_ACTION_ASSIGNED
+REPROCESSING_REQUIRES_AUTHORIZATION
+RETENTION_AND_AUDIT_DEFINED
+```
+
+Reglas:
+
+1. las siete puertas son acumulativas;
+2. una puerta falsa impide presentar el caso como dead-letter completo;
+3. retry agotado satisface como máximo la puerta de presupuesto y no las otras seis;
+4. `BUSINESS_OUTCOME_CLASSIFIED_OR_RECONCILIATION_OPEN` permite mantener incertidumbre solo si la conciliación permanece explícitamente abierta;
+5. dead-letter no elimina la necesidad de propietaria ni siguiente acción;
+6. un caso dead-letter puede requerir reprocess, rechazo, conciliación, corrección o compensación según evidencia;
+7. la antigüedad por sí sola no satisface ninguna puerta de negocio.
+
+---
+
+#### 16. Rechazo terminal seguro
+
+`PERMANENTLY_REJECT` solo es válido cuando puede demostrarse que la unidad exacta no produjo un efecto empresarial que deba conservarse o compensarse y que no existe resultado desconocido material pendiente.
+
+Condiciones mínimas:
+
+1. identidad de la unidad conocida;
+2. contrato aplicable conocido;
+3. causa terminal demostrada;
+4. ausencia de efecto incompatible demostrada para la unidad que se rechaza;
+5. ausencia de `OUTCOME_UNKNOWN` o `RESULT_UNKNOWN` sin resolver;
+6. ausencia de efecto parcial que deba permanecer visible;
+7. propietaria y autoridad de la decisión identificadas;
+8. evidencia y auditoría suficientes;
+9. cierre permitido por el vocabulario vigente.
+
+Un rechazo de autenticidad o schema puede ser terminal para la entrada recibida, pero no autoriza a inventar el estado del hecho externo que dicha entrada pretendía representar.
+
+---
+
+#### 17. Precedencia del resultado desconocido
+
+Cuando existe posibilidad material de que un efecto haya ocurrido, se aplica:
+
+```text
+RESULTADO DESCONOCIDO
+→ CONSULTAR FUENTE AUTORITATIVA O RECEIPT
+   → EFECTO CONFIRMADO: RECUPERAR RESULTADO O EVALUAR COMPENSACIÓN SI PROCEDE
+   → AUSENCIA DE EFECTO DEMOSTRADA: EVALUAR RETRY O RECHAZO SEGÚN CONTRATO
+   → INDETERMINADO: RECONCILIATION_REQUIRED
+```
+
+Reglas:
+
+1. timeout no equivale a fracaso;
+2. ausencia de respuesta no equivale a ausencia de efecto;
+3. dead-letter no resuelve la incertidumbre;
+4. cuarentena no resuelve la incertidumbre;
+5. rechazo no puede usarse para cerrar una incertidumbre;
+6. compensación no se inicia para un efecto que solo podría haber ocurrido;
+7. un caso puede estar aislado operacionalmente y simultáneamente conservar conciliación abierta.
+
+`OUTCOME_UNKNOWN` del claim externo y `RESULT_UNKNOWN` de la máquina de pendientes permanecen capas distintas y se enlazan sin fusionarse.
+
+---
+
+#### 18. Intervención manual autorizable
+
+`IntegrationManualInterventionAction` adopta exactamente las diez acciones aprobadas:
+
+```text
+RETRY_AUTHORIZED
+QUERY_RECEIPT
+CORRECT_METADATA
+CREATE_SUCCESSOR
+RELINK_EVIDENCE
+REPROCESS_FROM_QUARANTINE
+REPROCESS_FROM_DEAD_LETTER
+PERMANENT_REJECT
+START_RECONCILIATION
+START_COMPENSATION
+```
+
+Toda intervención debe poder reconstruir:
+
+- actor o principal;
+- autoridad vigente;
+- motivo;
+- alcance exacto;
+- hipótesis o fundamento;
+- estado anterior;
+- evidencia consultada;
+- acción seleccionada;
+- intento resultante cuando corresponda;
+- resultado;
+- referencias de auditoría;
+- siguiente acción si el caso permanece abierto.
+
+Recibir una alerta, pertenecer a soporte o tener acceso de lectura no concede automáticamente autoridad para ejecutar una de estas acciones.
+
+---
+
+#### 19. Reproceso de la misma intención
+
+Un reproceso legítimo desde cuarentena o dead-letter conserva la operación empresarial original cuando la intención no cambió.
+
+Debe conservar:
+
+- identidad empresarial;
+- idempotency scope y key;
+- huella lógica compatible;
+- event ID, command ID o external identity aplicable;
+- propietaria;
+- finalidad;
+- sensibilidad;
+- correlación;
+- evidencia fuente;
+- presupuesto y antecedentes de retry conforme a la política aplicable.
+
+Solo cambian metadatos técnicos propios del nuevo intento, como `attempt_id`, tiempo y traza.
+
+Nunca:
+
+```text
+REPROCESS
+→ NUEVA IDENTIDAD EMPRESARIAL
+→ SEGUNDO EFECTO
+```
+
+---
+
+#### 20. Cambio material y sucesión
+
+Si para poder continuar es necesario cambiar materialmente la intención, payload empresarial, recurso, importe, cantidad, destinatario, versión incompatible, acción o autoridad del hecho, ya no existe un simple reproceso.
+
+Se aplica:
+
+```text
+CASO ORIGINAL
++
+CAMBIO MATERIAL AUTORIZADO
+→ CREATE_CORRECTION_OR_SUCCESSOR
+→ NUEVA IDENTIDAD PARA LA NUEVA INTENCIÓN
+→ RELACIÓN EXPLÍCITA CON EL ORIGINAL
+```
+
+El original permanece inmutable y su cierre no se reinterpreta.
+
+---
+
+#### 21. Referencia compartida de compensación
+
+`IntegrationCompensationPlanRef` no crea una política compensatoria paralela. Referencia un plan gobernado por `ENTERPRISE-EVENT-COMPENSATION-POLICY-001`.
+
+La referencia debe poder distinguir, sin copiar el plan completo:
+
+- identidad y versión del plan;
+- efecto original confirmado;
+- propietaria;
+- acción CCR aplicable;
+- estado u outcome del plan;
+- referencias de verificación y auditoría cuando correspondan.
+
+No contiene secretos, payloads completos ni decisiones de otra propietaria.
+
+---
+
+#### 22. Elegibilidad para compensación
+
+`COMPENSATE_CONFIRMED_EFFECTS` solo puede seleccionarse cuando:
+
+1. existe un efecto original confirmado;
+2. el efecto está correctamente identificado y correlacionado;
+3. la política de reversibilidad lo permite o define una compensación válida;
+4. la propietaria del efecto está identificada;
+5. existe autoridad vigente;
+6. la acción compensatoria conserva identidad e idempotencia propias;
+7. las dependencias y residuales son explícitos;
+8. el resultado puede verificarse.
+
+No se compensa:
+
+- un timeout sin resultado;
+- una unidad únicamente enviada;
+- un ACK técnico;
+- una hipótesis de efecto;
+- una entrega no confirmada;
+- una entrada rechazada sin efecto;
+- una diferencia todavía no conciliada;
+- un mapping ambiguo que no permite saber qué recurso fue afectado.
+
+---
+
+#### 23. Compensación no destructiva
+
+Toda compensación preserva:
+
+```text
+EFECTO ORIGINAL CONFIRMADO
++
+IDENTIDAD DE COMPENSACIÓN PROPIA
++
+CAUSALIDAD EXPLÍCITA
++
+PROPIETARIA DEL EFECTO
++
+AUTORIZACIÓN
++
+RESULTADO RECUPERABLE
++
+EVIDENCIA
+```
+
+Reglas:
+
+1. el efecto original no se borra ni se edita para aparentar que nunca ocurrió;
+2. una compensación confirmada no se repite por retry;
+3. una segunda solicitud equivalente recupera el resultado previo;
+4. contenido compensatorio incompatible produce conflicto;
+5. una compensación parcial conserva pasos confirmados, pendientes, imposibles y residuales;
+6. una compensación no revierte automáticamente efectos en otras propietarias;
+7. cada propietaria ejecuta solo su propio efecto inverso, correctivo o compensatorio.
+
+---
+
+#### 24. No existe rollback global
+
+Queda expresamente fuera del contrato:
+
+```text
+FALLO EN UNA INTEGRACIÓN
+→ ROLLBACK GLOBAL DE PULSO + NEXO + NUMERA + PASS + PROVEEDOR
+```
+
+La consistencia se obtiene mediante:
+
+- identidad idempotente por alcance;
+- resultados durables;
+- retry seguro;
+- conciliación;
+- correcciones o sucesores;
+- compensaciones propietarias cuando correspondan;
+- residuales explícitos.
+
+Un efecto confirmado en una propietaria puede coexistir temporalmente con otro pendiente, rechazado o desconocido y debe conservarse como tal.
+
+---
+
+#### 25. Relación con conciliación
+
+`IntegrationDispositionCase` puede enlazar `IntegrationReconciliationRef` cuando la evidencia sea insuficiente, existan resultados divergentes o un efecto sea desconocido.
+
+La conciliación:
+
+- compara fuentes autoritativas;
+- conserva diferencias;
+- determina certeza por unidad;
+- no reescribe historia;
+- no genera identidades nuevas para descubrir si la operación ocurrió;
+- no habilita escritura cruzada;
+- no cierra una unidad solo por desaparición de una alerta;
+- puede terminar en resultado confirmado, no efecto, duplicado previo, corrección, compensación, residual aceptado, rechazo permanente o sucesor.
+
+El caso de disposición y el caso de conciliación pueden estar correlacionados sin ser el mismo objeto.
+
+---
+
+#### 26. Outcomes de cierre reutilizados
+
+`SHELL-CON-024` reutiliza `IntegrationReconciliationClosureOutcome` de `SHELL-CON-023` y no crea otro vocabulario:
+
+```text
+RESOLVED_CONFIRMED
+RESOLVED_NO_EFFECT
+RESOLVED_DUPLICATE_PRIOR_RESULT
+RESOLVED_CORRECTED
+RESOLVED_COMPENSATED
+RESOLVED_WITH_ACCEPTED_RESIDUAL
+PERMANENTLY_REJECTED
+SUPERSEDED_BY_SUCCESSOR
+```
+
+Quedan prohibidos cierres equivalentes a:
+
+- `CLOSED_UNKNOWN`;
+- cierre por edad;
+- cierre por silencio;
+- cierre por desaparición de alerta;
+- cierre por mover el elemento a dead-letter;
+- cierre por reinicio de worker;
+- cierre por borrar o archivar la unidad.
+
+---
+
+#### 27. Residuales y cierre responsable
+
+`RESOLVED_WITH_ACCEPTED_RESIDUAL` exige conservar, como mínimo:
+
+- residual exacto;
+- propietaria;
+- responsable;
+- riesgo;
+- control aplicable;
+- autoridad que acepta el residual;
+- condición o momento de seguimiento;
+- evidencia de la decisión.
+
+Un residual sin responsable no constituye cierre válido.
+
+Un caso puede terminar operacionalmente sin trabajo automático pendiente y seguir abierto empresarialmente si conserva una obligación residual no aceptada.
+
+---
+
+#### 28. Sobre lógico de `IntegrationDispositionCase`
+
+La forma conceptual deberá poder representar, cuando aplique:
+
+```text
+integration_disposition_case_id
+failure_scope
+partiality_class
+disposition
+owner_application
+owner_domain_ref
+resource_or_operation_refs[]
+external_system_id
+environment
+surface
+integration_principal_ref
+external_received_event_ref
+external_identifier_mapping_refs[]
+idempotency_ref
+reconciliation_ref
+quarantine_ref
+dead_letter_ref
+compensation_plan_ref
+original_evidence_refs[]
+content_integrity_ref
+contract_or_schema_version
+quarantine_reason
+owner_specialization_ref
+owner_resolution_detail
+dead_letter_gate_results[]
+manual_intervention_action
+authorization_reference
+attempt_references[]
+business_outcome_reference
+responsible_owner
+next_action
+residual_obligations[]
+retention_policy_ref
+legal_hold_reference
+audit_references[]
+closure_outcome
+created_at
+updated_at
+closed_at
+```
+
+Esta notación es lógica. No fija nombres físicos de columnas, tipos escalares, opcionalidad de una base de datos, formato JSON, lenguaje de implementación, índice, constraint, algoritmo de claim, cola, topic ni esquema de persistencia.
+
+Los campos se materializan únicamente cuando son pertinentes; no se rellenan valores ficticios para aparentar completitud.
+
+---
+
+#### 29. Privacidad, sensibilidad y evidencia
+
+El caso compartido aplica minimización por finalidad.
+
+Queda prohibido incorporar por conveniencia:
+
+- API keys;
+- bearer tokens;
+- service role;
+- private keys;
+- contraseñas;
+- firmas completas reutilizables;
+- payloads personales completos;
+- datos bancarios completos;
+- documentos completos cuando una referencia protegida sea suficiente;
+- URLs firmadas o parámetros con credenciales;
+- diagnósticos sensibles no necesarios para resolver el caso.
+
+Se prefieren referencias protegidas, hashes y metadatos mínimos. Tener acceso al caso no concede acceso automático a la evidencia completa.
+
+---
+
+#### 30. Ownership y autorización
+
+El contrato mantiene estas fronteras:
+
+1. el adaptador puede registrar metadatos, receipts, mappings y evidencia técnica propia;
+2. la aplicación propietaria conserva la decisión empresarial;
+3. una cola no se convierte en propietaria del hecho;
+4. soporte no adquiere autoridad empresarial por recibir el caso;
+5. observabilidad puede diagnosticar, no modificar una fuente privada;
+6. una compensación se ejecuta dentro de la propietaria del efecto;
+7. una corrección de un dominio ajeno se expresa mediante contrato hacia su propietaria;
+8. un principal técnico autenticado no implica autorización para retry, reprocess, rechazo o compensación;
+9. una credencial externa no concede autoridad transversal en VENTO;
+10. compartir Supabase, service role, conexión, esquema o package no transfiere propiedad funcional.
+
+---
+
+#### 31. Aplicación al universo externo vigente
+
+`SHELL-CON-024` adopta las veintiuna identidades externas vigentes sin cambiar su identidad ni fabricar bindings.
+
+La clasificación de contexto conserva la decisión vigente de `SHELL-CON-023`; la última columna expresa únicamente cómo consume cada identidad este contrato de disposición.
+
+| ID            | Sistema / plataforma                     | Clasificación vigente heredada                       | Aplicación de `SHELL-CON-024`                                                                                                                               | Estado documental |
+| ------------- | ---------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| `EXT-SYS-001` | Supabase                                 | `GOBERNADA_POR_CONTRATO_INTERNO`                     | Las disposiciones se aplican por la superficie propietaria VENTO; no se crea una cuarentena externa universal para toda la plataforma.                      | `ESPECIFICADO`    |
+| `EXT-SYS-002` | Wompi                                    | `APLICA_IDEMPOTENCIA_Y_CONCILIACION`                 | Puede usar cuarentena, rechazo y conciliación por unidad; compensación solo sobre efecto confirmado y por su propietaria, nunca por timeout.                | `ESPECIFICADO`    |
+| `EXT-SYS-003` | RevenueCat                               | `APLICA_IDEMPOTENCIA_Y_CONCILIACION`                 | Entrada o mapping incompatible puede aislarse; entitlement incierto se concilia antes de corrección o compensación.                                         | `ESPECIFICADO`    |
+| `EXT-SYS-004` | Resend                                   | `APLICA_IDEMPOTENCIA_Y_CONCILIACION`                 | Fallos de entrega conservan generación e intento; dead-letter no significa correo entregado o rechazado empresarialmente y no se reenvía a ciegas.          | `ESPECIFICADO`    |
+| `EXT-SYS-005` | Expo / EAS Update                        | `PLATAFORMA_TECNICA_SIN_EFECTO_EMPRESARIAL_EN_CORTE` | Consume tratamiento técnico propietario cuando exista; no recibe un ledger, cuarentena empresarial o compensación ficticios.                                | `ESPECIFICADO`    |
+| `EXT-SYS-006` | Expo Push Service                        | `APLICA_IDEMPOTENCIA_Y_CONCILIACION`                 | Disposición por destino/generación; un lote no oculta elementos aislados y un resultado desconocido no autoriza redelivery ciego.                           | `ESPECIFICADO`    |
+| `EXT-SYS-007` | Sentry                                   | `SIN_LEDGER_DE_EFECTO_EMPRESARIAL`                   | La telemetría best-effort no crea compensación empresarial ni dead-letter de negocio; cualquier aislamiento técnico conserva finalidad y evidencia mínima.  | `ESPECIFICADO`    |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | `SIN_LEDGER_DE_EFECTO_EMPRESARIAL`                   | Una lectura interactiva fallida puede rechazarse o degradarse según su propietaria; no se crea dead-letter o compensación empresarial por defecto.          | `ESPECIFICADO`    |
+| `EXT-SYS-009` | Apple Wallet / PassKit + APNs            | `APLICA_IDEMPOTENCIA_Y_CONCILIACION`                 | Recurso y push permanecen separados; cada unidad conserva disposición propia y un push incierto no justifica recrear el recurso.                            | `ESPECIFICADO`    |
+| `EXT-SYS-010` | Vercel                                   | `PLATAFORMA_TECNICA_SIN_EFECTO_EMPRESARIAL_EN_CORTE` | Consume controles de plataforma/continuidad donde correspondan; no se fabrica una cola empresarial o plan compensatorio remoto.                             | `ESPECIFICADO`    |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | `APLICA_IDEMPOTENCIA_Y_CONCILIACION`                 | Resultado físico incierto exige verificación o conciliación antes de reimpresión; intervención manual queda autorizada y auditada por caso.                 | `ESPECIFICADO`    |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | `MODELO_SIN_BINDING_REMOTO`                          | Sin binding remoto acreditado no se materializa cuarentena, dead-letter o compensación runtime del proveedor.                                               | `NO_APLICA`       |
+| `EXT-SYS-013` | POS externo vigente                      | `APLICA_CON_ESPECIALIZACION_POS`                     | Usa el contrato compartido y conserva `EXTERNAL-SALE-LINE-QUARANTINE-001`, las reglas de reverso y la conciliación POS como especializaciones propietarias. | `ESPECIFICADO`    |
+| `EXT-SYS-014` | Shopify / canal de comercio electrónico  | `NO_APLICA_SIN_BINDING`                              | No se inventan unidades, razones, colas, dead-letter ni compensaciones sin binding acreditado.                                                              | `NO_APLICA`       |
+| `EXT-SYS-015` | Rappi / marketplace                      | `NO_APLICA_SIN_BINDING`                              | No se inventan unidades, razones, colas, dead-letter ni compensaciones sin binding acreditado.                                                              | `NO_APLICA`       |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | `NO_APLICA_SIN_BINDING`                              | No se inventan unidades, razones, colas, dead-letter ni compensaciones sin binding acreditado.                                                              | `NO_APLICA`       |
+| `EXT-SYS-017` | WhatsApp                                 | `NO_APLICA_SIN_BINDING`                              | No se presume proveedor, API, receipt, retry, cuarentena, dead-letter o compensación sin binding acreditado.                                                | `NO_APLICA`       |
+| `EXT-SYS-018` | Instagram / perfiles sociales            | `NO_APLICA_SIN_BINDING`                              | No se inventan unidades, razones, colas, dead-letter ni compensaciones sin binding acreditado.                                                              | `NO_APLICA`       |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | `NO_APLICA_SIN_BINDING`                              | El canal organizacional no acredita por sí mismo integración runtime ni tratamiento técnico de proveedor.                                                   | `NO_APLICA`       |
+| `EXT-SYS-020` | Telefonía / canal de voz                 | `BLOQUEADO_SIN_BINDING`                              | Permanece bloqueado hasta existir proveedor e interfaz acreditados; no se define una disposición específica de operador.                                    | `BLOQUEADO`       |
+| `EXT-SYS-021` | Transporte externo                       | `NO_APLICA_SIN_BINDING`                              | Sin proveedor e integración acreditados no se inventan estados de entrega, dead-letter o compensaciones.                                                    | `NO_APLICA`       |
+
+Balance:
+
+```text
+1 GOBERNADA_POR_CONTRATO_INTERNO
++ 6 APLICA_IDEMPOTENCIA_Y_CONCILIACION
++ 2 SIN_LEDGER_DE_EFECTO_EMPRESARIAL
++ 2 PLATAFORMA_TECNICA_SIN_EFECTO_EMPRESARIAL_EN_CORTE
++ 1 MODELO_SIN_BINDING_REMOTO
++ 1 APLICA_CON_ESPECIALIZACION_POS
++ 7 NO_APLICA_SIN_BINDING
++ 1 BLOQUEADO_SIN_BINDING
+= 21
+```
+
+Resultado de integridad del universo documental:
+
+- identidades esperadas: **21**;
+- identidades materializadas: **21/21**;
+- identificadores únicos: **21**;
+- faltantes: **0**;
+- duplicados: **0**;
+- bindings inventados: **0**;
+- compensaciones reales creadas: **0**.
+
+---
+
+#### 32. Especialización vigente del POS externo
+
+`EXT-SYS-013` consume el contrato compartido con estas reglas adicionales ya aprobadas:
+
+1. la unidad de cuarentena propietaria es la línea canónica de venta cuando el bloqueo depende del mapping de producto, presentación o receta;
+2. una línea puede preservarse sin ser elegible para efecto físico;
+3. una línea `ACTIVE` en cuarentena produce cero efecto NEXO dependiente de producto;
+4. liberar cuarentena no ejecuta inventario ni confirma otro efecto;
+5. mapping corregido no cambia la identidad de la línea;
+6. si existe posibilidad de efecto previo, primero se concilia;
+7. reversos, devoluciones y reembolsos conservan la venta y línea originales;
+8. NEXO, NUMERA y PASS compensan únicamente sus propios efectos confirmados;
+9. no existe rollback global de la venta;
+10. la conciliación compara cada efecto y no vuelve a ejecutar los ya confirmados.
+
+Las razones especializadas de `EXTERNAL-SALE-LINE-QUARANTINE-001` permanecen propietarias. Se enlazan mediante `owner_specialization_ref` y `owner_resolution_detail` sin ampliar `IntegrationQuarantineReason`.
+
+---
+
+#### 33. Entrada externa no confiable
+
+Para una entrada externa con autenticidad, integridad o contrato insuficientes:
+
+```text
+RECIBIR EVIDENCIA EN FRONTERA CONFIABLE
+→ VALIDAR AUTENTICIDAD / INTEGRIDAD / CONTRATO
+→ CLASIFICAR FALLO
+→ AISLAR O RECHAZAR SEGÚN EVIDENCIA
+→ CERO EFECTO EMPRESARIAL POR CONVENIENCIA
+```
+
+Reglas:
+
+1. una firma inválida no se convierte en error transitorio por fallback;
+2. un payload incompatible no se normaliza a la fuerza;
+3. una identidad ambigua no se resuelve por semejanza;
+4. un mapping conflictivo no se escoge por orden de llegada;
+5. conservar evidencia no valida la afirmación externa;
+6. el proveedor no recibe acceso a dominios internos por existir un caso de soporte.
+
+---
+
+#### 34. Lotes, batches y unidades independientes
+
+Para operaciones con varias unidades:
+
+1. cada elemento conserva identidad y disposición propias;
+2. una unidad confirmada no se repite porque otra falle;
+3. una unidad rechazada no cancela otra independiente;
+4. una unidad desconocida no se presenta como fallida para cerrar el batch;
+5. un resumen se deriva de las unidades y no las sustituye;
+6. dead-letter puede aplicarse a un elemento sin promover todo el lote;
+7. compensación se evalúa por efecto confirmado y no por el estado agregado;
+8. residuales y responsables se conservan por unidad cuando sea necesario.
+
+---
+
+#### 35. Retry, presupuesto y dead-letter
+
+La relación es:
+
+```text
+FALLO REINTENTABLE
+→ RETRY MISMA OPERACIÓN DENTRO DEL PRESUPUESTO
+→ AGOTAMIENTO
+→ CLASIFICAR RESULTADO Y PARCIALIDAD
+→ EVALUAR PUERTAS DE DEAD-LETTER
+→ INTERVENCIÓN / CONCILIACIÓN / RECHAZO / COMPENSACIÓN SEGÚN EVIDENCIA
+```
+
+Nunca:
+
+```text
+RETRY_EXHAUSTED
+→ PERMANENTLY_REJECT AUTOMÁTICO
+```
+
+Nunca:
+
+```text
+RETRY_EXHAUSTED
+→ DEAD-LETTER COMPLETO SIN LAS SIETE PUERTAS
+```
+
+El presupuesto pertenece a la operación y no se reinicia por restart, redeploy, cambio de worker, reencolado o cambio de transportista.
+
+---
+
+#### 36. Auditoría y reconstrucción
+
+Cada caso materializado deberá poder reconstruir:
+
+- qué unidad fue afectada;
+- qué propietaria la gobierna;
+- qué fallo se observó;
+- qué evidencia lo sustenta;
+- qué parcialidad se clasificó;
+- qué disposición se decidió;
+- qué razones o puertas aplicaron;
+- quién autorizó una intervención;
+- qué intentos existieron;
+- qué resultados previos se recuperaron;
+- si hubo conciliación;
+- si hubo compensación;
+- qué residual quedó;
+- quién es responsable;
+- cuál es la siguiente acción;
+- cómo y por qué se cerró.
+
+Una corrección de auditoría crea una nueva entrada enlazada; no altera la evidencia histórica original.
+
+---
+
+#### 37. Superficie lógica compartida
+
+La familia conceptual queda agrupada en:
+
+```text
+@vento/contracts/integrations
+```
+
+La relación esperada entre contratos es:
+
+```text
+ExternalReceivedEvent
+→ IntegrationIdempotencyRef
+→ ExternalIdentifierMappingRef[]
+→ IntegrationDispositionCaseRef cuando exista fallo o parcialidad
+   ├── IntegrationQuarantineRef
+   ├── IntegrationDeadLetterRef
+   ├── IntegrationReconciliationRef
+   └── IntegrationCompensationPlanRef
+```
+
+Las referencias no implican que todos los objetos existan para toda operación.
+
+`IntegrationDispositionCaseRef` no se inserta como campo obligatorio universal en contratos anteriores por esta tarea documental; su adopción física queda sujeta al ciclo autorizado del package y de cada consumidora.
+
+---
+
+#### 38. Versionado y compatibilidad
+
+1. los vocabularios cerrados se consumen con su significado aprobado;
+2. renombrar un valor exige una decisión canónica previa y compatibilidad explícita;
+3. ampliar un enum ejecutable no se autoriza desde esta tarea;
+4. un contrato físico posterior debe representar valores desconocidos de forma segura y fallar cerrado cuando la semántica no sea reconocible;
+5. un cambio incompatible crea una versión contractual sucesora;
+6. un caso iniciado conserva la versión que gobernó su decisión;
+7. una versión posterior no reinterpreta retrospectivamente un rechazo, cuarentena o compensación anteriores;
+8. las especializaciones propietarias mantienen su propia versión y referencia.
+
+---
+
+#### 39. Handoffs físicos y condiciones de salida
+
+| Trabajo posterior                                           | Estado desde esta tarea     | Propietario / tarea                                             | Condición de salida                                                                                 |
+| ----------------------------------------------------------- | --------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| persistencia de cuarentena y errores no procesables         | `DEFINIDO_NO_MATERIALIZADO` | `INT-DB-006`                                                    | infraestructura autorizada preserva identidad, evidencia, razón, disposición, ownership y lifecycle |
+| auditoría física de procesamiento, retries y compensaciones | `DEFINIDO_NO_MATERIALIZADO` | `INT-DB-007`                                                    | intentos, decisiones, autoridad, resultados y compensaciones quedan reconstruibles                  |
+| conciliación física por integración                         | `DEFINIDO_NO_MATERIALIZADO` | `INT-DB-008`                                                    | casos, fuentes comparadas, outcomes y residuales quedan persistidos y operables                     |
+| cola de fallos y recuperación manual                        | `DEFINIDO_NO_MATERIALIZADO` | `QUEUE-ARC-008`                                                 | aislamiento durable y recuperación controlada cumplen este contrato                                 |
+| exclusión/concurrencia de reproceso                         | `DEFINIDO_NO_MATERIALIZADO` | `QUEUE-ARC-009`                                                 | un mismo caso no produce reprocesos concurrentes incompatibles                                      |
+| métricas de espera, error y recuperación                    | `DEFINIDO_NO_MATERIALIZADO` | `QUEUE-ARC-011`                                                 | observabilidad usa proyecciones sin sustituir el estado propietario                                 |
+| autorización de retry o reprocess                           | `DEFINIDO_NO_MATERIALIZADO` | `QUEUE-ARC-012`                                                 | acciones manuales revalidan autoridad y quedan auditadas                                            |
+| package físico de contratos compartidos                     | `DEFINIDO_NO_MATERIALIZADO` | ciclo autorizado de package, CI y release de `@vento/contracts` | tipos y exports implementan la semántica sin cambiarla                                              |
+| adopción por consumidoras                                   | `DEFINIDO_NO_MATERIALIZADO` | paquetes E5 y tareas de migración aplicables                    | adaptadores y aplicaciones consumen la versión aprobada y pasan pruebas de compatibilidad           |
+
+No queda un pendiente material de esta tarea sin propietario y condición de salida.
+
+---
+
+#### 40. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA**
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+Justificación: `SHELL-CON-024` centraliza en la superficie compartida comportamientos ya definidos y protegidos por las políticas aprobadas de compensación, estados pendientes, error parcial, ownership, cuarentena, dead-letter, intervención, conciliación y especializaciones externas/POS. No introduce una capacidad ejecutable nueva, no cambia un límite numérico, no amplía una taxonomía vigente, no crea un nuevo estado empresarial, no modifica seguridad o autorización y no declara infraestructura física implementada. El registro canónico permanece sin cambios.
+
+---
+
+#### 41. Cobertura de prueba vigente no modificada
+
+Se preserva, entre otra cobertura existente:
+
+- `TREQ-INTEGRATION-108` a `TREQ-INTEGRATION-137`, para idempotencia, identidad, huella, resultado recuperable, concurrencia, replay y retención;
+- `TREQ-INTEGRATION-138` a `TREQ-INTEGRATION-167`, para retry, clasificación, resultado desconocido, presupuestos y recuperación;
+- `TREQ-INTEGRATION-168` a `TREQ-INTEGRATION-197`, para compensación, causalidad, reversibilidad, planes, idempotencia, resultados y residuales;
+- `TREQ-INTEGRATION-228` a `TREQ-INTEGRATION-257`, para pending, conflicto, resultado desconocido y conciliación;
+- `TREQ-INTEGRATION-258` a `TREQ-INTEGRATION-287`, para error parcial, alcances, parcialidad, cuarentena, dead-letter, intervención y cierre;
+- `TREQ-INTEGRATION-288` a `TREQ-INTEGRATION-306`, para ownership, comandos propietarios, escrituras cruzadas, correcciones y adaptadores externos;
+- `TREQ-INTEGRATION-309` y la cobertura posterior del contrato compartido de integraciones, para recepción externa, procedencia y referencias sin fuentes competidoras.
+
+Ningún requisito cambia de identidad, texto, estado, relación, propietaria, evidencia, momento de implementación o secuencia.
+
+---
+
+#### 42. Decisiones vinculantes
+
+1. Existe un único contrato lógico compartido de disposición para integraciones.
+2. El caso de disposición tiene identidad propia.
+3. Caso, operación, evento, intento, receipt, idempotencia, conciliación y compensación permanecen identidades distintas.
+4. Se reutilizan exactamente ocho alcances de fallo.
+5. Se reutilizan exactamente nueve clases de parcialidad.
+6. Se reutilizan exactamente doce disposiciones.
+7. Se reutilizan exactamente ocho razones transversales de cuarentena.
+8. Se reutilizan exactamente siete puertas acumulativas de dead-letter.
+9. Se reutilizan exactamente diez acciones manuales autorizables.
+10. Se reutilizan exactamente ocho outcomes de cierre ya centralizados en `SHELL-CON-023`.
+11. Cuarentena no es estado empresarial.
+12. Dead-letter no es rechazo empresarial.
+13. Retry agotado no implica dead-letter completo.
+14. Retry agotado no implica rechazo terminal.
+15. Resultado desconocido bloquea repetición ciega.
+16. Resultado desconocido se consulta o concilia antes de retry cuando el efecto pudo ocurrir.
+17. Resultado desconocido no se compensa por hipótesis.
+18. Rechazo terminal exige ausencia de efecto incompatible y ausencia de incertidumbre material.
+19. Compensación exige efecto original confirmado.
+20. Compensación conserva el efecto original.
+21. Compensación tiene identidad e idempotencia propias.
+22. Cada propietaria compensa únicamente sus propios efectos.
+23. No existe rollback global entre aplicaciones o proveedor.
+24. Reprocess de la misma intención conserva identidad, idempotencia y huella compatible.
+25. Un nuevo intento técnico puede cambiar `attempt_id` sin cambiar la operación.
+26. Cambio material de intención crea corrección o sucesor.
+27. Una unidad ya confirmada no se repite por fallo de otra.
+28. Lotes conservan resultado por elemento.
+29. La intervención manual usa la allowlist vigente y requiere autoridad.
+30. El caso no contiene secretos por conveniencia.
+31. Evidencia sensible se referencia de forma protegida.
+32. La auditoría no sustituye la fuente empresarial.
+33. La observabilidad no autoriza acciones.
+34. El adaptador no obtiene autoridad transversal.
+35. Las especializaciones propietarias pueden conservar detalle sin ampliar enums compartidos.
+36. POS conserva la línea como unidad de cuarentena especializada.
+37. Liberar una línea POS no ejecuta inventario.
+38. Un reverso POS no borra la venta o línea original.
+39. `EXT-SYS-013` conserva la especialización POS vigente.
+40. `EXT-SYS-020` permanece bloqueado sin binding acreditado.
+41. Las siete identidades sin binding no reciben disposiciones runtime ficticias.
+42. Las veintiuna identidades externas quedan materializadas en la matriz de adopción.
+43. Faltantes de identidad externa en la matriz: cero.
+44. Duplicados de identidad externa en la matriz: cero.
+45. Casos operativos reales creados: cero.
+46. Compensaciones reales ejecutadas: cero.
+47. Objetos físicos creados: cero.
+48. Código modificado: cero.
+49. Supabase modificado: cero.
+50. Requisitos de prueba creados o modificados: cero.
+51. `SHELL-NORM-001` permanece únicamente reservada.
+
+---
+
+#### 43. Hallazgos y destinos exactos
+
+| Hallazgo                                                                                                                                                   | Estado                       | Destino                                                                                                            |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| la semántica de error parcial, cuarentena y dead-letter estaba definida transversalmente pero no centralizada en la superficie compartida de integraciones | resuelto documentalmente     | `SHELL-CON-024`                                                                                                    |
+| la compensación ya posee política transversal completa y no debe duplicarse en un contrato externo                                                         | resuelto por referencia      | `IntegrationCompensationPlanRef` enlaza `ENTERPRISE-EVENT-COMPENSATION-POLICY-001`                                 |
+| los outcomes de cierre ya fueron centralizados por `SHELL-CON-023`                                                                                         | resuelto por reutilización   | `IntegrationReconciliationClosureOutcome` se consume sin enum competidor                                           |
+| la especialización POS usa razones y unidad propietarias de cuarentena                                                                                     | reconciliado                 | `owner_specialization_ref` y `owner_resolution_detail` conservan el detalle de `EXTERNAL-SALE-LINE-QUARANTINE-001` |
+| la matriz histórica de `INT-EXT-016` precede a la evidencia POS posterior                                                                                  | reconciliado por precedencia | `EXT-SYS-013` adopta el estado vigente `APLICA_CON_ESPECIALIZACION_POS`                                            |
+| persistencia física de cuarentena aún no existe en esta fase                                                                                               | esperado por fase            | `INT-DB-006`                                                                                                       |
+| auditoría física de retries y compensaciones aún no existe en esta fase                                                                                    | esperado por fase            | `INT-DB-007`                                                                                                       |
+| conciliación física por integración aún no existe en esta fase                                                                                             | esperado por fase            | `INT-DB-008`                                                                                                       |
+| cola de fallos y recuperación manual aún no está materializada desde este contrato                                                                         | esperado por fase            | `QUEUE-ARC-008`                                                                                                    |
+| control de concurrencia de reproceso requiere infraestructura posterior                                                                                    | esperado por fase            | `QUEUE-ARC-009`                                                                                                    |
+| autorización física de retry/reprocess requiere enforcement posterior                                                                                      | esperado por fase            | `QUEUE-ARC-012`                                                                                                    |
+
+No queda una brecha narrativa sin propietario y condición de salida.
+
+---
+
+#### 44. Criterios de aceptación
+
+`SHELL-CON-024` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. existe exactamente un contrato lógico compartido para cuarentena, rechazo y compensación;
+2. existe una identidad lógica propia para cada caso de disposición;
+3. la identidad es estable, opaca y no secreta;
+4. no se inventa un formato físico de identificador;
+5. se preservan los ocho alcances de fallo sin renombrarlos;
+6. se preservan las nueve clases de parcialidad sin renombrarlas;
+7. se preservan las doce disposiciones sin renombrarlas;
+8. se preservan las ocho razones de cuarentena sin renombrarlas;
+9. se preservan las siete puertas de dead-letter sin renombrarlas;
+10. se preservan las diez acciones manuales sin renombrarlas;
+11. se reutilizan los ocho outcomes de cierre de `SHELL-CON-023`;
+12. cuarentena permanece distinta de dead-letter;
+13. dead-letter permanece distinto de rechazo terminal;
+14. rechazo terminal permanece distinto de resultado desconocido;
+15. conciliación permanece distinta de compensación;
+16. compensación permanece distinta de retry;
+17. contingencia permanece fuera del contrato de disposición;
+18. cuarentena conserva identidad, contenido/evidencia, integridad, versión, procedencia, razón, propietaria y siguiente acción;
+19. cuarentena no autoejecuta efectos;
+20. cuarentena no libera por edad o silencio;
+21. dead-letter exige las siete puertas acumulativas;
+22. retry agotado no se presenta como dead-letter completo;
+23. dead-letter no se presenta como business reject;
+24. resultado desconocido exige consulta o conciliación antes de repetir un efecto material;
+25. resultado desconocido no se cierra por rechazo;
+26. compensación exige efecto original confirmado;
+27. compensación conserva original, causalidad e identidad propia;
+28. una compensación repetida recupera el resultado previo;
+29. no existe rollback global;
+30. cada propietaria conserva sus efectos y compensaciones;
+31. reprocess de la misma intención conserva identidad e idempotencia;
+32. un nuevo intento no crea otro hecho empresarial;
+33. cambio material crea corrección o sucesor;
+34. intervención manual requiere acción permitida, actor, autoridad, motivo, evidencia y resultado;
+35. residuales tienen propietaria, responsable, riesgo, control y seguimiento;
+36. no existe cierre desconocido ni automático por edad;
+37. el caso lógico aplica minimización y no contiene secretos;
+38. se conservan referencias de auditoría sin convertir auditoría en fuente empresarial;
+39. se materializan exactamente 21 identidades externas en la matriz;
+40. faltantes de identidades externas = 0;
+41. duplicados de identidades externas = 0;
+42. `EXT-SYS-013` usa especialización POS vigente;
+43. `EXT-SYS-020` permanece bloqueado sin binding;
+44. no se inventan bindings para sistemas sin evidencia;
+45. `INT-DB-006`, `INT-DB-007` e `INT-DB-008` conservan la materialización física posterior;
+46. `QUEUE-ARC-008`, `QUEUE-ARC-009`, `QUEUE-ARC-011` y `QUEUE-ARC-012` conservan infraestructura y operación posterior;
+47. no se crean tablas, índices, RPC, RLS, colas, workers o migraciones;
+48. no se modifica Supabase;
+49. no se modifica código;
+50. se crean cero requisitos de prueba;
+51. se modifican cero requisitos de prueba;
+52. la continuidad reserva exclusivamente `SHELL-NORM-001`.
+
+---
+
+#### 45. Límites finales de la tarea
+
+`SHELL-CON-024` no:
+
+- implementa `@vento/contracts`;
+- crea archivos TypeScript;
+- publica versiones de package;
+- crea schemas ejecutables;
+- crea tablas, columnas, índices o constraints;
+- crea migraciones;
+- crea RLS, grants, RPC o funciones;
+- crea colas, topics, workers, cron o schedulers;
+- crea registros reales de cuarentena;
+- mueve elementos reales a dead-letter;
+- rechaza operaciones reales;
+- ejecuta retries o reprocess;
+- ejecuta compensaciones;
+- cambia ledgers o saldos;
+- modifica ventas, líneas, pagos, puntos o inventario;
+- crea casos de conciliación reales;
+- modifica proveedores, cuentas, endpoints o credenciales;
+- crea secretos;
+- cambia decisiones de `INT-APP-006`, `INT-APP-009`, `INT-EXT-016`, `INT-POS-012`, `INT-POS-019` o `INT-POS-020`;
+- restaura diagnósticos históricos que hayan sido superados por evidencia posterior aprobada;
+- modifica código;
+- modifica Supabase;
+- cambia la ruta canónica;
+- desarrolla `SHELL-NORM-001`.
+
+---
+
+#### 46. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-CON-023 — Crear contrato de idempotencia y conciliación
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-CON-024 — Crear contrato de cuarentena, rechazo y compensación
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-NORM-001 — Crear @vento/data-normalization
+
