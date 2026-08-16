@@ -1853,7 +1853,1286 @@ SHELL-DB-002 — Centralizar tipos generados por cada paquete de base de datos a
 SHELL-DB-003 — Crear y actualizar wrappers tipados para RPC canónicas
 
 
-### [ ] SHELL-DB-003 — Crear y actualizar wrappers tipados para RPC canónicas
+### ✅ SHELL-DB-003 — Crear y actualizar wrappers tipados para RPC canónicas
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-DB-002 — Centralizar tipos generados por cada paquete de base de datos aprobado
+**Tarea siguiente:** SHELL-DB-004 — Normalizar errores de Supabase
+**Tipo de tarea:** Documental; definición y centralización canónica de la frontera de wrappers tipados de RPC dentro de `@vento/supabase`, alineada con firmas PostgreSQL exactas, contratos `QUERY_RPC` y `COMMAND_RPC`, tipos `Args`/`Returns`, autorización, idempotencia, concurrencia, errores, compatibilidad, versionado, consumidores y transición aprobados, sin materializar código, package físico, exports, RPC, migraciones, DDL, DML, cambios de datos ni modificaciones en Supabase
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md`
+**Estado físico resultante:** ESPECIFICADO; WRAPPERS Y PACKAGE FÍSICO NO MATERIALIZADOS
+**Implementación física autorizada:** ninguna
+**Cambios de código, packages físicos, configuración npm, registry, CI, despliegues, SQL, migraciones, RLS, RPC, triggers, índices, constraints, datos, secretos o configuración remota:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-DB-003` define cómo `@vento/supabase` deberá centralizar los wrappers tipados de las RPC canónicas aprobadas sin convertir esa capa en una segunda fuente de semántica empresarial, autorización, persistencia o contratos físicos.
+
+La relación obligatoria queda:
+
+```text
+CONTRATO CANÓNICO DE DOMINIO
+        +
+RPC CANÓNICA APROBADA
+        +
+FIRMA POSTGRESQL EXACTA
+        +
+TIPOS GENERADOS Args / Returns
+        +
+CONTRATO DE SEGURIDAD, EFECTO Y COMPATIBILIDAD
+        ↓
+WRAPPER TIPADO @vento/supabase
+        ↓
+CONSUMIDOR AUTORIZADO
+        ↓
+RPC AUTORITATIVA EN SUPABASE
+```
+
+Nunca:
+
+```text
+WRAPPER
+→ inventa RPC
+→ redefine semántica
+→ concede autorización
+→ elige una sobrecarga por conveniencia
+→ oculta error como null
+→ crea idempotencia que la RPC no posee
+→ sustituye RLS
+→ llama trigger functions como RPC
+→ accede a VITAL por coexistencia
+```
+
+---
+
+#### 2. Resultado material
+
+Queda definida documentalmente una única política de wrappers RPC para `@vento/supabase`.
+
+La política fija:
+
+- elegibilidad cerrada de una RPC para wrapper;
+- identidad inequívoca por firma y versión;
+- relación entre `Args`/`Returns` físicos y contrato empresarial;
+- separación `QUERY_RPC` / `COMMAND_RPC`;
+- traducción explícita de argumentos;
+- tratamiento de nullability, defaults y payloads;
+- tratamiento de retorno;
+- errores y resultados no ambiguos;
+- autorización y RLS como autoridades externas al wrapper;
+- idempotencia, concurrencia, timeout y retry según contrato;
+- compatibilidad, deprecación y retiro;
+- separación de overloads;
+- exclusión de funciones trigger e internas sin contrato expuesto;
+- actualización incremental por package de base de datos aprobado;
+- pruebas y adopción posteriores por consumidores.
+
+No se fija un número de wrappers por inferencia desde el número total de funciones existentes.
+
+---
+
+#### 3. Fuentes normativas consumidas
+
+| Fuente               | Decisión preservada                                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-DB-001`       | `@vento/supabase` posee wrappers RPC como una de sus cuatro familias exactas de responsabilidad                           |
+| `SHELL-DB-002`       | `Args` y `Returns` crudos provienen de firmas generadas; wrappers pertenecen exclusivamente a `SHELL-DB-003`              |
+| `SHELL-CON-001`      | inputs y outputs RPC se coordinan con `@vento/contracts` sin mover el acceso a datos fuera de `@vento/supabase`           |
+| `SUPA-ARC-005`       | la capa expuesta admite `READ_VIEW`, `QUERY_RPC` y `COMMAND_RPC`, siendo las dos últimas las clases RPC                   |
+| `SUPA-ARC-013`       | clasificación, identidad de rutina, firma, tipos, seguridad, error, idempotencia, concurrencia, triggers y compatibilidad |
+| `SUPA-ARC-014`       | excepciones `SECURITY DEFINER` y sus gates                                                                                |
+| `SUPA-ARC-015`       | exposición, grants, RLS y mínimo privilegio                                                                               |
+| `SUPA-ARC-016`       | contratos de lectura y mutación por dominio, request, response, efectos y errores                                         |
+| `SUPA-ARC-017`       | coordinación explícita cuando una operación requiere más de un owner                                                      |
+| `SUPA-ARC-023`       | tipos generados para consumidores, tiers, runtime validation, compatibilidad y retiro                                     |
+| `SUPA-TRANS-014`     | contrato material de tipos, RPC, consumidores, errores, versiones, deprecación, rollback y documentación                  |
+| registro 04A vigente | cobertura verificable existente de firmas, RPC, tipos, seguridad, idempotencia y compatibilidad                           |
+| `AUTH-DB-026`        | generación/publicación incremental después de cada package de base de datos aprobado                                      |
+| `SHELL-CI-*`         | materialización, contract tests, compatibilidad, publicación y evidencia posteriores                                      |
+
+Precedencia:
+
+```text
+SEMÁNTICA EMPRESARIAL
+        ↓
+CONTRATO RPC APROBADO
+        ↓
+FIRMA FÍSICA CERTIFICADA
+        ↓
+TIPOS GENERADOS
+        ↓
+WRAPPER TIPADO
+        ↓
+CONSUMIDOR
+```
+
+El wrapper no puede invertir esta precedencia.
+
+---
+
+#### 4. Reconciliación del universo actual
+
+El corte vigente, ya reconciliado con el delta mensual de VISO, distingue:
+
+```text
+FUNCIONES VENTO TOTALES = 348
+FUNCIONES DIRECTAS = 274
+FUNCIONES TRIGGER = 74
+TRIGGERS VENTO EXPLÍCITOS = 197
+RELACIONES OBJETIVO DE TRIGGERS = 155
+```
+
+La suma se conserva:
+
+```text
+274 directas
++ 74 funciones trigger
+= 348 funciones Vento
+```
+
+Estas cifras son inventario técnico, no cardinalidad de wrappers.
+
+Reglas:
+
+1. una función directa no obtiene wrapper solo por ser invocable;
+2. una función trigger no obtiene wrapper de cliente;
+3. una función interna no obtiene wrapper por aparecer en tipos generados;
+4. una función legacy no obtiene wrapper por tener consumidores actuales;
+5. una función de VITAL permanece fuera del registro contractual ordinario de Vento OS;
+6. solo una RPC aprobada y versionada puede entrar al registro de wrappers.
+
+---
+
+#### 5. Elegibilidad exacta para wrapper RPC
+
+Una rutina es elegible únicamente cuando cumple simultáneamente:
+
+1. tiene identidad técnica inequívoca;
+2. pertenece a una superficie RPC aprobada;
+3. está clasificada como `QUERY_RPC` o `COMMAND_RPC`;
+4. posee contrato empresarial aprobado;
+5. posee request y response definidos;
+6. posee política de autorización identificada;
+7. posee contrato de error identificable;
+8. posee política de compatibilidad;
+9. posee owner;
+10. posee consumidores o condición explícita de adopción;
+11. su firma física corresponde a una fuente versionada aprobada;
+12. los tipos `Args` y `Returns` aplicables pueden derivarse o adaptarse de forma gobernada;
+13. no pertenece a VITAL;
+14. no está bloqueada por incompatibilidad, seguridad o transición pendiente que impida consumo.
+
+La elegibilidad no se infiere por:
+
+- nombre;
+- presencia en `Database`;
+- grant actual;
+- existencia en `public`;
+- uso histórico;
+- llamada desde una aplicación;
+- `SECURITY DEFINER`;
+- aparición en búsquedas de código.
+
+---
+
+#### 6. Clases RPC que reciben wrapper
+
+Las únicas clases de rutina expuesta que reciben wrapper RPC son:
+
+```text
+QUERY_RPC
+COMMAND_RPC
+```
+
+`READ_VIEW` pertenece a la capa expuesta, pero no es una RPC y no se incorpora a la familia de wrappers definida aquí.
+
+Tampoco reciben wrapper RPC directo:
+
+```text
+DOMAIN_QUERY_FUNCTION
+DOMAIN_COMMAND_FUNCTION
+DOMAIN_RULE_FUNCTION
+INTERNAL_QUERY_HELPER
+INTERNAL_COMMAND_HELPER
+PLATFORM_ADAPTER
+SECURITY_PRIMITIVE
+INTERNAL_COORDINATOR
+AUDIT_QUERY_FUNCTION
+AUDIT_APPEND_FUNCTION
+TRIGGER_FUNCTION
+```
+
+Una función interna podrá ser consumida por otra capa autorizada, pero no se promueve al API compartido por conveniencia.
+
+---
+
+#### 7. Identidad canónica del wrapper
+
+Todo wrapper conserva como fuente la identidad completa de rutina:
+
+```text
+<schema>.<routine_name>(<identity_argument_types>)
+```
+
+y la relaciona con:
+
+```text
+contract_id
+contract_version
+routine_class
+qualified_signature
+owner_schema
+process_ids
+input_contract
+return_contract
+error_contract
+authorization_contract
+idempotency_contract
+concurrency_contract
+compatibility_status
+replacement_signature
+lifecycle_state
+definition_hash
+```
+
+Reglas:
+
+1. nombre sin schema no basta;
+2. nombre sin tipos de argumentos no basta;
+3. `specific_name` generado no reemplaza la firma;
+4. una sobrecarga no se elige por orden;
+5. no se usa `latest`;
+6. no se usa la primera coincidencia;
+7. misma identidad contractual no puede apuntar silenciosamente a otra semántica;
+8. una nueva firma incompatible requiere nueva versión o transición explícita.
+
+---
+
+#### 8. Separación entre wrapper y RPC física
+
+El wrapper es un adapter de invocación tipado.
+
+Puede:
+
+- recibir un input tipado;
+- validar estructura cuando el contrato lo exija;
+- mapear el input del consumidor a `Args`;
+- seleccionar una identidad RPC previamente fijada por contrato;
+- invocar mediante el cliente Supabase autorizado;
+- interpretar `Returns`;
+- proyectar un resultado contractual;
+- conservar error, retryability y metadata aprobada;
+- transportar correlación o idempotency key cuando el contrato la defina.
+
+No puede:
+
+- crear lógica de negocio inexistente en el contrato;
+- decidir un owner;
+- cambiar el efecto primario;
+- ejecutar una segunda RPC para completar silenciosamente una operación;
+- convertir varias RPC en una transacción;
+- escribir directamente tablas para completar un fallo;
+- corregir un error de schema con un cast;
+- suplantar una RPC retirada;
+- alterar grants, RLS o autorización.
+
+---
+
+#### 9. Frontera L1 → wrapper
+
+`SHELL-DB-002` entrega la capa física:
+
+```text
+L1
+→ Database
+→ Functions
+→ Args
+→ Returns
+→ enums / composites / shapes físicos
+```
+
+`SHELL-DB-003` consume esa capa sin editarla.
+
+El wrapper agrega únicamente la capa de acceso contractual:
+
+```text
+Args físicos
+        +
+contrato request
+        ↓
+mapeo explícito
+        ↓
+invocación RPC
+
+Returns físicos
+        +
+contrato response
+        ↓
+mapeo explícito
+        ↓
+resultado contractual
+```
+
+Si el tipo generado es insuficiente, se usa una capa separada y gobernada. Nunca se modifica manualmente el artefacto generado.
+
+---
+
+#### 10. Contrato mínimo por wrapper
+
+Cada wrapper deberá poder resolver, cuando aplique, al menos:
+
+| Dimensión                         | Fuente                        |
+| --------------------------------- | ----------------------------- |
+| schema                            | firma certificada             |
+| nombre                            | firma certificada             |
+| tipos de argumentos               | firma certificada             |
+| `Args`                            | tipos generados               |
+| retorno                           | firma + tipos generados       |
+| filas/conjunto                    | contrato RPC                  |
+| nullability                       | firma + contrato              |
+| orden                             | contrato cuando sea semántico |
+| clase RPC                         | arquitectura                  |
+| versión                           | contrato                      |
+| owner                             | registro de dominio           |
+| proceso                           | contrato de dominio           |
+| roles con EXECUTE                 | seguridad                     |
+| autorización interna              | contrato de autorización      |
+| error codes                       | contrato de error             |
+| retryability                      | contrato RPC                  |
+| efecto primario                   | contrato de comando           |
+| transacción                       | contrato RPC                  |
+| locks                             | contrato RPC                  |
+| idempotencia                      | contrato RPC                  |
+| timeout                           | contrato RPC                  |
+| compatibilidad anterior/siguiente | registro de transición        |
+| consumidores                      | registro de consumidores      |
+| lifecycle                         | registro contractual          |
+| replacement                       | transición o deprecación      |
+| evidencia de origen               | candidate / digest / manifest |
+
+Un campo desconocido no se inventa.
+
+---
+
+#### 11. Request: campos requeridos y opcionales
+
+Todo request contractual distingue:
+
+- campos requeridos;
+- campos opcionales;
+- nullability;
+- límites;
+- normalización permitida;
+- campos desconocidos;
+- precondiciones;
+- idempotencia.
+
+Reglas:
+
+1. ausencia y `null` no son equivalentes por defecto;
+2. `null` no puede significar simultáneamente omitir, borrar, default, todos, ninguno o desconocido;
+3. el wrapper no agrega un default no aprobado;
+4. el wrapper no elimina un campo porque un consumidor no lo use;
+5. un campo server-owned no se completa con dato arbitrario de cliente;
+6. precondiciones se transportan de forma explícita;
+7. un cambio del request incompatible requiere transición contractual.
+
+---
+
+#### 12. Traducción de argumentos
+
+El mapeo request → `Args` es explícito y determinista.
+
+Invariantes:
+
+```text
+MISMO REQUEST CONTRACTUAL
++ MISMA VERSIÓN
++ MISMA FIRMA RPC
+=
+MISMOS Args LÓGICOS
+```
+
+Queda prohibido:
+
+- construir argumentos por orden incidental de propiedades;
+- eliminar argumentos requeridos;
+- renombrar un argumento sin contrato;
+- rellenar con `undefined`, `null` o default por conveniencia;
+- aceptar propiedades desconocidas cuando el contrato las prohíbe;
+- usar `as any` como estrategia canónica;
+- seleccionar overload a partir de heurística del payload;
+- serializar arbitrariamente un objeto a JSON para eludir una firma.
+
+---
+
+#### 13. Tipos RPC prohibidos o condicionados
+
+El wrapper no convierte en contrato válido una RPC que use una forma no autorizada.
+
+Se mantienen bloqueados, salvo contrato canónico que resuelva la restricción aplicable:
+
+```text
+VARIADIC
+record sin shape
+anyelement
+anyarray
+tipos polimórficos
+JSON genérico sin schema/version/límites/validación
+```
+
+Un wrapper TypeScript no sanea estas ambigüedades.
+
+---
+
+#### 14. Payloads no confiables
+
+TypeScript no sustituye validación runtime.
+
+Cuando el request incorpore:
+
+- JSONB;
+- payload externo;
+- metadata;
+- cuerpo HTTP;
+- input de webhook;
+- contenido procedente de cache no confiable;
+- dato importado;
+- estructura que el compilador no controla;
+
+el wrapper deberá consumir el runtime validator aprobado por el contrato correspondiente.
+
+Un cast no constituye validación.
+
+---
+
+#### 15. Autoridad de actor y contexto
+
+Ningún wrapper tratará como autoridad final valores aportados libremente por cliente para:
+
+```text
+actor_id
+rol
+permiso
+sede activa
+área activa
+sesión
+estado autorizado
+claims editables
+owner
+schema
+tabla
+función
+```
+
+El wrapper puede transportar datos declarados por el contrato, pero la autoridad final se resuelve server-side en la capa propietaria.
+
+Por tanto:
+
+```text
+PARÁMETRO TIPADO
+≠ ACTOR AUTORIZADO
+≠ PERMISO
+≠ SCOPE
+≠ RLS APROBADA
+```
+
+---
+
+#### 16. `QUERY_RPC`
+
+Un wrapper de `QUERY_RPC` conserva:
+
+1. request inequívoco;
+2. respuesta explícita;
+3. ausencia de DML;
+4. ausencia de DDL;
+5. ausencia de side effects externos;
+6. ausencia de cambios de sesión;
+7. ausencia de colas, webhooks o automatismos como efecto oculto;
+8. autorización de lectura;
+9. sensibilidad y minimización;
+10. paginación y orden cuando correspondan;
+11. compatibilidad y error.
+
+Un wrapper no puede promover una función mutante a query porque su nombre use `get`, `list`, `find` o equivalente.
+
+---
+
+#### 17. `COMMAND_RPC`
+
+Un wrapper de `COMMAND_RPC` conserva:
+
+1. una semántica empresarial;
+2. exactamente un efecto empresarial primario;
+3. un owner primario;
+4. autorización explícita;
+5. request y response;
+6. errores;
+7. idempotencia cuando sea reintentable;
+8. concurrencia y precondiciones;
+9. transacción y locks;
+10. auditabilidad;
+11. compatibilidad;
+12. resultado verificable.
+
+El wrapper no puede agregar un segundo efecto empresarial.
+
+---
+
+#### 18. Operaciones multi-owner
+
+Si una operación requiere efectos en dos o más owner schemas:
+
+```text
+CROSS_DOMAIN_COORDINATION_REQUIRED
+```
+
+Consecuencias:
+
+1. el wrapper no encadena RPC para aparentar atomicidad;
+2. el wrapper no usa DML lateral;
+3. el wrapper no crea una saga local en el cliente;
+4. la coordinación consume contratos propietarios aprobados;
+5. cada owner confirma su propio efecto;
+6. una falla parcial conserva estado explícito;
+7. compensación pertenece al contrato de coordinación, no al wrapper básico.
+
+---
+
+#### 19. Idempotencia
+
+Un wrapper no inventa idempotencia.
+
+Cuando el contrato declare una operación reintentable, deberá transportar y preservar:
+
+- clave idempotente;
+- scope;
+- equivalencia o digest del payload;
+- referencia del resultado;
+- conflicto por reutilización incompatible;
+- estado de resultado cuando aplique.
+
+Invariantes:
+
+```text
+MISMA CLAVE + MISMO PAYLOAD COMPATIBLE
+→ mismo resultado lógico previo cuando la capa autoritativa lo soporte
+
+MISMA CLAVE + PAYLOAD INCOMPATIBLE
+→ conflicto explícito
+```
+
+La memoria local del cliente no sustituye el registro autoritativo de idempotencia.
+
+---
+
+#### 20. Concurrencia y versión esperada
+
+Cuando el comando afecte un agregado versionado, el wrapper transportará:
+
+```text
+expected_version
+```
+
+o el mecanismo equivalente aprobado.
+
+Reglas:
+
+1. no elimina la precondición para reducir errores;
+2. no reintenta automáticamente con una versión nueva sin reevaluar intención;
+3. no usa last-writer-wins como corrección;
+4. un conflicto de versión se conserva como conflicto;
+5. el wrapper no lee de nuevo y sobrescribe sin contrato;
+6. locks y timeouts pertenecen a la semántica RPC, no a heurísticas del cliente.
+
+---
+
+#### 21. Locks y timeouts
+
+Cuando correspondan, el contrato RPC conserva:
+
+- recurso bloqueado;
+- scope;
+- orden;
+- timeout;
+- conducta ante conflicto;
+- relación con retry;
+- resultado desconocido cuando aplique.
+
+El wrapper:
+
+- no amplía locks;
+- no crea advisory locks;
+- no supone éxito por timeout;
+- no supone fallo definitivo por timeout;
+- no repite una mutación desconocida salvo política segura;
+- no cambia el timeout contractual unilateralmente.
+
+---
+
+#### 22. Manejo de retorno
+
+El retorno de una RPC debe ser explícito.
+
+Se conserva:
+
+- tipo;
+- shape;
+- colección o fila;
+- nullability;
+- orden cuando sea contractual;
+- estado;
+- referencias;
+- versión;
+- errores separados.
+
+Queda prohibido que el wrapper:
+
+- dependa de `record` sin shape;
+- use `SELECT *` como contrato estable;
+- exponga tipos internos administrados por conveniencia;
+- acepte JSON genérico sin contrato;
+- interprete ausencia de fila como éxito si el contrato no lo dice;
+- transforme un error en `null`;
+- transforme resultado parcial en éxito completo.
+
+---
+
+#### 23. Resultado empresarial y transporte
+
+El wrapper distingue:
+
+```text
+RPC INVOCADA
+≠ RPC ACEPTADA
+≠ EFECTO EMPRESARIAL CONFIRMADO
+```
+
+Cuando el contrato utilice estados intermedios o receipts, se preservan sin colapsarlos.
+
+Una respuesta técnica 2xx o una invocación sin excepción no es evidencia suficiente de efecto empresarial si el contrato define confirmación separada.
+
+---
+
+#### 24. Errores
+
+`SHELL-DB-003` preserva la información contractual de error necesaria para invocación:
+
+- código estable;
+- categoría fuente;
+- retryability;
+- contexto mínimo;
+- mapping contractual de cliente;
+- resultado desconocido cuando corresponda;
+- conflicto;
+- denegación;
+- fallo técnico.
+
+Esta tarea no crea la taxonomía transversal final de errores de acceso a datos.
+
+Esa normalización pertenece a:
+
+```text
+SHELL-DB-004 — Normalizar errores de Supabase
+```
+
+Por tanto:
+
+1. no se inventan códigos aquí;
+2. no se fusionan errores de negocio y técnicos;
+3. no se reetiqueta una denegación como fallo de red;
+4. no se transforma un conflicto en `null`;
+5. no se oculta un error para mantener una API aparentemente simple.
+
+---
+
+#### 25. Seguridad y `EXECUTE`
+
+Compilar un wrapper no concede `EXECUTE`.
+
+El wrapper no modifica ni sustituye:
+
+- grants;
+- RLS;
+- `USAGE`;
+- política Data API;
+- resolución de actor;
+- autorización empresarial;
+- `SECURITY INVOKER`;
+- `SECURITY DEFINER`;
+- `search_path`;
+- owner PostgreSQL;
+- controles de schema.
+
+La existencia de una RPC en tipos generados tampoco constituye aprobación de exposición.
+
+---
+
+#### 26. `SECURITY DEFINER`
+
+Una RPC `SECURITY DEFINER` solo puede tener wrapper cuando la función haya superado sus gates propietarios.
+
+El wrapper no puede certificar por sí mismo:
+
+- necesidad de elevación;
+- owner;
+- search path;
+- referencias calificadas;
+- autorización interna;
+- grants mínimos;
+- auditabilidad;
+- ausencia de bypass;
+- pruebas negativas.
+
+Una función privilegiada observada pero no aprobada permanece fuera del consumo canónico.
+
+---
+
+#### 27. `search_path` y resolución de objetos
+
+El wrapper no compensa un `search_path` inseguro.
+
+Cada RPC aprobada conserva su contrato de resolución y la infraestructura propietaria verifica:
+
+- `search_path` explícito y mínimo;
+- referencias empresariales calificadas;
+- ausencia de resolución manipulable por caller;
+- dependencias inventariadas;
+- SQL dinámico gobernado cuando exista.
+
+El wrapper nunca suministra un schema arbitrario para cambiar la resolución interna.
+
+---
+
+#### 28. Overloads
+
+Las sobrecargas se tratan como firmas distintas.
+
+Reglas:
+
+1. cada firma tiene identidad propia;
+2. la API pública no usa un nombre ambiguo para decidir overload;
+3. el wrapper se liga a una firma certificada;
+4. un cambio de argumentos no se absorbe silenciosamente;
+5. una sobrecarga legacy conserva transición independiente;
+6. la retirada exige consumidor cero o sustitución desplegada;
+7. una nueva versión puede coexistir durante la migración según su contrato.
+
+---
+
+#### 29. Triggers y funciones trigger
+
+Las 74 funciones trigger vigentes no forman automáticamente parte de wrappers RPC.
+
+Invariantes:
+
+```text
+TRIGGER_FUNCTION
+→ asociada a relación y evento
+→ ejecutada por PostgreSQL
+→ sin invocación directa como RPC por defecto
+```
+
+Los 197 triggers vigentes se documentan mediante su contrato de trigger, no mediante wrappers de consumidor.
+
+Si una capacidad equivalente necesita una RPC directa, deberá existir un contrato RPC separado y aprobado.
+
+---
+
+#### 30. Funciones internas
+
+Una función en owner schema, `app_private` o `audit` no se expone mediante wrapper público por existir en `Database`.
+
+Los consumers ordinarios no reciben wrappers para:
+
+- helpers privados;
+- primitivas de seguridad;
+- coordinadores internos;
+- append de auditoría;
+- reglas internas;
+- adapters de plataforma;
+- funciones de trigger.
+
+La exposición debe provenir de una RPC canónica aprobada.
+
+---
+
+#### 31. Frontera VITAL
+
+Las funciones y relaciones de VITAL permanecen fuera del bundle ordinario de Vento OS.
+
+El wrapper no:
+
+- importa firmas VITAL;
+- genera adapters VITAL;
+- reexporta tipos VITAL;
+- crea aliases VITAL;
+- utiliza coexistencia física como permiso;
+- permite que un consumidor Vento OS invoque VITAL mediante el package compartido.
+
+Una integración futura requerirá contrato explícito de la arquitectura propietaria correspondiente.
+
+---
+
+#### 32. Compatibilidad de versiones
+
+Cada wrapper evoluciona de acuerdo con la clasificación contractual.
+
+```text
+PATCH
+→ metadata o documentación sin cambiar consumo
+
+MINOR
+→ adición compatible y opcional
+
+MAJOR
+→ eliminación o cambio incompatible de firma, significado,
+   autorización, nullability, enum cerrado, ruta o error
+```
+
+Reglas:
+
+1. una versión publicada es inmutable;
+2. un wrapper no cambia de RPC objetivo dentro de la misma versión;
+3. una versión nueva no reinterpreta historia;
+4. el consumidor registra la versión exacta resuelta;
+5. lockfile forma parte de reproducibilidad;
+6. un rango compatible no sustituye la identidad exacta desplegada;
+7. no existe fallback automático a `latest`.
+
+---
+
+#### 33. Compatibilidad entre firma anterior y siguiente
+
+Cuando una RPC cambie, la unidad de wrapper conserva:
+
+- firma anterior;
+- firma siguiente;
+- clase de cambio;
+- consumidores;
+- deadline;
+- compatibilidad;
+- mapper cuando sea legítimo;
+- rollback;
+- condición de retiro;
+- telemetría o evidencia de uso;
+- replacement explícito.
+
+No se realiza una traducción silenciosa incompatible para conservar compilación.
+
+---
+
+#### 34. Deprecación y retiro
+
+Un wrapper no se retira únicamente porque una búsqueda de código no encuentre imports.
+
+El retiro exige, según contrato:
+
+1. replacement cuando corresponda;
+2. consumidores inventariados;
+3. migración o evidencia de no consumo;
+4. periodo de deprecación;
+5. compatibilidad;
+6. rollback;
+7. condición de cero uso o sustitución desplegada;
+8. retiro coordinado de firma física cuando aplique.
+
+El wrapper legacy puede permanecer temporalmente sin ser considerado arquitectura objetivo.
+
+---
+
+#### 35. Registro de consumidores
+
+Todo consumidor que adopte un wrapper deberá registrar como mínimo:
+
+- repositorio;
+- aplicación o responsabilidad;
+- runtime;
+- versión exacta de `@vento/supabase`;
+- contrato RPC;
+- versión del contrato;
+- owner;
+- release o corte;
+- compatibilidad;
+- evidencia de pruebas.
+
+La mera instalación del package no prueba compatibilidad.
+
+---
+
+#### 36. Pruebas de wrapper
+
+La futura implementación deberá cubrir por cada wrapper aplicable:
+
+1. input válido;
+2. input inválido;
+3. requerido ausente;
+4. `null` permitido;
+5. `null` prohibido;
+6. unknown field;
+7. límite inválido;
+8. retorno válido;
+9. retorno incompatible;
+10. código de error estable;
+11. denegación;
+12. conflicto;
+13. timeout;
+14. resultado desconocido cuando aplique;
+15. retry seguro cuando aplique;
+16. retry no permitido;
+17. idempotencia cuando aplique;
+18. payload conflictivo con la misma clave;
+19. expected version correcto;
+20. expected version obsoleto;
+21. overload exacto;
+22. firma retirada;
+23. versión incompatible;
+24. ausencia de side effect para `QUERY_RPC`;
+25. efecto primario único para `COMMAND_RPC`;
+26. cross-domain bloqueado o coordinado por contrato;
+27. grants/RLS/authorization negativos en la capa propietaria;
+28. paridad con consumidor.
+
+Esta sección especifica cobertura futura; no afirma ejecución física.
+
+---
+
+#### 37. Reproducibilidad
+
+Cada wrapper materializado deberá poder vincularse con:
+
+```text
+candidate
+schema digest
+qualified signature
+definition hash
+generated Args
+generated Returns
+contract id
+contract version
+package version
+consumer version
+```
+
+Dos builds de la misma versión y mismas fuentes no pueden seleccionar firmas distintas.
+
+Una diferencia obliga a bloquear o clasificar drift.
+
+---
+
+#### 38. Sincronización incremental con BLOQUE R
+
+`SHELL-DB-003` no es una fotografía única.
+
+Después de cada package contractual de base de datos aprobado que modifique RPC:
+
+1. se resuelve el candidate aprobado;
+2. se verifica la firma;
+3. se actualizan tipos mediante la tarea propietaria;
+4. se reconcilia el contrato RPC;
+5. se crea, actualiza, depreca o retira el wrapper según disposición;
+6. se clasifica compatibilidad;
+7. se prueban consumidores;
+8. se publica únicamente tras gates;
+9. se conserva rollback;
+10. se actualiza evidencia.
+
+`AUTH-DB-026` conserva el handoff incremental de generación/publicación.
+
+---
+
+#### 39. Estado de materialización física
+
+| Elemento                         | Estado                                        |
+| -------------------------------- | --------------------------------------------- |
+| identidad de la familia wrappers | `ESPECIFICADA`                                |
+| elegibilidad                     | `ESPECIFICADA`                                |
+| `QUERY_RPC`                      | `ESPECIFICADA`                                |
+| `COMMAND_RPC`                    | `ESPECIFICADA`                                |
+| firma inequívoca                 | `ESPECIFICADA`                                |
+| mapeo request → Args             | `ESPECIFICADO`                                |
+| mapeo Returns → response         | `ESPECIFICADO`                                |
+| nullability                      | `ESPECIFICADA`                                |
+| runtime validation               | `ESPECIFICADA` como obligación cuando aplique |
+| idempotencia                     | `ESPECIFICADA` por contrato                   |
+| concurrencia                     | `ESPECIFICADA` por contrato                   |
+| compatibilidad                   | `ESPECIFICADA`                                |
+| deprecación                      | `ESPECIFICADA`                                |
+| VITAL                            | `EXCLUIDO`                                    |
+| wrappers físicos                 | `NO MATERIALIZADOS`                           |
+| exports                          | `NO ASIGNADOS`                                |
+| nombres TypeScript públicos      | `NO ASIGNADOS`                                |
+| package físico                   | `NO MATERIALIZADO`                            |
+| versión npm                      | `NO ASIGNADA`                                 |
+| consumidores migrados            | `0`                                           |
+| cambios Supabase                 | `0`                                           |
+| cambios de datos                 | `0`                                           |
+| requisitos creados               | `0`                                           |
+| requisitos modificados           | `0`                                           |
+
+---
+
+#### 40. Handoffs exactos
+
+| Materia                                                              | Tarea propietaria                                                   | Condición de salida                                                        |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| taxonomía transversal final de errores Supabase                      | `SHELL-DB-004`                                                      | errores técnicos normalizados sin mezclar dominio, autorización o contexto |
+| separación de clientes server/browser/native/privileged              | `SHELL-DB-005`                                                      | runtime y secretos aislados                                                |
+| generación/publicación incremental de tipos tras package DB aprobado | `AUTH-DB-026`                                                       | artefactos generados y publicados bajo gates                               |
+| gates de contratos, tipos, wrappers y consumidores                   | `SHELL-CI-017` y tareas CI aplicables                               | automatización y evidencia reproducible                                    |
+| materialización física de `@vento/supabase`                          | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` | implementación solo para package autorizado                                |
+| migración de consumidores legacy                                     | `SHELL-MIG-*` y tareas de adopción propietarias                     | paridad, compatibilidad y rollback por consumidor                          |
+| cambios de RPC físicas                                               | tareas E3/BLOQUE R propietarias                                     | migración versionada y contrato aprobado                                   |
+| coordinación multi-owner                                             | `SUPA-ARC-017` y tareas de transición/implementación aplicables     | owner local, saga o patrón aprobado                                        |
+| seguridad `SECURITY DEFINER`, grants y RLS                           | `SUPA-ARC-014`; `SUPA-ARC-015`; BLOQUE R                            | gates de seguridad y pruebas negativas                                     |
+
+No queda un pendiente narrativo sin propietario documental exacto.
+
+---
+
+#### 41. Cobertura de prueba vigente no modificada
+
+La conducta centralizada ya se encuentra protegida por requisitos canónicos vigentes que cubren, entre otros:
+
+- firma PostgreSQL exacta y rechazo de identidad abreviada;
+- clasificación previa de una función antes de presentarla como RPC;
+- clases `QUERY_RPC` y `COMMAND_RPC`;
+- nullability y semántica inequívoca de parámetros;
+- prohibición de formas RPC no tipables o ambiguas;
+- resolución server-side de actor y contexto;
+- pureza de `QUERY_RPC`;
+- efecto primario único de `COMMAND_RPC`;
+- separación multi-owner;
+- `Args` y `Returns` derivados por firma;
+- overloads inequívocos;
+- retorno explícito;
+- idempotencia;
+- expected version;
+- locks, timeout y concurrencia;
+- errores no silenciados;
+- `SECURITY INVOKER` como predeterminado;
+- gate separado de `SECURITY DEFINER`;
+- search path y referencias calificadas;
+- mínimo privilegio;
+- tipos por tiers;
+- exclusión VITAL;
+- compatibilidad, deprecación, retiro y rollback;
+- pruebas de consumidores;
+- actualización contractual de `SUPA-TRANS-014`;
+- paridad entre package compartido y consumidores.
+
+`SHELL-DB-003` no cambia esas reglas. Las proyecta como una única frontera documental de wrappers dentro de `@vento/supabase`.
+
+---
+
+#### 42. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** `SHELL-DB-003` centraliza dentro de `@vento/supabase` obligaciones de firma, request, response, autorización, idempotencia, concurrencia, error, compatibilidad, overloads, consumidores, deprecación y retiro ya protegidas por la arquitectura E3, la transición contractual y el registro vigente. No introduce una nueva clase RPC, un nuevo resultado, un nuevo error, una nueva regla de autorización, una nueva estrategia de retry, una nueva operación de base de datos ni un efecto runtime adicional.
+
+---
+
+#### 43. Decisiones vinculantes
+
+1. Los wrappers RPC pertenecen a `@vento/supabase`.
+2. Solo RPC canónicas aprobadas son elegibles.
+3. `QUERY_RPC` y `COMMAND_RPC` son las dos clases RPC expuestas.
+4. `READ_VIEW` no entra a la familia de wrappers RPC.
+5. Funciones trigger no reciben wrapper RPC por defecto.
+6. Helpers internos no reciben wrapper público por aparecer en tipos.
+7. El universo actual es 348 funciones Vento.
+8. Se distinguen 274 funciones directas y 74 funciones trigger.
+9. Existen 197 triggers Vento explícitos sobre 155 relaciones objetivo.
+10. Estas cifras no significan que existan 274 wrappers.
+11. No se inventa una cardinalidad de wrappers.
+12. La identidad de rutina usa schema, nombre y tipos de argumentos.
+13. Nombre abreviado no basta.
+14. No existe selección por `latest`.
+15. No existe selección por primera coincidencia.
+16. Overloads son identidades distintas.
+17. `Args` y `Returns` físicos provienen de la capa generada.
+18. El artefacto generado no se edita para adaptarlo al wrapper.
+19. Request empresarial y `Args` físicos permanecen capas distintas.
+20. Response empresarial y `Returns` físicos permanecen capas distintas.
+21. Ausencia y `null` no se confunden.
+22. El wrapper no inventa defaults.
+23. El wrapper no convierte JSON arbitrario en contrato.
+24. Payload no confiable requiere validación runtime cuando aplique.
+25. Cast TypeScript no constituye validación.
+26. Parámetro cliente no constituye autoridad.
+27. El wrapper no decide actor, permiso, scope u owner.
+28. `QUERY_RPC` no puede tener efectos mutantes.
+29. `COMMAND_RPC` conserva exactamente un efecto primario.
+30. Un wrapper no compone una transacción multi-owner.
+31. Operaciones multi-owner usan coordinación aprobada.
+32. El wrapper no inventa idempotencia.
+33. Idempotency key se transporta únicamente cuando el contrato la define.
+34. Reutilización incompatible produce conflicto explícito.
+35. Expected version se conserva cuando el contrato lo exige.
+36. El wrapper no implementa last-writer-wins.
+37. Timeout no se convierte automáticamente en fallo final o éxito.
+38. El retorno tiene shape explícito.
+39. Un error no se convierte en `null` sin contrato.
+40. Error técnico y error empresarial permanecen distinguibles.
+41. La taxonomía final de errores pertenece a `SHELL-DB-004`.
+42. Un wrapper no concede `EXECUTE`.
+43. Un wrapper no sustituye RLS.
+44. Un wrapper no sustituye autorización empresarial.
+45. `SECURITY DEFINER` conserva gate independiente.
+46. Search path inseguro no se corrige desde el wrapper.
+47. Funciones internas no se promocionan por conveniencia.
+48. VITAL permanece excluido.
+49. Cada versión publicada del wrapper será inmutable.
+50. Una versión incompatible requiere transición explícita.
+51. Retiro exige evidencia de consumidores y rollback.
+52. La ausencia de import observado no demuestra cero uso.
+53. Consumidores registran versión exacta.
+54. El wrapper conserva procedencia reproducible.
+55. La familia se actualiza incrementalmente con packages DB aprobados.
+56. Observación casual del remoto no crea wrapper.
+57. `AUTH-DB-026` conserva el handoff incremental.
+58. La materialización física queda para gates y tareas ejecutables.
+59. No se asignan nombres TypeScript públicos.
+60. No se asignan exports físicos.
+61. No se asigna root físico.
+62. No se asigna versión npm.
+63. No se crea código.
+64. No se modifica Supabase.
+65. No se modifican datos.
+66. No se crean ni modifican requisitos de prueba.
+67. `SHELL-DB-004` queda únicamente reservada.
+
+---
+
+#### 44. Criterios de aceptación documental
+
+`SHELL-DB-003` queda documentalmente satisfecha cuando:
+
+1. define una única frontera de wrappers RPC;
+2. preserva `@vento/supabase` como owner de la familia;
+3. limita elegibilidad a RPC aprobadas;
+4. distingue `QUERY_RPC` y `COMMAND_RPC`;
+5. excluye `READ_VIEW` de wrappers RPC;
+6. excluye funciones trigger de invocación cliente directa;
+7. excluye helpers internos sin contrato expuesto;
+8. conserva el baseline vigente 348/274/74/197/155 sin convertirlo en cantidad de wrappers;
+9. usa firma PostgreSQL completa como identidad;
+10. prohíbe nombre ambiguo;
+11. prohíbe `latest`;
+12. conserva overloads separados;
+13. consume `Args` y `Returns` de la capa generada;
+14. no edita tipos generados;
+15. define mapping request → Args;
+16. define mapping Returns → response;
+17. conserva nullability inequívoca;
+18. prohíbe defaults inventados;
+19. exige runtime validation cuando aplique;
+20. impide usar cast como validación;
+21. impide autoridad por parámetros de cliente;
+22. mantiene `QUERY_RPC` libre de efectos;
+23. mantiene un efecto primario por `COMMAND_RPC`;
+24. bloquea composición multi-owner implícita;
+25. conserva idempotencia contractual;
+26. conserva concurrencia y expected version;
+27. conserva timeout y resultado desconocido cuando aplique;
+28. conserva retorno explícito;
+29. conserva errores sin convertirlos a null;
+30. reserva taxonomía final de errores a `SHELL-DB-004`;
+31. no interpreta tipado como grant;
+32. no interpreta tipado como RLS;
+33. no interpreta tipado como autorización;
+34. conserva gate de `SECURITY DEFINER`;
+35. conserva search path como responsabilidad de la RPC;
+36. excluye VITAL;
+37. define compatibilidad;
+38. define deprecación;
+39. define retiro;
+40. define registro de consumidores;
+41. define cobertura futura de pruebas;
+42. define reproducibilidad;
+43. define sincronización incremental con BLOQUE R;
+44. asigna handoffs exactos;
+45. no crea código;
+46. no crea package físico;
+47. no crea exports;
+48. no modifica Supabase;
+49. no modifica datos;
+50. no crea ni modifica requisitos;
+51. la siguiente tarea permanece únicamente reservada.
+
+---
+
+#### 45. Límites
+
+`SHELL-DB-003` no:
+
+- crea físicamente `@vento/supabase`;
+- crea wrappers TypeScript;
+- crea funciones helper;
+- crea factories;
+- crea exports;
+- asigna nombres públicos de funciones;
+- asigna subpaths;
+- asigna root físico;
+- asigna versión npm;
+- publica package;
+- genera tipos;
+- ejecuta codegen;
+- modifica `Database`;
+- modifica `Args`;
+- modifica `Returns`;
+- crea DTO;
+- crea runtime validators;
+- crea códigos de error;
+- normaliza la taxonomía final de errores;
+- modifica RPC;
+- crea RPC;
+- crea funciones PostgreSQL;
+- crea triggers;
+- modifica triggers;
+- modifica `SECURITY DEFINER`;
+- cambia `search_path`;
+- cambia grants;
+- cambia RLS;
+- cambia Data API;
+- ejecuta DDL;
+- ejecuta DML;
+- ejecuta migraciones;
+- ejecuta backfills;
+- modifica datos;
+- invoca mutaciones operativas;
+- migra consumidores;
+- modifica VITAL;
+- crea contratos multi-owner;
+- inicia `SHELL-DB-004`.
+
+---
+
+#### 46. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-DB-002 — Centralizar tipos generados por cada paquete de base de datos aprobado
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-DB-003 — Crear y actualizar wrappers tipados para RPC canónicas
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-DB-004 — Normalizar errores de Supabase
+
+
 ### [ ] SHELL-DB-004 — Normalizar errores de Supabase
 ### [ ] SHELL-DB-005 — Separar cliente server, browser y native
 
