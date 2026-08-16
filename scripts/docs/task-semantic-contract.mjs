@@ -89,7 +89,8 @@ function canonicalPrefix(taskId) {
 function physicalContradiction(metadata) {
   const state = metadata.get('Estado físico resultante') ?? '';
   const changes = metadata.get('Cambios físicos autorizados') ?? '';
-  return /NO_MATERIALIZADO|NO MATERIALIZADO/iu.test(state) && !/^ninguno$/iu.test(changes);
+  const noPhysicalChanges = /^(?:ninguno|0)$/iu.test(changes);
+  return /NO_MATERIALIZADO|NO MATERIALIZADO/iu.test(state) && !noPhysicalChanges;
 }
 
 export function validateTaskDevelopmentPolicy(policy) {

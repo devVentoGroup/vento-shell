@@ -120,6 +120,17 @@ test('acepta una tarea aprobada completa y con evidencia tipada', () => {
   assert.deepEqual(result.warnings, []);
 });
 
+test('acepta cero como declaración explícita de cambios físicos no autorizados', () => {
+  const result = validateTaskSemanticContract({
+    block: validBlock.replace('**Cambios físicos autorizados:** ninguno', '**Cambios físicos autorizados:** 0'),
+    task: { id: 'TEST-SEM-011', state: 'APROBADA' },
+    ownerRelativePath: 'bloques/X/test.md',
+    inventory,
+    policy,
+  });
+  assert.ok(!result.errors.some(({ code }) => code === 'PHYSICAL_SCOPE_CONTRADICTION'));
+});
+
 test('durante desarrollo convierte incumplimientos en advertencias', () => {
   const result = validateTaskSemanticContract({
     block: validBlock.replace('### ✅', '### [ ]').replace('APROBADA', 'NO INICIADA').replace(
