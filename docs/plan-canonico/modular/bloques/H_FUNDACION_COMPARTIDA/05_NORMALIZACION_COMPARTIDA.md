@@ -5355,20 +5355,20 @@ No se crea una versión nueva de `VENTO_TEXT_SEARCH_AND_COMPARISON_POLICY@1.0.0`
 
 #### 3. Fuentes normativas y precedencia
 
-| Fuente | Decisión preservada por `SHELL-NORM-006` |
-| --- | --- |
-| `SHELL-NORM-001` | identidad de `@vento/data-normalization`, pureza, determinismo, ausencia de I/O y prohibición de convertir el package en fuente empresarial o capa de persistencia |
-| `SHELL-NORM-002` | 14 clases semánticas, roles de representación, roles de fuente, modos de tratamiento y operación `SEARCH_KEY_DERIVATION` |
-| `SHELL-NORM-003` | NFC, tratamiento gobernado de espacios, perfil lingüístico explícito, tokenización y preservación de signos y fronteras |
-| `SHELL-NORM-004` | conectores, excepciones oficiales, aliases explícitos y formas protegidas que no pueden degradarse por búsqueda |
-| `SHELL-NORM-005` | diccionario ortográfico separado de la búsqueda; las correcciones ortográficas no se convierten en aliases ni equivalencias |
-| `DATA-NORM-ARC-007` | revisión humana de aliases, conflictos y candidatos que no pueden activarse por telemetría, frecuencia o similitud |
-| `DATA-NORM-ARC-008` | autoridad semántica completa sobre representaciones, perfiles, modos, ranking, scopes y fronteras de búsqueda y comparación |
-| `DATA-NORM-ARC-009` | versión, auditoría, vigencia, reproducibilidad, procedencia algorítmica e idempotencia |
-| `DATA-NORM-ARC-010` | identidad, scopes de unicidad, colisiones, duplicados y prohibición de fusionar por coincidencia textual |
-| `DATA-NORM-ARC-011` | arquitectura ejecutora, servicio de dominio, RPC, defensa de base, APIs e implementación técnica |
-| `DATA-NORM-ARC-012` | originales externos, procedencia, mapeos, evidencia y fronteras de integración |
-| `SHELL-PKG-001..008` | distribución, compatibilidad, versionado, deprecación, rollback y adopción de packages compartidos |
+| Fuente               | Decisión preservada por `SHELL-NORM-006`                                                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `SHELL-NORM-001`     | identidad de `@vento/data-normalization`, pureza, determinismo, ausencia de I/O y prohibición de convertir el package en fuente empresarial o capa de persistencia |
+| `SHELL-NORM-002`     | 14 clases semánticas, roles de representación, roles de fuente, modos de tratamiento y operación `SEARCH_KEY_DERIVATION`                                           |
+| `SHELL-NORM-003`     | NFC, tratamiento gobernado de espacios, perfil lingüístico explícito, tokenización y preservación de signos y fronteras                                            |
+| `SHELL-NORM-004`     | conectores, excepciones oficiales, aliases explícitos y formas protegidas que no pueden degradarse por búsqueda                                                    |
+| `SHELL-NORM-005`     | diccionario ortográfico separado de la búsqueda; las correcciones ortográficas no se convierten en aliases ni equivalencias                                        |
+| `DATA-NORM-ARC-007`  | revisión humana de aliases, conflictos y candidatos que no pueden activarse por telemetría, frecuencia o similitud                                                 |
+| `DATA-NORM-ARC-008`  | autoridad semántica completa sobre representaciones, perfiles, modos, ranking, scopes y fronteras de búsqueda y comparación                                        |
+| `DATA-NORM-ARC-009`  | versión, auditoría, vigencia, reproducibilidad, procedencia algorítmica e idempotencia                                                                             |
+| `DATA-NORM-ARC-010`  | identidad, scopes de unicidad, colisiones, duplicados y prohibición de fusionar por coincidencia textual                                                           |
+| `DATA-NORM-ARC-011`  | arquitectura ejecutora, servicio de dominio, RPC, defensa de base, APIs e implementación técnica                                                                   |
+| `DATA-NORM-ARC-012`  | originales externos, procedencia, mapeos, evidencia y fronteras de integración                                                                                     |
+| `SHELL-PKG-001..008` | distribución, compatibilidad, versionado, deprecación, rollback y adopción de packages compartidos                                                                 |
 
 Precedencia normativa:
 
@@ -5445,20 +5445,20 @@ Esta tarea no:
 
 #### 5. Conciliación de inventarios heredados
 
-| Inventario | Esperado | Centralizado | Faltantes | Duplicados |
-| --- | ---: | ---: | ---: | ---: |
-| representaciones derivadas | 7 | 7 | 0 | 0 |
-| clases mínimas de token o frontera | 7 | 7 | 0 | 0 |
-| atributos de alias | 15 | 15 | 0 | 0 |
-| perfiles cerrados de búsqueda | 6 | 6 | 0 | 0 |
-| modos cerrados de coincidencia | 9 | 9 | 0 | 0 |
-| niveles de ranking | 9 | 9 | 0 | 0 |
-| pasos del pipeline | 15 | 15 | 0 | 0 |
-| atributos mínimos de respuesta | 13 | 13 | 0 | 0 |
-| clases semánticas gobernadas | 14 | 14 | 0 | 0 |
-| componentes estructurados mínimos | 11 | 11 | 0 | 0 |
-| ejemplos normativos | 17 | 17 | 0 | 0 |
-| dimensiones mínimas de corpus | 20 | 20 | 0 | 0 |
+| Inventario                         | Esperado | Centralizado | Faltantes | Duplicados |
+| ---------------------------------- | -------: | -----------: | --------: | ---------: |
+| representaciones derivadas         |        7 |            7 |         0 |          0 |
+| clases mínimas de token o frontera |        7 |            7 |         0 |          0 |
+| atributos de alias                 |       15 |           15 |         0 |          0 |
+| perfiles cerrados de búsqueda      |        6 |            6 |         0 |          0 |
+| modos cerrados de coincidencia     |        9 |            9 |         0 |          0 |
+| niveles de ranking                 |        9 |            9 |         0 |          0 |
+| pasos del pipeline                 |       15 |           15 |         0 |          0 |
+| atributos mínimos de respuesta     |       13 |           13 |         0 |          0 |
+| clases semánticas gobernadas       |       14 |           14 |         0 |          0 |
+| componentes estructurados mínimos  |       11 |           11 |         0 |          0 |
+| ejemplos normativos                |       17 |           17 |         0 |          0 |
+| dimensiones mínimas de corpus      |       20 |           20 |         0 |          0 |
 
 Ningún inventario se amplía por inferencia.
 
@@ -5487,15 +5487,15 @@ Reglas:
 
 #### 7. Las siete representaciones derivadas
 
-| Orden | Representación | Propósito | Frontera obligatoria |
-| ---: | --- | --- | --- |
-| 01 | `SEARCH_FORM_KEY` | comparar forma estable sin distinguir caja ni espacios accidentales autorizados | conserva tildes, `ñ`, signos, palabras y fronteras |
-| 02 | `SEARCH_ACCENT_KEY` | recuperar de forma tolerante a tildes españolas en campos elegibles | preserva `ñ`, signos y caracteres no autorizados para plegado |
-| 03 | `SEARCH_TOKEN_STREAM` | comparar frases, tokens completos, cobertura y prefijo controlado | no usa subcadenas, stemming, lematización ni stopwords implícitas |
-| 04 | `SEARCH_APPROVED_ALIAS_SET` | recuperar mediante aliases explícitos y aprobados | no aprende aliases por uso, frecuencia, clics o similitud |
-| 05 | `SEARCH_TRANSLITERATION_KEY` | fallback opcional entre escrituras bajo perfil explícito | deshabilitada por defecto; nunca igualdad |
-| 06 | `SEARCH_STRUCTURED_COMPONENT_SET` | buscar estructuras mediante componentes ya interpretados | no aplana estructura como identidad textual |
-| 07 | `SEARCH_FREE_TEXT_TERMS` | descubrir términos y frases en texto libre elegible | no corrige autoría ni crea identidad |
+| Orden | Representación                    | Propósito                                                                       | Frontera obligatoria                                              |
+| ----: | --------------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+|    01 | `SEARCH_FORM_KEY`                 | comparar forma estable sin distinguir caja ni espacios accidentales autorizados | conserva tildes, `ñ`, signos, palabras y fronteras                |
+|    02 | `SEARCH_ACCENT_KEY`               | recuperar de forma tolerante a tildes españolas en campos elegibles             | preserva `ñ`, signos y caracteres no autorizados para plegado     |
+|    03 | `SEARCH_TOKEN_STREAM`             | comparar frases, tokens completos, cobertura y prefijo controlado               | no usa subcadenas, stemming, lematización ni stopwords implícitas |
+|    04 | `SEARCH_APPROVED_ALIAS_SET`       | recuperar mediante aliases explícitos y aprobados                               | no aprende aliases por uso, frecuencia, clics o similitud         |
+|    05 | `SEARCH_TRANSLITERATION_KEY`      | fallback opcional entre escrituras bajo perfil explícito                        | deshabilitada por defecto; nunca igualdad                         |
+|    06 | `SEARCH_STRUCTURED_COMPONENT_SET` | buscar estructuras mediante componentes ya interpretados                        | no aplana estructura como identidad textual                       |
+|    07 | `SEARCH_FREE_TEXT_TERMS`          | descubrir términos y frases en texto libre elegible                             | no corrige autoría ni crea identidad                              |
 
 Una política de campo puede habilitar un subconjunto. No puede inventar una octava representación local ni combinar varias en una clave opaca sin explicación.
 
@@ -5558,15 +5558,15 @@ La versión `1.0.0` conserva exactamente:
 
 #### 10. Las siete clases mínimas de token o frontera
 
-| Orden | Clase | Conducta |
-| ---: | --- | --- |
-| 01 | `LEXICAL_TOKEN` | letras y marcas combinantes como token completo |
-| 02 | `NUMERIC_TOKEN` | número, decimal, rango o fracción sin cambiar magnitud |
-| 03 | `TECHNICAL_TOKEN` | código, modelo, unidad, referencia o combinación protegida |
-| 04 | `INTERNAL_COMPOUND_TOKEN` | token con guion, apóstrofo o signo interno conservado salvo gramática aprobada |
-| 05 | `PUNCTUATION_BOUNDARY` | signo delimitador cuya presencia sigue disponible para coincidencia precisa |
-| 06 | `WHITESPACE_BOUNDARY` | separador autorizado que delimita tokens |
-| 07 | `UNRESOLVED_TOKEN_OR_BOUNDARY` | forma no clasificable que bloquea modos más amplios |
+| Orden | Clase                          | Conducta                                                                       |
+| ----: | ------------------------------ | ------------------------------------------------------------------------------ |
+|    01 | `LEXICAL_TOKEN`                | letras y marcas combinantes como token completo                                |
+|    02 | `NUMERIC_TOKEN`                | número, decimal, rango o fracción sin cambiar magnitud                         |
+|    03 | `TECHNICAL_TOKEN`              | código, modelo, unidad, referencia o combinación protegida                     |
+|    04 | `INTERNAL_COMPOUND_TOKEN`      | token con guion, apóstrofo o signo interno conservado salvo gramática aprobada |
+|    05 | `PUNCTUATION_BOUNDARY`         | signo delimitador cuya presencia sigue disponible para coincidencia precisa    |
+|    06 | `WHITESPACE_BOUNDARY`          | separador autorizado que delimita tokens                                       |
+|    07 | `UNRESOLVED_TOKEN_OR_BOUNDARY` | forma no clasificable que bloquea modos más amplios                            |
 
 Reglas:
 
@@ -5657,14 +5657,14 @@ Invariantes:
 
 #### 14. Los seis perfiles cerrados de búsqueda
 
-| Orden | Perfil | Clases principales | Restricción |
-| ---: | --- | --- | --- |
-| 01 | `STRICT_TECHNICAL_LOOKUP` | códigos, SKU, unidades, estados, slugs, referencias y contactos | no usa tildes, aliases comerciales, transliteración ni similitud |
-| 02 | `STANDARD_COMMERCIAL_NAME` | `COMMERCIAL_NAME` | no corrige el nombre ni convierte resultado en identidad |
-| 03 | `OFFICIAL_FORM_LOOKUP` | marcas, nombres legales, siglas y formas oficiales | conserva signos y forma oficial; tolerancias mayores requieren autoridad explícita |
-| 04 | `STRUCTURED_PRESENTATION_LOOKUP` | presentaciones, cantidades, unidades y etiquetas estructuradas | cantidad, unidad, multiplicador, contexto y fuente son filtros separados |
-| 05 | `FREE_TEXT_DISCOVERY` | `FREE_TEXT` y descripciones elegibles | sin stemming, lematización, stopwords ni reescritura automática en `1.0.0` |
-| 06 | `RESTRICTED_HUMAN_OR_LOCATION` | personas, actores, direcciones y ubicaciones | exige finalidad, scope, privacidad y autorización; no resuelve identidad |
+| Orden | Perfil                           | Clases principales                                              | Restricción                                                                        |
+| ----: | -------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+|    01 | `STRICT_TECHNICAL_LOOKUP`        | códigos, SKU, unidades, estados, slugs, referencias y contactos | no usa tildes, aliases comerciales, transliteración ni similitud                   |
+|    02 | `STANDARD_COMMERCIAL_NAME`       | `COMMERCIAL_NAME`                                               | no corrige el nombre ni convierte resultado en identidad                           |
+|    03 | `OFFICIAL_FORM_LOOKUP`           | marcas, nombres legales, siglas y formas oficiales              | conserva signos y forma oficial; tolerancias mayores requieren autoridad explícita |
+|    04 | `STRUCTURED_PRESENTATION_LOOKUP` | presentaciones, cantidades, unidades y etiquetas estructuradas  | cantidad, unidad, multiplicador, contexto y fuente son filtros separados           |
+|    05 | `FREE_TEXT_DISCOVERY`            | `FREE_TEXT` y descripciones elegibles                           | sin stemming, lematización, stopwords ni reescritura automática en `1.0.0`         |
+|    06 | `RESTRICTED_HUMAN_OR_LOCATION`   | personas, actores, direcciones y ubicaciones                    | exige finalidad, scope, privacidad y autorización; no resuelve identidad           |
 
 `UNCLASSIFIED_PRESERVE`, secretos, firmas y material criptográfico no reciben búsqueda derivada general.
 
@@ -5672,17 +5672,17 @@ Invariantes:
 
 #### 15. Los nueve modos cerrados de coincidencia
 
-| Nivel | Modo | Confianza relativa |
-| ---: | --- | --- |
-| 1 | `EXACT_VALUE_MATCH` | máxima |
-| 2 | `FORM_EQUIVALENT_MATCH` | muy alta |
-| 3 | `ACCENT_TOLERANT_MATCH` | alta |
-| 4 | `APPROVED_ALIAS_MATCH` | alta contextual |
-| 5 | `ORDERED_PHRASE_MATCH` | media alta |
-| 6 | `ALL_TOKEN_MATCH` | media |
-| 7 | `LAST_TOKEN_PREFIX_MATCH` | media baja |
-| 8 | `TRANSLITERATION_FALLBACK_MATCH` | baja |
-| 9 | `SIMILARITY_CANDIDATE_ONLY` | mínima |
+| Nivel | Modo                             | Confianza relativa |
+| ----: | -------------------------------- | ------------------ |
+|     1 | `EXACT_VALUE_MATCH`              | máxima             |
+|     2 | `FORM_EQUIVALENT_MATCH`          | muy alta           |
+|     3 | `ACCENT_TOLERANT_MATCH`          | alta               |
+|     4 | `APPROVED_ALIAS_MATCH`           | alta contextual    |
+|     5 | `ORDERED_PHRASE_MATCH`           | media alta         |
+|     6 | `ALL_TOKEN_MATCH`                | media              |
+|     7 | `LAST_TOKEN_PREFIX_MATCH`        | media baja         |
+|     8 | `TRANSLITERATION_FALLBACK_MATCH` | baja               |
+|     9 | `SIMILARITY_CANDIDATE_ONLY`      | mínima             |
 
 Reglas:
 
@@ -5791,22 +5791,22 @@ Reglas:
 
 #### 20. Matriz completa de las catorce clases semánticas
 
-| Clase | Perfil o conducta | Permitido por defecto | Bloqueado por defecto |
-| --- | --- | --- | --- |
-| `COMMERCIAL_NAME` | `STANDARD_COMMERCIAL_NAME` | exacta, forma, tildes `es-CO`, frase, tokens, aliases aprobados | transliteración y similitud |
-| `STRUCTURED_PRESENTATION_NAME` | `STRUCTURED_PRESENTATION_LOOKUP` | etiqueta y componentes estructurados | identidad por etiqueta o eliminación genérica de signos |
-| `HUMAN_LABEL` | política específica | exacta y forma | heredar búsqueda comercial |
-| `OFFICIAL_LEGAL_NAME` | `OFFICIAL_FORM_LOOKUP` | exacta, casefold autorizado, aliases legales explícitos | tildes genéricas, eliminación de signos, similitud, reconstrucción |
-| `OFFICIAL_BRAND_FORM` | `OFFICIAL_FORM_LOOKUP` | exacta, casefold autorizado, aliases de marca explícitos | tokenización destructiva, transliteración y similitud global |
-| `PERSON_OR_ACTOR_NAME` | `RESTRICTED_HUMAN_OR_LOCATION` | forma y tildes cuando estén aprobadas | identidad, fusión, corrección o exposición transversal |
-| `ADDRESS_OR_LOCATION_TEXT` | `RESTRICTED_HUMAN_OR_LOCATION` o búsqueda estructurada | forma y componentes aprobados | eliminación universal de números, signos, orden o abreviaturas |
-| `FREE_TEXT` | `FREE_TEXT_DISCOVERY` | términos, frases y último prefijo autorizado | identidad, corrección silenciosa, stemming y sinónimos automáticos |
-| `CONTROLLED_VOCABULARY_CODE` | `STRICT_TECHNICAL_LOOKUP` | exacta y equivalencias de catálogo | búsqueda comercial, tildes, transliteración o similitud |
-| `MEASUREMENT_OR_UNIT_CODE` | `STRICT_TECHNICAL_LOOKUP` en componente estructurado | exacta, casefold o alias técnico si el catálogo lo declara | subcadena o equivalencia con etiqueta |
-| `TECHNICAL_IDENTIFIER` | contrato técnico propietario | exacta y casefold o prefijo técnico explícito cuando corresponda | diccionario, alias comercial, eliminación de signos y similitud |
-| `CONTACT_IDENTIFIER` | contrato propio del canal | canonicalización y comparación del estándar | búsqueda comercial o exposición fuera de finalidad |
-| `SECRET_OR_SIGNATURE_MATERIAL` | sin representación general | validación exacta por mecanismo de seguridad | derivación textual, prefijo, similitud, logging y exposición |
-| `UNCLASSIFIED_PRESERVE` | bloqueado | ninguna | todos los modos |
+| Clase                          | Perfil o conducta                                      | Permitido por defecto                                            | Bloqueado por defecto                                              |
+| ------------------------------ | ------------------------------------------------------ | ---------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `COMMERCIAL_NAME`              | `STANDARD_COMMERCIAL_NAME`                             | exacta, forma, tildes `es-CO`, frase, tokens, aliases aprobados  | transliteración y similitud                                        |
+| `STRUCTURED_PRESENTATION_NAME` | `STRUCTURED_PRESENTATION_LOOKUP`                       | etiqueta y componentes estructurados                             | identidad por etiqueta o eliminación genérica de signos            |
+| `HUMAN_LABEL`                  | política específica                                    | exacta y forma                                                   | heredar búsqueda comercial                                         |
+| `OFFICIAL_LEGAL_NAME`          | `OFFICIAL_FORM_LOOKUP`                                 | exacta, casefold autorizado, aliases legales explícitos          | tildes genéricas, eliminación de signos, similitud, reconstrucción |
+| `OFFICIAL_BRAND_FORM`          | `OFFICIAL_FORM_LOOKUP`                                 | exacta, casefold autorizado, aliases de marca explícitos         | tokenización destructiva, transliteración y similitud global       |
+| `PERSON_OR_ACTOR_NAME`         | `RESTRICTED_HUMAN_OR_LOCATION`                         | forma y tildes cuando estén aprobadas                            | identidad, fusión, corrección o exposición transversal             |
+| `ADDRESS_OR_LOCATION_TEXT`     | `RESTRICTED_HUMAN_OR_LOCATION` o búsqueda estructurada | forma y componentes aprobados                                    | eliminación universal de números, signos, orden o abreviaturas     |
+| `FREE_TEXT`                    | `FREE_TEXT_DISCOVERY`                                  | términos, frases y último prefijo autorizado                     | identidad, corrección silenciosa, stemming y sinónimos automáticos |
+| `CONTROLLED_VOCABULARY_CODE`   | `STRICT_TECHNICAL_LOOKUP`                              | exacta y equivalencias de catálogo                               | búsqueda comercial, tildes, transliteración o similitud            |
+| `MEASUREMENT_OR_UNIT_CODE`     | `STRICT_TECHNICAL_LOOKUP` en componente estructurado   | exacta, casefold o alias técnico si el catálogo lo declara       | subcadena o equivalencia con etiqueta                              |
+| `TECHNICAL_IDENTIFIER`         | contrato técnico propietario                           | exacta y casefold o prefijo técnico explícito cuando corresponda | diccionario, alias comercial, eliminación de signos y similitud    |
+| `CONTACT_IDENTIFIER`           | contrato propio del canal                              | canonicalización y comparación del estándar                      | búsqueda comercial o exposición fuera de finalidad                 |
+| `SECRET_OR_SIGNATURE_MATERIAL` | sin representación general                             | validación exacta por mecanismo de seguridad                     | derivación textual, prefijo, similitud, logging y exposición       |
+| `UNCLASSIFIED_PRESERVE`        | bloqueado                                              | ninguna                                                          | todos los modos                                                    |
 
 Conciliación:
 
@@ -5864,14 +5864,14 @@ Reglas:
 
 #### 23. Fuentes, overrides, copias, snapshots y externos
 
-| Caso | Conducta |
-| --- | --- |
-| `AUTHORITATIVE_SOURCE` | derivación vinculada a la versión de la fuente |
-| `APPROVED_OVERRIDE` | derivación propia, acotada a canal y scope |
-| `SYNCHRONIZED_COPY` | misma versión y contrato; ninguna política local |
-| `IMMUTABLE_SNAPSHOT` | derivación histórica vinculada al valor histórico; sin resincronización |
-| `EXTERNAL_ORIGINAL` | original preservado; derivación interna separada |
-| `OUTPUT_PROJECTION` | no adquiere autoridad de búsqueda sobre la fuente |
+| Caso                   | Conducta                                                                |
+| ---------------------- | ----------------------------------------------------------------------- |
+| `AUTHORITATIVE_SOURCE` | derivación vinculada a la versión de la fuente                          |
+| `APPROVED_OVERRIDE`    | derivación propia, acotada a canal y scope                              |
+| `SYNCHRONIZED_COPY`    | misma versión y contrato; ninguna política local                        |
+| `IMMUTABLE_SNAPSHOT`   | derivación histórica vinculada al valor histórico; sin resincronización |
+| `EXTERNAL_ORIGINAL`    | original preservado; derivación interna separada                        |
+| `OUTPUT_PROJECTION`    | no adquiere autoridad de búsqueda sobre la fuente                       |
 
 La política del dominio decide qué representaciones pueden participar según finalidad y vigencia.
 
@@ -5969,25 +5969,25 @@ La futura distribución física deberá preservar esta paridad.
 
 #### 28. Diecisiete ejemplos normativos
 
-| Caso | Permitido | Prohibido |
-| --- | --- | --- |
-| `Harina de Maíz` / `harina de maiz` | `ACCENT_TOLERANT_MATCH`; mostrar `Harina de Maíz` | sobrescribir o declarar identidad |
-| `Maiz Dulce` / `maíz dulce` | candidato tolerante con motivo y scope | corregir o fusionar automáticamente |
-| `año` / `ano` | no coincidir por `SEARCH_ACCENT_KEY` | plegar `ñ` a `n` |
-| `Coca-Cola` / `coca-cola` | forma equivalente si la excepción autoriza casefold | eliminar el guion |
-| `Coca-Cola` / `coca cola` | menor coincidencia por tokens solo si la política lo autoriza | alias implícito |
-| `S.A.S.` / `sas` | no coincidir sin alias legal explícito | eliminar puntos globalmente |
-| `iPhone` / `iphone` | casefold oficial cuando la excepción lo permita | cambiar la grafía mostrada |
-| `expresso` / `espresso` | sin coincidencia estándar | autocorrección o alias implícito |
-| `Wellmix` / `Welmix` | resultados separados | seleccionar uno por frecuencia |
-| `Choco Bites` / `Chocobites` | resultados separados | unir o dividir palabras |
-| presentación `500 g` | componentes de cantidad y unidad | comparar solo cadena sin contexto |
-| `Bolsa de 1.100 ml` / `Bolsa de 1100 ml` | candidatos separados hasta resolver convención | retirar punto y declarar equivalencia |
-| `Carlos Ibarra` | búsqueda restringida y retorno por identificador estable autorizado | identificar o fusionar personas por nombre |
-| SKU `FRIO` / comercial `frío` | búsquedas independientes | aplicar tolerancia comercial al código |
-| externo `MAIZ` / interno `Maíz` | preservar original y buscar derivación interna | sobrescribir original externo |
-| dos `VÍVERES & BODEGA PRINCIPAL` | dos resultados con IDs distintos | devolver uno por orden físico |
-| doce `Nivel 1` bajo padres distintos | filtrar por jerarquía | colapsar por nombre |
+| Caso                                     | Permitido                                                           | Prohibido                                  |
+| ---------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------ |
+| `Harina de Maíz` / `harina de maiz`      | `ACCENT_TOLERANT_MATCH`; mostrar `Harina de Maíz`                   | sobrescribir o declarar identidad          |
+| `Maiz Dulce` / `maíz dulce`              | candidato tolerante con motivo y scope                              | corregir o fusionar automáticamente        |
+| `año` / `ano`                            | no coincidir por `SEARCH_ACCENT_KEY`                                | plegar `ñ` a `n`                           |
+| `Coca-Cola` / `coca-cola`                | forma equivalente si la excepción autoriza casefold                 | eliminar el guion                          |
+| `Coca-Cola` / `coca cola`                | menor coincidencia por tokens solo si la política lo autoriza       | alias implícito                            |
+| `S.A.S.` / `sas`                         | no coincidir sin alias legal explícito                              | eliminar puntos globalmente                |
+| `iPhone` / `iphone`                      | casefold oficial cuando la excepción lo permita                     | cambiar la grafía mostrada                 |
+| `expresso` / `espresso`                  | sin coincidencia estándar                                           | autocorrección o alias implícito           |
+| `Wellmix` / `Welmix`                     | resultados separados                                                | seleccionar uno por frecuencia             |
+| `Choco Bites` / `Chocobites`             | resultados separados                                                | unir o dividir palabras                    |
+| presentación `500 g`                     | componentes de cantidad y unidad                                    | comparar solo cadena sin contexto          |
+| `Bolsa de 1.100 ml` / `Bolsa de 1100 ml` | candidatos separados hasta resolver convención                      | retirar punto y declarar equivalencia      |
+| `Carlos Ibarra`                          | búsqueda restringida y retorno por identificador estable autorizado | identificar o fusionar personas por nombre |
+| SKU `FRIO` / comercial `frío`            | búsquedas independientes                                            | aplicar tolerancia comercial al código     |
+| externo `MAIZ` / interno `Maíz`          | preservar original y buscar derivación interna                      | sobrescribir original externo              |
+| dos `VÍVERES & BODEGA PRINCIPAL`         | dos resultados con IDs distintos                                    | devolver uno por orden físico              |
+| doce `Nivel 1` bajo padres distintos     | filtrar por jerarquía                                               | colapsar por nombre                        |
 
 ---
 
@@ -6022,29 +6022,29 @@ La referencia a perfiles futuros no autoriza su activación en `1.0.0`; el corpu
 
 #### 30. Estado de materialización física
 
-| Elemento | Estado |
-| --- | --- |
-| `@vento/data-normalization` | `ESPECIFICADO`; package físico no materializado |
+| Elemento                                        | Estado                                                 |
+| ----------------------------------------------- | ------------------------------------------------------ |
+| `@vento/data-normalization`                     | `ESPECIFICADO`; package físico no materializado        |
 | `VENTO_TEXT_SEARCH_AND_COMPARISON_POLICY@1.0.0` | centralizada documentalmente; runtime no materializado |
-| 7 representaciones derivadas | `ESPECIFICADAS` |
-| 7 clases de token o frontera | `ESPECIFICADAS` |
-| 15 atributos de alias | `ESPECIFICADOS` |
-| 6 perfiles cerrados | `ESPECIFICADOS` |
-| 9 modos y niveles | `ESPECIFICADOS` |
-| pipeline de 15 pasos | `ESPECIFICADO` |
-| ranking determinista | `ESPECIFICADO` |
-| contrato de respuesta | `ESPECIFICADO` |
-| matriz de 14 clases | `ESPECIFICADA` |
-| 11 componentes estructurados | `ESPECIFICADOS` |
-| transliteración | deshabilitada por defecto |
-| similitud | deshabilitada por defecto |
-| API TypeScript | `NO IMPLEMENTADA` |
-| tokenizers y helpers físicos | `NO IMPLEMENTADOS` |
-| columnas o derivaciones persistidas | `NO IMPLEMENTADAS` |
-| índices | `NO IMPLEMENTADOS` por esta tarea |
-| consumidores migrados | `0` por esta tarea |
-| cambios Supabase | `0` |
-| requisitos de prueba creados o modificados | `0` |
+| 7 representaciones derivadas                    | `ESPECIFICADAS`                                        |
+| 7 clases de token o frontera                    | `ESPECIFICADAS`                                        |
+| 15 atributos de alias                           | `ESPECIFICADOS`                                        |
+| 6 perfiles cerrados                             | `ESPECIFICADOS`                                        |
+| 9 modos y niveles                               | `ESPECIFICADOS`                                        |
+| pipeline de 15 pasos                            | `ESPECIFICADO`                                         |
+| ranking determinista                            | `ESPECIFICADO`                                         |
+| contrato de respuesta                           | `ESPECIFICADO`                                         |
+| matriz de 14 clases                             | `ESPECIFICADA`                                         |
+| 11 componentes estructurados                    | `ESPECIFICADOS`                                        |
+| transliteración                                 | deshabilitada por defecto                              |
+| similitud                                       | deshabilitada por defecto                              |
+| API TypeScript                                  | `NO IMPLEMENTADA`                                      |
+| tokenizers y helpers físicos                    | `NO IMPLEMENTADOS`                                     |
+| columnas o derivaciones persistidas             | `NO IMPLEMENTADAS`                                     |
+| índices                                         | `NO IMPLEMENTADOS` por esta tarea                      |
+| consumidores migrados                           | `0` por esta tarea                                     |
+| cambios Supabase                                | `0`                                                    |
+| requisitos de prueba creados o modificados      | `0`                                                    |
 
 `ESPECIFICADO` no equivale a `IMPLEMENTADO` ni a `VALIDADO` en runtime.
 
@@ -6052,28 +6052,28 @@ La referencia a perfiles futuros no autoriza su activación en `1.0.0`; el corpu
 
 #### 31. Handoffs exactos
 
-| Materia fuera de esta tarea | Propietario exacto | Condición de salida |
-| --- | --- | --- |
-| previsualización de transformaciones | `SHELL-NORM-007` | preview debe mostrar entrada, derivaciones, coincidencias, explicación y versiones sin autoridad de commit |
-| metadata compartida de versión y auditoría | `SHELL-NORM-008` | toda evaluación del package debe quedar atribuible a política, algoritmo, entrada y versión |
-| pruebas de idempotencia y conservación semántica | `SHELL-NORM-009` | corpus compartido debe demostrar paridad, estabilidad y ausencia de efectos estructurales |
-| aliases, conflictos y candidatos que requieran decisión humana | `DATA-NORM-ARC-007` | ninguna propuesta se activa por telemetría o frecuencia |
-| vigencia, trazas y procedencia | `DATA-NORM-ARC-009` | derivaciones y resultados deben ser reproducibles por conjunto de versiones |
-| identidad, unicidad, duplicidad y fusión | `DATA-NORM-ARC-010` | ninguna coincidencia se transforma en estructura sin evaluación propietaria |
-| API, RPC, defensa de base e implementación ejecutora | `DATA-NORM-ARC-011` | las capas físicas deben conservar la misma semántica y precedencia |
-| originales y mappings externos | `DATA-NORM-ARC-012` | cualquier derivación interna conserva payload y procedencia externos |
-| compatibilidad de versiones | `SUPA-TRANS-006` | coexistencia y consumidores incompatibles resueltos antes de cutover |
-| adaptación de consumidores | `SUPA-TRANS-007` | consumidores usan contratos compatibles sin helpers locales divergentes |
-| paridad y pruebas transversales | `SUPA-TRANS-009` | mismas entradas y versiones producen resultados equivalentes entre capas |
-| rendimiento y seguridad bajo carga | `SUPA-TRANS-010` | representación e índices candidatos medidos antes de activación |
-| rollback de transición | `SUPA-TRANS-011` | cambios físicos reversibles sin reinterpretar historia |
-| paridad de ambientes | `SUPA-TRANS-013` | artefactos compatibles entre ambientes |
-| artefactos y consumidores desplegados | `SUPA-TRANS-014` | versiones desplegadas y consumidores reconciliados |
-| materialización física del package | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` | solo el package autorizado puede crearse y desplegarse |
-| análisis estructural de duplicidad durante transición | `DATA-NORM-TRANS-003` | colisiones se evalúan con relaciones y scope, nunca solo con texto |
-| coexistencia y materialización de versiones | `DATA-NORM-TRANS-004`; `DATA-NORM-TRANS-005` | cambios físicos mantienen compatibilidad y trazabilidad |
-| restauración y rollback de normalización | `DATA-NORM-TRANS-008` | historia y derivaciones anteriores permanecen reconstruibles |
-| certificación final de paridad | `DATA-NORM-TRANS-009` | corpus y capas físicas deben producir resultados compatibles |
+| Materia fuera de esta tarea                                    | Propietario exacto                                                  | Condición de salida                                                                                        |
+| -------------------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| previsualización de transformaciones                           | `SHELL-NORM-007`                                                    | preview debe mostrar entrada, derivaciones, coincidencias, explicación y versiones sin autoridad de commit |
+| metadata compartida de versión y auditoría                     | `SHELL-NORM-008`                                                    | toda evaluación del package debe quedar atribuible a política, algoritmo, entrada y versión                |
+| pruebas de idempotencia y conservación semántica               | `SHELL-NORM-009`                                                    | corpus compartido debe demostrar paridad, estabilidad y ausencia de efectos estructurales                  |
+| aliases, conflictos y candidatos que requieran decisión humana | `DATA-NORM-ARC-007`                                                 | ninguna propuesta se activa por telemetría o frecuencia                                                    |
+| vigencia, trazas y procedencia                                 | `DATA-NORM-ARC-009`                                                 | derivaciones y resultados deben ser reproducibles por conjunto de versiones                                |
+| identidad, unicidad, duplicidad y fusión                       | `DATA-NORM-ARC-010`                                                 | ninguna coincidencia se transforma en estructura sin evaluación propietaria                                |
+| API, RPC, defensa de base e implementación ejecutora           | `DATA-NORM-ARC-011`                                                 | las capas físicas deben conservar la misma semántica y precedencia                                         |
+| originales y mappings externos                                 | `DATA-NORM-ARC-012`                                                 | cualquier derivación interna conserva payload y procedencia externos                                       |
+| compatibilidad de versiones                                    | `SUPA-TRANS-006`                                                    | coexistencia y consumidores incompatibles resueltos antes de cutover                                       |
+| adaptación de consumidores                                     | `SUPA-TRANS-007`                                                    | consumidores usan contratos compatibles sin helpers locales divergentes                                    |
+| paridad y pruebas transversales                                | `SUPA-TRANS-009`                                                    | mismas entradas y versiones producen resultados equivalentes entre capas                                   |
+| rendimiento y seguridad bajo carga                             | `SUPA-TRANS-010`                                                    | representación e índices candidatos medidos antes de activación                                            |
+| rollback de transición                                         | `SUPA-TRANS-011`                                                    | cambios físicos reversibles sin reinterpretar historia                                                     |
+| paridad de ambientes                                           | `SUPA-TRANS-013`                                                    | artefactos compatibles entre ambientes                                                                     |
+| artefactos y consumidores desplegados                          | `SUPA-TRANS-014`                                                    | versiones desplegadas y consumidores reconciliados                                                         |
+| materialización física del package                             | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` | solo el package autorizado puede crearse y desplegarse                                                     |
+| análisis estructural de duplicidad durante transición          | `DATA-NORM-TRANS-003`                                               | colisiones se evalúan con relaciones y scope, nunca solo con texto                                         |
+| coexistencia y materialización de versiones                    | `DATA-NORM-TRANS-004`; `DATA-NORM-TRANS-005`                        | cambios físicos mantienen compatibilidad y trazabilidad                                                    |
+| restauración y rollback de normalización                       | `DATA-NORM-TRANS-008`                                               | historia y derivaciones anteriores permanecen reconstruibles                                               |
+| certificación final de paridad                                 | `DATA-NORM-TRANS-009`                                               | corpus y capas físicas deben producir resultados compatibles                                               |
 
 No queda un pendiente narrativo sin propietario documental exacto.
 
@@ -6163,19 +6163,19 @@ La conducta centralizada ya está protegida por requisitos canónicos vigentes:
 
 #### 35. Hallazgos y destinos exactos
 
-| Hallazgo | Resultado de `SHELL-NORM-006` | Destino exacto |
-| --- | --- | --- |
-| la política de búsqueda ya estaba definida en E3 pero no centralizada en SHELL-NORM | política completa centralizada documentalmente | `SHELL-NORM-006` |
-| los helpers legacy pueden divergir | ninguno se adopta como semántica transversal | `DATA-NORM-ARC-011`; `SUPA-TRANS-006`; `SUPA-TRANS-009` |
-| la búsqueda sin tildes aumenta recall y puede introducir colisiones | tolerancia `es-CO` acotada con `ñ` preservada | `DATA-NORM-ARC-009`; `SUPA-TRANS-009`; `SUPA-TRANS-010` |
-| transliteración no tiene perfil transversal aprobado | permanece deshabilitada | `SHELL-NORM-006` |
-| similitud no tiene algoritmo transversal aprobado | permanece deshabilitada | `SHELL-NORM-006` |
-| aliases pueden crear equivalencias falsas | solo aliases explícitos y gobernados | `DATA-NORM-ARC-007`; `DATA-NORM-ARC-009` |
-| presentaciones y UOM pueden colisionar por etiqueta | comparación estructurada obligatoria | `DATA-NORM-ARC-010`; `DATA-NORM-TRANS-003` |
-| búsqueda puede confundirse con identidad o fusión | frontera estructural absoluta | `DATA-NORM-ARC-010` |
-| package compartido aún no está materializado | especificación documental completa | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` |
-| metadata y auditoría compartidas todavía pertenecen a la siguiente especialización | no se anticipan aquí | `SHELL-NORM-008` |
-| corpus y pruebas compartidas todavía pertenecen a su especialización | no se implementan aquí | `SHELL-NORM-009` |
+| Hallazgo                                                                            | Resultado de `SHELL-NORM-006`                  | Destino exacto                                                      |
+| ----------------------------------------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------- |
+| la política de búsqueda ya estaba definida en E3 pero no centralizada en SHELL-NORM | política completa centralizada documentalmente | `SHELL-NORM-006`                                                    |
+| los helpers legacy pueden divergir                                                  | ninguno se adopta como semántica transversal   | `DATA-NORM-ARC-011`; `SUPA-TRANS-006`; `SUPA-TRANS-009`             |
+| la búsqueda sin tildes aumenta recall y puede introducir colisiones                 | tolerancia `es-CO` acotada con `ñ` preservada  | `DATA-NORM-ARC-009`; `SUPA-TRANS-009`; `SUPA-TRANS-010`             |
+| transliteración no tiene perfil transversal aprobado                                | permanece deshabilitada                        | `SHELL-NORM-006`                                                    |
+| similitud no tiene algoritmo transversal aprobado                                   | permanece deshabilitada                        | `SHELL-NORM-006`                                                    |
+| aliases pueden crear equivalencias falsas                                           | solo aliases explícitos y gobernados           | `DATA-NORM-ARC-007`; `DATA-NORM-ARC-009`                            |
+| presentaciones y UOM pueden colisionar por etiqueta                                 | comparación estructurada obligatoria           | `DATA-NORM-ARC-010`; `DATA-NORM-TRANS-003`                          |
+| búsqueda puede confundirse con identidad o fusión                                   | frontera estructural absoluta                  | `DATA-NORM-ARC-010`                                                 |
+| package compartido aún no está materializado                                        | especificación documental completa             | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` |
+| metadata y auditoría compartidas todavía pertenecen a la siguiente especialización  | no se anticipan aquí                           | `SHELL-NORM-008`                                                    |
+| corpus y pruebas compartidas todavía pertenecen a su especialización                | no se implementan aquí                         | `SHELL-NORM-009`                                                    |
 
 No queda un pendiente narrativo sin propietario documental exacto.
 
@@ -6294,7 +6294,852 @@ SHELL-NORM-006 — Crear normalización de búsqueda y comparación
 SHELL-NORM-007 — Crear previsualización de transformaciones
 
 
-### [ ] SHELL-NORM-007 — Crear previsualización de transformaciones
+### ✅ SHELL-NORM-007 — Crear previsualización de transformaciones
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-NORM-006 — Crear normalización de búsqueda y comparación
+**Tarea siguiente:** SHELL-NORM-008 — Crear metadatos de versión y auditoría de reglas
+**Tipo de tarea:** Documental; centralización dentro de `@vento/data-normalization` del contrato canónico de previsualización no vinculante de transformaciones y evaluaciones de normalización, preservando la autoridad única del servicio de dominio, las versiones efectivas, la fuente observada, la explicación, la divergencia previa al commit y la separación absoluta entre preview y mutación, sin materializar código, package físico, API, RPC, persistencia, migraciones ni cambios en Supabase
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md`
+**Estado físico resultante:** NO MATERIALIZADO
+**Implementación física autorizada:** ninguna
+**Cambios de código, packages físicos, archivos TypeScript, configuración npm, registry, workflows, DDL, DML, migraciones, RLS, RPC, triggers, índices, constraints, datos, secretos, configuración remota o despliegues:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-NORM-007` centraliza para la futura superficie compartida de `@vento/data-normalization` la conducta de previsualización ya aprobada por el gobierno de normalización de BLOQUE E3 y por las tareas `SHELL-NORM-001..006`.
+
+La previsualización permite observar qué decidiría el motor semántico para una entrada y contexto concretos, con sus versiones, derivaciones, coincidencias, explicación, bloqueos o necesidad de revisión, sin convertir esa observación en una escritura, una reserva de estado, una confirmación de unicidad ni una autorización de commit.
+
+La regla central es:
+
+```text
+ENTRADA OBSERVADA + CONTEXTO + VERSIONES
+        ↓
+MISMA AUTORIDAD SEMÁNTICA DEL SERVICIO
+        ↓
+EVALUACIÓN NO MUTANTE
+        ↓
+PREVISUALIZACIÓN EXPLICABLE
+        ↓
+SIN RESERVA
+SIN COMMIT
+SIN EFECTO EMPRESARIAL
+```
+
+Toda mutación posterior vuelve a atravesar la frontera transaccional y reevalúa el estado actual.
+
+---
+
+#### 2. Resultado material de la tarea
+
+Queda definido documentalmente el contrato compartido de previsualización que deberá exponer `@vento/data-normalization` cuando se materialice físicamente.
+
+El resultado centraliza, sin crear una política semántica nueva:
+
+- las 4 funciones cerradas de autoridad ya aprobadas y la ubicación de `PREVIEW_AND_GUIDANCE`;
+- las 4 capas lógicas y su frontera frente a la previsualización;
+- la familia `NORMALIZATION_EVALUATION_QUERY` como consulta no mutante;
+- el vínculo obligatorio entre preview y `AUTHORITATIVE_SEMANTIC_EVALUATION`;
+- los 21 atributos del descriptor de colocación que gobierna una operación textual;
+- las 10 etapas del flujo transaccional canónico, manteniendo el preview únicamente como etapa opcional previa al comando;
+- las 6 dimensiones cuya modificación obliga a revalidar la previsualización antes del commit: valor, scope, política, versiones, unicidad y relaciones;
+- la separación entre valor observado, salida propuesta, derivaciones, coincidencias, explicación y resultado cerrado de la operación evaluada;
+- el tratamiento de previews iguales o divergentes respecto del commit;
+- la conducta para resultados sin cambio, bloqueados, conflictivos, ambiguos, estructurales y fallidos técnicamente;
+- las fronteras de privacidad, autorización, caché, offline, timeout, reintento e idempotencia;
+- el handoff exacto hacia metadatos/auditoría y certificación del package.
+
+No se crea un identificador nuevo de política, catálogo, tarea, estado o requisito de prueba.
+
+---
+
+#### 3. Fuentes normativas consumidas
+
+| Fuente                | Decisión preservada por `SHELL-NORM-007`                                                                                                |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-NORM-001`      | identidad de `@vento/data-normalization`, pureza, determinismo, ausencia de I/O y separación entre evaluación, preview y commit         |
+| `SHELL-NORM-002`      | clase semántica, representación, fuente, tratamiento y descriptor tipado de la entrada                                                  |
+| `SHELL-NORM-003`      | operaciones deterministas de espacios, Unicode y capitalización, con orden y exclusiones explícitas                                     |
+| `SHELL-NORM-004`      | conectores, excepciones oficiales, precedencia, fuentes y formas protegidas                                                             |
+| `SHELL-NORM-005`      | diccionario ortográfico versionado, resultados cerrados y separación frente a revisión                                                  |
+| `SHELL-NORM-006`      | entrada, derivaciones, coincidencias, explicación, perfiles y versiones de búsqueda/comparación                                         |
+| `DATA-NORM-ARC-009`   | conjunto efectivo de versiones, `version_set_digest`, procedencia y reproducibilidad                                                    |
+| `DATA-NORM-ARC-011`   | cuatro capas, cuatro funciones de autoridad, consulta de evaluación, preview no vinculante, divergencia y revalidación previa al commit |
+| `DATA-NORM-ARC-010`   | unicidad y duplicidad no se confirman desde una previsualización                                                                        |
+| `DATA-NORM-ARC-012`   | originales externos y evidencia no se sobrescriben mediante una proyección previa                                                       |
+| `SUPA-TRANS-007`      | adaptación de consumidores y presentación de divergencias                                                                               |
+| `DATA-NORM-TRANS-005` | materialización transaccional posterior y reevaluación antes de persistir                                                               |
+
+`SHELL-NORM-007` no sustituye ninguna de estas autoridades; únicamente fija su proyección compartida para preview.
+
+---
+
+#### 4. Frontera exacta
+
+Esta tarea define documentalmente:
+
+- qué es y qué no es una previsualización;
+- qué autoridad produce el resultado semántico;
+- qué información mínima deberá conservarse para interpretar la salida;
+- cómo se relaciona el preview con las operaciones `SHELL-NORM-002..006`;
+- cómo debe presentarse una transformación propuesta sin afirmar que fue aplicada;
+- cómo se exponen derivaciones y coincidencias de búsqueda sin convertirlas en identidad;
+- cómo se trata una entrada ya canónica;
+- cómo se exponen bloqueos, conflictos, revisión y fallos técnicos;
+- cómo se detecta divergencia entre preview y commit;
+- qué debe revalidarse al escribir;
+- qué responsabilidades permanecen en la aplicación, servicio de dominio, RPC y trigger;
+- qué datos no pueden exponerse;
+- qué estado físico permanece pendiente y cuál es su propietario exacto.
+
+Esta tarea no:
+
+- crea una API física de preview;
+- define endpoint, ruta HTTP, RPC o función SQL;
+- crea tipos o schemas runtime;
+- selecciona framework, librería, transporte o serialización;
+- persiste previews;
+- crea una tabla o ledger de previews;
+- crea auditoría física;
+- reserva filas o locks;
+- confirma una mutación;
+- crea aliases, reglas, diccionarios o catálogos nuevos;
+- cambia algoritmos de búsqueda o normalización;
+- activa similitud o transliteración;
+- modifica Supabase.
+
+---
+
+#### 5. Función de autoridad aplicable
+
+La previsualización conserva exactamente la función aprobada:
+
+```text
+PREVIEW_AND_GUIDANCE
+```
+
+Su significado permanece:
+
+```text
+producir sugerencia, explicación o validación no vinculante
+para interacción humana
+```
+
+La aplicación presenta el resultado, pero no decide la semántica. La decisión semántica pertenece a:
+
+```text
+AUTHORITATIVE_SEMANTIC_EVALUATION
+```
+
+producida por el servicio de dominio.
+
+La previsualización nunca asume:
+
+```text
+TRANSACTIONAL_REVALIDATION_AND_COMMIT
+```
+
+ni:
+
+```text
+DEFENSIVE_INVARIANT_ENFORCEMENT
+```
+
+---
+
+#### 6. Modelo de las cuatro capas
+
+| Capa                            | Responsabilidad frente al preview                                                                             | Autoridad que no posee                                             |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `APPLICATION_INTERACTION_LAYER` | captura intención, solicita preview servidor, muestra original, propuesta, explicación, bloqueos y candidatos | no define política, no selecciona versiones y no confirma mutación |
+| `DOMAIN_NORMALIZATION_SERVICE`  | produce la evaluación semántica autoritativa consumida por preview                                            | no confirma escritura ni sustituye autorización o transacción      |
+| `TRANSACTIONAL_RPC_BOUNDARY`    | reevalúa al existir intención de escritura y confirma únicamente el resultado vigente autorizado              | no reutiliza ciegamente un preview ni inventa reglas               |
+| `DEFENSIVE_DATABASE_TRIGGER`    | participa únicamente en la defensa de una escritura posterior cuando el descriptor lo autoriza                | no produce preview, no decide semántica y no corrige ambigüedades  |
+
+La previsualización no crea una quinta capa.
+
+---
+
+#### 7. Familia de consulta
+
+El preview pertenece a la familia canónica:
+
+```text
+NORMALIZATION_EVALUATION_QUERY
+```
+
+Su finalidad es:
+
+```text
+obtener previsualización o evaluación sin mutar
+```
+
+La frontera obligatoria es el servicio de dominio mediante una superficie servidor futura.
+
+Consecuencias:
+
+1. el cliente no ejecuta un normalizador local como autoridad;
+2. un resultado local puramente visual no sustituye el preview canónico;
+3. una consulta de evaluación no se convierte en comando de escritura;
+4. una respuesta favorable no prueba que una mutación posterior vaya a poder confirmarse;
+5. el preview no crea un evento raíz de commit.
+
+---
+
+#### 8. Descriptor de colocación heredado
+
+Toda operación que pueda previsualizarse permanece gobernada por el descriptor de 21 atributos ya aprobado:
+
+```text
+execution_policy_key
+operation_kind
+policy_coordinate
+semantic_class
+representation_role
+source_role
+primary_semantic_authority
+transactional_boundary
+application_preview_mode
+trigger_mode
+allowed_callers
+required_authorization_context
+resolved_version_dependencies
+idempotency_class
+concurrency_expectations
+mutation_target
+synchronous_derivations
+audit_owner
+failure_mode
+bypass_policy
+propagation_policy
+```
+
+Reglas:
+
+1. `SHELL-NORM-007` no crea un descriptor alternativo;
+2. `application_preview_mode` se consume desde el descriptor efectivo y no se infiere por UI;
+3. `primary_semantic_authority` continúa siendo el servicio de dominio;
+4. una operación sin descriptor compatible no adquiere preview ejecutable por estar visible en una aplicación;
+5. el preview no amplía `allowed_callers`, autorización, bypass ni destino de mutación;
+6. el descriptor pertenece al conjunto de versiones efectivo.
+
+Conciliación:
+
+```text
+atributos esperados = 21
+atributos centralizados = 21
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 9. Entrada lógica mínima de una previsualización
+
+La solicitud deberá poder aportar o resolver, conforme al descriptor y a la autorización aplicable:
+
+- intención u operación solicitada;
+- coordenada de política;
+- clase semántica;
+- representación;
+- rol de fuente;
+- valor o estructura observada que corresponda a la operación;
+- scope y finalidad aplicables;
+- versión o hash de la fuente observada cuando exista estado persistido;
+- dependencias de versión necesarias para evaluar;
+- contexto de autorización requerido por la operación;
+- parámetros estructurados propios de la operación, cuando existan.
+
+Reglas:
+
+1. el cliente no sustituye el valor fuente por el resultado de un helper local antes de solicitar la evaluación;
+2. un campo, scope, fuente o versión faltante que impida resolver la política produce bloqueo o fallo conforme al contrato vigente;
+3. secretos, firmas y material criptográfico permanecen fuera del pipeline general;
+4. un original externo se preserva y cualquier propuesta interna se mantiene separada;
+5. una previsualización no exige que exista todavía una mutación futura.
+
+---
+
+#### 10. Salida lógica mínima
+
+Toda previsualización deberá permitir distinguir, según la operación y autorización:
+
+- entrada o fuente observada;
+- salida propuesta o valor preservado;
+- resultado cerrado producido por la operación canónica correspondiente;
+- explicación o motivo suficiente para interpretar el resultado;
+- operaciones, reglas, catálogos o decisiones efectivamente consumidos cuando formen parte de la explicación autorizada;
+- bloqueos, conflictos, necesidad de revisión o escalamiento estructural cuando correspondan;
+- derivaciones producidas por la evaluación;
+- coincidencias y explicación de búsqueda/comparación cuando la operación las incluya;
+- conjunto efectivo de versiones y `version_set_digest`;
+- versión o hash de la fuente observada cuando aplique;
+- momento de observación necesario para interpretar vigencia;
+- scope relevante para la decisión;
+- indicación inequívoca de que el resultado es no vinculante.
+
+La previsualización no crea una taxonomía paralela de resultados. Reutiliza el resultado cerrado de la operación evaluada.
+
+---
+
+#### 11. Original, propuesta y diferencia visible
+
+Cuando exista una transformación candidata, la experiencia deberá permitir reconocer sin ambigüedad:
+
+```text
+VALOR OBSERVADO
+        ↓
+EVALUACIÓN CANÓNICA
+        ↓
+VALOR PROPUESTO O PRESERVADO
+```
+
+Reglas:
+
+1. el original no se reemplaza visualmente de forma que parezca ya persistido;
+2. la propuesta no se marca como aplicada;
+3. una transformación puramente visual de la interfaz no altera el payload canónico;
+4. un valor ya canónico se distingue de una operación bloqueada;
+5. una propuesta ambigua se distingue de una corrección determinista;
+6. una salida protegida o preservada no se presenta como fallo técnico;
+7. un fallo técnico no se presenta como ausencia de cambio.
+
+Esta tarea no prescribe un componente visual, formato de diff ni diseño de pantalla concreto.
+
+---
+
+#### 12. Integración con `SHELL-NORM-002`
+
+El preview deberá conservar la clasificación resuelta por `SHELL-NORM-002`.
+
+No podrá:
+
+- recategorizar un campo por apariencia del valor;
+- convertir `UNCLASSIFIED_PRESERVE` en una operación permisiva;
+- tratar un identificador técnico como nombre comercial;
+- cambiar representación o rol de fuente para obtener un resultado más conveniente;
+- omitir la política de un campo porque la propuesta parezca segura.
+
+La clase, representación y fuente mostradas o explicadas deberán corresponder a la evaluación servidor.
+
+---
+
+#### 13. Integración con `SHELL-NORM-003`
+
+Para espacios, Unicode y capitalización, la previsualización deberá:
+
+- consumir exactamente el orden y las operaciones autorizadas;
+- mostrar la salida producida sin volver a ejecutar una variante local;
+- conservar exclusiones, límites de segmento y reglas de preservación;
+- mantener las operaciones separadas cuando el contrato las distinga;
+- evidenciar cuando una operación no aplica o queda bloqueada.
+
+No existe una previsualización basada en `trim`, `lower`, `initcap`, `unaccent` u otro helper genérico por conveniencia del cliente.
+
+---
+
+#### 14. Integración con `SHELL-NORM-004`
+
+Para conectores y excepciones, la previsualización deberá conservar:
+
+- precedencia aprobada;
+- forma oficial o preservada;
+- alcance de la coincidencia;
+- fuente o autoridad aplicable cuando sea visible por autorización;
+- resultado de evaluación correspondiente;
+- bloqueo ante conflicto.
+
+No podrá inferir aliases, ampliar scopes, elegir por frecuencia ni convertir un candidato sin autoridad en una excepción activa.
+
+---
+
+#### 15. Integración con `SHELL-NORM-005`
+
+Para diccionario ortográfico, la previsualización deberá:
+
+- consumir la versión exacta del diccionario;
+- aplicar únicamente entradas activas y compatibles;
+- conservar la caja resuelta por las etapas anteriores;
+- diferenciar corrección, preservación, ambigüedad, conflicto y bloqueo;
+- mantener `expresso` fuera de corrección automática mientras no exista una decisión contextual aprobada;
+- conservar originales externos, snapshots y evidencia.
+
+La previsualización de una corrección no autoriza su persistencia.
+
+---
+
+#### 16. Integración con `SHELL-NORM-006`
+
+Para búsqueda y comparación, el preview deberá poder mostrar, según autorización:
+
+- consulta o entrada observada;
+- representación o derivaciones utilizadas;
+- coincidencias obtenidas;
+- modo y nivel de coincidencia;
+- scope y filtros efectivos;
+- valor mostrado autorizado;
+- explicación de ranking cuando corresponda;
+- versiones y algoritmo aplicables;
+- bloqueos o degradación explícita.
+
+Invariantes:
+
+1. una coincidencia no es una transformación aplicada;
+2. el primer resultado no es selección segura;
+3. una derivación no sustituye el valor mostrado;
+4. una coincidencia exacta no demuestra identidad;
+5. una similitud deshabilitada no se activa para mejorar el preview;
+6. un resultado de búsqueda utilizado después en una mutación deberá revalidarse por identificador estable.
+
+---
+
+#### 17. Conjunto de versiones y reproducibilidad
+
+Toda previsualización consume un conjunto efectivo de versiones y conserva:
+
+```text
+resolved_version_set
+version_set_digest
+```
+
+cuando apliquen al resultado.
+
+Reglas:
+
+1. no existe `latest` implícito;
+2. la misma entrada lógica, contexto y conjunto de versiones debe producir el mismo resultado lógico;
+3. una dependencia ausente, suspendida, retirada o incompatible bloquea la evaluación correspondiente;
+4. el cliente no reemplaza una dependencia por otra local;
+5. una nueva versión produce una nueva evaluación y no reinterpreta silenciosamente el preview anterior;
+6. la procedencia detallada de algoritmo y auditoría compartida se centralizará en `SHELL-NORM-008` sin cambiar estas obligaciones.
+
+---
+
+#### 18. Preview no vinculante
+
+Toda previsualización es, por definición:
+
+```text
+NO VINCULANTE
+```
+
+Por tanto:
+
+- no reserva la fila;
+- no crea lock empresarial;
+- no garantiza que la fuente permanezca igual;
+- no garantiza que la política permanezca igual;
+- no garantiza que la versión siga vigente;
+- no garantiza unicidad;
+- no garantiza que relaciones o contexto sigan iguales;
+- no constituye commit;
+- no constituye evidencia de que una mutación fue persistida;
+- no puede reutilizarse como autorización para otro registro, scope o versión.
+
+Una previsualización puede ser reproducible respecto de su corte observado y aun así quedar obsoleta antes de una escritura futura.
+
+---
+
+#### 19. Las seis dimensiones de divergencia previa al commit
+
+Antes de persistir, la frontera transaccional vuelve a evaluar el estado actual y no reutiliza ciegamente un preview cuando cambie cualquiera de estas dimensiones:
+
+| Dimensión  | Regla                                                                      |
+| ---------- | -------------------------------------------------------------------------- |
+| valor      | la fuente actual debe ser revalidada frente a la observada                 |
+| scope      | el alcance actual debe seguir siendo compatible                            |
+| política   | la decisión efectiva no puede asumirse desde el preview anterior           |
+| versiones  | el conjunto vigente debe revalidarse                                       |
+| unicidad   | cualquier señal o protección aplicable se vuelve a evaluar                 |
+| relaciones | dependencias estructurales relevantes se comprueban sobre el estado actual |
+
+Conciliación:
+
+```text
+dimensiones esperadas = 6
+dimensiones centralizadas = 6
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 20. Conducta cuando preview y commit divergen
+
+Si una reevaluación posterior produce una diferencia material:
+
+1. no se aplica silenciosamente una salida distinta a la mostrada;
+2. la RPC devuelve el resultado actual, conflicto, bloqueo o revisión que corresponda;
+3. la aplicación muestra la diferencia cuando cambie el valor resultante o la decisión humana requerida;
+4. una confirmación previa no se reutiliza para otra salida;
+5. una versión nueva no se incorpora dentro de un reintento de una operación anterior;
+6. un conflicto de concurrencia no se resuelve mediante último escritor;
+7. el usuario o proceso deberá continuar desde el resultado vigente conforme al contrato de la operación.
+
+La forma física de la respuesta de divergencia pertenece a la futura implementación de `DATA-NORM-ARC-011` y a la adaptación de consumidores en `SUPA-TRANS-007`.
+
+---
+
+#### 21. Relación con el flujo transaccional de diez etapas
+
+La previsualización ocupa únicamente la etapa opcional 2:
+
+```text
+1. capturar intención, valor, contexto y versión observada
+2. solicitar opcionalmente preview servidor no vinculante
+3. enviar comando con client_command_id y expectativa de fuente
+4. autenticar, autorizar y construir operación idempotente
+5. resolver coordenada, versiones y resultado en servicio de dominio
+6. revalidar estado, concurrencia, unicidad y precondiciones
+7. persistir fuente, derivaciones sincrónicas y auditoría raíz
+8. comprobar invariantes defensivos autorizados
+9. confirmar commit y devolver resultado
+10. continuar propagaciones o destinos asincrónicos como comandos hijos
+```
+
+Reglas:
+
+- el preview es opcional para el flujo transaccional salvo que una experiencia o política específica lo exija;
+- si existe, no permite omitir ninguna etapa posterior;
+- un administrador no puede saltar revalidación por haber visto un preview;
+- un trigger no puede convertir un preview en commit;
+- la futura API compartida debe conservar la separación entre consulta y comando.
+
+---
+
+#### 22. Resultados de fallo y bloqueo heredados
+
+La previsualización conserva los resultados o conductas ya definidos por la arquitectura cuando correspondan:
+
+| Condición                               | Conducta visible y contractual                                 |
+| --------------------------------------- | -------------------------------------------------------------- |
+| servicio de dominio no disponible       | conservar entrada y devolver fallo técnico; sin fallback local |
+| política, versión o dependencia ausente | `BLOCKED_POLICY`                                               |
+| dos reglas o resultados incompatibles   | `BLOCKED_CONFLICT`                                             |
+| valor, scope o estado obsoleto          | conflicto de concurrencia y reevaluación                       |
+| corrección ambigua                      | `REVIEW_REQUIRED`                                              |
+| problema estructural o de identidad     | `ESCALATED_STRUCTURAL`                                         |
+| mismatch entre artefacto y versión      | bloquear ejecución e iniciar reconciliación propietaria        |
+
+La aplicación no traduce un bloqueo en éxito, una revisión en corrección ni un fallo técnico en “sin cambios”.
+
+---
+
+#### 23. Revisión humana
+
+Un preview puede mostrar que una decisión requiere revisión, pero no puede:
+
+- aprobar el candidato;
+- asignar autoridad por sí mismo;
+- activar una entrada;
+- materializar una corrección;
+- cerrar un expediente;
+- convertir una sugerencia en forma canónica.
+
+Las decisiones humanas permanecen en `DATA-NORM-ARC-007` y sus mecanismos de materialización posteriores.
+
+---
+
+#### 24. Unicidad y duplicidad
+
+La previsualización puede presentar candidatos, advertencias o bloqueos devueltos por la autoridad servidor, pero no demuestra unicidad ni decide identidad.
+
+Invariantes:
+
+```text
+PREVIEW SIN CANDIDATOS
+≠ UNICIDAD CERTIFICADA
+
+PREVIEW CON CANDIDATO
+≠ DUPLICADO CONFIRMADO
+
+CONFIRMACIÓN VISUAL
+≠ PROTECCIÓN ATÓMICA
+```
+
+La RPC y la base revalidan cualquier protección certificada antes del commit conforme a `DATA-NORM-ARC-010` y `DATA-NORM-ARC-011`.
+
+---
+
+#### 25. Offline, caché, timeout y reintentos
+
+1. una caché de preview conserva scope, versiones y vigencia; no se convierte en fuente de verdad;
+2. un cliente offline no ejecuta una versión local como autoridad semántica;
+3. si el servicio no está disponible, se conserva la entrada y se muestra el fallo o bloqueo correspondiente;
+4. después de timeout de una mutación, se consulta el resultado de la operación antes de crear otra;
+5. una previsualización no sustituye `expected_source_version_or_hash` ni `expected_version_set_digest` del commit;
+6. un retry de una mutación no adopta silenciosamente una versión nueva;
+7. volver online obliga a revalidar contexto, fuente y versiones antes de una nueva mutación.
+
+---
+
+#### 26. Seguridad, privacidad y minimización
+
+1. lectura, preview, mutación, aprobación, activación, búsqueda sensible y exportación permanecen capacidades diferenciadas;
+2. la aplicación no es frontera de seguridad;
+3. el servidor aplica la autorización necesaria antes de exponer datos protegidos;
+4. el preview no amplía la visibilidad respecto del actor y finalidad autorizados;
+5. secretos, firmas, tokens y material criptográfico no ingresan al pipeline general;
+6. valores sensibles, evidencia y metadatos se minimizan en explicación y telemetría;
+7. la existencia de una propuesta no autoriza revelar fuentes o evidencias que el actor no puede consultar;
+8. VITAL permanece fuera del contrato transversal de Vento OS.
+
+---
+
+#### 27. Estado de materialización física
+
+| Elemento                                   | Estado                                           |
+| ------------------------------------------ | ------------------------------------------------ |
+| `@vento/data-normalization`                | `ESPECIFICADO`; package físico no materializado  |
+| contrato compartido de preview             | `ESPECIFICADO`                                   |
+| `PREVIEW_AND_GUIDANCE`                     | `ESPECIFICADO`                                   |
+| `NORMALIZATION_EVALUATION_QUERY`           | `ESPECIFICADA`                                   |
+| descriptor de colocación de 21 atributos   | `ESPECIFICADO`                                   |
+| 6 dimensiones de divergencia               | `ESPECIFICADAS`                                  |
+| separación preview/commit                  | `ESPECIFICADA`                                   |
+| revalidación previa al commit              | `ESPECIFICADA`; ejecución no materializada       |
+| API TypeScript                             | `NO IMPLEMENTADA`                                |
+| endpoint o RPC de preview                  | `NO IMPLEMENTADO`                                |
+| persistencia de previews                   | `FUERA_DE_ALCANCE`; no autorizada por esta tarea |
+| auditoría física                           | `NO IMPLEMENTADA`                                |
+| consumidores migrados                      | `0` por esta tarea                               |
+| cambios Supabase                           | `0`                                              |
+| requisitos de prueba creados o modificados | `0`                                              |
+
+`ESPECIFICADO_DOCUMENTALMENTE` no equivale a `IMPLEMENTADO`, `VALIDADO` ni a una respuesta real de preview.
+
+---
+
+#### 28. Handoffs exactos
+
+| Materia fuera de esta tarea                                  | Propietario exacto                                                  | Condición de salida                                                                                                |
+| ------------------------------------------------------------ | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| metadatos compartidos de versión y auditoría                 | `SHELL-NORM-008`                                                    | cada evaluación compartida debe poder atribuirse a entrada, conjunto de versiones, algoritmo, resultado y contexto |
+| pruebas de idempotencia y conservación semántica del package | `SHELL-NORM-009`                                                    | corpus debe cubrir preview estable, divergente, bloqueado y sin efectos de escritura                               |
+| decisión humana sobre candidatos ambiguos                    | `DATA-NORM-ARC-007`                                                 | preview puede mostrar revisión requerida, pero no aprobarla                                                        |
+| identidad, unicidad y duplicidad                             | `DATA-NORM-ARC-010`                                                 | preview no certifica identidad ni protección concurrente                                                           |
+| API servidor, servicio, RPC y contrato físico de commit      | `DATA-NORM-ARC-011`                                                 | preview y commit deben consumir la misma autoridad semántica con fronteras separadas                               |
+| originales y evidencia externa                               | `DATA-NORM-ARC-012`                                                 | una propuesta interna nunca sustituye el valor externo recibido                                                    |
+| adaptación de consumidores y experiencia de divergencia      | `SUPA-TRANS-007`                                                    | cliente muestra resultado vigente y diferencias sin fallback local                                                 |
+| pruebas de paridad entre capas                               | `SUPA-TRANS-009`                                                    | misma entrada y versiones producen evaluación equivalente entre capas autorizadas                                  |
+| rendimiento y seguridad de la futura superficie servidor     | `SUPA-TRANS-010`                                                    | capacidad se certifica bajo carga sin relajar semántica ni seguridad                                               |
+| rollback de transición                                       | `SUPA-TRANS-011`                                                    | una reversión no convierte previews históricos en commits ni reinterpreta evidencia                                |
+| materialización transaccional de cambios                     | `DATA-NORM-TRANS-005`                                               | toda escritura vuelve a evaluar estado actual antes de persistir                                                   |
+| certificación final de paridad                               | `DATA-NORM-TRANS-009`                                               | corpus demuestra preview/commit, versiones, concurrencia y ausencia de efectos no autorizados                      |
+| materialización física del package                           | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` | crear y desplegar únicamente el package autorizado                                                                 |
+
+No queda un pendiente narrativo sin propietario documental exacto.
+
+---
+
+#### 29. Cobertura de prueba vigente no modificada
+
+La conducta centralizada ya está protegida por requisitos canónicos vigentes, entre ellos:
+
+- `TREQ-DATA-191`: cuatro capas y cuatro funciones de autoridad;
+- `TREQ-DATA-192`: aplicación limitada a captura, preview y explicación, sin autoridad de commit;
+- `TREQ-DATA-193`: misma autoridad semántica para preview, RPC, jobs y replay;
+- `TREQ-DATA-196`: descriptor obligatorio de colocación y `application_preview_mode`;
+- `TREQ-DATA-197`: flujo transaccional completo sin omitir etapas por existir preview;
+- `TREQ-DATA-201`: preview no vinculante, fuente observada, `version_set_digest`, reevaluación y divergencia previa al commit;
+- `TREQ-DATA-203`: la aplicación solo previsualiza normalización determinista; servicio y RPC conservan autoridad;
+- `TREQ-DATA-205`: búsqueda del lado servidor y revalidación por identificador estable;
+- `TREQ-DATA-211`: lectura, preview, mutación, aprobación, activación, búsqueda sensible y exportación como capacidades distintas;
+- `TREQ-DATA-214`: corpus integral que incluye preview igual y divergente frente al commit;
+- `TREQ-SHELL-002`: responsabilidades compartidas no pueden divergir mediante copias locales;
+- `TREQ-SHELL-006`: packages compartidos requieren pruebas propias y compatibilidad con consumidores antes de adopción.
+
+`SHELL-NORM-007` no modifica esas reglas protegidas; centraliza su proyección dentro del futuro `@vento/data-normalization`.
+
+---
+
+#### 30. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** `SHELL-NORM-007` centraliza sin ampliar el comportamiento de previsualización, autoridad, revalidación y divergencia ya aprobado en `DATA-NORM-ARC-011` y protegido por requisitos canónicos existentes. No introduce una operación nueva, un estado nuevo, un resultado nuevo, una política, un algoritmo, un scope, una autorización, una persistencia, una API, una migración, una mutación de datos ni un cambio en Supabase. El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 31. Decisiones vinculantes
+
+1. Toda previsualización es no vinculante.
+2. `PREVIEW_AND_GUIDANCE` permanece como función de interacción y no de commit.
+3. La autoridad semántica sigue siendo `AUTHORITATIVE_SEMANTIC_EVALUATION` del servicio de dominio.
+4. La previsualización pertenece a `NORMALIZATION_EVALUATION_QUERY`.
+5. El preview no crea una quinta capa.
+6. El descriptor de colocación conserva exactamente 21 atributos.
+7. `application_preview_mode` se resuelve desde el descriptor efectivo.
+8. El preview no amplía callers, permisos, bypass ni target de mutación.
+9. El cliente conserva la entrada original y no sustituye la fuente por un helper local.
+10. La salida distingue fuente observada, propuesta o preservación, resultado y explicación.
+11. La salida puede incluir derivaciones y coincidencias únicamente conforme a la operación y autorización.
+12. El preview conserva el conjunto efectivo de versiones y `version_set_digest`.
+13. No existe `latest` implícito.
+14. El resultado de preview no reserva fila ni estado.
+15. El preview no garantiza commit.
+16. El preview no garantiza unicidad.
+17. El preview no constituye auditoría raíz de mutación.
+18. El preview no permite omitir autenticación, autorización, idempotencia o concurrencia de una escritura posterior.
+19. Una mutación posterior vuelve a evaluar el estado actual.
+20. Las seis dimensiones de divergencia son valor, scope, política, versiones, unicidad y relaciones.
+21. Si existe divergencia material, no se persiste silenciosamente una salida distinta.
+22. Una propuesta ambigua continúa siendo revisión requerida.
+23. Un resultado ya canónico se distingue de un bloqueo.
+24. Un fallo técnico se distingue de ausencia de cambio.
+25. `SHELL-NORM-003` no se reemplaza por helpers locales durante preview.
+26. `SHELL-NORM-004` conserva precedencia y autoridad de excepciones durante preview.
+27. `SHELL-NORM-005` conserva entradas, versiones y ambigüedad durante preview.
+28. `SHELL-NORM-006` conserva derivaciones, coincidencias, ranking y frontera frente a identidad.
+29. Una coincidencia de búsqueda no se convierte en selección automática.
+30. Un preview sin candidatos no certifica unicidad.
+31. Una confirmación visual no sustituye protección atómica.
+32. Un cliente offline no se convierte en autoridad semántica.
+33. Una caché no se convierte en fuente de verdad.
+34. Una previsualización no sustituye expectativas de fuente y versiones del commit.
+35. Lectura, preview y mutación permanecen capacidades distintas.
+36. Secretos, firmas, tokens y material criptográfico permanecen fuera del pipeline general.
+37. VITAL permanece fuera del contrato transversal.
+38. No se crea API física, endpoint, RPC, tabla, ledger, TypeScript, SQL, trigger, índice, constraint, migración o backfill.
+39. No se modifica Supabase.
+40. Esta tarea crea cero requisitos de prueba y modifica cero requisitos existentes.
+41. `SHELL-NORM-008` queda como única continuidad reservada.
+
+---
+
+#### 32. Hallazgos y destinos exactos
+
+| Hallazgo                                                                            | Resultado de `SHELL-NORM-007`                                          | Destino exacto                                                      |
+| ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| la semántica de preview ya estaba aprobada en E3 pero no centralizada en SHELL-NORM | contrato completo centralizado documentalmente                         | `SHELL-NORM-007`                                                    |
+| el preview podía confundirse con resultado confirmado                               | separación absoluta preview/commit preservada                          | `SHELL-NORM-007`; `DATA-NORM-ARC-011`                               |
+| una versión puede cambiar entre preview y commit                                    | `version_set_digest` se conserva y el commit reevalúa                  | `SHELL-NORM-008`; `DATA-NORM-TRANS-005`                             |
+| valor, scope, política, versiones, unicidad o relaciones pueden cambiar             | seis dimensiones de divergencia centralizadas                          | `DATA-NORM-ARC-011`; `SUPA-TRANS-007`                               |
+| clientes offline o con caché podrían usar resultados obsoletos                      | fallback semántico local prohibido                                     | `SUPA-TRANS-007`; `SUPA-TRANS-009`                                  |
+| una advertencia de duplicidad podría confundirse con protección concurrente         | preview no certifica unicidad                                          | `DATA-NORM-ARC-010`; `DATA-NORM-TRANS-005`                          |
+| búsqueda y comparación pueden producir candidatos sin autoridad de mutación         | derivaciones y coincidencias se muestran sin convertirlas en identidad | `SHELL-NORM-006`; `DATA-NORM-ARC-011`                               |
+| metadata detallada y auditoría compartida todavía requieren especialización         | no se anticipa su contrato físico                                      | `SHELL-NORM-008`                                                    |
+| corpus de idempotencia y conservación semántica requiere certificación específica   | no se implementan pruebas aquí                                         | `SHELL-NORM-009`                                                    |
+| package compartido aún no está materializado físicamente                            | especificación completa; ejecución no iniciada                         | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` |
+
+No queda un pendiente narrativo sin propietario documental exacto.
+
+---
+
+#### 33. Criterios de aceptación
+
+`SHELL-NORM-007` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. `PREVIEW_AND_GUIDANCE` permanece separado de autoridad semántica y commit;
+2. se preservan las cuatro capas sin crear una quinta;
+3. `NORMALIZATION_EVALUATION_QUERY` queda centralizada como consulta no mutante;
+4. se preservan exactamente los 21 atributos del descriptor;
+5. faltantes de atributos = 0;
+6. duplicados de atributos = 0;
+7. la entrada de preview conserva operación, política, clase, representación, fuente, scope y versiones aplicables;
+8. la salida conserva fuente observada, propuesta o preservación, resultado y explicación;
+9. la salida puede representar bloqueos, conflictos, revisión y fallos sin colapsarlos;
+10. derivaciones y coincidencias de búsqueda permanecen explicables y no vinculantes;
+11. el preview conserva `version_set_digest` cuando aplica;
+12. no existe selección `latest` implícita;
+13. un preview no reserva estado;
+14. un preview no garantiza commit;
+15. un preview no certifica unicidad;
+16. un preview no se usa como auditoría de commit;
+17. la mutación posterior reevalúa estado actual;
+18. se preservan exactamente las seis dimensiones de divergencia;
+19. faltantes de dimensiones = 0;
+20. duplicados de dimensiones = 0;
+21. una divergencia material no se aplica silenciosamente;
+22. un valor ya canónico se distingue de un bloqueo;
+23. un fallo técnico se distingue de una no operación;
+24. preview de espacios, Unicode y capitalización conserva `SHELL-NORM-003`;
+25. preview de conectores y excepciones conserva `SHELL-NORM-004`;
+26. preview de diccionario conserva `SHELL-NORM-005`;
+27. preview de búsqueda conserva `SHELL-NORM-006`;
+28. revisión humana permanece separada;
+29. identidad y unicidad permanecen separadas;
+30. cliente offline y caché no adquieren autoridad;
+31. timeout y reintento no convierten preview en operación confirmada;
+32. autorización y minimización permanecen obligatorias;
+33. VITAL permanece separado;
+34. no se crea código;
+35. no se crea package físico;
+36. no se crea API, endpoint o RPC;
+37. no se persisten previews;
+38. no se modifica Supabase;
+39. no se crean ni modifican requisitos de prueba;
+40. todos los carryovers tienen propietario exacto;
+41. la siguiente tarea permanece únicamente reservada.
+
+---
+
+#### 34. Límites
+
+`SHELL-NORM-007` no:
+
+- crea físicamente `@vento/data-normalization`;
+- crea `package.json`;
+- crea archivos `.ts` o `.tsx`;
+- define exports físicos;
+- crea schemas runtime;
+- define endpoint HTTP;
+- crea RPC;
+- crea función SQL;
+- crea tablas de preview;
+- persiste previsualizaciones;
+- crea locks;
+- confirma commits;
+- crea auditoría raíz;
+- crea triggers;
+- crea índices;
+- crea constraints;
+- modifica RLS;
+- ejecuta DDL;
+- ejecuta DML;
+- ejecuta backfills;
+- modifica datos existentes;
+- crea aliases;
+- modifica conectores o excepciones;
+- modifica diccionario;
+- cambia algoritmos de búsqueda;
+- activa similitud;
+- activa transliteración;
+- decide identidad;
+- activa unicidad;
+- fusiona registros;
+- selecciona sobrevivientes;
+- migra consumidores;
+- modifica Supabase;
+- redefine `DATA-NORM-ARC-001..012`;
+- desarrolla `SHELL-NORM-008`.
+
+---
+
+#### 35. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-NORM-006 — Crear normalización de búsqueda y comparación
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-NORM-007 — Crear previsualización de transformaciones
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-NORM-008 — Crear metadatos de versión y auditoría de reglas
+
+
 ### [ ] SHELL-NORM-008 — Crear metadatos de versión y auditoría de reglas
 ### [ ] SHELL-NORM-009 — Probar idempotencia y conservación semántica
 

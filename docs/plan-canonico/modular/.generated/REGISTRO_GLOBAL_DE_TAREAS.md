@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **909** |
+| Aprobadas | **910** |
 | En propuesta | **0** |
-| No iniciadas | **685** |
+| No iniciadas | **684** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **57.03% (909/1594)** |
+| Porcentaje de completamiento | **57.09% (910/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-NORM-006` — Crear normalización de búsqueda y comparación | ✅ APROBADA |
-| Tarea actual | `SHELL-NORM-007` — Crear previsualización de transformaciones | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-NORM-008` — Crear metadatos de versión y auditoría de reglas | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-NORM-007` — Crear previsualización de transformaciones | ✅ APROBADA |
+| Tarea actual | `SHELL-NORM-008` — Crear metadatos de versión y auditoría de reglas | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-NORM-009` — Probar idempotencia y conservación semántica | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -736,7 +736,7 @@
 | ✅ APROBADA | `SHELL-NORM-004` | Centralizar conectores y excepciones | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ✅ APROBADA | `SHELL-NORM-005` | Centralizar diccionarios ortográficos versionados | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ✅ APROBADA | `SHELL-NORM-006` | Crear normalización de búsqueda y comparación | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
-| ⬜ NO INICIADA | `SHELL-NORM-007` | Crear previsualización de transformaciones | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
+| ✅ APROBADA | `SHELL-NORM-007` | Crear previsualización de transformaciones | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ⬜ NO INICIADA | `SHELL-NORM-008` | Crear metadatos de versión y auditoría de reglas | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ⬜ NO INICIADA | `SHELL-NORM-009` | Probar idempotencia y conservación semántica | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ⬜ NO INICIADA | `SHELL-DB-001` | Crear @vento/supabase | `bloques/H_FUNDACION_COMPARTIDA/06_ACCESO_COMPARTIDO_A_DATOS.md` |
