@@ -188,6 +188,30 @@ function ensureContinuitySection(block) {
   return `${block.replace(/\n+$/u, '')}\n\n---\n\n${continuity}\n`;
 }
 
+function ensureHeaderSeparator(block) {
+  const lines = normalizeSource(block).split('\n');
+  let index = 1;
+  while (lines[index]?.trim() === '') index += 1;
+  let metadataFound = false;
+  while (index < lines.length) {
+    if (lines[index]?.match(METADATA)) {
+      metadataFound = true;
+      index += 1;
+      continue;
+    }
+    if (lines[index]?.trim() === '') {
+      index += 1;
+      continue;
+    }
+    break;
+  }
+  if (!metadataFound || lines[index]?.trim() === '---' || !/^####\s+/u.test(lines[index] ?? '')) {
+    return block;
+  }
+  lines.splice(index, 0, '---', '');
+  return lines.join('\n');
+}
+
 function normalizeStructuralSpacing(lines) {
   const output = [];
   let fenced = false;
@@ -310,6 +334,7 @@ export function formatTaskBlock(block, { scaffold = false } = {}) {
   }
   const task = parsed[0];
   if (scaffold) candidate = addScaffold(candidate, task);
+  candidate = ensureHeaderSeparator(candidate);
   candidate = ensureContinuitySection(candidate);
   candidate = normalizeContinuitySection(candidate);
 

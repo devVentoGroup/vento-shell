@@ -123,3 +123,32 @@ Texto.
   assert.match(formatted, /`TEST-FMT-006 — Con desarrollo`/u);
   assert.deepEqual(validateTaskPresentation(formatted), []);
 });
+
+test('inserta el separador estructural de cabecera cuando fue omitido', () => {
+  const source = `### ✅ TEST-FMT-007 — Sin separador
+
+**Estado:** APROBADA
+**Tarea anterior:** TEST-FMT-006 — Anterior
+**Tarea siguiente:** TEST-FMT-008 — Siguiente
+**Tipo de tarea:** Documental
+**Bloque:** X — Prueba
+
+#### 1. Propósito
+
+Texto.
+
+#### 2. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+\`TEST-FMT-006 — Anterior\`
+
+**TAREA ACTUAL APROBADA**
+\`TEST-FMT-007 — Sin separador\`
+
+**SIGUIENTE TAREA RESERVADA**
+\`TEST-FMT-008 — Siguiente\`
+`;
+  const formatted = formatTaskBlock(source);
+  assert.match(formatted, /\*\*Bloque:\*\* X — Prueba\n\n---\n\n#### 1\. Propósito/u);
+  assert.deepEqual(validateTaskPresentation(formatted), []);
+});
