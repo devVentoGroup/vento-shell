@@ -4092,7 +4092,1053 @@ SHELL-CON-006 — Centralizar scopes
 SHELL-CON-007 — Centralizar tipos de contexto
 
 
-### [ ] SHELL-CON-007 — Centralizar tipos de contexto
+### ✅ SHELL-CON-007 — Centralizar tipos de contexto
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CON-006 — Centralizar scopes
+**Tarea siguiente:** SHELL-CON-008 — Centralizar códigos de error
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 1
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-007` centraliza la superficie contractual de tipos de contexto que Vento OS deberá compartir entre productores, SDK, aplicaciones consumidoras y pruebas, sin modificar la forma publicada de `AccessContext@1.0.0`, `SimulationContext@1.0.0` ni de los contratos de decisión relacionados.
+
+La tarea fija simultáneamente:
+
+1. la familia versionada que gobierna los tipos de contexto;
+2. el inventario del contexto real que deberá representarse de forma compartida;
+3. la separación obligatoria entre contexto real, simulación y decisión;
+4. la reutilización de `AppCode`, `BaseRoleCode` y `OperationalRoleCode` ya centralizados;
+5. la incorporación del octavo rol base `trabajador_operativo` a los tipos de contexto sin cambiar la forma serializada de `AccessContext@1.x`;
+6. el tratamiento del `EffectiveContext` físico actual como superficie parcial de compatibilidad, no como contrato canónico;
+7. la prohibición de representar autorización mediante booleanos, bypasses o strings locales no validados;
+8. la frontera exacta entre esta tarea y `SHELL-CON-008`, que centralizará códigos de error y razón sin ser desarrollada aquí;
+9. los destinos canónicos de materialización, backend, adopción y certificación sin ejecutar cambios físicos en esta fase.
+
+Regla central:
+
+```text
+CONTRATO VERSIONADO DE CONTEXTO
+→ FUENTE SEMÁNTICA
+
+TIPOS COMPARTIDOS
+→ PROYECCIÓN ESTÁTICA DEL CONTRATO
+
+CONTEXTO
+≠ DECISIÓN DE AUTORIZACIÓN
+≠ SIMULACIÓN REAL
+≠ BOOLEANO can_operate
+≠ BYPASS
+```
+
+---
+
+#### 2. Resultado canónico
+
+Se centraliza como autoridad contractual la familia:
+
+```text
+vento.authorization.response-contracts@1.0.0
+```
+
+con perfil de serialización:
+
+```text
+vento.canonical-json@1.0.0
+```
+
+y huella de release:
+
+```text
+sha256:782a216c4bbfdc3b3cec1bbd7239c05d93edd7fa34b4ce62cad48c1e6b9941cd
+```
+
+La familia conserva cuatro contratos publicados e independientes:
+
+| Contrato | `contract_version` | `schema_version` | Disposición en esta tarea |
+| --- | --- | --- | --- |
+| `AccessContext` | `1.0.0` | `1.0.0` | centralizar tipos de contexto real |
+| `AuthorizationDecision` | `1.0.0` | `1.0.0` | conservar como contrato relacionado; no redefinir decisión |
+| `SimulationContext` | `1.0.0` | `1.0.0` | centralizar como contexto hipotético separado |
+| `SimulatedAuthorizationDecision` | `1.0.0` | `1.0.0` | conservar como decisión hipotética separada |
+
+Conciliación:
+
+| Dimensión | Resultado |
+| --- | ---: |
+| Familias contractuales nuevas | **0** |
+| Contratos de respuesta nuevos | **0** |
+| Cambios de forma en `AccessContext@1.0.0` | **0** |
+| Cambios de forma en `SimulationContext@1.0.0` | **0** |
+| Cambios de `contract_version` | **0** |
+| Cambios de `schema_version` | **0** |
+| Cambios de huella de release | **0** |
+| Roles base admitidos por el tipo vigente | **8** |
+| Roles operativos admitidos por el tipo vigente | **12** |
+| Aplicaciones canónicas reutilizables como `AppCode` | **10** |
+| Cambios físicos autorizados | **0** |
+
+---
+
+#### 3. Fuentes y precedencia
+
+Esta tarea conserva y reconcilia las siguientes decisiones aprobadas:
+
+| Fuente | Uso vinculante |
+| --- | --- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md` | continuidad, granularidad, trazabilidad y requisitos de prueba |
+| `docs/plan-canonico/modular/delivery-contract.json` | forma del artefacto documental y coordinación del registro de requisitos |
+| `docs/plan-canonico/modular/active-sequence.json` | continuidad vigente del BLOQUE H |
+| `AUTH-MOD-020` | arquitectura de identidad, contexto, autorización y presentación |
+| `AUTH-MOD-021` | octavo `BaseRoleCode`, `trabajador_operativo`, y obligación explícita de actualizar tipos de contexto sin cambiar `AccessContext@1.x` |
+| `AUTH-CTX-001` | forma raíz y principios de `AccessContext` |
+| `AUTH-CTX-002` | separación entre contexto y `AuthorizationDecision` |
+| `AUTH-CTX-003` | separación de `SimulationContext` y decisiones hipotéticas |
+| `AUTH-CTX-004` | versionado, metadatos comunes, serialización y huella de la familia de contratos |
+| `AUTH-CTX-005` a `AUTH-CTX-015` | formas y semántica de los nodos internos del contexto real |
+| `SHELL-CON-002` | `AppCode` canónico de diez aplicaciones |
+| `SHELL-CON-004` | `BaseRoleCode` canónico de ocho roles |
+| `SHELL-CON-005` | `OperationalRoleCode` canónico de doce roles |
+| `SHELL-CON-006` | `PermissionScopeCode` y separación entre alcance y contexto |
+| `SHELL-AUTH-001` y `SHELL-CTX-001` | destino de materialización compartida posterior |
+
+Precedencia específica para rol base:
+
+```text
+AUTH-CTX-008
+→ definió la forma de BaseRoleContext
+→ reflejaba el catálogo base disponible en ese momento
+
+AUTH-MOD-021
+→ decisión aditiva posterior
+→ agrega trabajador_operativo
+→ no cambia la forma de AccessContext@1.x
+
+SHELL-CON-004
+→ centraliza BaseRoleCode de ocho miembros
+
+SHELL-CON-007
+→ BaseRoleContext reutiliza el BaseRoleCode vigente
+```
+
+No se crea una segunda versión de `AccessContext` únicamente para incorporar el nuevo literal de rol.
+
+---
+
+#### 4. Línea base verificable
+
+El estado físico actual queda clasificado así:
+
+| Elemento | Estado actual | Disposición |
+| --- | --- | --- |
+| `vento.authorization.response-contracts@1.0.0` | publicación contractual documental | conservar inmutable |
+| `@vento/contracts/authorization` | no publicado físicamente como fuente completa de los contratos | materialización posterior |
+| `@vento/os-context@0.1.0` | package físico parcial existente | conservar como implementación parcial hasta migración controlada |
+| `EffectiveContext` | tipo físico plano y parcial | compatibilidad temporal; no fuente semántica canónica |
+| `EffectiveContextSource` | clasificación física existente | no promover a discriminante canónico de `AccessContext` |
+| `ContextSimulationInput` | entrada física de simulación existente | no confundir con `SimulationContext@1.0.0` |
+| RPC `get_effective_context_v1` | consumidor físico actual | migración posterior mediante las tareas propietarias |
+| RPC `has_effective_permission_v1` | devuelve booleano físico actual | no define la forma de `AuthorizationDecision` |
+| cambios físicos en esta tarea | no autorizados | ninguno |
+
+La existencia del package parcial no invierte la fuente de verdad:
+
+```text
+CONTRATO CANÓNICO
+→ TIPOS COMPARTIDOS
+→ ADAPTERS
+→ CONSUMIDORES
+```
+
+Nunca:
+
+```text
+EffectiveContext físico actual
+→ redefinir AccessContext
+```
+
+---
+
+#### 5. Frontera de propiedad de los tipos
+
+La arquitectura compartida queda separada así:
+
+```text
+@vento/contracts/authorization
+→ identidades y formas contractuales versionadas
+→ schemas
+→ catálogos
+→ códigos compartidos
+
+@vento/os-context
+→ consumo de tipos contractuales
+→ adapters
+→ scopes por solicitud
+→ proyecciones seguras
+→ compatibilidad temporal
+→ utilidades de prueba
+
+Supabase
+→ productor autoritativo de contexto
+→ evaluación autoritativa
+→ persistencia y resolutores privados
+```
+
+Queda prohibido:
+
+- crear `@vento/auth` como segunda fuente;
+- crear `@vento/operational-context` como segundo núcleo;
+- mantener una forma canónica distinta dentro de una aplicación;
+- generar el contrato desde `packages/os-context/src/types.ts`;
+- tratar tipos generados de Supabase como semántica contractual;
+- permitir que frontend o rutas redefinan campos de contexto.
+
+---
+
+#### 6. Metadatos comunes de la familia
+
+Todos los contratos de la familia conservan conceptualmente:
+
+```text
+type ContractMetadata = {
+  contract_family: "vento.authorization.response-contracts";
+  contract_family_version: "1.0.0";
+  contract_name:
+    | "AccessContext"
+    | "AuthorizationDecision"
+    | "SimulationContext"
+    | "SimulatedAuthorizationDecision";
+  contract_version: string;
+  schema_version: string;
+};
+```
+
+Para las versiones congeladas, los discriminantes se restringen a `1.0.0` según el contrato exacto.
+
+Reglas:
+
+1. `contract_family` no se infiere desde el package que transporta el tipo;
+2. `contract_name` discrimina contratos incompatibles;
+3. `contract_version` y `schema_version` no son intercambiables;
+4. una versión desconocida no admite downgrade silencioso;
+5. la ausencia de un campo obligatorio invalida el contrato;
+6. los tipos compartidos no podrán ocultar estas propiedades mediante una interfaz más permisiva.
+
+---
+
+#### 7. Raíz `AccessContextV1`
+
+La raíz compartida conserva exactamente los nodos aprobados:
+
+```text
+type AccessContextV1 = ContractMetadata & {
+  contract_name: "AccessContext";
+  contract_version: "1.0.0";
+  schema_version: "1.0.0";
+
+  context_id: string;
+  resolved_at: string;
+
+  principal: PrincipalContext;
+  actor_effective: EffectiveActorContext;
+  domain_identity: DomainIdentityContext | null;
+  employee: EmployeeContext | null;
+
+  base_role: BaseRoleContext | null;
+  assigned_sites: AssignedSiteContext[];
+  assigned_areas: AssignedAreaContext[];
+  administrative_coverage: AdministrativeCoverageContext;
+
+  active_shift: ActiveShiftContext | null;
+  active_checkin_session: ActiveCheckinContext | null;
+  operational_role: OperationalRoleContext | null;
+  operational_site: OperationalSiteContext | null;
+  operational_area: OperationalAreaContext | null;
+
+  device_context: DeviceContext | null;
+
+  lane_readiness: {
+    base: LaneReadiness;
+    operational: LaneReadiness;
+  };
+
+  structural_issues: StructuralIssue[];
+  resolution_metadata: ResolutionMetadata;
+};
+```
+
+La centralización no agrega ni elimina propiedades.
+
+---
+
+#### 8. Inventario de nodos de `AccessContextV1`
+
+Cada identidad del contexto real recibe una disposición explícita:
+
+| Identidad contractual | Disposición | Regla principal |
+| --- | --- | --- |
+| `PrincipalContext` | CENTRALIZAR | representa el principal autenticado; no el actor empresarial |
+| `EffectiveActorContext` | CENTRALIZAR | representa el actor atribuible; no hereda identidad del dispositivo |
+| `DomainIdentityContext` | CENTRALIZAR | representa identidad laboral, cliente, dispositivo o sistema sin mezclarlas |
+| `EmployeeContext` | CENTRALIZAR | representa identidad laboral mínima; no permisos ni territorio operativo |
+| `BaseRoleContext` | CENTRALIZAR | usa el `BaseRoleCode` vigente y no concede por nombre de rol |
+| `AssignedSiteContext` | CENTRALIZAR | representa asignación laboral, no sede operativa |
+| `AssignedAreaContext` | CENTRALIZAR | representa asignación laboral, no área operativa |
+| `AdministrativeCoverageContext` | CENTRALIZAR | delimita cobertura del carril base; no permiso |
+| `ActiveShiftContext` | CENTRALIZAR | snapshot de turno publicado y vigente |
+| `ActiveCheckinContext` | CENTRALIZAR | sesión de asistencia activa y coherente; no turno |
+| `OperationalRoleContext` | CENTRALIZAR | usa `OperationalRoleCode` y deriva del turno vigente |
+| `OperationalSiteContext` | CENTRALIZAR | sede exacta del turno; no selector ni recurso |
+| `OperationalAreaContext` | CENTRALIZAR | área exacta del turno cuando aplica |
+| `DeviceContext` | CENTRALIZAR | restricción de dispositivo; nunca fuente de autoridad adicional |
+| `LaneReadiness` | CENTRALIZAR | preparación estructural del carril; nunca decisión final |
+| `StructuralIssue` | CENTRALIZAR FORMA | forma compartida; catálogo exacto de códigos queda reservado a `SHELL-CON-008` |
+| `ResolutionMetadata` | CENTRALIZAR | procedencia y versiones de resolución; no autorización |
+
+El inventario contiene todos los nodos directos de `AccessContextV1` y conserva sus relaciones de nulabilidad y cardinalidad.
+
+---
+
+#### 9. `PrincipalContext`
+
+La forma canónica conserva:
+
+```text
+principal_type:
+  HUMAN_USER
+  SHARED_DEVICE
+  SYSTEM_SERVICE
+  ANONYMOUS
+
+auth_user_id: string | null
+session_id: string | null
+authenticated: boolean
+authentication_method: string | null
+authenticated_at: string | null
+session_expires_at: string | null
+
+principal_status:
+  VALID
+  INVALID
+  ANONYMOUS
+```
+
+Reglas:
+
+- una credencial técnica no se convierte en trabajador;
+- una sesión anónima no recibe identidad laboral por fallback;
+- IDs enviados por cliente no sustituyen al principal autenticado;
+- la sesión no concede permiso por sí misma.
+
+---
+
+#### 10. `EffectiveActorContext`
+
+La forma canónica conserva:
+
+```text
+actor_type:
+  EMPLOYEE
+  CUSTOMER
+  SYSTEM
+  UNRESOLVED
+
+actor_id: string | null
+
+attribution_source:
+  PERSONAL_SESSION
+  DEVICE_ACTOR_SESSION
+  SYSTEM_PROCESS
+  DOMAIN_IDENTITY
+  NONE
+
+delegation_id: string | null
+resolved: boolean
+```
+
+El principal y el actor permanecen separados.
+
+En dispositivo compartido:
+
+```text
+principal = dispositivo
+actor = empleado de sesión válida
+```
+
+Nunca:
+
+```text
+actor = device_id
+```
+
+---
+
+#### 11. `DomainIdentityContext` y `EmployeeContext`
+
+`DomainIdentityContext` conserva:
+
+```text
+identity_type:
+  EMPLOYEE
+  CUSTOMER
+  DEVICE
+  SYSTEM
+
+identity_id: string
+
+status:
+  ACTIVE
+  INACTIVE
+  INVALID
+
+source: string
+```
+
+`EmployeeContext` conserva la identidad laboral mínima y su referencia al rol base.
+
+La proyección estática deberá reutilizar el `BaseRoleCode` vigente para `base_role_code` cuando el campo sea tipado dentro de TypeScript.
+
+No se agrega un campo nuevo al JSON y no se altera la serialización.
+
+---
+
+#### 12. `BaseRoleContext` y precedencia del octavo rol
+
+La forma permanece:
+
+```text
+type BaseRoleContext = {
+  role_code: BaseRoleCode;
+  role_status: "ACTIVE" | "INACTIVE" | "INVALID";
+  assignment_source: string;
+};
+```
+
+`BaseRoleCode` contiene exactamente:
+
+```text
+propietario
+gerente_general
+gerente
+supervisor
+auxiliar_administrativa
+contador
+marketing
+trabajador_operativo
+```
+
+`trabajador_operativo`:
+
+- es un rol base canónico válido;
+- puede aparecer en `EmployeeContext` y `BaseRoleContext`;
+- no crea cobertura administrativa implícita;
+- no crea rol operativo;
+- no crea turno;
+- no crea check-in;
+- no se usa como fallback para oficios legacy;
+- no altera la forma de `AccessContext@1.x`.
+
+Los oficios base legacy no se agregan a `BaseRoleCode` por compatibilidad.
+
+---
+
+#### 13. Asignaciones y cobertura administrativa
+
+Se conservan:
+
+```text
+AssignedSiteContext
+AssignedAreaContext
+AdministrativeCoverageContext
+```
+
+`AdministrativeCoverageContext.mode` conserva:
+
+```text
+NONE
+ASSIGNED_SITES
+SPECIFIC_SITE
+ASSIGNED_AREAS
+SPECIFIC_AREA
+ORGANIZATION
+```
+
+Reglas:
+
+1. asignación laboral no equivale a permiso;
+2. sede primaria no equivale a cobertura completa;
+3. cobertura administrativa no equivale a territorio operativo;
+4. `NONE` no significa globalidad;
+5. `trabajador_operativo` no recibe una cobertura administrativa implícita por existir como rol base;
+6. arrays vacíos no se interpretan como todos los territorios.
+
+---
+
+#### 14. `ActiveShiftContext` y `ActiveCheckinContext`
+
+`ActiveShiftContext` conserva como hechos mínimos:
+
+- `shift_id`;
+- `employee_id`;
+- `site_id`;
+- `area_id` nullable;
+- `operational_role_code`;
+- `starts_at`;
+- `ends_at`;
+- `shift_status`;
+- `published`;
+- `currently_valid`.
+
+La proyección TypeScript deberá utilizar `OperationalRoleCode` para `operational_role_code` cuando el valor ya haya sido validado contra el catálogo operativo.
+
+`ActiveCheckinContext` conserva:
+
+- `checkin_session_id`;
+- `employee_id`;
+- `shift_id`;
+- `site_id`;
+- `area_id` nullable;
+- `checked_in_at`;
+- `expires_at` nullable;
+- `checked_out_at` nullable;
+- `status` `ACTIVE | EXPIRED | CLOSED | INVALID`.
+
+Reglas:
+
+```text
+CHECK-IN
+≠ TURNO
+
+CHECK-IN
+≠ ROL OPERATIVO
+
+CHECK-IN
+≠ PERMISO
+```
+
+---
+
+#### 15. `OperationalRoleContext`
+
+La forma canónica conserva:
+
+```text
+type OperationalRoleContext = {
+  role_code: OperationalRoleCode;
+  shift_id: string;
+  site_id: string;
+  area_id: string | null;
+  valid_for_site: boolean;
+  valid_for_area: boolean;
+};
+```
+
+`OperationalRoleCode` contiene exactamente los doce miembros centralizados en `SHELL-CON-005`.
+
+No se admite:
+
+- `propietario_admin`;
+- un `BaseRoleCode` como rol operativo;
+- un oficio base legacy como sustituto de rol operativo;
+- un `string` desconocido convertido mediante cast;
+- `navigation_role` como fuente de este nodo.
+
+---
+
+#### 16. `OperationalSiteContext` y `OperationalAreaContext`
+
+Se conservan exactamente:
+
+```text
+type OperationalSiteContext = {
+  site_id: string;
+  source_shift_id: string;
+  site_active: boolean;
+  assignment_valid: boolean;
+};
+```
+
+```text
+type OperationalAreaContext = {
+  area_id: string;
+  site_id: string;
+  area_kind: string;
+  source: "SHIFT" | "CHECKIN_CONFIRMED_SHIFT";
+  area_active: boolean;
+  compatible_with_role: boolean;
+};
+```
+
+Reglas:
+
+1. ambos nodos derivan del turno vigente;
+2. el check-in solo puede confirmar el área del turno;
+3. la sede seleccionada no es fuente;
+4. la sede primaria no es fallback;
+5. el dispositivo no reemplaza territorio laboral;
+6. el recurso no reemplaza territorio laboral;
+7. `null` nunca significa wildcard;
+8. el territorio del actor y el territorio del recurso permanecen separados.
+
+---
+
+#### 17. `DeviceContext`
+
+La forma canónica conserva:
+
+```text
+type DeviceContext = {
+  device_id: string;
+  device_code: string;
+  device_type: string;
+  device_status: "ACTIVE" | "INACTIVE" | "INVALID";
+  authenticated_as_device: boolean;
+  actor_session_id: string | null;
+  actor_session_expires_at: string | null;
+  allowed_application_codes: AppCode[];
+  capability_package_code: string | null;
+};
+```
+
+La sustitución estática de `string[]` por `AppCode[]` no cambia la serialización; reutiliza el catálogo canónico ya centralizado.
+
+Reglas:
+
+- aplicaciones visibles no son permisos;
+- el package del dispositivo es techo restrictivo, no grant;
+- lista vacía no significa todas;
+- instancia solo puede reducir su plantilla;
+- PIN ligero no equivale a reautenticación fuerte;
+- dispositivo sin actor humano no ejecuta acciones empresariales;
+- identidad técnica del dispositivo no se convierte en actor humano.
+
+---
+
+#### 18. `LaneReadiness`
+
+La forma permanece:
+
+```text
+type LaneReadiness = {
+  status: "READY" | "UNAVAILABLE" | "INVALID" | "NOT_APPLICABLE";
+  reason_codes: string[];
+};
+```
+
+Semántica obligatoria:
+
+```text
+READY
+≠ ALLOW
+
+UNAVAILABLE
+≠ INVALID
+
+NOT_APPLICABLE
+≠ DENY
+```
+
+`reason_codes` permanece como referencia textual contractual durante esta tarea.
+
+La unión cerrada de códigos y razones corresponde a `SHELL-CON-008` y no se anticipa aquí.
+
+---
+
+#### 19. `StructuralIssue`
+
+La forma permanece:
+
+```text
+type StructuralIssue = {
+  issue_code: string;
+  severity:
+    | "BLOCKING_ALL"
+    | "BLOCKING_BASE"
+    | "BLOCKING_OPERATIONAL"
+    | "WARNING"
+    | "INFO";
+  subject_type: string;
+  subject_id: string | null;
+  source: string;
+  safe_message: string;
+};
+```
+
+Esta tarea centraliza la **forma** y la relación del nodo con `AccessContext`.
+
+No centraliza todavía como uniones literales:
+
+- los 100 `issue_code` iniciales;
+- los códigos de disponibilidad de `LaneReadiness`;
+- códigos de error de consumidores;
+- códigos HTTP;
+- errores internos de infraestructura.
+
+Ese vocabulario permanece reservado para `SHELL-CON-008`.
+
+---
+
+#### 20. `ResolutionMetadata`
+
+`ResolutionMetadata` se conserva como nodo obligatorio de procedencia del snapshot.
+
+Debe permitir identificar de forma reproducible:
+
+- resolver utilizado;
+- versión del resolver;
+- versión del contrato de autorización;
+- versión del catálogo;
+- versiones de las fuentes consumidas;
+- metadatos de resolución aprobados por `AUTH-CTX-001`.
+
+Reglas:
+
+1. no concede autorización;
+2. no reemplaza `ContractMetadata`;
+3. no contiene secretos;
+4. no se reconstruye desde el cliente;
+5. no admite versiones inventadas por una aplicación;
+6. una versión incompatible debe provocar fallo cerrado conforme a la familia contractual.
+
+La forma exacta publicada continúa gobernada por `AUTH-CTX-001`; esta tarea no agrega campos.
+
+---
+
+#### 21. `SimulationContextV1`
+
+La simulación conserva un contrato raíz independiente:
+
+```text
+contract_name = SimulationContext
+contract_version = 1.0.0
+schema_version = 1.0.0
+```
+
+Debe mantener separados como mínimo:
+
+- actor real;
+- referencia al contexto real;
+- autorización para simular;
+- sujeto simulado;
+- contexto hipotético;
+- escenario de recurso cuando aplique;
+- evaluaciones hipotéticas;
+- resultados `WOULD_ALLOW`, `WOULD_DENY` e `INDETERMINATE`;
+- problemas de simulación;
+- auditoría de simulación.
+
+Reglas:
+
+```text
+SimulationContext
+≠ AccessContext real mutado
+```
+
+```text
+WOULD_ALLOW
+≠ ALLOW ejecutable
+```
+
+```text
+sede/área simuladas
+≠ territorio laboral real
+```
+
+`ContextSimulationInput` físico actual puede servir únicamente como entrada de compatibilidad mientras exista el adapter correspondiente; no es el contrato canónico de simulación.
+
+---
+
+#### 22. Contratos de decisión relacionados
+
+`AuthorizationDecisionV1` y `SimulatedAuthorizationDecisionV1` pertenecen a la misma familia versionada, pero no se fusionan con los tipos de contexto.
+
+Separación obligatoria:
+
+```text
+AccessContextV1
+→ hechos resueltos del actor y su contexto
+
+AuthorizationDecisionV1
+→ evaluación de permiso y recurso exactos
+
+SimulationContextV1
+→ hechos hipotéticos aislados
+
+SimulatedAuthorizationDecisionV1
+→ evaluación hipotética no ejecutable
+```
+
+Los tipos de contexto pueden ser referenciados por los contratos de decisión, pero no deben adquirir:
+
+- `final_decision`;
+- matched grants;
+- matched denies;
+- autorización de campos;
+- autorización del recurso;
+- resultado ejecutable;
+- decisión simulada.
+
+---
+
+#### 23. Reutilización de contratos ya centralizados
+
+Cuando un campo de contexto ya corresponde inequívocamente con un contrato compartido aprobado, la proyección TypeScript deberá reutilizarlo en lugar de declarar una unión local.
+
+| Campo contextual | Tipo compartido reutilizado | Regla |
+| --- | --- | --- |
+| `EmployeeContext.base_role_code` | `BaseRoleCode` | ocho miembros vigentes |
+| `BaseRoleContext.role_code` | `BaseRoleCode` | ocho miembros vigentes |
+| `ActiveShiftContext.operational_role_code` | `OperationalRoleCode` | doce miembros vigentes |
+| `OperationalRoleContext.role_code` | `OperationalRoleCode` | doce miembros vigentes |
+| `DeviceContext.allowed_application_codes[]` | `AppCode` | diez aplicaciones canónicas |
+
+`PermissionScopeCode` se reutilizará únicamente en campos o contratos que realmente representen un scope publicado. No se agrega artificialmente a `AccessContextV1` porque la raíz no contiene un campo de scope genérico.
+
+---
+
+#### 24. Cadenas externas y validación runtime
+
+Un tipo compartido no convierte automáticamente datos externos en valores canónicos.
+
+Entradas desde:
+
+- Supabase;
+- RPC;
+- JSON;
+- eventos;
+- formularios;
+- local storage;
+- query strings;
+- headers;
+- datos legacy;
+
+deben validarse antes de producir un contexto canónico tipado.
+
+Queda prohibido:
+
+```text
+externalValue as BaseRoleCode
+externalValue as OperationalRoleCode
+externalObject as AccessContextV1
+```
+
+como sustituto de validación.
+
+Una entrada desconocida, incompleta, incompatible o ambigua falla cerrada.
+
+---
+
+#### 25. Prohibición de catch-all permisivo
+
+La centralización no admite utilizar como escape semántico:
+
+```text
+string
+Record<string, unknown>
+metadata genérica
+booleanos agregados
+casts dobles
+campos opcionales indiscriminados
+```
+
+cuando exista un discriminante o nodo contractual publicado.
+
+Un campo puede continuar serializado como `string` cuando el contrato publicado así lo define y no exista todavía un vocabulario compartido aprobado para restringirlo.
+
+Ejemplos que permanecen sin inventar una taxonomía nueva en esta tarea:
+
+- `device_type`;
+- `area_kind` cuando corresponda;
+- `employment_status`;
+- `StructuralIssue.issue_code` hasta `SHELL-CON-008`;
+- `LaneReadiness.reason_codes` hasta `SHELL-CON-008`.
+
+---
+
+#### 26. Reconciliación del `EffectiveContext` físico actual
+
+El tipo físico actual no constituye la forma canónica de `AccessContextV1`.
+
+Disposición por campo o concepto:
+
+| Superficie actual | Disposición |
+| --- | --- |
+| `source: EffectiveContextSource` | COMPATIBILIDAD; no discriminante raíz canónico |
+| `session_mode` abierto con `string` | COMPATIBILIDAD; no se usa para reemplazar principal, actor o dispositivo |
+| `app_code` | no pertenece al snapshot raíz de `AccessContext`; la aplicación solicitada se evalúa posteriormente |
+| `user_id` | no reemplaza `principal`, `domain_identity`, `actor_effective` ni `employee` |
+| `real_administrative_role` | RETIRAR COMO FUENTE CANÓNICA; sustituido conceptualmente por `BaseRoleContext` |
+| `effective_administrative_role` | RETIRAR COMO FUENTE CANÓNICA; no existe rol administrativo efectivo alternativo |
+| `effective_operational_role` | COMPATIBILIDAD; debe converger en `OperationalRoleContext` |
+| `site_id`, `area_id`, `area_kind` planos | COMPATIBILIDAD; deben converger en nodos administrativos/operativos separados |
+| `shift_id` plano | COMPATIBILIDAD; debe converger en `ActiveShiftContext` y referencias dependientes |
+| `simulation_id` dentro del contexto real | NO CANÓNICO; la simulación pertenece a `SimulationContext` |
+| `shared_device_id` plano | COMPATIBILIDAD; debe converger en `DeviceContext` |
+| `is_simulation` | NO CANÓNICO en `AccessContextV1`; no se usa para mutar un contexto real |
+| `is_shared_device` | derivable del principal/dispositivo; no sustituye discriminantes publicados |
+| `bypass_applied` | PROHIBIDO COMO AUTORIDAD; ningún bypass forma parte del contexto canónico |
+| `can_operate` | PROHIBIDO COMO DECISIÓN; se reemplaza por `lane_readiness` y evaluación posterior |
+| `blocked_reasons` | COMPATIBILIDAD; no sustituye `structural_issues`, `reason_codes` ni razones de decisión |
+| `metadata: Record<string, unknown>` | no puede absorber propiedades contractuales omitidas |
+
+La migración física de estas superficies no ocurre en `SHELL-CON-007`.
+
+---
+
+#### 27. Distribución física posterior
+
+Las responsabilidades quedan asignadas sin pendientes narrativos:
+
+| Resultado físico futuro | Tarea propietaria |
+| --- | --- |
+| estructura, exports, versionado y compatibilidad del SDK único | `SHELL-AUTH-001` |
+| módulo contextual dentro de `@vento/os-context` | `SHELL-CTX-001` |
+| consumo canónico de turno y check-in | `SHELL-CTX-002` |
+| proyecciones seguras de sede y área | `SHELL-CTX-003` |
+| readiness sin booleanos de autorización | `SHELL-CTX-004` |
+| razones seguras de bloqueo contextual | `SHELL-CTX-005` |
+| caché compartida, single-flight y frescura | `SHELL-CTX-006` |
+| adapters de servidor/cliente y proyecciones seguras | `SHELL-AUTH-002` |
+| lint, métricas y gates contra consumidores legacy | `SHELL-AUTH-004` |
+| migración final de consumidores | `SHELL-AUTH-005` |
+| productor autoritativo de contexto en backend | `AUTH-DB-033` |
+| token/frescura e invalidación autoritativa | `AUTH-DB-035` |
+| productor de decisión autoritativa | `AUTH-DB-034` |
+| persistencia/backend compartido correspondiente | `AUTH-DB-032` |
+
+Esta asignación no modifica ni inicia ninguna de esas tareas.
+
+---
+
+#### 28. Versionado e inmutabilidad
+
+Esta centralización es una proyección de contratos ya publicados documentalmente.
+
+Se conserva:
+
+```text
+contract_family = vento.authorization.response-contracts
+contract_family_version = 1.0.0
+
+AccessContext@1.0.0
+SimulationContext@1.0.0
+AuthorizationDecision@1.0.0
+SimulatedAuthorizationDecision@1.0.0
+
+schema_version = 1.0.0
+release_hash = sha256:782a216c4bbfdc3b3cec1bbd7239c05d93edd7fa34b4ce62cad48c1e6b9941cd
+```
+
+No generan nueva versión:
+
+- reemplazar un `string` TypeScript por un literal ya canónico cuando la serialización no cambia;
+- reutilizar `BaseRoleCode` vigente dentro de `BaseRoleContext`;
+- reutilizar `OperationalRoleCode` vigente;
+- reutilizar `AppCode` vigente;
+- centralizar la misma forma en un package compartido.
+
+Sí exigiría revisión contractual y versionado correspondiente:
+
+- agregar o retirar un campo serializado;
+- cambiar nulabilidad o cardinalidad;
+- cambiar semántica de un nodo;
+- fusionar contexto real y simulación;
+- convertir un warning en bloqueo de forma incompatible;
+- cambiar el significado de un discriminante publicado;
+- reutilizar un contrato con semántica distinta.
+
+---
+
+#### 29. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **1**
+**Requisitos modificados:** **0**
+
+Se crea `TREQ-SHELL-043` para proteger la centralización de tipos de contexto y la separación entre contexto real, simulación, decisión y superficies legacy.
+
+| ID | Regla protegida | Riesgo | Destino de implementación |
+| --- | --- | --- | --- |
+| `TREQ-SHELL-043` | Preservar la familia `response-contracts@1.0.0`, `AccessContext@1.0.0`, el uso de catálogos tipados vigentes y la separación estricta frente a `EffectiveContext`, simulación, bypasses y booleanos de autorización. | Deriva de tipos, autorización por booleano, mezcla real/simulado, rol legacy aceptado, bypass o consumidor incompatible. | `SHELL-CON-007`; `SHELL-AUTH-001`; `SHELL-CTX-001`; `SHELL-AUTH-004`; `SHELL-CI-017`; `SHELL-CI-018` |
+
+El detalle operativo del requisito permanece en el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 30. Decisiones vinculantes
+
+1. La familia contractual compartida es `vento.authorization.response-contracts@1.0.0`.
+2. Su perfil de serialización permanece `vento.canonical-json@1.0.0`.
+3. Su huella de release permanece `sha256:782a216c4bbfdc3b3cec1bbd7239c05d93edd7fa34b4ce62cad48c1e6b9941cd`.
+4. `AccessContext`, `AuthorizationDecision`, `SimulationContext` y `SimulatedAuthorizationDecision` permanecen contratos independientes.
+5. `AccessContextV1` conserva exactamente su forma publicada.
+6. `SimulationContextV1` conserva exactamente su forma publicada y nunca muta el contexto real.
+7. `BaseRoleContext.role_code` reutiliza el `BaseRoleCode` vigente de ocho miembros.
+8. `trabajador_operativo` es válido como rol base del contexto sin crear autoridad administrativa implícita.
+9. `OperationalRoleContext.role_code` reutiliza el `OperationalRoleCode` vigente de doce miembros.
+10. `DeviceContext.allowed_application_codes` reutiliza `AppCode` de diez aplicaciones después de validación.
+11. `PermissionScopeCode` se reutiliza solo donde exista realmente un campo contractual de alcance; no se agrega a la raíz de `AccessContext`.
+12. `LaneReadiness.READY` no significa `ALLOW`.
+13. `StructuralIssue` centraliza su forma, pero los códigos exactos quedan reservados a `SHELL-CON-008`.
+14. `reason_codes` no se convierte todavía en una unión literal durante esta tarea.
+15. `EffectiveContext` físico actual no es fuente de verdad canónica.
+16. `ContextSimulationInput` físico actual no es `SimulationContextV1`.
+17. `administrative_bypass` no forma parte de la autorización canónica.
+18. `bypass_applied` no puede convertirse en autoridad.
+19. `can_operate` no puede sustituir `AuthorizationDecision`.
+20. `is_simulation` no puede transformar un `AccessContext` real en un contexto simulado.
+21. `metadata: Record<string, unknown>` no puede almacenar propiedades contractuales omitidas como mecanismo de compatibilidad.
+22. strings externos requieren validación runtime antes de convertirse en tipos canónicos.
+23. una versión crítica desconocida o incompatible falla cerrada.
+24. no se crean packages paralelos de autorización o contexto.
+25. no se modifica código, SQL, Supabase, RLS, RPC, migraciones, datos o packages físicos.
+26. la materialización queda asignada a tareas canónicas existentes y no se inicia aquí.
+27. `SHELL-CON-008` permanece exclusivamente reservada.
+
+---
+
+#### 31. Criterios de aceptación
+
+`SHELL-CON-007` queda documentalmente cerrada cuando se cumplan simultáneamente:
+
+- la familia `vento.authorization.response-contracts@1.0.0` queda identificada como fuente de los contratos contextuales compartidos;
+- `AccessContextV1` conserva todos sus nodos directos, nulabilidad y cardinalidad;
+- el inventario de nodos del contexto real tiene una disposición explícita para cada identidad;
+- `SimulationContextV1` permanece aislado del contexto real;
+- los dos contratos de decisión permanecen separados de los tipos de contexto;
+- `BaseRoleCode`, `OperationalRoleCode` y `AppCode` se reutilizan sin crear uniones locales;
+- el octavo rol base entra en los tipos sin cambiar la forma serializada de `AccessContext@1.x`;
+- `EffectiveContext`, `administrative_bypass`, `bypass_applied`, `can_operate`, `simulation_id` real y metadata genérica no se promueven a contrato canónico;
+- `LaneReadiness` y `StructuralIssue` conservan sus formas aprobadas;
+- la centralización de códigos exactos permanece reservada a `SHELL-CON-008`;
+- todos los cambios físicos quedan vinculados a tareas propietarias existentes;
+- no se crea una nueva versión contractual ni de schema;
+- se incorpora exactamente `TREQ-SHELL-043` y ningún otro requisito;
+- la continuidad reserva exclusivamente `SHELL-CON-008`.
+
+---
+
+#### 32. Continuidad canónica
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-CON-006 — Centralizar scopes
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-CON-007 — Centralizar tipos de contexto
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-CON-008 — Centralizar códigos de error
+
+
 ### [ ] SHELL-CON-008 — Centralizar códigos de error
 
 ### [ ] SHELL-CON-009 — Centralizar identificadores de procesos

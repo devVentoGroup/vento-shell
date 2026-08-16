@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **885** |
+| Aprobadas | **886** |
 | En propuesta | **0** |
-| No iniciadas | **709** |
+| No iniciadas | **708** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **55.52% (885/1594)** |
+| Porcentaje de completamiento | **55.58% (886/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CON-006` — Centralizar scopes | ✅ APROBADA |
-| Tarea actual | `SHELL-CON-007` — Centralizar tipos de contexto | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CON-008` — Centralizar códigos de error | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CON-007` — Centralizar tipos de contexto | ✅ APROBADA |
+| Tarea actual | `SHELL-CON-008` — Centralizar códigos de error | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CON-009` — Centralizar identificadores de procesos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -712,7 +712,7 @@
 | ✅ APROBADA | `SHELL-CON-004` | Centralizar roles base | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CON-005` | Centralizar roles operativos | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CON-006` | Centralizar scopes | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-CON-007` | Centralizar tipos de contexto | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-CON-007` | Centralizar tipos de contexto | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-008` | Centralizar códigos de error | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-009` | Centralizar identificadores de procesos | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-010` | Centralizar estados de procesos | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
