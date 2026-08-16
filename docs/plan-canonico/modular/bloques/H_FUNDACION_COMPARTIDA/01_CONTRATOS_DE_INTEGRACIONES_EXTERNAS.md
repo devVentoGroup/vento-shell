@@ -3377,7 +3377,1065 @@ Justificación: la tarea materializa como contrato compartido estático la semá
 `SHELL-CON-021 — Crear contrato canónico de línea de venta`
 
 
-### [ ] SHELL-CON-021 — Crear contrato canónico de línea de venta
+### ✅ SHELL-CON-021 — Crear contrato canónico de línea de venta
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CON-020 — Crear contrato canónico de venta
+**Tarea siguiente:** SHELL-CON-022 — Crear contrato de mapeo de identificadores externos
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md`
+**Superficie lógica objetivo:** `@vento/contracts/integrations`
+**Estado físico resultante:** `CONTRATO_CANONICO_DE_LINEA_DE_VENTA_DEFINIDO_NO_MATERIALIZADO`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, Storage, Edge Functions, endpoints, colas, workers, datos, secretos, credenciales, configuración remota o despliegues:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-CON-021` centraliza en la fundación compartida de Vento OS la representación técnica común de una **línea de venta canónica individual**, compatible con el contrato de venta aprobado en `SHELL-CON-020` y con la semántica ya definida por `INT-POS-005..013` e `INT-SALES-001`.
+
+La tarea cierra la frontera que `CanonicalSale<TSaleLine>` dejó deliberadamente abierta:
+
+```text
+CanonicalSale<TSaleLine>
+        ↓
+TSaleLine
+        ↓
+CanonicalSaleLine
+```
+
+La regla central es:
+
+```text
+LÍNEA DE VENTA CANÓNICA
+=
+IDENTIDAD DE LÍNEA ESTABLE
++
+PERTENENCIA A UNA VENTA CANÓNICA
++
+IDENTIDAD / REVISIÓN DE ORIGEN CUANDO EXISTAN
++
+REFERENCIA AL ÍTEM REALMENTE VENDIDO
++
+CANTIDAD Y UNIDAD INTERPRETABLES
++
+SNAPSHOT COMERCIAL DE LÍNEA
++
+REFERENCIAS DE MAPPING CUANDO APLIQUEN
++
+ESTADO DE LÍNEA SOLO CUANDO SEA SEMÁNTICAMENTE ACREDITABLE
++
+PROCEDENCIA Y CORRELACIÓN
+```
+
+La línea permanece separada de:
+
+```text
+PRODUCTO CANÓNICO
+PRESENTACIÓN
+RECETA
+LÍNEA DE PEDIDO
+MOVIMIENTO DE INVENTARIO
+HECHO ECONÓMICO
+MOVIMIENTO DE FIDELIZACIÓN
+PAGO
+DOCUMENTO FISCAL
+CUARENTENA
+MAPPING
+EVENTO
+EFECTO DE CONSUMIDOR
+```
+
+Una relación explícita puede vincular estos objetos. Ninguna coincidencia de identificador, nombre, código, posición, importe o timestamp los convierte en equivalentes.
+
+---
+
+#### 2. Resultado canónico
+
+Quedan definidos dos artefactos públicos lógicos dentro de la superficie compartida `@vento/contracts/integrations`:
+
+1. `CanonicalSaleLineId`, como identidad canónica estable, opaca y no secreta de una línea de venta individual;
+2. `CanonicalSaleLine`, como contrato compartido estático de la línea de venta.
+
+La composición aprobada pasa a ser:
+
+```text
+CanonicalSale<CanonicalSaleLine>
+```
+
+sin cambiar la semántica de `CanonicalSale` aprobada por `SHELL-CON-020`.
+
+`CanonicalSaleLine` permite representar de forma uniforme una línea originada:
+
+- en una venta individual del POS externo durante el alcance transitorio autorizado;
+- en una venta nativa de PULSO dentro de su autoridad;
+- en una revisión válida de cualquiera de esas ventas;
+
+sin trasladar al consumidor interno el payload particular del proveedor, la estructura de una tabla propietaria ni el mecanismo técnico de adquisición.
+
+La tarea no crea instancias físicas de `CanonicalSaleLineId`, tipos TypeScript, schemas ejecutables, tablas, eventos ni consumidores.
+
+---
+
+#### 3. Fuentes y precedencia
+
+La tarea consume y conserva sin reabrir las decisiones aprobadas de:
+
+| Fuente                                    | Uso vinculante                                                                                                                         |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-CON-001`                           | `@vento/contracts` como autoridad contractual estática, versionada, sin red, secretos ni lógica operacional                            |
+| `SHELL-CON-019`                           | procedencia de recepciones externas, evidencia protegida, mapping, idempotencia y correlación por referencia                           |
+| `SHELL-CON-020`                           | `CanonicalSaleId`, `CanonicalSale<TSaleLine>`, fuente única, venta individual, snapshot monetario y composición obligatoria con líneas |
+| `INT-POS-005`                             | identidad y semántica canónicas de venta y línea durante la transición                                                                 |
+| `INT-POS-006`                             | identidad de línea, revisión, estados y temporalidad sin inferencias                                                                   |
+| `INT-POS-007`                             | precio, descuentos, impuestos, propinas y demás componentes monetarios separados                                                       |
+| `INT-POS-008`                             | anulación, devolución y reembolso como hechos distintos del original                                                                   |
+| `INT-POS-009`                             | procedencia, payload original, hash, versión y recepción protegidos fuera del contrato normalizado                                     |
+| `INT-POS-010`                             | empresa, sede, terminal y caja como contexto de origen separado                                                                        |
+| `INT-POS-011`                             | mapping explícito entre ítem externo, producto Vento, presentación y receta                                                            |
+| `INT-POS-012`                             | conservación de líneas con mapping incompleto y bloqueo de efectos dependientes de producto                                            |
+| `INT-POS-013`                             | estabilidad e idempotencia por sistema, venta y línea externa                                                                          |
+| `INT-SALES-001`                           | registro durable PULSO de venta y líneas con identidad, snapshots e historia                                                           |
+| Registro Canónico de Requisitos de Prueba | cobertura vigente de venta, línea, integración, mapping, idempotencia y efectos                                                        |
+
+Precedencia aplicable:
+
+```text
+SEMÁNTICA EMPRESARIAL APROBADA
+→ CanonicalSale
+→ CanonicalSaleLine
+→ mapping compartido
+→ idempotencia / conciliación
+→ cuarentena / rechazo / compensación
+→ implementación física autorizada
+→ consumidores y efectos propietarios
+```
+
+`SHELL-CON-021` no reabre la propiedad de la venta ni la autoridad de sus efectos downstream.
+
+---
+
+#### 4. Frontera exacta de la tarea
+
+La tarea incluye únicamente:
+
+- identidad lógica de una línea canónica;
+- vínculo inequívoco con una venta canónica;
+- identidad, secuencia y revisión de línea en la fuente cuando existan;
+- referencia al ítem realmente vendido;
+- cantidad y unidad comercial;
+- referencias al producto, presentación y receta cuando hayan sido resueltas por contratos propietarios;
+- referencias de mapping sin definir todavía el contrato compartido de mapping;
+- snapshot monetario de línea;
+- estado de línea cuando exista semántica acreditada;
+- temporalidad propia de línea únicamente cuando la fuente la distinga de forma verificable;
+- procedencia y correlación;
+- estabilidad frente a revisiones, replay, retry, cambios de mapping y liberación de cuarentena;
+- reglas de completitud estructural y elegibilidad para efectos dependientes de producto;
+- compatibilidad con `CanonicalSale<CanonicalSaleLine>`.
+
+La tarea no incluye:
+
+- redefinir `CanonicalSale`;
+- crear un contrato de pedido o línea de pedido;
+- definir físicamente producto, presentación o receta;
+- crear o modificar catálogos de producto;
+- definir el contrato compartido de mapping de identificadores;
+- definir la forma compartida de idempotencia o conciliación;
+- definir la forma compartida de cuarentena, rechazo o compensación;
+- importar o transformar datos reales;
+- definir endpoints, webhooks, polling o transporte;
+- crear eventos empresariales;
+- ejecutar movimientos NEXO;
+- registrar hechos NUMERA;
+- aplicar puntos PASS;
+- cobrar pagos;
+- emitir documentos fiscales;
+- crear tablas, columnas, índices, RPC, RLS, migraciones o cambios Supabase;
+- implementar físicamente `@vento/contracts`;
+- migrar consumidores.
+
+---
+
+#### 5. Identidad pública del contrato
+
+La identidad lógica queda fijada así:
+
+| Propiedad                           | Decisión                                                |
+| ----------------------------------- | ------------------------------------------------------- |
+| identidad de línea                  | `CanonicalSaleLineId`                                   |
+| contrato de línea                   | `CanonicalSaleLine`                                     |
+| contrato padre                      | `CanonicalSale<CanonicalSaleLine>`                      |
+| package lógico                      | `@vento/contracts`                                      |
+| superficie lógica                   | `@vento/contracts/integrations`                         |
+| repositorio propietario             | `devVentoGroup/vento-shell`                             |
+| propietaria empresarial de la venta | `PULSO`, conforme a la autoridad y transición aprobadas |
+| naturaleza                          | contrato estático, versionado y no ejecutable           |
+| persistencia                        | fuera del alcance                                       |
+| transporte                          | fuera del alcance                                       |
+| efectos downstream                  | fuera del alcance                                       |
+
+`CanonicalSaleLineId` identifica la línea comercial dentro del ciclo de vida de la venta y no se reutiliza como identidad de:
+
+- la venta;
+- un producto;
+- una presentación;
+- una receta;
+- una línea de pedido;
+- un movimiento de inventario;
+- un evento;
+- un efecto consumidor;
+- una fila de archivo;
+- un mapping;
+- una cuarentena.
+
+Esta tarea no fija UUID, prefijo, secuencia, slug ni otro formato físico de `CanonicalSaleLineId`.
+
+---
+
+#### 6. Forma lógica de `CanonicalSaleLine`
+
+La forma normativa objetivo es:
+
+```text
+CanonicalSaleLine = {
+  sale_line_id
+  sale_id
+  contract_version
+
+  source_line_id
+  source_line_sequence
+  source_line_revision
+
+  sold_item_ref
+
+  product_ref
+  presentation_ref
+  recipe_ref
+  mapping_refs[]
+
+  quantity
+  unit_ref
+
+  monetary_snapshot {
+    currency_ref
+    applied_unit_price
+    line_subtotal
+    discount_total
+    tax_total
+    tip_total
+    line_total
+  }
+
+  source_line_state
+  canonical_line_state
+  line_state_mapping_result
+  line_occurred_at
+
+  provenance_refs[]
+  correlation_refs[]
+}
+```
+
+La forma es lógica y normativa. No fija:
+
+- nombres físicos de archivos o módulos;
+- representación JSON final;
+- tipos escalares concretos;
+- precisión decimal;
+- formato de moneda;
+- formato de timestamps;
+- enum físico de estados;
+- algoritmo de serialización;
+- formato de identificadores;
+- schema de base de datos;
+- mecanismo runtime de validación;
+- estructura física de mapping;
+- almacenamiento de cuarentena.
+
+Los campos condicionales solo se materializan cuando la fuente o el contrato propietario aportan evidencia suficiente. Ausencia no equivale automáticamente a cero, `NOT_APPLICABLE`, `RESOLVED` ni valor predeterminado.
+
+---
+
+#### 7. `sale_line_id` y estabilidad de identidad
+
+`CanonicalSaleLineId` representa la misma línea comercial a través de revisiones, reintentos, replay, backfill, sincronización tardía y cambios posteriores de mapping.
+
+Invariantes:
+
+1. cambiar el mapping de producto no crea otra línea;
+2. resolver posteriormente presentación o receta no crea otra línea;
+3. entrar en cuarentena no crea otra línea;
+4. liberar una cuarentena no crea otra línea;
+5. cambiar el estado de línea no crea otra línea;
+6. una revisión posterior de la misma línea conserva la identidad cuando la fuente y el contrato demuestran continuidad del mismo hecho;
+7. un retry o redelivery no crea otra línea;
+8. sincronizar una venta PULSO después de operar offline no crea otra línea;
+9. una línea Makos histórica no se recrea como línea PULSO por ser procesada después del corte;
+10. reutilizar la misma identidad con contenido lógicamente incompatible produce conflicto y no sobrescritura silenciosa.
+
+La identidad no se deriva únicamente de:
+
+- producto;
+- nombre del ítem;
+- categoría;
+- precio;
+- cantidad;
+- importe;
+- posición;
+- número de fila;
+- timestamp;
+- hash de archivo o payload;
+- mapping;
+- receta;
+- presentación.
+
+---
+
+#### 8. Relación con `CanonicalSaleId`
+
+Toda línea pertenece a exactamente una venta canónica mediante `sale_id`.
+
+Reglas:
+
+1. una línea no puede pertenecer simultáneamente a dos ventas;
+2. `sale_line_id` y `sale_id` son identidades distintas;
+3. mover una línea entre ventas para corregir una importación no constituye una edición ordinaria: requiere conservar el error, la decisión y la corrección bajo los contratos propietarios;
+4. una línea aislada puede transportarse como proyección técnica únicamente si conserva `sale_id` y contexto contractual suficiente para reconstruir su venta;
+5. la fuente, contexto territorial y autoridad empresarial de la venta permanecen gobernados por `CanonicalSale`;
+6. una línea no redefine `source_system`, sede, terminal, caja, cliente, pedido, documento fiscal o pagos del encabezado;
+7. si una proyección duplica alguna dimensión del encabezado por necesidades de transporte, los valores deben ser consistentes con la venta propietaria y no se convierten en una segunda fuente.
+
+La colección `lines` de `CanonicalSale` queda materializada conceptualmente como una colección de `CanonicalSaleLine` compatibles con la misma venta.
+
+---
+
+#### 9. Identidad de línea en la fuente
+
+##### 9.1. `source_line_id`
+
+Conserva la identidad de línea que la fuente provea cuando exista y sea semánticamente estable.
+
+Reglas:
+
+1. no se sustituye por `sale_line_id` para ocultar la procedencia;
+2. no se sustituye por la posición de la línea cuando existe una identidad más fuerte;
+3. no se sustituye por producto, importe, nombre, código o categoría;
+4. su ausencia no autoriza a fabricar un identificador externo;
+5. cuando una fuente no entregue identidad estable, la resolución necesaria para idempotencia permanece bajo `INT-POS-013` y el futuro contrato compartido de `SHELL-CON-023`;
+6. una fila agregada que no demuestre una línea individual no recibe un `source_line_id` ficticio.
+
+##### 9.2. `source_line_sequence`
+
+Conserva orden o posición únicamente cuando sea material para reconstruir la fuente.
+
+La secuencia no es una identidad universal y no puede usarse por sí sola para deduplicar líneas.
+
+##### 9.3. `source_line_revision`
+
+Conserva la revisión de línea cuando la fuente la provea de forma acreditable.
+
+No se inventan números de revisión, timestamps de revisión ni valores `latest` cuando la fuente no los declare.
+
+---
+
+#### 10. Referencia al ítem realmente vendido
+
+`sold_item_ref` identifica o referencia la representación comercial del ítem que realmente participó en la línea.
+
+Su propósito es preservar el hecho comercial antes de cualquier mapping a maestros internos.
+
+Reglas:
+
+1. `sold_item_ref` no equivale automáticamente a `product_ref`;
+2. una identidad de catálogo comercial no sustituye la identidad del producto maestro cuando el efecto requiera producto;
+3. una descripción textual puede conservarse en la evidencia o snapshot propietario, pero no se convierte por sí sola en identidad canónica;
+4. una categoría no es un producto;
+5. una presentación visual no es una presentación operativa;
+6. una receta no es el ítem vendido;
+7. cambiar el catálogo actual no reescribe qué ítem fue vendido históricamente;
+8. una venta nativa de PULSO conserva el snapshot o referencia comercial realmente utilizada al vender, no una reconstrucción posterior desde el catálogo vigente.
+
+---
+
+#### 11. Producto, presentación, receta y mapping
+
+`CanonicalSaleLine` conserva referencias canónicas cuando ya exista una resolución explícita y acreditada:
+
+- `product_ref`;
+- `presentation_ref`;
+- `recipe_ref`;
+- `mapping_refs[]`.
+
+La tarea adopta estas reglas:
+
+1. `product_ref` es obligatorio antes de cualquier efecto que dependa de producto;
+2. `presentation_ref` es condicional y solo se exige cuando la unidad vendida o el efecto posterior requieran una presentación operativa diferenciada;
+3. `recipe_ref` es condicional y solo se exige cuando el efecto aplicable dependa de una receta concreta;
+4. producto, presentación y receta conservan resoluciones independientes;
+5. una presentación predeterminada no se selecciona únicamente por ser predeterminada;
+6. tener un producto con receta no determina automáticamente cuál receta aplica;
+7. código, nombre o categoría son evidencia o candidatos, no autoridad automática;
+8. ausencia silenciosa no equivale a `NOT_APPLICABLE`;
+9. un mapping posterior no reescribe la identidad de la línea ni su procedencia histórica;
+10. el contrato compartido exacto de `mapping_refs[]`, namespaces, equivalencias y estados de mapping pertenece exclusivamente a `SHELL-CON-022`.
+
+Los estados de resolución aprobados en `INT-POS-011` continúan gobernando la elegibilidad, pero esta tarea no crea un segundo enum compartido ni una segunda fuente de mapping.
+
+---
+
+#### 12. Cantidad y unidad
+
+`quantity` conserva la cantidad comercial realmente expresada por la línea.
+
+`unit_ref` conserva la unidad o convención necesaria para interpretar esa cantidad sin ambigüedad.
+
+Reglas:
+
+1. cantidad es obligatoria para una línea canónica individual;
+2. unidad es obligatoria cuando la magnitud no sea autosuficiente;
+3. una cantidad de venta no es automáticamente cantidad de inventario;
+4. una cantidad no se convierte entre unidades sin una regla aprobada;
+5. presentación y unidad permanecen conceptos relacionados pero distintos;
+6. el factor de conversión aplicable pertenece al contrato propietario del producto, presentación o efecto y no se inventa en la línea;
+7. una cantidad negativa no se usa como sustituto silencioso de devolución, anulación, reembolso o compensación;
+8. una diferencia de cantidad se conserva para conciliación cuando no pueda resolverse sin alterar la evidencia.
+
+---
+
+#### 13. Snapshot monetario de línea
+
+`monetary_snapshot` conserva los componentes monetarios aplicados o acreditados para la línea sin recalcular historia desde reglas actuales.
+
+Debe poder representar, según aplicabilidad y evidencia:
+
+- `currency_ref`;
+- `applied_unit_price`;
+- `line_subtotal`;
+- `discount_total`;
+- `tax_total`;
+- `tip_total` cuando exista atribución válida a la línea;
+- `line_total` cuando la fuente o propietaria lo defina de forma verificable.
+
+Reglas:
+
+1. precio aplicado conserva el snapshot comercial del momento de la venta;
+2. descuento, impuesto y propina permanecen componentes diferenciados;
+3. un descuento de encabezado no se reparte entre líneas mediante prorrateo inventado;
+4. un descuento de línea no se eleva a descuento global sin conservar su alcance;
+5. varios descuentos o impuestos permanecen individualizables cuando la fuente los individualice y el contrato especializado lo requiera;
+6. un agregado permanece agregado cuando la fuente no entregue desglose;
+7. moneda no se deduce de la interfaz, la sede, el formato visual ni un valor técnico por defecto;
+8. un valor desconocido no se transforma automáticamente en cero;
+9. pago no se incorpora como componente monetario de la línea por equivalencia;
+10. redondeo, precisión y fórmulas físicas no se fijan en esta tarea;
+11. una diferencia entre suma de líneas y encabezado se conserva como diferencia a conciliar y no se corrige silenciosamente.
+
+---
+
+#### 14. Estado de línea
+
+La línea conserva separados:
+
+```text
+ESTADO DE LÍNEA EN LA FUENTE
+≠
+ESTADO CANÓNICO DE LÍNEA
+≠
+ESTADO COMERCIAL DE LA VENTA
+≠
+ESTADO DE MAPPING
+≠
+ESTADO DE CUARENTENA
+≠
+ESTADO DE INVENTARIO
+```
+
+`source_line_state` conserva el valor o referencia de estado de la fuente cuando exista.
+
+`canonical_line_state` solo se materializa cuando exista equivalencia semántica acreditada con el vocabulario mínimo ya aprobado:
+
+```text
+ACTIVE
+CANCELLED
+```
+
+`line_state_mapping_result` distingue conceptualmente:
+
+```text
+MAPPED
+NOT_PROVIDED
+UNRESOLVED
+```
+
+Reglas:
+
+1. ausencia de estado no se convierte automáticamente en `ACTIVE`;
+2. un estado técnico del importador no es estado de línea;
+3. estado de pago, preparación, entrega, fiscalidad o inventario no se convierte en estado de línea;
+4. `CANCELLED` no ejecuta por sí solo devolución, reembolso, compensación ni reverso físico;
+5. un valor nuevo o ambiguo permanece no resuelto hasta disponer de equivalencia aprobada;
+6. esta tarea no crea un enum físico ni un mapping de estados ejecutable.
+
+---
+
+#### 15. Temporalidad propia de línea
+
+`line_occurred_at` es condicional.
+
+Solo existe cuando la fuente o propietaria distingue un hecho temporal específico de línea con semántica verificable.
+
+Reglas:
+
+1. no se copia automáticamente `CanonicalSale.occurred_at` como si fuera un timestamp propio de línea;
+2. no se sustituye por tiempo de importación, recepción, registro, replay o sincronización;
+3. una fecha sin hora no se transforma en medianoche para fabricar un instante;
+4. una hora local sin zona u offset verificables no recibe una zona arbitraria;
+5. timestamps de creación o modificación de la fuente pueden conservarse en procedencia cuando correspondan, pero no sustituyen el momento comercial;
+6. una revisión tardía conserva la temporalidad histórica acreditada y no se mueve al día de recepción.
+
+---
+
+#### 16. Procedencia y correlación
+
+##### 16.1. `provenance_refs[]`
+
+Permite reconstruir qué entrada, registro o evidencia originó la línea sin copiar el payload completo dentro del contrato compartido.
+
+Puede enlazar, según corresponda:
+
+- una recepción externa gobernada por `SHELL-CON-019`;
+- evidencia protegida del POS externo;
+- una línea durable propietaria de PULSO;
+- una revisión de fuente;
+- una importación o transformación autorizada;
+- otra referencia de procedencia aprobada.
+
+Reglas:
+
+1. la procedencia de línea no sustituye `sale_line_id`;
+2. un hash protege integridad o equivalencia según su contrato, pero no es identidad empresarial;
+3. una corrección de parser o mapping no sobrescribe la evidencia original;
+4. el payload completo permanece fuera del contrato normalizado cuando una referencia protegida sea suficiente.
+
+##### 16.2. `correlation_refs[]`
+
+Relaciona la línea con:
+
+- la venta;
+- un pedido o línea de pedido cuando exista relación explícita;
+- mappings;
+- recepción externa;
+- evento empresarial posterior;
+- movimiento NEXO;
+- hecho NUMERA;
+- movimiento PASS;
+- devolución, anulación o compensación;
+- conciliación.
+
+La correlación no crea equivalencia entre identidades.
+
+Coincidencia de producto, importe, timestamp, email, teléfono, posición o texto libre no constituye correlación suficiente por sí sola.
+
+---
+
+#### 17. Completitud estructural y elegibilidad para efectos
+
+La tarea separa dos conceptos que no pueden fusionarse.
+
+##### 17.1. Línea canónica estructural
+
+Una línea puede conservarse como línea canónica estructural cuando se pueda demostrar:
+
+1. `sale_line_id` estable;
+2. `sale_id` inequívoco;
+3. versión contractual interpretable;
+4. identidad de fuente cuando exista o una regla estable autorizada que no fabrique capacidad del proveedor;
+5. referencia al ítem realmente vendido;
+6. cantidad interpretable;
+7. unidad cuando sea necesaria;
+8. snapshot comercial suficiente según aplicabilidad;
+9. procedencia reconstruible;
+10. ausencia de conflicto incompatible de identidad.
+
+Una línea estructural puede seguir teniendo mapping de producto pendiente.
+
+##### 17.2. Línea elegible para efecto dependiente de producto
+
+Además de ser estructural, la línea solo queda elegible para un efecto que dependa de producto cuando:
+
+1. `product_ref` está resuelto de forma explícita;
+2. toda presentación obligatoria está resuelta;
+3. toda receta obligatoria está resuelta;
+4. las dimensiones que no apliquen poseen una decisión explícita de no aplicabilidad bajo el contrato de mapping;
+5. cantidad y unidad son compatibles con el efecto solicitado;
+6. no existe mapping ambiguo, conflictivo o pendiente en un plano obligatorio;
+7. no existe cuarentena activa que bloquee el efecto;
+8. la versión de mapping aplicable está identificada;
+9. la autorización y demás puertas del consumidor propietario se satisfacen;
+10. idempotencia y correlación del efecto se resuelven en sus contratos propietarios.
+
+Elegibilidad no equivale a ejecución. La línea no descuenta inventario, registra costo ni aplica puntos por sí misma.
+
+---
+
+#### 18. Frontera con mapping y cuarentena
+
+La relación es:
+
+```text
+CanonicalSaleLine
+→ CONSERVA LA LÍNEA Y SU IDENTIDAD
+
+SHELL-CON-022 / mapping propietario
+→ RESUELVE EQUIVALENCIAS Y REFERENCIAS
+
+cuarentena aplicable
+→ BLOQUEA EFECTOS CUANDO LA RESOLUCIÓN ES INSUFICIENTE
+
+consumidor propietario
+→ EJECUTA SU EFECTO ÚNICAMENTE TRAS SUS PUERTAS
+```
+
+Reglas:
+
+1. una línea con mapping incompleto no se elimina de la venta;
+2. el mapping incompleto no cambia `sale_line_id`;
+3. entrar en cuarentena no cambia `sale_line_id`;
+4. liberar cuarentena no cambia `sale_line_id`;
+5. la liberación solo habilita evaluación de puertas posteriores y no ejecuta inventario;
+6. una coincidencia legacy por nombre, código o categoría no sustituye mapping explícito;
+7. la forma compartida de cuarentena, rechazo y compensación queda reservada para `SHELL-CON-024`;
+8. esta tarea no incorpora `ACTIVE` o `RELEASED` de cuarentena dentro de `canonical_line_state`.
+
+---
+
+#### 19. Revisión, corrección y preservación histórica
+
+Una revisión válida de línea:
+
+- conserva `sale_line_id` cuando continúa representando la misma línea;
+- conserva `sale_id`;
+- conserva identidad de fuente y revisión acreditadas;
+- conserva el snapshot anterior como historia reconstruible;
+- no reescribe el payload fuente;
+- no reinterpreta retroactivamente mappings ya usados sin evidencia de una nueva decisión;
+- no permite que una revisión antigua sobrescriba silenciosamente una posterior.
+
+Reglas adicionales:
+
+1. corregir producto o presentación mediante mapping no convierte la corrección en una línea nueva;
+2. corregir una cantidad o componente monetario requiere una revisión o hecho de corrección trazable; no una edición histórica silenciosa;
+3. una anulación, devolución, reembolso o compensación conserva relación con la línea original y no la elimina;
+4. si la fuente demuestra que una línea fue sustituida por otra identidad distinta, la relación se conserva explícitamente en lugar de reutilizar el identificador anterior;
+5. la conciliación de versiones y conflictos pertenece a `SHELL-CON-023` y contratos propietarios.
+
+---
+
+#### 20. Origen externo y origen PULSO
+
+El contrato de línea es agnóstico al mecanismo de adquisición y conserva la fuente empresarial de la venta mediante su relación con `CanonicalSale`.
+
+##### 20.1. Línea proveniente de fuente externa
+
+La secuencia válida es:
+
+```text
+EVIDENCIA / AFIRMACIÓN EXTERNA
+→ ExternalReceivedEvent
+→ VALIDACIÓN Y ADAPTACIÓN PROPIETARIA
+→ CanonicalSale
+→ CanonicalSaleLine
+```
+
+Un elemento del payload externo no se convierte en línea canónica únicamente porque tenga nombre, precio o cantidad.
+
+Debe existir identidad y granularidad suficientes para demostrar que representa una línea individual de una venta individual.
+
+##### 20.2. Línea nativa PULSO
+
+PULSO puede producir la misma forma contractual cuando sea fuente autorizada de la venta.
+
+No necesita inventar un proveedor externo, receipt o payload externo para satisfacer el contrato. Conserva su propia procedencia propietaria, snapshots e identidades durables.
+
+La sustitución de Makos por PULSO no crea una segunda semántica de línea ni obliga a los consumidores internos a entender el mecanismo de origen.
+
+---
+
+#### 21. Límite del flujo agregado `makos_excel`
+
+La implementación observada de `makos_excel` conserva filas agregadas por artículo, pero no demuestra por sí sola:
+
+- identidad individual de venta;
+- identidad individual estable de línea dentro de una venta;
+- granularidad transaccional completa;
+- relación individual entre línea, pago, terminal, cliente o documento fiscal.
+
+Por tanto:
+
+```text
+FILA AGREGADA POR ARTÍCULO
+≠ CanonicalSaleLine
+
+NÚMERO DE FILA
+≠ CanonicalSaleLineId
+
+PRODUCTO + FECHA + SEDE
+≠ IDENTIDAD CANÓNICA DE LÍNEA
+
+HASH DE ARCHIVO
+≠ IDENTIDAD CANÓNICA DE LÍNEA
+```
+
+El flujo agregado puede conservar valor como evidencia, conciliación o contingencia bajo sus contratos propietarios, pero esta tarea no fabrica líneas individuales para cerrar una brecha de granularidad.
+
+---
+
+#### 22. Fronteras con efectos downstream
+
+`CanonicalSaleLine` describe el hecho comercial de línea. No ejecuta efectos.
+
+| Frontera                         | Propiedad preservada                          | Regla                                                                                            |
+| -------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| PULSO                            | registro comercial durable de venta y líneas  | conserva identidad, revisión, snapshots y procedencia                                            |
+| NEXO                             | movimiento físico e inventario                | usa líneas elegibles y confirma su propio efecto exactamente una vez                             |
+| NUMERA                           | hecho económico, costo y conciliación         | consume referencias y valores autorizados sin convertir su línea económica en la línea comercial |
+| PASS                             | fidelización                                  | evalúa elegibilidad y registra su ledger bajo identidad propia                                   |
+| proveedor fiscal / POS aplicable | documento fiscal externo mientras corresponda | la línea comercial no se convierte en línea fiscal por equivalencia implícita                    |
+| servicios de eventos             | publicación y transporte                      | no adquieren propiedad empresarial de la línea                                                   |
+
+Reglas:
+
+1. una línea comercial no es un movimiento de inventario;
+2. un movimiento NEXO no puede reidentificar la línea comercial;
+3. un hecho NUMERA no puede reescribir precio, cantidad o producto de la línea para cerrar una diferencia;
+4. un movimiento PASS no convierte `sale_line_id` en identidad de ledger;
+5. un fallo downstream no borra ni modifica retroactivamente la línea;
+6. un consumidor conserva su propia identidad de efecto y correlaciona con `sale_line_id`.
+
+---
+
+#### 23. Versionado y compatibilidad
+
+`CanonicalSaleLine` hereda la política de `@vento/contracts` y debe mantenerse compatible con `CanonicalSale`.
+
+Reglas:
+
+1. `contract_version` permite interpretar la forma y semántica de la línea;
+2. una publicación del package es inmutable;
+3. cambiar significado, obligatoriedad o cardinalidad material exige clasificación de compatibilidad apropiada;
+4. una nueva versión no reinterpreta silenciosamente líneas históricas;
+5. una línea conserva la versión contractual con la que fue materializada o interpretada;
+6. una versión de línea incompatible con la versión de venta no puede componerse silenciosamente;
+7. agregar un campo opcional solo es compatible cuando un consumidor anterior puede ignorarlo sin alterar el significado previo;
+8. cambiar mapping, producto resuelto o credencial de integración no obliga por sí solo a versionar el contrato si su forma y semántica permanecen iguales;
+9. cambiar la definición de identidad de `CanonicalSaleLineId` constituye un cambio contractual material;
+10. la futura materialización deberá probar compatibilidad entre productores y consumidores antes de adopción.
+
+Esta tarea no declara una release física ni un número de versión publicado inexistente.
+
+---
+
+#### 24. Seguridad y privacidad
+
+`CanonicalSaleLine` aplica minimización por finalidad.
+
+No deberá contener por defecto:
+
+- secretos;
+- API keys;
+- service-role keys;
+- access tokens o refresh tokens;
+- passwords;
+- credenciales del proveedor;
+- payload externo completo cuando una referencia protegida sea suficiente;
+- datos completos de tarjeta o instrumento de pago;
+- datos personales completos de cliente;
+- logs o trazas completos;
+- archivos de evidencia embebidos;
+- material criptográfico de autenticación.
+
+Reglas:
+
+1. `sold_item_ref` no debe convertirse en una copia innecesaria de información sensible;
+2. una referencia de mapping no transporta credenciales ni secretos;
+3. consumir una línea no concede acceso automático al expediente completo de venta, cliente, pago o evidencia;
+4. las consumidoras reciben únicamente los datos necesarios para su finalidad y autorización;
+5. la procedencia se conserva por referencias protegidas cuando sea suficiente.
+
+---
+
+#### 25. Matriz de escenarios materializados
+
+| Escenario                                                                         | Estado en `SHELL-CON-021`                              | Decisión                                                                          |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| línea individual Makos con venta e identidad de línea acreditadas                 | `APLICA_CONTRATO_CANONICO`                             | se adapta conservando identidad, procedencia, cantidad, unidad y snapshots reales |
+| línea individual nativa PULSO                                                     | `APLICA_CONTRATO_CANONICO`                             | utiliza la misma forma compartida sin semántica paralela                          |
+| línea con producto resuelto y presentación/receta satisfechas según aplicabilidad | `ESTRUCTURAL_Y_POTENCIALMENTE_ELEGIBLE`                | puede avanzar a puertas del consumidor sin que el contrato ejecute el efecto      |
+| línea individual con mapping de producto obligatorio pendiente                    | `ESTRUCTURAL_PERO_NO_ELEGIBLE_PARA_EFECTO_DE_PRODUCTO` | se conserva; los efectos dependientes de producto permanecen bloqueados           |
+| línea con mapping ambiguo o conflictivo                                           | `BLOQUEADA_PARA_EFECTOS_DEPENDIENTES_DE_PRODUCTO`      | no se escoge un destino por heurística                                            |
+| fila agregada de `makos_excel` sin venta y línea individuales acreditadas         | `NO_SATISFACE_LINEA_INDIVIDUAL`                        | permanece como evidencia o conciliación; no se fabrica `CanonicalSaleLineId`      |
+| línea de pedido, movimiento NEXO, hecho NUMERA o movimiento PASS                  | `NO_EQUIVALE_A_LINEA_DE_VENTA`                         | puede correlacionarse, pero mantiene identidad y autoridad propias                |
+| línea cancelada                                                                   | `CONSERVA_HISTORIA`                                    | no se elimina ni ejecuta automáticamente devolución, reembolso o compensación     |
+
+La matriz no crea datos operativos, mappings ni efectos.
+
+---
+
+#### 26. Estado de materialización física
+
+En el corte actual:
+
+```text
+SHELL-CON-021
+→ CanonicalSaleLineId definido lógicamente
+→ CanonicalSaleLine definido lógicamente
+→ CanonicalSale<CanonicalSaleLine> definido como composición contractual
+→ superficie @vento/contracts/integrations preservada
+→ semántica INT-POS-005..013 centralizada sin reabrirla
+→ semántica permanente INT-SALES-001 preservada
+→ mapping compartido NO definido todavía
+→ idempotencia / conciliación compartidas NO definidas todavía
+→ cuarentena / rechazo / compensación compartidas NO definidas todavía
+→ 0 valores físicos de CanonicalSaleLineId creados
+→ 0 tipos físicos creados
+→ 0 schemas ejecutables creados
+→ 0 tablas creadas
+→ 0 RPC creadas
+→ 0 migraciones creadas
+→ 0 cambios Supabase
+→ 0 eventos emitidos
+→ 0 consumidores migrados
+→ 0 líneas operativas creadas o modificadas
+```
+
+La aprobación documental de esta tarea no acredita publicación del package, adopción por consumidores, persistencia física ni validación E2E.
+
+---
+
+#### 27. Handoffs exactos
+
+| Trabajo posterior                              | Estado desde esta tarea             | Propietario / tarea                                    | Condición de salida                                                                                                            |
+| ---------------------------------------------- | ----------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| mapping compartido de identificadores externos | `FUERA_DE_ALCANCE`                  | `SHELL-CON-022`                                        | identidades externas, canónicas y namespaces se relacionan mediante equivalencias explícitas, versionadas y no heurísticas     |
+| idempotencia y conciliación compartidas        | `FUERA_DE_ALCANCE`                  | `SHELL-CON-023`                                        | venta y línea conservan identidades estables, huella, resultado recuperable y conciliación sin fusionarlas con claves técnicas |
+| cuarentena, rechazo y compensación             | `FUERA_DE_ALCANCE`                  | `SHELL-CON-024`                                        | entradas o líneas incompatibles reciben disposición explícita sin borrar identidad ni historia                                 |
+| salida física de inventario                    | preservada por contrato propietario | `INT-SALES-003` / NEXO                                 | una línea elegible produce el movimiento físico exactamente una vez bajo autoridad NEXO                                        |
+| hecho económico                                | preservado por contrato propietario | `INT-SALES-004` / NUMERA                               | NUMERA consume el hecho correlacionado sin escritura cruzada ni reinterpretación de identidad                                  |
+| fidelización                                   | preservada por contrato propietario | `INT-SALES-005` / `INT-SALES-006` / PASS               | PASS evalúa acumulación o redención bajo su ledger e identidad propias                                                         |
+| control permanente de retry                    | preservado por contrato propietario | `INT-SALES-007`                                        | reintentos recuperan resultados sin duplicar venta, línea ni efectos                                                           |
+| convivencia y fuente única                     | preservada por contrato propietario | `INT-SALES-008` a `INT-SALES-010`                      | Makos y PULSO no producen dos líneas para el mismo hecho por doble fuente                                                      |
+| materialización física de `@vento/contracts`   | `DEFINIDO_NO_MATERIALIZADO`         | ciclo de package, CI, release y paquetes E5 aplicables | existe autorización física, implementación, compatibilidad, pruebas y adopción verificadas                                     |
+
+Todos los pendientes poseen propietario canónico existente. Esta tarea no crea un identificador de tarea adicional.
+
+---
+
+#### 28. Cobertura de prueba preexistente
+
+La semántica centralizada por `SHELL-CON-021` ya se encuentra protegida por cobertura canónica vigente, en particular:
+
+- `TREQ-PULSO-001`, que exige demostrar creación de venta y líneas dentro del ciclo POS integral;
+- `TREQ-PULSO-005`, que exige separación de hechos comerciales, snapshots e historia;
+- `TREQ-PULSO-006`, que protege precio, descuento, propina, reversos y hechos relacionados mediante acciones autorizadas y auditables;
+- `TREQ-INTEGRATION-003`, que protege estabilidad e idempotencia de operaciones reintentables;
+- `TREQ-INTEGRATION-006`, que exige fuente empresarial única y resolución de fuentes competidoras sin sobrescribir historia;
+- `TREQ-INTEGRATION-011`, que exige que los efectos de inventario conserven documento, línea, versión, cantidad y unidad y se produzcan exactamente una vez;
+- `TREQ-INTEGRATION-014`, que exige convergencia de PULSO y POS externo sobre contratos canónicos de pedido, venta y línea, con mapping, cuarentena, idempotencia y prevención de doble emisión.
+
+`SHELL-CON-021` no introduce un comportamiento operacional nuevo; centraliza como contrato compartido estático la representación de línea que esas obligaciones y las tareas `INT-POS` / `INT-SALES` ya exigen.
+
+---
+
+#### 29. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** la tarea materializa documentalmente una representación compartida de línea de venta ya definida y protegida por contratos y requisitos vigentes. No introduce una operación ejecutable, una nueva fuente, un nuevo estado empresarial, una regla monetaria nueva, un mapping nuevo, una política de idempotencia, un efecto de inventario, un hecho económico, una política de fidelización, una persistencia, un permiso, una migración ni un cambio Supabase. El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 30. Decisiones vinculantes
+
+1. `CanonicalSaleLineId` es la identidad canónica compartida de una línea de venta individual.
+2. `CanonicalSaleLineId` es estable, opaca y no secreta.
+3. Esta tarea no fija su formato físico.
+4. `CanonicalSaleLine` es el contrato compartido estático de línea de venta.
+5. `CanonicalSale<CanonicalSaleLine>` materializa la composición abierta por `SHELL-CON-020` sin redefinir `CanonicalSale`.
+6. La superficie lógica permanece en `@vento/contracts/integrations`.
+7. Toda línea pertenece a exactamente una venta mediante `sale_id`.
+8. Línea de venta, venta, producto, presentación, receta, línea de pedido, movimiento de inventario, hecho económico y movimiento de fidelización mantienen identidades distintas.
+9. `source_line_id` se conserva cuando la fuente lo provea; no se inventa cuando no exista.
+10. La posición o número de fila no es identidad universal de línea.
+11. La revisión de línea se conserva únicamente cuando exista evidencia.
+12. `sold_item_ref` conserva el ítem realmente vendido antes del mapping a maestros internos.
+13. `product_ref` es obligatorio antes de efectos dependientes de producto.
+14. `presentation_ref` y `recipe_ref` son condicionales y requieren decisiones explícitas según aplicabilidad.
+15. Código, nombre, categoría o coincidencia aproximada no resuelven por sí solos un mapping.
+16. Mapping, cuarentena y liberación no cambian `sale_line_id`.
+17. Cantidad es obligatoria y unidad debe ser inequívoca cuando sea necesaria.
+18. Cantidad comercial no se convierte automáticamente en cantidad de inventario.
+19. Cantidad negativa no sustituye automáticamente una devolución o compensación.
+20. El snapshot monetario de línea conserva valores históricos y no recalcula historia desde el catálogo vigente.
+21. Precio, descuento, impuesto y propina permanecen componentes diferenciados.
+22. Un descuento de encabezado no se prorratea por inferencia sobre las líneas.
+23. Moneda, precisión y redondeo no se inventan.
+24. Estado de línea permanece separado de estado de venta, pago, mapping, cuarentena, inventario y entrega.
+25. El estado canónico de línea solo se materializa con equivalencia semántica acreditada.
+26. `CANCELLED` no ejecuta por sí solo devolución, reembolso o compensación.
+27. `line_occurred_at` solo existe cuando hay temporalidad propia de línea acreditada.
+28. La procedencia se conserva por referencias protegidas sin copiar innecesariamente el payload fuente.
+29. Una línea estructural puede existir con mapping pendiente.
+30. Una línea con mapping obligatorio pendiente no es elegible para efectos dependientes de producto.
+31. Elegibilidad no equivale a ejecución.
+32. Una cuarentena activa bloquea efectos aplicables sin borrar la línea.
+33. Liberar cuarentena habilita puertas posteriores, pero no ejecuta inventario.
+34. `makos_excel` agregado no se eleva a línea individual sin granularidad e identidad suficientes.
+35. Un retry, replay, redelivery o sincronización tardía no crea otra línea.
+36. Una reutilización incompatible de identidad produce conflicto y no sobrescritura.
+37. Una revisión válida conserva historia y no reescribe el original.
+38. Anulación, devolución, reembolso y compensación conservan relación con la línea original y no la eliminan.
+39. NEXO, NUMERA y PASS conservan identidades de efecto y autoridad propias.
+40. `SHELL-CON-022` conserva la responsabilidad exclusiva del contrato compartido de mapping.
+41. `SHELL-CON-023` conserva la responsabilidad exclusiva de idempotencia y conciliación compartidas.
+42. `SHELL-CON-024` conserva la responsabilidad exclusiva de cuarentena, rechazo y compensación compartidos.
+43. Esta tarea crea cero valores físicos de `CanonicalSaleLineId`.
+44. Esta tarea no crea código, tablas, migraciones, RLS, RPC, eventos, secretos, credenciales ni cambios Supabase.
+45. Esta tarea crea cero requisitos de prueba y modifica cero requisitos existentes.
+46. `SHELL-CON-022` permanece como única continuidad reservada.
+
+---
+
+#### 31. Hallazgos y destinos exactos
+
+| Hallazgo                                                                            | Estado                                                | Destino                                                                            |
+| ----------------------------------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `CanonicalSale<TSaleLine>` requería una forma compartida concreta para `TSaleLine`  | resuelto documentalmente                              | `SHELL-CON-021`                                                                    |
+| la semántica de línea estaba distribuida entre `INT-POS-005..013` e `INT-SALES-001` | resuelto documentalmente                              | `SHELL-CON-021` centraliza sin cambiar decisiones propietarias                     |
+| el mapping compartido de identidades aún no está definido en BLOQUE H               | reservado                                             | `SHELL-CON-022`                                                                    |
+| la forma compartida de idempotencia y conciliación aún no está definida             | reservado                                             | `SHELL-CON-023`                                                                    |
+| la forma compartida de cuarentena, rechazo y compensación aún no está definida      | reservado                                             | `SHELL-CON-024`                                                                    |
+| `makos_excel` no acredita granularidad de venta y línea individual                  | brecha física preservada, no corregida por inferencia | evidencia y pilotos propietarios `INT-POS-021` / `INT-POS-022`; no fabricar líneas |
+| los efectos de inventario dependen de mapping suficiente                            | frontera preservada                                   | `INT-SALES-003` / NEXO y contratos propietarios de mapping                         |
+| la materialización física de `CanonicalSaleLine` todavía no existe                  | esperado por fase                                     | ciclo autorizado de package, CI, release y paquetes E5 aplicables                  |
+
+No queda un pendiente narrativo sin propietario o condición de salida.
+
+---
+
+#### 32. Criterios de aceptación
+
+`SHELL-CON-021` queda documentalmente completa cuando se cumplen simultáneamente estos criterios:
+
+1. existe exactamente un contrato lógico compartido `CanonicalSaleLine`;
+2. existe una identidad lógica `CanonicalSaleLineId`;
+3. `CanonicalSaleLineId` queda definida como estable, opaca y no secreta;
+4. no se inventa un formato físico de identificador;
+5. `CanonicalSale<CanonicalSaleLine>` queda como composición compatible con `SHELL-CON-020`;
+6. la superficie permanece en `@vento/contracts/integrations`;
+7. cada línea pertenece a exactamente una venta;
+8. venta y línea conservan identidades distintas;
+9. línea y producto conservan identidades distintas;
+10. línea y línea de pedido conservan identidades distintas;
+11. línea y movimiento de inventario conservan identidades distintas;
+12. línea y hecho económico conservan identidades distintas;
+13. línea y movimiento PASS conservan identidades distintas;
+14. se conserva identidad de línea de fuente cuando exista;
+15. no se usa posición, fila, producto, precio, cantidad, hash o timestamp como identidad universal;
+16. se conserva secuencia de origen únicamente como dato condicional;
+17. se conserva revisión de línea únicamente cuando exista evidencia;
+18. `sold_item_ref` preserva el ítem realmente vendido sin convertirlo automáticamente en producto Vento;
+19. producto, presentación y receta permanecen referencias separadas;
+20. producto es obligatorio antes de efectos dependientes de producto;
+21. presentación y receta se exigen solo cuando correspondan;
+22. los estados de resolución de mapping continúan bajo su contrato propietario;
+23. `SHELL-CON-022` no se adelanta;
+24. cantidad y unidad quedan semánticamente diferenciadas;
+25. no se inventan conversiones de unidad;
+26. precio, descuento, impuesto, propina y total de línea permanecen diferenciados según aplicabilidad;
+27. no se inventa prorrateo de descuentos;
+28. no se inventa moneda, precisión ni redondeo;
+29. estado de línea permanece separado de estado de venta y de procesos técnicos;
+30. `ACTIVE` y `CANCELLED` solo se usan con equivalencia semántica acreditada;
+31. `MAPPED`, `NOT_PROVIDED` y `UNRESOLVED` mantienen la semántica aprobada de mapping de estado;
+32. `line_occurred_at` no se fabrica desde timestamps técnicos;
+33. procedencia y correlación se conservan sin duplicar payload sensible;
+34. una línea estructural puede preservarse con mapping pendiente;
+35. una línea no elegible no produce efectos dependientes de producto;
+36. entrar o salir de cuarentena no crea una nueva línea;
+37. `SHELL-CON-023` no se adelanta;
+38. `SHELL-CON-024` no se adelanta;
+39. retry, replay y sincronización tardía conservan identidad;
+40. revisiones conservan historia y no sobrescriben el original;
+41. anulaciones, devoluciones, reembolsos y compensaciones no borran la línea original;
+42. el flujo agregado `makos_excel` no se presenta como línea individual canónica sin evidencia suficiente;
+43. PULSO y el POS externo convergen sobre la misma semántica de línea;
+44. NEXO, NUMERA y PASS conservan autoridad e identidad de efectos independientes;
+45. no se crean valores físicos de `CanonicalSaleLineId`;
+46. no se crean tipos físicos, schemas, tablas, RPC, migraciones, RLS, endpoints, eventos o consumidores;
+47. no se modifica Supabase;
+48. no se modifica código;
+49. se crean cero requisitos de prueba;
+50. se modifican cero requisitos de prueba;
+51. la continuidad reserva exclusivamente `SHELL-CON-022`.
+
+---
+
+#### 33. Límites de la tarea
+
+`SHELL-CON-021` no:
+
+- implementa `@vento/contracts`;
+- crea archivos TypeScript;
+- publica una versión de package;
+- crea schemas ejecutables;
+- crea tablas o columnas;
+- crea migraciones;
+- crea RLS, grants, RPC o funciones;
+- crea endpoints, webhooks, colas o workers;
+- crea datos de venta o líneas operativas;
+- modifica ventas o líneas existentes;
+- resuelve mappings reales;
+- crea equivalencias por nombre, código o categoría;
+- ejecuta cuarentena o liberación;
+- ejecuta idempotencia o conciliación;
+- emite eventos;
+- aplica inventario;
+- registra costos o asientos;
+- aplica puntos;
+- cobra pagos;
+- emite documentos fiscales;
+- ejecuta cutover;
+- retira adaptadores;
+- modifica código;
+- modifica Supabase;
+- cambia la ruta canónica;
+- desarrolla `SHELL-CON-022`.
+
+---
+
+#### 34. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-CON-020 — Crear contrato canónico de venta
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-CON-021 — Crear contrato canónico de línea de venta
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-CON-022 — Crear contrato de mapeo de identificadores externos
+
+
 ### [ ] SHELL-CON-022 — Crear contrato de mapeo de identificadores externos
 ### [ ] SHELL-CON-023 — Crear contrato de idempotencia y conciliación
 ### [ ] SHELL-CON-024 — Crear contrato de cuarentena, rechazo y compensación
