@@ -5268,7 +5268,1032 @@ SHELL-NORM-005 — Centralizar diccionarios ortográficos versionados
 SHELL-NORM-006 — Crear normalización de búsqueda y comparación
 
 
-### [ ] SHELL-NORM-006 — Crear normalización de búsqueda y comparación
+### ✅ SHELL-NORM-006 — Crear normalización de búsqueda y comparación
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-NORM-005 — Centralizar diccionarios ortográficos versionados
+**Tarea siguiente:** SHELL-NORM-007 — Crear previsualización de transformaciones
+**Tipo de tarea:** Documental; centralización dentro de `@vento/data-normalization` de la política canónica de búsqueda y comparación textual ya aprobada, preservando representaciones derivadas, perfiles, modos, precedencia, ranking, explicación, privacidad, scopes, versionado y fronteras frente a corrección, identidad, unicidad y fusión, sin materializar código, package físico, índices, SQL, migraciones ni cambios en Supabase
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md`
+**Estado físico resultante:** NO MATERIALIZADO
+**Implementación física autorizada:** ninguna
+**Cambios de código, packages físicos, archivos TypeScript, configuración npm, registry, workflows, DDL, DML, migraciones, RLS, RPC, triggers, índices, constraints, datos, secretos, configuración remota o despliegues:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-NORM-006` centraliza para la futura superficie compartida de `@vento/data-normalization` la política de búsqueda y comparación textual aprobada en `DATA-NORM-ARC-008`.
+
+La tarea no redefine esa política ni crea una segunda fuente semántica. Su resultado es fijar, dentro de la familia SHELL-NORM, qué representaciones, perfiles, modos, precedencias y contratos deberá consumir una implementación compartida para recuperar candidatos de manera determinista sin transformar el valor empresarial ni convertir una coincidencia textual en identidad.
+
+La regla central es:
+
+```text
+VALOR FUENTE
+        ↓
+POLÍTICA DEL CAMPO + CLASE + REPRESENTACIÓN + FUENTE + FINALIDAD + SCOPE + VERSIÓN
+        ↓
+DERIVACIONES DE BÚSQUEDA SEPARADAS
+        ↓
+MATCHING POR PRECEDENCIA CANÓNICA
+        ↓
+RANKING DETERMINISTA
+        ↓
+VALOR MOSTRADO AUTORIZADO + EXPLICACIÓN
+```
+
+y nunca:
+
+```text
+CLAVE DE BÚSQUEDA
+→ VALOR EMPRESARIAL
+→ IDENTIDAD
+→ UNICIDAD
+→ SELECCIÓN AUTOMÁTICA
+→ FUSIÓN
+```
+
+---
+
+#### 2. Resultado material de la tarea
+
+Queda centralizada documentalmente, sin cambio de identidad ni versión, la proyección compartida del artefacto:
+
+```text
+VENTO_TEXT_SEARCH_AND_COMPARISON_POLICY@1.0.0
+```
+
+dentro de la futura responsabilidad de:
+
+```text
+@vento/data-normalization
+```
+
+La centralización materializa documentalmente:
+
+- 7 representaciones derivadas aprobadas;
+- 7 clases mínimas de token o frontera;
+- 15 atributos del contrato lógico de alias de búsqueda;
+- 6 perfiles cerrados de búsqueda;
+- 9 modos cerrados de coincidencia;
+- 9 niveles de ranking derivados directamente de esos modos;
+- 15 pasos de precedencia del pipeline de búsqueda;
+- 13 atributos mínimos del contrato lógico de respuesta;
+- 14 decisiones explícitas, una por cada clase semántica heredada;
+- 11 componentes mínimos para búsqueda estructurada de presentaciones;
+- 17 ejemplos normativos de comportamiento;
+- 20 dimensiones mínimas del corpus de conformidad;
+- separación explícita entre derivación, recuperación, comparación, revisión humana, identidad, unicidad y fusión.
+
+No se crea una versión nueva de `VENTO_TEXT_SEARCH_AND_COMPARISON_POLICY@1.0.0`.
+
+---
+
+#### 3. Fuentes normativas y precedencia
+
+| Fuente | Decisión preservada por `SHELL-NORM-006` |
+| --- | --- |
+| `SHELL-NORM-001` | identidad de `@vento/data-normalization`, pureza, determinismo, ausencia de I/O y prohibición de convertir el package en fuente empresarial o capa de persistencia |
+| `SHELL-NORM-002` | 14 clases semánticas, roles de representación, roles de fuente, modos de tratamiento y operación `SEARCH_KEY_DERIVATION` |
+| `SHELL-NORM-003` | NFC, tratamiento gobernado de espacios, perfil lingüístico explícito, tokenización y preservación de signos y fronteras |
+| `SHELL-NORM-004` | conectores, excepciones oficiales, aliases explícitos y formas protegidas que no pueden degradarse por búsqueda |
+| `SHELL-NORM-005` | diccionario ortográfico separado de la búsqueda; las correcciones ortográficas no se convierten en aliases ni equivalencias |
+| `DATA-NORM-ARC-007` | revisión humana de aliases, conflictos y candidatos que no pueden activarse por telemetría, frecuencia o similitud |
+| `DATA-NORM-ARC-008` | autoridad semántica completa sobre representaciones, perfiles, modos, ranking, scopes y fronteras de búsqueda y comparación |
+| `DATA-NORM-ARC-009` | versión, auditoría, vigencia, reproducibilidad, procedencia algorítmica e idempotencia |
+| `DATA-NORM-ARC-010` | identidad, scopes de unicidad, colisiones, duplicados y prohibición de fusionar por coincidencia textual |
+| `DATA-NORM-ARC-011` | arquitectura ejecutora, servicio de dominio, RPC, defensa de base, APIs e implementación técnica |
+| `DATA-NORM-ARC-012` | originales externos, procedencia, mapeos, evidencia y fronteras de integración |
+| `SHELL-PKG-001..008` | distribución, compatibilidad, versionado, deprecación, rollback y adopción de packages compartidos |
+
+Precedencia normativa:
+
+```text
+POLÍTICA DEL CAMPO
+        ↓
+CLASIFICACIÓN SHELL-NORM-002
+        ↓
+REGLAS DETERMINISTAS SHELL-NORM-003
+        ↓
+EXCEPCIONES Y FORMAS PROTEGIDAS SHELL-NORM-004
+        ↓
+DICCIONARIO ORTOGRÁFICO SHELL-NORM-005, SOLO CUANDO CORRESPONDA A LA REPRESENTACIÓN MOSTRADA
+        ↓
+DERIVACIONES DE BÚSQUEDA SHELL-NORM-006
+        ↓
+MATCHING Y RANKING SIN EFECTOS ESTRUCTURALES
+```
+
+La búsqueda consume contexto y versiones; no adquiere autoridad para reescribir ninguna decisión precedente.
+
+---
+
+#### 4. Frontera exacta
+
+Esta tarea centraliza exclusivamente:
+
+- relación entre valor fuente, valor mostrado y representaciones derivadas;
+- siete representaciones canónicas de búsqueda;
+- reglas lógicas de `SEARCH_FORM_KEY` y `SEARCH_ACCENT_KEY`;
+- tokenización y fronteras para `SEARCH_TOKEN_STREAM`;
+- consumo gobernado de `SEARCH_APPROVED_ALIAS_SET`;
+- estado deshabilitado por defecto de transliteración y similitud;
+- seis perfiles cerrados de búsqueda;
+- nueve modos de coincidencia;
+- precedencia de filtros, matching y ranking;
+- contrato lógico de respuesta y explicación;
+- reglas de minimización y privacidad;
+- decisión por las 14 clases semánticas;
+- tratamiento estructurado de presentaciones;
+- fronteras para códigos, slugs, contactos e identificadores;
+- tratamiento de fuentes, overrides, copias, snapshots y originales externos;
+- compatibilidad de versión;
+- paridad entre capas;
+- corpus mínimo de conformidad;
+- handoffs exactos hacia preview, auditoría, pruebas e implementación física.
+
+Esta tarea no:
+
+- crea funciones de búsqueda ejecutables;
+- define exports TypeScript;
+- selecciona librerías de Unicode, tokenización, fuzzy matching o ranking;
+- selecciona `citext`, trigramas, full-text search ni otra extensión;
+- crea columnas derivadas;
+- crea índices;
+- crea constraints;
+- define RLS;
+- crea RPC;
+- crea triggers;
+- crea migraciones;
+- ejecuta backfills;
+- modifica datos;
+- activa similitud;
+- activa transliteración;
+- define un umbral de similitud;
+- define longitud mínima de prefijo;
+- crea aliases nuevos;
+- corrige ortografía;
+- decide identidad o unicidad;
+- selecciona registros sobrevivientes;
+- modifica Supabase.
+
+---
+
+#### 5. Conciliación de inventarios heredados
+
+| Inventario | Esperado | Centralizado | Faltantes | Duplicados |
+| --- | ---: | ---: | ---: | ---: |
+| representaciones derivadas | 7 | 7 | 0 | 0 |
+| clases mínimas de token o frontera | 7 | 7 | 0 | 0 |
+| atributos de alias | 15 | 15 | 0 | 0 |
+| perfiles cerrados de búsqueda | 6 | 6 | 0 | 0 |
+| modos cerrados de coincidencia | 9 | 9 | 0 | 0 |
+| niveles de ranking | 9 | 9 | 0 | 0 |
+| pasos del pipeline | 15 | 15 | 0 | 0 |
+| atributos mínimos de respuesta | 13 | 13 | 0 | 0 |
+| clases semánticas gobernadas | 14 | 14 | 0 | 0 |
+| componentes estructurados mínimos | 11 | 11 | 0 | 0 |
+| ejemplos normativos | 17 | 17 | 0 | 0 |
+| dimensiones mínimas de corpus | 20 | 20 | 0 | 0 |
+
+Ningún inventario se amplía por inferencia.
+
+---
+
+#### 6. Identidad, perfil y versión
+
+La política centralizada conserva exactamente:
+
+```text
+VENTO_TEXT_SEARCH_AND_COMPARISON_POLICY@1.0.0
+```
+
+Reglas:
+
+1. `@vento/data-normalization` no reemplaza la identidad de la política;
+2. la versión de la política es distinta de la futura versión npm del package;
+3. cada evaluación deberá declarar perfil, locale y versión compatibles;
+4. consulta y valor buscado deberán usar el mismo algoritmo y versión;
+5. no existe `latest` implícito;
+6. una incompatibilidad de versión bloquea o produce un resultado explícitamente degradado; nunca activa un fallback silencioso;
+7. una versión histórica conserva significado histórico y no vuelve a ser activa por ausencia de una versión más reciente;
+8. una nueva política de búsqueda requerirá evolución canónica propia y no una edición silenciosa de `1.0.0`.
+
+---
+
+#### 7. Las siete representaciones derivadas
+
+| Orden | Representación | Propósito | Frontera obligatoria |
+| ---: | --- | --- | --- |
+| 01 | `SEARCH_FORM_KEY` | comparar forma estable sin distinguir caja ni espacios accidentales autorizados | conserva tildes, `ñ`, signos, palabras y fronteras |
+| 02 | `SEARCH_ACCENT_KEY` | recuperar de forma tolerante a tildes españolas en campos elegibles | preserva `ñ`, signos y caracteres no autorizados para plegado |
+| 03 | `SEARCH_TOKEN_STREAM` | comparar frases, tokens completos, cobertura y prefijo controlado | no usa subcadenas, stemming, lematización ni stopwords implícitas |
+| 04 | `SEARCH_APPROVED_ALIAS_SET` | recuperar mediante aliases explícitos y aprobados | no aprende aliases por uso, frecuencia, clics o similitud |
+| 05 | `SEARCH_TRANSLITERATION_KEY` | fallback opcional entre escrituras bajo perfil explícito | deshabilitada por defecto; nunca igualdad |
+| 06 | `SEARCH_STRUCTURED_COMPONENT_SET` | buscar estructuras mediante componentes ya interpretados | no aplana estructura como identidad textual |
+| 07 | `SEARCH_FREE_TEXT_TERMS` | descubrir términos y frases en texto libre elegible | no corrige autoría ni crea identidad |
+
+Una política de campo puede habilitar un subconjunto. No puede inventar una octava representación local ni combinar varias en una clave opaca sin explicación.
+
+---
+
+#### 8. `SEARCH_FORM_KEY`
+
+La derivación base `es-CO` conserva este orden:
+
+```text
+valor fuente o consulta
+        ↓
+validar clase, representación, fuente, perfil y scope
+        ↓
+NFC
+        ↓
+casefold Unicode del perfil
+        ↓
+recorte de bordes solo si el campo lo permite
+        ↓
+compactación de espacios solo si el campo lo permite
+        ↓
+conservar tildes, ñ, signos, guiones, apóstrofos y fronteras
+        ↓
+SEARCH_FORM_KEY versionada
+```
+
+Reglas:
+
+1. NFC se aplica a la derivación y no obliga a reescribir el original;
+2. casefold no autoriza guardar el valor fuente en minúsculas;
+3. solo se compactan separadores declarados accidentales por la política;
+4. saltos de línea, tabulaciones, espacios no separables y formatos significativos no se compactan por defecto;
+5. los signos permanecen en la clave;
+6. esta etapa no ejecuta diccionario, capitalización, conectores, aliases, transliteración ni corrección;
+7. si el campo no permite trim o compactación, esos caracteres también se conservan en la clave.
+
+---
+
+#### 9. `SEARCH_ACCENT_KEY` y preservación de `ñ`
+
+La versión `1.0.0` conserva exactamente:
+
+1. `á → a`;
+2. `é → e`;
+3. `í → i`;
+4. `ó → o`;
+5. `ú → u`;
+6. `ü → u` únicamente cuando el campo habilite esa tolerancia `es-CO`;
+7. `ñ` y `n` permanecen distintos;
+8. otros diacríticos o alfabetos no se eliminan por analogía;
+9. signos, guiones, apóstrofos y espacios no se eliminan;
+10. la salida solo participa en recuperación y ranking;
+11. `Maiz`/`Maíz` puede ser una coincidencia tolerante, pero no una autorización de corrección;
+12. `ano`/`año` no coincide por esta representación.
+
+`unaccent` genérico no se adopta como semántica transversal.
+
+---
+
+#### 10. Las siete clases mínimas de token o frontera
+
+| Orden | Clase | Conducta |
+| ---: | --- | --- |
+| 01 | `LEXICAL_TOKEN` | letras y marcas combinantes como token completo |
+| 02 | `NUMERIC_TOKEN` | número, decimal, rango o fracción sin cambiar magnitud |
+| 03 | `TECHNICAL_TOKEN` | código, modelo, unidad, referencia o combinación protegida |
+| 04 | `INTERNAL_COMPOUND_TOKEN` | token con guion, apóstrofo o signo interno conservado salvo gramática aprobada |
+| 05 | `PUNCTUATION_BOUNDARY` | signo delimitador cuya presencia sigue disponible para coincidencia precisa |
+| 06 | `WHITESPACE_BOUNDARY` | separador autorizado que delimita tokens |
+| 07 | `UNRESOLVED_TOKEN_OR_BOUNDARY` | forma no clasificable que bloquea modos más amplios |
+
+Reglas:
+
+- no existe coincidencia por subcadena dentro de otro token;
+- los conectores permanecen presentes;
+- `al`, `del`, `e`, `o`, `u` y `y` conservan forma y posición;
+- `Coca-Cola` y `Coca Cola` no son equivalentes por forma;
+- `S.A.S.` y `SAS` permanecen distintos salvo alias oficial explícito;
+- `Choco Bites` y `Chocobites` no se unen ni dividen;
+- una gramática de compuesto requiere delimitadores, alcance, locale, versión y corpus propios.
+
+---
+
+#### 11. `SEARCH_APPROVED_ALIAS_SET`
+
+Cada alias de búsqueda deberá conservar exactamente estos 15 atributos lógicos:
+
+```text
+alias_key
+canonical_target_reference
+alias_form
+match_scope
+semantic_class
+domain_scope
+entity_scope
+field_scope
+language_profile
+source_authority
+approval_reference
+status
+valid_from
+valid_to
+alias_version
+```
+
+Reglas:
+
+1. un alias referencia una entidad o forma canónica explícita;
+2. la coincidencia del alias no modifica consulta ni valor mostrado;
+3. una forma oficial exige autoridad compatible con su familia;
+4. una entrada ortográfica no se vuelve alias bidireccional;
+5. tolerancia de tildes no crea alias persistido;
+6. frecuencia o telemetría no activan aliases;
+7. aliases suspendidos, retirados o rechazados no participan en decisiones nuevas;
+8. un conflicto bloquea ese nivel y conserva las alternativas;
+9. una propuesta explícita de resolución puede remitirse a `DATA-NORM-ARC-007`;
+10. ningún alias crea identidad ni autoriza unicidad.
+
+---
+
+#### 12. Transliteración
+
+`SEARCH_TRANSLITERATION_KEY` permanece:
+
+```text
+DESHABILITADA_POR_DEFECTO
+```
+
+en el perfil estándar `es-CO`.
+
+No existe en `1.0.0` una tabla transversal de transliteración ni una regla `ñ → n`.
+
+Una eventual activación no forma parte de esta tarea ni constituye un pendiente de implementación: el comportamiento vigente es permanecer deshabilitada. Cualquier cambio semántico posterior deberá pasar por una nueva decisión canónica antes de poder materializarse.
+
+---
+
+#### 13. Similitud
+
+`SIMILARITY_CANDIDATE_ONLY` permanece:
+
+```text
+DESHABILITADO_POR_DEFECTO
+```
+
+y no forma parte de la igualdad canónica.
+
+Invariantes:
+
+1. una coincidencia difusa nunca se presenta como igualdad;
+2. nunca selecciona automáticamente un registro;
+3. nunca escribe, relaciona, corrige, fusiona ni autoriza;
+4. nunca crea entradas de diccionario, excepción o alias;
+5. no existe fallback oculto a distancia de edición, fonética o modelo lingüístico;
+6. `expresso`/`espresso`, `Wellmix`/`Welmix` y `Choco Bites`/`Chocobites` permanecen separados bajo la política activa;
+7. el comportamiento vigente no requiere seleccionar algoritmo, umbral ni longitud mínima porque la capacidad está deshabilitada.
+
+---
+
+#### 14. Los seis perfiles cerrados de búsqueda
+
+| Orden | Perfil | Clases principales | Restricción |
+| ---: | --- | --- | --- |
+| 01 | `STRICT_TECHNICAL_LOOKUP` | códigos, SKU, unidades, estados, slugs, referencias y contactos | no usa tildes, aliases comerciales, transliteración ni similitud |
+| 02 | `STANDARD_COMMERCIAL_NAME` | `COMMERCIAL_NAME` | no corrige el nombre ni convierte resultado en identidad |
+| 03 | `OFFICIAL_FORM_LOOKUP` | marcas, nombres legales, siglas y formas oficiales | conserva signos y forma oficial; tolerancias mayores requieren autoridad explícita |
+| 04 | `STRUCTURED_PRESENTATION_LOOKUP` | presentaciones, cantidades, unidades y etiquetas estructuradas | cantidad, unidad, multiplicador, contexto y fuente son filtros separados |
+| 05 | `FREE_TEXT_DISCOVERY` | `FREE_TEXT` y descripciones elegibles | sin stemming, lematización, stopwords ni reescritura automática en `1.0.0` |
+| 06 | `RESTRICTED_HUMAN_OR_LOCATION` | personas, actores, direcciones y ubicaciones | exige finalidad, scope, privacidad y autorización; no resuelve identidad |
+
+`UNCLASSIFIED_PRESERVE`, secretos, firmas y material criptográfico no reciben búsqueda derivada general.
+
+---
+
+#### 15. Los nueve modos cerrados de coincidencia
+
+| Nivel | Modo | Confianza relativa |
+| ---: | --- | --- |
+| 1 | `EXACT_VALUE_MATCH` | máxima |
+| 2 | `FORM_EQUIVALENT_MATCH` | muy alta |
+| 3 | `ACCENT_TOLERANT_MATCH` | alta |
+| 4 | `APPROVED_ALIAS_MATCH` | alta contextual |
+| 5 | `ORDERED_PHRASE_MATCH` | media alta |
+| 6 | `ALL_TOKEN_MATCH` | media |
+| 7 | `LAST_TOKEN_PREFIX_MATCH` | media baja |
+| 8 | `TRANSLITERATION_FALLBACK_MATCH` | baja |
+| 9 | `SIMILARITY_CANDIDATE_ONLY` | mínima |
+
+Reglas:
+
+1. el orden es absoluto;
+2. un resultado que satisfaga varios modos se clasifica por el más preciso;
+3. motivos secundarios pueden conservarse únicamente como explicación;
+4. un modo deshabilitado no participa por ausencia de resultados en modos superiores;
+5. ningún nivel representa identidad empresarial.
+
+---
+
+#### 16. Pipeline canónico de quince pasos
+
+```text
+1. autorización y finalidad
+2. dominio, entidad, campo y scope
+3. estado, vigencia y filtros estructurales
+4. perfil, locale y versión
+5. derivación de consulta con la misma versión activa
+6. EXACT_VALUE_MATCH
+7. FORM_EQUIVALENT_MATCH
+8. ACCENT_TOLERANT_MATCH
+9. APPROVED_ALIAS_MATCH
+10. ORDERED_PHRASE_MATCH
+11. ALL_TOKEN_MATCH
+12. LAST_TOKEN_PREFIX_MATCH
+13. TRANSLITERATION_FALLBACK_MATCH
+14. SIMILARITY_CANDIDATE_ONLY, únicamente si estuviera habilitado por una política futura
+15. orden estable, explicación y paginación
+```
+
+Un registro fuera de scope o autorización queda excluido antes del ranking aunque su texto coincida exactamente.
+
+---
+
+#### 17. Ranking determinista
+
+La tupla canónica permanece:
+
+```text
+match_level ascendente
++ scope_specificity descendente
++ matched_token_coverage descendente
++ approved_business_priority, solo si el dominio la declara
++ stable_domain_sort_key
++ immutable_entity_id
+```
+
+Invariantes:
+
+1. `match_level` domina los demás factores;
+2. una prioridad empresarial no eleva una coincidencia menos precisa sobre una más precisa;
+3. popularidad, frecuencia, uso reciente y telemetría no participan sin política versionada;
+4. un empate conserva todos los registros;
+5. el primer resultado no se considera selección segura para mutar;
+6. la paginación utiliza la tupla completa;
+7. un cambio de ranking es un cambio versionado;
+8. consumidores no reordenan silenciosamente los niveles canónicos.
+
+---
+
+#### 18. Contrato lógico mínimo de respuesta
+
+La respuesta gobernada deberá poder expresar estos 13 atributos, según autorización:
+
+```text
+entity_id
+entity_type
+display_value
+matched_field
+match_mode
+match_level
+matched_terms_or_components
+search_profile
+language_profile
+algorithm_version
+scope_summary
+source_value_version_or_hash
+is_historical_or_inactive
+```
+
+Reglas:
+
+1. `display_value` procede de la representación mostrada autorizada;
+2. las claves derivadas no se exponen por defecto;
+3. la explicación minimiza datos;
+4. resaltado y explicación no reescriben el valor mostrado;
+5. degradación por versión o dependencia se declara;
+6. una respuesta vacía diferencia ausencia de resultados, bloqueo de perfil, scope inválido y dependencia no disponible;
+7. la futura API física deberá preservar estas semánticas.
+
+---
+
+#### 19. Consulta, privacidad y minimización
+
+1. la consulta original es transitoria y no se persiste por defecto;
+2. logs y métricas conservan únicamente lo necesario para rendimiento, error o explicación;
+3. personas, direcciones, contactos y datos sensibles exigen finalidad y permiso;
+4. secretos, firmas, tokens, hashes y credenciales no usan búsqueda derivada general;
+5. consulta vacía o compuesta solo por separadores no abre una búsqueda amplia;
+6. prefijo y similitud no se habilitan sin límites explícitos;
+7. no se permite reconstruir masivamente el corpus de claves por paginación o errores;
+8. autorización, RLS y protección de servidor siguen siendo obligatorias.
+
+---
+
+#### 20. Matriz completa de las catorce clases semánticas
+
+| Clase | Perfil o conducta | Permitido por defecto | Bloqueado por defecto |
+| --- | --- | --- | --- |
+| `COMMERCIAL_NAME` | `STANDARD_COMMERCIAL_NAME` | exacta, forma, tildes `es-CO`, frase, tokens, aliases aprobados | transliteración y similitud |
+| `STRUCTURED_PRESENTATION_NAME` | `STRUCTURED_PRESENTATION_LOOKUP` | etiqueta y componentes estructurados | identidad por etiqueta o eliminación genérica de signos |
+| `HUMAN_LABEL` | política específica | exacta y forma | heredar búsqueda comercial |
+| `OFFICIAL_LEGAL_NAME` | `OFFICIAL_FORM_LOOKUP` | exacta, casefold autorizado, aliases legales explícitos | tildes genéricas, eliminación de signos, similitud, reconstrucción |
+| `OFFICIAL_BRAND_FORM` | `OFFICIAL_FORM_LOOKUP` | exacta, casefold autorizado, aliases de marca explícitos | tokenización destructiva, transliteración y similitud global |
+| `PERSON_OR_ACTOR_NAME` | `RESTRICTED_HUMAN_OR_LOCATION` | forma y tildes cuando estén aprobadas | identidad, fusión, corrección o exposición transversal |
+| `ADDRESS_OR_LOCATION_TEXT` | `RESTRICTED_HUMAN_OR_LOCATION` o búsqueda estructurada | forma y componentes aprobados | eliminación universal de números, signos, orden o abreviaturas |
+| `FREE_TEXT` | `FREE_TEXT_DISCOVERY` | términos, frases y último prefijo autorizado | identidad, corrección silenciosa, stemming y sinónimos automáticos |
+| `CONTROLLED_VOCABULARY_CODE` | `STRICT_TECHNICAL_LOOKUP` | exacta y equivalencias de catálogo | búsqueda comercial, tildes, transliteración o similitud |
+| `MEASUREMENT_OR_UNIT_CODE` | `STRICT_TECHNICAL_LOOKUP` en componente estructurado | exacta, casefold o alias técnico si el catálogo lo declara | subcadena o equivalencia con etiqueta |
+| `TECHNICAL_IDENTIFIER` | contrato técnico propietario | exacta y casefold o prefijo técnico explícito cuando corresponda | diccionario, alias comercial, eliminación de signos y similitud |
+| `CONTACT_IDENTIFIER` | contrato propio del canal | canonicalización y comparación del estándar | búsqueda comercial o exposición fuera de finalidad |
+| `SECRET_OR_SIGNATURE_MATERIAL` | sin representación general | validación exacta por mecanismo de seguridad | derivación textual, prefijo, similitud, logging y exposición |
+| `UNCLASSIFIED_PRESERVE` | bloqueado | ninguna | todos los modos |
+
+Conciliación:
+
+```text
+clases esperadas = 14
+filas materializadas = 14
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 21. Búsqueda estructurada de presentaciones
+
+`SEARCH_STRUCTURED_COMPONENT_SET` conserva como mínimo:
+
+```text
+product_id
+quantity
+input_unit_code
+stock_quantity
+stock_unit_code
+multiplier
+package_kind
+usage_context
+supplier_or_source_scope
+validity_or_status
+visible_label
+```
+
+Reglas:
+
+1. `500 g`, `Pote x 2`, `Bolsa 1 kg`, `Six Pack` y `six_pack` no son claves intercambiables;
+2. cantidades y unidades se comparan por contratos numéricos y de catálogo;
+3. la etiqueta visible participa después de filtros estructurales;
+4. etiquetas iguales con estructura distinta permanecen como resultados distintos;
+5. equivalencia cuantitativa no demuestra igualdad operacional;
+6. búsqueda no altera conversiones, defaults, fuente ni vigencia;
+7. una posible duplicidad se remite a `DATA-NORM-ARC-010`.
+
+---
+
+#### 22. Códigos, slugs, contactos e identificadores
+
+1. `_vento_slugify` y `_navigation_slugify` no se adoptan como representación universal;
+2. un slug continúa siendo ruta o identificador técnico según su contrato;
+3. cambiar algoritmo de slug o código requiere transición propia;
+4. SKU, códigos de barras, referencias, modelos y series usan contratos exactos;
+5. emails y teléfonos usan canonicalización propia del estándar;
+6. signos o tildes no se eliminan de un identificador para hacerlo coincidir con un nombre comercial;
+7. una entidad puede buscarse por código y por nombre como coincidencias distintas;
+8. un mismo string en dos campos no crea aliases entre representaciones.
+
+---
+
+#### 23. Fuentes, overrides, copias, snapshots y externos
+
+| Caso | Conducta |
+| --- | --- |
+| `AUTHORITATIVE_SOURCE` | derivación vinculada a la versión de la fuente |
+| `APPROVED_OVERRIDE` | derivación propia, acotada a canal y scope |
+| `SYNCHRONIZED_COPY` | misma versión y contrato; ninguna política local |
+| `IMMUTABLE_SNAPSHOT` | derivación histórica vinculada al valor histórico; sin resincronización |
+| `EXTERNAL_ORIGINAL` | original preservado; derivación interna separada |
+| `OUTPUT_PROJECTION` | no adquiere autoridad de búsqueda sobre la fuente |
+
+La política del dominio decide qué representaciones pueden participar según finalidad y vigencia.
+
+---
+
+#### 24. Relación con revisión humana
+
+La búsqueda ordinaria no abre casos de revisión por cada consulta o resultado de baja confianza.
+
+`DATA-NORM-ARC-007` conserva propiedad únicamente cuando exista una propuesta explícita para:
+
+- aprobar un alias;
+- resolver conflicto de aliases o fuentes;
+- clasificar un campo o token;
+- convertir un candidato en corrección, excepción o preservación;
+- resolver una divergencia que afecte forma oficial, estructura o autoridad.
+
+Telemetría, clics, frecuencia o selección repetida no constituyen autoridad.
+
+---
+
+#### 25. Frontera frente a identidad, unicidad y duplicidad
+
+Invariantes:
+
+```text
+misma SEARCH_FORM_KEY
+≠ misma entidad
+
+ACCENT_TOLERANT_MATCH
+≠ equivalencia empresarial
+
+APPROVED_ALIAS_MATCH
+≠ autorización de fusión
+
+primer resultado
+≠ registro sobreviviente
+```
+
+Por tanto:
+
+1. ninguna de las siete representaciones constituye identidad;
+2. ningún modo de coincidencia crea unicidad;
+3. homónimos y scopes distintos permanecen separados;
+4. una clave de búsqueda no se usa como constraint;
+5. la búsqueda no selecciona sobreviviente;
+6. no desactiva registros;
+7. no reasigna relaciones;
+8. el ranking no decide fusión;
+9. toda acción posterior revalida identificador estable, autorización, versión y contexto;
+10. toda estrategia estructural permanece en `DATA-NORM-ARC-010`.
+
+---
+
+#### 26. Compatibilidad de versión e índices
+
+1. consulta y representación indexada usan el mismo algoritmo y versión;
+2. `lower(trim(value))` no equivale automáticamente a ninguna representación canónica;
+3. una versión nueva exige medir cobertura, colisiones, tamaño, latencia, plan y paginación antes de activarse;
+4. coexistencia de versiones declara cuál atiende cada función;
+5. no existe fallback silencioso a helper legacy;
+6. los 13 índices locales auditados no constituyen estrategia transversal;
+7. esta tarea no selecciona `citext`, trigramas, full-text search ni otra tecnología de índice;
+8. rendimiento y seguridad bajo carga permanecen asignados a `SUPA-TRANS-010`;
+9. compatibilidad temporal de consumidores permanece asignada a `SUPA-TRANS-006`, `SUPA-TRANS-007`, `SUPA-TRANS-013` y `SUPA-TRANS-014`.
+
+---
+
+#### 27. Paridad entre capas
+
+Para la misma consulta, corpus, scope, perfil y versiones, las capas autorizadas deberán producir:
+
+- las mismas derivaciones lógicas;
+- el mismo conjunto elegible;
+- el mismo modo principal;
+- el mismo nivel;
+- el mismo orden;
+- la misma explicación;
+- la misma conducta ante bloqueo o incompatibilidad.
+
+Se prohíbe que un consumidor mantenga por separado:
+
+- tokenizer;
+- lista de stopwords;
+- alias;
+- transliteración;
+- normalización de tildes;
+- ranking;
+- fallback;
+- semántica de `lower`, `trim`, `unaccent` o similitud.
+
+La futura distribución física deberá preservar esta paridad.
+
+---
+
+#### 28. Diecisiete ejemplos normativos
+
+| Caso | Permitido | Prohibido |
+| --- | --- | --- |
+| `Harina de Maíz` / `harina de maiz` | `ACCENT_TOLERANT_MATCH`; mostrar `Harina de Maíz` | sobrescribir o declarar identidad |
+| `Maiz Dulce` / `maíz dulce` | candidato tolerante con motivo y scope | corregir o fusionar automáticamente |
+| `año` / `ano` | no coincidir por `SEARCH_ACCENT_KEY` | plegar `ñ` a `n` |
+| `Coca-Cola` / `coca-cola` | forma equivalente si la excepción autoriza casefold | eliminar el guion |
+| `Coca-Cola` / `coca cola` | menor coincidencia por tokens solo si la política lo autoriza | alias implícito |
+| `S.A.S.` / `sas` | no coincidir sin alias legal explícito | eliminar puntos globalmente |
+| `iPhone` / `iphone` | casefold oficial cuando la excepción lo permita | cambiar la grafía mostrada |
+| `expresso` / `espresso` | sin coincidencia estándar | autocorrección o alias implícito |
+| `Wellmix` / `Welmix` | resultados separados | seleccionar uno por frecuencia |
+| `Choco Bites` / `Chocobites` | resultados separados | unir o dividir palabras |
+| presentación `500 g` | componentes de cantidad y unidad | comparar solo cadena sin contexto |
+| `Bolsa de 1.100 ml` / `Bolsa de 1100 ml` | candidatos separados hasta resolver convención | retirar punto y declarar equivalencia |
+| `Carlos Ibarra` | búsqueda restringida y retorno por identificador estable autorizado | identificar o fusionar personas por nombre |
+| SKU `FRIO` / comercial `frío` | búsquedas independientes | aplicar tolerancia comercial al código |
+| externo `MAIZ` / interno `Maíz` | preservar original y buscar derivación interna | sobrescribir original externo |
+| dos `VÍVERES & BODEGA PRINCIPAL` | dos resultados con IDs distintos | devolver uno por orden físico |
+| doce `Nivel 1` bajo padres distintos | filtrar por jerarquía | colapsar por nombre |
+
+---
+
+#### 29. Corpus mínimo de veinte dimensiones
+
+El corpus futuro deberá cubrir exactamente estas dimensiones heredadas:
+
+1. Unicode precompuesto y descompuesto;
+2. múltiples cajas;
+3. espacios de borde, repetidos, no separables, saltos y formatos preservados;
+4. tildes, diéresis y `ñ` frente a `n`;
+5. guiones, apóstrofos, puntos, ampersands, barras, paréntesis y signos;
+6. conectores sin stopwords globales;
+7. marcas, siglas, unidades, nombres legales, personas y direcciones;
+8. términos extranjeros y perfiles no soportados;
+9. aliases activos, suspendidos, retirados, conflictivos y fuera de scope;
+10. transliteración deshabilitada, incompatible y explícitamente habilitada en un perfil futuro aprobado;
+11. similitud deshabilitada y candidatos de baja confianza en un perfil futuro aprobado;
+12. frases, todos los tokens y prefijo únicamente en el último token;
+13. scopes de sede, dominio, padre, contexto, vigencia e historial;
+14. UOM con etiqueta igual y estructura distinta;
+15. productos homónimos entre insumo, preparación y venta;
+16. personas con mismo nombre e identificadores distintos;
+17. versiones compatibles e incompatibles;
+18. ranking y paginación estables;
+19. autorización, masking y consultas sensibles;
+20. paridad entre capas sin efectos de escritura.
+
+La referencia a perfiles futuros no autoriza su activación en `1.0.0`; el corpus deberá demostrar también su bloqueo cuando no estén aprobados.
+
+---
+
+#### 30. Estado de materialización física
+
+| Elemento | Estado |
+| --- | --- |
+| `@vento/data-normalization` | `ESPECIFICADO`; package físico no materializado |
+| `VENTO_TEXT_SEARCH_AND_COMPARISON_POLICY@1.0.0` | centralizada documentalmente; runtime no materializado |
+| 7 representaciones derivadas | `ESPECIFICADAS` |
+| 7 clases de token o frontera | `ESPECIFICADAS` |
+| 15 atributos de alias | `ESPECIFICADOS` |
+| 6 perfiles cerrados | `ESPECIFICADOS` |
+| 9 modos y niveles | `ESPECIFICADOS` |
+| pipeline de 15 pasos | `ESPECIFICADO` |
+| ranking determinista | `ESPECIFICADO` |
+| contrato de respuesta | `ESPECIFICADO` |
+| matriz de 14 clases | `ESPECIFICADA` |
+| 11 componentes estructurados | `ESPECIFICADOS` |
+| transliteración | deshabilitada por defecto |
+| similitud | deshabilitada por defecto |
+| API TypeScript | `NO IMPLEMENTADA` |
+| tokenizers y helpers físicos | `NO IMPLEMENTADOS` |
+| columnas o derivaciones persistidas | `NO IMPLEMENTADAS` |
+| índices | `NO IMPLEMENTADOS` por esta tarea |
+| consumidores migrados | `0` por esta tarea |
+| cambios Supabase | `0` |
+| requisitos de prueba creados o modificados | `0` |
+
+`ESPECIFICADO` no equivale a `IMPLEMENTADO` ni a `VALIDADO` en runtime.
+
+---
+
+#### 31. Handoffs exactos
+
+| Materia fuera de esta tarea | Propietario exacto | Condición de salida |
+| --- | --- | --- |
+| previsualización de transformaciones | `SHELL-NORM-007` | preview debe mostrar entrada, derivaciones, coincidencias, explicación y versiones sin autoridad de commit |
+| metadata compartida de versión y auditoría | `SHELL-NORM-008` | toda evaluación del package debe quedar atribuible a política, algoritmo, entrada y versión |
+| pruebas de idempotencia y conservación semántica | `SHELL-NORM-009` | corpus compartido debe demostrar paridad, estabilidad y ausencia de efectos estructurales |
+| aliases, conflictos y candidatos que requieran decisión humana | `DATA-NORM-ARC-007` | ninguna propuesta se activa por telemetría o frecuencia |
+| vigencia, trazas y procedencia | `DATA-NORM-ARC-009` | derivaciones y resultados deben ser reproducibles por conjunto de versiones |
+| identidad, unicidad, duplicidad y fusión | `DATA-NORM-ARC-010` | ninguna coincidencia se transforma en estructura sin evaluación propietaria |
+| API, RPC, defensa de base e implementación ejecutora | `DATA-NORM-ARC-011` | las capas físicas deben conservar la misma semántica y precedencia |
+| originales y mappings externos | `DATA-NORM-ARC-012` | cualquier derivación interna conserva payload y procedencia externos |
+| compatibilidad de versiones | `SUPA-TRANS-006` | coexistencia y consumidores incompatibles resueltos antes de cutover |
+| adaptación de consumidores | `SUPA-TRANS-007` | consumidores usan contratos compatibles sin helpers locales divergentes |
+| paridad y pruebas transversales | `SUPA-TRANS-009` | mismas entradas y versiones producen resultados equivalentes entre capas |
+| rendimiento y seguridad bajo carga | `SUPA-TRANS-010` | representación e índices candidatos medidos antes de activación |
+| rollback de transición | `SUPA-TRANS-011` | cambios físicos reversibles sin reinterpretar historia |
+| paridad de ambientes | `SUPA-TRANS-013` | artefactos compatibles entre ambientes |
+| artefactos y consumidores desplegados | `SUPA-TRANS-014` | versiones desplegadas y consumidores reconciliados |
+| materialización física del package | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` | solo el package autorizado puede crearse y desplegarse |
+| análisis estructural de duplicidad durante transición | `DATA-NORM-TRANS-003` | colisiones se evalúan con relaciones y scope, nunca solo con texto |
+| coexistencia y materialización de versiones | `DATA-NORM-TRANS-004`; `DATA-NORM-TRANS-005` | cambios físicos mantienen compatibilidad y trazabilidad |
+| restauración y rollback de normalización | `DATA-NORM-TRANS-008` | historia y derivaciones anteriores permanecen reconstruibles |
+| certificación final de paridad | `DATA-NORM-TRANS-009` | corpus y capas físicas deben producir resultados compatibles |
+
+No queda un pendiente narrativo sin propietario documental exacto.
+
+---
+
+#### 32. Cobertura de prueba vigente no modificada
+
+La conducta centralizada ya está protegida por requisitos canónicos vigentes:
+
+- `TREQ-DATA-123` a `TREQ-DATA-142`: separación de representaciones, compatibilidad de versión, derivaciones, tildes y `ñ`, tokenización, aliases, transliteración, similitud, nueve modos, ranking, perfiles por clase, presentaciones, identificadores, privacidad, respuesta, paridad, índices, frontera de identidad y corpus;
+- requisitos previos de `DATA-NORM-ARC-001..007` que gobiernan clasificación, forma, excepciones, diccionario y revisión humana;
+- `TREQ-SHELL-002`: implementación compartida frente a copias locales;
+- `TREQ-SHELL-006`: pruebas y compatibilidad de packages antes de publicación y adopción.
+
+`SHELL-NORM-006` no altera esas reglas; fija su proyección compartida dentro de `@vento/data-normalization`.
+
+---
+
+#### 33. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** `SHELL-NORM-006` centraliza sin ampliar la política de búsqueda y comparación ya aprobada en `DATA-NORM-ARC-008` y protegida por requisitos canónicos existentes. No introduce una representación, perfil, modo, ranking, algoritmo, alias, scope, regla lingüística, autorización, persistencia, índice, migración, cambio de datos ni comportamiento ejecutable nuevo o modificado. El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 34. Decisiones vinculantes
+
+1. La política compartida es exactamente `VENTO_TEXT_SEARCH_AND_COMPARISON_POLICY@1.0.0`.
+2. Existen exactamente siete representaciones derivadas.
+3. Las siete son `SEARCH_FORM_KEY`, `SEARCH_ACCENT_KEY`, `SEARCH_TOKEN_STREAM`, `SEARCH_APPROVED_ALIAS_SET`, `SEARCH_TRANSLITERATION_KEY`, `SEARCH_STRUCTURED_COMPONENT_SET` y `SEARCH_FREE_TEXT_TERMS`.
+4. Ninguna representación sustituye el valor mostrado.
+5. Ninguna representación crea identidad.
+6. `SEARCH_FORM_KEY` usa NFC, casefold y espacios únicamente cuando la política lo autoriza.
+7. `SEARCH_FORM_KEY` conserva tildes, `ñ`, signos, palabras y fronteras.
+8. `SEARCH_ACCENT_KEY` pliega únicamente las vocales autorizadas por el perfil `es-CO`.
+9. `ñ` y `n` permanecen distintos.
+10. `unaccent` genérico no define la semántica transversal.
+11. Existen exactamente siete clases mínimas de token o frontera.
+12. No existe matching por subcadena dentro de tokens.
+13. Los conectores no se eliminan como stopwords.
+14. Los compuestos no se unen ni dividen por inferencia.
+15. El contrato de alias conserva 15 atributos.
+16. Los aliases son explícitos, acotados, versionados y respaldados.
+17. El diccionario ortográfico no crea aliases de búsqueda automáticamente.
+18. Transliteración permanece deshabilitada por defecto.
+19. No existe regla transversal `ñ → n`.
+20. Similitud permanece deshabilitada por defecto.
+21. Similitud, si alguna vez se aprueba mediante una nueva decisión canónica, solo podrá producir candidatos.
+22. Existen exactamente seis perfiles cerrados de búsqueda.
+23. `UNCLASSIFIED_PRESERVE`, secretos y firmas no reciben búsqueda derivada general.
+24. Existen exactamente nueve modos de coincidencia.
+25. El orden de los nueve modos es absoluto.
+26. `EXACT_VALUE_MATCH` es el nivel más preciso.
+27. `SIMILARITY_CANDIDATE_ONLY` es el nivel de menor confianza.
+28. El pipeline conserva exactamente quince pasos.
+29. Autorización, finalidad, scope, estado y filtros estructurales se resuelven antes de matching y ranking.
+30. El ranking usa la tupla canónica aprobada.
+31. Popularidad y frecuencia no forman parte del ranking por defecto.
+32. Un empate conserva todos los registros.
+33. El primer resultado no es selección segura para mutar.
+34. La respuesta lógica conserva 13 atributos mínimos.
+35. La respuesta presenta `display_value`, no la clave derivada.
+36. Una respuesta degradada debe declararlo.
+37. La consulta se minimiza y no se persiste por defecto.
+38. Secretos, firmas y credenciales no son buscables por derivación general.
+39. Las 14 clases semánticas conservan decisión explícita.
+40. Presentaciones se buscan por componentes y no por etiqueta como identidad.
+41. SKU, slugs, códigos, contactos y referencias mantienen contratos propios.
+42. Fuentes, overrides, copias, snapshots y externos conservan vínculo temporal y de autoridad.
+43. La búsqueda ordinaria no auto-crea decisiones de revisión.
+44. Ningún matching activa unicidad.
+45. Ningún ranking selecciona sobreviviente.
+46. Consulta, derivación e índice físico deberán ser compatibles por algoritmo y versión.
+47. Los índices legacy no se presumen equivalentes a la política canónica.
+48. Las capas deben mantener paridad.
+49. VITAL permanece fuera de la política transversal de Vento OS.
+50. No se crea package físico, TypeScript, SQL, RPC, trigger, índice, constraint, migración o backfill.
+51. No se modifica Supabase.
+52. Esta tarea crea cero requisitos de prueba y modifica cero requisitos existentes.
+53. `SHELL-NORM-007` queda como única continuidad reservada.
+
+---
+
+#### 35. Hallazgos y destinos exactos
+
+| Hallazgo | Resultado de `SHELL-NORM-006` | Destino exacto |
+| --- | --- | --- |
+| la política de búsqueda ya estaba definida en E3 pero no centralizada en SHELL-NORM | política completa centralizada documentalmente | `SHELL-NORM-006` |
+| los helpers legacy pueden divergir | ninguno se adopta como semántica transversal | `DATA-NORM-ARC-011`; `SUPA-TRANS-006`; `SUPA-TRANS-009` |
+| la búsqueda sin tildes aumenta recall y puede introducir colisiones | tolerancia `es-CO` acotada con `ñ` preservada | `DATA-NORM-ARC-009`; `SUPA-TRANS-009`; `SUPA-TRANS-010` |
+| transliteración no tiene perfil transversal aprobado | permanece deshabilitada | `SHELL-NORM-006` |
+| similitud no tiene algoritmo transversal aprobado | permanece deshabilitada | `SHELL-NORM-006` |
+| aliases pueden crear equivalencias falsas | solo aliases explícitos y gobernados | `DATA-NORM-ARC-007`; `DATA-NORM-ARC-009` |
+| presentaciones y UOM pueden colisionar por etiqueta | comparación estructurada obligatoria | `DATA-NORM-ARC-010`; `DATA-NORM-TRANS-003` |
+| búsqueda puede confundirse con identidad o fusión | frontera estructural absoluta | `DATA-NORM-ARC-010` |
+| package compartido aún no está materializado | especificación documental completa | `SHELL-CI-020::<package_id>` después de `E5-GATE-008::<package_id>` |
+| metadata y auditoría compartidas todavía pertenecen a la siguiente especialización | no se anticipan aquí | `SHELL-NORM-008` |
+| corpus y pruebas compartidas todavía pertenecen a su especialización | no se implementan aquí | `SHELL-NORM-009` |
+
+No queda un pendiente narrativo sin propietario documental exacto.
+
+---
+
+#### 36. Criterios de aceptación
+
+`SHELL-NORM-006` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. se centraliza exactamente `VENTO_TEXT_SEARCH_AND_COMPARISON_POLICY@1.0.0`;
+2. no se crea una segunda fuente de política;
+3. se materializan documentalmente las siete representaciones;
+4. faltantes de representaciones = 0;
+5. duplicados de representaciones = 0;
+6. `SEARCH_FORM_KEY` conserva su algoritmo lógico y exclusiones;
+7. `SEARCH_ACCENT_KEY` preserva `ñ`;
+8. no se adopta `unaccent` genérico como política;
+9. se materializan las siete clases de token o frontera;
+10. faltantes de clases de token = 0;
+11. duplicados de clases de token = 0;
+12. se conservan los 15 atributos de alias;
+13. no se generan aliases por telemetría o diccionario;
+14. transliteración permanece deshabilitada;
+15. similitud permanece deshabilitada;
+16. se materializan los seis perfiles;
+17. faltantes de perfiles = 0;
+18. duplicados de perfiles = 0;
+19. se materializan los nueve modos;
+20. faltantes de modos = 0;
+21. duplicados de modos = 0;
+22. se conserva el orden absoluto de los nueve niveles;
+23. se conserva el pipeline de quince pasos;
+24. se conserva el ranking determinista;
+25. empates y paginación tienen orden estable;
+26. se conservan los 13 atributos de respuesta;
+27. se aplica minimización de consulta y explicación;
+28. las catorce clases aparecen exactamente una vez;
+29. faltantes de clases = 0;
+30. duplicados de clases = 0;
+31. se conservan los 11 componentes estructurados;
+32. códigos, slugs, contactos e identificadores permanecen separados;
+33. fuentes, snapshots y externos conservan su frontera;
+34. búsqueda no sustituye revisión humana;
+35. búsqueda no crea identidad ni unicidad;
+36. versiones incompatibles no usan fallback silencioso;
+37. índices legacy no se consideran equivalentes;
+38. todas las capas quedan obligadas a paridad;
+39. se conservan los 17 ejemplos normativos;
+40. se conservan las 20 dimensiones de corpus;
+41. VITAL permanece separado;
+42. no se crea código;
+43. no se crea package físico;
+44. no se crean índices;
+45. no se modifica Supabase;
+46. no se crean ni modifican requisitos de prueba;
+47. todos los carryovers tienen propietario exacto;
+48. la siguiente tarea permanece únicamente reservada.
+
+---
+
+#### 37. Límites
+
+`SHELL-NORM-006` no:
+
+- crea físicamente `@vento/data-normalization`;
+- crea `package.json`;
+- crea archivos `.ts` o `.tsx`;
+- define exports físicos;
+- selecciona librerías runtime;
+- crea schemas Zod o JSON Schema;
+- crea tokenizer ejecutable;
+- crea motor de matching;
+- crea motor de ranking;
+- crea API;
+- crea RPC;
+- crea SQL;
+- crea triggers;
+- crea índices;
+- crea constraints;
+- modifica RLS;
+- ejecuta DDL;
+- ejecuta DML;
+- ejecuta backfills;
+- modifica datos existentes;
+- activa transliteración;
+- activa similitud;
+- selecciona umbrales de similitud;
+- selecciona algoritmos fuzzy;
+- agrega aliases;
+- modifica diccionario;
+- modifica excepciones;
+- corrige valores;
+- decide identidad;
+- activa unicidad;
+- fusiona registros;
+- selecciona sobrevivientes;
+- migra consumidores;
+- modifica Supabase;
+- redefine `DATA-NORM-ARC-001..012`;
+- desarrolla `SHELL-NORM-007`.
+
+---
+
+#### 38. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-NORM-005 — Centralizar diccionarios ortográficos versionados
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-NORM-006 — Crear normalización de búsqueda y comparación
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-NORM-007 — Crear previsualización de transformaciones
+
+
 ### [ ] SHELL-NORM-007 — Crear previsualización de transformaciones
 ### [ ] SHELL-NORM-008 — Crear metadatos de versión y auditoría de reglas
 ### [ ] SHELL-NORM-009 — Probar idempotencia y conservación semántica
