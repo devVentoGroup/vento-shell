@@ -13910,8 +13910,2756 @@ La tarea queda documentalmente completa cuando se cumple todo lo siguiente:
 `SHELL-UI-011 — Compartir navegación orientada a tareas`
 
 
-### [ ] SHELL-UI-011 — Compartir navegación orientada a tareas
-### [ ] SHELL-UI-012 — Compartir línea de estados de proceso
+### ✅ SHELL-UI-011 — Compartir navegación orientada a tareas
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-010 — Evaluar AppShell compartido
+**Tarea siguiente:** SHELL-UI-012 — Compartir línea de estados de proceso
+**Tipo de tarea:** Documental; definición canónica de la superficie compartida de navegación orientada a trabajo para `@vento/ui-web`, su modelo presentacional, estados, identidad semántica, composición con AppShell, accesibilidad, fronteras de autorización, reconciliación de consumidores y handoff de migración, sin materializar package, rutas, consultas, permisos, migraciones, releases ni cambios runtime
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Package propietario:** `@vento/ui-web`
+**Naturaleza:** patrón visual web compartido, presentacional y orientado a intención de trabajo; no es cola de tareas, resolver de autorización, catálogo de rutas ni motor de navegación empresarial
+
+---
+
+#### 1. Propósito
+
+Esta tarea define la superficie compartida que representa navegación web organizada alrededor de trabajo, obligación, resultado y siguiente paso, en lugar de reproducir como menú el inventario técnico de rutas, entidades, tablas o permisos.
+
+La regla raíz queda:
+
+```text
+PROYECCIÓN DE NAVEGACIÓN YA RESUELTA
+        ↓
+TaskNavigation
+        ↓
+ORIENTACIÓN VISUAL Y ACCESO A DESTINOS
+```
+
+Queda prohibida la dirección inversa:
+
+```text
+TaskNavigation
+        ✕
+DESCUBRIR PERMISOS
+        ✕
+RESOLVER CONTEXTO
+        ✕
+CREAR TAREAS
+        ✕
+DECIDIR PRIORIDAD EMPRESARIAL
+```
+
+#### 2. Alcance de la tarea
+
+La tarea fija documentalmente:
+
+- identidad pública conceptual;
+- modelo de grupos y destinos;
+- identidad semántica de cada destino;
+- separación entre identidad, copy, ruta y permiso;
+- estados visuales admitidos;
+- tratamiento de destinos ocultos, deshabilitados y bloqueados;
+- relación entre navegación y foco de trabajo;
+- relación con `AppShell`;
+- frontera con router, autorización, contexto y Supabase;
+- accesibilidad, responsive y comportamiento server-safe;
+- reconciliación de los siete consumidores web previstos;
+- tratamiento del template histórico;
+- handoff a migración, calidad, compatibilidad y retiro legacy.
+
+No materializa código ni adopción física.
+
+#### 3. Dependencias documentales consumidas
+
+La definición consume como entradas aprobadas:
+
+- `SHELL-UI-001`, propietario de la frontera visual web compartida;
+- `SHELL-UI-002` a `SHELL-UI-009`, para conservar fronteras de alertas, primitivas, contexto, selectores y simulación;
+- `SHELL-UI-010`, que reserva el slot `navigation` del `AppShell` para una superficie ya preparada;
+- reglas canónicas de navegación, relevancia, foco, accesibilidad, migración y golden path ya vigentes;
+- requisitos SHELL vigentes sobre duplicación, template histórico, compatibilidad y retiro;
+- mini-bloque de migración coordinada de consumidores web;
+- mini-bloque de paquetes, releases y compatibilidad.
+
+#### 4. Evidencia técnica vigente
+
+La evidencia runtime actual muestra una familia repetida en seis repositorios consumidores:
+
+```text
+vento-nexo
+vento-fogo
+vento-origo
+vento-viso
+vento-pulso
+vento-numera
+```
+
+Los seis mantienen tipos locales equivalentes a:
+
+```text
+NavGroup
+NavItem
+```
+
+con una forma aproximada basada en:
+
+```text
+href
+label
+description
+icon
+permissionCode
+```
+
+La implementación local de NEXO confirma además una separación parcial ya existente: la capa de servidor consulta las filas de navegación, evalúa permisos y entrega al chrome grupos filtrados. La copia cliente, sin embargo, conserva `permissionCode` dentro de su tipo visual y vuelve a acoplar navegación con Next.js mediante `usePathname`.
+
+#### 5. Resultado documental
+
+Se aprueba el componente conceptual:
+
+```text
+TaskNavigation
+```
+
+como parte de:
+
+```text
+@vento/ui-web
+```
+
+La decisión es **COMPARTIR** la superficie de presentación de navegación, no compartir el resolver de permisos, la fuente de datos de navegación ni el router de cada aplicación.
+
+#### 6. Identidad pública conceptual
+
+La superficie conceptual queda formada por:
+
+```text
+TaskNavigation
+TaskNavigationProps
+TaskNavigationGroup
+TaskNavigationItem
+TaskNavigationPresentationState
+```
+
+No se fijan todavía:
+
+- subpath físico de exportación;
+- nombre de archivo TypeScript;
+- barrel concreto;
+- versión npm;
+- clases CSS finales;
+- dependencia física de router.
+
+#### 7. Modelo conceptual general
+
+La unidad visual compartida se compone así:
+
+```text
+TaskNavigation
+├─ grupo 1
+│  ├─ destino A
+│  └─ destino B
+└─ grupo 2
+   ├─ destino C
+   └─ destino D
+```
+
+La profundidad base es de dos niveles estructurales:
+
+```text
+grupo
+→ destino
+```
+
+No se aprueba un árbol arbitrariamente anidado de menús.
+
+#### 8. Superficie conceptual de props
+
+La API conceptual mínima se congela como:
+
+```ts
+type TaskNavigationProps = {
+  ariaLabel: string;
+  groups: readonly TaskNavigationGroup[];
+  currentNavigationId?: string;
+};
+```
+
+La implementación futura podrá conservar atributos HTML compatibles del contenedor cuando no contradigan las reglas semánticas y de accesibilidad de esta tarea.
+
+No se abre una prop genérica `navigation` sin estructura.
+
+#### 9. Estados de presentación
+
+`TaskNavigationPresentationState` conserva exactamente las categorías visuales aplicables al contenido renderizable:
+
+```text
+PRIMARY
+SECONDARY
+DISCOVERABLE
+CONTEXTUAL_DISABLED
+REQUIRED_BLOCKED
+```
+
+Estos valores describen **presentación y descubribilidad**.
+
+No son:
+
+- permisos;
+- decisiones de autorización;
+- estados de proceso;
+- estados de claim;
+- estados de una tarea;
+- resultados empresariales.
+
+#### 10. Exclusión explícita de `HIDDEN`
+
+`HIDDEN` no forma parte de la unión renderizable de `TaskNavigationPresentationState`.
+
+La capa propietaria debe excluir el destino antes de construir las props cuando corresponda ocultarlo.
+
+Regla:
+
+```text
+HIDDEN
+→ no se pasa al componente
+→ no se renderiza
+→ no queda en DOM
+→ no queda en tab order
+```
+
+Esto evita tratar ocultamiento sensible como una variante CSS.
+
+#### 11. `TaskNavigationGroup`
+
+Cada grupo se define conceptualmente como:
+
+```ts
+type TaskNavigationGroup = {
+  groupId: string;
+  label: string;
+  description?: string;
+  items: readonly TaskNavigationItem[];
+};
+```
+
+`groupId` es una identidad estable de composición preparada por la capa propietaria.
+
+No es permiso, ruta, rol ni fuente de autoridad.
+
+#### 12. `TaskNavigationItem`
+
+Cada destino se define conceptualmente como:
+
+```ts
+type TaskNavigationItem = {
+  navigationId: string;
+  intentCode: string;
+  label: string;
+  description?: string;
+  href?: string;
+  state: TaskNavigationPresentationState;
+  statusLabel?: string;
+  ownerLabel?: string;
+  icon?: React.ReactNode;
+};
+```
+
+La estructura no acepta payloads de autorización ni objetos de contexto completos.
+
+#### 13. `navigationId`
+
+`navigationId` es la identidad estable del destino de navegación.
+
+Debe permanecer separado de:
+
+```text
+href
+label
+permissionCode
+componentName
+processId
+```
+
+El componente puede usar `navigationId` para identidad visual estable y comparación con `currentNavigationId`, pero no puede inferir de él permisos, rutas o prioridad.
+
+#### 14. `intentCode`
+
+`intentCode` conserva la intención empresarial estable ya preparada por la capa propietaria.
+
+`TaskNavigation` no lo muestra como copy ordinario y no lo interpreta para:
+
+- decidir grupo;
+- decidir orden;
+- decidir autorización;
+- fabricar un CTA;
+- resolver proceso;
+- seleccionar aplicación.
+
+Su presencia evita que el label visible se convierta en identidad contractual.
+
+#### 15. `href`
+
+`href` es un destino web ya preparado y seguro para presentación.
+
+Reglas:
+
+1. no es la identidad del destino;
+2. no concede autoridad;
+3. no se construye dentro del componente a partir de IDs empresariales;
+4. no se completa con permisos o contexto desde el cliente;
+5. puede ser relativo o absoluto cuando la capa propietaria ya resolvió el destino admitido;
+6. su presencia no significa que la operación de destino esté autorizada para ejecutarse sin revalidación propia.
+
+Si `href` se omite, el elemento puede permanecer visible como estado no navegable cuando su presentación sea necesaria.
+
+#### 16. `currentNavigationId`
+
+El destino actual se identifica mediante:
+
+```text
+currentNavigationId
+```
+
+La capa propietaria debe resolverlo antes de renderizar.
+
+`TaskNavigation` compara esa identidad con `navigationId` y puede proyectar semántica equivalente a `aria-current`.
+
+No lee:
+
+- pathname;
+- query params;
+- hash;
+- storage;
+- historial del navegador.
+
+#### 17. `label`
+
+`label` es el nombre humano principal del destino.
+
+Debe expresar resultado, objeto empresarial o finalidad reconocible, según el tipo de navegación.
+
+No debe exponer como nombre ordinario:
+
+- tabla;
+- schema;
+- RPC;
+- componente;
+- repositorio;
+- ruta;
+- permission code;
+- enum;
+- migración;
+- UUID.
+
+#### 18. `description`
+
+`description` aporta orientación secundaria cuando el label por sí solo no explica suficientemente el destino.
+
+No sustituye el nombre accesible principal.
+
+No debe utilizarse para esconder:
+
+- bloqueo material;
+- estado crítico;
+- consecuencia difícil de revertir;
+- contexto que debe permanecer perceptible.
+
+#### 19. `ownerLabel`
+
+`ownerLabel` permite mostrar, como contexto secundario, la aplicación o dominio propietario cuando el destino cruza una frontera de aplicación o cuando esa información evita ambigüedad.
+
+Regla de lenguaje:
+
+```text
+finalidad o resultado humano
+→ principal
+
+aplicación propietaria
+→ contexto secundario
+```
+
+No se convierte la marca de la aplicación en la única instrucción de navegación.
+
+#### 20. `statusLabel`
+
+`statusLabel` permite presentar una situación humana breve asociada al destino, por ejemplo cuando está contextual o materialmente bloqueado.
+
+Debe provenir ya preparado por la capa propietaria.
+
+El componente no genera reason codes, diagnósticos ni mensajes a partir de errores técnicos.
+
+Cuando un elemento permanece visible sin `href`, `statusLabel` o una descripción equivalente debe permitir comprender por qué no es un destino ordinariamente navegable cuando esa explicación sea necesaria.
+
+#### 21. `icon`
+
+`icon` es contenido visual opcional y no contractual.
+
+Se utiliza `React.ReactNode` para evitar congelar en el componente una taxonomía de iconos específica de NEXO, FOGO, ORIGO, VISO, PULSO o NUMERA.
+
+El icono:
+
+- no sustituye `label`;
+- no es identidad;
+- no expresa autoridad por sí solo;
+- no puede ser la única señal de estado;
+- debe quedar oculto a tecnologías de asistencia cuando sea puramente decorativo.
+
+#### 22. Navegación orientada a tareas no equivale a cola de tareas
+
+`TaskNavigation` organiza acceso alrededor de intención de trabajo.
+
+No es:
+
+```text
+TaskQueue
+WorkQueue
+ClaimQueue
+AssignmentResolver
+```
+
+Un destino puede llevar a una cola, a un flujo, a una revisión o a una superficie administrativa legítima, pero el componente no recibe el work item empresarial completo.
+
+#### 23. Agrupación operativa
+
+En navegación operativa, la proyección propietaria debe priorizar trabajo y obligación por encima del inventario de entidades.
+
+La estructura compartida soporta, sin hardcodearlos, grupos humanos compatibles con:
+
+```text
+Ahora
+Después
+En espera
+Bloqueadas
+```
+
+Esos nombres no se generan dentro de `TaskNavigation`.
+
+La capa propietaria decide qué destinos legítimos pertenecen a cada grupo conforme a la fuente canónica de trabajo y relevancia.
+
+#### 24. Agrupación administrativa
+
+En navegación administrativa, la organización debe responder a intención empresarial como:
+
+```text
+Planificar
+Revisar
+Aprobar
+Conciliar
+Configurar
+Auditar
+```
+
+`TaskNavigation` no genera un menú a partir de tablas, catálogos, schemas o familias de permisos.
+
+Los labels concretos siguen siendo localizables y deben conservar semántica canónica.
+
+#### 25. Prioridad y foco
+
+La superficie visual no calcula qué trabajo es prioritario.
+
+La capa propietaria entrega grupos e items en el orden ya determinado.
+
+El componente conserva ese orden.
+
+No recibe scores opacos de frontend ni ejecuta políticas de prioridad.
+
+#### 26. Prohibición de ordenamiento autónomo
+
+`TaskNavigation` no ordena automáticamente por:
+
+- label;
+- href;
+- fecha;
+- cantidad;
+- color;
+- icono;
+- role;
+- nombre de aplicación.
+
+Reordenar silenciosamente podría romper prioridad, continuidad o intención ya resueltas.
+
+#### 27. Separación entre estado de navegación y estado de tarea
+
+Los estados visuales de navegación no sustituyen estados como:
+
+```text
+eligible
+assigned
+offered
+claimed
+started
+paused
+waiting
+completed
+cancelled
+```
+
+Un `PRIMARY` no significa tarea iniciada.
+
+Un `REQUIRED_BLOCKED` no reemplaza el estado empresarial del work item.
+
+#### 28. Abrir no equivale a iniciar
+
+Seleccionar o abrir un destino de navegación:
+
+```text
+≠ claim
+≠ start
+≠ accept
+≠ approve
+≠ execute
+≠ complete
+```
+
+Cualquier transición empresarial se resuelve en el propietario correspondiente con su propia autorización y evidencia.
+
+#### 29. Frontera de autorización
+
+`TaskNavigation` recibe únicamente destinos que la capa propietaria decidió que pueden presentarse según las reglas de autorización, relevancia, sensibilidad y contexto aplicables.
+
+Queda prohibido como prop del componente:
+
+```text
+permissionCode
+requiredPermissions
+anyOfPermissions
+role
+allowedRoles
+AccessContext
+AuthorizationDecision
+canAccess
+canExecute
+```
+
+La UI compartida no se convierte en seguridad de servidor.
+
+#### 30. Relevancia, visibilidad y descubrimiento
+
+La capa propietaria mantiene separados:
+
+```text
+AUTHORIZED
+RELEVANT
+VISIBLE
+DISCOVERABLE
+ENABLED
+ACTIONABLE
+REQUIRED
+```
+
+`TaskNavigation` representa el resultado presentacional recibido.
+
+No infiere una categoría desde otra.
+
+En particular, que un destino sea visible no significa que sea ejecutable.
+
+#### 31. Deshabilitado contextual y obligación bloqueada
+
+Los estados:
+
+```text
+CONTEXTUAL_DISABLED
+REQUIRED_BLOCKED
+```
+
+son diferentes.
+
+`CONTEXTUAL_DISABLED` representa un destino relevante cuya precondición actual impide la interacción ordinaria.
+
+`REQUIRED_BLOCKED` representa una obligación que debe permanecer visible aunque no pueda continuarse todavía.
+
+La diferencia debe ser perceptible y no depender solo de color.
+
+#### 32. Comportamiento sin destinos
+
+`TaskNavigation` no inventa una causa cuando `groups` está vacío.
+
+No debe producir automáticamente mensajes como:
+
+```text
+No tienes permisos
+No hay trabajo
+No existen pantallas
+```
+
+porque un conjunto vacío puede provenir de causas distintas.
+
+La superficie propietaria decide si corresponde componer `EmptyState`, `Alert`, diagnóstico contextual u otro patrón ya aprobado.
+
+#### 33. Integración con `AppShell`
+
+`SHELL-UI-010` reservó:
+
+```text
+AppShell.navigation
+```
+
+como un slot de navegación ya preparada.
+
+La composición canónica queda:
+
+```text
+AppShell
+└─ navigation
+   └─ TaskNavigation
+```
+
+`AppShell` controla el marco y disclosure responsive.
+
+`TaskNavigation` controla la estructura semántica y visual de grupos y destinos.
+
+#### 34. Landmark y nombre accesible
+
+`ariaLabel` proporciona el nombre accesible de la región de navegación.
+
+La implementación debe evitar landmarks duplicados o anidados de forma confusa cuando se componga dentro de `AppShell`.
+
+La aplicación deberá mantener coherencia entre:
+
+```text
+AppShell.navigationLabel
+TaskNavigation.ariaLabel
+```
+
+sin anunciar dos regiones competidoras para el mismo contenido.
+
+#### 35. Frontera con router
+
+El contrato conceptual no exige:
+
+- App Router;
+- Pages Router;
+- `next/link`;
+- `usePathname`;
+- `useSearchParams`;
+- router imperativo.
+
+La capa adaptadora de cada consumidor puede resolver la ruta actual y entregar `currentNavigationId`.
+
+El componente compartido no transforma pathname en identidad empresarial.
+
+#### 36. Clasificación server/client
+
+La lógica conceptual de `TaskNavigation` no requiere:
+
+- estado React interno;
+- efectos;
+- `window`;
+- `document`;
+- storage;
+- timers;
+- red;
+- sesión;
+- router.
+
+Por tanto la superficie base se clasifica como **server-safe**.
+
+Una aplicación puede componerla dentro del `AppShell` interactivo sin convertir el componente en propietario de esa interacción.
+
+#### 37. Responsive
+
+La navegación debe poder presentarse en escritorio, móvil y superficies táctiles compatibles sin cambiar el significado de sus destinos.
+
+La compactación puede modificar:
+
+- disposición;
+- densidad visual;
+- visibilidad de descripciones secundarias;
+- uso de iconos decorativos.
+
+No puede eliminar:
+
+- nombre accesible;
+- estado relevante;
+- obligación bloqueada;
+- destino actual perceptible.
+
+#### 38. Sidebar compactado
+
+Cuando `AppShell` compacte visualmente el área de navegación:
+
+- los controles visibles conservan nombre accesible;
+- el icono no se vuelve la única identidad;
+- el destino actual sigue siendo distinguible;
+- el contenido oculto no permanece como foco fantasma;
+- el componente no depende de hover como única forma de conocer un destino.
+
+#### 39. Teclado
+
+Toda navegación interactiva debe ser operable por teclado.
+
+La implementación futura debe conservar:
+
+1. orden lógico según grupos e items recibidos;
+2. foco visible;
+3. ausencia de destinos ocultos en tab order;
+4. enlaces con nombre comprensible;
+5. acceso a estados o explicaciones relevantes sin hover;
+6. ausencia de trampas de foco creadas por la navegación.
+
+#### 40. Lectores de pantalla
+
+La estructura debe utilizar semántica de navegación, listas, grupos y destinos de forma coherente.
+
+Debe permitir identificar:
+
+- nombre de la región;
+- grupo;
+- destino;
+- destino actual;
+- estado no accionable cuando aplique;
+- contexto secundario relevante.
+
+No se anuncian códigos técnicos como sustituto de lenguaje humano.
+
+#### 41. Superficies táctiles
+
+Los destinos interactivos deben admitir áreas activables compatibles con las reglas táctiles vigentes.
+
+No se colocarán destinos incompatibles de manera que un toque impreciso active una acción distinta.
+
+La tarea no fija una composición universal para tablet o kiosco; esas superficies conservan sus propietarios posteriores.
+
+#### 42. Foco después de navegar
+
+`TaskNavigation` no fuerza foco sobre contenido de destino ni ejecuta scroll programático.
+
+El propietario de la ruta o flujo decide el tratamiento de foco posterior a una navegación material.
+
+El componente puede conservar semántica de destino actual, pero no simula que la nueva superficie terminó de cargar o confirmó una operación.
+
+#### 43. Localización y terminología
+
+`label`, `description`, `statusLabel`, `ownerLabel` y `ariaLabel` son contenido humano localizable.
+
+Cambiar idioma o copy no cambia:
+
+```text
+navigationId
+intentCode
+```
+
+No se utilizan labels traducidos como claves de lógica.
+
+#### 44. Destinos cross-app
+
+La superficie puede presentar un destino cuyo `href` ya cruza a otra aplicación.
+
+Debe conservar:
+
+- finalidad humana como contenido principal;
+- aplicación propietaria como contexto secundario cuando sea útil;
+- identidad semántica estable;
+- destino seguro ya preparado.
+
+El componente no define payload de handoff, revalidación, retorno de proceso ni transporte de referencias; esa responsabilidad conserva su propietario canónico.
+
+#### 45. Búsqueda, favoritos, recientes y breadcrumbs
+
+No forman parte de la API base de `TaskNavigation` en este corte.
+
+La decisión es explícita: el componente compartido cubre la navegación estructurada por grupos y destinos.
+
+Las implementaciones de búsqueda, favoritos, recientes, regreso lógico y breadcrumbs siguen obligadas por sus reglas UX vigentes, pero no se mezclan dentro de esta primitiva para evitar una API monolítica.
+
+#### 46. Telemetría
+
+`TaskNavigation` no emite por sí mismo eventos empresariales ni interpreta selección como ejecución.
+
+La presencia de:
+
+```text
+navigationId
+intentCode
+```
+
+permite que la capa instrumentadora conserve identidades estables sin usar el label o el href como clave analítica.
+
+Los eventos de presentación, selección, redirección y ejecución permanecen diferenciados.
+
+#### 47. Privacidad y minimización
+
+Las props no deben transportar datos innecesarios del actor o del recurso.
+
+Quedan fuera del componente:
+
+- documento personal;
+- correo como identidad ordinaria;
+- teléfono;
+- token;
+- sesión;
+- payload de autorización;
+- UUID sensible del recurso;
+- reason code técnico restringido;
+- detalles de otros actores.
+
+La capa propietaria minimiza antes de renderizar.
+
+#### 48. Patrón runtime común observado
+
+Los seis consumidores con chrome conservan una familia equivalente:
+
+```text
+VentoShell
+→ obtiene/resuelve datos y navegación
+→ navGroups
+→ VentoChrome
+→ SidebarLink
+```
+
+La intención reutilizable es válida.
+
+La forma local no se adopta íntegramente porque mezcla aspectos que deben separarse:
+
+- `permissionCode` dentro de `NavItem` visual;
+- identidad basada en `href` como key práctica;
+- current route derivado localmente desde pathname;
+- enums de iconos por aplicación;
+- copy y grupos locales sin identidad semántica explícita.
+
+#### 49. Reconciliación de NEXO
+
+Estado observado:
+
+- `NavGroup` y `NavItem` locales;
+- navegación consultada desde `app_navigation_items`;
+- permisos evaluados antes de construir los grupos;
+- `permissionCode` todavía viaja dentro de la forma visual;
+- `VentoChrome` calcula activo mediante pathname;
+- iconografía local extensa;
+- `VentoChrome` mezcla navegación con chrome, contexto y gating.
+
+Decisión:
+
+```text
+CANDIDATO_A_MIGRAR
+```
+
+Se conserva la separación server-side ya existente y se reemplazará la forma visual por una proyección compatible con `TaskNavigation` durante la migración propietaria.
+
+#### 50. Reconciliación de FOGO
+
+Estado observado:
+
+- `NavGroup` y `NavItem` locales;
+- forma visual con `permissionCode`;
+- active route resuelto dentro del chrome;
+- iconografía y contexto locales;
+- navegación acoplada al `VentoChrome` propio.
+
+Decisión:
+
+```text
+CANDIDATO_A_MIGRAR
+```
+
+La migración conservará únicamente extensiones empresariales legítimas y preparará la misma forma semántica compartida.
+
+#### 51. Reconciliación de ORIGO
+
+Estado observado:
+
+- `NavGroup` y `NavItem` locales;
+- `permissionCode` forma parte del item visual;
+- iconografía local reducida;
+- active route resuelto dentro del chrome.
+
+Decisión:
+
+```text
+CANDIDATO_A_MIGRAR
+```
+
+La diferencia de iconografía no justifica una API de navegación distinta.
+
+#### 52. Reconciliación de VISO
+
+Estado observado:
+
+- `NavGroup` y `NavItem` locales;
+- `permissionCode` dentro del item;
+- active route dentro del chrome;
+- vocabulario y destinos propios de administración y auditoría.
+
+Decisión:
+
+```text
+CANDIDATO_A_MIGRAR
+```
+
+`TaskNavigation` debe admitir intención administrativa sin convertir el patrón en una navegación exclusivamente operativa.
+
+#### 53. Reconciliación de PULSO
+
+Estado observado:
+
+- `NavGroup` y `NavItem` locales;
+- `permissionCode` dentro del item;
+- active route dentro del chrome;
+- uso de query params para otras decisiones locales del shell;
+- iconografía propia de POS y operación.
+
+Decisión:
+
+```text
+CANDIDATO_A_MIGRAR
+```
+
+El componente compartido no absorbe query params ni decisiones de estación.
+
+#### 54. Reconciliación de NUMERA
+
+Estado observado:
+
+- `NavGroup` y `NavItem` locales;
+- `permissionCode` dentro del item;
+- active route dentro del chrome;
+- vocabulario y destinos propios de análisis y rentabilidad.
+
+Decisión:
+
+```text
+CANDIDATO_A_MIGRAR
+```
+
+La superficie compartida conserva la posibilidad de agrupación administrativa y analítica sin incorporar lógica de NUMERA.
+
+#### 55. Reconciliación de SHELL
+
+SHELL no utiliza actualmente la misma familia `NavGroup`/`NavItem` como navegación lateral principal.
+
+Su home funciona como launcher de aplicaciones mediante tarjetas y evalúa acceso a esos destinos.
+
+Decisión:
+
+```text
+COMPOSICIÓN_ELEGIBLE_SIN_EQUIVALENTE_RUNTIME_ACTUAL
+```
+
+No se obliga a convertir el launcher actual en `TaskNavigation` por esta tarea.
+
+SHELL podrá componer la superficie cuando exista una proyección de navegación orientada a trabajo que corresponda legítimamente a su finalidad.
+
+#### 56. Reconciliación del template histórico
+
+El template `app-shell-standard` conserva:
+
+- grupos `NAV_GROUPS` hardcodeados para NEXO;
+- rutas y labels específicos;
+- arrays `required` / `anyOf` de permisos;
+- consultas cliente de permisos;
+- cálculo local de pathname;
+- navegación presentada como parte del chrome.
+
+Clasificación:
+
+```text
+FUENTE_HISTÓRICA_DE_EVIDENCIA
+≠
+IMPLEMENTACIÓN_CANÓNICA_DE TaskNavigation
+```
+
+No se adopta como fuente del nuevo contrato.
+
+#### 57. Matriz materializada de consumidores
+
+| Consumidor | Patrón actual relevante                                      | Decisión UI011                                        | Implementación en esta tarea |
+| ---------- | ------------------------------------------------------------ | ----------------------------------------------------- | ---------------------------- |
+| SHELL      | launcher de aplicaciones, sin `NavGroup` lateral equivalente | `COMPOSICIÓN_ELEGIBLE_SIN_EQUIVALENTE_RUNTIME_ACTUAL` | 0                            |
+| NEXO       | `NavGroup` / `NavItem` local dentro de chrome                | `CANDIDATO_A_MIGRAR`                                  | 0                            |
+| FOGO       | `NavGroup` / `NavItem` local dentro de chrome                | `CANDIDATO_A_MIGRAR`                                  | 0                            |
+| ORIGO      | `NavGroup` / `NavItem` local dentro de chrome                | `CANDIDATO_A_MIGRAR`                                  | 0                            |
+| VISO       | `NavGroup` / `NavItem` local dentro de chrome                | `CANDIDATO_A_MIGRAR`                                  | 0                            |
+| PULSO      | `NavGroup` / `NavItem` local dentro de chrome                | `CANDIDATO_A_MIGRAR`                                  | 0                            |
+| NUMERA     | `NavGroup` / `NavItem` local dentro de chrome                | `CANDIDATO_A_MIGRAR`                                  | 0                            |
+
+Control de cobertura:
+
+```text
+consumidores esperados: 7
+consumidores evaluados: 7
+faltantes: 0
+duplicados: 0
+migrados: 0
+certificados: 0
+```
+
+#### 58. Forma objetivo de migración
+
+La migración futura no copiará directamente el tipo local `NavItem` hacia el package.
+
+La forma objetivo es:
+
+```text
+FUENTE PROPIETARIA DE NAVEGACIÓN
+        ↓
+AUTORIZACIÓN + RELEVANCIA + CONTEXTO
+        ↓
+ADAPTER DEL CONSUMIDOR
+        ↓
+TaskNavigationGroup[]
+        ↓
+TaskNavigation
+```
+
+La autorización nunca se mueve hacia la capa inferior.
+
+#### 59. Adapter local permitido
+
+Cada aplicación puede conservar un adapter local pequeño para traducir su runtime a la proyección compartida.
+
+Ese adapter puede:
+
+- resolver `currentNavigationId` desde router local;
+- mapear iconos propios a `ReactNode`;
+- preparar labels localizados;
+- preparar `ownerLabel`;
+- excluir destinos `HIDDEN`;
+- construir el orden ya resuelto.
+
+No puede usar el adapter para crear una segunda taxonomía de navegación incompatible.
+
+#### 60. Handoff a migración coordinada
+
+La adopción física queda asignada al mini-bloque de migración ya vigente.
+
+Responsabilidades:
+
+| Tarea           | Handoff de UI011                                                                   |
+| --------------- | ---------------------------------------------------------------------------------- |
+| `SHELL-MIG-001` | inventariar consumidores, adapters, grupos, destinos, rutas y extensiones locales  |
+| `SHELL-MIG-002` | definir lotes reversibles por repositorio                                          |
+| `SHELL-MIG-003` | bloquear nuevos consumidores de la forma legacy y preparar compatibilidad temporal |
+| `SHELL-MIG-004` | impedir que el template histórico replique navegación hardcodeada                  |
+| `SHELL-MIG-005` | adoptar `TaskNavigation` junto con AppShell, chrome y estilos por aplicación       |
+| `SHELL-MIG-006` | verificar accesibilidad, tema, densidad y responsive                               |
+| `SHELL-MIG-007` | demostrar paridad de rutas, estados y comportamiento                               |
+| `SHELL-MIG-008` | retirar únicamente copias legacy sin uso residual                                  |
+
+No se adelanta ninguno de esos cambios físicos.
+
+#### 61. Handoff a calidad, compatibilidad y releases
+
+La materialización futura deberá entrar en el gobierno vigente de paquetes compartidos:
+
+| Tarea          | Responsabilidad                                      |
+| -------------- | ---------------------------------------------------- |
+| `SHELL-CI-001` | pruebas propias del package                          |
+| `SHELL-CI-002` | build independiente                                  |
+| `SHELL-CI-003` | release versionado                                   |
+| `SHELL-CI-004` | changelog                                            |
+| `SHELL-CI-005` | matriz de compatibilidad por consumidor              |
+| `SHELL-CI-006` | actualización controlada de consumidores mediante PR |
+
+La existencia documental de `TaskNavigation` no equivale a package publicado.
+
+#### 62. Contrato futuro de prueba
+
+La implementación física y adopción deberán demostrar, como mínimo:
+
+1. render de grupos en el orden recibido;
+2. render de items en el orden recibido;
+3. unicidad de `navigationId` en la proyección visible;
+4. `currentNavigationId` marca exactamente un destino coincidente cuando exista;
+5. cambiar label no cambia identidad;
+6. cambiar href no cambia identidad;
+7. `intentCode` no se muestra como copy ordinario;
+8. `permissionCode` no forma parte de la API pública;
+9. `HIDDEN` no puede renderizarse como variante visual;
+10. `PRIMARY` distinguible sin depender solo de color;
+11. `SECONDARY` no se convierte en irrelevante por presentación;
+12. `DISCOVERABLE` conserva nombre accesible cuando se presenta;
+13. `CONTEXTUAL_DISABLED` es perceptible y no accionable cuando así llega preparado;
+14. `REQUIRED_BLOCKED` permanece visible y comprensible;
+15. ausencia de inferencia de permisos;
+16. ausencia de lectura de rol;
+17. ausencia de lectura de contexto;
+18. ausencia de dependencia directa de Supabase;
+19. ausencia de consultas de red;
+20. ausencia de `usePathname` dentro de la superficie base;
+21. ausencia de `useSearchParams` dentro de la superficie base;
+22. ausencia de storage;
+23. ausencia de sorting autónomo;
+24. abrir destino no emite start o claim empresarial;
+25. href relativo ya preparado se conserva;
+26. href absoluto ya preparado se conserva sin introducir autoridad;
+27. label humano permanece principal frente a ownerLabel;
+28. icono decorativo no sustituye label;
+29. navegación vacía no inventa causa;
+30. teclado completo;
+31. foco visible;
+32. destinos ocultos fuera de tab order;
+33. lectores de pantalla identifican región, grupo, destino y current;
+34. reflow en ancho reducido;
+35. zoom sin recorte esencial;
+36. integración dentro de `AppShell.navigation` sin landmarks competidores;
+37. composición con contexto y avisos sin mezclar responsabilidades;
+38. paridad por consumidor antes de retirar la navegación legacy;
+39. rollback disponible durante cada lote de migración;
+40. compatibilidad de package verificada antes de adopción.
+
+Esta lista define evidencia futura. No declara implementación ni ejecución de pruebas runtime en esta tarea.
+
+#### 63. Cobertura de requisitos vigente
+
+No se introduce una obligación transversal nueva porque el registro canónico vigente ya cubre, entre otras, estas materias:
+
+- tarea actual, siguiente acción y estado del proceso: `TREQ-UX-001`;
+- identidad real del foco de trabajo y prohibición de inventar tareas: `TREQ-UX-024`;
+- separación entre abrir, claim, inicio y finalización: `TREQ-UX-025`;
+- política determinista de foco: `TREQ-UX-026`;
+- estados sin tareas, bloqueos y contexto insuficiente: `TREQ-UX-037`;
+- accesibilidad del foco: `TREQ-UX-038`;
+- separación entre presentar, abrir e iniciar: `TREQ-UX-040`;
+- lenguaje humano de navegación: `TREQ-UX-041`;
+- `navigation_id` e `intent_code` separados de ruta, label y permiso: `TREQ-UX-042`;
+- gramática de grupos, destinos, acciones y estados: `TREQ-UX-043`;
+- términos especializados y divulgación progresiva: `TREQ-UX-044`;
+- consistencia terminológica cross-app: `TREQ-UX-045`;
+- finalidad humana por encima de la marca de aplicación: `TREQ-UX-046`;
+- navegación operativa por trabajo, obligación, resultado y siguiente paso: `TREQ-UX-047`;
+- navegación administrativa por intención empresarial: `TREQ-UX-048`;
+- personalización sin cambiar significado empresarial: `TREQ-UX-049`;
+- separación entre label, ruta y permiso: `TREQ-UX-050`;
+- lenguaje y revalidación cross-app: `TREQ-UX-051`;
+- búsqueda segura y humana: `TREQ-UX-052`;
+- breadcrumbs, regreso, recientes y favoritos por identidad semántica: `TREQ-UX-053`;
+- localización y accesibilidad de labels: `TREQ-UX-056`;
+- telemetría por identidades estables: `TREQ-UX-057`;
+- migración de navegación legacy: `TREQ-UX-058`;
+- separación entre autorización, relevancia, visibilidad y acción: `TREQ-UX-059` a `TREQ-UX-063`;
+- relevancia de accesos cross-app: `TREQ-UX-071`;
+- elementos ocultos fuera de árbol accesible: `TREQ-UX-074`;
+- separación de operación, administración y excepción: `TREQ-UX-075`;
+- migración segura de superficies: `TREQ-UX-076`;
+- roles, simulación y navegación diferenciados: `TREQ-UX-080`;
+- golden path y reducción segura de pasos: `TREQ-UX-139` a `TREQ-UX-144` y `TREQ-UX-157`;
+- jerarquía de divulgación y contenido esencial: `TREQ-UX-182` a `TREQ-UX-188`;
+- implementación compartida, reconciliación y template histórico: `TREQ-SHELL-002`, `TREQ-SHELL-029`, `TREQ-SHELL-030` y `TREQ-SHELL-035`;
+- compatibilidad, versionado, deprecación y retiro de packages: `TREQ-SHELL-006`, `TREQ-SHELL-007` y `TREQ-SHELL-036` a `TREQ-SHELL-039`.
+
+#### 64. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA**
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+Justificación: la tarea materializa una superficie compartida de presentación y una reconciliación de consumidores dentro de obligaciones de navegación, accesibilidad, autorización, migración, compatibilidad y retiro que ya están registradas. No introduce una obligación verificable nueva ni altera el significado de una obligación vigente.
+
+#### 65. Fuera de alcance
+
+Esta tarea no ejecuta:
+
+- creación física de `@vento/ui-web`;
+- creación de archivos TS/TSX;
+- modificación de `VentoChrome`;
+- modificación de `VentoShell`;
+- migración de consumidores;
+- cambio de `app_navigation_items`;
+- SQL, DDL o DML;
+- cambios de Supabase;
+- autorización;
+- creación o modificación de roles;
+- creación de work items;
+- prioridades de colas;
+- claims;
+- router cross-app;
+- implementación de búsqueda, favoritos o breadcrumbs;
+- release npm;
+- despliegue;
+- retiro del template legacy.
+
+#### 66. Criterios de aceptación documental
+
+La tarea queda documentalmente cerrada cuando se cumple todo lo siguiente:
+
+- [x] existe una decisión explícita de compartir navegación orientada a tareas;
+- [x] existe identidad pública conceptual;
+- [x] existe API conceptual mínima;
+- [x] `navigationId` queda separado de href, label y permiso;
+- [x] `intentCode` queda separado del copy;
+- [x] se definen cinco estados renderizables y `HIDDEN` queda fuera de la API renderizable;
+- [x] se separa navegación de cola y work item;
+- [x] abrir navegación no equivale a iniciar trabajo;
+- [x] permisos, roles y contexto quedan fuera del componente;
+- [x] el componente no depende de Supabase;
+- [x] el componente no depende conceptualmente de Next Router;
+- [x] la superficie base queda clasificada como server-safe;
+- [x] se define integración con `AppShell.navigation`;
+- [x] se cubren teclado, lectores, foco, responsive y táctil;
+- [x] los siete consumidores previstos reciben decisión explícita;
+- [x] no existen faltantes ni duplicados en la matriz de consumidores;
+- [x] el template histórico queda clasificado como evidencia, no como implementación canónica;
+- [x] migración y calidad conservan propietarios explícitos;
+- [x] no se ejecuta migración física;
+- [x] no se crean ni modifican requisitos de prueba.
+
+#### 67. Decisiones consolidadas
+
+1. `TaskNavigation` es la superficie compartida aprobada para navegación estructurada orientada a trabajo.
+2. La navegación se organiza por grupos y destinos; no por árbol técnico arbitrario.
+3. `navigationId` es identidad estable del destino.
+4. `intentCode` conserva intención estable sin convertirse en copy.
+5. `href` es un destino ya preparado y no es autoridad.
+6. `currentNavigationId` llega resuelto desde la capa propietaria.
+7. La superficie base no lee pathname ni query params.
+8. La superficie base es server-safe.
+9. Los estados renderizables son `PRIMARY`, `SECONDARY`, `DISCOVERABLE`, `CONTEXTUAL_DISABLED` y `REQUIRED_BLOCKED`.
+10. `HIDDEN` se filtra antes de las props y no llega al DOM.
+11. El componente no recibe `permissionCode`.
+12. El componente no recibe roles ni decisiones de autorización.
+13. El componente no recibe contexto autoritativo completo.
+14. El componente no consulta Supabase.
+15. El componente no calcula relevancia ni prioridad empresarial.
+16. El componente conserva el orden recibido.
+17. Abrir un destino no equivale a claim, start, approve, execute o complete.
+18. La navegación operativa puede proyectar `Ahora`, `Después`, `En espera` y `Bloqueadas`, sin hardcodearlos.
+19. La navegación administrativa puede organizarse por intención empresarial sin menú por schema.
+20. SHELL no está obligado a reemplazar su launcher actual por esta primitiva.
+21. NEXO, FOGO, ORIGO, VISO, PULSO y NUMERA quedan como candidatos de migración.
+22. Los seis consumidores con chrome deben retirar `permissionCode` de la forma visual compartida durante la migración.
+23. Los adapters locales pueden resolver router e iconos sin crear una segunda semántica de navegación.
+24. El template histórico no define la nueva API.
+25. La migración permanece posterior, reversible y por consumidor.
+26. Compatibilidad, release y retiro legacy permanecen gobernados por sus tareas propietarias.
+27. La tarea produce cero cambios de requisitos de prueba.
+28. No se materializa código ni se modifica runtime en esta fase.
+
+#### 68. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-UI-010 — Evaluar AppShell compartido`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-UI-011 — Compartir navegación orientada a tareas`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-UI-012 — Compartir línea de estados de proceso`
+
+
+### ✅ SHELL-UI-012 — Compartir línea de estados de proceso
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-011 — Compartir navegación orientada a tareas
+**Tarea siguiente:** SHELL-UI-013 — Compartir señalización de offline y sincronización
+**Tipo de tarea:** Documental; definición canónica de la línea compartida de estados de proceso para `@vento/ui-web`, su proyección del ciclo de vida principal, API conceptual, semántica, accesibilidad, fronteras con transiciones, condiciones, navegación, offline y sincronización, reconciliación de consumidores y handoff de migración, sin materializar package, estado de dominio, motor de transiciones, cambios runtime, SQL, migraciones, releases ni despliegues
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Package propietario:** `@vento/ui-web`
+**Naturaleza:** patrón visual web compartido, presentacional y de lectura del ciclo de vida ya resuelto; no es máquina de estados, timeline de auditoría, motor de transiciones ni señalización de sincronización
+
+---
+
+#### 1. Propósito
+
+`SHELL-UI-012` define la línea visual compartida que permite comunicar, dentro de una superficie de proceso, la posición principal ya resuelta de una instancia y las posiciones relevantes de su recorrido visible.
+
+La identidad conceptual aprobada es:
+
+```text
+ProcessStatusLine
+```
+
+La regla raíz queda:
+
+```text
+ESTADO Y CICLO DE VIDA AUTORITATIVOS
+        ↓
+APLICACIÓN PROPIETARIA / CONTRATO DE PROCESO
+        ↓
+PROYECCIÓN HUMANA Y SEGURA DE ESTADOS
+        ↓
+ProcessStatusLine
+        ↓
+PRESENTACIÓN WEB
+```
+
+Nunca:
+
+```text
+ProcessStatusLine → máquina de estados
+ProcessStatusLine → motor de transiciones
+ProcessStatusLine → autorización
+ProcessStatusLine → fuente de verdad del proceso
+ProcessStatusLine → inferencia de transición por posición visual
+ProcessStatusLine → escritura de estado
+ProcessStatusLine → auditoría completa
+ProcessStatusLine → estado offline o de sincronización
+```
+
+---
+
+#### 2. Alcance
+
+La tarea cierra documentalmente:
+
+- identidad pública conceptual del patrón;
+- responsabilidad del componente;
+- API conceptual mínima;
+- modelo de paso visible;
+- estados presentacionales de cada paso;
+- reglas para una única posición principal actual;
+- relación con estados iniciales, intermedios y finales;
+- tratamiento de ramificaciones, ciclos y reingresos;
+- separación entre posición principal y condiciones transversales;
+- separación respecto a transición, autorización y efectos;
+- semántica HTML y accesibilidad;
+- responsive, reflow y movimiento reducido;
+- frontera server/client;
+- privacidad y minimización;
+- evidencia técnica vigente de consumidores;
+- disposición documental de los siete consumidores web previstos;
+- handoff a migración, calidad y releases;
+- cobertura de requisitos vigente.
+
+No se materializa código compartido ni se modifica estado de proceso alguno.
+
+---
+
+#### 3. Dependencias documentales consumidas
+
+La definición conserva las decisiones aprobadas por:
+
+- `SHELL-UI-001`, que fija la frontera de `@vento/ui-web` como implementación visual web compartida sin autoridad empresarial;
+- `SHELL-UI-010`, que fija `AppShell` como marco composicional y deja el proceso dentro de su contenido principal;
+- `SHELL-UI-011`, que fija `TaskNavigation` para navegación orientada a trabajo sin asumir propiedad del estado de proceso;
+- el registro canónico de procesos, que define identidad, estados, transiciones, propietario y reglas de evolución;
+- la arquitectura UX, que exige lenguaje humano, siguiente acción comprensible, separación entre presentación y autoridad y estados visibles honestos;
+- la fundación compartida, que exige adopción progresiva y reversible de componentes comunes.
+
+Precedencia:
+
+```text
+PROCESO Y ESTADO CANÓNICOS
+→ PROYECCIÓN DE ESTADO PROPIETARIA
+→ ProcessStatusLine
+→ COMPOSICIÓN EN SUPERFICIE
+→ PRUEBAS DEL PACKAGE
+→ ADOPCIÓN CONTROLADA
+```
+
+---
+
+#### 4. Evidencia técnica vigente
+
+El estado técnico observado conserva `@vento/ui-web` sin materialización física dentro de la raíz de packages compartidos; el package disponible actualmente en esa raíz es `os-context`.
+
+La evidencia runtime muestra, además, estados y copy de proceso resueltos localmente en consumidores.
+
+En NEXO, la experiencia de remisiones mantiene una normalización local de estados como:
+
+```text
+pending
+preparing
+dispatch_ready
+in_transit
+partial
+received
+closed
+cancelled
+```
+
+con etiquetas humanas y clases visuales locales.
+
+También construye una traza visible de hitos como solicitud, preparación, despacho y recepción.
+
+Esta evidencia demuestra necesidad de una superficie visual común, pero no autoriza a convertir esos valores particulares en un enum transversal.
+
+FOGO conserva formularios y superficies de producción con estado local de interacción y datos específicos del dominio. Ese código confirma que la composición de proceso seguirá siendo propietaria de cada aplicación.
+
+---
+
+#### 5. Resultado documental
+
+Queda especificada la siguiente superficie conceptual:
+
+```ts
+type ProcessStatusLineProps = {
+  ariaLabel: string;
+  steps: readonly ProcessStatusLineStep[];
+};
+```
+
+```ts
+type ProcessStatusLineStep = {
+  stepId: string;
+  label: string;
+  description?: string;
+  state: ProcessStatusLineStepState;
+};
+```
+
+```ts
+type ProcessStatusLineStepState =
+  | "REACHED"
+  | "CURRENT"
+  | "NOT_REACHED";
+```
+
+La API representa únicamente una proyección visual ya preparada.
+
+No incluye estado empresarial crudo, comandos, permisos, guards, transición, router, almacenamiento, red ni persistencia.
+
+---
+
+#### 6. Identidad pública conceptual
+
+La identidad compartida queda:
+
+```text
+ProcessStatusLine
+```
+
+Los nombres conceptuales auxiliares son:
+
+```text
+ProcessStatusLineProps
+ProcessStatusLineStep
+ProcessStatusLineStepState
+```
+
+No se aprueban alias como:
+
+```text
+ProcessStepper
+WorkflowStepper
+StatusTimeline
+ProcessTimeline
+WorkflowTimeline
+StateMachineView
+```
+
+La palabra `Line` expresa una representación visual ordenada y evita presentar el componente como máquina, historial o motor.
+
+---
+
+#### 7. Definición de línea de estados
+
+Una línea de estados es una **proyección visible y ordenada** de posiciones principales relevantes para comprender la instancia actual.
+
+No es necesariamente:
+
+- el grafo completo del proceso;
+- todos sus estados canónicos;
+- todas sus transiciones;
+- toda su historia;
+- una lista de eventos;
+- una representación de cada condición transversal;
+- una promesa de que todos los pasos visibles serán alcanzados.
+
+La aplicación propietaria prepara la proyección válida para el caso actual.
+
+---
+
+#### 8. Superficie conceptual de props
+
+`ProcessStatusLineProps` se mantiene deliberadamente pequeña:
+
+| Propiedad   | Responsabilidad                                     |
+| ----------- | --------------------------------------------------- |
+| `ariaLabel` | nombre humano y accesible de la región o lista      |
+| `steps`     | proyección explícita de pasos visibles ya resueltos |
+
+No se incorporan en la API base:
+
+- `processId`;
+- `instanceId`;
+- `currentStateCode`;
+- `transitionId`;
+- `nextAllowedStates`;
+- `permissionCode`;
+- `role`;
+- `canOperate`;
+- `isOffline`;
+- `syncState`;
+- `href`;
+- callbacks de transición.
+
+---
+
+#### 9. Modelo de paso
+
+Cada `ProcessStatusLineStep` representa una posición visible preparada por el propietario.
+
+Campos:
+
+```text
+stepId
+label
+description
+state
+```
+
+`stepId` identifica de forma estable la ocurrencia renderizada dentro de la proyección actual.
+
+`label` presenta el significado humano.
+
+`description` agrega aclaración opcional sin convertirse en lógica.
+
+`state` declara explícitamente la relación del paso con la posición actual.
+
+---
+
+#### 10. Estados presentacionales del paso
+
+La taxonomía visual mínima queda limitada a:
+
+```text
+REACHED
+CURRENT
+NOT_REACHED
+```
+
+Estos estados describen relación con el recorrido visible, no resultados de autorización ni condiciones técnicas.
+
+Quedan fuera de esta taxonomía:
+
+```text
+BLOCKED
+WAITING
+DENIED
+CONFLICT
+SYNCING
+QUEUED
+OFFLINE
+ERROR
+STALE
+CANCELLED
+```
+
+Esos conceptos pertenecen a contratos propietarios de proceso, impedimento, resiliencia o sincronización y pueden componerse alrededor de la línea cuando corresponda.
+
+---
+
+#### 11. `REACHED`
+
+`REACHED` significa exclusivamente:
+
+```text
+la capa propietaria confirma que esta posición visible fue alcanzada
+```
+
+No significa automáticamente:
+
+- proceso completado;
+- evidencia completa;
+- aprobación concedida;
+- pago confirmado;
+- entrega aceptada;
+- conciliación cerrada;
+- efecto irreversible;
+- estado terminal.
+
+La etiqueta visible debe conservar el significado empresarial real de la posición.
+
+---
+
+#### 12. `CURRENT`
+
+`CURRENT` identifica la posición principal actual de la instancia dentro de la proyección visible.
+
+Debe derivarse de una fuente autoritativa preparada por la capa propietaria.
+
+El componente no calcula `CURRENT` mediante:
+
+- índice;
+- ruta;
+- URL;
+- presencia de un botón;
+- timestamp más reciente;
+- color;
+- último paso alcanzado según el cliente;
+- estado guardado localmente.
+
+La implementación accesible utilizará una semántica equivalente a `aria-current="step"` sobre la posición actual.
+
+---
+
+#### 13. `NOT_REACHED`
+
+`NOT_REACHED` significa:
+
+```text
+la posición pertenece a la proyección visible preparada,
+pero la capa propietaria declara que todavía no ha sido alcanzada
+```
+
+No implica que la transición hacia ella esté autorizada.
+
+No implica que sea el siguiente destino posible.
+
+No implica que el proceso vaya a alcanzarla necesariamente.
+
+No habilita controles ni comandos.
+
+---
+
+#### 14. Una única posición `CURRENT`
+
+Cuando la línea represente una instancia real con posición principal resuelta, la proyección deberá contener exactamente una posición `CURRENT`.
+
+La capa propietaria no entregará simultáneamente dos estados principales actuales para la misma instancia.
+
+Si la fuente todavía no permite resolver una posición principal válida, el consumidor no fabricará una posición actual para mantener la estética del componente.
+
+La ausencia o inconsistencia debe resolverse mediante la superficie propietaria de estado, bloqueo o recuperación.
+
+---
+
+#### 15. Fuente de verdad
+
+`ProcessStatusLine` no posee fuente de verdad propia.
+
+La dirección permitida es:
+
+```text
+REGISTRO / SERVICIO PROPIETARIO
+        ↓
+ESTADO PRINCIPAL RESUELTO
+        ↓
+PROYECCIÓN HUMANA
+        ↓
+ProcessStatusLine
+```
+
+La dirección prohibida es:
+
+```text
+ProcessStatusLine
+        ↓
+calcular estado
+        ↓
+escribir proceso
+```
+
+El componente no consulta ni confirma la existencia de la instancia.
+
+---
+
+#### 16. Orden recibido
+
+El orden de `steps` es responsabilidad de la capa propietaria.
+
+`ProcessStatusLine` lo preserva.
+
+No ordena por:
+
+- `stepId`;
+- texto;
+- tiempo;
+- estado visual;
+- prioridad;
+- supuesto orden universal;
+- posición de `CURRENT`.
+
+Esto evita transformar una proyección de dominio en una inferencia de frontend.
+
+---
+
+#### 17. Prohibición de inferir por posición
+
+Queda prohibido el patrón:
+
+```text
+índice < CURRENT  → REACHED
+índice = CURRENT  → CURRENT
+índice > CURRENT  → NOT_REACHED
+```
+
+Cada paso trae su estado explícitamente.
+
+Razones:
+
+- un proceso puede ramificarse;
+- una ruta puede omitir estados no aplicables;
+- un ciclo puede reingresar en una posición;
+- una transición excepcional puede alterar la proyección;
+- una etapa visible anterior puede no haber sido efectivamente alcanzada en esa ocurrencia;
+- la proximidad visual no constituye una transición canónica.
+
+---
+
+#### 18. Proyección visible frente al grafo completo
+
+El registro canónico de procesos contiene un conjunto amplio de estados y transiciones por proceso.
+
+La línea no intenta renderizar todo ese grafo.
+
+Regla:
+
+```text
+GRAFO CANÓNICO COMPLETO
+≠
+PROYECCIÓN VISIBLE DE LA INSTANCIA
+```
+
+El propietario puede seleccionar únicamente las posiciones necesarias para orientación humana, siempre que no invente ni falsifique el ciclo real.
+
+No mostrar una posición no la elimina del contrato del proceso.
+
+---
+
+#### 19. Ramificaciones
+
+Cuando el proceso tenga rutas alternativas, el propietario construirá una proyección coherente con la instancia vigente.
+
+No deberán mostrarse ramas alternativas como si fueran pasos inevitables.
+
+Una alternativa puede:
+
+- omitirse si no aplica al caso actual;
+- presentarse en otra superficie explicativa;
+- aparecer cuando el contrato propietario determine que es material para comprender el estado.
+
+`ProcessStatusLine` no decide qué rama corresponde.
+
+---
+
+#### 20. Ciclos y reingresos
+
+Los procesos con revisión, reintento empresarial o repetición válida pueden volver conceptualmente a una posición equivalente sin reescribir historia.
+
+La proyección debe distinguir ocurrencias cuando esa diferencia sea material.
+
+`stepId` identifica la ocurrencia renderizada y no debe utilizarse para fingir que un paso histórico es la posición actual.
+
+El componente no genera automáticamente sufijos, rondas o revisiones.
+
+El propietario entrega la representación humana necesaria.
+
+---
+
+#### 21. Estado inicial
+
+La posición inicial puede formar parte de la línea cuando sea útil para orientar a la persona.
+
+Su presencia no significa que:
+
+- el proceso esté aprobado;
+- haya ocurrido un efecto posterior;
+- exista aceptación;
+- se hayan cumplido guards futuros.
+
+La línea preserva la semántica de nacimiento definida por el proceso propietario.
+
+---
+
+#### 22. Estados intermedios
+
+Los estados intermedios visibles deberán representar verdades empresariales ya definidas por el propietario.
+
+No podrán comprimirse en una etiqueta genérica que borre diferencias materiales.
+
+El componente no crea un catálogo alternativo de estados intermedios.
+
+La aplicación puede proyectar una etiqueta humana versionada sin exponer el código técnico como copy primario.
+
+---
+
+#### 23. Estado final
+
+El estado final normal puede representarse como `CURRENT` cuando la instancia realmente está en su cierre canónico.
+
+Una posición final histórica puede representarse como `REACHED` únicamente si la proyección pertenece a una revisión o flujo vinculado que conserva ese hecho sin reinterpretarlo.
+
+La línea no declara `completado` por sí misma.
+
+La completitud empresarial sigue dependiendo de la fuente propietaria y de sus obligaciones, evidencias y conciliaciones.
+
+---
+
+#### 24. Condiciones separadas del ciclo principal
+
+La posición principal y las condiciones transversales son dimensiones distintas.
+
+Ejemplos de condiciones que no se convierten en pasos principales por defecto:
+
+- bloqueo;
+- atraso;
+- riesgo;
+- SLA;
+- evidencia incompleta;
+- dependencia externa;
+- atención requerida;
+- sincronización pendiente.
+
+Estas condiciones pueden acompañar visualmente la superficie, pero no compiten con `CURRENT`.
+
+---
+
+#### 25. Bloqueo y espera
+
+`BLOCKED` y `WAITING` no se incorporan a `ProcessStatusLineStepState`.
+
+Una instancia puede estar, por ejemplo:
+
+```text
+CURRENT = Preparación
+CONDICIÓN = Bloqueada por insumo faltante
+```
+
+La UI debe comunicar ambas verdades sin convertir el bloqueo en un nuevo estado principal ficticio.
+
+La explicación y recuperación del bloqueo permanecen en los patrones propietarios correspondientes.
+
+---
+
+#### 26. Frontera con offline y sincronización
+
+La línea de estados no representa:
+
+```text
+LOCAL_DRAFT
+LOCAL_CAPTURED
+QUEUED
+SYNCING
+SERVER_RECEIVED
+RESULT_UNKNOWN
+CONFLICT
+RECONCILIATION_REQUIRED
+```
+
+Esos estados describen persistencia, entrega técnica, sincronización o reconciliación y pertenecen a la tarea siguiente reservada y a contratos de resiliencia.
+
+Una operación local pendiente no puede cambiar visualmente la posición principal como si el servidor hubiera confirmado la transición.
+
+---
+
+#### 27. Prohibición de motor de transiciones
+
+`ProcessStatusLine` no contiene:
+
+- tabla de transiciones;
+- source-state / target-state rules;
+- guards;
+- comandos;
+- validadores de transición;
+- permisos;
+- efectos;
+- idempotency keys;
+- lógica de concurrencia.
+
+La implementación compartida es de lectura y presentación.
+
+---
+
+#### 28. Proximidad visual no equivale a transición
+
+Una línea o conector entre dos pasos es únicamente una ayuda visual.
+
+Nunca significa:
+
+```text
+A puede transicionar a B
+```
+
+La autorización de una transición se determina fuera del componente.
+
+Incluso pasos adyacentes pueden no representar una transición directa del grafo canónico si la proyección resume posiciones intermedias no necesarias para la orientación humana.
+
+---
+
+#### 29. Ausencia de comandos y callbacks empresariales
+
+La API base no incorpora:
+
+```text
+onAdvance
+onBack
+onStepClick
+onTransition
+onComplete
+onRetry
+onApprove
+onReject
+```
+
+La línea no ejecuta acciones empresariales.
+
+Si una superficie necesita un CTA, lo compone fuera de esta primitiva con contrato y autorización propios.
+
+---
+
+#### 30. Propiedad de la acción principal
+
+La línea puede ayudar a entender dónde está el proceso, pero no decide la acción siguiente.
+
+El propietario del flujo conserva:
+
+- selección de acción principal;
+- elegibilidad;
+- autorización;
+- confirmación;
+- guards;
+- ejecución;
+- receipt;
+- recuperación.
+
+No se utiliza el estado visual del paso para habilitar un botón.
+
+---
+
+#### 31. Navegación y router
+
+`ProcessStatusLine` no depende de:
+
+- `href`;
+- `Link`;
+- `usePathname`;
+- `useSearchParams`;
+- router global;
+- deep links;
+- rutas específicas de aplicación.
+
+La posición de proceso y la ubicación de navegación son conceptos separados.
+
+La línea es no interactiva por defecto.
+
+---
+
+#### 32. Relación con `TaskNavigation`
+
+`TaskNavigation` responde a:
+
+```text
+¿qué trabajo puedo descubrir o abrir?
+```
+
+`ProcessStatusLine` responde a:
+
+```text
+¿en qué posición principal está esta instancia y qué posiciones visibles la rodean?
+```
+
+Reglas:
+
+1. abrir una entrada de navegación no cambia el proceso;
+2. una entrada activa no implica `CURRENT` empresarial;
+3. una línea de estados no reemplaza la navegación;
+4. la navegación no infiere el estado desde la ruta;
+5. ambas superficies reciben proyecciones preparadas por sus propietarios.
+
+---
+
+#### 33. Relación con `AppShell`
+
+`AppShell` no incorpora `ProcessStatusLine` como estado global obligatorio.
+
+La composición ordinaria es:
+
+```text
+AppShell
+└─ children
+   └─ superficie propietaria de proceso
+      └─ ProcessStatusLine
+```
+
+Esto evita que el chrome transversal pretenda conocer qué proceso, instancia o etapa está activa.
+
+Una aplicación puede no mostrar la línea en superficies sin ciclo de proceso relevante.
+
+---
+
+#### 34. Relación con la señalización de sincronización
+
+La señalización de conectividad y sincronización permanece separada.
+
+Composición permitida:
+
+```text
+SUPERFICIE DE PROCESO
+├─ ProcessStatusLine
+└─ señalización de sincronización
+```
+
+Nunca:
+
+```text
+SYNCING como paso principal
+QUEUED como etapa empresarial
+OFFLINE como estado canónico del proceso
+```
+
+La siguiente tarea conserva esa propiedad sin ser adelantada por UI012.
+
+---
+
+#### 35. Ausencia de instancia
+
+Cuando no existe una instancia real no se dibuja una línea ficticia de proceso.
+
+La UI no utiliza una secuencia vacía o genérica para dar la impresión de progreso.
+
+Los estados de ausencia, búsqueda, creación o recuperación pertenecen a sus patrones propietarios.
+
+La línea se monta únicamente cuando existe una proyección material que presentar.
+
+---
+
+#### 36. Etiquetas humanas
+
+`label` debe expresar una situación empresarial comprensible.
+
+No se utiliza como copy primario:
+
+- nombre de tabla;
+- enum técnico;
+- schema;
+- RPC;
+- identificador interno;
+- nombre de componente;
+- permiso;
+- slug;
+- clave de migración.
+
+La etiqueta humana puede cambiar de idioma o redacción sin alterar la identidad canónica del estado en la capa propietaria.
+
+---
+
+#### 37. Identificadores y códigos técnicos
+
+La API base no requiere `VPROC-*`, state codes o transition IDs porque el componente no los necesita para renderizar.
+
+Si una capa propietaria conserva referencias técnicas para soporte, auditoría o telemetría, no deben convertirse automáticamente en contenido visible de la línea.
+
+`stepId` es identidad de la ocurrencia renderizada, no permiso, estado canónico ni comando.
+
+---
+
+#### 38. Localización
+
+Los textos se preparan fuera del componente y pueden localizarse sin cambiar la semántica empresarial.
+
+Reglas:
+
+- `label` y `description` son humanos;
+- `ariaLabel` es humano y localizable;
+- cambiar copy no altera `state`;
+- cambiar idioma no altera el proceso;
+- una traducción no puede generar comandos ni transiciones;
+- no se utiliza el label como clave de negocio.
+
+---
+
+#### 39. Semántica HTML
+
+La estructura conceptual preferida es una lista ordenada:
+
+```text
+ol
+└─ li por paso
+```
+
+La semántica comunica secuencia visible sin afirmar que la lista sea el grafo completo del proceso.
+
+Los conectores puramente decorativos quedan fuera del árbol accesible.
+
+No se utilizan roles ARIA que simulen un widget interactivo cuando la línea es de lectura.
+
+---
+
+#### 40. Estado actual accesible
+
+La posición `CURRENT` debe ser identificable sin depender de color.
+
+La implementación utilizará una señal accesible equivalente a:
+
+```text
+aria-current="step"
+```
+
+además de texto o descripción perceptible cuando sea necesario para evitar ambigüedad.
+
+`REACHED` y `NOT_REACHED` también deben poder distinguirse por estructura o texto accesible, no exclusivamente por estilo cromático.
+
+---
+
+#### 41. Componente no interactivo por defecto
+
+Los pasos no son botones ni enlaces por defecto.
+
+No se añaden tab stops a elementos que solo comunican estado.
+
+Esto evita que una persona interprete cada paso como acción disponible.
+
+Si una superficie especializada necesita navegación o detalle por paso, deberá componerse fuera de la API base y no cambiar el significado de la línea compartida.
+
+---
+
+#### 42. Teclado y foco
+
+Por ser una superficie de lectura:
+
+- no roba foco al actualizarse;
+- no mueve foco al paso `CURRENT` automáticamente;
+- no introduce controles invisibles;
+- no exige teclado para descubrir información ordinaria;
+- cualquier contenido interactivo compuesto externamente conserva su propia responsabilidad de foco.
+
+Un cambio de estado no debe interrumpir una captura en curso únicamente para destacar la línea.
+
+---
+
+#### 43. Lectores de pantalla
+
+La lectura debe permitir comprender:
+
+- nombre de la línea;
+- número y orden de pasos visibles;
+- etiqueta de cada paso;
+- paso actual;
+- información descriptiva relevante.
+
+Los conectores gráficos no se anuncian como contenido.
+
+No se repite un anuncio assertivo completo de la línea ante cada render ordinario.
+
+Los cambios materiales pueden ser anunciados por la superficie propietaria cuando el contrato de experiencia lo requiera.
+
+---
+
+#### 44. Color, iconos y redundancia perceptiva
+
+Los estados visuales pueden utilizar:
+
+- color;
+- forma;
+- iconografía;
+- peso;
+- conectores;
+- texto auxiliar.
+
+Pero ninguna de esas señales puede funcionar de manera aislada como única diferencia perceptible.
+
+Un check visual no significa por sí solo `completado empresarial`.
+
+La semántica accesible debe acompañar cualquier icono de hito alcanzado.
+
+---
+
+#### 45. Responsive y reflow
+
+La implementación debe conservar comprensión en:
+
+- escritorio;
+- tablet;
+- móvil;
+- zoom;
+- viewport estrecho.
+
+En ancho suficiente puede utilizar disposición horizontal.
+
+En ancho reducido puede refluír a una composición vertical o equivalente.
+
+El cambio de orientación visual no altera orden, estado ni semántica.
+
+No se requiere scroll horizontal estructural para comprender la secuencia ordinaria.
+
+---
+
+#### 46. Movimiento reducido
+
+Cualquier transición visual entre estados es presentacional.
+
+Debe respetar preferencia de movimiento reducido.
+
+Quedan prohibidas animaciones que:
+
+- simulen avance del servidor;
+- hagan parecer completada una transición no confirmada;
+- funcionen como única señal del cambio;
+- retrasen la visualización de un estado material;
+- conviertan la línea en una barra de progreso temporal falsa.
+
+---
+
+#### 47. Frontera server/client
+
+La API base se clasifica conceptualmente como **server-safe**.
+
+No necesita:
+
+- hooks de estado;
+- efectos;
+- `window`;
+- `document`;
+- timers;
+- router;
+- storage;
+- red.
+
+La línea puede renderizarse dentro de una superficie cliente o dentro de un AppShell interactivo sin convertirse ella misma en un componente client-only por necesidad contractual.
+
+---
+
+#### 48. Datos y privacidad
+
+La API minimiza datos deliberadamente.
+
+No requiere:
+
+- actor completo;
+- correo;
+- documento;
+- teléfono;
+- tokens;
+- sesión;
+- payload de autorización;
+- detalle RLS;
+- secrets;
+- evidence payload;
+- correlation ID;
+- datos de terceros.
+
+La descripción visible deberá evitar información sensible no necesaria para comprender la posición.
+
+---
+
+#### 49. Diferencia frente a timeline de auditoría
+
+`ProcessStatusLine` no es un historial de eventos.
+
+No incorpora en su API base:
+
+- timestamps;
+- actor por evento;
+- before/after;
+- motivo;
+- receipt;
+- evidencia;
+- correlation ID;
+- source event;
+- transición exacta.
+
+Un timeline de auditoría puede coexistir en una superficie especializada, pero no se confunde con la línea de orientación del ciclo principal.
+
+---
+
+#### 50. Evidencia NEXO
+
+NEXO demuestra actualmente una implementación local de presentación de estados de remisión.
+
+Se observan:
+
+- valores locales de estado;
+- traducción a etiquetas humanas;
+- estilos locales por estado;
+- un estado derivado de disponibilidad para despacho;
+- traza humana de solicitud, preparación, despacho y recepción.
+
+Decisión documental:
+
+```text
+la evidencia se usa para reconciliar necesidades visuales
+≠
+los enums locales se convierten en contrato global
+```
+
+NEXO será consumidor candidato de la superficie compartida cuando exista materialización y migración autorizadas.
+
+---
+
+#### 51. Evidencia FOGO
+
+FOGO conserva superficies de producción con composición empresarial propia, captura de ingredientes, resultados, empaques, ubicaciones y cantidades.
+
+Esa evidencia demuestra que una línea compartida debe poder integrarse sin conocer:
+
+- recetas;
+- lotes;
+- unidades;
+- empaques;
+- destinos;
+- reglas de producción.
+
+La aplicación seguirá preparando la proyección del ciclo correspondiente y entregará únicamente los pasos humanos necesarios al componente compartido.
+
+---
+
+#### 52. Evidencia nativa y separación de plataforma
+
+Existe evidencia de experiencias nativas con timelines de pedidos dentro del ecosistema.
+
+No se adopta esa implementación como fuente de `@vento/ui-web`.
+
+La fundación web y la UI nativa permanecen separadas.
+
+Se pueden compartir significados y contratos cuando su propietario lo apruebe, pero no copiar componentes React Native dentro del package web ni declarar compatibilidad por similitud visual.
+
+---
+
+#### 53. Reglas de reconciliación de consumidores
+
+La reconciliación de consumidores utiliza estas disposiciones documentales:
+
+```text
+CANDIDATO_A_MIGRAR
+CANDIDATO_A_ADOPTAR
+COMPOSICIÓN_ELEGIBLE_SIN_EQUIVALENTE_RUNTIME_ACTUAL
+```
+
+Definiciones:
+
+- `CANDIDATO_A_MIGRAR`: existe evidencia local de presentación equivalente o cercana que deberá compararse antes de sustitución;
+- `CANDIDATO_A_ADOPTAR`: la aplicación tiene procesos que pueden usar el componente, pero esta tarea no confirma una copia equivalente concreta que retirar;
+- `COMPOSICIÓN_ELEGIBLE_SIN_EQUIVALENTE_RUNTIME_ACTUAL`: la superficie compartida puede componerse en el producto, pero no se confirma un equivalente runtime actual que migrar.
+
+Ninguna disposición significa implementación física.
+
+---
+
+#### 54. Matriz de consumidores web
+
+La cobertura materializada conserva exactamente los siete consumidores web previstos por la fundación compartida:
+
+| Consumidor | Disposición UI012                                     | Evidencia / decisión                                                                                                               |
+| ---------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `SHELL`    | `COMPOSICIÓN_ELEGIBLE_SIN_EQUIVALENTE_RUNTIME_ACTUAL` | el launcher no debe fabricar un ciclo de proceso global; podrá componer una línea solo dentro de una superficie propietaria futura |
+| `VISO`     | `CANDIDATO_A_ADOPTAR`                                 | consumidor web previsto; no se confirma en esta tarea una copia equivalente concreta que retirar                                   |
+| `NEXO`     | `CANDIDATO_A_MIGRAR`                                  | se confirmó presentación local de estados y traza de remisiones que deberá reconciliarse durante migración                         |
+| `FOGO`     | `CANDIDATO_A_ADOPTAR`                                 | existen superficies de producción empresariales; la proyección de ciclo seguirá siendo propietaria                                 |
+| `ORIGO`    | `CANDIDATO_A_ADOPTAR`                                 | consumidor web previsto; la adopción dependerá de procesos y proyecciones propietarias materializadas                              |
+| `PULSO`    | `CANDIDATO_A_ADOPTAR`                                 | consumidor web previsto; no se declara un timeline local equivalente sin evidencia específica                                      |
+| `NUMERA`   | `CANDIDATO_A_ADOPTAR`                                 | consumidor web previsto; las etapas financieras conservarán semántica y propiedad propias                                          |
+
+Conteo:
+
+```text
+consumidores esperados = 7
+consumidores materializados en la matriz = 7
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 55. Decisión para SHELL
+
+SHELL no se convierte en propietario universal del estado de los procesos.
+
+El launcher puede abrir aplicaciones, pero no debe mostrar una secuencia empresarial como si conociera el ciclo interno de cada dominio.
+
+Una futura superficie SHELL que agregue trabajo cross-app solo podrá componer `ProcessStatusLine` desde una proyección contractual recibida del propietario correspondiente.
+
+No se infiere estado desde la aplicación activa.
+
+---
+
+#### 56. Decisión para NEXO
+
+NEXO queda como `CANDIDATO_A_MIGRAR`.
+
+La migración futura deberá:
+
+1. inventariar cada presentación local de estado relevante;
+2. distinguir chips de estado, trazas, timelines y condiciones;
+3. mapear únicamente posiciones principales equivalentes;
+4. mantener condiciones como parcialidad, bloqueo o sincronización según su semántica real;
+5. comparar copy humano y accesibilidad;
+6. conservar comportamiento propietario de las remisiones;
+7. demostrar paridad antes de retirar código local.
+
+No se modifica NEXO en esta tarea.
+
+---
+
+#### 57. Decisión para FOGO
+
+FOGO queda como `CANDIDATO_A_ADOPTAR`.
+
+La futura adopción no trasladará al package compartido:
+
+- cálculo de producción;
+- ingredientes;
+- rendimientos;
+- empaques;
+- unidades;
+- ubicaciones;
+- validaciones de lote;
+- escritura de inventario.
+
+Solo la proyección humana del ciclo que corresponda podrá usar la línea compartida.
+
+---
+
+#### 58. Decisiones para ORIGO, PULSO, VISO y NUMERA
+
+Los cuatro consumidores quedan como `CANDIDATO_A_ADOPTAR`.
+
+Reglas comunes:
+
+- cada aplicación conserva su fuente de verdad;
+- cada una decide qué proceso e instancia está mostrando;
+- los estados de dominio no se reemplazan por un enum global de UI;
+- la proyección visible usa labels humanos preparados;
+- el package no recibe permisos ni comandos;
+- la adopción exige evidencia de compatibilidad y rollback;
+- la ausencia de un equivalente local confirmado impide declarar migración o retiro en esta tarea.
+
+---
+
+#### 59. Relación con template y patrones legacy
+
+La plantilla AppShell histórica no contiene un contrato canónico de línea de estados que deba convertirse automáticamente en export compartido.
+
+Las implementaciones locales detectadas en aplicaciones se consideran evidencia de uso y necesidades, no API canónica por existencia.
+
+Queda prohibido:
+
+```text
+copiar un stepper local al package
+→ llamarlo compartido
+→ asumir paridad
+```
+
+La adopción seguirá la secuencia de package, compatibilidad, migración y retiro controlado.
+
+---
+
+#### 60. Handoff a migración coordinada
+
+La migración posterior deberá:
+
+1. inventariar steppers, timelines, chips, trazas y encabezados de estado por consumidor;
+2. separar posición principal, condición transversal, evento histórico y sincronización;
+3. identificar la fuente autoritativa de cada proyección;
+4. construir adapters locales hacia `ProcessStatusLineStep[]`;
+5. demostrar que el adapter no infiere transiciones por índice;
+6. conservar copy y localización válidos;
+7. comparar accesibilidad y responsive;
+8. migrar por repositorio con rollback;
+9. impedir nuevos clones del patrón compartido;
+10. retirar únicamente implementaciones con ausencia de uso residual demostrada.
+
+No se ejecuta ese handoff en UI012.
+
+---
+
+#### 61. Handoff a calidad y releases
+
+La futura materialización conservará las responsabilidades ya asignadas para paquetes compartidos:
+
+| Área                | Evidencia futura esperada                                        |
+| ------------------- | ---------------------------------------------------------------- |
+| pruebas del package | semántica de estados, accesibilidad, reflow, ausencia de efectos |
+| build               | package independiente reproducible                               |
+| release             | identidad versionada e inmutable                                 |
+| changelog           | cambios de API y comportamiento visibles                         |
+| compatibilidad      | matriz contra consumidores web previstos                         |
+| adopción            | cambios controlados por consumidor                               |
+| rollback            | retorno a combinación soportada sin recuperar patrones inseguros |
+
+UI012 especifica el contrato de presentación; no publica una versión.
+
+---
+
+#### 62. Contrato futuro de prueba
+
+La implementación física deberá demostrar, como mínimo:
+
+1. render de una lista con pasos explícitos;
+2. conservación exacta del orden recibido;
+3. un único `CURRENT` en una proyección válida;
+4. identificación accesible del `CURRENT`;
+5. `REACHED` suministrado explícitamente;
+6. `NOT_REACHED` suministrado explícitamente;
+7. ausencia de inferencia por índice;
+8. ausencia de inferencia por ruta;
+9. ausencia de inferencia por timestamp;
+10. ausencia de inferencia por color;
+11. ausencia de sort interno;
+12. ausencia de transitions registry dentro del componente;
+13. ausencia de `nextAllowedStates`;
+14. ausencia de commands;
+15. ausencia de callbacks empresariales;
+16. ausencia de escritura de estado;
+17. ausencia de Supabase;
+18. ausencia de RPC;
+19. ausencia de Auth;
+20. ausencia de permisos;
+21. ausencia de rol como autorización;
+22. ausencia de `canOperate`;
+23. ausencia de router;
+24. ausencia de `href` obligatorio;
+25. ausencia de storage;
+26. ausencia de timers como progreso;
+27. ausencia de estado offline dentro de la taxonomía base;
+28. ausencia de estado de sincronización dentro de la taxonomía base;
+29. una condición de bloqueo no reemplaza `CURRENT`;
+30. una condición de espera no reemplaza `CURRENT`;
+31. un conflicto no fabrica una nueva posición principal;
+32. ramificación preparada por el propietario;
+33. alternativas no aplicables omitibles;
+34. ciclo o reingreso con identidad de ocurrencia no ambigua;
+35. estado inicial sin efectos implícitos;
+36. estado intermedio sin cierre implícito;
+37. estado final mostrado solo desde proyección confirmada;
+38. paso alcanzado sin copy falso de completitud;
+39. conector decorativo sin semántica de transición;
+40. lista ordenada semántica;
+41. no dependencia exclusiva de color;
+42. no dependencia exclusiva de icono;
+43. sin tab stops innecesarios;
+44. sin robo de foco;
+45. sin anuncio assertivo repetitivo;
+46. zoom;
+47. reflow;
+48. viewport estrecho;
+49. disposición horizontal cuando exista espacio;
+50. disposición vertical o equivalente en ancho reducido;
+51. movimiento reducido;
+52. ausencia de animación que simule confirmación;
+53. server-safe sin APIs cliente obligatorias;
+54. datos sensibles ausentes de la API base;
+55. códigos técnicos no usados como copy primario;
+56. localización sin cambio de identidad empresarial;
+57. composición dentro de una superficie propietaria;
+58. coexistencia con `TaskNavigation` sin acoplamiento;
+59. coexistencia con AppShell sin estado global de proceso;
+60. coexistencia con señalización de sincronización separada;
+61. ausencia de línea ficticia cuando no existe instancia;
+62. adapters por consumidor sin trasladar lógica empresarial al package;
+63. paridad NEXO antes de retirar presentación local equivalente;
+64. adopción FOGO sin trasladar lógica de producción;
+65. adopción de otros consumidores solo con evidencia;
+66. rollback por consumidor;
+67. ninguna variante visual concede autoridad;
+68. ninguna posición visual ejecuta una transición.
+
+Esta lista define evidencia futura; no declara implementación ni ejecución física.
+
+---
+
+#### 63. Cobertura de requisitos vigente
+
+La tarea no necesita crear una obligación transversal nueva porque el registro vigente ya cubre:
+
+- foco real derivado de proceso, instancia, etapa, estado, contexto, recurso y siguiente acción: `TREQ-UX-024`;
+- separación entre elegibilidad, asignación, claim, inicio, pausa y finalización: `TREQ-UX-025`;
+- foco y estado visibles sin inferencias opacas de frontend: `TREQ-UX-026`, `TREQ-UX-028`;
+- superficie operativa centrada en proceso, recurso, etapa, estado y siguiente acción: `TREQ-UX-029`;
+- explicación humana de bloqueos y recuperación: `TREQ-UX-031`, `TREQ-UX-037`;
+- accesibilidad del foco sin dependencia exclusiva de color o animación: `TREQ-UX-038`;
+- eventos diferenciados de presentación, inicio, pausa, bloqueo, handoff y completitud: `TREQ-UX-040`;
+- lenguaje humano y separación de identificadores técnicos: `TREQ-UX-041`, `TREQ-UX-043`;
+- proyección humana versionada de estados sin inferir transiciones desde copy: `TREQ-UX-054`;
+- localización y accesibilidad de etiquetas: `TREQ-UX-056`;
+- separación entre autorización, relevancia, visibilidad y posibilidad de actuar: `TREQ-UX-059`;
+- taxonomía independiente de impedimentos y condiciones: `TREQ-UX-097`;
+- un único estado inicial vigente por proceso: `TREQ-PROC-038`;
+- verdad limitada del estado inicial: `TREQ-PROC-040`;
+- cobertura de estados intermedios y semántica propia: `TREQ-PROC-043`, `TREQ-PROC-044`;
+- una única posición principal y condiciones transversales separadas: `TREQ-PROC-045`;
+- control de versión, concurrencia e historia para cambios de estado: `TREQ-PROC-046`;
+- un único final normal y cierre no inferido: `TREQ-PROC-048`, `TREQ-PROC-050`;
+- grafo explícito de transiciones y prohibición de inferir transición por nombre, orden o proximidad visual: `TREQ-PROC-053`, `TREQ-PROC-054`;
+- guards e idempotencia de comandos de transición: `TREQ-PROC-055`;
+- completitud empresarial antes de presentar cierre: `TREQ-PROC-081`;
+- propiedad única del estado por aplicación propietaria: `TREQ-PROC-019`, `TREQ-PROC-112`;
+- handoff sin marcar la etapa siguiente como completada: `TREQ-PROC-034`, `TREQ-PROC-169`;
+- reautorización por etapa en procesos híbridos: `TREQ-PROC-168`;
+- estados temporales honestos y resultado desconocido: `TREQ-PROC-277`;
+- estados de sincronización y reconciliación separados del ciclo principal: `TREQ-PROC-298`;
+- responsabilidad compartida clasificada y migración segura: `TREQ-SHELL-002`;
+- template histórico separado de runtime compartido: `TREQ-SHELL-029`;
+- versionado, compatibilidad y retiro seguro de superficies compartidas: `TREQ-SHELL-036` a `TREQ-SHELL-039`.
+
+UI012 especializa esas obligaciones en una primitiva visual de lectura sin alterar la semántica de los procesos ni crear una nueva fuente de verdad.
+
+---
+
+#### 64. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+La cobertura vigente ya exige posición principal única, estados y transiciones gobernados, proyección humana, separación de condiciones, accesibilidad, honestidad de progreso, autoridad server-side y resiliencia. UI012 únicamente fija cómo una superficie web compartida presenta una proyección ya resuelta de esas obligaciones.
+
+---
+
+#### 65. Fuera de alcance
+
+Quedan fuera de UI012:
+
+- materializar `@vento/ui-web`;
+- crear archivos TypeScript del package;
+- crear exports físicos;
+- modificar aplicaciones consumidoras;
+- crear o cambiar estados de proceso;
+- crear o cambiar transiciones;
+- implementar motor de workflow;
+- implementar comandos;
+- implementar autorización;
+- resolver permisos;
+- implementar RLS o RPC;
+- cambiar Supabase;
+- crear SQL o migraciones;
+- implementar offline;
+- implementar sincronización;
+- crear timeline de auditoría;
+- decidir la acción principal;
+- implementar navegación;
+- desplegar;
+- publicar releases;
+- retirar código legacy.
+
+---
+
+#### 66. Criterios de aceptación documental
+
+`SHELL-UI-012` queda documentalmente cerrada cuando se cumplen simultáneamente:
+
+- [x] existe una identidad única `ProcessStatusLine`;
+- [x] pertenece conceptualmente a `@vento/ui-web`;
+- [x] se define como superficie de lectura y presentación;
+- [x] se especifica una API conceptual mínima;
+- [x] cada paso conserva identidad, label, descripción opcional y estado explícito;
+- [x] la taxonomía base queda limitada a `REACHED`, `CURRENT` y `NOT_REACHED`;
+- [x] se evita `COMPLETE` como afirmación genérica de negocio;
+- [x] se exige una única posición `CURRENT` cuando existe una instancia resuelta;
+- [x] se prohíbe inferir estados por índice;
+- [x] se preserva el orden recibido;
+- [x] se distingue proyección visible de grafo completo;
+- [x] se resuelven ramificaciones sin presentar alternativas como inevitables;
+- [x] se resuelven ciclos y reingresos sin reescribir historia;
+- [x] se conservan las semánticas de estado inicial, intermedio y final;
+- [x] se separan condiciones transversales de la posición principal;
+- [x] bloqueo y espera no se convierten en estados principales de la línea;
+- [x] offline y sincronización quedan separados;
+- [x] se prohíbe motor de transiciones dentro del componente;
+- [x] se declara que proximidad visual no equivale a transición;
+- [x] se excluyen comandos y callbacks empresariales de la API base;
+- [x] se mantiene la acción principal fuera del componente;
+- [x] se mantiene router y navegación fuera del componente;
+- [x] se delimita su relación con `TaskNavigation`;
+- [x] se delimita su relación con AppShell;
+- [x] se conserva la tarea de sincronización siguiente sin adelantarla;
+- [x] no se fabrica una línea cuando no existe instancia;
+- [x] se exige copy humano y localizable;
+- [x] se separan códigos técnicos de contenido ordinario;
+- [x] se especifica lista ordenada semántica;
+- [x] se identifica accesiblemente el paso actual;
+- [x] el componente es no interactivo por defecto;
+- [x] se evita tab order innecesario y robo de foco;
+- [x] se cubren lectores de pantalla;
+- [x] no depende exclusivamente de color o icono;
+- [x] se cubren responsive, zoom y reflow;
+- [x] se respeta movimiento reducido;
+- [x] la API base permanece server-safe;
+- [x] se minimizan datos sensibles;
+- [x] se separa la línea de un timeline de auditoría;
+- [x] se reconcilia evidencia actual de NEXO;
+- [x] se conserva composición propietaria de FOGO;
+- [x] se mantiene separada la UI nativa;
+- [x] se materializan siete decisiones de consumidor;
+- [x] existen cero faltantes y cero duplicados en la matriz;
+- [x] se define handoff a migración;
+- [x] se define handoff a calidad y releases;
+- [x] se define evidencia futura de prueba;
+- [x] se demuestra cobertura de requisitos existente;
+- [x] se crean cero requisitos y se modifican cero;
+- [x] no se ejecuta implementación física;
+- [x] la siguiente tarea queda únicamente reservada.
+
+---
+
+#### 67. Decisiones consolidadas
+
+Quedan fijadas las siguientes decisiones vinculantes:
+
+1. La superficie conceptual se denomina `ProcessStatusLine`.
+2. Pertenece conceptualmente a `@vento/ui-web`.
+3. Es una primitiva visual de lectura, no una máquina de estados.
+4. La fuente de verdad permanece en la aplicación y contrato propietarios.
+5. La API base contiene `ariaLabel` y `steps`.
+6. Cada paso contiene `stepId`, `label`, `description` opcional y `state`.
+7. Los estados visuales base son `REACHED`, `CURRENT` y `NOT_REACHED`.
+8. `REACHED` significa posición alcanzada confirmada por el propietario.
+9. `REACHED` no significa proceso completo.
+10. `CURRENT` es la única posición principal actual de la proyección válida.
+11. `NOT_REACHED` no significa transición autorizada ni siguiente paso garantizado.
+12. Los estados de cada paso se entregan explícitamente.
+13. El componente no infiere estados por índice.
+14. El componente preserva el orden recibido.
+15. El componente no ordena por tiempo, texto o estado.
+16. La proyección visible no es el grafo completo.
+17. El propietario decide qué rama se presenta.
+18. Alternativas no aplicables no se muestran como inevitables.
+19. Los ciclos y reingresos conservan ocurrencias diferenciadas cuando sea material.
+20. `stepId` no es un código de autorización ni de transición.
+21. El estado inicial no implica efectos posteriores.
+22. Un estado intermedio no implica cierre.
+23. El final se presenta únicamente desde una proyección confirmada.
+24. La completitud empresarial no se calcula en UI.
+25. Cada instancia conserva una posición principal única.
+26. Bloqueos, atrasos, riesgos, SLA y pendientes son condiciones separadas.
+27. `BLOCKED` no pertenece al enum base de pasos.
+28. `WAITING` no pertenece al enum base de pasos.
+29. Estados offline y de sincronización no pertenecen al enum base.
+30. La tarea siguiente conserva la señalización de sincronización.
+31. No existe motor de transiciones dentro del componente.
+32. La proximidad visual no prueba una transición válida.
+33. No existen callbacks empresariales obligatorios.
+34. La línea no ejecuta acciones.
+35. La línea no habilita CTAs.
+36. La línea no recibe permisos.
+37. La línea no recibe roles para autorizar.
+38. La línea no recibe `canOperate`.
+39. La línea no consulta Supabase.
+40. La línea no ejecuta RPC.
+41. La línea no escribe estados.
+42. La línea no depende de router.
+43. La línea no necesita `href`.
+44. `TaskNavigation` y `ProcessStatusLine` conservan responsabilidades distintas.
+45. AppShell no se convierte en propietario global del estado de proceso.
+46. La línea se compone dentro de la superficie propietaria.
+47. No se muestra una línea ficticia sin instancia real.
+48. Las etiquetas ordinarias usan lenguaje humano.
+49. Los códigos técnicos no son copy primario.
+50. El copy puede localizarse sin cambiar semántica de negocio.
+51. La estructura preferida es una lista ordenada.
+52. `CURRENT` se comunica con semántica accesible equivalente a `aria-current="step"`.
+53. Los conectores decorativos no se anuncian.
+54. Los pasos son no interactivos por defecto.
+55. El componente no roba foco.
+56. No se crean tab stops innecesarios.
+57. El significado no depende solo de color o icono.
+58. La implementación debe soportar responsive, zoom y reflow.
+59. La animación no puede simular confirmación empresarial.
+60. La API base es server-safe.
+61. La API minimiza datos sensibles.
+62. La línea no sustituye un timeline de auditoría.
+63. NEXO queda `CANDIDATO_A_MIGRAR`.
+64. FOGO, ORIGO, PULSO, VISO y NUMERA quedan `CANDIDATO_A_ADOPTAR`.
+65. SHELL queda `COMPOSICIÓN_ELEGIBLE_SIN_EQUIVALENTE_RUNTIME_ACTUAL`.
+66. La matriz cubre siete de siete consumidores, sin faltantes ni duplicados.
+67. La adopción será progresiva, reversible y con paridad demostrada.
+68. UI012 crea cero requisitos de prueba y modifica cero.
+
+---
+
+#### 68. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-UI-011 — Compartir navegación orientada a tareas`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-UI-012 — Compartir línea de estados de proceso`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-UI-013 — Compartir señalización de offline y sincronización`
+
+
 ### [ ] SHELL-UI-013 — Compartir panel de acción principal
 ### [ ] SHELL-UI-014 — Compartir confirmaciones de acciones sensibles
 ### [ ] SHELL-UI-015 — Compartir diagnóstico de contexto
