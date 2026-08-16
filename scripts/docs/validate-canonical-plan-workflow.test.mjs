@@ -75,6 +75,12 @@ test('el watcher regenera y valida también la guía de tareas pendientes', () =
   assert.match(watcher, /driftArgs\.push\("--write-baseline"\)/u);
   assert.match(watcher, /driftIntervalMs = 30 \* 60 \* 1000/u);
   assert.match(watcher, /runRepositoryDriftIfDue\(reason === "verificación inicial"\)/u);
+  assert.match(watcher, /"plan-watch\.lock\.json"/u);
+  assert.match(watcher, /"plan-status\.md"/u);
+  assert.match(watcher, /acquireWatcherLock/u);
+  assert.match(watcher, /releaseWatcherLock/u);
+  assert.match(watcher, /publishStatus\("COMPILANDO"\)/u);
+  assert.match(watcher, /publishStatus\("VIGILANDO"\)/u);
 });
 
 test('el build prepara formato sin iniciar tareas vacías', () => {

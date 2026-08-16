@@ -10896,7 +10896,1653 @@ SHELL-UI-008 — Compartir selector de área
 SHELL-UI-009 — Compartir aviso de rol simulado
 ```
 
-### [ ] SHELL-UI-009 — Compartir aviso de rol simulado
+### ✅ SHELL-UI-009 — Compartir aviso de rol simulado
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-UI-008 — Compartir selector de área
+**Tarea siguiente:** SHELL-UI-010 — Evaluar AppShell compartido
+**Tipo de tarea:** Documental
+**Bloque:** H — Fundación compartida
+**Paquete propietario:** `@vento/ui-web`
+**Naturaleza:** definición documental de un aviso visual compartido para mantener perceptible que una superficie representa un rol simulado, sin convertir la presentación en fuente de simulación, autoridad, permisos, contexto efectivo ni capacidad de ejecución. No materializa código, no modifica Supabase y no migra consumidores.
+
+---
+
+#### 1. Propósito
+
+Definir el contrato canónico de un aviso de rol simulado compartido para las superficies web de Vento OS que presenten una vista previa hipotética ya resuelta por las capas propietarias de simulación y autorización.
+
+El componente deberá resolver únicamente la representación visual, semántica y accesible de que la persona está observando una proyección simulada y no una autoridad empresarial real.
+
+La regla central es:
+
+```text
+ESTADO DE SIMULACIÓN YA RESUELTO
+        +
+ROL SIMULADO YA IDENTIFICADO
+        +
+COPY SEGURO YA PREPARADO
+        ↓
+SimulatedRoleNotice
+        ↓
+AVISO PERSISTENTE Y PERCEPTIBLE
+        ↓
+PERSONA ENTIENDE QUE OBSERVA
+UNA VISTA HIPOTÉTICA NO EJECUTABLE
+```
+
+Queda prohibida la dirección inversa:
+
+```text
+SimulatedRoleNotice
+        ✕
+INICIAR SIMULACIÓN
+        ✕
+CAMBIAR ROL REAL
+        ✕
+CONVERTIR WOULD_ALLOW EN ALLOW
+        ✕
+CONCEDER PERMISOS
+        ✕
+EJECUTAR ACCIONES EMPRESARIALES
+```
+
+---
+
+#### 2. Posición dentro de la secuencia compartida
+
+`SHELL-UI-009` define exclusivamente el aviso visual compartido de rol simulado.
+
+Se apoya en la separación ya aprobada entre:
+
+- contexto confirmado y presentación;
+- autoridad real y evaluación hipotética;
+- rol real y rol simulado;
+- controles de interfaz y decisiones de autorización;
+- contexto territorial real y escenarios simulados;
+- componente visual y ciclo de vida de simulación.
+
+No absorbe:
+
+- elegibilidad para simular;
+- catálogo de roles simulables;
+- sede simulada;
+- área simulada;
+- turno simulado;
+- mezcla o separación física de evaluadores;
+- inicio o cierre de la simulación;
+- auditoría de inicio o salida;
+- bloqueo de acciones críticas;
+- definición del modo solo lectura;
+- resolución de contexto;
+- AppShell;
+- autorización;
+- diagnóstico de contexto.
+
+---
+
+#### 3. Dependencias documentales consumidas
+
+La definición consume, sin reemplazar:
+
+- `SHELL-UI-001 — Crear @vento/ui-web`;
+- `SHELL-UI-006 — Compartir indicador de contexto`;
+- `SHELL-UI-007 — Compartir selector de sede`;
+- `SHELL-UI-008 — Compartir selector de área`;
+- `AUTH-SIM-001 — Definir quién puede simular`;
+- `AUTH-SIM-002 — Definir roles simulables`;
+- `AUTH-SIM-003 — Definir sede simulada`;
+- `AUTH-SIM-004 — Definir área simulada`;
+- `AUTH-SIM-005 — Definir turno simulado`;
+- `AUTH-SIM-006 — No mezclar permisos reales y simulados`;
+- `AUTH-SIM-007 — Mostrar aviso persistente`, como tarea propietaria posterior de la política completa de persistencia del aviso;
+- `AUTH-SIM-008 — Registrar inicio de simulación`;
+- `AUTH-SIM-009 — Registrar salida de simulación`;
+- `AUTH-SIM-010 — Bloquear acciones críticas durante simulación`;
+- `AUTH-SIM-011 — Definir modo solo lectura`;
+- las reglas vigentes de experiencia, accesibilidad, privacidad y contexto;
+- la frontera vigente de `@vento/os-context`;
+- el gobierno de paquetes compartidos, compatibilidad, deprecación y retiro;
+- la estrategia posterior de migración coordinada de consumidores web.
+
+Estas fuentes determinan qué constituye una simulación válida, qué puede evaluarse y qué nunca puede convertirse en autoridad real. `SHELL-UI-009` define únicamente la superficie visual reutilizable que comunica esa condición.
+
+---
+
+#### 4. Naturaleza de la tarea
+
+La tarea es documental.
+
+Al cierre se define:
+
+1. identidad del componente;
+2. responsabilidad y límites;
+3. superficie pública conceptual;
+4. fuente externa de su estado;
+5. representación del rol simulado;
+6. copy suministrado por la capa propietaria;
+7. persistencia visual mientras el componente está montado;
+8. prohibición de cierre local del aviso;
+9. separación respecto al ciclo de vida de simulación;
+10. relación con autorización y resultados hipotéticos;
+11. relación con `ContextIndicator`, `SiteSelector` y `AreaSelector`;
+12. frontera respecto a AppShell;
+13. semántica HTML y accesibilidad;
+14. comportamiento responsive;
+15. compatibilidad client/server;
+16. dependencias permitidas y prohibidas;
+17. evidencia técnica actual;
+18. estrategia posterior de adopción;
+19. contrato futuro de pruebas;
+20. cobertura de requisitos existente.
+
+No se crea el componente físico en esta tarea.
+
+---
+
+#### 5. Resultado documental
+
+Se aprueba el componente conceptual:
+
+```text
+SimulatedRoleNotice
+```
+
+como parte de:
+
+```text
+@vento/ui-web
+```
+
+Su función es presentar de forma inequívoca que la superficie actual representa un rol simulado y que esa representación no equivale a autoridad ejecutable.
+
+No es:
+
+- iniciador de simulación;
+- finalizador de simulación;
+- selector de rol;
+- selector de sede;
+- selector de área;
+- editor de turno;
+- editor de check-in;
+- resolver de contexto;
+- guard de autorización;
+- evaluador de permiso;
+- transportador de tokens;
+- controlador de sesión;
+- mutación de base de datos;
+- mecanismo de persistencia;
+- mecanismo de auditoría;
+- bloqueo técnico de acciones críticas;
+- implementación del modo solo lectura;
+- sustituto del `ContextIndicator`.
+
+---
+
+#### 6. Identidad pública conceptual
+
+La superficie conceptual queda formada por:
+
+```text
+SimulatedRoleNotice
+SimulatedRoleNoticeProps
+```
+
+Esta tarea no fija:
+
+- subpath físico de exportación;
+- estructura de carpetas del package;
+- mapa de exports;
+- herramienta de estilos;
+- nombre de archivo TypeScript;
+- framework de documentación visual;
+- implementación interna;
+- ubicación exacta dentro del chrome de cada aplicación.
+
+Esas decisiones pertenecen a la materialización física, al gobierno del package y, para la composición sistémica del chrome, a la tarea propietaria correspondiente.
+
+---
+
+#### 7. Superficie conceptual de props
+
+La API conceptual mínima queda definida como:
+
+```text
+title: string
+simulatedRoleLabel: string
+description: string
+nonExecutableLabel: string
+```
+
+Además podrá conservar atributos HTML compatibles del contenedor según la implementación física, con las restricciones de semántica, privacidad y accesibilidad definidas en esta tarea.
+
+No se añade una prop genérica `context`.
+
+No se añade una prop `effectiveContext`.
+
+No se añade una prop `accessContext`.
+
+No se añade una prop `permissions`.
+
+No se añade una prop `canOperate`.
+
+No se añade una prop `wouldAllow`.
+
+No se añade una prop `simulationId` como requisito visual obligatorio.
+
+No se añade una prop de sesión, cookie, token, grant, scope, RLS o RPC.
+
+---
+
+#### 8. Fuente del estado presentado
+
+`SimulatedRoleNotice` no determina si existe una simulación.
+
+La composición propietaria deberá renderizarlo únicamente cuando disponga de una proyección de simulación que deba presentarse como activa según los contratos autoritativos aplicables.
+
+Por tanto:
+
+```text
+CAPA PROPIETARIA
+        ↓
+RESUELVE ESTADO DE SIMULACIÓN
+        ↓
+PREPARA COPY SEGURO
+        ↓
+RENDERIZA SimulatedRoleNotice
+```
+
+El componente no ejecuta:
+
+- consultas para descubrir una simulación;
+- lectura de cookies para inferir un override;
+- lectura de URL;
+- inspección de `localStorage`;
+- inspección de `sessionStorage`;
+- reconstrucción desde historial cliente;
+- inferencia desde el rol mostrado por otro componente.
+
+---
+
+#### 9. Semántica del rol simulado
+
+`simulatedRoleLabel` representa una etiqueta humana ya preparada para indicar el rol hipotético que se está presentando.
+
+Su presencia significa:
+
+```text
+ESTE ES EL ROL QUE LA VISTA PREVIA ESTÁ REPRESENTANDO
+```
+
+No significa:
+
+```text
+ESTE ES EL ROL REAL DE LA PERSONA
+ESTE ROL FUE ASIGNADO AL TRABAJADOR
+ESTE ROL ESTÁ ACTIVO EN SU TURNO REAL
+ESTE ROL CONCEDE PERMISOS EJECUTABLES
+ESTE ROL PUEDE SER USADO POR RLS
+ESTE ROL PUEDE FIRMAR UNA MUTACIÓN
+```
+
+El componente nunca traduce la etiqueta en autoridad.
+
+---
+
+#### 10. Contenido humano y privacidad
+
+El aviso deberá usar texto humano suficiente para distinguir una vista simulada de una sesión o contexto real.
+
+No se utilizarán como contenido principal:
+
+- UUID de simulación;
+- UUID de sesión;
+- tokens;
+- JWT;
+- claims;
+- nombres de cookie;
+- nombres de tabla;
+- nombres de schema;
+- nombres de RPC;
+- claves de permisos;
+- reason codes internos;
+- fingerprints completos;
+- secretos;
+- payloads;
+- SQL;
+- variables de entorno;
+- detalles de políticas RLS;
+- mecanismos internos de seguridad.
+
+La capa propietaria suministra textos minimizados y seguros.
+
+---
+
+#### 11. `title`
+
+`title` es el encabezado humano del aviso.
+
+Su función es permitir que la persona identifique inmediatamente la naturaleza de la superficie presentada.
+
+Esta tarea no congela un copy empresarial universal porque la política completa de aviso persistente pertenece a `AUTH-SIM-007`.
+
+Reglas:
+
+1. debe ser explícito respecto al carácter simulado o hipotético;
+2. no debe describir la vista como autoridad real;
+3. no debe afirmar que la persona cambió realmente de rol;
+4. no debe afirmar que la sesión real fue sustituida;
+5. no debe ocultarse visualmente cuando el componente está renderizado.
+
+---
+
+#### 12. `simulatedRoleLabel`
+
+`simulatedRoleLabel` es la etiqueta humana del rol hipotético.
+
+La capa propietaria es responsable de suministrar una etiqueta:
+
+- ya resuelta;
+- legible;
+- segura para la audiencia;
+- coherente con la identidad tipada del rol simulable;
+- no derivada por el componente desde un código bare.
+
+El componente no necesita recibir:
+
+- `role_kind`;
+- catálogo completo de roles;
+- matriz de permisos;
+- grants;
+- roles alternativos;
+- jerarquía organizacional;
+- roles elegibles para el simulador;
+- alias legacy.
+
+---
+
+#### 13. `description`
+
+`description` permite comunicar la explicación humana principal de la vista simulada.
+
+La explicación debe poder expresar, sin exponer detalles internos, que la superficie representa un escenario hipotético.
+
+El componente no redacta por sí mismo mensajes a partir de:
+
+- permiso;
+- recurso;
+- scope;
+- resultado de autorización;
+- reason code;
+- sede;
+- área;
+- turno;
+- check-in;
+- dispositivo;
+- sesión;
+- catálogo;
+- error técnico.
+
+La composición propietaria decide el copy seguro que corresponde al escenario.
+
+---
+
+#### 14. `nonExecutableLabel`
+
+`nonExecutableLabel` comunica explícitamente la naturaleza no ejecutable de la proyección cuando la capa propietaria deba presentar esa advertencia.
+
+Su semántica es informativa:
+
+```text
+LA VISTA NO CONSTITUYE AUTORIDAD PARA PRODUCIR EFECTOS REALES
+```
+
+El texto no ejecuta ni sustituye el control técnico que impide efectos reales.
+
+La protección material continúa perteneciendo a:
+
+- evaluadores autoritativos;
+- servidor;
+- RPC;
+- RLS;
+- Server Actions;
+- Route Handlers;
+- Edge Functions;
+- procesos asíncronos;
+- integraciones;
+- tareas propietarias de simulación y autorización.
+
+---
+
+#### 15. Condición de renderizado
+
+El componente se define como una pieza de presentación que existe cuando la composición propietaria decide que debe mostrar el aviso de simulación.
+
+No se define una prop pública base `active` o `isSimulated` para que el propio componente determine si debe ocultarse o aparecer.
+
+La regla de composición es:
+
+```text
+SIN AVISO REQUERIDO POR LA PROYECCIÓN
+→ NO RENDERIZAR EL COMPONENTE
+
+AVISO REQUERIDO POR LA PROYECCIÓN
+→ RENDERIZAR EL COMPONENTE CON COPY RESUELTO
+```
+
+Esto evita convertir un booleano visual en fuente de verdad de simulación.
+
+---
+
+#### 16. Persistencia visual y carácter no descartable
+
+Mientras `SimulatedRoleNotice` permanezca renderizado por la composición propietaria, el aviso debe permanecer perceptible.
+
+La implementación base no ofrece cierre local.
+
+Queda prohibido que el componente se comporte como:
+
+- toast temporal;
+- snackbar que desaparece por timeout;
+- alerta autocerrable;
+- banner que se oculta por scroll sin mantener otra representación equivalente;
+- aviso que el usuario pueda descartar y olvidar mientras la misma simulación continúa.
+
+La política autoritativa que determina cuánto dura una simulación y cuándo debe existir el aviso no pertenece a este componente.
+
+---
+
+#### 17. Prohibición de `onDismiss`
+
+No se define:
+
+```text
+onDismiss
+onClose
+hideNotice
+snooze
+acknowledgeAndHide
+```
+
+El cierre visual independiente sería incompatible con la función de mantener perceptible una condición material de interpretación de la superficie.
+
+Aceptar que la persona comprendió el aviso no convierte la simulación en contexto real ni autoriza a ocultar indefinidamente su condición mientras continúe.
+
+---
+
+#### 18. Prohibición de iniciar o terminar simulación
+
+No se define:
+
+```text
+onStartSimulation
+startSimulation
+onStopSimulation
+stopSimulation
+exitSimulation
+```
+
+`SimulatedRoleNotice` no es propietario del ciclo de vida de simulación.
+
+Una futura acción explícita para salir podrá componerse alrededor del aviso únicamente cuando el contrato propietario de salida esté definido y materializado.
+
+El componente compartido no adelanta esa decisión.
+
+---
+
+#### 19. Prohibición de cambiar el rol simulado
+
+No se define:
+
+```text
+onRoleChange
+roleOptions
+selectedRole
+roleOverride
+setRole
+```
+
+El aviso no es selector.
+
+El hecho de mostrar un rol hipotético no le concede responsabilidad para:
+
+- elegir otro rol;
+- listar roles simulables;
+- validar qué roles puede simular la persona;
+- persistir una selección;
+- escribir una cookie;
+- modificar la sesión;
+- reconstruir una matriz.
+
+---
+
+#### 20. Separación respecto a autoridad real
+
+El componente conserva la regla transversal:
+
+```text
+ROL SIMULADO
+≠
+ROL REAL
+≠
+AUTORIDAD REAL
+≠
+PERMISO EJECUTABLE
+```
+
+El aviso no puede recibir ni producir un resultado que transforme la simulación en `ALLOW`.
+
+Una superficie que utiliza `SimulatedRoleNotice` sigue obligada a resolver cualquier acción real desde autoridad real y mediante las fronteras autoritativas correspondientes.
+
+---
+
+#### 21. Separación de los cuatro planos
+
+El componente pertenece al plano de presentación dentro de la separación ya aprobada entre:
+
+```text
+1. AUTORIDAD REAL
+2. EVALUACIÓN SIMULADA
+3. PRESENTACIÓN
+4. AUDITORÍA
+```
+
+`SimulatedRoleNotice` opera exclusivamente en:
+
+```text
+3. PRESENTACIÓN
+```
+
+No lee directamente el plano de autoridad real.
+
+No ejecuta el evaluador simulado.
+
+No escribe auditoría.
+
+No comparte caché autoritativa con ninguno de esos planos.
+
+---
+
+#### 22. Vocabulario de resultado hipotético
+
+Los contratos vigentes reservan para la evaluación simulada resultados como:
+
+```text
+WOULD_ALLOW
+WOULD_DENY
+INDETERMINATE
+```
+
+con naturaleza no ejecutable.
+
+`SimulatedRoleNotice` no necesita interpretar esos valores para cumplir su responsabilidad base.
+
+Si una superficie debe explicar un resultado específico, la capa propietaria prepara el contenido correspondiente y conserva la separación entre resultado hipotético y decisión real.
+
+---
+
+#### 23. Prohibición de `canOperate`
+
+No se define `canOperate` como prop del aviso.
+
+Tampoco se acepta que el componente:
+
+- habilite acciones porque `canOperate=true`;
+- deshabilite acciones porque `canOperate=false`;
+- trate un booleano ambiguo como resultado simulado;
+- transforme el estado visual del aviso en guard.
+
+La evidencia técnica actual que aún contiene `can_operate` dentro de tipos runtime no se adopta como contrato visual ni se legitima mediante esta tarea.
+
+---
+
+#### 24. Acciones, lecturas y efectos reales
+
+El componente no ejecuta:
+
+- mutaciones;
+- lecturas protegidas para ampliar la vista;
+- exports;
+- impresiones;
+- notificaciones;
+- jobs;
+- webhooks;
+- operaciones offline;
+- sincronizaciones;
+- acciones de servidor;
+- RPC;
+- llamadas que produzcan efectos empresariales.
+
+Una vista previa que contenga controles hipotéticos deberá mantener esos controles sin handlers de negocio ejecutables según los contratos de simulación aplicables.
+
+---
+
+#### 25. Sesión real
+
+El aviso no modifica ni sustituye la sesión real.
+
+No:
+
+- cierra sesión;
+- renueva sesión;
+- cambia usuario;
+- cambia empleado;
+- cambia actor;
+- cambia rol administrativo real;
+- cambia rol operativo real;
+- crea una sesión simulada ejecutable;
+- emite un token de autoridad.
+
+La persona permanece bajo la identidad real que las capas propietarias resuelven.
+
+---
+
+#### 26. Datos reales y RLS
+
+El aviso no amplía la lectura de datos.
+
+Que se presente un rol simulado nunca significa que RLS, RPC o una consulta puedan usar ese rol para devolver filas adicionales.
+
+La superficie debe seguir aplicando:
+
+```text
+DATOS REALES VISIBLES
+=
+ALCANCE REAL AUTORIZADO
+```
+
+El componente no conoce ni altera políticas RLS.
+
+---
+
+#### 27. Relación con `ContextIndicator`
+
+`ContextIndicator` y `SimulatedRoleNotice` resuelven responsabilidades diferentes.
+
+```text
+ContextIndicator
+→ presenta contexto confirmado y su proyección
+
+SimulatedRoleNotice
+→ advierte que existe una interpretación hipotética de rol
+```
+
+Pueden coexistir.
+
+`ContextIndicator` no absorbe la advertencia especializada de simulación.
+
+`SimulatedRoleNotice` no reemplaza el contexto confirmado ni reescribe sus valores.
+
+La composición superior deberá impedir que la presencia de una simulación haga desaparecer la referencia necesaria al contexto real o confirmado que corresponda mostrar.
+
+---
+
+#### 28. Relación con `SiteSelector` y `AreaSelector`
+
+El aviso no se convierte en selector territorial.
+
+`SiteSelector` y `AreaSelector` mantienen sus contratos propios de intención y transición de contexto real.
+
+Durante una vista simulada:
+
+- un selector real no puede fabricar territorio simulado;
+- un selector simulado no puede fabricar territorio real;
+- el aviso no mezcla ambos planos;
+- la composición propietaria decide qué controles están disponibles según el contrato de simulación.
+
+`SimulatedRoleNotice` no recibe listas de sedes o áreas.
+
+---
+
+#### 29. Relación con AppShell
+
+`SHELL-UI-009` no decide la arquitectura completa del AppShell.
+
+Por tanto, esta tarea no congela si el aviso estará físicamente en:
+
+- header;
+- barra superior;
+- región bajo el header;
+- sidebar;
+- contenido principal;
+- chrome persistente específico.
+
+La evaluación sistémica de AppShell pertenece a su tarea propietaria.
+
+La única obligación de esta pieza es que, donde sea compuesta para representar una simulación activa, no se comporte como mensaje efímero o descartable.
+
+---
+
+#### 30. Ciclo de vida de simulación
+
+El ciclo completo de simulación permanece fuera de `SimulatedRoleNotice`.
+
+Conceptualmente puede existir:
+
+```text
+SOLICITAR
+→ VALIDAR
+→ CREAR ESCENARIO
+→ MOSTRAR PREVIEW
+→ MANTENER AVISO
+→ SALIR O EXPIRAR
+→ INVALIDAR PROYECCIÓN
+→ VOLVER A CONTEXTO REAL
+```
+
+El componente participa únicamente en:
+
+```text
+MOSTRAR PREVIEW
+→ MANTENER AVISO MIENTRAS LA COMPOSICIÓN LO RENDERIZA
+```
+
+No resuelve las demás transiciones.
+
+---
+
+#### 31. Handoff a `AUTH-SIM-007`
+
+`AUTH-SIM-007 — Mostrar aviso persistente` conserva la propiedad del contrato de simulación que determine de forma completa:
+
+- cuándo el aviso debe considerarse obligatorio;
+- persistencia durante el ciclo de simulación;
+- copy empresarial definitivo cuando corresponda;
+- información mínima que debe mantenerse visible;
+- relación exacta con el estado autoritativo de la simulación;
+- condiciones de invalidez o pérdida del indicador.
+
+`SHELL-UI-009` no suplanta esa tarea.
+
+Su responsabilidad es dejar disponible una primitiva visual compartida capaz de representar el resultado de ese contrato sin añadir autoridad.
+
+---
+
+#### 32. Handoff a `AUTH-SIM-008` y `AUTH-SIM-009`
+
+El inicio y la salida de una simulación conservan propietarios separados:
+
+| Tarea          | Responsabilidad conservada        |
+| -------------- | --------------------------------- |
+| `AUTH-SIM-008` | registrar el inicio de simulación |
+| `AUTH-SIM-009` | registrar la salida de simulación |
+
+`SimulatedRoleNotice` no escribe esos eventos.
+
+Tampoco interpreta que montar o desmontar el componente equivalga a inicio o salida autoritativos.
+
+Renderizar no es auditar.
+
+Desmontar no es cerrar una simulación.
+
+---
+
+#### 33. Handoff a `AUTH-SIM-010`
+
+`AUTH-SIM-010 — Bloquear acciones críticas durante simulación` mantiene la propiedad del bloqueo material correspondiente.
+
+El aviso no puede ser usado como sustituto de enforcement.
+
+Queda prohibido un diseño equivalente a:
+
+```text
+SI EL BANNER ES VISIBLE
+→ DESHABILITAR LOCALMENTE
+→ ASUMIR SEGURIDAD COMPLETA
+```
+
+La seguridad deberá existir aunque el componente visual falle, no cargue o sea omitido por un cliente defectuoso.
+
+---
+
+#### 34. Handoff a `AUTH-SIM-011`
+
+`AUTH-SIM-011 — Definir modo solo lectura` conserva la propiedad de definir cuándo y cómo una simulación opera en modo de lectura o preview.
+
+`nonExecutableLabel` puede comunicar visualmente una condición ya resuelta.
+
+No implementa el modo solo lectura.
+
+No transforma controles reales en seguros por sí mismo.
+
+No decide qué datos o formularios pueden aparecer.
+
+---
+
+#### 35. Elegibilidad y autorización para simular
+
+El componente no resuelve quién puede simular.
+
+No evalúa:
+
+- `viso.access`;
+- `viso.authorization.context_simulations.view`;
+- rol base real;
+- grants individuales;
+- alcance `OWN`;
+- alcance `THIRD_PARTY_EXPLICIT`;
+- reautenticación fuerte;
+- denegaciones;
+- sesión personal;
+- actor humano;
+- cobertura territorial;
+- sensibilidad del objetivo.
+
+La capa autoritativa entrega únicamente la proyección que deba presentarse.
+
+---
+
+#### 36. Bloqueos, errores y recuperación
+
+`SimulatedRoleNotice` no es un componente de error ni de bloqueo general.
+
+No debe absorber:
+
+- ausencia de sesión;
+- usuario inactivo;
+- falta de acceso a aplicación;
+- falta de permiso;
+- falta de sede o área activa;
+- falta de turno;
+- falta de check-in;
+- rol operativo faltante o inválido;
+- dispositivo compartido no autorizado;
+- configuración administrativa inconsistente;
+- indisponibilidad técnica.
+
+Cuando una de esas condiciones tenga componente propietario, la composición deberá utilizarlo sin degradarla a un mensaje genérico de simulación.
+
+---
+
+#### 37. Semántica HTML
+
+El componente deberá usar una estructura semántica persistente y reconocible.
+
+La implementación podrá utilizar una región o elemento equivalente que permita identificar:
+
+- encabezado del aviso;
+- rol simulado;
+- descripción;
+- naturaleza no ejecutable.
+
+No se exige que sea un diálogo.
+
+No se exige que tome el foco.
+
+No se exige que interrumpa la interacción como modal.
+
+No se modela como toast efímero.
+
+---
+
+#### 38. Regiones vivas y anuncios
+
+El componente no utilizará por defecto una semántica assertiva equivalente a `role="alert"` para cada render ordinario.
+
+La persistencia del aviso no justifica que cada navegación o re-render produzca una interrupción repetitiva del lector de pantalla.
+
+La transición autoritativa de entrada a simulación podrá requerir un anuncio específico cuando su tarea propietaria lo defina.
+
+`SHELL-UI-009` conserva estas reglas base:
+
+- el contenido debe ser descubrible por lector de pantalla;
+- el título debe aportar nombre comprensible;
+- el rol simulado debe formar parte de la información accesible;
+- no se fuerza anuncio assertivo continuo;
+- no se roba foco para anunciar el aviso.
+
+---
+
+#### 39. Icono, color y redundancia perceptiva
+
+La condición de simulación no dependerá exclusivamente de:
+
+- color;
+- icono;
+- borde;
+- fondo;
+- animación;
+- posición.
+
+Debe existir texto explícito.
+
+Un icono puede reforzar el significado, pero no sustituir:
+
+- título;
+- identificación del rol simulado;
+- explicación de la condición;
+- indicación de naturaleza no ejecutable cuando corresponda.
+
+---
+
+#### 40. Teclado y foco
+
+El componente base es informativo y no introduce controles interactivos obligatorios.
+
+Por tanto:
+
+- no debe crear tab stops innecesarios;
+- no roba foco al montarse;
+- no mueve foco por re-render ordinario;
+- no encierra el foco;
+- no implementa escape para cerrarse;
+- no depende de hover para revelar su mensaje esencial.
+
+Si una composición futura añade acciones adyacentes, esas acciones deberán cumplir sus propios contratos de teclado y foco.
+
+---
+
+#### 41. Responsive, zoom y tacto
+
+El aviso deberá conservar legibilidad en:
+
+- escritorio;
+- tablet;
+- kiosco web cuando corresponda;
+- viewport estrecho;
+- zoom elevado;
+- reflow.
+
+No se fija una altura rígida universal.
+
+El texto podrá envolver líneas sin ocultar la identidad de simulación.
+
+La información esencial no dependerá de hover ni de un tooltip exclusivo.
+
+---
+
+#### 42. Densidad y jerarquía de información
+
+La jerarquía visual mínima es:
+
+```text
+CONDICIÓN DE SIMULACIÓN
+        ↓
+ROL SIMULADO
+        ↓
+EXPLICACIÓN
+        ↓
+NATURALEZA NO EJECUTABLE
+```
+
+La implementación puede adaptar densidad visual sin borrar ninguno de los significados que la composición haya decidido presentar.
+
+No deberá convertir el aviso en una etiqueta minúscula indistinguible del resto del chrome cuando la simulación sea material para interpretar la pantalla.
+
+---
+
+#### 43. Frontera client/server
+
+La representación base no necesita poseer lógica de resolución en cliente.
+
+Podrá implementarse como componente compatible con renderizado de servidor siempre que la composición le entregue props serializables y seguras.
+
+No requiere una frontera cliente solo para mostrar texto.
+
+Si la implementación física necesita detalles de interacción visual no esenciales, esa frontera deberá mantenerse mínima.
+
+La resolución de simulación, autorización, sesión, persistencia, auditoría y efectos permanece fuera del componente.
+
+---
+
+#### 44. Dependencias prohibidas
+
+`SimulatedRoleNotice` no depende directamente de:
+
+- Supabase;
+- `@supabase/supabase-js`;
+- `@supabase/ssr`;
+- RPC empresariales;
+- RLS;
+- Server Actions de negocio;
+- servicios de aplicación;
+- routers propietarios;
+- cookies de override;
+- `localStorage`;
+- `sessionStorage`;
+- IndexedDB;
+- cache API;
+- tablas de roles;
+- catálogos físicos de permisos;
+- una aplicación consumidora concreta.
+
+Tampoco requiere que `@vento/os-context` sea dependencia runtime obligatoria del componente visual.
+
+---
+
+#### 45. Persistencia
+
+El componente no persiste estado de simulación.
+
+No escribe:
+
+- cookies;
+- storage;
+- base de datos;
+- settings del empleado;
+- preferencias de interfaz;
+- query parameters;
+- estado compartido de sesión;
+- registros de auditoría.
+
+Su persistencia es visual mientras la composición lo mantiene montado, no persistencia de negocio.
+
+---
+
+#### 46. Navegación y parámetros de URL
+
+El componente no lee ni escribe parámetros de URL para determinar:
+
+- rol simulado;
+- sesión simulada;
+- sede simulada;
+- área simulada;
+- turno simulado;
+- permiso simulado;
+- resultado hipotético.
+
+Tampoco ejecuta navegación como mecanismo de entrada o salida de simulación.
+
+Si una capa propietaria utiliza navegación durante el ciclo de simulación, deberá preservar el aviso y revalidar su proyección mediante su contrato correspondiente.
+
+---
+
+#### 47. Minimización y datos sensibles
+
+La API base evita exigir:
+
+- identidad real completa del actor;
+- correo;
+- documento;
+- employee ID;
+- user ID;
+- simulation ID;
+- permisos;
+- grants;
+- scopes;
+- recurso sensible;
+- motivo interno de denegación;
+- fingerprint;
+- información de reautenticación.
+
+La capa propietaria puede construir `title`, `description` y etiquetas seguras sin transferir al componente datos que este no necesita.
+
+---
+
+#### 48. Estado técnico actual de SHELL
+
+La fundación compartida actual mantiene primitivas web locales y un template histórico, pero no existe dentro de las primitivas locales revisadas una pieza canónica dedicada que materialice `SimulatedRoleNotice` como contrato compartido.
+
+La definición de `SHELL-UI-009` no convierte automáticamente:
+
+- una alerta genérica;
+- un bloque de perfil;
+- una etiqueta de modo prueba;
+- un selector de rol;
+- un fragmento de chrome;
+
+en la implementación canónica del nuevo componente.
+
+La materialización física permanece pendiente de su fase propietaria.
+
+---
+
+#### 49. Evidencia del template histórico
+
+El template `app-shell-standard` revisado contiene en `ProfileMenu` un bloque cliente denominado humanamente `Modo prueba`.
+
+La evidencia observada incluye:
+
+- lectura de una cookie de override de rol;
+- escritura de esa cookie desde cliente;
+- listado local de `ROLE_OPTIONS`;
+- cambio visual de `Rol activo`;
+- acción local `Usar rol real`;
+- `router.refresh()` después del override;
+- convivencia en la misma pieza con selección de sede;
+- dependencia directa del cliente Supabase para otras acciones del perfil.
+
+Esta evidencia es histórica y técnica.
+
+No constituye el contrato objetivo de simulación.
+
+---
+
+#### 50. Evidencia de overrides runtime en consumidores
+
+La búsqueda técnica vigente identifica implementaciones `role-override.ts` al menos en consumidores como:
+
+```text
+vento-nexo
+vento-fogo
+vento-pulso
+```
+
+La existencia de esos helpers demuestra que hay lógica local de override que deberá ser reconciliada durante la migración.
+
+No demuestra que:
+
+- todas las aplicaciones tengan la misma implementación;
+- los overrides sean simulación canónica;
+- una cookie sea fuente de autoridad válida;
+- el nuevo componente deba leer esos helpers;
+- exista hoy una API compartida de aviso;
+- se pueda migrar por búsqueda y reemplazo sin revisar semántica.
+
+---
+
+#### 51. Reconciliación de evidencia actual
+
+La evidencia se clasifica así:
+
+| Evidencia observada                                                                         | Decisión documental                                             |
+| ------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `@vento/os-context` runtime contiene fuente `simulation`, `simulation_id` e `is_simulation` | no adoptar el tipo runtime completo como prop pública del aviso |
+| el mismo tipo runtime aún contiene `can_operate`                                            | no trasladar ese booleano ambiguo al componente visual          |
+| el template histórico escribe una cookie de role override                                   | no convertir cookie cliente en contrato de simulación           |
+| el template histórico ofrece selector de roles                                              | separar selector legacy del aviso compartido                    |
+| existen helpers `role-override.ts` en varios consumidores                                   | asignar reconciliación posterior a migración coordinada         |
+| `AUTH-SIM-006` separa autoridad real de simulada                                            | ubicar el componente solo en el plano de presentación           |
+| `AUTH-SIM-007` conserva aviso persistente como responsabilidad propia                       | no adelantar su política completa desde UI009                   |
+| TREQ vigentes exigen indicador persistente y cero efectos reales                            | reutilizar cobertura existente sin duplicar requisitos          |
+
+---
+
+#### 52. Decisión de no legitimar el patrón legacy
+
+`SHELL-UI-009` no adopta como API canónica:
+
+```text
+ROLE_OVERRIDE_COOKIE
+PRIVILEGED_ROLE_OVERRIDES
+ROLE_OPTIONS
+setCookieValue
+handleRoleOverride
+Usar rol real
+```
+
+Estos nombres y mecanismos observados son evidencia de implementación actual o histórica.
+
+No se convierten por esta tarea en:
+
+- contrato de simulación;
+- contrato de autoridad;
+- API de `@vento/ui-web`;
+- mecanismo de persistencia del nuevo componente;
+- mecanismo de salida del nuevo componente.
+
+La migración deberá clasificar qué se conserva, adapta o retira bajo los contratos canónicos vigentes.
+
+---
+
+#### 53. Concurrencia y estado obsoleto
+
+El componente no conserva una simulación anterior por estado interno.
+
+Si la composición propietaria cambia de escenario, rol o deja de considerar válida la simulación, deberá volver a renderizar o desmontar el aviso con la proyección vigente.
+
+`SimulatedRoleNotice` no:
+
+- aplica respuestas tardías;
+- mantiene una cola de simulaciones;
+- resuelve carreras;
+- escoge qué escenario gana;
+- conserva un rol anterior después de recibir nuevas props;
+- reintenta automáticamente.
+
+La invalidación autoritativa pertenece a las capas propietarias.
+
+---
+
+#### 54. Conectividad y offline
+
+El aviso no crea semántica offline propia.
+
+No:
+
+- inicia simulación offline;
+- prolonga una simulación porque la red cayó;
+- convierte la última simulación conocida en estado vigente;
+- persiste snapshots para reutilizarlos como autoridad;
+- encola acciones durante una simulación;
+- reintenta efectos al recuperar conectividad.
+
+Una aplicación puede mostrar una proyección ya preparada según su contrato de conectividad, pero el componente no decide si esa proyección sigue siendo válida.
+
+---
+
+#### 55. Composición con patrones compartidos
+
+Una superficie puede componer:
+
+```text
+ContextIndicator
+SimulatedRoleNotice
+SiteSelector
+AreaSelector
+Alert
+Button
+```
+
+según corresponda.
+
+Cada pieza conserva su responsabilidad:
+
+- `ContextIndicator`: contexto confirmado;
+- `SimulatedRoleNotice`: condición especializada de rol simulado;
+- `SiteSelector`: intención de cambio de sede real cuando el contrato lo permita;
+- `AreaSelector`: intención de cambio de área real cuando el contrato lo permita;
+- `Alert`: mensaje contextual no cubierto por una pieza especializada;
+- `Button`: acción explícita con su propio contrato.
+
+La composición no autoriza a una pieza visual a asumir la responsabilidad de otra.
+
+---
+
+#### 56. `className`, estilos y layout
+
+La implementación podrá admitir extensión visual compatible con el sistema de diseño.
+
+`className`, `style` o atributos equivalentes no podrán:
+
+- ocultar el carácter simulado;
+- ocultar el rol simulado;
+- hacer depender el significado solo de color;
+- convertir el aviso en toast autocerrable;
+- eliminar contenido accesible esencial;
+- romper contraste;
+- romper reflow;
+- romper zoom;
+- introducir una acción de cierre no prevista;
+- fabricar variantes de autoridad.
+
+No se crea una prop funcional `authorized`, `executable`, `admin`, `operational` o `real` que cambie la naturaleza del componente.
+
+---
+
+#### 57. Compatibilidad y versionado
+
+La futura superficie pública deberá gobernarse con SemVer.
+
+Cambios potencialmente incompatibles incluyen:
+
+- renombrar `simulatedRoleLabel`;
+- cambiar la semántica de `nonExecutableLabel`;
+- introducir cierre local;
+- introducir inicio o salida de simulación;
+- introducir selección de rol;
+- convertir una prop visual en fuente de autoridad;
+- adoptar `EffectiveContext` como prop obligatoria;
+- introducir dependencia directa de Supabase;
+- introducir persistencia propia;
+- introducir `canOperate` como guard visual;
+- cambiar la semántica accesible del aviso;
+- convertir la región persistente en mensaje efímero;
+- retirar props sin ventana de compatibilidad.
+
+Una necesidad local no se incorpora silenciosamente a la API común.
+
+---
+
+#### 58. Estrategia posterior de migración
+
+La migración física no ocurre en `SHELL-UI-009`.
+
+La fase propietaria posterior deberá:
+
+1. inventariar avisos, selectores de rol, cookies y helpers de override reales;
+2. separar simulación canónica, modo de prueba legacy, impersonación técnica y simples filtros visuales;
+3. identificar las fuentes actuales de rol y persistencia;
+4. clasificar cada implementación como activa, compartible, local válida, legacy o sin consumidor;
+5. asignar lotes reversibles por repositorio;
+6. materializar el componente compartido cuando corresponda;
+7. adaptar consumidores sin convertir el aviso en fuente de autoridad;
+8. eliminar dependencia autoritativa de cookies u overrides locales cuando el paquete propietario lo ordene;
+9. probar accesibilidad, persistencia visual, cero efectos y paridad;
+10. retirar únicamente copias con ausencia de uso residual demostrada.
+
+---
+
+#### 59. Handoff a migración coordinada
+
+Responsabilidades posteriores:
+
+| Tarea           | Handoff de `SimulatedRoleNotice`                                                  |
+| --------------- | --------------------------------------------------------------------------------- |
+| `SHELL-MIG-001` | inventariar avisos, selectores, overrides, cookies, helpers y consumidores reales |
+| `SHELL-MIG-002` | separar lotes reversibles por repositorio                                         |
+| `SHELL-MIG-003` | preparar compatibilidad temporal y bloquear nuevas copias legacy                  |
+| `SHELL-MIG-004` | impedir que scaffolds históricos reintroduzcan patrones divergentes               |
+| `SHELL-MIG-005` | adoptar el componente compartido donde la clasificación lo determine              |
+| `SHELL-MIG-006` | verificar accesibilidad, tema, densidad y responsive                              |
+| `SHELL-MIG-007` | demostrar paridad contractual, no ejecución y comportamiento por consumidor       |
+| `SHELL-MIG-008` | retirar únicamente artefactos sin uso residual                                    |
+
+No se adelanta ninguno de esos cambios.
+
+---
+
+#### 60. Handoff a calidad y releases
+
+La materialización futura conserva los propietarios ya definidos para paquetes compartidos:
+
+| Tarea          | Responsabilidad                                      |
+| -------------- | ---------------------------------------------------- |
+| `SHELL-CI-001` | pruebas propias del package                          |
+| `SHELL-CI-002` | build independiente                                  |
+| `SHELL-CI-003` | releases versionados                                 |
+| `SHELL-CI-004` | changelog                                            |
+| `SHELL-CI-005` | matriz de compatibilidad                             |
+| `SHELL-CI-006` | actualización controlada de consumidores mediante PR |
+
+`SHELL-UI-009` define el contrato; no publica una versión.
+
+---
+
+#### 61. Contrato futuro de prueba
+
+La implementación física y su adopción deberán demostrar, como mínimo:
+
+1. renderizado del aviso con un rol simulado válido ya preparado;
+2. título visible;
+3. etiqueta de rol simulado visible;
+4. descripción visible;
+5. naturaleza no ejecutable visible cuando sea suministrada;
+6. ausencia de `active` como fuente interna de verdad;
+7. ausencia de `onDismiss`;
+8. ausencia de cierre por timeout;
+9. ausencia de toast autocerrable;
+10. ausencia de `onStartSimulation`;
+11. ausencia de `onStopSimulation`;
+12. ausencia de `onRoleChange`;
+13. ausencia de selector de roles dentro del aviso;
+14. ausencia de persistencia propia;
+15. ausencia de escritura de cookies;
+16. ausencia de lectura de cookies de override;
+17. ausencia de lectura o escritura de storage;
+18. ausencia de query parameters como fuente de simulación;
+19. ausencia de consulta Supabase;
+20. ausencia de RPC dentro del componente;
+21. ausencia de `canOperate` como prop o guard;
+22. ausencia de permisos o grants en la API base;
+23. ausencia de `EffectiveContext` como prop pública obligatoria;
+24. ausencia de dependencia runtime directa de `@vento/os-context` para presentación;
+25. ausencia de mutaciones empresariales;
+26. ausencia de lecturas protegidas ampliadas por rol simulado;
+27. coexistencia con `ContextIndicator` sin reemplazar contexto confirmado;
+28. coexistencia con selectores reales sin convertirlos en territorio simulado;
+29. re-render con nuevo rol sin conservar etiqueta anterior por estado interno;
+30. desmontaje sin registrar por sí mismo una salida autoritativa;
+31. montaje sin registrar por sí mismo un inicio autoritativo;
+32. fallo visual que no desactive enforcement server-side;
+33. texto explícito que no dependa solo de color;
+34. icono opcional no usado como única señal;
+35. contraste suficiente;
+36. zoom;
+37. reflow;
+38. viewport estrecho;
+39. lector de pantalla capaz de descubrir la condición;
+40. ausencia de anuncio assertivo repetitivo por re-render ordinario;
+41. ausencia de robo de foco;
+42. ausencia de tab stop innecesario;
+43. ausencia de hover obligatorio para información esencial;
+44. SSR compatible cuando la composición entregue props seguras;
+45. copy técnico sensible ausente;
+46. reason codes internos ausentes del contenido base;
+47. tokens, IDs de sesión y secretos ausentes del contenido base;
+48. paridad entre consumidores antes de retirar avisos existentes;
+49. rollback verificable por lote de migración;
+50. demostración de que ninguna variante visual concede autoridad.
+
+Esta lista define evidencia futura. No declara implementación ni ejecución de pruebas en esta tarea.
+
+---
+
+#### 62. Cobertura de requisitos existente
+
+La tarea no necesita introducir una obligación transversal nueva porque el registro vigente ya cubre de forma específica:
+
+- separación de simulación y autoridad real, aviso persistente, bloqueo aplicable y auditoría: `TREQ-AUTH-012`;
+- separación en cuatro planos y exclusividad del `ALLOW` ejecutable para autoridad real: `TREQ-AUTH-119`;
+- resultados simulados limitados a `WOULD_ALLOW`, `WOULD_DENY` e `INDETERMINATE` con `executable=false`: `TREQ-AUTH-120`;
+- separación de tipos, APIs, caches y consumidores reales y simulados: `TREQ-AUTH-121`;
+- lectura de datos reales y RLS exclusivamente desde autoridad real: `TREQ-AUTH-122`;
+- rechazo de autoridad simulada para mutaciones y efectos: `TREQ-AUTH-123`;
+- controles simulados únicamente en superficies de preview no ejecutables: `TREQ-AUTH-124`;
+- prohibición de completar un plano desde el otro: `TREQ-AUTH-125`;
+- separación de sesiones, tokens, cookies, claims, storage y cache entre propósitos: `TREQ-AUTH-126`;
+- auditoría separada del actor real y el escenario hipotético: `TREQ-AUTH-127`;
+- simulación, role override cookie y otros atajos incapaces de satisfacer un permiso base real: `TREQ-AUTH-165`;
+- bloqueo explícito de intentos de ejecución con procedencia simulada: `TREQ-AUTH-279`;
+- separación física de autoridad, evaluación, presentación y auditoría: `TREQ-AUTH-280`;
+- clasificación de preview y controles inertes: `TREQ-AUTH-281`;
+- rechazo multicanal de procedencia simulada antes de efectos: `TREQ-AUTH-282`;
+- salida y nueva autorización real antes de ejecutar después de una simulación: `TREQ-AUTH-283`;
+- consistencia de causas y canales: `TREQ-AUTH-284`, `TREQ-AUTH-285`;
+- cobertura de las diez aplicaciones sin autoridad simulada: `TREQ-AUTH-286`;
+- indicador persistente, copy no ejecutable, confirmación de cero cambios y minimización de datos internos: `TREQ-AUTH-287`;
+- reconciliación física de APIs, tipos y patrones legacy que mezclan simulación y contexto efectivo: `TREQ-AUTH-288`;
+- responsabilidades compartidas clasificadas y reconciliadas antes de adopción o retiro: `TREQ-SHELL-002`, `TREQ-SHELL-032`;
+- template histórico separado de runtime: `TREQ-SHELL-029`;
+- autoridad real separada de role overrides y controles cliente: `TREQ-SHELL-031`;
+- versionado, deprecación y retiro seguro de paquetes compartidos: `TREQ-SHELL-036` a `TREQ-SHELL-039`.
+
+`SHELL-UI-009` especializa estas obligaciones en el contrato de presentación de `SimulatedRoleNotice` sin crear una regla material nueva ni adelantar las decisiones pendientes de `AUTH-SIM-007` a `AUTH-SIM-011`.
+
+---
+
+#### 63. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+La cobertura vigente ya protege aviso persistente, separación entre autoridad real y simulada, preview no ejecutable, cero efectos, privacidad, multicanalidad, invalidación, auditoría y reconciliación de patrones legacy. Esta tarea únicamente fija la API visual compartida y sus fronteras dentro de esa cobertura existente.
+
+---
+
+#### 64. Estado de materialización física
+
+Al cierre documental de `SHELL-UI-009`:
+
+```text
+IDENTIDAD SimulatedRoleNotice            = ESPECIFICADA
+SimulatedRoleNoticeProps                 = ESPECIFICADO CONCEPTUALMENTE
+ROL SIMULADO / ROL REAL                  = SEPARADOS
+PRESENTACIÓN / AUTORIDAD                 = SEPARADAS
+AVISO VISUAL                             = NO DESCARTABLE MIENTRAS ESTÁ MONTADO
+INICIO / SALIDA DE SIMULACIÓN            = FUERA DEL COMPONENTE
+BLOQUEO DE ACCIONES                      = FUERA DEL COMPONENTE
+MODO SOLO LECTURA                        = FUERA DEL COMPONENTE
+AUDITORÍA                                = FUERA DEL COMPONENTE
+PERSISTENCIA DE NEGOCIO                  = FUERA DEL COMPONENTE
+ACCESIBILIDAD                            = ESPECIFICADA DOCUMENTALMENTE
+FRONTERA CLIENTE                         = MÍNIMA / NO OBLIGATORIA PARA TEXTO
+MATERIALIZACIÓN FÍSICA                   = PENDIENTE DE FASE PROPIETARIA
+```
+
+No existe en esta tarea un archivo TypeScript nuevo ni una exportación física nueva.
+
+---
+
+#### 65. Decisiones vinculantes
+
+Quedan fijadas las siguientes decisiones documentales:
+
+1. El componente compartido conceptual se denomina `SimulatedRoleNotice`.
+2. Pertenece conceptualmente a `@vento/ui-web`.
+3. Su responsabilidad es exclusivamente visual, semántica y accesible.
+4. El componente no determina si una simulación está activa.
+5. La composición propietaria decide cuándo renderizarlo.
+6. La API base no incluye `active` ni `isSimulated` como fuente de verdad interna.
+7. La API conceptual mínima usa `title`, `simulatedRoleLabel`, `description` y `nonExecutableLabel`.
+8. Los textos son suministrados por la capa propietaria.
+9. La tarea no congela el copy empresarial completo antes de `AUTH-SIM-007`.
+10. `simulatedRoleLabel` es etiqueta humana, no identidad autoritativa.
+11. El componente no recibe catálogo de roles.
+12. El componente no recibe permisos ni grants.
+13. El componente no recibe `EffectiveContext` como prop pública obligatoria.
+14. El componente no recibe `canOperate`.
+15. El componente no interpreta `WOULD_ALLOW` como `ALLOW`.
+16. El componente pertenece al plano de presentación, no al de autoridad, evaluación o auditoría.
+17. Mientras esté montado, el aviso debe permanecer perceptible.
+18. No existe `onDismiss` ni cierre local.
+19. No existe autocierre por timeout.
+20. No existe `onStartSimulation`.
+21. No existe `onStopSimulation`.
+22. No existe `onRoleChange`.
+23. El aviso no contiene un selector de rol.
+24. El aviso no escribe cookies.
+25. El aviso no lee cookies de override.
+26. El aviso no usa storage como fuente de simulación.
+27. El aviso no usa URL como fuente de simulación.
+28. El aviso no consulta Supabase.
+29. El aviso no ejecuta RPC.
+30. El aviso no ejecuta mutaciones empresariales.
+31. El aviso no amplía lecturas protegidas.
+32. RLS sigue usando autoridad real.
+33. La sesión real no se modifica.
+34. `ContextIndicator` puede coexistir con el aviso y no es sustituido.
+35. `SiteSelector` y `AreaSelector` conservan sus responsabilidades propias.
+36. El aviso no define el AppShell completo.
+37. La ubicación sistémica dentro del chrome no se congela en esta tarea.
+38. `AUTH-SIM-007` conserva la política completa de aviso persistente.
+39. `AUTH-SIM-008` conserva el registro de inicio.
+40. `AUTH-SIM-009` conserva el registro de salida.
+41. `AUTH-SIM-010` conserva el bloqueo de acciones críticas.
+42. `AUTH-SIM-011` conserva la definición del modo solo lectura.
+43. Montar el componente no equivale a iniciar una simulación.
+44. Desmontarlo no equivale a cerrar una simulación.
+45. Un fallo del aviso no puede desactivar enforcement autoritativo.
+46. La condición de simulación no depende solo de color o icono.
+47. El contenido esencial permanece accesible por lector de pantalla.
+48. No se usa anuncio assertivo repetitivo por defecto.
+49. El componente no roba foco.
+50. El componente no introduce tab stops obligatorios.
+51. La API minimiza datos sensibles y técnicos.
+52. El template histórico `Modo prueba` se trata como evidencia legacy, no como contrato objetivo.
+53. La cookie de role override observada no se canoniza.
+54. Los helpers locales de override no se vuelven dependencia del componente.
+55. La reconciliación física queda para migración coordinada.
+56. Las pruebas, build, release y compatibilidad quedan en sus tareas propietarias.
+57. Se crean 0 requisitos de prueba y se modifican 0.
+58. No se adelanta la tarea siguiente.
+
+---
+
+#### 66. Criterios de aceptación documental
+
+`SHELL-UI-009` queda documentalmente cerrada únicamente si se cumplen simultáneamente:
+
+- [x] la continuidad real apunta de la tarea anterior a `SHELL-UI-009`;
+- [x] existe una identidad única para el componente;
+- [x] se fija su pertenencia a `@vento/ui-web`;
+- [x] se define su responsabilidad estrictamente presentacional;
+- [x] se define una API conceptual mínima;
+- [x] se evita adoptar `EffectiveContext` como prop pública obligatoria;
+- [x] se evita adoptar `canOperate` como guard visual;
+- [x] se separa rol simulado de rol real;
+- [x] se separa presentación de autoridad;
+- [x] se mantiene la separación de los cuatro planos;
+- [x] se evita convertir resultados hipotéticos en `ALLOW`;
+- [x] se evita toda mutación empresarial desde el componente;
+- [x] se evita ampliar lecturas protegidas desde la simulación;
+- [x] se conserva RLS bajo autoridad real;
+- [x] se evita modificación de sesión real;
+- [x] se define el aviso como perceptible mientras está montado;
+- [x] se prohíbe cierre local;
+- [x] se prohíbe autocierre por timeout;
+- [x] se excluye inicio de simulación;
+- [x] se excluye salida de simulación;
+- [x] se excluye cambio de rol;
+- [x] se excluye selector de roles dentro del aviso;
+- [x] se asigna la política completa de aviso a `AUTH-SIM-007`;
+- [x] se asignan inicio y salida a `AUTH-SIM-008` y `AUTH-SIM-009`;
+- [x] se asigna bloqueo de acciones a `AUTH-SIM-010`;
+- [x] se asigna modo solo lectura a `AUTH-SIM-011`;
+- [x] se separa el aviso de `ContextIndicator`;
+- [x] se separa el aviso de selectores territoriales;
+- [x] no se congela arquitectura completa de AppShell;
+- [x] se prohíben dependencias de Supabase, RPC, cookies, storage y router propietario;
+- [x] se minimizan datos sensibles y técnicos;
+- [x] se especifica semántica HTML persistente;
+- [x] se evita un `role="alert"` assertivo repetitivo por defecto;
+- [x] se evita dependencia exclusiva de color o icono;
+- [x] se especifican foco, teclado, zoom, reflow y responsive;
+- [x] se reconcilia el template histórico `Modo prueba` sin canonizarlo;
+- [x] se reconocen helpers de override actuales sin convertirlos en autoridad;
+- [x] se asigna inventario, adopción y retiro a migración coordinada;
+- [x] se asignan pruebas, build, release y compatibilidad a tareas propietarias;
+- [x] no se modifica código, Supabase, consumidores o configuración;
+- [x] se declaran 0 cambios TREQ con cobertura existente concreta;
+- [x] no queda una decisión material de esta tarea sin propietario.
+
+Resultado documental:
+
+```text
+AVISO DE ROL SIMULADO COMPARTIDO   = ESPECIFICADO
+API CONCEPTUAL                     = CERRADA
+PRESENTACIÓN / AUTORIDAD           = SEPARADAS
+ROL SIMULADO / ROL REAL            = SEPARADOS
+CIERRE LOCAL                       = PROHIBIDO
+CICLO DE VIDA DE SIMULACIÓN        = EXTERNO
+EJECUCIÓN REAL                     = FUERA DEL COMPONENTE
+COPY EMPRESARIAL COMPLETO          = BAJO TAREA PROPIETARIA
+MATERIALIZACIÓN FÍSICA             = PENDIENTE DE FASE PROPIETARIA
+```
+
+---
+
+#### 67. Límites de la tarea
+
+Esta tarea no autoriza:
+
+- crear archivos TypeScript del componente;
+- modificar `@vento/ui-web` físicamente;
+- modificar `@vento/os-context`;
+- modificar contratos de simulación;
+- modificar contratos de autorización;
+- iniciar o terminar simulaciones;
+- crear un selector de roles;
+- definir el copy definitivo completo de `AUTH-SIM-007`;
+- registrar inicio o salida de simulación;
+- definir enforcement de acciones críticas;
+- definir el modo solo lectura;
+- crear o alterar tablas;
+- crear o alterar columnas;
+- crear RPC;
+- modificar RLS;
+- modificar datos;
+- cambiar configuración de Supabase;
+- editar consumidores;
+- retirar overrides actuales;
+- cambiar roles, sedes, áreas, turnos o check-ins;
+- ejecutar una migración;
+- publicar un package;
+- crear un release;
+- cambiar continuidad canónica;
+- iniciar la tarea siguiente.
+
+---
+
+#### 68. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-UI-008 — Compartir selector de área`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-UI-009 — Compartir aviso de rol simulado`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-UI-010 — Evaluar AppShell compartido`
+
+
 ### [ ] SHELL-UI-010 — Evaluar AppShell compartido
 
 ### [ ] SHELL-UI-011 — Compartir navegación orientada a tareas

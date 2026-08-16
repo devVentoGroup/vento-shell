@@ -61,6 +61,9 @@ Comandos desde la raíz de vento-shell:
    las tareas posteriores, el build exige cabecera compacta tipo SHELL-UI-005 y
    una sección Continuidad con etiquetas apiladas y valores en código inline.
    Los borradores vacíos siguen sin iniciarse ni recibir scaffold automático.
+   task-delivery-template.md se valida contra esa política en cada preparación,
+   por lo que una plantilla antigua o divergente bloquea el build antes de
+   propagarse a una tarea.
 
 10. Inventariar deriva multi-repositorio sin escribir:
 
@@ -149,6 +152,10 @@ Organización:
   Solo normaliza estructura de las tareas cubiertas por la frontera prospectiva;
   preserva las anteriores, no cambia estados, no crea scaffolds y no inicia
   continuidad.
+- watch-plan-canonico mantiene un único proceso mediante
+  .delivery/plan-watch.lock.json, recupera locks obsoletos y publica en
+  .delivery/plan-status.md un resumen legible de salud, continuidad y última
+  compilación. Ambos archivos son locales y no son fuentes canónicas.
 - docs:repos:drift inventaría branch/upstream, estado local, manifiestos,
   rutas, componentes, contratos, migraciones y consumidores Supabase de los
   doce repositorios VENTO. No ejecuta Supabase ni escribe salvo

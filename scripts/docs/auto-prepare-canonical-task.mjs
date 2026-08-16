@@ -8,6 +8,7 @@ import {
   parseTaskBlocks,
   validateTaskPresentation,
 } from './format-canonical-task.mjs';
+import { validateTaskFormatPolicy } from './task-format-policy.mjs';
 
 function fail(message) {
   throw new Error(message);
@@ -35,11 +36,7 @@ export function autoPrepareCanonicalTask({
 } = {}) {
   const currentPreflight = derivePreflight({ root });
   const baseDir = path.join(root, 'docs', 'plan-canonico', 'modular');
-  const policyPath = path.join(baseDir, 'task-format-policy.json');
-  const policy = JSON.parse(fs.readFileSync(policyPath, 'utf8'));
-  if (policy.schema_version !== 1 || policy.historical_policy !== 'PRESERVE_BEFORE_BOUNDARY') {
-    fail('task-format-policy.json no contiene una política prospectiva soportada.');
-  }
+  const policy = validateTaskFormatPolicy({ root });
   const boundary = derivePreflight({ root, requestedTaskId: policy.effective_from_task_id });
   const changed = [];
   const checked = [];

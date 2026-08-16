@@ -2,6 +2,12 @@ import { existsSync, watch } from "node:fs";
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { derivePreflight } from "./canonical-task-preflight.mjs";
+import {
+  acquireWatcherLock,
+  releaseWatcherLock,
+  writePlanWatchStatus,
+} from "./plan-watch-runtime.mjs";
 
 const currentFile = fileURLToPath(import.meta.url);
 const currentDirectory = path.dirname(currentFile);
@@ -55,6 +61,36 @@ const repositoryDriftBaseline = path.join(
   "repository-drift-baseline.json"
 );
 
+const watcherLockPath = path.join(
+  repositoryRoot,
+  ".delivery",
+  "plan-watch.lock.json"
+);
+
+const watcherStatusPath = path.join(
+  repositoryRoot,
+  ".delivery",
+  "plan-status.md"
+);
+
+const watcherStartedAt = new Date().toISOString();
+const watcherLock = acquireWatcherLock({
+  lockPath: watcherLockPath,
+  startedAt: watcherStartedAt,
+});
+
+if (!watcherLock.acquired) {
+  console.log(
+    `[PLAN CANÓNICO] Watcher ya activo con PID ${watcherLock.lock.pid}; `
+    + "esta instancia finaliza sin duplicarlo."
+  );
+  process.exit(0);
+}
+
+if (watcherLock.reclaimed) {
+  console.log("[PLAN CANÓNICO] Lock obsoleto recuperado de forma segura.");
+}
+
 const driftIntervalMs = 30 * 60 * 1000;
 let lastDriftAt = 0;
 
@@ -82,6 +118,30 @@ let buildPending = false;
 let buildSequence = 0;
 let changeVersion = 0;
 const pendingChanges = new Set();
+let lastObservedPreflight = null;
+let lastBuild = {
+  buildId: null,
+  reason: null,
+  result: "PENDIENTE",
+  message: "El watcher todavía no ha completado su verificación inicial.",
+};
+
+function publishStatus(state, overrides = {}) {
+  try {
+    lastObservedPreflight = derivePreflight({ root: repositoryRoot });
+  } catch {
+    // Conserva la última continuidad legible si la fuente está transitoriamente incompleta.
+  }
+  writePlanWatchStatus(watcherStatusPath, {
+    state,
+    pid: process.pid,
+    startedAt: watcherStartedAt,
+    pendingChanges: pendingChanges.size,
+    preflight: lastObservedPreflight,
+    ...lastBuild,
+    ...overrides,
+  });
+}
 
 function normalizeRelativePath(filename) {
   return String(filename ?? "").replaceAll("\\", "/");
@@ -168,6 +228,13 @@ async function rebuild(reason) {
   console.log(
     `\n[PLAN CANÓNICO] ▶ Compilación #${buildId} iniciada (${reason}).`
   );
+  lastBuild = {
+    buildId,
+    reason,
+    result: "EN CURSO",
+    message: "Compilando y validando fuentes canónicas.",
+  };
+  publishStatus("COMPILANDO");
 
   try {
     await runNodeScript(
@@ -211,11 +278,25 @@ async function rebuild(reason) {
     console.log(
       `\n[PLAN CANÓNICO] ✅ Compilación #${buildId}: compilado actualizado y validado.`
     );
+    lastBuild = {
+      buildId,
+      reason,
+      result: "OK",
+      message: "Compilado actualizado y validado.",
+    };
+    publishStatus("VIGILANDO");
   } catch (error) {
     console.error(
       `\n[PLAN CANÓNICO] ❌ Compilación #${buildId} fallida:`
     );
     console.error(error instanceof Error ? error.message : error);
+    lastBuild = {
+      buildId,
+      reason,
+      result: "ERROR",
+      message: error instanceof Error ? error.message : String(error),
+    };
+    publishStatus("VIGILANDO");
   } finally {
     buildRunning = false;
 
@@ -244,6 +325,7 @@ function scheduleRebuild(filename) {
   clearTimeout(debounceTimer);
   changeVersion += 1;
   pendingChanges.add(relativePath);
+  publishStatus(buildRunning ? "COMPILANDO" : "VIGILANDO");
 
   console.log(
     `[PLAN CANÓNICO] Cambio detectado: ${relativePath}`
@@ -261,6 +343,7 @@ function scheduleRebuild(filename) {
 console.log("[PLAN CANÓNICO] Vigilancia automática iniciada.");
 console.log(`[PLAN CANÓNICO] Carpeta: ${watchedDirectory}`);
 console.log("[PLAN CANÓNICO] Esperando cambios...");
+publishStatus("VIGILANDO");
 
 const watcher = watch(
   watchedDirectory,
@@ -279,13 +362,33 @@ const watcher = watch(
 
 watcher.on("error", (error) => {
   console.error("[PLAN CANÓNICO] Error del watcher:", error);
+  lastBuild = {
+    ...lastBuild,
+    result: "ERROR",
+    message: error instanceof Error ? error.message : String(error),
+  };
+  publishStatus("ERROR");
   process.exitCode = 1;
 });
 
-process.on("SIGINT", () => {
-  console.log("\n[PLAN CANÓNICO] Vigilancia finalizada.");
+let shuttingDown = false;
+
+function shutdown(signal) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  console.log(`\n[PLAN CANÓNICO] Vigilancia finalizada (${signal}).`);
+  publishStatus("DETENIDO", {
+    message: `Watcher detenido por ${signal}.`,
+  });
   watcher.close();
+  releaseWatcherLock({ lockPath: watcherLockPath });
   process.exit(0);
+}
+
+process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("exit", () => {
+  releaseWatcherLock({ lockPath: watcherLockPath });
 });
 
 // Garantiza que el compilado esté vigente al iniciar VS Code.
