@@ -4113,7 +4113,7 @@ Se aprueban cinco artefactos documentales completos:
    anterior no lo aprobó;
 4. `AUTHORIZATION-MESSAGE-CONSUMER-CHANNEL-MATRIX-001`, que decide diez canales
    y diez aplicaciones con una semántica equivalente;
-6. `AUTHORIZATION-MESSAGE-PHYSICAL-RECONCILIATION-001`, que registra el estado
+5. `AUTHORIZATION-MESSAGE-PHYSICAL-RECONCILIATION-001`, que registra el estado
    físico observado y dieciséis brechas con destino canónico exacto.
 
 Cobertura materializada:
@@ -4189,7 +4189,7 @@ AUTH-ERR-020 decide:
 3. los veinte códigos públicos incluidos;
 4. los veinticinco perfiles de presentación;
 5. los dos estados interactivos auxiliares excluidos y sus propietarios;
-5. el modelo de campos obligatorios, opcionales y prohibidos;
+6. el modelo de campos obligatorios, opcionales y prohibidos;
 7. la propiedad de cada módulo compartido;
 8. el algoritmo de resolución;
 9. las reglas de fallback;
@@ -5049,22 +5049,24 @@ Observaciones:
 
 #### 36. `AUTHORIZATION-MESSAGE-PHYSICAL-RECONCILIATION-001`
 
-|    # | Brecha física                                                                | Estado                        | Riesgo                                                                   | Destino exacto                                                                  |
-| ---: | ---------------------------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
-|    1 | no existe el paquete físico `@vento/contracts`                               | `PENDIENTE_DE_IMPLEMENTACION` | códigos y schemas no tienen distribución canónica                        | `SHELL-CON-001`; `SHELL-PKG-001` a `SHELL-PKG-008`                              |
-|    2 | no existe export `@vento/contracts/authorization` con catálogo y perfiles    | `PENDIENTE_DE_IMPLEMENTACION` | cada consumidor puede definir otra semántica                             | `SHELL-CON-008`; `SHELL-AUTH-001`                                               |
-|    3 | no existe schema o tipo generado que valide 20 razones y 25 perfiles         | `PENDIENTE_DE_IMPLEMENTACION` | faltantes, duplicados y campos inseguros                                 | `SHELL-CON-008`; `SHELL-AUTH-001`; `SHELL-CI-016`                               |
-|    4 | `@vento/os-context` solo exporta types y client legacy                       | `BLOQUEADO`                   | no existe resolver compartido y persisten `can_operate` y strings libres | `SHELL-AUTH-001`; `SHELL-CTX-001`; `SHELL-AUTH-002`                             |
-|    5 | no existe paquete físico `@vento/ui-web` ni componente de bloqueo compartido | `PENDIENTE_DE_IMPLEMENTACION` | cinco aplicaciones mantienen páginas divergentes                         | `SHELL-UI-001`; `SHELL-UI-016`                                                  |
-|    6 | NEXO conserva página genérica que muestra la ruta                            | `PENDIENTE_DE_MIGRACION`      | filtración y causa incorrecta                                            | `SHELL-AUTH-005`; `SHELL-UI-016`; `SHELL-CI-016`                                |
-|    7 | FOGO conserva ruta, permiso y copy local de override                         | `PENDIENTE_DE_MIGRACION`      | enumeración de capacidades y semántica de simulación incorrecta          | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-UI-016`                              |
-|    8 | ORIGO conserva ruta, permiso y copy local de override                        | `PENDIENTE_DE_MIGRACION`      | enumeración y drift                                                      | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-UI-016`                              |
-|    9 | PULSO conserva mensaje genérico ligado a sede seleccionada                   | `PENDIENTE_DE_MIGRACION`      | atribución falsa del bloqueo                                             | `SHELL-AUTH-005`; `SHELL-UI-016`; `SHELL-CI-016`                                |
-|   10 | VISO conserva copy genérico y muestra ruta                                   | `PENDIENTE_DE_MIGRACION`      | diagnóstico administrativo filtrado sin contrato                         | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-UI-016`                              |
-|   11 | guards transportan `reason`, `permission` y `returnTo` libres                | `BLOQUEADO`                   | manipulación, exposición y mapping local                                 | `SHELL-AUTH-002`; `SHELL-AUTH-003`; `SHELL-AUTH-004`; `SHELL-AUTH-005`          |
-|   12 | no existe versionado, hash, locale y fingerprint físicos del catálogo        | `PENDIENTE_DE_IMPLEMENTACION` | mezcla de versiones, stale copy y rollback incierto                      | `SHELL-PKG-002` a `SHELL-PKG-005`; `SHELL-CON-008`; `SHELL-CI-019`              |
-|   13 | no existe gate de completitud, exactitud y ausencia de copy local            | `PENDIENTE_DE_IMPLEMENTACION` | una app puede omitir o alterar perfiles                                  | `SHELL-PKG-008`; `SHELL-AUTH-004`; `SHELL-CI-016`                               |
-|   14 | no existe adopción y certificación de diez aplicaciones y diez canales       | `PENDIENTE_DE_EVIDENCIA`      | implementación parcial y bypass entre superficies                        | `SHELL-AUTH-005`; `AUTH-QA-019`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019` |
+|    # | Brecha física                                                                             | Estado                        | Riesgo                                                                          | Destino exacto                                                                                   |
+| ---: | ----------------------------------------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+|    1 | no existe el paquete físico `@vento/contracts`                                            | `PENDIENTE_DE_IMPLEMENTACION` | códigos y schemas no tienen distribución canónica                               | `SHELL-CON-001`; `SHELL-PKG-001` a `SHELL-PKG-008`                                               |
+|    2 | no existe export `@vento/contracts/authorization` con catálogo y perfiles                 | `PENDIENTE_DE_IMPLEMENTACION` | cada consumidor puede definir otra semántica                                    | `SHELL-CON-008`; `SHELL-AUTH-001`                                                                |
+|    3 | no existe schema o tipo generado que valide 20 razones y 25 perfiles                      | `PENDIENTE_DE_IMPLEMENTACION` | faltantes, duplicados y campos inseguros                                        | `SHELL-CON-008`; `SHELL-AUTH-001`; `SHELL-CI-016`                                                |
+|    4 | `@vento/os-context` solo exporta types y client legacy                                    | `BLOQUEADO`                   | no existe resolver compartido y persisten `can_operate` y strings libres        | `SHELL-AUTH-001`; `SHELL-CTX-001`; `SHELL-AUTH-002`                                              |
+|    5 | no existe paquete físico `@vento/ui-web` ni componente de bloqueo compartido              | `PENDIENTE_DE_IMPLEMENTACION` | cinco aplicaciones mantienen páginas divergentes                                | `SHELL-UI-001`; `SHELL-UI-016`                                                                   |
+|    6 | NEXO conserva página genérica que muestra la ruta                                         | `PENDIENTE_DE_MIGRACION`      | filtración y causa incorrecta                                                   | `SHELL-AUTH-005`; `SHELL-UI-016`; `SHELL-CI-016`                                                 |
+|    7 | FOGO conserva ruta, permiso y copy local de override                                      | `PENDIENTE_DE_MIGRACION`      | enumeración de capacidades y semántica de simulación incorrecta                 | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-UI-016`                                               |
+|    8 | ORIGO conserva ruta, permiso y copy local de override                                     | `PENDIENTE_DE_MIGRACION`      | enumeración y drift                                                             | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-UI-016`                                               |
+|    9 | PULSO conserva mensaje genérico ligado a sede seleccionada                                | `PENDIENTE_DE_MIGRACION`      | atribución falsa del bloqueo                                                    | `SHELL-AUTH-005`; `SHELL-UI-016`; `SHELL-CI-016`                                                 |
+|   10 | VISO conserva copy genérico y muestra ruta                                                | `PENDIENTE_DE_MIGRACION`      | diagnóstico administrativo filtrado sin contrato                                | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-UI-016`                                               |
+|   11 | guards transportan `reason`, `permission` y `returnTo` libres                             | `BLOQUEADO`                   | manipulación, exposición y mapping local                                        | `SHELL-AUTH-002`; `SHELL-AUTH-003`; `SHELL-AUTH-004`; `SHELL-AUTH-005`                           |
+|   12 | no existe versionado, hash, locale y fingerprint físicos del catálogo                     | `PENDIENTE_DE_IMPLEMENTACION` | mezcla de versiones, stale copy y rollback incierto                             | `SHELL-PKG-002` a `SHELL-PKG-005`; `SHELL-CON-008`; `SHELL-CI-019`                               |
+|   13 | no existe gate de completitud, exactitud y ausencia de copy local                         | `PENDIENTE_DE_IMPLEMENTACION` | una app puede omitir o alterar perfiles                                         | `SHELL-PKG-008`; `SHELL-AUTH-004`; `SHELL-CI-016`                                                |
+|   14 | no existe adopción y certificación de diez aplicaciones y diez canales                    | `PENDIENTE_DE_EVIDENCIA`      | implementación parcial y bypass entre superficies                               | `SHELL-AUTH-005`; `AUTH-QA-019`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019`                  |
+|   15 | evaluadores y consumidores físicos no discriminan denegación base de denegación operativa | `PENDIENTE_DE_IMPLEMENTACION` | un deny operativo puede mostrarse como administrativo o reducirse a `false`     | `AUTH-ERR-004`; `AUTH-DB-034`; `SHELL-AUTH-001`; `SHELL-AUTH-002`; `SHELL-CI-016`                |
+|   16 | no existe catálogo compartido para identificación de actor y reautenticación fuerte       | `PENDIENTE_DE_IMPLEMENTACION` | estados interactivos pueden degradarse a dispositivo no autorizado o copy local | `AUTH-ERR-015`; `AUTH-DEV-007`; `AUTH-DEV-012`; `AUTH-DEV-014`; `SHELL-AUTH-002`; `SHELL-UI-016` |
 
 Ninguna brecha autoriza implementación durante esta tarea documental.
 
@@ -5262,3 +5264,4 @@ en la reconciliación física.
 **SIGUIENTE TAREA RESERVADA**
 
 `NEXO-DOM-001 — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores`
+
