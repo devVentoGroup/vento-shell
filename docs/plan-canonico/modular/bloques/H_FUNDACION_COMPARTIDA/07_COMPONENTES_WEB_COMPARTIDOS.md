@@ -15145,7 +15145,7 @@ La tarea queda documentalmente cerrada cuando se cumple todo lo siguiente:
 
 **Estado:** APROBADA
 **Tarea anterior:** SHELL-UI-011 — Compartir navegación orientada a tareas
-**Tarea siguiente:** SHELL-UI-013 — Compartir señalización de offline y sincronización
+**Tarea siguiente:** SHELL-UI-013 — Compartir panel de acción principal
 **Tipo de tarea:** Documental; definición canónica de la línea compartida de estados de proceso para `@vento/ui-web`, su proyección del ciclo de vida principal, API conceptual, semántica, accesibilidad, fronteras con transiciones, condiciones, navegación, offline y sincronización, reconciliación de consumidores y handoff de migración, sin materializar package, estado de dominio, motor de transiciones, cambios runtime, SQL, migraciones, releases ni despliegues
 **Bloque:** H — Fundación compartida de VENTO-SHELL
 **Package propietario:** `@vento/ui-web`
@@ -16657,7 +16657,7 @@ Quedan fijadas las siguientes decisiones vinculantes:
 `SHELL-UI-012 — Compartir línea de estados de proceso`
 
 **SIGUIENTE TAREA RESERVADA**
-`SHELL-UI-013 — Compartir señalización de offline y sincronización`
+`SHELL-UI-013 — Compartir panel de acción principal`
 
 
 ### [ ] SHELL-UI-013 — Compartir panel de acción principal
