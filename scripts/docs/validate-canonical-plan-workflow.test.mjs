@@ -70,6 +70,9 @@ test('el watcher regenera y valida también la guía de tareas pendientes', () =
   );
   assert.match(watcher, /"normalize-retired-priority-route\.mjs"/u);
   assert.match(watcher, /"repository-drift\.mjs"/u);
+  assert.match(watcher, /"repository-drift-baseline\.json"/u);
+  assert.match(watcher, /if \(!existsSync\(repositoryDriftBaseline\)\)/u);
+  assert.match(watcher, /driftArgs\.push\("--write-baseline"\)/u);
   assert.match(watcher, /driftIntervalMs = 30 \* 60 \* 1000/u);
   assert.match(watcher, /runRepositoryDriftIfDue\(reason === "verificación inicial"\)/u);
 });

@@ -1,4 +1,4 @@
-import { watch } from "node:fs";
+import { existsSync, watch } from "node:fs";
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -47,6 +47,12 @@ const repositoryDriftScript = path.join(
   "scripts",
   "docs",
   "repository-drift.mjs"
+);
+
+const repositoryDriftBaseline = path.join(
+  repositoryRoot,
+  ".delivery",
+  "repository-drift-baseline.json"
 );
 
 const driftIntervalMs = 30 * 60 * 1000;
@@ -134,8 +140,12 @@ async function runRepositoryDriftIfDue(force = false) {
   if (!force && now - lastDriftAt < driftIntervalMs) {
     return;
   }
+  const driftArgs = [repositoryDriftScript];
+  if (!existsSync(repositoryDriftBaseline)) {
+    driftArgs.push("--write-baseline");
+  }
   await runNodeScript(
-    [repositoryDriftScript],
+    driftArgs,
     "Inventariando deriva multi-repositorio de solo lectura..."
   );
   lastDriftAt = now;

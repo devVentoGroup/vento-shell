@@ -79,6 +79,8 @@ Automatización cotidiana:
   actual, pero solo formatea la que ya tenga desarrollo;
 - la deriva de los doce repositorios se revisa al abrir el workspace y, como
   máximo, una vez cada treinta minutos;
+- si una instalación nueva todavía no tiene baseline local, el watcher crea el
+  primer corte automáticamente al abrir el workspace;
 - la baseline nunca se sobrescribe automáticamente, para que una deriva real no
   desaparezca por el solo hecho de ejecutar el watcher.
 
