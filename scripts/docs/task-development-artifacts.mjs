@@ -152,7 +152,11 @@ function sectionBullets(block, titlePattern, limit = 20) {
   const rest = normalized.slice(start);
   const end = rest.search(/^####(?:\s+\d+\.)?\s+/mu);
   const source = end >= 0 ? rest.slice(0, end) : rest;
-  return source.split('\n').map((line) => line.trim()).filter((line) => /^[-*]\s+/u.test(line)).slice(0, limit);
+  return source
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => /^(?:[-*]|\d+\.)\s+/u.test(line))
+    .slice(0, limit);
 }
 
 function worktreePaths() {
