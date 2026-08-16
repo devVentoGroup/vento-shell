@@ -1469,7 +1469,7 @@ Cobertura materializada:
 | Escenarios con decisión explícita                                  |                        24 |
 | Canales con respuesta explícita                                    |                        10 |
 | Aplicaciones canónicas reconciliadas                               |                        10 |
-| Permisos canónicos documentales vigentes                           |                       112 |
+| Permisos canónicos documentales vigentes                           |                       140 |
 | Permisos físicos activos observados                                |                       179 |
 | Referencias físicas de navegación, pantallas y política observadas |                       153 |
 | Referencias físicas de matrices base e individuales observadas     |                       630 |
@@ -1483,7 +1483,7 @@ Cobertura materializada:
 
 Las cifras físicas son un snapshot agregado de solo lectura. Que las referencias
 observadas coincidan con la proyección física actual no demuestra que pertenezcan
-a la versión contractual de 112 permisos ni que la ausencia futura de una clave
+a la versión contractual de 140 permisos ni que la ausencia futura de una clave
 sea clasificada correctamente.
 
 ---
@@ -1628,12 +1628,12 @@ catalog_id = vento.authorization
 catalog_version = 1.0.0
 schema_version = 1.0.0
 application_count = 10
-active_permission_count = 112
+active_permission_count = 140
 ```
 
-La cifra de 112 procede de la decisión aprobada más reciente de versionado del
-catálogo y prevalece sobre snapshots documentales anteriores que registraron
-140 durante una fase previa.
+La cifra de 140 procede del congelamiento contractual aprobado en
+`AUTH-CAT-024` para `vento.authorization@1.0.0` y prevalece sobre el snapshot
+documental histórico de 112 permisos anterior a esa reconciliación.
 
 La base de datos puede contener una proyección operativa, pero:
 
@@ -2527,7 +2527,7 @@ Comportamientos observados:
 - ANIMA acepta arreglos de strings, consulta `has_permission` y también reduce
   error y resultado a booleano;
 - la proyección física no materializa versión, hash y ciclo de vida completos
-  del catálogo contractual de 112 permisos.
+  del catálogo contractual de 140 permisos.
 
 ---
 
@@ -2535,7 +2535,7 @@ Comportamientos observados:
 
 |    # | Brecha física                                                                                                             | Estado                               | Riesgo                                                                      | Destino exacto                                                                                     |
 | ---: | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-|    1 | no existe publicación física verificable del catálogo contractual de 112 permisos con versión, schema y hash              | `PENDIENTE_DE_IMPLEMENTACION`        | la tabla de 179 filas se usa como fuente semántica no versionada            | `AUTH-CAT-017`; `AUTH-CAT-018`; `AUTH-DB-020`; `AUTH-DB-031`                                       |
+|    1 | no existe publicación física verificable del catálogo contractual de 140 permisos con versión, schema y hash              | `PENDIENTE_DE_IMPLEMENTACION`        | la tabla de 179 filas se usa como fuente semántica no versionada            | `AUTH-CAT-017`; `AUTH-CAT-018`; `AUTH-DB-020`; `AUTH-DB-031`                                       |
 |    2 | la proyección física no separa activos, aliases, retirados y legacy con ciclo de vida canónico                            | `BLOQUEADO`                          | una cadena retirada puede parecer ausente o activa                          | `AUTH-CAT-017`; `AUTH-CTX-028`; `AUTH-DB-020`                                                      |
 |    3 | cinco evaluadores `has_*` devuelven booleanos y no preservan `PERMISSION_NOT_FOUND`                                       | `BLOQUEADO`                          | clave ausente, deny, falta de allow y contexto inválido son indistinguibles | `AUTH-CTX-026`; `AUTH-DB-034`; `SHELL-AUTH-001`; `SHELL-AUTH-002`                                  |
 |    4 | evaluadores operativos no validan la existencia canónica antes de consultar la matriz                                     | `BLOQUEADO`                          | una fila huérfana podría autorizar una clave inexistente                    | `AUTH-DB-009`; `AUTH-DB-034`; `AUTH-QA-019`                                                        |
@@ -2600,7 +2600,7 @@ El artefacto permite comprobar:
 4. `500` reservado para una operación con binding server-side inválido;
 5. sesión preservada y cero efectos;
 6. definición exhaustiva de lectura concluyente;
-7. catálogo contractual vigente de 112 permisos;
+7. catálogo contractual vigente de 140 permisos;
 8. identidad exacta `app_code + permission_code`;
 9. cero fallbacks permitidos;
 10. operación server-side propietaria del permiso;
@@ -2680,7 +2680,7 @@ reconciliación física.
 - [x] Se prohibió reintento automático.
 - [x] Se definieron las doce condiciones de aplicabilidad.
 - [x] Se exigió catálogo publicado, compatible e íntegro.
-- [x] Se tomó 112 como cantidad contractual vigente.
+- [x] Se tomó 140 como cantidad contractual vigente.
 - [x] Se separó la proyección física de la fuente normativa.
 - [x] Se exigió búsqueda exacta por aplicación y código relativo.
 - [x] Se prohibieron coincidencias parciales y similares.
