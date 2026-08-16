@@ -103,8 +103,10 @@ export function inspectRepository(repositoryPath, name = path.basename(repositor
   const [behind, ahead] = divergence?.split(/\s+/u).map(Number) ?? [null, null];
   const status = git(repositoryPath, ['status', '--porcelain']) ?? '';
 
-  const routePattern = /^(?:src\/)?app\/.+\/(?:page|route|layout)\.(?:js|jsx|ts|tsx)$/u;
-  const componentPattern = /^(?:src\/)?components\/.+\.(?:js|jsx|ts|tsx)$/u;
+  const routePattern = /^(?:src\/)?app\/(?:.+\/)?(?:page|route|layout)\.(?:js|jsx|ts|tsx)$/u;
+  const pagePattern = /^(?:src\/)?app\/(?:.+\/)?page\.(?:js|jsx|ts|tsx)$/u;
+  const screenPattern = /^(?:src\/)?(?:screens?|views?)\/.+\.(?:js|jsx|ts|tsx)$/u;
+  const componentPattern = /^(?:src\/)?components\/(?:.+\/)?[^/]+\.(?:js|jsx|ts|tsx)$/u;
   const migrationPattern = /^supabase\/migrations\/.+\.sql$/u;
   const contractPattern = /(?:^|\/)(?:contracts?|schemas?|types?)(?:\/|[^/]*\.(?:js|jsx|ts|tsx|json)$)/iu;
 
@@ -124,6 +126,7 @@ export function inspectRepository(repositoryPath, name = path.basename(repositor
     package: readPackage(repositoryPath),
     surfaces: {
       route_files: relative.filter((file) => routePattern.test(file)).length,
+      screen_files: relative.filter((file) => pagePattern.test(file) || screenPattern.test(file)).length,
       component_files: relative.filter((file) => componentPattern.test(file)).length,
       migration_files: relative.filter((file) => migrationPattern.test(file)).length,
       contract_files: relative.filter((file) => contractPattern.test(file)).length,

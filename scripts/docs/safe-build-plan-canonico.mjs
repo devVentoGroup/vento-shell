@@ -22,6 +22,7 @@ import {
   readCanonicalTreqRegistry,
   writeCanonicalTreqRegistry,
 } from './treq-registry-files.mjs';
+import { autoPrepareCanonicalTask } from './auto-prepare-canonical-task.mjs';
 
 const root = process.cwd();
 const baseDir = path.resolve(root, 'docs/plan-canonico/modular');
@@ -229,6 +230,11 @@ function attemptSafeReconciliation() {
 
   return { originalSource: currentSource, recoveryPath };
 }
+
+autoPrepareCanonicalTask({
+  root,
+  checkOnly: process.argv.includes('--check'),
+});
 
 let reconciliation = null;
 

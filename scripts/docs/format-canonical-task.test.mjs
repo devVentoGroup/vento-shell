@@ -23,7 +23,7 @@ Texto sin tocar.
   assert.deepEqual(result.changedTaskIds, ['TEST-FMT-001']);
   assert.match(result.source, /\*\*Estado:\*\* NO INICIADA\n\*\*Bloque:\*\* X/u);
   assert.match(result.source, /#### 1\. Propósito\n\nTexto intacto\./u);
-  assert.match(result.source, /### \[ \] TEST-FMT-002 — Segunda\nTexto sin tocar\./u);
+  assert.match(result.source, /Otro texto\.\n\n### \[ \] TEST-FMT-002 — Segunda\nTexto sin tocar\./u);
 
   const secondPass = formatTaskFileSource(result.source, { taskId: 'TEST-FMT-001' });
   assert.deepEqual(secondPass.changedTaskIds, []);

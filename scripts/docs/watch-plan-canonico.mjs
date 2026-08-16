@@ -42,6 +42,16 @@ const retiredPriorityRouteCheckScript = path.join(
   "normalize-retired-priority-route.mjs"
 );
 
+const repositoryDriftScript = path.join(
+  repositoryRoot,
+  "scripts",
+  "docs",
+  "repository-drift.mjs"
+);
+
+const driftIntervalMs = 30 * 60 * 1000;
+let lastDriftAt = 0;
+
 const ignoredDirectories = new Set([
   ".generated",
   "respaldo",
@@ -119,6 +129,18 @@ function runNodeScript(args, label) {
   });
 }
 
+async function runRepositoryDriftIfDue(force = false) {
+  const now = Date.now();
+  if (!force && now - lastDriftAt < driftIntervalMs) {
+    return;
+  }
+  await runNodeScript(
+    [repositoryDriftScript],
+    "Inventariando deriva multi-repositorio de solo lectura..."
+  );
+  lastDriftAt = now;
+}
+
 async function rebuild(reason) {
   if (buildRunning) {
     buildPending = true;
@@ -165,6 +187,8 @@ async function rebuild(reason) {
       [retiredPriorityRouteCheckScript, "--check"],
       "Validando rutas y destinos de implementación..."
     );
+
+    await runRepositoryDriftIfDue(reason === "verificación inicial");
 
     if (changeVersion !== buildVersion) {
       console.log(

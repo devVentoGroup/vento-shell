@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **924** |
+| Aprobadas | **925** |
 | En propuesta | **0** |
-| No iniciadas | **670** |
+| No iniciadas | **669** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **57.97% (924/1594)** |
+| Porcentaje de completamiento | **58.03% (925/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-UI-007` — Compartir selector de sede | ✅ APROBADA |
-| Tarea actual | `SHELL-UI-008` — Compartir selector de área | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-UI-009` — Compartir aviso de rol simulado | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-UI-008` — Compartir selector de área | ✅ APROBADA |
+| Tarea actual | `SHELL-UI-009` — Compartir aviso de rol simulado | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-UI-010` — Evaluar AppShell compartido | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -751,7 +751,7 @@
 | ✅ APROBADA | `SHELL-UI-005` | Compartir EmptyState | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-UI-006` | Compartir indicador de contexto | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-UI-007` | Compartir selector de sede | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-UI-008` | Compartir selector de área | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-UI-008` | Compartir selector de área | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-009` | Compartir aviso de rol simulado | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-010` | Evaluar AppShell compartido | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-011` | Compartir navegación orientada a tareas | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |

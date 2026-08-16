@@ -46,6 +46,9 @@ jobs:
       - name: Verificar fuentes y derivados versionados antes de compilar
         run: npm run docs:plan:check
 
+      - name: Verificar contrato de entrega de tareas
+        run: npm run docs:delivery:check
+
       - name: Compilar plan canónico
         run: npm run docs:plan:build
 

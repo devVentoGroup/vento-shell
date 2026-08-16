@@ -9341,7 +9341,1561 @@ SHELL-UI-008 — Compartir selector de área
 
 `SHELL-UI-008` permanece reservada y no se desarrolla en esta tarea.
 
-### [ ] SHELL-UI-008 — Compartir selector de área
+### ✅ SHELL-UI-008 — Compartir selector de área
+
+**Estado:** APROBADA
+
+**Tarea anterior:** `SHELL-UI-007 — Compartir selector de sede`
+
+**Tarea siguiente:** `SHELL-UI-009 — Compartir aviso de rol simulado`
+
+**Tipo de tarea:** Documental
+
+**Bloque:** H — Fundación compartida
+
+**Paquete propietario:** `@vento/ui-web`
+
+**Naturaleza:** definición documental de un control compartido para solicitar cambios de área sin convertir la selección visual en contexto operativo autoritativo. No materializa código, no resuelve contexto, no modifica Supabase y no migra consumidores.
+
+---
+
+#### 1. Propósito
+
+Definir el contrato canónico de un selector de área compartido para las superficies web de Vento OS que necesiten permitir a una persona solicitar un cambio de área dentro de un contexto elegible ya preparado por las capas propietarias.
+
+El componente deberá resolver únicamente la interacción visual y accesible de selección. La autoridad del área permanecerá fuera de `@vento/ui-web`.
+
+La regla central es:
+
+```text
+ÁREAS ELEGIBLES PARA PRESENTACIÓN
+        +
+ÁREA CONFIRMADA AUTORITATIVAMENTE
+        ↓
+AreaSelector
+        ↓
+SOLICITUD DE CAMBIO
+        ↓
+CAPA PROPIETARIA
+        ↓
+VALIDACIÓN + TRANSICIÓN + RECEIPT
+        ↓
+NUEVA ÁREA CONFIRMADA
+```
+
+Queda prohibida la dirección inversa:
+
+```text
+AreaSelector
+        ✕
+DEFINIR ÁREA ACTIVA
+        ✕
+CREAR ELEGIBILIDAD
+        ✕
+AMPLIAR TERRITORIO
+        ✕
+CONCEDER AUTORIZACIÓN
+```
+
+---
+
+#### 2. Posición dentro de la secuencia compartida
+
+`SHELL-UI-008` define exclusivamente la selección compartida de área.
+
+Se apoya en la separación ya aprobada entre:
+
+- contexto confirmado y presentación;
+- sede confirmada y solicitud de cambio de sede;
+- autoridad real y controles de interfaz;
+- contexto operativo y filtros administrativos.
+
+No absorbe:
+
+- resolución de contexto;
+- selección de sede;
+- simulación;
+- diagnóstico de contexto;
+- AppShell;
+- autorización;
+- reglas de turno;
+- reglas de check-in;
+- reglas de dispositivo compartido;
+- recuperación ante bloqueos.
+
+---
+
+#### 3. Dependencias documentales consumidas
+
+La definición consume, sin reemplazar:
+
+- `SHELL-UI-001 — Crear @vento/ui-web`;
+- `SHELL-UI-006 — Compartir indicador de contexto`;
+- `SHELL-UI-007 — Compartir selector de sede`;
+- `UX-BASE-005 — Mantener visible sede, área, turno y rol activos`;
+- las reglas de captura y reutilización de contexto;
+- las reglas de superficies densas y estaciones multiárea;
+- las reglas de reanudación e invalidación de contexto;
+- los contratos vigentes de autorización territorial;
+- la frontera vigente de `@vento/os-context`;
+- el gobierno de paquetes compartidos, compatibilidad, deprecación y retiro;
+- la estrategia posterior de migración coordinada de consumidores web.
+
+Estas fuentes determinan qué puede considerarse área real, elegible o confirmada. `SHELL-UI-008` define únicamente la superficie visual reutilizable que expresa la intención de cambiarla.
+
+---
+
+#### 4. Naturaleza de la tarea
+
+La tarea es documental.
+
+Al cierre se define:
+
+1. identidad del componente;
+2. responsabilidad y límites;
+3. superficie pública conceptual;
+4. forma de representar opciones;
+5. separación entre área confirmada y área solicitada;
+6. comportamiento durante una transición pendiente;
+7. relación con sede, contexto, filtros y territorio;
+8. reglas para estaciones compartidas y multiárea;
+9. semántica HTML y accesibilidad;
+10. comportamiento responsive;
+11. compatibilidad client/server;
+12. dependencias permitidas y prohibidas;
+13. evidencia técnica actual;
+14. estrategia posterior de adopción;
+15. contrato futuro de pruebas;
+16. cobertura de requisitos existente.
+
+No se crea el componente físico en esta tarea.
+
+---
+
+#### 5. Resultado documental
+
+Se aprueba el componente conceptual:
+
+```text
+AreaSelector
+```
+
+como parte de:
+
+```text
+@vento/ui-web
+```
+
+Su función es presentar un conjunto de áreas ya habilitadas para ser ofrecidas por la capa propietaria y emitir una solicitud explícita de cambio.
+
+No es:
+
+- fuente de áreas autorizadas;
+- resolver de contexto;
+- guard de autorización;
+- selector de sede;
+- filtro administrativo;
+- editor de asignaciones laborales;
+- editor de turno;
+- editor de check-in;
+- selector de rol;
+- switcher de aplicación;
+- mutación directa de base de datos;
+- mecanismo de persistencia;
+- reconciliador de borradores, claims o custodia.
+
+---
+
+#### 6. Identidad pública conceptual
+
+La superficie conceptual queda formada por:
+
+```text
+AreaSelector
+AreaSelectorProps
+AreaSelectorOption
+```
+
+Esta tarea no fija:
+
+- subpath físico de exportación;
+- estructura de carpetas del package;
+- mapa de exports;
+- herramienta de estilos;
+- nombre de archivo TypeScript;
+- framework de documentación visual;
+- implementación interna.
+
+Esas decisiones pertenecen a la materialización física y al gobierno del package.
+
+---
+
+#### 7. Superficie conceptual de props
+
+La API conceptual mínima queda definida como:
+
+```text
+label: string
+confirmedAreaId: string | null
+requestedAreaId?: string | null
+options: readonly AreaSelectorOption[]
+onRequestChange: (areaId: string) => void
+pending?: boolean
+pendingLabel?: string
+disabled?: boolean
+placeholderLabel?: string
+```
+
+Además podrá conservar atributos HTML compatibles del control o contenedor según la implementación física, con las restricciones de semántica y accesibilidad definidas en esta tarea.
+
+No se añade una prop genérica `context`.
+
+No se añade una prop `effectiveContext`.
+
+No se añade una prop `accessContext`.
+
+No se añade una colección de permisos o booleanos de autorización.
+
+---
+
+#### 8. `AreaSelectorOption`
+
+Cada opción se define conceptualmente como:
+
+```text
+id: string
+label: string
+```
+
+`id` es la identidad estable que la capa propietaria utilizará para reconocer la intención seleccionada.
+
+`label` es el nombre humano que puede presentarse a la persona.
+
+El componente no necesita recibir, para cada opción:
+
+- nombre de sede;
+- `siteId`;
+- `areaKind`;
+- rol;
+- turno;
+- check-in;
+- permisos;
+- grants;
+- scopes;
+- reason codes;
+- estado de RLS;
+- metadata genérica.
+
+La capa propietaria prepara las opciones antes de renderizar.
+
+---
+
+#### 9. Semántica de una opción disponible
+
+Que un área aparezca en `options` significa únicamente:
+
+```text
+ESTA OPCIÓN PUEDE SER PRESENTADA EN ESTE CONTROL
+```
+
+No significa:
+
+```text
+EL ÁREA YA ESTÁ ACTIVA
+EL ÁREA ESTÁ AUTORIZADA PARA TODA ACCIÓN
+EL USUARIO PUEDE MUTAR CUALQUIER RECURSO DEL ÁREA
+EL DISPOSITIVO CONCEDE AUTORIDAD SOBRE EL ÁREA
+EL SERVIDOR GARANTIZA QUE EL CAMBIO SERÁ ACEPTADO
+```
+
+La autorización y elegibilidad final se revalidan en la transición propietaria.
+
+---
+
+#### 10. Contenido humano y privacidad
+
+Las opciones deberán usar etiquetas humanas suficientes para distinguir áreas sin exponer información técnica innecesaria.
+
+No se utilizarán como etiqueta principal:
+
+- UUID;
+- códigos internos de permiso;
+- nombres de tabla;
+- nombres de schema;
+- nombres de RPC;
+- claves de cookie;
+- nombres de variables de entorno;
+- identificadores de sesión;
+- nombres técnicos de claims;
+- payloads;
+- SQL;
+- metadata privada.
+
+Si dos áreas requieren diferenciación adicional, la capa propietaria aportará un `label` humano inequívoco y minimizado.
+
+---
+
+#### 11. `confirmedAreaId`
+
+`confirmedAreaId` representa exclusivamente el área que la capa propietaria reconoce como confirmada para la proyección actual.
+
+Reglas:
+
+1. puede ser `null` cuando la capa propietaria no tenga un área confirmada para mostrar;
+2. no se deriva desde la primera opción;
+3. no se deriva desde una sede;
+4. no se deriva desde un dispositivo;
+5. no se deriva desde un turno mostrado en cliente;
+6. no se deriva desde `area_kind`;
+7. no se deriva desde una URL;
+8. no se deriva desde almacenamiento local;
+9. no se deriva desde una selección anterior;
+10. no se actualiza optimistamente al emitir una solicitud.
+
+El componente no interpreta por qué el valor es `null`.
+
+---
+
+#### 12. `requestedAreaId`
+
+`requestedAreaId` representa una intención visible de transición que todavía no debe confundirse con el área confirmada.
+
+Su presencia permite que la interfaz distinga:
+
+```text
+ÁREA CONFIRMADA
+≠
+ÁREA SOLICITADA
+```
+
+Puede utilizarse para mantener perceptible el destino solicitado durante una transición controlada.
+
+No constituye:
+
+- receipt;
+- autorización;
+- confirmación de servidor;
+- nuevo `AccessContext`;
+- evidencia de que la transición terminó.
+
+---
+
+#### 13. Componente controlado
+
+`AreaSelector` se define conceptualmente como un componente controlado por la capa propietaria.
+
+El componente no conserva como fuente de verdad interna:
+
+- área confirmada;
+- área solicitada después de la respuesta propietaria;
+- última área usada;
+- historial de cambios;
+- área del actor anterior;
+- área previa del dispositivo.
+
+La aplicación mantiene el estado de integración y vuelve a renderizar el control con la proyección vigente.
+
+---
+
+#### 14. `onRequestChange`
+
+`onRequestChange` comunica una intención:
+
+```text
+persona solicita cambiar al área X
+```
+
+No comunica:
+
+```text
+el área X ya es activa
+```
+
+El callback no convierte su argumento en autoridad.
+
+La implementación compartida no deberá exigir que el callback devuelva un resultado de autorización ni deberá interpretar un `Promise` resuelto como receipt autoritativo.
+
+La capa propietaria conserva el ciclo completo de transición.
+
+---
+
+#### 15. Transición autoritativa de área
+
+El cambio real de área conserva la secuencia transversal aprobada:
+
+```text
+SOLICITAR CAMBIO
+        ↓
+VALIDAR ELEGIBILIDAD
+        ↓
+REVISAR TRABAJO Y CUSTODIA PENDIENTES
+        ↓
+CONFIRMAR EFECTO CUANDO APLIQUE
+        ↓
+RESOLVER NUEVO CONTEXTO EN SERVIDOR
+        ↓
+INVALIDAR PROYECCIÓN ANTERIOR
+        ↓
+PUBLICAR NUEVO CONTEXTO
+        ↓
+REANUDAR O REDIRIGIR
+```
+
+`AreaSelector` participa únicamente en el primer paso visual y en la representación de que existe una solicitud pendiente.
+
+---
+
+#### 16. Prohibición de actualización optimista autoritativa
+
+Al seleccionar otra opción:
+
+```text
+requestedAreaId = destino solicitado
+confirmedAreaId = área todavía confirmada
+```
+
+hasta que la capa propietaria entregue el resultado autoritativo.
+
+Queda prohibido que el componente:
+
+- reemplace inmediatamente `confirmedAreaId`;
+- marque visualmente la opción solicitada como nueva área activa;
+- habilite acciones como consecuencia de la selección;
+- infiera éxito porque no hubo excepción cliente;
+- convierta navegación a otra URL en confirmación.
+
+---
+
+#### 17. `pending`
+
+`pending` indica que la composición propietaria quiere presentar una transición en curso.
+
+Cuando `pending=true`:
+
+- la transición debe ser perceptible;
+- el control no debe inducir a creer que el destino solicitado ya está activo;
+- la implementación puede impedir solicitudes simultáneas para evitar ambigüedad;
+- el área confirmada conserva su semántica hasta recibir nueva confirmación;
+- el componente no inicia polling, retries ni consultas propias.
+
+`pending` es estado de interacción, no estado de autorización.
+
+---
+
+#### 18. `pendingLabel`
+
+`pendingLabel` permite aportar texto humano para comunicar la transición en curso cuando la composición lo necesite.
+
+No se congela una frase universal porque el copy puede depender de localización y contexto de uso.
+
+La presentación de `pending` no dependerá exclusivamente de:
+
+- spinner;
+- color;
+- opacidad;
+- icono;
+- animación.
+
+---
+
+#### 19. `disabled`
+
+`disabled` expresa que la capa propietaria no permite interacción con el selector en ese render.
+
+No explica por sí mismo la causa.
+
+El componente no deduce `disabled` desde:
+
+- rol;
+- permiso;
+- cantidad de opciones;
+- conectividad;
+- turno;
+- check-in;
+- dispositivo;
+- `canOperate`;
+- simulación;
+- estado del recurso.
+
+Cuando la causa material de bloqueo deba explicarse, la composición utilizará el patrón propietario de explicación o diagnóstico.
+
+---
+
+#### 20. Ausencia de una opción universal `Sin área`
+
+No se incorpora por contrato una opción interactiva universal equivalente a:
+
+```text
+Sin área
+```
+
+Un `confirmedAreaId=null` puede representar situaciones diferentes según la capa propietaria, por ejemplo:
+
+- contexto aún no resuelto;
+- área no aplicable para esa superficie;
+- ausencia válida ya confirmada por otro contrato;
+- contexto inválido o no disponible.
+
+El componente no puede transformar automáticamente `null` en una acción que elimine el área operativa.
+
+---
+
+#### 21. `placeholderLabel`
+
+`placeholderLabel` permite mostrar un texto inicial o informativo cuando no existe una opción confirmada que deba presentarse como seleccionada.
+
+El placeholder:
+
+- no es una opción de negocio;
+- no tiene identidad autoritativa;
+- no puede activar una mutación al aparecer;
+- no sustituye una explicación de contexto inválido o no disponible;
+- no se convierte en fallback.
+
+---
+
+#### 22. Prohibición de `defaultAreaId`
+
+No se define `defaultAreaId`.
+
+Tampoco se define:
+
+```text
+primaryAreaId
+lastAreaId
+preferredAreaId
+deviceAreaId
+firstEligibleAreaId
+```
+
+como mecanismos de inicialización autoritativa.
+
+El área confirmada debe entrar mediante `confirmedAreaId` desde la capa propietaria.
+
+---
+
+#### 23. Caso de una sola opción
+
+Si `options` contiene una sola área, el componente no la confirma automáticamente.
+
+Una única opción visible puede simplificar la interacción, pero:
+
+```text
+UNA OPCIÓN
+≠
+ÁREA ACTIVA CONFIRMADA
+```
+
+La capa propietaria decide si el proceso puede resolverla automáticamente mediante un contrato autoritativo externo; `AreaSelector` no ejecuta esa decisión.
+
+---
+
+#### 24. Caso de cero opciones
+
+`options=[]` no significa por sí mismo:
+
+- actor sin permisos;
+- actor sin asignaciones;
+- empresa sin áreas;
+- sede sin áreas;
+- usuario bloqueado;
+- error técnico;
+- contexto inválido.
+
+La capa propietaria conserva la causa y decide si el control debe mostrarse deshabilitado, acompañarse de explicación o no renderizarse.
+
+El componente no inventa un EmptyState a partir de una lista vacía.
+
+---
+
+#### 25. Orden de opciones
+
+`AreaSelector` conserva el orden entregado por el consumidor.
+
+No reordena por:
+
+- `id`;
+- texto;
+- frecuencia de uso;
+- última selección;
+- supuesta prioridad;
+- tipo de área;
+- heurísticas locales.
+
+La capa propietaria decide el orden cuando exista una política válida de presentación.
+
+---
+
+#### 26. Relación con `ContextIndicator`
+
+La composición conceptual es:
+
+```text
+ContextIndicator
+→ muestra el área confirmada dentro del contexto efectivo
+
+AreaSelector
+→ permite solicitar otra área entre las opciones ofrecidas
+```
+
+Durante una transición:
+
+```text
+ContextIndicator = contexto confirmado o estado CHANGING
+AreaSelector      = destino solicitado, si aplica
+```
+
+El selector no sustituye al indicador persistente de contexto.
+
+---
+
+#### 27. Relación con `SiteSelector`
+
+`SiteSelector` y `AreaSelector` son controles distintos.
+
+`AreaSelector` no cambia sede.
+
+`SiteSelector` no confirma por sí mismo un área.
+
+La capa propietaria debe coordinar ambas dimensiones para impedir un contexto imposible.
+
+La composición puede presentar ambos controles cuando la superficie realmente permita ambas transiciones.
+
+---
+
+#### 28. Dependencia jerárquica sede–área
+
+Las opciones de `AreaSelector` deberán prepararse contra el contexto territorial que la capa propietaria considere válido para la solicitud.
+
+Reglas:
+
+1. un área no se ofrece solo porque su nombre existe;
+2. el componente no consulta a qué sede pertenece;
+3. el componente no recibe un `siteId` para calcular elegibilidad;
+4. la capa propietaria filtra y valida las opciones antes de presentarlas;
+5. un cambio confirmado de sede puede invalidar el área anterior;
+6. tras cambiar sede, el área anterior no se conserva como fallback;
+7. tras cambiar sede, no se elige automáticamente la primera área nueva;
+8. si sede y área deben cambiar de forma coordinada, la orquestación pertenece a la capa propietaria y debe producir una transición autoritativa coherente.
+
+---
+
+#### 29. Filtros administrativos de área
+
+Un filtro administrativo por área no es `AreaSelector` cuando su efecto es únicamente restringir una consulta o vista.
+
+Separación:
+
+```text
+filtro administrativo
+→ cambia alcance de visualización
+
+AreaSelector
+→ solicita cambio de contexto de área cuando el proceso lo permite
+```
+
+Cambiar un filtro no puede alterar por inferencia:
+
+- turno;
+- check-in;
+- rol operativo;
+- actor;
+- permisos;
+- contexto operativo;
+- territorio de una tarea.
+
+---
+
+#### 30. `area_kind`, nombres y semántica territorial
+
+`area_kind` no se incorpora a la API pública del selector como fuente de autoridad.
+
+El nombre humano tampoco sustituye la identidad estable.
+
+Queda prohibido resolver equivalencia territorial por:
+
+- coincidencia de texto;
+- prefijo;
+- traducción;
+- tipo de área;
+- posición en la lista;
+- etiqueta abreviada.
+
+La identidad y compatibilidad territorial se resuelven fuera del componente.
+
+---
+
+#### 31. Simulación
+
+`AreaSelector` no inicia ni modifica simulación.
+
+Una lista de áreas simuladas no puede mezclarse con opciones de contexto real sin que la composición propietaria mantenga separados ambos planos.
+
+El componente no recibe:
+
+```text
+isSimulated
+simulationId
+simulatedAreaId
+```
+
+como mecanismos para decidir autoridad.
+
+La visibilidad especializada de simulación permanece en su patrón propio.
+
+---
+
+#### 32. Autorización
+
+`AreaSelector` no decide si una acción empresarial está autorizada.
+
+La existencia de un área en el selector no permite usar esa área como scope para:
+
+- lectura protegida;
+- mutación;
+- RPC;
+- RLS;
+- exportación;
+- impresión;
+- aprobación;
+- movimiento de inventario;
+- producción;
+- venta;
+- custodia.
+
+Toda acción conserva su evaluación autoritativa con contexto y recurso vigentes.
+
+---
+
+#### 33. Bloqueos y recuperación
+
+El selector no se convierte en mecanismo universal de recuperación frente a una denegación territorial.
+
+Si una superficie de bloqueo establece que la persona no puede corregir localmente rol o área, la composición no debe presentar `AreaSelector` como bypass para convertir la denegación en autorización.
+
+Las causas de:
+
+- área faltante;
+- área inválida;
+- rol no habilitado para área;
+- configuración contradictoria;
+- grant faltante;
+- indisponibilidad técnica;
+
+permanecen separadas y son propiedad de los contratos de autorización y diagnóstico.
+
+---
+
+#### 34. Trabajo, borradores, claims y custodia
+
+Antes de que un cambio material de área se confirme, la capa propietaria deberá aplicar las reglas vigentes sobre trabajo en curso.
+
+El selector no decide qué hacer con:
+
+- tarea activa;
+- claim o lease;
+- borrador;
+- captura sensible;
+- custodia;
+- aprobación abierta;
+- operación offline pendiente;
+- resultado incierto;
+- archivo local;
+- transición empresarial en curso.
+
+No incorpora callbacks específicos para resolver esos dominios.
+
+La capa propietaria puede bloquear la interacción o conducir la confirmación necesaria antes de completar la transición.
+
+---
+
+#### 35. Dispositivos compartidos y estaciones multiárea
+
+En una estación compartida, la lista de áreas presentable no se construye a partir de la configuración del dispositivo de forma aislada.
+
+La capa propietaria deberá determinar las opciones aplicables considerando la intersección que corresponda entre:
+
+```text
+dispositivo
+actor
+turno
+permiso
+proceso
+territorio
+```
+
+Las áreas permitidas del dispositivo son un límite; no son una concesión de autoridad.
+
+Cada mutación conserva un único actor y un área activa autoritativa.
+
+`AreaSelector` no calcula la intersección ni sabe por qué una opción fue incluida o excluida.
+
+---
+
+#### 36. Cambio de actor
+
+Cuando cambia el actor en un dispositivo compartido, la composición propietaria debe descartar cualquier intención de área incompatible con el nuevo actor.
+
+El componente no persiste:
+
+- `requestedAreaId`;
+- área anterior;
+- historial del actor anterior;
+- lista previa de opciones.
+
+El nuevo render deberá reflejar únicamente la proyección preparada para el actor vigente.
+
+---
+
+#### 37. Semántica HTML
+
+La implementación física utilizará preferentemente un control nativo de selección cuando el volumen y la experiencia no exijan otro patrón.
+
+La estructura conceptual es equivalente a:
+
+```text
+label
+select
+  option
+  option
+  ...
+estado de transición cuando aplique
+```
+
+La asociación entre etiqueta y control será explícita.
+
+No se requiere un landmark global.
+
+---
+
+#### 38. Decisión sobre combobox y búsqueda
+
+No se define un combobox buscable como requisito base.
+
+No existe evidencia documental en esta tarea que obligue a introducir:
+
+- búsqueda incremental;
+- virtualización;
+- agrupamiento jerárquico;
+- carga remota al escribir;
+- paginación de áreas.
+
+Si un consumidor futuro demuestra una necesidad transversal real, deberá evolucionarse el contrato de forma compatible y accesible.
+
+---
+
+#### 39. Atributos nativos
+
+La implementación podrá conservar atributos compatibles del control nativo cuando no contradigan el contrato.
+
+`name`, `id`, `aria-*`, `className` y atributos equivalentes no podrán utilizarse para:
+
+- transportar autoridad;
+- introducir un segundo valor confirmado;
+- cambiar el significado de `disabled`;
+- ocultar el label obligatorio;
+- crear opciones no presentes en `options`;
+- convertir un filtro en contexto operativo.
+
+---
+
+#### 40. Accesibilidad mínima
+
+La implementación futura deberá conservar como mínimo:
+
+1. etiqueta perceptible asociada al control;
+2. nombre accesible coherente con la etiqueta visible;
+3. soporte de teclado nativo;
+4. foco visible;
+5. estado deshabilitado perceptible;
+6. transición pendiente comunicable mediante texto cuando sea relevante;
+7. distinción entre área confirmada y solicitada sin depender solo de color;
+8. orden de opciones estable según la entrada;
+9. reflow sin pérdida del control;
+10. zoom sin truncar información esencial;
+11. contraste suficiente;
+12. ausencia de información crítica únicamente en hover;
+13. compatibilidad con lector de pantalla;
+14. ausencia de anuncios repetitivos por cada re-render ordinario.
+
+---
+
+#### 41. Teclado y foco
+
+El control debe conservar la interacción de teclado esperable de su semántica nativa.
+
+No deberá:
+
+- robar foco al recibir nuevas props;
+- mover foco por una transición ordinaria;
+- implementar atajos globales;
+- confirmar el cambio únicamente por foco;
+- disparar dos solicitudes por una sola selección;
+- hacer foco automático sobre la nueva opción después de un receipt sin decisión de composición.
+
+Los bloqueos críticos y movimientos de foco asociados a recuperación pertenecen al patrón superior correspondiente.
+
+---
+
+#### 42. Tacto, responsive y dispositivos
+
+El selector deberá poder usarse en escritorio, tablet, móvil y kiosco cuando la superficie lo permita.
+
+La implementación futura deberá:
+
+- conservar un target táctil suficiente;
+- evitar depender de hover;
+- permitir etiquetas legibles;
+- reacomodarse sin scroll horizontal ordinario;
+- no ocultar el área confirmada únicamente dentro de un menú de perfil;
+- coexistir con el contexto persistente de la superficie.
+
+La ubicación exacta dentro del AppShell permanece fuera de esta tarea.
+
+---
+
+#### 43. Frontera client/server
+
+A diferencia de un indicador puramente presentacional, `AreaSelector` necesita una frontera cliente para la interacción de selección.
+
+Esa frontera debe permanecer delgada.
+
+El componente compartido puede emitir eventos de interacción, pero no debe incorporar:
+
+- resolución de sesión;
+- fetch de áreas;
+- evaluación de permisos;
+- transición de contexto;
+- persistencia;
+- navegación propietaria;
+- consultas a Supabase;
+- efectos de negocio.
+
+La capa propietaria puede ser server-first y entregar al control cliente únicamente las props necesarias.
+
+---
+
+#### 44. Dependencias prohibidas
+
+`AreaSelector` no dependerá directamente de:
+
+- `@vento/supabase`;
+- cliente Supabase;
+- RPC;
+- tablas;
+- schemas;
+- RLS;
+- cookies;
+- localStorage;
+- sessionStorage;
+- IndexedDB;
+- router de una aplicación concreta;
+- query parameters;
+- servicios de red;
+- resolvers de permisos;
+- servicios de dominio;
+- variables secretas;
+- observabilidad como fuente de autoridad.
+
+---
+
+#### 45. Persistencia
+
+El componente no persiste el área seleccionada ni solicitada.
+
+No escribe en:
+
+- cookies;
+- storage del navegador;
+- base de datos;
+- settings del trabajador;
+- cache de aplicación;
+- URL.
+
+Una preferencia de usuario, si existiera en otro contrato, no se transforma por ello en área operativa activa.
+
+---
+
+#### 46. Navegación y query parameters
+
+`AreaSelector` no ejecuta navegación como mecanismo de confirmación.
+
+Un `area_id` o equivalente presente en URL puede ser una referencia de navegación bajo un contrato específico, pero no es autoridad para el componente.
+
+La aplicación destino deberá resolver y revalidar el contexto.
+
+El selector no lee ni escribe query parameters por sí mismo.
+
+---
+
+#### 47. Ausencia de escritura directa de configuración
+
+La definición compartida no incorpora ningún contrato para actualizar directamente preferencias, perfiles laborales, asignaciones o settings persistidos.
+
+La tarea no inventa columnas, tablas ni RPC para almacenar una supuesta `selected_area_id`.
+
+Si una capa propietaria necesita registrar preferencia o intención, deberá hacerlo mediante su contrato propio y sin convertir esa persistencia en autoridad operativa.
+
+---
+
+#### 48. Estado técnico actual de SHELL
+
+El inventario directo de primitivas locales de SHELL contiene:
+
+```text
+Button
+Card
+Chip
+Input
+Modal
+```
+
+No existe allí un componente dedicado `AreaSelector`.
+
+Ninguna de esas cinco primitivas se adopta como sustituto automático del nuevo contrato.
+
+---
+
+#### 49. Evidencia del template histórico
+
+El `ProfileMenu` del template AppShell histórico expone selección de sede, pero no expone una superficie equivalente de área en su firma revisada.
+
+Clasificación:
+
+```text
+TEMPLATE HISTÓRICO
+=
+EVIDENCIA DE DISEÑO PREVIO
+≠
+IMPLEMENTACIÓN CANÓNICA DE AreaSelector
+```
+
+La ausencia de props de área en esa pieza concreta no demuestra ausencia de conceptos de área en todo el ecosistema; únicamente evita tratar ese menú como una implementación existente del selector compartido de área.
+
+---
+
+#### 50. Evidencia runtime en consumidores revisados
+
+Se revisaron las firmas actuales de `ProfileMenu` en:
+
+```text
+NEXO
+FOGO
+ORIGO
+VISO
+PULSO
+NUMERA
+```
+
+Las seis copias runtime revisadas exponen props de sede equivalentes a `sites` y `activeSiteId`, pero no exponen en esa pieza props equivalentes a:
+
+```text
+areas
+activeAreaId
+selectedAreaId
+```
+
+Resultado del universo revisado en esta tarea:
+
+```text
+PROFILEMENU REVISADOS, INCLUYENDO TEMPLATE = 7
+FIRMAS CON SELECCIÓN DE SEDE             = 7
+FIRMAS CON SELECCIÓN DE ÁREA             = 0
+```
+
+La conclusión se limita a esas siete implementaciones de `ProfileMenu` revisadas.
+
+---
+
+#### 51. Reconciliación de evidencia actual
+
+La evidencia se clasifica así:
+
+| Evidencia observada                                                  | Decisión documental                                      |
+| -------------------------------------------------------------------- | -------------------------------------------------------- |
+| `area_id` forma parte del contexto runtime actual                    | no acoplar la UI directamente a `EffectiveContext`       |
+| `area_kind` existe en contexto runtime                               | no utilizarlo como autoridad ni prop obligatoria         |
+| las reglas UX exigen cambio autoritativo de área                     | reflejar intención separada de confirmación              |
+| las reglas de estación multiárea exigen intersección de elegibilidad | calcularla fuera del componente                          |
+| los ProfileMenu revisados no tienen selector de área                 | no declarar una copia legacy homogénea inexistente       |
+| las cinco primitivas locales de SHELL no incluyen AreaSelector       | definir identidad compartida sin adoptar una copia local |
+| el cambio de área invalida contexto incompatible                     | mantener transición y revalidación fuera del componente  |
+
+---
+
+#### 52. Decisión de no fabricar un inventario legacy simétrico
+
+`SHELL-UI-008` no replica artificialmente el inventario de `SiteSelector`.
+
+No se afirma que existan siete selectores de área legacy porque la evidencia revisada no lo demuestra.
+
+Tampoco se afirma que no exista ningún control de área en todos los repositorios.
+
+La conclusión documental exacta es:
+
+```text
+NO SE OBSERVÓ UN PATRÓN HOMOGÉNEO DE AreaSelector
+EN LAS SIETE FIRMAS ProfileMenu REVISADAS
+```
+
+El inventario ejecutable completo de consumidores y extensiones permanece bajo la fase de migración propietaria.
+
+---
+
+#### 53. Concurrencia y solicitudes obsoletas
+
+Una solicitud de cambio puede quedar obsoleta si, antes de confirmarse, cambia materialmente:
+
+- actor;
+- sede;
+- turno;
+- check-in;
+- rol;
+- dispositivo;
+- simulación;
+- pertenencia área–sede;
+- permiso;
+- recurso;
+- contexto de trabajo.
+
+`AreaSelector` no resuelve esas carreras.
+
+La capa propietaria deberá invalidar o reconciliar la solicitud y entregar nuevas props.
+
+El componente no aplica el resultado de una solicitud anterior sobre un contexto más nuevo por su cuenta.
+
+---
+
+#### 54. Conectividad y offline
+
+El selector no crea una cola offline de cambios de área.
+
+No deberá:
+
+- almacenar una solicitud para ejecutarla automáticamente después;
+- asumir que el área previa sigue autorizada por estar cacheada;
+- prolongar contexto por falta de red;
+- convertir una selección local en confirmación;
+- reintentar una transición material sin revalidación.
+
+Cuando una política propietaria permita un cambio de área sin conexión bajo contexto offline válido, esa política debe resolverse fuera del componente y conservar la separación entre intención y autoridad.
+
+---
+
+#### 55. Composición con patrones compartidos
+
+La composición esperada puede incluir:
+
+```text
+ContextIndicator
+SiteSelector
+AreaSelector
+Alert
+Button
+```
+
+según la superficie.
+
+Cada pieza conserva su responsabilidad:
+
+- indicador: contexto confirmado y frescura;
+- selector de sede: intención de cambio de sede;
+- selector de área: intención de cambio de área;
+- alerta: mensaje contextual;
+- botón: acción explícita cuando corresponda.
+
+La composición no autoriza a una pieza visual a asumir la responsabilidad de otra.
+
+---
+
+#### 56. `className`, estilos y layout
+
+La implementación podrá admitir extensión visual compatible con el sistema de diseño.
+
+`className`, `style` o atributos equivalentes no podrán:
+
+- ocultar la etiqueta accesible;
+- hacer indistinguible pending de confirmado;
+- ocultar una restricción material que la superficie deba comunicar;
+- convertir una opción en área activa solo por estilo;
+- romper foco visible;
+- romper contraste;
+- romper reflow;
+- fabricar variantes de autorización.
+
+No se crea una prop funcional `variant`, `tone`, `role`, `kiosk`, `admin` u `operational` para alterar la semántica del selector.
+
+---
+
+#### 57. Compatibilidad y versionado
+
+La futura superficie pública deberá gobernarse con SemVer.
+
+Cambios potencialmente incompatibles incluyen:
+
+- renombrar `confirmedAreaId`;
+- cambiar el significado de `requestedAreaId`;
+- cambiar el contrato de `onRequestChange`;
+- convertir `options` en fuente autoritativa;
+- introducir auto-selección;
+- introducir persistencia propia;
+- cambiar la semántica accesible del control;
+- convertir el selector en resolver de contexto;
+- introducir una dependencia runtime obligatoria sobre Supabase o una aplicación;
+- retirar props sin ventana de compatibilidad.
+
+Una necesidad local no se incorpora silenciosamente a la API común.
+
+---
+
+#### 58. Estrategia posterior de migración
+
+La migración física no ocurre en `SHELL-UI-008`.
+
+La fase propietaria posterior deberá:
+
+1. inventariar controles reales de área en consumidores, procesos, estaciones y superficies;
+2. distinguir selector operativo, filtro administrativo y selector de recurso;
+3. identificar fuentes de opciones, persistencias y fallbacks;
+4. clasificar cada implementación como activa, compartible, local válida, legacy o sin consumidor;
+5. asignar lotes reversibles por repositorio;
+6. materializar el componente compartido cuando corresponda;
+7. adaptar cada consumidor sin convertir la migración visual en cambio de autoridad;
+8. probar accesibilidad, paridad, contexto y transición;
+9. retirar únicamente copias con ausencia de uso residual demostrada.
+
+---
+
+#### 59. Handoff a migración coordinada
+
+Responsabilidades posteriores:
+
+| Tarea           | Handoff de `AreaSelector`                                                         |
+| --------------- | --------------------------------------------------------------------------------- |
+| `SHELL-MIG-001` | inventariar selectores, filtros, controles de área, fuentes y consumidores reales |
+| `SHELL-MIG-002` | separar lotes reversibles por repositorio                                         |
+| `SHELL-MIG-003` | preparar compatibilidad temporal y bloquear nuevas copias legacy                  |
+| `SHELL-MIG-004` | impedir que scaffolds históricos reintroduzcan controles divergentes              |
+| `SHELL-MIG-005` | adoptar el componente compartido donde la clasificación lo determine              |
+| `SHELL-MIG-006` | verificar accesibilidad, tema, densidad y responsive                              |
+| `SHELL-MIG-007` | demostrar paridad contractual y operativa por consumidor                          |
+| `SHELL-MIG-008` | retirar únicamente artefactos sin uso residual                                    |
+
+No se adelanta ninguno de esos cambios.
+
+---
+
+#### 60. Handoff a calidad y releases
+
+La materialización futura conserva los propietarios ya definidos para paquetes compartidos:
+
+| Tarea          | Responsabilidad                                      |
+| -------------- | ---------------------------------------------------- |
+| `SHELL-CI-001` | pruebas propias del package                          |
+| `SHELL-CI-002` | build independiente                                  |
+| `SHELL-CI-003` | releases versionados                                 |
+| `SHELL-CI-004` | changelog                                            |
+| `SHELL-CI-005` | matriz de compatibilidad                             |
+| `SHELL-CI-006` | actualización controlada de consumidores mediante PR |
+
+`SHELL-UI-008` define el contrato; no publica una versión.
+
+---
+
+#### 61. Contrato futuro de prueba
+
+La implementación física y su adopción deberán demostrar, como mínimo:
+
+1. renderizado con área confirmada;
+2. renderizado sin área confirmada;
+3. renderizado con múltiples opciones;
+4. renderizado con una sola opción sin auto-confirmarla;
+5. renderizado con cero opciones sin inventar una causa;
+6. conservación del orden recibido;
+7. etiqueta humana asociada al control;
+8. selección que emite exactamente una intención;
+9. selección que no cambia por sí sola `confirmedAreaId`;
+10. representación separada de `requestedAreaId`;
+11. `pending` perceptible;
+12. `pending` sin convertir el destino solicitado en activo;
+13. `disabled` sin inferencia de permiso interna;
+14. placeholder no interactivo como autoridad;
+15. ausencia de `defaultAreaId`;
+16. ausencia de auto-selección de primera opción;
+17. ausencia de fallback al área anterior;
+18. ausencia de fallback al área del dispositivo;
+19. ausencia de inferencia desde `area_kind`;
+20. ausencia de inferencia desde nombre de área;
+21. ausencia de inferencia desde URL;
+22. ausencia de lectura o escritura de storage;
+23. ausencia de cookies;
+24. ausencia de persistencia propia;
+25. ausencia de consulta Supabase;
+26. ausencia de RPC dentro del componente;
+27. ausencia de evaluación de permisos dentro del componente;
+28. ausencia de filtro administrativo mezclado con contexto operativo;
+29. cambio de sede que no conserva automáticamente un área incompatible;
+30. coexistencia con SiteSelector sin carreras visuales autoritativas;
+31. coexistencia con ContextIndicator mostrando el contexto confirmado;
+32. opciones preparadas externamente para estaciones compartidas;
+33. allowed areas del dispositivo tratadas solo como límite externo;
+34. cambio de actor que no conserva intención local anterior;
+35. solicitud obsoleta que no se aplica por estado interno del componente;
+36. ausencia de cola offline propia;
+37. soporte de teclado;
+38. foco visible;
+39. label accesible;
+40. reflow;
+41. zoom;
+42. contraste;
+43. interacción táctil;
+44. ausencia de dependencia exclusiva de color o icono;
+45. compatibilidad con SSR de la composición propietaria y frontera cliente mínima;
+46. ausencia de dependencia runtime directa de `@vento/os-context` como requisito de presentación;
+47. ausencia de `EffectiveContext` como prop pública;
+48. ausencia de bypass desde una superficie de bloqueo que prohíba corregir área localmente;
+49. paridad por consumidor antes de retirar cualquier control existente;
+50. rollback verificable por lote de migración.
+
+Esta lista define evidencia futura. No declara implementación ni ejecución de pruebas en esta tarea.
+
+---
+
+#### 62. Cobertura de requisitos existente
+
+La tarea no necesita introducir una obligación transversal nueva porque el registro vigente ya cubre de forma específica:
+
+- contexto efectivo resuelto por fuente autoritativa y prohibición de derivarlo desde frontend: `TREQ-UX-077`;
+- separación entre área asignada, seleccionada, filtrada, operativa y territorio del recurso: `TREQ-UX-078`;
+- tratamiento fail-closed de dimensiones obligatorias: `TREQ-UX-082`;
+- transición autoritativa de sede, área, turno o rol y prohibición de activar antes del receipt: `TREQ-UX-083`;
+- invalidación de acciones, controles y borradores ante cambios materiales: `TREQ-UX-084`;
+- comparación entre contexto activo y territorio del recurso: `TREQ-UX-085`;
+- separación de filtros administrativos y contexto operativo: `TREQ-UX-086`;
+- singularidad del contexto activo frente a múltiples áreas elegibles: `TREQ-UX-087`;
+- contexto derivado y no recapturado manualmente: `TREQ-UX-122`;
+- intersección externa de áreas en estaciones compartidas y revalidación al cambiar: `TREQ-UX-246`;
+- cambio de área con nuevo AccessContext y sin fallback desde selectores: `TREQ-UX-286`;
+- área real y compatibilidad territorial no derivadas de área seleccionada, primera área, nombre o `area_kind`: `TREQ-AUTH-261`;
+- separación de causas de área inválida, configuración, grant e indisponibilidad: `TREQ-AUTH-262`;
+- revalidación de compatibilidad exacta del área en autorización: `TREQ-AUTH-259` a `TREQ-AUTH-267`;
+- responsabilidades compartidas clasificadas y reconciliadas antes de adopción o retiro: `TREQ-SHELL-002`, `TREQ-SHELL-032`;
+- template histórico separado de runtime: `TREQ-SHELL-029`;
+- autoridad real separada de controles cliente: `TREQ-SHELL-031`;
+- versionado, deprecación y retiro seguro de paquetes compartidos: `TREQ-SHELL-036` a `TREQ-SHELL-039`;
+- separación entre tipos canónicos, `EffectiveContext` runtime y autoridad: `TREQ-SHELL-043`.
+
+`SHELL-UI-008` especializa estas obligaciones en el contrato de presentación e interacción de `AreaSelector` sin crear una regla material nueva.
+
+---
+
+#### 63. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+La cobertura vigente ya contempla autoridad territorial, transición, invalidación, estaciones multiárea, accesibilidad, migración y compatibilidad. Esta tarea únicamente fija la API visual compartida y sus fronteras dentro de esa cobertura existente.
+
+---
+
+#### 64. Estado de materialización física
+
+Al cierre documental de `SHELL-UI-008`:
+
+```text
+IDENTIDAD AreaSelector                   = ESPECIFICADA
+AreaSelectorProps                        = ESPECIFICADO CONCEPTUALMENTE
+AreaSelectorOption                       = ESPECIFICADO CONCEPTUALMENTE
+ÁREA CONFIRMADA / SOLICITADA             = SEPARADAS
+TRANSICIÓN AUTORITATIVA                  = FUERA DEL COMPONENTE
+ELEGIBILIDAD DE OPCIONES                 = PROPIETARIA Y EXTERNA
+SEDE / ÁREA                              = FRONTERA CERRADA
+FILTRO ADMIN / CONTEXTO OPERATIVO        = FRONTERA CERRADA
+DISPOSITIVO / ÁREA                       = FRONTERA CERRADA
+ACCESIBILIDAD                            = ESPECIFICADA DOCUMENTALMENTE
+FRONTERA CLIENTE                         = ESPECIFICADA
+PACKAGE FÍSICO                           = NO MATERIALIZADO
+COMPONENTE FÍSICO                        = NO MATERIALIZADO
+CONSUMIDORES MIGRADOS                    = 0
+CONTROLES LEGACY RETIRADOS               = 0
+CAMBIOS TREQ                             = 0
+```
+
+La definición documental no implica publicación, instalación, migración ni adopción runtime.
+
+---
+
+#### 65. Decisiones vinculantes
+
+1. El componente compartido se denomina `AreaSelector`.
+2. Pertenece a `@vento/ui-web`.
+3. La tarea es documental y no materializa código.
+4. La superficie conceptual incluye `AreaSelector`, `AreaSelectorProps` y `AreaSelectorOption`.
+5. Cada opción contiene únicamente identidad estable y etiqueta humana como contrato mínimo.
+6. `confirmedAreaId` representa el área confirmada por la capa propietaria.
+7. `requestedAreaId` representa una intención todavía no confirmada.
+8. `onRequestChange` emite intención y no receipt.
+9. La selección visual no cambia automáticamente el área activa.
+10. `pending` representa transición de interacción y no autorización.
+11. No se crea `defaultAreaId`.
+12. No se crea fallback a primera opción.
+13. No se crea fallback a última área.
+14. No se crea fallback al área del dispositivo.
+15. Una sola opción no se auto-confirma.
+16. Cero opciones no se interpreta como falta de permiso.
+17. No existe una opción universal interactiva `Sin área`.
+18. El placeholder no es autoridad ni opción de negocio.
+19. El orden de opciones lo determina la capa propietaria.
+20. Las opciones no conceden autoridad por aparecer en el selector.
+21. El componente no recibe permisos, grants o scopes para decidir elegibilidad.
+22. El componente no resuelve pertenencia área–sede.
+23. El componente no cambia sede.
+24. Un cambio confirmado de sede puede invalidar el área anterior sin auto-seleccionar otra.
+25. La orquestación conjunta sede–área pertenece a la capa propietaria.
+26. Un filtro administrativo de área no se convierte en contexto operativo.
+27. `area_kind` no es fuente de autoridad visual.
+28. El nombre de área no sustituye la identidad estable.
+29. El componente no inicia simulación.
+30. El componente no evalúa autorización empresarial.
+31. El componente no funciona como bypass de una superficie de bloqueo.
+32. Borradores, claims, custodia y operaciones pendientes se resuelven fuera del componente.
+33. En dispositivos compartidos, allowed areas son límite y no concesión.
+34. La intersección entre dispositivo, actor, turno, permiso y proceso se calcula fuera del componente.
+35. Cada mutación conserva un único actor y área autoritativa.
+36. Cambiar actor invalida cualquier intención local incompatible mediante la composición propietaria.
+37. El control base preferido conserva semántica nativa de selección.
+38. No se exige combobox buscable.
+39. La etiqueta accesible es obligatoria.
+40. La transición no depende solo de color o spinner.
+41. El control conserva teclado y foco visible.
+42. El componente no roba ni mueve foco por re-render ordinario.
+43. La interacción requiere una frontera cliente mínima.
+44. Resolución, autorización, persistencia y efectos permanecen fuera de esa frontera.
+45. El componente no depende directamente de Supabase.
+46. El componente no ejecuta RPC.
+47. El componente no lee ni escribe cookies o storage.
+48. El componente no lee ni escribe query parameters.
+49. El componente no persiste preferencias o settings.
+50. No se inventa una columna o contrato `selected_area_id`.
+51. `EffectiveContext` no se adopta como prop pública.
+52. `@vento/os-context` no es dependencia runtime obligatoria del componente visual.
+53. SHELL no posee actualmente una primitiva local dedicada `AreaSelector` entre las cinco revisadas.
+54. El template revisado no expone selección de área en su `ProfileMenu`.
+55. Las seis firmas runtime de `ProfileMenu` revisadas tampoco exponen selección de área en esa pieza.
+56. No se fabrica un inventario de copias legacy de área por simetría con sede.
+57. La conclusión de evidencia se limita a los siete `ProfileMenu` revisados.
+58. La migración completa permanece bajo sus tareas propietarias.
+59. La calidad, releases, compatibilidad y retiro permanecen bajo sus tareas propietarias.
+60. Se crean 0 requisitos de prueba y se modifican 0.
+
+---
+
+#### 66. Criterios de aceptación documental
+
+`SHELL-UI-008` queda documentalmente cerrada únicamente si se cumplen simultáneamente:
+
+- [x] la continuidad real apunta de la tarea anterior a `SHELL-UI-008`;
+- [x] existe una identidad única para el componente;
+- [x] se fija su pertenencia a `@vento/ui-web`;
+- [x] se separa área confirmada de área solicitada;
+- [x] se define una API conceptual mínima;
+- [x] se define una opción mínima con `id` y `label`;
+- [x] se evita convertir opciones visibles en autorización;
+- [x] se evita actualización optimista autoritativa;
+- [x] se define el estado pending sin convertirlo en receipt;
+- [x] se prohíben defaults y fallbacks permisivos;
+- [x] se trata correctamente una, cero y múltiples opciones;
+- [x] se separa área operativa de filtro administrativo;
+- [x] se separa selección de área de selección de sede;
+- [x] se define la coordinación sede–área fuera del componente;
+- [x] se excluye `area_kind` como fuente de autoridad;
+- [x] se excluyen simulación y autorización del componente;
+- [x] se preservan reglas de trabajo, borradores, claims y custodia fuera del control;
+- [x] se define la frontera de estaciones compartidas y multiárea;
+- [x] se evita convertir allowed areas del dispositivo en autoridad;
+- [x] se especifica semántica HTML;
+- [x] se especifica accesibilidad mínima;
+- [x] se especifica interacción por teclado y tacto;
+- [x] se especifica frontera cliente mínima;
+- [x] se prohíben dependencias de Supabase, RPC, storage, cookies y router propietario;
+- [x] se evita persistencia directa de preferencias o settings;
+- [x] se reconcilian las cinco primitivas actuales de SHELL;
+- [x] se reconcilia el template histórico;
+- [x] se reconcilian seis firmas runtime de `ProfileMenu`;
+- [x] no se infiere un patrón legacy de área que la evidencia no demuestra;
+- [x] se asigna inventario, adopción y retiro a migración coordinada;
+- [x] se asignan pruebas, build, release y compatibilidad a tareas propietarias;
+- [x] no se modifica código, Supabase, consumidores o configuración;
+- [x] se declaran 0 cambios TREQ con cobertura existente concreta;
+- [x] no queda una decisión material de esta tarea sin propietario.
+
+Resultado documental:
+
+```text
+SELECTOR DE ÁREA COMPARTIDO       = ESPECIFICADO
+API CONCEPTUAL                    = CERRADA
+ÁREA CONFIRMADA / SOLICITADA      = SEPARADAS
+AUTORIDAD                         = FUERA DEL COMPONENTE
+PERSISTENCIA                      = FUERA DEL COMPONENTE
+ELEGIBILIDAD                      = EXTERNA
+MATERIALIZACIÓN FÍSICA            = PENDIENTE DE FASE PROPIETARIA
+```
+
+---
+
+#### 67. Límites de la tarea
+
+Esta tarea no autoriza:
+
+- crear archivos TypeScript del componente;
+- modificar `@vento/ui-web` físicamente;
+- modificar `@vento/os-context`;
+- modificar contratos de autorización;
+- crear o alterar tablas;
+- crear o alterar columnas;
+- crear RPC;
+- modificar RLS;
+- modificar datos;
+- cambiar configuración de Supabase;
+- editar consumidores;
+- retirar controles existentes;
+- cambiar filtros administrativos;
+- cambiar turnos, check-ins o roles;
+- ejecutar una migración;
+- publicar un package;
+- crear un release;
+- cambiar continuidad canónica;
+- iniciar la tarea siguiente.
+
+---
+
+#### 68. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+
+```text
+SHELL-UI-007 — Compartir selector de sede
+```
+
+**TAREA ACTUAL APROBADA**
+
+```text
+SHELL-UI-008 — Compartir selector de área
+```
+
+**SIGUIENTE TAREA RESERVADA**
+
+```text
+SHELL-UI-009 — Compartir aviso de rol simulado
+```
+
 ### [ ] SHELL-UI-009 — Compartir aviso de rol simulado
 ### [ ] SHELL-UI-010 — Evaluar AppShell compartido
 

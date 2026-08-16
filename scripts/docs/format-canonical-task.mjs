@@ -255,8 +255,10 @@ export function formatTaskFileSource(source, {
       output.push(...lines.slice(task.index, task.endIndex));
     } else {
       const formatted = formatTaskBlock(task.block, { scaffold });
-      if (formatted !== task.block.replace(/\n+$/u, '')) changedTaskIds.push(task.id);
-      output.push(...formatted.split('\n'));
+      const trailing = task.block.match(/\n+$/u)?.[0] ?? '';
+      const formattedWithTrailing = `${formatted}${trailing}`;
+      if (formattedWithTrailing !== task.block) changedTaskIds.push(task.id);
+      output.push(...formattedWithTrailing.split('\n'));
     }
     cursor = task.endIndex;
   }

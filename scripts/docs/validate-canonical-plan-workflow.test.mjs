@@ -5,6 +5,7 @@ import test from 'node:test';
 
 const workflowPath = path.resolve('.github/workflows/validate-canonical-plan.yml');
 const watcherPath = path.resolve('scripts/docs/watch-plan-canonico.mjs');
+const safeBuildPath = path.resolve('scripts/docs/safe-build-plan-canonico.mjs');
 const productionIntegrationPath = path.resolve(
   'docs/plan-canonico/modular/bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md',
 );
@@ -68,6 +69,19 @@ test('el watcher regenera y valida también la guía de tareas pendientes', () =
     /\[pendingTaskContextCheckScript, "--check"\]/u,
   );
   assert.match(watcher, /"normalize-retired-priority-route\.mjs"/u);
+  assert.match(watcher, /"repository-drift\.mjs"/u);
+  assert.match(watcher, /driftIntervalMs = 30 \* 60 \* 1000/u);
+  assert.match(watcher, /runRepositoryDriftIfDue\(reason === "verificación inicial"\)/u);
+});
+
+test('el build prepara formato sin iniciar tareas vacías', () => {
+  const safeBuild = fs.readFileSync(safeBuildPath, 'utf8');
+  const prepare = safeBuild.indexOf('autoPrepareCanonicalTask({');
+  const continuity = safeBuild.indexOf('syncPlanContinuity({');
+
+  assert.ok(prepare >= 0, 'falta la preparación automática de tareas');
+  assert.ok(continuity > prepare, 'el formato debe prepararse antes de sincronizar continuidad');
+  assert.match(safeBuild, /checkOnly: process\.argv\.includes\('--check'\)/u);
 });
 
 test('INT-PROD conserva decidir, ejecutar y verificar sin dependencia circular', () => {

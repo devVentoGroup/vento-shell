@@ -31,6 +31,57 @@ Comandos desde la raíz de vento-shell:
 
    npm run docs:screen-processes:check
 
+8. Preparar la tarea actual sin modificar archivos:
+
+   npm run docs:task:preflight
+
+   Para consultar otra tarea o producir salida estructurada:
+
+   npm run docs:task:preflight -- --task-id <TASK-ID> --json
+
+   No es necesario ejecutar este comando durante el trabajo normal. VS Code
+   inicia el watcher al abrir vento-shell y el build ejecuta automáticamente el
+   preflight y el formateo seguro de la tarea actual y la última aprobada.
+
+9. Comprobar o aplicar el formato de una tarea concreta:
+
+   npm run docs:task:format -- --file <fragmento.md> --task-id <TASK-ID> --check
+   npm run docs:task:format -- --file <fragmento.md> --task-id <TASK-ID> --write
+
+   Para preparar una tarea NO INICIADA que todavía solo tiene encabezado:
+
+   npm run docs:task:format -- --file <fragmento.md> --task-id <TASK-ID> --scaffold --write
+
+   --all existe para mantenimiento explícito, pero nunca se ejecuta desde CI ni
+   desde el preflight. El formateador no cambia IDs, títulos, estados, prosa,
+   tablas ni bloques de código; ante una transformación no estructural falla.
+
+10. Inventariar deriva multi-repositorio sin escribir:
+
+    npm run docs:repos:drift
+
+    La primera baseline local se crea únicamente de forma explícita y queda
+    bajo .delivery/, fuera del plan canónico:
+
+    npm run docs:repos:drift -- --write-baseline
+
+    Una baseline es evidencia de corte. No aprueba tareas, no reemplaza la
+    consulta remota y no constituye prueba operativa ni de Supabase.
+
+Automatización cotidiana:
+
+- al abrir vento-shell, la tarea "Plan canónico: compilar automáticamente" se
+  inicia mediante runOn=folderOpen;
+- cada guardado estable ejecuta preparación, formateo seguro, build y checks;
+- una tarea [ ] vacía se conserva intacta: el watcher no crea su scaffold ni la
+  inicia por inferencia;
+- al aprobar una tarea, el build revisa esa última aprobada y la nueva tarea
+  actual, pero solo formatea la que ya tenga desarrollo;
+- la deriva de los doce repositorios se revisa al abrir el workspace y, como
+  máximo, una vez cada treinta minutos;
+- la baseline nunca se sobrescribe automáticamente, para que una deriva real no
+  desaparezca por el solo hecho de ejecutar el watcher.
+
 Organización:
 
 - manifest.json controla únicamente el orden físico de compilación.
@@ -80,6 +131,19 @@ Organización:
   UX-BASE-015 como constantes.
 - CI ejecuta las pruebas de continuidad, las diez regresiones del validador,
   la validación del registro y el check del compilado.
+- docs:plan:check valida también el contrato modular de entrega. Los artefactos
+  concretos se validan con docs:delivery:check -- --task <archivo> y los
+  fragmentos 04A afectados cuando corresponda.
+- docs:task:preflight deriva la tarea vigente desde execution-route.json y las
+  fuentes reales, comprueba contrato, formato, continuidad y estado Git local,
+  y enumera validadores proporcionales sin modificar archivos.
+- safe-build-plan-canonico ejecuta auto-prepare-canonical-task antes de compilar.
+  Solo normaliza estructura de la tarea actual y su predecesora desarrollada;
+  no cambia estados, no crea scaffolds y no inicia continuidad.
+- docs:repos:drift inventaría branch/upstream, estado local, manifiestos,
+  rutas, componentes, contratos, migraciones y consumidores Supabase de los
+  doce repositorios VENTO. No ejecuta Supabase ni escribe salvo
+  --write-baseline.
 
 Al agregar una tarea futura:
 
