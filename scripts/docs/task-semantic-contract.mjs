@@ -1,0 +1,222 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { derivePreflight } from './canonical-task-preflight.mjs';
+import { parseTaskBlocks, validateTaskPresentation } from './format-canonical-task.mjs';
+
+const TASK_REFERENCE = /\b[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3}(?!\d)\b/gu;
+const METADATA = /^\*\*(?<label>[^*\n]+):\*\*\s*(?<value>.*)$/u;
+const SECTION = /^####(?:\s+\d+\.)?\s+(?<title>.+)$/gmu;
+
+function stripInline(value) {
+  return String(value ?? '').trim().replace(/^`|`$/gu, '');
+}
+
+export function metadataFromTaskBlock(block) {
+  const metadata = new Map();
+  for (const line of block.replace(/\r\n?/gu, '\n').split('\n').slice(1)) {
+    if (line.trim() === '') continue;
+    if (line.trim() === '---') break;
+    const match = line.match(METADATA);
+    if (!match) break;
+    metadata.set(match.groups.label.trim(), stripInline(match.groups.value));
+  }
+  return metadata;
+}
+
+export function taskSectionTitles(block) {
+  return [...block.matchAll(SECTION)].map((match) => match.groups.title.trim());
+}
+
+function sectionSource(block, titlePattern) {
+  const normalized = block.replace(/\r\n?/gu, '\n');
+  const matches = [...normalized.matchAll(SECTION)];
+  const targetIndex = matches.findIndex((match) => titlePattern.test(match.groups.title));
+  if (targetIndex < 0) return null;
+  const start = matches[targetIndex].index + matches[targetIndex][0].length;
+  const end = matches[targetIndex + 1]?.index ?? normalized.length;
+  return normalized.slice(start, end).trim();
+}
+
+export function extractValidationEvidence(block) {
+  const source = sectionSource(block, /Evidencia de validación/iu);
+  if (!source) return [];
+  const rows = [];
+  for (const line of source.split('\n')) {
+    if (!/^\s*\|/u.test(line)) continue;
+    const cells = line.split('|').slice(1, -1).map((cell) => stripInline(cell));
+    if (cells.length < 3 || cells[0] === 'Clase' || /^-+$/u.test(cells[0])) continue;
+    rows.push({ class: cells[0], status: cells[1], evidence: cells.slice(2).join(' | ') });
+  }
+  return rows;
+}
+
+export function readCanonicalTaskInventory(root = process.cwd()) {
+  const baseDir = path.join(root, 'docs', 'plan-canonico', 'modular');
+  const manifest = JSON.parse(fs.readFileSync(path.join(baseDir, 'manifest.json'), 'utf8'));
+  const inventory = new Map();
+  for (const relativePath of [...manifest.files, ...(manifest.auxiliary_files ?? [])]) {
+    const filePath = path.join(baseDir, relativePath);
+    if (!fs.existsSync(filePath) || !relativePath.endsWith('.md')) continue;
+    const source = fs.readFileSync(filePath, 'utf8');
+    for (const task of parseTaskBlocks(source)) {
+      inventory.set(task.id, { ...task, relativePath: relativePath.replaceAll('\\', '/'), filePath });
+    }
+  }
+  return inventory;
+}
+
+function canonicalPrefix(taskId) {
+  return taskId.replace(/-\d{3}$/u, '');
+}
+
+function physicalContradiction(metadata) {
+  const state = metadata.get('Estado físico resultante') ?? '';
+  const changes = metadata.get('Cambios físicos autorizados') ?? '';
+  return /NO_MATERIALIZADO|NO MATERIALIZADO/iu.test(state) && !/^ninguno$/iu.test(changes);
+}
+
+export function validateTaskSemanticContract({
+  block,
+  task,
+  ownerRelativePath,
+  inventory,
+  policy,
+  root = process.cwd(),
+}) {
+  const findings = [];
+  const approved = task.state === 'APROBADA';
+  const add = (code, message) => findings.push({
+    severity: approved ? 'ERROR' : 'WARNING',
+    code,
+    message,
+  });
+  const sections = taskSectionTitles(block);
+  if (sections.length === 0) {
+    add('EMPTY_DRAFT', 'la tarea continúa como borrador vacío; no se inicia automáticamente.');
+    return {
+      errors: findings.filter(({ severity }) => severity === 'ERROR'),
+      warnings: findings.filter(({ severity }) => severity === 'WARNING'),
+      evidence: [],
+    };
+  }
+
+  for (const message of validateTaskPresentation(block)) add('PRESENTATION', message);
+  const metadata = metadataFromTaskBlock(block);
+  for (const label of policy.required_header_fields ?? []) {
+    if (!metadata.get(label)) add('HEADER_FIELD_MISSING', `falta el campo de cabecera ${label}.`);
+  }
+  const declaredOwner = metadata.get('Archivo propietario');
+  if (declaredOwner && declaredOwner.replaceAll('\\', '/') !== `docs/plan-canonico/modular/${ownerRelativePath}`) {
+    add('OWNER_FILE_MISMATCH', `Archivo propietario no coincide con ${ownerRelativePath}.`);
+  }
+  const repositoryOwner = metadata.get('Repositorio propietario');
+  if (repositoryOwner?.startsWith('devVentoGroup/')) {
+    const repositoryName = repositoryOwner.split('/').at(-1);
+    const repositoryPath = path.join(path.dirname(root), repositoryName);
+    if (!fs.existsSync(repositoryPath)) add('OWNER_REPOSITORY_MISSING', `no existe el repositorio propietario ${repositoryOwner}.`);
+  }
+  if (physicalContradiction(metadata)) {
+    add('PHYSICAL_SCOPE_CONTRADICTION', 'el estado no materializado contradice los cambios físicos autorizados.');
+  }
+
+  for (const required of policy.required_section_groups ?? []) {
+    const pattern = new RegExp(required.pattern, 'iu');
+    if (!sections.some((title) => pattern.test(title))) {
+      add('SECTION_MISSING', `falta una sección de ${required.label}.`);
+    }
+  }
+  const placeholderPattern = new RegExp(policy.forbidden_placeholder_pattern, 'iu');
+  if (placeholderPattern.test(block)) add('UNRESOLVED_PLACEHOLDER', 'persisten placeholders sin resolver.');
+
+  const knownIds = new Set(inventory.keys());
+  const knownPrefixes = new Set([...knownIds].map(canonicalPrefix));
+  const unknownReferences = [...new Set(block.match(TASK_REFERENCE) ?? [])]
+    .filter((id) => !id.startsWith('TREQ-'))
+    .filter((id) => knownPrefixes.has(canonicalPrefix(id)) && !knownIds.has(id));
+  if (unknownReferences.length > 0) {
+    add('UNKNOWN_TASK_REFERENCE', `referencias canónicas inexistentes: ${unknownReferences.join(', ')}.`);
+  }
+
+  const evidence = extractValidationEvidence(block);
+  const allowedStatuses = new Set(policy.allowed_evidence_statuses ?? []);
+  const rowsByClass = new Map();
+  for (const row of evidence) {
+    if (!rowsByClass.has(row.class)) rowsByClass.set(row.class, []);
+    rowsByClass.get(row.class).push(row);
+    if (!allowedStatuses.has(row.status)) {
+      add('EVIDENCE_STATUS_INVALID', `${row.class} usa el estado no permitido ${row.status}.`);
+    }
+    if (row.status === 'PASS' && (!row.evidence || /pendiente|not.executed/iu.test(row.evidence))) {
+      add('EVIDENCE_MISSING', `${row.class} declara PASS sin evidencia concreta.`);
+    }
+  }
+  for (const evidenceClass of policy.required_evidence_classes ?? []) {
+    const rows = rowsByClass.get(evidenceClass) ?? [];
+    if (rows.length !== 1) add('EVIDENCE_CLASS_CARDINALITY', `${evidenceClass} debe aparecer exactamente una vez.`);
+  }
+
+  const treqCount = Number(metadata.get('Requisitos de prueba creados o modificados'));
+  const testSection = sectionSource(block, /Requisitos de prueba derivados/iu) ?? '';
+  if (/NO GENERA REQUISITOS DE PRUEBA/iu.test(testSection) && treqCount !== 0) {
+    add('TREQ_COUNT_CONTRADICTION', 'la cabecera declara TREQ modificados, pero la sección declara que no genera requisitos.');
+  }
+  if (/GENERA REQUISITOS DE PRUEBA/iu.test(testSection) && !/NO GENERA/iu.test(testSection) && treqCount === 0) {
+    add('TREQ_COUNT_CONTRADICTION', 'la sección genera TREQ, pero la cabecera declara cero.');
+  }
+
+  return {
+    errors: findings.filter(({ severity }) => severity === 'ERROR'),
+    warnings: findings.filter(({ severity }) => severity === 'WARNING'),
+    evidence,
+  };
+}
+
+export function validateProspectiveTaskSemantics({ root = process.cwd(), taskId = null } = {}) {
+  const preflight = derivePreflight({ root, requestedTaskId: taskId });
+  const policyPath = path.join(root, 'docs', 'plan-canonico', 'modular', 'task-development-policy.json');
+  const policy = JSON.parse(fs.readFileSync(policyPath, 'utf8'));
+  if (policy.schema_version !== 1) throw new Error('task-development-policy.json requiere schema_version 1.');
+  const boundary = derivePreflight({ root, requestedTaskId: policy.effective_from_task_id });
+  if (preflight.task.canonical_order < boundary.task.canonical_order) {
+    return { skipped: true, errors: [], warnings: [], evidence: [], preflight };
+  }
+  const inventory = readCanonicalTaskInventory(root);
+  const task = inventory.get(preflight.task.id);
+  if (!task) throw new Error(`no se pudo aislar ${preflight.task.id}.`);
+  const result = validateTaskSemanticContract({
+    block: task.block,
+    task: preflight.task,
+    ownerRelativePath: task.relativePath,
+    inventory,
+    policy,
+    root,
+  });
+  return { ...result, skipped: false, preflight, task, policy };
+}
+
+function main() {
+  const result = validateProspectiveTaskSemantics();
+  if (result.skipped) {
+    console.log('OK: tarea anterior a la frontera semántica; preservada.');
+    return;
+  }
+  for (const warning of result.warnings) console.warn(`[TASK QUALITY] ${warning.code}: ${warning.message}`);
+  if (result.errors.length > 0) {
+    throw new Error(result.errors.map(({ code, message }) => `${code}: ${message}`).join('\n'));
+  }
+  console.log(`OK: contrato semántico ${result.preflight.task.id}; ${result.warnings.length} advertencia(s).`);
+}
+
+const isCli = process.argv[1]
+  && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url));
+
+if (isCli) {
+  try {
+    main();
+  } catch (error) {
+    console.error(`ERROR: ${error instanceof Error ? error.message : String(error)}`);
+    process.exit(1);
+  }
+}
