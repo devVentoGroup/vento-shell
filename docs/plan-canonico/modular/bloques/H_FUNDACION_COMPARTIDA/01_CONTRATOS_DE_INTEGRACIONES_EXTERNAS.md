@@ -1653,7 +1653,797 @@ SHELL-CON-018 — Crear contrato de referencia de credencial externa sin incluir
 SHELL-CON-019 — Crear contrato de evento externo recibido
 
 
-### [ ] SHELL-CON-019 — Crear contrato de evento externo recibido
+### ✅ SHELL-CON-019 — Crear contrato de evento externo recibido
+
+**Estado:** APROBADA  
+**Tarea anterior:** `SHELL-CON-018 — Crear contrato de referencia de credencial externa sin incluir el secreto` — APROBADA  
+**Tarea siguiente:** `SHELL-CON-020 — Crear contrato canónico de venta` — RESERVADA  
+**Tipo de tarea:** Documental; definición normativa y materializada del contrato compartido de evento externo recibido, con sobre estable, versión, identidad de recepción, referencia de autenticidad, evidencia fuente protegida, afirmación normalizada, referencias de mapping, idempotencia y correlación, sin convertir al tercero en fuente empresarial ni implementar código, persistencia, endpoints o transporte  
+**Bloque:** H — Fundación compartida de VENTO-SHELL  
+**Repositorio propietario:** `devVentoGroup/vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md`  
+**Superficie lógica objetivo:** `@vento/contracts/integrations`  
+**Estado físico resultante:** `DEFINIDO_NO_MATERIALIZADO`  
+**Implementación física autorizada:** ninguna  
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, Storage, Edge Functions, secretos, credenciales, endpoints, proveedores, configuración remota, despliegues o datos:** ninguno  
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato compartido que representa una **afirmación o evento recibido desde una frontera externa** antes de que una aplicación propietaria de VENTO produzca, rechace, difiera o concilie un efecto empresarial.
+
+El contrato debe permitir que cualquier adaptador autorizado conserve de forma uniforme:
+
+- qué sistema externo originó la afirmación;
+- qué instancia, superficie y ambiente participaron cuando exista evidencia;
+- bajo qué contrato VENTO interpretó la entrada;
+- qué identidad externa o receipt permite reconocer la recepción;
+- cuándo fue recibida y, cuando exista evidencia, cuándo afirma el proveedor que ocurrió;
+- qué resultado de autenticidad corresponde a la recepción;
+- dónde se conserva la evidencia fuente protegida;
+- qué huella identifica el contenido capturado sin usarla como identidad empresarial;
+- cuál es la afirmación externa normalizada y minimizada;
+- qué referencias de mapping, idempotencia y correlación están asociadas;
+- qué propietario interno debe evaluar cualquier efecto posterior.
+
+La tarea elimina la ambigüedad entre recibir información externa y confirmar un hecho interno:
+
+```text
+EVENTO / AFIRMACIÓN EXTERNA RECIBIDA
+≠
+HECHO EMPRESARIAL CANÓNICO VENTO
+```
+
+```text
+PROVEEDOR EXTERNO
+≠
+PRODUCTOR EMPRESARIAL INTERNO
+```
+
+```text
+RECEIPT / ACK / CALLBACK / WEBHOOK
+≠
+EFECTO EMPRESARIAL CONFIRMADO
+```
+
+```text
+PAYLOAD DEL PROVEEDOR
+≠
+MODELO CANÓNICO DEL DOMINIO PROPIETARIO
+```
+
+---
+
+#### 2. Resultado canónico
+
+Se define `ExternalReceivedEvent<TNormalizedAssertion>` como el contrato lógico compartido de una recepción externa gobernada por VENTO.
+
+Su responsabilidad es representar la frontera entre:
+
+```text
+FUENTE EXTERNA
+→ CAPTURA DE RECEPCIÓN
+→ AUTENTICIDAD / CONTRATO / EVIDENCIA
+→ NORMALIZACIÓN DEL ADAPTADOR
+→ HANDOFF A LA APLICACIÓN PROPIETARIA
+```
+
+sin saltar directamente a:
+
+```text
+HECHO EMPRESARIAL
+EVENTO EMPRESARIAL INTERNO
+MUTACIÓN DE DOMINIO
+COMPENSACIÓN
+CONCILIACIÓN CERRADA
+```
+
+El contrato se define documentalmente dentro de la superficie lógica ya aprobada:
+
+```text
+@vento/contracts/integrations
+```
+
+Esta tarea no crea todavía el package, archivo TypeScript, export, schema físico, tabla inbox, registro de receipt, endpoint de webhook ni mecanismo de almacenamiento.
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+`SHELL-CON-019` consume y conserva sin redefinir:
+
+- `SHELL-CON-017`, incluido `IntegrationPrincipal`, su identidad estable y la separación entre principal técnico, actor humano, permiso, cuenta, endpoint y credencial;
+- `SHELL-CON-018`, incluidos `ExternalCredentialId`, `ExternalCredentialRef`, ambiente, procedencia, mecanismo, alcance, clase de material y lifecycle sin valor secreto;
+- `INT-EXT-001`, incluidas las veintiuna identidades `EXT-SYS-001` a `EXT-SYS-021` y su distribución de evidencia;
+- `INT-EXT-002`, incluida la separación entre principal técnico y autoridad empresarial;
+- `INT-EXT-003` a `INT-EXT-008`, incluidas procedencia, mecanismo, mínimo privilegio, separación ambiental, custodia y lifecycle de credenciales;
+- `INT-EXT-009`, incluida la diferencia entre contrato de entrada, payload del proveedor, respuesta externa, versión del proveedor, versión VENTO y adaptador;
+- `INT-EXT-010`, incluida la estrategia concreta de intercambio por superficie sin convertir toda entrada HTTP en evento;
+- `INT-EXT-011`, incluida la validación de autenticidad, origen, tiempo y replay sin exponer material secreto;
+- `INT-EXT-012`, incluida la identidad idempotente independiente de la identidad del recurso y del intento técnico;
+- `INT-EXT-013`, incluido el mapping explícito entre identificadores externos, receipts, referencias canónicas y relaciones sin equivalencia;
+- `INT-EXT-014`, incluida la preservación protegida del payload o evidencia fuente, la huella y la prohibición de reescribir evidencia histórica;
+- `INT-EXT-015` a `INT-EXT-017`, incluidas resiliencia, cuarentena, auditoría, métricas, alertas y conciliación sin transformar sus políticas en campos ejecutables de este contrato;
+- la política transversal que impide a un adaptador externo escribir directamente fuentes privadas de varias aplicaciones;
+- la propiedad exclusiva de la aplicación responsable sobre cualquier hecho empresarial derivado.
+
+La tarea no modifica ninguna de esas decisiones.
+
+---
+
+#### 4. Frontera semántica obligatoria
+
+La secuencia canónica queda definida así:
+
+```text
+SISTEMA / CLIENTE TÉCNICO EXTERNO
+        ↓
+EVENTO O AFIRMACIÓN EXTERNA
+        ↓
+RECEPCIÓN TÉCNICA VENTO
+        ↓
+VALIDACIÓN DE CONTRATO Y AUTENTICIDAD
+        ↓
+EVIDENCIA FUENTE PROTEGIDA
+        ↓
+AFIRMACIÓN EXTERNA NORMALIZADA
+        ↓
+MAPEO / IDEMPOTENCIA / CORRELACIÓN
+        ↓
+APLICACIÓN PROPIETARIA
+        ↓
+VALIDACIÓN EMPRESARIAL Y AUTORIZACIÓN
+        ↓
+HECHO EMPRESARIAL, RECHAZO O CONCILIACIÓN
+        ↓
+EVENTO EMPRESARIAL INTERNO, CUANDO CORRESPONDA
+```
+
+Reglas:
+
+1. el sistema externo es fuente de su propia afirmación, no de la verdad empresarial interna;
+2. `ExternalReceivedEvent` no es un evento de `ENTERPRISE-EVENT-CATALOG-001`;
+3. el proveedor externo no puede aparecer como `producer_application` de un evento empresarial interno;
+4. el adaptador no adquiere propiedad funcional por recibir, verificar o transformar la entrada;
+5. una autenticidad válida demuestra la procedencia técnica definida por el contrato, no que el contenido sea empresarialmente correcto;
+6. una respuesta `2xx`, receipt, callback o ACK no confirma por sí sola un pago, entitlement, venta, inventario, entrega, saldo, documento o cualquier otro efecto de dominio;
+7. el hecho interno solo puede producirlo la aplicación propietaria después de sus validaciones y reglas;
+8. un error posterior no autoriza a reescribir la evidencia externa que originó el procesamiento.
+
+---
+
+#### 5. Identidad pública del contrato
+
+La identidad lógica queda fijada así:
+
+| Propiedad                | Decisión                                                             |
+| ------------------------ | -------------------------------------------------------------------- |
+| símbolo contractual      | `ExternalReceivedEvent<TNormalizedAssertion>`                        |
+| package lógico           | `@vento/contracts`                                                   |
+| superficie lógica        | `@vento/contracts/integrations`                                      |
+| propietario              | `devVentoGroup/vento-shell`                                          |
+| naturaleza               | contrato estático, versionado y no ejecutable                        |
+| payload genérico         | afirmación externa normalizada y tipada por el adaptador propietario |
+| valor secreto            | prohibido                                                            |
+| persistencia             | fuera del alcance de esta tarea                                      |
+| transporte               | fuera del alcance del contrato compartido                            |
+| autorización empresarial | fuera del contrato; permanece en la aplicación propietaria           |
+
+No se define un package adicional para eventos externos y no se crea una segunda fuente de contratos fuera de `@vento/contracts`.
+
+---
+
+#### 6. Forma lógica de `ExternalReceivedEvent`
+
+La forma contractual objetivo es:
+
+```ts
+type ExternalReceivedEvent<TNormalizedAssertion> = {
+  external_system_id: string;
+  external_instance_id: string | null;
+
+  integration_principal_id: IntegrationPrincipalId | null;
+  external_credential_id: ExternalCredentialId | null;
+
+  environment: "DEVELOPMENT" | "STAGING" | "PRODUCTION";
+
+  vento_contract_version: string;
+  provider_contract_version: string | null;
+  input_contract_ref: string;
+  transport_ref: string;
+
+  external_event_id: string | null;
+  receipt_id: string | null;
+
+  received_at: string;
+  provider_occurred_at: string | null;
+
+  authenticity_result_ref: string | null;
+  source_evidence_ref: string;
+  source_payload_digest: string | null;
+
+  normalized_assertion: TNormalizedAssertion | null;
+
+  mapping_refs: readonly string[];
+  idempotency_ref: string | null;
+  correlation_refs: readonly string[];
+  owner_contract_ref: string;
+};
+```
+
+La forma es **lógica y normativa**. No fija nombres de archivos, módulos internos, representación JSON final, librería de validación, algoritmo de hash, formato UUID, tabla, bucket, endpoint ni estrategia de serialización física.
+
+---
+
+#### 7. Semántica de los campos
+
+##### 7.1. `external_system_id`
+
+Identifica la relación con el sistema externo gobernado. Debe ser estable dentro del catálogo aplicable y no puede derivarse libremente desde hostname, nombre comercial, endpoint o texto del payload.
+
+Las claves `EXT-SYS-*` utilizadas en la matriz de esta tarea son identidades documentales del inventario vigente. Esta tarea no crea identificadores físicos de runtime para ellas.
+
+##### 7.2. `external_instance_id`
+
+Referencia la instancia, cuenta, proyecto, aplicación, issuer u otra frontera externa concreta únicamente cuando exista una identidad acreditada.
+
+`null` significa que la instancia todavía no está acreditada o no aplica al intercambio; nunca significa “cualquier instancia”.
+
+##### 7.3. `integration_principal_id`
+
+Referencia el principal técnico VENTO definido por `SHELL-CON-017` cuando exista materialización aplicable.
+
+No contiene:
+
+- usuario humano;
+- rol;
+- `PermissionKey`;
+- token;
+- API key;
+- `service_role`;
+- secreto;
+- cuenta comercial del proveedor.
+
+La ausencia física actual del principal no autoriza a reemplazarlo con una credencial o identidad humana.
+
+##### 7.4. `external_credential_id`
+
+Referencia la credencial gobernada por `SHELL-CON-018` cuando la superficie utilice una credencial materializada.
+
+Nunca contiene el secreto, token, firma, certificado privado o valor de autenticación.
+
+Una superficie cuya autenticidad no use una credencial externa materializada puede conservar `null` conforme a su contrato aprobado.
+
+##### 7.5. `environment`
+
+Conserva exactamente la identidad lógica de ambiente VENTO:
+
+```text
+DEVELOPMENT
+STAGING
+PRODUCTION
+```
+
+No se deriva automáticamente de `test`, `preview`, hostname, branch, proyecto externo, tag de telemetría o contenido enviado por el proveedor.
+
+##### 7.6. `vento_contract_version`
+
+Es la versión del contrato VENTO que interpreta esta recepción.
+
+Debe existir siempre para una instancia contractual consumible.
+
+Un cambio incompatible de significado, obligatoriedad, cardinalidad o interpretación exige una nueva versión mayor conforme a las reglas de versionado aprobadas.
+
+##### 7.7. `provider_contract_version`
+
+Conserva la versión del proveedor solo cuando sea acreditable.
+
+Si el proveedor no publica o no permite determinar una versión de forma verificable:
+
+```text
+provider_contract_version = null
+```
+
+No se inventa `v1`, `latest`, fecha ni versión por convención.
+
+##### 7.8. `input_contract_ref`
+
+Referencia el contrato de entrada exacto mediante el cual VENTO interpreta la superficie externa.
+
+No es el endpoint y no es el nombre del proveedor.
+
+##### 7.9. `transport_ref`
+
+Referencia la modalidad o superficie de transporte ya gobernada por BLOQUE X.
+
+No autoriza a inferir que cualquier request HTTP, callback de SDK o consulta polling sea un evento externo recibido.
+
+---
+
+#### 8. Identidad de evento y de recepción
+
+`external_event_id` y `receipt_id` tienen semánticas distintas.
+
+```text
+external_event_id
+→ identidad que el proveedor atribuye a la afirmación o evento, cuando existe y es confiable
+
+receipt_id
+→ identidad VENTO de una recepción técnica cuando el contrato la materializa
+```
+
+Invariantes:
+
+1. al menos una identidad estable entre `external_event_id` y `receipt_id` debe ser resoluble antes de permitir procesamiento con efecto;
+2. si el proveedor no entrega un identificador externo estable, la implementación futura deberá materializar un `receipt_id` durable antes del primer procesamiento o reintento;
+3. un `receipt_id` nuevo por intento de procesamiento está prohibido cuando represente la misma recepción;
+4. una redelivery del mismo evento puede compartir `external_event_id` y conservar una recepción técnica distinta cuando el contrato de evidencia lo requiera;
+5. `external_event_id` no se convierte en identificador del recurso empresarial por coincidencia de valor;
+6. `receipt_id` no se convierte en `event_id` empresarial interno;
+7. el hash del payload no sustituye ninguna de estas identidades;
+8. la relación entre evento externo, receipt y recurso canónico se declara mediante mapping o correlación explícita, nunca por semejanza de texto.
+
+Ejemplo semántico permitido:
+
+```text
+EVENTO EXTERNO WOMPI
+external_event_id
+        ↓
+RECEPCIÓN VENTO
+receipt_id
+        ↓
+MAPPING / CORRELACIÓN
+        ↓
+TRANSACCIÓN PROPIETARIA
+        ↓
+HECHO INTERNO CONFIRMADO
+```
+
+No se permite:
+
+```text
+external_event_id
+=
+transaction_id canónico
+```
+
+sin una relación de mapping acreditada.
+
+---
+
+#### 9. Autenticidad, principal y credencial
+
+El contrato conserva **referencias**, no material de autenticación.
+
+`authenticity_result_ref` enlaza el resultado producido por la política aprobada de autenticidad de la superficie.
+
+Reglas:
+
+1. una recepción puede capturarse antes de completar autenticidad, pero no puede liberarse para producir un efecto empresarial mientras la política de la superficie no autorice continuar;
+2. `authenticity_result_ref = null` no equivale a autenticidad válida;
+3. una firma, checksum, MAC, JWT, token o certificado completo no se copia al contrato compartido;
+4. la credencial referenciada permanece separada del resultado de autenticidad;
+5. una credencial válida no convierte al proveedor en actor humano ni le concede permiso empresarial;
+6. una recepción con autenticidad fallida o no demostrable conserva su evidencia y pasa a la disposición gobernada por las tareas de rechazo o cuarentena, sin producir efecto silencioso;
+7. una redelivery deberá conservar la identidad lógica necesaria para que autenticidad e idempotencia puedan evaluarse sin crear un nuevo hecho por intento.
+
+---
+
+#### 10. Evidencia fuente y payload
+
+`source_evidence_ref` referencia la evidencia fuente protegida definida por la política de preservación externa.
+
+El contrato compartido **no transporta por defecto el payload original completo**.
+
+Separación obligatoria:
+
+```text
+RAW_SOURCE_BYTES / PAYLOAD DEL PROVEEDOR
+→ evidencia protegida
+
+ExternalReceivedEvent
+→ referencias + metadata + afirmación normalizada mínima
+```
+
+Reglas:
+
+1. `source_evidence_ref` no puede ser una URL firmada persistente ni un secreto de acceso;
+2. `source_payload_digest` es una huella de integridad o correlación y no una identidad empresarial;
+3. el algoritmo concreto de huella se versiona en la implementación propietaria y no se fija en esta tarea;
+4. cuando autenticidad dependa de los bytes exactos recibidos, la preservación debe mantener esa fuente sin reemplazarla por JSON reserializado;
+5. una corrección de parser crea una nueva interpretación derivada, no modifica la fuente histórica;
+6. una redelivery no sobrescribe la evidencia de una recepción previa;
+7. el contrato no replica innecesariamente datos personales, financieros, médicos, documentos, credenciales o material sensible cuando una referencia protegida sea suficiente;
+8. auditoría y logs deben registrar referencias, estados y huellas adecuadas sin convertirse en copia del payload.
+
+---
+
+#### 11. `normalized_assertion`
+
+`normalized_assertion` contiene únicamente la representación **tipada, validada y minimizada** que el adaptador necesita entregar a la frontera propietaria.
+
+No es un hecho empresarial.
+
+Reglas:
+
+1. su tipo concreto se especializa por contrato de entrada y superficie externa;
+2. no existe un `Record<string, unknown>` universal como API canónica para todos los proveedores;
+3. la afirmación normalizada conserva significado externo; no inventa campos internos ausentes;
+4. un valor no acreditado permanece ausente o no resoluble conforme al contrato específico, en lugar de completarse por inferencia;
+5. cualquier dato que deba convertirse a una identidad canónica requiere mapping explícito;
+6. la afirmación normalizada no incluye secretos;
+7. la afirmación normalizada no puede declarar por sí sola que un efecto empresarial quedó confirmado;
+8. si autenticidad, contrato o integridad no permiten continuar, `normalized_assertion` puede permanecer `null` y la recepción conserva su evidencia para disposición controlada;
+9. una nueva interpretación incompatible exige versión contractual compatible con la historia preservada.
+
+---
+
+#### 12. Mapping, idempotencia y correlación
+
+El contrato solo mantiene referencias hacia las responsabilidades especializadas; no las redefine.
+
+##### 12.1. `mapping_refs`
+
+Relaciona identificadores externos con receipts, namespaces, rutas o recursos canónicos únicamente cuando exista una relación acreditada.
+
+La forma compartida de mapping permanece a cargo de `SHELL-CON-022`.
+
+No se permite deducir mapping por:
+
+- igualdad de string;
+- nombre de campo;
+- proximidad temporal;
+- email;
+- teléfono;
+- importe;
+- texto libre;
+- posición dentro del payload.
+
+##### 12.2. `idempotency_ref`
+
+Referencia la operación o decisión idempotente gobernada por las políticas vigentes.
+
+La forma compartida de idempotencia y conciliación permanece a cargo de `SHELL-CON-023`.
+
+`idempotency_ref` no es:
+
+- `external_event_id` por definición universal;
+- `receipt_id` por definición universal;
+- hash de payload;
+- `correlation_id`;
+- identificador del recurso.
+
+Cada superficie conserva el alcance aprobado de deduplicación.
+
+##### 12.3. `correlation_refs`
+
+Conserva referencias que permiten reconstruir la relación causal o técnica entre la recepción y otros objetos sin afirmar equivalencia.
+
+Un timestamp por sí solo no constituye correlación ni causalidad.
+
+##### 12.4. `owner_contract_ref`
+
+Identifica la frontera propietaria que debe evaluar el significado empresarial de la afirmación.
+
+No concede autoridad al adaptador y no permite escritura directa sobre la fuente de verdad del dominio.
+
+---
+
+#### 13. Semántica temporal
+
+El contrato distingue como mínimo:
+
+```text
+received_at
+→ momento en que VENTO registra la recepción técnica
+
+provider_occurred_at
+→ momento que el proveedor afirma para el evento, solo cuando existe y es interpretable bajo su contrato
+```
+
+Reglas:
+
+1. `received_at` no se reemplaza por el timestamp declarado por el proveedor;
+2. `provider_occurred_at` no se inventa si la fuente no lo aporta o no puede interpretarse de forma acreditada;
+3. una entrega tardía conserva el momento externo original cuando exista y el momento real de recepción VENTO;
+4. una redelivery no cambia retroactivamente el momento declarado del evento original;
+5. el orden empresarial no se deriva únicamente de timestamps;
+6. orden, versión de agregado, causalidad y reconciliación siguen gobernados por sus contratos especializados.
+
+---
+
+#### 14. Matriz materializada de aplicabilidad por identidad externa
+
+Se preservan las veintiuna identidades del inventario y se decide explícitamente si existe hoy una superficie que pueda materializar `ExternalReceivedEvent` como evento externo recibido.
+
+| ID            | Sistema / plataforma                     | Superficie inbound acreditada en el corte                                                                                                   | Decisión `SHELL-CON-019`           | Estado físico               | Condición de salida / regla                                                                                                                                                                       |
+| ------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | no existe un evento de proveedor único acreditado por esta tarea; las fronteras dependen de contratos propietarios                          | `NO_APLICA_EN_CORTE`               | `NO_APLICA`                 | cualquier futura superficie de evento externo deberá declarar contrato de entrada, autenticidad, evidencia y propietario antes de producir efecto                                                 |
+| `EXT-SYS-002` | Wompi                                    | webhook de resultado de pago                                                                                                                | `APLICA_EVENTO_INBOUND_ACREDITADO` | `DEFINIDO_NO_MATERIALIZADO` | la recepción deberá conservar identidad externa o receipt, contrato, autenticidad, evidencia protegida, afirmación normalizada, mapping, idempotencia y correlación antes del handoff propietario |
+| `EXT-SYS-003` | RevenueCat                               | webhook de entitlement / suscripción                                                                                                        | `APLICA_EVENTO_INBOUND_ACREDITADO` | `DEFINIDO_NO_MATERIALIZADO` | la recepción deberá conservar identidad externa o receipt, contrato, autenticidad, evidencia protegida, afirmación normalizada, mapping, idempotencia y correlación antes del handoff propietario |
+| `EXT-SYS-004` | Resend                                   | la superficie observada es salida de correo                                                                                                 | `NO_APLICA_EN_CORTE`               | `NO_APLICA`                 | una futura callback o evento recibido deberá instanciar este contrato antes de ser procesado como afirmación externa                                                                              |
+| `EXT-SYS-005` | Expo / EAS Update                        | configuración observada sin evento runtime acreditado                                                                                       | `NO_APLICA_EN_CORTE`               | `NO_APLICA`                 | acreditar primero una superficie inbound real y su contrato                                                                                                                                       |
+| `EXT-SYS-006` | Expo Push Service                        | la superficie observada es salida de notificación                                                                                           | `NO_APLICA_EN_CORTE`               | `NO_APLICA`                 | una futura recepción de evento independiente requerirá contrato de entrada específico                                                                                                             |
+| `EXT-SYS-007` | Sentry                                   | ingestión de telemetría VENTO hacia proveedor                                                                                               | `NO_APLICA_EN_CORTE`               | `NO_APLICA`                 | una futura entrada desde Sentry no se presume por la existencia del SDK                                                                                                                           |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | consulta y navegación, sin evento inbound acreditado                                                                                        | `NO_APLICA_EN_CORTE`               | `NO_APLICA`                 | acreditar una superficie de evento antes de instanciar el contrato                                                                                                                                |
+| `EXT-SYS-009` | Apple Wallet / PassKit y APNs            | existen requests inbound del PassKit Web Service, pero son requests de recurso/registro y no se reetiquetan como evento empresarial externo | `NO_APLICA_AL_EVENTO_EN_CORTE`     | `NO_APLICA`                 | si se incorpora una afirmación/evento externo distinto, deberá instanciar `ExternalReceivedEvent`; los requests actuales conservan su contrato I/O propio                                         |
+| `EXT-SYS-010` | Vercel                                   | configuración de plataforma sin evento runtime acreditado                                                                                   | `NO_APLICA_EN_CORTE`               | `NO_APLICA`                 | acreditar primero un binding inbound y su contrato                                                                                                                                                |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | bridge local y efecto físico, sin evento de proveedor inbound acreditado                                                                    | `NO_APLICA_EN_CORTE`               | `NO_APLICA`                 | callbacks o estados futuros no se convierten en evento externo sin contrato específico                                                                                                            |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | modelo documentado sin binding remoto acreditado                                                                                            | `NO_APLICA_EN_CORTE`               | `NO_APLICA_ACTUAL`          | acreditar binding remoto y una superficie inbound antes de materializar recepción de eventos                                                                                                      |
+| `EXT-SYS-013` | POS externo vigente                      | proveedor e interfaz no acreditados                                                                                                         | `NO_APLICA_EN_CORTE`               | `BLOQUEADO`                 | `INT-POS-001` debe acreditar proveedor, interfaz y payload; cualquier evento posterior deberá cumplir este contrato antes de producir un hecho interno                                            |
+| `EXT-SYS-014` | Shopify / comercio electrónico           | sin binding acreditado                                                                                                                      | `NO_APLICA_EN_CORTE`               | `NO_APLICA_ACTUAL`          | acreditar integración y evento real antes de materialización                                                                                                                                      |
+| `EXT-SYS-015` | Rappi / marketplace                      | sin binding acreditado                                                                                                                      | `NO_APLICA_EN_CORTE`               | `NO_APLICA_ACTUAL`          | acreditar integración y evento real antes de materialización                                                                                                                                      |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | sin binding acreditado                                                                                                                      | `NO_APLICA_EN_CORTE`               | `NO_APLICA_ACTUAL`          | acreditar bot/API y evento real antes de materialización                                                                                                                                          |
+| `EXT-SYS-017` | WhatsApp                                 | sin proveedor/API/binding acreditados                                                                                                       | `NO_APLICA_EN_CORTE`               | `NO_APLICA_ACTUAL`          | acreditar proveedor, cuenta, API y evento real antes de materialización                                                                                                                           |
+| `EXT-SYS-018` | Instagram / perfiles sociales            | sin API/binding acreditados                                                                                                                 | `NO_APLICA_EN_CORTE`               | `NO_APLICA_ACTUAL`          | acreditar API, cuenta técnica y evento real antes de materialización                                                                                                                              |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | proveedor e integración API no acreditados                                                                                                  | `NO_APLICA_EN_CORTE`               | `NO_APLICA_ACTUAL`          | acreditar proveedor y binding automatizado antes de materialización                                                                                                                               |
+| `EXT-SYS-020` | Telefonía / canal de voz                 | operador e integración no acreditados                                                                                                       | `NO_APLICA_EN_CORTE`               | `BLOQUEADO`                 | `TI-INT-003` debe acreditar operador, interfaz y binding; un evento posterior deberá usar este contrato                                                                                           |
+| `EXT-SYS-021` | Transporte externo                       | proveedor e interfaz no acreditados                                                                                                         | `NO_APLICA_EN_CORTE`               | `NO_APLICA_ACTUAL`          | acreditar proveedor, tracking/API y evento real antes de materialización                                                                                                                          |
+
+---
+
+#### 15. Reconciliación de identidades y decisiones
+
+La tarea conserva exactamente el inventario heredado:
+
+```text
+21 IDENTIDADES
+= 3 BINDING_TECNICO_OBSERVADO
++ 6 BINDING_CONDICIONAL_OBSERVADO
++ 2 CONFIGURACION_OBSERVADA
++ 6 DOCUMENTADO_SIN_BINDING_ACREDITADO
++ 4 PROVEEDOR_NO_ACREDITADO
+```
+
+La aplicabilidad específica de `ExternalReceivedEvent` queda:
+
+```text
+21 IDENTIDADES
+= 2 APLICA_EVENTO_INBOUND_ACREDITADO
++ 19 SIN EVENTO EXTERNO RECIBIDO ACREDITADO EN EL CORTE
+```
+
+Control:
+
+| Control                                         | Resultado |
+| ----------------------------------------------- | --------: |
+| identidades esperadas                           |    **21** |
+| identidades materializadas en la matriz         | **21/21** |
+| identificadores únicos                          |    **21** |
+| faltantes                                       |     **0** |
+| duplicados                                      |     **0** |
+| eventos inbound acreditados                     |     **2** |
+| demás identidades sin evento inbound acreditado |    **19** |
+| secretos incorporados al contrato               |     **0** |
+| credenciales físicas creadas                    |     **0** |
+| endpoints creados                               |     **0** |
+| cambios de Supabase                             |     **0** |
+
+La clasificación de aplicabilidad no reemplaza las clasificaciones aprobadas de evidencia, transporte, autenticidad, idempotencia, mapping, preservación o resiliencia.
+
+---
+
+#### 16. Versionado y compatibilidad
+
+El contrato sigue las reglas de compatibilidad ya aprobadas para `@vento/contracts` e `INT-EXT-009`.
+
+Un cambio es incompatible cuando altera de forma no preservable, entre otros:
+
+- la semántica de una identidad;
+- la diferencia entre evento externo y hecho interno;
+- obligatoriedad de un campo material;
+- significado de autenticidad;
+- interpretación temporal;
+- vínculo entre payload fuente y afirmación normalizada;
+- reglas de mapping o idempotencia;
+- propiedad del efecto empresarial.
+
+Un cambio aditivo opcional puede permanecer compatible únicamente cuando un consumidor anterior pueda ignorarlo sin reinterpretar el intercambio histórico.
+
+Reglas adicionales:
+
+1. `provider_contract_version` y `vento_contract_version` evolucionan independientemente;
+2. cambiar la versión del proveedor no obliga automáticamente a cambiar la versión VENTO si el adaptador conserva semántica compatible;
+3. cambiar el contrato VENTO no modifica retrospectivamente recepciones históricas;
+4. una recepción conserva la versión con la que fue interpretada;
+5. un parser nuevo no puede reinterpretar silenciosamente historia sin dejar evidencia de la nueva derivación;
+6. la publicación física de versiones permanece sujeta al ciclo de package y release aprobado para `@vento/contracts`.
+
+---
+
+#### 17. Seguridad, privacidad y contenido prohibido
+
+`ExternalReceivedEvent` nunca deberá incluir como contenido ordinario:
+
+- API keys;
+- service-role keys;
+- passwords;
+- client secrets;
+- webhook secrets;
+- refresh tokens;
+- access tokens reutilizables;
+- claves privadas;
+- P8/P12;
+- certificados privados;
+- firmas completas cuando una referencia o resultado sea suficiente;
+- URLs firmadas persistentes;
+- cookies de sesión;
+- payload fuente completo sensible cuando una referencia protegida sea suficiente;
+- datos bancarios completos;
+- expedientes médicos o personales completos;
+- credenciales de proveedor;
+- secretos usados para calcular checksums, HMAC o firmas.
+
+También queda prohibido usar el contrato para transportar una `service_role` hacia un proveedor o para permitir escritura transversal sobre varias aplicaciones VENTO.
+
+La minimización se aplica tanto a `normalized_assertion` como a metadata, auditoría, errores y correlaciones.
+
+---
+
+#### 18. Handoffs y fronteras posteriores
+
+`SHELL-CON-019` deja definidos estos límites sin desarrollar las tareas posteriores:
+
+| Trabajo posterior                       | Estado desde esta tarea     | Propietario / tarea                              | Condición de salida                                                                                                                                                            |
+| --------------------------------------- | --------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| contrato canónico de venta              | `FUERA_DE_ALCANCE`          | `SHELL-CON-020`                                  | la afirmación externa que corresponda a una venta puede convertirse por la propietaria en contrato canónico de venta sin conservar semántica del proveedor como fuente interna |
+| contrato canónico de línea de venta     | `FUERA_DE_ALCANCE`          | `SHELL-CON-021`                                  | las líneas quedan representadas por identidad y semántica canónicas sin depender del payload nativo externo                                                                    |
+| mapping compartido de identificadores   | `FUERA_DE_ALCANCE`          | `SHELL-CON-022`                                  | `mapping_refs` puede apuntar a una representación compartida tipada y sin heurísticas de identidad                                                                             |
+| idempotencia y conciliación compartidas | `FUERA_DE_ALCANCE`          | `SHELL-CON-023`                                  | `idempotency_ref` y resultados recuperables usan el contrato compartido aprobado sin fusionar evento, receipt y efecto                                                         |
+| cuarentena, rechazo y compensación      | `FUERA_DE_ALCANCE`          | `SHELL-CON-024`                                  | autenticidad fallida, incompatibilidad, mapping irresoluble, conflicto o entrada no procesable tienen disposición explícita sin efecto silencioso                              |
+| implementación física de la superficie  | `DEFINIDO_NO_MATERIALIZADO` | ciclo de package y release de `@vento/contracts` | existe habilitación física del expediente de package correspondiente y se materializa la superficie sin alterar este contrato documental                                       |
+
+Ningún handoff autoriza a anticipar el contenido de las tareas `SHELL-CON-020` a `SHELL-CON-024`.
+
+---
+
+#### 19. Cobertura de prueba preexistente
+
+La semántica protegida por esta tarea ya está cubierta por requisitos canónicos vigentes, entre ellos:
+
+- `TREQ-INTEGRATION-003`, para identidad estable, huella, estado durable, resultado recuperable e idempotencia de operaciones asíncronas y webhooks;
+- `TREQ-INTEGRATION-004`, para reconstrucción de causa, payload, principal, intento, resultado, error y efecto final;
+- `TREQ-INTEGRATION-049`, para conservar afirmación externa, autenticidad, proveedor, identificador externo, payload protegido, recepción y correlación antes del hecho interno;
+- `TREQ-INTEGRATION-051`, para impedir secretos y credenciales en eventos, esquemas y ejemplos;
+- `TREQ-INTEGRATION-061`, para exigir validación en adaptador y propietaria antes de persistir un hecho interno;
+- `TREQ-INTEGRATION-125`, para deduplicación de afirmaciones externas con identificador confiable;
+- `TREQ-INTEGRATION-126`, para materializar un receipt durable cuando el proveedor no aporta identidad estable;
+- `TREQ-INTEGRATION-127`, para impedir que el hash del payload sustituya la identidad empresarial;
+- `TREQ-INTEGRATION-213`, para conservar sistema, autenticación referenciada, identidad externa o receipt, payload protegido, huella, versión, transformación, mapping, respuesta y correlación;
+- `TREQ-INTEGRATION-306`, para limitar al adaptador a receipts, mappings y metadata propia y exigir que cualquier efecto interno pase por la propietaria.
+
+`SHELL-CON-019` centraliza estas obligaciones en un contrato compartido y no crea una regla de comportamiento nueva respecto de las ya protegidas.
+
+---
+
+#### 20. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación:
+
+- la tarea materializa una representación contractual compartida de obligaciones ya aprobadas para eventos externos, autenticidad, evidencia, identidad, idempotencia, mapping, correlación y propiedad empresarial;
+- no introduce un proveedor, evento operativo, mecanismo de autenticación, algoritmo criptográfico, endpoint, transporte, efecto empresarial, política de retry, almacenamiento, disposición ni autorización nueva;
+- no cambia el comportamiento exigido a Wompi o RevenueCat; únicamente define el sobre común que deberá materializar esas obligaciones cuando la fase física sea autorizada;
+- las diecinueve identidades restantes no reciben eventos, endpoints ni bindings ficticios;
+- no se implementa código ni se modifica Supabase.
+
+**Requisitos creados:** 0  
+**Requisitos modificados:** 0  
+**Requisitos diferidos:** 0  
+**Requisitos descartados:** 0  
+**Requisitos obsoletos:** 0
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 21. Criterios de aceptación
+
+`SHELL-CON-019` queda documentalmente completa cuando se cumplen simultáneamente estos criterios:
+
+1. existe exactamente un contrato lógico compartido `ExternalReceivedEvent<TNormalizedAssertion>`;
+2. la superficie permanece en `@vento/contracts/integrations`;
+3. el contrato distingue afirmación externa de hecho empresarial VENTO;
+4. el proveedor externo no se convierte en `producer_application` interna;
+5. el adaptador no adquiere propiedad funcional;
+6. se conserva `external_system_id` sin derivarlo libremente del payload;
+7. `external_instance_id` solo se utiliza con evidencia acreditada;
+8. `IntegrationPrincipalId` y `ExternalCredentialId` se referencian sin redefinirlos;
+9. el valor secreto no aparece en el contrato;
+10. ambiente VENTO queda separado de etiquetas del proveedor;
+11. versión VENTO y versión del proveedor permanecen independientes;
+12. `input_contract_ref` identifica el contrato de entrada y no el endpoint;
+13. `transport_ref` no convierte cualquier request en evento;
+14. `external_event_id` y `receipt_id` conservan semánticas distintas;
+15. cuando no existe ID externo estable, el contrato permite exigir receipt durable antes del procesamiento con efecto;
+16. una redelivery no crea identidad empresarial nueva;
+17. el hash del payload no sustituye identidad externa, receipt ni recurso;
+18. autenticidad se conserva por referencia sin copiar secreto o firma completa;
+19. autenticidad válida no equivale a autorización empresarial;
+20. `source_evidence_ref` apunta a evidencia protegida y no a un secreto de acceso;
+21. la evidencia fuente no se sobrescribe por redelivery, parser nuevo o mapping nuevo;
+22. `normalized_assertion` es tipada y minimizada por superficie;
+23. `normalized_assertion` no puede declarar por sí sola un hecho empresarial confirmado;
+24. mapping se conserva por referencia y sin heurísticas de equivalencia;
+25. idempotencia se conserva por referencia y no se confunde con receipt o hash;
+26. correlación no se infiere solo por timestamp;
+27. `owner_contract_ref` conserva la frontera de la aplicación propietaria;
+28. `received_at` y `provider_occurred_at` permanecen separados;
+29. se preservan exactamente las veintiuna identidades `EXT-SYS-001` a `EXT-SYS-021`;
+30. existen exactamente 21 decisiones en la matriz;
+31. faltantes = 0;
+32. duplicados = 0;
+33. Wompi y RevenueCat quedan como las dos superficies de evento inbound actualmente acreditadas;
+34. Apple PassKit conserva sus requests inbound sin reetiquetarlos como evento empresarial externo;
+35. las demás identidades no reciben un binding ficticio;
+36. se preserva la distribución heredada `3 + 6 + 2 + 6 + 4 = 21`;
+37. no se crean identificadores físicos de runtime;
+38. no se crean secretos ni credenciales;
+39. no se crean endpoints, tablas, buckets, funciones, colas o workers;
+40. no se modifica Supabase;
+41. no se modifica código;
+42. no se ejecuta despliegue;
+43. no se adelanta el contrato canónico de venta;
+44. no se adelantan mapping, idempotencia, conciliación, cuarentena, rechazo o compensación compartidos;
+45. se crean cero requisitos de prueba;
+46. se modifican cero requisitos de prueba;
+47. la siguiente tarea permanece exclusivamente reservada en `SHELL-CON-020`.
+
+---
+
+#### 22. Límites de la tarea
+
+`SHELL-CON-019` no:
+
+- implementa `@vento/contracts`;
+- crea archivos TypeScript del package;
+- crea schemas ejecutables;
+- crea validadores runtime;
+- define endpoints o rutas de webhook;
+- crea tablas inbox;
+- crea registros de receipt físicos;
+- define una cola;
+- define un dead-letter store;
+- crea buckets de evidencia;
+- almacena payloads;
+- calcula hashes reales;
+- valida firmas reales;
+- selecciona secretos;
+- rota credenciales;
+- crea principals técnicos físicos;
+- crea credenciales físicas;
+- decide mappings concretos no acreditados;
+- define una nueva política idempotente;
+- ejecuta retry;
+- ejecuta conciliación;
+- ejecuta compensación;
+- convierte callbacks técnicos en hechos empresariales;
+- cambia propiedad funcional;
+- cambia código;
+- cambia Supabase;
+- cambia la ruta canónica;
+- desarrolla `SHELL-CON-020`.
+
+---
+
+#### 23. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`SHELL-CON-018 — Crear contrato de referencia de credencial externa sin incluir el secreto`
+
+TAREA ACTUAL APROBADA
+
+`SHELL-CON-019 — Crear contrato de evento externo recibido`
+
+SIGUIENTE TAREA RESERVADA
+
+`SHELL-CON-020 — Crear contrato canónico de venta`
+
+
 ### [ ] SHELL-CON-020 — Crear contrato canónico de venta
 ### [ ] SHELL-CON-021 — Crear contrato canónico de línea de venta
 ### [ ] SHELL-CON-022 — Crear contrato de mapeo de identificadores externos
