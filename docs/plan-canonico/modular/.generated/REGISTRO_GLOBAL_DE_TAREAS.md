@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **907** |
+| Aprobadas | **908** |
 | En propuesta | **0** |
-| No iniciadas | **687** |
+| No iniciadas | **686** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **56.90% (907/1594)** |
+| Porcentaje de completamiento | **56.96% (908/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-NORM-004` — Centralizar conectores y excepciones | ✅ APROBADA |
-| Tarea actual | `SHELL-NORM-005` — Centralizar diccionarios ortográficos versionados | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-NORM-006` — Crear normalización de búsqueda y comparación | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-NORM-005` — Centralizar diccionarios ortográficos versionados | ✅ APROBADA |
+| Tarea actual | `SHELL-NORM-006` — Crear normalización de búsqueda y comparación | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-NORM-007` — Crear previsualización de transformaciones | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -734,7 +734,7 @@
 | ✅ APROBADA | `SHELL-NORM-002` | Centralizar tipos de campo normalizable | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ✅ APROBADA | `SHELL-NORM-003` | Centralizar reglas de espacios, Unicode y capitalización | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ✅ APROBADA | `SHELL-NORM-004` | Centralizar conectores y excepciones | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
-| ⬜ NO INICIADA | `SHELL-NORM-005` | Centralizar diccionarios ortográficos versionados | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
+| ✅ APROBADA | `SHELL-NORM-005` | Centralizar diccionarios ortográficos versionados | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ⬜ NO INICIADA | `SHELL-NORM-006` | Crear normalización de búsqueda y comparación | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ⬜ NO INICIADA | `SHELL-NORM-007` | Crear previsualización de transformaciones | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ⬜ NO INICIADA | `SHELL-NORM-008` | Crear metadatos de versión y auditoría de reglas | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |

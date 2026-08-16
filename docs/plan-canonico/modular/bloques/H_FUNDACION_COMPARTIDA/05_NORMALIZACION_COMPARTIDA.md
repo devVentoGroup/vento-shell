@@ -4182,7 +4182,1092 @@ SHELL-NORM-004 — Centralizar conectores y excepciones
 SHELL-NORM-005 — Centralizar diccionarios ortográficos versionados
 
 
-### [ ] SHELL-NORM-005 — Centralizar diccionarios ortográficos versionados
+### ✅ SHELL-NORM-005 — Centralizar diccionarios ortográficos versionados
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-NORM-004 — Centralizar conectores y excepciones
+**Tarea siguiente:** SHELL-NORM-006 — Crear normalización de búsqueda y comparación
+**Tipo de tarea:** Documental; centralización normativa del diccionario ortográfico canónico versionado dentro de `@vento/data-normalization`, preservando literalmente la identidad, entradas iniciales, contratos, alcances, precedencia, estados, resultados, gobierno y fronteras ya aprobados por `DATA-NORM-ARC-006`, sin crear código, package físico, APIs TypeScript definitivas, persistencia, migraciones, backfills ni cambios en Supabase
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md`
+**Estado físico resultante:** ESPECIFICADO; NO MATERIALIZADO
+**Implementación física autorizada:** ninguna
+**Cambios de código, packages físicos, archivos TypeScript, configuración npm, registry, workflows, DDL, DML, migraciones, RLS, RPC, triggers, datos, secretos, configuración remota o despliegues:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-NORM-005` centraliza dentro de la futura superficie compartida de `@vento/data-normalization` el diccionario ortográfico canónico ya aprobado para Vento OS, de modo que una corrección léxica autorizada no dependa de listas locales, autocorrectores, similitud, frecuencia, herramientas del runtime ni decisiones aisladas de una aplicación.
+
+La tarea no redefine el gobierno de normalización. Proyecta de forma compartida el contrato aprobado en `DATA-NORM-ARC-006`:
+
+```text
+POLÍTICA CANÓNICA DE CAMPO
+        ↓
+TIPOS Y ELEGIBILIDAD SHELL-NORM-002
+        ↓
+FORMA / CAPITALIZACIÓN SHELL-NORM-003
+        ↓
+CONECTORES Y EXCEPCIONES SHELL-NORM-004
+        ↓
+DICCIONARIO ORTOGRÁFICO SHELL-NORM-005
+        ↓
+RESULTADO TEXTUAL DETERMINISTA O PRESERVACIÓN / REVISIÓN / BLOQUEO
+```
+
+Regla central:
+
+```text
+DICCIONARIO ORTOGRÁFICO
+=
+ENTRADAS APROBADAS
++ ALCANCE EXPLÍCITO
++ COINCIDENCIA DIRECCIONAL EXACTA
++ EVIDENCIA Y APROBACIÓN
++ VERSIONADO Y VIGENCIA
++ RESULTADOS CERRADOS
+
+≠ AUTOCORRECCIÓN POR SIMILITUD
+≠ CATÁLOGO DE MARCAS O EXCEPCIONES
+≠ BÚSQUEDA TOLERANTE
+≠ IDENTIDAD
+≠ FUSIÓN
+```
+
+---
+
+#### 2. Resultado material de la tarea
+
+Queda centralizado documentalmente el artefacto canónico preexistente:
+
+```text
+VENTO_CANONICAL_ORTHOGRAPHIC_DICTIONARY_ES_CO@1.0.0
+```
+
+La centralización materializa en esta tarea:
+
+1. un perfil lingüístico explícito: `es-CO`;
+2. 21 atributos mínimos del contrato lógico de una entrada;
+3. 3 alcances cerrados de coincidencia;
+4. la coincidencia direccional exacta y la prohibición de inferir reversibilidad;
+5. el modo de proyección de caja `PRESERVE_RESOLVED_CASE_PATTERN`;
+6. 3 modos cerrados de decisión;
+7. 4 niveles explícitos de resolución de alcance;
+8. la precedencia general de 8 niveles frente a excepciones, protecciones y otras entradas;
+9. exactamente 3 correcciones iniciales activables por contrato;
+10. la exclusión explícita de `expresso` de cualquier corrección automática;
+11. 11 condiciones de activación;
+12. 6 estados cerrados de ciclo de vida;
+13. 7 resultados cerrados de evaluación;
+14. gobierno de altas, cambios, suspensión, supersesión y retiro;
+15. no retroactividad y rollback lógico;
+16. reglas de procedencia, evidencia, autoridad, determinismo, paridad e idempotencia;
+17. corpus mínimo de conformidad heredado;
+18. fronteras frente a búsqueda, identidad, persistencia, integraciones y VITAL.
+
+No se crea una versión nueva del diccionario ni una entrada adicional.
+
+---
+
+#### 3. Fuentes normativas y precedencia
+
+| Fuente               | Decisión preservada por `SHELL-NORM-005`                                                                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `SHELL-NORM-001`     | identidad y frontera de `@vento/data-normalization`; pureza, determinismo, ausencia de I/O y separación frente a persistencia                                            |
+| `SHELL-NORM-002`     | clases semánticas, representaciones, fuentes, modos y operación `APPROVED_DICTIONARY_CORRECTION`                                                                         |
+| `SHELL-NORM-003`     | capitalización y proyección de caja separadas de la ortografía; el diccionario consume una caja ya resuelta                                                              |
+| `SHELL-NORM-004`     | conectores y excepciones oficiales con precedencia superior al diccionario; prohibición de absorber marcas, siglas, unidades o nombres legales como corrección ordinaria |
+| `DATA-NORM-ARC-001`  | política por dominio, entidad, campo, representación, fuente y versión; fallo cerrado                                                                                    |
+| `DATA-NORM-ARC-002`  | elegibilidad tipada y exclusiones por clase, representación y fuente                                                                                                     |
+| `DATA-NORM-ARC-003`  | separación estricta entre caja y ortografía                                                                                                                              |
+| `DATA-NORM-ARC-004`  | conectores versionados sin sustituciones lingüísticas heurísticas                                                                                                        |
+| `DATA-NORM-ARC-005`  | catálogo de excepciones oficiales y protecciones técnicas de mayor precedencia                                                                                           |
+| `DATA-NORM-ARC-006`  | contenido completo de `VENTO_CANONICAL_ORTHOGRAPHIC_DICTIONARY_ES_CO@1.0.0`                                                                                              |
+| `DATA-NORM-ARC-007`  | revisión humana para `expresso`, ambigüedades y conflictos no resolubles automáticamente                                                                                 |
+| `DATA-NORM-ARC-008`  | búsqueda, transliteración y comparación tolerante separadas del valor corregido                                                                                          |
+| `DATA-NORM-ARC-009`  | persistencia futura de versiones, vigencias, trazas, evidencia y auditoría                                                                                               |
+| `DATA-NORM-ARC-010`  | identidad, unicidad, duplicidad y fusión separadas de cualquier convergencia ortográfica                                                                                 |
+| `DATA-NORM-ARC-011`  | capa ejecutora y paridad entre aplicación, servicio, RPC, procesos programados y trigger defensivo                                                                       |
+| `DATA-NORM-ARC-012`  | preservación de originales externos y procedencia                                                                                                                        |
+| `SHELL-PKG-001..008` | distribución, compatibilidad, versionado, deprecación, rollback y adopción cuando el package exista físicamente                                                          |
+
+Precedencia normativa:
+
+```text
+GOBIERNO E3
+        ↓
+TIPOS SHELL-NORM-002
+        ↓
+FORMA SHELL-NORM-003
+        ↓
+EXCEPCIONES Y PROTECCIONES SHELL-NORM-004
+        ↓
+DICCIONARIO SHELL-NORM-005
+        ↓
+BÚSQUEDA / PREVIEW / AUDITORÍA / PRUEBAS EN SUS TAREAS PROPIETARIAS
+```
+
+Una entrada de diccionario nunca amplía una clase, representación, fuente o política bloqueada.
+
+---
+
+#### 4. Frontera exacta
+
+Esta tarea centraliza exclusivamente:
+
+- identidad y versión del diccionario `es-CO`;
+- contrato lógico de entradas;
+- formas de origen y formas canónicas aprobadas;
+- coincidencia exacta, direccional y por fronteras completas;
+- preservación del patrón de caja ya resuelto;
+- alcances y precedencias;
+- modos de decisión;
+- estados y vigencia;
+- resultados cerrados;
+- condiciones de activación;
+- reglas de conflicto y fallo cerrado;
+- evidencia, autoridad, aprobación y procedencia;
+- supersesión, no retroactividad y rollback lógico;
+- determinismo, paridad e idempotencia;
+- corpus de conformidad heredado;
+- exclusiones y handoffs exactos.
+
+Esta tarea no centraliza ni decide:
+
+- nuevas palabras o correcciones no aprobadas por E3;
+- la resolución de `expresso`;
+- marcas, siglas, unidades o nombres legales como entradas ortográficas ordinarias;
+- catálogo de conectores;
+- búsqueda tolerante, transliteración, stemming, lematización o similitud;
+- identidad, unicidad, deduplicación, fusión o selección de sobreviviente;
+- cola física o interfaz de revisión humana;
+- persistencia de entradas, trazas o evidencia;
+- API TypeScript definitiva;
+- schemas runtime concretos;
+- SQL, RPC, trigger, índice, constraint, migración o backfill;
+- adopción por consumidores;
+- cambios en Supabase.
+
+---
+
+#### 5. Conciliación del inventario heredado
+
+| Familia contractual                         | Esperado por E3 | Materializado aquí | Faltantes | Duplicados |
+| ------------------------------------------- | --------------: | -----------------: | --------: | ---------: |
+| perfil lingüístico                          |               1 |                  1 |         0 |          0 |
+| atributos mínimos de entrada                |              21 |                 21 |         0 |          0 |
+| alcances de coincidencia                    |               3 |                  3 |         0 |          0 |
+| modos de decisión                           |               3 |                  3 |         0 |          0 |
+| niveles explícitos de resolución de alcance |               4 |                  4 |         0 |          0 |
+| correcciones iniciales                      |               3 |                  3 |         0 |          0 |
+| estados de ciclo de vida                    |               6 |                  6 |         0 |          0 |
+| resultados cerrados                         |               7 |                  7 |         0 |          0 |
+| condiciones de activación                   |              11 |                 11 |         0 |          0 |
+| niveles de precedencia general              |               8 |                  8 |         0 |          0 |
+
+`PRESERVE_RESOLVED_CASE_PATTERN` se conserva como regla explícita de proyección de caja del contrato; no se cuenta como una familia adicional de modos de decisión.
+
+---
+
+#### 6. Identidad, perfil y versión
+
+La identidad compartida es exactamente:
+
+```text
+VENTO_CANONICAL_ORTHOGRAPHIC_DICTIONARY_ES_CO@1.0.0
+```
+
+Invariantes:
+
+1. el perfil es `es-CO` explícito;
+2. el perfil no se infiere desde sistema operativo, navegador, proceso o base de datos;
+3. la versión fija entradas, alcances, precedencia, segmentación compatible, proyección de caja y resultados cerrados;
+4. modificar forma de origen, forma canónica, alcance, estado, evidencia o precedencia exige evolución versionada;
+5. no existe diccionario paralelo por aplicación, capa o consumidor;
+6. una librería lingüística genérica no sustituye el catálogo canónico;
+7. otro idioma o producto requiere identidad, alcance, pruebas y aprobación propios;
+8. VITAL no participa en este diccionario transversal.
+
+---
+
+#### 7. Contrato lógico de una entrada
+
+Toda entrada conserva exactamente estos 21 atributos mínimos:
+
+```text
+dictionary_entry_key
+locale
+source_form
+canonical_form
+match_scope
+semantic_class
+domain_scope
+entity_scope
+field_scope
+representation_role
+source_role
+case_projection_mode
+decision_mode
+status
+valid_from
+valid_to
+dictionary_version
+supersedes
+evidence_reference
+approval_reference
+reason
+```
+
+Conciliación:
+
+```text
+atributos esperados = 21
+atributos materializados = 21
+faltantes = 0
+duplicados = 0
+```
+
+Reglas:
+
+1. `dictionary_entry_key` es estable y no depende del texto visible;
+2. `source_form` y `canonical_form` preservan Unicode, signos, separación y estructura aprobados;
+3. `source_form` no puede ser vacío ni equivaler a `canonical_form` bajo la comparación propia de la entrada;
+4. `match_scope` pertenece al catálogo cerrado de esta tarea;
+5. clase, representación y fuente deben ser compatibles con `SHELL-NORM-002`;
+6. `case_projection_mode` preserva la caja resuelta; no ejecuta capitalización nueva;
+7. `evidence_reference` y `approval_reference` son obligatorios para activar una entrada;
+8. una entrada incompleta no es ejecutable;
+9. persistencia física y auditoría no se definen en esta tarea.
+
+---
+
+#### 8. Alcances cerrados de coincidencia
+
+| Alcance      | Definición                                                    | Uso permitido                                                                      |
+| ------------ | ------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `FULL_VALUE` | cubre todo el valor textual                                   | corrección aprobada del valor completo dentro de coordenada y contexto específicos |
+| `PHRASE`     | secuencia contigua y exacta de tokens con fronteras completas | locución cuya corrección no puede resolverse token por token                       |
+| `TOKEN`      | token lexical completo                                        | palabra ordinaria con corrección aprobada                                          |
+
+Reglas:
+
+1. los tres alcances son cerrados;
+2. toda coincidencia exige fronteras completas;
+3. una entrada `TOKEN` no coincide como subcadena;
+4. una entrada `PHRASE` no atraviesa valor, componente estructurado, campo, representación o fuente;
+5. una frase parcial o un solapamiento sin resolución única produce conflicto;
+6. no existe matching difuso dentro del diccionario.
+
+---
+
+#### 9. Coincidencia direccional exacta
+
+La evaluación preserva simultáneamente:
+
+1. comparación de la forma de origen mediante casefold Unicode compatible con `es-CO`;
+2. conservación de diacríticos, signos, separación y fronteras durante el matching;
+3. coincidencia exacta del alcance declarado;
+4. dirección exclusiva `source_form` → `canonical_form`;
+5. prohibición de inferir la corrección inversa;
+6. prohibición de retirar tildes para ampliar coincidencias;
+7. prohibición de compactar espacios, cambiar Unicode, sustituir signos o unir/dividir palabras durante el matching.
+
+No son fuentes de coincidencia:
+
+- distancia de edición;
+- similitud;
+- fonética;
+- autocorrección del navegador, sistema operativo o teclado;
+- stemming;
+- lematización;
+- frecuencia;
+- popularidad;
+- forma mayoritaria;
+- modelo lingüístico;
+- aliases automáticos.
+
+---
+
+#### 10. Proyección de caja
+
+El modo preservado es exactamente:
+
+```text
+PRESERVE_RESOLVED_CASE_PATTERN
+```
+
+La entrada ortográfica no vuelve a capitalizar. Proyecta la corrección sobre el patrón de caja ya resuelto por la etapa anterior.
+
+Ejemplos contractuales:
+
+```text
+maiz → maíz
+Maiz → Maíz
+MAIZ → MAÍZ
+```
+
+Reglas:
+
+1. la proyección de caja no modifica la política de capitalización;
+2. un patrón no resoluble bloquea la mutación;
+3. una entrada no inventa capitalización interna;
+4. la misma entrada, caja resuelta y versiones deben producir la misma salida;
+5. `Maíz` ya canónico se distingue de una mutación nueva mediante resultado cerrado propio.
+
+---
+
+#### 11. Modos cerrados de decisión
+
+| Modo                   | Conducta                                                                                                    |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `REPLACE_ORTHOGRAPHY`  | emite la forma canónica cuando entrada, autoridad, política, clase, representación y fuente son compatibles |
+| `PRESERVE_AS_APPROVED` | conserva una forma válida dentro de un alcance específico e impide que una regla más amplia la reescriba    |
+| `REVIEW_REQUIRED`      | conserva el valor y declara que la decisión necesita revisión humana                                        |
+
+Conciliación:
+
+```text
+modos esperados = 3
+modos materializados = 3
+faltantes = 0
+duplicados = 0
+```
+
+Una entrada de preservación o revisión conserva la misma exigencia de alcance, evidencia, aprobación, vigencia y versión que una entrada de reemplazo.
+
+---
+
+#### 12. Catálogo inicial aprobado
+
+La versión `1.0.0` contiene exactamente tres correcciones iniciales:
+
+| Clave lógica                  | Origen    | Forma canónica | Alcance | Modo                  | Restricción                                                      |
+| ----------------------------- | --------- | -------------- | ------- | --------------------- | ---------------------------------------------------------------- |
+| `ORTHO_ES_CO_MAIZ_MAIZ`       | `maiz`    | `maíz`         | `TOKEN` | `REPLACE_ORTHOGRAPHY` | palabra ordinaria no protegida dentro de clase y campo elegibles |
+| `ORTHO_ES_CO_CLASICO_CLASICO` | `clasico` | `clásico`      | `TOKEN` | `REPLACE_ORTHOGRAPHY` | palabra ordinaria no protegida dentro de clase y campo elegibles |
+| `ORTHO_ES_CO_FRIO_FRIO`       | `frio`    | `frío`         | `TOKEN` | `REPLACE_ORTHOGRAPHY` | palabra ordinaria no protegida dentro de clase y campo elegibles |
+
+Conciliación:
+
+```text
+entradas iniciales esperadas = 3
+entradas iniciales materializadas = 3
+faltantes = 0
+duplicados = 0
+```
+
+La versión no contiene ninguna cuarta corrección por analogía.
+
+---
+
+#### 13. Exclusión explícita de `expresso`
+
+`expresso` no pertenece a las correcciones automáticas de `1.0.0`.
+
+Cuando no exista una decisión contextual suficiente, se conserva el valor y se produce:
+
+```text
+DICTIONARY_AMBIGUOUS_REVIEW
+```
+
+La ambigüedad puede corresponder a:
+
+- error ortográfico;
+- denominación comercial;
+- nombre histórico;
+- marca;
+- producto externo;
+- término extranjero;
+- variante deliberada.
+
+Quedan prohibidas las sustituciones automáticas hacia `espresso`, `expreso` o cualquier otra forma. La resolución humana pertenece a `DATA-NORM-ARC-007`.
+
+---
+
+#### 14. Puerta de activación
+
+El diccionario solo interviene cuando se cumplen simultáneamente estas 11 condiciones:
+
+1. existe una política activa para dominio, entidad y campo;
+2. la clase semántica admite corrección mediante diccionario;
+3. representación y rol de fuente permiten mutación o derivación;
+4. el perfil lingüístico es `es-CO`;
+5. la versión del diccionario es compatible con capitalización, conectores y excepciones;
+6. la entrada está `APPROVED_ACTIVE` y dentro de vigencia;
+7. coincidencia exacta y fronteras pueden resolverse;
+8. no existe excepción oficial o protección de mayor precedencia;
+9. no existe conflicto entre entradas activas aplicables;
+10. la proyección de caja puede resolverse determinísticamente;
+11. decisión, entrada y versiones pueden quedar trazadas.
+
+La ausencia de cualquiera de estas condiciones preserva el valor y produce un resultado de bloqueo, no aplicación o revisión según corresponda.
+
+---
+
+#### 15. Clases, representaciones y fuentes elegibles
+
+| Dimensión             | Elegible                                                                     | Conducta                                                              |
+| --------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| clase semántica       | `COMMERCIAL_NAME` y otra clase expresamente autorizada por política de campo | aplicar únicamente entradas compatibles con la clase declarada        |
+| representación        | `PRIMARY_VALUE` mutable o `DISPLAY_OVERRIDE` aprobado                        | corregir dentro del alcance autorizado                                |
+| fuente                | `AUTHORITATIVE_SOURCE` o `APPROVED_OVERRIDE`                                 | permitir mutación trazable                                            |
+| proyección            | `OUTPUT_PROJECTION`                                                          | derivar sin retroalimentar la fuente                                  |
+| copia sincronizada    | `SYNCHRONIZED_COPY`                                                          | recibir resultado por propagación gobernada; no corregirse localmente |
+| original externo      | `EXTERNAL_ORIGINAL`                                                          | preservar exactamente                                                 |
+| histórico o evidencia | `HISTORICAL_SNAPSHOT`, `IMMUTABLE_SNAPSHOT`, `AUDIT_EVIDENCE`                | preservar exactamente                                                 |
+
+Bloqueos predeterminados:
+
+- `OFFICIAL_BRAND_FORM`;
+- `OFFICIAL_LEGAL_NAME`;
+- `MEASUREMENT_OR_UNIT_CODE`;
+- `TECHNICAL_IDENTIFIER`;
+- `CONTACT_IDENTIFIER`;
+- `SECRET_OR_SIGNATURE_MATERIAL`;
+- `UNCLASSIFIED_PRESERVE`;
+- texto libre sin política propia explícita;
+- valores de VITAL.
+
+Una coincidencia textual no elimina ninguno de estos bloqueos.
+
+---
+
+#### 16. Resolución de alcance
+
+La especificidad se conserva exactamente en este orden:
+
+```text
+1. FIELD_SCOPE
+2. ENTITY_SCOPE
+3. DOMAIN_SCOPE
+4. VENTO_OS_TRANSVERSAL_SCOPE
+5. conservación por ausencia de política
+```
+
+Los cuatro primeros son niveles explícitos de alcance; la quinta salida es la conducta cerrada por ausencia de resolución.
+
+Reglas:
+
+1. una entrada más específica prevalece solo dentro de un alcance compatible;
+2. una entrada específica no amplía clase, representación o fuente bloqueada;
+3. dos entradas activas incompatibles con la misma especificidad producen conflicto;
+4. no se elige por fecha, orden físico, frecuencia o consumidor;
+5. el alcance transversal debe estar aprobado expresamente;
+6. VITAL queda fuera de `VENTO_OS_TRANSVERSAL_SCOPE`.
+
+---
+
+#### 17. Precedencia general
+
+La precedencia completa se centraliza sin alteración:
+
+```text
+1. excepción oficial de frase válida más larga
+2. excepción oficial de token o componente estructurado
+3. protección técnica por clase, representación o fuente
+4. entrada de diccionario más específica
+5. entrada de frase más larga dentro de la misma especificidad
+6. entrada de token exacto
+7. token sin entrada
+8. forma ambigua o conflictiva
+```
+
+Consecuencias:
+
+- `3M`, `iPhone`, `Coca-Cola`, siglas, unidades y nombres legales no se reescriben por una entrada ortográfica ordinaria;
+- una entrada de diccionario no altera la posición de conectores;
+- una forma repetida no adquiere autoridad por frecuencia;
+- un conflicto no se resuelve por orden de carga.
+
+---
+
+#### 18. Frases, tokens y fronteras
+
+1. `PHRASE` precede a `TOKEN` dentro del mismo alcance y versión;
+2. entre frases compatibles prevalece la coincidencia válida más larga;
+3. cada frase declara exactamente tokens y separadores relevantes;
+4. una coincidencia no atraviesa valor, componente, campo, representación o fuente;
+5. `TOKEN` no coincide como subcadena;
+6. una frase parcial o solapada sin resolución única produce conflicto;
+7. el diccionario no agrega, retira ni mueve conectores, signos o palabras.
+
+---
+
+#### 19. Prohibiciones de inferencia
+
+El diccionario compartido no puede utilizar como autoridad:
+
+- Levenshtein u otra distancia de edición;
+- matching difuso;
+- algoritmos fonéticos;
+- autocorrector del navegador, sistema operativo o teclado;
+- stemming o lematización;
+- singularización o pluralización;
+- traducción o transliteración;
+- frecuencia, popularidad o mayoría;
+- aprendizaje automático no aprobado como autoridad;
+- eliminación de tildes para ampliar coincidencias;
+- aliases automáticos;
+- sustituciones `y`/`e` u `o`/`u`;
+- contracciones o expansiones `a el`/`al` o `de el`/`del`;
+- unión o división de palabras;
+- nombre físico de tabla, columna, aplicación o consumidor.
+
+Una herramienta externa o modelo puede originar un candidato de revisión, nunca una entrada automática.
+
+---
+
+#### 20. Separación de operaciones
+
+| Operación                                  | Pertenece al diccionario | Conducta                                               |
+| ------------------------------------------ | ------------------------ | ------------------------------------------------------ |
+| reemplazo ortográfico aprobado             | sí                       | aplica una entrada exacta, vigente y trazable          |
+| preservación contextual aprobada           | sí                       | bloquea una corrección más amplia dentro de su alcance |
+| clasificación como ambigua                 | sí, como resultado       | conserva y deriva a revisión                           |
+| recorte o compactación de espacios         | no                       | `SHELL-NORM-003`                                       |
+| composición Unicode NFC                    | no                       | `SHELL-NORM-003`                                       |
+| capitalización empresarial                 | no                       | `SHELL-NORM-003`                                       |
+| conectores                                 | no                       | `SHELL-NORM-004`                                       |
+| marcas, siglas, unidades y nombres legales | no                       | `SHELL-NORM-004`                                       |
+| búsqueda o comparación tolerante           | no                       | `SHELL-NORM-006`                                       |
+| identidad, unicidad o fusión               | no                       | `DATA-NORM-ARC-010`                                    |
+
+Cada operación conserva versión, entrada, salida y traza lógicas propias.
+
+---
+
+#### 21. Estados de ciclo de vida
+
+| Estado            | Ejecutable | Conducta                                                              |
+| ----------------- | ---------- | --------------------------------------------------------------------- |
+| `DRAFT`           | no         | propuesta incompleta o pendiente de evaluación                        |
+| `APPROVED_ACTIVE` | sí         | entrada aprobada, vigente y compatible                                |
+| `SUSPENDED`       | no         | entrada temporalmente bloqueada por riesgo, conflicto o investigación |
+| `SUPERSEDED`      | no         | reemplazada por otra entrada o versión explícita                      |
+| `RETIRED`         | no         | retirada sin sustitución ejecutable                                   |
+| `REJECTED`        | no         | propuesta descartada con justificación preservada                     |
+
+Conciliación:
+
+```text
+estados esperados = 6
+estados materializados = 6
+estados ejecutables = 1
+faltantes = 0
+duplicados = 0
+```
+
+Solo `APPROVED_ACTIVE` puede ejecutar `REPLACE_ORTHOGRAPHY` o `PRESERVE_AS_APPROVED`.
+
+---
+
+#### 22. Gobierno de altas y cambios
+
+Toda propuesta de entrada deberá incorporar:
+
+1. forma de origen y forma canónica;
+2. locale, alcance y clase;
+3. representación y fuente autorizadas;
+4. evidencia reproducible;
+5. riesgo de falso positivo;
+6. consumidores afectados;
+7. colisiones con excepciones, conectores y entradas existentes;
+8. corpus positivo, negativo y ambiguo;
+9. responsable empresarial del dominio afectado;
+10. responsable canónico de normalización;
+11. decisión y justificación aprobadas.
+
+Reglas:
+
+- una entrada activa no se edita silenciosamente;
+- una corrección transversal exige revisión de dominios consumidores identificados;
+- una entrada específica no crea precedentes implícitos fuera de su alcance;
+- una propuesta ambigua permanece no ejecutable;
+- una corrección observada sin entrada activa es desviación, no regla;
+- toda brecha conserva propietario documental exacto.
+
+---
+
+#### 23. Versionado, supersesión y rollback lógico
+
+1. todo cambio ejecutable origina una nueva versión o una nueva entrada con `supersedes`;
+2. la entrada reemplazada conserva historia y estado `SUPERSEDED`;
+3. el cambio no es retroactivo por defecto;
+4. corregir datos existentes requiere transición, análisis de impacto, pruebas y rollback propios;
+5. revertir exige activar explícitamente una versión anterior compatible o una versión correctiva nueva;
+6. rollback no elimina decisiones, evidencia, entradas ni resultados históricos;
+7. una versión retirada no reaparece por caché, fallback o consumidor local;
+8. artefactos históricos conservan la versión aplicada al momento de su creación.
+
+---
+
+#### 24. Conflictos y fallo cerrado
+
+Se considera conflicto cuando:
+
+- dos entradas activas aplicables producen formas canónicas distintas;
+- reemplazo y preservación compiten con la misma especificidad;
+- frases aplicables se solapan sin resolución única;
+- una entrada contradice una excepción oficial vigente;
+- falta compatibilidad de versión entre diccionario y pipeline;
+- evidencia o aprobación fue retirada;
+- clase, representación, fuente o locale no pueden determinarse;
+- la proyección de caja no es determinista.
+
+Ante conflicto:
+
+1. se conserva el valor;
+2. no se selecciona por orden físico, fecha o frecuencia;
+3. se produce `DICTIONARY_CONFLICT_BLOCKED` o `DICTIONARY_AMBIGUOUS_REVIEW`;
+4. se conserva la coordenada y las entradas involucradas;
+5. la resolución queda fuera de la mutación automática y mantiene destino en `DATA-NORM-ARC-007` cuando requiere decisión humana.
+
+---
+
+#### 25. Resultados cerrados de evaluación
+
+| Resultado                        | Significado                                                                                  |
+| -------------------------------- | -------------------------------------------------------------------------------------------- |
+| `DICTIONARY_CANONICAL_EMITTED`   | una entrada activa y compatible produjo la forma canónica                                    |
+| `DICTIONARY_ALREADY_CANONICAL`   | el valor ya satisface la entrada aplicable y no requiere cambio                              |
+| `DICTIONARY_PRESERVED_PROTECTED` | una excepción, clase, representación, fuente o entrada de preservación bloqueó la corrección |
+| `DICTIONARY_NOT_APPLICABLE`      | no existe entrada compatible con la coordenada evaluada                                      |
+| `DICTIONARY_AMBIGUOUS_REVIEW`    | la forma requiere decisión humana y se conserva                                              |
+| `DICTIONARY_CONFLICT_BLOCKED`    | dos o más decisiones aplicables son incompatibles                                            |
+| `DICTIONARY_POLICY_BLOCKED`      | falta política, versión, evidencia, aprobación o contexto obligatorio                        |
+
+Conciliación:
+
+```text
+resultados esperados = 7
+resultados materializados = 7
+faltantes = 0
+duplicados = 0
+```
+
+Ausencia de cambio, protección, no aplicabilidad, ambigüedad, conflicto y bloqueo permanecen resultados distintos.
+
+---
+
+#### 26. Representaciones, fuentes y propagación
+
+1. `PRIMARY_VALUE` de `AUTHORITATIVE_SOURCE` o `DISPLAY_OVERRIDE` con `APPROVED_OVERRIDE` puede recibir corrección directa si la política lo autoriza;
+2. `EXTERNAL_ORIGINAL`, `HISTORICAL_SNAPSHOT`, `IMMUTABLE_SNAPSHOT` y `AUDIT_EVIDENCE` se preservan exactamente;
+3. `OUTPUT_PROJECTION` puede derivar una forma corregida sin retroalimentar la fuente;
+4. `SEARCH_DERIVATION` conserva su contrato propio y no convierte la forma corregida en identidad;
+5. `SYNCHRONIZED_COPY` no ejecuta el diccionario como autoridad independiente;
+6. una versión nueva no resincroniza snapshots ni historia;
+7. un override conserva su alcance;
+8. propagación técnica y eventos permanecen bajo `DATA-NORM-ARC-009` y `DATA-NORM-ARC-011`.
+
+---
+
+#### 27. Procedencia, evidencia y autoridad
+
+Toda decisión ejecutada deberá poder atribuirse lógicamente a:
+
+```text
+entrada de diccionario
+versión del diccionario
+forma de origen
+forma canónica
+alcance resuelto
+clase semántica
+representación
+rol de fuente
+perfil lingüístico
+modo de decisión
+evidencia
+aprobación
+fecha de vigencia
+```
+
+No constituyen autoridad suficiente por sí solos:
+
+- frecuencia en base de datos;
+- forma más reciente;
+- preferencia de una interfaz o desarrollador;
+- autocorrector o sugerencia de herramienta;
+- búsqueda externa no incorporada como evidencia aprobada;
+- coincidencia sin tildes;
+- salida de un modelo lingüístico;
+- nombre de tabla, columna o función.
+
+La persistencia física de esta traza pertenece a `DATA-NORM-ARC-009` y su futura centralización compartida a `SHELL-NORM-008`.
+
+---
+
+#### 28. Determinismo, paridad e idempotencia
+
+Para la misma entrada, coordenada y conjunto de versiones:
+
+```text
+apply_dictionary(apply_dictionary(value, context), context)
+=
+apply_dictionary(value, context)
+```
+
+La igualdad lógica cubre:
+
+- valor resultante;
+- entrada seleccionada;
+- alcance resuelto;
+- forma de origen y forma canónica;
+- proyección de caja;
+- precedencia aplicada;
+- resultado cerrado;
+- bloqueo o revisión;
+- versiones y evidencia referenciadas;
+- ausencia de efectos duplicados.
+
+Aplicación, servicio de dominio, RPC, proceso programado y trigger defensivo deberán producir la misma decisión al consumir la misma entrada, coordenada y versiones. La implementación compartida no podrá convertir una revisión en corrección.
+
+---
+
+#### 29. Corpus mínimo de conformidad
+
+La futura materialización deberá conservar como mínimo estos casos aprobados:
+
+| Entrada y contexto                                 | Resultado esperado             | Regla demostrada                                 |
+| -------------------------------------------------- | ------------------------------ | ------------------------------------------------ |
+| `harina de maiz` después de capitalización         | `Harina de Maíz`               | corrección token y preservación de caja resuelta |
+| `pan masa madre clasico` después de capitalización | `Pan Masa Madre Clásico`       | corrección exacta de token                       |
+| `latte frio` después de capitalización             | `Latte Frío`                   | corrección de tilde sin cambiar palabras         |
+| `MAIZ` en token elegible                           | `MAÍZ`                         | proyección de caja estable                       |
+| `Maíz`                                             | `DICTIONARY_ALREADY_CANONICAL` | idempotencia y ausencia de mutación              |
+| `expresso` sin decisión contextual                 | conservar y revisar            | ambigüedad no automática                         |
+| `Coca-Cola`                                        | conservar                      | precedencia de excepción oficial                 |
+| `COMERCIALIZADORA ABC S.A.S.`                      | conservar                      | nombre legal excluido                            |
+| `500 g`                                            | conservar                      | cantidad y unidad protegidas                     |
+| `product_sku=FRIO`                                 | conservar                      | identificador técnico excluido                   |
+| `EXTERNAL_ORIGINAL=maiz`                           | conservar exactamente          | representación externa protegida                 |
+| `maizena`                                          | no aplicar                     | subcadena prohibida                              |
+| dos entradas con destinos incompatibles            | conservar y bloquear           | conflicto de igual especificidad                 |
+| entrada de campo y transversal compatibles         | aplicar la de campo            | precedencia de alcance                           |
+| versión retirada en caché                          | bloquear                       | ausencia de fallback                             |
+
+Además deberá cubrir Unicode compuesto, signos, guiones, apóstrofos, frases, fronteras, cajas, clases excluidas, fuentes, overrides, snapshots, conflictos, versiones, múltiples capas e idempotencia.
+
+---
+
+#### 30. Frontera frente a búsqueda
+
+`SHELL-NORM-005` no desarrolla `SHELL-NORM-006`.
+
+Invariantes:
+
+1. la forma corregida no es una clave de búsqueda por sí sola;
+2. el diccionario no ejecuta `unaccent`, transliteración, stemming, ranking ni similitud;
+3. una forma sin tilde no se convierte en alias de búsqueda por existir como `source_form`;
+4. `SEARCH_DERIVATION` se construye bajo su contrato propietario;
+5. una coincidencia de búsqueda futura no puede activar una entrada ortográfica no coincidente;
+6. búsqueda e identidad permanecen separadas.
+
+---
+
+#### 31. Frontera frente a identidad, unicidad y fusión
+
+La corrección ortográfica no define estructura empresarial.
+
+```text
+maiz → maíz
+
+texto corregido igual
+≠ misma entidad
+```
+
+Por tanto:
+
+1. no crea ni modifica SKU, slug, código, barcode, URL, email, referencia o clave externa;
+2. no activa constraints de unicidad;
+3. no selecciona registro sobreviviente;
+4. no desactiva filas;
+5. no reasigna relaciones;
+6. no autoriza fusión;
+7. una convergencia después de corregir es solo una señal textual;
+8. toda identidad o duplicidad continúa bajo `DATA-NORM-ARC-010` y las transiciones propietarias.
+
+---
+
+#### 32. VITAL
+
+VITAL permanece excluido del diccionario transversal de Vento OS.
+
+Compartir infraestructura, tipos o un futuro package no autoriza:
+
+- aplicar `maiz` → `maíz` en VITAL;
+- aplicar `clasico` → `clásico` en VITAL;
+- aplicar `frio` → `frío` en VITAL;
+- reutilizar `VENTO_OS_TRANSVERSAL_SCOPE` dentro de VITAL;
+- convertir decisiones de Vento OS en autoridad lingüística de VITAL.
+
+Una eventual adopción requerirá contrato propio y aprobación explícita.
+
+---
+
+#### 33. Estado de materialización física
+
+| Elemento                                                   | Estado                                                 |
+| ---------------------------------------------------------- | ------------------------------------------------------ |
+| `@vento/data-normalization`                                | `ESPECIFICADO`; package físico no materializado        |
+| tipos de `SHELL-NORM-002`                                  | `ESPECIFICADOS`                                        |
+| reglas de `SHELL-NORM-003`                                 | `ESPECIFICADAS`                                        |
+| catálogos de `SHELL-NORM-004`                              | `ESPECIFICADOS`                                        |
+| `VENTO_CANONICAL_ORTHOGRAPHIC_DICTIONARY_ES_CO@1.0.0`      | centralizado documentalmente; runtime no materializado |
+| 21 atributos de entrada                                    | `ESPECIFICADOS`                                        |
+| 3 alcances de coincidencia                                 | `ESPECIFICADOS`                                        |
+| 3 modos de decisión                                        | `ESPECIFICADOS`                                        |
+| 4 niveles explícitos de resolución de alcance              | `ESPECIFICADOS`                                        |
+| 3 correcciones iniciales                                   | `ESPECIFICADAS`                                        |
+| exclusión automática de `expresso`                         | `ESPECIFICADA`                                         |
+| 6 estados de ciclo de vida                                 | `ESPECIFICADOS`                                        |
+| 7 resultados cerrados                                      | `ESPECIFICADOS`                                        |
+| API TypeScript definitiva                                  | `NO IMPLEMENTADA`                                      |
+| schemas runtime                                            | `NO IMPLEMENTADOS`                                     |
+| persistencia de entradas, versiones, evidencia y auditoría | `NO IMPLEMENTADA`                                      |
+| consumidores migrados                                      | `0` por esta tarea                                     |
+| cambios Supabase                                           | `0`                                                    |
+| requisitos de prueba creados o modificados                 | `0`                                                    |
+
+`ESPECIFICADO` no equivale a `IMPLEMENTADO` ni a `VALIDADO` en runtime.
+
+---
+
+#### 34. Handoffs exactos
+
+| Materia fuera de esta tarea                                               | Propietario exacto                                          | Condición de salida                                                                        |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| resolución humana de `expresso` y otras ambigüedades                      | `DATA-NORM-ARC-007`                                         | conservar valor hasta decisión contextual, evidencia y aprobación suficientes              |
+| búsqueda, transliteración y comparación tolerante                         | `SHELL-NORM-006`                                            | derivaciones no alteran valor mostrado ni convierten una variante ortográfica en identidad |
+| previsualización                                                          | `SHELL-NORM-007`                                            | preview reproduce entrada, salida, decisión y versiones sin autoridad de commit            |
+| metadatos de versión y auditoría                                          | `SHELL-NORM-008`                                            | cada evaluación queda atribuible a entrada, versión, alcance, evidencia y resultado        |
+| pruebas de idempotencia y conservación semántica                          | `SHELL-NORM-009`                                            | corpus demuestra paridad, repetición estable y ausencia de falsos positivos                |
+| materialización física del package                                        | `SHELL-CI-020::<package_id>` después de la puerta aplicable | crear y desplegar únicamente el package autorizado                                         |
+| persistencia, backfills, constraints, índices y triggers de normalización | `DATA-NORM-DB-001..010`                                     | ejecutar solo dentro del package autorizado cuando el alcance incluya BLOQUE R             |
+| identidad, unicidad, duplicidad o fusión asociadas a convergencia textual | `DATA-NORM-ARC-010`                                         | resolver estructura y relaciones sin inferir identidad desde ortografía                    |
+
+No se crea un identificador de tarea adicional.
+
+---
+
+#### 35. Cobertura de prueba vigente no modificada
+
+La conducta centralizada ya está protegida por requisitos canónicos vigentes:
+
+- `TREQ-DATA-087` a `TREQ-DATA-104`: identidad y cierre del diccionario, contrato de entrada, matching exacto, scopes, tres correcciones iniciales, exclusión de `expresso`, precedencia, clases/fuentes, separación de operaciones, frases, conflictos, estados, supersesión, procedencia, paridad, corpus y frontera frente a identidad;
+- `TREQ-DATA-049`: separación entre capitalización y ortografía;
+- `TREQ-DATA-053`: corpus lingüístico de conformidad;
+- `TREQ-DATA-069` a `TREQ-DATA-086`: precedencia y protección de excepciones oficiales frente a correcciones ordinarias;
+- `TREQ-SHELL-002`: implementación compartida y paridad frente a copias locales;
+- `TREQ-SHELL-006`: pruebas propias y compatibilidad de packages antes de publicación o adopción.
+
+`SHELL-NORM-005` no cambia ninguna de esas reglas protegidas; fija su proyección compartida dentro de la futura superficie de `@vento/data-normalization`.
+
+---
+
+#### 36. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** `SHELL-NORM-005` centraliza sin ampliar el diccionario ortográfico, sus tres entradas iniciales, contratos, estados, resultados, precedencias, bloqueos y reglas de gobierno ya aprobados en `DATA-NORM-ARC-006` y ya protegidos por requisitos canónicos vigentes. No introduce una corrección nueva, un alias nuevo, un scope nuevo, un modo nuevo, un estado nuevo, un resultado nuevo, un algoritmo de similitud, una autorización, una persistencia, una migración, un cambio de datos ni un cambio en Supabase. El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 37. Decisiones vinculantes
+
+1. El diccionario compartido es exactamente `VENTO_CANONICAL_ORTHOGRAPHIC_DICTIONARY_ES_CO@1.0.0`.
+2. El perfil lingüístico es exactamente `es-CO`.
+3. El perfil nunca se infiere desde el runtime.
+4. El contrato lógico de una entrada conserva exactamente 21 atributos mínimos.
+5. Los alcances de coincidencia son exactamente `FULL_VALUE`, `PHRASE` y `TOKEN`.
+6. El matching es direccional y exacto.
+7. No se infiere la dirección inversa.
+8. No existe matching por subcadena.
+9. No existe matching difuso.
+10. No existe matching fonético.
+11. No existe matching por distancia de edición.
+12. No se eliminan tildes para ampliar coincidencias.
+13. `PRESERVE_RESOLVED_CASE_PATTERN` preserva la caja previamente resuelta.
+14. El diccionario no vuelve a ejecutar capitalización.
+15. Los modos de decisión son exactamente `REPLACE_ORTHOGRAPHY`, `PRESERVE_AS_APPROVED` y `REVIEW_REQUIRED`.
+16. Los niveles explícitos de alcance son `FIELD_SCOPE`, `ENTITY_SCOPE`, `DOMAIN_SCOPE` y `VENTO_OS_TRANSVERSAL_SCOPE`.
+17. La ausencia de resolución produce preservación, no un quinto scope permisivo.
+18. Las correcciones iniciales son exactamente `maiz` → `maíz`, `clasico` → `clásico` y `frio` → `frío`.
+19. Las claves de esas entradas son exactamente `ORTHO_ES_CO_MAIZ_MAIZ`, `ORTHO_ES_CO_CLASICO_CLASICO` y `ORTHO_ES_CO_FRIO_FRIO`.
+20. No se agrega una cuarta corrección por analogía.
+21. `expresso` queda excluido de corrección automática.
+22. No se convierte `expresso` automáticamente en `espresso`, `expreso` u otra forma.
+23. La puerta de activación conserva exactamente 11 condiciones.
+24. Las excepciones oficiales y protecciones técnicas prevalecen sobre el diccionario.
+25. Dentro del diccionario, una entrada más específica prevalece únicamente dentro de un alcance compatible.
+26. `PHRASE` precede a `TOKEN` dentro de la misma especificidad.
+27. La coincidencia válida de frase más larga prevalece entre frases compatibles.
+28. Los estados son exactamente `DRAFT`, `APPROVED_ACTIVE`, `SUSPENDED`, `SUPERSEDED`, `RETIRED` y `REJECTED`.
+29. Solo `APPROVED_ACTIVE` es ejecutable.
+30. Los resultados son exactamente siete y permanecen semánticamente distintos.
+31. Un conflicto conserva el valor y falla cerrado.
+32. Un cambio ejecutable crea nueva versión o nueva entrada con `supersedes`.
+33. El cambio no es retroactivo por defecto.
+34. Rollback no elimina historia, evidencia ni decisiones.
+35. Frecuencia, forma reciente, autocorrector, búsqueda externa no aprobada, modelo lingüístico o preferencia local no constituyen autoridad.
+36. `PRIMARY_VALUE` y `DISPLAY_OVERRIDE` solo pueden mutar bajo las fuentes y políticas autorizadas.
+37. Originales externos, snapshots y evidencia permanecen protegidos.
+38. `SYNCHRONIZED_COPY` no ejecuta una autoridad ortográfica independiente.
+39. La misma entrada, coordenada y versiones producen el mismo resultado lógico en todas las capas.
+40. La evaluación es idempotente bajo las mismas versiones.
+41. El diccionario no ejecuta espacios, Unicode, capitalización, conectores, excepciones, búsqueda, transliteración, identidad o fusión como efectos implícitos.
+42. Una convergencia ortográfica no crea identidad ni unicidad.
+43. VITAL no hereda el diccionario transversal.
+44. No se crea package físico, TypeScript, SQL, RPC, trigger, índice, constraint, migración o backfill.
+45. No se modifica Supabase.
+46. Esta tarea crea cero requisitos de prueba y modifica cero requisitos existentes.
+47. `SHELL-NORM-006` queda como única continuidad reservada.
+
+---
+
+#### 38. Hallazgos y destinos exactos
+
+| Hallazgo                                                                   | Resultado de `SHELL-NORM-005`                     | Destino exacto                                              |
+| -------------------------------------------------------------------------- | ------------------------------------------------- | ----------------------------------------------------------- |
+| el diccionario ya estaba definido en E3 pero no centralizado en SHELL-NORM | diccionario completo centralizado documentalmente | `SHELL-NORM-005`                                            |
+| existen solo tres correcciones iniciales aprobadas                         | las tres se preservan sin expansión por analogía  | `SHELL-NORM-005`                                            |
+| `expresso` permanece ambiguo                                               | no se activa corrección automática                | `DATA-NORM-ARC-007`                                         |
+| una convergencia ortográfica puede revelar una posible duplicidad          | no produce identidad ni fusión                    | `DATA-NORM-ARC-010`                                         |
+| búsqueda tolerante y variantes de búsqueda permanecen separadas            | no se generan desde el diccionario                | `SHELL-NORM-006`                                            |
+| el package compartido aún no está materializado físicamente                | especificación completa; ejecución no iniciada    | `SHELL-CI-020::<package_id>` después de la puerta aplicable |
+| persistencia y enforcement de normalización pertenecen a BLOQUE R          | sin cambio físico                                 | `DATA-NORM-DB-001..010`                                     |
+
+No queda un pendiente narrativo sin propietario documental exacto.
+
+---
+
+#### 39. Criterios de aceptación
+
+`SHELL-NORM-005` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. se centraliza exactamente `VENTO_CANONICAL_ORTHOGRAPHIC_DICTIONARY_ES_CO@1.0.0`;
+2. no se crea una segunda fuente de diccionario;
+3. el perfil `es-CO` permanece explícito;
+4. los 21 atributos de entrada aparecen completos;
+5. faltantes de atributos = 0;
+6. duplicados de atributos = 0;
+7. los tres alcances de coincidencia permanecen cerrados;
+8. el matching es exacto y direccional;
+9. no se infiere reversibilidad;
+10. no se admiten subcadenas;
+11. no se admite similitud, fonética ni distancia de edición;
+12. la proyección de caja conserva `PRESERVE_RESOLVED_CASE_PATTERN`;
+13. el diccionario no capitaliza nuevamente;
+14. se preservan los tres modos de decisión;
+15. se preservan los cuatro niveles explícitos de alcance;
+16. la ausencia de policy conserva el valor;
+17. se preservan exactamente las tres entradas iniciales;
+18. faltantes de entradas iniciales = 0;
+19. duplicados de entradas iniciales = 0;
+20. no se agrega una entrada adicional por analogía;
+21. `expresso` no es una entrada automática;
+22. se preservan las 11 condiciones de activación;
+23. se preserva la precedencia de 8 niveles;
+24. excepciones y protecciones técnicas preceden al diccionario;
+25. frases más largas preceden a tokens dentro de la misma especificidad;
+26. se preservan los seis estados de ciclo de vida;
+27. solo `APPROVED_ACTIVE` es ejecutable;
+28. se preservan los siete resultados cerrados;
+29. faltantes de resultados = 0;
+30. duplicados de resultados = 0;
+31. conflictos fallan cerrados;
+32. entradas incompletas no son ejecutables;
+33. evidencia y aprobación son obligatorias para activar;
+34. supersesión y no retroactividad permanecen explícitas;
+35. rollback lógico no destruye historia;
+36. originales externos, snapshots y evidencia no se reescriben;
+37. `SYNCHRONIZED_COPY` no corrige independientemente;
+38. la misma entrada, coordenada y versiones produce el mismo resultado lógico;
+39. la evaluación repetida es idempotente;
+40. el corpus mínimo conserva positivos, negativos, ambigüedad, conflictos y versiones;
+41. búsqueda permanece separada;
+42. identidad y unicidad permanecen separadas;
+43. VITAL permanece separado;
+44. no se crea código ni package físico;
+45. no se modifica Supabase;
+46. no se crean ni modifican requisitos de prueba;
+47. todos los carryovers tienen propietario exacto;
+48. la siguiente tarea permanece únicamente reservada.
+
+---
+
+#### 40. Límites
+
+`SHELL-NORM-005` no:
+
+- crea físicamente `@vento/data-normalization`;
+- crea `package.json`;
+- crea archivos `.ts` o `.tsx`;
+- define exports físicos;
+- selecciona una librería de diccionario, Unicode, tokenización o validación runtime;
+- crea schemas Zod, JSON Schema u otros schemas serializados;
+- modifica `VENTO_CANONICAL_ORTHOGRAPHIC_DICTIONARY_ES_CO@1.0.0`;
+- agrega palabras al diccionario;
+- activa `expresso`;
+- resuelve `Oster`, `Wellmix`, `Welmix`, `BBQ` u otros candidatos de excepción;
+- infiere aliases;
+- ejecuta similitud;
+- ejecuta fonética;
+- ejecuta autocorrección externa;
+- ejecuta stemming;
+- ejecuta lematización;
+- traduce;
+- translitera;
+- singulariza;
+- pluraliza;
+- corrige espacios;
+- corrige Unicode;
+- capitaliza;
+- modifica conectores;
+- modifica excepciones oficiales;
+- implementa búsqueda;
+- implementa ranking;
+- genera slug, SKU o identificadores;
+- decide identidad, unicidad, deduplicación o fusión;
+- implementa preview;
+- implementa auditoría física;
+- persiste entradas o evidencias;
+- modifica datos existentes;
+- crea funciones SQL;
+- crea RPC;
+- crea triggers;
+- crea índices;
+- crea constraints;
+- ejecuta backfills;
+- modifica RLS;
+- modifica Supabase;
+- migra consumidores;
+- redefine `DATA-NORM-ARC-001..012`;
+- desarrolla `SHELL-NORM-006`.
+
+---
+
+#### 41. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+SHELL-NORM-004 — Centralizar conectores y excepciones
+
+##### TAREA ACTUAL APROBADA
+
+SHELL-NORM-005 — Centralizar diccionarios ortográficos versionados
+
+##### SIGUIENTE TAREA RESERVADA
+
+SHELL-NORM-006 — Crear normalización de búsqueda y comparación
+
+
 ### [ ] SHELL-NORM-006 — Crear normalización de búsqueda y comparación
 ### [ ] SHELL-NORM-007 — Crear previsualización de transformaciones
 ### [ ] SHELL-NORM-008 — Crear metadatos de versión y auditoría de reglas
