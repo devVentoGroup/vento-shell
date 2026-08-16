@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **904** |
+| Aprobadas | **905** |
 | En propuesta | **0** |
-| No iniciadas | **690** |
+| No iniciadas | **689** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **56.71% (904/1594)** |
+| Porcentaje de completamiento | **56.78% (905/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-NORM-001` — Crear `@vento/data-normalization` | ✅ APROBADA |
-| Tarea actual | `SHELL-NORM-002` — Centralizar tipos de campo normalizable | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-NORM-003` — Centralizar reglas de espacios, Unicode y capitalización | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-NORM-002` — Centralizar tipos de campo normalizable | ✅ APROBADA |
+| Tarea actual | `SHELL-NORM-003` — Centralizar reglas de espacios, Unicode y capitalización | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-NORM-004` — Centralizar conectores y excepciones | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -731,7 +731,7 @@
 | ✅ APROBADA | `SHELL-CON-023` | Crear contrato de idempotencia y conciliación | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
 | ✅ APROBADA | `SHELL-CON-024` | Crear contrato de cuarentena, rechazo y compensación | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
 | ✅ APROBADA | `SHELL-NORM-001` | Crear `@vento/data-normalization` | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
-| ⬜ NO INICIADA | `SHELL-NORM-002` | Centralizar tipos de campo normalizable | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
+| ✅ APROBADA | `SHELL-NORM-002` | Centralizar tipos de campo normalizable | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ⬜ NO INICIADA | `SHELL-NORM-003` | Centralizar reglas de espacios, Unicode y capitalización | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ⬜ NO INICIADA | `SHELL-NORM-004` | Centralizar conectores y excepciones | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
 | ⬜ NO INICIADA | `SHELL-NORM-005` | Centralizar diccionarios ortográficos versionados | `bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md` |
