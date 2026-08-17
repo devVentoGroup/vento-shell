@@ -8,11 +8,11 @@
 
 ## Qué toca hacer ahora
 
-- **Acción principal obligatoria:** `AUTORIZAR_IMPLEMENTACION`
+- **Acción principal obligatoria:** `INICIAR_IMPLEMENTACION`
 - **Objetivo exacto:** `SHELL-CI-001::GLOBAL` — Crear pruebas de paquetes compartidos
-- **Instrucción:** Definir y aprobar el alcance físico exacto de SHELL-CI-001::GLOBAL; todavía no modificar código.
+- **Instrucción:** Implementar únicamente el alcance autorizado de SHELL-CI-001::GLOBAL.
 - **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `SHELL-CI-003`
-- **Implementación física autorizada:** **NINGUNA**
+- **Implementación física autorizada:** `SHELL-CI-001::GLOBAL`
 
 > Esta instrucción prevalece sobre la simple posición de una tarea en la lista pendiente. Aprobar documentación no autoriza código y una instancia física no puede saltar su predecesora global.
 

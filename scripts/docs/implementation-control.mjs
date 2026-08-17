@@ -15,6 +15,12 @@ const EXPLICIT_STATUSES = new Set([
   'VERIFIED',
   'DEFERRED',
 ]);
+const AUTHORIZED_LIFECYCLE_STATUSES = new Set([
+  'AUTHORIZED',
+  'IN_PROGRESS',
+  'IMPLEMENTED',
+  'VERIFIED',
+]);
 
 function fail(errors) {
   throw new Error(`implementation-control.json inválido:\n- ${errors.join('\n- ')}`);
@@ -95,7 +101,7 @@ export function validateImplementationControl(control, workTopology) {
     if (!configuredStatuses.has(entry.status)) {
       errors.push(`${entry.instance_id} usa el estado no permitido ${entry.status ?? 'VACÍO'}.`);
     }
-    if (['AUTHORIZED', 'IN_PROGRESS', 'IMPLEMENTED', 'VERIFIED'].includes(entry.status)) {
+    if (AUTHORIZED_LIFECYCLE_STATUSES.has(entry.status)) {
       if (!Array.isArray(entry.target_repositories) || entry.target_repositories.length === 0) {
         errors.push(`${entry.instance_id} debe declarar target_repositories antes de ${entry.status}.`);
       }
@@ -104,6 +110,38 @@ export function validateImplementationControl(control, workTopology) {
       }
       if (!Array.isArray(entry.validation_commands) || entry.validation_commands.length === 0) {
         errors.push(`${entry.instance_id} debe declarar validation_commands antes de ${entry.status}.`);
+      }
+      const authorization = entry.authorization;
+      if (!authorization || typeof authorization !== 'object' || Array.isArray(authorization)) {
+        errors.push(`${entry.instance_id} debe conservar authorization como evidencia humana antes de ${entry.status}.`);
+      } else {
+        if (authorization.decision !== 'APPROVED') {
+          errors.push(`${entry.instance_id} debe declarar authorization.decision = APPROVED.`);
+        }
+        if (!String(authorization.approved_by ?? '').trim()) {
+          errors.push(`${entry.instance_id} debe declarar authorization.approved_by.`);
+        }
+        if (!/^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2}(?:\.\d{3})?)?(?:Z|[+-]\d{2}:\d{2})?)?$/u.test(
+          String(authorization.approved_at ?? ''),
+        )) {
+          errors.push(`${entry.instance_id} debe declarar authorization.approved_at como fecha ISO concreta.`);
+        }
+        if (!String(authorization.timezone ?? '').trim()) {
+          errors.push(`${entry.instance_id} debe declarar authorization.timezone.`);
+        }
+        if (!String(authorization.approval_statement ?? '').trim()) {
+          errors.push(`${entry.instance_id} debe declarar authorization.approval_statement.`);
+        }
+        if (!/^[a-f0-9]{64}$/iu.test(String(authorization.source_contract_sha256 ?? ''))) {
+          errors.push(`${entry.instance_id} debe declarar authorization.source_contract_sha256 válido.`);
+        }
+        if (authorization.proposal_response_sha256 !== undefined
+          && !/^[a-f0-9]{64}$/iu.test(String(authorization.proposal_response_sha256))) {
+          errors.push(`${entry.instance_id} declara authorization.proposal_response_sha256 inválido.`);
+        }
+      }
+      if (!Array.isArray(entry.evidence)) {
+        errors.push(`${entry.instance_id} debe declarar evidence como arreglo antes de ${entry.status}.`);
       }
       if (lifecycle.mode !== 'GLOBAL_ENABLE_ONCE'
         && (!Array.isArray(entry.prerequisite_evidence) || entry.prerequisite_evidence.length === 0)) {

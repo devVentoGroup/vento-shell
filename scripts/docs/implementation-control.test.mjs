@@ -38,7 +38,7 @@ function topology() {
 }
 
 function scope(status, taskId = 'SHELL-CI-001') {
-  return {
+  const entry = {
     instance_id: `${taskId}::GLOBAL`,
     task_id: taskId,
     status,
@@ -46,6 +46,17 @@ function scope(status, taskId = 'SHELL-CI-001') {
     authorized_changes: ['scripts de CI del habilitador'],
     validation_commands: ['npm test'],
     evidence: ['evidence.json'],
+  };
+  return {
+    ...entry,
+    authorization: {
+      decision: 'APPROVED',
+      approved_by: 'VENTO_OWNER',
+      approved_at: '2026-08-17',
+      timezone: 'America/Bogota',
+      approval_statement: 'Apruebo exclusivamente el alcance declarado por esta instancia.',
+      source_contract_sha256: 'a'.repeat(64),
+    },
   };
 }
 
@@ -70,6 +81,24 @@ test('una autorización explícita cambia la instrucción a implementar solo su 
   assert.equal(result.primaryAction.type, 'INICIAR_IMPLEMENTACION');
   assert.equal(result.implementationAuthorized, true);
   assert.deepEqual(result.physical.authorized.map(({ instanceId }) => instanceId), ['SHELL-CI-001::GLOBAL']);
+});
+
+test('rechaza autorizar una instancia sin evidencia humana completa', () => {
+  const entry = scope('AUTHORIZED');
+  delete entry.authorization;
+  assert.throws(() => deriveImplementationControl({
+    control: { ...baseControl, instances: [entry] },
+    workTopology: topology(),
+  }), /debe conservar authorization como evidencia humana/u);
+});
+
+test('acepta la autorización sin obligar al usuario a calcular un hash del alcance', () => {
+  const entry = scope('AUTHORIZED');
+  const result = deriveImplementationControl({
+    control: { ...baseControl, instances: [entry] },
+    workTopology: topology(),
+  });
+  assert.equal(result.primaryAction.type, 'INICIAR_IMPLEMENTACION');
 });
 
 test('la segunda instancia global solo queda elegible después de verificar la primera', () => {

@@ -30,6 +30,66 @@ function taskState(task) {
   return 'APROBADA';
 }
 
+export function actionResponseContract(control, sourceContractHash) {
+  const { type, target } = control.primaryAction;
+  const common = [
+    'La respuesta debe comenzar con FORMATO_ENTREGA_VENTO_V1 y conservar exactamente sus ocho secciones; no agregues una novena sección.',
+    'No te limites a informar qué sigue. Indica exactamente qué debe hacer el usuario, sin asumir que conoce comandos, archivos, estados o convenciones del repositorio.',
+    'Dentro de la sección 8 incluye el bloque PASOS EXACTOS PARA EL USUARIO con una lista numerada, rutas exactas, fragmento actual que se reemplaza, contenido completo de reemplazo, resultado esperado del watcher, revisión visual en VS Code y acción de commit/sincronización cuando corresponda.',
+    'Si el usuario no debe hacer nada, escríbelo expresamente y explica cuál acción ya ejecutaste tú.',
+    'No uses placeholders sin resolver. Cada JSON, ruta, identificador, fecha, hash, estado y texto que el usuario deba copiar debe quedar completo y válido.',
+  ];
+
+  if (type === 'AUTORIZAR_IMPLEMENTACION') {
+    return [
+      ...common,
+      `Para ${target}, la sección 4 debe contener la propiedad JSON completa y válida, desde "instances": [ hasta su corchete final ], que reemplazará exclusivamente la línea "instances": [] en docs/plan-canonico/modular/implementation-control.json si el usuario decide aprobar. No entregues únicamente el objeto interior.`,
+      'Ese objeto debe incluir instance_id, task_id, status AUTHORIZED, target_repositories, authorized_changes, validation_commands, authorization y evidence: [].',
+      'authorization debe incluir decision: APPROVED, approved_by, approved_at, timezone, approval_statement y source_contract_sha256.',
+      'Si no puedes verificar el nombre civil del usuario, usa approved_by: VENTO_OWNER; usa una fecha ISO concreta y timezone: America/Bogota, nunca marcadores como <FECHA> o <USUARIO>.',
+      `source_contract_sha256 debe ser exactamente ${sourceContractHash}. No pidas al usuario calcular, corregir o conciliar hashes manualmente; la autorización se demuestra con su declaración explícita y su commit.`,
+      'approval_statement debe aprobar exclusivamente los repositorios, cambios y validaciones enumerados, y negar expresamente cualquier ampliación inferida.',
+      'Aclara que el bloque listo para copiar sigue siendo una propuesta hasta que el usuario lo pegue, guarde y confirme mediante su propio commit; tú no debes modificar implementation-control.json ni autorizarte a ti mismo.',
+      'Distingue la evidencia de autorización de la evidencia de implementación: evidence debe permanecer [] mientras el estado sea AUTHORIZED.',
+      'En PASOS EXACTOS PARA EL USUARIO indica, sin comandos de terminal: abrir implementation-control.json, reemplazar solo instances: [], guardar, esperar el watcher, comprobar el cambio a INICIAR_IMPLEMENTACION, revisar el diff, crear el commit desde el control de código fuente de VS Code, sincronizar y cargar el INICIADOR_VENTO_ACTUAL.txt recién regenerado.',
+      'Incluye el texto exacto que debería mostrar el watcher después de guardar y el mensaje de commit recomendado.',
+    ].join('\n');
+  }
+
+  if (type === 'INICIAR_IMPLEMENTACION' || type === 'CONTINUAR_IMPLEMENTACION') {
+    return [
+      ...common,
+      `Para ${target}, ejecuta la implementación autorizada antes de redactar la respuesta.`,
+      'La sección 4 debe enumerar cada archivo creado o modificado, su cambio observable y todo límite respetado.',
+      'La sección 6 debe separar comandos ejecutados y resultados reales de validaciones pendientes o no aplicables.',
+      'En PASOS EXACTOS PARA EL USUARIO explica cómo inspeccionar los cambios en VS Code, qué comportamiento comprobar manualmente, qué estado físico sigue y si debe esperar, aprobar, corregir o validar; no le delegues comandos que puedas ejecutar tú.',
+    ].join('\n');
+  }
+
+  if (type === 'VALIDAR_IMPLEMENTACION') {
+    return [
+      ...common,
+      `Para ${target}, ejecuta todas las validaciones autorizadas que estén disponibles y no conviertas resultados pendientes en PASS.`,
+      'La sección 6 debe contener comando, resultado, evidencia concreta y clasificación local, remota, operativa o física.',
+      'En PASOS EXACTOS PARA EL USUARIO entrega el reemplazo JSON completo para la transición de estado que realmente corresponda, incluido evidence con referencias concretas; si no puede avanzar a VERIFIED, entrega en su lugar el bloqueo exacto y cómo resolverlo.',
+    ].join('\n');
+  }
+
+  if (type === 'RESOLVER_BLOQUEO') {
+    return [
+      ...common,
+      `Para ${target}, identifica la causa raíz, resuelve solo el bloqueo autorizado y demuestra su condición de salida.`,
+      'En PASOS EXACTOS PARA EL USUARIO indica el estado resultante, el JSON exacto que corresponde y cualquier comprobación manual que solo el usuario pueda realizar.',
+    ].join('\n');
+  }
+
+  return [
+    ...common,
+    `Para ${target}, entrega el artefacto documental completo listo para revisión y reemplazo, sin aprobarlo por inferencia.`,
+    'En PASOS EXACTOS PARA EL USUARIO indica el archivo propietario exacto, qué bloque reemplazar, cómo revisar el cambio, qué palabra debe usar para aprobar y qué ocurrirá automáticamente después; no le pidas deducir la continuidad.',
+  ].join('\n');
+}
+
 function actionInstruction(control) {
   const { type, target } = control.primaryAction;
   if (type === 'AUTORIZAR_IMPLEMENTACION') {
@@ -88,6 +148,7 @@ export function renderCurrentWork({ control, workTopology, templateHash }) {
     instanceId === control.primaryAction.target
   ));
   const emptyDraft = task.block.match(/^####\s+/gmu) === null;
+  const sourceContractHash = sha256(task.block.replace(/\r\n?/gu, '\n'));
 
   return `TRABAJO SOLICITADO ACTUAL
 
@@ -137,6 +198,10 @@ INSTRUCCIÓN FINAL PARA CHATGPT
 
 ${actionInstruction(control)}
 
+CONTRATO OBLIGATORIO DE LA RESPUESTA Y DEL PASO MANUAL
+
+${actionResponseContract(control, sourceContractHash)}
+
 No desarrolles la tarea documental ${control.documentary.taskId} mientras su carril figure ${control.documentary.state}, salvo que esa misma tarea sea el objetivo exacto de la acción principal. No ejecutes otra instancia, no interpretes la aprobación documental como autorización física y no sustituyas el resultado material por recomendaciones genéricas.
 
 Este iniciador ya contiene la instrucción de trabajo: comienza directamente con el preflight y el desarrollo aplicable. Solo detén escrituras si encuentras una contradicción real, un permiso externo faltante o una operación destructiva no autorizada.
@@ -144,6 +209,7 @@ Este iniciador ya contiene la instrucción de trabajo: comienza directamente con
 TRAZABILIDAD DEL INICIADOR
 
 - Plantilla SHA-256: ${templateHash}
+- Contrato propietario SHA-256: ${sourceContractHash}
 - Fuente de control: docs/plan-canonico/modular/implementation-control.json
 - Directiva local equivalente: .delivery/current-work-directive.md
 - Generación automática: npm run docs:plan:build y watcher del plan canónico
