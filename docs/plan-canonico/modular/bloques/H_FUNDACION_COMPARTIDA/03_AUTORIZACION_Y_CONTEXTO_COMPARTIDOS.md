@@ -2556,7 +2556,894 @@ Esta tarea no:
 `SHELL-AUTH-004 — Implementar lint, métricas y gates contra consumidores legacy`
 
 
-### [ ] SHELL-AUTH-004 — Implementar lint, métricas y gates contra consumidores legacy
+### ✅ SHELL-AUTH-004 — Implementar lint, métricas y gates contra consumidores legacy
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores
+**Tarea siguiente:** SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios
+**Tipo de tarea:** definición documental vinculante del freeze de nuevos consumos legacy, análisis estático, métricas, allowlist temporal y gates de CI
+**Bloque:** H — Fundación compartida
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Modo topológico:** `PER_IMPLEMENTATION_UNIT`
+**Trabajo canónico actual:** definir el contrato global una sola vez
+**Instancia física futura:** `SHELL-AUTH-004::<implementation_unit_id>`
+**Condición de materialización:** `DELIV-PKG-025::<package_id>` asigna `implementation_unit_id` y el package propietario obtiene `E5-GATE-008::<package_id> = PASS`
+**Registro de consumidores de entrada:** `SHELL-AUTH-REQUEST-SCOPE-CONSUMERS-001` — 32 filas, 15 campos, 32 identidades compuestas únicas
+**Snapshot producido:** `SHELL-AUTH-LEGACY-GATES-001`
+**Estado físico en este marcador:** 0 linters AUTH004, 0 allowlists ejecutables, 0 gates CI AUTH004 y 0 cambios Supabase materializados por esta tarea
+
+---
+
+#### 1. Resultado material
+
+Se define el contrato canónico que **congela la deuda legacy de autorización y contexto antes de la migración masiva**, sin confundir congelación con aceptación arquitectónica.
+
+La regla resultante es:
+
+```text
+BASELINE LEGACY CONOCIDA
++ IDENTIDAD EXACTA REGISTRADA
++ ALLOWLIST TEMPORAL SIN COMODINES
++ MÉTRICAS RECONCILIADAS
+= PUEDE PERMANECER SOLO DURANTE LA MIGRACIÓN
+```
+
+```text
+CONSUMO LEGACY NUEVO
+O HALLAZGO NO REGISTRADO
+O INCREMENTO DE DEUDA
+O EXCEPCIÓN HUÉRFANA/STALE
+= FAIL
+```
+
+```text
+ALLOWLIST TEMPORAL
+≠ COMPATIBILIDAD
+≠ APROBACIÓN DE SEGURIDAD
+≠ ARQUITECTURA FINAL
+```
+
+El marcador materializa:
+
+| Dimensión                                                 | Resultado |
+| --------------------------------------------------------- | --------: |
+| consumidores baseline heredados                           |    **32** |
+| identidades reconciliadas                                 | **32/32** |
+| duplicados de identidad                                   |     **0** |
+| perfiles de deuda                                         |     **8** |
+| APIs legacy explícitamente congeladas                     |     **5** |
+| reglas de detección                                       |     **9** |
+| métricas contractuales                                    |    **14** |
+| gates de futura materialización                           |    **12** |
+| entradas de allowlist documental                          |    **32** |
+| consumidores cliente con autorización directa en baseline |     **2** |
+| consumidores laborales PASS inventados                    |     **0** |
+| rutas AURA inventadas                                     |     **0** |
+| código o CI físico creado en este marcador                |     **0** |
+| cambios Supabase                                          |     **0** |
+| requisitos de prueba nuevos                               |     **8** |
+
+---
+
+#### 2. Fuentes y estado verificable
+
+Se consumen como entradas vinculantes:
+
+1. protocolo canónico vigente;
+2. contrato modular de entrega vigente;
+3. secuencia activa con `SHELL-AUTH-003` como precedencia y `SHELL-AUTH-004` como primera tarea pendiente;
+4. topología `PER_IMPLEMENTATION_UNIT`;
+5. `SHELL-AUTH-001`, `SHELL-AUTH-002` y `SHELL-AUTH-003` aprobadas;
+6. `AUTH-CTX-027` sobre consumo centralizado, freeze, lint, observabilidad y migración;
+7. `SHELL-PKG-005` sobre deprecación, consumidores, retiro y preservación histórica;
+8. `SHELL-PKG-008` sobre fail-closed, evidencia por commit y gates obligatorios;
+9. registro canónico de consumidores de `SHELL-AUTH-003`;
+10. registro `04A` vigente con 7050 requisitos y `TREQ-SHELL-001..082`;
+11. infraestructura de lint actual de `vento-shell`;
+12. superficies físicas actuales necesarias para confirmar los patrones legacy relevantes.
+
+Cortes técnicos inspeccionados:
+
+| Artefacto                            | Identidad verificada                            | Resultado relevante                                                                      |
+| ------------------------------------ | ----------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `packages/os-context/package.json`   | blob `604c6412f5220e4694d4c31f8422544c2690d5a3` | `@vento/os-context@0.1.0`, privado, export raíz a source                                 |
+| `packages/os-context/src/client.ts`  | blob `43fab8004617175ae22e378032a69e92e4a922d1` | llama `get_effective_context_v1` y `has_effective_permission_v1`; conserva simulación v1 |
+| `scripts/quality/lint-ratchet.mjs`   | blob `c5cba15b4accd98c809b270d3b573f62c9b92bcb` | ratchet genérico `NO_NEW_DEBT_AND_TOUCHED_FILES_CLEAN`, sin semántica AUTH legacy        |
+| `quality/lint-debt-baseline.json`    | blob `82e6348294c700cd15aa485f38e1346665931804` | baseline genérica de ESLint; no es allowlist de autorización                             |
+| `eslint.config.mjs`                  | blob `05e726d1b4201bc8c7716d2b058279676582e8c0` | no materializa reglas AUTH004 específicas                                                |
+| `src/app/page.tsx` de SHELL          | blob `7aae59568bc5eac5dae4b792ddc945f03793a80f` | `has_permission` directo y fallback de firma                                             |
+| FOGO `src/lib/auth/permissions.ts`   | blob `a5a2b7e6f914075d78cc72a9b016994f5a102dde` | prefijo local + `has_permission` + booleano                                              |
+| ORIGO `src/lib/suppliers.ts`         | blob `830fa1e5f0598ff747f7d9102c532393ac87bf81` | `has_permission` + fallback local por rol                                                |
+| PULSO `delivery-override-bridge.tsx` | blob `a3419fb82b6fe2a1b149960d377726ac94a03617` | cliente invoca `has_permission` directamente                                             |
+| ANIMA `use-app-permissions.ts`       | blob `bda072e4b4d9664ece585c2f21123d1e5cd5434a` | cliente ejecuta una RPC por permission code y reduce a booleano                          |
+
+El ratchet genérico existente **se conserva**. AUTH004 no lo redefine ni usa su baseline de warnings como sustituto del inventario de autorización.
+
+---
+
+#### 3. Alcance exacto
+
+AUTH004 define:
+
+1. el universo de APIs y patrones legacy congelados;
+2. el modelo de análisis estático;
+3. la relación entre findings y las 32 identidades del registro;
+4. la allowlist temporal exacta;
+5. las reglas de incremento, sustitución, traslado y eliminación de deuda;
+6. las métricas obligatorias y sus labels permitidos;
+7. las métricas expresamente prohibidas por sensibilidad o cardinalidad;
+8. el fail-closed de los gates;
+9. la integración conceptual con el ratchet genérico sin mezclar baselines;
+10. la matriz de decisión 32/32;
+11. la política para PASS y AURA sin inventar consumidores;
+12. la evidencia que deberá producir la futura instancia;
+13. las pruebas contractuales, integración, denegaciones, seguridad, compatibilidad y regresión;
+14. la aplicabilidad real de RLS/RPC;
+15. la unicidad por `implementation_unit_id`, lineage y rollback.
+
+AUTH004 no migra ni elimina los 32 consumidores. Esa acción pertenece a `SHELL-AUTH-005` y el retiro físico de RPC legacy aplicables permanece en `AUTH-DB-030`.
+
+---
+
+#### 4. Principio de freeze
+
+El freeze comienza cuando la futura instancia AUTH004 esté materializada y sea un check obligatorio del flujo aplicable.
+
+A partir de ese punto:
+
+- una identidad baseline puede conservar **solo** sus hallazgos legacy conocidos y temporalmente autorizados;
+- agregar un hallazgo nuevo a una identidad existente falla;
+- mover el mismo patrón a otra ruta falla;
+- copiar un helper a otro repositorio falla;
+- cambiar `surface_type` o `consumer_name` para eludir la identidad falla;
+- crear un consumidor nuevo de `/legacy` falla;
+- una fila nueva en el registro no concede automáticamente excepción;
+- una excepción no sustituye pruebas, owner, migración ni removal gate;
+- eliminar deuda reduce el baseline; nunca habilita reutilizar la cuota eliminada.
+
+La política es **monótonamente decreciente**: la deuda permitida puede bajar, pero no volver a crecer bajo el mismo snapshot.
+
+---
+
+#### 5. APIs legacy explícitamente congeladas
+
+La lista canónica inicial contiene exactamente cinco familias:
+
+```text
+has_permission
+has_operational_permission
+has_effective_permission_v1
+get_operational_context
+get_effective_context_v1
+```
+
+Reglas:
+
+1. una llamada directa nueva a cualquiera de ellas es bloqueo;
+2. alias sintáctico, destructuring, wrapper local o reexport no evitan la detección;
+3. construir dinámicamente el nombre para evadir el scanner es bloqueo;
+4. la lista se compara por identidad semántica, no solo por una búsqueda textual;
+5. los usos SQL/RLS se inventarían y certificarán en sus tareas propietarias; no se declaran ausentes por no estar en el scanner TypeScript;
+6. simulación v1 permanece representada en la fila `SDK_ADAPTER` existente, pero esta tarea no amplía arbitrariamente las cinco familias legacy reconocidas por AUTH001/AUTH-CTX-027.
+
+---
+
+#### 6. Catálogo de reglas de detección
+
+| Regla          | Nombre                                | Detecta                                                                                                          | Política para baseline                                       | Política para delta nuevo |
+| -------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------- |
+| `AUTH004-L001` | `LEGACY_RPC_DIRECT`                   | invocación, wrapper, alias o reexport directo de una de las cinco APIs legacy                                    | solo finding exacto inventariado                             | `FAIL`                    |
+| `AUTH004-L002` | `LEGACY_CLIENT_AUTHORIZATION`         | autorización interna invocada desde `CLIENT_HOOK`, `CLIENT_COMPONENT` o browser                                  | solo las identidades baseline de ANIMA/PULSO mientras migran | `FAIL`                    |
+| `AUTH004-L003` | `LOCAL_PERMISSION_KEY_CONSTRUCTION`   | prefijos, concatenación, split o normalización local que fabrica `PermissionKey`                                 | baseline exacta registrada                                   | `FAIL`                    |
+| `AUTH004-L004` | `LOCAL_ROLE_OR_BYPASS_AUTHORITY`      | rol, override o lista local usados para conceder/ampliar capacidad                                               | baseline exacta registrada; nunca se declara canónica        | `FAIL`                    |
+| `AUTH004-L005` | `CALLER_CONTEXT_AS_AUTHORITY`         | sede, área, actor, turno, check-in o contexto efectivo aportado por caller para decidir autoridad                | baseline exacta registrada                                   | `FAIL`                    |
+| `AUTH004-L006` | `BOOLEAN_OR_LEGACY_CONTEXT_AUTHORITY` | booleanos, `can_operate`, `EffectiveContext` o shape legacy usados como sustituto de decisión/contexto canónicos | baseline exacta registrada                                   | `FAIL`                    |
+| `AUTH004-L007` | `DUPLICATED_AUTHORIZATION_HELPER`     | copia o variante local de helper/guard/contexto con responsabilidad ya compartida                                | solo identidades baseline actuales                           | `FAIL`                    |
+| `AUTH004-L008` | `UNREGISTERED_AUTH_CONSUMER`          | finding de contexto/autorización sin fila resoluble en el registro de 15 campos                                  | ninguno                                                      | `FAIL` incondicional      |
+| `AUTH004-L009` | `NEW_LEGACY_SUBPATH_CONSUMER`         | import o dependencia nueva hacia `@vento/os-context/legacy` una vez exista físicamente                           | solo consumidores expresamente heredados y registrados       | `FAIL`                    |
+
+Las reglas `L004` y `L005` pueden requerir análisis semántico. Un resultado ambiguo no se convierte en `PASS`: queda `BLOCKED` hasta clasificación atribuible.
+
+---
+
+#### 7. Modelo de finding
+
+Cada finding físico deberá materializar como mínimo:
+
+```text
+repository
+path
+surface_type
+consumer_name
+rule_id
+legacy_family_or_pattern
+normalized_signature
+count
+source_commit
+scanner_version
+registry_snapshot
+```
+
+La identidad del consumidor continúa siendo la tupla de AUTH003:
+
+```text
+(repository, path, surface_type, consumer_name)
+```
+
+La identidad de finding agrega `rule_id` y `normalized_signature`. No se usa número de línea como identidad porque un refactor inocuo puede desplazar líneas sin crear deuda nueva.
+
+La firma normalizada deberá cambiar cuando cambie la operación legacy material, aunque el conteo total permanezca igual.
+
+---
+
+#### 8. Allowlist temporal
+
+Se define el catálogo documental:
+
+```text
+SHELL-AUTH-LEGACY-BASELINE-001
+```
+
+Cada entrada deberá contener:
+
+```text
+consumer_identity
+allowed_rule_ids
+allowed_finding_signatures
+max_count_by_signature
+owner
+migration_task
+removal_gate
+reason
+baseline_source_commit
+registry_snapshot
+status
+```
+
+Reglas obligatorias:
+
+- **0 comodines** en repository, path, surface, consumer, rule o signature;
+- **0 cuotas transferibles** entre consumidores;
+- reducir un conteo reduce inmediatamente el máximo permitido;
+- un finding eliminado no puede reaparecer usando su cupo histórico;
+- path renombrado exige reconciliación de registro y nueva evidencia, no copia automática de excepción;
+- entrada sin owner, `SHELL-AUTH-005` o removal gate queda `STALE`;
+- entrada cuyo consumer ya no existe queda histórica y no vuelve a habilitar código;
+- una extensión por calendario no se infiere; cualquier excepción sigue `SHELL-PKG-005`;
+- un expediente de deprecación no transforma el finding en compatible;
+- la allowlist solo evita romper el baseline el día de activación del freeze.
+
+---
+
+#### 9. Perfiles de deuda
+
+| Perfil                      | Alcance                                                             | Reglas evaluadas prioritariamente  |
+| --------------------------- | ------------------------------------------------------------------- | ---------------------------------- |
+| `PERMISSION_HELPER`         | helpers `permissions.ts` distribuidos                               | L001, L003, L005, L006, L007, L008 |
+| `DISTRIBUTED_GUARD`         | guards server con múltiples carriles                                | L001, L004, L005, L006, L007, L008 |
+| `OPERATIONAL_SESSION_LOCAL` | sesión/contexto local por app                                       | L004, L005, L006, L007, L008       |
+| `OPERATIONAL_CONTEXT_LOCAL` | NEXO `operational-context`                                          | L001, L004, L005, L006, L007, L008 |
+| `DIRECT_SERVER_AUTH`        | páginas, acciones y handlers con autorización local/directa         | L001, L003, L005, L006, L008       |
+| `CLIENT_DIRECT_AUTH`        | hook/componente cliente que decide visibilidad mediante RPC interna | L001, L002, L003, L005, L006, L008 |
+| `ROLE_FALLBACK`             | helper con concesión local por lista/rol                            | L001, L004, L006, L008             |
+| `LEGACY_SDK_ADAPTER`        | wrapper transitorio del SDK                                         | L001, L006, L008, L009             |
+
+Un perfil define qué reglas deben inspeccionarse; no afirma que cada regla produzca un finding en toda fila.
+
+---
+
+#### 10. Matriz de decisión 32/32
+
+La allowlist documental conserva todas las identidades de `SHELL-AUTH-003` sin agregar ni quitar consumidores:
+
+|    # | repository                   | path                                                     | surface_type       | consumer_name                                | perfil                      | decisión AUTH004                                                           | migración        | retiro                                              |
+| ---: | ---------------------------- | -------------------------------------------------------- | ------------------ | -------------------------------------------- | --------------------------- | -------------------------------------------------------------------------- | ---------------- | --------------------------------------------------- |
+|    1 | `devVentoGroup/vento-viso`   | `src/lib/auth/permissions.ts`                            | `SERVER_HELPER`    | VISO permission helper                       | `PERMISSION_HELPER`         | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|    2 | `devVentoGroup/vento-viso`   | `src/lib/auth/guard.ts`                                  | `SERVER_HELPER`    | VISO application guard                       | `DISTRIBUTED_GUARD`         | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|    3 | `devVentoGroup/vento-viso`   | `src/lib/auth/operational-session.ts`                    | `SERVER_HELPER`    | VISO operational-session                     | `OPERATIONAL_SESSION_LOCAL` | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|    4 | `devVentoGroup/vento-nexo`   | `src/lib/auth/permissions.ts`                            | `SERVER_HELPER`    | NEXO permission helper                       | `PERMISSION_HELPER`         | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|    5 | `devVentoGroup/vento-nexo`   | `src/lib/auth/guard.ts`                                  | `SERVER_HELPER`    | NEXO application guard                       | `DISTRIBUTED_GUARD`         | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|    6 | `devVentoGroup/vento-nexo`   | `src/lib/auth/operational-session.ts`                    | `SERVER_HELPER`    | NEXO operational-session                     | `OPERATIONAL_SESSION_LOCAL` | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|    7 | `devVentoGroup/vento-fogo`   | `src/lib/auth/permissions.ts`                            | `SERVER_HELPER`    | FOGO permission helper                       | `PERMISSION_HELPER`         | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|    8 | `devVentoGroup/vento-fogo`   | `src/lib/auth/guard.ts`                                  | `SERVER_HELPER`    | FOGO application guard                       | `DISTRIBUTED_GUARD`         | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|    9 | `devVentoGroup/vento-fogo`   | `src/lib/auth/operational-session.ts`                    | `SERVER_HELPER`    | FOGO operational-session                     | `OPERATIONAL_SESSION_LOCAL` | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   10 | `devVentoGroup/vento-origo`  | `src/lib/auth/permissions.ts`                            | `SERVER_HELPER`    | ORIGO permission helper                      | `PERMISSION_HELPER`         | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   11 | `devVentoGroup/vento-origo`  | `src/lib/auth/guard.ts`                                  | `SERVER_HELPER`    | ORIGO application guard                      | `DISTRIBUTED_GUARD`         | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   12 | `devVentoGroup/vento-origo`  | `src/lib/auth/operational-session.ts`                    | `SERVER_HELPER`    | ORIGO operational-session                    | `OPERATIONAL_SESSION_LOCAL` | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   13 | `devVentoGroup/vento-pulso`  | `src/lib/auth/permissions.ts`                            | `SERVER_HELPER`    | PULSO permission helper                      | `PERMISSION_HELPER`         | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   14 | `devVentoGroup/vento-pulso`  | `src/lib/auth/guard.ts`                                  | `SERVER_HELPER`    | PULSO application guard                      | `DISTRIBUTED_GUARD`         | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   15 | `devVentoGroup/vento-pulso`  | `src/lib/auth/operational-session.ts`                    | `SERVER_HELPER`    | PULSO operational-session                    | `OPERATIONAL_SESSION_LOCAL` | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   16 | `devVentoGroup/vento-numera` | `src/lib/auth/permissions.ts`                            | `SERVER_HELPER`    | NUMERA permission helper                     | `PERMISSION_HELPER`         | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   17 | `devVentoGroup/vento-numera` | `src/lib/auth/guard.ts`                                  | `SERVER_HELPER`    | NUMERA application guard                     | `DISTRIBUTED_GUARD`         | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   18 | `devVentoGroup/vento-numera` | `src/lib/auth/operational-session.ts`                    | `SERVER_HELPER`    | NUMERA operational-session                   | `OPERATIONAL_SESSION_LOCAL` | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   19 | `devVentoGroup/vento-nexo`   | `src/lib/auth/operational-context.ts`                    | `SERVER_HELPER`    | NEXO operational context                     | `OPERATIONAL_CONTEXT_LOCAL` | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   20 | `devVentoGroup/vento-shell`  | `src/app/page.tsx`                                       | `SERVER_COMPONENT` | SHELL application launcher                   | `DIRECT_SERVER_AUTH`        | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   21 | `devVentoGroup/vento-viso`   | `src/app/api/viso/upload-product-image/route.ts`         | `ROUTE_HANDLER`    | VISO product-image upload                    | `DIRECT_SERVER_AUTH`        | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   22 | `devVentoGroup/vento-viso`   | `src/app/api/viso/upload-commercial-menu-image/route.ts` | `ROUTE_HANDLER`    | VISO commercial-menu image upload            | `DIRECT_SERVER_AUTH`        | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   23 | `devVentoGroup/vento-viso`   | `src/app/api/viso/attendance-report/route.ts`            | `ROUTE_HANDLER`    | VISO attendance report                       | `DIRECT_SERVER_AUTH`        | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   24 | `devVentoGroup/vento-viso`   | `src/app/staff/[id]/page.tsx`                            | `SERVER_COMPONENT` | VISO staff detail                            | `DIRECT_SERVER_AUTH`        | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   25 | `devVentoGroup/vento-origo`  | `src/lib/suppliers.ts`                                   | `SERVER_HELPER`    | ORIGO supplier management                    | `ROLE_FALLBACK`             | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   26 | `devVentoGroup/vento-origo`  | `src/app/receipts/new/page.tsx`                          | `SERVER_COMPONENT` | ORIGO receipt creation                       | `DIRECT_SERVER_AUTH`        | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   27 | `devVentoGroup/vento-origo`  | `src/app/product-master-review/page.tsx`                 | `SERVER_COMPONENT` | ORIGO product master review                  | `DIRECT_SERVER_AUTH`        | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   28 | `devVentoGroup/vento-origo`  | `src/app/purchase-orders/[id]/pdf/route.ts`              | `ROUTE_HANDLER`    | ORIGO purchase-order PDF                     | `DIRECT_SERVER_AUTH`        | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   29 | `devVentoGroup/vento-pulso`  | `src/modules/pos/actions/identify-client.action.ts`      | `SERVER_ACTION`    | PULSO identify client                        | `DIRECT_SERVER_AUTH`        | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   30 | `devVentoGroup/vento-pulso`  | `src/app/orders/delivery-override-bridge.tsx`            | `CLIENT_COMPONENT` | PULSO delivery override visibility           | `CLIENT_DIRECT_AUTH`        | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   31 | `devVentoGroup/vento-anima`  | `src/hooks/use-app-permissions.ts`                       | `CLIENT_HOOK`      | ANIMA app permissions hook                   | `CLIENT_DIRECT_AUTH`        | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+|   32 | `devVentoGroup/vento-shell`  | `packages/os-context/src/client.ts`                      | `SDK_ADAPTER`      | @vento/os-context transitional legacy client | `LEGACY_SDK_ADAPTER`        | `BASELINE_TEMPORAL_ONLY`; cualquier hallazgo nuevo o no registrado bloquea | `SHELL-AUTH-005` | `AUTH-DB-030` cuando retire la RPC legacy aplicable |
+
+**Conciliación:** 32 esperadas, 32 materializadas, 32 identidades únicas, 0 faltantes y 0 duplicadas.
+
+Todas quedan `BASELINE_TEMPORAL_ONLY`. Ese estado es propio del contrato AUTH004 y **no sustituye** `status = PENDIENTE_DE_EVIDENCIA` del registro AUTH003.
+
+---
+
+#### 11. Reconciliación por perfil
+
+| Perfil                      |  Filas |
+| --------------------------- | -----: |
+| `PERMISSION_HELPER`         |  **6** |
+| `DISTRIBUTED_GUARD`         |  **6** |
+| `OPERATIONAL_SESSION_LOCAL` |  **6** |
+| `OPERATIONAL_CONTEXT_LOCAL` |  **1** |
+| `DIRECT_SERVER_AUTH`        |  **9** |
+| `CLIENT_DIRECT_AUTH`        |  **2** |
+| `ROLE_FALLBACK`             |  **1** |
+| `LEGACY_SDK_ADAPTER`        |  **1** |
+| **Total**                   | **32** |
+
+Cobertura adicional sin fila sintética:
+
+- PASS: **0** consumidores laborales baseline; el gate deberá demostrar 0 consumo legacy nuevo cuando el repositorio esté dentro del scope de scan;
+- AURA: **0** filas porque no existe repo runtime confirmado en el corte; la primera adopción real deberá registrarse antes de operar conforme a `AURA-AUTH-001`;
+- SQL/RLS/RPC: se incorporan cuando existan las superficies físicas canónicas y sus tareas propietarias; no se inventan findings por nombres documentales.
+
+---
+
+#### 12. Contrato de métricas
+
+Se definen 14 métricas lógicas:
+
+| ID             | Métrica                                | Fuente                                                | Cardinalidad/seguridad                                                      |
+| -------------- | -------------------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------------- |
+| `AUTH004-M001` | `legacy_registry_consumers_total`      | registro AUTH003                                      | agregada                                                                    |
+| `AUTH004-M002` | `legacy_registry_consumers_by_profile` | matriz AUTH004                                        | perfil cerrado                                                              |
+| `AUTH004-M003` | `legacy_allowlist_entries_total`       | allowlist exacta                                      | agregada                                                                    |
+| `AUTH004-M004` | `legacy_static_findings_total`         | scanner                                               | rule/profile; sin usuario/recurso                                           |
+| `AUTH004-M005` | `legacy_static_findings_by_rule`       | scanner                                               | `rule_id` cerrado                                                           |
+| `AUTH004-M006` | `legacy_new_findings_total`            | diff baseline→actual                                  | agregada/regla                                                              |
+| `AUTH004-M007` | `legacy_removed_findings_total`        | diff baseline→actual                                  | agregada/regla                                                              |
+| `AUTH004-M008` | `legacy_unregistered_findings_total`   | scanner ↔ registry                                    | debe converger a 0                                                          |
+| `AUTH004-M009` | `legacy_client_direct_consumers_total` | registry + scanner                                    | baseline documental = 2                                                     |
+| `AUTH004-M010` | `legacy_allowlist_stale_total`         | validador allowlist                                   | debe ser 0 para PASS                                                        |
+| `AUTH004-M011` | `legacy_allowlist_orphan_total`        | allowlist ↔ registry                                  | debe ser 0 para PASS                                                        |
+| `AUTH004-M012` | `legacy_migrated_consumers_total`      | registry/diff                                         | monotónica creciente                                                        |
+| `AUTH004-M013` | `legacy_runtime_invocations_total`     | adapter `/legacy`, solo cuando exista instrumentación | labels estáticos: consumer identity/family; nunca actor, recurso ni secreto |
+| `AUTH004-M014` | `legacy_gate_failures_total`           | agregador CI                                          | gate/rule cerrados                                                          |
+
+Reglas:
+
+1. M001 en el baseline AUTH003 vale 32;
+2. M009 en el baseline vale 2 — PULSO client component y ANIMA client hook;
+3. M013 **no es requisito para activar el primer freeze estático**, porque la instrumentación física no existe todavía para todos los directos;
+4. M013 sí participa en la certificación de retiro cuando el carril legacy esté instrumentado;
+5. ningún label contiene `user_id`, actor, email, documento, JWT, service role, `resource_ids`, payload, grants, denies o stack;
+6. `correlation_id` puede enlazar evidencia controlada, pero no se usa como label de métrica de alta cardinalidad ni como autoridad;
+7. métricas faltantes o no reconciliables no se convierten en cero.
+
+---
+
+#### 13. Integración con el ratchet genérico
+
+El mecanismo existente `quality:lint:ratchet` y AUTH004 son controles distintos:
+
+```text
+RATCHET GENÉRICO
+→ deuda ESLint del repositorio
+
+AUTH004
+→ deuda semántica de autorización/contexto legacy
+```
+
+Reglas:
+
+- no se agregan findings AUTH004 a `quality/lint-debt-baseline.json`;
+- no se usa un warning ESLint genérico como excepción a AUTH004;
+- una ejecución futura puede orquestar ambos checks, pero conserva resultados separados;
+- desactivar una regla de ESLint no desactiva AUTH004;
+- un comentario de supresión local no concede una excepción AUTH004;
+- cualquier excepción AUTH004 existe solo en la allowlist canónica y exacta.
+
+---
+
+#### 14. Contrato del scanner
+
+La futura implementación deberá analizar como mínimo:
+
+- TypeScript/TSX/JavaScript/JSX runtime del repositorio;
+- imports y reexports;
+- llamadas `.rpc(...)` con literales, aliases o wrappers resolubles;
+- archivos declarados `use client` y superficies client del registro;
+- construcción de PermissionKey local;
+- comparaciones/allowlists de roles usadas en ramas de autorización;
+- `can_operate`, EffectiveContext y booleanos legacy usados como autoridad;
+- duplicación de familias de helper inventariadas;
+- imports futuros hacia `@vento/os-context/legacy`;
+- correspondencia exacta contra la identidad del registro.
+
+No contará:
+
+- comentarios o documentación como ejecución;
+- fixtures de `/testing` como consumidores productivos;
+- archivos generados o artefactos de build como fuentes runtime salvo que una tarea propietaria los declare;
+- strings coincidentes sin contexto ejecutable como finding automático de seguridad.
+
+Una coincidencia semántica ambigua queda `REVIEW_REQUIRED` y bloquea hasta resolverla. El scanner no puede elegir silenciosamente el resultado permisivo.
+
+---
+
+#### 15. Scope de repositorios
+
+La primera materialización deberá cubrir al menos los repositorios realmente presentes en el baseline:
+
+```text
+devVentoGroup/vento-shell
+devVentoGroup/vento-viso
+devVentoGroup/vento-nexo
+devVentoGroup/vento-fogo
+devVentoGroup/vento-origo
+devVentoGroup/vento-pulso
+devVentoGroup/vento-numera
+devVentoGroup/vento-anima
+```
+
+PASS se verifica como cobertura de cero consumo laboral legacy sin crear fila sintética. AURA se incorpora cuando exista repo runtime confirmado y antes de su primera adopción conforme a `AURA-AUTH-001`.
+
+El conjunto físico se deriva del registro y de las fuentes canónicas vigentes en la ejecución. No se mantiene una lista paralela editable que pueda omitir un consumidor registrado.
+
+---
+
+#### 16. Modelo de estados de finding
+
+Estados de un finding AUTH004:
+
+```text
+BASELINE_TEMPORAL
+NEW_BLOCKED
+MIGRATED
+STALE
+HISTORICAL
+```
+
+Transiciones permitidas:
+
+```text
+BASELINE_TEMPORAL → MIGRATED
+BASELINE_TEMPORAL → STALE
+STALE → BASELINE_TEMPORAL   solo después de reconciliación aprobada de la misma deuda
+MIGRATED → HISTORICAL
+```
+
+Queda prohibido:
+
+```text
+MIGRATED → BASELINE_TEMPORAL
+HISTORICAL → BASELINE_TEMPORAL
+NEW_BLOCKED → BASELINE_TEMPORAL por simple edición de allowlist
+```
+
+Un nuevo finding solo puede dejar de bloquear cuando se elimina o cuando una decisión canónica distinta y explícita demuestre que no es legacy. AUTH004 no crea un flujo ordinario para ampliar la allowlist.
+
+---
+
+#### 17. Fail-closed y resultado de gate
+
+Estados de cada gate físico:
+
+```text
+PASS
+FAIL
+BLOCKED
+NOT_APPLICABLE
+NOT_EXECUTED
+STALE
+```
+
+Reglas:
+
+- `PASS` requiere evidencia del mismo commit/snapshot;
+- `NOT_APPLICABLE` requiere justificación contractual explícita;
+- `NOT_EXECUTED`, `STALE`, timeout, error del scanner o ausencia de repositorio obligatorio bloquean;
+- `FAIL` no se reduce a warning;
+- la imposibilidad de parsear una allowlist o registry bloquea;
+- una discrepancia entre métricas y findings bloquea;
+- un resultado de otro repositorio no certifica el actual.
+
+---
+
+#### 18. Doce gates de futura materialización
+
+| Gate                           | PASS                                                                                      | Bloqueo                                        |
+| ------------------------------ | ----------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| 1. `IDENTITY`                  | unidad, owner, versiones, commits y snapshot inequívocos                                  | identidad incompleta                           |
+| 2. `SCANNER_CONTRACT`          | 9 reglas, 5 APIs y perfiles reproducidos sin drift                                        | scanner parcial o versión no declarada         |
+| 3. `REGISTRY_RECONCILIATION`   | 32 baseline + drift vigente reconciliados; 15 campos e identidad exacta                   | consumer sin fila, duplicado o fila incompleta |
+| 4. `ALLOWLIST_INTEGRITY`       | entradas exactas, 0 wildcard, owner/migración/removal, 0 stale/orphan                     | excepción genérica o huérfana                  |
+| 5. `NO_NEW_LEGACY`             | 0 findings nuevos y ningún aumento/sustitución no aprobada                                | nueva deuda o cuota reutilizada                |
+| 6. `CLIENT_BOUNDARY`           | 0 nuevos directos cliente; baseline client no aumenta                                     | RPC interna nueva desde browser                |
+| 7. `LOCAL_AUTHORITY`           | 0 nuevo prefijo/rol/bypass/caller-context/boolean/helper duplicado                        | autoridad local nueva o ambigua no resuelta    |
+| 8. `METRICS_EVIDENCE`          | 14 métricas aplicables reconciliadas; labels seguros                                      | métrica contradictoria, faltante o sensible    |
+| 9. `CONSUMER_INTEGRATION`      | todos los repositorios/consumidores de la unidad ejecutan gate y pruebas aplicables       | consumidor omitido o resultado ajeno           |
+| 10. `SECURITY_DENIALS_RLS_RPC` | negativos de evasión superados; RLS/RPC solo PASS con objeto/ambiente real cuando aplique | bypass, falsa paridad o evidencia inferida     |
+| 11. `COMPATIBILITY_LINEAGE`    | package/consumer/runtime/lockfile/commit/snapshot alineados                               | combinación incompatible o evidencia stale     |
+| 12. `ROLLBACK`                 | rollback del gate/allowlist/registry a combinación soportada, sin reabrir deuda eliminada | rollback restaura bypass o expande allowlist   |
+
+Todos los gates aplicables deben estar `PASS` para certificar la instancia.
+
+---
+
+#### 19. Pruebas contractuales del scanner
+
+Como mínimo:
+
+1. `has_permission` directo nuevo → `AUTH004-L001`, `FAIL`;
+2. alias que termina en `has_permission` → mismo resultado;
+3. `has_effective_permission_v1` nuevo → `FAIL`;
+4. `get_operational_context` nuevo → `FAIL`;
+5. string en comentario/documentación → no finding ejecutable;
+6. baseline exacta sin cambio → no nuevo finding;
+7. segunda llamada en la misma identidad → incremento, `FAIL`;
+8. eliminar una llamada → deuda reducida; la cuota no se conserva;
+9. mover la llamada a otro archivo → nuevo consumer/finding, `FAIL`;
+10. path registrado con `consumer_name` distinto → identidad no resoluble, `FAIL`;
+11. wildcard en allowlist → `FAIL`;
+12. entry sin owner/migration/removal → `STALE`, bloqueo.
+
+---
+
+#### 20. Pruebas de frontera cliente
+
+Escenarios mínimos:
+
+| Escenario                                                     | Resultado                                              |
+| ------------------------------------------------------------- | ------------------------------------------------------ |
+| nueva `.rpc("has_permission")` en `use client`                | FAIL L001 + L002                                       |
+| nuevo hook que envuelve una RPC legacy                        | FAIL aunque el wrapper oculte el literal al caller     |
+| consumo de `SafeDecisionProjectionV1` ya emitida por servidor | no es legacy por sí mismo                              |
+| parser `/client` puro                                         | permitido si cumple AUTH002                            |
+| proyección ALLOW reutilizada para autorizar mutación          | FAIL por contrato AUTH002, no se legitima en AUTH004   |
+| baseline PULSO/ANIMA sin incremento                           | temporalmente inventariada; sigue pendiente de AUTH005 |
+
+La migración de las dos filas cliente exige llegar a cero directos internos; trasladar la RPC a otro componente cliente no cuenta como progreso.
+
+---
+
+#### 21. Pruebas de autoridad local
+
+El perfil de seguridad deberá cubrir:
+
+- rol listado localmente que concede después de un deny;
+- role override que amplía capacidad;
+- `can_operate = true` usado como permiso de acción;
+- booleano legacy tratado como `AuthorizationDecision`;
+- sede o área suministrada por UI usada como territorio efectivo;
+- permiso construido por prefijo local;
+- helper copiado a un nuevo repositorio;
+- error técnico reducido a permiso concedido;
+- supresión de scanner usada para ocultar un hallazgo.
+
+Resultado requerido para toda deuda nueva: bloqueo.
+
+---
+
+#### 22. Métricas runtime y privacidad
+
+Cuando `/legacy` pueda emitir telemetría real:
+
+- etiqueta únicamente familia legacy, consumer identity estática, versión SDK y ambiente controlado;
+- no etiqueta permiso concreto si genera cardinalidad o exposición innecesaria;
+- no etiqueta actor, principal, sesión, site, area, resource ni correlation id como dimensión de métrica;
+- correlation puede permanecer en logs de evidencia controlada conforme a AUTH003;
+- una caída de métrica no se interpreta como cero uso si la instrumentación está incompleta;
+- ausencia de tráfico puntual no demuestra retiro;
+- OLA 8 exige inventario = 0, búsqueda estática = 0 y telemetría legacy = 0 con cobertura demostrada.
+
+---
+
+#### 23. Compatibilidad y adopción
+
+AUTH004 no certifica un consumidor por compilar únicamente.
+
+La futura instancia conserva por consumidor:
+
+```text
+repository
+commit
+branch/base cuando aplique
+runtime
+lockfile/package versions
+registry row identity
+scanner version
+allowlist snapshot
+gate results
+TREQ results
+```
+
+La matriz de compatibilidad sigue siendo propiedad de `SHELL-PKG-004`/`SHELL-CI-005`. AUTH004 consume su resultado y bloquea evidencia de otra combinación.
+
+---
+
+#### 24. RLS y RPC
+
+AUTH004 no inventa paridad SQL.
+
+Reglas:
+
+1. análisis TypeScript no certifica RLS;
+2. detectar ausencia de `.rpc(...)` no demuestra que una policy sea correcta;
+3. si la futura instancia afecta una superficie RPC/RLS materializada, las pruebas propietarias deben ejecutarse contra el objeto y ambiente autorizados;
+4. si todavía no existe la superficie física, el gate aplicable queda `NOT_APPLICABLE` o `NOT_EXECUTED` según contrato, nunca `PASS` por inferencia;
+5. `AUTH-DB-006..010`, `AUTH-DB-021`, `AUTH-DB-027`, `AUTH-DB-030` y `AUTH-DB-031` conservan sus responsabilidades.
+
+---
+
+#### 25. Seguridad contra evasión
+
+La suite adversarial deberá intentar:
+
+- alias de la función RPC;
+- wrapper nuevo con nombre inocuo;
+- string concatenada para resolver API legacy;
+- import dinámico;
+- copia de helper con cambios de formato;
+- comentario de supresión;
+- cambio de path sin actualizar registro;
+- duplicación de `consumer_name` para ocultar una fila;
+- wildcard de allowlist;
+- reducción manual de métricas sin eliminar source;
+- uso de baseline de otro repositorio;
+- resultado `PASS` de otro commit.
+
+Toda evasión reproducible bloquea la certificación.
+
+---
+
+#### 26. Rollback
+
+El rollback de `SHELL-AUTH-004::<implementation_unit_id>` restaura coordinadamente:
+
+1. versión anterior soportada del scanner;
+2. configuración anterior del gate;
+3. snapshot anterior de allowlist;
+4. snapshot anterior del registro sin eliminar historial;
+5. integración CI anterior compatible;
+6. métricas y esquema de evidencia de la combinación restaurada;
+7. package/lockfile anteriores cuando la implementación del gate los haya modificado.
+
+Prohibiciones:
+
+- restaurar un finding que ya fue migrado solo para hacer coincidir un baseline antiguo;
+- incrementar máximos de allowlist durante rollback;
+- desactivar el freeze para resolver un incidente ordinario;
+- reactivar role bypass o RPC legacy como arquitectura final;
+- borrar evidencia de ejecuciones fallidas;
+- declarar rollback válido sin repetir gates esenciales.
+
+Si la versión anterior del gate ya no es compatible con el registry actual, el rollback queda bloqueado y requiere una combinación soportada explícita.
+
+---
+
+#### 27. Snapshot contractual
+
+```json
+{"allowlist_entry_count":32,"allowlist_mode":"EXACT_BASELINE_ONLY","baseline_consumer_row_count":32,"baseline_registry_status":"PENDIENTE_DE_EVIDENCIA","client_direct_legacy_row_count":2,"forbidden_legacy_api_count":5,"gate_count":12,"legacy_profile_count":8,"lint_rule_count":9,"metric_count":14,"new_legacy_allowed":false,"physical_state":"NOT_IMPLEMENTED","registry_field_count":15,"rls_rpc_pass_requires_real_evidence":true,"runtime_telemetry_required_for_initial_freeze":false,"schema":"vento.authorization-legacy-gates@1","snapshot_id":"SHELL-AUTH-LEGACY-GATES-001","wildcards_allowed":false}
+```
+
+Huella normativa:
+
+`sha256:5a0ef377e16cd4020680cdc7bfb54a844a4731aba6dde81d500b63aa57fb76cb`
+
+La serialización normativa es JSON UTF-8 en una línea, claves de objeto ordenadas lexicográficamente y arrays en orden contractual.
+
+---
+
+#### 28. Entrada obligatoria de futura instancia
+
+Toda `SHELL-AUTH-004::<implementation_unit_id>` deberá registrar:
+
+| Campo                     | Obligación                                                     |
+| ------------------------- | -------------------------------------------------------------- |
+| `implementation_unit_id`  | unidad exacta asignada por E5                                  |
+| `owner_package_id`        | package propietario habilitado                                 |
+| `consumer_package_ids`    | packages consumidores vinculados por lineage                   |
+| baseline/result commit    | commits atribuibles                                            |
+| SDK/contracts versions    | versiones exactas                                              |
+| registry snapshot         | registro AUTH003 vigente y diff desde baseline 32              |
+| gate snapshot             | `SHELL-AUTH-LEGACY-GATES-001` o revisión aprobada              |
+| scanner version/digest    | artefacto exacto del scanner                                   |
+| allowlist snapshot/digest | 32 baseline o su reducción vigente, nunca expansión silenciosa |
+| finding manifest          | findings normalizados por consumidor/regla                     |
+| metrics manifest          | 14 métricas aplicables y reconciliación                        |
+| consumer matrix           | repositorio, commit, runtime, lockfile, resultados             |
+| security results          | evasión, client, roles, caller context y fail-closed           |
+| RLS/RPC applicability     | evidencia real o justificación de no aplicabilidad             |
+| compatibility evidence    | combinación exacta                                             |
+| artifact digest           | huella materializada                                           |
+| rollback                  | combinación anterior y ensayo                                  |
+| blockers                  | lista cerrada con owner y condición de salida                  |
+
+Campo obligatorio ausente deja la instancia `BLOCKED`.
+
+---
+
+#### 29. Unicidad y lineage
+
+```text
+1 implementation_unit_id
+→ máximo 1 SHELL-AUTH-004::<implementation_unit_id>
+→ máximo 1 scanner/gate propietario para la unidad
+→ máximo 1 snapshot AUTH004 activo por versión
+→ N package_id consumidores mediante lineage
+```
+
+Los repositorios consumidores integran el check, pero no copian ni bifurcan el motor canónico del scanner. Configuración local mínima podrá declarar el adapter de ejecución y el commit actual; no podrá redefinir las reglas para permitir deuda adicional.
+
+---
+
+#### 30. Hallazgos y destinos
+
+| Hallazgo                                                     | Estado                        | Destino exacto                                                      |
+| ------------------------------------------------------------ | ----------------------------- | ------------------------------------------------------------------- |
+| 32 consumidores legacy permanecen inventariados              | `LEGACY_BASELINE`             | `SHELL-AUTH-005`; retiro de RPC aplicable en `AUTH-DB-030`          |
+| 6 permission helpers distribuidos                            | `LEGACY_BASELINE`             | `SHELL-AUTH-005`                                                    |
+| 6 guards distribuidos                                        | `LEGACY_BASELINE`             | `SHELL-AUTH-005`                                                    |
+| 6 operational-session locales                                | `LEGACY_BASELINE`             | `SHELL-AUTH-005`; consolidación contextual en `SHELL-CTX-001`       |
+| NEXO mantiene operational-context paralelo                   | `LEGACY_BASELINE`             | `SHELL-AUTH-005`; `AUTH-DB-030`                                     |
+| SHELL mantiene evaluador/fallback local                      | `LEGACY_BASELINE`             | `SHELL-AUTH-005`; backend canónico `AUTH-DB-034`                    |
+| PULSO y ANIMA contienen los 2 directos cliente del baseline  | `BLOQUEO_DE_MIGRACION`        | `SHELL-AUTH-005`; frontera server `AUTH-UI-043`                     |
+| ORIGO mantiene fallback de suppliers por rol                 | `BLOQUEO_DE_MIGRACION`        | `SHELL-AUTH-005`                                                    |
+| ratchet ESLint existente no modela deuda AUTH legacy         | `SEPARACION_REQUERIDA`        | futura instancia `SHELL-AUTH-004::<implementation_unit_id>`         |
+| runtime telemetry completa no existe para todos los directos | `PENDIENTE_DE_IMPLEMENTACION` | AUTH004 físico + migración AUTH005; condición: cobertura demostrada |
+| PASS no requiere fila laboral sintética                      | `NO_APLICA`                   | conservar contrato AUTH003/AUTH-CTX-027                             |
+| AURA no tiene repo runtime confirmado en el corte            | `PENDIENTE_DE_EVIDENCIA`      | `AURA-AUTH-001` antes de primera adopción                           |
+
+No se crea una tarea nueva.
+
+---
+
+#### 31. Requisitos de prueba derivados
+
+**Resultado:** GENERA 8 REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** **8**
+**Requisitos modificados:** **0**
+
+- `TREQ-SHELL-083` — registry + allowlist exacta + identidad estable + prohibición de wildcard y consumidor no registrado;
+- `TREQ-SHELL-084` — freeze de las cinco APIs legacy, construcción local de permission key y deuda monótonamente decreciente;
+- `TREQ-SHELL-085` — bloqueo de autorización directa desde cliente y migración hacia proyecciones seguras server-issued;
+- `TREQ-SHELL-086` — bloqueo de nueva autoridad local por rol/bypass/caller-context/boolean/can_operate/helper duplicado;
+- `TREQ-SHELL-087` — métricas reconciliadas, labels seguros, correlación sin autoridad y ausencia no inferida como cero;
+- `TREQ-SHELL-088` — ciclo de vida de allowlist temporal, stale/orphan, deprecación y conservación histórica sin reactivar cuota;
+- `TREQ-SHELL-089` — integración multi-repositorio del gate, fail-closed, compatibilidad, commit/lockfile/snapshot y evidencia vigente;
+- `TREQ-SHELL-090` — unicidad por unidad, seguridad/denegaciones, RLS/RPC solo con evidencia real, lineage y rollback.
+
+No se difiere, descarta ni vuelve obsoleto ningún requisito histórico.
+
+---
+
+#### 32. Puerta de cierre del marcador global
+
+El marcador global queda documentalmente cerrado porque:
+
+1. fija exactamente cinco APIs legacy congeladas;
+2. define nueve reglas de detección;
+3. define finding e identidad normalizados;
+4. crea allowlist temporal sin wildcards;
+5. materializa decisión para 32/32 identidades baseline;
+6. reconcilia ocho perfiles y 32 filas;
+7. conserva PASS con cero filas sintéticas;
+8. conserva AURA sin path inventado;
+9. define catorce métricas;
+10. separa ratchet genérico y deuda AUTH;
+11. define scanner, privacidad y anti-evasión;
+12. define doce gates fail-closed;
+13. define integración, compatibilidad y RLS/RPC aplicable;
+14. define rollback y preservación histórica;
+15. fija snapshot reproducible;
+16. crea `TREQ-SHELL-083` a `TREQ-SHELL-090`;
+17. mantiene 0 cambios físicos y 0 cambios Supabase en este marcador.
+
+---
+
+#### 33. Puerta de cierre de futura instancia
+
+`SHELL-AUTH-004::<implementation_unit_id>` podrá quedar `PASS` solo cuando:
+
+- E5 habilite unidad y owner;
+- scanner y gate físicos reproduzcan las nueve reglas;
+- el registro vigente esté reconciliado desde las 32 filas baseline;
+- la allowlist activa sea exacta, sin wildcard, stale ni orphan;
+- no exista deuda nueva ni aumento de firmas baseline;
+- los dos directos cliente baseline no hayan aumentado;
+- toda nueva autoridad local esté en cero;
+- métricas y findings reconcilien;
+- todos los consumidores aplicables ejecuten checks sobre el mismo commit;
+- pruebas de evasión y fail-closed estén correctas;
+- compatibilidad y lineage sean vigentes;
+- RLS/RPC solo aparezcan `PASS` con evidencia física propia cuando apliquen;
+- snapshot, versiones, commits y digest coincidan;
+- rollback haya sido ensayado;
+- `TREQ-SHELL-083` a `TREQ-SHELL-090` tengan evidencia atribuible a esa misma instancia.
+
+---
+
+#### 34. Criterios de aceptación
+
+- [x] `SHELL-AUTH-003` es la precedencia inmediata aprobada;
+- [x] `SHELL-AUTH-005` permanece reservada;
+- [x] la tarea usa `PER_IMPLEMENTATION_UNIT`;
+- [x] se separa definición global de materialización física;
+- [x] se preservan 32/32 identidades del registro;
+- [x] no se agregan consumidores PASS o AURA inventados;
+- [x] se congelan cinco familias legacy reconocidas;
+- [x] se definen nueve reglas con fail-closed;
+- [x] se prohíben comodines y cuotas transferibles;
+- [x] deuda eliminada no puede reaparecer usando baseline histórica;
+- [x] se materializa una decisión por cada una de las 32 identidades;
+- [x] se distinguen ocho perfiles de deuda;
+- [x] se definen catorce métricas con minimización de datos;
+- [x] runtime telemetry no se finge donde no existe cobertura;
+- [x] se separa AUTH004 del ratchet ESLint genérico;
+- [x] se define análisis de client, roles, caller context, booleanos y helpers duplicados;
+- [x] se define anti-evasión;
+- [x] se definen doce gates;
+- [x] se exige evidencia por repositorio/commit/lockfile/snapshot;
+- [x] se exige compatibilidad y lineage;
+- [x] RLS/RPC no se certifican por inferencia;
+- [x] se define rollback sin reexpandir deuda;
+- [x] se fija snapshot y huella;
+- [x] se crean exactamente ocho TREQ nuevos;
+- [x] se declaran 0 cambios físicos y 0 cambios Supabase;
+- [x] no se desarrolla `SHELL-AUTH-005`.
+
+---
+
+#### 35. Límites
+
+Esta tarea no:
+
+- crea el scanner físico;
+- modifica `eslint.config.mjs`;
+- modifica `scripts/quality/lint-ratchet.mjs`;
+- modifica la baseline genérica de ESLint;
+- crea workflows o branch protection;
+- modifica `packages/os-context`;
+- crea el subpath `/legacy` físicamente;
+- migra una sola de las 32 filas;
+- elimina helpers, guards, hooks o llamadas RPC;
+- corrige el fallback por rol de ORIGO;
+- corrige los directos cliente de PULSO o ANIMA;
+- implementa `get_access_context` o `evaluate_authorization`;
+- crea SQL, RLS, RPC, migraciones, triggers, Storage, Realtime o Edge Functions;
+- ejecuta Supabase;
+- declara telemetría runtime existente donde no está instrumentada;
+- declara compatibilidad o paridad por documentación;
+- ejecuta `SHELL-AUTH-004::<implementation_unit_id>`;
+- inicia o desarrolla la tarea siguiente.
+
+---
+
+#### 36. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-AUTH-004 — Implementar lint, métricas y gates contra consumidores legacy`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios`
+
+
 ### [ ] SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios
 
 ### Módulos internos de contexto
