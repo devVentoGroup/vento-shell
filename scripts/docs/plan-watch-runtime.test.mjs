@@ -6,9 +6,19 @@ import test from 'node:test';
 
 import {
   acquireWatcherLock,
+  registerPendingChange,
   releaseWatcherLock,
   renderPlanWatchStatus,
 } from './plan-watch-runtime.mjs';
+
+test('agrupa eventos repetidos del mismo archivo en un único anuncio por lote', () => {
+  const pendingChanges = new Set();
+  assert.equal(registerPendingChange(pendingChanges, 'bloques/H/tarea.md'), true);
+  assert.equal(registerPendingChange(pendingChanges, 'bloques/H/tarea.md'), false);
+  assert.equal(pendingChanges.size, 1);
+  pendingChanges.clear();
+  assert.equal(registerPendingChange(pendingChanges, 'bloques/H/tarea.md'), true);
+});
 
 function withTempDirectory(run) {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'vento-plan-watch-'));

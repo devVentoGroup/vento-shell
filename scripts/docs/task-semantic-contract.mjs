@@ -93,6 +93,12 @@ function physicalContradiction(metadata) {
   return /NO_MATERIALIZADO|NO MATERIALIZADO/iu.test(state) && !noPhysicalChanges;
 }
 
+function passEvidenceIsMissing(evidence) {
+  const value = String(evidence ?? '').trim();
+  if (!value) return true;
+  return /\bpendiente\b|\bnot(?:[_\s.-]+)?executed\b/iu.test(value);
+}
+
 export function validateTaskDevelopmentPolicy(policy) {
   const errors = [];
   if (policy?.schema_version !== 1) errors.push('schema_version debe ser 1.');
@@ -202,7 +208,7 @@ export function validateTaskSemanticContract({
     if (!allowedStatuses.has(row.status)) {
       add('EVIDENCE_STATUS_INVALID', `${row.class} usa el estado no permitido ${row.status}.`);
     }
-    if (row.status === 'PASS' && (!row.evidence || /pendiente|not.executed/iu.test(row.evidence))) {
+    if (row.status === 'PASS' && passEvidenceIsMissing(row.evidence)) {
       add('EVIDENCE_MISSING', `${row.class} declara PASS sin evidencia concreta.`);
     }
   }

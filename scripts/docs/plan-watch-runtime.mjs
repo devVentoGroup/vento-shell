@@ -63,6 +63,12 @@ export function releaseWatcherLock({ lockPath, pid = process.pid }) {
   }
 }
 
+export function registerPendingChange(pendingChanges, relativePath) {
+  const firstInBatch = !pendingChanges.has(relativePath);
+  pendingChanges.add(relativePath);
+  return firstInBatch;
+}
+
 function display(value, fallback = '—') {
   if (value === undefined || value === null || value === '') return fallback;
   return String(value).replace(/\r?\n/gu, '<br>');

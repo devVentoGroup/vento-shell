@@ -120,6 +120,36 @@ test('acepta una tarea aprobada completa y con evidencia tipada', () => {
   assert.deepEqual(result.warnings, []);
 });
 
+test('no confunde artefacto independiente con evidencia pendiente', () => {
+  const block = validBlock.replace(
+    'pruebas unitarias completadas',
+    'El artefacto independiente fue comprobado estructuralmente contra la política',
+  );
+  const result = validateTaskSemanticContract({
+    block,
+    task: { id: 'TEST-SEM-011', state: 'APROBADA' },
+    ownerRelativePath: 'bloques/X/test.md',
+    inventory,
+    policy,
+  });
+  assert.ok(!result.errors.some(({ code }) => code === 'EVIDENCE_MISSING'));
+});
+
+test('sigue rechazando un PASS que declara evidencia pendiente', () => {
+  const block = validBlock.replace(
+    'pruebas unitarias completadas',
+    'Evidencia pendiente de ejecución local',
+  );
+  const result = validateTaskSemanticContract({
+    block,
+    task: { id: 'TEST-SEM-011', state: 'APROBADA' },
+    ownerRelativePath: 'bloques/X/test.md',
+    inventory,
+    policy,
+  });
+  assert.ok(result.errors.some(({ code }) => code === 'EVIDENCE_MISSING'));
+});
+
 test('acepta cero como declaración explícita de cambios físicos no autorizados', () => {
   const result = validateTaskSemanticContract({
     block: validBlock.replace('**Cambios físicos autorizados:** ninguno', '**Cambios físicos autorizados:** 0'),

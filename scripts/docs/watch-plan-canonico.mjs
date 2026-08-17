@@ -6,6 +6,7 @@ import { derivePreflight } from "./canonical-task-preflight.mjs";
 import { writeCurrentTaskDevelopmentArtifacts } from "./task-development-artifacts.mjs";
 import {
   acquireWatcherLock,
+  registerPendingChange,
   releaseWatcherLock,
   writePlanWatchStatus,
 } from "./plan-watch-runtime.mjs";
@@ -341,12 +342,14 @@ function scheduleRebuild(filename) {
 
   clearTimeout(debounceTimer);
   changeVersion += 1;
-  pendingChanges.add(relativePath);
+  const firstInBatch = registerPendingChange(pendingChanges, relativePath);
   publishStatus(buildRunning ? "COMPILANDO" : "VIGILANDO");
 
-  console.log(
-    `[PLAN CANÓNICO] Cambio detectado: ${relativePath}`
-  );
+  if (firstInBatch) {
+    console.log(
+      `[PLAN CANÓNICO] Cambio detectado: ${relativePath}`
+    );
+  }
 
   debounceTimer = setTimeout(() => {
     console.log(
