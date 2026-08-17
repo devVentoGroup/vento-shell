@@ -146,6 +146,23 @@ Para cada implementación física:
 10. el progreso se informa como `N/M` sin declarar completado lo que no fue demostrado;
 11. las respuestas intermedias son compactas para no repetir el contrato completo ni consumir mensajes innecesarios.
 
+FLUJO RÁPIDO DE IMPLEMENTACIÓN FÍSICA
+
+Para una instancia física autorizada, la eficiencia operativa es vinculante:
+
+1. mientras el carril sea documental, el watcher puede permanecer activo para sincronizar artefactos derivados y crear el registro `PENDING_AUTHORIZATION` cuando corresponda;
+2. antes de guardar la transición `AUTHORIZED → IN_PROGRESS`, detén el watcher con `Ctrl+C` si está activo;
+3. desde ese momento el watcher debe permanecer apagado hasta después de dejar la instancia `VERIFIED`;
+4. cambia estados únicamente en el archivo propio de la instancia; no ejecutes un build global solo para reflejar `AUTHORIZED`, `IN_PROGRESS`, `IMPLEMENTED` o `VERIFIED`;
+5. ejecuta el preflight canónico una sola vez después de entrar a `IN_PROGRESS` y antes de modificar código; repítelo únicamente si el checkout cambia materialmente o una discrepancia concreta lo exige;
+6. después del preflight materializa todos los cambios deterministas de la implementación sin gates intermedios de `git status`, Source Control, capturas, hashes sueltos, diff, build, lint o tests;
+7. cuando todos los cambios físicos estén completos, registra `IMPLEMENTED` con la identidad disponible y ejecuta una sola batería final fail-fast que contenga las validaciones autorizadas;
+8. si la batería falla, corrige únicamente la causa dentro del alcance y vuelve a ejecutar la misma batería final; no la fragmentes en micro-gates;
+9. si la batería pasa completa, consolida `evidence`, cambia la instancia a `VERIFIED` y no repitas validaciones por rutina;
+10. después de `VERIFIED`, deriva el control y regenera el Iniciador mediante `npm run docs:implementation:status` y `npm run docs:chatgpt:starter`;
+11. `npm run docs:plan:build` se ejecuta una sola vez cuando forme parte de la batería final autorizada o cuando una tarea documental requiera realmente recompilar el plan; no se usa como refresco de estado;
+12. si GitHub Push Protection bloquea un push, clasifica primero el hallazgo: un fixture sintético verificado puede exceptuarse como prueba o falso positivo, pero un secreto real debe retirarse y rotarse y nunca puede recibir bypass.
+
 La única excepción es una frase explícita para un paso ya numerado, por ejemplo:
 
 `AUTORIZO EJECUCION ASISTIDA DEL PASO 3`
@@ -159,6 +176,8 @@ Cuando exista checkout actualizado de `vento-shell`, entrega al usuario como pas
 `npm run docs:task:preflight`
 
 Si se trabaja sobre una tarea explícita, usa su ID real y exacto en el comando; nunca escribas placeholders ejecutables ni rutas ficticias.
+
+En una instancia física el preflight se ejecuta una sola vez después de `IN_PROGRESS` y antes de tocar código. No se repite como comprobación rutinaria entre archivos ni antes de cada comando; solo se repite si el checkout cambia materialmente o una discrepancia concreta hace que la evidencia anterior deje de ser suficiente.
 
 El preflight debe resolver como mínimo:
 
@@ -468,7 +487,7 @@ Cuando aplique topología:
 
 `npm run docs:work-topology:check`
 
-Para implementación, agrega typecheck, lint, unitarias, integración, build, migraciones, seguridad y validaciones remotas/operativas realmente aplicables.
+Para implementación, agrega typecheck, lint, unitarias, integración, build, migraciones, seguridad y validaciones remotas/operativas realmente aplicables. Todas las validaciones independientes autorizadas se agrupan en una sola batería final fail-fast después de materializar los cambios físicos; no se convierten en gates intermedios separados. Si la batería falla, se corrige la causa y se vuelve a ejecutar la misma batería; un PASS completo no se repite antes de `VERIFIED`.
 
 Distingue siempre:
 

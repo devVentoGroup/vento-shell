@@ -1401,7 +1401,703 @@ Esta tarea no:
 `SHELL-CI-003 — Crear releases versionados`
 
 
-### [ ] SHELL-CI-003 — Crear releases versionados
+### ✅ SHELL-CI-003 — Crear releases versionados
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CI-002 — Crear build independiente por paquete
+**Tarea siguiente:** SHELL-CI-004 — Crear changelog automático
+**Tipo de tarea:** Habilitador global único — contrato documental de releases versionados e identidad inmutable de packages compartidos
+**Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada el habilitador global que gobernará la creación de **releases versionados, atribuibles e inmutables** para los packages compartidos de Vento OS, de modo que una versión publicada pueda demostrarse como la misma unidad material que fue probada, construida y empaquetada antes de su publicación.
+
+La regla vinculante queda fijada así:
+
+```text
+PACKAGE CANÓNICO
++ VERSIÓN SEMVER EXACTA
++ COMMIT DE ORIGEN EXACTO
++ MANIFEST EXACTO
++ PRUEBAS VIGENTES
++ BUILD CERTIFICADO
++ TARBALL E INTEGRIDAD CERTIFICADOS
++ TAG GIT ANOTADO E INMUTABLE
++ RELEASE INMUTABLE
++ PUBLICACIÓN INMUTABLE EN REGISTRY
++ CANAL COHERENTE
++ EVIDENCIA DE PROCEDENCIA
+= RELEASE VERSIONADO ELEGIBLE
+```
+
+Y, de forma fail-closed:
+
+```text
+VERSIÓN REUTILIZADA CON BYTES DISTINTOS
+O TAG MOVIDO
+O RELEASE REASOCIADO
+O ARTEFACTO RECONSTRUIDO DURANTE PUBLICACIÓN
+O CANDIDATO SIN LINEAGE CI001/CI002
+O CANAL CONTRADICTORIO
+O DEPENDENCIA INTERNA NO ELEGIBLE
+≠ PASS
+```
+
+Esta tarea no publica todavía un package real. Define el contrato que `SHELL-CI-003::GLOBAL` deberá materializar y certificar una sola vez y que las futuras ejecuciones de release reutilizarán sin crear otra implementación del habilitador.
+
+#### 2. Resultado canónico
+
+`SHELL-CI-003` establece un único contrato transversal para:
+
+1. recibir un candidato de package ya identificado y construido;
+2. comprobar que la versión publicada coincide con la versión contenida en el manifest certificado;
+3. vincular de forma unívoca package, versión, manifest, commit, artefacto, tag, release, canal, tarball e integridad;
+4. impedir reconstrucciones silenciosas entre el build certificado y la publicación;
+5. crear una identidad Git anotada y atribuible para cada release;
+6. crear una release remota atribuible a la misma identidad;
+7. publicar exactamente el artefacto certificado en el registry privado compatible con npm;
+8. preservar versiones independientes por package;
+9. coordinar cortes multi-package sin versionar familias que no tengan cambio distribuible;
+10. respetar el orden de dependencias internas exactas;
+11. impedir que una release estable dependa de una prerelease interna no autorizada;
+12. mantener coherencia entre SemVer y el canal declarado;
+13. bloquear sobrescritura, reasignación o reutilización conflictiva de una identidad ya publicada;
+14. registrar evidencia machine-readable suficiente para reproducir y auditar la procedencia de la release;
+15. separar release, changelog, compatibilidad y adopción de consumidores;
+16. conservar recuperación y rollback sin mutar identidades publicadas.
+
+#### 3. Base vinculante
+
+La definición conserva las decisiones ya aprobadas del mini-bloque y del registro de pruebas:
+
+- packages npm privados e inmutables producidos desde `vento-shell`;
+- cuatro familias de package compartido vigentes;
+- versiones independientes por package;
+- registry privado compatible con npm como canal ordinario de distribución;
+- `.tgz` como artefacto verificable y reproducible;
+- pruebas propias separadas del acto de publicar;
+- build independiente separado del acto de publicar;
+- correspondencia inmutable entre package, SemVer, manifest, tag Git anotado, release, commit, canal, tarball e integridad;
+- correcciones posteriores mediante una versión nueva, nunca mediante mutación de una versión publicada;
+- cortes coordinados que publican únicamente packages con cambio distribuible;
+- orden de publicación compatible con dependencias internas exactas;
+- prohibición de que una release estable dependa de una prerelease interna no autorizada;
+- compatibilidad package–consumidor como gate separado;
+- actualización de consumidores como operación posterior y separada.
+
+#### 4. Topología de trabajo
+
+`PHASE-03-T-CI-FOUNDATION` usa `GLOBAL_ENABLE_ONCE` para `SHELL-CI-003`.
+
+Por tanto:
+
+```text
+MARCADOR CANÓNICO
+SHELL-CI-003
+→ define el contrato una sola vez
+
+INSTANCIA FÍSICA FUTURA
+SHELL-CI-003::GLOBAL
+→ materializa y certifica el habilitador una sola vez
+
+RELEASES REALES POSTERIORES
+→ reutilizan el habilitador certificado
+→ no crean otra implementación de CI003
+→ conservan evidencia propia por ejecución de release
+```
+
+La instancia global podrá autocertificar el habilitador mediante fixtures, repositorios temporales y destinos de publicación sintéticos o aislados. La existencia del habilitador no autoriza publicar un package real que todavía no haya superado sus gates aplicables.
+
+#### 5. Universo de packages gobernado
+
+El contrato cubre exactamente las cuatro familias compartidas aprobadas:
+
+1. `@vento/contracts`;
+2. `@vento/os-context`;
+3. `@vento/supabase`;
+4. `@vento/ui-web`.
+
+Una carpeta, workspace o package nuevo no entra automáticamente en este universo. Su incorporación exige identidad y ownership canónicos previos.
+
+#### 6. Línea base física observada
+
+En el corte actual verificado de `vento-shell`:
+
+- `SHELL-CI-001::GLOBAL` figura `VERIFIED`;
+- `SHELL-CI-002::GLOBAL` figura `VERIFIED` con evidencia de pruebas, build, empaquetado, reproducibilidad y cierre final;
+- el archivo propietario conserva `SHELL-CI-003` como marcador documental no iniciado;
+- el directorio `.github/workflows/` observado contiene únicamente el workflow de validación del plan canónico;
+- no se observó un workflow de release materializado;
+- no se observó tooling de publicación de packages que pueda considerarse implementación previa de CI003;
+- CI002 entrega a CI003 la identidad del candidato de artefacto construido y prohíbe tratar el empaquetado verificable como publicación.
+
+Por tanto, el contrato de release está documentalmente pendiente y su habilitador físico aún debe materializarse después de la aprobación de este marcador.
+
+#### 7. Frontera con el mini-bloque
+
+| Responsabilidad                                                               | Propietario    |
+| ----------------------------------------------------------------------------- | -------------- |
+| pruebas propias del package                                                   | `SHELL-CI-001` |
+| build, exports, declarations, empaquetado e identidad del artefacto candidato | `SHELL-CI-002` |
+| identidad inmutable y publicación de release                                  | `SHELL-CI-003` |
+| changelog y narrativa automática del cambio                                   | `SHELL-CI-004` |
+| compatibilidad package–consumidor                                             | `SHELL-CI-005` |
+| modificación y PR de consumidores                                             | `SHELL-CI-006` |
+
+CI003 no vuelve a implementar pruebas ni build. Consume sus identidades y evidencia y fija la identidad de publicación que los gates posteriores pueden referenciar.
+
+#### 8. Definición de release versionado
+
+Una release es elegible únicamente cuando existe una relación unívoca entre:
+
+```text
+package_name
+release_version
+package_manifest_identity
+source_commit
+certified_test_identity
+certified_build_identity
+artifact_content_identity
+annotated_git_tag_identity
+remote_release_identity
+registry_artifact_identity
+release_channel
+release_run_identity
+```
+
+La relación deberá ser demostrable desde evidencia machine-readable. Una coincidencia parcial o basada únicamente en nombres no satisface el contrato.
+
+#### 9. Unidad exacta de release
+
+Cada ejecución de release se atribuirá, como mínimo, a:
+
+```text
+package_name
+release_version
+source_commit
+package_manifest_hash
+lockfile_hash
+resolved_internal_dependency_set
+test_evidence_identity
+build_evidence_identity
+artifact_file_manifest_identity
+artifact_content_hash
+pack_integrity
+release_channel
+release_contract_identity
+release_run_identity
+```
+
+Después de materializar la publicación, se incorporarán además las identidades verificadas del tag Git anotado, la release remota y el artefacto publicado en registry.
+
+Cambiar cualquiera de estas dimensiones materiales invalida la reutilización de la evidencia anterior para una nueva release.
+
+#### 10. Precondiciones de una publicación real
+
+Una publicación real de package deberá permanecer bloqueada hasta demostrar, como mínimo:
+
+1. package perteneciente al universo aprobado;
+2. versión SemVer concreta y coherente con el manifest del candidato certificado;
+3. commit de origen identificable;
+4. evidencia vigente de pruebas propias aplicables;
+5. evidencia vigente de CI002 para el mismo candidato;
+6. integridad del `.tgz` o artefacto empaquetado certificado;
+7. dependencias internas exactas elegibles;
+8. canal de release coherente con la identidad SemVer;
+9. ausencia de una identidad publicada conflictiva;
+10. compatibilidad aplicable demostrada antes de publicación o adopción conforme al gate propietario;
+11. material de changelog o release notes exigible cuando el contrato del cambio lo requiera;
+12. credenciales de publicación disponibles únicamente en el entorno autorizado y nunca dentro de la evidencia.
+
+La instancia `SHELL-CI-003::GLOBAL` podrá certificar el mecanismo sin cumplir la precondición 10 contra packages reales, usando escenarios sintéticos. Esa autocertificación no constituye publicación ni compatibilidad de una familia real.
+
+#### 11. Versión candidata y manifest
+
+CI003 no cambiará silenciosamente la versión después de certificar el build.
+
+Reglas:
+
+1. `release_version` deberá coincidir con la versión del manifest que participó en la identidad certificada del candidato;
+2. si la versión del manifest cambia, el candidato deja de ser el mismo y deberán regenerarse las evidencias que dependan de esa identidad;
+3. una versión publicada no podrá reutilizarse para contenido distinto;
+4. una corrección posterior exigirá otro SemVer y otra cadena completa de identidad;
+5. CI003 valida la versión de entrada; no deriva por sí solo el bump SemVer a partir de un diff de source.
+
+La clasificación semántica del cambio y su representación narrativa permanecen separadas del mecanismo de publicación.
+
+#### 12. Versionado independiente por package
+
+Las cuatro familias conservan versionado independiente.
+
+Por tanto:
+
+- una nueva versión de `@vento/contracts` no fuerza por sí sola una nueva versión de `@vento/ui-web`;
+- un package sin cambio distribuible no recibe una versión artificial durante un corte coordinado;
+- cada versión conserva su propio tag, release, tarball e integridad;
+- el historial de una familia no se deriva de la numeración de otra;
+- la coordinación entre packages se expresa mediante dependencias exactas y evidencia de corte, no mediante lockstep de versiones.
+
+#### 13. Identidad Git anotada
+
+Cada release publicada deberá quedar asociada a un **tag Git anotado** que:
+
+1. sea determinista a partir de la identidad de package y versión;
+2. no colisione con releases de otras familias del monorepo;
+3. apunte al commit exacto de origen;
+4. conserve una anotación atribuible a la release;
+5. no pueda moverse a otro commit;
+6. no pueda reutilizarse para otra versión o package;
+7. forme parte de la evidencia del release.
+
+No se fija en este marcador una cadena física de nombre para el tag porque no existe una convención material previa aprobada. `SHELL-CI-003::GLOBAL` será el propietario de materializar una única función determinista de serialización `package + version → tag`, autocertificar ausencia de colisiones y conservar su identidad dentro del contrato de release. Una vez certificada, esa función no podrá cambiar para una release existente.
+
+#### 14. Release remota
+
+La release remota deberá:
+
+- referenciar el tag anotado exacto;
+- conservar package y versión verificables;
+- conservar el commit de origen;
+- registrar o adjuntar la identidad del artefacto empaquetado certificado;
+- conservar la integridad verificable del tarball;
+- identificar el canal aplicable;
+- no sustituir un artefacto después de la publicación;
+- no reasociarse a otro tag o commit.
+
+El cuerpo descriptivo extensivo o changelog automático no pertenece a CI003; CI004 gobierna esa narrativa. CI003 solo exige metadata mínima de procedencia suficiente para demostrar identidad.
+
+#### 15. Publicación en registry privado
+
+La publicación en el registry privado compatible con npm deberá cumplir simultáneamente:
+
+1. package y versión iguales al candidato certificado;
+2. bytes distribuibles iguales al artefacto certificado por CI002;
+3. integridad comprobable antes y después de la publicación;
+4. metadata de registry coherente con la identidad del manifest;
+5. canal coherente con SemVer;
+6. ausencia de rutas locales, dependencias no publicables o secretos;
+7. prohibición de sobrescribir una versión existente;
+8. prohibición de convertir una respuesta ambigua del registry en `PASS`;
+9. lectura posterior suficiente para demostrar que la identidad publicada existe y corresponde al candidato esperado.
+
+CI003 no reconstruirá el package durante la publicación. El artefacto de entrada es el mismo candidato empaquetado certificado por CI002.
+
+#### 16. Inmutabilidad
+
+Una vez publicada una identidad `package + version`:
+
+- el tag anotado no se mueve;
+- la release no se reasocia;
+- el tarball no se sustituye;
+- los bytes publicados no se sobrescriben;
+- la integridad histórica no se edita para coincidir con contenido nuevo;
+- el commit de origen no cambia;
+- el manifest histórico no se reescribe.
+
+Una corrección exige una release nueva con nueva versión e identidades nuevas.
+
+#### 17. Idempotencia y conflictos
+
+El habilitador distinguirá entre repetición idempotente y conflicto.
+
+Una repetición podrá reconocerse como ya satisfecha únicamente cuando todas las identidades inmutables observadas coincidan exactamente con la ejecución esperada.
+
+Será `BLOCKED` cuando exista cualquiera de estos conflictos:
+
+- mismo tag apuntando a otro commit;
+- misma versión con otro manifest;
+- misma versión con otros bytes;
+- release remota asociada a otra identidad;
+- integridad diferente;
+- package o canal incompatibles;
+- evidencia de build o pruebas distinta a la esperada.
+
+Nunca se resolverá un conflicto sobrescribiendo la identidad existente.
+
+#### 18. Canal y prerelease
+
+CI003 tratará el canal como parte explícita de la identidad operativa de publicación.
+
+Reglas:
+
+1. una versión con sufijo prerelease no podrá presentarse como release estable;
+2. una versión estable no podrá depender de una prerelease interna no autorizada;
+3. el canal declarado deberá ser coherente con la versión SemVer;
+4. cambiar únicamente un puntero mutable de canal no cambia la identidad histórica de una versión ya publicada;
+5. cualquier cambio de puntero de canal deberá ser auditable y no podrá alterar tag, release, tarball o bytes de una versión existente.
+
+CI003 no inventa en este marcador nombres concretos de canales o dist-tags que no estén aprobados por una fuente propietaria.
+
+#### 19. Cortes coordinados multi-package
+
+Cuando un cambio requiera publicar varias familias:
+
+1. se construirá el conjunto de packages con cambio distribuible real;
+2. los packages sin cambio quedan fuera del corte;
+3. se resolverá el grafo de dependencias internas exactas;
+4. se publicarán primero las dependencias necesarias para que sus dependientes puedan referenciar identidades elegibles;
+5. una dependencia interna estable no podrá resolver a una prerelease no autorizada;
+6. cada package conservará SemVer, tag, release y evidencia propios;
+7. un fallo parcial no permitirá declarar el corte completo como `PASS`;
+8. las publicaciones exitosas previas al fallo permanecen inmutables y el recovery continúa mediante nuevas identidades o reanudación idempotente, nunca mediante sobrescritura.
+
+#### 20. Integración con CI001 — pruebas propias
+
+CI003 consume la evidencia de CI001 como lineage de la release.
+
+La evidencia deberá corresponder al mismo package, candidato, commit, manifest y conjunto material aplicable. Si la identidad definitiva de release no puede vincularse con el candidato probado, las pruebas anteriores no certifican esa release.
+
+CI003 no ejecuta una segunda implementación de las pruebas propias.
+
+#### 21. Integración con CI002 — artefacto construido
+
+CI002 entrega a CI003:
+
+```text
+SOURCE COMMIT
+→ BUILD RUN
+→ CONTENIDO CONSTRUIDO
+→ ARTEFACTO EMPAQUETADO
+→ IDENTIDAD CANDIDATA
+```
+
+CI003 agrega:
+
+```text
+→ TAG ANOTADO
+→ RELEASE REMOTA
+→ PUBLICACIÓN EN REGISTRY
+→ IDENTIDAD DE RELEASE INMUTABLE
+```
+
+Los bytes publicados deberán corresponder al artefacto certificado por CI002. Si CI003 necesita reconstruir para publicar, el resultado constituye un candidato nuevo y debe volver por los gates que dependan del build.
+
+#### 22. Integración con CI004 — changelog automático
+
+CI004 conserva la propiedad sobre:
+
+- generación automática del changelog;
+- narrativa del cambio;
+- clasificación y presentación de cambios públicos;
+- material de migración o deprecación cuando corresponda.
+
+CI003 podrá consumir una identidad o referencia de ese material cuando una release real lo exija, pero no lo genera ni lo reescribe.
+
+La ausencia de changelog exigible deberá bloquear la publicación aplicable; no autoriza a CI003 a inventarlo.
+
+#### 23. Integración con CI005 — matriz de compatibilidad
+
+CI003 no declara compatibilidad package–consumidor.
+
+La publicación o adopción de una versión real deberá respetar la obligación vigente de superar la matriz de compatibilidad aplicable. CI005 produce el veredicto sobre combinaciones package–consumidor; CI003 únicamente consume esa evidencia como precondición de una publicación real cuando corresponda.
+
+La autocertificación global de CI003 puede usar fixtures sintéticos sin afirmar compatibilidad de un package real.
+
+#### 24. Integración con CI006 — consumidores
+
+CI006 consume una release inmutable producida por CI003.
+
+CI003 no:
+
+- modifica manifests de consumidores;
+- cambia lockfiles de consumidores;
+- abre PR;
+- selecciona consumidores;
+- ejecuta despliegues de aplicaciones.
+
+El handoff hacia CI006 deberá proporcionar package, versión, registry identity, integridad, commit de origen y evidencia necesaria para que el consumidor adopte una versión exacta.
+
+#### 25. Credenciales y secretos
+
+La publicación real podrá utilizar credenciales únicamente desde el entorno autorizado de release.
+
+Reglas:
+
+- los secretos no forman parte de manifests, tarballs, release notes ni evidencia;
+- los valores de tokens no se imprimen ni persisten como artefacto;
+- ausencia o rechazo de credenciales produce `BLOCKED` o `FAIL`, nunca `PASS`;
+- el habilitador global deberá probar el camino de credenciales mediante sustitutos sintéticos sin requerir secretos productivos;
+- una detección de secreto real en source, test, artifact o historia bloquea publicación hasta retirarlo y rotarlo cuando corresponda.
+
+Un fixture sintético diseñado expresamente para probar detección de secretos deberá estar claramente clasificado como dato de prueba y no deberá confundirse con una credencial productiva.
+
+#### 26. Evidencia machine-readable
+
+Cada ejecución certificable conservará, como mínimo:
+
+```text
+package_name
+release_version
+source_commit
+package_manifest_hash
+lockfile_hash
+resolved_internal_dependency_set
+test_evidence_identity
+build_evidence_identity
+artifact_file_manifest_identity
+artifact_content_hash
+pack_integrity
+release_channel
+release_contract_identity
+release_run_identity
+annotated_tag_identity
+remote_release_identity
+registry_artifact_identity
+started_at
+completed_at
+release_status
+invalidation_reason
+```
+
+Cuando una fase aún no haya ocurrido, su identidad permanecerá ausente y el estado no podrá declararse `PASS` para una publicación completa.
+
+La evidencia no contendrá secretos, tokens ni credenciales.
+
+#### 27. Invalidation y evidencia stale
+
+La evidencia deja de certificar la release cuando cambia materialmente cualquiera de estos elementos antes de publicar:
+
+- source commit;
+- manifest;
+- lockfile;
+- versión;
+- dependencia interna;
+- evidencia de pruebas;
+- evidencia de build;
+- contenido o integridad del artefacto;
+- contrato del habilitador;
+- canal aplicable;
+- tag esperado.
+
+Después de publicar, esas identidades se consideran históricas e inmutables. Un cambio posterior produce una release distinta, no una edición de la evidencia anterior.
+
+#### 28. Estados y fallo seguro
+
+El gate de release reutilizará la semántica común:
+
+- `PENDING`;
+- `RUNNING`;
+- `PASS`;
+- `FAIL`;
+- `BLOCKED`;
+- `CANCELLED`;
+- `TIMED_OUT`;
+- `STALE`;
+- `NOT_APPLICABLE` únicamente para comprobaciones condicionales justificadas.
+
+Una publicación completa solo se satisface con `PASS`.
+
+Una operación parcial, cancelada, con timeout, ambigua, stale o con conflicto de identidad no podrá normalizarse a `PASS`.
+
+#### 29. Casos positivos obligatorios del habilitador
+
+`SHELL-CI-003::GLOBAL` deberá demostrar, como mínimo:
+
+1. candidato sintético completo y elegible → identidad de release coherente y atribuible;
+2. misma identidad ya publicada de forma exacta → repetición idempotente sin sobrescritura;
+3. dos packages distintos con versiones independientes → tags y releases sin colisión;
+4. corte coordinado con dos packages cambiados y uno sin cambio → solo los dos cambiados entran al corte;
+5. dependencia interna exacta → orden topológico de publicación preservado;
+6. prerelease válida → canal coherente y sin presentarse como estable;
+7. release estable sin prereleases internas no autorizadas → elegibilidad conservada;
+8. lectura posterior del destino → package, versión, commit, tarball e integridad corresponden a la evidencia esperada.
+
+#### 30. Casos negativos obligatorios del habilitador
+
+`SHELL-CI-003::GLOBAL` deberá bloquear, como mínimo:
+
+1. package fuera del universo aprobado;
+2. versión ausente o SemVer inválido;
+3. versión distinta a la del manifest certificado;
+4. evidencia CI001 ausente, incompatible o stale;
+5. evidencia CI002 ausente, incompatible o stale;
+6. tarball distinto al certificado;
+7. integridad distinta;
+8. tag existente apuntando a otro commit;
+9. tag existente atribuido a otro package o versión;
+10. release remota existente con identidad conflictiva;
+11. versión de registry existente con bytes distintos;
+12. intento de sobrescribir una versión publicada;
+13. reconstrucción durante el paso de publicación que cambie el artefacto;
+14. package estable dependiendo de una prerelease interna no autorizada;
+15. orden de dependencias internas irresoluble;
+16. canal contradictorio con SemVer;
+17. publicación de package sin cambio durante un corte coordinado;
+18. credencial productiva ausente o rechazada;
+19. secreto detectado dentro del artefacto;
+20. respuesta remota incompleta o no verificable tratada como éxito.
+
+#### 31. Regresiones del habilitador global
+
+La implementación única deberá proteger, como mínimo:
+
+1. tag movido después de una ejecución previa;
+2. release reasociada a otro tag;
+3. mismo SemVer resolviendo bytes distintos;
+4. tarball sustituido manteniendo metadata anterior;
+5. integridad calculada sobre un artefacto distinto al publicado;
+6. evidencia de otra versión reutilizada por coincidencia de commit;
+7. evidencia de otro commit reutilizada por coincidencia de versión;
+8. package sin cambios versionado por lockstep accidental;
+9. dependencia interna publicada después del dependiente;
+10. prerelease presentada como estable;
+11. reintento que duplica una publicación correcta;
+12. reintento que oculta una publicación parcial conflictiva;
+13. fallo remoto convertido en `PASS` por exit code ambiguo;
+14. secreto o token incluido en evidencia;
+15. segunda implementación del habilitador dentro de un package;
+16. cambio de serialización de tag que colisiona con una identidad histórica.
+
+#### 32. Criterios de materialización de `SHELL-CI-003::GLOBAL`
+
+La instancia física podrá declararse materializada únicamente cuando:
+
+1. exista una sola implementación transversal en `vento-shell`;
+2. reconozca exactamente las cuatro familias aprobadas;
+3. consuma identidades de CI001 y CI002 sin duplicar sus implementaciones;
+4. valide SemVer y manifest antes de cualquier publicación;
+5. materialice una serialización determinista y no colisionante de tag por package y versión;
+6. cree o simule tags anotados con verificación de commit;
+7. cree o simule releases remotas con identidad verificable;
+8. publique o simule publicación de exactamente el tarball certificado;
+9. valide lectura posterior e integridad;
+10. preserve versiones independientes por package;
+11. soporte cortes coordinados respetando el grafo interno;
+12. sea idempotente ante repetición exacta;
+13. sea fail-closed ante cualquier conflicto de identidad;
+14. produzca evidencia machine-readable atribuible;
+15. proteja los casos negativos y regresiones definidos;
+16. no requiera secretos productivos para autocertificarse;
+17. no genere changelog, compatibilidad ni PR de consumidores;
+18. disponga de recuperación sin mutar releases históricas;
+19. conserve una única implementación global reutilizable por releases futuras.
+
+#### 33. Recuperación y rollback
+
+El rollback de CI003 no modifica una release histórica para hacerla parecer anterior.
+
+Reglas:
+
+1. una versión, tag, release y tarball publicados permanecen inmutables;
+2. una corrección se publica como una nueva versión después de superar los gates aplicables;
+3. un consumidor podrá volver a una versión previa soportada mediante su propio flujo de adopción y rollback;
+4. un puntero mutable de canal podrá reajustarse únicamente mediante operación auditable y sin alterar identidades históricas;
+5. una publicación parcial se reconcilia conservando lo ya publicado e identificando exactamente qué fases faltan o entraron en conflicto;
+6. un conflicto irreversible de identidad bloquea esa versión y obliga a otra identidad de release;
+7. la recuperación conservará causa, actor, identidad previa, identidad resultante y evidencia.
+
+#### 34. Estado documental de las cuatro familias
+
+| Package             | Release real confirmada por este contrato | Estado actual para CI003                                               | Bloqueo antes de una publicación real                                      |
+| ------------------- | ----------------------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `@vento/contracts`  | No                                        | familia gobernada, package físico no confirmado en la base heredada    | materializar package, pruebas, build, compatibilidad y candidato exacto    |
+| `@vento/os-context` | No                                        | familia gobernada; la base heredada permanece transitoria y no estable | completar candidato distribuible elegible, pruebas, build y compatibilidad |
+| `@vento/supabase`   | No                                        | familia gobernada, package físico no confirmado en la base heredada    | materializar package sin acoplar publicación a cambios de base de datos    |
+| `@vento/ui-web`     | No                                        | familia gobernada, package físico no confirmado en la base heredada    | materializar package, assets/peers, pruebas, build y compatibilidad        |
+
+**Conciliación:** 4 familias esperadas, 4 gobernadas por el contrato, 0 releases reales confirmadas por CI003 y 0 familias omitidas.
+
+#### 35. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** el registro vigente ya exige comandos reproducibles, pruebas y compatibilidad antes de publicación, rollback controlado, evidencia trazable y correspondencia inmutable entre package, SemVer, manifest, tag, release, commit, canal, tarball e integridad. CI003 concreta cómo materializar esas obligaciones en el habilitador de release sin introducir una nueva regla empresarial ni modificar filas históricas.
+
+#### 36. Cobertura de prueba vigente reutilizada
+
+La cobertura existente se conserva sin modificación:
+
+- `TREQ-SHELL-005` protege tooling reproducible y bloquea falsos verdes de comandos y build;
+- `TREQ-SHELL-006` exige pruebas propias y compatibilidad antes de publicar o adoptar un package compartido;
+- `TREQ-SHELL-007` exige rollback independiente sin restaurar bypasses ni perder trazabilidad;
+- `TREQ-SHELL-008` exige evidencia reproducible y trazabilidad de requisitos afectados;
+- `TREQ-SHELL-036` exige correspondencia unívoca e inmutable entre package, SemVer, manifest, tag Git anotado, release, commit, canal, tarball e integridad;
+- `TREQ-SHELL-037` exige versiones independientes, publicación solo de familias cambiadas, orden de dependencias internas y coherencia entre SemVer y canal;
+- `TREQ-SHELL-038` reserva para deprecaciones la evidencia adicional de changelog, guía, ventana y consumidores;
+- `TREQ-SHELL-039` mantiene el retiro y fin de soporte bloqueados hasta completar compatibilidad, pruebas, rollback y adopción aplicable.
+
+Estas referencias expresan únicamente trazabilidad de cobertura vigente.
+
+#### 37. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                            |
+| --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador documental no materializa `SHELL-CI-003::GLOBAL`, no crea tooling de release y no publica packages.                                                      |
+| LOCAL     | NOT_EXECUTED   | El artefacto se entrega para revisión; todavía no ha sido insertado ni validado mediante los scripts del checkout del usuario.                                       |
+| REMOTA    | PASS           | Se verificaron en `main` la continuidad activa, el propietario, CI002 `VERIFIED`, la ausencia de un workflow de release materializado y la cobertura TREQ aplicable. |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutaron tags, releases ni publicaciones reales o sintéticas en este marcador.                                                                               |
+| FÍSICA    | NOT_APPLICABLE | La materialización pertenece a la futura instancia `SHELL-CI-003::GLOBAL` después de aprobación y autorización explícita.                                            |
+
+#### 38. Criterios de aceptación
+
+`SHELL-CI-003` queda documentalmente completa cuando:
+
+- identifica la topología `GLOBAL_ENABLE_ONCE` y la instancia `SHELL-CI-003::GLOBAL`;
+- conserva exactamente las cuatro familias aprobadas;
+- define una unidad de release atribuible a package, SemVer, manifest, commit, pruebas, build y artefacto;
+- exige que el manifest ya contenga la versión certificada antes de publicación;
+- exige que los bytes publicados sean los mismos certificados por CI002;
+- exige tag Git anotado, release remota y publicación de registry vinculados a la misma identidad;
+- mantiene tag, release, tarball, bytes e integridad inmutables;
+- obliga a crear otra versión para toda corrección;
+- conserva versiones independientes por package;
+- define cortes coordinados que excluyen packages sin cambios y respetan el grafo interno;
+- impide release estable sobre prerelease interna no autorizada;
+- define coherencia entre SemVer y canal sin inventar nombres físicos de canales;
+- define idempotencia exacta y bloqueo de conflictos;
+- define credenciales y secretos sin persistir valores sensibles;
+- define evidencia machine-readable e invalidación;
+- separa claramente CI001, CI002, CI004, CI005 y CI006;
+- define casos positivos, negativos y regresiones del habilitador;
+- define recuperación sin mutar identidades publicadas;
+- concilia 4/4 familias sin afirmar releases inexistentes;
+- no modifica código, workflows, registry, consumidores, Supabase ni 04A durante el marcador;
+- no crea ni modifica requisitos de prueba.
+
+#### 39. Límites
+
+Esta tarea no:
+
+- implementa físicamente `SHELL-CI-003::GLOBAL` durante el marcador;
+- crea scripts, workflows o configuración de publicación;
+- fija un nombre físico de tag, canal o dist-tag no aprobado por una fuente material;
+- publica packages reales;
+- crea tags Git reales;
+- crea releases remotas reales;
+- configura credenciales de registry o GitHub;
+- reconstruye packages reservados a CI002;
+- ejecuta pruebas propias reservadas a CI001;
+- genera changelog reservado a CI004;
+- certifica compatibilidad reservada a CI005;
+- modifica manifests o lockfiles de consumidores ni abre PR reservados a CI006;
+- materializa packages ausentes;
+- modifica la API pública de una familia;
+- ejecuta despliegues de aplicaciones;
+- ejecuta cambios de Supabase;
+- crea, modifica, difiere, descarta o vuelve obsoletos requisitos del registro 04A.
+
+#### 40. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CI-002 — Crear build independiente por paquete`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CI-003 — Crear releases versionados`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-004 — Crear changelog automático`
+
+
 ### [ ] SHELL-CI-004 — Crear changelog automático
 ### [ ] SHELL-CI-005 — Crear matriz de compatibilidad
 ### [ ] SHELL-CI-006 — Crear actualización de consumidores mediante PR

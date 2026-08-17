@@ -51,59 +51,69 @@ export function actionResponseContract(control, sourceContractHash) {
     'Solo la frase exacta AUTORIZO EJECUCION ASISTIDA DEL PASO N, con el número real ya definido, autoriza a ejecutar ese único paso. Al terminarlo vuelve automáticamente el modo humano manual.',
     'Dentro de la sección 8 incluye PASOS EXACTOS PARA EL USUARIO. Entrega el LOTE ACTUAL completo y seguido hasta el primer gate donde el próximo paso dependa realmente de una salida todavía desconocida.',
     'No pauses por rutina, por cambio de archivo ni para pedir confirmación de cada paso. Pausa únicamente por una prueba o comando cuyo resultado determine lo siguiente, una discrepancia con el contenido esperado, una decisión humana, un permiso o credencial, o una operación sensible no autorizada.',
-    'Cuando pauses, termina pidiendo RESULTADO DEL PASO N y especifica exactamente qué salida, captura, diff o decisión debe aportar el usuario.',
+    'Durante una implementación física el watcher del plan debe permanecer apagado desde antes de cambiar la instancia a IN_PROGRESS hasta después de dejarla VERIFIED. No uses el watcher como gate de implementación ni permitas que un cambio de estado dispare compilaciones globales repetidas.',
+    'Después del preflight no solicites git status, Source Control, capturas, hashes sueltos, diff, build, lint ni tests como gates intermedios. Materializa primero todos los cambios deterministas y ejecuta después una sola batería final de validación.',
+    'Si la batería final falla, corrige únicamente la causa dentro del alcance y vuelve a ejecutar la misma batería final. Si pasa completa, consolida la evidencia y cambia a VERIFIED sin repetir validaciones por rutina.',
+    'Después de VERIFIED regenera el estado y el Iniciador con npm run docs:implementation:status y npm run docs:chatgpt:starter. No ejecutes otro docs:plan:build solo para refrescar la acción.',
+    'Si GitHub Push Protection bloquea un push, clasifica primero el hallazgo. Solo puede usarse un bypass de prueba o falso positivo cuando el valor esté verificado como fixture sintético; un secreto real debe retirarse y rotarse, nunca exceptuarse.',
+    'Cuando pauses, termina pidiendo RESULTADO DEL PASO N y especifica exactamente qué salida o decisión debe aportar el usuario.',
     'No uses placeholders sin resolver. Cada JSON, ruta, identificador, fecha, hash, estado y texto que el usuario deba copiar debe quedar completo y válido.',
   ];
 
   if (type === 'AUTORIZAR_IMPLEMENTACION') {
     return [
       ...common,
-      `El watcher ya creó ${instanceRecordPath} en PENDING_AUTHORIZATION. Para ${target}, la sección 4 debe entregar el contenido completo que reemplaza ese archivo y lo lleva a AUTHORIZED. No entregues una propiedad instances ni modifiques docs/plan-canonico/modular/implementation-control.json.`,
+      `El archivo ${instanceRecordPath} debe existir en PENDING_AUTHORIZATION antes de autorizar ${target}. Para esta acción, la sección 4 debe entregar el contenido completo que reemplaza ese archivo y lo lleva a AUTHORIZED. No entregues una propiedad instances ni modifiques docs/plan-canonico/modular/implementation-control.json.`,
       `El historial anterior contiene ${previousInstances.length} instancia(s): ${recordedSummary}. Se conserva completo; nunca borres, reemplaces, reordenes ni reescribas archivos de instancias anteriores para autorizar la siguiente.`,
       'El reemplazo completo debe incluir instance_id, task_id, status AUTHORIZED, target_repositories, authorized_changes, validation_commands, authorization y evidence: [].',
       'authorization debe incluir decision: APPROVED, approved_by, approved_at, timezone, approval_statement y source_contract_sha256.',
       'Si no puedes verificar el nombre civil del usuario, usa approved_by: VENTO_OWNER; usa una fecha ISO concreta y timezone: America/Bogota, nunca marcadores como <FECHA> o <USUARIO>.',
       `source_contract_sha256 debe ser exactamente ${sourceContractHash}. No pidas al usuario calcular, corregir o conciliar hashes manualmente; la autorización se demuestra con su declaración explícita y su commit.`,
       'approval_statement debe aprobar exclusivamente los repositorios, cambios y validaciones enumerados, y negar expresamente cualquier ampliación inferida.',
-      'Aclara que el reemplazo listo para copiar sigue siendo una propuesta hasta que el usuario lo pegue, guarde y confirme mediante su propio commit; tú no debes editar el archivo ni autorizarte a ti mismo.',
+      'Aclara que el reemplazo listo para copiar sigue siendo una propuesta hasta que el usuario lo pegue y guarde; tú no debes editar el archivo ni autorizarte a ti mismo.',
       'Distingue la evidencia de autorización de la evidencia de implementación: evidence debe permanecer [] mientras el estado sea AUTHORIZED.',
-      `En PASOS EXACTOS PARA EL USUARIO indica, sin comandos de terminal: abrir el archivo ya creado ${instanceRecordPath}, reemplazar todo su contenido, guardar, esperar el watcher, comprobar el cambio a INICIAR_IMPLEMENTACION, revisar el diff, crear el commit desde el control de código fuente de VS Code, sincronizar y cargar el INICIADOR_VENTO_ACTUAL.txt recién regenerado.`,
-      'Si el archivo exacto no existe, no está PENDING_AUTHORIZATION o el historial mostrado por el iniciador no coincide con el estado observado, no propongas crear ni sobrescribir nada: pide ejecutar o esperar el watcher y recargar el iniciador regenerado.',
-      'Incluye el texto exacto que debería mostrar el watcher después de guardar y el mensaje de commit recomendado.',
+      `En PASOS EXACTOS PARA EL USUARIO indica: confirmar que ${instanceRecordPath} existe en PENDING_AUTHORIZATION; detener el watcher si está activo; reemplazar todo su contenido; guardar; ejecutar npm run docs:implementation:status y npm run docs:chatgpt:starter; comprobar el cambio a INICIAR_IMPLEMENTACION; crear el commit y sincronizar; y cargar el INICIADOR_VENTO_ACTUAL.txt recién regenerado.`,
+      'No pidas reiniciar el watcher ni ejecutar docs:plan:build para comprobar una autorización ya materializada. La derivación ligera de control e Iniciador es suficiente.',
+      'Si el archivo exacto no existe o no está PENDING_AUTHORIZATION, no propongas crear ni sobrescribir nada por inferencia: debe materializarse primero mediante el flujo canónico vigente.',
+      'Incluye el mensaje de commit recomendado.',
     ].join('\n');
   }
 
   if (type === 'INICIAR_IMPLEMENTACION') {
     return [
       ...common,
-      `Para ${target}, primero entrega un MAPA COMPLETO DE IMPLEMENTACIÓN: todos los pasos numerados, operación, ruta, propósito, dependencias y validación, pero sin incluir todavía el contenido de pasos futuros.`,
-      `El LOTE ACTUAL debe incluir seguidos: la transición manual de status AUTHORIZED a IN_PROGRESS únicamente en ${instanceRecordPath}, la comprobación esperada del watcher y el comando exacto del preflight canónico.`,
-      'No pauses después de cambiar el estado si el watcher no muestra error. El primer gate obligatorio es el resultado del preflight, porque el contenido físico posterior debe reconciliarse contra el checkout local real.',
-      'Termina pidiendo RESULTADO DEL PASO correspondiente al preflight, con su salida completa y cualquier error del watcher. No entregues todavía código que dependa de ese resultado.',
+      `Para ${target}, primero entrega un MAPA COMPLETO DE IMPLEMENTACIÓN: todos los pasos numerados, operación, ruta, propósito, dependencias y validación, pero sin incluir todavía el contenido de pasos futuros que dependa del preflight.`,
+      `El LOTE ACTUAL debe incluir seguidos: detener el watcher si está activo; la transición manual de status AUTHORIZED a IN_PROGRESS únicamente en ${instanceRecordPath}; y el comando exacto del preflight canónico.`,
+      'No ejecutes docs:plan:build entre AUTHORIZED e IN_PROGRESS. El primer y único gate previo al código es el resultado del preflight, porque el contenido físico posterior debe reconciliarse contra el checkout local real.',
+      'El preflight se ejecuta una sola vez por instancia antes de modificar código; solo se repite si el checkout cambia materialmente o una discrepancia concreta lo exige.',
+      'Termina pidiendo RESULTADO DEL PASO correspondiente al preflight, con su salida completa. No entregues todavía código que dependa de ese resultado.',
     ].join('\n');
   }
 
   if (type === 'CONTINUAR_IMPLEMENTACION') {
     return [
       ...common,
-      `Para ${target}, conserva un MAPA COMPLETO DE IMPLEMENTACIÓN numerado y entrega todos los pasos pendientes deterministas hasta el siguiente gate de evidencia real.`,
+      `Para ${target}, conserva un MAPA COMPLETO DE IMPLEMENTACIÓN numerado y entrega todos los cambios físicos pendientes deterministas en un único lote antes de validar.`,
+      'Mantén el watcher apagado durante todo el lote.',
       'Si la operación es CREAR: indica repositorio, ruta absoluta y relativa, codificación, nombre exacto y contenido completo sin elipsis. Para archivos .mjs entrega además un .txt descargable con el mismo contenido.',
       'Si la operación es MODIFICAR: entrega el archivo completo listo para reemplazar. Solo si es materialmente enorme permite un bloque anterior literal y único más su reemplazo completo; nunca uses fragmentos ambiguos, resúmenes ni “resto sin cambios”.',
-      'Si la operación es EJECUTAR: indica directorio exacto, un solo comando copiable, qué modifica, resultado esperado y qué salida debe pegar el usuario. No lo ejecutes tú.',
-      'Incluye en el mismo lote todas las creaciones y modificaciones cuyo contenido ya pueda determinarse, aunque sean varios archivos. Después incluye los comandos que el usuario puede ejecutar sin que un resultado intermedio cambie esos archivos.',
-      'Si un comando falla, el usuario debe detener el resto del lote y responder RESULTADO DEL PASO N con la salida completa. Si todos pasan, debe responder una sola vez con las salidas solicitadas del gate final.',
-      'Al recibir evidencia, actualiza el progreso visible N/M y genera el lote siguiente. No declares PASS por la afirmación del usuario si falta contenido o salida verificable.',
-      `No cambies el estado a IMPLEMENTED hasta cerrar todos los pasos físicos y reunir evidencia real; entonces entrega como último paso el contenido completo y exacto de ${instanceRecordPath} para esa transición. No modifiques registros anteriores.`,
+      'No ejecutes validaciones entre archivos ni pidas comprobaciones de Source Control, git status, diff o hashes como gates intermedios.',
+      `Cuando todos los cambios físicos estén materializados, lleva ${instanceRecordPath} a IMPLEMENTED con evidencia de identidad disponible y entrega inmediatamente después una sola batería final que contenga las validation_commands autorizadas en orden fail-fast.`,
+      'La batería final debe detenerse en el primer fallo. Si pasa completa, el usuario responde una sola vez con la salida final; si falla, responde una sola vez con el primer fallo.',
+      'Al recibir un fallo, entrega la corrección determinista y vuelve a ejecutar la misma batería final; no fragmentes la validación en micro-gates.',
+      'Al recibir PASS completo, no repitas la batería: consolida evidence y entrega el contenido completo del registro para VERIFIED.',
     ].join('\n');
   }
 
   if (type === 'VALIDAR_IMPLEMENTACION') {
     return [
       ...common,
-      `Para ${target}, entrega juntas las validaciones autorizadas que sean independientes y ordénalas para que el usuario las ejecute; nunca las ejecutes por tu cuenta.`,
-      'Cada paso debe contener directorio, comando, efecto, duración estimada, resultado esperado y salida que el usuario debe conservar. Indica que debe detener el lote en el primer fallo.',
-      'Pide una única respuesta RESULTADO DEL PASO N con las salidas del lote o con el primer fallo. Clasifica después la evidencia como local, remota, operativa o física.',
-      `Solo después de verificar todas las salidas entrega el contenido completo de ${instanceRecordPath} para VERIFIED con la evidencia consolidada. No modifiques registros anteriores. Si algo falla, entrega todos los pasos deterministas de diagnóstico o corrección hasta el siguiente gate de evidencia y conserva el estado actual.`,
+      `Para ${target}, entrega una sola batería final con todas las validaciones autorizadas aplicables, ordenadas y fail-fast; nunca las ejecutes por tu cuenta.`,
+      'Mantén el watcher apagado. No conviertas cada comando de la batería en un gate separado y no pidas estimaciones de duración, capturas o Source Control.',
+      'Pide una única respuesta RESULTADO DEL PASO N con la salida completa de la batería o con el primer fallo.',
+      `Solo después de verificar PASS completo entrega el contenido completo de ${instanceRecordPath} para VERIFIED con la evidencia consolidada. No modifiques registros anteriores.`,
+      'Después de VERIFIED no repitas la batería. Indica npm run docs:implementation:status y npm run docs:chatgpt:starter como regeneración ligera antes del commit/sync o del siguiente Iniciador.',
+      'Si algo falla, conserva IMPLEMENTED, corrige la causa dentro del alcance y vuelve a ejecutar la misma batería final.',
     ].join('\n');
   }
 
@@ -111,6 +121,7 @@ export function actionResponseContract(control, sourceContractHash) {
     return [
       ...common,
       `Para ${target}, identifica la causa raíz en solo lectura y entrega al usuario todos los pasos deterministas de resolución dentro del alcance.`,
+      'Mantén el watcher apagado si la instancia está en fase física.',
       'Pausa únicamente cuando la condición de salida necesite evidencia nueva y pide RESULTADO DEL PASO N. No resuelvas el bloqueo mediante escrituras automáticas.',
     ].join('\n');
   }
@@ -119,6 +130,7 @@ export function actionResponseContract(control, sourceContractHash) {
     ...common,
     `Para ${target}, entrega el artefacto documental completo listo para revisión y reemplazo, sin aprobarlo por inferencia.`,
     'En PASOS EXACTOS PARA EL USUARIO indica el archivo propietario exacto, qué bloque reemplazar, cómo revisar el cambio, qué palabra debe usar para aprobar y qué ocurrirá automáticamente después; no le pidas deducir la continuidad.',
+    'La regla de watcher apagado y batería final única aplica a la futura instancia física, no obliga a modificar el watcher durante una tarea documental.',
   ].join('\n');
 }
 
@@ -128,23 +140,23 @@ function actionInstruction(control) {
     return [
       `Prepara el alcance físico exacto y verificable de ${target}.`,
       'Audita primero el repositorio y los consumidores necesarios; identifica archivos, símbolos, comportamiento actual, cambios permitidos, pruebas, evidencia y rollback.',
-      'Entrega una propuesta completa de autorización por instancia, pero no cambies código ni declares la instancia autorizada por inferencia.',
+      'Entrega una propuesta completa de autorización por instancia; después de guardarla se deriva el control y el Iniciador con comandos ligeros, sin recompilar todo el plan por rutina.',
     ].join(' ');
   }
   if (type === 'INICIAR_IMPLEMENTACION') {
     return [
       `Inicia la guía humana continua de ${target}; no modifiques repositorios ni ejecutes comandos.`,
-      'Entrega el mapa completo, la transición a IN_PROGRESS y el preflight en el mismo lote; pausa únicamente para recibir el resultado del preflight.',
+      'Detén el watcher si está activo, entrega la transición a IN_PROGRESS y el preflight en el mismo lote y pausa únicamente para recibir ese resultado.',
     ].join(' ');
   }
   if (type === 'CONTINUAR_IMPLEMENTACION') {
     return [
-      `Guía al usuario en el siguiente lote pendiente de ${target}; no lo ejecutes por él.`,
-      'Entrega seguidas todas las creaciones, modificaciones y validaciones deterministas; pausa solo cuando el próximo paso dependa de evidencia nueva.',
+      `Guía al usuario en el lote físico completo pendiente de ${target}; no lo ejecutes por él.`,
+      'Con el watcher apagado, entrega todos los cambios deterministas, la transición a IMPLEMENTED y una sola batería final de validación; pausa únicamente por su resultado.',
     ].join(' ');
   }
   if (type === 'VALIDAR_IMPLEMENTACION') {
-    return `Entrega al usuario el lote ordenado de validaciones independientes de ${target}; no lo ejecutes ni marques VERIFIED sin las salidas reales aportadas por él.`;
+    return `Entrega al usuario una sola batería final fail-fast de ${target}; no la ejecutes ni marques VERIFIED sin las salidas reales aportadas por él y no repitas validaciones después de PASS completo.`;
   }
   if (type === 'RESOLVER_BLOQUEO') {
     return `Audita el bloqueo de ${target} en solo lectura y guía al usuario con todos los pasos deterministas; pausa solo cuando necesites evidencia nueva.`;
@@ -209,12 +221,15 @@ ACCIÓN PRINCIPAL OBLIGATORIA
 MODO DE EJECUCIÓN Y OPERADOR
 
 - Operador que realiza los cambios: USUARIO HUMANO
-- Interacción: PASOS CONSECUTIVOS HASTA UN GATE DE EVIDENCIA
+- Interacción: CAMBIOS EN LOTE + UNA SOLA BATERÍA FINAL
 - Escrituras del asistente en archivos o repositorios: NO AUTORIZADAS
 - Comandos y validaciones ejecutados por el asistente: NO AUTORIZADOS
 - Commit, push, PR, despliegues y mutaciones remotas del asistente: NO AUTORIZADOS
 - Auditoría de solo lectura por el asistente: AUTORIZADA
-- Pausa obligatoria: solo cuando el paso siguiente depende de evidencia todavía desconocida
+- Watcher durante implementación física: APAGADO desde antes de IN_PROGRESS hasta después de VERIFIED
+- Preflight físico: UNA VEZ antes de modificar código, salvo cambio material del checkout
+- Gates intermedios rutinarios: PROHIBIDOS
+- Pausa obligatoria: preflight inicial o resultado de la batería final; además solo ante bloqueo real no resoluble con evidencia disponible
 - Respuesta del usuario ante una pausa: RESULTADO DEL PASO N
 - Excepción limitada: AUTORIZO EJECUCION ASISTIDA DEL PASO N, usando el número real del paso ya presentado
 - Alcance de la excepción: solo ese paso; al terminar vuelve automáticamente el modo manual
@@ -252,7 +267,7 @@ HISTORIAL FÍSICO ACUMULATIVO
 
 ${list(recordedInstanceRows, 'Ninguno; la primera autorización creará el primer archivo.')}
 
-El watcher crea automáticamente el archivo PENDING_AUTHORIZATION de la instancia elegible. La autorización y cada transición posterior modifican exclusivamente ese mismo archivo. Los registros anteriores y su evidencia nunca se reemplazan ni se copian dentro de un arreglo compartido.
+El flujo canónico conserva un archivo por instancia. El watcher puede crear el PENDING_AUTHORIZATION durante el carril documental, pero debe detenerse antes de entrar a la implementación física. Desde IN_PROGRESS hasta VERIFIED los cambios de estado y código se realizan con el watcher apagado; la batería final ejecuta las validaciones globales una sola vez y los registros anteriores nunca se reemplazan.
 
 CONTENIDO LOCAL EXACTO DEL REGISTRO ACTIVO
 
@@ -283,7 +298,7 @@ ${actionResponseContract(control, sourceContractHash)}
 
 No desarrolles la tarea documental ${control.documentary.taskId} mientras su carril figure ${control.documentary.state}, salvo que esa misma tarea sea el objetivo exacto de la acción principal. No ejecutes otra instancia, no interpretes la aprobación documental como autorización física y no sustituyas el resultado material por recomendaciones genéricas.
 
-Este iniciador ya contiene la instrucción de trabajo: comienza con auditoría de solo lectura, presenta el mapa y entrega el lote manual completo hasta el primer gate real de evidencia. No hagas ninguna escritura mientras no exista autorización asistida explícita para el número exacto del paso.
+Este iniciador ya contiene la instrucción de trabajo. En implementación física usa preflight único, watcher apagado, cambios deterministas en lote y una sola batería final. No hagas ninguna escritura mientras no exista autorización asistida explícita para el número exacto del paso.
 
 TRAZABILIDAD DEL INICIADOR
 
@@ -291,7 +306,9 @@ TRAZABILIDAD DEL INICIADOR
 - Contrato propietario SHA-256: ${sourceContractHash}
 - Fuente de control: docs/plan-canonico/modular/implementation-control.json
 - Directiva local equivalente: .delivery/current-work-directive.md
-- Generación automática: npm run docs:plan:build y watcher del plan canónico
+- Regeneración ligera de control: npm run docs:implementation:status
+- Regeneración ligera del Iniciador: npm run docs:chatgpt:starter
+- Compilación global: npm run docs:plan:build solo cuando una tarea documental o la batería final autorizada lo requiera
 
 ${sourceContext(task, workTopology, emptyDraft)}
 `;
@@ -325,7 +342,7 @@ export function writeChatgptWorkStarter({ root = process.cwd(), check = false } 
   const current = fs.existsSync(result.outputPath) ? fs.readFileSync(result.outputPath, 'utf8') : '';
   const changed = current !== result.source;
   if (check && changed && fs.existsSync(result.outputPath)) {
-    throw new Error(`${OUTPUT_PATH} está desactualizado; ejecute docs:plan:build.`);
+    throw new Error(`${OUTPUT_PATH} está desactualizado; ejecute npm run docs:chatgpt:starter.`);
   }
   if (!check && changed) {
     fs.mkdirSync(path.dirname(result.outputPath), { recursive: true });
