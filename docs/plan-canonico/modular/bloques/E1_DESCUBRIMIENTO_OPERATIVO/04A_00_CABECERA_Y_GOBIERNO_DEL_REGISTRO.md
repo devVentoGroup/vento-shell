@@ -81,15 +81,15 @@ Dominios iniciales:
 
 ### Resumen vigente
 
-| Métrica                           |        Resultado |
-| --------------------------------- | ---------------: |
-| Requisitos vigentes               |         **7012** |
-| Dominios con requisitos           |           **19** |
-| Filas con catorce columnas        | **7012 de 7012** |
-| Identificadores duplicados        |            **0** |
-| Relaciones `TREQ-*` no resolubles |            **0** |
-| Última tarea incorporada          |    `NEXO-UX-025` |
-| Fecha de normalización            |     `2026-08-16` |
+| Métrica                           |          Resultado |
+| --------------------------------- | -----------------: |
+| Requisitos vigentes               |           **7016** |
+| Dominios con requisitos           |             **19** |
+| Filas con catorce columnas        |   **7016 de 7016** |
+| Identificadores duplicados        |              **0** |
+| Relaciones `TREQ-*` no resolubles |              **0** |
+| Última tarea incorporada          | `SHELL-NATIVE-001` |
+| Fecha de normalización            |       `2026-08-16` |
 
 Distribución vigente:
 
@@ -98,7 +98,7 @@ Distribución vigente:
 | `AUTH`        | `TREQ-AUTH-001` a `TREQ-AUTH-331`               |      331 |
 | `GAP`         | `TREQ-GAP-001`                                  |        1 |
 | `PROC`        | `TREQ-PROC-001` a `TREQ-PROC-1560`              |     1560 |
-| `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-044`             |       44 |
+| `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-048`             |       48 |
 | `SUPABASE`    | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-1770`      |     1770 |
 | `ANIMA`       | `TREQ-ANIMA-001` a `TREQ-ANIMA-025`             |       25 |
 | `AURA`        | `TREQ-AURA-001` a `TREQ-AURA-027`               |       27 |
