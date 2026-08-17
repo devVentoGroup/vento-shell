@@ -7649,7 +7649,1324 @@ Esta tarea no:
 `SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización`
 
 
-### [ ] SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización
+### ✅ SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas
+**Tarea siguiente:** SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual
+**Tipo de tarea:** Documental — definición global única del consumo, validación y proyección interna de `lane_readiness` dentro de `@vento/os-context`, con futura materialización física una sola vez por unidad de implementación
+**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`
+**Estado físico resultante:** `DEFINIDO_NO_MATERIALIZADO`; 2 carriles de readiness preservados; 4 estados cerrados; 110 `LaneReasonCode` consumidos; 0 booleanos de autorización nuevos; 0 contratos serializados nuevos; 0 packages nuevos; 0 subpaths públicos nuevos; 0 unidades materializadas; 0 cambios Supabase
+**Cambios físicos autorizados:** ninguno durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+**Modalidad:** `PER_IMPLEMENTATION_UNIT`
+**Trabajo canónico actual:** definir una sola vez el contrato de readiness contextual y asignar su futura materialización
+**Instancia física futura:** `SHELL-CTX-004::<implementation_unit_id>`
+**Condición de materialización:** después de que `DELIV-PKG-025` asigne `implementation_unit_id` y el `package_id` propietario supere `E5-GATE-008`
+
+---
+
+#### 1. Propósito
+
+`SHELL-CTX-004` define el contrato único mediante el cual el módulo contextual interno de `@vento/os-context` deberá consumir, validar y preservar `lane_readiness.base` y `lane_readiness.operational` de un `AccessContextV1` canónico sin reducirlos a `can_operate`, `allowed`, `has_permission` ni cualquier otro booleano de autorización.
+
+La frontera queda:
+
+```text
+AccessContextV1 validado
+→ structural_issues tipados
+→ lane_readiness.base
+→ lane_readiness.operational
+→ consumo contextual compartido
+```
+
+Nunca:
+
+```text
+readiness = READY
+→ ALLOW
+```
+
+Ni:
+
+```text
+can_operate = true
+→ autoridad
+```
+
+El marcador global fija el comportamiento documental. La implementación física corresponde exclusivamente a una futura instancia `SHELL-CTX-004::<implementation_unit_id>` habilitada por E5.
+
+---
+
+#### 2. Modalidad canónica y ciclo de materialización
+
+La tarea usa `PER_IMPLEMENTATION_UNIT`.
+
+```text
+MARCADOR GLOBAL SHELL-CTX-004
+→ define una vez entradas, estados, invariantes, gates, pruebas y rollback
+→ no materializa código
+
+DELIV-PKG-025::<package_id>
+→ asigna implementation_unit_id y package propietario
+
+E5-GATE-008::<package_id> = PASS
+→ habilita la unidad
+
+SHELL-CTX-004::<implementation_unit_id>
+→ materializa una sola vez el consumo tipado de readiness
+→ N package_id pueden reutilizarlo mediante lineage
+→ no duplica lógica por aplicación
+```
+
+**Dependencia para desarrollar:** `SHELL-CTX-003`.
+
+La futura instancia no inventará `implementation_unit_id`, no se repetirá por consumidor y no podrá utilizar evidencia perteneciente a otra unidad, versión o commit.
+
+---
+
+#### 3. Fuentes vinculantes preservadas
+
+| Fuente                    | Regla preservada                                                                                                                       |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-CTX-001`           | existe un único módulo contextual interno; `AccessContextV1` es entrada validada e inmutable                                           |
+| `SHELL-CTX-002`           | turno y check-in se consumen desde nodos canónicos; ausencia normal y contradicción permanecen separadas                               |
+| `SHELL-CTX-003`           | sede y área operativas proceden del turno; `null` nunca es wildcard; selectores no son autoridad                                       |
+| `SHELL-CON-007`           | `LaneReadiness` pertenece a `AccessContext@1.0.0`; `READY` no significa `ALLOW`; `can_operate` es legacy                               |
+| `SHELL-CON-008`           | cuatro estados cerrados; 100 `StructuralIssueCode`; 10 `LaneAvailabilityReasonCode`; `LaneReasonCode` contiene exactamente 110 valores |
+| `AUTH-CTX-015`            | semántica de `READY`, `UNAVAILABLE`, `INVALID`, `NOT_APPLICABLE`, independencia de carriles, orden y fail closed                       |
+| `AUTH-CTX-027`            | aplicaciones consumen contexto centralizado; cliente no decide autorización                                                            |
+| `AUTH-CTX-028`            | `can_operate` legacy es readiness temporal y nunca decisión; compatibilidad fluye de canónico hacia legacy                             |
+| `AUTH-CTX-029`            | contexto stale no puede reutilizarse; L0, L1, write barrier y frescura conservan propietarios separados                                |
+| `SHELL-AUTH-002`          | `SafeContextProjectionV1` expone únicamente estados seguros de readiness; no expone autoridad ejecutable                               |
+| `SHELL-AUTH-003`          | L0 y write barrier son request-scoped y no pertenecen a CTX004                                                                         |
+| `SHELL-CTX-005`           | traducción de razones seguras y presentación permanece reservada                                                                       |
+| `SHELL-CTX-006`           | L1, single-flight cross-request y validación de frescura permanecen reservados                                                         |
+| `AUTH-DB-033`             | productor físico autoritativo de `AccessContext` y sus hechos contextuales                                                             |
+| `AUTH-DB-035`             | token transaccional de frescura e invalidación                                                                                         |
+| `AUTH-DB-034`             | decisión autoritativa de autorización; readiness es insumo, no resultado final                                                         |
+| `task-work-topology.json` | una materialización máxima por `implementation_unit_id`                                                                                |
+
+No se reabre ninguna de estas responsabilidades.
+
+---
+
+#### 4. Línea base técnica verificable
+
+El package físico actual continúa siendo transitorio y no satisface el contrato objetivo:
+
+| Superficie actual                           | Estado                                   | Disposición                              |
+| ------------------------------------------- | ---------------------------------------- | ---------------------------------------- |
+| `@vento/os-context@0.1.0`                   | package privado con export raíz a source | baseline transitorio                     |
+| `EffectiveContext.can_operate`              | booleano legacy                          | prohibido como autoridad canónica        |
+| `EffectiveContext.blocked_reasons`          | `string[]` libre                         | no es `LaneReasonCode[]`                 |
+| `EffectiveContext.site_id/area_id/shift_id` | campos planos legacy                     | no sustituyen nodos de `AccessContextV1` |
+| `get_effective_context_v1`                  | RPC legacy consumida directamente        | compatibilidad temporal, no fuente final |
+| `has_effective_permission_v1`               | booleano legacy                          | no es decisión canónica                  |
+| `LaneReadiness` físico compartido           | no materializado en el package actual    | futura instancia de fundación compartida |
+| `SafeContextProjectionV1` físico estable    | no materializado                         | propiedad de `SHELL-AUTH-002`            |
+
+El estado actual sirve únicamente como baseline de transición. Esta tarea no lo modifica físicamente.
+
+---
+
+#### 5. Resultado canónico de CTX004
+
+La tarea cierra una única responsabilidad contextual:
+
+1. aceptar únicamente un `AccessContextV1` validado;
+2. consumir `lane_readiness.base` y `lane_readiness.operational` sin reconstruir hechos empresariales;
+3. validar los cuatro estados contractuales;
+4. validar `reason_codes` exclusivamente contra `LaneReasonCode`;
+5. conservar la distinción entre problema estructural y ausencia normal;
+6. conservar la independencia entre carril base y carril operativo;
+7. conservar `READY` como readiness contextual, nunca como decisión;
+8. impedir cualquier booleano canónico equivalente a autorización;
+9. mantener determinismo de orden y deduplicación;
+10. fallar cerrado ante vocabulario, estado o combinación estructural incompatible;
+11. entregar a `SHELL-AUTH-002` únicamente los estados que su proyección segura ya tiene aprobados;
+12. dejar la traducción segura de razones a `SHELL-CTX-005`;
+13. dejar caché y frescura a `SHELL-CTX-006` y `AUTH-DB-035`;
+14. materializarse físicamente una sola vez por unidad autorizada.
+
+---
+
+#### 6. Entrada única
+
+La entrada conceptual de CTX004 es únicamente:
+
+```text
+AccessContext@1.0.0
+schema_version = 1.0.0
+validado por @vento/contracts/authorization
+```
+
+Queda prohibido construir readiness desde:
+
+- `EffectiveContext`;
+- `OperationalContextRow`;
+- `blocked_reasons: string[]`;
+- `can_operate`;
+- un rol local;
+- una sede seleccionada;
+- un área seleccionada;
+- una cookie de override;
+- un dispositivo usado como fuente laboral;
+- un permiso solicitado;
+- un recurso solicitado;
+- un booleano de RPC legacy;
+- una proyección cliente;
+- un objeto parcial fabricado por consumidor.
+
+Una entrada externa incompleta, desconocida o incompatible se rechaza antes de utilizar readiness.
+
+---
+
+#### 7. Forma contractual preservada
+
+CTX004 no crea otro contrato serializado. Consume la forma aprobada:
+
+```text
+type LaneReadiness = {
+  status: "READY" | "UNAVAILABLE" | "INVALID" | "NOT_APPLICABLE";
+  reason_codes: LaneReasonCode[];
+};
+```
+
+Y conserva en `AccessContextV1` dos carriles independientes:
+
+```text
+lane_readiness.base
+lane_readiness.operational
+```
+
+No se agregan campos como:
+
+- `can_operate`;
+- `can_administer`;
+- `is_allowed`;
+- `permission_granted`;
+- `effective_allow`;
+- `ready_and_allowed`;
+- `bypass_applied`.
+
+---
+
+#### 8. Vocabulario cerrado de estados
+
+Los únicos estados admitidos son:
+
+```text
+READY
+UNAVAILABLE
+INVALID
+NOT_APPLICABLE
+```
+
+Un valor distinto:
+
+```text
+→ contexto no conforme
+→ fail closed
+```
+
+No se admiten aliases como:
+
+- `AVAILABLE`;
+- `BLOCKED`;
+- `DISABLED`;
+- `DENIED`;
+- `OK`;
+- `TRUE`;
+- `FALSE`.
+
+---
+
+#### 9. Semántica de `READY`
+
+`READY` significa únicamente:
+
+```text
+el carril posee el núcleo contextual estructural suficiente
+para que una evaluación posterior determine si el permiso exacto puede continuar
+```
+
+No significa:
+
+- existe grant;
+- no existe deny;
+- el recurso pertenece al territorio;
+- el permiso está registrado;
+- el scope es válido;
+- la operación está permitida;
+- la mutación puede ejecutarse;
+- el usuario puede ver o editar un campo;
+- existe autorización final.
+
+Regla inmutable:
+
+```text
+READY ≠ ALLOW
+```
+
+---
+
+#### 10. Semántica de `UNAVAILABLE`
+
+`UNAVAILABLE` representa una ausencia o estado normal que impide disponer del carril en el snapshot actual sin constituir una contradicción estructural bloqueante.
+
+Ejemplos contractuales:
+
+- actor no laboral para el carril operativo;
+- empleado inactivo cuando la semántica aprobada lo trate como disponibilidad;
+- ausencia de turno activo;
+- ausencia de rol operativo en un estado normal sin contradicción de turno;
+- ausencia de sede operativa en un estado normal sin contradicción estructural;
+- ausencia de rol base o cobertura administrativa cuando el carril base la requiere y el contexto no está corrupto;
+- dispositivo válido temporalmente sin actor session cuando aplique.
+
+`UNAVAILABLE` no se usa para ocultar un `StructuralIssueCode` bloqueante.
+
+---
+
+#### 11. Semántica de `INVALID`
+
+`INVALID` significa que existe una contradicción estructural que afecta el carril y no puede degradarse a ausencia normal.
+
+Ejemplos:
+
+- turno solapado o revisión contradictoria;
+- turno con sede inválida;
+- check-in incompatible presentado como activo;
+- rol operativo desconocido, inactivo o territorialmente incompatible;
+- sede operativa inválida;
+- área de otra sede;
+- área incompatible con rol;
+- configuración de dispositivo que contradice actor o territorio;
+- versión contractual incompatible;
+- snapshot mezclado;
+- contexto stale detectado.
+
+Un carril `INVALID` no puede participar como carril elegible de autorización hasta una nueva resolución válida.
+
+---
+
+#### 12. Semántica de `NOT_APPLICABLE`
+
+`NOT_APPLICABLE` significa que el carril no corresponde al actor o al contexto evaluado.
+
+No significa:
+
+- `DENY`;
+- error técnico;
+- falta de permiso;
+- bypass;
+- wildcard;
+- carril implícitamente satisfecho.
+
+Ejemplos conceptuales incluyen actores para los cuales no existe carril laboral operativo o contextos donde un carril no corresponde por naturaleza.
+
+La evaluación final conserva la modalidad del permiso y decide qué carriles necesita; CTX004 no lo decide.
+
+---
+
+#### 13. Tipos de razón consumidos
+
+`LaneReasonCode` es exclusivamente:
+
+```text
+type LaneReasonCode =
+  | StructuralIssueCode
+  | LaneAvailabilityReasonCode;
+```
+
+Cardinalidad cerrada:
+
+```text
+StructuralIssueCode        = 100
+LaneAvailabilityReasonCode = 10
+LaneReasonCode             = 110
+```
+
+Intersección entre los dos vocabularios contextuales:
+
+```text
+0
+```
+
+CTX004 no crea códigos, aliases, extensiones locales ni un tipo catch-all.
+
+---
+
+#### 14. Razones normales de disponibilidad
+
+Las diez razones normales admitidas permanecen exactamente:
+
+```text
+NON_LABOR_ACTOR
+DEVICE_ACTOR_SESSION_NOT_AVAILABLE
+EMPLOYEE_INACTIVE
+NO_ACTIVE_SHIFT
+NO_ACTIVE_CHECKIN
+NO_OPERATIONAL_AREA
+BASE_ROLE_NOT_AVAILABLE
+ADMINISTRATIVE_COVERAGE_NOT_AVAILABLE
+OPERATIONAL_ROLE_NOT_AVAILABLE
+OPERATIONAL_SITE_NOT_AVAILABLE
+```
+
+Estas razones:
+
+- no son `StructuralIssue`;
+- no se insertan dentro de `structural_issues`;
+- no sustituyen un problema bloqueante;
+- no se convierten automáticamente en una razón pública de autorización;
+- no se convierten en booleano.
+
+---
+
+#### 15. Problemas estructurales y severidad
+
+CTX004 consume los cien `StructuralIssueCode` del contrato compartido y conserva las cinco severidades:
+
+```text
+BLOCKING_ALL
+BLOCKING_BASE
+BLOCKING_OPERATIONAL
+WARNING
+INFO
+```
+
+Efecto contextual:
+
+```text
+BLOCKING_ALL
+→ invalida base y operational
+
+BLOCKING_BASE
+→ invalida base
+→ no invalida automáticamente operational
+
+BLOCKING_OPERATIONAL
+→ invalida operational
+→ no invalida automáticamente base
+
+WARNING / INFO
+→ no conceden autoridad
+→ no bloquean por sí solas
+```
+
+CTX004 no cambia la severidad de un issue, no la infiere desde el nombre y no duplica una causa raíz con otro código.
+
+---
+
+#### 16. Carril base
+
+El carril base conserva su independencia frente al contexto operativo.
+
+No requiere por sí mismo:
+
+- turno;
+- check-in;
+- rol operativo;
+- sede operativa;
+- área operativa.
+
+Su readiness se basa en la suficiencia e integridad de identidad, rol base y cobertura administrativa aplicables.
+
+Por tanto:
+
+```text
+problema exclusivamente operativo
+-x-> INVALID base automático
+```
+
+Y:
+
+```text
+check-out
+-x-> revocación automática del carril base
+```
+
+La decisión de un permiso base pertenece al evaluador canónico posterior.
+
+---
+
+#### 17. Carril operativo
+
+El carril operativo conserva como núcleo contextual:
+
+- actor laboral válido;
+- identidad laboral válida;
+- empleado utilizable;
+- turno vigente cuando corresponde;
+- rol operativo efectivo;
+- sede operativa válida;
+- área cuando el contexto o rol la exige;
+- compatibilidad de dispositivo cuando aplique;
+- ausencia de contradicciones `BLOCKING_OPERATIONAL` o `BLOCKING_ALL`.
+
+CTX004 no consulta grants, denies, permiso, scope o recurso para decidir su estado.
+
+---
+
+#### 18. Check-in y readiness operativo
+
+La ausencia de check-in no convierte universalmente el carril operativo en `UNAVAILABLE`.
+
+Regla canónica:
+
+```text
+operational.status = READY
++
+NO_ACTIVE_CHECKIN puede aparecer en reason_codes
+```
+
+cuando el núcleo operativo está estructuralmente íntegro y la ausencia de check-in es normal.
+
+Esto preserva la diferencia entre prerrequisitos:
+
+```text
+T
+→ requiere turno y núcleo operativo válido
+→ no requiere check-in
+
+T+C
+→ requiere además active_checkin_session válida
+```
+
+CTX004 no sabe qué permiso se está solicitando y, por tanto, no convierte `NO_ACTIVE_CHECKIN` en una denegación universal.
+
+---
+
+#### 19. Área opcional y readiness operativo
+
+La ausencia legítima de área puede coexistir con `READY` cuando el contexto operativo es site-wide y el contrato posterior no exige área.
+
+Por tanto:
+
+```text
+operational_area = null
++
+NO_OPERATIONAL_AREA
++
+contexto site-wide estructuralmente válido
+→ puede conservar operational.status = READY
+```
+
+Nunca:
+
+```text
+operational_area = null
+→ todas las áreas
+```
+
+Cuando el turno o rol exige área y la ausencia constituye contradicción, se conserva el `StructuralIssueCode` correspondiente y el carril queda `INVALID`.
+
+---
+
+#### 20. Distinción ausencia normal versus contradicción
+
+CTX004 debe preservar explícitamente:
+
+```text
+NO_ACTIVE_SHIFT
+≠ SHIFT_OVERLAP
+```
+
+```text
+NO_ACTIVE_CHECKIN
+≠ CHECKIN_SESSION_AMBIGUOUS
+```
+
+```text
+OPERATIONAL_ROLE_NOT_AVAILABLE
+≠ OPERATIONAL_ROLE_UNKNOWN
+```
+
+```text
+OPERATIONAL_SITE_NOT_AVAILABLE
+≠ OPERATIONAL_SITE_UNKNOWN
+```
+
+```text
+NO_OPERATIONAL_AREA
+≠ OPERATIONAL_AREA_SITE_MISMATCH
+```
+
+Una contradicción catalogada nunca se degrada a `UNAVAILABLE` para mejorar disponibilidad.
+
+---
+
+#### 21. Orden y deduplicación
+
+El orden canónico se conserva sin depender del orden de llegada.
+
+`LaneReadiness.reason_codes`:
+
+```text
+1. StructuralIssueCode aplicables, en orden estructural canónico
+2. LaneAvailabilityReasonCode, alfabéticamente
+3. cero duplicados
+```
+
+CTX004 no reordena por texto de UI, tiempo de respuesta, tabla, promesa o preferencia del consumidor.
+
+Mismo snapshot lógico:
+
+```text
+→ mismo status
+→ mismos reason_codes
+→ mismo orden
+```
+
+---
+
+#### 22. Independencia de carriles
+
+Las combinaciones son independientes y representables:
+
+| Base             | Operational      | Interpretación contextual                                               |
+| ---------------- | ---------------- | ----------------------------------------------------------------------- |
+| `READY`          | `READY`          | ambos núcleos contextuales están disponibles; todavía no existe `ALLOW` |
+| `READY`          | `UNAVAILABLE`    | base disponible; operativo no disponible en el snapshot                 |
+| `READY`          | `INVALID`        | base puede permanecer utilizable; operativo posee contradicción propia  |
+| `UNAVAILABLE`    | `READY`          | operativo puede estar listo aunque el carril base no lo esté            |
+| `INVALID`        | `READY`          | problema base no invalida automáticamente el carril operativo           |
+| `INVALID`        | `INVALID`        | existen bloqueos aplicables a ambos o contradicciones independientes    |
+| `NOT_APPLICABLE` | `READY`          | el carril base no corresponde y el operativo sí puede corresponder      |
+| `READY`          | `NOT_APPLICABLE` | el carril operativo no corresponde y el base sí puede corresponder      |
+
+`BLOCKING_ALL` es la excepción estructural que invalida ambos carriles.
+
+---
+
+#### 23. Relación con modalidades de autorización
+
+CTX004 no evalúa modalidad, pero preserva los estados necesarios para que el evaluador aplique:
+
+##### `BASE_ONLY`
+
+Consume el carril base cuando corresponda.
+
+##### `OPERATIONAL_ONLY`
+
+Consume el carril operativo y después aplica prerrequisitos, grants, denies, scope y recurso.
+
+##### `BASE_OR_OPERATIONAL`
+
+Los carriles permanecen independientes; no se fusionan contextos ni razones para fabricar un carril más permisivo.
+
+##### `BASE_AND_OPERATIONAL`
+
+Ambos carriles deberán estar contextualmente disponibles conforme al evaluador y después deberán satisfacer las reglas completas de autorización.
+
+En todos los casos:
+
+```text
+readiness necesaria
+≠ autorización suficiente
+```
+
+---
+
+#### 24. Frontera con `SHELL-AUTH-002`
+
+`SHELL-AUTH-002` mantiene la propiedad de `SafeContextProjectionV1@1.0.0`.
+
+CTX004 únicamente aporta los estados canónicos que esa proyección ya tiene aprobados:
+
+```text
+base_readiness
+operational_readiness
+```
+
+No crea:
+
+- otra proyección pública;
+- otro DTO;
+- otro subpath;
+- un export React;
+- una lista completa de `structural_issues` para cliente;
+- un booleano `can_operate`.
+
+La proyección segura sigue sin ser autoridad para mutaciones.
+
+---
+
+#### 25. Frontera con `SHELL-CTX-005`
+
+CTX004 conserva códigos tipados y estados dentro del contexto.
+
+CTX005 conserva exclusivamente la responsabilidad posterior de:
+
+- seleccionar razones contextuales seguras para exposición;
+- aplicar minimización;
+- impedir fuga de `subject_id`, fuente interna o evidencia sensible;
+- traducir el estado contextual hacia información de bloqueo segura sin convertirlo en decisión;
+- conservar separación frente a `AuthorizationReasonCode`.
+
+CTX004 no inventa copy, títulos, mensajes, acciones, locale ni mapeos nominales hacia razones públicas.
+
+---
+
+#### 26. Frontera con `SHELL-CTX-006`
+
+CTX004 no implementa caché.
+
+La responsabilidad permanece:
+
+```text
+SHELL-CTX-006
+→ L1 validada
+→ single-flight cross-request
+→ token de frescura
+→ límites temporales
+→ modos de caché
+→ invalidación
+```
+
+Un readiness almacenado solo puede reutilizarse como parte de un `AccessContext` íntegro y fresco.
+
+Queda prohibido cachear por separado:
+
+- `operational.status`;
+- `base.status`;
+- `reason_codes`;
+- `can_operate` derivado;
+- un booleano de UI.
+
+---
+
+#### 27. Frontera con `SHELL-AUTH-003`
+
+La memoización L0 y la write barrier pertenecen a `SHELL-AUTH-003`.
+
+Después de una mutación relevante que pueda alterar contexto:
+
+```text
+write barrier
+→ contexto previo deja de ser elegible
+→ nueva resolución
+→ nuevo readiness
+→ nueva evaluación si corresponde
+```
+
+CTX004 no mantiene un singleton, cache local cross-request ni estado mutable global.
+
+---
+
+#### 28. Frescura y snapshot
+
+Readiness pertenece al snapshot de `AccessContext`.
+
+Puede quedar obsoleto cuando cambia, entre otros:
+
+- sesión o actor;
+- estado del empleado;
+- rol base;
+- asignaciones o cobertura;
+- turno;
+- check-in;
+- rol operativo;
+- sede o área operativas;
+- dispositivo o actor session;
+- catálogos o configuración contractual relevante.
+
+Si la infraestructura de frescura determina `CONTEXT_STALE`:
+
+```text
+contexto previo
+→ no reutilizable
+```
+
+CTX004 no recalcula únicamente readiness sobre un snapshot viejo para intentar conservarlo.
+
+---
+
+#### 29. Prohibición de recomputación parcial
+
+La futura instancia no podrá recibir un contexto stale o incompatible y “repararlo” recalculando solo:
+
+- status;
+- reasons;
+- turno;
+- check-in;
+- territorio;
+- rol;
+- dispositivo.
+
+La regla es:
+
+```text
+snapshot no conforme
+→ nueva resolución autoritativa
+```
+
+No:
+
+```text
+snapshot no conforme
+→ parche local
+→ continuar
+```
+
+---
+
+#### 30. Dispositivo compartido
+
+En dispositivo compartido, readiness pertenece al actor efectivo y a la intersección restrictiva del dispositivo.
+
+Reglas:
+
+- dispositivo sin actor humano puede producir disponibilidad negativa normal según contrato;
+- actor session ambigua o incompatible conserva problema estructural;
+- cambio de actor invalida el snapshot anterior;
+- la sede o área del dispositivo no corrigen turno ni territorio laboral;
+- la allowlist del dispositivo no concede permiso;
+- el dispositivo no presta rol operativo;
+- `READY` no significa que cualquier capacidad admitida por el dispositivo esté autorizada.
+
+---
+
+#### 31. Simulación
+
+`SimulationContext` permanece separado de readiness real.
+
+Queda prohibido:
+
+- sustituir readiness real con readiness hipotético;
+- usar `WOULD_ALLOW` como `READY` real;
+- usar un selector simulado para reparar contexto real;
+- almacenar la simulación dentro de `AccessContextV1`;
+- convertir una proyección simulada en autoridad ejecutable.
+
+Una simulación podrá modelar estados hipotéticos en su contrato propio, pero no modifica CTX004 real.
+
+---
+
+#### 32. Compatibilidad legacy
+
+La dirección de compatibilidad permanece:
+
+```text
+AccessContextV1 canónico
+→ adapter legacy controlado
+```
+
+Nunca:
+
+```text
+can_operate / blocked_reasons / fila legacy
+→ reconstruir LaneReadiness canónico
+```
+
+`can_operate` puede existir temporalmente en una proyección legacy conforme a `AUTH-CTX-028`, pero:
+
+- no es `AuthorizationDecision`;
+- no se acepta como entrada de CTX004;
+- no se persiste como autoridad nueva;
+- no se utiliza para completar un `AccessContextV1`;
+- no se mantiene como arquitectura final;
+- no habilita fallback después de una denegación canónica.
+
+---
+
+#### 33. Fail closed
+
+CTX004 falla cerrado ante:
+
+- estado de readiness desconocido;
+- `StructuralIssueCode` desconocido;
+- `LaneAvailabilityReasonCode` desconocido;
+- `LaneReasonCode` fuera de las uniones aprobadas;
+- metadata estructural incompatible;
+- versión contractual desconocida;
+- schema incompatible;
+- reason code duplicado cuando la representación viola el contrato;
+- contradicción bloqueante degradada a disponibilidad normal;
+- contexto parcial;
+- cast desde string legacy;
+- snapshot stale;
+- mezcla de contexto real y simulación.
+
+No se utiliza `false` como sustituto de diagnóstico contractual.
+
+---
+
+#### 34. Matriz materializada de decisiones de readiness
+
+| Condición canónica observada                   | Base                                | Operational                                                   | Regla de CTX004                                          |
+| ---------------------------------------------- | ----------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------- |
+| ambos carriles íntegros                        | preservar resultado canónico        | preservar resultado canónico                                  | no producir ALLOW                                        |
+| solo ausencia normal de turno                  | no alterar por turno                | `UNAVAILABLE`                                                 | conservar `NO_ACTIVE_SHIFT`                              |
+| turno válido, sin check-in normal              | no alterar                          | puede ser `READY`                                             | conservar `NO_ACTIVE_CHECKIN`; no denegar universalmente |
+| turno solapado                                 | no alterar salvo issue global       | `INVALID`                                                     | conservar issue estructural; no desempatar               |
+| rol operativo inexistente como ausencia normal | no alterar                          | `UNAVAILABLE`                                                 | conservar razón de disponibilidad                        |
+| rol operativo desconocido/incompatible         | no alterar                          | `INVALID`                                                     | conservar issue estructural                              |
+| sede operativa ausente normal                  | no alterar                          | `UNAVAILABLE`                                                 | no usar sede primaria/seleccionada                       |
+| sede operativa inválida                        | no alterar salvo issue global       | `INVALID`                                                     | no corregir con dispositivo o recurso                    |
+| área opcional ausente                          | no alterar                          | puede ser `READY`                                             | `null` no es wildcard                                    |
+| área requerida ausente/incompatible            | no alterar                          | `INVALID`                                                     | no completar por fallback                                |
+| problema `BLOCKING_BASE`                       | `INVALID`                           | no invalidar automáticamente                                  | separación de carriles                                   |
+| problema `BLOCKING_OPERATIONAL`                | no invalidar automáticamente        | `INVALID`                                                     | separación de carriles                                   |
+| problema `BLOCKING_ALL`                        | `INVALID`                           | `INVALID`                                                     | ambos carriles bloqueados                                |
+| solo `WARNING`/`INFO`                          | no conceder ni bloquear por sí solo | no conceder ni bloquear por sí solo                           | preservar metadata                                       |
+| actor no laboral                               | según carril base aplicable         | `NOT_APPLICABLE` o estado contractual equivalente ya resuelto | no fabricar rol/turno                                    |
+| contexto stale                                 | no reutilizar                       | no reutilizar                                                 | exigir nueva resolución                                  |
+
+La matriz no reemplaza al productor autoritativo: define el comportamiento que la futura implementación compartida debe preservar y validar.
+
+---
+
+#### 35. Integración con productor y evaluador
+
+Cuando el backend canónico exista físicamente:
+
+```text
+AUTH-DB-033
+→ produce AccessContextV1
+→ incluye structural_issues y lane_readiness
+
+@vento/os-context / CTX004
+→ valida y consume readiness
+→ preserva estado y códigos
+→ no re-resuelve hechos
+
+AUTH-DB-034
+→ consume contexto válido
+→ evalúa permiso + modalidad + prerrequisitos + recurso + grants + denies
+→ produce AuthorizationDecisionV1
+```
+
+Antes de la materialización live de `AUTH-DB-033`, la futura instancia de CTX004 podrá probarse con fixtures contractuales versionados sin declarar integración remota inexistente.
+
+---
+
+#### 36. Perfil de pruebas de la futura instancia
+
+La futura instancia deberá cubrir, como mínimo, cinco perfiles:
+
+| Perfil                     | Objetivo                                                                                                                             |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `CONTRACT`                 | validar shapes, cuatro estados, 110 razones, orden, deduplicación y versiones                                                        |
+| `INTEGRATION`              | comprobar handoff CTX002/CTX003 → readiness → AUTH002/AUTH003/CTX005/CTX006/backend                                                  |
+| `DENIAL_AND_FAIL_CLOSED`   | demostrar que readiness no autoriza, que contradicciones no se degradan y que valores desconocidos bloquean                          |
+| `SECURITY_RLS`             | demostrar ausencia de autoridad cliente/booleanos y paridad con fronteras server/RPC/RLS únicamente cuando existan físicamente       |
+| `REGRESSION_COMPATIBILITY` | impedir reaparición de `can_operate`, `blocked_reasons` libre, fallbacks territoriales y autoridad legacy; probar rollback soportado |
+
+La clasificación `SECURITY_RLS` no autoriza declarar RLS verificada antes de disponer de objetos, ambiente y evidencia reales.
+
+---
+
+#### 37. Escenarios mínimos de prueba
+
+##### Contrato y estados
+
+1. aceptar `READY` válido;
+2. aceptar `UNAVAILABLE` válido;
+3. aceptar `INVALID` válido;
+4. aceptar `NOT_APPLICABLE` válido;
+5. rechazar un quinto estado;
+6. rechazar `LaneReasonCode` desconocido;
+7. rechazar `StructuralIssueCode` desconocido conforme al contrato;
+8. rechazar metadata estructural incompatible;
+9. conservar orden determinista;
+10. impedir duplicados contractualmente inválidos.
+
+##### Semántica operacional
+
+11. turno ausente normal → operational `UNAVAILABLE` con `NO_ACTIVE_SHIFT`;
+12. turno válido sin check-in → operational puede permanecer `READY` con `NO_ACTIVE_CHECKIN`;
+13. check-in ambiguo → operational `INVALID`, no `UNAVAILABLE`;
+14. turno solapado → operational `INVALID`;
+15. rol operativo ausente normal → `UNAVAILABLE` cuando corresponda;
+16. rol operativo desconocido → `INVALID`;
+17. sede operativa ausente normal → `UNAVAILABLE` cuando corresponda;
+18. sede operativa inválida → `INVALID`;
+19. área opcional ausente → puede permanecer `READY`;
+20. área obligatoria ausente → `INVALID`;
+21. área de otra sede → `INVALID`;
+22. incompatibilidad de rol-área → `INVALID`;
+23. dispositivo válido sin actor temporal → disponibilidad negativa normal según contrato;
+24. sesión de actor ambigua → invalidez estructural;
+25. `BLOCKING_OPERATIONAL` no invalida automáticamente base;
+26. `BLOCKING_BASE` no invalida automáticamente operational;
+27. `BLOCKING_ALL` invalida ambos.
+
+##### Separación de autorización
+
+28. `READY` no produce `ALLOW`;
+29. dos carriles `READY` no producen `ALLOW`;
+30. un booleano `can_operate=true` legacy no satisface CTX004;
+31. falta de grant no se convierte en `StructuralIssue` local;
+32. explicit deny posterior no cambia retroactivamente el readiness del snapshot;
+33. recurso incompatible no se resuelve dentro de CTX004;
+34. modalidad del permiso no se decide dentro de CTX004.
+
+##### Seguridad, frescura y compatibilidad
+
+35. sede seleccionada no cambia readiness;
+36. área seleccionada no cambia readiness;
+37. role override no cambia readiness real;
+38. cambio de actor invalida snapshot previo;
+39. write barrier obliga nueva resolución antes de reutilizar readiness afectado;
+40. `CONTEXT_STALE` impide reutilización;
+41. `blocked_reasons: string[]` no se acepta como `LaneReasonCode[]`;
+42. payload parcial de `EffectiveContext` no se promueve a `AccessContextV1`;
+43. safe projection cliente no autoriza mutación;
+44. simulación no cambia readiness real;
+45. evidencia de otra unidad/versión/commit se considera no atribuible;
+46. rollback vuelve a una combinación soportada sin reinstalar booleanos como autoridad.
+
+##### Integración física cuando exista infraestructura
+
+47. SDK y productor backend preservan exactamente status/reasons;
+48. RPC sensibles y evaluador consumen el mismo contexto sin recrear readiness local;
+49. RLS aplicable no usa `can_operate` ni selected site/area como autoridad;
+50. migración de consumidor elimina fallback a booleano legacy después del cutover.
+
+---
+
+#### 38. Gates de futura materialización
+
+`SHELL-CTX-004::<implementation_unit_id>` deberá superar doce gates:
+
+| Gate                       | Condición                                                                                                        |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| 1. `IDENTITY`              | unidad asignada por E5 y owner package habilitado                                                                |
+| 2. `LINEAGE`               | una sola implementación física para la unidad; consumidores enlazados sin duplicación                            |
+| 3. `CONTRACT_INPUT`        | `AccessContext@1.0.0` y schemas exactos validados antes del consumo                                              |
+| 4. `READINESS_STATES`      | cuatro estados y cero aliases/booleanos canónicos                                                                |
+| 5. `LANE_REASON_CODES`     | 100 + 10 = 110 valores, namespaces cerrados, orden y deduplicación válidos                                       |
+| 6. `LANE_SEPARATION`       | base y operational independientes; severidades afectan únicamente los carriles aprobados                         |
+| 7. `OPERATIONAL_SEMANTICS` | turno/check-in/rol/sede/área preservan `UNAVAILABLE` versus `INVALID` y la excepción `READY + NO_ACTIVE_CHECKIN` |
+| 8. `NO_AUTHORITY_BOOLEAN`  | `READY`, legacy booleans y safe projections no autorizan acciones                                                |
+| 9. `FRESHNESS_HANDOFF`     | write barrier y frescura se integran con propietarios físicos disponibles sin cache local paralelo               |
+| 10. `INTEGRATION_SECURITY` | adapters/consumidores aplicables conservan server authority y RLS/RPC solo se certifican con evidencia real      |
+| 11. `COMPATIBILITY`        | combinación SDK/contracts/backend/consumidores probada; legacy aislado sin fallback permisivo                    |
+| 12. `ROLLBACK`             | rollback reproducible a combinación soportada sin reactivar bypass, booleanos o autoridad legacy                 |
+
+Un gate no ejecutado cuando sea aplicable, con evidencia stale o perteneciente a otra combinación impide certificar la instancia.
+
+---
+
+#### 39. Evidencia requerida por futura instancia
+
+| Clase de evidencia | Contenido mínimo                                                                    |
+| ------------------ | ----------------------------------------------------------------------------------- |
+| `IDENTITY`         | implementation unit, owner package, consumers y commits                             |
+| `CONTRACTS`        | versiones exactas de `@vento/contracts/authorization`, schemas y vocabularios       |
+| `READINESS`        | estados, reasons, orden, deduplicación e invariantes                                |
+| `SEPARATION`       | prueba de `READY ≠ ALLOW` y ausencia de booleanos canónicos                         |
+| `INTEGRATION`      | productor, SDK, adapters y evaluador aplicables sobre la misma combinación          |
+| `SECURITY`         | inputs manipulados, selected site/area, role override y cliente sin autoridad       |
+| `RLS_RPC`          | evidencia real solo cuando objetos y ambiente aplicables existan                    |
+| `FRESHNESS`        | barreras, invalidación y rechazo de stale cuando infraestructura propietaria exista |
+| `COMPATIBILITY`    | consumidores y combinación de versiones probados                                    |
+| `REGRESSION`       | ausencia de reaparición de `can_operate`/`blocked_reasons` como autoridad           |
+| `ROLLBACK`         | combinación previa, procedimiento y ensayo                                          |
+| `CERTIFICATION`    | doce gates, resultado agregado y evidencia atribuible                               |
+
+No se utilizará evidencia de otra unidad, build o commit como sustituto.
+
+---
+
+#### 40. Compatibilidad y adopción
+
+La futura materialización deberá admitir adopción gradual sin crear dos semánticas canónicas.
+
+Reglas:
+
+1. los consumidores nuevos usan únicamente la superficie canónica materializada;
+2. legacy permanece aislado bajo la frontera aprobada;
+3. un consumidor todavía legacy no modifica el significado de `LaneReadiness`;
+4. paridad compara comportamiento contractual, no igualdad de booleanos;
+5. una diferencia que corrige un bug legacy no obliga a degradar la implementación canónica;
+6. ningún consumidor puede introducir un quinto estado o código local;
+7. un consumidor client solo recibe proyección segura;
+8. una mutación siempre reevalúa en servidor;
+9. la combinación exacta de contratos/SDK/backend queda registrada en evidencia;
+10. la migración multi-repositorio permanece en `SHELL-AUTH-005`.
+
+---
+
+#### 41. Rollback
+
+El rollback de una futura instancia podrá volver a una combinación anterior únicamente si continúa soportada y cumple:
+
+- contratos compatibles;
+- evidencia reproducible;
+- `READY` sigue sin equivaler a `ALLOW`;
+- no se restaura `can_operate` como fuente de autorización;
+- no se restaura `blocked_reasons` libre como contrato canónico;
+- no se reactiva bypass por rol;
+- no se reactiva selected site/area como autoridad;
+- no se mezcla simulación con contexto real;
+- no se sirve contexto stale;
+- no se pierde lineage de la unidad.
+
+Cuando el incidente esté en la capa L1, el rollback normal permanece en `SHELL-CTX-006` hacia `REQUEST_ONLY`; CTX004 no crea un modo de caché propio.
+
+Rollback no equivale a reinstalar deuda retirada como arquitectura objetivo.
+
+---
+
+#### 42. Dependencias físicas y orden de integración
+
+El marcador global puede cerrarse documentalmente sin que exista la materialización física.
+
+Para una futura instancia, las dependencias se evalúan por el package propietario y su orden aplicable:
+
+```text
+contratos compartidos materializados
++
+SDK contextual base materializado
++
+productor backend cuando la integración live sea exigible
++
+readiness CTX004
+→ adapters/evaluador/consumidores posteriores
+```
+
+CTX004 no adelanta:
+
+- `AUTH-DB-033`;
+- `AUTH-DB-035`;
+- `AUTH-DB-034`;
+- `SHELL-AUTH-002`;
+- `SHELL-AUTH-003`;
+- `SHELL-CTX-005`;
+- `SHELL-CTX-006`;
+- migración de consumidores.
+
+---
+
+#### 43. Reconciliación de responsabilidades y destinos
+
+| Responsabilidad                              | Propietario exacto                          |
+| -------------------------------------------- | ------------------------------------------- |
+| forma `AccessContext` y `LaneReadiness`      | `SHELL-CON-007` / contratos de autorización |
+| códigos estructurales y availability reasons | `SHELL-CON-008`                             |
+| módulo contextual único                      | `SHELL-CTX-001`                             |
+| turno y check-in                             | `SHELL-CTX-002`                             |
+| sede y área operativas                       | `SHELL-CTX-003`                             |
+| readiness tipado sin booleanos               | `SHELL-CTX-004`                             |
+| razones seguras de bloqueo contextual        | `SHELL-CTX-005`                             |
+| L1, single-flight y frescura                 | `SHELL-CTX-006`                             |
+| proyecciones seguras server/client           | `SHELL-AUTH-002`                            |
+| L0 y write barrier                           | `SHELL-AUTH-003`                            |
+| freeze contra autoridad legacy               | `SHELL-AUTH-004`                            |
+| migración de consumidores                    | `SHELL-AUTH-005`                            |
+| productor físico de contexto                 | `AUTH-DB-033`                               |
+| token transaccional de frescura              | `AUTH-DB-035`                               |
+| evaluador autoritativo                       | `AUTH-DB-034`                               |
+| retiro de backend legacy                     | `AUTH-DB-030`                               |
+| certificación final                          | `AUTH-DB-031`                               |
+
+No queda una responsabilidad detectada sin propietario documental.
+
+---
+
+#### 44. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** CTX004 no introduce un nuevo contrato serializado, estado, código, regla de autorización, productor de hechos, política de caché ni API pública. Materializa dentro del SDK una responsabilidad ya aprobada por `AUTH-CTX-015` y centralizada por `SHELL-CON-007..008`; las obligaciones de tipos, namespaces, ausencia de autoridad booleana, proyección segura, seguridad, frescura, compatibilidad y migración ya están protegidas por requisitos vigentes. Crear otro requisito repetiría comportamiento ya identificado en el registro canónico.
+
+El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 45. Cobertura de prueba vigente reutilizada
+
+La futura instancia deberá producir evidencia, según aplique, contra la cobertura ya existente, sin modificarla:
+
+- `TREQ-AUTH-008` — coherencia transversal de contexto operativo y autorización entre SDK, servidor, RPC y RLS;
+- `TREQ-SHELL-043` — tipos contextuales canónicos, separación real/simulado y prohibición de `can_operate` como autoridad;
+- `TREQ-SHELL-044` — 100 `StructuralIssueCode`, 10 `LaneAvailabilityReasonCode`, 110 `LaneReasonCode` y namespaces cerrados;
+- `TREQ-SHELL-062` — autoridad de contratos, validación runtime y prohibición de shapes/booleanos legacy;
+- `TREQ-SHELL-063` — separación server/client y fail closed;
+- `TREQ-SHELL-070` — proyección segura de los estados de readiness sin evidencia sensible ni autoridad ejecutable;
+- `TREQ-SHELL-078` — write barrier y nueva resolución después de cambios relevantes;
+- `TREQ-SHELL-092` — consumidores migrados sin `can_operate`, booleanos legacy ni contexto fabricado por caller.
+
+La enumeración documenta cobertura existente; no crea, modifica, difiere, descarta ni vuelve obsoleto ningún TREQ.
+
+---
+
+#### 46. Evidencia de validación del marcador global
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                       |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador global es documental y no materializa código ni package; la validación build corresponde a la futura instancia física y al checkout canónico completo.              |
+| LOCAL     | PASS           | La definición reconcilia CTX001..003, contratos de contexto/códigos, AUTH-CTX-015, compatibilidad, frescura y fronteras propietarias sin introducir API, código ni TREQ nuevos. |
+| REMOTA    | NOT_APPLICABLE | El marcador no autoriza escritura, despliegue ni modificación remota.                                                                                                           |
+| OPERATIVA | NOT_APPLICABLE | No se ejecuta tráfico, autorización, consumidor ni operación empresarial.                                                                                                       |
+| FÍSICA    | NOT_APPLICABLE | No existe materialización `SHELL-CTX-004::<implementation_unit_id>` ni cambio de package, SQL, RLS, RPC o Supabase.                                                             |
+
+---
+
+#### 47. Puerta de cierre del marcador global
+
+El marcador global queda documentalmente cerrado cuando:
+
+1. `SHELL-CTX-003` se conserva como precedencia inmediata aprobada;
+2. CTX004 usa `PER_IMPLEMENTATION_UNIT`;
+3. `AccessContext@1.0.0` permanece como única entrada canónica;
+4. se preservan exactamente dos carriles de readiness;
+5. se preservan exactamente cuatro estados;
+6. se preservan 100 códigos estructurales, 10 razones de disponibilidad y 110 `LaneReasonCode`;
+7. `READY` queda separado de `ALLOW`;
+8. no se crea `can_operate` ni booleano equivalente;
+9. `UNAVAILABLE` queda separado de `INVALID`;
+10. `NOT_APPLICABLE` queda separado de `DENY`;
+11. `READY + NO_ACTIVE_CHECKIN` queda preservado para el núcleo operativo cuando la ausencia es normal;
+12. la ausencia opcional de área no se convierte en wildcard;
+13. base y operational permanecen independientes;
+14. `BLOCKING_ALL`, `BLOCKING_BASE` y `BLOCKING_OPERATIONAL` conservan su alcance;
+15. reason codes conservan orden y deduplicación deterministas;
+16. CTX004 no re-resuelve hechos empresariales;
+17. CTX004 no crea otra safe projection;
+18. CTX005 conserva razones seguras;
+19. CTX006 conserva L1/frescura;
+20. AUTH003 conserva L0/write barrier;
+21. el legacy solo fluye desde canónico hacia legacy;
+22. se concreta el perfil previsto de contrato, integración, denegaciones, seguridad/RLS y regresión;
+23. se definen 50 escenarios mínimos;
+24. se definen doce gates de futura instancia;
+25. se define compatibilidad y rollback;
+26. se justifican cero cambios TREQ;
+27. se mantienen cero cambios físicos y cero cambios Supabase.
+
+---
+
+#### 48. Puerta de cierre de futura instancia
+
+`SHELL-CTX-004::<implementation_unit_id>` podrá quedar `PASS` únicamente cuando:
+
+- unidad y owner package estén habilitados por E5;
+- exista una sola materialización para la unidad;
+- contratos/versiones/schemas sean exactos;
+- los cuatro estados sean los únicos aceptados;
+- los 110 reason codes sean los únicos admitidos;
+- orden y deduplicación sean deterministas;
+- `READY` no produzca ni implique `ALLOW`;
+- no exista booleano canónico de autorización;
+- `UNAVAILABLE` e `INVALID` preserven sus causas;
+- `READY + NO_ACTIVE_CHECKIN` funcione conforme al contrato;
+- ausencia opcional de área no sea wildcard;
+- carriles base/operational permanezcan independientes;
+- inputs legacy no reconstruyan readiness canónico;
+- safe client projection no autorice mutaciones;
+- write barrier/frescura se integren cuando sus propietarios estén materializados;
+- RLS/RPC solo se marquen PASS con objetos y ambiente reales;
+- pruebas contractuales, integración, denegaciones, seguridad y regresión aplicables estén en PASS;
+- compatibilidad corresponda a la misma combinación de versiones;
+- evidencia pertenezca a la misma unidad/commits;
+- rollback haya sido ensayado sin reactivar autoridad legacy.
+
+---
+
+#### 49. Criterios de aceptación
+
+- [x] `SHELL-CTX-003` es la precedencia inmediata aprobada;
+- [x] `SHELL-CTX-005` permanece únicamente reservada;
+- [x] se usa `PER_IMPLEMENTATION_UNIT`;
+- [x] no se inventa `implementation_unit_id`;
+- [x] se separa contrato global de materialización física;
+- [x] se conserva `AccessContext@1.0.0` sin cambio de forma;
+- [x] se conservan `lane_readiness.base` y `lane_readiness.operational`;
+- [x] se conservan `READY`, `UNAVAILABLE`, `INVALID` y `NOT_APPLICABLE`;
+- [x] `READY` no equivale a `ALLOW`;
+- [x] `NOT_APPLICABLE` no equivale a `DENY`;
+- [x] se prohíbe `can_operate` como autoridad canónica;
+- [x] se preservan 100 `StructuralIssueCode`;
+- [x] se preservan 10 `LaneAvailabilityReasonCode`;
+- [x] se preservan 110 `LaneReasonCode`;
+- [x] no se crean aliases ni códigos locales;
+- [x] se preservan cinco severidades;
+- [x] `BLOCKING_BASE` no bloquea operational automáticamente;
+- [x] `BLOCKING_OPERATIONAL` no bloquea base automáticamente;
+- [x] `BLOCKING_ALL` invalida ambos carriles;
+- [x] `WARNING` e `INFO` no conceden autoridad;
+- [x] ausencia normal permanece separada de contradicción;
+- [x] `READY + NO_ACTIVE_CHECKIN` queda preservado;
+- [x] permisos `T` no quedan convertidos en `T+C` por CTX004;
+- [x] área opcional ausente puede coexistir con readiness cuando el contrato lo permite;
+- [x] `null` nunca se interpreta como wildcard;
+- [x] se mantiene independencia entre base y operational;
+- [x] CTX004 no consulta grants, denies, permiso, scope o recurso;
+- [x] CTX004 no crea safe projection adicional;
+- [x] AUTH002 conserva `SafeContextProjectionV1`;
+- [x] CTX005 conserva razones seguras;
+- [x] CTX006 conserva L1/frescura;
+- [x] AUTH003 conserva L0/write barrier;
+- [x] no se acepta `blocked_reasons` como `LaneReasonCode[]`;
+- [x] no se acepta `EffectiveContext` como entrada canónica;
+- [x] se conserva fail closed ante valores desconocidos;
+- [x] se define orden y deduplicación deterministas;
+- [x] se concreta matriz materializada de decisiones de readiness;
+- [x] se definen cinco perfiles de prueba;
+- [x] se definen 50 escenarios mínimos;
+- [x] se definen doce gates;
+- [x] se define evidencia futura;
+- [x] se define compatibilidad y rollback;
+- [x] se crean cero TREQ y se modifica cero TREQ;
+- [x] se declaran cero cambios físicos y cero cambios Supabase;
+- [x] no se desarrolla `SHELL-CTX-005`.
+
+---
+
+#### 50. Límites
+
+Esta tarea no:
+
+- modifica `packages/os-context`;
+- crea archivos TypeScript;
+- publica packages;
+- crea un package contextual adicional;
+- crea un subpath público adicional;
+- modifica `@vento/contracts` físicamente;
+- modifica manifests o lockfiles;
+- implementa `AUTH-DB-033`;
+- implementa `AUTH-DB-035`;
+- implementa `AUTH-DB-034`;
+- implementa adapters de `SHELL-AUTH-002`;
+- implementa L0 de `SHELL-AUTH-003`;
+- implementa L1 de `SHELL-CTX-006`;
+- implementa razones seguras de `SHELL-CTX-005`;
+- migra consumidores;
+- retira RPC legacy;
+- consulta tablas para reconstruir contexto;
+- cambia contratos serializados;
+- crea códigos nuevos;
+- crea booleanos de autorización;
+- crea SQL, migraciones, RLS, grants, triggers, Storage, Realtime o Edge Functions;
+- ejecuta cambios en Supabase;
+- declara pruebas RLS/RPC ejecutadas sin infraestructura real;
+- ejecuta `SHELL-CTX-004::<implementation_unit_id>`;
+- desarrolla la tarea siguiente.
+
+---
+
+#### 51. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual`
+
+
 ### [ ] SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual
 ### [ ] SHELL-CTX-006 — Implementar caché compartida, single-flight y validación de frescura
 

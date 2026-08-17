@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **956** |
+| Aprobadas | **957** |
 | En propuesta | **0** |
-| No iniciadas | **638** |
+| No iniciadas | **637** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **59.97% (956/1594)** |
+| Porcentaje de completamiento | **60.04% (957/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CTX-003` — Implementar proyecciones seguras de sede y área efectivas | ✅ APROBADA |
-| Tarea actual | `SHELL-CTX-004` — Implementar readiness operativo sin booleanos de autorización | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CTX-005` — Implementar razones seguras de bloqueo contextual | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CTX-004` — Implementar readiness operativo sin booleanos de autorización | ✅ APROBADA |
+| Tarea actual | `SHELL-CTX-005` — Implementar razones seguras de bloqueo contextual | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CTX-006` — Implementar caché compartida, single-flight y validación de frescura | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -783,7 +783,7 @@
 | ✅ APROBADA | `SHELL-CTX-001` | Consolidar el módulo de contexto dentro de @vento/os-context | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CTX-002` | Implementar consumo canónico de turno y check-in | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CTX-003` | Implementar proyecciones seguras de sede y área efectivas | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-CTX-004` | Implementar readiness operativo sin booleanos de autorización | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-CTX-004` | Implementar readiness operativo sin booleanos de autorización | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CTX-005` | Implementar razones seguras de bloqueo contextual | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CTX-006` | Implementar caché compartida, single-flight y validación de frescura | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-APP-001` | Inventariar la experiencia actual del hub | `bloques/H2_SHELL_APP/01_INVENTARIO_Y_VISIBILIDAD_DE_APLICACIONES.md` |
