@@ -1095,8 +1095,10 @@ los catálogos canónicos, sin duplicarlos como fuente de autoridad:
 - `INICIADOR_VENTO_ACTUAL.txt` reúne automáticamente la instrucción, identidad,
   dependencias, autorización y contenido canónico que debe cargarse en ChatGPT.
 
-Estos artefactos obedecen `implementation-readiness-policy.json` y
-`implementation-control.json` en modo `CONTROLLED_EXECUTION`. Todo corte nuevo
+Estos artefactos obedecen `implementation-readiness-policy.json` y la política
+común de `implementation-control.json` en modo `CONTROLLED_EXECUTION`. Cada
+instancia física tiene un registro exclusivo bajo `implementation-instances/`;
+crear una instancia nueva no reemplaza ni reescribe las anteriores. Todo corte nuevo
 inicia sin autorización; el watcher puede crear cortes faltantes y regenerar sus
 vistas, pero no avanzará estados, no autorizará implementación, no alterará
 marcadores canónicos ni inferirá evidencia. Cada instancia física requiere
@@ -1105,8 +1107,9 @@ Los estados `IMPLEMENTED` y `VERIFIED` exigirán evidencia local explícita.
 
 Los artefactos derivados son ayuda de desarrollo de solo lectura. No aprueban
 tareas, no sustituyen evidencia remota, operativa o física y no autorizan cambios;
-la autorización vive exclusivamente en la instancia exacta registrada por
-`implementation-control.json`.
+la autorización y su evidencia viven exclusivamente en el archivo exacto de la
+instancia bajo `implementation-instances/`. Una instancia `VERIFIED` es
+histórica e inmutable.
 La consola resume las advertencias prospectivas en una línea; el archivo local
 conserva el detalle completo por tarea para evitar ruido repetitivo sin ocultar
 hallazgos.

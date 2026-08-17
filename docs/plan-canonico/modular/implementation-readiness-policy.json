@@ -5,6 +5,7 @@
   "automatic_state_changes": false,
   "implementation_authorized": false,
   "authorization_source": "implementation-control.json",
+  "authorization_records_directory": "implementation-instances",
   "application_readiness_statuses": [
     "BASE_COVERED",
     "PARTIAL",

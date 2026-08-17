@@ -16,6 +16,10 @@
     "evidence_reply_prefix": "RESULTADO DEL PASO ",
     "assisted_execution_authorization_prefix": "AUTORIZO EJECUCION ASISTIDA DEL PASO "
   },
+  "instance_storage_mode": "ONE_FILE_PER_INSTANCE",
+  "instance_records_directory": "docs/plan-canonico/modular/implementation-instances",
+  "instance_history_mode": "APPEND_ONLY_LEDGER",
+  "verified_instances_immutable": true,
   "instance_statuses": [
     "AUTHORIZED",
     "IN_PROGRESS",
@@ -23,40 +27,5 @@
     "IMPLEMENTED",
     "VERIFIED",
     "DEFERRED"
-  ],
-  "instances": [
-    {
-      "instance_id": "SHELL-CI-001::GLOBAL",
-      "task_id": "SHELL-CI-001",
-      "status": "IN_PROGRESS",
-      "target_repositories": [
-        "devVentoGroup/vento-shell"
-      ],
-      "authorized_changes": [
-        "Crear scripts/quality/shared-package-test-gate.mjs como única implementación global del gate de pruebas propias de packages.",
-        "Crear scripts/quality/shared-package-test-gate.test.mjs para autocertificar los casos positivos, negativos y regresiones obligatorios.",
-        "Generar evidencia runtime únicamente bajo .delivery/shared-package-tests/ sin versionarla."
-      ],
-      "validation_commands": [
-        "npm ci",
-        "node --test scripts/quality/shared-package-test-gate.test.mjs",
-        "npm run lint -- scripts/quality/shared-package-test-gate.mjs scripts/quality/shared-package-test-gate.test.mjs",
-        "npm run docs:plan:build",
-        "npm run docs:plan:check",
-        "npm run docs:plan:test",
-        "git diff --check"
-      ],
-      "authorization": {
-        "decision": "APPROVED",
-        "approved_by": "User",
-        "approved_at": "2026-08-17",
-        "timezone": "America/Bogota",
-        "approval_statement": "Apruebo exclusivamente el alcance físico declarado en esta instancia. No autorizo cambios en packages, consumidores, package.json, GitHub Actions, Supabase, releases, despliegues ni infraestructura.",
-        "proposal_scope_sha256": "954362d000ff44846b9b810fc81981567d735b4d757db06a91fe961961b1d2cd",
-        "proposal_response_sha256": "0DE11C8AD494A01572E501343DA0791D014A845DC0D1C7B130F46EC77C87BE71",
-        "source_contract_sha256": "67ccf973ab4e67e353d7ef13251f9dfdd1953156acea261f380f205dfa5203e0"
-      },
-      "evidence": []
-    }
   ]
 }

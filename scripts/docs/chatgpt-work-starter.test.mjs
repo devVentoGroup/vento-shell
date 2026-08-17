@@ -17,6 +17,8 @@ test('genera un único iniciador desde la acción operativa vigente', () => {
   assert.match(result.source, /Operador que realiza los cambios: USUARIO HUMANO/u);
   assert.match(result.source, /Interacción: PASOS CONSECUTIVOS HASTA UN GATE DE EVIDENCIA/u);
   assert.match(result.source, /Raíz local exacta del repositorio: .+vento-shell/u);
+  assert.match(result.source, /HISTORIAL FÍSICO ACUMULATIVO/u);
+  assert.match(result.source, /Modo de almacenamiento: UN ARCHIVO POR INSTANCIA/u);
   assert.match(result.source, /Escrituras del asistente en archivos o repositorios: NO AUTORIZADAS/u);
   assert.match(result.source, /AUTORIZO EJECUCION ASISTIDA DEL PASO N/u);
   assert.match(result.source, /Contrato propietario SHA-256: [a-f0-9]{64}/u);
@@ -65,15 +67,23 @@ test('la autorización exige JSON completo, evidencia humana y pasos manuales ex
   const source = actionResponseContract({
     primaryAction: {
       type: 'AUTORIZAR_IMPLEMENTACION',
-      target: 'SHELL-CI-001::GLOBAL',
+      target: 'SHELL-CI-002::GLOBAL',
+    },
+    physical: {
+      recordedInstances: [{ instance_id: 'SHELL-CI-001::GLOBAL', status: 'VERIFIED' }],
     },
   }, 'a'.repeat(64));
 
   assert.match(source, /exactamente sus ocho secciones/u);
   assert.match(source, /implementation-control\.json/u);
-  assert.match(source, /desde "instances": \[ hasta su corchete final \]/u);
-  assert.match(source, /reemplazará exclusivamente la línea "instances": \[\]/u);
-  assert.match(source, /No entregues únicamente el objeto interior/u);
+  assert.match(
+    source,
+    /implementation-instances\/SHELL-CI-002__GLOBAL\.json/u,
+  );
+  assert.match(source, /El registro histórico actual contiene 1 instancia/u);
+  assert.match(source, /SHELL-CI-001::GLOBAL=VERIFIED/u);
+  assert.match(source, /No entregues una propiedad instances/u);
+  assert.match(source, /nunca borres, reemplaces, reordenes ni reescribas/u);
   assert.match(source, /status AUTHORIZED/u);
   assert.match(source, /authorization y evidence: \[\]/u);
   assert.match(source, /decision: APPROVED/u);
@@ -90,6 +100,7 @@ test('la autorización exige JSON completo, evidencia humana y pasos manuales ex
   assert.match(source, /control de código fuente de VS Code/u);
   assert.match(source, /INICIADOR_VENTO_ACTUAL\.txt recién regenerado/u);
   assert.match(source, /mensaje de commit recomendado/u);
+  assert.doesNotMatch(source, /reemplazar solo instances: \[\]/u);
 });
 
 test('las demás acciones también terminan con una guía operativa exacta', () => {
@@ -124,6 +135,8 @@ test('la plantilla global conserva el modo humano aunque cambie la acción actua
   assert.match(template, /ChatGPT entrega seguidos todos los pasos/u);
   assert.match(template, /no se pausa entre pasos por rutina ni para pedir `HECHO`/u);
   assert.match(template, /RESULTADO DEL PASO N/u);
+  assert.match(template, /un archivo por instancia/u);
+  assert.match(template, /nunca se reemplaza un arreglo global `instances`/u);
   assert.match(template, /AUTORIZO EJECUCION ASISTIDA DEL PASO 3/u);
   assert.match(template, /“haz la acción principal” no autorizan escrituras automáticas/u);
 });

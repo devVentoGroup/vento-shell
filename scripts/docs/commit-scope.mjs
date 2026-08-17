@@ -29,6 +29,9 @@ function normalizePath(filePath) {
 export function classifyCommitPath(filePath) {
   const normalized = normalizePath(filePath);
   if (TRANSVERSAL_PLAN_FILES.has(normalized)) return 'TRANSVERSAL';
+  if (normalized.startsWith('docs/plan-canonico/modular/implementation-instances/')) {
+    return 'TRANSVERSAL';
+  }
   if (DERIVED_PLAN_PROJECTIONS.has(normalized)) return 'PROJECTION';
   if (
     normalized === 'AGENTS.md'

@@ -164,6 +164,9 @@ function validatePolicy(policy) {
   if (policy?.authorization_source !== 'implementation-control.json') {
     errors.push('authorization_source debe ser implementation-control.json.');
   }
+  if (policy?.authorization_records_directory !== 'implementation-instances') {
+    errors.push('authorization_records_directory debe ser implementation-instances.');
+  }
   for (const key of ['application_readiness_statuses', 'handoff_statuses', 'slice_statuses', 'slices']) {
     if (!Array.isArray(policy?.[key]) || policy[key].length === 0) errors.push(`${key} debe ser un arreglo no vacío.`);
   }

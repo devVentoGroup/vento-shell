@@ -8,6 +8,10 @@ const baseControl = {
   authorization_mode: 'EXPLICIT_PER_INSTANCE',
   automatic_authorization: false,
   single_primary_action: true,
+  instance_storage_mode: 'ONE_FILE_PER_INSTANCE',
+  instance_records_directory: 'docs/plan-canonico/modular/implementation-instances',
+  instance_history_mode: 'APPEND_ONLY_LEDGER',
+  verified_instances_immutable: true,
   execution_operator_policy: {
     default_operator: 'HUMAN_USER',
     interaction_mode: 'CONTINUOUS_BATCH_UNTIL_EVIDENCE_GATE',
@@ -138,6 +142,24 @@ test('la segunda instancia global solo queda elegible después de verificar la p
   });
   assert.equal(result.primaryAction.type, 'AUTORIZAR_IMPLEMENTACION');
   assert.equal(result.primaryAction.target, 'SHELL-CI-002::GLOBAL');
+  assert.equal(
+    result.physical.active.recordPath,
+    'docs/plan-canonico/modular/implementation-instances/SHELL-CI-002__GLOBAL.json',
+  );
+  assert.deepEqual(
+    result.physical.recordedInstances.map(({ instance_id: instanceId }) => instanceId),
+    ['SHELL-CI-001::GLOBAL'],
+  );
+});
+
+test('el historial físico exige almacenamiento acumulativo por archivo', () => {
+  assert.throws(() => deriveImplementationControl({
+    control: {
+      ...baseControl,
+      instance_history_mode: 'REPLACE_CURRENT',
+    },
+    workTopology: topology(),
+  }), /instance_history_mode debe ser APPEND_ONLY_LEDGER/u);
 });
 
 test('bloquea autorización paralela que salte una instancia global previa', () => {

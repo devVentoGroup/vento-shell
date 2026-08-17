@@ -9,6 +9,12 @@ test('clasifica fuentes canónicas y herramientas transversales por separado', (
     'CANONICAL_TASK',
   );
   assert.equal(classifyCommitPath('scripts/docs/watch-plan-canonico.mjs'), 'TRANSVERSAL');
+  assert.equal(
+    classifyCommitPath(
+      'docs/plan-canonico/modular/implementation-instances/SHELL-CI-001__GLOBAL.json',
+    ),
+    'TRANSVERSAL',
+  );
   assert.equal(classifyCommitPath('docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md'), 'PROJECTION');
   assert.equal(classifyCommitPath('src/app/page.tsx'), 'APPLICATION');
 });

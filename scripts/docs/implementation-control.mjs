@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { resolveTaskWorkTopology } from './task-work-topology.mjs';
 
 const CONTROL_PATH = 'docs/plan-canonico/modular/implementation-control.json';
+const INSTANCE_RECORDS_DIRECTORY = 'docs/plan-canonico/modular/implementation-instances';
 const OUTPUT_PATH = '.delivery/current-work-directive.md';
 const STATUS_OUTPUT_PATH = '.delivery/implementation-control-status.json';
 const EXPLICIT_STATUSES = new Set([
@@ -43,6 +44,48 @@ function expectedInstancePattern(taskId, lifecycle) {
   return null;
 }
 
+export function instanceRecordRelativePath(instanceId) {
+  const normalized = String(instanceId ?? '').trim();
+  if (!normalized || !/^[A-Za-z0-9._:-]+$/u.test(normalized)) {
+    throw new Error(`instance_id no puede convertirse en ruta segura: ${instanceId ?? 'VACÍO'}.`);
+  }
+  return `${INSTANCE_RECORDS_DIRECTORY}/${normalized.replaceAll('::', '__')}.json`;
+}
+
+export function loadImplementationControl({ root = process.cwd() } = {}) {
+  const controlPath = path.join(root, CONTROL_PATH);
+  const policy = JSON.parse(fs.readFileSync(controlPath, 'utf8'));
+  const errors = [];
+  if (Object.hasOwn(policy, 'instances')) {
+    errors.push('instances no debe almacenarse dentro de implementation-control.json; use un archivo por instancia.');
+  }
+  if (policy.instance_storage_mode !== 'ONE_FILE_PER_INSTANCE') {
+    errors.push('instance_storage_mode debe ser ONE_FILE_PER_INSTANCE.');
+  }
+  if (policy.instance_records_directory !== INSTANCE_RECORDS_DIRECTORY) {
+    errors.push(`instance_records_directory debe ser ${INSTANCE_RECORDS_DIRECTORY}.`);
+  }
+  if (errors.length > 0) fail(errors);
+
+  const directoryPath = path.join(root, INSTANCE_RECORDS_DIRECTORY);
+  const files = fs.existsSync(directoryPath)
+    ? fs.readdirSync(directoryPath, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name.endsWith('.json'))
+      .map((entry) => entry.name)
+      .sort((left, right) => left.localeCompare(right, 'en'))
+    : [];
+  const instances = files.map((filename) => {
+    const record = JSON.parse(fs.readFileSync(path.join(directoryPath, filename), 'utf8'));
+    const expectedPath = instanceRecordRelativePath(record.instance_id);
+    const actualPath = `${INSTANCE_RECORDS_DIRECTORY}/${filename}`;
+    if (actualPath !== expectedPath) {
+      fail([`${actualPath} debe llamarse ${expectedPath} según instance_id.`]);
+    }
+    return record;
+  });
+  return { ...policy, instances };
+}
+
 function matchesLifecycle(instanceId, taskId, lifecycle) {
   const escaped = taskId.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
   if (lifecycle.mode === 'GLOBAL_ENABLE_ONCE') return instanceId === `${taskId}::GLOBAL`;
@@ -65,6 +108,18 @@ export function validateImplementationControl(control, workTopology) {
   }
   if (control?.automatic_authorization !== false) errors.push('automatic_authorization debe ser false.');
   if (control?.single_primary_action !== true) errors.push('single_primary_action debe ser true.');
+  if (control?.instance_storage_mode !== 'ONE_FILE_PER_INSTANCE') {
+    errors.push('instance_storage_mode debe ser ONE_FILE_PER_INSTANCE.');
+  }
+  if (control?.instance_records_directory !== INSTANCE_RECORDS_DIRECTORY) {
+    errors.push(`instance_records_directory debe ser ${INSTANCE_RECORDS_DIRECTORY}.`);
+  }
+  if (control?.instance_history_mode !== 'APPEND_ONLY_LEDGER') {
+    errors.push('instance_history_mode debe ser APPEND_ONLY_LEDGER.');
+  }
+  if (control?.verified_instances_immutable !== true) {
+    errors.push('verified_instances_immutable debe ser true.');
+  }
   const operatorPolicy = control?.execution_operator_policy;
   if (!operatorPolicy || typeof operatorPolicy !== 'object' || Array.isArray(operatorPolicy)) {
     errors.push('execution_operator_policy debe ser un objeto.');
@@ -208,7 +263,7 @@ export function deriveImplementationControl({
 } = {}) {
   const workTopology = suppliedTopology ?? resolveTaskWorkTopology({ root });
   const control = validateImplementationControl(
-    suppliedControl ?? JSON.parse(fs.readFileSync(path.join(root, CONTROL_PATH), 'utf8')),
+    suppliedControl ?? loadImplementationControl({ root }),
     workTopology,
   );
   const operatorPolicy = control.execution_operator_policy;
@@ -233,6 +288,7 @@ export function deriveImplementationControl({
       const explicit = explicitById.get(instanceId);
       return {
         instanceId,
+        recordPath: instanceRecordRelativePath(instanceId),
         taskId: task.id,
         taskTitle: task.title,
         lifecycleMode: lifecycle.mode,
@@ -254,6 +310,7 @@ export function deriveImplementationControl({
       const lifecycle = workTopology.topology.get(entry.task_id);
       return {
         instanceId: entry.instance_id,
+        recordPath: instanceRecordRelativePath(entry.instance_id),
         taskId: entry.task_id,
         taskTitle: task.title,
         lifecycleMode: lifecycle.mode,
@@ -368,6 +425,10 @@ export function deriveImplementationControl({
     physical: {
       active: selected,
       instances,
+      recordedInstances: control.instances,
+      recordDirectory: control.instance_records_directory,
+      historyMode: control.instance_history_mode,
+      verifiedInstancesImmutable: control.verified_instances_immutable,
       authorized,
       readyCount: instances.filter(({ status }) => status === 'READY_FOR_AUTHORIZATION').length,
       blockedCount: instances.filter(({ status }) => (

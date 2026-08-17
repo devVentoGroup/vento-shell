@@ -3,7 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { deriveImplementationControl } from './implementation-control.mjs';
+import {
+  deriveImplementationControl,
+  instanceRecordRelativePath,
+} from './implementation-control.mjs';
 import { resolveTaskWorkTopology } from './task-work-topology.mjs';
 
 const TEMPLATE_PATH = 'docs/plan-canonico/modular/chatgpt-work-starter-template.txt';
@@ -32,6 +35,11 @@ function taskState(task) {
 
 export function actionResponseContract(control, sourceContractHash) {
   const { type, target } = control.primaryAction;
+  const instanceRecordPath = target.includes('::') ? instanceRecordRelativePath(target) : null;
+  const recordedInstances = control.physical?.recordedInstances ?? [];
+  const recordedSummary = recordedInstances.length > 0
+    ? recordedInstances.map((entry) => `${entry.instance_id}=${entry.status}`).join(', ')
+    : 'NINGUNA';
   const common = [
     'La primera respuesta de la acción y la entrega final deben comenzar con FORMATO_ENTREGA_VENTO_V1 y conservar exactamente sus ocho secciones; no agregues una novena sección.',
     'Las respuestas intermedias después de recibir evidencia no son entregas finales: usa únicamente PROGRESO N/M, LOTE ACTUAL, PASOS CONSECUTIVOS, GATE DE EVIDENCIA y QUÉ DEBE RESPONDER EL USUARIO. Así se evita repetir contexto y consumir mensajes innecesarios.',
@@ -49,15 +57,17 @@ export function actionResponseContract(control, sourceContractHash) {
   if (type === 'AUTORIZAR_IMPLEMENTACION') {
     return [
       ...common,
-      `Para ${target}, la sección 4 debe contener la propiedad JSON completa y válida, desde "instances": [ hasta su corchete final ], que reemplazará exclusivamente la línea "instances": [] en docs/plan-canonico/modular/implementation-control.json si el usuario decide aprobar. No entregues únicamente el objeto interior.`,
-      'Ese objeto debe incluir instance_id, task_id, status AUTHORIZED, target_repositories, authorized_changes, validation_commands, authorization y evidence: [].',
+      `Para ${target}, la sección 4 debe entregar el contenido completo del archivo nuevo ${instanceRecordPath}. No entregues una propiedad instances ni modifiques docs/plan-canonico/modular/implementation-control.json.`,
+      `El registro histórico actual contiene ${recordedInstances.length} instancia(s): ${recordedSummary}. Se conserva completo; nunca borres, reemplaces, reordenes ni reescribas archivos de instancias anteriores para autorizar la siguiente.`,
+      'El archivo nuevo debe incluir instance_id, task_id, status AUTHORIZED, target_repositories, authorized_changes, validation_commands, authorization y evidence: [].',
       'authorization debe incluir decision: APPROVED, approved_by, approved_at, timezone, approval_statement y source_contract_sha256.',
       'Si no puedes verificar el nombre civil del usuario, usa approved_by: VENTO_OWNER; usa una fecha ISO concreta y timezone: America/Bogota, nunca marcadores como <FECHA> o <USUARIO>.',
       `source_contract_sha256 debe ser exactamente ${sourceContractHash}. No pidas al usuario calcular, corregir o conciliar hashes manualmente; la autorización se demuestra con su declaración explícita y su commit.`,
       'approval_statement debe aprobar exclusivamente los repositorios, cambios y validaciones enumerados, y negar expresamente cualquier ampliación inferida.',
-      'Aclara que el bloque listo para copiar sigue siendo una propuesta hasta que el usuario lo pegue, guarde y confirme mediante su propio commit; tú no debes modificar implementation-control.json ni autorizarte a ti mismo.',
+      'Aclara que el archivo listo para crear sigue siendo una propuesta hasta que el usuario lo cree, guarde y confirme mediante su propio commit; tú no debes crear el archivo ni autorizarte a ti mismo.',
       'Distingue la evidencia de autorización de la evidencia de implementación: evidence debe permanecer [] mientras el estado sea AUTHORIZED.',
-      'En PASOS EXACTOS PARA EL USUARIO indica, sin comandos de terminal: abrir implementation-control.json, reemplazar solo instances: [], guardar, esperar el watcher, comprobar el cambio a INICIAR_IMPLEMENTACION, revisar el diff, crear el commit desde el control de código fuente de VS Code, sincronizar y cargar el INICIADOR_VENTO_ACTUAL.txt recién regenerado.',
+      `En PASOS EXACTOS PARA EL USUARIO indica, sin comandos de terminal: crear ${instanceRecordPath}, pegar el contenido completo, guardar, esperar el watcher, comprobar el cambio a INICIAR_IMPLEMENTACION, revisar el diff, crear el commit desde el control de código fuente de VS Code, sincronizar y cargar el INICIADOR_VENTO_ACTUAL.txt recién regenerado.`,
+      'Si el archivo exacto ya existe o el historial mostrado por el iniciador no coincide con el estado observado, no propongas sobrescribirlo: pide recargar el iniciador regenerado.',
       'Incluye el texto exacto que debería mostrar el watcher después de guardar y el mensaje de commit recomendado.',
     ].join('\n');
   }
@@ -66,7 +76,7 @@ export function actionResponseContract(control, sourceContractHash) {
     return [
       ...common,
       `Para ${target}, primero entrega un MAPA COMPLETO DE IMPLEMENTACIÓN: todos los pasos numerados, operación, ruta, propósito, dependencias y validación, pero sin incluir todavía el contenido de pasos futuros.`,
-      'El LOTE ACTUAL debe incluir seguidos: la transición manual de status AUTHORIZED a IN_PROGRESS en docs/plan-canonico/modular/implementation-control.json, la comprobación esperada del watcher y el comando exacto del preflight canónico.',
+      `El LOTE ACTUAL debe incluir seguidos: la transición manual de status AUTHORIZED a IN_PROGRESS únicamente en ${instanceRecordPath}, la comprobación esperada del watcher y el comando exacto del preflight canónico.`,
       'No pauses después de cambiar el estado si el watcher no muestra error. El primer gate obligatorio es el resultado del preflight, porque el contenido físico posterior debe reconciliarse contra el checkout local real.',
       'Termina pidiendo RESULTADO DEL PASO correspondiente al preflight, con su salida completa y cualquier error del watcher. No entregues todavía código que dependa de ese resultado.',
     ].join('\n');
@@ -82,7 +92,7 @@ export function actionResponseContract(control, sourceContractHash) {
       'Incluye en el mismo lote todas las creaciones y modificaciones cuyo contenido ya pueda determinarse, aunque sean varios archivos. Después incluye los comandos que el usuario puede ejecutar sin que un resultado intermedio cambie esos archivos.',
       'Si un comando falla, el usuario debe detener el resto del lote y responder RESULTADO DEL PASO N con la salida completa. Si todos pasan, debe responder una sola vez con las salidas solicitadas del gate final.',
       'Al recibir evidencia, actualiza el progreso visible N/M y genera el lote siguiente. No declares PASS por la afirmación del usuario si falta contenido o salida verificable.',
-      'No cambies el estado a IMPLEMENTED hasta cerrar todos los pasos físicos y reunir evidencia real; entonces entrega como último paso el JSON completo y exacto para esa transición.',
+      `No cambies el estado a IMPLEMENTED hasta cerrar todos los pasos físicos y reunir evidencia real; entonces entrega como último paso el contenido completo y exacto de ${instanceRecordPath} para esa transición. No modifiques registros anteriores.`,
     ].join('\n');
   }
 
@@ -92,7 +102,7 @@ export function actionResponseContract(control, sourceContractHash) {
       `Para ${target}, entrega juntas las validaciones autorizadas que sean independientes y ordénalas para que el usuario las ejecute; nunca las ejecutes por tu cuenta.`,
       'Cada paso debe contener directorio, comando, efecto, duración estimada, resultado esperado y salida que el usuario debe conservar. Indica que debe detener el lote en el primer fallo.',
       'Pide una única respuesta RESULTADO DEL PASO N con las salidas del lote o con el primer fallo. Clasifica después la evidencia como local, remota, operativa o física.',
-      'Solo después de verificar todas las salidas entrega el reemplazo JSON completo para VERIFIED. Si algo falla, entrega todos los pasos deterministas de diagnóstico o corrección hasta el siguiente gate de evidencia y conserva el estado actual.',
+      `Solo después de verificar todas las salidas entrega el contenido completo de ${instanceRecordPath} para VERIFIED con la evidencia consolidada. No modifiques registros anteriores. Si algo falla, entrega todos los pasos deterministas de diagnóstico o corrección hasta el siguiente gate de evidencia y conserva el estado actual.`,
     ].join('\n');
   }
 
@@ -174,6 +184,9 @@ export function renderCurrentWork({ control, workTopology, templateHash, reposit
   const implementationAuthorized = control.physical.authorized.some(({ instanceId }) => (
     instanceId === control.primaryAction.target
   ));
+  const recordedInstanceRows = control.physical.recordedInstances.map((entry) => (
+    `${entry.instance_id} — ${entry.status} — ${instanceRecordRelativePath(entry.instance_id)}`
+  ));
   const emptyDraft = task.block.match(/^####\s+/gmu) === null;
   const sourceContractHash = sha256(task.block.replace(/\r\n?/gu, '\n'));
 
@@ -214,6 +227,7 @@ TAREA O CONTRATO PROPIETARIO
 - Cambios físicos declarados: ${metadata(task.block, 'Cambios físicos autorizados')}
 - Ciclo: ${lifecycle.label} (${lifecycle.mode})
 - Identidad de instancia: ${physical?.instanceId ?? lifecycle.instancePattern ?? 'No aplica.'}
+- Archivo exclusivo de la instancia: ${physical?.recordPath ?? 'No aplica todavía.'}
 
 CARRILES Y CONTINUIDAD
 
@@ -223,6 +237,18 @@ CARRILES Y CONTINUIDAD
 - Regla de ejecución: ${lifecycle.executionRule}
 - Dependencias para desarrollar: ${dependencies.developmentSource ?? 'Solo precedencia canónica vigente.'}
 - Dependencias para ejecutar: ${dependencies.executionSource ?? lifecycle.executionDependencies}
+
+HISTORIAL FÍSICO ACUMULATIVO
+
+- Modo de almacenamiento: UN ARCHIVO POR INSTANCIA
+- Política histórica: ${control.physical.historyMode}
+- Instancias VERIFIED inmutables: ${control.physical.verifiedInstancesImmutable ? 'SÍ' : 'NO'}
+- Directorio propietario: ${control.physical.recordDirectory}
+- Registros existentes: ${control.physical.recordedInstances.length}
+
+${list(recordedInstanceRows, 'Ninguno; la primera autorización creará el primer archivo.')}
+
+Cada autorización crea exclusivamente el archivo nuevo de su instancia. Cada transición posterior modifica exclusivamente ese mismo archivo. Los registros anteriores y su evidencia nunca se reemplazan ni se copian dentro de un arreglo compartido.
 
 ALCANCE FÍSICO AUTORIZADO
 

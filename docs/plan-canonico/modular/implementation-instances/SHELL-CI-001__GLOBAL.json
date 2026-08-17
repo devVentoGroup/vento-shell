@@ -1,0 +1,45 @@
+{
+  "instance_id": "SHELL-CI-001::GLOBAL",
+  "task_id": "SHELL-CI-001",
+  "status": "VERIFIED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear scripts/quality/shared-package-test-gate.mjs como única implementación global del gate de pruebas propias de packages.",
+    "Crear scripts/quality/shared-package-test-gate.test.mjs para autocertificar los casos positivos, negativos y regresiones obligatorios.",
+    "Generar evidencia runtime únicamente bajo .delivery/shared-package-tests/ sin versionarla."
+  ],
+  "validation_commands": [
+    "npm ci",
+    "node --test scripts/quality/shared-package-test-gate.test.mjs",
+    "npm run lint -- scripts/quality/shared-package-test-gate.mjs scripts/quality/shared-package-test-gate.test.mjs",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "git diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "User",
+    "approved_at": "2026-08-17",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente el alcance físico declarado en esta instancia. No autorizo cambios en packages, consumidores, package.json, GitHub Actions, Supabase, releases, despliegues ni infraestructura.",
+    "proposal_scope_sha256": "954362d000ff44846b9b810fc81981567d735b4d757db06a91fe961961b1d2cd",
+    "proposal_response_sha256": "0DE11C8AD494A01572E501343DA0791D014A845DC0D1C7B130F46EC77C87BE71",
+    "source_contract_sha256": "67ccf973ab4e67e353d7ef13251f9dfdd1953156acea261f380f205dfa5203e0"
+  },
+  "evidence": [
+    "BASE_COMMIT 724d425c20273b38d4677fe6a131d54429f049e7",
+    "FILE_SHA256 scripts/quality/shared-package-test-gate.mjs b8cbab5202ef15f020c0599aba899a8a8b151b12cbe0dab3c3725817f3e65304",
+    "FILE_SHA256 scripts/quality/shared-package-test-gate.test.mjs 5df60eba94229cfb0a03bba116b195273a6f9863fba6c4af4dd1ca49eec10f88",
+    "VALIDATION npm ci PASS; added=382; audited=384",
+    "VALIDATION node --test scripts/quality/shared-package-test-gate.test.mjs PASS; tests=41; pass=41; fail=0",
+    "VALIDATION npm run lint -- scripts/quality/shared-package-test-gate.mjs scripts/quality/shared-package-test-gate.test.mjs PASS",
+    "VALIDATION npm run docs:plan:build PASS; compiled_sha256=421c9b21a23b81c2b1b5631211e3f0c4c5f69255592af668a2b280f180342a21",
+    "VALIDATION npm run docs:plan:check PASS; delivery_contract_sha256=df38e1efe6c5d249236dbed6f2cfa513291587b13ce360fcab199e47954a3075",
+    "VALIDATION npm run docs:plan:test PASS; tests=182; pass=182; fail=0",
+    "VALIDATION git diff --check PASS; output=EMPTY",
+    "SCOPE git status --short PASS; files=scripts/quality/shared-package-test-gate.mjs,scripts/quality/shared-package-test-gate.test.mjs"
+  ]
+}

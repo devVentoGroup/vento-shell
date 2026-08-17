@@ -8,11 +8,11 @@
 
 ## Qué toca hacer ahora
 
-- **Acción principal obligatoria:** `CONTINUAR_IMPLEMENTACION`
-- **Objetivo exacto:** `SHELL-CI-001::GLOBAL` — Crear pruebas de paquetes compartidos
-- **Instrucción:** Entregar al usuario el siguiente lote determinista de SHELL-CI-001::GLOBAL y pausar solo por evidencia necesaria.
+- **Acción principal obligatoria:** `AUTORIZAR_IMPLEMENTACION`
+- **Objetivo exacto:** `SHELL-CI-002::GLOBAL` — Crear build independiente por paquete
+- **Instrucción:** Definir y aprobar el alcance físico exacto de SHELL-CI-002::GLOBAL; todavía no modificar código.
 - **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `SHELL-CI-003`
-- **Implementación física autorizada:** `SHELL-CI-001::GLOBAL`
+- **Implementación física autorizada:** **NINGUNA**
 
 > Esta instrucción prevalece sobre la simple posición de una tarea en la lista pendiente. Aprobar documentación no autoriza código y una instancia física no puede saltar su predecesora global.
 

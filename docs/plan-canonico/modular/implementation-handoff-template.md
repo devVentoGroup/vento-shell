@@ -3,7 +3,9 @@
 > Plantilla transversal. Su materialización en `.delivery` es de solo lectura y
 > permanece en modo `CONTROLLED_EXECUTION`: no inicia implementación por sí
 > sola, no cambia el estado de una tarea y no acredita evidencia física. Toda
-> autorización material pertenece a una instancia de `implementation-control.json`.
+> `implementation-control.json` gobierna la política común y cada autorización
+> material pertenece al archivo exclusivo de su instancia bajo
+> `implementation-instances/`.
 
 ## Identidad y autoridad
 

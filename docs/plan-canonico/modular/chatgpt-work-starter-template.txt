@@ -121,6 +121,15 @@ Por defecto:
 - ChatGPT entrega seguidos todos los pasos que pueden determinarse con la evidencia disponible y se detiene únicamente cuando el paso siguiente depende de una salida todavía desconocida;
 - `AUTHORIZED`, `APROBADO`, `RESULTADO DEL PASO`, “implementa” y “haz la acción principal” no autorizan escrituras automáticas del asistente.
 
+El historial físico es acumulativo y usa un archivo por instancia bajo `docs/plan-canonico/modular/implementation-instances/`:
+
+- autorizar una instancia crea únicamente su archivo nuevo;
+- implementar, validar o bloquear una instancia modifica únicamente ese mismo archivo;
+- `evidence` conserva allí la evidencia consolidada de su implementación y validación;
+- una instancia `VERIFIED` y su evidencia son históricas e inmutables;
+- nunca se reemplaza un arreglo global `instances`, nunca se borra un registro anterior y nunca se autoriza la siguiente instancia sobrescribiendo la precedente;
+- `docs/plan-canonico/modular/implementation-control.json` contiene solo la política común y no se modifica durante el ciclo normal de una instancia.
+
 Para cada implementación física:
 
 1. la primera respuesta presenta el mapa completo numerado;
