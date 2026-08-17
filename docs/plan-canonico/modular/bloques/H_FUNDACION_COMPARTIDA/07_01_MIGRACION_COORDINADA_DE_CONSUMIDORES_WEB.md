@@ -3259,18 +3259,30 @@ Esta tarea no:
 
 **Puerta de cierre:** matriz de accesibilidad y paridad visual aprobada por aplicación, sin depender de CSS legacy no declarado.
 
-### [ ] SHELL-MIG-007 — Ejecutar pruebas de paridad de consumidores
+### [ ] SHELL-MIG-007 — Definir contrato de paridad ejecutable por paquete
 
-**Propósito:** comparar API TypeScript, comportamiento, rutas, clases, estados y fallos antes y después de cada lote.
+**Propósito:** definir una sola matriz reutilizable de API TypeScript, comportamiento, rutas, clases, estados, fallos y oráculos antes/después para que cada paquete ejecute su propia evidencia sin reabrir esta tarea global.
 
-**Dependencias:** `SHELL-MIG-005`; `SHELL-MIG-006`; `SHELL-CI-001`; `SHELL-CI-007` a `SHELL-CI-013`.
+**Dependencias para desarrollar:** `SHELL-MIG-005`; `SHELL-MIG-006`.
 
-**Puerta de cierre:** pruebas contractuales y operativas aprobadas, evidencia atribuible al commit y paquete de cambio, y rollback ensayado.
+**Dependencias para ejecutar cada instancia:** `SHELL-CI-001`; `SHELL-CI-007` a `SHELL-CI-013`; `E5-GATE-008::<package_id>`; `SHELL-CI-020::<package_id>`.
 
-### [ ] SHELL-MIG-008 — Retirar copias legacy y certificar adopción
+**Modo de ejecución posterior:** `TEMPLATE_PER_PACKAGE`; instancia `SHELL-MIG-007::<package_id>` dentro del readiness `SHELL-CI-021::<package_id>`.
 
-**Propósito:** retirar únicamente artefactos aprobados cuyo consumo sea cero o cuyos consumidores ya hayan migrado con paridad demostrada.
+**Puerta de cierre del marcador global:** matriz, fixtures, oráculos, atribución a commit/paquete, clases de evidencia y rollback esperado definidos sin afirmar que las pruebas ya se ejecutaron.
 
-**Dependencias:** `SHELL-MIG-007`; `SHELL-PKG-007`; `SHELL-PKG-008`; decisiones de `SHELL-AUD-011`.
+**Puerta de cierre de cada instancia:** pruebas contractuales y operativas aprobadas, evidencia atribuible al commit y paquete de cambio, y rollback ensayado.
 
-**Puerta de cierre:** cero consumidores legacy no autorizados, artefactos retirados registrados, builds aprobados y rollback reproducible por repositorio.
+### [ ] SHELL-MIG-008 — Definir gate de retiro legacy y certificación por paquete
+
+**Propósito:** definir una sola regla de retiro para artefactos aprobados cuyo consumo sea cero o cuyos consumidores migren con paridad demostrada; cada paquete aplicará y evidenciará únicamente su subconjunto.
+
+**Dependencias para desarrollar:** `SHELL-MIG-007`; `SHELL-PKG-007`; `SHELL-PKG-008`; decisiones de `SHELL-AUD-011`.
+
+**Dependencias para ejecutar cada instancia:** `SHELL-MIG-007::<package_id>`; `E5-GATE-008::<package_id>`; `SHELL-CI-020::<package_id>`; `SHELL-CI-024::<package_id>`.
+
+**Modo de ejecución posterior:** `TEMPLATE_PER_PACKAGE`; instancia `SHELL-MIG-008::<package_id>` vinculada al mismo paquete y a su unidad de implementación.
+
+**Puerta de cierre del marcador global:** regla de elegibilidad, inventario residual, evidencia exigida, rollback y conciliación entre paquetes definidos sin retirar artefactos todavía.
+
+**Puerta de cierre de cada instancia:** cero consumidores legacy no autorizados dentro del alcance del paquete, artefactos retirados registrados, builds aprobados y rollback reproducible por repositorio.
