@@ -101,6 +101,9 @@ test('el build prepara formato sin iniciar tareas vacías', () => {
 
 test('el build publica un estado local legible sin volverlo canónico', () => {
   const buildWrapper = fs.readFileSync(buildWrapperPath, 'utf8');
+  assert.match(buildWrapper, /try \{\s+await import\('\.\/safe-build-plan-canonico\.mjs'\)/u);
+  assert.match(buildWrapper, /\[PLAN CANÓNICO\] Validación bloqueada:/u);
+  assert.match(buildWrapper, /process\.exit\(1\)/u);
   assert.match(buildWrapper, /"plan-status\.md"|'plan-status\.md'/u);
   assert.match(buildWrapper, /writePlanWatchStatus/u);
   assert.match(buildWrapper, /state: 'COMPILACIÓN COMPLETADA'/u);

@@ -1,4 +1,10 @@
-await import('./safe-build-plan-canonico.mjs');
+try {
+  await import('./safe-build-plan-canonico.mjs');
+} catch (error) {
+  console.error('[PLAN CANÓNICO] Validación bloqueada:');
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exit(1);
+}
 const { syncPendingTaskContext } = await import('./sync-pending-task-context.mjs');
 syncPendingTaskContext();
 
