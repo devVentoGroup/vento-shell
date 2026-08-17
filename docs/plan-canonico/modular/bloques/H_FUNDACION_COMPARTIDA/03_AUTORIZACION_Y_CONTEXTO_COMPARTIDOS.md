@@ -3444,9 +3444,1003 @@ Esta tarea no:
 `SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios`
 
 
-### [ ] SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios
+### ✅ SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-AUTH-004 — Implementar lint, métricas y gates contra consumidores legacy
+**Tarea siguiente:** SHELL-CTX-001 — Consolidar el módulo de contexto dentro de @vento/os-context
+**Tipo de tarea:** definición documental vinculante del contrato global de migración multi-repositorio de consumidores de autorización/contexto, paridad, cutover, evidencia, rollback y handoff de retiro legacy
+**Bloque:** H — Fundación compartida
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`
+**Modo topológico:** `PER_IMPLEMENTATION_UNIT`
+**Trabajo canónico actual:** definir el contrato global una sola vez y asignar la futura materialización sin ejecutar consumidores
+**Instancia física futura:** `SHELL-AUTH-005::<implementation_unit_id>`
+**Condición topológica de materialización:** `DELIV-PKG-025::<package_id>` asigna `implementation_unit_id` y el package propietario obtiene `E5-GATE-008::<package_id> = PASS`
+**Precedencia documental para desarrollar:** `SHELL-AUTH-004`
+**Registro de entrada:** `SHELL-AUTH-REQUEST-SCOPE-CONSUMERS-001` — 32 filas baseline, 15 campos, 32 identidades únicas
+**Freeze de entrada:** `SHELL-AUTH-LEGACY-GATES-001` — 9 reglas, 14 métricas, 12 gates y allowlist exacta de 32 identidades
+**Snapshot producido:** `SHELL-AUTH-CONSUMER-MIGRATION-001`
+**Estado físico en este marcador:** 0/32 consumidores certificables como migrados; 0 cambios de código; 0 cambios de manifests/lockfiles; 0 cambios Supabase; 0 retiros físicos
+
+---
+
+#### 1. Resultado material
+
+Se define el contrato canónico que convierte el inventario y freeze de `SHELL-AUTH-003..004` en una migración verificable por consumidor, sin confundir una definición documental con un cutover ya ejecutado.
+
+La regla de salida es:
+
+```text
+CONSUMIDOR REGISTRADO
++ DESTINO CANÓNICO EXACTO
++ PARIDAD CLASIFICADA
++ VALIDACIÓN DEL MISMO COMMIT
++ CUTOVER FAIL-CLOSED
++ ROLLBACK CERTIFICADO DURANTE LA VENTANA PERMITIDA
+= CONSUMIDOR MIGRABLE
+```
+
+```text
+MIGRACIÓN CONFIRMADA
+→ llamada directa legacy = 0
+→ autoridad local legacy = 0
+→ registry row con evidencia física = COMPATIBLE
+→ finding AUTH004 = MIGRATED
+→ cuota temporal AUTH004 deja de ser reutilizable
+```
+
+```text
+AUTH005
+→ migra consumidores y deja retiro legacy en condición verificable
+
+AUTH-DB-030
+→ retira objetos/RPC legacy aplicables
+
+AUTH-DB-031
+→ certifica cierre final de la transición
+```
+
+El marcador materializa:
+
+| Dimensión                                                        | Resultado |
+| ---------------------------------------------------------------- | --------: |
+| filas baseline con decisión explícita                            | **32/32** |
+| identidades duplicadas                                           |     **0** |
+| repositorios físicos actuales con filas                          |     **8** |
+| ámbitos conceptuales cubiertos, incluido PASS/AURA/shared        |    **11** |
+| perfiles de deuda heredados                                      |     **8** |
+| grupos de migración materializados                               |     **4** |
+| filas `PRECONDICIÓN COMPARTIDA`                                  |     **1** |
+| filas `OLA 3`                                                    |     **1** |
+| filas `OLA 4`                                                    |    **25** |
+| filas `OLA 5`                                                    |     **5** |
+| directos cliente baseline                                        |     **2** |
+| resultados/clasificaciones de paridad                            |     **6** |
+| gates de futura materialización                                  |    **12** |
+| objetivo de consumidores directos legacy después de la instancia |     **0** |
+| objetivo de findings estáticos legacy después de la instancia    |     **0** |
+| objetivo de consumidores no registrados                          |     **0** |
+| código, Supabase o despliegues ejecutados ahora                  |     **0** |
+| requisitos de prueba nuevos                                      |     **8** |
+
+---
+
+#### 2. Fuentes vinculantes y estado verificable
+
+La tarea consume como fuentes normativas:
+
+1. protocolo canónico vigente;
+2. contrato modular de entrega vigente;
+3. secuencia activa con `SHELL-AUTH-004` como precedencia y `SHELL-AUTH-005` como primera tarea pendiente;
+4. topología `PER_IMPLEMENTATION_UNIT`;
+5. `SHELL-AUTH-001..004` aprobadas;
+6. `AUTH-CTX-027` sobre consumo centralizado, olas, paridad, pruebas y retiro;
+7. `SHELL-PKG-004` sobre compatibilidad por consumidor;
+8. `SHELL-PKG-005` sobre deprecación y retiro;
+9. `SHELL-PKG-006` sobre rollback independiente por aplicación;
+10. `SHELL-PKG-008` sobre fail-closed y evidencia por combinación;
+11. `AUTH-DB-020`, `AUTH-DB-006..010` y `AUTH-DB-021` como adopción física de objetos/RPC/RLS cuando aplique;
+12. `AUTH-DB-030` y `AUTH-DB-031` como retiro y certificación posteriores;
+13. el registro canónico de 32 consumidores y el freeze AUTH004;
+14. el registro 04A vigente con 7058 requisitos y `TREQ-SHELL-001..090`.
+
+El corte de manifests actual es:
+
+| Repositorio                  | blob `package.json`                        | runtime declarado                                                        | cobertura AUTH003                 |
+| ---------------------------- | ------------------------------------------ | ------------------------------------------------------------------------ | --------------------------------- |
+| `devVentoGroup/vento-shell`  | `151b6072f7ed7b88b83dce67f61d54e3b622f238` | Next 16.1.1 / React 19.2.3 / Supabase JS ^2.90.1                         | 1 consumer + 1 shared-service row |
+| `devVentoGroup/vento-viso`   | `91920190b8f24da8f593e76d08b238fd4d294392` | Next ^16.1.6 / React 19.2.3 / Supabase JS ^2.90.1                        | 7 rows                            |
+| `devVentoGroup/vento-nexo`   | `fe5f3231070a77bd62bd084f980a370c2152c643` | Next ^16.2.3 / React 19.2.3 / Supabase JS ^2.90.1                        | 4 rows                            |
+| `devVentoGroup/vento-fogo`   | `043c3cda9f3f71957a762ccf53f3de97ef2685fc` | Next ^16.2.4 / React 19.2.3 / Supabase JS ^2.90.1                        | 3 rows                            |
+| `devVentoGroup/vento-origo`  | `953df5749068ef56209bf8d5a4b46319fe1a7318` | Next ^16.2.1 / React 19.2.3 / Supabase JS ^2.90.1                        | 7 rows                            |
+| `devVentoGroup/vento-pulso`  | `83d1340544f209df7f53b37551b6f71dd2c668a6` | Next 16.1.1 / React 19.2.3 / Supabase JS ^2.90.1                         | 5 rows                            |
+| `devVentoGroup/vento-numera` | `82eb8a39c5c3225f5e59cf8997f01772d07b2e33` | Next ^16.2.1 / React 19.2.3 / Supabase JS ^2.90.1                        | 3 rows                            |
+| `devVentoGroup/vento-anima`  | `27112bdfa34c7612b387dce71efae5cf946b6497` | Expo ~54.0.35 / React Native 0.81.5 / React 19.1.0 / Supabase JS ^2.91.0 | 1 row; perfil nativo              |
+
+Ninguno de esos ocho manifests declara todavía una dependencia publicada `@vento/*` como adopción runtime certificada. La coexistencia de helpers, guards, contexto local, RPC directas y adapter transitorio sigue siendo baseline de migración, no estado final.
+
+---
+
+#### 3. Modalidad, unidad y separación documental/física
+
+La tarea se rige por `PER_IMPLEMENTATION_UNIT`.
+
+```text
+MARCADOR GLOBAL SHELL-AUTH-005
+→ define una vez matriz, orden, paridad, cutover, evidencia, gates y rollback
+→ asigna cada identidad a una futura unidad mediante lineage
+→ no inventa implementation_unit_id
+→ no modifica repositorios consumidores
+
+DELIV-PKG-025::<package_id>
+→ asigna implementation_unit_id y owner package
+
+E5-GATE-008::<package_id> = PASS
+→ habilita materialización
+
+SHELL-AUTH-005::<implementation_unit_id>
+→ migra exactamente las filas asignadas a esa unidad
+→ una misma identidad no puede migrarse dos veces
+→ N package_id pueden consumir la misma unidad por lineage
+```
+
+El scope global conserva las 32 identidades actuales. La distribución física de esas identidades entre unidades se toma exclusivamente de `DELIV-PKG-025`; no se presupone aquí que todos los consumidores pertenecerán a una única unidad.
+
+---
+
+#### 4. Dependencias de ejecución de una futura instancia
+
+Además del gate topológico E5, cada instancia exige que estén físicamente disponibles y compatibles, cuando correspondan a sus filas:
+
+- `SHELL-AUTH-001::<implementation_unit_id>` — paquete/exports canónicos;
+- `SHELL-AUTH-002::<implementation_unit_id>` — adapters y proyecciones;
+- `SHELL-AUTH-003::<implementation_unit_id>` — request scope y registro;
+- `SHELL-AUTH-004::<implementation_unit_id>` — freeze/gates;
+- contratos `@vento/contracts` y `@vento/os-context` exactos;
+- `AUTH-DB-033`, `AUTH-DB-035`, `AUTH-DB-034` y `AUTH-DB-032` materializados según la unidad;
+- `AUTH-DB-020`, `AUTH-DB-006..010` y `AUTH-DB-021` cuando el consumidor dependa de RPC/RLS/objetos ya migrados;
+- módulos `SHELL-CTX-*` requeridos por el comportamiento que la fila consuma;
+- matriz de compatibilidad vigente y snapshot de rollback certificado.
+
+Una dependencia física ausente deja la fila `BLOCKED`; no se sustituye por mocks que pretendan demostrar integración real.
+
+---
+
+#### 5. Estado objetivo de arquitectura
+
+Al cerrar una instancia física para sus filas, el consumidor deberá cumplir simultáneamente:
+
+1. `app_code` fijado por adapter propietario;
+2. contexto resuelto desde frontera canónica;
+3. permiso exacto desde catálogo canónico;
+4. recurso resuelto en servidor para toda operación sensible;
+5. `AuthorizationDecisionV1` o proyección segura correspondiente como contrato;
+6. ninguna decisión empresarial derivada de nombre de rol, role override, `can_operate` o booleano legacy;
+7. ninguna sede/área/actor/turno/check-in del caller usado como hecho efectivo;
+8. ninguna RPC interna de autorización desde navegador/renderer;
+9. ningún fallback que convierta DENY o fallo técnico canónico en ALLOW legacy;
+10. ninguna doble ejecución de side effects para obtener paridad;
+11. evidencia del mismo commit, versiones, lockfile/runtime y snapshots;
+12. rollback controlado únicamente mientras la deuda siga legalmente en baseline temporal.
+
+---
+
+#### 6. Reconciliación del universo de consumidores
+
+| Ámbito                | Filas | Cobertura documental     | Regla de migración                                                        |
+| --------------------- | ----: | ------------------------ | ------------------------------------------------------------------------- |
+| SHELL                 | **1** | `MATERIALIZADO`          | launcher directo; shared service se cuenta aparte                         |
+| VISO                  | **7** | `MATERIALIZADO`          | 3 auth helpers + 4 superficies funcionales                                |
+| NEXO                  | **4** | `MATERIALIZADO`          | 3 auth helpers + operational-context                                      |
+| FOGO                  | **3** | `MATERIALIZADO`          | 3 auth helpers                                                            |
+| ORIGO                 | **7** | `MATERIALIZADO`          | 3 auth helpers + 4 superficies funcionales                                |
+| PULSO                 | **5** | `MATERIALIZADO`          | 3 auth helpers + Server Action + client component                         |
+| NUMERA                | **3** | `MATERIALIZADO`          | 3 auth helpers                                                            |
+| ANIMA                 | **1** | `MATERIALIZADO`          | client hook directo                                                       |
+| PASS                  | **0** | `NO_APLICA`              | contexto laboral interno excluido por defecto; no se inventa fila         |
+| AURA                  | **0** | `PENDIENTE_DE_EVIDENCIA` | sin repo runtime confirmado; primera adopción gobernada por AURA-AUTH-001 |
+| SERVICIOS_COMPARTIDOS | **1** | `MATERIALIZADO`          | adapter transitorio de @vento/os-context                                  |
+
+Las 32 filas permanecen en estado documental `PENDIENTE_DE_EVIDENCIA` hasta que una futura instancia produzca resultados físicos. PASS no recibe una fila laboral artificial. AURA permanece sin ruta runtime inventada; su primera adopción real deberá registrarse antes de operar conforme a `AURA-AUTH-001`.
+
+---
+
+#### 7. Grupos de migración derivados de AUTH-CTX-027
+
+La secuencia de AUTH-CTX-027 se conserva. AUTH005 no reordena olas para acelerar el cutover.
+
+| Grupo                     |                  Filas baseline | Regla                                                                                                                                                                                 |
+| ------------------------- | ------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PRECONDICIÓN COMPARTIDA` |                           **1** | el adapter transitorio de `@vento/os-context` debe estar reconciliado con las superficies canónicas antes del cutover de consumidores; AUTH005 verifica, no reimplementa AUTH001..004 |
+| `OLA 3`                   |                           **1** | SHELL se migra primero como consumidor transversal de acceso/navegación                                                                                                               |
+| `OLA 4`                   |                          **25** | helpers, guards, sesiones/contextos locales, páginas/lecturas y proyecciones cliente migran sin heredar autoridad local                                                               |
+| `OLA 5`                   |                           **5** | Server Actions y Route Handlers migran con permiso/recurso exactos, denegaciones, concurrencia y rollback                                                                             |
+| `OLA 6`                   | **0 filas baseline inventadas** | RPC/RLS se incorporan solo si existen filas físicas registradas y tareas propietarias materializadas                                                                                  |
+| `OLA 7`                   | **0 filas baseline inventadas** | jobs, Edge, Realtime e integraciones se incorporan solo cuando existan consumidores reales registrados                                                                                |
+| `OLA 8`                   |           **handoff posterior** | requiere convergencia a cero y habilita retiro/certificación en `AUTH-DB-030/031`; no se adelanta en este marcador                                                                    |
+
+**Conciliación de las 32 filas actuales:** 1 + 1 + 25 + 5 = **32**; cero filas omitidas y cero duplicadas.
+
+---
+
+#### 8. Matriz materializada 32/32
+
+Cada fila hereda la identidad estable `(repository, path, surface_type, consumer_name)` de AUTH003. La siguiente matriz fija un resultado de migración explícito por identidad:
+
+|    # | repository                   | path                                                     | surface_type       | consumer_name                                | perfil AUTH004              | grupo                     | destino canónico                                                                                       | paridad física requerida                                                                 |
+| ---: | ---------------------------- | -------------------------------------------------------- | ------------------ | -------------------------------------------- | --------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+|    1 | `devVentoGroup/vento-viso`   | `src/lib/auth/permissions.ts`                            | `SERVER_HELPER`    | VISO permission helper                       | `PERMISSION_HELPER`         | `OLA 4`                   | scope server + evaluateAuthorization/requireAuthorization; PermissionKey canónica                      | decisión ALLOW/DENY y error técnico sobre escenarios equivalentes                        |
+|    2 | `devVentoGroup/vento-viso`   | `src/lib/auth/guard.ts`                                  | `SERVER_HELPER`    | VISO application guard                       | `DISTRIBUTED_GUARD`         | `OLA 4`                   | scope server + requireAuthorization; navegación mediante proyección segura                             | acceso de aplicación/ruta, denegaciones y recuperación segura                            |
+|    3 | `devVentoGroup/vento-viso`   | `src/lib/auth/operational-session.ts`                    | `SERVER_HELPER`    | VISO operational-session                     | `OPERATIONAL_SESSION_LOCAL` | `OLA 4`                   | scope server + resolveAccessContext; sin territorio efectivo del caller                                | hechos empresariales equivalentes y readiness; no shape legacy                           |
+|    4 | `devVentoGroup/vento-nexo`   | `src/lib/auth/permissions.ts`                            | `SERVER_HELPER`    | NEXO permission helper                       | `PERMISSION_HELPER`         | `OLA 4`                   | scope server + evaluateAuthorization/requireAuthorization; PermissionKey canónica                      | decisión ALLOW/DENY y error técnico sobre escenarios equivalentes                        |
+|    5 | `devVentoGroup/vento-nexo`   | `src/lib/auth/guard.ts`                                  | `SERVER_HELPER`    | NEXO application guard                       | `DISTRIBUTED_GUARD`         | `OLA 4`                   | scope server + requireAuthorization; navegación mediante proyección segura                             | acceso de aplicación/ruta, denegaciones y recuperación segura                            |
+|    6 | `devVentoGroup/vento-nexo`   | `src/lib/auth/operational-session.ts`                    | `SERVER_HELPER`    | NEXO operational-session                     | `OPERATIONAL_SESSION_LOCAL` | `OLA 4`                   | scope server + resolveAccessContext; sin territorio efectivo del caller                                | hechos empresariales equivalentes y readiness; no shape legacy                           |
+|    7 | `devVentoGroup/vento-fogo`   | `src/lib/auth/permissions.ts`                            | `SERVER_HELPER`    | FOGO permission helper                       | `PERMISSION_HELPER`         | `OLA 4`                   | scope server + evaluateAuthorization/requireAuthorization; PermissionKey canónica                      | decisión ALLOW/DENY y error técnico sobre escenarios equivalentes                        |
+|    8 | `devVentoGroup/vento-fogo`   | `src/lib/auth/guard.ts`                                  | `SERVER_HELPER`    | FOGO application guard                       | `DISTRIBUTED_GUARD`         | `OLA 4`                   | scope server + requireAuthorization; navegación mediante proyección segura                             | acceso de aplicación/ruta, denegaciones y recuperación segura                            |
+|    9 | `devVentoGroup/vento-fogo`   | `src/lib/auth/operational-session.ts`                    | `SERVER_HELPER`    | FOGO operational-session                     | `OPERATIONAL_SESSION_LOCAL` | `OLA 4`                   | scope server + resolveAccessContext; sin territorio efectivo del caller                                | hechos empresariales equivalentes y readiness; no shape legacy                           |
+|   10 | `devVentoGroup/vento-origo`  | `src/lib/auth/permissions.ts`                            | `SERVER_HELPER`    | ORIGO permission helper                      | `PERMISSION_HELPER`         | `OLA 4`                   | scope server + evaluateAuthorization/requireAuthorization; PermissionKey canónica                      | decisión ALLOW/DENY y error técnico sobre escenarios equivalentes                        |
+|   11 | `devVentoGroup/vento-origo`  | `src/lib/auth/guard.ts`                                  | `SERVER_HELPER`    | ORIGO application guard                      | `DISTRIBUTED_GUARD`         | `OLA 4`                   | scope server + requireAuthorization; navegación mediante proyección segura                             | acceso de aplicación/ruta, denegaciones y recuperación segura                            |
+|   12 | `devVentoGroup/vento-origo`  | `src/lib/auth/operational-session.ts`                    | `SERVER_HELPER`    | ORIGO operational-session                    | `OPERATIONAL_SESSION_LOCAL` | `OLA 4`                   | scope server + resolveAccessContext; sin territorio efectivo del caller                                | hechos empresariales equivalentes y readiness; no shape legacy                           |
+|   13 | `devVentoGroup/vento-pulso`  | `src/lib/auth/permissions.ts`                            | `SERVER_HELPER`    | PULSO permission helper                      | `PERMISSION_HELPER`         | `OLA 4`                   | scope server + evaluateAuthorization/requireAuthorization; PermissionKey canónica                      | decisión ALLOW/DENY y error técnico sobre escenarios equivalentes                        |
+|   14 | `devVentoGroup/vento-pulso`  | `src/lib/auth/guard.ts`                                  | `SERVER_HELPER`    | PULSO application guard                      | `DISTRIBUTED_GUARD`         | `OLA 4`                   | scope server + requireAuthorization; navegación mediante proyección segura                             | acceso de aplicación/ruta, denegaciones y recuperación segura                            |
+|   15 | `devVentoGroup/vento-pulso`  | `src/lib/auth/operational-session.ts`                    | `SERVER_HELPER`    | PULSO operational-session                    | `OPERATIONAL_SESSION_LOCAL` | `OLA 4`                   | scope server + resolveAccessContext; sin territorio efectivo del caller                                | hechos empresariales equivalentes y readiness; no shape legacy                           |
+|   16 | `devVentoGroup/vento-numera` | `src/lib/auth/permissions.ts`                            | `SERVER_HELPER`    | NUMERA permission helper                     | `PERMISSION_HELPER`         | `OLA 4`                   | scope server + evaluateAuthorization/requireAuthorization; PermissionKey canónica                      | decisión ALLOW/DENY y error técnico sobre escenarios equivalentes                        |
+|   17 | `devVentoGroup/vento-numera` | `src/lib/auth/guard.ts`                                  | `SERVER_HELPER`    | NUMERA application guard                     | `DISTRIBUTED_GUARD`         | `OLA 4`                   | scope server + requireAuthorization; navegación mediante proyección segura                             | acceso de aplicación/ruta, denegaciones y recuperación segura                            |
+|   18 | `devVentoGroup/vento-numera` | `src/lib/auth/operational-session.ts`                    | `SERVER_HELPER`    | NUMERA operational-session                   | `OPERATIONAL_SESSION_LOCAL` | `OLA 4`                   | scope server + resolveAccessContext; sin territorio efectivo del caller                                | hechos empresariales equivalentes y readiness; no shape legacy                           |
+|   19 | `devVentoGroup/vento-nexo`   | `src/lib/auth/operational-context.ts`                    | `SERVER_HELPER`    | NEXO operational context                     | `OPERATIONAL_CONTEXT_LOCAL` | `OLA 4`                   | scope + resolveAccessContext + evaluateAuthorization/requireAuthorization; sin can_operate/override    | hechos de contexto y decisión por recurso; no paridad de shape plana                     |
+|   20 | `devVentoGroup/vento-shell`  | `src/app/page.tsx`                                       | `SERVER_COMPONENT` | SHELL application launcher                   | `DIRECT_SERVER_AUTH`        | `OLA 3`                   | scope + evaluateAuthorization + SafeDecisionProjectionV1                                               | acceso a cada aplicación y denegación segura sin fallback de firma                       |
+|   21 | `devVentoGroup/vento-viso`   | `src/app/api/viso/upload-product-image/route.ts`         | `ROUTE_HANDLER`    | VISO product-image upload                    | `DIRECT_SERVER_AUTH`        | `OLA 5`                   | scope + requireAuthorization sobre recurso exacto antes del upload                                     | decisión canónica; side effect Storage se ejecuta una sola vez                           |
+|   22 | `devVentoGroup/vento-viso`   | `src/app/api/viso/upload-commercial-menu-image/route.ts` | `ROUTE_HANDLER`    | VISO commercial-menu image upload            | `DIRECT_SERVER_AUTH`        | `OLA 5`                   | scope + requireAuthorization sobre recurso exacto antes del upload                                     | decisión canónica; procesamiento/upload se ejecutan una sola vez                         |
+|   23 | `devVentoGroup/vento-viso`   | `src/app/api/viso/attendance-report/route.ts`            | `ROUTE_HANDLER`    | VISO attendance report                       | `DIRECT_SERVER_AUTH`        | `OLA 5`                   | scope + requireAuthorization sobre reporte/recurso exactos                                             | decisión y alcance de lectura/exportación; generación una sola vez                       |
+|   24 | `devVentoGroup/vento-viso`   | `src/app/staff/[id]/page.tsx`                            | `SERVER_COMPONENT` | VISO staff detail                            | `DIRECT_SERVER_AUTH`        | `OLA 4`                   | scope + evaluateAuthorization/requireAuthorization; proyección segura para presentación                | acceso directo por URL, recurso staff y acciones sensibles separadas                     |
+|   25 | `devVentoGroup/vento-origo`  | `src/lib/suppliers.ts`                                   | `SERVER_HELPER`    | ORIGO supplier management                    | `ROLE_FALLBACK`             | `OLA 4`                   | scope + requireAuthorization; sin fallback permisivo por rol                                           | mismos casos de negocio contra contrato; deny canónico no se amplía por rol              |
+|   26 | `devVentoGroup/vento-origo`  | `src/app/receipts/new/page.tsx`                          | `SERVER_COMPONENT` | ORIGO receipt creation                       | `DIRECT_SERVER_AUTH`        | `OLA 4`                   | scope + evaluateAuthorization/requireAuthorization; contexto canónico                                  | acceso de vista/contexto; mutaciones se autorizan en su frontera server exacta           |
+|   27 | `devVentoGroup/vento-origo`  | `src/app/product-master-review/page.tsx`                 | `SERVER_COMPONENT` | ORIGO product master review                  | `DIRECT_SERVER_AUTH`        | `OLA 4`                   | scope + evaluateAuthorization/requireAuthorization; contexto canónico                                  | acceso por recurso y denegaciones; mutaciones no heredan autorización de página          |
+|   28 | `devVentoGroup/vento-origo`  | `src/app/purchase-orders/[id]/pdf/route.ts`              | `ROUTE_HANDLER`    | ORIGO purchase-order PDF                     | `DIRECT_SERVER_AUTH`        | `OLA 5`                   | scope + requireAuthorization sobre purchase order exacta en la rama autenticada                        | decisión/rama autenticada; otras credenciales conservan contrato propietario separado    |
+|   29 | `devVentoGroup/vento-pulso`  | `src/modules/pos/actions/identify-client.action.ts`      | `SERVER_ACTION`    | PULSO identify client                        | `DIRECT_SERVER_AUTH`        | `OLA 5`                   | scope + requireAuthorization sobre recurso exacto; siteId no es territorio efectivo                    | decisión antes de consulta sensible; consulta/efecto se ejecuta una sola vez             |
+|   30 | `devVentoGroup/vento-pulso`  | `src/app/orders/delivery-override-bridge.tsx`            | `CLIENT_COMPONENT` | PULSO delivery override visibility           | `CLIENT_DIRECT_AUTH`        | `OLA 4`                   | SafeDecisionProjectionV1 emitida por servidor + parser /client; mutación reautorizada en servidor      | visibilidad segura y reautorización server; navegador sin RPC interna de autorización    |
+|   31 | `devVentoGroup/vento-anima`  | `src/hooks/use-app-permissions.ts`                       | `CLIENT_HOOK`      | ANIMA app permissions hook                   | `CLIENT_DIRECT_AUTH`        | `OLA 4`                   | SafeDecisionProjectionV1/SafeContextProjectionV1 emitida por servidor + parser /client puro            | presentación móvil equivalente; cero RPC interna de autorización desde Expo/cliente      |
+|   32 | `devVentoGroup/vento-shell`  | `packages/os-context/src/client.ts`                      | `SDK_ADAPTER`      | @vento/os-context transitional legacy client | `LEGACY_SDK_ADAPTER`        | `PRECONDICIÓN COMPARTIDA` | adapters /server y parsers /client canónicos; /legacy solo durante transición y luego sin consumidores | contratos, exports y compatibilidad; no se preservan booleanos/shapes legacy como oracle |
+
+La matriz no afirma que el código ya esté migrado. Fija el destino, la ola y el oracle que deberá demostrar la futura instancia.
+
+---
+
+#### 9. Estados de migración AUTH005
+
+AUTH005 mantiene un estado de migración separado del campo `status` del registro de consumidores:
+
+```text
+BASELINE_FROZEN
+CANONICAL_READY
+SHADOW_PARITY
+PARITY_RESOLVED
+CANONICAL_ENFORCING
+OBSERVATION
+MIGRATION_COMMITTED
+RETIREMENT_HANDOFF_READY
+BLOCKED
+ROLLED_BACK
+```
+
+Flujo ordinario:
+
+```text
+BASELINE_FROZEN
+→ CANONICAL_READY
+→ SHADOW_PARITY
+→ PARITY_RESOLVED
+→ CANONICAL_ENFORCING
+→ OBSERVATION
+→ MIGRATION_COMMITTED
+→ RETIREMENT_HANDOFF_READY
+```
+
+`ROLLED_BACK` solo es admisible desde una etapa donde la cuota legacy exacta todavía no haya sido eliminada del baseline AUTH004. `BLOCKED` puede ocurrir en cualquier gate y conserva owner, causa, evidencia y condición de salida.
+
+---
+
+#### 10. Relación con el estado del registro y findings AUTH004
+
+El estado de migración no reemplaza las taxonomías previas.
+
+```text
+ANTES DEL CUTOVER
+registry.status = PENDIENTE_DE_EVIDENCIA
+AUTH004 finding = BASELINE_TEMPORAL
+```
+
+```text
+MIGRATION_COMMITTED
+registry.status = COMPATIBLE
+AUTH004 finding = MIGRATED
+```
+
+La transición a `COMPATIBLE` exige evidencia física. Un cambio documental no la produce.
+
+`MIGRATED` reduce de forma irreversible la cuota AUTH004. `HISTORICAL` solo se alcanza cuando el finding ya no forma parte del código ejecutable y su removal gate aplicable está satisfecho. Ningún rollback ordinario puede ejecutar `MIGRATED → BASELINE_TEMPORAL` ni `HISTORICAL → BASELINE_TEMPORAL`.
+
+---
+
+#### 11. Precondición compartida del SDK
+
+La fila `packages/os-context/src/client.ts` representa el adapter transitorio, no un consumidor de dominio ordinario.
+
+AUTH005 deberá comprobar antes de las olas de consumidor que:
+
+- las superficies server/client/testing aprobadas estén disponibles en la combinación exacta;
+- `/client` permanezca puro y renderer-neutral;
+- `/legacy`, si todavía existe durante transición, esté registrado, instrumentado y sin nuevas adopciones;
+- las aplicaciones no copien adapters para evitar depender del package;
+- el root export no reintroduzca booleanos o shapes legacy como autoridad final;
+- la eliminación final del adapter legacy ocurra solo después de cero consumidores directos y con handoff hacia retiro de backend.
+
+AUTH005 no vuelve a diseñar ni implementar las APIs de AUTH001..004.
+
+---
+
+#### 12. OLA 3 — SHELL como primer consumidor transversal
+
+La fila `devVentoGroup/vento-shell / src/app/page.tsx` se migra antes de los demás consumidores de aplicación.
+
+Resultado requerido:
+
+```text
+cinco accesos de aplicación
+→ PermissionKey canónica
+→ AuthorizationScope de SHELL
+→ evaluateAuthorization por aplicación
+→ SafeDecisionProjectionV1 para presentación
+```
+
+Quedan eliminados del camino final:
+
+- `has_permission` directo;
+- fallback entre firma completa y firma `p_app_id/p_code`;
+- split local de permission code como mecanismo de compatibilidad;
+- booleano RPC como contrato de decisión.
+
+La paridad se mide por acceso de cada aplicación y denegaciones esperadas, no por reproducir el fallback de firma.
+
+---
+
+#### 13. OLA 4 — helpers, guards, contexto y superficies de lectura/presentación
+
+OLA 4 concentra 25 filas.
+
+Reglas:
+
+1. `permissions.ts` deja de construir prefijos y de devolver booleano legacy;
+2. `guard.ts` deja de combinar autorización con role override o territorio del caller;
+3. `operational-session.ts` deja de ser fuente autoritativa paralela de contexto;
+4. NEXO `operational-context.ts` deja de usar `can_operate`, permiso operativo directo o modificación local del rol/área como autoridad;
+5. Server Components validan acceso/recurso en servidor y solo serializan proyecciones seguras;
+6. PULSO/ANIMA cliente reciben DTO ya evaluados por servidor, sin invocar RPC internas de autorización;
+7. una página autorizada no transfiere su decisión a una mutación posterior;
+8. un role fallback legacy que anteriormente ampliaba acceso se clasifica como divergencia, no como requisito de paridad.
+
+---
+
+#### 14. OLA 5 — Server Actions y Route Handlers
+
+Las cinco filas de OLA 5 deberán construir o consumir una evaluación exacta de recurso antes de ejecutar la operación sensible.
+
+Regla de side effect:
+
+```text
+PARIDAD
+→ puede ejecutar legacy y canónico como EVALUACIONES comparables
+→ NO ejecuta dos veces upload, export, consulta sensible con side effect, mutación o transición de estado
+```
+
+Durante shadow se comparan decisiones/contexto. La operación empresarial se ejecuta una sola vez por la frontera que sea autoritativa en esa etapa.
+
+Después del cutover:
+
+```text
+CANONICAL DENY
+→ operación no ejecutada
+
+CANONICAL TECHNICAL FAILURE
+→ operación no ejecutada
+
+LEGACY ALLOW
+→ nunca funciona como fallback de un DENY/fallo canónico
+```
+
+Volver temporalmente al comportamiento anterior exige rollback de la combinación, no un fallback por llamada.
+
+---
+
+#### 15. OLA 6 y OLA 7 — consumidores futuros físicamente confirmados
+
+El baseline actual no contiene filas RPC, RLS, JOB, EDGE_FUNCTION o REALTIME que AUTH005 pueda inventar.
+
+Si una futura instancia encuentra superficies reales:
+
+- primero se registran con los 15 campos de AUTH003;
+- se asignan a la unidad por lineage;
+- RPC/RLS esperan sus tareas propietarias y evidencia real;
+- jobs/Edge/Realtime usan principal técnico registrado y app fijo;
+- el scanner AUTH004 debe cubrirlas según aplicabilidad;
+- no se usa ausencia de fila histórica como permiso para omitirlas.
+
+PASS y AURA siguen las reglas de cobertura de la sección 6.
+
+---
+
+#### 16. Frontera cliente y perfil ANIMA
+
+PULSO y ANIMA son las dos filas cliente baseline.
+
+Destino común:
+
+```text
+SERVIDOR
+→ resuelve contexto/decisión
+→ emite SafeContextProjectionV1 / SafeDecisionProjectionV1
+
+CLIENTE
+→ parsea DTO con @vento/os-context/client
+→ usa resultado para presentación
+→ no obtiene autoridad ejecutable
+```
+
+Para ANIMA se aplica además:
+
+- su runtime actual es Expo/React Native, no Next.js;
+- no se exige un script web inexistente como prueba de compatibilidad;
+- `/client` deberá permanecer sin React, Next.js, React Native, Expo, red o Supabase;
+- el adapter de presentación móvil puede usar hooks propios consumiendo DTO seguros;
+- ninguna mutación nativa reutiliza una proyección como autorización;
+- la validación física usa el perfil móvil/TypeScript/Expo que corresponda al commit real.
+
+---
+
+#### 17. Contrato de paridad
+
+Cada fila migra contra un conjunto cerrado de escenarios reproducibles. Una comparación válida conserva:
+
+```text
+consumer_identity
+source_commit
+canonical_commit
+app_code
+principal/actor lógico equivalente
+resource identity/version cuando aplique
+context source versions/fingerprint aplicable
+legacy result
+canonical result
+classification
+expected canonical oracle
+contracts/sdk/backend versions
+environment
+evidence digest
+```
+
+No se exige igualdad byte a byte entre un shape legacy y `AccessContextV1`, ni entre un booleano y `AuthorizationDecisionV1`. La paridad protege el comportamiento empresarial correcto y la denegación cerrada según el contrato nuevo.
+
+---
+
+#### 18. Clasificación cerrada de paridad
+
+Se preserva la taxonomía de AUTH-CTX-027 y se añade el caso sin divergencia:
+
+```text
+IGUAL
+CORRECCION_INTENCIONAL
+BRECHA_DE_DATOS
+BUG_LEGACY
+BUG_CANONICO
+CONTRATO_PENDIENTE
+```
+
+Reglas:
+
+- `IGUAL`: el comportamiento contractual esperado coincide;
+- `CORRECCION_INTENCIONAL`: la diferencia está respaldada por contrato/decisión aprobada y prueba negativa/positiva correspondiente;
+- `BRECHA_DE_DATOS`: bloquea cutover hasta corregir datos/fuentes y reejecutar;
+- `BUG_LEGACY`: no obliga a copiar el bug; exige demostrar que el resultado canónico coincide con el contrato aprobado antes de resolver la divergencia;
+- `BUG_CANONICO`: bloquea cutover;
+- `CONTRATO_PENDIENTE`: bloquea cutover y conserva el owner contractual aplicable.
+
+Un resultado legacy incorrecto no se preserva para obtener una métrica de igualdad artificial.
+
+---
+
+#### 19. Oracle por perfil de deuda
+
+| Perfil AUTH004              | Oracle de paridad                                                                                      |
+| --------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `PERMISSION_HELPER`         | outcome, recurso/territorio resueltos en servidor, error técnico separado y PermissionKey canónica     |
+| `DISTRIBUTED_GUARD`         | acceso directo por URL, redirección/mensaje seguro y prohibición de ampliar autoridad por rol/override |
+| `OPERATIONAL_SESSION_LOCAL` | hechos empresariales canónicos y readiness; no igualdad de shape, selected site o navigation role      |
+| `OPERATIONAL_CONTEXT_LOCAL` | contexto + decisión exacta; `can_operate` no forma parte del oracle final                              |
+| `DIRECT_SERVER_AUTH`        | decisión exacta antes de la operación y side effect único                                              |
+| `CLIENT_DIRECT_AUTH`        | proyección segura de presentación + reautorización server de la operación                              |
+| `ROLE_FALLBACK`             | contrato canónico; un deny no puede transformarse en allow por lista local de roles                    |
+| `LEGACY_SDK_ADAPTER`        | contratos/exports/compatibilidad; shapes/booleanos legacy no son oracle final                          |
+
+---
+
+#### 20. Shadow, cutover y fail-closed
+
+`SHADOW_PARITY` solo compara resultados; no duplica efectos empresariales y no crea una tercera fuente de autoridad.
+
+Para entrar en `CANONICAL_ENFORCING` se requiere:
+
+1. paridad resuelta para escenarios obligatorios;
+2. AUTH004 sin deuda nueva;
+3. contratos/backend exactos disponibles;
+4. compatibilidad del consumidor demostrada;
+5. rollback snapshot válido y ensayable;
+6. pruebas de seguridad y denegación correctas;
+7. observabilidad suficiente para atribuir el cutover.
+
+Una vez canónico:
+
+- `DENY` canónico bloquea;
+- fallo contractual/técnico bloquea;
+- el cliente no puede elegir el carril legacy;
+- el caller no puede solicitar fallback;
+- el rollback se ejecuta como cambio de combinación controlado, no como rama permisiva por request.
+
+---
+
+#### 21. Ventana de observación y commit de migración
+
+Durante `OBSERVATION` puede conservarse el artefacto legacy necesario para rollback, siempre dentro de la cuota exacta AUTH004 y sin nuevas invocaciones no justificadas.
+
+Solo se entra en `MIGRATION_COMMITTED` cuando:
+
+- el consumidor canónico opera sobre la combinación exacta;
+- paridad/seguridad/regresión son correctas;
+- el rollback window propietario se completó o cerró conforme al paquete E5;
+- ya no se necesita reactivar el direct legacy como rollback ordinario;
+- el scanner confirma eliminación de la firma/direct call aplicable;
+- registry/test evidence se actualizan con el mismo commit.
+
+En ese punto el finding pasa a `MIGRATED` y la cuota AUTH004 desaparece. Un incidente posterior usa forward-fix o mecanismo extraordinario aprobado; no resucita silenciosamente el legacy histórico.
+
+---
+
+#### 22. Contrato de evidencia por consumidor
+
+Cada fila física deberá conservar:
+
+```text
+consumer_identity
+implementation_unit_id
+owner_package_id
+consumer_package_ids
+baseline_commit
+result_commit
+branch/base cuando aplique
+manifest digest
+lockfile digest
+runtime/framework versions
+@vento/contracts version
+@vento/os-context version
+backend identities/versions
+registry snapshot
+AUTH004 gate/allowlist snapshot
+migration group
+parity scenario set + results
+security/denial results
+consumer validation results
+runtime telemetry coverage cuando aplique
+rollback snapshot + rehearsal
+artifact digest
+blockers
+```
+
+Evidencia de otro commit, repo, runtime, versión o unidad es `STALE`.
+
+---
+
+#### 23. Perfil de validación de los siete consumidores web
+
+Para SHELL, VISO, NEXO, FOGO, ORIGO, PULSO y NUMERA la futura instancia deberá ejecutar, según el repositorio real:
+
+- instalación reproducible desde manifest/lockfile exactos;
+- lint/análisis estático disponible y AUTH004;
+- comprobación TypeScript reproducible;
+- build/export aplicable;
+- pruebas contractuales de adapters/proyecciones;
+- pruebas de integración de autorización de las filas migradas;
+- denegaciones y seguridad;
+- regresión funcional focal;
+- paridad legacy/canónica durante la etapa correspondiente;
+- rollback rehearsal o evidencia del snapshot exacto.
+
+La ausencia de un check obligatorio no se interpreta como PASS; se asigna a la automatización/prueba propietaria aplicable antes de certificar la fila.
+
+---
+
+#### 24. Perfil de validación de ANIMA
+
+ANIMA usa un perfil nativo diferenciado:
+
+- instalación reproducible desde su lockfile;
+- validación TypeScript del proyecto móvil;
+- resolución de package/subpath compatible con Metro/Expo y el runtime declarado;
+- prueba de que `/client` no incorpora dependencias server/web/native de renderer;
+- prueba de que el hook/adaptador de presentación no invoca RPC interna de autorización;
+- escenarios allow/deny y cambio de actor/contexto mediante DTO seguros;
+- replay de proyección incapaz de autorizar mutación;
+- prueba de bundle/build/smoke nativo autorizada cuando la infraestructura correspondiente exista;
+- rollback de versión/package y adapter móvil sin reactivar RPC cliente como estado final.
+
+Un build Next.js de otro repositorio no certifica ANIMA.
+
+---
+
+#### 25. Compatibilidad, package y lineage
+
+Cada consumidor debe demostrar la combinación exacta de:
+
+```text
+consumer commit
++ manifest/lockfile
++ runtime/framework
++ @vento/contracts
++ @vento/os-context
++ backend contract/version
++ registry snapshot
++ AUTH004 snapshot
+= combinación certificable
+```
+
+La matriz de compatibilidad sigue en `SHELL-PKG-004`/`SHELL-CI-005`. AUTH005 consume esa evidencia y no crea compatibilidad por inferencia.
+
+Una sola implementación física por `implementation_unit_id` puede servir a varios `package_id`; no se copia código del SDK por consumidor para evitar la distribución canónica.
+
+---
+
+#### 26. RLS, RPC y backend
+
+AUTH005 migra consumidores; no sustituye la migración propietaria del backend.
+
+Reglas:
+
+1. una llamada TypeScript canónica no demuestra que RLS sea equivalente;
+2. una policy correcta no demuestra que el consumidor use el adapter correcto;
+3. una fila que dependa de RPC/RLS solo puede certificar esa parte con objeto y ambiente reales;
+4. `AUTH-DB-006..010`, `AUTH-DB-021` y `AUTH-DB-027` conservan pruebas físicas de RPC/RLS;
+5. `AUTH-DB-020` conserva la migración de objetos;
+6. `AUTH-DB-030` conserva el retiro de objetos/RPC legacy;
+7. `AUTH-DB-031` conserva la certificación final;
+8. Supabase nunca se modifica desde repositorios consumidores.
+
+---
+
+#### 27. Handoff de retiro legacy
+
+El resultado físico de AUTH005 es **elegibilidad verificable para el retiro**, no la eliminación anticipada de objetos backend.
+
+Para `RETIREMENT_HANDOFF_READY` de la unidad se exige:
+
+```text
+consumidores directos legacy asignados = 0
+findings estáticos legacy asignados = 0
+consumidores no registrados = 0
+client direct authorization asignada = 0
+allowlist activa de filas migradas = 0
+telemetría legacy = 0 cuando existe cobertura obligatoria demostrada
+paridad = resuelta
+rollback window = cerrada o transferida conforme al contrato
+```
+
+El handoff registra exactamente qué objetos legacy siguen existiendo solo para `AUTH-DB-030`. La existencia residual del backend no autoriza nuevas adopciones ni restaura cuotas AUTH004.
+
+---
+
+#### 28. Rollback por aplicación y consumidor
+
+Antes de `MIGRATION_COMMITTED`, un rollback controlado puede restaurar el snapshot anterior únicamente si:
+
+- commit/manifest/lockfile previos son exactos y disponibles;
+- package artifacts e integridad coinciden;
+- backend vigente acepta esa combinación;
+- datos/schema son compatibles;
+- la versión previa no restaura una vulnerabilidad o bypass conocido;
+- la cuota AUTH004 exacta todavía está en `BASELINE_TEMPORAL`;
+- el rollback fue ensayado o existe evidencia reproducible aplicable;
+- el rollback no mezcla commits de distintos consumidores.
+
+Si el snapshot previo dejó de ser seguro/compatible, el resultado es `FORWARD_FIX_REQUIRED`.
+
+Después de `MIGRATION_COMMITTED`, un rollback ordinario no puede revivir una firma ya `MIGRATED`/`HISTORICAL`; se conserva la regla monotónica de AUTH004.
+
+---
+
+#### 29. Casos mínimos de paridad y seguridad
+
+Cada futura instancia deberá cubrir, según aplicabilidad:
+
+1. acceso permitido esperado;
+2. acceso denegado esperado;
+3. acceso directo por URL;
+4. acción directa sin pasar por UI;
+5. recurso ajeno;
+6. sede ajena;
+7. área ajena;
+8. actor cambiado;
+9. dispositivo incompatible;
+10. contexto obsoleto;
+11. mensaje seguro;
+12. app code manipulado;
+13. permission key manipulado;
+14. recurso/version manipulados;
+15. proyección client replayed;
+16. decision_id usado como token;
+17. sede/área del caller inyectadas como autoridad;
+18. role fallback/bypass;
+19. fallo técnico del backend;
+20. rollback y repetición de los escenarios esenciales.
+
+Las mutaciones nunca se duplican para comparar outputs.
+
+---
+
+#### 30. Snapshot contractual
+
+Se define:
+
+```text
+snapshot_id = SHELL-AUTH-CONSUMER-MIGRATION-001
+schema = vento.authorization-consumer-migration@1
+baseline_consumer_row_count = 32
+current_repository_count = 8
+registry_field_count = 15
+client_direct_baseline_count = 2
+migration_groups = PRECONDICIÓN_COMPARTIDA:1, OLA_3:1, OLA_4:25, OLA_5:5
+parity_outcomes = 6
+gate_count = 12
+target_direct_legacy_consumers = 0
+target_static_legacy_findings = 0
+target_unregistered_consumers = 0
+target_client_direct_legacy = 0
+pass_labor_consumer_rows = 0
+aura_repository_confirmed = false
+rollback_can_resurrect_historical_legacy = false
+physical_state = NOT_IMPLEMENTED
+```
+
+Huella documental:
+
+`sha256:7c54e585ce02a4a23ec38fd01435cac72740f4c0161070ed290f958976e52d83`
+
+Payload normativo:
+
+```json
+{"aura_repository_confirmed":false,"baseline_consumer_row_count":32,"client_direct_baseline_count":2,"current_repository_count":8,"gate_count":12,"migration_group_counts":{"OLA_3":1,"OLA_4":25,"OLA_5":5,"SHARED_PREREQUISITE":1},"parity_outcome_count":6,"pass_labor_consumer_rows":0,"physical_state":"NOT_IMPLEMENTED","registry_field_count":15,"rollback_can_resurrect_historical_legacy":false,"schema":"vento.authorization-consumer-migration@1","snapshot_id":"SHELL-AUTH-CONSUMER-MIGRATION-001","target_client_direct_legacy":0,"target_direct_legacy_consumers":0,"target_static_legacy_findings":0,"target_unregistered_consumers":0,"wave_model":"AUTH-CTX-027_OLA_0_8"}
+```
+
+La serialización normativa usa JSON UTF-8 en una línea, claves ordenadas lexicográficamente y arrays/objetos internos en el orden estable indicado por el payload.
+
+---
+
+#### 31. Contrato de entrada de futura instancia
+
+Toda `SHELL-AUTH-005::<implementation_unit_id>` registrará como mínimo:
+
+| Campo                          | Obligación                                                  |
+| ------------------------------ | ----------------------------------------------------------- |
+| `implementation_unit_id`       | unidad exacta asignada por `DELIV-PKG-025`                  |
+| `owner_package_id`             | package propietario con E5 PASS                             |
+| `consumer_package_ids`         | paquetes que consumen la unidad                             |
+| `assigned_consumer_identities` | filas exactas del registro asignadas a la unidad            |
+| baseline/result commits        | commits por repositorio                                     |
+| manifest/lockfile digests      | identidad de dependencias por consumidor                    |
+| runtime matrix                 | framework/runtime exactos, incluido perfil ANIMA            |
+| SDK/contracts/backend versions | versiones exactas de todas las fronteras                    |
+| registry snapshot              | filas, estados, diff y 15 campos                            |
+| AUTH004 snapshot               | scanner, allowlist, metrics y gates exactos                 |
+| migration matrix               | grupo y target de cada fila asignada                        |
+| parity evidence                | escenarios, clasificación y oracle canónico                 |
+| security evidence              | denegaciones, manipulación, replay y bypass                 |
+| consumer validation            | lint/type/build/tests o perfil equivalente aplicable        |
+| RLS/RPC evidence               | solo cuando exista superficie física aplicable              |
+| telemetry evidence             | cobertura y cero uso legacy cuando sea requisito de handoff |
+| retirement handoff             | objetos legacy restantes y owner `AUTH-DB-030`              |
+| rollback                       | snapshot previo, compatibilidad y ensayo                    |
+| artifact digest                | huella del resultado materializado                          |
+| blockers                       | lista cerrada con owner y condición de salida               |
+
+Campo obligatorio ausente deja la instancia `BLOCKED`.
+
+---
+
+#### 32. Doce gates de futura materialización
+
+| Gate                        | PASS                                                                                                   | Bloqueo                                                                               |
+| --------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| 1. `IDENTITY_LINEAGE`       | unidad, owner, filas, packages, commits y snapshots inequívocos                                        | identidad/lineage incompletos o fila duplicada entre unidades                         |
+| 2. `PREREQUISITES`          | AUTH001..004 y backend/contratos aplicables disponibles en versiones compatibles                       | dependencia física ausente o combinación no certificada                               |
+| 3. `REGISTRY_SCOPE`         | todas las filas asignadas reconciliadas, 15 campos, 0 unregistered/duplicates; PASS/AURA sin invención | consumidor omitido, fila huérfana o path inventado                                    |
+| 4. `WAVE_ORDER`             | precondición shared y olas respetan AUTH-CTX-027; no se adelanta superficie sensible                   | cutover fuera de orden o backend aún no preparado                                     |
+| 5. `CANONICAL_TARGET`       | cada fila usa su destino exacto y elimina autoridad local/direct legacy                                | wrapper nuevo, role fallback, caller context o booleano persistente                   |
+| 6. `PARITY`                 | escenarios completos y divergencias resueltas contra oracle canónico                                   | bug canónico, brecha de datos, contrato pendiente o diferencia sin clasificación      |
+| 7. `CLIENT_NATIVE_BOUNDARY` | PULSO/ANIMA sin RPC interna de autorización; DTO seguros y reauth server                               | autorización desde browser/native o replay como autoridad                             |
+| 8. `CUTOVER_FAIL_CLOSED`    | canónico gobierna; DENY/técnico bloquean; side effect único                                            | fallback legacy, doble mutación o fail-open                                           |
+| 9. `CONSUMER_VALIDATION`    | cada repo ejecuta perfil propio sobre el mismo commit/versiones                                        | lint/type/build/test faltante, ajeno, stale o no aplicable sin justificar             |
+| 10. `BACKEND_RLS_RPC`       | objetos aplicables tienen evidencia física propia y paridad real                                       | inferencia TypeScript, objeto inexistente o ambiente no atribuible                    |
+| 11. `RETIREMENT_HANDOFF`    | direct/static/client/unregistered en 0; telemetry 0 con cobertura; allowlist migrada sin reuso         | deuda residual, métrica falsa de cero o backend legacy sin owner de retiro            |
+| 12. `ROLLBACK_EVIDENCE`     | rollback ensayable antes del commit de migración y no revive legacy histórico                          | snapshot inseguro/incompatible, evidencia de otra combinación o resurrección de deuda |
+
+Todos los gates aplicables deben estar `PASS` para cerrar la instancia AUTH005. `AUTH-DB-030/031` siguen siendo necesarios para el retiro/certificación de backend posterior.
+
+---
+
+#### 33. Hallazgos y destinos exactos
+
+| Hallazgo                                                                           | Estado documental             | Destino/condición de salida                                                                             |
+| ---------------------------------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------- |
+| los ocho manifests actuales no demuestran adopción runtime publicada de `@vento/*` | `PENDIENTE_DE_IMPLEMENTACION` | publicación/adopción física de packages y combinación certificada antes de `CANONICAL_READY`            |
+| los helpers/guards/sesiones legacy siguen físicamente presentes                    | `LEGACY_ACTIVO`               | filas AUTH005 de OLA 4 + gates AUTH004; retiro de directos durante la instancia                         |
+| NEXO conserva `operational-context.ts`                                             | `LEGACY_ACTIVO`               | fila NEXO de OLA 4; backend/contexto canónicos aplicables                                               |
+| SHELL conserva `has_permission` y fallback de firma                                | `LEGACY_ACTIVO`               | OLA 3 de AUTH005; backend canónico disponible                                                           |
+| ORIGO conserva fallback local por rol en suppliers                                 | `LEGACY_ACTIVO`               | fila ORIGO supplier management; no se conserva como paridad correcta                                    |
+| PULSO conserva autorización cliente en delivery override                           | `LEGACY_ACTIVO`               | fila client PULSO → safe projection + reauth server                                                     |
+| ANIMA conserva hook con RPC cliente y no tiene perfil web de build/lint            | `LEGACY_ACTIVO`               | fila ANIMA + perfil nativo AUTH005; `/client` puro                                                      |
+| shared SDK conserva adapter legacy actual                                          | `LEGACY_ACTIVO`               | precondición shared; cero consumidores antes de eliminar adapter; backend legacy luego en `AUTH-DB-030` |
+| PASS no tiene consumidor laboral baseline                                          | `NO_APLICA`                   | conservar regla; registrar solo si aparece superficie real autorizada                                   |
+| AURA no tiene repo runtime confirmado en el corte                                  | `PENDIENTE_DE_EVIDENCIA`      | `AURA-AUTH-001` antes de primera adopción; no inventar path                                             |
+| retiro de RPC/RLS legacy no pertenece a AUTH005                                    | `RESERVADO`                   | `AUTH-DB-030`; certificación posterior `AUTH-DB-031`                                                    |
+| cualquier divergencia `BRECHA_DE_DATOS`, `BUG_CANONICO` o `CONTRATO_PENDIENTE`     | `BLOCKED`                     | owner de datos/código/contrato aplicable; reejecución de paridad antes de cutover                       |
+
+No queda pendiente narrativo sin propietario o condición de salida.
+
+---
+
+#### 34. Requisitos de prueba derivados
+
+**Resultado:** GENERA 8 REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** **8**
+**Requisitos modificados:** **0**
+
+- `TREQ-SHELL-091` — matriz de migración 32/32, identidad estable, asignación única por unidad y reconciliación de registry/finding sin faltantes ni duplicados;
+- `TREQ-SHELL-092` — destino canónico por consumidor con cero direct legacy, role/bypass/caller-context/boolean authority y fail-closed después del cutover;
+- `TREQ-SHELL-093` — orden de precondición/olas conforme a AUTH-CTX-027, dependencias físicas, cutover por grupo y prohibición de adelantar superficies sensibles;
+- `TREQ-SHELL-094` — paridad legacy↔canónica reproducible, seis clasificaciones, oracle contractual y bloqueo/resolución de divergencias sin preservar bugs legacy;
+- `TREQ-SHELL-095` — PULSO/ANIMA sin autorización cliente directa, proyecciones server-issued, `/client` puro y perfil nativo Expo/React Native para ANIMA;
+- `TREQ-SHELL-096` — evidencia por repositorio/commit/manifest/lockfile/runtime/versiones, perfil de validación propio, compatibilidad, seguridad y lineage;
+- `TREQ-SHELL-097` — convergencia de retiro de consumidores a cero direct/static/client/unregistered, telemetría cero con cobertura y handoff exacto a `AUTH-DB-030/031`;
+- `TREQ-SHELL-098` — unicidad por implementation unit, rollback seguro antes del commit de migración, no resurrección de deuda histórica y RLS/RPC solo con evidencia física real.
+
+No se modifica, difiere, descarta ni vuelve obsoleto ningún requisito histórico.
+
+---
+
+#### 35. Puerta de cierre del marcador global
+
+El marcador global queda documentalmente cerrado cuando:
+
+1. conserva AUTH004 como precedencia;
+2. mantiene modalidad `PER_IMPLEMENTATION_UNIT`;
+3. materializa decisiones para 32/32 identidades;
+4. reconcilia 8 perfiles, 8 repositorios actuales y cobertura PASS/AURA/shared sin invención;
+5. conserva la secuencia de olas de AUTH-CTX-027;
+6. fija 1 precondición shared, 1 fila OLA3, 25 OLA4 y 5 OLA5;
+7. define destino canónico por cada fila;
+8. define estados de migración separados de registry/AUTH004;
+9. define paridad y seis clasificaciones;
+10. prohíbe doble side effect y fallback legacy después del cutover;
+11. define perfil web y perfil ANIMA nativo;
+12. define evidencia por consumidor y combinación;
+13. define handoff de retiro sin usurpar AUTH-DB-030/031;
+14. define rollback y punto de no retorno de la cuota AUTH004;
+15. define snapshot reproducible;
+16. define doce gates;
+17. crea `TREQ-SHELL-091` a `TREQ-SHELL-098`;
+18. mantiene 0 cambios físicos, 0 migraciones y 0 cambios Supabase en este marcador.
+
+---
+
+#### 36. Puerta de cierre de futura instancia
+
+`SHELL-AUTH-005::<implementation_unit_id>` podrá quedar `PASS` únicamente cuando:
+
+- la unidad y packages estén asignados por E5;
+- toda fila asignada exista exactamente una vez y tenga owner/target/evidencia;
+- las dependencias físicas aplicables estén disponibles;
+- el orden de migración sea válido;
+- cada fila use su frontera canónica;
+- paridad y divergencias estén resueltas;
+- PULSO/ANIMA aplicables no llamen autorización interna desde cliente;
+- no exista role/bypass/caller context/booleano legacy como autoridad;
+- side effects no se hayan duplicado;
+- lint/análisis, typecheck equivalente, build/bundle y pruebas aplicables correspondan al mismo commit;
+- AUTH004 esté en PASS y no exista nueva deuda;
+- compatibilidad/lineage correspondan a la misma combinación;
+- RLS/RPC aplicables tengan evidencia física propia;
+- direct/static/client/unregistered legacy asignados sean 0;
+- runtime telemetry sea 0 cuando la cobertura requerida esté demostrada;
+- registry rows migradas puedan marcarse `COMPATIBLE` con evidencia;
+- findings migrados hayan perdido cuota reutilizable;
+- objetos legacy restantes estén entregados explícitamente a `AUTH-DB-030`;
+- rollback haya sido ensayado antes del punto de no retorno;
+- `TREQ-SHELL-091` a `TREQ-SHELL-098` tengan evidencia atribuible a la misma instancia.
+
+---
+
+#### 37. Criterios de aceptación
+
+- [x] `SHELL-AUTH-004` es la precedencia inmediata aprobada;
+- [x] `SHELL-CTX-001` permanece únicamente reservada;
+- [x] se usa `PER_IMPLEMENTATION_UNIT`;
+- [x] no se inventa `implementation_unit_id`;
+- [x] se separa contrato global de ejecución física;
+- [x] se conservan 32/32 identidades y 0 duplicados;
+- [x] se materializa una decisión de migración por cada identidad;
+- [x] se reconcilian las distribuciones heredadas;
+- [x] PASS conserva 0 filas laborales por defecto;
+- [x] AURA conserva 0 paths inventados;
+- [x] se preserva AURA-AUTH-001 como puerta de primera adopción;
+- [x] se preservan las olas AUTH-CTX-027;
+- [x] SHELL queda primero entre consumidores transversales;
+- [x] helpers/guards/contexto/presentación quedan en OLA 4;
+- [x] Server Actions/Route Handlers quedan en OLA 5;
+- [x] no se inventan RPC/RLS/jobs/Edge/Realtime baseline;
+- [x] se definen estados de migración y punto de commit;
+- [x] se distingue registry status de finding AUTH004;
+- [x] se definen seis resultados de paridad;
+- [x] no se exige conservar un bug legacy;
+- [x] se prohíbe doble ejecución de side effects;
+- [x] DENY/fallo canónico no hace fallback a ALLOW legacy;
+- [x] PULSO y ANIMA migran a proyecciones seguras server-issued;
+- [x] ANIMA recibe perfil nativo, no perfil Next inventado;
+- [x] se exige evidencia por repo/commit/lockfile/runtime/versiones;
+- [x] se define convergencia a cero y handoff a AUTH-DB-030/031;
+- [x] se define rollback sin resurrección de deuda histórica;
+- [x] se definen doce gates;
+- [x] se crean exactamente ocho TREQ nuevos;
+- [x] se declaran 0 cambios físicos y 0 cambios Supabase;
+- [x] no se inicia ni desarrolla `SHELL-CTX-001`.
+
+---
+
+#### 38. Límites
+
+Esta tarea no:
+
+- modifica `packages/os-context`;
+- instala packages en consumidores;
+- cambia `package.json` o lockfiles;
+- edita helpers, guards, páginas, Route Handlers, Server Actions o hooks;
+- elimina el fallback por rol de ORIGO físicamente;
+- elimina las RPC cliente de PULSO o ANIMA físicamente;
+- crea o modifica pipelines CI;
+- ejecuta el scanner AUTH004;
+- declara paridad física por documentación;
+- declara un consumer `COMPATIBLE` sin evidencia;
+- crea filas sintéticas de PASS o AURA;
+- implementa `get_access_context` o `evaluate_authorization`;
+- migra RPC/RLS/objetos de Supabase;
+- crea SQL, migraciones, RLS, triggers, Storage, Realtime o Edge Functions;
+- ejecuta Supabase;
+- retira funciones/RPC legacy del backend;
+- ejecuta `AUTH-DB-030` ni `AUTH-DB-031`;
+- ejecuta `SHELL-AUTH-005::<implementation_unit_id>`;
+- avanza ni desarrolla la tarea siguiente.
 
 ### Módulos internos de contexto
+
+---
+
+#### 39. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-AUTH-004 — Implementar lint, métricas y gates contra consumidores legacy`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CTX-001 — Consolidar el módulo de contexto dentro de @vento/os-context`
 
 ### [ ] SHELL-CTX-001 — Consolidar el módulo de contexto dentro de @vento/os-context
 ### [ ] SHELL-CTX-002 — Implementar consumo canónico de turno y check-in
