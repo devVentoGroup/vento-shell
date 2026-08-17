@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **948** |
+| Tareas aprobadas | **949** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **646** |
+| Tareas no iniciadas | **645** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **59.47% (948/1594)** |
+| Porcentaje de completamiento | **59.54% (949/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-NATIVE-003 — Mantener UI React Native separada** |
-| Tarea actual | **SHELL-AUTH-001 — Consolidar @vento/os-context como SDK canónico de contexto y autorización** |
+| Última tarea aprobada | **SHELL-AUTH-001 — Consolidar @vento/os-context como SDK canónico de contexto y autorización** |
+| Tarea actual | **SHELL-AUTH-002 — Implementar adapters de servidor, cliente y proyecciones seguras** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-AUTH-002 — Implementar adapters de servidor, cliente y proyecciones seguras** |
+| Siguiente tarea | **SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 98 de 109 aprobadas; SHELL-AUTH-001 pendiente** |
+| Progreso del bloque | **BLOQUE H: 99 de 109 aprobadas; SHELL-AUTH-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-NATIVE-003` — Mantener UI React Native separada |
-| Tarea actual | `SHELL-AUTH-001` — Consolidar @vento/os-context como SDK canónico de contexto y autorización — **NO INICIADA** |
-| Siguiente tarea | `SHELL-AUTH-002` — Implementar adapters de servidor, cliente y proyecciones seguras |
+| Última aprobada | `SHELL-AUTH-001` — Consolidar @vento/os-context como SDK canónico de contexto y autorización |
+| Tarea actual | `SHELL-AUTH-002` — Implementar adapters de servidor, cliente y proyecciones seguras — **NO INICIADA** |
+| Siguiente tarea | `SHELL-AUTH-003` — Implementar scope por solicitud y registro canónico de consumidores |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 98 DE 109 APROBADAS — ACTUAL SHELL-AUTH-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 99 DE 109 APROBADAS — ACTUAL SHELL-AUTH-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-NATIVE-003 — Mantener UI React Native separada
-        ↓
-TAREA ACTUAL
 SHELL-AUTH-001 — Consolidar @vento/os-context como SDK canónico de contexto y autorización
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-AUTH-002 — Implementar adapters de servidor, cliente y proyecciones seguras
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 98 de 109 tareas aprobadas
+BLOQUE H — 99 de 109 tareas aprobadas
 ```
