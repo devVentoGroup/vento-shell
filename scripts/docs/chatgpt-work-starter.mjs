@@ -33,10 +33,14 @@ function taskState(task) {
 export function actionResponseContract(control, sourceContractHash) {
   const { type, target } = control.primaryAction;
   const common = [
-    'La respuesta debe comenzar con FORMATO_ENTREGA_VENTO_V1 y conservar exactamente sus ocho secciones; no agregues una novena sección.',
+    'La primera respuesta de la acción y la entrega final deben comenzar con FORMATO_ENTREGA_VENTO_V1 y conservar exactamente sus ocho secciones; no agregues una novena sección.',
+    'Las respuestas intermedias después de HECHO no son entregas finales: usa únicamente PASO N DE M, OPERACIÓN Y RUTA, CONTENIDO O COMANDO EXACTO, COMPROBACIÓN y RESPONDE HECHO. Así se evita repetir contexto y consumir mensajes innecesarios.',
     'No te limites a informar qué sigue. Indica exactamente qué debe hacer el usuario, sin asumir que conoce comandos, archivos, estados o convenciones del repositorio.',
-    'Dentro de la sección 8 incluye el bloque PASOS EXACTOS PARA EL USUARIO con una lista numerada, rutas exactas, fragmento actual que se reemplaza, contenido completo de reemplazo, resultado esperado del watcher, revisión visual en VS Code y acción de commit/sincronización cuando corresponda.',
-    'Si el usuario no debe hacer nada, escríbelo expresamente y explica cuál acción ya ejecutaste tú.',
+    'El operador es el usuario humano. Tu función predeterminada es auditar en solo lectura, diseñar el mapa y entregar exactamente un paso ejecutable por respuesta.',
+    'No escribas archivos, no uses herramientas de edición, no ejecutes validaciones, no instales dependencias y no hagas commit, push, PR, despliegues ni mutaciones mediante conectores locales o remotos.',
+    'AUTHORIZED habilita el trabajo físico, pero no te autoriza a ejecutarlo. Tampoco “haz la acción principal”, APROBADO, HECHO ni una solicitud general de implementación conceden permisos de escritura.',
+    'Solo la frase exacta AUTORIZO EJECUCION ASISTIDA DEL PASO N, con el número real ya definido, autoriza a ejecutar ese único paso. Al terminarlo vuelve automáticamente el modo humano manual.',
+    'Dentro de la sección 8 incluye PASOS EXACTOS PARA EL USUARIO. Entrega un único PASO ACTUAL, termina pidiendo HECHO y no reveles ni inicies el paso siguiente hasta recibir esa confirmación y verificar la evidencia aportada.',
     'No uses placeholders sin resolver. Cada JSON, ruta, identificador, fecha, hash, estado y texto que el usuario deba copiar debe quedar completo y válido.',
   ];
 
@@ -56,30 +60,41 @@ export function actionResponseContract(control, sourceContractHash) {
     ].join('\n');
   }
 
-  if (type === 'INICIAR_IMPLEMENTACION' || type === 'CONTINUAR_IMPLEMENTACION') {
+  if (type === 'INICIAR_IMPLEMENTACION') {
     return [
       ...common,
-      `Para ${target}, ejecuta la implementación autorizada antes de redactar la respuesta.`,
-      'La sección 4 debe enumerar cada archivo creado o modificado, su cambio observable y todo límite respetado.',
-      'La sección 6 debe separar comandos ejecutados y resultados reales de validaciones pendientes o no aplicables.',
-      'En PASOS EXACTOS PARA EL USUARIO explica cómo inspeccionar los cambios en VS Code, qué comportamiento comprobar manualmente, qué estado físico sigue y si debe esperar, aprobar, corregir o validar; no le delegues comandos que puedas ejecutar tú.',
+      `Para ${target}, primero entrega un MAPA COMPLETO DE IMPLEMENTACIÓN: todos los pasos numerados, operación, ruta, propósito, dependencias y validación, pero sin incluir todavía el contenido de pasos futuros.`,
+      'El PASO ACTUAL 0 debe ser la transición manual de status AUTHORIZED a IN_PROGRESS en docs/plan-canonico/modular/implementation-control.json. Entrega la ruta, el fragmento actual exacto, el reemplazo exacto, el resultado esperado del watcher y pide HECHO.',
+      'No entregues todavía código de implementación ni ejecutes preflight. Después de HECHO y de comprobar CONTINUAR_IMPLEMENTACION, comienza el primer paso físico.',
+    ].join('\n');
+  }
+
+  if (type === 'CONTINUAR_IMPLEMENTACION') {
+    return [
+      ...common,
+      `Para ${target}, conserva un MAPA COMPLETO DE IMPLEMENTACIÓN numerado y entrega únicamente el siguiente paso pendiente.`,
+      'Si la operación es CREAR: indica repositorio, ruta absoluta y relativa, codificación, nombre exacto y contenido completo sin elipsis. Para archivos .mjs entrega además un .txt descargable con el mismo contenido.',
+      'Si la operación es MODIFICAR: entrega el archivo completo listo para reemplazar. Solo si es materialmente enorme permite un bloque anterior literal y único más su reemplazo completo; nunca uses fragmentos ambiguos, resúmenes ni “resto sin cambios”.',
+      'Si la operación es EJECUTAR: indica directorio exacto, un solo comando copiable, qué modifica, resultado esperado y qué salida debe pegar el usuario. No lo ejecutes tú.',
+      'Después de cada HECHO verifica la evidencia aportada, actualiza el progreso visible N/M y entrega solo el paso siguiente. No declares PASS por la afirmación del usuario si falta contenido o salida verificable.',
+      'No cambies el estado a IMPLEMENTED hasta cerrar todos los pasos físicos y reunir evidencia real; entonces entrega como último paso el JSON completo y exacto para esa transición.',
     ].join('\n');
   }
 
   if (type === 'VALIDAR_IMPLEMENTACION') {
     return [
       ...common,
-      `Para ${target}, ejecuta todas las validaciones autorizadas que estén disponibles y no conviertas resultados pendientes en PASS.`,
-      'La sección 6 debe contener comando, resultado, evidencia concreta y clasificación local, remota, operativa o física.',
-      'En PASOS EXACTOS PARA EL USUARIO entrega el reemplazo JSON completo para la transición de estado que realmente corresponda, incluido evidence con referencias concretas; si no puede avanzar a VERIFIED, entrega en su lugar el bloqueo exacto y cómo resolverlo.',
+      `Para ${target}, entrega las validaciones autorizadas una por una para que el usuario las ejecute; nunca ejecutes la batería completa por tu cuenta.`,
+      'Cada paso debe contener directorio, comando único, efecto, duración estimada, resultado esperado y salida que el usuario debe pegar. Clasifica la evidencia como local, remota, operativa o física.',
+      'Solo después de verificar todas las salidas entrega el reemplazo JSON completo para VERIFIED. Si algo falla, entrega un único paso de diagnóstico o corrección y conserva el estado actual.',
     ].join('\n');
   }
 
   if (type === 'RESOLVER_BLOQUEO') {
     return [
       ...common,
-      `Para ${target}, identifica la causa raíz, resuelve solo el bloqueo autorizado y demuestra su condición de salida.`,
-      'En PASOS EXACTOS PARA EL USUARIO indica el estado resultante, el JSON exacto que corresponde y cualquier comprobación manual que solo el usuario pueda realizar.',
+      `Para ${target}, identifica la causa raíz en solo lectura y entrega al usuario un único paso de resolución dentro del alcance.`,
+      'Espera HECHO y evidencia antes de comprobar la condición de salida o entregar otro paso. No resuelvas el bloqueo mediante escrituras automáticas.',
     ].join('\n');
   }
 
@@ -99,17 +114,23 @@ function actionInstruction(control) {
       'Entrega una propuesta completa de autorización por instancia, pero no cambies código ni declares la instancia autorizada por inferencia.',
     ].join(' ');
   }
-  if (type === 'INICIAR_IMPLEMENTACION' || type === 'CONTINUAR_IMPLEMENTACION') {
+  if (type === 'INICIAR_IMPLEMENTACION') {
     return [
-      `Implementa ${target} únicamente dentro de los repositorios y cambios autorizados enumerados abajo.`,
-      'Muestra el progreso mediante diffs pequeños, ejecuta las validaciones proporcionales y registra evidencia real; no amplíes alcance ni avances otra instancia.',
+      `Inicia la guía humana paso a paso de ${target}; no modifiques repositorios ni ejecutes comandos.`,
+      'Entrega el mapa completo y únicamente el paso manual para pasar la instancia a IN_PROGRESS; espera HECHO.',
+    ].join(' ');
+  }
+  if (type === 'CONTINUAR_IMPLEMENTACION') {
+    return [
+      `Guía al usuario en el siguiente paso pendiente de ${target}; no lo ejecutes por él.`,
+      'Entrega una sola creación, modificación o validación con ruta y contenido exactos, y espera HECHO con evidencia antes de avanzar.',
     ].join(' ');
   }
   if (type === 'VALIDAR_IMPLEMENTACION') {
-    return `Valida ${target} con los comandos autorizados, registra resultados reales y no la marques VERIFIED si falta evidencia remota, operativa o física exigible.`;
+    return `Entrega al usuario una validación exacta de ${target} por vez; no la ejecutes ni marques VERIFIED sin la salida real aportada por él.`;
   }
   if (type === 'RESOLVER_BLOQUEO') {
-    return `Resuelve únicamente el bloqueo declarado de ${target}; conserva el alcance y no avances mientras la condición de salida no esté demostrada.`;
+    return `Audita el bloqueo de ${target} en solo lectura y guía al usuario en un único paso de resolución; espera HECHO antes de avanzar.`;
   }
   return `Desarrolla completa y exclusivamente la tarea documental ${target}; entrega el artefacto material listo para revisión, sin aprobarlo ni iniciar su instancia física por inferencia.`;
 }
@@ -161,6 +182,18 @@ ACCIÓN PRINCIPAL OBLIGATORIA
 - Modo operativo: ${control.mode}
 - Autorización física para este objetivo: ${implementationAuthorized ? 'SÍ' : 'NO'}
 
+MODO DE EJECUCIÓN Y OPERADOR
+
+- Operador que realiza los cambios: USUARIO HUMANO
+- Interacción: UN PASO POR VEZ
+- Escrituras del asistente en archivos o repositorios: NO AUTORIZADAS
+- Comandos y validaciones ejecutados por el asistente: NO AUTORIZADOS
+- Commit, push, PR, despliegues y mutaciones remotas del asistente: NO AUTORIZADOS
+- Auditoría de solo lectura por el asistente: AUTORIZADA
+- Confirmación para recibir el paso siguiente: HECHO
+- Excepción limitada: AUTORIZO EJECUCION ASISTIDA DEL PASO N, usando el número real del paso ya presentado
+- Alcance de la excepción: solo ese paso; al terminar vuelve automáticamente el modo manual
+
 TAREA O CONTRATO PROPIETARIO
 
 - ID: ${task.id}
@@ -204,7 +237,7 @@ ${actionResponseContract(control, sourceContractHash)}
 
 No desarrolles la tarea documental ${control.documentary.taskId} mientras su carril figure ${control.documentary.state}, salvo que esa misma tarea sea el objetivo exacto de la acción principal. No ejecutes otra instancia, no interpretes la aprobación documental como autorización física y no sustituyas el resultado material por recomendaciones genéricas.
 
-Este iniciador ya contiene la instrucción de trabajo: comienza directamente con el preflight y el desarrollo aplicable. Solo detén escrituras si encuentras una contradicción real, un permiso externo faltante o una operación destructiva no autorizada.
+Este iniciador ya contiene la instrucción de trabajo: comienza con auditoría de solo lectura, presenta el mapa y entrega únicamente el paso manual vigente. No hagas ninguna escritura mientras no exista autorización asistida explícita para el número exacto del paso.
 
 TRAZABILIDAD DEL INICIADOR
 

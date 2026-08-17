@@ -65,6 +65,39 @@ export function validateImplementationControl(control, workTopology) {
   }
   if (control?.automatic_authorization !== false) errors.push('automatic_authorization debe ser false.');
   if (control?.single_primary_action !== true) errors.push('single_primary_action debe ser true.');
+  const operatorPolicy = control?.execution_operator_policy;
+  if (!operatorPolicy || typeof operatorPolicy !== 'object' || Array.isArray(operatorPolicy)) {
+    errors.push('execution_operator_policy debe ser un objeto.');
+  } else {
+    if (operatorPolicy.default_operator !== 'HUMAN_USER') {
+      errors.push('execution_operator_policy.default_operator debe ser HUMAN_USER.');
+    }
+    if (operatorPolicy.interaction_mode !== 'ONE_STEP_AT_A_TIME') {
+      errors.push('execution_operator_policy.interaction_mode debe ser ONE_STEP_AT_A_TIME.');
+    }
+    for (const field of [
+      'assistant_repository_writes',
+      'assistant_validation_execution',
+      'assistant_git_operations',
+      'assistant_remote_mutations',
+    ]) {
+      if (operatorPolicy[field] !== false) {
+        errors.push(`execution_operator_policy.${field} debe ser false.`);
+      }
+    }
+    if (operatorPolicy.assistant_read_only_audit !== true) {
+      errors.push('execution_operator_policy.assistant_read_only_audit debe ser true.');
+    }
+    if (operatorPolicy.step_confirmation_token !== 'HECHO') {
+      errors.push('execution_operator_policy.step_confirmation_token debe ser HECHO.');
+    }
+    if (operatorPolicy.assisted_execution_authorization_prefix
+      !== 'AUTORIZO EJECUCION ASISTIDA DEL PASO ') {
+      errors.push(
+        'execution_operator_policy.assisted_execution_authorization_prefix no coincide con el contrato.',
+      );
+    }
+  }
   if (!Array.isArray(control?.instance_statuses) || control.instance_statuses.length === 0) {
     errors.push('instance_statuses debe ser un arreglo no vacío.');
   }
@@ -171,6 +204,7 @@ export function deriveImplementationControl({
     suppliedControl ?? JSON.parse(fs.readFileSync(path.join(root, CONTROL_PATH), 'utf8')),
     workTopology,
   );
+  const operatorPolicy = control.execution_operator_policy;
   const currentTask = workTopology.inventory.get(workTopology.currentId);
   if (!suppliedPreflight && !currentTask) {
     throw new Error('no se pudo resolver la tarea documental actual para el control de implementación.');
@@ -278,12 +312,12 @@ export function deriveImplementationControl({
     instruction: actionType === 'AUTORIZAR_IMPLEMENTACION'
       ? `Definir y aprobar el alcance físico exacto de ${selected.instanceId}; todavía no modificar código.`
       : actionType === 'INICIAR_IMPLEMENTACION'
-        ? `Implementar únicamente el alcance autorizado de ${selected.instanceId}.`
+        ? `Iniciar la guía humana paso a paso de ${selected.instanceId}; el asistente no modifica archivos.`
         : actionType === 'CONTINUAR_IMPLEMENTACION'
-          ? `Continuar ${selected.instanceId} y registrar evidencia real por cada corte.`
+          ? `Guiar al usuario en el siguiente paso de ${selected.instanceId} y esperar HECHO antes de avanzar.`
           : actionType === 'VALIDAR_IMPLEMENTACION'
-            ? `Ejecutar las validaciones declaradas de ${selected.instanceId} y registrar evidencia antes de verificarla.`
-            : `Resolver el bloqueo declarado de ${selected.instanceId} sin ampliar el alcance.`,
+            ? `Entregar una validación por vez para que el usuario la ejecute y aporte su resultado real.`
+            : `Guiar la resolución humana del bloqueo de ${selected.instanceId} sin ampliar el alcance.`,
     why: selected.blocker ?? `${selected.taskId} tiene contrato aprobado y es la primera instancia física global sin verificar.`,
   } : {
     type: documentary.actionType,
@@ -308,6 +342,17 @@ export function deriveImplementationControl({
     schemaVersion: 1,
     mode,
     authorizationMode: control.authorization_mode,
+    executionOperatorPolicy: {
+      defaultOperator: operatorPolicy.default_operator,
+      interactionMode: operatorPolicy.interaction_mode,
+      assistantRepositoryWrites: operatorPolicy.assistant_repository_writes,
+      assistantValidationExecution: operatorPolicy.assistant_validation_execution,
+      assistantGitOperations: operatorPolicy.assistant_git_operations,
+      assistantRemoteMutations: operatorPolicy.assistant_remote_mutations,
+      assistantReadOnlyAudit: operatorPolicy.assistant_read_only_audit,
+      stepConfirmationToken: operatorPolicy.step_confirmation_token,
+      assistedExecutionAuthorizationPrefix: operatorPolicy.assisted_execution_authorization_prefix,
+    },
     implementationAuthorized: authorized.length > 0,
     primaryAction,
     documentary,
@@ -346,6 +391,16 @@ export function renderCurrentWorkDirective(control) {
 - **Por qué:** ${action.why}
 - **Implementación física autorizada ahora:** ${allowed}
 
+## Operador de ejecución
+
+- **Operador predeterminado:** USUARIO HUMANO
+- **Modo:** UN PASO POR VEZ
+- **Escrituras del asistente:** PROHIBIDAS POR DEFECTO
+- **Ejecución de validaciones por el asistente:** PROHIBIDA POR DEFECTO
+- **Git, GitHub y mutaciones remotas del asistente:** PROHIBIDAS POR DEFECTO
+- **Confirmación para avanzar:** \`HECHO\`
+- **Excepción limitada:** solo \`AUTORIZO EJECUCION ASISTIDA DEL PASO N\` autoriza ese paso numerado; después vuelve el modo manual.
+
 ## Carril documental
 
 - **Estado:** ${control.documentary.state}
@@ -363,8 +418,10 @@ ${physicalRows}
 1. Solo la acción principal puede iniciarse.
 2. Aprobar un marcador documental crea elegibilidad, nunca autorización física automática.
 3. Código, migraciones, Supabase, despliegues o cambios remotos requieren una instancia explícitamente \`AUTHORIZED\`.
-4. La siguiente instancia global espera la verificación de la anterior; no se concilia trabajo duplicado al final.
-5. No necesitas recordar comandos: pide “haz la acción principal” y el estado se vuelve a derivar con el watcher.
+4. \`AUTHORIZED\` habilita el trabajo físico, pero no concede al asistente permiso para escribirlo.
+5. El asistente entrega exactamente un paso; el usuario lo realiza y responde \`HECHO\` antes de recibir el siguiente.
+6. La siguiente instancia global espera la verificación de la anterior; no se concilia trabajo duplicado al final.
+7. “Haz la acción principal” inicia la guía paso a paso; nunca autoriza escrituras automáticas.
 `;
 }
 

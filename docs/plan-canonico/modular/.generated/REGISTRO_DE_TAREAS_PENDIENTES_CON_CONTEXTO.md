@@ -10,7 +10,7 @@
 
 - **Acción principal obligatoria:** `INICIAR_IMPLEMENTACION`
 - **Objetivo exacto:** `SHELL-CI-001::GLOBAL` — Crear pruebas de paquetes compartidos
-- **Instrucción:** Implementar únicamente el alcance autorizado de SHELL-CI-001::GLOBAL.
+- **Instrucción:** Iniciar la guía humana paso a paso de SHELL-CI-001::GLOBAL; el asistente no modifica archivos.
 - **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `SHELL-CI-003`
 - **Implementación física autorizada:** `SHELL-CI-001::GLOBAL`
 

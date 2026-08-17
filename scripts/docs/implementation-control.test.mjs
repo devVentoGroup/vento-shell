@@ -8,6 +8,17 @@ const baseControl = {
   authorization_mode: 'EXPLICIT_PER_INSTANCE',
   automatic_authorization: false,
   single_primary_action: true,
+  execution_operator_policy: {
+    default_operator: 'HUMAN_USER',
+    interaction_mode: 'ONE_STEP_AT_A_TIME',
+    assistant_repository_writes: false,
+    assistant_validation_execution: false,
+    assistant_git_operations: false,
+    assistant_remote_mutations: false,
+    assistant_read_only_audit: true,
+    step_confirmation_token: 'HECHO',
+    assisted_execution_authorization_prefix: 'AUTORIZO EJECUCION ASISTIDA DEL PASO ',
+  },
   instance_statuses: [
     'AUTHORIZED',
     'IN_PROGRESS',
@@ -80,7 +91,23 @@ test('una autorización explícita cambia la instrucción a implementar solo su 
   });
   assert.equal(result.primaryAction.type, 'INICIAR_IMPLEMENTACION');
   assert.equal(result.implementationAuthorized, true);
+  assert.equal(result.executionOperatorPolicy.defaultOperator, 'HUMAN_USER');
+  assert.equal(result.executionOperatorPolicy.assistantRepositoryWrites, false);
+  assert.match(result.primaryAction.instruction, /guía humana paso a paso/u);
   assert.deepEqual(result.physical.authorized.map(({ instanceId }) => instanceId), ['SHELL-CI-001::GLOBAL']);
+});
+
+test('rechaza habilitar escrituras automáticas del asistente por inferencia', () => {
+  assert.throws(() => deriveImplementationControl({
+    control: {
+      ...baseControl,
+      execution_operator_policy: {
+        ...baseControl.execution_operator_policy,
+        assistant_repository_writes: true,
+      },
+    },
+    workTopology: topology(),
+  }), /assistant_repository_writes debe ser false/u);
 });
 
 test('rechaza autorizar una instancia sin evidencia humana completa', () => {

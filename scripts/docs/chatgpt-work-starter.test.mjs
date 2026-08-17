@@ -14,9 +14,45 @@ test('genera un único iniciador desde la acción operativa vigente', () => {
   assert.match(result.source, new RegExp(`Objetivo exacto: ${result.control.primaryAction.target}`, 'u'));
   assert.match(result.source, /CONTRATO OBLIGATORIO DE LA RESPUESTA Y DEL PASO MANUAL/u);
   assert.match(result.source, /PASOS EXACTOS PARA EL USUARIO/u);
+  assert.match(result.source, /Operador que realiza los cambios: USUARIO HUMANO/u);
+  assert.match(result.source, /Escrituras del asistente en archivos o repositorios: NO AUTORIZADAS/u);
+  assert.match(result.source, /AUTORIZO EJECUCION ASISTIDA DEL PASO N/u);
   assert.match(result.source, /Contrato propietario SHA-256: [a-f0-9]{64}/u);
   assert.doesNotMatch(result.source, /\{\{CURRENT_WORK\}\}/u);
   assert.equal(result.outputPath.endsWith('INICIADOR_VENTO_ACTUAL.txt'), true);
+});
+
+test('iniciar implementación entrega el mapa y solo la transición manual a IN_PROGRESS', () => {
+  const source = actionResponseContract({
+    primaryAction: {
+      type: 'INICIAR_IMPLEMENTACION',
+      target: 'SHELL-CI-001::GLOBAL',
+    },
+  }, 'b'.repeat(64));
+
+  assert.match(source, /MAPA COMPLETO DE IMPLEMENTACIÓN/u);
+  assert.match(source, /PASO ACTUAL 0/u);
+  assert.match(source, /status AUTHORIZED a IN_PROGRESS/u);
+  assert.match(source, /No entregues todavía código de implementación ni ejecutes preflight/u);
+  assert.match(source, /pide HECHO/u);
+});
+
+test('continuar implementación entrega exactamente un cambio completo al usuario', () => {
+  const source = actionResponseContract({
+    primaryAction: {
+      type: 'CONTINUAR_IMPLEMENTACION',
+      target: 'SHELL-CI-001::GLOBAL',
+    },
+  }, 'c'.repeat(64));
+
+  assert.match(source, /únicamente el siguiente paso pendiente/u);
+  assert.match(source, /Si la operación es CREAR/u);
+  assert.match(source, /contenido completo sin elipsis/u);
+  assert.match(source, /Si la operación es MODIFICAR/u);
+  assert.match(source, /archivo completo listo para reemplazar/u);
+  assert.match(source, /Si la operación es EJECUTAR/u);
+  assert.match(source, /No lo ejecutes tú/u);
+  assert.match(source, /progreso visible N\/M/u);
 });
 
 test('la autorización exige JSON completo, evidencia humana y pasos manuales exactos', () => {
@@ -63,8 +99,23 @@ test('las demás acciones también terminan con una guía operativa exacta', () 
     }, 'b'.repeat(64));
     assert.match(source, /PASOS EXACTOS PARA EL USUARIO/u);
     assert.match(source, /No te limites a informar qué sigue/u);
-    assert.match(source, /rutas exactas/u);
+    assert.match(source, /El operador es el usuario humano/u);
+    assert.match(source, /No escribas archivos/u);
+    assert.match(source, /exactamente un paso ejecutable por respuesta/u);
+    assert.match(source, /AUTORIZO EJECUCION ASISTIDA DEL PASO N/u);
   }
+});
+
+test('la plantilla global conserva el modo humano aunque cambie la acción actual', () => {
+  const template = fs.readFileSync(
+    'docs/plan-canonico/modular/chatgpt-work-starter-template.txt',
+    'utf8',
+  );
+  assert.match(template, /MODO PREDETERMINADO DE IMPLEMENTACIÓN HUMANA/u);
+  assert.match(template, /el usuario humano crea, modifica, reemplaza y elimina archivos/u);
+  assert.match(template, /ChatGPT entrega un único paso por respuesta y espera `HECHO`/u);
+  assert.match(template, /AUTORIZO EJECUCION ASISTIDA DEL PASO 3/u);
+  assert.match(template, /“haz la acción principal” no autorizan escrituras automáticas/u);
 });
 
 test('el build, check y watcher mantienen conectado el iniciador', () => {
