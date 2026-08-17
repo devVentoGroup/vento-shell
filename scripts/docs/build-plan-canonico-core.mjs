@@ -71,7 +71,7 @@ try {
 }
 
 try {
-  const prospectiveAudit = assertProspectiveTasks({ root });
+  const prospectiveAudit = assertProspectiveTasks({ root, requireCanonicalFormat: true });
   console.log(
     `OK: auditoría prospectiva; ${prospectiveAudit.stats.formatCovered} tareas aprobadas con formato; `
     + `${prospectiveAudit.stats.semanticCovered} con contrato semántico; `

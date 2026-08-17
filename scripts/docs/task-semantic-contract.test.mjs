@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import {
+  isHistoricalApprovedExemption,
   validateTaskDevelopmentPolicy,
   validateTaskSemanticContract,
 } from './task-semantic-contract.mjs';
@@ -112,6 +113,18 @@ test('la política material prospectiva es válida', () => {
   assert.deepEqual(validateTaskDevelopmentPolicy(materialPolicy), []);
 });
 
+test('las exenciones históricas se comparten por ID exacto y por rango', () => {
+  const exemptionPolicy = {
+    historical_approved_exemptions: [
+      { task_ids: ['TEST-HIST-001'] },
+      { prefix: 'TEST-RANGE', from: 2, to: 4 },
+    ],
+  };
+  assert.equal(isHistoricalApprovedExemption('TEST-HIST-001', exemptionPolicy), true);
+  assert.equal(isHistoricalApprovedExemption('TEST-RANGE-003', exemptionPolicy), true);
+  assert.equal(isHistoricalApprovedExemption('TEST-RANGE-005', exemptionPolicy), false);
+});
+
 test('acepta una tarea aprobada completa y con evidencia tipada', () => {
   const result = validateTaskSemanticContract({
     block: validBlock,
@@ -152,6 +165,42 @@ test('sigue rechazando un PASS que declara evidencia pendiente', () => {
     policy,
   });
   assert.ok(result.errors.some(({ code }) => code === 'EVIDENCE_MISSING'));
+});
+
+test('no confunde el estado pendiente de una tarea referenciada con evidencia pendiente', () => {
+  const block = validBlock.replace(
+    'pruebas unitarias completadas',
+    'Lectura remota confirmó TEST-SEM-010 aprobado y TEST-SEM-012 como único pendiente del bloque',
+  );
+  const result = validateTaskSemanticContract({
+    block,
+    task: { id: 'TEST-SEM-011', state: 'APROBADA' },
+    ownerRelativePath: 'bloques/X/test.md',
+    inventory,
+    policy,
+  });
+  assert.ok(!result.errors.some(({ code }) => code === 'EVIDENCE_MISSING'));
+});
+
+test('sigue rechazando un PASS que admite no haber ejecutado o verificado la prueba', () => {
+  for (const evidence of [
+    'Pendiente de verificar en remoto',
+    'La evidencia pendiente debe capturarse después',
+    'No se ha ejecutado la validación remota',
+    'NOT_EXECUTED',
+  ]) {
+    const result = validateTaskSemanticContract({
+      block: validBlock.replace('pruebas unitarias completadas', evidence),
+      task: { id: 'TEST-SEM-011', state: 'APROBADA' },
+      ownerRelativePath: 'bloques/X/test.md',
+      inventory,
+      policy,
+    });
+    assert.ok(
+      result.errors.some(({ code }) => code === 'EVIDENCE_MISSING'),
+      `debía rechazar: ${evidence}`,
+    );
+  }
 });
 
 test('acepta cero como declaración explícita de cambios físicos no autorizados', () => {

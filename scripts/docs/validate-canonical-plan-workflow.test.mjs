@@ -100,6 +100,9 @@ test('el build prepara formato sin iniciar tareas vacías', () => {
   assert.ok(prepare >= 0, 'falta la preparación automática de tareas');
   assert.ok(continuity > prepare, 'el formato debe prepararse antes de sincronizar continuidad');
   assert.match(safeBuild, /checkOnly: process\.argv\.includes\('--check'\)/u);
+  const autoPrepare = fs.readFileSync(path.resolve('scripts/docs/auto-prepare-canonical-task.mjs'), 'utf8');
+  assert.match(autoPrepare, /isHistoricalApprovedExemption\(taskId, developmentPolicy\)/u);
+  assert.match(safeBuild, /additionalTaskIds: prospectiveAudit\.normalizableTaskIds/u);
 });
 
 test('el build publica un estado local legible sin volverlo canónico', () => {

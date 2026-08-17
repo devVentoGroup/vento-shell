@@ -242,6 +242,7 @@ console.log(
 autoPrepareCanonicalTask({
   root,
   checkOnly: process.argv.includes('--check'),
+  additionalTaskIds: prospectiveAudit.normalizableTaskIds,
 });
 
 let reconciliation = null;

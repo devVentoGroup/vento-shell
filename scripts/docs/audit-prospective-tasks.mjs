@@ -8,6 +8,7 @@ import {
 } from './format-canonical-task.mjs';
 import { readPendingTaskTitleAuthority } from './pending-task-title-authority.mjs';
 import {
+  isHistoricalApprovedExemption,
   validateTaskDevelopmentPolicy,
   validateTaskSemanticContract,
 } from './task-semantic-contract.mjs';
@@ -23,18 +24,6 @@ function taskState(marker) {
 
 function finding(taskId, contract, code, message) {
   return { taskId, contract, code, message };
-}
-
-function matchesHistoricalExemption(taskId, selectors) {
-  for (const selector of selectors ?? []) {
-    if (selector.task_ids?.includes(taskId)) return true;
-    if (typeof selector.prefix !== 'string') continue;
-    const match = taskId.match(/^(?<prefix>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+)-(?<number>\d{3})$/u);
-    if (!match || match.groups.prefix !== selector.prefix) continue;
-    const number = Number(match.groups.number);
-    if (number >= selector.from && number <= selector.to) return true;
-  }
-  return false;
 }
 
 export function auditProspectiveTaskSet({
@@ -63,6 +52,7 @@ export function auditProspectiveTaskSet({
   let formatCovered = 0;
   let semanticCovered = 0;
   let normalizable = 0;
+  const normalizableTaskIds = [];
   let historicalExemptions = 0;
 
   for (const routeTask of ordered) {
@@ -70,7 +60,7 @@ export function auditProspectiveTaskSet({
     const inventoryTask = inventory.get(routeTask.id) ?? routeTask;
     if (taskState(inventoryTask.marker) !== 'APROBADA') continue;
     approved += 1;
-    if (matchesHistoricalExemption(routeTask.id, developmentPolicy.historical_approved_exemptions)) {
+    if (isHistoricalApprovedExemption(routeTask.id, developmentPolicy)) {
       historicalExemptions += 1;
       continue;
     }
@@ -82,6 +72,7 @@ export function auditProspectiveTaskSet({
         formattedById.set(routeTask.id, formatted);
         if (formatted !== inventoryTask.block.replace(/\r\n?/gu, '\n').replace(/\n+$/u, '')) {
           normalizable += 1;
+          normalizableTaskIds.push(routeTask.id);
         }
         for (const message of validateTaskPresentation(formatted, { canonicalTitles })) {
           errors.push(finding(routeTask.id, 'FORMAT', 'PRESENTATION', message));
@@ -120,6 +111,7 @@ export function auditProspectiveTaskSet({
   return {
     errors,
     warnings,
+    normalizableTaskIds,
     stats: { approved, formatCovered, semanticCovered, normalizable, historicalExemptions },
   };
 }
@@ -157,14 +149,26 @@ export function renderProspectiveAuditErrors(errors) {
   ].join('\n');
 }
 
-export function assertProspectiveTasks({ root = process.cwd() } = {}) {
+export function assertProspectiveTasks({
+  root = process.cwd(),
+  requireCanonicalFormat = false,
+} = {}) {
   const result = auditProspectiveTasks({ root });
-  if (result.errors.length > 0) throw new Error(renderProspectiveAuditErrors(result.errors));
+  const errors = [...result.errors];
+  if (requireCanonicalFormat) {
+    errors.push(...result.normalizableTaskIds.map((taskId) => finding(
+      taskId,
+      'FORMAT',
+      'NORMALIZATION_REQUIRED',
+      'requiere normalización automática; ejecute docs:plan:build.',
+    )));
+  }
+  if (errors.length > 0) throw new Error(renderProspectiveAuditErrors(errors));
   return result;
 }
 
 function main() {
-  const result = assertProspectiveTasks();
+  const result = assertProspectiveTasks({ requireCanonicalFormat: true });
   console.log(
     `OK: auditoría prospectiva completa; ${result.stats.formatCovered} tareas aprobadas con formato; `
     + `${result.stats.semanticCovered} con contrato semántico; `

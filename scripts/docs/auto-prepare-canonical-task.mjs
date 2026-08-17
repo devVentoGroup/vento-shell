@@ -10,16 +10,20 @@ import {
 } from './format-canonical-task.mjs';
 import { validateTaskFormatPolicy } from './task-format-policy.mjs';
 import { readPendingTaskTitleAuthority } from './pending-task-title-authority.mjs';
-import { validateProspectiveTaskSemantics } from './task-semantic-contract.mjs';
+import {
+  isHistoricalApprovedExemption,
+  validateProspectiveTaskSemantics,
+} from './task-semantic-contract.mjs';
 
 function fail(message) {
   throw new Error(message);
 }
 
-export function automaticTaskIds(preflight) {
+export function automaticTaskIds(preflight, additionalTaskIds = []) {
   return [...new Set([
     preflight.continuity.previous,
     preflight.continuity.current,
+    ...additionalTaskIds,
   ].filter(Boolean))];
 }
 
@@ -74,10 +78,15 @@ function writeSemanticWarningsReport(root, warnings) {
 export function autoPrepareCanonicalTask({
   root = process.cwd(),
   checkOnly = false,
+  additionalTaskIds = [],
 } = {}) {
   const currentPreflight = derivePreflight({ root });
   const baseDir = path.join(root, 'docs', 'plan-canonico', 'modular');
   const policy = validateTaskFormatPolicy({ root });
+  const developmentPolicy = JSON.parse(fs.readFileSync(
+    path.join(baseDir, 'task-development-policy.json'),
+    'utf8',
+  ));
   const boundary = derivePreflight({ root, requestedTaskId: policy.effective_from_task_id });
   const canonicalTitles = readPendingTaskTitleAuthority(root);
   const changed = [];
@@ -85,7 +94,7 @@ export function autoPrepareCanonicalTask({
   const skipped = [];
   const semanticWarnings = [];
 
-  for (const taskId of automaticTaskIds(currentPreflight)) {
+  for (const taskId of automaticTaskIds(currentPreflight, additionalTaskIds)) {
     let preflight;
     try {
       preflight = derivePreflight({ root, requestedTaskId: taskId });
@@ -102,6 +111,11 @@ export function autoPrepareCanonicalTask({
       boundary.task.canonical_order,
     )) {
       skipped.push({ taskId, reason: 'HISTORICAL_STYLE_PRESERVED' });
+      continue;
+    }
+
+    if (isHistoricalApprovedExemption(taskId, developmentPolicy)) {
+      skipped.push({ taskId, reason: 'HISTORICAL_APPROVAL_PRESERVED' });
       continue;
     }
 
@@ -152,6 +166,8 @@ export function autoPrepareCanonicalTask({
       console.log(`[PLAN CANÓNICO] ${taskId}: borrador vacío preservado; no se inicia automáticamente.`);
     } else if (reason === 'HISTORICAL_STYLE_PRESERVED') {
       console.log(`[PLAN CANÓNICO] ${taskId}: formato histórico preservado por la frontera prospectiva.`);
+    } else if (reason === 'HISTORICAL_APPROVAL_PRESERVED') {
+      console.log(`[PLAN CANÓNICO] ${taskId}: aprobación histórica preservada; no se reformatea.`);
     } else {
       console.warn(`[PLAN CANÓNICO] ${taskId}: preparación omitida: ${reason}`);
     }

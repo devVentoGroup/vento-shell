@@ -28,6 +28,13 @@ test('no duplica una tarea terminal', () => {
   );
 });
 
+test('incluye tareas normalizables aunque la continuidad ya haya saltado de etapa', () => {
+  const ids = automaticTaskIds({
+    continuity: { previous: 'AUTH-UI-039', current: 'SHELL-CI-001' },
+  }, ['SHELL-CTX-006']);
+  assert.deepEqual(ids, ['AUTH-UI-039', 'SHELL-CI-001', 'SHELL-CTX-006']);
+});
+
 test('preserva tareas anteriores y aplica el formato desde la frontera incluida', () => {
   assert.equal(isTaskCoveredByPresentationPolicy(8, 9), false);
   assert.equal(isTaskCoveredByPresentationPolicy(9, 9), true);

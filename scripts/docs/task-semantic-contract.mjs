@@ -100,7 +100,10 @@ function physicalContradiction(metadata) {
 function passEvidenceIsMissing(evidence) {
   const value = String(evidence ?? '').trim();
   if (!value) return true;
-  return /\bpendiente\b|\bnot(?:[_\s.-]+)?executed\b/iu.test(value);
+  return /^(?:`?not(?:[_\s.-]+)?executed`?|(?:la\s+)?evidencia\s+pendiente)(?:\b|[.:;-])/iu.test(value)
+    || /\b(?:evidencia|validación|verificación|ejecución|prueba)\s+(?:aún\s+)?pendiente\b/iu.test(value)
+    || /\bpendiente\s+de\s+(?:ejecutar|ejecución|validar|validación|verificar|verificación|confirmar|obtener|capturar|aportar)\b/iu.test(value)
+    || /\b(?:sin|no\s+se\s+ha)\s+(?:ejecutar|ejecutado|validar|validado|verificar|verificado)\b/iu.test(value);
 }
 
 export function validateTaskDevelopmentPolicy(policy) {
@@ -149,6 +152,18 @@ export function validateTaskDevelopmentPolicy(policy) {
     }
   }
   return errors;
+}
+
+export function isHistoricalApprovedExemption(taskId, policy) {
+  for (const selector of policy?.historical_approved_exemptions ?? []) {
+    if (selector.task_ids?.includes(taskId)) return true;
+    if (typeof selector.prefix !== 'string') continue;
+    const match = taskId.match(/^(?<prefix>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+)-(?<number>\d{3})$/u);
+    if (!match || match.groups.prefix !== selector.prefix) continue;
+    const number = Number(match.groups.number);
+    if (number >= selector.from && number <= selector.to) return true;
+  }
+  return false;
 }
 
 export function validateTaskSemanticContract({
