@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **937** |
+| Aprobadas | **938** |
 | En propuesta | **0** |
-| No iniciadas | **657** |
+| No iniciadas | **656** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **58.78% (937/1594)** |
+| Porcentaje de completamiento | **58.85% (938/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-UI-020` — Compartir patrón de traspaso entre aplicaciones | ✅ APROBADA |
-| Tarea actual | `SHELL-MIG-001` — Consolidar inventario ejecutable de consumidores | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-MIG-002` — Definir lotes reversibles por repositorio | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-MIG-001` — Consolidar inventario ejecutable de consumidores | ✅ APROBADA |
+| Tarea actual | `SHELL-MIG-002` — Definir lotes reversibles por repositorio | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-MIG-003` — Preparar compatibilidad y bloqueo de nuevos consumidores legacy | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -764,7 +764,7 @@
 | ✅ APROBADA | `SHELL-UI-018` | Compartir patrón para kiosco | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-UI-019` | Compartir patrón de proceso interrumpido | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-UI-020` | Compartir patrón de traspaso entre aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-MIG-001` | Consolidar inventario ejecutable de consumidores | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
+| ✅ APROBADA | `SHELL-MIG-001` | Consolidar inventario ejecutable de consumidores | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ⬜ NO INICIADA | `SHELL-MIG-002` | Definir lotes reversibles por repositorio | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ⬜ NO INICIADA | `SHELL-MIG-003` | Preparar compatibilidad y bloqueo de nuevos consumidores legacy | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ⬜ NO INICIADA | `SHELL-MIG-004` | Sustituir la plantilla histórica por scaffold versionado | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
