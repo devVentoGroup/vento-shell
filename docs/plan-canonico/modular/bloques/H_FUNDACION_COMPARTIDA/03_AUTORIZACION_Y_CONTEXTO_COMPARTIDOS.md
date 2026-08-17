@@ -8967,7 +8967,1578 @@ Esta tarea no:
 `SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual`
 
 
-### [ ] SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual
+### ✅ SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización
+**Tarea siguiente:** SHELL-CTX-006 — Implementar caché compartida, single-flight y validación de frescura
+**Tipo de tarea:** Documental global única; contrato de razones contextuales seguras con materialización futura por unidad de implementación
+**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`
+**Estado físico resultante:** `DEFINIDO_NO_MATERIALIZADO`; queda especificada la proyección interna de razones contextuales seguras; 0 nuevos contratos públicos serializados; 0 packages; 0 subpaths; 0 unidades físicas materializadas; 0 cambios en Supabase
+**Cambios físicos autorizados:** ninguno durante el marcador global; la materialización futura queda condicionada a la unidad de implementación asignada y a la puerta E5 aplicable
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-CTX-005` define de forma única cómo `@vento/os-context` deberá consumir las razones contextuales ya resueltas dentro de `AccessContext@1.0.0` y convertirlas en información segura, mínima, determinista y no autoritativa para adapters, proyecciones y compatibilidad.
+
+La tarea no crea una nueva taxonomía de errores. Materializa documentalmente la frontera entre:
+
+```text
+StructuralIssueCode
++
+LaneAvailabilityReasonCode
++
+LaneReadiness.status
+→ razón contextual segura
+```
+
+sin convertir ese resultado en:
+
+```text
+AuthorizationReasonCode
+AuthorizationDecision
+permiso
+ALLOW
+DENY
+copy público completo
+acción de recuperación
+```
+
+La regla raíz es:
+
+```text
+HECHO CONTEXTUAL CANÓNICO
+→ VALIDACIÓN CONTRACTUAL
+→ MINIMIZACIÓN
+→ RAZÓN CONTEXTUAL SEGURA
+
+RAZÓN CONTEXTUAL SEGURA
+≠ DECISIÓN DE AUTORIZACIÓN
+```
+
+---
+
+#### 2. Resultado canónico
+
+El marcador global deja definido el contrato de comportamiento que una futura instancia física deberá materializar una sola vez por `implementation_unit_id`.
+
+Resultado documental:
+
+| Dimensión                                  | Resultado |
+| ------------------------------------------ | --------: |
+| Carriles consumidos                        |     **2** |
+| Estados de readiness consumidos            |     **4** |
+| `StructuralIssueCode` consumibles          |   **100** |
+| `LaneAvailabilityReasonCode` consumibles   |    **10** |
+| `LaneReasonCode` consumibles               |   **110** |
+| Severidades estructurales conservadas      |     **5** |
+| Namespaces nuevos                          |     **0** |
+| `AuthorizationReasonCode` nuevos           |     **0** |
+| Contratos públicos serializados nuevos     |     **0** |
+| Booleanos de autorización nuevos           |     **0** |
+| Cambios físicos durante el marcador global |     **0** |
+
+La implementación futura deberá proyectar únicamente semántica ya aprobada. No podrá enriquecerla con causas locales, heurísticas, textos técnicos o datos sensibles.
+
+---
+
+#### 3. Fuentes y precedencia
+
+La tarea conserva sin reinterpretar las fuentes canónicas vigentes:
+
+| Fuente                                              | Uso vinculante                                                                                                               |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`        | continuidad, granularidad, evidencia y separación entre marcador global e instancia física                                   |
+| `docs/plan-canonico/modular/delivery-contract.json` | forma del artefacto documental y coordinación del registro de pruebas                                                        |
+| `docs/plan-canonico/modular/active-sequence.json`   | `SHELL-CTX-005` como tarea actual después de `SHELL-CTX-004`                                                                 |
+| `task-work-topology.json`                           | modalidad `PER_IMPLEMENTATION_UNIT` y condiciones de materialización                                                         |
+| `AUTH-CTX-015`                                      | semántica de `LaneReadiness`, `StructuralIssue`, catálogo estructural, disponibilidad, orden, deduplicación y `safe_message` |
+| `SHELL-CON-007`                                     | forma compartida de `AccessContextV1`, `LaneReadiness` y `StructuralIssue`                                                   |
+| `SHELL-CON-008`                                     | namespaces cerrados de razones contextuales y separación frente a razones públicas                                           |
+| `AUTH-CTX-028`                                      | compatibilidad unidireccional canónico → legacy y mapping legacy controlado                                                  |
+| `AUTH-CTX-029`                                      | frescura, invalidación, snapshots y prohibición de servir autoridad stale                                                    |
+| `AUTH-CTX-030`                                      | perfiles de prueba, oráculos, cobertura contractual y seguridad                                                              |
+| `AUTH-ERR-020`                                      | catálogo público de mensajes de autorización, perfiles, acciones, locale y privacidad                                        |
+| `SHELL-CTX-004`                                     | readiness tipado, estados, precedencia, `READY + NO_ACTIVE_CHECKIN` y frontera con decisión                                  |
+
+Precedencia específica:
+
+```text
+AUTH-CTX-015
+→ define la semántica contextual
+
+SHELL-CON-008
+→ centraliza los tipos cerrados
+
+SHELL-CTX-004
+→ conserva readiness sin decidir autorización
+
+SHELL-CTX-005
+→ minimiza y proyecta razones contextuales seguras
+
+AUTH-DB-034 / evaluador
+→ selecciona la razón pública de una decisión
+
+AUTH-ERR-020
+→ resuelve perfil, copy y recuperación públicos
+```
+
+---
+
+#### 4. Línea base física verificable
+
+El estado físico vigente de `packages/os-context` todavía es parcial y legacy.
+
+Se observa actualmente:
+
+```text
+EffectiveContext
+→ can_operate: boolean
+→ bypass_applied: boolean
+→ blocked_reasons: string[]
+```
+
+También existe consumo directo de RPC legacy para contexto, permiso y simulación.
+
+Esta línea base:
+
+- no constituye el contrato objetivo;
+- no convierte `blocked_reasons` en `LaneReasonCode[]`;
+- no convierte `can_operate` en decisión canónica;
+- no permite reconstruir `AccessContextV1`;
+- no autoriza agregar razones locales;
+- no justifica una implementación física durante el marcador global.
+
+La deuda física permanece asignada a las tareas de materialización, adapters, migración y retiro ya existentes.
+
+---
+
+#### 5. Frontera de propiedad
+
+La distribución de responsabilidades queda:
+
+```text
+@vento/contracts/authorization
+→ define códigos, tipos, catálogos y schemas
+
+@vento/os-context
+→ valida AccessContext
+→ consume readiness e issues
+→ minimiza razones contextuales
+→ adapta legacy de forma controlada
+→ no inventa códigos ni copy público
+
+@vento/ui-web
+→ renderiza presentación aprobada
+→ no decide autorización
+
+backend canónico
+→ produce AccessContext y AuthorizationDecision autoritativos
+```
+
+`SHELL-CTX-005` pertenece al segundo nivel. No absorbe la autoría de catálogos ni la selección de razón pública de una decisión.
+
+---
+
+#### 6. Entrada exclusiva
+
+La entrada autoritativa de la futura materialización será un `AccessContextV1` validado contra la versión contractual compatible.
+
+La proyección de razones no aceptará como fuente autoritativa:
+
+- `EffectiveContext` legacy;
+- `blocked_reasons: string[]`;
+- excepciones;
+- errores SQL;
+- mensajes de Supabase;
+- cookies;
+- query strings;
+- rutas;
+- estado React;
+- local storage;
+- selected site o selected area;
+- texto humano enviado por una aplicación;
+- `can_operate`;
+- `bypass_applied`;
+- una `SafeContextProjectionV1` previa;
+- una `AuthorizationDecisionV1` previa;
+- una simulación real mezclada con el contexto.
+
+La dirección es exclusivamente:
+
+```text
+AccessContextV1 válido
+→ proyección contextual segura
+```
+
+Nunca:
+
+```text
+razón legacy / mensaje / booleano
+→ reconstruir AccessContextV1
+```
+
+---
+
+#### 7. Fuentes internas permitidas
+
+Dentro de `AccessContextV1`, la proyección consume únicamente:
+
+```text
+lane_readiness.base.status
+lane_readiness.base.reason_codes
+lane_readiness.operational.status
+lane_readiness.operational.reason_codes
+structural_issues
+```
+
+`structural_issues` solo se consulta para validar metadata canónica y recuperar el `safe_message` aprobado de un código estructural.
+
+No se utilizarán como contenido de salida seguro:
+
+- `subject_id`;
+- `source`;
+- actor o employee IDs;
+- session IDs;
+- nombres;
+- correos;
+- documentos;
+- teléfonos;
+- coordenadas;
+- tokens;
+- fingerprints;
+- grants;
+- denies;
+- datos de recurso;
+- SQLSTATE;
+- stack traces.
+
+---
+
+#### 8. Unidad lógica de proyección
+
+La implementación futura podrá representar internamente cada razón contextual mediante la combinación mínima de conceptos ya existentes:
+
+```text
+lane
+readiness_status
+reason_code
+reason_kind
+structural_severity cuando aplique
+safe_message cuando exista en el catálogo estructural
+```
+
+Esta estructura es una vista interna de trabajo, no una nueva identidad pública ni una nueva versión contractual.
+
+`reason_kind` distingue únicamente:
+
+```text
+STRUCTURAL
+AVAILABILITY
+```
+
+La distinción no crea un namespace nuevo: indica de cuál de los dos vocabularios aprobados procede `reason_code`.
+
+---
+
+#### 9. Carriles
+
+La proyección conserva exactamente dos carriles:
+
+```text
+BASE
+OPERATIONAL
+```
+
+No se crea:
+
+- carril administrativo adicional;
+- carril de UI;
+- carril de dispositivo;
+- carril de simulación real;
+- carril de fallback legacy.
+
+Una razón estructural `BLOCKING_ALL` puede aparecer como aplicable a ambos carriles, pero sigue siendo una sola causa raíz contractual.
+
+---
+
+#### 10. Estados de readiness
+
+Se conservan exactamente:
+
+```text
+READY
+UNAVAILABLE
+INVALID
+NOT_APPLICABLE
+```
+
+La proyección debe transportar la semántica del estado sin reinterpretarla.
+
+Reglas:
+
+```text
+READY
+≠ ALLOW
+```
+
+```text
+UNAVAILABLE
+≠ INVALID
+```
+
+```text
+INVALID
+≠ DENY empresarial configurado
+```
+
+```text
+NOT_APPLICABLE
+≠ ERROR
+```
+
+Una interfaz podrá explicar el estado, pero la proyección nunca podrá transformarlo en un resultado autorizativo.
+
+---
+
+#### 11. Razones estructurales
+
+Un `StructuralIssueCode` solo puede convertirse en razón contextual segura cuando:
+
+1. pertenece al catálogo estructural vigente;
+2. la metadata observada es compatible con el catálogo;
+3. su severidad coincide con la definición canónica;
+4. su sujeto y fuente son válidos en el `AccessContext` de origen;
+5. el código aparece como aplicable al carril o como bloqueo global conforme a readiness;
+6. el snapshot completo es compatible y fresco.
+
+La salida segura conserva el código y, cuando corresponda, la severidad contractual.
+
+No conserva la identidad concreta del sujeto ni la fuente técnica como payload de presentación.
+
+---
+
+#### 12. `safe_message` estructural
+
+Para una razón estructural, `safe_message` debe ser exactamente el mensaje seguro definido por el catálogo canónico para ese código.
+
+Queda prohibido construirlo desde:
+
+- `Error.message`;
+- SQL;
+- nombres de tablas;
+- nombres de funciones;
+- excepciones;
+- datos personales;
+- identificadores internos;
+- detalles de recurso;
+- secretos;
+- logs;
+- stack traces;
+- respuestas crudas del backend.
+
+La implementación no concatena valores al mensaje.
+
+Ejemplo de regla:
+
+```text
+STRUCTURAL CODE válido
++
+metadata válida
+→ safe_message exacto del catálogo
+```
+
+No:
+
+```text
+STRUCTURAL CODE
++
+subject_id
++
+error técnico
+→ mensaje dinámico
+```
+
+---
+
+#### 13. `safe_message` no es copy público completo
+
+El `safe_message` estructural:
+
+- explica de forma segura una inconsistencia contextual;
+- no sustituye `AuthorizationReasonCode`;
+- no sustituye un perfil de presentación;
+- no define título;
+- no define acción primaria;
+- no define acción secundaria;
+- no define help text;
+- no define locale;
+- no define HTTP;
+- no define retry;
+- no define soporte;
+- no autoriza navegación.
+
+La presentación pública completa sigue perteneciendo al catálogo de mensajes de autorización y a la decisión canónica correspondiente.
+
+---
+
+#### 14. Razones de disponibilidad
+
+Los diez `LaneAvailabilityReasonCode` se consumen como hechos de disponibilidad normal.
+
+Son exactamente:
+
+```text
+NON_LABOR_ACTOR
+DEVICE_ACTOR_SESSION_NOT_AVAILABLE
+EMPLOYEE_INACTIVE
+NO_ACTIVE_SHIFT
+NO_ACTIVE_CHECKIN
+NO_OPERATIONAL_AREA
+BASE_ROLE_NOT_AVAILABLE
+ADMINISTRATIVE_COVERAGE_NOT_AVAILABLE
+OPERATIONAL_ROLE_NOT_AVAILABLE
+OPERATIONAL_SITE_NOT_AVAILABLE
+```
+
+No son `StructuralIssueCode`.
+
+No se agregan a `structural_issues`.
+
+No se transforman por nombre en un código público.
+
+---
+
+#### 15. Disponibilidad sin copy inventado
+
+El catálogo contextual no define un `safe_message` contractual para los diez códigos de disponibilidad.
+
+Por tanto:
+
+```text
+availability reason
+→ code seguro y estable
+→ safe_message contextual = null
+```
+
+La implementación no inventará:
+
+- títulos;
+- mensajes;
+- acciones;
+- ayudas;
+- instrucciones al trabajador;
+- recomendaciones administrativas.
+
+Cuando una evaluación posterior determine una razón pública, el copy vendrá del catálogo público correspondiente, no de CTX005.
+
+---
+
+#### 16. `READY + NO_ACTIVE_CHECKIN`
+
+Se conserva la semántica aprobada:
+
+```text
+operational.status = READY
+reason_codes incluye NO_ACTIVE_CHECKIN
+```
+
+Significa:
+
+```text
+el núcleo operativo puede participar en permisos T
+pero una evaluación T+C deberá exigir check-in
+```
+
+CTX005 no podrá presentar `NO_ACTIVE_CHECKIN` como denegación universal mientras el carril permanezca `READY`.
+
+En particular, no podrá convertirlo automáticamente en `AUTH_CHECKIN_REQUIRED`.
+
+---
+
+#### 17. `READY + NO_OPERATIONAL_AREA`
+
+Cuando la ausencia de área es legítima:
+
+```text
+operational.status = READY
+reason_codes incluye NO_OPERATIONAL_AREA
+```
+
+CTX005 deberá conservar el hecho sin:
+
+- interpretar `null` como todas las áreas;
+- convertirlo automáticamente en bloqueo;
+- inventar un área;
+- mapearlo por nombre a una razón pública.
+
+La evaluación posterior del permiso decide si el área concreta es prerrequisito.
+
+---
+
+#### 18. `UNAVAILABLE`
+
+Cuando el carril está `UNAVAILABLE`, la salida segura debe explicar únicamente las razones normales de disponibilidad que ya estén presentes en `reason_codes`.
+
+No se utilizará `UNAVAILABLE` para ocultar:
+
+- contradicción;
+- código desconocido;
+- metadata inválida;
+- snapshot mixto;
+- contexto obsoleto;
+- error técnico.
+
+Una contradicción aplicable pertenece a `INVALID`.
+
+---
+
+#### 19. `INVALID`
+
+Cuando un carril está `INVALID`, la salida segura debe conservar las causas estructurales aplicables ya presentes en el contexto.
+
+No debe:
+
+- añadir una causa secundaria derivada;
+- escoger la causa más conveniente para UI;
+- degradar el problema a una ausencia normal;
+- sustituirlo por un mensaje genérico local;
+- emitir un `AuthorizationReasonCode` por similitud textual.
+
+`INVALID` bloquea la posibilidad de una decisión positiva en el carril afectado, pero CTX005 no produce por sí misma la decisión final.
+
+---
+
+#### 20. `NOT_APPLICABLE`
+
+`NOT_APPLICABLE` representa un carril que no corresponde al tipo de actor o contexto.
+
+La proyección:
+
+- conserva el estado;
+- conserva las razones de disponibilidad aplicables;
+- no lo presenta como error;
+- no fabrica una denegación;
+- no inventa recuperación.
+
+Un actor no laboral no adquiere razones laborales por fallback.
+
+---
+
+#### 21. Severidades y alcance de bloqueo
+
+Se conservan exactamente:
+
+```text
+BLOCKING_ALL
+BLOCKING_BASE
+BLOCKING_OPERATIONAL
+WARNING
+INFO
+```
+
+Semántica:
+
+| Severidad              | Tratamiento en CTX005                                   |
+| ---------------------- | ------------------------------------------------------- |
+| `BLOCKING_ALL`         | razón estructural bloqueante aplicable a ambos carriles |
+| `BLOCKING_BASE`        | razón estructural bloqueante del carril base            |
+| `BLOCKING_OPERATIONAL` | razón estructural bloqueante del carril operativo       |
+| `WARNING`              | diagnóstico seguro no bloqueante por sí solo            |
+| `INFO`                 | diagnóstico seguro no bloqueante por sí solo            |
+
+CTX005 no crea un booleano `is_allowed`, `can_operate`, `blocked` o equivalente.
+
+El impacto se conserva mediante el estado del carril y la severidad contractual existente.
+
+---
+
+#### 22. `WARNING` e `INFO`
+
+Una razón con severidad `WARNING` o `INFO`:
+
+- puede conservarse como diagnóstico contextual seguro cuando el contrato la produzca;
+- no cambia el estado por sí sola;
+- no se presenta como bloqueo;
+- no se convierte en razón pública de denegación;
+- no concede autoridad;
+- no oculta una razón bloqueante.
+
+Si un consumidor solo solicita bloqueos contextuales, debe excluir estas entradas sin alterar el `AccessContext` original.
+
+---
+
+#### 23. Causa raíz
+
+La proyección respeta la supresión de cascadas del productor canónico.
+
+Ejemplo:
+
+```text
+SHIFT_OVERLAP
+→ active_shift = null
+→ operational_role = null
+→ operational_site = null
+→ operational_area = null
+```
+
+CTX005 conserva únicamente la causa raíz ya emitida.
+
+No agrega:
+
+```text
+OPERATIONAL_ROLE_NOT_AVAILABLE
+OPERATIONAL_SITE_NOT_AVAILABLE
+NO_OPERATIONAL_AREA
+```
+
+si esos valores son consecuencias directas del mismo problema estructural y el productor los suprimió.
+
+---
+
+#### 24. Deduplicación
+
+La proyección no reintroduce duplicados.
+
+Para salida por carril:
+
+1. cada `reason_code` se proyecta como máximo una vez por carril;
+2. múltiples instancias estructurales del mismo código no exponen sus distintos `subject_id`;
+3. el mensaje seguro permanece idéntico para el mismo código;
+4. metadata contradictoria bloquea la proyección en lugar de escoger una variante.
+
+La deduplicación de la vista segura no modifica el inventario completo de `structural_issues` conservado para auditoría privada.
+
+---
+
+#### 25. Orden determinista
+
+La salida conserva el orden contractual:
+
+```text
+1. StructuralIssueCode aplicables, en orden estructural canónico
+2. LaneAvailabilityReasonCode, alfabéticamente
+3. sin duplicados
+```
+
+Dentro del orden estructural se respeta:
+
+```text
+severity rank
+→ issue_code
+→ subject_type
+→ subject_id normalizado
+→ source
+```
+
+La vista segura puede colapsar instancias repetidas por código únicamente después de validar ese orden y su metadata.
+
+No se ordena por:
+
+- hora de llegada;
+- orden de promesas;
+- orden de filas SQL;
+- prioridad visual local;
+- traducción;
+- longitud del mensaje.
+
+---
+
+#### 26. Código desconocido
+
+Un `StructuralIssueCode` desconocido no se publica como string libre.
+
+La semántica canónica exige fallo cerrado mediante la clasificación estructural correspondiente.
+
+Un `LaneAvailabilityReasonCode` desconocido tampoco se acepta como string libre.
+
+En ambos casos, CTX005:
+
+- rechaza la proyección como contexto conforme;
+- no inventa alias;
+- no remapea a un código parecido;
+- no fabrica un mensaje genérico;
+- no continúa con razones parciales como si fueran completas.
+
+El consumidor server debe tratar el caso como incompatibilidad contractual y resolver de nuevo o bloquear conforme a su adapter.
+
+---
+
+#### 27. Metadata estructural incompatible
+
+Si un código conocido llega con severidad, sujeto, fuente o `safe_message` incompatibles con el catálogo:
+
+```text
+contexto no conforme
+→ fail closed
+```
+
+CTX005 no escogerá el campo que parezca correcto.
+
+No se admiten:
+
+- severidad local;
+- mensaje modificado;
+- fuente alternativa;
+- código válido con significado distinto;
+- metadata parcial aceptada por cast.
+
+---
+
+#### 28. Separación frente a `AuthorizationReasonCode`
+
+No existe mapping nominal automático:
+
+```text
+StructuralIssueCode
+-x-> AuthorizationReasonCode
+```
+
+ni:
+
+```text
+LaneAvailabilityReasonCode
+-x-> AuthorizationReasonCode
+```
+
+Ejemplos prohibidos:
+
+```text
+NO_ACTIVE_CHECKIN
+→ AUTH_CHECKIN_REQUIRED
+```
+
+sin evaluación del prerrequisito del permiso.
+
+```text
+CONTEXT_STALE
+→ AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE
+```
+
+por semejanza semántica.
+
+```text
+BASE_ROLE_UNKNOWN
+→ AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT
+```
+
+sin que el evaluador haya aplicado la precedencia aprobada.
+
+La razón pública es resultado de la evaluación, no de CTX005.
+
+---
+
+#### 29. Separación frente al catálogo público de mensajes
+
+El catálogo público `vento.authorization.messages@1.0.0` conserva:
+
+```text
+20 reason codes
+25 presentation profiles
+source_locale = es-CO
+```
+
+CTX005 no:
+
+- crea perfiles;
+- traduce locale;
+- selecciona variant;
+- define copy de denegación;
+- define HTTP;
+- define retry;
+- define acciones;
+- define soporte;
+- altera campos `null` deliberados.
+
+Cuando exista una `AuthorizationDecision` válida, la capa propietaria de presentación resolverá su perfil público de forma independiente.
+
+---
+
+#### 30. Minimización de datos
+
+Una salida contextual segura no deberá contener:
+
+- `subject_id`;
+- `StructuralIssue.source`;
+- identificadores de principal, actor o empleado;
+- IDs de sesión;
+- IDs de turno o check-in;
+- IDs de dispositivo;
+- asignaciones completas;
+- grants o denies;
+- evidencia de decisión;
+- catalog hash;
+- source fingerprints;
+- resolution metadata;
+- SQL;
+- SQLSTATE;
+- stack trace;
+- nombre de tabla;
+- nombre de función;
+- recurso completo;
+- secretos;
+- tokens;
+- credenciales;
+- datos personales.
+
+La ausencia de estos campos es una propiedad de seguridad, no pérdida de autoridad: la evidencia privada permanece en las fuentes propietarias.
+
+---
+
+#### 31. SafeContextProjection
+
+La proyección pública de contexto segura permanece propiedad de `SHELL-AUTH-002`.
+
+CTX005 solo entrega el insumo contextual minimizado necesario para que esa proyección pueda representar readiness sin filtrar `structural_issues` completos.
+
+La integración deberá demostrar:
+
+- que la proyección segura no contiene el objeto estructural completo;
+- que los códigos expuestos pertenecen al vocabulario aprobado;
+- que el estado conserva su semántica;
+- que ninguna razón contextual se convierte en capacidad ejecutable;
+- que el cliente no puede reconstruir actor, fuente o evidencia sensible desde la salida.
+
+CTX005 no cambia el número ni la forma raíz de campos públicos ya fijados para `SafeContextProjectionV1`.
+
+---
+
+#### 32. SafeDecisionProjection
+
+`SafeDecisionProjectionV1` pertenece a la decisión de autorización y permanece separada.
+
+CTX005 no decide:
+
+- outcome;
+- permiso;
+- recurso;
+- reason code público;
+- campos visibles o mutables;
+- recuperación.
+
+Una razón contextual puede contribuir a la decisión autoritativa posterior, pero no se copia automáticamente como razón pública.
+
+---
+
+#### 33. Compatibilidad con `blocked_reasons`
+
+`EffectiveContext.blocked_reasons: string[]` permanece legacy.
+
+Reglas:
+
+```text
+blocked_reasons legacy
+≠ LaneReasonCode[]
+≠ AuthorizationReasonCode[]
+```
+
+Un valor legacy:
+
+- no entra al contexto canónico por cast;
+- no puede ampliar autoridad;
+- no puede corregir un código canónico;
+- no puede sustituir un problema estructural;
+- no puede producir un `ALLOW`.
+
+La compatibilidad solo puede proyectarse desde el contexto canónico hacia la forma legacy.
+
+---
+
+#### 34. Mapping legacy controlado
+
+La compatibilidad aprobada conserva el mapping legacy existente como responsabilidad de transición.
+
+CTX005 deberá permitir que el adapter propietario proyecte de manera determinista las clases ya aprobadas, incluyendo estados como:
+
+```text
+unauthenticated
+out_of_shift
+checkin_required
+shift_site_mismatch
+checkin_site_mismatch
+legacy_employee_argument_mismatch
+app_not_allowed
+device_actor_required
+shift_ambiguous
+operational_role_missing
+operational_role_not_allowed_in_site
+operational_role_not_allowed_in_area
+operational_area_required
+operational_context_invalid
+```
+
+Este mapping:
+
+- es canónico → legacy;
+- no es reversible;
+- no crea evidencia interna;
+- no crea razón pública nueva;
+- no crea allow;
+- no se utiliza para código nuevo;
+- no sustituye los catálogos cerrados.
+
+La materialización del adapter continúa siendo responsabilidad de la fase física correspondiente.
+
+---
+
+#### 35. Fallos técnicos
+
+CTX005 distingue una razón contextual válida de un fallo técnico.
+
+No se debe convertir:
+
+```text
+timeout
+RPC error
+schema inválido
+respuesta parcial
+catálogo no disponible
+```
+
+en:
+
+```text
+LaneAvailabilityReasonCode
+StructuralIssueCode inventado
+AuthorizationReasonCode inventado
+```
+
+La capa server propietaria deberá conservar el fallo técnico separado y bloquear ejecución.
+
+Un fallo técnico nunca produce un resultado más permisivo que una resolución válida.
+
+---
+
+#### 36. Frescura e invalidación
+
+Las razones contextuales forman parte de la semántica del snapshot.
+
+Por tanto:
+
+```text
+razones proyectadas
+→ válidas solo mientras el AccessContext de origen sea válido
+```
+
+Cambios de:
+
+- actor;
+- sesión;
+- empleado;
+- rol base;
+- cobertura;
+- turno;
+- check-in;
+- rol operativo;
+- sede;
+- área;
+- dispositivo;
+- catálogo;
+- versión contractual;
+
+pueden volver obsoleta la proyección.
+
+CTX005 no mantiene una caché independiente de razones.
+
+---
+
+#### 37. `CONTEXT_STALE`
+
+Cuando el contexto está marcado como obsoleto:
+
+```text
+CONTEXT_STALE
+→ ambos carriles INVALID
+→ no reutilizar la proyección anterior
+→ resolver AccessContext nuevo
+```
+
+No se permite:
+
+- conservar un mensaje anterior;
+- recalcular solo una razón;
+- actualizar solo turno o check-in;
+- servir una razón stale mientras se refresca;
+- utilizar la proyección para autorizar una mutación.
+
+La infraestructura cross-request de frescura pertenece a `SHELL-CTX-006` y `AUTH-DB-035`.
+
+---
+
+#### 38. Caché
+
+El marcador CTX005 no implementa caché.
+
+La futura proyección podrá beneficiarse de la misma validez del `AccessContext` que la produjo, pero no tendrá:
+
+- TTL independiente;
+- freshness token independiente;
+- stale-while-revalidate;
+- almacenamiento cliente autoritativo;
+- caché CDN;
+- caché legacy paralela.
+
+La activación de L1 permanece reservada a CTX006.
+
+---
+
+#### 39. Cliente y offline
+
+Una razón contextual segura recibida por cliente sirve únicamente para presentación.
+
+No puede:
+
+- autorizar una acción;
+- viajar como token de capacidad;
+- sustituir una evaluación server;
+- reanudar una mutación offline sin reevaluar;
+- conservarse después de cambio de actor como autoridad;
+- convertir un botón visible en permiso.
+
+En offline, una proyección anterior puede mostrarse como información potencialmente obsoleta cuando el contrato de experiencia lo permita, pero toda acción protegida se autoriza nuevamente al ejecutarse online.
+
+---
+
+#### 40. Simulación
+
+`SimulationContext` permanece separado.
+
+CTX005 no mezcla razones de simulación con las razones del `AccessContext` real.
+
+Reglas:
+
+```text
+razón contextual real
+≠ razón hipotética
+```
+
+```text
+WOULD_DENY
+≠ bloqueo ejecutable real
+```
+
+```text
+WOULD_ALLOW
+≠ ALLOW real
+```
+
+Una simulación no llena ni modifica la proyección de razones del contexto real.
+
+---
+
+#### 41. Observabilidad y auditoría
+
+La vista segura no sustituye la evidencia privada.
+
+Observabilidad podrá registrar de forma minimizada:
+
+- código contextual;
+- carril;
+- readiness status;
+- clase estructural o disponibilidad;
+- versión contractual;
+- consumidor;
+- correlación opaca;
+- resultado de validación.
+
+No deberá registrar como métrica general:
+
+- `subject_id` crudo;
+- IDs humanos;
+- tokens;
+- payload completo;
+- grants;
+- denies sensibles;
+- mensajes técnicos crudos.
+
+La auditoría propietaria podrá conservar más evidencia bajo su propio contrato y controles de acceso.
+
+---
+
+#### 42. Determinismo
+
+Para el mismo `AccessContextV1` válido, compatible y fresco, la proyección de razones contextuales seguras debe ser idéntica.
+
+No depende de:
+
+- aplicación visual;
+- framework;
+- orden de render;
+- orden de red;
+- idioma del navegador;
+- selected site;
+- selected area;
+- ruta;
+- mensaje legacy;
+- orden de llegada de errores;
+- caché stale;
+- primer match de una lista.
+
+El mismo código estructural siempre conserva el mismo `safe_message` de la versión contractual aplicable.
+
+---
+
+#### 43. Matriz de integración
+
+La futura instancia deberá demostrar como mínimo:
+
+| Integración                      | Regla                                                        |
+| -------------------------------- | ------------------------------------------------------------ |
+| `@vento/contracts/authorization` | única fuente de tipos, códigos y metadata                    |
+| `AccessContextV1`                | única fuente contextual real                                 |
+| `SHELL-CTX-004`                  | readiness consumido sin reinterpretación                     |
+| `SHELL-AUTH-002`                 | recibe insumo minimizado para proyecciones/adapters          |
+| `AUTH-DB-033`                    | productor físico de contexto; CTX005 no lo sustituye         |
+| `AUTH-DB-034`                    | productor de decisión; CTX005 no selecciona reason público   |
+| catálogo público                 | copy y recuperación permanecen fuera de CTX005               |
+| legacy                           | solo proyección canónico → legacy                            |
+| CTX006                           | hereda frescura del contexto; no cachea razones por separado |
+| UI                               | presenta información segura sin autorizar                    |
+
+---
+
+#### 44. Casos mínimos de prueba de materialización
+
+La futura instancia física deberá cubrir, como mínimo:
+
+1. `READY` sin razones;
+2. `READY + NO_ACTIVE_CHECKIN`;
+3. `READY + NO_OPERATIONAL_AREA`;
+4. `UNAVAILABLE + NO_ACTIVE_SHIFT`;
+5. `UNAVAILABLE + DEVICE_ACTOR_SESSION_NOT_AVAILABLE`;
+6. `NOT_APPLICABLE + NON_LABOR_ACTOR`;
+7. `INVALID + BLOCKING_ALL`;
+8. `INVALID base + BLOCKING_BASE`;
+9. `INVALID operational + BLOCKING_OPERATIONAL`;
+10. `WARNING` no bloquea;
+11. `INFO` no bloquea;
+12. cobertura exhaustiva de los diez códigos de disponibilidad;
+13. cobertura exhaustiva de los cien códigos estructurales;
+14. `safe_message` exacto para cada código estructural;
+15. código estructural desconocido;
+16. availability reason desconocida;
+17. severidad manipulada;
+18. fuente manipulada;
+19. sujeto manipulado;
+20. `safe_message` manipulado;
+21. `subject_id` no expuesto;
+22. `source` no expuesto en proyección pública;
+23. stack trace no expuesto;
+24. SQLSTATE no expuesto;
+25. secreto no expuesto;
+26. dato personal no expuesto;
+27. causa raíz sin cascadas derivadas;
+28. duplicados estructurales equivalentes;
+29. metadata duplicada contradictoria;
+30. orden determinista;
+31. reorder de entrada no altera salida;
+32. `NO_ACTIVE_CHECKIN` no mapea automáticamente a reason público;
+33. `NO_OPERATIONAL_AREA` no mapea automáticamente a reason público;
+34. `CONTEXT_STALE` no mapea por nombre a fallo técnico;
+35. razón pública no entra a readiness;
+36. `blocked_reasons` legacy no se acepta como fuente canónica;
+37. mapping canónico → legacy produce código aprobado;
+38. mapping legacy no reconstruye contexto;
+39. error técnico no se convierte en razón contextual;
+40. contexto de versión incompatible falla cerrado;
+41. cambio de actor invalida proyección anterior;
+42. cambio de turno invalida proyección anterior;
+43. check-in/check-out invalida proyección anterior cuando corresponda;
+44. cambio territorial invalida proyección anterior;
+45. dispositivo cambia y no conserva razones del actor previo;
+46. contexto stale no se sirve durante refresh;
+47. simulación no contamina razones reales;
+48. cliente no usa razón como capability token;
+49. mutación reevalúa en servidor aunque exista proyección previa;
+50. rollback no reactiva `can_operate` o bypass como arquitectura canónica.
+
+Además, las pruebas contractuales deben iterar los catálogos completos y no depender de una lista manual parcial mantenida por CTX005.
+
+---
+
+#### 45. Perfil de pruebas
+
+La materialización deberá cubrir cinco perfiles obligatorios:
+
+##### 45.1 Contrato contextual
+
+- catálogo exacto;
+- metadata;
+- orden;
+- deduplicación;
+- causa raíz;
+- separación de namespaces;
+- `safe_message` exacto;
+- ausencia de copy inventado para disponibilidad.
+
+##### 45.2 Integración
+
+- contratos compartidos;
+- productor de contexto;
+- adapters;
+- proyección segura;
+- decisión autoritativa;
+- compatibilidad legacy;
+- consumidores declarados.
+
+##### 45.3 Frescura e invalidación
+
+- cambios de actor;
+- turno;
+- check-in;
+- territorio;
+- dispositivo;
+- versión;
+- `CONTEXT_STALE`;
+- ausencia de caché independiente.
+
+##### 45.4 Fallos seguros
+
+- códigos desconocidos;
+- metadata alterada;
+- payload parcial;
+- versión incompatible;
+- error técnico;
+- no filtración;
+- fail closed;
+- cero fallback permisivo.
+
+##### 45.5 Regresión
+
+- todos los códigos contextuales;
+- paridad de orden;
+- compatibilidad controlada;
+- separación real/simulado;
+- no reaparición de booleanos/bypass;
+- rollback reproducible.
+
+---
+
+#### 46. Gates de materialización
+
+La instancia física deberá superar doce gates atribuibles a la misma combinación de unidad, versiones y commit:
+
+1. **IDENTITY** — la instancia corresponde a una sola `implementation_unit_id` y no duplica otra materialización.
+2. **LINEAGE** — owner package, consumidores, versiones y commit pertenecen al lineage aprobado.
+3. **CONTRACT_INPUT** — solo se acepta `AccessContextV1` compatible y validado.
+4. **NAMESPACE_SEPARATION** — estructural, disponibilidad y razón pública permanecen separados.
+5. **SAFE_MESSAGE_CATALOG** — cada mensaje estructural coincide con el catálogo; disponibilidad no inventa copy.
+6. **MINIMIZATION** — no se exponen sujeto, fuente, evidencia, secretos ni datos personales prohibidos.
+7. **ORDERING_ROOT_CAUSE** — orden, deduplicación y supresión de cascadas son deterministas.
+8. **FAIL_CLOSED** — códigos desconocidos, metadata inválida, versión incompatible y fallos técnicos no producen salida permisiva.
+9. **FRESHNESS** — contexto stale o invalidado no produce razones reutilizables como autoridad.
+10. **COMPATIBILITY** — legacy solo consume proyección canónica y no reconstruye contexto ni crea allow.
+11. **INTEGRATION** — adapters y proyecciones conservan las fronteras con contexto, decisión y UI.
+12. **ROLLBACK** — la reversión restaura una combinación soportada sin reactivar bypass, `can_operate` o mapping local como arquitectura final.
+
+Un gate no ejecutado no puede declararse `PASS`.
+
+---
+
+#### 47. Evidencia exigida a la futura instancia
+
+La evidencia de materialización deberá ligar, como mínimo:
+
+- `implementation_unit_id`;
+- owner package y paquetes consumidores;
+- commit;
+- versión de `@vento/contracts`;
+- versión de `@vento/os-context`;
+- versión de `AccessContext`;
+- versión del catálogo estructural;
+- versión del catálogo público cuando la integración lo consuma;
+- digest o checksum de los artefactos publicables aplicables;
+- fixtures y semillas;
+- resultados contractuales;
+- resultados de integración;
+- resultados de seguridad y no filtración;
+- resultados de frescura;
+- resultados de compatibilidad;
+- resultados de rollback;
+- ambiente y runtime de cada resultado.
+
+Evidencia de otra unidad, commit, versión o combinación de dependencias se considera no atribuible a la instancia actual.
+
+---
+
+#### 48. Rollback
+
+El rollback de CTX005 debe ser de implementación/versionado, no de semántica.
+
+Una reversión aceptable puede volver a una combinación anterior certificada siempre que:
+
+- sea compatible con la misma familia contractual;
+- no acepte códigos desconocidos;
+- no reintroduzca copy local;
+- no reintroduzca `can_operate` como autoridad;
+- no reintroduzca `bypass_applied` como autoridad;
+- no convierta `blocked_reasons` en fuente canónica;
+- no mezcle resultados legacy y canónicos;
+- preserve fail closed.
+
+No existe rollback permitido hacia una arquitectura que elija el resultado más permisivo.
+
+---
+
+#### 49. Materialización por unidad
+
+La tarea global se define una sola vez.
+
+La materialización física futura utilizará el patrón:
+
+```text
+SHELL-CTX-005::<implementation_unit_id>
+```
+
+Condiciones previas obligatorias:
+
+1. `DELIV-PKG-025::<package_id>` asignó el `implementation_unit_id`;
+2. el package propietario superó `E5-GATE-008::<package_id>`;
+3. las dependencias físicas requeridas de la misma unidad están disponibles;
+4. el lineage identifica consumidores y versiones;
+5. no existe una instancia física ya materializada para esa misma unidad.
+
+Varios paquetes pueden consumir la misma instancia mediante lineage explícito. No se repite código por paquete consumidor.
+
+---
+
+#### 50. Dependencias físicas
+
+La instancia de CTX005 depende de que exista físicamente la combinación aplicable de:
+
+- contratos compartidos de autorización;
+- módulo `@vento/os-context` consolidado;
+- productor canónico de `AccessContext`;
+- tipos de readiness y códigos compartidos;
+- integración server autorizada.
+
+Si una dependencia no existe físicamente para la unidad:
+
+```text
+instancia = BLOQUEADA
+```
+
+No se reemplaza por:
+
+- mock en producción;
+- mapping local;
+- RPC legacy como fuente canónica;
+- string libre;
+- booleano.
+
+Los fixtures de prueba sí podrán usar adapters controlados de testing cuando el plan de materialización lo autorice.
+
+---
+
+#### 51. Estado material del marcador global
+
+Al cerrar documentalmente este marcador:
+
+```text
+contrato contextual seguro = DEFINIDO
+implementación TypeScript = NO MATERIALIZADA
+package público nuevo = NO
+subpath público nuevo = NO
+backend nuevo = NO
+SQL = NO
+migraciones = NO
+Supabase = NO
+consumidores migrados = 0 por esta tarea
+instancias físicas = 0
+```
+
+El marcador global no declara que la conducta exista todavía en runtime.
+
+---
+
+#### 52. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+La tarea no introduce una regla de negocio, namespace, catálogo o conducta de seguridad nueva que carezca de cobertura en el registro vigente.
+
+La cobertura existente ya protege de forma explícita:
+
+- separación de namespaces contextuales y públicos;
+- catálogo estructural y de disponibilidad cerrado;
+- minimización de proyecciones seguras;
+- rechazo de códigos desconocidos;
+- separación entre denegación y fallo técnico;
+- prohibición de fallback legacy;
+- compatibilidad canónico → legacy;
+- no uso de booleanos como autoridad;
+- frescura e invalidación;
+- rollback y lineage de instancias compartidas.
+
+Crear un requisito adicional duplicaría comportamientos ya registrados. Por ello el registro canónico de requisitos no cambia.
+
+---
+
+#### 53. Cobertura heredada y trazabilidad
+
+La materialización futura deberá demostrar trazabilidad hacia la cobertura canónica ya existente para:
+
+- tipos y namespaces de contexto;
+- catálogo de razones;
+- proyecciones seguras;
+- fallos de adapters;
+- clientes sin autoridad;
+- migración sin fallback;
+- catálogo público de mensajes;
+- privacidad;
+- compatibilidad;
+- frescura;
+- rollback.
+
+La trazabilidad se documentará por identidad de requisito durante la instancia física, sin crear duplicados durante este marcador global.
+
+---
+
+#### 54. Evidencia de validación
+
+| Clase     | Estado           | Evidencia / límite                                                                                                           |
+| --------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | El marcador global no materializa código ni package y no requiere atribuir un build físico.                                  |
+| LOCAL     | `PASS`           | La definición documental conserva los contratos, fronteras, catálogos y continuidad vigentes y no introduce cambios físicos. |
+| REMOTA    | `NOT_EXECUTED`   | No se autorizan escrituras, despliegues ni ejecuciones remotas durante el marcador global.                                   |
+| OPERATIVA | `NOT_APPLICABLE` | La tarea actual no cambia comportamiento operativo desplegado.                                                               |
+| FÍSICA    | `NOT_APPLICABLE` | No existe una instancia `SHELL-CTX-005::<implementation_unit_id>` materializada por este marcador.                           |
+
+La evidencia física y operativa pertenece a la futura instancia de implementación y deberá ser atribuible a su unidad, commit, versiones y ambiente.
+
+---
+
+#### 55. Decisiones vinculantes
+
+1. CTX005 consume exclusivamente un `AccessContextV1` validado y fresco.
+2. Se conservan dos carriles y cuatro estados de readiness.
+3. Se conservan 100 códigos estructurales y diez razones de disponibilidad.
+4. No se crea un nuevo namespace de razones.
+5. No se crea un nuevo contrato público serializado.
+6. La proyección contextual segura no decide autorización.
+7. `READY` nunca significa `ALLOW`.
+8. `INVALID` no es una denegación empresarial configurada.
+9. `UNAVAILABLE` no oculta contradicciones.
+10. `NOT_APPLICABLE` no es un error.
+11. `safe_message` estructural procede exactamente del catálogo canónico.
+12. Availability reasons no reciben copy inventado.
+13. `subject_id` no se expone en la vista segura.
+14. `StructuralIssue.source` no se expone en la proyección pública.
+15. No se exponen SQL, stack, secretos ni datos personales.
+16. `WARNING` e `INFO` no bloquean por sí solos.
+17. `READY + NO_ACTIVE_CHECKIN` permanece válido para evaluar permisos T.
+18. `READY + NO_OPERATIONAL_AREA` puede ser válido cuando el área es opcional.
+19. Un código desconocido falla cerrado.
+20. Metadata estructural incompatible falla cerrada.
+21. Se conserva causa raíz y se suprimen cascadas derivadas.
+22. La salida es determinista y sin duplicados por carril.
+23. No existe mapping nominal automático hacia `AuthorizationReasonCode`.
+24. CTX005 no crea títulos, acciones, locale, HTTP ni perfiles de presentación.
+25. `SafeContextProjectionV1` permanece propiedad de `SHELL-AUTH-002`.
+26. `SafeDecisionProjectionV1` permanece separada de CTX005.
+27. `blocked_reasons` legacy no es fuente canónica.
+28. La compatibilidad solo va de canónico hacia legacy.
+29. Un error técnico no se convierte en razón contextual.
+30. Las razones heredan la frescura del `AccessContext` de origen.
+31. CTX005 no mantiene caché independiente.
+32. `CONTEXT_STALE` obliga a nueva resolución completa.
+33. Offline y cliente no usan razones como autoridad.
+34. Simulación permanece separada.
+35. Se definen cincuenta escenarios mínimos de materialización.
+36. Se definen doce gates de materialización.
+37. La tarea física ocurre como máximo una vez por `implementation_unit_id`.
+38. Varios paquetes pueden consumir una misma unidad mediante lineage.
+39. No existe cambio de 04A porque no se crean ni modifican requisitos de prueba.
+40. El marcador global ejecuta cero cambios en código, SQL, Supabase, packages o consumidores.
+41. `SHELL-CTX-006` permanece exclusivamente reservada.
+
+---
+
+#### 56. Criterios de aceptación
+
+`SHELL-CTX-005` queda documentalmente completa cuando se cumple simultáneamente que:
+
+- la entrada autoritativa es únicamente `AccessContextV1` validado;
+- los dos vocabularios contextuales se consumen sin crear un tercero;
+- estructural y disponibilidad permanecen separados;
+- los cuatro estados de readiness conservan significado;
+- `safe_message` solo procede del catálogo estructural;
+- los códigos de disponibilidad no reciben copy inventado;
+- no existe mapeo nominal automático a razones públicas;
+- no se exponen sujeto, fuente técnica, evidencia sensible, secretos o datos personales;
+- causa raíz, deduplicación y orden son deterministas;
+- códigos desconocidos y metadata incompatible fallan cerrados;
+- `READY + NO_ACTIVE_CHECKIN` y área opcional conservan su semántica;
+- warning e info no se convierten en bloqueo;
+- el catálogo público, los perfiles y las acciones siguen fuera de CTX005;
+- la compatibilidad legacy permanece unidireccional;
+- no se reconstruye contexto desde `blocked_reasons`;
+- un fallo técnico no se convierte en razón de contexto;
+- las razones heredan frescura del snapshot y no tienen caché paralela;
+- simulación, offline y cliente no obtienen autoridad;
+- existen cincuenta escenarios mínimos y doce gates para la instancia futura;
+- el rollback no puede restaurar bypasses o booleanos como autoridad;
+- la materialización queda condicionada a lineage y E5;
+- se generan cero cambios de requisitos de prueba;
+- no se ejecutan cambios físicos durante el marcador global;
+- la única siguiente tarea reservada es `SHELL-CTX-006`.
+
+---
+
+#### 57. Límites
+
+Este marcador global no:
+
+- modifica `packages/os-context`;
+- crea tipos TypeScript físicos;
+- crea exports;
+- crea subpaths;
+- publica packages;
+- modifica lockfiles;
+- crea SQL;
+- crea migraciones;
+- modifica Supabase;
+- crea tablas;
+- crea RPC;
+- crea RLS;
+- modifica grants;
+- crea Edge Functions;
+- cambia clientes;
+- migra consumidores;
+- retira legacy;
+- crea caché L1;
+- implementa single-flight;
+- implementa freshness token;
+- selecciona `AuthorizationReasonCode`;
+- crea copy público;
+- crea UI;
+- ejecuta pruebas físicas;
+- despliega;
+- modifica la continuidad canónica.
+
+Cada responsabilidad física permanece en su tarea propietaria existente.
+
+---
+
+#### 58. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CTX-006 — Implementar caché compartida, single-flight y validación de frescura`
+
+
 ### [ ] SHELL-CTX-006 — Implementar caché compartida, single-flight y validación de frescura
 
 ### Orden contractual interno
