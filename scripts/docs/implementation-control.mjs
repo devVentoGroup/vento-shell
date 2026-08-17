@@ -9,6 +9,7 @@ const INSTANCE_RECORDS_DIRECTORY = 'docs/plan-canonico/modular/implementation-in
 const OUTPUT_PATH = '.delivery/current-work-directive.md';
 const STATUS_OUTPUT_PATH = '.delivery/implementation-control-status.json';
 const EXPLICIT_STATUSES = new Set([
+  'PENDING_AUTHORIZATION',
   'AUTHORIZED',
   'IN_PROGRESS',
   'BLOCKED',
@@ -50,6 +51,19 @@ export function instanceRecordRelativePath(instanceId) {
     throw new Error(`instance_id no puede convertirse en ruta segura: ${instanceId ?? 'VACÍO'}.`);
   }
   return `${INSTANCE_RECORDS_DIRECTORY}/${normalized.replaceAll('::', '__')}.json`;
+}
+
+export function pendingInstanceRecord(instance) {
+  return {
+    instance_id: instance.instanceId,
+    task_id: instance.taskId,
+    status: 'PENDING_AUTHORIZATION',
+    target_repositories: [],
+    authorized_changes: [],
+    validation_commands: [],
+    authorization: null,
+    evidence: [],
+  };
 }
 
 export function loadImplementationControl({ root = process.cwd() } = {}) {
@@ -294,6 +308,7 @@ export function deriveImplementationControl({
         lifecycleMode: lifecycle.mode,
         status: explicit?.status ?? 'READY_FOR_AUTHORIZATION',
         source: explicit ? 'EXPLICIT' : 'DERIVED_FROM_APPROVED_CONTRACT',
+        record: explicit ?? null,
         targetRepositories: explicit?.target_repositories ?? [],
         authorizedChanges: explicit?.authorized_changes ?? [],
         validationCommands: explicit?.validation_commands ?? [],
@@ -316,6 +331,7 @@ export function deriveImplementationControl({
         lifecycleMode: lifecycle.mode,
         status: entry.status,
         source: 'EXPLICIT',
+        record: entry,
         targetRepositories: entry.target_repositories ?? [],
         authorizedChanges: entry.authorized_changes ?? [],
         validationCommands: entry.validation_commands ?? [],
@@ -349,6 +365,7 @@ export function deriveImplementationControl({
     ['IN_PROGRESS', 'CONTINUAR_IMPLEMENTACION'],
     ['IMPLEMENTED', 'VALIDAR_IMPLEMENTACION'],
     ['AUTHORIZED', 'INICIAR_IMPLEMENTACION'],
+    ['PENDING_AUTHORIZATION', 'AUTORIZAR_IMPLEMENTACION'],
     ['READY_FOR_AUTHORIZATION', 'AUTORIZAR_IMPLEMENTACION'],
     ['BLOCKED', 'RESOLVER_BLOQUEO'],
   ];
@@ -497,8 +514,34 @@ ${physicalRows}
 `;
 }
 
+export function ensurePendingImplementationRecord({ root, control, check = false }) {
+  const missingPendingRecord = control.primaryAction.type === 'AUTORIZAR_IMPLEMENTACION'
+    && control.physical.active?.source === 'DERIVED_FROM_APPROVED_CONTRACT';
+  if (!missingPendingRecord) return false;
+
+  const active = control.physical.active;
+  const recordPath = path.join(root, active.recordPath);
+  if (fs.existsSync(recordPath)) return true;
+  if (check) {
+    throw new Error(
+      `${active.recordPath} falta; ejecute docs:plan:build para crear automáticamente el borrador.`,
+    );
+  }
+  fs.mkdirSync(path.dirname(recordPath), { recursive: true });
+  fs.writeFileSync(
+    recordPath,
+    `${JSON.stringify(pendingInstanceRecord(active), null, 2)}\n`,
+    { encoding: 'utf8', flag: 'wx' },
+  );
+  console.log(`[PLAN CANÓNICO] Borrador de instancia creado automáticamente: ${active.recordPath}.`);
+  return true;
+}
+
 export function writeImplementationControlArtifacts({ root = process.cwd(), check = false } = {}) {
-  const control = deriveImplementationControl({ root });
+  let control = deriveImplementationControl({ root });
+  if (ensurePendingImplementationRecord({ root, control, check })) {
+    control = deriveImplementationControl({ root });
+  }
   const markdown = renderCurrentWorkDirective(control);
   const status = `${JSON.stringify(control, null, 2)}\n`;
   const outputs = [

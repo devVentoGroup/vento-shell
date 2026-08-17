@@ -1098,7 +1098,9 @@ los catálogos canónicos, sin duplicarlos como fuente de autoridad:
 Estos artefactos obedecen `implementation-readiness-policy.json` y la política
 común de `implementation-control.json` en modo `CONTROLLED_EXECUTION`. Cada
 instancia física tiene un registro exclusivo bajo `implementation-instances/`;
-crear una instancia nueva no reemplaza ni reescribe las anteriores. Todo corte nuevo
+crear una instancia nueva no reemplaza ni reescribe las anteriores. Cuando una
+instancia se vuelve elegible, el watcher crea automáticamente su registro exacto
+en `PENDING_AUTHORIZATION`, sin alcance ni autorización inferidos. Todo corte nuevo
 inicia sin autorización; el watcher puede crear cortes faltantes y regenerar sus
 vistas, pero no avanzará estados, no autorizará implementación, no alterará
 marcadores canónicos ni inferirá evidencia. Cada instancia física requiere

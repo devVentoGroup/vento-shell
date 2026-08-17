@@ -123,7 +123,9 @@ Por defecto:
 
 El historial físico es acumulativo y usa un archivo por instancia bajo `docs/plan-canonico/modular/implementation-instances/`:
 
-- autorizar una instancia crea únicamente su archivo nuevo;
+- cuando una instancia queda lista para autorización, el watcher crea automáticamente su archivo exacto en `PENDING_AUTHORIZATION` sin inferir alcance ni autorización;
+- ChatGPT recibe en este iniciador la ruta y el contenido local completos de ese archivo y, después de auditar, entrega su reemplazo íntegro para `AUTHORIZED`;
+- el usuario nunca crea manualmente el archivo ni edita `implementation-control.json` durante el flujo normal;
 - implementar, validar o bloquear una instancia modifica únicamente ese mismo archivo;
 - `evidence` conserva allí la evidencia consolidada de su implementación y validación;
 - una instancia `VERIFIED` y su evidencia son históricas e inmutables;

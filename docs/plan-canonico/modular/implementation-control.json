@@ -21,6 +21,7 @@
   "instance_history_mode": "APPEND_ONLY_LEDGER",
   "verified_instances_immutable": true,
   "instance_statuses": [
+    "PENDING_AUTHORIZATION",
     "AUTHORIZED",
     "IN_PROGRESS",
     "BLOCKED",

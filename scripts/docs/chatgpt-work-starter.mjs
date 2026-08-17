@@ -37,8 +37,9 @@ export function actionResponseContract(control, sourceContractHash) {
   const { type, target } = control.primaryAction;
   const instanceRecordPath = target.includes('::') ? instanceRecordRelativePath(target) : null;
   const recordedInstances = control.physical?.recordedInstances ?? [];
-  const recordedSummary = recordedInstances.length > 0
-    ? recordedInstances.map((entry) => `${entry.instance_id}=${entry.status}`).join(', ')
+  const previousInstances = recordedInstances.filter((entry) => entry.instance_id !== target);
+  const recordedSummary = previousInstances.length > 0
+    ? previousInstances.map((entry) => `${entry.instance_id}=${entry.status}`).join(', ')
     : 'NINGUNA';
   const common = [
     'La primera respuesta de la acción y la entrega final deben comenzar con FORMATO_ENTREGA_VENTO_V1 y conservar exactamente sus ocho secciones; no agregues una novena sección.',
@@ -57,17 +58,17 @@ export function actionResponseContract(control, sourceContractHash) {
   if (type === 'AUTORIZAR_IMPLEMENTACION') {
     return [
       ...common,
-      `Para ${target}, la sección 4 debe entregar el contenido completo del archivo nuevo ${instanceRecordPath}. No entregues una propiedad instances ni modifiques docs/plan-canonico/modular/implementation-control.json.`,
-      `El registro histórico actual contiene ${recordedInstances.length} instancia(s): ${recordedSummary}. Se conserva completo; nunca borres, reemplaces, reordenes ni reescribas archivos de instancias anteriores para autorizar la siguiente.`,
-      'El archivo nuevo debe incluir instance_id, task_id, status AUTHORIZED, target_repositories, authorized_changes, validation_commands, authorization y evidence: [].',
+      `El watcher ya creó ${instanceRecordPath} en PENDING_AUTHORIZATION. Para ${target}, la sección 4 debe entregar el contenido completo que reemplaza ese archivo y lo lleva a AUTHORIZED. No entregues una propiedad instances ni modifiques docs/plan-canonico/modular/implementation-control.json.`,
+      `El historial anterior contiene ${previousInstances.length} instancia(s): ${recordedSummary}. Se conserva completo; nunca borres, reemplaces, reordenes ni reescribas archivos de instancias anteriores para autorizar la siguiente.`,
+      'El reemplazo completo debe incluir instance_id, task_id, status AUTHORIZED, target_repositories, authorized_changes, validation_commands, authorization y evidence: [].',
       'authorization debe incluir decision: APPROVED, approved_by, approved_at, timezone, approval_statement y source_contract_sha256.',
       'Si no puedes verificar el nombre civil del usuario, usa approved_by: VENTO_OWNER; usa una fecha ISO concreta y timezone: America/Bogota, nunca marcadores como <FECHA> o <USUARIO>.',
       `source_contract_sha256 debe ser exactamente ${sourceContractHash}. No pidas al usuario calcular, corregir o conciliar hashes manualmente; la autorización se demuestra con su declaración explícita y su commit.`,
       'approval_statement debe aprobar exclusivamente los repositorios, cambios y validaciones enumerados, y negar expresamente cualquier ampliación inferida.',
-      'Aclara que el archivo listo para crear sigue siendo una propuesta hasta que el usuario lo cree, guarde y confirme mediante su propio commit; tú no debes crear el archivo ni autorizarte a ti mismo.',
+      'Aclara que el reemplazo listo para copiar sigue siendo una propuesta hasta que el usuario lo pegue, guarde y confirme mediante su propio commit; tú no debes editar el archivo ni autorizarte a ti mismo.',
       'Distingue la evidencia de autorización de la evidencia de implementación: evidence debe permanecer [] mientras el estado sea AUTHORIZED.',
-      `En PASOS EXACTOS PARA EL USUARIO indica, sin comandos de terminal: crear ${instanceRecordPath}, pegar el contenido completo, guardar, esperar el watcher, comprobar el cambio a INICIAR_IMPLEMENTACION, revisar el diff, crear el commit desde el control de código fuente de VS Code, sincronizar y cargar el INICIADOR_VENTO_ACTUAL.txt recién regenerado.`,
-      'Si el archivo exacto ya existe o el historial mostrado por el iniciador no coincide con el estado observado, no propongas sobrescribirlo: pide recargar el iniciador regenerado.',
+      `En PASOS EXACTOS PARA EL USUARIO indica, sin comandos de terminal: abrir el archivo ya creado ${instanceRecordPath}, reemplazar todo su contenido, guardar, esperar el watcher, comprobar el cambio a INICIAR_IMPLEMENTACION, revisar el diff, crear el commit desde el control de código fuente de VS Code, sincronizar y cargar el INICIADOR_VENTO_ACTUAL.txt recién regenerado.`,
+      'Si el archivo exacto no existe, no está PENDING_AUTHORIZATION o el historial mostrado por el iniciador no coincide con el estado observado, no propongas crear ni sobrescribir nada: pide ejecutar o esperar el watcher y recargar el iniciador regenerado.',
       'Incluye el texto exacto que debería mostrar el watcher después de guardar y el mensaje de commit recomendado.',
     ].join('\n');
   }
@@ -189,6 +190,9 @@ export function renderCurrentWork({ control, workTopology, templateHash, reposit
   ));
   const emptyDraft = task.block.match(/^####\s+/gmu) === null;
   const sourceContractHash = sha256(task.block.replace(/\r\n?/gu, '\n'));
+  const activeRecordSource = physical?.record
+    ? JSON.stringify(physical.record, null, 2)
+    : 'No existe todavía un registro material para esta acción.';
 
   return `TRABAJO SOLICITADO ACTUAL
 
@@ -248,7 +252,15 @@ HISTORIAL FÍSICO ACUMULATIVO
 
 ${list(recordedInstanceRows, 'Ninguno; la primera autorización creará el primer archivo.')}
 
-Cada autorización crea exclusivamente el archivo nuevo de su instancia. Cada transición posterior modifica exclusivamente ese mismo archivo. Los registros anteriores y su evidencia nunca se reemplazan ni se copian dentro de un arreglo compartido.
+El watcher crea automáticamente el archivo PENDING_AUTHORIZATION de la instancia elegible. La autorización y cada transición posterior modifican exclusivamente ese mismo archivo. Los registros anteriores y su evidencia nunca se reemplazan ni se copian dentro de un arreglo compartido.
+
+CONTENIDO LOCAL EXACTO DEL REGISTRO ACTIVO
+
+Ruta: ${physical?.recordPath ?? 'No aplica.'}
+
+\`\`\`json
+${activeRecordSource}
+\`\`\`
 
 ALCANCE FÍSICO AUTORIZADO
 

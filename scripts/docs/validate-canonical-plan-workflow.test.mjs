@@ -90,6 +90,10 @@ test('el watcher regenera y valida también la guía de tareas pendientes', () =
   assert.match(watcher, /writeChatgptWorkStarter/u);
   assert.match(watcher, /ACCIÓN PRINCIPAL/u);
   assert.match(watcher, /publishTaskArtifacts\(true\)/u);
+  assert.match(watcher, /invalidPendingJsonFiles/u);
+  assert.match(watcher, /ESPERANDO_JSON_COMPLETO/u);
+  assert.match(watcher, /JSON todavía guardándose; compilación pospuesta/u);
+  assert.match(watcher, /sustituida por un guardado más reciente/u);
 });
 
 test('el build prepara formato sin iniciar tareas vacías', () => {

@@ -1,7 +1,14 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import test from 'node:test';
 
-import { deriveImplementationControl } from './implementation-control.mjs';
+import {
+  deriveImplementationControl,
+  ensurePendingImplementationRecord,
+  pendingInstanceRecord,
+} from './implementation-control.mjs';
 
 const baseControl = {
   schema_version: 1,
@@ -25,6 +32,7 @@ const baseControl = {
     assisted_execution_authorization_prefix: 'AUTORIZO EJECUCION ASISTIDA DEL PASO ',
   },
   instance_statuses: [
+    'PENDING_AUTHORIZATION',
     'AUTHORIZED',
     'IN_PROGRESS',
     'BLOCKED',
@@ -87,6 +95,58 @@ test('elige una sola autorización física y pausa la documentación sin autoriz
   assert.equal(result.documentary.taskId, 'SHELL-CI-003');
   assert.equal(result.documentary.state, 'PAUSADO_POR_ACCION_FISICA_PRIORITARIA');
   assert.equal(result.physical.instances[1].status, 'WAITING_FOR_PREVIOUS_INSTANCE');
+});
+
+test('el borrador automático conserva identidad sin inferir autorización ni alcance', () => {
+  const draft = pendingInstanceRecord({
+    instanceId: 'SHELL-CI-001::GLOBAL',
+    taskId: 'SHELL-CI-001',
+  });
+  assert.deepEqual(draft, {
+    instance_id: 'SHELL-CI-001::GLOBAL',
+    task_id: 'SHELL-CI-001',
+    status: 'PENDING_AUTHORIZATION',
+    target_repositories: [],
+    authorized_changes: [],
+    validation_commands: [],
+    authorization: null,
+    evidence: [],
+  });
+  const result = deriveImplementationControl({
+    control: { ...baseControl, instances: [draft] },
+    workTopology: topology(),
+  });
+  assert.equal(result.primaryAction.type, 'AUTORIZAR_IMPLEMENTACION');
+  assert.equal(result.implementationAuthorized, false);
+  assert.equal(result.physical.active.record.status, 'PENDING_AUTHORIZATION');
+});
+
+test('materializa automáticamente el archivo pendiente exacto una sola vez', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vento-implementation-instance-'));
+  const recordPath = 'docs/plan-canonico/modular/implementation-instances/SHELL-CI-001__GLOBAL.json';
+  const control = {
+    primaryAction: { type: 'AUTORIZAR_IMPLEMENTACION' },
+    physical: {
+      active: {
+        instanceId: 'SHELL-CI-001::GLOBAL',
+        taskId: 'SHELL-CI-001',
+        recordPath,
+        source: 'DERIVED_FROM_APPROVED_CONTRACT',
+      },
+    },
+  };
+  try {
+    assert.equal(ensurePendingImplementationRecord({ root, control }), true);
+    const materialized = JSON.parse(fs.readFileSync(path.join(root, recordPath), 'utf8'));
+    assert.equal(materialized.status, 'PENDING_AUTHORIZATION');
+    assert.deepEqual(materialized.target_repositories, []);
+    assert.equal(materialized.authorization, null);
+    const original = fs.readFileSync(path.join(root, recordPath), 'utf8');
+    assert.equal(ensurePendingImplementationRecord({ root, control }), true);
+    assert.equal(fs.readFileSync(path.join(root, recordPath), 'utf8'), original);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test('una autorización explícita cambia la instrucción a implementar solo su alcance', () => {

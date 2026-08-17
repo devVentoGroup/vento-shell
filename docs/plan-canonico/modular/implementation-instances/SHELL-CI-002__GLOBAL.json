@@ -1,0 +1,34 @@
+{
+  "instance_id": "SHELL-CI-002::GLOBAL",
+  "task_id": "SHELL-CI-002",
+  "status": "AUTHORIZED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear scripts/quality/shared-package-build-gate.mjs como única implementación global del gate de build independiente de packages compartidos. El gate gobernará exactamente @vento/contracts, @vento/os-context, @vento/supabase y @vento/ui-web; recibirá package root y contrato de build machine-readable de forma explícita; ejecutará build limpio y dirigido; validará outputs, exports, declarations, dependencias internas, peers, superficie empaquetada, ausencia de secretos y referencias locales; comprobará reproducibilidad por contenido distribuible normalizado; generará e invalidará evidencia atribuible; y empaquetará únicamente para inspección sin publicar releases ni registry.",
+    "Crear scripts/quality/shared-package-build-gate.test.mjs para autocertificar el habilitador mediante fixtures y workspaces sintéticos temporales, cubriendo como mínimo los 8 casos positivos, 20 casos negativos y 16 regresiones obligatorios de SHELL-CI-002, sin crear ni modificar packages reales.",
+    "Generar evidencia runtime únicamente bajo .delivery/shared-package-builds/ y utilizar ubicaciones temporales no versionadas para artefactos de autocertificación; no conservar outputs de prueba, paquetes .tgz ni secretos como archivos versionados."
+  ],
+  "validation_commands": [
+    "npm ci",
+    "node --test scripts/quality/shared-package-build-gate.test.mjs",
+    "npm run lint -- scripts/quality/shared-package-build-gate.mjs scripts/quality/shared-package-build-gate.test.mjs",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm run docs:work-topology:check",
+    "git diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-17",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente la implementación de SHELL-CI-002::GLOBAL en devVentoGroup/vento-shell mediante scripts/quality/shared-package-build-gate.mjs, scripts/quality/shared-package-build-gate.test.mjs y evidencia runtime no versionada bajo .delivery/shared-package-builds/, junto con las validaciones enumeradas en validation_commands. No autorizo cambios en packages, package.json, package-lock.json, consumidores, GitHub Actions, registry, releases, changelog, matriz de compatibilidad, Supabase, despliegues ni ninguna ampliación inferida del alcance.",
+    "source_contract_sha256": "16a75a3f7e6b9bcd51a6dfb1879dd5acf4c46a6ff8e834d41c7b370dfc729c0a"
+  },
+  "evidence": []
+}

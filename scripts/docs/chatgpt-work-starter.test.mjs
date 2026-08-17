@@ -19,6 +19,7 @@ test('genera un único iniciador desde la acción operativa vigente', () => {
   assert.match(result.source, /Raíz local exacta del repositorio: .+vento-shell/u);
   assert.match(result.source, /HISTORIAL FÍSICO ACUMULATIVO/u);
   assert.match(result.source, /Modo de almacenamiento: UN ARCHIVO POR INSTANCIA/u);
+  assert.match(result.source, /CONTENIDO LOCAL EXACTO DEL REGISTRO ACTIVO/u);
   assert.match(result.source, /Escrituras del asistente en archivos o repositorios: NO AUTORIZADAS/u);
   assert.match(result.source, /AUTORIZO EJECUCION ASISTIDA DEL PASO N/u);
   assert.match(result.source, /Contrato propietario SHA-256: [a-f0-9]{64}/u);
@@ -80,8 +81,11 @@ test('la autorización exige JSON completo, evidencia humana y pasos manuales ex
     source,
     /implementation-instances\/SHELL-CI-002__GLOBAL\.json/u,
   );
-  assert.match(source, /El registro histórico actual contiene 1 instancia/u);
+  assert.match(source, /El historial anterior contiene 1 instancia/u);
   assert.match(source, /SHELL-CI-001::GLOBAL=VERIFIED/u);
+  assert.match(source, /El watcher ya creó/u);
+  assert.match(source, /PENDING_AUTHORIZATION/u);
+  assert.match(source, /abrir el archivo ya creado/u);
   assert.match(source, /No entregues una propiedad instances/u);
   assert.match(source, /nunca borres, reemplaces, reordenes ni reescribas/u);
   assert.match(source, /status AUTHORIZED/u);
@@ -136,6 +140,8 @@ test('la plantilla global conserva el modo humano aunque cambie la acción actua
   assert.match(template, /no se pausa entre pasos por rutina ni para pedir `HECHO`/u);
   assert.match(template, /RESULTADO DEL PASO N/u);
   assert.match(template, /un archivo por instancia/u);
+  assert.match(template, /watcher crea automáticamente su archivo exacto/u);
+  assert.match(template, /usuario nunca crea manualmente el archivo/u);
   assert.match(template, /nunca se reemplaza un arreglo global `instances`/u);
   assert.match(template, /AUTORIZO EJECUCION ASISTIDA DEL PASO 3/u);
   assert.match(template, /“haz la acción principal” no autorizan escrituras automáticas/u);

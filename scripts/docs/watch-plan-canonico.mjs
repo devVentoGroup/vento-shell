@@ -1,4 +1,4 @@
-import { existsSync, watch } from "node:fs";
+import { existsSync, readFileSync, watch } from "node:fs";
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -125,6 +125,7 @@ let buildPending = false;
 let buildSequence = 0;
 let changeVersion = 0;
 const pendingChanges = new Set();
+let waitingJsonSignature = null;
 let lastObservedPreflight = null;
 let lastImplementationControl = null;
 let lastBuild = {
@@ -335,6 +336,13 @@ async function rebuild(reason) {
       console.log("[PLAN CANÓNICO]   Iniciador ChatGPT: INICIADOR_VENTO_ACTUAL.txt");
     }
   } catch (error) {
+    if (changeVersion !== buildVersion) {
+      console.log(
+        `[PLAN CANÓNICO] ↻ Compilación #${buildId} sustituida por un guardado más reciente; `
+        + "el resultado se evaluará cuando el nuevo lote esté completo."
+      );
+      return;
+    }
     console.error(
       `\n[PLAN CANÓNICO] ❌ Compilación #${buildId} fallida:`
     );
@@ -362,6 +370,49 @@ async function rebuild(reason) {
   }
 }
 
+function invalidPendingJsonFiles() {
+  const invalid = [];
+  for (const relativePath of pendingChanges) {
+    if (!relativePath.endsWith(".json")) continue;
+    const filePath = path.join(watchedDirectory, relativePath);
+    if (!existsSync(filePath)) continue;
+    try {
+      JSON.parse(readFileSync(filePath, "utf8"));
+    } catch (error) {
+      invalid.push({
+        relativePath,
+        message: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+  return invalid;
+}
+
+function flushStableBatch() {
+  const invalidJson = invalidPendingJsonFiles();
+  if (invalidJson.length > 0) {
+    const signature = invalidJson.map(({ relativePath, message }) => (
+      `${relativePath}: ${message}`
+    )).join(" | ");
+    if (signature !== waitingJsonSignature) {
+      console.log(
+        `[PLAN CANÓNICO] ⏳ JSON todavía guardándose; compilación pospuesta: ${signature}`
+      );
+      waitingJsonSignature = signature;
+    }
+    publishStatus("ESPERANDO_JSON_COMPLETO");
+    debounceTimer = setTimeout(flushStableBatch, 1000);
+    return;
+  }
+
+  waitingJsonSignature = null;
+  console.log(
+    `[PLAN CANÓNICO] Aplicando lote estable de ${pendingChanges.size} archivo(s).`
+  );
+  pendingChanges.clear();
+  void rebuild("cambios guardados");
+}
+
 function scheduleRebuild(filename) {
   const relativePath = normalizeRelativePath(filename);
 
@@ -383,13 +434,7 @@ function scheduleRebuild(filename) {
     );
   }
 
-  debounceTimer = setTimeout(() => {
-    console.log(
-      `[PLAN CANÓNICO] Aplicando lote estable de ${pendingChanges.size} archivo(s).`
-    );
-    pendingChanges.clear();
-    void rebuild("cambios guardados");
-  }, 2000);
+  debounceTimer = setTimeout(flushStableBatch, 2000);
 }
 
 console.log("[PLAN CANÓNICO] Vigilancia automática iniciada.");
