@@ -50,6 +50,33 @@ test('separa dependencias para desarrollar de bloqueos futuros de ejecución', (
   ]);
 });
 
+test('acepta dependencias desarrolladas como secciones con listas', () => {
+  const knownIds = new Set([
+    'SHELL-MIG-005',
+    'SHELL-MIG-006',
+    'SHELL-CI-001',
+    'E5-GATE-008',
+    'SHELL-CI-020',
+  ]);
+  const result = taskDependencies({
+    id: 'SHELL-MIG-007',
+    block: `### ✅ SHELL-MIG-007 — Definir contrato
+
+Dependencias para desarrollar el marcador global:
+
+- \`SHELL-MIG-005\`;
+- \`SHELL-MIG-006\`.
+
+Dependencias para ejecutar una instancia:
+
+- \`SHELL-CI-001\`;
+- \`E5-GATE-008::<package_id>\`;
+- \`SHELL-CI-020::<package_id>\`.`,
+  }, knownIds);
+  assert.deepEqual(result.development, ['SHELL-MIG-005', 'SHELL-MIG-006']);
+  assert.deepEqual(result.execution, ['SHELL-CI-001', 'E5-GATE-008', 'SHELL-CI-020']);
+});
+
 test('rechaza una dependencia de desarrollo hacia una tarea futura', () => {
   const ordered = [{ id: 'TEST-A-001' }, { id: 'TEST-A-002' }];
   const dependencies = new Map([

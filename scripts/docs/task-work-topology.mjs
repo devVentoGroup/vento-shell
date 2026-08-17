@@ -48,6 +48,14 @@ function inlineField(block, labels) {
   return block.match(pattern)?.groups?.value?.trim() ?? null;
 }
 
+function listedField(block, labels) {
+  const pattern = new RegExp(
+    `^(?:${labels.join('|')}):[ \\t]*\\r?\\n[ \\t]*\\r?\\n(?<value>(?:[ \\t]*[-*][ \\t]+[^\\r\\n]+(?:\\r?\\n|$))+)`,
+    'imu',
+  );
+  return block.match(pattern)?.groups?.value?.trim() ?? null;
+}
+
 function expandReferences(value, knownIds) {
   const references = new Set(String(value ?? '').match(TASK_REFERENCE) ?? []);
   for (const match of String(value ?? '').matchAll(RANGE_REFERENCE)) {
@@ -63,14 +71,19 @@ function expandReferences(value, knownIds) {
 }
 
 export function taskDependencies(task, knownIds) {
-  const developmentSource = inlineField(task.block, [
-    'Dependencias para desarrollar',
+  const developmentLabels = [
+    'Dependencias para desarrollar(?: el marcador global)?',
     'Dependencias de desarrollo',
-  ]) ?? inlineField(task.block, ['Dependencias?']);
-  const executionSource = inlineField(task.block, [
-    'Dependencias para ejecutar(?: cada instancia)?',
+  ];
+  const executionLabels = [
+    'Dependencias para ejecutar(?: cada instancia| una instancia)?',
     'Dependencias de ejecución',
-  ]);
+  ];
+  const developmentSource = inlineField(task.block, developmentLabels)
+    ?? listedField(task.block, developmentLabels)
+    ?? inlineField(task.block, ['Dependencias?']);
+  const executionSource = inlineField(task.block, executionLabels)
+    ?? listedField(task.block, executionLabels);
   return {
     developmentSource,
     development: expandReferences(developmentSource, knownIds).filter((id) => id !== task.id),
