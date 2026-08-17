@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **953** |
+| Tareas aprobadas | **954** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **641** |
+| Tareas no iniciadas | **640** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **59.79% (953/1594)** |
+| Porcentaje de completamiento | **59.85% (954/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios** |
-| Tarea actual | **SHELL-CTX-001 — Consolidar el módulo de contexto dentro de @vento/os-context** |
+| Última tarea aprobada | **SHELL-CTX-001 — Consolidar el módulo de contexto dentro de @vento/os-context** |
+| Tarea actual | **SHELL-CTX-002 — Implementar consumo canónico de turno y check-in** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CTX-002 — Implementar consumo canónico de turno y check-in** |
+| Siguiente tarea | **SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 103 de 109 aprobadas; SHELL-CTX-001 pendiente** |
+| Progreso del bloque | **BLOQUE H: 104 de 109 aprobadas; SHELL-CTX-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-AUTH-005` — Migrar consumidores de autorización en todos los repositorios |
-| Tarea actual | `SHELL-CTX-001` — Consolidar el módulo de contexto dentro de @vento/os-context — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CTX-002` — Implementar consumo canónico de turno y check-in |
+| Última aprobada | `SHELL-CTX-001` — Consolidar el módulo de contexto dentro de @vento/os-context |
+| Tarea actual | `SHELL-CTX-002` — Implementar consumo canónico de turno y check-in — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CTX-003` — Implementar proyecciones seguras de sede y área efectivas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 103 DE 109 APROBADAS — ACTUAL SHELL-CTX-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 104 DE 109 APROBADAS — ACTUAL SHELL-CTX-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios
-        ↓
-TAREA ACTUAL
 SHELL-CTX-001 — Consolidar el módulo de contexto dentro de @vento/os-context
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-CTX-002 — Implementar consumo canónico de turno y check-in
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 103 de 109 tareas aprobadas
+BLOQUE H — 104 de 109 tareas aprobadas
 ```

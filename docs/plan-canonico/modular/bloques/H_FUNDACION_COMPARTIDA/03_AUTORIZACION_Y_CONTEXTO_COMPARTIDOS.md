@@ -4449,7 +4449,983 @@ Esta tarea no:
 **SIGUIENTE TAREA RESERVADA**
 `SHELL-CTX-001 — Consolidar el módulo de contexto dentro de @vento/os-context`
 
-### [ ] SHELL-CTX-001 — Consolidar el módulo de contexto dentro de @vento/os-context
+### ✅ SHELL-CTX-001 — Consolidar el módulo de contexto dentro de @vento/os-context
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios
+**Tarea siguiente:** SHELL-CTX-002 — Implementar consumo canónico de turno y check-in
+**Tipo de tarea:** documental — definición global única del módulo contextual interno de `@vento/os-context`, su autoridad, composición, fronteras y eliminación contractual de responsabilidades contextuales competidoras, con futura materialización física `SHELL-CTX-001::<implementation_unit_id>` una sola vez por unidad de implementación
+**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`
+**Estado físico resultante:** `CONTRATO_GLOBAL_DEL_MODULO_CONTEXTUAL_OS_CONTEXT_ESPECIFICADO`; 1 módulo contextual canónico dentro del SDK existente; 0 packages nuevos; 0 subpaths públicos nuevos; 7 módulos contextuales locales competidores clasificados; 1 superficie compartida transitoria reconciliada; 0 unidades materializadas; 0 cambios Supabase
+**Cambios físicos autorizados:** ninguno durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+**Modalidad:** `PER_IMPLEMENTATION_UNIT`
+**Snapshot producido:** `SHELL-CTX-CONTEXT-MODULE-001`
+
+---
+
+#### 1. Propósito
+
+`SHELL-CTX-001` consolida dentro de `@vento/os-context` una única responsabilidad runtime para consumir, validar, mantener inmutable y componer el contexto canónico de Vento OS, sin crear un segundo paquete, un segundo contrato `AccessContext`, un resolver empresarial alternativo ni una fuente local de autoridad por aplicación.
+
+La arquitectura queda cerrada así:
+
+```text
+@vento/contracts/authorization
+→ autoridad de tipos, códigos, schemas y validadores
+
+BACKEND CANÓNICO / AUTH-DB-033
+→ autoridad de hechos contextuales
+→ produce AccessContext@1.0.0
+
+@vento/os-context
+→ único SDK runtime compartido
+→ contiene un único módulo contextual interno
+→ valida, conserva y compone el AccessContext recibido
+→ no reconstruye hechos empresariales
+
+APLICACIONES
+→ consumen el SDK
+→ no mantienen un contexto efectivo competidor
+```
+
+La consolidación de propiedad ocurre ahora como contrato. No elimina todavía archivos locales, no modifica `packages/os-context`, no implementa `get_access_context`, no migra consumidores y no ejecuta cambios en Supabase.
+
+---
+
+#### 2. Modalidad canónica y ciclo de materialización
+
+La tarea usa `PER_IMPLEMENTATION_UNIT`.
+
+```text
+MARCADOR GLOBAL SHELL-CTX-001
+→ define una sola vez identidad, autoridad, fronteras, invariantes, gates y evidencia
+→ no materializa código
+
+DELIV-PKG-025::<package_id>
+→ asigna implementation_unit_id y package propietario
+
+E5-GATE-008::<package_id> = PASS
+→ habilita la unidad
+
+SHELL-CTX-001::<implementation_unit_id>
+→ materializa una sola vez el módulo contextual interno de la unidad
+→ N package_id pueden consumirlo mediante lineage
+→ no duplica el módulo por aplicación ni por package consumidor
+```
+
+**Dependencia para desarrollar:** `SHELL-AUTH-005`.
+
+La futura instancia no inventará su `implementation_unit_id`: lo recibirá exclusivamente del ciclo `DELIV-PKG-025`/E5.
+
+La posición física aprobada permite materializar el módulo interno antes del resolver autoritativo. Por tanto, la instancia `SHELL-CTX-001::<implementation_unit_id>` deberá poder cerrar su estructura, validación contractual, invariantes y pruebas con fixtures contractuales sin fingir integración live con `AUTH-DB-033`. La integración real con el productor backend se certificará en las tareas físicas propietarias posteriores.
+
+---
+
+#### 3. Fuentes vinculantes preservadas
+
+| Fuente                    | Regla preservada                                                                                                                                         |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AUTH-CTX-001`            | `AccessContext@1.0.0` es el contrato real de contexto y no se sustituye por un shape local.                                                              |
+| `AUTH-CTX-003`            | `SimulationContext` permanece separado del contexto real.                                                                                                |
+| `AUTH-CTX-015`            | readiness, problemas estructurales, fuentes y razones contextuales conservan sus catálogos y semántica.                                                  |
+| `AUTH-CTX-025`            | `get_access_context(text) → jsonb` resuelve hechos; el caller no aporta actor, rol, territorio, turno, check-in o dispositivo efectivos.                 |
+| `AUTH-CTX-027`            | existe un solo SDK `@vento/os-context`; aplicaciones no reconstruyen contexto; cliente recibe solo proyecciones seguras.                                 |
+| `AUTH-CTX-028`            | la compatibilidad legacy proyecta desde canónico hacia legacy y nunca reconstruye `AccessContext` desde una fila legacy.                                 |
+| `AUTH-CTX-029`            | L0 request-scoped pertenece a `SHELL-AUTH-003`; L1/frescura pertenece a `SHELL-CTX-006`; caché no es fuente de verdad.                                   |
+| `SHELL-CON-007`           | tipos contextuales se centralizan en `@vento/contracts/authorization`; `EffectiveContext` no es canónico.                                                |
+| `SHELL-CON-008`           | `StructuralIssueCode`, `LaneAvailabilityReasonCode` y `LaneReasonCode` son vocabularios cerrados; `blocked_reasons: string[]` es legacy.                 |
+| `SHELL-AUTH-001`          | `@vento/os-context` es el único SDK runtime; conserva exactamente `/server`, `/client`, `/testing`, `/legacy`; no existe agregador runtime raíz estable. |
+| `SHELL-AUTH-002`          | transporte server y proyecciones seguras son adapters; el módulo contextual no absorbe esa responsabilidad.                                              |
+| `SHELL-AUTH-003`          | scope, correlación, L0 y write barrier request-scoped son propietarios de AUTH003.                                                                       |
+| `SHELL-AUTH-004`          | nuevos consumos legacy y autoridad local quedan congelados.                                                                                              |
+| `SHELL-AUTH-005`          | la eliminación física de consumidores locales y la migración multi-repositorio se ejecutan después, con paridad y rollback.                              |
+| `task-work-topology.json` | una materialización máxima por `implementation_unit_id`.                                                                                                 |
+
+No se reabre ninguna de estas decisiones.
+
+---
+
+#### 4. Modelo de autoridad en tres capas
+
+La frase “fuente canónica de contexto” se separa en tres responsabilidades para evitar una nueva ambigüedad:
+
+| Capa                | Autoridad                                        | Puede hacer                                                                                                | No puede hacer                                                                               |
+| ------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| contrato            | `@vento/contracts/authorization`                 | definir shapes, versiones, códigos, schemas y validadores                                                  | consultar datos, decidir hechos o permisos                                                   |
+| hechos contextuales | backend canónico / `AUTH-DB-033`                 | resolver principal, actor, identidad, empleo, rol, asignaciones, turno, check-in, territorio y dispositivo | delegar autoridad al caller o decidir permiso/recurso                                        |
+| consumo runtime     | módulo contextual interno de `@vento/os-context` | validar, preservar, componer y entregar contexto a componentes internos del SDK                            | reconstruir hechos, crear fallbacks empresariales o convertirse en evaluador de autorización |
+
+Por tanto:
+
+```text
+ÚNICO MÓDULO RUNTIME
+≠ ÚNICO PRODUCTOR DE DATOS
+```
+
+```text
+SDK CANÓNICO
+≠ FUENTE EMPRESARIAL
+```
+
+```text
+CONTRATO TIPADO
+≠ RESOLVER
+```
+
+---
+
+#### 5. Línea base física verificable
+
+El estado físico actual de `@vento/os-context` es transitorio:
+
+| Superficie                         | Estado observado                                                                        | Disposición contractual                                       |
+| ---------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `@vento/os-context@0.1.0`          | package privado, ESM, export raíz directo a source                                      | conservar identidad; no considerar estable                    |
+| export `.`                         | reexporta `types` y `client`                                                            | no forma parte de la superficie runtime estable               |
+| `EffectiveContext`                 | shape plano con strings abiertos, simulación, bypass, `can_operate` y `blocked_reasons` | `LEGACY_COMPATIBILITY`; no canónico                           |
+| `ContextSimulationInput`           | input local mezclado con el package de contexto real                                    | compatibilidad; simulación permanece contrato separado        |
+| `getEffectiveContext`              | llama `get_effective_context_v1` y hace cast                                            | legacy; no entrada del módulo canónico                        |
+| `hasEffectivePermission`           | llama `has_effective_permission_v1` y retorna booleano                                  | legacy; autorización pertenece al evaluador/adapters          |
+| README actual                      | prioriza dispositivo, simulación, ANIMA y bypass                                        | documentación transitoria; no autoridad normativa             |
+| módulo contextual canónico interno | no materializado                                                                        | futuro resultado de `SHELL-CTX-001::<implementation_unit_id>` |
+
+La presencia del package actual no demuestra que el módulo contextual canónico ya exista.
+
+---
+
+#### 6. Inventario de responsabilidades contextuales locales competidoras
+
+La auditoría y el estado remoto verificable identifican exactamente siete módulos de aplicación que hoy contienen resolución o autoridad contextual local directa:
+
+|    # | Repositorio                  | Superficie                            | Estado objetivo                                                                            |
+| ---: | ---------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------ |
+|    1 | `devVentoGroup/vento-viso`   | `src/lib/auth/operational-session.ts` | deja de resolver contexto efectivo localmente; consumidor del SDK                          |
+|    2 | `devVentoGroup/vento-nexo`   | `src/lib/auth/operational-session.ts` | deja de resolver contexto efectivo localmente; consumidor del SDK                          |
+|    3 | `devVentoGroup/vento-fogo`   | `src/lib/auth/operational-session.ts` | deja de resolver contexto efectivo localmente; consumidor del SDK                          |
+|    4 | `devVentoGroup/vento-origo`  | `src/lib/auth/operational-session.ts` | deja de resolver contexto efectivo localmente; consumidor del SDK                          |
+|    5 | `devVentoGroup/vento-pulso`  | `src/lib/auth/operational-session.ts` | deja de resolver contexto efectivo localmente; consumidor del SDK                          |
+|    6 | `devVentoGroup/vento-numera` | `src/lib/auth/operational-session.ts` | deja de resolver contexto efectivo localmente; consumidor del SDK                          |
+|    7 | `devVentoGroup/vento-nexo`   | `src/lib/auth/operational-context.ts` | deja de ser contexto operativo alternativo; consumidor/adaptación legacy durante migración |
+
+Las seis copias de `operational-session.ts` observadas comparten el mismo contenido físico y actualmente pueden aceptar `preferredSiteId`, `preferredAreaId`, usar `navigationRole`, resolver dispositivo/empleado por consultas locales y ejecutar checks de permiso. NEXO agrega además un `operational-context.ts` que consume `get_operational_context`, aplica role override local, modifica área/rol y utiliza `can_operate`.
+
+**Conciliación:** 7 módulos locales esperados, 7 clasificados, 0 sin disposición.
+
+Esta tarea no los elimina físicamente. Su migración y retiro como consumidores pertenece a `SHELL-AUTH-005`; `SHELL-CTX-001` elimina su condición de autoridad válida en la arquitectura objetivo.
+
+---
+
+#### 7. Decisión principal de consolidación
+
+Se define exactamente un módulo contextual interno dentro de la identidad existente:
+
+```text
+@vento/os-context
+└─ MÓDULO CONTEXTUAL INTERNO CANÓNICO
+```
+
+No se crea:
+
+```text
+@vento/operational-context
+@vento/context-core
+@vento/access-context
+@vento/runtime-context
+```
+
+ni otro package paralelo equivalente.
+
+La tarea tampoco añade un quinto subpath público. La superficie pública estable sigue siendo exactamente:
+
+```text
+@vento/os-context/server
+@vento/os-context/client
+@vento/os-context/testing
+@vento/os-context/legacy
+```
+
+El módulo contextual es una responsabilidad interna reutilizada por esas fronteras según su función, no un nuevo namespace público.
+
+---
+
+#### 8. Contrato de entrada del módulo
+
+La entrada canónica runtime se compone conceptualmente de:
+
+```text
+app_code validado y fijado por la frontera propietaria
++
+AccessContextV1 validado
+```
+
+No se crea un nuevo contrato serializado raíz para envolver ambos valores.
+
+Reglas:
+
+1. `app_code` permanece fuera de la raíz `AccessContext@1.0.0`;
+2. `app_code` debe ser un `AppCode` canónico;
+3. `AccessContextV1` debe superar el validador de `@vento/contracts/authorization`;
+4. contract family, contract version y schema version deben ser compatibles;
+5. el módulo no acepta un `EffectiveContext` como sustituto;
+6. el módulo no acepta una fila `OperationalContextRow` como sustituto;
+7. no acepta un objeto parcial completado con fallbacks locales;
+8. no acepta un cast TypeScript como prueba de validez;
+9. la asociación app/context no se reutiliza para otra aplicación;
+10. una entrada inválida falla cerrada y no produce contexto parcial.
+
+---
+
+#### 9. Inmutabilidad del snapshot contextual
+
+Una vez validado, el `AccessContextV1` se trata como snapshot inmutable.
+
+El módulo no podrá:
+
+- sustituir actor;
+- sustituir empleado;
+- cambiar rol base;
+- cambiar rol operativo;
+- completar sede o área;
+- insertar un turno;
+- insertar un check-in;
+- cambiar dispositivo;
+- eliminar un `StructuralIssue` para mejorar readiness;
+- convertir una ausencia en fallback;
+- mutar metadata de resolución para aparentar frescura.
+
+Toda nueva realidad empresarial exige una nueva resolución o una operación propietaria de caché/frescura, nunca mutar el snapshot recibido.
+
+---
+
+#### 10. Separación entre contexto, decisión y simulación
+
+El módulo contextual real no contiene ni produce autoridad de permiso.
+
+Queda prohibido exponer desde su núcleo:
+
+```text
+hasPermission
+canOperate
+isAllowed
+allow
+bypassApplied
+roleOverrideAsAuthority
+```
+
+como decisión empresarial.
+
+La separación queda:
+
+```text
+AccessContextV1
+→ hechos reales
+
+AuthorizationDecisionV1
+→ permiso + recurso + outcome
+
+SimulationContextV1
+→ hipótesis explícita separada
+```
+
+El módulo contextual real no mezcla un `SimulationContextV1` con `AccessContextV1` ni interpreta un role override como contexto real.
+
+---
+
+#### 11. Prohibición de reconstrucción local de hechos
+
+El módulo no consulta ni combina por sí mismo tablas empresariales para reconstruir:
+
+- principal;
+- actor;
+- identidad de dominio;
+- empleado;
+- rol base;
+- asignaciones;
+- cobertura;
+- turno;
+- check-in;
+- rol operativo;
+- sede operativa;
+- área operativa;
+- dispositivo.
+
+Esos hechos proceden del productor autoritativo cuando exista físicamente.
+
+También queda prohibido recuperar autoridad mediante:
+
+```text
+selected site
+preferred site
+primary site
+employee default site
+last used site
+preferred area
+navigation role
+cookie role override
+last actor
+```
+
+La presentación podrá conservar preferencias no autoritativas fuera del contexto canónico, pero nunca usarlas para completar `AccessContextV1`.
+
+---
+
+#### 12. Frontera con `SHELL-AUTH-001`
+
+`SHELL-AUTH-001` continúa siendo propietario de:
+
+- identidad del package;
+- subpaths públicos;
+- exports estables;
+- versionado;
+- dependencias;
+- compatibilidad;
+- transición `0.1.0 → 1.0.0`.
+
+`SHELL-CTX-001` no modifica ese contrato. Define únicamente qué responsabilidad contextual vive dentro de la identidad ya aprobada.
+
+Por tanto, una futura instancia CTX001 no podrá crear un package o subpath adicional para evitar las restricciones de AUTH001.
+
+---
+
+#### 13. Frontera con `SHELL-AUTH-002`
+
+`SHELL-AUTH-002` mantiene la propiedad del transporte y las fronteras públicas:
+
+```text
+resolveAccessContext
+evaluateAuthorization
+requireAuthorization
+getSafeContextProjection
+getSafeDecisionProjection
+parseSafeContextProjection
+parseSafeDecisionProjection
+```
+
+El módulo CTX001:
+
+- no invoca Supabase como adapter público;
+- no define RPC transport;
+- no traduce errores de red como contrato empresarial;
+- no duplica `SafeContextProjectionV1`;
+- recibe o entrega contexto a las capas internas autorizadas.
+
+La separación permite materializar CTX001 antes que AUTH002 sin crear una dependencia circular.
+
+---
+
+#### 14. Frontera con `SHELL-AUTH-003`
+
+`SHELL-AUTH-003` mantiene:
+
+- `createAuthorizationScope`;
+- lifetime request-scoped;
+- L0 de contexto;
+- L0 de decisiones;
+- promise dedup;
+- correlación;
+- write barrier;
+- registro de consumidores.
+
+CTX001 no crea un singleton, `AsyncLocalStorage` global de autoridad, Map cross-request ni otro scope paralelo.
+
+El módulo debe ser utilizable desde el scope sin poseer el lifetime del scope.
+
+---
+
+#### 15. Frontera con `SHELL-CTX-002`
+
+`SHELL-CTX-002` queda exclusivamente reservada para el consumo canónico de:
+
+- turno activo;
+- check-in activo;
+- relación entre ambos;
+- disponibilidad asociada a esos nodos conforme al contrato.
+
+CTX001 preserva los nodos de `AccessContextV1`, pero no implementa sus selectores especializados ni redefine sus reglas temporales.
+
+---
+
+#### 16. Frontera con `SHELL-CTX-003`
+
+`SHELL-CTX-003` queda reservada para proyecciones seguras de:
+
+- sede operativa efectiva;
+- área operativa efectiva;
+- relaciones seguras necesarias para presentación/consumo.
+
+CTX001 prohíbe completar territorio desde el caller, pero no materializa todavía esas proyecciones.
+
+---
+
+#### 17. Frontera con `SHELL-CTX-004`
+
+`SHELL-CTX-004` queda reservada para readiness contextual sin booleanos de autorización.
+
+CTX001 conserva `lane_readiness` como parte del contrato recibido y prohíbe traducirlo a `ALLOW`, pero no implementa todavía reglas de lectura o proyección especializada de readiness.
+
+En particular:
+
+```text
+READY
+≠ ALLOW
+```
+
+permanece invariante obligatorio.
+
+---
+
+#### 18. Frontera con `SHELL-CTX-005`
+
+`SHELL-CTX-005` queda reservada para razones seguras de bloqueo contextual.
+
+CTX001 conserva los namespaces contractuales y rechaza strings libres como autoridad, pero no implementa todavía el mapping seguro hacia presentación.
+
+`blocked_reasons: string[]` legacy no se promueve a `LaneReasonCode[]` por coincidencia textual.
+
+---
+
+#### 19. Frontera con `SHELL-CTX-006`
+
+`SHELL-CTX-006` queda reservada para:
+
+- L1 compartida;
+- `ContextFreshnessToken@1.0.0`;
+- TTL y límites temporales;
+- single-flight cross-request;
+- invalidación por eventos;
+- modos `OFF`, `REQUEST_ONLY`, `SHADOW_SHARED`, `VALIDATED_SHARED`;
+- rollback de caché.
+
+CTX001 no conserva contexto entre solicitudes y no interpreta TTL como frescura.
+
+La ausencia de CTX006 no autoriza una caché ad hoc dentro del módulo base.
+
+---
+
+#### 20. Frontera con `AUTH-DB-033`
+
+`AUTH-DB-033` es el productor autoritativo físico de `AccessContext@1.0.0`.
+
+La relación futura es:
+
+```text
+AUTH-DB-033
+→ produce contexto autoritativo
+
+SHELL-AUTH-002
+→ transporta y valida la respuesta externa
+
+MÓDULO CTX001
+→ recibe el contexto ya sujeto al contrato
+→ conserva semántica e invariantes
+→ lo pone a disposición de las capacidades contextuales internas
+```
+
+CTX001 no adelanta SQL, schema, `SECURITY DEFINER`, grants, resolvers privados, fingerprints de fuentes ni proyección backend.
+
+---
+
+#### 21. Tratamiento de la superficie `EffectiveContext`
+
+`EffectiveContext` queda clasificado exclusivamente como:
+
+```text
+LEGACY_COMPATIBILITY
+```
+
+No puede:
+
+- ser alias de `AccessContextV1`;
+- ser tipo base del módulo contextual;
+- ser input de CTX002..006;
+- conservar `bypass_applied` como autoridad;
+- conservar `can_operate` como decisión;
+- mezclar simulación y contexto real;
+- convertir `metadata` genérica en sustituto de campos contractuales.
+
+La futura compatibilidad, cuando exista, sigue la dirección:
+
+```text
+AccessContextV1 válido
+→ proyección legacy controlada
+```
+
+Nunca:
+
+```text
+EffectiveContext
+→ reconstruir AccessContextV1
+```
+
+---
+
+#### 22. Tratamiento de los seis `operational-session.ts`
+
+Los seis módulos locales observados quedan clasificados como:
+
+```text
+LEGACY_CONTEXT_AUTHORITY
+```
+
+Responsabilidades que deberán abandonar como autoridad durante la migración:
+
+- resolver dispositivo compartido mediante consultas locales;
+- resolver empleado mediante consultas locales;
+- escoger sede por `preferredSiteId` o asignación primaria;
+- aceptar `preferredAreaId` como área efectiva;
+- usar `navigationRole` como rol operativo;
+- decidir app access por código local;
+- consultar permisos desde el mismo helper contextual;
+- reducir errores a booleanos.
+
+Después del cutover, podrán subsistir funciones de presentación no autoritativas solo si no reconstruyen contexto, rol, territorio o permisos y están separadas de la frontera de seguridad.
+
+La migración física corresponde a `SHELL-AUTH-005`, no a este marcador.
+
+---
+
+#### 23. Tratamiento de NEXO `operational-context.ts`
+
+La superficie NEXO queda clasificada como:
+
+```text
+LEGACY_PARALLEL_OPERATIONAL_CONTEXT
+```
+
+Quedan expresamente no canónicos:
+
+- `OperationalContextRow` como contexto alternativo;
+- `get_operational_context` como fuente final;
+- `has_operational_permission` como evaluador final;
+- `can_operate` como guard de acción;
+- role override por cookie;
+- reemplazo local de rol/área;
+- `permissionCode.split(".")[0]` como fuente de aplicación;
+- mensajes derivados de `blocked_reasons` libres como contrato.
+
+La compatibilidad temporal seguirá `AUTH-CTX-028` y `/legacy`; la migración del consumidor sigue `SHELL-AUTH-005`.
+
+---
+
+#### 24. Tratamiento de datos de presentación
+
+La consolidación no convierte todo dato actualmente presente en helpers locales en contexto canónico.
+
+Pueden permanecer fuera del módulo, bajo propiedad de presentación o dominio, datos como:
+
+- `displayName`;
+- labels visuales de dispositivo;
+- preferencias de filtro;
+- selección de vista;
+- texto de ayuda no contractual.
+
+Regla:
+
+```text
+DATO DE PRESENTACIÓN
+PUEDE SER LOCAL
+
+HECHO QUE AFECTA AUTORIZACIÓN O READINESS
+DEBE PROCEDER DEL CONTEXTO CANÓNICO
+```
+
+Esto evita trasladar innecesariamente estado de UI al SDK y, al mismo tiempo, impide que una preferencia local se convierta en autoridad.
+
+---
+
+#### 25. Manejo fail-closed
+
+Una entrada externa o interna incompatible no se corrige silenciosamente.
+
+| Condición                              | Resultado del módulo                                              |
+| -------------------------------------- | ----------------------------------------------------------------- |
+| contrato o schema no soportado         | rechazo contractual                                               |
+| `AccessContextV1` inválido             | rechazo; no objeto parcial                                        |
+| `app_code` inválido                    | rechazo                                                           |
+| app/context incompatibles              | rechazo                                                           |
+| `StructuralIssueCode` desconocido      | aplicar contrato de incompatibilidad estructural; no string libre |
+| metadata estructural incompatible      | fail closed según contrato                                        |
+| `LaneReasonCode` desconocido           | contexto no conforme                                              |
+| `EffectiveContext` usado como canónico | rechazo de arquitectura                                           |
+| fila legacy usada para reconstrucción  | rechazo de arquitectura                                           |
+| error inesperado                       | fallo técnico seguro; nunca contexto permisivo                    |
+
+No se define aquí el copy de UI ni la traducción de transporte; pertenecen a las tareas propietarias correspondientes.
+
+---
+
+#### 26. Ausencia de estado global mutable
+
+El módulo contextual base será conceptualmente puro respecto del lifetime de la solicitud.
+
+Quedan prohibidos:
+
+- último contexto global;
+- último actor global;
+- última sede o área;
+- último rol;
+- singleton mutable compartido entre requests;
+- cache keyed solo por `user_id`;
+- fallback a una entrada anterior ante error;
+- estado persistido en navegador como autoridad.
+
+El lifetime y las capas de cache conservan sus propietarios explícitos AUTH003/CTX006.
+
+---
+
+#### 27. Snapshot contractual
+
+Se define el snapshot documental:
+
+```json
+{"authorization_decision_owned_here":false,"canonical_context_contract":"AccessContext@1.0.0","canonical_contract_source":"@vento/contracts/authorization","competing_application_context_modules":7,"context_authority_model":"CONTRACTS_BACKEND_SDK","cross_request_cache_owned_here":false,"legacy_effective_context_is_canonical":false,"module_location":"@vento/os-context","new_package_count":0,"new_public_subpath_count":0,"physical_state":"NOT_IMPLEMENTED","request_scope_cache_owned_here":false,"schema":"vento.os-context-context-module@1","simulation_owned_here":false,"snapshot_id":"SHELL-CTX-CONTEXT-MODULE-001","transitional_shared_context_surface_count":1}
+```
+
+Huella normativa:
+
+`sha256:cc1fb34b7b526847648e61d64b06a25d26f9fbf0c7406b236035ea3e299469ab`
+
+La serialización normativa usa JSON UTF-8 en una sola línea, claves ordenadas lexicográficamente y booleanos/números JSON canónicos.
+
+La misma identidad de snapshot no puede reutilizarse para otro package, otro `AccessContext`, un subpath público adicional o una autoridad distinta.
+
+---
+
+#### 28. Contrato de entrada de cada futura instancia
+
+Toda `SHELL-CTX-001::<implementation_unit_id>` deberá registrar como mínimo:
+
+| Campo                            | Obligación                                                                         |
+| -------------------------------- | ---------------------------------------------------------------------------------- |
+| `implementation_unit_id`         | unidad exacta asignada por `DELIV-PKG-025`                                         |
+| `owner_package_id`               | package propietario con gate E5 aprobado                                           |
+| `consumer_package_ids`           | consumidores vinculados mediante lineage                                           |
+| baseline                         | commit anterior a la materialización                                               |
+| result commit                    | commit exacto de resultado                                                         |
+| SDK version                      | versión exacta de `@vento/os-context`                                              |
+| contracts version                | versión exacta de `@vento/contracts`                                               |
+| context contract                 | `AccessContext@1.0.0` y schema esperados                                           |
+| module snapshot                  | `SHELL-CTX-CONTEXT-MODULE-001` o revisión aprobada                                 |
+| public surface check             | evidencia de cero package/subpath público adicional                                |
+| authority map                    | contratos → backend → módulo → consumidores                                        |
+| competing surface reconciliation | estado de las siete autoridades locales y de la superficie transitoria del package |
+| dependency graph                 | imports/runtime/dev efectivos del módulo                                           |
+| tests                            | resultados atribuibles al mismo commit y versiones                                 |
+| artifact digest                  | huella del artefacto materializado                                                 |
+| rollback                         | combinación anterior soportada y ensayo                                            |
+| blockers                         | lista cerrada con owner y condición de salida                                      |
+
+Un campo obligatorio ausente deja la instancia `BLOCKED`.
+
+---
+
+#### 29. Unicidad y lineage
+
+```text
+1 implementation_unit_id
+→ máximo 1 SHELL-CTX-001::<implementation_unit_id>
+→ máximo 1 módulo contextual interno propietario
+→ 0 packages contextuales paralelos
+→ 0 subpaths públicos nuevos por esta tarea
+→ N package_id consumidores mediante lineage
+```
+
+Los repositorios consumidores no copian el módulo para evitar una dependencia publicada.
+
+Evidencia de otra unidad, versión, snapshot o commit se considera no atribuible y no certifica la instancia.
+
+---
+
+#### 30. Doce gates de futura materialización
+
+| Gate                        | PASS                                                                                                | Bloqueo                                                           |
+| --------------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| 1. `IDENTITY`               | unidad, owner package, versiones y commits inequívocos                                              | identidad incompleta o duplicada                                  |
+| 2. `PACKAGE_BOUNDARY`       | módulo dentro de `@vento/os-context`; 0 package y 0 subpath público nuevo                           | núcleo paralelo o drift de exports                                |
+| 3. `CONTRACT_AUTHORITY`     | tipos/códigos/schemas solo desde `@vento/contracts/authorization`                                   | shape, enum, catálogo o cast como autoridad local                 |
+| 4. `CONTEXT_AUTHORITY`      | hechos externos al módulo y productor backend preservado                                            | resolver empresarial duplicado dentro del SDK                     |
+| 5. `CANONICAL_INPUT`        | app fijada + `AccessContextV1` validado e inmutable                                                 | `EffectiveContext`, fila legacy, objeto parcial o fallback        |
+| 6. `SEPARATION`             | contexto real separado de decisión y simulación                                                     | `can_operate`, bypass, role override o decisión dentro del núcleo |
+| 7. `LOCAL_COMPETITORS`      | las siete superficies tienen disposición explícita y ninguna se presenta como autoridad objetivo    | helper local sin clasificación o nueva autoridad competidora      |
+| 8. `RESPONSIBILITY_HANDOFF` | CTX002..006, AUTH002/003 y DB033 conservan fronteras exactas                                        | absorción silenciosa de otra tarea                                |
+| 9. `FAIL_CLOSED`            | contrato/versiones/códigos inválidos se rechazan sin reconstrucción permisiva                       | coerción, fallback o contexto parcial                             |
+| 10. `TEST_INTEGRATION`      | fixtures contractuales y composición interna demuestran invariantes sin fingir backend live         | test basado en legacy o evidencia de otra versión                 |
+| 11. `LINEAGE_COMPATIBILITY` | consumidores de la unidad, snapshot, digest y compatibilidad atribuibles                            | evidencia stale/ajena o módulo duplicado                          |
+| 12. `ROLLBACK`              | regreso reproducible a combinación soportada sin reinstalar autoridad local como arquitectura final | rollback reintroduce núcleo competidor o bypass                   |
+
+Todos los gates aplicables deberán estar `PASS` para certificar una futura instancia.
+
+---
+
+#### 31. Perfil de pruebas concretado
+
+El perfil previsto por la tarea queda materializado así:
+
+| Perfil                | Cobertura mínima                                                                                                                                    |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| contrato contextual   | validación de `AccessContextV1`, versión/schema, catálogos, app binding, inmutabilidad y rechazo de `EffectiveContext`/fila legacy                  |
+| unitaria              | ausencia de fallbacks, separación contexto-decisión-simulación, no mutación y fail-closed                                                           |
+| integración           | composición interna con contratos y fixtures de `/testing`, sin dependencia de renderer y sin fingir `AUTH-DB-033` live antes de su materialización |
+| frescura/invalidación | demostrar que CTX001 no mantiene L0/L1 propios, no conserva estado cross-request y respeta los handoffs a AUTH003/CTX006                            |
+| seguridad             | caller no puede aportar actor/rol/sede/área/turno/check-in efectivos ni usar role override/bypass para modificar contexto                           |
+| regresión             | impedir nuevos tipos/contextos paralelos, reintroducción de `can_operate`, strings libres o autoridad local dentro del núcleo                       |
+| compatibilidad        | package, contracts version, snapshot, imports y consumidores de la unidad                                                                           |
+| lineage               | unidad, package, commit, versiones, snapshot y digest                                                                                               |
+| rollback              | restauración de combinación soportada sin convertir legacy en arquitectura final                                                                    |
+
+La prueba de integración live con el resolver SQL no se declara `PASS` aquí antes de `AUTH-DB-033`; se ejecutará en las tareas físicas que posean esa frontera.
+
+---
+
+#### 32. Escenarios mínimos de futura instancia
+
+Como mínimo se verificarán:
+
+1. `AccessContextV1` válido + app compatible → aceptación sin mutación;
+2. versión contractual desconocida → rechazo;
+3. schema desconocido → rechazo;
+4. objeto parcial → rechazo;
+5. `EffectiveContext` legacy → no aceptado como contexto canónico;
+6. `OperationalContextRow` → no aceptada como contexto canónico;
+7. `blocked_reasons` libre → no promovido a `LaneReasonCode`;
+8. `can_operate = true` legacy → no produce decisión;
+9. role override → no modifica contexto real;
+10. `preferredSiteId` → no completa sede efectiva;
+11. `preferredAreaId` → no completa área efectiva;
+12. `navigationRole` → no se transforma en rol operativo;
+13. simulación → no se mezcla con contexto real;
+14. mismo snapshot de entrada → salida/lecturas deterministas;
+15. módulo no persiste último actor/contexto entre solicitudes;
+16. fallo de validación → error seguro y cero contexto parcial;
+17. imports del módulo → sin React/UI/renderer y sin catálogo contextual local;
+18. exports públicos del package → sin quinto subpath introducido por CTX001;
+19. dos packages consumidores de una misma unidad → un solo módulo materializado mediante lineage;
+20. rollback → vuelve a combinación soportada sin activar autoridad legacy nueva.
+
+---
+
+#### 33. Evidencia requerida por futura instancia
+
+| Clase                | Contenido mínimo                                                                          |
+| -------------------- | ----------------------------------------------------------------------------------------- |
+| `IDENTITY`           | implementation unit, owner package, consumers, baseline/result commit                     |
+| `CONTRACTS`          | versiones exactas, schemas y validators consumidos                                        |
+| `PACKAGE_BOUNDARY`   | package, exports y ausencia de nuevo núcleo/subpath                                       |
+| `AUTHORITY_MAP`      | prueba de que contratos, productor y módulo conservan responsabilidades separadas         |
+| `CANONICAL_INPUT`    | fixtures válidos/inválidos y rechazo de legacy                                            |
+| `COMPETING_SURFACES` | reconciliación de las siete superficies locales y de la superficie transitoria compartida |
+| `SEPARATION`         | ausencia de decisión, simulación, bypass y fallbacks dentro del módulo real               |
+| `FAIL_CLOSED`        | pruebas negativas y errores seguros                                                       |
+| `COMPATIBILITY`      | combinación package/contracts/consumer/runtime aplicable                                  |
+| `ARTIFACT_INTEGRITY` | snapshot, versión, commit y digest                                                        |
+| `ROLLBACK`           | combinación previa, procedimiento y ensayo                                                |
+| `CERTIFICATION`      | doce gates y estado agregado                                                              |
+
+No se utilizará una captura, build ajeno o evidencia de otro commit como sustituto.
+
+---
+
+#### 34. Reconciliación de responsabilidades y destinos
+
+| Responsabilidad                                 | Propietario exacto                                      |
+| ----------------------------------------------- | ------------------------------------------------------- |
+| tipos, códigos, schemas y validación estática   | `@vento/contracts/authorization` / `SHELL-CON-007..008` |
+| identidad/package/exports/versionado            | `SHELL-AUTH-001`                                        |
+| módulo contextual interno único                 | `SHELL-CTX-001`                                         |
+| transporte server/client y proyecciones seguras | `SHELL-AUTH-002`                                        |
+| request scope, L0, correlación y write barrier  | `SHELL-AUTH-003`                                        |
+| turno y check-in consumidos canónicamente       | `SHELL-CTX-002`                                         |
+| sede/área seguras                               | `SHELL-CTX-003`                                         |
+| readiness contextual                            | `SHELL-CTX-004`                                         |
+| razones seguras contextuales                    | `SHELL-CTX-005`                                         |
+| L1, single-flight cross-request y frescura      | `SHELL-CTX-006`                                         |
+| resolver físico de contexto                     | `AUTH-DB-033`                                           |
+| token transaccional de frescura                 | `AUTH-DB-035`                                           |
+| evaluador de autorización                       | `AUTH-DB-034`                                           |
+| freeze de autoridad/legacy nuevo                | `SHELL-AUTH-004`                                        |
+| migración de consumidores locales               | `SHELL-AUTH-005`                                        |
+| retiro de objetos/RPC legacy                    | `AUTH-DB-030`                                           |
+| certificación final                             | `AUTH-DB-031`                                           |
+
+No queda una responsabilidad detectada sin propietario documental.
+
+---
+
+#### 35. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** `SHELL-CTX-001` consolida como módulo runtime decisiones ya protegidas por requisitos vigentes y no introduce un nuevo shape serializado, código de razón, API pública, regla de autorización, caché o productor de hechos. Crear requisitos adicionales duplicaría coberturas ya existentes.
+
+La futura materialización deberá aportar evidencia, según aplique, contra los requisitos vigentes siguientes sin modificarlos:
+
+- `TREQ-SHELL-002` — responsabilidades compartidas y prohibición de copias divergentes;
+- `TREQ-SHELL-043` — tipos contextuales canónicos y separación frente a shapes legacy;
+- `TREQ-SHELL-044` — códigos contextuales cerrados y validación;
+- `TREQ-SHELL-061` — SDK único, fronteras públicas y prohibición de núcleos paralelos;
+- `TREQ-SHELL-062` — autoridad contractual y prohibición de shapes/casts paralelos;
+- `TREQ-SHELL-063` — separación de fronteras, app fijada y fail-closed;
+- `TREQ-SHELL-066` — unicidad por `implementation_unit_id`, lineage, evidencia y rollback;
+- `TREQ-SHELL-076` y `TREQ-SHELL-078` — L0 request-scoped, aislamiento y write barrier sin apropiación por CTX001;
+- `TREQ-SHELL-084` y `TREQ-SHELL-086` — freeze de APIs/contexto legacy y autoridad local;
+- `TREQ-SHELL-092` — eliminación de autoridad local/legacy en consumidores después del cutover.
+
+El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 36. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                      |
+| --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador es documental y no existe checkout completo actualizado en esta ejecución para correr el build global del plan.                                                                                    |
+| LOCAL     | PASS           | Artefacto aislado verificado contra título, cabecera, una sola tarea, secciones obligatorias, continuidad, ausencia de instrucciones de entrega internas, snapshot determinista y referencias TREQ existentes. |
+| REMOTA    | NOT_APPLICABLE | La tarea no autoriza escritura, despliegue ni modificación remota durante el marcador global.                                                                                                                  |
+| OPERATIVA | NOT_APPLICABLE | No existe ejecución runtime, tráfico, consumidor migrado ni backend materializado por esta tarea documental.                                                                                                   |
+| FÍSICA    | NOT_APPLICABLE | Se autorizan cero cambios de código, package, SQL, migraciones o Supabase en el marcador global.                                                                                                               |
+
+---
+
+#### 37. Puerta de cierre del marcador global
+
+El marcador global queda documentalmente cerrado cuando:
+
+1. `@vento/os-context` queda confirmado como única identidad runtime para el módulo contextual;
+2. no se crea package ni subpath público adicional;
+3. `@vento/contracts/authorization` conserva la autoridad contractual;
+4. `AUTH-DB-033` conserva la autoridad sobre los hechos contextuales;
+5. CTX001 se limita a validar, preservar y componer contexto;
+6. `AccessContext@1.0.0` permanece sin cambios;
+7. `EffectiveContext` y `OperationalContextRow` quedan fuera de la entrada canónica;
+8. se clasifican 7/7 módulos contextuales locales competidores;
+9. las seis copias de `operational-session.ts` pierden autoridad en el diseño objetivo;
+10. NEXO `operational-context.ts` queda como legacy paralelo no canónico;
+11. no se aceptan selected/preferred site/area, navigation role o role override como hechos efectivos;
+12. contexto, autorización y simulación permanecen separados;
+13. AUTH002, AUTH003 y CTX002..006 conservan sus fronteras;
+14. no se crea L0 o L1 propio;
+15. se define snapshot reproducible;
+16. se definen contrato de futura instancia, unicidad, gates, pruebas, evidencia y rollback;
+17. se justifican cero nuevos TREQ por cobertura existente;
+18. se mantienen 0 cambios físicos y 0 cambios Supabase.
+
+---
+
+#### 38. Puerta de cierre de cada futura instancia
+
+`SHELL-CTX-001::<implementation_unit_id>` podrá quedar `PASS` únicamente cuando:
+
+- unidad y owner package estén habilitados por E5;
+- el módulo exista una sola vez dentro de `@vento/os-context`;
+- no exista package contextual paralelo;
+- no se añada un subpath público no aprobado;
+- contracts version/schema sean exactos y validados;
+- no exista tipo `AccessContext` alternativo;
+- no exista cast de legacy como contexto canónico;
+- no exista resolución empresarial duplicada dentro del módulo;
+- no existan fallbacks de actor/rol/site/area/turno/check-in;
+- contexto real, simulación y decisión permanezcan separados;
+- el módulo no mantenga estado autoritativo cross-request;
+- las siete superficies locales estén reconciliadas con destino explícito sin presentarlas como objetivo;
+- fixtures y pruebas contractuales/unitarias/integración/seguridad/regresión aplicables estén en PASS;
+- integración live con backend no se declare ejecutada antes de su tarea física propietaria;
+- snapshot, versiones, commits y digest coincidan;
+- lineage sea único;
+- rollback haya sido ensayado;
+- la evidencia sea atribuible a la misma combinación.
+
+---
+
+#### 39. Criterios de aceptación
+
+- [x] `SHELL-AUTH-005` se conserva como precedencia inmediata aprobada;
+- [x] `SHELL-CTX-002` permanece únicamente reservada;
+- [x] la tarea usa `PER_IMPLEMENTATION_UNIT`;
+- [x] se separa contrato global de materialización física;
+- [x] se conserva un único package `@vento/os-context`;
+- [x] se crean cero packages contextuales paralelos;
+- [x] se crean cero subpaths públicos adicionales;
+- [x] se define un único módulo contextual interno;
+- [x] se conserva `@vento/contracts/authorization` como autoridad de contrato;
+- [x] se conserva `AUTH-DB-033` como productor autoritativo de hechos;
+- [x] se conserva `AccessContext@1.0.0` sin cambios;
+- [x] se prohíbe `EffectiveContext` como entrada canónica;
+- [x] se prohíbe `OperationalContextRow` como entrada canónica;
+- [x] se prohíben objetos parciales y casts como validación;
+- [x] se preserva inmutabilidad del snapshot;
+- [x] se separan contexto, decisión y simulación;
+- [x] se prohíben `can_operate`, bypass y role override como autoridad del núcleo;
+- [x] se prohíbe reconstruir hechos empresariales localmente;
+- [x] se clasifican 7/7 módulos locales competidores;
+- [x] las seis copias de `operational-session.ts` tienen disposición explícita;
+- [x] NEXO `operational-context.ts` tiene disposición explícita;
+- [x] se separan datos de presentación de hechos autoritativos;
+- [x] AUTH002 conserva transporte/proyecciones;
+- [x] AUTH003 conserva L0/scope/write barrier;
+- [x] CTX002 conserva turno/check-in;
+- [x] CTX003 conserva sede/área seguras;
+- [x] CTX004 conserva readiness;
+- [x] CTX005 conserva razones seguras;
+- [x] CTX006 conserva L1/frescura;
+- [x] se define fail-closed;
+- [x] se define snapshot y huella determinista;
+- [x] se definen doce gates;
+- [x] se concreta el perfil de pruebas indicado por el iniciador;
+- [x] se reutilizan requisitos TREQ vigentes y se crean cero duplicados;
+- [x] se declaran 0 cambios físicos y 0 cambios Supabase;
+- [x] no se desarrolla `SHELL-CTX-002`.
+
+---
+
+#### 40. Límites
+
+Esta tarea no:
+
+- modifica `packages/os-context`;
+- crea archivos TypeScript;
+- crea un package nuevo;
+- crea un nuevo subpath público;
+- publica `@vento/os-context`;
+- modifica manifests o lockfiles;
+- modifica los seis `operational-session.ts`;
+- modifica NEXO `operational-context.ts`;
+- migra consumidores;
+- implementa `resolveAccessContext`;
+- implementa `get_access_context`;
+- implementa `evaluate_authorization`;
+- implementa turno o check-in;
+- implementa proyecciones de sede o área;
+- implementa readiness;
+- implementa razones seguras;
+- implementa L0 o L1;
+- implementa `ContextFreshnessToken`;
+- mezcla simulación con contexto real;
+- crea SQL, RPC, RLS, migraciones, triggers, Storage, Realtime o Edge Functions;
+- ejecuta Supabase;
+- declara integración live con backend;
+- ejecuta `SHELL-CTX-001::<implementation_unit_id>`;
+- avanza ni desarrolla la tarea siguiente.
+
+---
+
+#### 41. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CTX-001 — Consolidar el módulo de contexto dentro de @vento/os-context`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CTX-002 — Implementar consumo canónico de turno y check-in`
+
+
 ### [ ] SHELL-CTX-002 — Implementar consumo canónico de turno y check-in
 ### [ ] SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas
 ### [ ] SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización
