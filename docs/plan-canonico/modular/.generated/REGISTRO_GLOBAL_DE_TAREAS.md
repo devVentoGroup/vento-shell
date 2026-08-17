@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **960** |
+| Aprobadas | **961** |
 | En propuesta | **0** |
-| No iniciadas | **634** |
+| No iniciadas | **633** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **60.23% (960/1594)** |
+| Porcentaje de completamiento | **60.29% (961/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CI-001` — Crear pruebas de paquetes compartidos | ✅ APROBADA |
-| Tarea actual | `SHELL-CI-002` — Crear build independiente por paquete | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CI-003` — Crear releases versionados | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CI-002` — Crear build independiente por paquete | ✅ APROBADA |
+| Tarea actual | `SHELL-CI-003` — Crear releases versionados | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CI-004` — Crear changelog automático | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1285,7 +1285,7 @@
 | ✅ APROBADA | `AUTH-ERR-019` | Diferenciar error técnico y denegación | `bloques/S_MENSAJES_BLOQUEO/03_CONFIGURACION_ERRORES_Y_DISTRIBUCION.md` |
 | ✅ APROBADA | `AUTH-ERR-020` | Compartir mensajes desde vento-shell | `bloques/S_MENSAJES_BLOQUEO/03_CONFIGURACION_ERRORES_Y_DISTRIBUCION.md` |
 | ✅ APROBADA | `SHELL-CI-001` | Crear pruebas de paquetes compartidos | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |
-| ⬜ NO INICIADA | `SHELL-CI-002` | Crear build independiente por paquete | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |
+| ✅ APROBADA | `SHELL-CI-002` | Crear build independiente por paquete | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |
 | ⬜ NO INICIADA | `SHELL-CI-003` | Crear releases versionados | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |
 | ⬜ NO INICIADA | `SHELL-CI-004` | Crear changelog automático | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |
 | ⬜ NO INICIADA | `SHELL-CI-005` | Crear matriz de compatibilidad | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |

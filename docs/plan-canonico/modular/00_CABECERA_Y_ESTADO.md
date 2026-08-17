@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **960** |
+| Tareas aprobadas | **961** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **634** |
+| Tareas no iniciadas | **633** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **60.23% (960/1594)** |
+| Porcentaje de completamiento | **60.29% (961/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-CI-001 — Crear pruebas de paquetes compartidos** |
-| Tarea actual | **SHELL-CI-002 — Crear build independiente por paquete** |
+| Última tarea aprobada | **SHELL-CI-002 — Crear build independiente por paquete** |
+| Tarea actual | **SHELL-CI-003 — Crear releases versionados** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CI-003 — Crear releases versionados** |
+| Siguiente tarea | **SHELL-CI-004 — Crear changelog automático** |
 | Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
-| Progreso del bloque | **BLOQUE T: 1 de 24 aprobadas; SHELL-CI-002 pendiente** |
+| Progreso del bloque | **BLOQUE T: 2 de 24 aprobadas; SHELL-CI-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-CI-001` — Crear pruebas de paquetes compartidos |
-| Tarea actual | `SHELL-CI-002` — Crear build independiente por paquete — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CI-003` — Crear releases versionados |
+| Última aprobada | `SHELL-CI-002` — Crear build independiente por paquete |
+| Tarea actual | `SHELL-CI-003` — Crear releases versionados — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CI-004` — Crear changelog automático |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE T: 1 DE 24 APROBADAS — ACTUAL SHELL-CI-002** |
+| CONTINUIDAD ACTIVA | **BLOQUE T: 2 DE 24 APROBADAS — ACTUAL SHELL-CI-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-CI-001 — Crear pruebas de paquetes compartidos
-        ↓
-TAREA ACTUAL
 SHELL-CI-002 — Crear build independiente por paquete
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-CI-003 — Crear releases versionados
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CI-004 — Crear changelog automático
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE T — 1 de 24 tareas aprobadas
+BLOQUE T — 2 de 24 tareas aprobadas
 ```

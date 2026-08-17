@@ -698,7 +698,709 @@ Esta tarea no:
 `SHELL-CI-002 — Crear build independiente por paquete`
 
 
-### [ ] SHELL-CI-002 — Crear build independiente por paquete
+### ✅ SHELL-CI-002 — Crear build independiente por paquete
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CI-001 — Crear pruebas de paquetes compartidos
+**Tarea siguiente:** SHELL-CI-003 — Crear releases versionados
+**Tipo de tarea:** Habilitador global único — contrato documental de build independiente y artefactos publicables de packages compartidos
+**Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada el habilitador global que gobernará el **build independiente de cada package compartido de Vento OS**, de modo que cada familia pueda producir desde un snapshot exacto un artefacto npm instalable, verificable y reproducible sin depender del build de una aplicación consumidora ni del build de la aplicación raíz de `vento-shell`.
+
+La regla vinculante queda fijada así:
+
+```text
+PACKAGE GOBERNADO
++ SNAPSHOT EXACTO
++ TOOLCHAIN IDENTIFICADO
++ DEPENDENCIAS RESUELTAS
++ BUILD LIMPIO Y ACOTADO AL PACKAGE
++ EXPORTS Y DECLARATIONS RESOLUBLES
++ ARTEFACTO EMPAQUETABLE
++ REPRODUCIBILIDAD DEMOSTRADA
+= BUILD DE PACKAGE ELEGIBLE
+```
+
+Y, de forma fail-closed:
+
+```text
+FUENTE TYPESCRIPT EXPUESTA COMO ARTEFACTO FINAL
+O OUTPUT STALE
+O EXPORT ROTO
+O DECLARATION AUSENTE
+O DEPENDENCIA LOCAL NO RESUELTA
+O BUILD NO REPRODUCIBLE
+≠ PASS
+```
+
+Esta tarea no ejecuta todavía la instancia física global. Define el contrato que `SHELL-CI-002::GLOBAL` deberá materializar una sola vez y que todos los packages reutilizarán sin duplicar el habilitador.
+
+#### 2. Resultado canónico
+
+`SHELL-CI-002` establece un único contrato transversal para:
+
+1. identificar el package y el snapshot exactos que se construyen;
+2. ejecutar un build limpio y dirigido a un solo package;
+3. impedir que el build del package dependa del build de Next.js u otra aplicación consumidora;
+4. resolver dependencias internas declaradas sin introducir dependencias implícitas;
+5. producir runtime, declarations y assets únicamente cuando formen parte de la superficie pública aprobada;
+6. comprobar que `exports`, `main`, `types` y subpaths declarados resuelven dentro del artefacto construido;
+7. impedir que una release estable apunte directamente a fuente TypeScript no construida;
+8. comprobar que el artefacto puede empaquetarse como package npm sin referencias locales inválidas;
+9. capturar identidad, contenido e integridad del candidato de build;
+10. demostrar reproducibilidad bajo el mismo snapshot y toolchain;
+11. ejecutar contract checks sobre el artefacto construido sin absorber las pruebas funcionales propias de CI001;
+12. producir evidencia consumible por CI003 y CI005 sin declarar por sí solo una release ni una combinación compatible;
+13. probar el propio habilitador contra falsos verdes de build;
+14. conservar rollback seguro del habilitador global;
+15. mantener una sola implementación transversal para las cuatro familias aprobadas.
+
+#### 3. Base vinculante
+
+La definición conserva las decisiones aprobadas de distribución, versionado y gates:
+
+- packages npm privados e inmutables producidos desde `vento-shell`;
+- npm workspaces como mecanismo de autoría e integración local, no como canal de distribución entre repositorios;
+- registry privado compatible con npm como canal ordinario de distribución;
+- `.tgz` como artefacto verificable y reproducible, no como mecanismo manual ordinario de instalación;
+- versiones independientes por package;
+- cuatro familias de package compartido vigentes;
+- build, declarations y exports publicables como precondición de distribución;
+- snapshots de API antes y después cuando el cambio afecte superficie pública;
+- correspondencia posterior entre package, versión, manifest, release, commit y artefacto;
+- dieciséis gates canónicos de actualización fail-closed;
+- matriz de compatibilidad separada del build propio;
+- publicación y adopción separadas del acto de construir.
+
+#### 4. Topología de trabajo
+
+La topología de `PHASE-03-T-CI-FOUNDATION` es `GLOBAL_ENABLE_ONCE`.
+
+Por tanto:
+
+```text
+MARCADOR CANÓNICO
+SHELL-CI-002
+→ define el contrato una sola vez
+
+INSTANCIA FÍSICA FUTURA
+SHELL-CI-002::GLOBAL
+→ materializa y certifica el habilitador una sola vez
+
+PACKAGES
+→ declaran su perfil de build
+→ reutilizan el habilitador certificado
+→ no crean otra implementación de CI002
+```
+
+La instancia global deberá quedar certificada antes de que cualquier package pueda depender de este habilitador para superar una puerta `E5-GATE-008` de su paquete de implementación aplicable.
+
+#### 5. Universo de packages gobernado
+
+El contrato inicial cubre exactamente las cuatro familias compartidas aprobadas:
+
+1. `@vento/contracts`;
+2. `@vento/os-context`;
+3. `@vento/supabase`;
+4. `@vento/ui-web`.
+
+La existencia futura de otra carpeta, workspace o package no la incorpora automáticamente. Toda nueva familia deberá contar primero con identidad y ownership canónicos.
+
+#### 6. Línea base física observada
+
+En el corte actual de `vento-shell`:
+
+- la raíz declara `packages/*` como workspace;
+- la raíz declara Node `24.19.0` y npm `11.17.0` como toolchain actual del repositorio;
+- bajo `packages/` solo existe físicamente `@vento/os-context`;
+- `@vento/os-context` permanece en `0.1.0` y `private: true`;
+- `@vento/os-context` declara `type: module`;
+- `main`, `types` y `exports["."]` de `@vento/os-context` apuntan directamente a `src/index.ts`;
+- su manifest no declara un script de build propio;
+- su peer `@supabase/supabase-js` permanece como `>=2.90.0`, sin el límite superior `<3` aprobado para la futura línea estable;
+- `@vento/contracts`, `@vento/supabase` y `@vento/ui-web` todavía no existen como packages físicos en el workspace observado;
+- el `package.json` raíz contiene build de la aplicación y validadores documentales, pero no demuestra un habilitador global de build independiente para packages compartidos.
+
+Por tanto, no existe evidencia física de un build independiente ya materializado para ninguna de las cuatro familias.
+
+#### 7. Definición de build independiente
+
+Un build será **independiente por package** únicamente si cumple simultáneamente:
+
+1. su unidad objetivo es un package canónico específico;
+2. parte de un snapshot de fuente y dependencias identificable;
+3. no necesita ejecutar el build de la aplicación raíz de `vento-shell`;
+4. no necesita ejecutar el build de un consumidor;
+5. no necesita construir packages no relacionados;
+6. cuando dependa de otro package interno, consume una identidad exacta y respeta el orden del grafo declarado;
+7. escribe únicamente outputs pertenecientes al package objetivo;
+8. puede repetirse desde un estado limpio sin reutilizar outputs anteriores;
+9. produce un artefacto cuya superficie pública puede validarse sin acceder a rutas privadas del repositorio;
+10. no necesita credenciales productivas, conexión a Supabase desplegado ni datos operativos para compilar.
+
+Independencia no significa ausencia de dependencias. Significa que las dependencias son explícitas, cerradas y reproducibles y que el build no obtiene éxito accidental por estado compartido no declarado.
+
+#### 8. Unidad exacta de evaluación
+
+Cada ejecución se atribuirá, como mínimo, a esta identidad lógica:
+
+```text
+package_name
+package_candidate_version
+source_commit
+package_manifest_hash
+lockfile_hash
+toolchain_identity
+runtime_identity
+resolved_internal_dependency_set
+public_surface_identity
+build_contract_identity
+run_identity
+```
+
+Cambiar una dimensión material invalida la evidencia anterior para el nuevo candidato.
+
+#### 9. Entradas obligatorias del build
+
+Todo package materializado deberá declarar de forma machine-readable:
+
+1. identidad canónica del package;
+2. versión candidata o identidad pre-release evaluada;
+3. entrypoints públicos aprobados;
+4. formato o formatos de módulo aprobados por el package propietario;
+5. outputs runtime aplicables;
+6. declarations TypeScript aplicables;
+7. assets públicos aplicables;
+8. peers externos y sus bandas permitidas;
+9. dependencias internas exactas;
+10. runtime soportado cuando sea relevante;
+11. inputs generados que formen parte del snapshot;
+12. exclusiones de contenido del artefacto;
+13. contract checks que deben aplicarse al resultado construido.
+
+El build no inferirá silenciosamente entrypoints, peers o assets a partir de archivos encontrados en el árbol.
+
+#### 10. Salidas obligatorias del build
+
+Cuando apliquen al package, el artefacto construido deberá contener:
+
+- JavaScript ejecutable para cada entrypoint runtime público;
+- declarations TypeScript resolubles para cada entrypoint público tipado;
+- manifests y metadata necesarios para instalación;
+- assets públicos explícitamente aprobados;
+- mapas u otros artefactos auxiliares solo cuando estén declarados y no filtren rutas o datos sensibles;
+- metadata de integridad suficiente para demostrar qué archivos componen el candidato.
+
+Una salida que solo exponga archivos fuente TypeScript como sustituto del build final no satisface esta tarea para una release estable.
+
+#### 11. Contrato de superficie pública construida
+
+Para cada entrypoint público:
+
+1. la ruta declarada deberá existir dentro del artefacto;
+2. ningún export público podrá resolver a un archivo ausente;
+3. ningún export público podrá escapar hacia una ruta privada del repositorio;
+4. ningún export público podrá depender de una ruta absoluta local;
+5. las declarations deberán describir la misma superficie pública expuesta por runtime cuando ambas apliquen;
+6. subpaths privados no se volverán públicos por inclusión accidental en el artefacto;
+7. `main`, `types` y `exports` deberán ser coherentes entre sí cuando coexistan;
+8. la superficie construida deberá poder compararse con el snapshot contractual del package.
+
+#### 12. Reglas sobre source y output
+
+El artefacto final deberá separar fuente de distribución:
+
+- source forma parte del repositorio de autoría;
+- output forma parte del candidato distribuible;
+- un consumidor no deberá necesitar conocer la estructura privada de source;
+- imports públicos no deberán apuntar a `src/` por conveniencia;
+- outputs anteriores deberán eliminarse o aislarse antes de una nueva ejecución;
+- archivos no generados por el snapshot actual no podrán sobrevivir y producir un falso verde.
+
+El package podrá incluir source únicamente cuando su contrato propietario lo declare como contenido distribuible adicional; esa inclusión no sustituirá los outputs runtime y declarations requeridos.
+
+#### 13. Dependencias internas
+
+Cuando un package dependa de otro package compartido:
+
+1. la dependencia deberá estar declarada expresamente;
+2. la versión o candidato consumido deberá ser identificable;
+3. el build respetará el orden topológico del grafo;
+4. un package no leerá archivos privados del source de otro package;
+5. no se admitirán dependencias circulares no resueltas;
+6. una release estable no podrá quedar ligada a una prerelease interna no autorizada;
+7. el conjunto resuelto deberá formar parte de la evidencia del build;
+8. cambiar una dependencia interna material invalidará el resultado anterior.
+
+#### 14. Dependencias externas y peers
+
+El build deberá distinguir entre dependencia runtime, dependencia de desarrollo y peer dependency.
+
+Reglas:
+
+1. los peers no se convertirán silenciosamente en código embebido dentro del artefacto si su contrato exige resolución por el consumidor;
+2. una banda externa no podrá exceder el soporte canónico aprobado;
+3. una dependencia usada en runtime deberá estar declarada en la categoría contractual correcta;
+4. una dependencia exclusiva del build no deberá aparecer como requisito runtime del consumidor;
+5. dependencias locales por ruta, Git URL o referencias no publicables no podrán escapar al artefacto candidato;
+6. el build bloqueará un candidato estable cuando su peer declarado contradiga una banda canónica vinculante.
+
+Para la línea futura estable de `@vento/os-context`, el peer de Supabase JS deberá quedar acotado por debajo de la major `3`; el rango actual abierto no puede considerarse elegible para publicación estable.
+
+#### 15. Perfil de `@vento/contracts`
+
+El build de `@vento/contracts` deberá:
+
+- permanecer libre de dependencias de framework no aprobadas;
+- construir y publicar únicamente entrypoints contractuales aprobados;
+- conservar declarations completas y resolubles;
+- conservar runtime únicamente para schemas, catálogos u otros símbolos que realmente existan en ejecución;
+- detectar imports de Next.js, React, React DOM o Supabase cuando no pertenezcan al contrato propietario;
+- producir una superficie comparables mediante snapshot de API;
+- impedir que tipos privados o archivos internos se vuelvan exports públicos por accidente.
+
+#### 16. Perfil de `@vento/os-context`
+
+El build de `@vento/os-context` deberá:
+
+- conservar la separación entre entrypoints server, client y cualquier subpath aprobado por sus tareas propietarias;
+- evitar que el artefacto client arrastre APIs server, secretos o dependencias no permitidas;
+- emitir declarations coherentes con los contratos de contexto y autorización vigentes;
+- tratar `@supabase/supabase-js` según su condición de peer aprobada;
+- impedir que el package estable siga apuntando directamente a `src/index.ts`;
+- impedir bundling que mezcle fronteras server/client;
+- permitir contract checks sobre cada entrypoint público construido.
+
+#### 17. Perfil de `@vento/supabase`
+
+El build de `@vento/supabase` deberá:
+
+- tratar tipos generados y wrappers aprobados como inputs versionados del snapshot;
+- no conectarse a un proyecto Supabase desplegado para completar la compilación;
+- no ejecutar migraciones, DDL, RLS, RPC ni cambios de configuración;
+- no incluir service-role, secretos, tokens o valores de ambiente en outputs;
+- conservar declarations de factories, wrappers y tipos públicos;
+- bloquear imports que dependan de archivos generados fuera del snapshot declarado;
+- separar claramente el build del SDK de cualquier cambio físico de base de datos.
+
+#### 18. Perfil de `@vento/ui-web`
+
+El build de `@vento/ui-web` deberá:
+
+- conservar React y otros peers aprobados fuera del bundle cuando el contrato los declare peers;
+- producir declarations de props y APIs públicas;
+- incluir CSS, tokens, fuentes referenciadas o assets solo cuando formen parte de la superficie aprobada;
+- evitar imports internos de una aplicación consumidora;
+- evitar dependencias implícitas de rutas, variables o configuración de una app concreta;
+- conservar entrypoints compatibles con el entorno web aprobado;
+- permitir verificación de que no se introducen estilos globales o assets no declarados por accidente.
+
+#### 19. Contract checks del artefacto construido
+
+La decisión histórica que asigna contract tests a CI002 se concreta aquí exclusivamente como **contract checks de la frontera construida**.
+
+CI002 deberá comprobar, como mínimo:
+
+1. resolución de todos los entrypoints públicos;
+2. resolución de declarations;
+3. coherencia entre exports runtime y tipos;
+4. ausencia de imports a source privado desde la superficie distribuible;
+5. ausencia de rutas absolutas locales;
+6. ausencia de dependencias locales no publicables;
+7. coherencia de peers y runtime declarados;
+8. instalación o inspección del artefacto empaquetado en un entorno aislado;
+9. carga o importación básica de entrypoints aplicables sin recurrir al árbol fuente;
+10. comparación de la superficie pública contra el snapshot contractual aplicable.
+
+Estos checks no absorben las pruebas funcionales, negativas o de seguridad del comportamiento propio del package definidas en CI001.
+
+#### 20. Relación con CI001 — pruebas propias
+
+CI001 certifica el comportamiento propio del package. CI002 certifica que el package construido preserva una frontera distribuible válida.
+
+Cuando una prueba de CI001 necesite código compilado:
+
+- consumirá el artefacto exacto certificado por CI002 para el mismo snapshot;
+- no mantendrá una segunda implementación de build;
+- no reutilizará un build de otro commit o conjunto de dependencias;
+- un cambio de output material invalidará la evidencia que dependa de ese output.
+
+El `PASS` de CI001 no sustituye CI002 y el `PASS` de CI002 no demuestra comportamiento funcional completo.
+
+#### 21. Relación con CI003 — releases versionados
+
+CI002 produce la identidad del **candidato de artefacto construido**. CI003 fija posteriormente la identidad publicada e inmutable de la release.
+
+El handoff deberá permitir demostrar:
+
+```text
+SOURCE COMMIT
+→ BUILD RUN
+→ CONTENIDO CONSTRUIDO
+→ ARTEFACTO EMPAQUETADO
+→ IDENTIDAD CANDIDATA
+→ RELEASE PUBLICADA POR CI003
+```
+
+CI002 no crea tags, releases ni publica en registry.
+
+Si CI003 no puede demostrar que el release corresponde al mismo artefacto certificado, la evidencia de build no satisface la release.
+
+#### 22. Relación con CI004 — changelog automático
+
+CI002 podrá aportar snapshots de superficie construida y diferencias verificables entre candidatos. CI004 decide cómo esas diferencias alimentan changelog y evidencia de cambio.
+
+CI002 no redacta changelog ni clasifica por sí solo el cambio SemVer definitivo.
+
+#### 23. Relación con CI005 — matriz de compatibilidad
+
+CI002 entrega a CI005 evidencia de que el package puede construirse, empaquetarse y exponer su superficie bajo el runtime y peers declarados.
+
+CI002 no puede declarar una relación package–consumidor como compatible.
+
+La propiedad compartida de los gates de compatibilidad significa:
+
+- CI002 valida la dimensión de build, exports, declarations, runtime y peers del package;
+- CI005 cruza esa evidencia con consumidor, framework, runtime, lockfile y conjunto exacto de versiones;
+- el resultado de CI002 es entrada necesaria, no veredicto final de compatibilidad.
+
+#### 24. Relación con CI006 — actualización de consumidores
+
+CI006 podrá consumir la identidad del artefacto y el resultado de CI002 para una propuesta concreta.
+
+CI006 deberá rechazar la evidencia cuando no corresponda al package, versión o candidato, commit, manifest, lockfile, dependencias internas y contenido construido de la propuesta actual.
+
+CI002 no modifica manifests ni lockfiles de consumidores y no abre pull requests.
+
+#### 25. Integración con los gates de packages
+
+CI002 contribuye a los gates aprobados sin cambiar su semántica:
+
+- en pruebas propias, aporta el build aplicable cuando la composición del gate lo requiera;
+- en identidad de release, aporta identidad e integridad del candidato construido que CI003 deberá fijar;
+- en matriz de compatibilidad, aporta la dimensión build/runtime/peers del package que CI005 deberá evaluar contra consumidores;
+- en perfil especializado de familia, aporta los checks de artefacto construido correspondientes a cada familia.
+
+Ninguno de esos aportes permite merge, publicación, despliegue o adopción por sí solo.
+
+#### 26. Reproducibilidad
+
+Un build será reproducible cuando dos ejecuciones limpias sobre la misma identidad lógica, con el mismo toolchain y dependencias resueltas, produzcan el mismo contenido distribuible normalizado.
+
+La comparación deberá excluir únicamente metadata no distributiva expresamente declarada por el contrato del empaquetador. No podrá ocultar diferencias en código, declarations, assets, manifest o exports.
+
+La evidencia deberá conservar al menos:
+
+- conjunto ordenado de archivos distribuibles;
+- hash de contenido de cada archivo;
+- hash agregado del contenido normalizado;
+- identidad del manifest empaquetado;
+- identidad de declarations;
+- identidad de la superficie exportada;
+- integridad del artefacto empaquetado cuando exista;
+- toolchain y runtime usados.
+
+#### 27. Limpieza y protección contra output stale
+
+Antes de un build certificable:
+
+1. el output anterior del package no será elegible como entrada implícita;
+2. la ejecución deberá partir de un estado limpio de outputs distribuibles;
+3. un archivo eliminado de source no podrá sobrevivir en el artefacto por residuo de una ejecución anterior;
+4. una ejecución incremental podrá utilizarse para desarrollo, pero no sustituirá la evidencia de un build limpio cuando se certifique reproducibilidad;
+5. la comparación limpio-versus-repetido deberá detectar residuos y diferencias no explicadas.
+
+#### 28. Empaquetado verificable
+
+El build deberá poder transformarse en un artefacto npm inspeccionable antes de publicación.
+
+La verificación deberá demostrar:
+
+- identidad correcta de package y versión candidata;
+- lista cerrada de archivos incluidos;
+- ausencia de secretos y archivos operativos no distribuibles;
+- resolución de exports y declarations desde el contenido empaquetado;
+- ausencia de referencias a rutas locales del workspace;
+- integridad capturable del artefacto;
+- instalación o importación básica en un entorno aislado cuando aplique.
+
+El empaquetado verificable no equivale a publicación. La publicación continúa reservada a CI003.
+
+#### 29. Evidencia machine-readable
+
+Cada ejecución certificable conservará, como mínimo:
+
+```text
+package_name
+package_candidate_version
+source_commit
+package_manifest_hash
+lockfile_hash
+toolchain_identity
+runtime_identity
+resolved_internal_dependency_set
+public_surface_identity
+build_contract_identity
+run_identity
+build_status
+artifact_file_manifest
+artifact_content_hash
+declarations_identity
+exports_identity
+pack_integrity
+started_at
+completed_at
+invalidation_reason
+```
+
+No se almacenarán secretos, tokens, credenciales ni valores de configuración sensible dentro de esta evidencia.
+
+#### 30. Invalidación
+
+La evidencia deberá pasar a no vigente cuando cambie de forma material cualquiera de estos elementos:
+
+- source commit;
+- package manifest;
+- lockfile;
+- versión candidata;
+- toolchain;
+- runtime de build;
+- dependencia interna;
+- banda de peer relevante;
+- entrypoint público;
+- configuración de compilación;
+- declarations;
+- assets públicos;
+- snapshot de superficie;
+- reglas de empaquetado;
+- contract checks del artefacto.
+
+La nueva evidencia deberá provenir de otra ejecución atribuible. No se editará manualmente un resultado anterior para hacerlo coincidir con entradas nuevas.
+
+#### 31. Estados y fallo seguro
+
+La instancia física reutilizará la semántica canónica de estados de gate:
+
+- `PENDING`;
+- `RUNNING`;
+- `PASS`;
+- `FAIL`;
+- `BLOCKED`;
+- `CANCELLED`;
+- `TIMED_OUT`;
+- `STALE`;
+- `NOT_APPLICABLE` únicamente para comprobaciones condicionales justificadas.
+
+El build propio requerido de una familia gobernada solo se satisface con `PASS`.
+
+Un comando ausente, output vacío, error de compilación, export roto, declaration faltante, package no materializado, dependencia irresoluble, timeout o evidencia stale no podrá normalizarse a `PASS`.
+
+#### 32. Casos positivos obligatorios del habilitador
+
+`SHELL-CI-002::GLOBAL` deberá demostrar, como mínimo:
+
+1. package materializado con build completo → artefacto válido y atribuible;
+2. dos builds limpios del mismo snapshot → mismo contenido distribuible normalizado;
+3. package con declarations → tipos resolubles desde el artefacto empaquetado;
+4. package con varios entrypoints → todos resuelven y ninguno escapa a source privado;
+5. package con peer externo válido → peer preservado y no convertido silenciosamente en dependencia embebida incompatible;
+6. package con dependencia interna exacta → build respeta el grafo y registra la identidad consumida;
+7. artefacto empaquetado → importación o inspección aislada satisfactoria sin acceder al árbol fuente;
+8. nuevo build después de cambio legítimo → evidencia nueva sin borrar la ejecución anterior.
+
+#### 33. Casos negativos obligatorios del habilitador
+
+`SHELL-CI-002::GLOBAL` deberá bloquear, como mínimo:
+
+1. package sin declaración de build;
+2. package gobernado todavía no materializado;
+3. script de build inexistente o no ejecutable;
+4. build que en realidad ejecuta únicamente el build de la aplicación raíz;
+5. build que finaliza con cero outputs distribuibles requeridos;
+6. manifest público que apunta a `src/` como artefacto estable;
+7. entrypoint declarado cuyo archivo construido no existe;
+8. declaration requerida ausente o irresoluble;
+9. export público que depende de archivo privado del repositorio;
+10. referencia absoluta local en output;
+11. dependencia local, Git URL o referencia workspace no resoluble en el artefacto final;
+12. dependencia runtime usada pero no declarada correctamente;
+13. peer incompatible con una banda canónica vinculante;
+14. build que necesita credenciales productivas o conexión a Supabase desplegado;
+15. output contaminado por archivos stale de una ejecución anterior;
+16. dos builds limpios del mismo snapshot con diferencias distribuibles no justificadas;
+17. build de un package que modifica outputs de otro package;
+18. artefacto empaquetado que no puede resolverse fuera del árbol fuente;
+19. inclusión de secretos, tokens o configuración sensible;
+20. evidencia de otro commit, manifest, lockfile, toolchain o dependencia reutilizada como vigente.
+
+#### 34. Regresiones del propio habilitador global
+
+La implementación única deberá probarse contra, como mínimo:
+
+1. falso verde por script que no compila;
+2. falso verde por output heredado;
+3. falso verde por `main` existente pero `exports` roto;
+4. falso verde por declarations desactualizadas;
+5. falso verde por artefacto empaquetado que depende del workspace;
+6. falso verde por import que funciona solo desde source;
+7. diferencia reproducible ignorada por comparación incompleta;
+8. peer incompatible tratado como warning no bloqueante;
+9. dependencia interna distinta reutilizando evidencia anterior;
+10. package desconocido aceptado como familia gobernada;
+11. build cancelado o con timeout presentado como correcto;
+12. contract check obligatorio omitido;
+13. salida con secreto no detectado;
+14. build de una familia escribiendo sobre otra;
+15. evidencia humana que contradice el resultado machine-readable;
+16. segunda implementación del habilitador creada dentro de un package.
+
+#### 35. Criterios de materialización de `SHELL-CI-002::GLOBAL`
+
+La instancia física podrá declararse materializada únicamente cuando:
+
+1. exista una sola implementación transversal en el repositorio propietario;
+2. reconozca exactamente las cuatro familias aprobadas;
+3. cada package materializado pueda declarar su perfil de build;
+4. el build dirigido no requiera el build de la aplicación raíz ni del consumidor;
+5. los outputs se generen desde estado limpio;
+6. exports, main, types y subpaths aplicables se validen desde el artefacto construido;
+7. las declarations requeridas sean resolubles;
+8. el artefacto pueda empaquetarse e inspeccionarse fuera del árbol fuente;
+9. dependencias internas exactas y peers queden verificadas;
+10. los cuatro perfiles de familia puedan aplicar sus checks propios;
+11. la ejecución produzca evidencia machine-readable atribuible;
+12. dos builds limpios del mismo snapshot demuestren reproducibilidad;
+13. los veinte casos negativos aplicables queden bloqueados;
+14. las dieciséis regresiones del propio habilitador queden protegidas;
+15. no se publiquen releases ni se modifiquen consumidores;
+16. no se requieran credenciales productivas ni cambios de Supabase;
+17. exista rollback seguro del habilitador;
+18. la implementación quede vinculada a una identidad y commit reproducibles.
+
+#### 36. Rollback del habilitador global
+
+El rollback de CI002 nunca autoriza volver a distribuir source no construido ni omitir el build independiente.
+
+Reglas:
+
+1. podrá restituirse una versión anterior certificada del habilitador;
+2. la versión restituida deberá comprender el contrato del package evaluado;
+3. evidencia generada por una versión incompatible del habilitador no se reutilizará automáticamente;
+4. si no existe versión certificada compatible, los packages quedan bloqueados para build certificable;
+5. rollback no revalida artefactos stale ni peers incompatibles;
+6. la recuperación conservará identidad de origen, identidad restituida, causa y nueva evidencia de funcionamiento.
+
+#### 37. Estado documental de las cuatro familias
+
+| Package             | Estado físico observado                                            | Build independiente confirmado | Bloqueo actual de salida                                                                                      |
+| ------------------- | ------------------------------------------------------------------ | ------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `@vento/contracts`  | package físico no observado                                        | No                             | materializar package y contrato de build antes de certificarlo                                                |
+| `@vento/os-context` | workspace transitorio `0.1.0`, privado y exportando `src/index.ts` | No                             | construir outputs publicables, corregir superficie distribuible y acotar el peer de Supabase antes de estable |
+| `@vento/supabase`   | package físico no observado                                        | No                             | materializar package y contrato de build sin acoplarlo a cambios de base de datos                             |
+| `@vento/ui-web`     | package físico no observado                                        | No                             | materializar package, outputs UI y contrato de assets/peers antes de certificarlo                             |
+
+**Conciliación:** 4 familias esperadas, 4 evaluadas documentalmente, 0 builds independientes confirmados y 0 familias omitidas.
+
+#### 38. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** las obligaciones de comandos reproducibles, pruebas y compatibilidad de packages, evidencia por entrega, identidad inmutable de artefactos y validación previa a adopción ya existen en el registro vigente. CI002 concreta el contrato de materialización de esas obligaciones para el build independiente sin introducir un comportamiento empresarial nuevo ni alterar una fila histórica.
+
+#### 39. Cobertura de prueba vigente reutilizada
+
+La cobertura existente se conserva sin modificación:
+
+- `TREQ-SHELL-005` protege comandos reproducibles, build real y bloqueo de falsos verdes;
+- `TREQ-SHELL-006` exige pruebas propias y matriz de compatibilidad antes de publicar o adoptar un package compartido;
+- `TREQ-SHELL-008` exige trazabilidad reproducible de requisitos y resultados;
+- `TREQ-SHELL-036` protege la correspondencia inmutable entre package, versión, manifest, commit y artefacto y asigna responsabilidad a CI002 y CI003;
+- `TREQ-SHELL-037` protege cortes coordinados y dependencias internas exactas;
+- `TREQ-SHELL-039` exige build y pruebas antes de retiro o fin de soporte.
+
+Estas referencias expresan únicamente trazabilidad de cobertura vigente.
+
+#### 40. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                        |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | NOT_EXECUTED   | El marcador global no materializa `SHELL-CI-002::GLOBAL` ni ejecuta builds de packages.                                                          |
+| LOCAL     | PASS           | El artefacto documental fue comprobado estructuralmente contra cabecera, secciones obligatorias, continuidad, TREQ y consistencia interna.       |
+| REMOTA    | PASS           | Se verificaron en `main` la continuidad activa, el propietario, CI001 aprobado, el workspace actual y el manifest físico de `@vento/os-context`. |
+| OPERATIVA | NOT_EXECUTED   | No existe ejecución operativa del habilitador ni publicación de packages en este marcador.                                                       |
+| FÍSICA    | NOT_APPLICABLE | La materialización física corresponde a la futura instancia única `SHELL-CI-002::GLOBAL`.                                                        |
+
+#### 41. Criterios de aceptación
+
+`SHELL-CI-002` queda documentalmente completa cuando:
+
+- identifica la topología `GLOBAL_ENABLE_ONCE` y la instancia `SHELL-CI-002::GLOBAL`;
+- conserva exactamente las cuatro familias aprobadas;
+- define build independiente sin depender del build de una app raíz o consumidora;
+- define la unidad exacta de evaluación y sus entradas;
+- define runtime, declarations y assets como outputs contractuales cuando apliquen;
+- exige coherencia entre `exports`, `main`, `types` y subpaths;
+- impide source TypeScript como sustituto del artefacto estable construido;
+- define reglas de dependencias internas, peers y runtime;
+- define perfiles específicos para contracts, os-context, supabase y ui-web;
+- concilia contract checks de CI002 sin absorber pruebas funcionales de CI001;
+- produce handoff de identidad de artefacto hacia CI003 sin publicar;
+- aporta a CI005 la dimensión build/runtime/peers sin declarar compatibilidad;
+- define reproducibilidad mediante contenido distribuible normalizado;
+- define limpieza de outputs y protección contra stale;
+- define empaquetado verificable sin confundirlo con publicación;
+- define evidencia machine-readable e invalidación;
+- define al menos ocho casos positivos, veinte casos negativos y dieciséis regresiones del habilitador;
+- define dieciocho criterios de materialización y rollback fail-closed;
+- reconcilia 4/4 familias con 0 builds independientes actualmente confirmados;
+- no modifica código, CI, consumers, registry, datos o Supabase durante el marcador global;
+- no crea ni modifica requisitos de prueba;
+- entrega a CI003 un candidato de artefacto identificable sin anticipar la release.
+
+#### 42. Límites
+
+Esta tarea no:
+
+- implementa físicamente `SHELL-CI-002::GLOBAL` durante el marcador;
+- crea scripts, workflows, runners, configuraciones de compilación o directorios de output;
+- decide nombres físicos de comandos o archivos que aún no existen;
+- crea packages ausentes;
+- modifica `@vento/os-context` ni corrige todavía su manifest;
+- cambia la API pública aprobada de ningún package;
+- ejecuta las pruebas funcionales propias reservadas a CI001;
+- crea tags, releases o publicaciones reservadas a CI003;
+- genera changelog reservado a CI004;
+- certifica combinaciones package–consumidor reservadas a CI005;
+- modifica manifests o lockfiles de consumidores ni abre pull requests reservados a CI006;
+- configura registry, credenciales o permisos de publicación;
+- habilita auto-merge o auto-deploy;
+- ejecuta cambios de Supabase;
+- modifica requisitos del registro 04A.
+
+#### 43. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CI-001 — Crear pruebas de paquetes compartidos`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CI-002 — Crear build independiente por paquete`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-003 — Crear releases versionados`
+
+
 ### [ ] SHELL-CI-003 — Crear releases versionados
 ### [ ] SHELL-CI-004 — Crear changelog automático
 ### [ ] SHELL-CI-005 — Crear matriz de compatibilidad
