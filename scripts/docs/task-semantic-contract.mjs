@@ -187,8 +187,17 @@ export function validateTaskSemanticContract({
       add('SECTION_MISSING', `falta una sección de ${required.label}.`);
     }
   }
-  const placeholderPattern = new RegExp(policy.forbidden_placeholder_pattern, 'u');
-  if (placeholderPattern.test(block)) add('UNRESOLVED_PLACEHOLDER', 'persisten placeholders sin resolver.');
+  const placeholderPattern = new RegExp(policy.forbidden_placeholder_pattern, 'gu');
+  const unresolvedPlaceholders = [...block.matchAll(placeholderPattern)].map((match) => ({
+    value: match[0],
+    line: block.slice(0, match.index).split(/\r?\n/u).length,
+  }));
+  if (unresolvedPlaceholders.length > 0) {
+    add(
+      'UNRESOLVED_PLACEHOLDER',
+      `persisten placeholders sin resolver: ${unresolvedPlaceholders.map(({ value, line }) => `${value} (línea ${line})`).join(', ')}.`,
+    );
+  }
 
   const knownIds = new Set(inventory.keys());
   const knownPrefixes = new Set([...knownIds].map(canonicalPrefix));

@@ -37,7 +37,7 @@
     { "label": "límites", "pattern": "Límites" },
     { "label": "continuidad", "pattern": "Continuidad" }
   ],
-  "forbidden_placeholder_pattern": "\\[PENDIENTE[^\\]]*\\]|<[A-Z][A-Z0-9_-]*>",
+  "forbidden_placeholder_pattern": "\\[PENDIENTE[^\\]]*\\]|<[A-Z][A-Z0-9_-]+>",
   "required_evidence_classes": [
     "BUILD",
     "LOCAL",

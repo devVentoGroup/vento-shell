@@ -30,7 +30,7 @@ const policy = {
     { label: 'límites', pattern: 'Límites' },
     { label: 'continuidad', pattern: 'Continuidad' },
   ],
-  forbidden_placeholder_pattern: '\\[PENDIENTE[^\\]]*\\]|<[A-Z][A-Z0-9_-]*>',
+  forbidden_placeholder_pattern: '\\[PENDIENTE[^\\]]*\\]|<[A-Z][A-Z0-9_-]+>',
   required_evidence_classes: ['BUILD', 'LOCAL', 'REMOTA', 'OPERATIVA', 'FÍSICA'],
   allowed_evidence_statuses: ['PASS', 'FAIL', 'NOT_EXECUTED', 'NOT_APPLICABLE'],
   blocking_codes: [
@@ -205,6 +205,24 @@ test('permite parámetros canónicos en minúscula y bloquea placeholders en may
     policy,
   });
   assert.ok(unresolvedPlaceholder.errors.some(({ code }) => code === 'UNRESOLVED_PLACEHOLDER'));
+  assert.match(
+    unresolvedPlaceholder.errors.find(({ code }) => code === 'UNRESOLVED_PLACEHOLDER').message,
+    /<PACKAGE_ID> \(línea \d+\)/u,
+  );
+});
+
+test('permite genéricos TypeScript de una letra', () => {
+  const result = validateTaskSemanticContract({
+    block: validBlock.replace(
+      'Texto.',
+      '`parseX(input: unknown): ContractValidationResult<X>` y `ContractValidationResult<T>`.',
+    ),
+    task: { id: 'TEST-SEM-011', state: 'APROBADA' },
+    ownerRelativePath: 'bloques/X/test.md',
+    inventory,
+    policy,
+  });
+  assert.ok(!result.errors.some(({ code }) => code === 'UNRESOLVED_PLACEHOLDER'));
 });
 
 test('una tarea aprobada con formato histórico recibe recomendaciones sin bloquear', () => {
