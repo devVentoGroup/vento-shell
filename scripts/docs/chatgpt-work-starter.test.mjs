@@ -15,6 +15,8 @@ test('genera un único iniciador desde la acción operativa vigente', () => {
   assert.match(result.source, /CONTRATO OBLIGATORIO DE LA RESPUESTA Y DEL PASO MANUAL/u);
   assert.match(result.source, /PASOS EXACTOS PARA EL USUARIO/u);
   assert.match(result.source, /Operador que realiza los cambios: USUARIO HUMANO/u);
+  assert.match(result.source, /Interacción: PASOS CONSECUTIVOS HASTA UN GATE DE EVIDENCIA/u);
+  assert.match(result.source, /Raíz local exacta del repositorio: .+vento-shell/u);
   assert.match(result.source, /Escrituras del asistente en archivos o repositorios: NO AUTORIZADAS/u);
   assert.match(result.source, /AUTORIZO EJECUCION ASISTIDA DEL PASO N/u);
   assert.match(result.source, /Contrato propietario SHA-256: [a-f0-9]{64}/u);
@@ -22,7 +24,7 @@ test('genera un único iniciador desde la acción operativa vigente', () => {
   assert.equal(result.outputPath.endsWith('INICIADOR_VENTO_ACTUAL.txt'), true);
 });
 
-test('iniciar implementación entrega el mapa y solo la transición manual a IN_PROGRESS', () => {
+test('iniciar implementación entrega transición y preflight en el mismo lote', () => {
   const source = actionResponseContract({
     primaryAction: {
       type: 'INICIAR_IMPLEMENTACION',
@@ -31,13 +33,14 @@ test('iniciar implementación entrega el mapa y solo la transición manual a IN_
   }, 'b'.repeat(64));
 
   assert.match(source, /MAPA COMPLETO DE IMPLEMENTACIÓN/u);
-  assert.match(source, /PASO ACTUAL 0/u);
+  assert.match(source, /LOTE ACTUAL/u);
   assert.match(source, /status AUTHORIZED a IN_PROGRESS/u);
-  assert.match(source, /No entregues todavía código de implementación ni ejecutes preflight/u);
-  assert.match(source, /pide HECHO/u);
+  assert.match(source, /comando exacto del preflight canónico/u);
+  assert.match(source, /No pauses después de cambiar el estado/u);
+  assert.match(source, /RESULTADO DEL PASO/u);
 });
 
-test('continuar implementación entrega exactamente un cambio completo al usuario', () => {
+test('continuar implementación entrega todos los cambios deterministas hasta evidencia', () => {
   const source = actionResponseContract({
     primaryAction: {
       type: 'CONTINUAR_IMPLEMENTACION',
@@ -45,13 +48,16 @@ test('continuar implementación entrega exactamente un cambio completo al usuari
     },
   }, 'c'.repeat(64));
 
-  assert.match(source, /únicamente el siguiente paso pendiente/u);
+  assert.match(source, /todos los pasos pendientes deterministas/u);
   assert.match(source, /Si la operación es CREAR/u);
   assert.match(source, /contenido completo sin elipsis/u);
   assert.match(source, /Si la operación es MODIFICAR/u);
   assert.match(source, /archivo completo listo para reemplazar/u);
   assert.match(source, /Si la operación es EJECUTAR/u);
   assert.match(source, /No lo ejecutes tú/u);
+  assert.match(source, /mismo lote todas las creaciones y modificaciones/u);
+  assert.match(source, /detener el resto del lote/u);
+  assert.match(source, /RESULTADO DEL PASO N/u);
   assert.match(source, /progreso visible N\/M/u);
 });
 
@@ -101,7 +107,9 @@ test('las demás acciones también terminan con una guía operativa exacta', () 
     assert.match(source, /No te limites a informar qué sigue/u);
     assert.match(source, /El operador es el usuario humano/u);
     assert.match(source, /No escribas archivos/u);
-    assert.match(source, /exactamente un paso ejecutable por respuesta/u);
+    assert.match(source, /todos los pasos consecutivos/u);
+    assert.match(source, /No pauses por rutina/u);
+    assert.match(source, /RESULTADO DEL PASO N/u);
     assert.match(source, /AUTORIZO EJECUCION ASISTIDA DEL PASO N/u);
   }
 });
@@ -113,7 +121,9 @@ test('la plantilla global conserva el modo humano aunque cambie la acción actua
   );
   assert.match(template, /MODO PREDETERMINADO DE IMPLEMENTACIÓN HUMANA/u);
   assert.match(template, /el usuario humano crea, modifica, reemplaza y elimina archivos/u);
-  assert.match(template, /ChatGPT entrega un único paso por respuesta y espera `HECHO`/u);
+  assert.match(template, /ChatGPT entrega seguidos todos los pasos/u);
+  assert.match(template, /no se pausa entre pasos por rutina ni para pedir `HECHO`/u);
+  assert.match(template, /RESULTADO DEL PASO N/u);
   assert.match(template, /AUTORIZO EJECUCION ASISTIDA DEL PASO 3/u);
   assert.match(template, /“haz la acción principal” no autorizan escrituras automáticas/u);
 });

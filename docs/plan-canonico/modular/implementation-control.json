@@ -6,13 +6,14 @@
   "single_primary_action": true,
   "execution_operator_policy": {
     "default_operator": "HUMAN_USER",
-    "interaction_mode": "ONE_STEP_AT_A_TIME",
+    "interaction_mode": "CONTINUOUS_BATCH_UNTIL_EVIDENCE_GATE",
     "assistant_repository_writes": false,
     "assistant_validation_execution": false,
     "assistant_git_operations": false,
     "assistant_remote_mutations": false,
     "assistant_read_only_audit": true,
-    "step_confirmation_token": "HECHO",
+    "pause_only_when_next_step_depends_on_evidence": true,
+    "evidence_reply_prefix": "RESULTADO DEL PASO ",
     "assisted_execution_authorization_prefix": "AUTORIZO EJECUCION ASISTIDA DEL PASO "
   },
   "instance_statuses": [
@@ -27,7 +28,7 @@
     {
       "instance_id": "SHELL-CI-001::GLOBAL",
       "task_id": "SHELL-CI-001",
-      "status": "AUTHORIZED",
+      "status": "IN_PROGRESS",
       "target_repositories": [
         "devVentoGroup/vento-shell"
       ],

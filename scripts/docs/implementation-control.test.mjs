@@ -10,13 +10,14 @@ const baseControl = {
   single_primary_action: true,
   execution_operator_policy: {
     default_operator: 'HUMAN_USER',
-    interaction_mode: 'ONE_STEP_AT_A_TIME',
+    interaction_mode: 'CONTINUOUS_BATCH_UNTIL_EVIDENCE_GATE',
     assistant_repository_writes: false,
     assistant_validation_execution: false,
     assistant_git_operations: false,
     assistant_remote_mutations: false,
     assistant_read_only_audit: true,
-    step_confirmation_token: 'HECHO',
+    pause_only_when_next_step_depends_on_evidence: true,
+    evidence_reply_prefix: 'RESULTADO DEL PASO ',
     assisted_execution_authorization_prefix: 'AUTORIZO EJECUCION ASISTIDA DEL PASO ',
   },
   instance_statuses: [
@@ -93,7 +94,9 @@ test('una autorización explícita cambia la instrucción a implementar solo su 
   assert.equal(result.implementationAuthorized, true);
   assert.equal(result.executionOperatorPolicy.defaultOperator, 'HUMAN_USER');
   assert.equal(result.executionOperatorPolicy.assistantRepositoryWrites, false);
-  assert.match(result.primaryAction.instruction, /guía humana paso a paso/u);
+  assert.match(result.primaryAction.instruction, /guía humana/u);
+  assert.equal(result.executionOperatorPolicy.pauseOnlyWhenNextStepDependsOnEvidence, true);
+  assert.equal(result.executionOperatorPolicy.evidenceReplyPrefix, 'RESULTADO DEL PASO ');
   assert.deepEqual(result.physical.authorized.map(({ instanceId }) => instanceId), ['SHELL-CI-001::GLOBAL']);
 });
 

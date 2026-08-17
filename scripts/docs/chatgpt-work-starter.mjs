@@ -34,13 +34,15 @@ export function actionResponseContract(control, sourceContractHash) {
   const { type, target } = control.primaryAction;
   const common = [
     'La primera respuesta de la acción y la entrega final deben comenzar con FORMATO_ENTREGA_VENTO_V1 y conservar exactamente sus ocho secciones; no agregues una novena sección.',
-    'Las respuestas intermedias después de HECHO no son entregas finales: usa únicamente PASO N DE M, OPERACIÓN Y RUTA, CONTENIDO O COMANDO EXACTO, COMPROBACIÓN y RESPONDE HECHO. Así se evita repetir contexto y consumir mensajes innecesarios.',
+    'Las respuestas intermedias después de recibir evidencia no son entregas finales: usa únicamente PROGRESO N/M, LOTE ACTUAL, PASOS CONSECUTIVOS, GATE DE EVIDENCIA y QUÉ DEBE RESPONDER EL USUARIO. Así se evita repetir contexto y consumir mensajes innecesarios.',
     'No te limites a informar qué sigue. Indica exactamente qué debe hacer el usuario, sin asumir que conoce comandos, archivos, estados o convenciones del repositorio.',
-    'El operador es el usuario humano. Tu función predeterminada es auditar en solo lectura, diseñar el mapa y entregar exactamente un paso ejecutable por respuesta.',
+    'El operador es el usuario humano. Tu función predeterminada es auditar en solo lectura, diseñar el mapa y entregar en cada respuesta todos los pasos consecutivos que puedan determinarse con la evidencia disponible.',
     'No escribas archivos, no uses herramientas de edición, no ejecutes validaciones, no instales dependencias y no hagas commit, push, PR, despliegues ni mutaciones mediante conectores locales o remotos.',
-    'AUTHORIZED habilita el trabajo físico, pero no te autoriza a ejecutarlo. Tampoco “haz la acción principal”, APROBADO, HECHO ni una solicitud general de implementación conceden permisos de escritura.',
+    'AUTHORIZED habilita el trabajo físico, pero no te autoriza a ejecutarlo. Tampoco “haz la acción principal”, APROBADO, RESULTADO DEL PASO ni una solicitud general de implementación conceden permisos de escritura.',
     'Solo la frase exacta AUTORIZO EJECUCION ASISTIDA DEL PASO N, con el número real ya definido, autoriza a ejecutar ese único paso. Al terminarlo vuelve automáticamente el modo humano manual.',
-    'Dentro de la sección 8 incluye PASOS EXACTOS PARA EL USUARIO. Entrega un único PASO ACTUAL, termina pidiendo HECHO y no reveles ni inicies el paso siguiente hasta recibir esa confirmación y verificar la evidencia aportada.',
+    'Dentro de la sección 8 incluye PASOS EXACTOS PARA EL USUARIO. Entrega el LOTE ACTUAL completo y seguido hasta el primer gate donde el próximo paso dependa realmente de una salida todavía desconocida.',
+    'No pauses por rutina, por cambio de archivo ni para pedir confirmación de cada paso. Pausa únicamente por una prueba o comando cuyo resultado determine lo siguiente, una discrepancia con el contenido esperado, una decisión humana, un permiso o credencial, o una operación sensible no autorizada.',
+    'Cuando pauses, termina pidiendo RESULTADO DEL PASO N y especifica exactamente qué salida, captura, diff o decisión debe aportar el usuario.',
     'No uses placeholders sin resolver. Cada JSON, ruta, identificador, fecha, hash, estado y texto que el usuario deba copiar debe quedar completo y válido.',
   ];
 
@@ -64,19 +66,22 @@ export function actionResponseContract(control, sourceContractHash) {
     return [
       ...common,
       `Para ${target}, primero entrega un MAPA COMPLETO DE IMPLEMENTACIÓN: todos los pasos numerados, operación, ruta, propósito, dependencias y validación, pero sin incluir todavía el contenido de pasos futuros.`,
-      'El PASO ACTUAL 0 debe ser la transición manual de status AUTHORIZED a IN_PROGRESS en docs/plan-canonico/modular/implementation-control.json. Entrega la ruta, el fragmento actual exacto, el reemplazo exacto, el resultado esperado del watcher y pide HECHO.',
-      'No entregues todavía código de implementación ni ejecutes preflight. Después de HECHO y de comprobar CONTINUAR_IMPLEMENTACION, comienza el primer paso físico.',
+      'El LOTE ACTUAL debe incluir seguidos: la transición manual de status AUTHORIZED a IN_PROGRESS en docs/plan-canonico/modular/implementation-control.json, la comprobación esperada del watcher y el comando exacto del preflight canónico.',
+      'No pauses después de cambiar el estado si el watcher no muestra error. El primer gate obligatorio es el resultado del preflight, porque el contenido físico posterior debe reconciliarse contra el checkout local real.',
+      'Termina pidiendo RESULTADO DEL PASO correspondiente al preflight, con su salida completa y cualquier error del watcher. No entregues todavía código que dependa de ese resultado.',
     ].join('\n');
   }
 
   if (type === 'CONTINUAR_IMPLEMENTACION') {
     return [
       ...common,
-      `Para ${target}, conserva un MAPA COMPLETO DE IMPLEMENTACIÓN numerado y entrega únicamente el siguiente paso pendiente.`,
+      `Para ${target}, conserva un MAPA COMPLETO DE IMPLEMENTACIÓN numerado y entrega todos los pasos pendientes deterministas hasta el siguiente gate de evidencia real.`,
       'Si la operación es CREAR: indica repositorio, ruta absoluta y relativa, codificación, nombre exacto y contenido completo sin elipsis. Para archivos .mjs entrega además un .txt descargable con el mismo contenido.',
       'Si la operación es MODIFICAR: entrega el archivo completo listo para reemplazar. Solo si es materialmente enorme permite un bloque anterior literal y único más su reemplazo completo; nunca uses fragmentos ambiguos, resúmenes ni “resto sin cambios”.',
       'Si la operación es EJECUTAR: indica directorio exacto, un solo comando copiable, qué modifica, resultado esperado y qué salida debe pegar el usuario. No lo ejecutes tú.',
-      'Después de cada HECHO verifica la evidencia aportada, actualiza el progreso visible N/M y entrega solo el paso siguiente. No declares PASS por la afirmación del usuario si falta contenido o salida verificable.',
+      'Incluye en el mismo lote todas las creaciones y modificaciones cuyo contenido ya pueda determinarse, aunque sean varios archivos. Después incluye los comandos que el usuario puede ejecutar sin que un resultado intermedio cambie esos archivos.',
+      'Si un comando falla, el usuario debe detener el resto del lote y responder RESULTADO DEL PASO N con la salida completa. Si todos pasan, debe responder una sola vez con las salidas solicitadas del gate final.',
+      'Al recibir evidencia, actualiza el progreso visible N/M y genera el lote siguiente. No declares PASS por la afirmación del usuario si falta contenido o salida verificable.',
       'No cambies el estado a IMPLEMENTED hasta cerrar todos los pasos físicos y reunir evidencia real; entonces entrega como último paso el JSON completo y exacto para esa transición.',
     ].join('\n');
   }
@@ -84,17 +89,18 @@ export function actionResponseContract(control, sourceContractHash) {
   if (type === 'VALIDAR_IMPLEMENTACION') {
     return [
       ...common,
-      `Para ${target}, entrega las validaciones autorizadas una por una para que el usuario las ejecute; nunca ejecutes la batería completa por tu cuenta.`,
-      'Cada paso debe contener directorio, comando único, efecto, duración estimada, resultado esperado y salida que el usuario debe pegar. Clasifica la evidencia como local, remota, operativa o física.',
-      'Solo después de verificar todas las salidas entrega el reemplazo JSON completo para VERIFIED. Si algo falla, entrega un único paso de diagnóstico o corrección y conserva el estado actual.',
+      `Para ${target}, entrega juntas las validaciones autorizadas que sean independientes y ordénalas para que el usuario las ejecute; nunca las ejecutes por tu cuenta.`,
+      'Cada paso debe contener directorio, comando, efecto, duración estimada, resultado esperado y salida que el usuario debe conservar. Indica que debe detener el lote en el primer fallo.',
+      'Pide una única respuesta RESULTADO DEL PASO N con las salidas del lote o con el primer fallo. Clasifica después la evidencia como local, remota, operativa o física.',
+      'Solo después de verificar todas las salidas entrega el reemplazo JSON completo para VERIFIED. Si algo falla, entrega todos los pasos deterministas de diagnóstico o corrección hasta el siguiente gate de evidencia y conserva el estado actual.',
     ].join('\n');
   }
 
   if (type === 'RESOLVER_BLOQUEO') {
     return [
       ...common,
-      `Para ${target}, identifica la causa raíz en solo lectura y entrega al usuario un único paso de resolución dentro del alcance.`,
-      'Espera HECHO y evidencia antes de comprobar la condición de salida o entregar otro paso. No resuelvas el bloqueo mediante escrituras automáticas.',
+      `Para ${target}, identifica la causa raíz en solo lectura y entrega al usuario todos los pasos deterministas de resolución dentro del alcance.`,
+      'Pausa únicamente cuando la condición de salida necesite evidencia nueva y pide RESULTADO DEL PASO N. No resuelvas el bloqueo mediante escrituras automáticas.',
     ].join('\n');
   }
 
@@ -116,21 +122,21 @@ function actionInstruction(control) {
   }
   if (type === 'INICIAR_IMPLEMENTACION') {
     return [
-      `Inicia la guía humana paso a paso de ${target}; no modifiques repositorios ni ejecutes comandos.`,
-      'Entrega el mapa completo y únicamente el paso manual para pasar la instancia a IN_PROGRESS; espera HECHO.',
+      `Inicia la guía humana continua de ${target}; no modifiques repositorios ni ejecutes comandos.`,
+      'Entrega el mapa completo, la transición a IN_PROGRESS y el preflight en el mismo lote; pausa únicamente para recibir el resultado del preflight.',
     ].join(' ');
   }
   if (type === 'CONTINUAR_IMPLEMENTACION') {
     return [
-      `Guía al usuario en el siguiente paso pendiente de ${target}; no lo ejecutes por él.`,
-      'Entrega una sola creación, modificación o validación con ruta y contenido exactos, y espera HECHO con evidencia antes de avanzar.',
+      `Guía al usuario en el siguiente lote pendiente de ${target}; no lo ejecutes por él.`,
+      'Entrega seguidas todas las creaciones, modificaciones y validaciones deterministas; pausa solo cuando el próximo paso dependa de evidencia nueva.',
     ].join(' ');
   }
   if (type === 'VALIDAR_IMPLEMENTACION') {
-    return `Entrega al usuario una validación exacta de ${target} por vez; no la ejecutes ni marques VERIFIED sin la salida real aportada por él.`;
+    return `Entrega al usuario el lote ordenado de validaciones independientes de ${target}; no lo ejecutes ni marques VERIFIED sin las salidas reales aportadas por él.`;
   }
   if (type === 'RESOLVER_BLOQUEO') {
-    return `Audita el bloqueo de ${target} en solo lectura y guía al usuario en un único paso de resolución; espera HECHO antes de avanzar.`;
+    return `Audita el bloqueo de ${target} en solo lectura y guía al usuario con todos los pasos deterministas; pausa solo cuando necesites evidencia nueva.`;
   }
   return `Desarrolla completa y exclusivamente la tarea documental ${target}; entrega el artefacto material listo para revisión, sin aprobarlo ni iniciar su instancia física por inferencia.`;
 }
@@ -154,7 +160,7 @@ function sourceContext(task, workTopology, includePrevious) {
   return blocks.join('\n');
 }
 
-export function renderCurrentWork({ control, workTopology, templateHash }) {
+export function renderCurrentWork({ control, workTopology, templateHash, repositoryRoot }) {
   const physical = control.physical.active;
   const taskId = physical?.taskId ?? control.documentary.taskId;
   const task = workTopology.inventory.get(taskId);
@@ -181,16 +187,18 @@ ACCIÓN PRINCIPAL OBLIGATORIA
 - Motivo: ${control.primaryAction.why}
 - Modo operativo: ${control.mode}
 - Autorización física para este objetivo: ${implementationAuthorized ? 'SÍ' : 'NO'}
+- Raíz local exacta del repositorio: ${repositoryRoot}
 
 MODO DE EJECUCIÓN Y OPERADOR
 
 - Operador que realiza los cambios: USUARIO HUMANO
-- Interacción: UN PASO POR VEZ
+- Interacción: PASOS CONSECUTIVOS HASTA UN GATE DE EVIDENCIA
 - Escrituras del asistente en archivos o repositorios: NO AUTORIZADAS
 - Comandos y validaciones ejecutados por el asistente: NO AUTORIZADOS
 - Commit, push, PR, despliegues y mutaciones remotas del asistente: NO AUTORIZADOS
 - Auditoría de solo lectura por el asistente: AUTORIZADA
-- Confirmación para recibir el paso siguiente: HECHO
+- Pausa obligatoria: solo cuando el paso siguiente depende de evidencia todavía desconocida
+- Respuesta del usuario ante una pausa: RESULTADO DEL PASO N
 - Excepción limitada: AUTORIZO EJECUCION ASISTIDA DEL PASO N, usando el número real del paso ya presentado
 - Alcance de la excepción: solo ese paso; al terminar vuelve automáticamente el modo manual
 
@@ -237,7 +245,7 @@ ${actionResponseContract(control, sourceContractHash)}
 
 No desarrolles la tarea documental ${control.documentary.taskId} mientras su carril figure ${control.documentary.state}, salvo que esa misma tarea sea el objetivo exacto de la acción principal. No ejecutes otra instancia, no interpretes la aprobación documental como autorización física y no sustituyas el resultado material por recomendaciones genéricas.
 
-Este iniciador ya contiene la instrucción de trabajo: comienza con auditoría de solo lectura, presenta el mapa y entrega únicamente el paso manual vigente. No hagas ninguna escritura mientras no exista autorización asistida explícita para el número exacto del paso.
+Este iniciador ya contiene la instrucción de trabajo: comienza con auditoría de solo lectura, presenta el mapa y entrega el lote manual completo hasta el primer gate real de evidencia. No hagas ninguna escritura mientras no exista autorización asistida explícita para el número exacto del paso.
 
 TRAZABILIDAD DEL INICIADOR
 
@@ -252,22 +260,24 @@ ${sourceContext(task, workTopology, emptyDraft)}
 }
 
 export function buildChatgptWorkStarter({ root = process.cwd() } = {}) {
-  const templatePath = path.join(root, TEMPLATE_PATH);
+  const repositoryRoot = path.resolve(root);
+  const templatePath = path.join(repositoryRoot, TEMPLATE_PATH);
   if (!fs.existsSync(templatePath)) throw new Error(`no existe ${TEMPLATE_PATH}.`);
   const template = fs.readFileSync(templatePath, 'utf8').replace(/\r\n?/gu, '\n');
   if (template.split(SLOT).length !== 2) {
     throw new Error(`${TEMPLATE_PATH} debe contener exactamente una ranura ${SLOT}.`);
   }
-  const workTopology = resolveTaskWorkTopology({ root });
-  const control = deriveImplementationControl({ root, workTopology });
+  const workTopology = resolveTaskWorkTopology({ root: repositoryRoot });
+  const control = deriveImplementationControl({ root: repositoryRoot, workTopology });
   const currentWork = renderCurrentWork({
     control,
     workTopology,
     templateHash: sha256(template),
+    repositoryRoot,
   });
   return {
     control,
-    outputPath: path.join(root, OUTPUT_PATH),
+    outputPath: path.join(repositoryRoot, OUTPUT_PATH),
     source: template.replace(SLOT, currentWork).replace(/\n*$/u, '\n'),
   };
 }

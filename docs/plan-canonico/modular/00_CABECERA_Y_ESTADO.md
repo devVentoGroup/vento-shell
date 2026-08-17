@@ -34,10 +34,10 @@
 | Siguiente tarea | **SHELL-CI-004 — Crear changelog automático** |
 | Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
 | Progreso del bloque | **BLOQUE T: 2 de 24 aprobadas; SHELL-CI-003 pendiente** |
-| Estado de implementación | **GLOBAL_IMPLEMENTATION_AUTHORIZED** |
-| Acción principal obligatoria | **INICIAR_IMPLEMENTACION — SHELL-CI-001::GLOBAL** |
+| Estado de implementación | **GLOBAL_IMPLEMENTATION_ACTIVE** |
+| Acción principal obligatoria | **CONTINUAR_IMPLEMENTACION — SHELL-CI-001::GLOBAL** |
 | Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — SHELL-CI-003** |
-| Carril físico | **AUTHORIZED — SHELL-CI-001::GLOBAL** |
+| Carril físico | **IN_PROGRESS — SHELL-CI-001::GLOBAL** |
 | Alcance físico autorizado | **SHELL-CI-001::GLOBAL** |
 
 ### Continuidad inmediata
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE T: 2 DE 24 APROBADAS — ACTUAL SHELL-CI-003** |
-| Implementación física | **SHELL-CI-001::GLOBAL — AUTHORIZED** |
+| Implementación física | **SHELL-CI-001::GLOBAL — IN_PROGRESS** |
 
 ## Reglas de edición
 

@@ -72,8 +72,10 @@ export function validateImplementationControl(control, workTopology) {
     if (operatorPolicy.default_operator !== 'HUMAN_USER') {
       errors.push('execution_operator_policy.default_operator debe ser HUMAN_USER.');
     }
-    if (operatorPolicy.interaction_mode !== 'ONE_STEP_AT_A_TIME') {
-      errors.push('execution_operator_policy.interaction_mode debe ser ONE_STEP_AT_A_TIME.');
+    if (operatorPolicy.interaction_mode !== 'CONTINUOUS_BATCH_UNTIL_EVIDENCE_GATE') {
+      errors.push(
+        'execution_operator_policy.interaction_mode debe ser CONTINUOUS_BATCH_UNTIL_EVIDENCE_GATE.',
+      );
     }
     for (const field of [
       'assistant_repository_writes',
@@ -88,8 +90,13 @@ export function validateImplementationControl(control, workTopology) {
     if (operatorPolicy.assistant_read_only_audit !== true) {
       errors.push('execution_operator_policy.assistant_read_only_audit debe ser true.');
     }
-    if (operatorPolicy.step_confirmation_token !== 'HECHO') {
-      errors.push('execution_operator_policy.step_confirmation_token debe ser HECHO.');
+    if (operatorPolicy.pause_only_when_next_step_depends_on_evidence !== true) {
+      errors.push(
+        'execution_operator_policy.pause_only_when_next_step_depends_on_evidence debe ser true.',
+      );
+    }
+    if (operatorPolicy.evidence_reply_prefix !== 'RESULTADO DEL PASO ') {
+      errors.push('execution_operator_policy.evidence_reply_prefix no coincide con el contrato.');
     }
     if (operatorPolicy.assisted_execution_authorization_prefix
       !== 'AUTORIZO EJECUCION ASISTIDA DEL PASO ') {
@@ -312,11 +319,11 @@ export function deriveImplementationControl({
     instruction: actionType === 'AUTORIZAR_IMPLEMENTACION'
       ? `Definir y aprobar el alcance físico exacto de ${selected.instanceId}; todavía no modificar código.`
       : actionType === 'INICIAR_IMPLEMENTACION'
-        ? `Iniciar la guía humana paso a paso de ${selected.instanceId}; el asistente no modifica archivos.`
+        ? `Iniciar la guía humana continua de ${selected.instanceId}; avanzar hasta la primera comprobación necesaria.`
         : actionType === 'CONTINUAR_IMPLEMENTACION'
-          ? `Guiar al usuario en el siguiente paso de ${selected.instanceId} y esperar HECHO antes de avanzar.`
+          ? `Entregar al usuario el siguiente lote determinista de ${selected.instanceId} y pausar solo por evidencia necesaria.`
           : actionType === 'VALIDAR_IMPLEMENTACION'
-            ? `Entregar una validación por vez para que el usuario la ejecute y aporte su resultado real.`
+            ? `Entregar seguidas las validaciones independientes y pausar cuando sus resultados determinen el avance.`
             : `Guiar la resolución humana del bloqueo de ${selected.instanceId} sin ampliar el alcance.`,
     why: selected.blocker ?? `${selected.taskId} tiene contrato aprobado y es la primera instancia física global sin verificar.`,
   } : {
@@ -350,7 +357,9 @@ export function deriveImplementationControl({
       assistantGitOperations: operatorPolicy.assistant_git_operations,
       assistantRemoteMutations: operatorPolicy.assistant_remote_mutations,
       assistantReadOnlyAudit: operatorPolicy.assistant_read_only_audit,
-      stepConfirmationToken: operatorPolicy.step_confirmation_token,
+      pauseOnlyWhenNextStepDependsOnEvidence:
+        operatorPolicy.pause_only_when_next_step_depends_on_evidence,
+      evidenceReplyPrefix: operatorPolicy.evidence_reply_prefix,
       assistedExecutionAuthorizationPrefix: operatorPolicy.assisted_execution_authorization_prefix,
     },
     implementationAuthorized: authorized.length > 0,
@@ -394,11 +403,12 @@ export function renderCurrentWorkDirective(control) {
 ## Operador de ejecución
 
 - **Operador predeterminado:** USUARIO HUMANO
-- **Modo:** UN PASO POR VEZ
+- **Modo:** PASOS SEGUIDOS HASTA UNA COMPROBACIÓN NECESARIA
 - **Escrituras del asistente:** PROHIBIDAS POR DEFECTO
 - **Ejecución de validaciones por el asistente:** PROHIBIDA POR DEFECTO
 - **Git, GitHub y mutaciones remotas del asistente:** PROHIBIDAS POR DEFECTO
-- **Confirmación para avanzar:** \`HECHO\`
+- **Pausa:** solo cuando el paso siguiente depende de una salida, prueba, decisión o permiso todavía desconocido
+- **Respuesta en una pausa:** \`RESULTADO DEL PASO N\` seguida de la evidencia solicitada
 - **Excepción limitada:** solo \`AUTORIZO EJECUCION ASISTIDA DEL PASO N\` autoriza ese paso numerado; después vuelve el modo manual.
 
 ## Carril documental
@@ -419,9 +429,10 @@ ${physicalRows}
 2. Aprobar un marcador documental crea elegibilidad, nunca autorización física automática.
 3. Código, migraciones, Supabase, despliegues o cambios remotos requieren una instancia explícitamente \`AUTHORIZED\`.
 4. \`AUTHORIZED\` habilita el trabajo físico, pero no concede al asistente permiso para escribirlo.
-5. El asistente entrega exactamente un paso; el usuario lo realiza y responde \`HECHO\` antes de recibir el siguiente.
-6. La siguiente instancia global espera la verificación de la anterior; no se concilia trabajo duplicado al final.
-7. “Haz la acción principal” inicia la guía paso a paso; nunca autoriza escrituras automáticas.
+5. El asistente entrega seguidos todos los pasos deterministas hasta la primera comprobación necesaria.
+6. No se detiene por rutina entre pasos; solo pausa si el siguiente depende realmente de evidencia todavía desconocida.
+7. La siguiente instancia global espera la verificación de la anterior; no se concilia trabajo duplicado al final.
+8. “Haz la acción principal” inicia la guía manual continua; nunca autoriza escrituras automáticas.
 `;
 }
 

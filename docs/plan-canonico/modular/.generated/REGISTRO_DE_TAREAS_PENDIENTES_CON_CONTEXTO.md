@@ -8,9 +8,9 @@
 
 ## Qué toca hacer ahora
 
-- **Acción principal obligatoria:** `INICIAR_IMPLEMENTACION`
+- **Acción principal obligatoria:** `CONTINUAR_IMPLEMENTACION`
 - **Objetivo exacto:** `SHELL-CI-001::GLOBAL` — Crear pruebas de paquetes compartidos
-- **Instrucción:** Iniciar la guía humana paso a paso de SHELL-CI-001::GLOBAL; el asistente no modifica archivos.
+- **Instrucción:** Entregar al usuario el siguiente lote determinista de SHELL-CI-001::GLOBAL y pausar solo por evidencia necesaria.
 - **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `SHELL-CI-003`
 - **Implementación física autorizada:** `SHELL-CI-001::GLOBAL`
 
