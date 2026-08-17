@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **943** |
+| Aprobadas | **944** |
 | En propuesta | **0** |
-| No iniciadas | **651** |
+| No iniciadas | **650** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **59.16% (943/1594)** |
+| Porcentaje de completamiento | **59.22% (944/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-MIG-006` — Verificar accesibilidad, tema y movimiento reducido | ✅ APROBADA |
-| Tarea actual | `SHELL-MIG-007` — Definir contrato de paridad ejecutable por paquete | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-MIG-008` — Definir gate de retiro legacy y certificación por paquete | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-MIG-007` — Definir contrato de paridad ejecutable por paquete | ✅ APROBADA |
+| Tarea actual | `SHELL-MIG-008` — Definir gate de retiro legacy y certificación por paquete | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-NATIVE-001` — Crear tokens compatibles con ANIMA | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -770,7 +770,7 @@
 | ✅ APROBADA | `SHELL-MIG-004` | Sustituir la plantilla histórica por scaffold versionado | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ✅ APROBADA | `SHELL-MIG-005` | Migrar componentes, Chrome y estilos por aplicación | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ✅ APROBADA | `SHELL-MIG-006` | Verificar accesibilidad, tema y movimiento reducido | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
-| ⬜ NO INICIADA | `SHELL-MIG-007` | Definir contrato de paridad ejecutable por paquete | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
+| ✅ APROBADA | `SHELL-MIG-007` | Definir contrato de paridad ejecutable por paquete | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ⬜ NO INICIADA | `SHELL-MIG-008` | Definir gate de retiro legacy y certificación por paquete | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ⬜ NO INICIADA | `SHELL-NATIVE-001` | Crear tokens compatibles con ANIMA | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-NATIVE-002` | Compartir contratos y validadores | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |

@@ -3597,19 +3597,793 @@ Esta tarea no:
 `SHELL-MIG-007 — Definir contrato de paridad ejecutable por paquete`
 
 
-### [ ] SHELL-MIG-007 — Definir contrato de paridad ejecutable por paquete
+### ✅ SHELL-MIG-007 — Definir contrato de paridad ejecutable por paquete
 
-**Propósito:** definir una sola matriz reutilizable de API TypeScript, comportamiento, rutas, clases, estados, fallos y oráculos antes/después para que cada paquete ejecute su propia evidencia sin reabrir esta tarea global.
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-MIG-006 — Verificar accesibilidad, tema y movimiento reducido
+**Tarea siguiente:** SHELL-MIG-008 — Definir gate de retiro legacy y certificación por paquete
+**Tipo de tarea:** documental — definición global única de un contrato de paridad reutilizable con ejecución posterior por paquete mediante instancias `SHELL-MIG-007::<package_id>`; no ejecuta pruebas físicas ni reabre el marcador global durante cada paquete
+**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md`
+**Estado físico resultante:** CONTRATO_GLOBAL_DE_PARIDAD_ESPECIFICADO; 1 plantilla reutilizable; 7 dimensiones de paridad; 8 familias de fixtures; 8 oráculos; 7 clases de evidencia de instancia; 0 instancias ejecutadas; 0 consumidores certificados por esta tarea
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
 
-**Dependencias para desarrollar:** `SHELL-MIG-005`; `SHELL-MIG-006`.
+---
 
-**Dependencias para ejecutar cada instancia:** `SHELL-CI-001`; `SHELL-CI-007` a `SHELL-CI-013`; `E5-GATE-008::<package_id>`; `SHELL-CI-020::<package_id>`.
+#### 1. Propósito
 
-**Modo de ejecución posterior:** `TEMPLATE_PER_PACKAGE`; instancia `SHELL-MIG-007::<package_id>` dentro del readiness `SHELL-CI-021::<package_id>`.
+`SHELL-MIG-007` define una sola vez el contrato con el que cada paquete de cambio deberá demostrar paridad de consumidor antes de considerarse apto para continuar su readiness.
 
-**Puerta de cierre del marcador global:** matriz, fixtures, oráculos, atribución a commit/paquete, clases de evidencia y rollback esperado definidos sin afirmar que las pruebas ya se ejecutaron.
+La tarea separa expresamente dos momentos:
 
-**Puerta de cierre de cada instancia:** pruebas contractuales y operativas aprobadas, evidencia atribuible al commit y paquete de cambio, y rollback ensayado.
+```text
+MARCADOR GLOBAL SHELL-MIG-007
+→ define una sola matriz, fixtures, oráculos, evidencia, excepciones y gates
+→ se aprueba una sola vez
+→ no ejecuta todavía pruebas de paquetes
+
+INSTANCIA SHELL-MIG-007::<package_id>
+→ aplica el contrato global al alcance exacto de un paquete ya autorizado
+→ compara baseline y candidato reales
+→ conserva evidencia propia
+→ no reabre ni vuelve a aprobar el marcador global
+```
+
+La paridad no significa conservar bytes, estructura interna o defectos legacy. Significa demostrar que todo comportamiento observable protegido permanece equivalente o que cualquier diferencia está respaldada por una decisión canónica aprobada y un oráculo explícito.
+
+---
+
+#### 2. Modalidad canónica y ciclo de ejecución
+
+La modalidad de esta tarea es `TEMPLATE_PER_PACKAGE`.
+
+| Capa                     | Identidad                     | Momento                                                                 | Resultado                                                                                  |
+| ------------------------ | ----------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| definición global        | `SHELL-MIG-007`               | ahora, después de `SHELL-MIG-005` y `SHELL-MIG-006`                     | contrato reusable aprobado, sin ejecución física                                           |
+| instancia de paquete     | `SHELL-MIG-007::<package_id>` | después de los habilitadores y del inicio de implementación del paquete | evidencia real de paridad del paquete y sus consumidores afectados                         |
+| integración de readiness | misma instancia               | dentro de `SHELL-CI-021::<package_id>`                                  | la evidencia queda disponible para la decisión de readiness, sin aprobarla automáticamente |
+
+Dependencias para desarrollar el marcador global:
+
+- `SHELL-MIG-005`;
+- `SHELL-MIG-006`.
+
+Dependencias para ejecutar una instancia:
+
+- `SHELL-CI-001`;
+- `SHELL-CI-007` a `SHELL-CI-013`;
+- `E5-GATE-008::<package_id>`;
+- `SHELL-CI-020::<package_id>`.
+
+La existencia de las dependencias de ejecución no bloquea la definición global actual y no autoriza a ejecutar una instancia antes de que su paquete posea un candidato materializado y verificable.
+
+---
+
+#### 3. Resultado material
+
+Queda definido un contrato global completo con las siguientes unidades:
+
+| Unidad                                    | Cantidad | Resultado                                                                                 |
+| ----------------------------------------- | -------: | ----------------------------------------------------------------------------------------- |
+| plantilla global de instancia             |    **1** | definida                                                                                  |
+| dimensiones obligatorias de paridad       |    **7** | definidas                                                                                 |
+| familias reutilizables de fixtures        |    **8** | definidas                                                                                 |
+| oráculos reutilizables                    |    **8** | definidos                                                                                 |
+| clases de evidencia por instancia         |    **7** | definidas                                                                                 |
+| estados posibles de una dimensión         |    **5** | definidos                                                                                 |
+| consumidores heredados de `SHELL-MIG-005` |    **7** | conservados como universo de referencia, no como alcance automático de todos los paquetes |
+| ocurrencias UI heredadas                  |   **57** | conservadas como inventario de referencia; 20 `KEEP LOCAL` y 37 `MIGRATE`                 |
+| instancias de paquete ejecutadas          |    **0** | no corresponde en esta tarea global                                                       |
+| pruebas runtime ejecutadas                |    **0** | no corresponde en esta tarea global                                                       |
+| rollbacks ensayados                       |    **0** | se exigen a cada instancia, no se inventan en la definición global                        |
+
+---
+
+#### 4. Baseline heredada de migración
+
+El contrato reutiliza sin alterar el universo aprobado por `SHELL-MIG-005` y el gate visual definido por `SHELL-MIG-006`.
+
+| Consumidor | Ocurrencias UI | `KEEP LOCAL` | `MIGRATE` |
+| ---------- | -------------: | -----------: | --------: |
+| SHELL      |              2 |            2 |         0 |
+| NUMERA     |              9 |            3 |         6 |
+| FOGO       |              9 |            3 |         6 |
+| ORIGO      |              9 |            3 |         6 |
+| VISO       |             10 |            3 |         7 |
+| PULSO      |              9 |            3 |         6 |
+| NEXO       |              9 |            3 |         6 |
+| **Total**  |         **57** |       **20** |    **37** |
+
+Esta tabla define el universo de referencia del mini-bloque, no obliga a que una instancia de paquete pruebe los siete consumidores.
+
+El alcance de una instancia es exclusivamente la intersección entre:
+
+```text
+alcance aprobado del package_id
+∩
+consumidores y superficies realmente modificados por ese paquete
+∩
+identidades y extensiones que participan en el comportamiento comparado
+```
+
+Un consumidor fuera de esa intersección no se incorpora por similitud ni por pertenecer a la misma familia de aplicación.
+
+---
+
+#### 5. Unidad mínima de paridad
+
+La unidad mínima de comparación queda definida por la siguiente tupla indivisible:
+
+```text
+package_id
++
+repositorio consumidor
++
+commit baseline
++
+commit candidato
++
+identidades afectadas
++
+versiones e integridad de dependencias
++
+manifest y lockfile
++
+toolchain
++
+fixture
++
+oráculo
++
+ambiente de prueba
+```
+
+Una evidencia que no pueda reconstruir esta tupla queda `BLOCKED` y no puede heredarse a otra combinación.
+
+La unidad de aprobación de una instancia es el conjunto completo de unidades mínimas que cubra todos los consumidores y superficies incluidos en el paquete.
+
+---
+
+#### 6. Contrato de entrada de cada instancia
+
+Toda instancia deberá materializar como mínimo los siguientes datos antes de ejecutar un oráculo:
+
+| Campo                    | Regla                                                                              |
+| ------------------------ | ---------------------------------------------------------------------------------- |
+| identidad de instancia   | `SHELL-MIG-007::<package_id>` con el mismo `package_id` aprobado en E5             |
+| paquete                  | identidad exacta del paquete de cambio                                             |
+| unidad de implementación | identidad exacta cuando el paquete ya la tenga asignada; no se inventa una nueva   |
+| consumidores afectados   | repositorios exactos realmente modificados por el paquete                          |
+| commit baseline          | último commit aprobado que representa el comportamiento previo a comparar          |
+| commit candidato         | commit exacto que contiene el cambio materializado por el paquete                  |
+| superficies afectadas    | archivos, exports, rutas, componentes, adapters o contratos incluidos en el cambio |
+| identidades heredadas    | filas aplicables de la matriz de migración cuando correspondan                     |
+| package versions         | versiones exactas de cada dependencia compartida que participe en el resultado     |
+| integridad               | huella o integridad resoluble del artefacto compartido cuando aplique              |
+| manifest                 | manifest efectivo del consumidor candidato                                         |
+| lockfile                 | lockfile efectivo del consumidor candidato                                         |
+| toolchain                | runtime, package manager, compilador y versiones materiales para reproducibilidad  |
+| fixtures                 | conjunto exacto de fixtures ejecutados                                             |
+| oráculos                 | conjunto exacto de oráculos ejecutados                                             |
+| excepciones              | lista cerrada de deltas aprobados; lista vacía cuando no existan                   |
+| rollback                 | snapshot restituible y procedimiento aplicable al consumidor                       |
+
+La ausencia de un campo obligatorio no se convierte en valor por defecto: bloquea la instancia.
+
+---
+
+#### 7. Identidad de baseline y candidato
+
+El baseline no es una referencia narrativa ni el commit histórico de una tarea anterior por defecto. Es el commit exacto aprobado como estado previo del consumidor para el paquete concreto.
+
+El candidato es el commit exacto que contiene el cambio cuya paridad se evalúa.
+
+Reglas:
+
+1. baseline y candidato pertenecen al mismo repositorio consumidor;
+2. el candidato deberá descender del baseline o declarar explícitamente la relación de transición aprobada cuando el flujo autorizado use otra base;
+3. la evidencia de otro commit no se reutiliza por equivalencia supuesta;
+4. cambiar manifest, lockfile, package version, configuración material o toolchain invalida la atribución anterior cuando pueda modificar el resultado;
+5. un baseline con defecto conocido no se convierte automáticamente en oráculo de comportamiento deseado;
+6. todo defecto legacy que no deba conservarse se modela como excepción aprobada con resultado candidato esperado;
+7. un candidato que reintroduzca una copia legacy para alcanzar similitud visual no satisface paridad.
+
+---
+
+#### 8. Familias reutilizables de fixtures
+
+La plantilla define ocho familias de fixtures. Cada instancia seleccionará todas las aplicables y justificará expresamente cualquier `NOT_APPLICABLE`.
+
+| Fixture                 | Propósito                                                | Entradas mínimas                                                                                       |
+| ----------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `FIXTURE_IDENTITY`      | fijar identidad del consumidor y configuración estable   | aplicación, repositorio, metadata y configuración pública aplicable                                    |
+| `FIXTURE_COMPOSITION`   | comparar composición de shell y slots                    | brand, navigation preparada, context presentacional, notices, headerActions y children cuando apliquen |
+| `FIXTURE_NAVIGATION`    | comparar navegación visible y estado activo              | conjunto preparado de destinos, identidad activa, labels, iconos y estados presentacionales            |
+| `FIXTURE_ROUTING`       | comparar navegación efectiva y transiciones de URL       | ruta inicial, acción, destino esperado, parámetros gobernados y retorno cuando aplique                 |
+| `FIXTURE_STATE`         | comparar estados observables                             | estado inicial, transición, loading, empty, disabled, open, closed, success y error aplicables         |
+| `FIXTURE_INTERACTION`   | comparar secuencia de interacción                        | acciones de usuario o eventos reproducibles, callbacks esperados y orden observable                    |
+| `FIXTURE_FAILURE`       | comparar fallos y comportamiento fail-closed             | entrada inválida, dependencia ausente, configuración incompatible o fallo inyectado aplicable          |
+| `FIXTURE_BUILD_RUNTIME` | comparar capacidad de construir y ejecutar el consumidor | instalación bloqueada, manifest, lockfile, toolchain, variables no secretas y comando aplicable        |
+
+Los fixtures deberán usar entradas deterministas. No usarán datos productivos, secretos ni autoridad fabricada para forzar un resultado verde.
+
+---
+
+#### 9. Regla de igualdad y diferencias autorizadas
+
+Cada comparación produce una de cuatro disposiciones semánticas:
+
+| Disposición      | Significado                                                                                                      |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `EQUIVALENT`     | baseline y candidato preservan el contrato observable protegido                                                  |
+| `APPROVED_DELTA` | existe una diferencia intencional respaldada por una decisión canónica y el candidato satisface el nuevo oráculo |
+| `NOT_APPLICABLE` | la dimensión no participa en el alcance concreto y existe justificación verificable                              |
+| `MISMATCH`       | existe una diferencia no autorizada, no explicada o incompatible con el contrato                                 |
+
+`APPROVED_DELTA` exige registrar:
+
+- fuente canónica que autoriza la diferencia;
+- observable anterior;
+- observable esperado nuevo;
+- riesgo protegido;
+- oráculo que demuestra el resultado;
+- responsable del delta.
+
+No son justificaciones válidas “es equivalente”, “se ve igual”, “es una refactorización”, “debería funcionar” o “el package lo maneja” sin evidencia reproducible.
+
+---
+
+#### 10. Oráculos reutilizables
+
+Quedan definidos ocho oráculos globales. Una instancia puede ejecutar más de un caso por oráculo.
+
+| Oráculo                   | Protege                               | PASS cuando                                                                                            | FAIL cuando                                                                                                                     |
+| ------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| `ORACLE_TYPESCRIPT`       | API TypeScript consumible             | todos los usos protegidos compilan con el contrato esperado o con mapping aprobado                     | desaparece un uso, cambia un tipo sin autorización, requiere cast inseguro o aparece import interno                             |
+| `ORACLE_BEHAVIOR`         | comportamiento observable             | la misma entrada produce resultado y secuencia equivalentes o delta aprobado                           | cambia resultado, callback, side effect, orden material o interacción sin autorización                                          |
+| `ORACLE_ROUTE`            | rutas y navegación                    | destinos, estado activo, transición y retorno conservan intención aprobada                             | aparece destino nuevo no autorizado, se pierde ruta, cambia retorno o la UI fabrica autoridad                                   |
+| `ORACLE_MARKUP_CLASS`     | contrato DOM, clases y hooks externos | semántica y hooks contractuales permanecen o migran mediante mapping aprobado                          | se rompe selector/hook público, semántica material o dependencia externa no inventariada                                        |
+| `ORACLE_STATE`            | estados y transiciones                | todos los estados aplicables conservan disponibilidad, transición y significado                        | estado desaparece, se vuelve inalcanzable, cambia significado o queda bloqueado incorrectamente                                 |
+| `ORACLE_FAILURE`          | fallos y fail-closed                  | el candidato falla de forma controlada, atribuible y sin ampliar autoridad ni side effects             | fallback silencioso, éxito falso, ampliación de acceso, excepción distinta no aprobada o side effect parcial                    |
+| `ORACLE_BUILD_REGRESSION` | integración del consumidor            | instalación, chequeos estáticos, build y pruebas aplicables completan con evidencia atribuible         | comando inexistente, dependencia flotante, build roto, prueba omitida sin justificación o regresión                             |
+| `ORACLE_ROLLBACK`         | reversibilidad                        | el snapshot previo se restaura y el consumidor vuelve a una combinación soportada sin bypass prohibido | rollback incompleto, manifest/lockfile divergentes, pérdida de datos/configuración o dependencia de edición manual no gobernada |
+
+---
+
+#### 11. Matriz obligatoria de siete dimensiones de paridad
+
+Cada consumidor incluido en una instancia deberá producir una fila por dimensión aplicable.
+
+| Dimensión           | Baseline que se captura                         | Candidato que se compara                     | Oráculo principal         | Evidencia mínima                                                 | Bloqueo principal                                         |
+| ------------------- | ----------------------------------------------- | -------------------------------------------- | ------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------- |
+| API TypeScript      | imports y usos públicos consumidos              | imports y usos después de migración          | `ORACLE_TYPESCRIPT`       | compilación/fixture de consumidor y mapping de API cuando exista | símbolo, tipo o contrato no resoluble                     |
+| comportamiento      | entradas, callbacks y observables relevantes    | mismo escenario sobre candidato              | `ORACLE_BEHAVIOR`         | trace o resultado reproducible antes/después                     | delta funcional no autorizado                             |
+| rutas y navegación  | destinos, estado activo y transición            | mismo escenario o delta aprobado             | `ORACLE_ROUTE`            | rutas observadas, intentos y transiciones                        | pérdida, ampliación o destino divergente                  |
+| DOM, clases y hooks | semántica y dependencias externas contractuales | estructura contractual candidata             | `ORACLE_MARKUP_CLASS`     | inventario de hooks públicos y comparación                       | ruptura de consumidor externo o clase legacy oculta       |
+| estados             | conjunto y transición de estados aplicables     | conjunto y transición candidatos             | `ORACLE_STATE`            | matriz estado inicial → evento → estado final                    | estado perdido, añadido sin contrato o semántica distinta |
+| fallos              | fallos conocidos e inyectados aplicables        | comportamiento candidato bajo el mismo fallo | `ORACLE_FAILURE`          | error, reason, ausencia de side effects y recuperación           | fallback permisivo o resultado falso                      |
+| build y regresión   | capacidad reproducible del baseline             | capacidad reproducible del candidato         | `ORACLE_BUILD_REGRESSION` | instalación bloqueada, lint/typecheck/build/tests aplicables     | comando ausente, fallo o prueba obligatoria omitida       |
+
+El rollback se ejecuta como gate transversal después de obtener un candidato apto y no sustituye ninguna de las siete dimensiones.
+
+---
+
+#### 12. Paridad de API TypeScript
+
+La comparación de API TypeScript protege el contrato realmente consumido, no la forma privada de implementación.
+
+Cada instancia deberá clasificar cada uso afectado como una de estas modalidades:
+
+1. `SAME_PUBLIC_API`: el consumidor conserva el mismo contrato público y deberá compilar sin cambios semánticos.
+2. `MAPPED_PUBLIC_API`: la migración usa una API pública distinta aprobada y cada uso baseline posee mapping explícito hacia el candidato.
+3. `LOCAL_ADAPTER`: el consumidor conserva un adapter local propietario que traduce su modelo al contrato compartido sin copiar la implementación.
+4. `REMOVED_BY_APPROVED_DELTA`: el uso desaparece porque una decisión canónica aprobada elimina la capacidad o la sustituye por otra.
+
+Para `MAPPED_PUBLIC_API` y `LOCAL_ADAPTER` deberán registrarse los usos baseline cubiertos y los usos candidatos resultantes. Un mapping parcial es `FAIL`.
+
+Queda prohibido obtener PASS mediante:
+
+- `any` nuevo o cast equivalente para ocultar incompatibilidad;
+- import desde ruta privada no publicada;
+- `file:`, `link:` o workspace como sustituto de una release cuando la instancia exige artefacto publicado;
+- wrapper vacío cuyo único objetivo sea conservar una firma rota;
+- duplicación local de tipos propietarios del package.
+
+---
+
+#### 13. Paridad de comportamiento
+
+La conducta se compara mediante observables, no mediante implementación interna.
+
+Observables materiales incluyen, cuando apliquen:
+
+- contenido presentado;
+- acciones habilitadas o deshabilitadas;
+- callbacks emitidos;
+- eventos y su orden material;
+- navegación iniciada;
+- apertura y cierre de disclosure, menú o modal;
+- persistencia o limpieza de estado local permitido;
+- loading, empty, success y error;
+- side effects expresamente pertenecientes al consumidor;
+- retorno de foco y comportamiento interactivo cuando el caso lo incluya.
+
+Un refactor interno que conserva todos los observables protegidos puede ser `EQUIVALENT`. Una diferencia observable exige `APPROVED_DELTA` o produce `MISMATCH`.
+
+---
+
+#### 14. Paridad de rutas y navegación
+
+La ruta se compara por intención y resultado aprobado, no por coincidencia textual ciega cuando exista un cambio canónico de ruta.
+
+La evidencia deberá registrar:
+
+- ruta o estado inicial;
+- identidad de navegación activa;
+- acción ejecutada;
+- destino resultante;
+- parámetros gobernados preservados;
+- comportamiento de retorno cuando aplique;
+- destinos excluidos u ocultos relevantes;
+- razón de cualquier diferencia autorizada.
+
+La UI compartida no puede ganar PASS calculando permisos, roles, scope o contexto autoritativo. La autorización y la selección de navegación permitida deberán llegar resueltas desde sus propietarios.
+
+Un destino visible que no existía y no está autorizado, o un destino protegido que desaparece sin decisión aprobada, produce `FAIL`.
+
+---
+
+#### 15. Paridad de DOM, clases y hooks externos
+
+No se exige identidad byte a byte de DOM ni de class names internos.
+
+La instancia deberá distinguir:
+
+- semántica y atributos contractuales;
+- clases públicas documentadas;
+- `data-*`, ids o hooks realmente consumidos externamente;
+- clases internas sin contrato;
+- CSS legacy cuya dependencia fue detectada;
+- extensiones locales legítimas del consumidor.
+
+Solo las superficies contractuales deben preservarse o poseer mapping aprobado. Una clase interna puede cambiar sin delta si ningún consumidor depende de ella y no altera la evidencia especializada de `SHELL-MIG-006`.
+
+Una clase legacy descubierta como dependencia externa no puede ignorarse: debe migrarse, conservarse explícitamente como extensión propietaria o bloquear la instancia.
+
+---
+
+#### 16. Paridad de estados
+
+Cada superficie afectada deberá declarar su matriz de estados aplicables.
+
+Como mínimo se evalúan cuando existan:
+
+- inicial;
+- loading;
+- empty;
+- ready;
+- active/selected;
+- disabled;
+- open/closed;
+- success;
+- recoverable error;
+- terminal error.
+
+Cada caso se expresa como:
+
+```text
+estado inicial
++
+evento o entrada
+→ estado final esperado
++
+observable protegido
+```
+
+Un estado inexistente en baseline no se añade al candidato sin fuente aprobada. Un estado baseline que se elimina deberá poseer delta aprobado o producir `FAIL`.
+
+---
+
+#### 17. Paridad de fallos
+
+La instancia deberá incluir pruebas negativas para toda condición de fallo material al alcance.
+
+La comparación protege:
+
+- clasificación o reason esperado cuando exista contrato;
+- resultado visible seguro;
+- ausencia de autorización adicional;
+- ausencia de side effects parciales no permitidos;
+- capacidad de reintento o recuperación cuando aplique;
+- logs o evidencia técnica sin exposición de secretos;
+- distinción entre error de consumidor, package, configuración y ambiente.
+
+El candidato no puede transformar un fallo baseline en éxito silencioso para obtener paridad. Cuando el baseline sea permisivo de forma conocida y el contrato objetivo sea fail-closed, se registra `APPROVED_DELTA` y el oráculo esperado es el comportamiento seguro nuevo.
+
+---
+
+#### 18. Build y regresión por consumidor
+
+Una instancia no queda aprobada únicamente por pasar pruebas unitarias del package.
+
+Por cada consumidor afectado deberán ejecutarse los comandos aplicables y disponibles del repositorio exacto, incluyendo según corresponda:
+
+- instalación bloqueada;
+- lint;
+- typecheck;
+- build o export;
+- pruebas automatizadas;
+- pruebas de integración del cambio;
+- regresiones vinculadas a las superficies afectadas.
+
+Un comando requerido por el contrato pero todavía inexistente deja la dimensión `BLOCKED`; no se sustituye por una afirmación manual.
+
+Los habilitadores `SHELL-CI-001` y `SHELL-CI-007` a `SHELL-CI-013` no definen por sí mismos el alcance de la instancia. El alcance sigue viniendo del paquete y de sus consumidores afectados. La instancia deberá usar únicamente la infraestructura que resulte aplicable al repositorio probado.
+
+---
+
+#### 19. Relación con `SHELL-MIG-006`
+
+`SHELL-MIG-006` conserva el contrato especializado de tokens/tema, contraste, foco, teclado, movimiento reducido, densidad, responsive, CSS declarada e hidratación.
+
+`SHELL-MIG-007` no duplica esa matriz.
+
+Reglas:
+
+1. una instancia de paridad deberá identificar si el cambio toca una dimensión gobernada por `SHELL-MIG-006`;
+2. cuando exista evidencia especializada aplicable al mismo candidato, se referencia y se conserva su identidad de commit, paquete y configuración;
+3. evidencia de otro commit o combinación no se hereda;
+4. la ausencia de una referencia especializada no se convierte en PASS visual por comparación superficial;
+5. un resultado `FAIL`, `BLOCKED` o `STALE` de la evidencia especializada no puede ocultarse dentro de un PASS de paridad general;
+6. este vínculo no modifica las dependencias formales de ejecución declaradas para `SHELL-MIG-007`.
+
+---
+
+#### 20. Clases de evidencia de una instancia
+
+Cada instancia deberá conservar exactamente las clases aplicables de evidencia siguientes:
+
+| Clase                | Contenido obligatorio                                                                                 |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
+| `LINEAGE`            | package_id, repositorio, baseline, candidato, versiones, integridades, manifest, lockfile y toolchain |
+| `TYPESCRIPT`         | fixtures de compilación, mappings y resultado de `ORACLE_TYPESCRIPT`                                  |
+| `BUILD`              | comandos ejecutados, códigos de salida y artefactos de build/regresión aplicables                     |
+| `RUNTIME`            | fixtures de comportamiento y trazas/resultados antes/después                                          |
+| `NAVIGATION_STATE`   | rutas, navegación, estados y hooks contractuales comparados                                           |
+| `FAILURE_REGRESSION` | fallos inyectados, razones, side effects y regresiones ejecutadas                                     |
+| `ROLLBACK`           | snapshot, acción de reversión, resultado restaurado y comprobación posterior                          |
+
+Una captura aislada, log parcial, comentario de PR o resultado de otra combinación no satisface una clase por sí solo.
+
+---
+
+#### 21. Estados de dimensión y agregación
+
+Cada dimensión de una instancia usa uno de cinco estados:
+
+- `PASS`;
+- `FAIL`;
+- `BLOCKED`;
+- `STALE`;
+- `NOT_APPLICABLE`.
+
+Regla de agregación:
+
+```text
+si existe FAIL
+→ instancia FAIL
+
+si no existe FAIL pero existe BLOCKED o STALE
+→ instancia BLOCKED
+
+si todas las dimensiones aplicables son PASS
+ y cada NOT_APPLICABLE tiene justificación
+ y rollback = PASS
+→ instancia PASS
+```
+
+`STALE` nunca se convierte en PASS sin repetir la evidencia sobre la combinación vigente.
+
+---
+
+#### 22. Excepciones y deltas aprobados
+
+Las excepciones son cerradas y positivas: solo existe una excepción si una fuente canónica aprobada autoriza una diferencia concreta.
+
+Cada excepción deberá registrar:
+
+- consumidor;
+- superficie;
+- observable baseline;
+- observable candidato esperado;
+- fuente aprobada;
+- riesgo;
+- fixture;
+- oráculo;
+- responsable;
+- criterio de cierre.
+
+Queda prohibido usar una excepción para:
+
+- saltar una prueba porque falla;
+- aceptar un import privado;
+- mantener un fallback legacy no autorizado;
+- ampliar permisos o contexto;
+- ocultar un error de build;
+- trasladar un defecto conocido sin decisión explícita;
+- reutilizar evidencia de otro commit.
+
+---
+
+#### 23. Responsabilidades
+
+| Responsabilidad                                  | Propietario operativo del resultado                                                 |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| definir el contrato global                       | `SHELL-MIG-007`                                                                     |
+| aprobar el alcance del package_id                | `E5-GATE-008::<package_id>`                                                         |
+| proveer infraestructura de pruebas de packages   | `SHELL-CI-001`                                                                      |
+| proveer habilitadores de pruebas de consumidores | `SHELL-CI-007` a `SHELL-CI-013`                                                     |
+| materializar el candidato del paquete            | `SHELL-CI-020::<package_id>` y los grupos de implementación incluidos en el paquete |
+| ejecutar y registrar la instancia de paridad     | `SHELL-MIG-007::<package_id>` dentro del readiness correspondiente                  |
+| consumir la evidencia para readiness             | `SHELL-CI-021::<package_id>`                                                        |
+| definir retiro posterior                         | `SHELL-MIG-008` y su futura instancia aplicable                                     |
+
+Una misma persona o pipeline puede participar en varias responsabilidades, pero la evidencia conserva la identidad de la tarea y del paquete que la produce.
+
+---
+
+#### 24. Plantilla materializada de registro por instancia
+
+Toda futura instancia deberá materializar como mínimo esta matriz, con valores reales y sin filas omitidas:
+
+| Campo de instancia       | Contenido requerido                                                         |
+| ------------------------ | --------------------------------------------------------------------------- |
+| Instancia                | identidad `SHELL-MIG-007::<package_id>`                                     |
+| Package                  | package_id aprobado                                                         |
+| Unidad de implementación | identidad aprobada cuando aplique                                           |
+| Consumidores             | repositorios exactos incluidos                                              |
+| Baselines                | commit baseline por consumidor                                              |
+| Candidatos               | commit candidato por consumidor                                             |
+| Dependencias compartidas | package, versión e integridad exactas                                       |
+| Manifest / lockfile      | identidad o huella de ambos por consumidor                                  |
+| Toolchain                | versiones materiales                                                        |
+| Superficies afectadas    | lista exacta del cambio                                                     |
+| Fixtures                 | fixtures realmente ejecutados                                               |
+| Oráculos                 | oráculos realmente ejecutados                                               |
+| Deltas aprobados         | referencias explícitas o lista vacía                                        |
+| Resultado por dimensión  | estado y evidencia de las siete dimensiones aplicables                      |
+| Evidencia especializada  | referencias aplicables de gates especializados, sin herencia por inferencia |
+| Rollback                 | snapshot, ensayo y resultado                                                |
+| Resultado agregado       | PASS, FAIL o BLOCKED                                                        |
+| Bloqueadores             | lista cerrada con propietario y condición de salida                         |
+
+Esta plantilla es el resultado documental de la tarea global. Los valores concretos pertenecen exclusivamente a cada futura instancia.
+
+---
+
+#### 25. Reglas para paquetes con múltiples consumidores
+
+Cuando un package_id afecte más de un consumidor:
+
+1. se crea una sola instancia `SHELL-MIG-007::<package_id>`;
+2. dentro de ella existe un subresultado independiente por consumidor;
+3. cada consumidor conserva baseline, candidato, manifest, lockfile, fixtures y evidencia propios;
+4. PASS en un consumidor no se hereda a otro;
+5. un FAIL en cualquier consumidor obligatorio convierte la instancia en FAIL;
+6. un consumidor bloqueado convierte la instancia en BLOCKED mientras siga dentro del alcance aprobado;
+7. el rollback se ensaya por repositorio afectado y no exige revertir consumidores ajenos al paquete;
+8. una instancia no puede dividirse artificialmente para ocultar un consumidor fallido del mismo package_id.
+
+---
+
+#### 26. Reglas para un consumidor afectado por múltiples paquetes
+
+Un mismo consumidor puede aparecer en varias instancias cuando paquetes distintos modifican superficies diferentes.
+
+En ese caso:
+
+- cada package_id conserva su propia instancia;
+- cada instancia usa el baseline y candidato reales de su ventana;
+- la evidencia no se transfiere automáticamente entre paquetes;
+- una superficie común deberá declarar qué paquete produjo el cambio observado;
+- el segundo paquete no puede asumir que el PASS del primero cubre modificaciones posteriores;
+- la secuencia real de commits deberá permitir reconstruir la evolución sin saltos.
+
+---
+
+#### 27. Rollback ensayado
+
+La puerta de cierre de una instancia exige rollback realmente ensayado.
+
+El ensayo mínimo deberá demostrar, por cada repositorio afectado:
+
+1. identificación del snapshot anterior;
+2. restauración coherente de código, manifest, lockfile y configuración local aplicable;
+3. restitución de una combinación soportada de dependencias;
+4. ausencia de edición directa de `node_modules` o mutación de una release publicada;
+5. ausencia de reactivación de bypasses prohibidos;
+6. build o smoke verificable posterior a la restauración según el contrato del consumidor;
+7. registro del resultado y del tiempo/condición de recuperación cuando el paquete lo requiera.
+
+Si el rollback no puede ejecutarse de forma segura, la instancia queda `BLOCKED` aunque las comparaciones antes/después sean verdes.
+
+---
+
+#### 28. Gate de ejecución de una instancia
+
+Una instancia solo puede comenzar cuando se cumplan simultáneamente:
+
+1. el marcador global `SHELL-MIG-007` está aprobado;
+2. los habilitadores de ejecución declarados están disponibles;
+3. existe `E5-GATE-008::<package_id>` aprobado para el mismo package_id;
+4. `SHELL-CI-020::<package_id>` ha iniciado la ejecución del paquete;
+5. existe un candidato materializado para al menos una superficie incluida;
+6. baseline y candidato están identificados por commit;
+7. manifest y lockfile del candidato son atribuibles;
+8. los consumidores afectados están enumerados;
+9. fixtures y oráculos aplicables están seleccionados;
+10. rollback posee snapshot restituible;
+11. cualquier excepción posee fuente aprobada antes de ejecutar la comparación.
+
+No se considera iniciado un test por disponer únicamente de documentación, un PR vacío, una release no consumida o una captura visual.
+
+---
+
+#### 29. Condiciones de suspensión
+
+La instancia se suspende y queda `BLOCKED` cuando ocurra cualquiera de estas condiciones:
+
+- package_id distinto entre gate, implementación y evidencia;
+- baseline o candidato no atribuible;
+- consumidor afectado omitido;
+- versión o integridad de dependencia no resoluble;
+- manifest y lockfile incoherentes;
+- fixture no reproducible;
+- oráculo ambiguo;
+- mapping de API parcial;
+- import privado o dependencia local no autorizada usada para obtener PASS;
+- diferencia observable sin fuente aprobada;
+- CSS o hook legacy consumido pero no inventariado;
+- ruta o estado añadido/eliminado sin decisión aprobada;
+- fallo transformado en éxito silencioso;
+- build, typecheck o prueba obligatoria inexistente o fallida;
+- evidencia de otro commit marcada como vigente;
+- rollback no restituible o no ensayable;
+- evidencia especializada aplicable en FAIL, BLOCKED o STALE;
+- reintroducción de una copia legacy para aparentar paridad.
+
+---
+
+#### 30. Reconciliación de las tareas CI declaradas
+
+La dependencia de ejecución `SHELL-CI-007` a `SHELL-CI-013` se conserva exactamente como habilitador canónico de pruebas de consumidores.
+
+No se interpreta ese rango como una lista alternativa del universo de `SHELL-MIG-005` y no añade automáticamente ANIMA al alcance de una instancia de migración UI.
+
+Del mismo modo, una aplicación del universo de migración no obtiene PASS por el solo hecho de no poseer una tarea CI nominal con su nombre. Si el package_id la modifica, deberá existir un mecanismo aplicable y reproducible para ejecutar sus oráculos; de lo contrario, la instancia queda `BLOCKED`.
+
+---
+
+#### 31. Decisiones vinculantes
+
+1. `SHELL-MIG-007` se desarrolla y aprueba una sola vez.
+2. Cada package_id posterior utiliza una instancia `SHELL-MIG-007::<package_id>`.
+3. Una instancia no modifica el marcador global.
+4. La paridad se demuestra sobre consumidores realmente afectados, no sobre una lista fija aplicada a todos los paquetes.
+5. Baseline y candidato se identifican por commit exacto.
+6. Evidencia de otro commit, versión, lockfile o configuración no se hereda.
+7. La comparación protege contrato observable, no estructura privada de implementación.
+8. Un defecto legacy conocido no se conserva solo para obtener igualdad.
+9. Toda diferencia intencional exige `APPROVED_DELTA` con fuente canónica.
+10. API TypeScript admite mapping explícito, pero no casts inseguros ni imports privados.
+11. Rutas se comparan por intención y resultado aprobado; UI no resuelve autorización.
+12. Clases internas pueden cambiar cuando no son contractuales; hooks externos consumidos deben preservarse o migrarse explícitamente.
+13. Estados y fallos se comparan como transiciones reproducibles.
+14. El build del package no sustituye pruebas del consumidor.
+15. La evidencia especializada de `SHELL-MIG-006` no se duplica ni se ignora.
+16. Un package con varios consumidores conserva subresultados independientes.
+17. Un consumidor afectado por varios paquetes conserva evidencia independiente por package_id.
+18. La instancia es fail-closed ante evidencia faltante, ambigua o desactualizada.
+19. Rollback ensayado es obligatorio para PASS de instancia.
+20. La instancia vive dentro del readiness del package_id, pero no aprueba `SHELL-CI-021` automáticamente.
+21. Esta tarea global no ejecuta pruebas ni certifica consumidores físicos.
+22. El retiro legacy permanece reservado a `SHELL-MIG-008`.
+
+---
+
+#### 32. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Creados:** 0.
+
+**Modificados:** 0.
+
+**Justificación:** esta tarea no introduce un comportamiento ejecutable nuevo. Materializa el contrato operativo con el que se ejecutarán requisitos de paridad, compatibilidad, regresión, evidencia y rollback ya existentes. Las instancias futuras implementarán y ejecutarán esas obligaciones dentro de sus paquetes sin crear una identidad de requisito nueva por el solo hecho de aplicar esta plantilla.
+
+---
+
+#### 33. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                           |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador global define el contrato y no materializa un candidato de package ni modifica consumidores; no existe build de instancia que pueda atribuirse a esta tarea documental.                                                                                 |
+| LOCAL     | PASS           | La definición contiene una sola tarea, cabecera completa, 1 plantilla, 7 dimensiones, 8 fixtures, 8 oráculos, 7 clases de evidencia, estados fail-closed, plantilla de instancia, rollback, criterios y continuidad sin placeholders de desarrollo.                 |
+| REMOTA    | PASS           | Se verificaron la tarea actual, el owner, la topología `TEMPLATE_PER_PACKAGE`, las dependencias globales, las dependencias de ejecución, el universo 57 = 20 + 37, el contrato de entrega, el registro de requisitos aplicable y los scripts documentales vigentes. |
+| OPERATIVA | NOT_APPLICABLE | Ninguna instancia `SHELL-MIG-007::<package_id>` está autorizada ni materializada por el desarrollo del marcador global.                                                                                                                                             |
+| FÍSICA    | NOT_APPLICABLE | No se modifica código, package, repositorio consumidor, despliegue, Supabase, dispositivo ni ambiente operativo.                                                                                                                                                    |
+
+---
+
+#### 34. Criterios de aceptación
+
+`SHELL-MIG-007` queda documentalmente completa cuando:
+
+- [x] se define una sola plantilla global reutilizable;
+- [x] se conserva la modalidad `TEMPLATE_PER_PACKAGE`;
+- [x] se separan dependencias para desarrollar de dependencias para ejecutar;
+- [x] se define la identidad de instancia `SHELL-MIG-007::<package_id>`;
+- [x] se ubica la ejecución posterior dentro de `SHELL-CI-021::<package_id>`;
+- [x] se definen exactamente 7 dimensiones obligatorias de paridad;
+- [x] se definen 8 familias de fixtures reutilizables;
+- [x] se definen 8 oráculos con condición de PASS y FAIL;
+- [x] se define atribución completa a package_id, consumidor, commits, versiones, manifest, lockfile, toolchain y ambiente;
+- [x] se define mapping explícito para API TypeScript cuando la migración no sea drop-in;
+- [x] se separan hooks contractuales de clases o implementación interna;
+- [x] se definen oráculos de rutas, estados y fallos;
+- [x] se define el manejo de defectos legacy mediante deltas aprobados;
+- [x] se definen 7 clases de evidencia por instancia;
+- [x] se definen estados PASS, FAIL, BLOCKED, STALE y NOT_APPLICABLE;
+- [x] se define agregación fail-closed;
+- [x] se define comportamiento para paquetes con múltiples consumidores;
+- [x] se define comportamiento para consumidores afectados por múltiples paquetes;
+- [x] se exige rollback ensayado para PASS de instancia;
+- [x] se reconcilia `SHELL-MIG-006` sin duplicar su matriz especializada;
+- [x] se reconcilian los habilitadores `SHELL-CI-007..013` sin usarlos como selector de alcance;
+- [x] se conservan 57 identidades de referencia como 20 `KEEP LOCAL` y 37 `MIGRATE`;
+- [x] no se afirma ejecución de una instancia ni prueba runtime inexistente;
+- [x] no se crean ni modifican requisitos de prueba;
+- [x] `SHELL-MIG-008` permanece reservada como definición del gate de retiro.
+
+---
+
+#### 35. Límites
+
+Esta tarea no:
+
+- ejecuta `SHELL-MIG-007::<package_id>`;
+- crea un package_id;
+- aprueba un paquete E5;
+- inicia `SHELL-CI-020::<package_id>`;
+- ejecuta readiness;
+- ejecuta build, typecheck, lint, pruebas contractuales o pruebas operativas de un consumidor candidato;
+- publica `@vento/ui-web` ni otro package;
+- modifica package versions, manifests o lockfiles;
+- modifica los 57 archivos o identidades de la migración;
+- cambia rutas, navegación, clases, estados o fallos runtime;
+- modifica autorización, contexto, sesión, SSO, middleware o permisos;
+- modifica Supabase, SQL, RLS, RPC, Storage, Realtime, Edge Functions, datos, secretos o tipos generados;
+- declara PASS de una instancia futura;
+- crea excepciones sin fuente canónica;
+- usa el baseline como autorización para preservar un defecto conocido;
+- retira copias legacy;
+- desarrolla ni ejecuta `SHELL-MIG-008`.
+
+---
+
+#### 36. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-MIG-006 — Verificar accesibilidad, tema y movimiento reducido`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-MIG-007 — Definir contrato de paridad ejecutable por paquete`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-MIG-008 — Definir gate de retiro legacy y certificación por paquete`
+
 
 ### [ ] SHELL-MIG-008 — Definir gate de retiro legacy y certificación por paquete
 

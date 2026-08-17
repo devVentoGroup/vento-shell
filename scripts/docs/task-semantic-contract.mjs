@@ -128,7 +128,7 @@ export function validateTaskDevelopmentPolicy(policy) {
     errors.push('forbidden_placeholder_pattern debe ser un string.');
   } else {
     try {
-      new RegExp(policy.forbidden_placeholder_pattern, 'iu');
+      new RegExp(policy.forbidden_placeholder_pattern, 'u');
     } catch {
       errors.push('forbidden_placeholder_pattern no es una expresión regular válida.');
     }
@@ -187,7 +187,7 @@ export function validateTaskSemanticContract({
       add('SECTION_MISSING', `falta una sección de ${required.label}.`);
     }
   }
-  const placeholderPattern = new RegExp(policy.forbidden_placeholder_pattern, 'iu');
+  const placeholderPattern = new RegExp(policy.forbidden_placeholder_pattern, 'u');
   if (placeholderPattern.test(block)) add('UNRESOLVED_PLACEHOLDER', 'persisten placeholders sin resolver.');
 
   const knownIds = new Set(inventory.keys());

@@ -187,6 +187,26 @@ test('una tarea aprobada no puede conservar placeholders', () => {
   assert.ok(result.errors.some(({ code }) => code === 'UNRESOLVED_PLACEHOLDER'));
 });
 
+test('permite parámetros canónicos en minúscula y bloquea placeholders en mayúscula', () => {
+  const canonicalParameter = validateTaskSemanticContract({
+    block: validBlock.replace('Texto.', 'Instancia `SHELL-MIG-007::<package_id>`.'),
+    task: { id: 'TEST-SEM-011', state: 'APROBADA' },
+    ownerRelativePath: 'bloques/X/test.md',
+    inventory,
+    policy,
+  });
+  assert.ok(!canonicalParameter.errors.some(({ code }) => code === 'UNRESOLVED_PLACEHOLDER'));
+
+  const unresolvedPlaceholder = validateTaskSemanticContract({
+    block: validBlock.replace('Texto.', 'Instancia `<PACKAGE_ID>`.'),
+    task: { id: 'TEST-SEM-011', state: 'APROBADA' },
+    ownerRelativePath: 'bloques/X/test.md',
+    inventory,
+    policy,
+  });
+  assert.ok(unresolvedPlaceholder.errors.some(({ code }) => code === 'UNRESOLVED_PLACEHOLDER'));
+});
+
 test('una tarea aprobada con formato histórico recibe recomendaciones sin bloquear', () => {
   const historicalBlock = validBlock
     .replace(/^\*\*(?:Repositorio propietario|Archivo propietario|Estado físico resultante|Cambios físicos autorizados|Requisitos de prueba creados o modificados):\*\*.*\n/gmu, '')

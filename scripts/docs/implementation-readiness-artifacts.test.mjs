@@ -11,6 +11,7 @@ import {
   parseScreens,
   prepareImplementationReadinessArtifacts,
 } from './implementation-readiness-artifacts.mjs';
+import { resolveTaskWorkTopology } from './task-work-topology.mjs';
 
 const policy = {
   mode: 'PLANNING_ONLY',
@@ -134,16 +135,27 @@ test('rechaza estados materiales sin evidencia', () => {
 
 test('los catálogos reales generan preparación completa sin escrituras', () => {
   const result = prepareImplementationReadinessArtifacts({ write: false });
+  const workTopology = resolveTaskWorkTopology();
+  const currentLifecycle = workTopology.topology.get(workTopology.currentId);
   assert.equal(result.applicationRows.length, 10);
   assert.equal(result.applicationRows.reduce((sum, row) => sum + row.ownedProcesses, 0), 69);
   assert.equal(result.applicationRows.reduce((sum, row) => sum + row.screenCount, 0), 177);
   assert.ok(result.handoff.includes('PLANNING_ONLY'));
-  assert.ok(result.handoff.includes('TEMPLATE_PER_PACKAGE'));
-  assert.ok(result.handoff.includes('SHELL-CI-001'));
+  assert.ok(result.handoff.includes(workTopology.currentId));
+  assert.ok(result.handoff.includes(currentLifecycle.mode));
   assert.equal(result.progress.implementation_authorized, false);
-  assert.equal(result.progress.lifecycle_mode, 'TEMPLATE_PER_PACKAGE');
-  assert.equal(result.progress.future_instance_pattern, '<task_id>::<package_id>');
+  assert.equal(result.progress.lifecycle_mode, currentLifecycle.mode);
+  assert.equal(result.progress.future_instance_pattern, currentLifecycle.instancePattern);
   assert.equal(result.progress.slices.length, 5);
+});
+
+test('el contrato de paridad conserva su ejecución futura aunque deje de ser la tarea actual', () => {
+  const workTopology = resolveTaskWorkTopology();
+  const lifecycle = workTopology.topology.get('SHELL-MIG-007');
+  const dependencies = workTopology.dependencies.get('SHELL-MIG-007');
+  assert.equal(lifecycle.mode, 'TEMPLATE_PER_PACKAGE');
+  assert.equal(lifecycle.instancePattern, '<task_id>::<package_id>');
+  assert.ok(dependencies.execution.includes('SHELL-CI-001'));
 });
 
 test('el build y el check mantienen la preparación automática conectada', () => {
