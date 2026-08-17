@@ -553,7 +553,9 @@ La distribución de trabajo queda cerrada así:
 | adapters server/client y proyecciones seguras                                  | `SHELL-AUTH-002`  |
 | request scope, deduplicación, correlación, registro de consumidores y fixtures | `SHELL-AUTH-003`  |
 | lint, métricas, allowlist temporal y gates contra legado                       | `SHELL-AUTH-004`  |
-| migración multi-repositorio y certificación de retiro                          | `SHELL-AUTH-005`  |
+| migración multi-repositorio y handoff verificable para retiro legacy           | `SHELL-AUTH-005`  |
+| retiro físico de objetos/RPC legacy aplicables                                 | `AUTH-DB-030`     |
+| certificación final del cierre de la transición legacy                         | `AUTH-DB-031`     |
 | módulo contextual interno del mismo package                                    | `SHELL-CTX-001`   |
 | turno y check-in canónicos                                                     | `SHELL-CTX-002`   |
 | sede y área efectivas seguras                                                  | `SHELL-CTX-003`   |
@@ -2561,16 +2563,19 @@ Esta tarea no:
 **Estado:** APROBADA
 **Tarea anterior:** SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores
 **Tarea siguiente:** SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios
-**Tipo de tarea:** definición documental vinculante del freeze de nuevos consumos legacy, análisis estático, métricas, allowlist temporal y gates de CI
-**Bloque:** H — Fundación compartida
+**Tipo de tarea:** documental — definición global única del freeze de nuevos consumos legacy, análisis estático, métricas, allowlist temporal y gates de CI, con futura materialización física `SHELL-AUTH-004::<implementation_unit_id>` una sola vez por unidad de implementación
+**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
 **Repositorio propietario:** `devVentoGroup/vento-shell`
-**Modo topológico:** `PER_IMPLEMENTATION_UNIT`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`
+**Estado físico resultante:** freeze legacy, scanner, allowlist temporal, métricas y gates contractualmente especificados; 32/32 identidades baseline reconciliadas; 9 reglas; 14 métricas; 12 gates; 0 linters AUTH004 materializados; 0 allowlists ejecutables; 0 gates CI AUTH004; 0 cambios Supabase
+**Cambios físicos autorizados:** ninguno durante el marcador global
+**Requisitos de prueba creados o modificados:** 8 creados (`TREQ-SHELL-083` a `TREQ-SHELL-090`)
+**Modalidad:** `PER_IMPLEMENTATION_UNIT`
 **Trabajo canónico actual:** definir el contrato global una sola vez
 **Instancia física futura:** `SHELL-AUTH-004::<implementation_unit_id>`
 **Condición de materialización:** `DELIV-PKG-025::<package_id>` asigna `implementation_unit_id` y el package propietario obtiene `E5-GATE-008::<package_id> = PASS`
 **Registro de consumidores de entrada:** `SHELL-AUTH-REQUEST-SCOPE-CONSUMERS-001` — 32 filas, 15 campos, 32 identidades compuestas únicas
 **Snapshot producido:** `SHELL-AUTH-LEGACY-GATES-001`
-**Estado físico en este marcador:** 0 linters AUTH004, 0 allowlists ejecutables, 0 gates CI AUTH004 y 0 cambios Supabase materializados por esta tarea
 
 ---
 
@@ -2723,7 +2728,7 @@ Reglas:
 2. alias sintáctico, destructuring, wrapper local o reexport no evitan la detección;
 3. construir dinámicamente el nombre para evadir el scanner es bloqueo;
 4. la lista se compara por identidad semántica, no solo por una búsqueda textual;
-5. los usos SQL/RLS se inventarían y certificarán en sus tareas propietarias; no se declaran ausentes por no estar en el scanner TypeScript;
+5. los usos SQL/RLS se inventariarán y certificarán en sus tareas propietarias; no se declaran ausentes por no estar en el scanner TypeScript;
 6. simulación v1 permanece representada en la fila `SDK_ADAPTER` existente, pero esta tarea no amplía arbitrariamente las cinco familias legacy reconocidas por AUTH001/AUTH-CTX-027.
 
 ---
@@ -3449,11 +3454,14 @@ Esta tarea no:
 **Estado:** APROBADA
 **Tarea anterior:** SHELL-AUTH-004 — Implementar lint, métricas y gates contra consumidores legacy
 **Tarea siguiente:** SHELL-CTX-001 — Consolidar el módulo de contexto dentro de @vento/os-context
-**Tipo de tarea:** definición documental vinculante del contrato global de migración multi-repositorio de consumidores de autorización/contexto, paridad, cutover, evidencia, rollback y handoff de retiro legacy
-**Bloque:** H — Fundación compartida
+**Tipo de tarea:** documental — definición global única del contrato de migración multi-repositorio de consumidores de autorización/contexto, paridad, cutover, evidencia, rollback y handoff de retiro legacy, con futura materialización física `SHELL-AUTH-005::<implementation_unit_id>` una sola vez por unidad de implementación
+**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
 **Repositorio propietario:** `devVentoGroup/vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`
-**Modo topológico:** `PER_IMPLEMENTATION_UNIT`
+**Estado físico resultante:** contrato global de migración multi-repositorio especificado; 32/32 consumidores con decisión explícita; 4 grupos de migración; 6 clasificaciones de paridad; 12 gates; 0/32 consumidores físicamente migrados; 0 cambios de código; 0 cambios de manifests/lockfiles; 0 cambios Supabase; 0 retiros físicos
+**Cambios físicos autorizados:** ninguno durante el marcador global
+**Requisitos de prueba creados o modificados:** 8 creados (`TREQ-SHELL-091` a `TREQ-SHELL-098`)
+**Modalidad:** `PER_IMPLEMENTATION_UNIT`
 **Trabajo canónico actual:** definir el contrato global una sola vez y asignar la futura materialización sin ejecutar consumidores
 **Instancia física futura:** `SHELL-AUTH-005::<implementation_unit_id>`
 **Condición topológica de materialización:** `DELIV-PKG-025::<package_id>` asigna `implementation_unit_id` y el package propietario obtiene `E5-GATE-008::<package_id> = PASS`
@@ -3461,7 +3469,6 @@ Esta tarea no:
 **Registro de entrada:** `SHELL-AUTH-REQUEST-SCOPE-CONSUMERS-001` — 32 filas baseline, 15 campos, 32 identidades únicas
 **Freeze de entrada:** `SHELL-AUTH-LEGACY-GATES-001` — 9 reglas, 14 métricas, 12 gates y allowlist exacta de 32 identidades
 **Snapshot producido:** `SHELL-AUTH-CONSUMER-MIGRATION-001`
-**Estado físico en este marcador:** 0/32 consumidores certificables como migrados; 0 cambios de código; 0 cambios de manifests/lockfiles; 0 cambios Supabase; 0 retiros físicos
 
 ---
 
