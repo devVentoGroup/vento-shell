@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **949** |
+| Tareas aprobadas | **950** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **645** |
+| Tareas no iniciadas | **644** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **59.54% (949/1594)** |
+| Porcentaje de completamiento | **59.60% (950/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-AUTH-001 — Consolidar @vento/os-context como SDK canónico de contexto y autorización** |
-| Tarea actual | **SHELL-AUTH-002 — Implementar adapters de servidor, cliente y proyecciones seguras** |
+| Última tarea aprobada | **SHELL-AUTH-002 — Implementar adapters de servidor, cliente y proyecciones seguras** |
+| Tarea actual | **SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores** |
+| Siguiente tarea | **SHELL-AUTH-004 — Implementar lint, métricas y gates contra consumidores legacy** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 99 de 109 aprobadas; SHELL-AUTH-002 pendiente** |
+| Progreso del bloque | **BLOQUE H: 100 de 109 aprobadas; SHELL-AUTH-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-AUTH-001` — Consolidar @vento/os-context como SDK canónico de contexto y autorización |
-| Tarea actual | `SHELL-AUTH-002` — Implementar adapters de servidor, cliente y proyecciones seguras — **NO INICIADA** |
-| Siguiente tarea | `SHELL-AUTH-003` — Implementar scope por solicitud y registro canónico de consumidores |
+| Última aprobada | `SHELL-AUTH-002` — Implementar adapters de servidor, cliente y proyecciones seguras |
+| Tarea actual | `SHELL-AUTH-003` — Implementar scope por solicitud y registro canónico de consumidores — **NO INICIADA** |
+| Siguiente tarea | `SHELL-AUTH-004` — Implementar lint, métricas y gates contra consumidores legacy |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 99 DE 109 APROBADAS — ACTUAL SHELL-AUTH-002** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 100 DE 109 APROBADAS — ACTUAL SHELL-AUTH-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-AUTH-001 — Consolidar @vento/os-context como SDK canónico de contexto y autorización
-        ↓
-TAREA ACTUAL
 SHELL-AUTH-002 — Implementar adapters de servidor, cliente y proyecciones seguras
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-AUTH-004 — Implementar lint, métricas y gates contra consumidores legacy
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 99 de 109 tareas aprobadas
+BLOQUE H — 100 de 109 tareas aprobadas
 ```

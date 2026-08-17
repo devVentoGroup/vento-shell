@@ -838,7 +838,927 @@ Esta tarea no:
 `SHELL-AUTH-002 — Implementar adapters de servidor, cliente y proyecciones seguras`
 
 
-### [ ] SHELL-AUTH-002 — Implementar adapters de servidor, cliente y proyecciones seguras
+### ✅ SHELL-AUTH-002 — Implementar adapters de servidor, cliente y proyecciones seguras
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-AUTH-001 — Consolidar @vento/os-context como SDK canónico de contexto y autorización
+**Tarea siguiente:** SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores
+**Tipo de tarea:** documental — definición global única del contrato de adapters server/client y proyecciones seguras, con futura materialización física `SHELL-AUTH-002::<implementation_unit_id>` una sola vez por unidad de implementación
+**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`
+**Estado físico resultante:** `CONTRATO_GLOBAL_DE_ADAPTERS_Y_PROYECCIONES_SEGURAS_ESPECIFICADO`; 5 operaciones server; 2 operaciones client puras; 2 DTO de proyección segura; 4 categorías internas de fallo; 0 unidades materializadas; 0 cambios Supabase
+**Cambios físicos autorizados:** ninguno durante el marcador global
+**Requisitos de prueba creados o modificados:** 8 creados (`TREQ-SHELL-067` a `TREQ-SHELL-074`)
+**Modalidad:** `PER_IMPLEMENTATION_UNIT`
+
+---
+
+#### 1. Propósito
+
+`SHELL-AUTH-002` define de forma cerrada cómo `@vento/os-context` adaptará el productor canónico de contexto, el evaluador canónico de autorización y sus salidas hacia consumidores server y client sin reconstruir autoridad, sin exponer evidencia interna y sin convertir estado de presentación en autorización ejecutable.
+
+La frontera queda:
+
+```text
+@vento/contracts/authorization
+→ valida requests, AccessContext, AuthorizationDecision, códigos y versiones
+
+BACKEND AUTORITATIVO
+→ get_access_context
+→ evaluate_authorization
+
+@vento/os-context/server
+→ adapta transporte
+→ valida resultados
+→ falla cerrado
+→ produce proyecciones seguras
+
+@vento/os-context/client
+→ valida DTO seguros ya emitidos
+→ no consulta autorización
+→ no depende de React ni de Supabase
+
+CAPA DE PRESENTACIÓN DE CADA APLICACIÓN
+→ puede construir provider/hook/component propios sobre /client
+→ nunca convierte UI en frontera de seguridad
+```
+
+El marcador global no modifica `packages/os-context`, no crea RPC y no ejecuta una instancia física.
+
+---
+
+#### 2. Modalidad canónica y separación entre definición y ejecución
+
+La tarea usa `PER_IMPLEMENTATION_UNIT`.
+
+```text
+MARCADOR GLOBAL SHELL-AUTH-002
+→ define adapters, DTO, errores, gates, pruebas y evidencia
+→ se aprueba una sola vez
+→ no materializa código
+
+DELIV-PKG-025::<package_id>
+→ asigna implementation_unit_id
+
+E5-GATE-008::<package_id> = PASS
+→ habilita la unidad propietaria
+
+DEPENDENCIAS FÍSICAS DE CONTEXTO Y BACKEND
+→ deben existir según el orden contractual interno aplicable
+
+SHELL-AUTH-002::<implementation_unit_id>
+→ materializa una sola vez adapters y proyecciones de la unidad
+→ N package_id pueden consumir la misma implementación mediante lineage
+```
+
+**Dependencia para desarrollar:** `SHELL-AUTH-001`.
+
+**Dependencias para ejecutar una instancia:** además de la habilitación E5, deberán estar materializadas las superficies de contexto/backend que la unidad declare consumir, incluidas las tareas propietarias del resolver, evaluador y proyecciones contextuales cuando sean aplicables.
+
+La continuidad documental y el orden físico no se confunden: este marcador puede definirse ahora aunque su código se materialice después de las dependencias físicas previstas.
+
+---
+
+#### 3. Fuentes vinculantes y precedencia
+
+La tarea conserva sin reabrir:
+
+| Fuente                                 | Uso vinculante                                                                                                        |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `AUTH-CTX-025`                         | contrato lógico `get_access_context(text) → jsonb`; un único `p_app_code`; `AccessContext@1.0.0`; fail-closed         |
+| `AUTH-CTX-026`                         | `evaluate_authorization(jsonb) → jsonb`; request versionado; `AuthorizationDecision@1.0.0`; permiso y recurso exactos |
+| `AUTH-CTX-027`                         | consumo centralizado, adapters, proyecciones seguras, separación server/client y prohibición de autoridad desde UI    |
+| `SHELL-CON-002..008`                   | `AppCode`, `PermissionKey`, roles, scopes, contexto y códigos compartidos                                             |
+| `SHELL-NATIVE-002`                     | validadores puros, parse/is fail-closed y diagnósticos contractuales separados                                        |
+| `SHELL-NATIVE-003`                     | ninguna API compartida adquiere tipos de renderer                                                                     |
+| `SHELL-AUTH-001`                       | identidad del SDK, cuatro subpaths y cinco operaciones server propietarias de esta tarea                              |
+| estado físico de `packages/os-context` | baseline legacy que debe ser reemplazado, no fuente normativa                                                         |
+
+Precedencia:
+
+```text
+CONTRATO VERSIONADO
+→ VALIDACIÓN
+→ BACKEND AUTORITATIVO
+→ ADAPTER SERVER
+→ PROYECCIÓN SEGURA
+→ ADAPTER CLIENT PURO
+→ PRESENTACIÓN
+```
+
+Una aplicación no podrá invertir esa dirección mediante un helper local.
+
+---
+
+#### 4. Línea base verificable
+
+El package físico actual permanece en estado transitorio:
+
+| Superficie                | Estado observado                                               | Disposición                          |
+| ------------------------- | -------------------------------------------------------------- | ------------------------------------ |
+| `@vento/os-context@0.1.0` | package privado, export raíz de source TypeScript              | baseline legacy                      |
+| `src/client.ts`           | llama `get_effective_context_v1`                               | mover a compatibilidad, no promover  |
+| `src/client.ts`           | llama `has_effective_permission_v1` y retorna booleano         | mover a compatibilidad, no promover  |
+| `src/client.ts`           | inicia/detiene simulación legacy                               | fuera del adapter real de esta tarea |
+| `EffectiveContext`        | shape plano, strings abiertos, `bypass_applied`, `can_operate` | no canónico                          |
+| `ContextSimulationInput`  | input legacy                                                   | no es `SimulationContextV1`          |
+| `/server` estable         | no materializado                                               | futuro resultado de instancia        |
+| `/client` estable         | no materializado                                               | futuro resultado de instancia        |
+
+**Conciliación:** 8 superficies observadas, 8 decisiones explícitas, 0 sin disposición.
+
+---
+
+#### 5. Identidades contractuales
+
+| Identidad                                          | Función                                             |
+| -------------------------------------------------- | --------------------------------------------------- |
+| `VENTO-OS-CONTEXT-ADAPTER-PROJECTION-CONTRACT-001` | contrato global de adapters y proyecciones          |
+| `SHELL-AUTH-ADAPTER-PROJECTION-001`                | snapshot documental de superficie y allowlists      |
+| `SafeContextProjectionV1`                          | DTO seguro de contexto para transporte/presentación |
+| `SafeDecisionProjectionV1`                         | DTO seguro de decisión para transporte/presentación |
+| `SHELL-AUTH-002::<implementation_unit_id>`         | futura materialización física única por unidad      |
+
+Los DTO seguros son proyecciones derivadas. No reemplazan `AccessContextV1` ni `AuthorizationDecisionV1` y no crean otra fuente de autorización.
+
+---
+
+#### 6. Superficie server exacta de esta tarea
+
+`@vento/os-context/server` materializará exactamente estas cinco operaciones públicas pertenecientes a `SHELL-AUTH-002`:
+
+```text
+resolveAccessContext
+evaluateAuthorization
+requireAuthorization
+getSafeContextProjection
+getSafeDecisionProjection
+```
+
+`createAuthorizationScope` permanece reservado íntegramente a `SHELL-AUTH-003`.
+
+No se agregan aliases como `hasPermission`, `can`, `authorizeByRole`, `getCurrentPermissions` o equivalentes que reduzcan el contrato canónico a un booleano o lista general.
+
+---
+
+#### 7. `resolveAccessContext`
+
+Contrato conceptual:
+
+```ts
+resolveAccessContext({ appCode: AppCode })
+  → Promise<AccessContextV1>
+```
+
+Reglas:
+
+1. `appCode` debe ser un `AppCode` validado y fijado por el adapter propietario de la aplicación;
+2. no se deriva desde `permission_key`;
+3. no se acepta desde query, body, cookie editable, local storage ni ruta dinámica como autoridad;
+4. el adapter invoca únicamente la frontera física autorizada que materialice `get_access_context`;
+5. no acepta actor, empleado, rol, sede, área, turno, check-in, dispositivo, simulación ni bypass como hechos autoritativos suministrados por consumidor;
+6. el resultado externo se valida como `AccessContextV1` antes de retornarlo tipado;
+7. `null`, shape parcial, versión incompatible o respuesta inválida fallan cerrados;
+8. esta operación no evalúa permisos;
+9. la deduplicación por solicitud pertenece a `SHELL-AUTH-003` y no se implementa como singleton o caché global aquí.
+
+---
+
+#### 8. `evaluateAuthorization`
+
+Contrato conceptual:
+
+```ts
+evaluateAuthorization({ request: AuthorizationEvaluationRequestV1 })
+  → Promise<AuthorizationDecisionV1>
+```
+
+Reglas:
+
+1. el request completo se valida antes de invocar backend;
+2. `app_code` y `permission_key` son identidades exactas publicadas;
+3. el adapter no recibe un `AccessContext` fabricado por consumidor para sustituir al resolver autoritativo;
+4. actor, rol, territorio efectivo, turno, check-in, dispositivo y outcome no se aceptan como autoridad desde el caller;
+5. el evaluador físico resuelve permiso, recurso, contexto y datasets conforme a su contrato propietario;
+6. el resultado se valida como `AuthorizationDecisionV1` antes de consumo;
+7. `DENY` es un resultado canónico válido y no se transforma en error técnico;
+8. fallo de transporte, versión, contrato o respuesta inválida no produce `ALLOW` ni `false` silencioso;
+9. una decisión no se reutiliza para otro permiso, recurso, actor o versión.
+
+---
+
+#### 9. `requireAuthorization`
+
+Contrato conceptual:
+
+```ts
+requireAuthorization({ request: AuthorizationEvaluationRequestV1 })
+  → Promise<AuthorizationDecisionV1>
+```
+
+Semántica:
+
+```text
+final_decision.outcome = ALLOW
+→ retorna la decisión canónica validada
+
+final_decision.outcome = DENY
+→ interrumpe la operación mediante fallo tipado DENIED
+
+contrato/transporte/backend inválido
+→ interrumpe mediante fallo técnico tipado
+```
+
+Reglas:
+
+- no acepta booleanos legacy;
+- no concede acceso por nombre de rol;
+- no convierte fallo técnico en `DENY` silencioso cuando el caller necesita distinguir disponibilidad de autorización;
+- cualquier caller que ejecute una mutación deberá hacerlo solo después de esta frontera o de una evaluación equivalente autorizada;
+- `decision_id` nunca se usa como token de capacidad;
+- una mutación posterior revalida cuando contexto, recurso o versión puedan haber cambiado.
+
+---
+
+#### 10. `SafeContextProjectionV1`
+
+La proyección segura de contexto usa una allowlist cerrada:
+
+```ts
+type SafeContextProjectionV1 = {
+  projection_version: "1.0.0";
+  app_code: AppCode;
+  context_id: string;
+  resolved_at: string;
+  principal_type: "HUMAN_USER" | "SHARED_DEVICE" | "SYSTEM_SERVICE" | "ANONYMOUS";
+  actor_type: "EMPLOYEE" | "CUSTOMER" | "SYSTEM" | "UNRESOLVED";
+  base_role_code: BaseRoleCode | null;
+  operational_role_code: OperationalRoleCode | null;
+  operational_site_id: string | null;
+  operational_area_id: string | null;
+  base_readiness: "READY" | "UNAVAILABLE" | "INVALID" | "NOT_APPLICABLE";
+  operational_readiness: "READY" | "UNAVAILABLE" | "INVALID" | "NOT_APPLICABLE";
+};
+```
+
+`app_code` procede del adapter que solicitó el contexto; no se agrega ni retroescribe en `AccessContextV1`.
+
+La proyección no contiene permiso, allow/deny ni autoridad ejecutable.
+
+---
+
+#### 11. Datos prohibidos en `SafeContextProjectionV1`
+
+No se serializan por defecto:
+
+- `auth_user_id` ni `session_id`;
+- `actor_id`, `delegation_id`, `employee_id` o identidad de dominio completa;
+- asignaciones completas de sedes o áreas;
+- `device_id`, `device_code`, actor session ni metadata privada del dispositivo;
+- `structural_issues` completos;
+- `resolution_metadata`;
+- versiones o fingerprints de fuentes;
+- grants, denies, permission datasets;
+- secretos, JWT, cookies, tokens o credenciales;
+- `bypass_applied`, `can_operate`, `is_simulation` o metadata legacy.
+
+Una ampliación futura de la allowlist exige revisión explícita del contrato y pruebas de minimización.
+
+---
+
+#### 12. `getSafeContextProjection`
+
+Contrato conceptual:
+
+```ts
+getSafeContextProjection({
+  appCode: AppCode,
+  context: AccessContextV1
+}) → SafeContextProjectionV1
+```
+
+Reglas:
+
+1. valida `context` antes de proyectar;
+2. deriva campos únicamente de identidades contractuales aprobadas;
+3. no consulta red;
+4. no altera ni completa un contexto incompleto;
+5. no convierte `lane_readiness.READY` en `ALLOW`;
+6. no incluye campos fuera de la allowlist;
+7. produce salida determinista para el mismo input lógico;
+8. `context_id` es referencia opaca y nunca credencial.
+
+---
+
+#### 13. `SafeDecisionProjectionV1`
+
+La proyección segura de decisión usa una allowlist cerrada:
+
+```ts
+type SafeDecisionProjectionV1 = {
+  projection_version: "1.0.0";
+  correlation_id: string | null;
+  app_code: AppCode;
+  permission_key: PermissionKey;
+  outcome: "ALLOW" | "DENY";
+  safe_message_code: AuthorizationReasonCode | null;
+  reason_codes: AuthorizationReasonCode[];
+  visible_fields: string[];
+  mutable_fields: string[];
+};
+```
+
+`safe_message_code` y `reason_codes` solo pueden utilizar códigos públicos aprobados. Un `DecisionReason.reason_code` interno no se expone por coincidencia textual.
+
+Para `ALLOW`, `safe_message_code = null` y `reason_codes = []`; la ausencia de una razón de denegación no crea un código de éxito nuevo. Para `DENY`, `safe_message_code` deberá ser un `AuthorizationReasonCode` público y `reason_codes` solo podrá contener miembros de ese mismo catálogo.
+
+---
+
+#### 14. Datos prohibidos en `SafeDecisionProjectionV1`
+
+No se serializan:
+
+- `decision_id` como mecanismo de autoridad o replay;
+- `access_context_ref.context_fingerprint`;
+- `permission_contract.catalog_hash`;
+- `matched_allows` o `matched_denies`;
+- datasets, source IDs, versiones internas o hashes;
+- `structural_denies`, `actor_wide_denies`, `lane_denies` o `blocked_reasons` completos;
+- recurso completo, `state_snapshot`, ownership o concurrencia internos;
+- audit interno;
+- SQLSTATE, stack trace, query, nombres de tablas o errores crudos;
+- datos de otros actores o territorios no visibles.
+
+`visible_fields` y `mutable_fields` provienen exclusivamente de la política de campos ya evaluada y no autorizan una operación posterior por sí mismos.
+
+---
+
+#### 15. `getSafeDecisionProjection`
+
+Contrato conceptual:
+
+```ts
+getSafeDecisionProjection({ decision: AuthorizationDecisionV1 })
+  → SafeDecisionProjectionV1
+```
+
+Reglas:
+
+1. valida la decisión canónica completa;
+2. toma `app_code` y `permission_key` desde `decision.request`;
+3. toma el outcome desde `final_decision.outcome`;
+4. mapea únicamente razones marcadas y catalogadas para exposición pública;
+5. conserva correlación cuando exista;
+6. deriva `visible_fields` y `mutable_fields` desde `field_policy_decision`;
+7. no incluye evidencia interna;
+8. no convierte la proyección en token de autorización;
+9. salida idéntica para una misma decisión canónica y misma versión de proyección.
+
+---
+
+#### 16. Frontera client pura
+
+`@vento/os-context/client` materializará únicamente operaciones puras sobre DTO seguros:
+
+```text
+parseSafeContextProjection
+parseSafeDecisionProjection
+```
+
+Contrato conceptual:
+
+```ts
+parseSafeContextProjection(input: unknown)
+  → SafeContextProjectionV1
+
+parseSafeDecisionProjection(input: unknown)
+  → SafeDecisionProjectionV1
+```
+
+Ambas operaciones:
+
+- validan forma, discriminantes, versiones y catálogos aplicables;
+- fallan cerradas ante payload inválido o versión no soportada;
+- no ejecutan red;
+- no importan `@supabase/supabase-js`;
+- no importan React, React DOM, Next.js, React Native, Expo ni UI;
+- no consultan permisos;
+- no mutan DTO;
+- no guardan autoridad en storage.
+
+---
+
+#### 17. Reconciliación de provider y hooks de presentación
+
+`AUTH-CTX-027` describió provider y hooks conceptuales como mecanismos de consumo cliente. La política posterior de `SHELL-AUTH-001` fijó que React no forma parte del SDK estable.
+
+La conciliación vinculante es:
+
+```text
+@vento/os-context/client
+→ DTO + parsers puros
+
+ADAPTER DE PRESENTACIÓN EN LA APLICACIÓN/RENDERER
+→ puede crear provider/hook/component
+→ consume DTO validados
+→ no llama RPC de autorización
+→ no se convierte en frontera de seguridad
+```
+
+Por tanto, `useAccessContext`, `useAuthorization`, `useCan` o nombres equivalentes no son exports de `@vento/os-context` bajo este contrato.
+
+---
+
+#### 18. Autoridad de `@vento/contracts/authorization`
+
+Los adapters deberán importar y reutilizar, cuando estén materializados, los tipos y validadores aprobados para:
+
+- `AppCode`;
+- `PermissionKey`;
+- `BaseRoleCode`;
+- `OperationalRoleCode`;
+- `AccessContextV1`;
+- `AuthorizationEvaluationRequestV1`;
+- `AuthorizationDecisionV1`;
+- `AuthorizationReasonCode`;
+- contratos de validación y diagnósticos aplicables.
+
+Queda prohibido mantener dentro del SDK un catálogo paralelo o convertir `as Type` en sustituto de validación runtime.
+
+---
+
+#### 19. Traducción de fallos y separación semántica
+
+El adapter server distingue internamente cuatro categorías cerradas:
+
+```text
+DENIED
+CONTRACT_INVALID
+BACKEND_UNAVAILABLE
+BACKEND_RESPONSE_INVALID
+```
+
+Reglas:
+
+1. `DENIED` procede únicamente de una `AuthorizationDecisionV1` válida con outcome `DENY`;
+2. `CONTRACT_INVALID` conserva el diagnóstico contractual aplicable sin exponer input sensible;
+3. `BACKEND_UNAVAILABLE` representa fallo de transporte o indisponibilidad de la frontera autoritativa;
+4. `BACKEND_RESPONSE_INVALID` representa payload backend incompatible con el contrato/versiones esperados;
+5. ninguna categoría equivale a `ALLOW`;
+6. los fallos técnicos expuestos a UI se reducen a la razón pública aprobada de evaluación no disponible, sin stack, SQLSTATE ni detalle interno;
+7. `requireAuthorization` diferencia DENY de fallo técnico para observabilidad y recuperación, pero ambos impiden ejecutar la acción.
+
+No se crea un catálogo público alternativo de razones.
+
+---
+
+#### 20. Fallo cerrado y ausencia de coerciones
+
+Quedan prohibidos:
+
+```text
+Boolean(data)
+return error ? false : true
+value as AccessContextV1
+value as AuthorizationDecisionV1
+permission.split(".")[0] como fuente de app_code
+trim/lowercase/alias para corregir códigos contractuales
+role === "propietario" como bypass
+selected_site_id como territorio efectivo
+```
+
+Un payload externo inválido se rechaza; no se normaliza hasta aparentar validez.
+
+---
+
+#### 21. Recurso y autoridad de la UI
+
+Una proyección client puede controlar presentación, por ejemplo:
+
+- mostrar u ocultar acciones;
+- mostrar estados seguros de disponibilidad;
+- construir contexto visible;
+- limitar campos presentados.
+
+Nunca autoriza por sí sola:
+
+- Server Action;
+- Route Handler;
+- RPC sensible;
+- mutación;
+- exportación;
+- transición de estado;
+- lectura de recurso que requiera evaluación nueva.
+
+La frontera de ejecución reevalúa permiso y recurso exactos en servidor.
+
+---
+
+#### 22. Obsolescencia y replay
+
+`SafeContextProjectionV1` y `SafeDecisionProjectionV1` son snapshots de presentación.
+
+Reglas:
+
+1. no existe TTL que convierta una proyección en token de capacidad;
+2. replay de una proyección nunca autoriza una mutación;
+3. cambio de actor, contexto, recurso o versión obliga a obtener/evaluar estado nuevo para ejecutar;
+4. una versión de proyección desconocida se rechaza;
+5. almacenamiento local de una proyección no aumenta su autoridad;
+6. `decision_id` no se serializa como mecanismo de ejecución;
+7. la política de caché cross-request pertenece a `SHELL-CTX-006`/tareas propietarias de frescura, no a esta frontera client.
+
+---
+
+#### 23. Supabase, RPC y RLS
+
+La tarea no crea ni cambia Supabase.
+
+La futura instancia deberá demostrar, cuando las superficies físicas existan:
+
+```text
+adapter server
+→ consume la frontera backend autorizada
+
+RPC de dominio
+→ utiliza evaluación canónica o equivalente aprobada
+
+RLS
+→ utiliza predicados SQL semánticamente equivalentes
+
+client
+-x-> RPC interna de autorización
+```
+
+RLS no consume el SDK TypeScript. Una prueba TypeScript no sustituye evidencia RLS/RPC, y una prueba RLS/RPC no sustituye la validación contractual del SDK.
+
+---
+
+#### 24. Snapshot normativo
+
+La representación normativa de `SHELL-AUTH-ADAPTER-PROJECTION-001` usa JSON UTF-8, claves ordenadas lexicográficamente para la entrada de huella y arrays en el orden contractual fijado.
+
+Huella documental:
+
+`sha256:011ba969ca10cf68d4fd31a9041c3a37011f4c5c0953452d112806b9a123660d`
+
+Payload normativo:
+
+```json
+{
+  "client_network_authorization": false,
+  "client_operations": [
+    "parseSafeContextProjection",
+    "parseSafeDecisionProjection"
+  ],
+  "contract_id": "VENTO-OS-CONTEXT-ADAPTER-PROJECTION-CONTRACT-001",
+  "future_instance_pattern": "SHELL-AUTH-002::<implementation_unit_id>",
+  "projection_versions": {
+    "safe_context": "1.0.0",
+    "safe_decision": "1.0.0"
+  },
+  "react_dependency": false,
+  "safe_context_fields": [
+    "projection_version",
+    "app_code",
+    "context_id",
+    "resolved_at",
+    "principal_type",
+    "actor_type",
+    "base_role_code",
+    "operational_role_code",
+    "operational_site_id",
+    "operational_area_id",
+    "base_readiness",
+    "operational_readiness"
+  ],
+  "safe_decision_fields": [
+    "projection_version",
+    "correlation_id",
+    "app_code",
+    "permission_key",
+    "outcome",
+    "safe_message_code",
+    "reason_codes",
+    "visible_fields",
+    "mutable_fields"
+  ],
+  "schema": "vento.os-context-adapter-projection@1",
+  "server_operations": [
+    "resolveAccessContext",
+    "evaluateAuthorization",
+    "requireAuthorization",
+    "getSafeContextProjection",
+    "getSafeDecisionProjection"
+  ],
+  "snapshot_id": "SHELL-AUTH-ADAPTER-PROJECTION-001"
+}
+```
+
+La misma identidad no puede reutilizarse con otra allowlist, versión o superficie pública sin revisión aprobada.
+
+---
+
+#### 25. Contrato de entrada de cada futura instancia
+
+Toda `SHELL-AUTH-002::<implementation_unit_id>` deberá registrar:
+
+| Campo                     | Obligación                                              |
+| ------------------------- | ------------------------------------------------------- |
+| `implementation_unit_id`  | unidad asignada por `DELIV-PKG-025`                     |
+| `owner_package_id`        | package propietario con gate E5 aprobado                |
+| `consumer_package_ids`    | consumidores exactos                                    |
+| baseline                  | commit anterior                                         |
+| result commit             | commit exacto de resultado                              |
+| SDK version               | versión exacta de `@vento/os-context`                   |
+| contracts version         | versión exacta de `@vento/contracts`                    |
+| context backend identity  | función/resolver físico autorizado y versión            |
+| decision backend identity | evaluador físico autorizado y versión                   |
+| adapter snapshot          | `SHELL-AUTH-ADAPTER-PROJECTION-001` o revisión aprobada |
+| projection schemas        | versiones y allowlists de ambos DTO                     |
+| dependency graph          | imports runtime y dev efectivos                         |
+| consumer matrix           | consumidor, runtime, subpath, lockfile y resultado      |
+| negative tests            | manipulación, replay, leakage y fail-closed             |
+| backend parity            | evidencia RPC/RLS cuando aplique                        |
+| artifact digest           | huella del artefacto implementado                       |
+| rollback                  | combinación anterior soportada y ensayo                 |
+| blockers                  | lista cerrada, owner y condición de salida              |
+
+Un campo obligatorio ausente deja la instancia `BLOCKED`.
+
+---
+
+#### 26. Unicidad por unidad
+
+```text
+1 implementation_unit_id
+→ máximo 1 SHELL-AUTH-002::<implementation_unit_id>
+→ máximo 1 implementación propietaria de los adapters de la unidad
+→ máximo 1 snapshot de proyección activo por versión
+→ N package_id consumidores mediante lineage
+```
+
+Los consumidores no copian adapters para evitar depender del package publicado.
+
+---
+
+#### 27. Doce gates de futura materialización
+
+| Gate                     | PASS                                                                | Bloqueo                         |
+| ------------------------ | ------------------------------------------------------------------- | ------------------------------- |
+| 1. identidad             | unidad, owner, versiones y commits inequívocos                      | identidad ambigua               |
+| 2. contratos             | todos los inputs/outputs validados con autoridad contractual        | casts o shapes paralelos        |
+| 3. contexto              | `resolveAccessContext` conserva app fijo y backend autoritativo     | hechos del caller o fallback    |
+| 4. decisión              | `evaluateAuthorization` conserva request exacto y decisión completa | booleano o reconstrucción local |
+| 5. require               | solo ALLOW continúa; DENY/técnico bloquean                          | fail-open                       |
+| 6. safe-context          | allowlist exacta, minimización y determinismo                       | fuga contextual                 |
+| 7. safe-decision         | allowlist exacta y razones públicas                                 | evidencia interna expuesta      |
+| 8. client                | parsers puros, sin red/Supabase/React                               | autorización desde navegador    |
+| 9. errores               | deny, contrato y backend diferenciados sin fuga                     | error ambiguo o sensible        |
+| 10. seguridad/paridad    | replay, manipulación y backend/RLS-RPC aplicable superados          | bypass o paridad sin evidencia  |
+| 11. consumidores/lineage | matriz cerrada y una implementación por unidad                      | copia o evidencia stale         |
+| 12. rollback             | regreso reproducible a combinación soportada                        | recuperación no ensayable       |
+
+La instancia queda `PASS` solo con todos los gates aplicables en `PASS`.
+
+---
+
+#### 28. Perfil de pruebas
+
+| Perfil         | Cobertura mínima                                                            |
+| -------------- | --------------------------------------------------------------------------- |
+| contractual    | request/context/decision/projections y versiones                            |
+| unitaria       | app fijo, proyecciones, parsers client y traducción de fallos               |
+| integración    | adapter ↔ resolver/evaluador cuando existan físicamente                     |
+| denegaciones   | permiso/recurso/actor/sede/área/dispositivo/contexto inválidos              |
+| seguridad      | app manipulado, replay, decisión como token, fuga, role bypass y client RPC |
+| RLS/RPC        | paridad semántica cuando las superficies propietarias estén materializadas  |
+| compatibilidad | package, consumidor, runtime, lockfile y subpath                            |
+| regresión      | ausencia de booleanos autoritativos, casts y RPC legacy nuevas              |
+| lineage        | unidad, versiones, commits, snapshot y digest                               |
+| rollback       | restauración y repetición de pruebas esenciales                             |
+
+Las pruebas RLS/RPC permanecen `NOT_EXECUTED` hasta existir los objetos físicos y ambiente autorizado; no pueden declararse `PASS` por documentación.
+
+---
+
+#### 29. Matriz mínima de escenarios
+
+La futura instancia deberá cubrir como mínimo:
+
+| Escenario                               | Resultado esperado                                      |
+| --------------------------------------- | ------------------------------------------------------- |
+| `app_code` manipulado o no publicado    | rechazo/fallo cerrado                                   |
+| respuesta de contexto válida            | `AccessContextV1` validado                              |
+| respuesta de contexto inválida          | `BACKEND_RESPONSE_INVALID`                              |
+| request de decisión válido con allow    | decisión `ALLOW` validada                               |
+| request válido con deny                 | decisión `DENY` preservada                              |
+| backend de autorización no disponible   | `BACKEND_UNAVAILABLE`; nunca allow                      |
+| permiso o recurso manipulados           | deny/rechazo según contrato; nunca corrección permisiva |
+| actor/sede/área enviados como autoridad | input no admitido                                       |
+| safe context                            | solo 12 campos aprobados                                |
+| safe decision                           | solo 9 campos aprobados                                 |
+| payload client con versión desconocida  | parser rechaza                                          |
+| client intenta consultar autorización   | no existe API de red en `/client`                       |
+| replay de proyección                    | no autoriza mutación                                    |
+| role bypass                             | no existe bypass                                        |
+| RLS/RPC aplicables                      | paridad con el mismo contrato/versiones                 |
+| rollback                                | combinación anterior vuelve a pasar gates esenciales    |
+
+---
+
+#### 30. Evidencia requerida
+
+| Clase                | Contenido mínimo                                    |
+| -------------------- | --------------------------------------------------- |
+| `LINEAGE`            | unidad, owner, consumidores, baseline/result commit |
+| `CONTRACTS`          | versiones y validadores exactos                     |
+| `SERVER_CONTEXT`     | fixtures válidos/inválidos y resultado del adapter  |
+| `SERVER_DECISION`    | allow/deny/errores con request exacto               |
+| `SAFE_CONTEXT`       | allowlist, payload y prueba de no filtración        |
+| `SAFE_DECISION`      | allowlist, razones públicas y no evidencia interna  |
+| `CLIENT_PURITY`      | grafo sin red, Supabase, React o renderer           |
+| `SECURITY`           | manipulación, replay, bypass y leakage              |
+| `BACKEND_PARITY`     | RPC/RLS cuando aplique, con ambiente y versión      |
+| `COMPATIBILITY`      | consumidores, runtime, lockfile, subpath, resultado |
+| `ARTIFACT_INTEGRITY` | package, versión, commit, digest                    |
+| `ROLLBACK`           | combinación anterior, procedimiento y ensayo        |
+| `CERTIFICATION`      | doce gates y estado agregado                        |
+
+---
+
+#### 31. Rollback
+
+El rollback de una instancia deberá restaurar coordinadamente:
+
+1. versión anterior soportada de `@vento/os-context`;
+2. versión exacta compatible de `@vento/contracts`;
+3. adapters server/client anteriores;
+4. schemas de proyección compatibles;
+5. manifest y lockfile de cada consumidor afectado;
+6. configuración de transporte autorizada;
+7. fixtures y evidencia de la combinación restaurada.
+
+No se permite rollback mediante:
+
+- reactivar `has_effective_permission_v1` como arquitectura final;
+- restaurar `can_operate` o bypass como autoridad;
+- editar `node_modules`;
+- mutar una release publicada;
+- reutilizar evidencia de otro commit o unidad.
+
+---
+
+#### 32. Hallazgos y destinos exactos
+
+| Hallazgo                                                                 | Estado                     | Destino                                                         |
+| ------------------------------------------------------------------------ | -------------------------- | --------------------------------------------------------------- |
+| package actual consulta RPC legacy desde `client.ts`                     | `LEGACY_ACTIVO`            | `SHELL-AUTH-004`; migración en `SHELL-AUTH-005`                 |
+| `EffectiveContext` no representa `AccessContextV1`                       | `LEGACY_NO_CANÓNICO`       | `SHELL-CTX-001` y futura instancia de esta tarea                |
+| provider/hooks históricos entrarían React al SDK                         | `RECONCILIADO`             | permanecen en capa de presentación consumiendo `/client`        |
+| backend canónico debe existir antes de integración física                | `DEPENDENCIA_DE_EJECUCIÓN` | `AUTH-DB-033`, `AUTH-DB-034` y tareas contextuales propietarias |
+| scope, memoización y registro de consumidores no pertenecen a esta tarea | `RESERVADO`                | `SHELL-AUTH-003`                                                |
+| lint/gate contra usos legacy no pertenece a esta tarea                   | `RESERVADO`                | `SHELL-AUTH-004`                                                |
+| migración multi-repositorio no pertenece a esta tarea                    | `RESERVADO`                | `SHELL-AUTH-005`                                                |
+| caché/frescura cross-request no pertenece a esta tarea                   | `RESERVADO`                | `SHELL-CTX-006`                                                 |
+
+No se crea una tarea nueva ni queda pendiente sin propietario.
+
+---
+
+#### 33. Requisitos de prueba derivados
+
+**Resultado:** GENERA 8 REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** **8**
+**Requisitos modificados:** **0**
+
+- `TREQ-SHELL-067` — `resolveAccessContext`: app canónico fijado, input mínimo, validación de `AccessContextV1` y fail-closed;
+- `TREQ-SHELL-068` — `evaluateAuthorization`: request canónico exacto, decisión completa validada, sin contexto o autoridad fabricados por caller;
+- `TREQ-SHELL-069` — `requireAuthorization`: solo `ALLOW` continúa; `DENY` y fallos técnicos permanecen diferenciados y bloquean ejecución;
+- `TREQ-SHELL-070` — `SafeContextProjectionV1`: allowlist cerrada, minimización, determinismo y ausencia de evidencia sensible;
+- `TREQ-SHELL-071` — `SafeDecisionProjectionV1`: razones públicas, field projection segura y prohibición de usarla como token o autorización de mutación;
+- `TREQ-SHELL-072` — `/client`: parsers puros, sin red, Supabase o React, con rechazo de payload/versiones inválidos;
+- `TREQ-SHELL-073` — traducción segura y fail-closed de denegación, contrato inválido e indisponibilidad/respuesta inválida de backend;
+- `TREQ-SHELL-074` — una materialización por `implementation_unit_id`, pruebas de integración/seguridad/paridad aplicable, compatibilidad, lineage y rollback atribuibles a la misma combinación.
+
+No se modifica, difiere, descarta ni obsoleta ningún requisito histórico.
+
+---
+
+#### 34. Puerta de cierre del marcador global
+
+El marcador global queda documentalmente cerrado cuando:
+
+1. conserva `SHELL-AUTH-001` como precedencia;
+2. fija exactamente cinco operaciones server de esta tarea;
+3. mantiene `createAuthorizationScope` reservado a `SHELL-AUTH-003`;
+4. define inputs/outputs de contexto, decisión y require;
+5. prohíbe autoridad del caller sobre actor, rol y territorio efectivo;
+6. define `SafeContextProjectionV1` con 12 campos;
+7. define `SafeDecisionProjectionV1` con 9 campos;
+8. define allowlists y datos prohibidos;
+9. fija dos parsers client puros;
+10. reconcilia provider/hooks fuera del SDK;
+11. conserva `@vento/contracts/authorization` como autoridad de tipos y validación;
+12. distingue cuatro categorías internas de fallo;
+13. prohíbe coerciones, booleanos y fail-open;
+14. define replay/staleness sin convertir proyección en autoridad;
+15. define gates, escenarios, evidencia y rollback;
+16. crea `TREQ-SHELL-067` a `TREQ-SHELL-074`;
+17. mantiene 0 código materializado, 0 RPC nuevas y 0 cambios Supabase en este marcador.
+
+---
+
+#### 35. Puerta de cierre de futura instancia
+
+`SHELL-AUTH-002::<implementation_unit_id>` podrá quedar `PASS` únicamente cuando:
+
+- la unidad y owner package estén habilitados por E5;
+- las dependencias físicas declaradas del resolver/evaluador/contexto estén disponibles;
+- los cinco server operations respeten el contrato;
+- los dos DTO reproduzcan sus allowlists y versiones;
+- `/client` permanezca puro y sin red/UI;
+- las respuestas backend se validen antes de tiparse;
+- no exista fail-open, role bypass, autoridad desde UI ni decisión reusable como token;
+- integración y denegaciones tengan evidencia real;
+- pruebas de seguridad estén en `PASS`;
+- RLS/RPC aplicables tengan evidencia propia y no inferida;
+- consumidores declarados tengan compatibilidad vigente;
+- no exista otra materialización para la misma unidad;
+- snapshot, versiones, commits y digest coincidan;
+- rollback haya sido ensayado;
+- `TREQ-SHELL-067` a `TREQ-SHELL-074` tengan evidencia atribuible a la misma instancia.
+
+---
+
+#### 36. Criterios de aceptación
+
+- [x] `SHELL-AUTH-001` permanece como tarea anterior aprobada;
+- [x] `SHELL-AUTH-003` permanece únicamente reservada;
+- [x] el marcador se clasifica `PER_IMPLEMENTATION_UNIT`;
+- [x] se separa desarrollo documental de materialización física;
+- [x] se definen las cinco operaciones server propietarias de esta tarea;
+- [x] no se anticipa `createAuthorizationScope`;
+- [x] `resolveAccessContext` consume backend canónico y valida `AccessContextV1`;
+- [x] `evaluateAuthorization` valida request y `AuthorizationDecisionV1` completos;
+- [x] `requireAuthorization` solo continúa con `ALLOW`;
+- [x] se definen dos DTO de proyección segura con allowlists exactas;
+- [x] se excluyen evidencia, hashes, sesiones, IDs sensibles y metadata interna;
+- [x] se definen dos parsers client sin red ni Supabase;
+- [x] React/providers/hooks permanecen fuera del SDK;
+- [x] se reutilizan tipos/códigos de `@vento/contracts/authorization`;
+- [x] se distinguen DENY, contrato inválido e indisponibilidad/respuesta inválida de backend;
+- [x] todo error falla cerrado;
+- [x] UI y proyecciones no autorizan mutaciones;
+- [x] replay no convierte `decision_id` ni DTO en token;
+- [x] RLS/RPC exigen evidencia propia cuando apliquen;
+- [x] se define snapshot determinista y huella;
+- [x] se definen doce gates, pruebas, evidencia y rollback;
+- [x] se crean exactamente ocho TREQ nuevos;
+- [x] se declaran 0 cambios físicos, 0 migraciones y 0 cambios Supabase;
+- [x] no se desarrolla `SHELL-AUTH-003`.
+
+---
+
+#### 37. Límites
+
+Esta tarea no:
+
+- modifica `packages/os-context`;
+- crea archivos server/client físicos;
+- publica `@vento/os-context`;
+- crea `createAuthorizationScope`;
+- implementa memoización request-scoped;
+- crea registro de consumidores;
+- crea providers o hooks React dentro del SDK;
+- modifica aplicaciones consumidoras;
+- crea lint, codemods o gates legacy;
+- migra consumidores;
+- implementa `get_access_context` o `evaluate_authorization`;
+- crea SQL, RPC, RLS, migraciones, triggers, Storage, Realtime o Edge Functions;
+- ejecuta Supabase;
+- certifica RLS/RPC por inferencia;
+- implementa caché cross-request;
+- retira código legacy;
+- ejecuta `SHELL-AUTH-002::<implementation_unit_id>`;
+- avanza ni desarrolla la tarea siguiente.
+
+---
+
+#### 38. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-AUTH-001 — Consolidar @vento/os-context como SDK canónico de contexto y autorización`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-AUTH-002 — Implementar adapters de servidor, cliente y proyecciones seguras`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores`
+
+
 ### [ ] SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores
 ### [ ] SHELL-AUTH-004 — Implementar lint, métricas y gates contra consumidores legacy
 ### [ ] SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios
