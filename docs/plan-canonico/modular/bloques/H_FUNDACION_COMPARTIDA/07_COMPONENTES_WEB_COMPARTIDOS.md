@@ -15148,6 +15148,11 @@ La tarea queda documentalmente cerrada cuando se cumple todo lo siguiente:
 **Tarea siguiente:** SHELL-UI-013 — Compartir panel de acción principal
 **Tipo de tarea:** Documental; definición canónica de la línea compartida de estados de proceso para `@vento/ui-web`, su proyección del ciclo de vida principal, API conceptual, semántica, accesibilidad, fronteras con transiciones, condiciones, navegación, offline y sincronización, reconciliación de consumidores y handoff de migración, sin materializar package, estado de dominio, motor de transiciones, cambios runtime, SQL, migraciones, releases ni despliegues
 **Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md`
+**Estado físico resultante:** ESPECIFICADO; PACKAGE, EXPORTS Y LÍNEA DE ESTADOS COMPARTIDA NO MATERIALIZADOS
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
 **Package propietario:** `@vento/ui-web`
 **Naturaleza:** patrón visual web compartido, presentacional y de lectura del ciclo de vida ya resuelto; no es máquina de estados, timeline de auditoría, motor de transiciones ni señalización de sincronización
 
@@ -15722,7 +15727,7 @@ CONFLICT
 RECONCILIATION_REQUIRED
 ```
 
-Esos estados describen persistencia, entrega técnica, sincronización o reconciliación y pertenecen a la tarea siguiente reservada y a contratos de resiliencia.
+Esos estados describen persistencia, entrega técnica, sincronización o reconciliación y pertenecen a sus contratos propietarios de resiliencia, entrega y sincronización; no a `ProcessStatusLine`.
 
 Una operación local pendiente no puede cambiar visualmente la posición principal como si el servidor hubiera confirmado la transición.
 
@@ -15883,7 +15888,7 @@ QUEUED como etapa empresarial
 OFFLINE como estado canónico del proceso
 ```
 
-La siguiente tarea conserva esa propiedad sin ser adelantada por UI012.
+La señalización de conectividad y sincronización permanece en sus contratos propietarios y fuera de UI012.
 
 ---
 
@@ -16487,7 +16492,7 @@ La cobertura vigente ya exige posición principal única, estados y transiciones
 
 ---
 
-#### 65. Fuera de alcance
+#### 65. Límites y fuera de alcance
 
 Quedan fuera de UI012:
 
@@ -16515,7 +16520,17 @@ Quedan fuera de UI012:
 
 ---
 
-#### 66. Criterios de aceptación documental
+#### 66. Evidencia de validación y criterios de aceptación documental
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                        |
+| --------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | `NOT_EXECUTED`   | UI012 es una tarea documental y no materializa código ejecutable, package ni build.                                                                                                              |
+| LOCAL     | `NOT_EXECUTED`   | No se ejecutaron scripts del repositorio ni comprobaciones de diff sobre un checkout actualizado durante esta corrección documental.                                                             |
+| REMOTA    | `PASS`           | Se verificaron el contrato de entrega vigente, la política `CANONICAL-TASK-DEVELOPMENT-QUALITY-001` efectiva desde UI012 y la continuidad canónica `SHELL-UI-011 → SHELL-UI-012 → SHELL-UI-013`. |
+| OPERATIVA | `NOT_APPLICABLE` | UI012 define exclusivamente presentación de estados ya resueltos; no ejecuta transiciones, autorización, sincronización, comandos ni efectos empresariales.                                      |
+| FÍSICA    | `NOT_EXECUTED`   | No existe una implementación física compartida de `ProcessStatusLine` materializada por UI012 ni consumidores migrados por esta tarea documental.                                                |
+
+Criterios de aceptación documental:
 
 `SHELL-UI-012` queda documentalmente cerrada cuando se cumplen simultáneamente:
 
@@ -16543,7 +16558,7 @@ Quedan fuera de UI012:
 - [x] se mantiene router y navegación fuera del componente;
 - [x] se delimita su relación con `TaskNavigation`;
 - [x] se delimita su relación con AppShell;
-- [x] se conserva la tarea de sincronización siguiente sin adelantarla;
+- [x] la señalización de conectividad y sincronización permanece fuera de UI012 y en sus contratos propietarios;
 - [x] no se fabrica una línea cuando no existe instancia;
 - [x] se exige copy humano y localizable;
 - [x] se separan códigos técnicos de contenido ordinario;
@@ -16606,7 +16621,7 @@ Quedan fijadas las siguientes decisiones vinculantes:
 27. `BLOCKED` no pertenece al enum base de pasos.
 28. `WAITING` no pertenece al enum base de pasos.
 29. Estados offline y de sincronización no pertenecen al enum base.
-30. La tarea siguiente conserva la señalización de sincronización.
+30. La señalización de conectividad y sincronización permanece fuera de UI012 y en sus contratos propietarios.
 31. No existe motor de transiciones dentro del componente.
 32. La proximidad visual no prueba una transición válida.
 33. No existen callbacks empresariales obligatorios.
