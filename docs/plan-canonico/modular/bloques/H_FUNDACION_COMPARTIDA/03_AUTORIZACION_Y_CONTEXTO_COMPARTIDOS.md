@@ -4462,6 +4462,9 @@ Esta tarea no:
 **Cambios físicos autorizados:** ninguno durante el marcador global
 **Requisitos de prueba creados o modificados:** 0
 **Modalidad:** `PER_IMPLEMENTATION_UNIT`
+**Trabajo canónico actual:** definir una sola vez el contrato del módulo contextual interno y asignar su futura materialización
+**Instancia física futura:** `SHELL-CTX-001::<implementation_unit_id>`
+**Condición de materialización:** después de que `DELIV-PKG-025` asigne `implementation_unit_id` y el `package_id` propietario supere `E5-GATE-008`
 **Snapshot producido:** `SHELL-CTX-CONTEXT-MODULE-001`
 
 ---
@@ -5256,14 +5259,18 @@ No queda una responsabilidad detectada sin propietario documental.
 
 #### 35. Requisitos de prueba derivados
 
-**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
 
 **Requisitos creados:** **0**
 **Requisitos modificados:** **0**
 
-**Justificación:** `SHELL-CTX-001` consolida como módulo runtime decisiones ya protegidas por requisitos vigentes y no introduce un nuevo shape serializado, código de razón, API pública, regla de autorización, caché o productor de hechos. Crear requisitos adicionales duplicaría coberturas ya existentes.
+**Justificación:** `SHELL-CTX-001` consolida dentro del SDK una responsabilidad runtime ya definida por contratos y requisitos vigentes. No introduce un nuevo shape serializado, código de razón, API pública, regla de autorización, política de caché, productor de hechos ni comportamiento verificable adicional que requiera una nueva identidad de prueba. El Registro Canónico de Requisitos de Prueba permanece sin cambios.
 
-La futura materialización deberá aportar evidencia, según aplique, contra los requisitos vigentes siguientes sin modificarlos:
+---
+
+#### 36. Cobertura de prueba vigente reutilizada
+
+La futura materialización deberá aportar evidencia, según aplique, contra la cobertura canónica ya existente, sin crearla ni modificarla:
 
 - `TREQ-SHELL-002` — responsabilidades compartidas y prohibición de copias divergentes;
 - `TREQ-SHELL-043` — tipos contextuales canónicos y separación frente a shapes legacy;
@@ -5276,11 +5283,11 @@ La futura materialización deberá aportar evidencia, según aplique, contra los
 - `TREQ-SHELL-084` y `TREQ-SHELL-086` — freeze de APIs/contexto legacy y autoridad local;
 - `TREQ-SHELL-092` — eliminación de autoridad local/legacy en consumidores después del cutover.
 
-El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+Esta enumeración es exclusivamente de trazabilidad de cobertura existente y queda fuera de la sección que el validador de entrega interpreta como actualización del registro 04A.
 
 ---
 
-#### 36. Evidencia de validación
+#### 37. Evidencia de validación
 
 | Clase     | Estado         | Evidencia                                                                                                                                                                                                      |
 | --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -5292,7 +5299,7 @@ El Registro Canónico de Requisitos de Prueba permanece sin cambios.
 
 ---
 
-#### 37. Puerta de cierre del marcador global
+#### 38. Puerta de cierre del marcador global
 
 El marcador global queda documentalmente cerrado cuando:
 
@@ -5317,7 +5324,7 @@ El marcador global queda documentalmente cerrado cuando:
 
 ---
 
-#### 38. Puerta de cierre de cada futura instancia
+#### 39. Puerta de cierre de cada futura instancia
 
 `SHELL-CTX-001::<implementation_unit_id>` podrá quedar `PASS` únicamente cuando:
 
@@ -5342,7 +5349,7 @@ El marcador global queda documentalmente cerrado cuando:
 
 ---
 
-#### 39. Criterios de aceptación
+#### 40. Criterios de aceptación
 
 - [x] `SHELL-AUTH-005` se conserva como precedencia inmediata aprobada;
 - [x] `SHELL-CTX-002` permanece únicamente reservada;
@@ -5383,7 +5390,7 @@ El marcador global queda documentalmente cerrado cuando:
 
 ---
 
-#### 40. Límites
+#### 41. Límites
 
 Esta tarea no:
 
@@ -5414,7 +5421,7 @@ Esta tarea no:
 
 ---
 
-#### 41. Continuidad
+#### 42. Continuidad
 
 **ÚLTIMA TAREA APROBADA**
 `SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios`
@@ -6317,22 +6324,26 @@ Rollback no equivale a restaurar deuda ya retirada como arquitectura final.
 **Requisitos creados:** **0**
 **Requisitos modificados:** **0**
 
-Justificación:
-
-- `TREQ-AUTH-008` ya asigna explícitamente a `SHELL-CTX-002..004` la protección de turno vigente, check-in activo, rol operativo, territorio compatible y paridad transversal;
-- `TREQ-SHELL-043` protege la forma de `AccessContext@1.0.0` y la separación frente a `EffectiveContext`, simulación y decisión;
-- `TREQ-SHELL-044` protege los códigos estructurales y razones de disponibilidad cerrados;
-- `TREQ-SHELL-062` prohíbe promover legacy, strings abiertos, casts, `bypass_applied` o `can_operate` a autoridad contractual;
-- `TREQ-SHELL-078` protege la write barrier después de cambios relevantes;
-- `TREQ-SHELL-092` exige que los consumidores migrados terminen sin turno/check-in del caller ni fallback legacy como hechos efectivos.
-
-El comportamiento introducido por CTX002 queda completamente cubierto por estos requisitos vigentes. Crear `TREQ-SHELL-099` repetiría reglas ya identificadas y no añadiría un comportamiento verificable distinto.
-
-El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+**Justificación:** `SHELL-CTX-002` materializa documentalmente el consumo canónico de turno y check-in ya protegido por requisitos vigentes. No crea un contrato serializado nuevo, un código nuevo, una modalidad de autorización, una fuente de autoridad, una política de frescura ni una conducta verificable distinta que requiera otra identidad de prueba. El Registro Canónico de Requisitos de Prueba permanece sin cambios.
 
 ---
 
-#### 38. Evidencia de validación
+#### 38. Cobertura de prueba vigente reutilizada
+
+La futura materialización deberá demostrar, según aplique, la cobertura canónica ya existente:
+
+- `TREQ-AUTH-008` — turno vigente, check-in activo, rol operativo, territorio compatible y coherencia transversal;
+- `TREQ-SHELL-043` — forma de `AccessContext@1.0.0` y separación frente a `EffectiveContext`, simulación y decisión;
+- `TREQ-SHELL-044` — códigos estructurales y razones de disponibilidad cerrados;
+- `TREQ-SHELL-062` — prohibición de promover legacy, strings abiertos, casts, `bypass_applied` o `can_operate` a autoridad contractual;
+- `TREQ-SHELL-078` — write barrier después de cambios relevantes;
+- `TREQ-SHELL-092` — consumidores migrados sin turno/check-in del caller ni fallback legacy como hechos efectivos.
+
+Esta enumeración documenta trazabilidad sobre requisitos vigentes; no crea, modifica, difiere, descarta ni vuelve obsoleto ningún `TREQ-*` y queda fuera de la sección interpretada por el validador de entrega como actualización 04A.
+
+---
+
+#### 39. Evidencia de validación
 
 | Clase     | Estado         | Evidencia                                                                                                                                                      |
 | --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -6344,7 +6355,7 @@ El Registro Canónico de Requisitos de Prueba permanece sin cambios.
 
 ---
 
-#### 39. Decisiones vinculantes
+#### 40. Decisiones vinculantes
 
 1. `AccessContextV1` validado es la única entrada de CTX002.
 2. `active_shift` es el único turno canónico consumido.
@@ -6387,7 +6398,7 @@ El Registro Canónico de Requisitos de Prueba permanece sin cambios.
 
 ---
 
-#### 40. Criterios de aceptación
+#### 41. Criterios de aceptación
 
 - [x] `SHELL-CTX-001` es la precedencia inmediata aprobada;
 - [x] `SHELL-CTX-003` permanece únicamente reservada;
@@ -6426,7 +6437,7 @@ El Registro Canónico de Requisitos de Prueba permanece sin cambios.
 
 ---
 
-#### 41. Límites
+#### 42. Límites
 
 Esta tarea no:
 
@@ -6458,7 +6469,7 @@ Esta tarea no:
 
 ---
 
-#### 42. Continuidad
+#### 43. Continuidad
 
 **ÚLTIMA TAREA APROBADA**
 `SHELL-CTX-001 — Consolidar el módulo de contexto dentro de @vento/os-context`
@@ -8979,6 +8990,10 @@ Esta tarea no:
 **Estado físico resultante:** `DEFINIDO_NO_MATERIALIZADO`; queda especificada la proyección interna de razones contextuales seguras; 0 nuevos contratos públicos serializados; 0 packages; 0 subpaths; 0 unidades físicas materializadas; 0 cambios en Supabase
 **Cambios físicos autorizados:** ninguno durante el marcador global; la materialización futura queda condicionada a la unidad de implementación asignada y a la puerta E5 aplicable
 **Requisitos de prueba creados o modificados:** 0
+**Modalidad:** `PER_IMPLEMENTATION_UNIT`
+**Trabajo canónico actual:** definir una sola vez el contrato interno de razones contextuales seguras y asignar su futura materialización
+**Instancia física futura:** `SHELL-CTX-005::<implementation_unit_id>`
+**Condición de materialización:** después de que `DELIV-PKG-025` asigne `implementation_unit_id` y el `package_id` propietario supere `E5-GATE-008`
 
 ---
 
@@ -9792,19 +9807,31 @@ La ausencia de estos campos es una propiedad de seguridad, no pérdida de autori
 
 #### 31. SafeContextProjection
 
-La proyección pública de contexto segura permanece propiedad de `SHELL-AUTH-002`.
+La proyección pública `SafeContextProjectionV1@1.0.0` permanece propiedad exclusiva de `SHELL-AUTH-002` y conserva exactamente su allowlist aprobada de **12 campos**.
 
-CTX005 solo entrega el insumo contextual minimizado necesario para que esa proyección pueda representar readiness sin filtrar `structural_issues` completos.
+CTX005 produce únicamente una vista contextual segura **interna y server-side** para adapters y diagnóstico controlado. Esa vista no amplía el DTO público de contexto.
 
-La integración deberá demostrar:
+En `SafeContextProjectionV1@1.0.0`:
 
-- que la proyección segura no contiene el objeto estructural completo;
-- que los códigos expuestos pertenecen al vocabulario aprobado;
-- que el estado conserva su semántica;
-- que ninguna razón contextual se convierte en capacidad ejecutable;
-- que el cliente no puede reconstruir actor, fuente o evidencia sensible desde la salida.
+- `base_readiness` y `operational_readiness` exponen únicamente el estado del carril;
+- no se exponen `LaneReasonCode`;
+- no se exponen `StructuralIssueCode`;
+- no se exponen `LaneAvailabilityReasonCode`;
+- no se expone severidad estructural;
+- no se expone `safe_message` contextual;
+- no se exponen `structural_issues`, `subject_id`, `source` ni evidencia interna.
 
-CTX005 no cambia el número ni la forma raíz de campos públicos ya fijados para `SafeContextProjectionV1`.
+Cuando una aplicación necesite explicar una denegación pública, deberá consumir una `SafeDecisionProjectionV1` derivada de una `AuthorizationDecisionV1` válida y utilizar exclusivamente `AuthorizationReasonCode` conforme al contrato de `SHELL-AUTH-002` y al catálogo público de mensajes.
+
+Cualquier futura exposición pública de razones contextuales requerirá una revisión contractual y una nueva versión explícitamente aprobadas; `SHELL-CTX-005` no puede añadirlas por inferencia a `SafeContextProjectionV1@1.0.0`.
+
+La integración deberá demostrar simultáneamente que:
+
+1. la proyección pública conserva exactamente 12 campos;
+2. los dos estados de readiness conservan su semántica y nunca equivalen a `ALLOW`;
+3. no existe reason code ni mensaje contextual adicional en el DTO público;
+4. la vista interna minimizada no se convierte en capacidad ejecutable;
+5. el cliente no puede reconstruir actor, fuente o evidencia sensible desde las proyecciones aprobadas.
 
 ---
 
@@ -10087,18 +10114,18 @@ El mismo código estructural siempre conserva el mismo `safe_message` de la vers
 
 La futura instancia deberá demostrar como mínimo:
 
-| Integración                      | Regla                                                        |
-| -------------------------------- | ------------------------------------------------------------ |
-| `@vento/contracts/authorization` | única fuente de tipos, códigos y metadata                    |
-| `AccessContextV1`                | única fuente contextual real                                 |
-| `SHELL-CTX-004`                  | readiness consumido sin reinterpretación                     |
-| `SHELL-AUTH-002`                 | recibe insumo minimizado para proyecciones/adapters          |
-| `AUTH-DB-033`                    | productor físico de contexto; CTX005 no lo sustituye         |
-| `AUTH-DB-034`                    | productor de decisión; CTX005 no selecciona reason público   |
-| catálogo público                 | copy y recuperación permanecen fuera de CTX005               |
-| legacy                           | solo proyección canónico → legacy                            |
-| CTX006                           | hereda frescura del contexto; no cachea razones por separado |
-| UI                               | presenta información segura sin autorizar                    |
+| Integración                      | Regla                                                                                 |
+| -------------------------------- | ------------------------------------------------------------------------------------- |
+| `@vento/contracts/authorization` | única fuente de tipos, códigos y metadata                                             |
+| `AccessContextV1`                | única fuente contextual real                                                          |
+| `SHELL-CTX-004`                  | readiness consumido sin reinterpretación                                              |
+| `SHELL-AUTH-002`                 | conserva el DTO público de 12 campos; la vista de razones de CTX005 permanece interna |
+| `AUTH-DB-033`                    | productor físico de contexto; CTX005 no lo sustituye                                  |
+| `AUTH-DB-034`                    | productor de decisión; CTX005 no selecciona reason público                            |
+| catálogo público                 | copy y recuperación permanecen fuera de CTX005                                        |
+| legacy                           | solo proyección canónico → legacy                                                     |
+| CTX006                           | hereda frescura del contexto; no cachea razones por separado                          |
+| UI                               | presenta información segura sin autorizar                                             |
 
 ---
 
@@ -10544,13 +10571,17 @@ Cada responsabilidad física permanece en su tarea propietaria existente.
 **Estado:** APROBADA
 **Tarea anterior:** SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual
 **Tarea siguiente:** SHELL-CI-001 — Crear pruebas de paquetes compartidos
-**Tipo de tarea:** Documental; definición contractual global con materialización futura por unidad
-**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Tipo de tarea:** Documental — definición global única de caché compartida L1, single-flight cross-request y validación de frescura, con futura materialización física una sola vez por unidad de implementación
+**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
 **Repositorio propietario:** `devVentoGroup/vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`
 **Estado físico resultante:** `DOCUMENTED_FOR_FUTURE_IMPLEMENTATION`; no existe instancia física materializada
 **Cambios físicos autorizados:** ninguno
 **Requisitos de prueba creados o modificados:** 0
+**Modalidad:** `PER_IMPLEMENTATION_UNIT`
+**Trabajo canónico actual:** definir una sola vez el contrato de L1 compartida, single-flight cross-request y validación de frescura y asignar su futura materialización
+**Instancia física futura:** `SHELL-CTX-006::<implementation_unit_id>`
+**Condición de materialización:** después de que `DELIV-PKG-025` asigne `implementation_unit_id` y el `package_id` propietario supere `E5-GATE-008`
 
 ---
 
@@ -11833,7 +11864,7 @@ Evidencia de otra combinación se considera no vigente para la instancia evaluad
 
 ---
 
-#### Requisitos de prueba derivados
+#### 58. Requisitos de prueba derivados
 
 **Resultado:** NO GENERA REQUISITOS DE PRUEBA
 
@@ -11844,7 +11875,7 @@ Evidencia de otra combinación se considera no vigente para la instancia evaluad
 
 ---
 
-#### 58. Evidencia de validación
+#### 59. Evidencia de validación
 
 | Clase       | Estado           | Evidencia                                                                                                                                    |
 | ----------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -11858,7 +11889,7 @@ Los estados anteriores describen exclusivamente la evidencia disponible para el 
 
 ---
 
-#### 59. Decisiones vinculantes
+#### 60. Decisiones vinculantes
 
 1. `SHELL-CTX-006` define el contrato global una sola vez.
 2. La materialización física es `PER_IMPLEMENTATION_UNIT`.
@@ -11919,7 +11950,7 @@ Los estados anteriores describen exclusivamente la evidencia disponible para el 
 
 ---
 
-#### 60. Criterios de aceptación
+#### 61. Criterios de aceptación
 
 `SHELL-CTX-006` queda documentalmente cerrada cuando se cumplan simultáneamente:
 
@@ -11957,7 +11988,7 @@ Los estados anteriores describen exclusivamente la evidencia disponible para el 
 
 ---
 
-#### 61. Límites
+#### 62. Límites
 
 Esta tarea no:
 
@@ -12045,7 +12076,7 @@ Reglas:
 
 ---
 
-#### 62. Continuidad
+#### 63. Continuidad
 
 **ÚLTIMA TAREA APROBADA**
 `SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual`
