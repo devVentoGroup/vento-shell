@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **940** |
+| Tareas aprobadas | **941** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **654** |
+| Tareas no iniciadas | **653** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **58.97% (940/1594)** |
+| Porcentaje de completamiento | **59.03% (941/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy** |
-| Tarea actual | **SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado** |
+| Última tarea aprobada | **SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado** |
+| Tarea actual | **SHELL-MIG-005 — Migrar componentes, Chrome y estilos por aplicación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-MIG-005 — Migrar componentes, Chrome y estilos por aplicación** |
+| Siguiente tarea | **SHELL-MIG-006 — Verificar accesibilidad, tema y movimiento reducido** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 90 de 109 aprobadas; SHELL-MIG-004 pendiente** |
+| Progreso del bloque | **BLOQUE H: 91 de 109 aprobadas; SHELL-MIG-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-MIG-003` — Preparar compatibilidad y bloqueo de nuevos consumidores legacy |
-| Tarea actual | `SHELL-MIG-004` — Sustituir la plantilla histórica por scaffold versionado — **NO INICIADA** |
-| Siguiente tarea | `SHELL-MIG-005` — Migrar componentes, Chrome y estilos por aplicación |
+| Última aprobada | `SHELL-MIG-004` — Sustituir la plantilla histórica por scaffold versionado |
+| Tarea actual | `SHELL-MIG-005` — Migrar componentes, Chrome y estilos por aplicación — **NO INICIADA** |
+| Siguiente tarea | `SHELL-MIG-006` — Verificar accesibilidad, tema y movimiento reducido |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 90 DE 109 APROBADAS — ACTUAL SHELL-MIG-004** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 91 DE 109 APROBADAS — ACTUAL SHELL-MIG-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy
-        ↓
-TAREA ACTUAL
 SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-MIG-005 — Migrar componentes, Chrome y estilos por aplicación
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-MIG-006 — Verificar accesibilidad, tema y movimiento reducido
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 90 de 109 tareas aprobadas
+BLOQUE H — 91 de 109 tareas aprobadas
 ```

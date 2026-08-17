@@ -1622,13 +1622,906 @@ Esta tarea no:
 `SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado`
 
 
-### [ ] SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado
+### ✅ SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado
 
-**Propósito:** impedir que la plantilla AppShell vuelva a copiar implementaciones desfasadas y hacer que instale o genere dependencias aprobadas.
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy
+**Tarea siguiente:** SHELL-MIG-005 — Migrar componentes, Chrome y estilos por aplicación
+**Tipo de tarea:** Documental; definición vinculante y materializada del scaffold versionado que sustituirá el mecanismo histórico de copia de AppShell, con contrato de entradas, salidas, versiones exactas, configuración explícita, procedencia, reproducibilidad, rollback y gate de ejecución, sin crear todavía el scaffold físico ni modificar consumidores
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md`
+**Estado físico resultante:** ESPECIFICADO; 1 lote de scaffold cerrado documentalmente; 8 artefactos legacy reconciliados; 3 salidas locales permitidas; 5 copias runtime compartidas prohibidas; 0 scaffold físico creado; 0 consumidores migrados
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
 
-**Dependencias:** `SHELL-MIG-003`; `SHELL-PKG-001`; `SHELL-PKG-003`; `SHELL-PKG-004`; `SHELL-UI-010`.
+---
 
-**Puerta de cierre:** scaffold reproducible, sin fuente runtime duplicada, con versiones fijadas, configuración explícita y rollback documentado.
+#### 1. Propósito
+
+`SHELL-MIG-004` sustituye documentalmente el modelo histórico de distribución del AppShell basado en copiar archivos por un scaffold versionado, reproducible y trazable.
+
+La tarea materializa el contrato completo que deberá cumplir el sustituto físico antes de poder usarse sobre un repositorio consumidor.
+
+La regla raíz queda:
+
+```text
+FUENTE CANÓNICA VERSIONADA
++
+RELEASES EXACTAS Y COMPATIBLES
++
+CONFIGURACIÓN EXPLÍCITA DEL CONSUMIDOR
++
+SCAFFOLD IDENTIFICABLE E INMUTABLE
+→ DEPENDENCIAS INSTALADAS
+→ ENTRYPOINTS Y COMPOSICIÓN LOCAL MÍNIMA
+→ MANIFEST DE RESULTADO Y PROCEDENCIA
+```
+
+Y queda descartado como mecanismo futuro:
+
+```text
+TEMPLATE HISTÓRICO
+→ COPIAR IMPLEMENTACIÓN RUNTIME
+→ CAMBIAR TEXTO, RUTAS, PERMISOS O COLORES POR SUSTITUCIÓN
+→ CREAR OTRA COPIA INDEPENDIENTE
+```
+
+El objetivo no es ocultar la plantilla histórica detrás de otro script. El objetivo es eliminar la duplicación como mecanismo de distribución.
+
+---
+
+#### 2. Resultado material
+
+Queda cerrado un único lote documental heredado de `SHELL-MIG-002`:
+
+```text
+devVentoGroup/vento-shell / SHELL-MIG-004
+```
+
+Su resultado se materializa así:
+
+| Dimensión                                                                     | Resultado |
+| ----------------------------------------------------------------------------- | --------: |
+| lotes de `SHELL-MIG-004`                                                      |     **1** |
+| mecanismos legacy directos gobernados                                         |     **2** |
+| archivo bootstrap histórico                                                   |     **1** |
+| árbol de plantilla histórica                                                  |     **1** |
+| archivos físicos administrados por el bootstrap actual                        |     **8** |
+| módulos TypeScript/TSX de la plantilla                                        |     **7** |
+| hojas de estilo adicionales                                                   |     **1** |
+| archivos locales que el scaffold podrá generar o actualizar                   |     **3** |
+| archivos de implementación compartida que el scaffold tendrá prohibido copiar |     **5** |
+| packages compartidos de frontera reconocidos                                  |     **4** |
+| versiones concretas de packages inventadas por esta tarea                     |     **0** |
+| scaffold físico creado                                                        |     **0** |
+| consumidores migrados                                                         |     **0** |
+| cambios Supabase                                                              |     **0** |
+| cambios `TREQ-*`                                                              |     **0** |
+
+Los dos mecanismos legacy gobernados son:
+
+1. `tools/bootstrap-app-shell.ps1`;
+2. `templates/app-shell-standard`.
+
+Los ocho archivos físicos administrados actualmente son:
+
+1. `src/app/globals.css`;
+2. `src/app/layout.tsx`;
+3. `src/components/vento/standard/vento-shell.tsx`;
+4. `src/components/vento/standard/vento-chrome.tsx`;
+5. `src/components/vento/standard/ui.tsx`;
+6. `src/components/vento/standard/table.tsx`;
+7. `src/components/vento/standard/app-switcher.tsx`;
+8. `src/components/vento/standard/profile-menu.tsx`.
+
+La diferencia entre ocho archivos físicos y siete módulos del registro de pruebas es coherente: `globals.css` es la hoja de estilo adicional; los otros siete son módulos TSX.
+
+---
+
+#### 3. Fuentes, dependencias y corte verificable
+
+##### 3.1. Dependencias vinculantes
+
+| Fuente                | Decisión heredada                                                                                                          |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-MIG-003`       | bloquear crecimiento de legacy y fallar cerrado ante nuevas aristas o copias no inventariadas                              |
+| `SHELL-PKG-001`       | registry npm privado, versiones exactas, lockfile, `npm ci`, procedencia y prohibición de distribución por copia           |
+| `SHELL-PKG-003`       | releases y artefactos inmutables; una identidad publicada no se corrige en sitio                                           |
+| `SHELL-PKG-004`       | compatibilidad atribuible a package, versión, consumidor, commit, lockfile, toolchain y evidencia exactos                  |
+| `SHELL-UI-010`        | `AppShell` es composición presentacional; datos, permisos, contexto, Supabase y navegación empresarial permanecen fuera    |
+| `SHELL-MIG-002`       | lote exacto de scaffold, pruebas, observabilidad, rollback y criterio de suspensión                                        |
+| `TREQ-SHELL-002`      | una responsabilidad compartida no se propaga mediante copias manuales sin paridad contractual                              |
+| `TREQ-SHELL-006`      | packages compartidos requieren pruebas y compatibilidad por consumidor                                                     |
+| `TREQ-SHELL-007`      | rollback independiente antes de release o cutover                                                                          |
+| `TREQ-SHELL-029`      | la plantilla histórica es fuente y no runtime por su sola existencia                                                       |
+| `TREQ-SHELL-030..032` | navegación, autorización, simulación, componentes y copias del template deben reconciliarse sin autoridad local divergente |
+| `TREQ-SHELL-035`      | textos y estados de template no pueden propagar codificación o significado defectuosos                                     |
+| `TREQ-SHELL-036..039` | identidad de release, compatibilidad, deprecación y retiro controlado                                                      |
+
+##### 3.2. Estado remoto observado
+
+La línea base remota consultada mantiene:
+
+- `packages/*` como workspace de autoría;
+- únicamente `packages/os-context` materializado bajo `packages/`;
+- `@vento/os-context@0.1.0` con `private: true` y exports directos a `src/index.ts`, por lo que no constituye una release estable de distribución;
+- `@vento/contracts`, `@vento/supabase` y `@vento/ui-web` sin package físico publicado confirmado;
+- cero evidencia de releases estables adoptables de las cuatro familias para ejecutar el scaffold;
+- `tools/bootstrap-app-shell.ps1` como único archivo bajo `tools/`;
+- `templates/app-shell-standard` como plantilla histórica vigente.
+
+Por tanto, el scaffold queda **ESPECIFICADO** pero **BLOQUEADO PARA EJECUCIÓN FÍSICA** hasta que existan releases exactas, compatibles y autorizadas de las dependencias que cada ejecución requiera.
+
+---
+
+#### 4. Línea base física del mecanismo histórico
+
+El bootstrap actual recibe configuración de aplicación y luego copia recursivamente la implementación de `templates/app-shell-standard` al repositorio destino.
+
+Después de copiar:
+
+- reescribe variables CSS mediante una tabla de paletas embebida;
+- reescribe metadata de `layout.tsx`;
+- sustituye `NEXO` y prefijos de permisos dentro de `vento-chrome.tsx`;
+- modifica texto de `profile-menu.tsx`;
+- puede alterar el estado local del AppSwitcher;
+- permite sobrescribir los ocho archivos administrados mediante una opción de fuerza.
+
+El README histórico amplía el riesgo: si faltan helpers de Supabase o autenticación, indica copiarlos desde NEXO o adaptar imports.
+
+Ese modelo viola la arquitectura objetivo porque distribuye fuente mutable por duplicación en lugar de consumir una identidad versionada.
+
+La plantilla también conserva evidencia de defectos que no deben propagarse, incluidos textos con codificación corrupta y listas locales de aplicaciones, navegación y permisos.
+
+---
+
+#### 5. Decisión principal
+
+Se aprueba el siguiente modelo de sustitución:
+
+```text
+SCAFFOLD VERSIONADO
+→ NO CONTIENE UNA COPIA CANÓNICA DE LA IMPLEMENTACIÓN RUNTIME COMPARTIDA
+→ INSTALA DEPENDENCIAS APROBADAS MEDIANTE VERSIONES EXACTAS
+→ GENERA SOLO COMPOSICIÓN Y CONFIGURACIÓN LOCAL PROPIETARIA
+→ REGISTRA PROCEDENCIA Y RESULTADO
+→ FALLA SI NO PUEDE DEMOSTRAR COMPATIBILIDAD O REPRODUCIBILIDAD
+```
+
+El scaffold no será un segundo package de UI ni una segunda fuente de contratos.
+
+No podrá convertirse en propietario semántico de:
+
+- catálogos de aplicaciones;
+- permisos;
+- roles;
+- scopes;
+- contexto operativo;
+- clientes Supabase;
+- navegación empresarial;
+- AppSwitcher;
+- ProfileMenu;
+- componentes visuales compartidos;
+- contratos CSS compartidos.
+
+Es una herramienta de materialización controlada de un consumidor, no una fuente alternativa de verdad.
+
+---
+
+#### 6. Fronteras de package
+
+El scaffold reconoce exactamente las cuatro familias compartidas ya aprobadas:
+
+| Package             | Responsabilidad que puede consumir el scaffold                                  | Regla                                                            |
+| ------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `@vento/contracts`  | identidades, catálogos, tipos y contratos estáticos                             | nunca generar una copia local editable del contrato              |
+| `@vento/os-context` | adapters y runtime compartido de contexto/autorización                          | nunca copiar helpers auth desde NEXO u otra aplicación           |
+| `@vento/supabase`   | factories y frontera técnica de acceso a Supabase                               | nunca copiar factories browser/server desde otra aplicación      |
+| `@vento/ui-web`     | AppShell, Chrome presentacional, primitivas y componentes compartidos aprobados | nunca copiar la implementación de esos componentes al consumidor |
+
+Una ejecución concreta instala únicamente packages que realmente formen parte del grafo aprobado de esa composición, pero toda dependencia instalada deberá tener versión exacta y compatibilidad demostrada.
+
+La omisión de una familia es válida solo cuando el resultado no importa ni duplica su responsabilidad y la matriz aplicable la clasifica como no requerida para esa composición. El scaffold no instala packages sin uso para aparentar cumplimiento.
+
+---
+
+#### 7. Identidad y versionado del scaffold
+
+Toda implementación física futura del scaffold deberá poseer una identidad de versión inmutable y verificable.
+
+Su procedencia mínima queda definida por esta tupla:
+
+```text
+versión del scaffold
++
+repositorio fuente
++
+commit fuente
++
+huella del artefacto ejecutado
++
+contrato de entradas
++
+versiones exactas de packages requeridos
+```
+
+Reglas:
+
+1. una misma versión del scaffold no podrá cambiar de lógica o bytes sin crear una versión nueva;
+2. la versión deberá quedar registrada en cada ejecución y en su manifest de resultado;
+3. un cambio que modifique archivos generados, semántica de configuración, dependencias requeridas o reglas de validación exige una nueva versión del scaffold;
+4. una corrección no podrá sustituir silenciosamente el artefacto de una versión ya utilizada;
+5. el commit fuente y la huella del ejecutable son evidencia obligatoria aun cuando exista una versión humana;
+6. esta tarea no asigna un número inicial, tag ni ruta de publicación porque todavía no existe el artefacto físico autorizado;
+7. la primera identidad física solo podrá declararse cuando el scaffold real supere sus gates de implementación y evidencia.
+
+No se reutilizan los tags `pkg/...` de `SHELL-PKG-003` para fingir que el scaffold es uno de los cuatro packages.
+
+---
+
+#### 8. Contrato de entrada obligatorio
+
+Una ejecución válida deberá resolver explícitamente, como mínimo:
+
+| Entrada                         | Obligación                                                                                                |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| repositorio consumidor          | identidad exacta del repositorio objetivo                                                                 |
+| commit base                     | commit exacto sobre el que se calcula la salida                                                           |
+| aplicación                      | `AppCode` canónico validado; no derivado del nombre visible                                               |
+| nombre visible                  | copy de presentación explícito                                                                            |
+| metadata web                    | valores aprobados de título, descripción y origen cuando apliquen                                         |
+| configuración visual            | tokens o configuración de tema admitidos por el contrato UI vigente                                       |
+| dependencias compartidas        | nombre y versión exacta de cada package requerido                                                         |
+| integridad de dependencias      | resolución verificable mediante lockfile/registry                                                         |
+| compatibilidad                  | relación aprobada para package, versión y consumidor aplicables                                           |
+| composición AppShell            | contenido preparado para `brand`, `navigation`, `context`, `notices` y `headerActions` cuando corresponda |
+| política de archivos existentes | baseline y procedencia de cada archivo local administrado                                                 |
+| rollback                        | snapshot previo restituible del consumidor                                                                |
+
+Queda prohibido inferir `AppCode` desde `AppName`, nombre de carpeta, nombre de repositorio o dominio.
+
+---
+
+#### 9. Versiones fijadas y lockfile
+
+La regla de dependencias es estricta:
+
+```text
+package requerido
+→ release canónica existente
+→ versión exacta
+→ integridad resoluble
+→ combinación compatible con el consumidor
+→ package.json
+→ package-lock.json
+→ npm ci reproducible
+```
+
+Queda prohibido para una ejecución certificable:
+
+- `latest`;
+- `*`;
+- rangos flotantes;
+- `file:`;
+- `link:`;
+- dependencia Git por branch o commit como canal ordinario;
+- workspace local como evidencia de release externa;
+- regeneración silenciosa del lockfile;
+- override permanente para ocultar incompatibilidad;
+- uso de `@vento/os-context@0.1.0` privado como si fuera release estable.
+
+Si una dependencia requerida no tiene una release exacta y compatible, el scaffold **no ejecuta** la materialización certificable.
+
+---
+
+#### 10. Contrato de salida
+
+El scaffold podrá producir únicamente estas clases de resultado:
+
+1. actualización controlada de `package.json` para dependencias compartidas exactas;
+2. actualización reproducible de `package-lock.json`;
+3. composición local de aplicación;
+4. configuración local explícita;
+5. metadata y tema propios del consumidor;
+6. manifest de resultado y procedencia de la ejecución;
+7. evidencia necesaria para comparar la salida con su baseline.
+
+No podrá generar una copia local de la implementación fuente de un package compartido.
+
+La salida deberá poder clasificarse completamente como:
+
+```text
+DEPENDENCIA VERSIONADA
++
+COMPOSICIÓN LOCAL
++
+CONFIGURACIÓN LOCAL
+```
+
+Nunca como:
+
+```text
+FORK LOCAL DEL PACKAGE
+```
+
+---
+
+#### 11. Reconciliación exacta de los ocho archivos históricos
+
+| Archivo histórico                                | Disposición del scaffold     | Motivo                                                                                                                |
+| ------------------------------------------------ | ---------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `src/app/layout.tsx`                             | `GENERAR_O_ACTUALIZAR_LOCAL` | entrypoint de aplicación; metadata, fuentes y composición raíz permanecen locales                                     |
+| `src/app/globals.css`                            | `GENERAR_O_ACTUALIZAR_LOCAL` | entrypoint CSS local; tema y overrides de aplicación permanecen locales                                               |
+| `src/components/vento/standard/vento-shell.tsx`  | `GENERAR_O_ACTUALIZAR_LOCAL` | compositor server de la aplicación; ensambla dependencias sin convertirse en fuente compartida                        |
+| `src/components/vento/standard/vento-chrome.tsx` | `NO_COPIAR`                  | estructura compartible pertenece a `@vento/ui-web`; navegación, permisos y Supabase históricos deben salir del chrome |
+| `src/components/vento/standard/ui.tsx`           | `NO_COPIAR`                  | primitivas compartidas deben consumirse desde `@vento/ui-web`                                                         |
+| `src/components/vento/standard/table.tsx`        | `NO_COPIAR`                  | los seis wrappers semánticos pertenecen a la superficie UI compartida aprobada                                        |
+| `src/components/vento/standard/app-switcher.tsx` | `NO_COPIAR`                  | metadata viene de contratos; acceso se resuelve fuera de UI; el componente visual no mantiene catálogo local          |
+| `src/components/vento/standard/profile-menu.tsx` | `NO_COPIAR`                  | estructura visual puede compartirse, pero sesión, simulación, sede y autoridad permanecen fuera del componente        |
+
+Conciliación:
+
+```text
+8 archivos históricos
+= 3 locales permitidos
++ 5 copias compartidas prohibidas
+```
+
+No hay archivo sin disposición.
+
+---
+
+#### 12. Contrato de `src/app/layout.tsx`
+
+El scaffold podrá crear o actualizar el layout local únicamente para:
+
+- metadata de aplicación;
+- configuración de fuentes aprobada;
+- import del entrypoint CSS local;
+- composición raíz hacia el compositor local o superficie compartida aprobada;
+- atributos estructurales del documento que sigan siendo responsabilidad del consumidor.
+
+No podrá insertar en el layout:
+
+- catálogos locales de permisos;
+- datos de sesión como fuente de autoridad;
+- listas copiadas de aplicaciones;
+- lógica de Supabase de dominio;
+- rutas específicas heredadas de NEXO como estándar transversal.
+
+La metadata deberá usar identidad y configuración explícitas; no se obtendrá por sustitución textual sobre un archivo NEXO.
+
+---
+
+#### 13. Contrato de `src/app/globals.css`
+
+`globals.css` permanece local porque cada consumidor conserva su entrypoint CSS y configuración visual propia.
+
+El scaffold podrá generar o actualizar:
+
+- importaciones públicas requeridas por el contrato CSS compartido cuando esas superficies existan;
+- tokens u overrides explícitamente permitidos;
+- configuración local de fondo, tipografía o marca que pertenezca al consumidor.
+
+Queda prohibido:
+
+- copiar íntegramente el CSS histórico como implementación base compartida;
+- mantener una segunda definición local de tokens cuyo propietario sea `@vento/ui-web`;
+- inventar variables públicas no aprobadas;
+- derivar paleta desde el nombre de la aplicación;
+- propagar texto o bytes corruptos desde el template histórico.
+
+---
+
+#### 14. Contrato de `src/components/vento/standard/vento-shell.tsx`
+
+El compositor local permanece porque `SHELL-UI-010` separa la composición de aplicación de la implementación visual compartida.
+
+Su responsabilidad máxima será:
+
+```text
+RESOLVER MEDIANTE FRONTERAS APROBADAS
+→ identidad de aplicación
+→ sesión/contexto que realmente corresponda
+→ navegación ya preparada
+→ contexto presentacional
+→ avisos
+→ utilidades de header
+
+COMPONER
+→ AppShell compartido
+→ children de la aplicación
+```
+
+No podrá reimplementar dentro del archivo:
+
+- factories Supabase compartidas;
+- algoritmo de autorización compartido;
+- catálogos de roles o permisos;
+- AppShell visual completo;
+- primitivas UI compartidas;
+- AppSwitcher compartido;
+- ProfileMenu compartido.
+
+La existencia del compositor local no equivale a mantener una copia del package.
+
+---
+
+#### 15. Superficies que dejan de generarse como fuente runtime
+
+El scaffold prohíbe materializar como copia los cinco archivos compartibles siguientes:
+
+```text
+vento-chrome.tsx
+ui.tsx
+table.tsx
+app-switcher.tsx
+profile-menu.tsx
+```
+
+Su sustitución será mediante imports públicos de releases exactas cuando las superficies físicas correspondientes existan y estén aprobadas.
+
+Si una API pública necesaria todavía no existe, el scaffold se bloquea. No reconstruye esa API copiando el template histórico.
+
+Un wrapper local legítimo solo podrá existir cuando tenga responsabilidad de aplicación propia, nombre y alcance explícitos y no reproduzca la implementación compartida. El scaffold no crea wrappers vacíos para conservar rutas legacy.
+
+---
+
+#### 16. Reconciliación de los parámetros del bootstrap histórico
+
+| Entrada histórica | Decisión del scaffold versionado                                                                                               |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `TargetPath`      | se conserva únicamente como destino operacional de una ejecución; no define identidad semántica                                |
+| `AppName`         | se conserva como copy explícito de presentación; no genera `AppCode`                                                           |
+| `AppCode`         | pasa a ser obligatorio y debe validar contra el contrato canónico aplicable                                                    |
+| `Palette`         | se elimina como tabla hardcodeada del generador; se sustituye por configuración visual explícita compatible con el contrato UI |
+| `Domain`          | se conserva como metadata explícita solo cuando el consumidor tenga un origen aprobado                                         |
+| `Description`     | se conserva como copy local explícito                                                                                          |
+| `Tagline`         | se conserva como copy local explícito si la composición lo utiliza                                                             |
+| `SetActiveApp`    | se elimina; el scaffold no cambia ciclo de vida, disponibilidad ni estado de una aplicación                                    |
+| `Force`           | se elimina como sobrescritura ciega; un cambio sobre archivos existentes exige baseline reconocible y diff controlado          |
+
+No se mantiene compatibilidad por nombre con parámetros cuya semántica sea insegura.
+
+---
+
+#### 17. Configuración explícita
+
+La configuración de una ejecución deberá ser declarativa, resoluble y suficiente para regenerar el mismo resultado bajo el mismo estado de entrada.
+
+Como mínimo deberá registrar:
+
+- aplicación canónica;
+- consumidor exacto;
+- commit base;
+- metadata de aplicación utilizada;
+- tema/tokens configurados;
+- packages requeridos y versiones exactas;
+- referencias de compatibilidad aplicables;
+- decisiones de composición por slot de AppShell;
+- archivos locales administrados;
+- política de conflicto;
+- snapshot de rollback.
+
+La representación física de esa configuración no se asigna en esta fase para no inventar una ruta o formato que todavía no existe en el repositorio.
+
+La futura implementación podrá elegir una serialización concreta únicamente si conserva todos estos campos e invariantes.
+
+---
+
+#### 18. Relación con el catálogo de aplicaciones
+
+El scaffold no mantiene una lista propia de aplicaciones.
+
+Reglas:
+
+1. `AppCode` se valida contra el contrato compartido aplicable.
+2. nombre, destino y ciclo de vida no se reconstruyen desde arrays embebidos.
+3. `hub` no se convierte por inferencia en un `AppCode` alternativo.
+4. el scaffold no marca una aplicación como activa o próxima.
+5. la disponibilidad para un actor no se determina en generación.
+6. URLs y dominios solo se usan como configuración explícita gobernada.
+
+Esto elimina el comportamiento actual de AppSwitcher que transporta una lista local como fuente propia.
+
+---
+
+#### 19. Relación con `AppShell` de `SHELL-UI-010`
+
+El scaffold deberá preparar el consumidor para la composición conceptual aprobada:
+
+```text
+AppShell
+├─ brand
+├─ navigation
+├─ context
+├─ notices
+├─ headerActions
+└─ children
+```
+
+El scaffold no resuelve el contenido autoritativo de esos slots.
+
+| Slot            | Propiedad del scaffold                                                     |
+| --------------- | -------------------------------------------------------------------------- |
+| `brand`         | cablear identidad visual explícita del consumidor                          |
+| `navigation`    | aceptar navegación ya preparada por la aplicación; no calcular permisos    |
+| `context`       | aceptar proyección visual ya resuelta; no decidir sede, área, turno o rol  |
+| `notices`       | aceptar avisos preparados; no iniciar ni terminar simulación               |
+| `headerActions` | componer utilidades aprobadas; no resolver sesión o catálogo por su cuenta |
+| `children`      | preservar la superficie empresarial local                                  |
+
+No se introducen props alternativas para conservar acoplamientos del `VentoChrome` histórico.
+
+---
+
+#### 20. Frontera con autorización y contexto
+
+El scaffold no genera:
+
+- matrices de permisos;
+- `NAV_GROUPS` con permisos hardcodeados;
+- role overrides cliente;
+- cookies de autoridad;
+- resolución de sede desde query parameters;
+- `canOperate` local;
+- `OperatingGate` como autoridad del AppShell;
+- casts de strings legacy a contratos canónicos.
+
+Cuando la composición necesite contexto o autorización compartidos, se consumirá la release exacta de `@vento/os-context` y los contratos exactos aplicables.
+
+La aplicación conserva sus adapters y composición locales cuando su responsabilidad así lo exige, pero no reimplementa el SDK compartido.
+
+---
+
+#### 21. Frontera con Supabase
+
+El scaffold no copia:
+
+```text
+src/lib/supabase/client
+src/lib/supabase/server
+```
+
+ni otros helpers desde NEXO.
+
+La frontera futura utiliza `@vento/supabase` cuando la composición requiera capacidades compartidas de acceso técnico.
+
+`@vento/ui-web` y `AppShell` no reciben dependencia directa de Supabase.
+
+Cualquier cambio de esquema, RPC, RLS, datos, Storage, Realtime, Edge Functions, configuración o secretos permanece fuera de `SHELL-MIG-004` y, si pertenece a VENTO, se materializa exclusivamente desde `vento-shell` mediante su tarea propietaria.
+
+---
+
+#### 22. Frontera con navegación
+
+La navegación del template histórico no se usa como seed de nuevos consumidores.
+
+El scaffold no genera:
+
+- rutas NEXO;
+- grupos NEXO;
+- permisos NEXO;
+- descripciones NEXO;
+- lógica `required` / `anyOf` heredada;
+- acceso calculado desde RPC dentro del chrome.
+
+La futura composición consume la superficie de navegación aprobada por su tarea propietaria y recibe únicamente la proyección que la aplicación esté autorizada a presentar.
+
+---
+
+#### 23. Política de archivos existentes
+
+La sustitución elimina el comportamiento de sobrescritura ciega.
+
+Reglas:
+
+1. un archivo existente no se modifica si el scaffold no puede demostrar su baseline;
+2. una salida creada por una versión anterior del scaffold debe poder vincularse a esa versión y a su configuración;
+3. una actualización calcula diferencias antes de modificar;
+4. un archivo con cambios locales no atribuibles al scaffold bloquea la actualización automática;
+5. la ejecución no borra extensiones locales para forzar convergencia;
+6. un conflicto produce estado bloqueado y no una sobrescritura parcial;
+7. un resultado parcial no se considera scaffold válido;
+8. el scaffold no utiliza una opción equivalente a `Force` para saltar estas reglas.
+
+---
+
+#### 24. Reproducibilidad e idempotencia
+
+Bajo las mismas entradas exactas:
+
+```text
+mismo scaffold
++
+mismo commit base
++
+misma configuración
++
+mismas versiones e integridades de packages
+→ mismo conjunto lógico de salidas
+→ mismas dependencias
+→ mismos archivos generados
+→ mismas huellas de archivos generados
+```
+
+Una segunda ejecución sobre una salida intacta deberá producir diff vacío o una confirmación equivalente de convergencia.
+
+Se considera fallo de reproducibilidad si:
+
+- cambia una salida sin cambiar entrada o versión del scaffold;
+- resuelve otra versión de package;
+- depende de hora, red no versionada o contenido flotante;
+- el orden de ejecución altera el resultado;
+- genera archivos adicionales no declarados;
+- muta datos externos como efecto lateral.
+
+---
+
+#### 25. Manifest de resultado y procedencia
+
+Cada ejecución física futura deberá emitir evidencia resoluble con, como mínimo:
+
+| Campo lógico         | Evidencia requerida                                         |
+| -------------------- | ----------------------------------------------------------- |
+| versión del scaffold | identidad exacta utilizada                                  |
+| repositorio fuente   | `devVentoGroup/vento-shell`                                 |
+| commit fuente        | commit exacto del scaffold                                  |
+| huella del scaffold  | integridad del artefacto ejecutado                          |
+| consumidor           | repositorio objetivo                                        |
+| commit base          | baseline previo del consumidor                              |
+| aplicación           | `AppCode` validado                                          |
+| packages             | nombres y versiones exactas utilizadas                      |
+| integridades         | valores resueltos por registry/lockfile                     |
+| compatibilidad       | referencias de matriz aplicables                            |
+| configuración        | huella de la configuración efectiva                         |
+| archivos generados   | conjunto exacto de paths afectados                          |
+| huellas de salida    | integridad de archivos generados o actualizados             |
+| manifest/lockfile    | huellas resultantes de `package.json` y `package-lock.json` |
+| rollback             | snapshot previo restituible                                 |
+
+Esta tarea define el contenido mínimo, no inventa el nombre o ubicación física de ese manifest.
+
+---
+
+#### 26. Gates previos a una ejecución certificable
+
+El scaffold solo podrá materializar un consumidor cuando se cumplan acumulativamente:
+
+1. scaffold físico autorizado y versionado;
+2. artefacto de scaffold inmutable e identificable;
+3. commit base exacto del consumidor;
+4. `AppCode` válido;
+5. configuración completa;
+6. APIs públicas requeridas materializadas;
+7. releases exactas de packages disponibles;
+8. integridad de esas releases verificable;
+9. matriz de compatibilidad aplicable sin estado pendiente o incompatible;
+10. snapshot de rollback disponible;
+11. ausencia de archivos legacy nuevos fuera del inventario;
+12. posibilidad de producir la salida sin copiar implementación runtime compartida;
+13. `package.json` y lockfile reconciliables;
+14. validaciones del consumidor definidas;
+15. ningún conflicto local no resuelto en archivos administrados.
+
+Fallar una condición bloquea la ejecución; no activa un modo degradado de copia.
+
+---
+
+#### 27. Observabilidad del lote
+
+La ejecución deberá permitir reconstruir:
+
+- versión y commit del scaffold;
+- repositorio y commit base del consumidor;
+- packages y versiones efectivas;
+- integridades de resolución;
+- configuración efectiva;
+- archivos creados, modificados u omitidos;
+- razones de omisión o bloqueo;
+- diff respecto al baseline;
+- resultado de instalación y validaciones aplicables;
+- snapshot de rollback;
+- resultado de una segunda ejecución de idempotencia.
+
+No se utilizará telemetría sensible para demostrar estas propiedades. La evidencia puede basarse en manifests, lockfile, hashes, logs técnicos seguros y resultados de CI.
+
+---
+
+#### 28. Estado y ciclo de vida del bootstrap/template legacy
+
+La clasificación queda:
+
+| Elemento                                     | Estado documental después de `SHELL-MIG-004` | Regla                                                               |
+| -------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------- |
+| `tools/bootstrap-app-shell.ps1`              | `LEGACY_FROZEN`                              | no evoluciona como mecanismo ordinario de distribución              |
+| `templates/app-shell-standard`               | `LEGACY_FROZEN`                              | fuente histórica y rollback controlado; no canon runtime            |
+| README de copia                              | `LEGACY_FROZEN`                              | sus instrucciones de copiar fuente no gobiernan nuevos consumidores |
+| futuras copias creadas desde esos artefactos | `PROHIBIDAS_COMO_NUEVA_ADOPCION`             | un nuevo consumidor debe usar el scaffold certificado cuando exista |
+| scaffold sustituto                           | `ESPECIFICADO_NO_MATERIALIZADO`              | no puede declararse operativo hasta superar los gates de esta tarea |
+
+Mientras el scaffold no exista físicamente, conservar los artefactos legacy en Git no constituye aprobación para crear nuevos consumidores con ellos.
+
+Su conservación permite evidencia histórica y rollback del lote hasta que el sustituto esté certificado.
+
+---
+
+#### 29. Rollback
+
+El rollback se define en dos momentos.
+
+##### 29.1. Antes de certificar el scaffold sustituto
+
+Si la materialización física del scaffold falla durante su desarrollo, se restaura el snapshot previo del repositorio productor que contiene el bootstrap y la plantilla históricos.
+
+Esa restauración:
+
+- recupera la capacidad previa para diagnóstico;
+- no convierte la copia histórica en canal canónico;
+- no autoriza nuevos consumidores;
+- conserva la evidencia de la falla.
+
+##### 29.2. Después de una adopción certificada por consumidor
+
+El rollback de un consumidor restaura conjuntamente:
+
+```text
+commit previo del consumidor
++
+package.json previo
++
+package-lock.json previo
++
+configuración local previa
++
+entrypoints locales previos
+```
+
+No se reconstruye el estado copiando archivos desde el template histórico.
+
+No se mueve una versión publicada ni se edita `node_modules`.
+
+---
+
+#### 30. Criterios de suspensión
+
+El lote se suspende inmediatamente cuando ocurra cualquiera de estos casos:
+
+1. el scaffold copia `vento-chrome.tsx`, `ui.tsx`, `table.tsx`, `app-switcher.tsx` o `profile-menu.tsx` como implementación runtime;
+2. copia helpers auth o Supabase desde NEXO u otro consumidor;
+3. resuelve un package con rango flotante o identidad no estable;
+4. usa un package privado/transitorio como si fuera release estable;
+5. genera una ruta, permiso, app list, role override o sede autoritativa desde el template;
+6. necesita una API pública que todavía no existe;
+7. no existe compatibilidad verificable con el consumidor exacto;
+8. cambia archivos no declarados;
+9. sobrescribe un archivo local con cambios no atribuibles al scaffold;
+10. una segunda ejecución cambia la salida sin cambio de entradas;
+11. el build o las pruebas aplicables del consumidor fallan por el cambio;
+12. el rollback no puede restaurar el snapshot anterior;
+13. aparece una nueva fuente runtime duplicada;
+14. la configuración efectiva no puede reconstruirse desde evidencia;
+15. se requiere una modificación Supabase no materializada por su tarea propietaria.
+
+No existe bypass documental para estas condiciones.
+
+---
+
+#### 31. Handoff hacia adopción de UI
+
+`SHELL-MIG-004` prepara el mecanismo, pero no migra las siete aplicaciones.
+
+`SHELL-MIG-005` conserva la responsabilidad de adoptar las superficies UI compartidas por aplicación.
+
+Antes de esa adopción, el scaffold deberá permitir que cada consumidor:
+
+- conserve `layout.tsx` y `globals.css` como entrypoints locales;
+- conserve un compositor local cuando corresponda;
+- instale `@vento/ui-web` y demás packages requeridos mediante versiones exactas;
+- componga AppShell sin copiar su implementación;
+- mantenga navegación, contexto, avisos y acciones empresariales en sus propietarios;
+- conserve rollback por repositorio.
+
+La existencia documental de este contrato no adelanta `SHELL-MIG-005`.
+
+---
+
+#### 32. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** el scaffold especializa obligaciones ya cubiertas: evitar copias manuales y deriva (`TREQ-SHELL-002`), exigir instalación y validación reproducibles (`TREQ-SHELL-005`), compatibilidad por consumidor (`TREQ-SHELL-006`), rollback independiente (`TREQ-SHELL-007`), preservar la plantilla como fuente y no runtime (`TREQ-SHELL-029`), impedir que navegación, autorización y componentes legacy se conviertan en estándar (`TREQ-SHELL-030..032`), evitar propagación de contenido defectuoso (`TREQ-SHELL-035`) y conservar identidad, deprecación y retiro controlados (`TREQ-SHELL-036..039`). No aparece una regla de comportamiento nueva que carezca de cobertura canónica.
+
+---
+
+#### 33. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                         |
+| --------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | La tarea no materializa scaffold ni consumidor; no existe cambio físico sobre el que ejecutar un build atribuible.                                                                                                |
+| LOCAL     | PASS           | La especificación reconcilia 8 de 8 archivos históricos, 3 salidas locales permitidas y 5 copias compartidas prohibidas, sin faltantes ni duplicados.                                                             |
+| REMOTA    | PASS           | Se verificaron en `main` el bootstrap, el árbol completo de la plantilla, su README, `package.json`, el único workspace físico `packages/os-context`, las dependencias canónicas y el registro `04A_04_SHELL.md`. |
+| OPERATIVA | NOT_APPLICABLE | No existe scaffold físico autorizado ni ejecución sobre un consumidor en esta fase documental.                                                                                                                    |
+| FÍSICA    | NOT_APPLICABLE | No se crean, modifican o retiran archivos runtime, packages, consumidores, despliegues ni objetos Supabase.                                                                                                       |
+
+---
+
+#### 34. Criterios de aceptación
+
+`SHELL-MIG-004` queda documentalmente completa porque:
+
+- [x] conserva exactamente el lote `devVentoGroup/vento-shell / SHELL-MIG-004`;
+- [x] reconcilia `tools/bootstrap-app-shell.ps1` y `templates/app-shell-standard` como el mecanismo legacy gobernado;
+- [x] reconcilia los ocho archivos físicos actuales sin faltantes;
+- [x] aclara la relación entre ocho archivos y siete módulos TSX más una hoja de estilo;
+- [x] sustituye el modelo de copia por dependencias versionadas y composición local;
+- [x] fija versión e identidad inmutables para el scaffold sin inventar una release física inexistente;
+- [x] exige versiones exactas e integridad de cada package requerido;
+- [x] exige compatibilidad del consumidor antes de una ejecución certificable;
+- [x] prohíbe ranges flotantes, Git, `file:`, `link:` y workspace como canal de release del consumidor;
+- [x] mantiene `layout.tsx`, `globals.css` y `vento-shell.tsx` como salidas locales propietarias;
+- [x] prohíbe copiar `vento-chrome.tsx`, `ui.tsx`, `table.tsx`, `app-switcher.tsx` y `profile-menu.tsx`;
+- [x] prohíbe copiar helpers auth y Supabase desde NEXO;
+- [x] elimina la derivación automática de `AppCode` desde nombre de aplicación;
+- [x] elimina la tabla de paletas como fuente del generador;
+- [x] elimina `SetActiveApp` como operación del scaffold;
+- [x] elimina la sobrescritura ciega equivalente a `Force`;
+- [x] define configuración explícita sin inventar un path físico para ella;
+- [x] define manifest de resultado y procedencia sin inventar nombre de archivo;
+- [x] define reproducibilidad e idempotencia;
+- [x] define gate fail-closed antes de materialización;
+- [x] define observabilidad suficiente para reconstruir cada ejecución;
+- [x] congela bootstrap/template legacy como recuperación controlada y no como distribución canónica;
+- [x] define rollback antes y después de adopción;
+- [x] define criterios concretos de suspensión;
+- [x] no ejecuta migraciones ni adelanta `SHELL-MIG-005`;
+- [x] no crea ni modifica `TREQ-*`;
+- [x] no modifica Supabase ni ningún repositorio consumidor.
+
+---
+
+#### 35. Límites y fuera de alcance
+
+Esta tarea no:
+
+- crea físicamente el scaffold;
+- asigna una ruta nueva al scaffold;
+- asigna un nombre de archivo nuevo al scaffold;
+- asigna su primera versión concreta o tag;
+- materializa `@vento/contracts`, `@vento/supabase` o `@vento/ui-web`;
+- convierte `@vento/os-context@0.1.0` en release estable;
+- publica packages;
+- modifica `package.json` o `package-lock.json` de consumidores;
+- genera los tres entrypoints locales;
+- elimina el bootstrap o la plantilla históricos;
+- modifica las seis copias runtime existentes;
+- migra SHELL, VISO, NEXO, FOGO, ORIGO, PULSO o NUMERA;
+- define la API física de exports de los packages;
+- define rutas o navegación empresarial de una aplicación;
+- modifica autenticación, autorización, simulación, contexto o sesiones;
+- modifica SQL, migraciones, RLS, RPC, Realtime, Storage, Edge Functions, datos, configuración o secretos de Supabase;
+- ejecuta builds, despliegues o pruebas operativas de un scaffold inexistente;
+- crea nuevos requisitos de prueba;
+- inicia `SHELL-MIG-005`.
+
+---
+
+#### 36. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-MIG-005 — Migrar componentes, Chrome y estilos por aplicación`
+
 
 ### [ ] SHELL-MIG-005 — Migrar componentes, Chrome y estilos por aplicación
 
