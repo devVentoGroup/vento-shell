@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **958** |
+| Tareas aprobadas | **959** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **636** |
+| Tareas no iniciadas | **635** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **60.10% (958/1594)** |
+| Porcentaje de completamiento | **60.16% (959/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual** |
-| Tarea actual | **SHELL-CTX-006 — Implementar caché compartida, single-flight y validación de frescura** |
+| Última tarea aprobada | **AUTH-UI-039 — Definir masking según permiso** |
+| Tarea actual | **SHELL-CI-001 — Crear pruebas de paquetes compartidos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CI-001 — Crear pruebas de paquetes compartidos** |
-| Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 108 de 109 aprobadas; SHELL-CTX-006 pendiente** |
+| Siguiente tarea | **SHELL-CI-002 — Crear build independiente por paquete** |
+| Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
+| Progreso del bloque | **BLOQUE T: 0 de 24 aprobadas; SHELL-CI-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-CTX-005` — Implementar razones seguras de bloqueo contextual |
-| Tarea actual | `SHELL-CTX-006` — Implementar caché compartida, single-flight y validación de frescura — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CI-001` — Crear pruebas de paquetes compartidos |
+| Última aprobada | `AUTH-UI-039` — Definir masking según permiso |
+| Tarea actual | `SHELL-CI-001` — Crear pruebas de paquetes compartidos — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CI-002` — Crear build independiente por paquete |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 108 DE 109 APROBADAS — ACTUAL SHELL-CTX-006** |
+| CONTINUIDAD ACTIVA | **BLOQUE T: 0 DE 24 APROBADAS — ACTUAL SHELL-CI-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual
+AUTH-UI-039 — Definir masking según permiso
         ↓
 TAREA ACTUAL
-SHELL-CTX-006 — Implementar caché compartida, single-flight y validación de frescura
-        ↓
-SIGUIENTE TAREA RESERVADA
 SHELL-CI-001 — Crear pruebas de paquetes compartidos
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CI-002 — Crear build independiente por paquete
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 108 de 109 tareas aprobadas
+BLOQUE T — 0 de 24 tareas aprobadas
 ```

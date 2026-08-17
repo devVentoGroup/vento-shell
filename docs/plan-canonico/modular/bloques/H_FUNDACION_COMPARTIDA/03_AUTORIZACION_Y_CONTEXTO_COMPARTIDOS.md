@@ -10539,7 +10539,1452 @@ Cada responsabilidad física permanece en su tarea propietaria existente.
 `SHELL-CTX-006 — Implementar caché compartida, single-flight y validación de frescura`
 
 
-### [ ] SHELL-CTX-006 — Implementar caché compartida, single-flight y validación de frescura
+### ✅ SHELL-CTX-006 — Implementar caché compartida, single-flight y validación de frescura
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual
+**Tarea siguiente:** SHELL-CI-001 — Crear pruebas de paquetes compartidos
+**Tipo de tarea:** Documental; definición contractual global con materialización futura por unidad
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`
+**Estado físico resultante:** `DOCUMENTED_FOR_FUTURE_IMPLEMENTATION`; no existe instancia física materializada
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`SHELL-CTX-006` cierra el contrato global de caché compartida de `AccessContextV1`, coordinación single-flight y validación de frescura para `@vento/os-context`, sin convertir la caché en fuente de autoridad y sin alterar la forma semántica de `AccessContext@1.0.0`.
+
+La regla raíz queda:
+
+```text
+CACHE HIT
+=
+entrada íntegra
++
+token autoritativo vigente
++
+límite temporal no vencido
++
+identidad completa de la solicitud
++
+contrato y resolver compatibles
+```
+
+Nunca:
+
+```text
+TTL vigente
+→ contexto vigente
+```
+
+ni:
+
+```text
+evento de invalidación no recibido
+→ entrada todavía utilizable
+```
+
+ni:
+
+```text
+entrada stale
+→ servir mientras se refresca
+```
+
+La tarea define una sola vez el contrato. La materialización física futura se ejecutará como máximo una vez por `implementation_unit_id` y podrá ser consumida por varios paquetes mediante lineage explícito.
+
+---
+
+#### 2. Resultado canónico
+
+Quedan definidos de forma cerrada:
+
+1. los cuatro modos operativos de caché;
+2. la frontera entre L0, L1 y L2;
+3. la dependencia obligatoria del token de frescura autoritativo;
+4. el contrato interno `CachedAccessContextRecord@1.0.0`;
+5. la identidad completa de la clave L1;
+6. la elegibilidad para almacenar un contexto;
+7. los TTL máximos y el margen temporal;
+8. los límites temporales que invalidan sin escritura;
+9. el algoritmo de lectura validada;
+10. el algoritmo de escritura con doble lectura T1/T2;
+11. el único reintento permitido ante carrera de generaciones;
+12. la coordinación single-flight;
+13. las reglas multiinstancia;
+14. la prohibición absoluta de stale-while-revalidate para autoridad;
+15. la validación de schema, versión e integridad de cada entrada;
+16. el comportamiento ante fallos del backend de caché;
+17. el comportamiento ante indisponibilidad del token;
+18. el tratamiento de eventos de invalidación como optimización y no como garantía;
+19. la separación frente a decisiones de autorización;
+20. la separación frente a cliente, CDN, Service Worker, offline, simulación y legacy;
+21. las métricas y límites de observabilidad;
+22. el rollout `REQUEST_ONLY → SHADOW_SHARED → VALIDATED_SHARED`;
+23. el rollback obligatorio a `REQUEST_ONLY`;
+24. la matriz mínima de integración y compatibilidad;
+25. sesenta escenarios mínimos de verificación;
+26. doce gates para certificar cada instancia física;
+27. la evidencia y lineage exigidos por `implementation_unit_id`.
+
+No se elige en este marcador una tecnología concreta de almacenamiento compartido. La implementación podrá usar el backend aprobado por su expediente físico siempre que satisfaga íntegramente este contrato y no introduzca una nueva fuente de autoridad.
+
+---
+
+#### 3. Fuentes y precedencia
+
+Esta tarea conserva y materializa documentalmente las decisiones vigentes de:
+
+| Fuente               | Responsabilidad consumida                                                   |
+| -------------------- | --------------------------------------------------------------------------- |
+| `AUTH-CTX-001`       | forma y semántica de `AccessContext`                                        |
+| `AUTH-CTX-004`       | versionado e inmutabilidad contractual                                      |
+| `AUTH-CTX-015`       | invalidez estructural y `CONTEXT_STALE`                                     |
+| `AUTH-CTX-025`       | productor canónico de contexto                                              |
+| `AUTH-CTX-027`       | consumo centralizado por aplicaciones                                       |
+| `AUTH-CTX-028`       | compatibilidad legacy canónico → legacy                                     |
+| `AUTH-CTX-029`       | estrategia de caché, token, límites, single-flight, rollout y rollback      |
+| `AUTH-CTX-030`       | plan maestro de pruebas contractuales, concurrencia, caché y rollback       |
+| `AUTH-DB-033`        | productor físico autoritativo de `AccessContext`                            |
+| `AUTH-DB-035`        | token transaccional de frescura, generaciones y eventos de invalidación     |
+| `SHELL-AUTH-001`     | superficie y versionado del SDK compartido                                  |
+| `SHELL-AUTH-002`     | adapters y proyecciones seguras                                             |
+| `SHELL-AUTH-003`     | scope por solicitud, L0, deduplicación y write barrier                      |
+| `SHELL-CTX-001..005` | consumo contextual, turno/check-in, territorio, readiness y razones seguras |
+
+Precedencia funcional:
+
+```text
+AUTH-DB-035
+→ demuestra frescura
+
+AUTH-DB-033
+→ produce contexto fresco
+
+SHELL-AUTH-003
+→ controla L0 dentro de una solicitud
+
+SHELL-CTX-006
+→ controla L1 compartida validada
+
+SHELL-AUTH-002
+→ entrega adapters y proyecciones
+```
+
+`SHELL-CTX-006` no sustituye ninguna de estas responsabilidades.
+
+---
+
+#### 4. Línea base verificable
+
+El estado físico actual del repositorio conserva `@vento/os-context@0.1.0` como implementación parcial y transitoria.
+
+La superficie observada contiene todavía tipos y clientes legacy asociados a `EffectiveContext`, RPC heredadas y booleanos como `can_operate`; no existe en el package actual una implementación física del contrato L1 definido por esta tarea.
+
+Por tanto:
+
+```text
+contrato CTX006
+=
+ESPECIFICADO
+
+instancia SHELL-CTX-006::implementation_unit_id
+=
+NO MATERIALIZADA
+```
+
+La ausencia de implementación física en este corte es coherente con la fase `PLANNING_ONLY` y no autoriza crear código, almacenamiento, migraciones, Redis, jobs, triggers o cambios Supabase durante este marcador global.
+
+---
+
+#### 5. Modalidad de materialización
+
+La topología aplicable es `PER_IMPLEMENTATION_UNIT`.
+
+Reglas:
+
+1. el marcador global define el contrato una sola vez;
+2. una instancia física se identifica como `SHELL-CTX-006::implementation_unit_id`;
+3. la unidad solo puede materializarse después de que `DELIV-PKG-025` asigne su `implementation_unit_id`;
+4. el `package_id` propietario deberá haber superado `E5-GATE-008`;
+5. una unidad se implementa físicamente como máximo una vez;
+6. paquetes adicionales consumen la misma unidad mediante lineage;
+7. lineage no duplica código, migraciones, backend de caché ni pruebas propietarias de la unidad;
+8. evidencia de otra unidad, commit, combinación de contratos o backend se considera no atribuible a la instancia evaluada;
+9. un defecto posterior agrega regresión a la instancia propietaria sin reabrir este contrato global salvo cambio contractual real.
+
+---
+
+#### 6. Frontera L0, L1 y L2
+
+La separación obligatoria queda:
+
+| Capa | Alcance                                                                   | Propietario                     | Puede autorizar |
+| ---- | ------------------------------------------------------------------------- | ------------------------------- | --------------: |
+| L0   | una solicitud lógica                                                      | `SHELL-AUTH-003`                |              No |
+| L1   | múltiples solicitudes y, cuando aplique, múltiples instancias de servidor | `SHELL-CTX-006`                 |              No |
+| L2   | proyección segura de presentación                                         | `SHELL-AUTH-002` y consumidores |              No |
+
+L0 conserva memoización y single-flight request-scoped propios.
+
+L1 conserva contexto compartido únicamente cuando la entrada supera validación de frescura e integridad.
+
+L2 nunca contiene autoridad reutilizable para una mutación.
+
+Ninguna capa almacena `AuthorizationDecision` como capability token.
+
+---
+
+#### 7. Modos operativos
+
+Los modos válidos son exactamente:
+
+```text
+OFF
+REQUEST_ONLY
+SHADOW_SHARED
+VALIDATED_SHARED
+```
+
+Semántica:
+
+| Modo               |                    L0 | Lee L1 |          Sirve L1 | Escribe/observa L1 | Uso                                           |
+| ------------------ | --------------------: | -----: | ----------------: | -----------------: | --------------------------------------------- |
+| `OFF`              | no exigida por CTX006 |     No |                No |                 No | diagnóstico o aislamiento excepcional         |
+| `REQUEST_ONLY`     |                    Sí |     No |                No |                 No | baseline seguro inicial                       |
+| `SHADOW_SHARED`    |                    Sí |     Sí |                No |                 Sí | validar comportamiento sin autoridad desde L1 |
+| `VALIDATED_SHARED` |                    Sí |     Sí | Sí, solo validada |                 Sí | operación compartida certificada              |
+
+El modo inicial de rollout es `REQUEST_ONLY`.
+
+`OFF` no constituye el modo de producción objetivo y no autoriza recrear cachés locales ad hoc.
+
+---
+
+#### 8. Control del modo
+
+El modo será:
+
+- server-side;
+- versionado;
+- no controlable por navegador;
+- no controlable por query string, cookie de usuario, header libre o body;
+- observable por ambiente;
+- reversible sin cambiar consumidores;
+- idéntico para todos los workers de una misma unidad salvo rollout explícitamente controlado.
+
+Un consumidor no podrá seleccionar `VALIDATED_SHARED` para obtener un resultado más permisivo.
+
+---
+
+#### 9. `ContextFreshnessToken@1.0.0`
+
+L1 consume el token autoritativo aprobado, que representa como mínimo:
+
+```text
+environment
+organization_id
+app_code
+subject_key
+session_generation
+actor_generation
+employee_generation
+base_lane_generation
+operational_lane_generation
+device_generation
+app_authorization_generation
+global_authorization_generation
+next_temporal_boundary_at
+issued_at
+token_fingerprint
+```
+
+`SHELL-CTX-006`:
+
+- no incrementa generaciones;
+- no inventa generaciones;
+- no reconstruye el token desde el contexto cacheado;
+- no obtiene el token desde la misma L1;
+- no utiliza eventos como sustituto del token;
+- no acepta un token suministrado por el cliente;
+- no altera el `subject_key` para aumentar hit rate.
+
+La fuente física autoritativa pertenece a `AUTH-DB-035`.
+
+---
+
+#### 10. Generaciones y alcance de invalidación
+
+La comparación de frescura deberá considerar todas las generaciones presentes en el token.
+
+Una modificación de cualquiera de ellas invalida la elegibilidad de la entrada anterior para la combinación afectada.
+
+La implementación no podrá decidir que una generación es irrelevante únicamente porque el campo empresarial que cambió no sea visible en una proyección cliente.
+
+La granularidad física de incremento pertenece a `AUTH-DB-035`; CTX006 consume el resultado sin redefinirla.
+
+---
+
+#### 11. `CachedAccessContextRecord@1.0.0`
+
+La forma interna permanece:
+
+```ts
+type CachedAccessContextRecord = {
+  contract_name: "CachedAccessContextRecord";
+  contract_version: "1.0.0";
+
+  cache_key_hash: string;
+
+  context: AccessContextV1;
+  context_fingerprint: string;
+  freshness_token: ContextFreshnessToken;
+
+  stored_at: string;
+  hard_expires_at: string;
+  next_temporal_boundary_at: string | null;
+
+  storage_version: string;
+  integrity_hash: string;
+};
+```
+
+Es un contrato interno de almacenamiento.
+
+No se expone al navegador, a aplicaciones consumidoras ni a APIs públicas como forma de autoridad.
+
+---
+
+#### 12. Validación de la entrada almacenada
+
+Antes de utilizar una entrada deberán validarse, en este orden lógico:
+
+1. identidad de storage soportada;
+2. versión del registro soportada;
+3. forma completa de `CachedAccessContextRecord`;
+4. forma y versión de `AccessContextV1`;
+5. integridad del registro;
+6. correspondencia del `cache_key_hash`;
+7. correspondencia de `context_fingerprint` con el contexto almacenado;
+8. TTL duro;
+9. límite temporal;
+10. token almacenado contra token T1 autoritativo.
+
+Un fallo en cualquiera de estas validaciones impide el HIT.
+
+---
+
+#### 13. Clave L1
+
+La clave lógica conserva exactamente estas dimensiones:
+
+```text
+ac
+environment
+organization_id
+app_code
+principal_type
+principal_id_or_device_id
+auth_session_id
+actor_session_id_or_none
+system_process_id_or_none
+context_contract_version
+resolver_version
+freshness_token_fingerprint
+```
+
+Reglas:
+
+1. ninguna dimensión obligatoria puede omitirse;
+2. `null` se representa de forma inequívoca;
+3. el entorno siempre participa;
+4. la organización siempre participa;
+5. aplicación siempre participa;
+6. una sesión distinta produce identidad distinta;
+7. un cambio de actor session produce identidad distinta;
+8. un dispositivo distinto produce identidad distinta;
+9. una versión de contrato distinta produce identidad distinta;
+10. una versión de resolver distinta produce identidad distinta;
+11. un token fingerprint distinto produce identidad distinta;
+12. no se usa rol, sede seleccionada, ruta, permiso o recurso como sustituto de identidad contextual.
+
+---
+
+#### 14. Serialización y privacidad de la clave
+
+La implementación física deberá construir la clave de forma determinista y sin ambigüedad de separadores o valores nulos.
+
+Los identificadores crudos no se registrarán completos en logs o métricas.
+
+`cache_key_hash` deberá ser una representación opaca y estable para la misma clave lógica dentro del contrato de almacenamiento aplicable.
+
+La reducción criptográfica de la clave no autoriza omitir ninguna dimensión lógica.
+
+---
+
+#### 15. Elegibilidad de almacenamiento
+
+Puede entrar en L1 únicamente un `AccessContextV1` que:
+
+- haya sido resuelto de forma fresca por el productor autoritativo;
+- valide completamente su contrato;
+- no esté estructuralmente inválido;
+- tenga principal y actor compatibles con una clase admitida;
+- tenga token T1/T2 estable durante la resolución;
+- tenga expiración efectiva mayor que el instante de almacenamiento;
+- no pertenezca a simulación;
+- no proceda del backend legacy nativo;
+- no sea un error técnico;
+- no sea un contexto anónimo o de actor no resuelto.
+
+La elegibilidad de cachear no equivale a `ALLOW`.
+
+---
+
+#### 16. Casos que nunca entran en L1
+
+No se almacenan como autoridad compartida:
+
+```text
+principal anónimo
+actor no resuelto
+contexto estructuralmente inválido
+error técnico
+SimulationContext
+resultado legacy nativo
+AuthorizationDecision
+SafeDecisionProjection
+resultado de una mutación
+entrada con integridad inválida
+entrada cuyo token cambió durante resolución
+entrada cuyo límite temporal ya venció
+```
+
+No existe caché negativa L1 de autorización.
+
+---
+
+#### 17. TTL duro máximo
+
+Los máximos iniciales son:
+
+| Principal                               |                 TTL duro máximo |
+| --------------------------------------- | ------------------------------: |
+| Sesión humana personal                  |                     60 segundos |
+| Servicio de sistema registrado          |                     60 segundos |
+| Dispositivo compartido con actor válido |                     15 segundos |
+| Actor no resuelto                       |                    no almacenar |
+| Principal anónimo                       |                    no almacenar |
+| Contexto estructuralmente inválido      |                    no almacenar |
+| Contexto legacy nativo                  | no almacenar independientemente |
+| Simulación                              |                 no usar L1 real |
+
+El TTL es un techo de rendimiento, no una prueba de frescura.
+
+---
+
+#### 18. Expiración efectiva
+
+La expiración real de una entrada es:
+
+```text
+min(
+  ttl_maximo_por_principal,
+  expiracion_de_sesion,
+  next_temporal_boundary_at - 1 segundo
+)
+```
+
+Cuando no exista una frontera aplicable, la dimensión correspondiente no reduce el máximo.
+
+Si el resultado es menor o igual a cero:
+
+```text
+NO ALMACENAR
+```
+
+Una implementación no puede redondear hacia arriba para conservar una entrada.
+
+---
+
+#### 19. Margen temporal
+
+El margen de seguridad es exactamente:
+
+```text
+1 segundo
+```
+
+Se aplica contra `next_temporal_boundary_at`.
+
+El reloj autoritativo es servidor/base de datos conforme al contrato de resolución.
+
+El reloj del cliente nunca extiende una entrada.
+
+---
+
+#### 20. Límites temporales
+
+Una entrada puede invalidarse sin escritura cuando se alcanza el mínimo aplicable entre:
+
+- expiración de sesión;
+- inicio de un turno futuro que cambia contexto;
+- fin del turno vigente;
+- expiración o cierre programado de check-in;
+- expiración de actor session;
+- expiración de dispositivo;
+- expiración de delegación;
+- inicio o fin de una excepción;
+- inicio o fin de una denegación;
+- inicio o fin de una asignación;
+- cambio de versión programado;
+- fin de una ventana operativa aprobada.
+
+El paso del tiempo basta para rechazar la entrada aunque no exista evento.
+
+---
+
+#### 21. Lectura autoritativa de T1
+
+Antes de buscar una entrada servible en `VALIDATED_SHARED`, el consumidor deberá leer un token T1 desde la fuente autoritativa aprobada.
+
+Queda prohibido:
+
+- obtener T1 desde L1;
+- obtener T1 desde una réplica con lag no certificada para frescura;
+- reutilizar indefinidamente un token anterior;
+- derivar T1 desde `context_fingerprint`;
+- asumir T1 por ausencia de eventos;
+- aceptar T1 desde cliente.
+
+---
+
+#### 22. Algoritmo de lectura L1
+
+El algoritmo contractual es:
+
+```text
+1. Resolver identidad completa de subject y app.
+2. Leer token autoritativo T1.
+3. Construir la clave lógica con T1.
+4. Buscar la entrada correspondiente.
+5. Validar storage_version, schema e integridad.
+6. Validar hard_expires_at.
+7. Validar next_temporal_boundary_at.
+8. Comparar el token almacenado con T1.
+9. Si todas las condiciones cumplen, producir HIT.
+10. En cualquier otro caso, rechazar la entrada y resolver fresco.
+```
+
+No existe un paso alternativo que permita servir una entrada stale.
+
+---
+
+#### 23. Algoritmo de escritura L1
+
+La escritura contractual es:
+
+```text
+1. Leer token autoritativo T1.
+2. Resolver AccessContext fresco.
+3. Validar completamente AccessContextV1.
+4. Leer token autoritativo T2.
+5. Comparar T1 y T2.
+6. Si T1 = T2, calcular fingerprint, expiración, integridad y almacenar.
+7. Si T1 != T2, descartar el resultado y reintentar una sola vez.
+8. Si la segunda resolución vuelve a observar cambio, no almacenar.
+```
+
+El registro nunca se construye mezclando T1 con hechos posteriores a T2.
+
+---
+
+#### 24. Carrera durante resolución
+
+Cuando T1 y T2 difieren:
+
+- el contexto recién resuelto no entra en L1;
+- no se modifica parcialmente una entrada anterior;
+- no se conserva el resultado como fallback;
+- se permite un único reintento completo;
+- la segunda carrera impide almacenamiento;
+- el caller recibe un contexto fresco únicamente si la frontera autoritativa puede demostrarlo de forma segura;
+- si la frescura no puede demostrarse, el resultado es un fallo seguro y nunca un allow inferido.
+
+---
+
+#### 25. Single-flight
+
+Para una misma identidad lógica de resolución concurrente:
+
+```text
+misma clave elegible
+→ una resolución propietaria
+→ consumidores concurrentes comparten su resultado pendiente
+```
+
+El coordinador single-flight:
+
+- no contiene autoridad por sí mismo;
+- no sustituye token;
+- no extiende TTL;
+- no conserva una promesa fallida;
+- no devuelve un resultado stale al vencer la espera;
+- libera la coordinación después de éxito o fallo;
+- registra contención y tiempo de espera sin datos sensibles.
+
+---
+
+#### 26. Frontera con single-flight L0
+
+`SHELL-AUTH-003` conserva el single-flight request-scoped de L0.
+
+CTX006 no crea un segundo L0 ni modifica la clave de L0.
+
+La relación es:
+
+```text
+L0
+→ deduplica dentro de una solicitud
+
+L1 single-flight
+→ evita resoluciones compartidas duplicadas entre solicitudes elegibles
+```
+
+Dos capas pueden coexistir sin compartir estado mutable de autoridad.
+
+---
+
+#### 27. Multiinstancia
+
+La futura instancia deberá demostrar comportamiento correcto con al menos dos procesos o instancias de servidor que compartan la misma fuente de frescura y el backend L1 aplicable.
+
+Invariantes:
+
+1. ambas observan la misma generación autoritativa para la misma fuente consistente;
+2. una entrada creada por una instancia solo es servible por otra después de la misma validación T1;
+3. un evento perdido en una instancia no permite stale hit;
+4. una purga tardía no afecta la garantía del token;
+5. un lock local no se presenta como coordinación global;
+6. si la coordinación single-flight no es distribuida, la duplicación eventual de resolución puede afectar rendimiento pero nunca corrección;
+7. ningún mecanismo de coordinación puede convertir una entrada no validada en HIT.
+
+---
+
+#### 28. Prohibición de stale-while-revalidate
+
+Para todo contexto que pueda influir en autorización:
+
+```text
+STALE-WHILE-REVALIDATE = PROHIBIDO
+```
+
+No se sirve una entrada:
+
+- expirada;
+- con token diferente;
+- después de frontera temporal;
+- con integridad inválida;
+- de otra sesión;
+- de otro actor;
+- de otra aplicación;
+- de otra organización;
+- de otro entorno;
+- de otro resolver;
+- de otra versión contractual.
+
+Puede existir refresh preventivo mientras la entrada siga siendo válida, pero nunca autoridad stale durante el refresh.
+
+---
+
+#### 29. Integridad y corrupción
+
+Una entrada con:
+
+- schema inválido;
+- versión no soportada;
+- hash de integridad inválido;
+- fingerprint incompatible;
+- token mal formado;
+- timestamps inválidos;
+- clave inconsistente;
+
+debe descartarse.
+
+Una entrada corrupta nunca se repara parcialmente ni produce contexto positivo.
+
+La purga de una entrada corrupta es una acción de infraestructura y no una decisión de autorización.
+
+---
+
+#### 30. `cache_status`
+
+Se conservan exactamente:
+
+```text
+MISS
+HIT
+BYPASS
+NOT_IMPLEMENTED
+```
+
+Semántica:
+
+| Estado            | Significado                                                        |
+| ----------------- | ------------------------------------------------------------------ |
+| `MISS`            | no existía entrada válida y se resolvió contexto nuevo             |
+| `HIT`             | se utilizó una entrada cuya frescura e integridad fueron validadas |
+| `BYPASS`          | la política exigió resolver sin L1                                 |
+| `NOT_IMPLEMENTED` | L1 todavía no existe en esa combinación autorizada                 |
+
+No se agrega `STALE` al contrato semántico.
+
+El rechazo stale se registra solo como telemetría interna segura.
+
+---
+
+#### 31. Inmutabilidad de un HIT
+
+Un HIT conserva:
+
+- `context_id`;
+- `resolved_at`;
+- `context_fingerprint`;
+- principal y actor;
+- hechos laborales;
+- carriles;
+- dispositivo;
+- structural issues;
+- source fingerprints.
+
+No se genera un contexto nuevo por leer la misma entrada válida.
+
+Metadata de entrega como hit/miss no cambia el contenido semántico ni el fingerprint.
+
+---
+
+#### 32. `context_id`, fingerprint y token
+
+Las identidades permanecen separadas:
+
+```text
+context_id
+→ instancia de resolución
+
+context_fingerprint
+→ contenido semántico del snapshot
+
+ContextFreshnessToken
+→ prueba de que generaciones relevantes siguen vigentes
+```
+
+Ninguna de las tres sustituye a las otras.
+
+Dos resoluciones nuevas pueden tener `context_id` distinto y `context_fingerprint` igual.
+
+Un fingerprint igual no permite omitir la comparación del token.
+
+---
+
+#### 33. Eventos de invalidación
+
+Los eventos producidos por `AUTH-DB-035` sirven para:
+
+- purga anticipada;
+- reducción de misses tardíos;
+- observabilidad;
+- propagación eficiente entre instancias.
+
+No sirven para demostrar por sí solos que una entrada está fresca.
+
+Regla:
+
+```text
+evento
+→ optimización
+
+token
+→ garantía de corrección
+```
+
+---
+
+#### 34. Evento perdido o duplicado
+
+Un evento perdido no permite HIT stale porque toda lectura servible revalida T1.
+
+Un evento duplicado deberá ser idempotente respecto de la purga.
+
+Un evento retrasado puede purgar una entrada ya reemplazada únicamente si su mecanismo de targeting demuestra que corresponde; si no puede demostrarlo, la implementación deberá usar una estrategia que no invalide autoridad de forma incorrecta ni omita la validación T1 posterior.
+
+La exactitud de la caché nunca depende de entrega exactly-once del evento.
+
+---
+
+#### 35. Fallo de lectura de caché
+
+Ante error del backend L1:
+
+```text
+cache read failure
+→ no usar entrada anterior
+→ resolver fresco por la frontera autoritativa
+```
+
+Si la resolución fresca funciona, el caller recibe ese contexto y el evento se clasifica como bypass/miss técnico según la implementación compatible.
+
+Si también falla la resolución autoritativa, se produce fallo seguro.
+
+Nunca:
+
+```text
+cache failure
+→ previous allow
+```
+
+---
+
+#### 36. Fallo de escritura de caché
+
+Una escritura L1 fallida no invalida un contexto recién resuelto y demostrado fresco para la solicitud actual.
+
+Resultado:
+
+```text
+contexto fresco válido
++
+cache write failure
+→ responder con contexto fresco
+→ no declarar HIT
+→ registrar fallo seguro de infraestructura
+```
+
+No se reintenta una mutación empresarial por un fallo de almacenamiento de caché.
+
+---
+
+#### 37. Fallo de lectura del token
+
+En `VALIDATED_SHARED`, si T1 no puede leerse de una fuente autoritativa consistente:
+
+- L1 no puede producir HIT;
+- la solicitud debe hacer bypass de L1;
+- podrá resolverse contexto fresco únicamente si el productor autoritativo disponible demuestra el snapshot sin depender de la prueba de frescura ausente;
+- si la frontera completa no puede demostrar frescura, el resultado es fallo seguro;
+- no se reutiliza el último token conocido.
+
+---
+
+#### 38. Bypass seguro
+
+El bypass de L1 significa:
+
+```text
+NO USAR CACHE COMPARTIDA
+→ RESOLVER FRESCO
+```
+
+No significa:
+
+- saltarse autorización;
+- saltarse validación contractual;
+- usar legacy;
+- usar una entrada stale;
+- ignorar actor o sesión;
+- aceptar un token de cliente.
+
+Operaciones de alta sensibilidad podrán iniciar con bypass obligatorio conforme al expediente físico aplicable.
+
+---
+
+#### 39. Decisiones de autorización
+
+La primera versión no mantiene caché L1 de `AuthorizationDecision`.
+
+Cada permiso/recurso sigue requiriendo evaluación exacta dentro de la frontera aprobada.
+
+Un contexto cacheado válido puede alimentar múltiples evaluaciones, pero no convierte una decisión anterior en reutilizable.
+
+La deduplicación de decisiones dentro de la misma solicitud permanece en `SHELL-AUTH-003`.
+
+---
+
+#### 40. Write barrier
+
+La write barrier L0 pertenece a `SHELL-AUTH-003`.
+
+CTX006 deberá interoperar con ella así:
+
+1. una mutación relevante invalida L0 aplicable dentro del request;
+2. el backend transaccional incrementa generaciones mediante `AUTH-DB-035`;
+3. la siguiente lectura L1 observa un token diferente y no puede servir la entrada anterior;
+4. el evento puede purgar anticipadamente;
+5. la corrección no depende del orden de llegada del evento.
+
+No se utiliza una purga local como sustituto del incremento transaccional.
+
+---
+
+#### 41. Cliente, navegador y CDN
+
+Queda prohibido almacenar autoridad de contexto L1 en:
+
+- `localStorage`;
+- `sessionStorage`;
+- IndexedDB como fuente de autorización;
+- Service Worker cache;
+- Cache API del navegador;
+- CDN;
+- edge cache pública;
+- cache de HTML o RSC como sustituto de reevaluación;
+- singleton de frontend;
+- store global compartido entre actores.
+
+Las proyecciones seguras L2 son presentación y nunca autorizan mutaciones.
+
+---
+
+#### 42. Framework caches
+
+Un mecanismo de framework como memoización cross-request, data cache o revalidation temporal no podrá envolver `resolveAccessContext` como autoridad si no implementa íntegramente:
+
+- identidad de clave;
+- token autoritativo;
+- límites temporales;
+- integridad;
+- aislamiento;
+- purga;
+- rollback;
+- observabilidad;
+- prohibición de stale.
+
+Un TTL aislado no satisface el contrato.
+
+---
+
+#### 43. Offline
+
+Offline puede conservar intención, datos funcionales permitidos o payloads sincronizables según el dominio.
+
+No conserva autorización ejecutable.
+
+Al sincronizar:
+
+```text
+intención offline
+→ nueva resolución de contexto
+→ nueva evaluación de autorización
+→ ejecución solo si la decisión fresca permite
+```
+
+Una proyección o contexto almacenado previamente nunca autoriza el replay.
+
+---
+
+#### 44. Simulación
+
+`SimulationContext` no utiliza L1 real de `AccessContext`.
+
+Queda prohibido:
+
+- llenar L1 real desde una simulación;
+- servir contexto real desde una clave de simulación;
+- mezclar fingerprints;
+- usar un resultado hipotético como contexto efectivo;
+- compartir single-flight entre resolución real y simulada.
+
+La simulación conserva su evaluador y ciclo propios.
+
+---
+
+#### 45. Legacy
+
+El backend legacy nativo no tendrá una caché compartida independiente.
+
+Durante compatibilidad:
+
+```text
+canónico
+→ AccessContext
+→ L1 validada cuando corresponda
+→ proyección legacy controlada
+```
+
+Nunca:
+
+```text
+fila legacy cacheada
+→ reconstruir AccessContext
+```
+
+`can_operate`, `bypass_applied` o `blocked_reasons` no participan en la identidad o frescura canónica.
+
+---
+
+#### 46. Seguridad y aislamiento
+
+Toda materialización deberá demostrar aislamiento por:
+
+- entorno;
+- organización;
+- aplicación;
+- principal;
+- sesión;
+- actor session;
+- proceso de sistema cuando aplique;
+- versión contractual;
+- versión del resolver;
+- token fingerprint.
+
+Una colisión lógica entre dos identidades distintas es crítica y bloquea la instancia.
+
+Los datos almacenados son privados y no se exponen mediante APIs generales de diagnóstico.
+
+---
+
+#### 47. Observabilidad
+
+La instancia deberá medir como mínimo:
+
+- modo activo;
+- hit/miss/bypass;
+- rechazo por TTL;
+- rechazo por frontera temporal;
+- rechazo por token;
+- rechazo por integridad;
+- error de read;
+- error de write;
+- latencia de token;
+- latencia de resolver;
+- latencia de cache read/write;
+- single-flight owner/waiter;
+- tiempo de espera;
+- contención;
+- purgas por evento;
+- stale rechazado;
+- retry por T1/T2;
+- segunda carrera;
+- rollback de modo.
+
+No se registran JWT, service role, secretos, payload completo, nombres humanos, documentos, correo, grants, denies ni claves completas de caché.
+
+---
+
+#### 48. Rollout
+
+El orden obligatorio de habilitación es:
+
+```text
+REQUEST_ONLY
+→ SHADOW_SHARED
+→ VALIDATED_SHARED
+```
+
+`SHADOW_SHARED` podrá leer, escribir y comparar L1, pero el resultado entregado al caller procede siempre de resolución fresca.
+
+No puede utilizar una entrada shadow para reducir latencia de una mutación real.
+
+---
+
+#### 49. Gates de shadow
+
+Antes de abandonar `SHADOW_SHARED` deberán demostrarse, sobre la misma unidad:
+
+- cero mismatches de identidad de clave;
+- cero stale servidos, por diseño;
+- comparaciones de contexto semántico explicadas;
+- T1/T2 estable bajo escenarios ordinarios;
+- rechazos correctos en fronteras temporales;
+- integridad validada;
+- comportamiento de fallos sin fallback;
+- métricas sin datos sensibles;
+- compatibilidad con los consumidores asignados;
+- comportamiento multiinstancia;
+- purga por evento sin dependencia de corrección;
+- rollback operativo a `REQUEST_ONLY`.
+
+Un mismatch no explicado bloquea `VALIDATED_SHARED`.
+
+---
+
+#### 50. Gates de `VALIDATED_SHARED`
+
+La activación de `VALIDATED_SHARED` exige simultáneamente:
+
+1. `AUTH-DB-035` materializado y compatible para la misma unidad/ambiente;
+2. fuente de token con consistencia aprobada;
+3. backend L1 privado disponible;
+4. `AccessContextV1` y resolver compatibles;
+5. suite contractual y de concurrencia aprobada;
+6. shadow sin discrepancias bloqueantes;
+7. multiinstancia demostrada;
+8. fallos de cache y token probados;
+9. fronteras temporales probadas con reloj controlado;
+10. observabilidad activa;
+11. consumidores asignados compatibles;
+12. rollback ensayado.
+
+No se habilita por una mejora de hit rate sin estas garantías.
+
+---
+
+#### 51. Rollback
+
+El rollback operativo obligatorio es:
+
+```text
+VALIDATED_SHARED
+→ REQUEST_ONLY
+```
+
+También podrá desactivar el backend compartido mientras L0 y el resolver canónico permanecen disponibles.
+
+Rollback no puede:
+
+- activar legacy como arquitectura final;
+- restaurar bypasses;
+- servir entradas stale;
+- desactivar validación contractual;
+- omitir el resolver autoritativo;
+- reintroducir una caché global local no gobernada;
+- reutilizar una combinación de package/backend incompatible.
+
+---
+
+#### 52. Compatibilidad y versionado
+
+Una instancia debe registrar como mínimo:
+
+```text
+implementation_unit_id
+owner_package_id
+repository_commit
+@vento/os-context version
+@vento/contracts version
+AccessContext contract version
+resolver version
+freshness token contract version
+cache record contract version
+storage version
+backend configuration version
+consumer package ids
+environment
+```
+
+Una combinación incompatible no se corrige mediante downgrade silencioso.
+
+Un cambio incompatible de forma o semántica exige el versionado propietario correspondiente.
+
+---
+
+#### 53. Matriz de integración
+
+| Integración                      | Obligación de CTX006                              | Resultado ante ausencia/incompatibilidad    |
+| -------------------------------- | ------------------------------------------------- | ------------------------------------------- |
+| `AUTH-DB-035`                    | leer token autoritativo y consumir eventos        | L1 no produce HIT                           |
+| `AUTH-DB-033`                    | resolver contexto fresco                          | fallo seguro si no puede resolver           |
+| `SHELL-AUTH-003`                 | respetar L0 y write barrier                       | no duplicar scope ni autoridad              |
+| `SHELL-AUTH-002`                 | exponer consumo sin filtrar backend L1 al cliente | no bypass local                             |
+| `@vento/contracts/authorization` | validar contratos/versiones                       | rechazo de payload incompatible             |
+| `@vento/os-context/server`       | hospedar la frontera server aplicable             | no red desde `/client`                      |
+| `/legacy`                        | proyectar solo desde canónico                     | sin caché legacy paralela                   |
+| consumidores                     | usar versión certificada por lineage              | consumidor incompatible bloquea su adopción |
+
+---
+
+#### 54. Escenarios mínimos de verificación
+
+La futura instancia deberá automatizar como mínimo los siguientes sesenta escenarios, preservando el oráculo contractual:
+
+1. dos resoluciones iguales dentro de una solicitud producen una sola resolución L0;
+2. llamadas concurrentes L0 comparten promesa;
+3. una promesa L0 fallida se elimina;
+4. write barrier elimina L0 aplicable;
+5. otra solicitud no recibe L0 de la anterior;
+6. L1 deshabilitada no cambia semántica;
+7. `SHADOW_SHARED` no sirve entrada;
+8. un HIT exige token idéntico;
+9. token distinto rechaza entrada;
+10. TTL expirado rechaza entrada;
+11. fin de turno rechaza entrada;
+12. límite de check-in rechaza entrada;
+13. límite de actor session rechaza entrada;
+14. margen de un segundo se aplica;
+15. actor diferente produce clave diferente;
+16. app diferente produce clave diferente;
+17. entorno diferente produce clave diferente;
+18. organización diferente produce clave diferente;
+19. auth session distinta produce clave diferente;
+20. dispositivo distinto produce clave diferente;
+21. una entrada corrupta no se utiliza;
+22. error de cache read resuelve fresco;
+23. error de cache write no invalida contexto fresco;
+24. fallo de token impide HIT y hace bypass seguro;
+25. fallo de token y resolver produce fallo seguro;
+26. evento perdido no permite stale hit;
+27. generación cambia durante resolución y fuerza un retry;
+28. segunda carrera impide almacenamiento;
+29. check-out cambia la generación aplicable;
+30. deny individual cambia la generación aplicable;
+31. cambio de rol base cambia la generación aplicable;
+32. cambio de turno cambia la generación aplicable;
+33. cambio de mapping rol-sede cambia la generación aplicable;
+34. cambio de actor de dispositivo cambia las generaciones aplicables;
+35. cambio de catálogo global cambia generación global;
+36. cambio de matriz de app cambia generación de app;
+37. cambio de recurso obliga nueva decisión sin requerir necesariamente nuevo contexto;
+38. decisión no se comparte entre solicitudes;
+39. decisión no se reutiliza para otro recurso;
+40. decisión no se reutiliza para otra versión;
+41. L2 nunca autoriza mutación;
+42. logout purga proyecciones cliente aplicables;
+43. actor switch purga proyecciones cliente aplicables;
+44. offline no ejecuta autorización almacenada;
+45. legacy no tiene caché independiente;
+46. simulación no llena la caché real;
+47. `cache_status` no cambia fingerprint;
+48. HIT conserva `context_id`;
+49. resolución nueva crea nuevo `context_id`;
+50. rollback a `REQUEST_ONLY` funciona sin cambiar consumidores;
+51. dos instancias observan la misma generación autoritativa;
+52. una réplica con lag no se utiliza para validar frescura;
+53. CDN no almacena autoridad contextual;
+54. Service Worker no almacena autoridad contextual;
+55. métricas no exponen IDs humanos crudos innecesarios;
+56. entradas no contienen secretos adicionales;
+57. invalidación se confirma con la escritura empresarial mediante la barrera transaccional propietaria;
+58. fallo de incremento de generación revierte la escritura propietaria;
+59. outbox admite replay idempotente de purga;
+60. stale-while-revalidate no puede activarse como modo de autoridad.
+
+Los escenarios que dependen físicamente de `AUTH-DB-035` permanecerán bloqueados en una instancia que todavía no disponga de ese backend; esa ausencia impide certificar `VALIDATED_SHARED` y no autoriza sustituirlos por mocks como evidencia final.
+
+---
+
+#### 55. Perfil de pruebas por instancia
+
+La evidencia física futura deberá cubrir:
+
+| Perfil         | Cobertura mínima                                                 |
+| -------------- | ---------------------------------------------------------------- |
+| Contractual    | formas, versiones, keys, TTL, modos, record, token               |
+| Unitaria       | serialización, cálculo de expiración, comparadores y validadores |
+| Concurrencia   | single-flight, T1/T2, carreras, locks, retries                   |
+| Integración    | token, resolver, storage, events, adapters                       |
+| Seguridad      | aislamiento, poisoning, stale, actor/session crossing, redacción |
+| Multiinstancia | lectura compartida, invalidación y pérdida de eventos            |
+| Compatibilidad | package/consumidor/versiones por lineage                         |
+| Regresión      | todos los escenarios críticos aplicables                         |
+| Rollback       | retorno real a `REQUEST_ONLY`                                    |
+
+Las pruebas críticas no pueden quedar neutralizadas por retries, snapshots autoactualizados o mocks que omitan la frontera autoritativa.
+
+---
+
+#### 56. Doce gates de materialización física
+
+Cada instancia `SHELL-CTX-006::implementation_unit_id` deberá superar doce gates, en este orden lógico:
+
+|    # | Gate                   | Condición de PASS                                                           |
+| ---: | ---------------------- | --------------------------------------------------------------------------- |
+|    1 | Lineage y habilitación | unidad asignada, package propietario identificado y `E5-GATE-008` superado  |
+|    2 | Contratos              | versiones de SDK, contexto, token y record compatibles                      |
+|    3 | Backend autoritativo   | `AUTH-DB-033` y `AUTH-DB-035` disponibles en el ambiente aplicable          |
+|    4 | Baseline               | `REQUEST_ONLY` reproduce semántica canónica sin L1                          |
+|    5 | Shadow                 | `SHADOW_SHARED` observa sin servir y sin discrepancias bloqueantes          |
+|    6 | Key e aislamiento      | dimensiones completas, sin colisiones entre actores/sesiones/apps/ambientes |
+|    7 | Frescura e integridad  | T1/T2, TTL, fronteras, schema e integrity fail closed                       |
+|    8 | Concurrencia           | single-flight y carreras probadas sin stale fallback                        |
+|    9 | Multiinstancia         | comportamiento entre procesos demostrado                                    |
+|   10 | Fallos y seguridad     | cache/token/event failures, poisoning y redacción probados                  |
+|   11 | Consumidores           | matriz de compatibilidad de todos los consumidores asignados vigente        |
+|   12 | Rollback               | retorno a `REQUEST_ONLY` ensayado y reproducible                            |
+
+Un resultado `NOT_EXECUTED`, evidencia de otro commit o combinación incompatible no equivale a PASS.
+
+---
+
+#### 57. Evidencia de la instancia
+
+La certificación futura conservará, para el mismo corte:
+
+- `implementation_unit_id`;
+- `owner_package_id`;
+- package consumers por lineage;
+- commit de `vento-shell`;
+- versiones exactas de contratos y SDK;
+- versión del resolver y token;
+- versión/configuración del backend L1;
+- ambiente;
+- fixtures y reloj determinista;
+- resultados de los sesenta escenarios aplicables;
+- resultados de los doce gates;
+- métricas de shadow/validated;
+- evidencia multiinstancia;
+- evidencia de fallos seguros;
+- ensayo de rollback;
+- digest de artefactos de prueba.
+
+Evidencia de otra combinación se considera no vigente para la instancia evaluada.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** esta tarea concreta el mecanismo L1, single-flight, frescura, invalidación, compatibilidad y rollback ya exigidos por los contratos y requisitos vigentes de contexto, caché, concurrencia, compatibilidad y rollback. No introduce una regla empresarial o de seguridad nueva: preserva y asigna a la futura instancia los mismos oráculos aprobados, incluidos los sesenta escenarios transferidos por la estrategia canónica de frescura. Por tanto, no corresponde crear una identidad adicional ni modificar el registro canónico.
+
+---
+
+#### 58. Evidencia de validación
+
+| Clase       | Estado           | Evidencia                                                                                                                                    |
+| ----------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BUILD`     | `NOT_EXECUTED`   | el marcador global no modifica un checkout y no autoriza build físico                                                                        |
+| `LOCAL`     | `PASS`           | artefacto documental verificado en UTF-8, estructura, continuidad, ausencia de placeholders y consistencia interna                           |
+| `REMOTA`    | `PASS`           | lectura de solo acceso del remoto confirmó `SHELL-CTX-005` aprobado, `SHELL-CTX-006` como único pendiente de H, fuentes y políticas vigentes |
+| `OPERATIVA` | `NOT_EXECUTED`   | no existe instancia `implementation_unit_id` habilitada ni rollout L1 autorizado en este marcador                                            |
+| `FÍSICA`    | `NOT_APPLICABLE` | la fase `PLANNING_ONLY` prohíbe materialización física durante el contrato global                                                            |
+
+Los estados anteriores describen exclusivamente la evidencia disponible para el marcador documental; no certifican una futura instancia de caché.
+
+---
+
+#### 59. Decisiones vinculantes
+
+1. `SHELL-CTX-006` define el contrato global una sola vez.
+2. La materialización física es `PER_IMPLEMENTATION_UNIT`.
+3. Una unidad se implementa como máximo una vez.
+4. Varios paquetes consumen la misma unidad mediante lineage explícito.
+5. La instancia requiere asignación por `DELIV-PKG-025` y `E5-GATE-008` del package propietario.
+6. El modo inicial es `REQUEST_ONLY`.
+7. `SHADOW_SHARED` jamás sirve L1 al caller.
+8. `VALIDATED_SHARED` solo sirve entradas validadas contra T1 autoritativo.
+9. Los únicos modos son `OFF`, `REQUEST_ONLY`, `SHADOW_SHARED` y `VALIDATED_SHARED`.
+10. L0 pertenece a `SHELL-AUTH-003`.
+11. L1 pertenece a `SHELL-CTX-006`.
+12. L2 es solo presentación y no autoriza.
+13. `AUTH-DB-035` es propietario de generaciones y token.
+14. CTX006 no incrementa ni inventa generaciones.
+15. La clave L1 conserva todas las dimensiones aprobadas.
+16. El token fingerprint participa en la clave.
+17. TTL nunca sustituye token.
+18. Eventos nunca sustituyen token.
+19. El TTL máximo es 60 s para sesión humana personal.
+20. El TTL máximo es 60 s para servicio de sistema registrado.
+21. El TTL máximo es 15 s para dispositivo compartido con actor válido.
+22. El margen temporal es exactamente 1 s.
+23. Actor no resuelto no entra en L1.
+24. Principal anónimo no entra en L1.
+25. Contexto estructuralmente inválido no entra en L1.
+26. Simulación no entra en L1 real.
+27. Legacy nativo no tiene L1 independiente.
+28. No existe caché L1 cross-request de decisiones en esta versión.
+29. La lectura valida schema, integridad, TTL, frontera y token.
+30. La escritura usa T1 → resolver → T2.
+31. Una carrera permite un solo retry completo.
+32. Una segunda carrera impide almacenamiento.
+33. Single-flight no sustituye frescura.
+34. Una promesa o lock fallidos no conservan autoridad.
+35. Multiinstancia debe demostrarse físicamente antes de certificar validated.
+36. Stale-while-revalidate de autoridad está prohibido.
+37. Un evento perdido no permite stale hit.
+38. Un cache read failure degrada a resolución fresca, no a contexto anterior.
+39. Un cache write failure no invalida un contexto fresco ya resuelto para la solicitud.
+40. Un token failure impide HIT.
+41. Un fallo total produce resultado seguro, nunca allow por fallback.
+42. HIT conserva `context_id` y `resolved_at`.
+43. `cache_status` no cambia `context_fingerprint`.
+44. Fingerprint no sustituye token.
+45. Navegador, CDN y Service Worker no almacenan autoridad contextual.
+46. Offline reautoriza al sincronizar.
+47. Rollback operativo vuelve a `REQUEST_ONLY`.
+48. Rollback no reactiva legacy, bypasses ni booleanos como autoridad.
+49. La activación validated exige los doce gates.
+50. La futura suite contiene al menos sesenta escenarios.
+51. Las métricas no pueden exponer secretos ni identidad humana innecesaria.
+52. La tecnología de storage no se canoniza en este marcador.
+53. Cambiar la tecnología no puede cambiar la semántica del contrato.
+54. El marcador global ejecuta cero cambios de código, SQL, Supabase, almacenamiento o consumidores.
+55. Se generan cero cambios en requisitos de prueba.
+56. El BLOQUE H queda documentalmente listo para cierre con la aprobación explícita de esta tarea.
+
+---
+
+#### 60. Criterios de aceptación
+
+`SHELL-CTX-006` queda documentalmente cerrada cuando se cumplan simultáneamente:
+
+- se distinguen L0, L1 y L2 sin solapamiento de autoridad;
+- quedan fijados los cuatro modos y `REQUEST_ONLY` como inicio;
+- se consume `ContextFreshnessToken@1.0.0` sin redefinir su propiedad;
+- se conserva `CachedAccessContextRecord@1.0.0`;
+- la clave L1 contiene todas las dimensiones aprobadas;
+- se definen elegibilidad y exclusiones de almacenamiento;
+- se fijan TTL 60/60/15 segundos;
+- se fija margen de 1 segundo;
+- se respetan fronteras temporales sin evento;
+- la lectura exige T1 autoritativo antes del HIT;
+- la escritura aplica doble lectura T1/T2;
+- se permite exactamente un retry ante carrera;
+- se define single-flight sin convertir locks en autoridad;
+- se exige prueba multiinstancia;
+- stale-while-revalidate queda prohibido;
+- corrupción e incompatibilidad fallan cerrado;
+- se conservan `MISS`, `HIT`, `BYPASS` y `NOT_IMPLEMENTED`;
+- HIT conserva identidad semántica;
+- eventos son optimización y token es garantía;
+- los fallos de caché degradan a resolución fresca cuando sea posible;
+- los fallos de token impiden HIT;
+- no existe caché L1 de decisiones;
+- cliente, CDN, offline, simulación y legacy permanecen separados;
+- se definen rollout, gates y rollback;
+- se definen sesenta escenarios mínimos;
+- se definen doce gates de instancia;
+- se define evidencia por `implementation_unit_id`;
+- la materialización se limita a una vez por unidad;
+- no se generan requisitos de prueba nuevos ni modificados;
+- no se ejecuta ningún cambio físico en el marcador global;
+- la continuidad reserva únicamente `SHELL-CI-001`.
+
+---
+
+#### 61. Límites
+
+Esta tarea no:
+
+- crea backend de caché;
+- selecciona proveedor de caché;
+- crea Redis u otro servicio;
+- crea tablas;
+- crea generaciones;
+- crea triggers;
+- crea outbox;
+- crea listeners;
+- crea feature flags físicos;
+- implementa single-flight;
+- modifica `AccessContext@1.0.0`;
+- modifica `AuthorizationDecision@1.0.0`;
+- modifica `SimulationContext@1.0.0`;
+- crea caché de decisiones cross-request;
+- modifica aplicaciones;
+- modifica Supabase;
+- ejecuta DDL o DML;
+- publica packages;
+- habilita `VALIDATED_SHARED`;
+- ejecuta pruebas operativas o multiinstancia;
+- certifica una instancia física;
+- inicia `SHELL-CI-001`.
+
+La implementación física queda reservada a `SHELL-CTX-006::implementation_unit_id` después de la asignación y gates correspondientes.
 
 ### Orden contractual interno
 
@@ -10597,3 +12042,16 @@ Reglas:
 - `AUTH-DB-020`, `AUTH-DB-006..010` y `AUTH-DB-021` migran objetos, RPC y RLS por dominio;
 - `SHELL-AUTH-005` coordina y certifica la migración multi-repositorio después de disponer de backend, adapters, gates y rollback;
 - `AUTH-DB-030` y `AUTH-DB-031` retiran legacy y certifican paridad únicamente al final.
+
+---
+
+#### 62. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CTX-006 — Implementar caché compartida, single-flight y validación de frescura`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-001 — Crear pruebas de paquetes compartidos`

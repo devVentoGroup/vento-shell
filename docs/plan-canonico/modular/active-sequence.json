@@ -2,31 +2,31 @@
   "schema_version": 1,
   "generated_from": "execution-route.json",
   "route_id": "NORMAL-CANONICAL-FLOW-001",
-  "sequence_id": "PHASE-03-H-SHARED-FOUNDATION",
-  "block_code": "BLOQUE H",
-  "block_title": "Fundación compartida de VENTO-SHELL",
-  "previous_task_id": "SHELL-CTX-005",
+  "sequence_id": "PHASE-03-T-CI-FOUNDATION",
+  "block_code": "BLOQUE T",
+  "block_title": "CI, pruebas, despliegue y rollback base",
+  "previous_task_id": "AUTH-UI-039",
   "latest_treq_task_id": "NEXO-UX-025",
-  "handoff_task_id": "SHELL-CI-001",
-  "handoff_sequence_id": "PHASE-03-T-CI-FOUNDATION",
+  "handoff_task_id": "AUTH-SRV-001",
+  "handoff_sequence_id": "PHASE-03-J-SERVER-ACTIONS",
   "segments": [
     {
-      "prefix": "SHELL-CTX",
-      "from": 6,
-      "to": 6
+      "prefix": "SHELL-CI",
+      "from": 1,
+      "to": 24
     }
   ],
   "block_progress": {
-    "total_tasks": 109,
-    "approved_tasks": 108,
-    "pending_tasks": 1
+    "total_tasks": 24,
+    "approved_tasks": 0,
+    "pending_tasks": 24
   },
   "route_progress": {
     "covered_tasks": 1594,
-    "pending_tasks": 636,
+    "pending_tasks": 635,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
-    "active_stage": 10
+    "active_stage": 11
   },
   "selected_route_id": "NORMAL-CANONICAL-FLOW-001"
 }
