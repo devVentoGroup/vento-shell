@@ -1,10 +1,33 @@
 {
   "instance_id": "SHELL-CI-003::GLOBAL",
   "task_id": "SHELL-CI-003",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
+  "status": "AUTHORIZED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear scripts/quality/shared-package-release-gate.mjs como única implementación global de SHELL-CI-003::GLOBAL. El gate gobernará exactamente @vento/contracts, @vento/os-context, @vento/supabase y @vento/ui-web; consumirá de forma explícita la identidad del package, manifest y versión SemVer, evidencia vigente de SHELL-CI-001, evidencia vigente de SHELL-CI-002 y el tarball certificado; verificará commit de origen, dependencias internas, hash de contenido, integridad y canal; materializará una serialización determinista y no colisionante de tag por package y versión; será idempotente ante repetición exacta y fail-closed ante cualquier conflicto de identidad; no reconstruirá el package durante publicación; separará autocertificación sintética de ejecución real; redactará secretos y producirá evidencia machine-readable atribuible sin duplicar las implementaciones de CI001 o CI002.",
+    "Crear scripts/quality/shared-package-release-gate.test.mjs para autocertificar el habilitador mediante repositorios, packages, tarballs, tags, releases y destinos de registry sintéticos o aislados en ubicaciones temporales. La suite cubrirá como mínimo los 8 casos positivos, 20 casos negativos y 16 regresiones definidos por SHELL-CI-003, incluyendo idempotencia, SemVer, manifest, lineage CI001/CI002, bytes e integridad del tarball, colisiones y movimiento de tags, conflictos de release, versiones existentes con bytes distintos, dependencias internas, prereleases, canales, publicaciones parciales y detección de secretos. La autocertificación no utilizará credenciales productivas ni realizará push, release o publicación reales.",
+    "Generar evidencia runtime únicamente bajo .delivery/shared-package-releases/ y utilizar ubicaciones temporales no versionadas para fixtures, repositorios sintéticos, tarballs y destinos de autocertificación. La evidencia conservará historial por package, versión y ejecución; almacenará identidades y hashes necesarios para demostrar procedencia, idempotencia, conflictos e invalidación, pero nunca secretos, tokens, credenciales ni contenido sensible."
+  ],
+  "validation_commands": [
+    "npm ci",
+    "node --test scripts/quality/shared-package-release-gate.test.mjs",
+    "npm run lint -- scripts/quality/shared-package-release-gate.mjs scripts/quality/shared-package-release-gate.test.mjs",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm run docs:work-topology:check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-17",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente la implementación de SHELL-CI-003::GLOBAL en devVentoGroup/vento-shell mediante scripts/quality/shared-package-release-gate.mjs, scripts/quality/shared-package-release-gate.test.mjs y evidencia runtime no versionada bajo .delivery/shared-package-releases/, junto con las validaciones enumeradas en validation_commands. Autorizo únicamente la autocertificación sintética o aislada del mecanismo durante esta instancia. No autorizo publicar packages reales, crear, mover o eliminar tags Git reales, crear o modificar releases remotas reales, publicar en un registry real, modificar workflows, package.json, package-lock.json, packages reales, consumidores, credenciales o configuración de registry, changelog, matriz de compatibilidad, pull requests, Supabase, despliegues ni ninguna ampliación inferida del alcance.",
+    "source_contract_sha256": "ec9e33a14c322aaad2760f437f2eca836d6ebbba47548cfe3553666994f8f2f7"
+  },
   "evidence": []
 }
