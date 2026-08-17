@@ -1,7 +1,7 @@
 {
   "instance_id": "SHELL-CI-002::GLOBAL",
   "task_id": "SHELL-CI-002",
-  "status": "AUTHORIZED",
+  "status": "VERIFIED",
   "target_repositories": [
     "devVentoGroup/vento-shell"
   ],
@@ -30,5 +30,22 @@
     "approval_statement": "Apruebo exclusivamente la implementación de SHELL-CI-002::GLOBAL en devVentoGroup/vento-shell mediante scripts/quality/shared-package-build-gate.mjs, scripts/quality/shared-package-build-gate.test.mjs y evidencia runtime no versionada bajo .delivery/shared-package-builds/, junto con las validaciones enumeradas en validation_commands. No autorizo cambios en packages, package.json, package-lock.json, consumidores, GitHub Actions, registry, releases, changelog, matriz de compatibilidad, Supabase, despliegues ni ninguna ampliación inferida del alcance.",
     "source_contract_sha256": "16a75a3f7e6b9bcd51a6dfb1879dd5acf4c46a6ff8e834d41c7b370dfc729c0a"
   },
-  "evidence": []
+  "evidence": [
+    "BASE_COMMIT d8edd3959bcb0854b1ae109452bf1d9361899611",
+    "FILE_SHA256 scripts/quality/shared-package-build-gate.mjs 5c6542f2e0963b5e9a7ee9163d8f1e070334abee5155c5f744026808aacc88c5",
+    "FILE_SHA256 scripts/quality/shared-package-build-gate.test.mjs ba2961bfd030590f909bd41bc5756359d75530a52c4ad96f7732b40130f14deb",
+    "SELF_CERTIFICATION_ATTEMPT_1 FAIL; tests=46; pass=45; fail=1; positive_01 expected=PASS actual=FAIL",
+    "CORRECTION shared-package-build-gate Windows npm invocation corrected without relaxing test contract",
+    "VALIDATION npm ci PASS; added=382; audited=384",
+    "VALIDATION node --test scripts/quality/shared-package-build-gate.test.mjs PASS; tests=46; pass=46; fail=0; skipped=0",
+    "VALIDATION npm run lint -- scripts/quality/shared-package-build-gate.mjs scripts/quality/shared-package-build-gate.test.mjs PASS",
+    "VALIDATION npm run docs:plan:build PASS; compiled_sha256=400dbd204a1508d06eda9ffc636a182090f3790ec484c54b7c69b058c1296cde",
+    "VALIDATION npm run docs:plan:check PASS; delivery_contract_sha256=df38e1efe6c5d249236dbed6f2cfa513291587b13ce360fcab199e47954a3075",
+    "VALIDATION npm run docs:plan:test PASS; tests=185; pass=185; fail=0",
+    "VALIDATION npm run docs:treq:check PASS; requirements=7066; duplicates=0; unresolved_relations=0",
+    "VALIDATION npm run docs:treq:test PASS; tests=25; pass=25; fail=0",
+    "VALIDATION npm run docs:work-topology:check PASS; tasks=1594",
+    "VALIDATION git diff --check PASS; nonblocking_crlf_warning=implementation-instances/SHELL-CI-002__GLOBAL.json",
+    "RESULT CI002_FINAL_VALIDATION=PASS"
+  ]
 }

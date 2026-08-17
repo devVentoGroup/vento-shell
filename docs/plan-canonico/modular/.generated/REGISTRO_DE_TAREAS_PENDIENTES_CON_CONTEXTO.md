@@ -8,9 +8,9 @@
 
 ## Qué toca hacer ahora
 
-- **Acción principal obligatoria:** `INICIAR_IMPLEMENTACION`
+- **Acción principal obligatoria:** `VALIDAR_IMPLEMENTACION`
 - **Objetivo exacto:** `SHELL-CI-002::GLOBAL` — Crear build independiente por paquete
-- **Instrucción:** Iniciar la guía humana continua de SHELL-CI-002::GLOBAL; avanzar hasta la primera comprobación necesaria.
+- **Instrucción:** Entregar seguidas las validaciones independientes y pausar cuando sus resultados determinen el avance.
 - **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `SHELL-CI-003`
 - **Implementación física autorizada:** `SHELL-CI-002::GLOBAL`
 
