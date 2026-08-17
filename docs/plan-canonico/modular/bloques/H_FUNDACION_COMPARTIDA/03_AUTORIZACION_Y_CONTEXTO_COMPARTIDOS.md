@@ -5426,7 +5426,1050 @@ Esta tarea no:
 `SHELL-CTX-002 — Implementar consumo canónico de turno y check-in`
 
 
-### [ ] SHELL-CTX-002 — Implementar consumo canónico de turno y check-in
+### ✅ SHELL-CTX-002 — Implementar consumo canónico de turno y check-in
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CTX-001 — Consolidar el módulo de contexto dentro de @vento/os-context
+**Tarea siguiente:** SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas
+**Tipo de tarea:** Documental — definición global única del consumo canónico de turno y check-in con materialización futura por unidad
+**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`
+**Estado físico resultante:** `DEFINIDO_NO_MATERIALIZADO`; 2 nodos canónicos consumidos; 0 contratos serializados nuevos; 0 packages nuevos; 0 subpaths públicos nuevos; 0 unidades materializadas; 0 cambios Supabase
+**Cambios físicos autorizados:** ninguno durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+**Modalidad:** `PER_IMPLEMENTATION_UNIT`
+**Trabajo canónico actual:** definir una sola vez el contrato de consumo de turno y check-in y asignar su futura materialización
+**Instancia física futura:** `SHELL-CTX-002::<implementation_unit_id>`
+**Condición de materialización:** después de que `DELIV-PKG-025` asigne `implementation_unit_id` y el `package_id` propietario supere `E5-GATE-008`
+
+---
+
+#### 1. Propósito
+
+`SHELL-CTX-002` define el contrato único mediante el cual el módulo contextual interno de `@vento/os-context` deberá consumir los nodos canónicos `active_shift` y `active_checkin_session` de `AccessContext@1.0.0`, preservando su relación temporal, laboral y territorial sin volver a resolver hechos empresariales y sin convertir turno o check-in en permiso.
+
+La tarea concreta el resultado que `SHELL-CTX-001` dejó reservado exclusivamente para esta responsabilidad:
+
+```text
+AccessContextV1 validado
+→ active_shift
+→ active_checkin_session
+→ consumo contextual coherente
+```
+
+Nunca:
+
+```text
+turno o check-in local
+→ reconstruir AccessContextV1
+```
+
+Ni:
+
+```text
+turno/check-in válidos
+→ ALLOW
+```
+
+El marcador global es documental. La implementación física se realizará únicamente en la futura instancia `SHELL-CTX-002::<implementation_unit_id>` cuando exista unidad autorizada por E5.
+
+---
+
+#### 2. Resultado canónico
+
+Se fija una única semántica compartida para consumir turno y check-in dentro de `@vento/os-context`:
+
+1. el SDK recibe un `AccessContextV1` ya validado;
+2. el turno consumido es exclusivamente `active_shift`;
+3. el check-in consumido es exclusivamente `active_checkin_session`;
+4. el check-in se interpreta únicamente después del turno;
+5. ambos nodos se preservan sin mutación;
+6. ausencia normal y contradicción estructural permanecen diferenciadas;
+7. `structural_issues` y `lane_readiness` se respetan como parte del snapshot recibido, sin reemitir causas equivalentes;
+8. no se consulta una fuente local para completar campos ausentes;
+9. no se crea un contrato serializado alternativo para turno/check-in;
+10. no se crea package, subpath público ni autoridad paralela;
+11. no se decide permiso, recurso ni resultado de autorización;
+12. la futura materialización se ejecutará como máximo una vez por `implementation_unit_id`.
+
+---
+
+#### 3. Fuentes y precedencia
+
+La semántica de esta tarea conserva, sin reinterpretar, las decisiones aprobadas en:
+
+| Fuente                    | Responsabilidad vinculante                                                              |
+| ------------------------- | --------------------------------------------------------------------------------------- |
+| `SHELL-CTX-001`           | un único módulo contextual interno; `AccessContextV1` como entrada validada e inmutable |
+| `SHELL-CON-007`           | forma canónica de `AccessContext@1.0.0`, `ActiveShiftContext` y `ActiveCheckinContext`  |
+| `SHELL-CON-008`           | namespaces cerrados de problemas estructurales y razones de disponibilidad              |
+| `AUTH-CTX-010`            | turno publicado, vigente, determinista y fail-closed                                    |
+| `AUTH-CTX-011`            | sesión de check-in confirmada, activa y vinculada al turno exacto                       |
+| `AUTH-CTX-015`            | `lane_readiness`, causas estructurales y separación entre ausencia e invalidez          |
+| `AUTH-CTX-025`            | productor backend futuro de `AccessContext@1.0.0`                                       |
+| `AUTH-CTX-027`            | consumo centralizado por aplicaciones y eliminación de reconstrucción local             |
+| `AUTH-CTX-028`            | compatibilidad temporal canónico → legacy                                               |
+| `AUTH-CTX-029`            | frescura, write barrier, límites temporales e invalidación                              |
+| `AUTH-CTX-030`            | plan contractual de pruebas, paridad, seguridad y rollback                              |
+| `task-work-topology.json` | `PER_IMPLEMENTATION_UNIT`, unicidad y condición E5 de materialización                   |
+
+Precedencia obligatoria:
+
+```text
+contratos compartidos
+→ productor autoritativo de AccessContext
+→ AccessContextV1 validado
+→ consumo contextual de turno/check-in
+→ proyecciones/readiness/razones posteriores
+→ adapters y consumidores
+```
+
+---
+
+#### 4. Línea base técnica verificable
+
+El estado actual todavía no representa el resultado objetivo:
+
+| Superficie                            | Estado actual                         | Disposición                                                                         |
+| ------------------------------------- | ------------------------------------- | ----------------------------------------------------------------------------------- |
+| `@vento/os-context@0.1.0`             | package parcial y transitorio         | conservar como baseline legacy hasta materialización autorizada                     |
+| `EffectiveContext.shift_id`           | campo plano legacy                    | no es `ActiveShiftContext`                                                          |
+| `EffectiveContext.can_operate`        | booleano legacy                       | no es autorización ni readiness canónico                                            |
+| `get_effective_context_v1`            | RPC legacy consumida directamente     | aislar en compatibilidad; no usar como fuente final                                 |
+| `get_operational_context`             | fachada legacy plana                  | únicamente proyección temporal en dirección canónico → legacy                       |
+| ANIMA `useAttendance`                 | lógica operativa propia de asistencia | continúa como productor/UX de dominio; no se convierte en resolver del SDK          |
+| consulta ANIMA por `shift_date = hoy` | implementación actual localizada      | no define la semántica canónica de turno vigente, especialmente en turnos nocturnos |
+| cola offline de ANIMA                 | estado cliente pendiente              | nunca satisface check-in activo antes de confirmación de servidor                   |
+
+La tarea no corrige físicamente estas superficies; define el contrato que deberá reemplazar su autoridad contextual en la instancia futura y en las migraciones propietarias ya existentes.
+
+---
+
+#### 5. Frontera de propiedad
+
+La propiedad queda separada así:
+
+```text
+@vento/contracts/authorization
+→ forma, códigos, schemas y validadores contractuales
+
+AUTH-DB-033
+→ resolución autoritativa de turno, check-in y demás hechos de AccessContext
+
+@vento/os-context
+→ valida el contrato recibido
+→ consume sus nodos
+→ preserva invariantes
+→ no vuelve a resolver hechos
+
+SHELL-CTX-002
+→ contrato especializado de consumo de active_shift + active_checkin_session
+```
+
+Queda fuera de `SHELL-CTX-002`:
+
+- persistir turnos;
+- publicar turnos;
+- registrar check-in o check-out;
+- emparejar eventos físicos de asistencia;
+- consultar tablas para fabricar contexto;
+- seleccionar turno por heurística;
+- resolver sede o área seguras para cliente;
+- calcular el `AuthorizationDecision`;
+- implementar caché L1.
+
+---
+
+#### 6. Entrada única del consumo
+
+La entrada conceptual es exclusivamente un `AccessContextV1` válido y completo conforme a la familia:
+
+```text
+vento.authorization.response-contracts@1.0.0
+AccessContext@1.0.0
+schema_version = 1.0.0
+```
+
+Antes de utilizar turno o check-in deberán cumplirse simultáneamente:
+
+1. contrato reconocido;
+2. versión reconocida;
+3. schema reconocido;
+4. `AccessContextV1` validado;
+5. catálogos y códigos tipados compatibles;
+6. snapshot completo, no objeto parcial;
+7. ausencia de coerción desde `EffectiveContext`, `OperationalContextRow` u otra forma legacy.
+
+Una entrada inválida se rechaza en la frontera contractual. No se intenta reparar dentro del módulo contextual.
+
+---
+
+#### 7. Nodo de turno consumido
+
+La forma consumida permanece exactamente:
+
+```text
+ActiveShiftContext
+- shift_id
+- employee_id
+- site_id
+- area_id nullable
+- operational_role_code
+- starts_at
+- ends_at
+- shift_status
+- published
+- currently_valid
+```
+
+`SHELL-CTX-002` no agrega campos, no elimina campos y no crea una variante local.
+
+Para un nodo no nulo se conserva el invariante:
+
+```text
+active_shift != null
+→ published = true
+→ currently_valid = true
+```
+
+---
+
+#### 8. Nodo de check-in consumido
+
+La forma consumida permanece exactamente:
+
+```text
+ActiveCheckinContext
+- checkin_session_id
+- employee_id
+- shift_id
+- site_id
+- area_id nullable
+- checked_in_at
+- expires_at nullable
+- checked_out_at nullable
+- status = ACTIVE | EXPIRED | CLOSED | INVALID
+```
+
+En el `AccessContextV1` real utilizado para autorización:
+
+```text
+active_checkin_session != null
+→ status = ACTIVE
+→ checked_out_at = null
+→ active_shift != null
+```
+
+Una sesión `CLOSED`, `EXPIRED` o `INVALID` no se expone como sesión activa.
+
+---
+
+#### 9. Orden obligatorio de consumo
+
+La secuencia queda cerrada así:
+
+```text
+1. validar AccessContextV1
+2. leer active_shift
+3. conservar su nulabilidad e invariantes
+4. leer active_checkin_session
+5. verificar que su existencia sea compatible con active_shift
+6. preservar structural_issues y lane_readiness del snapshot
+7. entregar los hechos a las responsabilidades posteriores
+```
+
+Queda prohibido invertir la dependencia:
+
+```text
+check-in
+→ elegir turno
+```
+
+El check-in solo puede confirmar coherencia con un turno ya resuelto por la fuente autoritativa.
+
+---
+
+#### 10. Semántica temporal del turno
+
+`SHELL-CTX-002` conserva la ventana canónica:
+
+```text
+starts_at <= resolved_at < ends_at
+```
+
+Consecuencias:
+
+- el turno empieza exactamente en `starts_at`;
+- deja de ser vigente exactamente en `ends_at`;
+- no existen minutos de gracia implícitos;
+- dos turnos consecutivos pueden tocarse en el límite sin solaparse;
+- el estado físico `scheduled` no prolonga un turno terminado;
+- la vigencia no depende de un job, check-out o estado UI.
+
+El SDK no recalcula esta ventana desde horas locales ni usa el reloj del cliente para redefinir el resultado recibido.
+
+---
+
+#### 11. Turnos nocturnos
+
+La semántica canónica admite turnos que cruzan medianoche mediante timestamps absolutos.
+
+Por tanto queda prohibido tratar como regla contractual:
+
+```text
+shift_date = fecha local actual
+```
+
+Un turno iniciado el día anterior puede continuar vigente después de medianoche.
+
+El consumo de `active_shift` utiliza el resultado autoritativo ya resuelto; no reconsulta `employee_shifts` para reconstruir el candidato por fecha.
+
+---
+
+#### 12. Publicación y revisión del turno
+
+El turno consumido debe representar una única revisión publicada autoritativa.
+
+El módulo no podrá:
+
+- mezclar campos de revisiones distintas;
+- preferir un borrador más reciente;
+- seleccionar por `published_at` aislado cuando exista ambigüedad;
+- escoger la primera o última fila;
+- usar confirmación del trabajador como desempate;
+- completar campos desde otra revisión.
+
+Si el productor reporta una contradicción estructural de turno, el SDK preserva la invalidez y no crea un turno alternativo.
+
+---
+
+#### 13. Cardinalidad del turno
+
+La semántica heredada es:
+
+```text
+0 candidatos autoritativos vigentes
+→ active_shift = null
+
+1 candidato autoritativo vigente
+→ active_shift = nodo válido
+
+2 o más candidatos vigentes
+→ active_shift = null
+→ SHIFT_OVERLAP
+```
+
+`SHELL-CTX-002` no implementa desempates locales.
+
+---
+
+#### 14. Ausencia normal de turno
+
+La ausencia de turno puede ser un estado válido y esperado.
+
+Ejemplos:
+
+- actor laboral fuera de jornada;
+- turno futuro;
+- jornada ya terminada;
+- actor no laboral;
+- dispositivo sin actor humano.
+
+En ausencia normal:
+
+```text
+active_shift = null
+```
+
+sin inventar `StructuralIssue` por la sola ausencia.
+
+La clasificación exacta de readiness permanece en `SHELL-CTX-004` y en el contrato de `LaneReadiness`; `SHELL-CTX-002` únicamente preserva el hecho.
+
+---
+
+#### 15. Invalidez estructural del turno
+
+Los códigos de turno ya congelados por `AUTH-CTX-015` permanecen como única taxonomía estructural aplicable:
+
+```text
+SHIFT_REVISION_AMBIGUOUS
+SHIFT_UNPUBLISHED_SELECTED
+SHIFT_KIND_INVALID
+SHIFT_TIME_RANGE_INVALID
+SHIFT_TIMEZONE_INVALID
+SHIFT_EMPLOYEE_MISMATCH
+SHIFT_SITE_INVALID
+SHIFT_AREA_SITE_MISMATCH
+SHIFT_OPERATIONAL_ROLE_MISSING
+SHIFT_STATUS_INVALID
+SHIFT_OVERLAP
+SHIFT_FIELDS_MIXED_REVISIONS
+SHIFT_CLIENT_SELECTED
+```
+
+`SHELL-CTX-002` no inventa códigos nuevos ni reemite el mismo problema con otra fuente. Consume el resultado estructural producido por el backend canónico.
+
+---
+
+#### 16. Semántica de sesión activa
+
+Un `active_checkin_session` no nulo exige simultáneamente:
+
+- evento confirmado por servidor;
+- actor laboral correcto;
+- empleado activo;
+- `active_shift` existente;
+- mismo `employee_id`;
+- mismo `shift_id`;
+- misma sede operativa;
+- área compatible cuando esté presente;
+- sesión abierta;
+- no expirada;
+- no reemplazada;
+- sin evento terminal aplicable;
+- candidato único;
+- `status = ACTIVE`;
+- `checked_out_at = null`.
+
+Ninguna solicitud o estado cliente satisface estas condiciones por sí sola.
+
+---
+
+#### 17. Coincidencia obligatoria turno ↔ check-in
+
+La relación mínima queda:
+
+```text
+active_checkin_session.employee_id
+=
+active_shift.employee_id
+=
+employee.employee_id
+=
+actor_effective.actor_id
+```
+
+Y:
+
+```text
+active_checkin_session.shift_id
+=
+active_shift.shift_id
+```
+
+Y:
+
+```text
+active_checkin_session.site_id
+=
+active_shift.site_id
+```
+
+Cuando ambos nodos contienen `area_id`, la sesión no puede introducir un área distinta de la declarada por el turno.
+
+Un mismatch no se corrige localmente.
+
+---
+
+#### 18. Check-in no crea turno ni territorio
+
+Queda prohibido utilizar un check-in para:
+
+- crear `active_shift`;
+- elegir entre turnos solapados;
+- prolongar un turno terminado;
+- recuperar un turno cancelado;
+- completar un rol operativo faltante;
+- crear sede operativa;
+- crear área operativa;
+- convertir el punto físico de marcación en sede laboral;
+- fabricar cobertura administrativa.
+
+El punto físico de marcación y la geocerca son evidencia del dominio de asistencia; no sustituyen `site_id` del turno.
+
+---
+
+#### 19. Check-in temprano
+
+Una marcación confirmada antes del inicio del turno puede existir en el dominio de asistencia.
+
+Sin embargo:
+
+```text
+resolved_at < active_shift.starts_at
+→ active_shift = null
+→ active_checkin_session = null
+```
+
+Al comenzar el turno, una sesión todavía válida podrá aparecer en una nueva resolución autoritativa.
+
+El SDK no anticipa esa transición ni habilita permisos antes del nuevo snapshot.
+
+---
+
+#### 20. Expiración y fin efectivo del check-in
+
+La sesión activa nunca puede sobrevivir al turno.
+
+Su límite efectivo es el primero aplicable entre:
+
+- `expires_at`, cuando exista;
+- `active_shift.ends_at`;
+- check-out confirmado;
+- cierre administrativo autoritativo;
+- cancelación o retiro del turno;
+- reemplazo o invalidación de la sesión.
+
+Por tanto:
+
+```text
+fin del turno sin check-out
+→ active_shift = null
+→ active_checkin_session = null
+```
+
+La ausencia de check-out no genera vigencia indefinida.
+
+---
+
+#### 21. Sesiones cerradas, expiradas e inválidas
+
+Una sesión correctamente cerrada o expirada produce ausencia normal de sesión activa.
+
+Solo existe contradicción estructural cuando una sesión no activa se presenta como activa.
+
+`SHELL-CTX-002` conserva esta diferencia y no transforma:
+
+```text
+CLOSED / EXPIRED
+```
+
+en un `ACTIVE` de conveniencia.
+
+---
+
+#### 22. Cardinalidad del check-in
+
+La semántica heredada es:
+
+```text
+0 sesiones activas candidatas
+→ active_checkin_session = null
+
+1 sesión activa válida
+→ active_checkin_session = nodo válido
+
+2 o más sesiones activas candidatas
+→ active_checkin_session = null
+→ CHECKIN_SESSION_AMBIGUOUS
+```
+
+Queda prohibido seleccionar por recencia, orden de fila, dispositivo, GPS o completitud aparente.
+
+---
+
+#### 23. Invalidez estructural del check-in
+
+Los códigos de check-in ya congelados por `AUTH-CTX-015` permanecen como única taxonomía estructural aplicable:
+
+```text
+CHECKIN_UNCONFIRMED_AS_ACTIVE
+CHECKIN_SESSION_ID_MISSING
+CHECKIN_ACTOR_MISMATCH
+CHECKIN_SHIFT_MISMATCH
+CHECKIN_SITE_MISMATCH
+CHECKIN_AREA_MISMATCH
+CHECKIN_TIME_INVALID
+CHECKIN_SESSION_AMBIGUOUS
+CHECKIN_EXPIRED_AS_ACTIVE
+CHECKIN_CLOSED_AS_ACTIVE
+CHECKIN_OUTLIVES_SHIFT
+CHECKIN_TERMINAL_LINK_INVALID
+CHECKIN_OFFLINE_PENDING_AS_ACTIVE
+```
+
+El SDK no agrega códigos locales ni traduce estas causas a booleanos de autorización.
+
+---
+
+#### 24. Ausencia de check-in y prerrequisitos
+
+La ausencia de check-in no es una denegación universal.
+
+Semántica contractual preservada:
+
+```text
+N
+→ no exige turno ni check-in
+
+T
+→ exige active_shift
+→ no exige active_checkin_session
+
+T+C
+→ exige active_shift
+→ exige active_checkin_session
+```
+
+`SHELL-CTX-002` expone hechos contextuales suficientes para que el evaluador aplique el requisito correcto, pero no conoce ni decide por sí solo el permiso solicitado.
+
+---
+
+#### 25. Separación frente a `lane_readiness`
+
+`SHELL-CTX-002` no implementa la política final de readiness reservada a `SHELL-CTX-004`.
+
+Conserva únicamente estas distinciones contractuales:
+
+- falta normal de turno puede producir disponibilidad negativa sin invalidez;
+- falta normal de check-in puede coexistir con núcleo operativo válido;
+- una contradicción `SHIFT_*` o `CHECKIN_*` bloqueante no se degrada a ausencia normal;
+- `READY + NO_ACTIVE_CHECKIN` puede permitir evaluar permisos `T`, pero nunca satisface `T+C`.
+
+No se crea un nuevo `can_operate`.
+
+---
+
+#### 26. Independencia del carril base
+
+Turno y check-in pertenecen al carril operativo.
+
+Por tanto:
+
+- ausencia de turno no invalida automáticamente el carril base;
+- check-out no revoca automáticamente permisos base;
+- cierre del check-in no cambia `administrative_coverage`;
+- turno no agrega sedes administrativas;
+- turno no cambia `base_role`;
+- una inconsistencia `BLOCKING_OPERATIONAL` no se promueve a `BLOCKING_ALL` localmente.
+
+La precedencia final pertenece al evaluador canónico.
+
+---
+
+#### 27. Dispositivo compartido
+
+En un dispositivo compartido:
+
+```text
+principal = SHARED_DEVICE
+actor efectivo = empleado de actor_session válida
+```
+
+Turno y check-in pertenecen al empleado actor.
+
+El dispositivo:
+
+- no posee turno propio;
+- no posee check-in laboral propio;
+- no presta el turno del último actor;
+- no utiliza `navigation_role` para completar el turno;
+- no utiliza su sede para corregir la sede laboral;
+- no convierte la sesión de actor en check-in.
+
+Un cambio de actor exige un nuevo snapshot.
+
+---
+
+#### 28. Simulación
+
+`SimulationContext` permanece separado del contexto real.
+
+Queda prohibido:
+
+- sustituir `active_shift` real con un turno hipotético;
+- sustituir `active_checkin_session` real con un check-in simulado;
+- usar role override como turno;
+- transformar un `WOULD_ALLOW` en autoridad;
+- persistir una selección simulada dentro del `AccessContextV1` real.
+
+La simulación utiliza su propia frontera contractual y no entra al consumo real de CTX002.
+
+---
+
+#### 29. Cola offline y estados pendientes
+
+Una marcación offline pendiente:
+
+```text
+no confirmada
+→ no active_checkin_session
+```
+
+Aunque la UI de ANIMA pueda conservarla para reconciliación, no puede convertirse en autoridad del SDK.
+
+Después de sincronizar, el backend deberá validar actor, turno, sede, política, temporalidad e idempotencia antes de que una nueva resolución pueda contener la sesión.
+
+Una corrección posterior no crea autorización retroactiva para acciones ya ejecutadas.
+
+---
+
+#### 30. Prohibición de reconstrucción local
+
+La futura implementación de `SHELL-CTX-002` no podrá consultar por su cuenta:
+
+- `employee_shifts`;
+- `attendance_logs`;
+- sesiones abiertas;
+- sedes seleccionadas;
+- áreas seleccionadas;
+- perfiles operativos predeterminados;
+- cookies de role override;
+- GPS o geocercas;
+- últimos eventos de asistencia;
+- `get_operational_context`;
+- `get_effective_context_v1`;
+
+para completar un `AccessContextV1` ya recibido.
+
+Las consultas del dominio ANIMA continúan siendo responsabilidad de la operación de asistencia hasta su convergencia física; no se copian dentro del SDK.
+
+---
+
+#### 31. Compatibilidad legacy
+
+La única dirección permitida de compatibilidad es:
+
+```text
+AccessContextV1 canónico
+→ proyección legacy controlada
+```
+
+Nunca:
+
+```text
+OperationalContextRow / EffectiveContext / attendance state
+→ reconstruir AccessContextV1
+```
+
+Durante transición, la proyección legacy podrá conservar campos como:
+
+- `active_shift_id`;
+- `active_checkin_id`;
+- `on_shift_now`;
+- `checked_in_now`;
+
+únicamente como derivados del contexto canónico cuando `AUTH-DB-033` exista y la compatibilidad correspondiente esté habilitada.
+
+Estos campos no se convierten en autoridad nueva.
+
+---
+
+#### 32. Frescura e invalidación
+
+Turno y check-in son hechos temporales y mutables; un snapshot previamente válido puede quedar obsoleto.
+
+Cambios relevantes incluyen:
+
+- publicación, revisión, cancelación o retiro de turno;
+- inicio o fin del turno;
+- cambio de empleado, sede, área o rol del turno;
+- confirmación de check-in;
+- confirmación de check-out;
+- expiración o auto-checkout;
+- reemplazo o corrección de sesión;
+- cambio de actor de dispositivo;
+- corrección de duplicados.
+
+`SHELL-CTX-002` no implementa una caché propia.
+
+La coordinación futura será:
+
+```text
+SHELL-AUTH-003
+→ L0 + write barrier
+
+AUTH-DB-035
+→ generaciones + token transaccional de frescura
+
+SHELL-CTX-006
+→ L1 validada + límites temporales + single-flight cross-request
+```
+
+Un contexto anterior a una barrera o límite temporal no puede reutilizarse para autoridad posterior.
+
+---
+
+#### 33. Integración futura con el backend canónico
+
+La instancia física de CTX002 solo podrá declarar integración live cuando exista el productor autorizado de `AccessContext@1.0.0`.
+
+La frontera es:
+
+```text
+AUTH-DB-033
+→ resuelve active_shift
+→ resuelve active_checkin_session
+→ produce structural_issues y lane_readiness
+→ serializa AccessContextV1
+
+@vento/os-context
+→ valida
+→ consume
+→ no re-resuelve
+```
+
+Antes de `AUTH-DB-033`, la materialización del módulo podrá probarse con fixtures contractuales versionados sin declarar integración real inexistente.
+
+---
+
+#### 34. Perfil de pruebas de la futura instancia
+
+La futura instancia deberá cubrir como mínimo:
+
+##### Turno
+
+1. turno publicado y vigente;
+2. turno futuro;
+3. turno terminado;
+4. borrador no publicado;
+5. turno nocturno que cruza medianoche;
+6. turno cancelado;
+7. turno de otro empleado;
+8. área de otra sede;
+9. turno sin rol operativo;
+10. dos turnos solapados;
+11. turnos consecutivos en el mismo límite temporal;
+12. revisión publicada frente a borrador posterior.
+
+##### Check-in
+
+13. sesión confirmada y activa;
+14. ausencia normal de check-in;
+15. check-in temprano antes del turno;
+16. sesión de otro actor;
+17. sesión de otro turno;
+18. mismatch de sede;
+19. mismatch de área;
+20. sesión cerrada;
+21. sesión expirada;
+22. fin de turno sin check-out;
+23. dos sesiones abiertas;
+24. reintento idempotente;
+25. evento offline pendiente;
+26. evento terminal vinculado a otra sesión.
+
+##### Integración y seguridad
+
+27. `N`, `T` y `T+C` preservan sus prerrequisitos sin producir decisión local;
+28. el carril base no cambia por ausencia/cierre de turno o check-in;
+29. dispositivo compartido utiliza turno/check-in del actor humano exacto;
+30. cambio de actor invalida el snapshot anterior;
+31. simulación no contamina contexto real;
+32. legacy no se usa para reconstruir contexto;
+33. `SHIFT_*` y `CHECKIN_*` desconocidos o incompatibles fallan por validación contractual;
+34. write barrier obliga nueva resolución después de mutación relevante;
+35. límites temporales impiden reutilizar contexto después de turno/check-in;
+36. paridad legacy clasifica diferencias sin conservar un bug por igualdad artificial;
+37. rollback restaura una combinación soportada sin reactivar bypasses ni autoridad local.
+
+Cada resultado físico deberá ser atribuible a la misma unidad, commit, versiones de contratos, versión del SDK y backend aplicable.
+
+---
+
+#### 35. Gates de materialización por unidad
+
+`SHELL-CTX-002::<implementation_unit_id>` deberá superar doce gates:
+
+| Gate                      | Condición                                                                                                    |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| 1. `IDENTITY`             | `implementation_unit_id` asignado y owner `package_id` con `E5-GATE-008 = PASS`                              |
+| 2. `LINEAGE`              | lineage único; ninguna segunda implementación física para la misma unidad                                    |
+| 3. `CONTRACT_INPUT`       | `AccessContext@1.0.0` y schema exactos, validados antes del consumo                                          |
+| 4. `SHIFT_CONSUMPTION`    | `active_shift` consume exclusivamente el nodo canónico, sin consulta/fallback local                          |
+| 5. `CHECKIN_CONSUMPTION`  | `active_checkin_session` consume exclusivamente la sesión canónica activa                                    |
+| 6. `RELATIONAL_INTEGRITY` | relación actor/empleado/shift/site/area preservada y fail-closed ante mismatch                               |
+| 7. `TEMPORAL_BOUNDARIES`  | fronteras de tiempo, turno nocturno, finalización y expiración cubiertas                                     |
+| 8. `STRUCTURAL_CODES`     | códigos `SHIFT_*` y `CHECKIN_*` preservados sin códigos locales ni cascadas duplicadas                       |
+| 9. `SEPARATION`           | ausencia normal separada de invalidez; sin `can_operate` ni decisión local                                   |
+| 10. `FRESHNESS_HANDOFF`   | write barrier, frescura y límites temporales integrados con sus tareas propietarias cuando estén disponibles |
+| 11. `COMPATIBILITY`       | compatibilidad, consumidores y paridad aplicables probados sobre la misma combinación                        |
+| 12. `ROLLBACK`            | rollback reproducible y evidencia atribuible a la misma unidad/versiones/commits                             |
+
+Un gate faltante, no ejecutado cuando sea aplicable, con evidencia stale o perteneciente a otra unidad bloquea la certificación física.
+
+---
+
+#### 36. Rollback
+
+El rollback de una futura instancia podrá volver a una combinación anterior de `@vento/os-context` únicamente cuando esa combinación:
+
+- continúe soportada;
+- sea compatible con los contratos vigentes;
+- tenga evidencia reproducible;
+- no reactive bypass por rol;
+- no reactive `can_operate` como autoridad;
+- no transforme check-in o turno local en fuente canónica;
+- no mezcle contexto real con simulación;
+- no rompa la trazabilidad de la unidad.
+
+Cuando exista L1, el rollback normal de caché es hacia `REQUEST_ONLY`; no se sirve un snapshot stale para preservar disponibilidad.
+
+Rollback no equivale a restaurar deuda ya retirada como arquitectura final.
+
+---
+
+#### 37. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+Justificación:
+
+- `TREQ-AUTH-008` ya asigna explícitamente a `SHELL-CTX-002..004` la protección de turno vigente, check-in activo, rol operativo, territorio compatible y paridad transversal;
+- `TREQ-SHELL-043` protege la forma de `AccessContext@1.0.0` y la separación frente a `EffectiveContext`, simulación y decisión;
+- `TREQ-SHELL-044` protege los códigos estructurales y razones de disponibilidad cerrados;
+- `TREQ-SHELL-062` prohíbe promover legacy, strings abiertos, casts, `bypass_applied` o `can_operate` a autoridad contractual;
+- `TREQ-SHELL-078` protege la write barrier después de cambios relevantes;
+- `TREQ-SHELL-092` exige que los consumidores migrados terminen sin turno/check-in del caller ni fallback legacy como hechos efectivos.
+
+El comportamiento introducido por CTX002 queda completamente cubierto por estos requisitos vigentes. Crear `TREQ-SHELL-099` repetiría reglas ya identificadas y no añadiría un comportamiento verificable distinto.
+
+El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 38. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                      |
+| --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador global no modifica código ni packages; build corresponde a la futura instancia física.                                                             |
+| LOCAL     | PASS           | La definición reconcilia `SHELL-CTX-001`, `AUTH-CTX-010`, `AUTH-CTX-011`, `AUTH-CTX-015`, frescura, compatibilidad y topología sin alterar tareas posteriores. |
+| REMOTA    | NOT_APPLICABLE | No existe escritura, despliegue ni cambio remoto en este marcador documental.                                                                                  |
+| OPERATIVA | NOT_APPLICABLE | No se modifica la operación real de turnos, asistencia o consumidores.                                                                                         |
+| FÍSICA    | NOT_APPLICABLE | No existe `implementation_unit_id` materializada para CTX002 y E5 no autoriza ejecución física desde este marcador global.                                     |
+
+---
+
+#### 39. Decisiones vinculantes
+
+1. `AccessContextV1` validado es la única entrada de CTX002.
+2. `active_shift` es el único turno canónico consumido.
+3. `active_checkin_session` es la única sesión de check-in canónica consumida.
+4. el check-in siempre depende del turno ya resuelto.
+5. el check-in nunca selecciona turno.
+6. turno y check-in permanecen inmutables dentro del snapshot.
+7. CTX002 no consulta tablas ni RPC legacy para completar contexto.
+8. `shift_date = hoy` no es una regla canónica de vigencia.
+9. la ventana de turno conserva `starts_at <= resolved_at < ends_at`.
+10. un turno nocturno puede permanecer vigente después de medianoche.
+11. un turno no nulo siempre conserva `published = true` y `currently_valid = true`.
+12. dos turnos vigentes producen ambigüedad, no desempate.
+13. una sesión activa exige `status = ACTIVE` y `checked_out_at = null`.
+14. una sesión activa coincide con actor, empleado, turno y sede.
+15. un check-in no inventa área, rol, sede ni turno.
+16. una sesión nunca sobrevive al fin/cancelación del turno.
+17. un check-out confirmado elimina la sesión activa sin afectar automáticamente el carril base.
+18. una cola offline pendiente no satisface check-in.
+19. `N`, `T` y `T+C` permanecen distintos.
+20. CTX002 no decide permisos ni recursos.
+21. CTX002 no implementa `lane_readiness`; preserva su contrato para CTX004.
+22. CTX002 no implementa razones seguras de presentación; permanecen en CTX005.
+23. CTX002 no implementa sede/área seguras; permanecen en CTX003.
+24. CTX002 no implementa L1; permanece en CTX006.
+25. `SHIFT_*` y `CHECKIN_*` permanecen en el catálogo canónico, sin extensiones locales.
+26. ausencia normal no se convierte en contradicción.
+27. contradicción no se degrada a ausencia para permitir operación.
+28. dispositivos compartidos usan el contexto del actor humano exacto.
+29. simulación permanece fuera del contexto real.
+30. compatibilidad solo fluye de canónico a legacy.
+31. ANIMA conserva su operación de asistencia, pero no define el `AccessContext` del SDK.
+32. la futura instancia se materializa como máximo una vez por `implementation_unit_id`.
+33. varios packages podrán consumir la misma unidad mediante lineage.
+34. integración live requiere backend propietario realmente disponible.
+35. rollback no puede reactivar autoridad legacy como estado final.
+36. se crean cero TREQ y cero cambios 04A.
+37. no se modifica código, Supabase ni consumidores durante este marcador global.
+38. `SHELL-CTX-003` permanece exclusivamente reservada.
+
+---
+
+#### 40. Criterios de aceptación
+
+- [x] `SHELL-CTX-001` es la precedencia inmediata aprobada;
+- [x] `SHELL-CTX-003` permanece únicamente reservada;
+- [x] se usa `PER_IMPLEMENTATION_UNIT`;
+- [x] se separa contrato global de implementación física;
+- [x] se conserva `AccessContext@1.0.0` sin cambio de forma;
+- [x] se conserva un único módulo contextual dentro de `@vento/os-context`;
+- [x] `active_shift` y `active_checkin_session` son las únicas fuentes canónicas de esta responsabilidad;
+- [x] se define el orden turno → check-in;
+- [x] el check-in no selecciona turno;
+- [x] se conserva la ventana temporal semiabierta del turno;
+- [x] se preservan turnos nocturnos;
+- [x] se preserva revisión publicada autoritativa;
+- [x] se prohíben desempates por orden, UI, check-in o sede seleccionada;
+- [x] se preserva cardinalidad 0/1/>1 para turno;
+- [x] se preserva cardinalidad 0/1/>1 para check-in;
+- [x] se exige relación exacta actor/employee/shift/site;
+- [x] se conserva área nullable sin permitir que check-in la invente;
+- [x] se prohíbe una sesión activa después del fin del turno;
+- [x] se distingue check-in cerrado/expirado de check-in inválidamente presentado como activo;
+- [x] cola offline no concede autoridad;
+- [x] `N`, `T` y `T+C` permanecen diferenciados;
+- [x] el carril base permanece independiente;
+- [x] no se crea `can_operate`;
+- [x] no se crea decisión local;
+- [x] no se crean códigos `SHIFT_*` o `CHECKIN_*` nuevos;
+- [x] se preserva el catálogo estructural vigente;
+- [x] se prohíbe reconstruir contexto desde ANIMA, RPC legacy o tablas locales;
+- [x] se define frontera de frescura y write barrier sin absorber CTX006/AUTH003/DB035;
+- [x] se definen 37 casos mínimos de prueba futura;
+- [x] se definen doce gates de materialización;
+- [x] se define compatibilidad y rollback;
+- [x] se justifica 0 TREQ nuevos y 0 modificados;
+- [x] se declaran 0 cambios físicos y 0 cambios Supabase;
+- [x] no se desarrolla `SHELL-CTX-003`.
+
+---
+
+#### 41. Límites
+
+Esta tarea no:
+
+- modifica `packages/os-context`;
+- crea TypeScript;
+- crea package o subpath público;
+- publica una release;
+- crea o modifica turnos;
+- registra check-in o check-out;
+- modifica ANIMA;
+- modifica `employee_shifts`;
+- modifica `attendance_logs`;
+- crea sesiones físicas de check-in;
+- implementa `get_access_context`;
+- implementa `evaluate_authorization`;
+- implementa `resolveAccessContext`;
+- implementa `operational_site` u `operational_area`;
+- implementa `lane_readiness`;
+- implementa razones seguras de bloqueo;
+- implementa L0 o L1;
+- implementa `ContextFreshnessToken`;
+- migra consumidores;
+- retira RPC legacy;
+- crea SQL, migraciones, RLS, triggers, Storage, Realtime o Edge Functions;
+- ejecuta cambios en Supabase;
+- declara integración remota u operativa inexistente;
+- ejecuta `SHELL-CTX-002::<implementation_unit_id>`;
+- avanza ni desarrolla la tarea siguiente.
+
+---
+
+#### 42. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CTX-001 — Consolidar el módulo de contexto dentro de @vento/os-context`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CTX-002 — Implementar consumo canónico de turno y check-in`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas`
+
+
 ### [ ] SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas
 ### [ ] SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización
 ### [ ] SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual
