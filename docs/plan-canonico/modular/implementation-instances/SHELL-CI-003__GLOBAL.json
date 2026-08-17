@@ -1,7 +1,7 @@
 {
   "instance_id": "SHELL-CI-003::GLOBAL",
   "task_id": "SHELL-CI-003",
-  "status": "AUTHORIZED",
+  "status": "VERIFIED",
   "target_repositories": [
     "devVentoGroup/vento-shell"
   ],
@@ -29,5 +29,21 @@
     "approval_statement": "Apruebo exclusivamente la implementación de SHELL-CI-003::GLOBAL en devVentoGroup/vento-shell mediante scripts/quality/shared-package-release-gate.mjs, scripts/quality/shared-package-release-gate.test.mjs y evidencia runtime no versionada bajo .delivery/shared-package-releases/, junto con las validaciones enumeradas en validation_commands. Autorizo únicamente la autocertificación sintética o aislada del mecanismo durante esta instancia. No autorizo publicar packages reales, crear, mover o eliminar tags Git reales, crear o modificar releases remotas reales, publicar en un registry real, modificar workflows, package.json, package-lock.json, packages reales, consumidores, credenciales o configuración de registry, changelog, matriz de compatibilidad, pull requests, Supabase, despliegues ni ninguna ampliación inferida del alcance.",
     "source_contract_sha256": "ec9e33a14c322aaad2760f437f2eca836d6ebbba47548cfe3553666994f8f2f7"
   },
-  "evidence": []
+  "evidence": [
+    "PREFLIGHT PASS; task=SHELL-CI-003; format=OK; branch=main; behind=0; ahead=0",
+    "BASE_COMMIT 26bc1d1cc586f4dffe536ed3de03b09a75823c9d",
+    "FILE_SHA256 scripts/quality/shared-package-release-gate.mjs aa5be1df00cb7552bd098c1444586d6a64fea381f2d1974135875722ab6535dc",
+    "FILE_SHA256 scripts/quality/shared-package-release-gate.test.mjs a68e3e8e620bf36b335257cb09c7831d43c628e1c887d69e87fc123b07239b5b",
+    "IMPLEMENTATION shared-package-release-gate materialized",
+    "VALIDATION npm ci PASS",
+    "VALIDATION node --test scripts/quality/shared-package-release-gate.test.mjs PASS; tests=46; pass=46; fail=0",
+    "VALIDATION npm run lint -- scripts/quality/shared-package-release-gate.mjs scripts/quality/shared-package-release-gate.test.mjs PASS",
+    "VALIDATION npm run docs:plan:build PASS",
+    "VALIDATION npm run docs:plan:check PASS",
+    "VALIDATION npm run docs:plan:test PASS",
+    "VALIDATION npm run docs:treq:check PASS",
+    "VALIDATION npm run docs:treq:test PASS",
+    "VALIDATION npm run docs:work-topology:check PASS",
+    "RESULT CI003_FINAL_VALIDATION=PASS"
+  ]
 }

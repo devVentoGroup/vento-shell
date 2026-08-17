@@ -34,11 +34,11 @@
 | Siguiente tarea | **SHELL-CI-005 — Crear matriz de compatibilidad** |
 | Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
 | Progreso del bloque | **BLOQUE T: 3 de 24 aprobadas; SHELL-CI-004 pendiente** |
-| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
-| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CI-003::GLOBAL** |
+| Estado de implementación | **GLOBAL_VALIDATION_REQUIRED** |
+| Acción principal obligatoria | **VALIDAR_IMPLEMENTACION — SHELL-CI-003::GLOBAL** |
 | Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — SHELL-CI-004** |
-| Carril físico | **PENDING_AUTHORIZATION — SHELL-CI-003::GLOBAL** |
-| Alcance físico autorizado | **NINGUNO** |
+| Carril físico | **IMPLEMENTED — SHELL-CI-003::GLOBAL** |
+| Alcance físico autorizado | **SHELL-CI-003::GLOBAL** |
 
 ### Continuidad inmediata
 
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE T: 3 DE 24 APROBADAS — ACTUAL SHELL-CI-004** |
-| Implementación física | **SHELL-CI-003::GLOBAL — PENDING_AUTHORIZATION** |
+| Implementación física | **SHELL-CI-003::GLOBAL — IMPLEMENTED** |
 
 ## Reglas de edición
 
