@@ -288,7 +288,12 @@
       "sequence_id": "PHASE-07-PULSO",
       "block_code": "BLOQUE N",
       "block_title": "PULSO",
-      "selectors": [{ "prefix": "OPS-POS" }, { "prefix": "PULSO-AUTH" }, { "prefix": "PULSO-UX" }]
+      "selectors": [
+        { "prefix": "PULSO-UX", "from": 1, "to": 1 },
+        { "prefix": "OPS-POS" },
+        { "prefix": "PULSO-AUTH" },
+        { "prefix": "PULSO-UX", "from": 2 }
+      ]
     },
     {
       "sequence_id": "PHASE-08-NUMERA",

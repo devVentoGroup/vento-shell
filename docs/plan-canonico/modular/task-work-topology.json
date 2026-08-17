@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "policy_id": "CANONICAL-TASK-WORK-TOPOLOGY-001",
+  "canonical_marker_semantics": "DEFINE_CONTRACT_ONCE",
+  "instance_separator": "::",
+  "coverage_policy": "ALL_CONTINUITY_TASKS_EXACTLY_ONCE",
+  "mode_definitions": {
+    "DEFINE_ONCE": {
+      "label": "Definición global única",
+      "canonical_work": "Se desarrolla y aprueba una sola vez como contrato canónico.",
+      "execution_dependencies": "No crea una instancia posterior; sus consumidores reutilizan el contrato aprobado.",
+      "execution_rule": "No se repite por paquete; los consumidores posteriores reutilizan la decisión aprobada.",
+      "instance_pattern": null
+    },
+    "GLOBAL_ENABLE_ONCE": {
+      "label": "Habilitador global único",
+      "canonical_work": "Se define una vez y se materializa una sola vez antes de habilitar paquetes.",
+      "execution_dependencies": "Después de aprobar su contrato global y antes de cualquier E5-GATE-008::<package_id>.",
+      "execution_rule": "Todos los paquetes reutilizan el mismo habilitador certificado; no lo vuelven a implementar.",
+      "instance_pattern": "<task_id>::GLOBAL"
+    },
+    "TEMPLATE_PER_PACKAGE": {
+      "label": "Plantilla global con ejecución por paquete",
+      "canonical_work": "Ahora se define una sola plantilla, sus entradas, pruebas, gates y evidencia.",
+      "execution_dependencies": "Después de SHELL-CI-001..019, DELIV-PKG del paquete y E5-GATE-008::<package_id>.",
+      "execution_rule": "Más adelante se ejecuta una instancia independiente por package_id; la instancia no reabre ni aprueba el marcador global.",
+      "instance_pattern": "<task_id>::<package_id>"
+    },
+    "PER_IMPLEMENTATION_UNIT": {
+      "label": "Contrato global con materialización por unidad",
+      "canonical_work": "Ahora se define el contrato una sola vez y se asigna su futura materialización.",
+      "execution_dependencies": "Después de que DELIV-PKG-025 asigne implementation_unit_id y el package_id propietario supere E5-GATE-008.",
+      "execution_rule": "Se implementa una sola vez por implementation_unit_id; varios paquetes pueden consumir la misma unidad con lineage sin repetir código.",
+      "instance_pattern": "<task_id>::<implementation_unit_id>"
+    },
+    "PER_PACKAGE_AND_GLOBAL_FINAL": {
+      "label": "Validación por paquete y certificación global final",
+      "canonical_work": "Ahora se define una sola matriz de prueba y sus oráculos.",
+      "execution_dependencies": "El subconjunto se ejecuta después de implementar cada paquete; la certificación global espera todos los cierres aplicables.",
+      "execution_rule": "Cada paquete ejecuta su subconjunto y, después de todos los paquetes aplicables, se ejecuta una certificación global sin rehacer las definiciones.",
+      "instance_pattern": "<task_id>::<package_id> + <task_id>::GLOBAL-FINAL"
+    },
+    "GLOBAL_FINAL": {
+      "label": "Cierre global posterior",
+      "canonical_work": "Ahora se define el gate global y la evidencia acumulada que exigirá.",
+      "execution_dependencies": "Después de todos los paquetes, certificaciones y conciliaciones aplicables.",
+      "execution_rule": "Se ejecuta una sola vez al final, consumiendo cierres de paquetes sin repetir sus implementaciones.",
+      "instance_pattern": "<task_id>::GLOBAL-FINAL"
+    }
+  },
+  "stage_defaults": [
+    { "sequence_id": "PHASE-01-CANONICAL-DEFINITION", "mode": "DEFINE_ONCE" },
+    { "sequence_id": "PHASE-02-E1-DISCOVERY", "mode": "DEFINE_ONCE" },
+    { "sequence_id": "PHASE-02-E1-EXTERNAL-GOVERNANCE-CONDITIONAL", "mode": "DEFINE_ONCE" },
+    { "sequence_id": "PHASE-02-E2-PROCESSES-AND-UX", "mode": "DEFINE_ONCE" },
+    { "sequence_id": "PHASE-02-X-INTEGRATION-CONTRACTS", "mode": "DEFINE_ONCE" },
+    { "sequence_id": "PHASE-02-E3-SUPABASE-DESIGN", "mode": "DEFINE_ONCE" },
+    { "sequence_id": "PHASE-02-E4-TRANSVERSE-SERVICES", "mode": "DEFINE_ONCE" },
+    { "sequence_id": "PHASE-02-VISO-SCHEDULE-DELTA", "mode": "DEFINE_ONCE" },
+    { "sequence_id": "PHASE-02-E5-IMPLEMENTATION-PLANNING", "mode": "TEMPLATE_PER_PACKAGE" },
+    { "sequence_id": "PHASE-03-H-SHARED-FOUNDATION", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-03-T-CI-FOUNDATION", "mode": "GLOBAL_ENABLE_ONCE" },
+    { "sequence_id": "PHASE-03-J-SERVER-ACTIONS", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-03-R-DATABASE-IMPLEMENTATION", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-03-S-BLOCKING-EXPERIENCE", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-04-F-ANIMA", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-04-G-VISO-CORE", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-04-H2-SHELL-APPLICATION", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-04-I-UI-IMPLEMENTATION", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-04-PQ-DEVICE-AND-SIMULATION", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-04-Z-TECHNOLOGY", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-04-AA-INFORMATION-GOVERNANCE", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-04-AB-DATA-AND-ANALYTICS", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-04-AC-CONTINUITY", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-05-NEXO", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-06-FOGO-ORIGO", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-07-PULSO", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-08-NUMERA", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-09-VISO-COMPLETE", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-10-PASS", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-12-AURA", "mode": "PER_IMPLEMENTATION_UNIT" },
+    { "sequence_id": "PHASE-13-U-INTEGRAL-CERTIFICATION", "mode": "PER_PACKAGE_AND_GLOBAL_FINAL" },
+    { "sequence_id": "PHASE-13-R3-LEGACY-RETIREMENT", "mode": "GLOBAL_FINAL" }
+  ],
+  "overrides": [
+    {
+      "selectors": [
+        { "prefix": "SHELL-AUD" },
+        { "prefix": "SHELL-PKG" },
+        { "prefix": "SHELL-MIG", "from": 1, "to": 2 },
+        { "prefix": "AUTH-UI", "from": 30, "to": 39 }
+      ],
+      "mode": "DEFINE_ONCE"
+    },
+    {
+      "selectors": [
+        { "prefix": "SHELL-MIG", "from": 3, "to": 8 }
+      ],
+      "mode": "TEMPLATE_PER_PACKAGE",
+      "execution_rule": "La definición global no se reabre. Cada lote conserva una instancia task_id::package_id y reconcilia consumidores, commit, pruebas y rollback propios dentro del ciclo SHELL-CI-020..024::<package_id>."
+    },
+    {
+      "selectors": [
+        { "prefix": "SHELL-CI", "from": 20, "to": 24 }
+      ],
+      "mode": "TEMPLATE_PER_PACKAGE"
+    }
+  ]
+}

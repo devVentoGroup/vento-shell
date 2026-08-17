@@ -940,6 +940,51 @@ propósito es validar una capacidad vertical reutilizable y devolver evidencia,
 defectos y contratos comprobados al desarrollo normal.
 <!-- PRIORITY-PACKAGE-PROTOCOL:END -->
 
+<!-- TASK-WORK-TOPOLOGY:START -->
+## Topología canónica de trabajo, dependencias y repetición
+
+La autoridad estructurada es `task-work-topology.json`. El orden de desarrollo
+del marcador global y el orden de ejecución física son dos capas relacionadas,
+pero no intercambiables.
+
+Reglas obligatorias:
+
+1. el marcador global `<task_id>` define y aprueba su contrato canónico una
+   sola vez; una instancia física no reabre ni vuelve a desarrollar ese
+   contenido;
+2. `Dependencias para desarrollar` solo puede referenciar tareas anteriores en
+   `continuity-route.json`; cuando la tarea sea actual, todas deberán estar
+   aprobadas;
+3. `Dependencias para ejecutar cada instancia` puede referenciar gates,
+   habilitadores o pasos posteriores y no se interpretará como prerrequisito
+   para definir ahora el contrato;
+4. el campo histórico `Dependencias` mantiene semántica de dependencia para
+   desarrollar y, por tanto, tampoco puede apuntar hacia el futuro;
+5. `DEFINE_ONCE` no se repite por paquete;
+6. `GLOBAL_ENABLE_ONCE` se materializa una sola vez y todos los paquetes
+   reutilizan el habilitador certificado;
+7. `TEMPLATE_PER_PACKAGE` define una plantilla global y registra después una
+   instancia `<task_id>::<package_id>` por paquete;
+8. `PER_IMPLEMENTATION_UNIT` registra como máximo una materialización
+   `<task_id>::<implementation_unit_id>`; varios `package_id` podrán consumirla
+   con lineage explícito sin duplicar código, migraciones ni pruebas propias de
+   la unidad;
+9. `PER_PACKAGE_AND_GLOBAL_FINAL` ejecuta el subconjunto de cada paquete y una
+   certificación agregada `<task_id>::GLOBAL-FINAL` después de cerrar todos los
+   paquetes aplicables;
+10. `GLOBAL_FINAL` se ejecuta una sola vez al final y consume evidencia
+    acumulada sin repetir las implementaciones que la produjeron;
+11. cada defecto posterior añade una regresión al contrato o a la instancia
+    propietaria; no obliga a rehacer tareas cerradas que no cambiaron;
+12. el compilador rechazará tareas sin clasificación, overrides superpuestos,
+    dependencias de desarrollo futuras, dependencias actuales no aprobadas y
+    cualquier deriva entre la topología, la ruta y la guía derivada.
+
+La guía pendiente deberá mostrar para cada tarea: trabajo canónico actual,
+modalidad, identidad de instancia, dependencias para desarrollar, dependencias
+para ejecutar, regla de repetición, pruebas y cierres global/de instancia.
+<!-- TASK-WORK-TOPOLOGY:END -->
+
 ## Regla canónica de granularidad documental
 
 La unidad física del plan será la **sección o bloque lógico**, no cada tarea individual.
