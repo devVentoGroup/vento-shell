@@ -685,7 +685,7 @@ La existencia actual bajo `src/components/ui` queda decidida para esta tarea as�
 
 Esta decisión cierra el tratamiento de los seis archivos para `SHELL-UI-001`: no quedan pendientes narrativos sobre `Chip`, `Input`, `Modal` o el barrel. Cualquier cambio futuro desde `MANTENER_LOCAL` requerirá una tarea canónica que lo autorice.
 
-El template histórico contiene además implementaciones propias de `Button`, `Card`, `Input`, `Select` y `Badge`; esas copias no desplazan la decisión anterior ni se convierten en package API. `Button` y `Card` deberán reconciliar sus variantes al ejecutarse `SHELL-UI-003` y `SHELL-UI-004`; `Input`, `Select` y `Badge` permanecen fuera de la superficie inicial compartida aprobada por este mini-bloque mientras no exista una tarea propietaria que decida lo contrario.
+El template histórico contiene además implementaciones propias de `Button`, `Card`, `Input`, `Select` y `Badge`; esas copias no desplazan la decisión anterior ni se convierten por sí mismas en package API. La familia auditada `FAM-005 — src/components/vento/standard/ui.tsx` conserva la disposición heredada `COMPARTIR`: `Button` y `Card` se reconcilian en `SHELL-UI-003` y `SHELL-UI-004`, mientras que `Input`, `Select` y `Badge` quedan reconciliados documentalmente en `SHELL-UI-001` como parte de esa familia compartida, sin autorizar todavía exports físicos. Esta decisión no promueve el archivo local `src/components/ui/Input.tsx`: ese archivo concreto mantiene la disposición local fijada en la tabla anterior.
 
 La decisión `MANTENER_LOCAL` no declara un componente legacy ni autoriza su retiro.
 
@@ -705,10 +705,42 @@ Reglas:
 2. no se conserva código NEXO-específico como default transversal;
 3. AppSwitcher, ProfileMenu, Chrome, shell, tablas y helpers se evalúan por responsabilidad;
 4. una similitud visual no demuestra paridad funcional;
-5. cualquier componente que se comparta necesita tarea propietaria, contrato y pruebas;
+5. toda familia o superficie compartida necesita propietario exacto, contrato y pruebas; cuando `SHELL-AUD-010` ya asignó una familia a `SHELL-UI-001` y no existe una tarea `SHELL-UI-*` posterior dedicada, `SHELL-UI-001` conserva la propiedad documental indicada en la reconciliación siguiente, sin aprobar por ello un export físico;
 6. el retiro de la plantilla ocurre únicamente después de migración y evidencia de cero consumo legacy.
 
 El template no se modifica en `SHELL-UI-001`.
+
+##### 25.1. Reconciliación explícita de familias UI heredadas de `SHELL-AUD-010`
+
+La disposición aprobada por `SHELL-AUD-010` es vinculante para este mini-bloque. Por ello, las familias visuales heredadas no pueden quedar con destinos genéricos ni con un simple “evaluar después”. `SHELL-UI-001` fija el propietario documental exacto cuando no existe una tarea posterior dedicada y conserva los gates de materialización del package.
+
+| Referencia heredada                                       | Disposición preservada | Propietario o handoff UI exacto                                                                                                                                        | Regla cerrada en este mini-bloque                                                                                                                                                                      |
+| --------------------------------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `FAM-001 — src/app/layout.tsx`                            | `MANTENER_LOCAL`       | entrypoint por aplicación; frontera de AppShell en `SHELL-UI-010`, mecanismo de package en `SHELL-PKG-001` y sesión/autorización en `SHELL-AUTH-005`                   | metadata, fuentes y scripts propios permanecen locales; el layout consume políticas compartidas sin copiar un layout global                                                                            |
+| `FAM-002 — src/app/globals.css`                           | `MANTENER_LOCAL`       | entrypoint por aplicación; base/tokens compartibles bajo `SHELL-UI-001`, `SHELL-PKG-004` y `SHELL-PKG-008`                                                             | el CSS de aplicación permanece local; la base compartida no convierte `globals.css` en archivo común                                                                                                   |
+| `FAM-003 — src/components/vento/standard/vento-shell.tsx` | `MANTENER_LOCAL`       | compositor server por aplicación; frontera visual en `SHELL-UI-010`, contratos en `SHELL-CON-002`, `SHELL-CON-007`, `SHELL-CON-011` y autorización en `SHELL-AUTH-005` | consultas, navegación, contexto y extensiones de dominio permanecen en la aplicación; solo sus dependencias transversales convergen                                                                    |
+| `FAM-004 — vento-chrome.tsx`                              | `COMPARTIR`            | `SHELL-UI-010` para AppShell y `SHELL-UI-011` para navegación, dentro de la frontera de `SHELL-UI-001`                                                                 | se comparte estructura transversal, no catálogos, permisos ni extensiones empresariales locales                                                                                                        |
+| `FAM-005 — ui.tsx`                                        | `COMPARTIR`            | `SHELL-UI-003` (`Button`), `SHELL-UI-004` (`Card`) y `SHELL-UI-001` (`Input`, `Select`, `Badge`), con `SHELL-PKG-008` como gate de estilos/calidad                     | la disposición de la familia queda cerrada; ningún blob histórico se adopta automáticamente como implementación canónica                                                                               |
+| `FAM-006 — table.tsx`                                     | `COMPARTIR`            | `SHELL-UI-001`, con gates de package/calidad de `SHELL-PKG-006` y `SHELL-PKG-008`                                                                                      | la línea base auditada contiene únicamente wrappers semánticos `Table`, `TableHead`, `TableBody`, `TableRow`, `TableHeaderCell` y `TableCell`; no se infiere un data grid ni otra abstracción avanzada |
+| `FAM-007 — app-switcher.tsx`                              | `COMPARTIR`            | `SHELL-UI-001`; metadata en `SHELL-CON-002`; acceso resuelto fuera de UI según `SHELL-AUTH-005`                                                                        | el componente visual no mantiene catálogo manual ni concede acceso                                                                                                                                     |
+| `FAM-008 — profile-menu.tsx`                              | `COMPARTIR`            | `SHELL-UI-001`, compuesto por `SHELL-UI-010`; sesión/autoridad en `SHELL-AUTH-005`; residuales reconciliados por `SHELL-AUD-011`                                       | la estructura visual puede compartirse; acciones y autoridad se inyectan desde propietarios externos                                                                                                   |
+| `FAM-019 — page-header.tsx`                               | `COMPARTIR`            | `SHELL-UI-001`, con compatibilidad en `SHELL-PKG-006` y reconciliación legacy de `SHELL-AUD-011`                                                                       | se conserva una API reconciliada que debe combinar responsividad y acento sin adoptar un blob actual como canon físico                                                                                 |
+| `FAM-020 — vento-logo.tsx`                                | `COMPARTIR`            | `SHELL-UI-001`; identidad/presentación en `SHELL-CON-002`; integración de acceso/sesión en `SHELL-AUTH-005`                                                            | el componente visual consume datos de marca generados y no hardcodea una aplicación por defecto                                                                                                        |
+
+Las identidades contractuales asociadas quedan igualmente conciliadas:
+
+| Identidad                                                   | Disposición heredada | Propiedad exacta preservada                                                                                                                                                         |
+| ----------------------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TYPE-CON-002 — definición de aplicación / AppSwitcherItem` | `GENERAR`            | fuente en `SHELL-CON-002`; `SHELL-UI-001` consume la proyección visual, `SHELL-APP-001..003` gobierna runtimes de aplicación y `SHELL-AUTH-005` la proyección de acceso             |
+| `TYPE-CON-003 — VentoEntity`                                | `GENERAR`            | se deriva de `AppCode` y del registro de marca en `SHELL-CON-002`; `SHELL-UI-001` únicamente consume esa identidad visual                                                           |
+| `TYPE-CON-004 — IconName`                                   | `COMPARTIR`          | vocabulario/parser coordinado entre `SHELL-CON-011` y la superficie visual de `SHELL-UI-001`; la UI consume el vocabulario y no crea otro paralelo                                  |
+| `TYPE-CON-009 — PageHeaderProps`                            | `COMPARTIR`          | contrato visual bajo `SHELL-UI-001`, asociado a `FAM-019`                                                                                                                           |
+| `TYPE-CON-010 — VentoLogoProps / VentoIconProps`            | `COMPARTIR`          | contrato visual bajo `SHELL-UI-001`, con identidad/metadata provenientes de `SHELL-CON-002`                                                                                         |
+| `TYPE-CON-035 — AppSwitcherItem.brandColor`                 | `GENERAR`            | se deriva de `ApplicationPresentation` bajo `SHELL-CON-002`; su residual histórico queda reconciliado por `SHELL-AUD-011`; UI001 solo consume la proyección visual                  |
+| `TYPE-CON-036 — AppSwitcherProps.sites`                     | `MANTENER_LOCAL`     | no forma parte del AppSwitcher compartido; la selección de sede pertenece a `SHELL-UI-007`/`SHELL-CTX-003`; `SHELL-AUD-011` gobierna el residual histórico                          |
+| `TYPE-CON-037 — AppSwitcherProps.activeSiteId`              | `MANTENER_LOCAL`     | no forma parte del AppSwitcher compartido; el contexto activo se resuelve en `SHELL-CTX-003`; `SHELL-UI-007` consume la proyección y `SHELL-AUD-011` gobierna el residual histórico |
+
+Esta reconciliación **no crea tareas nuevas**, **no materializa `@vento/ui-web`**, **no aprueba un mapa físico de exports** y **no cambia ninguna disposición histórica de `SHELL-AUD-010`**. Su efecto es cerrar el owner documental de las familias ya clasificadas para que `SHELL-MIG-001` pueda referenciarlas sin inventar destinos.
 
 ---
 
@@ -1083,6 +1115,11 @@ Por ello no se modifica ningún fragmento 04A.
 31. El retiro legacy solo ocurre después de paridad, compatibilidad y rollback.
 32. No se realiza implementación física en esta tarea.
 33. Se crean 0 requisitos `TREQ-*` y se modifican 0.
+34. Las familias heredadas `FAM-001..008`, `FAM-019` y `FAM-020` relevantes para la frontera web quedan reconciliadas con propietario exacto dentro del mini-bloque.
+35. `FAM-006 — table.tsx` queda bajo propiedad documental de `SHELL-UI-001` y su línea base se limita a seis wrappers semánticos; no se aprueba un data grid.
+36. `AppSwitcher`, `ProfileMenu`, `PageHeader` y `VentoLogo` conservan propietario visual exacto en `SHELL-UI-001` sin trasladar catálogos, sesión, contexto, permisos o autoridad a la UI.
+37. `TYPE-CON-002`, `TYPE-CON-003`, `TYPE-CON-004`, `TYPE-CON-009`, `TYPE-CON-010`, `TYPE-CON-035`, `TYPE-CON-036` y `TYPE-CON-037` quedan reconciliados con sus propietarios contractuales y visuales aprobados.
+38. La reconciliación documental de familias heredadas no autoriza exports físicos ni adopta blobs históricos como implementación canónica.
 
 ---
 
@@ -1106,7 +1143,11 @@ Por ello no se modifica ningún fragmento 04A.
 - [x] los cinco componentes locales actuales reciben decisión explícita;
 - [x] `Button` se entrega a `SHELL-UI-003`;
 - [x] `Card` se entrega a `SHELL-UI-004`;
-- [x] `Chip`, `Input` y `Modal` permanecen locales en este corte;
+- [x] `Chip`, `Input` y `Modal` locales bajo `src/components/ui` permanecen locales en este corte;
+- [x] la familia histórica `FAM-005 — ui.tsx` conserva `COMPARTIR`, con `Input`, `Select` y `Badge` reconciliados documentalmente en `SHELL-UI-001` sin export físico;
+- [x] `FAM-006 — table.tsx` conserva `COMPARTIR`, tiene owner exacto en `SHELL-UI-001` y una línea base explícita de seis wrappers semánticos;
+- [x] `AppSwitcher`, `ProfileMenu`, `PageHeader` y `VentoLogo` tienen propietario visual exacto;
+- [x] las identidades `TYPE-CON-002..004`, `TYPE-CON-009`, `TYPE-CON-010` y `TYPE-CON-035..037` quedan conciliadas sin contratos paralelos;
 - [x] el template AppShell permanece fuente histórica;
 - [x] AppShell compuesto no se aprueba antes de `SHELL-UI-010`;
 - [x] se preservan tareas propietarias `SHELL-UI-002..020`;
@@ -1121,7 +1162,7 @@ Resultado:
 IDENTIDAD DEL PACKAGE                 = CERRADA
 FRONTERAS DE RESPONSABILIDAD          = CERRADAS
 ESTADO DEL CÓDIGO UI EXISTENTE        = RECONCILIADO PARA UI001
-API CONCRETA                          = RESERVADA A UI002..020
+API CONCRETA                          = NO MATERIALIZADA; OWNERSHIP DOCUMENTAL CERRADO
 PACKAGE FÍSICO                        = NO MATERIALIZADO
 CONSUMIDORES MIGRADOS                 = 0
 CAMBIOS TREQ                          = 0
@@ -13110,12 +13151,12 @@ Los patrones actuales `AppSwitcher` y `ProfileMenu` aparecen dentro de las copia
 
 Decisión:
 
-| Patrón                            | Decisión dentro de UI010                                                    |
-| --------------------------------- | --------------------------------------------------------------------------- |
-| AppSwitcher                       | contenido candidato de `headerActions`; contrato propio fuera de esta tarea |
-| ProfileMenu                       | contenido candidato de `headerActions`; datos y sesión permanecen fuera     |
-| selector de sede dentro de perfil | no pertenece al AppShell                                                    |
-| role override dentro de perfil    | no pertenece al AppShell                                                    |
+| Patrón                            | Decisión dentro de UI010                                                                                                                                             |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AppSwitcher                       | contenido candidato de `headerActions`; contrato visual propietario `SHELL-UI-001`, metadata en `SHELL-CON-002` y acceso resuelto fuera de UI según `SHELL-AUTH-005` |
+| ProfileMenu                       | contenido candidato de `headerActions`; contrato visual propietario `SHELL-UI-001`; datos de sesión, contexto y autoridad permanecen fuera de UI                     |
+| selector de sede dentro de perfil | no pertenece al AppShell                                                                                                                                             |
+| role override dentro de perfil    | no pertenece al AppShell                                                                                                                                             |
 
 ---
 
@@ -19332,6 +19373,14 @@ Quedan fuera de UI014:
 ---
 
 #### 57. Evidencia de validación y criterios de aceptación documental
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                        |
+| --------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | `NOT_EXECUTED`   | UI014 es una tarea documental y no materializa código ejecutable, package ni build.                                                                                                              |
+| LOCAL     | `NOT_EXECUTED`   | No se ejecutaron scripts del repositorio ni comprobaciones sobre un checkout local actualizado como evidencia histórica de UI014; esta corrección se limita al documento canónico.               |
+| REMOTA    | `PASS`           | El canon remoto vigente conserva `SHELL-UI-014` aprobada entre `SHELL-UI-013` y `SHELL-UI-015`, y la política de desarrollo exige desde UI012 las cinco clases de evidencia aquí materializadas. |
+| OPERATIVA | `NOT_APPLICABLE` | UI014 especifica una confirmación presentacional; no ejecuta autorización, reautenticación, mutaciones, RPC, transiciones ni efectos empresariales.                                              |
+| FÍSICA    | `NOT_EXECUTED`   | UI014 no materializó `SensitiveActionConfirmation`, no publicó exports y no migró consumidores; los cambios físicos autorizados permanecen en ninguno.                                           |
 
 La aceptación documental exige que la definición cumpla simultáneamente:
 
