@@ -23,6 +23,7 @@ import {
   writeCanonicalTreqRegistry,
 } from './treq-registry-files.mjs';
 import { autoPrepareCanonicalTask } from './auto-prepare-canonical-task.mjs';
+import { assertProspectiveTasks } from './audit-prospective-tasks.mjs';
 
 const root = process.cwd();
 const baseDir = path.resolve(root, 'docs/plan-canonico/modular');
@@ -230,6 +231,13 @@ function attemptSafeReconciliation() {
 
   return { originalSource: currentSource, recoveryPath };
 }
+
+const prospectiveAudit = assertProspectiveTasks({ root });
+console.log(
+  `[PLAN CANÓNICO] Auditoría prospectiva: ${prospectiveAudit.stats.formatCovered} tarea(s) aprobada(s) `
+  + `con formato y ${prospectiveAudit.stats.semanticCovered} con contrato semántico; `
+  + '0 incompatibilidades.',
+);
 
 autoPrepareCanonicalTask({
   root,

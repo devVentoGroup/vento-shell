@@ -91,9 +91,12 @@ test('el watcher regenera y valida también la guía de tareas pendientes', () =
 
 test('el build prepara formato sin iniciar tareas vacías', () => {
   const safeBuild = fs.readFileSync(safeBuildPath, 'utf8');
+  const audit = safeBuild.indexOf('assertProspectiveTasks({ root })');
   const prepare = safeBuild.indexOf('autoPrepareCanonicalTask({');
   const continuity = safeBuild.indexOf('syncPlanContinuity({');
 
+  assert.ok(audit >= 0, 'falta la auditoría prospectiva agregada');
+  assert.ok(prepare > audit, 'la auditoría completa debe ejecutarse antes de la preparación puntual');
   assert.ok(prepare >= 0, 'falta la preparación automática de tareas');
   assert.ok(continuity > prepare, 'el formato debe prepararse antes de sincronizar continuidad');
   assert.match(safeBuild, /checkOnly: process\.argv\.includes\('--check'\)/u);

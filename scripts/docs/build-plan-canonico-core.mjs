@@ -16,6 +16,7 @@ import { validateEventApplicationBlock } from './validate-event-application-bloc
 import { validateExternalCredentialTaxonomy } from './validate-external-credential-taxonomy.mjs';
 import { validateE3TransitionClosure } from './validate-e3-transition-closure.mjs';
 import { resolveTaskWorkTopology } from './task-work-topology.mjs';
+import { assertProspectiveTasks } from './audit-prospective-tasks.mjs';
 
 const root = process.cwd();
 const checkOnly = process.argv.includes('--check');
@@ -65,6 +66,18 @@ function findUnregisteredBlockFragments(manifestFiles, auxiliaryFiles = []) {
 
 try {
   syncPlanContinuity({ root, checkOnly });
+} catch (error) {
+  fail(error instanceof Error ? error.message : String(error));
+}
+
+try {
+  const prospectiveAudit = assertProspectiveTasks({ root });
+  console.log(
+    `OK: auditoría prospectiva; ${prospectiveAudit.stats.formatCovered} tareas aprobadas con formato; `
+    + `${prospectiveAudit.stats.semanticCovered} con contrato semántico; `
+    + `${prospectiveAudit.stats.normalizable} normalizables automáticamente; `
+    + '0 incompatibilidades.',
+  );
 } catch (error) {
   fail(error instanceof Error ? error.message : String(error));
 }

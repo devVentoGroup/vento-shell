@@ -90,9 +90,9 @@ function physicalContradiction(metadata) {
   const state = metadata.get('Estado físico resultante') ?? '';
   const changes = metadata.get('Cambios físicos autorizados') ?? '';
   const normalizedChanges = changes.replaceAll('`', '').trim();
-  const noPhysicalChanges = /^(?:0|cero|ninguno)(?:\s+(?:durante|en)\s+(?:(?:el|este)\s+marcador(?:\s+global)?|(?:esta|la)\s+tarea))?[\s.;]*$/iu
+  const noPhysicalChanges = /^(?:0|cero|ninguno)(?:\s+(?:durante|en)\s+(?:(?:el|este)\s+marcador(?:\s+global)?|(?:esta|la)\s+tarea))?(?:\s*[.;]|$)/iu
     .test(normalizedChanges)
-    || /^sin\s+(?:cambios?|modificaciones?)\s+físic[oa]s?(?:\s+autorizad[oa]s?)?[\s.;]*$/iu
+    || /^sin\s+(?:cambios?|modificaciones?)\s+físic[oa]s?(?:\s+autorizad[oa]s?)?(?:\s*[.;]|$)/iu
       .test(normalizedChanges);
   return /NO_MATERIALIZADO|NO MATERIALIZADO/iu.test(state) && !noPhysicalChanges;
 }
@@ -135,6 +135,17 @@ export function validateTaskDevelopmentPolicy(policy) {
       new RegExp(policy.forbidden_placeholder_pattern, 'u');
     } catch {
       errors.push('forbidden_placeholder_pattern no es una expresión regular válida.');
+    }
+  }
+  for (const selector of policy?.historical_approved_exemptions ?? []) {
+    const exactIds = Array.isArray(selector?.task_ids) && selector.task_ids.length > 0;
+    const range = typeof selector?.prefix === 'string'
+      && Number.isInteger(selector?.from)
+      && Number.isInteger(selector?.to)
+      && selector.from > 0
+      && selector.to >= selector.from;
+    if (exactIds === range) {
+      errors.push('historical_approved_exemptions debe usar task_ids o un rango prefix/from/to, pero no ambos.');
     }
   }
   return errors;

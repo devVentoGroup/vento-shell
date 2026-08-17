@@ -8,6 +8,10 @@ import {
   validateTaskDevelopmentPolicy,
   validateTaskSemanticContract,
 } from './task-semantic-contract.mjs';
+import {
+  auditProspectiveTaskSet,
+  renderProspectiveAuditErrors,
+} from './audit-prospective-tasks.mjs';
 
 const policy = {
   required_header_fields: [
@@ -173,6 +177,55 @@ test('acepta ninguno durante el marcador global como cero cambios físicos', () 
     policy,
   });
   assert.ok(!result.errors.some(({ code }) => code === 'PHYSICAL_SCOPE_CONTRADICTION'));
+});
+
+test('acepta una aclaración futura después de declarar cero cambios físicos', () => {
+  const result = validateTaskSemanticContract({
+    block: validBlock.replace(
+      '**Cambios físicos autorizados:** ninguno',
+      '**Cambios físicos autorizados:** ninguno durante el marcador global; la materialización futura queda condicionada a E5',
+    ),
+    task: { id: 'TEST-SEM-011', state: 'APROBADA' },
+    ownerRelativePath: 'bloques/X/test.md',
+    inventory,
+    policy,
+  });
+  assert.ok(!result.errors.some(({ code }) => code === 'PHYSICAL_SCOPE_CONTRADICTION'));
+});
+
+test('la auditoría prospectiva agrega errores y preserva aprobaciones históricas', () => {
+  const auditPolicy = {
+    blocking_codes: ['EMPTY_DRAFT', 'PRESENTATION'],
+    required_header_fields: [],
+    required_section_groups: [],
+    forbidden_placeholder_pattern: '\\[PENDIENTE[^\\]]*\\]',
+    required_evidence_classes: [],
+    allowed_evidence_statuses: [],
+    historical_approved_exemptions: [{ task_ids: ['TEST-AUD-003'] }],
+  };
+  const makeTask = (id, marker = '✅') => ({
+    id,
+    marker,
+    title: `Título ${id}`,
+    block: `### ${marker} ${id} — Título ${id}`,
+    relativePath: 'bloques/X/test.md',
+  });
+  const ordered = [makeTask('TEST-AUD-001'), makeTask('TEST-AUD-002'), makeTask('TEST-AUD-003')];
+  const result = auditProspectiveTaskSet({
+    ordered,
+    inventory: new Map(ordered.map((item) => [item.id, item])),
+    canonicalTitles: new Map(ordered.map((item) => [item.id, item.title])),
+    formatBoundaryId: 'TEST-AUD-001',
+    semanticBoundaryId: 'TEST-AUD-001',
+    developmentPolicy: auditPolicy,
+  });
+
+  assert.deepEqual(new Set(result.errors.map(({ taskId }) => taskId)), new Set([
+    'TEST-AUD-001',
+    'TEST-AUD-002',
+  ]));
+  assert.equal(result.stats.historicalExemptions, 1);
+  assert.match(renderProspectiveAuditErrors(result.errors), /encontradas en conjunto/u);
 });
 
 test('explica los dos valores cuando existe una contradicción física real', () => {
