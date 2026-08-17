@@ -541,13 +541,558 @@ Esta tarea no:
 `SHELL-MIG-002 — Definir lotes reversibles por repositorio`
 
 
-### [ ] SHELL-MIG-002 — Definir lotes reversibles por repositorio
+### ✅ SHELL-MIG-002 — Definir lotes reversibles por repositorio
 
-**Propósito:** ordenar la adopción por aplicación sin exigir despliegue simultáneo y separar artefactos inertes de legacy consumido.
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-MIG-001 — Consolidar inventario ejecutable de consumidores
+**Tarea siguiente:** SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy
+**Tipo de tarea:** Documental; definición vinculante y materializada de lotes reversibles por repositorio, orden de adopción, precondiciones, cambios, consumidores, pruebas, observabilidad, rollback y criterios de suspensión, sin ejecutar migraciones ni modificar consumidores
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md`
+**Estado físico resultante:** ESPECIFICADO; 22 lotes base reversibles definidos; 0 migraciones ejecutadas; 0 adopciones de packages ejecutadas; 0 retiros ejecutados
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
 
-**Dependencias:** `SHELL-MIG-001`; `SHELL-PKG-004`; `SHELL-PKG-006`; `SHELL-PKG-008`.
+---
 
-**Puerta de cierre:** cada lote declara precondiciones, cambios, consumidores, pruebas, observabilidad, rollback y criterio de suspensión.
+#### 1. Propósito
+
+`SHELL-MIG-002` transforma los `Lote base` ya asignados por `SHELL-MIG-001` en unidades de cambio reversibles y ordenadas por repositorio.
+
+La tarea no vuelve a clasificar consumidores ni mueve identidades entre propietarios. Su función es fijar, para cada lote ya identificado:
+
+- precondiciones de entrada;
+- alcance exacto del cambio;
+- consumidores alcanzados;
+- pruebas obligatorias;
+- observabilidad mínima;
+- snapshot de rollback;
+- criterio de suspensión;
+- relación con las tareas propietarias que materializarán el cambio.
+
+La regla raíz queda:
+
+```text
+una identidad de SHELL-MIG-001
+→ conserva su Lote base
+→ entra en un solo cambio atribuible
+→ se valida sobre un commit consumidor exacto
+→ se observa de forma independiente
+→ puede revertirse sin desplegar simultáneamente los otros consumidores
+```
+
+No existe una oleada que obligue a actualizar conjuntamente SHELL, VISO, NEXO, FOGO, ORIGO, PULSO y NUMERA.
+
+---
+
+#### 2. Resultado material
+
+Quedan definidos **22 lotes base reversibles**:
+
+| Propietario de ejecución | Lotes por repositorio                         | Cantidad |
+| ------------------------ | --------------------------------------------- | -------: |
+| `SHELL-MIG-003`          | NEXO                                          |    **1** |
+| `SHELL-MIG-004`          | SHELL                                         |    **1** |
+| `SHELL-MIG-005`          | SHELL, NUMERA, FOGO, ORIGO, VISO, PULSO, NEXO |    **7** |
+| `SHELL-MIG-008`          | NUMERA, FOGO, ORIGO, VISO, PULSO, NEXO        |    **6** |
+| `SHELL-AUTH-005`         | SHELL, NUMERA, FOGO, ORIGO, VISO, PULSO, NEXO |    **7** |
+| **Total**                |                                               |   **22** |
+
+La distribución no crea un identificador paralelo. La identidad material de cada lote sigue siendo exactamente la clave:
+
+```text
+repositorio consumidor / tarea propietaria
+```
+
+Las **142 filas ejecutables** de `SHELL-MIG-001` conservan sin cambios su `Lote base`. Esta tarea añade el contrato de ejecución a las 22 claves distintas resultantes.
+
+Los elementos internos de AppSwitcher y `GuardOptions.requireAppAccessPermission = false` conservan los lotes `SHELL-MIG-008` ya asignados. Las dos entradas de navegación SHELL cuyo propietario es `SHELL-APP-021` permanecen fuera de estos 22 lotes porque no pertenecen a una fila física del inventario ejecutable ni al mini-bloque de migración compartida.
+
+---
+
+#### 3. Fuentes, dependencias y corte verificable
+
+##### 3.1. Dependencias vinculantes
+
+| Fuente           | Decisión heredada                                                                                                                           |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-MIG-001`  | 142 filas ejecutables, `Lote base` exacto por consumidor, 11 candidatos físicos sin consumidor y separación entre legacy consumido e inerte |
+| `SHELL-PKG-004`  | compatibilidad atribuible a package, versión, consumidor, commit, manifest, lockfile, toolchain, ambiente y evidencia exactos               |
+| `SHELL-PKG-006`  | rollback por snapshot de aplicación, independiente de los demás consumidores y sin inferir rollback de datos o Supabase                     |
+| `SHELL-PKG-008`  | dieciséis gates fail-closed, evidencia vigente por commit y prohibición de auto-merge, auto-deploy y bypass                                 |
+| `TREQ-SHELL-004` | retiro únicamente con búsqueda reproducible de consumidores y validaciones aplicables                                                       |
+| `TREQ-SHELL-005` | comandos reproducibles para instalación, lint, typecheck, build o export y pruebas                                                          |
+| `TREQ-SHELL-006` | pruebas propias y compatibilidad por consumidor sin despliegue simultáneo obligatorio                                                       |
+| `TREQ-SHELL-007` | rollback independiente probado antes de release o cutover                                                                                   |
+| `TREQ-SHELL-008` | declaración de requisitos y resultados reproducibles por package y cambio                                                                   |
+| `TREQ-SHELL-009` | identidad verificable de repositorio, commit, ambiente y superficie                                                                         |
+| `TREQ-SHELL-038` | migración y deprecación con inventario y evidencia atribuible                                                                               |
+| `TREQ-SHELL-039` | retiro bloqueado hasta resolver consumidores, pruebas, compatibilidad y rollback                                                            |
+
+##### 3.2. Corte remoto de los consumidores
+
+| Repositorio                  | Commit de `main` verificado para esta tarea | Relación con el corte de `SHELL-MIG-001`                                                                                     |
+| ---------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `devVentoGroup/vento-shell`  | `c5d53c7b6c643ed655bf4dfa6946794150a965d7`  | avanzó únicamente para incorporar documentalmente `SHELL-MIG-001`; el parent es el corte inspeccionado por la tarea anterior |
+| `devVentoGroup/vento-viso`   | `47322403f3c64e83ae0c4a2f68c05d47093e5bb4`  | sin cambio                                                                                                                   |
+| `devVentoGroup/vento-nexo`   | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799`  | sin cambio                                                                                                                   |
+| `devVentoGroup/vento-fogo`   | `b6b9ed00e5267cabaac1a5a1090d93d5f60e86f2`  | sin cambio                                                                                                                   |
+| `devVentoGroup/vento-origo`  | `b7a8303fa078ef087f522b6c99059ababfc27472`  | sin cambio                                                                                                                   |
+| `devVentoGroup/vento-pulso`  | `71e0184486b5fe11e0a42435baf4024807a80efd`  | sin cambio                                                                                                                   |
+| `devVentoGroup/vento-numera` | `1b48a5da425d92e19ed89cf175b1dccc4cd960e1`  | sin cambio                                                                                                                   |
+
+No existe un delta de consumidor que obligue a invalidar el inventario aprobado.
+
+##### 3.3. Estado técnico que bloquea ejecución física
+
+En el corte actual:
+
+- no existe una release estable adoptada de `@vento/contracts`, `@vento/os-context`, `@vento/supabase` o `@vento/ui-web`;
+- las 28 relaciones package–consumidor de `SHELL-PKG-004` permanecen pendientes de evidencia;
+- no existe un snapshot anterior de package compartido certificado que permita declarar una adopción `ROLLBACK_READY`;
+- los siete `package.json` inspeccionados declaran `build` y `lint`, pero ninguno declara un script `typecheck` ni un script `test`;
+- la fase canónica vigente es exclusivamente documental y prohíbe migraciones, cambios de código y modificaciones de Supabase.
+
+Por tanto, los 22 lotes quedan **ESPECIFICADOS** y **NO EJECUTABLES EN ESTE CORTE**. Esto no impide cerrar documentalmente `SHELL-MIG-002`; impide presentar una definición como migración ya realizada.
+
+---
+
+#### 4. Invariantes de un lote reversible
+
+Todo lote materializado por esta tarea conserva estas reglas:
+
+1. Un lote afecta un solo repositorio consumidor.
+2. Un lote no obliga a desplegar ningún otro consumidor.
+3. Todo cambio de package usa versión exacta y conserva manifest y lockfile como unidad.
+4. El commit base y el commit de propuesta forman parte de la evidencia.
+5. Un cambio posterior al commit evaluado invalida pruebas y aprobaciones técnicas aplicables.
+6. Todo package compartido aplicable debe tener release identificable, integridad y compatibilidad para el consumidor exacto.
+7. Todo lote conserva un snapshot previo certificado antes de cualquier cutover.
+8. El rollback se ejecuta por historia auditable del consumidor y no modificando manualmente dependencias instaladas.
+9. Un rollback de package no revierte por inferencia datos, schema, migraciones, configuración remota, cachés ni secretos.
+10. Todo impacto Supabase que requiera materialización se resuelve exclusivamente desde `vento-shell` y mediante su tarea propietaria.
+11. Los candidatos inertes no se mezclan en el mismo cambio con una migración funcional.
+12. Un archivo consumido no puede pasar al lote de retiro porque su sustituto esté planificado.
+13. La aparición de un consumidor nuevo invalida la elegibilidad de retiro.
+14. Una regresión de autorización, contexto, sesión o denegación cerrada detiene la expansión de la oleada.
+15. Un lote fallido no produce despliegue compensatorio automático en los otros repositorios.
+16. Cualquier dependencia simultánea entre dos consumidores que no haya sido demostrada como compatible bloquea el lote y exige resolver la dependencia antes de continuar.
+
+---
+
+#### 5. Orden canónico entre tareas y oleadas
+
+La secuencia entre propietarios no se altera:
+
+```text
+SHELL-MIG-003
+→ SHELL-MIG-004
+→ SHELL-MIG-005
+→ SHELL-MIG-006
+→ SHELL-MIG-007
+→ SHELL-MIG-008
+→ continuidad posterior del BLOQUE H
+→ SHELL-AUTH-005 cuando alcance su turno canónico
+```
+
+`SHELL-MIG-006` y `SHELL-MIG-007` no crean lotes de cambio nuevos: son puertas de accesibilidad, paridad y evidencia para los lotes de `SHELL-MIG-005`.
+
+`SHELL-AUTH-005` ya es propietario de las filas de autorización, contexto y acceso compartido que `SHELL-MIG-001` le asignó. `SHELL-MIG-002` define esos siete lotes ahora, pero no adelanta ni desarrolla `SHELL-AUTH-005`.
+
+---
+
+#### 6. Orden serial de repositorios
+
+Cuando una tarea propietaria deba materializar el mismo tipo de adopción en más de un repositorio, se utiliza esta secuencia:
+
+**Secuencia:** SHELL → NUMERA → FOGO → ORIGO → VISO → PULSO → NEXO.
+
+| Orden | Repositorio                  | Base verificable del orden                                                                                                          |
+| ----: | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **1** | `devVentoGroup/vento-shell`  | repositorio productor de la fundación y menor superficie runtime del inventario: 5 familias, 1 consumidor directo y 1 script/manual |
+| **2** | `devVentoGroup/vento-numera` | menor superficie externa: 19 familias, 0 consumidores directos de autorización y 0 consumidores CI/script                           |
+| **3** | `devVentoGroup/vento-fogo`   | 20 familias, 0 consumidores directos de autorización y 0 consumidores CI/script                                                     |
+| **4** | `devVentoGroup/vento-origo`  | 20 familias y 4 consumidores directos de autorización                                                                               |
+| **5** | `devVentoGroup/vento-viso`   | 21 familias y 4 consumidores directos de autorización                                                                               |
+| **6** | `devVentoGroup/vento-pulso`  | 20 familias, 2 consumidores directos y excepciones heredadas de cliente Supabase alterno y rama de guard                            |
+| **7** | `devVentoGroup/vento-nexo`   | 23 familias, 2 consumidores CI/script y excepción local de contexto operativo                                                       |
+
+Reglas de aplicación:
+
+- el orden solo se usa entre repositorios alcanzados por la misma tarea propietaria;
+- un repositorio no aplicable se omite sin alterar la identidad de los demás lotes;
+- no se inician dos despliegues de consumidor en paralelo;
+- el siguiente consumidor no avanza mientras el anterior permanezca en observación, rollback o investigación de un gate;
+- SHELL sirve como verificación del productor y su superficie local; NUMERA es el primer piloto externo completo cuando el lote aplique;
+- NEXO queda al final de las oleadas multi-repositorio por sus consumidores CI/script y su extensión local adicional, no por una prioridad empresarial.
+
+---
+
+#### 7. Contrato común de entrada y cierre
+
+Cada una de las 22 instancias de lote hereda obligatoriamente estas precondiciones antes de cualquier cambio físico:
+
+1. tarea propietaria del lote aprobada y en fase autorizada para materialización;
+2. commit base del consumidor revalidado contra el inventario de `SHELL-MIG-001`;
+3. cero delta no clasificado en los archivos consumidores del lote;
+4. release exacta del package objetivo disponible cuando el lote migra a package compartido;
+5. identidad, integridad y procedencia de la release verificadas;
+6. relación package–consumidor evaluable en la matriz de compatibilidad;
+7. manifest y lockfile base conservados;
+8. instalación reproducible disponible;
+9. lint, typecheck, build o export y pruebas automatizadas aplicables ejecutables;
+10. perfil especializado de `SHELL-PKG-008` aplicable definido;
+11. requisitos `TREQ-*` afectados declarados;
+12. snapshot previo certificado y restaurable;
+13. impacto de datos, configuración, caché y Supabase explícitamente clasificado;
+14. revisores y autoridad de despliegue del consumidor identificados;
+15. cero cambios ajenos mezclados en el mismo lote.
+
+Un lote solo puede considerarse cerrado cuando:
+
+- todos los gates universales aplicables están en `PASS`;
+- el gate de riesgo está en `PASS` o en no aplicabilidad justificada;
+- la evidencia corresponde al commit, manifest, lockfile y versiones exactas;
+- las pruebas específicas del lote son correctas;
+- la observación posterior al despliegue no presenta regresión bloqueante;
+- el rollback sigue siendo reproducible;
+- no existe un consumidor legacy nuevo o no clasificado;
+- el resultado queda atribuible al repositorio y lote exactos.
+
+---
+
+#### 8. Lote de compatibilidad CI/script de NEXO
+
+| Campo                          | Decisión materializada                                                                                                                                                                                    |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Lote base**                  | `devVentoGroup/vento-nexo / SHELL-MIG-003`                                                                                                                                                                |
+| **Consumidores**               | `.github/workflows/tmp-apply-privileged-request-area.yml`; `scripts/tmp-apply-privileged-request-area.mjs`                                                                                                |
+| **Precondiciones específicas** | commit NEXO revalidado; forma contractual objetivo de autorización/contexto aprobada; targets del patch identificados; gate contra nuevo consumo legacy disponible                                        |
+| **Cambios permitidos**         | adaptar o retirar únicamente la dependencia del workflow/script respecto de la forma legacy; impedir que vuelva a crear consumidores legacy; conservar el comportamiento empresarial de los targets       |
+| **Pruebas**                    | gates `PKG-GATE-003..014` aplicables; ejecución reproducible del patch; build y validación de targets; evidencia de que el script no introduce una forma legacy nueva                                     |
+| **Observabilidad**             | resultado del workflow, identidad del commit, archivos objetivo modificados, errores del patch y build atribuibles al mismo intento                                                                       |
+| **Rollback**                   | restaurar workflow, script y targets al snapshot NEXO previo certificado; no tocar otros consumidores                                                                                                     |
+| **Suspensión**                 | target no coincide, patch deja de ser determinista, build falla, aparece ampliación de autoridad, el workflow intenta modificar una forma contractual no aprobada o el snapshot previo deja de ser seguro |
+| **Estado actual**              | ESPECIFICADO; BLOQUEADO PARA EJECUCIÓN por fase documental y por no estar desarrollada/aprobada `SHELL-MIG-003`                                                                                           |
+
+---
+
+#### 9. Lote de scaffold de SHELL
+
+| Campo                          | Decisión materializada                                                                                                                                                                                        |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Lote base**                  | `devVentoGroup/vento-shell / SHELL-MIG-004`                                                                                                                                                                   |
+| **Consumidor**                 | `tools/bootstrap-app-shell.ps1` y la plantilla histórica `templates/app-shell-standard` como fuente de scaffold                                                                                               |
+| **Precondiciones específicas** | contratos, packages y AppShell requeridos aprobados; versiones exactas disponibles; procedencia del scaffold definida; bootstrap legacy conservado como recuperación controlada hasta certificar el sustituto |
+| **Cambios permitidos**         | reemplazar la copia de implementación runtime por un scaffold versionado que instale o genere únicamente dependencias y configuración aprobadas                                                               |
+| **Pruebas**                    | generación reproducible; identidad de versiones; ausencia de fuente runtime duplicada; build de un consumidor de prueba autorizado; comparación de configuración y archivos generados                         |
+| **Observabilidad**             | versión del scaffold, versions de packages resueltas, commit fuente, conjunto de archivos generados y diferencias respecto del baseline                                                                       |
+| **Rollback**                   | restaurar bootstrap y plantilla legacy controlados al snapshot previo certificado sin presentar esa restauración como distribución canónica                                                                   |
+| **Suspensión**                 | el scaffold vuelve a copiar implementación runtime, usa versiones no fijadas, genera archivos fuera del contrato, no reproduce configuración o requiere package sin release/evidencia compatible              |
+| **Estado actual**              | ESPECIFICADO; BLOQUEADO PARA EJECUCIÓN por fase documental y por precondiciones de package/scaffold aún no materializadas                                                                                     |
+
+---
+
+#### 10. Lotes de adopción UI — `SHELL-MIG-005`
+
+La membresía de cada fila es exacta: pertenecen al lote todas y solo las filas de `SHELL-MIG-001` cuyo `Lote base` coincide con la clave indicada.
+
+| Orden de oleada | Lote base                                    | Consumidores                                       | Precondiciones específicas                                                                                                                            | Cambios permitidos                                                                                 | Pruebas y observabilidad                                                                                                    | Rollback                                                | Suspensión específica                                                                       |
+| --------------: | -------------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+|               1 | `devVentoGroup/vento-shell / SHELL-MIG-005`  | todas las filas UI de SHELL asignadas a esta clave | release canónica de `@vento/ui-web`; combinación compatible; snapshot SHELL previo certificado; `layout.tsx` y `globals.css` confirmados como locales | adoptar superficies aprobadas conservando composición y estilos locales propietarios               | perfil `GATE-PROFILE-UI-WEB`; render, navegación, CSS, accesibilidad e hidratación cuando aplique; commit y versión exactos | restaurar archivos locales y pin/configuración previa   | pérdida de layout, navegación, identidad visual, accesibilidad o dependencia no pública     |
+|               2 | `devVentoGroup/vento-numera / SHELL-MIG-005` | todas las filas NUMERA asignadas a esta clave      | release UI elegible; combinación NUMERA compatible; extensiones locales inventariadas; snapshot previo certificado                                    | sustituir copias UI consumidas por APIs públicas aprobadas; conservar extensiones locales          | perfil UI, build, render, navegación, CSS, accesibilidad y regresión visual aplicable                                       | restaurar copias locales consumidas y versiones previas | cualquier diferencia funcional o visual no aprobada                                         |
+|               3 | `devVentoGroup/vento-fogo / SHELL-MIG-005`   | todas las filas FOGO asignadas a esta clave        | release UI elegible; combinación FOGO compatible; candidatos inertes excluidos del cambio; snapshot previo certificado                                | adoptar UI compartida sin retirar candidatos inertes                                               | perfil UI y evidencia por commit FOGO                                                                                       | restaurar snapshot FOGO previo                          | consumidor oculto, paridad incompleta o gate no `PASS`                                      |
+|               4 | `devVentoGroup/vento-origo / SHELL-MIG-005`  | todas las filas ORIGO asignadas a esta clave       | release UI elegible; combinación ORIGO compatible; extensiones empresariales identificadas; snapshot previo certificado                               | adopción UI conservando extensiones empresariales ORIGO locales                                    | perfil UI; navegación, render, CSS, accesibilidad y regresión aplicables                                                    | restaurar snapshot ORIGO previo                         | ruptura de extensión local o del contrato público                                           |
+|               5 | `devVentoGroup/vento-viso / SHELL-MIG-005`   | todas las filas VISO asignadas a esta clave        | release UI elegible; combinación VISO compatible; composición de dominio identificada; snapshot previo certificado                                    | adopción UI preservando componentes y composición de dominio VISO                                  | perfil UI; build, render, rutas, CSS, accesibilidad y evidencia visual aplicable                                            | restaurar snapshot VISO previo                          | regresión visual/funcional, import interno o estilo global no declarado                     |
+|               6 | `devVentoGroup/vento-pulso / SHELL-MIG-005`  | todas las filas PULSO asignadas a esta clave       | release UI elegible; combinación PULSO compatible; variante Supabase y rama de guard excluidas del lote; snapshot previo certificado                  | adopción UI sin mezclar retiro del cliente Supabase alterno ni cambios de autorización             | perfil UI; navegación, hidratación, CSS, accesibilidad y regresión                                                          | restaurar snapshot PULSO previo                         | mezcla de cambios de datos/auth, regresión UI o dependencia en artefacto reservado a retiro |
+|               7 | `devVentoGroup/vento-nexo / SHELL-MIG-005`   | todas las filas NEXO asignadas a esta clave        | release UI elegible; combinación NEXO compatible; extensión local de contexto identificada; lote CI/script no mezclado; snapshot previo certificado   | adopción UI preservando composición empresarial y extensión local de contexto fuera del package UI | perfil UI; build, render, navegación, CSS, accesibilidad, regresión y trazabilidad de extensiones locales                   | restaurar snapshot NEXO previo                          | acoplamiento del package a NEXO, pérdida de extensión local o regresión de navegación       |
+
+Para los siete lotes:
+
+- `SHELL-MIG-006` debe demostrar accesibilidad, tema, movimiento reducido, densidad y responsive aplicables;
+- `SHELL-MIG-007` debe demostrar paridad contractual y operativa atribuible;
+- ningún retiro de copia consumida ocurre dentro de `SHELL-MIG-005` si la paridad y el rollback no están certificados.
+
+---
+
+#### 11. Lotes de retiro inerte — `SHELL-MIG-008`
+
+Estos lotes están deliberadamente separados de la adopción funcional. La ausencia de sustituto solo es válida cuando se confirma **cero consumo**.
+
+| Orden de oleada | Lote base                                    | Identidades candidatas                                                                                                                          | Precondiciones específicas                                                                                                | Pruebas y observabilidad                                                                             | Rollback                                                | Suspensión específica                                                                                |
+| --------------: | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+|               1 | `devVentoGroup/vento-numera / SHELL-MIG-008` | `src/lib/auth/sso.ts`; `src/lib/supabase/employee-sites.ts`; miembros inertes de AppSwitcher ya clasificados                                    | revalidar cero consumo STATIC, DYNAMIC, FRAMEWORK, CI y SCRIPT; paridad UI previa cuando afecte miembros AppSwitcher      | búsquedas reproducibles, typecheck, lint, build, pruebas aplicables y ausencia de import/uso runtime | restaurar blobs y miembros desde snapshot NUMERA previo | aparece cualquier consumidor, falla build o el miembro conserva función observable                   |
+|               2 | `devVentoGroup/vento-fogo / SHELL-MIG-008`   | `src/lib/auth/sso.ts`; `src/lib/supabase/employee-sites.ts`; miembros inertes de AppSwitcher                                                    | mismas precondiciones de cero consumo                                                                                     | mismas clases de evidencia sobre commit FOGO                                                         | restaurar snapshot FOGO previo                          | nuevo consumidor o regresión atribuible                                                              |
+|               3 | `devVentoGroup/vento-origo / SHELL-MIG-008`  | `src/lib/auth/sso.ts`; miembros inertes de AppSwitcher                                                                                          | cero consumo y conservación del `employee-sites` consumido fuera del lote                                                 | búsqueda de consumo, build y pruebas; verificación explícita de que `employee-sites` no se retira    | restaurar snapshot ORIGO previo                         | el cambio toca `employee-sites` consumido o aparece consumidor del SSO                               |
+|               4 | `devVentoGroup/vento-viso / SHELL-MIG-008`   | `src/lib/supabase/proxy.ts`; `src/lib/auth/sso.ts`; miembros inertes de AppSwitcher                                                             | cero consumo en cinco clases y UI migrada cuando el retiro interno dependa de ella                                        | búsqueda, build, typecheck, lint, pruebas y render aplicable                                         | restaurar snapshot VISO previo                          | consumo indirecto, fallo de build o regresión de AppSwitcher                                         |
+|               5 | `devVentoGroup/vento-pulso / SHELL-MIG-008`  | `src/lib/supabase/proxy.ts`; `src/utils/supabase/client.ts`; `GuardOptions.requireAppAccessPermission = false`; miembros inertes de AppSwitcher | cero consumo de archivos y rama `false`; si la rama sigue consumida, no se retira y conserva propietario `SHELL-AUTH-005` | búsqueda de consumo, pruebas de guard, build, typecheck, lint y comportamiento de AppSwitcher        | restaurar archivos, rama y miembros previos             | cualquier consumo real, cambio de autoridad, dependencia de la variante Supabase o falta de rollback |
+|               6 | `devVentoGroup/vento-nexo / SHELL-MIG-008`   | `src/lib/supabase/proxy.ts`; `src/components/vento/standard/page-header.tsx`; miembros inertes de AppSwitcher                                   | cero consumo en cinco clases; cierre previo de la migración/paridad UI aplicable                                          | búsquedas, build, typecheck, lint, pruebas, render y navegación aplicables                           | restaurar snapshot NEXO previo                          | aparece consumidor, la cabecera sigue siendo necesaria o se cruza con el patch CI/script pendiente   |
+
+**Candidatos físicos conciliados:** 11 archivos.
+**Archivos consumidos autorizados para retiro por simple pertenencia a este lote:** 0.
+
+Un candidato que deje de cumplir cero consumo sale del conjunto ejecutable de retiro y vuelve a estado bloqueado; no se elimina para preservar el conteo.
+
+---
+
+#### 12. Lotes de autorización, contexto y acceso compartido — `SHELL-AUTH-005`
+
+Estos siete lotes quedan definidos por `SHELL-MIG-002`, pero su materialización permanece reservada a `SHELL-AUTH-005` cuando alcance su turno canónico.
+
+La membresía es exacta: pertenecen a cada lote todas y solo las filas de `SHELL-MIG-001` cuyo `Lote base` coincide con la clave indicada, incluidos los once consumidores directos de autorización.
+
+| Orden de oleada | Lote base                                     | Consumidores                                                                             | Precondiciones específicas                                                                                                                                       | Cambio permitido                                                                                                     | Pruebas y observabilidad                                                                                                 | Rollback                                                       | Suspensión específica                                                                                                        |
+| --------------: | --------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+|               1 | `devVentoGroup/vento-shell / SHELL-AUTH-005`  | todas las filas SHELL de esta clave, incluido 1 consumidor directo del launcher          | `SHELL-AUTH-005` habilitada por continuidad; releases exactas elegibles; compatibilidad SHELL; snapshot previo certificado                                       | migrar factories Supabase y consumidor directo del launcher a contratos/SDK aprobados, preservando fronteras locales | perfiles `OS-CONTEXT`, `SUPABASE` y `CONTRACTS`; sesión, cookies, decisiones, razones y errores                          | restaurar helpers/factories/evaluadores locales y pins previos | ampliación de autoridad, error de sesión/cookies, incompatibilidad de schema o snapshot inseguro                             |
+|               2 | `devVentoGroup/vento-numera / SHELL-AUTH-005` | todas las filas NUMERA de esta clave; 0 consumidores directos adicionales                | releases elegibles; compatibilidad NUMERA; middleware local preservado; snapshot previo certificado                                                              | migrar legacy consumido de autorización/contexto/datos; conservar middleware local                                   | perfiles aplicables, decisiones permitidas/denegadas, SSR, Supabase, build y evidencia                                   | snapshot NUMERA previo completo                                | diferencia de decisión, redirect, contexto o acceso a datos                                                                  |
+|               3 | `devVentoGroup/vento-fogo / SHELL-AUTH-005`   | todas las filas FOGO de esta clave; 0 consumidores directos adicionales                  | releases elegibles; compatibilidad FOGO; retiros inertes previos no reintroducidos; snapshot previo certificado                                                  | migrar legacy consumido sin restaurar archivos retirados por cero consumo                                            | perfiles aplicables y paridad de autorización/datos                                                                      | snapshot FOGO previo                                           | fallback que amplíe autoridad o dependencia en legacy retirado                                                               |
+|               4 | `devVentoGroup/vento-origo / SHELL-AUTH-005`  | todas las filas ORIGO de esta clave, incluidos 4 consumidores directos                   | releases elegibles; compatibilidad ORIGO; cuatro consumidores directos identificados; extensión empresarial local preservada; snapshot previo certificado        | migrar legacy y los cuatro consumidores directos; mantener extensión empresarial local                               | perfiles aplicables, cuatro consumidores directos, sesión/contexto/Supabase                                              | snapshot ORIGO previo                                          | cualquier consumidor directo queda fuera, decisión diverge o extensión local se pierde                                       |
+|               5 | `devVentoGroup/vento-viso / SHELL-AUTH-005`   | todas las filas VISO de esta clave, incluidos 4 consumidores directos en rutas framework | releases elegibles; compatibilidad VISO; cuatro rutas/consumidores directos revalidados; snapshot previo certificado                                             | migrar legacy y cuatro consumidores directos de autorización, incluidas rutas framework                              | perfiles aplicables; rutas server protegidas; misma decisión y razones por actor/contexto                                | snapshot VISO previo                                           | ruta pierde autorización de servidor, aparece bypass o consumidor directo no migrado                                         |
+|               6 | `devVentoGroup/vento-pulso / SHELL-AUTH-005`  | todas las filas PULSO de esta clave, incluidos 2 consumidores directos                   | releases elegibles; compatibilidad PULSO; excepciones de guard y cliente alterno clasificadas; snapshot previo certificado                                       | migrar legacy consumido y dos consumidores directos; resolver solo excepciones autorizadas por su propietario        | perfiles aplicables; guard, contexto, datos, dos consumidores directos y ausencia de cliente alterno no autorizado       | snapshot PULSO previo                                          | rama de guard amplía acceso, reaparece cliente alterno o se requiere cambio Supabase no materializado                        |
+|               7 | `devVentoGroup/vento-nexo / SHELL-AUTH-005`   | todas las filas NEXO de esta clave; 0 consumidores directos adicionales                  | releases elegibles; compatibilidad NEXO; `operational-context` preservado como extensión local; lote CI/script cerrado o compatible; snapshot previo certificado | migrar legacy consumido preservando `operational-context` como extensión local explícita                             | perfiles aplicables; sesión/contexto, autorización, Supabase y compatibilidad con extensión local; CI/script conciliados | snapshot NEXO previo                                           | la extensión local queda absorbida indebidamente, el patch CI/script vuelve a depender de legacy o cambia autoridad efectiva |
+
+Reglas adicionales:
+
+- `middleware.ts` permanece local cuando así lo clasificó `SHELL-MIG-001`;
+- `operational-context` de NEXO permanece local y consume la fundación en vez de convertirse automáticamente en API compartida;
+- una actualización de `@vento/supabase` no autoriza cambios de schema, datos, RLS, RPC, Realtime, Storage, Edge Functions, secretos o configuración;
+- cualquier cambio Supabase físico se materializa únicamente desde `vento-shell` mediante su tarea propietaria.
+
+---
+
+#### 13. Separación entre legacy consumido e inerte
+
+La división es vinculante:
+
+| Clase                                           | Tratamiento                                                                                                    |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `legacy consumido`                              | permanece hasta que su lote de migración tenga sustituto aprobado, compatibilidad, paridad, pruebas y rollback |
+| `KEEP LOCAL`                                    | permanece en el repositorio y se adapta a la fundación compartida sin perder propiedad local                   |
+| `GENERAR`                                       | se sustituye únicamente por artefacto determinista aprobado; no por copia manual                               |
+| `sin consumidor confirmado`                     | puede entrar en `SHELL-MIG-008` únicamente después de revalidar cero consumo                                   |
+| miembro interno inerte                          | puede retirarse solo si cero lecturas/consumidores y comportamiento equivalente están demostrados              |
+| navegación SHELL propietaria de `SHELL-APP-021` | queda fuera de `SHELL-MIG-002`; conserva su propietario exacto                                                 |
+
+No se permite convertir un `MIGRATE` en `RETIRE` para simplificar un lote.
+
+---
+
+#### 14. Pruebas obligatorias por clase de lote
+
+Todos los lotes usan los gates de `SHELL-PKG-008` que correspondan. La siguiente tabla especializa la evidencia sin crear un sistema paralelo:
+
+| Clase de lote            | Pruebas mínimas                                                                                                                                                                       |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| compatibilidad CI/script | identidad del target, ejecución reproducible, no creación de nuevo legacy, build y validación de archivos objetivo                                                                    |
+| scaffold                 | procedencia, versiones exactas, generación reproducible, ausencia de fuente runtime copiada, build del resultado autorizado                                                           |
+| UI                       | package tests, lint/análisis estático, typecheck, build, pruebas automatizadas, compatibilidad, render, hidratación, navegación, CSS, accesibilidad y regresión visual cuando aplique |
+| autorización/contexto    | package tests, lint, typecheck, build, integración, casos allow/deny, SSR/cookies/redirects, razones estructuradas y denegación cerrada                                               |
+| Supabase SDK             | factories, tipos, wrappers, parámetros/resultados/errores, compatibilidad con schema/tipos y ausencia de bypass de RLS o privilegio                                                   |
+| retiro                   | búsqueda STATIC/DYNAMIC/FRAMEWORK/CI/SCRIPT, typecheck, lint, build, pruebas aplicables y comprobación de cero comportamiento perdido                                                 |
+
+Un resultado omitido, cancelado, vencido, intermitente, ligado a otro commit o no ejecutado no cierra el lote.
+
+---
+
+#### 15. Observabilidad obligatoria
+
+La observabilidad de cada lote registra, como mínimo:
+
+- repositorio y commit base;
+- commit de propuesta o cambio;
+- package y versión exacta cuando aplique;
+- hash/identidad del manifest y lockfile;
+- conjunto de packages resuelto;
+- resultado individual de gates;
+- evidencia de compatibilidad;
+- eventos o errores de build/runtime relevantes al lote;
+- resultado de smoke o prueba operativa aplicable;
+- estado de rollback;
+- inicio y final de la ventana de observación definida por el paquete de implementación propietario;
+- causa y propietario de cualquier suspensión.
+
+Por clase:
+
+- UI observa render, navegación, hidratación, CSS, foco/accesibilidad y errores del cliente/servidor aplicables;
+- autorización/contexto observa decisiones, razones, redirects, sesión y denegaciones sin registrar secretos ni datos sensibles;
+- Supabase observa errores normalizados, contratos de cliente/RPC y compatibilidad de schema, sin convertir telemetría en autorización;
+- retiro observa ausencia sostenida de referencias y fallos atribuibles a la eliminación;
+- CI/script observa ejecución, targets y resultado completo del patch;
+- scaffold observa procedencia, versiones y diff del resultado generado.
+
+No se inventan umbrales numéricos globales. Los umbrales operativos pertenecen al paquete E5 o al proceso de despliegue propietario.
+
+---
+
+#### 16. Rollback de los lotes
+
+Todo lote adopta el snapshot de aplicación definido por `SHELL-PKG-006`:
+
+```text
+commit consumidor
++ manifest
++ lockfile
++ versiones exactas de packages
++ configuración compatible identificada
++ artefacto desplegado
++ evidencia de compatibilidad
+```
+
+Reglas:
+
+1. El snapshot previo debe existir y estar certificado antes del cutover.
+2. El rollback restaura código, manifest y lockfile coherentes.
+3. Los packages publicados no se mutan ni se sobrescriben.
+4. Si varias familias `@vento/*` forman un conjunto cerrado de dependencias, retroceden juntas dentro del mismo consumidor.
+5. Otro consumidor no se despliega ni retrocede por inferencia.
+6. Datos y migraciones usan un plan propietario separado.
+7. Si el schema, servicio o contrato vigente ya no acepta el snapshot previo, el rollback queda bloqueado y se exige corrección hacia adelante o transición coordinada.
+8. Una versión previa con vulnerabilidad o bypass conocido no es objetivo válido.
+9. Después de restaurar se repiten las validaciones aplicables antes de declarar el rollback cerrado.
+10. Un fallo previo al despliegue se aborta o revierte; no se registra como rollback productivo.
+
+---
+
+#### 17. Criterios de suspensión y detención de expansión
+
+Cualquier lote se suspende cuando ocurra al menos una de estas condiciones:
+
+- un gate universal no está en `PASS`;
+- evidencia `STALE`, incompleta, contradictoria o intermitente;
+- cambia el commit base, manifest, lockfile, package, versión o matriz después de probar;
+- aparece un consumidor no inventariado;
+- se detecta import interno, copia manual o dependencia legacy nueva;
+- una decisión de autorización se amplía o diverge;
+- la denegación cerrada deja de cumplirse;
+- una ruta, sesión, cookie, redirect, contrato, RPC, UI o comportamiento de dominio pierde paridad;
+- un cambio requiere schema, datos o configuración Supabase no materializados desde `vento-shell`;
+- el snapshot previo no es reproducible o seguro;
+- el rollback falla;
+- el lote mezcla cambios ajenos que impiden atribuir riesgo y evidencia;
+- se descubre necesidad de despliegue simultáneo de dos consumidores no cubierta por compatibilidad aprobada;
+- el consumidor anterior de la oleada sigue bajo observación o incidente.
+
+Al suspender:
+
+1. no avanza el siguiente repositorio de la misma oleada;
+2. los consumidores no afectados permanecen en su snapshot actual;
+3. se conserva toda evidencia fallida;
+4. se ejecuta rollback solo si el snapshot previo sigue siendo seguro;
+5. si el rollback no es viable, el lote queda bloqueado para corrección hacia adelante bajo su propietario exacto.
+
+---
+
+#### 18. Estado de preparación de los 22 lotes
+
+| Condición                                                            | Estado actual                                       | Propietario de salida                                       |
+| -------------------------------------------------------------------- | --------------------------------------------------- | ----------------------------------------------------------- |
+| fase física autorizada                                               | no                                                  | continuidad canónica posterior; tarea propietaria aplicable |
+| releases estables compartidas adoptables                             | no confirmadas                                      | `SHELL-CI-001..003` y propietarios de packages              |
+| matriz ejecutada de compatibilidad                                   | 28 relaciones pendientes de evidencia               | `SHELL-CI-002`; `SHELL-CI-005`                              |
+| gates ejecutables de actualización                                   | política definida; implementación posterior         | `SHELL-CI-001..006`                                         |
+| scripts reproducibles `typecheck` y `test` declarados por consumidor | no declarados en los siete manifests inspeccionados | `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019`              |
+| snapshot previo de package compartido certificado                    | no existe adopción estable previa                   | `SHELL-CI-014`; `SHELL-CI-015`                              |
+| bloqueo de nuevos consumidores legacy                                | reservado                                           | `SHELL-MIG-003`                                             |
+| retiro de candidatos inertes                                         | no ejecutado                                        | `SHELL-MIG-008`                                             |
+| adopción auth/context/data                                           | no ejecutada                                        | `SHELL-AUTH-005`                                            |
+
+Todos los bloqueos tienen propietario y condición de salida. Ninguno modifica la definición documental de los lotes.
+
+---
+
+#### 19. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** `SHELL-MIG-002` no introduce una obligación verificable nueva. Materializa, por repositorio y lote, obligaciones vigentes ya registradas para retiro seguro, comandos reproducibles, compatibilidad por consumidor, rollback independiente, evidencia atribuible, deprecación y retiro. No altera su contenido, alcance, responsable, estado, relación ni evidencia.
+
+| Operación sobre el registro de pruebas | Cantidad |
+| -------------------------------------- | -------: |
+| creados                                |    **0** |
+| modificados                            |    **0** |
+| diferidos                              |    **0** |
+| descartados                            |    **0** |
+| obsoletos                              |    **0** |
+
+No se modifica ningún fragmento del registro canónico de requisitos de prueba.
+
+---
+
+#### 20. Evidencia de validación
+
+| Clase       | Estado           | Evidencia de esta tarea                                                                                                                                                         |
+| ----------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BUILD`     | `NOT_EXECUTED`   | no se ejecutó build del repositorio ni de consumidores; la tarea es documental y no existe checkout integrado autorizado en esta entrega                                        |
+| `LOCAL`     | `PASS`           | artefacto de tarea comprobado estructuralmente contra metadata, secciones obligatorias, continuidad, cardinalidad de 22 lotes y ausencia de instrucciones operativas de entrega |
+| `REMOTA`    | `PASS`           | continuidad, propietario, dependencias, 04A, políticas, manifests y commits `main` de los siete repositorios fueron inspeccionados en GitHub                                    |
+| `OPERATIVA` | `NOT_APPLICABLE` | no se ejecuta migración, despliegue, smoke productivo ni rollback durante la fase documental                                                                                    |
+| `FÍSICA`    | `NOT_APPLICABLE` | la tarea es exclusivamente documental y no requiere validación de hardware, dispositivo ni intervención física                                                                  |
+
+---
+
+#### 21. Criterios de aceptación
+
+`SHELL-MIG-002` queda materialmente completa cuando se cumple todo lo siguiente:
+
+- conserva las 142 filas de `SHELL-MIG-001` y sus `Lote base`;
+- materializa exactamente 22 claves de lote distintas dentro del alcance compartido;
+- define un solo repositorio por lote;
+- define orden de repositorios para toda tarea multi-consumidor;
+- conserva `SHELL-MIG-003`, `004`, `005`, `008` y `SHELL-AUTH-005` como propietarios ya asignados;
+- no adelanta el desarrollo de esos propietarios;
+- separa los 11 archivos sin consumidor confirmado del legacy consumido;
+- conserva fuera del catálogo MIG las dos entradas de navegación propietarias de `SHELL-APP-021`;
+- declara precondiciones, cambios, consumidores, pruebas, observabilidad, rollback y suspensión para cada lote;
+- exige manifest y lockfile coherentes;
+- exige compatibilidad por combinación exacta;
+- exige gates fail-closed;
+- exige snapshot previo certificado;
+- impide despliegue simultáneo obligatorio de consumidores;
+- detiene expansión cuando un lote falla o sigue en observación;
+- impide retirar un artefacto consumido por tratarlo como inerte;
+- preserva extensiones locales válidas;
+- separa `@vento/supabase` del estado físico de Supabase;
+- identifica los bloqueos actuales y su tarea de salida;
+- declara cero cambios `TREQ-*`;
+- no ejecuta código, migraciones, despliegues, retiros, publicación de packages ni cambios Supabase.
+
+---
+
+#### 22. Límites y fuera de alcance
+
+`SHELL-MIG-002` no:
+
+- implementa adapters ni gates de nuevo legacy;
+- sustituye físicamente la plantilla;
+- modifica componentes, imports, manifests o lockfiles;
+- publica packages, tags o releases;
+- abre pull requests de consumidor;
+- ejecuta pruebas de compatibilidad;
+- ejecuta despliegues;
+- retira archivos o miembros;
+- modifica código de autorización, contexto o Supabase;
+- crea migraciones o modifica datos;
+- configura CI, secretos o protección de ramas;
+- desarrolla `SHELL-MIG-003` ni ninguna tarea posterior;
+- modifica `active-sequence.json`;
+- modifica el registro `04A`.
+
+Los umbrales operativos, ambientes concretos de despliegue y ventanas temporales pertenecen a los paquetes E5 y tareas de implementación propietarias; no se inventan en esta definición.
+
+---
+
+#### 23. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-MIG-001 — Consolidar inventario ejecutable de consumidores`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-MIG-002 — Definir lotes reversibles por repositorio`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy`
+
 
 ### [ ] SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy
 

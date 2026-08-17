@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **938** |
+| Tareas aprobadas | **939** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **656** |
+| Tareas no iniciadas | **655** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **58.85% (938/1594)** |
+| Porcentaje de completamiento | **58.91% (939/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-MIG-001 — Consolidar inventario ejecutable de consumidores** |
-| Tarea actual | **SHELL-MIG-002 — Definir lotes reversibles por repositorio** |
+| Última tarea aprobada | **SHELL-MIG-002 — Definir lotes reversibles por repositorio** |
+| Tarea actual | **SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy** |
+| Siguiente tarea | **SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 88 de 109 aprobadas; SHELL-MIG-002 pendiente** |
+| Progreso del bloque | **BLOQUE H: 89 de 109 aprobadas; SHELL-MIG-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-MIG-001` — Consolidar inventario ejecutable de consumidores |
-| Tarea actual | `SHELL-MIG-002` — Definir lotes reversibles por repositorio — **NO INICIADA** |
-| Siguiente tarea | `SHELL-MIG-003` — Preparar compatibilidad y bloqueo de nuevos consumidores legacy |
+| Última aprobada | `SHELL-MIG-002` — Definir lotes reversibles por repositorio |
+| Tarea actual | `SHELL-MIG-003` — Preparar compatibilidad y bloqueo de nuevos consumidores legacy — **NO INICIADA** |
+| Siguiente tarea | `SHELL-MIG-004` — Sustituir la plantilla histórica por scaffold versionado |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 88 DE 109 APROBADAS — ACTUAL SHELL-MIG-002** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 89 DE 109 APROBADAS — ACTUAL SHELL-MIG-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-MIG-001 — Consolidar inventario ejecutable de consumidores
-        ↓
-TAREA ACTUAL
 SHELL-MIG-002 — Definir lotes reversibles por repositorio
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 88 de 109 tareas aprobadas
+BLOQUE H — 89 de 109 tareas aprobadas
 ```
