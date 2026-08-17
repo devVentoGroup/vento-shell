@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **942** |
+| Aprobadas | **943** |
 | En propuesta | **0** |
-| No iniciadas | **652** |
+| No iniciadas | **651** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **59.10% (942/1594)** |
+| Porcentaje de completamiento | **59.16% (943/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-MIG-005` — Migrar componentes, Chrome y estilos por aplicación | ✅ APROBADA |
-| Tarea actual | `SHELL-MIG-006` — Verificar accesibilidad, tema y movimiento reducido | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-MIG-007` — Ejecutar pruebas de paridad de consumidores | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-MIG-006` — Verificar accesibilidad, tema y movimiento reducido | ✅ APROBADA |
+| Tarea actual | `SHELL-MIG-007` — Definir contrato de paridad ejecutable por paquete | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-MIG-008` — Definir gate de retiro legacy y certificación por paquete | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -769,9 +769,9 @@
 | ✅ APROBADA | `SHELL-MIG-003` | Preparar compatibilidad y bloqueo de nuevos consumidores legacy | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ✅ APROBADA | `SHELL-MIG-004` | Sustituir la plantilla histórica por scaffold versionado | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ✅ APROBADA | `SHELL-MIG-005` | Migrar componentes, Chrome y estilos por aplicación | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
-| ⬜ NO INICIADA | `SHELL-MIG-006` | Verificar accesibilidad, tema y movimiento reducido | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
-| ⬜ NO INICIADA | `SHELL-MIG-007` | Ejecutar pruebas de paridad de consumidores | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
-| ⬜ NO INICIADA | `SHELL-MIG-008` | Retirar copias legacy y certificar adopción | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
+| ✅ APROBADA | `SHELL-MIG-006` | Verificar accesibilidad, tema y movimiento reducido | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
+| ⬜ NO INICIADA | `SHELL-MIG-007` | Definir contrato de paridad ejecutable por paquete | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
+| ⬜ NO INICIADA | `SHELL-MIG-008` | Definir gate de retiro legacy y certificación por paquete | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ⬜ NO INICIADA | `SHELL-NATIVE-001` | Crear tokens compatibles con ANIMA | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-NATIVE-002` | Compartir contratos y validadores | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-NATIVE-003` | Mantener UI React Native separada | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |

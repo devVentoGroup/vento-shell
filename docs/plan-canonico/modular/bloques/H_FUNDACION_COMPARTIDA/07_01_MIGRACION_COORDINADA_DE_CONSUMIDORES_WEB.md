@@ -3251,13 +3251,351 @@ Esta tarea no:
 `SHELL-MIG-006 — Verificar accesibilidad, tema y movimiento reducido`
 
 
-### [ ] SHELL-MIG-006 — Verificar accesibilidad, tema y movimiento reducido
+### ✅ SHELL-MIG-006 — Verificar accesibilidad, tema y movimiento reducido
 
-**Propósito:** demostrar que la migración conserva tokens, contraste, foco, teclado, motion-reduction, densidad y comportamiento responsive aplicables.
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-MIG-005 — Migrar componentes, Chrome y estilos por aplicación
+**Tarea siguiente:** SHELL-MIG-007 — Definir contrato de paridad ejecutable por paquete
+**Tipo de tarea:** documental — matriz aprobada de accesibilidad y paridad visual por aplicación; gate fail-closed sin ejecución física
+**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** devVentoGroup/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** 0
+**Requisitos de prueba creados o modificados:** 0
 
-**Dependencias:** `SHELL-MIG-005`; `SHELL-PKG-006`; `SHELL-PKG-008`.
+---
 
-**Puerta de cierre:** matriz de accesibilidad y paridad visual aprobada por aplicación, sin depender de CSS legacy no declarado.
+#### 1. Propósito
+
+Establecer y aprobar la matriz documental que deberá demostrar, por cada aplicación incluida en la migración coordinada de interfaz web, que la adopción de las superficies compartidas conserva los contratos visuales y de accesibilidad aplicables en tokens y tema, contraste, foco, teclado, reducción de movimiento, densidad y comportamiento responsive.
+
+La tarea no declara que exista una migración física validada. La adopción de `@vento/ui-web` todavía no está materializada en los consumidores y la fase vigente continúa siendo exclusivamente documental. Por tanto, esta tarea cierra mediante una matriz completa, trazable y fail-closed que fija exactamente qué deberá probarse y qué condición convierte cada aplicación en apta para la verificación posterior.
+
+---
+
+#### 2. Resultado canónico
+
+Queda aprobada una única matriz de accesibilidad y paridad visual para los siete lotes heredados de `SHELL-MIG-005`.
+
+El resultado material de esta tarea es:
+
+1. **7/7 aplicaciones** con una decisión explícita de gate de accesibilidad y paridad visual.
+2. **57/57 ocurrencias UI heredadas** reconciliadas contra la migración precedente, sin identidades faltantes ni duplicadas.
+3. **20/57 ocurrencias `KEEP LOCAL`** preservadas como fronteras propietarias del consumidor.
+4. **37/57 ocurrencias `MIGRATE`** obligadas a converger únicamente a superficies públicas aprobadas de la UI compartida.
+5. **7/7 gates de aplicación en `BLOQUEADO` para evidencia física**, porque todavía no existe adopción material de `@vento/ui-web` que permita ejecutar una comparación válida post-migración.
+6. **0 gates declarados `PASS` por inferencia documental**.
+7. **0 dependencias CSS legacy no declaradas permitidas** en una futura evidencia válida.
+8. **0 cambios físicos** sobre repositorios consumidores, paquetes, CSS, configuración, navegación, código o Supabase.
+
+La aprobación de esta tarea aprueba la **matriz y sus reglas de decisión**; no certifica todavía accesibilidad ni paridad visual de una migración inexistente.
+
+---
+
+#### 3. Baseline heredada y corte verificable
+
+La unidad de reconciliación continúa siendo la ocurrencia UI definida por repositorio, familia y archivo en la migración precedente.
+
+|     Orden | Aplicación / repositorio              | Commit base verificable                    | Ocurrencias UI | `KEEP LOCAL` | `MIGRATE` | Estado de adopción compartida al corte |
+| --------: | ------------------------------------- | ------------------------------------------ | -------------: | -----------: | --------: | -------------------------------------- |
+|         1 | SHELL — `devVentoGroup/vento-shell`   | `c84cdace5dd4ec1014bb7f8f3324f26056718014` |              2 |            2 |         0 | No materializada                       |
+|         2 | NUMERA — `devVentoGroup/vento-numera` | `1b48a5da425d92e19ed89cf175b1dccc4cd960e1` |              9 |            3 |         6 | No materializada                       |
+|         3 | FOGO — `devVentoGroup/vento-fogo`     | `b6b9ed00e5267cabaac1a5a1090d93d5f60e86f2` |              9 |            3 |         6 | No materializada                       |
+|         4 | ORIGO — `devVentoGroup/vento-origo`   | `b7a8303fa078ef087f522b6c99059ababfc27472` |              9 |            3 |         6 | No materializada                       |
+|         5 | VISO — `devVentoGroup/vento-viso`     | `47322403f3c64e83ae0c4a2f68c05d47093e5bb4` |             10 |            3 |         7 | No materializada                       |
+|         6 | PULSO — `devVentoGroup/vento-pulso`   | `71e0184486b5fe11e0a42435baf4024807a80efd` |              9 |            3 |         6 | No materializada                       |
+|         7 | NEXO — `devVentoGroup/vento-nexo`     | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799` |              9 |            3 |         6 | No materializada                       |
+| **Total** | **7 aplicaciones**                    | —                                          |         **57** |       **20** |    **37** | **0 adopciones físicas certificadas**  |
+
+La evidencia futura solo será atribuible si identifica el commit consumidor realmente probado. Si cualquiera de estos commits deja de ser el corte de ejecución, la matriz deberá registrar el nuevo commit exacto; la evidencia del commit anterior no podrá trasladarse por equivalencia supuesta.
+
+---
+
+#### 4. Reconciliación exacta de las 57 identidades UI
+
+Convenciones de la matriz:
+
+- `K`: `KEEP LOCAL` — la identidad permanece como responsabilidad local explícita y deberá probar que su composición o estilo propietario sigue siendo compatible con las superficies compartidas que consuma.
+- `M`: `MIGRATE` — la identidad deberá sustituir su copia local consumida por una superficie pública aprobada de la UI compartida.
+- `—`: la familia no forma parte del lote UI de esa aplicación.
+
+| Familia / archivo canónico de inventario                     | SHELL | NUMERA | FOGO  | ORIGO | VISO   | PULSO | NEXO  |  Total |
+| ------------------------------------------------------------ | ----- | ------ | ----- | ----- | ------ | ----- | ----- | -----: |
+| `FAM-001` · `src/app/layout.tsx`                             | K     | K      | K     | K     | K      | K     | K     |      7 |
+| `FAM-002` · `src/app/globals.css`                            | K     | K      | K     | K     | K      | K     | K     |      7 |
+| `FAM-003` · `src/components/vento/standard/vento-shell.tsx`  | —     | K      | K     | K     | K      | K     | K     |      6 |
+| `FAM-004` · `src/components/vento/standard/vento-chrome.tsx` | —     | M      | M     | M     | M      | M     | M     |      6 |
+| `FAM-005` · `src/components/vento/standard/ui.tsx`           | —     | M      | M     | M     | M      | M     | M     |      6 |
+| `FAM-006` · `src/components/vento/standard/table.tsx`        | —     | M      | M     | M     | M      | M     | M     |      6 |
+| `FAM-007` · `src/components/vento/standard/app-switcher.tsx` | —     | M      | M     | M     | M      | M     | M     |      6 |
+| `FAM-008` · `src/components/vento/standard/profile-menu.tsx` | —     | M      | M     | M     | M      | M     | M     |      6 |
+| `FAM-019` · `src/components/vento/standard/page-header.tsx`  | —     | —      | —     | —     | M      | —     | —     |      1 |
+| `FAM-020` · `src/components/vento/standard/vento-logo.tsx`   | —     | M      | M     | M     | M      | M     | M     |      6 |
+| **Total por aplicación**                                     | **2** | **9**  | **9** | **9** | **10** | **9** | **9** | **57** |
+
+Conciliación obligatoria: `20 K + 37 M = 57`. Ninguna identidad de autorización, contexto, Supabase, middleware, script, CI, retiro o lógica empresarial se incorpora a este gate UI por proximidad física o por compartir archivo consumidor.
+
+---
+
+#### 5. Dimensiones obligatorias de accesibilidad y paridad visual
+
+Toda aplicación deberá producir evidencia independiente para las siguientes dimensiones. Una dimensión no ejecutada, incompleta, no atribuible o apoyada en una dependencia no declarada impide el `PASS` global.
+
+| Dimensión                               | Contrato que debe conservarse                                                                                                                                                                   | Evidencia mínima admisible                                                                                                       | Condición de bloqueo                                                                                                              |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Tokens y tema                           | La superficie renderizada utiliza tokens públicos aprobados y extensiones locales explícitas; el tema no depende de valores legacy ocultos ni de orden accidental de CSS.                       | Inventario de tokens efectivos, origen de cada override material y comparación de estilos computados en estados representativos. | Token sin origen, override no inventariado, divergencia visual material no aprobada o dependencia de CSS legacy no declarada.     |
+| Contraste                               | Texto, iconografía significativa, controles, foco, estados y superficies conservan el contraste exigido por el contrato de accesibilidad aplicable.                                             | Medición reproducible sobre combinaciones relevantes y estado de aprobación por caso; no basta inspección visual.                | Caso obligatorio sin medición, resultado inferior al criterio aplicable o color usado como única señal.                           |
+| Foco                                    | El foco es perceptible, coherente y no queda oculto por overlays, shells, menús, scroll o estados responsive.                                                                                   | Recorrido reproducible de foco, captura o registro del elemento enfocado y verificación de foco visible en estados interactivos. | Foco invisible, perdido, atrapado, desplazado a elemento irrelevante o dependiente de estilo legacy no declarado.                 |
+| Teclado                                 | La tarea y navegación aplicables pueden recorrerse y operarse por teclado sin crear atajos que fabriquen autoridad ni omitan controles necesarios.                                              | Secuencia de tabulación, activación, cierre, retorno de foco y ausencia de trampas en componentes afectados.                     | Trap de teclado, orden incoherente, control inaccesible, retorno de foco roto o acción solo disponible por puntero.               |
+| Movimiento reducido                     | La preferencia de reducción de movimiento se respeta en transiciones, animaciones, desplazamientos y feedback; ningún movimiento decorativo es requisito para comprender o completar una tarea. | Ejecución explícita con preferencia de movimiento reducido y comparación de estados antes/después.                               | Animación no reducida cuando debe reducirse, pérdida de información al reducirla o interacción dependiente de movimiento.         |
+| Densidad                                | La densidad aplicable conserva legibilidad, jerarquía, objetivos interactivos, datos necesarios y separación entre operación ordinaria y controles secundarios.                                 | Comparación por variantes de densidad realmente soportadas, con overflow, truncamiento y targets interactivos registrados.       | Contenido esencial truncado, objetivos impracticables, solapamiento, pérdida de jerarquía o aparición de controles irrelevantes.  |
+| Responsive                              | La composición conserva navegación, contenido, acciones, modales, tablas y estados aplicables en los tamaños declarados por el consumidor y por el contrato compartido.                         | Matriz reproducible de viewports soportados por la superficie, con comportamiento observado y diferencias justificadas.          | Overflow destructivo, acción inaccesible, navegación perdida, contenido oculto sin alternativa o viewport obligatorio no probado. |
+| Hidratación y frontera cliente/servidor | La adopción compartida no introduce divergencias visuales, pérdida de estado ni reordenamiento que invalide foco o navegación durante hidratación.                                              | Build aplicable, observación de hidratación y ausencia de errores atribuibles a la superficie migrada.                           | Error de hidratación, contenido interactivo inconsistente o dependencia no pública entre servidor y cliente.                      |
+
+---
+
+#### 6. Matriz aprobada por aplicación
+
+`ESPECIFICADO/BLOQUEADO` significa que el criterio documental queda aprobado, pero todavía no existe evidencia física post-migración suficiente para certificarlo.
+
+| Aplicación | Tokens / tema          | Contraste              | Foco / teclado         | Movimiento reducido    | Densidad               | Responsive             | CSS declarada          | Gate de aplicación |
+| ---------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------------- | ------------------ |
+| SHELL      | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | **BLOQUEADO**      |
+| NUMERA     | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | **BLOQUEADO**      |
+| FOGO       | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | **BLOQUEADO**      |
+| ORIGO      | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | **BLOQUEADO**      |
+| VISO       | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | **BLOQUEADO**      |
+| PULSO      | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | **BLOQUEADO**      |
+| NEXO       | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | ESPECIFICADO/BLOQUEADO | **BLOQUEADO**      |
+
+No existe excepción por similitud entre repositorios. Una aplicación solo podrá cambiar su gate a `PASS` con evidencia propia atribuible a su commit, sus extensiones locales, sus viewports aplicables y la versión exacta del paquete compartido consumido.
+
+---
+
+#### 7. Regla canónica para CSS y extensiones visuales locales
+
+Toda regla CSS, token, clase global, theme override, stylesheet, utility, variable o adaptación visual que afecte una superficie incluida en el gate deberá quedar clasificada en una de estas dos categorías antes de producir evidencia válida:
+
+1. **`SHARED_PUBLIC`**: superficie o estilo público del paquete compartido, consumido mediante una API o mecanismo documentado y versionado.
+2. **`LOCAL_OWNER_EXTENSION`**: extensión que permanece en el repositorio consumidor porque expresa composición, branding, layout, contexto o comportamiento visual legítimamente propietario de esa aplicación.
+
+Una extensión `LOCAL_OWNER_EXTENSION` deberá declarar como mínimo:
+
+- repositorio propietario;
+- archivo que la contiene;
+- superficie afectada;
+- propósito;
+- dependencia pública compartida sobre la que se apoya, cuando exista;
+- tokens o variables que sobrescribe;
+- alcance responsive o de densidad;
+- impacto sobre foco, teclado o movimiento cuando aplique;
+- mecanismo de rollback.
+
+Quedan expresamente bloqueados:
+
+- CSS sin propietario o sin archivo identificado;
+- selectores legacy conservados solo porque “la pantalla se ve igual”;
+- dependencia en orden accidental de imports;
+- duplicación local de tokens o estilos públicos sin clasificación;
+- override global que altere otra aplicación o superficie sin contrato;
+- reglas que oculten problemas de foco, contraste, overflow o hidratación;
+- estilos no declarados utilizados para justificar un resultado de paridad.
+
+La ausencia de una regla en esta clasificación no demuestra que sea inocua: si participa en el render evaluado y no puede atribuirse, el gate queda `BLOQUEADO`.
+
+---
+
+#### 8. Contrato de evidencia por aplicación
+
+Cada ejecución futura del gate deberá quedar unida como una unidad indivisible a:
+
+- aplicación y repositorio;
+- commit exacto del consumidor;
+- versión exacta de `@vento/ui-web` y de cualquier dependencia compartida relevante;
+- lockfile efectivo;
+- inventario de las identidades UI del lote;
+- inventario de CSS y extensiones locales que intervienen en el render;
+- configuración de tema y densidad aplicable;
+- navegador o runtime usado cuando sea material para el resultado;
+- viewport o conjunto de viewports realmente ejecutados;
+- preferencia de movimiento usada;
+- comando, herramienta o procedimiento reproducible;
+- resultado por dimensión;
+- evidencia de rollback disponible.
+
+Una evidencia visual aislada, una captura de pantalla, un build exitoso o una inspección manual sin estos vínculos no certifican por sí solos la matriz.
+
+---
+
+#### 9. Estados del gate y regla fail-closed
+
+Los estados operativos de la evidencia conservan la semántica del gate de paquetes compartidos:
+
+- `PASS`: todas las dimensiones obligatorias aplicables se ejecutaron, son atribuibles y cumplen el contrato.
+- `FAIL`: al menos una dimensión ejecutada incumple el contrato.
+- `BLOCKED`: falta una precondición necesaria para ejecutar o atribuir la evidencia.
+- `STALE`: la evidencia fue válida para otro commit, versión, CSS efectivo, configuración o combinación de consumidor y paquete.
+- `NOT_APPLICABLE`: la dimensión fue descartada de forma explícita y justificable para esa superficie concreta.
+
+Reglas vinculantes:
+
+1. `FAIL`, `BLOCKED` o `STALE` en una dimensión obligatoria impide el `PASS` global de la aplicación.
+2. Evidencia omitida, parcial, no reproducible o no atribuible no equivale a `PASS`.
+3. Un cambio material en paquete, commit consumidor, lockfile, tokens, CSS efectivo, configuración de tema, densidad o frontera de hidratación invalida la evidencia afectada y la devuelve a `STALE` hasta nueva ejecución.
+4. La aprobación documental de esta matriz no convierte ningún gate físico actual en `PASS`.
+5. Ningún repositorio puede heredar el resultado de otro aunque ambos compartan las mismas APIs públicas.
+
+---
+
+#### 10. Reglas específicas por aplicación
+
+| Aplicación | Condición local que debe preservarse además del contrato compartido                                                                       | Mezcla expresamente prohibida en este gate                                                                  | Condición mínima de salida de `BLOQUEADO`                                                               |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| SHELL      | `layout.tsx` y `globals.css` permanecen propietarios y cualquier consumo compartido debe respetar su composición raíz y tokens efectivos. | Convertir el gate en migración de autenticación, contexto, Supabase o lógica del Hub.                       | Adopción material elegible, CSS clasificada y evidencia completa del perfil UI para el commit probado.  |
+| NUMERA     | Conservar extensiones locales inventariadas y la semántica visual propia de sus superficies administrativas.                              | Eliminar extensiones locales por similitud visual o mezclar cambios de autorización.                        | Versión compatible adoptada, extensiones declaradas y matriz completa ejecutada.                        |
+| FOGO       | Mantener separados los candidatos inertes reservados para retiro y probar solo identidades UI consumidas del lote.                        | Retirar candidatos sin consumidor o incorporar ese retiro a la comparación visual.                          | Adopción UI material, inventario de CSS efectivo y evidencia por commit FOGO.                           |
+| ORIGO      | Preservar extensiones empresariales locales y su composición sin trasladarlas al paquete compartido por conveniencia.                     | Convertir reglas de negocio, contexto o autorización en props de presentación para lograr paridad.          | Superficies compartidas adoptadas, extensiones clasificadas y dimensiones completas ejecutadas.         |
+| VISO       | Preservar composición de dominio y tratar su `page-header.tsx` consumido como parte explícita del lote migrable.                          | Confundir el PageHeader consumido con artefactos inertes reservados para retiro.                            | Las 10 identidades reconciliadas, CSS declarada y evidencia completa atribuible al commit VISO.         |
+| PULSO      | Preservar la composición UI sin mezclar la variante Supabase ni las ramas de guard/autorización ajenas a este lote.                       | Usar cambios de datos, auth o retiro para conseguir una aparente paridad visual.                            | Adopción UI aislada, extensiones declaradas y gate UI completo sin cambios ajenos.                      |
+| NEXO       | Preservar la extensión local de contexto fuera del paquete UI y mantener separado el lote temporal CI/script.                             | Acoplar `@vento/ui-web` a contexto empresarial NEXO o mezclar el mecanismo temporal de patch con este gate. | Adopción UI aislada, extensión de contexto intacta, CSS declarada y evidencia completa por commit NEXO. |
+
+---
+
+#### 11. Secuencia de verificación futura
+
+Cuando la fase de implementación autorice la adopción física, cada aplicación deberá seguir esta secuencia sin saltos:
+
+1. fijar commit base y snapshot de rollback;
+2. fijar versión exacta de las superficies compartidas;
+3. confirmar las identidades UI del lote aplicable;
+4. clasificar todo CSS efectivo como `SHARED_PUBLIC` o `LOCAL_OWNER_EXTENSION`;
+5. ejecutar instalación reproducible y validaciones técnicas disponibles;
+6. ejecutar tokens/tema y contraste;
+7. ejecutar foco y teclado;
+8. ejecutar movimiento reducido;
+9. ejecutar densidad y responsive;
+10. verificar hidratación cuando aplique;
+11. registrar resultado y evidencia por dimensión;
+12. verificar rollback independiente;
+13. emitir el estado agregado del gate.
+
+La secuencia no autoriza la implementación desde esta tarea. Define únicamente el orden mínimo para que la evidencia futura sea válida y no mezcle cambios de otras familias.
+
+---
+
+#### 12. Rollback y caducidad de evidencia
+
+El rollback de una aplicación deberá poder restaurar su snapshot previo, el pin o configuración compartida anterior y las extensiones locales legítimas anteriores sin:
+
+- restaurar CSS legacy no declarado como dependencia oculta;
+- introducir copias locales nuevas de superficies públicas;
+- mezclar cambios de autorización, contexto, Supabase o datos;
+- invalidar el rollback independiente de las otras aplicaciones.
+
+El rollback no convierte automáticamente la evidencia anterior en vigente. Una combinación restaurada deberá demostrar que coincide exactamente con el commit, versión, configuración y CSS a los que pertenecía la evidencia recuperada; de lo contrario su estado será `STALE`.
+
+---
+
+#### 13. Decisiones vinculantes
+
+1. La unidad de aprobación de esta tarea es la matriz documental de siete aplicaciones, no una certificación runtime.
+2. Las 57 ocurrencias UI heredadas quedan completamente reconciliadas: 20 `KEEP LOCAL` y 37 `MIGRATE`.
+3. No se crean lotes nuevos; se conservan los siete lotes de migración definidos previamente.
+4. El resultado de una aplicación no se hereda a otra.
+5. Ningún gate físico actual es `PASS` porque la adopción compartida aún no está materializada.
+6. `@vento/ui-web` solo puede certificarse mediante superficies públicas, versionadas y compatibles con el consumidor exacto.
+7. `layout.tsx`, `globals.css` y las composiciones locales clasificadas `KEEP LOCAL` no son deuda por definición; son fronteras propietarias que también deben superar la matriz.
+8. Una copia local clasificada `MIGRATE` no puede conservarse silenciosamente para obtener paridad visual.
+9. Todo CSS que participe en el resultado deberá ser público compartido o extensión local declarada.
+10. Capturas visuales aisladas no sustituyen mediciones, recorridos de teclado, verificación de foco, reduced-motion ni evidencia responsive.
+11. Contraste y accesibilidad no pueden inferirse únicamente de que el diseño “se vea igual”.
+12. El gate es fail-closed ante evidencia faltante, parcial, desactualizada o no atribuible.
+13. Cualquier cambio material en commit, paquete, lockfile, tokens, CSS o configuración puede convertir evidencia previa en `STALE`.
+14. La verificación de accesibilidad no modifica decisiones de autorización ni convierte visibilidad en permiso.
+15. Las extensiones NEXO, PULSO, ORIGO, VISO, FOGO y NUMERA permanecen bajo sus propietarios y no se trasladan al paquete UI sin una tarea que lo autorice.
+16. Los candidatos de retiro permanecen fuera de este gate.
+17. La evidencia de paridad completa posterior debe conservar rollback independiente por aplicación.
+18. La tarea siguiente permanece reservada y no se ejecuta desde este documento.
+
+---
+
+#### 14. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Creados:** 0.
+
+**Modificados:** 0.
+
+La obligación de validar componentes compartidos, compatibilidad por consumidor, rollback, accesibilidad, foco, teclado, movimiento, navegación y protección frente a dependencias visuales no declaradas ya está cubierta por el registro canónico vigente. Esta tarea materializa la matriz de aplicación de esas obligaciones sobre los siete consumidores sin introducir una regla verificable independiente que requiera una nueva identidad de prueba.
+
+---
+
+#### 15. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                   |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | La fase documental no autoriza adopción física ni existe una combinación post-migración sobre la que un build pueda demostrar paridad de esta tarea.                                                                                        |
+| LOCAL     | PASS           | El artefacto materializa 7/7 aplicaciones y reconcilia 57/57 identidades UI como 20 `KEEP LOCAL` y 37 `MIGRATE`; la estructura, cardinalidad, continuidad y reglas fail-closed fueron verificadas sobre el archivo entregado.               |
+| REMOTA    | PASS           | La continuidad, el archivo propietario, las dependencias de migración/compatibilidad/gates, los commits consumidores y las fuentes canónicas necesarias fueron contrastados contra el estado remoto vigente de los repositorios accesibles. |
+| OPERATIVA | NOT_APPLICABLE | No existe todavía una adopción UI post-migración autorizada que pueda someterse a recorrido operativo sin inventar evidencia.                                                                                                               |
+| FÍSICA    | NOT_APPLICABLE | No se autoriza en esta fase ejecución física en navegador, dispositivo, tecnología de asistencia o estación real.                                                                                                                           |
+
+---
+
+#### 16. Criterios de aceptación
+
+La tarea queda documentalmente aceptada cuando se cumplen simultáneamente estas condiciones:
+
+1. existen exactamente 7 filas de aplicación en la matriz de paridad;
+2. las 57 identidades heredadas están reconciliadas sin faltantes ni duplicados;
+3. la distribución conserva exactamente 20 `KEEP LOCAL` y 37 `MIGRATE`;
+4. cada aplicación tiene decisión explícita para tokens/tema, contraste, foco/teclado, movimiento reducido, densidad, responsive y CSS declarada;
+5. ningún gate físico se declara `PASS` sin adopción y evidencia reales;
+6. el contrato de evidencia vincula versión de paquete, commit consumidor, CSS efectivo y configuración aplicable;
+7. toda dependencia visual queda clasificada como compartida pública o extensión local propietaria;
+8. cualquier CSS legacy no declarado bloquea la certificación;
+9. la evidencia faltante, parcial o desactualizada falla de forma cerrada;
+10. las responsabilidades de autorización, contexto, datos y lógica empresarial permanecen fuera del paquete UI;
+11. el rollback independiente está definido por aplicación;
+12. no se crean ni modifican requisitos de prueba;
+13. no se realizan cambios físicos durante esta tarea;
+14. la continuidad conserva `SHELL-MIG-007` exclusivamente como siguiente tarea reservada.
+
+---
+
+#### 17. Límites
+
+Esta tarea no:
+
+- instala ni publica `@vento/ui-web`;
+- cambia dependencias ni lockfiles de consumidores;
+- modifica `layout.tsx`, `globals.css` o componentes locales;
+- migra Chrome, kits, tablas, AppSwitcher, ProfileMenu, VentoLogo o PageHeader;
+- ejecuta navegadores, lectores de pantalla, dispositivos o estaciones físicas;
+- ejecuta pruebas de paridad post-migración;
+- modifica autenticación, permisos, contexto, SSO, middleware o lógica empresarial;
+- modifica Supabase, esquemas, migraciones, datos, RLS, funciones o tipos generados;
+- retira candidatos legacy o artefactos sin consumidor;
+- crea un lote adicional de migración;
+- declara compatible una versión compartida todavía no probada contra un consumidor exacto;
+- convierte una evidencia visual en prueba de accesibilidad completa;
+- desarrolla ni ejecuta la tarea siguiente.
+
+---
+
+#### 18. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-MIG-005 — Migrar componentes, Chrome y estilos por aplicación`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-MIG-006 — Verificar accesibilidad, tema y movimiento reducido`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-MIG-007 — Definir contrato de paridad ejecutable por paquete`
+
 
 ### [ ] SHELL-MIG-007 — Definir contrato de paridad ejecutable por paquete
 
