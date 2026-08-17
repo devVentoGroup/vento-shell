@@ -6,6 +6,8 @@ import {
   describeTaskScope,
   orderPendingTasksByRoute,
   parseTaskScopeContracts,
+  pendingTaskExecutionContext,
+  validationProfileForTask,
 } from './sync-pending-task-context.mjs';
 
 test('describe tareas pendientes con una acción breve y legible', () => {
@@ -66,6 +68,51 @@ test('ordena las pendientes por etapa y selector, no por orden físico del manif
   assert.deepEqual(result.map(({ id }) => id), ['TEST-A-002', 'TEST-B-002']);
   assert.deepEqual(result.map(({ canonicalOrder }) => canonicalOrder), [2, 4]);
   assert.deepEqual(result.map(({ stageOrder }) => stageOrder), [1, 2]);
+  assert.deepEqual(result.map(({ routePredecessorId }) => routePredecessorId), ['TEST-A-001', 'TEST-B-001']);
+});
+
+test('expone dependencias, TREQ y cierre declarados sin inferir contenido canónico', () => {
+  const context = pendingTaskExecutionContext({
+    ...task('TEST-A-002'),
+    title: 'Migrar consumidores legacy',
+    routePredecessorId: 'TEST-A-001',
+    block: `### [ ] TEST-A-002 — Migrar consumidores legacy
+
+**Dependencias:** \`TEST-A-001\`; \`TEST-SEC-004\`.
+
+#### 1. Requisitos de prueba derivados
+
+- \`TREQ-UX-2001\`
+- \`TREQ-SEC-2002\`
+
+**Puerta de cierre:** paridad aprobada y rollback reproducible.`,
+  });
+
+  assert.equal(context.dependencyKind, 'DECLARADAS');
+  assert.equal(context.dependencies, '`TEST-A-001`; `TEST-SEC-004`.');
+  assert.match(context.tests, /`TREQ-UX-2001`, `TREQ-SEC-2002`/u);
+  assert.match(context.tests, /paridad contractual y operativa/u);
+  assert.equal(context.closure, 'paridad aprobada y rollback reproducible.');
+});
+
+test('distingue precedencia y perfil previsto cuando la tarea sigue vacía', () => {
+  const context = pendingTaskExecutionContext({
+    ...task('TEST-UI-002'),
+    title: 'Implementar componente accesible',
+    routePredecessorId: 'TEST-UI-001',
+    block: '### [ ] TEST-UI-002 — Implementar componente accesible',
+  });
+
+  assert.equal(context.dependencyKind, 'PRECEDENCIA_DE_RUTA');
+  assert.equal(context.dependencies, 'Precedencia de ruta: `TEST-UI-001`');
+  assert.match(context.tests, /^Por definir al desarrollar/u);
+  assert.match(context.tests, /accesibilidad/u);
+  assert.match(context.closure, /Se concreta al desarrollar/u);
+});
+
+test('selecciona perfiles de validación proporcionales por naturaleza', () => {
+  assert.match(validationProfileForTask({ ...task('TEST-AUTH-001'), title: 'Proteger permisos' }), /denegaciones/u);
+  assert.match(validationProfileForTask({ ...task('TEST-INT-001'), title: 'Integrar webhook idempotente' }), /reintentos/u);
 });
 
 test('rechaza cualquier tarea canónica que quede fuera de la guía', () => {

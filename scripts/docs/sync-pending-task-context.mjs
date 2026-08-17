@@ -2,8 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const TASK_REGEX = /^###\s+(?<marker>\[[ x~]\]|[✅🟡❌])\s+(?<id>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3})\b(?:\s+[—-]\s+(?<title>[^\n]+))?$/gmu;
+import { parseTaskBlocks } from './format-canonical-task.mjs';
+
 const TASK_ID_PATTERN = '[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\\d{3}';
+const TASK_REFERENCE = new RegExp(`\\b${TASK_ID_PATTERN}(?!\\d)`, 'gu');
+const TREQ_REFERENCE = /\bTREQ-[A-Z]+-\d{3,}\b/gu;
 const SCOPE_START = '<!-- TASK-SCOPE-CONTRACT:START -->';
 const SCOPE_END = '<!-- TASK-SCOPE-CONTRACT:END -->';
 const OUTPUT = '.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md';
@@ -152,24 +155,153 @@ export function describeTaskScope(task) {
   return task.scope.decides;
 }
 
+function inlineField(block, labels) {
+  const pattern = new RegExp(
+    `^\\*\\*(?:${labels.join('|')}):\\*\\*\\s*(?<value>.+?)\\s*$`,
+    'imu',
+  );
+  return block.match(pattern)?.groups?.value?.trim() ?? null;
+}
+
+function sectionSource(block, titlePattern) {
+  const normalized = String(block ?? '').replace(/\r\n?/gu, '\n');
+  const headings = [...normalized.matchAll(/^####(?:\s+\d+\.)?\s+(?<title>.+)$/gmu)];
+  const index = headings.findIndex((heading) => titlePattern.test(heading.groups.title));
+  if (index < 0) return null;
+  const start = headings[index].index + headings[index][0].length;
+  const end = headings[index + 1]?.index ?? normalized.length;
+  return normalized.slice(start, end).trim();
+}
+
+function compactText(value, limit = 190) {
+  const normalized = String(value ?? '')
+    .replace(/[`*_]/gu, '')
+    .replace(/^[-+]\s+/gmu, '')
+    .replace(/\s+/gu, ' ')
+    .trim();
+  if (!normalized) return null;
+  return normalized.length <= limit ? normalized : `${normalized.slice(0, limit - 1).trimEnd()}…`;
+}
+
+function compactMarkdown(value, limit = 190) {
+  const normalized = String(value ?? '')
+    .replace(/\*\*/gu, '')
+    .replace(/^[-+]\s+/gmu, '')
+    .replace(/\s+/gu, ' ')
+    .trim();
+  if (!normalized) return null;
+  return normalized.length <= limit ? normalized : `${normalized.slice(0, limit - 1).trimEnd()}…`;
+}
+
+function taskReferences(value, selfId) {
+  return [...new Set(String(value ?? '').match(TASK_REFERENCE) ?? [])]
+    .filter((id) => id !== selfId && !id.startsWith('TREQ-'));
+}
+
+function summarizedReferences(references, limit = 6) {
+  if (references.length <= limit) return references.map((id) => `\`${id}\``).join(', ');
+  return `${references.slice(0, limit).map((id) => `\`${id}\``).join(', ')} (+${references.length - limit})`;
+}
+
+export function validationProfileForTask(task) {
+  const id = task.id;
+  const title = task.title;
+  if (/-MIG-/u.test(id) || /\b(?:migrar|retirar|adopci[oó]n|paridad)\b/iu.test(title)) {
+    return 'paridad contractual y operativa, build por consumidor, regresión y rollback';
+  }
+  if (/(?:^|-)(?:AUTH|SEC|RLS)(?:-|$)/u.test(id) || /\b(?:autorizaci[oó]n|permiso|credencial|seguridad|guard)\b/iu.test(title)) {
+    return 'contrato, integración, denegaciones, seguridad/RLS y regresión';
+  }
+  if (/(?:^|-)(?:DB|SUPA)(?:-|$)/u.test(id) || /\b(?:SQL|RPC|base de datos|esquema)\b/iu.test(title)) {
+    return 'lint y migración, contratos SQL/RPC, RLS, integración y rollback';
+  }
+  if (/(?:^|-)(?:UI|UX|SCREEN)(?:-|$)/u.test(id) || /\b(?:pantalla|componente|accesibilidad|responsive|visual|navegaci[oó]n)\b/iu.test(title)) {
+    return 'unitarias/render, accesibilidad, regresión visual e integración del flujo';
+  }
+  if (/(?:^|-)CTX(?:-|$)/u.test(id) || /\b(?:contexto|turno|check-in|frescura|cach[eé]|single-flight)\b/iu.test(title)) {
+    return 'contrato contextual, integración, frescura/invalidación, fallos seguros y regresión';
+  }
+  if (/(?:^|-)(?:NATIVE|CON)(?:-|$)/u.test(id) || /\b(?:contrato|token|tipo|validador|SDK|adapter)\b/iu.test(title)) {
+    return 'unitarias y contractuales, compatibilidad, serialización y consumo multiplataforma';
+  }
+  if (/(?:^|-)CI(?:-|$)/u.test(id) || /\b(?:lint|m[eé]trica|gate|automatizaci[oó]n|pipeline)\b/iu.test(title)) {
+    return 'automatización, casos positivos/negativos, build reproducible y regresión del gate';
+  }
+  if (/(?:^|-)INT(?:-|$)/u.test(id) || /\b(?:evento|webhook|integraci[oó]n|cola|retry|idempotencia)\b/iu.test(title)) {
+    return 'contrato, integración, idempotencia/reintentos, fallos parciales y E2E';
+  }
+  return 'consistencia documental, TREQ y validación funcional proporcional al materializar';
+}
+
+export function pendingTaskExecutionContext(task) {
+  const dependencyField = inlineField(task.block, ['Dependencias?', 'Prerrequisitos?']);
+  const dependencySection = sectionSource(task.block, /Dependencias?|Prerrequisitos?/iu);
+  const dependencySource = dependencyField ?? dependencySection;
+  const declaredDependencies = taskReferences(dependencySource, task.id);
+  let dependencies;
+  let dependencyKind;
+  if (declaredDependencies.length > 0) {
+    dependencies = compactMarkdown(dependencySource) ?? summarizedReferences(declaredDependencies);
+    dependencyKind = 'DECLARADAS';
+  } else if (dependencySource) {
+    dependencies = compactText(dependencySource) ?? 'Declaración sin referencias de tarea.';
+    dependencyKind = 'DECLARADAS';
+  } else if (task.routePredecessorId) {
+    dependencies = `Precedencia de ruta: \`${task.routePredecessorId}\``;
+    dependencyKind = 'PRECEDENCIA_DE_RUTA';
+  } else {
+    dependencies = 'Entrada de la ruta; sin dependencia de tarea declarada todavía.';
+    dependencyKind = 'NO_DECLARADA';
+  }
+
+  const testSection = sectionSource(task.block, /Requisitos de prueba derivados|Pruebas requeridas|Plan de pruebas/iu);
+  const treq = [...new Set(String(testSection ?? '').match(TREQ_REFERENCE) ?? [])];
+  const declaredTreqCount = inlineField(task.block, ['Requisitos de prueba creados o modificados']);
+  const profile = validationProfileForTask(task);
+  let tests;
+  if (treq.length > 0) tests = `${summarizedReferences(treq, 4)} · ${profile}`;
+  else if (/NO GENERA REQUISITOS DE PRUEBA/iu.test(testSection ?? '') || declaredTreqCount === '0') {
+    tests = `Sin TREQ nuevos · ${profile}`;
+  } else if (testSection) tests = `Sección canónica de pruebas definida · ${profile}`;
+  else tests = `Por definir al desarrollar · perfil previsto: ${profile}`;
+
+  const closureField = inlineField(task.block, ['Puerta de cierre', 'Condici[oó]n de cierre']);
+  const acceptanceSection = sectionSource(task.block, /Criterios de aceptación|Puerta de cierre|Condici[oó]n de cierre/iu);
+  const acceptanceLine = acceptanceSection?.split('\n')
+    .map((line) => line.trim())
+    .find((line) => line && !/^\||^---|^```/u.test(line));
+  const closure = compactText(closureField ?? acceptanceLine)
+    ?? 'Se concreta al desarrollar; requiere evidencia real de las pruebas aplicables.';
+
+  return {
+    dependencies,
+    dependencyKind,
+    tests,
+    treq,
+    closure,
+  };
+}
+
 function readCanonicalTasks(baseDir) {
   const manifest = JSON.parse(fs.readFileSync(path.join(baseDir, 'manifest.json'), 'utf8'));
   const tasks = [];
   for (const relativePath of manifest.files) {
     const fullPath = path.join(baseDir, relativePath);
     if (!fs.existsSync(fullPath) || !fs.statSync(fullPath).isFile()) continue;
-    const source = maskFencedCode(fs.readFileSync(fullPath, 'utf8').replace(/\r\n?/gu, '\n'));
+    const rawSource = fs.readFileSync(fullPath, 'utf8').replace(/\r\n?/gu, '\n');
+    const source = maskFencedCode(rawSource);
     const scopes = parseTaskScopeContracts(source, relativePath);
     const fileTaskIds = new Set();
-    for (const match of source.matchAll(TASK_REGEX)) {
-      const state = stateFromMarker(match.groups?.marker ?? '');
-      fileTaskIds.add(match.groups.id);
+    for (const task of parseTaskBlocks(rawSource)) {
+      const state = stateFromMarker(task.marker);
+      fileTaskIds.add(task.id);
       tasks.push({
-        id: match.groups.id,
-        title: (match.groups.title ?? '(sin título canónico)').trim(),
+        id: task.id,
+        title: (task.title || '(sin título canónico)').trim(),
         state,
         relativePath,
-        scope: scopes.get(match.groups.id) ?? null,
+        scope: scopes.get(task.id) ?? null,
+        block: task.block,
       });
     }
     const orphanScopes = [...scopes.keys()].filter((id) => !fileTaskIds.has(id));
@@ -243,20 +375,24 @@ export function orderPendingTasksByRoute(tasks, route) {
     ...expandedStages.filter((stage) => stage.activation_state === 'DEFERRED'),
   ];
 
+  let routePredecessorId = null;
   for (const stage of executionStages) {
     for (const task of stage.tasks) {
       if (seen.has(task.id)) throw new Error(`La guía asigna dos veces ${task.id}.`);
       seen.add(task.id);
-      if (task.state === 'APROBADA') continue;
-      ordered.push({
-        ...task,
-        canonicalOrder: canonicalOrderById.get(task.id),
-        stageOrder: stage.stageOrder,
-        sequenceId: stage.sequence_id,
-        blockCode: stage.block_code,
-        blockTitle: stage.block_title,
-        activationState: stage.activation_state ?? 'ACTIVE',
-      });
+      if (task.state !== 'APROBADA') {
+        ordered.push({
+          ...task,
+          routePredecessorId,
+          canonicalOrder: canonicalOrderById.get(task.id),
+          stageOrder: stage.stageOrder,
+          sequenceId: stage.sequence_id,
+          blockCode: stage.block_code,
+          blockTitle: stage.block_title,
+          activationState: stage.activation_state ?? 'ACTIVE',
+        });
+      }
+      routePredecessorId = task.id;
     }
   }
 
@@ -277,6 +413,7 @@ function render(tasks, route, active) {
     stageIds.add(task.sequenceId);
     return true;
   });
+  const quickTasks = tasks.slice(0, 12);
   const lines = [
     '# GUÍA MAESTRA DE EJECUCIÓN TAREA POR TAREA — VENTO OS',
     '',
@@ -301,7 +438,25 @@ function render(tasks, route, active) {
     '',
     '| # | Tarea | Qué hace |',
     '| ---: | --- | --- |',
-    ...tasks.slice(0, 12).map((task, index) => `| ${index + 1} | \`${task.id}\` — ${task.title.replaceAll('|', '\\|')} | ${describeTaskScope(task).replaceAll('|', '\\|').replaceAll('\n', ' ')} |`),
+    ...quickTasks.map((task, index) => `| ${index + 1} | \`${task.id}\` — ${task.title.replaceAll('|', '\\|')} | ${describeTaskScope(task).replaceAll('|', '\\|').replaceAll('\n', ' ')} |`),
+    '',
+    '## Preparación de las próximas tareas',
+    '',
+    '> Dependencias, pruebas y cierre se leen de la tarea cuando ya están declarados. "Precedencia de ruta" y "perfil previsto" son ayudas derivadas y no amplían el contrato canónico.',
+    '',
+    ...quickTasks.flatMap((task, index) => {
+      const context = pendingTaskExecutionContext(task);
+      return [
+        `### ${index + 1}. \`${task.id}\` — ${task.title}`,
+        '',
+        `- **Qué hace:** ${describeTaskScope(task)}`,
+        `- **Dependencias:** ${context.dependencies}`,
+        `- **Pruebas:** ${context.tests}`,
+        `- **Cierre:** ${context.closure}`,
+        `- **Fuente:** \`${task.relativePath}\``,
+        '',
+      ];
+    }),
     '',
     '## Contrato obligatorio para ejecutar cada tarea',
     '',
@@ -344,12 +499,13 @@ function render(tasks, route, active) {
     '',
     '> Las etapas `ACTIVE` aparecen primero en su orden ejecutable. Las tareas de etapas `DEFERRED` permanecen incluidas al final y no se pierden, pero no bloquean la continuidad activa hasta que se resuelva su condición de activación.',
     '',
-    '| Pendiente # | Orden canónico | Etapa | Estado | Identificador | Título canónico | Qué hace | Fragmento propietario |',
-    '| ---: | ---: | --- | --- | --- | --- | --- | --- |',
+    '| Pendiente # | Orden canónico | Etapa | Estado | Identificador | Título canónico | Qué hace | Dependencias | Pruebas / TREQ | Cierre | Fragmento propietario |',
+    '| ---: | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
   ];
   for (const [pendingIndex, task] of tasks.entries()) {
     const esc = (value) => String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
-    lines.push(`| ${pendingIndex + 1} | ${task.canonicalOrder} | \`${task.sequenceId}\` | ${task.state} | \`${task.id}\` | ${esc(task.title)} | ${esc(describeTaskScope(task))} | \`${esc(task.relativePath)}\` |`);
+    const context = pendingTaskExecutionContext(task);
+    lines.push(`| ${pendingIndex + 1} | ${task.canonicalOrder} | \`${task.sequenceId}\` | ${task.state} | \`${task.id}\` | ${esc(task.title)} | ${esc(describeTaskScope(task))} | ${esc(context.dependencies)} | ${esc(context.tests)} | ${esc(context.closure)} | \`${esc(task.relativePath)}\` |`);
   }
   lines.push('');
   return lines.join('\n');
