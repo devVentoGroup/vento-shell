@@ -161,6 +161,37 @@ test('acepta cero como declaración explícita de cambios físicos no autorizado
   assert.ok(!result.errors.some(({ code }) => code === 'PHYSICAL_SCOPE_CONTRADICTION'));
 });
 
+test('acepta ninguno durante el marcador global como cero cambios físicos', () => {
+  const result = validateTaskSemanticContract({
+    block: validBlock.replace(
+      '**Cambios físicos autorizados:** ninguno',
+      '**Cambios físicos autorizados:** ninguno durante el marcador global',
+    ),
+    task: { id: 'TEST-SEM-011', state: 'APROBADA' },
+    ownerRelativePath: 'bloques/X/test.md',
+    inventory,
+    policy,
+  });
+  assert.ok(!result.errors.some(({ code }) => code === 'PHYSICAL_SCOPE_CONTRADICTION'));
+});
+
+test('explica los dos valores cuando existe una contradicción física real', () => {
+  const result = validateTaskSemanticContract({
+    block: validBlock.replace(
+      '**Cambios físicos autorizados:** ninguno',
+      '**Cambios físicos autorizados:** modificar código consumidor',
+    ),
+    task: { id: 'TEST-SEM-011', state: 'APROBADA' },
+    ownerRelativePath: 'bloques/X/test.md',
+    inventory,
+    policy,
+  });
+  const finding = result.errors.find(({ code }) => code === 'PHYSICAL_SCOPE_CONTRADICTION');
+  assert.ok(finding);
+  assert.match(finding.message, /NO_MATERIALIZADO/u);
+  assert.match(finding.message, /modificar código consumidor/u);
+});
+
 test('durante desarrollo convierte incumplimientos en advertencias', () => {
   const result = validateTaskSemanticContract({
     block: validBlock.replace('### ✅', '### [ ]').replace('APROBADA', 'NO INICIADA').replace(

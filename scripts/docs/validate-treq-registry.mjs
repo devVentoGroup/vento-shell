@@ -113,6 +113,10 @@ export function extractDerivedTreqIds(body) {
   const section = nextSection >= 0
     ? derivedBody.slice(0, nextSection + 5)
     : derivedBody;
+  const declaresNoRequirements = /^\*\*Resultado:\*\*\s*(?:\*\*)?NO\s+(?:GENERA|CREA|MODIFICA)\b/imu.test(section);
+  const declaresZeroCreated = /^\*\*(?:Requisitos\s+)?creados:\*\*\s*(?:\*\*)?0(?:\*\*)?\b/imu.test(section);
+  const declaresZeroModified = /^\*\*(?:Requisitos\s+)?modificados:\*\*\s*(?:\*\*)?0(?:\*\*)?\b/imu.test(section);
+  if (declaresNoRequirements && declaresZeroCreated && declaresZeroModified) return [];
   return expandTreqReferences(section);
 }
 
@@ -151,6 +155,44 @@ function expandActiveSequence(config) {
   return ids;
 }
 
+function orderedRouteTaskIds(tasks, route) {
+  const ordered = [];
+  const seen = new Set();
+  for (const stage of route.stages ?? []) {
+    for (const selector of stage.selectors ?? []) {
+      const selected = Array.isArray(selector.task_ids)
+        ? selector.task_ids
+        : [...tasks.keys()]
+          .map((id) => {
+            const match = id.match(/^(?<prefix>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+)-(?<number>\d{3})$/u);
+            return match ? { id, prefix: match.groups.prefix, number: Number(match.groups.number) } : null;
+          })
+          .filter((task) => task
+            && task.prefix === selector.prefix
+            && task.number >= (selector.from ?? 1)
+            && task.number <= (selector.to ?? Number.MAX_SAFE_INTEGER))
+          .sort((left, right) => left.number - right.number)
+          .map(({ id }) => id);
+      for (const id of selected) {
+        if (tasks.has(id) && !seen.has(id)) {
+          ordered.push(id);
+          seen.add(id);
+        }
+      }
+    }
+  }
+  return ordered;
+}
+
+export function deriveLatestTreqTaskId({ tasks, orderedTaskIds, currentTaskId, fallbackTaskId }) {
+  const currentIndex = orderedTaskIds.indexOf(currentTaskId);
+  const history = currentIndex >= 0 ? orderedTaskIds.slice(0, currentIndex) : orderedTaskIds;
+  return history
+    .map((id) => tasks.get(id))
+    .filter((task) => task?.state === 'APROBADA' && task.derivedIds.length > 0)
+    .at(-1)?.id ?? fallbackTaskId;
+}
+
 export function buildCanonicalTreqContext({ baseDir, manifest }) {
   const tasks = new Map();
 
@@ -176,11 +218,18 @@ export function buildCanonicalTreqContext({ baseDir, manifest }) {
     fs.readFileSync(path.join(baseDir, 'active-sequence.json'), 'utf8')
   );
   const activeIds = expandActiveSequence(activeConfig);
-  const activeLatestTaskId = activeIds
-    .map((id) => tasks.get(id))
-    .filter((task) => task?.state === 'APROBADA' && task.derivedIds.length > 0)
-    .at(-1)?.id;
-  const expectedLatestTaskId = activeLatestTaskId ?? activeConfig.latest_treq_task_id;
+  const currentTaskId = activeIds.find((id) => tasks.get(id)?.state !== 'APROBADA') ?? activeIds.at(-1);
+  const routePath = path.join(baseDir, 'continuity-route.json');
+  const route = fs.existsSync(routePath)
+    ? JSON.parse(fs.readFileSync(routePath, 'utf8'))
+    : { stages: [{ selectors: [{ task_ids: activeIds }] }] };
+  const orderedTaskIds = orderedRouteTaskIds(tasks, route);
+  const expectedLatestTaskId = deriveLatestTreqTaskId({
+    tasks,
+    orderedTaskIds,
+    currentTaskId,
+    fallbackTaskId: activeConfig.latest_treq_task_id,
+  });
 
   if (!expectedLatestTaskId) {
     throw new Error('No se pudo derivar la última tarea aprobada que incorporó TREQ.');

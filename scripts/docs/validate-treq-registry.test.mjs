@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
+  deriveLatestTreqTaskId,
   extractDerivedTreqIds,
   validateTreqRegistrySource,
 } from './validate-treq-registry.mjs';
@@ -43,6 +44,52 @@ test('reconoce todos los encabezados válidos de requisitos de prueba', () => {
       'TREQ-SUPABASE-141',
     ]);
   }
+});
+
+test('no confunde requisitos existentes citados con requisitos incorporados', () => {
+  const body = `#### 37. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** **0**
+
+**Requisitos modificados:** **0**
+
+- \`TREQ-AUTH-008\` ya protege este comportamiento;
+- \`TREQ-SHELL-043\` permanece vigente.
+
+#### 38. Cierre`;
+  assert.deepEqual(extractDerivedTreqIds(body), []);
+});
+
+test('sigue extrayendo requisitos realmente incorporados', () => {
+  const body = `#### 37. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** **2**
+
+**Requisitos modificados:** **0**
+
+- \`TREQ-SHELL-099\`;
+- \`TREQ-SHELL-100\`.
+
+#### 38. Cierre`;
+  assert.deepEqual(extractDerivedTreqIds(body), ['TREQ-SHELL-099', 'TREQ-SHELL-100']);
+});
+
+test('conserva la última tarea que incorporó TREQ al atravesar una tarea con cero cambios', () => {
+  const tasks = new Map([
+    ['TASK-BASE-001', { id: 'TASK-BASE-001', state: 'APROBADA', derivedIds: ['TREQ-AUTH-001'] }],
+    ['TASK-BASE-002', { id: 'TASK-BASE-002', state: 'APROBADA', derivedIds: [] }],
+    ['TASK-BASE-003', { id: 'TASK-BASE-003', state: 'NO INICIADA', derivedIds: [] }],
+  ]);
+  assert.equal(deriveLatestTreqTaskId({
+    tasks,
+    orderedTaskIds: [...tasks.keys()],
+    currentTaskId: 'TASK-BASE-003',
+    fallbackTaskId: 'TASK-OLD-001',
+  }), 'TASK-BASE-001');
 });
 
 function registry({ rowOverrides = {}, summaryOverrides = {}, extraRows = [] } = {}) {

@@ -89,7 +89,11 @@ function canonicalPrefix(taskId) {
 function physicalContradiction(metadata) {
   const state = metadata.get('Estado físico resultante') ?? '';
   const changes = metadata.get('Cambios físicos autorizados') ?? '';
-  const noPhysicalChanges = /^(?:ninguno|0)$/iu.test(changes);
+  const normalizedChanges = changes.replaceAll('`', '').trim();
+  const noPhysicalChanges = /^(?:0|cero|ninguno)(?:\s+(?:durante|en)\s+(?:(?:el|este)\s+marcador(?:\s+global)?|(?:esta|la)\s+tarea))?[\s.;]*$/iu
+    .test(normalizedChanges)
+    || /^sin\s+(?:cambios?|modificaciones?)\s+físic[oa]s?(?:\s+autorizad[oa]s?)?[\s.;]*$/iu
+      .test(normalizedChanges);
   return /NO_MATERIALIZADO|NO MATERIALIZADO/iu.test(state) && !noPhysicalChanges;
 }
 
@@ -178,7 +182,10 @@ export function validateTaskSemanticContract({
     if (!fs.existsSync(repositoryPath)) add('OWNER_REPOSITORY_MISSING', `no existe el repositorio propietario ${repositoryOwner}.`);
   }
   if (physicalContradiction(metadata)) {
-    add('PHYSICAL_SCOPE_CONTRADICTION', 'el estado no materializado contradice los cambios físicos autorizados.');
+    add(
+      'PHYSICAL_SCOPE_CONTRADICTION',
+      `Estado físico resultante declara "${metadata.get('Estado físico resultante')}", pero Cambios físicos autorizados declara "${metadata.get('Cambios físicos autorizados')}".`,
+    );
   }
 
   for (const required of policy.required_section_groups ?? []) {
