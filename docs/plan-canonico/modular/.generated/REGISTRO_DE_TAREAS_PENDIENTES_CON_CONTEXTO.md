@@ -8,11 +8,11 @@
 
 ## Qué toca hacer ahora
 
-- **Acción principal obligatoria:** `VALIDAR_IMPLEMENTACION`
-- **Objetivo exacto:** `SHELL-CI-003::GLOBAL` — Crear releases versionados
-- **Instrucción:** Entregar seguidas las validaciones independientes y pausar cuando sus resultados determinen el avance.
-- **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `SHELL-CI-004`
-- **Implementación física autorizada:** `SHELL-CI-003::GLOBAL`
+- **Acción principal obligatoria:** `DOCUMENTAR_TAREA`
+- **Objetivo exacto:** `SHELL-CI-004` — Crear changelog automático
+- **Instrucción:** Desarrollar únicamente el contrato documental de SHELL-CI-004; no iniciar su instancia física por inferencia.
+- **Carril documental:** ACTIVO — `SHELL-CI-004`
+- **Implementación física autorizada:** **NINGUNA**
 
 > Esta instrucción prevalece sobre la simple posición de una tarea en la lista pendiente. Aprobar documentación no autoriza código y una instancia física no puede saltar su predecesora global.
 
