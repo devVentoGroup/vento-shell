@@ -1094,13 +1094,533 @@ Los umbrales operativos, ambientes concretos de despliegue y ventanas temporales
 `SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy`
 
 
-### [ ] SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy
+### ✅ SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy
 
-**Propósito:** habilitar adapters o compatibilidad temporal solo donde exista consumo real y evitar nuevas dependencias sobre copias deprecadas.
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-MIG-002 — Definir lotes reversibles por repositorio
+**Tarea siguiente:** SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado
+**Tipo de tarea:** Documental; definición vinculante y materializada de compatibilidad temporal, observabilidad de deprecación y gate fail-closed contra nuevos consumidores legacy, sin implementar adapters, packages, workflows ni migraciones físicas
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md`
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO; 1 lote NEXO de compatibilidad legacy delimitado; 2 artefactos legacy reales congelados como baseline; 0 adapters físicos; 0 gates físicos; 0 migraciones ejecutadas
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
 
-**Dependencias:** `SHELL-MIG-002`; `SHELL-PKG-003`; `SHELL-PKG-005`; tareas `SHELL-CON-*`, `SHELL-DB-*`, `SHELL-UI-*` o `SHELL-AUTH-*` propietarias.
+---
 
-**Puerta de cierre:** compatibilidad versionada, deprecaciones observables y gate automático contra nuevos consumidores legacy.
+#### 1. Propósito
+
+`SHELL-MIG-003` convierte la compatibilidad temporal de legacy en una excepción controlada y no en una licencia para seguir copiando implementaciones antiguas.
+
+La tarea toma el inventario ejecutable de `SHELL-MIG-001` y el lote reversible ya cerrado por `SHELL-MIG-002` y fija tres resultados inseparables:
+
+1. compatibilidad temporal únicamente para consumidores legacy reales, inventariados y con propietario;
+2. observabilidad de la deprecación o transición sin convertir archivos privados en superficies públicas ficticias;
+3. un gate automático fail-closed que impida crear, ampliar o regenerar nuevos consumidores legacy.
+
+La regla raíz es:
+
+```text
+legacy ya inventariado
+→ puede conservarse temporalmente bajo frontera exacta
+→ queda ligado a consumidor, commit, contrato objetivo, evidencia y rollback
+→ no puede crecer
+→ no puede convertirse en fuente de verdad
+→ no puede crear nuevos consumidores
+→ debe desaparecer cuando su lote propietario cierre la migración
+```
+
+La compatibilidad temporal no cambia autoridad, no introduce aliases implícitos y no habilita fallbacks permisivos.
+
+---
+
+#### 2. Resultado material
+
+La única instancia material asignada a `SHELL-MIG-003` por `SHELL-MIG-002` es:
+
+```text
+devVentoGroup/vento-nexo / SHELL-MIG-003
+```
+
+La instancia contiene exactamente dos consumidores legacy confirmados:
+
+| Repositorio                | Artefacto                                                 | Clase    | Estado heredado | Decisión de `SHELL-MIG-003`                                                                                                                     |
+| -------------------------- | --------------------------------------------------------- | -------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `devVentoGroup/vento-nexo` | `.github/workflows/tmp-apply-privileged-request-area.yml` | `CI`     | `LEGACY_ACTIVO` | conservar únicamente como baseline transitorio exacto; cualquier expansión o recreación legacy bloquea                                          |
+| `devVentoGroup/vento-nexo` | `scripts/tmp-apply-privileged-request-area.mjs`           | `SCRIPT` | `LEGACY_ACTIVO` | conservar únicamente como baseline transitorio exacto; adaptar o retirar solo cuando exista frontera canónica consumible y rollback certificado |
+
+Conciliación:
+
+| Métrica                                                       | Resultado |
+| ------------------------------------------------------------- | --------: |
+| repositorios con lote propio `SHELL-MIG-003`                  |     **1** |
+| consumidores legacy CI/script del lote                        |     **2** |
+| consumidores legacy adicionales autorizados por esta tarea    |     **0** |
+| adapters especulativos autorizados                            |     **0** |
+| nuevas copias legacy permitidas                               |     **0** |
+| releases estables de compatibilidad declaradas por esta tarea |     **0** |
+| deprecaciones públicas iniciadas por esta tarea               |     **0** |
+| cambios físicos ejecutados                                    |     **0** |
+
+Los targets actuales `src/app/inventory/remissions/page.tsx` y `src/app/inventory/remissions/actions.ts` no se convierten en un lote nuevo de `SHELL-MIG-003`. Permanecen como superficies consumidoras vigiladas y su migración de autorización/contexto conserva la propiedad ya asignada a `SHELL-AUTH-005` y tareas propietarias relacionadas.
+
+---
+
+#### 3. Fuentes, dependencias y corte verificable
+
+##### 3.1. Dependencias vinculantes
+
+| Fuente            | Decisión heredada                                                                                                                     |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `SHELL-MIG-001`   | inventario de 142 filas, clasificación de CI/script y lote base exacto para los dos artefactos NEXO                                   |
+| `SHELL-MIG-002`   | 22 lotes reversibles, un único lote `SHELL-MIG-003`, suspensión y rollback por snapshot consumidor                                    |
+| `SHELL-PKG-003`   | identidad inmutable de package, versión, tag, release, commit, artefacto y canal                                                      |
+| `SHELL-PKG-005`   | deprecación separada de retiro, señales observables, ventana y prohibición de nuevas adopciones de líneas deprecadas                  |
+| `SHELL-CON-003`   | `PermissionKey` canónica; aliases y permisos legacy fuera del conjunto activo; no nuevas asignaciones legacy                          |
+| `SHELL-CON-004`   | ocho `BaseRoleCode`; oficios base legacy y conversiones silenciosas prohibidos                                                        |
+| `SHELL-CON-005`   | doce `OperationalRoleCode`; `propietario_admin`, roles base y aliases/fallbacks fuera del catálogo operativo                          |
+| `SHELL-CON-006`   | scopes contractuales separados de rol, permiso y contexto; entradas desconocidas fallan cerrado                                       |
+| `SHELL-CON-007`   | tipos de contexto compartidos y separación de contexto, simulación y decisión                                                         |
+| `SHELL-AUTH-001`  | `@vento/os-context` como único SDK compartido de contexto/autorización                                                                |
+| `SHELL-AUTH-002`  | adapters canónicos de servidor, cliente y proyecciones seguras                                                                        |
+| `SHELL-AUTH-004`  | implementación futura de lint, métricas y gates contra consumidores legacy                                                            |
+| `SHELL-AUTH-005`  | migración posterior de consumidores de autorización en todos los repositorios                                                         |
+| `04A_04_SHELL.md` | cobertura vigente de copias compartidas, CI reproducible, compatibilidad, rollback, releases, deprecación y contratos de autorización |
+
+##### 3.2. Corte físico inspeccionado
+
+| Superficie                  | Identidad verificada                                      | Resultado relevante                                                                             |
+| --------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `devVentoGroup/vento-shell` | `2750dd5fc30cb951e51d0dab0405d72396584f91`                | continuidad documental ya actualizada hasta `SHELL-MIG-002`; `SHELL-MIG-003` es la tarea actual |
+| `devVentoGroup/vento-nexo`  | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799`                | mismo corte runtime usado por `SHELL-MIG-001`; los dos artefactos CI/script siguen presentes    |
+| workflow NEXO               | `.github/workflows/tmp-apply-privileged-request-area.yml` | parchea script y targets, ejecuta instalación/build y puede escribir sobre `preview`            |
+| script NEXO                 | `scripts/tmp-apply-privileged-request-area.mjs`           | parchea `page.tsx` y `actions.ts` usando formas locales de rol, permiso, sesión y contexto      |
+| target NEXO                 | `src/app/inventory/remissions/page.tsx`                   | consume helpers locales de guard, role override y sesión operacional                            |
+| target NEXO                 | `src/app/inventory/remissions/actions.ts`                 | consume helpers locales de role override, operational session/context y cliente Supabase server |
+
+La inspección confirma consumo real. Por ello el lote NEXO cumple la condición de entrada para compatibilidad temporal. No existe base para crear adapters equivalentes en otro repositorio desde esta tarea.
+
+---
+
+#### 4. Clasificación vinculante de consumo legacy
+
+Para esta migración, una dependencia se trata como legacy cuando existe una decisión canónica propietaria que exige converger a una frontera compartida, generada o local explícitamente clasificada y el consumidor todavía depende de una forma anterior.
+
+El gate deberá cubrir como mínimo estas clases ya aprobadas por `SHELL-MIG-001`:
+
+| Clase       | Forma de consumo que debe detectar                                                                |
+| ----------- | ------------------------------------------------------------------------------------------------- |
+| `STATIC`    | import, llamada, tipo, constante o referencia directa a una copia o helper legacy                 |
+| `DYNAMIC`   | importación dinámica, registry, lookup o resolución indirecta que introduzca una forma legacy     |
+| `FRAMEWORK` | layout, middleware, page o route que use una forma legacy aunque no tenga importadores explícitos |
+| `CI`        | workflow que copie, modifique, regenere o valide código dependiente de una forma legacy           |
+| `SCRIPT`    | script que copie, parchee, genere o reintroduzca una forma legacy                                 |
+| `MANUAL`    | herramienta operativa que materialice código o configuración legacy                               |
+
+También se considera nuevo consumo legacy:
+
+- un archivo nuevo que introduce una identidad legacy;
+- una nueva arista desde un archivo existente hacia una identidad legacy;
+- una nueva referencia dentro de un consumidor grandfathered que amplía su superficie legacy;
+- un generador, patch o workflow que escriba una nueva forma legacy en otro archivo;
+- un alias, cast, fallback, concatenación o parser que convierta una identidad no canónica en autoridad actual;
+- una copia de implementación que evita el package, contrato o adapter propietario ya aprobado;
+- una forma no clasificable cuya seguridad o propiedad no pueda demostrarse.
+
+Modificar un consumidor grandfathered no renueva su excepción. Solo puede mantenerla sin crecimiento, reducirla o sustituirla por una frontera canónica compatible.
+
+---
+
+#### 5. Contrato de compatibilidad temporal versionada
+
+La compatibilidad temporal solo es admisible cuando todas estas condiciones se cumplen simultáneamente:
+
+1. el consumidor existe en el inventario aprobado;
+2. el repositorio y commit consumidor son verificables;
+3. la identidad legacy exacta está clasificada y tiene propietario canónico;
+4. el reemplazo contractual está identificado;
+5. la compatibilidad no amplía permisos, roles, scopes, sedes, áreas, sesiones ni autoridad efectiva;
+6. entradas desconocidas, deprecadas o fuera de catálogo fallan cerrado;
+7. no se crea una segunda fuente editable de contratos;
+8. la compatibilidad puede eliminarse sin obligar a migrar simultáneamente los demás repositorios;
+9. existe rollback hacia un snapshot previo certificado;
+10. la evidencia está ligada al commit, manifest, lockfile y versiones aplicables cuando existan packages publicados.
+
+La identidad contractual aplicable al lote NEXO queda fijada así:
+
+| Materia              | Versión o identidad contractual                     | Regla de compatibilidad                                                                                     |
+| -------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| catálogo de permisos | `vento.authorization@1.0.0`                         | solo claves activas se convierten en `PermissionKey`; legacy/retiradas no adquieren autoridad actual        |
+| roles base           | `vento.authorization.base-role-grants@1.1.0`        | ocho `BaseRoleCode`; oficios legacy no reciben alias automático                                             |
+| roles operativos     | `vento.authorization.operational-role-grants@1.0.0` | doce `OperationalRoleCode`; `propietario_admin` y roles base no se convierten por fallback                  |
+| SDK runtime objetivo | `@vento/os-context`                                 | no existe release estable confirmada; no puede declararse compatibilidad estable ni adopción física todavía |
+| consumidor NEXO      | commit `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799`   | baseline exacto para la excepción transitoria de los dos artefactos CI/script                               |
+
+`@vento/os-context@0.1.0` no se eleva a release estable por esta tarea. Una futura compatibilidad distribuible deberá usar una versión publicada e inmutable conforme a `SHELL-PKG-003` y superar la matriz de compatibilidad antes de adopción.
+
+---
+
+#### 6. Aplicabilidad por repositorio
+
+`SHELL-MIG-002` asignó un solo lote a esta tarea. La decisión por repositorio queda explícita:
+
+| Repositorio                  | Lote propio `SHELL-MIG-003` | Excepción temporal materializada | Decisión                                                                                                |
+| ---------------------------- | --------------------------- | -------------------------------: | ------------------------------------------------------------------------------------------------------- |
+| `devVentoGroup/vento-shell`  | no                          |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
+| `devVentoGroup/vento-numera` | no                          |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
+| `devVentoGroup/vento-fogo`   | no                          |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
+| `devVentoGroup/vento-origo`  | no                          |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
+| `devVentoGroup/vento-viso`   | no                          |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
+| `devVentoGroup/vento-pulso`  | no                          |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
+| `devVentoGroup/vento-nexo`   | sí                          |                                2 | permitir exclusivamente la excepción transitoria inventariada del workflow y script; bloquear expansión |
+
+Esta tabla no afirma ausencia de legacy runtime en los otros repositorios. Solo materializa la propiedad exacta de `SHELL-MIG-003`; los demás consumidores conservan los lotes ya asignados por `SHELL-MIG-002`.
+
+---
+
+#### 7. Delimitación del lote NEXO
+
+##### 7.1. Workflow temporal
+
+`.github/workflows/tmp-apply-privileged-request-area.yml` permanece clasificado como consumidor `CI` porque modifica el script, ejecuta el patch, valida instalación/build y puede escribir el resultado sobre `preview`.
+
+Su compatibilidad temporal no autoriza:
+
+- introducir otra ruta, helper, rol, permiso o fallback legacy;
+- modificar el catálogo canónico mediante patch;
+- convertir strings locales en contratos compartidos;
+- aceptar una forma legacy desconocida para evitar un error del patch;
+- extender sus targets más allá del alcance aprobado sin reclasificación;
+- considerar un build exitoso como prueba de paridad de autorización.
+
+##### 7.2. Script temporal
+
+`scripts/tmp-apply-privileged-request-area.mjs` permanece clasificado como consumidor `SCRIPT` porque modifica directamente `page.tsx` y `actions.ts`.
+
+Las formas que el gate deberá reconocer en su baseline incluyen las dependencias locales actualmente usadas por el patch, entre ellas:
+
+- role override local;
+- operational session local;
+- operational context local;
+- evaluadores de permisos locales;
+- consulta directa del rol de empleado usada por el patch;
+- códigos textuales de rol base usados para decidir comportamiento;
+- resolución local de área operacional asociada al flujo de remisiones.
+
+La enumeración anterior describe el baseline que debe congelarse; no lo convierte en API permitida para nuevos consumidores.
+
+##### 7.3. Targets vigilados
+
+`src/app/inventory/remissions/page.tsx` y `src/app/inventory/remissions/actions.ts` se incluyen en el análisis de salida del gate porque el workflow/script puede modificarlos.
+
+La tarea propietaria de su migración de autorización/contexto sigue siendo `SHELL-AUTH-005`. `SHELL-MIG-003` únicamente impide que el mecanismo temporal aumente la deuda legacy mientras esa migración no ha ocurrido.
+
+---
+
+#### 8. Deprecación y observabilidad
+
+La observabilidad distingue dos objetos:
+
+##### 8.1. Superficie pública estable
+
+Si una compatibilidad temporal se incorpora posteriormente a una superficie pública estable de `@vento/contracts`, `@vento/os-context`, `@vento/supabase` o `@vento/ui-web`, deberá seguir `SHELL-PKG-005`:
+
+- expediente `DEP-*` cuando exista deprecación real de una superficie estable;
+- señal `@deprecated` cuando aplique;
+- documentación pública;
+- changelog;
+- release notes;
+- guía de migración;
+- matriz de consumidores;
+- evidencia de compatibilidad y rollback;
+- ventana y retiro gobernados por la política de deprecación.
+
+##### 8.2. Artefacto privado de migración
+
+El workflow y el script NEXO son artefactos privados de migración, no APIs públicas estables. Por tanto:
+
+- no se inventa un expediente `DEP-*` para ellos;
+- su observabilidad proviene del inventario `SHELL-MIG-001`, el lote `SHELL-MIG-002`, la identidad de commit, el resultado del gate y la evidencia del patch/build;
+- su estado legacy debe seguir visible hasta que se adapten o retiren;
+- su retiro exige revalidar consumidores y rollback conforme a `SHELL-MIG-008`.
+
+Un warning de runtime no es obligatorio ni suficiente. Si una tarea propietaria lo adopta posteriormente, deberá ser deduplicado, seguro, no sensible, atribuible y no modificar el control de autorización.
+
+---
+
+#### 9. Gate automático contra nuevos consumidores legacy
+
+El gate queda especificado como una comparación fail-closed entre el baseline aprobado y el estado propuesto del consumidor.
+
+##### 9.1. Entradas mínimas
+
+El gate deberá recibir o resolver:
+
+1. repositorio consumidor;
+2. commit base;
+3. commit de propuesta;
+4. inventario legacy aprobado de `SHELL-MIG-001` y lotes de `SHELL-MIG-002`;
+5. archivos cambiados;
+6. contenido completo de los archivos legacy grandfathered afectados;
+7. targets que un workflow, script o generador pueda escribir;
+8. catálogo de identidades canónicas y legacy de las tareas propietarias;
+9. manifest y lockfile cuando el cambio involucre packages;
+10. versiones de contratos o packages objetivo;
+11. declaración de requisitos `TREQ-*` afectados;
+12. referencia de rollback.
+
+##### 9.2. Regla de comparación
+
+El resultado solo puede ser favorable cuando se cumplen simultáneamente:
+
+```text
+nuevas aristas legacy = 0
+crecimiento del baseline grandfathered = 0
+nuevos archivos legacy = 0
+nuevos generators o patches legacy = 0
+identidades sin clasificar = 0
+fallbacks o aliases no autorizados = 0
+bypasses de autoridad = 0
+```
+
+Además, cualquier modificación de una entrada material invalida la evidencia anterior y exige reejecución.
+
+##### 9.3. Condiciones de fallo
+
+El gate debe bloquear al menos cuando:
+
+- aparece una referencia legacy fuera del baseline exacto;
+- un consumidor grandfathered añade otra identidad legacy;
+- un workflow o script empieza a parchear un target nuevo con una forma legacy;
+- una copia local se presenta como sustituto de una frontera compartida aprobada;
+- se agrega un alias o fallback no aprobado;
+- se acepta un rol, permiso, scope, app code o razón desconocidos por cast o semejanza;
+- se restaura una identidad retirada o deprecada como autoridad actual;
+- la clasificación del hallazgo no es determinista;
+- el baseline, commit o versión usados por la evidencia ya no coinciden con la propuesta;
+- falta el propietario, condición de salida o rollback de una excepción temporal.
+
+##### 9.4. Estados de resultado
+
+El gate reutiliza la semántica fail-closed ya aprobada por `SHELL-PKG-008`:
+
+| Estado           | Aplicación en `SHELL-MIG-003`                                                                                                       |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `PASS`           | cero crecimiento legacy y todas las excepciones observadas coinciden con el baseline autorizado                                     |
+| `FAIL`           | se detectó una nueva arista, copia, patch, alias, fallback o uso legacy no autorizado                                               |
+| `BLOCKED`        | la clasificación o evidencia necesaria no puede resolverse de forma segura                                                          |
+| `STALE`          | evidencia ligada a otro commit, baseline, manifest, lockfile o versión                                                              |
+| `NOT_APPLICABLE` | solo para una comprobación condicional cuya no aplicabilidad esté demostrada; nunca sustituye la búsqueda universal de nuevo legacy |
+
+Ausencia de resultado, omisión, cancelación o análisis parcial no equivalen a `PASS`.
+
+---
+
+#### 10. Propiedad de implementación del gate
+
+La tarea actual define el contrato del gate; no lo implementa físicamente.
+
+La materialización queda distribuida sin crear tareas nuevas:
+
+| Materia                                                           | Propietario existente                               |
+| ----------------------------------------------------------------- | --------------------------------------------------- |
+| lint, métricas y gate contra legacy de autorización/contexto      | `SHELL-AUTH-004`                                    |
+| adapters canónicos requeridos para sustituir legacy               | `SHELL-AUTH-002` y módulos `SHELL-CTX-*` aplicables |
+| migración de consumidores auth/context                            | `SHELL-AUTH-005`                                    |
+| gate universal de packages y evidencia de actualización           | `SHELL-PKG-008` y tareas CI propietarias aplicables |
+| compatibilidad de datos/factories si un hallazgo futuro la activa | `SHELL-DB-*` correspondiente                        |
+| compatibilidad UI si un hallazgo futuro la activa                 | `SHELL-UI-*` correspondiente                        |
+| retiro final de copias legacy                                     | `SHELL-MIG-008`                                     |
+
+En el lote NEXO actual no se autoriza una modificación de factories Supabase ni de contratos de UI compartida; por ello `SHELL-DB-*` y `SHELL-UI-*` no reciben una instancia material adicional desde esta tarea.
+
+---
+
+#### 11. Reglas de adapter y frontera temporal
+
+Cuando una tarea propietaria materialice un adapter temporal, deberá cumplir:
+
+1. estar ligado a consumidores reales enumerados;
+2. existir en la frontera propietaria, no replicado por cada aplicación;
+3. aceptar solo las formas legacy expresamente clasificadas;
+4. traducir a una única identidad canónica cuando esa relación exista;
+5. rechazar relaciones uno-a-muchos que requieran decisión de negocio no declarada;
+6. no inferir permisos por rol, prefijo, ruta o similitud textual;
+7. no convertir `propietario_admin` ni oficios legacy en roles canónicos por fallback;
+8. no ampliar scope, territorio, sesión, dispositivo o contexto;
+9. no usar el cliente como autoridad para rol, sede, área o permiso efectivo;
+10. conservar razón estructurada de rechazo cuando el contrato propietario la defina;
+11. conservar una condición de salida medible;
+12. ser eliminable sin modificar el significado del contrato canónico.
+
+La existencia del adapter no vuelve soportada la forma legacy para consumidores nuevos.
+
+---
+
+#### 12. Rollback y suspensión
+
+El lote `devVentoGroup/vento-nexo / SHELL-MIG-003` conserva el rollback aprobado por `SHELL-MIG-002`:
+
+```text
+restaurar workflow, script y targets
+→ al snapshot previo certificado de NEXO
+→ sin reescribir historia
+→ sin ampliar la superficie legacy
+```
+
+La adaptación o retiro debe suspenderse si ocurre cualquiera de estas condiciones:
+
+- el target esperado no coincide con el commit inspeccionado;
+- el patch deja de ser determinista;
+- instalación, typecheck, pruebas o build aplicables fallan;
+- la compatibilidad amplía autoridad;
+- aparece una identidad legacy no clasificada;
+- el cambio toca una forma contractual fuera del propietario aprobado;
+- no existe snapshot previo seguro;
+- el gate contra nuevo legacy no produce evidencia vigente;
+- el rollback requeriría restaurar un bypass o una identidad expresamente retirada.
+
+Una suspensión conserva abierto el lote; no autoriza a deshabilitar el gate.
+
+---
+
+#### 13. Decisiones vinculantes
+
+1. `SHELL-MIG-003` conserva un único lote material: `devVentoGroup/vento-nexo / SHELL-MIG-003`.
+2. El lote contiene exactamente dos consumidores legacy CI/script inventariados.
+3. Ningún otro repositorio recibe un adapter por inferencia.
+4. Compatibilidad temporal exige consumo real e inventariado.
+5. Un consumidor grandfathered no puede crecer en superficie legacy.
+6. Una nueva referencia legacy fuera del baseline queda bloqueada.
+7. CI, scripts, generators, patches y entrypoints framework cuentan como consumidores.
+8. Un mecanismo que escribe legacy en otro archivo cuenta como nueva arista aunque el archivo generador ya existiera.
+9. Toda forma no clasificable falla cerrado.
+10. `PermissionKey`, `BaseRoleCode`, `OperationalRoleCode`, scopes y contexto conservan sus fuentes contractuales propietarias.
+11. Aliases y fallbacks no crean autoridad ni compatibilidad implícita.
+12. La compatibilidad no amplía rol, permiso, territorio, sesión, dispositivo ni contexto.
+13. El catálogo `vento.authorization@1.0.0` es la identidad de permisos aplicable al baseline NEXO.
+14. `base-role-grants@1.1.0` y `operational-role-grants@1.0.0` son las identidades contractuales de rol aplicables.
+15. `@vento/os-context@0.1.0` no se declara release estable ni objetivo de adopción certificada.
+16. Una futura compatibilidad distribuible deberá tener versión publicada inmutable y matriz de compatibilidad.
+17. Los dos artefactos NEXO privados no reciben expedientes `DEP-*` ficticios.
+18. Una deprecación pública futura sí deberá cumplir íntegramente `SHELL-PKG-005`.
+19. El gate automático reutiliza semántica fail-closed y no permite omisión como éxito.
+20. `SHELL-AUTH-004` permanece propietario de materializar lint, métricas y gates auth/context.
+21. `SHELL-AUTH-005` permanece propietario de migrar los targets consumidores.
+22. `SHELL-MIG-008` permanece propietario del retiro final.
+23. La tarea actual no modifica workflow, script, target, package, lockfile, CI, datos ni Supabase.
+24. La tarea actual no publica tags, releases ni deprecaciones.
+25. La tarea actual crea cero requisitos de prueba por cobertura canónica existente.
+26. `SHELL-MIG-004` permanece como única tarea siguiente reservada.
+
+---
+
+#### 14. Hallazgos y destinos exactos
+
+| Hallazgo                                                                                     | Estado                          | Destino o condición de salida                                                               |
+| -------------------------------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------- |
+| workflow NEXO puede modificar script y targets que usan formas auth/context legacy           | `LEGACY_ACTIVO`                 | gate especificado aquí; materialización en `SHELL-AUTH-004`; migración en `SHELL-AUTH-005`  |
+| script NEXO parchea roles, permisos, sesión y contexto locales                               | `LEGACY_ACTIVO`                 | adapter o sustitución solo tras frontera canónica consumible; migración en `SHELL-AUTH-005` |
+| targets NEXO siguen usando helpers locales de auth/context                                   | `LEGACY_ACTIVO`                 | lote `devVentoGroup/vento-nexo / SHELL-AUTH-005` ya definido por `SHELL-MIG-002`            |
+| `@vento/os-context` no tiene release estable confirmada                                      | `NO_RELEASE_ESTABLE_CONFIRMADA` | publicación y compatibilidad según tareas propietarias antes de adopción física             |
+| no existe gate físico confirmado que bloquee nuevos consumidores legacy                      | `PENDIENTE_DE_IMPLEMENTACION`   | `SHELL-AUTH-004` para auth/context y gates de package/CI aplicables                         |
+| no existen deprecaciones públicas estables activas de los packages compartidos en este corte | `NO_APLICA_EN_LINEA_BASE`       | primer expediente real futuro bajo `SHELL-PKG-005`                                          |
+| el lote actual no requiere modificar factories Supabase                                      | `NO_APLICA`                     | conservar propiedad `SHELL-DB-*`; reabrir solo ante hallazgo material futuro                |
+| el lote actual no requiere modificar contrato UI compartido                                  | `NO_APLICA`                     | conservar propiedad `SHELL-UI-*`; reabrir solo ante hallazgo material futuro                |
+
+No queda un pendiente narrativo sin propietario o condición de salida.
+
+---
+
+#### 15. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `SHELL-MIG-003` materializa el mecanismo de enforcement de obligaciones ya registradas y no crea una regla de negocio o seguridad independiente. El fragmento canónico `04A_04_SHELL.md` ya protege la prohibición de copias compartidas divergentes, la clasificación y retiro seguro de consumidores, los comandos y gates reproducibles con bloqueo de merge, la compatibilidad por consumidor, el rollback independiente, la evidencia por package y PR, la identidad inmutable de release, el ciclo observable de deprecación, el bloqueo de retiro con consumo residual y los contratos específicos de roles, scopes y contexto. Esta tarea especializa esas obligaciones para el lote NEXO sin alterar su contenido ni estado.
+
+| Operación sobre `TREQ-*` | Cantidad |
+| ------------------------ | -------: |
+| creados                  |    **0** |
+| modificados              |    **0** |
+| diferidos                |    **0** |
+| descartados              |    **0** |
+| obsoletos                |    **0** |
+
+No corresponde modificar el registro 04A.
+
+---
+
+#### 16. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                |
+| --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | La tarea es documental y no existe un checkout local completo de `vento-shell` en este entorno para ejecutar el build canónico del plan.                                                                 |
+| LOCAL     | PASS           | El artefacto independiente fue comprobado estructuralmente contra cabecera obligatoria, secciones requeridas, continuidad, cinco clases de evidencia, conteo TREQ cero y ausencia de placeholders.       |
+| REMOTA    | PASS           | Se verificaron en GitHub la continuidad actual, `SHELL-MIG-002`, `SHELL-PKG-003`, `SHELL-PKG-005`, contratos propietarios, 04A, commit NEXO y contenido actual del workflow, script y targets vigilados. |
+| OPERATIVA | NOT_APPLICABLE | No se ejecuta el workflow, patch, migración ni prueba operativa durante la fase documental.                                                                                                              |
+| FÍSICA    | NOT_APPLICABLE | No se materializa adapter, package, gate, cambio de consumidor, Supabase ni despliegue en esta tarea.                                                                                                    |
+
+---
+
+#### 17. Criterios de aceptación
+
+`SHELL-MIG-003` queda materialmente completa porque:
+
+- conserva exactamente el único lote que `SHELL-MIG-002` asignó a esta tarea;
+- materializa exactamente dos consumidores CI/script NEXO y cero consumidores adicionales;
+- distingue los artefactos del lote de los targets cuya migración pertenece a `SHELL-AUTH-005`;
+- impide crear adapters por inferencia en repositorios sin lote propio `SHELL-MIG-003`;
+- fija las condiciones acumulativas que hacen admisible una compatibilidad temporal;
+- liga la compatibilidad NEXO a contratos versionados y al commit consumidor exacto;
+- impide declarar `@vento/os-context@0.1.0` como release estable;
+- define qué constituye una nueva arista legacy en consumo estático, dinámico, framework, CI, script y manual;
+- congela el baseline grandfathered y prohíbe su crecimiento;
+- trata generators y patches que escriben legacy como consumidores efectivos;
+- especifica entradas, comparación, condiciones de fallo y estados del gate automático;
+- conserva comportamiento fail-closed ante formas no clasificables;
+- separa deprecación pública estable de artefactos privados de migración;
+- mantiene observables el workflow y script mediante inventario, commit, gate y evidencia sin inventar expedientes `DEP-*`;
+- preserva rollback por snapshot de NEXO y criterios explícitos de suspensión;
+- asigna la implementación física del gate a `SHELL-AUTH-004` sin adelantarla;
+- conserva la migración de consumidores en `SHELL-AUTH-005` y el retiro en `SHELL-MIG-008`;
+- declara cero cambios `TREQ-*` con cobertura existente explícita;
+- no modifica código, workflows, scripts, packages, CI, datos, Supabase ni continuidad;
+- deja `SHELL-MIG-004` únicamente reservada.
+
+---
+
+#### 18. Límites
+
+Esta tarea no:
+
+- crea adapters físicos;
+- materializa `@vento/contracts`, `@vento/os-context`, `@vento/supabase` o `@vento/ui-web`;
+- publica versions, tags, releases o artefactos npm;
+- inicia una ventana real de deprecación;
+- crea expedientes `DEP-*` para archivos privados;
+- modifica el workflow o script temporal de NEXO;
+- modifica `page.tsx`, `actions.ts` ni helpers de autorización/contexto;
+- implementa el lint o gate físico reservado a `SHELL-AUTH-004`;
+- migra consumidores reservados a `SHELL-AUTH-005`;
+- retira copias legacy reservadas a `SHELL-MIG-008`;
+- ejecuta workflows, patches, builds de consumidor, despliegues o validaciones operativas;
+- cambia tablas, datos, RLS, RPC, funciones, triggers, Storage, Realtime, Edge Functions, tipos generados, secretos o configuración de Supabase;
+- cambia `active-sequence.json` ni desarrolla `SHELL-MIG-004`.
+
+---
+
+#### 19. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-MIG-002 — Definir lotes reversibles por repositorio`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado`
+
 
 ### [ ] SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado
 
