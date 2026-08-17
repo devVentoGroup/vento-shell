@@ -2,10 +2,34 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
+  describePendingTask,
   describeTaskScope,
   orderPendingTasksByRoute,
   parseTaskScopeContracts,
 } from './sync-pending-task-context.mjs';
+
+test('describe tareas pendientes con una acción breve y legible', () => {
+  assert.equal(
+    describePendingTask('Migrar consumidores de autorización'),
+    'Migra consumidores de autorización al destino canónico, comprueba paridad y conserva rollback.',
+  );
+  assert.equal(
+    describePendingTask('Verificar accesibilidad y movimiento reducido'),
+    'Verifica accesibilidad y movimiento reducido, registra brechas y deja evidencia del resultado.',
+  );
+  assert.equal(
+    describePendingTask('Retirar copias legacy y certificar adopción'),
+    'Retira copias legacy y certifica adopción solo después de verificar el reemplazo y el rollback.',
+  );
+  assert.equal(
+    describePendingTask('Ejecutar y resolver el checklist aprobado'),
+    'Ejecuta y resuelve el checklist aprobado de forma controlada y registra resultado, fallos y evidencia.',
+  );
+  assert.equal(
+    describePendingTask('Los fallos parciales permiten recuperación'),
+    'Convierte «Los fallos parciales permiten recuperación» en una condición verificable, con responsable, evidencia y criterio de cierre.',
+  );
+});
 
 const task = (id, state = 'NO INICIADA') => ({
   id,
@@ -103,7 +127,7 @@ test('extrae el alcance canónico sin alterar el título de la tarea', () => {
   });
   assert.equal(
     describeTaskScope({ ...task('TEST-A-001'), scope }),
-    'Decide: Arquitectura y versiones compatibles. No decide ni ejecuta: Instalación física. Entrega a: `TEST-A-002`.',
+    'Arquitectura y versiones compatibles.',
   );
 });
 

@@ -30,28 +30,79 @@ function normalizeSubject(title) {
   return title.trim().replace(/[.!?]+$/u, '');
 }
 
+function conjugateCoordinatedActions(value) {
+  const conjugations = new Map([
+    ['aprobar', 'aprueba'],
+    ['certificar', 'certifica'],
+    ['configurar', 'configura'],
+    ['corregir', 'corrige'],
+    ['desplegar', 'despliega'],
+    ['documentar', 'documenta'],
+    ['estabilizar', 'estabiliza'],
+    ['ejecutar', 'ejecuta'],
+    ['habilitar', 'habilita'],
+    ['migrar', 'migra'],
+    ['probar', 'prueba'],
+    ['proteger', 'protege'],
+    ['publicar', 'publica'],
+    ['reconciliar', 'reconcilia'],
+    ['recuperar', 'recupera'],
+    ['registrar', 'registra'],
+    ['resolver', 'resuelve'],
+    ['retirar', 'retira'],
+    ['validar', 'valida'],
+    ['verificar', 'verifica'],
+  ]);
+  let result = value;
+  for (const [infinitive, conjugated] of conjugations) {
+    result = result.replace(new RegExp(`\\by ${infinitive}\\b`, 'giu'), `y ${conjugated}`);
+  }
+  return result;
+}
+
 export function describePendingTask(title) {
   const subject = normalizeSubject(title || 'tarea sin título');
   const rules = [
-    [/^Definir\s+/iu, (rest) => `Establecer reglas, alcance, datos, responsables, excepciones y criterios verificables para ${rest}.`],
-    [/^Diseñar\s+/iu, (rest) => `Materializar la arquitectura, flujo, componentes, decisiones y límites necesarios para ${rest}.`],
-    [/^Implementar\s+/iu, (rest) => `Construir, integrar y probar el cambio técnico necesario para ${rest}, incluyendo compatibilidad y rollback cuando aplique.`],
-    [/^Crear\s+/iu, (rest) => `Producir el artefacto completo y verificable requerido para ${rest}, con sus relaciones y criterios de aceptación.`],
-    [/^Validar\s+/iu, (rest) => `Comprobar con evidencia que ${rest} cumple los contratos, escenarios y criterios aprobados.`],
-    [/^Probar\s+/iu, (rest) => `Ejecutar pruebas representativas sobre ${rest}, registrar resultados reales y clasificar los defectos encontrados.`],
-    [/^Registrar\s+/iu, (rest) => `Consolidar de forma trazable la información, decisiones, responsables y evidencia de ${rest}.`],
-    [/^Aprobar\s+/iu, (rest) => `Revisar evidencia y criterios de salida para autorizar formalmente ${rest} sin pendientes bloqueantes.`],
-    [/^Auditar\s+/iu, (rest) => `Inspeccionar el estado real de ${rest}, identificar brechas y dejar decisiones verificables por cada hallazgo.`],
-    [/^Inventariar\s+/iu, (rest) => `Identificar y reconciliar todas las instancias reales de ${rest}, sin faltantes, duplicados ni identidades ambiguas.`],
-    [/^Clasificar\s+/iu, (rest) => `Asignar una decisión explícita y trazable a cada elemento de ${rest}, preservando identidades y excepciones.`],
-    [/^Documentar\s+/iu, (rest) => `Consolidar la definición completa, fuentes, decisiones, límites y evidencia de ${rest}.`],
-    [/^Resolver\s+/iu, (rest) => `Cerrar las decisiones y bloqueos necesarios para ${rest}, dejando una salida verificable y continuidad explícita.`],
+    [/^Definir\s+/iu, (rest) => `Define ${rest} con reglas, responsables, excepciones y criterios verificables.`],
+    [/^Diseñar\s+/iu, (rest) => `Diseña ${rest}, incluyendo arquitectura, flujo, componentes y límites.`],
+    [/^Implementar y desplegar\s+/iu, (rest) => `Implementa y despliega ${rest} de forma controlada, con pruebas y rollback.`],
+    [/^Implementar\s+/iu, (rest) => `Implementa ${rest} y verifica integración, compatibilidad y rollback.`],
+    [/^Crear\s+/iu, (rest) => `Crea ${rest} como artefacto verificable, con relaciones y aceptación claras.`],
+    [/^Validar\s+/iu, (rest) => `Valida ${rest} contra los contratos y escenarios aprobados y registra evidencia.`],
+    [/^Verificar\s+/iu, (rest) => `Verifica ${rest}, registra brechas y deja evidencia del resultado.`],
+    [/^Probar\s+/iu, (rest) => `Prueba ${rest} en escenarios representativos y registra resultados y defectos reales.`],
+    [/^Ejecutar\s+/iu, (rest) => `Ejecuta ${rest} de forma controlada y registra resultado, fallos y evidencia.`],
+    [/^Registrar\s+/iu, (rest) => `Registra ${rest} de forma trazable, con decisiones y evidencia.`],
+    [/^Aprobar\s+/iu, (rest) => `Aprueba ${rest} solo después de revisar evidencia y bloqueos.`],
+    [/^Auditar\s+/iu, (rest) => `Audita ${rest}, identifica brechas y decide cada hallazgo.`],
+    [/^Inventariar\s+/iu, (rest) => `Inventaría ${rest} y reconcilia faltantes, duplicados e identidades.`],
+    [/^Clasificar\s+/iu, (rest) => `Clasifica ${rest} con una decisión explícita por elemento y excepción.`],
+    [/^Documentar\s+/iu, (rest) => `Documenta ${rest} con fuentes, decisiones, límites y evidencia.`],
+    [/^Resolver\s+/iu, (rest) => `Resuelve ${rest}, cierra bloqueos y deja una salida verificable.`],
+    [/^Preparar\s+/iu, (rest) => `Prepara ${rest} para su ejecución posterior, con dependencias y puertas claras.`],
+    [/^Migrar\s+/iu, (rest) => `Migra ${rest} al destino canónico, comprueba paridad y conserva rollback.`],
+    [/^Retirar\s+/iu, (rest) => `Retira ${rest} solo después de verificar el reemplazo y el rollback.`],
+    [/^Sustituir\s+/iu, (rest) => `Sustituye ${rest} por su alternativa canónica sin romper consumidores.`],
+    [/^Consolidar\s+/iu, (rest) => `Consolida ${rest}; establece una fuente canónica y elimina responsabilidades competidoras.`],
+    [/^Compartir\s+/iu, (rest) => `Comparte ${rest} mediante una API reutilizable y un propietario claro.`],
+    [/^Mantener\s+/iu, (rest) => `Mantiene ${rest} y documenta la frontera que evita acoplamientos.`],
+    [/^Permitir\s+/iu, (rest) => `Permite ${rest} bajo condiciones, límites y controles verificables.`],
+    [/^Evitar\s+/iu, (rest) => `Evita ${rest} mediante una regla comprobable y una respuesta segura.`],
+    [/^Estandarizar\s+/iu, (rest) => `Estandariza ${rest} con una forma común y verificable.`],
+    [/^Publicar\s+/iu, (rest) => `Publica ${rest} con versión, trazabilidad y evidencia de entrega.`],
+    [/^Configurar\s+/iu, (rest) => `Configura ${rest} con valores, propietarios, validaciones y rollback.`],
+    [/^Integrar\s+/iu, (rest) => `Integra ${rest} con sus consumidores y verifica contratos y compatibilidad.`],
+    [/^Proteger\s+/iu, (rest) => `Protege ${rest} y verifica denegación segura, auditoría y recuperación.`],
+    [/^Certificar\s+/iu, (rest) => `Certifica ${rest} con evidencia de paridad y cumplimiento.`],
+    [/^Reconciliar\s+/iu, (rest) => `Reconcilia ${rest} con sus fuentes canónicas y resuelve cada diferencia.`],
+    [/^Medir\s+/iu, (rest) => `Mide ${rest} con criterios reproducibles y registra resultados reales.`],
+    [/^Revisar\s+/iu, (rest) => `Revisa ${rest}, identifica diferencias y deja decisiones trazables.`],
   ];
   for (const [pattern, formatter] of rules) {
     const match = subject.match(pattern);
-    if (match) return formatter(subject.slice(match[0].length));
+    if (match) return formatter(conjugateCoordinatedActions(subject.slice(match[0].length)));
   }
-  return `Completar ${subject.toLowerCase()}, definiendo el resultado material, sus límites, responsables, evidencia y criterios de cierre.`;
+  return `Convierte «${subject}» en una condición verificable, con responsable, evidencia y criterio de cierre.`;
 }
 
 function countOccurrences(source, token) {
@@ -98,7 +149,7 @@ export function parseTaskScopeContracts(source, relativePath = '(fuente desconoc
 
 export function describeTaskScope(task) {
   if (!task.scope) return describePendingTask(task.title);
-  return `Decide: ${task.scope.decides} No decide ni ejecuta: ${task.scope.excludes} Entrega a: ${task.scope.handoff}`;
+  return task.scope.decides;
 }
 
 function readCanonicalTasks(baseDir) {
@@ -244,6 +295,14 @@ function render(tasks, route, active) {
     `- **Tareas pendientes ordenadas:** **${tasks.length}**`,
     `- **Tareas canónicas cubiertas por la ruta:** **${route.coverage_policy === 'ALL_CANONICAL_TASKS_EXACTLY_ONCE' ? 'todas, exactamente una vez' : route.coverage_policy}**`,
     '',
+    '## Próximas tareas — vista rápida',
+    '',
+    '> Estas frases orientan la lectura sin iniciar ni ampliar las tareas. El contrato y el fragmento propietario siguen siendo la autoridad.',
+    '',
+    '| # | Tarea | Qué hace |',
+    '| ---: | --- | --- |',
+    ...tasks.slice(0, 12).map((task, index) => `| ${index + 1} | \`${task.id}\` — ${task.title.replaceAll('|', '\\|')} | ${describeTaskScope(task).replaceAll('|', '\\|').replaceAll('\n', ' ')} |`),
+    '',
     '## Contrato obligatorio para ejecutar cada tarea',
     '',
     'Antes de desarrollar:',
@@ -285,7 +344,7 @@ function render(tasks, route, active) {
     '',
     '> Las etapas `ACTIVE` aparecen primero en su orden ejecutable. Las tareas de etapas `DEFERRED` permanecen incluidas al final y no se pierden, pero no bloquean la continuidad activa hasta que se resuelva su condición de activación.',
     '',
-    '| Pendiente # | Orden canónico | Etapa | Estado | Identificador | Título canónico | Alcance resumido | Fragmento propietario |',
+    '| Pendiente # | Orden canónico | Etapa | Estado | Identificador | Título canónico | Qué hace | Fragmento propietario |',
     '| ---: | ---: | --- | --- | --- | --- | --- | --- |',
   ];
   for (const [pendingIndex, task] of tasks.entries()) {
