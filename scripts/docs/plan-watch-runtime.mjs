@@ -85,10 +85,19 @@ export function renderPlanWatchStatus({
   message = null,
   pendingChanges = 0,
   preflight = null,
+  implementationControl = null,
 }) {
   return `# Estado local del plan canónico
 
 > Generado automáticamente por el watcher. No es una fuente canónica ni aprueba tareas.
+
+## QUÉ TOCA HACER AHORA
+
+- **Acción principal obligatoria:** ${display(implementationControl?.primaryAction?.type)}
+- **Objetivo exacto:** ${display(implementationControl?.primaryAction?.target)} — ${display(implementationControl?.primaryAction?.title)}
+- **Instrucción:** ${display(implementationControl?.primaryAction?.instruction)}
+- **Carril documental:** ${display(implementationControl?.documentary?.state)} — ${display(implementationControl?.documentary?.taskId)}
+- **Implementación física autorizada:** ${implementationControl?.physical?.authorized?.length > 0 ? implementationControl.physical.authorized.map(({ instanceId }) => instanceId).join(', ') : 'NINGUNA'}
 
 ## Watcher
 

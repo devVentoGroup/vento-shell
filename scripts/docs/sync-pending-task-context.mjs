@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 import { parseTaskBlocks } from './format-canonical-task.mjs';
 import { resolveTaskWorkTopology } from './task-work-topology.mjs';
+import { deriveImplementationControl } from './implementation-control.mjs';
 
 const TASK_ID_PATTERN = '[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\\d{3}';
 const TASK_REFERENCE = new RegExp(`\\b${TASK_ID_PATTERN}(?!\\d)`, 'gu');
@@ -428,7 +429,7 @@ export function orderPendingTasksByRoute(tasks, route) {
   return ordered;
 }
 
-function render(tasks, route, active, workTopology) {
+function render(tasks, route, active, workTopology, implementationControl) {
   const activeTaskId = active.segments?.[0]
     ? `${active.segments[0].prefix}-${String(active.segments[0].from).padStart(3, '0')}`
     : 'NINGUNA';
@@ -453,6 +454,16 @@ function render(tasks, route, active, workTopology) {
     '> Esta guía ordena todas las tareas pendientes del flujo canónico integral. El contenido completo y los criterios específicos permanecen en el fragmento propietario enlazado por cada fila.',
     '>',
     '> En planeación, el marcador global aprueba una sola definición verificable y no afirma ejecución física. La implementación, las pruebas reales y los cierres posteriores viven en la instancia indicada por su ciclo y nunca obligan a reabrir la definición.',
+    '',
+    '## Qué toca hacer ahora',
+    '',
+    `- **Acción principal obligatoria:** \`${implementationControl.primaryAction.type}\``,
+    `- **Objetivo exacto:** \`${implementationControl.primaryAction.target}\` — ${implementationControl.primaryAction.title}`,
+    `- **Instrucción:** ${implementationControl.primaryAction.instruction}`,
+    `- **Carril documental:** ${implementationControl.documentary.state} — \`${implementationControl.documentary.taskId}\``,
+    `- **Implementación física autorizada:** ${implementationControl.physical.authorized.length > 0 ? implementationControl.physical.authorized.map(({ instanceId }) => `\`${instanceId}\``).join(', ') : '**NINGUNA**'}`,
+    '',
+    '> Esta instrucción prevalece sobre la simple posición de una tarea en la lista pendiente. Aprobar documentación no autoriza código y una instancia física no puede saltar su predecesora global.',
     '',
     '## Estado ejecutivo',
     '',
@@ -571,7 +582,8 @@ export function syncPendingTaskContext({ root = process.cwd(), check = false } =
   const active = JSON.parse(fs.readFileSync(path.join(baseDir, 'active-sequence.json'), 'utf8'));
   const tasks = orderPendingTasksByRoute(readCanonicalTasks(baseDir), route);
   const workTopology = resolveTaskWorkTopology({ root });
-  const expected = render(tasks, route, active, workTopology);
+  const implementationControl = deriveImplementationControl({ root, workTopology });
+  const expected = render(tasks, route, active, workTopology, implementationControl);
   const current = fs.existsSync(outputPath) ? fs.readFileSync(outputPath, 'utf8') : '';
   if (current === expected) return { changed: false };
   if (check) throw new Error('El registro de tareas pendientes con contexto está desactualizado.');

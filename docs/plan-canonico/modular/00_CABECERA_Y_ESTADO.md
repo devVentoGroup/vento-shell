@@ -34,7 +34,11 @@
 | Siguiente tarea | **SHELL-CI-004 — Crear changelog automático** |
 | Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
 | Progreso del bloque | **BLOQUE T: 2 de 24 aprobadas; SHELL-CI-003 pendiente** |
-| Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
+| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
+| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CI-001::GLOBAL** |
+| Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — SHELL-CI-003** |
+| Carril físico | **READY_FOR_AUTHORIZATION — SHELL-CI-001::GLOBAL** |
+| Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
 
@@ -43,7 +47,7 @@
 | Última aprobada | `SHELL-CI-002` — Crear build independiente por paquete |
 | Tarea actual | `SHELL-CI-003` — Crear releases versionados — **NO INICIADA** |
 | Siguiente tarea | `SHELL-CI-004` — Crear changelog automático |
-| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
+| Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
 
@@ -56,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE T: 2 DE 24 APROBADAS — ACTUAL SHELL-CI-003** |
-| Implementación física             | **NO INICIADA**                              |
+| Implementación física | **SHELL-CI-001::GLOBAL — READY_FOR_AUTHORIZATION** |
 
 ## Reglas de edición
 
@@ -66,7 +70,7 @@
 4. Cada cambio guardado en un fragmento canónico debe regenerar y validar automáticamente el compilado.
 5. Una tarea no puede marcarse como aprobada hasta que el usuario indique expresamente `APROBADO`.
 6. No debe adelantarse la tarea siguiente ni modificarse una decisión aprobada sin autorización expresa.
-7. Las migraciones, cambios de código y modificaciones de Supabase permanecen prohibidas durante la fase documental actual.
+7. Las migraciones, cambios de código, modificaciones de Supabase y despliegues solo pueden ejecutarse dentro de una instancia física explícitamente autorizada por `implementation-control.json`; aprobar el marcador documental no concede esa autorización.
 
 ## Navegación principal
 

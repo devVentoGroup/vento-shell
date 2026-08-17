@@ -78,8 +78,21 @@ test('renderiza un estado legible sin convertirlo en fuente canónica', () => {
         route: 'NORMAL-CANONICAL-FLOW-001',
       },
     },
+    implementationControl: {
+      primaryAction: {
+        type: 'AUTORIZAR_IMPLEMENTACION',
+        target: 'SHELL-CI-001::GLOBAL',
+        title: 'Crear pruebas de paquetes compartidos',
+        instruction: 'Definir el alcance exacto; todavía no modificar código.',
+      },
+      documentary: { state: 'PAUSADO_POR_ACCION_FISICA_PRIORITARIA', taskId: 'SHELL-CI-003' },
+      physical: { authorized: [] },
+    },
   });
   assert.match(status, /No es una fuente canónica ni aprueba tareas/u);
   assert.match(status, /SHELL-UI-009 — Compartir aviso de rol simulado/u);
   assert.match(status, /\*\*Resultado:\*\* OK/u);
+  assert.match(status, /AUTORIZAR_IMPLEMENTACION/u);
+  assert.match(status, /SHELL-CI-001::GLOBAL/u);
+  assert.match(status, /Implementación física autorizada:\*\* NINGUNA/u);
 });

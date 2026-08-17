@@ -86,6 +86,8 @@ test('el watcher regenera y valida también la guía de tareas pendientes', () =
   assert.match(watcher, /publishStatus\("COMPILANDO"\)/u);
   assert.match(watcher, /publishStatus\("VIGILANDO"\)/u);
   assert.match(watcher, /writeCurrentTaskDevelopmentArtifacts/u);
+  assert.match(watcher, /writeImplementationControlArtifacts/u);
+  assert.match(watcher, /ACCIÓN PRINCIPAL/u);
   assert.match(watcher, /publishTaskArtifacts\(true\)/u);
 });
 
@@ -115,6 +117,8 @@ test('el build publica un estado local legible sin volverlo canónico', () => {
   assert.match(buildWrapper, /state: 'COMPILACIÓN COMPLETADA'/u);
   assert.match(buildWrapper, /derivePreflight/u);
   assert.match(buildWrapper, /writeCurrentTaskDevelopmentArtifacts/u);
+  assert.match(buildWrapper, /writeImplementationControlArtifacts/u);
+  assert.match(buildWrapper, /implementationControl/u);
 });
 
 test('INT-PROD conserva decidir, ejecutar y verificar sin dependencia circular', () => {

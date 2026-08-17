@@ -4,6 +4,7 @@ import {
   serializeActiveSequence,
 } from './continuity-route.mjs';
 import { readAndResolveExecutionRoute } from './execution-route.mjs';
+import { deriveImplementationControl } from './implementation-control.mjs';
 
 const TASK_REGEX = /^###\s+(?<marker>\[[ x~]\]|[✅🟡❌])\s+(?<id>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3})\b(?:\s+[—-]\s+(?<title>[^\n]+))?$/gmu;
 
@@ -369,7 +370,7 @@ function buildCtxProgressRows(taskMap) {
   });
 }
 
-function updateProgressSection(section, taskMap, continuity, activeConfig) {
+function updateProgressSection(section, taskMap, continuity, activeConfig, implementationControl) {
   const gate = taskMap.get('AUTH-MOD-021');
   const gateValue = gate.state === 'APROBADA'
     ? '**APROBADA — PUERTA SUPERADA**'
@@ -395,7 +396,10 @@ function updateProgressSection(section, taskMap, continuity, activeConfig) {
   const activeRow = `| CONTINUIDAD ACTIVA | **${activeConfig.block_code}: ${activeStatus}** |`;
   const implementationPattern = /^\|\s*Implementación física\s*\|[^\n]*\|$/m;
   if (!implementationPattern.test(updated)) fail('no se encontró la fila Implementación física.');
-  return updated.replace(implementationPattern, `${activeRow}\n$&`);
+  const physical = implementationControl.physical.active
+    ? `**${implementationControl.physical.active.instanceId} — ${implementationControl.physical.active.status}**`
+    : '**SIN INSTANCIA FÍSICA ACTIVA**';
+  return updated.replace(implementationPattern, `${activeRow}\n| Implementación física | ${physical} |`);
 }
 
 function buildControlBlock(continuity, activeConfig) {
@@ -429,7 +433,7 @@ function buildControlBlock(continuity, activeConfig) {
   return lines.join('\n');
 }
 
-function updateHeader(header, manifest, taskMap, stats, continuity, activeConfig) {
+function updateHeader(header, manifest, taskMap, stats, continuity, activeConfig, implementationControl) {
   const originalEol = header.includes('\r\n') ? '\r\n' : '\n';
   let updated = header.replace(/\r\n?/g, '\n');
   updated = replaceRow(updated, 'Fragmentos canónicos', `**${manifest.files.length}**`);
@@ -454,6 +458,31 @@ function updateHeader(header, manifest, taskMap, stats, continuity, activeConfig
       : '**NINGUNA — CIERRE SIN HANDOFF DECLARADO**'
   );
   updated = replaceRow(updated, 'Progreso del bloque', `**${buildProgressSummary(continuity, activeConfig)}**`);
+  updated = replaceRow(updated, 'Estado de implementación', `**${implementationControl.mode}**`);
+  updated = replaceRow(
+    updated,
+    'Acción principal obligatoria',
+    `**${implementationControl.primaryAction.type} — ${implementationControl.primaryAction.target}**`,
+  );
+  updated = replaceRow(
+    updated,
+    'Carril documental',
+    `**${implementationControl.documentary.state} — ${implementationControl.documentary.taskId}**`,
+  );
+  updated = replaceRow(
+    updated,
+    'Carril físico',
+    implementationControl.physical.active
+      ? `**${implementationControl.physical.active.status} — ${implementationControl.physical.active.instanceId}**`
+      : '**SIN INSTANCIA FÍSICA ACTIVA**',
+  );
+  updated = replaceRow(
+    updated,
+    'Alcance físico autorizado',
+    implementationControl.physical.authorized.length > 0
+      ? `**${implementationControl.physical.authorized.map(({ instanceId }) => instanceId).join(', ')}**`
+      : '**NINGUNO**',
+  );
 
   updated = replaceSection(updated, '### Continuidad inmediata', (section) => {
     let result = section;
@@ -472,13 +501,18 @@ function updateHeader(header, manifest, taskMap, stats, continuity, activeConfig
         ? formatTask(continuity.next ?? continuity.handoff, true)
         : 'NINGUNA — CIERRE SIN HANDOFF DECLARADO'
     );
+    result = replaceRow(
+      result,
+      'Restricción',
+      '**NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA**',
+    );
     return result;
   });
 
   updated = replaceSection(
     updated,
     '## Progreso documental aprobado',
-    (section) => updateProgressSection(section, taskMap, continuity, activeConfig)
+    (section) => updateProgressSection(section, taskMap, continuity, activeConfig, implementationControl)
   );
 
   const controlPattern = /## Control de continuidad\n\n```text\n[\s\S]*?\n```/;
@@ -597,9 +631,18 @@ export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } =
   const sequenceIds = buildExecutionSequence(activeConfig);
   const continuity = resolveContinuity(continuityTaskMap, sequenceIds);
   continuity.handoff = resolveHandoff(continuityTaskMap, activeConfig, sequenceIds);
+  const implementationControl = deriveImplementationControl({ root });
 
   const currentHeader = fs.readFileSync(headerPath, 'utf8');
-  const nextHeader = updateHeader(currentHeader, manifest, taskMap, stats, continuity, activeConfig);
+  const nextHeader = updateHeader(
+    currentHeader,
+    manifest,
+    taskMap,
+    stats,
+    continuity,
+    activeConfig,
+    implementationControl,
+  );
   const nextRegistry = buildRegistryMarkdown(taskMap, stats, continuity);
   const headerChanged = nextHeader !== currentHeader;
   const registryChanged = !fs.existsSync(registryPath) || fs.readFileSync(registryPath, 'utf8') !== nextRegistry;
@@ -634,6 +677,7 @@ export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } =
     stats,
     taskMap,
     activeConfig,
+    implementationControl,
     ...continuity,
   };
 }

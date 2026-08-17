@@ -6,6 +6,16 @@
 >
 > En planeación, el marcador global aprueba una sola definición verificable y no afirma ejecución física. La implementación, las pruebas reales y los cierres posteriores viven en la instancia indicada por su ciclo y nunca obligan a reabrir la definición.
 
+## Qué toca hacer ahora
+
+- **Acción principal obligatoria:** `AUTORIZAR_IMPLEMENTACION`
+- **Objetivo exacto:** `SHELL-CI-001::GLOBAL` — Crear pruebas de paquetes compartidos
+- **Instrucción:** Definir y aprobar el alcance físico exacto de SHELL-CI-001::GLOBAL; todavía no modificar código.
+- **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `SHELL-CI-003`
+- **Implementación física autorizada:** **NINGUNA**
+
+> Esta instrucción prevalece sobre la simple posición de una tarea en la lista pendiente. Aprobar documentación no autoriza código y una instancia física no puede saltar su predecesora global.
+
 ## Estado ejecutivo
 
 - **Ruta activa:** `NORMAL-CANONICAL-FLOW-001`

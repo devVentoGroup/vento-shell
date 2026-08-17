@@ -8,6 +8,7 @@ import {
   validateProspectiveTaskSemantics,
 } from './task-semantic-contract.mjs';
 import { resolveTaskWorkTopology } from './task-work-topology.mjs';
+import { deriveImplementationControl } from './implementation-control.mjs';
 
 const POLICY_PATH = 'docs/plan-canonico/modular/implementation-readiness-policy.json';
 const APPLICATION_PATH =
@@ -157,9 +158,12 @@ export function buildApplicationReadiness(applications, relationships, screens) 
 function validatePolicy(policy) {
   const errors = [];
   if (policy?.schema_version !== 1) errors.push('schema_version debe ser 1.');
-  if (policy?.mode !== 'PLANNING_ONLY') errors.push('mode debe ser PLANNING_ONLY.');
+  if (policy?.mode !== 'CONTROLLED_EXECUTION') errors.push('mode debe ser CONTROLLED_EXECUTION.');
   if (policy?.automatic_state_changes !== false) errors.push('automatic_state_changes debe ser false.');
   if (policy?.implementation_authorized !== false) errors.push('implementation_authorized debe ser false.');
+  if (policy?.authorization_source !== 'implementation-control.json') {
+    errors.push('authorization_source debe ser implementation-control.json.');
+  }
   for (const key of ['application_readiness_statuses', 'handoff_statuses', 'slice_statuses', 'slices']) {
     if (!Array.isArray(policy?.[key]) || policy[key].length === 0) errors.push(`${key} debe ser un arreglo no vacío.`);
   }
@@ -256,13 +260,14 @@ export function mergeProgress(existing, { taskId, taskTitle, policy, repositorie
     created_at: new Date().toISOString(),
     slices: [],
   };
-  if (progress.schema_version !== 1 || progress.task_id !== taskId || progress.mode !== 'PLANNING_ONLY') {
-    throw new Error(`el progreso local de ${taskId} no cumple su identidad o modo de planeación.`);
+  if (progress.schema_version !== 1 || progress.task_id !== taskId) {
+    throw new Error(`el progreso local de ${taskId} no cumple su identidad.`);
   }
   if (progress.implementation_authorized !== false) {
     throw new Error(`el progreso local de ${taskId} no puede autorizar implementación.`);
   }
   if (!Array.isArray(progress.slices)) throw new Error(`el progreso local de ${taskId} no contiene slices.`);
+  progress.mode = policy.mode;
   const existingById = new Map(progress.slices.map((slice) => [slice.id, slice]));
   const allowed = new Set(policy.slice_statuses);
   progress.task_title = taskTitle;
@@ -298,8 +303,9 @@ function renderApplicationMatrix(rows) {
   }), { owners: 0, direct: 0, conditional: 0, screens: 0 });
   return `# Matriz automática de preparación documental por aplicación
 
-> Modo \`PLANNING_ONLY\`. Resume fuentes canónicas existentes; no audita código,
-> no autoriza implementación y no demuestra que una aplicación esté terminada.
+> Modo \`CONTROLLED_EXECUTION\`. Resume fuentes canónicas existentes; no audita
+> código ni autoriza implementación por sí mismo. La autorización física vive en
+> \`implementation-control.json\` y siempre corresponde a una instancia exacta.
 
 | App | Repositorio futuro | Roadmap | Procesos propios | Consumos directos | Consumos condicionales | Pantallas | Cobertura base | Observación |
 | --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- |
@@ -321,7 +327,7 @@ ${rows.map((row) => `| ${markdown(row.code)} — ${markdown(row.name)} | \`${row
 `;
 }
 
-function renderHandoff({ semantic, current, previous, references, status, lifecycle, dependencies }) {
+function renderHandoff({ semantic, current, previous, references, status, lifecycle, dependencies, control }) {
   const inherited = previous ? sectionBullets(previous.block, 'Decisiones (?:vinculantes|consolidadas)', 12) : [];
   const limits = sectionBullets(current.block, 'Límites', 20);
   const findings = [...semantic.errors, ...semantic.warnings]
@@ -332,8 +338,10 @@ function renderHandoff({ semantic, current, previous, references, status, lifecy
   ]);
   return `# Paquete automático de relevo — ${semantic.preflight.task.id}
 
-> Modo \`PLANNING_ONLY\`. Este archivo prepara una conversación futura; no inicia
-> implementación, no modifica la tarea y no acredita evidencia física.
+> Modo \`CONTROLLED_EXECUTION\`. Este archivo prepara el relevo de la tarea
+> documental actual. La acción operativa vinculante es
+> \`${control.primaryAction.type} ${control.primaryAction.target}\`; este archivo no
+> autoriza por sí mismo código, datos, despliegues ni evidencia física.
 
 ## Identidad y estado documental
 
@@ -404,11 +412,12 @@ ${renderList(semantic.preflight.validators.map((validator) => `\`${validator}\``
 `;
 }
 
-function renderProgress(progress, relativeProgressPath) {
+function renderProgress(progress, relativeProgressPath, control) {
   return `# Progreso observable de implementación futura — ${progress.task_id}
 
-> Modo \`PLANNING_ONLY\`. Todos los cortes nacen en \`NOT_STARTED\` y el generador
-> nunca los avanza. El registro editable se conserva en
+> Modo \`CONTROLLED_EXECUTION\`. Todos los cortes nacen en \`NOT_STARTED\` y el
+> generador nunca los avanza. La acción principal actual es
+> \`${control.primaryAction.type} ${control.primaryAction.target}\`. El registro editable se conserva en
 > \`${relativeProgressPath.replaceAll('\\', '/')}\`.
 
 | Corte | Estado | Repositorios objetivo | Evidencia local | Notas |
@@ -445,6 +454,7 @@ export function prepareImplementationReadinessArtifacts({
   write = true,
 } = {}) {
   const policy = validatePolicy(JSON.parse(fs.readFileSync(path.join(root, POLICY_PATH), 'utf8')));
+  const control = deriveImplementationControl({ root });
   const catalogs = readCatalogs(root);
   const applicationRows = buildApplicationReadiness(
     catalogs.applications,
@@ -496,9 +506,10 @@ export function prepareImplementationReadinessArtifacts({
     status,
     lifecycle,
     dependencies,
+    control,
   });
   const relativeProgressPath = path.relative(root, progressPath);
-  const progressView = renderProgress(progress, relativeProgressPath);
+  const progressView = renderProgress(progress, relativeProgressPath, control);
 
   if (write) {
     for (const output of [
@@ -523,6 +534,7 @@ export function prepareImplementationReadinessArtifacts({
     matrix,
     handoff,
     progressView,
+    control,
   };
 }
 

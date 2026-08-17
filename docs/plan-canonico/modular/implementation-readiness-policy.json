@@ -1,9 +1,10 @@
 {
   "schema_version": 1,
   "policy_id": "DOCUMENTARY-IMPLEMENTATION-READINESS-001",
-  "mode": "PLANNING_ONLY",
+  "mode": "CONTROLLED_EXECUTION",
   "automatic_state_changes": false,
   "implementation_authorized": false,
+  "authorization_source": "implementation-control.json",
   "application_readiness_statuses": [
     "BASE_COVERED",
     "PARTIAL",

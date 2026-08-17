@@ -9,6 +9,7 @@ test('clasifica fuentes canónicas y herramientas transversales por separado', (
     'CANONICAL_TASK',
   );
   assert.equal(classifyCommitPath('scripts/docs/watch-plan-canonico.mjs'), 'TRANSVERSAL');
+  assert.equal(classifyCommitPath('docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md'), 'PROJECTION');
   assert.equal(classifyCommitPath('src/app/page.tsx'), 'APPLICATION');
 });
 
@@ -27,6 +28,15 @@ test('permite derivados y fragmento propietario dentro del mismo alcance canóni
     'docs/plan-canonico/modular/bloques/H/tareas.md',
     'docs/plan-canonico/modular/active-sequence.json',
     'docs/plan-canonico/modular/.generated/REGISTRO_GLOBAL_DE_TAREAS.md',
+  ]);
+  assert.deepEqual(result.errors, []);
+});
+
+test('permite proyecciones derivadas junto a infraestructura transversal', () => {
+  const result = analyzeCommitScope([
+    'scripts/docs/implementation-control.mjs',
+    'docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md',
+    'docs/plan-canonico/modular/.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md',
   ]);
   assert.deepEqual(result.errors, []);
 });

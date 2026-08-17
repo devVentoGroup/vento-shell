@@ -7,11 +7,18 @@ const TRANSVERSAL_PLAN_FILES = new Set([
   'docs/plan-canonico/modular/delivery-contract.json',
   'docs/plan-canonico/modular/implementation-handoff-template.md',
   'docs/plan-canonico/modular/implementation-readiness-policy.json',
+  'docs/plan-canonico/modular/implementation-control.json',
   'docs/plan-canonico/modular/continuity-route.json',
   'docs/plan-canonico/modular/task-delivery-template.md',
   'docs/plan-canonico/modular/task-development-policy.json',
   'docs/plan-canonico/modular/task-format-policy.json',
   'docs/plan-canonico/modular/task-work-topology.json',
+]);
+const DERIVED_PLAN_PROJECTIONS = new Set([
+  'docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md',
+  'docs/plan-canonico/modular/active-sequence.json',
+  'docs/plan-canonico/modular/.generated/REGISTRO_GLOBAL_DE_TAREAS.md',
+  'docs/plan-canonico/modular/.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md',
 ]);
 
 function normalizePath(filePath) {
@@ -21,6 +28,7 @@ function normalizePath(filePath) {
 export function classifyCommitPath(filePath) {
   const normalized = normalizePath(filePath);
   if (TRANSVERSAL_PLAN_FILES.has(normalized)) return 'TRANSVERSAL';
+  if (DERIVED_PLAN_PROJECTIONS.has(normalized)) return 'PROJECTION';
   if (
     normalized === 'AGENTS.md'
     || normalized === 'package.json'

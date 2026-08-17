@@ -5,6 +5,10 @@ import { fileURLToPath } from "node:url";
 import { derivePreflight } from "./canonical-task-preflight.mjs";
 import { writeCurrentTaskDevelopmentArtifacts } from "./task-development-artifacts.mjs";
 import {
+  deriveImplementationControl,
+  writeImplementationControlArtifacts,
+} from "./implementation-control.mjs";
+import {
   acquireWatcherLock,
   registerPendingChange,
   releaseWatcherLock,
@@ -121,6 +125,7 @@ let buildSequence = 0;
 let changeVersion = 0;
 const pendingChanges = new Set();
 let lastObservedPreflight = null;
+let lastImplementationControl = null;
 let lastBuild = {
   buildId: null,
   reason: null,
@@ -131,6 +136,10 @@ let lastBuild = {
 function publishStatus(state, overrides = {}) {
   try {
     lastObservedPreflight = derivePreflight({ root: repositoryRoot });
+    lastImplementationControl = deriveImplementationControl({
+      root: repositoryRoot,
+      preflight: lastObservedPreflight,
+    });
   } catch {
     // Conserva la última continuidad legible si la fuente está transitoriamente incompleta.
   }
@@ -140,6 +149,7 @@ function publishStatus(state, overrides = {}) {
     startedAt: watcherStartedAt,
     pendingChanges: pendingChanges.size,
     preflight: lastObservedPreflight,
+    implementationControl: lastImplementationControl,
     ...lastBuild,
     ...overrides,
   });
@@ -154,6 +164,14 @@ function publishTaskArtifacts(buildSucceeded = false) {
   } catch (error) {
     console.warn(
       `[PLAN CANÓNICO] Brief/diff no disponible: ${error instanceof Error ? error.message : String(error)}`
+    );
+  }
+  try {
+    const { control } = writeImplementationControlArtifacts({ root: repositoryRoot });
+    lastImplementationControl = control;
+  } catch (error) {
+    console.warn(
+      `[PLAN CANÓNICO] Directiva operativa no disponible: ${error instanceof Error ? error.message : String(error)}`
     );
   }
 }
@@ -302,6 +320,16 @@ async function rebuild(reason) {
     };
     publishStatus("VIGILANDO");
     publishTaskArtifacts(true);
+    if (lastImplementationControl) {
+      console.log(
+        `[PLAN CANÓNICO] ➜ ACCIÓN PRINCIPAL: ${lastImplementationControl.primaryAction.type} `
+        + `${lastImplementationControl.primaryAction.target}`
+      );
+      console.log(
+        `[PLAN CANÓNICO]   Carril documental: ${lastImplementationControl.documentary.state} `
+        + `${lastImplementationControl.documentary.taskId}`
+      );
+    }
   } catch (error) {
     console.error(
       `\n[PLAN CANÓNICO] ❌ Compilación #${buildId} fallida:`

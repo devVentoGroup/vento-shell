@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "policy_id": "CANONICAL-IMPLEMENTATION-CONTROL-001",
+  "authorization_mode": "EXPLICIT_PER_INSTANCE",
+  "automatic_authorization": false,
+  "single_primary_action": true,
+  "instance_statuses": [
+    "AUTHORIZED",
+    "IN_PROGRESS",
+    "BLOCKED",
+    "IMPLEMENTED",
+    "VERIFIED",
+    "DEFERRED"
+  ],
+  "instances": []
+}

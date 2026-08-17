@@ -14,7 +14,7 @@ import {
 import { resolveTaskWorkTopology } from './task-work-topology.mjs';
 
 const policy = {
-  mode: 'PLANNING_ONLY',
+  mode: 'CONTROLLED_EXECUTION',
   initial_slice_status: 'NOT_STARTED',
   slice_statuses: ['NOT_STARTED', 'PLANNED', 'IN_PROGRESS', 'IMPLEMENTED', 'VERIFIED', 'BLOCKED'],
   slices: [
@@ -112,7 +112,7 @@ test('rechaza estados materiales sin evidencia', () => {
     schema_version: 1,
     task_id: 'SHELL-UI-015',
     task_title: 'Diagnóstico',
-    mode: 'PLANNING_ONLY',
+    mode: 'CONTROLLED_EXECUTION',
     implementation_authorized: false,
     slices: [
       {
@@ -140,7 +140,7 @@ test('los catálogos reales generan preparación completa sin escrituras', () =>
   assert.equal(result.applicationRows.length, 10);
   assert.equal(result.applicationRows.reduce((sum, row) => sum + row.ownedProcesses, 0), 69);
   assert.equal(result.applicationRows.reduce((sum, row) => sum + row.screenCount, 0), 177);
-  assert.ok(result.handoff.includes('PLANNING_ONLY'));
+  assert.ok(result.handoff.includes('CONTROLLED_EXECUTION'));
   assert.ok(result.handoff.includes(workTopology.currentId));
   assert.ok(result.handoff.includes(currentLifecycle.mode));
   assert.equal(result.progress.implementation_authorized, false);
