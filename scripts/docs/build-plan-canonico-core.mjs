@@ -15,6 +15,7 @@ import { validatePriorityDeliveryLanes } from './validate-priority-delivery-lane
 import { validateEventApplicationBlock } from './validate-event-application-block.mjs';
 import { validateExternalCredentialTaxonomy } from './validate-external-credential-taxonomy.mjs';
 import { validateE3TransitionClosure } from './validate-e3-transition-closure.mjs';
+import { resolveTaskWorkTopology } from './task-work-topology.mjs';
 
 const root = process.cwd();
 const checkOnly = process.argv.includes('--check');
@@ -84,6 +85,16 @@ const unregisteredFragments = findUnregisteredBlockFragments(
 );
 if (unregisteredFragments.length) {
   fail(`fragmentos Markdown fuera de manifest.json: ${unregisteredFragments.join(', ')}`);
+}
+
+try {
+  const workTopology = resolveTaskWorkTopology({ root });
+  console.log(
+    `OK: topología de trabajo; ${workTopology.topology.size} tareas; `
+    + 'dependencias de desarrollo ordenadas y ciclos de repetición clasificados.',
+  );
+} catch (error) {
+  fail(error instanceof Error ? error.message : String(error));
 }
 
 try {

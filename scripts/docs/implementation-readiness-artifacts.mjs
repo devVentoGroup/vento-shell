@@ -7,6 +7,7 @@ import {
   readCanonicalTaskInventory,
   validateProspectiveTaskSemantics,
 } from './task-semantic-contract.mjs';
+import { resolveTaskWorkTopology } from './task-work-topology.mjs';
 
 const POLICY_PATH = 'docs/plan-canonico/modular/implementation-readiness-policy.json';
 const APPLICATION_PATH =
@@ -245,7 +246,7 @@ function handoffStatus(semantic) {
   return 'DOCUMENTED_FOR_FUTURE_IMPLEMENTATION';
 }
 
-export function mergeProgress(existing, { taskId, taskTitle, policy, repositories }) {
+export function mergeProgress(existing, { taskId, taskTitle, policy, repositories, lifecycle = null }) {
   const progress = existing ?? {
     schema_version: 1,
     task_id: taskId,
@@ -265,6 +266,8 @@ export function mergeProgress(existing, { taskId, taskTitle, policy, repositorie
   const existingById = new Map(progress.slices.map((slice) => [slice.id, slice]));
   const allowed = new Set(policy.slice_statuses);
   progress.task_title = taskTitle;
+  progress.lifecycle_mode = lifecycle?.mode ?? null;
+  progress.future_instance_pattern = lifecycle?.instancePattern ?? null;
   progress.slices = policy.slices.map(({ id, title }) => {
     const slice = existingById.get(id) ?? {
       id,
@@ -318,7 +321,7 @@ ${rows.map((row) => `| ${markdown(row.code)} — ${markdown(row.name)} | \`${row
 `;
 }
 
-function renderHandoff({ semantic, current, previous, references, status }) {
+function renderHandoff({ semantic, current, previous, references, status, lifecycle, dependencies }) {
   const inherited = previous ? sectionBullets(previous.block, 'Decisiones (?:vinculantes|consolidadas)', 12) : [];
   const limits = sectionBullets(current.block, 'Límites', 20);
   const findings = [...semantic.errors, ...semantic.warnings]
@@ -341,6 +344,15 @@ function renderHandoff({ semantic, current, previous, references, status }) {
 - **Archivo propietario:** \`docs/plan-canonico/modular/${current.relativePath}\`
 - **Última aprobada:** ${semantic.preflight.continuity.previous}
 - **Siguiente reservada:** ${semantic.preflight.continuity.next}
+
+## Ciclo de trabajo y dependencias
+
+- **Trabajo canónico actual:** ${lifecycle.canonicalWork}
+- **Modalidad posterior:** ${lifecycle.label} (\`${lifecycle.mode}\`)
+- **Identidad de instancia:** ${lifecycle.instancePattern ? `\`${lifecycle.instancePattern}\`` : 'No aplica; se reutiliza la definición global.'}
+- **Dependencias para desarrollar:** ${dependencies.developmentSource ?? 'Solo la precedencia canónica vigente.'}
+- **Dependencias para ejecutar:** ${dependencies.executionSource ?? lifecycle.executionDependencies}
+- **Regla contra repetición:** ${lifecycle.executionRule}
 
 ## Aplicaciones y repositorios detectados
 
@@ -451,6 +463,10 @@ export function prepareImplementationReadinessArtifacts({
   const current = inventory.get(semantic.preflight.task.id);
   const previous = inventory.get(semantic.preflight.continuity.previous);
   if (!current) throw new Error(`no se pudo resolver ${semantic.preflight.task.id} en el inventario canónico.`);
+  const workTopology = resolveTaskWorkTopology({ root });
+  const lifecycle = workTopology.topology.get(current.id);
+  const dependencies = workTopology.dependencies.get(current.id);
+  if (!lifecycle || !dependencies) throw new Error(`no existe topología de trabajo para ${current.id}.`);
   const references = extractImplementationReferences(
     current.block,
     current.id,
@@ -469,9 +485,18 @@ export function prepareImplementationReadinessArtifacts({
       ...references.repositories,
       ...references.applications.map((code) => `vento-${code}`),
     ]),
+    lifecycle,
   });
   const matrix = renderApplicationMatrix(applicationRows);
-  const handoff = renderHandoff({ semantic, current, previous, references, status });
+  const handoff = renderHandoff({
+    semantic,
+    current,
+    previous,
+    references,
+    status,
+    lifecycle,
+    dependencies,
+  });
   const relativeProgressPath = path.relative(root, progressPath);
   const progressView = renderProgress(progress, relativeProgressPath);
 

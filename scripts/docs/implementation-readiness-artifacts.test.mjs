@@ -138,7 +138,11 @@ test('los catálogos reales generan preparación completa sin escrituras', () =>
   assert.equal(result.applicationRows.reduce((sum, row) => sum + row.ownedProcesses, 0), 69);
   assert.equal(result.applicationRows.reduce((sum, row) => sum + row.screenCount, 0), 177);
   assert.ok(result.handoff.includes('PLANNING_ONLY'));
+  assert.ok(result.handoff.includes('TEMPLATE_PER_PACKAGE'));
+  assert.ok(result.handoff.includes('SHELL-CI-001'));
   assert.equal(result.progress.implementation_authorized, false);
+  assert.equal(result.progress.lifecycle_mode, 'TEMPLATE_PER_PACKAGE');
+  assert.equal(result.progress.future_instance_pattern, '<task_id>::<package_id>');
   assert.equal(result.progress.slices.length, 5);
 });
 

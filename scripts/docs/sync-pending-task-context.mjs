@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { parseTaskBlocks } from './format-canonical-task.mjs';
+import { resolveTaskWorkTopology } from './task-work-topology.mjs';
 
 const TASK_ID_PATTERN = '[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\\d{3}';
 const TASK_REFERENCE = new RegExp(`\\b${TASK_ID_PATTERN}(?!\\d)`, 'gu');
@@ -233,11 +234,15 @@ export function validationProfileForTask(task) {
   return 'consistencia documental, TREQ y validación funcional proporcional al materializar';
 }
 
-export function pendingTaskExecutionContext(task) {
-  const dependencyField = inlineField(task.block, ['Dependencias?', 'Prerrequisitos?']);
+export function pendingTaskExecutionContext(task, lifecycle = null, parsedDependencies = null) {
+  const dependencyField = inlineField(task.block, [
+    'Dependencias para desarrollar',
+    'Dependencias de desarrollo',
+  ]) ?? inlineField(task.block, ['Dependencias?', 'Prerrequisitos?']);
   const dependencySection = sectionSource(task.block, /Dependencias?|Prerrequisitos?/iu);
   const dependencySource = dependencyField ?? dependencySection;
-  const declaredDependencies = taskReferences(dependencySource, task.id);
+  const declaredDependencies = parsedDependencies?.development
+    ?? taskReferences(dependencySource, task.id);
   let dependencies;
   let dependencyKind;
   if (declaredDependencies.length > 0) {
@@ -254,6 +259,14 @@ export function pendingTaskExecutionContext(task) {
     dependencyKind = 'NO_DECLARADA';
   }
 
+  const executionDependencySource = inlineField(task.block, [
+    'Dependencias para ejecutar(?: cada instancia)?',
+    'Dependencias de ejecución',
+  ]);
+  const executionDependencies = executionDependencySource
+    ? compactMarkdown(executionDependencySource)
+    : lifecycle?.executionDependencies ?? 'No hay un ciclo de ejecución posterior declarado.';
+
   const testSection = sectionSource(task.block, /Requisitos de prueba derivados|Pruebas requeridas|Plan de pruebas/iu);
   const treq = [...new Set(String(testSection ?? '').match(TREQ_REFERENCE) ?? [])];
   const declaredTreqCount = inlineField(task.block, ['Requisitos de prueba creados o modificados']);
@@ -265,7 +278,12 @@ export function pendingTaskExecutionContext(task) {
   } else if (testSection) tests = `Sección canónica de pruebas definida · ${profile}`;
   else tests = `Por definir al desarrollar · perfil previsto: ${profile}`;
 
-  const closureField = inlineField(task.block, ['Puerta de cierre', 'Condici[oó]n de cierre']);
+  const closureField = inlineField(task.block, [
+    'Puerta de cierre del marcador global',
+    'Puerta de cierre',
+    'Condici[oó]n de cierre',
+  ]);
+  const instanceClosure = compactText(inlineField(task.block, ['Puerta de cierre de cada instancia']));
   const acceptanceSection = sectionSource(task.block, /Criterios de aceptación|Puerta de cierre|Condici[oó]n de cierre/iu);
   const acceptanceLine = acceptanceSection?.split('\n')
     .map((line) => line.trim())
@@ -276,9 +294,16 @@ export function pendingTaskExecutionContext(task) {
   return {
     dependencies,
     dependencyKind,
+    executionDependencies,
     tests,
     treq,
     closure,
+    instanceClosure,
+    lifecycleMode: lifecycle?.mode ?? 'SIN_CLASIFICAR',
+    lifecycleLabel: lifecycle?.label ?? 'Sin clasificación de ciclo',
+    canonicalWork: lifecycle?.canonicalWork ?? 'Desarrollar el contrato canónico una sola vez.',
+    executionRule: lifecycle?.executionRule ?? 'No se declaró una regla de repetición.',
+    instancePattern: lifecycle?.instancePattern ?? null,
   };
 }
 
@@ -403,7 +428,7 @@ export function orderPendingTasksByRoute(tasks, route) {
   return ordered;
 }
 
-function render(tasks, route, active) {
+function render(tasks, route, active, workTopology) {
   const activeTaskId = active.segments?.[0]
     ? `${active.segments[0].prefix}-${String(active.segments[0].from).padStart(3, '0')}`
     : 'NINGUNA';
@@ -414,6 +439,12 @@ function render(tasks, route, active) {
     return true;
   });
   const quickTasks = tasks.slice(0, 12);
+  const modeRows = Object.entries(workTopology.counts)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([mode, count]) => {
+      const definition = workTopology.policy.mode_definitions[mode];
+      return `| \`${mode}\` | ${definition.label} | ${count} | ${definition.execution_rule} |`;
+    });
   const lines = [
     '# GUÍA MAESTRA DE EJECUCIÓN TAREA POR TAREA — VENTO OS',
     '',
@@ -421,7 +452,7 @@ function render(tasks, route, active) {
     '>',
     '> Esta guía ordena todas las tareas pendientes del flujo canónico integral. El contenido completo y los criterios específicos permanecen en el fragmento propietario enlazado por cada fila.',
     '>',
-    '> Una fila no puede aprobarse solo por producir documentación: debe demostrar la cobertura y la evidencia exigidas por su naturaleza real.',
+    '> En planeación, el marcador global aprueba una sola definición verificable y no afirma ejecución física. La implementación, las pruebas reales y los cierres posteriores viven en la instancia indicada por su ciclo y nunca obligan a reabrir la definición.',
     '',
     '## Estado ejecutivo',
     '',
@@ -431,6 +462,14 @@ function render(tasks, route, active) {
     `- **Siguiente etapa:** \`${active.handoff_sequence_id ?? 'NINGUNA'}\``,
     `- **Tareas pendientes ordenadas:** **${tasks.length}**`,
     `- **Tareas canónicas cubiertas por la ruta:** **${route.coverage_policy === 'ALL_CANONICAL_TASKS_EXACTLY_ONCE' ? 'todas, exactamente una vez' : route.coverage_policy}**`,
+    '',
+    '## Cómo leer el orden sin repetir trabajo',
+    '',
+    '> El marcador canónico siempre define el contrato una sola vez. La columna de ciclo indica si después existe una ejecución global, por paquete, por unidad de implementación o una certificación final. Una instancia nunca reabre ni aprueba el marcador global.',
+    '',
+    '| Modo | Significado | Tareas en el plan | Regla contra repetición |',
+    '| --- | --- | ---: | --- |',
+    ...modeRows,
     '',
     '## Próximas tareas — vista rápida',
     '',
@@ -445,14 +484,23 @@ function render(tasks, route, active) {
     '> Dependencias, pruebas y cierre se leen de la tarea cuando ya están declarados. "Precedencia de ruta" y "perfil previsto" son ayudas derivadas y no amplían el contrato canónico.',
     '',
     ...quickTasks.flatMap((task, index) => {
-      const context = pendingTaskExecutionContext(task);
+      const context = pendingTaskExecutionContext(
+        task,
+        workTopology.topology.get(task.id),
+        workTopology.dependencies.get(task.id),
+      );
       return [
         `### ${index + 1}. \`${task.id}\` — ${task.title}`,
         '',
         `- **Qué hace:** ${describeTaskScope(task)}`,
-        `- **Dependencias:** ${context.dependencies}`,
+        `- **Trabajo canónico ahora:** ${context.canonicalWork}`,
+        `- **Ciclo:** ${context.lifecycleLabel}${context.instancePattern ? ` — \`${context.instancePattern}\`` : ''}`,
+        `- **Dependencias para desarrollar:** ${context.dependencies}`,
+        `- **Se ejecuta después de:** ${context.executionDependencies}`,
+        `- **Regla de repetición:** ${context.executionRule}`,
         `- **Pruebas:** ${context.tests}`,
-        `- **Cierre:** ${context.closure}`,
+        `- **Cierre del marcador global:** ${context.closure}`,
+        ...(context.instanceClosure ? [`- **Cierre de cada instancia:** ${context.instanceClosure}`] : []),
         `- **Fuente:** \`${task.relativePath}\``,
         '',
       ];
@@ -499,13 +547,18 @@ function render(tasks, route, active) {
     '',
     '> Las etapas `ACTIVE` aparecen primero en su orden ejecutable. Las tareas de etapas `DEFERRED` permanecen incluidas al final y no se pierden, pero no bloquean la continuidad activa hasta que se resuelva su condición de activación.',
     '',
-    '| Pendiente # | Orden canónico | Etapa | Estado | Identificador | Título canónico | Qué hace | Dependencias | Pruebas / TREQ | Cierre | Fragmento propietario |',
-    '| ---: | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
+    '| Pendiente # | Orden canónico | Etapa | Estado | Identificador | Título canónico | Qué hace | Ciclo | Dependencias para desarrollar | Ejecución posterior | Pruebas / TREQ | Cierre global | Fragmento propietario |',
+    '| ---: | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
   ];
   for (const [pendingIndex, task] of tasks.entries()) {
     const esc = (value) => String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
-    const context = pendingTaskExecutionContext(task);
-    lines.push(`| ${pendingIndex + 1} | ${task.canonicalOrder} | \`${task.sequenceId}\` | ${task.state} | \`${task.id}\` | ${esc(task.title)} | ${esc(describeTaskScope(task))} | ${esc(context.dependencies)} | ${esc(context.tests)} | ${esc(context.closure)} | \`${esc(task.relativePath)}\` |`);
+    const context = pendingTaskExecutionContext(
+      task,
+      workTopology.topology.get(task.id),
+      workTopology.dependencies.get(task.id),
+    );
+    const cycle = `${context.lifecycleLabel}${context.instancePattern ? ` — \`${context.instancePattern}\`` : ''}`;
+    lines.push(`| ${pendingIndex + 1} | ${task.canonicalOrder} | \`${task.sequenceId}\` | ${task.state} | \`${task.id}\` | ${esc(task.title)} | ${esc(describeTaskScope(task))} | ${esc(cycle)} | ${esc(context.dependencies)} | ${esc(context.executionDependencies)} | ${esc(context.tests)} | ${esc(context.closure)} | \`${esc(task.relativePath)}\` |`);
   }
   lines.push('');
   return lines.join('\n');
@@ -517,7 +570,8 @@ export function syncPendingTaskContext({ root = process.cwd(), check = false } =
   const route = JSON.parse(fs.readFileSync(path.join(baseDir, 'continuity-route.json'), 'utf8'));
   const active = JSON.parse(fs.readFileSync(path.join(baseDir, 'active-sequence.json'), 'utf8'));
   const tasks = orderPendingTasksByRoute(readCanonicalTasks(baseDir), route);
-  const expected = render(tasks, route, active);
+  const workTopology = resolveTaskWorkTopology({ root });
+  const expected = render(tasks, route, active, workTopology);
   const current = fs.existsSync(outputPath) ? fs.readFileSync(outputPath, 'utf8') : '';
   if (current === expected) return { changed: false };
   if (check) throw new Error('El registro de tareas pendientes con contexto está desactualizado.');
