@@ -1,10 +1,34 @@
 {
   "instance_id": "SHELL-CI-004::GLOBAL",
   "task_id": "SHELL-CI-004",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
+  "status": "AUTHORIZED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear scripts/quality/shared-package-changelog-gate.mjs como única implementación global de SHELL-CI-004::GLOBAL. El habilitador gobernará exactamente @vento/contracts, @vento/os-context, @vento/supabase y @vento/ui-web; validará package, versión SemVer, source commit, manifest, release base y change sets estructurados; admitirá únicamente ADDED, CHANGED, FIXED, DEPRECATED, REMOVED y SECURITY; verificará coherencia SemVer, NO_RELEASE, breaking changes, migraciones, expedientes DEP-*, prereleases, seguridad y cortes multi-package; implementará las fases lógicas PREPARE y FINALIZE; generará de forma determinista la entrada humana de changelog, release notes y changelog_identity sha256; normalizará UTF-8 y LF; será idempotente ante repetición exacta y fail-closed ante omisión, reescritura, conflicto o evidencia stale; permitirá que la identidad producida sea consumida por el contrato existente de SHELL-CI-003 sin modificar su implementación; y separará autocertificación sintética de cualquier escritura real futura de historiales.",
+    "Crear scripts/quality/shared-package-changelog-gate.test.mjs para autocertificar el habilitador mediante repositorios, manifests, change sets, historiales, releases y evidencia CI003 sintéticos o aislados en ubicaciones temporales. La suite cubrirá exactamente los 8 casos positivos, 20 casos negativos y 16 regresiones contractuales definidos por SHELL-CI-004, incluyendo determinismo, idempotencia, SemVer, NO_RELEASE, breaking changes, migración, expedientes DEP-*, prereleases, seguridad, separación por package, cortes multi-package, integración de changelog_identity con validateReleaseContract de SHELL-CI-003, finalización, preservación de historia y bloqueo de reescritura. La autocertificación no modificará packages reales ni ejecutará releases, tags, registry o consumidores reales.",
+    "Generar evidencia runtime únicamente bajo .delivery/shared-package-changelogs/ y utilizar ubicaciones temporales no versionadas para fixtures, packages sintéticos, CHANGELOG sintéticos, change sets y evidencia de release de autocertificación. La evidencia conservará package, versión, commit, base, change_set_identity, rendered_changelog_entry_identity, release_notes_identity, changelog_identity, estado PREPARE o FINALIZE, invalidaciones y resultado; nunca almacenará secretos, tokens, credenciales, cookies, claves privadas ni contenido sensible. Durante SHELL-CI-004::GLOBAL no se creará ni modificará ningún CHANGELOG.md real bajo packages/."
+  ],
+  "validation_commands": [
+    "npm ci",
+    "node --test scripts/quality/shared-package-changelog-gate.test.mjs",
+    "npm run lint -- scripts/quality/shared-package-changelog-gate.mjs scripts/quality/shared-package-changelog-gate.test.mjs",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm run docs:work-topology:check",
+    "git diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-17",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente la implementación de SHELL-CI-004::GLOBAL en devVentoGroup/vento-shell mediante la creación de scripts/quality/shared-package-changelog-gate.mjs, scripts/quality/shared-package-changelog-gate.test.mjs y evidencia runtime no versionada bajo .delivery/shared-package-changelogs/, junto con las validaciones enumeradas en validation_commands. Autorizo únicamente la autocertificación sintética o aislada del habilitador durante esta instancia y la materialización de caminos PREPARE y FINALIZE fail-closed para ejecuciones reales futuras que cuenten con su autorización correspondiente. No autorizo crear ni modificar CHANGELOG.md reales de packages durante esta instancia, modificar packages, manifests, package.json, package-lock.json, workflows, la implementación de SHELL-CI-003, tags Git reales, releases remotas reales, registry real, consumidores, pull requests, credenciales, secretos, matriz de compatibilidad, Supabase, despliegues ni ninguna ampliación inferida del alcance.",
+    "source_contract_sha256": "cadb1c86fc99c9055828fa7a17e57dcac4c5e294c88e1520a352cb80dc51ba64"
+  },
   "evidence": []
 }
