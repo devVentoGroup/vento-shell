@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **946** |
+| Tareas aprobadas | **947** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **648** |
+| Tareas no iniciadas | **647** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **59.35% (946/1594)** |
+| Porcentaje de completamiento | **59.41% (947/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-NATIVE-001 — Crear tokens compatibles con ANIMA** |
-| Tarea actual | **SHELL-NATIVE-002 — Compartir contratos y validadores** |
+| Última tarea aprobada | **SHELL-NATIVE-002 — Compartir contratos y validadores** |
+| Tarea actual | **SHELL-NATIVE-003 — Mantener UI React Native separada** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-NATIVE-003 — Mantener UI React Native separada** |
+| Siguiente tarea | **SHELL-AUTH-001 — Consolidar @vento/os-context como SDK canónico de contexto y autorización** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 96 de 109 aprobadas; SHELL-NATIVE-002 pendiente** |
+| Progreso del bloque | **BLOQUE H: 97 de 109 aprobadas; SHELL-NATIVE-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-NATIVE-001` — Crear tokens compatibles con ANIMA |
-| Tarea actual | `SHELL-NATIVE-002` — Compartir contratos y validadores — **NO INICIADA** |
-| Siguiente tarea | `SHELL-NATIVE-003` — Mantener UI React Native separada |
+| Última aprobada | `SHELL-NATIVE-002` — Compartir contratos y validadores |
+| Tarea actual | `SHELL-NATIVE-003` — Mantener UI React Native separada — **NO INICIADA** |
+| Siguiente tarea | `SHELL-AUTH-001` — Consolidar @vento/os-context como SDK canónico de contexto y autorización |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 96 DE 109 APROBADAS — ACTUAL SHELL-NATIVE-002** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 97 DE 109 APROBADAS — ACTUAL SHELL-NATIVE-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-NATIVE-001 — Crear tokens compatibles con ANIMA
-        ↓
-TAREA ACTUAL
 SHELL-NATIVE-002 — Compartir contratos y validadores
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-NATIVE-003 — Mantener UI React Native separada
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-AUTH-001 — Consolidar @vento/os-context como SDK canónico de contexto y autorización
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 96 de 109 tareas aprobadas
+BLOQUE H — 97 de 109 tareas aprobadas
 ```

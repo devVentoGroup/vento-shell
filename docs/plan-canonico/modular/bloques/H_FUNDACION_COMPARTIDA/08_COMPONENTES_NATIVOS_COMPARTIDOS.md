@@ -638,7 +638,853 @@ Esta tarea no:
 `SHELL-NATIVE-002 — Compartir contratos y validadores`
 
 
-### [ ] SHELL-NATIVE-002 — Compartir contratos y validadores
+### ✅ SHELL-NATIVE-002 — Compartir contratos y validadores
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-NATIVE-001 — Crear tokens compatibles con ANIMA
+**Tarea siguiente:** SHELL-NATIVE-003 — Mantener UI React Native separada
+**Tipo de tarea:** documental — definición global única de una API reutilizable y portable de contratos y validadores, con futura materialización física `SHELL-NATIVE-002::<implementation_unit_id>` una sola vez por unidad de implementación
+**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md`
+**Estado físico resultante:** `CONTRATO_GLOBAL_DE_API_DE_CONTRATOS_Y_VALIDADORES_ESPECIFICADO`; 1 contrato global; 1 snapshot de cobertura; 8 namespaces contractuales existentes; 30 superficies reconciliadas; 4 políticas de validación; 6 diagnósticos contractuales; 0 unidades materializadas; 0 packages físicos creados
+**Cambios físicos autorizados:** ninguno durante el marcador global
+**Requisitos de prueba creados o modificados:** 6 creados (`TREQ-SHELL-049` a `TREQ-SHELL-054`)
+**Modalidad:** `PER_IMPLEMENTATION_UNIT`
+
+---
+
+#### 1. Propósito
+
+`SHELL-NATIVE-002` define una sola vez la API reutilizable mediante la cual consumidores web, Expo/React Native y otros runtimes compatibles podrán consumir los contratos estáticos de Vento OS y validar entradas no confiables sin copiar catálogos, inventar uniones locales, usar casts como validación ni trasladar dependencias de Supabase o de interfaz a la capa contractual.
+
+La tarea fija simultáneamente:
+
+1. el propietario técnico de los contratos y validadores compartidos;
+2. la frontera entre `@vento/contracts` y `@vento/os-context`;
+3. las superficies contractuales incluidas en el corte vigente;
+4. cuatro políticas de validación según la naturaleza de cada superficie;
+5. una semántica uniforme `parse` / `is`;
+6. un resultado de validación serializable y seguro;
+7. seis códigos de diagnóstico contractuales separados de autorización y contexto;
+8. reglas de pureza, determinismo y portabilidad multiplataforma;
+9. paridad obligatoria entre consumidores para los mismos fixtures y versiones;
+10. la futura materialización única por `implementation_unit_id` con lineage multi-package.
+
+La regla central es:
+
+```text
+FUENTE CANÓNICA APROBADA
+→ artefacto derivado en @vento/contracts
+→ validador puro derivado de la misma fuente
+→ entrada unknown
+→ parse / is
+→ valor canónico o rechazo determinista
+→ consumidor web o nativo
+
+CONSUMIDOR
+-x-> catálogo paralelo
+-x-> cast como validación
+-x-> heurística
+-x-> fallback permisivo
+-x-> dependencia de Supabase o UI dentro del validador
+```
+
+El marcador global no crea código de producción, no modifica consumidores y no publica una versión física.
+
+---
+
+#### 2. Modalidad canónica y ciclo
+
+La topología aplicable es `PER_IMPLEMENTATION_UNIT`.
+
+```text
+MARCADOR GLOBAL SHELL-NATIVE-002
+→ define contrato, cobertura, API, políticas, diagnósticos, gates, pruebas y lineage
+→ se cierra una sola vez
+→ no crea implementación física
+
+DELIV-PKG-025::<package_id>
+→ asigna implementation_unit_id y package_id propietario
+
+E5-GATE-008::<package_id> = PASS
+→ autoriza materialización del alcance aprobado
+
+SHELL-NATIVE-002::<implementation_unit_id>
+→ materializa una sola API física de contratos/validadores para la unidad
+→ uno o más package_id la consumen mediante lineage
+→ no duplica catálogos, parsers, predicados ni fixtures propietarios por package_id
+```
+
+**Dependencia de desarrollo:** `SHELL-NATIVE-001`.
+
+**Dependencias de ejecución de una instancia:**
+
+- `DELIV-PKG-025::<package_id>` con `implementation_unit_id` asignado;
+- `E5-GATE-008::<package_id> = PASS` para el paquete propietario;
+- package físico exacto y repositorio de materialización autorizados por el expediente E5;
+- fuentes contractuales vigentes y versionadas;
+- consumidores declarados;
+- baseline y commit de resultado verificables.
+
+La identidad física concreta, versión npm y rutas internas no se fijan en el marcador global cuando dependan de la unidad todavía no asignada.
+
+---
+
+#### 3. Fuentes contractuales preservadas
+
+`SHELL-NATIVE-002` no crea una segunda semántica. Consume y preserva las decisiones ya aprobadas en:
+
+| Fuente             | Responsabilidad preservada                                                                       |
+| ------------------ | ------------------------------------------------------------------------------------------------ |
+| `SHELL-CON-001`    | raíz única `@vento/contracts`, pureza, publicación y separación frente a runtime, Supabase y UI  |
+| `SHELL-CON-002`    | `AppCode` y catálogo de diez aplicaciones                                                        |
+| `SHELL-CON-003`    | `PermissionKey` y separación de activos, aliases, legacy y retirados                             |
+| `SHELL-CON-004`    | `BaseRoleCode` de ocho miembros                                                                  |
+| `SHELL-CON-005`    | `OperationalRoleCode` de doce miembros                                                           |
+| `SHELL-CON-006`    | `PermissionScopeCode` de trece miembros                                                          |
+| `SHELL-CON-007`    | familia `vento.authorization.response-contracts@1.0.0` y separación contexto/simulación/decisión |
+| `SHELL-CON-008`    | namespaces de razones, problemas estructurales, readiness y metadata cerrada                     |
+| `SHELL-CON-009`    | `ProcessId` y `@vento/contracts/processes`                                                       |
+| `SHELL-CON-010`    | `ProcessStateId` y sus 592 identidades vigentes                                                  |
+| `SHELL-CON-011`    | `ScreenId` y `@vento/contracts/screens`                                                          |
+| `SHELL-CON-012`    | `FunctionalActionId` y `@vento/contracts/actions`                                                |
+| `SHELL-CON-013`    | `BusinessEventId`, 395 definiciones normales y ocho familias condicionales                       |
+| `SHELL-CON-014`    | 49 relaciones de handoff y `@vento/contracts/handoffs`                                           |
+| `SHELL-CON-015`    | contrato de work items, referencia opaca `work_item_id` y vocabularios cerrados                  |
+| `SHELL-CON-016`    | propiedad funcional y `@vento/contracts/ownership`                                               |
+| `SHELL-NATIVE-001` | precedencia inmediata, pureza multiplataforma y regla de materialización por unidad              |
+
+Las tareas propietarias siguen gobernando significado, identidad y evolución. Esta tarea gobierna únicamente la forma común de exponer y validar esas decisiones.
+
+No se anticipa ni incorpora una superficie reservada para una tarea contractual posterior que todavía no forme parte del conjunto materializado por `SHELL-CON-002..016`.
+
+---
+
+#### 4. Línea base técnica verificable
+
+El estado físico previo al marcador global es:
+
+| Elemento                                              | Estado observado                                                                     | Disposición                                       |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------- |
+| workspace raíz de `vento-shell`                       | admite `packages/*`                                                                  | base para materialización futura                  |
+| `packages/contracts`                                  | no materializado                                                                     | no se crea durante este marcador                  |
+| `@vento/contracts`                                    | definido documentalmente, sin release física confirmada                              | propietario lógico de contratos y validadores     |
+| `packages/os-context`                                 | existe como package privado `@vento/os-context@0.1.0`                                | consumidor/adaptador runtime posterior            |
+| `@vento/os-context`                                   | declara peer dependency de `@supabase/supabase-js`                                   | no puede convertirse en core contractual portable |
+| `EffectiveContext` físico actual                      | contiene strings abiertos, `blocked_reasons: string[]`, booleans y metadata genérica | compatibilidad legacy; no contrato canónico       |
+| cliente actual de `os-context`                        | ejecuta RPC Supabase                                                                 | queda fuera de la API pura definida aquí          |
+| validadores contractuales compartidos para web+nativo | no materializados como API física común                                              | objeto de futura instancia                        |
+| cambios físicos en este marcador                      | 0                                                                                    | fase exclusivamente documental                    |
+
+La presencia de tipos parciales en `@vento/os-context` no los convierte en autoridad de catálogo ni justifica duplicar los contratos ya aprobados en `@vento/contracts`.
+
+---
+
+#### 5. Propiedad y fronteras
+
+La propiedad queda definida en tres niveles distintos:
+
+```text
+FUENTE SEMÁNTICA
+→ tarea/registro propietario de cada contrato
+
+PROPIETARIO TÉCNICO COMPARTIDO
+→ @vento/contracts
+→ proyecciones, tipos, catálogos y validadores puros
+
+CONSUMIDORES RUNTIME
+→ @vento/os-context
+→ aplicaciones web
+→ ANIMA / Expo / React Native
+→ otros consumidores declarados
+```
+
+Reglas vinculantes:
+
+1. `@vento/contracts` es la autoridad técnica compartida para los contratos estáticos y sus validadores puros.
+2. `@vento/os-context` consume contratos y validadores; no redefine catálogos ya centralizados.
+3. Supabase produce o persiste hechos según sus contratos propietarios; no define el significado local de los tipos compartidos.
+4. una aplicación consumidora no mantiene una unión, enum, array o lista paralela como autoridad cuando exista una fuente compartida publicada;
+5. los helpers de validación no ejecutan autorización, contexto, persistencia, navegación ni lógica empresarial;
+6. un validator no adquiere propiedad semántica sobre el contrato que valida;
+7. la futura unidad física conserva un solo propietario por `implementation_unit_id`, independientemente de cuántos paquetes la consuman.
+
+---
+
+#### 6. Namespaces reutilizados en el corte vigente
+
+La API se distribuye sobre ocho superficies lógicas ya aprobadas; esta tarea no crea un noveno namespace público solo para validación:
+
+```text
+@vento/contracts/authorization
+@vento/contracts/processes
+@vento/contracts/screens
+@vento/contracts/actions
+@vento/contracts/events
+@vento/contracts/handoffs
+@vento/contracts/work-items
+@vento/contracts/ownership
+```
+
+Cada namespace podrá exponer los validadores correspondientes desde una única implementación compartida y reutilizar las primitivas comunes de resultado y diagnóstico.
+
+La ubicación física interna de esas primitivas comunes no se convierte en API pública por existir dentro del package.
+
+---
+
+#### 7. Cuatro políticas de validación
+
+Cada superficie debe declarar exactamente una política primaria:
+
+| Política             | Uso                                                                     | Regla de aceptación                                                                                                |
+| -------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `CLOSED_MEMBERSHIP`  | códigos e identidades con conjunto finito aprobado                      | tipo/forma válida **y** pertenencia al conjunto publicado                                                          |
+| `STRUCTURED_SCHEMA`  | objetos contractuales con forma y versión aprobadas                     | estructura, discriminantes, cardinalidad y versiones compatibles                                                   |
+| `COMPOSITE_RELATION` | relaciones cuya identidad depende de una tupla o mapping aprobado       | componentes válidos **y** relación existente en la fuente propietaria                                              |
+| `OPAQUE_REFERENCE`   | referencias runtime cuya forma no fue fijada como identidad contractual | no se inventa patrón, secuencia o membresía global; se valida únicamente dentro del contrato propietario aplicable |
+
+Estas políticas impiden aplicar una misma heurística a conceptos que poseen naturalezas distintas.
+
+---
+
+#### 8. Snapshot de cobertura `SHELL-NATIVE-CONTRACTS-VALIDATORS-001`
+
+El corte vigente reconcilia exactamente 30 superficies:
+
+|    # | Superficie                         | Namespace     | Política                     |                             Cobertura vigente | Fuente          |
+| ---: | ---------------------------------- | ------------- | ---------------------------- | --------------------------------------------: | --------------- |
+|    1 | `AppCode`                          | authorization | `CLOSED_MEMBERSHIP`          |                                            10 | `SHELL-CON-002` |
+|    2 | `PermissionKey`                    | authorization | `CLOSED_MEMBERSHIP`          |                                           140 | `SHELL-CON-003` |
+|    3 | `BaseRoleCode`                     | authorization | `CLOSED_MEMBERSHIP`          |                                             8 | `SHELL-CON-004` |
+|    4 | `OperationalRoleCode`              | authorization | `CLOSED_MEMBERSHIP`          |                                            12 | `SHELL-CON-005` |
+|    5 | `PermissionScopeCode`              | authorization | `CLOSED_MEMBERSHIP`          |                                            13 | `SHELL-CON-006` |
+|    6 | `AccessContextV1`                  | authorization | `STRUCTURED_SCHEMA`          |                                    1 contrato | `SHELL-CON-007` |
+|    7 | `SimulationContextV1`              | authorization | `STRUCTURED_SCHEMA`          |                                    1 contrato | `SHELL-CON-007` |
+|    8 | `AuthorizationDecisionV1`          | authorization | `STRUCTURED_SCHEMA`          |                                    1 contrato | `SHELL-CON-007` |
+|    9 | `SimulatedAuthorizationDecisionV1` | authorization | `STRUCTURED_SCHEMA`          |                                    1 contrato | `SHELL-CON-007` |
+|   10 | `AuthorizationReasonCode`          | authorization | `CLOSED_MEMBERSHIP`          |                                            20 | `SHELL-CON-008` |
+|   11 | `StructuralIssueCode`              | authorization | `CLOSED_MEMBERSHIP`          |                                           100 | `SHELL-CON-008` |
+|   12 | `LaneAvailabilityReasonCode`       | authorization | `CLOSED_MEMBERSHIP`          |                                            10 | `SHELL-CON-008` |
+|   13 | `LaneReasonCode`                   | authorization | `CLOSED_MEMBERSHIP` derivada |                                           110 | `SHELL-CON-008` |
+|   14 | `StructuralIssueSeverity`          | authorization | `CLOSED_MEMBERSHIP`          |                                             5 | `SHELL-CON-008` |
+|   15 | `StructuralIssueSubjectType`       | authorization | `CLOSED_MEMBERSHIP`          |                                            17 | `SHELL-CON-008` |
+|   16 | `StructuralIssueSource`            | authorization | `CLOSED_MEMBERSHIP`          |                                            15 | `SHELL-CON-008` |
+|   17 | `ProcessId`                        | processes     | `CLOSED_MEMBERSHIP`          |                                            69 | `SHELL-CON-009` |
+|   18 | `ProcessStateId`                   | processes     | `CLOSED_MEMBERSHIP`          |                                           592 | `SHELL-CON-010` |
+|   19 | `ScreenId`                         | screens       | `CLOSED_MEMBERSHIP`          |                                           177 | `SHELL-CON-011` |
+|   20 | `FunctionalActionId`               | actions       | `CLOSED_MEMBERSHIP`          |                                           885 | `SHELL-CON-012` |
+|   21 | `BusinessEventId`                  | events        | `CLOSED_MEMBERSHIP`          |                                           395 | `SHELL-CON-013` |
+|   22 | familia condicional de evento      | events        | `CLOSED_MEMBERSHIP`          |                                             8 | `SHELL-CON-013` |
+|   23 | `ApplicationHandoffRelation`       | handoffs      | `COMPOSITE_RELATION`         |                                            49 | `SHELL-CON-014` |
+|   24 | `work_item_id`                     | work-items    | `OPAQUE_REFERENCE`           | dinámica; sin parser de formato independiente | `SHELL-CON-015` |
+|   25 | clase de work item                 | work-items    | `CLOSED_MEMBERSHIP`          |                                             8 | `SHELL-CON-015` |
+|   26 | estado de work item                | work-items    | `CLOSED_MEMBERSHIP`          |                                            16 | `SHELL-CON-015` |
+|   27 | readiness de work item             | work-items    | `CLOSED_MEMBERSHIP`          |                                             7 | `SHELL-CON-015` |
+|   28 | propiedad de proceso               | ownership     | `COMPOSITE_RELATION`         |                                   69 mappings | `SHELL-CON-016` |
+|   29 | fuente objetivo por subcapacidad   | ownership     | `COMPOSITE_RELATION`         |                                217 decisiones | `SHELL-CON-016` |
+|   30 | estado de fuente objetivo          | ownership     | `CLOSED_MEMBERSHIP`          |                                             5 | `SHELL-CON-016` |
+
+**Conciliación:** 30 superficies esperadas, 30 cubiertas, 0 omitidas dentro del corte `SHELL-CON-002..016`, 0 superficies añadidas desde tareas futuras.
+
+`LaneReasonCode` se registra como unión derivada de 100 `StructuralIssueCode` + 10 `LaneAvailabilityReasonCode`; sus 110 valores no constituyen una tercera fuente editable.
+
+Las 49 relaciones de handoff, las 69 asignaciones de propiedad de proceso y las 217 decisiones de fuente objetivo se validan desde sus fuentes propietarias; esta tarea no crea copias manuales de esas matrices.
+
+---
+
+#### 9. Regla especial de referencias opacas
+
+`work_item_id` permanece una referencia runtime opaca porque `SHELL-CON-015` no aprobó una gramática serial universal para esa identidad.
+
+Por tanto:
+
+```text
+NO EXISTE en este corte:
+→ regex canónica de work_item_id
+→ secuencia global canónica de work_item_id
+→ catálogo global de work_item_id
+→ parseWorkItemId basado en sintaxis inventada
+```
+
+Un consumidor puede transportar y validar la presencia/tipo que exija el contrato físico propietario cuando este exista, pero no inferirá proceso, aplicación, actor, permiso, prioridad, territorio o estado a partir de la forma del identificador.
+
+La ausencia de un validador de formato sintético es una decisión de seguridad contractual, no una brecha de cobertura.
+
+---
+
+#### 10. API uniforme `parse` / `is`
+
+Para toda superficie `CLOSED_MEMBERSHIP`, `STRUCTURED_SCHEMA` o `COMPOSITE_RELATION`, la futura API física deberá ofrecer dos operaciones semánticas equivalentes:
+
+```text
+parseX(input: unknown) -> ContractValidationResult<X>
+isX(input: unknown) -> boolean / type predicate
+```
+
+Reglas:
+
+1. `parseX` es la operación normativa para frontera externa;
+2. `isX` devuelve `true` exactamente cuando `parseX(input)` produce `ok = true`;
+3. `isX` no aplica normalización adicional;
+4. `parseX` no convierte ni corrige silenciosamente el input;
+5. ambas operaciones consumen la misma fuente derivada y la misma versión;
+6. ninguna mantiene una lista manual paralela;
+7. una implementación puede generar los nombres concretos de exports desde el tipo aprobado, pero no puede cambiar esta semántica.
+
+No se exige una operación `assertX` pública en el contrato mínimo. La entrada inválida ordinaria se modela mediante resultado explícito y no mediante excepciones como flujo normal de control.
+
+---
+
+#### 11. Resultado común de validación
+
+La forma conceptual común queda:
+
+```text
+type ContractValidationIssueCode =
+  | "INVALID_TYPE"
+  | "INVALID_FORMAT"
+  | "UNKNOWN_MEMBER"
+  | "INVALID_STRUCTURE"
+  | "UNSUPPORTED_CONTRACT_VERSION"
+  | "UNSUPPORTED_SCHEMA_VERSION";
+
+type ContractValidationIssue = {
+  code: ContractValidationIssueCode;
+  contract_id: string;
+  path: string | null;
+  expected_version: string | null;
+  received_version: string | null;
+};
+
+type ContractValidationResult<T> =
+  | { ok: true; value: T }
+  | { ok: false; issue: ContractValidationIssue };
+```
+
+Esta forma es una interfaz contractual conceptual; no fija archivo, librería de schema ni implementación física antes de la instancia E5.
+
+`ContractValidationIssue` no incluye por defecto el valor bruto rechazado, secretos, tokens de sesión, credenciales, datos personales ni stack traces.
+
+---
+
+#### 12. Semántica exacta de los seis diagnósticos
+
+| Código                         | Uso exacto                                                                                              |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| `INVALID_TYPE`                 | el tipo primitivo o contenedor requerido no coincide                                                    |
+| `INVALID_FORMAT`               | el valor tiene tipo admisible, pero viola la gramática aprobada de una identidad que sí posee gramática |
+| `UNKNOWN_MEMBER`               | forma válida, pero el valor, tupla o mapping no pertenece al conjunto publicado                         |
+| `INVALID_STRUCTURE`            | un contrato estructurado incumple campos, nulabilidad, cardinalidad o discriminantes obligatorios       |
+| `UNSUPPORTED_CONTRACT_VERSION` | la versión contractual recibida no está soportada por el validator activo                               |
+| `UNSUPPORTED_SCHEMA_VERSION`   | la versión de schema recibida no está soportada por el validator activo                                 |
+
+Separaciones obligatorias:
+
+- estos códigos no son `AuthorizationReasonCode`;
+- no son `StructuralIssueCode`;
+- no son HTTP status;
+- no son SQLSTATE;
+- no son nombres de excepción;
+- no son copy de UI;
+- no conceden ni deniegan autorización por sí solos.
+
+Un diagnóstico contractual describe por qué un valor no puede convertirse en el tipo compartido solicitado.
+
+---
+
+#### 13. Reglas fail-closed y prohibición de coerción
+
+La frontera de validación obedece:
+
+```text
+unknown
+→ comprobar tipo
+→ comprobar formato cuando exista
+→ comprobar versión/schema cuando aplique
+→ comprobar estructura o pertenencia
+→ producir tipo canónico
+
+cualquier fallo
+→ resultado ok=false
+→ no tipo canónico
+```
+
+Queda prohibido como sustituto de validación:
+
+- `value as AppCode`;
+- `value as PermissionKey`;
+- cast doble;
+- `as unknown as X`;
+- `trim`, case-folding o corrección ortográfica implícitos;
+- concatenación para fabricar una identidad;
+- aproximación por prefijo;
+- aceptación de un valor porque “parece” válido;
+- fallback a un miembro parecido;
+- aceptar una versión desconocida como la última conocida;
+- convertir aliases o legacy en miembros activos sin el resolver de compatibilidad propietario.
+
+Una transformación solo puede ocurrir cuando la fuente contractual propietaria la define expresamente y la API de compatibilidad está separada del parser canónico.
+
+---
+
+#### 14. Casos contractuales de referencia
+
+Los siguientes resultados quedan fijados como oracles mínimos de la futura implementación:
+
+| Entrada                                                    | Parser conceptual            | Resultado                                                           |
+| ---------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------- |
+| `shell`                                                    | `AppCode`                    | `ok=true`                                                           |
+| `hub`                                                      | `AppCode`                    | `UNKNOWN_MEMBER`                                                    |
+| `default`                                                  | `AppCode`                    | `UNKNOWN_MEMBER`                                                    |
+| `VPROC-0001`                                               | `ProcessId`                  | `ok=true`                                                           |
+| `VPROC-0070`                                               | `ProcessId`                  | `UNKNOWN_MEMBER`                                                    |
+| `vproc-0001`                                               | `ProcessId`                  | `INVALID_FORMAT`                                                    |
+| `VSCREEN-0001`                                             | `ScreenId`                   | `ok=true`                                                           |
+| `VSCREEN-0178`                                             | `ScreenId`                   | `UNKNOWN_MEMBER`                                                    |
+| `VSCREEN-0001::SECONDARY:04`                               | `FunctionalActionId`         | `ok=true`                                                           |
+| `VSCREEN-0001::SECONDARY:05`                               | `FunctionalActionId`         | `UNKNOWN_MEMBER`                                                    |
+| valor activo de `PermissionKey`                            | `PermissionKey`              | `ok=true`                                                           |
+| alias o permiso legacy fuera del conjunto activo           | `PermissionKey`              | `UNKNOWN_MEMBER`                                                    |
+| `NO_ACTIVE_CHECKIN`                                        | `LaneAvailabilityReasonCode` | `ok=true`                                                           |
+| razón pública insertada como lane reason                   | `LaneReasonCode`             | `UNKNOWN_MEMBER`                                                    |
+| tupla handoff aprobada                                     | `ApplicationHandoffRelation` | `ok=true`                                                           |
+| tupla con `ProcessId` y `AppCode` válidos pero no aprobada | `ApplicationHandoffRelation` | `UNKNOWN_MEMBER`                                                    |
+| mapping proceso→owner aprobado                             | propiedad de proceso         | `ok=true`                                                           |
+| mapping con propietario distinto del registro              | propiedad de proceso         | `UNKNOWN_MEMBER`                                                    |
+| `work_item_id` con forma arbitraria                        | referencia opaca             | no se infiere validez por sintaxis; se remite al contrato productor |
+
+Los fixtures físicos deberán utilizar valores exactos de las fuentes publicadas; esta tabla fija únicamente la semántica esperada.
+
+---
+
+#### 15. Contratos estructurados de autorización
+
+Los parsers de `AccessContextV1`, `SimulationContextV1`, `AuthorizationDecisionV1` y `SimulatedAuthorizationDecisionV1` deberán:
+
+1. exigir discriminantes contractuales compatibles;
+2. validar `contract_family`, `contract_name`, `contract_version` y `schema_version` cuando sean obligatorios;
+3. conservar la separación entre contexto real, simulación y decisión;
+4. validar nested codes mediante los mismos parsers compartidos, no mediante casts;
+5. rechazar campos obligatorios ausentes;
+6. rechazar una versión crítica desconocida;
+7. no promover `EffectiveContext`, `administrative_bypass`, `bypass_applied`, `can_operate` ni metadata genérica a fuente canónica;
+8. no convertir `READY` en `ALLOW`;
+9. no aceptar strings legacy libres en campos que ya poseen unión cerrada;
+10. producir un valor canónico sin introducir autoridad adicional.
+
+El hash aprobado de `vento.authorization.response-contracts@1.0.0` permanece gobernado por `SHELL-CON-007`; esta tarea no crea una versión alternativa.
+
+---
+
+#### 16. Relaciones compuestas
+
+##### 16.1. Handoffs
+
+Una relación de handoff válida exige simultáneamente:
+
+```text
+ProcessId válido
++ owner_application AppCode válida
++ participant_application AppCode válida
++ tupla exacta presente entre las 49 relaciones aprobadas
+```
+
+La coincidencia de los tres componentes por separado no basta.
+
+##### 16.2. Propiedad de proceso
+
+Una relación de propiedad válida exige:
+
+```text
+ProcessId válido
++ owner_app_code AppCode válido
++ mapping exacto presente en PROC-APPLICATION-OWNERSHIP-REGISTRY-001
+```
+
+##### 16.3. Fuente objetivo de subcapacidad
+
+La proyección válida conserva las 217 decisiones de `CAP-MAP-008`, incluidos los casos `OBJETIVO_DIVIDIDO`, `OBJETIVO_DIFERIDO` y `SIN_FUENTE_ADECUADA`, sin inferir una propietaria donde la fuente no la define.
+
+Ninguna de las tres relaciones se valida concatenando strings ni duplicando manualmente la matriz propietaria.
+
+---
+
+#### 17. Pureza del runtime contractual
+
+La implementación pública de contratos y validadores deberá ser portable y libre de efectos.
+
+En el runtime público de la unidad quedan prohibidos imports o dependencias requeridas para validar que pertenezcan a:
+
+- `react`;
+- `react-native`;
+- Expo;
+- DOM o CSS;
+- Next.js;
+- `@supabase/supabase-js`;
+- clientes HTTP;
+- SDK de almacenamiento;
+- variables de ambiente como fuente de significado contractual;
+- cookies o sesión;
+- acceso a filesystem;
+- built-ins exclusivos de Node.js necesarios en runtime;
+- hora actual, aleatoriedad o estado global mutable para decidir validez.
+
+Las herramientas de build/generación podrán usar infraestructura de desarrollo si el artefacto runtime publicado permanece portable, determinista y sin esas dependencias.
+
+---
+
+#### 18. Portabilidad multiplataforma
+
+La misma versión lógica del validator deberá producir la misma decisión contractual en todos los targets declarados.
+
+Para un fixture idéntico:
+
+```text
+MISMO INPUT
++ MISMA VERSIÓN DE CONTRATO
++ MISMA VERSIÓN DE VALIDATOR
+=
+MISMO ok
++ MISMO VALOR CANÓNICO CUANDO ok=true
++ MISMO issue.code CUANDO ok=false
+```
+
+Una diferencia entre web y Expo/React Native bajo esas condiciones constituye drift y bloquea la certificación de la unidad.
+
+Los adaptadores de consumo pueden cambiar sintaxis de import o empaquetado, pero no membresía, semántica, diagnósticos ni reglas de aceptación.
+
+---
+
+#### 19. Serialización y determinismo
+
+La API deberá conservar resultados y manifests compatibles con JSON puro.
+
+Reglas:
+
+1. el contrato común de resultado no depende de clases con prototipo, funciones o símbolos;
+2. los fixtures normativos se serializan en UTF-8;
+3. un mismo resultado lógico canonizado produce bytes equivalentes para evidencia;
+4. el orden de catálogos derivados se conserva conforme a su fuente propietaria;
+5. ningún build reordena semánticamente un conjunto para cambiar su digest;
+6. timestamps, rutas temporales, hostname o variables de ambiente no forman parte del payload normativo;
+7. un digest pertenece a una versión, commit, snapshot y conjunto de fuentes exactos;
+8. bytes distintos bajo la misma identidad contractual requieren investigación y no se aceptan como equivalentes por conveniencia.
+
+---
+
+#### 20. Payload normativo del snapshot de cobertura
+
+La representación normativa de `SHELL-NATIVE-CONTRACTS-VALIDATORS-001` usa JSON UTF-8, claves de objetos ordenadas lexicográficamente para la entrada de huella y arrays en el orden contractual definido por esta tarea.
+
+Huella documental del snapshot:
+
+`sha256:0a273797febd78a33bf05073d3dec509829c15c6629fb99f59b933fc47b5b102`
+
+El snapshot contiene:
+
+```text
+schema = vento.contract-validation-api@1
+snapshot_id = SHELL-NATIVE-CONTRACTS-VALIDATORS-001
+api_owner = @vento/contracts
+surface_count = 30
+validation_policy_count = 4
+diagnostic_code_count = 6
+coercion = false
+fail_closed = true
+```
+
+La futura implementación deberá reproducir ese snapshot lógico o publicar una revisión contractual posterior con diff y lineage. No puede conservar la misma identidad con otra cobertura silenciosa.
+
+---
+
+#### 21. Regla de alias, legacy y compatibilidad
+
+La API canónica no fusiona compatibilidad con identidad activa.
+
+En particular:
+
+- `parsePermissionKey` acepta únicamente las 140 claves activas del corte correspondiente;
+- aliases de permiso se resuelven únicamente mediante la frontera de compatibilidad propietaria;
+- permisos legacy bloqueados no se convierten automáticamente en activos;
+- permisos retirados no se reactivan;
+- `hub` no se convierte en `shell` dentro de `parseAppCode`;
+- `default` no se convierte en una aplicación;
+- un código desconocido no recibe sustitución por semejanza;
+- una relación inexistente no se fabrica combinando miembros válidos.
+
+La compatibilidad explícita puede producir un valor canónico, pero debe conservar trazabilidad de la referencia original y no alterar la semántica del parser canónico.
+
+---
+
+#### 22. Contrato de entrada de cada futura instancia
+
+Toda `SHELL-NATIVE-002::<implementation_unit_id>` deberá registrar como mínimo:
+
+| Campo                    | Obligación                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------------ |
+| `implementation_unit_id` | unidad exacta asignada por `DELIV-PKG-025`                                           |
+| `owner_package_id`       | paquete propietario con `E5-GATE-008::<package_id> = PASS`                           |
+| `consumer_package_ids`   | lista cerrada de paquetes consumidores                                               |
+| repositorio              | repositorio físico propietario                                                       |
+| package físico           | identidad exacta autorizada por el expediente E5                                     |
+| baseline                 | commit anterior a la materialización                                                 |
+| result commit            | commit exacto de implementación                                                      |
+| API snapshot             | `SHELL-NATIVE-CONTRACTS-VALIDATORS-001` o revisión aprobada                          |
+| contract sources         | fuente, versión/hash cuando exista y procedencia de cada superficie                  |
+| public API inventory     | exports públicos exactos y política asociada                                         |
+| generated inventory      | catálogos, tipos y validadores generados                                             |
+| diagnostic contract      | seis códigos o revisión contractual aprobada                                         |
+| fixture inventory        | positivos, negativos, límites y versiones incompatibles                              |
+| target matrix            | runtimes/plataformas declarados                                                      |
+| consumer matrix          | repositorio, versión, plataforma y resultado por consumidor                          |
+| digest                   | huella del manifest/payload canónico aplicable                                       |
+| tests                    | resultados unitarios, contractuales, serialización, compatibilidad y multiplataforma |
+| rollback                 | versión previa y procedimiento reproducible                                          |
+| blockers                 | lista cerrada con propietario y condición de salida                                  |
+
+Un campo obligatorio ausente deja la instancia `BLOCKED`.
+
+---
+
+#### 23. Unicidad por `implementation_unit_id`
+
+La materialización se agrega por unidad, no por paquete:
+
+```text
+1 implementation_unit_id
+→ máximo 1 SHELL-NATIVE-002::<implementation_unit_id>
+→ máximo 1 fuente física propietaria de validadores
+→ máximo 1 conjunto propietario de catálogos derivados
+→ máximo 1 contrato común de diagnóstico para la unidad
+→ máximo 1 suite propietaria del core
+→ N package_id consumidores mediante lineage
+```
+
+Si varios paquetes consumen la misma unidad, todos referencian la misma versión física y sus pruebas de consumidor se agregan a la matriz; no se copian los parsers dentro de cada repositorio.
+
+Una unidad distinta se evalúa independientemente y no puede reutilizar evidencia de otra unidad como si fuera propia.
+
+---
+
+#### 24. Once gates de una futura materialización
+
+| Gate                        | PASS                                                                      | Bloqueo                                           |
+| --------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------- |
+| 1. identidad                | unidad, owner package, versión y commits inequívocos                      | identidad ambigua                                 |
+| 2. fuentes                  | 30 superficies resueltas contra fuentes aprobadas o revisión explícita    | fuente ausente o drift silencioso                 |
+| 3. cobertura                | inventario de exports y políticas completo                                | superficie omitida o duplicada                    |
+| 4. membresía/schema         | positivos y negativos respetan la fuente                                  | aceptación o rechazo incorrectos                  |
+| 5. fail-closed              | coerción, casts, aliases implícitos y versiones desconocidas rechazados   | fallback permisivo                                |
+| 6. diagnósticos             | seis códigos y resultado común exactos                                    | excepción/código ambiguo o fuga de input sensible |
+| 7. serialización            | fixtures y manifest deterministas; digest reproducible                    | bytes o huella divergentes                        |
+| 8. pureza                   | runtime sin UI, Supabase, red, env ni dependencia exclusiva de plataforma | acoplamiento no portable                          |
+| 9. multiplataforma          | misma decisión para mismos fixtures/versiones en targets declarados       | drift web/nativo                                  |
+| 10. consumidores y unicidad | matriz completa y una sola implementación por unidad                      | consumidor sin validar o copia paralela           |
+| 11. rollback                | retorno ensayable a combinación soportada sin mutar releases              | rollback no reproducible                          |
+
+La instancia queda `PASS` únicamente con todos los gates aplicables en `PASS`; evidencia de otra versión, commit o unidad es `STALE`.
+
+---
+
+#### 25. Perfil de pruebas aplicable
+
+La futura materialización deberá ejecutar como mínimo:
+
+| Perfil          | Cobertura mínima                                                          |
+| --------------- | ------------------------------------------------------------------------- |
+| unitarias       | cada parser/predicate, valores válidos, inválidos, límites y relaciones   |
+| contractuales   | counts, membresía, schemas, versiones, discriminantes y diagnósticos      |
+| compatibilidad  | versiones soportadas, aliases explícitos y rechazo de legacy/no soportado |
+| serialización   | resultado común, manifest, determinismo y digest repetible                |
+| multiplataforma | mismos fixtures en targets web y nativos declarados                       |
+| consumer-driven | typecheck/build/pruebas de cada consumidor declarado                      |
+| regresión       | ausencia de nuevas listas locales, casts permisivos o drift de semántica  |
+| lineage         | unidad–package–versión–commit–snapshot–digest                             |
+| rollback        | retorno a una versión soportada y repetición de fixtures esenciales       |
+
+No se declara ninguna de estas pruebas como ejecutada físicamente durante el marcador global.
+
+---
+
+#### 26. Evidencia requerida por instancia
+
+| Clase                  | Contenido mínimo                                                   |
+| ---------------------- | ------------------------------------------------------------------ |
+| `LINEAGE`              | unidad, package_id, repositorio, baseline, result commit y versión |
+| `CONTRACT_SOURCES`     | 30 superficies, fuentes, versiones y hashes disponibles            |
+| `API_INVENTORY`        | exports, política y owner exactos                                  |
+| `COVERAGE`             | counts y pertenencia frente a fuentes propietarias                 |
+| `FAIL_CLOSED`          | fixtures de tipo, formato, miembro, schema y versión inválidos     |
+| `DIAGNOSTICS`          | seis códigos, paths y ausencia de input sensible                   |
+| `SERIALIZATION`        | payload, digest y repetición                                       |
+| `PLATFORM_PURITY`      | grafo de dependencias runtime y ausencia de imports prohibidos     |
+| `MULTIPLATFORM_PARITY` | mismo fixture y resultado por target                               |
+| `CONSUMERS`            | matriz de builds/typechecks/pruebas de consumidores                |
+| `ROLLBACK`             | snapshot, procedimiento, ensayo y resultado                        |
+| `CERTIFICATION`        | once gates y estado agregado                                       |
+
+---
+
+#### 27. Rollback y versionado
+
+Toda versión física deberá poder retroceder sin mutar un artefacto ya publicado.
+
+El rollback restaura coordinadamente:
+
+1. versión anterior del package contractual;
+2. catálogos y tipos derivados de esa versión;
+3. parsers/predicados de esa versión;
+4. manifest y checksums;
+5. referencias y lockfiles de consumidores cuando hayan cambiado;
+6. fixtures y snapshots contractuales compatibles.
+
+Cambiar miembros, schema, semántica de diagnóstico, política de coerción o significado de una superficie exige versionado conforme a la fuente propietaria y a la política SemVer aprobada.
+
+Una versión antigua no aprende silenciosamente miembros futuros. Una versión nueva no puede presentarse como compatible si cambia resultados para fixtures existentes sin clasificación y evidencia.
+
+---
+
+#### 28. Hallazgos y destino exacto
+
+| Hallazgo                                                          | Estado                      | Destino                                                                                                          |
+| ----------------------------------------------------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `packages/contracts` no existe físicamente                        | esperado en fase documental | futura instancia habilitada por `DELIV-PKG-025` + `E5-GATE-008`; materialización compartida conforme al ciclo E5 |
+| `@vento/os-context@0.1.0` mezcla runtime Supabase con tipos laxos | `LEGACY/TRANSITORIO`        | `SHELL-AUTH-001`; `SHELL-CTX-001`; migración de consumidores en tareas propietarias                              |
+| `EffectiveContext` acepta strings abiertos y metadata genérica    | `NO_CANÓNICO`               | convergencia ya asignada por `SHELL-CON-007`, `SHELL-CTX-*` y `SHELL-AUTH-*`                                     |
+| no existe API física uniforme `parse/is`                          | `DEFINIDO_NO_MATERIALIZADO` | futura `SHELL-NATIVE-002::<implementation_unit_id>`                                                              |
+| `work_item_id` no tiene gramática serial universal aprobada       | `OPAQUE_REFERENCE`          | conservar opacidad; no inventar parser de formato                                                                |
+| 30 superficies tienen fuente contractual previa                   | `CONCILIADO`                | snapshot `SHELL-NATIVE-CONTRACTS-VALIDATORS-001`                                                                 |
+| UI React Native compartida permanece fuera                        | `RESERVADO_POR_SECUENCIA`   | `SHELL-NATIVE-003`                                                                                               |
+
+No se crea una tarea nueva: todos los destinos tienen propietario canónico existente.
+
+---
+
+#### 29. Requisitos de prueba derivados
+
+**Resultado:** GENERA 6 REQUISITOS DE PRUEBA.
+
+**Creados:**
+
+- `TREQ-SHELL-049` — propiedad única de la API y cobertura exacta de las 30 superficies sin catálogos paralelos;
+- `TREQ-SHELL-050` — políticas de validación, semántica `parse/is`, fail-closed y prohibición de coerción o formatos inventados;
+- `TREQ-SHELL-051` — resultado común, seis diagnósticos contractuales, serialización segura y determinista;
+- `TREQ-SHELL-052` — pureza del runtime contractual sin UI, Supabase, red, env ni dependencia exclusiva de plataforma;
+- `TREQ-SHELL-053` — paridad multiplataforma y matriz de compatibilidad de consumidores;
+- `TREQ-SHELL-054` — unicidad física por `implementation_unit_id`, lineage, evidencia vigente y rollback.
+
+No se modifica, difiere, descarta ni obsoleta ningún requisito histórico.
+
+---
+
+#### 30. Puerta de cierre del marcador global
+
+El marcador global queda documentalmente cerrado cuando:
+
+1. `@vento/contracts` queda fijado como propietario técnico compartido;
+2. se conserva la separación frente a `@vento/os-context`, Supabase y UI;
+3. se fija topología `PER_IMPLEMENTATION_UNIT`;
+4. se reconcilian exactamente ocho namespaces vigentes;
+5. se reconcilian 30 superficies con fuente y política explícitas;
+6. se definen las cuatro políticas de validación;
+7. se preserva `work_item_id` como referencia opaca sin formato inventado;
+8. se define la semántica común `parse/is`;
+9. se define `ContractValidationResult<T>`;
+10. se definen exactamente seis diagnósticos contractuales;
+11. se prohíben coerción, casts, heurísticas y fallback silencioso;
+12. se define pureza del runtime contractual;
+13. se define paridad multiplataforma;
+14. se fija snapshot y huella documental;
+15. se define contrato de entrada de instancia;
+16. se definen once gates;
+17. se define evidencia, rollback y versionado;
+18. se registran `TREQ-SHELL-049` a `TREQ-SHELL-054`;
+19. se mantienen 0 unidades físicas materializadas y 0 cambios Supabase.
+
+---
+
+#### 31. Puerta de cierre de cada futura instancia
+
+`SHELL-NATIVE-002::<implementation_unit_id>` solo podrá quedar `PASS` cuando:
+
+- exista `implementation_unit_id` inequívoco;
+- exista package propietario autorizado por E5;
+- la API física provenga de una única fuente propietaria;
+- el inventario de superficies coincida con el snapshot o revisión aprobada;
+- cada parser/predicate use la política correcta;
+- valores desconocidos, relaciones inexistentes y versiones incompatibles fallen cerrados;
+- los seis diagnósticos se serialicen sin filtrar input sensible;
+- el runtime sea portable y sin imports prohibidos;
+- web y nativo produzcan paridad para los mismos fixtures aplicables;
+- cada consumidor declarado tenga evidencia vigente;
+- no exista una segunda implementación para la misma unidad;
+- lineage, snapshot, commit, versión y digest coincidan;
+- el rollback haya sido ensayado;
+- `TREQ-SHELL-049` a `TREQ-SHELL-054` estén satisfechos con evidencia atribuible a la instancia.
+
+---
+
+#### 32. Criterios de aceptación
+
+- [x] se conserva `SHELL-NATIVE-001` como precedencia inmediata;
+- [x] se conserva `SHELL-NATIVE-003` únicamente como siguiente tarea reservada;
+- [x] se define un contrato global único de API compartida;
+- [x] se fija `@vento/contracts` como propietario técnico y `@vento/os-context` como consumidor/adaptador runtime;
+- [x] se preservan exactamente ocho namespaces previamente aprobados;
+- [x] se reconcilian 30/30 superficies del corte `SHELL-CON-002..016`;
+- [x] se definen cuatro políticas de validación;
+- [x] se evita inventar formato para `work_item_id`;
+- [x] se define semántica uniforme `parse/is`;
+- [x] se definen seis diagnósticos contractuales separados de autorización/contexto;
+- [x] se prohíben casts, coerción, heurísticas y fallbacks permisivos;
+- [x] se conservan counts y relaciones de las fuentes sin crear catálogos paralelos;
+- [x] se define un runtime contractual puro y portable;
+- [x] se define paridad web/nativo;
+- [x] se define snapshot determinista y huella;
+- [x] se define materialización única por `implementation_unit_id`;
+- [x] se definen once gates, evidencia y rollback;
+- [x] se crean exactamente seis requisitos de prueba;
+- [x] se declaran 0 packages físicos, 0 migraciones y 0 cambios Supabase;
+- [x] no se desarrolla `SHELL-NATIVE-003`.
+
+---
+
+#### 33. Límites
+
+Esta tarea no:
+
+- crea físicamente `packages/contracts`;
+- publica `@vento/contracts`;
+- decide una versión npm física antes de la habilitación E5;
+- modifica `@vento/os-context`;
+- migra consumers;
+- corrige `EffectiveContext` físicamente;
+- crea RPC, SQL, RLS, migraciones o datos;
+- ejecuta Supabase;
+- crea UI React Native o web;
+- mueve AppShell, navegación, páginas o formularios;
+- define rutas de aplicación;
+- inventa formatos para referencias opacas;
+- reabre identidades, counts o decisiones de `SHELL-CON-002..016`;
+- incorpora una tarea contractual posterior todavía no materializada;
+- ejecuta `SHELL-NATIVE-002::<implementation_unit_id>`;
+- avanza ni desarrolla `SHELL-NATIVE-003`.
+
+---
+
+#### 34. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-NATIVE-001 — Crear tokens compatibles con ANIMA`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-NATIVE-002 — Compartir contratos y validadores`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-NATIVE-003 — Mantener UI React Native separada`
+
+
 ### [ ] SHELL-NATIVE-003 — Mantener UI React Native separada
 
 No se debe empezar trasladando el AppShell completo. Primero deben compartirse contratos, códigos, tipos, eventos y helpers puros.
