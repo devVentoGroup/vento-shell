@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **941** |
+| Aprobadas | **942** |
 | En propuesta | **0** |
-| No iniciadas | **653** |
+| No iniciadas | **652** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **59.03% (941/1594)** |
+| Porcentaje de completamiento | **59.10% (942/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-MIG-004` — Sustituir la plantilla histórica por scaffold versionado | ✅ APROBADA |
-| Tarea actual | `SHELL-MIG-005` — Migrar componentes, Chrome y estilos por aplicación | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-MIG-006` — Verificar accesibilidad, tema y movimiento reducido | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-MIG-005` — Migrar componentes, Chrome y estilos por aplicación | ✅ APROBADA |
+| Tarea actual | `SHELL-MIG-006` — Verificar accesibilidad, tema y movimiento reducido | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-MIG-007` — Ejecutar pruebas de paridad de consumidores | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -768,7 +768,7 @@
 | ✅ APROBADA | `SHELL-MIG-002` | Definir lotes reversibles por repositorio | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ✅ APROBADA | `SHELL-MIG-003` | Preparar compatibilidad y bloqueo de nuevos consumidores legacy | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ✅ APROBADA | `SHELL-MIG-004` | Sustituir la plantilla histórica por scaffold versionado | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
-| ⬜ NO INICIADA | `SHELL-MIG-005` | Migrar componentes, Chrome y estilos por aplicación | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
+| ✅ APROBADA | `SHELL-MIG-005` | Migrar componentes, Chrome y estilos por aplicación | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ⬜ NO INICIADA | `SHELL-MIG-006` | Verificar accesibilidad, tema y movimiento reducido | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ⬜ NO INICIADA | `SHELL-MIG-007` | Ejecutar pruebas de paridad de consumidores | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ⬜ NO INICIADA | `SHELL-MIG-008` | Retirar copias legacy y certificar adopción | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |

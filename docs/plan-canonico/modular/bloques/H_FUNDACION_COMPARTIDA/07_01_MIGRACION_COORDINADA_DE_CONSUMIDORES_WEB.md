@@ -2523,13 +2523,733 @@ Esta tarea no:
 `SHELL-MIG-005 — Migrar componentes, Chrome y estilos por aplicación`
 
 
-### [ ] SHELL-MIG-005 — Migrar componentes, Chrome y estilos por aplicación
+### ✅ SHELL-MIG-005 — Migrar componentes, Chrome y estilos por aplicación
 
-**Propósito:** adoptar componentes compartidos preservando navegación, responsividad, tema y extensiones empresariales legítimas de cada consumidor.
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado
+**Tarea siguiente:** SHELL-MIG-006 — Verificar accesibilidad, tema y movimiento reducido
+**Tipo de tarea:** Documental; materialización vinculante de la migración de componentes, Chrome, navegación presentacional y estilos por los siete repositorios web consumidores, preservando composición, tema, extensiones empresariales legítimas y rollback independiente, sin ejecutar adopción física de packages ni modificar código consumidor
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md`
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO; 7 lotes UI definidos; 57 ocurrencias UI reconciliadas; 20 ocurrencias conservadas locales; 37 ocurrencias destinadas a APIs compartidas aprobadas; 0 adopciones físicas; 0 retiros ejecutados
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
 
-**Dependencias:** `SHELL-MIG-003`; `SHELL-UI-001`; `SHELL-UI-010`; `SHELL-UI-011`; contratos requeridos aprobados.
+---
 
-**Puerta de cierre:** cada aplicación usa APIs compartidas aprobadas, mantiene locales únicamente sus extensiones declaradas y conserva rollback por repositorio.
+#### 1. Propósito
+
+`SHELL-MIG-005` materializa, por aplicación y por identidad heredada de `SHELL-MIG-001`, la migración futura desde copias UI locales hacia las superficies compartidas aprobadas de Vento OS.
+
+La tarea conserva simultáneamente cuatro objetivos:
+
+1. converger Chrome y componentes transversales hacia `@vento/ui-web`;
+2. mantener locales los entrypoints, estilos de integración y compositores cuya responsabilidad continúa perteneciendo a cada aplicación;
+3. preservar navegación, tema, responsividad y extensiones empresariales legítimas sin introducir forks de la API compartida;
+4. mantener cada consumidor reversible de forma independiente.
+
+La regla raíz queda:
+
+```text
+ORQUESTACIÓN, AUTORIDAD Y DOMINIO DEL CONSUMIDOR
+→ permanecen en el consumidor
+→ producen composición y props ya resueltas
+→ consumen APIs compartidas aprobadas
+→ conservan extensión local explícita
+→ demuestran paridad y rollback antes de retirar legacy consumido
+```
+
+Nunca:
+
+```text
+migrar UI
+→ copiar otra implementación local como nuevo estándar
+→ trasladar Supabase, permisos o contexto autoritativo al package visual
+→ retirar un consumidor legacy antes de paridad y rollback
+→ mezclar el lote UI con AUTH, Supabase o candidatos inertes
+```
+
+---
+
+#### 2. Resultado material
+
+Quedan materializados **7 lotes de migración UI**, uno por repositorio consumidor, y reconciliadas **57 ocurrencias** pertenecientes exactamente a `SHELL-MIG-005`.
+
+| Resultado                                         | Cantidad |
+| ------------------------------------------------- | -------: |
+| repositorios consumidores                         |    **7** |
+| lotes `SHELL-MIG-005`                             |    **7** |
+| ocurrencias UI heredadas de `SHELL-MIG-001`       |   **57** |
+| ocurrencias `KEEP LOCAL`                          |   **20** |
+| ocurrencias `MIGRATE` hacia superficie compartida |   **37** |
+| ocurrencias omitidas o duplicadas                 |    **0** |
+| adopciones físicas ejecutadas                     |    **0** |
+| retiros legacy ejecutados                         |    **0** |
+
+Distribución exacta:
+
+| Repositorio                  | Ocurrencias | `KEEP LOCAL` | `MIGRATE` | Estado documental del lote      |
+| ---------------------------- | ----------: | -----------: | --------: | ------------------------------- |
+| `devVentoGroup/vento-shell`  |       **2** |        **2** |     **0** | `ESPECIFICADO_NO_MATERIALIZADO` |
+| `devVentoGroup/vento-numera` |       **9** |        **3** |     **6** | `ESPECIFICADO_NO_MATERIALIZADO` |
+| `devVentoGroup/vento-fogo`   |       **9** |        **3** |     **6** | `ESPECIFICADO_NO_MATERIALIZADO` |
+| `devVentoGroup/vento-origo`  |       **9** |        **3** |     **6** | `ESPECIFICADO_NO_MATERIALIZADO` |
+| `devVentoGroup/vento-viso`   |      **10** |        **3** |     **7** | `ESPECIFICADO_NO_MATERIALIZADO` |
+| `devVentoGroup/vento-pulso`  |       **9** |        **3** |     **6** | `ESPECIFICADO_NO_MATERIALIZADO` |
+| `devVentoGroup/vento-nexo`   |       **9** |        **3** |     **6** | `ESPECIFICADO_NO_MATERIALIZADO` |
+| **Total**                    |      **57** |       **20** |    **37** |                                 |
+
+La identidad de cada lote continúa siendo la clave aprobada:
+
+```text
+repositorio consumidor / SHELL-MIG-005
+```
+
+No se crean lotes paralelos, alias ni una segunda numeración.
+
+---
+
+#### 3. Dependencias y corte verificable
+
+##### 3.1. Dependencias vinculantes
+
+| Fuente          | Decisión heredada aplicada                                                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `SHELL-MIG-001` | inventario ejecutable, disposición por familia y lote base exacto por consumidor                                                                 |
+| `SHELL-MIG-002` | siete lotes UI, orden serial, precondiciones, pruebas, observabilidad, rollback y suspensión                                                     |
+| `SHELL-MIG-003` | el lote CI/script de NEXO permanece separado y no puede recrear legacy sin detección                                                             |
+| `SHELL-MIG-004` | `layout.tsx`, `globals.css` y el compositor de aplicación permanecen locales; el scaffold futuro deja de copiar implementaciones UI compartibles |
+| `SHELL-UI-001`  | frontera de `@vento/ui-web`, separación respecto de autorización, datos y lógica empresarial, y disposición de familias UI                       |
+| `SHELL-UI-010`  | `AppShell` es composición presentacional; recibe `brand`, navegación, contexto, avisos, acciones y contenido ya preparados                       |
+| `SHELL-UI-011`  | `TaskNavigation` presenta navegación ya resuelta y no recibe permisos, roles ni contexto autoritativo                                            |
+| `SHELL-PKG-004` | compatibilidad se demuestra por package, versión, consumidor, commit, manifest, lockfile, toolchain y evidencia                                  |
+| `SHELL-PKG-006` | rollback se ejecuta por snapshot de aplicación y no obliga a revertir otros consumidores                                                         |
+| `SHELL-PKG-008` | actualización fail-closed; ausencia de evidencia aplicable impide adopción                                                                       |
+
+##### 3.2. Corte remoto de repositorios
+
+| Repositorio                  | Commit `main` verificado                   |
+| ---------------------------- | ------------------------------------------ |
+| `devVentoGroup/vento-shell`  | `c84cdace5dd4ec1014bb7f8f3324f26056718014` |
+| `devVentoGroup/vento-numera` | `1b48a5da425d92e19ed89cf175b1dccc4cd960e1` |
+| `devVentoGroup/vento-fogo`   | `b6b9ed00e5267cabaac1a5a1090d93d5f60e86f2` |
+| `devVentoGroup/vento-origo`  | `b7a8303fa078ef087f522b6c99059ababfc27472` |
+| `devVentoGroup/vento-viso`   | `47322403f3c64e83ae0c4a2f68c05d47093e5bb4` |
+| `devVentoGroup/vento-pulso`  | `71e0184486b5fe11e0a42435baf4024807a80efd` |
+| `devVentoGroup/vento-nexo`   | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799` |
+
+Los seis repositorios externos permanecen en los mismos commits usados por el inventario aprobado de consumidores. El avance observado de `vento-shell` corresponde a documentación y tooling de continuidad; no se observó modificación bajo `src/` en el commit de incorporación de `SHELL-MIG-004`.
+
+##### 3.3. Estado de adopción física
+
+En los siete manifests actuales:
+
+- ninguno declara dependencia en `@vento/ui-web`;
+- todos declaran `build` y `lint`;
+- ninguno declara un script `typecheck`;
+- ninguno declara un script `test`;
+- no existe evidencia de una adopción física de `AppShell` o `TaskNavigation` desde un release compartido.
+
+Por tanto:
+
+```text
+mapeo de migración = COMPLETO DOCUMENTALMENTE
+adopción package = NO EJECUTADA
+paridad de consumidor = NO EJECUTADA
+retiro legacy consumido = NO AUTORIZADO EN ESTE CORTE
+```
+
+---
+
+#### 4. Invariantes de migración UI
+
+Cada uno de los siete lotes conserva estas reglas:
+
+1. El cambio afecta un solo repositorio consumidor por vez.
+2. El orden serial heredado es SHELL → NUMERA → FOGO → ORIGO → VISO → PULSO → NEXO.
+3. `layout.tsx` permanece propietario del entrypoint, metadata, fuentes, providers y composición raíz propia de cada aplicación.
+4. `globals.css` permanece propietario de integración global, tokens locales aprobados y adaptación del tema del consumidor.
+5. `vento-shell.tsx` permanece local en las seis aplicaciones que lo poseen como compositor de servidor/orquestación.
+6. `AppShell` sustituye intención estructural de Chrome, no la resolución de sesión, permisos, contexto, datos o negocio.
+7. `TaskNavigation` recibe únicamente navegación ya preparada por el consumidor.
+8. La resolución de visibilidad y autorización ocurre antes de construir la navegación presentacional.
+9. `permissionCode`, roles, matrices de permisos y objetos autoritativos no forman parte de la forma compartida de navegación.
+10. El router y el cálculo de la ruta actual permanecen en un adapter local cuando sean necesarios.
+11. Los estilos compartidos no sustituyen ciegamente `globals.css` ni fuerzan una paleta única entre aplicaciones.
+12. Una extensión de dominio permanece local si expresa proceso, navegación empresarial, composición, integración o contenido exclusivo del consumidor.
+13. Una extensión local no puede redefinir un componente compartido con la misma responsabilidad y contrato.
+14. Los cambios de autorización, contexto, Supabase, sesión, middleware o datos no forman parte de estos lotes.
+15. Los candidatos sin consumidor confirmado no se retiran dentro de `SHELL-MIG-005`.
+16. La aparición de una diferencia funcional, visual, semántica o accesible no aprobada detiene el lote.
+17. Cada rollback restaura el snapshot del repositorio consumidor, su manifest, lockfile, configuración y combinación de UI previa compatibles.
+18. La siguiente aplicación no inicia adopción mientras la anterior esté en investigación, observación o rollback.
+
+---
+
+#### 5. Mapa de convergencia de familias compartibles
+
+Las **37 ocurrencias `MIGRATE`** convergen por familia, sin inventar subpaths físicos de exportación todavía no materializados:
+
+| Familia                      | Ocurrencias | Destino conceptual aprobado                                      | Regla de migración                                                                                                                |
+| ---------------------------- | ----------: | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `FAM-004 — vento-chrome.tsx` |       **6** | `AppShell` / `@vento/ui-web`                                     | reemplazar estructura duplicada de header, sidebar, main y disclosure por composición; extraer toda autoridad y lógica de dominio |
+| `FAM-005 — ui.tsx`           |       **6** | primitivas aprobadas de `@vento/ui-web`                          | sustituir wrappers duplicados por las primitivas públicas propietarias; no copiar implementación local                            |
+| `FAM-006 — table.tsx`        |       **6** | wrappers semánticos de tabla aprobados de `@vento/ui-web`        | conservar semántica de tabla; no transformar el wrapper en data grid o lógica de dominio                                          |
+| `FAM-007 — app-switcher.tsx` |       **6** | superficie visual compartida + contratos canónicos de aplicación | catálogo, disponibilidad y autoridad se resuelven fuera de UI; la pieza visual no mantiene una lista local autoritativa           |
+| `FAM-008 — profile-menu.tsx` |       **6** | superficie visual compartida compuesta en `headerActions`        | sesión, logout, contexto, simulación y autoridad permanecen en propietarios externos                                              |
+| `FAM-019 — page-header.tsx`  |       **1** | API reconciliada de PageHeader en `@vento/ui-web`                | VISO migra el único consumidor confirmado preservando responsividad y acento                                                      |
+| `FAM-020 — vento-logo.tsx`   |       **6** | superficie de marca compartida + metadata canónica               | marca visual se comparte sin crear un segundo catálogo de aplicaciones                                                            |
+| **Total**                    |      **37** |                                                                  |                                                                                                                                   |
+
+Las **20 ocurrencias `KEEP LOCAL`** quedan explícitamente preservadas:
+
+| Familia                         | Ocurrencias | Decisión     |
+| ------------------------------- | ----------: | ------------ |
+| `FAM-001 — src/app/layout.tsx`  |       **7** | `KEEP LOCAL` |
+| `FAM-002 — src/app/globals.css` |       **7** | `KEEP LOCAL` |
+| `FAM-003 — vento-shell.tsx`     |       **6** | `KEEP LOCAL` |
+| **Total**                       |      **20** |              |
+
+Conciliación:
+
+```text
+37 MIGRATE + 20 KEEP LOCAL = 57/57 ocurrencias
+```
+
+---
+
+#### 6. Matriz materializada de 57 identidades
+
+Cada fila conserva la identidad de familia, archivo, disposición y lote heredados. `Destino MIG-005` expresa la decisión documental de esta tarea.
+
+|    # | Repositorio    | Familia   | Archivo                                          | Disposición  | Destino MIG-005                                                                                                   |
+| ---: | -------------- | --------- | ------------------------------------------------ | ------------ | ----------------------------------------------------------------------------------------------------------------- |
+|    1 | `vento-shell`  | `FAM-001` | `src/app/layout.tsx`                             | `KEEP LOCAL` | entrypoint y composición raíz local; elegible para componer `AppShell` sin obligación de sidebar                  |
+|    2 | `vento-shell`  | `FAM-002` | `src/app/globals.css`                            | `KEEP LOCAL` | integración de tema y estilos globales local; consume contrato visual compartido cuando exista release compatible |
+|    3 | `vento-numera` | `FAM-001` | `src/app/layout.tsx`                             | `KEEP LOCAL` | entrypoint y composición raíz NUMERA                                                                              |
+|    4 | `vento-numera` | `FAM-002` | `src/app/globals.css`                            | `KEEP LOCAL` | integración de tema NUMERA                                                                                        |
+|    5 | `vento-numera` | `FAM-003` | `src/components/vento/standard/vento-shell.tsx`  | `KEEP LOCAL` | compositor local; prepara identidad, navegación, contexto y extensiones antes de UI compartida                    |
+|    6 | `vento-numera` | `FAM-004` | `src/components/vento/standard/vento-chrome.tsx` | `MIGRATE`    | `AppShell` compuesto con slots ya resueltos                                                                       |
+|    7 | `vento-numera` | `FAM-005` | `src/components/vento/standard/ui.tsx`           | `MIGRATE`    | primitivas públicas aprobadas de `@vento/ui-web`                                                                  |
+|    8 | `vento-numera` | `FAM-006` | `src/components/vento/standard/table.tsx`        | `MIGRATE`    | wrappers semánticos compartidos aprobados                                                                         |
+|    9 | `vento-numera` | `FAM-007` | `src/components/vento/standard/app-switcher.tsx` | `MIGRATE`    | superficie visual compartida con catálogo/autoridad externos                                                      |
+|   10 | `vento-numera` | `FAM-008` | `src/components/vento/standard/profile-menu.tsx` | `MIGRATE`    | superficie visual compartida con sesión/contexto externos                                                         |
+|   11 | `vento-numera` | `FAM-020` | `src/components/vento/standard/vento-logo.tsx`   | `MIGRATE`    | superficie de marca compartida con metadata canónica                                                              |
+|   12 | `vento-fogo`   | `FAM-001` | `src/app/layout.tsx`                             | `KEEP LOCAL` | entrypoint y composición raíz FOGO                                                                                |
+|   13 | `vento-fogo`   | `FAM-002` | `src/app/globals.css`                            | `KEEP LOCAL` | integración de tema FOGO                                                                                          |
+|   14 | `vento-fogo`   | `FAM-003` | `src/components/vento/standard/vento-shell.tsx`  | `KEEP LOCAL` | compositor local; conserva orquestación de producción y contexto fuera del package visual                         |
+|   15 | `vento-fogo`   | `FAM-004` | `src/components/vento/standard/vento-chrome.tsx` | `MIGRATE`    | `AppShell` compuesto con slots ya resueltos                                                                       |
+|   16 | `vento-fogo`   | `FAM-005` | `src/components/vento/standard/ui.tsx`           | `MIGRATE`    | primitivas públicas aprobadas de `@vento/ui-web`                                                                  |
+|   17 | `vento-fogo`   | `FAM-006` | `src/components/vento/standard/table.tsx`        | `MIGRATE`    | wrappers semánticos compartidos aprobados                                                                         |
+|   18 | `vento-fogo`   | `FAM-007` | `src/components/vento/standard/app-switcher.tsx` | `MIGRATE`    | superficie visual compartida con catálogo/autoridad externos                                                      |
+|   19 | `vento-fogo`   | `FAM-008` | `src/components/vento/standard/profile-menu.tsx` | `MIGRATE`    | superficie visual compartida con sesión/contexto externos                                                         |
+|   20 | `vento-fogo`   | `FAM-020` | `src/components/vento/standard/vento-logo.tsx`   | `MIGRATE`    | superficie de marca compartida con metadata canónica                                                              |
+|   21 | `vento-origo`  | `FAM-001` | `src/app/layout.tsx`                             | `KEEP LOCAL` | entrypoint y composición raíz ORIGO                                                                               |
+|   22 | `vento-origo`  | `FAM-002` | `src/app/globals.css`                            | `KEEP LOCAL` | integración de tema ORIGO                                                                                         |
+|   23 | `vento-origo`  | `FAM-003` | `src/components/vento/standard/vento-shell.tsx`  | `KEEP LOCAL` | compositor local; conserva extensiones empresariales de compras/proveedores                                       |
+|   24 | `vento-origo`  | `FAM-004` | `src/components/vento/standard/vento-chrome.tsx` | `MIGRATE`    | `AppShell` compuesto con slots ya resueltos                                                                       |
+|   25 | `vento-origo`  | `FAM-005` | `src/components/vento/standard/ui.tsx`           | `MIGRATE`    | primitivas públicas aprobadas de `@vento/ui-web`                                                                  |
+|   26 | `vento-origo`  | `FAM-006` | `src/components/vento/standard/table.tsx`        | `MIGRATE`    | wrappers semánticos compartidos aprobados                                                                         |
+|   27 | `vento-origo`  | `FAM-007` | `src/components/vento/standard/app-switcher.tsx` | `MIGRATE`    | superficie visual compartida con catálogo/autoridad externos                                                      |
+|   28 | `vento-origo`  | `FAM-008` | `src/components/vento/standard/profile-menu.tsx` | `MIGRATE`    | superficie visual compartida con sesión/contexto externos                                                         |
+|   29 | `vento-origo`  | `FAM-020` | `src/components/vento/standard/vento-logo.tsx`   | `MIGRATE`    | superficie de marca compartida con metadata canónica                                                              |
+|   30 | `vento-viso`   | `FAM-001` | `src/app/layout.tsx`                             | `KEEP LOCAL` | entrypoint y composición raíz VISO                                                                                |
+|   31 | `vento-viso`   | `FAM-002` | `src/app/globals.css`                            | `KEEP LOCAL` | integración de tema VISO                                                                                          |
+|   32 | `vento-viso`   | `FAM-003` | `src/components/vento/standard/vento-shell.tsx`  | `KEEP LOCAL` | compositor local; mantiene sesión operativa, contexto, dispositivos, navegación resuelta y gates fuera de UI      |
+|   33 | `vento-viso`   | `FAM-004` | `src/components/vento/standard/vento-chrome.tsx` | `MIGRATE`    | `AppShell` compuesto con slots ya resueltos                                                                       |
+|   34 | `vento-viso`   | `FAM-005` | `src/components/vento/standard/ui.tsx`           | `MIGRATE`    | primitivas públicas aprobadas de `@vento/ui-web`                                                                  |
+|   35 | `vento-viso`   | `FAM-006` | `src/components/vento/standard/table.tsx`        | `MIGRATE`    | wrappers semánticos compartidos aprobados                                                                         |
+|   36 | `vento-viso`   | `FAM-007` | `src/components/vento/standard/app-switcher.tsx` | `MIGRATE`    | superficie visual compartida con catálogo/autoridad externos                                                      |
+|   37 | `vento-viso`   | `FAM-008` | `src/components/vento/standard/profile-menu.tsx` | `MIGRATE`    | superficie visual compartida con sesión/contexto externos                                                         |
+|   38 | `vento-viso`   | `FAM-019` | `src/components/vento/standard/page-header.tsx`  | `MIGRATE`    | PageHeader compartido reconciliado; preservar responsividad, semántica y acento requeridos                        |
+|   39 | `vento-viso`   | `FAM-020` | `src/components/vento/standard/vento-logo.tsx`   | `MIGRATE`    | superficie de marca compartida con metadata canónica                                                              |
+|   40 | `vento-pulso`  | `FAM-001` | `src/app/layout.tsx`                             | `KEEP LOCAL` | entrypoint y composición raíz PULSO                                                                               |
+|   41 | `vento-pulso`  | `FAM-002` | `src/app/globals.css`                            | `KEEP LOCAL` | integración de tema PULSO                                                                                         |
+|   42 | `vento-pulso`  | `FAM-003` | `src/components/vento/standard/vento-shell.tsx`  | `KEEP LOCAL` | compositor local; preserva composición POS/ventas sin absorber excepciones de datos o guard                       |
+|   43 | `vento-pulso`  | `FAM-004` | `src/components/vento/standard/vento-chrome.tsx` | `MIGRATE`    | `AppShell` compuesto con slots ya resueltos                                                                       |
+|   44 | `vento-pulso`  | `FAM-005` | `src/components/vento/standard/ui.tsx`           | `MIGRATE`    | primitivas públicas aprobadas de `@vento/ui-web`                                                                  |
+|   45 | `vento-pulso`  | `FAM-006` | `src/components/vento/standard/table.tsx`        | `MIGRATE`    | wrappers semánticos compartidos aprobados                                                                         |
+|   46 | `vento-pulso`  | `FAM-007` | `src/components/vento/standard/app-switcher.tsx` | `MIGRATE`    | superficie visual compartida con catálogo/autoridad externos                                                      |
+|   47 | `vento-pulso`  | `FAM-008` | `src/components/vento/standard/profile-menu.tsx` | `MIGRATE`    | superficie visual compartida con sesión/contexto externos                                                         |
+|   48 | `vento-pulso`  | `FAM-020` | `src/components/vento/standard/vento-logo.tsx`   | `MIGRATE`    | superficie de marca compartida con metadata canónica                                                              |
+|   49 | `vento-nexo`   | `FAM-001` | `src/app/layout.tsx`                             | `KEEP LOCAL` | entrypoint y composición raíz NEXO                                                                                |
+|   50 | `vento-nexo`   | `FAM-002` | `src/app/globals.css`                            | `KEEP LOCAL` | integración de tema NEXO                                                                                          |
+|   51 | `vento-nexo`   | `FAM-003` | `src/components/vento/standard/vento-shell.tsx`  | `KEEP LOCAL` | compositor local; preserva extensión `operational-context` y composición empresarial fuera de UI                  |
+|   52 | `vento-nexo`   | `FAM-004` | `src/components/vento/standard/vento-chrome.tsx` | `MIGRATE`    | `AppShell` compuesto con slots ya resueltos                                                                       |
+|   53 | `vento-nexo`   | `FAM-005` | `src/components/vento/standard/ui.tsx`           | `MIGRATE`    | primitivas públicas aprobadas de `@vento/ui-web`                                                                  |
+|   54 | `vento-nexo`   | `FAM-006` | `src/components/vento/standard/table.tsx`        | `MIGRATE`    | wrappers semánticos compartidos aprobados                                                                         |
+|   55 | `vento-nexo`   | `FAM-007` | `src/components/vento/standard/app-switcher.tsx` | `MIGRATE`    | superficie visual compartida con catálogo/autoridad externos                                                      |
+|   56 | `vento-nexo`   | `FAM-008` | `src/components/vento/standard/profile-menu.tsx` | `MIGRATE`    | superficie visual compartida con sesión/contexto externos                                                         |
+|   57 | `vento-nexo`   | `FAM-020` | `src/components/vento/standard/vento-logo.tsx`   | `MIGRATE`    | superficie de marca compartida con metadata canónica                                                              |
+
+Comprobaciones de identidad:
+
+```text
+identidades esperadas = 57
+identidades materializadas = 57
+IDs de fila duplicados = 0
+identidades sin decisión = 0
+KEEP LOCAL = 20
+MIGRATE = 37
+```
+
+---
+
+#### 7. Contrato de composición compartida
+
+##### 7.1. AppShell
+
+Las seis copias runtime de Chrome migrarán hacia la intención estructural aprobada de `AppShell`.
+
+La composición objetivo es:
+
+```text
+compositor local
+→ resuelve sesión, permisos, contexto, navegación y dominio
+→ prepara brand
+→ prepara navigation
+→ prepara context
+→ prepara notices
+→ prepara headerActions
+→ entrega children
+→ AppShell compone únicamente la estructura visual
+```
+
+La superficie compartida no resuelve:
+
+- permisos;
+- sesión;
+- contexto efectivo;
+- Supabase;
+- RPC;
+- navegación permitida;
+- reglas de operación;
+- side effects empresariales;
+- rutas específicas de un dominio.
+
+SHELL queda elegible para usar el mismo marco por composición, pero su launcher no recibe una navegación lateral artificial solo para imitar a las seis aplicaciones.
+
+##### 7.2. TaskNavigation
+
+La navegación local de cada consumidor se transforma antes de llegar a la superficie compartida:
+
+```text
+fuente propietaria de navegación
+→ autorización y relevancia ya resueltas
+→ adapter local
+→ navigationId + intentCode + copy + href + estado presentacional
+→ TaskNavigation
+→ slot navigation de AppShell
+```
+
+El adapter local puede:
+
+- mapear el router a `currentNavigationId`;
+- mapear iconos;
+- localizar labels y descripciones;
+- excluir destinos clasificados como ocultos;
+- preparar estados visuales admitidos.
+
+El adapter local no puede:
+
+- crear una taxonomía paralela de navegación;
+- convertir `permissionCode` en copy;
+- resolver autorización dentro del componente compartido;
+- mantener una segunda lista canónica de aplicaciones;
+- fabricar contexto desde URL, storage o parámetros visuales.
+
+##### 7.3. Otras superficies compartidas
+
+`AppSwitcher`, `ProfileMenu`, `VentoLogo`, primitivas, wrappers de tabla y PageHeader se adoptan únicamente desde APIs públicas aprobadas cuando existan releases compatibles. Su composición puede recibir datos y callbacks del consumidor, pero no absorber la autoridad de esos datos o acciones.
+
+---
+
+#### 8. Contrato de estilos, tema y responsividad
+
+`globals.css` permanece local en los siete consumidores. La convergencia visual no significa reemplazarlo por una copia común.
+
+Reglas:
+
+1. cada aplicación conserva su integración de fuentes, reset, tema y CSS global requerido por su runtime;
+2. los componentes compartidos consumen el contrato visual aprobado mediante tokens y estilos compatibles;
+3. una aplicación puede definir valores de marca compatibles sin bifurcar la lógica del componente;
+4. no se copian clases específicas de una aplicación al package como estándar transversal;
+5. una variante visual solo se incorpora al contrato compartido si representa una necesidad transversal, no un detalle accidental de un consumidor;
+6. `AppShell` es responsable del reflow estructural compartido; la aplicación conserva el layout interno de sus pantallas y procesos;
+7. navegación móvil, disclosure y foco pertenecen al comportamiento presentacional compartido cuando formen parte de AppShell;
+8. `TaskNavigation` no duplica el mecanismo responsive del shell;
+9. la migración no puede introducir scroll horizontal estructural, pérdida de contenido esencial ni ocultamiento de contexto material;
+10. la evidencia definitiva de accesibilidad, tema, movimiento reducido, densidad y responsive permanece en la puerta inmediatamente posterior.
+
+---
+
+#### 9. Extensiones locales legítimas
+
+Una extensión permanece local cuando su responsabilidad pertenece al consumidor y no sustituye una API compartida.
+
+| Clase de extensión                                                         | Tratamiento                                     |
+| -------------------------------------------------------------------------- | ----------------------------------------------- |
+| composición de pantallas y procesos de dominio                             | local                                           |
+| formularios, tablas de negocio y paneles específicos                       | local                                           |
+| resolución de sesión, permisos y contexto                                  | fuera del lote UI; propietarios AUTH/CTX        |
+| consultas, RPC, mutaciones y acceso a datos                                | fuera del lote UI; propietarios DB/Supabase     |
+| adapter de navegación entre modelo propietario y `TaskNavigation`          | local                                           |
+| adapter de router/current route                                            | local                                           |
+| mapping de iconografía o copy específico aprobado                          | local, mientras no redefina identidad semántica |
+| metadata, fuentes, providers y layout raíz                                 | local                                           |
+| tokens o valores de tema del consumidor compatibles con el contrato visual | local                                           |
+| estructura duplicada de header/sidebar/main                                | no extensión; migra a `AppShell`                |
+| primitivas duplicadas que reproducen el contrato compartido                | no extensión; migran                            |
+| catálogo local autoritativo de aplicaciones                                | no extensión; no permanece como autoridad UI    |
+
+La condición de legitimidad es doble:
+
+```text
+responsabilidad empresarial o de integración propia
++
+no competir con una responsabilidad compartida aprobada
+```
+
+---
+
+#### 10. Decisión por aplicación
+
+##### 10.1. SHELL — lote 1
+
+**Lote:** `devVentoGroup/vento-shell / SHELL-MIG-005`
+
+**Membresía:** 2 ocurrencias; 2 `KEEP LOCAL`, 0 `MIGRATE` en el inventario heredado.
+
+Decisiones:
+
+- `layout.tsx` permanece local;
+- `globals.css` permanece local;
+- el launcher actual se conserva como composición empresarial propia;
+- la elegibilidad de `AppShell` es por composición y no obliga a crear sidebar;
+- el catálogo, acceso y sesión del launcher no se trasladan a `@vento/ui-web` por esta tarea;
+- futuras superficies compartidas se consumen únicamente mediante release exacta compatible.
+
+**Rollback:** restaurar snapshot SHELL previo, manifest, lockfile, configuración y combinación UI anterior certificada.
+
+**Suspensión:** pérdida de identidad del launcher, modificación de autoridad por UI, navegación artificial, incompatibilidad de tema o dependencia no pública.
+
+##### 10.2. NUMERA — lote 2
+
+**Lote:** `devVentoGroup/vento-numera / SHELL-MIG-005`
+
+**Membresía:** 9 ocurrencias; 3 `KEEP LOCAL`, 6 `MIGRATE`.
+
+Decisiones:
+
+- mantener `layout.tsx`, `globals.css` y `vento-shell.tsx`;
+- migrar Chrome a `AppShell`;
+- migrar kit UI, tabla, AppSwitcher, ProfileMenu y VentoLogo a superficies aprobadas;
+- conservar en NUMERA composición financiera, analítica y administrativa propia;
+- navegación se prepara en adapter local y llega a `TaskNavigation` sin payload de autorización.
+
+**Rollback:** snapshot NUMERA previo completo, incluidos archivos locales consumidos y pins/configuración de package anteriores.
+
+**Suspensión:** divergencia funcional o visual no aprobada, pérdida de navegación, estilos globales inesperados, import interno o dependencia de autoridad dentro de UI.
+
+##### 10.3. FOGO — lote 3
+
+**Lote:** `devVentoGroup/vento-fogo / SHELL-MIG-005`
+
+**Membresía:** 9 ocurrencias; 3 `KEEP LOCAL`, 6 `MIGRATE`.
+
+Decisiones:
+
+- mantener entrypoint, CSS global y compositor local;
+- migrar Chrome y las seis superficies UI inventariadas hacia contratos compartidos;
+- conservar local la composición empresarial de recetas, producción y trazabilidad;
+- excluir de este lote los candidatos inertes ya reservados para retiro por cero consumo;
+- ninguna migración UI reactiva SSO o helpers retirables.
+
+**Rollback:** snapshot FOGO anterior con archivos locales, manifest, lockfile y combinación UI previa.
+
+**Suspensión:** aparece consumidor oculto de candidato inerte, paridad incompleta, regresión de producción/navegación o gate aplicable distinto de `PASS`.
+
+##### 10.4. ORIGO — lote 4
+
+**Lote:** `devVentoGroup/vento-origo / SHELL-MIG-005`
+
+**Membresía:** 9 ocurrencias; 3 `KEEP LOCAL`, 6 `MIGRATE`.
+
+Decisiones:
+
+- mantener layout, CSS global y compositor local;
+- migrar Chrome, primitivas, tabla, AppSwitcher, ProfileMenu y VentoLogo;
+- conservar composición empresarial de compras, proveedores, recepción y abastecimiento;
+- el helper consumido de sedes de empleados permanece fuera del lote UI y conserva su propietario de autorización/contexto;
+- UI no modifica decisiones de territorio ni acceso.
+
+**Rollback:** snapshot ORIGO anterior y combinación de package/configuración previa.
+
+**Suspensión:** pérdida de extensión empresarial, cambio de alcance territorial, dependencia en helper AUTH desde UI compartida o ruptura de contrato público.
+
+##### 10.5. VISO — lote 5
+
+**Lote:** `devVentoGroup/vento-viso / SHELL-MIG-005`
+
+**Membresía:** 10 ocurrencias; 3 `KEEP LOCAL`, 7 `MIGRATE`.
+
+Decisiones:
+
+- mantener layout, CSS global y `vento-shell.tsx` como compositor;
+- preservar fuera de UI la resolución actual de sesión operativa, contexto, dispositivos compartidos, navegación y gates;
+- migrar Chrome, kit UI, tabla, AppSwitcher, ProfileMenu y VentoLogo;
+- migrar además el único `PageHeader` consumido confirmado de este universo;
+- PageHeader debe conservar la semántica, responsividad y acento reconciliados por su contrato compartido;
+- composición administrativa, calendario, personal y auditoría de VISO permanece local.
+
+**Rollback:** snapshot VISO previo con archivos, manifest, lockfile y pin/configuración UI anterior.
+
+**Suspensión:** pérdida de composición de dominio, cambio de gates, regresión de navegación, PageHeader no equivalente, import interno o estilo global no declarado.
+
+##### 10.6. PULSO — lote 6
+
+**Lote:** `devVentoGroup/vento-pulso / SHELL-MIG-005`
+
+**Membresía:** 9 ocurrencias; 3 `KEEP LOCAL`, 6 `MIGRATE`.
+
+Decisiones:
+
+- mantener layout, CSS global y compositor local;
+- migrar las seis superficies UI compartibles;
+- conservar local la composición POS, pedidos, ventas, salón y demás dominio PULSO;
+- excluir expresamente del lote cualquier variante Supabase alterna o rama de guard reservada a sus propietarios;
+- la migración no modifica autorización, datos ni lógica de chat/pedidos.
+
+**Rollback:** snapshot PULSO previo y combinación de package/configuración previa.
+
+**Suspensión:** mezcla con AUTH o Supabase, ampliación de acceso, dependencia en variante reservada a retiro o regresión de UI/navegación.
+
+##### 10.7. NEXO — lote 7
+
+**Lote:** `devVentoGroup/vento-nexo / SHELL-MIG-005`
+
+**Membresía:** 9 ocurrencias; 3 `KEEP LOCAL`, 6 `MIGRATE`.
+
+Decisiones:
+
+- mantener layout, CSS global y compositor local;
+- preservar `operational-context` como extensión local explícita fuera del package visual;
+- migrar Chrome, kit UI, tabla, AppSwitcher, ProfileMenu y VentoLogo;
+- mantener separado el lote CI/script ya reconciliado por `SHELL-MIG-003`;
+- el `page-header.tsx` sin consumidor confirmado no pertenece a este lote y permanece reservado al gate de retiro;
+- la navegación NEXO se transforma en un adapter local hacia `TaskNavigation`, sin resolver permisos dentro de UI compartida.
+
+**Rollback:** snapshot NEXO previo con composición local, manifest, lockfile, pins y configuración compatibles.
+
+**Suspensión:** acoplamiento del package a NEXO, pérdida de `operational-context`, reintroducción de legacy por CI/script, retiro accidental de candidato inerte o regresión de navegación.
+
+---
+
+#### 11. Separación de otros lotes
+
+`SHELL-MIG-005` no absorbe responsabilidades vecinas.
+
+| Conjunto                                                                                | Tratamiento                                                        |
+| --------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| autorización, guards, permisos, role override, contexto y factories Supabase consumidos | permanecen en lotes `SHELL-AUTH-005` y tareas propietarias         |
+| NEXO workflow/script temporal de compatibilidad                                         | permanece bajo `SHELL-MIG-003`                                     |
+| 11 archivos sin consumidor confirmado                                                   | permanecen bajo `SHELL-MIG-008`                                    |
+| `page-header.tsx` NEXO sin consumidor confirmado                                        | permanece bajo `SHELL-MIG-008`                                     |
+| `page-header.tsx` VISO consumido                                                        | pertenece a `SHELL-MIG-005`                                        |
+| variante Supabase alterna de PULSO                                                      | permanece fuera del lote UI                                        |
+| `operational-context` NEXO                                                              | permanece local y fuera del package UI                             |
+| pruebas de accesibilidad/tema/movimiento reducido                                       | puerta `SHELL-MIG-006`                                             |
+| pruebas de paridad completa por consumidor                                              | puerta `SHELL-MIG-007`                                             |
+| retiro de copias consumidas                                                             | no ocurre antes de paridad, compatibilidad y rollback certificados |
+
+---
+
+#### 12. Precondiciones de materialización física
+
+Un lote solo puede pasar de especificación documental a adopción física cuando cumpla, como mínimo:
+
+1. release exacta de `@vento/ui-web` disponible e inmutable;
+2. APIs públicas requeridas materializadas;
+3. artefacto e integridad identificables;
+4. compatibilidad aprobada para repositorio y commit exactos;
+5. manifest y lockfile coherentes;
+6. instalación bloqueada reproducible;
+7. comandos aplicables de lint, typecheck, build y pruebas disponibles y ejecutables;
+8. perfil de gates UI aplicable en `PASS`;
+9. snapshot anterior certificado y restaurable;
+10. extensiones locales inventariadas y delimitadas;
+11. navegación propietaria preparada sin autoridad dentro del componente compartido;
+12. impacto de CSS y tema clasificado;
+13. ausencia de mezcla con cambios AUTH, datos, Supabase o retiro inerte;
+14. observación y criterio de suspensión definidos para el repositorio exacto.
+
+En el corte actual estas precondiciones no están completas. En particular, no existe adopción declarada de `@vento/ui-web` en los manifests revisados y faltan scripts declarados `typecheck` y `test` en los siete repositorios.
+
+---
+
+#### 13. Pruebas y observabilidad de los lotes
+
+La materialización futura de cada repositorio deberá registrar:
+
+- repositorio y commit base;
+- commit de propuesta;
+- versión exacta de `@vento/ui-web`;
+- integridad y release de origen;
+- manifest y lockfile;
+- conjunto exacto de ocurrencias migradas;
+- conjunto exacto de extensiones conservadas locales;
+- resultado de instalación reproducible;
+- lint;
+- typecheck;
+- build;
+- pruebas automatizadas aplicables;
+- render e hidratación cuando correspondan;
+- navegación y estado activo;
+- tema, CSS y responsive;
+- accesibilidad aplicable;
+- diferencias visuales justificadas;
+- prueba de rollback;
+- periodo de observación;
+- cualquier consumidor legacy residual.
+
+Una evidencia de otro commit, otra versión, otro manifest o un resultado omitido no cierra el lote.
+
+`SHELL-MIG-006` conserva la validación especializada de accesibilidad, tema, movimiento reducido, densidad y responsive. `SHELL-MIG-007` conserva la paridad completa de consumidor. La presente tarea define qué debe migrarse y qué debe permanecer local; no anticipa resultados de esas puertas.
+
+---
+
+#### 14. Rollback por repositorio
+
+El rollback es independiente y conserva la aplicación como unidad.
+
+| Repositorio | Snapshot mínimo de rollback                                                                                                |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| SHELL       | commit consumidor previo + layout/globals + manifest + lockfile + configuración + combinación UI anterior                  |
+| NUMERA      | commit previo + copias UI consumidas + compositor/extensiones locales + manifest + lockfile + pins anteriores              |
+| FOGO        | commit previo + copias UI consumidas + compositor/extensiones locales + manifest + lockfile + pins anteriores              |
+| ORIGO       | commit previo + copias UI consumidas + compositor/extensiones locales + manifest + lockfile + pins anteriores              |
+| VISO        | commit previo + copias UI y PageHeader consumidos + compositor/extensiones locales + manifest + lockfile + pins anteriores |
+| PULSO       | commit previo + copias UI consumidas + compositor/extensiones locales + manifest + lockfile + pins anteriores              |
+| NEXO        | commit previo + copias UI consumidas + compositor + `operational-context` + manifest + lockfile + pins anteriores          |
+
+Reglas:
+
+- no se edita `node_modules` para revertir;
+- no se cambia una versión publicada;
+- manifest y lockfile se restauran juntos;
+- rollback de UI no revierte por inferencia datos, migraciones, Supabase o configuración remota;
+- no se restaura un bypass o comportamiento de autoridad prohibido;
+- si el snapshot previo deja de ser compatible con el entorno actual, el lote queda bloqueado y requiere corrección hacia adelante o transición coordinada autorizada.
+
+---
+
+#### 15. Cobertura de requisitos existente
+
+La tarea no introduce una obligación transversal nueva. La migración queda cubierta por requisitos vigentes que ya protegen:
+
+- procedencia compartida, clasificación local y paridad de copias (`TREQ-SHELL-002`);
+- catálogo único de aplicaciones (`TREQ-SHELL-003`);
+- retiro seguro de consumidores (`TREQ-SHELL-004`);
+- comandos reproducibles de validación (`TREQ-SHELL-005`);
+- compatibilidad por versión y consumidor (`TREQ-SHELL-006`);
+- rollback independiente (`TREQ-SHELL-007`);
+- evidencia y trazabilidad de cambios (`TREQ-SHELL-008` y `TREQ-SHELL-009`);
+- template, Chrome, autorización y reconciliación UI (`TREQ-SHELL-029` a `TREQ-SHELL-032`);
+- integridad textual y visual del template (`TREQ-SHELL-035`);
+- identidad, release, deprecación y retiro (`TREQ-SHELL-036` a `TREQ-SHELL-039`);
+- separación entre identidad de navegación, ruta, copy y permiso (`TREQ-UX-041` a `TREQ-UX-050`);
+- localización, accesibilidad y migración de navegación legacy (`TREQ-UX-056` y `TREQ-UX-058`);
+- separación de autorización, relevancia y presentación (`TREQ-UX-059` y `TREQ-UX-062`);
+- exclusión de elementos ocultos del árbol accesible y tab order (`TREQ-UX-074`).
+
+Estas obligaciones ya abarcan la adopción, la preservación de extensiones, la navegación, la compatibilidad, la accesibilidad y el rollback que esta tarea asigna a identidades concretas.
+
+---
+
+#### 16. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** la tarea materializa sobre las 57 identidades UI existentes las obligaciones de adopción compartida, preservación local, navegación, compatibilidad, validación y rollback que ya están registradas. No crea una regla adicional de autorización, datos, integridad, negocio, transición o experiencia que requiera una identidad de prueba nueva.
+
+---
+
+#### 17. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                          |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | NOT_EXECUTED   | La fase vigente es documental y no se materializó código ni una release consumible de `@vento/ui-web`; no se declara build de adopción.                                                                                                                            |
+| LOCAL     | PASS           | El artefacto fue verificado estructuralmente: una sola tarea, metadata requerida, continuidad única, 57 identidades, conciliación 20 + 37, siete lotes y ausencia de contenido reservado de entrega.                                                               |
+| REMOTA    | PASS           | Se verificaron continuidad canónica, owner, dependencias, manifests y commits `main` de los siete repositorios; los seis consumidores externos conservan el corte inventariado y SHELL no presenta delta `src/` en el commit documental de incorporación anterior. |
+| OPERATIVA | NOT_APPLICABLE | No existe adopción runtime autorizada en esta fase documental; no se atribuye evidencia operativa a una especificación.                                                                                                                                            |
+| FÍSICA    | NOT_APPLICABLE | La tarea no modifica dispositivos, despliegues, repositorios consumidores, packages instalados ni Supabase.                                                                                                                                                        |
+
+---
+
+#### 18. Criterios de aceptación
+
+`SHELL-MIG-005` queda documentalmente completa cuando:
+
+- [x] se materializan exactamente siete lotes UI, uno por repositorio;
+- [x] se preserva el orden serial heredado;
+- [x] se reconcilian 57/57 ocurrencias UI;
+- [x] 20 ocurrencias quedan explícitamente `KEEP LOCAL`;
+- [x] 37 ocurrencias quedan explícitamente `MIGRATE`;
+- [x] cada una de las 57 identidades tiene una decisión concreta;
+- [x] no existen filas omitidas ni duplicadas;
+- [x] Chrome converge conceptualmente a `AppShell` sin absorber autoridad ni datos;
+- [x] navegación converge a `TaskNavigation` mediante adapter local y sin `permissionCode` como contrato visual;
+- [x] `layout.tsx`, `globals.css` y los seis compositores `vento-shell.tsx` permanecen locales;
+- [x] se preservan extensiones empresariales legítimas por aplicación;
+- [x] VISO conserva el tratamiento explícito de su `PageHeader` consumido;
+- [x] NEXO conserva `operational-context` local y separa su lote CI/script;
+- [x] PULSO separa variantes de Supabase y guard del lote UI;
+- [x] los candidatos inertes permanecen fuera de esta tarea;
+- [x] cada repositorio conserva un rollback independiente;
+- [x] se declaran las precondiciones que bloquean ejecución física actual;
+- [x] la evidencia futura queda atribuible a commit, versión, manifest y lockfile;
+- [x] no se ejecutan adopciones físicas, retiros, cambios AUTH, cambios Supabase ni despliegues;
+- [x] se declaran cero cambios de requisitos de prueba.
+
+---
+
+#### 19. Límites
+
+Esta tarea no:
+
+- crea físicamente `@vento/ui-web`;
+- publica un package o release;
+- inventa subpaths de exports no materializados;
+- modifica `package.json` o lockfiles consumidores;
+- modifica imports, componentes o CSS runtime;
+- modifica `layout.tsx`, `globals.css` o compositores consumidores;
+- cambia autorización, guards, role override, contexto, sesión o middleware;
+- modifica Supabase, SQL, RLS, RPC, Storage, Realtime, Edge Functions, datos, secretos o tipos generados;
+- retira archivos sin consumidor confirmado;
+- retira copias UI consumidas;
+- ejecuta pruebas operativas, despliegues o validación física;
+- adelanta la validación especializada reservada a `SHELL-MIG-006`;
+- adelanta la paridad reservada a `SHELL-MIG-007`;
+- desarrolla ni modifica la tarea siguiente.
+
+---
+
+#### 20. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-MIG-005 — Migrar componentes, Chrome y estilos por aplicación`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-MIG-006 — Verificar accesibilidad, tema y movimiento reducido`
+
 
 ### [ ] SHELL-MIG-006 — Verificar accesibilidad, tema y movimiento reducido
 
