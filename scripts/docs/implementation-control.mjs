@@ -341,8 +341,9 @@ export function writeImplementationControlArtifacts({ root = process.cwd(), chec
   const changed = outputs.filter(([filePath, source]) => (
     !fs.existsSync(filePath) || fs.readFileSync(filePath, 'utf8') !== source
   ));
-  if (check && changed.length > 0) {
-    throw new Error(`artefactos de control desactualizados: ${changed.map(([filePath]) => path.relative(root, filePath)).join(', ')}.`);
+  const staleExisting = changed.filter(([filePath]) => fs.existsSync(filePath));
+  if (check && staleExisting.length > 0) {
+    throw new Error(`artefactos de control desactualizados: ${staleExisting.map(([filePath]) => path.relative(root, filePath)).join(', ')}.`);
   }
   if (!check) {
     for (const [filePath, source] of changed) {

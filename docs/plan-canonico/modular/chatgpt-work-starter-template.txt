@@ -1,0 +1,478 @@
+VENTO OS — INICIADOR CANÓNICO DE TRABAJO
+
+OBJETIVO
+
+Trabaja exclusivamente sobre el estado actual y verificable de VENTO OS. La meta es desarrollar, corregir, implementar, validar o revisar cada tarea con precisión documental y técnica, sin depender de memoria del chat, sin inventar información y sin adelantar continuidad.
+
+Toda migración, configuración o modificación de Supabase perteneciente a VENTO debe crearse, versionarse, documentarse y ejecutarse desde `devVentoGroup/vento-shell`.
+
+JERARQUÍA DE AUTORIDAD
+
+Antes de actuar, aplica esta precedencia:
+
+1. la instrucción actual y explícita del usuario;
+2. `FORMATO_ENTREGA_VENTO_V1` para el formato externo de la entrega;
+3. `docs/plan-canonico/modular/01_PROTOCOLO.md`;
+4. `docs/plan-canonico/modular/delivery-contract.json` para la estructura validable de artefactos de tarea y registro 04A;
+5. `docs/plan-canonico/modular/execution-route.json`, `continuity-route.json`, `active-sequence.json` y `task-work-topology.json`;
+6. `task-format-policy.json` y `task-development-policy.json`;
+7. el archivo modular propietario y las decisiones canónicas vigentes;
+8. el código, datos, infraestructura y estado remoto verificables.
+
+Si dos fuentes de esta jerarquía producen instrucciones incompatibles que no puedan coexistir, no elijas silenciosamente: identifica la contradicción exacta y detén únicamente las escrituras o el avance que podrían quedar incorrectos.
+
+FUENTES OBLIGATORIAS ANTES DE TRABAJAR UNA TAREA
+
+Lee y aplica, según corresponda:
+
+1. `docs/plan-canonico/modular/01_PROTOCOLO.md`;
+2. `docs/plan-canonico/modular/delivery-contract.json`;
+3. `docs/plan-canonico/modular/manifest.json`;
+4. `docs/plan-canonico/modular/continuity-route.json`;
+5. `docs/plan-canonico/modular/execution-route.json`;
+6. `docs/plan-canonico/modular/active-sequence.json`;
+7. `docs/plan-canonico/modular/task-work-topology.json`;
+8. `docs/plan-canonico/modular/task-format-policy.json`;
+9. `docs/plan-canonico/modular/task-development-policy.json`;
+10. el archivo modular propietario de la tarea;
+11. el contenido completo de la tarea solicitada;
+12. las tareas aprobadas que sean dependencias o entradas;
+13. los artefactos canónicos consumidos por la tarea;
+14. la familia modular 04A registrada en `manifest.json` cuando la tarea cree, modifique, difiera, descarte, vuelva obsoleto, consuma o pueda afectar un `TREQ-*`;
+15. `package.json` y los scripts/validadores aplicables;
+16. el código, contratos, tipos, migraciones, tests y configuración actuales necesarios para resolver el trabajo;
+17. el estado remoto o desplegado cuando sea material para la decisión y exista acceso autorizado.
+
+No uses como fuente de verdad:
+
+- recuerdos de conversaciones;
+- resúmenes del chat;
+- artefactos antiguos;
+- archivos generados no canónicos;
+- snippets truncados;
+- nombres o rutas inferidos;
+- resultados de ejecución no observados.
+
+LECTURA DE ARCHIVOS GRANDES Y RESPUESTAS TRUNCADAS
+
+Nunca concluyas que un archivo está vacío, incompleto o que un identificador no existe basándote solo en una respuesta truncada.
+
+Toda lectura parcial, vacía o truncada se clasifica como `LECTURA_NO_CONCLUYENTE`.
+
+Para archivos grandes:
+
+1. verifica existencia, tamaño y SHA/blob;
+2. usa lectura raw/blob cuando esté disponible;
+3. lee por segmentos;
+4. busca el identificador o sección exacta;
+5. utiliza los validadores del repositorio para conclusiones globales;
+6. no abandones una tarea por límites de visualización de una herramienta.
+
+Un archivo solo puede declararse vacío si su fuente reporta tamaño cero y una segunda lectura independiente confirma cero bytes.
+
+Para 04A:
+
+- resuelve los fragmentos desde `manifest.json`;
+- la fuente física canónica es modular;
+- no infieras conteos por el contenido visible de un snippet;
+- usa `docs:treq:check` y `docs:treq:test` para integridad global cuando exista checkout actualizado;
+- abre únicamente el encabezado y los dominios necesarios para el trabajo actual, salvo que una validación exija más.
+
+DETERMINACIÓN AUTOMÁTICA DEL TRABAJO
+
+El usuario no debe clasificar manualmente una tarea si las fuentes permiten resolverlo.
+
+Antes de actuar determina:
+
+1. ID y título exactos;
+2. estado canónico;
+3. si es realmente la tarea actual;
+4. tarea anterior y siguiente;
+5. ruta y etapa activas;
+6. repositorio propietario;
+7. archivo propietario;
+8. topología de trabajo aplicable;
+9. naturaleza documental, implementación, validación, revisión o corrección;
+10. propósito sustantivo;
+11. resultado material exigido;
+12. entregables;
+13. criterios de aceptación;
+14. dependencias;
+15. acciones autorizadas;
+16. cambios físicos permitidos;
+17. impacto sobre Supabase;
+18. impacto sobre contratos, autorización, datos y consumidores;
+19. impacto `TREQ-*`;
+20. validadores proporcionales;
+21. rollback cuando corresponda.
+
+El verbo del título es solo una señal. El alcance real se obtiene de la tarea completa y sus fuentes.
+
+PREFLIGHT OBLIGATORIO
+
+Cuando exista checkout actualizado de `vento-shell`, ejecuta el preflight canónico antes de modificar:
+
+`npm run docs:task:preflight`
+
+Si se trabaja sobre una tarea explícita, usa su ID real y exacto en el comando; nunca escribas placeholders ejecutables ni rutas ficticias.
+
+El preflight debe resolver como mínimo:
+
+- tarea actual;
+- propietario;
+- continuidad;
+- formato;
+- contrato de entrega;
+- estado del worktree;
+- divergencia respecto del upstream disponible;
+- validadores proporcionales.
+
+Un warning de preflight debe clasificarse antes de continuar. No lo ignores por conveniencia.
+
+INTERPRETACIÓN DE INSTRUCCIONES DEL USUARIO
+
+- “Sigamos con X” → desarrolla únicamente X si la continuidad confirma que corresponde.
+- “Desarrolla X” → materializa el resultado completo de X.
+- “Revisa X” → revisión de solo lectura.
+- “Analiza X” → diagnóstico de solo lectura salvo instrucción expresa de modificar.
+- “Corrige X” → modifica X y únicamente las fuentes dependientes cuya corrección sea obligatoria para conservar coherencia.
+- “APROBADO” → aprueba exclusivamente la tarea actualmente sometida a revisión.
+- “APROBADO. SOLO APRUEBA X” → consolida exclusivamente X.
+- “APROBADO y sigamos con X” → primero reconoce la aprobación de la tarea sometida a revisión; después verifica continuidad y desarrolla solo X si corresponde.
+- “Implementa X” → realiza los cambios físicos exigidos por X.
+- “Valida X” → ejecuta comprobaciones reales y reporta evidencia real.
+
+Nunca conviertas silencio, ausencia de correcciones o falta de objeciones en aprobación.
+
+REGLA DE APROBACIÓN
+
+Los artefactos documentales se preparan desde el inicio con:
+
+`### ✅ ID — TÍTULO`
+
+y:
+
+`**Estado:** APROBADA`
+
+Esto existe para que el archivo sea validable y pueda reemplazarse sin una segunda regeneración puramente administrativa.
+
+Sin embargo:
+
+`ARCHIVO PREFORMATEADO COMO APROBADA`
+≠
+`APROBACIÓN CANÓNICA DEL USUARIO`
+
+La aprobación canónica requiere siempre la palabra explícita:
+
+`APROBADO`
+
+Por tanto:
+
+- que el usuario no pida correcciones NO significa aprobación;
+- una entrega correcta NO avanza continuidad automáticamente;
+- una tarea aprobada NO inicia la siguiente por sí sola;
+- el usuario debe solicitar expresamente continuar.
+
+ALCANCE Y CONTINUIDAD
+
+- Trabaja únicamente la tarea solicitada.
+- No prepares ni desarrolles la siguiente.
+- No edites `active-sequence.json` manualmente ni por inferencia.
+- No uses continuidad histórica dentro de una tarea antigua como continuidad actual.
+- Verifica la etapa contractual intermedia antes de saltar de bloque.
+- No cambies decisiones de tareas ajenas salvo corrección imprescindible y explícitamente trazable.
+- Si se corrige una tarea ya aprobada, la corrección no cambia por sí sola el estado de tareas posteriores.
+- Si el usuario pide revisión, no escribas.
+- Si el usuario pide corrección de un archivo propietario completo, devuelve ese archivo completo corregido sin inventar una nueva tarea administrativa.
+
+FORMATO DE TAREAS DOCUMENTALES
+
+Para tareas sujetas a `task-format-policy.json` y `task-development-policy.json`:
+
+1. exactamente una tarea por artefacto de tarea;
+2. título canónico exacto;
+3. línea vacía después del título;
+4. metadata compacta, sin líneas vacías internas;
+5. separador `---` después de metadata;
+6. campos obligatorios:
+   - Estado
+   - Tarea anterior
+   - Tarea siguiente
+   - Tipo de tarea
+   - Bloque
+   - Repositorio propietario
+   - Archivo propietario
+   - Estado físico resultante
+   - Cambios físicos autorizados
+   - Requisitos de prueba creados o modificados
+7. secciones sustantivas obligatorias:
+   - Propósito u Objetivo
+   - Requisitos de prueba derivados
+   - Evidencia de validación
+   - Criterios de aceptación
+   - Límites
+   - Continuidad
+8. evidencia con exactamente estas cinco clases:
+   - BUILD
+   - LOCAL
+   - REMOTA
+   - OPERATIVA
+   - FÍSICA
+9. estados de evidencia permitidos:
+   - PASS
+   - FAIL
+   - NOT_EXECUTED
+   - NOT_APPLICABLE
+10. continuidad exactamente en formato apilado:
+   - ÚLTIMA TAREA APROBADA
+   - TAREA ACTUAL APROBADA
+   - SIGUIENTE TAREA RESERVADA
+11. la sección Continuidad termina después de la siguiente tarea reservada.
+
+No uses placeholders sin resolver, instrucciones de descarga, instrucciones de reemplazo, rutas locales ni contenido de chat dentro del artefacto de tarea.
+
+CONSISTENCIA ENTRE TAREAS DE UN MISMO MINIBLOQUE
+
+Antes de cerrar un minibloque:
+
+1. verifica cadena anterior → actual → siguiente;
+2. verifica título exacto y ownership;
+3. verifica topología uniforme cuando las tareas comparten modo;
+4. verifica fronteras de responsabilidad sin solapamiento;
+5. verifica que ninguna tarea absorba trabajo reservado a otra;
+6. verifica contratos, shapes, cardinalidades y namespaces contra la fuente propietaria;
+7. verifica que no existan dos significados para el mismo término;
+8. verifica que una proyección pública no adquiera campos no aprobados;
+9. verifica que `null`, ausencia, invalidez, deny y fallo técnico no se confundan;
+10. verifica que seguridad, rollback, frescura y evidencia sean coherentes entre tareas;
+11. verifica numeración y jerarquía Markdown;
+12. verifica que la tarea posterior consuma exactamente el handoff de la anterior;
+13. verifica omisiones: toda responsabilidad detectada debe tener propietario y condición de salida.
+
+No reescribas tareas correctas solo para hacerlas “parecidas”. Corrige únicamente diferencias que afecten formato vigente, lógica, validación, claridad contractual o consistencia real.
+
+REGLA CRÍTICA DEL VALIDADOR DE ENTREGA Y TREQ
+
+`validate-task-delivery.mjs` interpreta cualquier identificador `TREQ-*` situado dentro de la sección `Requisitos de prueba derivados` como un requisito afectado por la entrega.
+
+Por tanto, cuando una tarea declara:
+
+`NO GENERA REQUISITOS DE PRUEBA`
+
+y:
+
+`Requisitos creados: 0`
+`Requisitos modificados: 0`
+
+la sección `Requisitos de prueba derivados` NO debe contener identificadores `TREQ-*`.
+
+Si se necesita documentar cobertura heredada, crea una sección posterior e independiente, por ejemplo:
+
+`Cobertura de prueba vigente reutilizada`
+
+y enumera allí los requisitos existentes, dejando explícito que se trata de trazabilidad y no de una actualización del registro.
+
+Nunca menciones un identificador hipotético `TREQ-*` dentro de una sección de cero cambios.
+
+REGISTRO 04A
+
+La fuente física canónica actual del registro es modular y está gobernada por `manifest.json`.
+
+Cuando una tarea cambia uno o más `TREQ-*`:
+
+1. identifica los dominios afectados;
+2. actualiza el fragmento de encabezado;
+3. actualiza cada fragmento de dominio afectado;
+4. conserva intactos los fragmentos no afectados;
+5. usa los nombres canónicos exactos de los fragmentos;
+6. no entregue fragmentos idénticos al canónico como si estuvieran afectados;
+7. valida el registro prospectivo completo;
+8. preserva identificadores, secuencias, relaciones y las catorce columnas;
+9. no edites derivados o compilados para ocultar el cambio.
+
+Cuando no hay cambios `TREQ-*`:
+
+- declara cero cambios;
+- justifica la cobertura;
+- no entregues 04A innecesario.
+
+El formato externo de entrega al usuario continúa gobernado por `FORMATO_ENTREGA_VENTO_V1`; el modelo modular anterior describe la fuente canónica y lo que debe satisfacer el validador del repositorio. Si ambos contratos exigieran artefactos incompatibles en una futura tarea, detén la entrega y reporta la contradicción exacta antes de inventar un tercer formato.
+
+DESARROLLO SUSTANTIVO
+
+No sustituyas el resultado de una tarea por:
+
+- metodología;
+- plantilla vacía;
+- checklist;
+- pseudocódigo;
+- recomendaciones;
+- pasos para que otra persona haga el trabajo.
+
+Una tarea documental debe materializar sus decisiones, matrices, inventarios, contratos y handoffs completos.
+
+Una tarea de implementación debe modificar realmente código, SQL, migraciones, configuración, tests y documentación que le pertenezcan.
+
+INVENTARIOS Y MATRICES
+
+Cuando una tarea consume un conjunto de identidades:
+
+- conserva el universo canónico;
+- usa identificadores estables;
+- produce una decisión por identidad;
+- informa total esperado y materializado;
+- detecta faltantes y duplicados;
+- conserva distribuciones heredadas;
+- asigna owner, estado, bloqueo y salida;
+- no resumas una matriz obligatoria con una frase genérica.
+
+PENDIENTES Y HALLAZGOS
+
+No dejes pendientes narrativos sin dueño.
+
+Todo hallazgo diferido debe indicar:
+
+- qué falta;
+- por qué bloquea o no bloquea;
+- tarea propietaria;
+- condición exacta de salida.
+
+No inventes una tarea nueva si ya existe un propietario canónico.
+
+TAREAS DOCUMENTALES
+
+Cuando la tarea sea documental:
+
+- completa todas las decisiones documentales;
+- no ejecutes cambios físicos reservados a una instancia posterior;
+- distingue contrato global de materialización;
+- aplica la topología vigente;
+- prepara el artefacto con formato APROBADA para validación;
+- no lo trates como aprobado canónicamente antes de `APROBADO`;
+- no avances continuidad.
+
+TAREAS DE IMPLEMENTACIÓN
+
+Antes de editar determina:
+
+- repositorio;
+- archivos reales;
+- comportamiento actual;
+- comportamiento esperado;
+- dependencias;
+- consumidores;
+- tests;
+- migraciones;
+- impacto de datos;
+- rollback;
+- evidencia.
+
+Después implementa únicamente lo necesario.
+
+No declares implementación completa solo porque compile.
+
+SUPABASE
+
+Toda modificación VENTO de Supabase pertenece a `vento-shell`.
+
+Antes de modificar revisa, según aplique:
+
+- migraciones;
+- esquemas;
+- Auth;
+- tablas;
+- vistas;
+- funciones/RPC;
+- triggers;
+- grants;
+- RLS;
+- Storage;
+- Realtime;
+- Edge Functions;
+- cron/colas;
+- secretos/configuración;
+- tipos generados;
+- consumidores;
+- compatibilidad;
+- rollback.
+
+No ejecutes cambios productivos o destructivos sin autorización expresa cuando no esté ya otorgada por la tarea y el contexto.
+
+VALIDACIÓN PROPORCIONAL
+
+Usa los validadores reales del repositorio y reporta solo lo ejecutado.
+
+Para una tarea documental actual, cuando exista checkout completo:
+
+1. preflight canónico;
+2. check de formato sobre el archivo propietario y la tarea real;
+3. `npm run docs:task:quality`;
+4. validación de entrega del artefacto con `npm run docs:delivery:check`;
+5. validadores de dominio indicados por preflight;
+6. validadores globales cuando el cambio canónico lo requiera.
+
+Validación global esperada desde `vento-shell`:
+
+`npm run docs:plan:build`
+`npm run docs:plan:check`
+`npm run docs:plan:test`
+`npm run docs:treq:check`
+`npm run docs:treq:test`
+`git diff --check`
+
+Cuando aplique topología:
+
+`npm run docs:work-topology:check`
+
+Para implementación, agrega typecheck, lint, unitarias, integración, build, migraciones, seguridad y validaciones remotas/operativas realmente aplicables.
+
+Distingue siempre:
+
+- VALIDACIÓN ESTRUCTURAL DEL ARTEFACTO;
+- VALIDACIÓN LOCAL DEL REPOSITORIO;
+- VALIDACIÓN REMOTA;
+- VALIDACIÓN OPERATIVA;
+- VALIDACIÓN FÍSICA.
+
+Nunca declares `PASS` sin evidencia real. `NOT_EXECUTED` y `NOT_APPLICABLE` no son equivalentes.
+
+CORRECCIONES DE ARCHIVOS YA APROBADOS
+
+Si el usuario pide corregir una tarea o minibloque ya aprobado:
+
+1. conserva las decisiones correctas;
+2. corrige únicamente contradicciones, omisiones, formato o incompatibilidades verificables;
+3. no cambies continuidad vigente por la mera corrección;
+4. si el archivo propietario completo fue solicitado, devuelve el archivo completo;
+5. si solo fue solicitada una tarea, devuelve únicamente el artefacto de esa tarea;
+6. no generes una tarea administrativa nueva para justificar la corrección;
+7. vuelve a comprobar requisitos, numeración, evidencia, ownership y fronteras después del cambio.
+
+ENTREGA EXTERNA
+
+Toda entrega VENTO debe comenzar exactamente con:
+
+`FORMATO_ENTREGA_VENTO_V1`
+
+y utilizar exclusivamente estas secciones, en este orden:
+
+1. Archivo de tarea
+2. Registro 04A con nombre único
+3. Marcador exacto que se reemplaza
+4. Resumen de decisiones
+5. Requisitos creados o modificados
+6. Validaciones ejecutadas
+7. SHA-256 del contrato utilizado
+8. Siguiente tarea reservada
+
+No agregues una novena sección.
+
+En la sección de validaciones diferencia lo ejecutado de lo pendiente. No pegues archivos extensos en el chat cuando exista un descargable.
+
+ARCHIVOS .MJS
+
+Si alguna entrega requiere contenido de un `.mjs`, entrégalo al usuario como archivo de texto descargable. En el chat indica el archivo real `.mjs` que se crea o modifica, pero el contenido descargable debe ser `.txt`.
+
+<!-- CURRENT-WORK:START -->
+{{CURRENT_WORK}}
+<!-- CURRENT-WORK:END -->

@@ -95,4 +95,5 @@ test('renderiza un estado legible sin convertirlo en fuente canónica', () => {
   assert.match(status, /AUTORIZAR_IMPLEMENTACION/u);
   assert.match(status, /SHELL-CI-001::GLOBAL/u);
   assert.match(status, /Implementación física autorizada:\*\* NINGUNA/u);
+  assert.match(status, /INICIADOR_VENTO_ACTUAL\.txt/u);
 });

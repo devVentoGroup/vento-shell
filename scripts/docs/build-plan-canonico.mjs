@@ -13,11 +13,13 @@ try {
   const { derivePreflight } = await import('./canonical-task-preflight.mjs');
   const { prepareImplementationReadinessArtifacts } = await import('./implementation-readiness-artifacts.mjs');
   const { writeImplementationControlArtifacts } = await import('./implementation-control.mjs');
+  const { writeChatgptWorkStarter } = await import('./chatgpt-work-starter.mjs');
   const { writeCurrentTaskDevelopmentArtifacts } = await import('./task-development-artifacts.mjs');
   const { writePlanWatchStatus } = await import('./plan-watch-runtime.mjs');
   const root = process.cwd();
   const completedAt = new Date().toISOString();
   const { control: implementationControl } = writeImplementationControlArtifacts({ root });
+  writeChatgptWorkStarter({ root });
   writePlanWatchStatus(path.join(root, '.delivery', 'plan-status.md'), {
     state: 'COMPILACIÓN COMPLETADA',
     pid: null,
@@ -35,6 +37,7 @@ try {
     `[PLAN CANÓNICO] ➜ ACCIÓN PRINCIPAL: ${implementationControl.primaryAction.type} `
     + `${implementationControl.primaryAction.target}`,
   );
+  console.log('[PLAN CANÓNICO]   Iniciador ChatGPT: INICIADOR_VENTO_ACTUAL.txt');
 } catch (error) {
   console.warn(
     `[PLAN CANÓNICO] No se pudieron actualizar todos los artefactos locales: ${error instanceof Error ? error.message : String(error)}`,

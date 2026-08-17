@@ -1,8 +1,9 @@
 # Paquete de relevo para implementación futura
 
 > Plantilla transversal. Su materialización en `.delivery` es de solo lectura y
-> permanece en modo `PLANNING_ONLY`: no inicia implementación, no cambia el
-> estado de una tarea y no acredita evidencia física.
+> permanece en modo `CONTROLLED_EXECUTION`: no inicia implementación por sí
+> sola, no cambia el estado de una tarea y no acredita evidencia física. Toda
+> autorización material pertenece a una instancia de `implementation-control.json`.
 
 ## Identidad y autoridad
 

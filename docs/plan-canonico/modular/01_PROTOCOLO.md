@@ -1079,8 +1079,8 @@ El watcher y el build generarán fuera de las fuentes canónicas:
 - `.delivery/task-diffs/<TASK-ID>.md`;
 - `.delivery/task-evidence/<TASK-ID>.json`.
 
-La preparación para la fase futura de implementación también se deriva de los
-catálogos canónicos, sin duplicarlos como fuente de autoridad:
+La preparación y ejecución controlada de implementación también se derivan de
+los catálogos canónicos, sin duplicarlos como fuente de autoridad:
 
 - `.delivery/application-readiness-matrix.md` resume cobertura documental base
   por aplicación a partir del catálogo de aplicaciones, `PROC-CAT-005`,
@@ -1090,15 +1090,23 @@ catálogos canónicos, sin duplicarlos como fuente de autoridad:
 - `.delivery/current-implementation-progress.md` presenta el corte observable;
 - `.delivery/implementation-progress/<TASK-ID>.json` conserva localmente los
   estados y evidencia de cada corte futuro.
+- `.delivery/current-work-directive.md` declara una sola acción principal y
+  separa el carril documental del carril físico;
+- `INICIADOR_VENTO_ACTUAL.txt` reúne automáticamente la instrucción, identidad,
+  dependencias, autorización y contenido canónico que debe cargarse en ChatGPT.
 
-Estos artefactos obedecen `implementation-readiness-policy.json` y permanecen en
-modo `PLANNING_ONLY`. Todo corte nuevo inicia en `NOT_STARTED`; el watcher puede
-crear cortes faltantes y regenerar sus vistas, pero no avanzará estados, no
-autorizará implementación, no alterará marcadores canónicos ni inferirá evidencia.
+Estos artefactos obedecen `implementation-readiness-policy.json` y
+`implementation-control.json` en modo `CONTROLLED_EXECUTION`. Todo corte nuevo
+inicia sin autorización; el watcher puede crear cortes faltantes y regenerar sus
+vistas, pero no avanzará estados, no autorizará implementación, no alterará
+marcadores canónicos ni inferirá evidencia. Cada instancia física requiere
+autorización explícita, alcance, repositorios, validaciones y gates aplicables.
 Los estados `IMPLEMENTED` y `VERIFIED` exigirán evidencia local explícita.
 
-Estos artefactos son ayuda de desarrollo de solo lectura. No aprueban tareas,
-no sustituyen evidencia remota, operativa o física y no autorizan cambios.
+Los artefactos derivados son ayuda de desarrollo de solo lectura. No aprueban
+tareas, no sustituyen evidencia remota, operativa o física y no autorizan cambios;
+la autorización vive exclusivamente en la instancia exacta registrada por
+`implementation-control.json`.
 La consola resume las advertencias prospectivas en una línea; el archivo local
 conserva el detalle completo por tarea para evitar ruido repetitivo sin ocultar
 hallazgos.

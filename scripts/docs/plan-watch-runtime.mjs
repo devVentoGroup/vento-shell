@@ -98,6 +98,7 @@ export function renderPlanWatchStatus({
 - **Instrucción:** ${display(implementationControl?.primaryAction?.instruction)}
 - **Carril documental:** ${display(implementationControl?.documentary?.state)} — ${display(implementationControl?.documentary?.taskId)}
 - **Implementación física autorizada:** ${implementationControl?.physical?.authorized?.length > 0 ? implementationControl.physical.authorized.map(({ instanceId }) => instanceId).join(', ') : 'NINGUNA'}
+- **Archivo listo para cargar en ChatGPT:** \`INICIADOR_VENTO_ACTUAL.txt\`
 
 ## Watcher
 

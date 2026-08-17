@@ -8,6 +8,7 @@ import {
   deriveImplementationControl,
   writeImplementationControlArtifacts,
 } from "./implementation-control.mjs";
+import { writeChatgptWorkStarter } from "./chatgpt-work-starter.mjs";
 import {
   acquireWatcherLock,
   registerPendingChange,
@@ -169,6 +170,7 @@ function publishTaskArtifacts(buildSucceeded = false) {
   try {
     const { control } = writeImplementationControlArtifacts({ root: repositoryRoot });
     lastImplementationControl = control;
+    writeChatgptWorkStarter({ root: repositoryRoot });
   } catch (error) {
     console.warn(
       `[PLAN CANÓNICO] Directiva operativa no disponible: ${error instanceof Error ? error.message : String(error)}`
@@ -195,6 +197,7 @@ function shouldProcess(filename) {
 
   return (
     relativePath.endsWith(".md") ||
+    relativePath.endsWith(".txt") ||
     relativePath.endsWith(".json")
   );
 }
@@ -329,6 +332,7 @@ async function rebuild(reason) {
         `[PLAN CANÓNICO]   Carril documental: ${lastImplementationControl.documentary.state} `
         + `${lastImplementationControl.documentary.taskId}`
       );
+      console.log("[PLAN CANÓNICO]   Iniciador ChatGPT: INICIADOR_VENTO_ACTUAL.txt");
     }
   } catch (error) {
     console.error(
