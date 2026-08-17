@@ -4385,16 +4385,745 @@ Esta tarea no:
 `SHELL-MIG-008 — Definir gate de retiro legacy y certificación por paquete`
 
 
-### [ ] SHELL-MIG-008 — Definir gate de retiro legacy y certificación por paquete
+### ✅ SHELL-MIG-008 — Definir gate de retiro legacy y certificación por paquete
 
-**Propósito:** definir una sola regla de retiro para artefactos aprobados cuyo consumo sea cero o cuyos consumidores migren con paridad demostrada; cada paquete aplicará y evidenciará únicamente su subconjunto.
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-MIG-007 — Definir contrato de paridad ejecutable por paquete
+**Tarea siguiente:** SHELL-NATIVE-001 — Crear tokens compatibles con ANIMA
+**Tipo de tarea:** documental — definición global única de un gate reutilizable de retiro legacy y certificación, con ejecución posterior mediante instancias `SHELL-MIG-008::<package_id>`; no elimina artefactos ni certifica retiros físicos durante el marcador global
+**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md`
+**Estado físico resultante:** CONTRATO_GLOBAL_DE_RETIRO_ESPECIFICADO; 1 plantilla reutilizable; 6 lotes residuales reconciliados; 11 candidatos físicos; 4 identidades internas de retiro controlado; 0 instancias ejecutadas; 0 retiros físicos ejecutados
+**Cambios físicos autorizados:** ninguno durante el desarrollo del marcador global
+**Requisitos de prueba creados o modificados:** 0
 
-**Dependencias para desarrollar:** `SHELL-MIG-007`; `SHELL-PKG-007`; `SHELL-PKG-008`; decisiones de `SHELL-AUD-011`.
+---
 
-**Dependencias para ejecutar cada instancia:** `SHELL-MIG-007::<package_id>`; `E5-GATE-008::<package_id>`; `SHELL-CI-020::<package_id>`; `SHELL-CI-024::<package_id>`.
+#### 1. Propósito
 
-**Modo de ejecución posterior:** `TEMPLATE_PER_PACKAGE`; instancia `SHELL-MIG-008::<package_id>` vinculada al mismo paquete y a su unidad de implementación.
+`SHELL-MIG-008` define una sola vez el gate con el que cada paquete futuro deberá demostrar que un artefacto legacy puede retirarse sin consumidores no autorizados, sin pérdida de comportamiento protegido y con rollback reproducible.
 
-**Puerta de cierre del marcador global:** regla de elegibilidad, inventario residual, evidencia exigida, rollback y conciliación entre paquetes definidos sin retirar artefactos todavía.
+La tarea separa expresamente dos momentos:
 
-**Puerta de cierre de cada instancia:** cero consumidores legacy no autorizados dentro del alcance del paquete, artefactos retirados registrados, builds aprobados y rollback reproducible por repositorio.
+```text
+MARCADOR GLOBAL SHELL-MIG-008
+→ define elegibilidad, inventario residual, evidencia, rollback y conciliación
+→ se aprueba una sola vez
+→ no elimina artefactos
+
+INSTANCIA SHELL-MIG-008::<package_id>
+→ aplica el gate al subconjunto de retiro incluido en ese paquete
+→ usa evidencia real del package_id y sus repositorios
+→ certifica únicamente los retiros efectivamente materializados dentro del alcance aprobado
+→ no reabre ni vuelve a aprobar el marcador global
+```
+
+El retiro se admite por dos fundamentos principales:
+
+1. **cero consumo demostrado** para un artefacto o miembro realmente inerte;
+2. **migración completada con paridad demostrada** para legacy que sí tenía consumidores.
+
+La ausencia de imports estáticos, por sí sola, nunca constituye autorización suficiente.
+
+---
+
+#### 2. Modalidad canónica y ciclo
+
+La modalidad de esta tarea es `TEMPLATE_PER_PACKAGE`.
+
+| Capa                        | Identidad                     | Momento                                                                       | Resultado                                                             |
+| --------------------------- | ----------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| definición global           | `SHELL-MIG-008`               | ahora, después de sus dependencias de desarrollo                              | contrato reusable aprobado, sin retiro físico                         |
+| materialización del paquete | mismo `package_id`            | dentro de `SHELL-CI-020..024::<package_id>` cuando el paquete incluya retiros | cambios físicos, pruebas y evidencia pertenecientes al paquete        |
+| certificación de retiro     | `SHELL-MIG-008::<package_id>` | después de `SHELL-CI-024::<package_id>`                                       | decisión sobre los retiros ya incluidos y ejecutados bajo ese paquete |
+
+**Dependencias para desarrollar el marcador global:**
+
+- `SHELL-MIG-007`;
+- `SHELL-PKG-007`;
+- `SHELL-PKG-008`;
+- decisiones aprobadas de `SHELL-AUD-011`.
+
+**Dependencias para ejecutar una instancia:**
+
+- `SHELL-MIG-007::<package_id>`;
+- `E5-GATE-008::<package_id>`;
+- `SHELL-CI-020::<package_id>`;
+- `SHELL-CI-024::<package_id>`.
+
+La instancia posterior no autoriza una eliminación nueva fuera del alcance que fue aprobado y materializado por el mismo paquete. Si un candidato no perteneció al alcance ejecutado, permanece residual para una instancia futura propietaria.
+
+---
+
+#### 3. Resultado material
+
+Queda definida una plantilla global completa con el siguiente resultado:
+
+| Unidad                                              | Cantidad | Resultado                           |
+| --------------------------------------------------- | -------: | ----------------------------------- |
+| plantilla global de gate                            |    **1** | definida                            |
+| lotes residuales heredados                          |    **6** | reconciliados                       |
+| candidatos físicos de retiro por cero consumo       |   **11** | reconciliados                       |
+| identidades internas de retiro controlado           |    **4** | reconciliadas                       |
+| clases de elegibilidad                              |    **3** | definidas                           |
+| clases de evidencia de instancia                    |    **8** | definidas                           |
+| gates obligatorios de certificación                 |   **12** | definidos                           |
+| instancias `SHELL-MIG-008::<package_id>` ejecutadas |    **0** | no corresponde en esta tarea global |
+| artefactos eliminados por esta tarea                |    **0** | no autorizado                       |
+| retiros certificados por esta tarea global          |    **0** | no corresponde                      |
+
+Los once candidatos físicos y las cuatro identidades internas no se consideran retirados por quedar enumerados. Cada uno deberá superar el gate sobre el commit real donde se materialice su retiro.
+
+---
+
+#### 4. Universo residual heredado
+
+##### 4.1. Once candidatos físicos
+
+El inventario físico inicial queda reconciliado con las decisiones aprobadas de auditoría:
+
+| ID            | Repositorio | Identidad                                       | Decisión heredada                    | Lote de retiro |
+| ------------- | ----------- | ----------------------------------------------- | ------------------------------------ | -------------- |
+| `RET-ART-001` | VISO        | `src/lib/supabase/proxy.ts`                     | retiro físico posterior condicionado | VISO           |
+| `RET-ART-002` | NEXO        | `src/lib/supabase/proxy.ts`                     | retiro físico posterior condicionado | NEXO           |
+| `RET-ART-003` | PULSO       | `src/lib/supabase/proxy.ts`                     | retiro físico posterior condicionado | PULSO          |
+| `RET-ART-004` | PULSO       | `src/utils/supabase/client.ts`                  | retiro físico posterior condicionado | PULSO          |
+| `RET-ART-005` | NEXO        | `src/components/vento/standard/page-header.tsx` | retiro físico posterior condicionado | NEXO           |
+| `RET-ART-006` | FOGO        | `src/lib/supabase/employee-sites.ts`            | retiro físico posterior condicionado | FOGO           |
+| `RET-ART-007` | NUMERA      | `src/lib/supabase/employee-sites.ts`            | retiro con gate reforzado            | NUMERA         |
+| `RET-ART-020` | VISO        | `src/lib/auth/sso.ts`                           | retiro físico posterior condicionado | VISO           |
+| `RET-ART-021` | FOGO        | `src/lib/auth/sso.ts`                           | retiro físico posterior condicionado | FOGO           |
+| `RET-ART-022` | ORIGO       | `src/lib/auth/sso.ts`                           | retiro físico posterior condicionado | ORIGO          |
+| `RET-ART-023` | NUMERA      | `src/lib/auth/sso.ts`                           | retiro físico posterior condicionado | NUMERA         |
+
+**Conciliación:** 11 candidatos físicos esperados, 11 materializados, 0 omitidos y 0 duplicados.
+
+##### 4.2. Cuatro identidades internas
+
+Además de los archivos, el gate gobierna las identidades internas ya autorizadas para retiro controlado:
+
+| ID            | Alcance                         | Identidad                                         | Condición heredada                                                 |
+| ------------- | ------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------ |
+| `RET-ART-024` | PULSO                           | `GuardOptions.requireAppAccessPermission = false` | cero consumidores de la rama `false`; no ampliar autoridad         |
+| `RET-ART-025` | runtimes AppSwitcher aplicables | `AppSwitcherItem.brandColor`                      | cero lecturas legacy y presentación canónica preservada            |
+| `RET-ART-026` | runtimes AppSwitcher aplicables | `AppSwitcherProps.sites`                          | cero consumidores; selección de sede preservada en su propietario  |
+| `RET-ART-027` | runtimes AppSwitcher aplicables | `AppSwitcherProps.activeSiteId`                   | cero consumidores; contexto activo preservado fuera de AppSwitcher |
+
+Estas cuatro identidades son miembros contractuales o ramas internas, no archivos físicos adicionales.
+
+##### 4.3. Exclusiones expresas del inventario residual
+
+No pertenecen a los seis lotes `SHELL-MIG-008` por simple proximidad:
+
+- los accesos SHELL `Mi perfil` y `Configuración`, cuyo propietario de retiro es `SHELL-APP-021`;
+- `@vento/os-context`, que permanece en cuarentena contractual para su consolidación canónica y no se trata como package muerto;
+- rutas, `layout.tsx`, `route.ts` y `middleware.ts` que dependen de convención de framework;
+- scripts y bootstrap con consumo manual o de CI no descartado;
+- endpoints, RPC y objetos Supabase sin inventario remoto y transición propietaria;
+- cualquier artefacto consumido que aún no haya completado su migración y paridad.
+
+---
+
+#### 5. Seis lotes residuales por repositorio
+
+Los lotes se conservan en el orden serial aprobado y no se mezclan entre repositorios:
+
+| Orden | Lote                                         | Candidatos del lote                                                                                            | Protección especial                                                       |
+| ----: | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+|     1 | `devVentoGroup/vento-numera / SHELL-MIG-008` | `sso.ts`; `employee-sites.ts`; miembros inertes de AppSwitcher                                                 | revalidación reforzada de `employee-sites.ts`                             |
+|     2 | `devVentoGroup/vento-fogo / SHELL-MIG-008`   | `sso.ts`; `employee-sites.ts`; miembros inertes de AppSwitcher                                                 | impedir propagación de fallback ajeno                                     |
+|     3 | `devVentoGroup/vento-origo / SHELL-MIG-008`  | `sso.ts`; miembros inertes de AppSwitcher                                                                      | `employee-sites.ts` consumido queda fuera del retiro inerte               |
+|     4 | `devVentoGroup/vento-viso / SHELL-MIG-008`   | `proxy.ts`; `sso.ts`; miembros inertes de AppSwitcher                                                          | paridad UI previa cuando el retiro interno dependa de la migración UI     |
+|     5 | `devVentoGroup/vento-pulso / SHELL-MIG-008`  | `proxy.ts`; cliente Supabase alterno; rama `requireAppAccessPermission=false`; miembros inertes de AppSwitcher | ningún retiro puede ampliar autoridad ni mezclar un cambio Supabase       |
+|     6 | `devVentoGroup/vento-nexo / SHELL-MIG-008`   | `proxy.ts`; `page-header.tsx`; miembros inertes de AppSwitcher                                                 | mantener separado el lote CI/script y bloquear si reaparece un consumidor |
+
+No existe un lote residual SHELL dentro de esta tarea.
+
+---
+
+#### 6. Clases de elegibilidad
+
+##### 6.1. Clase A — artefacto sin consumidor
+
+Aplica cuando la decisión aprobada ya lo clasifica como candidato de retiro y el commit de cambio demuestra cero consumidores aplicables.
+
+Para quedar elegible deberá demostrar, según la naturaleza del artefacto:
+
+- cero referencias estáticas;
+- cero cargas dinámicas;
+- cero ejecución por convención de framework;
+- cero invocaciones desde scripts;
+- cero invocaciones desde CI;
+- cero reexports, aliases, workspaces o dependencias declaradas;
+- cero consumo manual vigente cuando esa clase sea material;
+- cero consumidores remotos, de datos o generados cuando la naturaleza del artefacto pueda tenerlos.
+
+La reaparición de un solo consumidor convierte el retiro en `BLOCKED`. El artefacto deberá migrarse o reclasificarse antes de poder volver al gate.
+
+##### 6.2. Clase B — legacy consumido ya migrado
+
+Aplica a una copia, adapter, helper o superficie legacy que tenía consumidores reales.
+
+Solo puede quedar elegible cuando:
+
+1. existe un sustituto aprobado y materializado;
+2. todos los consumidores incluidos en el alcance del paquete migraron al sustituto;
+3. `SHELL-MIG-007::<package_id>` demuestra paridad para la combinación exacta;
+4. los nuevos consumidores legacy están bloqueados por el mecanismo propietario aplicable;
+5. la búsqueda residual produce cero usos no autorizados;
+6. la combinación candidata supera los gates aplicables;
+7. el rollback hacia una combinación soportada está ensayado;
+8. cualquier deprecación pública aplicable conserva su expediente y condiciones.
+
+Como referencias protegidas, NEXO y PULSO conservan sus `sso.ts` consumidos hasta completar migración; ORIGO conserva su `employee-sites.ts` consumido; y la variante VISO de `PageHeader` no puede tratarse como inerte por la existencia de una variante NEXO sin consumidor.
+
+##### 6.3. Clase C — miembro interno inerte
+
+Aplica a props, campos o ramas internas autorizadas para retiro.
+
+La instancia deberá demostrar simultáneamente:
+
+- cero lecturas o consumidores de la identidad eliminada;
+- ausencia de cambio observable no aprobado;
+- typecheck, build y pruebas aplicables correctos;
+- preservación de la responsabilidad en su propietario cuando el miembro representaba datos derivados;
+- ausencia de ampliación de autorización o contexto;
+- rollback del miembro o rama junto con el snapshot del consumidor.
+
+---
+
+#### 7. Regla de búsqueda de consumidores
+
+El gate de consumidores es multiclase y fail-closed.
+
+| Clase heredada       | Qué debe cubrir                                                         |
+| -------------------- | ----------------------------------------------------------------------- |
+| `CONSUMER-STATIC`    | imports, exports, reexports, llamadas y referencias estáticas           |
+| `CONSUMER-DYNAMIC`   | `import()`, resolución por string, registries y carga construida        |
+| `CONSUMER-FRAMEWORK` | entrypoints y convenciones de framework                                 |
+| `CONSUMER-SCRIPT`    | scripts npm, shell, PowerShell, bootstrap y mantenimiento               |
+| `CONSUMER-CI`        | workflows, validadores, release y gates                                 |
+| `CONSUMER-MANUAL`    | procedimientos operativos vigentes                                      |
+| `CONSUMER-PACKAGE`   | `exports`, workspaces, manifests y lockfiles                            |
+| `CONSUMER-REMOTE`    | llamadas externas, tráfico, integraciones o despliegues cuando apliquen |
+| `CONSUMER-DATA`      | SQL, RPC, triggers, RLS o funciones cuando apliquen                     |
+| `CONSUMER-GENERATED` | manifiestos, catálogos, registries o codegen                            |
+
+Para los once candidatos físicos heredados se conservan como mínimo las cinco clases exigidas por sus lotes: estática, dinámica, framework, CI y script. Las demás clases se agregan cuando la naturaleza del candidato pueda depender de ellas.
+
+Una consulta única sin resultados no satisface este gate.
+
+---
+
+#### 8. Contrato de entrada de cada instancia
+
+Toda futura instancia `SHELL-MIG-008::<package_id>` deberá materializar como mínimo:
+
+| Campo                      | Regla                                                                              |
+| -------------------------- | ---------------------------------------------------------------------------------- |
+| identidad de instancia     | mismo `package_id` utilizado por el ciclo de implementación                        |
+| package                    | package de cambio exacto                                                           |
+| unidad de implementación   | unidad propietaria ya asignada cuando aplique                                      |
+| alcance de retiro          | repositorios e identidades exactas incluidos en el paquete                         |
+| baseline                   | commit anterior al cambio por repositorio                                          |
+| candidate/result commit    | commit exacto que contiene el retiro                                               |
+| decisiones de auditoría    | referencias `RET-ART-*` o decisión posterior aprobada aplicable                    |
+| relación de actualización  | expediente `PKG-PR-*` cuando el retiro forme parte de una actualización de package |
+| evidencia de paridad       | referencia `SHELL-MIG-007::<package_id>` para legacy previamente consumido         |
+| inventario de consumidores | resultado por clase de consumidor y por identidad                                  |
+| manifest y lockfile        | identidad efectiva cuando el retiro afecte dependencias                            |
+| versiones e integridad     | dependencias compartidas exactas que participan en el resultado                    |
+| pruebas y gates            | resultados atribuibles al mismo commit                                             |
+| inventario residual        | candidatos que permanecen después de la instancia y causa                          |
+| rollback                   | snapshot, procedimiento, ensayo y resultado                                        |
+| bloqueadores               | lista cerrada con propietario y condición de salida                                |
+
+No se inventan valores por ausencia. Un insumo obligatorio no disponible deja la instancia `BLOCKED`.
+
+---
+
+#### 9. Doce gates obligatorios de certificación
+
+| Gate                            | Condición de PASS                                                                                                         | Bloqueo                                                                    |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| 1. identidad y alcance          | package, unidad, repositorios, candidatos y commits coinciden con el paquete ejecutado                                    | identidad o alcance ambiguos                                               |
+| 2. elegibilidad del candidato   | cada identidad pertenece a una clase de elegibilidad satisfecha                                                           | candidato no clasificado o consumidor reaparecido                          |
+| 3. procedencia del cambio       | retiro contenido en la historia y alcance del mismo package_id                                                            | eliminación fuera del paquete o commit no atribuible                       |
+| 4. inventario de consumidores   | búsqueda multiclase completa y reproducible                                                                               | clase aplicable omitida o evidencia parcial                                |
+| 5. sustitución y paridad        | legacy consumido tiene sustituto y paridad de la instancia correspondiente                                                | consumidor sin migrar, paridad fallida o evidencia no vigente              |
+| 6. bloqueo de nuevo legacy      | no se puede crear silenciosamente un nuevo consumidor de la identidad retirada cuando la migración exige gate propietario | legacy todavía admisible sin control                                       |
+| 7. gates de package/consumidor  | gates aplicables heredados de la política de actualización están vigentes                                                 | resultado `FAIL`, `BLOCKED`, `CANCELLED`, `TIMED_OUT`, `STALE` o pendiente |
+| 8. build y regresión            | lint, typecheck, build/export y pruebas aplicables del consumidor completan correctamente                                 | comando requerido inexistente o resultado fallido                          |
+| 9. diff de retiro               | solo se eliminan identidades y ajustes necesarios del alcance aprobado                                                    | refactor o funcionalidad ajena impide atribución                           |
+| 10. inventario residual         | todo legacy restante queda enumerado con propietario y causa                                                              | residuo desconocido o candidato omitido                                    |
+| 11. rollback                    | restauración del snapshot soportado fue ensayada y verificada                                                             | rollback no reproducible o restaura un bypass prohibido                    |
+| 12. conciliación entre paquetes | no existe doble retiro, consumidor pendiente ni conflicto con otra unidad propietaria                                     | otra instancia o paquete todavía depende del artefacto                     |
+
+Los gates reutilizan la semántica fail-closed de `SHELL-PKG-008`. Un gate universal requiere `PASS`; una condición realmente no aplicable solo puede excluirse con justificación verificable.
+
+---
+
+#### 10. Estados y agregación
+
+Los resultados individuales conservan los estados canónicos de gates ya definidos para paquetes:
+
+- `PENDING`;
+- `RUNNING`;
+- `PASS`;
+- `FAIL`;
+- `BLOCKED`;
+- `CANCELLED`;
+- `TIMED_OUT`;
+- `STALE`;
+- `NOT_APPLICABLE`.
+
+La certificación de la instancia se agrega así:
+
+```text
+si cualquier gate obligatorio = FAIL
+→ instancia FAIL
+
+si no existe FAIL pero hay PENDING, RUNNING, BLOCKED, CANCELLED, TIMED_OUT o STALE
+→ instancia BLOCKED
+
+si todos los gates obligatorios = PASS
+ y cada NOT_APPLICABLE es condicional y está justificado
+→ instancia PASS
+```
+
+Un resultado de otro commit, otro package_id, otro manifest, otro lockfile o otra unidad de implementación es `STALE` para la instancia actual.
+
+---
+
+#### 11. Ocho clases de evidencia por instancia
+
+| Clase                | Contenido mínimo                                                                                                   |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `LINEAGE`            | package_id, unidad, repositorio, baseline, commit de retiro, versiones, integridad, manifest y lockfile aplicables |
+| `CONSUMER_INVENTORY` | consultas por clase, alcance, cero consumo o consumidores migrados y resultado reproducible                        |
+| `PARITY`             | referencia de paridad vigente cuando el artefacto tenía consumidores                                               |
+| `RETIREMENT_DIFF`    | identidades eliminadas, exports/imports ajustados y ausencia de cambios ajenos                                     |
+| `BUILD_REGRESSION`   | lint, typecheck, build/export, pruebas e integración aplicables por consumidor                                     |
+| `RESIDUAL_INVENTORY` | legacy restante, estado, propietario y condición de salida                                                         |
+| `ROLLBACK`           | snapshot, restauración, comandos/pruebas posteriores y resultado                                                   |
+| `CERTIFICATION`      | gates, responsables, excepciones justificadas y resultado agregado de la instancia                                 |
+
+Una captura, comentario de PR o búsqueda aislada no sustituye una clase completa.
+
+---
+
+#### 12. Contrato del registro de retiro
+
+Cada identidad retirada en una instancia deberá conservar un registro atribuible con:
+
+| Campo                 | Obligación                                                                      |
+| --------------------- | ------------------------------------------------------------------------------- |
+| `artifact_id`         | identidad `RET-ART-*` cuando ya exista o referencia canónica posterior aprobada |
+| `repository`          | repositorio exacto                                                              |
+| `package_id`          | paquete propietario de la instancia                                             |
+| `implementation_unit` | unidad propietaria cuando aplique                                               |
+| `base_commit`         | commit anterior al retiro                                                       |
+| `result_commit`       | commit que contiene el retiro                                                   |
+| `eligibility_class`   | cero consumo, legacy migrado o miembro interno inerte                           |
+| `consumer_evidence`   | inventario de consumidores y resultado                                          |
+| `parity_ref`          | referencia aplicable o no aplicabilidad justificada                             |
+| `update_ref`          | expediente de actualización cuando aplique                                      |
+| `tests`               | resultados reales atribuibles                                                   |
+| `residual_refs`       | legacy relacionado que permanece                                                |
+| `rollback_ref`        | snapshot y ensayo                                                               |
+| `outcome`             | PASS, FAIL o BLOCKED                                                            |
+| `owner`               | responsable de ejecución y certificación                                        |
+
+La eliminación física sin este lineage no puede certificarse.
+
+---
+
+#### 13. Conciliación entre paquetes y unidades
+
+La misma identidad física no se elimina más de una vez.
+
+Cuando más de un paquete dependa del mismo retiro:
+
+1. cada paquete declara su relación con la identidad;
+2. la unidad de implementación propietaria conserva la acción física;
+3. las demás instancias referencian el retiro propietario y su evidencia vigente;
+4. ningún paquete puede certificar cero residual mientras otro consumidor autorizado siga usando la identidad;
+5. una evidencia de retiro se vuelve `STALE` si un commit posterior reintroduce la identidad o crea un consumidor nuevo;
+6. el cierre de un package_id no aprueba ni oculta el estado de otro package_id;
+7. un retiro no incluido en el alcance aprobado permanece en el inventario residual.
+
+La conciliación evita duplicar borrados, pruebas y rollback sin convertir una instancia en aprobación global.
+
+---
+
+#### 14. Relación con actualizaciones mediante PR
+
+Cuando el retiro forme parte de una actualización de package:
+
+- la propuesta conserva manifest y lockfile como unidad cuando cambien;
+- el retiro de adapters temporales solo ocurre con su gate propietario satisfecho;
+- el expediente de actualización referencia la deprecación, compatibilidad, paridad, rollback y requisitos aplicables;
+- el automatizador puede preparar la propuesta, pero no puede certificar por sí solo el retiro, fusionarlo o desplegarlo;
+- cualquier commit adicional invalida la evidencia técnica que dependa del commit anterior;
+- un cambio multi-package usa el conjunto mínimo cerrado y no agrega retiros ajenos por conveniencia.
+
+`SHELL-MIG-008` no crea un segundo mecanismo de actualización; consume el lineage ya definido.
+
+---
+
+#### 15. Relación con el gate fail-closed de paquetes
+
+La instancia deberá respetar los gates aplicables de package y consumidor ya definidos, incluidos:
+
+- identidad y elegibilidad de release;
+- coherencia manifest–lockfile;
+- instalación bloqueada;
+- pruebas propias del package;
+- lint o análisis estático;
+- typecheck;
+- build/export;
+- pruebas automatizadas;
+- matriz de compatibilidad;
+- perfil especializado;
+- requisitos afectados;
+- controles reforzados por riesgo;
+- vigencia de evidencia;
+- revisión y protección de merge;
+- separación entre merge, despliegue y adopción.
+
+`SHELL-MIG-008` agrega la decisión de retiro al mismo expediente de evidencia; no degrada ni sustituye esos gates.
+
+---
+
+#### 16. Protección del legacy consumido
+
+La presencia de un sustituto no demuestra por sí sola que la copia legacy pueda borrarse.
+
+Antes de retirar legacy previamente consumido, la instancia exige:
+
+```text
+sustituto materializado
++
+todos los consumidores del alcance migrados
++
+paridad de SHELL-MIG-007::<package_id> = PASS
++
+cero uso residual no autorizado
++
+gates de package/consumidor = PASS
++
+rollback ensayado
+```
+
+Controles explícitos:
+
+- NEXO `src/lib/auth/sso.ts` permanece mientras conserve consumidores;
+- PULSO `src/lib/auth/sso.ts` permanece mientras conserve consumidores;
+- ORIGO `src/lib/supabase/employee-sites.ts` permanece mientras conserve consumidores;
+- VISO `PageHeader` no se retira por analogía con la copia NEXO sin consumidor;
+- `shared-device-signature`, middleware, rutas y endpoints conservan sus propietarios y gates específicos.
+
+No se permite convertir una identidad `MIGRATE` en retiro inerte para reducir el trabajo del paquete.
+
+---
+
+#### 17. Rollback de retiro
+
+Cada repositorio afectado deberá demostrar un rollback propio.
+
+El ensayo deberá poder restaurar, según aplique:
+
+1. el archivo o miembro eliminado;
+2. exports y aliases;
+3. imports o adapters modificados;
+4. manifest y lockfile como unidad cuando cambiaron;
+5. configuración local retirada;
+6. una combinación soportada de packages;
+7. build y pruebas posteriores a la restauración.
+
+El rollback no puede:
+
+- editar `node_modules`;
+- mutar una release publicada;
+- restaurar un bypass de autorización prohibido;
+- ejecutar cambios de Supabase fuera de `vento-shell`;
+- asumir que retroceder `@vento/supabase` revierte una migración de base de datos;
+- descartar datos o auditoría creados durante la ventana.
+
+Si restaurar el estado anterior ya no es seguro, la instancia permanece `BLOCKED` y requiere una transición o corrección hacia adelante autorizada por su propietario.
+
+---
+
+#### 18. Inventario residual posterior a cada instancia
+
+Toda instancia deberá cerrar con una conciliación completa del legado relacionado con su alcance:
+
+| Resultado residual                              | Tratamiento                                               |
+| ----------------------------------------------- | --------------------------------------------------------- |
+| retirado y certificado                          | queda ligado al commit y evidencia de la instancia        |
+| permanece consumido                             | conserva propietario y tarea de migración                 |
+| candidato sin consumo no incluido en el paquete | permanece residual para una futura instancia propietaria  |
+| consumidor reaparecido                          | retiro bloqueado y candidato reclasificado para migración |
+| evidencia desactualizada                        | estado `STALE`; repetir sobre la combinación vigente      |
+| fuera de alcance del package_id                 | no se modifica ni se declara cerrado                      |
+
+El objetivo no es llegar artificialmente a cero candidatos globales en cada paquete, sino a **cero consumidores legacy no autorizados dentro del alcance exacto de la instancia**.
+
+---
+
+#### 19. Responsabilidades
+
+| Responsabilidad                                       | Propietario                                                       |
+| ----------------------------------------------------- | ----------------------------------------------------------------- |
+| definir el contrato global de retiro                  | `SHELL-MIG-008`                                                   |
+| clasificar candidatos y consumidores heredados        | `SHELL-AUD-011` y decisiones posteriores propietarias             |
+| aprobar el alcance del paquete                        | `E5-GATE-008::<package_id>`                                       |
+| producir el candidato y cambios físicos del paquete   | `SHELL-CI-020::<package_id>` y grupos de implementación incluidos |
+| demostrar paridad del legacy consumido                | `SHELL-MIG-007::<package_id>`                                     |
+| aplicar gates de package/consumidor                   | tareas `SHELL-CI-*` y políticas propietarias aplicables           |
+| cerrar implementación, piloto y evidencia del paquete | `SHELL-CI-024::<package_id>`                                      |
+| certificar el subconjunto de retiro                   | `SHELL-MIG-008::<package_id>`                                     |
+| ejecutar cualquier cambio Supabase                    | tarea propietaria desde `vento-shell`                             |
+
+La certificación de retiro no sustituye la autoridad de release, datos, autorización, UI o Supabase de sus tareas propietarias.
+
+---
+
+#### 20. Gate de inicio de una instancia
+
+Una instancia solo puede evaluarse cuando:
+
+1. `SHELL-MIG-008` global está aprobado;
+2. existe `SHELL-MIG-007::<package_id>` aplicable y cerrado para el mismo paquete cuando el retiro depende de migración;
+3. `E5-GATE-008::<package_id>` autorizó el alcance;
+4. `SHELL-CI-020::<package_id>` materializó el cambio;
+5. `SHELL-CI-024::<package_id>` cerró el paquete con evidencia atribuible;
+6. los retiros que se pretenden certificar estaban incluidos en ese alcance;
+7. baseline y result commit son identificables;
+8. existe inventario de consumidores por identidad;
+9. los resultados de package y consumidor están vigentes;
+10. existe un snapshot de rollback ensayable.
+
+Una instancia no comienza por la sola existencia de un candidato histórico.
+
+---
+
+#### 21. Condiciones de suspensión
+
+La instancia queda `BLOCKED` cuando ocurra cualquiera de estas condiciones:
+
+- aparece un consumidor no inventariado;
+- falta una clase de búsqueda aplicable;
+- el artefacto fue eliminado fuera del package_id aprobado;
+- baseline o commit de retiro no son atribuibles;
+- un legacy consumido carece de sustituto materializado;
+- la paridad aplicable no está en `PASS`;
+- un gate requerido de package o consumidor no está en `PASS`;
+- existe un import, export, alias, route convention, script, CI o carga dinámica residual no autorizada;
+- el diff mezcla funcionalidad ajena y no permite atribuir el resultado;
+- la evidencia pertenece a otro commit o combinación;
+- el inventario residual está incompleto;
+- otro paquete o unidad todavía depende del artefacto;
+- el retiro modifica autoridad, contexto o datos fuera de su propietario;
+- el rollback no es reproducible;
+- el rollback reintroduce un bypass o combinación no soportada;
+- un cambio Supabase fue ejecutado fuera de `vento-shell`;
+- se intenta retirar una familia completa porque una sola ocurrencia carece de consumidor;
+- se intenta convertir un `MIGRATE` en `RETIRE` sin completar su migración.
+
+---
+
+#### 22. Regla por cada lote residual
+
+##### 22.1. NUMERA
+
+La instancia aplicable debe cubrir `sso.ts`, `employee-sites.ts` y miembros AppSwitcher incluidos en el package_id. `employee-sites.ts` exige verificar existencia y blob del commit de cambio además de cero consumidores. Cualquier consumidor encontrado revoca su elegibilidad.
+
+##### 22.2. FOGO
+
+La instancia aplicable debe cubrir `sso.ts`, `employee-sites.ts` y miembros AppSwitcher incluidos. El retiro de SSO no puede propagar ni conservar el fallback histórico ajeno como reemplazo indirecto.
+
+##### 22.3. ORIGO
+
+La instancia puede evaluar `sso.ts` y miembros AppSwitcher incluidos, pero deberá demostrar explícitamente que `src/lib/supabase/employee-sites.ts` consumido no fue retirado por pertenecer a la misma familia.
+
+##### 22.4. VISO
+
+La instancia puede evaluar `proxy.ts`, `sso.ts` y miembros AppSwitcher incluidos. Cuando un retiro interno dependa de la migración UI, la evidencia de paridad aplicable deberá pertenecer al mismo package_id y commit candidato.
+
+##### 22.5. PULSO
+
+La instancia puede evaluar `proxy.ts`, el cliente Supabase alterno, la rama `requireAppAccessPermission=false` y miembros AppSwitcher incluidos. Cualquier cambio que amplíe autoridad o mezcle una migración Supabase no autorizada bloquea el retiro.
+
+##### 22.6. NEXO
+
+La instancia puede evaluar `proxy.ts`, la copia NEXO de `page-header.tsx` y miembros AppSwitcher incluidos. La evidencia deberá mantener separado el lote CI/script y demostrar que la cabecera NEXO sigue sin consumidor; la existencia de consumidores VISO de su propia variante no autoriza ni impide por sí sola la decisión NEXO.
+
+---
+
+#### 23. Plantilla materializada de una instancia
+
+Toda futura instancia deberá completar al menos esta matriz con valores reales:
+
+| Campo                       | Contenido requerido                                               |
+| --------------------------- | ----------------------------------------------------------------- |
+| Instancia                   | `SHELL-MIG-008::<package_id>`                                     |
+| Package                     | package_id aprobado                                               |
+| Unidad                      | implementation unit propietaria cuando aplique                    |
+| Repositorios                | repositorios exactos incluidos                                    |
+| Candidatos                  | `RET-ART-*` u otras identidades aprobadas incluidas               |
+| Clase de elegibilidad       | A, B o C                                                          |
+| Baseline                    | commit anterior por repositorio                                   |
+| Resultado                   | commit de retiro por repositorio                                  |
+| Inventario de consumidores  | evidencia por clase y por candidato                               |
+| Paridad                     | referencia aplicable para legacy consumido                        |
+| Gates de package/consumidor | resultados vigentes                                               |
+| Pruebas                     | lint, typecheck, build/export, regresión e integración aplicables |
+| Diff                        | alcance exacto del retiro                                         |
+| Residual                    | legacy que permanece y propietario                                |
+| Rollback                    | snapshot, ensayo y resultado                                      |
+| Conciliación cross-package  | referencias de otras instancias o unidades afectadas              |
+| Resultado agregado          | PASS, FAIL o BLOCKED                                              |
+| Bloqueadores                | lista cerrada con propietario y condición de salida               |
+
+La plantilla global queda completa ahora; los valores reales solo pertenecen a cada futura instancia.
+
+---
+
+#### 24. Puerta de cierre del marcador global
+
+El marcador global queda documentalmente cerrado cuando:
+
+1. existe una sola regla reutilizable de elegibilidad;
+2. se distinguen cero consumo, legacy migrado y miembro interno inerte;
+3. se reconcilian los seis lotes residuales;
+4. se reconcilian los once candidatos físicos;
+5. se reconcilian las cuatro identidades internas;
+6. se conservan las exclusiones propietarias;
+7. se define búsqueda multiclase de consumidores;
+8. se define el contrato de entrada de instancia;
+9. se definen doce gates obligatorios;
+10. se define evidencia por commit, package y repositorio;
+11. se define rollback reproducible;
+12. se define inventario residual y conciliación entre paquetes;
+13. se define el cierre de instancia sin afirmar que una instancia ya ocurrió;
+14. no se retira ningún artefacto durante la definición global.
+
+---
+
+#### 25. Puerta de cierre de cada instancia
+
+Una futura `SHELL-MIG-008::<package_id>` solo puede quedar `PASS` cuando:
+
+- todos los retiros del alcance poseen lineage y elegibilidad demostrados;
+- existe **cero consumidores legacy no autorizados dentro del alcance exacto del paquete**;
+- los artefactos efectivamente retirados están registrados;
+- los consumidores migrados aplicables tienen paridad vigente;
+- los gates requeridos de package y consumidor están en `PASS`;
+- lint, typecheck, build/export y pruebas aplicables están aprobados;
+- el inventario residual está conciliado;
+- no existe conflicto con otra instancia o unidad propietaria;
+- el rollback es reproducible y fue ensayado por repositorio;
+- la evidencia corresponde a los commits realmente certificados.
+
+La instancia no exige cero legacy global de todo Vento OS, únicamente cero legacy no autorizado dentro de su alcance aprobado.
+
+---
+
+#### 26. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Creados:** 0.
+
+**Modificados:** 0.
+
+**Justificación:** el gate materializa para ejecución por paquete obligaciones de retiro seguro, búsqueda de consumidores, compatibilidad, regresión, evidencia, actualización controlada y rollback que ya están registradas y asignadas. No introduce una regla verificable independiente que requiera otra identidad de requisito; tampoco ejecuta todavía un retiro o una instancia.
+
+---
+
+#### 27. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                |
+| --------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador global no modifica código ni materializa una instancia de paquete; no existe build de retiro atribuible a esta definición documental.                                                                                        |
+| LOCAL     | PASS           | El artefacto materializa una sola tarea, 1 plantilla, 6 lotes, 11 candidatos físicos, 4 identidades internas, 3 clases de elegibilidad, 12 gates y 8 clases de evidencia, con conciliación y continuidad completas.                      |
+| REMOTA    | PASS           | Se verificaron continuidad, owner, topología `TEMPLATE_PER_PACKAGE`, dependencias de desarrollo, decisiones de auditoría, políticas de actualización/gates, inventario residual y siguiente identidad canónica contra el remoto vigente. |
+| OPERATIVA | NOT_APPLICABLE | Ninguna instancia `SHELL-MIG-008::<package_id>` se ejecuta durante la definición global.                                                                                                                                                 |
+| FÍSICA    | NOT_APPLICABLE | No se eliminan archivos, miembros, rutas, packages, datos ni objetos Supabase durante esta tarea documental.                                                                                                                             |
+
+---
+
+#### 28. Criterios de aceptación
+
+`SHELL-MIG-008` queda documentalmente completa cuando:
+
+- [x] se conserva la modalidad `TEMPLATE_PER_PACKAGE`;
+- [x] se define una sola plantilla global y no se reabre por paquete;
+- [x] se separan dependencias de desarrollo y de ejecución;
+- [x] se define `SHELL-MIG-008::<package_id>` como identidad de instancia;
+- [x] se define la relación con el mismo `package_id` y su unidad de implementación;
+- [x] se reconcilian exactamente 6 lotes residuales;
+- [x] se reconcilian exactamente 11 candidatos físicos;
+- [x] se reconcilian 4 identidades internas de retiro controlado;
+- [x] se excluyen las dos acciones SHELL propietarias de `SHELL-APP-021`;
+- [x] se preserva `@vento/os-context` como transición y no como código muerto;
+- [x] se distinguen tres clases de elegibilidad;
+- [x] se exige búsqueda multiclase de consumidores;
+- [x] se definen doce gates de certificación;
+- [x] se reutiliza la semántica fail-closed de los gates de package;
+- [x] se definen ocho clases de evidencia;
+- [x] se exige paridad para legacy previamente consumido;
+- [x] se protege explícitamente el legacy consumido de NEXO, PULSO, ORIGO y VISO;
+- [x] se impide convertir `MIGRATE` en retiro inerte;
+- [x] se define conciliación entre paquetes y unidades;
+- [x] se exige inventario residual después de cada instancia;
+- [x] se exige rollback reproducible y ensayado por repositorio;
+- [x] se prohíbe certificar eliminaciones fuera del package_id aprobado;
+- [x] se declaran 0 retiros físicos en la tarea global;
+- [x] se declaran 0 instancias ejecutadas;
+- [x] se declaran 0 cambios de requisitos de prueba;
+- [x] `SHELL-NATIVE-001` permanece únicamente reservada.
+
+---
+
+#### 29. Límites
+
+Esta tarea no:
+
+- ejecuta `SHELL-MIG-008::<package_id>`;
+- crea ni modifica un package_id;
+- modifica un implementation_unit_id;
+- aprueba `E5-GATE-008::<package_id>`;
+- inicia ni modifica `SHELL-CI-020::<package_id>` a `SHELL-CI-024::<package_id>`;
+- borra archivos, props, ramas, exports, rutas, scripts o endpoints;
+- retira `@vento/os-context`;
+- elimina `employee-sites.ts` de ORIGO;
+- elimina `PageHeader` de VISO;
+- elimina SSO NEXO o PULSO mientras conserven consumidores;
+- elimina rutas o middleware por ausencia de imports;
+- retira scripts por ausencia de llamadas JavaScript;
+- retira endpoints o RPC sin su inventario y gate propietario;
+- abre, fusiona ni despliega un pull request;
+- modifica manifest o lockfile de consumidor;
+- ejecuta lint, typecheck, build o pruebas de una instancia futura;
+- modifica autorización, contexto, sesión o permisos;
+- modifica Supabase, SQL, RLS, RPC, Storage, Realtime, Edge Functions, datos, secretos o configuración;
+- convierte una evidencia histórica en certificación física;
+- crea una excepción sin fuente canónica;
+- desarrolla ni ejecuta la tarea siguiente.
+
+---
+
+#### 30. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-MIG-007 — Definir contrato de paridad ejecutable por paquete`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-MIG-008 — Definir gate de retiro legacy y certificación por paquete`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-NATIVE-001 — Crear tokens compatibles con ANIMA`
+

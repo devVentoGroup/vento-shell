@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **944** |
+| Tareas aprobadas | **945** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **650** |
+| Tareas no iniciadas | **649** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **59.22% (944/1594)** |
+| Porcentaje de completamiento | **59.28% (945/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-MIG-007 — Definir contrato de paridad ejecutable por paquete** |
-| Tarea actual | **SHELL-MIG-008 — Definir gate de retiro legacy y certificación por paquete** |
+| Última tarea aprobada | **SHELL-MIG-008 — Definir gate de retiro legacy y certificación por paquete** |
+| Tarea actual | **SHELL-NATIVE-001 — Crear tokens compatibles con ANIMA** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-NATIVE-001 — Crear tokens compatibles con ANIMA** |
+| Siguiente tarea | **SHELL-NATIVE-002 — Compartir contratos y validadores** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 94 de 109 aprobadas; SHELL-MIG-008 pendiente** |
+| Progreso del bloque | **BLOQUE H: 95 de 109 aprobadas; SHELL-NATIVE-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-MIG-007` — Definir contrato de paridad ejecutable por paquete |
-| Tarea actual | `SHELL-MIG-008` — Definir gate de retiro legacy y certificación por paquete — **NO INICIADA** |
-| Siguiente tarea | `SHELL-NATIVE-001` — Crear tokens compatibles con ANIMA |
+| Última aprobada | `SHELL-MIG-008` — Definir gate de retiro legacy y certificación por paquete |
+| Tarea actual | `SHELL-NATIVE-001` — Crear tokens compatibles con ANIMA — **NO INICIADA** |
+| Siguiente tarea | `SHELL-NATIVE-002` — Compartir contratos y validadores |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 94 DE 109 APROBADAS — ACTUAL SHELL-MIG-008** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 95 DE 109 APROBADAS — ACTUAL SHELL-NATIVE-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-MIG-007 — Definir contrato de paridad ejecutable por paquete
-        ↓
-TAREA ACTUAL
 SHELL-MIG-008 — Definir gate de retiro legacy y certificación por paquete
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-NATIVE-001 — Crear tokens compatibles con ANIMA
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-NATIVE-002 — Compartir contratos y validadores
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 94 de 109 tareas aprobadas
+BLOQUE H — 95 de 109 tareas aprobadas
 ```

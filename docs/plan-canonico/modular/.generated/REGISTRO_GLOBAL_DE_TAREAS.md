@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **944** |
+| Aprobadas | **945** |
 | En propuesta | **0** |
-| No iniciadas | **650** |
+| No iniciadas | **649** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **59.22% (944/1594)** |
+| Porcentaje de completamiento | **59.28% (945/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-MIG-007` — Definir contrato de paridad ejecutable por paquete | ✅ APROBADA |
-| Tarea actual | `SHELL-MIG-008` — Definir gate de retiro legacy y certificación por paquete | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-NATIVE-001` — Crear tokens compatibles con ANIMA | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-MIG-008` — Definir gate de retiro legacy y certificación por paquete | ✅ APROBADA |
+| Tarea actual | `SHELL-NATIVE-001` — Crear tokens compatibles con ANIMA | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-NATIVE-002` — Compartir contratos y validadores | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -771,7 +771,7 @@
 | ✅ APROBADA | `SHELL-MIG-005` | Migrar componentes, Chrome y estilos por aplicación | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ✅ APROBADA | `SHELL-MIG-006` | Verificar accesibilidad, tema y movimiento reducido | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ✅ APROBADA | `SHELL-MIG-007` | Definir contrato de paridad ejecutable por paquete | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
-| ⬜ NO INICIADA | `SHELL-MIG-008` | Definir gate de retiro legacy y certificación por paquete | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
+| ✅ APROBADA | `SHELL-MIG-008` | Definir gate de retiro legacy y certificación por paquete | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ⬜ NO INICIADA | `SHELL-NATIVE-001` | Crear tokens compatibles con ANIMA | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-NATIVE-002` | Compartir contratos y validadores | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-NATIVE-003` | Mantener UI React Native separada | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |
