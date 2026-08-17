@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **950** |
+| Aprobadas | **951** |
 | En propuesta | **0** |
-| No iniciadas | **644** |
+| No iniciadas | **643** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **59.60% (950/1594)** |
+| Porcentaje de completamiento | **59.66% (951/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-AUTH-002` — Implementar adapters de servidor, cliente y proyecciones seguras | ✅ APROBADA |
-| Tarea actual | `SHELL-AUTH-003` — Implementar scope por solicitud y registro canónico de consumidores | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-AUTH-004` — Implementar lint, métricas y gates contra consumidores legacy | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-AUTH-003` — Implementar scope por solicitud y registro canónico de consumidores | ✅ APROBADA |
+| Tarea actual | `SHELL-AUTH-004` — Implementar lint, métricas y gates contra consumidores legacy | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-AUTH-005` — Migrar consumidores de autorización en todos los repositorios | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -777,7 +777,7 @@
 | ✅ APROBADA | `SHELL-NATIVE-003` | Mantener UI React Native separada | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-AUTH-001` | Consolidar @vento/os-context como SDK canónico de contexto y autorización | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-AUTH-002` | Implementar adapters de servidor, cliente y proyecciones seguras | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-AUTH-003` | Implementar scope por solicitud y registro canónico de consumidores | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-AUTH-003` | Implementar scope por solicitud y registro canónico de consumidores | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUTH-004` | Implementar lint, métricas y gates contra consumidores legacy | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUTH-005` | Migrar consumidores de autorización en todos los repositorios | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CTX-001` | Consolidar el módulo de contexto dentro de @vento/os-context | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |

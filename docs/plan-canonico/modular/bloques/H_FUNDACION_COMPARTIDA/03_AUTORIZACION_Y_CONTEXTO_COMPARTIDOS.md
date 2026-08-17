@@ -1759,7 +1759,803 @@ Esta tarea no:
 `SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores`
 
 
-### [ ] SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores
+### ✅ SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-AUTH-002 — Implementar adapters de servidor, cliente y proyecciones seguras
+**Tarea siguiente:** SHELL-AUTH-004 — Implementar lint, métricas y gates contra consumidores legacy
+**Tipo de tarea:** documental — definición global única del scope por solicitud, deduplicación L0, correlación, write barrier y registro canónico materializado de consumidores, con futura materialización física `SHELL-AUTH-003::<implementation_unit_id>` una sola vez por unidad de implementación
+**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`
+**Estado físico resultante:** `CONTRATO_GLOBAL_DE_REQUEST_SCOPE_Y_REGISTRO_DE_CONSUMIDORES_ESPECIFICADO`; 1 factory pública reservada; 10 dimensiones de clave L0 de contexto; 11 dimensiones de clave L0 de decisión; 32 filas iniciales de consumidores; 15 campos por fila; 15 tipos de superficie; 0 unidades materializadas; 0 cambios Supabase
+**Cambios físicos autorizados:** ninguno durante el marcador global
+**Requisitos de prueba creados o modificados:** 8 creados (`TREQ-SHELL-075` a `TREQ-SHELL-082`)
+**Modalidad:** `PER_IMPLEMENTATION_UNIT`
+
+---
+
+#### 1. Propósito
+
+`SHELL-AUTH-003` cierra el contrato del scope request-scoped de autorización y materializa el primer registro canónico de consumidores que deberán migrar hacia `@vento/os-context`.
+
+La tarea resuelve dos responsabilidades inseparables:
+
+```text
+UNA SOLICITUD DE SERVIDOR
+→ un app_code fijo
+→ una identidad de principal/sesión confiable
+→ una correlación
+→ una resolución de contexto deduplicada L0
+→ decisiones exactas deduplicables solo cuando son idénticas
+→ write barrier después de mutaciones relevantes
+```
+
+```text
+CADA FRONTERA QUE CONSUME AUTORIZACIÓN O CONTEXTO
+→ una fila identificable
+→ API actual
+→ API objetivo
+→ propietario
+→ estado
+→ evidencia
+→ gate de retiro
+```
+
+El marcador global no crea todavía código de scope, caché, registry físico ejecutable, migraciones ni cambios en aplicaciones. Sí define completamente su forma y materializa las **32 filas iniciales** respaldadas por la auditoría canónica y el estado remoto verificado.
+
+---
+
+#### 2. Modalidad canónica y ciclo
+
+La topología aplicable es `PER_IMPLEMENTATION_UNIT`.
+
+```text
+MARCADOR GLOBAL SHELL-AUTH-003
+→ define una vez scope, L0, registro, fixtures, gates y evidencia
+→ conserva un snapshot documental reproducible
+→ no modifica runtime
+
+DELIV-PKG-025::<package_id>
+→ asigna implementation_unit_id y owner package
+
+E5-GATE-008::<package_id> = PASS
+→ habilita la futura materialización
+
+SHELL-AUTH-003::<implementation_unit_id>
+→ materializa una sola implementación del scope y registro para la unidad
+→ N package_id consumen la misma implementación mediante lineage
+```
+
+**Dependencia para desarrollar:** `SHELL-AUTH-002`.
+
+**Dependencias para ejecutar una instancia:** `DELIV-PKG-025::<package_id>`, `E5-GATE-008::<package_id> = PASS`, materialización compatible de `SHELL-AUTH-001` y `SHELL-AUTH-002` para la unidad, contratos exactos publicados y, cuando apliquen, `AUTH-DB-033`, `AUTH-DB-034`, `AUTH-DB-035` y `SHELL-CTX-001` a `SHELL-CTX-006` materializados conforme al paquete propietario.
+
+---
+
+#### 3. Fuentes vinculantes preservadas
+
+| Fuente                    | Regla preservada                                                                                          |
+| ------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `SHELL-AUTH-001`          | `createAuthorizationScope` pertenece a esta tarea; SDK único y cuatro subpaths públicos                   |
+| `SHELL-AUTH-002`          | cinco operaciones server y dos proyecciones seguras ya definidas; esta tarea las compone, no las redefine |
+| `AUTH-CTX-027`            | scope por request, resolución única, correlación y registro de consumidores con 15 campos mínimos         |
+| `AUTH-CTX-029`            | L0 request-scoped; promise dedup; clave de contexto y decisión; write barrier; L1 separado                |
+| `SHELL-AUD-003`           | helpers y consumidores de permisos distribuidos, llamadas directas y fallbacks locales                    |
+| `SHELL-AUD-004`           | seis `operational-session.ts`, NEXO `operational-context.ts` y falta de adopción del SDK                  |
+| `SHELL-CON-002..008`      | identidades y contratos compartidos, validación fail-closed y códigos canónicos                           |
+| `SHELL-PKG-004`           | compatibilidad por consumidor, commit, lockfile, runtime y subpath                                        |
+| `SHELL-PKG-005`           | deprecación y retiro requieren consumidor, reemplazo, evidencia y gate                                    |
+| `task-work-topology.json` | una materialización máxima por `implementation_unit_id`                                                   |
+
+No se reabre el significado de contexto, autorización, frescura, caché compartida ni de las proyecciones seguras.
+
+---
+
+#### 4. Línea base física verificable
+
+El estado actual conserva simultáneamente:
+
+- `@vento/os-context@0.1.0` privado, con export raíz a source y sin `createAuthorizationScope` físico;
+- seis repositorios web con `src/lib/auth/permissions.ts`, `guard.ts` y `operational-session.ts`;
+- NEXO con `src/lib/auth/operational-context.ts` adicional;
+- SHELL con evaluador local en `src/app/page.tsx`;
+- ANIMA con `src/hooks/use-app-permissions.ts` que llama `has_permission` desde cliente;
+- superficies funcionales VISO, ORIGO y PULSO que alcanzan autorización mediante RPC o helpers locales;
+- ninguna adopción runtime confirmada de la superficie estable futura de `@vento/os-context`.
+
+Esta coexistencia es baseline de migración, no arquitectura final.
+
+---
+
+#### 5. Factory pública `createAuthorizationScope`
+
+`@vento/os-context/server` reservará exactamente la factory:
+
+```ts
+createAuthorizationScope({ appCode, requestIdentity, correlationId })
+  → AuthorizationScope
+```
+
+`appCode` es `AppCode` canónico fijado por el adapter propietario. `requestIdentity` representa únicamente identidad técnica confiable de la frontera server; no es un objeto libre suministrado por UI.
+
+El scope:
+
+- vive como máximo durante una solicitud lógica;
+- no concede autoridad por existir;
+- no es serializable al cliente;
+- no se almacena en variable global, singleton, módulo mutable o caché cross-request;
+- compone las operaciones ya definidas por `SHELL-AUTH-002`;
+- propaga correlación y metadata de versión;
+- mantiene L0 únicamente para deduplicación dentro de la misma solicitud.
+
+No se crean aliases públicos `getScope`, `currentScope`, `globalAuthorizationScope` ni equivalentes.
+
+---
+
+#### 6. Entradas confiables y frontera de autoridad
+
+El scope solo puede construirse desde una frontera server capaz de demostrar:
+
+1. ambiente;
+2. organización cuando aplique;
+3. aplicación fija;
+4. principal técnico autenticado o principal de sistema registrado;
+5. identidad de sesión autenticada;
+6. sesión de actor cuando exista dispositivo compartido;
+7. proceso de sistema cuando aplique;
+8. versiones contractuales/resolver aplicables;
+9. correlación opcional.
+
+No podrá aceptar como hechos autoritativos desde query, body, cookie editable, local storage, estado UI o parámetros libres:
+
+- actor efectivo;
+- employee_id;
+- rol base u operativo;
+- sede o área efectivas;
+- turno o check-in;
+- dispositivo efectivo;
+- permiso concedido;
+- `can_operate`;
+- bypass;
+- `AuthorizationDecision` fabricada.
+
+---
+
+#### 7. Clave L0 de contexto
+
+La identidad de memoización request-scoped queda cerrada en **10 dimensiones**:
+
+```text
+environment
+organization_id
+app_code
+principal_type
+principal_id
+auth_session_id
+actor_session_id
+system_process_id
+context_contract_version
+resolver_version
+```
+
+Reglas:
+
+- todas las dimensiones aplicables forman la clave; no se omiten para mejorar hit-rate;
+- `actor_session_id` es obligatorio cuando un dispositivo compartido opera con actor humano;
+- un cambio de actor produce otra clave;
+- permiso, recurso, ruta, botón, sede seleccionada, área seleccionada y role override no pertenecen a esta clave;
+- una aplicación distinta produce otra clave aunque comparta principal;
+- la representación física de la clave deberá ser determinista y no incluir secretos completos.
+
+---
+
+#### 8. Memoización L0 de contexto y single-flight
+
+La estructura conceptual es:
+
+```ts
+Map<ContextRequestKey, Promise<AccessContextV1>>
+```
+
+Invariantes:
+
+1. la primera resolución almacena la `Promise` en curso;
+2. llamadas concurrentes con la misma clave esperan esa misma promesa;
+3. una resolución correcta puede reutilizarse únicamente dentro del mismo scope y mientras no exista write barrier aplicable;
+4. una promesa rechazada se elimina para permitir reintento explícito;
+5. el mapa muere con la solicitud;
+6. no existe TTL en L0;
+7. no comparte datos entre usuarios, solicitudes, procesos o workers;
+8. no sustituye la caché L1 gobernada por `SHELL-CTX-006`;
+9. un hit L0 no evita validar vigencia cuando una operación posterior exija revalidación.
+
+---
+
+#### 9. Deduplicación L0 de decisiones
+
+Solo una evaluación **exactamente idéntica** puede compartir promesa dentro de la misma solicitud.
+
+La clave queda cerrada en **11 dimensiones**:
+
+```text
+context_fingerprint
+app_code
+permission_key
+authorization_requirement
+operation_kind
+resource_type
+resource_ids
+resource_version
+resource_fingerprint
+requested_fields
+request_source
+```
+
+Reglas:
+
+- `resource_ids` y `requested_fields` se canonicalizan según su contrato antes de formar la clave;
+- un recurso, versión, fingerprint, campo solicitado u operation_kind distinto produce otra evaluación;
+- una decisión nunca se comparte entre requests;
+- una decisión nunca es token de capacidad;
+- una proyección `ALLOW` previa no autoriza una mutación posterior;
+- el scope puede deduplicar evaluación concurrente, pero `requireAuthorization` conserva la obligación de revalidar cuando el recurso o contexto puedan haber cambiado.
+
+---
+
+#### 10. Write barrier request-scoped
+
+Después de una mutación que pueda alterar hechos de contexto, autorización, recurso o vigencia dentro de la misma solicitud lógica, el scope deberá aplicar una barrera:
+
+```text
+MUTACIÓN RELEVANTE
+→ marcar sujeto/app como dirty
+→ invalidar L0 de contexto aplicable
+→ invalidar L0 de decisiones aplicable
+→ obtener estado/frescura nuevamente cuando la infraestructura física lo permita
+→ resolver contexto nuevo
+→ emitir decisión nueva
+```
+
+Está prohibido seguir usando un contexto o decisión anterior a la barrera para una operación posterior afectada.
+
+`SHELL-AUTH-003` define y materializará la barrera L0. El token transaccional de frescura, eventos de invalidación y caché compartida L1 permanecen en `AUTH-DB-035` y `SHELL-CTX-006`.
+
+---
+
+#### 11. Correlación y observabilidad
+
+`correlation_id` es metadata de trazabilidad, nunca evidencia positiva de autorización.
+
+El scope deberá propagarla, cuando exista, hacia:
+
+- resolución;
+- evaluación;
+- require;
+- ejecución enlazada;
+- auditoría;
+- error seguro;
+- métricas técnicas.
+
+La observabilidad podrá registrar:
+
+- versión del SDK;
+- consumidor registrado;
+- latencia;
+- L0 hit/miss/single-flight;
+- cantidad de evaluaciones;
+- outcome agregado;
+- categoría de fallo técnico;
+- uso de superficie legacy.
+
+No podrá registrar secretos, payloads completos, grants/denies sensibles, JWT, service role, stack traces o datos personales innecesarios.
+
+---
+
+#### 12. Frontera con caché compartida
+
+```text
+L0 REQUEST-SCOPED
+→ SHELL-AUTH-003
+
+L1 SHARED VALIDATED CACHE
+→ SHELL-CTX-006
++
+AUTH-DB-035
+
+L2 SAFE CLIENT PROJECTION
+→ SHELL-AUTH-002 / client consumer
+```
+
+Por tanto esta tarea no define TTL global, Redis, memoria de proceso compartida, Realtime de invalidación ni estrategia cross-request.
+
+---
+
+#### 13. Contrato del registro canónico de consumidores
+
+Cada fila conserva exactamente estos **15 campos mínimos**:
+
+```text
+repository
+path
+surface_type
+consumer_name
+app_code
+current_api
+target_api
+permission_source
+resource_source
+legacy_behavior
+migration_task
+owner
+status
+test_evidence
+removal_gate
+```
+
+La identidad estable de fila es la tupla:
+
+```text
+(repository, path, surface_type, consumer_name)
+```
+
+No se asignan números arbitrarios que puedan cambiar al reordenar el inventario.
+
+Una ruta no puede aparecer dos veces con la misma identidad de fila. Dos consumidores distintos en un mismo archivo solo se separan cuando tienen superficie o contrato de migración materialmente distinto.
+
+---
+
+#### 14. Taxonomía de `surface_type`
+
+Se preservan los trece valores iniciales de `AUTH-CTX-027` y se añaden dos tipos necesarios para representar fronteras técnicas directas ya observadas:
+
+```text
+SERVER_COMPONENT
+LAYOUT
+SERVER_ACTION
+ROUTE_HANDLER
+CLIENT_HOOK
+CLIENT_COMPONENT
+NAVIGATION
+MIDDLEWARE
+RPC
+RLS
+JOB
+EDGE_FUNCTION
+REALTIME
+SERVER_HELPER
+SDK_ADAPTER
+```
+
+`SERVER_HELPER` identifica helpers/guards server que consumen o reconstruyen contexto/autorización. `SDK_ADAPTER` identifica una frontera compartida de SDK que envuelve una API backend. Estos dos valores no convierten helpers locales en arquitectura final; permiten registrarlos sin falsear su naturaleza como `RPC`, `MIDDLEWARE` o componente UI.
+
+---
+
+#### 15. Estados del registro
+
+Se reutiliza la taxonomía de compatibilidad de `SHELL-PKG-004`:
+
+```text
+NO_APLICA
+PENDIENTE_DE_EVIDENCIA
+COMPATIBLE
+COMPATIBLE_CON_RESTRICCIONES
+INCOMPATIBLE
+BLOQUEADA
+```
+
+El marcador global no declara ningún consumidor `COMPATIBLE` con una superficie que todavía no está materializada. Las **32 filas** iniciales quedan `PENDIENTE_DE_EVIDENCIA` hasta que la futura instancia y `SHELL-AUTH-005` produzcan evidencia de migración.
+
+---
+
+#### 16. Registro inicial materializado
+
+El siguiente inventario contiene una fila por frontera directa o adapter técnico actualmente identificado. Los callers transitivos deberán vincularse a una de estas fronteras o crear una fila nueva antes de introducir otro consumo directo.
+
+| repository                 | path                                                   | surface_type     | consumer_name                                | app_code  | current_api                                                                        | target_api                                                                                                    | permission_source                                         | resource_source                                                | legacy_behavior                                                                                    | migration_task | owner                      | status                 | test_evidence                                                 | removal_gate                                                          |
+| -------------------------- | ------------------------------------------------------ | ---------------- | -------------------------------------------- | --------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | -------------- | -------------------------- | ---------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------- |
+| devVentoGroup/vento-viso   | src/lib/auth/permissions.ts                            | SERVER_HELPER    | VISO permission helper                       | viso      | normalizePermissionCode + has_permission → boolean                                 | createAuthorizationScope + evaluateAuthorization/requireAuthorization                                         | string local; prefijo de aplicación construido localmente | siteId/areaId opcionales suministrados por caller              | clave no validada contra catálogo; error técnico colapsado a false                                 | SHELL-AUTH-005 | devVentoGroup/vento-viso   | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-viso   | src/lib/auth/guard.ts                                  | SERVER_HELPER    | VISO application guard                       | viso      | requireAppAccess + has_permission + operational-session + role override            | createAuthorizationScope + requireAuthorization                                                               | claves locales/normalizadas; ramas de role override       | siteId/areaId preferidos y sesión operativa local              | múltiples rutas de decisión; booleanos; override local; protección no centralizada                 | SHELL-AUTH-005 | devVentoGroup/vento-viso   | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-viso   | src/lib/auth/operational-session.ts                    | SERVER_HELPER    | VISO operational-session                     | viso      | resolver local de sesión/dispositivo y helpers de permiso operativo                | createAuthorizationScope + resolveAccessContext                                                               | rol/permisos locales según rama                           | preferredSiteId/preferredAreaId y estado de dispositivo/sesión | proyección local; caller puede influir sede/área; no es AccessContextV1                            | SHELL-AUTH-005 | devVentoGroup/vento-viso   | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-nexo   | src/lib/auth/permissions.ts                            | SERVER_HELPER    | NEXO permission helper                       | nexo      | normalizePermissionCode + has_permission → boolean                                 | createAuthorizationScope + evaluateAuthorization/requireAuthorization                                         | string local; prefijo de aplicación construido localmente | siteId/areaId opcionales suministrados por caller              | clave no validada contra catálogo; error técnico colapsado a false                                 | SHELL-AUTH-005 | devVentoGroup/vento-nexo   | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-nexo   | src/lib/auth/guard.ts                                  | SERVER_HELPER    | NEXO application guard                       | nexo      | requireAppAccess + has_permission + operational-session + role override            | createAuthorizationScope + requireAuthorization                                                               | claves locales/normalizadas; ramas de role override       | siteId/areaId preferidos y sesión operativa local              | múltiples rutas de decisión; booleanos; override local; protección no centralizada                 | SHELL-AUTH-005 | devVentoGroup/vento-nexo   | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-nexo   | src/lib/auth/operational-session.ts                    | SERVER_HELPER    | NEXO operational-session                     | nexo      | resolver local de sesión/dispositivo y helpers de permiso operativo                | createAuthorizationScope + resolveAccessContext                                                               | rol/permisos locales según rama                           | preferredSiteId/preferredAreaId y estado de dispositivo/sesión | proyección local; caller puede influir sede/área; no es AccessContextV1                            | SHELL-AUTH-005 | devVentoGroup/vento-nexo   | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-fogo   | src/lib/auth/permissions.ts                            | SERVER_HELPER    | FOGO permission helper                       | fogo      | normalizePermissionCode + has_permission → boolean                                 | createAuthorizationScope + evaluateAuthorization/requireAuthorization                                         | string local; prefijo de aplicación construido localmente | siteId/areaId opcionales suministrados por caller              | clave no validada contra catálogo; error técnico colapsado a false                                 | SHELL-AUTH-005 | devVentoGroup/vento-fogo   | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-fogo   | src/lib/auth/guard.ts                                  | SERVER_HELPER    | FOGO application guard                       | fogo      | requireAppAccess + has_permission + operational-session + role override            | createAuthorizationScope + requireAuthorization                                                               | claves locales/normalizadas; ramas de role override       | siteId/areaId preferidos y sesión operativa local              | múltiples rutas de decisión; booleanos; override local; protección no centralizada                 | SHELL-AUTH-005 | devVentoGroup/vento-fogo   | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-fogo   | src/lib/auth/operational-session.ts                    | SERVER_HELPER    | FOGO operational-session                     | fogo      | resolver local de sesión/dispositivo y helpers de permiso operativo                | createAuthorizationScope + resolveAccessContext                                                               | rol/permisos locales según rama                           | preferredSiteId/preferredAreaId y estado de dispositivo/sesión | proyección local; caller puede influir sede/área; no es AccessContextV1                            | SHELL-AUTH-005 | devVentoGroup/vento-fogo   | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-origo  | src/lib/auth/permissions.ts                            | SERVER_HELPER    | ORIGO permission helper                      | origo     | normalizePermissionCode + has_permission → boolean                                 | createAuthorizationScope + evaluateAuthorization/requireAuthorization                                         | string local; prefijo de aplicación construido localmente | siteId/areaId opcionales suministrados por caller              | clave no validada contra catálogo; error técnico colapsado a false                                 | SHELL-AUTH-005 | devVentoGroup/vento-origo  | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-origo  | src/lib/auth/guard.ts                                  | SERVER_HELPER    | ORIGO application guard                      | origo     | requireAppAccess + has_permission + operational-session + role override            | createAuthorizationScope + requireAuthorization                                                               | claves locales/normalizadas; ramas de role override       | siteId/areaId preferidos y sesión operativa local              | múltiples rutas de decisión; booleanos; override local; protección no centralizada                 | SHELL-AUTH-005 | devVentoGroup/vento-origo  | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-origo  | src/lib/auth/operational-session.ts                    | SERVER_HELPER    | ORIGO operational-session                    | origo     | resolver local de sesión/dispositivo y helpers de permiso operativo                | createAuthorizationScope + resolveAccessContext                                                               | rol/permisos locales según rama                           | preferredSiteId/preferredAreaId y estado de dispositivo/sesión | proyección local; caller puede influir sede/área; no es AccessContextV1                            | SHELL-AUTH-005 | devVentoGroup/vento-origo  | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-pulso  | src/lib/auth/permissions.ts                            | SERVER_HELPER    | PULSO permission helper                      | pulso     | normalizePermissionCode + has_permission → boolean                                 | createAuthorizationScope + evaluateAuthorization/requireAuthorization                                         | string local; prefijo de aplicación construido localmente | siteId/areaId opcionales suministrados por caller              | clave no validada contra catálogo; error técnico colapsado a false                                 | SHELL-AUTH-005 | devVentoGroup/vento-pulso  | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-pulso  | src/lib/auth/guard.ts                                  | SERVER_HELPER    | PULSO application guard                      | pulso     | requireAppAccess + has_permission + operational-session + role override            | createAuthorizationScope + requireAuthorization                                                               | claves locales/normalizadas; ramas de role override       | siteId/areaId preferidos y sesión operativa local              | múltiples rutas de decisión; booleanos; override local; protección no centralizada                 | SHELL-AUTH-005 | devVentoGroup/vento-pulso  | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-pulso  | src/lib/auth/operational-session.ts                    | SERVER_HELPER    | PULSO operational-session                    | pulso     | resolver local de sesión/dispositivo y helpers de permiso operativo                | createAuthorizationScope + resolveAccessContext                                                               | rol/permisos locales según rama                           | preferredSiteId/preferredAreaId y estado de dispositivo/sesión | proyección local; caller puede influir sede/área; no es AccessContextV1                            | SHELL-AUTH-005 | devVentoGroup/vento-pulso  | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-numera | src/lib/auth/permissions.ts                            | SERVER_HELPER    | NUMERA permission helper                     | numera    | normalizePermissionCode + has_permission → boolean                                 | createAuthorizationScope + evaluateAuthorization/requireAuthorization                                         | string local; prefijo de aplicación construido localmente | siteId/areaId opcionales suministrados por caller              | clave no validada contra catálogo; error técnico colapsado a false                                 | SHELL-AUTH-005 | devVentoGroup/vento-numera | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-numera | src/lib/auth/guard.ts                                  | SERVER_HELPER    | NUMERA application guard                     | numera    | requireAppAccess + has_permission + operational-session + role override            | createAuthorizationScope + requireAuthorization                                                               | claves locales/normalizadas; ramas de role override       | siteId/areaId preferidos y sesión operativa local              | múltiples rutas de decisión; booleanos; override local; protección no centralizada                 | SHELL-AUTH-005 | devVentoGroup/vento-numera | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-numera | src/lib/auth/operational-session.ts                    | SERVER_HELPER    | NUMERA operational-session                   | numera    | resolver local de sesión/dispositivo y helpers de permiso operativo                | createAuthorizationScope + resolveAccessContext                                                               | rol/permisos locales según rama                           | preferredSiteId/preferredAreaId y estado de dispositivo/sesión | proyección local; caller puede influir sede/área; no es AccessContextV1                            | SHELL-AUTH-005 | devVentoGroup/vento-numera | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-nexo   | src/lib/auth/operational-context.ts                    | SERVER_HELPER    | NEXO operational context                     | nexo      | get_operational_context + has_operational_permission + can_operate + role override | createAuthorizationScope + resolveAccessContext + evaluateAuthorization/requireAuthorization                  | permissionCode string; appCode opcional/derivable         | employeeId/siteId/areaId del caller + contexto legacy          | contexto plano; can_operate; bypass/override; área y rol modificables localmente                   | SHELL-AUTH-005 | devVentoGroup/vento-nexo   | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-shell  | src/app/page.tsx                                       | SERVER_COMPONENT | SHELL application launcher                   | shell     | has_permission con firma completa y fallback a p_app_id/p_code                     | createAuthorizationScope + evaluateAuthorization + SafeDecisionProjectionV1                                   | cinco claves literales de acceso a aplicaciones           | NON_RESOURCE / acceso a aplicación                             | evaluador local; fallback entre firmas RPC; resultado booleano                                     | SHELL-AUTH-005 | devVentoGroup/vento-shell  | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-viso   | src/app/api/viso/upload-product-image/route.ts         | ROUTE_HANDLER    | VISO product-image upload                    | viso      | has_permission / guard local según superficie                                      | createAuthorizationScope + evaluateAuthorization/requireAuthorization                                         | viso.menu.images.manage                                   | recurso de Storage y payload de imagen                         | autorización distribuida en superficie; error/deny no conserva decisión canónica                   | SHELL-AUTH-005 | devVentoGroup/vento-viso   | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-viso   | src/app/api/viso/upload-commercial-menu-image/route.ts | ROUTE_HANDLER    | VISO commercial-menu image upload            | viso      | has_permission / guard local según superficie                                      | createAuthorizationScope + evaluateAuthorization/requireAuthorization                                         | viso.menu.images.manage                                   | recurso de Storage y owner/kind del request                    | autorización distribuida en superficie; error/deny no conserva decisión canónica                   | SHELL-AUTH-005 | devVentoGroup/vento-viso   | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-viso   | src/app/api/viso/attendance-report/route.ts            | ROUTE_HANDLER    | VISO attendance report                       | viso      | has_permission / guard local según superficie                                      | createAuthorizationScope + evaluateAuthorization/requireAuthorization                                         | permisos VISO de reporte                                  | reporte y relaciones laborales resueltas en servidor           | autorización distribuida en superficie; error/deny no conserva decisión canónica                   | SHELL-AUTH-005 | devVentoGroup/vento-viso   | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-viso   | src/app/staff/[id]/page.tsx                            | SERVER_COMPONENT | VISO staff detail                            | viso      | has_permission / guard local según superficie                                      | createAuthorizationScope + evaluateAuthorization/requireAuthorization                                         | permisos VISO de staff                                    | trabajador identificado por ruta y datos server                | autorización distribuida en superficie; error/deny no conserva decisión canónica                   | SHELL-AUTH-005 | devVentoGroup/vento-viso   | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-origo  | src/lib/suppliers.ts                                   | SERVER_HELPER    | ORIGO supplier management                    | origo     | has_permission + fallback local por rol                                            | createAuthorizationScope + evaluateAuthorization/requireAuthorization                                         | origo.suppliers.manage                                    | supplier/user server context                                   | control local; no conserva AuthorizationDecisionV1; en suppliers existe fallback permisivo por rol | SHELL-AUTH-005 | devVentoGroup/vento-origo  | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-origo  | src/app/receipts/new/page.tsx                          | SERVER_COMPONENT | ORIGO receipt creation                       | origo     | requireAppAccess + operational-session                                             | createAuthorizationScope + evaluateAuthorization/requireAuthorization                                         | procurement.receipts                                      | recepción, sede y actor resueltos por helpers locales          | control local; no conserva AuthorizationDecisionV1; en suppliers existe fallback permisivo por rol | SHELL-AUTH-005 | devVentoGroup/vento-origo  | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-origo  | src/app/product-master-review/page.tsx                 | SERVER_COMPONENT | ORIGO product master review                  | origo     | requireAppAccess                                                                   | createAuthorizationScope + evaluateAuthorization/requireAuthorization                                         | procurement.receipts                                      | review request/product/entry en servidor                       | control local; no conserva AuthorizationDecisionV1; en suppliers existe fallback permisivo por rol | SHELL-AUTH-005 | devVentoGroup/vento-origo  | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-origo  | src/app/purchase-orders/[id]/pdf/route.ts              | ROUTE_HANDLER    | ORIGO purchase-order PDF                     | origo     | control local de ruta/permiso según rama                                           | createAuthorizationScope + evaluateAuthorization/requireAuthorization                                         | origo.access / control de ruta según rama                 | purchase order + token/identidad de solicitud                  | control local; no conserva AuthorizationDecisionV1; en suppliers existe fallback permisivo por rol | SHELL-AUTH-005 | devVentoGroup/vento-origo  | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-pulso  | src/modules/pos/actions/identify-client.action.ts      | SERVER_ACTION    | PULSO identify client                        | pulso     | has_permission(pulso.pos.main, siteId) → boolean                                   | createAuthorizationScope + requireAuthorization sobre recurso exacto                                          | literal pulso.pos.main                                    | siteId del argumento + cliente resuelto en servidor            | siteId del caller participa en la RPC; error/deny se reduce a mensaje local                        | SHELL-AUTH-005 | devVentoGroup/vento-pulso  | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-pulso  | src/app/orders/delivery-override-bridge.tsx            | CLIENT_COMPONENT | PULSO delivery override visibility           | pulso     | browser has_permission(pulso.delivery.override, siteId) + RPC de override          | SafeDecisionProjectionV1 emitida en servidor + parseSafeDecisionProjection; mutación reautorizada en servidor | literal pulso.delivery.override                           | orderId/siteId obtenidos del DOM/formulario                    | cliente consulta autorización directamente; visibilidad depende de booleano y no conserva error    | SHELL-AUTH-005 | devVentoGroup/vento-pulso  | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-anima  | src/hooks/use-app-permissions.ts                       | CLIENT_HOOK      | ANIMA app permissions hook                   | anima     | browser has_permission por cada permissionCode → Record<string, boolean>           | SafeDecisionProjectionV1 emitida en servidor + parseSafeDecisionProjection                                    | permissionCodes recibidos por el hook                     | sin recurso exacto en el hook                                  | N RPC cliente por lista; múltiples snapshots; error se reduce a ausencia/false                     | SHELL-AUTH-005 | devVentoGroup/vento-anima  | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+| devVentoGroup/vento-shell  | packages/os-context/src/client.ts                      | SDK_ADAPTER      | @vento/os-context transitional legacy client | NO_APLICA | get_effective_context_v1 + has_effective_permission_v1 + simulación v1             | @vento/os-context/legacy durante transición; /server y /client como fronteras canónicas                       | permissionCode/appCode string legacy                      | contexto efectivo legacy sin recurso exacto                    | package 0.1.0 transitorio; casts/booleanos; mezcla compatibilidad y simulación                     | SHELL-AUTH-005 | devVentoGroup/vento-shell  | PENDIENTE_DE_EVIDENCIA | Ruta vigente o inventariada; pruebas de migración pendientes. | SHELL-AUTH-004 → SHELL-AUTH-005; AUTH-DB-030 cuando retire RPC legacy |
+
+
+**Conciliación:** 32 filas esperadas, 32 materializadas, 32 identidades compuestas únicas y 0 duplicadas.
+
+---
+
+#### 17. Cobertura obligatoria reconciliada
+
+| Ámbito                | Filas | Estado                   | Conciliación                                                                        |
+| --------------------- | ----: | ------------------------ | ----------------------------------------------------------------------------------- |
+| SHELL                 |     1 | `MATERIALIZADO`          | launcher directo; shared SDK se cuenta en servicios compartidos                     |
+| VISO                  |     7 | `MATERIALIZADO`          | 3 fronteras auth comunes + 4 superficies funcionales auditadas                      |
+| NEXO                  |     4 | `MATERIALIZADO`          | 3 fronteras auth comunes + operational-context                                      |
+| FOGO                  |     3 | `MATERIALIZADO`          | 3 fronteras auth comunes                                                            |
+| ORIGO                 |     7 | `MATERIALIZADO`          | 3 fronteras auth comunes + 4 superficies funcionales auditadas                      |
+| PULSO                 |     5 | `MATERIALIZADO`          | 3 fronteras auth comunes + Server Action + client component                         |
+| NUMERA                |     3 | `MATERIALIZADO`          | 3 fronteras auth comunes                                                            |
+| ANIMA                 |     1 | `MATERIALIZADO`          | client hook directo confirmado                                                      |
+| PASS                  |     0 | `NO_APLICA`              | AUTH-CTX-027 excluye contexto laboral interno por defecto; no se inventa consumidor |
+| AURA                  |     0 | `PENDIENTE_DE_EVIDENCIA` | repositorio runtime no confirmado; adopción futura exige registro antes de operar   |
+| SERVICIOS_COMPARTIDOS |     1 | `MATERIALIZADO`          | packages/os-context/src/client.ts como adapter legacy transitorio                   |
+
+
+La suma materializada es **32**. `PASS` no recibe por defecto contexto laboral interno según `AUTH-CTX-027`; por eso no se fabrica una fila. `AURA` permanece sin repositorio runtime confirmado en este corte, de modo que tampoco se inventa una ruta: su primera superficie real deberá registrarse al materializar `AURA-AUTH-001` y antes de adoptar contexto o autorización interna.
+
+---
+
+#### 18. Reglas de evolución del registro
+
+1. toda nueva llamada directa a una API de contexto/autorización exige fila antes de merge;
+2. una fila no se elimina por migrarse: cambia estado, API objetivo/evidencia y conserva trazabilidad hasta superar el gate de retiro;
+3. un cambio de ruta actualiza la identidad mediante una transición explícita, no mediante pérdida silenciosa;
+4. una copia nueva de helper se registra como consumidor nuevo y `SHELL-AUTH-004` deberá bloquearla cuando el gate físico exista;
+5. el registro no declara compatibilidad por similitud de código;
+6. cada consumidor conserva commit/lockfile/runtime en la evidencia física de la futura instancia aunque esos campos no se dupliquen como columnas base;
+7. consumidores SQL/RLS/RPC se incorporan cuando `AUTH-DB-006` a `AUTH-DB-010` y `AUTH-DB-021` materialicen las superficies aplicables; no se inventan desde nombres documentales;
+8. cada paquete consumidor queda ligado a `implementation_unit_id`, versión, snapshot y digest en la materialización.
+
+---
+
+#### 19. Disposición de las familias actuales
+
+| Familia                             | Estado actual                          | API objetivo                                              |
+| ----------------------------------- | -------------------------------------- | --------------------------------------------------------- |
+| `permissions.ts` x6                 | helper booleano y clave string         | scope + evaluate/require                                  |
+| `guard.ts` x6                       | guard distribuido, role override y RPC | scope + require                                           |
+| `operational-session.ts` x6         | sesión/contexto local                  | scope + canonical AccessContext                           |
+| NEXO `operational-context.ts`       | contexto/RPC operativa legacy          | scope + resolve/evaluate/require                          |
+| direct server surfaces              | RPC/helper local                       | scope + exact resource decision                           |
+| PULSO client component              | `has_permission` desde browser         | safe decision emitida en server                           |
+| ANIMA client hook                   | N RPC browser por permission           | safe decisions emitidas en server                         |
+| `packages/os-context/src/client.ts` | wrapper legacy 0.1.0                   | `/legacy` durante transición; `/server`/`/client` finales |
+
+No se migra ninguna fila durante este marcador.
+
+---
+
+#### 20. Fixtures y utilidades de prueba
+
+`@vento/os-context/testing` podrá materializar fixtures sintéticos y deterministas para esta tarea. Como mínimo deberá cubrir:
+
+1. dos llamadas concurrentes con misma clave de contexto → una resolución;
+2. cambio de `actor_session_id` → dos resoluciones;
+3. primera resolución fallida → entrada eliminada → reintento permitido;
+4. dos decisiones con clave exacta → una evaluación concurrente;
+5. mismo permiso sobre recurso distinto → dos evaluaciones;
+6. write barrier → contexto/decisión anterior no reutilizables;
+7. correlación propagada sin conceder autoridad;
+8. fila de registro válida de 15 campos;
+9. identidad compuesta duplicada → rechazo;
+10. superficie client directa a RPC legacy → estado no compatible;
+11. PASS laboral sin consumidor → `NO_APLICA`, sin fila sintética;
+12. AURA sin repo confirmado → cobertura pendiente, sin path inventado.
+
+Fixtures y factories usan únicamente contratos/códigos publicados; no llaman servicios remotos para decidir el oracle.
+
+---
+
+#### 21. Snapshot contractual
+
+Se define:
+
+```text
+snapshot_id = SHELL-AUTH-REQUEST-SCOPE-CONSUMERS-001
+schema = vento.os-context-request-scope-consumers@1
+public_factory = createAuthorizationScope
+context_l0_key_dimension_count = 10
+decision_l0_key_dimension_count = 11
+context_l0_storage = Map<ContextRequestKey, Promise<AccessContextV1>>
+registry_field_count = 15
+registry_surface_type_count = 15
+current_consumer_row_count = 32
+pass_labor_context_consumer_rows = 0
+aura_repository_confirmed = false
+l1_shared_cache_owned_here = false
+write_barrier = true
+correlation_grants_authority = false
+```
+
+Huella documental:
+
+`sha256:8facc1cf1938f9221e5991cc854e0891ecc9cf338a14ddf7342fdc2f878e2f56`
+
+La serialización normativa del snapshot usa JSON UTF-8 en una línea, claves de objeto ordenadas lexicográficamente y arrays en el orden contractual declarado.
+
+---
+
+#### 22. Contrato de entrada de futura instancia
+
+Toda `SHELL-AUTH-003::<implementation_unit_id>` registrará como mínimo:
+
+| Campo                         | Obligación                                                   |
+| ----------------------------- | ------------------------------------------------------------ |
+| `implementation_unit_id`      | unidad exacta asignada por E5                                |
+| `owner_package_id`            | paquete propietario habilitado                               |
+| `consumer_package_ids`        | consumidores exactos de la unidad                            |
+| baseline / result commit      | commits atribuibles                                          |
+| SDK/contracts versions        | versiones exactas                                            |
+| resolver/evaluator identities | backend físico consumido                                     |
+| scope snapshot                | `SHELL-AUTH-REQUEST-SCOPE-CONSUMERS-001` o revisión aprobada |
+| registry snapshot             | 15 campos, filas actuales y diff desde baseline              |
+| L0 implementation evidence    | claves, promise maps, eviction y write barrier               |
+| consumer matrix               | repo, commit, lockfile, runtime, subpath y estado            |
+| fixtures/tests                | resultados del mismo commit/versiones                        |
+| artifact digest               | huella del artefacto materializado                           |
+| rollback                      | combinación anterior y ensayo                                |
+| blockers                      | lista cerrada con owner y salida                             |
+
+Campo obligatorio ausente deja la instancia `BLOCKED`.
+
+---
+
+#### 23. Unicidad y lineage
+
+```text
+1 implementation_unit_id
+→ máximo 1 SHELL-AUTH-003::<implementation_unit_id>
+→ máximo 1 implementación propietaria del scope L0
+→ máximo 1 snapshot activo del registro para la versión
+→ N package_id consumidores mediante lineage
+```
+
+Los repositorios consumidores no copian la implementación del scope para evitar una dependencia publicada. Cualquier evidencia de otra unidad, snapshot, versión o commit es `STALE`.
+
+---
+
+#### 24. Doce gates de futura materialización
+
+| Gate                       | PASS                                                                    | Bloqueo                                 |
+| -------------------------- | ----------------------------------------------------------------------- | --------------------------------------- |
+| 1. identidad               | unidad, owner, versiones y commits inequívocos                          | identidad ambigua                       |
+| 2. scope                   | lifetime request-scoped, app/identity confiables, sin autoridad cliente | singleton o input fabricado             |
+| 3. contexto L0             | 10 dimensiones exactas y promise single-flight                          | clave incompleta o duplicación          |
+| 4. aislamiento/retry       | fallo elimina entrada; actor/request distintos no comparten             | contaminación o promesa tóxica          |
+| 5. decisión L0             | 11 dimensiones; solo duplicado exacto comparte                          | decisión reutilizada fuera de identidad |
+| 6. write barrier           | invalida contexto/decisión afectados dentro del request                 | uso de snapshot previo                  |
+| 7. correlación             | propagada sin autoridad ni fuga sensible                                | correlación usada como grant            |
+| 8. registry schema         | 15 campos, identidad compuesta y surface_type válido                    | fila incompleta/duplicada               |
+| 9. registry coverage       | baseline + drift reconciliados; PASS/AURA sin invención                 | consumidor directo sin fila             |
+| 10. testing                | fixtures deterministas y dev-only                                       | oracle remoto o fixture no versionada   |
+| 11. compatibilidad/lineage | todos los consumidores de la unidad con evidencia vigente               | consumidor obligatorio pendiente/stale  |
+| 12. rollback               | restauración reproducible sin reactivar bypass como final               | recuperación no ensayable               |
+
+---
+
+#### 25. Perfil de pruebas
+
+| Perfil         | Cobertura mínima                                                     |
+| -------------- | -------------------------------------------------------------------- |
+| contractual    | factory, scope, 10+11 dimensiones, 15 campos y taxonomías            |
+| unitaria       | promise dedup, eviction, aislamiento, write barrier, correlación     |
+| integración    | scope ↔ adapters AUTH002 ↔ backend cuando exista físicamente         |
+| denegaciones   | actor/app/recurso/contexto inválidos y contaminación cross-request   |
+| seguridad      | app spoofing, actor-session replay, client RPC, role bypass, leakage |
+| RLS/RPC        | paridad únicamente cuando las superficies propietarias existan       |
+| concurrencia   | single-flight de contexto y decisión exacta                          |
+| compatibilidad | repo, commit, lockfile, runtime, subpath y registry row              |
+| regresión      | ausencia de nuevos directos legacy y filas huérfanas                 |
+| rollback       | combinación anterior + repetición de gates esenciales                |
+
+RLS/RPC permanece `NOT_EXECUTED` hasta existir objetos físicos y ambiente autorizado.
+
+---
+
+#### 26. Evidencia requerida
+
+| Clase                | Contenido mínimo                                           |
+| -------------------- | ---------------------------------------------------------- |
+| `SCOPE_IDENTITY`     | request, app, principal/session y correlation sin secretos |
+| `L0_CONTEXT`         | key, hit/miss, single-flight y eviction                    |
+| `L0_DECISION`        | identidad exacta de evaluación y no reutilización          |
+| `WRITE_BARRIER`      | dirty set, invalidación y resolución posterior             |
+| `REGISTRY`           | 15 campos, identidad compuesta, conteos y diff             |
+| `CONSUMER_MATRIX`    | repo/path/commit/lockfile/runtime/target API               |
+| `TESTING`            | fixtures versionadas y resultados                          |
+| `SECURITY`           | replay, spoofing, isolation y leakage negatives            |
+| `COMPATIBILITY`      | build/typecheck/tests por consumidor aplicable             |
+| `ARTIFACT_INTEGRITY` | snapshot, versión, commit y digest                         |
+| `ROLLBACK`           | combinación previa y ensayo                                |
+| `CERTIFICATION`      | doce gates y estado agregado                               |
+
+---
+
+#### 27. Rollback
+
+El rollback de una futura instancia restaurará coordinadamente:
+
+1. versión anterior soportada de `@vento/os-context`;
+2. contracts exactos compatibles;
+3. scope factory/implementación anterior;
+4. registry snapshot anterior sin perder historial de consumidores;
+5. manifests/lockfiles de consumidores afectados;
+6. adapters/proyecciones compatibles;
+7. configuración legacy temporal autorizada;
+8. fixtures y evidencia de la combinación restaurada.
+
+No podrá eliminar filas para ocultar consumidores, mutar una versión publicada, reactivar role bypass como arquitectura final ni reutilizar evidencia de otra combinación.
+
+---
+
+#### 28. Hallazgos y destino exacto
+
+| Hallazgo                                             | Estado                   | Destino                                                                                          |
+| ---------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------ |
+| seis helpers de permiso siguen distribuidos          | `LEGACY_ACTIVO`          | `SHELL-AUTH-004`; `SHELL-AUTH-005`                                                               |
+| seis guards/session helpers siguen distribuidos      | `LEGACY_ACTIVO`          | `SHELL-AUTH-005`; módulo contextual propietario `SHELL-CTX-001`                                  |
+| NEXO mantiene contexto operativo paralelo            | `LEGACY_ACTIVO`          | `SHELL-AUTH-005`; `AUTH-DB-030`                                                                  |
+| SHELL mantiene evaluador local/fallback RPC          | `LEGACY_ACTIVO`          | `SHELL-AUTH-005`; `AUTH-DB-034`                                                                  |
+| ANIMA consulta `has_permission` desde cliente        | `BLOQUEO_DE_MIGRACION`   | `SHELL-AUTH-005`; protección server transversal `AUTH-UI-043`                                    |
+| PULSO conserva una consulta client de visibilidad    | `BLOQUEO_DE_MIGRACION`   | `SHELL-AUTH-005`; protección server transversal `AUTH-UI-043`                                    |
+| L1/freshness cross-request no pertenece a AUTH003    | `RESERVADO`              | `SHELL-CTX-006`; `AUTH-DB-035`                                                                   |
+| PASS no consume contexto laboral interno por defecto | `NO_APLICA`              | conservar regla de `AUTH-CTX-027`                                                                |
+| AURA no tiene repo runtime confirmado en este corte  | `PENDIENTE_DE_EVIDENCIA` | `AURA-AUTH-001` antes de primera adopción; `SHELL-AUTH-005` cuando exista consumidor transversal |
+
+No se crea tarea nueva: todos los hallazgos poseen destino existente.
+
+---
+
+#### 29. Requisitos de prueba derivados
+
+**Resultado:** GENERA 8 REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** **8**
+**Requisitos modificados:** **0**
+
+- `TREQ-SHELL-075` — factory y lifetime request-scoped, app/identidad confiables y correlación sin autoridad;
+- `TREQ-SHELL-076` — clave L0 de contexto de diez dimensiones, promise single-flight, eviction de fallo y aislamiento sin TTL/global;
+- `TREQ-SHELL-077` — clave L0 de decisión de once dimensiones y deduplicación exclusiva de evaluación exacta sin replay entre recursos/requests;
+- `TREQ-SHELL-078` — write barrier que invalida L0 afectado y prohíbe reutilizar contexto/decisión anteriores a una mutación relevante;
+- `TREQ-SHELL-079` — propagación/observabilidad de correlación y métricas sin autoridad ni filtración sensible;
+- `TREQ-SHELL-080` — registro de consumidores con 15 campos, identidad compuesta, taxonomía válida, 32 filas baseline y cobertura explícita PASS/AURA;
+- `TREQ-SHELL-081` — evolución del registro, migración current→target, client RPC→safe projection, fixtures deterministas y prohibición de nuevos directos sin fila;
+- `TREQ-SHELL-082` — una materialización por unidad, snapshot/registry/compatibilidad/seguridad/RLS-RPC aplicable/lineage y rollback atribuibles a la misma combinación.
+
+No se modifica, difiere, descarta ni obsoleta ningún requisito histórico.
+
+---
+
+#### 30. Puerta de cierre del marcador global
+
+El marcador queda documentalmente cerrado cuando:
+
+1. `createAuthorizationScope` queda definido como factory pública server de esta tarea;
+2. el scope queda limitado a una solicitud lógica;
+3. se fijan las diez dimensiones de contexto L0;
+4. se fija promise single-flight y eviction de errores;
+5. se fijan las once dimensiones de decisión L0;
+6. se prohíbe reuse cross-resource/cross-request;
+7. se fija write barrier y frontera con L1;
+8. se fija propagación de correlación sin autoridad;
+9. el registro conserva 15 campos y una identidad compuesta estable;
+10. la taxonomía incluye 15 tipos de superficie;
+11. se materializan exactamente 32 filas iniciales y se reconcilian 32/32;
+12. PASS y AURA quedan tratados sin inventar consumidores;
+13. se definen fixtures, gates, evidencia, compatibilidad y rollback;
+14. se crea snapshot y huella reproducibles;
+15. se crean `TREQ-SHELL-075` a `TREQ-SHELL-082`;
+16. se mantienen 0 cambios físicos, 0 migraciones y 0 cambios Supabase.
+
+---
+
+#### 31. Puerta de cierre de futura instancia
+
+`SHELL-AUTH-003::<implementation_unit_id>` podrá quedar `PASS` únicamente cuando:
+
+- owner y unidad estén habilitados por E5;
+- scope y L0 sean físicos y request-scoped;
+- las 10/11 dimensiones se reproduzcan sin drift;
+- concurrencia, eviction, aislamiento y write barrier tengan evidencia;
+- adapters de AUTH002 integren el mismo scope;
+- el registro se regenere contra el código vigente y reconcilie su diff desde las 32 filas baseline;
+- todo consumidor directo tenga fila, owner, target, estado y evidencia;
+- client surfaces no invoquen autorización interna para la arquitectura objetivo;
+- fixtures y pruebas contractuales/integración/denegación/seguridad estén en PASS;
+- RLS/RPC se marquen PASS solo con objetos y ambiente reales;
+- compatibilidad esté demostrada por consumidor de la unidad;
+- snapshot, versiones, commits y digest coincidan;
+- no exista segunda materialización para la unidad;
+- rollback haya sido ensayado;
+- `TREQ-SHELL-075` a `TREQ-SHELL-082` tengan evidencia atribuible a la instancia.
+
+---
+
+#### 32. Criterios de aceptación
+
+- [x] `SHELL-AUTH-002` es la precedencia inmediata aprobada;
+- [x] `SHELL-AUTH-004` permanece únicamente reservada;
+- [x] la tarea usa `PER_IMPLEMENTATION_UNIT`;
+- [x] se define `createAuthorizationScope` sin crear aliases paralelos;
+- [x] se limita el scope a una solicitud lógica;
+- [x] se prohíben singleton y cache cross-request en AUTH003;
+- [x] se fijan diez dimensiones de ContextRequestKey;
+- [x] se usa promise single-flight y eviction de fallo;
+- [x] se fijan once dimensiones de decisión exacta;
+- [x] se prohíbe reuse entre recurso/request;
+- [x] se define write barrier L0;
+- [x] L1 permanece en `SHELL-CTX-006`/`AUTH-DB-035`;
+- [x] correlación no concede autoridad;
+- [x] se conservan 15 campos mínimos del registro;
+- [x] se define identidad compuesta estable sin IDs arbitrarios;
+- [x] se añaden solo `SERVER_HELPER` y `SDK_ADAPTER` a los trece tipos iniciales;
+- [x] se materializan 32 filas iniciales;
+- [x] se reconcilian 32/32 sin duplicados;
+- [x] PASS queda `NO_APLICA` para contexto laboral interno por defecto;
+- [x] AURA queda pendiente sin ruta inventada;
+- [x] se definen fixtures deterministas dev-only;
+- [x] se define snapshot reproducible y huella;
+- [x] se definen doce gates, pruebas, evidencia y rollback;
+- [x] se crean exactamente ocho TREQ nuevos;
+- [x] se declaran 0 cambios físicos, 0 migraciones y 0 cambios Supabase;
+- [x] no se desarrolla `SHELL-AUTH-004`.
+
+---
+
+#### 33. Límites
+
+Esta tarea no:
+
+- modifica `packages/os-context`;
+- crea físicamente `createAuthorizationScope`;
+- implementa L0 ni L1;
+- crea cache compartida, TTL o eventos de invalidación;
+- modifica aplicaciones consumidoras;
+- elimina helpers, guards, hooks o RPC;
+- crea lint, codemods, allowlists o gates CI de legacy;
+- ejecuta `SHELL-AUTH-004`;
+- ejecuta `SHELL-AUTH-005`;
+- implementa resolver/evaluador SQL;
+- crea SQL, RPC, RLS, migraciones, triggers, Storage, Realtime o Edge Functions;
+- ejecuta Supabase;
+- declara compatibilidad de consumidor sin evidencia física;
+- declara RLS/RPC en PASS por inferencia;
+- inventa un consumidor de PASS o AURA;
+- ejecuta `SHELL-AUTH-003::<implementation_unit_id>`;
+- avanza ni desarrolla la tarea siguiente.
+
+---
+
+#### 34. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-AUTH-002 — Implementar adapters de servidor, cliente y proyecciones seguras`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-AUTH-004 — Implementar lint, métricas y gates contra consumidores legacy`
+
+
 ### [ ] SHELL-AUTH-004 — Implementar lint, métricas y gates contra consumidores legacy
 ### [ ] SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios
 
