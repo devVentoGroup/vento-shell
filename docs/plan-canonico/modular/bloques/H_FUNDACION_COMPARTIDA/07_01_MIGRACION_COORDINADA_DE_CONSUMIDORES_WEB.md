@@ -9,7 +9,11 @@ Esta sección organiza la adopción progresiva de contratos, componentes y paque
 
 **Puerta de entrada del mini-bloque:** contratos, paquetes y componentes involucrados aprobados; inventario de consumidores vigente; paquete de cambio identificado.
 
-**Puerta de salida del mini-bloque:** cero consumidores legacy no autorizados, evidencia por repositorio, rollback probado y retiro ejecutado únicamente para identidades aprobadas.
+**Puerta de salida documental del mini-bloque:** los ocho marcadores globales `SHELL-MIG-001..008` quedan aprobados como contratos canónicos; `SHELL-MIG-003..008` quedan definidos como plantillas `TEMPLATE_PER_PACKAGE`; la continuidad puede avanzar sin afirmar migraciones, pruebas, adopciones o retiros físicos ejecutados.
+
+**Puerta de salida operativa por paquete:** cada `package_id` que alcance materialización deberá cerrar las instancias aplicables `SHELL-MIG-003::<package_id>` a `SHELL-MIG-007::<package_id>` articuladas con su ciclo `SHELL-CI-020..024::<package_id>` y, cuando existan retiros, la certificación terminal `SHELL-MIG-008::<package_id>` después de `SHELL-CI-024::<package_id>`; todo con consumidores y commits exactos, evidencia vigente, paridad, rollback y retiro únicamente de identidades autorizadas.
+
+**Cierre operativo integral del mini-bloque:** solo existe cuando todos los `package_id` aplicables han cerrado sus instancias sin consumidores legacy no autorizados ni retiros residuales pendientes; la aprobación documental de los marcadores globales no equivale a ese cierre físico.
 <!-- PLAN-SECTION-META:END -->
 
 ### ✅ SHELL-MIG-001 — Consolidar inventario ejecutable de consumidores
@@ -32,6 +36,10 @@ Esta sección organiza la adopción progresiva de contratos, componentes y paque
 `SHELL-MIG-001` transforma la auditoría cerrada en `SHELL-AUD-001..011` y la decisión de distribución de `SHELL-PKG-001` en una matriz ejecutable por repositorio, identidad física, clase de consumidor, disposición, propietario, paquete de cambio, lote base, evidencia esperada y rollback.
 
 La tarea no ejecuta migraciones ni decide el orden reversible entre repositorios. `SHELL-MIG-002` permanece propietario de la definición final de lotes y orden. Para no dejar destinos genéricos, cada fila de esta tarea usa como **lote base** la combinación exacta `repositorio / tarea propietaria de ejecución`; esa dirección se convertirá en lote reversible y ordenado en `SHELL-MIG-002`.
+
+La modalidad canónica de `SHELL-MIG-001` es `DEFINE_ONCE`: el inventario se desarrolla y aprueba una sola vez como contrato de clasificación y no crea una instancia posterior propia.
+
+La clave `repositorio / tarea propietaria` es un **localizador documental de lote**, no la identidad de una ejecución física posterior. Para `SHELL-MIG-003..008`, la topología canónica exige una sola definición global y ejecuciones posteriores por paquete mediante `SHELL-MIG-003::<package_id>` a `SHELL-MIG-008::<package_id>`. Una instancia de paquete puede reunir uno o varios lotes de repositorio que pertenezcan al alcance aprobado del mismo `package_id`, sin reabrir ni volver a aprobar el marcador global.
 
 Regla raíz:
 
@@ -505,6 +513,7 @@ El rollback es por repositorio; ninguna aplicación queda obligada a revertir ju
 - CI de los siete repositorios fue reconciliado sin convertir workflows ajenos en consumidores ficticios;
 - ninguna fila usa un destino genérico como “migrar después” o “equipo correspondiente”;
 - no se inventa un orden entre repositorios ni lotes numéricos antes de `SHELL-MIG-002`;
+- el inventario queda explícitamente clasificado como `DEFINE_ONCE` y distingue el localizador `repositorio / tarea` de las futuras instancias por `package_id`;
 - no se modifica código, packages, CI, Supabase, despliegues ni continuidad;
 - se declaran cero cambios `TREQ-*`;
 - `SHELL-MIG-002` permanece como única continuidad inmediata reservada.
@@ -546,7 +555,7 @@ Esta tarea no:
 **Estado:** APROBADA
 **Tarea anterior:** SHELL-MIG-001 — Consolidar inventario ejecutable de consumidores
 **Tarea siguiente:** SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy
-**Tipo de tarea:** Documental; definición vinculante y materializada de lotes reversibles por repositorio, orden de adopción, precondiciones, cambios, consumidores, pruebas, observabilidad, rollback y criterios de suspensión, sin ejecutar migraciones ni modificar consumidores
+**Tipo de tarea:** documental; definición vinculante de lotes reversibles por repositorio, orden de adopción, precondiciones, cambios, consumidores, pruebas, observabilidad, rollback y criterios de suspensión, sin ejecutar migraciones ni modificar consumidores
 **Bloque:** H — Fundación compartida de VENTO-SHELL
 **Repositorio propietario:** `devVentoGroup/vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md`
@@ -599,13 +608,15 @@ Quedan definidos **22 lotes base reversibles**:
 | `SHELL-AUTH-005`         | SHELL, NUMERA, FOGO, ORIGO, VISO, PULSO, NEXO |    **7** |
 | **Total**                |                                               |   **22** |
 
-La distribución no crea un identificador paralelo. La identidad material de cada lote sigue siendo exactamente la clave:
+La distribución no crea un identificador paralelo para los **lotes base de repositorio**. Su localizador documental sigue siendo exactamente la clave:
 
 ```text
 repositorio consumidor / tarea propietaria
 ```
 
-Las **142 filas ejecutables** de `SHELL-MIG-001` conservan sin cambios su `Lote base`. Esta tarea añade el contrato de ejecución a las 22 claves distintas resultantes.
+Esa clave no sustituye la identidad canónica de las ejecuciones posteriores. `SHELL-MIG-001` y `SHELL-MIG-002` son `DEFINE_ONCE`; en cambio, `SHELL-MIG-003..008` son `TEMPLATE_PER_PACKAGE`. Por ello, cuando llegue la fase física, cada `package_id` utilizará la instancia `SHELL-MIG-003::<package_id>` a `SHELL-MIG-008::<package_id>` que corresponda, y cada instancia seleccionará los lotes base y consumidores incluidos en el alcance aprobado de ese mismo paquete.
+
+Las **142 filas ejecutables** de `SHELL-MIG-001` conservan sin cambios su `Lote base`. Esta tarea añade el contrato de ejecución a las 22 claves distintas resultantes; las instancias `::<package_id>` no se cuentan dentro de esas 22 claves porque se crean posteriormente a partir del paquete aprobado.
 
 Los elementos internos de AppSwitcher y `GuardOptions.requireAppAccessPermission = false` conservan los lotes `SHELL-MIG-008` ya asignados. Las dos entradas de navegación SHELL cuyo propietario es `SHELL-APP-021` permanecen fuera de estos 22 lotes porque no pertenecen a una fila física del inventario ejecutable ni al mini-bloque de migración compartida.
 
@@ -683,7 +694,9 @@ Todo lote materializado por esta tarea conserva estas reglas:
 
 #### 5. Orden canónico entre tareas y oleadas
 
-La secuencia entre propietarios no se altera:
+##### 5.1. Secuencia documental de los marcadores globales
+
+La continuidad documental entre propietarios no se altera:
 
 ```text
 SHELL-MIG-003
@@ -696,7 +709,23 @@ SHELL-MIG-003
 → SHELL-AUTH-005 cuando alcance su turno canónico
 ```
 
-`SHELL-MIG-006` y `SHELL-MIG-007` no crean lotes de cambio nuevos: son puertas de accesibilidad, paridad y evidencia para los lotes de `SHELL-MIG-005`.
+Esta cadena desarrolla y aprueba **una sola vez** los contratos globales. Aprobar los marcadores no ejecuta sus instancias físicas.
+
+##### 5.2. Ejecución posterior por `package_id`
+
+Para `SHELL-MIG-003..008`, la modalidad canónica es `TEMPLATE_PER_PACKAGE`.
+
+Una ejecución física futura solo puede ocurrir:
+
+1. después de los habilitadores `SHELL-CI-001..019`;
+2. después del `DELIV-PKG` correspondiente al paquete;
+3. después de `E5-GATE-008::<package_id>`;
+4. articulada con el ciclo `SHELL-CI-020..024::<package_id>`;
+5. mediante una única instancia de cada plantilla aplicable, sin reabrir el marcador global; `SHELL-MIG-003::<package_id>` a `SHELL-MIG-007::<package_id>` producen evidencia durante el ciclo y `SHELL-MIG-008::<package_id>` certifica los retiros después de `SHELL-CI-024::<package_id>`.
+
+Cada instancia selecciona la intersección entre el alcance aprobado del `package_id` y los lotes base de repositorio definidos en esta tarea. Si un mismo paquete alcanza varios repositorios, la instancia agrega esos sublotes pero conserva commit, pruebas, evidencia y rollback separados por consumidor. Si la intersección de una plantilla es vacía, la no aplicabilidad debe quedar demostrada; nunca se usa `NOT_APPLICABLE` para omitir un consumidor realmente afectado.
+
+`SHELL-MIG-006` y `SHELL-MIG-007` no crean lotes base de cambio nuevos: son puertas de accesibilidad, paridad y evidencia para los consumidores alcanzados por la instancia de `SHELL-MIG-005::<package_id>` u otras superficies UI incluidas expresamente en el mismo paquete.
 
 `SHELL-AUTH-005` ya es propietario de las filas de autorización, contexto y acceso compartido que `SHELL-MIG-001` le asignó. `SHELL-MIG-002` define esos siete lotes ahora, pero no adelanta ni desarrolla `SHELL-AUTH-005`.
 
@@ -764,33 +793,33 @@ Un lote solo puede considerarse cerrado cuando:
 
 #### 8. Lote de compatibilidad CI/script de NEXO
 
-| Campo                          | Decisión materializada                                                                                                                                                                                    |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Lote base**                  | `devVentoGroup/vento-nexo / SHELL-MIG-003`                                                                                                                                                                |
-| **Consumidores**               | `.github/workflows/tmp-apply-privileged-request-area.yml`; `scripts/tmp-apply-privileged-request-area.mjs`                                                                                                |
-| **Precondiciones específicas** | commit NEXO revalidado; forma contractual objetivo de autorización/contexto aprobada; targets del patch identificados; gate contra nuevo consumo legacy disponible                                        |
-| **Cambios permitidos**         | adaptar o retirar únicamente la dependencia del workflow/script respecto de la forma legacy; impedir que vuelva a crear consumidores legacy; conservar el comportamiento empresarial de los targets       |
-| **Pruebas**                    | gates `PKG-GATE-003..014` aplicables; ejecución reproducible del patch; build y validación de targets; evidencia de que el script no introduce una forma legacy nueva                                     |
-| **Observabilidad**             | resultado del workflow, identidad del commit, archivos objetivo modificados, errores del patch y build atribuibles al mismo intento                                                                       |
-| **Rollback**                   | restaurar workflow, script y targets al snapshot NEXO previo certificado; no tocar otros consumidores                                                                                                     |
-| **Suspensión**                 | target no coincide, patch deja de ser determinista, build falla, aparece ampliación de autoridad, el workflow intenta modificar una forma contractual no aprobada o el snapshot previo deja de ser seguro |
-| **Estado actual**              | ESPECIFICADO; BLOQUEADO PARA EJECUCIÓN por fase documental y por no estar desarrollada/aprobada `SHELL-MIG-003`                                                                                           |
+| Campo                                  | Decisión materializada                                                                                                                                                                                    |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Lote base**                          | `devVentoGroup/vento-nexo / SHELL-MIG-003`                                                                                                                                                                |
+| **Consumidores**                       | `.github/workflows/tmp-apply-privileged-request-area.yml`; `scripts/tmp-apply-privileged-request-area.mjs`                                                                                                |
+| **Precondiciones específicas**         | commit NEXO revalidado; forma contractual objetivo de autorización/contexto aprobada; targets del patch identificados; gate contra nuevo consumo legacy disponible                                        |
+| **Cambios permitidos**                 | adaptar o retirar únicamente la dependencia del workflow/script respecto de la forma legacy; impedir que vuelva a crear consumidores legacy; conservar el comportamiento empresarial de los targets       |
+| **Pruebas**                            | gates `PKG-GATE-003..014` aplicables; ejecución reproducible del patch; build y validación de targets; evidencia de que el script no introduce una forma legacy nueva                                     |
+| **Observabilidad**                     | resultado del workflow, identidad del commit, archivos objetivo modificados, errores del patch y build atribuibles al mismo intento                                                                       |
+| **Rollback**                           | restaurar workflow, script y targets al snapshot NEXO previo certificado; no tocar otros consumidores                                                                                                     |
+| **Suspensión**                         | target no coincide, patch deja de ser determinista, build falla, aparece ampliación de autoridad, el workflow intenta modificar una forma contractual no aprobada o el snapshot previo deja de ser seguro |
+| **Estado al corte de `SHELL-MIG-002`** | ESPECIFICADO; BLOQUEADO PARA EJECUCIÓN por fase documental y por no estar desarrollada/aprobada `SHELL-MIG-003`                                                                                           |
 
 ---
 
 #### 9. Lote de scaffold de SHELL
 
-| Campo                          | Decisión materializada                                                                                                                                                                                        |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Lote base**                  | `devVentoGroup/vento-shell / SHELL-MIG-004`                                                                                                                                                                   |
-| **Consumidor**                 | `tools/bootstrap-app-shell.ps1` y la plantilla histórica `templates/app-shell-standard` como fuente de scaffold                                                                                               |
-| **Precondiciones específicas** | contratos, packages y AppShell requeridos aprobados; versiones exactas disponibles; procedencia del scaffold definida; bootstrap legacy conservado como recuperación controlada hasta certificar el sustituto |
-| **Cambios permitidos**         | reemplazar la copia de implementación runtime por un scaffold versionado que instale o genere únicamente dependencias y configuración aprobadas                                                               |
-| **Pruebas**                    | generación reproducible; identidad de versiones; ausencia de fuente runtime duplicada; build de un consumidor de prueba autorizado; comparación de configuración y archivos generados                         |
-| **Observabilidad**             | versión del scaffold, versions de packages resueltas, commit fuente, conjunto de archivos generados y diferencias respecto del baseline                                                                       |
-| **Rollback**                   | restaurar bootstrap y plantilla legacy controlados al snapshot previo certificado sin presentar esa restauración como distribución canónica                                                                   |
-| **Suspensión**                 | el scaffold vuelve a copiar implementación runtime, usa versiones no fijadas, genera archivos fuera del contrato, no reproduce configuración o requiere package sin release/evidencia compatible              |
-| **Estado actual**              | ESPECIFICADO; BLOQUEADO PARA EJECUCIÓN por fase documental y por precondiciones de package/scaffold aún no materializadas                                                                                     |
+| Campo                                  | Decisión materializada                                                                                                                                                                                        |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Lote base**                          | `devVentoGroup/vento-shell / SHELL-MIG-004`                                                                                                                                                                   |
+| **Consumidor**                         | `tools/bootstrap-app-shell.ps1` y la plantilla histórica `templates/app-shell-standard` como fuente de scaffold                                                                                               |
+| **Precondiciones específicas**         | contratos, packages y AppShell requeridos aprobados; versiones exactas disponibles; procedencia del scaffold definida; bootstrap legacy conservado como recuperación controlada hasta certificar el sustituto |
+| **Cambios permitidos**                 | reemplazar la copia de implementación runtime por un scaffold versionado que instale o genere únicamente dependencias y configuración aprobadas                                                               |
+| **Pruebas**                            | generación reproducible; identidad de versiones; ausencia de fuente runtime duplicada; build de un consumidor de prueba autorizado; comparación de configuración y archivos generados                         |
+| **Observabilidad**                     | versión del scaffold, versions de packages resueltas, commit fuente, conjunto de archivos generados y diferencias respecto del baseline                                                                       |
+| **Rollback**                           | restaurar bootstrap y plantilla legacy controlados al snapshot previo certificado sin presentar esa restauración como distribución canónica                                                                   |
+| **Suspensión**                         | el scaffold vuelve a copiar implementación runtime, usa versiones no fijadas, genera archivos fuera del contrato, no reproduce configuración o requiere package sin release/evidencia compatible              |
+| **Estado al corte de `SHELL-MIG-002`** | ESPECIFICADO; BLOQUEADO PARA EJECUCIÓN por fase documental y por precondiciones de package/scaffold aún no materializadas                                                                                     |
 
 ---
 
@@ -1036,7 +1065,9 @@ No se modifica ningún fragmento del registro canónico de requisitos de prueba.
 `SHELL-MIG-002` queda materialmente completa cuando se cumple todo lo siguiente:
 
 - conserva las 142 filas de `SHELL-MIG-001` y sus `Lote base`;
-- materializa exactamente 22 claves de lote distintas dentro del alcance compartido;
+- define exactamente 22 claves de lote base distintas dentro del alcance compartido;
+- distingue las 22 claves `repositorio / tarea` de las futuras instancias `SHELL-MIG-003::<package_id>` a `SHELL-MIG-008::<package_id>`;
+- define que una instancia por paquete puede agregar varios sublotes de repositorio sin perder commit, evidencia ni rollback por consumidor;
 - define un solo repositorio por lote;
 - define orden de repositorios para toda tarea multi-consumidor;
 - conserva `SHELL-MIG-003`, `004`, `005`, `008` y `SHELL-AUTH-005` como propietarios ya asignados;
@@ -1099,11 +1130,11 @@ Los umbrales operativos, ambientes concretos de despliegue y ventanas temporales
 **Estado:** APROBADA
 **Tarea anterior:** SHELL-MIG-002 — Definir lotes reversibles por repositorio
 **Tarea siguiente:** SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado
-**Tipo de tarea:** Documental; definición vinculante y materializada de compatibilidad temporal, observabilidad de deprecación y gate fail-closed contra nuevos consumidores legacy, sin implementar adapters, packages, workflows ni migraciones físicas
+**Tipo de tarea:** documental; definición global única de compatibilidad temporal, observabilidad de deprecación y gate fail-closed contra nuevos consumidores legacy, con ejecución posterior por paquete mediante `SHELL-MIG-003::<package_id>`, sin implementar adapters, packages, workflows ni migraciones físicas durante el marcador global
 **Bloque:** H — Fundación compartida de VENTO-SHELL
 **Repositorio propietario:** `devVentoGroup/vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md`
-**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO; 1 lote NEXO de compatibilidad legacy delimitado; 2 artefactos legacy reales congelados como baseline; 0 adapters físicos; 0 gates físicos; 0 migraciones ejecutadas
+**Estado físico resultante:** CONTRATO_GLOBAL_COMPATIBILIDAD_LEGACY_ESPECIFICADO; 1 lote base NEXO delimitado; 2 artefactos legacy reales congelados como baseline; 0 instancias `SHELL-MIG-003::<package_id>` ejecutadas; 0 adapters físicos; 0 gates físicos; 0 migraciones ejecutadas
 **Cambios físicos autorizados:** ninguno
 **Requisitos de prueba creados o modificados:** 0
 
@@ -1133,17 +1164,21 @@ legacy ya inventariado
 
 La compatibilidad temporal no cambia autoridad, no introduce aliases implícitos y no habilita fallbacks permisivos.
 
+La modalidad canónica de trabajo es `TEMPLATE_PER_PACKAGE`: este marcador define el contrato una sola vez. La ejecución posterior se realiza mediante `SHELL-MIG-003::<package_id>` dentro del ciclo del mismo paquete y nunca vuelve a aprobar ni reabrir esta tarea global.
+
 ---
 
 #### 2. Resultado material
 
-La única instancia material asignada a `SHELL-MIG-003` por `SHELL-MIG-002` es:
+El único **lote base de repositorio** asignado a `SHELL-MIG-003` por `SHELL-MIG-002` es:
 
 ```text
 devVentoGroup/vento-nexo / SHELL-MIG-003
 ```
 
-La instancia contiene exactamente dos consumidores legacy confirmados:
+Ese lote base no es una instancia física. La identidad de ejecución posterior será `SHELL-MIG-003::<package_id>` y seleccionará este lote únicamente cuando el alcance aprobado del paquete intersecte el workflow, el script, sus targets vigilados o la frontera legacy que esos artefactos pueden recrear.
+
+El lote base contiene exactamente dos consumidores legacy confirmados:
 
 | Repositorio                | Artefacto                                                 | Clase    | Estado heredado | Decisión de `SHELL-MIG-003`                                                                                                                     |
 | -------------------------- | --------------------------------------------------------- | -------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1154,7 +1189,8 @@ Conciliación:
 
 | Métrica                                                       | Resultado |
 | ------------------------------------------------------------- | --------: |
-| repositorios con lote propio `SHELL-MIG-003`                  |     **1** |
+| repositorios con lote base `SHELL-MIG-003`                    |     **1** |
+| instancias `SHELL-MIG-003::<package_id>` ejecutadas           |     **0** |
 | consumidores legacy CI/script del lote                        |     **2** |
 | consumidores legacy adicionales autorizados por esta tarea    |     **0** |
 | adapters especulativos autorizados                            |     **0** |
@@ -1164,6 +1200,33 @@ Conciliación:
 | cambios físicos ejecutados                                    |     **0** |
 
 Los targets actuales `src/app/inventory/remissions/page.tsx` y `src/app/inventory/remissions/actions.ts` no se convierten en un lote nuevo de `SHELL-MIG-003`. Permanecen como superficies consumidoras vigiladas y su migración de autorización/contexto conserva la propiedad ya asignada a `SHELL-AUTH-005` y tareas propietarias relacionadas.
+
+##### 2.1. Contrato de la instancia `SHELL-MIG-003::<package_id>`
+
+Cada paquete que entre al ciclo de materialización evalúa esta plantilla con el mismo `package_id` aprobado por E5.
+
+La instancia deberá registrar:
+
+- `package_id` y referencia al `DELIV-PKG` aplicable;
+- repositorio y commit base de cada consumidor alcanzado;
+- commit candidato o conjunto exacto de archivos evaluados;
+- intersección entre el alcance del paquete y el lote base NEXO;
+- baseline legacy grandfathered aplicable;
+- resultado del gate contra crecimiento legacy;
+- evidencia de compatibilidad y de no ampliación de autoridad;
+- snapshot y rollback del consumidor;
+- vínculo con el ciclo `SHELL-CI-020..024::<package_id>`.
+
+Reglas de agregación:
+
+1. existe una sola instancia `SHELL-MIG-003::<package_id>` por paquete;
+2. si la intersección con el lote NEXO es vacía, la instancia solo puede cerrar como `NOT_APPLICABLE` con evidencia reproducible de esa intersección vacía;
+3. si el paquete toca cualquiera de los dos artefactos, sus targets o la frontera legacy que pueden regenerar, `NOT_APPLICABLE` queda prohibido;
+4. un fallo del workflow, script, target o gate bloquea la instancia completa del paquete;
+5. la evidencia de otro `package_id`, commit o baseline es `STALE`;
+6. la instancia no crea otro adapter, lote por repositorio ni marcador global.
+
+La instancia solo puede ejecutarse después de `SHELL-CI-001..019`, del `DELIV-PKG` del paquete y de `E5-GATE-008::<package_id>`, dentro del ciclo `SHELL-CI-020..024::<package_id>`.
 
 ---
 
@@ -1265,15 +1328,15 @@ La identidad contractual aplicable al lote NEXO queda fijada así:
 
 `SHELL-MIG-002` asignó un solo lote a esta tarea. La decisión por repositorio queda explícita:
 
-| Repositorio                  | Lote propio `SHELL-MIG-003` | Excepción temporal materializada | Decisión                                                                                                |
-| ---------------------------- | --------------------------- | -------------------------------: | ------------------------------------------------------------------------------------------------------- |
-| `devVentoGroup/vento-shell`  | no                          |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
-| `devVentoGroup/vento-numera` | no                          |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
-| `devVentoGroup/vento-fogo`   | no                          |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
-| `devVentoGroup/vento-origo`  | no                          |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
-| `devVentoGroup/vento-viso`   | no                          |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
-| `devVentoGroup/vento-pulso`  | no                          |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
-| `devVentoGroup/vento-nexo`   | sí                          |                                2 | permitir exclusivamente la excepción transitoria inventariada del workflow y script; bloquear expansión |
+| Repositorio                  | Lote base propio `SHELL-MIG-003` | Excepción temporal materializada | Decisión                                                                                                |
+| ---------------------------- | -------------------------------- | -------------------------------: | ------------------------------------------------------------------------------------------------------- |
+| `devVentoGroup/vento-shell`  | no                               |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
+| `devVentoGroup/vento-numera` | no                               |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
+| `devVentoGroup/vento-fogo`   | no                               |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
+| `devVentoGroup/vento-origo`  | no                               |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
+| `devVentoGroup/vento-viso`   | no                               |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
+| `devVentoGroup/vento-pulso`  | no                               |                                0 | no crear adapter desde esta tarea; cualquier legacy se conserva bajo su lote propietario                |
+| `devVentoGroup/vento-nexo`   | sí                               |                                2 | permitir exclusivamente la excepción transitoria inventariada del workflow y script; bloquear expansión |
 
 Esta tabla no afirma ausencia de legacy runtime en los otros repositorios. Solo materializa la propiedad exacta de `SHELL-MIG-003`; los demás consumidores conservan los lotes ya asignados por `SHELL-MIG-002`.
 
@@ -1433,7 +1496,7 @@ La materialización queda distribuida sin crear tareas nuevas:
 | compatibilidad UI si un hallazgo futuro la activa                 | `SHELL-UI-*` correspondiente                        |
 | retiro final de copias legacy                                     | `SHELL-MIG-008`                                     |
 
-En el lote NEXO actual no se autoriza una modificación de factories Supabase ni de contratos de UI compartida; por ello `SHELL-DB-*` y `SHELL-UI-*` no reciben una instancia material adicional desde esta tarea.
+En el lote NEXO actual no se autoriza una modificación de factories Supabase ni de contratos de UI compartida; por ello `SHELL-DB-*` y `SHELL-UI-*` no reciben un lote o cambio físico adicional desde esta tarea.
 
 ---
 
@@ -1526,8 +1589,8 @@ Una suspensión conserva abierto el lote; no autoriza a deshabilitar el gate.
 | `@vento/os-context` no tiene release estable confirmada                                      | `NO_RELEASE_ESTABLE_CONFIRMADA` | publicación y compatibilidad según tareas propietarias antes de adopción física             |
 | no existe gate físico confirmado que bloquee nuevos consumidores legacy                      | `PENDIENTE_DE_IMPLEMENTACION`   | `SHELL-AUTH-004` para auth/context y gates de package/CI aplicables                         |
 | no existen deprecaciones públicas estables activas de los packages compartidos en este corte | `NO_APLICA_EN_LINEA_BASE`       | primer expediente real futuro bajo `SHELL-PKG-005`                                          |
-| el lote actual no requiere modificar factories Supabase                                      | `NO_APLICA`                     | conservar propiedad `SHELL-DB-*`; reabrir solo ante hallazgo material futuro                |
-| el lote actual no requiere modificar contrato UI compartido                                  | `NO_APLICA`                     | conservar propiedad `SHELL-UI-*`; reabrir solo ante hallazgo material futuro                |
+| el lote base actual no requiere modificar factories Supabase                                 | `NO_APLICA`                     | conservar propiedad `SHELL-DB-*`; reabrir solo ante hallazgo material futuro                |
+| el lote base actual no requiere modificar contrato UI compartido                             | `NO_APLICA`                     | conservar propiedad `SHELL-UI-*`; reabrir solo ante hallazgo material futuro                |
 
 No queda un pendiente narrativo sin propietario o condición de salida.
 
@@ -1567,10 +1630,12 @@ No corresponde modificar el registro 04A.
 
 `SHELL-MIG-003` queda materialmente completa porque:
 
-- conserva exactamente el único lote que `SHELL-MIG-002` asignó a esta tarea;
+- conserva exactamente el único lote base que `SHELL-MIG-002` asignó a esta tarea;
+- distingue ese lote base de la futura identidad `SHELL-MIG-003::<package_id>`;
+- define selección, no aplicabilidad, lineage, agregación, evidencia y rollback por `package_id` sin reabrir el marcador global;
 - materializa exactamente dos consumidores CI/script NEXO y cero consumidores adicionales;
 - distingue los artefactos del lote de los targets cuya migración pertenece a `SHELL-AUTH-005`;
-- impide crear adapters por inferencia en repositorios sin lote propio `SHELL-MIG-003`;
+- impide crear adapters por inferencia en repositorios sin lote base propio `SHELL-MIG-003`;
 - fija las condiciones acumulativas que hacen admisible una compatibilidad temporal;
 - liga la compatibilidad NEXO a contratos versionados y al commit consumidor exacto;
 - impide declarar `@vento/os-context@0.1.0` como release estable;
@@ -1606,6 +1671,7 @@ Esta tarea no:
 - retira copias legacy reservadas a `SHELL-MIG-008`;
 - ejecuta workflows, patches, builds de consumidor, despliegues o validaciones operativas;
 - cambia tablas, datos, RLS, RPC, funciones, triggers, Storage, Realtime, Edge Functions, tipos generados, secretos o configuración de Supabase;
+- ejecuta una instancia `SHELL-MIG-003::<package_id>` durante el marcador global;
 - cambia `active-sequence.json` ni desarrolla `SHELL-MIG-004`.
 
 ---
@@ -1627,11 +1693,11 @@ Esta tarea no:
 **Estado:** APROBADA
 **Tarea anterior:** SHELL-MIG-003 — Preparar compatibilidad y bloqueo de nuevos consumidores legacy
 **Tarea siguiente:** SHELL-MIG-005 — Migrar componentes, Chrome y estilos por aplicación
-**Tipo de tarea:** Documental; definición vinculante y materializada del scaffold versionado que sustituirá el mecanismo histórico de copia de AppShell, con contrato de entradas, salidas, versiones exactas, configuración explícita, procedencia, reproducibilidad, rollback y gate de ejecución, sin crear todavía el scaffold físico ni modificar consumidores
+**Tipo de tarea:** documental; definición global única del scaffold versionado que sustituirá el mecanismo histórico de copia de AppShell, con ejecución posterior por paquete mediante `SHELL-MIG-004::<package_id>`, contrato de entradas, salidas, versiones exactas, configuración explícita, procedencia, reproducibilidad, rollback y gate de ejecución, sin crear todavía el scaffold físico ni modificar consumidores durante el marcador global
 **Bloque:** H — Fundación compartida de VENTO-SHELL
 **Repositorio propietario:** `devVentoGroup/vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md`
-**Estado físico resultante:** ESPECIFICADO; 1 lote de scaffold cerrado documentalmente; 8 artefactos legacy reconciliados; 3 salidas locales permitidas; 5 copias runtime compartidas prohibidas; 0 scaffold físico creado; 0 consumidores migrados
+**Estado físico resultante:** CONTRATO_GLOBAL_SCAFFOLD_ESPECIFICADO; 1 lote base productor reconciliado; 8 artefactos legacy reconciliados; 3 salidas locales permitidas; 5 copias runtime compartidas prohibidas; 0 instancias `SHELL-MIG-004::<package_id>` ejecutadas; 0 scaffold físico creado; 0 consumidores migrados
 **Cambios físicos autorizados:** ninguno
 **Requisitos de prueba creados o modificados:** 0
 
@@ -1669,21 +1735,26 @@ TEMPLATE HISTÓRICO
 
 El objetivo no es ocultar la plantilla histórica detrás de otro script. El objetivo es eliminar la duplicación como mecanismo de distribución.
 
+La modalidad canónica es `TEMPLATE_PER_PACKAGE`: este marcador aprueba una sola vez el contrato del scaffold. La herramienta física, cuando exista y quede certificada, se reutiliza; cada paquete registra su uso o no aplicabilidad mediante `SHELL-MIG-004::<package_id>` sin crear forks del scaffold ni reabrir la definición global.
+
 ---
 
 #### 2. Resultado material
 
-Queda cerrado un único lote documental heredado de `SHELL-MIG-002`:
+Queda cerrado un único **lote base productor** heredado de `SHELL-MIG-002`:
 
 ```text
 devVentoGroup/vento-shell / SHELL-MIG-004
 ```
 
-Su resultado se materializa así:
+Ese lote identifica la procedencia y sustitución del mecanismo histórico en el repositorio productor. No constituye una instancia por paquete.
+
+Su resultado documental se materializa así:
 
 | Dimensión                                                                     | Resultado |
 | ----------------------------------------------------------------------------- | --------: |
-| lotes de `SHELL-MIG-004`                                                      |     **1** |
+| lotes base productores de `SHELL-MIG-004`                                     |     **1** |
+| instancias `SHELL-MIG-004::<package_id>` ejecutadas                           |     **0** |
 | mecanismos legacy directos gobernados                                         |     **2** |
 | archivo bootstrap histórico                                                   |     **1** |
 | árbol de plantilla histórica                                                  |     **1** |
@@ -1698,6 +1769,32 @@ Su resultado se materializa así:
 | consumidores migrados                                                         |     **0** |
 | cambios Supabase                                                              |     **0** |
 | cambios `TREQ-*`                                                              |     **0** |
+
+##### 2.1. Contrato de la instancia `SHELL-MIG-004::<package_id>`
+
+La futura instancia por paquete evalúa si el alcance aprobado necesita crear o actualizar composición local mediante el scaffold certificado.
+
+Debe registrar, como mínimo:
+
+- mismo `package_id` usado por `E5-GATE-008` y `SHELL-CI-020..024`;
+- consumidores web incluidos en el paquete que requieren scaffold;
+- commit base y commit candidato de cada consumidor;
+- versión, commit fuente y huella del scaffold;
+- versiones exactas e integridades de packages resueltos;
+- archivos locales generados o actualizados y sus baselines;
+- manifest de resultado y procedencia por consumidor;
+- pruebas de reproducibilidad, idempotencia y ausencia de fuente runtime copiada;
+- rollback independiente por consumidor.
+
+Si un paquete afecta varios consumidores, existe **una sola** instancia `SHELL-MIG-004::<package_id>` que agrega ejecuciones de scaffold por consumidor. Cada subejecución conserva evidencia y rollback propios, y un fallo en cualquiera impide cerrar la instancia del paquete.
+
+Si el paquete no crea ni actualiza ninguna superficie gobernada por el scaffold, la instancia puede ser `NOT_APPLICABLE` únicamente con evidencia de intersección vacía. La no aplicabilidad nunca autoriza a copiar manualmente el template histórico.
+
+La implementación física del scaffold es una capacidad reutilizable del productor; no se recompone ni se versiona de nuevo por cada `package_id`.
+
+La **primera materialización física** del scaffold solo puede ocurrir dentro de una `SHELL-MIG-004::<package_id>` cuyo `DELIV-PKG` incluya expresamente esa implementación en `devVentoGroup/vento-shell`. Esa misma instancia deberá registrar commit productor, identidad inmutable del scaffold, artefacto, pruebas y rollback. Las instancias posteriores reutilizan una versión ya certificada, salvo que su propio `DELIV-PKG` incluya un cambio explícito del scaffold; en ese caso se exige una versión inmutable nueva y se conserva la anterior para rollback. Ningún paquete puede crear una copia o fork alternativo del scaffold.
+
+La instancia solo puede ejecutarse después de `SHELL-CI-001..019`, del `DELIV-PKG` del paquete y de `E5-GATE-008::<package_id>`, dentro del ciclo `SHELL-CI-020..024::<package_id>`.
 
 Los dos mecanismos legacy gobernados son:
 
@@ -2455,7 +2552,9 @@ La existencia documental de este contrato no adelanta `SHELL-MIG-005`.
 
 `SHELL-MIG-004` queda documentalmente completa porque:
 
-- [x] conserva exactamente el lote `devVentoGroup/vento-shell / SHELL-MIG-004`;
+- [x] conserva exactamente el lote base productor `devVentoGroup/vento-shell / SHELL-MIG-004`;
+- [x] distingue el lote productor de las futuras instancias `SHELL-MIG-004::<package_id>`;
+- [x] define selección, agregación multi-consumidor, lineage, no aplicabilidad y rollback por `package_id`;
 - [x] reconcilia `tools/bootstrap-app-shell.ps1` y `templates/app-shell-standard` como el mecanismo legacy gobernado;
 - [x] reconcilia los ocho archivos físicos actuales sin faltantes;
 - [x] aclara la relación entre ocho archivos y siete módulos TSX más una hoja de estilo;
@@ -2507,6 +2606,7 @@ Esta tarea no:
 - modifica SQL, migraciones, RLS, RPC, Realtime, Storage, Edge Functions, datos, configuración o secretos de Supabase;
 - ejecuta builds, despliegues o pruebas operativas de un scaffold inexistente;
 - crea nuevos requisitos de prueba;
+- ejecuta una instancia `SHELL-MIG-004::<package_id>` durante el marcador global;
 - inicia `SHELL-MIG-005`.
 
 ---
@@ -2528,11 +2628,11 @@ Esta tarea no:
 **Estado:** APROBADA
 **Tarea anterior:** SHELL-MIG-004 — Sustituir la plantilla histórica por scaffold versionado
 **Tarea siguiente:** SHELL-MIG-006 — Verificar accesibilidad, tema y movimiento reducido
-**Tipo de tarea:** Documental; materialización vinculante de la migración de componentes, Chrome, navegación presentacional y estilos por los siete repositorios web consumidores, preservando composición, tema, extensiones empresariales legítimas y rollback independiente, sin ejecutar adopción física de packages ni modificar código consumidor
+**Tipo de tarea:** documental; definición global única de la migración de componentes, Chrome, navegación presentacional y estilos, reutilizable mediante instancias `SHELL-MIG-005::<package_id>`, preservando composición, tema, extensiones empresariales legítimas y rollback independiente, sin ejecutar adopción física de packages ni modificar código consumidor durante el marcador global
 **Bloque:** H — Fundación compartida de VENTO-SHELL
 **Repositorio propietario:** `devVentoGroup/vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md`
-**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO; 7 lotes UI definidos; 57 ocurrencias UI reconciliadas; 20 ocurrencias conservadas locales; 37 ocurrencias destinadas a APIs compartidas aprobadas; 0 adopciones físicas; 0 retiros ejecutados
+**Estado físico resultante:** CONTRATO_GLOBAL_MIGRACION_UI_ESPECIFICADO; 7 lotes base UI definidos; 57 ocurrencias UI reconciliadas; 20 ocurrencias conservadas locales; 37 ocurrencias destinadas a APIs compartidas aprobadas; 0 instancias `SHELL-MIG-005::<package_id>` ejecutadas; 0 adopciones físicas; 0 retiros ejecutados
 **Cambios físicos autorizados:** ninguno
 **Requisitos de prueba creados o modificados:** 0
 
@@ -2540,7 +2640,9 @@ Esta tarea no:
 
 #### 1. Propósito
 
-`SHELL-MIG-005` materializa, por aplicación y por identidad heredada de `SHELL-MIG-001`, la migración futura desde copias UI locales hacia las superficies compartidas aprobadas de Vento OS.
+`SHELL-MIG-005` define, por aplicación y por identidad heredada de `SHELL-MIG-001`, la plantilla global de migración futura desde copias UI locales hacia las superficies compartidas aprobadas de Vento OS.
+
+La modalidad canónica es `TEMPLATE_PER_PACKAGE`: los siete lotes de repositorio son sublotes base de selección, mientras la identidad de ejecución física será `SHELL-MIG-005::<package_id>`.
 
 La tarea conserva simultáneamente cuatro objetivos:
 
@@ -2574,18 +2676,19 @@ migrar UI
 
 #### 2. Resultado material
 
-Quedan materializados **7 lotes de migración UI**, uno por repositorio consumidor, y reconciliadas **57 ocurrencias** pertenecientes exactamente a `SHELL-MIG-005`.
+Quedan definidos **7 lotes base de migración UI**, uno por repositorio consumidor, y reconciliadas **57 ocurrencias** pertenecientes exactamente a `SHELL-MIG-005`. Estos siete lotes no son siete instancias físicas: una futura instancia `SHELL-MIG-005::<package_id>` selecciona los sublotes y filas que pertenezcan al alcance aprobado del mismo paquete.
 
-| Resultado                                         | Cantidad |
-| ------------------------------------------------- | -------: |
-| repositorios consumidores                         |    **7** |
-| lotes `SHELL-MIG-005`                             |    **7** |
-| ocurrencias UI heredadas de `SHELL-MIG-001`       |   **57** |
-| ocurrencias `KEEP LOCAL`                          |   **20** |
-| ocurrencias `MIGRATE` hacia superficie compartida |   **37** |
-| ocurrencias omitidas o duplicadas                 |    **0** |
-| adopciones físicas ejecutadas                     |    **0** |
-| retiros legacy ejecutados                         |    **0** |
+| Resultado                                           | Cantidad |
+| --------------------------------------------------- | -------: |
+| repositorios consumidores                           |    **7** |
+| lotes base `SHELL-MIG-005`                          |    **7** |
+| instancias `SHELL-MIG-005::<package_id>` ejecutadas |    **0** |
+| ocurrencias UI heredadas de `SHELL-MIG-001`         |   **57** |
+| ocurrencias `KEEP LOCAL`                            |   **20** |
+| ocurrencias `MIGRATE` hacia superficie compartida   |   **37** |
+| ocurrencias omitidas o duplicadas                   |    **0** |
+| adopciones físicas ejecutadas                       |    **0** |
+| retiros legacy ejecutados                           |    **0** |
 
 Distribución exacta:
 
@@ -2600,13 +2703,41 @@ Distribución exacta:
 | `devVentoGroup/vento-nexo`   |       **9** |        **3** |     **6** | `ESPECIFICADO_NO_MATERIALIZADO` |
 | **Total**                    |      **57** |       **20** |    **37** |                                 |
 
-La identidad de cada lote continúa siendo la clave aprobada:
+El localizador documental de cada lote base continúa siendo la clave aprobada:
 
 ```text
 repositorio consumidor / SHELL-MIG-005
 ```
 
-No se crean lotes paralelos, alias ni una segunda numeración.
+La identidad de ejecución canónica es distinta y se crea únicamente en fase física:
+
+```text
+SHELL-MIG-005::<package_id>
+```
+
+No se crean alias, instancias paralelas por repositorio ni una segunda numeración.
+
+##### 2.1. Selección y agregación por `package_id`
+
+Cada futura instancia `SHELL-MIG-005::<package_id>` se forma exclusivamente con la intersección entre:
+
+1. el alcance aprobado del `package_id`;
+2. los consumidores y unidades incluidos en su `DELIV-PKG`;
+3. las filas de las 57 identidades cuyo `Lote base` es `repositorio / SHELL-MIG-005`;
+4. los commits reales que entran al ciclo `SHELL-CI-020..024::<package_id>`.
+
+Reglas:
+
+- existe una sola instancia `SHELL-MIG-005::<package_id>`;
+- si el paquete afecta un solo repositorio, la instancia contiene un solo sublote;
+- si afecta varios, agrega sus sublotes en el orden serial SHELL → NUMERA → FOGO → ORIGO → VISO → PULSO → NEXO;
+- cada sublote conserva commit, manifest, lockfile, pruebas, observabilidad y rollback propios;
+- la instancia no puede cerrar mientras un sublote aplicable esté fallido, bloqueado, stale o sin evidencia;
+- si el paquete no afecta ninguna de las 57 identidades ni otra superficie UI explícitamente gobernada por esta tarea, `NOT_APPLICABLE` requiere evidencia reproducible de selección vacía;
+- una fila seleccionada no puede omitirse usando `NOT_APPLICABLE`;
+- la misma identidad `package_id` continúa hacia `SHELL-MIG-006::<package_id>` y `SHELL-MIG-007::<package_id>` cuando esas puertas sean aplicables.
+
+La instancia solo puede ejecutarse después de `SHELL-CI-001..019`, del `DELIV-PKG` del paquete y de `E5-GATE-008::<package_id>`, y queda integrada al ciclo `SHELL-CI-020..024::<package_id>`.
 
 ---
 
@@ -2617,7 +2748,7 @@ No se crean lotes paralelos, alias ni una segunda numeración.
 | Fuente          | Decisión heredada aplicada                                                                                                                       |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `SHELL-MIG-001` | inventario ejecutable, disposición por familia y lote base exacto por consumidor                                                                 |
-| `SHELL-MIG-002` | siete lotes UI, orden serial, precondiciones, pruebas, observabilidad, rollback y suspensión                                                     |
+| `SHELL-MIG-002` | siete lotes base UI, orden serial, precondiciones, pruebas, observabilidad, rollback y suspensión                                                |
 | `SHELL-MIG-003` | el lote CI/script de NEXO permanece separado y no puede recrear legacy sin detección                                                             |
 | `SHELL-MIG-004` | `layout.tsx`, `globals.css` y el compositor de aplicación permanecen locales; el scaffold futuro deja de copiar implementaciones UI compartibles |
 | `SHELL-UI-001`  | frontera de `@vento/ui-web`, separación respecto de autorización, datos y lógica empresarial, y disposición de familias UI                       |
@@ -2664,7 +2795,7 @@ retiro legacy consumido = NO AUTORIZADO EN ESTE CORTE
 
 #### 4. Invariantes de migración UI
 
-Cada uno de los siete lotes conserva estas reglas:
+Cada uno de los siete lotes base conserva estas reglas:
 
 1. El cambio afecta un solo repositorio consumidor por vez.
 2. El orden serial heredado es SHELL → NUMERA → FOGO → ORIGO → VISO → PULSO → NEXO.
@@ -3184,7 +3315,7 @@ Estas obligaciones ya abarcan la adopción, la preservación de extensiones, la 
 | Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                          |
 | --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | BUILD     | NOT_EXECUTED   | La fase vigente es documental y no se materializó código ni una release consumible de `@vento/ui-web`; no se declara build de adopción.                                                                                                                            |
-| LOCAL     | PASS           | El artefacto fue verificado estructuralmente: una sola tarea, metadata requerida, continuidad única, 57 identidades, conciliación 20 + 37, siete lotes y ausencia de contenido reservado de entrega.                                                               |
+| LOCAL     | PASS           | El artefacto fue verificado estructuralmente: una sola tarea, metadata requerida, continuidad única, 57 identidades, conciliación 20 + 37, siete lotes base y ausencia de contenido reservado de entrega.                                                          |
 | REMOTA    | PASS           | Se verificaron continuidad canónica, owner, dependencias, manifests y commits `main` de los siete repositorios; los seis consumidores externos conservan el corte inventariado y SHELL no presenta delta `src/` en el commit documental de incorporación anterior. |
 | OPERATIVA | NOT_APPLICABLE | No existe adopción runtime autorizada en esta fase documental; no se atribuye evidencia operativa a una especificación.                                                                                                                                            |
 | FÍSICA    | NOT_APPLICABLE | La tarea no modifica dispositivos, despliegues, repositorios consumidores, packages instalados ni Supabase.                                                                                                                                                        |
@@ -3195,7 +3326,9 @@ Estas obligaciones ya abarcan la adopción, la preservación de extensiones, la 
 
 `SHELL-MIG-005` queda documentalmente completa cuando:
 
-- [x] se materializan exactamente siete lotes UI, uno por repositorio;
+- [x] se definen exactamente siete lotes base UI, uno por repositorio;
+- [x] la ejecución futura usa una sola instancia `SHELL-MIG-005::<package_id>` por paquete, con selección y agregación explícitas de sus sublotes;
+- [x] un paquete multi-repositorio conserva evidencia y rollback por consumidor y no puede ocultar un sublote fallido;
 - [x] se preserva el orden serial heredado;
 - [x] se reconcilian 57/57 ocurrencias UI;
 - [x] 20 ocurrencias quedan explícitamente `KEEP LOCAL`;
@@ -3235,6 +3368,7 @@ Esta tarea no:
 - ejecuta pruebas operativas, despliegues o validación física;
 - adelanta la validación especializada reservada a `SHELL-MIG-006`;
 - adelanta la paridad reservada a `SHELL-MIG-007`;
+- ejecuta una instancia `SHELL-MIG-005::<package_id>` durante el marcador global;
 - desarrolla ni modifica la tarea siguiente.
 
 ---
@@ -3256,12 +3390,12 @@ Esta tarea no:
 **Estado:** APROBADA
 **Tarea anterior:** SHELL-MIG-005 — Migrar componentes, Chrome y estilos por aplicación
 **Tarea siguiente:** SHELL-MIG-007 — Definir contrato de paridad ejecutable por paquete
-**Tipo de tarea:** documental — matriz aprobada de accesibilidad y paridad visual por aplicación; gate fail-closed sin ejecución física
-**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
-**Repositorio propietario:** devVentoGroup/vento-shell
-**Archivo propietario:** docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md
-**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
-**Cambios físicos autorizados:** 0
+**Tipo de tarea:** documental; definición global única de la matriz de accesibilidad y paridad visual, reutilizable mediante instancias `SHELL-MIG-006::<package_id>`, con gate fail-closed y sin ejecución física durante el marcador global
+**Bloque:** H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md`
+**Estado físico resultante:** CONTRATO_GLOBAL_ACCESIBILIDAD_UI_ESPECIFICADO; 1 matriz reutilizable; 7 subgates base de aplicación; 57 identidades UI reconciliadas; 0 instancias `SHELL-MIG-006::<package_id>` ejecutadas; 0 aplicaciones certificadas físicamente por esta tarea
+**Cambios físicos autorizados:** ninguno
 **Requisitos de prueba creados o modificados:** 0
 
 ---
@@ -3270,13 +3404,15 @@ Esta tarea no:
 
 Establecer y aprobar la matriz documental que deberá demostrar, por cada aplicación incluida en la migración coordinada de interfaz web, que la adopción de las superficies compartidas conserva los contratos visuales y de accesibilidad aplicables en tokens y tema, contraste, foco, teclado, reducción de movimiento, densidad y comportamiento responsive.
 
-La tarea no declara que exista una migración física validada. La adopción de `@vento/ui-web` todavía no está materializada en los consumidores y la fase vigente continúa siendo exclusivamente documental. Por tanto, esta tarea cierra mediante una matriz completa, trazable y fail-closed que fija exactamente qué deberá probarse y qué condición convierte cada aplicación en apta para la verificación posterior.
+La modalidad canónica es `TEMPLATE_PER_PACKAGE`: esta tarea aprueba una sola vez la matriz y sus oráculos; la ejecución futura ocurre mediante `SHELL-MIG-006::<package_id>` sobre los consumidores realmente alcanzados por el mismo paquete.
+
+La tarea no declara que exista una migración física validada. La adopción de `@vento/ui-web` todavía no está materializada en los consumidores y la fase vigente continúa siendo exclusivamente documental. Por tanto, esta tarea cierra mediante una matriz completa, trazable y fail-closed que fija exactamente qué deberá probarse y qué condición convierte cada consumidor seleccionado en apto para la verificación posterior.
 
 ---
 
 #### 2. Resultado canónico
 
-Queda aprobada una única matriz de accesibilidad y paridad visual para los siete lotes heredados de `SHELL-MIG-005`.
+Queda aprobada una única matriz global de accesibilidad y paridad visual para los siete lotes base heredados de `SHELL-MIG-005`. La matriz funciona como plantilla; no crea siete instancias físicas de esta tarea.
 
 El resultado material de esta tarea es:
 
@@ -3284,12 +3420,41 @@ El resultado material de esta tarea es:
 2. **57/57 ocurrencias UI heredadas** reconciliadas contra la migración precedente, sin identidades faltantes ni duplicadas.
 3. **20/57 ocurrencias `KEEP LOCAL`** preservadas como fronteras propietarias del consumidor.
 4. **37/57 ocurrencias `MIGRATE`** obligadas a converger únicamente a superficies públicas aprobadas de la UI compartida.
-5. **7/7 gates de aplicación en `BLOQUEADO` para evidencia física**, porque todavía no existe adopción material de `@vento/ui-web` que permita ejecutar una comparación válida post-migración.
-6. **0 gates declarados `PASS` por inferencia documental**.
-7. **0 dependencias CSS legacy no declaradas permitidas** en una futura evidencia válida.
-8. **0 cambios físicos** sobre repositorios consumidores, paquetes, CSS, configuración, navegación, código o Supabase.
+5. **7/7 subgates base de aplicación en `BLOQUEADO` para evidencia física**, porque todavía no existe adopción material de `@vento/ui-web` que permita ejecutar una comparación válida post-migración.
+6. **0 instancias `SHELL-MIG-006::<package_id>` ejecutadas**.
+7. **0 gates declarados `PASS` por inferencia documental**.
+8. **0 dependencias CSS legacy no declaradas permitidas** en una futura evidencia válida.
+9. **0 cambios físicos** sobre repositorios consumidores, paquetes, CSS, configuración, navegación, código o Supabase.
 
 La aprobación de esta tarea aprueba la **matriz y sus reglas de decisión**; no certifica todavía accesibilidad ni paridad visual de una migración inexistente.
+
+##### 2.1. Contrato de la instancia `SHELL-MIG-006::<package_id>`
+
+La instancia utiliza el mismo `package_id` del ciclo de implementación y selecciona exclusivamente los consumidores UI afectados por `SHELL-MIG-005::<package_id>` o por otra modificación UI expresamente incluida en el mismo paquete.
+
+Debe conservar:
+
+- `package_id`, unidad de implementación y `DELIV-PKG` aplicables;
+- lista exacta de repositorios y commits candidatos;
+- filas UI seleccionadas y disposición `KEEP LOCAL` o `MIGRATE`;
+- baseline visual y accesible por consumidor;
+- evidencia por dimensión obligatoria;
+- resultado de cada subgate de aplicación;
+- evidencia agregada del paquete;
+- rollback o referencia al snapshot previo de cada consumidor;
+- lineage hacia `SHELL-MIG-005::<package_id>`, `SHELL-MIG-007::<package_id>` y `SHELL-CI-020..024::<package_id>`.
+
+Reglas de agregación:
+
+1. existe una sola instancia `SHELL-MIG-006::<package_id>`;
+2. un paquete multi-repositorio conserva un subgate por consumidor, pero no crea una instancia distinta por aplicación;
+3. la instancia solo es `PASS` cuando todos los subgates aplicables están en `PASS`;
+4. cualquier `FAIL`, evidencia `STALE`, falta de baseline o dimensión obligatoria no ejecutada bloquea la instancia completa;
+5. si el paquete no afecta ninguna superficie UI gobernada, `NOT_APPLICABLE` exige evidencia de selección vacía;
+6. si `SHELL-MIG-005::<package_id>` seleccionó una identidad UI, `SHELL-MIG-006::<package_id>` no puede declararse no aplicable;
+7. evidencia de otro paquete, commit o consumidor no se transfiere por semejanza.
+
+La instancia física solo puede ejecutarse después de `SHELL-CI-001..019`, del `DELIV-PKG` del paquete y de `E5-GATE-008::<package_id>`, dentro del ciclo `SHELL-CI-020..024::<package_id>`.
 
 ---
 
@@ -3501,7 +3666,7 @@ El rollback no convierte automáticamente la evidencia anterior en vigente. Una 
 
 1. La unidad de aprobación de esta tarea es la matriz documental de siete aplicaciones, no una certificación runtime.
 2. Las 57 ocurrencias UI heredadas quedan completamente reconciliadas: 20 `KEEP LOCAL` y 37 `MIGRATE`.
-3. No se crean lotes nuevos; se conservan los siete lotes de migración definidos previamente.
+3. No se crean lotes nuevos; se conservan los siete lotes base de migración definidos previamente.
 4. El resultado de una aplicación no se hereda a otra.
 5. Ningún gate físico actual es `PASS` porque la adopción compartida aún no está materializada.
 6. `@vento/ui-web` solo puede certificarse mediante superficies públicas, versionadas y compatibles con el consumidor exacto.
@@ -3548,7 +3713,7 @@ La obligación de validar componentes compartidos, compatibilidad por consumidor
 
 La tarea queda documentalmente aceptada cuando se cumplen simultáneamente estas condiciones:
 
-1. existen exactamente 7 filas de aplicación en la matriz de paridad;
+1. existen exactamente 7 filas de aplicación en la matriz de paridad como subgates base reutilizables;
 2. las 57 identidades heredadas están reconciliadas sin faltantes ni duplicados;
 3. la distribución conserva exactamente 20 `KEEP LOCAL` y 37 `MIGRATE`;
 4. cada aplicación tiene decisión explícita para tokens/tema, contraste, foco/teclado, movimiento reducido, densidad, responsive y CSS declarada;
@@ -3561,7 +3726,10 @@ La tarea queda documentalmente aceptada cuando se cumplen simultáneamente estas
 11. el rollback independiente está definido por aplicación;
 12. no se crean ni modifican requisitos de prueba;
 13. no se realizan cambios físicos durante esta tarea;
-14. la continuidad conserva `SHELL-MIG-007` exclusivamente como siguiente tarea reservada.
+14. existe una sola instancia `SHELL-MIG-006::<package_id>` por paquete y los subgates de consumidores afectados se agregan sin perder evidencia ni rollback por repositorio;
+15. `NOT_APPLICABLE` exige selección vacía demostrable y no puede ocultar una identidad UI seleccionada por `SHELL-MIG-005::<package_id>`;
+16. la evidencia no se transfiere entre `package_id`, commits o consumidores;
+17. la continuidad conserva `SHELL-MIG-007` exclusivamente como siguiente tarea reservada.
 
 ---
 
@@ -3581,6 +3749,7 @@ Esta tarea no:
 - crea un lote adicional de migración;
 - declara compatible una versión compartida todavía no probada contra un consumidor exacto;
 - convierte una evidencia visual en prueba de accesibilidad completa;
+- ejecuta una instancia `SHELL-MIG-006::<package_id>` durante el marcador global;
 - desarrolla ni ejecuta la tarea siguiente.
 
 ---
@@ -3602,8 +3771,8 @@ Esta tarea no:
 **Estado:** APROBADA
 **Tarea anterior:** SHELL-MIG-006 — Verificar accesibilidad, tema y movimiento reducido
 **Tarea siguiente:** SHELL-MIG-008 — Definir gate de retiro legacy y certificación por paquete
-**Tipo de tarea:** documental — definición global única de un contrato de paridad reutilizable con ejecución posterior por paquete mediante instancias `SHELL-MIG-007::<package_id>`; no ejecuta pruebas físicas ni reabre el marcador global durante cada paquete
-**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
+**Tipo de tarea:** documental; definición global única de un contrato de paridad reutilizable con ejecución posterior por paquete mediante instancias `SHELL-MIG-007::<package_id>`; no ejecuta pruebas físicas ni reabre el marcador global durante cada paquete
+**Bloque:** H — Fundación compartida de VENTO-SHELL
 **Repositorio propietario:** `devVentoGroup/vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md`
 **Estado físico resultante:** CONTRATO_GLOBAL_DE_PARIDAD_ESPECIFICADO; 1 plantilla reutilizable; 7 dimensiones de paridad; 8 familias de fixtures; 8 oráculos; 7 clases de evidencia de instancia; 0 instancias ejecutadas; 0 consumidores certificados por esta tarea
@@ -3638,6 +3807,8 @@ La paridad no significa conservar bytes, estructura interna o defectos legacy. S
 #### 2. Modalidad canónica y ciclo de ejecución
 
 La modalidad de esta tarea es `TEMPLATE_PER_PACKAGE`.
+
+La instancia se ejecuta en el readiness de `SHELL-CI-021::<package_id>` y conserva lineage dentro del ciclo completo `SHELL-CI-020..024::<package_id>` hasta el cierre de evidencia del mismo paquete.
 
 | Capa                     | Identidad                     | Momento                                                                 | Resultado                                                                                  |
 | ------------------------ | ----------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
@@ -4390,12 +4561,12 @@ Esta tarea no:
 **Estado:** APROBADA
 **Tarea anterior:** SHELL-MIG-007 — Definir contrato de paridad ejecutable por paquete
 **Tarea siguiente:** SHELL-NATIVE-001 — Crear tokens compatibles con ANIMA
-**Tipo de tarea:** documental — definición global única de un gate reutilizable de retiro legacy y certificación, con ejecución posterior mediante instancias `SHELL-MIG-008::<package_id>`; no elimina artefactos ni certifica retiros físicos durante el marcador global
-**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
+**Tipo de tarea:** documental; definición global única de un gate reutilizable de retiro legacy y certificación, con ejecución posterior mediante instancias `SHELL-MIG-008::<package_id>`; no elimina artefactos ni certifica retiros físicos durante el marcador global
+**Bloque:** H — Fundación compartida de VENTO-SHELL
 **Repositorio propietario:** `devVentoGroup/vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md`
 **Estado físico resultante:** CONTRATO_GLOBAL_DE_RETIRO_ESPECIFICADO; 1 plantilla reutilizable; 6 lotes residuales reconciliados; 11 candidatos físicos; 4 identidades internas de retiro controlado; 0 instancias ejecutadas; 0 retiros físicos ejecutados
-**Cambios físicos autorizados:** ninguno durante el desarrollo del marcador global
+**Cambios físicos autorizados:** ninguno
 **Requisitos de prueba creados o modificados:** 0
 
 ---
