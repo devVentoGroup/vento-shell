@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **955** |
+| Tareas aprobadas | **956** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **639** |
+| Tareas no iniciadas | **638** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **59.91% (955/1594)** |
+| Porcentaje de completamiento | **59.97% (956/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-CTX-002 — Implementar consumo canónico de turno y check-in** |
-| Tarea actual | **SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas** |
+| Última tarea aprobada | **SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas** |
+| Tarea actual | **SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización** |
+| Siguiente tarea | **SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 105 de 109 aprobadas; SHELL-CTX-003 pendiente** |
+| Progreso del bloque | **BLOQUE H: 106 de 109 aprobadas; SHELL-CTX-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-CTX-002` — Implementar consumo canónico de turno y check-in |
-| Tarea actual | `SHELL-CTX-003` — Implementar proyecciones seguras de sede y área efectivas — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CTX-004` — Implementar readiness operativo sin booleanos de autorización |
+| Última aprobada | `SHELL-CTX-003` — Implementar proyecciones seguras de sede y área efectivas |
+| Tarea actual | `SHELL-CTX-004` — Implementar readiness operativo sin booleanos de autorización — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CTX-005` — Implementar razones seguras de bloqueo contextual |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 105 DE 109 APROBADAS — ACTUAL SHELL-CTX-003** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 106 DE 109 APROBADAS — ACTUAL SHELL-CTX-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-CTX-002 — Implementar consumo canónico de turno y check-in
-        ↓
-TAREA ACTUAL
 SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 105 de 109 tareas aprobadas
+BLOQUE H — 106 de 109 tareas aprobadas
 ```

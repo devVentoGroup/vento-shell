@@ -6470,7 +6470,1185 @@ Esta tarea no:
 `SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas`
 
 
-### [ ] SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas
+### ✅ SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CTX-002 — Implementar consumo canónico de turno y check-in
+**Tarea siguiente:** SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización
+**Tipo de tarea:** Documental — definición global única de las proyecciones contextuales seguras de sede y área operativas, con futura materialización física una sola vez por unidad de implementación
+**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`
+**Estado físico resultante:** `DEFINIDO_NO_MATERIALIZADO`; 2 nodos territoriales canónicos proyectados; 0 contratos públicos nuevos; 0 packages nuevos; 0 subpaths públicos nuevos; 0 unidades materializadas; 0 cambios Supabase
+**Cambios físicos autorizados:** ninguno durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+**Modalidad:** `PER_IMPLEMENTATION_UNIT`
+**Trabajo canónico actual:** definir una sola vez el contrato de proyección territorial segura y asignar su futura materialización
+**Instancia física futura:** `SHELL-CTX-003::<implementation_unit_id>`
+**Condición de materialización:** después de que `DELIV-PKG-025` asigne `implementation_unit_id` y el `package_id` propietario supere `E5-GATE-008`
+**Snapshot producido:** `SHELL-CTX-TERRITORY-PROJECTION-001`
+
+---
+
+#### 1. Propósito
+
+`SHELL-CTX-003` define el contrato único mediante el cual el módulo contextual interno de `@vento/os-context` deberá consumir y proyectar de forma segura los nodos canónicos `operational_site` y `operational_area` de `AccessContext@1.0.0`.
+
+La responsabilidad queda cerrada así:
+
+```text
+AccessContextV1 validado
+→ operational_site
+→ operational_area
+→ proyección contextual territorial segura
+→ responsabilidades posteriores
+```
+
+La tarea no resuelve nuevamente la sede o el área desde tablas, selectores, dispositivo, geocerca, recurso o estado local. Tampoco convierte territorio operativo en permiso, readiness o decisión.
+
+El marcador global es documental. La implementación física se realizará únicamente en `SHELL-CTX-003::<implementation_unit_id>` cuando exista una unidad autorizada por E5.
+
+---
+
+#### 2. Resultado canónico
+
+Se fija una sola semántica compartida para territorio operativo dentro de `@vento/os-context`:
+
+1. `operational_site` y `operational_area` se consumen exclusivamente desde un `AccessContextV1` validado;
+2. la sede efectiva de esta tarea significa **sede operativa del turno vigente**, no sede administrativa, primaria, seleccionada ni del recurso;
+3. el área efectiva de esta tarea significa **área operativa del turno vigente**, cuando exista, no área administrativa, seleccionada ni inferida;
+4. los dos nodos permanecen inmutables;
+5. sus flags negativos se preservan y nunca se mejoran localmente;
+6. `null` conserva su semántica contractual y nunca se transforma en wildcard;
+7. el check-in solo puede confirmar territorio ya derivado del turno;
+8. la proyección no crea otro contrato público ni otro namespace runtime;
+9. `SafeContextProjectionV1` continúa siendo propiedad de `SHELL-AUTH-002`;
+10. CTX003 únicamente aporta la semántica territorial interna que esa proyección pública podrá consumir;
+11. no se decide permiso, alcance del recurso, readiness ni autorización;
+12. la materialización se ejecutará como máximo una vez por `implementation_unit_id`.
+
+---
+
+#### 3. Fuentes y precedencia
+
+La tarea conserva sin reinterpretar las decisiones aprobadas en:
+
+| Fuente                    | Responsabilidad vinculante                                                      |
+| ------------------------- | ------------------------------------------------------------------------------- |
+| `SHELL-CTX-001`           | único módulo contextual interno, `AccessContextV1` validado e inmutable         |
+| `SHELL-CTX-002`           | consumo canónico de turno y check-in; el check-in no crea territorio            |
+| `AUTH-CTX-009`            | separación entre asignaciones/cobertura administrativa y territorio operativo   |
+| `AUTH-CTX-010`            | `active_shift` como turno publicado y vigente                                   |
+| `AUTH-CTX-011`            | check-in activo como evidencia confirmatoria, nunca fuente alternativa de turno |
+| `AUTH-CTX-012`            | rol operativo derivado exclusivamente del turno y validado territorialmente     |
+| `AUTH-CTX-013`            | formas y semántica de `operational_site` y `operational_area`                   |
+| `AUTH-CTX-015`            | problemas estructurales y `lane_readiness` canónicos                            |
+| `AUTH-CTX-018`            | territorio del recurso separado del territorio operativo                        |
+| `AUTH-CTX-025`            | productor backend de `AccessContext@1.0.0`                                      |
+| `AUTH-CTX-027`            | consumo centralizado y eliminación de lógica territorial local                  |
+| `AUTH-CTX-028`            | compatibilidad legacy únicamente desde canónico hacia legacy                    |
+| `AUTH-CTX-029`            | frescura e invalidación por cambios territoriales                               |
+| `SHELL-AUTH-002`          | `SafeContextProjectionV1` y frontera pública server/client                      |
+| `task-work-topology.json` | una materialización máxima por `implementation_unit_id`                         |
+
+Precedencia funcional:
+
+```text
+turno/check-in canónicos
+→ territorio operativo canónico
+→ proyección territorial interna segura
+→ readiness y razones contextuales
+→ adapter de proyección pública
+→ presentación
+```
+
+---
+
+#### 4. Modalidad y ciclo de materialización
+
+La tarea usa `PER_IMPLEMENTATION_UNIT`.
+
+```text
+MARCADOR GLOBAL SHELL-CTX-003
+→ define una sola vez semántica, invariantes, minimización, pruebas, gates y rollback
+→ no materializa código
+
+DELIV-PKG-025::<package_id>
+→ asigna implementation_unit_id y owner package
+
+E5-GATE-008::<package_id> = PASS
+→ habilita la unidad
+
+SHELL-CTX-003::<implementation_unit_id>
+→ materializa una sola implementación territorial de la unidad
+→ N package_id pueden consumirla mediante lineage
+→ no se duplica por aplicación ni por package consumidor
+```
+
+La futura instancia no inventará `implementation_unit_id` ni package propietario.
+
+---
+
+#### 5. Línea base física verificable
+
+El estado físico actual de `@vento/os-context` todavía es transitorio:
+
+| Superficie                              | Estado actual                                     | Disposición                                    |
+| --------------------------------------- | ------------------------------------------------- | ---------------------------------------------- |
+| `@vento/os-context@0.1.0`               | package privado con export raíz directo a source  | baseline transitorio                           |
+| `EffectiveContext.site_id`              | string nullable plano                             | legacy; no equivale a `OperationalSiteContext` |
+| `EffectiveContext.area_id`              | string nullable plano                             | legacy; no equivale a `OperationalAreaContext` |
+| `EffectiveContext.area_kind`            | string nullable abierto                           | legacy; no es catálogo territorial canónico    |
+| `EffectiveContext.can_operate`          | booleano plano                                    | no es readiness ni autorización canónica       |
+| `getEffectiveContext`                   | consume `get_effective_context_v1` y realiza cast | compatibilidad legacy; no fuente objetivo      |
+| proyección territorial interna canónica | no materializada                                  | futura instancia de CTX003                     |
+| `SafeContextProjectionV1` físico        | no materializado                                  | futura responsabilidad de `SHELL-AUTH-002`     |
+
+La presencia de `site_id` y `area_id` en `EffectiveContext` no demuestra que CTX003 ya esté implementada.
+
+---
+
+#### 6. Frontera de autoridad
+
+La propiedad queda separada así:
+
+```text
+@vento/contracts/authorization
+→ tipos, schemas, códigos y validadores
+
+AUTH-DB-033
+→ resuelve hechos empresariales y produce AccessContextV1
+
+SHELL-CTX-002
+→ consume active_shift + active_checkin_session
+
+SHELL-CTX-003
+→ consume operational_site + operational_area
+→ verifica coherencia contractual
+→ proyecta territorio de forma segura
+→ no re-resuelve datos empresariales
+
+SHELL-AUTH-002
+→ transforma contexto validado en SafeContextProjectionV1 para transporte/presentación
+```
+
+CTX003 no se convierte en resolver de sedes, áreas, asignaciones, recursos ni permisos.
+
+---
+
+#### 7. Entrada única
+
+La única entrada autorizada es un `AccessContextV1` válido y completo conforme a:
+
+```text
+vento.authorization.response-contracts@1.0.0
+AccessContext@1.0.0
+schema_version = 1.0.0
+```
+
+Antes de proyectar territorio deben existir:
+
+- contrato reconocido;
+- versión reconocida;
+- schema reconocido;
+- `AccessContextV1` validado;
+- nodos y códigos compatibles con `@vento/contracts/authorization`;
+- snapshot completo, no objeto parcial.
+
+Quedan prohibidos como entrada canónica:
+
+- `EffectiveContext`;
+- `OperationalContextRow`;
+- `{ site_id, area_id }` fabricado por caller;
+- estado de UI;
+- selección visual;
+- fila de turno aislada;
+- fila de check-in aislada;
+- resultado de geocerca;
+- dispositivo local;
+- recurso solicitado usado para fabricar territorio laboral.
+
+---
+
+#### 8. Forma de `operational_site`
+
+CTX003 conserva exactamente:
+
+```ts
+type OperationalSiteContext = {
+  site_id: string;
+  source_shift_id: string;
+  site_active: boolean;
+  assignment_valid: boolean;
+};
+```
+
+No agrega campos, aliases, nombres humanos, coordenadas, permisos, reasons ni metadata local.
+
+---
+
+#### 9. Forma de `operational_area`
+
+CTX003 conserva exactamente:
+
+```ts
+type OperationalAreaContext = {
+  area_id: string;
+  site_id: string;
+  area_kind: string;
+  source: "SHIFT" | "CHECKIN_CONFIRMED_SHIFT";
+  area_active: boolean;
+  compatible_with_role: boolean;
+};
+```
+
+No agrega campos ni crea una variante local del nodo.
+
+---
+
+#### 10. Significado de “sede efectiva”
+
+Para esta tarea:
+
+```text
+sede efectiva
+=
+operational_site del AccessContext real
+```
+
+No significa:
+
+- sede primaria;
+- sede seleccionada;
+- sede por defecto del empleado;
+- primera sede asignada;
+- última sede usada;
+- sede del dispositivo;
+- punto físico de marcación;
+- geocerca;
+- sede del recurso;
+- cobertura administrativa;
+- organización completa.
+
+La UI puede seleccionar filtros; esa selección no muta el territorio operativo.
+
+---
+
+#### 11. Significado de “área efectiva”
+
+Para esta tarea:
+
+```text
+área efectiva
+=
+operational_area del AccessContext real, cuando exista
+```
+
+No significa:
+
+- área primaria;
+- área seleccionada;
+- primera área asignada;
+- área del dispositivo;
+- área del recurso;
+- área inferida por rol;
+- área inferida por `area_kind`;
+- área obtenida del check-in cuando el turno no la declara.
+
+---
+
+#### 12. Dependencia obligatoria del turno
+
+La proyección conserva:
+
+```text
+active_shift = null
+→ operational_site = null
+→ operational_area = null
+```
+
+Si `active_shift` no existe, CTX003 no reconstruye territorio desde asignaciones, último turno, check-in residual, dispositivo, recurso o selector.
+
+---
+
+#### 13. Coherencia de sede con turno
+
+Para un nodo no nulo deben preservarse exactamente:
+
+```text
+operational_site.site_id
+=
+active_shift.site_id
+```
+
+```text
+operational_site.source_shift_id
+=
+active_shift.shift_id
+```
+
+Un mismatch no se corrige ni se oculta.
+
+CTX003 no puede cambiar `site_id` para hacerlo coincidir con:
+
+- asignación primaria;
+- check-in;
+- dispositivo;
+- recurso;
+- selección visual;
+- perfil laboral.
+
+---
+
+#### 14. Estado de sede
+
+`site_active` se proyecta como hecho canónico, no como decisión.
+
+```text
+site_active = true
+→ sede observada activa
+
+site_active = false
+→ sede observada inactiva
+```
+
+Una sede resoluble e inactiva puede permanecer representada con `site_active = false` para conservar el diagnóstico exacto. CTX003 nunca cambia ese valor a `true` para mejorar disponibilidad.
+
+---
+
+#### 15. Validez de asignación laboral
+
+`assignment_valid` se preserva exactamente desde el contexto autoritativo.
+
+Semántica:
+
+```text
+assignment_valid = true
+→ existe asignación laboral utilizable para la sede exacta del turno
+
+assignment_valid = false
+→ el turno observa una sede que no cuenta con asignación laboral utilizable
+```
+
+Un turno válido no crea una asignación permanente. CTX003 no modifica `assigned_sites`, no crea filas y no utiliza una sede primaria como compensación.
+
+---
+
+#### 16. Coherencia de área con turno
+
+Cuando el turno declara área:
+
+```text
+operational_area.area_id
+=
+active_shift.area_id
+```
+
+Y:
+
+```text
+operational_area.site_id
+=
+operational_site.site_id
+```
+
+El área debe pertenecer realmente a esa sede. Un área de otra sede no se reescribe para que coincida.
+
+---
+
+#### 17. Área ausente legítimamente
+
+Se conserva:
+
+```text
+active_shift.area_id = null
+→ operational_area = null
+```
+
+La ausencia puede ser válida para roles o permisos que operen a nivel de sede.
+
+CTX003 no crea un área sintética como:
+
+- `GENERAL`;
+- “toda la sede”;
+- primera área disponible;
+- área administrativa;
+- área principal;
+- wildcard.
+
+---
+
+#### 18. `null` nunca es wildcard
+
+Las siguientes equivalencias quedan prohibidas:
+
+```text
+operational_area = null
+→ todas las áreas
+```
+
+```text
+operational_site = null
+→ cualquier sede
+```
+
+```text
+resource_area = null
+→ cualquier área operativa
+```
+
+La semántica concreta de la ausencia se interpreta en el contrato del permiso y del recurso; CTX003 solo preserva el hecho territorial.
+
+---
+
+#### 19. `area_kind`
+
+`area_kind` se conserva exclusivamente como clasificación canónica del `area_id` observado.
+
+No podrá derivarse desde:
+
+- nombre humano;
+- rol operativo;
+- pantalla;
+- permiso;
+- dispositivo;
+- ruta;
+- string aproximado;
+- selector.
+
+`area_kind` no sustituye `area_id` ni amplía alcance.
+
+---
+
+#### 20. Fuente del área
+
+El campo `source` conserva exactamente dos valores:
+
+```text
+SHIFT
+CHECKIN_CONFIRMED_SHIFT
+```
+
+`SHIFT` significa que el área procede del turno.
+
+`CHECKIN_CONFIRMED_SHIFT` significa que el área procede del turno y una sesión de check-in activa confirma exactamente la misma área.
+
+No significa que el check-in haya creado o reemplazado el área.
+
+---
+
+#### 21. Check-in confirmatorio
+
+`CHECKIN_CONFIRMED_SHIFT` solo puede conservarse cuando:
+
+1. existe `active_checkin_session`;
+2. pertenece al mismo actor y empleado;
+3. coincide con el mismo turno;
+4. coincide con la misma sede;
+5. declara exactamente el mismo `area_id` del turno;
+6. no existe contradicción estructural aplicable.
+
+Si falta cualquiera de estas condiciones, CTX003 no inventa confirmación.
+
+---
+
+#### 22. Check-in sin área
+
+Cuando:
+
+```text
+active_shift.area_id != null
+active_checkin_session.area_id = null
+```
+
+la proyección territorial conserva el área del turno y su fuente permanece:
+
+```text
+SHIFT
+```
+
+La ausencia de área en check-in no borra ni reemplaza el área del turno.
+
+---
+
+#### 23. Check-in con área incompatible
+
+Cuando la sesión declara un área distinta de la del turno:
+
+- el check-in no cambia `operational_area`;
+- no se usa `CHECKIN_CONFIRMED_SHIFT`;
+- la incompatibilidad estructural canónica se preserva;
+- la sesión incompatible no se convierte en evidencia positiva;
+- CTX003 no degrada la contradicción a ausencia normal.
+
+---
+
+#### 24. Estado y compatibilidad del área
+
+`area_active` y `compatible_with_role` son hechos contractuales conservados.
+
+```text
+area_active = false
+→ área observada inactiva
+```
+
+```text
+compatible_with_role = false
+→ el área observada no satisface la compatibilidad territorial del rol operativo
+```
+
+CTX003 no convierte ninguno de estos flags en `true` mediante fallback, ni los transforma en `can_operate`.
+
+---
+
+#### 25. Asignaciones de área
+
+`assigned_areas` permanece separado de `operational_area`.
+
+La ausencia de una asignación permanente de área no impide por sí sola representar un área válida del turno cuando el contrato canónico la resolvió.
+
+CTX003 no exige artificialmente:
+
+```text
+operational_area.area_id ∈ assigned_areas
+```
+
+como condición universal.
+
+---
+
+#### 26. Separación frente a cobertura administrativa
+
+CTX003 no modifica:
+
+- `assigned_sites`;
+- `assigned_areas`;
+- `administrative_coverage`;
+- `base_role`;
+- grants base;
+- denegaciones base.
+
+Puede existir simultáneamente:
+
+```text
+administrative_coverage = ORGANIZATION
+operational_site = sede única del turno
+operational_area = área única o null
+```
+
+La cobertura administrativa amplia no amplía el territorio operativo.
+
+---
+
+#### 27. Separación frente al territorio del recurso
+
+`operational_site` y `operational_area` describen el territorio laboral del actor, no el territorio real del recurso solicitado.
+
+CTX003 no resuelve:
+
+- `resource_site_id`;
+- `resource_area_id`;
+- origen y destino;
+- múltiples sedes;
+- múltiples áreas;
+- recurso organizacional;
+- recurso no territorial.
+
+Esa responsabilidad permanece en `AUTH-CTX-018` y en el evaluador canónico.
+
+---
+
+#### 28. Operaciones multiterritoriales
+
+Una acción entre dos sedes o áreas no produce dos territorios operativos dentro del contexto laboral.
+
+Ejemplo conceptual:
+
+```text
+actor trabaja en CENTRO_PRODUCCION
+recurso implica origen CENTRO_PRODUCCION + destino VENTO_CAFE
+```
+
+CTX003 continúa proyectando únicamente el territorio operativo del actor. La autorización transversal se decide contra el territorio del recurso y el alcance exacto del permiso.
+
+---
+
+#### 29. Permiso global no es cross-site
+
+CTX003 no interpreta un permiso operativo global como capacidad para utilizar cualquier sede desde un turno actual.
+
+```text
+global operativo
+≠
+cross-site operativo
+```
+
+La proyección territorial nunca se expande por modalidad o scope del permiso.
+
+---
+
+#### 30. Dispositivo compartido
+
+El dispositivo puede imponer restricciones adicionales, pero no fabrica territorio laboral.
+
+```text
+territorio del actor
+∩
+límite territorial del dispositivo
+→ conjunto evaluable
+```
+
+Nunca:
+
+```text
+territorio del actor
+∪
+territorio del dispositivo
+```
+
+Un dispositivo incompatible no cambia la sede o el área del turno para obtener coincidencia.
+
+---
+
+#### 31. Simulación
+
+Una sede o área hipotética pertenece a `SimulationContext`, no al `AccessContextV1` real.
+
+CTX003 no permite:
+
+- role override territorial;
+- sede simulada dentro del contexto real;
+- área simulada dentro del contexto real;
+- `WOULD_ALLOW` como autoridad;
+- persistir selecciones hipotéticas como territorio efectivo.
+
+---
+
+#### 32. Proyección interna y `SafeContextProjectionV1`
+
+CTX003 no crea un DTO público nuevo.
+
+La proyección interna conserva los nodos territoriales canónicos para uso del SDK. Cuando `SHELL-AUTH-002` produzca `SafeContextProjectionV1`, la exposición territorial pública continuará limitada a:
+
+```text
+operational_site_id
+operational_area_id
+```
+
+Reglas:
+
+1. `operational_site_id` se deriva únicamente de `operational_site.site_id`;
+2. `operational_area_id` se deriva únicamente de `operational_area.area_id`;
+3. si el nodo canónico es `null`, el ID proyectado es `null`;
+4. no se incorporan nombres, direcciones, coordenadas, geocercas, asignaciones completas ni flags internos a la proyección pública por CTX003;
+5. CTX003 no modifica la allowlist de `SafeContextProjectionV1`.
+
+---
+
+#### 33. Minimización territorial
+
+La responsabilidad de CTX003 no crea ni expone adicionalmente:
+
+- nombre humano de sede;
+- nombre humano de área;
+- dirección;
+- coordenadas;
+- precisión GPS;
+- geocercas;
+- punto físico de marcación;
+- fotografías;
+- notas;
+- lista completa de sedes asignadas;
+- lista completa de áreas asignadas;
+- datos del dispositivo;
+- grants;
+- denegaciones;
+- permiso solicitado;
+- recurso completo;
+- `structural_issues` completos hacia cliente;
+- fingerprints internos;
+- `can_operate`;
+- bypasses.
+
+---
+
+#### 34. Separación frente a readiness
+
+CTX003 no decide si el carril operativo está `READY`, `UNAVAILABLE`, `INVALID` o `NOT_APPLICABLE`.
+
+Preserva hechos como:
+
+- sede ausente;
+- sede inactiva;
+- asignación inválida;
+- área ausente;
+- área inactiva;
+- rol incompatible con área.
+
+La composición final de `lane_readiness.operational` pertenece a `SHELL-CTX-004` y conserva el catálogo de `AUTH-CTX-015`.
+
+No se crea `can_operate` ni equivalente.
+
+---
+
+#### 35. Separación frente a razones seguras
+
+CTX003 no inventa textos ni códigos de bloqueo para UI.
+
+Los `StructuralIssueCode` y `LaneAvailabilityReasonCode` permanecen en sus namespaces cerrados. La traducción o proyección segura de razones contextuales pertenece a `SHELL-CTX-005` y las razones públicas de autorización pertenecen a sus contratos propios.
+
+---
+
+#### 36. Fail closed
+
+Ante contrato inválido, incompatibilidad o contradicción, CTX003 no corrige el contexto para obtener una proyección más permisiva.
+
+Queda prohibido:
+
+- usar sede primaria como fallback;
+- usar sede seleccionada como fallback;
+- usar `employees.site_id` como fallback;
+- usar área primaria como fallback;
+- escoger primera área compatible;
+- inferir área desde rol;
+- usar check-in para crear territorio;
+- usar dispositivo para crear territorio;
+- usar recurso para fabricar territorio laboral;
+- tratar `null` como wildcard;
+- ocultar flags negativos;
+- reconstruir `OperationalSiteContext` o `OperationalAreaContext` desde `EffectiveContext`.
+
+---
+
+#### 37. Frescura e invalidación
+
+Los hechos territoriales pueden quedar obsoletos cuando cambian, entre otros:
+
+- turno o revisión publicada;
+- sede del turno;
+- área del turno;
+- estado activo de sede;
+- estado activo de área;
+- asignación laboral de sede;
+- `assignable`;
+- rol operativo o habilitación territorial;
+- check-in o check-out;
+- sesión de dispositivo;
+- actor efectivo.
+
+CTX003 no implementa caché propia.
+
+La coordinación permanece:
+
+```text
+SHELL-AUTH-003
+→ L0 + write barrier
+
+AUTH-DB-035
+→ token transaccional de frescura
+
+SHELL-CTX-006
+→ L1 validada + single-flight cross-request
+```
+
+Un snapshot anterior a un cambio territorial no se reutiliza como autoridad posterior.
+
+---
+
+#### 38. Compatibilidad legacy
+
+La única dirección compatible es:
+
+```text
+AccessContextV1 canónico
+→ territorio canónico validado
+→ proyección legacy temporal, cuando aplique
+```
+
+Nunca:
+
+```text
+selectedSite / selectedArea / employees.site_id / EffectiveContext
+→ reconstruir operational_site u operational_area canónicos
+```
+
+Una proyección legacy puede conservar temporalmente IDs derivados del contexto canónico, pero no recupera autoridad para decidir territorio.
+
+---
+
+#### 39. Snapshot contractual
+
+Se define el snapshot documental:
+
+```json
+{"access_context_contract":"AccessContext@1.0.0","area_projection_source":"operational_area","client_projection_owner":"SHELL-AUTH-002","context_task":"SHELL-CTX-003","new_public_contracts":0,"new_public_subpaths":0,"operational_area_null_is_wildcard":false,"operational_site_projection_source":"operational_site","physical_state":"NOT_IMPLEMENTED","projection_mode":"READ_ONLY_CANONICAL_TERRITORY","snapshot_id":"SHELL-CTX-TERRITORY-PROJECTION-001"}
+```
+
+Huella normativa:
+
+`sha256:c135c974a4e388a285c355cd7f81cfcc7737493c0fc1f4c37f0d81d46f3c1db2`
+
+La serialización normativa usa JSON UTF-8 en una línea, claves ordenadas lexicográficamente y valores JSON canónicos.
+
+---
+
+#### 40. Contrato de futura instancia
+
+Cada `SHELL-CTX-003::<implementation_unit_id>` deberá registrar como mínimo:
+
+| Campo                    | Obligación                                                                  |
+| ------------------------ | --------------------------------------------------------------------------- |
+| `implementation_unit_id` | unidad exacta asignada por `DELIV-PKG-025`                                  |
+| `owner_package_id`       | package propietario con `E5-GATE-008 = PASS`                                |
+| `consumer_package_ids`   | consumidores vinculados por lineage                                         |
+| baseline                 | commit anterior a materialización                                           |
+| result commit            | commit exacto del resultado                                                 |
+| SDK version              | versión exacta de `@vento/os-context`                                       |
+| contracts version        | versión exacta de `@vento/contracts`                                        |
+| context contract         | `AccessContext@1.0.0` y schema esperados                                    |
+| territory snapshot       | `SHELL-CTX-TERRITORY-PROJECTION-001` o revisión aprobada                    |
+| source integrity         | evidencia de `operational_site`/`operational_area` sin reconstrucción local |
+| projection check         | IDs y nulabilidad derivados únicamente de nodos canónicos                   |
+| minimization check       | ausencia de datos territoriales no autorizados en superficie pública        |
+| freshness evidence       | integración con write barrier/frescura cuando esté disponible               |
+| consumer matrix          | consumidores y targets aplicables                                           |
+| tests                    | resultados atribuibles al mismo commit/versiones                            |
+| artifact digest          | huella del artefacto materializado                                          |
+| rollback                 | combinación anterior soportada y ensayo                                     |
+| blockers                 | lista cerrada con owner y condición de salida                               |
+
+Un campo obligatorio ausente deja la instancia `BLOCKED`.
+
+---
+
+#### 41. Unicidad y lineage
+
+```text
+1 implementation_unit_id
+→ máximo 1 SHELL-CTX-003::<implementation_unit_id>
+→ máximo 1 implementación propietaria de la proyección territorial
+→ N package_id consumidores mediante lineage
+```
+
+No se copiará la misma lógica territorial en cada aplicación o package para evitar una dependencia compartida.
+
+Evidencia de otra unidad, versión, snapshot o commit no certifica la instancia actual.
+
+---
+
+#### 42. Perfil de pruebas de futura instancia
+
+La futura instancia deberá cubrir como mínimo:
+
+##### Contrato territorial
+
+1. `operational_site` válido con todos sus campos exactos;
+2. `operational_area` válida con todos sus campos exactos;
+3. versión de `AccessContext` incompatible;
+4. shape parcial o cast legacy rechazado;
+5. `active_shift = null` produce territorio nulo;
+6. `source_shift_id` distinto del turno falla cerrado;
+7. `site_id` distinto del turno falla cerrado.
+
+##### Sede
+
+8. sede válida y asignación válida;
+9. sede válida con `assignment_valid = false`;
+10. sede inactiva conserva `site_active = false`;
+11. sede desconocida no se completa;
+12. sede primaria diferente no altera proyección;
+13. sede seleccionada diferente no altera proyección;
+14. punto físico de marcación diferente no altera proyección;
+15. sede del dispositivo diferente no reemplaza territorio.
+
+##### Área
+
+16. área válida y compatible con rol;
+17. área válida pero inactiva;
+18. área válida pero incompatible con rol;
+19. turno sin área conserva `operational_area = null`;
+20. área obligatoria ausente no recibe fallback;
+21. área perteneciente a otra sede no se corrige;
+22. `area_kind` procede del nodo/catálogo canónico, no del rol;
+23. `assigned_areas = []` no elimina automáticamente un área válida del turno;
+24. `null` no se interpreta como wildcard.
+
+##### Check-in y separación
+
+25. check-in con misma área conserva `CHECKIN_CONFIRMED_SHIFT`;
+26. check-in sin área conserva fuente `SHIFT`;
+27. check-in con área distinta no reemplaza el área;
+28. check-in en punto externo no cambia `operational_site`;
+29. cobertura administrativa amplia no amplía territorio operativo;
+30. territorio del recurso distinto no reescribe territorio laboral;
+31. operación multiterritorial conserva un solo territorio operativo del actor;
+32. simulación no modifica la proyección real.
+
+##### Integración, frescura y regresión
+
+33. `SafeContextProjectionV1` recibe únicamente IDs derivados de los nodos canónicos;
+34. no se filtran nombres, direcciones, GPS, geocercas, asignaciones completas ni evidencia interna;
+35. `site_active = false`, `assignment_valid = false`, `area_active = false` o `compatible_with_role = false` no se convierten en `can_operate` ni se ocultan;
+36. cambio territorial seguido de write barrier obliga nueva resolución;
+37. evidencia stale de otra unidad/commit/version no certifica;
+38. legacy no reconstruye contexto canónico;
+39. rollback no reactiva selected/default site/area como autoridad;
+40. dos packages consumidores de una unidad usan una sola implementación mediante lineage.
+
+---
+
+#### 43. Doce gates de materialización
+
+`SHELL-CTX-003::<implementation_unit_id>` deberá superar:
+
+| Gate                      | Condición de PASS                                                                    |
+| ------------------------- | ------------------------------------------------------------------------------------ |
+| 1. `IDENTITY`             | unidad, owner package, versiones y commits inequívocos                               |
+| 2. `LINEAGE`              | una sola implementación física para la unidad                                        |
+| 3. `CONTRACT_INPUT`       | `AccessContext@1.0.0` y schema exactos validados antes de proyectar                  |
+| 4. `SITE_PROJECTION`      | sede derivada exclusivamente de `operational_site`, sin fallback local               |
+| 5. `AREA_PROJECTION`      | área derivada exclusivamente de `operational_area`, preservando nulabilidad y source |
+| 6. `RELATIONAL_INTEGRITY` | turno, sede, área, rol y check-in conservan relaciones exactas                       |
+| 7. `NULL_AND_FLAGS`       | `null` no es wildcard y flags negativos no se elevan                                 |
+| 8. `MINIMIZATION`         | superficie pública no recibe datos territoriales fuera de la allowlist existente     |
+| 9. `SEPARATION`           | sin readiness local, autorización, recurso, simulación o `can_operate`               |
+| 10. `FRESHNESS_HANDOFF`   | write barrier/frescura aplicables integradas con sus propietarios                    |
+| 11. `COMPATIBILITY`       | consumidores, contratos y targets aplicables corresponden a la misma combinación     |
+| 12. `ROLLBACK`            | retorno reproducible sin reactivar autoridad legacy territorial                      |
+
+Un gate faltante, no ejecutado cuando sea aplicable, con evidencia stale o de otra unidad bloquea la certificación física.
+
+---
+
+#### 44. Evidencia requerida por futura instancia
+
+| Clase                | Contenido mínimo                                                                         |
+| -------------------- | ---------------------------------------------------------------------------------------- |
+| `IDENTITY`           | implementation unit, owner package, consumers, baseline/result commit                    |
+| `CONTRACTS`          | versiones y schemas exactos                                                              |
+| `TERRITORY_SOURCE`   | prueba de que sede/área proceden de nodos canónicos                                      |
+| `INVARIANTS`         | coherencia shift/site/area/check-in/role                                                 |
+| `MINIMIZATION`       | comparación de entrada frente a proyección pública                                       |
+| `NEGATIVE_FLAGS`     | preservación de `site_active`, `assignment_valid`, `area_active`, `compatible_with_role` |
+| `NULL_SEMANTICS`     | ausencia legítima frente a invalidez, sin wildcard                                       |
+| `FRESHNESS`          | barreras e invalidación aplicables                                                       |
+| `COMPATIBILITY`      | matriz de consumidores y targets                                                         |
+| `ARTIFACT_INTEGRITY` | snapshot, versión, commit y digest                                                       |
+| `ROLLBACK`           | combinación anterior y ensayo                                                            |
+| `CERTIFICATION`      | doce gates y estado agregado                                                             |
+
+---
+
+#### 45. Rollback
+
+El rollback de una futura instancia podrá volver a una combinación anterior únicamente cuando:
+
+- continúe soportada;
+- sea compatible con contratos vigentes;
+- tenga evidencia reproducible;
+- no reactive `selectedSite`, `selectedArea`, `employees.site_id` o valores equivalentes como autoridad;
+- no reactive `EffectiveContext` como contexto canónico;
+- no convierta `null` en wildcard;
+- no restablezca `can_operate` como autoridad;
+- no rompa lineage ni trazabilidad de la unidad.
+
+Cuando exista caché compartida, el rollback seguro de caché permanece definido por CTX006 y no permite servir territorio stale para conservar disponibilidad.
+
+---
+
+#### 46. Reconciliación de responsabilidades
+
+| Responsabilidad                                                 | Propietario exacto                                      |
+| --------------------------------------------------------------- | ------------------------------------------------------- |
+| contratos de contexto y tipos territoriales                     | `@vento/contracts/authorization` / `SHELL-CON-007..008` |
+| productor autoritativo de `operational_site`/`operational_area` | `AUTH-DB-033`                                           |
+| turno y check-in consumidos                                     | `SHELL-CTX-002`                                         |
+| proyección territorial interna segura                           | `SHELL-CTX-003`                                         |
+| readiness operativo                                             | `SHELL-CTX-004`                                         |
+| razones seguras contextuales                                    | `SHELL-CTX-005`                                         |
+| caché compartida/frescura                                       | `SHELL-CTX-006` + `AUTH-DB-035`                         |
+| DTO público `SafeContextProjectionV1`                           | `SHELL-AUTH-002`                                        |
+| territorio del recurso                                          | `AUTH-CTX-018`                                          |
+| decisión de autorización                                        | `AUTH-DB-034` / evaluador canónico                      |
+| migración de consumidores legacy                                | `SHELL-AUTH-005`                                        |
+| retiro físico legacy                                            | `AUTH-DB-030`                                           |
+| certificación final                                             | `AUTH-DB-031`                                           |
+
+No queda una responsabilidad detectada sin propietario documental exacto.
+
+---
+
+#### 47. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** la semántica territorial de CTX003 ya está protegida por requisitos canónicos vigentes que asignan expresamente esta responsabilidad y cubren la coherencia transversal de turno, check-in, rol, sede, área, autoridad contractual, minimización de la proyección pública, write barrier y eliminación de fallbacks territoriales legacy. CTX003 no introduce un contrato serializado nuevo, un código nuevo, una modalidad nueva de autorización ni una regla territorial distinta que requiera otra fila.
+
+Crear un requisito adicional duplicaría comportamiento ya registrado. El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 48. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                          |
+| --------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador global es documental; no se ejecuta build de runtime ni materialización física en esta fase.                                                                           |
+| LOCAL     | PASS           | El artefacto aislado conserva identidad, cabecera, una sola tarea, formas territoriales vigentes, límites de responsabilidad, sección TREQ, continuidad y ausencia de cambios 04A. |
+| REMOTA    | NOT_APPLICABLE | El marcador global no autoriza escritura, despliegue ni modificación remota.                                                                                                       |
+| OPERATIVA | NOT_APPLICABLE | No se modifica operación real, consumidores ni tráfico.                                                                                                                            |
+| FÍSICA    | NOT_APPLICABLE | No existe `implementation_unit_id` materializada para CTX003 y se autorizan cero cambios de código o Supabase en este marcador.                                                    |
+
+---
+
+#### 49. Decisiones vinculantes
+
+1. la proyección territorial consume un `AccessContextV1` validado;
+2. `operational_site` es la única sede operativa canónica de esta responsabilidad;
+3. `operational_area` es la única área operativa canónica de esta responsabilidad;
+4. CTX003 no vuelve a resolver sede o área;
+5. la sede operativa procede del turno vigente;
+6. el área operativa procede del turno vigente;
+7. el check-in solo puede confirmar la misma área;
+8. sede primaria y sede seleccionada no son autoridad;
+9. área primaria y área seleccionada no son autoridad;
+10. `employees.site_id` y `employees.area_id` no son autoridad canónica final;
+11. el punto de marcación no es sede operativa;
+12. el dispositivo solo restringe, nunca amplía territorio;
+13. el territorio del recurso permanece separado;
+14. cobertura administrativa permanece separada;
+15. `site_active` se conserva sin reinterpretación;
+16. `assignment_valid` se conserva sin fallback;
+17. `area_active` se conserva sin reinterpretación;
+18. `compatible_with_role` se conserva sin fallback;
+19. `source` solo puede ser `SHIFT` o `CHECKIN_CONFIRMED_SHIFT`;
+20. `CHECKIN_CONFIRMED_SHIFT` exige coincidencia exacta;
+21. un check-in sin área no elimina el área del turno;
+22. un check-in incompatible no reemplaza área;
+23. `null` nunca es wildcard;
+24. un rol site-wide puede conservar `operational_area = null` cuando el contrato lo permite;
+25. CTX003 no evalúa el requisito de área del permiso;
+26. CTX003 no resuelve recursos multiterritoriales;
+27. CTX003 no crea `can_operate`;
+28. CTX003 no implementa readiness;
+29. CTX003 no implementa razones seguras de bloqueo;
+30. CTX003 no implementa caché L1;
+31. CTX003 no modifica `SafeContextProjectionV1`;
+32. la proyección pública territorial permanece limitada a `operational_site_id` y `operational_area_id` dentro de AUTH002;
+33. no se exponen datos territoriales adicionales por esta tarea;
+34. simulación no modifica contexto real;
+35. compatibilidad fluye de canónico hacia legacy;
+36. cambios territoriales invalidan snapshots conforme a sus tareas propietarias;
+37. la instancia física se materializa una sola vez por `implementation_unit_id`;
+38. varios packages consumen la misma unidad mediante lineage;
+39. rollback no restaura autoridad territorial legacy;
+40. se crean cero TREQ y cero cambios 04A;
+41. se mantienen cero cambios físicos y cero cambios Supabase;
+42. `SHELL-CTX-004` permanece exclusivamente reservada.
+
+---
+
+#### 50. Criterios de aceptación
+
+- [x] `SHELL-CTX-002` es la precedencia inmediata aprobada;
+- [x] `SHELL-CTX-004` permanece únicamente reservada;
+- [x] la tarea usa `PER_IMPLEMENTATION_UNIT`;
+- [x] se separa contrato global de materialización física;
+- [x] se conserva `AccessContext@1.0.0` sin cambio de forma;
+- [x] se conservan exactamente `OperationalSiteContext` y `OperationalAreaContext`;
+- [x] se define “sede efectiva” como `operational_site`;
+- [x] se define “área efectiva” como `operational_area`;
+- [x] se prohíben sedes/áreas selected, primary, default o legacy como autoridad;
+- [x] `active_shift = null` implica territorio operativo nulo;
+- [x] `site_id` y `source_shift_id` deben coincidir con el turno;
+- [x] `site_active` se conserva sin elevarlo;
+- [x] `assignment_valid` se conserva sin fallback;
+- [x] un turno no crea asignación laboral;
+- [x] `area_id` coincide exactamente con el turno;
+- [x] el área pertenece a la sede operativa;
+- [x] `area_kind` procede del catálogo canónico;
+- [x] `source` conserva únicamente dos valores;
+- [x] `CHECKIN_CONFIRMED_SHIFT` exige coincidencia exacta;
+- [x] el check-in no crea ni reemplaza área;
+- [x] un check-in sin área conserva fuente `SHIFT`;
+- [x] un check-in incompatible no modifica territorio;
+- [x] `area_active` y `compatible_with_role` se preservan;
+- [x] la ausencia legítima de área se conserva como `null`;
+- [x] `null` nunca significa wildcard;
+- [x] `assigned_areas` no es requisito operativo universal;
+- [x] cobertura administrativa y territorio operativo permanecen separados;
+- [x] territorio operativo y territorio del recurso permanecen separados;
+- [x] operación multiterritorial no crea territorios operativos adicionales;
+- [x] permiso global operativo no se interpreta como cross-site;
+- [x] dispositivo solo restringe por intersección;
+- [x] simulación permanece separada;
+- [x] CTX003 no crea DTO público nuevo;
+- [x] `SafeContextProjectionV1` conserva owner `SHELL-AUTH-002`;
+- [x] la exposición pública territorial se limita a IDs ya aprobados;
+- [x] se define minimización de datos;
+- [x] CTX004 conserva readiness;
+- [x] CTX005 conserva razones seguras;
+- [x] CTX006 conserva L1/frescura;
+- [x] se define fail-closed;
+- [x] se define snapshot reproducible;
+- [x] se definen cuarenta escenarios mínimos de futura prueba;
+- [x] se definen doce gates de materialización;
+- [x] se define evidencia por instancia;
+- [x] se define rollback sin autoridad legacy;
+- [x] se reutilizan requisitos TREQ existentes;
+- [x] se crean cero TREQ nuevos y cero modificaciones 04A;
+- [x] se declaran cero cambios físicos y cero cambios Supabase;
+- [x] no se desarrolla `SHELL-CTX-004`.
+
+---
+
+#### 51. Límites
+
+Esta tarea no:
+
+- modifica `packages/os-context`;
+- crea archivos TypeScript;
+- crea package nuevo;
+- crea subpath público nuevo;
+- publica `@vento/os-context`;
+- modifica manifests o lockfiles;
+- implementa `OperationalSiteContext` o `OperationalAreaContext` físicos;
+- modifica `SafeContextProjectionV1`;
+- crea un segundo DTO territorial público;
+- consulta tablas de sedes, áreas, asignaciones, turnos o check-ins;
+- modifica `employees.site_id` o `employees.area_id`;
+- cambia asignaciones laborales;
+- corrige turnos;
+- modifica geocercas;
+- modifica dispositivos;
+- resuelve territorio del recurso;
+- implementa readiness;
+- implementa razones seguras;
+- implementa caché L1;
+- migra consumidores;
+- retira RPC legacy;
+- crea SQL, migraciones, RLS, triggers, Storage, Realtime o Edge Functions;
+- ejecuta cambios en Supabase;
+- declara integración remota u operativa inexistente;
+- ejecuta `SHELL-CTX-003::<implementation_unit_id>`;
+- avanza ni desarrolla la tarea siguiente.
+
+---
+
+#### 52. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CTX-002 — Implementar consumo canónico de turno y check-in`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización`
+
+
 ### [ ] SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización
 ### [ ] SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual
 ### [ ] SHELL-CTX-006 — Implementar caché compartida, single-flight y validación de frescura
