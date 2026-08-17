@@ -2098,6 +2098,821 @@ Esta tarea no:
 `SHELL-CI-004 — Crear changelog automático`
 
 
-### [ ] SHELL-CI-004 — Crear changelog automático
+### ✅ SHELL-CI-004 — Crear changelog automático
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CI-003 — Crear releases versionados
+**Tarea siguiente:** SHELL-CI-005 — Crear matriz de compatibilidad
+**Tipo de tarea:** Habilitador global único — contrato documental de changelog automático, release notes y trazabilidad narrativa de packages compartidos
+**Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada el habilitador global que gobernará la generación automática, determinista y trazable del **changelog y las release notes** de los packages compartidos de Vento OS, de modo que cada narrativa publicada corresponda exactamente al package, versión, commit, base de comparación, cambio distribuible y release que pretende describir.
+
+La regla vinculante queda fijada así:
+
+```text
+PACKAGE CANÓNICO
++ VERSIÓN SEMVER EXACTA
++ COMMIT DE ORIGEN EXACTO
++ RELEASE BASE EXACTA
++ CAMBIO DISTRIBUIBLE DEMOSTRADO
++ CHANGE SET ESTRUCTURADO Y COMPLETO
++ IMPACTO SEMVER DECLARADO
++ SUPERFICIES PÚBLICAS AFECTADAS
++ DEPRECACIONES Y MIGRACIÓN CUANDO APLIQUEN
++ NARRATIVA DETERMINISTA
++ IDENTIDAD CRIPTOGRÁFICA DEL CHANGELOG
+= MATERIAL DE CHANGELOG ELEGIBLE PARA RELEASE
+```
+
+Y, de forma fail-closed:
+
+```text
+GIT LOG SIN REGISTROS ESTRUCTURADOS
+O CAMBIO DISTRIBUIBLE SIN ENTRADA DE CHANGELOG
+O ENTRADA DE OTRO PACKAGE, VERSIÓN O COMMIT
+O CLASIFICACIÓN SEMVER CONTRADICTORIA
+O RUPTURA SIN MIGRACIÓN EXIGIBLE
+O DEPRECACIÓN SIN EXPEDIENTE DEP VÁLIDO
+O HISTORIAL PUBLICADO REESCRITO
+O SALIDA NO DETERMINISTA
+O CONTENIDO SENSIBLE EXPUESTO
+≠ PASS
+```
+
+Esta tarea no modifica todavía packages, changelogs, releases ni workflows. Define el contrato que `SHELL-CI-004::GLOBAL` deberá materializar y certificar una sola vez y que las futuras releases reutilizarán sin crear otra implementación del habilitador.
+
+#### 2. Resultado canónico
+
+`SHELL-CI-004` establece un único contrato transversal para:
+
+1. recibir un candidato de release ya identificado por package, versión y commit;
+2. exigir una fuente estructurada de cambios en lugar de inferir el significado únicamente desde commits o títulos de PR;
+3. vincular cada cambio narrado con su package, superficie, impacto SemVer y evidencia de origen;
+4. distinguir cambio distribuible de cambio que no requiere release;
+5. generar una entrada humana de changelog por package y versión;
+6. generar release notes desde la misma fuente estructurada, sin una segunda narrativa divergente;
+7. producir una identidad criptográfica determinista del material narrativo;
+8. entregar esa identidad a CI003 antes de una publicación real cuando el changelog sea exigible;
+9. enlazar la narrativa final con la identidad inmutable de release producida por CI003;
+10. preservar un historial independiente por package y versión;
+11. impedir reescritura de entradas correspondientes a releases ya publicadas;
+12. representar deprecaciones, breaking changes, migraciones y seguridad con reglas explícitas;
+13. preservar el versionado independiente durante cortes multi-package;
+14. impedir que packages sin cambio distribuible reciban entradas artificiales;
+15. producir evidencia machine-readable atribuible e invalidable;
+16. separar changelog, release, compatibilidad y actualización de consumidores.
+
+#### 3. Base vinculante
+
+La definición conserva las decisiones ya aprobadas del BLOQUE H, del mini-bloque CI y del registro de pruebas:
+
+- packages npm privados e inmutables producidos desde `vento-shell`;
+- cuatro familias de package compartido vigentes;
+- versionado SemVer independiente por package;
+- primera versión estable canónica `1.0.0` por familia cuando el package sea elegible;
+- clasificación por impacto sobre API público, no por tamaño, urgencia ni texto del commit;
+- prohibición de deducir el incremento únicamente desde Conventional Commits o el texto del PR;
+- `NO_RELEASE` cuando el artefacto distribuible no cambia;
+- correspondencia inmutable entre package, SemVer, manifest, commit, tag, release, tarball e integridad;
+- deprecación estable como cambio al menos `MINOR` cuando conserva la superficie;
+- retiro de superficie pública estable como cambio `MAJOR`;
+- expedientes `DEP-*` únicos e inmutables;
+- ventana ordinaria mínima de deprecación de 90 días y release estable intermedia antes del retiro;
+- changelog, release notes, guía y expediente coherentes para deprecaciones;
+- versiones, tags, releases y artefactos históricos inmutables;
+- cortes coordinados que publican únicamente packages con cambio distribuible;
+- compatibilidad package–consumidor como gate separado;
+- modificación de consumidores mediante PR como operación posterior y separada.
+
+#### 4. Topología de trabajo
+
+`PHASE-03-T-CI-FOUNDATION` usa `GLOBAL_ENABLE_ONCE` para `SHELL-CI-004`.
+
+Por tanto:
+
+```text
+MARCADOR CANÓNICO
+SHELL-CI-004
+→ define el contrato una sola vez
+
+INSTANCIA FÍSICA FUTURA
+SHELL-CI-004::GLOBAL
+→ materializa y certifica el habilitador una sola vez
+
+RELEASES REALES POSTERIORES
+→ reutilizan el habilitador certificado
+→ generan material propio por package y versión
+→ no crean otra implementación de CI004
+```
+
+La instancia global podrá autocertificarse con repositorios, manifests, change sets, historiales y releases sintéticos o aislados. La certificación del habilitador no constituye por sí misma una release real ni autoriza modificar consumidores.
+
+#### 5. Universo de packages gobernado
+
+El contrato cubre exactamente las cuatro familias compartidas aprobadas:
+
+1. `@vento/contracts`;
+2. `@vento/os-context`;
+3. `@vento/supabase`;
+4. `@vento/ui-web`.
+
+Una nueva carpeta, workspace o dependencia no entra automáticamente en el universo. Debe contar con identidad y ownership canónicos antes de participar en CI004.
+
+#### 6. Línea base física observada
+
+En el corte remoto vigente de `vento-shell`:
+
+- `SHELL-CI-001::GLOBAL` figura `VERIFIED`;
+- `SHELL-CI-002::GLOBAL` figura `VERIFIED`;
+- `SHELL-CI-003::GLOBAL` figura `VERIFIED` con su release gate y autocertificación materializados;
+- el release gate de CI003 ya reconoce `changelog_required` y exige `changelog_identity` cuando esa condición es verdadera;
+- el workspace raíz sigue declarando `packages/*`;
+- `@vento/os-context` continúa siendo el único package físico observado bajo ese workspace;
+- la raíz física de `@vento/os-context` contiene `README.md`, `package.json` y `src/`, sin `CHANGELOG.md` observado;
+- no se observó tooling materializado de Changesets, semantic-release, release-please o conventional-changelog;
+- no se observó otro mecanismo ejecutable que pueda considerarse implementación previa de CI004;
+- `@vento/contracts`, `@vento/supabase` y `@vento/ui-web` aún no están materializados como packages físicos observados.
+
+Por tanto, CI004 parte de una necesidad real y no de una convención física preexistente que deba preservarse.
+
+#### 7. Frontera con el mini-bloque
+
+| Responsabilidad                                                               | Propietario    |
+| ----------------------------------------------------------------------------- | -------------- |
+| pruebas propias del package                                                   | `SHELL-CI-001` |
+| build, exports, declarations, empaquetado e identidad del artefacto candidato | `SHELL-CI-002` |
+| identidad inmutable y publicación de release                                  | `SHELL-CI-003` |
+| changelog, release notes y narrativa automática del cambio                    | `SHELL-CI-004` |
+| compatibilidad package–consumidor                                             | `SHELL-CI-005` |
+| modificación y PR de consumidores                                             | `SHELL-CI-006` |
+
+CI004 puede consumir identidades y evidencia producidas por CI001, CI002 y CI003, pero no vuelve a ejecutar sus responsabilidades. Tampoco produce un veredicto de compatibilidad ni modifica consumidores.
+
+#### 8. Definición de changelog automático
+
+El habilitador manejará tres proyecciones sincronizadas de una misma fuente:
+
+```text
+CHANGE SET ESTRUCTURADO
+→ fuente machine-readable y atribuible
+
+ENTRADA DE CHANGELOG POR PACKAGE Y VERSIÓN
+→ historia humana legible
+
+RELEASE NOTES DE ESA VERSIÓN
+→ narrativa de publicación derivada del mismo contenido
+```
+
+La fuente machine-readable es la autoridad de contenido. El changelog y las release notes son proyecciones derivadas y no podrán introducir decisiones, cambios o categorías ausentes en el change set.
+
+#### 9. Fuente estructurada obligatoria
+
+CI004 no usará el texto libre de commits como fuente semántica suficiente.
+
+Los commits, PR, diffs y archivos podrán actuar como evidencia o referencias de origen, pero la narrativa publicable deberá provenir de registros estructurados que declaren de forma explícita:
+
+- qué package cambia;
+- qué superficie cambia;
+- qué tipo de cambio ocurrió;
+- qué impacto SemVer fue aprobado;
+- si existe ruptura;
+- si existe migración;
+- si existe deprecación;
+- qué evidencia permite atribuir el cambio.
+
+La automatización podrá detectar discrepancias entre diff, artefacto y registros, pero no inventará por heurística la clasificación contractual ausente.
+
+#### 10. Unidad exacta de changelog de release
+
+Cada candidato de changelog se atribuirá, como mínimo, a:
+
+```text
+package_name
+release_version
+source_commit
+package_manifest_identity
+base_release_version
+base_release_identity
+distribution_change
+change_set_identity
+release_channel_type
+changelog_contract_identity
+changelog_run_identity
+```
+
+Para la primera release estable de una familia, `base_release_version` y `base_release_identity` podrán ser `null` y la evidencia deberá declarar que se trata de la primera estable canónica.
+
+Cambiar cualquiera de estas dimensiones materiales invalida la reutilización del candidato de changelog anterior.
+
+#### 11. Contrato de cada registro de cambio
+
+Cada elemento del change set deberá contener, como mínimo:
+
+| Campo                 | Obligación                                                                                      |
+| --------------------- | ----------------------------------------------------------------------------------------------- |
+| `change_record_id`    | identificador estable y único dentro del candidato                                              |
+| `package_name`        | una de las cuatro familias gobernadas                                                           |
+| `change_kind`         | categoría canónica del cambio                                                                   |
+| `summary`             | descripción humana concreta, sin texto genérico                                                 |
+| `semver_impact`       | `PATCH`, `MINOR`, `MAJOR` o `NO_RELEASE`                                                        |
+| `public_surfaces`     | identidades públicas afectadas o arreglo vacío justificado si el cambio es interno distribuible |
+| `source_refs`         | referencias verificables a origen, diff, decisión o evidencia                                   |
+| `breaking_change`     | booleano explícito                                                                              |
+| `migration_required`  | booleano explícito                                                                              |
+| `migration_reference` | referencia resoluble cuando la migración sea obligatoria                                        |
+| `deprecation_ids`     | expedientes `DEP-*` relacionados o arreglo vacío                                                |
+| `security_visibility` | `PUBLIC`, `RESTRICTED` o `NOT_APPLICABLE`                                                       |
+| `treq_refs`           | requisitos afectados cuando existan                                                             |
+
+No se admitirán registros duplicados que describan el mismo cambio con identidades distintas para inflar o fragmentar artificialmente la narrativa.
+
+#### 12. Categorías canónicas de narrativa
+
+`change_kind` permitirá exactamente estas categorías de publicación:
+
+1. `ADDED`;
+2. `CHANGED`;
+3. `FIXED`;
+4. `DEPRECATED`;
+5. `REMOVED`;
+6. `SECURITY`.
+
+`BREAKING` no constituye una categoría independiente de origen: es una propiedad contractual que se proyecta en una sección humana prioritaria cuando `breaking_change = true`.
+
+`MIGRATION` tampoco constituye una categoría de origen: se deriva cuando uno o más registros requieren acción explícita del consumidor.
+
+El orden humano canónico será:
+
+```text
+Breaking changes
+Added
+Changed
+Fixed
+Deprecated
+Removed
+Security
+Migration
+```
+
+Las secciones vacías se omiten. El orden de las secciones no depende del orden del filesystem, del commit log ni de la configuración regional del entorno.
+
+#### 13. Relación con SemVer
+
+CI004 registra y valida coherencia; no sustituye la política de versionado aprobada.
+
+Reglas mínimas:
+
+1. un registro `NO_RELEASE` no justifica una versión publicada;
+2. una release con cambio distribuible debe usar el mayor impacto SemVer aplicable al conjunto de registros;
+3. `breaking_change = true` para una superficie estable exige `MAJOR`;
+4. retirar una superficie pública estable exige `MAJOR`;
+5. anunciar una deprecación estable manteniendo compatibilidad exige al menos `MINOR`;
+6. una corrección compatible podrá ser `PATCH`;
+7. una capacidad pública aditiva podrá ser `MINOR`;
+8. modificar una dependencia interna exacta de un package distribuido exige al menos `PATCH`, incluso si su API propio no cambia;
+9. CI004 no rebajará una clasificación aprobada para hacer coincidir una versión ya escrita en el manifest;
+10. una contradicción no resoluble entre registros, versión y política produce bloqueo.
+
+#### 14. Cobertura obligatoria por release
+
+Para toda release real con `distribution_change = true`:
+
+```text
+required_change_records > 0
+AND represented_distributable_changes = distributable_changes_detected
+AND duplicate_change_records = 0
+AND unresolved_semver_conflicts = 0
+AND unresolved_migration_requirements = 0
+AND unresolved_deprecation_requirements = 0
+AND changelog_identity_is_current = true
+```
+
+No constituye changelog suficiente:
+
+- una sección vacía creada solo para satisfacer el gate;
+- una lista de hashes de commit sin explicación del cambio;
+- un resumen genérico como “actualizaciones” o “mejoras” sin superficie o evidencia;
+- una entrada de otro package reutilizada por coincidencia de commit;
+- una release con artefacto distribuible distinto pero sin registros de cambio;
+- un conjunto de registros que omite deliberadamente una ruptura conocida;
+- una narrativa creada después de publicar para justificar retrospectivamente una release que carecía de material exigible.
+
+#### 15. Selección de base de comparación
+
+La base pertenece al mismo package y nunca se comparte por lockstep entre familias.
+
+Para una release estable:
+
+- la base ordinaria es la release estable inmediatamente anterior de esa familia;
+- la primera estable usa base nula declarada;
+- el cambio narrado representa el delta distribuible completo contra esa base estable.
+
+Para una prerelease:
+
+- se conserva como referencia la estable objetivo inmediatamente anterior;
+- se registra además la prerelease inmediatamente anterior de la misma serie cuando exista;
+- las notas incrementales pueden explicar el delta desde la prerelease previa;
+- la release estable final vuelve a representar el delta completo desde la estable anterior, no solo desde la última `rc`.
+
+Una base de otro package, otra línea o una identidad mutable invalida el candidato.
+
+#### 16. Preparación y finalización
+
+El flujo de CI004 tendrá dos fases lógicas sin duplicar implementación:
+
+```text
+PREPARE
+→ valida change set
+→ genera narrativa determinista
+→ calcula changelog_identity
+→ produce release notes candidatas
+→ entrega identidad a CI003
+
+CI003
+→ verifica lineage y publica o simula la release inmutable
+
+FINALIZE
+→ consume la identidad de release resultante
+→ vincula exactamente la narrativa ya preparada
+→ incorpora la entrada una sola vez al historial del package
+→ conserva evidencia final
+```
+
+La fase `FINALIZE` no puede cambiar el contenido sustantivo preparado para hacer coincidir una release ya publicada. Si el contenido necesita cambiar, el candidato deja de ser el mismo y debe volver por los gates aplicables antes de publicar.
+
+Si CI003 no completa la release, el material preparado puede conservarse como evidencia de intento, pero no se incorpora como historia publicada.
+
+#### 17. Historial humano por package
+
+Cada package materializado deberá conservar un único historial humano `CHANGELOG.md` junto a su manifest canónico.
+
+El historial tendrá:
+
+```text
+# Changelog — nombre exacto del package
+
+## versión SemVer exacta
+
+### secciones aplicables en orden canónico
+- entradas deterministas y trazables
+```
+
+Reglas:
+
+1. una entrada corresponde a un único `package_name + release_version`;
+2. la versión se escribe exactamente como en el manifest y la release;
+3. el historial de una familia no contiene entradas de otra;
+4. una release publicada no pierde su entrada histórica;
+5. una corrección narrativa posterior se documenta mediante una release posterior o nota de corrección trazable, sin reescribir silenciosamente la historia publicada;
+6. una regeneración del historial desde la misma evidencia debe producir los mismos bytes normalizados;
+7. UTF-8 y LF serán la representación normalizada usada para identidad y autocertificación.
+
+La ubicación física concreta de familias aún no materializadas se resolverá desde el package real y su manifest en la futura instancia; CI004 no crea carpetas ficticias durante este marcador.
+
+#### 18. Release notes
+
+Las release notes se derivan del mismo change set y de la misma entrada normalizada del changelog.
+
+Deberán incluir, según aplique:
+
+- package y versión exactos;
+- resumen de cambios distribuibles;
+- breaking changes;
+- adiciones, cambios y correcciones;
+- deprecaciones con `DEP-*`;
+- retiros;
+- avisos de seguridad publicables;
+- acciones de migración;
+- referencias de procedencia permitidas.
+
+No se permitirá que las release notes declaren una ruptura, deprecación, migración o alcance que el change set no contenga, ni que el changelog omita una obligación presente en las release notes.
+
+#### 19. Determinismo e identidad criptográfica
+
+La serialización de CI004 deberá ser reproducible.
+
+Como mínimo:
+
+1. objetos machine-readable usan orden canónico de claves;
+2. colecciones se ordenan mediante claves contractuales explícitas;
+3. los registros se ordenan por sección derivada y `change_record_id`;
+4. se normalizan saltos de línea a LF para cálculo de identidad;
+5. la codificación es UTF-8;
+6. no participan rutas absolutas, usuario local, locale, reloj de pared ni timezone en la identidad narrativa;
+7. timestamps operativos pueden existir en evidencia, pero no alteran la identidad del mismo contenido;
+8. la misma entrada lógica produce los mismos bytes y el mismo digest.
+
+`changelog_identity` será una identidad `sha256` del payload canónico que vincule, como mínimo:
+
+```text
+package_name
+release_version
+source_commit
+base_release_identity
+change_set_identity
+rendered_changelog_entry_identity
+release_notes_identity
+```
+
+La identidad del ejecutable que generó el material se conserva por separado como evidencia y no convierte en contenido diferente una narrativa byte-idéntica.
+
+#### 20. Inmutabilidad del historial
+
+Después de que CI003 publique una identidad `package + version` y CI004 la finalice:
+
+- la entrada histórica no se elimina;
+- la entrada no se reasocia a otra versión;
+- no se cambia su package;
+- no se cambia su `source_commit`;
+- no se sustituye el change set por otro;
+- no se rebaja ni oculta una ruptura;
+- no se elimina un `DEP-*` para acortar una ventana;
+- no se reescribe el texto para aparentar que la release contenía otra conducta.
+
+Una corrección exige una nueva evidencia y, cuando afecta el package distribuido, otra versión conforme a SemVer.
+
+#### 21. Integración con CI003 — releases versionados
+
+CI004 produce el material que CI003 consume, pero CI003 conserva autoridad sobre publicación e identidad de release.
+
+Para toda publicación real con cambio distribuible, el contrato de release deberá declarar:
+
+```text
+changelog_required = true
+changelog_identity = identidad vigente producida por CI004
+```
+
+La identidad deberá corresponder exactamente al mismo:
+
+- package;
+- versión;
+- source commit;
+- manifest candidato;
+- base de release aplicable;
+- change set.
+
+CI003 no genera ni corrige el changelog. Un `changelog_identity` ausente, stale o perteneciente a otra unidad bloquea la publicación aplicable.
+
+CI004, a su vez, no crea tags, releases ni publicaciones en registry.
+
+#### 22. Deprecaciones y expedientes `DEP-*`
+
+Una deprecación estable deberá proyectarse obligatoriamente bajo `Deprecated` y conservar al menos:
+
+- `deprecation_id` exacto;
+- superficie afectada;
+- versión que anuncia la deprecación;
+- motivo;
+- reemplazo soportado o decisión explícita sin reemplazo;
+- versión mínima del reemplazo cuando aplique;
+- referencia de migración;
+- fecha de elegibilidad documentada por el expediente;
+- relación con consumidores y compatibilidad cuando exista evidencia disponible.
+
+La ventana ordinaria de 90 días no inicia por crear un borrador de change set. Inicia cuando una release estable completa publica coherentemente la deprecación, changelog, release notes y señales obligatorias de su expediente.
+
+El retiro posterior deberá conservar el mismo `DEP-*`, aparecer bajo `Removed`, usar la clasificación SemVer correspondiente y enlazar la evidencia de cierre. CI004 no decide por sí solo que una superficie ya es elegible para retiro.
+
+#### 23. Breaking changes y migración
+
+Todo breaking change estable deberá:
+
+1. declarar `breaking_change = true`;
+2. usar impacto `MAJOR`;
+3. identificar las superficies públicas afectadas;
+4. explicar el comportamiento anterior y el nuevo sin ambigüedad;
+5. declarar acción de consumidor;
+6. incluir `migration_reference` resoluble;
+7. aparecer en `Breaking changes`;
+8. aparecer también en `Migration` cuando exista una acción concreta;
+9. conservar evidencia suficiente para que CI005 evalúe compatibilidad.
+
+La existencia de una guía no convierte un cambio incompatible en compatible.
+
+#### 24. Seguridad y contenido sensible
+
+Los cambios de seguridad deberán narrarse sin exponer secretos ni material que incremente innecesariamente el riesgo.
+
+`security_visibility` controla la proyección:
+
+- `PUBLIC`: el detalle autorizado puede aparecer en changelog y release notes;
+- `RESTRICTED`: la narrativa pública se limita al impacto y acción segura permitidos, mientras la evidencia enlaza una referencia protegida;
+- `NOT_APPLICABLE`: el cambio no pertenece a seguridad.
+
+Nunca se incluirán tokens, credenciales, cookies, claves privadas, secretos, dumps sensibles ni valores de entorno dentro del changelog, release notes o evidencia de CI004.
+
+La redacción no podrá ocultar una acción obligatoria de actualización, mitigación o migración que un consumidor necesite conocer.
+
+#### 25. Cortes coordinados multi-package
+
+Cuando un corte incluya varias familias:
+
+1. cada package conserva su propio change set;
+2. cada package conserva su propio changelog y release notes;
+3. cada package conserva su propio SemVer e identidad;
+4. un package sin cambio distribuible no recibe una entrada ni versión artificial;
+5. una actualización de dependencia interna exacta se registra en el package dependiente cuando modifica su manifest distribuido;
+6. el orden de publicación sigue perteneciendo a CI003;
+7. el veredicto de compatibilidad sigue perteneciendo a CI005;
+8. el fallo de una familia no autoriza declarar completo el changelog de otra release no publicada.
+
+Un mismo commit puede originar varias narrativas independientes, pero nunca una identidad de changelog global que sustituya las identidades por package y versión.
+
+#### 26. Prereleases
+
+Las versiones `alpha`, `beta` y `rc` conservarán narrativa propia e identidad propia.
+
+Reglas:
+
+- una prerelease se identifica explícitamente como no estable;
+- no inicia por sí sola la ventana ordinaria de deprecación de una superficie estable;
+- una ruptura presente solo en prerelease debe declararse en sus release notes;
+- la historia de prereleases no se presenta como garantía de API estable;
+- la release estable final resume el delta completo desde la estable anterior;
+- una prerelease retirada o reemplazada no se borra de la historia si fue publicada;
+- la misma versión prerelease no puede recibir otro change set después de publicarse.
+
+#### 27. Cambios `NO_RELEASE`
+
+Un cambio clasificado `NO_RELEASE` no crea una entrada publicada de changelog ni autoriza una nueva versión.
+
+Ejemplos heredados de la política SemVer incluyen:
+
+- documentación fuera del tarball sin cambio distribuible;
+- tests sin cambio del output del package;
+- regeneración de tipos con output idéntico.
+
+CI004 podrá conservar evidencia interna de que esos cambios fueron evaluados, pero el resultado de narrativa de release será `NOT_APPLICABLE` mientras no exista cambio distribuible.
+
+Si el manifest, tarball u otro contenido distribuido cambia materialmente, no podrá mantenerse `NO_RELEASE` por conveniencia.
+
+#### 28. Trazabilidad de requisitos y evidencia
+
+Los registros podrán conservar `treq_refs` para enlazar requisitos afectados por el cambio.
+
+La proyección pública no está obligada a mostrar identificadores internos de prueba, pero la evidencia machine-readable deberá preservar la relación cuando exista para permitir:
+
+- reconstruir por qué una release cambió;
+- vincular pruebas y gates aplicables;
+- demostrar qué requisitos fueron afectados;
+- evitar que una narrativa pública sustituya la evidencia técnica.
+
+Una lista de requisitos no sustituye la descripción del cambio y una descripción del cambio no sustituye resultados de prueba.
+
+#### 29. Invalidation y evidencia stale
+
+El material preparado deja de certificar un candidato si cambia de forma material cualquiera de estos elementos antes de publicar:
+
+- package;
+- versión;
+- source commit;
+- manifest;
+- release base;
+- clasificación SemVer;
+- change set;
+- superficie pública afectada;
+- estado de breaking change;
+- obligación de migración;
+- expediente de deprecación;
+- contenido publicable de seguridad;
+- identidad del artefacto distribuible que demuestra si existe cambio.
+
+Después de publicar, el material histórico se conserva como evidencia de esa identidad. Un cambio posterior genera otro candidato y no edita el anterior.
+
+#### 30. Estados y fallo seguro
+
+El habilitador reutilizará la semántica común:
+
+- `PENDING`;
+- `RUNNING`;
+- `PASS`;
+- `FAIL`;
+- `BLOCKED`;
+- `CANCELLED`;
+- `TIMED_OUT`;
+- `STALE`;
+- `NOT_APPLICABLE` únicamente cuando se haya demostrado ausencia de release distribuible para la unidad evaluada.
+
+Una narrativa certificable solo se satisface con `PASS`.
+
+Un resultado parcial, ambiguo, stale, cancelado, sin change set o con conflicto de identidad no podrá normalizarse a `PASS`.
+
+#### 31. Casos positivos obligatorios del habilitador
+
+`SHELL-CI-004::GLOBAL` deberá demostrar, como mínimo:
+
+1. release `PATCH` sintética con corrección compatible → changelog y release notes deterministas;
+2. release `MINOR` con capacidad aditiva → categoría y SemVer coherentes;
+3. release `MAJOR` con breaking change y guía → secciones `Breaking changes` y `Migration` completas;
+4. deprecación estable con expediente `DEP-*` completo → sección `Deprecated` y referencias coherentes;
+5. prerelease válida → narrativa identificada como no estable sin iniciar ventana ordinaria;
+6. corte coordinado con dos packages cambiados y uno sin cambio → dos narrativas independientes y ninguna entrada artificial;
+7. repetición exacta del mismo candidato → mismo `changelog_identity` y mismos bytes normalizados;
+8. finalización contra evidencia sintética de CI003 exacta → incorporación idempotente al historial sin reescritura.
+
+#### 32. Casos negativos obligatorios del habilitador
+
+`SHELL-CI-004::GLOBAL` deberá bloquear, como mínimo:
+
+1. package fuera del universo aprobado;
+2. versión ausente o SemVer inválido;
+3. versión distinta a la del manifest candidato;
+4. source commit ausente o incompatible;
+5. release base perteneciente a otro package;
+6. cambio distribuible con change set vacío;
+7. artefacto distribuible cambiado sin registro narrativo suficiente;
+8. registro de otro package dentro del candidato;
+9. `change_record_id` duplicado;
+10. categoría no permitida;
+11. intento de inferir el impacto exclusivamente desde commits sin clasificación estructurada;
+12. breaking change estable declarado como `PATCH` o `MINOR`;
+13. retiro de superficie estable sin impacto `MAJOR`;
+14. deprecación estable sin expediente `DEP-*` resoluble;
+15. migración obligatoria sin referencia de migración;
+16. `NO_RELEASE` con contenido distribuible materialmente distinto;
+17. changelog de una versión ya publicada regenerado con contenido distinto;
+18. release notes que añaden u omiten una obligación respecto del change set;
+19. contenido sensible detectado en narrativa o evidencia;
+20. identidad CI003 final incompatible con package, versión, commit o changelog preparado.
+
+#### 33. Regresiones del habilitador global
+
+La implementación única deberá proteger, como mínimo:
+
+1. orden distinto de objetos JSON produciendo un digest distinto para el mismo contenido lógico;
+2. orden del filesystem alterando la narrativa;
+3. locale o timezone alterando los bytes del mismo candidato;
+4. CRLF frente a LF alterando la identidad lógica normalizada;
+5. secciones vacías apareciendo de forma no determinista;
+6. registros duplicados inflando el changelog;
+7. entrada histórica eliminada durante regeneración completa;
+8. contenido de un package filtrándose al changelog de otro;
+9. prerelease presentada como estable;
+10. detalle restringido de seguridad apareciendo en salida pública;
+11. cambio `NO_RELEASE` recibiendo versión o entrada publicada;
+12. `DEP-*` eliminado de una narrativa histórica para acortar una ventana;
+13. breaking change degradado por reordenar o editar registros;
+14. reintento de finalización duplicando una entrada ya correcta;
+15. segunda implementación del habilitador dentro de un package;
+16. cambio de algoritmo de render que reescribe silenciosamente releases históricas.
+
+#### 34. Criterios de materialización de `SHELL-CI-004::GLOBAL`
+
+La instancia física podrá declararse materializada únicamente cuando:
+
+1. exista una sola implementación transversal en `vento-shell`;
+2. reconozca exactamente las cuatro familias aprobadas;
+3. valide una fuente estructurada de cambios;
+4. no derive SemVer únicamente desde commits o títulos de PR;
+5. diferencie cambio distribuible y `NO_RELEASE`;
+6. produzca changelog humano por package y versión;
+7. produzca release notes desde la misma fuente;
+8. calcule identidades deterministas e independientes por release;
+9. entregue `changelog_identity` consumible por CI003;
+10. permita enlazar la finalización con evidencia exacta de CI003;
+11. preserve historial inmutable después de publicación;
+12. represente breaking changes y migraciones sin degradar SemVer;
+13. represente deprecaciones con expedientes `DEP-*`;
+14. proteja contenido sensible;
+15. soporte prereleases sin confundirlas con estable;
+16. soporte cortes multi-package sin lockstep artificial;
+17. sea idempotente ante repetición exacta;
+18. sea fail-closed ante cambio, omisión o conflicto de identidad;
+19. produzca evidencia machine-readable atribuible e invalidable;
+20. proteja todos los casos positivos, negativos y regresiones definidos;
+21. no implemente compatibilidad ni modificación de consumidores;
+22. no requiera una publicación productiva para autocertificarse.
+
+#### 35. Recuperación y consistencia del historial
+
+La recuperación de CI004 deberá proteger primero la historia ya publicada.
+
+Reglas:
+
+1. la generación de una nueva entrada no modifica versiones históricas;
+2. una escritura parcial del historial no puede considerarse `PASS`;
+3. antes de finalizar se verifica que la historia observada coincide con la evidencia esperada;
+4. un reintento exacto no duplica la entrada;
+5. una divergencia histórica produce `BLOCKED`, no sobrescritura automática;
+6. una corrección de contenido se entrega mediante una nueva unidad de cambio trazable;
+7. la recuperación conserva causa, candidato, identidades antes y después y resultado;
+8. un fallo de CI004 no mueve tags, releases ni artefactos administrados por CI003.
+
+#### 36. Estado documental de las cuatro familias
+
+| Package             | Changelog automático materializado | Estado actual para CI004                                   | Condición antes de una narrativa real de release                        |
+| ------------------- | ---------------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `@vento/contracts`  | No                                 | familia gobernada; package físico estable no observado     | materializar candidato y change set atribuible                          |
+| `@vento/os-context` | No                                 | workspace físico transitorio; no se observó `CHANGELOG.md` | disponer de candidato distribuible elegible y clasificación aprobada    |
+| `@vento/supabase`   | No                                 | familia gobernada; package físico estable no observado     | materializar package sin confundir changelog con migraciones de base    |
+| `@vento/ui-web`     | No                                 | familia gobernada; package físico estable no observado     | materializar package y describir también superficie UI pública afectada |
+
+**Conciliación:** 4 familias esperadas, 4 gobernadas, 0 habilitadores duplicados confirmados, 0 changelogs automáticos materializados y 0 familias omitidas.
+
+#### 37. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** la obligación de trazabilidad de release, changelog, deprecación, migración, compatibilidad y conservación histórica ya está protegida por requisitos vigentes. CI004 materializa el contrato ejecutable de esa cobertura sin introducir una nueva regla empresarial, un nuevo riesgo independiente ni una nueva obligación que requiera otra fila del registro.
+
+#### 38. Cobertura de prueba vigente reutilizada
+
+La cobertura existente se conserva sin modificación:
+
+- `TREQ-SHELL-006` mantiene las pruebas propias y la compatibilidad antes de publicar o adoptar packages compartidos;
+- `TREQ-SHELL-008` exige evidencia reproducible y declaración de requisitos afectados por package y PR;
+- `TREQ-SHELL-036` protege la correspondencia inmutable entre package, SemVer, manifest, tag, release, commit, canal, tarball e integridad y asigna participación a CI004;
+- `TREQ-SHELL-038` exige que una deprecación conserve changelog, guía, SemVer, ventana, consumidores y evidencia atribuible;
+- `TREQ-SHELL-039` mantiene retiro y fin de soporte bloqueados hasta resolver consumidores, compatibilidad, pruebas, rollback y conservación histórica.
+
+Estas referencias expresan únicamente trazabilidad de cobertura vigente.
+
+#### 39. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                      |
+| --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador documental no materializa `SHELL-CI-004::GLOBAL`, no crea tooling y no genera changelogs de packages.                                                                                              |
+| LOCAL     | NOT_EXECUTED   | El artefacto se entrega para revisión; todavía no ha sido insertado ni validado mediante los scripts del checkout del usuario.                                                                                 |
+| REMOTA    | PASS           | Se verificaron continuidad, topología, archivo propietario, CI003 `VERIFIED`, el release gate vigente, la línea base del workspace, ausencia de changelog físico en `@vento/os-context` y cobertura aplicable. |
+| OPERATIVA | NOT_EXECUTED   | No se generaron release notes, changelogs ni releases reales o sintéticas durante este marcador.                                                                                                               |
+| FÍSICA    | NOT_APPLICABLE | La materialización pertenece a la futura instancia `SHELL-CI-004::GLOBAL` después de aprobación documental y autorización explícita.                                                                           |
+
+#### 40. Criterios de aceptación
+
+`SHELL-CI-004` queda documentalmente completa cuando:
+
+- identifica la topología `GLOBAL_ENABLE_ONCE` y la futura instancia `SHELL-CI-004::GLOBAL`;
+- conserva exactamente las cuatro familias aprobadas;
+- define el change set estructurado como fuente autoritativa;
+- prohíbe inferir SemVer únicamente desde commits o texto de PR;
+- define una unidad exacta de changelog por package, versión, commit y base;
+- define seis categorías de cambio y el orden de proyección humana;
+- distingue breaking changes y migraciones como obligaciones derivadas;
+- distingue release distribuible de `NO_RELEASE`;
+- define base estable y tratamiento de prereleases;
+- define las fases lógicas `PREPARE` y `FINALIZE` sin duplicar implementación;
+- exige un historial `CHANGELOG.md` por package materializado;
+- deriva release notes desde la misma fuente que el changelog;
+- define determinismo, normalización e identidad criptográfica;
+- impide reescritura de una entrada correspondiente a una release publicada;
+- hace obligatorio un `changelog_identity` vigente para toda publicación real con cambio distribuible;
+- integra deprecaciones `DEP-*`, breaking changes, migración y seguridad;
+- conserva versiones independientes durante cortes coordinados;
+- define 8 casos positivos, 20 negativos y 16 regresiones obligatorias;
+- define recuperación idempotente y fail-closed;
+- concilia 4/4 familias sin afirmar changelogs inexistentes;
+- no modifica código, packages, changelogs, workflows, registry, consumidores, Supabase ni 04A durante el marcador;
+- no crea ni modifica requisitos de prueba.
+
+#### 41. Límites
+
+Esta tarea no:
+
+- implementa físicamente `SHELL-CI-004::GLOBAL` durante el marcador;
+- crea scripts, workflows o configuración de automatización;
+- crea físicamente `CHANGELOG.md` en packages;
+- materializa packages ausentes;
+- modifica manifests o versiones;
+- decide una versión SemVer sustituyendo la política propietaria;
+- genera una release real;
+- crea o mueve tags Git;
+- crea o modifica releases remotas;
+- publica en registry;
+- modifica la implementación de CI003;
+- ejecuta pruebas propias reservadas a CI001;
+- reconstruye artefactos reservados a CI002;
+- certifica compatibilidad reservada a CI005;
+- modifica manifests o lockfiles de consumidores;
+- abre PR reservados a CI006;
+- crea un expediente de deprecación real sin la decisión propietaria correspondiente;
+- retira superficies públicas o líneas MAJOR;
+- ejecuta despliegues;
+- ejecuta cambios de Supabase;
+- crea, modifica, difiere, descarta o vuelve obsoletos requisitos del registro 04A.
+
+#### 42. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CI-003 — Crear releases versionados`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CI-004 — Crear changelog automático`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-005 — Crear matriz de compatibilidad`
+
+
 ### [ ] SHELL-CI-005 — Crear matriz de compatibilidad
 ### [ ] SHELL-CI-006 — Crear actualización de consumidores mediante PR
