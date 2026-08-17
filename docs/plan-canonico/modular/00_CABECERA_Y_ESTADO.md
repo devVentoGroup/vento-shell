@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **947** |
+| Tareas aprobadas | **948** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **647** |
+| Tareas no iniciadas | **646** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **59.41% (947/1594)** |
+| Porcentaje de completamiento | **59.47% (948/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-NATIVE-002 — Compartir contratos y validadores** |
-| Tarea actual | **SHELL-NATIVE-003 — Mantener UI React Native separada** |
+| Última tarea aprobada | **SHELL-NATIVE-003 — Mantener UI React Native separada** |
+| Tarea actual | **SHELL-AUTH-001 — Consolidar @vento/os-context como SDK canónico de contexto y autorización** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-AUTH-001 — Consolidar @vento/os-context como SDK canónico de contexto y autorización** |
+| Siguiente tarea | **SHELL-AUTH-002 — Implementar adapters de servidor, cliente y proyecciones seguras** |
 | Bloque actual | **BLOQUE H — Fundación compartida de VENTO-SHELL** |
-| Progreso del bloque | **BLOQUE H: 97 de 109 aprobadas; SHELL-NATIVE-003 pendiente** |
+| Progreso del bloque | **BLOQUE H: 98 de 109 aprobadas; SHELL-AUTH-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-NATIVE-002` — Compartir contratos y validadores |
-| Tarea actual | `SHELL-NATIVE-003` — Mantener UI React Native separada — **NO INICIADA** |
-| Siguiente tarea | `SHELL-AUTH-001` — Consolidar @vento/os-context como SDK canónico de contexto y autorización |
+| Última aprobada | `SHELL-NATIVE-003` — Mantener UI React Native separada |
+| Tarea actual | `SHELL-AUTH-001` — Consolidar @vento/os-context como SDK canónico de contexto y autorización — **NO INICIADA** |
+| Siguiente tarea | `SHELL-AUTH-002` — Implementar adapters de servidor, cliente y proyecciones seguras |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H: 97 DE 109 APROBADAS — ACTUAL SHELL-NATIVE-003** |
+| CONTINUIDAD ACTIVA | **BLOQUE H: 98 DE 109 APROBADAS — ACTUAL SHELL-AUTH-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-NATIVE-002 — Compartir contratos y validadores
-        ↓
-TAREA ACTUAL
 SHELL-NATIVE-003 — Mantener UI React Native separada
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-AUTH-001 — Consolidar @vento/os-context como SDK canónico de contexto y autorización
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-AUTH-002 — Implementar adapters de servidor, cliente y proyecciones seguras
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 97 de 109 tareas aprobadas
+BLOQUE H — 98 de 109 tareas aprobadas
 ```

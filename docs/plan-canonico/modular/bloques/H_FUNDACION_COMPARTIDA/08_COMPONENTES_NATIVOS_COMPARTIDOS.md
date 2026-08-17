@@ -1485,7 +1485,725 @@ Esta tarea no:
 `SHELL-NATIVE-003 — Mantener UI React Native separada`
 
 
-### [ ] SHELL-NATIVE-003 — Mantener UI React Native separada
+### ✅ SHELL-NATIVE-003 — Mantener UI React Native separada
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-NATIVE-002 — Compartir contratos y validadores
+**Tarea siguiente:** SHELL-AUTH-001 — Consolidar @vento/os-context como SDK canónico de contexto y autorización
+**Tipo de tarea:** documental — definición global única de la frontera entre renderer React Native/Expo, renderer web y capas neutrales compartidas, con futura materialización física `SHELL-NATIVE-003::<implementation_unit_id>` una sola vez por unidad de implementación
+**Bloque:** BLOQUE H — Fundación compartida de VENTO-SHELL
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md`
+**Estado físico resultante:** `CONTRATO_GLOBAL_DE_SEPARACION_DE_UI_NATIVA_ESPECIFICADO`; 1 contrato global; 1 snapshot de frontera; 4 clases de propiedad; 2 familias de renderer separadas; 8 clases inicialmente no compartidas; 0 unidades materializadas; 0 packages físicos creados
+**Cambios físicos autorizados:** ninguno durante el marcador global
+**Requisitos de prueba creados o modificados:** 6 creados (`TREQ-SHELL-055` a `TREQ-SHELL-060`)
+**Modalidad:** `PER_IMPLEMENTATION_UNIT`
+
+---
+
+#### 1. Propósito
+
+`SHELL-NATIVE-003` cierra el mini-bloque de componentes nativos compartidos definiendo una frontera verificable que permite reutilizar semántica sin obligar a React Native/Expo y a la UI web a compartir componentes, navegación, layout o árbol de renderizado.
+
+La regla central es:
+
+```text
+CONTRATOS + TOKENS + LÓGICA PURA GOBERNADA
+→ pueden compartirse entre plataformas
+
+RENDERER REACT NATIVE / EXPO
+→ conserva UI nativa y composición propias
+
+RENDERER WEB REACT DOM / CSS
+→ conserva @vento/ui-web y composición web propias
+
+MISMA SEMÁNTICA
+≠ MISMO COMPONENTE
+≠ MISMO LAYOUT
+≠ MISMO ÁRBOL DE UI
+```
+
+La tarea no crea un package nativo, no mueve componentes de ANIMA y no convierte `@vento/ui-web` en una biblioteca universal.
+
+---
+
+#### 2. Modalidad canónica y ciclo
+
+La topología aplicable es `PER_IMPLEMENTATION_UNIT`.
+
+```text
+MARCADOR GLOBAL SHELL-NATIVE-003
+→ define frontera, clasificación, dependencias permitidas, gates, pruebas y evidencia
+→ se cierra una sola vez
+→ no materializa código
+
+DELIV-PKG-025::<package_id>
+→ asigna implementation_unit_id y package propietario
+
+E5-GATE-008::<package_id> = PASS
+→ autoriza la materialización física exacta
+
+SHELL-NATIVE-003::<implementation_unit_id>
+→ materializa una sola vez la frontera o superficie nativa aprobada para esa unidad
+→ N package_id pueden consumirla mediante lineage
+→ no duplica implementación para la misma unidad
+```
+
+**Dependencia de desarrollo:** `SHELL-NATIVE-002`.
+
+**Dependencias de ejecución de una instancia:**
+
+- `DELIV-PKG-025::<package_id>` con `implementation_unit_id` asignado;
+- `E5-GATE-008::<package_id> = PASS` para el paquete propietario;
+- repositorio, package y consumidores exactos definidos por el expediente aprobado;
+- baseline de dependencias y renderer verificable;
+- versiones de contratos, tokens y toolchains declaradas.
+
+No se fija en este marcador el nombre, directorio ni versión de un eventual package nativo compartido.
+
+---
+
+#### 3. Fuentes y precedencia
+
+La tarea conserva, sin reabrirlas, las decisiones de:
+
+| Fuente                                       | Uso vinculante                                                                             |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `01_PROTOCOLO.md`                            | continuidad, fase documental, TREQ, evidencia y topología por unidad                       |
+| `delivery-contract.json`                     | estructura del artefacto documental y coordinación 04A                                     |
+| `active-sequence.json`                       | `SHELL-NATIVE-003` como primera tarea pendiente del segmento H                             |
+| `task-work-topology.json`                    | modalidad `PER_IMPLEMENTATION_UNIT`                                                        |
+| `SHELL-NATIVE-001`                           | tokens neutrales, adapters de plataforma y exclusión del layout local de ANIMA             |
+| `SHELL-NATIVE-002`                           | contratos, validadores y helpers puros sin dependencias de renderer                        |
+| `SHELL-CON-001`                              | separación de `@vento/contracts`, `@vento/os-context`, `@vento/supabase` y `@vento/ui-web` |
+| estado actual de `devVentoGroup/vento-anima` | baseline físico del renderer React Native/Expo                                             |
+| Registro Canónico de Requisitos de Prueba    | cobertura vigente y secuencia TREQ                                                         |
+
+Precedencia:
+
+```text
+FUENTE SEMÁNTICA
+→ contrato neutral compartido cuando corresponda
+→ adapter o renderer propietario
+→ aplicación consumidora
+```
+
+Una implementación visual existente no se convierte en contrato transversal por similitud de apariencia.
+
+---
+
+#### 4. Línea base verificable
+
+El corte técnico actual demuestra una UI nativa real y diferenciada:
+
+| Evidencia                                | Estado observado                                                                                            | Clasificación               |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------- | --------------------------- |
+| `devVentoGroup/vento-anima/package.json` | ANIMA `1.3.4`; Expo `~54.0.35`; React Native `0.81.5`; React `19.1.0`; `expo-router`; módulos Expo y RN     | `NATIVE_REACT_NATIVE_EXPO`  |
+| `app/_layout.tsx`                        | `Stack`, `StatusBar`, notificaciones, `GestureHandlerRootView`, safe-area y componentes RN                  | `NATIVE_COMPOSITION`        |
+| `app/(app)/_layout.tsx`                  | `Tabs`, `useRouter`, `Platform`, safe-area, notificaciones e iconos nativos                                 | `NATIVE_NAVIGATION`         |
+| grupo `app/(app)`                        | 9 módulos de pantalla observados más su layout                                                              | `APP_LOCAL_NATIVE_SCREENS`  |
+| raíz `src/components`                    | 3 componentes directos y 10 familias de componentes observadas                                              | `NATIVE_UI_TREE`            |
+| `AppUpdateGate.tsx`                      | `Modal`, `ActivityIndicator`, `StyleSheet`, `TouchableOpacity` y `View` de RN                               | `NATIVE_VISUAL_COMPONENT`   |
+| `LoginForm.tsx`                          | inputs, pressables, `Platform`, `StyleSheet` y Reanimated                                                   | `NATIVE_DOMAIN_FORM`        |
+| workspace físico de `vento-shell`        | solo `packages/os-context` observado; no hay package físico `@vento/ui-web` ni package nativo materializado | `DEFINIDO_NO_MATERIALIZADO` |
+
+Los conteos anteriores describen el baseline observado y no congelan el número futuro de pantallas o componentes de ANIMA.
+
+---
+
+#### 5. Identidades contractuales
+
+| Identidad                                    | Función                                        |
+| -------------------------------------------- | ---------------------------------------------- |
+| `VENTO-NATIVE-UI-SEPARATION-CONTRACT-001`    | contrato global de separación de renderers     |
+| `SHELL-NATIVE-UI-BOUNDARY-001`               | snapshot documental de la frontera vigente     |
+| `SHELL-NATIVE-003::<implementation_unit_id>` | futura materialización física única por unidad |
+
+No se crea una identidad como `@vento/ui-native` durante este marcador. Si una unidad futura requiere un package nativo compartido, su identidad física deberá provenir del expediente E5 correspondiente.
+
+---
+
+#### 6. Cuatro clases de propiedad
+
+Toda superficie evaluada por esta frontera pertenece a una de cuatro clases:
+
+| Clase                      | Definición                                                         | Ejemplos                                                        |
+| -------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------- |
+| `PLATFORM_NEUTRAL`         | semántica consumible sin React, RN, Expo, DOM o CSS                | contratos, validadores, tokens y helpers puros gobernados       |
+| `NATIVE_REACT_NATIVE_EXPO` | implementación visual o de interacción propia del renderer RN/Expo | `View`, `TextInput`, `Tabs`, safe-area, gestos, notificaciones  |
+| `WEB_REACT_DOM_CSS`        | implementación visual web bajo la frontera de `@vento/ui-web`      | AppShell web, DOM, CSS y navegación web                         |
+| `APP_LOCAL`                | composición o comportamiento específico de una aplicación          | pantallas, formularios de dominio, consultas y procesos propios |
+
+La clasificación se determina por responsabilidad y dependencias efectivas, no por el nombre del archivo.
+
+---
+
+#### 7. Grafo permitido de dependencias
+
+La dirección permitida queda:
+
+```text
+NATIVE_REACT_NATIVE_EXPO
+→ PLATFORM_NEUTRAL
+
+WEB_REACT_DOM_CSS
+→ PLATFORM_NEUTRAL
+
+APP_LOCAL NATIVE
+→ NATIVE_REACT_NATIVE_EXPO
+→ PLATFORM_NEUTRAL
+
+APP_LOCAL WEB
+→ WEB_REACT_DOM_CSS
+→ PLATFORM_NEUTRAL
+```
+
+Queda prohibido:
+
+```text
+NATIVE_REACT_NATIVE_EXPO
+-x-> @vento/ui-web
+
+@vento/ui-web
+-x-> react-native / Expo / módulos nativos
+
+PLATFORM_NEUTRAL
+-x-> React / React Native / Expo / DOM / CSS / Next.js
+```
+
+Una dependencia indirecta a través de un re-export también cuenta como cruce de frontera.
+
+---
+
+#### 8. Matriz materializada de decisiones por clase de superficie
+
+|    # | Superficie                                       | Decisión                          | Condición                                                                          |
+| ---: | ------------------------------------------------ | --------------------------------- | ---------------------------------------------------------------------------------- |
+|    1 | tokens de diseño y aliases compatibles           | `COMPARTIR_CORE_NEUTRAL`          | conforme a `SHELL-NATIVE-001` y adapters explícitos                                |
+|    2 | contratos, códigos, tipos, eventos y validadores | `COMPARTIR_NEUTRAL`               | conforme a `SHELL-NATIVE-002`                                                      |
+|    3 | helpers puros                                    | `CANDIDATO_CONDICIONADO`          | propietario semántico, reuse declarado y cero dependencia de renderer              |
+|    4 | layouts y composición de pantallas               | `MANTENER_SEPARADO`               | pertenecen al renderer/aplicación                                                  |
+|    5 | AppShell y navegación                            | `MANTENER_POR_RENDERER`           | web y nativo resuelven navegación con su stack propio                              |
+|    6 | componentes visuales, cards, modals e inputs     | `MANTENER_POR_RENDERER`           | pueden consumir tokens/contratos, no compartir implementación por defecto          |
+|    7 | formularios de dominio                           | `MANTENER_APP_LOCAL`              | contienen interacción y reglas propias del dominio                                 |
+|    8 | composición de procesos empresariales            | `MANTENER_APP_LOCAL`              | no pertenece a la biblioteca visual compartida                                     |
+|    9 | consultas y acceso a datos de una aplicación     | `FUERA_DE_UI_COMPARTIDA`          | permanecen en su capa propietaria                                                  |
+|   10 | capacidades de plataforma                        | `MANTENER_NATIVE`                 | permisos OS, notificaciones, ubicación, gestos, safe-area, haptics y similares     |
+|   11 | layout específico de ANIMA                       | `MANTENER_ANIMA_LOCAL`            | conserva la decisión de `SHELL-NATIVE-001` sobre sus 3 constantes actuales         |
+|   12 | marca y accesibilidad                            | `COMPARTIR_SEMANTICA_NO_RENDERER` | requisitos/tokens pueden ser comunes; implementación visual permanece por renderer |
+
+**Conciliación:** 12 clases evaluadas, 12 decisiones explícitas, 0 clases sin disposición.
+
+---
+
+#### 9. Disposición del baseline de ANIMA
+
+Las superficies observadas de ANIMA se clasifican así:
+
+| Superficie observada                                                                                                | Decisión del corte                                                                               |
+| ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `app/_layout.tsx`                                                                                                   | `MANTENER_NATIVE_APP_LOCAL`                                                                      |
+| `app/(app)/_layout.tsx`                                                                                             | `MANTENER_NATIVE_APP_LOCAL`                                                                      |
+| pantallas del grupo `app/(app)`                                                                                     | `MANTENER_NATIVE_APP_LOCAL`                                                                      |
+| `src/components/AppUpdateGate.tsx`                                                                                  | `MANTENER_NATIVE_APP_LOCAL`                                                                      |
+| `src/components/SplashScreen.tsx`                                                                                   | `MANTENER_NATIVE_APP_LOCAL`                                                                      |
+| `src/components/anima-logo.tsx`                                                                                     | `MANTENER_RENDERER_NATIVE`; puede consumir semántica de marca, no se convierte en componente web |
+| familias `announcements`, `auth`, `carnet`, `documents`, `history`, `home`, `settings`, `shifts`, `support`, `team` | `MANTENER_NATIVE_APP_LOCAL` en este corte                                                        |
+| `src/constants/colors.ts`                                                                                           | compatibilidad transitoria con el core de tokens de `SHELL-NATIVE-001`                           |
+| `src/constants/layout.ts`                                                                                           | `MANTENER_ANIMA_LOCAL`                                                                           |
+
+Esta disposición no prohíbe una futura extracción nativa controlada. Prohíbe asumir que la extracción ya está justificada o que debe hacerse hacia `@vento/ui-web`.
+
+---
+
+#### 10. Frontera de `@vento/ui-web`
+
+`@vento/ui-web` conserva la responsabilidad aprobada de componentes web, AppShell web, navegación, marca, accesibilidad y contrato CSS.
+
+Consecuencias:
+
+1. no se convierte en dependencia de ANIMA por existir un target web de Expo;
+2. no exporta `View`, `Text`, `StyleSheet`, `Platform`, módulos Expo ni tipos RN como API pública;
+3. no exige que un componente nativo replique su DOM o sus clases CSS;
+4. una decisión visual web no se aplica automáticamente a nativo sin una semántica compartida previa;
+5. un token o contrato consumido por ambos renderers no convierte sus componentes en la misma implementación.
+
+---
+
+#### 11. Regla de Expo Web
+
+ANIMA declara `react-dom` y un script web porque Expo puede producir un target web. Para esta frontera:
+
+```text
+EXPO WEB
+→ sigue perteneciendo a NATIVE_REACT_NATIVE_EXPO
+→ usa el renderer y abstracciones de RN/Expo
+→ no adquiere identidad WEB_REACT_DOM_CSS por ejecutarse en navegador
+```
+
+Por tanto, compatibilidad con navegador no autoriza:
+
+- importar `@vento/ui-web` desde el renderer nativo;
+- exigir el mismo árbol de componentes;
+- sustituir `StyleSheet` por contrato CSS compartido;
+- convertir Expo Router en la navegación web canónica de Vento OS;
+- tratar una compilación web de Expo como evidencia suficiente de compatibilidad de la UI web estándar.
+
+---
+
+#### 12. Tipos que no pueden cruzar la frontera neutral
+
+Una API `PLATFORM_NEUTRAL` no podrá exponer como parte de su contrato público tipos u objetos cuya identidad dependa del renderer, incluyendo equivalentes de:
+
+- elementos JSX o nodos React como datos contractuales;
+- `StyleProp`, `ViewStyle`, `TextStyle` u otros estilos RN;
+- eventos sintéticos RN o referencias a componentes RN;
+- nodos DOM, `HTMLElement`, eventos DOM o `CSSProperties`;
+- objetos de router, navegación o history propios de un framework;
+- handles de notificaciones, ubicación, gestos o permisos del sistema operativo;
+- objetos Expo específicos.
+
+Los adapters de cada renderer traducen desde contratos neutrales hacia sus tipos locales.
+
+---
+
+#### 13. Regla de promoción a una superficie compartida
+
+Un archivo o helper no se comparte por ser pequeño, reutilizable en apariencia o estar escrito en TypeScript.
+
+La promoción requiere simultáneamente:
+
+1. propietario semántico identificable;
+2. semántica estable y no dependiente de una pantalla concreta;
+3. reuse declarado por más de un consumidor o decisión canónica explícita de superficie compartida;
+4. clasificación de renderer explícita;
+5. ausencia de dependencias prohibidas para la clase elegida;
+6. contrato de entrada/salida verificable;
+7. package y `implementation_unit_id` autorizados por E5 cuando implique materialización;
+8. pruebas del propio artefacto y de cada consumidor declarado;
+9. rollback de adopción.
+
+Ser una función pura es condición útil, pero no suficiente para crear otra fuente compartida.
+
+---
+
+#### 14. Compartición nativa sin universalización
+
+La frontera permite que una futura unidad sea `NATIVE_REACT_NATIVE_EXPO` y sea reutilizada por varios consumidores nativos si el expediente E5 lo autoriza.
+
+Eso no la convierte en `PLATFORM_NEUTRAL` ni en `@vento/ui-web`.
+
+```text
+N CONSUMIDORES NATIVOS
+→ pueden usar 1 implementación nativa compartida
+→ si pertenecen al mismo implementation_unit_id
+
+CONSUMIDOR WEB ESTÁNDAR
+→ no queda obligado a consumir esa implementación
+```
+
+El objetivo es evitar duplicación nativa real sin fabricar una biblioteca universal que degrade las capacidades de cada plataforma.
+
+---
+
+#### 15. Capacidades propias de plataforma
+
+Permanecen en el renderer nativo o en adapters nativos propietarios, cuando apliquen:
+
+- safe-area;
+- status bar;
+- teclado y foco nativo;
+- back navigation del sistema;
+- gestos;
+- haptics;
+- notificaciones del dispositivo;
+- ubicación y permisos del sistema;
+- selección y manejo local de archivos;
+- linking nativo;
+- stores y actualizaciones de aplicación;
+- diferencias iOS/Android;
+- primitives visuales de React Native.
+
+La existencia de un contrato neutral para un resultado no obliga a compartir el mecanismo físico que lo produce.
+
+---
+
+#### 16. AppShell y navegación
+
+La semántica de navegación puede referenciar identidades compartidas, pero cada renderer conserva su implementación.
+
+En ANIMA, el baseline actual usa Expo Router, `Stack`, `Tabs`, `useRouter`, notificaciones y `Platform`. Ese conjunto se clasifica como composición nativa.
+
+En web, `@vento/ui-web` conserva su AppShell y navegación conforme a su contrato propio.
+
+Queda prohibido utilizar el AppShell completo de un renderer como dependencia del otro para obtener únicamente contratos, códigos o tokens.
+
+---
+
+#### 17. Formularios, pantallas y procesos
+
+Permanecen inicialmente fuera de la compartición transversal:
+
+- páginas o pantallas completas;
+- formularios específicos de dominio;
+- flujos de login específicos de aplicación;
+- composición de procesos empresariales;
+- UI de documentos, turnos, soporte, equipo u otras funciones propias de ANIMA;
+- estado visual ligado a una pantalla concreta;
+- reglas de presentación que obliguen a todas las aplicaciones a usar la misma interfaz.
+
+Cuando exista semántica común, se comparte primero el contrato o helper neutral; el renderer conserva la experiencia adecuada a su plataforma.
+
+---
+
+#### 18. Consultas y acceso a datos
+
+Una consulta de Supabase, RPC, API, storage o servicio propio de una aplicación no se vuelve UI compartida por ser utilizada por un componente.
+
+La separación queda:
+
+```text
+CONTRATO / IDENTIDAD
+→ capa neutral compartida cuando corresponda
+
+ACCESO A DATOS / CONTEXTO / AUTORIZACIÓN
+→ capa propietaria de runtime
+
+RENDERIZADO
+→ renderer nativo o web
+
+COMPOSICIÓN DE DOMINIO
+→ aplicación propietaria
+```
+
+Esta tarea no mueve consultas, clientes, providers, hooks de datos ni lógica empresarial.
+
+---
+
+#### 19. Marca y accesibilidad
+
+Pueden compartirse semánticas como:
+
+- identidad de marca;
+- tokens de color;
+- estados y significado de acciones;
+- requisitos de contraste;
+- labels y roles conceptuales cuando sean contractuales;
+- criterios de accesibilidad verificables.
+
+No se comparte automáticamente:
+
+- implementación de iconos;
+- componentes visuales concretos;
+- CSS;
+- estilos RN;
+- estructura DOM;
+- jerarquía de views;
+- gestos o affordances específicos de plataforma.
+
+Paridad significa conservar intención y requisitos, no igualdad pixel a pixel entre renderers.
+
+---
+
+#### 20. Snapshot normativo de frontera
+
+La representación normativa de `SHELL-NATIVE-UI-BOUNDARY-001` usa JSON UTF-8, claves de objetos ordenadas lexicográficamente para la entrada de huella y arrays en el orden contractual definido.
+
+Huella documental:
+
+`sha256:e568f86dae2c155471106d4f9f6d309623aea55ab6bc10154abde17549bc50c7`
+
+Payload normativo:
+
+```json
+{
+  "cross_renderer_component_imports": false,
+  "expo_web_renderer_class": "NATIVE_REACT_NATIVE_EXPO",
+  "future_instance_pattern": "SHELL-NATIVE-003::<implementation_unit_id>",
+  "identical_component_tree_required": false,
+  "initial_nonshared_classes": [
+    "routes_and_layouts",
+    "app_shell_and_navigation",
+    "visual_components",
+    "domain_forms",
+    "domain_process_composition",
+    "application_queries",
+    "platform_capabilities",
+    "application_specific_layout"
+  ],
+  "promotion_requires": [
+    "semantic_owner",
+    "declared_reuse_or_canonical_shared_decision",
+    "renderer_scope_explicit",
+    "no_forbidden_cross_renderer_dependency",
+    "e5_authorization",
+    "consumer_tests"
+  ],
+  "renderer_classes": [
+    "PLATFORM_NEUTRAL",
+    "NATIVE_REACT_NATIVE_EXPO",
+    "WEB_REACT_DOM_CSS",
+    "APP_LOCAL"
+  ],
+  "schema": "vento.ui-renderer-boundary@1",
+  "shared_neutral_sources": [
+    "VENTO-DESIGN-TOKENS-CONTRACT-001",
+    "VENTO-SHARED-CONTRACT-VALIDATION-API-001"
+  ],
+  "snapshot_id": "SHELL-NATIVE-UI-BOUNDARY-001",
+  "web_native_component_imports": false
+}
+```
+
+La identidad del snapshot no podrá reutilizarse con otra política de importación o clasificación silenciosa.
+
+---
+
+#### 21. Contrato de entrada de cada futura instancia
+
+Toda `SHELL-NATIVE-003::<implementation_unit_id>` deberá registrar como mínimo:
+
+| Campo                    | Obligación                                                                                          |
+| ------------------------ | --------------------------------------------------------------------------------------------------- |
+| `implementation_unit_id` | unidad exacta asignada por `DELIV-PKG-025`                                                          |
+| `owner_package_id`       | paquete propietario con `E5-GATE-008 = PASS`                                                        |
+| `consumer_package_ids`   | consumidores exactos                                                                                |
+| repositorio              | propietario físico                                                                                  |
+| package físico           | identidad exacta aprobada por E5, si existe                                                         |
+| renderer_class           | `PLATFORM_NEUTRAL`, `NATIVE_REACT_NATIVE_EXPO`, `WEB_REACT_DOM_CSS` o `APP_LOCAL` según corresponda |
+| baseline                 | commit anterior a la materialización                                                                |
+| result commit            | commit exacto del resultado                                                                         |
+| boundary snapshot        | `SHELL-NATIVE-UI-BOUNDARY-001` o revisión aprobada                                                  |
+| dependency graph         | imports directos, re-exports y dependencias runtime                                                 |
+| shared inputs            | versiones exactas de tokens, contratos y validators consumidos                                      |
+| native surface inventory | superficies nativas afectadas por la unidad                                                         |
+| consumer matrix          | repositorio, target, toolchain y resultado                                                          |
+| tests                    | unitarias, contractuales, import graph, serialización y consumo                                     |
+| digest                   | huella del manifest de frontera aplicable                                                           |
+| rollback                 | combinación anterior y procedimiento reproducible                                                   |
+| blockers                 | lista cerrada con propietario y condición de salida                                                 |
+
+Un campo obligatorio ausente deja la instancia `BLOCKED`.
+
+---
+
+#### 22. Unicidad por `implementation_unit_id`
+
+```text
+1 implementation_unit_id
+→ máximo 1 SHELL-NATIVE-003::<implementation_unit_id>
+→ máximo 1 definición física propietaria de esa frontera o renderer compartido
+→ máximo 1 conjunto propietario de gates de importación
+→ N package_id consumidores mediante lineage
+```
+
+No se crean copias de una misma superficie nativa compartida para satisfacer paquetes distintos pertenecientes a la misma unidad.
+
+Una UI app-local no se considera duplicación prohibida por tener una intención visual semejante; la prohibición aplica cuando ambos artefactos pretenden ser la misma implementación compartida de la misma unidad.
+
+---
+
+#### 23. Once gates de una futura materialización
+
+| Gate                   | PASS                                                                        | Bloqueo                               |
+| ---------------------- | --------------------------------------------------------------------------- | ------------------------------------- |
+| 1. identidad           | unidad, package, renderer, versión y commits inequívocos                    | identidad ambigua                     |
+| 2. clasificación       | cada superficie afectada tiene clase de propiedad                           | superficie sin owner o clase          |
+| 3. dependencias        | grafo cumple las direcciones permitidas                                     | import o re-export cruzando renderers |
+| 4. neutralidad         | superficies neutrales no filtran tipos de renderer                          | API compartida acoplada a UI          |
+| 5. localidad           | pantallas, formularios, procesos y queries no se promueven sin autorización | extracción prematura                  |
+| 6. Expo Web            | se conserva dentro de la familia RN/Expo                                    | fusión accidental con `@vento/ui-web` |
+| 7. contratos/tokens    | inputs compartidos usan versiones aprobadas                                 | copia o semántica paralela            |
+| 8. serialización       | manifest de frontera determinista y digest reproducible                     | evidencia no reproducible             |
+| 9. consumidores        | cada target y consumidor declarado supera sus pruebas                       | consumidor o target sin validar       |
+| 10. unicidad y lineage | una implementación por unidad y lineage completo                            | copia propietaria paralela            |
+| 11. rollback           | retorno reproducible a una combinación soportada                            | rollback no ensayable                 |
+
+La instancia queda `PASS` solo cuando todos los gates aplicables estén en `PASS`.
+
+---
+
+#### 24. Perfil de pruebas aplicable
+
+La futura materialización deberá cubrir como mínimo:
+
+| Perfil          | Cobertura mínima                                                                             |
+| --------------- | -------------------------------------------------------------------------------------------- |
+| unitarias       | helpers/adapters extraídos y clasificación de casos límite cuando existan                    |
+| contractuales   | snapshot de frontera, clases, dependencias permitidas y prohibidas                           |
+| estáticas       | grafo de imports/re-exports y ausencia de tipos de renderer en APIs neutrales                |
+| compatibilidad  | versiones de React, RN, Expo, web stack y contratos compartidos declarados                   |
+| serialización   | manifest, orden, bytes y SHA-256 repetible                                                   |
+| consumer-driven | typecheck, build/export y pruebas aplicables por consumidor                                  |
+| multiplataforma | targets nativos declarados y Expo Web cuando aplique; web estándar por su stack propio       |
+| regresión       | ausencia de nuevos cruces `native ↔ @vento/ui-web` y de promoción accidental de UI app-local |
+| lineage         | unidad, package, commit, renderer, snapshot y digest                                         |
+| rollback        | retorno a combinación soportada y repetición de gates esenciales                             |
+
+No se exige pixel parity entre renderers. Las pruebas visuales, cuando existan, se ejecutan contra el contrato de cada renderer.
+
+---
+
+#### 25. Evidencia requerida por instancia
+
+| Clase                     | Contenido mínimo                                                      |
+| ------------------------- | --------------------------------------------------------------------- |
+| `LINEAGE`                 | unidad, package_id, repositorio, baseline, result commit y versión    |
+| `RENDERER_CLASSIFICATION` | inventario afectado y clase de cada superficie                        |
+| `DEPENDENCY_GRAPH`        | imports, re-exports y dependencias runtime                            |
+| `NEUTRAL_API`             | ausencia de tipos UI/plataforma en superficies neutrales              |
+| `NATIVE_SURFACES`         | componentes/pantallas nativos afectados y disposición                 |
+| `SHARED_INPUTS`           | contratos, validators, tokens y versiones exactas                     |
+| `EXPO_WEB_BOUNDARY`       | evidencia de que el target web de Expo no cruza hacia `@vento/ui-web` |
+| `SERIALIZATION`           | manifest, digest y repetición                                         |
+| `CONSUMERS`               | resultados por target y consumidor                                    |
+| `ROLLBACK`                | snapshot, procedimiento, ensayo y resultado                           |
+| `CERTIFICATION`           | once gates y estado agregado                                          |
+
+---
+
+#### 26. Rollback y evolución
+
+El rollback de una instancia deberá restaurar coordinadamente:
+
+1. imports y exports anteriores;
+2. versión anterior de cualquier package afectado;
+3. adapters y contratos de props neutrales aplicables;
+4. referencias de consumidores y lockfiles cuando hayan cambiado;
+5. configuración de bundler/toolchain afectada;
+6. fixtures y manifest de frontera compatibles.
+
+Una superficie publicada como nativa no cambia a neutral o web únicamente por refactor. El cambio de clase exige revisión explícita de dependencias, consumidores, SemVer cuando aplique y evidencia de compatibilidad.
+
+---
+
+#### 27. Condiciones de suspensión
+
+Una instancia queda `BLOCKED` si ocurre cualquiera de estas condiciones:
+
+- `implementation_unit_id` ausente o ambiguo;
+- owner package sin gate E5 aprobado;
+- import directo o indirecto desde RN/Expo hacia `@vento/ui-web`;
+- import desde UI web compartida hacia RN, Expo o módulo nativo;
+- superficie neutral que exponga tipos de renderer;
+- extracción de página, formulario, proceso o consulta sin decisión propietaria;
+- fusión de Expo Web con la identidad de renderer web estándar;
+- componente compartido que obligue a aplicaciones con necesidades distintas a una misma interfaz sin contrato aprobado;
+- consumidor declarado sin prueba aplicable;
+- evidencia de otra versión, commit o unidad;
+- implementación duplicada para la misma unidad;
+- digest no reproducible;
+- rollback no reproducible.
+
+---
+
+#### 28. Requisitos de prueba derivados
+
+**Resultado:** GENERA 6 REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** **6**
+**Requisitos modificados:** **0**
+
+Se crean:
+
+- `TREQ-SHELL-055` — separación estricta entre renderer RN/Expo y `@vento/ui-web`, con capas neutrales como única frontera compartible transversal;
+- `TREQ-SHELL-056` — prohibición de tipos/objetos específicos de renderer dentro de APIs `PLATFORM_NEUTRAL`;
+- `TREQ-SHELL-057` — conservación app-local/nativa de pantallas, layouts, formularios, queries y capacidades de plataforma hasta cumplir el gate de promoción;
+- `TREQ-SHELL-058` — clasificación de Expo Web dentro de la familia RN/Expo sin colapsar la frontera con la UI web estándar;
+- `TREQ-SHELL-059` — matriz de compatibilidad y pruebas por renderer/target sin exigir árbol visual idéntico;
+- `TREQ-SHELL-060` — unicidad física por `implementation_unit_id`, lineage, evidencia vigente y rollback.
+
+No se modifica, difiere, descarta ni obsoleta ningún requisito histórico.
+
+---
+
+#### 29. Puerta de cierre del marcador global
+
+El marcador global queda documentalmente cerrado cuando:
+
+1. se define una sola frontera global de renderers;
+2. se fija la topología `PER_IMPLEMENTATION_UNIT`;
+3. se reconcilia el baseline RN/Expo actual de ANIMA;
+4. se definen cuatro clases de propiedad;
+5. se materializan 12 decisiones por clase de superficie;
+6. se establece el grafo permitido de dependencias;
+7. se preservan `SHELL-NATIVE-001` y `SHELL-NATIVE-002` como capas compartidas neutrales;
+8. se fija `@vento/ui-web` como renderer web y no como dependencia nativa;
+9. se fija Expo Web dentro de la familia RN/Expo;
+10. se prohíbe filtrar tipos de renderer a contratos neutrales;
+11. se define el gate de promoción de artefactos;
+12. se permite sharing nativo solo dentro de una unidad explícita, sin universalizarlo;
+13. se define snapshot determinista y huella;
+14. se definen once gates, pruebas, evidencia y rollback;
+15. se registran `TREQ-SHELL-055` a `TREQ-SHELL-060`;
+16. se mantienen 0 unidades físicas materializadas y 0 cambios Supabase.
+
+---
+
+#### 30. Puerta de cierre de cada futura instancia
+
+`SHELL-NATIVE-003::<implementation_unit_id>` solo podrá quedar `PASS` cuando:
+
+- exista unidad y package propietario inequívocos;
+- la clasificación de renderer esté documentada;
+- el grafo de dependencias cumpla la frontera;
+- las superficies neutrales no dependan de tipos UI;
+- cualquier sharing nativo tenga consumidores y owner explícitos;
+- ANIMA conserve compatibilidad cuando sea consumidor declarado;
+- Expo Web respete la frontera definida cuando aplique;
+- web estándar conserve su renderer propietario;
+- contratos/tokens compartidos sean versiones aprobadas;
+- todos los targets declarados tengan evidencia vigente;
+- no exista una segunda implementación para la misma unidad;
+- snapshot, commit, versión y digest coincidan;
+- rollback haya sido ensayado;
+- `TREQ-SHELL-055` a `TREQ-SHELL-060` aplicables estén satisfechos con evidencia atribuible.
+
+---
+
+#### 31. Criterios de aceptación
+
+- [x] `SHELL-NATIVE-002` permanece como precedencia inmediata;
+- [x] se define la continuidad hacia `SHELL-AUTH-001` sin desarrollarla;
+- [x] se define un contrato global único de separación de UI;
+- [x] se reconcilia la realidad RN/Expo de ANIMA;
+- [x] se distinguen cuatro clases de propiedad;
+- [x] se materializan 12 decisiones por clase de superficie;
+- [x] contratos y tokens permanecen compartibles sin trasladar renderer;
+- [x] `@vento/ui-web` permanece exclusivamente del renderer web;
+- [x] React Native/Expo no depende de `@vento/ui-web`;
+- [x] web compartida no depende de RN/Expo;
+- [x] Expo Web permanece dentro de la familia RN/Expo;
+- [x] páginas, pantallas, formularios, procesos y consultas propias permanecen inicialmente fuera de la compartición visual;
+- [x] se define un gate explícito para promoción futura;
+- [x] se permite sharing nativo por unidad sin obligar a web a consumirlo;
+- [x] se prohíben tipos de renderer dentro de APIs neutrales;
+- [x] se define snapshot y huella reproducible;
+- [x] se definen once gates y perfil de pruebas;
+- [x] se crean exactamente 6 requisitos de prueba;
+- [x] se declaran 0 packages físicos, 0 migraciones y 0 cambios Supabase;
+- [x] no se desarrolla `SHELL-AUTH-001`.
+
+---
+
+#### 32. Límites
+
+Esta tarea no:
+
+- crea un package nativo compartido;
+- crea o publica `@vento/ui-web`;
+- inventa la identidad `@vento/ui-native`;
+- modifica `vento-anima`;
+- mueve componentes, pantallas o layouts;
+- migra imports;
+- cambia Expo Router;
+- cambia navegación o providers de ANIMA;
+- convierte formularios de dominio en componentes transversales;
+- mueve consultas o acceso a datos;
+- crea SQL, RLS, RPC, migraciones, Storage, Edge Functions o datos;
+- ejecuta Supabase;
+- ejecuta una instancia `SHELL-NATIVE-003::<implementation_unit_id>`;
+- desarrolla `SHELL-AUTH-001`.
 
 No se debe empezar trasladando el AppShell completo. Primero deben compartirse contratos, códigos, tipos, eventos y helpers puros.
 
@@ -1496,3 +2214,16 @@ formularios específicos de dominio;
 procesos empresariales completos;
 consultas propias de una aplicación;
 componentes que obliguen a todas las aplicaciones a tener la misma interfaz.
+
+---
+
+#### 33. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-NATIVE-002 — Compartir contratos y validadores`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-NATIVE-003 — Mantener UI React Native separada`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-AUTH-001 — Consolidar @vento/os-context como SDK canónico de contexto y autorización`

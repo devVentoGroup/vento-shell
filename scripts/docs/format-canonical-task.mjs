@@ -139,27 +139,52 @@ function normalizeCanonicalIdentityTitles(block, canonicalTitles) {
   return candidate;
 }
 
-function extractContinuityValue(section, label) {
-  const escaped = escapeRegex(label);
-  const patterns = [
-    new RegExp(`\\*\\*${escaped}:?\\*\\*\\s*\\n+\\s*\\x60\\x60\\x60text\\s*\\n([^\\n]+)\\n\\x60\\x60\\x60`, 'u'),
-    new RegExp(`\\*\\*${escaped}:?\\*\\*\\s*\\n+\\s*\\x60([^\\n\\x60]+)\\x60`, 'u'),
-    new RegExp(`\\*\\*${escaped}:?\\*\\*\\s*\\x60([^\\n\\x60]+)\\x60`, 'u'),
-  ];
-  for (const pattern of patterns) {
-    const match = section.match(pattern);
-    if (match) return match[1].trim();
+function continuityLabel(line) {
+  for (const label of CONTINUITY_LABELS) {
+    const escaped = escapeRegex(label);
+    if (new RegExp(`^(?:\\*\\*${escaped}:?\\*\\*|#{1,6}\\s+${escaped})\\s*$`, 'u').test(line.trim())) {
+      return label;
+    }
   }
   return null;
+}
+
+function withoutLegacyContinuityTriplet(section) {
+  const lines = normalizeSource(section).split('\n');
+  const preserved = [];
+  for (let index = 0; index < lines.length;) {
+    if (!continuityLabel(lines[index])) {
+      preserved.push(lines[index]);
+      index += 1;
+      continue;
+    }
+
+    index += 1;
+    while (lines[index]?.trim() === '') index += 1;
+    if (/^```(?:text)?\s*$/u.test(lines[index]?.trim() ?? '')) {
+      index += 1;
+      while (index < lines.length && !/^```\s*$/u.test(lines[index].trim())) index += 1;
+      if (index < lines.length) index += 1;
+    } else if (index < lines.length) {
+      index += 1;
+    }
+    while (lines[index]?.trim() === '') index += 1;
+  }
+  return preserved
+    .filter((line) => !/No se inicia|permanece reservada y no se desarrolla/iu.test(line))
+    .join('\n')
+    .trim();
 }
 
 function normalizeContinuitySection(block) {
   const match = block.match(/^####(?:\s+\d+\.)?\s+Continuidad\s*$/mu);
   if (!match || match.index === undefined) return block;
   const before = block.slice(0, match.index);
-  const section = block.slice(match.index);
-  const values = CONTINUITY_LABELS.map((label) => extractContinuityValue(section, label));
+  const sectionBody = block.slice(match.index + match[0].length);
+  const identity = taskIdentityFromBlock(block);
+  const values = [identity?.previous, identity?.current, identity?.next];
   if (values.some((value) => !value)) return block;
+  const preserved = withoutLegacyContinuityTriplet(sectionBody);
 
   const heading = match[0].trim();
   const rendered = [heading, ''];
@@ -167,7 +192,10 @@ function normalizeContinuitySection(block) {
     rendered.push(`**${label}**`, `\`${values[index]}\``);
     if (index < CONTINUITY_LABELS.length - 1) rendered.push('');
   });
-  return `${before}${rendered.join('\n')}`;
+  if (!preserved) return `${before}${rendered.join('\n')}`;
+
+  const previousBody = before.replace(/\n*---\s*\n*$/u, '\n\n').replace(/\n+$/u, '');
+  return `${previousBody}\n\n${preserved}\n\n---\n\n${rendered.join('\n')}`;
 }
 
 function semanticFingerprint(block) {

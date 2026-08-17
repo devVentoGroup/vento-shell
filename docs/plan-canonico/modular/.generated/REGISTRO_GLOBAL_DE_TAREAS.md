@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **947** |
+| Aprobadas | **948** |
 | En propuesta | **0** |
-| No iniciadas | **647** |
+| No iniciadas | **646** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **59.41% (947/1594)** |
+| Porcentaje de completamiento | **59.47% (948/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-NATIVE-002` — Compartir contratos y validadores | ✅ APROBADA |
-| Tarea actual | `SHELL-NATIVE-003` — Mantener UI React Native separada | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-AUTH-001` — Consolidar @vento/os-context como SDK canónico de contexto y autorización | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-NATIVE-003` — Mantener UI React Native separada | ✅ APROBADA |
+| Tarea actual | `SHELL-AUTH-001` — Consolidar @vento/os-context como SDK canónico de contexto y autorización | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-AUTH-002` — Implementar adapters de servidor, cliente y proyecciones seguras | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -774,7 +774,7 @@
 | ✅ APROBADA | `SHELL-MIG-008` | Definir gate de retiro legacy y certificación por paquete | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ✅ APROBADA | `SHELL-NATIVE-001` | Crear tokens compatibles con ANIMA | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-NATIVE-002` | Compartir contratos y validadores | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-NATIVE-003` | Mantener UI React Native separada | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-NATIVE-003` | Mantener UI React Native separada | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUTH-001` | Consolidar @vento/os-context como SDK canónico de contexto y autorización | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUTH-002` | Implementar adapters de servidor, cliente y proyecciones seguras | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUTH-003` | Implementar scope por solicitud y registro canónico de consumidores | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |

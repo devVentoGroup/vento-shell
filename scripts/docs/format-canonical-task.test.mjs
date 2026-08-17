@@ -103,6 +103,57 @@ No se inicia \`TEST-FMT-006\` en esta tarea.
   assert.deepEqual(validateTaskPresentation(formatted), []);
 });
 
+test('normaliza continuidad con subtítulos y conserva su texto adicional antes del cierre', () => {
+  const source = `### ✅ TEST-FMT-010 — Contratos nativos
+
+**Estado:** APROBADA
+**Tarea anterior:** TEST-FMT-009 — Contrato anterior
+**Tarea siguiente:** TEST-FMT-011 — Contrato siguiente
+**Tipo de tarea:** Documental
+**Bloque:** X — Prueba
+
+---
+
+#### 1. Límites
+
+Límite original.
+
+---
+
+#### 2. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+TEST-FMT-001 — Valor equivocado
+
+##### TAREA ACTUAL APROBADA
+
+TEST-FMT-002 — Valor equivocado
+
+##### SIGUIENTE TAREA RESERVADA
+
+TEST-FMT-003 — Valor equivocado
+
+La implementación debe empezar por contratos puros.
+`;
+  const formatted = formatTaskBlock(source);
+  assert.match(formatted, /Límite original\.\n\nLa implementación debe empezar por contratos puros\./u);
+  assert.match(
+    formatted,
+    /\*\*ÚLTIMA TAREA APROBADA\*\*\n`TEST-FMT-009 — Contrato anterior`/u,
+  );
+  assert.match(
+    formatted,
+    /\*\*TAREA ACTUAL APROBADA\*\*\n`TEST-FMT-010 — Contratos nativos`/u,
+  );
+  assert.match(
+    formatted,
+    /\*\*SIGUIENTE TAREA RESERVADA\*\*\n`TEST-FMT-011 — Contrato siguiente`$/u,
+  );
+  assert.doesNotMatch(formatted, /^#####/mu);
+  assert.deepEqual(validateTaskPresentation(formatted), []);
+});
+
 test('añade continuidad prospectiva cuando la tarea desarrollada todavía no la contiene', () => {
   const source = `### [ ] TEST-FMT-006 — Con desarrollo
 
