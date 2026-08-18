@@ -5,25 +5,25 @@
   "sequence_id": "PHASE-03-T-CI-FOUNDATION",
   "block_code": "BLOQUE T",
   "block_title": "CI, pruebas, despliegue y rollback base",
-  "previous_task_id": "SHELL-CI-006",
+  "previous_task_id": "SHELL-CI-007",
   "latest_treq_task_id": "NEXO-UX-025",
   "handoff_task_id": "AUTH-SRV-001",
   "handoff_sequence_id": "PHASE-03-J-SERVER-ACTIONS",
   "segments": [
     {
       "prefix": "SHELL-CI",
-      "from": 7,
+      "from": 8,
       "to": 24
     }
   ],
   "block_progress": {
     "total_tasks": 24,
-    "approved_tasks": 6,
-    "pending_tasks": 18
+    "approved_tasks": 7,
+    "pending_tasks": 17
   },
   "route_progress": {
     "covered_tasks": 1594,
-    "pending_tasks": 629,
+    "pending_tasks": 628,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
     "active_stage": 11
