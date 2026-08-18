@@ -45,7 +45,7 @@ Recalcular cifras y huellas sobre commit final.
 
 #### TREQ existentes
 
-Modificar `TREQ-VISO-004`, `005`, `006`, `012`, `013`, `015` y `023`; reemplazar `04A` completo.
+Modificar `TREQ-VISO-004`, `005`, `006`, `012`, `013`, `015`, `016` y `023`; reemplazar `04A` completo.
 
 #### Aceptación
 
