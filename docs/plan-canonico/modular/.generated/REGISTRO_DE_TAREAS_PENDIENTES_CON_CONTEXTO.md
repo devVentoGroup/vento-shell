@@ -8,11 +8,11 @@
 
 ## Qué toca hacer ahora
 
-- **Acción principal obligatoria:** `EJECUTAR_IMPLEMENTACION`
-- **Objetivo exacto:** `SHELL-CI-009::GLOBAL` — Probar ORIGO antes de actualizar
-- **Instrucción:** Ejecutar la transacción humana continua de SHELL-CI-009::GLOBAL desde IMPLEMENTED hasta VERIFIED; detenerse solo ante bloqueo real o fallo.
-- **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `SHELL-CI-010`
-- **Implementación física autorizada:** `SHELL-CI-009::GLOBAL`
+- **Acción principal obligatoria:** `DOCUMENTAR_TAREA`
+- **Objetivo exacto:** `SHELL-CI-010` — Probar PULSO antes de actualizar
+- **Instrucción:** Desarrollar únicamente el contrato documental de SHELL-CI-010; no iniciar su instancia física por inferencia.
+- **Carril documental:** ACTIVO — `SHELL-CI-010`
+- **Implementación física autorizada:** **NINGUNA**
 
 > Esta instrucción prevalece sobre la simple posición de una tarea en la lista pendiente. Aprobar documentación no autoriza código y una instancia física no puede saltar su predecesora global.
 
