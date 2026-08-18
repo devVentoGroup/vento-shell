@@ -2914,5 +2914,948 @@ Esta tarea no:
 `SHELL-CI-005 — Crear matriz de compatibilidad`
 
 
-### [ ] SHELL-CI-005 — Crear matriz de compatibilidad
+### ✅ SHELL-CI-005 — Crear matriz de compatibilidad
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CI-004 — Crear changelog automático
+**Tarea siguiente:** SHELL-CI-006 — Crear actualización de consumidores mediante PR
+**Tipo de tarea:** Habilitador global único — contrato documental de matriz ejecutable de compatibilidad package–consumidor, targets y evidencia pre-release
+**Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada el habilitador global que materializará y certificará la **matriz de compatibilidad package–consumidor** de Vento OS antes de publicar o adoptar una versión compartida, preservando la identidad exacta del package, del artefacto candidato, del consumidor, del lockfile, del toolchain, del target y de la evidencia ejecutada.
+
+La regla vinculante queda fijada así:
+
+```text
+PACKAGE CANÓNICO
++ VERSIÓN EXACTA
++ ARTEFACTO CANDIDATO E INTEGRIDAD
++ COMMIT DE ORIGEN
++ CONSUMIDOR EXACTO
++ COMMIT DEL CONSUMIDOR
++ MANIFEST Y LOCKFILE DEL CONSUMIDOR
++ VERSIONES RESUELTAS DEL TOOLCHAIN
++ TARGET / RENDERER APLICABLE
++ EJES OBLIGATORIOS EJECUTADOS
++ EVIDENCIA VIGENTE
+= COMBINACIÓN ELEGIBLE PARA DECLARACIÓN DE COMPATIBILIDAD
+```
+
+Y, de forma fail-closed:
+
+```text
+RANGO DECLARADO SIN EJECUCIÓN
+O EVIDENCIA DE OTRO CONSUMIDOR
+O LOCKFILE DISTINTO
+O TOOLCHAIN NO RESUELTO
+O EJE OBLIGATORIO AUSENTE
+O RESULTADO STALE
+O CONSUMIDOR O TARGET OMITIDO
+O RESTRICCIÓN QUE OCULTA UNA RUPTURA
+≠ COMPATIBLE
+```
+
+Esta tarea no modifica packages, consumidores, workflows ni releases. Define el contrato que `SHELL-CI-005::GLOBAL` deberá materializar y certificar una sola vez y que las releases posteriores reutilizarán sin duplicar el habilitador.
+
+#### 2. Resultado canónico
+
+`SHELL-CI-005` establece un único contrato transversal para:
+
+1. materializar la política aprobada en `SHELL-PKG-004` como matriz ejecutable;
+2. conservar las 28 relaciones web base con sus identificadores canónicos;
+3. evaluar exactamente las cuatro familias compartidas aprobadas;
+4. evaluar los doce ejes de compatibilidad aplicables;
+5. diferenciar banda candidata, combinación verificada y banda soportada;
+6. conservar los seis estados canónicos de relación;
+7. impedir que ausencia de prueba o de adopción se convierta en compatibilidad;
+8. consumir evidencia vigente de pruebas propias y build del package;
+9. ejecutar perfiles consumer-driven contra commits, manifests y lockfiles exactos;
+10. registrar versiones realmente resueltas, no solo rangos declarados;
+11. soportar consumidores o targets adicionales únicamente mediante bindings explícitos de contratos propietarios ya aprobados;
+12. conservar separada la matriz web base de cualquier extensión nativa o multiplataforma;
+13. producir una identidad criptográfica determinista de compatibilidad;
+14. entregar esa identidad al contrato de release de CI003 antes de publicación;
+15. enlazar posteriormente el resultado preparado con la identidad inmutable de release sin reescribir la matriz;
+16. conservar historial de evaluaciones, invalidaciones y restricciones;
+17. soportar prereleases con pilotos explícitos sin prometer soporte general;
+18. soportar cortes multi-package con matrices independientes;
+19. invalidar evidencia cuando cambie cualquier entrada material;
+20. preservar la frontera entre compatibilidad, publicación y modificación de consumidores.
+
+#### 3. Base vinculante
+
+La definición conserva las decisiones ya aprobadas de distribución, versionado, release, changelog, compatibilidad, deprecación y fundación compartida:
+
+- packages npm privados e inmutables producidos desde `vento-shell`;
+- cuatro familias compartidas: `@vento/contracts`, `@vento/os-context`, `@vento/supabase` y `@vento/ui-web`;
+- versionado SemVer independiente por package;
+- versiones exactas y lockfile en consumidores;
+- siete consumidores web base;
+- 28 relaciones package–consumidor aplicables por diseño;
+- doce ejes obligatorios de compatibilidad;
+- seis estados canónicos;
+- evidencia atribuible a una combinación exacta;
+- banda candidata distinta de banda soportada;
+- adopción independiente por repositorio;
+- identidad inmutable de release;
+- changelog y release notes derivados de change set estructurado;
+- deprecaciones y retiros ligados a inventario de consumidores y matriz vigente;
+- ausencia de prueba como `PENDIENTE_DE_EVIDENCIA`, nunca como `COMPATIBLE`;
+- prohibición de inferir compatibilidad desde `peerDependencies`, rango SemVer, build aislado o similitud de stack.
+
+#### 4. Topología de trabajo
+
+`PHASE-03-T-CI-FOUNDATION` aplica `GLOBAL_ENABLE_ONCE` a `SHELL-CI-005`.
+
+Por tanto:
+
+```text
+MARCADOR CANÓNICO
+SHELL-CI-005
+→ define el contrato una sola vez
+
+INSTANCIA FÍSICA FUTURA
+SHELL-CI-005::GLOBAL
+→ materializa y autocertifica el habilitador una sola vez
+
+RELEASES Y ADOPCIONES POSTERIORES
+→ reutilizan el habilitador certificado
+→ producen evidencia propia por combinación
+→ no crean otra implementación de CI005
+```
+
+La autocertificación global podrá utilizar repositorios, manifests, lockfiles, packages y targets sintéticos o aislados. No necesita publicar una release real ni modificar consumidores reales.
+
+#### 5. Frontera con el mini-bloque
+
+| Responsabilidad                                                               | Propietario    |
+| ----------------------------------------------------------------------------- | -------------- |
+| pruebas propias del package                                                   | `SHELL-CI-001` |
+| build, exports, declarations, empaquetado e identidad del artefacto candidato | `SHELL-CI-002` |
+| identidad inmutable y publicación de release                                  | `SHELL-CI-003` |
+| changelog, release notes y narrativa automática                               | `SHELL-CI-004` |
+| matriz y veredicto de compatibilidad package–consumidor                       | `SHELL-CI-005` |
+| modificación del consumidor y PR de adopción                                  | `SHELL-CI-006` |
+
+CI005 consume identidades y evidencia de CI001, CI002 y CI004 y entrega una identidad de compatibilidad consumible por CI003. No reconstruye el package, no crea tags o releases, no modifica el changelog y no cambia manifests o lockfiles reales de consumidores.
+
+#### 6. Universo base gobernado
+
+La matriz web base conserva exactamente:
+
+**Packages**
+
+1. `@vento/contracts`;
+2. `@vento/os-context`;
+3. `@vento/supabase`;
+4. `@vento/ui-web`.
+
+**Consumidores web**
+
+1. `vento-shell`;
+2. `vento-viso`;
+3. `vento-nexo`;
+4. `vento-fogo`;
+5. `vento-origo`;
+6. `vento-pulso`;
+7. `vento-numera`.
+
+Resultado:
+
+```text
+4 packages × 7 consumidores web = 28 relaciones base
+```
+
+Las 28 relaciones son aplicables por diseño y ninguna puede eliminarse, renumerarse o declararse `NO_APLICA` por ausencia temporal de adopción.
+
+PASS, ANIMA, TALENTO y otras superficies móviles o nativas no se incorporan a estas 28 relaciones por inferencia.
+
+#### 7. Extensiones declaradas de consumidor y target
+
+Las decisiones posteriores a `SHELL-PKG-004` pueden exigir compatibilidad para consumidores o targets fuera de la matriz web base, incluido un target Expo/React Native cuando un contrato aprobado lo declare consumidor de una unidad compartida.
+
+CI005 soportará esas extensiones sin alterar la matriz histórica:
+
+```text
+MATRIZ WEB BASE
+→ 28 relaciones PKG-COMP-MX-001..028
+→ identidad y cardinalidad inmutables
+
+BINDINGS ADICIONALES
+→ solo desde contrato propietario aprobado
+→ conservan su identidad propietaria
+→ no reciben un PKG-COMP-MX inventado
+→ pueden declarar repository + target + renderer_class + package/unit
+```
+
+Una extensión será elegible únicamente si aporta una identidad resoluble de binding, contrato propietario, package o unidad consumida, repositorio, target, renderer y perfil de pruebas.
+
+La mera existencia de un repositorio, plataforma o dependencia no crea una extensión.
+
+#### 8. Línea base física observada
+
+En el corte remoto vigente:
+
+- `SHELL-CI-001::GLOBAL`, `SHELL-CI-002::GLOBAL`, `SHELL-CI-003::GLOBAL` y `SHELL-CI-004::GLOBAL` están materializados y `VERIFIED`;
+- CI003 ya reconoce `compatibility_required` y exige `compatibility_evidence_identity` cuando la compatibilidad es requerida;
+- CI004 ya produce material de changelog determinista y enlazable a CI003;
+- no se observó un habilitador físico de compatibilidad package–consumidor ya materializado;
+- `@vento/os-context@0.1.0` continúa como workspace privado y transitorio, exportando `src/index.ts`;
+- su peer `@supabase/supabase-js >=2.90.0` continúa sin límite superior `<3`;
+- `vento-shell` declara Node `24.19.0` y npm `11.17.0`;
+- `vento-viso`, `vento-nexo`, `vento-fogo`, `vento-origo`, `vento-pulso` y `vento-numera` no declaran todavía `engines.node` en sus manifests observados;
+- los siete consumidores web conservan React y React DOM `19.2.3`;
+- los siete consumidores web declaran Supabase JS `^2.90.1` y Supabase SSR `^0.8.0`;
+- las especificaciones de Next observadas siguen entre `16.1.1` y `^16.2.4`;
+- ninguno de los siete manifests web observados declara todavía una dependencia publicada `@vento/*`;
+- ANIMA utiliza Expo/React Native y no pertenece a la matriz web base.
+
+Por tanto, las 28 relaciones base permanecen `PENDIENTE_DE_EVIDENCIA`. La similitud de versiones no constituye evidencia ejecutada.
+
+#### 9. Unidad exacta de compatibilidad
+
+Cada evaluación se atribuirá, como mínimo, a:
+
+```text
+package_name
+package_version
+package_source_commit
+package_manifest_identity
+artifact_content_identity
+artifact_integrity
+consumer_repository
+consumer_commit
+consumer_manifest_identity
+consumer_lockfile_identity
+resolved_versions
+environment_identity
+target_identity
+renderer_class
+compatibility_profile_identity
+axis_set_identity
+run_identity
+```
+
+Para relaciones web base, `target_identity` será el target web realmente ejecutado por el consumidor.
+
+Para bindings adicionales, `target_identity` y `renderer_class` provendrán del contrato propietario.
+
+Cambiar cualquiera de estas dimensiones materiales invalida la reutilización del resultado anterior.
+
+#### 10. Perfiles canónicos por package
+
+| ID             | Package             | Banda candidata inicial                                                                                                 | Obligaciones principales                                              | Dependencias o acoplamientos prohibidos                          |
+| -------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `COMP-PKG-001` | `@vento/contracts`  | TypeScript `>=5 <6`; ESM y declarations consumibles                                                                     | exports, schemas, tipos, catálogos, códigos y serialización           | Next, React, Supabase, Tailwind o APIs de navegador              |
+| `COMP-PKG-002` | `@vento/os-context` | TypeScript `>=5 <6`; Supabase JS `>=2.90.0 <3`                                                                          | contexto efectivo, autorización, browser/server, razones y errores    | React, UI, Tailwind o acoplamiento a una aplicación              |
+| `COMP-PKG-003` | `@vento/supabase`   | TypeScript `>=5 <6`; Supabase JS `>=2.90.1 <3`; Supabase SSR `>=0.8.0 <0.9`; adapter Next `>=16.1.1 <17` cuando aplique | tipos `Database`, cliente browser/server, cookies, RPC, errores y SSR | componentes UI o reglas de negocio de aplicación                 |
+| `COMP-PKG-004` | `@vento/ui-web`     | TypeScript `>=5 <6`; Next `>=16.1.1 <17`; React y React DOM `>=19.2.3 <20`; Tailwind `>=4 <5`                           | SSR, hydration, props, eventos, DOM, accesibilidad, tokens y CSS      | acceso directo a datos, permisos efectivos o procesos de dominio |
+
+Reglas adicionales:
+
+1. React y React DOM forman una pareja de compatibilidad;
+2. una banda de Next no autoriza APIs privadas o experimentales no cubiertas por pruebas;
+3. un adapter específico de framework usa un subpath explícito;
+4. dependencias internas `@vento/*` permanecen exactas;
+5. peers externos tienen límite superior de major, o de minor para dependencias `0.x`;
+6. `@vento/os-context` no puede certificar estable con Supabase JS abierto a major `3`;
+7. una banda no es soportada mientras no exista evidencia sobre sus extremos y combinaciones efectivas.
+
+#### 11. Doce ejes obligatorios
+
+| ID              | Eje                        | Evidencia mínima                                                                             |
+| --------------- | -------------------------- | -------------------------------------------------------------------------------------------- |
+| `COMP-AXIS-001` | instalación reproducible   | instalación limpia con manifest y lockfile coherentes, sin regeneración silenciosa           |
+| `COMP-AXIS-002` | identidad del artefacto    | package, versión, identidad del candidato, integridad, commit y contenido coincidentes       |
+| `COMP-AXIS-003` | exports y módulos          | imports públicos, subpaths, ESM, tree-shaking y ausencia de imports internos no soportados   |
+| `COMP-AXIS-004` | TypeScript                 | declarations consumibles y typecheck de package y consumidor sin ocultar rupturas            |
+| `COMP-AXIS-005` | runtime y Node             | runtime declarado, runtime ejecutado, APIs de plataforma y ambiente compatibles              |
+| `COMP-AXIS-006` | Next y SSR                 | build, Server Components, client boundaries, cookies, middleware/proxy y SSR aplicables      |
+| `COMP-AXIS-007` | React e hidratación        | render server/client, hydration, hooks, contextos y pareja React/React DOM coherente         |
+| `COMP-AXIS-008` | Supabase                   | clientes browser/server, sesión, cookies, tipos generados, RPC y errores normalizados        |
+| `COMP-AXIS-009` | contratos y comportamiento | schemas, catálogos, códigos, serialización, errores y semántica observable                   |
+| `COMP-AXIS-010` | contexto y autorización    | identidad real, contexto operativo, simulación, dispositivo, razones y denegaciones          |
+| `COMP-AXIS-011` | UI, CSS y accesibilidad    | props, eventos, DOM, foco, teclado, lectores, tokens, estilos y composición                  |
+| `COMP-AXIS-012` | consumidor                 | lint, typecheck, build, pruebas contractuales, integración, regresión y smoke/E2E aplicables |
+
+Un eje puede quedar `NOT_APPLICABLE` únicamente con justificación machine-readable atribuible a package, consumidor y target. La ausencia de implementación o prueba no constituye no-aplicabilidad.
+
+#### 12. Estados de relación y transiciones
+
+Los estados de compatibilidad permanecen exactamente:
+
+1. `NO_APLICA`;
+2. `PENDIENTE_DE_EVIDENCIA`;
+3. `COMPATIBLE`;
+4. `COMPATIBLE_CON_RESTRICCIONES`;
+5. `INCOMPATIBLE`;
+6. `BLOQUEADA`.
+
+Para las 28 relaciones base, la aplicabilidad ya está aprobada; por tanto, su estado inicial es `PENDIENTE_DE_EVIDENCIA`.
+
+Transiciones permitidas:
+
+```text
+PENDIENTE_DE_EVIDENCIA → COMPATIBLE
+PENDIENTE_DE_EVIDENCIA → COMPATIBLE_CON_RESTRICCIONES
+PENDIENTE_DE_EVIDENCIA → INCOMPATIBLE
+PENDIENTE_DE_EVIDENCIA → BLOQUEADA
+BLOQUEADA → PENDIENTE_DE_EVIDENCIA
+INCOMPATIBLE → PENDIENTE_DE_EVIDENCIA
+COMPATIBLE → PENDIENTE_DE_EVIDENCIA
+COMPATIBLE_CON_RESTRICCIONES → PENDIENTE_DE_EVIDENCIA
+NO_APLICA → PENDIENTE_DE_EVIDENCIA
+```
+
+Un cambio material invalida primero hacia `PENDIENTE_DE_EVIDENCIA`; una ejecución nueva decide el siguiente estado. No se salta directamente de un resultado histórico a otro sin una nueva evaluación atribuible.
+
+#### 13. Matriz web base de 28 relaciones
+
+| ID                | Package             | Consumidor     | Aplicabilidad | Estado inicial           |
+| ----------------- | ------------------- | -------------- | ------------- | ------------------------ |
+| `PKG-COMP-MX-001` | `@vento/contracts`  | `vento-shell`  | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-002` | `@vento/contracts`  | `vento-viso`   | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-003` | `@vento/contracts`  | `vento-nexo`   | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-004` | `@vento/contracts`  | `vento-fogo`   | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-005` | `@vento/contracts`  | `vento-origo`  | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-006` | `@vento/contracts`  | `vento-pulso`  | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-007` | `@vento/contracts`  | `vento-numera` | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-008` | `@vento/os-context` | `vento-shell`  | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-009` | `@vento/os-context` | `vento-viso`   | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-010` | `@vento/os-context` | `vento-nexo`   | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-011` | `@vento/os-context` | `vento-fogo`   | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-012` | `@vento/os-context` | `vento-origo`  | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-013` | `@vento/os-context` | `vento-pulso`  | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-014` | `@vento/os-context` | `vento-numera` | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-015` | `@vento/supabase`   | `vento-shell`  | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-016` | `@vento/supabase`   | `vento-viso`   | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-017` | `@vento/supabase`   | `vento-nexo`   | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-018` | `@vento/supabase`   | `vento-fogo`   | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-019` | `@vento/supabase`   | `vento-origo`  | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-020` | `@vento/supabase`   | `vento-pulso`  | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-021` | `@vento/supabase`   | `vento-numera` | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-022` | `@vento/ui-web`     | `vento-shell`  | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-023` | `@vento/ui-web`     | `vento-viso`   | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-024` | `@vento/ui-web`     | `vento-nexo`   | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-025` | `@vento/ui-web`     | `vento-fogo`   | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-026` | `@vento/ui-web`     | `vento-origo`  | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-027` | `@vento/ui-web`     | `vento-pulso`  | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-028` | `@vento/ui-web`     | `vento-numera` | `APLICA`      | `PENDIENTE_DE_EVIDENCIA` |
+
+**Conciliación:** 28 esperadas, 28 materializadas, 28 aplicables, 28 pendientes de evidencia, 0 compatibles, 0 incompatibles, 0 faltantes y 0 duplicadas.
+
+#### 14. Contrato machine-readable de una relación
+
+Cada evaluación de relación deberá conservar, como mínimo:
+
+| Campo                        | Obligación                                                              |
+| ---------------------------- | ----------------------------------------------------------------------- |
+| `relation_identity`          | `PKG-COMP-MX-*` para la base o identidad propietaria para una extensión |
+| `relation_source`            | `BASE_WEB_MATRIX` o contrato propietario de extensión                   |
+| `package_name`               | una familia gobernada                                                   |
+| `package_version`            | SemVer exacto                                                           |
+| `package_source_commit`      | commit de origen exacto                                                 |
+| `package_manifest_identity`  | identidad del manifest candidato                                        |
+| `artifact_content_identity`  | identidad del artefacto distribuible                                    |
+| `artifact_integrity`         | integridad del tarball candidato                                        |
+| `candidate_bands`            | bandas que se pretende soportar                                         |
+| `consumer_repository`        | repositorio exacto                                                      |
+| `consumer_commit`            | commit probado                                                          |
+| `consumer_manifest_identity` | identidad del manifest probado                                          |
+| `consumer_lockfile_identity` | identidad del lockfile probado                                          |
+| `declared_versions`          | rangos declarados relevantes                                            |
+| `resolved_versions`          | versiones realmente resueltas                                           |
+| `environment_identity`       | ambiente controlado y reproducible                                      |
+| `target_identity`            | target ejecutado                                                        |
+| `renderer_class`             | clase de renderer o `NOT_APPLICABLE` cuando no existe renderer          |
+| `applicable_axes`            | doce ejes con aplicabilidad y justificación                             |
+| `test_results`               | resultados por eje                                                      |
+| `compatibility_state`        | uno de los seis estados                                                 |
+| `restrictions`               | restricciones explícitas o arreglo vacío                                |
+| `evidence_identities`        | identidades de ejecuciones y artefactos                                 |
+| `decision_owner`             | owner resoluble                                                         |
+| `invalidated_by`             | causa de invalidación o `NONE`                                          |
+
+Los timestamps operativos pueden conservarse fuera de la identidad material. No se usan como sustituto de commit, lockfile o evidencia.
+
+#### 15. Perfil de ejecución por relación
+
+Para evaluar una relación real, CI005 deberá:
+
+1. resolver el package candidato y su artefacto certificado;
+2. verificar que el artefacto corresponde al mismo manifest, versión y commit;
+3. resolver el checkout exacto del consumidor;
+4. verificar manifest y lockfile antes de instalar;
+5. preparar una ubicación aislada o efímera para no modificar el repositorio consumidor;
+6. instalar el artefacto candidato mediante el mecanismo reproducible aplicable;
+7. conservar la versión exacta del package y las versiones efectivamente resueltas de peers y toolchain;
+8. ejecutar los ejes requeridos por el perfil del package, consumidor y target;
+9. capturar exit codes y evidencia sin ocultar warnings contractuales;
+10. clasificar cada eje;
+11. derivar el estado de relación;
+12. preservar el resultado incluso cuando sea fallo, bloqueo o incompatibilidad;
+13. no realizar commit, push, PR ni despliegue en el consumidor.
+
+La ausencia de un perfil ejecutable para un eje obligatorio deja la relación `PENDIENTE_DE_EVIDENCIA`.
+
+#### 16. Estrategia de bandas
+
+Una banda soportada se deriva únicamente de evidencia.
+
+La estrategia deberá cubrir, según aplique:
+
+```text
+mínimo declarado de la banda
++ máximo probado dentro de la banda
++ versión efectiva de cada consumidor
++ combinaciones de peers relevantes
++ escenarios server/client/SSR
++ targets adicionales declarados
+```
+
+Reglas:
+
+1. probar una sola versión no certifica automáticamente todo el rango;
+2. el máximo probado nunca se extrapola a otro major;
+3. una dependencia `0.x` no extrapola soporte fuera del minor probado;
+4. React y React DOM se prueban como pareja;
+5. la versión efectiva del consumidor siempre se registra aunque coincida con un extremo;
+6. una ampliación de banda requiere nueva evidencia y SemVer conforme a la política aprobada;
+7. una reducción de banda no se oculta como corrección compatible.
+
+#### 17. Reglas de restricciones
+
+`COMPATIBLE_CON_RESTRICCIONES` solo es válido cuando cada restricción conserva:
+
+- identidad estable;
+- alcance exacto;
+- subpaths permitidos o excluidos;
+- ambiente o target permitido;
+- configuración o flag necesario;
+- riesgo aceptado;
+- owner;
+- condición de salida;
+- tareas o gates propietarios cuando apliquen;
+- evidencia ejecutada que sí pasa bajo la restricción;
+- bloqueo explícito de usos fuera de la restricción.
+
+Una restricción no puede:
+
+- esconder un eje fallido;
+- omitir un consumidor obligatorio;
+- convertir una incompatibilidad reproducible en compatibilidad;
+- autorizar bypass de tipos, seguridad o autorización;
+- eliminar una obligación de migración o deprecación;
+- permanecer sin owner ni salida.
+
+#### 18. Fase PREPARE de compatibilidad
+
+CI005 tendrá una fase lógica `PREPARE` previa a publicación:
+
+```text
+CANDIDATO CI001/CI002
++ MATERIAL CI004 CUANDO APLIQUE
++ MATRIZ REQUERIDA
++ CHECKOUTS / TARGETS EXACTOS
+→ ejecutar perfiles
+→ consolidar resultados
+→ derivar bandas soportadas
+→ calcular compatibility_evidence_identity
+→ entregar identidad al contrato de CI003
+```
+
+`PREPARE` no publica el package.
+
+Para una release estable, la matriz requerida incluye las 28 relaciones web base de la familia correspondiente y cualquier binding adicional obligatorio declarado por contratos propietarios aplicables.
+
+Para una prerelease, la matriz puede limitarse al conjunto explícito de pilotos aprobado para esa prerelease, pero el resultado no se proyecta como soporte para consumidores no ejecutados.
+
+#### 19. Criterio de suficiencia de matriz
+
+Una matriz estable es suficiente únicamente cuando:
+
+```text
+required_relations > 0
+AND evaluated_required_relations = required_relations
+AND pending_required_relations = 0
+AND blocked_required_relations = 0
+AND incompatible_required_relations = 0
+AND stale_required_relations = 0
+AND every_required_axis_is_resolved = true
+AND package_test_evidence_is_current = true
+AND build_evidence_is_current = true
+AND compatibility_identity_is_current = true
+```
+
+Una relación `COMPATIBLE_CON_RESTRICCIONES` puede satisfacer la matriz solo si las restricciones están completas, aprobadas, no contradicen el uso previsto del release y no ocultan un eje fallido.
+
+#### 20. Identidad criptográfica de compatibilidad
+
+`compatibility_evidence_identity` será una identidad `sha256` del payload canónico que vincule, como mínimo:
+
+```text
+compatibility_contract_identity
+package_name
+package_version
+package_source_commit
+package_manifest_identity
+artifact_content_identity
+artifact_integrity
+release_channel_type
+candidate_bands
+supported_bands
+package_test_evidence_identity
+build_evidence_identity
+required_relation_set_identity
+normalized_relation_results
+declared_extension_bindings
+```
+
+`normalized_relation_results` incorpora, por relación, commit, manifest, lockfile, resolved versions, ambiente, target, renderer, ejes, restricciones, estado y evidence identities.
+
+No participan en esa identidad:
+
+- rutas absolutas;
+- usuario local;
+- locale;
+- timezone;
+- timestamps de ejecución;
+- orden de descubrimiento del filesystem;
+- identificadores aleatorios de una corrida que no cambien el contenido lógico.
+
+La misma matriz lógica produce los mismos bytes canónicos y la misma identidad.
+
+#### 21. Integración con CI003
+
+El release gate vigente de CI003 ya admite:
+
+```text
+compatibility_required = true
+compatibility_evidence_identity = identidad producida por CI005
+```
+
+CI005 define que toda release compartida publicada mediante el flujo gobernado deberá presentar la evidencia de compatibilidad correspondiente a su canal:
+
+- estable: matriz completa aplicable;
+- prerelease: matriz de pilotos explícitos aplicable.
+
+La identidad debe pertenecer exactamente al mismo package, versión, source commit, manifest y artefacto candidato.
+
+CI003 conserva la autoridad de publicación. CI005 no crea tags, releases ni publicaciones en registry.
+
+La materialización de CI005 no requiere modificar CI003 para inventar una segunda interfaz.
+
+#### 22. Fase FINALIZE
+
+Después de que CI003 publique o simule de forma verificable la identidad de release:
+
+```text
+PREPARED MATRIX
++ RELEASE EVIDENCE CI003
+→ verificar package
+→ verificar versión
+→ verificar source commit
+→ verificar artefacto
+→ verificar compatibility_evidence_identity
+→ enlazar release identity
+→ conservar evaluación final
+```
+
+`FINALIZE` no puede cambiar una relación, una banda, una restricción ni un resultado para hacerlos coincidir con una release ya publicada.
+
+Si cambia el contenido sustantivo, el candidato deja de ser el mismo y vuelve a los gates previos.
+
+Un reintento exacto de `FINALIZE` es idempotente.
+
+#### 23. Publicación estable
+
+Antes de permitir una release estable deberán coexistir:
+
+1. pruebas propias vigentes del package;
+2. build reproducible vigente;
+3. identidad exacta del artefacto candidato;
+4. changelog exigible cuando corresponda;
+5. manifest de compatibilidad completo;
+6. banda candidata acotada;
+7. matriz requerida completa;
+8. cero relaciones requeridas `PENDIENTE_DE_EVIDENCIA`;
+9. cero relaciones requeridas `BLOQUEADA`;
+10. cero relaciones requeridas `INCOMPATIBLE`;
+11. cero evidencia `STALE`;
+12. restricciones completas y aprobadas cuando existan;
+13. runtime reproducible para cada target requerido;
+14. referencia de rollback hacia una combinación soportada cuando aplique;
+15. `compatibility_evidence_identity` vigente.
+
+Un rango de peer dependency o un build exitoso en `vento-shell` no satisface este conjunto.
+
+#### 24. Prereleases
+
+Para `alpha.N`, `beta.N` y `rc.N`:
+
+- el conjunto de pilotos debe declararse antes de ejecutar;
+- cada piloto conserva consumidor, commit, lockfile, target y evidencia propios;
+- no se declara compatibilidad con un consumidor no ejecutado;
+- una prerelease no convierte su banda en banda estable soportada;
+- una release estable posterior vuelve a ejecutar la matriz estable requerida contra el candidato final;
+- una prerelease interna no puede quedar como dependencia de una release estable;
+- evidencia de una prerelease no se reutiliza como evidencia de otra versión.
+
+#### 25. Cortes coordinados multi-package
+
+En un corte con varias familias:
+
+1. cada package mantiene su propia matriz e identidad;
+2. un package sin cambio distribuible no recibe una nueva matriz de release artificial;
+3. una dependencia interna exacta se resuelve antes de evaluar al dependiente;
+4. la matriz del dependiente usa la versión interna exacta que pretende consumir;
+5. un PASS de una familia no sustituye la matriz de otra;
+6. el orden de publicación sigue perteneciendo a CI003;
+7. el conjunto de consumidores puede ser el mismo, pero la evidencia nunca se fusiona entre packages;
+8. una incompatibilidad de un package no cambia silenciosamente el resultado de otro.
+
+#### 26. Invalidación y evidencia stale
+
+Una evaluación deja de ser vigente cuando cambia de forma material cualquiera de estas entradas:
+
+- versión del package;
+- source commit;
+- manifest del package;
+- artefacto o integridad;
+- banda candidata;
+- commit del consumidor;
+- manifest del consumidor;
+- lockfile del consumidor;
+- versión resuelta de una dependencia evaluada;
+- runtime;
+- framework;
+- renderer;
+- target;
+- configuración de build;
+- contrato CSS cuando aplique;
+- tipos generados;
+- catálogo, schema, código o contrato consumido;
+- fixture u oracle;
+- conjunto de ejes aplicables;
+- restricción;
+- binding de extensión;
+- perfil de compatibilidad.
+
+La evaluación histórica se conserva, pero la combinación vigente vuelve a `PENDIENTE_DE_EVIDENCIA`.
+
+El tiempo por sí solo no vuelve stale una evidencia si ninguna entrada material cambió y no existe defecto reproducible nuevo que invalide la declaración.
+
+#### 27. Runtime y Node
+
+Para la matriz web:
+
+- `vento-shell` conserva el runtime reproducible ya declarado en su configuración vigente;
+- los otros seis consumidores web no pueden considerarse listos para primera estable mientras no declaren y prueben su runtime reproducible;
+- CI005 registra tanto el runtime declarado como el realmente ejecutado;
+- una diferencia entre ambos bloquea la relación;
+- ejecutar correctamente bajo el runtime del runner no sustituye una declaración contractual necesaria del consumidor;
+- una modificación posterior del runtime invalida la evidencia relacionada.
+
+CI005 no modifica `engines.node` de consumidores; esa corrección pertenece al repositorio y tarea propietaria correspondiente.
+
+#### 28. Targets nativos, Expo y renderer
+
+Un binding nativo o multiplataforma aprobado deberá conservar la clase de renderer y el target.
+
+Reglas:
+
+1. un target Expo/React Native no se normaliza a consumidor `@vento/ui-web`;
+2. Expo Web permanece dentro de su stack Expo/React Native cuando así lo fija su contrato propietario;
+3. un build Expo Web no sustituye pruebas de un consumidor Next;
+4. un build Next no sustituye pruebas del target nativo;
+5. un PASS de Android, iOS o Web no sustituye otro target declarado obligatorio;
+6. contratos, validadores o tokens neutrales pueden probarse en varios targets sin compartir renderer;
+7. no se exige igualdad pixel a pixel entre renderers;
+8. se exige paridad del contrato observable donde el contrato propietario la declare;
+9. ANIMA solo entra en una ejecución cuando exista un binding propietario que declare exactamente qué unidad compartida consume y qué targets son obligatorios.
+
+#### 29. Deprecación, retiro y rollback
+
+CI005 conserva la relación con las políticas de deprecación y rollback:
+
+- una deprecación utiliza la matriz para identificar consumidores afectados;
+- la reducción de una banda soportada no se oculta como simple revalidación;
+- el retiro de una superficie no puede declarar resueltas relaciones que siguen activas;
+- la ausencia de consumo residual requiere evidencia propietaria, no inferencia por falta de import encontrado en una sola búsqueda;
+- el rollback apunta a una combinación previamente soportada y reproducible;
+- un rollback no restaura bypasses o versiones declaradas incompatibles;
+- una relación histórica de una release publicada no se elimina para aparentar que el consumidor nunca estuvo soportado;
+- el fin de soporte conserva lineage hacia la evidencia que justificó el cambio.
+
+#### 30. Seguridad de la matriz
+
+La evidencia de compatibilidad no incluirá:
+
+- tokens;
+- cookies de sesión;
+- credenciales;
+- service role;
+- claves privadas;
+- secretos de registry;
+- dumps sensibles;
+- JWT completos;
+- payloads empresariales innecesarios.
+
+Los fixtures reales sensibles deberán sustituirse por fixtures sintéticos o referencias protegidas.
+
+Una redacción o redacción automática de secreto no puede convertir una prueba técnicamente incompleta en `PASS`.
+
+El acceso a repositorios o registries privados se trata como infraestructura de ejecución y no forma parte del payload determinista de compatibilidad.
+
+#### 31. Estados de ejecución del habilitador
+
+El runtime del gate reutilizará la semántica común:
+
+- `PENDING`;
+- `RUNNING`;
+- `PASS`;
+- `FAIL`;
+- `BLOCKED`;
+- `CANCELLED`;
+- `TIMED_OUT`;
+- `STALE`;
+- `NOT_APPLICABLE` solo para ejecuciones realmente no aplicables.
+
+Estos estados describen la ejecución y no sustituyen los seis estados de relación.
+
+Una relación solo puede derivarse a `COMPATIBLE` o `COMPATIBLE_CON_RESTRICCIONES` desde evidencia requerida con ejecución satisfactoria y vigente.
+
+#### 32. Casos positivos obligatorios del habilitador
+
+`SHELL-CI-005::GLOBAL` deberá demostrar, como mínimo:
+
+1. una relación web con todos los ejes aplicables en PASS → `COMPATIBLE`;
+2. una relación con restricción explícita, owner, salida y ejes válidos → `COMPATIBLE_CON_RESTRICCIONES`;
+3. matriz estable sintética completa de 28 relaciones de una familia → identidad de compatibilidad determinista y elegible;
+4. repetición exacta de la misma matriz → mismos bytes canónicos y mismo `compatibility_evidence_identity`;
+5. corte sintético con dos packages → dos matrices e identidades independientes;
+6. prerelease con pilotos explícitos → certificación limitada únicamente a esos pilotos;
+7. binding adicional propietario de renderer nativo → evaluación separada sin alterar `PKG-COMP-MX-001..028`;
+8. `FINALIZE` con evidencia CI003 exacta → vínculo idempotente sin modificar resultados preparados.
+
+#### 33. Casos negativos obligatorios del habilitador
+
+`SHELL-CI-005::GLOBAL` deberá bloquear, como mínimo:
+
+1. package fuera de las familias gobernadas;
+2. relación base faltante;
+3. relación base duplicada;
+4. `PKG-COMP-MX-*` inventado o reasignado a otro consumidor;
+5. versión del package distinta a la del candidato;
+6. source commit, manifest, artefacto o integridad incompatibles;
+7. commit del consumidor distinto al probado;
+8. manifest del consumidor distinto al probado;
+9. lockfile distinto al probado;
+10. versiones resueltas obligatorias ausentes;
+11. consumidor web estable sin runtime reproducible exigible;
+12. peer o versión resuelta fuera de la banda candidata;
+13. eje obligatorio ausente;
+14. eje obligatorio fallido, bloqueado, cancelado o con timeout;
+15. `NOT_APPLICABLE` sin justificación contractual;
+16. evidencia stale reutilizada después de cambiar una entrada;
+17. `COMPATIBLE_CON_RESTRICCIONES` con restricción sin owner, alcance o salida;
+18. release estable con cualquier relación requerida pendiente, bloqueada o incompatible;
+19. evidencia de otro consumidor, target, renderer o package reutilizada;
+20. `FINALIZE` con evidencia CI003 de otra versión, commit, artefacto o identidad de compatibilidad.
+
+#### 34. Regresiones obligatorias del habilitador global
+
+La implementación única deberá proteger, como mínimo:
+
+1. orden distinto de claves JSON alterando el digest lógico;
+2. CRLF frente a LF alterando la identidad lógica normalizada;
+3. locale, timezone o reloj alterando el digest;
+4. reintento exacto duplicando una evaluación histórica;
+5. cambio de package devolviendo una relación vigente a pendiente;
+6. cambio de lockfile consumidor no invalidando evidencia;
+7. cambio de versión resuelta del toolchain no invalidando evidencia;
+8. pérdida, duplicación o renumeración de una de las 28 relaciones base;
+9. ANIMA u otro target adicional insertado como relación 29 de la matriz web;
+10. Expo Web clasificado como equivalente automático de `@vento/ui-web`;
+11. PASS de un target utilizado para certificar otro target obligatorio;
+12. `skipLibCheck`, cast global, mock permisivo o override ocultando una ruptura;
+13. una única versión probada ampliando automáticamente toda una banda;
+14. deprecación o retiro eliminando historia de compatibilidad previa;
+15. revalidación reescribiendo evidencia de una release histórica;
+16. el gate modificando un consumidor real, abriendo un PR o publicando una release.
+
+#### 35. Criterios de materialización de `SHELL-CI-005::GLOBAL`
+
+La instancia física podrá declararse materializada únicamente cuando:
+
+1. exista una sola implementación transversal en `vento-shell`;
+2. reconozca exactamente las cuatro familias aprobadas;
+3. conserve exactamente las 28 relaciones web base;
+4. admita extensiones únicamente desde bindings propietarios;
+5. implemente los doce ejes;
+6. preserve los seis estados y transiciones;
+7. capture commit, manifest y lockfile exactos del consumidor;
+8. capture versiones declaradas y resueltas;
+9. ejecute en ubicaciones aisladas sin modificar consumidores reales;
+10. soporte perfiles por package y target;
+11. soporte restricciones estructuradas;
+12. soporte mínimos, máximos y versiones efectivas de bandas;
+13. produzca `compatibility_evidence_identity` determinista;
+14. integre esa identidad con CI003 sin publicar por sí misma;
+15. implemente `PREPARE` y `FINALIZE`;
+16. soporte estable y prerelease sin mezclar garantías;
+17. soporte cortes multi-package independientes;
+18. invalide evidencia al cambiar una entrada material;
+19. preserve historia y sea idempotente;
+20. proteja evidencia sensible;
+21. autocertifique todos los casos positivos, negativos y regresiones definidos;
+22. no modifique consumers, PRs, Supabase, registry, tags o releases reales durante la autocertificación.
+
+#### 36. Recuperación e idempotencia
+
+La recuperación protege primero la evidencia ya producida.
+
+Reglas:
+
+1. una ejecución parcial no puede normalizarse a `COMPATIBLE`;
+2. una escritura parcial de evidencia no constituye PASS;
+3. un reintento exacto reutiliza la identidad lógica sin duplicar historia;
+4. una divergencia de evidencia produce `BLOCKED` o `STALE`, no sobrescritura;
+5. un fallo de un consumidor no altera evidencia válida de otro;
+6. un fallo de CI005 no mueve tags ni releases;
+7. una corrección del gate no reescribe matrices históricas de releases;
+8. una nueva versión del gate conserva la identidad de implementación por separado;
+9. las evidencias históricas mantienen package, consumer, commit, lockfile, target y digest;
+10. la recuperación no modifica repositorios consumidores para “reparar” un resultado.
+
+#### 37. Estado documental conciliado
+
+La situación documental resultante es:
+
+| Métrica                                                     | Resultado |
+| ----------------------------------------------------------- | --------: |
+| Packages base                                               |     **4** |
+| Consumidores web base                                       |     **7** |
+| Relaciones web base                                         |    **28** |
+| Relaciones base aplicables                                  |    **28** |
+| Relaciones base pendientes de evidencia                     |    **28** |
+| Relaciones base compatibles declaradas por esta tarea       |     **0** |
+| Relaciones base incompatibles declaradas por esta tarea     |     **0** |
+| Ejes canónicos                                              |    **12** |
+| Estados de relación                                         |     **6** |
+| Habilitadores globales CI001..CI004 previamente verificados |     **4** |
+| Habilitador físico CI005 materializado por este marcador    |     **0** |
+| Requisitos de prueba creados o modificados                  |     **0** |
+
+La existencia de manifests similares y tooling compartido no modifica estos estados.
+
+#### 38. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA  
+**Requisitos creados:** **0**  
+**Requisitos modificados:** **0**
+
+**Justificación:** las obligaciones de pruebas propias, compatibilidad por consumidor, identidad de release, cortes coordinados, deprecación, retiro, targets multiplataforma, lineage, rollback y evidencia ya están cubiertas por requisitos vigentes. CI005 define el habilitador ejecutable común y su forma de consolidación sin introducir una obligación empresarial independiente que requiera otra fila.
+
+#### 39. Cobertura de prueba vigente reutilizada
+
+La cobertura existente se conserva sin modificación:
+
+- `TREQ-SHELL-006` protege pruebas propias y matriz por consumidor antes de publicar o adoptar;
+- `TREQ-SHELL-007` protege rollback independiente hacia combinaciones soportadas;
+- `TREQ-SHELL-008` exige requisitos afectados y evidencia reproducible;
+- `TREQ-SHELL-009` exige identidad verificable de repositorio, commit y ambiente;
+- `TREQ-SHELL-036` protege la identidad inmutable de release;
+- `TREQ-SHELL-037` protege cortes multi-package y dependencias internas exactas;
+- `TREQ-SHELL-038` vincula deprecación con consumidores, changelog, migración y evidencia;
+- `TREQ-SHELL-039` mantiene retiro y fin de soporte bloqueados hasta resolver consumidores y rollback;
+- los requisitos vigentes de fundación nativa y autorización que asignan CI005 conservan sus bindings de consumidor, target, renderer, lineage y paridad sin ampliar la matriz web base por inferencia.
+
+Estas referencias son trazabilidad de cobertura ya existente y no constituyen actualización del registro.
+
+#### 40. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                    |
+| --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador documental no materializa el gate de compatibilidad ni ejecuta consumers.                                                                                                                                                                                                        |
+| LOCAL     | NOT_EXECUTED   | El artefacto aún no ha sido insertado ni validado por los scripts del checkout del usuario.                                                                                                                                                                                                  |
+| REMOTA    | PASS           | Se verificaron continuidad CI004→CI005→CI006, topología `GLOBAL_ENABLE_ONCE`, política `SHELL-PKG-004`, 28 relaciones, 12 ejes, seis estados, manifests web actuales, delta de runtime, CI004 `VERIFIED`, interfaz CI003 de `compatibility_evidence_identity` y cobertura vigente aplicable. |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutó una matriz real contra consumidores ni una release real o sintética durante este marcador.                                                                                                                                                                                     |
+| FÍSICA    | NOT_APPLICABLE | La materialización pertenece a `SHELL-CI-005::GLOBAL` después de aprobación documental y autorización física explícita.                                                                                                                                                                      |
+
+#### 41. Criterios de aceptación
+
+`SHELL-CI-005` queda documentalmente completa cuando:
+
+- identifica `SHELL-CI-005::GLOBAL` como habilitador único;
+- conserva exactamente 4 packages y 7 consumidores web base;
+- conserva exactamente `PKG-COMP-MX-001..028`;
+- mantiene las 28 relaciones base en `PENDIENTE_DE_EVIDENCIA` mientras no exista ejecución;
+- permite extensiones solo desde bindings propietarios y no inventa relación 29;
+- conserva los 12 ejes canónicos;
+- conserva los seis estados y sus transiciones;
+- define la unidad exacta con package, artefacto, consumer, commit, manifest, lockfile, toolchain, ambiente y target;
+- distingue versiones declaradas de versiones resueltas;
+- define perfiles y bandas candidatas por las cuatro familias;
+- define restricciones estructuradas;
+- define estrategia de extremos de banda;
+- exige runtime reproducible;
+- mantiene Expo/React Native separado de la matriz web;
+- define `PREPARE`, identidad determinista e integración con CI003;
+- define `FINALIZE` idempotente sin mutar resultados;
+- bloquea estable con cualquier relación requerida no resuelta;
+- limita prerelease a pilotos explícitos;
+- conserva matrices independientes por package en cortes coordinados;
+- invalida evidencia ante cualquier cambio material;
+- protege deprecación, retiro, rollback e historia;
+- define 8 casos positivos, 20 negativos y 16 regresiones obligatorias;
+- no modifica consumers, manifests, lockfiles, CI, registry, tags, releases, Supabase ni 04A;
+- no crea ni modifica requisitos de prueba.
+
+#### 42. Límites
+
+Esta tarea no:
+
+- implementa físicamente `SHELL-CI-005::GLOBAL`;
+- crea scripts o workflows;
+- crea perfiles ejecutables en consumidores;
+- modifica `package.json` o lockfiles reales;
+- añade `engines.node` a consumidores;
+- instala packages en consumidores reales;
+- declara bandas soportadas sin ejecución;
+- declara compatibles las 28 relaciones;
+- crea un `PKG-COMP-MX-029`;
+- agrega ANIMA, PASS o TALENTO a la matriz web base;
+- modifica CI001, CI002, CI003 o CI004;
+- crea tags o releases;
+- publica en registry;
+- modifica changelog;
+- crea PRs de consumidores;
+- modifica código de consumidores;
+- decide la adopción reservada a CI006;
+- ejecuta Supabase, migraciones, RLS, RPC o cambios de datos;
+- altera deprecaciones o ventanas ya aprobadas;
+- crea, modifica, difiere, descarta o vuelve obsoletos requisitos del registro 04A.
+
+#### 43. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CI-004 — Crear changelog automático`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CI-005 — Crear matriz de compatibilidad`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-006 — Crear actualización de consumidores mediante PR`
+
+
 ### [ ] SHELL-CI-006 — Crear actualización de consumidores mediante PR

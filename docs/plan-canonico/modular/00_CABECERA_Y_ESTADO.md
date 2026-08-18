@@ -20,33 +20,33 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **963** |
+| Tareas aprobadas | **964** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **631** |
+| Tareas no iniciadas | **630** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **60.41% (963/1594)** |
+| Porcentaje de completamiento | **60.48% (964/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-CI-004 — Crear changelog automático** |
-| Tarea actual | **SHELL-CI-005 — Crear matriz de compatibilidad** |
+| Última tarea aprobada | **SHELL-CI-005 — Crear matriz de compatibilidad** |
+| Tarea actual | **SHELL-CI-006 — Crear actualización de consumidores mediante PR** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CI-006 — Crear actualización de consumidores mediante PR** |
+| Siguiente tarea | **SHELL-CI-007 — Probar NEXO antes de actualizar** |
 | Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
-| Progreso del bloque | **BLOQUE T: 4 de 24 aprobadas; SHELL-CI-005 pendiente** |
-| Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — SHELL-CI-005** |
-| Carril documental | **ACTIVO — SHELL-CI-005** |
-| Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
+| Progreso del bloque | **BLOQUE T: 5 de 24 aprobadas; SHELL-CI-006 pendiente** |
+| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
+| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CI-005::GLOBAL** |
+| Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — SHELL-CI-006** |
+| Carril físico | **PENDING_AUTHORIZATION — SHELL-CI-005::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-CI-004` — Crear changelog automático |
-| Tarea actual | `SHELL-CI-005` — Crear matriz de compatibilidad — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CI-006` — Crear actualización de consumidores mediante PR |
+| Última aprobada | `SHELL-CI-005` — Crear matriz de compatibilidad |
+| Tarea actual | `SHELL-CI-006` — Crear actualización de consumidores mediante PR — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CI-007` — Probar NEXO antes de actualizar |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,8 +59,8 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE T: 4 DE 24 APROBADAS — ACTUAL SHELL-CI-005** |
-| Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
+| CONTINUIDAD ACTIVA | **BLOQUE T: 5 DE 24 APROBADAS — ACTUAL SHELL-CI-006** |
+| Implementación física | **SHELL-CI-005::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
 
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-CI-004 — Crear changelog automático
-        ↓
-TAREA ACTUAL
 SHELL-CI-005 — Crear matriz de compatibilidad
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-CI-006 — Crear actualización de consumidores mediante PR
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CI-007 — Probar NEXO antes de actualizar
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE T — 4 de 24 tareas aprobadas
+BLOQUE T — 5 de 24 tareas aprobadas
 ```

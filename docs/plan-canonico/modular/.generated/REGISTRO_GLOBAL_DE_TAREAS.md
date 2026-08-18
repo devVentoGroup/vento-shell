@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **963** |
+| Aprobadas | **964** |
 | En propuesta | **0** |
-| No iniciadas | **631** |
+| No iniciadas | **630** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **60.41% (963/1594)** |
+| Porcentaje de completamiento | **60.48% (964/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CI-004` — Crear changelog automático | ✅ APROBADA |
-| Tarea actual | `SHELL-CI-005` — Crear matriz de compatibilidad | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CI-006` — Crear actualización de consumidores mediante PR | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CI-005` — Crear matriz de compatibilidad | ✅ APROBADA |
+| Tarea actual | `SHELL-CI-006` — Crear actualización de consumidores mediante PR | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CI-007` — Probar NEXO antes de actualizar | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1288,7 +1288,7 @@
 | ✅ APROBADA | `SHELL-CI-002` | Crear build independiente por paquete | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |
 | ✅ APROBADA | `SHELL-CI-003` | Crear releases versionados | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |
 | ✅ APROBADA | `SHELL-CI-004` | Crear changelog automático | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |
-| ⬜ NO INICIADA | `SHELL-CI-005` | Crear matriz de compatibilidad | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |
+| ✅ APROBADA | `SHELL-CI-005` | Crear matriz de compatibilidad | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |
 | ⬜ NO INICIADA | `SHELL-CI-006` | Crear actualización de consumidores mediante PR | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |
 | ⬜ NO INICIADA | `SHELL-CI-007` | Probar NEXO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ⬜ NO INICIADA | `SHELL-CI-008` | Probar FOGO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
