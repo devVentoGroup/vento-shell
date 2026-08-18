@@ -3241,7 +3241,957 @@ Esta tarea no:
 `SHELL-CI-011 — Probar VISO antes de actualizar`
 
 
-### [ ] SHELL-CI-011 — Probar VISO antes de actualizar
+### ✅ SHELL-CI-011 — Probar VISO antes de actualizar
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CI-010 — Probar PULSO antes de actualizar
+**Tarea siguiente:** SHELL-CI-012 — Probar NUMERA antes de actualizar
+**Tipo de tarea:** Habilitador global único — contrato documental de pruebas específicas de VISO previas a actualización de packages compartidos
+**Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
+**Repositorio propietario:** `devVentoGroup/vento-viso`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada el contrato de pruebas que deberá demostrar que **VISO conserva una línea base reproducible, íntegra, atribuible y fail-closed antes de modificar su conjunto de packages compartidos**, de modo que una actualización preparada por CI006 nunca parta de un consumidor ambiguo, de un inventario de superficies desactualizado, de evidencia perteneciente a otro commit, de un handler tratado como página, de una ruta protegida sin guard efectivo, de una mutación administrativa que amplíe autoridad por parámetros controlados por cliente o de una ejecución de prueba que produzca cambios reales en roles, permisos, menús, productos, contenido, personal, horarios, Storage, datos o configuración Supabase.
+
+La regla vinculante queda:
+
+```text
+VISO EN UN COMMIT BASE EXACTO
++ MANIFEST Y LOCKFILE EXACTOS
++ INVENTARIO 61 PÁGINAS / 10 HANDLERS CONCILIADO
++ CLASIFICACIÓN 48 ESTÁTICAS / 13 DINÁMICAS CONCILIADA
++ EXPOSICIÓN 59 PROTEGIDAS / 2 SUPERFICIES PÚBLICAS CONTROLADAS CONCILIADA
++ ENTORNO DE PRUEBA AISLADO
++ RELACIÓN PACKAGE–VISO EXACTA
++ PERFIL DE PRUEBAS VISO APLICABLE
++ PRUEBAS FUNCIONALES, DE AUTORIZACIÓN, SERVIDOR, DATOS E INTERFAZ SATISFACTORIAS
++ EVIDENCIA VIGENTE
+= LÍNEA BASE VISO APTA PARA INICIAR UNA PROPUESTA DE ACTUALIZACIÓN
+```
+
+Y, de forma fail-closed:
+
+```text
+LINT VERDE
+O BUILD VERDE
+O LOGIN QUE REDIRIGE
+O DASHBOARD QUE RENDERIZA
+O HANDLER QUE RESPONDE
+O COMPATIBILIDAD DE OTRO CONSUMIDOR
+O PRUEBAS DE OTRO COMMIT
+O AUSENCIA DE TESTS AUTOMATIZADOS
+O USO DE DATOS REALES PARA OBTENER VERDE
+≠ LÍNEA BASE VISO CERTIFICADA
+```
+
+CI011 certifica la línea base específica de VISO. No publica packages, no modifica la versión objetivo, no prepara el pull request, no fusiona, no despliega, no ejecuta rollback y no convierte la autocertificación del habilitador en una afirmación de que todos los módulos administrativos, comerciales, de personal, programación, service desk, cumplimiento o gobierno de información estén funcionalmente cerrados.
+
+#### 2. Resultado canónico
+
+`SHELL-CI-011` establece un único habilitador reutilizable para:
+
+1. identificar el commit base exacto de `devVentoGroup/vento-viso` que se pretende actualizar;
+2. fijar las identidades del manifest, lockfile, configuración, suite, fixtures, inventario de rutas, inventario de handlers, contratos fuente y entorno;
+3. seleccionar únicamente las relaciones package–VISO aplicables;
+4. seleccionar el perfil VISO correspondiente a cada familia compartida objetivo;
+5. ejecutar una línea base técnica reproducible sobre el commit base sin modificar versiones de packages;
+6. reconciliar exactamente 61 páginas, 48 patrones estáticos, 13 patrones dinámicos y 10 route handlers;
+7. conservar los diez handlers fuera del conteo de páginas y con identidad técnica propia;
+8. conservar 59 rutas protegidas y dos superficies públicas controladas sin interpretar publicidad como autorización;
+9. conservar `/login` como puente SSO hacia Shell y `/no-access` como estado de denegación que no repara autoridad;
+10. proteger middleware, guardas, sesión operativa, acceso a VISO, sede, área, rol efectivo, simulación, dispositivo compartido y permisos;
+11. impedir que `returnTo`, `site_id`, IDs, slugs, parámetros de búsqueda, formularios o payloads cliente amplíen autoridad;
+12. proteger roles, permisos, sedes, áreas, perfiles y excepciones administrativas;
+13. proteger empresas, catálogo, productos, menú, colecciones, disponibilidad, delivery y configuración comercial;
+14. proteger CMS, bloques de contenido, medios y handlers de carga;
+15. proteger personal, vacantes, documentos, asistencia, calendarios, programación semanal y mensual;
+16. proteger la separación entre páginas, layouts, componentes, Server Actions, helpers y handlers;
+17. proteger handlers excluidos del matcher mediante autenticación, autorización, contexto y validación propias;
+18. proteger clientes Supabase browser, server y admin, incluido el confinamiento server-only de service-role;
+19. probar RLS, RPC, consultas, Storage y operaciones administrativas sin autorizar migraciones ni cambios remotos desde VISO;
+20. proteger fronteras VISO–Shell–PASS–NEXO–ANIMA y evitar apropiación de dominios ajenos;
+21. probar render, hidratación, interacción, formularios, feedback, accesibilidad y denegación representativa cuando la familia objetivo sea UI;
+22. producir evidencia machine-readable ligada al commit base y al conjunto exacto de pruebas;
+23. invalidar la evidencia cuando cambie cualquiera de sus entradas materiales;
+24. bloquear una actualización cuando no exista infraestructura de prueba suficiente;
+25. entregar a CI006 un resultado de línea base consumible para comparar el comportamiento previo y el `proposal_commit` posterior;
+26. soportar una actualización multi-package mediante la unión de perfiles requeridos, sin reducir cobertura;
+27. autocertificar el habilitador global una sola vez antes de reutilizarlo en futuras actualizaciones de VISO;
+28. separar la certificación del habilitador de la conformidad funcional completa del consumidor.
+
+#### 3. Frontera de responsabilidad
+
+| Responsabilidad                                              | Propietario         |
+| ------------------------------------------------------------ | ------------------- |
+| pruebas propias del package                                  | `SHELL-CI-001`      |
+| artefacto distribuible del package                           | `SHELL-CI-002`      |
+| identidad y publicación de release                           | `SHELL-CI-003`      |
+| changelog y release notes                                    | `SHELL-CI-004`      |
+| compatibilidad package–consumidor                            | `SHELL-CI-005`      |
+| preparación y mantenimiento del PR consumidor                | `SHELL-CI-006`      |
+| línea base y pruebas específicas de NEXO                     | `SHELL-CI-007`      |
+| línea base y pruebas específicas de FOGO                     | `SHELL-CI-008`      |
+| línea base y pruebas específicas de ORIGO                    | `SHELL-CI-009`      |
+| línea base y pruebas específicas de PULSO                    | `SHELL-CI-010`      |
+| línea base y pruebas específicas de VISO antes de actualizar | `SHELL-CI-011`      |
+| pruebas específicas de NUMERA                                | `SHELL-CI-012`      |
+| pruebas específicas de ANIMA                                 | `SHELL-CI-013`      |
+| rollback por repositorio                                     | `SHELL-CI-014`      |
+| independencia de despliegue                                  | `SHELL-CI-015`      |
+| normalización transversal de comandos                        | `SHELL-CI-016`      |
+| trazabilidad de requisitos y evidencia por PR                | `SHELL-CI-017..019` |
+
+CI011 puede exigir un punto de entrada reproducible para su propia suite. No absorbe la normalización transversal de comandos reservada a CI016, no convierte la línea base en implementación funcional de los pendientes de VISO y no corrige por anticipado obligaciones cuyo owner ya esté asignado a otros bloques.
+
+#### 4. Topología de trabajo
+
+`PHASE-03-T-CI-FOUNDATION` aplica `GLOBAL_ENABLE_ONCE` a `SHELL-CI-011`.
+
+Por tanto:
+
+```text
+MARCADOR CANÓNICO
+SHELL-CI-011
+→ define una sola vez el contrato de pruebas previas de VISO
+
+INSTANCIA FÍSICA FUTURA
+SHELL-CI-011::GLOBAL
+→ materializa y autocertifica una sola vez el habilitador VISO
+
+ACTUALIZACIONES POSTERIORES DE VISO
+→ reutilizan el habilitador certificado
+→ generan evidencia nueva por commit base y conjunto objetivo
+→ no vuelven a implementar CI011
+```
+
+La instancia global puede utilizar fixtures, dobles, oracles sintéticos, snapshots de inventario y entornos locales o CI aislados. No necesita actualizar un package real, cambiar permisos reales, publicar horarios, cargar medios, crear productos ni mutar Supabase productivo para demostrar que el habilitador funciona.
+
+#### 5. Handoff vinculante desde CI006, CI007, CI008, CI009 y CI010
+
+CI006 ya materializó el actualizador común y conserva las 28 relaciones base, los gates de actualización, la invalidación por commit y la prohibición de auto-merge y auto-deploy.
+
+CI007 a CI010 ya establecieron la disciplina común para líneas base previas de consumidores:
+
+- identidad exacta;
+- evidencia atribuible;
+- semántica fail-closed;
+- invalidación por cambios materiales;
+- separación entre habilitador global y ejecución por actualización;
+- prohibición de reutilizar evidencia de otro consumidor;
+- ausencia de tests distinta de PASS;
+- separación entre harness autocertificado y consumidor integralmente conforme.
+
+CI011 conserva esa disciplina y la especializa para VISO, donde deben coexistir un inventario amplio de superficies administrativas, diez handlers técnicos separados, middleware con `/api` excluido, guardas de autorización especializados, SSO, contexto operativo, administración comercial, personal, programación y operaciones server-side.
+
+La secuencia lógica será:
+
+```text
+RELEASE OBJETIVO CONOCIDA
+→ RELACIÓN PACKAGE–VISO RESUELTA
+→ COMMIT BASE VISO FIJADO
+→ CI011 CERTIFICA LA LÍNEA BASE DEL COMMIT BASE
+→ CI006 MATERIALIZA LA PROPUESTA AISLADA
+→ CI006 EJECUTA O CONSUME LOS GATES SOBRE EL PROPOSAL COMMIT
+→ SE COMPARA CON LA LÍNEA BASE VIGENTE
+→ REVISIÓN HUMANA
+```
+
+Un `PASS` de CI011 no sustituye CI005 ni autoriza por sí mismo `ELIGIBLE`, `READY_FOR_REVIEW`, merge, despliegue o adopción.
+
+#### 6. Relaciones package–VISO gobernadas
+
+CI011 gobierna exactamente las cuatro combinaciones VISO de la matriz web base:
+
+| Familia             | Compatibilidad CI005 | Actualización CI006 | Consumidor   |
+| ------------------- | -------------------- | ------------------- | ------------ |
+| `@vento/contracts`  | `PKG-COMP-MX-002`    | `PKG-PR-REL-002`    | `vento-viso` |
+| `@vento/os-context` | `PKG-COMP-MX-009`    | `PKG-PR-REL-009`    | `vento-viso` |
+| `@vento/supabase`   | `PKG-COMP-MX-016`    | `PKG-PR-REL-016`    | `vento-viso` |
+| `@vento/ui-web`     | `PKG-COMP-MX-023`    | `PKG-PR-REL-023`    | `vento-viso` |
+
+**Conciliación:** 4 relaciones VISO esperadas, 4 materializadas en el contrato, 0 faltantes y 0 duplicadas.
+
+Ninguna evidencia de NEXO, FOGO, ORIGO, PULSO, NUMERA, SHELL o ANIMA satisface estas cuatro relaciones.
+
+#### 7. Línea base física observada de VISO
+
+En el corte remoto inspeccionado de `devVentoGroup/vento-viso`:
+
+- la rama principal es `main`;
+- el commit remoto observado es `47322403f3c64e83ae0c4a2f68c05d47093e5bb4`;
+- existe `package-lock.json` y el repositorio es una aplicación Next privada;
+- el manifest declara `lint`, `build` y `audit:i18n`;
+- el manifest no declara un script de pruebas automatizadas;
+- el manifest no declara un script dedicado de typecheck;
+- no se observaron archivos `.test.*` ni `.spec.*` en el árbol completo;
+- no se declaran todavía dependencias publicadas `@vento/*`;
+- se observan Next `^16.1.6`, React `19.2.3`, React DOM `19.2.3`, Supabase JS `^2.90.1` y Supabase SSR `^0.8.0`;
+- el inventario canónico reconciliado contiene 61 páginas: 48 estáticas y 13 dinámicas;
+- el inventario canónico mantiene 59 rutas protegidas y dos superficies públicas controladas;
+- existen diez route handlers separados del inventario de páginas;
+- `/login` materializa un puente SSO hacia Shell y normaliza `returnTo`;
+- `/no-access` materializa un estado de denegación y solo acepta un `returnTo` relativo;
+- el middleware excluye `login` y `/api` de su matcher, por lo que los handlers no pueden depender del middleware como único control;
+- el guard central resuelve usuario, sesión operativa, acceso a aplicación, sede, área, dispositivo compartido, permisos y role override;
+- existe cliente Supabase admin protegido con `server-only` y service-role únicamente en servidor;
+- el árbol materializa superficies administrativas, comerciales, CMS, operaciones, personal, programación, asistencia, vacantes, usuarios PASS y componentes estándar;
+- la programación mensual y semanal conviven dentro del mismo dominio de personal y requieren conservar paridad, límites, borrador/publicación, validación server-side y trazabilidad según sus requisitos propietarios;
+- cualquier modificación futura de schema, RPC, RLS, Storage, Realtime, Edge Functions, datos o configuración Supabase permanece propiedad de `devVentoGroup/vento-shell`.
+
+Conclusión documental: **VISO todavía no puede considerarse físicamente certificado para CI011 por la sola existencia de lint y build**. La futura `SHELL-CI-011::GLOBAL` deberá materializar infraestructura de pruebas automatizadas reproducible y autocertificar el habilitador.
+
+#### 8. Inventario contractual de rutas y handlers VISO
+
+CI011 toma como línea base canónica:
+
+```text
+PÁGINAS
+61 totales
+48 estáticas
+13 dinámicas
+
+EXPOSICIÓN
+59 protegidas
+2 superficies públicas controladas
+
+HANDLERS
+10 route handlers
+separados de las páginas
+
+PATRONES TÉCNICOS COMBINADOS
+71
+sin llamar pantallas a los handlers
+```
+
+Las dos superficies públicas controladas son:
+
+- `/login`;
+- `/no-access`.
+
+Esta clasificación no significa que ambas permitan acceso anónimo irrestricto. `/login` permanece como puente SSO; `/no-access` permanece como estado de denegación y nunca concede autoridad.
+
+Los trece patrones dinámicos conservan `[id]` o `[slug]` como parte de la identidad contractual y no se expanden por cada entidad existente.
+
+Los diez handlers observados permanecen separados de las 61 páginas. Entre sus familias se encuentran:
+
+- health;
+- attendance report;
+- reordenamiento de menú;
+- programación de personal;
+- ocultamiento de personal en programación;
+- carga de medios comerciales;
+- carga de logo;
+- carga de imagen de producto;
+- carga de medios de website;
+- personalizaciones técnicas de menú.
+
+Cualquier alta, baja, movimiento, duplicación, cambio de patrón, cambio de guard o nuevo handler vuelve stale la evidencia que dependa del inventario hasta que exista un delta explícito.
+
+#### 9. Distinción entre habilitador certificado y consumidor conforme
+
+CI011 fija dos afirmaciones diferentes que nunca podrán fusionarse:
+
+```text
+SHELL-CI-011::GLOBAL = VERIFIED
+```
+
+significa:
+
+- existe el harness;
+- el harness es reproducible;
+- detecta sus escenarios positivos y negativos;
+- detecta drift de 61 páginas, 13 dinámicas, 10 handlers y exposición de rutas;
+- detecta stale evidence, otro consumidor, cero tests, aislamiento inválido, secretos y falsas condiciones de PASS;
+- produce evidencia machine-readable;
+- no requiere mutaciones productivas.
+
+No significa:
+
+```text
+EL COMMIT ACTUAL DE VISO CUMPLE TODOS LOS REQUISITOS FUNCIONALES FUTUROS DEL DOMINIO
+```
+
+La conformidad del consumidor se determina en cada ejecución real de línea base contra su commit exacto.
+
+Deudas o capacidades todavía no implementadas —incluidos cierres posteriores de service desk, gobierno de información, políticas de programación, seguridad de handlers, experiencia o paquetes E5— pueden coexistir con un harness global correctamente autocertificado. Cuando una deuda registrada sea aplicable al perfil ejecutado, la ejecución real deberá devolver `FAIL` o `BLOCKED` en lugar de ocultarla.
+
+#### 10. Unidad exacta de certificación previa
+
+Cada resultado de CI011 se atribuye como mínimo a:
+
+```text
+consumer_repository
+consumer_branch
+consumer_base_commit
+consumer_manifest_identity
+consumer_lockfile_identity
+test_contract_identity
+test_suite_identity
+fixture_set_identity
+route_inventory_identity
+handler_inventory_identity
+source_contract_identity
+environment_identity
+runtime_identity
+framework_identity
+target_package_set
+compatibility_refs
+viso_profile_set
+execution_identity
+started_at
+completed_at
+result
+invalidation_reason
+```
+
+La unidad certificada es el **commit base sin la actualización propuesta**.
+
+Cambiar commit, manifest, lockfile, suite, fixtures, inventario de páginas, inventario de handlers, configuración, contratos fuente, entorno o perfil invalida la reutilización del resultado anterior.
+
+#### 11. Momento de ejecución
+
+La prueba previa debe ejecutarse después de conocer el conjunto objetivo y antes de materializar la actualización sobre VISO.
+
+Orden obligatorio:
+
+1. resolver release o conjunto mínimo cerrado de releases objetivo;
+2. resolver una o más de las cuatro relaciones VISO;
+3. fijar `consumer_base_commit`;
+4. fijar manifest y lockfile del commit base;
+5. fijar inventarios de páginas, handlers y contratos fuente aplicables;
+6. resolver los perfiles VISO exigidos por las familias objetivo;
+7. ejecutar la línea base común y los perfiles seleccionados sin cambiar versiones de packages;
+8. consolidar la evidencia;
+9. solo con resultado satisfactorio permitir que CI006 continúe con la preparación aislada de la propuesta.
+
+Si durante la prueba cambia el commit base, la ejecución en curso deja de ser atribuible y debe reiniciarse sobre la nueva identidad.
+
+#### 12. Semántica de resultado
+
+CI011 reutiliza la semántica fail-closed aprobada:
+
+- `PENDING`;
+- `RUNNING`;
+- `PASS`;
+- `FAIL`;
+- `BLOCKED`;
+- `CANCELLED`;
+- `TIMED_OUT`;
+- `STALE`;
+- `NOT_APPLICABLE` únicamente para comprobaciones realmente condicionales y justificadas.
+
+Para declarar una línea base VISO apta se requiere `PASS` global de las comprobaciones obligatorias seleccionadas.
+
+No satisfacen el contrato:
+
+- suite ausente;
+- cero tests ejecutados;
+- tests obligatorios deshabilitados;
+- salida ambigua;
+- `SKIPPED` no justificado;
+- snapshots actualizados automáticamente para forzar verde;
+- mocks que eliminen la condición que se pretendía probar;
+- `NOT_APPLICABLE` en una comprobación obligatoria;
+- evidencia de otro commit;
+- evidencia de otro consumidor;
+- omisión de una página o handler;
+- contar un handler como página;
+- degradar 61 páginas a un snapshot histórico de 60;
+- tratar un `[id]` o `[slug]` como múltiples rutas;
+- aceptar un handler porque el middleware proteja páginas;
+- mutaciones contra datos reales;
+- uso de service-role real en fixtures;
+- una deuda crítica aplicable convertida manualmente en PASS.
+
+#### 13. Línea base técnica común
+
+Toda certificación previa de VISO deberá demostrar, sobre el mismo commit base:
+
+1. instalación bloqueada reproducible con el lockfile vigente;
+2. manifest y lockfile coherentes;
+3. lint o análisis estático aplicable;
+4. typecheck real de TypeScript;
+5. build de producción aplicable;
+6. ejecución de la suite automatizada específica de VISO;
+7. ausencia de tests omitidos silenciosamente;
+8. identidad del entorno y runtime registrada;
+9. evidencia separada por comprobación;
+10. resultado global fail-closed;
+11. inventarios de páginas, handlers y contratos fuente conciliados;
+12. ausencia de escrituras productivas provocadas por la propia certificación.
+
+El manifest observado no define una suite de tests ni typecheck dedicado. La futura materialización deberá incorporar puntos de entrada reproducibles dentro del alcance expresamente autorizado.
+
+Un build satisfactorio no sustituye las pruebas automatizadas específicas.
+
+#### 14. Matriz funcional mínima obligatoria de VISO
+
+La suite global deberá cubrir como mínimo estas doce superficies. La implementación física puede dividir cada superficie en varios tests, pero no eliminarla sin una decisión canónica posterior.
+
+|    # | Superficie                                                      | Afirmación positiva mínima                                                                        | Afirmación negativa o de borde mínima                                                                       |
+| ---: | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+|    1 | identidad, sesión, SSO y denegación                             | identidad válida conserva sesión, SSO, retorno seguro y acceso requerido                          | sesión ausente, `returnTo` externo, auth error o app no autorizada falla cerrado                            |
+|    2 | contexto operativo, sede, área, actor, simulación y dispositivo | contexto efectivo limita la operación al territorio y actor permitidos                            | cambiar sede, área, role override, dispositivo o actor no concede autoridad                                 |
+|    3 | inventario de páginas y rutas                                   | 61 páginas, 48 estáticas, 13 dinámicas y sus identidades permanecen conciliadas                   | alta, baja, movimiento, duplicado o expansión de `[id]/[slug]` bloquea                                      |
+|    4 | handlers y frontera servidor                                    | 10 handlers conservan identidad propia y controles server-side aplicables                         | handler sin auth, autorización, contexto o validación queda bloqueado                                       |
+|    5 | roles, permisos, sedes y estructura                             | configuración permitida conserva alcance, origen y resultado efectivo                             | edición ajena, permiso inesperado, conflicto oculto o self-escalation falla                                 |
+|    6 | comercio, menú, productos y colecciones                         | entidad comercial válida conserva identidad, pertenencia, orden y estado                          | colección ajena, orden inválido, producto no autorizado o edición fuera de alcance falla                    |
+|    7 | CMS, contenido, medios y uploads                                | publicación o carga autorizada conserva tipo, tamaño, destino y ownership                         | archivo inválido, destino ajeno, nombre inseguro o almacenamiento no autorizado falla                       |
+|    8 | personal, vacantes, documentos y asistencia                     | operaciones de personal autorizadas conservan sujeto, sede, rol y trazabilidad                    | recurso ajeno, documento no permitido, cambio territorial o dato sensible indebido falla                    |
+|    9 | programación semanal, mensual y calendario                      | fechas, turnos, bloques, límites, borrador/publicación y paridad conservan contrato               | fecha inválida, overlap, límite excedido, publicación prohibida o doble fuente falla                        |
+|   10 | atomicidad, idempotencia, concurrencia y recuperación           | reintentos conservan una identidad lógica y efectos reconciliables                                | replay, doble submit, conflicto concurrente o timeout no produce falso éxito                                |
+|   11 | integración y fronteras de dominio                              | VISO administra sus superficies y consume Shell, PASS, NEXO y ANIMA mediante contratos explícitos | VISO no adquiere por conveniencia ownership de auth global, inventario, cliente/loyalty o gobierno Supabase |
+|   12 | UI, SSR, interacción, accesibilidad y errores                   | superficies representativas renderizan, hidratan y presentan éxito/error/deny consistentemente    | hidratación, teclado, foco, formulario, loading, error o deny fallido no se normaliza a éxito               |
+
+Estas doce superficies son la línea base común. Los perfiles de familia agregan obligaciones, no las sustituyen.
+
+#### 15. Perfil VISO para `@vento/contracts`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-002`, la línea base deberá cubrir especialmente:
+
+- identidades y estructuras consumidas por empresas, sedes, usuarios, personal, productos, menús y colecciones;
+- identidades y estados de permisos, roles, perfiles, simulaciones y dispositivos;
+- contratos de programación, turnos, áreas, roles operativos, asistencia y calendario;
+- shapes de CMS, bloques, ítems, venues, media y metadatos comerciales;
+- payloads de acciones administrativas y handlers;
+- cantidades, fechas, duraciones, límites, prioridades y estados cuando sean consumidos;
+- diferencia entre dato ausente, `null`, inválido, denegado y no aplicable;
+- compilación de los puntos de consumo TypeScript;
+- serialización y deserialización aplicables;
+- ausencia de casts o fallbacks globales que oculten una incompatibilidad.
+
+La evidencia se vincula a `PKG-COMP-MX-002` y `PKG-PR-REL-002`.
+
+#### 16. Perfil VISO para `@vento/os-context`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-009`, la línea base deberá cubrir especialmente:
+
+- sesión real y sesión ausente;
+- delegación SSO al Shell;
+- acceso a la aplicación VISO;
+- contexto operativo por sede y área;
+- permiso concedido y permiso denegado;
+- sede solicitada frente a sede efectiva;
+- contexto incompleto o manipulado;
+- acceso directo a rutas protegidas representativas;
+- role override únicamente cuando el contrato lo permita;
+- simulación y actor efectivo;
+- dispositivo compartido y aplicaciones permitidas;
+- preservación de razones de denegación;
+- prohibición de elevar autoridad desde query params, IDs, slugs o valores controlados por cliente.
+
+La evidencia se vincula a `PKG-COMP-MX-009` y `PKG-PR-REL-009`.
+
+#### 17. Perfil VISO para `@vento/supabase`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-016`, la línea base deberá cubrir especialmente:
+
+- clientes browser, server y admin;
+- propagación de sesión y cookies;
+- confinamiento `server-only` del cliente privilegiado;
+- ausencia de service-role en bundles cliente o fixtures;
+- consultas de roles, permisos, sedes, personal, programación, comercio y contenido;
+- RPC y acciones nombradas aplicables;
+- Storage y handlers de medios;
+- operaciones permitidas dentro del alcance autorizado;
+- operaciones denegadas por permisos o RLS;
+- aislamiento por sede y área;
+- respuestas de error y estados parciales;
+- correspondencia entre schema de prueba y fuente canónica de `vento-shell`;
+- ausencia de bypass por cliente admin, wrapper, fallback o manejo de errores;
+- build y suite sin mutaciones remotas.
+
+Las pruebas que requieran base de datos deberán usar un entorno local o CI aislado derivado de la fuente canónica de `vento-shell`. La falta de ese entorno cuando la comprobación sea obligatoria produce `BLOCKED`, no `NOT_APPLICABLE`.
+
+La evidencia se vincula a `PKG-COMP-MX-016` y `PKG-PR-REL-016`.
+
+#### 18. Perfil VISO para `@vento/ui-web`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-023`, la línea base deberá cubrir especialmente:
+
+- render servidor y cliente de superficies representativas;
+- hidratación sin divergencias silenciosas;
+- shell visual, app switcher, profile menu, tablas, headers y componentes estándar;
+- formularios administrativos y comerciales;
+- tablas, filtros, estados vacíos, loading, success y error;
+- edición de menú, productos, colecciones y CMS;
+- programación y calendario;
+- foco, teclado y semántica accesible aplicable;
+- deny states sin exposición de datos protegidos;
+- integración de tokens y estilos sin degradar legibilidad u operación;
+- ausencia de imports privados no contractuales.
+
+La evidencia se vincula a `PKG-COMP-MX-023` y `PKG-PR-REL-023`.
+
+#### 19. Protección reforzada de SSO, middleware y handlers
+
+CI011 deberá conservar tres fronteras distintas:
+
+```text
+MIDDLEWARE DE SESIÓN
+≠ GUARD DE APLICACIÓN Y PERMISO
+≠ AUTORIZACIÓN PROPIA DEL HANDLER
+```
+
+La línea base deberá demostrar:
+
+1. ausencia de cookies → redirección controlada;
+2. ausencia de configuración Supabase → redirección controlada;
+3. auth error o usuario ausente → denegación y limpieza aplicable;
+4. `/login` conserva función de puente y `returnTo` seguro;
+5. `/no-access` no acepta destino externo como autoridad;
+6. una ruta protegida revalida aplicación, permiso y contexto;
+7. `/api` no depende del matcher para su protección;
+8. cada handler obligatorio demuestra controles propios;
+9. `GET /api/health` no expone secretos ni valores sensibles;
+10. handlers de carga validan tipo, tamaño, destino y nombre;
+11. reordenamiento de menú valida pertenencia y límites;
+12. cualquier handler que use privilegio elevado mantiene ese privilegio confinado al servidor.
+
+#### 20. Protección reforzada de administración y configuración
+
+Las superficies administrativas deberán demostrar, según aplicabilidad:
+
+- roles y permisos;
+- sedes y áreas;
+- perfiles y excepciones;
+- actor real y actor efectivo;
+- contexto territorial;
+- simulación;
+- origen de permiso;
+- resultado efectivo previo a guardar cuando el contrato lo requiera;
+- prohibición de autoescalamiento;
+- cambios de estructura con recursos pertenecientes al mismo ámbito;
+- trazabilidad de quién cambió qué;
+- rechazo de IDs ajenos o manipulados;
+- separación entre poder ver una pantalla y poder ejecutar todas sus acciones.
+
+Una autorización de navegación nunca sustituye la autorización de la mutación.
+
+#### 21. Protección reforzada de comercio, menú, CMS y medios
+
+La cobertura comercial deberá poder evaluar:
+
+- empresas y sedes;
+- productos y productos nuevos;
+- menú, ítems y personalizaciones;
+- categorías y colecciones;
+- disponibilidad y delivery;
+- orden comercial;
+- website CMS;
+- bloques e ítems;
+- venues;
+- uploads de logo, producto, menú y website;
+- tipo y tamaño de medio;
+- destino y ownership;
+- respuesta de almacenamiento;
+- edición de recurso ajeno;
+- consistencia entre colección, categoría, orden y entidad;
+- separación entre publicación visible y autoridad administrativa.
+
+CI011 no convierte VISO en owner de inventario físico ni de datos de cliente de PASS.
+
+#### 22. Protección reforzada de personal, asistencia y programación
+
+La línea base deberá poder evaluar, según el commit y perfil aplicables:
+
+- personal;
+- alta de personal;
+- ficha individual;
+- vacantes;
+- usuarios PASS administrados desde superficies autorizadas;
+- documentos y reglas documentales;
+- asistencia;
+- calendario;
+- programación semanal;
+- programación global;
+- programación mensual;
+- settings y métricas;
+- fechas de 28, 29, 30 y 31 días;
+- bloques, inicio, fin, pausas y overnight según política vigente;
+- borrador y publicación como comandos diferentes;
+- límites y umbrales desde política única;
+- total mensual entre sedes sin ampliar visibilidad;
+- concurrencia y rollback;
+- auditoría y `published_by`;
+- notificación a ANIMA idempotente y correlacionada;
+- paridad Semana/Mes sobre una misma fuente.
+
+La autocertificación global puede utilizar escenarios sintéticos para demostrar detección de estas condiciones. No necesita publicar horarios reales.
+
+#### 23. Protección reforzada del cliente privilegiado y Supabase
+
+La presencia de un cliente admin server-only exige pruebas negativas específicas:
+
+1. el módulo privilegiado importa `server-only`;
+2. service-role nunca aparece en código cliente;
+3. service-role nunca aparece en fixtures o snapshots;
+4. un bundle cliente no puede importar el módulo admin;
+5. un handler no obtiene permiso por el mero uso de admin client;
+6. autenticación, autorización y alcance se verifican antes de efectos privilegiados;
+7. un dato de otra sede o área permanece denegado;
+8. errores de RLS o autorización no se normalizan como éxito;
+9. las pruebas no escriben contra producción;
+10. CI011 no modifica schema, RLS, RPC ni grants para hacer pasar la suite.
+
+#### 24. Datos, fixtures y aislamiento
+
+Las pruebas de CI011 deberán cumplir simultáneamente:
+
+1. no leer ni modificar datos productivos;
+2. usar fixtures deterministas o entorno local/CI aislado;
+3. no depender de IDs aleatorios no registrados;
+4. limpiar o descartar estado temporal de forma reproducible;
+5. no compartir estado mutable entre tests independientes;
+6. no utilizar credenciales reales como fixture;
+7. no introducir una migración VISO para acomodar la prueba;
+8. cuando se necesite schema Supabase, consumir la fuente canónica de `vento-shell`;
+9. registrar identidad del fixture set;
+10. impedir que una falla de cleanup convierta el resultado en PASS;
+11. no crear roles, permisos, productos, menús, contenidos, empleados, vacantes, turnos o uploads productivos;
+12. no publicar programación real para demostrar idempotencia;
+13. no usar service-role real en la autocertificación sintética;
+14. separar fixtures administrativos, comerciales, CMS y personal;
+15. mantener aislados los escenarios de otra sede, área, actor y recurso.
+
+#### 25. Línea base antes de `INITIAL_ADOPTION`
+
+El manifest observado de VISO no declara todavía packages publicados `@vento/*`.
+
+Por tanto, la primera adopción futura de cualquiera de las cuatro familias deberá tratar la evidencia CI011 como **oráculo del comportamiento previo**:
+
+```text
+COMMIT BASE SIN EL PACKAGE COMPARTIDO
+→ CI011 PASS
+→ PROPUESTA INITIAL_ADOPTION
+→ MISMA COBERTURA ESENCIAL SOBRE PROPOSAL COMMIT
+→ COMPARACIÓN DE RESULTADOS
+```
+
+La ausencia actual del package no convierte sus pruebas específicas en no aplicables.
+
+#### 26. Actualizaciones `PATCH`, `MINOR`, `MAJOR`, seguridad y deprecación
+
+CI011 no sustituye las clases de actualización de CI006:
+
+- `PATCH_UPDATE`: línea base completa y regresión focal;
+- `MINOR_UPDATE`: añade escenarios para la nueva capacidad consumida;
+- `MAJOR_UPDATE`: exige línea base completa y matriz explícita de comportamiento preservado/cambiado;
+- `SECURITY_UPDATE`: mantiene autorización, territorialidad, actor, handler security, RLS y secretos; la urgencia no permite omitirlos;
+- `DEPRECATION_MIGRATION`: conserva pruebas de la superficie antigua mientras siga soportada y de la ruta objetivo cuando exista;
+- `ROLLBACK_UPDATE`: CI011 aporta la línea base; la ejecución y certificación del rollback pertenece a CI014.
+
+#### 27. Actualización multi-package
+
+Cuando CI006 resuelva más de una familia compartida:
+
+1. CI011 selecciona la unión de todos los perfiles correspondientes;
+2. ninguna familia reduce la cobertura de otra;
+3. las doce superficies comunes permanecen;
+4. una ejecución puede producir evidencia para el conjunto si las identidades permanecen unidas;
+5. el conjunto objetivo queda registrado;
+6. cambiar una sola versión objetivo invalida la evidencia dependiente;
+7. no se usa lockstep artificial para incluir familias no requeridas.
+
+#### 28. Evidencia consumible por CI006
+
+La evidencia satisfactoria deberá permitir a CI006 demostrar al menos:
+
+- repositorio consumidor exacto: `devVentoGroup/vento-viso`;
+- commit base exacto;
+- manifest y lockfile exactos;
+- inventario de 61 páginas exacto;
+- inventario de 10 handlers exacto;
+- clasificación de 48 estáticas y 13 dinámicas;
+- clasificación de exposición vigente;
+- contratos fuente exactos;
+- relación o relaciones VISO aplicables;
+- conjunto de packages objetivo;
+- referencias de compatibilidad CI005;
+- perfil o perfiles VISO ejecutados;
+- identidad de suite y fixtures;
+- identidad del entorno;
+- resultados por capa y superficie;
+- total de tests ejecutados, aprobados, fallidos y omitidos;
+- evidencia de caminos denegados aplicables;
+- evidencia de que handlers y páginas permanecen separados;
+- evidencia de aislamiento territorial y de actor;
+- evidencia de confinamiento de privilegios;
+- evidencia de que la certificación no produjo efectos productivos;
+- timestamps de inicio y cierre;
+- resultado global;
+- razón de bloqueo o invalidación cuando no sea PASS.
+
+La evidencia podrá formar parte de `validation_results` y `evidence_refs` del expediente `PKG-PR-*`, pero CI011 no crea ni mantiene ese expediente.
+
+#### 29. Invalidación obligatoria
+
+El resultado pasa a `STALE` cuando cambia materialmente cualquiera de estas entradas antes de que CI006 la consuma:
+
+- `consumer_base_commit`;
+- manifest;
+- lockfile;
+- configuración de build, TypeScript o test;
+- suite;
+- fixtures u oracles;
+- variables/configuración de entorno relevantes;
+- runtime o framework;
+- inventario de 61 páginas;
+- clasificación 48/13;
+- inventario de 10 handlers;
+- clasificación de exposición;
+- contrato de `/login`;
+- contrato de `/no-access`;
+- middleware;
+- guard, SSO, contexto, role override o dispositivo compartido;
+- contratos fuente;
+- contrato de roles o permisos;
+- contrato comercial, CMS o de medios;
+- contrato de personal o programación;
+- fuente de schema usada para pruebas Supabase;
+- relación package–VISO;
+- versión o conjunto objetivo;
+- referencia de compatibilidad CI005;
+- superficie obligatoria;
+- contrato de CI011.
+
+No se conserva un PASS anterior mediante rebase, cherry-pick, actualización de snapshot o cambio de fixture sin nueva ejecución atribuible.
+
+#### 30. Condiciones de bloqueo
+
+La futura ejecución deberá quedar `BLOCKED` o `FAIL` según corresponda cuando ocurra cualquiera de estas condiciones:
+
+1. no existe runner reproducible para pruebas VISO;
+2. el runner ejecuta cero tests obligatorios;
+3. falta identidad del commit base;
+4. manifest o lockfile no corresponden al commit;
+5. la suite cambió después de producir evidencia;
+6. existe un test obligatorio omitido;
+7. lint, typecheck o build obligatorio falla;
+8. una prueba funcional obligatoria falla;
+9. una prueba de denegación, autorización, contexto, actor, dispositivo, recurso, sede o área falla;
+10. el entorno apunta a datos o servicios productivos;
+11. un fixture contiene una credencial real;
+12. evidencia CI005 pertenece a otra versión o consumidor;
+13. la relación resuelta no corresponde a VISO;
+14. se intenta modificar packages antes de cerrar línea base;
+15. se intenta resolver el fallo mediante bypass, cast global, skip o snapshot forzado;
+16. una operación de prueba intenta crear o cambiar schema, RLS, RPC, datos o configuración remota desde VISO;
+17. evidencia de otro consumidor o commit se acepta como propia;
+18. el inventario deja de conciliar 61 páginas;
+19. el inventario deja de conciliar 48 estáticas y 13 dinámicas;
+20. un handler entra al conteo de páginas;
+21. uno de los diez handlers desaparece o aparece otro sin delta explícito;
+22. una ruta protegida queda accesible sin controles aplicables;
+23. un handler excluido del matcher carece de controles propios;
+24. `returnTo`, `site_id`, ID, slug o payload cliente amplía autoridad;
+25. un permiso de navegación se interpreta como permiso universal de mutación;
+26. service-role aparece en cliente o fixture;
+27. un upload acepta tipo, tamaño, destino o ownership inválidos;
+28. un reorder de menú modifica recurso ajeno o deja orden parcial;
+29. una operación de programación publica cuando el contrato exige bloqueo;
+30. un retry o replay duplica un efecto que debe ser idempotente;
+31. resultados contradictorios o flaky no han sido explicados;
+32. una deuda crítica conocida se transforma manualmente en PASS.
+
+Ninguna aprobación humana convierte estas condiciones técnicas en PASS.
+
+#### 31. Materialización futura de `SHELL-CI-011::GLOBAL`
+
+La instancia física solo podrá declararse materializada cuando, dentro del alcance expresamente autorizado:
+
+1. exista infraestructura de pruebas automatizadas reproducible en `devVentoGroup/vento-viso`;
+2. exista un punto de entrada determinista para la suite CI011;
+3. exista typecheck real;
+4. exista build CI reproducible sin efectos remotos;
+5. las pruebas cubran las doce superficies comunes;
+6. existan perfiles seleccionables para las cuatro familias;
+7. existan casos permitidos y denegados de autorización;
+8. exista cobertura del inventario 61/48/13;
+9. exista cobertura de los diez handlers separados;
+10. exista cobertura de la clasificación de exposición vigente;
+11. exista prueba del puente SSO y del estado de denegación;
+12. exista cobertura de middleware y guardas;
+13. exista estrategia aislada para pruebas Supabase;
+14. exista cobertura de cliente admin server-only y prohibición de exposición de service-role;
+15. exista cobertura administrativa de roles, permisos y territorialidad;
+16. exista cobertura comercial/CMS/media representativa;
+17. exista cobertura de personal/programación representativa;
+18. la suite no use datos productivos ni secretos reales;
+19. las pruebas no modifiquen schema ni migraciones VISO;
+20. identidad de commit, manifest, lockfile, suite, fixtures, rutas, handlers, contratos fuente y entorno forme parte de evidencia;
+21. un cambio material vuelva STALE la evidencia;
+22. una ejecución multi-package una perfiles sin reducir cobertura;
+23. la salida sea machine-readable y consumible por CI006;
+24. el habilitador falle sintéticamente ante al menos una ruptura por cada perfil;
+25. demuestre que evidencia de otro consumidor o commit no es reutilizable;
+26. demuestre que cero tests no se normaliza a PASS;
+27. demuestre que drift de páginas o handlers no se normaliza a PASS;
+28. demuestre que una manipulación territorial no se normaliza a PASS;
+29. demuestre que privilegio elevado en cliente o fixture se clasifica como fallo;
+30. la autocertificación no actualice packages, no abra PR, no despliegue y no ejecute rollback.
+
+La selección física concreta de framework, archivos y devDependencies se resolverá durante la instancia con el estado actualizado de VISO. El contrato no impone un proveedor inexistente por inferencia.
+
+#### 32. Recuperación e idempotencia
+
+Reglas:
+
+1. una repetición exacta sobre las mismas entradas puede reproducir la misma decisión sin duplicar identidad lógica;
+2. los intentos fallidos se conservan como evidencia;
+3. un test flaky no se resuelve reintentando hasta pasar sin registrar intermitencia;
+4. si cambia el commit base, se crea una ejecución nueva;
+5. si cambia el conjunto objetivo, se recalculan perfiles;
+6. un fallo de infraestructura produce `BLOCKED` cuando impide evaluar comportamiento;
+7. un fallo funcional produce `FAIL` cuando la infraestructura sí permitió evaluar;
+8. una ejecución cancelada o con timeout no certifica;
+9. la recuperación nunca modifica datos reales ni amplía permisos;
+10. una corrección del harness no reescribe evidencia histórica;
+11. una deuda preexistente del consumidor permanece visible como fallo o bloqueo de esa ejecución y no se borra al autocertificar el habilitador;
+12. retries de permisos, menú, uploads, publicación o programación se prueban mediante fixtures u oráculos aislados, no mediante repetición contra producción.
+
+#### 33. Estado documental conciliado
+
+| Métrica                                      |                          Resultado |
+| -------------------------------------------- | ---------------------------------: |
+| Repositorio consumidor                       | **1 — `devVentoGroup/vento-viso`** |
+| Familias compartidas base                    |                              **4** |
+| Relaciones CI005 de VISO                     |                              **4** |
+| Relaciones CI006 de VISO                     |                              **4** |
+| Páginas fuente canónicas                     |                             **61** |
+| Patrones estáticos                           |                             **48** |
+| Patrones dinámicos                           |                             **13** |
+| Rutas protegidas                             |                             **59** |
+| Superficies públicas controladas             |                              **2** |
+| Route handlers                               |                             **10** |
+| Patrones técnicos combinados                 |                             **71** |
+| Superficies funcionales comunes obligatorias |                             **12** |
+| Perfiles de familia                          |                              **4** |
+| Auto-merge autorizado                        |                              **0** |
+| Auto-deploy autorizado                       |                              **0** |
+| Migraciones Supabase autorizadas en VISO     |                              **0** |
+| Datos productivos autorizados para pruebas   |                              **0** |
+| Requisitos de prueba creados o modificados   |                              **0** |
+
+#### 34. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA  
+**Requisitos creados:** **0**  
+**Requisitos modificados:** **0**
+
+**Justificación:** las obligaciones de probar consumidores antes de adoptar packages compartidos, disponer de comandos reproducibles, conservar evidencia atribuible y bloquear falsos verdes ya existen en el registro canónico. La cobertura VISO vigente ya protege inventario de rutas, handlers, SSO, denegación, middleware, autorización, territorialidad, comercio, CMS, medios, programación, service desk, gobierno de información y fronteras interaplicación. CI011 especializa esas obligaciones para la línea base previa de VISO y define su habilitador reutilizable; no introduce una regla empresarial independiente.
+
+#### 35. Cobertura de prueba vigente reutilizada
+
+La tarea reutiliza sin modificar, entre otras, estas obligaciones existentes:
+
+- `TREQ-SHELL-005`, sobre comandos reproducibles y ausencia de falsos verdes;
+- `TREQ-SHELL-006`, sobre pruebas propias, matriz de compatibilidad y validación por consumidor antes de publicar o adoptar;
+- `TREQ-SHELL-008`, sobre requisitos afectados y resultados reproducibles por package y PR;
+- `TREQ-SHELL-009`, sobre identidad verificable de repositorio, commit y ambiente;
+- `TREQ-VISO-001`, sobre roles, permisos, sedes, áreas, perfiles y excepciones;
+- `TREQ-VISO-002`, sobre mesa de servicio tecnológica;
+- `TREQ-VISO-003`, sobre gobierno de información y segregación;
+- `TREQ-VISO-004` a `TREQ-VISO-023`, sobre 61 páginas, rutas 001–061, clasificación 48/13, raíz, separación de superficies técnicas, SSO, no-access, middleware, exposición, guardas, drift, diez handlers, seguridad de `/api`, health, reorder, uploads y dinámicas;
+- `TREQ-VISO-024` a `TREQ-VISO-045`, sobre programación mensual, paridad Semana/Mes, fechas, bloques, límites, publicación, concurrencia, rollback, auditoría, ANIMA y manipulación de acciones;
+- `TREQ-VISO-046` a `TREQ-VISO-048`, sobre SLA de service desk, ciclo de problemas y gobierno de cambios tecnológicos.
+
+Estas referencias son trazabilidad de cobertura existente y no constituyen una modificación del registro 04A.
+
+#### 36. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                                |
+| --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador documental no instala dependencias, no ejecuta build de VISO y no materializa el harness.                                                                                                                                                                                                    |
+| LOCAL     | NOT_EXECUTED   | El artefacto todavía no ha sido incorporado ni validado por el checkout local del usuario.                                                                                                                                                                                                               |
+| REMOTA    | PASS           | Se verificaron continuidad CI010→CI011→CI012, topología global, las cuatro relaciones package–VISO, commit remoto observado, manifest y lockfile, árbol completo, ausencia de suite test/spec, inventario 61/48/13/10, middleware, SSO, guard, Supabase admin server-only y cobertura TREQ VISO vigente. |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutaron cambios de permisos, comercio, CMS, personal, programación, Storage, Supabase ni datos reales.                                                                                                                                                                                          |
+| FÍSICA    | NOT_APPLICABLE | La materialización pertenece a `SHELL-CI-011::GLOBAL` después de aprobación documental y autorización física explícita.                                                                                                                                                                                  |
+
+#### 37. Criterios de aceptación
+
+`SHELL-CI-011` queda documentalmente completa cuando:
+
+- identifica `devVentoGroup/vento-viso` como consumidor propietario;
+- conserva CI006 como propietario del cambio y del PR;
+- conserva la disciplina de CI007 a CI010 sin reutilizar evidencia de otro consumidor;
+- gobierna exactamente cuatro relaciones package–VISO;
+- define unidad de evidencia ligada a commit, manifest, lockfile, suite, fixtures, páginas, handlers, contratos fuente y entorno;
+- exige ejecutar línea base antes de modificar versiones objetivo;
+- define doce superficies funcionales comunes;
+- define cuatro perfiles de familia;
+- protege 61 páginas, 48 estáticas y 13 dinámicas;
+- protege 59 rutas y dos superficies públicas controladas según la clasificación canónica;
+- protege diez route handlers separados de las páginas;
+- conserva `/login` como puente SSO;
+- conserva `/no-access` como deny state;
+- exige caminos permitidos y denegados;
+- protege sede, área, sesión, actor, simulación, role override y dispositivo;
+- protege handlers excluidos del matcher con controles propios;
+- protege cliente admin server-only y secretos;
+- protege roles, permisos y estructura administrativa;
+- protege comercio, menú, productos, CMS y medios;
+- protege personal, asistencia y programación;
+- protege clientes Supabase/RLS/RPC/Storage sin autorizar cambios de base de datos desde VISO;
+- protege UI, SSR, interacción y accesibilidad;
+- convierte ausencia de suite en bloqueo físico;
+- soporta `INITIAL_ADOPTION`;
+- soporta conjuntos multi-package;
+- invalida evidencia ante cambios materiales;
+- produce evidencia consumible por CI006;
+- conserva fronteras VISO–Shell–PASS–NEXO–ANIMA;
+- separa habilitador VERIFIED de consumidor conforme;
+- no crea PR, no actualiza packages, no fusiona, no despliega y no ejecuta rollback durante el marcador;
+- no crea ni modifica requisitos de prueba.
+
+#### 38. Límites
+
+Esta tarea no:
+
+- implementa físicamente `SHELL-CI-011::GLOBAL`;
+- instala un framework de pruebas durante el marcador documental;
+- modifica `package.json` o `package-lock.json` de VISO;
+- actualiza `@vento/contracts`, `@vento/os-context`, `@vento/supabase` ni `@vento/ui-web`;
+- modifica código funcional VISO;
+- modifica el inventario canónico de rutas;
+- renumera `VISO-ROUTE-*`;
+- trata handlers como páginas;
+- convierte `/login` en autenticación local;
+- convierte `/no-access` en mecanismo de autorización;
+- crea ramas ni pull requests;
+- modifica la lógica del actualizador CI006;
+- recalcula compatibilidad CI005;
+- reutiliza evidencia NEXO, FOGO, ORIGO o PULSO como si perteneciera a VISO;
+- normaliza todos los comandos del repositorio, responsabilidad de CI016;
+- implementa por anticipado service desk, gobierno de información, problemas, cambios tecnológicos ni demás capacidades futuras;
+- convierte VISO en propietario de cliente/loyalty de PASS, inventario de NEXO ni gobierno Supabase de Shell;
+- modifica schema, tablas, vistas, funciones, RPC, triggers, grants, RLS, Storage, Realtime, Edge Functions, datos, secretos o configuración Supabase;
+- crea ni modifica migraciones dentro de VISO;
+- usa datos productivos;
+- ejecuta rollback de CI014;
+- coordina despliegue de CI015;
+- desarrolla CI012 ni otra tarea posterior;
+- crea, modifica, difiere, descarta ni vuelve obsoletos requisitos del registro 04A.
+
+#### 39. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CI-010 — Probar PULSO antes de actualizar`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CI-011 — Probar VISO antes de actualizar`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-012 — Probar NUMERA antes de actualizar`
+
+
 ### [ ] SHELL-CI-012 — Probar NUMERA antes de actualizar
 ### [ ] SHELL-CI-013 — Probar ANIMA antes de actualizar
 ### [ ] SHELL-CI-014 — Permitir rollback por repositorio

@@ -20,33 +20,33 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **969** |
+| Tareas aprobadas | **970** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **625** |
+| Tareas no iniciadas | **624** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **60.79% (969/1594)** |
+| Porcentaje de completamiento | **60.85% (970/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-CI-010 — Probar PULSO antes de actualizar** |
-| Tarea actual | **SHELL-CI-011 — Probar VISO antes de actualizar** |
+| Última tarea aprobada | **SHELL-CI-011 — Probar VISO antes de actualizar** |
+| Tarea actual | **SHELL-CI-012 — Probar NUMERA antes de actualizar** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CI-012 — Probar NUMERA antes de actualizar** |
+| Siguiente tarea | **SHELL-CI-013 — Probar ANIMA antes de actualizar** |
 | Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
-| Progreso del bloque | **BLOQUE T: 10 de 24 aprobadas; SHELL-CI-011 pendiente** |
-| Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — SHELL-CI-011** |
-| Carril documental | **ACTIVO — SHELL-CI-011** |
-| Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
+| Progreso del bloque | **BLOQUE T: 11 de 24 aprobadas; SHELL-CI-012 pendiente** |
+| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
+| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CI-011::GLOBAL** |
+| Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — SHELL-CI-012** |
+| Carril físico | **PENDING_AUTHORIZATION — SHELL-CI-011::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-CI-010` — Probar PULSO antes de actualizar |
-| Tarea actual | `SHELL-CI-011` — Probar VISO antes de actualizar — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CI-012` — Probar NUMERA antes de actualizar |
+| Última aprobada | `SHELL-CI-011` — Probar VISO antes de actualizar |
+| Tarea actual | `SHELL-CI-012` — Probar NUMERA antes de actualizar — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CI-013` — Probar ANIMA antes de actualizar |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,8 +59,8 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE T: 10 DE 24 APROBADAS — ACTUAL SHELL-CI-011** |
-| Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
+| CONTINUIDAD ACTIVA | **BLOQUE T: 11 DE 24 APROBADAS — ACTUAL SHELL-CI-012** |
+| Implementación física | **SHELL-CI-011::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
 
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-CI-010 — Probar PULSO antes de actualizar
-        ↓
-TAREA ACTUAL
 SHELL-CI-011 — Probar VISO antes de actualizar
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-CI-012 — Probar NUMERA antes de actualizar
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CI-013 — Probar ANIMA antes de actualizar
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE T — 10 de 24 tareas aprobadas
+BLOQUE T — 11 de 24 tareas aprobadas
 ```
