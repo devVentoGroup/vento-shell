@@ -1,7 +1,7 @@
 {
   "instance_id": "SHELL-CI-004::GLOBAL",
   "task_id": "SHELL-CI-004",
-  "status": "AUTHORIZED",
+  "status": "VERIFIED",
   "target_repositories": [
     "devVentoGroup/vento-shell"
   ],
@@ -30,5 +30,22 @@
     "approval_statement": "Apruebo exclusivamente la implementación de SHELL-CI-004::GLOBAL en devVentoGroup/vento-shell mediante la creación de scripts/quality/shared-package-changelog-gate.mjs, scripts/quality/shared-package-changelog-gate.test.mjs y evidencia runtime no versionada bajo .delivery/shared-package-changelogs/, junto con las validaciones enumeradas en validation_commands. Autorizo únicamente la autocertificación sintética o aislada del habilitador durante esta instancia y la materialización de caminos PREPARE y FINALIZE fail-closed para ejecuciones reales futuras que cuenten con su autorización correspondiente. No autorizo crear ni modificar CHANGELOG.md reales de packages durante esta instancia, modificar packages, manifests, package.json, package-lock.json, workflows, la implementación de SHELL-CI-003, tags Git reales, releases remotas reales, registry real, consumidores, pull requests, credenciales, secretos, matriz de compatibilidad, Supabase, despliegues ni ninguna ampliación inferida del alcance.",
     "source_contract_sha256": "cadb1c86fc99c9055828fa7a17e57dcac4c5e294c88e1520a352cb80dc51ba64"
   },
-  "evidence": []
+  "evidence": [
+    "PREFLIGHT PASS; task=SHELL-CI-004; format=OK; branch=main; behind=0; ahead=0; warnings=EXPECTED_DOCUMENTAL_CONTINUITY_AND_IN_PROGRESS_WORKTREE",
+    "BASE_COMMIT 8eb34d4dc31a894ece5a98531c87e430e87cec63",
+    "FILE_SHA256 scripts/quality/shared-package-changelog-gate.mjs e0f8b1fd862862d29a86e6e04f4529366fc86274c53367c5d21520ff701c4ebf",
+    "FILE_SHA256 scripts/quality/shared-package-changelog-gate.test.mjs 93a06daab5dd4599e127d11cec54542445e42a46dbc4205731da6eda52064ca9",
+    "IMPLEMENTATION shared-package-changelog-gate materialized",
+    "VALIDATION npm ci PASS",
+    "VALIDATION CI004 self-certification PASS",
+    "VALIDATION CI004 lint PASS",
+    "VALIDATION Canonical plan build PASS",
+    "VALIDATION Canonical plan check PASS",
+    "VALIDATION Canonical plan tests PASS",
+    "VALIDATION TREQ check PASS",
+    "VALIDATION TREQ tests PASS",
+    "VALIDATION Work topology check PASS",
+    "VALIDATION git diff check PASS",
+    "RESULT CI004_FINAL_VALIDATION=PASS"
+  ]
 }

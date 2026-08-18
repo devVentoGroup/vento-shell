@@ -8,11 +8,11 @@
 
 ## Qué toca hacer ahora
 
-- **Acción principal obligatoria:** `AUTORIZAR_IMPLEMENTACION`
+- **Acción principal obligatoria:** `VALIDAR_IMPLEMENTACION`
 - **Objetivo exacto:** `SHELL-CI-004::GLOBAL` — Crear changelog automático
-- **Instrucción:** Definir y aprobar el alcance físico exacto de SHELL-CI-004::GLOBAL; todavía no modificar código.
+- **Instrucción:** Entregar seguidas las validaciones independientes y pausar cuando sus resultados determinen el avance.
 - **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `SHELL-CI-005`
-- **Implementación física autorizada:** **NINGUNA**
+- **Implementación física autorizada:** `SHELL-CI-004::GLOBAL`
 
 > Esta instrucción prevalece sobre la simple posición de una tarea en la lista pendiente. Aprobar documentación no autoriza código y una instancia física no puede saltar su predecesora global.
 
