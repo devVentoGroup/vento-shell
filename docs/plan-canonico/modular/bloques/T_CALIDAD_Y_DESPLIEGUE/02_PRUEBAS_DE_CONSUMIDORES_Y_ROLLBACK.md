@@ -1372,7 +1372,929 @@ Esta tarea no:
 `SHELL-CI-009 — Probar ORIGO antes de actualizar`
 
 
-### [ ] SHELL-CI-009 — Probar ORIGO antes de actualizar
+### ✅ SHELL-CI-009 — Probar ORIGO antes de actualizar
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CI-008 — Probar FOGO antes de actualizar
+**Tarea siguiente:** SHELL-CI-010 — Probar PULSO antes de actualizar
+**Tipo de tarea:** Habilitador global único — contrato documental de pruebas específicas de ORIGO previas a actualización de packages compartidos
+**Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
+**Repositorio propietario:** `devVentoGroup/vento-origo`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada el contrato de pruebas que deberá demostrar que **ORIGO conserva una línea base reproducible, íntegra, atribuible y fail-closed antes de modificar su conjunto de packages compartidos**, de modo que una actualización preparada por CI006 nunca parta de un consumidor ambiguo, de evidencia perteneciente a otro commit, de una ruta no inventariada o de una ejecución que haya mutado navegación, Supabase o datos durante la propia certificación.
+
+La regla vinculante queda:
+
+```text
+ORIGO EN UN COMMIT BASE EXACTO
++ MANIFEST Y LOCKFILE EXACTOS
++ INVENTARIO DE 13 PÁGINAS Y 1 HANDLER CONCILIADO
++ ENTORNO DE PRUEBA AISLADO
++ RELACIÓN PACKAGE–ORIGO EXACTA
++ PERFIL DE PRUEBAS ORIGO APLICABLE
++ PRUEBAS FUNCIONALES, DE AUTORIZACIÓN Y DE FRONTERA SATISFACTORIAS
++ EVIDENCIA VIGENTE
+= LÍNEA BASE ORIGO APTA PARA INICIAR UNA PROPUESTA DE ACTUALIZACIÓN
+```
+
+Y, de forma fail-closed:
+
+```text
+LINT VERDE
+O BUILD VERDE
+O NAVEGACIÓN SIN ERROR
+O COMPATIBILIDAD DE OTRO CONSUMIDOR
+O PRUEBAS DE OTRO COMMIT
+O EXISTENCIA DE UNA RELEASE
+O AUSENCIA DE TESTS AUTOMATIZADOS
+O BUILD QUE MUTÓ SUPABASE DURANTE LA PRUEBA
+≠ LÍNEA BASE ORIGO CERTIFICADA
+```
+
+CI009 certifica la línea base específica de ORIGO. No publica packages, no modifica la versión objetivo, no prepara el pull request, no fusiona, no despliega, no ejecuta rollback y no convierte la autocertificación del habilitador en una afirmación de cumplimiento integral de todos los requisitos ORIGO todavía planificados.
+
+#### 2. Resultado canónico
+
+`SHELL-CI-009` establece un único habilitador reutilizable para:
+
+1. identificar el commit base exacto de `devVentoGroup/vento-origo` que se pretende actualizar;
+2. fijar las identidades del manifest, lockfile, configuración, suite, fixtures y entorno;
+3. seleccionar únicamente las relaciones package–ORIGO aplicables;
+4. seleccionar el perfil ORIGO correspondiente a cada familia compartida objetivo;
+5. ejecutar una línea base técnica reproducible sin activar escrituras de navegación ni efectos remotos por `prebuild`;
+6. proteger el inventario exacto de trece páginas y el handler técnico de PDF;
+7. detectar drift entre las trece páginas fuente, las doce rutas sincronizables y las cuatro candidatas de menú;
+8. proteger identidad, sesión, acceso ORIGO, sede, contexto operacional y autorización por recurso;
+9. proteger proveedores, asociaciones producto–proveedor, presentaciones y revisión de maestro de productos;
+10. proteger creación, consulta, edición, envío y eliminación permitida de órdenes de compra según estado y autoridad aplicable;
+11. proteger cantidades, presentación, equivalencia a unidad de stock, costo unitario y total de líneas de compra;
+12. proteger el documento PDF de orden, su handler técnico, el token firmado y el uso condicionado de service role;
+13. proteger recepciones contra duplicación, replay, efectos parciales, correcciones destructivas y pérdida de trazabilidad;
+14. proteger modalidades de recepción, relación con orden de compra, sede, LOC, posición, lote, vencimiento, costos y movimientos aplicables;
+15. proteger la frontera por la cual ORIGO conserva abastecimiento, proveedores, órdenes y recepción, mientras NEXO conserva inventario/LOC como dominio logístico, FOGO conserva producción y Shell conserva contratos, datos y Supabase;
+16. probar clientes, consultas, RPC y denegaciones Supabase sin autorizar migraciones ni cambios remotos desde ORIGO;
+17. probar render, hidratación, interacción, accesibilidad, formularios y exportación representativa cuando la familia objetivo sea UI;
+18. producir evidencia machine-readable ligada al commit base y al conjunto exacto de pruebas;
+19. invalidar la evidencia cuando cambie cualquiera de sus entradas materiales;
+20. bloquear una actualización cuando no exista infraestructura de prueba suficiente;
+21. entregar a CI006 un resultado de línea base consumible para comparar el comportamiento previo y el `proposal_commit` posterior;
+22. soportar una actualización multi-package mediante la unión de perfiles requeridos, sin reducir cobertura;
+23. autocertificar el habilitador global una sola vez antes de reutilizarlo en futuras actualizaciones de ORIGO;
+24. separar la certificación del habilitador de la certificación funcional del consumidor para impedir que un harness correcto oculte una deuda funcional conocida.
+
+#### 3. Frontera de responsabilidad
+
+| Responsabilidad                                               | Propietario         |
+| ------------------------------------------------------------- | ------------------- |
+| pruebas propias del package                                   | `SHELL-CI-001`      |
+| artefacto distribuible del package                            | `SHELL-CI-002`      |
+| identidad y publicación de release                            | `SHELL-CI-003`      |
+| changelog y release notes                                     | `SHELL-CI-004`      |
+| compatibilidad package–consumidor                             | `SHELL-CI-005`      |
+| preparación y mantenimiento del PR consumidor                 | `SHELL-CI-006`      |
+| línea base y pruebas específicas de NEXO antes de actualizar  | `SHELL-CI-007`      |
+| línea base y pruebas específicas de FOGO antes de actualizar  | `SHELL-CI-008`      |
+| línea base y pruebas específicas de ORIGO antes de actualizar | `SHELL-CI-009`      |
+| pruebas específicas de PULSO                                  | `SHELL-CI-010`      |
+| pruebas específicas de VISO                                   | `SHELL-CI-011`      |
+| pruebas específicas de NUMERA                                 | `SHELL-CI-012`      |
+| pruebas específicas de ANIMA                                  | `SHELL-CI-013`      |
+| rollback por repositorio                                      | `SHELL-CI-014`      |
+| independencia de despliegue                                   | `SHELL-CI-015`      |
+| normalización transversal de comandos                         | `SHELL-CI-016`      |
+| trazabilidad de requisitos y evidencia por PR                 | `SHELL-CI-017..019` |
+
+CI009 puede exigir un punto de entrada reproducible para su propia suite y un build aislado que no ejecute el `prebuild` mutante de ORIGO. No absorbe la normalización transversal de comandos reservada a CI016 ni la corrección funcional de requisitos ORIGO cuyo owner ya esté asignado.
+
+#### 4. Topología de trabajo
+
+`PHASE-03-T-CI-FOUNDATION` aplica `GLOBAL_ENABLE_ONCE` a `SHELL-CI-009`.
+
+Por tanto:
+
+```text
+MARCADOR CANÓNICO
+SHELL-CI-009
+→ define una sola vez el contrato de pruebas previas de ORIGO
+
+INSTANCIA FÍSICA FUTURA
+SHELL-CI-009::GLOBAL
+→ materializa y autocertifica una sola vez el habilitador ORIGO
+
+ACTUALIZACIONES POSTERIORES DE ORIGO
+→ reutilizan el habilitador certificado
+→ generan evidencia nueva por commit base y conjunto objetivo
+→ no vuelven a implementar CI009
+```
+
+La instancia global puede utilizar fixtures, dobles, oracles sintéticos y entornos locales o CI aislados. No necesita actualizar un package real, abrir PR, ejecutar una compra real ni mutar Supabase para demostrar que el habilitador funciona.
+
+#### 5. Handoff vinculante desde CI006, CI007 y CI008
+
+CI006 ya materializó el actualizador común y conserva las 28 relaciones base, los gates de actualización, la invalidación por commit y la prohibición de auto-merge y auto-deploy.
+
+CI007 y CI008 ya establecieron la disciplina común para líneas base previas de consumidor:
+
+- identidad exacta;
+- evidencia atribuible;
+- semántica fail-closed;
+- invalidación por cambios materiales;
+- separación entre habilitador global y ejecución por actualización;
+- prohibición de reutilizar evidencia de otro consumidor;
+- ausencia de tests distinta de PASS.
+
+CI009 conserva esa disciplina, pero sustituye las superficies NEXO y FOGO por las superficies propias de ORIGO.
+
+La secuencia lógica será:
+
+```text
+RELEASE OBJETIVO CONOCIDA
+→ RELACIÓN PACKAGE–ORIGO RESUELTA
+→ COMMIT BASE ORIGO FIJADO
+→ CI009 CERTIFICA LA LÍNEA BASE DEL COMMIT BASE
+→ CI006 MATERIALIZA LA PROPUESTA AISLADA
+→ CI006 EJECUTA O CONSUME LOS GATES SOBRE EL PROPOSAL COMMIT
+→ SE COMPARA CON LA LÍNEA BASE VIGENTE
+→ REVISIÓN HUMANA
+```
+
+Un `PASS` de CI009 no sustituye CI005 ni autoriza por sí mismo `ELIGIBLE`, `READY_FOR_REVIEW`, merge, despliegue o adopción.
+
+#### 6. Relaciones package–ORIGO gobernadas
+
+CI009 gobierna exactamente las cuatro combinaciones ORIGO de la matriz web base:
+
+| Familia             | Compatibilidad CI005 | Actualización CI006 | Consumidor    |
+| ------------------- | -------------------- | ------------------- | ------------- |
+| `@vento/contracts`  | `PKG-COMP-MX-005`    | `PKG-PR-REL-005`    | `vento-origo` |
+| `@vento/os-context` | `PKG-COMP-MX-012`    | `PKG-PR-REL-012`    | `vento-origo` |
+| `@vento/supabase`   | `PKG-COMP-MX-019`    | `PKG-PR-REL-019`    | `vento-origo` |
+| `@vento/ui-web`     | `PKG-COMP-MX-026`    | `PKG-PR-REL-026`    | `vento-origo` |
+
+**Conciliación:** 4 relaciones ORIGO esperadas, 4 materializadas en el contrato, 0 faltantes y 0 duplicadas.
+
+Ninguna evidencia de NEXO, FOGO, PULSO, VISO, NUMERA, SHELL o ANIMA satisface estas cuatro relaciones.
+
+#### 7. Línea base física observada de ORIGO
+
+En el corte remoto inspeccionado de `devVentoGroup/vento-origo`:
+
+- la rama principal es `main`;
+- el commit remoto observado es `b7a8303fa078ef087f522b6c99059ababfc27472`;
+- existe `package-lock.json` y el repositorio es una aplicación Next privada;
+- el manifest declara `lint`, `build`, `prebuild` y `sync:navigation`;
+- el manifest no declara un script de pruebas automatizadas;
+- el manifest no declara un script dedicado de typecheck;
+- no se confirmó una suite `test/spec` materializada en el árbol observado;
+- no se declaran todavía dependencias publicadas `@vento/*` en el manifest observado;
+- se observan Next `^16.2.1`, React `19.2.3`, React DOM `19.2.3`, Supabase JS `^2.90.1` y Supabase SSR `^0.8.0`;
+- el inventario fuente contiene exactamente trece archivos de página;
+- existen exactamente tres patrones de página con segmento dinámico `[id]`;
+- existe el handler técnico `GET /purchase-orders/[id]/pdf`, separado del inventario de páginas;
+- `sync-navigation.mjs` excluye la raíz `/` del conjunto que sincroniza, por lo que la línea base distingue trece páginas fuente de doce rutas sincronizables;
+- la navegación define cuatro candidatas de menú: `/purchase-orders`, `/receipts`, `/suppliers` y `/product-master-review`;
+- se observan Auth/SSO, guardas, contexto operacional, permisos, role override y firma de actor compartido;
+- se observan órdenes de compra, proveedores, recepciones, revisión de maestro de producto, presentaciones y normalización de unidades;
+- las acciones de órdenes consumen productos, perfiles de UOM, asociaciones producto–proveedor, costos, estados y líneas;
+- el código observado permite edición solo sobre órdenes `draft` y contiene una eliminación de borradores restringida por rol;
+- la recepción materializa superficies de orden, proveedor, sede, LOC, posición, lote, vencimiento, costos, corrección y firma de actor;
+- el middleware protege páginas ordinarias y deriva el PDF público al handler para su autorización;
+- el handler PDF separa acceso por token de acceso autenticado y solo crea el cliente service-role en el camino de token válido;
+- el helper actual del token PDF conserva un fallback de desarrollo para el secreto, hallazgo ya cubierto por requisitos ORIGO existentes y no normalizable como seguridad satisfactoria;
+- `prebuild` ejecuta `sync-navigation.mjs`;
+- `sync-navigation.mjs` carga `.env.local` o `.env`, exige URL Supabase y una service-role key, ejecuta `upsert_app_screen_registry` y actualiza `app_screen_registry`;
+- por tanto, el `build` ordinario no es una operación de prueba puramente local ni puede utilizarse sin control dentro de la autocertificación CI009;
+- cualquier modificación de schema, RPC, RLS, Storage, Realtime, Edge Functions, datos o configuración Supabase permanece propiedad de `devVentoGroup/vento-shell`.
+
+Conclusión documental: **ORIGO todavía no puede considerarse físicamente certificado para CI009 por la sola existencia de lint y build**. La futura `SHELL-CI-009::GLOBAL` deberá materializar la infraestructura de pruebas automatizadas, disponer de un build CI seguro que no active `sync-navigation` y autocertificar el habilitador.
+
+#### 8. Inventario contractual de rutas ORIGO
+
+La línea base fuente de CI009 queda fijada en estas trece páginas:
+
+1. `/`;
+2. `/login`;
+3. `/no-access`;
+4. `/product-master-review`;
+5. `/purchase-orders`;
+6. `/purchase-orders/new`;
+7. `/purchase-orders/[id]`;
+8. `/purchase-orders/[id]/edit`;
+9. `/receipts`;
+10. `/receipts/new`;
+11. `/suppliers`;
+12. `/suppliers/new`;
+13. `/suppliers/[id]/edit`.
+
+Patrones dinámicos de página:
+
+1. `/purchase-orders/[id]`;
+2. `/purchase-orders/[id]/edit`;
+3. `/suppliers/[id]/edit`.
+
+Handler técnico separado:
+
+```text
+GET /purchase-orders/[id]/pdf
+```
+
+Conciliación de navegación:
+
+```text
+13 páginas fuente
+- 1 raíz excluida deliberadamente por sync-navigation
+= 12 rutas sincronizables
+
+4 candidatas de menú:
+- /purchase-orders
+- /receipts
+- /suppliers
+- /product-master-review
+```
+
+Layouts, componentes, server actions, helpers, loading states y route handlers no se contabilizan como páginas.
+
+Cualquier alta, baja, movimiento, duplicación o cambio de patrón frente a estas cardinalidades vuelve stale la evidencia que dependa del inventario.
+
+#### 9. Distinción entre habilitador certificado y consumidor conforme
+
+CI009 fija dos afirmaciones diferentes que nunca podrán fusionarse:
+
+```text
+SHELL-CI-009::GLOBAL = VERIFIED
+```
+
+significa:
+
+- existe el harness;
+- el harness es reproducible;
+- detecta sus escenarios positivos y negativos;
+- detecta drift, stale evidence, otro consumidor, cero tests, secretos y falsas condiciones de PASS;
+- produce evidencia machine-readable;
+- no requiere mutaciones productivas.
+
+No significa:
+
+```text
+EL COMMIT ACTUAL DE ORIGO CUMPLE TODOS LOS TREQ-ORIGO-*
+```
+
+La conformidad del consumidor se determina en cada ejecución real de línea base contra su commit exacto.
+
+Por tanto, una deuda funcional o de seguridad existente puede coexistir con un habilitador correctamente autocertificado. Cuando esa deuda sea aplicable al perfil ejecutado, la ejecución real deberá devolver `FAIL` o `BLOCKED` y conservar la evidencia hasta que el owner canónico la resuelva.
+
+Esta separación evita dos errores:
+
+1. bloquear para siempre la materialización del harness porque el consumidor aún tiene trabajo planificado;
+2. declarar al consumidor correcto solamente porque el harness se autocertificó.
+
+#### 10. Unidad exacta de certificación previa
+
+Cada resultado de CI009 se atribuye como mínimo a:
+
+```text
+consumer_repository
+consumer_branch
+consumer_base_commit
+consumer_manifest_identity
+consumer_lockfile_identity
+test_contract_identity
+test_suite_identity
+fixture_set_identity
+route_inventory_identity
+source_contract_identity
+environment_identity
+runtime_identity
+framework_identity
+target_package_set
+compatibility_refs
+origo_profile_set
+execution_identity
+started_at
+completed_at
+result
+invalidation_reason
+```
+
+La unidad certificada es el **commit base sin la actualización propuesta**.
+
+Cambiar commit, manifest, lockfile, suite, fixtures, inventario, configuración, source contracts, entorno o perfil invalida la reutilización del resultado anterior.
+
+#### 11. Momento de ejecución
+
+La prueba previa debe ejecutarse después de conocer el conjunto objetivo y antes de materializar la actualización sobre ORIGO.
+
+Orden obligatorio:
+
+1. resolver release o conjunto mínimo cerrado de releases objetivo;
+2. resolver una o más de las cuatro relaciones ORIGO;
+3. fijar `consumer_base_commit`;
+4. fijar manifest y lockfile del commit base;
+5. fijar inventario de rutas y source contracts aplicables;
+6. resolver los perfiles ORIGO exigidos por las familias objetivo;
+7. ejecutar la línea base común y los perfiles seleccionados sin cambiar versiones de packages;
+8. consolidar la evidencia;
+9. solo con resultado satisfactorio permitir que CI006 continúe con la preparación aislada de la propuesta.
+
+Si durante la prueba cambia el commit base, la ejecución en curso deja de ser atribuible y debe reiniciarse sobre la nueva identidad.
+
+#### 12. Semántica de resultado
+
+CI009 reutiliza la semántica fail-closed aprobada:
+
+- `PENDING`;
+- `RUNNING`;
+- `PASS`;
+- `FAIL`;
+- `BLOCKED`;
+- `CANCELLED`;
+- `TIMED_OUT`;
+- `STALE`;
+- `NOT_APPLICABLE` únicamente para comprobaciones realmente condicionales y justificadas.
+
+Para declarar una línea base ORIGO apta se requiere `PASS` global de las comprobaciones obligatorias seleccionadas.
+
+No satisfacen el contrato:
+
+- suite ausente;
+- cero tests ejecutados;
+- tests obligatorios deshabilitados;
+- salida ambigua;
+- `SKIPPED` no justificado;
+- snapshots actualizados automáticamente para forzar verde;
+- mocks que eliminen la condición que se pretendía probar;
+- build que active sincronización de navegación o escritura remota;
+- `NOT_APPLICABLE` en una comprobación obligatoria;
+- evidencia de otro commit;
+- evidencia de otro consumidor;
+- omisión de una ruta o handler exigido por la línea base;
+- deuda crítica aplicable convertida manualmente en PASS.
+
+#### 13. Línea base técnica común y build seguro
+
+Toda certificación previa de ORIGO deberá demostrar, sobre el mismo commit base:
+
+1. instalación bloqueada reproducible con el lockfile vigente;
+2. manifest y lockfile coherentes;
+3. lint o análisis estático aplicable;
+4. typecheck real de TypeScript;
+5. build de producción o export aplicable;
+6. ejecución de la suite automatizada específica de ORIGO;
+7. ausencia de tests omitidos silenciosamente;
+8. identidad del entorno y runtime registrada;
+9. evidencia separada por comprobación;
+10. resultado global fail-closed;
+11. ausencia de escrituras Supabase provocadas por la propia validación técnica;
+12. inventario de rutas y source contracts conciliados.
+
+El build usado por CI009 deberá **evitar el `prebuild` que ejecuta `sync-navigation.mjs`**. La implementación física podrá añadir un punto de entrada dedicado o ejecutar directamente la herramienta de build aplicable, pero deberá demostrar que el camino escogido no invoca el sincronizador.
+
+Queda prohibido considerar segura una validación que:
+
+- carga service-role para registrar navegación;
+- ejecuta RPC de sincronización;
+- actualiza `app_screen_registry`;
+- depende de conectarse a un proyecto remoto solo para compilar;
+- altera datos antes de producir el resultado de línea base.
+
+#### 14. Matriz funcional mínima obligatoria de ORIGO
+
+La suite global deberá cubrir como mínimo estas doce superficies de comportamiento. La implementación física puede dividir cada superficie en varios tests, pero no eliminarla sin una decisión canónica posterior.
+
+|    # | Superficie                                        | Afirmación positiva mínima                                                                                | Afirmación negativa o de borde mínima                                                                 |
+| ---: | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+|    1 | identidad, sesión y acceso ORIGO                  | una identidad válida conserva sesión y acceso requerido a ORIGO                                           | sesión ausente, auth error o app no autorizada falla cerrado                                          |
+|    2 | contexto operativo, sede, actor y recurso         | sede, contexto y autoridad efectiva limitan la operación al recurso permitido                             | cambiar sede, `id`, query param, override o actor no concede autoridad                                |
+|    3 | inventario de rutas y navegación                  | 13 páginas, 3 patrones dinámicos, 1 handler, 12 sincronizables y 4 candidatas de menú conservan identidad | alta, baja, duplicado, handler contado como página o drift silencioso bloquea                         |
+|    4 | proveedores y relación comercial                  | proveedor, relación producto–proveedor y datos comerciales permanecen atribuibles                         | proveedor inexistente, inactivo, duplicado o relación ajena no se normaliza como válida               |
+|    5 | maestro de producto, presentación y UOM           | producto, presentación, unidad, equivalencia y asociación con proveedor son coherentes                    | presentación ajena, unidad incompatible, factor no positivo o producto no elegible falla              |
+|    6 | orden de compra y líneas                          | una orden válida conserva proveedor, sede, líneas, cantidad, costo, presentación y total                  | orden sin proveedor/sede, línea inválida, cantidad no positiva o producto no asociado falla           |
+|    7 | estados, edición y autorización de orden          | transición y mutación respetan estado y autoridad aplicables                                              | edición fuera de borrador, transición inválida, eliminación no autorizada o recurso ajeno falla       |
+|    8 | PDF, token y privilegio de servicio               | acceso autenticado o token válido producen el documento aplicable sin ampliar autoridad                   | token inválido, secreto ausente/inseguro, token de otra orden o service-role anticipado falla         |
+|    9 | recepción y modalidad                             | una recepción válida conserva modalidad, orden aplicable, proveedor, sede, líneas y destino               | recepción duplicada, modalidad incoherente, cantidad inválida o contexto insuficiente falla           |
+|   10 | atomicidad, idempotencia, corrección y costos     | efectos de recepción permanecen atribuibles, idempotentes y reconciliables                                | replay, efecto parcial, doble costo, doble stock o reversa sin reemplazo no produce éxito aparente    |
+|   11 | integración y fronteras de dominio                | ORIGO consume inventario/LOC y contratos compartidos sin apropiarse de NEXO, FOGO o Shell                 | ORIGO no convierte inventario, producción o gobierno Supabase en autoridad local por conveniencia     |
+|   12 | UI, SSR, interacción, accesibilidad y exportación | listas, formularios, detalles, denegaciones y PDF representativos renderizan y conservan interacción      | hidratación, formulario, accesibilidad, exportación o autorización fallida no se normaliza como éxito |
+
+Estas doce superficies son la línea base común. Los perfiles de familia agregan obligaciones, no las sustituyen.
+
+#### 15. Perfil ORIGO para `@vento/contracts`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-005`, la línea base deberá cubrir especialmente:
+
+- tipos y estructuras consumidas por proveedor, orden, línea, recepción y maestro de producto;
+- identidades de proveedor, producto, presentación, orden, línea, recepción, sede, LOC y posición;
+- cantidades, unidades, factores de conversión, costos, impuestos, totales y moneda aplicables;
+- estados de orden y recepción realmente consumidos;
+- serialización y deserialización de payloads operativos;
+- límites entre dato ausente, `null`, inválido, denegado y no aplicable;
+- compilación de los puntos de consumo TypeScript;
+- comportamiento de adaptadores locales que consuman contratos compartidos;
+- ausencia de casts globales o fallbacks que oculten una incompatibilidad.
+
+La evidencia se vincula a `PKG-COMP-MX-005` y `PKG-PR-REL-005`.
+
+#### 16. Perfil ORIGO para `@vento/os-context`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-012`, la línea base deberá cubrir especialmente:
+
+- sesión real y sesión ausente;
+- acceso a la aplicación ORIGO;
+- contexto operativo por sede y área cuando aplique;
+- permiso concedido y permiso denegado;
+- contexto incompleto o manipulado;
+- acceso directo a rutas dinámicas;
+- revalidación de recurso por `id`;
+- fronteras server/client;
+- role override únicamente cuando el contrato lo permita;
+- firma de actor en dispositivo compartido cuando la acción lo requiera;
+- preservación de razones de denegación;
+- prohibición de elevar autoridad desde valores controlados por cliente.
+
+La evidencia se vincula a `PKG-COMP-MX-012` y `PKG-PR-REL-012`.
+
+#### 17. Perfil ORIGO para `@vento/supabase`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-019`, la línea base deberá cubrir especialmente:
+
+- clientes browser y server;
+- propagación de sesión y cookies;
+- tipos y shapes de respuesta consumidos;
+- consultas sobre proveedores, asociaciones producto–proveedor, perfiles UOM, productos, órdenes, líneas, recepciones, sedes, LOC y posiciones realmente utilizadas;
+- RPC o funciones de autorización aplicables;
+- operaciones permitidas dentro del alcance autorizado;
+- operaciones denegadas por permisos o RLS;
+- aislamiento territorial aplicable;
+- ausencia de service-role en cliente o fixtures;
+- creación de service-role únicamente en un camino explícitamente autorizado;
+- prohibición de sincronizar navegación durante el build de certificación;
+- correspondencia entre schema de prueba y fuente canónica de `vento-shell`;
+- ausencia de bypass por wrapper, fallback o manejo de errores.
+
+Las pruebas que requieran base de datos deberán usar un entorno local o CI aislado derivado de la fuente canónica de `vento-shell`. La falta de ese entorno cuando la comprobación sea obligatoria produce `BLOCKED`, no `NOT_APPLICABLE`.
+
+La evidencia se vincula a `PKG-COMP-MX-019` y `PKG-PR-REL-019`.
+
+#### 18. Perfil ORIGO para `@vento/ui-web`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-026`, la línea base deberá cubrir especialmente:
+
+- render servidor y cliente de superficies representativas;
+- hidratación sin divergencias silenciosas;
+- formularios de proveedor, orden y recepción;
+- navegación, tablas, filtros, estados vacíos y denegaciones;
+- rutas dinámicas y detalle de orden;
+- eventos de usuario y feedback de éxito/error;
+- foco, teclado y semántica accesible aplicable;
+- integración de tokens y estilos sin degradar legibilidad u operación;
+- loading, error y deny states;
+- ausencia de imports privados no contractuales;
+- smoke controlado de `GET /purchase-orders/[id]/pdf` sin requerir impresión física.
+
+La evidencia se vincula a `PKG-COMP-MX-026` y `PKG-PR-REL-026`.
+
+#### 19. Protección reforzada de proveedores y maestro de producto
+
+La cobertura de proveedor no puede reducirse a que `/suppliers` renderice.
+
+Según aplicabilidad, la línea base deberá conservar:
+
+1. identidad estable del proveedor;
+2. estado aplicable;
+3. edición ligada al mismo `[id]`;
+4. relación producto–proveedor;
+5. producto activo y elegible;
+6. presentación aprobada;
+7. unidad de entrada;
+8. equivalencia a unidad de stock;
+9. costos de entrada y stock cuando existan;
+10. separación entre proveedor, relación comercial, presentación y producto;
+11. revisión de maestro de producto como superficie administrativa distinta;
+12. rechazo de asociaciones o presentaciones que no correspondan al proveedor/producto seleccionado.
+
+CI009 no implementa el modelo TO-BE completo de contratos, ofertas, vigencias, Storage ni scoring de proveedor; protege las invariantes aplicables a la línea base y asegura que futuras actualizaciones de fundación compartida no degraden las superficies vigentes.
+
+#### 20. Protección reforzada de órdenes de compra
+
+La orden de compra deberá conservar pruebas representativas de:
+
+- proveedor requerido;
+- sede requerida;
+- al menos una línea válida;
+- producto elegible;
+- asociación producto–proveedor;
+- presentación perteneciente al producto;
+- factor de conversión positivo;
+- cantidad positiva;
+- costo y total calculables;
+- estado inicial y transiciones aplicables;
+- edición condicionada por estado;
+- autoridad aplicable a eliminación de borrador;
+- detalle y edición sobre el mismo recurso dinámico;
+- generación de referencia y documento;
+- rechazo de transición o mutación fuera de alcance.
+
+La suite deberá diferenciar:
+
+```text
+PRUEBA DE COMPORTAMIENTO VIGENTE
+≠
+CERTIFICACIÓN DE QUE TODO EL FLUJO TO-BE DE ABASTECIMIENTO YA ESTÁ IMPLEMENTADO
+```
+
+Las obligaciones todavía planificadas conservan sus owners existentes y no se consideran cumplidas por CI009.
+
+#### 21. Protección reforzada de recepciones
+
+La recepción es una superficie crítica porque puede afectar órdenes, inventario y costos a través de integraciones.
+
+La línea base deberá poder evaluar, según el commit y perfil aplicables:
+
+- recepción vinculada a orden;
+- recepción directa cuando esté permitida;
+- proveedor y sede;
+- producto y presentación;
+- cantidad recibida;
+- unidad y equivalencia;
+- LOC y posición;
+- lote y vencimiento cuando aplique;
+- costos;
+- firma de actor cuando corresponda;
+- corrección;
+- replay;
+- identidad de la operación;
+- cantidades recibidas de la orden;
+- estados resultantes;
+- efectos de inventario/costo únicamente en un entorno aislado.
+
+La suite no deberá simular idempotencia eliminando la repetición del escenario. Debe poder demostrar que una misma clave o identidad lógica no produce dos recepciones ni dobla efectos cuando ese contrato esté materializado.
+
+Cuando la implementación actual todavía no satisfaga una obligación crítica ya registrada, la ejecución real se clasifica `FAIL` o `BLOCKED`; no se redefine el requisito para obtener verde.
+
+#### 22. Protección reforzada del PDF público y secretos
+
+El handler `GET /purchase-orders/[id]/pdf` es una superficie técnica y de seguridad separada de las trece páginas.
+
+La cobertura deberá distinguir dos caminos:
+
+```text
+TOKEN VÁLIDO APLICABLE A LA ORDEN
+→ acceso público controlado
+→ service-role solo después de validar token
+
+SIN TOKEN VÁLIDO
+→ sesión requerida
+→ acceso ORIGO requerido
+→ denegación cerrada cuando no corresponde
+```
+
+La suite deberá cubrir, según aplicabilidad:
+
+- token vacío;
+- token malformado;
+- token expirado;
+- token de otra orden;
+- firma inválida;
+- ausencia de secreto obligatorio;
+- secreto inseguro o fallback prohibido;
+- creación prematura de service-role;
+- sesión ausente sin token válido;
+- acceso ORIGO denegado;
+- orden inexistente;
+- exportación válida.
+
+El helper físico observado conserva un fallback de desarrollo para el secreto. Ese hallazgo ya está gobernado por requisitos ORIGO existentes y **no crea un requisito nuevo en CI009**.
+
+La autocertificación global del habilitador podrá demostrar sintéticamente que la política detecta el fallback. Una ejecución real sobre un commit que siga incumpliendo la regla aplicable no podrá declararse PASS por el hecho de que el harness esté VERIFIED.
+
+#### 23. Datos, fixtures y aislamiento
+
+Las pruebas de CI009 deberán cumplir simultáneamente:
+
+1. no leer ni modificar datos productivos;
+2. usar fixtures deterministas o entorno local/CI aislado;
+3. no depender de IDs aleatorios no registrados;
+4. limpiar o descartar estado temporal de forma reproducible;
+5. no compartir estado mutable entre tests independientes;
+6. no utilizar credenciales reales como fixture;
+7. no introducir una migración ORIGO para acomodar la prueba;
+8. cuando se necesite schema Supabase, consumir la fuente canónica de `vento-shell`;
+9. registrar identidad del fixture set;
+10. impedir que una falla de cleanup convierta el resultado en PASS;
+11. no ejecutar `sync-navigation.mjs` contra un proyecto remoto;
+12. no crear órdenes, recepciones, proveedores, movimientos, costos o registros de navegación productivos;
+13. no depender de impresora física;
+14. no utilizar service-role real en autocertificación sintética;
+15. separar fixtures de compra, recepción y autorización para evitar contaminación entre escenarios.
+
+#### 24. Línea base antes de `INITIAL_ADOPTION`
+
+El manifest observado de ORIGO no declara todavía packages publicados `@vento/*`.
+
+Por tanto, la primera adopción futura de cualquiera de las cuatro familias deberá tratar la evidencia CI009 como **oráculo del comportamiento previo**:
+
+```text
+COMMIT BASE SIN EL PACKAGE COMPARTIDO
+→ CI009 PASS
+→ PROPUESTA INITIAL_ADOPTION
+→ MISMA COBERTURA ESENCIAL SOBRE PROPOSAL COMMIT
+→ COMPARACIÓN DE RESULTADOS
+```
+
+La ausencia actual del package no convierte sus pruebas específicas en no aplicables.
+
+#### 25. Actualizaciones `PATCH`, `MINOR`, `MAJOR`, seguridad y deprecación
+
+CI009 no sustituye las clases de actualización de CI006:
+
+- `PATCH_UPDATE`: línea base completa y regresión focal;
+- `MINOR_UPDATE`: añade escenarios para la nueva capacidad consumida;
+- `MAJOR_UPDATE`: exige línea base completa y matriz explícita de comportamiento preservado/cambiado;
+- `SECURITY_UPDATE`: mantiene autorización, token, service-role, RLS, denegación e IDOR; la urgencia no permite omitirlos;
+- `DEPRECATION_MIGRATION`: conserva pruebas de la superficie antigua mientras siga soportada y de la ruta objetivo cuando exista;
+- `ROLLBACK_UPDATE`: CI009 aporta la línea base; la ejecución y certificación del rollback pertenece a CI014.
+
+#### 26. Actualización multi-package
+
+Cuando CI006 resuelva más de una familia compartida:
+
+1. CI009 selecciona la unión de todos los perfiles correspondientes;
+2. ninguna familia reduce la cobertura de otra;
+3. las doce superficies comunes permanecen;
+4. una ejecución puede producir evidencia para el conjunto si las identidades permanecen unidas;
+5. el conjunto objetivo queda registrado;
+6. cambiar una sola versión objetivo invalida la evidencia dependiente;
+7. no se usa lockstep artificial para incluir familias no requeridas.
+
+#### 27. Evidencia consumible por CI006
+
+La evidencia satisfactoria deberá permitir a CI006 demostrar al menos:
+
+- repositorio consumidor exacto: `devVentoGroup/vento-origo`;
+- commit base exacto;
+- manifest y lockfile exactos;
+- inventario de rutas exacto;
+- source contracts exactos;
+- relación o relaciones ORIGO aplicables;
+- conjunto de packages objetivo;
+- referencias de compatibilidad CI005;
+- perfil o perfiles ORIGO ejecutados;
+- identidad de suite y fixtures;
+- identidad del entorno;
+- resultados por capa y superficie;
+- total de tests ejecutados, aprobados, fallidos y omitidos;
+- evidencia de caminos denegados aplicables;
+- evidencia de páginas, rutas dinámicas y handler;
+- evidencia de que el build no ejecutó sincronización remota;
+- started/completed timestamps;
+- resultado global;
+- razón de bloqueo o invalidación cuando no sea PASS.
+
+La evidencia podrá formar parte de `validation_results` y `evidence_refs` del expediente `PKG-PR-*`, pero CI009 no crea ni mantiene ese expediente.
+
+#### 28. Invalidación obligatoria
+
+El resultado pasa a `STALE` cuando cambia materialmente cualquiera de estas entradas antes de que CI006 la consuma:
+
+- `consumer_base_commit`;
+- manifest;
+- lockfile;
+- configuración de build, TypeScript o test;
+- suite;
+- fixtures u oracles;
+- variables/configuración de entorno relevantes;
+- runtime o framework;
+- inventario de trece páginas;
+- inventario del handler;
+- source contracts;
+- reglas de sincronización de navegación;
+- contrato de token PDF;
+- fuente de schema usada para pruebas Supabase;
+- contrato de autorización o contexto;
+- relación package–ORIGO;
+- versión o conjunto objetivo;
+- referencia de compatibilidad CI005;
+- superficie obligatoria;
+- contrato de CI009.
+
+No se conserva un PASS anterior mediante rebase, cherry-pick, actualización de snapshot o cambio de fixture sin nueva ejecución atribuible.
+
+#### 29. Condiciones de bloqueo
+
+La futura ejecución deberá quedar `BLOCKED` o `FAIL` según corresponda cuando ocurra cualquiera de estas condiciones:
+
+1. no existe runner reproducible para pruebas ORIGO;
+2. el runner ejecuta cero tests obligatorios;
+3. falta identidad del commit base;
+4. manifest o lockfile no corresponden al commit;
+5. la suite cambió después de producir evidencia;
+6. existe un test obligatorio omitido;
+7. lint, typecheck o build obligatorio falla;
+8. el build de certificación invoca `sync-navigation.mjs`;
+9. la prueba intenta escribir `app_screen_registry` u otra superficie remota;
+10. una prueba funcional obligatoria falla;
+11. una prueba de denegación, autorización, contexto, recurso o IDOR falla;
+12. una comprobación de token/service-role aplicable falla;
+13. se requiere RLS y no existe entorno aislado válido;
+14. el entorno apunta a datos o servicios productivos;
+15. un fixture contiene una credencial real;
+16. evidencia CI005 pertenece a otra versión o consumidor;
+17. la relación resuelta no corresponde a ORIGO;
+18. se intenta modificar packages antes de cerrar línea base;
+19. se intenta resolver el fallo mediante bypass, cast global, skip o snapshot forzado;
+20. una operación de prueba intenta crear o cambiar schema, RLS, RPC, datos o configuración remota desde ORIGO;
+21. la suite atribuye a ORIGO inventario/LOC, producción o gobierno Supabase que pertenecen a NEXO, FOGO o Shell;
+22. una orden inválida se normaliza como válida;
+23. una recepción repetida puede duplicar el mismo efecto lógico cuando la idempotencia sea aplicable;
+24. el PDF usa privilegio service-role antes de validar el camino autorizado;
+25. el inventario deja de conciliar 13 páginas, 3 dinámicas, 1 handler, 12 sincronizables y 4 candidatas de menú sin delta explícito;
+26. resultados contradictorios o flaky no han sido explicados;
+27. una deuda crítica conocida se transforma manualmente en PASS.
+
+Ninguna aprobación humana convierte estas condiciones técnicas en PASS.
+
+#### 30. Materialización futura de `SHELL-CI-009::GLOBAL`
+
+La instancia física solo podrá declararse materializada cuando, dentro del alcance expresamente autorizado:
+
+1. exista infraestructura de pruebas automatizadas reproducible en `devVentoGroup/vento-origo`;
+2. exista un punto de entrada determinista para la suite CI009;
+3. exista un camino de build CI que no ejecute `sync-navigation.mjs`;
+4. las pruebas cubran las doce superficies comunes;
+5. existan perfiles seleccionables para las cuatro familias;
+6. existan casos permitidos y denegados de autorización;
+7. exista cobertura de trece páginas, tres patrones dinámicos y un handler;
+8. exista validación de las cardinalidades 13/12/4 de navegación;
+9. exista estrategia aislada para pruebas Supabase;
+10. la suite no use datos productivos ni secretos reales;
+11. las pruebas no modifiquen schema ni migraciones ORIGO;
+12. identidad de commit, manifest, lockfile, suite, fixtures, rutas, source contracts y entorno forme parte de evidencia;
+13. un cambio material vuelva STALE la evidencia;
+14. una ejecución multi-package una perfiles sin reducir cobertura;
+15. la salida sea machine-readable y consumible por CI006;
+16. el habilitador falle sintéticamente ante al menos una ruptura por cada perfil;
+17. demuestre que evidencia de otro consumidor o commit no es reutilizable;
+18. demuestre que cero tests no se normaliza a PASS;
+19. demuestre que drift de rutas no se normaliza a PASS;
+20. demuestre que un camino de build mutante no se normaliza a PASS;
+21. demuestre que un token inseguro o un uso anticipado de service-role puede ser clasificado como fallo sin usar secretos reales;
+22. la autocertificación no actualice packages, no abra PR, no despliegue y no ejecute rollback;
+23. la autocertificación no cree órdenes, recepciones, proveedores, navegación ni mutaciones Supabase productivas.
+
+La selección física concreta de framework, archivos y devDependencies se resolverá durante la instancia con el estado actualizado de ORIGO. El contrato no impone un proveedor inexistente por inferencia.
+
+#### 31. Recuperación e idempotencia
+
+Reglas:
+
+1. una repetición exacta sobre las mismas entradas puede reproducir la misma decisión sin duplicar identidad lógica;
+2. los intentos fallidos se conservan como evidencia;
+3. un test flaky no se resuelve reintentando hasta pasar sin registrar intermitencia;
+4. si cambia el commit base, se crea una ejecución nueva;
+5. si cambia el conjunto objetivo, se recalculan perfiles;
+6. un fallo de infraestructura produce `BLOCKED` cuando impide evaluar comportamiento;
+7. un fallo funcional produce `FAIL` cuando la infraestructura sí permitió evaluar;
+8. una ejecución cancelada o con timeout no certifica;
+9. la recuperación nunca modifica datos reales ni amplía permisos;
+10. una corrección del harness no reescribe evidencia histórica;
+11. una deuda preexistente del consumidor permanece visible como fallo o bloqueo de esa ejecución y no se borra al autocertificar el habilitador.
+
+#### 32. Estado documental conciliado
+
+| Métrica                                      |                           Resultado |
+| -------------------------------------------- | ----------------------------------: |
+| Repositorio consumidor                       | **1 — `devVentoGroup/vento-origo`** |
+| Familias compartidas base                    |                               **4** |
+| Relaciones CI005 de ORIGO                    |                               **4** |
+| Relaciones CI006 de ORIGO                    |                               **4** |
+| Páginas fuente ORIGO                         |                              **13** |
+| Patrones dinámicos de página                 |                               **3** |
+| Handlers técnicos observados                 |                               **1** |
+| Rutas sincronizables observadas              |                              **12** |
+| Candidatas de menú observadas                |                               **4** |
+| Superficies funcionales comunes obligatorias |                              **12** |
+| Perfiles de familia                          |                               **4** |
+| Auto-merge autorizado                        |                               **0** |
+| Auto-deploy autorizado                       |                               **0** |
+| Migraciones Supabase autorizadas en ORIGO    |                               **0** |
+| Datos productivos autorizados para pruebas   |                               **0** |
+| Requisitos de prueba creados o modificados   |                               **0** |
+
+#### 33. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** las obligaciones de probar cada consumidor antes de adoptar packages compartidos, disponer de comandos reproducibles, conservar evidencia atribuible y bloquear falsos verdes ya existen en el registro canónico. La cobertura ORIGO vigente ya protege órdenes, recepción, proveedores, autorización, inventario de rutas, handler PDF, identidad de evidencia y fronteras operativas. CI009 especializa esas obligaciones para la línea base previa de ORIGO y define su habilitador reutilizable; no introduce una regla empresarial independiente.
+
+#### 34. Cobertura de prueba vigente reutilizada
+
+La tarea reutiliza sin modificar, entre otras, estas obligaciones existentes:
+
+- `TREQ-SHELL-005`, sobre comandos reproducibles y ausencia de falsos verdes;
+- `TREQ-SHELL-006`, sobre pruebas propias, matriz de compatibilidad y validación por consumidor antes de publicar o adoptar;
+- `TREQ-SHELL-008`, sobre requisitos afectados y resultados reproducibles por package y PR;
+- `TREQ-SHELL-009`, sobre identidad verificable de repositorio, commit y ambiente;
+- `TREQ-ORIGO-001`, sobre modalidad de recepción, duplicación, costos y auditabilidad;
+- `TREQ-ORIGO-002`, sobre autorización, alcance de órdenes y token externo firmado sin fallback inseguro;
+- `TREQ-ORIGO-003`, sobre atomicidad, idempotencia y reconciliación de recepción;
+- `TREQ-ORIGO-004`, sobre identidades y estados separados del ciclo de abastecimiento;
+- `TREQ-ORIGO-005`, sobre maestro de proveedores, relaciones comerciales y datos sensibles;
+- `TREQ-ORIGO-006` a `TREQ-ORIGO-025`, sobre trece páginas, rutas dinámicas, handler PDF, middleware, autorización, identidad de evidencia, drift, navegación y fronteras de aplicación.
+
+Estas referencias son trazabilidad de cobertura existente y no constituyen una modificación del registro 04A.
+
+#### 35. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                                                                                                                     |
+| --------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador documental no instala dependencias, no ejecuta build de ORIGO y no materializa el harness.                                                                                                                                                                                                                                                                                        |
+| LOCAL     | NOT_EXECUTED   | El artefacto todavía no ha sido incorporado ni validado por el checkout local del usuario.                                                                                                                                                                                                                                                                                                    |
+| REMOTA    | PASS           | Se verificaron continuidad CI008→CI009→CI010, topología `GLOBAL_ENABLE_ONCE`, las cuatro relaciones package–ORIGO, commit remoto observado, manifest y lockfile, árbol completo, trece páginas, tres patrones dinámicos, handler PDF, cuatro candidatas de menú, Auth/guard, órdenes, proveedores, recepciones, clientes Supabase, sincronizador de navegación y cobertura 04A ORIGO vigente. |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutaron compras, órdenes, recepciones, PDF, navegación, Supabase ni datos reales.                                                                                                                                                                                                                                                                                                    |
+| FÍSICA    | NOT_APPLICABLE | La materialización pertenece a `SHELL-CI-009::GLOBAL` después de aprobación documental y autorización física explícita.                                                                                                                                                                                                                                                                       |
+
+#### 36. Criterios de aceptación
+
+`SHELL-CI-009` queda documentalmente completa cuando:
+
+- identifica `devVentoGroup/vento-origo` como consumidor propietario;
+- conserva CI006 como propietario del cambio y del PR;
+- conserva la disciplina de CI007/CI008 sin reutilizar evidencia de otro consumidor;
+- gobierna exactamente cuatro relaciones package–ORIGO;
+- define unidad de evidencia ligada a commit, manifest, lockfile, suite, fixtures, rutas, source contracts y entorno;
+- exige ejecutar línea base antes de modificar versiones objetivo;
+- define doce superficies funcionales comunes;
+- define cuatro perfiles de familia;
+- protege trece páginas, tres patrones dinámicos y un handler;
+- concilia trece páginas fuente, doce sincronizables y cuatro candidatas de menú;
+- exige caminos permitidos y denegados;
+- protege sede, sesión, actor, recurso e identidad dinámica;
+- protege proveedores, presentaciones, unidades y relaciones comerciales aplicables;
+- protege órdenes, líneas, estados y documento;
+- protege recepciones, idempotencia y efectos integrados aplicables;
+- protege token PDF y frontera de service-role;
+- exige un build CI que no active `sync-navigation`;
+- protege clientes Supabase/RLS sin autorizar cambios de base de datos desde ORIGO;
+- protege UI, SSR, interacción, accesibilidad y exportación;
+- convierte ausencia de suite en bloqueo físico;
+- soporta `INITIAL_ADOPTION`;
+- soporta conjuntos multi-package;
+- invalida evidencia ante cambios materiales;
+- produce evidencia consumible por CI006;
+- conserva fronteras ORIGO–NEXO–FOGO–Shell;
+- separa habilitador VERIFIED de consumidor conforme;
+- no crea PR, no actualiza packages, no fusiona, no despliega y no ejecuta rollback durante el marcador;
+- no crea ni modifica requisitos de prueba.
+
+#### 37. Límites
+
+Esta tarea no:
+
+- implementa físicamente `SHELL-CI-009::GLOBAL`;
+- instala un framework de pruebas durante el marcador documental;
+- modifica `package.json` o `package-lock.json` de ORIGO;
+- actualiza `@vento/contracts`, `@vento/os-context`, `@vento/supabase` ni `@vento/ui-web`;
+- modifica código funcional ORIGO;
+- corrige el fallback físico del token PDF durante el marcador;
+- crea ramas ni pull requests;
+- modifica la lógica del actualizador CI006;
+- recalcula compatibilidad CI005;
+- reutiliza evidencia NEXO o FOGO como si perteneciera a ORIGO;
+- normaliza todos los comandos del repositorio, responsabilidad de CI016;
+- implementa por anticipado todo el ciclo TO-BE de abastecimiento, contratos, aprobaciones, evaluación de proveedores o compras urgentes;
+- convierte ORIGO en propietario de inventario/LOC de NEXO ni de producción de FOGO;
+- modifica schema, tablas, RPC, RLS, Storage, Realtime, Edge Functions, datos, secretos o configuración Supabase;
+- crea ni modifica migraciones dentro de ORIGO;
+- ejecuta `sync-navigation.mjs` contra un proyecto remoto;
+- usa datos productivos;
+- requiere impresora física;
+- ejecuta rollback de CI014;
+- coordina despliegue de CI015;
+- desarrolla CI010 ni otra tarea posterior;
+- crea, modifica, difiere, descarta u obsolete requisitos del registro 04A.
+
+#### 38. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CI-008 — Probar FOGO antes de actualizar`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CI-009 — Probar ORIGO antes de actualizar`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-010 — Probar PULSO antes de actualizar`
+
+
 ### [ ] SHELL-CI-010 — Probar PULSO antes de actualizar
 ### [ ] SHELL-CI-011 — Probar VISO antes de actualizar
 ### [ ] SHELL-CI-012 — Probar NUMERA antes de actualizar

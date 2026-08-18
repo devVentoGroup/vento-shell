@@ -20,33 +20,33 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **967** |
+| Tareas aprobadas | **968** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **627** |
+| Tareas no iniciadas | **626** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **60.66% (967/1594)** |
+| Porcentaje de completamiento | **60.73% (968/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-CI-008 — Probar FOGO antes de actualizar** |
-| Tarea actual | **SHELL-CI-009 — Probar ORIGO antes de actualizar** |
+| Última tarea aprobada | **SHELL-CI-009 — Probar ORIGO antes de actualizar** |
+| Tarea actual | **SHELL-CI-010 — Probar PULSO antes de actualizar** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CI-010 — Probar PULSO antes de actualizar** |
+| Siguiente tarea | **SHELL-CI-011 — Probar VISO antes de actualizar** |
 | Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
-| Progreso del bloque | **BLOQUE T: 8 de 24 aprobadas; SHELL-CI-009 pendiente** |
-| Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — SHELL-CI-009** |
-| Carril documental | **ACTIVO — SHELL-CI-009** |
-| Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
-| Alcance físico autorizado | **NINGUNO** |
+| Progreso del bloque | **BLOQUE T: 9 de 24 aprobadas; SHELL-CI-010 pendiente** |
+| Estado de implementación | **GLOBAL_IMPLEMENTATION_AUTHORIZED** |
+| Acción principal obligatoria | **EJECUTAR_IMPLEMENTACION — SHELL-CI-009::GLOBAL** |
+| Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — SHELL-CI-010** |
+| Carril físico | **AUTHORIZED — SHELL-CI-009::GLOBAL** |
+| Alcance físico autorizado | **SHELL-CI-009::GLOBAL** |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-CI-008` — Probar FOGO antes de actualizar |
-| Tarea actual | `SHELL-CI-009` — Probar ORIGO antes de actualizar — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CI-010` — Probar PULSO antes de actualizar |
+| Última aprobada | `SHELL-CI-009` — Probar ORIGO antes de actualizar |
+| Tarea actual | `SHELL-CI-010` — Probar PULSO antes de actualizar — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CI-011` — Probar VISO antes de actualizar |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,8 +59,8 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE T: 8 DE 24 APROBADAS — ACTUAL SHELL-CI-009** |
-| Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
+| CONTINUIDAD ACTIVA | **BLOQUE T: 9 DE 24 APROBADAS — ACTUAL SHELL-CI-010** |
+| Implementación física | **SHELL-CI-009::GLOBAL — AUTHORIZED** |
 
 ## Reglas de edición
 
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-CI-008 — Probar FOGO antes de actualizar
-        ↓
-TAREA ACTUAL
 SHELL-CI-009 — Probar ORIGO antes de actualizar
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-CI-010 — Probar PULSO antes de actualizar
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CI-011 — Probar VISO antes de actualizar
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE T — 8 de 24 tareas aprobadas
+BLOQUE T — 9 de 24 tareas aprobadas
 ```

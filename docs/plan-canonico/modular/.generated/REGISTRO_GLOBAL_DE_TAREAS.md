@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **967** |
+| Aprobadas | **968** |
 | En propuesta | **0** |
-| No iniciadas | **627** |
+| No iniciadas | **626** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **60.66% (967/1594)** |
+| Porcentaje de completamiento | **60.73% (968/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CI-008` — Probar FOGO antes de actualizar | ✅ APROBADA |
-| Tarea actual | `SHELL-CI-009` — Probar ORIGO antes de actualizar | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CI-010` — Probar PULSO antes de actualizar | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CI-009` — Probar ORIGO antes de actualizar | ✅ APROBADA |
+| Tarea actual | `SHELL-CI-010` — Probar PULSO antes de actualizar | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CI-011` — Probar VISO antes de actualizar | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1292,7 +1292,7 @@
 | ✅ APROBADA | `SHELL-CI-006` | Crear actualización de consumidores mediante PR | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |
 | ✅ APROBADA | `SHELL-CI-007` | Probar NEXO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ✅ APROBADA | `SHELL-CI-008` | Probar FOGO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
-| ⬜ NO INICIADA | `SHELL-CI-009` | Probar ORIGO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
+| ✅ APROBADA | `SHELL-CI-009` | Probar ORIGO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ⬜ NO INICIADA | `SHELL-CI-010` | Probar PULSO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ⬜ NO INICIADA | `SHELL-CI-011` | Probar VISO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ⬜ NO INICIADA | `SHELL-CI-012` | Probar NUMERA antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
