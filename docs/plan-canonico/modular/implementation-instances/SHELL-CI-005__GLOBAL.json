@@ -1,7 +1,7 @@
 {
   "instance_id": "SHELL-CI-005::GLOBAL",
   "task_id": "SHELL-CI-005",
-  "status": "AUTHORIZED",
+  "status": "VERIFIED",
   "target_repositories": [
     "devVentoGroup/vento-shell"
   ],
@@ -30,5 +30,22 @@
     "approval_statement": "Apruebo exclusivamente la implementación de SHELL-CI-005::GLOBAL en devVentoGroup/vento-shell mediante la creación de scripts/quality/shared-package-compatibility-gate.mjs, scripts/quality/shared-package-compatibility-gate.test.mjs y evidencia runtime no versionada bajo .delivery/shared-package-compatibility/, junto con las validaciones enumeradas en validation_commands. Autorizo únicamente la autocertificación sintética o aislada del habilitador durante esta instancia y la materialización de los caminos PREPARE, evaluación de relaciones y FINALIZE fail-closed para ejecuciones reales futuras que cuenten con su autorización correspondiente. No autorizo modificar los repositorios vento-viso, vento-nexo, vento-fogo, vento-origo, vento-pulso, vento-numera, vento-anima ni ningún otro consumidor; modificar packages compartidos, manifests, package-lock.json, package.json, workflows, SHELL-CI-001, SHELL-CI-002, SHELL-CI-003 o SHELL-CI-004; crear PKG-COMP-MX-029 o alterar PKG-COMP-MX-001..028; instalar packages en consumidores reales; crear pull requests; crear tags o releases reales; publicar en registry; modificar changelogs reales; ejecutar cambios de Supabase; modificar datos; usar credenciales o secretos; desplegar; ni realizar ninguna ampliación inferida del alcance.",
     "source_contract_sha256": "24c4ac99130ce4ddf3e1b668aa7278cb856788538e13cdcd7b06d8ade923d5c8"
   },
-  "evidence": []
+  "evidence": [
+    "PREFLIGHT PASS; task=SHELL-CI-005; instance=SHELL-CI-005::GLOBAL; format=OK; branch=main; behind=0; ahead=0; blockers=0; unexpected_paths=0; dirty=EXPECTED_PHYSICAL_DERIVATIVES",
+    "BASE_COMMIT e2728034a3cfa5208807c19992acbdbcf97b4ff4",
+    "FILE_SHA256 scripts/quality/shared-package-compatibility-gate.mjs f7b3650f499d3deb08d5a1fe3e3a261870362a1986e15aa977453e4f8e7d4ada",
+    "FILE_SHA256 scripts/quality/shared-package-compatibility-gate.test.mjs 12151f0dec2321f69a71839eec144cb2068a4636fd4df4438a51459d462add5d",
+    "IMPLEMENTATION shared-package-compatibility-gate materialized; base_relations=28; base_coverage_evaluations=140; contractual_tests=44",
+    "VALIDATION npm ci PASS",
+    "VALIDATION CI005 self-certification PASS; contractual_cases=44; positive=8; negative=20; regression=16",
+    "VALIDATION CI005 lint PASS",
+    "VALIDATION Canonical plan build PASS",
+    "VALIDATION Canonical plan check PASS",
+    "VALIDATION Canonical plan tests PASS",
+    "VALIDATION TREQ check PASS",
+    "VALIDATION TREQ tests PASS",
+    "VALIDATION Work topology check PASS",
+    "VALIDATION git diff check PASS",
+    "RESULT CI005_FINAL_VALIDATION=PASS"
+  ]
 }
