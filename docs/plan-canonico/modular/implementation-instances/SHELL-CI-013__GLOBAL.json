@@ -1,10 +1,50 @@
 {
   "instance_id": "SHELL-CI-013::GLOBAL",
   "task_id": "SHELL-CI-013",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "IMPLEMENTED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell",
+    "devVentoGroup/vento-anima"
+  ],
+  "authorized_changes": [
+    "En devVentoGroup/vento-shell, modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CI-013__GLOBAL.json para conservar la autorizacion humana, transicionar AUTHORIZED -> IN_PROGRESS -> IMPLEMENTED -> VERIFIED y consolidar evidencia. No modificar implementation-control.json ni registros de instancias anteriores.",
+    "En devVentoGroup/vento-anima, reemplazar exclusivamente package.json por una version semanticamente equivalente que preserve name, version, description, main, dependencies, devDependencies y private, y anada solo los scripts typecheck, test, test:ci013, build:ci013 y ci013:baseline. No cambiar versiones, dependencies, devDependencies ni package-lock.json.",
+    "En devVentoGroup/vento-anima, crear scripts/quality/anima-consumer-baseline-gate.mjs como habilitador global reutilizable de SHELL-CI-013::GLOBAL. Debe certificar la linea base ACTUAL de la aplicacion movil Expo/React Native para Android+iOS sin fijar la version futura objetivo de Expo; fijar identidad de commit, manifest, lockfile, app.config.js, suite, fixtures e inventarios; conservar exactamente 14 pantallas, 14 estaticas, 0 dinamicas, 3 layouts, 9 tabs, 16 superficies internas, 2 globales, 0 Expo +api handlers y 5 superficies web-auth separadas; proteger la allowlist de 5 tipos de notificacion; verificar renderer NATIVE_REACT_NATIVE_EXPO; rechazar PKG-COMP-MX-029, PKG-PR-REL-029, @vento/ui-web, binding de otro consumidor, target/renderer incorrecto, cero tests, evidencia stale, secretos, service-role, ambiente productivo y drift estructural; producir evidencia JSON machine-readable; y no modificar packages reales, Supabase, datos, PR, merge, deploy ni rollback.",
+    "En devVentoGroup/vento-anima, crear scripts/quality/anima-consumer-baseline-gate.test.mjs para autocertificar con node:test las 16 superficies comunes en caminos positivos y negativos, los 5 perfiles en caminos positivos y negativos y 12 regresiones globales.",
+    "Fuera de package.json y los dos scripts CI013, SHELL-CI-013::GLOBAL no autoriza modificar codigo funcional de ANIMA, app.config.js, eas.json, package-lock.json, dependencies, devDependencies, pantallas, layouts, navegacion, roles, capabilities, permisos, allowlists, offline/replay, documentos, privacidad, web-auth, migraciones, schema, tablas, vistas, funciones, RPC, triggers, grants, RLS, Storage, Realtime, Edge Functions, datos, secretos, archivos .env, packages @vento/* reales, ramas protegidas, pull requests, merge, deploy ni rollback. En vento-shell no autoriza cambios fuera del registro propio de la instancia."
+  ],
+  "validation_commands": [
+    "C:\\Users\\User\\devVentoGroup\\vento-anima: npm ci",
+    "C:\\Users\\User\\devVentoGroup\\vento-anima: npm run typecheck",
+    "C:\\Users\\User\\devVentoGroup\\vento-anima: npm run test:ci013",
+    "C:\\Users\\User\\devVentoGroup\\vento-anima: npm run build:ci013",
+    "C:\\Users\\User\\devVentoGroup\\vento-anima: npm run --silent ci013:baseline",
+    "C:\\Users\\User\\devVentoGroup\\vento-anima: git --no-pager diff --check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:build",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:work-topology:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-18T12:29:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO y continuar. Se autoriza exclusivamente SHELL-CI-013::GLOBAL sobre devVentoGroup/vento-shell y devVentoGroup/vento-anima dentro de los archivos, cambios y validaciones enumerados. La linea base corresponde al stack ACTUAL Expo/React Native de ANIMA y no fija la version futura objetivo. Se niega cualquier relacion base 29, adopcion de @vento/ui-web, cambio funcional, cambio de dependencias o package-lock, cambio de Supabase, uso de secretos o datos productivos, adopcion real de packages @vento/*, PR, merge, deploy o rollback.",
+    "source_contract_sha256": "7a0192a54a053fb4259d3722238778b6367047a14c65fe48903666240602b667"
+  },
+  "evidence": [
+    "PREFLIGHT PASS; task=SHELL-CI-013; instance=SHELL-CI-013::GLOBAL",
+    "SHELL_BASE_COMMIT 307904eac35d77e2b2b30446bd26cb505caccf56",
+    "ANIMA_BASE_COMMIT 50b77742cc0ae85f873d42152108a50acc9d6964",
+    "ANIMA_REMOTE_MAIN_VERIFIED 50b77742cc0ae85f873d42152108a50acc9d6964",
+    "ANIMA_TOOLCHAIN_BASELINE anima=1.3.4; expo=~54.0.35; expo_router=~6.0.24; react_native=0.81.5; react=19.1.0; mode=BASELINE_CURRENT_NOT_FUTURE_TARGET",
+    "IMPLEMENTATION anima-consumer-baseline-gate materialized; surfaces=16; profiles=5; screens=14; static=14; dynamic=0; layouts=3; tabs=9; handlers=0; contractual_tests=54",
+    "FILE_SHA256 package.json 87229bd864d8a2ba34c797e5b54937826c66face26991d10aeb9dca1d07853aa",
+    "FILE_SHA256 scripts/quality/anima-consumer-baseline-gate.mjs 7491b4994d82d02f6fb1ecefb730637c637eac094a391a317093a87151788371",
+    "FILE_SHA256 scripts/quality/anima-consumer-baseline-gate.test.mjs cb4fe391425e5dc6d3e3dae01f951e6ab9e2cb2d6df9dc95192f12df734c8a64"
+  ]
 }
