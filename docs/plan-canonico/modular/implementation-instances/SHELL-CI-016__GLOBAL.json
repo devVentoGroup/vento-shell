@@ -1,10 +1,59 @@
 {
   "instance_id": "SHELL-CI-016::GLOBAL",
   "task_id": "SHELL-CI-016",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell",
+    "devVentoGroup/vento-nexo",
+    "devVentoGroup/vento-fogo",
+    "devVentoGroup/vento-origo",
+    "devVentoGroup/vento-pulso",
+    "devVentoGroup/vento-viso",
+    "devVentoGroup/vento-numera",
+    "devVentoGroup/vento-anima"
+  ],
+  "authorized_changes": [
+    "En devVentoGroup/vento-shell, modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CI-016__GLOBAL.json para conservar la autorizacion humana, transicionar AUTHORIZED -> IN_PROGRESS -> IMPLEMENTED -> VERIFIED y consolidar evidencia. No modificar implementation-control.json ni registros de instancias anteriores.",
+    "En devVentoGroup/vento-shell, modificar exclusivamente package.json para anadir scripts.test = node scripts/quality/repository-test-command-gate.mjs run-shell, scripts.test:ci016 = node --test scripts/quality/repository-test-command-gate.test.mjs y scripts.ci016:certify = node scripts/quality/repository-test-command-gate.mjs certify --json --write-evidence. No modificar dependencies, devDependencies, versiones, workspaces ni package-lock.json.",
+    "En devVentoGroup/vento-shell, crear scripts/quality/repository-test-command-gate.mjs como unica implementacion global de SHELL-CI-016::GLOBAL. Debe fijar npm test como interfaz publica, conservar aliases internos, ejecutar la suite raiz de SHELL sin reducirla a CI016, auditar los ocho repositorios canonicos, resolver cadenas de scripts, bloquear cero tests, suites omitidas, skips obligatorios, fallos neutralizados, watch mode, interactividad, timeout, evidencia stale, rutas locales, secretos y mutaciones remotas, ejecutar npm test de forma secuencial en cada checkout y producir evidencia machine-readable ignorada bajo .delivery/repository-tests/.",
+    "En devVentoGroup/vento-shell, crear scripts/quality/repository-test-command-gate.test.mjs para autocertificar exactamente 45 escenarios contractuales de SHELL-CI-016::GLOBAL: 10 positivos, 20 negativos y 15 regresiones, mediante fixtures sinteticos o evaluaciones aisladas sin mutaciones remotas.",
+    "En devVentoGroup/vento-nexo, devVentoGroup/vento-fogo, devVentoGroup/vento-origo, devVentoGroup/vento-pulso, devVentoGroup/vento-viso, devVentoGroup/vento-numera y devVentoGroup/vento-anima, autorizar exclusivamente lectura del manifest, lockfile e identidad Git y ejecucion local no interactiva de npm test por el certificador CI016. No autorizar ningun cambio versionado o no versionado de aplicacion, manifest, lockfile, dependencia, configuracion, datos, Supabase, workflow, rama, PR, release, deploy o rollback en esos siete repositorios.",
+    "La autocertificacion de SHELL-CI-016::GLOBAL permite evidencia runtime no versionada unicamente bajo devVentoGroup/vento-shell/.delivery/repository-tests/. Queda prohibido modificar package-lock.json, dependencias, packages compartidos, codigo funcional de aplicaciones, workflows, branch protection, tags/releases, publicar packages, abrir o fusionar pull requests, desplegar, ejecutar rollback productivo, crear o ejecutar migraciones, restaurar backups, modificar schema, RLS, RPC, funciones, triggers, grants, Storage, Realtime, Edge Functions, datos, configuracion productiva, cache productiva, secretos, archivos .env o credenciales reales; tambien queda prohibido desarrollar SHELL-CI-017..019 por anticipado o ampliar por inferencia el alcance autorizado."
+  ],
+  "validation_commands": [
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm ci",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run ci016:certify",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run lint -- scripts/quality/repository-test-command-gate.mjs scripts/quality/repository-test-command-gate.test.mjs",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:build",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:work-topology:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-18T15:38:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Se autoriza exclusivamente la implementacion fisica de SHELL-CI-016::GLOBAL dentro de los ocho repositorios enumerados en target_repositories, limitada a los cambios y validaciones declarados en authorized_changes y validation_commands. Las unicas escrituras versionadas autorizadas pertenecen a devVentoGroup/vento-shell: el registro propio de la instancia, package.json y los dos archivos de scripts/quality declarados. En los otros siete repositorios se autoriza unicamente lectura local e invocacion no interactiva de npm test por el certificador. Se niega expresamente cualquier ampliacion inferida, cambio de consumers, package-lock, dependencias, packages, codigo funcional, workflows, protecciones, PR, merge, release, deploy, rollback productivo, Supabase, migraciones, backups, datos, configuracion productiva, cache, secretos, credenciales reales o desarrollo anticipado de SHELL-CI-017..019.",
+    "source_contract_sha256": "0fcb06e39d13bdd973ac0d97de4986e20ce0305fe1b1f72817b36400ba2e87f2"
+  },
+  "evidence": [
+  "PREFLIGHT PASS; task=SHELL-CI-016; instance=SHELL-CI-016::GLOBAL",
+  "IMPLEMENTATION repository-test-command-gate materialized; repositories=8; preexisting_public_test=7; shell_public_test_added=1; contractual_tests=45",
+  "VALIDATION SHELL npm ci PASS",
+  "VALIDATION CI016 live repository certification PASS; repositories=8; passed=8",
+  "VALIDATION CI016 self-certification PASS; contractual_cases=45; positive=10; negative=20; regression=15",
+  "VALIDATION CI016 lint PASS",
+  "VALIDATION Canonical plan build PASS",
+  "VALIDATION Canonical plan check PASS",
+  "VALIDATION Canonical plan tests PASS",
+  "VALIDATION TREQ check PASS",
+  "VALIDATION TREQ tests PASS",
+  "VALIDATION Work topology check PASS",
+  "VALIDATION git diff check PASS",
+  "RESULT CI016_FINAL_VALIDATION=PASS"
+]
 }
