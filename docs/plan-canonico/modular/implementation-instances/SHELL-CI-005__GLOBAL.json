@@ -1,10 +1,34 @@
 {
   "instance_id": "SHELL-CI-005::GLOBAL",
   "task_id": "SHELL-CI-005",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
+  "status": "AUTHORIZED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear scripts/quality/shared-package-compatibility-gate.mjs como única implementación global de SHELL-CI-005::GLOBAL. El habilitador gobernará exactamente @vento/contracts, @vento/os-context, @vento/supabase y @vento/ui-web; conservará exactamente las 28 relaciones web base PKG-COMP-MX-001..028 y los doce ejes COMP-AXIS-001..012; preservará los seis estados canónicos de relación y sus transiciones; aceptará extensiones únicamente mediante bindings propietarios explícitos sin crear relaciones PKG-COMP-MX adicionales por inferencia; validará package, versión, source commit, manifest, artefacto e integridad, consumidor, consumer commit, manifest y lockfile del consumidor, versiones declaradas y resueltas, runtime, ambiente, target, renderer, perfil, ejes, restricciones y evidencia; consumirá evidencia vigente de SHELL-CI-001 y SHELL-CI-002; implementará evaluación fail-closed de relaciones, estrategia de bandas, invalidación y evidencia STALE, prereleases con pilotos explícitos, cortes multi-package independientes, PREPARE y FINALIZE; generará de forma determinista compatibility_evidence_identity sha256; permitirá entregar esa identidad al contrato existente de SHELL-CI-003 sin modificar su implementación; protegerá historia e idempotencia; y no modificará repositorios consumidores durante la evaluación.",
+    "Crear scripts/quality/shared-package-compatibility-gate.test.mjs para autocertificar la implementación global mediante packages, manifests, lockfiles, toolchains, consumidores, targets, renderers, relaciones, restricciones, evidencia CI001/CI002 y evidencia CI003 sintéticos o aislados. La suite cubrirá los 44 casos contractuales definidos por SHELL-CI-005: 8 positivos, 20 negativos y 16 regresiones, incluyendo cardinalidad e identidad de PKG-COMP-MX-001..028, ausencia de relación 29 inventada, determinismo, normalización LF, independencia de locale/timezone/reloj, compatibilidad y compatibilidad con restricciones, invalidación por package, lockfile y toolchain, runtime reproducible, ejes obligatorios, evidencia STALE, prerelease por pilotos, cortes multi-package, bindings nativos separados, Expo Web no equivalente a @vento/ui-web, aislamiento por target, integración de compatibility_evidence_identity con validateReleaseContract de SHELL-CI-003, FINALIZE idempotente, preservación histórica y prohibición de modificar consumidores reales, abrir PR o publicar releases.",
+    "Generar evidencia runtime únicamente bajo .delivery/shared-package-compatibility/ y utilizar ubicaciones temporales no versionadas para repositories, packages, manifests, lockfiles, artefactos, consumidores, targets y evidencia sintética de autocertificación. La evidencia conservará package, versión, source commit, identidades de manifest y artefacto, integridad, consumer repository, consumer commit, manifest y lockfile, versiones resueltas, ambiente, target, renderer, ejes, restricciones, estado de relación, evidence identities, required_relation_set_identity, supported_bands, compatibility_evidence_identity, estado PREPARE o FINALIZE, invalidaciones y resultado. Nunca almacenará secretos, tokens, credenciales, cookies, service role, claves privadas, JWT completos ni payloads empresariales sensibles. Durante SHELL-CI-005::GLOBAL no se modificará ningún repositorio consumidor real ni se declarará compatible ninguna de las 28 relaciones reales."
+  ],
+  "validation_commands": [
+    "npm ci",
+    "node --test scripts/quality/shared-package-compatibility-gate.test.mjs",
+    "npm run lint -- scripts/quality/shared-package-compatibility-gate.mjs scripts/quality/shared-package-compatibility-gate.test.mjs",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm run docs:work-topology:check",
+    "git diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-17",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente la implementación de SHELL-CI-005::GLOBAL en devVentoGroup/vento-shell mediante la creación de scripts/quality/shared-package-compatibility-gate.mjs, scripts/quality/shared-package-compatibility-gate.test.mjs y evidencia runtime no versionada bajo .delivery/shared-package-compatibility/, junto con las validaciones enumeradas en validation_commands. Autorizo únicamente la autocertificación sintética o aislada del habilitador durante esta instancia y la materialización de los caminos PREPARE, evaluación de relaciones y FINALIZE fail-closed para ejecuciones reales futuras que cuenten con su autorización correspondiente. No autorizo modificar los repositorios vento-viso, vento-nexo, vento-fogo, vento-origo, vento-pulso, vento-numera, vento-anima ni ningún otro consumidor; modificar packages compartidos, manifests, package-lock.json, package.json, workflows, SHELL-CI-001, SHELL-CI-002, SHELL-CI-003 o SHELL-CI-004; crear PKG-COMP-MX-029 o alterar PKG-COMP-MX-001..028; instalar packages en consumidores reales; crear pull requests; crear tags o releases reales; publicar en registry; modificar changelogs reales; ejecutar cambios de Supabase; modificar datos; usar credenciales o secretos; desplegar; ni realizar ninguna ampliación inferida del alcance.",
+    "source_contract_sha256": "24c4ac99130ce4ddf3e1b668aa7278cb856788538e13cdcd7b06d8ade923d5c8"
+  },
   "evidence": []
 }
