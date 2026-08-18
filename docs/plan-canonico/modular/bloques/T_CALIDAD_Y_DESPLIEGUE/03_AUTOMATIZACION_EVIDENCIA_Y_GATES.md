@@ -1762,5 +1762,1070 @@ Esta tarea no:
 `SHELL-CI-018 — Bloquear merge o despliegue cuando fallen pruebas obligatorias`
 
 
-### [ ] SHELL-CI-018 — Bloquear merge o despliegue cuando fallen pruebas obligatorias
+### ✅ SHELL-CI-018 — Bloquear merge o despliegue cuando fallen pruebas obligatorias
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CI-017 — Crear verificador automático del Registro Canónico de Requisitos de Prueba
+**Tarea siguiente:** SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio
+**Tipo de tarea:** Habilitador global único — contrato documental de puerta fail-closed para merge y despliegue condicionada por pruebas obligatorias
+**Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada la puerta global que impedirá que un cambio sea **fusionado** o que un commit sea **desplegado hacia un ambiente gobernado** cuando alguna prueba o control obligatorio aplicable no haya terminado satisfactoriamente para el mismo repositorio, commit, contexto y conjunto de obligaciones.
+
+La regla vinculante queda:
+
+```text
+REPOSITORIO GOBERNADO
++ COMMIT EXACTO
++ CONTEXTO DE GATE RESUELTO
++ CONJUNTO OBLIGATORIO DE CHECKS RESUELTO
++ `npm test` CI016 PASS
++ REGISTRO TREQ CI017 VÁLIDO
++ TREQ AFECTADOS DECLARADOS Y RESOLUBLES CUANDO APLIQUE
++ CONTROLES CONDICIONALES OBLIGATORIOS PASS
++ CERO CHECKS OBLIGATORIOS AUSENTES
++ CERO RESULTADOS STALE
++ PROTECCIÓN SIN BYPASS
+= CAMBIO ELEGIBLE PARA MERGE O DESPLIEGUE
+```
+
+Y, de forma fail-closed:
+
+```text
+FAIL
+O ERROR
+O CANCELLED
+O TIMED_OUT
+O STALE
+O CHECK OBLIGATORIO AUSENTE
+O TREQ INVÁLIDO
+O COMMIT DISTINTO
+O REPOSITORIO DISTINTO
+O BASELINE REQUERIDA AUSENTE
+O DIRECT PUSH QUE ELUDA EL GATE
+O AUTOMATIZACIÓN QUE ESCRIBA EN LA RAMA GOBERNADA SIN PASAR EL GATE
+≠ MERGE O DESPLIEGUE AUTORIZABLE
+```
+
+CI018 decide **admisión**. No redefine las pruebas de CI016, no repara 04A, no publica el expediente final de CI019, no ejecuta despliegues y no ejecuta rollback.
+
+#### 2. Resultado canónico
+
+`SHELL-CI-018` establece un único habilitador reutilizable para:
+
+1. crear una decisión global y determinista de admisión para merge;
+2. crear una decisión global y determinista de admisión para despliegues gobernados;
+3. consumir `npm test` como interfaz pública de pruebas de repositorio;
+4. consumir el verificador TREQ de CI017 sin reimplementar su semántica;
+5. resolver un conjunto de controles obligatorios por repositorio, cambio y contexto;
+6. bloquear cuando cualquier control obligatorio falle o no pueda demostrarse;
+7. impedir que un check ausente se convierta en éxito;
+8. impedir reutilizar resultados de otro commit, repositorio o ambiente;
+9. impedir que path filters silencien el contexto final requerido;
+10. impedir direct push, force push o automatizaciones que permitan saltarse la puerta de integración;
+11. impedir que una automatización con permisos de escritura convierta un cambio no validado en commit gobernado;
+12. exigir una señal estable de gate que pueda configurarse como required status check;
+13. permitir subchecks condicionales únicamente con una clasificación `NOT_APPLICABLE` verificable;
+14. separar preview diagnóstico de staging, piloto y producción;
+15. impedir que un preview no certificado se presente como despliegue apto;
+16. exigir identidad del commit exacto a cualquier despliegue gobernado;
+17. soportar providers de despliegue externos sin asumir que GitHub Actions es el único ejecutor;
+18. soportar reintentos sin borrar fallos históricos ni aceptar resultados stale;
+19. bloquear mientras el gate esté pendiente, cancelado, con timeout o técnicamente indisponible;
+20. entregar a CI019 un resultado estructurado publicable sin publicar evidencia por sí misma;
+21. autocertificar una sola vez `SHELL-CI-018::GLOBAL`;
+22. no crear ni modificar requisitos de prueba porque las obligaciones empresariales aplicables ya existen en 04A.
+
+#### 3. Frontera de responsabilidad
+
+| Responsabilidad                                                    | Propietario    |
+| ------------------------------------------------------------------ | -------------- |
+| fachada uniforme `npm test` y semántica de ejecución               | `SHELL-CI-016` |
+| integridad estructural, semántica e histórica de 04A               | `SHELL-CI-017` |
+| decisión de admisión de merge y deploy                             | `SHELL-CI-018` |
+| publicación, conservación y trazabilidad del expediente de pruebas | `SHELL-CI-019` |
+| rollback independiente de repositorio                              | `SHELL-CI-014` |
+| independencia y orden de despliegue                                | `SHELL-CI-015` |
+| implementación por paquete                                         | `SHELL-CI-020` |
+| readiness por paquete                                              | `SHELL-CI-021` |
+| cutover y piloto                                                   | `SHELL-CI-022` |
+| hypercare                                                          | `SHELL-CI-023` |
+| cierre del paquete                                                 | `SHELL-CI-024` |
+
+CI018 puede **consumir** resultados de otras puertas, pero no absorbe sus oráculos ni se convierte en su owner.
+
+#### 4. Topología de trabajo
+
+`PHASE-03-T-CI-FOUNDATION` aplica `GLOBAL_ENABLE_ONCE` a `SHELL-CI-018`.
+
+```text
+MARCADOR CANÓNICO
+SHELL-CI-018
+→ define una sola vez la política de admisión y anti-bypass
+
+INSTANCIA FÍSICA FUTURA
+SHELL-CI-018::GLOBAL
+→ materializa y autocertifica una sola vez la puerta global
+
+REPOSITORIOS Y PAQUETES POSTERIORES
+→ reutilizan la misma semántica
+→ no vuelven a implementar CI018
+```
+
+La instancia global deberá quedar `VERIFIED` antes de cualquier `E5-GATE-008::<package_id>` que pretenda habilitar implementación física.
+
+#### 5. Universo inicial gobernado
+
+El universo inicial heredado de CI016 comprende exactamente:
+
+1. `devVentoGroup/vento-shell`;
+2. `devVentoGroup/vento-nexo`;
+3. `devVentoGroup/vento-fogo`;
+4. `devVentoGroup/vento-origo`;
+5. `devVentoGroup/vento-pulso`;
+6. `devVentoGroup/vento-viso`;
+7. `devVentoGroup/vento-numera`;
+8. `devVentoGroup/vento-anima`.
+
+Un repositorio futuro solo entra a CI018 después de tener identidad y ownership canónicos y de cumplir la fachada de CI016.
+
+#### 6. Línea base remota observada
+
+La auditoría remota del corte actual muestra:
+
+| Repositorio                  | Rama `main` observada | Protección observada | Required status checks observados | Automatización relevante observada                                       |
+| ---------------------------- | --------------------- | -------------------- | --------------------------------- | ------------------------------------------------------------------------ |
+| `devVentoGroup/vento-shell`  | sí                    | deshabilitada        | ninguno                           | `validate-canonical-plan.yml`, especializada y con filtros de paths      |
+| `devVentoGroup/vento-nexo`   | sí                    | deshabilitada        | ninguno                           | workflow temporal que escribe en `preview`; no constituye gate universal |
+| `devVentoGroup/vento-fogo`   | sí                    | deshabilitada        | ninguno                           | no se observó workflow de gate                                           |
+| `devVentoGroup/vento-origo`  | sí                    | deshabilitada        | ninguno                           | no se observó workflow de gate                                           |
+| `devVentoGroup/vento-pulso`  | sí                    | deshabilitada        | ninguno                           | workflow manual deshabilitado para aplicación de cambio                  |
+| `devVentoGroup/vento-viso`   | sí                    | deshabilitada        | ninguno                           | workflow que puede escribir y hacer push directo a `main`                |
+| `devVentoGroup/vento-numera` | sí                    | deshabilitada        | ninguno                           | no se observó workflow de gate                                           |
+| `devVentoGroup/vento-anima`  | sí                    | deshabilitada        | ninguno                           | no se observó workflow de gate                                           |
+
+Conciliación del corte:
+
+- repositorios gobernados: **8**;
+- ramas `main` observadas: **8/8**;
+- ramas `main` con protección observada: **0/8**;
+- ramas `main` con required status checks observados: **0/8**;
+- repositorios con una puerta universal de pruebas requerida para `main`: **0/8**;
+- existe al menos una automatización observada capaz de escribir directamente en `main`, por lo que la futura materialización deberá cerrar ese bypass antes de certificar CI018.
+
+Esta línea base describe el estado observado; no autoriza cambios remotos durante el marcador documental.
+
+#### 7. Modelo de puerta
+
+CI018 define dos contextos lógicos:
+
+```text
+MERGE
+DEPLOY
+```
+
+Ambos consumen el mismo motor de decisión, pero resuelven entradas distintas.
+
+```text
+MERGE
+→ protege la incorporación de un commit a la rama de integración gobernada
+
+DEPLOY
+→ protege el uso de un commit como fuente de un ambiente gobernado
+```
+
+Una ejecución `PASS` de MERGE no puede reutilizarse automáticamente como PASS de DEPLOY cuando el despliegue exige controles adicionales de ambiente, readiness, compatibilidad, independencia o rollback.
+
+#### 8. Identidad estable del gate
+
+Cada repositorio gobernado deberá exponer una señal final estable de admisión.
+
+La identidad lógica de la señal será:
+
+```text
+VENTO Required Gate
+```
+
+Reglas:
+
+1. la rama gobernada deberá requerir exactamente una señal final estable de CI018;
+2. la señal puede agregar múltiples subchecks;
+3. los nombres internos de suites o runners no forman parte de la interfaz pública;
+4. renombrar un subcheck no deberá desactivar accidentalmente la protección;
+5. cambiar la identidad final requerida exige migración coordinada sin ventana sin protección;
+6. un check homónimo producido por un workflow no autorizado no puede sustituir el resultado del gate canónico.
+
+Para despliegue, la misma lógica se ejecutará en contexto `DEPLOY` y conservará identidad de commit y ambiente aunque el provider externo represente la aprobación con otra interfaz técnica.
+
+#### 9. Gate de merge
+
+Un cambio solo queda elegible para merge cuando:
+
+```text
+gate_context = MERGE
+AND repository = repositorio del PR
+AND source_commit = HEAD exacto validado
+AND target_branch = rama gobernada
+AND required_check_set_resolved = true
+AND all_required_checks = PASS
+AND gate_result = PASS
+```
+
+El resultado debe pertenecer al commit exacto que se incorporará.
+
+Si la rama base avanza y la estrategia de integración puede cambiar el resultado, deberá ocurrir una de estas dos condiciones:
+
+- la rama del cambio se actualiza y el gate se vuelve a ejecutar;
+- una merge queue o mecanismo equivalente valida el commit sintetizado final.
+
+Un PASS del head antiguo no certifica un merge candidate materialmente distinto.
+
+#### 10. Gate de despliegue
+
+Un despliegue gobernado solo queda elegible cuando:
+
+```text
+gate_context = DEPLOY
+AND repository = repositorio desplegado
+AND source_commit = commit exacto desplegable
+AND environment = ambiente destino exacto
+AND required_check_set_resolved = true
+AND all_required_checks = PASS
+AND gate_result = PASS
+```
+
+Además:
+
+- el deploy no puede cambiar el commit después del gate;
+- una nueva build desde otro commit exige nueva evaluación;
+- una promoción entre ambientes puede reutilizar artefacto inmutable únicamente si conserva identidad y no cambian controles obligatorios del ambiente destino;
+- producción, piloto o staging no pueden depender de un estado de PR que ya sea stale;
+- un provider externo deberá consumir o respetar una señal equivalente para el mismo SHA.
+
+CI018 no ejecuta el deploy; únicamente entrega la decisión de admisión.
+
+#### 11. Preview diagnóstico
+
+Un preview podrá existir sin gate completo únicamente cuando sea:
+
+```text
+PREVIEW_DIAGNOSTIC
+```
+
+y cumpla simultáneamente:
+
+- no sea producción;
+- no sea staging de certificación;
+- no sea piloto;
+- no use datos productivos;
+- no tenga secretos productivos;
+- no ejecute migraciones productivas;
+- no se presente como evidencia de readiness;
+- no habilite cutover;
+- esté claramente separado de un ambiente gobernado.
+
+Un preview diagnóstico fallido puede ayudar a investigar un cambio, pero nunca convierte ese cambio en elegible para merge o despliegue gobernado.
+
+#### 12. Resolución del conjunto obligatorio
+
+CI018 no utiliza una lista universal rígida de comandos ajena al repositorio.
+
+Para cada ejecución deberá resolver:
+
+```text
+repository
++ gate_context
++ change_scope
++ package_id cuando aplique
++ environment cuando aplique
++ contratos propietarios
+= required_check_set
+```
+
+Cada subcheck queda clasificado como:
+
+```text
+REQUIRED
+CONDITIONAL
+NOT_APPLICABLE
+```
+
+`NOT_APPLICABLE` exige una razón verificable del contrato propietario.
+
+Un control `REQUIRED` no puede degradarse a `CONDITIONAL` porque falle.
+
+#### 13. Controles universales
+
+Para todo repositorio gobernado, la puerta exige como mínimo:
+
+1. checkout del commit exacto;
+2. instalación reproducible mediante lockfile cuando el repositorio la requiera;
+3. `npm test` conforme a CI016;
+4. identidad de repositorio y commit;
+5. ausencia de resultado stale;
+6. resolución completa del conjunto obligatorio;
+7. código de salida coherente;
+8. ausencia de neutralización de fallos;
+9. ausencia de mutaciones remotas dentro de la ruta de pruebas;
+10. una decisión final fail-closed.
+
+Cuando el cambio consuma o modifique obligaciones de prueba, se añaden los controles CI017 indicados en las secciones siguientes.
+
+#### 14. Controles condicionales
+
+CI018 podrá declarar obligatorios, según el contrato del cambio:
+
+- lint;
+- typecheck;
+- build o export;
+- pruebas de packages compartidos;
+- compatibilidad package–consumidor;
+- checks de actualización de consumidores;
+- rollback;
+- independencia de despliegue;
+- checks documentales;
+- validación de TREQ;
+- seguridad;
+- migración;
+- base de datos;
+- RLS;
+- RPC;
+- integración;
+- pruebas nativas;
+- otros gates canónicos ya propietarios.
+
+La condición deberá estar resuelta antes de ejecutar la puerta.
+
+La ausencia de un comando requerido por un contrato aplicable es `FAIL` o `BLOCKED`; nunca `PASS`.
+
+#### 15. Consumo de CI016
+
+CI018 invoca pruebas únicamente mediante:
+
+```text
+npm test
+```
+
+No podrá codificar lógica transversal como:
+
+```text
+si NEXO → test:ci007
+si FOGO → test:ci008
+si ANIMA → test:ci013
+```
+
+CI016 conserva la responsabilidad de:
+
+- resolver la cadena interna;
+- impedir cero tests;
+- propagar fallos;
+- impedir watch mode;
+- impedir prompts;
+- detectar suites ausentes;
+- identificar commit y repositorio;
+- impedir mutaciones remotas de la suite.
+
+CI018 consume su resultado y decide admisión.
+
+#### 16. Consumo de CI017
+
+Cuando el gate deba validar 04A, utilizará el verificador canónico de CI017.
+
+La puerta podrá exigir:
+
+```text
+docs:treq:check
+```
+
+con:
+
+- salida machine-readable;
+- baseline explícita cuando el contexto la requiera;
+- declaración de TREQ afectados;
+- cero TREQ afectados únicamente cuando el caller lo permita de forma explícita y justificada.
+
+CI018 no reparará el registro para obtener verde.
+
+#### 17. Declaración de TREQ afectados
+
+Todo PR o paquete sujeto a trazabilidad TREQ deberá suministrar a CI018 un conjunto explícito de requisitos afectados.
+
+La puerta deberá distinguir:
+
+```text
+LISTA NO VACÍA
+→ validar formato, unicidad y existencia
+
+CERO AFECTADOS EXPLÍCITO
+→ solo admisible cuando el contrato permita una modificación sin obligación TREQ
+→ debe conservar razón verificable
+
+DECLARACIÓN AUSENTE
+→ no equivale a cero
+→ bloquea cuando la declaración sea obligatoria
+```
+
+La implementación física resolverá un único canal machine-readable para transportar esta declaración sin duplicar la semántica de CI017.
+
+#### 18. Línea base histórica TREQ
+
+En pull request o integración que pueda eliminar o reescribir requisitos, CI018 deberá suministrar a CI017 una baseline explícita.
+
+Reglas:
+
+- la baseline corresponde a la base real de comparación;
+- no se adivina una rama;
+- no se toma de un snapshot ignorado como autoridad única de CI;
+- si la baseline es obligatoria y no puede resolverse, la puerta queda bloqueada;
+- un requisito histórico ausente bloquea la admisión;
+- cambiar la base del PR invalida una comparación histórica anterior.
+
+CI018 resuelve el contexto; CI017 conserva el oráculo de integridad histórica.
+
+#### 19. Identidad de commit
+
+Toda decisión queda ligada como mínimo a:
+
+```text
+repository
+source_commit
+target_branch o environment
+gate_context
+required_check_set_identity
+execution_identity
+```
+
+Queda prohibido reutilizar:
+
+- un PASS de otro SHA;
+- un PASS de otro repositorio;
+- un PASS de otra rama cuando el merge candidate cambió;
+- un PASS de preview como PASS de producción;
+- un PASS anterior a un cambio material del conjunto obligatorio.
+
+#### 20. Protección de rama
+
+La futura instancia deberá aplicar una protección equivalente sobre la rama de integración gobernada de cada repositorio.
+
+La protección deberá impedir:
+
+- incorporar un cambio sin `VENTO Required Gate = PASS`;
+- direct push que evite el gate;
+- force push;
+- borrado de la rama gobernada;
+- bypass administrativo ordinario;
+- bypass de bots o GitHub Actions no expresamente gobernados;
+- omitir el gate porque otro check tenga un nombre parecido.
+
+CI018 no fija política de número de revisores, ownership de CODEOWNERS ni gobierno funcional de aprobación humana salvo lo necesario para impedir bypass técnico de la puerta.
+
+#### 21. Orden seguro de activación
+
+La protección no se habilitará antes de que exista una señal funcional y verificable.
+
+La secuencia física obligatoria será conceptualmente:
+
+```text
+MATERIALIZAR GATE
+→ EJECUTAR AUTOCERTIFICACIÓN
+→ EJECUTAR GATE REAL SIN HACERLO REQUIRED
+→ CONFIRMAR CHECK ESTABLE EN CADA REPOSITORIO
+→ CONFIGURAR PROTECCIÓN
+→ DEMOSTRAR QUE PASS PERMITE Y FAIL BLOQUEA
+→ CERTIFICAR CI018
+```
+
+No se permite crear una regla requerida que apunte a un contexto inexistente y deje la rama en deadlock.
+
+Tampoco se permite una ventana en la que se retire el check anterior antes de que el nuevo esté activo.
+
+#### 22. Triggers sin path-filter de bypass
+
+La señal final requerida deberá ejecutarse para todo cambio que pueda llegar a la rama gobernada.
+
+Por tanto:
+
+- el workflow final de CI018 no podrá depender de `paths` o `paths-ignore` para decidir si existe;
+- un subcheck interno sí puede ser condicional;
+- un cambio sin impacto en un subcheck recibirá `NOT_APPLICABLE` con razón;
+- la señal agregada final siempre deberá producir un resultado.
+
+Un workflow especializado con path filters puede mantenerse, pero no puede ser la única señal required de CI018.
+
+#### 23. Merge queue
+
+Si un repositorio usa merge queue:
+
+- CI018 deberá soportar el evento o mecanismo equivalente que valida el merge candidate;
+- el resultado del PR previo no reemplaza la validación del commit sintetizado cuando este difiera;
+- el required gate conserva la misma semántica de subchecks;
+- un merge group cancelado no deja un PASS reutilizable.
+
+Si merge queue no está habilitada, esta capacidad permanece inactiva y no se simula.
+
+#### 24. Permisos mínimos
+
+La ejecución del gate de pull request deberá usar permisos mínimos.
+
+Por defecto:
+
+```text
+contents: read
+```
+
+Cualquier permiso adicional exige justificación del subcheck propietario.
+
+Queda prohibido que la ruta que ejecuta código no confiable de un PR:
+
+- tenga token con escritura innecesaria;
+- exponga secretos productivos;
+- use `pull_request_target` para ejecutar código del fork o branch no confiable con credenciales privilegiadas;
+- haga commit o push;
+- cree releases;
+- despliegue;
+- modifique infraestructura.
+
+La puerta observa y decide; no muta el producto.
+
+#### 25. Secretos y ambientes
+
+Una prueba obligatoria que requiera secretos deberá usar únicamente secretos de entorno de prueba explícitamente autorizados.
+
+CI018 deberá distinguir:
+
+```text
+SECRET REQUIRED AND AVAILABLE IN SAFE TEST CONTEXT
+→ ejecución permitida
+
+SECRET REQUIRED BUT UNAVAILABLE
+→ BLOCKED
+
+SECRET PRODUCTION ONLY
+→ no se expone al PR
+→ el check deberá disponer de estrategia propietaria distinta
+```
+
+La ausencia de un secreto requerido no se convierte en `PASS`.
+
+#### 26. Semántica fail-closed
+
+La decisión global solo puede quedar `PASS` cuando todos los controles `REQUIRED` hayan terminado en `PASS`.
+
+Estados globales permitidos:
+
+```text
+PENDING
+RUNNING
+PASS
+FAIL
+BLOCKED
+CANCELLED
+TIMED_OUT
+STALE
+```
+
+Solo:
+
+```text
+PASS
+```
+
+habilita admisión.
+
+Los demás estados equivalen a:
+
+```text
+DENY
+```
+
+para merge o despliegue gobernado.
+
+#### 27. Reintentos
+
+Un reintento puede producir un nuevo PASS únicamente si:
+
+- corresponde al mismo commit;
+- corresponde al mismo repositorio;
+- conserva el mismo conjunto obligatorio;
+- no existe una entrada material nueva;
+- vuelve a ejecutar realmente los checks requeridos.
+
+Los fallos anteriores permanecen como historial para CI019.
+
+Un rerun no puede reetiquetar un fallo anterior como si nunca hubiese ocurrido.
+
+#### 28. Concurrencia y stale
+
+Cuando llega un commit nuevo al mismo PR:
+
+1. la ejecución anterior pasa a ser no elegible;
+2. el nuevo commit requiere su propia evaluación;
+3. una ejecución cancelada por concurrencia no es PASS;
+4. un resultado tardío del commit anterior no puede reabrir el gate;
+5. el gate final debe apuntar siempre al SHA actual.
+
+La misma regla aplica a un despliegue cuyo artefacto o fuente cambia mientras la evaluación está en curso.
+
+#### 29. Checks neutralizados
+
+Queda prohibido construir el gate mediante:
+
+- `|| true`;
+- captura de error seguida de código `0`;
+- `continue-on-error` para un control obligatorio;
+- ignorar un job fallido en la agregación;
+- convertir `cancelled()` o `failure()` en éxito;
+- ejecutar un placeholder que no corre el control;
+- declarar manualmente un status verde sin la ejecución correspondiente.
+
+Un control opcional puede continuar después de fallar, pero no puede formar parte del conjunto `REQUIRED`.
+
+#### 30. Automatizaciones que escriben ramas gobernadas
+
+Toda automatización existente o futura que pueda escribir en una rama gobernada deberá clasificarse durante la futura instancia física.
+
+Una automatización que:
+
+```text
+modifica archivos
+→ hace commit
+→ hace push directo a `main`
+```
+
+es incompatible con CI018 mientras pueda eludir la puerta.
+
+Las salidas válidas son:
+
+- convertirla en productora de una rama y PR que pase CI018;
+- convertirla en generadora de artefacto sin escritura en la rama protegida;
+- retirarla si su propósito ya no aplica.
+
+CI018 no absorbe la funcionalidad empresarial de esa automatización; únicamente elimina su capacidad de bypass.
+
+#### 31. Automatizaciones sobre ramas no gobernadas
+
+Una automatización podrá escribir en una rama no gobernada solo cuando:
+
+- esa rama no sea fuente directa de staging, piloto o producción;
+- no pueda fusionarse automáticamente a la rama gobernada;
+- su cambio posterior deba pasar por CI018;
+- no manipule datos o infraestructura productiva;
+- no se presente como release aprobado.
+
+Si una rama como `preview` alimenta un ambiente gobernado, CI018 deberá proteger también el camino de despliegue correspondiente.
+
+#### 32. Despliegues externos a GitHub Actions
+
+CI018 no presupone que el deploy sea ejecutado por GitHub Actions.
+
+Para Vercel, EAS, CLI, plataforma administrada u otro provider, deberá existir una de estas garantías equivalentes:
+
+1. el provider solo despliega automáticamente commits que pueden llegar a la rama gobernada después de CI018;
+2. el workflow de deploy verifica explícitamente el gate del mismo SHA antes de iniciar;
+3. un environment gate o mecanismo equivalente exige la admisión previa.
+
+Un webhook o integración externa que despliegue cualquier commit sin consultar la puerta es un bypass.
+
+#### 33. Relación con build, lint y typecheck
+
+CI018 no redefine la interfaz de estos controles.
+
+Cuando sean `REQUIRED`, deberá ejecutar el comando que el repositorio o contrato propietario haya declarado y verificar su código de salida.
+
+Reglas:
+
+- build verde no sustituye tests;
+- lint verde no sustituye tests;
+- typecheck verde no sustituye tests;
+- tests verdes no sustituyen un build requerido;
+- un comando inexistente cuando es requerido bloquea;
+- warnings solo bloquean cuando la política propietaria los clasifique como bloqueantes.
+
+CI018 agrega decisiones; no inventa semántica de herramientas.
+
+#### 34. Relación con compatibilidad, rollback e independencia
+
+Cuando el cambio afecte packages compartidos, contratos o despliegue coordinado, el conjunto obligatorio podrá consumir evidencia de:
+
+- CI005 para compatibilidad;
+- CI014 para rollback;
+- CI015 para independencia de despliegue.
+
+Un resultado stale de estas puertas no puede reutilizarse.
+
+CI018 no ejecuta rollback y no decide por sí sola el orden de despliegue; bloquea cuando una dependencia obligatoria no está certificada.
+
+#### 35. Recuperación del propio gate
+
+Una falla técnica de CI018 no se convierte en bypass.
+
+Si la infraestructura de gate queda dañada:
+
+```text
+GATE NO DISPONIBLE
+→ BLOCKED
+→ no PASS
+```
+
+Una intervención de recuperación deberá:
+
+- quedar autorizada explícitamente;
+- limitarse a restaurar la capacidad del gate;
+- conservar evidencia de la interrupción;
+- restaurar la protección inmediatamente después;
+- no declarar como aprobado ningún merge o deploy ocurrido sin evidencia válida.
+
+Una suspensión temporal de protección, si fuese imprescindible para reparar el propio gate, no equivale a certificación del código que atraviese durante esa ventana.
+
+#### 36. Contrato machine-readable
+
+La futura implementación deberá producir un resultado estructurado con, como mínimo:
+
+```text
+schema_version
+gate_context
+repository
+source_commit
+base_commit
+target_branch
+environment
+package_id
+required_check_set_identity
+checks
+treq_registry_identity
+treq_baseline_identity
+affected_treq_ids
+started_at
+completed_at
+execution_identity
+result
+block_reasons
+```
+
+Cada elemento de `checks` deberá identificar:
+
+```text
+check_id
+owner
+classification
+applicability_reason
+source_identity
+result
+started_at
+completed_at
+invalidation_reason
+```
+
+CI019 podrá publicar este resultado sin reinterpretarlo.
+
+#### 37. Handoff a CI019
+
+CI018 entrega a CI019:
+
+- identidad del gate;
+- contexto MERGE o DEPLOY;
+- repositorio;
+- commit;
+- ambiente cuando aplique;
+- conjunto obligatorio;
+- resultado de cada subcheck;
+- TREQ afectados;
+- baseline utilizada;
+- fallos y bloqueos;
+- intentos y reintentos;
+- decisión global.
+
+CI019 será responsable de conservar y publicar el expediente.
+
+CI018 no sube artefactos como evidencia definitiva ni define retención histórica de reportes publicados.
+
+#### 38. Relación con `SHELL-CI-020` a `SHELL-CI-024`
+
+Las futuras instancias por paquete deberán consumir CI018 así:
+
+```text
+SHELL-CI-020::<package_id>
+→ implementación
+→ gate de cambio aplicable
+
+SHELL-CI-021::<package_id>
+→ readiness
+
+SHELL-CI-022::<package_id>
+→ despliegue/cutover solo con DEPLOY gate elegible
+
+SHELL-CI-023::<package_id>
+→ hypercare
+
+SHELL-CI-024::<package_id>
+→ cierre
+```
+
+CI018 no inicia paquetes ni sustituye readiness, cutover o hypercare.
+
+#### 39. Casos positivos obligatorios
+
+La futura `SHELL-CI-018::GLOBAL` deberá demostrar, como mínimo, estos catorce escenarios:
+
+1. PR de SHELL con `npm test` y controles documentales obligatorios en PASS;
+2. PR de NEXO con `npm test` en PASS mediante la misma señal final;
+3. PR de otro consumidor con alias interno distinto y la misma identidad pública del gate;
+4. cambio cuyo subcheck condicional queda `NOT_APPLICABLE` con razón verificable;
+5. declaración no vacía de TREQ afectados válida;
+6. cero TREQ afectados explícitamente autorizado por un contrato que realmente permite cero;
+7. baseline histórica válida con cero eliminaciones;
+8. commit corregido después de un FAIL y nueva ejecución PASS;
+9. rerun válido sobre el mismo SHA y conjunto obligatorio;
+10. staging gobernado del mismo SHA previamente evaluado;
+11. producción gobernada desde un SHA exacto con controles de deploy adicionales en PASS;
+12. merge candidate actualizado y revalidado después de avanzar la base;
+13. merge queue validando el commit sintetizado cuando la capacidad esté habilitada;
+14. provider externo que respeta la decisión de DEPLOY para el mismo SHA.
+
+#### 40. Casos negativos obligatorios
+
+La futura instancia deberá bloquear, como mínimo, estos veintiocho escenarios:
+
+1. señal final requerida ausente;
+2. `npm test` en FAIL;
+3. cero pruebas obligatorias detectadas por CI016;
+4. pruebas canceladas;
+5. timeout;
+6. PASS de otro commit;
+7. PASS de otro repositorio;
+8. registro TREQ inválido;
+9. declaración TREQ obligatoria ausente;
+10. TREQ afectado inexistente;
+11. TREQ afectado duplicado;
+12. baseline histórica obligatoria ausente;
+13. requisito histórico eliminado;
+14. lint, typecheck, build o gate condicional marcado REQUIRED en FAIL;
+15. check REQUIRED omitido como si fuese opcional;
+16. path filter que impide producir la señal final;
+17. direct push que evite el gate;
+18. bypass administrativo ordinario habilitado;
+19. force push sobre rama gobernada;
+20. workflow con permisos de escritura que haga push directo a `main`;
+21. deploy gobernado desde rama sin admisión;
+22. deploy de un SHA distinto al certificado;
+23. preview diagnóstico presentado como staging, piloto o producción;
+24. ejecución privilegiada de código no confiable con secretos productivos;
+25. fallo neutralizado mediante código de éxito;
+26. PASS reutilizado después de cambiar el conjunto obligatorio;
+27. protección configurada contra un contexto inexistente;
+28. provider de deploy que ignora el resultado del gate.
+
+#### 41. Regresiones obligatorias
+
+El harness deberá conservar protección contra estas dieciocho regresiones:
+
+1. volver a codificar `test:ci007` en CI018;
+2. volver a codificar `test:ci013` en CI018;
+3. aceptar build verde cuando `npm test` falla;
+4. usar un workflow con path filters como única señal required;
+5. reutilizar un PASS después de un commit nuevo;
+6. aceptar lista TREQ sin validarla con CI017;
+7. permitir cero TREQ afectados por defecto;
+8. permitir merge mientras el gate está pendiente;
+9. permitir deploy después de FAIL de MERGE sin nueva admisión válida;
+10. tratar una rama temporalmente desprotegida como estado certificado;
+11. reintroducir una automatización que haga push directo a `main`;
+12. reintroducir bypass administrativo ordinario;
+13. reintroducir force push;
+14. permitir que CI018 mutile producción o Supabase;
+15. convertir CI018 en publicador definitivo de evidencia reservado a CI019;
+16. ejecutar rollback desde CI018;
+17. implementar cutover o hypercare desde CI018;
+18. cambiar el nombre final requerido sin transición segura y dejar una ventana de bypass o deadlock.
+
+La autocertificación contractual mínima futura comprende **60 escenarios**: 14 positivos, 28 negativos y 18 regresiones.
+
+#### 42. Materialización futura de `SHELL-CI-018::GLOBAL`
+
+La instancia global podrá declararse materializada únicamente cuando:
+
+1. se auditen los ocho repositorios gobernados y sus ramas de integración;
+2. se auditen workflows y providers que puedan integrar o desplegar cambios;
+3. se materialice un motor de decisión fail-closed reutilizable;
+4. la señal final estable exista en los ocho repositorios;
+5. la señal final se produzca para todo PR gobernado sin path-filter de bypass;
+6. `npm test` sea obligatorio mediante CI016;
+7. la integración con CI017 valide TREQ y baseline cuando corresponda;
+8. los subchecks condicionales tengan reglas de aplicabilidad explícitas;
+9. se demuestre que un fallo obligatorio produce DENY;
+10. se demuestre que un check ausente produce DENY;
+11. se demuestre que un resultado stale produce DENY;
+12. se eliminen o rediseñen caminos de escritura directa que eludan el gate;
+13. las ramas gobernadas queden protegidas contra bypass técnico ordinario;
+14. las reglas de protección apunten a un contexto real y estable;
+15. se demuestre PASS→merge elegible y FAIL→merge bloqueado;
+16. se demuestre PASS→deploy elegible y FAIL→deploy bloqueado para ambientes gobernados;
+17. preview diagnóstico permanezca separado;
+18. los providers externos no puedan promover un SHA no admitido;
+19. se cubran los 60 escenarios contractuales mínimos;
+20. se genere resultado machine-readable para CI019;
+21. no se modifiquen TREQ para hacer pasar el gate;
+22. no se modifique Supabase;
+23. no se ejecute deploy real durante la autocertificación salvo una prueba explícitamente aislada y autorizada;
+24. no se ejecute rollback productivo;
+25. no se publique evidencia final reservada a CI019;
+26. no se desarrolle CI019 por anticipado;
+27. la instancia y su evidencia queden consolidadas en `SHELL-CI-018::GLOBAL`.
+
+Los archivos, workflows, rulesets o configuraciones exactas de la materialización se resolverán contra el estado vigente durante la instancia física. No se infieren durante este marcador documental.
+
+#### 43. Estado documental conciliado
+
+| Métrica                                          |               Resultado |
+| ------------------------------------------------ | ----------------------: |
+| Topología CI018                                  |  **GLOBAL_ENABLE_ONCE** |
+| Instancias físicas CI001..CI017 verificadas      |                  **17** |
+| Repositorios iniciales gobernados                |                   **8** |
+| Ramas `main` observadas                          |                 **8/8** |
+| Ramas `main` protegidas observadas               |                 **0/8** |
+| Required status checks observados en `main`      |                 **0/8** |
+| Puerta universal CI018 observada                 |                 **0/8** |
+| Contextos lógicos definidos                      |  **2 — MERGE / DEPLOY** |
+| Señal final lógica                               | **VENTO Required Gate** |
+| Casos positivos mínimos futuros                  |                  **14** |
+| Casos negativos mínimos futuros                  |                  **28** |
+| Regresiones mínimas futuras                      |                  **18** |
+| Escenarios contractuales mínimos futuros         |                  **60** |
+| Cambios físicos autorizados durante el marcador  |                   **0** |
+| Cambios Supabase autorizados durante el marcador |                   **0** |
+| Requisitos creados o modificados                 |                   **0** |
+
+#### 44. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** el Registro Canónico de Requisitos de Prueba ya exige que los comandos y pruebas aplicables bloqueen merge o despliegue según su criticidad, que cada PR y paquete declare requisitos afectados, que la evidencia sea reproducible y que los ambientes tengan identidad verificable. CI018 concreta la política técnica de admisión y anti-bypass sin introducir una obligación empresarial nueva.
+
+#### 45. Cobertura de prueba vigente reutilizada
+
+Sin modificar 04A, CI018 reutiliza cobertura vigente que exige:
+
+- comandos reproducibles y bloqueo ante fallos de controles obligatorios;
+- validación automática del registro TREQ;
+- declaración de requisitos afectados;
+- resultados reproducibles;
+- identidad de repositorio, commit y ambiente;
+- gates proporcionales a fase y exposición;
+- trazabilidad de compatibilidad, rollback e independencia de despliegue cuando sean aplicables.
+
+Estas referencias constituyen cobertura heredada y no una actualización del registro.
+
+#### 46. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | NOT_EXECUTED   | El marcador documental no materializa workflows, rulesets, required checks ni puertas de despliegue.                                                                                                                                                                                                                                                                                                                           |
+| LOCAL     | NOT_EXECUTED   | El artefacto todavía no ha sido incorporado ni validado contra el checkout local del usuario.                                                                                                                                                                                                                                                                                                                                  |
+| REMOTA    | PASS           | Se verificaron protocolo, contrato de entrega, manifest, ruta normal, secuencia activa, topología, políticas, archivo propietario, CI016 y CI017 materializados, verificador TREQ vigente, workflow de SHELL, workflows observados en NEXO, PULSO y VISO, y el estado remoto de la rama `main` de los ocho repositorios gobernados. Las ocho ramas observadas reportan protección deshabilitada y cero required status checks. |
+| OPERATIVA | NOT_EXECUTED   | No se intentaron merge, push protegido, deploy, branch protection, rulesets, environments ni proveedores externos.                                                                                                                                                                                                                                                                                                             |
+| FÍSICA    | NOT_APPLICABLE | La configuración real de workflows, protección de ramas y admisión de despliegue corresponde a la futura `SHELL-CI-018::GLOBAL` después de aprobación documental y autorización física separada.                                                                                                                                                                                                                               |
+
+#### 47. Criterios de aceptación
+
+`SHELL-CI-018` queda documentalmente completa cuando:
+
+- define MERGE y DEPLOY como contextos separados;
+- conserva `VENTO Required Gate` como señal lógica final estable;
+- consume `npm test` sin conocer aliases internos;
+- consume CI017 para integridad TREQ;
+- exige TREQ afectados cuando corresponda;
+- diferencia cero afectados explícito de declaración ausente;
+- resuelve baseline histórica cuando sea obligatoria;
+- liga cada PASS al repositorio y SHA exactos;
+- define required, conditional y not applicable sin degradar fallos;
+- bloquea FAIL, BLOCKED, CANCELLED, TIMED_OUT, STALE y ausencia de check;
+- evita path-filter de bypass en la señal final;
+- evita direct push, force push y bypass técnico ordinario;
+- clasifica automatizaciones que escriben ramas gobernadas;
+- define activación segura de branch protection sin deadlock;
+- define preview diagnóstico separado de ambientes gobernados;
+- define una frontera provider-agnostic para despliegues;
+- conserva permisos mínimos y seguridad de secretos;
+- define reintentos y concurrencia sin reutilizar evidencia stale;
+- mantiene CI014, CI015, CI016 y CI017 como owners de sus propios oráculos;
+- entrega a CI019 un resultado estructurado publicable;
+- define 60 escenarios mínimos de autocertificación;
+- no crea ni modifica TREQ;
+- no modifica Supabase;
+- no desarrolla CI019.
+
+#### 48. Límites
+
+Esta tarea no:
+
+- implementa `SHELL-CI-018::GLOBAL`;
+- crea workflows durante el marcador;
+- modifica workflows existentes;
+- modifica branch protection;
+- crea rulesets;
+- cambia permisos GitHub;
+- cambia repositorios consumidores;
+- modifica `package.json`;
+- modifica package-locks;
+- modifica dependencias;
+- cambia `npm test`;
+- cambia suites de CI016;
+- cambia el verificador CI017;
+- modifica 04A;
+- crea requisitos;
+- modifica requisitos;
+- ejecuta pruebas;
+- ejecuta lint;
+- ejecuta typecheck;
+- ejecuta build;
+- abre pull requests;
+- fusiona pull requests;
+- hace push;
+- hace force push;
+- crea tags;
+- crea releases;
+- publica packages;
+- despliega;
+- ejecuta cutover;
+- ejecuta hypercare;
+- ejecuta rollback;
+- crea o ejecuta migraciones;
+- modifica schema;
+- modifica RLS;
+- modifica RPC;
+- modifica triggers;
+- modifica grants;
+- modifica Storage;
+- modifica Realtime;
+- modifica Edge Functions;
+- modifica datos;
+- modifica secretos;
+- modifica configuración productiva;
+- modifica ambientes externos;
+- publica evidencia final de CI019;
+- desarrolla `SHELL-CI-019`.
+
+#### 49. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CI-017 — Crear verificador automático del Registro Canónico de Requisitos de Prueba`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CI-018 — Bloquear merge o despliegue cuando fallen pruebas obligatorias`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio`
+
+
 ### [ ] SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio
