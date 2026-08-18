@@ -34,10 +34,10 @@
 | Siguiente tarea | **SHELL-CI-013 — Probar ANIMA antes de actualizar** |
 | Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
 | Progreso del bloque | **BLOQUE T: 11 de 24 aprobadas; SHELL-CI-012 pendiente** |
-| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
-| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CI-011::GLOBAL** |
-| Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — SHELL-CI-012** |
-| Carril físico | **PENDING_AUTHORIZATION — SHELL-CI-011::GLOBAL** |
+| Estado de implementación | **DOCUMENTATION_ONLY** |
+| Acción principal obligatoria | **DOCUMENTAR_TAREA — SHELL-CI-012** |
+| Carril documental | **ACTIVO — SHELL-CI-012** |
+| Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE T: 11 DE 24 APROBADAS — ACTUAL SHELL-CI-012** |
-| Implementación física | **SHELL-CI-011::GLOBAL — PENDING_AUTHORIZATION** |
+| Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
 

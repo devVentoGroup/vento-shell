@@ -1,10 +1,74 @@
 {
   "instance_id": "SHELL-CI-011::GLOBAL",
   "task_id": "SHELL-CI-011",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell",
+    "devVentoGroup/vento-viso"
+  ],
+  "authorized_changes": [
+    "En devVentoGroup/vento-shell, modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CI-011__GLOBAL.json para conservar la autorizacion humana, transicionar AUTHORIZED -\u003e IN_PROGRESS -\u003e IMPLEMENTED -\u003e VERIFIED y consolidar la evidencia de implementacion y validacion. No modificar implementation-control.json ni archivos de instancias anteriores.",
+    "En devVentoGroup/vento-viso, modificar exclusivamente package.json para anadir los puntos de entrada typecheck, test, test:ci011, build:ci011 y ci011:baseline sin cambiar dependencies, devDependencies, versiones ni package-lock.json.",
+    "En devVentoGroup/vento-viso, crear scripts/quality/viso-consumer-baseline-gate.mjs como habilitador global reutilizable de SHELL-CI-011::GLOBAL. Debe fijar identidad de commit, manifest, lockfile, suite, entorno, inventario exacto de 61 paginas, 48 estaticas, 13 dinamicas, 59 protegidas, 2 superficies publicas controladas, 10 route handlers y 71 patrones tecnicos; gobernar cuatro relaciones package-VISO, cuatro perfiles y doce superficies VISO; producir evidencia JSON machine-readable; invalidar evidencia stale; bloquear cero tests, otro consumidor, otro commit, secretos, entorno productivo, drift de paginas o handlers, contratos fuente ausentes, superficies obligatorias ausentes y falsa exposicion de privilegio; y no modificar packages, PR, merge, deploy, rollback ni Supabase.",
+    "En devVentoGroup/vento-viso, crear scripts/quality/viso-consumer-baseline-gate.test.mjs para autocertificar mediante fixtures sinteticos o aislados las doce superficies comunes, los cuatro perfiles de familia y las regresiones globales de identidad, stale evidence, aislamiento, ausencia de tests, secretos, entorno productivo, inventario exacto 61/48/13/59/2/10/71 y reutilizacion de evidencia ajena.",
+    "Ampliacion de correccion aprobada el 2026-08-18T09:09:00-05:00: en devVentoGroup/vento-viso modificar exclusivamente src/app/menu/[id]/personalizations/manage/page.tsx, src/app/operations/site-roles/page.tsx, src/app/operations/site-roles/site-operational-role-form.tsx, src/app/roles-permissions/page.tsx, src/components/viso/commercial-collection-category-order-editor.tsx, src/components/viso/commercial-collection-order-editor.tsx, src/components/viso/monthly-schedule-organizer.tsx, src/components/viso/scheduled-order-rescheduler.tsx, src/components/viso/shared-device-create-form.tsx, src/components/viso/staff-photo-panel.tsx y src/components/viso/weekly-schedule-planner.tsx para corregir los 18 errores ESLint bloqueantes observados en la bateria CI011. La correccion se limita a eliminar JSX construido dentro de try/catch, sustituir usos explicitos de any por interfaces minimas tipadas, diferir sincronizaciones de estado senaladas por react-hooks/set-state-in-effect, eliminar el uso de Date.now durante render y sustituir el enlace interno HTML por next/link. Debe conservar el comportamiento funcional existente y no puede usar eslint-disable ni relajar la configuracion.",
+    "Fuera de package.json, los dos scripts CI011 y los once archivos enumerados en la ampliacion de correccion, SHELL-CI-011::GLOBAL no autoriza modificar otro codigo funcional de VISO, package-lock.json, dependencies, devDependencies, migraciones, schema, tablas, vistas, funciones, RPC, triggers, grants, RLS, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, packages @vento/* reales, ramas protegidas, pull requests, merge, deploy ni rollback. Tampoco autoriza cambiar reglas de negocio, permisos, rutas, ownership, contratos funcionales o datos productivos."
+  ],
+  "validation_commands": [
+    "C:\\Users\\User\\devVentoGroup\\vento-viso: npm ci",
+    "C:\\Users\\User\\devVentoGroup\\vento-viso: npm run lint",
+    "C:\\Users\\User\\devVentoGroup\\vento-viso: npm run typecheck",
+    "C:\\Users\\User\\devVentoGroup\\vento-viso: npm run build:ci011",
+    "C:\\Users\\User\\devVentoGroup\\vento-viso: npm run --silent ci011:baseline",
+    "C:\\Users\\User\\devVentoGroup\\vento-viso: git diff --check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:build",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:work-topology:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: git diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-18T08:42:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO. Autorizo exclusivamente SHELL-CI-011::GLOBAL sobre devVentoGroup/vento-shell y devVentoGroup/vento-viso dentro de los repositorios, cambios y validaciones enumerados en este registro. La autorizacion permite materializar y autocertificar el habilitador VISO descrito, pero niega cualquier ampliacion no registrada.",
+    "source_contract_sha256": "c19ef09765d92cabec468a02f532763d796c9b0c5e68ab70da854cd9903df264",
+    "amendments": [
+      {
+        "decision": "APPROVED",
+        "approved_by": "VENTO_OWNER",
+        "approved_at": "2026-08-18T09:09:00-05:00",
+        "timezone": "America/Bogota",
+        "scope": "CI011_LINT_BLOCKER_REMEDIATION",
+        "approval_statement": "Aprobada la fase de correccion de los errores ESLint bloqueantes detectados durante la bateria fisica de SHELL-CI-011::GLOBAL, limitada a los once archivos VISO enumerados en authorized_changes y sin autorizacion para ampliar funcionalidad ni relajar controles."
+      }
+    ]
+  },
+  "evidence": [
+    "PREFLIGHT PASS; task=SHELL-CI-011; instance=SHELL-CI-011::GLOBAL",
+    "SHELL_BASE_COMMIT d2515cf8b2ea6ed84c51fb6a0fa9f39d34e37304",
+    "VISO_BASE_COMMIT 47322403f3c64e83ae0c4a2f68c05d47093e5bb4",
+    "IMPLEMENTATION viso-consumer-baseline-gate materialized; consumer=vento-viso; relations=4; profiles=4; surfaces=12; pages=61; static_pages=48; dynamic_pages=13; protected_pages=59; public_controlled=2; handlers=10; technical_patterns=71; contractual_tests=42",
+    "FILE_SHA256 package.json 110d31fbcaccc8c8c703cb881748c896b6f54b17f89ad68740d4c85c94b07ead",
+    "FILE_SHA256 scripts/quality/viso-consumer-baseline-gate.mjs 69aa530e4688166b0025bea58486e053a0694bc7eea9139892e3e47c96fb4573",
+    "FILE_SHA256 scripts/quality/viso-consumer-baseline-gate.test.mjs 75475cad5f9f3501fcbc151d943ca7718250c120121e7d16717c3da24cbe4ddc",
+    "VALIDATION VISO npm ci PASS",
+    "VALIDATION VISO lint PASS",
+    "VALIDATION VISO typecheck PASS",
+    "VALIDATION VISO build:ci011 PASS",
+    "VALIDATION CI011 baseline PASS; contractual_tests=42; failed=0; skipped=0; denied_paths=16",
+    "VALIDATION VISO route inventory PASS; pages=61; static_pages=48; dynamic_pages=13; protected_pages=59; public_controlled=2; handlers=10; technical_patterns=71",
+    "VALIDATION VISO git diff check PASS",
+    "VALIDATION Canonical plan build PASS",
+    "VALIDATION Canonical plan check PASS",
+    "VALIDATION Canonical plan tests PASS",
+    "VALIDATION TREQ check PASS",
+    "VALIDATION TREQ tests PASS",
+    "VALIDATION Work topology check PASS",
+    "VALIDATION SHELL git diff check PASS",
+    "RESULT CI011_FINAL_VALIDATION=PASS"
+  ]
 }
