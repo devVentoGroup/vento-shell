@@ -1,10 +1,50 @@
 {
   "instance_id": "SHELL-CI-006::GLOBAL",
   "task_id": "SHELL-CI-006",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear scripts/quality/shared-package-consumer-update-gate.mjs como única implementación global de SHELL-CI-006::GLOBAL. El habilitador conservará exactamente las cuatro familias @vento/contracts, @vento/os-context, @vento/supabase y @vento/ui-web; los siete consumidores web base vento-shell, vento-viso, vento-nexo, vento-fogo, vento-origo, vento-pulso y vento-numera; las 28 relaciones PKG-PR-REL-001..028; las siete clases de actualización; los catorce estados del ciclo de propuesta; los 38 campos del expediente PKG-PR-*; los dieciséis gates PKG-GATE-001..016; los cuatro perfiles GATE-PROFILE-*; y los dieciocho bloqueos PR-BLK-001..018. La implementación preparará de forma determinista expedientes y planes de propuesta, validará release, compatibilidad, manifest, lockfile, versiones exactas, gates, revisores, rollback, riesgos, idempotencia, supersesión y evidencia stale; soportará conjuntos multi-package mínimos y cerrados; y mantendrá fail-closed las fronteras de merge, deploy, rama protegida y Supabase.",
+    "Crear scripts/quality/shared-package-consumer-update-gate.test.mjs para autocertificar exclusivamente mediante datos, manifests, lockfiles, releases, compatibilidades, consumidores, commits, gates y expedientes sintéticos o aislados los 42 casos contractuales de SHELL-CI-006: 8 positivos, 18 negativos correspondientes exactamente a PR-BLK-001..018 y 16 regresiones. La suite no abrirá pull requests reales, no modificará consumidores reales, no publicará releases, no ejecutará despliegues y no realizará operaciones de Supabase.",
+    "La autocertificación de SHELL-CI-006::GLOBAL se limitará a devVentoGroup/vento-shell y a estructuras sintéticas o aisladas. Queda prohibido modificar vento-viso, vento-nexo, vento-fogo, vento-origo, vento-pulso, vento-numera, vento-anima u otro consumidor; modificar manifests o lockfiles reales de consumidores; crear ramas o pull requests remotos; aprobar, fusionar o desplegar propuestas; modificar reglas de protección o checks; publicar packages, tags o releases; utilizar secretos o credenciales reales; ejecutar cambios de schema, datos, RLS, RPC, Realtime, Storage, Edge Functions o configuración; o declarar ADOPTED durante esta instancia."
+  ],
+  "validation_commands": [
+    "npm ci",
+    "node --test scripts/quality/shared-package-consumer-update-gate.test.mjs",
+    "npm run lint -- scripts/quality/shared-package-consumer-update-gate.mjs scripts/quality/shared-package-consumer-update-gate.test.mjs",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm run docs:work-topology:check",
+    "git diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-17T20:48:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO E IMPLEMENTAR. Autorizo exclusivamente la implementación física de SHELL-CI-006::GLOBAL en devVentoGroup/vento-shell dentro del alcance exacto declarado en authorized_changes y validation_commands. La autorización cubre la autocertificación sintética o aislada del actualizador común y no autoriza escrituras en repositorios consumidores reales, pull requests reales, merge, deploy, publicación, secretos, datos ni Supabase.",
+    "source_contract_sha256": "09e115231b0b05bf8bad4d38fe84d22f9656a636bd976265ebebfd8a7929ea66"
+  },
+  "evidence": [
+    "PREFLIGHT PASS; task=SHELL-CI-006; instance=SHELL-CI-006::GLOBAL; blockers=0",
+    "BASE_COMMIT b61259747c05ea15f47095ef1591906be2c75085",
+    "IMPLEMENTATION shared-package-consumer-update-gate materialized; packages=4; consumers=7; relations=28; update_classes=7; proposal_states=14; record_fields=38; gates=16; profiles=4; blockers=18; contractual_tests=42",
+    "FILE_SHA256 scripts/quality/shared-package-consumer-update-gate.mjs c69fc39132c1137c9802bd20bdeb490d6dd73ca250df8d88de93934d0417f721",
+    "FILE_SHA256 scripts/quality/shared-package-consumer-update-gate.test.mjs 355d8eefe7386646286ec9014dbe0660556f14bd4e1150d121d9a4858c93afcb",
+    "VALIDATION CI006 self-certification PASS; contractual_cases=42; positive=8; negative=18; regression=16",
+    "VALIDATION CI006 lint PASS",
+    "VALIDATION Canonical plan build PASS",
+    "VALIDATION Canonical plan check PASS",
+    "VALIDATION Canonical plan tests PASS",
+    "VALIDATION TREQ check PASS",
+    "VALIDATION TREQ tests PASS",
+    "VALIDATION Work topology check PASS",
+    "VALIDATION git diff check PASS",
+    "RESULT CI006_FINAL_VALIDATION=PASS"
+  ]
 }
