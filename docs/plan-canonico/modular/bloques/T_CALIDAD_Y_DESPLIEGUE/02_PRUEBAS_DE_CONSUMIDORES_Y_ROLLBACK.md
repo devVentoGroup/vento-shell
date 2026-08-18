@@ -4082,8 +4082,8 @@ Reglas:
 
 #### 34. Requisitos de prueba derivados
 
-**Resultado:** NO GENERA REQUISITOS DE PRUEBA  
-**Requisitos creados:** **0**  
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **0**
 **Requisitos modificados:** **0**
 
 **Justificación:** las obligaciones de probar consumidores antes de adoptar packages compartidos, disponer de comandos reproducibles, conservar evidencia atribuible y bloquear falsos verdes ya existen en el registro canónico. La cobertura VISO vigente ya protege inventario de rutas, handlers, SSO, denegación, middleware, autorización, territorialidad, comercio, CMS, medios, programación, service desk, gobierno de información y fronteras interaplicación. CI011 especializa esas obligaciones para la línea base previa de VISO y define su habilitador reutilizable; no introduce una regla empresarial independiente.
@@ -5130,8 +5130,8 @@ Reglas:
 
 #### 36. Requisitos de prueba derivados
 
-**Resultado:** NO GENERA REQUISITOS DE PRUEBA  
-**Requisitos creados:** **0**  
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **0**
 **Requisitos modificados:** **0**
 
 **Justificación:** las obligaciones de probar consumidores antes de adoptar packages compartidos, disponer de comandos reproducibles, conservar evidencia atribuible y bloquear falsos verdes ya existen en el registro canónico. La cobertura NUMERA vigente ya protege hechos económicos, conciliación, costos, presupuestos, rutas, SSO, denegación, middleware, permisos de lectura y administración, navegación, Server Actions y fronteras de datos. CI012 especializa esas obligaciones para la línea base previa de NUMERA y define su habilitador reutilizable; no introduce una regla empresarial independiente.

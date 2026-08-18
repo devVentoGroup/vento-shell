@@ -8,10 +8,10 @@
 
 ## Qué toca hacer ahora
 
-- **Acción principal obligatoria:** `AUTORIZAR_IMPLEMENTACION`
-- **Objetivo exacto:** `SHELL-CI-012::GLOBAL` — Probar NUMERA antes de actualizar
-- **Instrucción:** Definir y aprobar el alcance físico exacto de SHELL-CI-012::GLOBAL; la misma entrega puede dejar preparado el lote físico condicionado a guardar primero la autorización.
-- **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `SHELL-CI-013`
+- **Acción principal obligatoria:** `DOCUMENTAR_TAREA`
+- **Objetivo exacto:** `SHELL-CI-013` — Probar ANIMA antes de actualizar
+- **Instrucción:** Desarrollar únicamente el contrato documental de SHELL-CI-013; no iniciar su instancia física por inferencia.
+- **Carril documental:** ACTIVO — `SHELL-CI-013`
 - **Implementación física autorizada:** **NINGUNA**
 
 > Esta instrucción prevalece sobre la simple posición de una tarea en la lista pendiente. Aprobar documentación no autoriza código y una instancia física no puede saltar su predecesora global.

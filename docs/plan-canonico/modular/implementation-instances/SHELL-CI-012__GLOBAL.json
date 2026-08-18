@@ -1,10 +1,65 @@
 {
   "instance_id": "SHELL-CI-012::GLOBAL",
   "task_id": "SHELL-CI-012",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell",
+    "devVentoGroup/vento-numera"
+  ],
+  "authorized_changes": [
+    "En devVentoGroup/vento-shell, modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CI-012__GLOBAL.json para conservar la autorizacion humana, transicionar AUTHORIZED -> IN_PROGRESS -> IMPLEMENTED -> VERIFIED y consolidar la evidencia de implementacion y validacion. No modificar implementation-control.json ni archivos de instancias anteriores.",
+    "En devVentoGroup/vento-shell, corregir exclusivamente el whitespace final ya detectado por git diff --check en las dos lineas de SHELL-CI-012 dentro de docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md que contienen **Resultado:** NO GENERA REQUISITOS DE PRUEBA y **Requisitos creados:** **0**. La correccion es no semantica: eliminar espacios finales sin cambiar texto, TREQ, continuidad ni decisiones.",
+    "En devVentoGroup/vento-numera, modificar exclusivamente package.json para anadir los puntos de entrada build:ci012, typecheck, test, test:ci012 y ci012:baseline, preservando los scripts existentes y sin cambiar dependencies, devDependencies, versiones ni package-lock.json.",
+    "En devVentoGroup/vento-numera, crear scripts/quality/numera-consumer-baseline-gate.mjs como habilitador global reutilizable de SHELL-CI-012::GLOBAL. Debe fijar identidad de commit, manifest, lockfile, suite, entorno, inventario exacto de 7 paginas, 7 estaticas, 0 dinamicas, 5 protegidas, 2 superficies publicas controladas, 0 route handlers y 4 candidatas declarativas de navegacion; gobernar cuatro relaciones package-NUMERA, cuatro perfiles y doce superficies NUMERA; producir evidencia JSON machine-readable; invalidar evidencia stale; bloquear cero tests, otro consumidor, otro commit, secretos, entorno productivo, drift de paginas o navegacion, contratos fuente ausentes, service-role disponible durante certificacion, mutacion remota y falsa semantica financiera; y no modificar packages, PR, merge, deploy, rollback ni Supabase.",
+    "En devVentoGroup/vento-numera, crear scripts/quality/numera-consumer-baseline-gate.test.mjs para autocertificar mediante fixtures sinteticos o aislados las doce superficies comunes, los cuatro perfiles de familia y las regresiones globales de identidad, stale evidence, aislamiento, ausencia de tests, secretos, inventario exacto, navegacion exacta, service-role y reutilizacion de evidencia ajena.",
+    "Fuera de package.json y los dos scripts CI012, SHELL-CI-012::GLOBAL no autoriza modificar codigo funcional de NUMERA, package-lock.json, dependencies, devDependencies, sync-navigation.mjs, middleware.ts, guards, paginas, componentes, migraciones, schema, tablas, vistas, funciones, RPC, triggers, grants, RLS, Storage, Realtime, Edge Functions, datos, secretos, archivos .env, configuracion remota, packages @vento/* reales, ramas protegidas, pull requests, merge, deploy ni rollback. En vento-shell no autoriza cambios fuera del registro propio de la instancia y la correccion de whitespace expresamente enumerada."
+  ],
+  "validation_commands": [
+    "C:\\Users\\User\\devVentoGroup\\vento-numera: npm ci",
+    "C:\\Users\\User\\devVentoGroup\\vento-numera: npm run lint",
+    "C:\\Users\\User\\devVentoGroup\\vento-numera: npm run typecheck",
+    "C:\\Users\\User\\devVentoGroup\\vento-numera: npm run build:ci012",
+    "C:\\Users\\User\\devVentoGroup\\vento-numera: npm run --silent ci012:baseline",
+    "C:\\Users\\User\\devVentoGroup\\vento-numera: git --no-pager diff --check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:build",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:work-topology:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-18T11:05:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO. Autorizo exclusivamente SHELL-CI-012::GLOBAL sobre devVentoGroup/vento-shell y devVentoGroup/vento-numera dentro de los archivos, cambios y validaciones enumerados en este registro. La autorizacion permite materializar y autocertificar el habilitador NUMERA descrito y corregir unicamente el whitespace documental expresamente identificado, pero niega cualquier ampliacion inferida, cambio funcional no enumerado, cambio de dependencias, package-lock, Supabase, secretos, datos, packages compartidos reales, PR, merge, deploy o rollback.",
+    "source_contract_sha256": "2312fac8915215bae075e9abc517970cd470f620f6aecce00d5f3da32be6e4c9"
+  },
+  "evidence": [
+    "PREFLIGHT PASS; task=SHELL-CI-012; instance=SHELL-CI-012::GLOBAL",
+    "SHELL_BASE_COMMIT 6e383cb4e7c6b51486ff18a17d93f7ff9c65e257",
+    "NUMERA_BASE_COMMIT 1b48a5da425d92e19ed89cf175b1dccc4cd960e1",
+    "IMPLEMENTATION numera-consumer-baseline-gate materialized; consumer=vento-numera; relations=4; profiles=4; surfaces=12; pages=7; static_pages=7; dynamic_pages=0; protected_pages=5; public_controlled=2; handlers=0; navigation_candidates=4; contractual_tests=42",
+    "DOCUMENTARY_WHITESPACE_REMEDIATION SHELL-CI-012 trailing whitespace removed without semantic change",
+    "FILE_SHA256 package.json 8fcdb2e08cc1c2828711de2af05106c6a053e1b0f53f26b796730c591791bd63",
+    "FILE_SHA256 scripts/quality/numera-consumer-baseline-gate.mjs 1b42ddfeb7058335c583dd841d928141726996c5df2902cca5605df8b70719e9",
+    "FILE_SHA256 scripts/quality/numera-consumer-baseline-gate.test.mjs 6e0493a64b05279a9dc960b09b954b31d9feeff2ad26387ed1f30debf2f37d33",
+    "VALIDATION NUMERA npm ci PASS",
+    "VALIDATION NUMERA lint PASS",
+    "VALIDATION NUMERA typecheck PASS",
+    "VALIDATION NUMERA build:ci012 PASS; legacy prebuild not invoked; prebuild safety PASS",
+    "VALIDATION CI012 baseline PASS; contractual_tests=42; failed=0; skipped=0; denied_paths=16",
+    "VALIDATION NUMERA inventory PASS; pages=7; static_pages=7; dynamic_pages=0; protected_pages=5; public_controlled=2; handlers=0; navigation_candidates=4",
+    "VALIDATION NUMERA git diff check PASS",
+    "VALIDATION Canonical plan build PASS",
+    "VALIDATION Canonical plan check PASS",
+    "VALIDATION Canonical plan tests PASS",
+    "VALIDATION TREQ check PASS",
+    "VALIDATION TREQ tests PASS",
+    "VALIDATION Work topology check PASS",
+    "VALIDATION SHELL git diff check PASS",
+    "RESULT CI012_FINAL_VALIDATION=PASS"
+  ]
 }
