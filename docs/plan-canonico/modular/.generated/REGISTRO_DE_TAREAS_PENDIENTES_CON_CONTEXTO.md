@@ -8,10 +8,10 @@
 
 ## Qué toca hacer ahora
 
-- **Acción principal obligatoria:** `AUTORIZAR_IMPLEMENTACION`
-- **Objetivo exacto:** `SHELL-CI-017::GLOBAL` — Crear verificador automático del Registro Canónico de Requisitos de Prueba
-- **Instrucción:** Definir y aprobar el alcance físico exacto de SHELL-CI-017::GLOBAL; la misma entrega puede dejar preparado el lote físico condicionado a guardar primero la autorización.
-- **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `SHELL-CI-018`
+- **Acción principal obligatoria:** `DOCUMENTAR_TAREA`
+- **Objetivo exacto:** `SHELL-CI-018` — Bloquear merge o despliegue cuando fallen pruebas obligatorias
+- **Instrucción:** Desarrollar únicamente el contrato documental de SHELL-CI-018; no iniciar su instancia física por inferencia.
+- **Carril documental:** ACTIVO — `SHELL-CI-018`
 - **Implementación física autorizada:** **NINGUNA**
 
 > Esta instrucción prevalece sobre la simple posición de una tarea en la lista pendiente. Aprobar documentación no autoriza código y una instancia física no puede saltar su predecesora global.

@@ -1,10 +1,50 @@
 {
   "instance_id": "SHELL-CI-017::GLOBAL",
   "task_id": "SHELL-CI-017",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell"
+  ],
+  "authorized_changes": [
+    "En devVentoGroup/vento-shell, modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CI-017__GLOBAL.json para conservar la autorizacion humana, transicionar AUTHORIZED -> IN_PROGRESS -> IMPLEMENTED -> VERIFIED y consolidar evidencia. No modificar implementation-control.json ni registros de instancias anteriores.",
+    "En devVentoGroup/vento-shell, modificar exclusivamente scripts/docs/treq-registry-files.mjs para hacer de la familia modular 04A registrada y ordenada por manifest.json la unica fuente fisica del Registro Canonico de Requisitos de Prueba: eliminar la preferencia de lectura o escritura sobre el monolito legacy, validar existencia y unicidad de fragmentos, cabecera y reglas terminales, correspondencia dominio-fragmento, UTF-8 estricto y reconstruccion determinista, preservando las funciones publicas consumidas por build y reconciliacion.",
+    "En devVentoGroup/vento-shell, modificar exclusivamente scripts/docs/validate-treq-registry.mjs para endurecer el verificador canonico existente sin crear un verificador paralelo: conservar compatibilidad con validateCanonicalTreqRegistry y sus stats actuales, anadir diagnostico estructurado y salida machine-readable, validacion semantica de VERIFICADO y DIFERIDO, comparacion historica opcional contra baseline explicita, validacion de declaraciones de TREQ afectados, taxonomia fail-closed y CLI no mutante con --json, --baseline-file, --require-baseline, --affected y --allow-zero-affected.",
+    "En devVentoGroup/vento-shell, modificar exclusivamente scripts/docs/validate-treq-registry.test.mjs para autocertificar exactamente 48 escenarios contractuales de SHELL-CI-017::GLOBAL: 12 positivos, 24 negativos y 12 regresiones, cubriendo fuente modular, esquema, identidades, secuencia, relaciones, tareas, VERIFICADO, DIFERIDO, baseline historica, declaraciones de TREQ afectados, salida machine-readable, ausencia de autoridad del monolito legacy y semantica fail-closed.",
+    "Queda expresamente fuera del alcance modificar package.json, package-lock.json, dependencies, devDependencies, scripts distintos de los ya existentes, scripts/docs/treq-safe-reconcile.mjs, scripts/docs/treq-safe-reconcile.test.mjs, scripts/docs/safe-build-plan-canonico.mjs, scripts/docs/build-plan-canonico.mjs, scripts/docs/build-plan-canonico-core.mjs, cualquier fragmento 04A, cualquier TREQ, codigo funcional de aplicaciones, packages compartidos, consumidores, workflows, branch protection, GitHub Actions, tags, releases, PR, merge, deploy, rollback productivo, Supabase, migraciones, schema, RLS, RPC, funciones, triggers, grants, Storage, Realtime, Edge Functions, datos, secretos, archivos .env, configuracion productiva, SHELL-CI-018 o SHELL-CI-019; tambien se niega cualquier ampliacion inferida del alcance autorizado."
+  ],
+  "validation_commands": [
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm ci",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run lint -- scripts/docs/treq-registry-files.mjs scripts/docs/validate-treq-registry.mjs scripts/docs/validate-treq-registry.test.mjs",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:build",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:check -- --json",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:work-topology:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-18T16:22:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Se autoriza exclusivamente la implementacion fisica de SHELL-CI-017::GLOBAL en devVentoGroup/vento-shell, limitada al registro propio de la instancia y a los tres archivos de scripts/docs enumerados en authorized_changes, con las validaciones exactas declaradas en validation_commands. Se autoriza endurecer el verificador TREQ existente y su lectura modular, pero no modificar el registro 04A ni requisitos TREQ para hacer pasar las pruebas. Se niega expresamente cualquier ampliacion inferida, cambio de package.json o lockfile, dependencias, reconciliacion segura, build canonico fuera de las validaciones, codigo funcional, packages, consumidores, workflows, protecciones, PR, merge, release, deploy, rollback productivo, Supabase, migraciones, datos, secretos, configuracion productiva o desarrollo anticipado de SHELL-CI-018 y SHELL-CI-019.",
+    "source_contract_sha256": "f2f9910fd3494eddd12fec625ab559ae631f932d4bc27a3399d8d8038f1e5f03"
+  },
+  "evidence": [
+    "PREFLIGHT PASS; task=SHELL-CI-017; instance=SHELL-CI-017::GLOBAL",
+    "IMPLEMENTATION canonical TREQ verifier hardened; source_model=modular_manifest_only; contractual_tests=48; positive=12; negative=24; regression=12",
+    "VALIDATION npm ci PASS",
+    "VALIDATION CI017 TREQ self-certification PASS; contractual_cases=48; positive=12; negative=24; regression=12",
+    "VALIDATION CI017 lint PASS",
+    "VALIDATION Canonical plan build PASS",
+    "VALIDATION Canonical plan check PASS",
+    "VALIDATION Canonical plan tests PASS",
+    "VALIDATION Canonical TREQ check PASS; requirements=7066; domains=19; fragments=21; duplicates=0; unresolved_relations=0",
+    "VALIDATION Canonical TREQ machine-readable check PASS",
+    "VALIDATION Work topology check PASS",
+    "VALIDATION git diff check PASS",
+    "RESULT CI017_FINAL_VALIDATION=PASS"
+  ]
 }

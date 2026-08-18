@@ -34,10 +34,10 @@
 | Siguiente tarea | **SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio** |
 | Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
 | Progreso del bloque | **BLOQUE T: 17 de 24 aprobadas; SHELL-CI-018 pendiente** |
-| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
-| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CI-017::GLOBAL** |
-| Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — SHELL-CI-018** |
-| Carril físico | **PENDING_AUTHORIZATION — SHELL-CI-017::GLOBAL** |
+| Estado de implementación | **DOCUMENTATION_ONLY** |
+| Acción principal obligatoria | **DOCUMENTAR_TAREA — SHELL-CI-018** |
+| Carril documental | **ACTIVO — SHELL-CI-018** |
+| Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE T: 17 DE 24 APROBADAS — ACTUAL SHELL-CI-018** |
-| Implementación física | **SHELL-CI-017::GLOBAL — PENDING_AUTHORIZATION** |
+| Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
 

@@ -1,7 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readCanonicalTreqRegistry } from './treq-registry-files.mjs';
+import {
+  readCanonicalTreqRegistryBundle,
+} from './treq-registry-files.mjs';
 
 const EXPECTED_COLUMNS = [
   'ID',
@@ -25,9 +27,12 @@ const TASK_HEADING = new RegExp(
   'gmu'
 );
 const TREQ_ID = /^TREQ-([A-Z]+)-(\d{3,})$/;
+const TERMINAL_RESULT_PATTERN = /\b(?:PASS|FAIL|OK|APROBADO|RECHAZADO|VERIFICADO|COMPLETADO|CERRADO|EJECUTADO|EXIT[_ -]?CODE|RESULTADO)\b/iu;
+const PENDING_VALUE_PATTERN = /^(?:—|-|pendiente(?:\s+de[^]*)?|por\s+definir|no[_\s-]?confirmado|n\/?a|na|sin\s+(?:evidencia|resultado|artefacto)|no\s+aplica)$/iu;
+const GENERIC_EVIDENCE_PATTERN = /^(?:probado|correcto|listo|ok|aprobado|verificado|pass|funciona)(?:[.!])?$/iu;
 
 function cleanCell(value) {
-  return value.trim().replace(/^`|`$/g, '').replace(/\*\*/g, '').trim();
+  return String(value ?? '').trim().replace(/^`|`$/g, '').replace(/\*\*/g, '').trim();
 }
 
 function splitMarkdownRow(line) {
@@ -60,7 +65,7 @@ function isSeparatorRow(cells) {
 }
 
 function extractTaskIds(value) {
-  return [...value.matchAll(new RegExp(`\\b(${TASK_PATTERN})\\b`, 'g'))]
+  return [...String(value ?? '').matchAll(new RegExp(`\\b(${TASK_PATTERN})\\b`, 'g'))]
     .map((match) => match[1])
     .filter((id) => !id.startsWith('TREQ-'));
 }
@@ -78,26 +83,31 @@ function findUnknownCanonicalTaskIds(value, tasks) {
   )];
 }
 
-function expandTreqReferences(value) {
+function parseTreqReferences(value) {
   const references = new Set();
-  const rangeRegex = /TREQ-([A-Z]+)-(\d{3,})`?\s+a\s+`?TREQ-\1-(\d{3,})/g;
-  let withoutRanges = value;
+  const invalidRanges = [];
+  const rangeRegex = /TREQ-([A-Z]+)-(\d{3,})`?\s+a\s+`?TREQ-([A-Z]+)-(\d{3,})/g;
+  let withoutRanges = String(value ?? '');
 
-  for (const match of value.matchAll(rangeRegex)) {
-    const [, domain, fromRaw, toRaw] = match;
+  for (const match of String(value ?? '').matchAll(rangeRegex)) {
+    const [, fromDomain, fromRaw, toDomain, toRaw] = match;
     const from = Number(fromRaw);
     const to = Number(toRaw);
-    if (to < from) continue;
-    for (let number = from; number <= to; number += 1) {
-      references.add(`TREQ-${domain}-${String(number).padStart(3, '0')}`);
-    }
     withoutRanges = withoutRanges.replace(match[0], '');
+
+    if (fromDomain !== toDomain || to < from) {
+      invalidRanges.push(match[0]);
+      continue;
+    }
+    for (let number = from; number <= to; number += 1) {
+      references.add(`TREQ-${fromDomain}-${String(number).padStart(3, '0')}`);
+    }
   }
 
   for (const match of withoutRanges.matchAll(/\bTREQ-[A-Z]+-\d{3,}\b/g)) {
     references.add(match[0]);
   }
-  return [...references];
+  return { references: [...references], invalidRanges };
 }
 
 export function extractDerivedTreqIds(body) {
@@ -117,7 +127,7 @@ export function extractDerivedTreqIds(body) {
   const declaresZeroCreated = /^\*\*(?:Requisitos\s+)?creados:\*\*\s*(?:\*\*)?0(?:\*\*)?\b/imu.test(section);
   const declaresZeroModified = /^\*\*(?:Requisitos\s+)?modificados:\*\*\s*(?:\*\*)?0(?:\*\*)?\b/imu.test(section);
   if (declaresNoRequirements && declaresZeroCreated && declaresZeroModified) return [];
-  return expandTreqReferences(section);
+  return parseTreqReferences(section).references;
 }
 
 function markerState(marker) {
@@ -283,11 +293,26 @@ function parseDistribution(source) {
   return rows;
 }
 
-function parseRegistry(source, errors) {
+function createRecorder() {
+  const errors = [];
+  const diagnostics = [];
+  const add = (category, code, message, rowId = null) => {
+    errors.push(message);
+    diagnostics.push({
+      category,
+      code,
+      ...(rowId ? { row_id: rowId } : {}),
+      message,
+    });
+  };
+  return { errors, diagnostics, add };
+}
+
+function parseRegistry(source, add) {
   const start = source.indexOf('### Registro');
   const end = source.indexOf('### Reglas obligatorias', start);
   if (start < 0 || end < 0) {
-    errors.push('Debe existir exactamente una sección `### Registro` antes de `### Reglas obligatorias`.');
+    add('SOURCE', 'REGISTRY_SECTION_MISSING', 'Debe existir exactamente una sección `### Registro` antes de `### Reglas obligatorias`.');
     return { rows: [], domains: [] };
   }
 
@@ -304,23 +329,23 @@ function parseRegistry(source, errors) {
     domains.push(domain);
 
     if (tableLines.length < 3) {
-      errors.push(`${domain}: falta la tabla completa del registro.`);
+      add('SCHEMA', 'DOMAIN_TABLE_MISSING', `${domain}: falta la tabla completa del registro.`);
       return;
     }
     const header = splitMarkdownRow(tableLines[0]);
     if (!header || header.length !== EXPECTED_COLUMNS.length
       || header.some((cell, cellIndex) => cleanCell(cell) !== EXPECTED_COLUMNS[cellIndex])) {
-      errors.push(`${domain}: la cabecera debe tener las catorce columnas canónicas en el orden exacto.`);
+      add('SCHEMA', 'CANONICAL_COLUMNS_INVALID', `${domain}: la cabecera debe tener las catorce columnas canónicas en el orden exacto.`);
     }
     const separator = splitMarkdownRow(tableLines[1]);
     if (!separator || separator.length !== EXPECTED_COLUMNS.length || !isSeparatorRow(separator)) {
-      errors.push(`${domain}: el separador de la tabla es inválido.`);
+      add('SCHEMA', 'TABLE_SEPARATOR_INVALID', `${domain}: el separador de la tabla es inválido.`);
     }
 
     tableLines.slice(2).forEach((line) => {
       const cells = splitMarkdownRow(line);
       if (!cells || cells.length !== EXPECTED_COLUMNS.length) {
-        errors.push(`${domain}: fila con ${cells?.length ?? 0} columnas; se requieren 14.`);
+        add('SCHEMA', 'ROW_COLUMN_COUNT_INVALID', `${domain}: fila con ${cells?.length ?? 0} columnas; se requieren 14.`);
         return;
       }
       const row = Object.fromEntries(
@@ -333,20 +358,231 @@ function parseRegistry(source, errors) {
   return { rows, domains };
 }
 
-function numericSummary(summary, label, errors) {
+function numericSummary(summary, label, add) {
   const raw = summary.get(label);
   const value = Number(raw?.match(/\d+/)?.[0]);
-  if (!raw || !Number.isInteger(value)) errors.push(`Resumen: falta una cifra válida para "${label}".`);
+  if (!raw || !Number.isInteger(value)) add('SUMMARY', 'SUMMARY_NUMBER_MISSING', `Resumen: falta una cifra válida para "${label}".`);
   return value;
 }
 
-export function validateTreqRegistrySource(source, context) {
-  const normalized = source.replace(/\r\n?/g, '\n');
-  const errors = [];
+function isPendingValue(value) {
+  const normalized = cleanCell(value).replace(/\s+/gu, ' ');
+  return normalized.length === 0 || PENDING_VALUE_PATTERN.test(normalized);
+}
+
+function hasCompletedResult(value) {
+  const normalized = cleanCell(value);
+  return !isPendingValue(normalized)
+    && (TERMINAL_RESULT_PATTERN.test(normalized) || normalized.length >= 12);
+}
+
+function hasReproducibleEvidence(value) {
+  const normalized = cleanCell(value);
+  if (isPendingValue(normalized) || GENERIC_EVIDENCE_PATTERN.test(normalized)) return false;
+  return /https?:\/\//iu.test(normalized)
+    || /\b[0-9a-f]{7,64}\b/iu.test(normalized)
+    || /(?:^|[\s`])(?:\.{0,2}[\\/])?[A-Za-z0-9_.-]+[\\/][A-Za-z0-9_./\\-]+/u.test(normalized)
+    || /(?:^|[\s`'"])[A-Za-z0-9][A-Za-z0-9_.-]*\.(?:md|json|xml|html?|log|txt|csv|tap|trx|sarif|zip)(?=$|[\s`'";,.])/iu.test(normalized)
+    || /\b(?:run|job|execution|ejecuci[oó]n|reporte|report|artefacto|artifact|evidencia|evidence|log|commit|sha)\b[^\n]{0,40}(?:[#:=]|\bid\b)\s*[`"']?[A-Za-z0-9._/-]{2,}/iu.test(normalized);
+}
+
+function validateVerifiedRow(row, add) {
+  const requiredFields = ['Repositorio / ambiente', 'Artefacto', 'Último resultado', 'Evidencia'];
+  for (const field of requiredFields) {
+    if (isPendingValue(row[field])) {
+      add(
+        'VERIFIED_EVIDENCE',
+        'VERIFIED_REQUIRED_FIELD_PENDING',
+        `${row.ID}: VERIFICADO exige "${field}" resuelto y no pendiente.`,
+        row.ID,
+      );
+    }
+  }
+  if (!hasCompletedResult(row['Último resultado'])) {
+    add(
+      'VERIFIED_EVIDENCE',
+      'VERIFIED_RESULT_NOT_CONCLUDED',
+      `${row.ID}: VERIFICADO exige un último resultado que represente una ejecución o decisión concluida.`,
+      row.ID,
+    );
+  }
+  if (!hasReproducibleEvidence(row.Evidencia)) {
+    add(
+      'VERIFIED_EVIDENCE',
+      'VERIFIED_EVIDENCE_NOT_REPRODUCIBLE',
+      `${row.ID}: VERIFICADO exige una referencia de evidencia reproducible; una afirmación genérica no es suficiente.`,
+      row.ID,
+    );
+  }
+}
+
+function validateDeferredRow(row, context, add) {
+  const responsibleIds = extractTaskIds(row['Tarea responsable']).filter((id) => context.tasks.has(id));
+  const narrative = `${row['Último resultado']} ${row.Evidencia}`.trim();
+  const genericDeferral = /^(?:pendiente|despu[eé]s|m[aá]s adelante|cuando corresponda|por definir)[.!]?$/iu;
+  const hasJustification = /\b(?:justific|aplaz|diferid|posterg|bloquead|debido|porque|riesgo)\w*/iu.test(narrative);
+  const hasResumption = extractTaskIds(narrative).some((id) => context.tasks.has(id))
+    || /\b(?:puerta|gate|etapa|fase|cuando|despu[eé]s de|antes de|al completar|al aprobar|hasta que)\b\s+\S+/iu.test(narrative);
+
+  if (responsibleIds.length === 0) {
+    add(
+      'DEFERRED_RESOLUTION',
+      'DEFERRED_RESPONSIBLE_TASK_MISSING',
+      `${row.ID}: DIFERIDO exige una tarea responsable exacta y resoluble.`,
+      row.ID,
+    );
+  }
+  if (isPendingValue(row['Riesgo / prioridad'])) {
+    add(
+      'DEFERRED_RESOLUTION',
+      'DEFERRED_RISK_MISSING',
+      `${row.ID}: DIFERIDO exige riesgo aceptado o explicado.`,
+      row.ID,
+    );
+  }
+  if (!narrative || genericDeferral.test(narrative) || !hasJustification) {
+    add(
+      'DEFERRED_RESOLUTION',
+      'DEFERRED_JUSTIFICATION_MISSING',
+      `${row.ID}: DIFERIDO exige una justificación explícita del aplazamiento.`,
+      row.ID,
+    );
+  }
+  if (!narrative || genericDeferral.test(narrative) || !hasResumption) {
+    add(
+      'DEFERRED_RESOLUTION',
+      'DEFERRED_RESUMPTION_MISSING',
+      `${row.ID}: DIFERIDO exige una puerta, condición, evento o momento determinable de reanudación.`,
+      row.ID,
+    );
+  }
+}
+
+export function validateAffectedTreqDeclaration({
+  affectedIds,
+  knownIds,
+  allowZeroAffected = false,
+} = {}) {
+  const rawIds = Array.isArray(affectedIds)
+    ? affectedIds.map((value) => cleanCell(value)).filter(Boolean)
+    : [];
+  const duplicates = [...new Set(rawIds.filter((id, index, all) => all.indexOf(id) !== index))].sort();
+  const malformed = [...new Set(rawIds.filter((id) => !TREQ_ID.test(id)))].sort();
+  const known = knownIds instanceof Set ? knownIds : new Set(knownIds ?? []);
+  const unknown = [...new Set(rawIds.filter((id) => TREQ_ID.test(id) && !known.has(id)))].sort();
+  const diagnostics = [];
+
+  if (rawIds.length === 0 && !allowZeroAffected) {
+    diagnostics.push({
+      category: 'IDENTITY',
+      code: 'AFFECTED_REQUIREMENTS_EMPTY',
+      message: 'La declaración de requisitos afectados está vacía y el caller no autorizó cero requisitos.',
+    });
+  }
+  if (duplicates.length > 0) {
+    diagnostics.push({
+      category: 'IDENTITY',
+      code: 'AFFECTED_REQUIREMENTS_DUPLICATED',
+      message: `La declaración de requisitos afectados contiene duplicados: ${duplicates.join(', ')}.`,
+    });
+  }
+  if (malformed.length > 0) {
+    diagnostics.push({
+      category: 'IDENTITY',
+      code: 'AFFECTED_REQUIREMENTS_MALFORMED',
+      message: `La declaración contiene identificadores TREQ mal formados: ${malformed.join(', ')}.`,
+    });
+  }
+  if (unknown.length > 0) {
+    diagnostics.push({
+      category: 'IDENTITY',
+      code: 'AFFECTED_REQUIREMENTS_UNKNOWN',
+      message: `La declaración contiene requisitos inexistentes: ${unknown.join(', ')}.`,
+    });
+  }
+
+  return {
+    requested: true,
+    allow_zero: allowZeroAffected,
+    ids: rawIds,
+    duplicate_ids: duplicates,
+    malformed_ids: malformed,
+    unknown_ids: unknown,
+    result: diagnostics.length === 0 ? 'PASS' : 'FAIL',
+    diagnostics,
+  };
+}
+
+function parseHistoricalBaseline(source, add) {
+  const baselineRows = [];
+  let failed = false;
+  const baselineAdd = (_category, code, message, rowId = null) => {
+    failed = true;
+    add(
+      'HISTORICAL_RETENTION',
+      `BASELINE_${code}`,
+      `Línea base inválida: ${message}`,
+      rowId,
+    );
+  };
+  const parsed = parseRegistry(String(source ?? '').replace(/\r\n?/g, '\n'), baselineAdd);
+  baselineRows.push(...parsed.rows);
+  return { rows: baselineRows, failed };
+}
+
+function buildReport({
+  recorder,
+  stats,
+  historicalMissingIds,
+  historicalCheck,
+  affectedDeclaration,
+}) {
+  const invalidRows = [...new Set(recorder.diagnostics.map((entry) => entry.row_id).filter(Boolean))].sort();
+  const verifiedEvidenceErrors = [...new Set(
+    recorder.diagnostics
+      .filter((entry) => entry.category === 'VERIFIED_EVIDENCE')
+      .map((entry) => entry.row_id)
+      .filter(Boolean)
+  )].sort();
+  const deferredResolutionErrors = [...new Set(
+    recorder.diagnostics
+      .filter((entry) => entry.category === 'DEFERRED_RESOLUTION')
+      .map((entry) => entry.row_id)
+      .filter(Boolean)
+  )].sort();
+
+  return {
+    result: recorder.errors.length === 0 ? 'PASS' : 'FAIL',
+    requirements: stats.requirements,
+    domains: stats.domains,
+    fragments: [],
+    duplicates: stats.duplicates,
+    unresolved_relations: stats.unresolvedRelations,
+    invalid_rows: invalidRows,
+    verified_evidence_errors: verifiedEvidenceErrors,
+    deferred_resolution_errors: deferredResolutionErrors,
+    historical_missing_ids: [...historicalMissingIds],
+    historical_check: historicalCheck,
+    latest_task: stats.latestTask,
+    distribution: stats.distribution,
+    affected_requirements: affectedDeclaration,
+    errors: recorder.diagnostics,
+  };
+}
+
+export function validateTreqRegistrySource(source, context, {
+  baselineSource = null,
+  baselineRequired = false,
+  affectedIds = null,
+  allowZeroAffected = false,
+} = {}) {
+  const normalized = String(source ?? '').replace(/\r\n?/g, '\n');
+  const recorder = createRecorder();
+  const { add } = recorder;
   const mainHeadings = normalized.match(/^## REGISTRO CANÓNICO DE REQUISITOS DE PRUEBA\s*$/gm) ?? [];
   const registryHeadings = normalized.match(/^### Registro\s*$/gm) ?? [];
-  if (mainHeadings.length !== 1) errors.push('Debe existir exactamente un encabezado principal del registro.');
-  if (registryHeadings.length !== 1) errors.push('Debe existir exactamente una sección `### Registro`.');
+  if (mainHeadings.length !== 1) add('SOURCE', 'MAIN_HEADING_COUNT_INVALID', 'Debe existir exactamente un encabezado principal del registro.');
+  if (registryHeadings.length !== 1) add('SOURCE', 'REGISTRY_HEADING_COUNT_INVALID', 'Debe existir exactamente una sección `### Registro`.');
 
   const declaredDomains = parseDeclaredList(
     normalized,
@@ -366,13 +602,13 @@ export function validateTreqRegistrySource(source, context) {
     '### Resumen vigente',
     /^- ([^;.]+)[.;]$/gm
   );
-  if (declaredDomains.length === 0) errors.push('No se pudieron leer los dominios permitidos.');
-  if (allowedStates.length === 0) errors.push('No se pudieron leer los estados permitidos.');
-  if (allowedTypes.length === 0) errors.push('No se pudieron leer los tipos permitidos.');
+  if (declaredDomains.length === 0) add('DOMAIN', 'DOMAIN_CATALOG_UNREADABLE', 'No se pudieron leer los dominios permitidos.');
+  if (allowedStates.length === 0) add('STATE', 'STATE_CATALOG_UNREADABLE', 'No se pudieron leer los estados permitidos.');
+  if (allowedTypes.length === 0) add('TYPE', 'TYPE_CATALOG_UNREADABLE', 'No se pudieron leer los tipos permitidos.');
 
-  const { rows, domains } = parseRegistry(normalized, errors);
+  const { rows, domains } = parseRegistry(normalized, add);
   if (domains.join('|') !== declaredDomains.join('|')) {
-    errors.push('El orden o conjunto de dominios del registro no coincide con "Dominios iniciales".');
+    add('DOMAIN', 'DOMAIN_ORDER_MISMATCH', 'El orden o conjunto de dominios del registro no coincide con "Dominios iniciales".');
   }
 
   const ids = new Set();
@@ -382,58 +618,59 @@ export function validateTreqRegistrySource(source, context) {
 
   for (const row of rows) {
     for (const column of EXPECTED_COLUMNS) {
-      if (!row[column]) errors.push(`${row.ID || '(sin ID)'}: la columna "${column}" está vacía.`);
+      if (!row[column]) add('SCHEMA', 'REQUIRED_CELL_EMPTY', `${row.ID || '(sin ID)'}: la columna "${column}" está vacía.`, row.ID || null);
     }
 
     const idMatch = row.ID.match(TREQ_ID);
     if (!idMatch) {
-      errors.push(`${row.ID || '(sin ID)'}: identificador TREQ inválido.`);
+      add('IDENTITY', 'TREQ_ID_INVALID', `${row.ID || '(sin ID)'}: identificador TREQ inválido.`, row.ID || null);
       continue;
     }
     const [, idDomain] = idMatch;
     if (ids.has(row.ID)) duplicateIds.add(row.ID);
     ids.add(row.ID);
     if (row.Dominio !== idDomain) {
-      errors.push(`${row.ID}: el dominio de la fila (${row.Dominio}) no coincide con el identificador (${idDomain}).`);
+      add('DOMAIN', 'ROW_DOMAIN_MISMATCH', `${row.ID}: el dominio de la fila (${row.Dominio}) no coincide con el identificador (${idDomain}).`, row.ID);
     }
     if (!grouped.has(idDomain)) {
-      errors.push(`${row.ID}: dominio no declarado.`);
+      add('DOMAIN', 'ROW_DOMAIN_UNDECLARED', `${row.ID}: dominio no declarado.`, row.ID);
     } else {
       grouped.get(idDomain).push(row);
     }
-    if (!allowedStates.includes(row.Estado)) errors.push(`${row.ID}: estado no permitido "${row.Estado}".`);
+    if (!allowedStates.includes(row.Estado)) add('STATE', 'STATE_NOT_ALLOWED', `${row.ID}: estado no permitido "${row.Estado}".`, row.ID);
 
     const [typePart, modePart] = row['Tipo / modalidad'].split('/').map((part) => part?.trim());
     if (!typePart || !modePart) {
-      errors.push(`${row.ID}: "Tipo / modalidad" debe declarar tipo y modalidad separados por "/".`);
+      add('TYPE', 'TYPE_MODE_MISSING', `${row.ID}: "Tipo / modalidad" debe declarar tipo y modalidad separados por "/".`, row.ID);
     } else if (!allowedTypes.some((type) => typePart.toLowerCase().includes(type.toLowerCase()))) {
-      errors.push(`${row.ID}: no contiene ningún tipo permitido.`);
+      add('TYPE', 'TYPE_NOT_ALLOWED', `${row.ID}: no contiene ningún tipo permitido.`, row.ID);
     }
 
     for (const field of ['Origen', 'Tarea responsable']) {
       const known = extractTaskIds(row[field]).filter((id) => context.tasks.has(id));
-      if (known.length === 0) errors.push(`${row.ID}: "${field}" no referencia ninguna tarea canónica existente.`);
+      if (known.length === 0) add('TASK_REFERENCE', 'TASK_REFERENCE_MISSING', `${row.ID}: "${field}" no referencia ninguna tarea canónica existente.`, row.ID);
       const unknown = findUnknownCanonicalTaskIds(row[field], context.tasks);
       if (unknown.length > 0) {
-        errors.push(`${row.ID}: "${field}" referencia tareas canónicas inexistentes: ${unknown.join(', ')}.`);
+        add('TASK_REFERENCE', 'TASK_REFERENCE_UNKNOWN', `${row.ID}: "${field}" referencia tareas canónicas inexistentes: ${unknown.join(', ')}.`, row.ID);
       }
     }
     if (/pendiente/i.test(row.Paquete)
       && extractTaskIds(row['Tarea responsable']).every((id) => !context.tasks.has(id))) {
-      errors.push(`${row.ID}: paquete pendiente sin tarea canónica propietaria.`);
-    }
-    if (row.Estado === 'DIFERIDO') {
-      const deferralText = `${row['Tarea responsable']} ${row['Último resultado']} ${row.Evidencia}`;
-      if (!/justific|riesgo|puerta|gate|resolver/i.test(deferralText)) {
-        errors.push(`${row.ID}: un requisito DIFERIDO debe declarar justificación, riesgo y puerta de resolución.`);
-      }
+      add('TASK_REFERENCE', 'PENDING_PACKAGE_OWNER_MISSING', `${row.ID}: paquete pendiente sin tarea canónica propietaria.`, row.ID);
     }
 
-    for (const relation of expandTreqReferences(row.Relación)) {
-      if (relation === row.ID) errors.push(`${row.ID}: no puede relacionarse consigo mismo.`);
+    if (row.Estado === 'VERIFICADO') validateVerifiedRow(row, add);
+    if (row.Estado === 'DIFERIDO') validateDeferredRow(row, context, add);
+
+    const parsedRelations = parseTreqReferences(row.Relación);
+    for (const invalidRange of parsedRelations.invalidRanges) {
+      add('TREQ_RELATION', 'TREQ_RANGE_INVALID', `${row.ID}: rango TREQ inválido o invertido ${invalidRange}.`, row.ID);
+    }
+    for (const relation of parsedRelations.references) {
+      if (relation === row.ID) add('TREQ_RELATION', 'TREQ_SELF_REFERENCE', `${row.ID}: no puede relacionarse consigo mismo.`, row.ID);
       if (!rows.some((candidate) => candidate.ID === relation)) {
         unresolvedRelations += 1;
-        errors.push(`${row.ID}: relación no resoluble ${relation}.`);
+        add('TREQ_RELATION', 'TREQ_RELATION_UNRESOLVED', `${row.ID}: relación no resoluble ${relation}.`, row.ID);
       }
     }
     for (const proposal of row.Evidencia.matchAll(
@@ -441,7 +678,7 @@ export function validateTreqRegistrySource(source, context) {
     )) {
       const task = context.tasks.get(proposal[1].toUpperCase());
       if (task?.state === 'APROBADA') {
-        errors.push(`${row.ID}: la evidencia sigue llamando propuesta a la tarea aprobada ${task.id}.`);
+        add('TASK_REFERENCE', 'APPROVED_TASK_CALLED_PROPOSAL', `${row.ID}: la evidencia sigue llamando propuesta a la tarea aprobada ${task.id}.`, row.ID);
       }
     }
     if (/\b(?:definid[oa]s?\s+en\s+propuesta|regla\s+de\s+\w+\s+propuesta|aprobación\s+pendiente)\b/i.test(row.Evidencia)) {
@@ -449,54 +686,57 @@ export function validateTreqRegistrySource(source, context) {
         .map((id) => context.tasks.get(id))
         .filter((task) => task?.state === 'APROBADA');
       if (approvedSources.length > 0) {
-        errors.push(
+        add(
+          'TASK_REFERENCE',
+          'APPROVED_SOURCE_HAS_PROPOSAL_LANGUAGE',
           `${row.ID}: la evidencia conserva lenguaje de propuesta o aprobación pendiente `
-          + `para tareas ya aprobadas: ${[...new Set(approvedSources.map((task) => task.id))].join(', ')}.`
+          + `para tareas ya aprobadas: ${[...new Set(approvedSources.map((task) => task.id))].join(', ')}.`,
+          row.ID,
         );
       }
     }
   }
 
-  for (const duplicate of duplicateIds) errors.push(`Identificador duplicado: ${duplicate}.`);
+  for (const duplicate of duplicateIds) add('IDENTITY', 'TREQ_ID_DUPLICATED', `Identificador duplicado: ${duplicate}.`, duplicate);
   for (const [domain, domainRows] of grouped) {
     domainRows.forEach((row, index) => {
       const expected = `TREQ-${domain}-${String(index + 1).padStart(3, '0')}`;
-      if (row.ID !== expected) errors.push(`${domain}: secuencia inválida; se esperaba ${expected} y apareció ${row.ID}.`);
+      if (row.ID !== expected) add('SEQUENCE', 'DOMAIN_SEQUENCE_INVALID', `${domain}: secuencia inválida; se esperaba ${expected} y apareció ${row.ID}.`, row.ID);
     });
   }
 
   const summary = parseSummary(normalized);
   const domainsWithRequirements = [...grouped.values()].filter((domainRows) => domainRows.length > 0).length;
-  const summaryTotal = numericSummary(summary, 'Requisitos vigentes', errors);
-  const summaryDomains = numericSummary(summary, 'Dominios con requisitos', errors);
-  const summaryDuplicates = numericSummary(summary, 'Identificadores duplicados', errors);
-  const summaryUnresolved = numericSummary(summary, 'Relaciones `TREQ-*` no resolubles', errors);
+  const summaryTotal = numericSummary(summary, 'Requisitos vigentes', add);
+  const summaryDomains = numericSummary(summary, 'Dominios con requisitos', add);
+  const summaryDuplicates = numericSummary(summary, 'Identificadores duplicados', add);
+  const summaryUnresolved = numericSummary(summary, 'Relaciones `TREQ-*` no resolubles', add);
   const columnSummary = summary.get('Filas con catorce columnas')?.match(/(\d+)\s+de\s+(\d+)/);
   if (!columnSummary) {
-    errors.push('Resumen: "Filas con catorce columnas" debe usar el formato N de N.');
+    add('SUMMARY', 'COLUMN_SUMMARY_INVALID', 'Resumen: "Filas con catorce columnas" debe usar el formato N de N.');
   } else if (Number(columnSummary[1]) !== rows.length || Number(columnSummary[2]) !== rows.length) {
-    errors.push(`Resumen: las filas con catorce columnas no coinciden con las ${rows.length} filas reales.`);
+    add('SUMMARY', 'COLUMN_SUMMARY_MISMATCH', `Resumen: las filas con catorce columnas no coinciden con las ${rows.length} filas reales.`);
   }
-  if (summaryTotal !== rows.length) errors.push(`Resumen: declara ${summaryTotal} requisitos y existen ${rows.length}.`);
+  if (summaryTotal !== rows.length) add('SUMMARY', 'REQUIREMENT_COUNT_MISMATCH', `Resumen: declara ${summaryTotal} requisitos y existen ${rows.length}.`);
   if (summaryDomains !== domainsWithRequirements) {
-    errors.push(`Resumen: declara ${summaryDomains} dominios con requisitos y existen ${domainsWithRequirements}.`);
+    add('SUMMARY', 'DOMAIN_COUNT_MISMATCH', `Resumen: declara ${summaryDomains} dominios con requisitos y existen ${domainsWithRequirements}.`);
   }
-  if (summaryDuplicates !== duplicateIds.size) errors.push('Resumen: el total de duplicados no coincide con el registro.');
-  if (summaryUnresolved !== unresolvedRelations) errors.push('Resumen: el total de relaciones no resolubles no coincide con el registro.');
+  if (summaryDuplicates !== duplicateIds.size) add('SUMMARY', 'DUPLICATE_COUNT_MISMATCH', 'Resumen: el total de duplicados no coincide con el registro.');
+  if (summaryUnresolved !== unresolvedRelations) add('SUMMARY', 'UNRESOLVED_COUNT_MISMATCH', 'Resumen: el total de relaciones no resolubles no coincide con el registro.');
 
   const declaredLatest = summary.get('Última tarea incorporada');
   if (declaredLatest !== context.expectedLatestTaskId) {
-    errors.push(`Resumen: la última tarea debe ser ${context.expectedLatestTaskId}, no ${declaredLatest || 'vacía'}.`);
+    add('LATEST_TASK', 'LATEST_TASK_MISMATCH', `Resumen: la última tarea debe ser ${context.expectedLatestTaskId}, no ${declaredLatest || 'vacía'}.`);
   } else {
     const missingDerived = context.tasks.get(declaredLatest)?.derivedIds.filter((id) => !ids.has(id)) ?? [];
     if (missingDerived.length > 0) {
-      errors.push(`${declaredLatest}: faltan requisitos derivados en el registro: ${missingDerived.join(', ')}.`);
+      add('LATEST_TASK', 'LATEST_TASK_DERIVED_IDS_MISSING', `${declaredLatest}: faltan requisitos derivados en el registro: ${missingDerived.join(', ')}.`);
     }
   }
 
   const distribution = parseDistribution(normalized);
   if (distribution.map((row) => row.domain).join('|') !== declaredDomains.join('|')) {
-    errors.push('La distribución no conserva el orden y conjunto de dominios declarados.');
+    add('DISTRIBUTION', 'DISTRIBUTION_DOMAIN_ORDER_MISMATCH', 'La distribución no conserva el orden y conjunto de dominios declarados.');
   }
   distribution.forEach((declared) => {
     const actual = grouped.get(declared.domain) ?? [];
@@ -506,37 +746,240 @@ export function validateTreqRegistrySource(source, context) {
         ? `${actual[0].ID} a ${actual.at(-1).ID}`
         : '';
     if (declared.count !== actual.length || declared.range.replace(/`/g, '') !== expectedRange) {
-      errors.push(`${declared.domain}: distribución declarada incoherente con las filas reales.`);
+      add('DISTRIBUTION', 'DISTRIBUTION_ROW_MISMATCH', `${declared.domain}: distribución declarada incoherente con las filas reales.`);
     }
   });
 
+  const historicalMissingIds = [];
+  let historicalCheck = 'NOT_REQUESTED';
+  if (baselineSource !== null) {
+    historicalCheck = 'PASS';
+    const baseline = parseHistoricalBaseline(baselineSource, add);
+    if (baseline.failed) {
+      historicalCheck = 'FAIL';
+    } else {
+      for (const baselineRow of baseline.rows) {
+        if (!ids.has(baselineRow.ID)) historicalMissingIds.push(baselineRow.ID);
+      }
+      if (historicalMissingIds.length > 0) {
+        historicalCheck = 'FAIL';
+        for (const missingId of historicalMissingIds) {
+          add(
+            'HISTORICAL_RETENTION',
+            'HISTORICAL_ID_MISSING',
+            `${missingId}: requisito histórico ausente frente a la línea base explícita.`,
+            missingId,
+          );
+        }
+      }
+    }
+  } else if (baselineRequired) {
+    historicalCheck = 'UNAVAILABLE';
+    add(
+      'HISTORICAL_RETENTION',
+      'BASELINE_REQUIRED_BUT_UNAVAILABLE',
+      'La comprobación histórica fue solicitada, pero no se proporcionó una línea base explícita; no puede declararse PASS histórico.',
+    );
+  }
+
+  let affectedDeclaration = null;
+  if (affectedIds !== null) {
+    affectedDeclaration = validateAffectedTreqDeclaration({
+      affectedIds,
+      knownIds: ids,
+      allowZeroAffected,
+    });
+    for (const diagnostic of affectedDeclaration.diagnostics) {
+      add(diagnostic.category, diagnostic.code, diagnostic.message);
+    }
+  }
+
+  const stats = {
+    requirements: rows.length,
+    domains: domainsWithRequirements,
+    duplicates: duplicateIds.size,
+    unresolvedRelations,
+    latestTask: context.expectedLatestTaskId,
+    distribution: [...grouped.entries()].map(([domain, domainRows]) => ({
+      domain,
+      firstId: domainRows[0]?.ID ?? null,
+      lastId: domainRows.at(-1)?.ID ?? null,
+      count: domainRows.length,
+    })),
+  };
+
   return {
-    errors,
-    stats: {
-      requirements: rows.length,
-      domains: domainsWithRequirements,
-      duplicates: duplicateIds.size,
-      unresolvedRelations,
-      latestTask: context.expectedLatestTaskId,
-      distribution: [...grouped.entries()].map(([domain, domainRows]) => ({
-        domain,
-        firstId: domainRows[0]?.ID ?? null,
-        lastId: domainRows.at(-1)?.ID ?? null,
-        count: domainRows.length,
-      })),
-    },
+    errors: recorder.errors,
+    diagnostics: recorder.diagnostics,
+    stats,
+    rows,
+    report: buildReport({
+      recorder,
+      stats,
+      historicalMissingIds,
+      historicalCheck,
+      affectedDeclaration,
+    }),
   };
 }
 
-export function validateCanonicalTreqRegistry({ root = process.cwd() } = {}) {
+function emptyReport(diagnostic, historicalCheck = 'NOT_REQUESTED') {
+  return {
+    result: 'FAIL',
+    requirements: 0,
+    domains: 0,
+    fragments: [],
+    duplicates: 0,
+    unresolved_relations: 0,
+    invalid_rows: [],
+    verified_evidence_errors: [],
+    deferred_resolution_errors: [],
+    historical_missing_ids: [],
+    historical_check: historicalCheck,
+    latest_task: null,
+    distribution: [],
+    affected_requirements: null,
+    errors: [diagnostic],
+  };
+}
+
+export function inspectCanonicalTreqRegistry({
+  root = process.cwd(),
+  baselineFile = null,
+  requireBaseline = false,
+  affectedIds = null,
+  allowZeroAffected = false,
+} = {}) {
   const baseDir = path.resolve(root, 'docs/plan-canonico/modular');
-  const manifest = JSON.parse(fs.readFileSync(path.join(baseDir, 'manifest.json'), 'utf8'));
-  const context = buildCanonicalTreqContext({ baseDir, manifest });
-  const result = validateTreqRegistrySource(readCanonicalTreqRegistry({ baseDir }), context);
+  let manifest;
+  let context;
+  let bundle;
+
+  try {
+    manifest = JSON.parse(fs.readFileSync(path.join(baseDir, 'manifest.json'), 'utf8'));
+    context = buildCanonicalTreqContext({ baseDir, manifest });
+    bundle = readCanonicalTreqRegistryBundle({ baseDir, manifest });
+  } catch (error) {
+    const diagnostic = {
+      category: 'FRAGMENT',
+      code: 'CANONICAL_SOURCE_UNAVAILABLE',
+      message: error instanceof Error ? error.message : String(error),
+    };
+    return {
+      errors: [diagnostic.message],
+      diagnostics: [diagnostic],
+      stats: {
+        requirements: 0,
+        domains: 0,
+        duplicates: 0,
+        unresolvedRelations: 0,
+        latestTask: null,
+        distribution: [],
+      },
+      report: emptyReport(diagnostic),
+    };
+  }
+
+  let baselineSource = null;
+  let baselineLoadDiagnostic = null;
+  if (baselineFile) {
+    const resolved = path.isAbsolute(baselineFile)
+      ? baselineFile
+      : path.resolve(root, baselineFile);
+    try {
+      baselineSource = fs.readFileSync(resolved, 'utf8');
+    } catch (error) {
+      baselineLoadDiagnostic = {
+        category: 'HISTORICAL_RETENTION',
+        code: 'BASELINE_SOURCE_UNAVAILABLE',
+        message: `No se pudo leer la línea base explícita ${resolved}: ${error instanceof Error ? error.message : String(error)}`,
+      };
+    }
+  }
+
+  const result = validateTreqRegistrySource(bundle.source, context, {
+    baselineSource,
+    baselineRequired: requireBaseline || Boolean(baselineFile),
+    affectedIds,
+    allowZeroAffected,
+  });
+  result.report.fragments = [...bundle.fragments];
+
+  if (baselineLoadDiagnostic) {
+    result.errors.push(baselineLoadDiagnostic.message);
+    result.diagnostics.push(baselineLoadDiagnostic);
+    result.report.errors.push(baselineLoadDiagnostic);
+    result.report.historical_check = 'UNAVAILABLE';
+    result.report.result = 'FAIL';
+  }
+
+  return result;
+}
+
+export function validateCanonicalTreqRegistry(options = {}) {
+  const result = inspectCanonicalTreqRegistry(options);
   if (result.errors.length > 0) {
     throw new Error(`Registro TREQ inválido:\n- ${result.errors.join('\n- ')}`);
   }
-  return result.stats;
+  return {
+    ...result.stats,
+    fragments: result.report.fragments,
+    report: result.report,
+  };
+}
+
+function parseCliArguments(argv) {
+  const options = {
+    json: false,
+    baselineFile: null,
+    requireBaseline: false,
+    affectedIds: null,
+    allowZeroAffected: false,
+  };
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const argument = argv[index];
+    if (argument === '--json') {
+      options.json = true;
+    } else if (argument === '--require-baseline') {
+      options.requireBaseline = true;
+    } else if (argument === '--allow-zero-affected') {
+      options.allowZeroAffected = true;
+    } else if (argument === '--baseline-file') {
+      const value = argv[index + 1];
+      if (!value || value.startsWith('--')) throw new Error('--baseline-file exige una ruta explícita.');
+      options.baselineFile = value;
+      index += 1;
+    } else if (argument === '--affected') {
+      const value = argv[index + 1];
+      if (value === undefined || value.startsWith('--')) throw new Error('--affected exige una lista separada por comas.');
+      options.affectedIds = value.split(',').map((item) => item.trim()).filter(Boolean);
+      index += 1;
+    } else {
+      throw new Error(`Argumento no reconocido: ${argument}.`);
+    }
+  }
+
+  return options;
+}
+
+function printHumanReport(report) {
+  if (report.result === 'PASS') {
+    console.log(
+      `OK: registro TREQ; ${report.requirements} requisitos; ${report.domains} dominios; `
+      + `${report.fragments.length} fragmentos; ${report.duplicates} duplicados; `
+      + `${report.unresolved_relations} relaciones no resolubles; última tarea ${report.latest_task}.`
+    );
+    if (report.historical_check !== 'NOT_REQUESTED') {
+      console.log(`OK: integridad histórica ${report.historical_check}.`);
+    }
+    return;
+  }
+
+  console.error('ERROR: registro TREQ inválido:');
+  for (const diagnostic of report.errors) {
+    console.error(`- [${diagnostic.category}/${diagnostic.code}] ${diagnostic.message}`);
+  }
 }
 
 const isCli = process.argv[1]
@@ -544,14 +987,26 @@ const isCli = process.argv[1]
 
 if (isCli) {
   try {
-    const stats = validateCanonicalTreqRegistry();
-    console.log(
-      `OK: registro TREQ; ${stats.requirements} requisitos; ${stats.domains} dominios; `
-      + `${stats.duplicates} duplicados; ${stats.unresolvedRelations} relaciones no resolubles; `
-      + `última tarea ${stats.latestTask}.`
-    );
+    const options = parseCliArguments(process.argv.slice(2));
+    const result = inspectCanonicalTreqRegistry(options);
+    if (options.json) {
+      console.log(JSON.stringify(result.report, null, 2));
+    } else {
+      printHumanReport(result.report);
+    }
+    if (result.report.result !== 'PASS') process.exitCode = 1;
   } catch (error) {
-    console.error(`ERROR: ${error instanceof Error ? error.message : String(error)}`);
-    process.exit(1);
+    const diagnostic = {
+      category: 'SOURCE',
+      code: 'CLI_ARGUMENT_INVALID',
+      message: error instanceof Error ? error.message : String(error),
+    };
+    const report = emptyReport(diagnostic);
+    if (process.argv.includes('--json')) {
+      console.log(JSON.stringify(report, null, 2));
+    } else {
+      printHumanReport(report);
+    }
+    process.exitCode = 1;
   }
 }
