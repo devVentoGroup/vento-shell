@@ -6,6 +6,10 @@ import { fileURLToPath } from 'node:url';
 import { serializeActiveSequence } from './continuity-route.mjs';
 import { readAndResolveExecutionRoute } from './execution-route.mjs';
 import {
+  instanceRecordRelativePath,
+  loadImplementationControl,
+} from './implementation-control.mjs';
+import {
   buildExecutionSequence,
   expandSequenceSegments,
   readGlobalTaskRegistry,
@@ -27,6 +31,25 @@ function readJson(filePath, label) {
 function git(root, args) {
   const result = spawnSync('git', args, { cwd: root, encoding: 'utf8' });
   return result.status === 0 ? result.stdout.trim() : null;
+}
+
+function normalizeGitPath(value) {
+  return String(value ?? '')
+    .trim()
+    .replace(/^"|"$/gu, '')
+    .replaceAll('\\', '/');
+}
+
+export function parseWorktreePaths(source) {
+  const paths = [];
+  for (const line of String(source ?? '').split(/\r?\n/gu)) {
+    if (!line.trim()) continue;
+    const payload = line.length >= 4 ? line.slice(3).trim() : line.trim();
+    const candidate = payload.includes(' -> ') ? payload.split(' -> ').at(-1) : payload;
+    const normalized = normalizeGitPath(candidate);
+    if (normalized) paths.push(normalized);
+  }
+  return [...new Set(paths)].sort((left, right) => left.localeCompare(right, 'en'));
 }
 
 export function validatorsForPath(relativePath) {
@@ -57,7 +80,89 @@ export function validatorsForPath(relativePath) {
   return [...validators];
 }
 
-export function derivePreflight({ root = process.cwd(), requestedTaskId = null } = {}) {
+export function classifyPreflightFindings({
+  requestedTaskId = null,
+  currentTaskId = null,
+  requestedInstance = null,
+  worktreePaths = [],
+  behind = 0,
+  ahead = 0,
+  activeSequenceCurrent = true,
+  formatState = 'OK',
+  contractErrors = [],
+} = {}) {
+  const blockers = [];
+  const advisories = [];
+  const instanceMatchesTask = requestedInstance
+    && requestedTaskId
+    && requestedInstance.task_id === requestedTaskId;
+  const physicalRecordPath = requestedInstance
+    ? instanceRecordRelativePath(requestedInstance.instance_id)
+    : null;
+
+  if (requestedInstance && requestedInstance.status !== 'IN_PROGRESS') {
+    blockers.push(
+      `${requestedInstance.instance_id} debe estar IN_PROGRESS para ejecutar el preflight físico; estado actual: ${requestedInstance.status}.`,
+    );
+  }
+
+  if (requestedTaskId && requestedTaskId !== currentTaskId) {
+    if (instanceMatchesTask) {
+      advisories.push(
+        `${requestedTaskId} pertenece al carril físico ${requestedInstance.instance_id}; la continuidad documental apunta a ${currentTaskId}.`,
+      );
+    } else {
+      blockers.push(`${requestedTaskId} no es la tarea actual; la continuidad apunta a ${currentTaskId}.`);
+    }
+  }
+
+  if (worktreePaths.length > 0) {
+    if (physicalRecordPath) {
+      const unexpectedPaths = worktreePaths.filter((entry) => entry !== physicalRecordPath);
+      if (unexpectedPaths.length > 0) {
+        blockers.push(
+          `el worktree contiene cambios previos fuera del registro activo: ${unexpectedPaths.join(', ')}.`,
+        );
+      } else {
+        advisories.push(`el worktree contiene únicamente el cambio esperado de ${physicalRecordPath}.`);
+      }
+    } else {
+      blockers.push(`el repositorio contiene cambios locales: ${worktreePaths.join(', ')}.`);
+    }
+  }
+
+  if (Number(behind) > 0) {
+    blockers.push(`la referencia local de upstream contiene ${behind} commit(s) no integrados.`);
+  }
+  if (Number(ahead) > 0) {
+    if (requestedInstance) {
+      advisories.push(`la rama local contiene ${ahead} commit(s) no publicados durante el carril físico.`);
+    } else {
+      blockers.push(`la rama local contiene ${ahead} commit(s) no publicados.`);
+    }
+  }
+  if (!activeSequenceCurrent) blockers.push('active-sequence.json requiere regeneración.');
+  if (formatState !== 'OK') blockers.push(`formato de tarea: ${formatState}.`);
+  if (contractErrors.length > 0) {
+    blockers.push(`contrato de entrega inválido: ${contractErrors.join('; ')}`);
+  }
+
+  return { blockers, advisories };
+}
+
+function resolveRequestedInstance(root, requestedInstanceId) {
+  if (!requestedInstanceId) return null;
+  const control = loadImplementationControl({ root });
+  const instance = control.instances.find((entry) => entry.instance_id === requestedInstanceId) ?? null;
+  if (!instance) fail(`${requestedInstanceId} no existe en implementation-instances.`);
+  return instance;
+}
+
+export function derivePreflight({
+  root = process.cwd(),
+  requestedTaskId = null,
+  requestedInstanceId = null,
+} = {}) {
   const baseDir = path.join(root, 'docs', 'plan-canonico', 'modular');
   const manifest = readJson(path.join(baseDir, 'manifest.json'), 'manifest.json');
   const taskMap = readGlobalTaskRegistry(baseDir, manifest);
@@ -72,7 +177,11 @@ export function derivePreflight({ root = process.cwd(), requestedTaskId = null }
     buildExecutionSequence({ ...resolvedConfig, taskIds }),
   );
   const currentTaskId = continuity.current?.id ?? null;
-  const taskId = requestedTaskId ?? currentTaskId;
+  const requestedInstance = resolveRequestedInstance(root, requestedInstanceId);
+  if (requestedTaskId && requestedInstance && requestedTaskId !== requestedInstance.task_id) {
+    fail(`${requestedInstanceId} pertenece a ${requestedInstance.task_id}, no a ${requestedTaskId}.`);
+  }
+  const taskId = requestedTaskId ?? requestedInstance?.task_id ?? currentTaskId;
   if (!taskId) fail('la ruta está completa y no existe una tarea actual.');
   const task = taskMap.get(taskId);
   if (!task) fail(`${taskId} no es una tarea canónica física disponible para preflight.`);
@@ -101,24 +210,33 @@ export function derivePreflight({ root = process.cwd(), requestedTaskId = null }
   const expectedActiveSource = serializeActiveSequence(resolvedConfig);
   const activePath = path.join(baseDir, 'active-sequence.json');
   const activeSource = fs.readFileSync(activePath, 'utf8').replace(/\r\n?/gu, '\n');
-  const worktree = git(root, ['status', '--porcelain']) ?? '';
+  const worktree = git(root, ['status', '--porcelain=v1', '--untracked-files=all']) ?? '';
+  const changedPaths = parseWorktreePaths(worktree);
   const branch = git(root, ['branch', '--show-current']);
   const upstream = git(root, ['rev-parse', '--abbrev-ref', '@{upstream}']);
   const divergenceRaw = upstream
     ? git(root, ['rev-list', '--left-right', '--count', '@{upstream}...HEAD'])
     : null;
   const [behind, ahead] = divergenceRaw?.split(/\s+/u).map(Number) ?? [null, null];
+  const activeSequenceCurrent = activeSource === expectedActiveSource;
+  const { blockers, advisories } = classifyPreflightFindings({
+    requestedTaskId: taskId,
+    currentTaskId,
+    requestedInstance,
+    worktreePaths: changedPaths,
+    behind,
+    ahead,
+    activeSequenceCurrent,
+    formatState,
+    contractErrors,
+  });
 
-  const warnings = [];
-  if (requestedTaskId && requestedTaskId !== currentTaskId) {
-    warnings.push(`${requestedTaskId} no es la tarea actual; la continuidad apunta a ${currentTaskId}.`);
-  }
-  if (worktree) warnings.push('el repositorio contiene cambios locales.');
-  if (behind > 0) warnings.push(`la referencia local de upstream contiene ${behind} commit(s) no integrados.`);
-  if (ahead > 0) warnings.push(`la rama local contiene ${ahead} commit(s) no publicados.`);
-  if (activeSource !== expectedActiveSource) warnings.push('active-sequence.json requiere regeneración.');
-  if (formatState !== 'OK') warnings.push(`formato de tarea: ${formatState}.`);
-  if (contractErrors.length > 0) warnings.push(`contrato de entrega inválido: ${contractErrors.join('; ')}`);
+  const expectedRecordPath = requestedInstance
+    ? instanceRecordRelativePath(requestedInstance.instance_id)
+    : null;
+  const unexpectedPaths = requestedInstance
+    ? changedPaths.filter((entry) => entry !== expectedRecordPath)
+    : changedPaths;
 
   return {
     task: {
@@ -132,20 +250,30 @@ export function derivePreflight({ root = process.cwd(), requestedTaskId = null }
       structure: sectionCount === 0 ? 'EMPTY_DRAFT' : 'DEVELOPED',
       format: formatState,
     },
+    instance: requestedInstance ? {
+      id: requestedInstance.instance_id,
+      task_id: requestedInstance.task_id,
+      status: requestedInstance.status,
+      record_path: expectedRecordPath,
+      physical_preflight: true,
+    } : null,
     continuity: {
       previous: continuity.lastApproved?.id ?? null,
       current: currentTaskId,
       next: continuity.next?.id ?? resolvedConfig.handoff_task_id ?? null,
       route: resolvedConfig.route_id,
       sequence: resolvedConfig.sequence_id,
-      active_sequence_current: activeSource === expectedActiveSource,
+      active_sequence_current: activeSequenceCurrent,
     },
     repository: {
       branch,
       upstream,
       behind,
       ahead,
-      clean: !worktree,
+      clean: changedPaths.length === 0,
+      expected_dirty: Boolean(requestedInstance) && changedPaths.length > 0 && unexpectedPaths.length === 0,
+      changed_paths: changedPaths,
+      unexpected_paths: unexpectedPaths,
       remote_note: 'La comparación usa la referencia local de upstream; este comando no ejecuta git fetch.',
     },
     delivery_contract: {
@@ -153,21 +281,30 @@ export function derivePreflight({ root = process.cwd(), requestedTaskId = null }
       errors: contractErrors,
     },
     validators: validatorsForPath(task.relativePath),
-    warnings,
+    blockers,
+    advisories,
+    warnings: [...blockers, ...advisories],
   };
 }
 
 function parseArgs(argv) {
-  const args = { taskId: null, json: false, strict: false, help: false };
+  const args = {
+    taskId: null,
+    instanceId: null,
+    json: false,
+    strict: false,
+    help: false,
+  };
   for (let index = 0; index < argv.length; index += 1) {
     const token = argv[index];
     if (token === '--json') args.json = true;
     else if (token === '--strict') args.strict = true;
     else if (token === '--help' || token === '-h') args.help = true;
-    else if (token === '--task-id') {
+    else if (token === '--task-id' || token === '--instance-id') {
       const value = argv[index + 1];
-      if (!value || value.startsWith('--')) fail('falta el valor de --task-id.');
-      args.taskId = value;
+      if (!value || value.startsWith('--')) fail(`falta el valor de ${token}.`);
+      if (token === '--task-id') args.taskId = value;
+      else args.instanceId = value;
       index += 1;
     } else fail(`argumento desconocido: ${token}.`);
   }
@@ -178,31 +315,43 @@ function printUsage() {
   console.log(`Uso:
   npm run docs:task:preflight
   npm run docs:task:preflight -- --task-id <ID> [--json] [--strict]
+  npm run docs:task:preflight -- --instance-id <INSTANCE-ID> --json --strict
 
-El comando es de solo lectura. No hace fetch, no formatea y no cambia continuidad.`);
+En modo físico, --strict falla solo ante bloqueos reales. Un carril documental adelantado y el cambio exclusivo del registro IN_PROGRESS se clasifican como avisos y no detienen el lote. El comando es de solo lectura: no hace fetch, no formatea y no cambia continuidad.`);
 }
 
 export function main(argv = process.argv.slice(2)) {
   const args = parseArgs(argv);
   if (args.help) return printUsage();
-  const result = derivePreflight({ requestedTaskId: args.taskId });
+  const result = derivePreflight({
+    requestedTaskId: args.taskId,
+    requestedInstanceId: args.instanceId,
+  });
   if (args.json) console.log(JSON.stringify(result, null, 2));
   else {
     console.log(`TAREA: ${result.task.id} — ${result.task.title}`);
     console.log(`ESTADO: ${result.task.state}; estructura ${result.task.structure}; formato ${result.task.format}`);
     console.log(`ARCHIVO: ${result.task.owner}`);
+    if (result.instance) {
+      console.log(`INSTANCIA: ${result.instance.id}; estado ${result.instance.status}; registro ${result.instance.record_path}`);
+    }
     console.log(`CONTINUIDAD: ${result.continuity.previous} → ${result.continuity.current} → ${result.continuity.next}`);
     console.log(`GIT: ${result.repository.branch}; upstream ${result.repository.upstream ?? 'SIN_UPSTREAM'}; `
       + `behind ${result.repository.behind ?? 'N/A'}; ahead ${result.repository.ahead ?? 'N/A'}; `
-      + `${result.repository.clean ? 'LIMPIO' : 'CON CAMBIOS'}`);
+      + `${result.repository.clean ? 'LIMPIO' : result.repository.expected_dirty ? 'CAMBIO FÍSICO ESPERADO' : 'CON CAMBIOS'}`);
     console.log('VALIDADORES:');
     for (const validator of result.validators) console.log(`- ${validator}`);
-    if (result.warnings.length > 0) {
-      console.log('ADVERTENCIAS:');
-      for (const warning of result.warnings) console.log(`- ${warning}`);
-    } else console.log('OK: preflight sin advertencias.');
+    if (result.blockers.length > 0) {
+      console.log('BLOQUEOS:');
+      for (const blocker of result.blockers) console.log(`- ${blocker}`);
+    }
+    if (result.advisories.length > 0) {
+      console.log('AVISOS:');
+      for (const advisory of result.advisories) console.log(`- ${advisory}`);
+    }
+    if (result.blockers.length === 0) console.log('OK: preflight sin bloqueos reales.');
   }
-  if (args.strict && result.warnings.length > 0) process.exitCode = 1;
+  if (args.strict && result.blockers.length > 0) process.exitCode = 1;
   return result;
 }
 

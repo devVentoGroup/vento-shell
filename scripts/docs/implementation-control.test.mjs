@@ -149,16 +149,27 @@ test('materializa automáticamente el archivo pendiente exacto una sola vez', ()
   }
 });
 
-test('una autorización explícita cambia la instrucción a implementar solo su alcance', () => {
+test('AUTHORIZED, IN_PROGRESS e IMPLEMENTED comparten una sola acción física continua', () => {
+  for (const status of ['AUTHORIZED', 'IN_PROGRESS', 'IMPLEMENTED']) {
+    const result = deriveImplementationControl({
+      control: { ...baseControl, instances: [scope(status)] },
+      workTopology: topology(),
+    });
+    assert.equal(result.primaryAction.type, 'EJECUTAR_IMPLEMENTACION');
+    assert.equal(result.primaryAction.target, 'SHELL-CI-001::GLOBAL');
+    assert.equal(result.implementationAuthorized, true);
+    assert.match(result.primaryAction.instruction, /transacción humana continua/u);
+  }
+});
+
+test('la autorización explícita conserva operador humano y pausa solo por evidencia necesaria', () => {
   const result = deriveImplementationControl({
     control: { ...baseControl, instances: [scope('AUTHORIZED')] },
     workTopology: topology(),
   });
-  assert.equal(result.primaryAction.type, 'INICIAR_IMPLEMENTACION');
-  assert.equal(result.implementationAuthorized, true);
+  assert.equal(result.primaryAction.type, 'EJECUTAR_IMPLEMENTACION');
   assert.equal(result.executionOperatorPolicy.defaultOperator, 'HUMAN_USER');
   assert.equal(result.executionOperatorPolicy.assistantRepositoryWrites, false);
-  assert.match(result.primaryAction.instruction, /guía humana/u);
   assert.equal(result.executionOperatorPolicy.pauseOnlyWhenNextStepDependsOnEvidence, true);
   assert.equal(result.executionOperatorPolicy.evidenceReplyPrefix, 'RESULTADO DEL PASO ');
   assert.deepEqual(result.physical.authorized.map(({ instanceId }) => instanceId), ['SHELL-CI-001::GLOBAL']);
@@ -192,7 +203,7 @@ test('acepta la autorización sin obligar al usuario a calcular un hash del alca
     control: { ...baseControl, instances: [entry] },
     workTopology: topology(),
   });
-  assert.equal(result.primaryAction.type, 'INICIAR_IMPLEMENTACION');
+  assert.equal(result.primaryAction.type, 'EJECUTAR_IMPLEMENTACION');
 });
 
 test('la segunda instancia global solo queda elegible después de verificar la primera', () => {

@@ -362,9 +362,9 @@ export function deriveImplementationControl({
   }
 
   const priority = [
-    ['IN_PROGRESS', 'CONTINUAR_IMPLEMENTACION'],
-    ['IMPLEMENTED', 'VALIDAR_IMPLEMENTACION'],
-    ['AUTHORIZED', 'INICIAR_IMPLEMENTACION'],
+    ['IN_PROGRESS', 'EJECUTAR_IMPLEMENTACION'],
+    ['IMPLEMENTED', 'EJECUTAR_IMPLEMENTACION'],
+    ['AUTHORIZED', 'EJECUTAR_IMPLEMENTACION'],
     ['PENDING_AUTHORIZATION', 'AUTORIZAR_IMPLEMENTACION'],
     ['READY_FOR_AUTHORIZATION', 'AUTORIZAR_IMPLEMENTACION'],
     ['BLOCKED', 'RESOLVER_BLOQUEO'],
@@ -391,14 +391,10 @@ export function deriveImplementationControl({
     target: selected.instanceId,
     title: selected.taskTitle,
     instruction: actionType === 'AUTORIZAR_IMPLEMENTACION'
-      ? `Definir y aprobar el alcance físico exacto de ${selected.instanceId}; todavía no modificar código.`
-      : actionType === 'INICIAR_IMPLEMENTACION'
-        ? `Iniciar la guía humana continua de ${selected.instanceId}; avanzar hasta la primera comprobación necesaria.`
-        : actionType === 'CONTINUAR_IMPLEMENTACION'
-          ? `Entregar al usuario el siguiente lote determinista de ${selected.instanceId} y pausar solo por evidencia necesaria.`
-          : actionType === 'VALIDAR_IMPLEMENTACION'
-            ? `Entregar seguidas las validaciones independientes y pausar cuando sus resultados determinen el avance.`
-            : `Guiar la resolución humana del bloqueo de ${selected.instanceId} sin ampliar el alcance.`,
+      ? `Definir y aprobar el alcance físico exacto de ${selected.instanceId}; la misma entrega puede dejar preparado el lote físico condicionado a guardar primero la autorización.`
+      : actionType === 'EJECUTAR_IMPLEMENTACION'
+        ? `Ejecutar la transacción humana continua de ${selected.instanceId} desde ${selected.status} hasta VERIFIED; detenerse solo ante bloqueo real o fallo.`
+        : `Guiar la resolución humana del bloqueo de ${selected.instanceId} sin ampliar el alcance.`,
     why: selected.blocker ?? `${selected.taskId} tiene contrato aprobado y es la primera instancia física global sin verificar.`,
   } : {
     type: documentary.actionType,
@@ -481,12 +477,14 @@ export function renderCurrentWorkDirective(control) {
 ## Operador de ejecución
 
 - **Operador predeterminado:** USUARIO HUMANO
-- **Modo:** PASOS SEGUIDOS HASTA UNA COMPROBACIÓN NECESARIA
+- **Modo:** TRANSACCIÓN CONTINUA HASTA BLOQUEO REAL
 - **Escrituras del asistente:** PROHIBIDAS POR DEFECTO
 - **Ejecución de validaciones por el asistente:** PROHIBIDA POR DEFECTO
 - **Git, GitHub y mutaciones remotas del asistente:** PROHIBIDAS POR DEFECTO
-- **Pausa:** solo cuando el paso siguiente depende de una salida, prueba, decisión o permiso todavía desconocido
-- **Respuesta en una pausa:** \`RESULTADO DEL PASO N\` seguida de la evidencia solicitada
+- **Pausa:** solo cuando un comando fail-fast falla, existe una contradicción real o el siguiente paso requiere una decisión o permiso todavía desconocido
+- **Preflight PASS:** continúa localmente; no requiere volver al chat
+- **Batería final PASS:** continúa localmente hasta VERIFIED; no requiere otra ronda de validación
+- **Respuesta en una pausa real:** \`RESULTADO DEL PASO N\` seguida de la evidencia solicitada
 - **Excepción limitada:** solo \`AUTORIZO EJECUCION ASISTIDA DEL PASO N\` autoriza ese paso numerado; después vuelve el modo manual.
 
 ## Carril documental
@@ -507,10 +505,11 @@ ${physicalRows}
 2. Aprobar un marcador documental crea elegibilidad, nunca autorización física automática.
 3. Código, migraciones, Supabase, despliegues o cambios remotos requieren una instancia explícitamente \`AUTHORIZED\`.
 4. \`AUTHORIZED\` habilita el trabajo físico, pero no concede al asistente permiso para escribirlo.
-5. El asistente entrega seguidos todos los pasos deterministas hasta la primera comprobación necesaria.
-6. No se detiene por rutina entre pasos; solo pausa si el siguiente depende realmente de evidencia todavía desconocida.
-7. La siguiente instancia global espera la verificación de la anterior; no se concilia trabajo duplicado al final.
-8. “Haz la acción principal” inicia la guía manual continua; nunca autoriza escrituras automáticas.
+5. La entrega reúne todos los artefactos deterministas y un lote local continuo; el usuario ejecuta primero el preflight estricto y solo aplica el código si ese preflight termina correctamente.
+6. Un preflight estricto con código de salida 0 no crea un gate conversacional. Un fallo sí detiene el lote y exige evidencia antes de continuar.
+7. Después de materializar todos los cambios, se usa una sola batería final fail-fast; PASS permite consolidar evidencia y pasar a VERIFIED sin repetir validaciones.
+8. La siguiente instancia global espera la verificación de la anterior; no se concilia trabajo duplicado al final.
+9. “Haz la acción principal” inicia la guía manual continua; nunca autoriza escrituras automáticas.
 `;
 }
 
