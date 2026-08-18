@@ -1,10 +1,50 @@
 {
   "instance_id": "SHELL-CI-015::GLOBAL",
   "task_id": "SHELL-CI-015",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell"
+  ],
+  "authorized_changes": [
+    "En devVentoGroup/vento-shell, modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CI-015__GLOBAL.json para conservar la autorizacion humana, transicionar AUTHORIZED -> IN_PROGRESS -> IMPLEMENTED -> VERIFIED y consolidar evidencia. No modificar implementation-control.json ni registros de instancias anteriores.",
+    "En devVentoGroup/vento-shell, crear scripts/quality/deployment-independence-gate.mjs como unica implementacion global de SHELL-CI-015::GLOBAL. El habilitador debera gobernar exactamente los ocho repositorios devVentoGroup/vento-shell, devVentoGroup/vento-nexo, devVentoGroup/vento-fogo, devVentoGroup/vento-origo, devVentoGroup/vento-pulso, devVentoGroup/vento-viso, devVentoGroup/vento-numera y devVentoGroup/vento-anima; conservar exactamente los siete consumidores web base y las 28 relaciones historicas de CI005; representar unidades por repositorio+ambiente+estado origen+estado destino, estado inicial y objetivo, grafo de dependencias, ordenes candidatos, estados intermedios y ventanas de compatibilidad; clasificar SINGLE_REPOSITORY, ANY_ORDER, ORDERED o BLOCKED_LOCKSTEP; detectar ciclos, concurrencia y STALE; reutilizar releases CI003, compatibilidad CI005, expedientes CI006 y PR-BLK-018, lineas base CI007..CI013 y rollback CI014; tratar Supabase y base de datos exclusivamente como dependencia propietaria; conservar configuracion versionada segura y la frontera nativa de ANIMA; producir evidencia JSON machine-readable bajo .delivery/deployment-independence/; y no ejecutar merge, deploy, rollback, mutacion de release, cambio de Supabase ni otra mutacion remota.",
+    "En devVentoGroup/vento-shell, crear scripts/quality/deployment-independence-gate.test.mjs para autocertificar exclusivamente mediante fixtures sinteticos o aislados 56 casos contractuales de SHELL-CI-015::GLOBAL: 12 positivos, 24 negativos y 20 regresiones. La suite debera cubrir despliegue de una unidad, ANY_ORDER, orden unico valido, adopcion escalonada, version skew soportado, conjunto multi-package minimo y cerrado, expansion de schema compatible, configuracion versionada segura, ANIMA nativa, pausa de rollout, recuperacion mediante CI014, determinismo, todos los bloqueos negativos y todas las regresiones enumeradas por el contrato.",
+    "La autocertificacion de SHELL-CI-015::GLOBAL se limita a devVentoGroup/vento-shell y a estructuras sinteticas o aisladas. Se autoriza evidencia runtime no versionada unicamente bajo .delivery/deployment-independence/. Queda prohibido modificar vento-nexo, vento-fogo, vento-origo, vento-pulso, vento-viso, vento-numera, vento-anima u otro repositorio consumidor; modificar package.json, package-lock.json, packages compartidos, workflows, manifests de consumidores, ramas protegidas o reglas de proteccion; crear o modificar tags/releases; publicar o retirar packages; abrir o fusionar pull requests; desplegar; ejecutar rollback productivo o global; crear o ejecutar migraciones; restaurar backups; modificar schema, RLS, RPC, funciones, triggers, grants, Storage, Realtime, Edge Functions, datos, configuracion productiva, cache productiva, secretos o archivos .env; usar datos productivos o credenciales reales; crear un deploy all, tag global, version global o lock global entre repositorios; ni ampliar por inferencia el alcance autorizado."
+  ],
+  "validation_commands": [
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm ci",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: node --test scripts/quality/deployment-independence-gate.test.mjs",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run lint -- scripts/quality/deployment-independence-gate.mjs scripts/quality/deployment-independence-gate.test.mjs",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:build",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:work-topology:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-18T14:50:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Se autoriza exclusivamente la implementacion fisica de SHELL-CI-015::GLOBAL en devVentoGroup/vento-shell dentro de los repositorios, cambios y validaciones enumerados en target_repositories, authorized_changes y validation_commands. La autorizacion cubre unicamente la autocertificacion sintetica o aislada del habilitador global de independencia de despliegue y la generacion de evidencia runtime ignorada bajo .delivery/deployment-independence/. Se niega expresamente cualquier ampliacion inferida, modificacion de repositorios consumidores, cambio de packages o manifests reales, workflows, PR, merge, deploy, rollback productivo o global, mutacion de releases, cambio de Supabase, migraciones, backups, datos, configuracion productiva, cache productiva, secretos, credenciales reales, deploy all, tag global, version global o lock global entre repositorios.",
+    "source_contract_sha256": "b9ef07cb17f1c03e391c69cb564434b2459a8931b18a8534e290a6112f5f0d76"
+  },
+  "evidence": [
+    "PREFLIGHT PASS; task=SHELL-CI-015; instance=SHELL-CI-015::GLOBAL",
+    "IMPLEMENTATION deployment-independence-gate materialized; repositories=8; web_consumers=7; compatibility_relations=28; contractual_tests=56",
+    "FILE_SHA256 scripts/quality/deployment-independence-gate.mjs 5c1c683a9f4223ccf37982e6a7a58769434e8d01471d8bfbb75a578b42d68c7d",
+    "FILE_SHA256 scripts/quality/deployment-independence-gate.test.mjs 4cc4c319c5e38ed21dc0c3587b6113d0abe8562941dca1417d1711b73948e32c",
+    "VALIDATION CI015 self-certification PASS; contractual_cases=56; positive=12; negative=24; regression=20",
+    "VALIDATION CI015 lint PASS; errors=0; warnings=1",
+    "VALIDATION Canonical plan build PASS",
+    "VALIDATION Canonical plan check PASS",
+    "VALIDATION Canonical plan tests PASS; tests=194",
+    "VALIDATION TREQ check PASS",
+    "VALIDATION TREQ tests PASS; tests=25",
+    "VALIDATION Work topology check PASS",
+    "VALIDATION git diff check PASS",
+    "RESULT CI015_FINAL_VALIDATION=PASS"
+  ]
 }

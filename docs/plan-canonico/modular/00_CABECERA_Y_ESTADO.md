@@ -34,10 +34,10 @@
 | Siguiente tarea | **SHELL-CI-017 — Crear verificador automático del Registro Canónico de Requisitos de Prueba** |
 | Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
 | Progreso del bloque | **BLOQUE T: 15 de 24 aprobadas; SHELL-CI-016 pendiente** |
-| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
-| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CI-015::GLOBAL** |
-| Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — SHELL-CI-016** |
-| Carril físico | **PENDING_AUTHORIZATION — SHELL-CI-015::GLOBAL** |
+| Estado de implementación | **DOCUMENTATION_ONLY** |
+| Acción principal obligatoria | **DOCUMENTAR_TAREA — SHELL-CI-016** |
+| Carril documental | **ACTIVO — SHELL-CI-016** |
+| Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE T: 15 DE 24 APROBADAS — ACTUAL SHELL-CI-016** |
-| Implementación física | **SHELL-CI-015::GLOBAL — PENDING_AUTHORIZATION** |
+| Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
 
