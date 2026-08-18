@@ -1,10 +1,62 @@
 {
   "instance_id": "SHELL-CI-008::GLOBAL",
   "task_id": "SHELL-CI-008",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell",
+    "devVentoGroup/vento-fogo"
+  ],
+  "authorized_changes": [
+    "En devVentoGroup/vento-shell, modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CI-008__GLOBAL.json para conservar la autorización humana, transicionar AUTHORIZED → IN_PROGRESS → IMPLEMENTED → VERIFIED y consolidar la evidencia de implementación y validación. No modificar implementation-control.json ni archivos de instancias anteriores.",
+    "En devVentoGroup/vento-fogo, modificar exclusivamente package.json para añadir los puntos de entrada typecheck, test, test:ci008, build:ci008 y ci008:baseline sin cambiar dependencies, devDependencies, versiones ni package-lock.json.",
+    "En devVentoGroup/vento-fogo, crear scripts/quality/fogo-consumer-baseline-gate.mjs como habilitador global reutilizable de SHELL-CI-008::GLOBAL. Debe fijar identidad de commit, manifest, lockfile, suite, entorno, inventario exacto de nueve páginas, handler técnico, cuatro relaciones package–FOGO, cuatro perfiles y doce superficies FOGO; producir evidencia JSON machine-readable; invalidar evidencia stale; bloquear cero tests, otro consumidor, otro commit, secretos, entorno productivo, drift de rutas, contratos fuente ausentes y superficies obligatorias ausentes; y no modificar packages, PR, merge, deploy, rollback ni Supabase.",
+    "En devVentoGroup/vento-fogo, crear scripts/quality/fogo-consumer-baseline-gate.test.mjs para autocertificar mediante fixtures sintéticos o aislados las doce superficies comunes, los cuatro perfiles de familia y las regresiones globales de identidad, stale evidence, aislamiento, ausencia de tests, secretos, entorno productivo, inventario de rutas y reutilización de evidencia ajena.",
+    "La implementación de SHELL-CI-008::GLOBAL no autoriza modificar código funcional de FOGO, package-lock.json, dependencies, devDependencies, migraciones, schema, tablas, RPC, RLS, Storage, Realtime, Edge Functions, datos, secretos, configuración remota, packages @vento/* reales, ramas protegidas, pull requests, merge, deploy ni rollback. Cualquier ampliación requiere una autorización física distinta y explícita."
+  ],
+  "validation_commands": [
+    "C:\\Users\\User\\devVentoGroup\\vento-fogo: npm ci",
+    "C:\\Users\\User\\devVentoGroup\\vento-fogo: npm run lint",
+    "C:\\Users\\User\\devVentoGroup\\vento-fogo: npm run typecheck",
+    "C:\\Users\\User\\devVentoGroup\\vento-fogo: npm run build:ci008",
+    "C:\\Users\\User\\devVentoGroup\\vento-fogo: npm run --silent ci008:baseline",
+    "C:\\Users\\User\\devVentoGroup\\vento-fogo: git diff --check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:build",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:work-topology:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: git diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-17T22:32:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO. Autorizo exclusivamente SHELL-CI-008::GLOBAL sobre devVentoGroup/vento-shell y devVentoGroup/vento-fogo dentro de los repositorios, cambios y validaciones enumerados en este registro. La autorización permite materializar y autocertificar el habilitador FOGO, pero niega expresamente cualquier ampliación inferida a código funcional, dependencies, devDependencies, package-lock.json, packages reales, migraciones, schema, RPC, RLS, datos, secretos, configuración remota, pull requests, merge, deploy o rollback.",
+    "source_contract_sha256": "8a2da01882f0c247a2bf7f176d5952b7c93f4940a595d364b708a95533443eea"
+  },
+  "evidence": [
+    "PREFLIGHT PASS; task=SHELL-CI-008; instance=SHELL-CI-008::GLOBAL; blockers=0",
+    "SHELL_BASE_COMMIT 8086141e58ec2d8d2b94fc76f13064bb7c954da6",
+    "FOGO_BASE_COMMIT b6b9ed00e5267cabaac1a5a1090d93d5f60e86f2",
+    "IMPLEMENTATION fogo-consumer-baseline-gate materialized; consumer=vento-fogo; relations=4; profiles=4; surfaces=12; pages=9; handlers=1; contractual_tests=42",
+    "FILE_SHA256 package.json 171dca1ddb76a56189dc497ad1a7cace93a630d5daf3e7708a1bafeb6d9f6486",
+    "FILE_SHA256 scripts/quality/fogo-consumer-baseline-gate.mjs 3574b51fc25f3b8b67f9f9e36c5ccacd26b72b3e400236fdcbde06df0b942872",
+    "FILE_SHA256 scripts/quality/fogo-consumer-baseline-gate.test.mjs 6d005dcfb3a044797be9a31bf48e36cca9714292dd7ebd1baf26ef4f90ce3263",
+    "VALIDATION FOGO npm ci PASS",
+    "VALIDATION FOGO lint PASS",
+    "VALIDATION FOGO typecheck PASS",
+    "VALIDATION FOGO build:ci008 PASS",
+    "VALIDATION CI008 baseline PASS; contractual_tests=42; failed=0; skipped=0",
+    "VALIDATION FOGO git diff check PASS",
+    "VALIDATION Canonical plan build PASS",
+    "VALIDATION Canonical plan check PASS",
+    "VALIDATION Canonical plan tests PASS",
+    "VALIDATION TREQ check PASS",
+    "VALIDATION TREQ tests PASS",
+    "VALIDATION Work topology check PASS",
+    "VALIDATION SHELL git diff check PASS",
+    "RESULT CI008_FINAL_VALIDATION=PASS"
+  ]
 }
