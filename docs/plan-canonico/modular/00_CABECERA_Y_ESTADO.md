@@ -34,11 +34,11 @@
 | Siguiente tarea | **SHELL-CI-006 — Crear actualización de consumidores mediante PR** |
 | Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
 | Progreso del bloque | **BLOQUE T: 4 de 24 aprobadas; SHELL-CI-005 pendiente** |
-| Estado de implementación | **GLOBAL_VALIDATION_REQUIRED** |
-| Acción principal obligatoria | **VALIDAR_IMPLEMENTACION — SHELL-CI-004::GLOBAL** |
-| Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — SHELL-CI-005** |
-| Carril físico | **IMPLEMENTED — SHELL-CI-004::GLOBAL** |
-| Alcance físico autorizado | **SHELL-CI-004::GLOBAL** |
+| Estado de implementación | **DOCUMENTATION_ONLY** |
+| Acción principal obligatoria | **DOCUMENTAR_TAREA — SHELL-CI-005** |
+| Carril documental | **ACTIVO — SHELL-CI-005** |
+| Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
+| Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
 
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE T: 4 DE 24 APROBADAS — ACTUAL SHELL-CI-005** |
-| Implementación física | **SHELL-CI-004::GLOBAL — IMPLEMENTED** |
+| Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
 
