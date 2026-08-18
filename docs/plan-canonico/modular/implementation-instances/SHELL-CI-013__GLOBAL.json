@@ -1,7 +1,7 @@
 {
   "instance_id": "SHELL-CI-013::GLOBAL",
   "task_id": "SHELL-CI-013",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "target_repositories": [
     "devVentoGroup/vento-shell",
     "devVentoGroup/vento-anima"
