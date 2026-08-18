@@ -10,7 +10,7 @@
 
 - **Acción principal obligatoria:** `EJECUTAR_IMPLEMENTACION`
 - **Objetivo exacto:** `SHELL-CI-009::GLOBAL` — Probar ORIGO antes de actualizar
-- **Instrucción:** Ejecutar la transacción humana continua de SHELL-CI-009::GLOBAL desde AUTHORIZED hasta VERIFIED; detenerse solo ante bloqueo real o fallo.
+- **Instrucción:** Ejecutar la transacción humana continua de SHELL-CI-009::GLOBAL desde IMPLEMENTED hasta VERIFIED; detenerse solo ante bloqueo real o fallo.
 - **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `SHELL-CI-010`
 - **Implementación física autorizada:** `SHELL-CI-009::GLOBAL`
 

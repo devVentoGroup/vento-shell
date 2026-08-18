@@ -34,10 +34,10 @@
 | Siguiente tarea | **SHELL-CI-011 — Probar VISO antes de actualizar** |
 | Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
 | Progreso del bloque | **BLOQUE T: 9 de 24 aprobadas; SHELL-CI-010 pendiente** |
-| Estado de implementación | **GLOBAL_IMPLEMENTATION_AUTHORIZED** |
+| Estado de implementación | **GLOBAL_VALIDATION_REQUIRED** |
 | Acción principal obligatoria | **EJECUTAR_IMPLEMENTACION — SHELL-CI-009::GLOBAL** |
 | Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — SHELL-CI-010** |
-| Carril físico | **AUTHORIZED — SHELL-CI-009::GLOBAL** |
+| Carril físico | **IMPLEMENTED — SHELL-CI-009::GLOBAL** |
 | Alcance físico autorizado | **SHELL-CI-009::GLOBAL** |
 
 ### Continuidad inmediata
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE T: 9 DE 24 APROBADAS — ACTUAL SHELL-CI-010** |
-| Implementación física | **SHELL-CI-009::GLOBAL — AUTHORIZED** |
+| Implementación física | **SHELL-CI-009::GLOBAL — IMPLEMENTED** |
 
 ## Reglas de edición
 

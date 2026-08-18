@@ -1,0 +1,62 @@
+{
+  "instance_id": "SHELL-CI-009::GLOBAL",
+  "task_id": "SHELL-CI-009",
+  "status": "VERIFIED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell",
+    "devVentoGroup/vento-origo"
+  ],
+  "authorized_changes": [
+    "En devVentoGroup/vento-shell, modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CI-009__GLOBAL.json para conservar la autorización humana, transicionar AUTHORIZED → IN_PROGRESS → IMPLEMENTED → VERIFIED y consolidar la evidencia de implementación y validación. No modificar implementation-control.json ni archivos de instancias anteriores.",
+    "En devVentoGroup/vento-origo, modificar exclusivamente package.json para añadir los puntos de entrada typecheck, test, test:ci009, build:ci009 y ci009:baseline sin cambiar dependencies, devDependencies, versiones ni package-lock.json.",
+    "En devVentoGroup/vento-origo, crear scripts/quality/origo-consumer-baseline-gate.mjs como habilitador global reutilizable de SHELL-CI-009::GLOBAL. Debe fijar identidad de commit, manifest, lockfile, suite, entorno, inventario exacto de trece páginas, tres patrones dinámicos, un handler técnico, doce rutas sincronizables, cuatro candidatas de menú, cuatro relaciones package–ORIGO, cuatro perfiles y doce superficies ORIGO; producir evidencia JSON machine-readable; invalidar evidencia stale; bloquear cero tests, otro consumidor, otro commit, secretos, entorno productivo, drift de rutas, contratos fuente ausentes y superficies obligatorias ausentes; autocertificar sintéticamente la detección de fallback de secreto y uso anticipado de service-role; y no modificar packages, PR, merge, deploy, rollback ni Supabase.",
+    "En devVentoGroup/vento-origo, crear scripts/quality/origo-consumer-baseline-gate.test.mjs para autocertificar mediante fixtures sintéticos o aislados las doce superficies comunes, los cuatro perfiles de familia y las regresiones globales de identidad, stale evidence, aislamiento, ausencia de tests, secretos, entorno productivo, inventario de rutas, cardinalidades 13/3/1/12/4 y reutilización de evidencia ajena.",
+    "La implementación de SHELL-CI-009::GLOBAL no autoriza modificar código funcional de ORIGO, corregir el fallback físico del token PDF, package-lock.json, dependencies, devDependencies, migraciones, schema, tablas, RPC, RLS, Storage, Realtime, Edge Functions, datos, secretos, configuración remota, packages @vento/* reales, ramas protegidas, pull requests, merge, deploy ni rollback. Cualquier ampliación requiere una autorización física distinta y explícita."
+  ],
+  "validation_commands": [
+    "C:\\Users\\User\\devVentoGroup\\vento-origo: npm ci",
+    "C:\\Users\\User\\devVentoGroup\\vento-origo: npm run lint",
+    "C:\\Users\\User\\devVentoGroup\\vento-origo: npm run typecheck",
+    "C:\\Users\\User\\devVentoGroup\\vento-origo: npm run build:ci009",
+    "C:\\Users\\User\\devVentoGroup\\vento-origo: npm run --silent ci009:baseline",
+    "C:\\Users\\User\\devVentoGroup\\vento-origo: git diff --check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:build",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:work-topology:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: git diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-17T23:09:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO. Autorizo exclusivamente SHELL-CI-009::GLOBAL sobre devVentoGroup/vento-shell y devVentoGroup/vento-origo dentro de los repositorios, cambios y validaciones enumerados en este registro. La autorización permite materializar y autocertificar el habilitador ORIGO, incluido un build CI que no ejecute sync-navigation, pero niega expresamente cualquier ampliación inferida a código funcional, corrección del fallback físico del token PDF, dependencies, devDependencies, package-lock.json, packages reales, migraciones, schema, RPC, RLS, Storage, Realtime, Edge Functions, datos, secretos, configuración remota, pull requests, merge, deploy o rollback.",
+    "source_contract_sha256": "c7587eb4765adac86916975d65533158fd5a0cd3dca23382e016e7781ceebabe"
+  },
+  "evidence": [
+    "PREFLIGHT PASS; task=SHELL-CI-009; instance=SHELL-CI-009::GLOBAL; blockers=0",
+    "SHELL_BASE_COMMIT 195fd4b2d357e7378fcbb559c96f717ac7346d87",
+    "ORIGO_BASE_COMMIT b7a8303fa078ef087f522b6c99059ababfc27472",
+    "IMPLEMENTATION origo-consumer-baseline-gate materialized; consumer=vento-origo; relations=4; profiles=4; surfaces=12; pages=13; dynamic_pages=3; handlers=1; synced_routes=12; menu_candidates=4; contractual_tests=42",
+    "FILE_SHA256 package.json e6e331177024ed80ad162fc5b395ca7c36d52b3ab0509cfe2fb8cba682296d29",
+    "FILE_SHA256 scripts/quality/origo-consumer-baseline-gate.mjs 42e58c45f4d71b35067c2c85af87b3aa3a93b0bb915a8c4be1688e648fbc7605",
+    "FILE_SHA256 scripts/quality/origo-consumer-baseline-gate.test.mjs bcd1b00c2f863d8d708088e5c3afe80a30987072c6b960ae34eb32a8f7aee13b",
+    "VALIDATION ORIGO npm ci PASS",
+    "VALIDATION ORIGO lint PASS",
+    "VALIDATION ORIGO typecheck PASS",
+    "VALIDATION ORIGO build:ci009 PASS",
+    "VALIDATION CI009 baseline PASS; contractual_tests=42; failed=0; skipped=0; pages=13; dynamic_pages=3; handlers=1; synced_routes=12; menu_candidates=4",
+    "VALIDATION ORIGO git diff check PASS",
+    "VALIDATION Canonical plan build PASS",
+    "VALIDATION Canonical plan check PASS",
+    "VALIDATION Canonical plan tests PASS",
+    "VALIDATION TREQ check PASS",
+    "VALIDATION TREQ tests PASS",
+    "VALIDATION Work topology check PASS",
+    "VALIDATION SHELL git diff check PASS",
+    "RESULT CI009_FINAL_VALIDATION=PASS"
+  ]
+}
