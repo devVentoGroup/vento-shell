@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **972** |
+| Tareas aprobadas | **973** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **622** |
+| Tareas no iniciadas | **621** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **60.98% (972/1594)** |
+| Porcentaje de completamiento | **61.04% (973/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-CI-013 — Probar ANIMA antes de actualizar** |
-| Tarea actual | **SHELL-CI-014 — Permitir rollback por repositorio** |
+| Última tarea aprobada | **SHELL-CI-014 — Permitir rollback por repositorio** |
+| Tarea actual | **SHELL-CI-015 — Evitar despliegue simultáneo obligatorio** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CI-015 — Evitar despliegue simultáneo obligatorio** |
+| Siguiente tarea | **SHELL-CI-016 — Estandarizar un comando de pruebas automatizadas por repositorio** |
 | Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
-| Progreso del bloque | **BLOQUE T: 13 de 24 aprobadas; SHELL-CI-014 pendiente** |
+| Progreso del bloque | **BLOQUE T: 14 de 24 aprobadas; SHELL-CI-015 pendiente** |
 | Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — SHELL-CI-014** |
-| Carril documental | **ACTIVO — SHELL-CI-014** |
+| Acción principal obligatoria | **DOCUMENTAR_TAREA — SHELL-CI-015** |
+| Carril documental | **ACTIVO — SHELL-CI-015** |
 | Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-CI-013` — Probar ANIMA antes de actualizar |
-| Tarea actual | `SHELL-CI-014` — Permitir rollback por repositorio — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CI-015` — Evitar despliegue simultáneo obligatorio |
+| Última aprobada | `SHELL-CI-014` — Permitir rollback por repositorio |
+| Tarea actual | `SHELL-CI-015` — Evitar despliegue simultáneo obligatorio — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CI-016` — Estandarizar un comando de pruebas automatizadas por repositorio |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE T: 13 DE 24 APROBADAS — ACTUAL SHELL-CI-014** |
+| CONTINUIDAD ACTIVA | **BLOQUE T: 14 DE 24 APROBADAS — ACTUAL SHELL-CI-015** |
 | Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-CI-013 — Probar ANIMA antes de actualizar
-        ↓
-TAREA ACTUAL
 SHELL-CI-014 — Permitir rollback por repositorio
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-CI-015 — Evitar despliegue simultáneo obligatorio
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CI-016 — Estandarizar un comando de pruebas automatizadas por repositorio
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE T — 13 de 24 tareas aprobadas
+BLOQUE T — 14 de 24 tareas aprobadas
 ```

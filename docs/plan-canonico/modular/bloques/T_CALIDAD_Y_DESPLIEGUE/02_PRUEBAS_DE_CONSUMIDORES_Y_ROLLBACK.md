@@ -6460,5 +6460,1088 @@ Esta tarea no:
 `SHELL-CI-014 — Permitir rollback por repositorio`
 
 
-### [ ] SHELL-CI-014 — Permitir rollback por repositorio
+### ✅ SHELL-CI-014 — Permitir rollback por repositorio
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CI-013 — Probar ANIMA antes de actualizar
+**Tarea siguiente:** SHELL-CI-015 — Evitar despliegue simultáneo obligatorio
+**Tipo de tarea:** Habilitador global único — contrato documental de rollback independiente, reproducible y auditable por repositorio
+**Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada el contrato con el que Vento OS deberá poder **retroceder un repositorio concreto desde un estado desplegado problemático hacia un estado anterior conocido, soportado y verificable**, sin exigir que los demás repositorios retrocedan al mismo tiempo, sin reescribir historia, sin mutar releases históricas y sin restaurar bypasses, secretos comprometidos, incompatibilidades conocidas o estados de datos imposibles de reconstruir.
+
+La regla vinculante queda:
+
+```text
+REPOSITORIO Y AMBIENTE EXACTOS
++ ESTADO DESPLEGADO ACTUAL IDENTIFICADO
++ OBJETIVO DE ROLLBACK CONOCIDO Y SOPORTADO
++ SNAPSHOT PREVIO CERTIFICADO
++ COMPATIBILIDAD CON DATOS, CONTRATOS, CONFIGURACIÓN Y CONSUMIDORES VIGENTES
++ PLAN DE CACHÉ Y CONFIGURACIÓN
++ FRONTERA DE SUPABASE RESUELTA
++ PRUEBAS PREVIAS Y POSTERIORES
++ AUTORIDAD Y EVIDENCIA
+= ROLLBACK DE REPOSITORIO ELEGIBLE
+```
+
+Y, de forma fail-closed:
+
+```text
+COMMIT ANTIGUO EXISTENTE
+O TAG HISTÓRICO
+O PACKAGE ANTERIOR
+O REVERT DE GIT
+O RESTAURACIÓN DE BACKUP
+O BUILD VERDE
+O DESPLIEGUE ANTERIOR CONOCIDO
+≠ ROLLBACK SEGURO
+```
+
+CI014 define y habilita el mecanismo transversal. No convierte cualquier commit anterior en un destino válido, no ejecuta rollback de base de datos por cuenta propia, no obliga a otros repositorios a retroceder, no hace `force push`, no reescribe tags/releases, no fusiona pull requests y no despliega automáticamente.
+
+#### 2. Resultado canónico
+
+`SHELL-CI-014` establece un único habilitador reutilizable para:
+
+1. identificar de forma exacta el repositorio y ambiente sometidos a rollback;
+2. identificar el estado desplegado actual antes de cualquier mutación;
+3. resolver un objetivo de rollback previamente conocido, reproducible y soportado;
+4. conservar un snapshot previo certificado y su evidencia;
+5. diferenciar rollback de código, adopción de package, contrato, configuración, caché y migración;
+6. impedir que un rollback de aplicación ejecute por inferencia cambios de Supabase;
+7. reutilizar releases inmutables sin retag, repackage, unpublish ni edición histórica;
+8. reutilizar CI005 para demostrar compatibilidad con combinaciones soportadas;
+9. reutilizar CI006 como vehículo revisable cuando el rollback implique un cambio de manifest o lockfile de un consumidor;
+10. reutilizar CI007..CI013 para demostrar la línea base del consumidor aplicable;
+11. verificar que el objetivo puede operar contra el estado vigente de contratos, datos, configuración y esquema;
+12. bloquear la restauración de bypasses, permisos inseguros, credenciales comprometidas o deuda de seguridad conocida;
+13. preservar datos, auditoría e identidades creados durante la ventana del incidente;
+14. impedir down migrations destructivas o no demostradas;
+15. delegar respaldo, restauración y rollback de base de datos a `AUTH-DB-029`;
+16. invalidar cachés o reconstruirlas cuando una restauración literal resulte insegura;
+17. conservar configuración versionada y ambiente-específica;
+18. exigir una evaluación explícita de secretos sin restaurar secretos revocados o comprometidos;
+19. impedir rollback sobre un repositorio cuyo estado real haya cambiado después de preparar el plan;
+20. serializar un plan machine-readable atribuible a origen, destino, actor, causa y evidencia;
+21. ejecutar una única unidad de rollback por repositorio y ambiente;
+22. soportar incidentes multi-repositorio como un conjunto de unidades independientes, no como una reversión global implícita;
+23. producir verificación posterior separada de la preparación;
+24. conservar historial completo de intentos fallidos, bloqueados, cancelados o stale;
+25. permitir recuperación del propio habilitador sin eliminar la obligación de rollback seguro;
+26. autocertificar una sola vez `SHELL-CI-014::GLOBAL`;
+27. entregar a CI015 una frontera clara de independencia de despliegue;
+28. entregar al ciclo `SHELL-CI-020..024` un contrato de recuperación consumible por package;
+29. mantener cero mutaciones remotas durante el marcador documental;
+30. no crear ni modificar requisitos de prueba porque la obligación de rollback ya existe en el registro canónico.
+
+#### 3. Frontera de responsabilidad
+
+| Responsabilidad                                                                            | Propietario         |
+| ------------------------------------------------------------------------------------------ | ------------------- |
+| pruebas propias del package                                                                | `SHELL-CI-001`      |
+| build independiente                                                                        | `SHELL-CI-002`      |
+| identidad de release inmutable                                                             | `SHELL-CI-003`      |
+| changelog y release notes                                                                  | `SHELL-CI-004`      |
+| compatibilidad entre package y consumidor                                                  | `SHELL-CI-005`      |
+| propuesta revisable de actualización o downgrade de dependencia                            | `SHELL-CI-006`      |
+| línea base NEXO                                                                            | `SHELL-CI-007`      |
+| línea base FOGO                                                                            | `SHELL-CI-008`      |
+| línea base ORIGO                                                                           | `SHELL-CI-009`      |
+| línea base PULSO                                                                           | `SHELL-CI-010`      |
+| línea base VISO                                                                            | `SHELL-CI-011`      |
+| línea base NUMERA                                                                          | `SHELL-CI-012`      |
+| línea base ANIMA                                                                           | `SHELL-CI-013`      |
+| elegibilidad, preparación, ejecución controlada y verificación de rollback por repositorio | `SHELL-CI-014`      |
+| independencia ordinaria de despliegue entre repositorios                                   | `SHELL-CI-015`      |
+| interfaz homogénea de comandos de prueba                                                   | `SHELL-CI-016`      |
+| verificación automática del registro de requisitos                                         | `SHELL-CI-017`      |
+| bloqueo de merge o despliegue por pruebas obligatorias                                     | `SHELL-CI-018`      |
+| publicación de evidencia por package y repositorio                                         | `SHELL-CI-019`      |
+| rollback de esquema, backup y restauración de Supabase                                     | `AUTH-DB-029`       |
+| ejecución del package, readiness, cutover, hypercare y cierre                              | `SHELL-CI-020..024` |
+
+CI014 no reemplaza las pruebas de consumidor, no redefine compatibilidad, no crea releases, no normaliza comandos y no absorbe la recuperación física de Supabase.
+
+#### 4. Topología de trabajo
+
+`PHASE-03-T-CI-FOUNDATION` aplica `GLOBAL_ENABLE_ONCE` a `SHELL-CI-014`.
+
+```text
+MARCADOR CANÓNICO
+SHELL-CI-014
+→ define una sola vez el contrato transversal de rollback
+
+INSTANCIA FÍSICA FUTURA
+SHELL-CI-014::GLOBAL
+→ materializa y autocertifica una sola vez el habilitador
+
+ROLLBACKS POSTERIORES
+→ reutilizan el habilitador
+→ producen una ejecución nueva por repositorio + ambiente + estado origen + estado destino
+→ no vuelven a implementar CI014
+```
+
+La autocertificación del habilitador podrá usar repositorios lógicos, fixtures, commits sintéticos, manifests sintéticos y estados de despliegue simulados. No necesita provocar una caída real ni ejecutar un rollback productivo.
+
+#### 5. Base vinculante desde CI003, CI005 y CI006
+
+CI014 conserva tres decisiones previas obligatorias.
+
+**Desde CI003:**
+
+- una release publicada es inmutable;
+- rollback no reescribe tag, release, tarball ni commit;
+- volver a una versión anterior significa consumir nuevamente una versión previamente publicada y soportada;
+- una corrección nueva se publica como una identidad nueva.
+
+**Desde CI005:**
+
+- el destino de rollback debe corresponder a una combinación package–consumidor previamente soportada o volver a demostrar compatibilidad;
+- una versión conocida pero incompatible no es un destino válido;
+- evidencia de otra combinación no se reutiliza;
+- la matriz histórica no se elimina para aparentar compatibilidad.
+
+**Desde CI006:**
+
+- `rollback_ref` y snapshot anterior certificado forman parte del expediente del cambio;
+- el pull request es el vehículo revisable cuando el rollback exige modificar manifest, lockfile o compatibilidad local del consumidor;
+- el actualizador no hace auto-merge ni auto-deploy;
+- `PR-BLK-012` mantiene bloqueada una propuesta cuando no existe snapshot anterior certificado.
+
+CI014 consume estas decisiones sin reabrirlas.
+
+#### 6. Universo inicial de repositorios gobernados
+
+El habilitador se diseña para repositorios VENTO con identidad material y ownership resolubles.
+
+El universo inicial conocido por los contratos CI anteriores es:
+
+1. `devVentoGroup/vento-shell`;
+2. `devVentoGroup/vento-nexo`;
+3. `devVentoGroup/vento-fogo`;
+4. `devVentoGroup/vento-origo`;
+5. `devVentoGroup/vento-pulso`;
+6. `devVentoGroup/vento-viso`;
+7. `devVentoGroup/vento-numera`;
+8. `devVentoGroup/vento-anima`.
+
+Una identidad adicional no ingresa al habilitador por semejanza de nombre. Debe tener repositorio, owner, ambiente, flujo de despliegue y contrato de rollback aprobados.
+
+ANIMA conserva su clasificación `NATIVE_REACT_NATIVE_EXPO`; un rollback móvil no se convierte en rollback web por usar React ni por disponer de Expo Web.
+
+#### 7. Unidad exacta de rollback
+
+Cada ejecución de CI014 se atribuye, como mínimo, a:
+
+```text
+rollback_execution_id
+repository
+environment
+trigger
+incident_ref
+requested_by
+approved_by
+source_branch
+rollback_from_commit
+rollback_from_artifact
+rollback_to_commit
+rollback_to_artifact
+manifest_before_identity
+manifest_target_identity
+lockfile_before_identity
+lockfile_target_identity
+package_set_before
+package_set_target
+compatibility_refs
+consumer_baseline_ref
+database_state_ref
+configuration_before_identity
+configuration_target_identity
+cache_strategy
+secret_strategy
+data_impact
+supabase_impact
+required_validation_set
+execution_started_at
+execution_completed_at
+result
+post_rollback_verification
+invalidation_reason
+```
+
+Una ejecución nunca se identifica solo por número de versión, nombre de rama o timestamp.
+
+#### 8. Principio de rollback como operación hacia adelante
+
+CI014 adopta una regla obligatoria:
+
+```text
+ROLLBACK
+≠ BORRAR HISTORIA
+≠ MOVER MAIN HACIA ATRÁS
+≠ FORCE PUSH
+≠ MUTAR RELEASE HISTÓRICA
+```
+
+El rollback es una **operación nueva, atribuible y auditable** que restaura un estado operativo anterior mediante uno de estos mecanismos aprobados:
+
+- desplegar de nuevo un artefacto anterior inmutable;
+- crear una nueva propuesta que revierte cambios de código;
+- crear una nueva propuesta que restaura un conjunto anterior de dependencias exactas;
+- restaurar configuración versionada compatible;
+- invalidar o reconstruir caché;
+- ejecutar una operación propietaria de base de datos aprobada desde `vento-shell`.
+
+La identidad defectuosa permanece en la historia para auditoría.
+
+#### 9. Clases de rollback
+
+CI014 reconoce seis clases principales, que pueden coexistir en una misma ejecución:
+
+| Clase                    | Alcance                                                                                   |
+| ------------------------ | ----------------------------------------------------------------------------------------- |
+| `REPOSITORY_CODE`        | código y artefacto desplegable del repositorio                                            |
+| `PACKAGE_ADOPTION`       | manifest, lockfile y versiones compartidas consumidas                                     |
+| `CONTRACT_COMPATIBILITY` | retorno a un contrato soportado sin reescribir releases                                   |
+| `CONFIGURATION`          | configuración versionada y flags no secretos                                              |
+| `CACHE`                  | invalidación, reconstrucción o cambio de namespace/versionado                             |
+| `DATABASE_DEPENDENCY`    | dependencia de un estado de base de datos cuya reversión física pertenece a `AUTH-DB-029` |
+
+`DATABASE_DEPENDENCY` nunca habilita a CI014 para crear o ejecutar una migración por sí mismo.
+
+#### 10. Prerrequisitos de elegibilidad
+
+Un rollback solo puede pasar a preparación ejecutable cuando exista:
+
+1. repositorio exacto;
+2. ambiente exacto;
+3. commit actualmente desplegado;
+4. artefacto actualmente desplegado cuando aplique;
+5. causa o trigger identificable;
+6. objetivo de rollback exacto;
+7. evidencia de que el objetivo existió o fue construido reproduciblemente;
+8. manifest y lockfile del origen y destino cuando apliquen;
+9. conjunto de packages exacto;
+10. compatibilidad vigente o revalidada;
+11. línea base del consumidor aplicable;
+12. evaluación de datos;
+13. evaluación de Supabase;
+14. evaluación de configuración;
+15. evaluación de caché;
+16. evaluación de secretos;
+17. owner técnico;
+18. autoridad de ejecución;
+19. conjunto de pruebas posterior;
+20. snapshot previo certificado.
+
+La ausencia de cualquiera de los elementos obligatorios produce `BLOCKED`, no una ejecución “best effort”.
+
+#### 11. Snapshot previo certificado
+
+El snapshot previo de rollback debe conservar, según aplique:
+
+- commit;
+- artefacto;
+- manifest;
+- lockfile;
+- packages exactos;
+- configuración versionada;
+- versión de contratos;
+- runtime;
+- variables no secretas relevantes;
+- identidad de esquema;
+- identidad de migraciones aplicadas;
+- política de caché;
+- pruebas aprobadas;
+- evidencia de compatibilidad;
+- evidencia de línea base del consumidor;
+- fecha de certificación;
+- causa de invalidación.
+
+Un hash o tag aislado no constituye snapshot suficiente.
+
+#### 12. Requisitos del objetivo de rollback
+
+El destino debe cumplir simultáneamente:
+
+1. identidad exacta y recuperable;
+2. integridad verificable;
+3. compatibilidad con el ambiente actual;
+4. compatibilidad con el estado de datos actual;
+5. compatibilidad con el esquema vigente o con un plan propietario de base de datos;
+6. ausencia de vulnerabilidad o bypass conocido que invalide el retorno;
+7. soporte de packages y contratos requeridos;
+8. posibilidad de ejecutar pruebas relevantes;
+9. ausencia de secretos revocados que deban restaurarse;
+10. evidencia que no esté `STALE`.
+
+El “último despliegue verde” no es automáticamente un objetivo seguro.
+
+#### 13. Compatibilidad y version skew
+
+CI014 debe asumir que otros repositorios pueden permanecer en versiones distintas.
+
+Por tanto:
+
+1. el objetivo debe coexistir con consumidores y proveedores que no retrocedan;
+2. la matriz de CI005 se consulta sobre el conjunto realmente resuelto;
+3. contratos compartidos deberán respetar la ventana de compatibilidad aprobada;
+4. si el target antiguo exige un contrato ya retirado, el rollback queda bloqueado;
+5. si el target antiguo solo funciona con rollback simultáneo de otros repositorios, CI014 no lo presenta como rollback independiente válido;
+6. un incidente multi-repo se modela como varias unidades con dependencias explícitas;
+7. CI015 decidirá la política transversal de despliegue independiente sin que CI014 la anticipe.
+
+#### 14. Rollback de adopción de packages
+
+Cuando el problema provenga de una adopción de package compartido:
+
+```text
+VERSIÓN ACTUAL DEL CONSUMIDOR
+→ SNAPSHOT ANTERIOR SOPORTADO
+→ COMPATIBILIDAD CI005
+→ PROPUESTA REVISABLE CI006
+→ PRUEBAS DEL CONSUMIDOR
+→ MERGE Y DESPLIEGUE POR SU OWNER
+→ VERIFICACIÓN CI014
+```
+
+Reglas:
+
+1. se restauran versiones exactas;
+2. manifest y lockfile deben corresponder;
+3. no se reescribe la release defectuosa;
+4. no se elimina la release del registry para “forzar” el rollback;
+5. no se cambia un tag histórico;
+6. no se usa un rango flotante para seleccionar silenciosamente otra versión;
+7. el package anterior debe seguir siendo soportado o revalidarse;
+8. un downgrade incompatible con datos o contrato queda bloqueado;
+9. el rollback de un consumidor no obliga a otro.
+
+#### 15. Rollback de código de aplicación
+
+Para código propio del repositorio, CI014 permite dos formas:
+
+- redeploy de un artefacto histórico inmutable cuyo commit sigue siendo válido;
+- nuevo commit de revert cuando la plataforma o el flujo de despliegue exijan una cabeza nueva y revisable.
+
+Queda prohibido:
+
+- reescribir `main`;
+- hacer `force push`;
+- borrar commits intermedios;
+- borrar evidencia del incidente;
+- devolver el branch a un hash antiguo sin una operación auditada;
+- asumir que “revert compila” equivale a “revert es operacionalmente seguro”.
+
+#### 16. Rollback de configuración
+
+La configuración solo puede retroceder cuando:
+
+1. existe identidad versionada de origen y destino;
+2. el valor es apropiado para el ambiente actual;
+3. no restaura un secreto revocado;
+4. no reabre un feature flag retirado por seguridad;
+5. no contradice un schema o contrato ya cambiado;
+6. no amplía permisos;
+7. no elimina configuración requerida por otro componente vigente;
+8. queda evidencia de valores antes/después sin exponer secretos.
+
+Configuración no versionada o desconocida produce `BLOCKED`.
+
+#### 17. Rollback de caché
+
+CI014 no presume que una caché antigua sea restaurable.
+
+La estrategia permitida debe ser una de:
+
+- invalidación completa aplicable;
+- invalidación selectiva demostrada;
+- reconstrucción desde fuente autoritativa;
+- cambio de namespace o versión;
+- no aplicabilidad justificada.
+
+Restaurar una caché snapshot solo se admite si la caché es un artefacto versionado, inmutable, no autoritativo y compatible con el estado actual.
+
+Nunca se usa caché para recuperar autoridad obsoleta.
+
+#### 18. Frontera de base de datos y migraciones
+
+Las reglas de Supabase son vinculantes:
+
+```text
+ROLLBACK DE REPOSITORIO
+≠ DOWN MIGRATION AUTOMÁTICA
+≠ RESTAURAR BACKUP AUTOMÁTICAMENTE
+≠ CAMBIAR RLS/RPC/SCHEMA DESDE EL CONSUMIDOR
+```
+
+Cuando el rollback depende de un estado anterior de base de datos:
+
+1. CI014 registra `DATABASE_DEPENDENCY`;
+2. identifica la migración o cambio relevante;
+3. evalúa si el código target puede operar con el esquema actual;
+4. si puede operar, no se retrocede esquema innecesariamente;
+5. si no puede operar, CI014 queda `BLOCKED` hasta recibir un plan propietario de `AUTH-DB-029`;
+6. cualquier migración VENTO se crea, versiona, documenta y ejecuta desde `devVentoGroup/vento-shell`;
+7. restauración o down migration debe demostrar preservación de datos y auditoría;
+8. una corrección forward-compatible puede ser preferible a un down migration destructivo.
+
+CI014 no elige por inferencia una estrategia destructiva.
+
+#### 19. Preservación de datos
+
+El rollback de aplicación no puede borrar automáticamente datos creados durante la ventana defectuosa.
+
+Se exige clasificar:
+
+- datos válidos creados durante el incidente;
+- datos inválidos confirmados;
+- efectos parciales;
+- datos auditables;
+- datos derivados reconstruibles;
+- eventos pendientes;
+- idempotency keys;
+- colas offline;
+- uploads;
+- side effects externos.
+
+Reglas:
+
+1. datos válidos permanecen;
+2. datos inválidos requieren reconciliación propietaria;
+3. no se hace “restore snapshot” si ello pierde escrituras válidas;
+4. auditoría histórica no se elimina;
+5. un rollback que no pueda distinguir datos válidos de inválidos queda bloqueado o requiere plan de reconciliación;
+6. la recuperación posterior debe poder explicar qué ocurrió antes, durante y después del rollback.
+
+#### 20. Seguridad y autorización
+
+Ningún rollback puede restaurar:
+
+- bypasses de autorización;
+- policies deliberadamente endurecidas;
+- grants revocados por seguridad;
+- roles inseguros;
+- fallback permisivo;
+- allowlists obsoletas usadas como autoridad;
+- código con vulnerabilidad conocida no aceptada;
+- validaciones retiradas por inseguras;
+- una versión que degrade controles obligatorios.
+
+Una versión anterior funcional pero insegura no es un destino apto.
+
+Cuando el incidente sea de seguridad, la urgencia no elimina compatibilidad, evidencia, rollback de datos ni segregación de autoridad.
+
+#### 21. Secretos y credenciales
+
+CI014 trata secretos como una frontera especial.
+
+Reglas:
+
+1. un secreto comprometido nunca se restaura;
+2. un secreto rotado por respuesta al incidente permanece rotado;
+3. rollback de código no implica rollback de credenciales;
+4. evidencia no contiene valores secretos;
+5. configuración target referencia nombres o versiones, no valores sensibles;
+6. si el target solo funciona con una credencial revocada, el rollback queda bloqueado hasta corregir compatibilidad;
+7. service-role no se usa para facilitar autocertificación del habilitador.
+
+#### 22. Supabase
+
+CI014 podrá inspeccionar y registrar impacto de:
+
+- schema;
+- migraciones;
+- RLS;
+- RPC;
+- funciones;
+- triggers;
+- grants;
+- Storage;
+- Realtime;
+- Edge Functions;
+- datos;
+- configuración.
+
+Pero durante su propia ejecución no podrá modificar ninguno de esos elementos por inferencia.
+
+Toda modificación VENTO de Supabase continúa perteneciendo a `devVentoGroup/vento-shell` y a la tarea propietaria correspondiente.
+
+#### 23. Alcance por ambiente
+
+Una ejecución se atribuye a un único ambiente.
+
+No se permite:
+
+```text
+STAGING PASS
+= PRODUCCIÓN ROLLED BACK
+```
+
+Cada ambiente debe conservar:
+
+- identidad;
+- commit desplegado;
+- artefacto;
+- configuración;
+- schema;
+- migraciones;
+- dependencias;
+- owner;
+- evidencia.
+
+Un target probado en CI puede ser candidato para staging, pero no prueba por sí solo su rollback productivo.
+
+#### 24. Trigger y autoridad
+
+Triggers permitidos incluyen:
+
+- regresión funcional;
+- incompatibilidad de package;
+- error de despliegue;
+- incidente de seguridad;
+- configuración defectuosa;
+- degradación de rendimiento que exija retorno;
+- fallo operacional atribuible al cambio;
+- deprecación o retiro ejecutados incorrectamente;
+- decisión humana aprobada de contingencia.
+
+El trigger identifica por qué se solicita el rollback; no concede autoridad.
+
+La ejecución productiva debe conservar solicitante, aprobador, owner y separación de funciones aplicable.
+
+#### 25. Concurrencia y exclusión
+
+Antes de ejecutar:
+
+1. se vuelve a leer el estado desplegado actual;
+2. `rollback_from_commit` debe seguir coincidiendo;
+3. no puede existir otra mutación incompatible en curso sobre el mismo repositorio y ambiente;
+4. una propuesta nueva, hotfix, deployment o rollback concurrente invalida el plan previo;
+5. cambios de manifest, lockfile, configuración o schema invalidan la evaluación dependiente;
+6. una ejecución stale nunca se “reanuda” cambiando solo el hash origen.
+
+La recuperación exige una nueva evaluación.
+
+#### 26. Ciclo de estados
+
+El ciclo machine-readable deberá distinguir:
+
+```text
+PENDING
+RUNNING
+PASS
+FAIL
+BLOCKED
+CANCELLED
+TIMED_OUT
+STALE
+```
+
+Para comprobaciones realmente condicionales podrá existir `NOT_APPLICABLE`.
+
+La ejecución global del rollback solo obtiene `PASS` cuando:
+
+- la mutación autorizada terminó;
+- el estado final coincide con el objetivo;
+- las pruebas posteriores obligatorias pasaron;
+- no existe reconciliación crítica pendiente;
+- la evidencia quedó consolidada.
+
+Un deploy terminado con pruebas posteriores fallidas es `FAIL`, no `PASS`.
+
+#### 27. Secuencia obligatoria
+
+La ejecución reusable deberá seguir:
+
+1. fijar repositorio y ambiente;
+2. fijar estado desplegado origen;
+3. identificar trigger;
+4. resolver snapshot anterior certificado;
+5. resolver objetivo exacto;
+6. clasificar clases de rollback;
+7. comprobar CI005 cuando haya package o contrato afectado;
+8. comprobar línea base CI007..CI013 cuando aplique;
+9. evaluar datos;
+10. evaluar Supabase;
+11. evaluar configuración;
+12. evaluar caché;
+13. evaluar secretos;
+14. preparar mutación exacta;
+15. obtener autoridad de ejecución;
+16. volver a comprobar frescura del origen;
+17. ejecutar únicamente la mutación autorizada;
+18. verificar identidad desplegada resultante;
+19. ejecutar pruebas posteriores;
+20. reconciliar datos, colas, caché y side effects cuando corresponda;
+21. consolidar evidencia;
+22. cerrar resultado.
+
+No se omiten los pasos 18 a 21 por tratarse de una emergencia.
+
+#### 28. Verificación posterior
+
+La verificación deberá cubrir, según aplique:
+
+- commit o artefacto final;
+- manifest y lockfile finales;
+- package set final;
+- configuración final;
+- identidad de schema/migraciones;
+- caché;
+- autenticación;
+- autorización;
+- flujo crítico del consumidor;
+- integraciones;
+- colas y reintentos;
+- datos escritos durante el incidente;
+- logs y auditoría;
+- métricas mínimas de salud;
+- ausencia del fallo que disparó rollback;
+- ausencia de regresión crítica conocida.
+
+Un rollback que solo verifica “deployment succeeded” no queda certificado.
+
+#### 29. Fallo parcial y recuperación del rollback
+
+Si la ejecución falla después de iniciar la mutación:
+
+1. se conserva la evidencia del estado alcanzado;
+2. no se borra el intento fallido;
+3. no se marca automáticamente `CANCELLED`;
+4. se determina si el estado es todavía operativo;
+5. se bloquean mutaciones automáticas adicionales hasta reconciliar;
+6. volver al estado origen solo es válido si ese estado sigue siendo seguro y reproducible;
+7. si ni origen ni destino son seguros, se activa recuperación propietaria o forward-fix;
+8. los datos o efectos parciales se reconcilian por su owner;
+9. la nueva acción recibe una identidad de ejecución nueva.
+
+“Rollback del rollback” no es una excusa para alternar estados hasta obtener verde.
+
+#### 30. Independencia entre repositorios
+
+CI014 exige que cada unidad sea atribuible a un solo repositorio y ambiente.
+
+Reglas:
+
+1. NEXO puede retroceder sin retroceder FOGO;
+2. FOGO puede retroceder sin retroceder ORIGO;
+3. ORIGO puede retroceder sin retroceder PULSO;
+4. PULSO puede retroceder sin retroceder VISO;
+5. VISO puede retroceder sin retroceder NUMERA;
+6. NUMERA puede retroceder sin retroceder SHELL;
+7. ANIMA puede retroceder sin convertirse en consumidor web;
+8. SHELL puede retroceder sin reescribir releases compartidas.
+
+Estas reglas solo son válidas cuando CI005 y los contratos aplicables demuestran que la combinación resultante es soportada.
+
+Si una unidad depende necesariamente de rollback coordinado de otro repositorio, se registra explícitamente y no se presenta como rollback independiente apto.
+
+#### 31. Incidente multi-repositorio
+
+Un incidente que afecte varios repositorios se representa como:
+
+```text
+INCIDENTE
+→ ROLLBACK UNIT REPOSITORIO A
+→ ROLLBACK UNIT REPOSITORIO B
+→ ROLLBACK UNIT REPOSITORIO C
+```
+
+Cada unidad conserva:
+
+- origen;
+- destino;
+- owner;
+- autoridad;
+- pruebas;
+- resultado;
+- evidencia.
+
+La secuencia puede tener dependencias explícitas, pero no existe una operación implícita “rollback all”.
+
+#### 32. Integración con CI015
+
+CI014 entrega a CI015:
+
+- definición de unidad independiente;
+- compatibilidad exigida;
+- evidencia de version skew;
+- señal de bloqueo cuando dos repositorios solo son seguros si cambian juntos;
+- prohibición de usar coordinación simultánea como sustituto de compatibilidad.
+
+CI015 definirá cómo evitar que el despliegue ordinario requiera simultaneidad.
+
+CI014 no desarrolla CI015.
+
+#### 33. Integración con CI016..CI019
+
+CI014 no absorbe el mini-bloque siguiente.
+
+- CI016 normalizará el comando común de pruebas;
+- CI017 verificará el registro canónico de requisitos;
+- CI018 aplicará bloqueos de merge o deploy por pruebas obligatorias;
+- CI019 publicará evidencia de pruebas por package y repositorio.
+
+Hasta que CI016 exista, CI014 consume las entradas reproducibles de pruebas ya definidas por cada habilitador y consumidor, sin inventar una interfaz transversal nueva.
+
+La futura materialización de CI014 deberá ser compatible con la normalización posterior sin requerir reescribir su semántica.
+
+#### 34. Integración con `SHELL-CI-020..024`
+
+El ciclo por package podrá consumir CI014 así:
+
+```text
+IMPLEMENTACIÓN
+→ READINESS
+→ CUTOVER
+→ SI HAY INCIDENTE: CI014 EVALÚA Y EJECUTA ROLLBACK AUTORIZADO
+→ HYPERCARE
+→ CIERRE
+```
+
+CI014 aporta el mecanismo transversal; el expediente de package aporta el contexto de ejecución, ambiente, responsables y evidencia.
+
+CI014 no certifica por sí solo cierre de package.
+
+#### 35. Evidencia machine-readable
+
+Toda evidencia de rollback deberá contener, como mínimo:
+
+- identidad completa de la unidad;
+- trigger;
+- repositorio;
+- ambiente;
+- origen;
+- destino;
+- artefactos;
+- manifests;
+- lockfiles;
+- packages;
+- compatibilidad;
+- consumidor baseline;
+- datos;
+- Supabase;
+- configuración;
+- caché;
+- secretos evaluados sin valores;
+- autoridad;
+- validaciones previas;
+- mutación ejecutada;
+- validaciones posteriores;
+- incidentes parciales;
+- timestamps;
+- resultado;
+- causa de bloqueo, fallo o stale;
+- referencias a evidencia externa aplicable.
+
+El reporte no puede declarar `PASS` sin demostrar el estado final.
+
+#### 36. Invalidación obligatoria
+
+Una preparación de rollback pasa a `STALE` si cambia materialmente:
+
+- commit desplegado;
+- branch;
+- artefacto;
+- manifest;
+- lockfile;
+- package set;
+- compatibilidad;
+- línea base del consumidor;
+- schema;
+- migraciones;
+- RLS;
+- RPC;
+- configuración;
+- caché;
+- secreto requerido;
+- runtime;
+- build;
+- pruebas;
+- owner;
+- aprobación;
+- ambiente;
+- incidente;
+- objetivo;
+- contrato CI014.
+
+Una ejecución `STALE` debe recalcularse desde el estado real.
+
+#### 37. Casos positivos obligatorios
+
+La futura instancia `SHELL-CI-014::GLOBAL` deberá demostrar, como mínimo:
+
+1. rollback de código a un artefacto anterior compatible;
+2. rollback de una adopción de package mediante conjunto exacto anterior;
+3. rollback de configuración versionada sin tocar secretos;
+4. invalidación de caché seguida de reconstrucción correcta;
+5. conservación de datos válidos creados durante la ventana;
+6. rollback de un solo repositorio mientras otro permanece en versión nueva;
+7. compatibilidad con version skew soportado;
+8. bloqueo previo de cualquier cambio de Supabase no propietario;
+9. delegación correcta a `AUTH-DB-029` cuando el schema impide el retorno;
+10. ejecución repetida de verificación sin duplicar la mutación;
+11. evidencia completa de origen y destino;
+12. recuperación después de un intento fallido sin borrar historia.
+
+#### 38. Casos negativos obligatorios
+
+La futura instancia deberá bloquear, como mínimo:
+
+1. repositorio desconocido;
+2. ambiente desconocido;
+3. commit origen no coincidente con el desplegado;
+4. objetivo inexistente;
+5. artefacto sin integridad;
+6. manifest y lockfile inconsistentes;
+7. package anterior declarado incompatible;
+8. target que exige contrato retirado;
+9. target que exige rollback simultáneo no aprobado;
+10. ausencia de snapshot previo certificado;
+11. intento de `force push`;
+12. intento de mover o reescribir tag histórico;
+13. intento de unpublish de release para simular rollback;
+14. intento de restaurar un bypass de autorización;
+15. intento de restaurar un secreto revocado;
+16. configuración target no versionada;
+17. caché antigua usada como autoridad;
+18. down migration no certificada;
+19. rollback de Supabase desde un consumidor;
+20. pérdida potencial de datos válidos por restauración de snapshot;
+21. evidencia de otro ambiente;
+22. pruebas posteriores inexistentes;
+23. cero pruebas cuando existen comprobaciones obligatorias;
+24. estado origen cambiado por deploy concurrente;
+25. hotfix posterior no incorporado al plan;
+26. evidencia stale;
+27. fallo parcial presentado como éxito;
+28. target vulnerable conocido presentado como “último bueno”.
+
+#### 39. Regresiones obligatorias del habilitador
+
+El harness deberá conservar protección contra:
+
+1. comparación de commits como única elegibilidad;
+2. target por número SemVer sin package identity;
+3. target por branch sin commit;
+4. manifest sin lockfile;
+5. lockfile de otro commit;
+6. compatibilidad de otro consumidor;
+7. línea base de otro consumidor;
+8. ambiente mezclado;
+9. configuración de otro ambiente;
+10. caché stale;
+11. secretos en evidencia;
+12. datos productivos usados como fixture;
+13. cambio de schema ignorado;
+14. rollback DB implícito;
+15. bypass de seguridad restaurado;
+16. historial Git reescrito;
+17. release histórica mutada;
+18. auto-merge;
+19. auto-deploy no autorizado;
+20. rollback global implícito;
+21. resultado `PASS` antes de verificación posterior;
+22. pérdida de intentos fallidos;
+23. reintentos hasta verde sin diagnóstico;
+24. evidencia reutilizada después de cambio material.
+
+#### 40. Materialización futura de `SHELL-CI-014::GLOBAL`
+
+La instancia global podrá declararse materializada únicamente cuando exista, dentro de autorización física expresa:
+
+1. contrato machine-readable de unidad de rollback;
+2. validación de repositorio y ambiente;
+3. captura reproducible de estado origen;
+4. resolución de objetivo;
+5. soporte de artefacto histórico y revert revisable;
+6. soporte de rollback de package mediante identidades exactas;
+7. integración con evidencia CI003;
+8. integración con matriz CI005;
+9. integración con expediente CI006;
+10. integración con líneas base CI007..CI013;
+11. evaluación explícita de datos;
+12. evaluación explícita de Supabase;
+13. delegación a `AUTH-DB-029`;
+14. evaluación de configuración;
+15. evaluación de caché;
+16. evaluación de secretos;
+17. detección de concurrencia y stale;
+18. estados fail-closed;
+19. casos positivos;
+20. casos negativos;
+21. regresiones del propio habilitador;
+22. evidencia machine-readable;
+23. pruebas posteriores;
+24. preservación de intentos fallidos;
+25. soporte de una unidad por repositorio;
+26. soporte de incidentes multi-repo sin rollback global implícito;
+27. cero `force push`;
+28. cero mutación de release histórica;
+29. cero auto-merge;
+30. cero auto-deploy productivo durante autocertificación;
+31. cero cambios de Supabase durante autocertificación;
+32. cero secretos reales;
+33. cero datos productivos;
+34. rollback seguro del propio habilitador;
+35. identidad de implementación y commit reproducibles.
+
+Los archivos, scripts, adapters y detalles concretos se resolverán contra el checkout actualizado durante la instancia física. El marcador no inventa nombres que todavía no estén materializados.
+
+#### 41. Estado documental conciliado
+
+| Métrica                                                              |              Resultado |
+| -------------------------------------------------------------------- | ---------------------: |
+| Topología CI014                                                      | **GLOBAL_ENABLE_ONCE** |
+| Instancia física actual de CI014                                     |                  **0** |
+| Instancias globales CI001..CI013 declaradas VERIFIED en el iniciador |                 **13** |
+| Repositorios iniciales con identidad material gobernable             |                  **8** |
+| Clases principales de rollback                                       |                  **6** |
+| Auto-merge autorizado por CI014                                      |                  **0** |
+| Auto-deploy productivo durante autocertificación                     |                  **0** |
+| `force push` autorizado                                              |                  **0** |
+| Mutación de releases históricas                                      |                  **0** |
+| Cambios Supabase autorizados durante el marcador                     |                  **0** |
+| Requisitos de prueba creados o modificados                           |                  **0** |
+
+La tarea deja definido el contrato global. La implementación física sigue reservada a `SHELL-CI-014::GLOBAL`.
+
+#### 42. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** la obligación empresarial de rollback independiente, preservación de datos y auditoría, compatibilidad entre versiones, identidad verificable de repositorio/ambiente y trazabilidad ya existe en el registro. CI014 concreta el habilitador transversal que deberá satisfacer esa cobertura sin introducir una regla empresarial nueva ni cambiar el significado de requisitos históricos.
+
+#### 43. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, CI014 reutiliza:
+
+- `TREQ-SHELL-006`, pruebas propias, compatibilidad por consumidor y adopción independiente;
+- `TREQ-SHELL-007`, rollback independiente de código, contrato, caché, migración y configuración sin restaurar bypasses ni perder datos o auditoría;
+- `TREQ-SHELL-008`, declaración de requisitos afectados y evidencia reproducible;
+- `TREQ-SHELL-009`, identidad verificable de repositorio, commit y ambiente;
+- `TREQ-SHELL-036`, identidad inmutable de package, SemVer, manifest, tag, release, commit, canal, tarball e integridad;
+- `TREQ-SHELL-037`, versiones independientes y coherencia de dependencias internas;
+- `TREQ-SHELL-038`, trazabilidad de deprecación, guía, ventana y consumidores;
+- `TREQ-SHELL-039`, bloqueo de retiro o fin de soporte hasta completar compatibilidad, pruebas y rollback;
+- `TREQ-AUTH-015`, auditoría correlacionable también durante rollback.
+
+Estas referencias son trazabilidad de cobertura existente y no una modificación de 04A.
+
+#### 44. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                            |
+| --------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador documental no materializa el habilitador ni ejecuta build.                                                                                                                                                                                                                               |
+| LOCAL     | NOT_EXECUTED   | El artefacto todavía no ha sido insertado ni validado contra el checkout local del usuario.                                                                                                                                                                                                          |
+| REMOTA    | PASS           | Se contrastaron en lectura remota la continuidad, el marcador vacío de CI014, la topología `GLOBAL_ENABLE_ONCE`, el contrato de entrega, las políticas de formato/desarrollo, el package manifest de `vento-shell`, los contratos CI previos y la cobertura 04A necesaria para desarrollar la tarea. |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutó rollback, deploy, cambio de package, configuración, caché, datos ni Supabase.                                                                                                                                                                                                          |
+| FÍSICA    | NOT_APPLICABLE | La materialización corresponde a la futura `SHELL-CI-014::GLOBAL` después de aprobación documental y autorización física explícita.                                                                                                                                                                  |
+
+#### 45. Criterios de aceptación
+
+`SHELL-CI-014` queda documentalmente completa cuando:
+
+- define rollback como operación nueva y auditable, no como reescritura de historia;
+- define unidad por repositorio y ambiente;
+- conserva `GLOBAL_ENABLE_ONCE`;
+- identifica origen y destino exactos;
+- exige snapshot previo certificado;
+- conserva releases históricas inmutables;
+- reutiliza CI005 para compatibilidad;
+- reutiliza CI006 cuando el rollback requiera PR de consumidor;
+- consume CI007..CI013 para línea base aplicable;
+- soporta rollback de código;
+- soporta rollback de adopción de package;
+- soporta configuración versionada;
+- soporta invalidación/reconstrucción de caché;
+- separa migración y restauración de base de datos;
+- delega Supabase a `AUTH-DB-029`;
+- preserva datos y auditoría;
+- bloquea bypasses y regresiones de seguridad;
+- no restaura secretos revocados;
+- detecta concurrencia;
+- invalida planes stale;
+- exige verificación posterior;
+- conserva intentos fallidos;
+- soporta rollback independiente por repositorio;
+- representa incidentes multi-repo como unidades explícitas;
+- no obliga a despliegue simultáneo;
+- no desarrolla CI015;
+- no absorbe CI016..019;
+- produce evidencia machine-readable;
+- define casos positivos, negativos y regresiones;
+- no hace auto-merge;
+- no hace auto-deploy productivo durante autocertificación;
+- no usa `force push`;
+- no muta releases;
+- no modifica Supabase en el marcador;
+- no crea ni modifica requisitos de prueba.
+
+#### 46. Límites
+
+Esta tarea no:
+
+- implementa `SHELL-CI-014::GLOBAL`;
+- modifica repositorios consumidores;
+- modifica manifests o lockfiles;
+- crea commits de revert;
+- abre pull requests;
+- fusiona pull requests;
+- despliega;
+- ejecuta rollback productivo;
+- hace `force push`;
+- mueve tags históricos;
+- altera releases publicadas;
+- elimina versions del registry;
+- cambia CI003;
+- cambia CI005;
+- cambia CI006;
+- cambia CI007..CI013;
+- desarrolla CI015;
+- normaliza comandos de prueba de CI016;
+- desarrolla CI017..CI019;
+- ejecuta CI020..024;
+- crea migraciones;
+- ejecuta migraciones;
+- restaura backups;
+- modifica schema;
+- modifica RLS;
+- modifica RPC;
+- modifica triggers;
+- modifica grants;
+- modifica Storage;
+- modifica Realtime;
+- modifica Edge Functions;
+- modifica datos;
+- modifica secretos;
+- modifica configuración productiva;
+- invalida caché productiva;
+- crea, modifica, difiere, descarta ni vuelve obsoletos requisitos 04A.
+
+#### 47. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CI-013 — Probar ANIMA antes de actualizar`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CI-014 — Permitir rollback por repositorio`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-015 — Evitar despliegue simultáneo obligatorio`
+
+
 ### [ ] SHELL-CI-015 — Evitar despliegue simultáneo obligatorio

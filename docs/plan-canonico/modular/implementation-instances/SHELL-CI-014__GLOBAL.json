@@ -1,0 +1,50 @@
+{
+  "instance_id": "SHELL-CI-014::GLOBAL",
+  "task_id": "SHELL-CI-014",
+  "status": "VERIFIED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell"
+  ],
+  "authorized_changes": [
+    "En devVentoGroup/vento-shell, modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CI-014__GLOBAL.json para conservar la autorización humana, transicionar AUTHORIZED -> IN_PROGRESS -> IMPLEMENTED -> VERIFIED y consolidar evidencia. No modificar implementation-control.json ni registros de instancias anteriores.",
+    "En devVentoGroup/vento-shell, crear scripts/quality/repository-rollback-gate.mjs como única implementación global de SHELL-CI-014::GLOBAL. El habilitador deberá gobernar exactamente los ocho repositorios devVentoGroup/vento-shell, devVentoGroup/vento-nexo, devVentoGroup/vento-fogo, devVentoGroup/vento-origo, devVentoGroup/vento-pulso, devVentoGroup/vento-viso, devVentoGroup/vento-numera y devVentoGroup/vento-anima; conservar las seis clases REPOSITORY_CODE, PACKAGE_ADOPTION, CONTRACT_COMPATIBILITY, CONFIGURATION, CACHE y DATABASE_DEPENDENCY; validar origen, destino, snapshot previo certificado, release CI003, compatibilidad CI005, propuesta rollback CI006 cuando aplique, líneas base CI007..CI013, datos, configuración, caché, secretos, estado de base de datos, Supabase y autoridad; bloquear force push, reescritura de historia, mutación o unpublish de releases, auto-merge, auto-deploy, rollback global implícito, restauración de bypasses o secretos revocados y cambios de Supabase ejecutados por CI014; preparar una unidad independiente por repositorio+ambiente, verificar el resultado posterior, detectar STALE y concurrencia, preservar intentos fallidos, soportar incidentes multi-repositorio mediante unidades explícitas y generar evidencia JSON machine-readable bajo .delivery/repository-rollback/ sin ejecutar mutaciones reales.",
+    "En devVentoGroup/vento-shell, crear scripts/quality/repository-rollback-gate.test.mjs para autocertificar exclusivamente mediante fixtures sintéticos o aislados 64 casos contractuales de SHELL-CI-014::GLOBAL: 12 positivos, 28 negativos y 24 regresiones. La suite deberá cubrir rollback de código, package adoption, configuración, caché, preservación de datos y auditoría, version skew, delegación a AUTH-DB-029, idempotencia de verificación, evidencia machine-readable, recuperación del gate, todos los bloqueos negativos y todas las regresiones enumeradas por el contrato.",
+    "La autocertificación de SHELL-CI-014::GLOBAL se limita a devVentoGroup/vento-shell y a estructuras sintéticas o aisladas. Se autoriza evidencia runtime no versionada únicamente bajo .delivery/repository-rollback/. Queda prohibido modificar vento-nexo, vento-fogo, vento-origo, vento-pulso, vento-viso, vento-numera, vento-anima u otro repositorio consumidor; modificar package.json, package-lock.json, packages compartidos, workflows, manifests de consumidores, ramas protegidas o reglas de protección; crear o modificar tags/releases; publicar o retirar packages; abrir o fusionar pull requests; desplegar; hacer force push; reescribir historia; ejecutar rollback productivo; crear o ejecutar migraciones; restaurar backups; modificar schema, RLS, RPC, funciones, triggers, grants, Storage, Realtime, Edge Functions, datos, configuración productiva, caché productiva, secretos o archivos .env; usar datos productivos o credenciales reales; ni ampliar por inferencia el alcance autorizado."
+  ],
+  "validation_commands": [
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm ci",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: node --test scripts/quality/repository-rollback-gate.test.mjs",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run lint -- scripts/quality/repository-rollback-gate.mjs scripts/quality/repository-rollback-gate.test.mjs",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:build",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:work-topology:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-18T14:13:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO y continuar. Se autoriza exclusivamente la implementación física de SHELL-CI-014::GLOBAL en devVentoGroup/vento-shell dentro de los archivos, cambios y validaciones enumerados en target_repositories, authorized_changes y validation_commands. La autorización cubre únicamente la autocertificación sintética o aislada del habilitador global de rollback y la generación de evidencia runtime ignorada bajo .delivery/repository-rollback/. Se niega expresamente cualquier ampliación inferida, modificación de repositorios consumidores, cambio de packages o manifests reales, PR, merge, deploy, force push, reescritura de historia, mutación o retiro de releases, rollback productivo, cambio de Supabase, migraciones, backups, datos, configuración productiva, caché productiva, secretos o credenciales reales.",
+    "source_contract_sha256": "3b907b6a64a2609f1ed3861df10f21d68ab66441ed16ff65e95aec26d0a0e78b"
+  },
+  "evidence": [
+    "PREFLIGHT PASS; task=SHELL-CI-014; instance=SHELL-CI-014::GLOBAL",
+    "IMPLEMENTATION repository-rollback-gate materialized; repositories=8; rollback_classes=6; contractual_tests=64",
+    "FILE_SHA256 scripts/quality/repository-rollback-gate.mjs 39cabbce70871cde16f91f9e8347a13961f0056afbbf15465d7c672b66dbb5b5",
+    "FILE_SHA256 scripts/quality/repository-rollback-gate.test.mjs cd99a21ea3c214544b2de8595b0b2bac9fe7914a49bb53385974c5d4b3f532d6",
+    "VALIDATION CI014 self-certification PASS; contractual_cases=64; positive=12; negative=28; regression=24",
+    "VALIDATION CI014 lint PASS",
+    "VALIDATION Canonical plan build PASS",
+    "VALIDATION Canonical plan check PASS",
+    "VALIDATION Canonical plan tests PASS",
+    "VALIDATION TREQ check PASS",
+    "VALIDATION TREQ tests PASS",
+    "VALIDATION Work topology check PASS",
+    "VALIDATION git diff check PASS",
+    "RESULT CI014_FINAL_VALIDATION=PASS"
+  ]
+}
