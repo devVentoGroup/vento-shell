@@ -5246,6 +5246,1219 @@ Esta tarea no:
 `SHELL-CI-013 — Probar ANIMA antes de actualizar`
 
 
-### [ ] SHELL-CI-013 — Probar ANIMA antes de actualizar
+### ✅ SHELL-CI-013 — Probar ANIMA antes de actualizar
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CI-012 — Probar NUMERA antes de actualizar
+**Tarea siguiente:** SHELL-CI-014 — Permitir rollback por repositorio
+**Tipo de tarea:** Habilitador global único — contrato documental de pruebas específicas de ANIMA previas a adopción o actualización de packages compartidos
+**Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
+**Repositorio propietario:** `devVentoGroup/vento-anima`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada el contrato con el que ANIMA deberá demostrar una línea base reproducible, atribuible, móvil/nativa y fail-closed antes de adoptar o actualizar cualquier package compartido cuya relación con `devVentoGroup/vento-anima` haya sido aprobada explícitamente.
+
+ANIMA no pertenece a las 28 relaciones web base de `SHELL-CI-005` y no puede incorporarse por inferencia como una relación número 29. Por tanto, CI013 protege simultáneamente dos cosas:
+
+1. la línea base funcional y técnica del consumidor ANIMA;
+2. la frontera contractual que impide convertir una aplicación Expo/React Native en un consumidor web por semejanza tecnológica o por ejecutar Expo Web.
+
+La regla vinculante queda:
+
+```text
+ANIMA EN UN COMMIT BASE EXACTO
++ MANIFEST Y LOCKFILE EXACTOS
++ TOOLCHAIN NATIVA EXACTA
++ INVENTARIO DE 14 PANTALLAS / 3 LAYOUTS / 16 SUPERFICIES INTERNAS / 2 GLOBALES
++ 14 RUTAS ESTÁTICAS / 0 DINÁMICAS
++ 9 PESTAÑAS / 5 TIPOS DE NOTIFICACIÓN CON NAVEGACIÓN EXPLÍCITA
++ 0 EXPO ROUTE HANDLERS
++ 5 SUPERFICIES WEB-AUTH AUXILIARES SEPARADAS
++ iOS / Android COMO TARGETS MÓVILES DECLARADOS
++ BINDING NATIVO APROBADO EXPLÍCITAMENTE
++ PERFIL DE PRUEBA APLICABLE
++ ENTORNO AISLADO
++ PRUEBAS DE SESIÓN, AUTORIZACIÓN, CONTEXTO, OFFLINE, DISPOSITIVO, DATOS Y RENDERER
++ EVIDENCIA VIGENTE
+= LÍNEA BASE ANIMA APTA PARA SOPORTAR UNA ADOPCIÓN O ACTUALIZACIÓN AUTORIZADA
+```
+
+Y, de forma fail-closed:
+
+```text
+EXPO BUILD VERDE
+O RENDER CORRECTO EN UNA SOLA PLATAFORMA
+O PESTAÑA OCULTA
+O CAPABILITY LOCAL
+O ROL LOCAL
+O ALLOWLIST DE EMAIL
+O PRUEBA WEB DE OTRO CONSUMIDOR
+O EXPO WEB
+O BINDING SINTÉTICO
+O AUSENCIA DE TESTS AUTOMATIZADOS
+≠ LÍNEA BASE ANIMA CERTIFICADA
+```
+
+CI013 certifica la línea base específica de ANIMA. No crea bindings de compatibilidad, no inventa packages nativos, no extiende la matriz web de CI005, no amplía CI006, no publica packages, no abre PR, no fusiona, no despliega, no ejecuta rollback y no corrige por anticipado deudas funcionales o de autorización que ya poseen otro propietario canónico.
+
+#### 2. Resultado canónico
+
+`SHELL-CI-013` establece un único habilitador reutilizable para:
+
+1. fijar el commit base exacto de `devVentoGroup/vento-anima`;
+2. fijar manifest, lockfile, configuración Expo, suite, fixtures, inventario de pantallas, layouts, superficies, navegación, contratos fuente y entorno;
+3. aceptar únicamente bindings nativos explícitamente aprobados para ANIMA;
+4. rechazar cualquier intento de crear `PKG-COMP-MX-029`, `PKG-PR-REL-029` o equivalente por inferencia;
+5. seleccionar el perfil de pruebas aplicable según el binding y contrato propietario;
+6. ejecutar una línea base técnica reproducible antes de modificar una adopción o versión compartida;
+7. conservar exactamente 14 pantallas móviles activas en el snapshot contractual;
+8. conservar 14 patrones estáticos y cero dinámicos;
+9. conservar tres layouts separados del conteo de pantallas;
+10. conservar nueve pestañas autenticadas, siete generales y dos condicionadas;
+11. conservar 16 superficies internas subordinadas sin convertirlas en rutas;
+12. conservar dos superficies globales separadas de las rutas;
+13. conservar cero Expo Router `+api` handlers en el snapshot;
+14. conservar cinco superficies fuente de `web-auth` fuera del inventario móvil;
+15. conservar el circuito `/` → `/splash` → `/home` o `/login`;
+16. proteger sesión, actor, sede, área, turno, rol operativo y permisos efectivos cuando apliquen;
+17. comprobar que ocultar pestañas o controles no sustituye protección de acceso ni servidor;
+18. proteger check-in, check-out, geocerca, conectividad y cola offline;
+19. proteger idempotencia y replay de marcaciones;
+20. proteger turnos, descansos, historial, documentos, carné, anuncios, equipo, soporte y configuración personal;
+21. proteger eliminación y limpieza de datos sin confundir solicitud, ejecución y confirmación;
+22. proteger diagnóstico técnico sin conceder autoridad por correo hardcodeado;
+23. proteger navegación por notificaciones mediante allowlist exacta;
+24. proteger la separación entre aplicación móvil y `web-auth`;
+25. proteger la frontera React Native/Expo frente a `@vento/ui-web`;
+26. proteger contratos, validadores y tokens neutrales cuando exista un binding nativo aprobado;
+27. proteger clientes Supabase y datos de prueba sin autorizar cambios de Supabase desde ANIMA;
+28. producir evidencia machine-readable vinculada al commit y al binding ejecutado;
+29. invalidar evidencia cuando cambie cualquier entrada material;
+30. bloquear una adopción o actualización cuando no exista infraestructura de prueba suficiente;
+31. soportar más de un binding aprobado mediante la unión de perfiles requeridos, sin inventar relaciones base;
+32. autocertificar el habilitador global una sola vez;
+33. separar la certificación del harness de la conformidad funcional completa del consumidor.
+
+#### 3. Frontera de responsabilidad
+
+| Responsabilidad                                                           | Propietario                                       |
+| ------------------------------------------------------------------------- | ------------------------------------------------- |
+| pruebas propias de packages compartidos                                   | `SHELL-CI-001`                                    |
+| artefacto distribuible de package                                         | `SHELL-CI-002`                                    |
+| release, versión y publicación                                            | `SHELL-CI-003`                                    |
+| changelog y release notes                                                 | `SHELL-CI-004`                                    |
+| compatibilidad y extensión explícita hacia targets nativos                | `SHELL-CI-005` y contrato propietario del binding |
+| actualización automatizada de los 7 consumidores web / 28 relaciones base | `SHELL-CI-006`                                    |
+| línea base NEXO                                                           | `SHELL-CI-007`                                    |
+| línea base FOGO                                                           | `SHELL-CI-008`                                    |
+| línea base ORIGO                                                          | `SHELL-CI-009`                                    |
+| línea base PULSO                                                          | `SHELL-CI-010`                                    |
+| línea base VISO                                                           | `SHELL-CI-011`                                    |
+| línea base NUMERA                                                         | `SHELL-CI-012`                                    |
+| línea base ANIMA nativa antes de adopción o actualización                 | `SHELL-CI-013`                                    |
+| rollback por repositorio                                                  | `SHELL-CI-014`                                    |
+| independencia de despliegue                                               | `SHELL-CI-015`                                    |
+| normalización transversal de comandos                                     | `SHELL-CI-016`                                    |
+| trazabilidad de TREQ y evidencia por cambio                               | `SHELL-CI-017..019`                               |
+| tokens neutrales compatibles con ANIMA                                    | `SHELL-NATIVE-001`                                |
+| contratos y validadores portables                                         | `SHELL-NATIVE-002`                                |
+| separación de UI React Native/Expo frente a web                           | `SHELL-NATIVE-003`                                |
+| asignación de package/unidad física                                       | `DELIV-PKG-025` + `E5-GATE-008::<package_id>`     |
+
+CI013 puede exigir puntos de entrada reproducibles para su propia suite futura. No absorbe la normalización global de CI016 ni convierte a CI006 en actualizador nativo.
+
+#### 4. Topología de trabajo
+
+`PHASE-03-T-CI-FOUNDATION` aplica `GLOBAL_ENABLE_ONCE` a `SHELL-CI-013`.
+
+```text
+MARCADOR CANÓNICO
+SHELL-CI-013
+→ define una sola vez el contrato de pruebas previas de ANIMA
+
+INSTANCIA FÍSICA FUTURA
+SHELL-CI-013::GLOBAL
+→ materializa y autocertifica una sola vez el habilitador ANIMA
+
+ADOPCIONES O ACTUALIZACIONES POSTERIORES
+→ reutilizan el habilitador
+→ generan evidencia nueva por commit base + binding + target
+→ no vuelven a implementar CI013
+```
+
+La autocertificación del habilitador puede utilizar bindings, fixtures, dispositivos lógicos y datos sintéticos. No necesita un package nativo real publicado para demostrar que detecta binding inválido, target equivocado, evidencia stale, drift de inventario, zero-tests, secrets, uso productivo o fronteras de renderer rotas.
+
+#### 5. Reconciliación con CI005 y CI006
+
+La matriz base de CI005 permanece cerrada en 28 relaciones web:
+
+```text
+4 familias base
+×
+7 consumidores web
+=
+28 relaciones PKG-COMP-MX-001..028
+```
+
+ANIMA no se agrega a esa matriz como relación 29.
+
+CI005 ya establece que un target adicional como ANIMA se expresa mediante un **extension binding explícito**, con identidad propia proveniente de un contrato propietario, package, consumidor, target, renderer, plataforma y aprobación. La futura ejecución de CI013 solo podrá consumir bindings de ese tipo cuando estén materializados canónicamente.
+
+CI006, por su parte, conserva exactamente siete consumidores web y `PKG-PR-REL-001..028`. CI013 no extiende silenciosamente su implementación para escribir ANIMA.
+
+Por tanto:
+
+```text
+COMPATIBILIDAD ANIMA
+→ binding nativo explícito aprobado por su owner
+→ CI005 produce o valida evidencia compatible con ese binding
+
+LÍNEA BASE ANIMA
+→ CI013 produce evidencia específica del consumidor nativo
+
+MUTACIÓN O ADOPCIÓN REAL
+→ requiere expediente/unidad/owner físico autorizado
+→ no se atribuye a CI006 por inferencia
+```
+
+Hasta que exista un mecanismo físico aprobado para una adopción concreta, CI013 solo certifica baseline y no autoriza modificar dependencias de ANIMA.
+
+#### 6. Universo de bindings gobernado
+
+CI013 no congela una lista artificial de cuatro relaciones ANIMA.
+
+La unidad de selección es:
+
+```text
+binding aprobado
+WHERE consumer_repository = devVentoGroup/vento-anima
+AND target/renderer/platform coinciden con el contrato propietario
+AND binding pertenece a un package/unidad físicamente aprobados
+```
+
+Reglas:
+
+1. cero bindings aprobados sigue siendo una situación válida del marcador documental;
+2. un binding sintético solo sirve para autocertificación del harness y nunca se presenta como relación real;
+3. ningún `PKG-COMP-MX-*` base se reutiliza para ANIMA;
+4. no se crea `PKG-COMP-MX-029`;
+5. no se crea `PKG-PR-REL-029`;
+6. Expo Web no crea automáticamente un binding de `@vento/ui-web`;
+7. una unidad futura de tokens, contratos o validadores conserva su identidad E5;
+8. una prueba de un binding no certifica otro binding;
+9. cambiar binding, package, unidad, versión, target o renderer vuelve stale la evidencia dependiente.
+
+#### 7. Línea base documental verificable de ANIMA
+
+El último corte canónico revisado para este marcador demuestra:
+
+- repositorio consumidor: `devVentoGroup/vento-anima`;
+- ANIMA `1.3.4`;
+- Expo `~54.0.35`;
+- React Native `0.81.5`;
+- React `19.1.0`;
+- Supabase JS `^2.91.0`;
+- Expo Router como navegación;
+- clasificación de renderer: `NATIVE_REACT_NATIVE_EXPO`;
+- targets principales declarados: iOS y Android;
+- soporte de tablet iOS no aprobado;
+- ningún `@vento/*` publicado aparece todavía como adopción runtime certificada en el corte de manifests reutilizado;
+- scripts Expo existentes, pero sin interfaz homogénea de tests declarada;
+- 14 pantallas móviles;
+- 14 patrones estáticos;
+- 0 patrones dinámicos;
+- 3 rutas de arranque/acceso;
+- 11 rutas autenticadas;
+- 9 pestañas;
+- 7 pestañas generales;
+- 2 pestañas condicionadas;
+- 3 layouts;
+- 16 superficies internas;
+- 2 superficies globales;
+- 0 Expo Router `+api` handlers;
+- 5 superficies fuente de `web-auth`;
+- 5 tipos de notificación con navegación explícita;
+- 2 destinos de notificación;
+- roles, capabilities, permisos y allowlists observados todavía no constituyen una matriz uniforme definitiva.
+
+Este corte es una base documental. La futura ejecución física deberá capturar de nuevo el commit, manifest, lockfile, árbol e identidades del checkout real antes de certificarlo.
+
+#### 8. Inventario contractual de pantallas
+
+| ID                 | Patrón               | Clase                            |
+| ------------------ | -------------------- | -------------------------------- |
+| `ANIMA-SCREEN-001` | `/`                  | bootstrap / redirect             |
+| `ANIMA-SCREEN-002` | `/splash`            | bootstrap y resolución de sesión |
+| `ANIMA-SCREEN-003` | `/login`             | autenticación                    |
+| `ANIMA-SCREEN-004` | `/home`              | asistencia                       |
+| `ANIMA-SCREEN-005` | `/shifts`            | turnos                           |
+| `ANIMA-SCREEN-006` | `/history`           | historial                        |
+| `ANIMA-SCREEN-007` | `/documents`         | documentos                       |
+| `ANIMA-SCREEN-008` | `/carnet`            | carné laboral                    |
+| `ANIMA-SCREEN-009` | `/announcements`     | novedades                        |
+| `ANIMA-SCREEN-010` | `/operativo`         | resumen operativo                |
+| `ANIMA-SCREEN-011` | `/team`              | equipo                           |
+| `ANIMA-SCREEN-012` | `/support`           | soporte                          |
+| `ANIMA-SCREEN-013` | `/account-settings`  | cuenta y privacidad              |
+| `ANIMA-SCREEN-014` | `/anima-diagnostics` | diagnóstico técnico              |
+
+Todos los patrones del snapshot son estáticos.
+
+Los route groups `(auth)` y `(app)` organizan archivos pero no forman parte de la URL. Query params, hashes, selección de trabajador, turno, sede, ticket o estado de modal no crean nuevas pantallas.
+
+#### 9. Layouts, superficies internas y globales
+
+CI013 conserva separadas:
+
+**Layouts — 3**
+- `ANIMA-LAYOUT-001` — root stack;
+- `ANIMA-LAYOUT-002` — auth stack;
+- `ANIMA-LAYOUT-003` — tab layout.
+
+**Superficies internas — 16**
+- `SitePickerModal`;
+- `UserMenuModal`;
+- `CreateShiftModal`;
+- `EditShiftModal`;
+- `HistoryDetailModal`;
+- `HistoryIncidentModal`;
+- `UploadDocumentModal`;
+- `DocumentPickerModal`;
+- `AnnouncementFormModal`;
+- `TeamEditModal`;
+- `TeamInviteModal`;
+- `TeamDeleteModal`;
+- `SupportTicketModal`;
+- `ContactWorkerModal`;
+- `DataCleanupFlow`;
+- `DeleteAccountFlow`.
+
+**Superficies globales — 2**
+- `ErrorBoundary`;
+- `AppUpdateGate`.
+
+Ninguna de esas 21 superficies incrementa el conteo de 14 pantallas móviles.
+
+#### 10. Navegación autenticada y notificaciones
+
+Las nueve pestañas del snapshot son:
+
+```text
+/home
+/shifts
+/history
+/documents
+/carnet
+/announcements
+/operativo
+/team
+/support
+```
+
+`/operativo` y `/team` están condicionadas en la navegación observada. Esa visibilidad no sustituye protección efectiva de la pantalla ni del servidor.
+
+La allowlist de notificaciones observada es:
+
+| Tipo                  | Destino    |
+| --------------------- | ---------- |
+| `shift_update`        | `/shifts`  |
+| `shift`               | `/shifts`  |
+| `shift_end_reminder`  | `/shifts`  |
+| `shift_auto_checkout` | `/shifts`  |
+| `support_message`     | `/support` |
+
+Un tipo desconocido no puede convertirse en un deep link arbitrario por datos remotos.
+
+#### 11. Frontera de `web-auth`
+
+El repositorio conserva cinco superficies fuente auxiliares:
+
+- request-password;
+- set-password;
+- privacy-policy;
+- delete-account con alias en español;
+- index auxiliar cuya exposición exacta depende de configuración.
+
+Regla:
+
+```text
+WEB-AUTH AUXILIAR
+≠ APP MÓVIL
+≠ PANTALLA ANIMA
+≠ RENDERER WEB OPERATIVO
+≠ @vento/ui-web
+```
+
+Las pruebas de CI013 deberán cubrir la separación de despliegue, token y navegación cuando el binding o cambio evaluado pueda afectarla, pero no contarán estas superficies como pantallas móviles ni convertirán ANIMA en consumidor web base.
+
+#### 12. Distinción entre habilitador certificado y consumidor conforme
+
+```text
+SHELL-CI-013::GLOBAL = VERIFIED
+```
+
+significa que el harness:
+
+- existe;
+- es reproducible;
+- reconoce bindings nativos válidos e inválidos;
+- detecta otro consumidor;
+- detecta otro commit;
+- detecta target o renderer incorrecto;
+- detecta drift del inventario ANIMA;
+- detecta evidencia stale;
+- detecta cero tests;
+- detecta secretos;
+- detecta uso de datos o servicios productivos;
+- detecta falsos positivos de autorización;
+- detecta ruptura de frontera RN/Expo vs web;
+- produce evidencia machine-readable.
+
+No significa:
+
+```text
+EL COMMIT ACTUAL DE ANIMA CUMPLE TODAS LAS OBLIGACIONES FUNCIONALES Y DE AUTORIZACIÓN FUTURAS
+```
+
+Las brechas ya registradas continúan visibles y una ejecución real deberá producir `FAIL` o `BLOCKED` cuando una obligación aplicable todavía no se satisfaga.
+
+#### 13. Unidad exacta de certificación
+
+Cada resultado se atribuye como mínimo a:
+
+```text
+consumer_repository
+consumer_branch
+consumer_base_commit
+consumer_manifest_identity
+consumer_lockfile_identity
+expo_config_identity
+test_contract_identity
+test_suite_identity
+fixture_set_identity
+screen_inventory_identity
+layout_inventory_identity
+internal_surface_identity
+web_auth_identity
+source_contract_identity
+environment_identity
+runtime_identity
+expo_identity
+react_native_identity
+react_identity
+platform_set
+device_profile_set
+approved_binding_set
+owner_contract_refs
+anima_profile_set
+execution_identity
+started_at
+completed_at
+result
+invalidation_reason
+```
+
+La unidad certificada es el commit base de ANIMA antes de la mutación evaluada.
+
+#### 14. Momento de ejecución
+
+Orden obligatorio para una ejecución real:
+
+1. resolver el package/unidad compartida físicamente aprobados;
+2. resolver binding o bindings explícitos hacia ANIMA;
+3. fijar release o versión objetivo cuando corresponda;
+4. fijar `consumer_base_commit`;
+5. fijar manifest, lockfile y configuración Expo;
+6. fijar inventarios de pantallas, layouts, superficies y web-auth;
+7. fijar contratos fuente;
+8. resolver perfiles de prueba;
+9. ejecutar línea base común y perfiles seleccionados sin modificar todavía ANIMA;
+10. consolidar evidencia;
+11. entregar el resultado al mecanismo físico autorizado de adopción/actualización;
+12. ejecutar nuevamente la cobertura pertinente sobre el commit propuesto cuando el owner del cambio lo exija.
+
+Cambiar el commit base durante la ejecución invalida la atribución.
+
+#### 15. Semántica de resultado
+
+Estados permitidos:
+
+- `PENDING`;
+- `RUNNING`;
+- `PASS`;
+- `FAIL`;
+- `BLOCKED`;
+- `CANCELLED`;
+- `TIMED_OUT`;
+- `STALE`;
+- `NOT_APPLICABLE` solo para comprobaciones realmente condicionales y justificadas.
+
+Para considerar apta la línea base se exige `PASS` en todas las comprobaciones obligatorias del perfil activo.
+
+No satisfacen el contrato:
+
+- cero tests;
+- test obligatorio omitido;
+- evidencia de otro consumidor;
+- evidencia de otro target;
+- evidencia de otro renderer;
+- evidencia de otro commit;
+- un binding sintético presentado como real;
+- un binding inexistente inferido por package name;
+- Expo Web usado para justificar `@vento/ui-web`;
+- Android usado para certificar iOS cuando ambos sean obligatorios;
+- build usado como sustituto de interacción/dispositivo;
+- tab oculta usada como sustituto de autorización;
+- role fallback usado como autoridad canónica;
+- email allowlist usado como permiso;
+- cola offline no probada;
+- replay no probado;
+- dato productivo usado como fixture;
+- secret o service-role usado en pruebas;
+- snapshot regenerado automáticamente para forzar verde.
+
+#### 16. Línea base técnica común
+
+Toda ejecución real deberá demostrar, según el checkout vigente:
+
+1. instalación reproducible con lockfile;
+2. manifest y lockfile coherentes;
+3. análisis estático o lint aplicable;
+4. typecheck real cuando la toolchain lo permita;
+5. validación Expo aplicable;
+6. suite automatizada específica de CI013;
+7. cero tests obligatorios omitidos;
+8. configuración Expo parseable y atribuible;
+9. inventario de pantallas conciliado;
+10. inventario de layouts conciliado;
+11. inventario de superficies internas/globales conciliado;
+12. inventario `web-auth` conciliado;
+13. target/plataforma registrados;
+14. entorno aislado;
+15. secretos ausentes;
+16. datos productivos ausentes;
+17. evidencia machine-readable;
+18. resultado fail-closed.
+
+El marcador no selecciona un framework de tests inexistente ni agrega dependencias. La futura instancia física lo resolverá contra el estado actualizado de ANIMA y dentro de autorización expresa.
+
+#### 17. Matriz funcional mínima obligatoria
+
+La suite deberá cubrir exactamente estas 16 superficies comunes:
+
+|    # | Superficie                        | Afirmación positiva mínima                         | Afirmación negativa mínima                                      |
+| ---: | --------------------------------- | -------------------------------------------------- | --------------------------------------------------------------- |
+|    1 | bootstrap, sesión y login         | `/` y `/splash` conducen al destino permitido      | sesión ausente o bootstrap fallido no expone pantalla protegida |
+|    2 | providers, errores y update gate  | providers y gate global conservan estado coherente | fallo/update no se normaliza como app lista                     |
+|    3 | inventario de pantallas           | 14 estáticas / 0 dinámicas                         | alta, baja, duplicado o ruta dinámica bloquea                   |
+|    4 | tabs, deep links y notificaciones | 9 tabs y allowlist exacta                          | pestaña oculta o tipo remoto no amplía acceso                   |
+|    5 | asistencia, geocerca y sede       | marcación válida conserva contexto                 | sede/geocerca inválida no se normaliza a éxito                  |
+|    6 | offline, replay e idempotencia    | cola durable y replay exacto                       | duplicado o payload distinto con mismo id bloquea               |
+|    7 | turnos y descansos                | lectura/mutación autorizada preserva estado        | rol local o botón visible no autoriza mutación                  |
+|    8 | historial                         | actor accede solo a historial permitido            | manipulación local no expone tercero                            |
+|    9 | documentos                        | alcance y Storage conservan lifecycle              | eliminación parcial o sin permiso falla cerrada                 |
+|   10 | carné laboral                     | elegibilidad real produce estado válido            | condición faltante no produce carné válido                      |
+|   11 | anuncios                          | audiencia persistida/notificada/leída es coherente | administración no autorizada permanece bloqueada                |
+|   12 | operativo y equipo                | acceso directo coincide con decisión efectiva      | divergencia rol/capability/permiso bloquea                      |
+|   13 | soporte                           | tickets/mensajes respetan actor y territorio       | deep link no expone conversación ajena                          |
+|   14 | cuenta, privacidad y eliminación  | acciones operan sobre cuenta autenticada           | solicitud pendiente no se presenta como ejecución               |
+|   15 | diagnóstico técnico               | capacidad técnica y servidor protegen datos        | email hardcodeado no concede autoridad                          |
+|   16 | renderer, dispositivo y web-auth  | RN/Expo y auxiliares permanecen separados          | DOM/CSS/ui-web o web-auth no se infieren como renderer móvil    |
+
+Estas 16 superficies organizan la prueba de CI013. No crean nuevas capacidades de negocio ni nuevos requisitos 04A.
+
+#### 18. Perfil `ANIMA-PROFILE-CONTRACTS-VALIDATORS`
+
+Se activa únicamente cuando un binding aprobado introduce o actualiza contratos/validadores portables.
+
+Debe cubrir:
+
+- identidad y versión del contrato;
+- parser/predicate aplicable;
+- paridad de resultado frente a otros targets declarados;
+- conjuntos cerrados;
+- schemas;
+- relaciones compuestas;
+- referencias opacas;
+- diagnósticos contractuales;
+- cero casts como validación;
+- cero catálogos paralelos;
+- cero dependencias Supabase/UI en el core;
+- mismos fixtures → misma decisión semántica;
+- incompatibilidad de versión fail-closed.
+
+No presume un package físico hasta que el owner E5 lo materialice.
+
+#### 19. Perfil `ANIMA-PROFILE-OPERATIONAL-CONTEXT`
+
+Se activa únicamente cuando un binding aprobado afecta autorización/contexto.
+
+Debe cubrir:
+
+- usuario y sesión;
+- turno publicado;
+- sede;
+- área;
+- rol operativo;
+- check-in;
+- contexto activo;
+- permisos efectivos;
+- razones de bloqueo;
+- cambio de turno;
+- descanso;
+- cambio temporal de área;
+- cola offline;
+- revalidación al sincronizar;
+- cierre de contexto;
+- prohibición de otorgar permisos desde ANIMA.
+
+Un rol local, capability local o valor cliente no puede sustituir la decisión canónica.
+
+#### 20. Perfil `ANIMA-PROFILE-DATA-NATIVE`
+
+Se activa únicamente cuando el binding aprobado afecta cliente de datos, contratos de transporte o integración Supabase compatible con native.
+
+Debe cubrir:
+
+- cliente native;
+- persistencia de sesión;
+- refresh;
+- offline;
+- retry;
+- error;
+- RLS/permiso efectivo;
+- scope por actor/sede/área;
+- idempotencia;
+- conflictos;
+- datos parciales;
+- Storage de documentos;
+- ausencia de service-role;
+- ausencia de escrituras productivas durante la suite;
+- correspondencia con schema/fuentes canónicas de `vento-shell`.
+
+CI013 no crea migraciones ni cambia Supabase.
+
+#### 21. Perfil `ANIMA-PROFILE-DESIGN-TOKENS`
+
+Se activa únicamente si una unidad física aprobada derivada de `SHELL-NATIVE-001` declara ANIMA consumidor.
+
+Debe cubrir:
+
+- snapshot y versión de tokens;
+- 17 tokens canónicos iniciales o versión sucesora explícita;
+- compatibilidad con las 22 claves ANIMA del snapshot correspondiente;
+- aliases legacy mientras estén soportados;
+- mismo significado por token;
+- ausencia de DOM/CSS en core;
+- ausencia de React/RN/Expo en core neutral;
+- adaptador nativo separado;
+- typecheck/build del consumidor;
+- diff sin traslado de navegación, dominio o AppShell.
+
+La tarea no inventa nombre como `@vento/ui-native`.
+
+#### 22. Perfil `ANIMA-PROFILE-NATIVE-UI-BOUNDARY`
+
+Este perfil es obligatorio cuando la adopción pueda tocar composición, tokens adaptados o helpers consumidos por UI.
+
+Debe demostrar:
+
+```text
+PLATFORM_NEUTRAL
+→ puede alimentar RN/Expo
+
+NATIVE_REACT_NATIVE_EXPO
+→ conserva componentes, navegación y composición propias
+
+WEB_REACT_DOM_CSS
+→ permanece fuera del renderer ANIMA
+
+APP_LOCAL
+→ conserva pantallas, formularios, procesos y consultas propias
+```
+
+Expo Web continúa dentro de la frontera RN/Expo y no autoriza `@vento/ui-web`.
+
+#### 23. Protección reforzada de autorización
+
+El snapshot documental registra una combinación no uniforme de:
+
+- roles locales;
+- capabilities;
+- permisos;
+- fallbacks;
+- allowlists.
+
+CI013 no normaliza esa realidad como correcta.
+
+La ejecución deberá poder probar:
+
+1. acceso directo;
+2. acceso mediante tab;
+3. mutación desde formulario;
+4. recurso propio;
+5. recurso ajeno;
+6. sede propia;
+7. sede ajena;
+8. área válida;
+9. área inválida;
+10. rol permitido;
+11. rol no permitido;
+12. capability presente;
+13. capability ausente;
+14. permiso efectivo concedido;
+15. permiso efectivo denegado;
+16. diagnóstico técnico con y sin autoridad.
+
+Una divergencia relevante se registra como `FAIL` o `BLOCKED`, no como deuda invisible.
+
+#### 24. Protección reforzada de asistencia y offline
+
+La suite deberá conservar:
+
+- `client_event_id` estable;
+- actor;
+- sede;
+- turno;
+- instante;
+- geolocalización cuando aplique;
+- contexto;
+- persistencia durable de la cola;
+- supervivencia a reinicio;
+- replay idempotente;
+- detección de mismo id con contenido distinto;
+- estado pendiente distinto de aplicado;
+- estado fallido distinto de aplicado;
+- recuperación de conectividad;
+- revalidación de autorización al sincronizar.
+
+Un comportamiento offline verde sin replay idempotente no certifica esta superficie.
+
+#### 25. Protección reforzada de turnos y descansos
+
+La suite deberá distinguir:
+
+```text
+VER TURNO
+≠ CREAR TURNO
+≠ EDITAR TURNO
+≠ CONFIRMAR
+≠ CANCELAR
+≠ INICIAR DESCANSO
+≠ FINALIZAR DESCANSO
+```
+
+Las mutaciones deben revalidar autoridad fuera de la visibilidad del botón.
+
+Un fallback de rol observado puede existir en baseline, pero no se convierte en contrato canónico por CI013.
+
+#### 26. Protección reforzada de documentos
+
+La cobertura deberá distinguir:
+
+- lectura personal;
+- lectura ampliada autorizada;
+- upload;
+- reemplazo;
+- apertura;
+- eliminación lógica/fila;
+- eliminación Storage;
+- retención;
+- evidencia;
+- error parcial;
+- retry;
+- reconciliación posterior.
+
+Eliminar la fila y fallar en Storage, o viceversa, no puede declararse como eliminación completa.
+
+#### 27. Protección reforzada de privacidad y cuenta
+
+`/account-settings` deberá probar:
+
+- identidad autenticada;
+- permisos reales del dispositivo;
+- logout;
+- solicitud de limpieza;
+- solicitud de eliminación;
+- cancelación;
+- estado pendiente;
+- estado ejecutado;
+- trazabilidad;
+- no afectación de otra cuenta.
+
+CI013 no implementa el backend de privacidad; solo exige que el baseline haga visibles sus fallos cuando el perfil aplicable lo cubra.
+
+#### 28. Protección reforzada de diagnóstico
+
+`/anima-diagnostics` es superficie técnica.
+
+Regla:
+
+```text
+EMAIL EN ALLOWLIST
+≠ CAPACIDAD TÉCNICA CANÓNICA
+≠ PROTECCIÓN DE SERVIDOR
+```
+
+La suite deberá detectar:
+
+- allowlists divergentes;
+- acceso directo no protegido;
+- lectura de datos sin capacidad;
+- acceso a otra sede;
+- datos sensibles en errores;
+- bypass por navegación;
+- diagnóstico habilitado en ambiente incorrecto.
+
+#### 29. Protección reforzada de renderer
+
+La línea base deberá demostrar que:
+
+1. componentes React Native permanecen en ANIMA o en una unidad nativa aprobada;
+2. `@vento/ui-web` no aparece por inferencia;
+3. no se exige DOM ni CSS a contracts/tokens neutrales;
+4. Expo Web no cambia la clase de renderer;
+5. Expo Router no se sustituye por navegación web;
+6. AppShell web no se importa como solución universal;
+7. diferencias visuales permitidas no se interpretan como divergencia contractual;
+8. paridad se mide sobre semántica, contratos, tokens y comportamiento aplicable.
+
+#### 30. Protección reforzada de dispositivo y plataformas
+
+Cuando sea aplicable, la ejecución deberá distinguir:
+
+- Android;
+- iOS;
+- dispositivo físico;
+- emulador/simulador;
+- permisos de ubicación;
+- permisos de notificaciones;
+- conectividad;
+- background/foreground;
+- almacenamiento local;
+- actualización de aplicación.
+
+Un target no certifica otro cuando la condición es dependiente de plataforma.
+
+Si una comprobación exige hardware real y no está disponible, el resultado es `BLOCKED`, no `PASS`.
+
+#### 31. Datos, fixtures y aislamiento
+
+Las pruebas deberán cumplir:
+
+1. no usar datos productivos;
+2. no usar credenciales reales;
+3. no usar service-role;
+4. no usar tokens reales persistentes;
+5. fixtures deterministas;
+6. actores sintéticos;
+7. sedes/áreas sintéticas;
+8. turnos sintéticos;
+9. marcaciones sintéticas;
+10. documentos sintéticos;
+11. notificaciones sintéticas;
+12. cleanup reproducible;
+13. cero migraciones desde ANIMA;
+14. schema de prueba derivado de fuente canónica cuando se necesite;
+15. ningún fixture puede convertirse en una autorización real;
+16. ningún snapshot puede incluir PII real.
+
+#### 32. Adopción inicial
+
+El corte documental no confirma dependencias publicadas `@vento/*` ya adoptadas de forma certificada por ANIMA.
+
+Por tanto, la primera adopción futura de un binding aprobado deberá usar CI013 como oráculo previo:
+
+```text
+ANIMA BASE SIN LA ADOPCIÓN
+→ CI013 PASS
+→ CAMBIO AUTORIZADO
+→ MISMA COBERTURA ESENCIAL SOBRE COMMIT PROPUESTO
+→ COMPARACIÓN
+→ REVISIÓN / GATE DEL OWNER
+```
+
+La ausencia actual del package no vuelve innecesaria la línea base.
+
+#### 33. Actualizaciones posteriores
+
+Para un binding ya adoptado:
+
+- `PATCH`: línea base + regresión focal;
+- `MINOR`: línea base + nueva superficie consumida;
+- `MAJOR`: matriz explícita de comportamiento preservado/cambiado;
+- `SECURITY`: no permite omitir autorización, offline, secretos o datos;
+- `DEPRECATION`: mantiene cobertura de la superficie antigua mientras continúe soportada;
+- `ROLLBACK`: la línea base CI013 sirve de referencia, pero la ejecución pertenece a CI014.
+
+#### 34. Ejecución con múltiples bindings
+
+Cuando más de un binding ANIMA esté aprobado para el mismo cambio:
+
+1. se registra el conjunto cerrado;
+2. se selecciona la unión de perfiles;
+3. las 16 superficies comunes permanecen;
+4. una familia no reduce cobertura de otra;
+5. cada binding conserva owner, target y renderer;
+6. ningún binding sintético se mezcla con reales;
+7. cambiar un binding invalida la evidencia;
+8. no se crea una relación base adicional para resumir el conjunto.
+
+#### 35. Evidencia consumible
+
+La evidencia satisfactoria deberá declarar:
+
+- `devVentoGroup/vento-anima`;
+- commit base;
+- manifest;
+- lockfile;
+- Expo config;
+- inventario de 14 pantallas;
+- 14 estáticas / 0 dinámicas;
+- tres layouts;
+- nueve tabs;
+- 16 superficies internas;
+- dos globales;
+- cero Expo handlers;
+- cinco superficies web-auth;
+- bindings aprobados exactos;
+- owner contracts;
+- packages/unidades objetivo;
+- target;
+- renderer;
+- plataforma;
+- perfiles;
+- suite;
+- fixtures;
+- entorno;
+- dispositivo o simulador cuando aplique;
+- tests ejecutados/aprobados/fallidos/omitidos;
+- pruebas negativas;
+- estado de offline/replay;
+- fronteras de autorización;
+- frontera RN/Expo vs web;
+- ausencia de secretos/datos productivos;
+- timestamps;
+- resultado;
+- causa de bloqueo/stale.
+
+#### 36. Invalidación obligatoria
+
+La evidencia pasa a `STALE` si cambia materialmente:
+
+- commit;
+- manifest;
+- lockfile;
+- app config;
+- Expo;
+- React Native;
+- React;
+- Supabase client;
+- suite;
+- fixtures;
+- inventario de pantallas;
+- layouts;
+- superficies internas;
+- superficies globales;
+- tabs;
+- deep links;
+- notificaciones;
+- web-auth;
+- providers;
+- update gate;
+- auth/session;
+- lógica offline;
+- storage;
+- permisos/capabilities/roles;
+- contratos fuente;
+- binding;
+- owner contract;
+- package/unidad;
+- versión objetivo;
+- target;
+- renderer;
+- plataforma;
+- environment;
+- device profile;
+- contrato CI013.
+
+#### 37. Condiciones de bloqueo
+
+La ejecución queda `BLOCKED` o `FAIL` cuando:
+
+1. no existe runner reproducible;
+2. se ejecutan cero tests;
+3. no puede identificarse el commit;
+4. manifest/lockfile no corresponden;
+5. binding no está aprobado;
+6. binding pertenece a otro consumidor;
+7. se intenta inventar relación 29;
+8. target o renderer no coinciden;
+9. se intenta inferir `@vento/ui-web` por Expo Web;
+10. el inventario ya no concilia 14 pantallas;
+11. aparece ruta dinámica sin delta;
+12. aparece Expo handler sin delta;
+13. un layout se cuenta como pantalla;
+14. web-auth se cuenta como app móvil;
+15. una tab oculta se toma como control de acceso;
+16. un rol local sustituye permiso efectivo;
+17. un email hardcodeado concede diagnóstico;
+18. una mutación no revalida autoridad;
+19. offline no preserva idempotencia;
+20. replay duplica efecto;
+21. mismo event id con payload distinto no genera conflicto;
+22. estado pendiente se presenta como aplicado;
+23. documento queda parcialmente eliminado sin reconciliación;
+24. deep link desconocido abre destino arbitrario;
+25. una plataforma obligatoria no se prueba;
+26. un test dependiente de hardware se marca PASS sin hardware;
+27. se usan datos productivos;
+28. se usa secreto real;
+29. se usa service-role;
+30. se crea o ejecuta una migración desde ANIMA;
+31. se intenta publicar/merge/deploy/rollback desde CI013;
+32. se reutiliza evidencia de otro commit;
+33. una deuda crítica aplicable se convierte manualmente en PASS.
+
+#### 38. Materialización futura de `SHELL-CI-013::GLOBAL`
+
+La futura instancia podrá declararse materializada únicamente cuando, dentro de autorización expresa:
+
+1. exista infraestructura de pruebas reproducible para ANIMA;
+2. exista un punto de entrada determinista;
+3. exista typecheck/lint/Expo validation aplicable;
+4. exista suite automatizada;
+5. cubra las 16 superficies comunes;
+6. soporte perfiles seleccionables;
+7. reconozca bindings explícitos;
+8. rechace relaciones base inventadas;
+9. cubra 14/14/0;
+10. cubra 3 layouts;
+11. cubra 9 tabs;
+12. cubra 16 superficies internas;
+13. cubra 2 globales;
+14. cubra 0 Expo handlers;
+15. cubra web-auth por separado;
+16. cubra bootstrap y sesión;
+17. cubra autorización positiva/negativa;
+18. cubra asistencia/geocerca;
+19. cubra offline/replay;
+20. cubra turnos;
+21. cubra historial;
+22. cubra documentos;
+23. cubra carné;
+24. cubra anuncios;
+25. cubra operativo/equipo;
+26. cubra soporte;
+27. cubra cuenta/privacidad;
+28. cubra diagnóstico;
+29. cubra renderer boundary;
+30. cubra plataformas/dispositivo cuando aplique;
+31. produzca evidencia machine-readable;
+32. invalide stale;
+33. rechace zero-tests;
+34. rechace secretos/datos productivos;
+35. no modifique packages reales durante autocertificación;
+36. no modifique Supabase;
+37. no cree PR;
+38. no haga deploy;
+39. no ejecute rollback.
+
+La elección concreta de framework, archivos, scripts, devDependencies, simuladores o dispositivos se resolverá con el checkout actualizado durante la instancia física. El marcador no inventa tecnología no observada.
+
+#### 39. Recuperación e idempotencia
+
+1. reintento exacto sobre mismas entradas puede reproducir decisión;
+2. intentos fallidos se conservan;
+3. flaky no se resuelve reintentando hasta verde sin registro;
+4. cambio de commit crea ejecución nueva;
+5. cambio de binding crea ejecución nueva;
+6. cambio de target/plataforma vuelve stale;
+7. fallo de infraestructura produce `BLOCKED`;
+8. fallo funcional produce `FAIL`;
+9. timeout/cancelación no certifica;
+10. corrección del harness no reescribe evidencia histórica;
+11. fixture sintético nunca se reutiliza como evidencia de producción;
+12. replay de operación se prueba en aislamiento;
+13. rollback no se ejecuta en CI013.
+
+#### 40. Estado documental conciliado
+
+| Métrica                                    |                           Resultado |
+| ------------------------------------------ | ----------------------------------: |
+| Repositorio consumidor                     | **1 — `devVentoGroup/vento-anima`** |
+| Topología CI013                            |              **GLOBAL_ENABLE_ONCE** |
+| Relaciones base CI005 añadidas             |                               **0** |
+| `PKG-COMP-MX-029` creado                   |                               **0** |
+| `PKG-PR-REL-029` creado                    |                               **0** |
+| Bindings reales fijados por inferencia     |                               **0** |
+| Pantallas móviles baseline                 |                              **14** |
+| Patrones estáticos                         |                              **14** |
+| Patrones dinámicos                         |                               **0** |
+| Rutas de arranque/acceso                   |                               **3** |
+| Rutas autenticadas                         |                              **11** |
+| Tabs                                       |                               **9** |
+| Layouts                                    |                               **3** |
+| Superficies internas                       |                              **16** |
+| Superficies globales                       |                               **2** |
+| Expo route handlers                        |                               **0** |
+| Superficies fuente web-auth                |                               **5** |
+| Superficies comunes de prueba CI013        |                              **16** |
+| Auto-merge autorizado                      |                               **0** |
+| Auto-deploy autorizado                     |                               **0** |
+| Cambios Supabase autorizados               |                               **0** |
+| Datos productivos autorizados              |                               **0** |
+| Requisitos de prueba creados o modificados |                               **0** |
+
+#### 41. Hallazgos y propietarios
+
+| Hallazgo                                                | Tratamiento                                                                  | Propietario                                                         |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| ANIMA no pertenece a las 28 relaciones base             | usar extension binding explícito; nunca relación 29                          | `SHELL-CI-005` + owner E5 del binding                               |
+| CI006 físico solo cubre 7 consumidores web              | CI013 no amplía su mutación; la adopción nativa exige owner físico explícito | expediente/unidad aprobados por `DELIV-PKG-025` + `E5-GATE-008`     |
+| no existe runner homogéneo ANIMA declarado              | materializar runner específico en la futura instancia sin absorber CI016     | `SHELL-CI-013::GLOBAL`; normalización transversal en `SHELL-CI-016` |
+| existen gaps de lectura/capability en superficies ANIMA | no ocultarlos; ejecución real falla/bloquea cuando sean aplicables           | `ANIMA-AUTH-001` y tareas de autorización propietarias              |
+| UI RN/Expo no debe colapsar con web                     | probar frontera, no compartir renderer por inferencia                        | `SHELL-NATIVE-003`                                                  |
+| contracts/tokens pueden ser neutrales                   | probar paridad solo cuando exista binding/unidad aprobados                   | `SHELL-NATIVE-001`, `SHELL-NATIVE-002`, owner E5                    |
+| Supabase pertenece a Shell                              | ANIMA no crea migraciones ni eleva privilegios                               | `devVentoGroup/vento-shell` y tareas `AUTH-DB`/`SUPA-*` aplicables  |
+
+No queda un pendiente nuevo sin owner documental.
+
+#### 42. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** CI013 organiza y especializa pruebas previas para un consumidor ANIMA ya cubierto por requisitos de pantalla, navegación, asistencia, offline, autorización, datos, documentación, privacidad, contratos portables, frontera nativa y compatibilidad. No introduce una regla empresarial nueva ni cambia el significado de requisitos existentes.
+
+#### 43. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, CI013 reutiliza entre otras:
+
+- `TREQ-SHELL-005`, comandos reproducibles y falsos verdes;
+- `TREQ-SHELL-006`, pruebas propias y compatibilidad por consumidor;
+- `TREQ-SHELL-008`, trazabilidad de requisitos y resultados;
+- `TREQ-SHELL-009`, identidad verificable de repositorio/commit/ambiente;
+- `TREQ-SHELL-047`, portabilidad multiplataforma aplicable;
+- `TREQ-SHELL-049..054`, contratos y validadores portables, paridad y lineage por unidad;
+- `TREQ-SHELL-055..060`, separación RN/Expo/web y frontera de UI;
+- `TREQ-ANIMA-001..005`, anuncios, read-only, offline/idempotencia, descansos y ciclo documental;
+- `TREQ-ANIMA-006..025`, inventario, bootstrap, navegación, asistencia, turnos, historial, documentos, carné, anuncios, equipo, soporte, cuenta, diagnóstico y web-auth;
+- `TREQ-UX-1520`, diferenciación de pasos de las 37 superficies ANIMA;
+- `TREQ-UX-1544`, distribución de las 37 superficies entre ANIMA, SHELL y VISO sin convertir autoservicio en administración laboral.
+
+Estas referencias son trazabilidad de cobertura existente y no una modificación de 04A.
+
+#### 44. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                               |
+| --------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador documental no instala dependencias, no ejecuta Expo/build y no materializa el harness.                                                                                      |
+| LOCAL     | NOT_EXECUTED   | El artefacto todavía no ha sido insertado ni validado por el checkout local del usuario.                                                                                                |
+| REMOTA    | NOT_EXECUTED   | En esta preparación no se ejecutó una lectura remota nueva del repositorio; se reutilizaron snapshots y contratos canónicos aprobados disponibles para ANIMA, CI005/006 y SHELL-NATIVE. |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutaron dispositivos, marcaciones, turnos, documentos, notificaciones, Supabase ni datos reales.                                                                               |
+| FÍSICA    | NOT_APPLICABLE | La materialización corresponde a la futura `SHELL-CI-013::GLOBAL` después de aprobación documental y autorización física explícita.                                                     |
+
+#### 45. Criterios de aceptación
+
+`SHELL-CI-013` queda documentalmente completa cuando:
+
+- identifica `devVentoGroup/vento-anima` como consumidor propietario;
+- conserva `GLOBAL_ENABLE_ONCE`;
+- no crea una relación base 29;
+- no inventa `PKG-PR-REL-029`;
+- consume únicamente bindings nativos explícitos;
+- mantiene CI006 limitado a su implementación web vigente;
+- define línea base antes de mutar ANIMA;
+- define unidad de evidencia completa;
+- conserva 14 pantallas;
+- conserva 14 estáticas / 0 dinámicas;
+- conserva tres layouts;
+- conserva nueve tabs;
+- conserva 16 internas y dos globales;
+- conserva cero Expo handlers;
+- conserva web-auth separado;
+- protege bootstrap y sesión;
+- protege navegación por notificaciones;
+- protege autorización de acceso directo;
+- protege asistencia y geocerca;
+- protege offline/replay/idempotencia;
+- protege turnos y descansos;
+- protege historial;
+- protege documentos y Storage;
+- protege carné;
+- protege anuncios;
+- protege operativo/equipo;
+- protege soporte;
+- protege privacidad/cuenta;
+- protege diagnóstico;
+- protege renderer RN/Expo;
+- protege target/dispositivo;
+- define profiles sin inventar packages;
+- invalida evidencia stale;
+- bloquea zero-tests;
+- bloquea secrets/datos productivos;
+- separa harness VERIFIED de consumer conforme;
+- no crea PR;
+- no hace merge/deploy;
+- no ejecuta rollback;
+- no cambia Supabase;
+- no crea ni modifica TREQ.
+
+#### 46. Límites
+
+Esta tarea no:
+
+- implementa `SHELL-CI-013::GLOBAL`;
+- modifica `vento-anima`;
+- modifica `package.json` o lockfile de ANIMA;
+- instala test runner;
+- crea `PKG-COMP-MX-029`;
+- crea `PKG-PR-REL-029`;
+- fija bindings reales inexistentes;
+- inventa `@vento/ui-native`;
+- convierte Expo Web en `@vento/ui-web`;
+- modifica CI005;
+- amplía CI006;
+- publica packages;
+- materializa `SHELL-NATIVE-001..003`;
+- modifica pantallas;
+- modifica navegación runtime;
+- modifica roles/capabilities/permisos;
+- corrige allowlists;
+- corrige offline;
+- corrige documentos;
+- corrige privacidad;
+- modifica web-auth;
+- crea migraciones;
+- modifica schema, RLS, RPC, grants, Storage, Realtime, Edge Functions, datos o secretos;
+- ejecuta pruebas productivas;
+- crea branch/PR;
+- fusiona;
+- despliega;
+- ejecuta rollback;
+- desarrolla CI014;
+- crea, modifica, difiere, descarta ni vuelve obsoletos requisitos 04A.
+
+#### 47. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CI-012 — Probar NUMERA antes de actualizar`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CI-013 — Probar ANIMA antes de actualizar`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-014 — Permitir rollback por repositorio`
+
+
 ### [ ] SHELL-CI-014 — Permitir rollback por repositorio
 ### [ ] SHELL-CI-015 — Evitar despliegue simultáneo obligatorio

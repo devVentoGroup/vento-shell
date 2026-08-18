@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **971** |
+| Aprobadas | **972** |
 | En propuesta | **0** |
-| No iniciadas | **623** |
+| No iniciadas | **622** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **60.92% (971/1594)** |
+| Porcentaje de completamiento | **60.98% (972/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CI-012` — Probar NUMERA antes de actualizar | ✅ APROBADA |
-| Tarea actual | `SHELL-CI-013` — Probar ANIMA antes de actualizar | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CI-014` — Permitir rollback por repositorio | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CI-013` — Probar ANIMA antes de actualizar | ✅ APROBADA |
+| Tarea actual | `SHELL-CI-014` — Permitir rollback por repositorio | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CI-015` — Evitar despliegue simultáneo obligatorio | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1296,7 +1296,7 @@
 | ✅ APROBADA | `SHELL-CI-010` | Probar PULSO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ✅ APROBADA | `SHELL-CI-011` | Probar VISO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ✅ APROBADA | `SHELL-CI-012` | Probar NUMERA antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
-| ⬜ NO INICIADA | `SHELL-CI-013` | Probar ANIMA antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
+| ✅ APROBADA | `SHELL-CI-013` | Probar ANIMA antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ⬜ NO INICIADA | `SHELL-CI-014` | Permitir rollback por repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ⬜ NO INICIADA | `SHELL-CI-015` | Evitar despliegue simultáneo obligatorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ⬜ NO INICIADA | `SHELL-CI-016` | Estandarizar un comando de pruebas automatizadas por repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md` |
