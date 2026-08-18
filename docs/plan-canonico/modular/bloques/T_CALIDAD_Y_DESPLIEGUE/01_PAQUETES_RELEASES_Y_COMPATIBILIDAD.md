@@ -3858,4 +3858,996 @@ Esta tarea no:
 `SHELL-CI-006 — Crear actualización de consumidores mediante PR`
 
 
-### [ ] SHELL-CI-006 — Crear actualización de consumidores mediante PR
+### ✅ SHELL-CI-006 — Crear actualización de consumidores mediante PR
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CI-005 — Crear matriz de compatibilidad
+**Tarea siguiente:** SHELL-CI-007 — Probar NEXO antes de actualizar
+**Tipo de tarea:** Habilitador global único — contrato documental de actualizador controlado de consumidores mediante pull request
+**Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada el habilitador global que materializará la **preparación, mantenimiento y trazabilidad de actualizaciones de packages compartidos mediante pull requests en repositorios consumidores**, sin convertir la publicación de una release en una actualización automática, sin fusionar cambios, sin desplegar consumidores y sin degradar los gates de adopción ya aprobados.
+
+La regla vinculante queda fijada así:
+
+```text
+RELEASE CANÓNICA E INMUTABLE
++ CONSUMIDOR ELEGIBLE
++ RELACIÓN PKG-PR-REL-* EXACTA
++ BASE COMMIT EXACTO
++ MANIFEST Y LOCKFILE COHERENTES
++ VERSIÓN O CONJUNTO OBJETIVO EXACTOS
++ COMPATIBILIDAD CI005 VIGENTE
++ GATES PKG-GATE-* APLICABLES
++ EVIDENCIA LIGADA AL PROPOSAL COMMIT
+= PROPUESTA REVISABLE EN EL REPOSITORIO CONSUMIDOR
+```
+
+Y, de forma fail-closed:
+
+```text
+PUBLICACIÓN DEL PACKAGE
+O DESCUBRIMIENTO DE UNA VERSIÓN NUEVA
+O APERTURA CORRECTA DEL PR
+O APROBACIÓN DEL AUTOR
+O RESULTADOS DE OTRO COMMIT / CONSUMIDOR
+≠ ADOPCIÓN
+≠ MERGE AUTORIZADO
+≠ DESPLIEGUE AUTORIZADO
+```
+
+Esta tarea no abre pull requests reales ni modifica consumidores durante el marcador global. Define el contrato que `SHELL-CI-006::GLOBAL` deberá materializar y autocertificar una sola vez y que las futuras adopciones reutilizarán sin duplicar el actualizador.
+
+#### 2. Resultado canónico
+
+`SHELL-CI-006` establece un único habilitador transversal para:
+
+1. consumir releases canónicas e inmutables producidas por CI003;
+2. consumir evidencia de compatibilidad vigente y finalizada por CI005;
+3. resolver una relación `PKG-PR-REL-*` exacta por package y consumidor web base;
+4. reconocer las siete clases de actualización aprobadas;
+5. conservar los catorce estados canónicos del ciclo de propuesta;
+6. materializar manifest y lockfile como una unidad coherente;
+7. fijar versiones exactas de packages VENTO y el conjunto mínimo cerrado de dependencias internas;
+8. preparar cambios atribuibles únicamente a la actualización declarada;
+9. ejecutar o consumir los dieciséis `PKG-GATE-*` conforme a su propietario;
+10. mantener la evidencia ligada a `base_commit`, `proposal_commit`, manifest, lockfile, release, compatibilidad y configuración exactos;
+11. invalidar evidencia y aprobaciones técnicas cuando cambie una entrada material;
+12. abrir o mantener una propuesta sin auto-merge, auto-deploy ni push directo a rama protegida;
+13. conservar revisión humana independiente y autoridad propia del consumidor;
+14. soportar adopción independiente por repositorio;
+15. soportar un conjunto mínimo cerrado multi-package sin lockstep artificial;
+16. soportar actualización `MAJOR`, seguridad, deprecación y rollback con controles reforzados;
+17. mantener toda modificación de Supabase, datos o configuración remota separada y propietaria de `vento-shell`;
+18. preservar cierres, supersesiones, invalidaciones y reintentos sin reescribir historia;
+19. producir evidencia machine-readable atribuible al expediente `PKG-PR-*`;
+20. autocertificar el propio actualizador sin escribir en repositorios consumidores reales.
+
+#### 3. Base vinculante
+
+La implementación futura conservará sin reinterpretar las decisiones aprobadas de `SHELL-PKG-001..008` y los habilitadores `SHELL-CI-001..005`.
+
+Quedan vinculantes, como mínimo:
+
+- packages npm privados e inmutables publicados desde `vento-shell`;
+- versiones exactas y lockfile en consumidores;
+- cuatro familias compartidas: `@vento/contracts`, `@vento/os-context`, `@vento/supabase` y `@vento/ui-web`;
+- siete consumidores web base: `vento-shell`, `vento-viso`, `vento-nexo`, `vento-fogo`, `vento-origo`, `vento-pulso` y `vento-numera`;
+- 28 relaciones de actualización `PKG-PR-REL-001..028`;
+- siete clases de actualización;
+- catorce estados del ciclo de propuesta;
+- dieciséis gates `PKG-GATE-001..016`;
+- cuatro perfiles especializados `GATE-PROFILE-*`;
+- dieciocho bloqueos `PR-BLK-001..018`;
+- pull request como vehículo de adopción y rollback revisable;
+- cero auto-merge y cero auto-deploy por parte del actualizador;
+- adopción independiente por consumidor;
+- invalidación de checks y evidencia ante cambios materiales;
+- correspondencia exacta entre release, compatibilidad, propuesta, manifest y lockfile;
+- separación de la actualización de `@vento/supabase` respecto de cualquier migración o cambio remoto de Supabase.
+
+#### 4. Topología de trabajo
+
+`PHASE-03-T-CI-FOUNDATION` aplica `GLOBAL_ENABLE_ONCE` a `SHELL-CI-006`.
+
+Por tanto:
+
+```text
+MARCADOR CANÓNICO
+SHELL-CI-006
+→ define el contrato una sola vez
+
+INSTANCIA FÍSICA FUTURA
+SHELL-CI-006::GLOBAL
+→ materializa y autocertifica el actualizador una sola vez
+
+ADOPCIONES POSTERIORES
+→ reutilizan el actualizador certificado
+→ generan expedientes y evidencia por consumidor
+→ no crean otra implementación de CI006
+```
+
+La autocertificación global utilizará repositorios, branches, manifests, lockfiles, releases y pull requests sintéticos o aislados. No necesita escribir en los repositorios consumidores reales.
+
+#### 5. Frontera con el mini-bloque
+
+| Responsabilidad | Propietario |
+| --- | --- |
+| pruebas propias del package | `SHELL-CI-001` |
+| build y artefacto distribuible | `SHELL-CI-002` |
+| identidad y publicación de release | `SHELL-CI-003` |
+| changelog y release notes | `SHELL-CI-004` |
+| matriz y evidencia de compatibilidad | `SHELL-CI-005` |
+| preparación y mantenimiento del PR consumidor | `SHELL-CI-006` |
+| pruebas específicas de NEXO | `SHELL-CI-007` |
+| pruebas específicas de FOGO | `SHELL-CI-008` |
+| pruebas específicas de ORIGO | `SHELL-CI-009` |
+| pruebas específicas de PULSO | `SHELL-CI-010` |
+| pruebas específicas de VISO | `SHELL-CI-011` |
+| pruebas específicas de NUMERA | `SHELL-CI-012` |
+| pruebas específicas de ANIMA cuando exista binding aplicable | `SHELL-CI-013` |
+| rollback por repositorio | `SHELL-CI-014` |
+| independencia de despliegue | `SHELL-CI-015` |
+| comandos de prueba por repositorio | `SHELL-CI-016` |
+| requisitos de prueba y evidencia de PR | `SHELL-CI-017..019` |
+
+CI006 no absorbe las pruebas específicas de cada consumidor ni decide su merge, despliegue o adopción. Su función es materializar el vehículo de cambio y consolidar o consumir evidencia de los propietarios aplicables.
+
+#### 6. Línea base física observada
+
+En el corte vigente:
+
+- `SHELL-CI-001::GLOBAL` a `SHELL-CI-005::GLOBAL` están `VERIFIED`;
+- CI005 materializa exactamente 28 relaciones web base y 140 evaluaciones base de cobertura;
+- CI005 genera `compatibility_evidence_identity`, soporta `PREPARE` y `FINALIZE` y enlaza la identidad de compatibilidad con CI003;
+- CI003 conserva la autoridad de publicación de releases;
+- no existe todavía una implementación global certificada de CI006;
+- no se confirmó un actualizador ejecutable común para los siete consumidores web;
+- no se confirmó configuración dedicada de Dependabot o Renovate que satisfaga el contrato completo de VENTO;
+- el contrato aprobado prohíbe que un actualizador fusione, despliegue o escriba directamente en ramas protegidas;
+- las relaciones `PKG-PR-REL-001..028` permanecen inicialmente en `NO_APLICA_SIN_RELEASE_ESTABLE` mientras no exista una release estable y una propuesta con insumos completos;
+- las futuras tareas CI007..013 conservan la propiedad de pruebas específicas antes de actualizar sus consumidores.
+
+La existencia de GitHub, npm o un bot genérico no constituye por sí sola la materialización de CI006.
+
+#### 7. Universo gobernado
+
+##### 7.1. Packages base
+
+1. `@vento/contracts`;
+2. `@vento/os-context`;
+3. `@vento/supabase`;
+4. `@vento/ui-web`.
+
+##### 7.2. Consumidores web base
+
+1. `vento-shell`;
+2. `vento-viso`;
+3. `vento-nexo`;
+4. `vento-fogo`;
+5. `vento-origo`;
+6. `vento-pulso`;
+7. `vento-numera`.
+
+Resultado:
+
+```text
+4 packages × 7 consumidores web = 28 relaciones PKG-PR-REL-* base
+```
+
+`vento-shell` conserva una relación de consumo dentro de la matriz aprobada. Sin embargo, el actualizador no asumirá que el repositorio productor y un consumidor externo tienen la misma operación remota: la materialización deberá resolver explícitamente repository, base branch, permisos y alcance para cada relación antes de crear una propuesta.
+
+PASS, ANIMA, TALENTO y clientes móviles no se agregan a las 28 relaciones base por inferencia. Cualquier incorporación posterior requiere contrato propietario y binding explícito, sin renumerar `PKG-PR-REL-001..028`.
+
+#### 8. Unidad canónica de actualización
+
+La unidad ordinaria permanece exactamente:
+
+```text
+un repositorio consumidor
++ una rama base exacta
++ un conjunto cerrado de versiones objetivo
++ un manifest
++ un lockfile
++ un commit de propuesta
++ una ejecución de evidencia
++ un pull request
+```
+
+Reglas:
+
+1. cada pull request afecta exactamente un repositorio consumidor;
+2. una release puede originar propuestas independientes en consumidores distintos;
+3. una propuesta puede actualizar un package o el conjunto mínimo cerrado exigido por dependencias exactas;
+4. una propuesta no obliga a abrir, fusionar o desplegar las propuestas de otros consumidores;
+5. abrir, aprobar o fusionar una propuesta no equivale a adopción;
+6. la adopción exige despliegue identificado y validación propietaria;
+7. `base_commit`, `proposal_commit`, manifest, lockfile y conjunto objetivo forman parte de la identidad evaluada;
+8. cualquier cambio material posterior invalida la evidencia afectada.
+
+#### 9. Expediente `PKG-PR-*`
+
+CI006 materializará el expediente aprobado sin eliminar campos ni rebautizarlos.
+
+| Campo | Obligación |
+| --- | --- |
+| `update_id` | identificador estable compuesto por `PKG-PR-`, el código canónico del consumidor y una secuencia no reutilizable |
+| `consumer_repository` | repositorio consumidor exacto |
+| `consumer_owner` | responsable técnico del consumidor |
+| `target_branch` | rama destino autorizada |
+| `base_commit` | commit exacto usado como base |
+| `proposal_commit` | commit exacto evaluado |
+| `remote_pr_ref` | número o referencia remota del pull request |
+| `update_class` | clase primaria y calificadores |
+| `trigger` | release, seguridad, deprecación, incompatibilidad, rollback u otro disparador aprobado |
+| `package_set_from` | conjunto exacto instalado antes del cambio |
+| `package_set_to` | conjunto exacto objetivo |
+| `release_refs` | tags, releases, commits e integridad de packages |
+| `manifest_before_hash` | identidad del manifest anterior |
+| `manifest_after_hash` | identidad del manifest propuesto |
+| `lockfile_before_hash` | identidad del lockfile anterior |
+| `lockfile_after_hash` | identidad del lockfile propuesto |
+| `compatibility_ref` | manifest y resultados de compatibilidad aplicables |
+| `changelog_ref` | cambios relevantes por package |
+| `deprecation_refs` | expedientes `DEP-*` aplicables o `NONE` |
+| `security_ref` | advisory, evaluación o `NONE` |
+| `rollback_ref` | snapshot certificado y expediente aplicable |
+| `treq_impact` | requisitos creados, modificados, satisfechos, invalidados o cero cambios |
+| `supabase_impact` | `NO_APLICA` justificado o tarea propietaria desde `vento-shell` |
+| `data_impact` | evaluación de datos, compatibilidad y migración |
+| `configuration_impact` | variables, secretos, flags o configuración afectados |
+| `cache_impact` | invalidación, reconstrucción o no aplicabilidad |
+| `validation_results` | resultados por package y consumidor ligados al commit |
+| `evidence_refs` | ejecuciones y artefactos reproducibles |
+| `required_reviewers` | propietarios y revisores obligatorios |
+| `approvals` | aprobaciones vigentes ligadas al commit |
+| `bot_identity` | identidad automatizada o `MANUAL` |
+| `opened_at` | apertura atribuible |
+| `updated_at` | última modificación atribuible |
+| `merged_at` | momento de merge o `NONE` |
+| `deployment_ref` | despliegue de adopción o `PENDING` |
+| `outcome` | estado final, impacto residual y seguimiento |
+| `supersedes` | expediente anterior sustituido o `NONE` |
+| `superseded_by` | expediente posterior o `NONE` |
+
+**Conciliación:** 38 campos obligatorios, 38 conservados, 0 eliminados y 0 renombrados.
+
+#### 10. Identidad del expediente
+
+El identificador aprobado se compone, en este orden, de:
+
+1. el prefijo literal `PKG-PR-`;
+2. uno de los códigos canónicos de consumidor definidos a continuación;
+3. un guion literal `-`;
+4. una secuencia estable que no se reutiliza después de cierre, supersesión, reversión o cancelación.
+
+Ejemplo válido de forma documental: `PKG-PR-NEXO-1`.
+
+Para la matriz web base los códigos permitidos permanecen:
+
+```text
+SHELL
+VISO
+NEXO
+FOGO
+ORIGO
+PULSO
+NUMERA
+```
+
+Reglas:
+
+1. la secuencia no se reutiliza después de cierre, supersesión, reversión o cancelación;
+2. `update_id` no sustituye `remote_pr_ref`;
+3. una nueva versión objetivo que sustituya materialmente la propuesta anterior genera una nueva identidad y enlaza `supersedes` / `superseded_by`;
+4. un reintento exacto sobre el mismo expediente y commit mantiene la identidad lógica y no duplica historia;
+5. una extensión posterior solo podrá usar un código aprobado por su contrato propietario.
+
+#### 11. Clases de actualización
+
+Las clases permanecen exactamente:
+
+| Clase | Definición | Exigencia adicional principal |
+| --- | --- | --- |
+| `INITIAL_ADOPTION` | primera incorporación certificada de un package al consumidor | paridad contra la implementación anterior y plan de retiro |
+| `PATCH_UPDATE` | corrección compatible conforme a SemVer | regresión focal y verificación del defecto corregido |
+| `MINOR_UPDATE` | capacidad pública nueva compatible | escenarios nuevos y ausencia de cambio incompatible |
+| `MAJOR_UPDATE` | cambio incompatible o reducción de soporte | guía de migración, impacto completo y aprobación reforzada |
+| `SECURITY_UPDATE` | actualización motivada por vulnerabilidad o bypass | evaluación de exposición, prioridad, mitigación y no regresión |
+| `DEPRECATION_MIGRATION` | migración requerida por superficie o línea de soporte deprecada | expediente `DEP-*`, inventario de uso residual y puerta de retiro |
+| `ROLLBACK_UPDATE` | restauración del snapshot certificado anterior | expediente `RBK-*`, causa, objetivo restituible y validación posterior |
+
+Una propuesta puede conservar calificadores secundarios, pero la clase más exigente gobierna revisión, evidencia y bloqueos.
+
+#### 12. Ciclo de vida de la propuesta
+
+Los catorce estados permanecen exactamente:
+
+1. `NOT_REQUESTED`;
+2. `ELIGIBLE`;
+3. `PR_OPEN`;
+4. `VALIDATING`;
+5. `CHANGES_REQUESTED`;
+6. `BLOCKED`;
+7. `READY_FOR_REVIEW`;
+8. `APPROVED_FOR_MERGE`;
+9. `MERGED`;
+10. `ADOPTION_PENDING`;
+11. `ADOPTED`;
+12. `CLOSED_NO_CHANGE`;
+13. `SUPERSEDED`;
+14. `REVERTED`.
+
+Transiciones ordinarias:
+
+```text
+NOT_REQUESTED → ELIGIBLE
+ELIGIBLE → PR_OPEN
+PR_OPEN → VALIDATING
+VALIDATING → READY_FOR_REVIEW
+VALIDATING → BLOCKED
+READY_FOR_REVIEW → CHANGES_REQUESTED
+CHANGES_REQUESTED → VALIDATING
+READY_FOR_REVIEW → APPROVED_FOR_MERGE
+APPROVED_FOR_MERGE → VALIDATING
+APPROVED_FOR_MERGE → MERGED
+MERGED → ADOPTION_PENDING
+ADOPTION_PENDING → ADOPTED
+PR_OPEN → CLOSED_NO_CHANGE
+VALIDATING → CLOSED_NO_CHANGE
+BLOCKED → VALIDATING
+PR_OPEN → SUPERSEDED
+VALIDATING → SUPERSEDED
+READY_FOR_REVIEW → SUPERSEDED
+MERGED → REVERTED
+ADOPTION_PENDING → REVERTED
+ADOPTED → REVERTED
+```
+
+CI006 podrá crear o mantener estados hasta donde alcance su autoridad técnica, pero nunca inferirá `MERGED`, `ADOPTION_PENDING`, `ADOPTED` o `REVERTED` sin evidencia propietaria del consumidor.
+
+#### 13. Catálogo canónico de gates
+
+CI006 deberá reconocer exactamente los dieciséis gates aprobados:
+
+| ID | Gate | Aplicabilidad | Resultado exigido | Propietario principal |
+| --- | --- | --- | --- | --- |
+| `PKG-GATE-001` | identidad de release | universal | `PASS` | `SHELL-CI-001`; `SHELL-CI-003` |
+| `PKG-GATE-002` | elegibilidad de versión | universal | `PASS` | `SHELL-CI-003`; `SHELL-CI-005` |
+| `PKG-GATE-003` | coherencia manifest–lockfile | universal | `PASS` | `SHELL-CI-006` |
+| `PKG-GATE-004` | instalación bloqueada reproducible | universal | `PASS` | `SHELL-CI-006`; consumidor |
+| `PKG-GATE-005` | pruebas propias del package | universal | `PASS` | `SHELL-CI-001`; propietario package |
+| `PKG-GATE-006` | lint o análisis estático del consumidor | universal | `PASS` | consumidor; `SHELL-CI-006` |
+| `PKG-GATE-007` | typecheck del consumidor | universal | `PASS` | consumidor; `SHELL-CI-006` |
+| `PKG-GATE-008` | build o export del consumidor | universal | `PASS` | consumidor; `SHELL-CI-006` |
+| `PKG-GATE-009` | pruebas automatizadas del consumidor | universal | `PASS` | consumidor; `SHELL-CI-006` |
+| `PKG-GATE-010` | matriz de compatibilidad | universal | `PASS` | `SHELL-CI-002`; `SHELL-CI-005` |
+| `PKG-GATE-011` | perfil especializado de familia | universal | `PASS` | `SHELL-CI-002`; `SHELL-CI-004` |
+| `PKG-GATE-012` | requisitos de prueba afectados | universal | `PASS` | `SHELL-CI-006`; registro 04A |
+| `PKG-GATE-013` | controles reforzados por riesgo | condicional | `PASS` o `NOT_APPLICABLE` | tareas propietarias aplicables |
+| `PKG-GATE-014` | vigencia y coherencia de evidencia | universal | `PASS` | `SHELL-CI-006` |
+| `PKG-GATE-015` | revisión y protección de merge | universal | `PASS` | gobierno del repositorio consumidor |
+| `PKG-GATE-016` | separación de merge, despliegue y adopción | universal | `PASS` | gobierno de CI; consumidor |
+
+**Conciliación:** 16 gates, 15 universales, 1 condicional, 0 gates omitidos.
+
+#### 14. Semántica fail-closed de resultados
+
+Los estados de gate permanecen:
+
+- `PENDING`;
+- `RUNNING`;
+- `PASS`;
+- `FAIL`;
+- `BLOCKED`;
+- `CANCELLED`;
+- `TIMED_OUT`;
+- `STALE`;
+- `NOT_APPLICABLE` únicamente para el gate condicional cuando exista justificación válida.
+
+Reglas:
+
+1. un gate universal solo se satisface con `PASS`;
+2. `NOT_APPLICABLE` nunca satisface un gate universal;
+3. `SKIPPED`, `NEUTRAL`, ausencia de resultado o éxito parcial no equivalen a `PASS`;
+4. un comentario, etiqueta o aprobación manual no transforma un resultado técnico no satisfactorio en `PASS`;
+5. los reintentos preservan intentos anteriores;
+6. la decisión usa evidencia vigente del commit actual;
+7. intermitencia o resultados contradictorios mantienen la propuesta bloqueada hasta resolver la causa.
+
+#### 15. Perfiles especializados
+
+##### 15.1. `GATE-PROFILE-CONTRACTS`
+
+Para `@vento/contracts`:
+
+- build y pruebas propias;
+- schemas, catálogos, tipos derivados y diagnósticos;
+- contract tests contra el consumidor;
+- typecheck y build consumidor;
+- compatibilidad hacia atrás y adelante cuando aplique;
+- clasificación de cambios incompatibles;
+- bloqueo de casts globales o adaptadores sin propietario usados para ocultar rupturas.
+
+##### 15.2. `GATE-PROFILE-OS-CONTEXT`
+
+Para `@vento/os-context`:
+
+- build y pruebas propias;
+- contratos de sesión, contexto, permiso, recurso, territorio y razones;
+- typecheck, build e integración del consumidor;
+- fronteras servidor–cliente, cookies, redirects y SSR cuando apliquen;
+- casos permitidos y denegados fail-closed;
+- ausencia de autoridad ampliada por valores cliente, fallback o contexto incompleto;
+- compatibilidad con versiones soportadas y dependencias internas exactas.
+
+##### 15.3. `GATE-PROFILE-SUPABASE`
+
+Para `@vento/supabase`:
+
+- build y pruebas propias;
+- factories, tipos generados, wrappers RPC y errores;
+- typecheck, build e integración consumidor;
+- contract tests de clientes, llamadas, parámetros, resultados y errores;
+- coherencia con schema y tipos declarados compatibles;
+- ausencia de acceso privilegiado o bypass de RLS introducido por el SDK;
+- `supabase_impact = NO_APLICA` justificado o referencia a tarea propietaria en `vento-shell`;
+- bloqueo si faltan migraciones o cambios remotos propietarios exigidos.
+
+##### 15.4. `GATE-PROFILE-UI-WEB`
+
+Para `@vento/ui-web`:
+
+- build y pruebas del package;
+- build e integración del consumidor;
+- render, hidratación, navegación y contrato CSS;
+- accesibilidad automatizada y revisión controlada cuando aplique;
+- regresión visual cuando cambien apariencia, layout, tokens, marca o estados;
+- compatibilidad con runtime, framework y peers;
+- ausencia de dependencias locales, estilos globales no declarados o imports privados.
+
+#### 16. Matriz base de 28 relaciones de actualización
+
+| ID | Package | Consumidor | Aplicabilidad | Estado inicial |
+| --- | --- | --- | --- | --- |
+| `PKG-PR-REL-001` | `@vento/contracts` | `vento-shell` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-002` | `@vento/contracts` | `vento-viso` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-003` | `@vento/contracts` | `vento-nexo` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-004` | `@vento/contracts` | `vento-fogo` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-005` | `@vento/contracts` | `vento-origo` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-006` | `@vento/contracts` | `vento-pulso` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-007` | `@vento/contracts` | `vento-numera` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-008` | `@vento/os-context` | `vento-shell` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-009` | `@vento/os-context` | `vento-viso` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-010` | `@vento/os-context` | `vento-nexo` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-011` | `@vento/os-context` | `vento-fogo` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-012` | `@vento/os-context` | `vento-origo` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-013` | `@vento/os-context` | `vento-pulso` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-014` | `@vento/os-context` | `vento-numera` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-015` | `@vento/supabase` | `vento-shell` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-016` | `@vento/supabase` | `vento-viso` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-017` | `@vento/supabase` | `vento-nexo` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-018` | `@vento/supabase` | `vento-fogo` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-019` | `@vento/supabase` | `vento-origo` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-020` | `@vento/supabase` | `vento-pulso` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-021` | `@vento/supabase` | `vento-numera` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-022` | `@vento/ui-web` | `vento-shell` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-023` | `@vento/ui-web` | `vento-viso` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-024` | `@vento/ui-web` | `vento-nexo` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-025` | `@vento/ui-web` | `vento-fogo` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-026` | `@vento/ui-web` | `vento-origo` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-027` | `@vento/ui-web` | `vento-pulso` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+| `PKG-PR-REL-028` | `@vento/ui-web` | `vento-numera` | `APLICA` | `NO_APLICA_SIN_RELEASE_ESTABLE` |
+
+**Conciliación:** 28 esperadas, 28 materializadas, 28 aplicables, 28 en estado inicial, 0 faltantes y 0 duplicadas.
+
+Estas identidades son distintas de `PKG-COMP-MX-001..028`. Ambas matrices describen las mismas combinaciones package–consumidor base, pero una conserva el veredicto de compatibilidad y la otra gobierna la propuesta de adopción.
+
+#### 17. Elegibilidad para generar una propuesta
+
+Una relación solo podrá pasar de `NOT_REQUESTED` a `ELIGIBLE` cuando existan, según aplicabilidad:
+
+1. release canónica, inmutable y verificable;
+2. versión objetivo exacta y canal permitido;
+3. evidencia vigente de pruebas propias del package;
+4. artefacto de build reproducible;
+5. changelog o material de release aplicable;
+6. evidencia CI005 perteneciente al mismo package, versión, artefacto y consumidor;
+7. `base_commit` exacto del consumidor;
+8. manifest y lockfile de base identificados;
+9. conjunto objetivo resoluble sin rangos flotantes ni prereleases internas no autorizadas;
+10. clase de actualización determinada;
+11. evaluación de deprecación, seguridad, datos, Supabase, configuración y caché;
+12. snapshot anterior y rollback cuando la clase o política lo requiera;
+13. propietario técnico del consumidor resoluble;
+14. repositorio y rama destino autorizados;
+15. cero bloqueo `PR-BLK-*` abierto que impida crear una propuesta atribuible.
+
+La elegibilidad permite preparar una propuesta; no la aprueba ni la adopta.
+
+#### 18. Materialización del cambio consumidor
+
+El actualizador deberá producir el cambio mínimo atribuible al expediente.
+
+Podrá incluir, cuando corresponda:
+
+1. versión exacta anterior y objetivo por package;
+2. modificación coherente del manifest;
+3. modificación coherente del lockfile;
+4. ajustes mínimos de compatibilidad exigidos por el cambio;
+5. pruebas o fixtures nuevos vinculados al comportamiento afectado;
+6. documentación del consumidor cuando cambie operación, configuración o soporte;
+7. referencias a release, changelog, compatibilidad, deprecación y rollback;
+8. declaración de impacto `treq_impact`;
+9. declaración de impacto de datos, Supabase, configuración y caché;
+10. plan de verificación posterior cuando el merge no complete la adopción.
+
+Queda prohibido:
+
+- introducir rangos flotantes para packages VENTO;
+- sustituir el registry por URL Git, fuente local o código copiado;
+- editar artefactos instalados;
+- regenerar lockfile con cambios no explicados;
+- mezclar refactors o funcionalidades ajenas que destruyan atribución;
+- usar aliases, overrides permanentes, casts globales o desactivación de validadores para ocultar incompatibilidad;
+- modificar secretos, datos productivos o configuración remota;
+- ejecutar migraciones Supabase desde un repositorio consumidor;
+- convertir una prerelease en dependencia productiva estable sin autorización.
+
+#### 19. Proceso determinista del actualizador
+
+Para una ejecución real futura, el habilitador seguirá este orden lógico:
+
+1. recibir el disparador y la release objetivo;
+2. verificar identidad e integridad de la release;
+3. resolver package y conjunto mínimo cerrado de dependencias exactas;
+4. resolver relación `PKG-PR-REL-*` o binding propietario aplicable;
+5. resolver repositorio consumidor, rama base y `base_commit` exactos;
+6. comprobar que no existe un bloqueo previo que haga inválida la propuesta;
+7. materializar en un checkout aislado únicamente los cambios autorizados;
+8. actualizar manifest y lockfile como unidad coherente;
+9. calcular el `proposal_commit` del cambio a evaluar;
+10. consumir o ejecutar los gates propietarios sobre ese commit;
+11. consolidar `validation_results`, `evidence_refs` e impactos;
+12. crear o mantener el expediente `PKG-PR-*`;
+13. crear o actualizar la propuesta remota solo cuando la identidad y el alcance coincidan;
+14. mantener la propuesta en `VALIDATING`, `BLOCKED` o `READY_FOR_REVIEW` según evidencia;
+15. invalidar resultados y aprobaciones técnicas cuando cambie una entrada material;
+16. finalizar la actuación del automatizador sin fusionar, desplegar ni declarar adopción.
+
+La implementación no deducirá nombres de branch, checks, labels, revisores, credenciales o repositorios remotos que no estén resueltos por configuración propietaria vigente.
+
+#### 20. Idempotencia y supersesión
+
+Reglas:
+
+1. una repetición exacta del mismo expediente, base, objetivo y `proposal_commit` no crea una segunda propuesta equivalente;
+2. el actualizador podrá mantener la propuesta existente cuando su identidad remota siga siendo la misma;
+3. cambios materiales devuelven la propuesta a `VALIDATING` y marcan evidencia anterior como no vigente;
+4. una versión objetivo distinta no sustituye silenciosamente la anterior;
+5. una nueva propuesta materialmente distinta conserva un `update_id` propio y enlaza supersesión;
+6. una propuesta cerrada no se reabre como si su historia nunca hubiera existido;
+7. un resultado correcto posterior no elimina intentos fallidos previos;
+8. la historia de adopción, cierre, supersesión y reversión permanece auditable.
+
+#### 21. Facultades del automatizador
+
+El actualizador podrá, cuando exista autorización física y remota aplicable:
+
+- leer metadata de releases y paquetes;
+- resolver la relación y expediente aplicables;
+- crear un checkout aislado del consumidor;
+- modificar únicamente archivos autorizados para la actualización;
+- resolver manifest y lockfile;
+- ejecutar validaciones autorizadas;
+- preparar una rama de propuesta;
+- crear o mantener un pull request;
+- publicar evidencia técnica no sensible;
+- actualizar el estado técnico del expediente.
+
+No podrá:
+
+- fusionar el pull request;
+- aprobar su propia propuesta;
+- desplegar la aplicación;
+- escribir directamente en la rama principal o protegida;
+- modificar reglas de protección o checks obligatorios;
+- publicar packages con credenciales del consumidor;
+- ampliar alcance sin decisión canónica;
+- ocultar fallos o reintentar indefinidamente para obtener un verde aparente;
+- introducir credenciales en código, manifest, lockfile, logs o comentarios;
+- ejecutar cambios de Supabase, datos o ambientes remotos;
+- declarar `ADOPTED` sin evidencia propietaria del consumidor.
+
+#### 22. Separación de identidades y privilegios
+
+Se conservará separación efectiva entre:
+
+1. identidad que publica packages;
+2. identidad que lee el registry;
+3. identidad que prepara actualizaciones;
+4. identidad que revisa;
+5. identidad que aprueba merge;
+6. identidad que fusiona;
+7. identidad que despliega.
+
+La capacidad de abrir una propuesta no concede facultad para publicar, aprobar, fusionar o desplegar.
+
+Los secretos, tokens o credenciales no forman parte del payload documental ni de la evidencia determinista del expediente.
+
+#### 23. Evidencia y vigencia
+
+Toda evaluación conservará, como mínimo:
+
+- `update_id`;
+- relación `PKG-PR-REL-*` o binding propietario;
+- package y versión exactos;
+- consumidor y rama destino;
+- `base_commit` y `proposal_commit`;
+- hashes de manifest y lockfile;
+- conjunto de packages resuelto;
+- integridad de release;
+- referencia de compatibilidad;
+- perfil especializado;
+- resultados individuales de los dieciséis gates;
+- impacto de requisitos;
+- calificadores de riesgo;
+- identidad de ejecución;
+- artefactos de evidencia;
+- estado de revisión;
+- causa de invalidación;
+- resultado global.
+
+La evidencia no certifica otra rama, commit, lockfile, consumidor, package, versión, matriz o configuración.
+
+#### 24. Invalidación obligatoria
+
+Se invalidan los resultados afectados cuando cambia cualquiera de estas entradas:
+
+- `base_commit`;
+- `proposal_commit`;
+- manifest;
+- lockfile;
+- package o versión objetivo;
+- conjunto multi-package resuelto;
+- integridad del artefacto;
+- runtime, framework o peers relevantes;
+- configuración de build, tipos o pruebas;
+- código de compatibilidad del consumidor;
+- fixtures, snapshots u oracles;
+- matriz de compatibilidad;
+- expediente de deprecación, seguridad o rollback;
+- impacto `treq_impact`;
+- impacto de datos, Supabase, configuración o caché;
+- alcance o severidad del cambio.
+
+Un rebase, un commit nuevo o una modificación de lockfile no puede conservar silenciosamente checks o aprobaciones técnicas ligados al estado anterior.
+
+#### 25. Cambios multi-package
+
+Una propuesta multi-package solo será válida cuando el conjunto sea mínimo y cerrado por dependencias exactas o por una migración indivisible del consumidor.
+
+Reglas:
+
+1. no se publica ni actualiza un package sin cambio por lockstep;
+2. no se incluyen packages adicionales por comodidad;
+3. una release estable no depende de prereleases internas no autorizadas;
+4. el conjunto objetivo queda fijo al solicitar revisión;
+5. compatibilidad y gates se calculan sobre el conjunto realmente resuelto por el lockfile;
+6. una propuesta posterior puede superseder la anterior sin reescribirla;
+7. el merge de un consumidor no obliga al de otro;
+8. la adopción escalonada debe mantener compatibilidad entre consumidores en versiones distintas.
+
+#### 26. Cambios `MAJOR`, seguridad, deprecación y rollback
+
+##### 26.1. `MAJOR_UPDATE`
+
+Exige guía de migración, inventario de superficies afectadas, compatibilidad objetivo, evaluación de datos/configuración/caché, rollback soportado y aprobación reforzada.
+
+##### 26.2. `SECURITY_UPDATE`
+
+Puede recibir prioridad, pero no elimina compatibilidad, revisión, rollback ni separación de autoridad. No autoriza bypasses, auto-merge ni reducción de controles.
+
+##### 26.3. `DEPRECATION_MIGRATION`
+
+Debe vincular expedientes `DEP-*`, inventario de uso residual y condición de retiro. Abrir o fusionar un PR no cierra por sí mismo la deprecación.
+
+##### 26.4. `ROLLBACK_UPDATE`
+
+Restaura mediante historia revisable manifest y lockfile de un snapshot certificado. No muta una versión publicada ni edita artefactos instalados.
+
+#### 27. Frontera de `@vento/supabase`
+
+Actualizar `@vento/supabase` no equivale a aplicar una migración.
+
+Toda modificación de:
+
+- schema;
+- datos;
+- funciones o RPC;
+- triggers;
+- RLS;
+- Realtime;
+- Storage;
+- Edge Functions;
+- secretos;
+- configuración;
+
+permanece en su tarea propietaria y se ejecuta desde `devVentoGroup/vento-shell`.
+
+Una propuesta consumidor queda bloqueada cuando requiere una modificación de Supabase no materializada o cuando package, tipos generados, schema y ambiente objetivo no demuestran compatibilidad.
+
+#### 28. Integración con CI005
+
+CI006 consumirá compatibilidad, no la recalculará de forma paralela.
+
+Para una combinación de release y consumidor deberá verificar que la evidencia CI005:
+
+1. pertenece al mismo package;
+2. pertenece a la misma versión;
+3. pertenece al mismo source commit y artefacto;
+4. cubre la relación `PKG-COMP-MX-*` correspondiente o binding propietario aplicable;
+5. cubre el target y renderer aplicables;
+6. conserva ejes y restricciones vigentes;
+7. no está `STALE`;
+8. está finalizada contra la identidad CI003 exigible cuando corresponda.
+
+La relación `PKG-PR-REL-*` no puede declararse elegible usando evidencia de otro consumidor o de una versión distinta.
+
+#### 29. Integración con CI007..CI013
+
+CI006 materializa el mecanismo común; CI007..CI013 conservan pruebas específicas antes de actualizar consumidores concretos.
+
+Reglas:
+
+1. la autocertificación de `SHELL-CI-006::GLOBAL` puede utilizar evidencia sintética o aislada y no depende de abrir PR reales;
+2. una ejecución real para un consumidor deberá consumir las pruebas propietarias aplicables cuando estén exigidas por su contrato;
+3. el resultado de NEXO no certifica FOGO, ORIGO, PULSO, VISO, NUMERA o ANIMA;
+4. ANIMA permanece fuera de las 28 relaciones web `PKG-PR-REL-*`; solo podrá entrar mediante binding propietario aplicable;
+5. un target nativo o Expo no se normaliza a consumidor web por similitud de stack;
+6. la ausencia de una prueba específica requerida mantiene el gate correspondiente sin `PASS`.
+
+#### 30. Integración con CI014 y CI015
+
+CI006 deberá preservar:
+
+- snapshot anterior certificado y `rollback_ref` para el tratamiento posterior de CI014;
+- independencia entre consumidores para CI015;
+- prohibición de exigir despliegue simultáneo como condición ordinaria;
+- bloqueo de una propuesta cuando su adopción solo sería segura mediante sincronización simultánea no probada.
+
+CI006 no ejecuta rollback ni coordina despliegues multi-repositorio.
+
+#### 31. Bloqueos `PR-BLK-*`
+
+La materialización deberá reconocer exactamente los dieciocho bloqueos aprobados:
+
+| ID | Bloqueo | Propietario principal |
+| --- | --- | --- |
+| `PR-BLK-001` | package o versión objetivo no existe como release canónica | CI003 / propietario del package |
+| `PR-BLK-002` | tag, release, commit, tarball o integridad no coinciden | CI003 / release |
+| `PR-BLK-003` | manifest y lockfile no cambian como unidad coherente | consumidor |
+| `PR-BLK-004` | rango flotante, tag, URL Git o fuente local | actualizador / consumidor |
+| `PR-BLK-005` | falta compatibilidad para consumidor y conjunto objetivo | CI005 |
+| `PR-BLK-006` | comprobación obligatoria falla o carece de evidencia | propietario del gate |
+| `PR-BLK-007` | base, propuesta o lockfile cambió después de la evidencia | nueva ejecución |
+| `PR-BLK-008` | cambio `MAJOR` sin guía, migración o aprobación reforzada | package / consumidor |
+| `PR-BLK-009` | deprecación sin expediente, inventario o uso residual resuelto | política de deprecación / CI004..006 |
+| `PR-BLK-010` | actualización de seguridad restaura bypass o deja exposición sin tratar | seguridad / package |
+| `PR-BLK-011` | impacto de datos o Supabase sin tarea y rollback propietarios | tareas propietarias en `vento-shell` |
+| `PR-BLK-012` | no existe snapshot anterior certificado | política de rollback / CI014 |
+| `PR-BLK-013` | faltan revisores o aprobaciones aplicables | package / consumidor |
+| `PR-BLK-014` | identidad automatizada excede permisos o intenta merge/deploy/gates | gobierno CI / seguridad |
+| `PR-BLK-015` | cambios ajenos impiden atribución de compatibilidad y riesgo | consumidor |
+| `PR-BLK-016` | conjunto multi-package no es mínimo, cerrado o resoluble | release / compatibilidad |
+| `PR-BLK-017` | versión objetivo sustituida silenciosamente después de revisión | nuevo expediente |
+| `PR-BLK-018` | adopción requeriría despliegue simultáneo no probado | CI015 / paquetes E5 |
+
+Un bloqueo conserva causa, evidencia, propietario y condición de salida. No se normaliza como éxito por reintento, comentario, etiqueta o aprobación manual.
+
+#### 32. Autocertificación positiva del habilitador
+
+`SHELL-CI-006::GLOBAL` deberá demostrar, como mínimo, estos ocho escenarios sintéticos o aislados:
+
+1. `INITIAL_ADOPTION` elegible → propuesta atribuible con manifest y lockfile coherentes;
+2. `PATCH_UPDATE` compatible → propuesta mantenida de forma idempotente y evidencia vigente;
+3. `MINOR_UPDATE` compatible → escenarios adicionales declarados sin cambio incompatible;
+4. `MAJOR_UPDATE` completa → migración y revisión reforzada exigidas antes de quedar lista;
+5. `SECURITY_UPDATE` → prioridad sin auto-merge, bypass ni pérdida de rollback;
+6. `DEPRECATION_MIGRATION` → expediente `DEP-*` preservado y uso residual no cerrado por abrir el PR;
+7. `ROLLBACK_UPDATE` → snapshot certificado restaurado mediante historia revisable;
+8. conjunto multi-package mínimo cerrado → una sola propuesta del consumidor con versiones exactas y sin lockstep artificial.
+
+#### 33. Autocertificación negativa del habilitador
+
+La suite física deberá demostrar que cada uno de `PR-BLK-001..018` bloquea la propuesta o su avance al estado siguiente.
+
+**Conciliación:** 18 bloqueos contractuales, 18 casos negativos obligatorios, 0 bloqueos sin prueba.
+
+#### 34. Regresiones obligatorias del habilitador
+
+La implementación global deberá proteger, como mínimo, contra:
+
+1. convertir rango flotante en versión aceptable;
+2. aceptar lockfile con drift respecto del manifest;
+3. conservar evidencia después de cambiar `base_commit`;
+4. conservar checks o aprobaciones técnicas después de cambiar `proposal_commit`;
+5. sustituir silenciosamente la versión objetivo;
+6. crear dos propuestas equivalentes para el mismo expediente lógico;
+7. perder la historia de una propuesta supersedida;
+8. auto-fusionar una propuesta técnicamente correcta;
+9. auto-desplegar después del merge;
+10. escribir directamente en una rama protegida;
+11. reutilizar credenciales de publicación con privilegios de consumidor o viceversa;
+12. reutilizar resultados de otro consumidor;
+13. reutilizar compatibilidad de otra versión, artefacto o target;
+14. aceptar `NOT_APPLICABLE` para un gate universal;
+15. convertir `FAIL`, `BLOCKED`, `CANCELLED`, `TIMED_OUT` o `STALE` en `PASS` mediante reintento o aprobación manual;
+16. ejecutar o inferir una migración Supabase desde el repositorio consumidor.
+
+#### 35. Criterios de materialización de `SHELL-CI-006::GLOBAL`
+
+La futura instancia física podrá declararse materializada únicamente cuando:
+
+1. exista una sola implementación transversal en `vento-shell`;
+2. reconozca exactamente las cuatro familias base;
+3. reconozca exactamente los siete consumidores web base;
+4. conserve `PKG-PR-REL-001..028` sin faltantes, duplicados ni renumeración;
+5. conserve las siete clases de actualización;
+6. conserve los catorce estados y transiciones;
+7. conserve los 38 campos del expediente;
+8. reconozca los dieciséis gates y sus propietarios;
+9. reconozca los cuatro perfiles especializados;
+10. reconozca los dieciocho bloqueos;
+11. consuma evidencia vigente de CI001..CI005 según responsabilidad;
+12. materialice manifest y lockfile como unidad;
+13. soporte versiones exactas y conjuntos multi-package mínimos cerrados;
+14. invalide evidencia cuando cambien entradas materiales;
+15. preserve idempotencia, cierres y supersesiones;
+16. aplique privilegio mínimo y separación de identidades;
+17. pueda preparar y mantener una propuesta sin auto-merge o auto-deploy;
+18. mantenga Supabase y datos fuera de la autoridad del actualizador;
+19. soporte bindings adicionales solo desde contratos propietarios;
+20. autocertifique los 8 escenarios positivos, 18 bloqueos negativos y 16 regresiones definidos;
+21. no escriba en consumidores reales, no cree PR reales y no despliegue durante la autocertificación global.
+
+#### 36. Recuperación e idempotencia
+
+Reglas:
+
+1. una ejecución parcial no declara la propuesta lista;
+2. una escritura parcial de expediente no constituye evidencia suficiente;
+3. un reintento exacto no duplica el expediente lógico;
+4. una discrepancia de base, lockfile, release o evidencia produce bloqueo o invalidación;
+5. un fallo de un consumidor no altera expedientes de otro;
+6. una corrección del actualizador no reescribe expedientes históricos;
+7. una propuesta ya fusionada o cerrada conserva su historia;
+8. una versión objetivo nueva usa supersesión explícita;
+9. una recuperación nunca fuerza push, merge o deploy para “arreglar” el estado;
+10. un fallo del actualizador no modifica packages, releases ni consumidores fuera de su checkout aislado.
+
+#### 37. Estado documental conciliado
+
+| Métrica | Resultado |
+| --- | ---: |
+| Packages base | **4** |
+| Consumidores web base | **7** |
+| Relaciones `PKG-PR-REL-*` | **28** |
+| Clases de actualización | **7** |
+| Estados del ciclo de propuesta | **14** |
+| Campos del expediente `PKG-PR-*` | **38** |
+| Gates canónicos | **16** |
+| Gates universales | **15** |
+| Gates condicionales | **1** |
+| Perfiles especializados | **4** |
+| Bloqueos `PR-BLK-*` | **18** |
+| Escenarios positivos de autocertificación | **8** |
+| Casos negativos obligatorios | **18** |
+| Regresiones obligatorias | **16** |
+| Auto-merges autorizados | **0** |
+| Auto-deploys autorizados por el actualizador | **0** |
+| PR reales creados por este marcador | **0** |
+| Requisitos de prueba creados o modificados | **0** |
+
+#### 38. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** CI006 materializa el vehículo y la automatización de obligaciones ya existentes sobre comandos reproducibles, compatibilidad previa, rollback independiente, evidencia por package y pull request, identidad de repositorio y ambiente, identidad inmutable de release, cortes coordinados, deprecación y retiro. La tarea no introduce una nueva obligación empresarial independiente; convierte contratos aprobados en un habilitador global reutilizable y conserva la cobertura vigente sin alterar el registro.
+
+#### 39. Cobertura de prueba vigente reutilizada
+
+La cobertura existente se reutiliza sin modificación:
+
+- `TREQ-SHELL-005` protege comandos reproducibles y bloqueos de merge o despliegue según criticidad;
+- `TREQ-SHELL-006` exige pruebas propias y matriz de compatibilidad antes de publicar o adoptar, con adopción independiente por repositorio;
+- `TREQ-SHELL-007` exige rollback independiente y probado;
+- `TREQ-SHELL-008` exige declaración de requisitos afectados y resultados reproducibles por package y PR;
+- `TREQ-SHELL-009` exige identidad verificable de repositorio, commit y ambiente;
+- `TREQ-SHELL-036` protege identidad inmutable de release;
+- `TREQ-SHELL-037` protege cortes coordinados y dependencias internas exactas;
+- `TREQ-SHELL-038` protege deprecación, migración e inventario de consumidores;
+- `TREQ-SHELL-039` mantiene retiro y fin de soporte bloqueados hasta resolver consumidores, compatibilidad y rollback.
+
+Estas referencias son trazabilidad de cobertura vigente y no constituyen modificación del registro.
+
+#### 40. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | El marcador documental no materializa ni ejecuta el actualizador global. |
+| LOCAL | NOT_EXECUTED | El artefacto todavía no ha sido incorporado al checkout del usuario ni validado por sus scripts documentales. |
+| REMOTA | PASS | Se verificaron continuidad CI005→CI006→CI007, topología `GLOBAL_ENABLE_ONCE`, `SHELL-PKG-007`, `SHELL-PKG-008`, 28 relaciones, 7 clases, 14 estados, 38 campos, 16 gates, 4 perfiles, 18 bloqueos, CI005 `VERIFIED`, interfaz de compatibilidad vigente y cobertura 04A aplicable. |
+| OPERATIVA | NOT_EXECUTED | No se abrió, actualizó, fusionó ni desplegó ningún pull request real durante este marcador. |
+| FÍSICA | NOT_APPLICABLE | La materialización pertenece a `SHELL-CI-006::GLOBAL` después de aprobación documental y autorización física explícita. |
+
+#### 41. Criterios de aceptación
+
+`SHELL-CI-006` queda documentalmente completa cuando:
+
+- identifica `SHELL-CI-006::GLOBAL` como habilitador global único;
+- conserva exactamente 4 packages y 7 consumidores web base;
+- conserva exactamente `PKG-PR-REL-001..028`;
+- distingue la matriz de actualización de la matriz de compatibilidad;
+- conserva 7 clases de actualización;
+- conserva 14 estados y sus transiciones;
+- conserva los 38 campos del expediente;
+- conserva los 16 `PKG-GATE-*` y sus propietarios;
+- conserva 4 perfiles especializados;
+- conserva 18 `PR-BLK-*`;
+- consume releases CI003 y compatibilidad CI005 sin duplicarlas;
+- actualiza manifest y lockfile como una unidad coherente;
+- usa versiones exactas y conjuntos mínimos cerrados;
+- invalida checks y evidencia cuando cambia una entrada material;
+- preserva idempotencia y supersesión;
+- impide auto-merge, auto-deploy y push directo a ramas protegidas;
+- separa identidades de publicación, actualización, revisión, merge y despliegue;
+- mantiene `@vento/supabase` separado de migraciones y datos;
+- define integración con CI007..CI015 sin absorber sus responsabilidades;
+- define 8 casos positivos, 18 negativos y 16 regresiones para autocertificación;
+- no abre PR reales, no modifica consumidores, no publica releases y no ejecuta Supabase durante el marcador documental;
+- no crea ni modifica requisitos de prueba.
+
+#### 42. Límites
+
+Esta tarea no:
+
+- implementa físicamente `SHELL-CI-006::GLOBAL`;
+- crea workflows, bots, GitHub Apps, tokens o secretos;
+- elige Dependabot, Renovate u otro proveedor por inferencia;
+- crea ramas o pull requests reales;
+- modifica `package.json`, manifests o lockfiles reales de consumidores;
+- modifica packages compartidos;
+- publica tags, releases o registry;
+- fusiona cambios;
+- despliega consumidores;
+- configura protección de ramas o revisores;
+- ejecuta CI007..CI013;
+- ejecuta rollback de CI014;
+- coordina despliegue simultáneo;
+- incorpora ANIMA, PASS, TALENTO o móviles a las 28 relaciones base;
+- ejecuta cambios de Supabase, migraciones, RLS, RPC, datos o configuración;
+- crea, modifica, difiere, descarta u obsolete requisitos del registro 04A.
+
+#### 43. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CI-005 — Crear matriz de compatibilidad`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CI-006 — Crear actualización de consumidores mediante PR`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-007 — Probar NEXO antes de actualizar`
+
