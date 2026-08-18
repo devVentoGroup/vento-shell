@@ -7544,4 +7544,1057 @@ Esta tarea no:
 `SHELL-CI-015 — Evitar despliegue simultáneo obligatorio`
 
 
-### [ ] SHELL-CI-015 — Evitar despliegue simultáneo obligatorio
+### ✅ SHELL-CI-015 — Evitar despliegue simultáneo obligatorio
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CI-014 — Permitir rollback por repositorio
+**Tarea siguiente:** SHELL-CI-016 — Estandarizar un comando de pruebas automatizadas por repositorio
+**Tipo de tarea:** Habilitador global único — contrato documental de independencia ordinaria de despliegue entre repositorios
+**Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada el contrato con el que Vento OS deberá demostrar que un cambio ordinario puede desplegarse **por repositorio y ambiente como una secuencia de unidades independientes**, sin convertir la simultaneidad entre aplicaciones en una condición técnica de corrección, sin usar una ventana temporal mínima como sustituto de compatibilidad y sin exigir que todos los consumidores adopten al mismo tiempo una release, contrato, configuración o cambio compartido.
+
+La regla vinculante queda:
+
+```text
+UNIDADES DE DESPLIEGUE IDENTIFICADAS
++ ESTADO INICIAL EXACTO
++ ESTADO OBJETIVO EXACTO
++ DEPENDENCIAS EXPLÍCITAS
++ AL MENOS UN ORDEN SECUENCIAL VÁLIDO
++ CADA ESTADO INTERMEDIO SOPORTADO
++ COMPATIBILIDAD VIGENTE
++ LÍNEAS BASE APLICABLES
++ ROLLBACK INDEPENDIENTE DISPONIBLE
++ EVIDENCIA VIGENTE
+= DESPLIEGUE INDEPENDIENTE ELEGIBLE
+```
+
+Y, de forma fail-closed:
+
+```text
+DOS DEPLOYS LANZADOS CASI AL MISMO TIEMPO
+O MISMA VENTANA DE MANTENIMIENTO
+O BUILD VERDE EN CADA REPOSITORIO
+O MISMO TAG DE RELEASE
+O MISMO NÚMERO SEMVER
+O ORDEN MANUAL NO PROBADO
+O "DEPLOY ALL"
+≠ INDEPENDENCIA DE DESPLIEGUE
+```
+
+CI015 define y habilita la comprobación transversal de independencia. No despliega aplicaciones, no fusiona pull requests, no publica releases, no ejecuta rollback productivo, no crea migraciones y no convierte una coordinación operativa voluntaria en dependencia técnica obligatoria.
+
+#### 2. Resultado canónico
+
+`SHELL-CI-015` establece un único habilitador reutilizable para:
+
+1. identificar el conjunto exacto de repositorios implicados por un cambio;
+2. representar cada despliegue como una unidad `repositorio + ambiente + estado origen + estado destino`;
+3. distinguir cambios de un solo repositorio de cambios multi-repositorio;
+4. construir dependencias explícitas entre unidades cuando exista un orden necesario;
+5. demostrar que existe al menos una secuencia finita sin simultaneidad obligatoria;
+6. comprobar cada estado intermedio producido por esa secuencia;
+7. exigir compatibilidad vigente para packages y contratos compartidos;
+8. exigir líneas base de consumidor cuando correspondan;
+9. exigir que cada unidad disponga de recuperación independiente conforme a CI014;
+10. impedir que una banda SemVer, una declaración de peer dependency o un build aislado sustituyan evidencia de compatibilidad;
+11. impedir que un orden secuencial oculte un estado intermedio incompatible;
+12. bloquear ciclos de dependencias que solo puedan resolverse mediante despliegue simultáneo;
+13. exigir rediseño compatible cuando no exista una secuencia segura;
+14. permitir coordinación horaria voluntaria sin convertirla en requisito de corrección;
+15. soportar adopción escalonada de packages entre consumidores web;
+16. soportar coexistencia de versiones distintas dentro de las bandas realmente certificadas;
+17. mantener ANIMA fuera de cualquier supuesto de despliegue web sincronizado;
+18. tratar cambios de base de datos como dependencia externa propietaria, nunca como mutación implícita de CI015;
+19. soportar patrones de expansión y contracción cuando el owner correspondiente los haya aprobado;
+20. impedir que una configuración o flag inseguro se use como puente de compatibilidad;
+21. conservar un plan machine-readable de orden, estados intermedios, evidencias y bloqueos;
+22. invalidar el plan cuando cambie una entrada material;
+23. conservar intentos fallidos o bloqueados sin reescribir historia;
+24. producir una señal consumible por gates posteriores sin hacer auto-merge ni auto-deploy;
+25. autocertificar una sola vez `SHELL-CI-015::GLOBAL`;
+26. cerrar el mini-bloque CI007..CI015 con pruebas previas por consumidor, rollback independiente e independencia de despliegue;
+27. entregar a CI016 una frontera limpia: CI015 decide independencia y CI016 normaliza comandos de prueba;
+28. mantener cero mutaciones remotas durante el marcador documental;
+29. no crear ni modificar requisitos de prueba porque la obligación empresarial ya existe en el registro canónico.
+
+#### 3. Frontera de responsabilidad
+
+| Responsabilidad                                                | Propietario                                                   |
+| -------------------------------------------------------------- | ------------------------------------------------------------- |
+| pruebas propias del package                                    | `SHELL-CI-001`                                                |
+| build independiente                                            | `SHELL-CI-002`                                                |
+| release inmutable                                              | `SHELL-CI-003`                                                |
+| changelog y release notes                                      | `SHELL-CI-004`                                                |
+| compatibilidad package–consumidor                              | `SHELL-CI-005`                                                |
+| propuesta revisable de adopción o downgrade                    | `SHELL-CI-006`                                                |
+| línea base NEXO                                                | `SHELL-CI-007`                                                |
+| línea base FOGO                                                | `SHELL-CI-008`                                                |
+| línea base ORIGO                                               | `SHELL-CI-009`                                                |
+| línea base PULSO                                               | `SHELL-CI-010`                                                |
+| línea base VISO                                                | `SHELL-CI-011`                                                |
+| línea base NUMERA                                              | `SHELL-CI-012`                                                |
+| línea base ANIMA                                               | `SHELL-CI-013`                                                |
+| rollback independiente por repositorio                         | `SHELL-CI-014`                                                |
+| elegibilidad de despliegue secuencial sin lockstep obligatorio | `SHELL-CI-015`                                                |
+| interfaz homogénea de comandos de prueba                       | `SHELL-CI-016`                                                |
+| verificación automática del registro de requisitos             | `SHELL-CI-017`                                                |
+| bloqueo de merge o despliegue por pruebas obligatorias         | `SHELL-CI-018`                                                |
+| publicación de evidencia por package y repositorio             | `SHELL-CI-019`                                                |
+| ejecución, readiness, cutover, hypercare y cierre por package  | `SHELL-CI-020..024`                                           |
+| cambios, migraciones, backup y restauración de Supabase        | tarea propietaria del BLOQUE R y `AUTH-DB-029` cuando aplique |
+
+CI015 no reemplaza CI005, no decide compatibilidad por inferencia, no implementa el motor de despliegue de cada repositorio y no absorbe los gates posteriores.
+
+#### 4. Topología de trabajo
+
+`PHASE-03-T-CI-FOUNDATION` aplica `GLOBAL_ENABLE_ONCE` a `SHELL-CI-015`.
+
+```text
+MARCADOR CANÓNICO
+SHELL-CI-015
+→ define una sola vez el contrato transversal de independencia
+
+INSTANCIA FÍSICA FUTURA
+SHELL-CI-015::GLOBAL
+→ materializa y autocertifica una sola vez el habilitador
+
+DESPLIEGUES POSTERIORES
+→ reutilizan el habilitador
+→ producen una evaluación nueva para el cambio y ambiente concretos
+→ no vuelven a implementar CI015
+```
+
+La autocertificación podrá utilizar repositorios lógicos, grafos sintéticos, manifests sintéticos, releases de prueba y estados simulados. No necesita ejecutar despliegues productivos ni coordinar aplicaciones reales.
+
+#### 5. Base vinculante desde CI003, CI005, CI006 y CI014
+
+CI015 conserva cuatro decisiones anteriores obligatorias.
+
+**Desde CI003:**
+
+- las releases publicadas son identidades inmutables;
+- consumidores distintos pueden adoptar una release en momentos distintos;
+- una corrección nueva utiliza una identidad nueva;
+- la independencia no puede lograrse mutando una release histórica.
+
+**Desde CI005:**
+
+- la compatibilidad se demuestra por combinación exacta;
+- la matriz web base conserva 28 relaciones package–consumidor;
+- la adopción es independiente por repositorio;
+- una banda soportada solo existe donde la evidencia realmente la demuestra;
+- evidencia de un consumidor no certifica otro;
+- evidencia stale no puede justificar un estado intermedio.
+
+**Desde CI006:**
+
+- el PR de un consumidor es una propuesta aislada y revisable;
+- el merge de un consumidor no obliga al de otro;
+- una adopción multi-package debe ser mínima, cerrada y resoluble;
+- existe bloqueo cuando una adopción requeriría despliegue simultáneo no probado;
+- CI006 no coordina despliegues multi-repositorio.
+
+**Desde CI014:**
+
+- cada rollback es una unidad por repositorio y ambiente;
+- la recuperación no implica rollback global;
+- version skew soportado es una condición normal;
+- una unidad que solo sea segura con rollback coordinado de otros repositorios no puede presentarse como independiente;
+- datos, configuración, caché y Supabase deben conservar sus fronteras propietarias.
+
+CI015 consume estas decisiones sin reabrirlas.
+
+#### 6. Universo inicial gobernado
+
+El habilitador gobierna inicialmente los ocho repositorios con identidad ya establecida en CI014:
+
+1. `devVentoGroup/vento-shell`;
+2. `devVentoGroup/vento-nexo`;
+3. `devVentoGroup/vento-fogo`;
+4. `devVentoGroup/vento-origo`;
+5. `devVentoGroup/vento-pulso`;
+6. `devVentoGroup/vento-viso`;
+7. `devVentoGroup/vento-numera`;
+8. `devVentoGroup/vento-anima`.
+
+Para packages web, CI015 conserva los siete consumidores base de CI005 y sus 28 relaciones históricas. ANIMA permanece como target nativo adicional únicamente cuando un contrato propietario aprobado declare la relación aplicable.
+
+Una identidad futura no ingresa por semejanza de nombre. Debe tener repositorio, owner, ambiente y contrato de despliegue aprobados.
+
+#### 7. Definición de independencia
+
+Un despliegue es independiente cuando su corrección no depende de que otra unidad cambie en el mismo instante.
+
+La independencia admite dos formas:
+
+- **cualquier orden:** las unidades pueden desplegarse en cualquier secuencia y todos los estados intermedios aplicables son soportados;
+- **orden compatible:** existe una dependencia de orden explícita, pero cada paso puede terminar, verificarse y permanecer operativo antes de iniciar el siguiente.
+
+No es independencia:
+
+- una secuencia en la que el primer paso deja el sistema incompatible hasta que termine el segundo;
+- un plan correcto únicamente si la separación temporal entre dos deploys es prácticamente cero;
+- un script `deploy all`;
+- una barrera que espera a que todos los repositorios estén listos y luego los muta como una sola operación;
+- una ventana de mantenimiento usada para esconder una incompatibilidad de contrato.
+
+La coordinación operativa es permitida. La simultaneidad como requisito técnico es lo que CI015 elimina.
+
+#### 8. Unidad exacta de despliegue
+
+Cada unidad deberá atribuirse, como mínimo, a:
+
+```text
+deployment_unit_id
+repository
+environment
+owner
+change_ref
+source_branch
+source_commit
+source_artifact
+target_commit
+target_artifact
+manifest_before_identity
+manifest_target_identity
+lockfile_before_identity
+lockfile_target_identity
+package_set_before
+package_set_target
+contract_set_before
+contract_set_target
+configuration_before_identity
+configuration_target_identity
+database_state_ref
+compatibility_refs
+consumer_baseline_ref
+release_refs
+rollback_ref
+depends_on_units
+required_validation_set
+unit_result
+```
+
+La unidad no se identifica solo por repositorio, nombre de rama, versión o timestamp.
+
+#### 9. Unidad exacta del plan de independencia
+
+Cada evaluación multi-repositorio deberá conservar, como mínimo:
+
+```text
+deployment_independence_id
+environment
+change_ref
+requested_by
+approved_by
+initial_system_state_identity
+target_system_state_identity
+deployment_units
+dependency_edges
+candidate_orders
+selected_order
+intermediate_states
+compatibility_evidence
+baseline_evidence
+rollback_evidence
+database_dependency_evidence
+configuration_evidence
+validation_set
+started_at
+completed_at
+result
+invalidation_reason
+evidence_refs
+```
+
+La identidad del plan cambia cuando cambia una unidad, dependencia, orden seleccionado o evidencia material.
+
+#### 10. Estado inicial y estado objetivo
+
+CI015 evalúa una transición entre dos vectores de estado:
+
+```text
+ESTADO INICIAL
+= identidad desplegada de cada repositorio aplicable
+
+ESTADO OBJETIVO
+= identidad objetivo de cada repositorio aplicable
+```
+
+Un repositorio sin cambio conserva la misma identidad en ambos vectores.
+
+El hecho de aparecer en el expediente no obliga a desplegarlo.
+
+#### 11. Estados intermedios obligatorios
+
+Para un orden de `n` unidades, CI015 deberá evaluar:
+
+- el estado inicial;
+- cada uno de los `n` prefijos después de completar una unidad;
+- el estado objetivo.
+
+Si el orden es:
+
+```text
+A → B → C
+```
+
+los estados obligatorios son:
+
+```text
+S0 = A0 B0 C0
+S1 = A1 B0 C0
+S2 = A1 B1 C0
+S3 = A1 B1 C1
+```
+
+`S1` y `S2` deben ser estados soportados reales. No se consideran transitorios descartables por durar pocos minutos.
+
+#### 12. Grafo de dependencias
+
+Las dependencias entre unidades forman un grafo dirigido.
+
+Una arista:
+
+```text
+A → B
+```
+
+significa que A debe completar su transición y verificación antes de iniciar B.
+
+Reglas:
+
+1. toda arista debe conservar causa y evidencia;
+2. una arista no convierte un estado intermedio incompatible en válido;
+3. un orden candidato debe respetar todas las aristas;
+4. un ciclo de dependencias duras implica que no existe secuencia ordinaria válida;
+5. un ciclo no se resuelve declarando “simultáneo”;
+6. el plan queda `BLOCKED` hasta que el owner del cambio introduzca una frontera compatible;
+7. varias secuencias válidas pueden coexistir;
+8. el habilitador puede seleccionar una secuencia determinista sin negar las demás.
+
+#### 13. Clasificación del plan
+
+CI015 distingue:
+
+| Clasificación       | Condición                                                                      |
+| ------------------- | ------------------------------------------------------------------------------ |
+| `SINGLE_REPOSITORY` | solo una unidad cambia y sus dependencias externas permanecen soportadas       |
+| `ANY_ORDER`         | varias unidades cambian y cualquier orden evaluado conserva estados soportados |
+| `ORDERED`           | existe al menos un orden secuencial válido con dependencias explícitas         |
+| `BLOCKED_LOCKSTEP`  | ninguna secuencia válida existe sin un estado intermedio incompatible          |
+
+`BLOCKED_LOCKSTEP` nunca se convierte en `PASS` por lanzar comandos en paralelo.
+
+#### 14. Compatibilidad de cada estado intermedio
+
+Cada estado intermedio deberá resolver, cuando aplique:
+
+1. versiones exactas de packages;
+2. contratos compartidos;
+3. APIs consumidas;
+4. configuración versionada;
+5. esquema y migraciones visibles;
+6. runtime;
+7. línea base del consumidor;
+8. release identity;
+9. restricciones de compatibilidad;
+10. rollback disponible.
+
+Para relaciones package–consumidor, CI005 es la autoridad de compatibilidad.
+
+Una combinación no ejecutada no es compatible por similitud de stack, SemVer o código.
+
+#### 15. Ventana de compatibilidad
+
+La independencia no exige soporte indefinido, pero sí una ventana explícita y vigente.
+
+La ventana se deriva de:
+
+- bandas soportadas por CI005;
+- políticas de deprecación vigentes;
+- fechas y restricciones del contrato propietario;
+- soporte real de runtime, package y consumidor.
+
+El plan deberá registrar la condición que cierra la ventana.
+
+Si la ventana vence antes de completar un rollout, la evidencia deja de justificar los estados restantes y el plan pasa a `STALE` o `BLOCKED` según el caso.
+
+No se define una ventana artificial de segundos para simular independencia.
+
+#### 16. Adopción escalonada de packages
+
+Para un package compartido:
+
+```text
+RELEASE INMUTABLE CI003
+→ COMPATIBILIDAD CI005
+→ PROPUESTA CI006 PARA CONSUMIDOR A
+→ BASELINE A
+→ DESPLIEGUE A
+→ VERIFICACIÓN A
+→ CONSUMIDOR B PUEDE PERMANECER EN SU VERSIÓN SOPORTADA
+→ PROPUESTA B CUANDO CORRESPONDA
+```
+
+Reglas:
+
+1. los consumidores fijan versiones exactas;
+2. un consumidor puede adoptar sin obligar a los demás;
+3. el package publicado no se modifica para acomodar adopciones posteriores;
+4. cada consumidor mantiene su propio manifest y lockfile;
+5. la compatibilidad de la versión vieja y la nueva debe estar demostrada para los consumidores que las usan;
+6. un cambio multi-package dentro de un consumidor puede ser una sola unidad si CI006 demuestra que el conjunto es mínimo, cerrado y resoluble;
+7. ese conjunto no obliga a otros consumidores a cambiar.
+
+#### 17. Publicación coordinada de packages frente a despliegue lockstep
+
+CI015 no prohíbe un corte coordinado de packages cuando sus dependencias internas exactas lo exijan.
+
+La distinción es:
+
+```text
+PUBLICAR UN CONJUNTO CERRADO DE RELEASES COMPATIBLES
+≠
+OBLIGAR A TODOS LOS CONSUMIDORES A DESPLEGAR AL MISMO TIEMPO
+```
+
+Las familias sin cambio distribuible no reciben versiones artificiales y los consumidores adoptan según compatibilidad y expediente propio.
+
+#### 18. Contratos y APIs compartidos
+
+Un cambio de contrato entre productor y consumidor deberá permitir al menos un orden seguro.
+
+Patrones admisibles, cuando su owner los apruebe:
+
+- extensión aditiva compatible;
+- versión paralela del contrato;
+- adapter temporal;
+- fase de compatibilidad previa;
+- deprecación con ventana soportada;
+- activación diferida después de que los consumidores estén preparados.
+
+No es admisible:
+
+```text
+PRODUCTOR NUEVO SOLO FUNCIONA CON CONSUMIDOR NUEVO
++
+CONSUMIDOR NUEVO SOLO FUNCIONA CON PRODUCTOR NUEVO
+=
+DESPLEGAR AMBOS A LA VEZ
+```
+
+Ese caso queda `BLOCKED_LOCKSTEP` hasta romper el ciclo.
+
+#### 19. Base de datos y Supabase
+
+CI015 trata el estado de base de datos como una dependencia compartida, no como una unidad que pueda modificar por inferencia.
+
+Para cambios que afecten schema o datos:
+
+```text
+EXPANSIÓN COMPATIBLE APROBADA POR EL OWNER
+→ CÓDIGO VIEJO Y NUEVO PUEDEN COEXISTIR
+→ REPOSITORIOS MIGRAN EN SECUENCIA
+→ SE DEMUESTRA AUSENCIA DE CONSUMIDORES ANTIGUOS
+→ CONTRACCIÓN POSTERIOR POR SU OWNER
+```
+
+Reglas:
+
+1. CI015 no crea ni ejecuta migraciones;
+2. toda modificación VENTO de Supabase se crea, versiona, documenta y ejecuta desde `devVentoGroup/vento-shell`;
+3. una migración destructiva que rompe inmediatamente a un consumidor vigente produce bloqueo;
+4. un repositorio consumidor no modifica schema, RLS, RPC, grants, Storage, Realtime, Edge Functions ni datos para “desbloquear” su deploy;
+5. el rollback de base de datos permanece bajo `AUTH-DB-029` cuando corresponda;
+6. una fase de contracción solo puede ejecutarse cuando su owner demuestre que los consumidores que dependían de la forma anterior ya no están activos.
+
+#### 20. Configuración y feature flags
+
+Una configuración puede facilitar independencia únicamente si:
+
+1. está versionada o tiene identidad verificable;
+2. su valor por ambiente está controlado;
+3. el estado previo y posterior son compatibles con los repositorios que coexistirán;
+4. el default no abre permisos ni bypasses;
+5. no contiene secretos en evidencia;
+6. una activación puede posponerse hasta que las unidades necesarias estén preparadas;
+7. la desactivación o rollback conserva una ruta segura.
+
+Un flag no convierte código incompatible en compatible por declaración.
+
+#### 21. ANIMA y despliegue nativo
+
+ANIMA conserva su clasificación `NATIVE_REACT_NATIVE_EXPO`.
+
+Por tanto:
+
+1. no se asume que una versión nativa instalada cambie al mismo tiempo que un backend o una aplicación web;
+2. un backend o contrato consumido por ANIMA debe respetar la compatibilidad realmente aprobada para las versiones nativas soportadas;
+3. Expo Web no convierte ANIMA en consumidor web de `@vento/ui-web`;
+4. la evidencia de un target web no certifica un target nativo;
+5. un cambio que exija actualización instantánea de todos los clientes nativos queda bloqueado hasta disponer de una frontera compatible.
+
+#### 22. Pausas y fallos durante un rollout
+
+Un rollout independiente debe poder detenerse después de cualquier unidad completada.
+
+Si el proceso se pausa:
+
+- el último estado intermedio verificado debe permanecer soportado durante su ventana;
+- no se lanza la siguiente unidad solo para “salir” de un estado incompatible;
+- el owner puede reanudar únicamente con evidencia vigente.
+
+Si una unidad falla:
+
+1. se conserva la evidencia del fallo;
+2. no se despliegan automáticamente las unidades restantes;
+3. no se ejecuta rollback global;
+4. CI014 puede evaluar rollback de la unidad afectada o de otra unidad únicamente como operación explícita y compatible;
+5. el plan restante se reevalúa si cambia cualquier identidad material.
+
+#### 23. Rollback durante despliegue parcial
+
+Cada unidad debe conservar `rollback_ref`.
+
+Después de un despliegue parcial:
+
+- un rollback puede devolver una unidad a su snapshot anterior si CI014 lo declara elegible;
+- el estado resultante también debe satisfacer compatibilidad;
+- volver una unidad atrás no obliga a volver las demás;
+- si el rollback produciría una combinación incompatible, el plan queda bloqueado y requiere otra recuperación propietaria;
+- “rollback all” no existe como fallback implícito.
+
+CI015 usa CI014 como mecanismo de recuperación, no lo redefine.
+
+#### 24. Coordinación operativa voluntaria
+
+Los owners pueden acordar:
+
+- una misma ventana de mantenimiento;
+- una secuencia supervisada;
+- una sala de incidente;
+- una hora común de inicio;
+- una pausa entre unidades;
+- un plan de comunicación conjunto.
+
+Nada de ello autoriza a declarar compatible una combinación que no lo sea.
+
+La evidencia de independencia debe seguir siendo válida aunque la coordinación humana sea perfecta.
+
+#### 25. Simultaneidad no demostrable
+
+CI015 no intenta probar que dos mutaciones remotas ocurrieron en el mismo instante.
+
+La simultaneidad distribuida no se usa como propiedad de seguridad porque:
+
+- los proveedores pueden iniciar o terminar en momentos distintos;
+- la propagación de artefactos y configuración puede variar;
+- un despliegue puede fallar parcialmente;
+- un cliente móvil puede permanecer desactualizado;
+- una ejecución puede ser reintentada;
+- un repositorio puede avanzar mientras otro queda bloqueado.
+
+La arquitectura debe tolerar estas diferencias mediante compatibilidad demostrada.
+
+#### 26. Concurrencia
+
+Antes de evaluar o ejecutar una unidad posterior:
+
+1. se vuelve a identificar el estado vigente de las unidades relevantes;
+2. un deploy, hotfix, rollback, cambio de manifest, lockfile, contrato, configuración o schema puede invalidar el plan;
+3. una unidad no puede asumir que otro repositorio sigue en el estado observado durante la preparación;
+4. si cambia una entrada material, el plan previo pasa a `STALE`;
+5. la evaluación se recalcula desde el estado real.
+
+CI015 no resuelve concurrencia mediante un bloqueo global permanente de todos los repositorios.
+
+#### 27. Semántica de resultado
+
+El habilitador reutilizará:
+
+```text
+PENDING
+RUNNING
+PASS
+FAIL
+BLOCKED
+CANCELLED
+TIMED_OUT
+STALE
+```
+
+`NOT_APPLICABLE` podrá utilizarse únicamente para comprobaciones realmente condicionales.
+
+Para el plan global:
+
+- `PASS`: existe al menos una secuencia válida y todos sus estados intermedios obligatorios están certificados;
+- `BLOCKED`: falta evidencia obligatoria, existe dependencia irresuelta o solo queda lockstep;
+- `FAIL`: una comprobación ejecutada demostró incumplimiento;
+- `STALE`: una entrada material cambió después de preparar la evaluación.
+
+Un `PASS` no despliega nada.
+
+#### 28. Secuencia obligatoria de evaluación
+
+La evaluación reusable deberá seguir:
+
+1. fijar ambiente;
+2. fijar `change_ref`;
+3. identificar repositorios afectados;
+4. capturar estado inicial;
+5. definir estado objetivo;
+6. crear unidades por repositorio;
+7. resolver releases, packages y contratos;
+8. resolver compatibilidad CI005;
+9. resolver propuestas CI006 cuando apliquen;
+10. resolver líneas base CI007..CI013;
+11. resolver rollback CI014;
+12. resolver dependencias de base de datos;
+13. resolver configuración;
+14. construir el grafo de dependencias;
+15. detectar ciclos;
+16. enumerar o calcular órdenes candidatos;
+17. seleccionar un orden determinista válido;
+18. materializar cada estado intermedio;
+19. validar cada estado intermedio;
+20. comprobar ventana de compatibilidad;
+21. comprobar frescura;
+22. consolidar evidencia;
+23. emitir resultado.
+
+No se omiten los pasos 18 a 20 porque los deploys estén programados en la misma ventana.
+
+#### 29. Evidencia machine-readable
+
+La evidencia deberá contener, como mínimo:
+
+- identidad completa del plan;
+- ambiente;
+- `change_ref`;
+- unidades;
+- estado inicial;
+- estado objetivo;
+- aristas de dependencia;
+- orden o órdenes evaluados;
+- orden seleccionado;
+- estados intermedios;
+- compatibilidad por estado;
+- líneas base aplicables;
+- releases;
+- manifests;
+- lockfiles;
+- packages;
+- contratos;
+- estado de base de datos referenciado;
+- configuración referenciada;
+- rollback por unidad;
+- ventanas de soporte;
+- bloqueos;
+- invalidaciones;
+- timestamps;
+- resultado;
+- referencias a evidencia externa.
+
+No puede declararse `PASS` omitiendo un prefijo intermedio del orden seleccionado.
+
+#### 30. Invalidación obligatoria
+
+El plan pasa a `STALE` si cambia materialmente:
+
+- repositorio;
+- ambiente;
+- `change_ref`;
+- commit origen o destino;
+- artefacto;
+- manifest;
+- lockfile;
+- package set;
+- contract set;
+- release;
+- compatibilidad;
+- línea base;
+- dependencia entre unidades;
+- schema o migraciones;
+- configuración;
+- runtime;
+- rollback ref;
+- ventana de soporte;
+- owner;
+- aprobación;
+- validaciones;
+- contrato CI015.
+
+No se actualiza solo un hash para reutilizar el resto de la evidencia.
+
+#### 31. Condición de bloqueo por lockstep
+
+Una propuesta queda bloqueada cuando:
+
+```text
+NO EXISTE ORDEN SECUENCIAL
+QUE MANTENGA TODOS LOS ESTADOS INTERMEDIOS SOPORTADOS
+```
+
+La condición de salida es una modificación propietaria del cambio que produzca al menos una secuencia válida, por ejemplo mediante:
+
+- contrato aditivo;
+- versión paralela;
+- adapter temporal;
+- release compatible;
+- expansión de schema;
+- configuración versionada segura;
+- fase de deprecación;
+- separación del cambio en unidades compatibles.
+
+CI015 no implementa ese rediseño. Lo exige al owner del cambio correspondiente.
+
+#### 32. Prohibición de lockstep artificial
+
+Queda prohibido introducir como “solución”:
+
+- una única versión global de todas las aplicaciones;
+- un tag global que sustituya identidades de repositorio;
+- un manifest compartido que obligue a todos los consumidores a la misma versión;
+- una rama global usada como fuente de deploy de varios repositorios;
+- un script que falle si un consumidor todavía está en una versión soportada anterior;
+- una regla de CI que exija merge coordinado sin necesidad contractual;
+- una release artificial para una familia sin cambios;
+- un rollback global para compensar un deploy parcial.
+
+La independencia se demuestra por compatibilidad, no por uniformidad forzada.
+
+#### 33. Relación con deprecación y retiro
+
+Una deprecación o retiro no puede crear lockstep al final de su ventana.
+
+Antes de retirar una superficie o línea:
+
+1. los consumidores aplicables deben estar inventariados;
+2. la compatibilidad de la línea objetivo debe estar demostrada;
+3. los consumidores deben disponer de una ruta de adopción independiente;
+4. debe existir rollback soportado;
+5. el retiro no debe obligar a una actualización simultánea de los repositorios restantes.
+
+CI015 consume las decisiones de deprecación y retiro sin acortar sus ventanas.
+
+#### 34. Relación con CI016..CI019
+
+CI015 cierra el mini-bloque actual y no absorbe el siguiente.
+
+- CI016 normaliza la interfaz de comandos de pruebas;
+- CI017 verifica automáticamente el registro de requisitos;
+- CI018 convierte fallos obligatorios en bloqueos de merge o deploy;
+- CI019 publica evidencia por package y repositorio.
+
+La futura materialización de CI015 debe producir una salida machine-readable que estos gates puedan consumir sin redefinir la semántica de independencia.
+
+#### 35. Relación con `SHELL-CI-020..024`
+
+El ciclo por package podrá consumir CI015 así:
+
+```text
+READINESS DEL PACKAGE
+→ CAMBIO Y REPOSITORIOS AFECTADOS CONOCIDOS
+→ CI015 DEMUESTRA SECUENCIA INDEPENDIENTE
+→ CUTOVER EJECUTA SOLO LA UNIDAD AUTORIZADA
+→ SI FALLA: CI014 EVALÚA RECUPERACIÓN
+→ HYPERCARE
+→ CIERRE
+```
+
+CI015 no certifica readiness, cutover, hypercare ni cierre. Solo certifica que la estrategia no necesita lockstep técnico entre repositorios.
+
+#### 36. Cierre del mini-bloque CI007..CI015
+
+Al completar CI015, el mini-bloque queda conceptualmente cerrado con esta cadena:
+
+```text
+CI007..CI013
+→ cada consumidor dispone de contrato de línea base previa
+
+CI014
+→ cada repositorio dispone de contrato de rollback independiente
+
+CI015
+→ un cambio ordinario debe admitir despliegue secuencial con estados intermedios soportados
+```
+
+Resultado del mini-bloque:
+
+- prueba previa por consumidor;
+- compatibilidad atribuible;
+- adopción aislada;
+- rollback por repositorio;
+- version skew soportado;
+- despliegue ordinario sin simultaneidad obligatoria;
+- handoff limpio hacia automatización, evidencia y gates.
+
+No queda una responsabilidad del mini-bloque diferida sin owner.
+
+#### 37. Casos positivos obligatorios
+
+La futura instancia `SHELL-CI-015::GLOBAL` deberá demostrar, como mínimo:
+
+1. cambio de un solo repositorio con dependencias externas compatibles;
+2. dos repositorios compatibles en cualquier orden;
+3. dos repositorios con un único orden válido y estado intermedio soportado;
+4. adopción escalonada de una release compartida por consumidores distintos;
+5. consumidor antiguo y consumidor nuevo coexistiendo dentro de banda soportada;
+6. cambio multi-package mínimo y cerrado dentro de un solo consumidor sin obligar a otros;
+7. expansión de schema aprobada que permite coexistencia de código viejo y nuevo;
+8. configuración versionada segura que difiere activación sin bypass;
+9. ANIMA permaneciendo en una versión soportada mientras cambia un backend aplicable;
+10. rollout de tres unidades detenido después de la primera con estado todavía soportado;
+11. fallo de una unidad seguido de evaluación CI014 sin rollback global;
+12. repetición exacta de la evaluación produciendo la misma identidad lógica y el mismo orden determinista.
+
+#### 38. Casos negativos obligatorios
+
+La futura instancia deberá bloquear, como mínimo:
+
+1. repositorio desconocido;
+2. ambiente desconocido;
+3. unidad sin owner;
+4. estado origen no coincidente con el desplegado;
+5. objetivo sin identidad exacta;
+6. release no verificable;
+7. manifest y lockfile inconsistentes;
+8. package set flotante o no resuelto;
+9. compatibilidad ausente;
+10. relación declarada incompatible;
+11. evidencia de compatibilidad de otro consumidor;
+12. línea base de otro consumidor;
+13. target que exige contrato retirado;
+14. ciclo A requiere B nuevo y B requiere A nuevo;
+15. plan cuya única condición de éxito es lanzar dos deploys simultáneamente;
+16. ventana de compatibilidad expresada solo como segundos entre deploys;
+17. `deploy all` usado como unidad;
+18. migración destructiva aplicada antes de retirar consumidores antiguos;
+19. modificación de Supabase intentada desde un consumidor;
+20. configuración puente no versionada;
+21. flag que reabre un bypass o amplía permisos;
+22. supuesto de actualización instantánea de ANIMA;
+23. estado intermedio no probado;
+24. rollback global automático como recuperación de un fallo parcial.
+
+#### 39. Regresiones obligatorias del habilitador
+
+El harness deberá conservar protección contra:
+
+1. build verde interpretado como independencia;
+2. rango SemVer interpretado como compatibilidad ejecutada;
+3. mismo timestamp de deploy interpretado como atomicidad;
+4. orden manual sin validar estados intermedios;
+5. omitir el primer o último prefijo de una secuencia;
+6. evidencia de otro ambiente;
+7. evidencia de otro consumidor;
+8. evidencia stale;
+9. publicación coordinada de packages convertida en obligación de deploy coordinado;
+10. versión artificial de un package sin cambios para mantener lockstep;
+11. un tag global sustituyendo commits por repositorio;
+12. un lock global de todos los repositorios como estrategia permanente;
+13. ANIMA tratada como consumidor web;
+14. schema incompatible ignorado porque “la ventana es corta”;
+15. migración de base de datos implícita;
+16. secreto incluido en evidencia de configuración;
+17. auto-merge o auto-deploy introducido por el habilitador;
+18. rollback global implícito;
+19. ciclo de dependencias ocultado seleccionando un orden arbitrario;
+20. `PASS` emitido antes de validar todos los estados intermedios obligatorios.
+
+#### 40. Materialización futura de `SHELL-CI-015::GLOBAL`
+
+La instancia global podrá declararse materializada únicamente cuando exista, dentro de autorización física expresa:
+
+1. contrato machine-readable del plan de independencia;
+2. catálogo exacto de repositorios gobernados;
+3. captura de estado inicial y objetivo;
+4. unidad por repositorio y ambiente;
+5. grafo de dependencias;
+6. detección de ciclos;
+7. cálculo determinista de orden;
+8. evaluación de estados intermedios;
+9. integración con releases CI003;
+10. integración con compatibilidad CI005;
+11. integración con expedientes CI006;
+12. integración con líneas base CI007..CI013;
+13. integración con rollback CI014;
+14. tratamiento de Supabase como dependencia propietaria;
+15. tratamiento de configuración;
+16. soporte de ANIMA nativa;
+17. ventanas de compatibilidad;
+18. detección de concurrencia y stale;
+19. estados fail-closed;
+20. casos positivos;
+21. casos negativos;
+22. regresiones del habilitador;
+23. evidencia machine-readable;
+24. preservación de intentos fallidos;
+25. cero dependencia de simultaneidad;
+26. cero mutación de releases históricas;
+27. cero auto-merge;
+28. cero auto-deploy productivo durante autocertificación;
+29. cero cambios de Supabase durante autocertificación;
+30. cero secretos reales;
+31. cero datos productivos;
+32. identidad de implementación y commit reproducibles.
+
+Los archivos, scripts, adapters y detalles físicos concretos se resolverán contra el checkout actualizado durante la instancia. El marcador documental no presupone nombres de archivos de implementación.
+
+#### 41. Estado documental conciliado
+
+| Métrica                                                              |              Resultado |
+| -------------------------------------------------------------------- | ---------------------: |
+| Topología CI015                                                      | **GLOBAL_ENABLE_ONCE** |
+| Instancia física actual de CI015                                     |                  **0** |
+| Instancias globales CI001..CI014 declaradas VERIFIED en el iniciador |                 **14** |
+| Repositorios iniciales gobernados                                    |                  **8** |
+| Consumidores web base de CI005                                       |                  **7** |
+| Relaciones web base conservadas                                      |                 **28** |
+| Casos positivos mínimos de la futura autocertificación               |                 **12** |
+| Casos negativos mínimos                                              |                 **24** |
+| Regresiones mínimas                                                  |                 **20** |
+| Auto-merge autorizado por CI015                                      |                  **0** |
+| Auto-deploy productivo durante autocertificación                     |                  **0** |
+| Cambios Supabase autorizados durante el marcador                     |                  **0** |
+| Requisitos de prueba creados o modificados                           |                  **0** |
+
+La tarea define el contrato global. La implementación física permanece reservada a `SHELL-CI-015::GLOBAL`.
+
+#### 42. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** la obligación empresarial de desplegar actualizaciones por repositorio sin exigir actualización simultánea, conservar compatibilidad entre versiones, disponer de rollback independiente, identificar el ambiente y publicar evidencia reproducible ya existe en el registro canónico. CI015 concreta el habilitador transversal que hará verificable esa obligación sin introducir una regla empresarial nueva ni cambiar requisitos históricos.
+
+#### 43. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, CI015 reutiliza:
+
+- `TREQ-SHELL-005`, comandos reproducibles y bloqueo de merge o despliegue según criticidad;
+- `TREQ-SHELL-006`, pruebas propias, matriz de compatibilidad y despliegue/adopción independiente por repositorio sin actualización simultánea;
+- `TREQ-SHELL-007`, rollback independiente y compatibilidad con consumidores en versiones distintas;
+- `TREQ-SHELL-008`, trazabilidad de requisitos afectados y resultados reproducibles;
+- `TREQ-SHELL-009`, identidad verificable de repositorio, commit y ambiente;
+- `TREQ-SHELL-036`, identidad inmutable de package y release;
+- `TREQ-SHELL-037`, versiones y releases independientes sin lockstep artificial;
+- `TREQ-SHELL-038`, deprecación con inventario, ventana y migración soportada;
+- `TREQ-SHELL-039`, retiro bloqueado hasta completar compatibilidad, pruebas y rollback;
+- `TREQ-AUTH-015`, auditoría correlacionable de operaciones y cambios.
+
+Estas referencias documentan cobertura vigente y no modifican 04A.
+
+#### 44. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                                                                                                        |
+| --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador documental no materializa el habilitador ni ejecuta build.                                                                                                                                                                                                                                                                                                           |
+| LOCAL     | NOT_EXECUTED   | El artefacto todavía no ha sido incorporado ni validado contra el checkout local del usuario.                                                                                                                                                                                                                                                                                    |
+| REMOTA    | PASS           | Se contrastaron en lectura remota protocolo, contrato de entrega, manifest, ruta, secuencia activa, topología, políticas de formato/desarrollo, archivo propietario, CI005/CI006, registro 04A aplicable, siguiente mini-bloque y scripts declarados en `package.json`; el iniciador local vigente confirma CI014::GLOBAL como VERIFIED y CI015 como objetivo documental actual. |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutó deploy, rollback, merge, release, actualización de consumidor, configuración ni cambio de Supabase.                                                                                                                                                                                                                                                                |
+| FÍSICA    | NOT_APPLICABLE | La materialización corresponde a la futura `SHELL-CI-015::GLOBAL` después de aprobación documental y autorización física separada.                                                                                                                                                                                                                                               |
+
+#### 45. Criterios de aceptación
+
+`SHELL-CI-015` queda documentalmente completa cuando:
+
+- define independencia como ausencia de simultaneidad técnica obligatoria;
+- admite cualquier orden u orden secuencial explícito cuando cada estado intermedio es soportado;
+- bloquea planes cuyo único camino seguro sea lockstep;
+- representa unidades por repositorio y ambiente;
+- representa estado inicial, objetivo e intermedios;
+- modela dependencias como grafo;
+- detecta ciclos;
+- consume releases inmutables de CI003;
+- consume compatibilidad de CI005;
+- conserva adopción aislada de CI006;
+- consume líneas base CI007..CI013;
+- consume rollback independiente de CI014;
+- soporta version skew realmente certificado;
+- conserva los 28 bindings web base;
+- mantiene ANIMA como target nativo;
+- permite adopción escalonada de packages;
+- diferencia publicación coordinada de packages de despliegue lockstep;
+- exige compatibilidad durante una ventana explícita;
+- trata schema y Supabase como dependencia propietaria;
+- permite expansión/contracción únicamente bajo owner aprobado;
+- bloquea configuración o flags inseguros;
+- permite detener un rollout después de cualquier unidad;
+- no hace rollback global por inferencia;
+- detecta concurrencia y stale;
+- produce evidencia machine-readable;
+- define casos positivos, negativos y regresiones;
+- cierra coherentemente el mini-bloque CI007..CI015;
+- no desarrolla CI016..CI019;
+- no ejecuta CI020..024;
+- no hace auto-merge;
+- no hace auto-deploy productivo durante autocertificación;
+- no modifica Supabase durante el marcador;
+- no crea ni modifica requisitos de prueba.
+
+#### 46. Límites
+
+Esta tarea no:
+
+- implementa `SHELL-CI-015::GLOBAL`;
+- modifica repositorios consumidores;
+- crea workflows de despliegue;
+- configura proveedores de hosting;
+- crea un orquestador `deploy all`;
+- modifica manifests o lockfiles;
+- publica packages;
+- publica releases;
+- crea tags;
+- abre pull requests;
+- fusiona pull requests;
+- despliega;
+- ejecuta rollback productivo;
+- modifica CI003;
+- modifica CI005;
+- modifica CI006;
+- modifica CI007..CI014;
+- estandariza comandos de prueba de CI016;
+- desarrolla CI017..CI019;
+- ejecuta CI020..024;
+- crea migraciones;
+- ejecuta migraciones;
+- restaura backups;
+- modifica schema;
+- modifica RLS;
+- modifica RPC;
+- modifica triggers;
+- modifica grants;
+- modifica Storage;
+- modifica Realtime;
+- modifica Edge Functions;
+- modifica datos;
+- modifica secretos;
+- modifica configuración productiva;
+- crea versiones artificiales para sincronizar repositorios;
+- crea, modifica, difiere, descarta ni vuelve obsoletos requisitos 04A.
+
+#### 47. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CI-014 — Permitir rollback por repositorio`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CI-015 — Evitar despliegue simultáneo obligatorio`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-016 — Estandarizar un comando de pruebas automatizadas por repositorio`
+

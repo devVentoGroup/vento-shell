@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **973** |
+| Aprobadas | **974** |
 | En propuesta | **0** |
-| No iniciadas | **621** |
+| No iniciadas | **620** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **61.04% (973/1594)** |
+| Porcentaje de completamiento | **61.10% (974/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CI-014` — Permitir rollback por repositorio | ✅ APROBADA |
-| Tarea actual | `SHELL-CI-015` — Evitar despliegue simultáneo obligatorio | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CI-016` — Estandarizar un comando de pruebas automatizadas por repositorio | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CI-015` — Evitar despliegue simultáneo obligatorio | ✅ APROBADA |
+| Tarea actual | `SHELL-CI-016` — Estandarizar un comando de pruebas automatizadas por repositorio | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CI-017` — Crear verificador automático del Registro Canónico de Requisitos de Prueba | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1298,7 +1298,7 @@
 | ✅ APROBADA | `SHELL-CI-012` | Probar NUMERA antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ✅ APROBADA | `SHELL-CI-013` | Probar ANIMA antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ✅ APROBADA | `SHELL-CI-014` | Permitir rollback por repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
-| ⬜ NO INICIADA | `SHELL-CI-015` | Evitar despliegue simultáneo obligatorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
+| ✅ APROBADA | `SHELL-CI-015` | Evitar despliegue simultáneo obligatorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ⬜ NO INICIADA | `SHELL-CI-016` | Estandarizar un comando de pruebas automatizadas por repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md` |
 | ⬜ NO INICIADA | `SHELL-CI-017` | Crear verificador automático del Registro Canónico de Requisitos de Prueba | `bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md` |
 | ⬜ NO INICIADA | `SHELL-CI-018` | Bloquear merge o despliegue cuando fallen pruebas obligatorias | `bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md` |
