@@ -881,6 +881,886 @@ Esta tarea no:
 `SHELL-CI-017 — Crear verificador automático del Registro Canónico de Requisitos de Prueba`
 
 
-### [ ] SHELL-CI-017 — Crear verificador automático del Registro Canónico de Requisitos de Prueba
+### ✅ SHELL-CI-017 — Crear verificador automático del Registro Canónico de Requisitos de Prueba
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CI-016 — Estandarizar un comando de pruebas automatizadas por repositorio
+**Tarea siguiente:** SHELL-CI-018 — Bloquear merge o despliegue cuando fallen pruebas obligatorias
+**Tipo de tarea:** Habilitador global único — contrato documental de verificador automático de integridad del Registro Canónico de Requisitos de Prueba
+**Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada el verificador automático que certificará la **integridad estructural, referencial, semántica e histórica** del Registro Canónico de Requisitos de Prueba antes de que tareas posteriores utilicen sus filas para bloquear merge o despliegue y para publicar evidencia.
+
+La interfaz pública canónica ya existente permanece:
+
+```text
+npm run docs:treq:check
+```
+
+La regla vinculante es:
+
+```text
+FUENTE MODULAR 04A RESUELTA DESDE manifest.json
++ FRAGMENTOS ESPERADOS Y ORDENADOS
++ IDENTIFICADORES ÚNICOS Y SECUENCIALES
++ CATORCE COLUMNAS CANÓNICAS
++ DOMINIOS, ESTADOS Y TIPOS PERMITIDOS
++ ORIGEN Y RESPONSABLES CANÓNICOS
++ RELACIONES TREQ RESOLUBLES
++ RESUMEN Y DISTRIBUCIÓN COHERENTES
++ EVIDENCIA SUFICIENTE PARA VERIFICADO
++ REANUDACIÓN DETERMINISTA PARA DIFERIDO
++ PRESERVACIÓN HISTÓRICA CONTRA LÍNEA BASE CUANDO APLIQUE
+= REGISTRO ELEGIBLE PARA CONSUMO POR GATES POSTERIORES
+```
+
+Y, de forma fail-closed:
+
+```text
+FRAGMENTO FALTANTE O DUPLICADO
+O FILA MAL FORMADA
+O ID DUPLICADO
+O SALTO DE SECUENCIA
+O ESTADO INVÁLIDO
+O RESPONSABLE INEXISTENTE
+O RELACIÓN NO RESOLUBLE
+O VERIFICADO SIN EVIDENCIA REPRODUCIBLE
+O DIFERIDO SIN PUERTA Y MOMENTO DE REANUDACIÓN
+O REQUISITO HISTÓRICO ELIMINADO
+O RESUMEN INCOHERENTE
+≠ REGISTRO VÁLIDO
+```
+
+CI017 valida el registro. No decide por sí sola si un fallo bloquea merge o despliegue y no publica el expediente final de evidencia.
+
+#### 2. Resultado canónico
+
+`SHELL-CI-017` establece un único habilitador reutilizable para:
+
+1. conservar `docs:treq:check` como punto de entrada público del verificador;
+2. consolidar el verificador existente en vez de crear un segundo sistema paralelo;
+3. reconstruir el registro lógico exclusivamente desde la familia modular 04A registrada en `manifest.json`;
+4. validar la presencia y el orden de todos los fragmentos canónicos;
+5. validar exactamente las catorce columnas de cada tabla de dominio;
+6. validar identificadores, dominio y secuencia;
+7. detectar identificadores duplicados;
+8. validar estados y tipos permitidos;
+9. exigir `Origen` y `Tarea responsable` resolubles contra tareas canónicas;
+10. validar relaciones `TREQ-*`, incluida prohibición de autorreferencia;
+11. validar resumen, distribución y última tarea incorporada;
+12. exigir evidencia reproducible antes de aceptar `VERIFICADO`;
+13. exigir justificación, riesgo, tarea y momento o puerta de resolución para `DIFERIDO`;
+14. impedir la eliminación silenciosa de requisitos históricos cuando exista una línea base comparable;
+15. preservar `DESCARTADO` y `OBSOLETO` como historial en vez de eliminarlos;
+16. diferenciar validación de reparación o reconciliación automática;
+17. producir diagnóstico determinista y consumible por automatización;
+18. exponer el resultado a CI018 sin asumir autoridad de bloqueo;
+19. exponer datos verificables a CI019 sin publicar evidencia final;
+20. autocertificar una sola vez `SHELL-CI-017::GLOBAL`;
+21. no crear ni modificar requisitos de prueba porque la obligación ya existe en el propio registro.
+
+#### 3. Estado físico auditado
+
+La implementación actual ya contiene:
+
+- `scripts/docs/validate-treq-registry.mjs`;
+- `scripts/docs/validate-treq-registry.test.mjs`;
+- `scripts/docs/treq-registry-files.mjs`;
+- `scripts/docs/treq-safe-reconcile.mjs`;
+- `scripts/docs/treq-safe-reconcile.test.mjs`;
+- el script raíz `docs:treq:check`;
+- el script raíz `docs:treq:test`;
+- integración del registro dentro de `docs:plan:build`.
+
+El verificador existente ya cubre, entre otros controles:
+
+- encabezado principal y sección única de registro;
+- dominios, estados y tipos declarados;
+- catorce columnas;
+- celdas no vacías;
+- formato `TREQ-*`;
+- dominio coherente con el identificador;
+- unicidad;
+- secuencia;
+- estados permitidos;
+- tipo y modalidad;
+- existencia de tareas en `Origen` y `Tarea responsable`;
+- relaciones resolubles;
+- autorreferencias;
+- lenguaje residual de propuesta;
+- resumen vigente;
+- distribución;
+- última tarea que incorporó requisitos.
+
+CI017 no descarta esa implementación. La convierte en el habilitador físicamente certificado y cierra las brechas restantes.
+
+#### 4. Brechas que CI017 debe cerrar
+
+La auditoría del código vigente identifica tres brechas materiales frente al contrato ya registrado:
+
+1. `VERIFICADO` no tiene todavía una validación semántica específica que demuestre evidencia reproducible; hoy una celda no vacía puede superar la comprobación general.
+2. `DIFERIDO` tiene una comprobación parcial de lenguaje de justificación o puerta, pero debe quedar cerrada la exigencia de tarea exacta y momento o condición verificable de reanudación.
+3. la validación intrínseca del snapshot actual no compara por sí sola el conjunto de identificadores contra una línea base; por ello una eliminación histórica que deje el snapshot nuevamente coherente podría no ser detectada por ese chequeo aislado.
+
+Estas brechas pertenecen a CI017. No se trasladan a CI018 ni CI019.
+
+#### 5. Topología de trabajo
+
+`PHASE-03-T-CI-FOUNDATION` aplica `GLOBAL_ENABLE_ONCE` a `SHELL-CI-017`.
+
+```text
+MARCADOR CANÓNICO
+SHELL-CI-017
+→ define una sola vez el contrato del verificador
+
+INSTANCIA FÍSICA FUTURA
+SHELL-CI-017::GLOBAL
+→ endurece y autocertifica una sola vez el verificador existente
+
+CONSUMIDORES POSTERIORES
+→ reutilizan el mismo resultado
+→ no vuelven a implementar CI017
+```
+
+La futura instancia no podrá iniciarse por inferencia durante este marcador documental.
+
+#### 6. Autoridad física del registro
+
+La fuente física canónica es exclusivamente la familia modular registrada por `manifest.json`.
+
+En el estado vigente comprende:
+
+```text
+04A_00_CABECERA_Y_GOBIERNO_DEL_REGISTRO.md
+04A_01_AUTH.md
+04A_02_GAP.md
+04A_03_PROC.md
+04A_04_SHELL.md
+04A_05_SUPABASE.md
+04A_06_ANIMA.md
+04A_07_AURA.md
+04A_08_VISO.md
+04A_09_NEXO.md
+04A_10_FOGO.md
+04A_11_ORIGO.md
+04A_12_PULSO.md
+04A_13_NUMERA.md
+04A_14_DATA.md
+04A_15_CONT.md
+04A_16_PASS.md
+04A_17_TALENTO.md
+04A_18_INTEGRATION.md
+04A_19_UX.md
+04A_20_REGLAS_OBLIGATORIAS.md
+```
+
+Total vigente: **21 fragmentos**, formados por una cabecera, diecinueve dominios y un fragmento final de reglas obligatorias.
+
+El archivo monolítico legacy no recupera autoridad por conveniencia de implementación.
+
+#### 7. Reconstrucción lógica
+
+El verificador deberá reconstruir una vista lógica completa en el orden de `manifest.json`.
+
+Reglas:
+
+1. no recorrer el filesystem para inferir orden;
+2. no ordenar fragmentos alfabéticamente como sustituto del manifest;
+3. no aceptar un fragmento 04A no registrado como parte de la fuente canónica;
+4. no omitir silenciosamente un fragmento registrado;
+5. no duplicar un dominio entre fragmentos;
+6. no utilizar derivados bajo `.generated/` como fuente primaria;
+7. la reconstrucción será determinista para el mismo conjunto de bytes canónicos.
+
+#### 8. Integridad de fragmentos
+
+La validación deberá detectar como mínimo:
+
+- cabecera 04A ausente;
+- dominio registrado ausente;
+- reglas obligatorias ausentes;
+- fragmento duplicado en la composición;
+- dominio físico distinto del esperado;
+- orden físico o lógico incompatible con `manifest.json`;
+- fragmento no UTF-8;
+- estructura que impida reconstruir el registro lógico.
+
+La existencia de los archivos no equivale a integridad de sus tablas.
+
+#### 9. Contrato de columnas
+
+Cada fila de dominio conserva exactamente estas catorce columnas y este orden:
+
+```text
+ID
+Dominio
+Regla protegida
+Origen
+Riesgo / prioridad
+Tipo / modalidad
+Tarea responsable
+Paquete
+Repositorio / ambiente
+Estado
+Artefacto
+Último resultado
+Evidencia
+Relación
+```
+
+Queda bloqueado:
+
+- cualquier columna ausente;
+- cualquier columna adicional;
+- encabezado renombrado;
+- orden distinto;
+- fila con menos o más de catorce celdas;
+- celda obligatoria vacía.
+
+#### 10. Identificadores y dominios
+
+Todo identificador deberá:
+
+- cumplir `TREQ-DOMINIO-SECUENCIA`;
+- usar un dominio declarado;
+- coincidir con la columna `Dominio`;
+- ser único globalmente;
+- conservar mínimo tres dígitos;
+- continuar sin truncamiento después de `999`;
+- no reutilizar un identificador retirado para otro comportamiento.
+
+La presentación con backticks puede normalizarse; la identidad lógica no.
+
+#### 11. Secuencia por dominio
+
+Dentro de cada dominio la secuencia es ascendente, continua y empieza en `001`.
+
+Ejemplos válidos:
+
+```text
+TREQ-PROC-998
+TREQ-PROC-999
+TREQ-PROC-1000
+TREQ-PROC-1001
+```
+
+Un salto, inversión o reutilización es error.
+
+Añadir un requisito nuevo no permite renumerar requisitos históricos.
+
+#### 12. Estados permitidos
+
+Los únicos estados son:
+
+```text
+IDENTIFICADO
+ESPECIFICADO
+PLANIFICADO
+IMPLEMENTADO
+VERIFICADO
+DIFERIDO
+DESCARTADO
+OBSOLETO
+```
+
+El verificador no inventa equivalencias ni normaliza un estado desconocido hacia uno permitido.
+
+#### 13. Tipos y modalidad
+
+`Tipo / modalidad` debe conservar dos componentes separados.
+
+El componente de tipo deberá resolver al menos uno de los tipos declarados por la cabecera 04A.
+
+El componente de modalidad deberá existir y no puede quedar vacío.
+
+CI017 no convierte por inferencia una validación manual en automatizada ni una prueba automatizada en manual.
+
+#### 14. Origen y tarea responsable
+
+Cada requisito deberá conservar trazabilidad hacia tareas canónicas reales.
+
+`Origen` y `Tarea responsable` deberán:
+
+- contener al menos una tarea canónica resoluble cuando el contrato vigente así lo exige;
+- rechazar identificadores de tareas inexistentes dentro de familias canónicas conocidas;
+- aceptar referencias múltiples o rangos únicamente cuando sus extremos y miembros aplicables sean resolubles;
+- no usar texto genérico como sustituto de ownership.
+
+Un paquete pendiente no elimina la obligación de tener tarea propietaria.
+
+#### 15. Relaciones TREQ
+
+La columna `Relación` podrá expresar referencias individuales o rangos.
+
+El verificador deberá:
+
+- expandir rangos válidos;
+- rechazar extremos invertidos;
+- rechazar referencias inexistentes;
+- rechazar autorreferencias;
+- conservar cero relaciones no resolubles como condición de éxito global.
+
+Una relación narrativa que contiene un identificador sigue estando sujeta a resolución.
+
+#### 16. Resumen vigente
+
+La cabecera deberá concordar con las filas reales.
+
+Se verifican al menos:
+
+- requisitos vigentes;
+- dominios con requisitos;
+- filas con catorce columnas;
+- identificadores duplicados;
+- relaciones no resolubles;
+- última tarea incorporada;
+- distribución por dominio.
+
+Una cifra desactualizada bloquea la validación aunque las filas sean individualmente correctas.
+
+#### 17. Distribución por dominio
+
+Para cada dominio se valida:
+
+```text
+dominio
+primer identificador
+último identificador
+cantidad
+```
+
+El orden debe coincidir con la lista de dominios de la cabecera.
+
+Un dominio sin filas no puede presentarse con un rango inventado.
+
+#### 18. Última tarea incorporada
+
+La última tarea TREQ no se obtiene por una fecha manual ni por el último archivo editado.
+
+Se deriva desde:
+
+```text
+continuity-route
++ inventario real de tareas
++ estado aprobado
++ sección de requisitos derivados realmente incorporados
+```
+
+Una tarea aprobada que declara cero requisitos no desplaza por sí sola la última tarea que sí incorporó TREQ.
+
+#### 19. Contrato de `VERIFICADO`
+
+Una fila en `VERIFICADO` solo será válida cuando exista evidencia reproducible.
+
+Como mínimo deberán estar resueltos y no contener valores equivalentes a pendiente:
+
+- `Repositorio / ambiente`;
+- `Artefacto`;
+- `Último resultado`;
+- `Evidencia`.
+
+Además:
+
+- `Último resultado` debe representar una ejecución o decisión concluida;
+- `Evidencia` debe contener una referencia reproducible al artefacto, ejecución, resultado, reporte o identidad que permita revisar el cierre;
+- una afirmación genérica como “probado”, “correcto” o “listo” sin referencia reproducible no satisface el estado;
+- un requisito no puede pasar a `VERIFICADO` únicamente porque la tarea propietaria esté aprobada.
+
+La futura instancia deberá autocertificar falsos verdes de esta regla.
+
+#### 20. Contrato de `DIFERIDO`
+
+Una fila `DIFERIDO` deberá conservar explícitamente:
+
+1. justificación;
+2. riesgo aceptado o explicado;
+3. tarea responsable exacta;
+4. puerta, condición o evento de reanudación;
+5. momento determinable de resolución mediante tarea, etapa, gate o condición canónica.
+
+No basta con escribir “después”, “más adelante”, “pendiente” o “cuando corresponda”.
+
+La reanudación debe poder ser interpretada por un revisor sin depender de memoria del chat.
+
+#### 21. `DESCARTADO` y `OBSOLETO`
+
+Estos estados no eliminan historial.
+
+Para ambos:
+
+- el identificador permanece;
+- la fila permanece;
+- la justificación permanece trazable;
+- relaciones históricas no se borran para ocultar el requisito;
+- el resumen continúa contabilizando la fila mientras el modelo vigente la considere parte del registro.
+
+CI017 no reabre la decisión empresarial que llevó al descarte u obsolescencia.
+
+#### 22. Preservación histórica
+
+La protección contra eliminación silenciosa utiliza dos niveles:
+
+```text
+INTEGRIDAD DEL SNAPSHOT
+→ valida que el registro actual sea internamente coherente
+
+INTEGRIDAD HISTÓRICA
+→ compara los identificadores actuales contra una línea base explícita
+```
+
+En integridad histórica:
+
+- todo identificador presente en la línea base debe seguir existiendo;
+- una fila nueva puede añadirse si respeta secuencia y reglas;
+- una fila histórica puede evolucionar en campos permitidos sin ser eliminada;
+- la desaparición de cualquier identificador base es error bloqueante.
+
+La línea base nunca se inventa ni se infiere desde un archivo generado no confiable.
+
+#### 23. Contrato de línea base
+
+La implementación deberá aceptar una fuente base explícita cuando el caller solicite comprobación histórica.
+
+La línea base puede provenir de un snapshot confiable o de una revisión Git resuelta por el caller, pero:
+
+- el verificador recibe la fuente; no adivina ramas;
+- no hace fetch remoto;
+- no modifica Git;
+- no escribe el registro;
+- no considera un snapshot local ignorado como única autoridad para CI;
+- una línea base ausente se reporta como no disponible para la comprobación histórica, no como `PASS` histórico.
+
+CI018 podrá resolver posteriormente qué baseline de PR o merge debe utilizar.
+
+#### 24. Separación entre verificar y reconciliar
+
+`docs:treq:check` es fail-closed y de solo lectura.
+
+No deberá:
+
+- restaurar filas;
+- corregir el resumen;
+- normalizar estados;
+- reescribir evidencia;
+- distribuir fragmentos;
+- aceptar automáticamente una recuperación.
+
+La reconciliación preventiva de `docs:plan:build` continúa siendo una capacidad separada.
+
+Una reconciliación automática nunca convierte por sí misma un registro entrante inválido en evidencia de que la entrega original era correcta.
+
+#### 25. Relación con `docs:plan:build`
+
+El build canónico puede:
+
+- construir contexto;
+- detectar inconsistencias;
+- conservar snapshot válido;
+- producir copia de recuperación;
+- aplicar reconciliaciones seguras dentro de su contrato.
+
+CI017 exige que el verificador independiente pueda diagnosticar el registro sin depender de que el build lo repare primero.
+
+El resultado de `docs:treq:check` conserva significado propio.
+
+#### 26. Declaraciones de TREQ afectados
+
+CI017 deberá proporcionar una base de resolución para que una lista de requisitos declarados por package o PR pueda validarse contra el registro:
+
+- cada identificador declarado debe existir;
+- duplicados en la declaración deben detectarse;
+- identificadores mal formados deben rechazarse;
+- una lista vacía solo podrá aceptarse cuando el caller permita explícitamente cero requisitos afectados.
+
+CI017 no decide si la declaración es obligatoria para un PR concreto. Esa política de bloqueo pertenece a CI018.
+
+#### 27. Salida machine-readable
+
+La futura implementación deberá poder producir una representación consumible por automatización con, como mínimo:
+
+```text
+result
+requirements
+domains
+fragments
+duplicates
+unresolved_relations
+invalid_rows
+verified_evidence_errors
+deferred_resolution_errors
+historical_missing_ids
+latest_task
+distribution
+errors
+```
+
+La salida humana y la machine-readable deben derivarse del mismo resultado lógico.
+
+No puede existir un `PASS` humano y un `FAIL` machine-readable para el mismo snapshot.
+
+#### 28. Taxonomía mínima de error
+
+El verificador deberá distinguir al menos estas familias:
+
+```text
+SOURCE
+FRAGMENT
+SCHEMA
+IDENTITY
+SEQUENCE
+DOMAIN
+STATE
+TYPE
+TASK_REFERENCE
+TREQ_RELATION
+SUMMARY
+DISTRIBUTION
+VERIFIED_EVIDENCE
+DEFERRED_RESOLUTION
+HISTORICAL_RETENTION
+LATEST_TASK
+```
+
+La implementación puede usar códigos internos más específicos, pero no debe reducir todos los fallos a un único mensaje genérico.
+
+#### 29. Determinismo y fail-closed
+
+Para los mismos bytes de entrada, contexto canónico y baseline:
+
+- se obtiene el mismo conjunto de errores;
+- el orden de errores es estable;
+- los conteos son iguales;
+- el resultado no depende de la hora;
+- el resultado no depende del orden accidental del filesystem;
+- un error de lectura no se convierte en `PASS`;
+- un parseo incompleto no se convierte en registro vacío válido;
+- una lectura truncada no equivale a ausencia de filas.
+
+#### 30. Relación con CI016
+
+CI016 ya dejó disponible una interfaz uniforme para ejecutar pruebas por repositorio.
+
+CI017 no modifica:
+
+```text
+npm test
+```
+
+La relación es:
+
+```text
+CI016
+→ garantiza cómo pedir pruebas del repositorio
+
+CI017
+→ garantiza que el catálogo canónico de obligaciones de prueba sea íntegro
+```
+
+Un `PASS` de `npm test` no valida por sí solo 04A.
+
+#### 31. Handoff a CI018
+
+CI018 recibirá de CI017:
+
+- un comando de validación canónico;
+- resultado fail-closed;
+- diagnóstico estructurado;
+- resolución de identificadores declarados;
+- capacidad de comparación histórica cuando reciba baseline.
+
+CI018 será responsable de:
+
+- ejecutar el verificador en los puntos obligatorios;
+- decidir cuándo el fallo bloquea merge;
+- decidir cuándo el fallo bloquea despliegue;
+- impedir bypass de checks obligatorios;
+- resolver la baseline correspondiente al contexto de integración.
+
+CI017 no configura branch protection ni workflows durante su marcador documental.
+
+#### 32. Handoff a CI019
+
+CI019 podrá publicar:
+
+- identidad del registro;
+- commit;
+- resultado de `docs:treq:check`;
+- conteos;
+- errores;
+- TREQ afectados;
+- baseline utilizada cuando aplique;
+- referencias de ejecución.
+
+CI017 produce el resultado verificable; CI019 conserva y publica la evidencia.
+
+#### 33. Relación con `SHELL-CI-020..024`
+
+Las instancias por package deberán consumir un registro ya verificable.
+
+CI017 no sustituye:
+
+- readiness del package;
+- ejecución de pruebas funcionales;
+- compatibilidad;
+- rollback;
+- cutover;
+- hypercare.
+
+Su obligación es impedir que esos procesos operen sobre un registro TREQ estructural o históricamente inválido.
+
+#### 34. Casos positivos obligatorios
+
+La futura `SHELL-CI-017::GLOBAL` deberá demostrar, como mínimo, estos doce escenarios:
+
+1. registro modular completo y coherente;
+2. identificadores de cuatro dígitos;
+3. múltiples dominios en el orden canónico;
+4. relación individual resoluble;
+5. rango TREQ resoluble;
+6. tarea responsable canónica válida;
+7. `VERIFICADO` con artefacto, resultado y evidencia reproducible;
+8. `DIFERIDO` con justificación, riesgo, tarea y puerta de reanudación;
+9. baseline histórica con todas las filas preservadas y filas nuevas válidas;
+10. tarea aprobada con cero TREQ sin desplazar `Última tarea incorporada`;
+11. declaración de TREQ afectados sin duplicados y completamente resoluble;
+12. reconstrucción modular con salida humana y machine-readable equivalentes.
+
+#### 35. Casos negativos obligatorios
+
+La futura instancia deberá bloquear, como mínimo, estos veinticuatro escenarios:
+
+1. fragmento registrado ausente;
+2. dominio físico duplicado;
+3. tabla con trece columnas;
+4. tabla con quince columnas;
+5. celda obligatoria vacía;
+6. identificador mal formado;
+7. dominio de fila distinto al identificador;
+8. identificador duplicado;
+9. salto de secuencia;
+10. estado no permitido;
+11. tipo no permitido;
+12. modalidad ausente;
+13. `Origen` sin tarea canónica;
+14. `Tarea responsable` inexistente;
+15. autorreferencia TREQ;
+16. relación TREQ inexistente;
+17. rango TREQ invertido o no resoluble;
+18. resumen de requisitos desactualizado;
+19. distribución incoherente;
+20. última tarea TREQ incoherente;
+21. `VERIFICADO` con artefacto pendiente;
+22. `VERIFICADO` con evidencia genérica no reproducible;
+23. `DIFERIDO` sin momento o puerta de reanudación;
+24. identificador histórico ausente frente a baseline.
+
+#### 36. Regresiones obligatorias
+
+El harness deberá conservar protección contra estas doce regresiones:
+
+1. volver a leer el monolito legacy como autoridad preferente;
+2. depender del orden del filesystem en vez de `manifest.json`;
+3. aceptar backticks como parte de la identidad lógica;
+4. truncar secuencias al superar `999`;
+5. considerar una tarea con cero TREQ como última tarea incorporada;
+6. aceptar lenguaje de propuesta para una tarea ya aprobada;
+7. reparar el registro durante `docs:treq:check`;
+8. usar un snapshot ignorado como única baseline de CI;
+9. convertir ausencia de baseline en `PASS` histórico;
+10. permitir eliminación de una fila `DESCARTADO`;
+11. permitir eliminación de una fila `OBSOLETO`;
+12. devolver código de éxito cuando existe cualquier error bloqueante.
+
+La autocertificación contractual mínima futura comprende **48 escenarios**: 12 positivos, 24 negativos y 12 regresiones.
+
+#### 37. Materialización futura de `SHELL-CI-017::GLOBAL`
+
+La instancia global podrá declararse materializada únicamente cuando:
+
+1. se audite el verificador vigente contra el registro modular real;
+2. se preserve `docs:treq:check` como interfaz pública;
+3. no se cree un verificador paralelo con semántica divergente;
+4. se validen los 21 fragmentos vigentes;
+5. se validen las catorce columnas;
+6. se validen IDs, dominio, unicidad y secuencia;
+7. se validen estados y tipos;
+8. se validen tareas propietarias y orígenes;
+9. se validen relaciones;
+10. se validen resumen y distribución;
+11. se valide `Última tarea incorporada`;
+12. se endurezca `VERIFICADO`;
+13. se endurezca `DIFERIDO`;
+14. se implemente comparación histórica con baseline explícita;
+15. se preserve separación entre check y reconciliación;
+16. se disponga de salida estructurada consumible;
+17. se cubran los 48 escenarios contractuales mínimos;
+18. se ejecute el verificador contra el 04A canónico completo;
+19. no se modifique ningún TREQ para hacer pasar la autocertificación;
+20. no se cambie Supabase;
+21. no se creen workflows ni branch protection;
+22. no se desarrolle CI018 ni CI019 por anticipado;
+23. la implementación sea reproducible;
+24. la evidencia quede consolidada en `SHELL-CI-017::GLOBAL`.
+
+Los cambios físicos concretos se resolverán contra el checkout vigente, priorizando el endurecimiento de la implementación existente bajo `scripts/docs/` y evitando archivos paralelos innecesarios.
+
+#### 38. Estado documental conciliado
+
+| Métrica                                          |                     Resultado |
+| ------------------------------------------------ | ----------------------------: |
+| Topología CI017                                  |        **GLOBAL_ENABLE_ONCE** |
+| Instancias físicas CI001..CI016 verificadas      |                        **16** |
+| Fuente física 04A                                |                   **modular** |
+| Fragmentos 04A vigentes                          |                        **21** |
+| Dominios con requisitos                          |                        **19** |
+| Requisitos vigentes observados                   |                      **7066** |
+| Filas con catorce columnas observadas            |              **7066 de 7066** |
+| Identificadores duplicados observados            |                         **0** |
+| Relaciones no resolubles observadas              |                         **0** |
+| Verificador público existente                    | **`npm run docs:treq:check`** |
+| Suite pública existente                          |  **`npm run docs:treq:test`** |
+| Brechas materiales asignadas a CI017             |                         **3** |
+| Casos positivos mínimos futuros                  |                        **12** |
+| Casos negativos mínimos futuros                  |                        **24** |
+| Regresiones mínimas futuras                      |                        **12** |
+| Escenarios contractuales mínimos futuros         |                        **48** |
+| Cambios físicos autorizados durante el marcador  |                         **0** |
+| Cambios Supabase autorizados durante el marcador |                         **0** |
+| Requisitos creados o modificados                 |                         **0** |
+
+#### 39. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** la obligación empresarial de validar automáticamente el Registro Canónico de Requisitos de Prueba ya existe y asigna responsabilidad expresa a CI017. Esta tarea concreta el contrato técnico del verificador y sus brechas de implementación sin añadir una nueva obligación empresarial ni alterar filas históricas.
+
+#### 40. Cobertura de prueba vigente reutilizada
+
+Sin modificar 04A, CI017 reutiliza la cobertura vigente que exige:
+
+- validación automática del registro;
+- identificadores únicos;
+- catorce columnas;
+- estados permitidos;
+- relaciones resolubles;
+- responsables existentes;
+- evidencia reproducible para `VERIFICADO`;
+- reanudación para `DIFERIDO`;
+- ausencia de eliminación silenciosa;
+- conservación histórica de requisitos cerrados;
+- declaración trazable de requisitos afectados.
+
+Estas referencias son cobertura heredada y no constituyen una actualización del registro.
+
+#### 41. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                                                                             |
+| --------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador documental no modifica ni ejecuta el verificador.                                                                                                                                                                                                                                                                                         |
+| LOCAL     | NOT_EXECUTED   | El artefacto todavía no ha sido incorporado ni validado contra el checkout local del usuario.                                                                                                                                                                                                                                                         |
+| REMOTA    | PASS           | Se verificaron protocolo, contrato de entrega, manifest, ruta normal, secuencia activa, topología, políticas, archivo propietario, familia modular 04A, reglas obligatorias, requisito que asigna CI017, `package.json`, el verificador TREQ vigente, sus pruebas, la reconciliación segura, el build seguro y la instancia CI016 en estado VERIFIED. |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutaron checks, tests, build, merge, deploy, releases ni mutaciones remotas.                                                                                                                                                                                                                                                                 |
+| FÍSICA    | NOT_APPLICABLE | La materialización corresponde a la futura `SHELL-CI-017::GLOBAL` después de aprobación documental y autorización física separada.                                                                                                                                                                                                                    |
+
+#### 42. Criterios de aceptación
+
+`SHELL-CI-017` queda documentalmente completa cuando:
+
+- conserva `docs:treq:check` como interfaz pública;
+- usa la fuente modular de `manifest.json`;
+- define los 21 fragmentos vigentes sin convertir esa cifra en una autoridad distinta del manifest;
+- valida las catorce columnas;
+- valida identificadores, dominio, unicidad y secuencia;
+- soporta secuencias superiores a tres dígitos;
+- valida estados y tipos;
+- valida `Origen` y `Tarea responsable`;
+- valida relaciones y autorreferencias;
+- valida resumen y distribución;
+- deriva correctamente la última tarea TREQ;
+- endurece el contrato de `VERIFICADO`;
+- endurece el contrato de `DIFERIDO`;
+- preserva `DESCARTADO` y `OBSOLETO`;
+- define comparación histórica con baseline explícita;
+- no confunde ausencia de baseline con éxito histórico;
+- mantiene `docs:treq:check` como operación de solo lectura;
+- mantiene reconciliación separada;
+- define salida consumible por automatización;
+- entrega a CI018 un resultado fail-closed sin asumir su autoridad;
+- entrega a CI019 datos verificables sin publicar evidencia final;
+- define casos positivos, negativos y regresiones;
+- no desarrolla CI018 ni CI019;
+- no modifica requisitos de prueba;
+- no modifica Supabase.
+
+#### 43. Límites
+
+Esta tarea no:
+
+- implementa `SHELL-CI-017::GLOBAL`;
+- modifica `validate-treq-registry.mjs`;
+- modifica pruebas existentes;
+- modifica `treq-safe-reconcile.mjs`;
+- modifica `treq-registry-files.mjs`;
+- modifica `package.json`;
+- modifica fragmentos 04A;
+- crea requisitos;
+- modifica requisitos;
+- cambia estados TREQ;
+- corrige filas históricas;
+- ejecuta reconciliación;
+- crea snapshots;
+- crea copias de recuperación;
+- ejecuta `docs:treq:check`;
+- ejecuta `docs:treq:test`;
+- ejecuta build;
+- crea workflows;
+- configura branch protection;
+- bloquea merge;
+- bloquea deploy;
+- publica evidencia;
+- crea releases;
+- crea tags;
+- abre pull requests;
+- fusiona pull requests;
+- despliega;
+- ejecuta rollback;
+- crea o ejecuta migraciones;
+- modifica schema;
+- modifica RLS;
+- modifica RPC;
+- modifica triggers;
+- modifica grants;
+- modifica Storage;
+- modifica Realtime;
+- modifica Edge Functions;
+- modifica datos;
+- modifica secretos;
+- modifica configuración productiva;
+- desarrolla `SHELL-CI-018`;
+- desarrolla `SHELL-CI-019`.
+
+#### 44. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CI-016 — Estandarizar un comando de pruebas automatizadas por repositorio`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CI-017 — Crear verificador automático del Registro Canónico de Requisitos de Prueba`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-018 — Bloquear merge o despliegue cuando fallen pruebas obligatorias`
+
+
 ### [ ] SHELL-CI-018 — Bloquear merge o despliegue cuando fallen pruebas obligatorias
 ### [ ] SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio
