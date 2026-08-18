@@ -30,7 +30,17 @@ function readJson(filePath, label) {
 
 function git(root, args) {
   const result = spawnSync('git', args, { cwd: root, encoding: 'utf8' });
-  return result.status === 0 ? result.stdout.trim() : null;
+  return result.status === 0 ? result.stdout.trimEnd() : null;
+}
+
+
+const PHYSICAL_DERIVED_WORKTREE_PATHS = Object.freeze([
+  'docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md',
+  'docs/plan-canonico/modular/.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md',
+]);
+
+function expectedPhysicalDirtyPathSet(physicalRecordPath) {
+  return new Set([physicalRecordPath, ...PHYSICAL_DERIVED_WORKTREE_PATHS].filter(Boolean));
 }
 
 function normalizeGitPath(value) {
@@ -118,13 +128,17 @@ export function classifyPreflightFindings({
 
   if (worktreePaths.length > 0) {
     if (physicalRecordPath) {
-      const unexpectedPaths = worktreePaths.filter((entry) => entry !== physicalRecordPath);
+      const expectedDirtyPaths = expectedPhysicalDirtyPathSet(physicalRecordPath);
+      const unexpectedPaths = worktreePaths.filter((entry) => !expectedDirtyPaths.has(entry));
+      const expectedPresent = worktreePaths.filter((entry) => expectedDirtyPaths.has(entry));
       if (unexpectedPaths.length > 0) {
         blockers.push(
-          `el worktree contiene cambios previos fuera del registro activo: ${unexpectedPaths.join(', ')}.`,
+          `el worktree contiene cambios previos fuera del carril físico esperado: ${unexpectedPaths.join(', ')}.`,
         );
       } else {
-        advisories.push(`el worktree contiene únicamente el cambio esperado de ${physicalRecordPath}.`);
+        advisories.push(
+          `el worktree contiene únicamente cambios esperados del carril físico: ${expectedPresent.join(', ')}.`,
+        );
       }
     } else {
       blockers.push(`el repositorio contiene cambios locales: ${worktreePaths.join(', ')}.`);
@@ -234,9 +248,15 @@ export function derivePreflight({
   const expectedRecordPath = requestedInstance
     ? instanceRecordRelativePath(requestedInstance.instance_id)
     : null;
+  const expectedDirtyPaths = requestedInstance
+    ? expectedPhysicalDirtyPathSet(expectedRecordPath)
+    : new Set();
   const unexpectedPaths = requestedInstance
-    ? changedPaths.filter((entry) => entry !== expectedRecordPath)
+    ? changedPaths.filter((entry) => !expectedDirtyPaths.has(entry))
     : changedPaths;
+  const expectedChangedPaths = requestedInstance
+    ? changedPaths.filter((entry) => expectedDirtyPaths.has(entry))
+    : [];
 
   return {
     task: {
@@ -273,6 +293,7 @@ export function derivePreflight({
       clean: changedPaths.length === 0,
       expected_dirty: Boolean(requestedInstance) && changedPaths.length > 0 && unexpectedPaths.length === 0,
       changed_paths: changedPaths,
+      expected_changed_paths: expectedChangedPaths,
       unexpected_paths: unexpectedPaths,
       remote_note: 'La comparación usa la referencia local de upstream; este comando no ejecuta git fetch.',
     },

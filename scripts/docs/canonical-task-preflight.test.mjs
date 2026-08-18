@@ -63,7 +63,27 @@ test('carril físico IN_PROGRESS acepta continuidad documental adelantada y camb
   assert.deepEqual(result.blockers, []);
   assert.equal(result.advisories.length, 2);
   assert.match(result.advisories[0], /carril físico/u);
-  assert.match(result.advisories[1], /únicamente el cambio esperado/u);
+  assert.match(result.advisories[1], /únicamente cambios esperados del carril físico/u);
+});
+
+test('tolera proyecciones derivadas del estado físico junto con el registro activo', () => {
+  const result = classifyPreflightFindings({
+    requestedTaskId: 'SHELL-CI-005',
+    currentTaskId: 'SHELL-CI-006',
+    requestedInstance: {
+      instance_id: 'SHELL-CI-005::GLOBAL',
+      task_id: 'SHELL-CI-005',
+      status: 'IN_PROGRESS',
+    },
+    worktreePaths: [
+      'docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md',
+      'docs/plan-canonico/modular/.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md',
+      'docs/plan-canonico/modular/implementation-instances/SHELL-CI-005__GLOBAL.json',
+    ],
+  });
+
+  assert.deepEqual(result.blockers, []);
+  assert.ok(result.advisories.some((entry) => /cambios esperados del carril físico/u.test(entry)));
 });
 
 test('bloquea cambios locales ajenos al registro antes de aplicar código', () => {
@@ -82,7 +102,7 @@ test('bloquea cambios locales ajenos al registro antes de aplicar código', () =
   });
 
   assert.equal(result.blockers.length, 1);
-  assert.match(result.blockers[0], /fuera del registro activo/u);
+  assert.match(result.blockers[0], /fuera del carril físico esperado/u);
   assert.match(result.blockers[0], /scripts\/quality\/unrelated\.mjs/u);
 });
 
