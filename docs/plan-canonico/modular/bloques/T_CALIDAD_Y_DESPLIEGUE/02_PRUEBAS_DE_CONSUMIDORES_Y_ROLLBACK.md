@@ -2295,7 +2295,952 @@ Esta tarea no:
 `SHELL-CI-010 — Probar PULSO antes de actualizar`
 
 
-### [ ] SHELL-CI-010 — Probar PULSO antes de actualizar
+### ✅ SHELL-CI-010 — Probar PULSO antes de actualizar
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CI-009 — Probar ORIGO antes de actualizar
+**Tarea siguiente:** SHELL-CI-011 — Probar VISO antes de actualizar
+**Tipo de tarea:** Habilitador global único — contrato documental de pruebas específicas de PULSO previas a actualización de packages compartidos
+**Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
+**Repositorio propietario:** `devVentoGroup/vento-pulso`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada el contrato de pruebas que deberá demostrar que **PULSO conserva una línea base reproducible, íntegra, atribuible y fail-closed antes de modificar su conjunto de packages compartidos**, de modo que una actualización preparada por CI006 nunca parta de un consumidor ambiguo, de evidencia perteneciente a otro commit, de una sede distinta, de una ruta no inventariada, de una acción que amplíe autoridad por parámetros controlados por cliente o de una ejecución de prueba que produzca ventas, redenciones, movimientos, llamados, publicaciones de ventas u otros efectos reales.
+
+La regla vinculante queda:
+
+```text
+PULSO EN UN COMMIT BASE EXACTO
++ MANIFEST Y LOCKFILE EXACTOS
++ INVENTARIO DE 6 PÁGINAS Y 0 HANDLERS CONCILIADO
++ ENTORNO DE PRUEBA AISLADO
++ RELACIÓN PACKAGE–PULSO EXACTA
++ PERFIL DE PRUEBAS PULSO APLICABLE
++ PRUEBAS FUNCIONALES, DE AUTORIZACIÓN, REALTIME Y DE FRONTERA SATISFACTORIAS
++ EVIDENCIA VIGENTE
+= LÍNEA BASE PULSO APTA PARA INICIAR UNA PROPUESTA DE ACTUALIZACIÓN
+```
+
+Y, de forma fail-closed:
+
+```text
+LINT VERDE
+O BUILD VERDE
+O ESCÁNER QUE RENDERIZA
+O TABLERO QUE ABRE
+O REALTIME CONECTADO
+O COMPATIBILIDAD DE OTRO CONSUMIDOR
+O PRUEBAS DE OTRO COMMIT
+O AUSENCIA DE TESTS AUTOMATIZADOS
+O USO DE DATOS REALES PARA OBTENER VERDE
+≠ LÍNEA BASE PULSO CERTIFICADA
+```
+
+CI010 certifica la línea base específica de PULSO. No publica packages, no modifica la versión objetivo, no prepara el pull request, no fusiona, no despliega, no ejecuta rollback y no convierte la autocertificación del habilitador en una afirmación de que el POS, caja, pagos, entrega, inventario, fidelización o reporting futuros ya estén completamente implementados.
+
+#### 2. Resultado canónico
+
+`SHELL-CI-010` establece un único habilitador reutilizable para:
+
+1. identificar el commit base exacto de `devVentoGroup/vento-pulso` que se pretende actualizar;
+2. fijar las identidades del manifest, lockfile, configuración, suite, fixtures, inventario de rutas y entorno;
+3. seleccionar únicamente las relaciones package–PULSO aplicables;
+4. seleccionar el perfil PULSO correspondiente a cada familia compartida objetivo;
+5. ejecutar una línea base técnica reproducible sobre el commit base sin modificar versiones de packages;
+6. proteger el inventario exacto de seis páginas, cero segmentos dinámicos y cero route handlers;
+7. conservar `/` y `/scanner` como identidades de ruta separadas mientras la decisión canónica posterior no autorice su consolidación;
+8. conservar la delegación SSO al Shell sin inventar una ruta `/login` local;
+9. proteger sesión, acceso a PULSO, sede, contexto operacional, actor y denegación;
+10. proteger el escáner, identificación de cliente y fronteras server-only de cualquier privilegio elevado;
+11. proteger validación y consumo de redenciones, acreditación de loyalty y firma de actor en dispositivo compartido;
+12. proteger lectura, filtrado y transición operacional de pedidos;
+13. proteger pago previo aplicable, fulfillment, despacho, conversación, historial, opciones, facturación y actualización operativa de pedidos;
+14. proteger zonas, mesas, sesiones y llamados del salón, incluidos refresh y Realtime;
+15. proteger importación de ventas XLSX, hashing, mapeos, lotes, filas, warnings y publicación posterior;
+16. proteger idempotencia, replay, atomicidad y no duplicación de efectos donde corresponda;
+17. impedir que `site_id`, filtros, mensajes o cualquier query param amplíen autoridad;
+18. impedir que abrir una página equivalga a autorizar las mutaciones que la página expone;
+19. proteger la frontera PULSO–PASS–NEXO–Shell y los dominios que no pertenecen a PULSO;
+20. probar clientes, consultas, RPC y denegaciones Supabase sin autorizar migraciones ni cambios remotos desde PULSO;
+21. probar render, hidratación, interacción, feedback, accesibilidad y comportamiento Realtime representativo cuando la familia objetivo sea UI;
+22. producir evidencia machine-readable ligada al commit base y al conjunto exacto de pruebas;
+23. invalidar la evidencia cuando cambie cualquiera de sus entradas materiales;
+24. bloquear una actualización cuando no exista infraestructura de prueba suficiente;
+25. entregar a CI006 un resultado de línea base consumible para comparar el comportamiento previo y el `proposal_commit` posterior;
+26. soportar una actualización multi-package mediante la unión de perfiles requeridos, sin reducir cobertura;
+27. autocertificar el habilitador global una sola vez antes de reutilizarlo en futuras actualizaciones de PULSO;
+28. separar la certificación del habilitador de la conformidad funcional completa del consumidor.
+
+#### 3. Frontera de responsabilidad
+
+| Responsabilidad                                               | Propietario         |
+| ------------------------------------------------------------- | ------------------- |
+| pruebas propias del package                                   | `SHELL-CI-001`      |
+| artefacto distribuible del package                            | `SHELL-CI-002`      |
+| identidad y publicación de release                            | `SHELL-CI-003`      |
+| changelog y release notes                                     | `SHELL-CI-004`      |
+| compatibilidad package–consumidor                             | `SHELL-CI-005`      |
+| preparación y mantenimiento del PR consumidor                 | `SHELL-CI-006`      |
+| línea base y pruebas específicas de NEXO                      | `SHELL-CI-007`      |
+| línea base y pruebas específicas de FOGO                      | `SHELL-CI-008`      |
+| línea base y pruebas específicas de ORIGO                     | `SHELL-CI-009`      |
+| línea base y pruebas específicas de PULSO antes de actualizar | `SHELL-CI-010`      |
+| pruebas específicas de VISO                                   | `SHELL-CI-011`      |
+| pruebas específicas de NUMERA                                 | `SHELL-CI-012`      |
+| pruebas específicas de ANIMA                                  | `SHELL-CI-013`      |
+| rollback por repositorio                                      | `SHELL-CI-014`      |
+| independencia de despliegue                                   | `SHELL-CI-015`      |
+| normalización transversal de comandos                         | `SHELL-CI-016`      |
+| trazabilidad de requisitos y evidencia por PR                 | `SHELL-CI-017..019` |
+
+CI010 puede exigir un punto de entrada reproducible para su propia suite. No absorbe la normalización transversal de comandos reservada a CI016, no convierte la línea base en implementación del POS integral y no corrige por anticipado obligaciones funcionales cuyo owner ya esté asignado.
+
+#### 4. Topología de trabajo
+
+`PHASE-03-T-CI-FOUNDATION` aplica `GLOBAL_ENABLE_ONCE` a `SHELL-CI-010`.
+
+Por tanto:
+
+```text
+MARCADOR CANÓNICO
+SHELL-CI-010
+→ define una sola vez el contrato de pruebas previas de PULSO
+
+INSTANCIA FÍSICA FUTURA
+SHELL-CI-010::GLOBAL
+→ materializa y autocertifica una sola vez el habilitador PULSO
+
+ACTUALIZACIONES POSTERIORES DE PULSO
+→ reutilizan el habilitador certificado
+→ generan evidencia nueva por commit base y conjunto objetivo
+→ no vuelven a implementar CI010
+```
+
+La instancia global puede utilizar fixtures, dobles, oracles sintéticos y entornos locales o CI aislados. No necesita actualizar un package real, abrir PR, registrar una venta real, consumir una redención real, manipular una mesa real ni publicar un lote real para demostrar que el habilitador funciona.
+
+#### 5. Handoff vinculante desde CI006, CI007, CI008 y CI009
+
+CI006 ya materializó el actualizador común y conserva las 28 relaciones base, los dieciséis gates, la invalidación por commit y la prohibición de auto-merge y auto-deploy.
+
+CI007, CI008 y CI009 ya establecieron la disciplina común para líneas base previas de consumidores:
+
+- identidad exacta;
+- evidencia atribuible;
+- semántica fail-closed;
+- invalidación por cambios materiales;
+- separación entre habilitador global y ejecución por actualización;
+- prohibición de reutilizar evidencia de otro consumidor;
+- ausencia de tests distinta de PASS;
+- separación entre harness autocertificado y consumidor integralmente conforme.
+
+CI010 conserva esa disciplina, pero sustituye las superficies NEXO, FOGO y ORIGO por las superficies propias de PULSO.
+
+La secuencia lógica será:
+
+```text
+RELEASE OBJETIVO CONOCIDA
+→ RELACIÓN PACKAGE–PULSO RESUELTA
+→ COMMIT BASE PULSO FIJADO
+→ CI010 CERTIFICA LA LÍNEA BASE DEL COMMIT BASE
+→ CI006 MATERIALIZA LA PROPUESTA AISLADA
+→ CI006 EJECUTA O CONSUME LOS GATES SOBRE EL PROPOSAL COMMIT
+→ SE COMPARA CON LA LÍNEA BASE VIGENTE
+→ REVISIÓN HUMANA
+```
+
+Un `PASS` de CI010 no sustituye CI005 ni autoriza por sí mismo `ELIGIBLE`, `READY_FOR_REVIEW`, merge, despliegue o adopción.
+
+#### 6. Relaciones package–PULSO gobernadas
+
+CI010 gobierna exactamente las cuatro combinaciones PULSO de la matriz web base:
+
+| Familia             | Compatibilidad CI005 | Actualización CI006 | Consumidor    |
+| ------------------- | -------------------- | ------------------- | ------------- |
+| `@vento/contracts`  | `PKG-COMP-MX-006`    | `PKG-PR-REL-006`    | `vento-pulso` |
+| `@vento/os-context` | `PKG-COMP-MX-013`    | `PKG-PR-REL-013`    | `vento-pulso` |
+| `@vento/supabase`   | `PKG-COMP-MX-020`    | `PKG-PR-REL-020`    | `vento-pulso` |
+| `@vento/ui-web`     | `PKG-COMP-MX-027`    | `PKG-PR-REL-027`    | `vento-pulso` |
+
+**Conciliación:** 4 relaciones PULSO esperadas, 4 materializadas en el contrato, 0 faltantes y 0 duplicadas.
+
+Ninguna evidencia de NEXO, FOGO, ORIGO, VISO, NUMERA, SHELL o ANIMA satisface estas cuatro relaciones.
+
+#### 7. Línea base física observada de PULSO
+
+En el corte remoto inspeccionado de `devVentoGroup/vento-pulso`:
+
+- la rama principal es `main`;
+- el commit remoto observado es `71e0184486b5fe11e0a42435baf4024807a80efd`;
+- existe `package-lock.json` y el repositorio es una aplicación Next privada;
+- el manifest declara `lint`, `build` y `audit:i18n`;
+- el manifest no declara un script de pruebas automatizadas;
+- el manifest no declara un script dedicado de typecheck;
+- no se observaron archivos `.test.*` ni `.spec.*` en el árbol completo;
+- no se declaran todavía dependencias publicadas `@vento/*`;
+- se observan Next `16.1.1`, React `19.2.3`, React DOM `19.2.3`, Supabase JS `^2.90.1` y Supabase SSR `^0.8.0`;
+- el inventario fuente contiene exactamente seis archivos de página;
+- no se observan segmentos dinámicos de página;
+- no se observan route handlers;
+- no existe una página local `/login`; el acceso no autenticado se delega al Shell mediante el guard;
+- `/` y `/scanner` renderizan el mismo `ScannerPage`, pero conservan identidades URL distintas;
+- las cinco rutas de negocio observadas usan guard de PULSO, contexto de sede y permiso `pos.main`;
+- se observan Auth/SSO, contexto operacional, role override y firma de actor para dispositivo compartido;
+- `/orders` materializa filtros, estados, fulfillment, pago operativo, líneas, opciones, eventos, despacho, conversación y facturación;
+- las acciones de pedidos revalidan identificación, sede y acceso antes de ejecutar el RPC operacional observado;
+- `/sales-imports` materializa lectura XLSX, hash SHA-256 del archivo, mapeos externos, lotes, filas, warnings y publicación mediante RPC;
+- `/salon` materializa zonas, mesas, sesiones, llamados, refresh y suscripción Realtime a cambios de llamadas y sesiones;
+- el escáner materializa identificación de cliente, validación de redención y acreditación de loyalty;
+- las acciones de loyalty observadas incluyen controles de acceso y firma de actor compartido donde aplica;
+- la identificación de cliente puede utilizar un cliente privilegiado exclusivamente en código servidor cuando existe configuración service-role, frontera que la suite deberá proteger contra exposición o uso fuera del camino autorizado;
+- el árbol conserva implementaciones live y legacy relacionadas con el tablero de órdenes, por lo que la línea base no puede inferir que la retirada de legacy ya esté completada;
+- el estado actual documentado asigna PULSO como owner operacional de caja/salón, PASS como owner de cliente/loyalty, NEXO/Shell como frontera para inventario y Shell como owner de Supabase;
+- el estado actual documentado mantiene pendientes futuros de cierre formal de caja, pagos, integración única con PASS, llamados persistentes, estados compartidos y reporting; CI010 no los implementa por anticipación.
+
+Conclusión documental: **PULSO todavía no puede considerarse físicamente certificado para CI010 por la sola existencia de lint y build**. La futura `SHELL-CI-010::GLOBAL` deberá materializar infraestructura de pruebas automatizadas reproducible y autocertificar el habilitador.
+
+#### 8. Inventario contractual de rutas PULSO
+
+La línea base fuente de CI010 queda fijada en estas seis páginas:
+
+1. `/`;
+2. `/no-access`;
+3. `/orders`;
+4. `/sales-imports`;
+5. `/salon`;
+6. `/scanner`.
+
+Conciliación:
+
+```text
+6 páginas fuente
+0 patrones dinámicos
+0 route handlers
+
+5 rutas de negocio:
+- /
+- /orders
+- /sales-imports
+- /salon
+- /scanner
+
+1 estado de denegación:
+- /no-access
+
+0 rutas /login locales
+```
+
+`/` y `/scanner` permanecen como identidades distintas aunque compartan `ScannerPage`.
+
+Layouts, componentes, bridges, módulos, server actions, helpers y scripts no se contabilizan como páginas.
+
+Los query parameters `site_id`, `view`, `fulfillment`, `message`, `error` y `ok` permanecen dentro del contrato de su ruta y no generan nuevas identidades de pantalla.
+
+Cualquier alta, baja, movimiento, duplicación, segmento dinámico o route handler frente a esta línea base vuelve stale la evidencia que dependa del inventario hasta que exista un delta explícito.
+
+La reconciliación posterior contra navegación runtime y menú permanece separada: la ausencia de un sincronizador local no demuestra ausencia de registros remotos.
+
+#### 9. Distinción entre habilitador certificado y consumidor conforme
+
+CI010 fija dos afirmaciones diferentes que nunca podrán fusionarse:
+
+```text
+SHELL-CI-010::GLOBAL = VERIFIED
+```
+
+significa:
+
+- existe el harness;
+- el harness es reproducible;
+- detecta sus escenarios positivos y negativos;
+- detecta drift, stale evidence, otro consumidor, cero tests, aislamiento inválido y falsas condiciones de PASS;
+- produce evidencia machine-readable;
+- no requiere mutaciones productivas.
+
+No significa:
+
+```text
+EL COMMIT ACTUAL DE PULSO CUMPLE TODOS LOS REQUISITOS FUNCIONALES FUTUROS DEL DOMINIO
+```
+
+La conformidad del consumidor se determina en cada ejecución real de línea base contra su commit exacto.
+
+La coexistencia actual de tablero live y legacy, permisos todavía amplios, flujos de POS aún incompletos o fronteras de integración pendientes no impide materializar un harness correcto. Cuando una deuda registrada sea aplicable al perfil ejecutado, la ejecución real deberá devolver `FAIL` o `BLOCKED` en lugar de ocultarla.
+
+#### 10. Unidad exacta de certificación previa
+
+Cada resultado de CI010 se atribuye como mínimo a:
+
+```text
+consumer_repository
+consumer_branch
+consumer_base_commit
+consumer_manifest_identity
+consumer_lockfile_identity
+test_contract_identity
+test_suite_identity
+fixture_set_identity
+route_inventory_identity
+source_contract_identity
+environment_identity
+runtime_identity
+framework_identity
+target_package_set
+compatibility_refs
+pulso_profile_set
+execution_identity
+started_at
+completed_at
+result
+invalidation_reason
+```
+
+La unidad certificada es el **commit base sin la actualización propuesta**.
+
+Cambiar commit, manifest, lockfile, suite, fixtures, inventario, configuración, contratos fuente, entorno o perfil invalida la reutilización del resultado anterior.
+
+#### 11. Momento de ejecución
+
+La prueba previa debe ejecutarse después de conocer el conjunto objetivo y antes de materializar la actualización sobre PULSO.
+
+Orden obligatorio:
+
+1. resolver release o conjunto mínimo cerrado de releases objetivo;
+2. resolver una o más de las cuatro relaciones PULSO;
+3. fijar `consumer_base_commit`;
+4. fijar manifest y lockfile del commit base;
+5. fijar inventario de rutas y contratos fuente aplicables;
+6. resolver los perfiles PULSO exigidos por las familias objetivo;
+7. ejecutar la línea base común y los perfiles seleccionados sin cambiar versiones de packages;
+8. consolidar la evidencia;
+9. solo con resultado satisfactorio permitir que CI006 continúe con la preparación aislada de la propuesta.
+
+Si durante la prueba cambia el commit base, la ejecución en curso deja de ser atribuible y debe reiniciarse sobre la nueva identidad.
+
+#### 12. Semántica de resultado
+
+CI010 reutiliza la semántica fail-closed aprobada:
+
+- `PENDING`;
+- `RUNNING`;
+- `PASS`;
+- `FAIL`;
+- `BLOCKED`;
+- `CANCELLED`;
+- `TIMED_OUT`;
+- `STALE`;
+- `NOT_APPLICABLE` únicamente para comprobaciones realmente condicionales y justificadas.
+
+Para declarar una línea base PULSO apta se requiere `PASS` global de las comprobaciones obligatorias seleccionadas.
+
+No satisfacen el contrato:
+
+- suite ausente;
+- cero tests ejecutados;
+- tests obligatorios deshabilitados;
+- salida ambigua;
+- `SKIPPED` no justificado;
+- snapshots actualizados automáticamente para forzar verde;
+- mocks que eliminen la condición que se pretendía probar;
+- `NOT_APPLICABLE` en una comprobación obligatoria;
+- evidencia de otro commit;
+- evidencia de otro consumidor;
+- omisión de una de las seis páginas;
+- tratar `/` y `/scanner` como una sola ruta sin decisión canónica;
+- mutaciones contra datos reales;
+- redenciones, ventas, llamados, pedidos o lotes productivos generados por la prueba;
+- una deuda crítica aplicable convertida manualmente en PASS.
+
+#### 13. Línea base técnica común
+
+Toda certificación previa de PULSO deberá demostrar, sobre el mismo commit base:
+
+1. instalación bloqueada reproducible con el lockfile vigente;
+2. manifest y lockfile coherentes;
+3. lint o análisis estático aplicable;
+4. typecheck real de TypeScript;
+5. build de producción o export aplicable;
+6. ejecución de la suite automatizada específica de PULSO;
+7. ausencia de tests omitidos silenciosamente;
+8. identidad del entorno y runtime registrada;
+9. evidencia separada por comprobación;
+10. resultado global fail-closed;
+11. inventario de rutas y contratos fuente conciliados;
+12. ausencia de escrituras productivas provocadas por la propia certificación.
+
+El manifest observado no define `prebuild` mutante. Aun así, una ejecución futura deberá demostrar que su build y sus pruebas no disparan operaciones remotas con efectos de negocio por import, prerender, script auxiliar o configuración.
+
+Un build satisfactorio no sustituye las pruebas automatizadas específicas.
+
+#### 14. Matriz funcional mínima obligatoria de PULSO
+
+La suite global deberá cubrir como mínimo estas doce superficies de comportamiento. La implementación física puede dividir cada superficie en varios tests, pero no eliminarla sin una decisión canónica posterior.
+
+|    # | Superficie                                            | Afirmación positiva mínima                                                                                 | Afirmación negativa o de borde mínima                                                                   |
+| ---: | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+|    1 | identidad, sesión, SSO y acceso PULSO                 | una identidad válida conserva sesión, retorno seguro y acceso requerido                                    | sesión ausente, auth error o app no autorizada falla cerrado                                            |
+|    2 | contexto operativo, sede, actor y dispositivo         | sede, contexto y actor efectivo limitan la operación al territorio permitido                               | cambiar `site_id`, override, dispositivo o actor no concede autoridad                                   |
+|    3 | inventario de rutas y navegación                      | 6 páginas, 0 dinámicas y 0 handlers conservan identidad; `/` y `/scanner` siguen separadas                 | alta, baja, duplicado, handler oculto o fusión silenciosa bloquea                                       |
+|    4 | escáner e identificación de cliente                   | un código válido identifica al cliente dentro del contexto autorizado                                      | código inválido, usuario ausente, permiso denegado o privilegio indebido falla                          |
+|    5 | loyalty, redención y acreditación                     | redención válida y award aplicable conservan identidad, estado, actor y trazabilidad                       | QR reutilizado, redención no pendiente, doble award o firma de actor inválida falla                     |
+|    6 | pedidos, líneas, estado, pago y fulfillment           | pedido válido conserva sede, líneas, opciones, pago, modalidad y transición permitida                      | ID/sede inválidos, pago requerido ausente, transición prohibida o recurso ajeno falla                   |
+|    7 | despacho, chat, facturación e historial               | asignación, conversación, eventos y referencia fiscal permanecen ligados al mismo pedido                   | despacho de recurso ajeno, mensaje inválido, evento incoherente o ampliación de autoridad falla         |
+|    8 | salón, mesas, sesiones, llamados y Realtime           | zonas, mesas, sesión y llamados de la sede se proyectan y actualizan de forma coherente                    | llamada de otra sede, transición inválida, duplicación o evento Realtime no autorizado falla            |
+|    9 | importación de ventas, mapeos, lotes y publicación    | XLSX válido produce lote atribuible, hash, filas reconciliadas y publicación controlada                    | archivo inválido, mapping ajeno, replay, doble publicación o lote de otra sede falla                    |
+|   10 | atomicidad, idempotencia, concurrencia y recuperación | efectos repetibles conservan una identidad lógica y no duplican pedidos, redenciones ni publicaciones      | retry, timeout, doble submit o replay no produce dos efectos exitosos                                   |
+|   11 | integración y fronteras de dominio                    | PULSO opera POS/salón y consume PASS, NEXO y Shell mediante contratos explícitos                           | PULSO no adquiere por conveniencia ownership de cliente/loyalty, inventario o gobierno Supabase         |
+|   12 | UI, SSR, interacción, accesibilidad y Realtime        | páginas representativas renderizan, hidratan, reaccionan y presentan éxito/error/deny de forma consistente | hidratación, teclado, foco, formulario, realtime, loading, deny o error fallido no se normaliza a éxito |
+
+Estas doce superficies son la línea base común. Los perfiles de familia agregan obligaciones, no las sustituyen.
+
+#### 15. Perfil PULSO para `@vento/contracts`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-006`, la línea base deberá cubrir especialmente:
+
+- identidades y estructuras consumidas por pedido, línea, opción, evento, conversación y mensaje;
+- identidades y estados de zonas, mesas, sesiones y llamados;
+- identidades de cliente, redención, reward y transacción de loyalty;
+- identidades de lote, fila, mapping y publicación de ventas;
+- sede, fulfillment, payment status, dispatch status y estados operativos realmente consumidos;
+- cantidades, precios, subtotales, impuestos, descuentos, devoluciones y total;
+- payloads de dirección, guest info, metadata y referencias externas;
+- diferencia entre dato ausente, `null`, inválido, denegado y no aplicable;
+- compilación de los puntos de consumo TypeScript;
+- ausencia de casts o fallbacks globales que oculten una incompatibilidad.
+
+La evidencia se vincula a `PKG-COMP-MX-006` y `PKG-PR-REL-006`.
+
+#### 16. Perfil PULSO para `@vento/os-context`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-013`, la línea base deberá cubrir especialmente:
+
+- sesión real y sesión ausente;
+- delegación SSO al Shell;
+- acceso a la aplicación PULSO;
+- contexto operativo por sede y área cuando aplique;
+- permiso concedido y permiso denegado;
+- `site_id` solicitado frente a sede efectiva;
+- contexto incompleto o manipulado;
+- acceso directo a las cinco rutas de negocio;
+- role override únicamente cuando el contrato lo permita;
+- dispositivo compartido y aplicaciones permitidas;
+- firma de actor cuando una acción la requiera;
+- preservación de razones de denegación;
+- prohibición de elevar autoridad desde query params o valores controlados por cliente.
+
+La evidencia se vincula a `PKG-COMP-MX-013` y `PKG-PR-REL-013`.
+
+#### 17. Perfil PULSO para `@vento/supabase`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-020`, la línea base deberá cubrir especialmente:
+
+- clientes browser y server;
+- propagación de sesión y cookies;
+- tipos y shapes de respuesta consumidos;
+- consultas de pedidos, líneas, opciones, eventos, conversaciones, mensajes y facturación;
+- consultas de zonas, mesas, sesiones y llamados;
+- tablas de importación de ventas, mappings, lotes y filas;
+- esquema PASS consumido para redenciones;
+- RPC de transición operacional de pedido y publicación de ventas;
+- operaciones permitidas dentro del alcance autorizado;
+- operaciones denegadas por permisos o RLS;
+- aislamiento por sede;
+- suscripciones Realtime y cleanup;
+- ausencia de service-role en bundles cliente o fixtures;
+- uso server-only de privilegio elevado únicamente en un camino explícitamente autorizado;
+- correspondencia entre schema de prueba y fuente canónica de `vento-shell`;
+- ausencia de bypass por wrapper, fallback o manejo de errores.
+
+Las pruebas que requieran base de datos deberán usar un entorno local o CI aislado derivado de la fuente canónica de `vento-shell`. La falta de ese entorno cuando la comprobación sea obligatoria produce `BLOCKED`, no `NOT_APPLICABLE`.
+
+La evidencia se vincula a `PKG-COMP-MX-020` y `PKG-PR-REL-020`.
+
+#### 18. Perfil PULSO para `@vento/ui-web`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-027`, la línea base deberá cubrir especialmente:
+
+- render servidor y cliente de superficies representativas;
+- hidratación sin divergencias silenciosas;
+- `/`, `/scanner`, `/orders`, `/sales-imports`, `/salon` y `/no-access`;
+- scanner por entrada manual, lector y cámara cuando la abstracción aplicable pueda aislarse;
+- filtros, tablas, estados vacíos, mensajes y errores;
+- formularios, file input, botones operativos y double-submit guard;
+- eventos de usuario y feedback de éxito/error;
+- foco, teclado y semántica accesible aplicable;
+- Realtime de salón y superficies live de pedidos;
+- integración de tokens y estilos sin degradar legibilidad u operación;
+- ausencia de imports privados no contractuales;
+- deny states sin exposición de datos protegidos.
+
+La evidencia se vincula a `PKG-COMP-MX-027` y `PKG-PR-REL-027`.
+
+#### 19. Protección reforzada del escáner, cliente y loyalty
+
+La cobertura del escáner no puede reducirse a que `ScannerPage` renderice.
+
+Según aplicabilidad, la línea base deberá conservar:
+
+1. parsing válido del código de cliente;
+2. rechazo de formato inválido;
+3. sesión válida;
+4. permiso PULSO aplicable;
+5. sede efectiva;
+6. consulta server-side del cliente;
+7. ausencia de credenciales privilegiadas en cliente;
+8. redención existente y estado permitido;
+9. rechazo de redención reutilizada o cancelada;
+10. transición de redención una sola vez;
+11. acreditación de loyalty atribuible;
+12. identidad de transacción;
+13. firma de actor compartido cuando aplique;
+14. relación opcional con pedido sin otorgar autoridad sobre pedido;
+15. frontera clara con PASS como owner de cliente y loyalty.
+
+Una ejecución real no podrá declarar PASS si obtiene el resultado correcto únicamente mediante un bypass de permiso, service-role expuesto o fixture que omita la condición adversarial.
+
+#### 20. Protección reforzada de pedidos, despacho, chat y facturación
+
+El tablero de pedidos deberá conservar pruebas representativas de:
+
+- filtrado por sede;
+- filtros de vista y fulfillment;
+- pedido con identidad válida;
+- líneas y opciones;
+- subtotal, fee y total;
+- payment status;
+- regla de pago previo para delivery cuando aplique;
+- estados operativos permitidos;
+- rechazo de transición no soportada;
+- transición server-side mediante acción nombrada;
+- despacho aplicable a delivery;
+- partner y referencia de despacho;
+- conversación y mensajes ligados al pedido;
+- historial de eventos y actor;
+- referencia de facturación sin convertir PULSO en proveedor fiscal;
+- actualización live sin mezclar pedidos de otra sede.
+
+La presencia simultánea de implementaciones live y legacy obliga a probar la superficie realmente activa y a impedir un retiro silencioso. CI010 no declara completada la retirada del tablero legacy.
+
+#### 21. Protección reforzada de salón, mesas y Realtime
+
+La línea base deberá poder evaluar, según el commit y perfil aplicables:
+
+- zonas activas de la sede;
+- mesas de la sede;
+- sesión abierta;
+- pax y servidor cuando existan;
+- llamados pendientes y acknowledged;
+- creación manual de llamado;
+- prioridad;
+- tomar un llamado;
+- resolver un llamado;
+- refresh de snapshot;
+- suscripción Realtime a llamados y sesiones;
+- cleanup de canal;
+- rechazo de datos o mutaciones de otra sede;
+- estados de UI derivados de sesión y llamados;
+- comportamiento ante error de red o de Supabase.
+
+Una conexión Realtime estable no autoriza por sí misma una mutación. Cada acción deberá conservar su contrato de autorización y territorialidad.
+
+#### 22. Protección reforzada de importación de ventas
+
+La superficie `/sales-imports` deberá conservar pruebas representativas de:
+
+- sede y fecha;
+- archivo no vacío;
+- parsing XLSX;
+- encabezados requeridos;
+- filas válidas;
+- normalización numérica y textual;
+- hash SHA-256 del archivo;
+- mapping por identificador, código o nombre según contrato vigente;
+- warnings de fila sin mapping;
+- lote ligado a sede, fecha y archivo;
+- filas ligadas al lote;
+- importación repetida;
+- mapping de otra sede;
+- publicación mediante acción/RPC separado;
+- publicación única e idempotente cuando el contrato materializado lo exija;
+- ausencia de efecto de inventario durante la mera carga o validación;
+- efectos de publicación únicamente en entorno aislado.
+
+CI010 no atribuye a PULSO el ownership del inventario. Cualquier efecto integrado sobre inventario deberá probarse contra el contrato de NEXO/Shell en entorno aislado, no mediante mutación productiva.
+
+#### 23. Protección reforzada de autorización, sede y dispositivo compartido
+
+El permiso observado `pulso.pos.main` es evidencia de implementación actual, no aprobación de que un único permiso sea suficiente para toda acción futura.
+
+La suite deberá demostrar como mínimo:
+
+```text
+VISIBILIDAD DE UNA RUTA
+≠
+AUTORIZACIÓN DE TODAS SUS MUTACIONES
+```
+
+Y deberá separar:
+
+- `pulso.access`;
+- permiso de superficie;
+- autorización de recurso;
+- sede efectiva;
+- actor efectivo;
+- rol efectivo;
+- dispositivo compartido;
+- aplicación permitida por el dispositivo;
+- firma de actor cuando aplique;
+- estado de origen y transición;
+- columnas o efectos permitidos.
+
+`site_id`, `view`, `fulfillment`, `message`, `error`, `ok`, IDs de recursos y payloads cliente nunca podrán convertirse por sí solos en fuente de autoridad.
+
+#### 24. Datos, fixtures y aislamiento
+
+Las pruebas de CI010 deberán cumplir simultáneamente:
+
+1. no leer ni modificar datos productivos;
+2. usar fixtures deterministas o entorno local/CI aislado;
+3. no depender de IDs aleatorios no registrados;
+4. limpiar o descartar estado temporal de forma reproducible;
+5. no compartir estado mutable entre tests independientes;
+6. no utilizar credenciales reales como fixture;
+7. no introducir una migración PULSO para acomodar la prueba;
+8. cuando se necesite schema Supabase, consumir la fuente canónica de `vento-shell`;
+9. registrar identidad del fixture set;
+10. impedir que una falla de cleanup convierta el resultado en PASS;
+11. no crear pedidos, pagos, facturas, redenciones, transacciones loyalty, mesas, sesiones, llamados, mappings, lotes o ventas productivos;
+12. no publicar un lote real para demostrar idempotencia;
+13. no usar service-role real en la autocertificación sintética;
+14. separar fixtures de pedidos, loyalty, salón e importaciones;
+15. simular Realtime sin depender de eventos productivos;
+16. mantener aislados los escenarios de otra sede y otro actor.
+
+#### 25. Línea base antes de `INITIAL_ADOPTION`
+
+El manifest observado de PULSO no declara todavía packages publicados `@vento/*`.
+
+Por tanto, la primera adopción futura de cualquiera de las cuatro familias deberá tratar la evidencia CI010 como **oráculo del comportamiento previo**:
+
+```text
+COMMIT BASE SIN EL PACKAGE COMPARTIDO
+→ CI010 PASS
+→ PROPUESTA INITIAL_ADOPTION
+→ MISMA COBERTURA ESENCIAL SOBRE PROPOSAL COMMIT
+→ COMPARACIÓN DE RESULTADOS
+```
+
+La ausencia actual del package no convierte sus pruebas específicas en no aplicables.
+
+#### 26. Actualizaciones `PATCH`, `MINOR`, `MAJOR`, seguridad y deprecación
+
+CI010 no sustituye las clases de actualización de CI006:
+
+- `PATCH_UPDATE`: línea base completa y regresión focal;
+- `MINOR_UPDATE`: añade escenarios para la nueva capacidad consumida;
+- `MAJOR_UPDATE`: exige línea base completa y matriz explícita de comportamiento preservado/cambiado;
+- `SECURITY_UPDATE`: mantiene autorización, territorialidad, actor, RLS, denegación y secretos; la urgencia no permite omitirlos;
+- `DEPRECATION_MIGRATION`: conserva pruebas de la superficie antigua mientras siga soportada y de la ruta objetivo cuando exista;
+- `ROLLBACK_UPDATE`: CI010 aporta la línea base; la ejecución y certificación del rollback pertenece a CI014.
+
+#### 27. Actualización multi-package
+
+Cuando CI006 resuelva más de una familia compartida:
+
+1. CI010 selecciona la unión de todos los perfiles correspondientes;
+2. ninguna familia reduce la cobertura de otra;
+3. las doce superficies comunes permanecen;
+4. una ejecución puede producir evidencia para el conjunto si las identidades permanecen unidas;
+5. el conjunto objetivo queda registrado;
+6. cambiar una sola versión objetivo invalida la evidencia dependiente;
+7. no se usa lockstep artificial para incluir familias no requeridas.
+
+#### 28. Evidencia consumible por CI006
+
+La evidencia satisfactoria deberá permitir a CI006 demostrar al menos:
+
+- repositorio consumidor exacto: `devVentoGroup/vento-pulso`;
+- commit base exacto;
+- manifest y lockfile exactos;
+- inventario de rutas exacto;
+- contratos fuente exactos;
+- relación o relaciones PULSO aplicables;
+- conjunto de packages objetivo;
+- referencias de compatibilidad CI005;
+- perfil o perfiles PULSO ejecutados;
+- identidad de suite y fixtures;
+- identidad del entorno;
+- resultados por capa y superficie;
+- total de tests ejecutados, aprobados, fallidos y omitidos;
+- evidencia de caminos denegados aplicables;
+- evidencia de seis páginas, cero dinámicas y cero handlers;
+- evidencia de aislamiento territorial;
+- evidencia de que la certificación no produjo efectos productivos;
+- timestamps de inicio y cierre;
+- resultado global;
+- razón de bloqueo o invalidación cuando no sea PASS.
+
+La evidencia podrá formar parte de `validation_results` y `evidence_refs` del expediente `PKG-PR-*`, pero CI010 no crea ni mantiene ese expediente.
+
+#### 29. Invalidación obligatoria
+
+El resultado pasa a `STALE` cuando cambia materialmente cualquiera de estas entradas antes de que CI006 la consuma:
+
+- `consumer_base_commit`;
+- manifest;
+- lockfile;
+- configuración de build, TypeScript o test;
+- suite;
+- fixtures u oracles;
+- variables/configuración de entorno relevantes;
+- runtime o framework;
+- inventario de seis páginas;
+- presencia de segmentos dinámicos o handlers;
+- contrato de `/` o `/scanner`;
+- contratos fuente;
+- guard, SSO, contexto o autorización;
+- contrato de dispositivo compartido;
+- contrato de pedidos o transición operacional;
+- contrato de loyalty o redención;
+- contrato de salón o Realtime;
+- contrato de importación/publicación de ventas;
+- fuente de schema usada para pruebas Supabase;
+- relación package–PULSO;
+- versión o conjunto objetivo;
+- referencia de compatibilidad CI005;
+- superficie obligatoria;
+- contrato de CI010.
+
+No se conserva un PASS anterior mediante rebase, cherry-pick, actualización de snapshot o cambio de fixture sin nueva ejecución atribuible.
+
+#### 30. Condiciones de bloqueo
+
+La futura ejecución deberá quedar `BLOCKED` o `FAIL` según corresponda cuando ocurra cualquiera de estas condiciones:
+
+1. no existe runner reproducible para pruebas PULSO;
+2. el runner ejecuta cero tests obligatorios;
+3. falta identidad del commit base;
+4. manifest o lockfile no corresponden al commit;
+5. la suite cambió después de producir evidencia;
+6. existe un test obligatorio omitido;
+7. lint, typecheck o build obligatorio falla;
+8. una prueba funcional obligatoria falla;
+9. una prueba de denegación, autorización, contexto, actor, dispositivo, recurso o sede falla;
+10. el entorno apunta a datos o servicios productivos;
+11. un fixture contiene una credencial real;
+12. evidencia CI005 pertenece a otra versión o consumidor;
+13. la relación resuelta no corresponde a PULSO;
+14. se intenta modificar packages antes de cerrar línea base;
+15. se intenta resolver el fallo mediante bypass, cast global, skip o snapshot forzado;
+16. una operación de prueba intenta crear o cambiar schema, RLS, RPC, datos o configuración remota desde PULSO;
+17. evidencia de otro consumidor o commit se acepta como propia;
+18. `/` y `/scanner` se fusionan por compartir componente sin decisión canónica;
+19. el inventario deja de conciliar 6 páginas, 0 dinámicas y 0 handlers sin delta explícito;
+20. `site_id` permite leer o mutar otra sede;
+21. abrir `/orders` habilita una mutación sin revalidación server-side aplicable;
+22. una transición de pedido inválida produce éxito;
+23. un retry o replay duplica una redención o acreditación cuando la idempotencia sea aplicable;
+24. una prueba expone o usa service-role en cliente o fixture;
+25. `/sales-imports` acepta archivo o lote no autorizado, o una publicación repetida duplica efectos;
+26. un evento o acción de salón cruza sede o aplica una transición inválida;
+27. Realtime mezcla eventos de otro contexto;
+28. datos de PASS, NEXO o Shell se apropian localmente para forzar la prueba;
+29. resultados contradictorios o flaky no han sido explicados;
+30. una deuda crítica conocida se transforma manualmente en PASS.
+
+Ninguna aprobación humana convierte estas condiciones técnicas en PASS.
+
+#### 31. Materialización futura de `SHELL-CI-010::GLOBAL`
+
+La instancia física solo podrá declararse materializada cuando, dentro del alcance expresamente autorizado:
+
+1. exista infraestructura de pruebas automatizadas reproducible en `devVentoGroup/vento-pulso`;
+2. exista un punto de entrada determinista para la suite CI010;
+3. exista typecheck real;
+4. exista build CI reproducible sin efectos de negocio remotos;
+5. las pruebas cubran las doce superficies comunes;
+6. existan perfiles seleccionables para las cuatro familias;
+7. existan casos permitidos y denegados de autorización;
+8. exista cobertura de seis páginas, cero patrones dinámicos y cero handlers;
+9. exista prueba de que `/` y `/scanner` permanecen identidades distintas;
+10. exista estrategia aislada para pruebas Supabase;
+11. exista cobertura de pedidos, transición, despacho, chat y facturación aplicable;
+12. exista cobertura de scanner, loyalty y redención;
+13. exista cobertura de salón y Realtime;
+14. exista cobertura de importación y publicación de ventas;
+15. la suite no use datos productivos ni secretos reales;
+16. las pruebas no modifiquen schema ni migraciones PULSO;
+17. identidad de commit, manifest, lockfile, suite, fixtures, rutas, contratos fuente y entorno forme parte de evidencia;
+18. un cambio material vuelva STALE la evidencia;
+19. una ejecución multi-package una perfiles sin reducir cobertura;
+20. la salida sea machine-readable y consumible por CI006;
+21. el habilitador falle sintéticamente ante al menos una ruptura por cada perfil;
+22. demuestre que evidencia de otro consumidor o commit no es reutilizable;
+23. demuestre que cero tests no se normaliza a PASS;
+24. demuestre que drift de rutas no se normaliza a PASS;
+25. demuestre que una manipulación de sede no se normaliza a PASS;
+26. demuestre que un replay de efecto crítico puede ser detectado sin producir efectos reales;
+27. demuestre que privilegio elevado en cliente o fixture se clasifica como fallo;
+28. la autocertificación no actualice packages, no abra PR, no despliegue y no ejecute rollback;
+29. la autocertificación no cree pedidos, ventas, redenciones, loyalty, llamados, lotes ni mutaciones Supabase productivas.
+
+La selección física concreta de framework, archivos y devDependencies se resolverá durante la instancia con el estado actualizado de PULSO. El contrato no impone un proveedor inexistente por inferencia.
+
+#### 32. Recuperación e idempotencia
+
+Reglas:
+
+1. una repetición exacta sobre las mismas entradas puede reproducir la misma decisión sin duplicar identidad lógica;
+2. los intentos fallidos se conservan como evidencia;
+3. un test flaky no se resuelve reintentando hasta pasar sin registrar intermitencia;
+4. si cambia el commit base, se crea una ejecución nueva;
+5. si cambia el conjunto objetivo, se recalculan perfiles;
+6. un fallo de infraestructura produce `BLOCKED` cuando impide evaluar comportamiento;
+7. un fallo funcional produce `FAIL` cuando la infraestructura sí permitió evaluar;
+8. una ejecución cancelada o con timeout no certifica;
+9. la recuperación nunca modifica datos reales ni amplía permisos;
+10. una corrección del harness no reescribe evidencia histórica;
+11. una deuda preexistente del consumidor permanece visible como fallo o bloqueo de esa ejecución y no se borra al autocertificar el habilitador;
+12. retries de pedido, redención, award, llamado o publicación se prueban mediante fixtures u oráculos aislados, no mediante repetición contra producción.
+
+#### 33. Estado documental conciliado
+
+| Métrica                                      |                           Resultado |
+| -------------------------------------------- | ----------------------------------: |
+| Repositorio consumidor                       | **1 — `devVentoGroup/vento-pulso`** |
+| Familias compartidas base                    |                               **4** |
+| Relaciones CI005 de PULSO                    |                               **4** |
+| Relaciones CI006 de PULSO                    |                               **4** |
+| Páginas fuente PULSO                         |                               **6** |
+| Rutas de negocio                             |                               **5** |
+| Estados de denegación                        |                               **1** |
+| Patrones dinámicos de página                 |                               **0** |
+| Route handlers observados                    |                               **0** |
+| Rutas `/login` locales                       |                               **0** |
+| Superficies funcionales comunes obligatorias |                              **12** |
+| Perfiles de familia                          |                               **4** |
+| Auto-merge autorizado                        |                               **0** |
+| Auto-deploy autorizado                       |                               **0** |
+| Migraciones Supabase autorizadas en PULSO    |                               **0** |
+| Datos productivos autorizados para pruebas   |                               **0** |
+| Requisitos de prueba creados o modificados   |                               **0** |
+
+#### 34. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** las obligaciones de probar cada consumidor antes de adoptar packages compartidos, disponer de comandos reproducibles, conservar evidencia atribuible y bloquear falsos verdes ya existen en el registro canónico. La cobertura PULSO vigente ya protege POS, pedidos, rutas, SSO, autorización, territorialidad, importación de ventas, salón, redenciones, idempotencia, evidencia y fronteras interaplicación. CI010 especializa esas obligaciones para la línea base previa de PULSO y define su habilitador reutilizable; no introduce una regla empresarial independiente.
+
+#### 35. Cobertura de prueba vigente reutilizada
+
+La tarea reutiliza sin modificar, entre otras, estas obligaciones existentes:
+
+- `TREQ-SHELL-005`, sobre comandos reproducibles y ausencia de falsos verdes;
+- `TREQ-SHELL-006`, sobre pruebas propias, matriz de compatibilidad y validación por consumidor antes de publicar o adoptar;
+- `TREQ-SHELL-008`, sobre requisitos afectados y resultados reproducibles por package y PR;
+- `TREQ-SHELL-009`, sobre identidad verificable de repositorio, commit y ambiente;
+- `TREQ-PULSO-001`, sobre el POS interno de extremo a extremo;
+- `TREQ-PULSO-002`, sobre paridad y retirada controlada del tablero legacy;
+- `TREQ-PULSO-003`, sobre no adoptar automáticamente piezas del prototipo histórico;
+- `TREQ-PULSO-004`, sobre acciones nombradas, autorización y transición de pedidos;
+- `TREQ-PULSO-005`, sobre separación del ciclo comercial y estados;
+- `TREQ-PULSO-006`, sobre ventas, pagos, caja, fiscal y reversos auditables;
+- `TREQ-PULSO-007`, sobre cumplimiento y entrega de pedidos;
+- `TREQ-PULSO-008` a `TREQ-PULSO-027`, sobre seis páginas, identidad de rutas, ausencia de dinámicas y handlers, SSO, denegación, territorialidad, acciones de pedidos, importación de ventas, salón, query params, evidencia, drift, navegación y fronteras de aplicación.
+
+Estas referencias son trazabilidad de cobertura existente y no constituyen una modificación del registro 04A.
+
+#### 36. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                                                                                                 |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador documental no instala dependencias, no ejecuta build de PULSO y no materializa el harness.                                                                                                                                                                                                                                                                    |
+| LOCAL     | NOT_EXECUTED   | El artefacto todavía no ha sido incorporado ni validado por el checkout local del usuario.                                                                                                                                                                                                                                                                                |
+| REMOTA    | PASS           | Se verificaron continuidad CI009→CI010→CI011, topología `GLOBAL_ENABLE_ONCE`, las cuatro relaciones package–PULSO, commit remoto observado, manifest y lockfile, árbol completo, seis páginas, cero patrones dinámicos, cero route handlers, guard/SSO, pedidos, importación de ventas, salón/Realtime, scanner/loyalty, clientes Supabase y cobertura 04A PULSO vigente. |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutaron pedidos, ventas, redenciones, loyalty, salón, importaciones, Realtime, Supabase ni datos reales.                                                                                                                                                                                                                                                         |
+| FÍSICA    | NOT_APPLICABLE | La materialización pertenece a `SHELL-CI-010::GLOBAL` después de aprobación documental y autorización física explícita.                                                                                                                                                                                                                                                   |
+
+#### 37. Criterios de aceptación
+
+`SHELL-CI-010` queda documentalmente completa cuando:
+
+- identifica `devVentoGroup/vento-pulso` como consumidor propietario;
+- conserva CI006 como propietario del cambio y del PR;
+- conserva la disciplina de CI007, CI008 y CI009 sin reutilizar evidencia de otro consumidor;
+- gobierna exactamente cuatro relaciones package–PULSO;
+- define unidad de evidencia ligada a commit, manifest, lockfile, suite, fixtures, rutas, contratos fuente y entorno;
+- exige ejecutar línea base antes de modificar versiones objetivo;
+- define doce superficies funcionales comunes;
+- define cuatro perfiles de familia;
+- protege seis páginas, cero patrones dinámicos y cero handlers;
+- conserva `/` y `/scanner` como identidades distintas;
+- conserva delegación SSO al Shell y ausencia de `/login` local;
+- exige caminos permitidos y denegados;
+- protege sede, sesión, actor, dispositivo y recurso;
+- protege scanner, identificación de cliente, loyalty y redención;
+- protege pedidos, líneas, pagos operativos, estados, despacho, chat, historial y facturación;
+- protege salón, mesas, sesiones, llamados y Realtime;
+- protege importación XLSX, mapeos, lotes y publicación;
+- protege idempotencia, replay y no duplicación de efectos;
+- protege clientes Supabase/RLS sin autorizar cambios de base de datos desde PULSO;
+- protege UI, SSR, interacción y accesibilidad;
+- convierte ausencia de suite en bloqueo físico;
+- soporta `INITIAL_ADOPTION`;
+- soporta conjuntos multi-package;
+- invalida evidencia ante cambios materiales;
+- produce evidencia consumible por CI006;
+- conserva fronteras PULSO–PASS–NEXO–Shell;
+- separa habilitador VERIFIED de consumidor conforme;
+- no crea PR, no actualiza packages, no fusiona, no despliega y no ejecuta rollback durante el marcador;
+- no crea ni modifica requisitos de prueba.
+
+#### 38. Límites
+
+Esta tarea no:
+
+- implementa físicamente `SHELL-CI-010::GLOBAL`;
+- instala un framework de pruebas durante el marcador documental;
+- modifica `package.json` o `package-lock.json` de PULSO;
+- actualiza `@vento/contracts`, `@vento/os-context`, `@vento/supabase` ni `@vento/ui-web`;
+- modifica código funcional PULSO;
+- retira `orders-board-legacy`;
+- fusiona `/` y `/scanner`;
+- inventa una ruta `/login`;
+- crea ramas ni pull requests;
+- modifica la lógica del actualizador CI006;
+- recalcula compatibilidad CI005;
+- reutiliza evidencia NEXO, FOGO u ORIGO como si perteneciera a PULSO;
+- normaliza todos los comandos del repositorio, responsabilidad de CI016;
+- implementa por anticipado caja completa, pagos, sesiones POS, fiscal, delivery integral, reporting o demás capacidades futuras;
+- convierte PULSO en propietario de cliente/loyalty de PASS, inventario de NEXO ni gobierno Supabase de Shell;
+- modifica schema, tablas, RPC, RLS, Storage, Realtime, Edge Functions, datos, secretos o configuración Supabase;
+- crea ni modifica migraciones dentro de PULSO;
+- usa datos productivos;
+- ejecuta rollback de CI014;
+- coordina despliegue de CI015;
+- desarrolla CI011 ni otra tarea posterior;
+- crea, modifica, difiere, descarta ni vuelve obsoletos requisitos del registro 04A.
+
+#### 39. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CI-009 — Probar ORIGO antes de actualizar`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CI-010 — Probar PULSO antes de actualizar`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-011 — Probar VISO antes de actualizar`
+
+
 ### [ ] SHELL-CI-011 — Probar VISO antes de actualizar
 ### [ ] SHELL-CI-012 — Probar NUMERA antes de actualizar
 ### [ ] SHELL-CI-013 — Probar ANIMA antes de actualizar
