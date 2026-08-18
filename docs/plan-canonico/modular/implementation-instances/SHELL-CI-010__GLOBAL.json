@@ -1,10 +1,63 @@
 {
   "instance_id": "SHELL-CI-010::GLOBAL",
   "task_id": "SHELL-CI-010",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "devVentoGroup/vento-shell",
+    "devVentoGroup/vento-pulso"
+  ],
+  "authorized_changes": [
+    "En devVentoGroup/vento-shell, modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CI-010__GLOBAL.json para conservar la autorización humana, transicionar AUTHORIZED → IN_PROGRESS → IMPLEMENTED → VERIFIED y consolidar la evidencia de implementación y validación. No modificar implementation-control.json ni archivos de instancias anteriores.",
+    "En devVentoGroup/vento-pulso, modificar exclusivamente package.json para añadir los puntos de entrada typecheck, test, test:ci010, build:ci010 y ci010:baseline sin cambiar dependencies, devDependencies, versiones ni package-lock.json.",
+    "En devVentoGroup/vento-pulso, crear scripts/quality/pulso-consumer-baseline-gate.mjs como habilitador global reutilizable de SHELL-CI-010::GLOBAL. Debe fijar identidad de commit, manifest, lockfile, suite, entorno, inventario exacto de seis páginas, cero patrones dinámicos, cero route handlers, cinco rutas de negocio, un estado de denegación, cuatro relaciones package–PULSO, cuatro perfiles y doce superficies PULSO; producir evidencia JSON machine-readable; invalidar evidencia stale; bloquear cero tests, otro consumidor, otro commit, secretos, entorno productivo, drift de rutas, contratos fuente ausentes, superficies obligatorias ausentes y falsa exposición de privilegio; y no modificar packages, PR, merge, deploy, rollback ni Supabase.",
+    "En devVentoGroup/vento-pulso, crear scripts/quality/pulso-consumer-baseline-gate.test.mjs para autocertificar mediante fixtures sintéticos o aislados las doce superficies comunes, los cuatro perfiles de familia y las regresiones globales de identidad, stale evidence, aislamiento, ausencia de tests, secretos, entorno productivo, inventario exacto 6/0/0/5/1 y reutilización de evidencia ajena.",
+    "La implementación de SHELL-CI-010::GLOBAL no autoriza modificar código funcional de PULSO, corregir deudas funcionales preexistentes, package-lock.json, dependencies, devDependencies, migraciones, schema, tablas, vistas, funciones, RPC, triggers, grants, RLS, Storage, Realtime, Edge Functions, datos, secretos, configuración remota, packages @vento/* reales, ramas protegidas, pull requests, merge, deploy ni rollback. Tampoco autoriza retirar orders-board-legacy, fusionar / y /scanner, crear /login local ni ampliar permisos. Cualquier ampliación requiere una autorización física distinta y explícita."
+  ],
+  "validation_commands": [
+    "C:\\Users\\User\\devVentoGroup\\vento-pulso: npm ci",
+    "C:\\Users\\User\\devVentoGroup\\vento-pulso: npm run lint",
+    "C:\\Users\\User\\devVentoGroup\\vento-pulso: npm run typecheck",
+    "C:\\Users\\User\\devVentoGroup\\vento-pulso: npm run build:ci010",
+    "C:\\Users\\User\\devVentoGroup\\vento-pulso: npm run --silent ci010:baseline",
+    "C:\\Users\\User\\devVentoGroup\\vento-pulso: git diff --check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:build",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:plan:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:treq:test",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: npm run docs:work-topology:check",
+    "C:\\Users\\User\\devVentoGroup\\vento-shell: git diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-18T00:10:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO. Autorizo exclusivamente SHELL-CI-010::GLOBAL sobre devVentoGroup/vento-shell y devVentoGroup/vento-pulso dentro de los repositorios, cambios y validaciones enumerados en este registro. La autorización permite materializar y autocertificar el habilitador PULSO descrito, pero niega expresamente cualquier ampliación inferida a código funcional, corrección de deudas preexistentes, dependencies, devDependencies, package-lock.json, packages @vento/* reales, migraciones, schema, tablas, vistas, funciones, RPC, triggers, grants, RLS, Storage, Realtime, Edge Functions, datos, secretos, configuración remota, permisos, retirada de legacy, fusión de rutas, pull requests, merge, deploy o rollback.",
+    "source_contract_sha256": "19c7d9b4afbc604888220eb18ca569c7f9d259a0fa6318e8a4bc80543ff3c0d7"
+  },
+  "evidence": [
+    "PREFLIGHT PASS; task=SHELL-CI-010; instance=SHELL-CI-010::GLOBAL",
+    "SHELL_BASE_COMMIT 5006317d8306dec24f57d2cd81a8e109daa43abb",
+    "PULSO_BASE_COMMIT 71e0184486b5fe11e0a42435baf4024807a80efd",
+    "IMPLEMENTATION pulso-consumer-baseline-gate materialized; consumer=vento-pulso; relations=4; profiles=4; surfaces=12; pages=6; dynamic_pages=0; handlers=0; business_routes=5; deny_routes=1; contractual_tests=42",
+    "FILE_SHA256 package.json 913d9e76a584fdc037e10d290fdf6631142e5d246e5dafef2c52da8fd83cfb9f",
+    "FILE_SHA256 scripts/quality/pulso-consumer-baseline-gate.mjs 2156f0473522246756d33c5be78bf8b09040764f605e068385445fcc1c2b6dbd",
+    "FILE_SHA256 scripts/quality/pulso-consumer-baseline-gate.test.mjs 4bda3641da75caa9c22af0937764aee21400a5d7eacb7bd103ab5fbdf0a38eee",
+    "VALIDATION PULSO npm ci PASS",
+    "VALIDATION PULSO lint PASS",
+    "VALIDATION PULSO typecheck PASS",
+    "VALIDATION PULSO build:ci010 PASS",
+    "VALIDATION CI010 baseline PASS; contractual_tests=42; failed=0; skipped=0; denied_paths=16",
+    "VALIDATION PULSO route inventory PASS; pages=6; dynamic_pages=0; handlers=0; business_routes=5; deny_routes=1",
+    "VALIDATION PULSO git diff check PASS",
+    "VALIDATION Canonical plan build PASS",
+    "VALIDATION Canonical plan check PASS",
+    "VALIDATION Canonical plan tests PASS",
+    "VALIDATION TREQ check PASS",
+    "VALIDATION TREQ tests PASS",
+    "VALIDATION Work topology check PASS",
+    "VALIDATION SHELL git diff check PASS",
+    "RESULT CI010_FINAL_VALIDATION=PASS"
+  ]
 }

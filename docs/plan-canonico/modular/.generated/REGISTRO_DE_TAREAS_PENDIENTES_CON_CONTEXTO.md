@@ -8,11 +8,11 @@
 
 ## Qué toca hacer ahora
 
-- **Acción principal obligatoria:** `AUTORIZAR_IMPLEMENTACION`
+- **Acción principal obligatoria:** `EJECUTAR_IMPLEMENTACION`
 - **Objetivo exacto:** `SHELL-CI-010::GLOBAL` — Probar PULSO antes de actualizar
-- **Instrucción:** Definir y aprobar el alcance físico exacto de SHELL-CI-010::GLOBAL; la misma entrega puede dejar preparado el lote físico condicionado a guardar primero la autorización.
+- **Instrucción:** Ejecutar la transacción humana continua de SHELL-CI-010::GLOBAL desde IMPLEMENTED hasta VERIFIED; detenerse solo ante bloqueo real o fallo.
 - **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `SHELL-CI-011`
-- **Implementación física autorizada:** **NINGUNA**
+- **Implementación física autorizada:** `SHELL-CI-010::GLOBAL`
 
 > Esta instrucción prevalece sobre la simple posición de una tarea en la lista pendiente. Aprobar documentación no autoriza código y una instancia física no puede saltar su predecesora global.
 
