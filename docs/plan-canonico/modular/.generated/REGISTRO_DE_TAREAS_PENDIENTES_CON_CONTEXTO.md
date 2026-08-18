@@ -8,11 +8,11 @@
 
 ## Qué toca hacer ahora
 
-- **Acción principal obligatoria:** `INICIAR_IMPLEMENTACION`
-- **Objetivo exacto:** `SHELL-CI-005::GLOBAL` — Crear matriz de compatibilidad
-- **Instrucción:** Iniciar la guía humana continua de SHELL-CI-005::GLOBAL; avanzar hasta la primera comprobación necesaria.
-- **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `SHELL-CI-006`
-- **Implementación física autorizada:** `SHELL-CI-005::GLOBAL`
+- **Acción principal obligatoria:** `DOCUMENTAR_TAREA`
+- **Objetivo exacto:** `SHELL-CI-006` — Crear actualización de consumidores mediante PR
+- **Instrucción:** Desarrollar únicamente el contrato documental de SHELL-CI-006; no iniciar su instancia física por inferencia.
+- **Carril documental:** ACTIVO — `SHELL-CI-006`
+- **Implementación física autorizada:** **NINGUNA**
 
 > Esta instrucción prevalece sobre la simple posición de una tarea en la lista pendiente. Aprobar documentación no autoriza código y una instancia física no puede saltar su predecesora global.
 
