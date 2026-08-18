@@ -4192,7 +4192,1060 @@ Esta tarea no:
 `SHELL-CI-012 — Probar NUMERA antes de actualizar`
 
 
-### [ ] SHELL-CI-012 — Probar NUMERA antes de actualizar
+### ✅ SHELL-CI-012 — Probar NUMERA antes de actualizar
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CI-011 — Probar VISO antes de actualizar
+**Tarea siguiente:** SHELL-CI-013 — Probar ANIMA antes de actualizar
+**Tipo de tarea:** Habilitador global único — contrato documental de pruebas específicas de NUMERA previas a actualización de packages compartidos
+**Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
+**Repositorio propietario:** `devVentoGroup/vento-numera`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada el contrato de pruebas que deberá demostrar que **NUMERA conserva una línea base reproducible, íntegra, atribuible, financieramente trazable y fail-closed antes de modificar su conjunto de packages compartidos**, de modo que una actualización preparada por CI006 nunca parta de un consumidor ambiguo, de evidencia perteneciente a otro commit, de un inventario de rutas desactualizado, de una navegación sincronizada con efectos remotos durante la certificación, de una autorización inferida por visibilidad de interfaz, de un valor económico ausente presentado como real, de un contexto territorial manipulado o de una ejecución de prueba que escriba sobre datos, navegación, permisos o configuración Supabase reales.
+
+La regla vinculante queda:
+
+```text
+NUMERA EN UN COMMIT BASE EXACTO
++ MANIFEST Y LOCKFILE EXACTOS
++ INVENTARIO 7 PÁGINAS / 0 HANDLERS CONCILIADO
++ CLASIFICACIÓN 7 ESTÁTICAS / 0 DINÁMICAS CONCILIADA
++ EXPOSICIÓN 5 PROTEGIDAS / 2 SUPERFICIES PÚBLICAS CONTROLADAS CONCILIADA
++ 4 CANDIDATAS DE NAVEGACIÓN CONCILIADAS
++ ENTORNO DE PRUEBA AISLADO
++ BUILD SIN MUTACIÓN REMOTA
++ RELACIÓN PACKAGE–NUMERA EXACTA
++ PERFIL DE PRUEBAS NUMERA APLICABLE
++ PRUEBAS DE AUTORIZACIÓN, ECONOMÍA, DATOS, SERVIDOR E INTERFAZ SATISFACTORIAS
++ EVIDENCIA VIGENTE
+= LÍNEA BASE NUMERA APTA PARA INICIAR UNA PROPUESTA DE ACTUALIZACIÓN
+```
+
+Y, de forma fail-closed:
+
+```text
+LINT VERDE
+O BUILD VERDE
+O REDIRECCIÓN SSO QUE FUNCIONA
+O TABLA QUE RENDERIZA
+O RPC QUE RESPONDE
+O VALOR NULO MOSTRADO COMO CERO SIN ORIGEN
+O PREBUILD QUE ESCRIBE NAVEGACIÓN REAL
+O COMPATIBILIDAD DE OTRO CONSUMIDOR
+O PRUEBAS DE OTRO COMMIT
+O AUSENCIA DE TESTS AUTOMATIZADOS
+≠ LÍNEA BASE NUMERA CERTIFICADA
+```
+
+CI012 certifica la línea base específica de NUMERA. No publica packages, no modifica la versión objetivo, no prepara el pull request, no fusiona, no despliega, no ejecuta rollback y no corrige por anticipado las capacidades financieras o de autorización cuyo propietario canónico pertenece a tareas posteriores.
+
+#### 2. Resultado canónico
+
+`SHELL-CI-012` establece un único habilitador reutilizable para:
+
+1. identificar el commit base exacto de `devVentoGroup/vento-numera` que se pretende actualizar;
+2. fijar las identidades del manifest, lockfile, configuración, suite, fixtures, inventario de rutas, contratos fuente y entorno;
+3. seleccionar únicamente las relaciones package–NUMERA aplicables;
+4. seleccionar el perfil NUMERA correspondiente a cada familia compartida objetivo;
+5. ejecutar una línea base técnica reproducible sobre el commit base sin modificar versiones de packages;
+6. reconciliar exactamente siete páginas estáticas y cero patrones dinámicos;
+7. conservar exactamente cinco rutas protegidas y dos superficies públicas controladas;
+8. conservar cero route handlers App Router y mantenerlos separados de páginas, Server Actions y scripts;
+9. reconciliar exactamente cuatro candidatas declarativas de navegación sin convertir la raíz ni las superficies de acceso en elementos de menú;
+10. conservar `/login` como puente SSO hacia Shell y `/no-access` como estado de denegación;
+11. proteger middleware, guardas, sesión operativa, acceso a NUMERA, sede, área, dispositivo compartido, permisos y role override;
+12. impedir que `returnTo`, IDs, query params, formularios o valores cliente amplíen autoridad;
+13. proteger la separación entre permiso de lectura y permiso de administración;
+14. proteger el panel raíz sin interpretar acceso a la aplicación como permiso definitivo sobre toda métrica económica;
+15. proteger centros de costo, presupuestos, ingreso esperado, margen objetivo y acciones de actualización;
+16. proteger gastos, categorías, centros, moneda, fecha, origen y acción de creación;
+17. proteger punto de equilibrio y rentabilidad frente a datos ausentes, parciales o no conciliados;
+18. proteger la distinción entre dato real, esperado, presupuestado, calculado, simulado, propuesto y ausente;
+19. proteger la reconciliación con hechos y documentos fuente de PULSO, ORIGO, FOGO y NEXO;
+20. proteger periodos, moneda, centro de costo, entidad, origen, documento, monto y correlación cuando resulten aplicables;
+21. proteger `sync-navigation` como mecanismo declarativo separado de la certificación y bloquear cualquier efecto remoto durante la suite;
+22. proteger los clientes Supabase browser/server y cualquier uso privilegiado del script de sincronización;
+23. probar RLS, RPC, consultas y Server Actions sin autorizar migraciones ni cambios remotos desde NUMERA;
+24. proteger fronteras NUMERA–Shell–PULSO–ORIGO–FOGO–NEXO–PASS–ANIMA;
+25. probar render, hidratación, interacción, formularios, tablas, feedback, accesibilidad y estados vacíos/deny representativos cuando la familia objetivo sea UI;
+26. producir evidencia machine-readable ligada al commit base y al conjunto exacto de pruebas;
+27. invalidar la evidencia cuando cambie cualquiera de sus entradas materiales;
+28. bloquear una actualización cuando no exista infraestructura de prueba suficiente;
+29. entregar a CI006 un resultado de línea base consumible para comparar el comportamiento previo y el `proposal_commit` posterior;
+30. soportar una actualización multi-package mediante la unión de perfiles requeridos, sin reducir cobertura;
+31. autocertificar el habilitador global una sola vez antes de reutilizarlo en futuras actualizaciones de NUMERA;
+32. separar la certificación del habilitador de la conformidad funcional completa del consumidor.
+
+#### 3. Frontera de responsabilidad
+
+| Responsabilidad                                                | Propietario         |
+| -------------------------------------------------------------- | ------------------- |
+| pruebas propias del package                                    | `SHELL-CI-001`      |
+| artefacto distribuible del package                             | `SHELL-CI-002`      |
+| identidad y publicación de release                             | `SHELL-CI-003`      |
+| changelog y release notes                                      | `SHELL-CI-004`      |
+| compatibilidad package–consumidor                              | `SHELL-CI-005`      |
+| preparación y mantenimiento del PR consumidor                  | `SHELL-CI-006`      |
+| línea base y pruebas específicas de NEXO                       | `SHELL-CI-007`      |
+| línea base y pruebas específicas de FOGO                       | `SHELL-CI-008`      |
+| línea base y pruebas específicas de ORIGO                      | `SHELL-CI-009`      |
+| línea base y pruebas específicas de PULSO                      | `SHELL-CI-010`      |
+| línea base y pruebas específicas de VISO                       | `SHELL-CI-011`      |
+| línea base y pruebas específicas de NUMERA antes de actualizar | `SHELL-CI-012`      |
+| pruebas específicas de ANIMA                                   | `SHELL-CI-013`      |
+| rollback por repositorio                                       | `SHELL-CI-014`      |
+| independencia de despliegue                                    | `SHELL-CI-015`      |
+| normalización transversal de comandos                          | `SHELL-CI-016`      |
+| trazabilidad de requisitos y evidencia por PR                  | `SHELL-CI-017..019` |
+
+CI012 puede exigir un punto de entrada reproducible para su propia suite. No absorbe la normalización transversal de comandos reservada a CI016, no redefine el dominio financiero de NUMERA y no corrige por anticipado obligaciones cuyo owner ya esté asignado a `NUMERA-*`, `AUTH-UI-*`, integración, base de datos o paquetes posteriores.
+
+#### 4. Topología de trabajo
+
+`PHASE-03-T-CI-FOUNDATION` aplica `GLOBAL_ENABLE_ONCE` a `SHELL-CI-012`.
+
+Por tanto:
+
+```text
+MARCADOR CANÓNICO
+SHELL-CI-012
+→ define una sola vez el contrato de pruebas previas de NUMERA
+
+INSTANCIA FÍSICA FUTURA
+SHELL-CI-012::GLOBAL
+→ materializa y autocertifica una sola vez el habilitador NUMERA
+
+ACTUALIZACIONES POSTERIORES DE NUMERA
+→ reutilizan el habilitador certificado
+→ generan evidencia nueva por commit base y conjunto objetivo
+→ no vuelven a implementar CI012
+```
+
+La instancia global puede utilizar fixtures, dobles, oracles sintéticos, snapshots de inventario y entornos locales o CI aislados. No necesita actualizar un package real, crear gastos reales, modificar presupuestos reales, sincronizar navegación remota ni mutar Supabase productivo para demostrar que el habilitador funciona.
+
+#### 5. Handoff vinculante desde CI006 y CI007 a CI011
+
+CI006 conserva las 28 relaciones base, los gates de actualización, la invalidación por commit y la prohibición de auto-merge y auto-deploy.
+
+CI007 a CI011 ya establecen la disciplina común para líneas base previas de consumidores:
+
+- identidad exacta;
+- evidencia atribuible;
+- semántica fail-closed;
+- invalidación por cambios materiales;
+- separación entre habilitador global y ejecución por actualización;
+- prohibición de reutilizar evidencia de otro consumidor;
+- ausencia de tests distinta de PASS;
+- separación entre harness autocertificado y consumidor integralmente conforme.
+
+CI012 conserva esa disciplina y la especializa para NUMERA, donde la prueba previa debe añadir garantías explícitas sobre información económica, permisos atómicos de lectura/administración, navegación con prebuild potencialmente mutante, SSO, contexto operativo, Server Actions y datos financieros.
+
+La secuencia lógica será:
+
+```text
+RELEASE OBJETIVO CONOCIDA
+→ RELACIÓN PACKAGE–NUMERA RESUELTA
+→ COMMIT BASE NUMERA FIJADO
+→ CI012 CERTIFICA LA LÍNEA BASE DEL COMMIT BASE
+→ CI006 MATERIALIZA LA PROPUESTA AISLADA
+→ CI006 EJECUTA O CONSUME LOS GATES SOBRE EL PROPOSAL COMMIT
+→ SE COMPARA CON LA LÍNEA BASE VIGENTE
+→ REVISIÓN HUMANA
+```
+
+Un `PASS` de CI012 no sustituye CI005 ni autoriza por sí mismo `ELIGIBLE`, `READY_FOR_REVIEW`, merge, despliegue o adopción.
+
+#### 6. Relaciones package–NUMERA gobernadas
+
+CI012 gobierna exactamente las cuatro combinaciones NUMERA de la matriz web base:
+
+| Familia             | Compatibilidad CI005 | Actualización CI006 | Consumidor     |
+| ------------------- | -------------------- | ------------------- | -------------- |
+| `@vento/contracts`  | `PKG-COMP-MX-007`    | `PKG-PR-REL-007`    | `vento-numera` |
+| `@vento/os-context` | `PKG-COMP-MX-014`    | `PKG-PR-REL-014`    | `vento-numera` |
+| `@vento/supabase`   | `PKG-COMP-MX-021`    | `PKG-PR-REL-021`    | `vento-numera` |
+| `@vento/ui-web`     | `PKG-COMP-MX-028`    | `PKG-PR-REL-028`    | `vento-numera` |
+
+**Conciliación:** 4 relaciones NUMERA esperadas, 4 materializadas en el contrato, 0 faltantes y 0 duplicadas.
+
+Ninguna evidencia de NEXO, FOGO, ORIGO, PULSO, VISO, SHELL o ANIMA satisface estas cuatro relaciones.
+
+#### 7. Línea base física observada de NUMERA
+
+En el corte remoto inspeccionado de `devVentoGroup/vento-numera`:
+
+- la rama principal es `main`;
+- el commit remoto observado es `1b48a5da425d92e19ed89cf175b1dccc4cd960e1`;
+- existe `package-lock.json` y el repositorio es una aplicación Next privada;
+- el manifest declara `dev`, `build`, `start`, `lint`, `audit:i18n`, `sync:navigation` y `prebuild`;
+- `prebuild` ejecuta `sync:navigation`;
+- el manifest no declara un script de pruebas automatizadas;
+- el manifest no declara un script dedicado de typecheck;
+- no se observaron archivos `.test.*` ni `.spec.*` en el árbol completo;
+- no se declaran todavía dependencias publicadas `@vento/*`;
+- se observan Next `^16.2.1`, React `19.2.3`, React DOM `19.2.3`, Supabase JS `^2.90.1` y Supabase SSR `^0.8.0`;
+- el inventario canónico contiene siete páginas, todas estáticas;
+- existen cero patrones dinámicos y cero route handlers App Router;
+- cinco páginas están protegidas y `/login` + `/no-access` son superficies públicas controladas;
+- la raíz `/` es una página real, aunque no se sincroniza como navegación;
+- `sync-navigation` declara exactamente cuatro candidatas de negocio;
+- `/login` actúa como puente hacia Shell;
+- `/no-access` restringe `returnTo` a destinos relativos;
+- el middleware excluye `login`, `no-access`, `/api` y recursos técnicos del matcher;
+- el guard resuelve usuario, sesión operativa, acceso a aplicación, sede, área, dispositivo compartido, permisos y role override;
+- `/cost-centers` y `/expenses` materializan Server Actions con revalidación de permiso de administración;
+- `/break-even` y `/profitability` materializan lectura financiera;
+- el panel raíz consume `numera_current_period_summary`;
+- el script `sync-navigation` puede usar service-role y ejecutar RPC/upserts cuando esas credenciales están presentes;
+- cualquier modificación futura de schema, RPC, RLS, Storage, Realtime, Edge Functions, datos o configuración Supabase permanece propiedad de `devVentoGroup/vento-shell`.
+
+Conclusión documental: **NUMERA todavía no puede considerarse físicamente certificado para CI012 por la sola existencia de lint y build**. La futura `SHELL-CI-012::GLOBAL` deberá materializar infraestructura de pruebas automatizadas reproducible, typecheck explícito y un build de certificación que no pueda sincronizar navegación remota.
+
+#### 8. Inventario contractual de rutas y navegación NUMERA
+
+CI012 toma como línea base canónica:
+
+```text
+PÁGINAS
+7 totales
+7 estáticas
+0 dinámicas
+
+EXPOSICIÓN
+5 protegidas
+2 superficies públicas controladas
+
+HANDLERS APP ROUTER
+0
+
+NAVEGACIÓN DECLARATIVA
+4 candidatas de negocio
+```
+
+Identidades:
+
+| ID                 | Ruta             | Superficie                     |
+| ------------------ | ---------------- | ------------------------------ |
+| `NUMERA-ROUTE-001` | `/`              | panel económico inicial        |
+| `NUMERA-ROUTE-002` | `/login`         | puente SSO                     |
+| `NUMERA-ROUTE-003` | `/no-access`     | estado de denegación           |
+| `NUMERA-ROUTE-004` | `/cost-centers`  | centros de costo y presupuesto |
+| `NUMERA-ROUTE-005` | `/expenses`      | gastos                         |
+| `NUMERA-ROUTE-006` | `/break-even`    | punto de equilibrio            |
+| `NUMERA-ROUTE-007` | `/profitability` | rentabilidad                   |
+
+Las cuatro candidatas de navegación son:
+
+```text
+/cost-centers
+/expenses
+/break-even
+/profitability
+```
+
+La raíz, `/login` y `/no-access` no se convierten en menú por el solo hecho de ser páginas reales.
+
+Cualquier alta, baja, movimiento, duplicación, aparición de `[id]`/`[slug]`, nuevo handler, cambio de exposición, cambio de guard o cambio de lista declarativa de navegación vuelve stale la evidencia dependiente del inventario hasta que exista un delta explícito.
+
+#### 9. Distinción entre habilitador certificado y consumidor conforme
+
+CI012 fija dos afirmaciones diferentes que nunca podrán fusionarse:
+
+```text
+SHELL-CI-012::GLOBAL = VERIFIED
+```
+
+significa:
+
+- existe el harness;
+- el harness es reproducible;
+- detecta sus escenarios positivos y negativos;
+- detecta drift de 7 páginas, 0 dinámicas, 0 handlers, 5 protegidas, 2 públicas controladas y 4 candidatas de navegación;
+- detecta stale evidence, otro consumidor, cero tests, aislamiento inválido, secretos, build mutante y falsas condiciones de PASS;
+- produce evidencia machine-readable;
+- no requiere mutaciones productivas.
+
+No significa:
+
+```text
+EL COMMIT ACTUAL DE NUMERA CUMPLE TODOS LOS REQUISITOS FINANCIEROS, DE AUTORIZACIÓN Y UX FUTUROS DEL DOMINIO
+```
+
+La conformidad del consumidor se determina en cada ejecución real de línea base contra su commit exacto.
+
+Deudas o capacidades todavía no implementadas pueden coexistir con un harness global correctamente autocertificado. Cuando una deuda registrada sea aplicable al perfil ejecutado, la ejecución real deberá devolver `FAIL` o `BLOCKED` en lugar de ocultarla.
+
+#### 10. Unidad exacta de certificación previa
+
+Cada resultado de CI012 se atribuye como mínimo a:
+
+```text
+consumer_repository
+consumer_branch
+consumer_base_commit
+consumer_manifest_identity
+consumer_lockfile_identity
+test_contract_identity
+test_suite_identity
+fixture_set_identity
+route_inventory_identity
+navigation_inventory_identity
+source_contract_identity
+environment_identity
+runtime_identity
+framework_identity
+target_package_set
+compatibility_refs
+numera_profile_set
+execution_identity
+started_at
+completed_at
+result
+invalidation_reason
+```
+
+La unidad certificada es el **commit base sin la actualización propuesta**.
+
+Cambiar commit, manifest, lockfile, suite, fixtures, inventario de páginas, inventario de navegación, configuración, contratos fuente, entorno o perfil invalida la reutilización del resultado anterior.
+
+#### 11. Momento de ejecución
+
+La prueba previa debe ejecutarse después de conocer el conjunto objetivo y antes de materializar la actualización sobre NUMERA.
+
+Orden obligatorio:
+
+1. resolver release o conjunto mínimo cerrado de releases objetivo;
+2. resolver una o más de las cuatro relaciones NUMERA;
+3. fijar `consumer_base_commit`;
+4. fijar manifest y lockfile del commit base;
+5. fijar inventarios de páginas, navegación y contratos fuente aplicables;
+6. resolver los perfiles NUMERA exigidos por las familias objetivo;
+7. ejecutar la línea base común y los perfiles seleccionados sin cambiar versiones de packages;
+8. consolidar la evidencia;
+9. solo con resultado satisfactorio permitir que CI006 continúe con la preparación aislada de la propuesta.
+
+Si durante la prueba cambia el commit base, la ejecución en curso deja de ser atribuible y debe reiniciarse sobre la nueva identidad.
+
+#### 12. Semántica de resultado
+
+CI012 reutiliza la semántica fail-closed aprobada:
+
+- `PENDING`;
+- `RUNNING`;
+- `PASS`;
+- `FAIL`;
+- `BLOCKED`;
+- `CANCELLED`;
+- `TIMED_OUT`;
+- `STALE`;
+- `NOT_APPLICABLE` únicamente para comprobaciones realmente condicionales y justificadas.
+
+Para declarar una línea base NUMERA apta se requiere `PASS` global de las comprobaciones obligatorias seleccionadas.
+
+No satisfacen el contrato:
+
+- suite ausente;
+- cero tests ejecutados;
+- tests obligatorios deshabilitados;
+- salida ambigua;
+- `SKIPPED` no justificado;
+- snapshots actualizados automáticamente para forzar verde;
+- mocks que eliminen la condición que se pretendía probar;
+- `NOT_APPLICABLE` en una comprobación obligatoria;
+- evidencia de otro commit;
+- evidencia de otro consumidor;
+- omisión de una página;
+- aparición de un handler no conciliado;
+- cuatro rutas de navegación tratadas como si fueran solo cuatro páginas;
+- raíz omitida porque no esté en el menú;
+- Server Action tratada como route handler;
+- valor económico ausente convertido en valor real confirmado;
+- build que ejecute sincronización remota;
+- uso de service-role real durante fixtures o certificación;
+- mutaciones contra datos reales;
+- una deuda crítica aplicable convertida manualmente en PASS.
+
+#### 13. Línea base técnica común
+
+Toda certificación previa de NUMERA deberá demostrar, sobre el mismo commit base:
+
+1. instalación bloqueada reproducible con el lockfile vigente;
+2. manifest y lockfile coherentes;
+3. lint o análisis estático aplicable;
+4. typecheck real de TypeScript;
+5. build de producción aplicable;
+6. ejecución de la suite automatizada específica de NUMERA;
+7. ausencia de tests omitidos silenciosamente;
+8. identidad del entorno y runtime registrada;
+9. evidencia separada por comprobación;
+10. resultado global fail-closed;
+11. inventarios de páginas y navegación conciliados;
+12. ausencia de escrituras productivas provocadas por la propia certificación;
+13. ausencia de service-role real en el entorno de build/test;
+14. ejecución de `sync-navigation` únicamente en modo no mutante cuando forme parte del build evaluado.
+
+El manifest observado no define una suite de tests ni typecheck dedicado. La futura materialización deberá incorporar puntos de entrada reproducibles dentro del alcance expresamente autorizado.
+
+Un build satisfactorio no sustituye las pruebas automatizadas específicas.
+
+#### 14. Matriz funcional mínima obligatoria de NUMERA
+
+La suite global deberá cubrir como mínimo estas doce superficies. La implementación física puede dividir cada superficie en varios tests, pero no eliminarla sin una decisión canónica posterior.
+
+|    # | Superficie                                          | Afirmación positiva mínima                                                               | Afirmación negativa o de borde mínima                                                            |
+| ---: | --------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+|    1 | identidad, sesión, SSO y denegación                 | identidad válida conserva sesión, retorno seguro y acceso requerido                      | sesión ausente, auth error o retorno inseguro falla cerrado                                      |
+|    2 | contexto operativo, sede, área, actor y dispositivo | contexto efectivo limita la operación al territorio y actor permitidos                   | cambiar sede, área, role override o dispositivo no concede autoridad                             |
+|    3 | inventario de páginas                               | 7 páginas estáticas, 0 dinámicas y 0 handlers permanecen conciliados                     | alta, baja, movimiento, duplicado o handler nuevo bloquea                                        |
+|    4 | navegación y prebuild                               | 4 candidatas conservan identidad, permiso y metadata sin escritura durante certificación | service-role presente, drift de rutas o mutación remota bloquea                                  |
+|    5 | panel raíz                                          | acceso a NUMERA y resumen económico se presentan con semántica de origen                 | acceso a app no se interpreta como permiso universal ni ausencia como dato real                  |
+|    6 | centros de costo y presupuesto                      | lectura y administración conservan permisos separados y entradas válidas                 | edición sin `cost_centers.manage`, centro/periodo inválido o monto inválido falla                |
+|    7 | gastos                                              | lectura y creación conservan permiso, centro, fecha, moneda y origen                     | creación sin `expenses.manage`, dato incompleto o recurso no autorizado falla                    |
+|    8 | punto de equilibrio                                 | cálculo disponible conserva centro, margen, gastos y resultado identificables            | ausencia de margen/cálculo no se presenta como valor económico confirmado                        |
+|    9 | rentabilidad                                        | ingreso esperado, gasto real, presupuesto y variación permanecen diferenciados           | dato ausente, fuente no conciliada o dimensión mezclada no se normaliza a éxito                  |
+|   10 | trazabilidad económica y conciliación               | montos, periodos, centros y fuentes conservan lineage verificable                        | duplicado manual, fuente perdida, periodo ambiguo o agregado editable bloquea                    |
+|   11 | Supabase, RLS, RPC y Server Actions                 | consultas y acciones permitidas respetan autorización y aislamiento                      | bypass, RLS denegada normalizada a éxito o privilegio elevado no justificado falla               |
+|   12 | UI, SSR, interacción, accesibilidad y errores       | tablas, formularios, estados vacíos y feedback renderizan de forma consistente           | hidratación, teclado, foco, error, loading, deny o null-state incorrecto no se normaliza a éxito |
+
+Estas doce superficies son la línea base común. Los perfiles de familia agregan obligaciones, no las sustituyen.
+
+#### 15. Perfil NUMERA para `@vento/contracts`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-007`, la línea base deberá cubrir especialmente:
+
+- identidades de empresa, sede, centro de costo, periodo, categoría y fuente;
+- shapes de presupuestos, gastos, resúmenes y métricas;
+- montos, moneda, fechas, porcentajes, márgenes y variaciones;
+- estados y discriminantes de dato real, esperado, presupuestado, calculado, simulado, propuesto y ausente;
+- contratos de entradas y salidas consumidos por Server Actions;
+- estructuras de errores y denegación;
+- diferencia entre dato ausente, `null`, cero legítimo, inválido y no aplicable;
+- compilación de los puntos de consumo TypeScript;
+- serialización y deserialización aplicables;
+- ausencia de casts o fallbacks globales que oculten una incompatibilidad.
+
+La evidencia se vincula a `PKG-COMP-MX-007` y `PKG-PR-REL-007`.
+
+#### 16. Perfil NUMERA para `@vento/os-context`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-014`, la línea base deberá cubrir especialmente:
+
+- sesión real y sesión ausente;
+- delegación SSO al Shell;
+- acceso a la aplicación NUMERA;
+- contexto operativo por sede y área;
+- permiso concedido y permiso denegado;
+- sede solicitada frente a sede efectiva;
+- contexto incompleto o manipulado;
+- acceso directo a las cinco rutas protegidas;
+- role override únicamente cuando el contrato lo permita;
+- dispositivo compartido y aplicaciones permitidas;
+- preservación de razones de denegación;
+- prohibición de elevar autoridad desde query params, IDs o valores controlados por cliente;
+- separación entre `numera.access`, permisos `.view` y permisos `.manage`.
+
+La evidencia se vincula a `PKG-COMP-MX-014` y `PKG-PR-REL-014`.
+
+#### 17. Perfil NUMERA para `@vento/supabase`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-021`, la línea base deberá cubrir especialmente:
+
+- clientes browser y server;
+- propagación de sesión y cookies;
+- consultas de periodos, centros, gastos y resúmenes;
+- RPC `has_permission`;
+- RPC `numera_current_period_summary`;
+- vistas y tablas NUMERA consumidas por las superficies actuales;
+- operaciones permitidas dentro del alcance autorizado;
+- operaciones denegadas por permisos o RLS;
+- aislamiento por sede y área cuando aplique;
+- respuestas de error y estados parciales;
+- correspondencia entre schema de prueba y fuente canónica de `vento-shell`;
+- Server Actions de presupuesto y gastos;
+- prohibición de usar service-role real durante la certificación;
+- prohibición de permitir que `sync-navigation` escriba sobre un proyecto remoto;
+- build y suite sin mutaciones remotas.
+
+Las pruebas que requieran base de datos deberán usar un entorno local o CI aislado derivado de la fuente canónica de `vento-shell`. La falta de ese entorno cuando la comprobación sea obligatoria produce `BLOCKED`, no `NOT_APPLICABLE`.
+
+La evidencia se vincula a `PKG-COMP-MX-021` y `PKG-PR-REL-021`.
+
+#### 18. Perfil NUMERA para `@vento/ui-web`
+
+Cuando la relación objetivo incluya `PKG-PR-REL-028`, la línea base deberá cubrir especialmente:
+
+- render servidor y cliente de superficies representativas;
+- hidratación sin divergencias silenciosas;
+- AppShell, app switcher, profile menu, tablas y componentes estándar;
+- panel económico inicial;
+- formularios de centros de costo y gastos;
+- tablas de gastos, equilibrio y rentabilidad;
+- estados vacíos, loading, success, error y deny;
+- foco, teclado y semántica accesible aplicable;
+- diferenciación visual de dato real, esperado, presupuestado, calculado, simulado y ausente cuando el contrato lo exija;
+- ausencia de exposición de datos protegidos en estados de error o denegación;
+- integración de tokens y estilos sin degradar legibilidad de cifras;
+- ausencia de imports privados no contractuales.
+
+La evidencia se vincula a `PKG-COMP-MX-028` y `PKG-PR-REL-028`.
+
+#### 19. Protección reforzada de SSO, middleware y guard
+
+CI012 deberá conservar tres fronteras distintas:
+
+```text
+MIDDLEWARE DE SESIÓN
+≠ GUARD DE APLICACIÓN Y PERMISO
+≠ AUTORIZACIÓN PROPIA DE SERVER ACTION
+```
+
+La línea base deberá demostrar:
+
+1. ausencia de cookies → redirección controlada;
+2. ausencia de configuración Supabase → redirección controlada;
+3. auth error o usuario ausente → denegación y limpieza aplicable;
+4. `/login` conserva función de puente y `returnTo` seguro;
+5. `/no-access` solo acepta destino local y no concede autoridad;
+6. una ruta protegida revalida aplicación, permiso y contexto;
+7. una Server Action no depende de la visibilidad del botón;
+8. `cost_centers.manage` se revalida antes de persistir presupuesto;
+9. `expenses.manage` se revalida antes de crear gasto;
+10. `numera.access` no se convierte en permiso universal de lectura;
+11. role override y dispositivo compartido no amplían la autoridad máxima;
+12. razones de denegación no exponen secretos ni datos financieros sensibles.
+
+El comportamiento observado que acepte un `returnTo` externo deberá ser evaluado contra el contrato vigente; si la comprobación aplicable demuestra una redirección insegura, la ejecución real devuelve `FAIL` y CI012 no la normaliza como deuda tolerada.
+
+#### 20. Protección reforzada de navegación y `prebuild`
+
+NUMERA tiene una frontera adicional que no podrá confundirse con build:
+
+```text
+COMPILAR LA APLICACIÓN
+≠ SINCRONIZAR NAVEGACIÓN REMOTA
+```
+
+El `prebuild` observado ejecuta `sync:navigation`. El script de sincronización:
+
+- declara cuatro rutas de negocio;
+- calcula hash de fuente y metadata;
+- puede invocar `upsert_app_screen_registry`;
+- puede actualizar `app_screen_registry`;
+- puede hacer upsert de `app_navigation_items`;
+- usa service-role cuando la credencial está disponible;
+- entra en modo preview cuando no existe service-role.
+
+Por tanto, la certificación CI012 deberá:
+
+1. comprobar antes del build que no existe una credencial service-role real utilizable;
+2. bloquear si `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_SERVICE_ROLE` o `SUPABASE_SERVICE_KEY` apuntan a credenciales reales;
+3. demostrar que el build de certificación no realiza RPC ni upserts remotos;
+4. conservar las cuatro rutas declarativas exactas;
+5. conservar `item_key`, grupo, orden, permiso, fuente y hash como metadata verificable;
+6. impedir que una sincronización previa del entorno se use como prueba de que el build fue seguro;
+7. tratar cualquier escritura remota durante la certificación como `FAIL` o `BLOCKED`;
+8. no modificar el script documentalmente en CI012; su corrección física pertenece a la instancia futura o al owner canónico correspondiente cuando sea autorizada.
+
+#### 21. Protección reforzada de trazabilidad económica
+
+La línea base deberá preservar como mínimo:
+
+- identidad del hecho económico;
+- entidad o unidad aplicable;
+- sede;
+- centro de costo;
+- periodo;
+- moneda;
+- fecha;
+- fuente;
+- correlación cuando exista;
+- documento u origen cuando exista;
+- monto;
+- estado;
+- evidencia;
+- separación entre hecho y agregado;
+- separación entre dato real y supuesto;
+- separación entre corrección y sobrescritura destructiva.
+
+NUMERA no podrá declararse conforme porque una suma coincida visualmente si el resultado perdió origen, periodo, centro, moneda o relación con su fuente.
+
+#### 22. Protección reforzada de centros de costo y presupuesto
+
+La cobertura deberá poder evaluar:
+
+- `numera.cost_centers.view` para lectura;
+- `numera.cost_centers.manage` para modificación;
+- periodo vigente;
+- centro de costo válido;
+- presupuesto;
+- ingreso esperado;
+- margen objetivo;
+- notas;
+- valores no negativos;
+- porcentaje dentro de rango;
+- separación entre configuración y gasto real;
+- revalidación de vistas posterior a una mutación válida;
+- fallo cerrado ante datos incompletos;
+- fallo cerrado ante permiso insuficiente;
+- no modificación de un centro ajeno al alcance autorizado;
+- conservación de trazabilidad del cambio.
+
+La presencia de un formulario editable no constituye autorización.
+
+#### 23. Protección reforzada de gastos
+
+La cobertura deberá poder evaluar:
+
+- `numera.expenses.view` para lectura;
+- `numera.expenses.manage` para creación;
+- periodo;
+- categoría;
+- centro de costo;
+- fecha;
+- descripción;
+- monto;
+- moneda;
+- `source_app`;
+- respuesta de persistencia;
+- error de base de datos;
+- separación entre lectura y creación;
+- fallo ante datos incompletos;
+- fallo ante monto inválido;
+- rechazo de centro o categoría fuera del alcance cuando la política aplicable lo exija;
+- ausencia de duplicación mediante retry o doble submit;
+- conservación de origen explícito.
+
+Crear un gasto de prueba contra datos reales queda prohibido.
+
+#### 24. Protección reforzada de equilibrio y rentabilidad
+
+La cobertura deberá distinguir:
+
+```text
+AUSENTE
+≠ CERO
+≠ CALCULADO
+≠ ESPERADO
+≠ PRESUPUESTADO
+≠ REAL
+```
+
+Para `/break-even` deberá poder evaluar:
+
+- `numera.break_even.view`;
+- gastos fijos;
+- gastos variables;
+- margen objetivo;
+- resultado de equilibrio;
+- ausencia de margen;
+- ausencia de cálculo;
+- centro de costo;
+- orden y presentación.
+
+Para `/profitability` deberá poder evaluar:
+
+- `numera.profitability.view`;
+- ingreso esperado;
+- gasto real;
+- presupuesto;
+- variación;
+- centro de costo;
+- ausencia de alguno de los componentes;
+- no inferencia de rentabilidad real desde ingreso esperado.
+
+La suite deberá bloquear cualquier regresión que convierta `null` o dato no conciliado en una afirmación financiera positiva sin origen.
+
+#### 25. Protección reforzada de Supabase y privilegios
+
+La certificación deberá demostrar:
+
+1. código cliente sin service-role;
+2. servidor con sesión de usuario para operaciones de aplicación;
+3. RLS y permisos no normalizados como éxito ante error;
+4. Server Actions con autorización antes de efectos;
+5. entorno de prueba no productivo;
+6. schema de prueba proveniente de la fuente canónica de `vento-shell`;
+7. cero migraciones creadas o ejecutadas desde NUMERA;
+8. cero cambios de RLS, RPC, grants, Storage, Realtime o Edge Functions desde NUMERA;
+9. cero service-role real dentro de fixtures;
+10. cero service-role real durante build;
+11. `sync-navigation` en preview o doble sintético durante certificación;
+12. secretos ausentes de reportes, snapshots y evidencia.
+
+#### 26. Datos, fixtures y aislamiento
+
+Las pruebas de CI012 deberán cumplir simultáneamente:
+
+1. no leer ni modificar datos productivos;
+2. usar fixtures deterministas o entorno local/CI aislado;
+3. no depender de IDs aleatorios no registrados;
+4. limpiar o descartar estado temporal de forma reproducible;
+5. no compartir estado mutable entre tests independientes;
+6. no utilizar credenciales reales como fixture;
+7. no introducir una migración NUMERA para acomodar la prueba;
+8. cuando se necesite schema Supabase, consumir la fuente canónica de `vento-shell`;
+9. registrar identidad del fixture set;
+10. impedir que una falla de cleanup convierta el resultado en PASS;
+11. no crear gastos, presupuestos, periodos, centros o navegación productivos;
+12. separar fixtures de autorización, economía, navegación y UI;
+13. mantener aislados los escenarios de otra sede, área, actor y centro de costo;
+14. conservar oracles que distingan valor ausente de cero legítimo;
+15. impedir que el build use variables remotas heredadas de la estación del desarrollador.
+
+#### 27. Línea base antes de `INITIAL_ADOPTION`
+
+El manifest observado de NUMERA no declara todavía packages publicados `@vento/*`.
+
+Por tanto, la primera adopción futura de cualquiera de las cuatro familias deberá tratar la evidencia CI012 como **oráculo del comportamiento previo**:
+
+```text
+COMMIT BASE SIN EL PACKAGE COMPARTIDO
+→ CI012 PASS
+→ PROPUESTA INITIAL_ADOPTION
+→ MISMA COBERTURA ESENCIAL SOBRE PROPOSAL COMMIT
+→ COMPARACIÓN DE RESULTADOS
+```
+
+La ausencia actual del package no convierte sus pruebas específicas en no aplicables.
+
+#### 28. Actualizaciones `PATCH`, `MINOR`, `MAJOR`, seguridad y deprecación
+
+CI012 no sustituye las clases de actualización de CI006:
+
+- `PATCH_UPDATE`: línea base completa y regresión focal;
+- `MINOR_UPDATE`: añade escenarios para la nueva capacidad consumida;
+- `MAJOR_UPDATE`: exige línea base completa y matriz explícita de comportamiento preservado/cambiado;
+- `SECURITY_UPDATE`: mantiene autorización, territorialidad, RLS, secretos y frontera de navegación; la urgencia no permite omitirlos;
+- `DEPRECATION_MIGRATION`: conserva pruebas de la superficie antigua mientras siga soportada y de la ruta objetivo cuando exista;
+- `ROLLBACK_UPDATE`: CI012 aporta la línea base; la ejecución y certificación del rollback pertenece a CI014.
+
+#### 29. Actualización multi-package
+
+Cuando CI006 resuelva más de una familia compartida:
+
+1. CI012 selecciona la unión de todos los perfiles correspondientes;
+2. ninguna familia reduce la cobertura de otra;
+3. las doce superficies comunes permanecen;
+4. una ejecución puede producir evidencia para el conjunto si las identidades permanecen unidas;
+5. el conjunto objetivo queda registrado;
+6. cambiar una sola versión objetivo invalida la evidencia dependiente;
+7. no se usa lockstep artificial para incluir familias no requeridas.
+
+#### 30. Evidencia consumible por CI006
+
+La evidencia satisfactoria deberá permitir a CI006 demostrar al menos:
+
+- repositorio consumidor exacto: `devVentoGroup/vento-numera`;
+- commit base exacto;
+- manifest y lockfile exactos;
+- inventario de siete páginas exacto;
+- siete estáticas y cero dinámicas;
+- cinco protegidas y dos públicas controladas;
+- cero route handlers;
+- cuatro candidatas de navegación exactas;
+- contratos fuente exactos;
+- relación o relaciones NUMERA aplicables;
+- conjunto de packages objetivo;
+- referencias de compatibilidad CI005;
+- perfil o perfiles NUMERA ejecutados;
+- identidad de suite y fixtures;
+- identidad del entorno;
+- resultados por capa y superficie;
+- total de tests ejecutados, aprobados, fallidos y omitidos;
+- evidencia de caminos denegados aplicables;
+- evidencia de separación lectura/administración;
+- evidencia de aislamiento territorial y económico;
+- evidencia de ausencia de service-role real;
+- evidencia de build sin sincronización remota;
+- evidencia de que la certificación no produjo efectos productivos;
+- timestamps de inicio y cierre;
+- resultado global;
+- razón de bloqueo o invalidación cuando no sea PASS.
+
+La evidencia podrá formar parte de `validation_results` y `evidence_refs` del expediente `PKG-PR-*`, pero CI012 no crea ni mantiene ese expediente.
+
+#### 31. Invalidación obligatoria
+
+El resultado pasa a `STALE` cuando cambia materialmente cualquiera de estas entradas antes de que CI006 la consuma:
+
+- `consumer_base_commit`;
+- manifest;
+- lockfile;
+- configuración de build, TypeScript o test;
+- suite;
+- fixtures u oracles;
+- variables/configuración de entorno relevantes;
+- runtime o framework;
+- inventario de siete páginas;
+- clasificación 7/0;
+- exposición 5/2;
+- aparición de route handlers;
+- lista de cuatro candidatas de navegación;
+- `sync-navigation`;
+- `prebuild`;
+- contrato de `/login`;
+- contrato de `/no-access`;
+- middleware;
+- guard, contexto, role override o dispositivo compartido;
+- contratos fuente;
+- permisos de centros de costo, gastos, equilibrio o rentabilidad;
+- contratos de Server Actions;
+- contratos de periodos, centros, presupuestos, gastos o resúmenes;
+- fuente de schema usada para pruebas Supabase;
+- relación package–NUMERA;
+- versión o conjunto objetivo;
+- referencia de compatibilidad CI005;
+- superficie obligatoria;
+- contrato de CI012.
+
+No se conserva un PASS anterior mediante rebase, cherry-pick, actualización de snapshot o cambio de fixture sin nueva ejecución atribuible.
+
+#### 32. Condiciones de bloqueo
+
+La futura ejecución deberá quedar `BLOCKED` o `FAIL` según corresponda cuando ocurra cualquiera de estas condiciones:
+
+1. no existe runner reproducible para pruebas NUMERA;
+2. el runner ejecuta cero tests obligatorios;
+3. falta identidad del commit base;
+4. manifest o lockfile no corresponden al commit;
+5. la suite cambió después de producir evidencia;
+6. existe un test obligatorio omitido;
+7. lint, typecheck o build obligatorio falla;
+8. una prueba funcional obligatoria falla;
+9. una prueba de denegación, autorización, contexto, actor, dispositivo, sede o área falla;
+10. el entorno apunta a datos o servicios productivos;
+11. un fixture contiene una credencial real;
+12. evidencia CI005 pertenece a otra versión o consumidor;
+13. la relación resuelta no corresponde a NUMERA;
+14. se intenta modificar packages antes de cerrar línea base;
+15. se intenta resolver el fallo mediante bypass, cast global, skip o snapshot forzado;
+16. una operación de prueba intenta crear o cambiar schema, RLS, RPC, datos o configuración remota desde NUMERA;
+17. evidencia de otro consumidor o commit se acepta como propia;
+18. el inventario deja de conciliar siete páginas;
+19. aparece una ruta dinámica sin delta explícito;
+20. aparece un route handler sin delta explícito;
+21. una de las cinco rutas protegidas queda fuera de controles aplicables;
+22. `/login` acepta o propaga un retorno inseguro según el contrato vigente;
+23. `/no-access` acepta destino externo;
+24. `returnTo`, ID, query param o payload cliente amplía autoridad;
+25. `numera.access` se interpreta como permiso universal de lectura;
+26. una Server Action ejecuta efectos sin revalidar `.manage`;
+27. se mezcla permiso `.view` con `.manage`;
+28. un valor ausente se presenta como dato económico confirmado;
+29. un gasto se crea sin moneda u origen explícitos;
+30. un presupuesto o gasto usa centro o periodo inválido;
+31. `sync-navigation` escribe remotamente durante la certificación;
+32. existe service-role real disponible para el build o fixtures;
+33. un retry o replay duplica un efecto que debe ser idempotente;
+34. resultados contradictorios o flaky no han sido explicados;
+35. una deuda crítica conocida se transforma manualmente en PASS.
+
+Ninguna aprobación humana convierte estas condiciones técnicas en PASS.
+
+#### 33. Materialización futura de `SHELL-CI-012::GLOBAL`
+
+La instancia física solo podrá declararse materializada cuando, dentro del alcance expresamente autorizado:
+
+1. exista infraestructura de pruebas automatizadas reproducible en `devVentoGroup/vento-numera`;
+2. exista un punto de entrada determinista para la suite CI012;
+3. exista typecheck real;
+4. exista build CI reproducible sin efectos remotos;
+5. las pruebas cubran las doce superficies comunes;
+6. existan perfiles seleccionables para las cuatro familias;
+7. existan casos permitidos y denegados de autorización;
+8. exista cobertura del inventario 7/7/0/5/2/0;
+9. exista cobertura de las cuatro candidatas de navegación;
+10. exista prueba del puente SSO y del estado de denegación;
+11. exista cobertura de middleware y guard;
+12. exista cobertura de lectura y administración de centros de costo;
+13. exista cobertura de lectura y creación de gastos;
+14. exista cobertura de equilibrio y rentabilidad;
+15. exista cobertura de null/zero/real/expected/budget semantics;
+16. exista estrategia aislada para pruebas Supabase;
+17. exista cobertura explícita del prebuild y del modo no mutante de `sync-navigation`;
+18. la suite no use datos productivos ni secretos reales;
+19. las pruebas no modifiquen schema ni migraciones NUMERA;
+20. identidad de commit, manifest, lockfile, suite, fixtures, rutas, navegación, contratos fuente y entorno forme parte de evidencia;
+21. un cambio material vuelva STALE la evidencia;
+22. una ejecución multi-package una perfiles sin reducir cobertura;
+23. la salida sea machine-readable y consumible por CI006;
+24. el habilitador falle sintéticamente ante al menos una ruptura por cada perfil;
+25. demuestre que evidencia de otro consumidor o commit no es reutilizable;
+26. demuestre que cero tests no se normaliza a PASS;
+27. demuestre que drift de páginas o navegación no se normaliza a PASS;
+28. demuestre que una manipulación territorial o de permiso no se normaliza a PASS;
+29. demuestre que service-role disponible durante certificación se clasifica como bloqueo;
+30. demuestre que un valor financiero ausente no se normaliza a real;
+31. la autocertificación no actualice packages, no abra PR, no despliegue y no ejecute rollback.
+
+La selección física concreta de framework, archivos y devDependencies se resolverá durante la instancia con el estado actualizado de NUMERA. El contrato no impone un proveedor inexistente por inferencia.
+
+#### 34. Recuperación e idempotencia
+
+Reglas:
+
+1. una repetición exacta sobre las mismas entradas puede reproducir la misma decisión sin duplicar identidad lógica;
+2. los intentos fallidos se conservan como evidencia;
+3. un test flaky no se resuelve reintentando hasta pasar sin registrar intermitencia;
+4. si cambia el commit base, se crea una ejecución nueva;
+5. si cambia el conjunto objetivo, se recalculan perfiles;
+6. un fallo de infraestructura produce `BLOCKED` cuando impide evaluar comportamiento;
+7. un fallo funcional produce `FAIL` cuando la infraestructura sí permitió evaluar;
+8. una ejecución cancelada o con timeout no certifica;
+9. la recuperación nunca modifica datos reales ni amplía permisos;
+10. una corrección del harness no reescribe evidencia histórica;
+11. una deuda preexistente del consumidor permanece visible como fallo o bloqueo de esa ejecución y no se borra al autocertificar el habilitador;
+12. retries de presupuesto, gasto o sincronización se prueban mediante fixtures u oráculos aislados, no mediante repetición contra producción.
+
+#### 35. Estado documental conciliado
+
+| Métrica                                      |                            Resultado |
+| -------------------------------------------- | -----------------------------------: |
+| Repositorio consumidor                       | **1 — `devVentoGroup/vento-numera`** |
+| Familias compartidas base                    |                                **4** |
+| Relaciones CI005 de NUMERA                   |                                **4** |
+| Relaciones CI006 de NUMERA                   |                                **4** |
+| Páginas fuente canónicas                     |                                **7** |
+| Patrones estáticos                           |                                **7** |
+| Patrones dinámicos                           |                                **0** |
+| Rutas protegidas                             |                                **5** |
+| Superficies públicas controladas             |                                **2** |
+| Route handlers App Router                    |                                **0** |
+| Candidatas declarativas de navegación        |                                **4** |
+| Superficies funcionales comunes obligatorias |                               **12** |
+| Perfiles de familia                          |                                **4** |
+| Auto-merge autorizado                        |                                **0** |
+| Auto-deploy autorizado                       |                                **0** |
+| Migraciones Supabase autorizadas en NUMERA   |                                **0** |
+| Datos productivos autorizados para pruebas   |                                **0** |
+| Requisitos de prueba creados o modificados   |                                **0** |
+
+#### 36. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA  
+**Requisitos creados:** **0**  
+**Requisitos modificados:** **0**
+
+**Justificación:** las obligaciones de probar consumidores antes de adoptar packages compartidos, disponer de comandos reproducibles, conservar evidencia atribuible y bloquear falsos verdes ya existen en el registro canónico. La cobertura NUMERA vigente ya protege hechos económicos, conciliación, costos, presupuestos, rutas, SSO, denegación, middleware, permisos de lectura y administración, navegación, Server Actions y fronteras de datos. CI012 especializa esas obligaciones para la línea base previa de NUMERA y define su habilitador reutilizable; no introduce una regla empresarial independiente.
+
+#### 37. Cobertura de prueba vigente reutilizada
+
+La tarea reutiliza sin modificar, entre otras, estas obligaciones existentes:
+
+- `TREQ-SHELL-005`, sobre comandos reproducibles y ausencia de falsos verdes;
+- `TREQ-SHELL-006`, sobre pruebas propias, matriz de compatibilidad y validación por consumidor antes de publicar o adoptar;
+- `TREQ-SHELL-008`, sobre requisitos afectados y resultados reproducibles por package y PR;
+- `TREQ-SHELL-009`, sobre identidad verificable de repositorio, commit y ambiente;
+- `TREQ-NUMERA-001`, sobre conciliación con hechos económicos y documentos fuente, segregación de permisos y trazabilidad;
+- `TREQ-NUMERA-002`, sobre identidad estable del hecho económico, periodos, moneda, origen, evidencia y correcciones no destructivas;
+- `TREQ-NUMERA-003`, sobre cartera, obligaciones, bancos, tesorería, estados y segregación de acciones;
+- `TREQ-NUMERA-004`, sobre costos, presupuestos, forecast, punto de equilibrio, rentabilidad y distinción entre datos reales y escenarios;
+- `TREQ-NUMERA-005` a `TREQ-NUMERA-024`, sobre siete páginas, rutas 001–007, clasificación 7/0, raíz, cero handlers, SSO, no-access, middleware, exposición 5/2, permisos de raíz y módulos, Server Actions, cuatro rutas de navegación, idempotencia y drift frente al commit base.
+
+Estas referencias son trazabilidad de cobertura existente y no constituyen una modificación del registro 04A.
+
+#### 38. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                                                                               |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El marcador documental no instala dependencias, no ejecuta build de NUMERA y no materializa el harness.                                                                                                                                                                                                                                                 |
+| LOCAL     | NOT_EXECUTED   | El artefacto todavía no ha sido incorporado ni validado por el checkout local del usuario.                                                                                                                                                                                                                                                              |
+| REMOTA    | PASS           | Se verificaron continuidad CI011→CI012→CI013, topología global, las cuatro relaciones package–NUMERA, commit remoto observado, manifest y lockfile, árbol completo, ausencia de suite test/spec, inventario 7/7/0/5/2/0, cuatro candidatas de navegación, middleware, guard, SSO/no-access, Server Actions financieras y cobertura TREQ NUMERA vigente. |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutaron gastos, presupuestos, navegación, permisos, Supabase ni datos reales.                                                                                                                                                                                                                                                                  |
+| FÍSICA    | NOT_APPLICABLE | La materialización pertenece a `SHELL-CI-012::GLOBAL` después de aprobación documental y autorización física explícita.                                                                                                                                                                                                                                 |
+
+#### 39. Criterios de aceptación
+
+`SHELL-CI-012` queda documentalmente completa cuando:
+
+- identifica `devVentoGroup/vento-numera` como consumidor propietario;
+- conserva CI006 como propietario del cambio y del PR;
+- conserva la disciplina de CI007 a CI011 sin reutilizar evidencia de otro consumidor;
+- gobierna exactamente cuatro relaciones package–NUMERA;
+- define unidad de evidencia ligada a commit, manifest, lockfile, suite, fixtures, rutas, navegación, contratos fuente y entorno;
+- exige ejecutar línea base antes de modificar versiones objetivo;
+- define doce superficies funcionales comunes;
+- define cuatro perfiles de familia;
+- protege siete páginas estáticas y cero dinámicas;
+- protege cinco rutas y dos superficies públicas controladas;
+- protege cero route handlers como cardinalidad observada;
+- protege cuatro candidatas declarativas de navegación;
+- conserva `/login` como puente SSO;
+- conserva `/no-access` como deny state;
+- exige caminos permitidos y denegados;
+- protege sede, área, sesión, actor, role override y dispositivo;
+- protege separación `.view`/`.manage`;
+- protege panel raíz sin convertir `numera.access` en permiso universal;
+- protege presupuestos y centros de costo;
+- protege gastos, moneda y origen;
+- protege equilibrio y rentabilidad;
+- protege dato ausente frente a cero, real, esperado y presupuestado;
+- protege clientes Supabase/RLS/RPC y Server Actions sin autorizar cambios de base de datos desde NUMERA;
+- impide service-role real durante certificación;
+- impide build con sincronización remota;
+- protege UI, SSR, interacción y accesibilidad;
+- convierte ausencia de suite en bloqueo físico;
+- soporta `INITIAL_ADOPTION`;
+- soporta conjuntos multi-package;
+- invalida evidencia ante cambios materiales;
+- produce evidencia consumible por CI006;
+- conserva fronteras NUMERA–Shell–PULSO–ORIGO–FOGO–NEXO–PASS–ANIMA;
+- separa habilitador VERIFIED de consumidor conforme;
+- no crea PR, no actualiza packages, no fusiona, no despliega y no ejecuta rollback durante el marcador;
+- no crea ni modifica requisitos de prueba.
+
+#### 40. Límites
+
+Esta tarea no:
+
+- implementa físicamente `SHELL-CI-012::GLOBAL`;
+- instala un framework de pruebas durante el marcador documental;
+- modifica `package.json` o `package-lock.json` de NUMERA;
+- actualiza `@vento/contracts`, `@vento/os-context`, `@vento/supabase` ni `@vento/ui-web`;
+- modifica código funcional NUMERA;
+- modifica el inventario canónico de rutas;
+- renumera `NUMERA-ROUTE-*`;
+- crea route handlers;
+- convierte `/login` en autenticación local;
+- convierte `/no-access` en mecanismo de autorización;
+- corrige el `returnTo` observado de la raíz;
+- corrige por anticipado el comportamiento de `sync-navigation`;
+- crea ramas ni pull requests;
+- modifica la lógica del actualizador CI006;
+- recalcula compatibilidad CI005;
+- reutiliza evidencia NEXO, FOGO, ORIGO, PULSO o VISO como si perteneciera a NUMERA;
+- normaliza todos los comandos del repositorio, responsabilidad de CI016;
+- implementa por anticipado cartera, tesorería, contabilidad, presupuestos, forecast, conciliación u otras capacidades futuras;
+- convierte NUMERA en propietario de hechos operativos de PULSO, compras de ORIGO, producción de FOGO, inventario de NEXO, cliente/loyalty de PASS ni gobierno Supabase de Shell;
+- modifica schema, tablas, vistas, funciones, RPC, triggers, grants, RLS, Storage, Realtime, Edge Functions, datos, secretos o configuración Supabase;
+- crea ni modifica migraciones dentro de NUMERA;
+- usa datos productivos;
+- sincroniza navegación remota durante la certificación;
+- ejecuta rollback de CI014;
+- coordina despliegue de CI015;
+- desarrolla CI013 ni otra tarea posterior;
+- crea, modifica, difiere, descarta ni vuelve obsoletos requisitos del registro 04A.
+
+#### 41. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CI-011 — Probar VISO antes de actualizar`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CI-012 — Probar NUMERA antes de actualizar`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-013 — Probar ANIMA antes de actualizar`
+
+
 ### [ ] SHELL-CI-013 — Probar ANIMA antes de actualizar
 ### [ ] SHELL-CI-014 — Permitir rollback por repositorio
 ### [ ] SHELL-CI-015 — Evitar despliegue simultáneo obligatorio

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **970** |
+| Aprobadas | **971** |
 | En propuesta | **0** |
-| No iniciadas | **624** |
+| No iniciadas | **623** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **60.85% (970/1594)** |
+| Porcentaje de completamiento | **60.92% (971/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CI-011` — Probar VISO antes de actualizar | ✅ APROBADA |
-| Tarea actual | `SHELL-CI-012` — Probar NUMERA antes de actualizar | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CI-013` — Probar ANIMA antes de actualizar | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CI-012` — Probar NUMERA antes de actualizar | ✅ APROBADA |
+| Tarea actual | `SHELL-CI-013` — Probar ANIMA antes de actualizar | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CI-014` — Permitir rollback por repositorio | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1295,7 +1295,7 @@
 | ✅ APROBADA | `SHELL-CI-009` | Probar ORIGO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ✅ APROBADA | `SHELL-CI-010` | Probar PULSO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ✅ APROBADA | `SHELL-CI-011` | Probar VISO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
-| ⬜ NO INICIADA | `SHELL-CI-012` | Probar NUMERA antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
+| ✅ APROBADA | `SHELL-CI-012` | Probar NUMERA antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ⬜ NO INICIADA | `SHELL-CI-013` | Probar ANIMA antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ⬜ NO INICIADA | `SHELL-CI-014` | Permitir rollback por repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
 | ⬜ NO INICIADA | `SHELL-CI-015` | Evitar despliegue simultáneo obligatorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` |
