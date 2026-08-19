@@ -9174,7 +9174,1151 @@ Estas referencias son trazabilidad heredada y no representan requisitos creados 
 `AUTH-SRV-012 — Evitar operaciones entre sedes no autorizadas`
 
 
-### [ ] AUTH-SRV-012 — Evitar operaciones entre sedes no autorizadas
+### ✅ AUTH-SRV-012 — Evitar operaciones entre sedes no autorizadas
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-SRV-011 — Validar estado actual de la entidad
+**Tarea siguiente:** AUTH-SRV-013 — Evitar operaciones entre áreas no autorizadas
+**Tipo de tarea:** Contrato global con materialización por unidad (`PER_IMPLEMENTATION_UNIT`) — contrato de autorización multisede para que toda escritura protegida identifique en servidor todos los lados de sede exigidos por el contrato del recurso, distinga mutación cross-site de lectura interna de validación, evalúe cada sede obligatoria contra el alcance efectivo del actor y falle cerrado antes del primer efecto cuando un origen, destino, sede actual, sede propuesta o cualquier otro lado requerido no exista, esté inactivo, no sea resoluble o quede fuera de autoridad
+**Bloque:** BLOQUE J — Protección de acciones de servidor
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global; las futuras materializaciones ocurren únicamente mediante `AUTH-SRV-012::<implementation_unit_id>` después de que `DELIV-PKG-025::<package_id>` asigne la unidad y el paquete propietario supere `E5-GATE-008::<package_id>`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el gate obligatorio para toda escritura cuyo recurso, transición o efecto empresarial pueda involucrar más de una sede.
+
+La regla vinculante queda:
+
+```text
+resolved resource
++
+validated current state
++
+required_sides
++
+all required site identities
++
+per-side authorization
++
+no unresolved or unauthorized side
+=
+CROSS_SITE_WRITE_ELIGIBLE_FOR_NEXT_GATES
+```
+
+Una autorización válida en una sede no se extiende automáticamente a otra.
+
+#### 2. Handoff recibido de `AUTH-SRV-011`
+
+La tarea anterior entrega como mínimo:
+
+```text
+resolved resource
+resource version
+current state snapshot
+validated business transition
+state validation result
+concurrency validation result
+```
+
+Además se conservan los handoffs acumulados de `AUTH-SRV-005..010`:
+
+```text
+effective_actor
+authorization_mode
+required_permission_key
+validated_target_site_id
+target_area_id
+effective_shift_id
+effective_operational_role
+device context
+```
+
+`AUTH-SRV-012` añade:
+
+```text
+cross_site_classification
+required_site_sides
+resolved_required_sites
+per_side_site_authorization
+cross_site_authorization_result
+validation_only_site_dependencies
+```
+
+#### 3. Pregunta contractual propietaria
+
+Esta tarea responde:
+
+```text
+¿QUÉ SEDES PARTICIPAN REALMENTE EN EL EFECTO?
+```
+
+y:
+
+```text
+¿TODOS LOS LADOS DE SEDE QUE EL CONTRATO EXIGE
+ESTÁN RESUELTOS, ACTIVOS Y AUTORIZADOS
+ANTES DEL PRIMER EFECTO?
+```
+
+No responde todavía si todos los lados de área están autorizados.
+
+Esa responsabilidad permanece en `AUTH-SRV-013`.
+
+#### 4. Relación con `AUTH-SRV-006`
+
+`AUTH-SRV-006` resuelve y valida la sede real de una escritura single-site.
+
+`AUTH-SRV-012` se activa cuando el recurso o efecto exige más de una sede o cuando una actualización pretende cambiar la sede propietaria del recurso.
+
+Se mantiene:
+
+```text
+single-site validation
+≠
+cross-site authorization
+```
+
+#### 5. Fuente de verdad para operaciones multisede
+
+La clasificación multisede procede del contrato canónico de recurso.
+
+Cada capacidad puede declarar:
+
+```text
+resource_type
+territory_resolver
+required_sides
+state_predicate
+```
+
+El servidor no inventa lados adicionales ni elimina lados exigidos por comodidad de implementación.
+
+#### 6. `required_sides`
+
+`required_sides` expresa qué lados del recurso deben participar en la evaluación de la acción concreta.
+
+Ejemplos canónicos incluyen:
+
+```text
+RESOURCE
+ORIGIN
+DESTINATION
+SOURCE
+TARGET
+PARENT
+CHILD
+CUSTODIAN
+VEHICLE
+```
+
+No todos los recursos multisede exigen ambos extremos en todas sus acciones.
+
+#### 7. Recurso multisede no equivale a acción bilateral
+
+Un mismo recurso puede tener varias sedes, pero una acción concreta puede pertenecer únicamente a uno de sus lados.
+
+Ejemplo conceptual:
+
+```text
+request
+→ ORIGIN required
+
+dispatch
+→ ORIGIN required
+
+receive
+→ DESTINATION required
+
+transfer ownership
+→ ORIGIN + DESTINATION required
+```
+
+La lista exacta procede del contrato del permiso y del proceso.
+
+#### 8. Regla de cobertura completa
+
+Cuando el contrato declare:
+
+```text
+required_sides = [ORIGIN, DESTINATION]
+```
+
+la decisión no puede quedar satisfecha por autorizar únicamente el origen.
+
+Resultado conceptual:
+
+```text
+origin = ALLOW
+destination = DENY
+→ DENY ALL
+```
+
+No se ejecuta un efecto parcial.
+
+#### 9. `site_ids` del recurso
+
+El contexto de recurso conserva:
+
+```text
+territory.site_ids
+```
+
+como conjunto de todas las sedes reales obligatorias del recurso.
+
+Una lista vacía solo significa que la dimensión no aplica cuando el contrato así lo declara.
+
+No significa todas las sedes.
+
+#### 10. Resolución server-side de todos los lados
+
+Cada lado obligatorio debe resolverse desde relaciones canónicas del recurso o del borrador validado.
+
+No puede derivarse exclusivamente de:
+
+```text
+body.siteId
+formData.site_id
+selectedSiteId
+primarySiteId
+device.site_id
+preferredSiteId
+route params
+UI state
+```
+
+Esos valores pueden actuar como intención o selector defensivo, nunca como autoridad final.
+
+#### 11. Identidad de sede
+
+Cada lado territorial usa una identidad de sede estable.
+
+La autorización no se decide por:
+
+```text
+site name
+label
+slug
+alias
+text shown in UI
+```
+
+La identidad debe resolver una sede canónica existente.
+
+#### 12. Actividad de cada sede
+
+Toda sede requerida por el efecto debe existir y encontrarse en estado compatible con la operación.
+
+Si cualquier lado obligatorio está inactivo:
+
+```text
+REQUIRED_SITE_INACTIVE
+→ DENY / NO EFFECT
+```
+
+Un lado activo no compensa otro lado inactivo.
+
+#### 13. Clasificación obligatoria de la operación
+
+Antes del efecto, cada unidad debe clasificar la operación en una de estas semánticas:
+
+```text
+SINGLE_SITE
+MULTI_SITE_RESOURCE
+SITE_TRANSFER
+VALIDATION_ONLY_CROSS_SITE_DEPENDENCY
+NON_TERRITORIAL
+```
+
+No se permite que una operación cambie de clasificación implícitamente durante la escritura.
+
+#### 14. `SINGLE_SITE`
+
+Una operación es `SINGLE_SITE` cuando todos los lados obligatorios del efecto resuelven una única sede y no cambia la propiedad territorial del recurso.
+
+En ese caso consume el resultado de `AUTH-SRV-006` y no exige inventar un gate multisede adicional.
+
+#### 15. `MULTI_SITE_RESOURCE`
+
+Una operación es `MULTI_SITE_RESOURCE` cuando el contrato exige dos o más sedes reales simultáneamente.
+
+Debe resolverse:
+
+```text
+all required sides
+→ all required site identities
+→ authorization for every required side
+```
+
+antes del primer efecto.
+
+#### 16. `SITE_TRANSFER`
+
+Una operación es `SITE_TRANSFER` cuando modifica la sede propietaria o territorial de un recurso existente.
+
+Debe mantener separados:
+
+```text
+current_site
+proposed_site
+```
+
+La sede propuesta no sustituye la sede actual durante la autorización.
+
+#### 17. Cambio de sede exige ambos territorios
+
+Cuando una actualización cambia:
+
+```text
+current_site = A
+proposed_site = B
+```
+
+la operación debe autorizar el lado vigente y el propuesto conforme al contrato.
+
+No es suficiente tener autoridad únicamente en `B` para tomar un recurso de `A`.
+
+Tampoco es suficiente tener autoridad únicamente en `A` para colocar el recurso en `B`.
+
+#### 18. Estado y cambio de territorio
+
+El cambio de sede consume la transición ya validada por `AUTH-SRV-011`.
+
+Se mantiene:
+
+```text
+valid state transition
+≠
+valid territorial transition
+```
+
+Ambas condiciones son necesarias.
+
+#### 19. Operación que solo muta un lado
+
+Cuando el contrato establece que una acción modifica únicamente un lado de un recurso multisede, la autorización debe aplicar exactamente a los lados declarados para esa acción.
+
+No se exige autoridad sobre lados que el contrato no declare obligatorios.
+
+Tampoco se usa esa reducción para ejecutar efectos sobre lados no autorizados.
+
+#### 20. Permiso exacto por lado
+
+Cada lado se evalúa con la capacidad empresarial exacta definida para la operación.
+
+No se permite sustituirla por:
+
+```text
+<app>.access
+view permission
+role name
+screen access
+selected site
+```
+
+Si acciones distintas de origen y destino utilizan permisos distintos, cada acción conserva su propia clave canónica.
+
+#### 21. Alcance `GLOBAL`
+
+Un grant global de la capacidad exacta puede cubrir varias sedes ordinarias cuando el recurso y la acción estén dentro de su dominio.
+
+Eso no elimina:
+
+- actividad de cada sede;
+- resolución del recurso;
+- estado;
+- dispositivo;
+- denegaciones;
+- restricciones del entorno;
+- contrato de `required_sides`.
+
+`GLOBAL` no significa universal.
+
+#### 22. Alcance `ASSIGNED_SITES`
+
+Cuando la capacidad utiliza sedes asignadas, cada sede obligatoria debe pertenecer a las relaciones activas y utilizables del actor conforme al modelo canónico.
+
+Una sola asignación no cubre por inferencia las demás sedes del recurso.
+
+#### 23. Alcance `SPECIFIC_SITE`
+
+Un alcance de sede específica solo cubre la identidad exacta declarada.
+
+Si la acción exige un segundo lado distinto, ese lado necesita cobertura válida propia bajo el evaluador canónico.
+
+No se promueve el grant a multisede.
+
+#### 24. Alcance por tipo de sede
+
+Cuando el contrato use un tipo de sede, cada lado obligatorio debe resolver primero una sede concreta y luego comprobar su clasificación canónica.
+
+El tipo no sustituye la identidad del origen o destino.
+
+#### 25. Contexto operativo
+
+Un turno operativo activo en una sede no concede automáticamente autoridad para mutar recursos de otra sede.
+
+Cuando una acción operacional sea multisede, la compatibilidad de cada lado debe seguir el contrato de capacidad y recurso.
+
+No se toma prestado el contexto de una sede para completar otra.
+
+#### 26. Roles y cobertura multisede
+
+Un rol administrativo o operativo no convierte por sí solo una operación en multisede autorizada.
+
+La autoridad continúa derivándose de:
+
+```text
+exact permission
++
+scope
++
+resource sides
++
+required context
+```
+
+El nombre del cargo no agrega lados.
+
+#### 27. Dispositivo compartido
+
+El dispositivo compartido puede reducir territorio.
+
+No puede ampliar una operación multisede.
+
+Si el dispositivo está limitado a una sede y la acción exige otra sede incompatible:
+
+```text
+DEVICE_SITE_RESTRICTION
+→ DENY
+```
+
+salvo que su contrato explícito admita el conjunto requerido sin ampliar la autoridad del actor.
+
+#### 28. Simulación
+
+Una simulación puede evaluar hipotéticamente los lados requeridos.
+
+No puede ejecutar una mutación cross-site real ni convertir un `would_allow` en autoridad efectiva.
+
+La separación real/simulada conserva su contrato propietario.
+
+#### 29. Operaciones masivas multisede
+
+Una operación masiva debe resolver los recursos y lados de sede de cada miembro antes del primer efecto cuando la política sea todo-o-nada.
+
+No se acepta:
+
+```text
+filter visible rows in UI
+→ assume all rows authorized
+```
+
+La atomicidad parcial, si existe, debe estar expresamente definida por el comando.
+
+#### 30. Conjunto con sedes heterogéneas
+
+Si un lote contiene recursos de sedes diferentes:
+
+```text
+site A
+site B
+site C
+```
+
+cada miembro y cada lado obligatorio mantiene su decisión territorial.
+
+Un miembro autorizado no legitima los demás.
+
+#### 31. Orden de evaluación
+
+La secuencia mínima de una escritura multisede queda:
+
+```text
+resolve effective mutation
+→ resolve resource or validated draft
+→ validate current state / transition
+→ derive required_sides
+→ resolve all required sites
+→ validate site existence and activity
+→ evaluate exact permission and scope for every required side
+→ apply device/context restrictions
+→ apply remaining area gate
+→ execute effect
+```
+
+Ningún efecto parcial ocurre antes de completar los lados obligatorios.
+
+#### 32. Fallo de un solo lado
+
+Si cualquier lado obligatorio produce:
+
+```text
+DENY
+UNRESOLVED
+CONFLICT
+INACTIVE
+TECHNICAL_FAILURE
+```
+
+la escritura completa queda no ejecutable cuando el contrato exige todos los lados.
+
+No se degrada a operación single-site.
+
+#### 33. Razones territoriales diferenciadas
+
+Se mantienen conceptualmente distintas:
+
+```text
+required_site_missing
+required_site_inactive
+required_site_scope_mismatch
+required_site_unresolved
+required_site_conflict
+cross_site_side_not_authorized
+cross_site_context_mismatch
+cross_site_device_restriction
+cross_site_state_changed
+```
+
+La taxonomía pública final pertenece a `AUTH-SRV-016`.
+
+#### 34. Fallo técnico
+
+Un error al resolver un lado no se interpreta como ausencia de restricción.
+
+Resultado:
+
+```text
+CROSS_SITE_RESOLUTION_FAILED
+→ NO EFFECT
+```
+
+No se intenta completar el lado con una sede seleccionada o primaria.
+
+#### 35. Carreras y frescura
+
+La autorización de todos los lados debe permanecer ligada a la versión del recurso y al estado usados para decidir.
+
+Si la sede actual, la sede propuesta, una asignación o la actividad de una sede cambia antes del efecto:
+
+```text
+REAUTHORIZE OR FAIL
+```
+
+No se conserva un `ALLOW` stale.
+
+#### 36. Operaciones diferidas
+
+Una acción encolada que afecte varias sedes debe resolver y autorizar nuevamente todos los lados al momento de ejecutar.
+
+La autoridad vigente al encolar no se conserva indefinidamente.
+
+#### 37. Operación offline
+
+Una intención cross-site generada offline no puede usar un snapshot local como autoridad.
+
+Al sincronizar:
+
+```text
+offline intent
+→ fresh resource
+→ fresh required sides
+→ fresh per-side authorization
+→ effect
+```
+
+Si cualquier lado cambió, se aplica conflicto o denegación conforme al contrato.
+
+#### 38. `VALIDATION_ONLY_CROSS_SITE_DEPENDENCY`
+
+No toda lectura interna de otra sede convierte una escritura en mutación multisede.
+
+Existe una clase separada cuando:
+
+```text
+write effect
+→ only authorized target site
+
+server invariant
+→ needs hidden facts from additional sites
+```
+
+La lectura adicional sirve exclusivamente para validar el efecto y no concede autoridad sobre esas sedes.
+
+#### 39. Regla de no ampliación por validación interna
+
+Una dependencia de validación cross-site:
+
+- no amplía `write_scope`;
+- no amplía `read_scope` visible del actor;
+- no devuelve filas ocultas;
+- no habilita navegación a otras sedes;
+- no convierte un agregado interno en permiso de consulta;
+- no permite reutilizar los datos para otro propósito.
+
+Su resultado se limita a la decisión o agregado mínimo necesario para el invariante.
+
+#### 40. Minimización de datos en validación interna
+
+La futura implementación debe consultar únicamente los campos necesarios para calcular la regla transversal.
+
+No se debe transportar al cliente información adicional de sedes ocultas.
+
+Ejemplo:
+
+```text
+server computes cross-site monthly total
+→ client receives only allowed result/message
+→ no hidden site rows are exposed
+```
+
+#### 41. Cliente administrativo y `service_role`
+
+Un cliente privilegiado puede ser necesario para calcular una invariante cross-site.
+
+Eso no convierte el `service_role` en permiso del actor.
+
+El uso válido exige:
+
+```text
+authorized target operation
++
+contractual validation dependency
++
+minimal hidden read
++
+no visibility expansion
+```
+
+La escritura continúa limitada al territorio autorizado del efecto.
+
+#### 42. Agregados visibles y validación interna
+
+Se distinguen:
+
+```text
+USER_VISIBLE_MULTI_SITE_AGGREGATE
+≠
+SERVER_INTERNAL_VALIDATION_AGGREGATE
+```
+
+Un agregado visible al usuario sigue el contrato ordinario de lectura del recurso.
+
+Un agregado interno solo puede participar en un invariante protegido y no se presenta como acceso del actor a los miembros ocultos.
+
+#### 43. VISO mensual — regla específica del package
+
+Para `VISO-SCHEDULE-MONTHLY-001`, la regla de esta tarea es:
+
+```text
+012
+→ total entre sedes sin acceso extra
+```
+
+El límite mensual del trabajador se calcula considerando todas sus sedes relevantes.
+
+Eso no concede al administrador acceso visible a la programación de sedes que no administra.
+
+#### 44. VISO mensual — efecto de escritura
+
+Crear, eliminar o publicar programación mensual conserva como territorio de escritura la sede objetivo validada por `AUTH-SRV-006`.
+
+La lectura de turnos de otras sedes para el total mensual es una dependencia de validación.
+
+No añade esas sedes a `write_scope`.
+
+#### 45. VISO mensual — total del trabajador
+
+El cálculo del total mensual debe considerar las filas aplicables del trabajador en todas las sedes necesarias para cumplir la política mensual.
+
+La operación debe usar ese total para:
+
+```text
+projected total
+warning / limit decision
+publication blocking
+```
+
+sin exponer el detalle territorial de las filas auxiliares.
+
+#### 46. VISO mensual — baseline observado
+
+El baseline remoto ya consulta `employee_shifts` por `employee_id` y rango mensual sin limitar la consulta a una sola sede para calcular totales.
+
+En publicación también obtiene el conjunto mensual de los trabajadores afectados sin filtro de sede y acumula sus minutos antes de publicar.
+
+Esto demuestra la intención funcional de total organizacional por trabajador.
+
+#### 47. VISO mensual — baseline no equivale a cumplimiento
+
+El hecho de usar `createAdminClient()` para leer todas las sedes no certifica por sí mismo:
+
+- minimización de campos;
+- no exposición de filas ocultas;
+- separación formal entre read scope y validation dependency;
+- auditoría del uso privilegiado;
+- coherencia con el permiso atómico de escritura;
+- tratamiento uniforme de errores.
+
+Por tanto el baseline se clasifica:
+
+```text
+PARTIAL_CROSS_SITE_VALIDATION_CONTROL
+```
+
+#### 48. VISO mensual — creación
+
+Al crear un borrador en una sede autorizada:
+
+```text
+write side
+→ validated target site
+
+monthly total dependency
+→ all relevant employee sites
+```
+
+La creación no exige permiso de escritura en cada sede que contribuye al total, porque esas filas no son modificadas.
+
+La lectura auxiliar tampoco puede hacerse visible como calendario cross-site del administrador.
+
+#### 49. VISO mensual — publicación
+
+`publishMonthAction` puede consultar filas de todas las sedes de los trabajadores afectados para comprobar el límite mensual.
+
+La actualización de publicación debe permanecer limitada a:
+
+```text
+validated target site
++
+month
++
+still-draft rows
+```
+
+La consulta auxiliar no autoriza publicar otras sedes.
+
+#### 50. VISO mensual — actualización de turno entre sedes
+
+Una edición ordinaria conserva el carril single-site cuando:
+
+```text
+persisted shift.site_id
+=
+validated requested site
+```
+
+Si el request pretende:
+
+```text
+persisted shift.site_id = A
+requested site_id = B
+```
+
+la operación se clasifica:
+
+```text
+SITE_TRANSFER
+```
+
+y debe autorizar los lados aplicables antes de cambiar el recurso.
+
+#### 51. VISO API — gap actual de actualización
+
+La API rápida auditada puede construir un payload con el `siteId` recibido y actualizar por `shiftId` mientras el turno siga en borrador.
+
+No relee primero el `site_id` persistido antes de construir la actualización.
+
+Por tanto no demuestra actualmente la separación:
+
+```text
+ordinary draft edit
+vs
+site transfer
+```
+
+Ese gap pertenece a la futura unidad física de `AUTH-SRV-012` aplicable a esa superficie.
+
+#### 52. VISO API — eliminación
+
+La eliminación rápida ya relee el turno y vuelve a comprobar permiso sobre:
+
+```text
+shift.site_id
+```
+
+Como no cambia la sede del recurso, permanece single-site si no existen otros lados obligatorios.
+
+No debe convertirse artificialmente en una operación cross-site.
+
+#### 53. VISO mensual — errores sin fuga territorial
+
+Cuando una validación interna detecte exceso o conflicto por datos de otra sede, el resultado no debe revelar innecesariamente:
+
+- nombre de la otra sede;
+- identificadores de turno ajenos;
+- responsables de la otra sede;
+- notas;
+- rol operativo de otro registro;
+- cualquier campo no necesario para explicar el bloqueo autorizado.
+
+El contrato final de copy pertenece a los owners de error y experiencia.
+
+#### 54. Relaciones laborales del trabajador objetivo
+
+Que un trabajador objetivo tenga asignaciones en varias sedes no concede al administrador autoridad sobre esas sedes.
+
+Se mantiene:
+
+```text
+target employee multi-site membership
+≠
+actor multi-site authorization
+```
+
+La relación del trabajador puede alimentar una validación de integridad o elegibilidad sin ampliar el actor.
+
+#### 55. Transferencia y vínculo del trabajador objetivo
+
+Cuando una operación realmente cambie la sede de un turno u otro recurso laboral, la sede propuesta debe ser compatible con la relación laboral vigente del trabajador objetivo según el contrato correspondiente.
+
+Esa compatibilidad no sustituye la autorización del actor en los lados requeridos.
+
+#### 56. Lecturas auxiliares y respuesta
+
+Toda lectura cross-site usada exclusivamente como validación debe terminar en una salida controlada como:
+
+```text
+ALLOW
+DENY
+CONFLICT
+aggregate value required by policy
+```
+
+No en una respuesta que materialice las filas auxiliares al consumidor sin permiso de lectura.
+
+#### 57. RPC y funciones privilegiadas
+
+Una RPC o función `SECURITY DEFINER` que calcule una regla multisede debe recibir o reconstruir el contexto suficiente para:
+
+- identificar la operación autorizada;
+- identificar el trabajador o recurso objetivo;
+- limitar la finalidad del cálculo;
+- evitar retorno de filas auxiliares;
+- producir un resultado determinista;
+- conservar trazabilidad.
+
+Su implementación física pertenece a los owners de base de datos y package correspondientes.
+
+#### 58. Server Actions
+
+Una Server Action con efecto cross-site debe resolver todos los lados antes del primer write.
+
+Una Server Action single-site que use una validación interna cross-site debe mantener explícitamente separados:
+
+```text
+write_scope
+validation_dependency_scope
+```
+
+La página de origen no define ninguno de los dos.
+
+#### 59. API routes
+
+Una route mutante que reciba origen y destino debe tratarlos como intención y resolver el recurso real.
+
+Cuando reciba solo un `siteId` para actualizar un recurso existente, debe releer el recurso antes de decidir si continúa single-site o se convierte en `SITE_TRANSFER`.
+
+#### 60. RLS y base de datos
+
+RLS, grants, constraints y funciones de base de datos deben preservar la misma frontera de lados.
+
+No se considera cumplimiento que una capa de aplicación valide ambos lados si una RPC privilegiada permite luego omitir uno.
+
+La implementación física definitiva conserva sus owners canónicos.
+
+#### 61. Atomicidad
+
+Una operación que deba producir efectos en varios lados no puede confirmar el primer lado y fallar después por autorización del segundo.
+
+La materialización debe asegurar que la autorización completa preceda el primer efecto y que la política de atomicidad del proceso se respete.
+
+#### 62. Idempotencia
+
+Un retry de una operación cross-site no puede repetir solo uno de sus lados ni reusar una autorización territorial vencida.
+
+Debe reconstruir recurso, lados y decisión conforme a la política de idempotencia y concurrencia aplicable.
+
+#### 63. Handoff a `AUTH-SRV-013`
+
+`AUTH-SRV-012` entrega:
+
+```text
+cross_site_classification
+required_site_sides
+resolved_required_sites
+per_side_site_authorization
+cross_site_authorization_result
+validation_only_site_dependencies
+```
+
+`AUTH-SRV-013` toma ese resultado y valida cualquier conjunto de áreas requerido dentro de las sedes ya aceptadas.
+
+#### 64. Handoff a auditoría
+
+La decisión debe conservar suficiente lineage para reconstruir:
+
+```text
+resource identity
+required sides
+resolved site per side
+site source per side
+per-side authorization result
+cross-site classification
+validation-only dependencies
+privileged read usage when applicable
+final cross-site decision
+```
+
+El contrato detallado de auditoría continúa en `AUTH-SRV-014`.
+
+#### 65. Handoff a errores
+
+Las causas conceptuales de fallo deben poder normalizarse después sin perder la distinción entre:
+
+```text
+missing side
+inactive side
+scope mismatch
+unresolved territory
+technical failure
+state conflict
+concurrency conflict
+```
+
+La taxonomía final pertenece a `AUTH-SRV-016`.
+
+#### 66. Lineage obligatorio
+
+Cada futura unidad deberá conservar:
+
+```text
+surface_identity
+→ effective_mutation
+→ required_permission_key
+→ resolved resource
+→ resource version
+→ state validation
+→ cross_site_classification
+→ required_sides
+→ resolved site per side
+→ site activity per side
+→ authorization basis per side
+→ authorization result per side
+→ validation-only site dependencies
+→ privileged read boundary when applicable
+→ downstream area gate
+→ effect
+```
+
+#### 67. Materialización futura
+
+Cada instancia:
+
+```text
+AUTH-SRV-012::<implementation_unit_id>
+```
+
+deberá registrar como mínimo:
+
+```text
+implementation_unit_id
+repository
+commit_before
+surface_identity[]
+write_operation[]
+resource_type[]
+resource_locator[]
+required_permission_key[]
+cross_site_classification[]
+required_sides[]
+site_source_by_side[]
+resolved_sites[]
+site_activity_checks[]
+authorization_basis_by_side[]
+authorization_result_by_side[]
+current_site_source[]
+proposed_site_source[]
+validation_only_dependencies[]
+validation_dependency_data_minimization[]
+privileged_client_usage
+bulk_policy
+offline_or_async_mode
+package_id[]
+change_set
+rollback
+validation_commands
+evidence
+commit_after
+```
+
+#### 68. Evidencia mínima de una futura unidad
+
+La materialización deberá demostrar, cuando aplique:
+
+1. single-site permanece single-site;
+2. recurso multisede resuelve todos los lados exigidos;
+3. lado inexistente → deny;
+4. lado inactivo → deny;
+5. lado no resoluble → deny;
+6. conflicto territorial → deny;
+7. permiso en origen sin destino requerido → deny;
+8. permiso en destino sin origen requerido → deny;
+9. grant global conserva límites de recurso y entorno;
+10. assigned-sites exige cobertura de cada sede aplicable;
+11. specific-site no se amplía a otra sede;
+12. turno de una sede no concede otra;
+13. dispositivo restringe y no amplía;
+14. cambio A → B relee A y valida B;
+15. autoridad solo en B no permite tomar recurso de A;
+16. autoridad solo en A no permite mover recurso a B;
+17. operación bilateral no produce primer efecto antes del segundo gate;
+18. lote multisede valida cada recurso;
+19. retry reautoriza todos los lados;
+20. offline reautoriza al sincronizar;
+21. Server Action directa conserva required_sides;
+22. API directa conserva required_sides;
+23. RPC privilegiada no omite un lado;
+24. en VISO, total mensual incluye todas las sedes relevantes;
+25. en VISO, filas auxiliares de otras sedes no se devuelven al administrador;
+26. en VISO, el total cross-site no amplía el write scope;
+27. en VISO, publicación actualiza solo la sede objetivo autorizada;
+28. en VISO, update A → B se clasifica como `SITE_TRANSFER`;
+29. en VISO, delete ordinario derivado de `shift.site_id` permanece single-site;
+30. lectura privilegiada de validación conserva finalidad y minimización.
+
+#### 69. Rollback
+
+El rollback de una futura unidad deberá restaurar únicamente el mecanismo técnico anterior sin:
+
+- convertir una sede en wildcard;
+- eliminar resolución de origen o destino;
+- permitir `SITE_TRANSFER` como update ordinario;
+- ampliar un scope `SPECIFIC_SITE`;
+- usar `employees.site_id` como autoridad multisede;
+- convertir vínculo del trabajador objetivo en autoridad del actor;
+- exponer filas auxiliares de validación;
+- convertir un agregado interno en acceso visible;
+- permitir efectos parciales cuando todos los lados son obligatorios;
+- retirar filtros territoriales existentes;
+- conservar una decisión stale después de cambio de lado.
+
+#### 70. Criterios de aceptación
+
+`AUTH-SRV-012` queda documentalmente satisfecha cuando:
+
+1. toda operación clasifica si es single-site, multisede, transferencia, validación interna o no territorial;
+2. `required_sides` gobierna qué lados deben autorizarse;
+3. todas las sedes obligatorias se resuelven desde el recurso o borrador validado;
+4. cada sede requerida existe y está activa antes del efecto;
+5. un lado autorizado no amplía otro;
+6. no se exige un lado que el contrato de la acción no declare obligatorio;
+7. una mutación bilateral exige cobertura completa antes del primer efecto;
+8. cambiar la sede de un recurso autoriza territorio vigente y propuesto;
+9. un grant global conserva el dominio exacto de la capacidad;
+10. assigned-sites exige cobertura real de cada sede aplicable;
+11. specific-site no cruza a otra sede;
+12. el contexto operativo no se presta entre sedes;
+13. el dispositivo solo restringe;
+14. operaciones masivas validan cada recurso y lado;
+15. errores de un lado no degradan la operación a single-site;
+16. decisiones stale obligan a reautorizar o fallar;
+17. colas y offline revalidan al ejecutar;
+18. validación interna cross-site permanece separada de autorización visible;
+19. lecturas auxiliares no amplían read scope ni write scope del actor;
+20. datos auxiliares se minimizan y no se devuelven como filas ocultas;
+21. `service_role` no se convierte en permiso humano;
+22. VISO calcula el total mensual con todas las sedes relevantes del trabajador;
+23. VISO no concede acceso visible adicional por calcular ese total;
+24. VISO mantiene las escrituras mensuales limitadas a la sede objetivo autorizada;
+25. VISO clasifica un update de turno A → B como transferencia de sede;
+26. el gap actual de la API rápida queda identificado;
+27. la eliminación rápida que relee `shift.site_id` conserva el carril single-site;
+28. se preserva el handoff exacto hacia `AUTH-SRV-013`;
+29. no se autorizan cambios físicos desde el marcador global;
+30. no se crean ni modifican requisitos de prueba.
+
+#### 71. Límites
+
+Este marcador no certifica todavía:
+
+- autorización cross-area;
+- semántica física definitiva de cada `required_side`;
+- implementación física del evaluador multisede;
+- RLS;
+- grants;
+- funciones `SECURITY DEFINER`;
+- atomicidad física de cada proceso;
+- idempotencia física de cada proceso;
+- auditoría completa;
+- taxonomía final de errores;
+- copy final de bloqueos territoriales;
+- implementación física de minimización de consultas VISO;
+- migración de la API rápida de VISO;
+- implementación física de transferencias de sede;
+- despliegue;
+- comportamiento productivo.
+
+Estas responsabilidades conservan sus owners canónicos.
+
+#### 72. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                                                                                                                             |
+| --------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | no se ejecutó build durante el desarrollo documental                                                                                                                                                                                                                                                                  |
+| LOCAL     | `NOT_EXECUTED`   | no se ejecutaron comandos contra el checkout del usuario                                                                                                                                                                                                                                                              |
+| REMOTA    | `PASS`           | se auditaron en solo lectura la continuidad vigente, la topología `PER_IMPLEMENTATION_UNIT`, el owner de `AUTH-SRV-012`, `AUTH-SRV-006` y `AUTH-SRV-011`, el contrato canónico de recurso y `required_sides`, los scopes territoriales, el registro 04A AUTH/VISO, el delta VISO mensual y el baseline actual de VISO |
+| OPERATIVA | `NOT_APPLICABLE` | el marcador no cambia operación real                                                                                                                                                                                                                                                                                  |
+| FÍSICA    | `NOT_APPLICABLE` | no existe instancia física autorizada para esta tarea                                                                                                                                                                                                                                                                 |
+
+#### 73. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** la denegación de cruces territoriales, la resolución de todos los lados obligatorios de recursos multisede, el rechazo de mutaciones manipuladas y el cálculo mensual VISO entre todas las sedes sin ampliar la visibilidad del administrador ya disponen de cobertura canónica vigente. `AUTH-SRV-012` especifica el gate de enforcement que consumirá esa cobertura y no introduce una obligación verificable sin requisito existente.
+
+#### 74. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificar el registro vigente:
+
+- `TREQ-AUTH-007` — la administración territorial limita cada fila al alcance autorizado del actor;
+- `TREQ-AUTH-009` — todo cruce territorial se deniega en servidor, RPC y RLS cuando queda fuera del territorio efectivo;
+- `TREQ-AUTH-013` — cada mutación revalida en servidor permiso, territorio, contexto y estado antes de producir efectos;
+- `TREQ-AUTH-170` — la dependencia de asignación de sede deriva del scope, carril y recurso, sin imponer asignación a capacidades que no la requieren;
+- `TREQ-AUTH-173` — el evaluador resuelve requisito y asignación antes de clasificar un scope mismatch y no completa grants con territorio inventado;
+- `TREQ-AUTH-183` — todo recurso territorial único o multisede resuelve todas las sedes obligatorias, comprueba existencia y actividad y no autoriza parcialmente un extremo;
+- `TREQ-VISO-033` — el total mensual considera todas las sedes del trabajador sin ampliar el acceso visible del administrador.
+
+Estas referencias son trazabilidad heredada y no representan requisitos creados o modificados por `AUTH-SRV-012`.
+
+#### 75. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SRV-011 — Validar estado actual de la entidad`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SRV-012 — Evitar operaciones entre sedes no autorizadas`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SRV-013 — Evitar operaciones entre áreas no autorizadas`
+
+
 ### [ ] AUTH-SRV-013 — Evitar operaciones entre áreas no autorizadas
 
 ### Reglas del package
