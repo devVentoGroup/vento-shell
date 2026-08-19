@@ -105,7 +105,6 @@ export const REQUIRED_PLAN_RECORD_FIELDS = Object.freeze([
 
 const RESULT_STATE_SET = new Set(RESULT_STATES);
 const REPOSITORY_SET = new Set(CANONICAL_REPOSITORIES);
-const WEB_CONSUMER_SET = new Set(CANONICAL_WEB_CONSUMERS);
 const PACKAGE_SET = new Set(CI003_PACKAGES);
 const COMMIT_PATTERN = /^[0-9a-f]{40}$/u;
 const SHA256_PATTERN = /^sha256:[0-9a-f]{64}$/u;

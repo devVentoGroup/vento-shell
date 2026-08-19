@@ -245,10 +245,6 @@ function normalizeRepositoryRef(value) {
   return `vento-group-sas/${trimmed}`;
 }
 
-function repositoryShortName(repository) {
-  return String(repository ?? '').split('/').at(-1) ?? '';
-}
-
 function sensitiveFindings(value, pointer = '$', findings = []) {
   if (Array.isArray(value)) {
     value.forEach((child, index) => sensitiveFindings(child, `${pointer}[${index}]`, findings));

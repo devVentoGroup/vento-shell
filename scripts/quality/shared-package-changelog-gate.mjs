@@ -643,13 +643,6 @@ function packageSlug(packageName) {
   return packageName.slice(1).replaceAll('/', '__');
 }
 
-function writeJsonAtomic(filePath, value) {
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  const tempPath = `${filePath}.${process.pid}.${crypto.randomUUID()}.tmp`;
-  fs.writeFileSync(tempPath, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
-  fs.renameSync(tempPath, filePath);
-}
-
 function writeTextAtomic(filePath, value) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   const tempPath = `${filePath}.${process.pid}.${crypto.randomUUID()}.tmp`;
