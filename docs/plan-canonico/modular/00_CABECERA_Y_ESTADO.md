@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **983** |
+| Tareas aprobadas | **984** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **611** |
+| Tareas no iniciadas | **610** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **61.67% (983/1594)** |
+| Porcentaje de completamiento | **61.73% (984/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-CI-024 — Certificar cierre del paquete y transferencia a soporte** |
-| Tarea actual | **AUTH-SRV-001 — Inventariar Server Actions de todos los repositorios** |
+| Última tarea aprobada | **AUTH-SRV-001 — Inventariar Server Actions de todos los repositorios** |
+| Tarea actual | **AUTH-SRV-002 — Inventariar API routes** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-SRV-002 — Inventariar API routes** |
+| Siguiente tarea | **AUTH-SRV-003 — Inventariar RPC utilizadas** |
 | Bloque actual | **BLOQUE J — Protección de acciones de servidor** |
-| Progreso del bloque | **BLOQUE J: 0 de 18 aprobadas; AUTH-SRV-001 pendiente** |
+| Progreso del bloque | **BLOQUE J: 1 de 18 aprobadas; AUTH-SRV-002 pendiente** |
 | Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-SRV-001** |
-| Carril documental | **ACTIVO — AUTH-SRV-001** |
+| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-SRV-002** |
+| Carril documental | **ACTIVO — AUTH-SRV-002** |
 | Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-CI-024` — Certificar cierre del paquete y transferencia a soporte |
-| Tarea actual | `AUTH-SRV-001` — Inventariar Server Actions de todos los repositorios — **NO INICIADA** |
-| Siguiente tarea | `AUTH-SRV-002` — Inventariar API routes |
+| Última aprobada | `AUTH-SRV-001` — Inventariar Server Actions de todos los repositorios |
+| Tarea actual | `AUTH-SRV-002` — Inventariar API routes — **NO INICIADA** |
+| Siguiente tarea | `AUTH-SRV-003` — Inventariar RPC utilizadas |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE J: 0 DE 18 APROBADAS — ACTUAL AUTH-SRV-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE J: 1 DE 18 APROBADAS — ACTUAL AUTH-SRV-002** |
 | Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-CI-024 — Certificar cierre del paquete y transferencia a soporte
-        ↓
-TAREA ACTUAL
 AUTH-SRV-001 — Inventariar Server Actions de todos los repositorios
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-SRV-002 — Inventariar API routes
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-SRV-003 — Inventariar RPC utilizadas
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE J — 0 de 18 tareas aprobadas
+BLOQUE J — 1 de 18 tareas aprobadas
 ```
