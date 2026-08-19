@@ -1,10 +1,52 @@
 {
   "instance_id": "SHELL-CI-019::GLOBAL",
   "task_id": "SHELL-CI-019",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "IMPLEMENTED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell",
+    "vento-group-sas/vento-nexo",
+    "vento-group-sas/vento-fogo",
+    "vento-group-sas/vento-origo",
+    "vento-group-sas/vento-pulso",
+    "vento-group-sas/vento-viso",
+    "vento-group-sas/vento-numera",
+    "vento-group-sas/vento-anima"
+  ],
+  "authorized_changes": [
+    "Crear scripts/quality/test-evidence-publisher.mjs en vento-shell como único motor propietario CI019 para construir, validar y verificar bundles de repositorio y expedientes de paquete.",
+    "Crear scripts/quality/test-evidence-publisher.test.mjs en vento-shell para autocertificación contractual de CI019.",
+    "Modificar .github/workflows/vento-required-gate.yml en los ocho repositorios gobernados para materializar, publicar con actions/upload-artifact@v4 y verificar el bundle CI019 dentro de la misma ejecución, preservando la identidad VENTO Required Gate.",
+    "Actualizar únicamente la línea VENTO-TREQ-ZERO-REASON de los ocho pull requests ya abiertos del carril shell-ci-018-global para reflejar conjuntamente SHELL-CI-018 y SHELL-CI-019, manteniendo VENTO-TREQ-AFFECTED: NONE.",
+    "Mantener el motor CI018, npm test, el verificador CI017, branch protection, TREQ, 04A, Supabase, despliegue, rollback, tags, releases y merges fuera de cambios semánticos o mutaciones no enumeradas.",
+    "Usar la rama existente shell-ci-018-global como referencia de integración del motor propietario durante esta materialización y registrar publisher_identity dentro de cada bundle."
+  ],
+  "validation_commands": [
+    "node --test scripts/quality/test-evidence-publisher.test.mjs",
+    "node scripts/quality/test-evidence-publisher.mjs self-certify --json",
+    "node --test scripts/quality/required-gate.test.mjs",
+    "node scripts/quality/required-gate.mjs audit-workspaces --json",
+    "npm test --silent",
+    "npm run lint -- --max-warnings 0 scripts/quality/test-evidence-publisher.mjs scripts/quality/test-evidence-publisher.test.mjs",
+    "git diff --check",
+    "npm run docs:commit-scope:check -- --staged",
+    "npm run docs:commit-scope:check -- --range origin/main..HEAD",
+    "node scripts/quality/test-evidence-publisher.mjs verify-github --head shell-ci-018-global --json"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-18T22:30:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente la materialización de SHELL-CI-019::GLOBAL en los ocho repositorios enumerados, limitada al motor propietario de evidencia, su autocertificación, la integración de publicación fail-closed dentro de VENTO Required Gate y la actualización de la justificación TREQ cero de los ocho PR existentes; niego cualquier ampliación inferida sobre TREQ, 04A, Supabase, merge, deploy, rollback, tags, releases, npm test, CI017, branch protection o implementación de SHELL-CI-020.",
+    "source_contract_sha256": "0ef71aefeb49a1a6c5c8133f3428ba8d778e4a28011da4baa733a9e6e20457ab"
+  },
+  "evidence": [
+    {
+      "kind": "LOCAL_MATERIALIZATION",
+      "result": "MATERIALIZED_PENDING_FINAL_VALIDATION",
+      "repository_count": 8,
+      "publisher": "scripts/quality/test-evidence-publisher.mjs",
+      "workflow": ".github/workflows/vento-required-gate.yml"
+    }
+  ]
 }
