@@ -1845,10 +1845,993 @@ Las futuras materializaciones y tareas de endurecimiento deberán vincular sus T
 `AUTH-SRV-003 — Inventariar RPC utilizadas`
 
 
-### [ ] AUTH-SRV-003 — Inventariar RPC utilizadas
+### ✅ AUTH-SRV-003 — Inventariar RPC utilizadas
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-SRV-002 — Inventariar API routes
+**Tarea siguiente:** AUTH-SRV-004 — Eliminar confianza exclusiva en la interfaz
+**Tipo de tarea:** Contrato global con materialización por unidad (`PER_IMPLEMENTATION_UNIT`) — inventario técnico transversal y reproducible de RPC consumidas por las superficies actuales de Vento OS, con identidad por esquema y función, reconciliación por repositorio, evidencia de caller y lineage hacia Server Actions, API routes, clientes, scripts y Edge Functions
+**Bloque:** BLOQUE J — Protección de acciones de servidor
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/01_INVENTARIO_DE_SUPERFICIES_DE_SERVIDOR.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global; las futuras materializaciones ocurren únicamente por `AUTH-SRV-003::<implementation_unit_id>` después de asignación de `implementation_unit_id` por `DELIV-PKG-025::<package_id>` y del `E5-GATE-008::<package_id>` aplicable
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Establecer el inventario canónico de las funciones expuestas mediante RPC que son efectivamente consumidas por código Vento en los snapshots auditados.
+
+La tarea registra dos niveles distintos:
+
+```text
+RPC CONTRACT
+=
+función de base de datos invocada mediante la interfaz RPC
+
+RPC USAGE
+=
+relación de un repositorio y snapshot concretos con ese contrato RPC
+```
+
+El inventario no presupone que toda función SQL sea RPC ni que toda RPC existente en la base esté siendo utilizada.
+
+Solo entra al universo una función para la que existe consumo observable mediante un cliente RPC en el código auditado.
+
+#### 2. Frontera de responsabilidad
+
+`AUTH-SRV-003` inventaría RPC utilizadas.
+
+No decide todavía:
+
+- si el caller debe poder invocar la RPC;
+- si la RPC valida autenticación;
+- si revalida permiso;
+- si valida sede;
+- si valida área;
+- si valida rol operativo;
+- si valida dispositivo compartido;
+- si valida estado actual;
+- si usa `SECURITY DEFINER`;
+- si el `search_path` es seguro;
+- si los `GRANT` son correctos;
+- si los argumentos permiten escalamiento;
+- si el resultado filtra información suficiente;
+- si una función privilegiada debe estar expuesta a PostgREST;
+- si el uso desde navegador o móvil es aceptable;
+- si el uso desde service role está correctamente aislado;
+- si la auditoría o idempotencia son suficientes.
+
+Las decisiones anteriores pertenecen al endurecimiento de `AUTH-SRV-004..018`.
+
+`AUTH-SRV-001` conserva Server Actions.
+
+`AUTH-SRV-002` conserva API routes y endpoints HTTP.
+
+#### 3. Regla de inclusión
+
+Se incluye una RPC cuando el snapshot contiene una invocación runtime verificable equivalente a:
+
+```text
+client.rpc("function_name", ...)
+client.schema("schema_name").rpc("function_name", ...)
+```
+
+También se incluyen:
+
+- invocaciones desde Server Components;
+- invocaciones desde componentes cliente;
+- invocaciones desde aplicaciones móviles;
+- invocaciones desde Server Actions;
+- invocaciones desde API routes;
+- invocaciones desde Edge Functions;
+- invocaciones desde scripts runtime u operativos versionados.
+
+La inclusión representa **uso observado**, no aprobación del diseño.
+
+#### 4. Regla de exclusión
+
+Quedan fuera del inventario primario:
+
+- definiciones SQL que no tengan consumo RPC observado;
+- funciones SQL invocadas internamente por otra función;
+- triggers;
+- trigger functions;
+- procedimientos mencionados solo en documentación;
+- nombres presentes únicamente en comentarios;
+- fixtures;
+- tests sin correspondencia runtime;
+- plantillas no materializadas como aplicación runtime;
+- `.from(...)`, `.insert(...)`, `.update(...)`, `.delete(...)` y demás operaciones PostgREST que no sean `.rpc(...)`;
+- Edge Functions como identidad primaria;
+- Server Actions como identidad primaria;
+- API routes como identidad primaria.
+
+Una Edge Function que invoque una RPC genera una relación Edge Function → RPC, pero sigue siendo una identidad RPC separada.
+
+#### 5. Trigger ≠ RPC
+
+Se fija explícitamente:
+
+```text
+TRIGGER
+≠
+RPC
+```
+
+Una función disparada automáticamente por un trigger no entra a `AUTH-SRV-003` por el mero hecho de existir o ejecutarse dentro de PostgreSQL.
+
+Para entrar al inventario debe existir una invocación RPC observada desde código Vento.
+
+Esta regla preserva la frontera heredada del paquete VISO mensual: los triggers relacionados con programación mensual no se reclasifican como RPC.
+
+#### 6. Identidad del contrato RPC
+
+La identidad global mínima queda:
+
+```text
+rpc_schema
++ rpc_name
+= rpc_contract_identity
+```
+
+Ejemplos:
+
+```text
+public.has_permission
+club.get_my_wallet
+pass.get_my_total_earned_points
+```
+
+No se crea un `rpc_id` artificial.
+
+El esquema es obligatorio porque una misma función nominal podría existir en más de un esquema.
+
+#### 7. Identidad del uso por repositorio
+
+La identidad primaria de uso queda:
+
+```text
+repository
++ commit
++ rpc_schema
++ rpc_name
+= rpc_usage_identity
+```
+
+Esta identidad permite contar una RPC una sola vez por repositorio y snapshot aunque tenga múltiples callsites.
+
+Los sitios de llamada se conservan como evidencia:
+
+```text
+repository
++ commit
++ source_path
++ rpc_schema
++ rpc_name
+= rpc_callsite_evidence
+```
+
+Por tanto:
+
+```text
+callsite_count
+≠
+rpc_usage_identity_count
+≠
+rpc_contract_identity_count
+```
+
+#### 8. Regla de esquema
+
+Cuando el caller usa:
+
+```text
+supabase.rpc(...)
+```
+
+y el cliente no redefine un esquema por defecto, la identidad se registra bajo:
+
+```text
+public
+```
+
+Cuando el caller usa explícitamente:
+
+```text
+supabase.schema("club").rpc(...)
+```
+
+la identidad conserva:
+
+```text
+club
+```
+
+Cuando un helper devuelve:
+
+```text
+supabase.schema("pass")
+```
+
+y luego invoca `.rpc(...)`, la identidad conserva:
+
+```text
+pass
+```
+
+No se aplana todo a `public`.
+
+#### 9. Corte de auditoría
+
+El baseline conserva los mismos snapshots reconciliados por `AUTH-SRV-001` y `AUTH-SRV-002`:
+
+| Repositorio                       | Commit del snapshot                        |
+| --------------------------------- | ------------------------------------------ |
+| `vento-group-sas/vento-shell`     | `2e12490a1d159a6152032d5472b937c05fa4b2bb` |
+| `vento-group-sas/vento-viso`      | `8cf7c49a593c748cb6c99dd9b919b6947bcfec14` |
+| `vento-group-sas/vento-nexo`      | `250097e3f615e895dbcc7236c5262f72c406235a` |
+| `vento-group-sas/vento-fogo`      | `9bc068d3c5afb7f34ae58c8664685feb5aad812a` |
+| `vento-group-sas/vento-origo`     | `131205837d1b08ded1cb51bb4c9ec914fa00afd6` |
+| `vento-group-sas/vento-pulso`     | `383d52b20c6af10066d8f2f1f2b137e90b588173` |
+| `vento-group-sas/vento-numera`    | `41050e3387db4e74216e4e42bc575490cc40fbb1` |
+| `vento-group-sas/vento-anima`     | `8bcfaaa3b6ab79d5839c03719edec7b50fd97d2d` |
+| `carlosibarraariza/Vento-Group`   | `aa5290cb2336681bf0a84bcf6dc03faca10c7c0d` |
+| `carlosibarraariza/vento-pass`    | `b5a4aec908ef12226f798078577ab089a29ccda2` |
+| `carlosibarraariza/vento-talento` | `dd39071daf587e3f006df62b646f8ad4b1b8de2c` |
+| `carlosibarraariza/vento-vital`   | `92d43bfac1f42d379928608005375a4b09bb04a4` |
+
+AURA continúa excluido como repositorio porque no existe un repositorio AURA confirmado en la línea canónica.
+
+#### 10. Regla de snapshot y drift
+
+Los resultados pertenecen únicamente a los commits declarados.
+
+Una modificación posterior puede producir:
+
+```text
+added
+removed
+renamed
+schema_changed
+callsite_added
+callsite_removed
+callsite_moved
+argument_shape_changed
+caller_context_changed
+privilege_changed
+control_changed
+unchanged
+```
+
+Ningún inventario posterior reescribe silenciosamente el estado histórico de este corte.
+
+#### 11. Resultado agregado
+
+El universo reconciliado produce:
+
+```text
+REPOSITORIOS_RECONCILIADOS = 12
+REPOSITORIOS_CON_RPC_OBSERVADA = 9
+REPOSITORIOS_SIN_RPC_OBSERVADA = 3
+
+RPC_USAGE_IDENTITIES_REPOSITORIO = 125
+RPC_CONTRACT_IDENTITIES_GLOBALES = 100
+
+PUBLIC_USAGE_IDENTITIES = 120
+CLUB_USAGE_IDENTITIES = 4
+PASS_USAGE_IDENTITIES = 1
+
+PUBLIC_CONTRACT_IDENTITIES_GLOBALES = 95
+CLUB_CONTRACT_IDENTITIES_GLOBALES = 4
+PASS_CONTRACT_IDENTITIES_GLOBALES = 1
+```
+
+La reconciliación cumple:
+
+```text
+125 relaciones repositorio↔RPC
+- 25 repeticiones legítimas entre repositorios
+= 100 contratos RPC únicos globales
+```
+
+#### 12. Distribución por repositorio
+
+| Repositorio     | RPC usage identities |
+| --------------- | -------------------: |
+| `vento-shell`   |                   14 |
+| `vento-viso`    |                   14 |
+| `vento-nexo`    |                   40 |
+| `vento-fogo`    |                    7 |
+| `vento-origo`   |                    9 |
+| `vento-pulso`   |                   15 |
+| `vento-numera`  |                    0 |
+| `vento-anima`   |                   10 |
+| `Vento-Group`   |                    0 |
+| `vento-pass`    |                   12 |
+| `vento-talento` |                    4 |
+| `vento-vital`   |                    0 |
+| **TOTAL**       |              **125** |
+
+#### 13. Contratos compartidos entre repositorios
+
+Las 25 repeticiones cross-repository se explican completamente por estos contratos compartidos:
+
+| Contrato                                              | Repositorios consumidores | Relaciones adicionales sobre una identidad global |
+| ----------------------------------------------------- | ------------------------: | ------------------------------------------------: |
+| `public.has_permission`                               |                         7 |                                                 6 |
+| `public.has_operational_role_permission`              |                         5 |                                                 4 |
+| `public.current_shared_operational_device_v1`         |                         5 |                                                 4 |
+| `public.sign_shared_device_action`                    |                         4 |                                                 3 |
+| `public.attach_shared_device_action_signature_target` |                         4 |                                                 3 |
+| `public.employee_wallet_eligibility`                  |                         3 |                                                 2 |
+| `public.upsert_app_screen_registry`                   |                         2 |                                                 1 |
+| `public.upsert_inventory_stock_by_location`           |                         2 |                                                 1 |
+| `public.mark_order_conversation_read`                 |                         2 |                                                 1 |
+| **TOTAL**                                             |                           |                                            **25** |
+
+Esta reconciliación permite demostrar que los conteos globales y por repositorio no se contradicen.
+
+#### 14. Inventario — SHELL
+
+Snapshot:
+
+```text
+vento-group-sas/vento-shell
+2e12490a1d159a6152032d5472b937c05fa4b2bb
+```
+
+| Esquema  | RPC                                                 | Familia                |
+| -------- | --------------------------------------------------- | ---------------------- |
+| `public` | `has_permission`                                    | autorización           |
+| `public` | `get_effective_context_v1`                          | contexto efectivo      |
+| `public` | `has_effective_permission_v1`                       | autorización efectiva  |
+| `public` | `start_context_simulation_v1`                       | simulación de contexto |
+| `public` | `stop_context_simulation_v1`                        | simulación de contexto |
+| `public` | `checkout_get_payment_webhook_event`                | pagos/webhook          |
+| `public` | `checkout_find_payment_transaction_by_reference`    | pagos/webhook          |
+| `public` | `checkout_record_payment_webhook_event`             | pagos/webhook          |
+| `public` | `mark_payment_transaction_status`                   | pagos/webhook          |
+| `public` | `checkout_fail_payment_transaction`                 | pagos/checkout         |
+| `public` | `checkout_get_payment_transaction`                  | pagos/checkout         |
+| `public` | `checkout_mark_payment_transaction_requires_action` | pagos/checkout         |
+| `public` | `anonymize_user_personal_data`                      | privacidad/borrado     |
+| `public` | `employee_wallet_eligibility`                       | identidad laboral      |
+
+Resultado:
+
+```text
+SHELL_RPC_USAGE_IDENTITIES = 14
+```
+
+#### 15. SHELL — caller y privilegio observado
+
+Las RPC de SHELL se consumen desde superficies de distinta naturaleza:
+
+```text
+Next Server Component / app shell
+packages compartidos de contexto
+Edge Functions con contexto de usuario
+Edge Functions con cliente service-role
+```
+
+Casos particularmente sensibles observados:
+
+```text
+payments-webhook
+payments-create-intent
+account-deletion
+process-account-deletions
+```
+
+usan o alcanzan clientes privilegiados.
+
+La presencia de service role se registra como evidencia de caller y no como aprobación de seguridad.
+
+#### 16. Inventario — VISO
+
+Snapshot:
+
+```text
+vento-group-sas/vento-viso
+8cf7c49a593c748cb6c99dd9b919b6947bcfec14
+```
+
+| Esquema  | RPC                                              | Familia                |
+| -------- | ------------------------------------------------ | ---------------------- |
+| `public` | `has_permission`                                 | autorización           |
+| `public` | `has_operational_role_permission`                | autorización operativa |
+| `public` | `reschedule_scheduled_order_admin`               | pedidos programados    |
+| `public` | `get_order_reschedule_slots_admin`               | pedidos programados    |
+| `public` | `resolve_scheduled_order_contact_admin`          | pedidos programados    |
+| `public` | `employee_wallet_eligibility`                    | identidad laboral      |
+| `public` | `set_employee_kiosk_pin`                         | dispositivo/kiosco     |
+| `public` | `viso_accounting_dashboard`                      | contabilidad           |
+| `public` | `promote_app_screen_to_navigation`               | navegación             |
+| `public` | `upsert_operational_checkin_point`               | operación/asistencia   |
+| `public` | `apply_shared_device_template_actor_policies_v1` | dispositivo compartido |
+| `public` | `upsert_site_operational_role`                   | rol operativo          |
+| `public` | `upsert_employee_site_operational_profile`       | perfil operativo       |
+| `public` | `current_shared_operational_device_v1`           | dispositivo compartido |
+
+Resultado:
+
+```text
+VISO_RPC_USAGE_IDENTITIES = 14
+```
+
+#### 17. VISO — frontera del paquete mensual
+
+El paquete mensual registra Server Actions en `AUTH-SRV-001` y no genera una API route nueva en `AUTH-SRV-002`.
+
+`AUTH-SRV-003` conserva esa separación:
+
+```text
+Server Action
+→ puede consumir tablas, helpers o RPC
+
+trigger PostgreSQL
+→ NO se reclasifica como RPC
+
+RPC
+→ solo entra si existe llamada RPC observable
+```
+
+No se inventa una RPC para representar el trigger o la programación mensual.
+
+#### 18. Inventario — NEXO: autorización y contexto
+
+Snapshot:
+
+```text
+vento-group-sas/vento-nexo
+250097e3f615e895dbcc7236c5262f72c406235a
+```
+
+Familia de autorización, contexto, dispositivo y registro:
+
+| Esquema  | RPC                                            |
+| -------- | ---------------------------------------------- |
+| `public` | `has_permission`                               |
+| `public` | `sign_shared_device_action`                    |
+| `public` | `attach_shared_device_action_signature_target` |
+| `public` | `has_operational_role_permission`              |
+| `public` | `get_operational_context`                      |
+| `public` | `has_operational_permission`                   |
+| `public` | `current_shared_operational_device_v1`         |
+| `public` | `upsert_app_screen_registry`                   |
+
+#### 19. Inventario — NEXO: maestro de producto
+
+| Esquema  | RPC                                       |
+| -------- | ----------------------------------------- |
+| `public` | `apply_master_product_identity_batch`     |
+| `public` | `deactivate_master_request_policy_batch`  |
+| `public` | `apply_master_request_policy_rules_batch` |
+| `public` | `apply_master_request_policy_units_batch` |
+| `public` | `apply_master_request_policy_batch`       |
+| `public` | `apply_master_supplier_purchase_batch`    |
+| `public` | `apply_master_presentation_version_batch` |
+| `public` | `apply_master_product_site_batch`         |
+| `public` | `apply_master_inventory_profile_batch`    |
+| `public` | `apply_master_production_route_batch`     |
+
+Estas diez identidades son contratos distintos aunque formen parte de un mismo flujo maestro.
+
+#### 20. Inventario — NEXO: stock y conteos
+
+| Esquema  | RPC                                                      |
+| -------- | -------------------------------------------------------- |
+| `public` | `assign_inventory_stock_to_location`                     |
+| `public` | `create_inventory_count_session_with_lines`              |
+| `public` | `apply_inventory_count_adjustments`                      |
+| `public` | `close_inventory_count_session`                          |
+| `public` | `consume_inventory_stock_from_positions`                 |
+| `public` | `upsert_inventory_stock_by_location`                     |
+| `public` | `upsert_inventory_stock_by_uom_profile`                  |
+| `public` | `consume_inventory_stock_by_uom_profile`                 |
+| `public` | `assign_inventory_stock_to_position`                     |
+| `public` | `reconcile_zero_internal_positions_for_location_product` |
+| `public` | `nexo_kiosk_withdraw_workers`                            |
+
+#### 21. Inventario — NEXO: remisiones, pricing y logística
+
+| Esquema  | RPC                                            |
+| -------- | ---------------------------------------------- |
+| `public` | `confirm_remission_shipment_receipt`           |
+| `public` | `price_restock_request_internal_transfer`      |
+| `public` | `preview_manual_daily_internal_pos_documents`  |
+| `public` | `generate_manual_daily_internal_pos_documents` |
+| `public` | `sync_restock_request_status_from_items`       |
+| `public` | `get_restock_request_operational_summary`      |
+| `public` | `apply_restock_receipt`                        |
+| `public` | `split_restock_request_item`                   |
+| `public` | `apply_restock_shipment_from_picks`            |
+| `public` | `reverse_restock_request`                      |
+| `public` | `create_remission_shipment_from_fulfillments`  |
+
+Resultado NEXO:
+
+```text
+8 autorización/contexto
++ 10 maestro
++ 11 stock/conteos
++ 11 remisiones/logística
+= 40 RPC usage identities
+```
+
+#### 22. NEXO — lineage API route ↔ RPC
+
+`AUTH-SRV-002` ya registra endpoints que consumen RPC.
+
+Se preservan al menos estas relaciones explícitas:
+
+```text
+POST /api/inventory/count-initial
+→ public.create_inventory_count_session_with_lines
+
+POST /api/inventory/count-initial/approve
+→ public.apply_inventory_count_adjustments
+
+POST /api/inventory/adjust
+→ public.reconcile_zero_internal_positions_for_location_product
+  cuando el flujo observado lo requiere
+```
+
+La identidad del endpoint y la identidad RPC no se fusionan.
+
+#### 23. Inventario — FOGO
+
+Snapshot:
+
+```text
+vento-group-sas/vento-fogo
+9bc068d3c5afb7f34ae58c8664685feb5aad812a
+```
+
+| Esquema  | RPC                                            | Familia                |
+| -------- | ---------------------------------------------- | ---------------------- |
+| `public` | `current_shared_operational_device_v1`         | dispositivo compartido |
+| `public` | `has_permission`                               | autorización           |
+| `public` | `sign_shared_device_action`                    | firma operativa        |
+| `public` | `attach_shared_device_action_signature_target` | firma operativa        |
+| `public` | `has_operational_role_permission`              | autorización operativa |
+| `public` | `current_employee_site_id`                     | contexto de sede       |
+| `public` | `fogo_recipe_area_options`                     | recetas/áreas          |
+
+Resultado:
+
+```text
+FOGO_RPC_USAGE_IDENTITIES = 7
+```
+
+`fogo_recipe_area_options` se consume en superficies de creación/edición de recetas.
+
+#### 24. Inventario — ORIGO
+
+Snapshot:
+
+```text
+vento-group-sas/vento-origo
+131205837d1b08ded1cb51bb4c9ec914fa00afd6
+```
+
+| Esquema  | RPC                                            | Familia                 |
+| -------- | ---------------------------------------------- | ----------------------- |
+| `public` | `current_shared_operational_device_v1`         | dispositivo compartido  |
+| `public` | `has_permission`                               | autorización            |
+| `public` | `sign_shared_device_action`                    | firma operativa         |
+| `public` | `attach_shared_device_action_signature_target` | firma operativa         |
+| `public` | `has_operational_role_permission`              | autorización operativa  |
+| `public` | `upsert_app_screen_registry`                   | navegación              |
+| `public` | `origo_reverse_inventory_entry`                | recepción/inventario    |
+| `public` | `upsert_inventory_stock_by_location`           | inventario              |
+| `public` | `origo_mark_inventory_entry_corrected`         | corrección de recepción |
+
+Resultado:
+
+```text
+ORIGO_RPC_USAGE_IDENTITIES = 9
+```
+
+#### 25. Inventario — PULSO
+
+Snapshot:
+
+```text
+vento-group-sas/vento-pulso
+383d52b20c6af10066d8f2f1f2b137e90b588173
+```
+
+| Esquema  | RPC                                            | Familia                |
+| -------- | ---------------------------------------------- | ---------------------- |
+| `public` | `current_shared_operational_device_v1`         | dispositivo compartido |
+| `public` | `has_permission`                               | autorización           |
+| `public` | `sign_shared_device_action`                    | firma operativa        |
+| `public` | `attach_shared_device_action_signature_target` | firma operativa        |
+| `public` | `has_operational_role_permission`              | autorización operativa |
+| `public` | `award_loyalty_points_external`                | lealtad                |
+| `public` | `override_order_delivery_confirmation`         | entrega                |
+| `public` | `update_order_operational_state`               | operación de pedidos   |
+| `public` | `update_order_gift_operational_state`          | checklist de regalos   |
+| `public` | `mark_order_conversation_read`                 | chat                   |
+| `public` | `get_staff_order_chat_unread_counts`           | chat                   |
+| `public` | `set_order_conversation_archived`              | chat                   |
+| `public` | `archive_finished_order_conversations`         | chat                   |
+| `public` | `pulso_post_daily_sales_import`                | importación de ventas  |
+| `public` | `create_order_delivery_courier_link`           | entrega                |
+
+Resultado:
+
+```text
+PULSO_RPC_USAGE_IDENTITIES = 15
+```
+
+#### 26. Inventario — ANIMA
+
+Snapshot:
+
+```text
+vento-group-sas/vento-anima
+8bcfaaa3b6ab79d5839c03719edec7b50fd97d2d
+```
+
+| Esquema  | RPC                                        | Familia                    |
+| -------- | ------------------------------------------ | -------------------------- |
+| `public` | `has_permission`                           | autorización               |
+| `public` | `start_attendance_break`                   | asistencia                 |
+| `public` | `end_attendance_break`                     | asistencia                 |
+| `public` | `sync_attendance_events`                   | asistencia offline/sync    |
+| `public` | `employee_wallet_eligibility`              | carnet laboral             |
+| `public` | `anima_diagnostic_employee_push_tokens`    | diagnóstico                |
+| `public` | `anima_diagnostic_push_token_coverage`     | diagnóstico                |
+| `public` | `reconcile_staff_invitations`              | equipo/invitaciones        |
+| `public` | `register_shift_departure_event_autoclose` | geolocalización/asistencia |
+| `public` | `register_shift_departure_event`           | geolocalización/asistencia |
+
+Resultado:
+
+```text
+ANIMA_RPC_USAGE_IDENTITIES = 10
+```
+
+La superficie ANIMA incluye callers móviles y sincronización offline; esa naturaleza debe conservarse al evaluar autorización y reintentos.
+
+#### 27. ANIMA — fallback y compatibilidad observada
+
+El código de asistencia contiene fallbacks explícitos:
+
+```text
+sync_attendance_events
+→ fallback de inserción cuando la función no existe
+
+register_shift_departure_event_autoclose
+→ fallback a register_shift_departure_event
+  cuando la función autoclose no está disponible
+```
+
+La presencia de fallback se registra como evidencia de compatibilidad.
+
+No implica que ambas RPC deban permanecer indefinidamente.
+
+#### 28. Inventario — PASS: esquemas `club` y `pass`
+
+Snapshot:
+
+```text
+carlosibarraariza/vento-pass
+b5a4aec908ef12226f798078577ab089a29ccda2
+```
+
+RPC fuera de `public`:
+
+| Esquema | RPC                          | Familia        |
+| ------- | ---------------------------- | -------------- |
+| `club`  | `get_my_wallet`              | Club/wallet    |
+| `club`  | `list_my_wallet_ledger`      | Club/wallet    |
+| `club`  | `can_access_beta`            | Club/acceso    |
+| `club`  | `get_my_membership`          | Club/membresía |
+| `pass`  | `get_my_total_earned_points` | Pass/lealtad   |
+
+Este conjunto demuestra por qué el esquema forma parte obligatoria de la identidad.
+
+#### 29. Inventario — PASS: esquema `public`
+
+| Esquema  | RPC                                                | Familia      |
+| -------- | -------------------------------------------------- | ------------ |
+| `public` | `mark_order_conversation_read`                     | chat         |
+| `public` | `ensure_order_conversation`                        | chat         |
+| `public` | `get_client_order_chat_unread_counts`              | chat         |
+| `public` | `get_order_delivery_pin`                           | entrega      |
+| `public` | `get_site_order_status`                            | programación |
+| `public` | `get_order_delivery_slots`                         | programación |
+| `public` | `create_gift_aware_scheduled_order_checkout_draft` | checkout     |
+
+Resultado:
+
+```text
+PASS_RPC_USAGE_IDENTITIES = 12
+PUBLIC = 7
+CLUB = 4
+PASS = 1
+```
+
+#### 30. Inventario — TALENTO
+
+Snapshot:
+
+```text
+carlosibarraariza/vento-talento
+dd39071daf587e3f006df62b646f8ad4b1b8de2c
+```
+
+| Esquema  | RPC                      | Familia          |
+| -------- | ------------------------ | ---------------- |
+| `public` | `bootstrap_my_candidate` | candidato/perfil |
+| `public` | `submit_application`     | postulaciones    |
+| `public` | `respond_to_offer`       | oferta           |
+| `public` | `confirm_interview`      | entrevista       |
+
+Resultado:
+
+```text
+TALENTO_RPC_USAGE_IDENTITIES = 4
+```
+
+Las tablas principales del dominio se consultan mediante esquema `talento`, pero las cuatro invocaciones RPC observadas usan el cliente por defecto y por ello se registran en `public`.
+
+#### 31. Repositorios sin RPC observada
+
+En los snapshots declarados no se detecta consumo `.rpc(...)` runtime en:
+
+```text
+vento-group-sas/vento-numera
+carlosibarraariza/Vento-Group
+carlosibarraariza/vento-vital
+```
+
+La declaración significa:
+
+```text
+NO RPC OBSERVADA EN EL SNAPSHOT
+```
+
+y no:
+
+```text
+NO EXISTEN FUNCIONES SQL
+NO EXISTIRÁN RPC
+NO EXISTEN SUPERFICIES DE SERVIDOR
+```
+
+#### 32. Familias funcionales globales
+
+Las 100 identidades globales cubren, entre otras, estas familias:
+
+```text
+AUTHORIZATION_CONTEXT
+SHARED_DEVICE
+NAVIGATION_REGISTRY
+INVENTORY_MASTER
+INVENTORY_STOCK
+INVENTORY_COUNT
+REMISSION_LOGISTICS
+PROCUREMENT
+RECIPE_PRODUCTION
+POS_ORDER_OPERATIONS
+POS_CHAT
+POS_SALES_IMPORT
+DELIVERY
+LOYALTY
+ATTENDANCE
+EMPLOYEE_IDENTITY
+CLUB_MEMBERSHIP
+PASS_POINTS
+TALENTO_CANDIDATE
+TALENTO_APPLICATION
+PAYMENT_CHECKOUT
+PAYMENT_WEBHOOK
+PRIVACY_DELETION
+```
+
+La familia es clasificación descriptiva, no parte de la identidad.
+
+#### 33. Caller context
+
+El inventario observa RPC consumidas desde:
+
+```text
+BROWSER_CLIENT
+MOBILE_CLIENT
+SERVER_COMPONENT
+SERVER_ACTION
+API_ROUTE
+EDGE_FUNCTION_USER_CONTEXT
+EDGE_FUNCTION_SERVICE_ROLE
+SCRIPT_OR_SHARED_PACKAGE
+```
+
+La misma RPC puede aparecer en más de un tipo de caller.
+
+El caller efectivo deberá revalidarse por unidad en la futura materialización.
+
+#### 34. Relación con `AUTH-SRV-001`
+
+Una Server Action puede invocar una RPC.
+
+Se conserva:
+
+```text
+server_action_identity
+→ rpc_contract_identity
+```
+
+sin fusionar ambas identidades.
+
+Una corrección futura de la RPC no elimina la necesidad de revisar la Server Action que la consume.
+
+Una corrección futura de la Server Action no demuestra que la RPC sea segura para otros callers.
+
+#### 35. Relación con `AUTH-SRV-002`
+
+Una API route puede invocar una RPC.
+
+Se conserva:
+
+```text
+api_route_identity
+→ rpc_contract_identity
+```
+
+El método/ruta HTTP continúa siendo responsabilidad de `AUTH-SRV-002`.
+
+El contrato PostgreSQL continúa siendo responsabilidad de `AUTH-SRV-003` y del endurecimiento posterior.
+
+#### 36. Frontera de privilegio
+
+Se observan callers con diferencias relevantes:
+
+```text
+anon/user JWT
+authenticated browser/mobile session
+server session
+admin client
+service role
+worker secret + service role
+```
+
+Por tanto:
+
+```text
+MISMA RPC
++ CALLER DISTINTO
+≠
+MISMO RIESGO
+```
+
+La futura revisión deberá demostrar, cuando aplique:
+
+- identidad del caller;
+- rol PostgreSQL efectivo;
+- grants;
+- RLS aplicable o bypass;
+- `SECURITY DEFINER`;
+- `search_path`;
+- validación de argumentos;
+- validación territorial;
+- auditoría;
+- tratamiento de errores.
+
+#### 37. Materialización futura
+
+Cada unidad futura utiliza:
+
+```text
+AUTH-SRV-003::<implementation_unit_id>
+```
+
+con lineage mínimo:
+
+```text
+implementation_unit_id
+repository
+commit_before
+rpc_schema
+rpc_name
+caller_context[]
+source_path[]
+package_id[]
+argument_shape_before
+control_before
+privilege_before
+decision
+change_set
+evidence
+commit_after
+```
+
+Varios paquetes pueden consumir la misma unidad sin duplicar implementación.
+
+#### 38. Criterios de aceptación
+
+`AUTH-SRV-003` se considera documentalmente completa cuando:
+
+1. los 12 repositorios del baseline están reconciliados;
+2. cada uso RPC detectado conserva repositorio y snapshot;
+3. el esquema forma parte de la identidad;
+4. los esquemas `club` y `pass` no se aplastan a `public`;
+5. los 125 usos por repositorio reconcilian con 100 contratos globales;
+6. las 25 repeticiones cross-repository están explicadas;
+7. Server Actions, API routes, Edge Functions y triggers no se confunden con RPC;
+8. los tres repositorios sin consumo detectado se declaran como ausencia observada y no como inexistencia absoluta;
+9. no se declara aprobación de seguridad a partir del inventario;
+10. la materialización futura queda gobernada por `implementation_unit_id`;
+11. no se crean cambios físicos;
+12. no se crean ni modifican requisitos de prueba.
+
+#### 39. Límites
+
+Este marcador no certifica:
+
+- existencia actual de cada definición en producción;
+- firma SQL exacta;
+- tipos PostgreSQL exactos;
+- overloads;
+- ownership;
+- `GRANT`;
+- `REVOKE`;
+- `SECURITY INVOKER`;
+- `SECURITY DEFINER`;
+- `search_path`;
+- RLS;
+- exposición PostgREST efectiva;
+- compatibilidad entre ambientes;
+- idempotencia;
+- atomicidad;
+- performance;
+- auditoría suficiente;
+- protección territorial;
+- protección frente a clientes manipulados.
+
+Esas propiedades requieren inspección DDL, configuración y ejecución en tareas posteriores.
+
+#### 40. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                     |
+| --------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | no se ejecutó build durante la auditoría documental de solo lectura                                                                                                                           |
+| LOCAL     | `NOT_EXECUTED`   | no se ejecutaron comandos locales ni se modificó el checkout                                                                                                                                  |
+| REMOTA    | `PASS`           | se inspeccionaron fuentes canónicas y callsites de los snapshots mediante acceso GitHub de solo lectura; la reconciliación identifica 125 relaciones repositorio↔RPC y 100 contratos globales |
+| OPERATIVA | `NOT_APPLICABLE` | la tarea no materializa ni opera RPC                                                                                                                                                          |
+| FÍSICA    | `NOT_APPLICABLE` | no existe instancia física activa ni cambios físicos autorizados                                                                                                                              |
+
+#### 41. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+La tarea establece inventario e identidad documental.
+
+No modifica el registro `04A`.
+
+La evaluación de seguridad, autorización, territorio, errores y auditoría se deriva a las tareas posteriores del Bloque J y a sus futuras unidades de implementación.
 
 ### Package VISO mensual
 
 `AUTH-SRV-001` registra `createMonthlyShiftsAction`, `deleteMonthlyDraftShiftAction`, `deleteMonthlyDraftsAction` y `publishMonthAction`, con entradas, tablas, cliente, acceso, mutación, revalidación, auditoría y error.
 
 `AUTH-SRV-002` confirma que no hay API route nueva. `AUTH-SRV-003` no clasifica el trigger como RPC.
+
+---
+
+#### 42. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SRV-002 — Inventariar API routes`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SRV-003 — Inventariar RPC utilizadas`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SRV-004 — Eliminar confianza exclusiva en la interfaz`
