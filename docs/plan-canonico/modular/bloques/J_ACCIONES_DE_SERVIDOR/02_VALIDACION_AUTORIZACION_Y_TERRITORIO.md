@@ -4319,7 +4319,1041 @@ Estas referencias son trazabilidad heredada y no representan requisitos creados 
 `AUTH-SRV-008 — Validar turno cuando corresponda`
 
 
-### [ ] AUTH-SRV-008 — Validar turno cuando corresponda
+### ✅ AUTH-SRV-008 — Validar turno cuando corresponda
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-SRV-007 — Validar área en cada escritura
+**Tarea siguiente:** AUTH-SRV-009 — Validar rol operativo cuando corresponda
+**Tipo de tarea:** Contrato global con materialización por unidad (`PER_IMPLEMENTATION_UNIT`) — contrato de prerrequisito laboral para que toda escritura protegida clasifique en servidor si su capacidad es administrativa u operativa, exija turno publicado y vigente únicamente cuando el contrato de autorización lo requiera, resuelva ese turno desde fuentes canónicas, valide su compatibilidad con actor, sede y área ya resueltas y falle cerrado ante ausencia, expiración, cancelación, ambigüedad o contexto laboral incompatible
+**Bloque:** BLOQUE J — Protección de acciones de servidor
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global; las futuras materializaciones ocurren únicamente mediante `AUTH-SRV-008::<implementation_unit_id>` después de que `DELIV-PKG-025::<package_id>` asigne la unidad y el paquete propietario supere `E5-GATE-008::<package_id>`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato obligatorio para que cada escritura protegida determine, en servidor, si necesita contexto laboral de turno y, cuando lo necesite, cuál turno satisface realmente la operación.
+
+La regla principal queda:
+
+```text
+administrative_capability
+→ shift_not_required_unless_explicitly_declared
+
+operational_capability
+→ published_valid_shift_required
+```
+
+La existencia de sesión, permiso, sede o área no crea por sí sola un turno válido.
+
+#### 2. Handoff recibido de `AUTH-SRV-007`
+
+La tarea anterior entrega como mínimo:
+
+```text
+required_permission_key
+validated_target_site_id
+area_requirement
+target_area_id
+area_authorization_result
+```
+
+`AUTH-SRV-008` añade:
+
+```text
+authorization_mode
+shift_requirement
+effective_shift_id
+shift_publication_status
+shift_temporal_status
+shift_site_id
+shift_area_id
+shift_resolution_result
+active_attendance_requirement
+```
+
+No reabre la sede ni el área ya resueltas.
+
+#### 3. Pregunta contractual propietaria
+
+Esta tarea responde:
+
+```text
+¿ESTA ESCRITURA NECESITA TURNO?
+```
+
+y, si la respuesta es sí:
+
+```text
+¿QUÉ TURNO PUBLICADO Y VIGENTE CORRESPONDE AL ACTOR Y AL TERRITORIO EFECTIVO?
+```
+
+No decide todavía qué rol operativo exacto queda habilitado.
+
+Esa responsabilidad permanece en `AUTH-SRV-009`.
+
+#### 4. Separación administrativa y operativa
+
+Toda superficie mutante deberá quedar clasificada como mínimo en uno de estos carriles:
+
+```text
+ADMINISTRATIVE
+OPERATIONAL
+```
+
+La clasificación procede del contrato canónico de la capacidad y no de:
+
+- la aplicación visible;
+- la pantalla;
+- el nombre del rol base;
+- el dispositivo;
+- la existencia de un turno;
+- la intención del cliente.
+
+#### 5. Regla para capacidades administrativas
+
+Cuando el contrato de la capacidad sea administrativo:
+
+```text
+authorization_mode = ADMINISTRATIVE
+```
+
+la escritura no exigirá automáticamente:
+
+```text
+shift
+check_in
+operational_role
+```
+
+siempre que el contrato de la propia capacidad no establezca un prerrequisito laboral especial.
+
+Administrar programación, perfiles, permisos o configuraciones desde un carril administrativo no se convierte en operación por tocar recursos laborales.
+
+#### 6. Regla para capacidades operativas
+
+Cuando el contrato de la capacidad sea operativo:
+
+```text
+authorization_mode = OPERATIONAL
+```
+
+deberá existir un turno canónico que sea, como mínimo:
+
+```text
+published
+not_cancelled
+temporally_applicable
+owned_by_effective_actor
+compatible_with_validated_site
+compatible_with_target_area_when_required
+```
+
+Sin ese turno:
+
+```text
+DENY
+```
+
+#### 7. Fuente canónica del turno
+
+La fuente de verdad laboral es:
+
+```text
+public.employee_shifts
+```
+
+El turno no se deriva de:
+
+- horario mostrado en UI;
+- selected site;
+- selected area;
+- rol base;
+- employee_sites;
+- employee_areas;
+- check-in aislado;
+- dispositivo;
+- cookie;
+- parámetro cliente.
+
+#### 8. Turno publicado
+
+Un turno utilizable para autorización operativa debe ser un turno publicado conforme al modelo canónico.
+
+Un borrador o turno todavía no publicado no establece contexto operativo.
+
+La regla es:
+
+```text
+draft_shift
+→ NOT_OPERATIONAL_AUTHORITY
+```
+
+#### 9. Publicación no equivale a activación
+
+Un turno publicado puede ser válido como asignación oficial sin estar todavía activo en el tiempo.
+
+Se mantiene:
+
+```text
+PUBLISHED
+≠
+CURRENTLY_ACTIVE
+```
+
+La autorización de una acción operativa exige además que el turno sea temporalmente aplicable.
+
+#### 10. Vigencia temporal
+
+La evaluación debe comprobar que el instante autoritativo de la acción pertenece al intervalo del turno según la política temporal vigente.
+
+No se utiliza como autoridad:
+
+- hora del navegador;
+- timestamp construido por cliente;
+- zona horaria elegida en UI.
+
+La fuente temporal debe ser server-side y coherente con la zona horaria contractual del turno.
+
+#### 11. Turnos que cruzan medianoche
+
+Un turno que cruza medianoche debe evaluarse mediante un intervalo temporal inequívoco.
+
+No puede decidirse únicamente comparando:
+
+```text
+HH:mm
+```
+
+sin fecha y contexto temporal.
+
+La futura unidad debe preservar correctamente fecha de inicio, fecha efectiva de fin y zona horaria aplicable.
+
+#### 12. Confirmación del trabajador
+
+La confirmación del empleado no es requisito de autorización.
+
+Se conserva:
+
+```text
+published_shift
++
+employee_not_confirmed
+=
+shift_still_valid_when_other_conditions_hold
+```
+
+La confirmación, si existe, es informativa y no crea ni retira autoridad.
+
+#### 13. Turno cancelado
+
+Un turno cancelado no puede satisfacer contexto operativo.
+
+```text
+cancelled_shift
+→ DENY
+```
+
+El histórico puede conservarse, pero deja de participar en la decisión operativa.
+
+#### 14. Turno retirado o republicado
+
+Si un turno previamente publicado cambia de forma material, su versión anterior no puede continuar autorizando silenciosamente.
+
+La futura materialización deberá resolver la versión vigente del turno y respetar la republicación o retiro aplicable.
+
+#### 15. Actor efectivo
+
+El turno exigido por una capacidad operativa pertenece al:
+
+```text
+effective_actor
+```
+
+No necesariamente al principal técnico, al usuario administrativo autenticado o al trabajador objetivo de la operación.
+
+La identidad laboral debe quedar alineada antes de aceptar el turno.
+
+#### 16. Actor y trabajador objetivo
+
+En una operación administrativa sobre la programación de otra persona:
+
+```text
+ACTOR
+→ administrador que ejecuta
+
+TARGET EMPLOYEE
+→ trabajador cuyo turno se crea o modifica
+```
+
+El turno del trabajador objetivo es el recurso administrado.
+
+No es un prerrequisito de turno para el actor administrativo.
+
+#### 17. Turno del recurso no equivale a turno del actor
+
+Una escritura puede operar sobre un objeto `employee_shift` sin que eso implique:
+
+```text
+actor must have own active shift
+```
+
+La necesidad de turno depende del modo de autorización de la capacidad.
+
+No del tipo de tabla modificada.
+
+#### 18. Compatibilidad con sede
+
+Para un carril operativo:
+
+```text
+effective_shift.site_id
+=
+validated_target_site_id
+```
+
+cuando la acción está territorialmente ligada a esa sede.
+
+Una discrepancia produce:
+
+```text
+OPERATIONAL_SHIFT_SITE_MISMATCH
+→ DENY
+```
+
+No se cambia la sede efectiva para adaptarla al turno.
+
+#### 19. Compatibilidad con área
+
+Cuando la capacidad requiere área:
+
+```text
+effective_shift.area_id
+=
+target_area_id
+```
+
+salvo una semántica site-wide explícita ya permitida por `AUTH-SRV-007`.
+
+Una discrepancia no se corrige usando el área seleccionada ni la del dispositivo.
+
+#### 20. Turno sin área
+
+Un turno con:
+
+```text
+area_id = null
+```
+
+puede ser legítimo únicamente cuando el contrato operacional admite contexto site-wide.
+
+No significa:
+
+```text
+all areas
+```
+
+Si la capacidad exige área específica:
+
+```text
+shift.area_id = null
+→ DENY
+```
+
+#### 21. Turno y rol operativo
+
+Un turno laboral puede contener:
+
+```text
+operational_role
+```
+
+pero `AUTH-SRV-008` solo conserva ese dato como salida de contexto.
+
+No certifica que el rol:
+
+- exista;
+- esté activo;
+- esté habilitado en la sede;
+- esté habilitado en el área;
+- posea la capacidad requerida.
+
+La evaluación del rol pertenece a `AUTH-SRV-009`.
+
+#### 22. Ambigüedad entre turnos
+
+Si más de un turno laboral puede satisfacer simultáneamente el mismo contexto operativo y la regla canónica no puede resolver uno de forma inequívoca:
+
+```text
+MULTIPLE_ELIGIBLE_SHIFTS
+→ DENY
+```
+
+No se elige:
+
+- el primero;
+- el más reciente;
+- el más largo;
+- el turno de la sede seleccionada;
+
+por inferencia.
+
+#### 23. Solapamiento
+
+El modelo operativo no debe depender de turnos laborales publicados solapados para el mismo actor cuando puedan crear dos contextos simultáneos incompatibles.
+
+La futura unidad debe detectar el caso o consumir una garantía canónica que lo impida.
+
+La existencia de dos candidatos no se interpreta como unión de autoridad.
+
+#### 24. Descanso
+
+Un bloque o turno de descanso no crea contexto operacional activo.
+
+```text
+published_rest
+→ NO_OPERATIONAL_AUTHORITY
+```
+
+Puede ser un recurso laboral válido para planificación, pero no habilita acciones operativas.
+
+#### 25. Turno futuro
+
+Un turno publicado cuyo intervalo todavía no ha comenzado:
+
+```text
+FUTURE_SHIFT
+→ NO_CURRENT_OPERATIONAL_AUTHORITY
+```
+
+No concede permisos anticipados.
+
+#### 26. Turno expirado
+
+Un turno cuyo intervalo ya finalizó:
+
+```text
+EXPIRED_SHIFT
+→ NO_CURRENT_OPERATIONAL_AUTHORITY
+```
+
+No conserva autoridad por caché ni por haber sido válido minutos antes.
+
+#### 27. Publicación tardía
+
+Publicar un turno después de que parte de su intervalo haya transcurrido no crea autoridad retroactiva para acciones anteriores.
+
+La autorización solo puede evaluarse con el estado vigente al momento autoritativo de la acción.
+
+#### 28. Cambio durante una sesión
+
+Si el turno cambia, se cancela, expira o deja de ser compatible con sede o área:
+
+```text
+previous_operational_context
+→ STALE
+```
+
+Las decisiones cacheadas no pueden continuar ejecutando mutaciones con la autoridad anterior.
+
+La invalidación física completa conserva su owner de contexto/frescura.
+
+#### 29. Relación con check-in
+
+El modelo canónico diferencia:
+
+```text
+published_shift
+≠
+active_check_in
+```
+
+Para capacidades operativas ordinarias, el contexto operativo completo requiere además un check-in activo cuando el contrato así lo define.
+
+`AUTH-SRV-008` debe distinguir:
+
+```text
+shift_valid
+active_attendance_required
+active_attendance_present
+```
+
+sin convertir un evento de asistencia aislado en fuente del turno.
+
+#### 30. Check-in nunca crea turno
+
+Se conserva:
+
+```text
+check_in
++
+missing_valid_published_shift
+=
+DENY
+```
+
+El check-in es evidencia laboral subordinada a un turno válido.
+
+No puede reconstruir por sí solo sede, área, rol o intervalo operativo.
+
+#### 31. Check-in confirmado
+
+Cuando se exige contexto operativo activo, el check-in debe estar confirmado y persistido en la fuente canónica.
+
+Un evento:
+
+```text
+pending
+offline_only
+client_local
+unconfirmed
+```
+
+no satisface el gate de operación.
+
+#### 32. Check-out
+
+Un check-out que cierra la sesión laboral elimina la condición de contexto activo para operaciones posteriores que lo exijan.
+
+```text
+checked_out
+→ active_attendance_present = false
+```
+
+No borra el histórico del turno ni la asistencia.
+
+#### 33. Capacidad operativa sin check-in exigible
+
+Si una capacidad específica estuviera canónicamente clasificada como operativa pero su contrato permitiera ejecución con turno publicado vigente sin check-in, esa excepción deberá estar declarada expresamente.
+
+No puede inferirse por aplicación, rol o conveniencia.
+
+La modalidad por defecto no degrada el requisito de contexto.
+
+#### 34. Acción administrativa durante un turno
+
+La existencia de un turno activo no transforma una capacidad administrativa en operativa.
+
+Un administrador puede continuar usando una capacidad administrativa bajo su contrato administrativo aunque además tenga un turno activo.
+
+El turno no amplía la capacidad.
+
+#### 35. Acción operativa de un administrador
+
+Un actor con rol administrativo que intente ejecutar una capacidad operativa deberá satisfacer el mismo contexto operativo que cualquier otro actor.
+
+El nombre del rol base no constituye bypass.
+
+#### 36. Permiso global y turno
+
+Un permiso administrativo global puede operar sin turno cuando su contrato lo permita.
+
+Un permiso operativo no se vuelve independiente del turno por tener alcance territorial global.
+
+Se mantiene:
+
+```text
+global_scope
+≠
+operational_context_bypass
+```
+
+#### 37. Service role
+
+Un proceso técnico legítimo puede operar sin un turno humano únicamente cuando la capacidad esté diseñada expresamente para un principal técnico o proceso de sistema.
+
+El uso de:
+
+```text
+service role
+admin client
+```
+
+por sí solo no crea esa excepción.
+
+#### 38. Server Actions
+
+Una Server Action operativa deberá demostrar:
+
+```text
+effective_actor
+→ classify capability
+→ resolve published shift when required
+→ validate temporal applicability
+→ validate site
+→ validate area when required
+→ validate active attendance when required
+→ remaining gates
+→ effect
+```
+
+La existencia de un botón visible durante la jornada no sustituye el gate.
+
+#### 39. API routes
+
+Una API mutante debe ignorar como autoridad cualquier:
+
+```text
+shiftId
+shift_id
+activeShift
+isOnShift
+```
+
+enviado desde cliente.
+
+Puede aceptar un `shift_id` como selector únicamente si lo resuelve y valida contra el actor y el territorio canónicos.
+
+#### 40. RPC
+
+Una RPC operativa debe recibir o reconstruir un contexto de turno ya validado cuando su diseño lo requiera.
+
+Si puede invocarse directamente por un caller no privilegiado, su protección interna debe preservar la misma semántica de turno.
+
+La revisión de grants, RLS y `SECURITY DEFINER` permanece en los owners de base de datos.
+
+#### 41. Operaciones offline
+
+Una acción capturada offline no conserva automáticamente la autoridad que existía al momento de captura.
+
+Al sincronizar deberá reautorizarse contra el estado aplicable y la política de temporalidad/idempotencia correspondiente.
+
+No se ejecuta únicamente porque el turno estaba activo cuando se originó localmente.
+
+#### 42. Jobs y procesos asíncronos
+
+Un job que ejecuta posteriormente una intención originada por un actor no debe reutilizar ciegamente un contexto laboral expirado.
+
+La unidad propietaria deberá clasificar si:
+
+- reautoriza al ejecutar;
+- usa una autorización durable explícita;
+- actúa como proceso técnico con contrato propio.
+
+No se inventa continuidad del turno.
+
+#### 43. Handoff a `AUTH-SRV-009`
+
+`AUTH-SRV-008` entrega:
+
+```text
+authorization_mode
+shift_requirement
+effective_shift_id
+shift_site_id
+shift_area_id
+shift_operational_role
+shift_resolution_result
+active_attendance_requirement
+active_attendance_result
+```
+
+`AUTH-SRV-009` valida el rol operativo efectivo y su habilitación territorial.
+
+#### 44. Handoff a `AUTH-SRV-010`
+
+Si la acción ocurre desde dispositivo compartido, `AUTH-SRV-010` deberá intersectar el contexto laboral ya resuelto con:
+
+```text
+device identity
+device site
+device area policy
+device permission ceiling
+actor session
+```
+
+El dispositivo no crea turno ni check-in.
+
+#### 45. Handoff a `AUTH-SRV-011`
+
+Un turno válido no demuestra que el recurso objetivo esté en un estado mutable.
+
+Draft, publicado, cancelado, reservado, procesado u otras transiciones del recurso siguen bajo `AUTH-SRV-011`.
+
+#### 46. Handoff a `AUTH-SRV-012` y `AUTH-SRV-013`
+
+El turno aporta una sede y, cuando corresponda, un área operativas.
+
+No concede capacidad de cruzar territorios.
+
+Si el efecto toca otra sede o área, debe pasar por los gates de `AUTH-SRV-012` o `AUTH-SRV-013`.
+
+#### 47. Baseline VISO mensual
+
+Se conserva el snapshot:
+
+```text
+vento-group-sas/vento-viso
+8cf7c49a593c748cb6c99dd9b919b6947bcfec14
+```
+
+Superficies relevantes:
+
+```text
+src/app/staff/schedule/month/actions.ts
+src/app/staff/schedule/month/block-actions.ts
+src/app/api/viso/staff-schedule-shifts/route.ts
+src/lib/auth/guard.ts
+src/lib/auth/operational-session.ts
+```
+
+#### 48. VISO mensual — clasificación del carril
+
+Las acciones de administración de horarios:
+
+```text
+createMonthlyShiftsAction
+createMonthlyScheduleBlocksAction
+deleteMonthlyDraftShiftAction
+deleteMonthlyDraftsAction
+publishMonthAction
+POST /api/viso/staff-schedule-shifts
+DELETE /api/viso/staff-schedule-shifts
+```
+
+administran recursos de programación.
+
+Su mera relación con `employee_shifts` no convierte al actor administrador en actor operativo.
+
+La futura materialización debe enlazar cada escritura con su permiso exacto de `AUTH-SRV-005` y clasificar su `authorization_mode` desde ese contrato.
+
+#### 49. VISO mensual — no exigir turno al administrador por inferencia
+
+Para una escritura administrativa de programación válida:
+
+```text
+ADMINISTRATIVE
++
+exact administrative permission
++
+authorized site/area
+=
+NO ACTOR SHIFT REQUIRED
+```
+
+Exigir al gerente o supervisor estar actualmente en turno únicamente por editar horarios sería un bloqueo incorrecto.
+
+#### 50. VISO mensual — trabajador objetivo
+
+El turno que se crea, actualiza, publica o elimina pertenece al trabajador objetivo.
+
+Ese turno debe cumplir las reglas propias del recurso laboral.
+
+Pero no puede reutilizarse como evidencia de que el actor administrativo está autorizado.
+
+#### 51. VISO baseline — `resolveOperationalSession`
+
+El resolver auditado construye actualmente `OperationalSession` a partir de:
+
+- usuario;
+- dispositivo compartido;
+- sede preferida o asignada;
+- área preferida;
+- rol base o `navigation_role`.
+
+No resuelve un `employee_shift` activo para el actor.
+
+Por tanto:
+
+```text
+OperationalSession
+≠
+validated shift context
+```
+
+en el snapshot auditado.
+
+#### 52. VISO baseline — guard
+
+`requireAppAccess` consume el `OperationalSession` y evalúa permisos usando sede y área.
+
+El guard auditado no demuestra por sí solo:
+
+```text
+published active shift
+active check-in
+```
+
+para una capacidad que los exija.
+
+Ese comportamiento se clasifica:
+
+```text
+CONTROL_EXISTENTE_REQUIERE_SHIFT_GATE
+```
+
+cuando la superficie sea operativa.
+
+#### 53. VISO baseline — API rápida
+
+La API rápida de programación puede crear o actualizar turnos administrativos sin resolver un turno activo del actor.
+
+Eso es correcto únicamente si el permiso de modificación de horarios queda clasificado como administrativo.
+
+No debe utilizarse como patrón para acciones operativas de NEXO, FOGO, ORIGO, PULSO u otras superficies.
+
+#### 54. VISO baseline — publicación
+
+`publishMonthAction` publica recursos de turno de terceros dentro de un carril administrativo de planificación.
+
+La publicación no crea un turno activo del actor administrador.
+
+Tampoco debe depender de que ese administrador tenga check-in.
+
+#### 55. VISO baseline — `employee_shifts` como recurso y contexto
+
+La misma tabla puede aparecer en dos papeles diferentes:
+
+```text
+A. resource being administered
+B. source of operational context
+```
+
+La futura implementación debe distinguirlos explícitamente.
+
+No se acepta una función que trate cualquier lectura de `employee_shifts` como autorización del caller.
+
+#### 56. Brecha contractual del baseline
+
+El snapshot VISO confirma:
+
+- soporte de permisos con sede y área;
+- modelo de `OperationalSession`;
+- administración de turnos;
+- lectura y persistencia de campos de turno.
+
+No demuestra todavía:
+
+- clasificación física de permisos entre administrativos y operativos en cada superficie;
+- resolución server-side de un turno publicado vigente del actor operativo;
+- verificación de check-in activo como parte del contexto cuando aplique;
+- invalidación inmediata de contexto por expiración, cancelación o cambio de turno.
+
+Estas brechas pertenecen a futuras unidades `AUTH-SRV-008::<implementation_unit_id>` y a los owners de contexto/frescura que correspondan.
+
+#### 57. Evaluación fail-closed
+
+Cuando una capacidad exija turno, cualquiera de estos estados bloquea:
+
+```text
+shift_required_but_missing
+shift_not_published
+shift_cancelled
+shift_not_yet_active
+shift_expired
+shift_actor_mismatch
+shift_site_mismatch
+shift_area_mismatch
+shift_ambiguous
+shift_resolution_failed
+active_attendance_required_but_missing
+active_attendance_closed
+active_attendance_unconfirmed
+```
+
+Un fallo técnico de resolución no se degrada a “sin turno” ni a autorización permisiva.
+
+#### 58. Lineage obligatorio
+
+Cada futura unidad deberá conservar:
+
+```text
+surface_identity
+→ required_permission_key
+→ authorization_mode
+→ shift_requirement
+→ effective_actor
+→ candidate_shift_set
+→ effective_shift_id
+→ publication_state
+→ temporal_interval
+→ validated_target_site_id
+→ target_area_id
+→ shift_site_id
+→ shift_area_id
+→ active_attendance_requirement
+→ active_attendance_result
+→ shift_resolution_result
+→ downstream role/device/state/cross-territory gates
+→ effect
+```
+
+#### 59. Materialización futura
+
+Cada instancia:
+
+```text
+AUTH-SRV-008::<implementation_unit_id>
+```
+
+deberá registrar como mínimo:
+
+```text
+implementation_unit_id
+repository
+commit_before
+surface_identity[]
+write_operation[]
+required_permission_key[]
+authorization_mode
+shift_requirement
+effective_actor_source
+shift_source
+candidate_shift_resolution
+effective_shift_id
+publication_rule
+temporal_rule
+timezone_rule
+shift_site_id
+shift_area_id
+shift_operational_role
+active_attendance_requirement
+attendance_source
+ambiguity_policy
+privileged_client_usage
+offline_or_async_mode
+package_id[]
+change_set
+rollback
+validation_commands
+evidence
+commit_after
+```
+
+#### 60. Evidencia mínima de una futura unidad
+
+La materialización deberá demostrar, cuando aplique:
+
+1. capacidad administrativa válida funciona sin turno;
+2. capacidad operativa sin turno → deny;
+3. borrador → deny para contexto operativo;
+4. turno cancelado → deny;
+5. turno futuro → deny;
+6. turno expirado → deny;
+7. turno de otro actor → deny;
+8. turno de otra sede → deny;
+9. turno de otra área cuando área es obligatoria → deny;
+10. descanso no crea contexto operativo;
+11. confirmación del empleado no se exige;
+12. dos turnos elegibles ambiguos → deny;
+13. turno cross-midnight se evalúa con intervalo inequívoco;
+14. check-in aislado no crea turno;
+15. check-in pendiente/offline no activa operación;
+16. check-out retira contexto activo cuando corresponde;
+17. rol administrativo no bypassa el turno de una acción operativa;
+18. permiso global no bypassa el turno operativo;
+19. admin/service role no crea excepción humana implícita;
+20. llamada directa obtiene la misma decisión que la interfaz;
+21. acción offline se reautoriza antes del efecto;
+22. cambio o expiración invalida contexto previo.
+
+#### 61. Rollback
+
+El rollback de una futura unidad deberá restaurar únicamente el mecanismo técnico anterior sin:
+
+- convertir turnos draft en contexto operativo;
+- reintroducir confirmación del empleado como requisito;
+- convertir check-in en fuente de turno;
+- permitir permisos operativos sin contexto laboral;
+- exigir turno a capacidades administrativas por defecto;
+- crear fallbacks por sede o área seleccionadas;
+- aceptar varios turnos ambiguos;
+- conservar autoridad después de cancelación, expiración o check-out;
+- borrar histórico laboral o de asistencia.
+
+#### 62. Criterios de aceptación
+
+`AUTH-SRV-008` queda documentalmente satisfecha cuando:
+
+1. toda escritura protegida clasifica su modo administrativo u operativo desde el contrato de capacidad;
+2. una capacidad administrativa no exige turno por inferencia;
+3. una capacidad operativa exige turno publicado y vigente;
+4. `public.employee_shifts` queda como fuente canónica del turno;
+5. el turno corresponde al actor efectivo;
+6. sede y área del turno son compatibles con el territorio ya resuelto;
+7. descanso, borrador, turno futuro, expirado o cancelado no crean contexto operativo;
+8. la confirmación del trabajador permanece fuera de la autorización;
+9. la ambigüedad entre turnos falla cerrado;
+10. los turnos cross-midnight se evalúan con intervalo inequívoco;
+11. check-in permanece subordinado al turno y no lo sustituye;
+12. el contexto de asistencia activo se exige cuando el contrato operativo lo requiera;
+13. check-out y expiración eliminan contexto activo;
+14. un permiso global no omite el turno operativo;
+15. un rol administrativo no omite el turno cuando ejecuta una capacidad operativa;
+16. procesos técnicos solo omiten turno mediante contrato explícito;
+17. VISO mensual queda clasificado como administración de programación y no como operación del actor por el mero uso de `employee_shifts`;
+18. el baseline VISO deja identificada la ausencia de resolución de turno activo en `OperationalSession`;
+19. se preservan handoffs a rol, dispositivo, estado y cruces territoriales;
+20. no se autorizan cambios físicos desde el marcador global;
+21. no se crean ni modifican requisitos de prueba.
+
+#### 63. Límites
+
+Este marcador no certifica todavía:
+
+- rol operativo válido;
+- habilitación del rol en sede o área;
+- identidad o techo de dispositivo compartido;
+- estado mutable del recurso;
+- operación cross-site;
+- operación cross-area;
+- auditoría completa;
+- invalidación física de cachés;
+- fingerprint de contexto;
+- RLS;
+- grants;
+- `SECURITY DEFINER`;
+- implementación física del resolver de turno;
+- implementación física del resolver de asistencia;
+- atomicidad;
+- idempotencia;
+- contrato final de errores.
+
+Esas responsabilidades conservan sus owners canónicos.
+
+#### 64. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                          |
+| --------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | `NOT_EXECUTED`   | no se ejecutó build durante el desarrollo documental                                                                                                                                                               |
+| LOCAL     | `NOT_EXECUTED`   | no se ejecutaron comandos contra el checkout del usuario                                                                                                                                                           |
+| REMOTA    | `PASS`           | se auditaron en solo lectura la continuidad vigente, la topología del Bloque J, el owner de `AUTH-SRV-008`, el modelo canónico de turno publicado y check-in, el registro 04A relevante y el snapshot VISO mensual |
+| OPERATIVA | `NOT_APPLICABLE` | el marcador no cambia operación real                                                                                                                                                                               |
+| FÍSICA    | `NOT_APPLICABLE` | no existe instancia física autorizada para esta tarea                                                                                                                                                              |
+
+#### 65. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** la separación entre capacidades administrativas y operativas, el requisito de turno publicado y vigente, el check-in activo cuando corresponde, la compatibilidad territorial y la invalidación de contexto laboral ya disponen de cobertura canónica vigente. `AUTH-SRV-008` especifica el contrato de enforcement que consumirán esas pruebas y no introduce una obligación verificable sin cobertura existente.
+
+#### 66. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificar el registro vigente:
+
+- `TREQ-AUTH-008` — las capacidades administrativas pueden operar sin turno/check-in cuando su contrato lo permite y las operativas exigen turno publicado y vigente, check-in activo, rol operativo efectivo y compatibilidad territorial;
+- `TREQ-AUTH-009` — sede y área efectivas se resuelven de forma determinista también desde turno y check-in;
+- `TREQ-AUTH-013` — cada mutación valida en servidor el contexto requerido antes de producir efectos;
+- `TREQ-AUTH-014` — cambio de turno, check-out, expiración o cambio territorial invalidan contexto, cachés y autoridad derivada.
+
+Estas referencias son trazabilidad heredada y no representan requisitos creados o modificados por `AUTH-SRV-008`.
+
+#### 67. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SRV-007 — Validar área en cada escritura`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SRV-008 — Validar turno cuando corresponda`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SRV-009 — Validar rol operativo cuando corresponda`
+
+
 ### [ ] AUTH-SRV-009 — Validar rol operativo cuando corresponda
 ### [ ] AUTH-SRV-010 — Validar dispositivo compartido
 ### [ ] AUTH-SRV-011 — Validar estado actual de la entidad
