@@ -3,8 +3,12 @@ import fs from 'node:fs';
 import test from 'node:test';
 
 import {
+  buildInfraPrBody,
   buildPrBody,
+  classifyInfraPath,
+  classifyPrChecksProbe,
   classifyTaskPath,
+  infraBranchName,
   parsePorcelainPaths,
   parseTaskTreqDeclaration,
   resolveCanonicalOwnerRelativePath,
@@ -43,6 +47,40 @@ test('solo automatiza rutas gobernadas y bloquea archivos ajenos', () => {
   assert.equal(classifyTaskPath('notas-personales.txt'), 'OTHER');
 });
 
+
+test('cambio transversal usa infra/<change-id> y bloquea archivos canonicos de tarea', () => {
+  assert.equal(
+    infraBranchName('task-lifecycle-finish-verification'),
+    'infra/task-lifecycle-finish-verification',
+  );
+  assert.throws(() => infraBranchName('../main'), /CHANGE_ID invalido/u);
+
+  assert.equal(classifyInfraPath('scripts/docs/task-branch-lifecycle.mjs'), 'ALLOWED');
+  assert.equal(classifyInfraPath('scripts/quality/lint-ratchet.mjs'), 'ALLOWED');
+  assert.equal(classifyInfraPath('.github/workflows/vento-required-gate.yml'), 'ALLOWED');
+  assert.equal(classifyInfraPath('package.json'), 'ALLOWED');
+  assert.equal(
+    classifyInfraPath('docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/01_INVENTARIO_DE_SUPERFICIES_DE_SERVIDOR.md'),
+    'OTHER',
+  );
+  assert.equal(classifyInfraPath('src/app/page.tsx'), 'OTHER');
+});
+
+test('PR transversal declara TREQ NONE y enumera solo infraestructura permitida', () => {
+  const body = buildInfraPrBody('task-lifecycle-finish-verification', [
+    'scripts/docs/task-branch-lifecycle.mjs',
+    'package.json',
+  ]);
+  assert.match(body, /^VENTO-TREQ-AFFECTED: NONE$/mu);
+  assert.match(body, /task-lifecycle-finish-verification/u);
+  assert.match(body, /- package\.json/u);
+  assert.match(body, /- scripts\/docs\/task-branch-lifecycle\.mjs/u);
+  assert.throws(
+    () => buildInfraPrBody('bad-scope', ['src/app/page.tsx']),
+    /solo admite infraestructura transversal/u,
+  );
+});
+
 test('deriva NONE cuando la tarea declara cero TREQ', () => {
   const source = `### ✅ AUTH-SRV-001 — Inventariar Server Actions\n\n**Requisitos de prueba creados o modificados:** 0\n\n#### 1. Requisitos de prueba derivados\n\n**Resultado:** NO GENERA REQUISITOS DE PRUEBA\n\n#### 2. Continuidad\n\nTexto\n\n### [ ] AUTH-SRV-002 — Siguiente\n`;
   const declaration = parseTaskTreqDeclaration(source, 'AUTH-SRV-001');
@@ -68,6 +106,91 @@ test('falla cerrado si metadata TREQ y seccion derivada contradicen', () => {
     () => parseTaskTreqDeclaration(source, 'TASK-001'),
     /declara 0 TREQ/u,
   );
+});
+
+test('distingue checks aun no registrados de errores reales de gh', () => {
+  assert.deepEqual(
+    classifyPrChecksProbe({
+      status: 1,
+      stdout: '',
+      stderr: "no checks reported on the 'task/auth-srv-002' branch",
+    }),
+    {
+      state: 'WAIT',
+      count: 0,
+      detail: "no checks reported on the 'task/auth-srv-002' branch",
+    },
+  );
+
+  assert.deepEqual(
+    classifyPrChecksProbe({
+      status: 0,
+      stdout: '[]',
+      stderr: '',
+    }),
+    { state: 'WAIT', count: 0, detail: '' },
+  );
+
+  assert.deepEqual(
+    classifyPrChecksProbe({
+      status: 8,
+      stdout: '[{"name":"VENTO Required Gate","state":"IN_PROGRESS","bucket":"pending","link":"https://example.invalid"}]',
+      stderr: '',
+    }),
+    { state: 'REGISTERED', count: 1, detail: '' },
+  );
+
+  assert.deepEqual(
+    classifyPrChecksProbe({
+      status: 1,
+      stdout: '',
+      stderr: 'HTTP 403: Resource not accessible',
+    }),
+    { state: 'ERROR', count: 0, detail: 'HTTP 403: Resource not accessible' },
+  );
+});
+
+test('finish espera checks antes de watch y verifica el cierre completo antes de PASS', () => {
+  const source = fs.readFileSync('scripts/docs/task-branch-lifecycle.mjs', 'utf8');
+  const registrationCall = source.indexOf('const registeredCheckCount = waitForPrChecksToRegister(root, prNumber);');
+  const watchCall = source.indexOf("'--watch',", registrationCall);
+  const mergeWait = source.indexOf('const merged = waitForPrMerged(root, prNumber, headSha);', watchCall);
+  const ancestorCheck = source.indexOf("['merge-base', '--is-ancestor', headSha, 'HEAD']", mergeWait);
+  const cleanupCall = source.indexOf('const cleanup = cleanupBranch(root, branch);', ancestorCheck);
+  const passOutput = source.indexOf("ESTADO: 'PASS'", cleanupCall);
+
+  assert.ok(registrationCall >= 0);
+  assert.ok(watchCall > registrationCall);
+  assert.ok(mergeWait > watchCall);
+  assert.ok(ancestorCheck > mergeWait);
+  assert.ok(cleanupCall > ancestorCheck);
+  assert.ok(passOutput > cleanupCall);
+  assert.match(source, /HEAD_VALIDATED_IN_MAIN: 'SI'/u);
+  assert.match(source, /CHECKS_REGISTERED: registeredCheckCount/u);
+});
+
+
+test('infra publish usa el mismo cierre fuerte y solo permite PASS al final', () => {
+  const source = fs.readFileSync('scripts/docs/task-branch-lifecycle.mjs', 'utf8');
+  const start = source.indexOf('export function publishInfraChange');
+  const branchCreate = source.indexOf("git(['switch', '-c', branch]", start);
+  const localValidation = source.indexOf('runInfraLocalValidation(root, dirty);', branchCreate);
+  const push = source.indexOf("git(['push', '-u', 'origin', branch]", localValidation);
+  const registration = source.indexOf('const registeredCheckCount = waitForPrChecksToRegister(root, prNumber);', push);
+  const mergeWait = source.indexOf('const merged = waitForPrMerged(root, prNumber, headSha);', registration);
+  const ancestor = source.indexOf("['merge-base', '--is-ancestor', headSha, 'HEAD']", mergeWait);
+  const cleanup = source.indexOf('const cleanup = cleanupBranch(root, branch);', ancestor);
+  const ready = source.indexOf("READY_FOR_NEXT_TASK: 'SI'", cleanup);
+
+  assert.ok(start >= 0);
+  assert.ok(branchCreate > start);
+  assert.ok(localValidation > branchCreate);
+  assert.ok(push > localValidation);
+  assert.ok(registration > push);
+  assert.ok(mergeWait > registration);
+  assert.ok(ancestor > mergeWait);
+  assert.ok(cleanup > ancestor);
+  assert.ok(ready > cleanup);
 });
 
 test('resuelve el owner del preflight dentro de docs/plan-canonico/modular', () => {
@@ -141,7 +264,7 @@ test('el iniciador exige start antes de trabajo y finish antes de siguiente tare
   assert.match(template, /ninguna tarea siguiente puede comenzar/u);
 });
 
-test('package.json expone los dos comandos de ciclo de tarea', () => {
+test('package.json expone ciclo de tarea y publicacion transversal', () => {
   const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
   assert.equal(
     packageJson.scripts['docs:task:start'],
@@ -150,6 +273,10 @@ test('package.json expone los dos comandos de ciclo de tarea', () => {
   assert.equal(
     packageJson.scripts['docs:task:finish'],
     'node scripts/docs/task-branch-lifecycle.mjs finish',
+  );
+  assert.equal(
+    packageJson.scripts['docs:infra:publish'],
+    'node scripts/docs/task-branch-lifecycle.mjs infra',
   );
 });
 
