@@ -1,7 +1,7 @@
 {
   "instance_id": "SHELL-CI-018::GLOBAL",
   "task_id": "SHELL-CI-018",
-  "status": "IN_PROGRESS",
+  "status": "VERIFIED",
   "target_repositories": [
     "vento-group-sas/vento-shell",
     "vento-group-sas/vento-nexo",
@@ -56,5 +56,37 @@
     "approval_statement": "Se autoriza exclusivamente la implementacion fisica de SHELL-CI-018::GLOBAL sobre los ocho repositorios enumerados, limitada al registro propio de la instancia, el motor y autocertificacion CI018 en vento-shell, el workflow VENTO Required Gate en los ocho repositorios, la eliminacion del bypass directo a main del workflow identificado de vento-viso, la proteccion exacta de main en GitHub y la auditoria de solo lectura de proveedores de despliegue. Se niega expresamente cualquier ampliacion inferida, modificacion de package.json o lockfiles, dependencias, TREQ o 04A, codigo funcional, packages, secretos, Supabase, migraciones, datos, provider configuration no verificada, deploy, rollback, cutover, hypercare, auto-merge o desarrollo anticipado de SHELL-CI-019. Un camino de proveedor o preview que eluda CI018 bloquea la instancia y exige una autorizacion separada antes de cualquier correccion externa adicional.",
     "source_contract_sha256": "06727c122fd69b571d975d94bfda2a2a7de4e75cf7f1453dbbdbdb27e02df2f5"
   },
-  "evidence": []
+  "evidence": [
+    {
+      "type": "GITHUB_OWNER_RECONCILIATION",
+      "result": "PASS",
+      "detail": "8/8 repositorios gobernados pertenecen a vento-group-sas."
+    },
+    {
+      "type": "REQUIRED_GATE_PR_HEADS",
+      "result": "PASS",
+      "detail": "8/8 PR de materialización con VENTO Required Gate en PASS."
+    },
+    {
+      "type": "MAIN_BRANCH_PROTECTION",
+      "result": "PASS",
+      "detail": "8/8 main con VENTO Required Gate strict, PR obligatorio, admins incluidos, cero bypass, sin force push y sin deletion."
+    },
+    {
+      "type": "FAIL_CLOSED_PROOF",
+      "result": "PASS",
+      "detail": "SHELL PR #27 falló sin VENTO-TREQ-AFFECTED y volvió a PASS tras restauración exacta."
+    },
+    {
+      "type": "DEPLOY_PROVIDER_AUDIT",
+      "result": "PASS",
+      "detail": "8/8 proyectos Vercel observados con producción desde main y enforcement PROTECTED_MAIN."
+    },
+    {
+      "type": "FINAL_VALIDATION_BATTERY",
+      "result": "PASS",
+      "command_count": 21,
+      "detail": "Batería contractual completa ejecutada en orden fail-fast."
+    }
+  ]
 }

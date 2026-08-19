@@ -10,7 +10,7 @@
 
 - **Acción principal obligatoria:** `EJECUTAR_IMPLEMENTACION`
 - **Objetivo exacto:** `SHELL-CI-018::GLOBAL` — Bloquear merge o despliegue cuando fallen pruebas obligatorias
-- **Instrucción:** Ejecutar la transacción humana continua de SHELL-CI-018::GLOBAL desde IN_PROGRESS hasta VERIFIED; detenerse solo ante bloqueo real o fallo.
+- **Instrucción:** Ejecutar la transacción humana continua de SHELL-CI-018::GLOBAL desde IMPLEMENTED hasta VERIFIED; detenerse solo ante bloqueo real o fallo.
 - **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `SHELL-CI-019`
 - **Implementación física autorizada:** `SHELL-CI-018::GLOBAL`
 

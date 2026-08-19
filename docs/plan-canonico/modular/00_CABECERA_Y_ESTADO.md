@@ -34,10 +34,10 @@
 | Siguiente tarea | **SHELL-CI-020 — Implementar y desplegar cada paquete aprobado por E5** |
 | Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
 | Progreso del bloque | **BLOQUE T: 18 de 24 aprobadas; SHELL-CI-019 pendiente** |
-| Estado de implementación | **GLOBAL_IMPLEMENTATION_ACTIVE** |
+| Estado de implementación | **GLOBAL_VALIDATION_REQUIRED** |
 | Acción principal obligatoria | **EJECUTAR_IMPLEMENTACION — SHELL-CI-018::GLOBAL** |
 | Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — SHELL-CI-019** |
-| Carril físico | **IN_PROGRESS — SHELL-CI-018::GLOBAL** |
+| Carril físico | **IMPLEMENTED — SHELL-CI-018::GLOBAL** |
 | Alcance físico autorizado | **SHELL-CI-018::GLOBAL** |
 
 ### Continuidad inmediata
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE T: 18 DE 24 APROBADAS — ACTUAL SHELL-CI-019** |
-| Implementación física | **SHELL-CI-018::GLOBAL — IN_PROGRESS** |
+| Implementación física | **SHELL-CI-018::GLOBAL — IMPLEMENTED** |
 
 ## Reglas de edición
 
