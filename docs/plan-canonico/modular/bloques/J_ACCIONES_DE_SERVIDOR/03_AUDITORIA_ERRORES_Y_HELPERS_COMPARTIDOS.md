@@ -1218,7 +1218,1410 @@ Estas referencias son trazabilidad heredada y no representan requisitos creados 
 `AUTH-SRV-015 — Registrar rol simulado en auditoría`
 
 
-### [ ] AUTH-SRV-015 — Registrar rol simulado en auditoría
+### ✅ AUTH-SRV-015 — Registrar rol simulado en auditoría
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-SRV-014 — Registrar actor real y actor operativo
+**Tarea siguiente:** AUTH-SRV-016 — Normalizar errores de autorización
+**Tipo de tarea:** Contrato global con materialización por unidad (`PER_IMPLEMENTATION_UNIT`) — contrato de enforcement y evidencia para que toda evaluación de simulación resuelta en servidor conserve de forma tipada el actor y la sesión reales, el sujeto simulado cuando exista, el rol simulado exacto, el contexto hipotético, el resultado no ejecutable y sus versiones, razones y fingerprints, sin convertir autoridad simulada en permiso, sesión, actor, territorio, recurso, autoría empresarial ni efecto real
+**Bloque:** BLOQUE J — Protección de acciones de servidor
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global; las futuras materializaciones ocurren únicamente mediante `AUTH-SRV-015::<implementation_unit_id>` después de que `DELIV-PKG-025::<package_id>` asigne la unidad y el paquete propietario supere `E5-GATE-008::<package_id>`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato obligatorio de servidor para registrar de forma inequívoca el rol y el sujeto simulados dentro de la evidencia de una simulación, preservando simultáneamente la identidad y autoridad reales fijadas por `AUTH-SRV-014`.
+
+La regla vinculante queda:
+
+```text
+principal técnico real
++
+actor efectivo real
++
+sesión real
++
+autoridad real
++
+solicitud de simulación válida
++
+sujeto simulado cuando exista
++
+rol simulado tipado
++
+contexto hipotético completo cuando aplique
++
+resultado simulado no ejecutable
++
+razones + versiones + fingerprints
+=
+evidencia de simulación reproducible
+```
+
+Y siempre:
+
+```text
+actor real
+≠
+sujeto simulado
+≠
+rol simulado
+≠
+autoridad ejecutable
+```
+
+#### 2. Handoff recibido de `AUTH-SRV-014`
+
+`AUTH-SRV-014` deja disponible para toda acción o decisión protegida:
+
+```text
+principal técnico real
+actor efectivo real
+fuente de atribución
+contexto operativo real cuando aplique
+dispositivo o delegación cuando aplique
+required_permission_key
+recurso resuelto
+territorio validado
+estado o versión
+decisión de autorización
+resultado de ejecución
+correlación
+campos empresariales de autoría
+```
+
+`AUTH-SRV-015` no reabre esa atribución.
+
+La simulación se adjunta como un plano separado y nunca sustituye al actor efectivo real.
+
+#### 3. Base contractual de simulación consumida
+
+La tarea consume sin redefinir los contratos ya aprobados de `AUTH-SIM-001..006`:
+
+```text
+AUTH-SIM-001
+→ quién puede solicitar una simulación
+
+AUTH-SIM-002
+→ roles objetivo simulables e identidad tipada
+
+AUTH-SIM-003
+→ sede simulada
+
+AUTH-SIM-004
+→ área simulada
+
+AUTH-SIM-005
+→ turno y check-in simulados
+
+AUTH-SIM-006
+→ separación estricta entre autoridad real y simulada
+```
+
+La implementación de servidor deberá aplicar esos contratos como entradas normativas.
+
+#### 4. Pregunta contractual propietaria
+
+Esta tarea responde:
+
+```text
+¿QUÉ ROL O SUJETO SE ESTABA EVALUANDO HIPOTÉTICAMENTE?
+```
+
+```text
+¿QUIÉN ERA EL ACTOR REAL QUE SOLICITÓ ESA EVALUACIÓN?
+```
+
+```text
+¿QUÉ RESULTADO HIPOTÉTICO PRODUJO EL SERVIDOR Y BAJO QUÉ VERSIÓN DEL CONTEXTO?
+```
+
+```text
+¿SE MANTUVO IMPOSIBLE CONVERTIR ESE RESULTADO EN AUTORIDAD O EFECTO REAL?
+```
+
+#### 5. Frontera con `AUTH-SRV-016..018`
+
+Las responsabilidades permanecen separadas:
+
+```text
+AUTH-SRV-015
+→ rol/sujeto simulado y evidencia autoritativa de simulación
+
+AUTH-SRV-016
+→ códigos y respuestas públicas estables de autorización
+
+AUTH-SRV-017
+→ helpers server compartidos
+
+AUTH-SRV-018
+→ prerrequisitos explícitos de acciones administrativas sin turno
+```
+
+`AUTH-SRV-015` no define mensajes públicos, no prescribe todavía un helper compartido y no decide si una capacidad administrativa exige turno.
+
+#### 6. Cuatro planos obligatoriamente separados
+
+Toda implementación deberá conservar cuatro planos:
+
+```text
+1. AUTORIDAD REAL
+2. EVALUACIÓN SIMULADA
+3. PRESENTACIÓN / PREVIEW
+4. AUDITORÍA
+```
+
+Solo el plano de autoridad real puede producir un `ALLOW` ejecutable.
+
+Los otros tres planos no conceden autoridad empresarial.
+
+#### 7. Identidades reales y simuladas
+
+La separación mínima queda:
+
+| Plano real               | Plano simulado                 | Regla                                                   |
+| ------------------------ | ------------------------------ | ------------------------------------------------------- |
+| `real_actor_id`          | `simulated_subject_reference`  | el sujeto simulado no reemplaza al actor real           |
+| `real_session_id`        | `simulation_session_id`        | la sesión de simulación no autentica                    |
+| `real_base_role`         | `simulated_base_role`          | el rol base simulado no se vuelve efectivo              |
+| `real_operational_role`  | `simulated_operational_role`   | el rol operativo simulado no autoriza operación         |
+| `real_site_ids`          | `simulated_site_id`            | la sede simulada no amplía cobertura real               |
+| `real_area_ids`          | `simulated_area_id`            | el área simulada no amplía cobertura real               |
+| `real_active_shift_id`   | `simulated_shift_reference`    | el turno simulado no satisface prerrequisitos reales    |
+| `real_active_checkin_id` | `simulated_checkin_state`      | el check-in simulado no crea presencia                  |
+| `real_permission_key`    | `target_permission_key`        | la clave evaluada no queda concedida                    |
+| `real_resource_scope`    | `simulated_resource_reference` | el recurso hipotético no amplía lectura real            |
+| `real_decision`          | `simulation_result`            | `ALLOW` y `WOULD_ALLOW` pertenecen a dominios distintos |
+
+#### 8. Actor real obligatorio
+
+Toda solicitud de simulación interactiva deberá conservar un actor humano real resuelto desde una sesión personal válida y un contexto real autoritativo.
+
+El servidor no podrá usar como actor real:
+
+```text
+simulated_subject_reference
+simulated_role_code
+technical_principal_id
+shared_device_id
+navigation_role
+target employee enviado por cliente
+```
+
+La elegibilidad del simulador se evalúa antes de aceptar el escenario hipotético.
+
+#### 9. Principal técnico
+
+El principal técnico real se conserva como parte de la evidencia de atribución, pero no se convierte automáticamente en simulador humano.
+
+Una sesión de simulación no puede iniciarse únicamente desde:
+
+```text
+SHARED_DEVICE
+SYSTEM_SERVICE
+ANONYMOUS
+cuenta compartida
+service role
+integración técnica
+```
+
+cuando no exista el actor humano personal exigido por el contrato de simulación.
+
+#### 10. Sujeto simulado
+
+`simulated_subject_reference` representa el sujeto hipotético o explícito sobre el que se evalúa el escenario cuando esa dimensión exista.
+
+No es:
+
+```text
+actor_effective
+employee_id real ejecutor
+principal técnico
+propietario del recurso por defecto
+autor empresarial
+```
+
+Puede ser `null` únicamente cuando el tipo de simulación no requiera un sujeto explícito y el contrato aplicable lo permita.
+
+#### 11. Rol simulado tipado
+
+Toda referencia de rol simulada deberá conservar como mínimo:
+
+```text
+role_kind
+role_code
+role_catalog_version
+role_matrix_version
+```
+
+`role_kind` distingue obligatoriamente:
+
+```text
+BASE
+OPERATIONAL
+```
+
+Un `role_code` sin `role_kind` no constituye una identidad simulada suficiente.
+
+#### 12. Prohibición de rol ambiguo
+
+Queda prohibido resolver un rol simulado únicamente desde:
+
+```text
+label visible
+nombre humano
+alias legacy
+role_code bare
+navigation_role
+ruta
+área
+sede
+employee_id
+valor cliente
+```
+
+Si dos catálogos contienen el mismo código, la identidad tipada decide el significado.
+
+Una referencia ambigua produce fallo cerrado del escenario.
+
+#### 13. Roles base simulados
+
+Un rol base simulado representa únicamente la hipótesis:
+
+```text
+"¿qué ocurriría si el sujeto evaluado tuviera este rol base bajo este escenario?"
+```
+
+No altera:
+
+```text
+rol base real
+matriz real del actor
+grants reales
+denies reales
+sesión real
+RLS
+claims
+```
+
+La disponibilidad física y canónica del rol se valida contra las versiones exigidas por `AUTH-SIM-002`.
+
+#### 14. Roles operativos simulados
+
+Un rol operativo simulado requiere el contexto hipotético que el contrato de la acción necesite.
+
+El rol aislado no puede producir por sí solo:
+
+```text
+WOULD_ALLOW
+```
+
+cuando faltan sede, área, turno, check-in, permiso, recurso o cualquier otro prerrequisito obligatorio.
+
+La ausencia contextual produce `INDETERMINATE` o `WOULD_DENY` según corresponda al contrato.
+
+#### 15. Roles legacy, deprecados y desconocidos
+
+No se permite convertir automáticamente en rol simulable:
+
+```text
+rol legacy
+rol deprecado
+rol retirado
+rol inactivo
+rol desconocido
+rol futuro no aprobado
+```
+
+No existe migración implícita por semejanza textual.
+
+El servidor falla cerrado y conserva una razón estructurada.
+
+#### 16. Colisiones de catálogo
+
+Una colisión como:
+
+```text
+BASE/bodeguero
+OPERATIONAL/bodeguero
+```
+
+representa dos identidades distintas.
+
+Nunca se resolverá mediante:
+
+```text
+role_code = bodeguero
+→ elegir el primero encontrado
+```
+
+La evidencia deberá conservar `role_kind` y las versiones utilizadas para evitar reinterpretación posterior.
+
+#### 17. Solicitud de simulación
+
+La evaluación de servidor deberá vincularse a una identidad de solicitud:
+
+```text
+simulation_request_id
+```
+
+La solicitud identifica el intento lógico de simulación.
+
+No funciona como:
+
+```text
+bearer token
+permiso
+actor
+sesión autenticada
+idempotency key de una mutación real
+```
+
+#### 18. Sesión de simulación
+
+Cuando exista una sesión de preview:
+
+```text
+simulation_session_id
+```
+
+deberá permanecer separada de la sesión autenticada real.
+
+La sesión simulada:
+
+```text
+no autentica
+no concede RLS
+no concede permisos
+no cambia claims
+no puede ejecutar mutaciones
+no reemplaza real_session_id
+```
+
+#### 19. Elegibilidad del simulador
+
+Antes de evaluar el rol simulado, el servidor deberá comprobar desde fuentes reales:
+
+```text
+actor humano efectivo
+sesión personal real válida
+viso.access efectivo
+viso.authorization.context_simulations.view efectivo
+carril base real
+alcance real suficiente
+justificación válida
+reautenticación fuerte cuando aplique
+ausencia de denegaciones
+contexto real no simulado
+```
+
+Un componente ausente, ambiguo o incompatible produce `DENY`.
+
+#### 20. La simulación no se autoautoriza
+
+El rol o sujeto simulado no puede aportar:
+
+```text
+viso.access
+viso.authorization.context_simulations.view
+alcance del simulador
+reautenticación
+identidad real
+carril real
+```
+
+Todos esos prerrequisitos se resuelven desde la autoridad real anterior a la simulación.
+
+#### 21. Alcance real como techo
+
+La simulación nunca amplía la capacidad de inspección del solicitante.
+
+Debe cumplirse:
+
+```text
+alcance solicitado
+⊆
+alcance real autorizado del simulador
+```
+
+La regla aplica, según el escenario, a:
+
+```text
+sujeto
+organización
+sede
+área
+permiso
+acción
+recurso
+```
+
+`null`, ausencia o valor desconocido no significan alcance global.
+
+#### 22. Sede simulada
+
+Cuando el escenario requiera sede, el servidor deberá conservar una referencia territorial tipada y validada conforme a `AUTH-SIM-003`.
+
+La sede simulada no puede derivarse únicamente de:
+
+```text
+filtro visual
+sede primaria
+sede seleccionada
+preferencia del empleado
+única sede visible
+valor cliente
+```
+
+Una sede simulada no modifica ni sustituye la sede real del actor.
+
+#### 23. Área simulada
+
+Cuando el escenario requiera área, el servidor deberá conservar la identidad exacta del área, su sede padre, clase y versiones compatibles.
+
+Queda prohibido usar como área exacta:
+
+```text
+agregado "todos"
+GENERAL agregado
+fallback por única área
+área de dispositivo
+área seleccionada
+área real del actor cuando falta la simulada
+```
+
+La ausencia de un área obligatoria no se completa desde el plano real.
+
+#### 24. Turno simulado
+
+Cuando el escenario requiera turno, la evidencia deberá distinguir el modo aprobado por `AUTH-SIM-005` y conservar la referencia reproducible aplicable.
+
+Un turno real no completa automáticamente un turno simulado ausente.
+
+Un turno simulado no satisface un prerrequisito real de ejecución.
+
+#### 25. Check-in simulado
+
+El check-in hipotético pertenece exclusivamente al escenario.
+
+No puede reutilizarse como:
+
+```text
+active_checkin real
+presencia real
+prueba de dispositivo
+prerrequisito de mutación
+evidencia de asistencia
+```
+
+El check-in real tampoco completa un escenario simulado incompleto.
+
+#### 26. Recurso y acción simulados
+
+Cuando la evaluación sea sobre una acción concreta deberán conservarse:
+
+```text
+target_permission_key
+simulated_action_reference
+simulated_resource_reference
+```
+
+El servidor debe distinguir:
+
+```text
+vista de matriz o navegación
+≠
+evaluación concreta de acción
+```
+
+Una vista general sin contexto suficiente nunca produce un permiso ejecutable.
+
+#### 27. Resultado simulado
+
+Los únicos resultados de autorización simulada permitidos son:
+
+```text
+WOULD_ALLOW
+WOULD_DENY
+INDETERMINATE
+```
+
+Toda respuesta simulada deberá declarar:
+
+```text
+executable = false
+```
+
+Quedan prohibidos para el resultado simulado:
+
+```text
+ALLOW
+can_operate = true
+can_execute = true
+authorized = true ambiguo
+token ejecutable
+booleano de permiso sin procedencia
+```
+
+#### 28. `WOULD_ALLOW` no es autoridad
+
+La equivalencia queda prohibida:
+
+```text
+WOULD_ALLOW
+=
+ALLOW
+```
+
+`WOULD_ALLOW` significa únicamente que, bajo el escenario hipotético completo y la versión evaluada, la decisión simulada resultaría positiva.
+
+No autoriza ningún efecto real.
+
+#### 29. `INDETERMINATE`
+
+`INDETERMINATE` se utiliza cuando falta evidencia suficiente para construir un escenario hipotético reproducible.
+
+No se degrada a:
+
+```text
+WOULD_ALLOW por conveniencia
+WOULD_DENY genérico para ocultar brechas
+ALLOW real
+```
+
+La evidencia conserva la razón estructurada de indeterminación.
+
+#### 30. Contrato de auditoría mínimo
+
+Cada evaluación deberá conservar un envelope equivalente en semántica a:
+
+```text
+audit_event_id
+real_actor_id
+real_session_id
+real_authority_decision
+real_permission_key
+real_scope_reference
+simulation_request_id
+simulation_session_id
+simulated_subject_reference
+simulated role identity
+target_permission_key
+simulated_action_reference
+simulated_resource_reference
+simulation_result
+executable=false
+real_reason_codes
+simulated_reason_codes
+real_context_fingerprint
+scenario_fingerprint
+policy_version
+evaluated_at
+simulated_resolved_at
+```
+
+Los nombres físicos pueden variar si preservan inequívocamente estas identidades y relaciones.
+
+#### 31. Identidad de rol dentro de la auditoría
+
+La expresión `simulated role identity` del envelope anterior debe materializar como mínimo:
+
+```text
+simulated_role_kind
+simulated_role_code
+role_catalog_version
+role_matrix_version
+```
+
+Si el escenario diferencia rol base y operativo en campos separados, la evidencia deberá conservar cuál de ellos fue evaluado y no fusionarlos en un único valor ambiguo.
+
+#### 32. Versiones
+
+La evidencia de simulación deberá conservar las versiones autoritativas necesarias para reproducir la decisión.
+
+Según el escenario incluyen:
+
+```text
+role catalog
+role matrix
+site catalog
+area catalog
+shift snapshot o revisión
+permission catalog
+policy version
+contract version
+```
+
+No se reconstruye una decisión histórica usando automáticamente las versiones actuales.
+
+#### 33. Fingerprints
+
+La evidencia deberá distinguir:
+
+```text
+real_context_fingerprint
+scenario_fingerprint
+```
+
+El primero representa el contexto real utilizado para determinar elegibilidad y techo de acceso.
+
+El segundo representa el escenario hipotético evaluado.
+
+No son intercambiables.
+
+#### 34. Tiempo real y tiempo simulado
+
+Se conservan separados:
+
+```text
+evaluated_at
+simulated_resolved_at
+```
+
+Cuando un escenario evalúe otro instante, ese tiempo hipotético no modifica el reloj ni el estado reales.
+
+La zona horaria y reglas temporales aplicables deben permanecer reproducibles.
+
+#### 35. Razones reales y simuladas
+
+La evidencia separa:
+
+```text
+real_reason_codes
+simulated_reason_codes
+```
+
+Una causa que deniega al simulador real no se presenta como una conclusión sobre el rol simulado.
+
+Una causa hipotética no se utiliza para negar o conceder autoridad real fuera de la simulación.
+
+#### 36. Denegación de entrada a simulación
+
+Si el solicitante real no está autorizado para simular:
+
+```text
+real_authority_decision = DENY
+simulation_result = no evaluado
+no efecto empresarial
+```
+
+La auditoría conserva la solicitud mínima autorizada, las razones reales y la correlación permitida.
+
+No se fabrica un escenario completo para un solicitante que no puede inspeccionarlo.
+
+#### 37. Escenario inválido después de entrada válida
+
+Si el simulador real es elegible pero el rol, sede, área, turno, sujeto o recurso son inválidos o incompletos:
+
+```text
+autoridad real para usar el simulador
+puede permanecer válida
+
+resultado hipotético
+=
+WOULD_DENY o INDETERMINATE
+```
+
+Las dos decisiones permanecen separadas.
+
+#### 38. Lectura de datos reales
+
+Toda lectura de filas, documentos o recursos reales necesaria para construir el preview permanece gobernada exclusivamente por la autoridad real.
+
+Queda prohibido:
+
+```text
+simulated role
++
+simulated territory
+→ ampliar RLS o filas reales visibles
+```
+
+El servidor minimiza los datos expuestos al escenario.
+
+#### 39. Mutaciones y efectos reales
+
+Toda superficie mutante deberá rechazar autoridad simulada antes del primer efecto.
+
+Incluye:
+
+```text
+Server Actions
+Route Handlers
+API routes
+RPC
+Data API
+RLS que participe en la decisión
+Edge Functions
+jobs
+colas
+webhooks
+integraciones
+exportaciones
+impresiones
+notificaciones
+Realtime cuando implique acceso protegido
+clientes nativos
+operaciones offline sincronizadas
+```
+
+El escenario hipotético nunca se convierte en payload de autoridad.
+
+#### 40. Acción real después de una simulación
+
+Ejecutar una acción real después de consultar un preview exige:
+
+```text
+salir o cerrar la vista previa
++
+descartar autoridad y contexto simulados
++
+emitir una nueva solicitud real
++
+resolver nuevamente actor
++
+resolver nuevamente permiso
++
+resolver nuevamente territorio
++
+resolver nuevamente estado y versión
++
+autorizar desde cero
+```
+
+La simulación no funciona como preautorización.
+
+#### 41. Reintentos
+
+Un reintento de simulación puede conservar correlación cuando pertenezca al mismo análisis lógico, pero debe producir una evaluación nueva si cambió:
+
+```text
+actor real
+sesión
+alcance
+rol objetivo
+sujeto
+sede
+área
+turno
+recurso
+permiso
+catálogo
+matriz
+política
+snapshot
+```
+
+Una decisión simulada anterior no se reutiliza como autoridad.
+
+#### 42. Idempotencia y replay
+
+Una identidad o clave usada para un preview no podrá reutilizarse como idempotency key de una mutación real.
+
+Queda prohibido:
+
+```text
+simulation request
+→ replay automático
+→ efecto real
+```
+
+Una ejecución posterior usa su propia identidad y autorización real.
+
+#### 43. Offline y colas
+
+Un preview conservado offline no mantiene autoridad vigente.
+
+Al reconectarse:
+
+```text
+contexto real
+se revalida
+
+escenario simulado
+se revalida o expira
+
+acción real
+requiere autorización nueva
+```
+
+Un worker técnico nunca convierte un resultado simulado en autorización empresarial.
+
+#### 44. Preview y controles de interfaz
+
+Un control mostrado por un escenario `WOULD_ALLOW` pertenece exclusivamente a la superficie de preview.
+
+No debe conservar:
+
+```text
+handler de negocio activo
+deep link ejecutable privilegiado
+token de mutación
+guard alimentado por WOULD_ALLOW
+```
+
+La interfaz real continúa gobernada por autoridad real.
+
+#### 45. Auditoría empresarial y observabilidad
+
+Se conserva:
+
+```text
+simulation business audit
+≠
+application logs
+≠
+metrics
+≠
+traces
+```
+
+Pueden compartir:
+
+```text
+correlation_id
+```
+
+La observabilidad no reemplaza el envelope de simulación.
+
+#### 46. Minimización de datos
+
+La auditoría de simulación no almacena por defecto:
+
+```text
+tokens
+cookies
+contraseñas
+OTP
+API keys
+headers completos
+documentos sensibles completos
+payloads completos
+datos médicos completos
+PII descriptiva innecesaria
+```
+
+Se conservan identificadores, referencias, versiones, fingerprints y razones suficientes para reproducir y explicar la decisión.
+
+#### 47. Historial inmutable
+
+Una evaluación histórica no se reinterpreta con:
+
+```text
+rol actual
+matriz actual
+catálogo actual
+territorio actual
+turno actual
+política actual
+```
+
+Un cambio posterior produce una nueva evaluación.
+
+La evidencia histórica conserva las versiones originales utilizadas.
+
+#### 48. Cambio del actor real
+
+Si cambia el actor humano real:
+
+```text
+old simulation session
+≠
+new actor authority
+```
+
+La simulación previa no se transfiere.
+
+Debe cerrarse o invalidarse conforme al contrato de ciclo de vida y requerirse una nueva autorización real.
+
+#### 49. Dispositivo compartido
+
+Un dispositivo compartido puede formar parte del contexto técnico desde el cual se presenta una superficie, pero no se convierte por ello en simulador humano.
+
+Si una futura implementación habilita simulación desde una estación compartida, deberá existir una sesión personal humana inequívoca y controles expresamente aprobados.
+
+Hasta entonces, la ausencia de identidad personal suficiente falla cerrada.
+
+#### 50. Campos empresariales `*_by`
+
+Los campos reales de autoría:
+
+```text
+created_by
+updated_by
+approved_by
+published_by
+cancelled_by
+```
+
+nunca reciben:
+
+```text
+simulated_subject_reference
+simulated_role_code
+simulation_request_id
+simulation_session_id
+```
+
+La simulación pertenece a la evidencia de preview, no a la autoría de un efecto empresarial real.
+
+#### 51. VISO mensual — regla de publicación
+
+Para la publicación mensual de programación laboral queda:
+
+```text
+SIMULATION ACTIVE
++
+publishMonthAction real
+=
+NO EFECTO EMPRESARIAL
+```
+
+El preview puede evaluar hipotéticamente si una capacidad resultaría permitida, pero no puede publicar turnos.
+
+La publicación real exige salir de simulación y reautorizar la operación desde el contexto real.
+
+#### 52. VISO mensual — `published_by`
+
+Cuando una publicación real sea finalmente autorizada:
+
+```text
+published_by
+=
+employee_id canónico del actor efectivo real
+```
+
+bajo la semántica física vigente.
+
+Queda prohibido:
+
+```text
+published_by = simulated_subject_reference
+published_by = simulated_role_code
+published_by = simulation_request_id
+published_by = auth_user_id sin resolución laboral
+```
+
+El rol simulado se conserva únicamente en la auditoría de la evaluación hipotética.
+
+#### 53. VISO mensual — borradores
+
+Crear o revisar un borrador dentro de una vista simulada no convierte la simulación en autoría.
+
+Mientras un turno permanezca sin publicar:
+
+```text
+published_at = null
+published_by = null
+```
+
+La simulación no se usa para poblar esos campos.
+
+#### 54. VISO mensual — periodo, sede y conjunto
+
+Una evaluación simulada sobre publicación mensual deberá conservar de forma reproducible:
+
+```text
+periodo mensual normalizado
+sede simulada exacta cuando aplique
+rol simulado tipado
+sujeto simulado cuando exista
+conjunto o descriptor reproducible de turnos
+target_permission_key
+scenario_fingerprint
+resultado hipotético
+```
+
+La existencia del preview no autoriza lectura o publicación fuera del alcance real del simulador.
+
+#### 55. VISO mensual — notificación
+
+Una simulación de publicación no genera notificación empresarial hacia ANIMA ni hacia otro consumidor.
+
+Puede representar en el preview que una notificación sería parte del efecto esperado, pero:
+
+```text
+preview
+≠
+notification attempt
+```
+
+Solo una publicación real ejecutada puede producir un resultado real de notificación.
+
+#### 56. Llamada directa o manipulada
+
+Una llamada directa que envíe:
+
+```text
+simulated_role_code
+simulated_subject_reference
+simulation_request_id
+simulation_session_id
+simulated_site_id
+simulated_area_id
+simulated_shift_reference
+```
+
+no convierte esos datos en hechos autoritativos.
+
+El servidor valida y resuelve el escenario contra las fuentes canónicas y el techo real del simulador.
+
+#### 57. Prohibición de contexto efectivo único
+
+Queda prohibido un modelo equivalente a:
+
+```text
+effective_context =
+real_context o simulated_context
+```
+
+si el mismo resultado puede ser consumido por operaciones reales.
+
+También quedan prohibidos nombres ambiguos como:
+
+```text
+effective_role
+effective_permission
+effective_context
+can_operate
+```
+
+para representar indistintamente valores reales y simulados.
+
+#### 58. Contratos compartidos futuros
+
+`AUTH-SRV-015` define la semántica de servidor que deberá respetarse.
+
+No prescribe todavía:
+
+```text
+nombre del helper TypeScript
+módulo compartido
+RPC concreta
+SDK concreto
+middleware concreto
+adapter concreto
+```
+
+La reutilización técnica pertenece a `AUTH-SRV-017` y a los owners físicos correspondientes.
+
+#### 59. Normalización de errores
+
+La evidencia conserva razones internas estructuradas y distingue autoridad real de resultado simulado.
+
+Los códigos públicos, status HTTP, mensajes seguros y traducción entre canales pertenecen a `AUTH-SRV-016` y a los contratos `AUTH-ERR-*`.
+
+Esta tarea no crea códigos públicos alternativos.
+
+#### 60. Acciones administrativas sin turno
+
+La ausencia de turno real en una capacidad administrativa no se corrige fabricando un turno simulado.
+
+`AUTH-SRV-018` conserva la decisión especializada sobre prerrequisitos administrativos.
+
+La simulación únicamente evalúa el contrato que resulte aplicable.
+
+#### 61. Persistencia física
+
+La arquitectura física de persistencia de simulación y auditoría no se redefine aquí.
+
+Las futuras unidades deberán integrarse con los owners canónicos de:
+
+```text
+persistencia
+RLS
+grants
+índices
+retención
+versionado
+auditoría
+contratos compartidos
+certificación
+```
+
+No se creará un log paralelo incompatible.
+
+#### 62. Lineage obligatorio
+
+Cada futura unidad deberá conservar:
+
+```text
+surface_identity
+→ principal real
+→ actor efectivo real
+→ real_session_id
+→ real authority
+→ simulation_request_id
+→ simulation_session_id when applicable
+→ simulated_subject_reference when applicable
+→ simulated_role_kind
+→ simulated_role_code
+→ role versions
+→ simulated site/area/shift when applicable
+→ target_permission_key
+→ simulated action/resource
+→ simulation_result
+→ executable=false
+→ real reasons
+→ simulated reasons
+→ fingerprints
+→ policy/contract versions
+→ timestamps
+→ audit/correlation evidence
+```
+
+#### 63. Materialización futura
+
+Cada instancia:
+
+```text
+AUTH-SRV-015::<implementation_unit_id>
+```
+
+deberá registrar como mínimo:
+
+```text
+implementation_unit_id
+repository
+commit_before
+surface_identity[]
+simulation_entry_surface[]
+real_principal_type
+real_principal_reference
+real_actor_type
+real_actor_id
+real_session_reference
+real_permission_key[]
+real_scope_reference[]
+simulation_request_reference[]
+simulation_session_reference[]
+simulated_subject_reference[]
+simulated_role_kind[]
+simulated_role_code[]
+role_catalog_version[]
+role_matrix_version[]
+simulated_site_reference[]
+simulated_area_reference[]
+simulated_shift_reference[]
+simulated_checkin_state[]
+target_permission_key[]
+simulated_action_reference[]
+simulated_resource_reference[]
+simulation_result[]
+real_reason_codes[]
+simulated_reason_codes[]
+real_context_fingerprint[]
+scenario_fingerprint[]
+policy_version[]
+evaluated_at[]
+simulated_resolved_at[]
+blocked_real_effect_surface[]
+business_authorship_fields[]
+package_id[]
+change_set
+rollback
+validation_commands
+evidence
+commit_after
+```
+
+Los nombres anteriores describen evidencia contractual y no obligan a crear columnas SQL homónimas.
+
+#### 64. Evidencia mínima de una futura unidad
+
+La materialización deberá demostrar, cuando aplique:
+
+1. el actor real permanece separado del sujeto simulado;
+2. el principal técnico no se convierte en simulador humano;
+3. la simulación exige sesión personal real cuando corresponda;
+4. el permiso para simular se resuelve desde autoridad real;
+5. el rol simulado no aporta el permiso para iniciar simulación;
+6. `role_kind` y `role_code` forman una identidad tipada;
+7. un código bare ambiguo falla cerrado;
+8. roles legacy no se convierten por alias;
+9. roles deprecados, inactivos o desconocidos fallan cerrado;
+10. un rol base simulado no modifica el rol base real;
+11. un rol operativo simulado no sustituye al rol operativo real;
+12. un rol operativo aislado no produce `WOULD_ALLOW` si falta contexto obligatorio;
+13. sede simulada y sede real permanecen separadas;
+14. área simulada y área real permanecen separadas;
+15. un área agregada no se convierte en wildcard;
+16. un turno real no completa un escenario simulado;
+17. un turno simulado no satisface un prerrequisito real;
+18. un check-in real no completa un check-in simulado;
+19. un check-in simulado no crea presencia real;
+20. el alcance simulado nunca excede el alcance real del solicitante;
+21. `WOULD_ALLOW` nunca se convierte en `ALLOW`;
+22. toda respuesta simulada declara `executable=false`;
+23. no existe booleano ambiguo consumible por guards reales;
+24. `INDETERMINATE` conserva una razón estructurada;
+25. la lectura de datos reales usa autoridad real;
+26. RLS no consume territorio ni rol simulados como autoridad;
+27. una mutación rechaza procedencia simulada antes del primer efecto;
+28. Server Actions y API routes aplican la misma separación;
+29. RPC y Edge Functions aplican la misma separación;
+30. jobs, colas e integraciones no ejecutan desde `WOULD_ALLOW`;
+31. una operación offline se reautoriza al sincronizar;
+32. una acción real posterior a preview exige solicitud nueva;
+33. una idempotency key de preview no se reutiliza para una mutación real;
+34. la auditoría conserva decisión real y resultado simulado por separado;
+35. la auditoría conserva identidad tipada del rol simulado;
+36. la auditoría conserva versiones y fingerprints suficientes;
+37. una decisión histórica no se reinterpreta con catálogos actuales;
+38. secretos y PII innecesaria quedan fuera de la auditoría ordinaria;
+39. cambiar de actor invalida la simulación previa;
+40. un dispositivo compartido sin actor personal suficiente no inicia simulación;
+41. ningún campo `*_by` recibe sujeto o rol simulado;
+42. VISO no publica mientras la autoridad consumida sea simulada;
+43. VISO no escribe sujeto simulado en `published_by`;
+44. una publicación real posterior usa el empleado efectivo real;
+45. un borrador no inventa `published_by`;
+46. una simulación de publicación no dispara notificaciones empresariales;
+47. una llamada directa no puede fabricar la identidad simulada autoritativa;
+48. contexto real y simulado usan contratos separados;
+49. observabilidad no sustituye auditoría de simulación;
+50. rollback conserva evidencia histórica legítima.
+
+#### 65. Rollback
+
+El rollback de una futura unidad deberá restaurar únicamente el mecanismo técnico anterior sin:
+
+- fusionar actor real y sujeto simulado;
+- convertir el rol simulado en rol efectivo;
+- convertir `WOULD_ALLOW` en `ALLOW`;
+- reintroducir `can_operate=true` desde simulación;
+- permitir que RLS consuma contexto simulado;
+- reutilizar una sesión simulada como autenticación;
+- transferir simulación entre actores;
+- utilizar contexto real para completar silenciosamente un escenario incompleto;
+- utilizar contexto simulado para completar autorización real;
+- escribir sujeto o rol simulado en campos reales `*_by`;
+- borrar evidencia histórica válida;
+- perder versiones o fingerprints de una evaluación histórica;
+- convertir logs de texto en sustituto de la auditoría estructurada;
+- reactivar una mutación que antes estaba bloqueada bajo simulación;
+- disparar efectos pendientes desde una simulación antigua.
+
+#### 66. Criterios de aceptación
+
+`AUTH-SRV-015` queda documentalmente satisfecha cuando:
+
+1. actor real, sujeto simulado y rol simulado permanecen inequívocamente separados;
+2. el principal técnico no se confunde con el simulador humano;
+3. se conserva `real_session_id` separado de `simulation_session_id`;
+4. el rol simulado usa identidad tipada y versionada;
+5. roles base y operativos se distinguen;
+6. colisiones de códigos se resuelven por tipo y no por orden;
+7. roles legacy no se convierten automáticamente;
+8. roles deprecados, inactivos, retirados, desconocidos o futuros no aprobados fallan cerrado;
+9. la elegibilidad del simulador se resuelve exclusivamente desde autoridad real;
+10. la simulación no puede autoautorizarse;
+11. el alcance real es techo del escenario;
+12. sede, área, turno y check-in simulados permanecen separados de sus equivalentes reales;
+13. ausencia de contexto obligatorio no se completa mediante fallback entre planos;
+14. la evaluación concreta conserva permiso, acción y recurso;
+15. los únicos resultados simulados son `WOULD_ALLOW`, `WOULD_DENY` e `INDETERMINATE`;
+16. todo resultado simulado declara `executable=false`;
+17. `WOULD_ALLOW` nunca equivale a `ALLOW`;
+18. las razones reales y simuladas permanecen separadas;
+19. la auditoría conserva las identidades del rol simulado;
+20. la auditoría conserva actor y sesión reales;
+21. la auditoría conserva versiones, fingerprints y tiempos;
+22. las decisiones históricas no se reinterpretan con estado actual;
+23. la lectura de datos reales continúa bajo autoridad real;
+24. RLS no amplía filas por simulación;
+25. toda mutación rechaza autoridad simulada antes del efecto;
+26. una acción real posterior exige solicitud y autorización nuevas;
+27. reintentos y replay no convierten preview en autoridad;
+28. offline y colas revalidan antes de cualquier efecto;
+29. controles de preview no conservan handlers empresariales ejecutables;
+30. auditoría y observabilidad continúan separadas;
+31. secretos y PII innecesaria quedan fuera de la evidencia ordinaria;
+32. campos empresariales `*_by` nunca reciben sujeto o rol simulados;
+33. VISO mensual no publica desde simulación;
+34. una publicación real de VISO conserva `published_by` con el actor efectivo real bajo el namespace físico vigente;
+35. borradores mantienen `published_by = null` mientras no estén publicados;
+36. una simulación de publicación no dispara notificaciones empresariales;
+37. el contrato no redefine mensajes públicos de error;
+38. el contrato no prescribe todavía helpers compartidos;
+39. el contrato no redefine prerrequisitos administrativos sin turno;
+40. no se autorizan cambios físicos desde el marcador global;
+41. no se crean ni modifican requisitos de prueba.
+
+#### 67. Límites
+
+Este marcador no certifica todavía:
+
+- implementación física de servicios de simulación;
+- implementación física de `SimulationContext`;
+- implementación física de persistencia de auditoría de simulación;
+- RLS específica de auditoría;
+- grants de consulta;
+- retención o particionamiento;
+- migración de resolvers legacy;
+- retiro físico de `can_operate`;
+- contratos TypeScript compartidos;
+- helpers server compartidos;
+- UI de preview;
+- ciclo de vida completo de sesión simulada;
+- mensajes públicos de bloqueo;
+- normalización de errores;
+- prerrequisitos administrativos sin turno;
+- cambio físico de `published_by` en VISO;
+- despliegue;
+- comportamiento productivo.
+
+Estas responsabilidades conservan sus owners canónicos.
+
+#### 68. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                                                                                                                                                                 |
+| --------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | no se ejecutó build durante el desarrollo documental                                                                                                                                                                                                                                                                                                      |
+| LOCAL     | `NOT_EXECUTED`   | no se ejecutaron comandos contra el checkout del usuario                                                                                                                                                                                                                                                                                                  |
+| REMOTA    | `PASS`           | se auditaron en solo lectura la continuidad vigente, el contrato de entrega, la topología `PER_IMPLEMENTATION_UNIT`, las políticas de formato y desarrollo, el owner de `AUTH-SRV-015`, `AUTH-SRV-014`, los contratos aprobados `AUTH-SIM-001..006`, la familia 04A AUTH relevante, el contrato de `AccessContext` y los scripts documentales disponibles |
+| OPERATIVA | `NOT_APPLICABLE` | el marcador no cambia operación real                                                                                                                                                                                                                                                                                                                      |
+| FÍSICA    | `NOT_APPLICABLE` | no existe instancia física autorizada para esta tarea                                                                                                                                                                                                                                                                                                     |
+
+#### 69. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** la separación entre autoridad real y simulada, la identidad tipada del rol objetivo, la elegibilidad del simulador, el techo de alcance real, el contexto hipotético de sede/área/turno, el resultado no ejecutable, la prohibición de mutaciones desde simulación y la evidencia correlacionable ya disponen de requisitos canónicos vigentes. `AUTH-SRV-015` materializa el contrato de enforcement y auditoría de servidor que consumirá esa cobertura sin crear una obligación verificable nueva.
+
+#### 70. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificar el registro vigente:
+
+- `TREQ-AUTH-012` — simulación separada de autoridad real y sin mutaciones reales;
+- `TREQ-AUTH-015` — evidencia correlacionable de principal, actor, simulación, roles, contexto, decisión y versiones;
+- `TREQ-AUTH-069` — elegibilidad completa del solicitante de simulación;
+- `TREQ-AUTH-071` a `TREQ-AUTH-077` — grants, actor humano, alcance, reautenticación, sesión, no mutación y auditoría;
+- `TREQ-AUTH-079` a `TREQ-AUTH-087` — identidad tipada del rol, colisiones, roles inválidos, completitud y sensibilidad;
+- `TREQ-AUTH-089` a `TREQ-AUTH-108` — sede y área simuladas, alcance, compatibilidad, aislamiento y auditoría;
+- `TREQ-AUTH-109` a `TREQ-AUTH-118` — turno, check-in, temporalidad, replay y auditoría reproducible;
+- `TREQ-AUTH-119` a `TREQ-AUTH-128` — cuatro planos, resultados no ejecutables, separación de APIs, RLS, mutaciones, cachés y auditoría;
+- `TREQ-AUTH-279` a `TREQ-AUTH-288` — bloqueo transversal de ejecución desde simulación, separación física de autoridad y certificación multicanal.
+
+Estas referencias son trazabilidad heredada y no representan requisitos creados o modificados por `AUTH-SRV-015`.
+
+#### 71. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SRV-014 — Registrar actor real y actor operativo`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SRV-015 — Registrar rol simulado en auditoría`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SRV-016 — Normalizar errores de autorización`
+
+
 ### [ ] AUTH-SRV-016 — Normalizar errores de autorización
 ### [ ] AUTH-SRV-017 — Crear helpers server compartidos
 ### [ ] AUTH-SRV-018 — Revisar acciones administrativas sin turno
