@@ -3906,7 +3906,1583 @@ Estas referencias son trazabilidad heredada y no representan requisitos creados 
 `AUTH-SRV-017 — Crear helpers server compartidos`
 
 
-### [ ] AUTH-SRV-017 — Crear helpers server compartidos
+### ✅ AUTH-SRV-017 — Crear helpers server compartidos
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-SRV-016 — Normalizar errores de autorización
+**Tarea siguiente:** AUTH-SRV-018 — Revisar acciones administrativas sin turno
+**Tipo de tarea:** Contrato global con materialización por unidad (`PER_IMPLEMENTATION_UNIT`) — contrato de composición y reutilización de helpers server para que las superficies protegidas consuman una sola orquestación por operación, deleguen contexto y autorización a las fronteras canónicas de `@vento/os-context/server`, recalculen reglas de dominio desde fuentes server-side versionadas, conserven frescura, auditoría y errores normalizados, y eliminen copias locales divergentes sin convertir el helper compartido en una nueva fuente de autoridad
+**Bloque:** BLOQUE J — Protección de acciones de servidor
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global; las futuras materializaciones ocurren únicamente mediante `AUTH-SRV-017::<implementation_unit_id>` después de que `DELIV-PKG-025::<package_id>` asigne la unidad y el paquete propietario supere `E5-GATE-008::<package_id>`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo deben componerse y reutilizarse los helpers de servidor que protegen operaciones empresariales de Vento OS, evitando que cada Server Action, Route Handler, RPC adapter, job o superficie equivalente reconstruya por su cuenta autenticación, contexto, autorización, territorio, estado, reglas de dominio, auditoría y manejo de errores.
+
+La regla vinculante queda:
+
+```text
+UNA OPERACION PROTEGIDA
++
+UN BINDING SERVER-SIDE
++
+UNA ORQUESTACION COMPARTIDA
++
+FUENTES CANONICAS
++
+REGLAS DE DOMINIO VERSIONADAS
+=
+UNA DECISION REPRODUCIBLE
++
+UN EFECTO CONTROLADO
++
+UNA EVIDENCIA CORRELACIONABLE
+```
+
+Y nunca:
+
+```text
+HELPER COMPARTIDO
+=
+NUEVO EVALUADOR DE AUTORIZACION
+=
+NUEVO CATALOGO DE PERMISOS
+=
+NUEVA FUENTE DE VERDAD DE NEGOCIO
+```
+
+El helper compartido coordina contratos ya aprobados. No los reemplaza.
+
+#### 2. Handoff recibido de `AUTH-SRV-016`
+
+`AUTH-SRV-016` deja congelada la normalización de resultados de autorización:
+
+```text
+AUTHORIZED
+AUTHORIZATION_DENIED
+AUTHORIZATION_TECHNICAL_FAILURE
+```
+
+También deja definidos:
+
+- la preservación del `reason_code` canónico;
+- la separación entre `DENY` y `TECHNICAL_FAILURE`;
+- la separación entre autorización y errores de negocio, estado o concurrencia;
+- la proyección segura por canal;
+- la prohibición de usar booleanos, texto libre, cero filas o HTTP como identidad de la causa;
+- la obligación de no repetir automáticamente una mutación;
+- la obligación de revalidar decisiones stale;
+- la frontera entre evidencia pública y privada.
+
+`AUTH-SRV-017` consume esas decisiones y define cómo una implementación compartida debe llegar hasta ese resultado sin reabrir la semántica de errores.
+
+#### 3. Handoff acumulado de `AUTH-SRV-004..015`
+
+El helper compartido debe poder componer los contratos ya cerrados para:
+
+```text
+intencion del request
+binding server-side de operacion
+permiso exacto
+principal
+actor efectivo
+sede
+area
+turno
+check-in cuando aplique
+rol operativo cuando aplique
+dispositivo cuando aplique
+estado actual del recurso
+cruce entre sedes
+cruce entre areas
+atribucion real
+simulacion cuando aplique
+recurso
+version
+correlacion
+```
+
+Ninguna de esas dimensiones se vuelve opcional por estar escondida detrás de un helper.
+
+La reutilización reduce duplicación; no reduce controles.
+
+#### 4. Pregunta contractual propietaria
+
+Esta tarea responde:
+
+```text
+¿QUE RESPONSABILIDADES DE SERVIDOR DEBEN REUTILIZARSE
+EN VEZ DE COPIARSE EN CADA SUPERFICIE?
+```
+
+```text
+¿COMO SE COMPONEN CONTEXTO, AUTORIZACION,
+REGLAS DE DOMINIO, FRESCURA, EFECTO, AUDITORIA Y ERROR
+SIN CREAR UNA SEGUNDA FUENTE DE AUTORIDAD?
+```
+
+```text
+¿COMO SE GARANTIZA QUE DOS SUPERFICIES
+QUE PROTEGEN LA MISMA REGLA
+CALCULEN Y VALIDEN LO MISMO?
+```
+
+Para el paquete VISO mensual responde además:
+
+```text
+¿COMO EVITAR QUE SEMANA, MES Y BASE DE DATOS
+MANTENGAN CALCULOS O POLITICAS DIVERGENTES?
+```
+
+#### 5. Frontera con `AUTH-SRV-016` y `AUTH-SRV-018`
+
+Las responsabilidades permanecen separadas:
+
+```text
+AUTH-SRV-016
+→ normaliza el resultado y los errores
+
+AUTH-SRV-017
+→ define la composicion y reutilizacion de helpers server
+
+AUTH-SRV-018
+→ define prerrequisitos administrativos sin turno
+```
+
+Por tanto `AUTH-SRV-017` no decide si una acción administrativa necesita turno, check-in o rol operativo.
+
+El helper consumirá esa decisión cuando `AUTH-SRV-018` la cierre.
+
+#### 6. Frontera con la fundación compartida de autorización
+
+La arquitectura aprobada se conserva:
+
+```text
+@vento/contracts/authorization
+→ contratos
+→ catalogos
+→ schemas
+→ codigos
+→ tipos derivados
+→ metadata estatica
+
+@vento/os-context/server
+→ runtime server compartido de contexto y autorizacion
+
+Supabase / backend canonico
+→ resolucion autoritativa
+→ evaluacion autoritativa
+→ enforcement de datos aplicable
+
+aplicacion / dominio propietario
+→ reglas empresariales propias
+→ composicion de proceso
+→ efecto empresarial
+```
+
+`AUTH-SRV-017` no crea:
+
+```text
+@vento/auth
+@vento/server-auth
+@vento/business-rules
+@vento/operational-context
+```
+
+ni otro núcleo competidor por inferencia.
+
+#### 7. Operaciones de autorización ya reservadas
+
+La composición compartida debe reutilizar las operaciones públicas ya aprobadas de `@vento/os-context/server`:
+
+```text
+resolveAccessContext
+evaluateAuthorization
+requireAuthorization
+getSafeContextProjection
+getSafeDecisionProjection
+createAuthorizationScope
+```
+
+Distribución preservada:
+
+```text
+resolveAccessContext
+evaluateAuthorization
+requireAuthorization
+getSafeContextProjection
+getSafeDecisionProjection
+→ contrato materializable de SHELL-AUTH-002
+
+createAuthorizationScope
+→ contrato materializable de SHELL-AUTH-003
+```
+
+`AUTH-SRV-017` no renombra estas operaciones ni crea wrappers públicos equivalentes que compitan con ellas.
+
+#### 8. Qué significa “helper server compartido”
+
+Un helper server compartido es una pieza reutilizable que:
+
+1. corre dentro de una frontera de servidor o produce una función pura consumible por ella;
+2. recibe únicamente intención y referencias permitidas;
+3. resuelve o consume hechos autoritativos desde sus propietarios;
+4. compone contratos aprobados;
+5. conserva una semántica estable para operaciones equivalentes;
+6. falla cerrado;
+7. expone solo el resultado permitido;
+8. no se convierte en propietario accidental de una regla que pertenece a otro dominio.
+
+“Compartido” puede significar:
+
+```text
+misma unidad de implementacion
++
+varias superficies consumidoras
+```
+
+No obliga a convertir todo helper en package público.
+
+La ubicación física se decide durante la instancia material y según ownership real.
+
+#### 9. Taxonomía obligatoria de helpers
+
+La implementación futura deberá clasificar cada helper en una sola responsabilidad primaria:
+
+| Clase                   | Responsabilidad                                       |     Puede decidir autorización |              Puede producir efecto |
+| ----------------------- | ----------------------------------------------------- | -----------------------------: | ---------------------------------: |
+| `CONTRACT_VALIDATION`   | validar shapes, códigos, versiones y contratos        |                             No |                                 No |
+| `AUTHORIZATION_RUNTIME` | adaptar y consumir contexto/decisión canónicos        | Solo mediante backend canónico |                                 No |
+| `DOMAIN_CALCULATION`    | cálculo puro de regla empresarial aprobada            |                             No |                                 No |
+| `DOMAIN_RESOLUTION`     | resolver hechos del dominio desde fuentes server-side |                 No por sí solo |                                 No |
+| `PERSISTENCE_ADAPTER`   | traducir un efecto ya autorizado hacia persistencia   |                             No | Sí, dentro de la frontera aprobada |
+| `AUDIT_ADAPTER`         | conservar evidencia y correlación                     |                             No |                     Solo evidencia |
+| `RESPONSE_ADAPTER`      | proyectar resultado normalizado por canal             |                             No |                                 No |
+| `LEGACY_ADAPTER`        | compatibilidad temporal explícita                     |             No autoridad nueva |                     No por sí solo |
+
+Un mismo archivo podrá contener más de una clase solo si la frontera permanece explícita y testeable.
+
+La clasificación no autoriza un módulo monolítico.
+
+#### 10. Regla de composición y no reemplazo
+
+La composición correcta es:
+
+```text
+helper de operacion
+→ consume primitive canonico
+→ consume regla de dominio propietaria
+→ consume estado autoritativo
+→ coordina orden
+```
+
+No:
+
+```text
+helper de operacion
+→ vuelve a implementar permiso
+→ vuelve a implementar precedencia
+→ vuelve a implementar territorio
+→ vuelve a implementar catalogo
+```
+
+Si dos capas tienen el mismo cálculo o decisión por copia manual, existe una brecha hasta demostrar que una es proyección generada o adapter estrictamente compatible.
+
+#### 11. Binding server-side de operación
+
+Toda operación protegida deberá poseer un binding server-side estable que determine, sin elección libre del cliente:
+
+```text
+aplicacion
+operacion
+permiso requerido
+tipo de recurso
+clase de efecto
+reglas de dominio aplicables
+requisitos de frescura
+politica de atomicidad
+```
+
+El cliente puede seleccionar el recurso o proponer contenido cuando el contrato lo permite.
+
+No puede seleccionar:
+
+```text
+permiso mas debil
+modalidad de autorizacion
+bypass
+rol efectivo
+sede efectiva
+area efectiva
+decision
+politica de limite
+politica de conflicto
+```
+
+El binding pertenece al código de servidor y a contratos versionados, no al `FormData`.
+
+#### 12. Request scope obligatorio
+
+La composición compartida debe operar dentro del `AuthorizationScope` aprobado para la solicitud cuando la materialización aplicable exista.
+
+Regla:
+
+```text
+UN REQUEST
+→ UN SCOPE AISLADO
+→ CONTEXTO Y DECISIONES DEDUPLICABLES SOLO DENTRO DE SUS CLAVES EXACTAS
+```
+
+No se permite:
+
+```text
+singleton global de autoridad
+cache cross-request no gobernada
+ultimo actor
+ultima sede
+ultimo permiso
+ultima decision
+```
+
+como fuente de la operación actual.
+
+#### 13. Pipeline mínimo de una operación protegida
+
+La secuencia conceptual obligatoria es:
+
+```text
+1. recibir intencion
+2. parsear y validar forma
+3. resolver binding server-side
+4. resolver identidad exacta del recurso
+5. resolver estado actual requerido
+6. crear/obtener scope de autorizacion de la solicitud
+7. resolver contexto canonico
+8. evaluar y exigir autorizacion exacta
+9. resolver reglas de dominio aplicables
+10. recalcular limites/conflictos/alcances funcionales desde estado vigente
+11. comprobar frescura y concurrencia inmediatamente antes del efecto
+12. construir payload efectivo
+13. ejecutar efecto con atomicidad aplicable
+14. aplicar write barrier si el efecto invalida contexto/decision
+15. registrar atribucion, decision, before/after y resultado
+16. normalizar respuesta o fallo
+```
+
+Una operación podrá omitir un paso solo cuando su contrato demuestre que es `NOT_APPLICABLE`.
+
+No puede omitirlo porque el frontend ya lo calculó.
+
+#### 14. Parseo no es autorización
+
+Los parsers compartidos podrán:
+
+- validar tipo;
+- validar forma;
+- limitar longitud;
+- normalizar representación cuando el contrato lo permita;
+- rechazar campos desconocidos;
+- producir una intención tipada.
+
+No podrán:
+
+- resolver automáticamente autoridad;
+- transformar un rol enviado por cliente en rol efectivo;
+- transformar una sede seleccionada en cobertura;
+- transformar un permiso textual en binding;
+- convertir ausencia de error de forma en `ALLOW`.
+
+#### 15. Resolver no es autorizar
+
+Los helpers de resolución podrán obtener:
+
+```text
+recurso
+estado
+relaciones
+configuracion
+politica
+version
+```
+
+pero esa resolución no equivale a autorización.
+
+La regla se mantiene:
+
+```text
+HECHO RESUELTO
+≠
+PERMISO CONCEDIDO
+```
+
+Un helper de resolución no expone una función booleana denominada de forma que sugiera autoridad final si solo comprueba existencia o compatibilidad.
+
+#### 16. Autorización exacta
+
+El helper de operación no implementa `hasPermission` local.
+
+Debe delegar la decisión a la frontera canónica.
+
+Solo:
+
+```text
+AuthorizationDecision valida
++
+final_decision.outcome = ALLOW
+```
+
+permite continuar hacia el efecto protegido.
+
+Un `DENY`, fallo contractual o fallo técnico bloquea.
+
+#### 17. Regla de dominio después de autorización
+
+Una autorización positiva significa:
+
+```text
+el actor puede intentar la capacidad
+```
+
+No significa:
+
+```text
+el recurso esta en estado valido
+el limite no fue superado
+no existe conflicto
+la version sigue vigente
+la operacion es atomicamente ejecutable
+```
+
+Las reglas de dominio conservan propietarios propios.
+
+El helper compartido coordina su evaluación sin redefinirlas como permisos.
+
+#### 18. Helpers de cálculo de dominio
+
+Un `DOMAIN_CALCULATION` deberá ser, cuando sea técnicamente posible:
+
+- determinista;
+- sin efectos;
+- sin red;
+- sin cookies;
+- sin redirects;
+- sin acceso implícito a sesión;
+- sin `service_role`;
+- sin dependencia de UI;
+- explícito respecto de la versión de política que consume;
+- reproducible con fixtures;
+- capaz de distinguir input inválido de resultado empresarial válido.
+
+Su salida no concede autoridad.
+
+#### 19. Helpers de resolución de dominio
+
+Un `DOMAIN_RESOLUTION` puede consultar fuentes autoritativas para construir los inputs del cálculo.
+
+Debe conservar:
+
+```text
+fuente
+version o revision aplicable
+instante o snapshot relevante
+identidad exacta
+```
+
+cuando esos elementos sean materiales para reproducir la decisión.
+
+No seleccionará “la primera fila” ante ambigüedad contractual.
+
+#### 20. Helpers de persistencia
+
+Un `PERSISTENCE_ADAPTER` recibe un efecto ya reconstruido y autorizado.
+
+No recibe un body completo para pasarlo sin filtrado.
+
+Regla:
+
+```text
+intencion
+→ resolucion
+→ autorizacion
+→ reglas
+→ payload efectivo
+→ persistencia
+```
+
+No:
+
+```text
+request body
+→ insert/update directo
+```
+
+El adapter no convierte `service_role` en permiso empresarial.
+
+#### 21. Redirección y navegación
+
+Los helpers puros, contractuales o de dominio no deben depender de `redirect()` para expresar su semántica.
+
+La navegación pertenece al adapter de canal.
+
+Por tanto:
+
+```text
+resultado estructurado
+→ RESPONSE_ADAPTER
+→ redirect / HTTP / action result / worker outcome
+```
+
+No:
+
+```text
+calculo de dominio
+→ redirect inmediato con texto libre
+```
+
+Esta separación permite reutilizar la misma regla desde semana, mes, API, pruebas y procesos no navegacionales.
+
+#### 22. Error estructurado
+
+Toda falla controlada deberá conservar una identidad estructurada antes de la presentación.
+
+Para autorización se consume `AUTH-SRV-016`.
+
+Para reglas empresariales se consume el código de dominio aprobado por su owner.
+
+Para fallos técnicos se conserva la clase técnica correspondiente.
+
+Queda prohibido usar como contrato primario:
+
+```text
+throw new Error("No autorizado")
+return false
+return null
+redirect("?error=texto")
+SQLSTATE sin adapter
+mensaje de Supabase
+```
+
+aunque un adapter final pueda mostrar copy aprobado.
+
+#### 23. Frontera con `@vento/contracts`
+
+`@vento/contracts` puede contener:
+
+- identidad de política;
+- versión;
+- schema;
+- catálogo;
+- código;
+- tipo derivado;
+- metadata estática;
+- fixture contractual cuando su propietario lo apruebe.
+
+No contiene la lógica operacional específica de una aplicación por conveniencia.
+
+Una política VISO no se mueve automáticamente a `@vento/contracts` solo para llamarla “compartida”.
+
+#### 24. Frontera con `@vento/os-context`
+
+`@vento/os-context` conserva:
+
+- contexto;
+- autorización;
+- request scope;
+- adapters y proyecciones seguras;
+- compatibilidad runtime aprobada.
+
+No absorbe:
+
+- cálculo de horas de programación;
+- reglas de descanso;
+- solapamientos de turnos;
+- límites mensuales;
+- reglas de publicación;
+- stock;
+- precio;
+- conciliación;
+- reglas funcionales de otra aplicación.
+
+La separación evita convertir el SDK de autorización en un motor de negocio universal.
+
+#### 25. Frontera con Supabase y base de datos
+
+La existencia de un helper server no reemplaza:
+
+- constraints;
+- transacciones;
+- locks;
+- funciones/RPC;
+- RLS;
+- triggers;
+- validaciones de integridad;
+- enforcement concurrente;
+
+cuando el contrato de datos exija esas protecciones.
+
+La regla es:
+
+```text
+HELPER SERVER
+→ prepara y coordina
+
+DB ENFORCEMENT
+→ protege invariantes que deben sobrevivir a concurrencia y callers alternos
+```
+
+Una regla crítica protegida solo en TypeScript no se considera equivalente a una invariante que el contrato exige en base de datos.
+
+#### 26. Una sola política, varias representaciones
+
+Cuando una regla de dominio deba existir tanto en runtime TypeScript como en PostgreSQL, la arquitectura deberá evitar dos fuentes normativas independientes.
+
+Modelo:
+
+```text
+POLITICA CANONICA VERSIONADA
+        ↓
+representacion runtime
+        +
+representacion DB
+        ↓
+fixtures/oracle compartidos
+        ↓
+prueba de paridad
+```
+
+La equivalencia se demuestra por:
+
+- misma identidad de política;
+- misma versión;
+- mismos casos de frontera;
+- mismos inputs semánticos;
+- mismos resultados esperados;
+- misma regla de redondeo, tiempo o inclusión cuando aplique.
+
+No se exige compartir el mismo lenguaje ejecutable.
+
+Se exige compartir el mismo significado.
+
+#### 27. Cambio de política
+
+Un cambio en una regla compartida deberá producir una nueva versión o revisión identificable antes de que dos capas adopten semánticas distintas.
+
+Queda prohibido:
+
+```text
+actualizar TypeScript
++
+dejar PostgreSQL anterior
++
+seguir declarando misma politica
+```
+
+o lo inverso.
+
+Durante una transición, la compatibilidad y orden de adopción deberán quedar explícitos.
+
+#### 28. Helpers de preview
+
+Un cálculo puro podrá reutilizarse para preview de cliente únicamente si:
+
+1. no contiene autoridad;
+2. no contiene secretos;
+3. no requiere fuentes privadas;
+4. su versión es identificable;
+5. el servidor vuelve a calcular desde estado vigente antes del efecto;
+6. el resultado cliente nunca funciona como autorización ni como bypass.
+
+La experiencia reactiva no sustituye el gate server-side.
+
+#### 29. Baseline físico de `@vento/os-context`
+
+El package físico observado es transitorio.
+
+Actualmente conserva wrappers legacy que:
+
+```text
+get_effective_context_v1
+has_effective_permission_v1
+start_context_simulation_v1
+stop_context_simulation_v1
+```
+
+y una comprobación booleana de permiso.
+
+`AUTH-SRV-017` no los convierte en helpers canónicos.
+
+Su destino permanece gobernado por:
+
+```text
+SHELL-AUTH-001..005
+```
+
+hasta materializar las fronteras aprobadas y migrar consumidores.
+
+#### 30. Prohibición de helpers de autorización paralelos
+
+Después de materializar la unidad aplicable, no se considerarán arquitectura válida nuevos helpers equivalentes a:
+
+```text
+hasPermission
+canAccess
+canOperate
+isAllowed
+checkRole
+requireRole
+canUseSite
+canUseArea
+```
+
+cuando implementen autoridad local por:
+
+- rol;
+- strings;
+- booleanos;
+- listas;
+- cookies;
+- navegación;
+- permisos copiados;
+- contexto legacy;
+- sede o área del caller.
+
+Un nombre similar no es automáticamente inválido; lo inválido es duplicar o degradar la decisión canónica.
+
+#### 31. Helpers legacy existentes
+
+Un helper local existente puede conservarse temporalmente solo como adapter si:
+
+```text
+1. esta inventariado
+2. no agrega autoridad
+3. delega a la frontera canonica
+4. conserva semantica
+5. tiene owner y retiro
+6. no recibe nuevos consumidores
+```
+
+Cambiar internamente un helper legacy para que delegue al SDK puede ser una estrategia de migración.
+
+Mantener su algoritmo anterior detrás de un nuevo nombre no lo es.
+
+#### 32. Baseline VISO de autorización
+
+El control actual de programación VISO contiene un helper local de acceso y guards locales.
+
+Ese baseline no prueba:
+
+- permiso atómico correcto para cada escritura;
+- misma autorización entre semana y mes;
+- misma semántica que el evaluador canónico;
+- separación correcta de carril base y operativo;
+- ausencia de role override legacy;
+- respuesta normalizada `AUTH-SRV-016`.
+
+La futura materialización debe migrar el control hacia la frontera canónica aplicable sin convertir el helper local en una excepción permanente.
+
+#### 33. Package VISO mensual — obligación específica
+
+El carryover de este minibloque exige:
+
+```text
+AUTH-SRV-017
+→ calculo compartido/versionado entre semana, mes y DB
+```
+
+Esto se materializa contractualmente como:
+
+```text
+SEMANA
+MES
+PREVIEW
+GUARDADO
+PUBLICACION
+DB ENFORCEMENT
+```
+
+consumiendo la misma política aplicable cuando evalúan la misma regla.
+
+No significa que todas las superficies tengan idénticas responsabilidades.
+
+Significa que una misma regla no puede tener significados distintos por pantalla o capa.
+
+#### 34. VISO — fuente única del proceso de programación
+
+Semana y Mes son proyecciones del mismo proceso de programación laboral.
+
+Por tanto:
+
+```text
+vista semanal
+≠ fuente de turnos independiente
+
+vista mensual
+≠ fuente de turnos independiente
+```
+
+Los helpers compartidos deberán operar sobre las mismas identidades persistidas y la misma semántica aprobada de turno, periodo y versión.
+
+No se crean turnos “mensuales” como universo paralelo solo para facilitar una vista.
+
+#### 35. VISO — duración de turno
+
+La duración deberá depender de la política aprobada de programación.
+
+La implementación actual de un cálculo no congela todavía:
+
+- overnight;
+- descanso;
+- redondeo;
+- límites de duración;
+- pausas;
+- tratamiento de turno de descanso.
+
+Estas decisiones permanecen bajo `VISO-SCH-003`.
+
+`AUTH-SRV-017` fija únicamente que, una vez aprobadas, semana, mes, preview, servidor y DB no podrán usar fórmulas divergentes.
+
+#### 36. VISO — bloques mensuales
+
+El máximo de bloques y las reglas de exclusividad de fechas forman parte del contrato funcional de programación.
+
+Los valores físicos actuales no se promueven a canon por esta tarea.
+
+Cuando `VISO-SCH-003` cierre esas reglas:
+
+```text
+parser
+preview
+guardado
+publicacion
+tests
+```
+
+deberán consumir la misma definición versionada o una representación derivada con paridad demostrada.
+
+#### 37. VISO — límite mensual
+
+`AUTH-SRV-017` no decide el valor del límite mensual.
+
+Tampoco decide el umbral preventivo.
+
+Los valores físicos observados continúan siendo provisionales hasta `VISO-SCH-004`.
+
+La obligación que sí queda cerrada es:
+
+```text
+UNA POLITICA DE LIMITE APROBADA
+→ UNA IDENTIDAD/VERSION
+→ MISMO SIGNIFICADO EN PREVIEW, SERVER Y DB
+```
+
+No se permiten constantes independientes con el mismo significado en distintos módulos sin lineage o generación demostrable.
+
+#### 38. VISO — total mensual
+
+El cálculo mensual deberá usar exactamente el universo de turnos definido por la política aprobada.
+
+La futura implementación no podrá calcular para mostrar una cosa y calcular para bloquear otra.
+
+Cuando la regla exija considerar múltiples sedes:
+
+- la resolución server-side obtiene el universo autorizado necesario;
+- el cálculo puede incluir datos que el usuario no tiene derecho a listar individualmente;
+- la respuesta pública devuelve solo el agregado permitido;
+- el helper no amplía visibilidad para poder calcular.
+
+Cálculo y exposición permanecen separados.
+
+#### 39. VISO — conflictos
+
+Los conflictos deberán ser recalculados en servidor desde estado actual inmediatamente antes del efecto cuando el contrato así lo exija.
+
+Una lista de conflictos enviada por cliente sirve como UX, no como evidencia.
+
+Cuando Semana y Mes detecten el mismo tipo de conflicto:
+
+```text
+misma politica
++
+mismos inputs semanticos
+→
+mismo resultado
+```
+
+La política concreta de solapamientos, disponibilidad, descanso, territorio y demás conflictos permanece bajo `VISO-SCH-006`.
+
+#### 40. VISO — guardado y publicación
+
+Guardar borrador y publicar son comandos distintos.
+
+El helper compartido podrá reutilizar primitives de:
+
+- parseo;
+- duración;
+- total;
+- conflictos;
+- política;
+- auditoría;
+
+pero no fusiona sus permisos, transición ni efecto.
+
+El pipeline debe permitir:
+
+```text
+GUARDAR BORRADOR
+→ contrato propio
+
+PUBLICAR
+→ contrato propio
+→ revalidacion completa de las reglas exigidas para publicacion
+```
+
+La política concreta de estados y publicación permanece bajo `VISO-SCH-005`.
+
+#### 41. VISO — paridad Semana/Mes
+
+La certificación futura deberá incluir fixtures equivalentes procesados por las rutas semanal y mensual.
+
+Para una misma política y conjunto de turnos, se compararán al menos:
+
+- minutos calculados;
+- clasificación de descanso;
+- periodo;
+- conflictos comunes;
+- límite aplicable;
+- estado de bloqueo o advertencia cuando corresponda;
+- versión de política utilizada.
+
+Las diferencias solo son válidas cuando el contrato de la vista las declare expresamente como diferencia de presentación o comando.
+
+#### 42. VISO — paridad TypeScript/PostgreSQL
+
+Toda protección de base de datos que implemente la misma regla deberá verificarse contra el mismo oracle contractual.
+
+La evidencia no se limita a comparar constantes.
+
+Debe cubrir casos de frontera suficientes para detectar diferencias en:
+
+- inclusión de fechas;
+- cambio de mes;
+- pausas;
+- redondeo;
+- límites exactos;
+- acumulados;
+- estados excluidos;
+- concurrencia;
+- reglas overnight cuando sean aprobadas.
+
+Una coincidencia en el caso nominal no demuestra paridad.
+
+#### 43. VISO — concurrencia
+
+El helper server no puede resolver por sí solo una carrera entre dos publicaciones concurrentes cuando ambas observaron un estado previo válido.
+
+La implementación deberá combinar:
+
+```text
+recalculo server
++
+control transaccional/DB aplicable
++
+version/frescura
++
+idempotencia
+```
+
+según lo que apruebe `VISO-SCH-006` y la arquitectura física correspondiente.
+
+Un precheck TypeScript sin enforcement aplicable no satisface la protección concurrente.
+
+#### 44. VISO — notificación
+
+La notificación posterior a una publicación no forma parte del cálculo que autoriza o valida el turno.
+
+El helper de proceso deberá distinguir:
+
+```text
+efecto empresarial confirmado
++
+evento/notificacion posterior
+```
+
+La falla de notificación no debe reescribir históricamente la autorización ni fingir que la publicación no ocurrió.
+
+La política exacta de eventos y notificaciones permanece bajo `VISO-SCH-007` y los contratos de integración correspondientes.
+
+#### 45. Política de tiempo
+
+Todo helper que calcule periodos, vigencias o límites temporales deberá consumir una política explícita de tiempo cuando el dominio lo requiera.
+
+No se permiten divergencias silenciosas por:
+
+- timezone del navegador;
+- timezone del proceso;
+- `Date` local;
+- UTC implícito;
+- inicio de semana distinto;
+- fecha inclusiva en una capa y exclusiva en otra.
+
+La decisión exacta de zona horaria y horizontes de programación pertenece a `VISO-SCH-002`.
+
+#### 46. Orden determinista
+
+Cuando el orden de registros afecte un resultado, el helper deberá definirlo explícitamente o consumir un conjunto cuya semántica sea independiente del orden.
+
+Queda prohibido:
+
+```text
+primera fila devuelta
+→ autoridad
+```
+
+o:
+
+```text
+ultima fila sin orden contractual
+→ estado vigente
+```
+
+La ambigüedad que impida decidir falla cerrada.
+
+#### 47. Operaciones masivas
+
+Un helper compartido para operaciones masivas deberá conservar:
+
+- universo objetivo exacto;
+- binding de operación;
+- política de atomicidad;
+- autorización de cada dimensión necesaria;
+- reglas globales;
+- reglas por miembro cuando apliquen;
+- resultado por miembro cuando la atomicidad lo permita;
+- evidencia de cero efectos parciales cuando se declare atomicidad total.
+
+No se autoriza el lote por evaluar solo el primer elemento.
+
+#### 48. Idempotencia
+
+La idempotencia pertenece al efecto, no a la autorización.
+
+Un helper podrá coordinar una clave idempotente aprobada, pero:
+
+```text
+idempotency key
+≠ permission
+≠ decision_id
+≠ bypass
+```
+
+Una nueva realidad material que invalide la decisión exige reevaluación aunque la intención lógica pertenezca al mismo proceso.
+
+#### 49. Write barrier
+
+Después de una mutación que pueda cambiar:
+
+- actor;
+- contexto;
+- permisos;
+- turno;
+- check-in;
+- rol;
+- sede;
+- área;
+- dispositivo;
+- recurso;
+- versión;
+- política;
+
+el scope debe invalidar los snapshots afectados conforme al contrato de write barrier.
+
+Un helper no puede seguir utilizando una decisión anterior solo porque vive en la misma función.
+
+#### 50. Simulación
+
+La composición compartida mantiene:
+
+```text
+actor real
+≠ sujeto simulado
+```
+
+y:
+
+```text
+WOULD_ALLOW
+≠ ALLOW ejecutable
+```
+
+Un helper de dominio puede calcular un escenario hipotético si la simulación lo autoriza.
+
+No puede convertir ese cálculo en persistencia real.
+
+Toda tentativa de efecto real desde simulación conserva la razón canónica correspondiente.
+
+#### 51. Dispositivo compartido
+
+El helper no convierte:
+
+```text
+device principal
+→ employee
+```
+
+ni:
+
+```text
+device app allowlist
+→ permiso humano
+```
+
+La sesión de actor, el dispositivo, la capacidad y el contexto conservan identidades separadas.
+
+La composición consume la decisión canónica y no reconstruye una segunda matriz local para terminales.
+
+#### 52. Privacidad
+
+Los helpers compartidos deberán minimizar:
+
+- payloads;
+- logs;
+- traces;
+- errores;
+- metadata;
+- caches;
+- evidencia.
+
+No se registran por defecto:
+
+```text
+JWT
+cookies
+service_role
+API keys
+grants completos
+denies completos
+payload empresarial completo
+PII innecesaria
+stack en respuesta pública
+SQL bruto
+```
+
+La evidencia privada conserva únicamente lo exigido por su contrato de auditoría.
+
+#### 53. Observabilidad
+
+Una implementación compartida deberá permitir medir, sin alterar la decisión:
+
+- versión de helper;
+- versión de contratos;
+- versión de política de dominio cuando aplique;
+- consumidor;
+- operación;
+- latencia agregada;
+- outcome agregado;
+- clase de fallo;
+- uso legacy;
+- cache/single-flight cuando corresponda.
+
+La ausencia de métrica no significa ausencia de uso.
+
+Una etiqueta de observabilidad no concede autoridad.
+
+#### 54. Compatibilidad y versionado
+
+Cada futura unidad deberá declarar las combinaciones compatibles de:
+
+```text
+contratos
+SDK
+helper de operacion
+politica de dominio
+backend
+consumidor
+```
+
+cuando sean materiales para el resultado.
+
+Una evidencia obtenida con otra combinación no certifica automáticamente la actual.
+
+Los consumidores podrán migrar de forma escalonada sin crear dos semánticas válidas para la misma regla.
+
+#### 55. Adopción por consumidores
+
+Cada superficie que adopte el helper compartido deberá conservar lineage:
+
+```text
+consumer identity
+current behavior
+target helper/composition
+binding
+contracts
+domain policy
+backend
+tests
+rollback
+```
+
+El cambio se considera completo solo cuando la superficie deja de depender de la autoridad local reemplazada.
+
+Importar un helper nuevo mientras se conserva el fallback legacy no constituye migración completa.
+
+#### 56. Reglas anti-“god helper”
+
+Queda prohibido consolidar todo el servidor en una función que simultáneamente:
+
+- lea sesión;
+- decida permiso localmente;
+- elija rol;
+- elija sede;
+- calcule negocio;
+- ejecute SQL;
+- redirija;
+- construya copy;
+- envíe notificación;
+- escriba auditoría;
+
+sin fronteras testeables.
+
+Compartir no significa mezclar.
+
+La composición puede ser central mientras las responsabilidades permanecen separadas.
+
+#### 57. Disposición del helper VISO actual
+
+El módulo helper actual de programación constituye baseline transitorio.
+
+La futura materialización deberá clasificar sus funciones en:
+
+```text
+CONSERVAR COMO PRIMITIVE PURA
+MOVER A CONTRATO/SDK EXISTENTE
+MOVER A DOMINIO VERSIONADO
+DELEGAR A BACKEND
+MANTENER COMO ADAPTER DE PRESENTACION
+DEPRECAR/RETIRAR
+```
+
+La clasificación se hará contra el código del commit asignado a la instancia.
+
+Este marcador no prescribe nombres de archivos nuevos ni declara que el módulo actual deba borrarse completo.
+
+#### 58. Disposición de guards locales
+
+Un guard local puede seguir existiendo como adapter de framework si su única responsabilidad es traducir una decisión canónica hacia navegación o respuesta del framework.
+
+No puede conservar como autoridad propia:
+
+- role overrides;
+- booleanos legacy;
+- permisos construidos localmente;
+- sede o área enviada como autoridad;
+- fallback de aplicación;
+- redirects cuyo query revele permiso o causa interna.
+
+La lógica de autorización permanece en la frontera canónica.
+
+#### 59. Materialización futura
+
+Cada instancia:
+
+```text
+AUTH-SRV-017::<implementation_unit_id>
+```
+
+deberá registrar como mínimo evidencia de:
+
+```text
+implementation_unit_id
+repository
+commit_before
+consumer_surface_identities
+shared_helper_scope
+helper_responsibility_classes
+canonical_authorization_operations_consumed
+operation_bindings
+domain_policies_consumed
+policy_versions
+backend_enforcement_dependencies
+legacy_helpers_replaced_or_adapted
+request_scope_and_write_barrier
+error_normalization
+audit_lineage
+validation_commands
+rollback
+package_ids
+evidence
+commit_after
+```
+
+Los nombres anteriores describen contenido mínimo del expediente.
+
+No obligan a crear campos físicos homónimos.
+
+#### 60. Evidencia mínima de una futura unidad
+
+La materialización deberá demostrar, cuando aplique:
+
+1. cada superficie tiene binding server-side;
+2. el cliente no selecciona permiso;
+3. el cliente no selecciona outcome;
+4. contexto y autorización delegan a la frontera canónica;
+5. no existe un segundo evaluador local;
+6. `requireAuthorization` o su frontera canónica equivalente bloquea todo excepto `ALLOW`;
+7. `DENY` y fallo técnico permanecen diferenciados;
+8. reglas de dominio no se convierten en códigos de autorización;
+9. parsing no concede autoridad;
+10. resolución no concede autoridad;
+11. payload final se reconstruye;
+12. ningún body completo llega directo a persistencia;
+13. `service_role` no sustituye autorización;
+14. los helpers puros no ejecutan red ni redirects;
+15. los adapters de canal no deciden negocio;
+16. errores estructurados preceden al copy;
+17. no existen nuevos booleanos de autoridad;
+18. no existen nuevos role/bypass helpers;
+19. legacy nuevo = 0;
+20. consumers no inventariados = 0;
+21. el request scope no se comparte entre actores;
+22. la write barrier invalida decisiones afectadas;
+23. idempotencia no funciona como permiso;
+24. decisiones stale se reevalúan;
+25. las operaciones masivas no autorizan solo el primer miembro;
+26. la simulación no ejecuta efectos reales;
+27. el dispositivo no aporta autoridad humana;
+28. observabilidad no contiene secretos;
+29. evidencia corresponde a la misma combinación de versiones y commits;
+30. rollback no restaura autoridad local eliminada;
+31. cuando una política existe en TS y DB, ambas declaran la misma identidad/version;
+32. fixtures de paridad cubren casos de frontera;
+33. preview cliente no sustituye recálculo server;
+34. Semana y Mes no mantienen fuentes de turnos paralelas;
+35. Semana y Mes producen el mismo resultado para reglas comunes;
+36. el valor de límite VISO proviene del owner aprobado, no del baseline provisional;
+37. el umbral preventivo proviene del mismo owner;
+38. duración/overnight provienen del contrato funcional aprobado;
+39. conflictos se recalculan server-side;
+40. publicación revalida reglas aplicables;
+41. DB enforcement protege concurrencia cuando el contrato lo exige;
+42. una carrera concurrente no se resuelve solo con precheck TypeScript;
+43. agregados multi-sede no amplían visibilidad;
+44. notificación posterior no reescribe el resultado empresarial;
+45. timezone y fronteras de periodo coinciden donde la regla es común;
+46. un cambio de política no conserva falsamente la misma versión.
+
+#### 61. Rollback
+
+El rollback de una futura unidad deberá restaurar una combinación previamente soportada sin:
+
+- volver a crear un evaluador local;
+- restaurar `hasPermission` booleano como autoridad final;
+- restaurar role override como bypass;
+- restaurar `can_operate` como decisión;
+- volver a confiar en sede, área, actor o permiso del caller;
+- reintroducir una política de dominio divergente;
+- reactivar constantes desactualizadas bajo la misma versión;
+- convertir un helper legacy retirado en arquitectura estable;
+- perder el binding server-side;
+- mezclar `DENY` y fallo técnico;
+- perder el write barrier;
+- reutilizar decisiones stale;
+- retirar enforcement DB requerido;
+- perder lineage de auditoría;
+- borrar evidencia histórica válida.
+
+Si una versión anterior ya no es segura o compatible, no constituye rollback permitido.
+
+#### 62. Criterios de aceptación
+
+`AUTH-SRV-017` queda documentalmente satisfecha cuando:
+
+1. se define qué es un helper server compartido;
+2. se fija que compartir no implica package público;
+3. se preserva `@vento/contracts` como autoridad estática;
+4. se preserva `@vento/os-context/server` como runtime canónico de autorización;
+5. se preserva Supabase/backend como productor autoritativo aplicable;
+6. no se crea un package competidor;
+7. se consumen las seis operaciones ya aprobadas del SDK;
+8. no se crean wrappers públicos alternativos de autorización;
+9. se define la taxonomía de helpers;
+10. se separa validación contractual de autorización;
+11. se separa cálculo de dominio de autorización;
+12. se separa resolución de dominio de autorización;
+13. se separa persistencia de autorización;
+14. se separa auditoría de decisión;
+15. se separa presentación de causa;
+16. cada operación exige binding server-side;
+17. el cliente no selecciona un permiso más débil;
+18. se fija request scope;
+19. se fija el pipeline mínimo de operación;
+20. parsear no equivale a autorizar;
+21. resolver no equivale a autorizar;
+22. solo `ALLOW` válido continúa;
+23. un `ALLOW` no satisface reglas empresariales posteriores;
+24. se definen propiedades de cálculo puro;
+25. se definen propiedades de resolución autoritativa;
+26. el payload efectivo se reconstruye;
+27. redirects quedan en adapters de canal;
+28. errores se estructuran antes del copy;
+29. `@vento/contracts` no absorbe lógica empresarial runtime;
+30. `@vento/os-context` no absorbe programación laboral;
+31. helpers no reemplazan enforcement DB;
+32. una regla TS/DB consume una política semánticamente única;
+33. cambios de política exigen identidad/versionado coherente;
+34. previews de cliente permanecen no autoritativos;
+35. el package físico `@vento/os-context@0.1.0` permanece baseline transitorio;
+36. wrappers legacy actuales no se promueven;
+37. se prohíbe nuevo evaluador local;
+38. se define compatibilidad temporal de helpers legacy;
+39. VISO Semana y Mes conservan una sola fuente de programación;
+40. VISO comparte cálculo/versionado para reglas comunes;
+41. esta tarea no fija overnight;
+42. esta tarea no fija máximo de bloques;
+43. esta tarea no fija límite mensual;
+44. esta tarea no fija umbral preventivo;
+45. los valores físicos provisionales no se canonizan;
+46. agregados y exposición permanecen separados;
+47. conflictos se recalculan en servidor;
+48. guardar y publicar conservan comandos distintos;
+49. se exige paridad Semana/Mes;
+50. se exige paridad semántica TS/PostgreSQL cuando aplique;
+51. concurrencia crítica no se protege solo con precheck;
+52. notificación queda fuera de la autoridad del cálculo;
+53. tiempo y periodo deben ser coherentes;
+54. ambigüedad falla cerrada;
+55. operaciones masivas conservan universo y atomicidad;
+56. idempotencia no concede autoridad;
+57. write barrier invalida snapshots;
+58. simulación no se convierte en ejecución;
+59. dispositivo no se convierte en actor;
+60. privacidad y observabilidad quedan minimizadas;
+61. adopción conserva lineage por consumidor;
+62. se prohíbe un “god helper”;
+63. el helper VISO actual se clasifica en la instancia y no se canoniza por existencia;
+64. guards locales solo podrán sobrevivir como adapters no autoritativos;
+65. se define evidencia mínima por unidad;
+66. se define rollback sin reactivar autoridad legacy;
+67. no se autorizan cambios físicos desde el marcador global;
+68. no se crean ni modifican requisitos de prueba.
+
+#### 63. Límites
+
+Este marcador no certifica todavía:
+
+- código físico de helpers;
+- nombres de nuevos módulos internos;
+- layout físico definitivo;
+- publicación de packages;
+- materialización de `@vento/contracts`;
+- materialización estable de `@vento/os-context`;
+- migración de guards;
+- migración de Server Actions;
+- retiro de wrappers legacy;
+- implementación de RPC;
+- implementación de RLS;
+- constraints o triggers;
+- transacciones;
+- migraciones Supabase;
+- datos;
+- despliegues;
+- límite mensual definitivo de VISO;
+- umbral preventivo definitivo;
+- máximo definitivo de bloques;
+- overnight;
+- descanso definitivo;
+- redondeo;
+- política de excepciones;
+- reglas completas de conflicto;
+- mecanismo definitivo de concurrencia;
+- estados definitivos de publicación/corrección;
+- prerrequisitos administrativos sin turno;
+- comportamiento productivo.
+
+Owners pendientes y condición de salida:
+
+```text
+VISO-SCH-002
+→ aprobar horizontes y politica temporal
+→ entonces helpers temporales consumen esa definicion
+
+VISO-SCH-003
+→ aprobar bloques, duracion, overnight y descansos
+→ entonces los calculos comunes consumen esa politica
+
+VISO-SCH-004
+→ aprobar limite, advertencia, vigencia y excepciones
+→ entonces preview/server/DB consumen una politica definitiva
+
+VISO-SCH-005
+→ aprobar borrador, revision, publicacion y correccion
+→ entonces la composicion aplica las transiciones definitivas
+
+VISO-SCH-006
+→ aprobar conflictos, integridad y concurrencia
+→ entonces helper y DB materializan el enforcement definitivo
+
+VISO-SCH-007
+→ aprobar auditoria, eventos y notificaciones
+→ entonces el proceso materializa su post-efecto definitivo
+
+AUTH-SRV-018
+→ aprobar prerrequisitos administrativos sin turno
+→ entonces los helpers consumen esa clasificacion sin inferencias
+
+SHELL-AUTH-001..005
+→ materializar SDK, adapters, scope, gates y migracion de consumidores
+→ entonces las unidades dejan de depender de autoridad legacy
+```
+
+#### 64. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| --------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | no se ejecutó build durante el desarrollo documental                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| LOCAL     | `NOT_EXECUTED`   | no se ejecutaron comandos contra el checkout del usuario                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| REMOTA    | `PASS`           | se auditaron en solo lectura la continuidad vigente, el contrato de entrega, la topología `PER_IMPLEMENTATION_UNIT`, las políticas de formato y desarrollo, el archivo propietario de `AUTH-SRV-017`, `AUTH-SRV-004..016`, la arquitectura de `@vento/contracts` y `@vento/os-context`, el registro 04A AUTH/SHELL/VISO relevante, el baseline físico transitorio de `packages/os-context`, los helpers y guards actuales de programación VISO, las tareas `VISO-SCH-001..008` y los scripts documentales declarados en `package.json` |
+| OPERATIVA | `NOT_APPLICABLE` | el marcador no cambia operación real                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| FÍSICA    | `NOT_APPLICABLE` | no existe instancia física autorizada para esta tarea                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+
+#### 65. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** la reutilización de autorización y contexto compartidos, el request scope, la prohibición de autoridad legacy local, la migración de consumidores, el cálculo común de programación, la paridad entre Semana/Mes y entre runtime/base de datos, el recálculo server-side, la concurrencia, la auditoría y el rollback ya cuentan con cobertura canónica vigente. Esta tarea organiza esas obligaciones dentro del contrato de composición de helpers server sin introducir una regla verificable nueva ni modificar el registro de pruebas.
+
+#### 66. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificar el registro vigente:
+
+- `TREQ-AUTH-004` — misma decisión y razones equivalentes entre evaluadores;
+- `TREQ-AUTH-015` — evidencia correlacionable de contexto, decisión y resultado;
+- `TREQ-SHELL-002` — responsabilidades compartidas no se resuelven mediante copias divergentes;
+- `TREQ-SHELL-061` a `TREQ-SHELL-098` — SDK, adapters, request scope, write barrier, consumer registry, freeze legacy, migración, paridad, seguridad, compatibilidad, lineage y rollback;
+- `TREQ-VISO-025` — Semana y Mes consumen una sola fuente de programación;
+- `TREQ-VISO-026` — preview mensual recalcula minutos actuales, propuestos y proyectados;
+- `TREQ-VISO-029` y `TREQ-VISO-030` — bloques y duración se validan con reglas equivalentes;
+- `TREQ-VISO-032` a `TREQ-VISO-036` — política mensual versionada, total multi-sede, umbral/límite únicos y paridad de publicación;
+- `TREQ-VISO-038` a `TREQ-VISO-040` — recálculo de conflictos, concurrencia y rollback;
+- `TREQ-VISO-042` a `TREQ-VISO-045` — revalidación server-side, auditoría, notificación y error canónico.
+
+Estas referencias son trazabilidad heredada y no representan requisitos creados o modificados por `AUTH-SRV-017`.
+
+#### 67. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SRV-016 — Normalizar errores de autorización`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SRV-017 — Crear helpers server compartidos`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SRV-018 — Revisar acciones administrativas sin turno`
+
+
 ### [ ] AUTH-SRV-018 — Revisar acciones administrativas sin turno
 
 ### Package VISO mensual
