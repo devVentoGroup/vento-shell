@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **987** |
+| Tareas aprobadas | **988** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **607** |
+| Tareas no iniciadas | **606** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **61.92% (987/1594)** |
+| Porcentaje de completamiento | **61.98% (988/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-SRV-004 — Eliminar confianza exclusiva en la interfaz** |
-| Tarea actual | **AUTH-SRV-005 — Validar permiso en cada escritura** |
+| Última tarea aprobada | **AUTH-SRV-005 — Validar permiso en cada escritura** |
+| Tarea actual | **AUTH-SRV-006 — Validar sede en cada escritura** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-SRV-006 — Validar sede en cada escritura** |
+| Siguiente tarea | **AUTH-SRV-007 — Validar área en cada escritura** |
 | Bloque actual | **BLOQUE J — Protección de acciones de servidor** |
-| Progreso del bloque | **BLOQUE J: 4 de 18 aprobadas; AUTH-SRV-005 pendiente** |
+| Progreso del bloque | **BLOQUE J: 5 de 18 aprobadas; AUTH-SRV-006 pendiente** |
 | Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-SRV-005** |
-| Carril documental | **ACTIVO — AUTH-SRV-005** |
+| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-SRV-006** |
+| Carril documental | **ACTIVO — AUTH-SRV-006** |
 | Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-SRV-004` — Eliminar confianza exclusiva en la interfaz |
-| Tarea actual | `AUTH-SRV-005` — Validar permiso en cada escritura — **NO INICIADA** |
-| Siguiente tarea | `AUTH-SRV-006` — Validar sede en cada escritura |
+| Última aprobada | `AUTH-SRV-005` — Validar permiso en cada escritura |
+| Tarea actual | `AUTH-SRV-006` — Validar sede en cada escritura — **NO INICIADA** |
+| Siguiente tarea | `AUTH-SRV-007` — Validar área en cada escritura |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE J: 4 DE 18 APROBADAS — ACTUAL AUTH-SRV-005** |
+| CONTINUIDAD ACTIVA | **BLOQUE J: 5 DE 18 APROBADAS — ACTUAL AUTH-SRV-006** |
 | Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-SRV-004 — Eliminar confianza exclusiva en la interfaz
-        ↓
-TAREA ACTUAL
 AUTH-SRV-005 — Validar permiso en cada escritura
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-SRV-006 — Validar sede en cada escritura
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-SRV-007 — Validar área en cada escritura
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE J — 4 de 18 tareas aprobadas
+BLOQUE J — 5 de 18 tareas aprobadas
 ```

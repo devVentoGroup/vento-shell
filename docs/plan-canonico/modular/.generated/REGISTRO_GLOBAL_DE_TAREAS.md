@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **987** |
+| Aprobadas | **988** |
 | En propuesta | **0** |
-| No iniciadas | **607** |
+| No iniciadas | **606** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **61.92% (987/1594)** |
+| Porcentaje de completamiento | **61.98% (988/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-SRV-004` — Eliminar confianza exclusiva en la interfaz | ✅ APROBADA |
-| Tarea actual | `AUTH-SRV-005` — Validar permiso en cada escritura | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-SRV-006` — Validar sede en cada escritura | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-SRV-005` — Validar permiso en cada escritura | ✅ APROBADA |
+| Tarea actual | `AUTH-SRV-006` — Validar sede en cada escritura | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-SRV-007` — Validar área en cada escritura | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -872,7 +872,7 @@
 | ✅ APROBADA | `AUTH-SRV-002` | Inventariar API routes | `bloques/J_ACCIONES_DE_SERVIDOR/01_INVENTARIO_DE_SUPERFICIES_DE_SERVIDOR.md` |
 | ✅ APROBADA | `AUTH-SRV-003` | Inventariar RPC utilizadas | `bloques/J_ACCIONES_DE_SERVIDOR/01_INVENTARIO_DE_SUPERFICIES_DE_SERVIDOR.md` |
 | ✅ APROBADA | `AUTH-SRV-004` | Eliminar confianza exclusiva en la interfaz | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
-| ⬜ NO INICIADA | `AUTH-SRV-005` | Validar permiso en cada escritura | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
+| ✅ APROBADA | `AUTH-SRV-005` | Validar permiso en cada escritura | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-006` | Validar sede en cada escritura | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-007` | Validar área en cada escritura | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-008` | Validar turno cuando corresponda | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |

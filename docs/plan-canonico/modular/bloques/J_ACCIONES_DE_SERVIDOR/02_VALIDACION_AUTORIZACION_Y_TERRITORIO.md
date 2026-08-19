@@ -934,7 +934,960 @@ Estas referencias son trazabilidad heredada y no representan requisitos creados 
 `AUTH-SRV-005 — Validar permiso en cada escritura`
 
 
-### [ ] AUTH-SRV-005 — Validar permiso en cada escritura
+### ✅ AUTH-SRV-005 — Validar permiso en cada escritura
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-SRV-004 — Eliminar confianza exclusiva en la interfaz
+**Tarea siguiente:** AUTH-SRV-006 — Validar sede en cada escritura
+**Tipo de tarea:** Contrato global con materialización por unidad (`PER_IMPLEMENTATION_UNIT`) — contrato de autorización atómica por operación para que toda escritura protegida vincule en servidor su efecto efectivo con una única capacidad canónica exacta, evalúe ese permiso dentro del contexto resuelto y bloquee cualquier sustitución por acceso a aplicación, permiso de consulta, rol, pantalla visible o autorización implícita
+**Bloque:** BLOQUE J — Protección de acciones de servidor
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global; las futuras materializaciones ocurren únicamente mediante `AUTH-SRV-005::<implementation_unit_id>` después de que `DELIV-PKG-025::<package_id>` asigne la unidad y el paquete propietario supere `E5-GATE-008::<package_id>`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato obligatorio mediante el cual toda escritura protegida debe validar en servidor el permiso funcional exacto correspondiente a la operación que realmente va a ejecutar.
+
+La regla vinculante queda:
+
+```text
+OPERACIÓN EFECTIVA
+→ CLAVE DE PERMISO EXACTA
+→ EVALUACIÓN CANÓNICA
+→ DECISIÓN
+→ EFECTO
+```
+
+Queda prohibido:
+
+```text
+ACCESO A APLICACIÓN
+→ AUTORIZACIÓN DE ESCRITURA
+
+PERMISO DE CONSULTA
+→ AUTORIZACIÓN DE ESCRITURA
+
+ROL O CARGO
+→ AUTORIZACIÓN DE ESCRITURA
+
+BOTÓN VISIBLE
+→ AUTORIZACIÓN DE ESCRITURA
+```
+
+#### 2. Handoff recibido de `AUTH-SRV-004`
+
+`AUTH-SRV-004` entrega una mutación efectiva reconstruida en servidor:
+
+```text
+effective_mutation
+```
+
+`AUTH-SRV-005` añade inmediatamente:
+
+```text
+effective_mutation
+→ required_permission_key
+```
+
+La clave no se recibe del cliente.
+
+La clave se deriva en servidor a partir del tipo de operación efectiva.
+
+#### 3. Definición de escritura
+
+Para esta tarea se considera escritura toda operación que pueda cambiar estado empresarial o producir un efecto sensible, incluyendo:
+
+- `insert`;
+- `update`;
+- `upsert`;
+- `delete`;
+- creación de borrador;
+- modificación de borrador;
+- publicación;
+- cancelación;
+- aprobación;
+- rechazo;
+- activación;
+- desactivación;
+- asignación;
+- revocación;
+- carga o eliminación sensible;
+- ejecución de RPC mutante;
+- envío a una cola con efecto empresarial;
+- llamada a API externa que produzca un efecto;
+- operación privilegiada mediante cliente administrativo o service role.
+
+El verbo técnico no sustituye la acción empresarial.
+
+#### 4. Consulta no equivale a escritura
+
+Una operación de consulta puede requerir su propio permiso:
+
+```text
+view
+```
+
+pero:
+
+```text
+view
+≠ create
+view
+≠ update
+view
+≠ delete
+view
+≠ publish
+```
+
+Un actor autorizado para consultar un recurso no obtiene autoridad para modificarlo.
+
+#### 5. Acceso a aplicación no equivale a capacidad interna
+
+La clave:
+
+```text
+viso.access
+```
+
+solo demuestra acceso a la aplicación VISO cuando el contrato vigente así lo resuelva.
+
+No demuestra capacidad para:
+
+- crear turnos;
+- editar turnos;
+- eliminar borradores;
+- publicar programación;
+- administrar seguridad;
+- realizar cualquier otra mutación interna.
+
+La misma regla aplica a `<app>.access` en las demás aplicaciones.
+
+#### 6. Permiso atómico
+
+Una escritura cumple esta tarea únicamente cuando existe una relación determinista:
+
+```text
+write_operation
+→ one_exact_permission_key
+```
+
+No se permiten autorizaciones basadas en categorías vagas como:
+
+```text
+manage
+admin
+staff
+operator
+screen_access
+module_access
+```
+
+cuando la acción real puede expresarse mediante una capacidad más específica.
+
+#### 7. Convención de claves
+
+Toda clave utilizada deberá respetar la convención canónica:
+
+```text
+app.module.resource.action
+```
+
+Las acciones aprobadas incluyen, entre otras:
+
+```text
+view
+create
+update
+delete
+publish
+```
+
+La clave usada por una superficie debe existir en una versión vigente del catálogo antes de habilitar físicamente la operación.
+
+#### 8. Fuente de la clave requerida
+
+La clave debe provenir de un mapping controlado por servidor o de un contrato compartido versionado.
+
+Queda prohibido:
+
+```text
+request.permission
+formData.permission
+body.permission
+query.permission
+header.permission
+```
+
+como autoridad para elegir la capacidad que será evaluada.
+
+El cliente puede solicitar una operación.
+
+El servidor decide qué permiso exige esa operación.
+
+#### 9. Ausencia de clave
+
+Si una operación protegida no dispone de una clave canónica exacta:
+
+```text
+MISSING_PERMISSION_CONTRACT
+→ DENY
+→ ZERO_EFFECTS
+```
+
+La ausencia no se resuelve usando:
+
+- `<app>.access`;
+- un permiso `view`;
+- un rol;
+- una lista local de nombres;
+- una clave `manage`;
+- el permiso de una acción vecina.
+
+La materialización permanece bloqueada hasta registrar la capacidad exacta.
+
+#### 10. Clave desconocida o retirada
+
+Si una clave:
+
+- no existe en el catálogo vigente;
+- está retirada;
+- pertenece a otra aplicación;
+- pertenece a otro recurso;
+- no es compatible con la versión contractual;
+- no puede resolverse sin ambigüedad;
+
+la operación debe denegarse.
+
+No se buscará una coincidencia aproximada.
+
+#### 11. Resultado de evaluación
+
+La evaluación debe producir una decisión explícita:
+
+```text
+ALLOW
+DENY
+TECHNICAL_FAILURE
+```
+
+Solo:
+
+```text
+ALLOW
+```
+
+permite continuar hacia el efecto.
+
+`DENY` y `TECHNICAL_FAILURE` producen cero efectos.
+
+El contrato detallado de error pertenece a `AUTH-SRV-016`.
+
+#### 12. Binding y evaluación son pasos distintos
+
+La clave puede determinarse antes de resolver todo el contexto:
+
+```text
+CREATE SHIFT
+→ schedules.create
+```
+
+pero la evaluación definitiva debe usar el contexto efectivo requerido por el permiso.
+
+Por tanto:
+
+```text
+BIND PERMISSION KEY
+→ RESOLVE CONTEXT
+→ EVALUATE PERMISSION
+→ WRITE
+```
+
+Las tareas `AUTH-SRV-006..010` completan las dimensiones territoriales y operativas aplicables.
+
+#### 13. Prohibición de autorización por rol
+
+Ningún patrón equivalente a:
+
+```text
+if role == "propietario"
+if role == "gerente_general"
+if role in ADMIN_ROLES
+```
+
+sustituye la evaluación del permiso exacto.
+
+Los roles pueden participar en la resolución canónica de autoridad.
+
+No son el permiso final.
+
+#### 14. Prohibición de autorización por UI
+
+No es evidencia suficiente:
+
+- botón renderizado;
+- formulario disponible;
+- página protegida;
+- ruta visible;
+- menú disponible;
+- selector habilitado;
+- estado local `canEdit`;
+- prop React;
+- feature flag de presentación.
+
+Una llamada directa debe producir la misma decisión que la interfaz.
+
+#### 15. Prohibición de fallback expansivo
+
+Quedan prohibidos patrones equivalentes a:
+
+```text
+exact_permission
+OR app.access
+
+exact_permission
+OR view_permission
+
+exact_permission
+OR admin_role
+```
+
+cuando el segundo término amplíe la capacidad atómica.
+
+Un fallback solo puede existir cuando esté expresamente definido por un contrato canónico de alias o compatibilidad que preserve exactamente la misma capacidad.
+
+#### 16. Alias seguros
+
+Un alias legacy solo es admisible cuando existe una relación:
+
+```text
+legacy_key
+→ exactly_one_canonical_key
+```
+
+y ambas representan la misma capacidad.
+
+No se permite:
+
+```text
+legacy_view
+→ create + update + delete + publish
+```
+
+ni:
+
+```text
+legacy_manage
+→ todas las operaciones
+```
+
+por inferencia.
+
+#### 17. Nuevas claves y deny por defecto
+
+Toda clave nueva, dividida o reemplazada debe comenzar:
+
+```text
+DEFAULT_DENY
+```
+
+hasta que exista:
+
+- versión de catálogo que la contenga;
+- contrato compartido actualizado;
+- matriz o concesión explícita aplicable;
+- consumidores migrados;
+- pruebas del paquete;
+- evidencia de integración.
+
+Ningún actor hereda automáticamente una capacidad nueva por tener la clave antigua más amplia.
+
+#### 18. Catálogo y contrato compartido
+
+Cuando una unidad de `AUTH-SRV-005` necesite una clave inexistente, deberá materializarla bajo los contratos ya aprobados de:
+
+```text
+AUTH-CAT-017
+→ catálogo versionado
+
+SHELL-CON-003
+→ códigos de permisos centralizados
+```
+
+La superficie consumidora no deberá introducir una string huérfana como solución local.
+
+#### 19. Asignaciones y matrices
+
+Definir la clave no concede el permiso.
+
+Las asignaciones continúan bajo los contratos propietarios de:
+
+```text
+AUTH-RBAC-*
+VISO-AUTH-003
+VISO-AUTH-004
+```
+
+cuando correspondan al tipo de actor y capacidad.
+
+`AUTH-SRV-005` no asigna nuevos permisos a ningún rol.
+
+#### 20. Cliente administrativo y service role
+
+Antes de una escritura realizada con:
+
+```text
+admin client
+service role
+```
+
+debe existir una evaluación de autorización en contexto del principal y actor efectivos.
+
+La credencial privilegiada es un mecanismo técnico de ejecución.
+
+No es evidencia de autorización empresarial.
+
+#### 21. Orden antes del efecto
+
+La regla mínima es:
+
+```text
+resolve principal / actor
+→ reconstruct effective_mutation
+→ bind exact permission
+→ resolve required context
+→ evaluate exact permission
+→ validate remaining task-specific invariants
+→ execute effect
+```
+
+Ningún efecto parcial puede ocurrir antes de finalizar las validaciones aplicables.
+
+#### 22. Operaciones compuestas
+
+Si una solicitud produce múltiples acciones funcionales:
+
+```text
+operation_A
++
+operation_B
+```
+
+debe determinarse antes del primer efecto el conjunto completo de permisos requeridos.
+
+Si cualquiera falta:
+
+```text
+DENY ALL
+```
+
+salvo que el contrato empresarial defina explícitamente operaciones independientes y recuperables.
+
+#### 23. Operaciones masivas
+
+Una operación masiva no reduce el permiso requerido.
+
+Ejemplo:
+
+```text
+delete one draft
+delete many drafts
+```
+
+pueden compartir la misma capacidad `delete`, pero cada recurso sigue sujeto a sus validaciones territoriales y de estado.
+
+La autorización no se infiere porque la UI haya filtrado previamente el conjunto.
+
+#### 24. Autorización de RPC
+
+Cuando una superficie invoque una RPC mutante, la clave funcional requerida debe derivarse de la operación empresarial y no del nombre técnico de la función.
+
+La capa de servidor debe validar la capacidad antes de invocar una RPC privilegiada.
+
+La protección interna de la RPC, grants, RLS y `SECURITY DEFINER` continúa bajo las tareas de base de datos correspondientes.
+
+#### 25. Autorización en API routes
+
+Un método HTTP no constituye por sí mismo un permiso.
+
+Ejemplo:
+
+```text
+POST
+```
+
+puede representar:
+
+- create;
+- update;
+- approve;
+- publish;
+- perform.
+
+La route debe resolver la acción empresarial concreta y exigir su clave exacta.
+
+#### 26. Autorización en Server Actions
+
+El nombre de una Server Action puede fijar estáticamente la clave requerida.
+
+Ejemplo:
+
+```text
+publishMonthAction
+→ permiso de publicación
+```
+
+Una acción genérica que reciba un parámetro `action` debe mapear cada valor permitido a una clave en servidor y rechazar valores no reconocidos.
+
+#### 27. Baseline VISO mensual
+
+El baseline heredado conserva:
+
+```text
+vento-group-sas/vento-viso
+snapshot 8cf7c49a593c748cb6c99dd9b919b6947bcfec14
+```
+
+Superficies relevantes:
+
+```text
+src/app/staff/schedule/month/actions.ts
+src/app/staff/schedule/month/block-actions.ts
+src/app/api/viso/staff-schedule-shifts/route.ts
+src/app/staff/schedule/helpers.ts
+src/lib/auth/guard.ts
+src/lib/auth/permissions.ts
+```
+
+#### 28. Estado actual de consulta
+
+El permiso legacy observado es:
+
+```text
+viso.staff.schedule.view
+```
+
+Su normalización canónica aprobada es:
+
+```text
+viso.workforce.schedules.view
+```
+
+Esta capacidad pertenece exclusivamente a consulta de programación.
+
+No se reutiliza como capacidad de escritura.
+
+#### 29. Gap actual de escritura
+
+En el catálogo documental auditado no existen todavía claves canónicas materializadas para:
+
+```text
+schedules.create
+schedules.update
+schedules.delete
+schedules.publish
+```
+
+El baseline de VISO utiliza actualmente el permiso de consulta para Server Actions de escritura, y una API route observada admite además `viso.access` como autorización suficiente para modificar horarios.
+
+Ese baseline queda clasificado como:
+
+```text
+CONTROL_EXISTENTE_NO_ATOMICO
+```
+
+y no como cumplimiento de `AUTH-SRV-005`.
+
+#### 30. Familia objetivo VISO schedules
+
+`AUTH-SRV-005` define como capacidades objetivo de la familia:
+
+```text
+viso.workforce.schedules.view
+viso.workforce.schedules.create
+viso.workforce.schedules.update
+viso.workforce.schedules.delete
+viso.workforce.schedules.publish
+```
+
+Estado contractual:
+
+| Clave                              | Estado en el baseline              | Decisión                                                    |
+| ---------------------------------- | ---------------------------------- | ----------------------------------------------------------- |
+| `viso.workforce.schedules.view`    | normalización canónica ya definida | conserva consulta                                           |
+| `viso.workforce.schedules.create`  | no materializada                   | crear como capacidad atómica antes de habilitar escritura   |
+| `viso.workforce.schedules.update`  | no materializada                   | crear como capacidad atómica antes de habilitar edición     |
+| `viso.workforce.schedules.delete`  | no materializada                   | crear como capacidad atómica antes de habilitar eliminación |
+| `viso.workforce.schedules.publish` | no materializada                   | crear como capacidad atómica antes de habilitar publicación |
+
+Las cuatro claves nuevas inician `DEFAULT_DENY`.
+
+#### 31. Separación propietaria del package
+
+La regla del package queda materializada como:
+
+```text
+CONSULTA
+→ viso.workforce.schedules.view
+
+BORRADOR NUEVO
+→ viso.workforce.schedules.create
+
+EDICIÓN DE BORRADOR
+→ viso.workforce.schedules.update
+
+ELIMINACIÓN
+→ viso.workforce.schedules.delete
+
+PUBLICACIÓN
+→ viso.workforce.schedules.publish
+```
+
+Consulta, borrador, eliminación y publicación quedan separados.
+
+#### 32. `createMonthlyShiftsAction`
+
+Binding objetivo:
+
+```text
+createMonthlyShiftsAction
+→ viso.workforce.schedules.create
+```
+
+La acción no puede quedar autorizada por:
+
+```text
+viso.workforce.schedules.view
+viso.staff.schedule.view
+viso.access
+```
+
+aunque cualquiera de esas claves permita abrir la pantalla.
+
+#### 33. `createMonthlyScheduleBlocksAction`
+
+Binding objetivo:
+
+```text
+createMonthlyScheduleBlocksAction
+→ viso.workforce.schedules.create
+```
+
+La presencia de bloques laborales o de descanso no cambia la capacidad de creación.
+
+Las validaciones específicas de área, rol, puntos externos y estado continúan en sus tareas propietarias.
+
+#### 34. Edición mediante API route
+
+Para:
+
+```text
+POST /api/viso/staff-schedule-shifts
+```
+
+la acción debe distinguir:
+
+```text
+sin shiftId
+→ viso.workforce.schedules.create
+
+con shiftId
+→ viso.workforce.schedules.update
+```
+
+El parámetro `action` o la existencia de `shiftId` solo seleccionan una rama permitida.
+
+No seleccionan libremente una clave recibida desde cliente.
+
+#### 35. Eliminación individual
+
+Binding objetivo:
+
+```text
+deleteMonthlyDraftShiftAction
+→ viso.workforce.schedules.delete
+```
+
+La condición de que el turno sea borrador pertenece a `AUTH-SRV-011`.
+
+El permiso `delete` no implica que cualquier turno sea eliminable.
+
+#### 36. Eliminación masiva
+
+Binding objetivo:
+
+```text
+deleteMonthlyDraftsAction
+→ viso.workforce.schedules.delete
+```
+
+La autorización de la operación masiva no permite ampliar:
+
+- sede;
+- periodo;
+- trabajador;
+- estado;
+- conjunto de filas.
+
+Esas dimensiones continúan sujetas a `AUTH-SRV-006`, `AUTH-SRV-011` y `AUTH-SRV-012` cuando apliquen.
+
+#### 37. API `DELETE`
+
+Binding objetivo:
+
+```text
+DELETE /api/viso/staff-schedule-shifts
+→ viso.workforce.schedules.delete
+```
+
+El baseline actual usa `canManageSchedule`.
+
+La futura materialización debe eliminar como autorización final el fallback a:
+
+```text
+viso.access
+```
+
+y al permiso de consulta.
+
+#### 38. Publicación
+
+Binding objetivo:
+
+```text
+publishMonthAction
+→ viso.workforce.schedules.publish
+```
+
+La publicación no se autoriza mediante:
+
+```text
+create
+update
+delete
+view
+access
+```
+
+Tener autoridad para preparar borradores no concede autoridad para publicarlos.
+
+#### 39. Matriz de no implicación
+
+La familia VISO schedules cumple:
+
+| Permiso   | view         | create | update | delete | publish |
+| --------- | ------------ | ------ | ------ | ------ | ------- |
+| `view`    | sí           | no     | no     | no     | no      |
+| `create`  | no implícito | sí     | no     | no     | no      |
+| `update`  | no implícito | no     | sí     | no     | no      |
+| `delete`  | no implícito | no     | no     | sí     | no      |
+| `publish` | no implícito | no     | no     | no     | sí      |
+
+Cualquier combinación adicional requiere concesiones explícitas independientes.
+
+#### 40. Handoff a `AUTH-SRV-006`
+
+`AUTH-SRV-005` entrega:
+
+```text
+required_permission_key
+```
+
+La siguiente tarea debe demostrar que la escritura está limitada a una sede autorizada cuando el contrato del permiso o recurso sea territorial.
+
+Separación:
+
+```text
+005
+→ QUÉ CAPACIDAD
+
+006
+→ EN QUÉ SEDE
+```
+
+Una clave correcta con sede incorrecta sigue siendo `DENY`.
+
+#### 41. Handoff a `AUTH-SRV-007..013`
+
+La aprobación de una clave exacta tampoco demuestra:
+
+- área válida;
+- turno requerido;
+- rol operativo;
+- dispositivo compartido;
+- estado mutable;
+- ausencia de cruce cross-site;
+- ausencia de cruce cross-area.
+
+Esas decisiones permanecen en:
+
+```text
+AUTH-SRV-007
+AUTH-SRV-008
+AUTH-SRV-009
+AUTH-SRV-010
+AUTH-SRV-011
+AUTH-SRV-012
+AUTH-SRV-013
+```
+
+#### 42. Materialización futura
+
+La identidad física es:
+
+```text
+AUTH-SRV-005::<implementation_unit_id>
+```
+
+Cada unidad deberá registrar como mínimo:
+
+```text
+implementation_unit_id
+repository
+commit_before
+surface_identity[]
+write_operation[]
+required_permission_key[]
+permission_catalog_version
+legacy_permission_key[]
+legacy_fallback_removed[]
+permission_binding_source
+principal_resolution
+actor_resolution
+context_inputs
+authorization_result
+privileged_client_usage
+package_id[]
+change_set
+rollback
+validation_commands
+evidence
+commit_after
+```
+
+#### 43. Reglas para consumidores
+
+Todo consumidor deberá:
+
+1. importar la clave desde contrato compartido cuando esté disponible;
+2. evitar strings locales nuevas;
+3. mapear la operación a la clave en servidor;
+4. evaluar antes del efecto;
+5. fallar cerrado ante error;
+6. no usar `view` para escribir;
+7. no usar `<app>.access` para escribir;
+8. no usar rol como sustituto;
+9. no usar una clave de otra acción;
+10. conservar evidencia de la decisión.
+
+#### 44. Rollback
+
+El rollback de una futura unidad deberá poder:
+
+- restaurar el consumidor previo;
+- restaurar la versión anterior del catálogo cuando el paquete lo permita;
+- revertir contratos compartidos de forma compatible;
+- preservar asignaciones históricas;
+- preservar evidencia de autorizaciones y denegaciones;
+- evitar que la reversa convierta una clave nueva en acceso implícito.
+
+Un rollback no puede mantener código consumidor apuntando a una clave inexistente.
+
+#### 45. Criterios de aceptación
+
+`AUTH-SRV-005` queda documentalmente satisfecha cuando:
+
+1. toda escritura se vincula con una acción funcional exacta;
+2. la clave requerida se deriva en servidor;
+3. acceso a aplicación no concede escritura;
+4. permiso de consulta no concede escritura;
+5. roles no sustituyen permisos;
+6. aliases no amplían capacidades;
+7. claves nuevas nacen denegadas;
+8. operaciones compuestas resuelven todos sus permisos antes del primer efecto;
+9. VISO schedules separa `view`, `create`, `update`, `delete` y `publish`;
+10. `createMonthlyShiftsAction` y `createMonthlyScheduleBlocksAction` quedan vinculadas a `create`;
+11. edición de turno queda vinculada a `update`;
+12. eliminaciones quedan vinculadas a `delete`;
+13. `publishMonthAction` queda vinculada a `publish`;
+14. el fallback actual a `viso.access` o `staff.schedule.view` no se considera cumplimiento;
+15. se preserva el handoff territorial a `AUTH-SRV-006`;
+16. no se autorizan cambios físicos desde el marcador global;
+17. no se crean ni modifican requisitos de prueba.
+
+#### 46. Límites
+
+Este marcador no certifica todavía:
+
+- quién recibe las nuevas claves;
+- sede autorizada;
+- área autorizada;
+- turno requerido;
+- modalidad administrativa u operativa final;
+- rol operativo;
+- dispositivo compartido;
+- estado actual del recurso;
+- protección cross-site;
+- protección cross-area;
+- grants;
+- RLS;
+- seguridad interna de RPC;
+- `SECURITY DEFINER`;
+- error UX final;
+- auditoría completa;
+- idempotencia;
+- atomicidad;
+- despliegue del catálogo;
+- migración física de consumidores.
+
+Las responsabilidades anteriores conservan sus owners canónicos.
+
+#### 47. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                                                     |
+| --------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | no se ejecutó build durante el desarrollo documental                                                                                                                                                                                          |
+| LOCAL     | `NOT_EXECUTED`   | no se ejecutaron comandos contra el checkout del usuario                                                                                                                                                                                      |
+| REMOTA    | `PASS`           | se auditaron en solo lectura la continuidad vigente, el owner de `AUTH-SRV-005`, la convención canónica de permisos, el catálogo VISO, el helper de autorización, las superficies mensuales, la API de turnos y los fragmentos 04A relevantes |
+| OPERATIVA | `NOT_APPLICABLE` | el marcador no cambia la operación real                                                                                                                                                                                                       |
+| FÍSICA    | `NOT_APPLICABLE` | no existe instancia física autorizada para esta tarea                                                                                                                                                                                         |
+
+#### 48. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** la regla de permiso exacto por mutación y la separación entre borrador y publicación ya disponen de cobertura vigente en el registro canónico. Esta tarea especifica el contrato que consumirán esas pruebas y no introduce una regla verificable sin requisito existente.
+
+#### 49. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificar el registro vigente:
+
+- `TREQ-AUTH-002` — toda clave consumida debe existir en el catálogo vigente y usar la convención aprobada;
+- `TREQ-AUTH-006` — campos y operaciones privilegiadas requieren capacidad y proyección autorizadas;
+- `TREQ-AUTH-013` — cada mutación valida permiso exacto en servidor y no puede eludirse desde URL, formulario, API o RPC;
+- `TREQ-VISO-013` — cada escritura de la ruta mensual requiere protección de servidor;
+- `TREQ-VISO-037` — guardar borrador y publicar son comandos separados, con permisos y resultados distintos;
+- `TREQ-VISO-042` — persona, sede, área, rol, fechas y alcance se revalidan en servidor.
+
+Estas referencias son trazabilidad heredada y no representan requisitos creados o modificados por `AUTH-SRV-005`.
+
+#### 50. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SRV-004 — Eliminar confianza exclusiva en la interfaz`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SRV-005 — Validar permiso en cada escritura`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SRV-006 — Validar sede en cada escritura`
+
+
 ### [ ] AUTH-SRV-006 — Validar sede en cada escritura
 ### [ ] AUTH-SRV-007 — Validar área en cada escritura
 ### [ ] AUTH-SRV-008 — Validar turno cuando corresponda
