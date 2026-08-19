@@ -899,7 +899,952 @@ Esta tarea documental no:
 `AUTH-SRV-002 — Inventariar API routes`
 
 
-### [ ] AUTH-SRV-002 — Inventariar API routes
+### ✅ AUTH-SRV-002 — Inventariar API routes
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-SRV-001 — Inventariar Server Actions de todos los repositorios
+**Tarea siguiente:** AUTH-SRV-003 — Inventariar RPC utilizadas
+**Tipo de tarea:** Contrato global con materialización por unidad (`PER_IMPLEMENTATION_UNIT`) — inventario técnico transversal y reproducible de superficies HTTP/API existentes, su identidad por método y ruta, efectos observables, controles presentes y lineage requerido para futuras unidades de implementación
+**Bloque:** BLOQUE J — Protección de acciones de servidor
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/01_INVENTARIO_DE_SUPERFICIES_DE_SERVIDOR.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global; las futuras materializaciones ocurren únicamente por `AUTH-SRV-002::<implementation_unit_id>` después de asignación de `implementation_unit_id` por `DELIV-PKG-025::<package_id>` y `E5-GATE-008::<package_id>` aplicable
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Establecer un inventario canónico, reproducible y trazable de las superficies HTTP/API observables en los repositorios actuales relacionados con Vento OS.
+
+La tarea registra:
+
+- endpoint;
+- método HTTP;
+- ruta observable;
+- archivo o módulo fuente;
+- repositorio;
+- commit del snapshot;
+- clase de efecto;
+- evidencia de autenticación, autorización o control existente cuando sea observable;
+- dependencias relevantes;
+- estado de materialización;
+- drift detectable.
+
+La mera existencia de un endpoint o de un control observado no constituye aprobación de seguridad, autorización, aislamiento territorial, auditoría ni aptitud productiva.
+
+#### 2. Frontera de responsabilidad
+
+`AUTH-SRV-002` inventaría superficies HTTP/API.
+
+No decide todavía:
+
+- si el endpoint confía en la interfaz;
+- si revalida el permiso correcto;
+- si valida sede;
+- si valida área;
+- si valida turno;
+- si valida rol;
+- si valida dispositivo compartido;
+- si revalida estado actual;
+- si impide operaciones cross-site o cross-area;
+- si registra auditoría suficiente;
+- si el manejo de errores es seguro;
+- si una credencial privilegiada está correctamente aislada;
+- si una ruta pública debería ser pública;
+- si un proxy a servicio externo necesita rate limiting;
+- si una descarga o upload aplica límites suficientes;
+- si una mutación HTTP es idempotente o transaccionalmente correcta.
+
+Esas decisiones pertenecen a las tareas posteriores de `AUTH-SRV-004..018`.
+
+`AUTH-SRV-001` conserva Server Actions.
+
+`AUTH-SRV-003` conserva RPC utilizadas desde servidor.
+
+#### 3. Regla de inclusión
+
+Se incluye como superficie HTTP/API primaria toda identidad observable que cumpla al menos una de estas condiciones:
+
+1. Route Handler materializado mediante archivo especial `route.ts` o equivalente admitido por el framework;
+2. endpoint declarado en un router HTTP explícito;
+3. endpoint despachado directamente por un servidor HTTP propio;
+4. endpoint histórico canónico confirmado contra el código del snapshot;
+5. método distinto sobre la misma ruta cuando el código expone contratos HTTP distintos.
+
+La unidad de inventario no es solamente el archivo.
+
+Dos métodos distintos sobre la misma ruta son dos identidades HTTP distintas.
+
+#### 4. Regla de exclusión y clasificación vecina
+
+Quedan fuera del inventario primario:
+
+- Server Actions, reservadas a `AUTH-SRV-001`;
+- RPC, reservadas a `AUTH-SRV-003`;
+- funciones SQL;
+- triggers;
+- Edge Functions como identidad primaria cuando no forman parte del router HTTP de la aplicación auditada;
+- componentes React;
+- páginas;
+- layouts;
+- middleware como identidad de endpoint;
+- llamadas salientes a APIs externas;
+- helpers server-only;
+- tests y fixtures;
+- rutas mencionadas únicamente en documentación;
+- archivos route-like cuya extensión o ubicación no materialice una ruta del framework.
+
+Una superficie excluida puede registrarse como evidencia de drift sin entrar al conteo primario.
+
+#### 5. Modelo de identidad
+
+La identidad mínima queda:
+
+```text
+repository
++ commit
++ source_path
++ http_method
++ route_path
+= api_route_identity
+```
+
+No se asigna un `api_route_id` artificial.
+
+La ruta dinámica conserva sus tokens declarativos:
+
+```text
+[id]
+:id
+```
+
+sin reemplazarlos por valores concretos.
+
+La identidad física futura queda:
+
+```text
+AUTH-SRV-002::<implementation_unit_id>
+```
+
+y puede ser consumida por uno o varios `package_id` mediante lineage explícito sin duplicar la misma implementación.
+
+#### 6. Regla para múltiples métodos sobre una ruta
+
+Cuando un mismo contenedor expone:
+
+```text
+GET /x
+POST /x
+DELETE /x
+```
+
+se registran tres identidades.
+
+Por tanto:
+
+```text
+source_container_count
+≠
+api_route_identity_count
+```
+
+El primer conteo mide contenedores de código.
+
+El segundo mide contratos HTTP observables por método y ruta.
+
+#### 7. Corte de auditoría
+
+El baseline conserva los mismos snapshots reconciliados por `AUTH-SRV-001`:
+
+| Repositorio                       | Commit del snapshot                        |
+| --------------------------------- | ------------------------------------------ |
+| `vento-group-sas/vento-shell`     | `2e12490a1d159a6152032d5472b937c05fa4b2bb` |
+| `vento-group-sas/vento-viso`      | `8cf7c49a593c748cb6c99dd9b919b6947bcfec14` |
+| `vento-group-sas/vento-nexo`      | `250097e3f615e895dbcc7236c5262f72c406235a` |
+| `vento-group-sas/vento-fogo`      | `9bc068d3c5afb7f34ae58c8664685feb5aad812a` |
+| `vento-group-sas/vento-origo`     | `131205837d1b08ded1cb51bb4c9ec914fa00afd6` |
+| `vento-group-sas/vento-pulso`     | `383d52b20c6af10066d8f2f1f2b137e90b588173` |
+| `vento-group-sas/vento-numera`    | `41050e3387db4e74216e4e42bc575490cc40fbb1` |
+| `vento-group-sas/vento-anima`     | `8bcfaaa3b6ab79d5839c03719edec7b50fd97d2d` |
+| `carlosibarraariza/Vento-Group`   | `aa5290cb2336681bf0a84bcf6dc03faca10c7c0d` |
+| `carlosibarraariza/vento-pass`    | `b5a4aec908ef12226f798078577ab089a29ccda2` |
+| `carlosibarraariza/vento-talento` | `dd39071daf587e3f006df62b646f8ad4b1b8de2c` |
+| `carlosibarraariza/vento-vital`   | `92d43bfac1f42d379928608005375a4b09bb04a4` |
+
+AURA continúa excluido como repositorio porque no existe un repositorio AURA confirmado en la línea canónica.
+
+#### 8. Regla de snapshot y drift
+
+Los resultados pertenecen exclusivamente a los commits declarados.
+
+Si cambia el commit:
+
+```text
+snapshot anterior
+≠
+inventario actual automático
+```
+
+La futura instancia por `implementation_unit_id` deberá reconciliar:
+
+```text
+added
+removed
+renamed
+moved
+method_changed
+path_changed
+control_changed
+effect_changed
+unchanged
+```
+
+sin borrar historia silenciosamente.
+
+#### 9. Resultado agregado
+
+El universo reconciliado produce:
+
+```text
+REPOSITORIOS_RECONCILIADOS = 12
+REPOSITORIOS_CON_SUPERFICIE_HTTP_PRIMARIA = 4
+REPOSITORIOS_SIN_SUPERFICIE_HTTP_PRIMARIA = 8
+CONTENEDORES_HTTP_PRIMARIOS = 38
+IDENTIDADES_HTTP_METODO_RUTA = 64
+ARTEFACTOS_ROUTE_LIKE_EXCLUIDOS_POR_DRIFT = 1
+```
+
+Los cuatro repositorios con superficie primaria son:
+
+```text
+vento-group-sas/vento-viso
+vento-group-sas/vento-nexo
+vento-group-sas/vento-origo
+carlosibarraariza/vento-vital
+```
+
+#### 10. Distribución por repositorio
+
+| Repositorio     | Contenedores primarios | Identidades método+ruta | Observación                                                      |
+| --------------- | ---------------------: | ----------------------: | ---------------------------------------------------------------- |
+| `vento-shell`   |                      0 |                       0 | no se detecta Route Handler ni router HTTP propio en el snapshot |
+| `vento-viso`    |                     10 |                      12 | Next App Router                                                  |
+| `vento-nexo`    |                     11 |                      13 | Next App Router                                                  |
+| `vento-fogo`    |                      0 |                       0 | existe `route.tsx` route-like excluido del conteo primario       |
+| `vento-origo`   |                      1 |                       1 | Route Handler dinámico de PDF                                    |
+| `vento-pulso`   |                      0 |                       0 | sin superficie primaria detectada                                |
+| `vento-numera`  |                      0 |                       0 | sin superficie primaria detectada                                |
+| `vento-anima`   |                      0 |                       0 | sin superficie primaria detectada                                |
+| `Vento-Group`   |                      0 |                       0 | sin superficie primaria detectada                                |
+| `vento-pass`    |                      0 |                       0 | sin superficie primaria detectada                                |
+| `vento-talento` |                      0 |                       0 | sin superficie primaria detectada                                |
+| `vento-vital`   |                     16 |                      38 | servidor HTTP Node propio + 15 módulos de rutas                  |
+
+#### 11. Distribución por método HTTP
+
+Las 64 identidades se distribuyen:
+
+```text
+GET = 29
+POST = 27
+PUT = 5
+DELETE = 3
+TOTAL = 64
+```
+
+No se detecta una identidad primaria explícita `PATCH`.
+
+`HEAD` u `OPTIONS` implícitos del framework no se contabilizan como identidad propia salvo declaración explícita en código.
+
+#### 12. Inventario primario — VISO
+
+Snapshot:
+
+```text
+vento-group-sas/vento-viso
+8cf7c49a593c748cb6c99dd9b919b6947bcfec14
+```
+
+Se detectan 10 contenedores `route.ts` y 12 identidades método+ruta:
+
+| Método   | Ruta                                        | Fuente                                                      | Control observado                                                      | Efecto observable                         |
+| -------- | ------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------- |
+| `GET`    | `/api/health`                               | `src/app/api/health/route.ts`                               | sin autenticación visible en el handler                                | health response                           |
+| `GET`    | `/api/viso/attendance-report`               | `src/app/api/viso/attendance-report/route.ts`               | sesión Supabase + `has_permission("viso.access")`                      | lectura y exportación de asistencia       |
+| `POST`   | `/api/viso/menu/reorder`                    | `src/app/api/viso/menu/reorder/route.ts`                    | `requireAppAccess({ appId: "viso" })`                                  | reordenamiento de catálogo/menú           |
+| `POST`   | `/api/viso/staff-schedule-hidden-employees` | `src/app/api/viso/staff-schedule-hidden-employees/route.ts` | usuario + permisos de acceso/programación                              | ocultamiento de trabajadores              |
+| `DELETE` | `/api/viso/staff-schedule-hidden-employees` | `src/app/api/viso/staff-schedule-hidden-employees/route.ts` | usuario + permisos de acceso/programación                              | revocación de ocultamiento                |
+| `POST`   | `/api/viso/staff-schedule-shifts`           | `src/app/api/viso/staff-schedule-shifts/route.ts`           | usuario + permiso de programación + controles de sede/turno observados | alta o actualización de turnos            |
+| `DELETE` | `/api/viso/staff-schedule-shifts`           | `src/app/api/viso/staff-schedule-shifts/route.ts`           | usuario + permiso de programación + controles de estado observados     | eliminación de turnos                     |
+| `POST`   | `/api/viso/upload-commercial-menu-image`    | `src/app/api/viso/upload-commercial-menu-image/route.ts`    | usuario + `viso.menu.images.manage`                                    | optimización y carga a Storage            |
+| `POST`   | `/api/viso/upload-logo`                     | `src/app/api/viso/upload-logo/route.ts`                     | usuario + rol propietario/gerente general                              | carga de logo a Storage                   |
+| `POST`   | `/api/viso/upload-product-image`            | `src/app/api/viso/upload-product-image/route.ts`            | usuario + rol propietario/gerente general                              | carga de imagen de producto               |
+| `POST`   | `/api/viso/upload-website-media`            | `src/app/api/viso/upload-website-media/route.ts`            | usuario + rol propietario/gerente general                              | carga de imagen/video a Storage           |
+| `POST`   | `/menu/[id]/personalizaciones`              | `src/app/menu/[id]/personalizaciones/route.ts`              | `requireAppAccess({ appId: "viso" })`                                  | mutación de personalizaciones de catálogo |
+
+Los controles se registran como evidencia existente.
+
+No se declaran suficientes ni correctos por este inventario.
+
+#### 13. Clasificación operativa — VISO
+
+Las 12 identidades se agrupan:
+
+```text
+HEALTH = 1
+LECTURA_EXPORTACION = 1
+MUTACION_CATALOGO = 2
+MUTACION_PROGRAMACION = 4
+UPLOAD_STORAGE = 4
+```
+
+Una ruta puede tocar cliente administrativo o Storage sin que este marcador apruebe su gobierno.
+
+Las rutas de programación merecen trazabilidad posterior específica por:
+
+- sede;
+- trabajador;
+- estado del turno;
+- periodo;
+- solapamiento;
+- publicación;
+- permiso operativo.
+
+#### 14. Inventario primario — NEXO
+
+Snapshot:
+
+```text
+vento-group-sas/vento-nexo
+250097e3f615e895dbcc7236c5262f72c406235a
+```
+
+Se detectan 11 contenedores `route.ts` y 13 identidades método+ruta:
+
+| Método   | Ruta                                      | Fuente                                                    | Control observado                                              | Efecto observable                      |
+| -------- | ----------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------- | -------------------------------------- |
+| `POST`   | `/api/inventory/adjust`                   | `src/app/api/inventory/adjust/route.ts`                   | usuario Supabase; validaciones de sede/LOC/posición observadas | ajuste de stock y movimientos          |
+| `GET`    | `/api/inventory/catalog/export-suppliers` | `src/app/api/inventory/catalog/export-suppliers/route.ts` | sesión Supabase observable                                     | exportación Excel de maestro           |
+| `POST`   | `/api/inventory/catalog/upload-image`     | `src/app/api/inventory/catalog/upload-image/route.ts`     | usuario + rol propietario/gerente general/bodeguero            | Storage + galería de producto          |
+| `POST`   | `/api/inventory/count-initial/approve`    | `src/app/api/inventory/count-initial/approve/route.ts`    | usuario; sesión de conteo cerrada                              | aplica ajustes mediante RPC            |
+| `POST`   | `/api/inventory/count-initial`            | `src/app/api/inventory/count-initial/route.ts`            | usuario                                                        | crea sesión y líneas de conteo         |
+| `GET`    | `/api/inventory/locations`                | `src/app/api/inventory/locations/route.ts`                | usuario actual + RLS                                           | lectura de LOC activos                 |
+| `GET`    | `/api/inventory/lpns`                     | `src/app/api/inventory/lpns/route.ts`                     | usuario actual + RLS                                           | lectura de LPN                         |
+| `GET`    | `/api/inventory/movements/export`         | `src/app/api/inventory/movements/export/route.ts`         | usuario + rol gerente general/propietario                      | exportación CSV de movimientos         |
+| `GET`    | `/api/inventory/stock/export-by-loc`      | `src/app/api/inventory/stock/export-by-loc/route.ts`      | usuario + rol gerente general/propietario                      | exportación CSV de stock por LOC       |
+| `POST`   | `/api/labelary`                           | `src/app/api/labelary/route.ts`                           | sin autenticación visible en el handler                        | proxy ZPL hacia Labelary y retorno PNG |
+| `GET`    | `/api/printing/layouts`                   | `src/app/api/printing/layouts/route.ts`                   | usuario Supabase                                               | lectura de plantillas                  |
+| `POST`   | `/api/printing/layouts`                   | `src/app/api/printing/layouts/route.ts`                   | usuario Supabase                                               | upsert de plantilla                    |
+| `DELETE` | `/api/printing/layouts`                   | `src/app/api/printing/layouts/route.ts`                   | usuario Supabase                                               | eliminación de plantilla               |
+
+#### 15. Clasificación operativa — NEXO
+
+Las 13 identidades incluyen:
+
+```text
+LECTURA = 3
+EXPORTACION = 3
+MUTACION_INVENTARIO = 3
+UPLOAD_STORAGE = 1
+PROXY_EXTERNO = 1
+PLANTILLAS_IMPRESION = 3
+```
+
+La presencia de autenticación no sustituye evaluación posterior de:
+
+- autorización;
+- alcance por sede;
+- alcance por LOC;
+- alcance por posición;
+- rol;
+- atomicidad de stock;
+- consistencia entre tablas;
+- privilegio de RPC;
+- exposición de proxy externo;
+- límites de carga y descarga.
+
+#### 16. Dependencia endpoint ↔ RPC en NEXO
+
+Se observan endpoints que invocan RPC.
+
+Ejemplos:
+
+```text
+POST /api/inventory/count-initial
+→ create_inventory_count_session_with_lines
+
+POST /api/inventory/count-initial/approve
+→ apply_inventory_count_adjustments
+```
+
+y `POST /api/inventory/adjust` puede invocar reconciliación mediante RPC.
+
+La regla es:
+
+```text
+endpoint HTTP
+≠
+RPC
+```
+
+La identidad HTTP permanece en `AUTH-SRV-002`.
+
+La identidad RPC se inventariará en `AUTH-SRV-003`.
+
+La relación entre ambas deberá conservar lineage explícito.
+
+#### 17. Inventario primario — ORIGO
+
+Snapshot:
+
+```text
+vento-group-sas/vento-origo
+131205837d1b08ded1cb51bb4c9ec914fa00afd6
+```
+
+Se detecta una identidad:
+
+| Método | Ruta                        | Fuente                                      | Control observado                                             | Efecto observable                             |
+| ------ | --------------------------- | ------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------- |
+| `GET`  | `/purchase-orders/[id]/pdf` | `src/app/purchase-orders/[id]/pdf/route.ts` | token público firmado válido o fallback de sesión autenticada | generación/descarga de PDF de orden de compra |
+
+El handler dispone de una ruta privilegiada mediante cliente service-role para el flujo público validado por token.
+
+Este hecho queda como evidencia técnica y no como aprobación de aislamiento o de duración/alcance del token.
+
+#### 18. Regla para endpoints públicos por token
+
+Cuando una ruta acepta:
+
+```text
+token válido
+OR
+sesión autenticada
+```
+
+debe conservarse explícitamente esa bifurcación.
+
+La futura materialización deberá poder demostrar, cuando aplique:
+
+- propósito del token;
+- objeto al que autoriza;
+- firma;
+- expiración;
+- revocabilidad;
+- imposibilidad de cambiar el recurso autorizado;
+- tratamiento de replay;
+- logging;
+- no exposición de service role.
+
+`AUTH-SRV-002` no declara cumplidos esos controles.
+
+#### 19. Inventario primario — VITAL
+
+Snapshot:
+
+```text
+carlosibarraariza/vento-vital
+92d43bfac1f42d379928608005375a4b09bb04a4
+```
+
+VITAL usa servidor HTTP Node propio.
+
+Contenedores:
+
+```text
+apps/api/src/server.js
++ 15 módulos *Routes.js
+= 16 contenedores HTTP primarios
+```
+
+El servidor expone `GET /health` y despacha namespaces `/api/*` a módulos específicos.
+
+#### 20. Inventario VITAL — health, hoy, wear y profile
+
+| Método | Ruta                     | Fuente                                          |
+| ------ | ------------------------ | ----------------------------------------------- |
+| `GET`  | `/health`                | `apps/api/src/server.js`                        |
+| `GET`  | `/api/hoy`               | `apps/api/src/modules/hoy/hoyRoutes.js`         |
+| `GET`  | `/api/hoy/feed`          | `apps/api/src/modules/hoy/hoyRoutes.js`         |
+| `POST` | `/api/hoy/:id/complete`  | `apps/api/src/modules/hoy/hoyRoutes.js`         |
+| `POST` | `/api/hoy/:id/snooze`    | `apps/api/src/modules/hoy/hoyRoutes.js`         |
+| `POST` | `/api/hoy/:id/reprogram` | `apps/api/src/modules/hoy/hoyRoutes.js`         |
+| `GET`  | `/api/wear/hoy`          | `apps/api/src/modules/wear/wearRoutes.js`       |
+| `GET`  | `/api/profile`           | `apps/api/src/modules/profile/profileRoutes.js` |
+| `PUT`  | `/api/profile`           | `apps/api/src/modules/profile/profileRoutes.js` |
+
+#### 21. Inventario VITAL — notifications, starter, modules y safety
+
+| Método | Ruta                              | Fuente                                                      |
+| ------ | --------------------------------- | ----------------------------------------------------------- |
+| `GET`  | `/api/notifications/plans`        | `apps/api/src/modules/notifications/notificationsRoutes.js` |
+| `POST` | `/api/notifications/plans/upsert` | `apps/api/src/modules/notifications/notificationsRoutes.js` |
+| `GET`  | `/api/notifications/intents`      | `apps/api/src/modules/notifications/notificationsRoutes.js` |
+| `GET`  | `/api/starter/catalog`            | `apps/api/src/modules/starter/starterRoutes.js`             |
+| `POST` | `/api/starter/create`             | `apps/api/src/modules/starter/starterRoutes.js`             |
+| `GET`  | `/api/modules/catalog`            | `apps/api/src/modules/modules/modulesRoutes.js`             |
+| `GET`  | `/api/modules/me`                 | `apps/api/src/modules/modules/modulesRoutes.js`             |
+| `PUT`  | `/api/modules/me`                 | `apps/api/src/modules/modules/modulesRoutes.js`             |
+| `POST` | `/api/safety/intake`              | `apps/api/src/modules/safety/safetyRoutes.js`               |
+| `GET`  | `/api/safety/status`              | `apps/api/src/modules/safety/safetyRoutes.js`               |
+
+#### 22. Inventario VITAL — onboarding, telemetry, sports-profile y planning
+
+| Método | Ruta                       | Fuente                                                      |
+| ------ | -------------------------- | ----------------------------------------------------------- |
+| `POST` | `/api/onboarding/complete` | `apps/api/src/modules/onboarding/onboardingRoutes.js`       |
+| `POST` | `/api/telemetry/track`     | `apps/api/src/modules/telemetry/telemetryRoutes.js`         |
+| `POST` | `/api/telemetry/decision`  | `apps/api/src/modules/telemetry/telemetryRoutes.js`         |
+| `GET`  | `/api/telemetry/decisions` | `apps/api/src/modules/telemetry/telemetryRoutes.js`         |
+| `GET`  | `/api/sports-profile/me`   | `apps/api/src/modules/sportsProfile/sportsProfileRoutes.js` |
+| `PUT`  | `/api/sports-profile/me`   | `apps/api/src/modules/sportsProfile/sportsProfileRoutes.js` |
+| `GET`  | `/api/planning/weekly`     | `apps/api/src/modules/planning/planningRoutes.js`           |
+| `GET`  | `/api/planning/cycle`      | `apps/api/src/modules/planning/planningRoutes.js`           |
+
+#### 23. Inventario VITAL — staff, AI, summary y nutrition
+
+| Método | Ruta                                | Fuente                                              |
+| ------ | ----------------------------------- | --------------------------------------------------- |
+| `GET`  | `/api/staff/football-presets`       | `apps/api/src/modules/staff/staffRoutes.js`         |
+| `POST` | `/api/staff/football-presets/apply` | `apps/api/src/modules/staff/staffRoutes.js`         |
+| `GET`  | `/api/staff/squad-weekly-overview`  | `apps/api/src/modules/staff/staffRoutes.js`         |
+| `POST` | `/api/ai/plan/preview`              | `apps/api/src/modules/ai/aiRoutes.js`               |
+| `POST` | `/api/ai/plan/apply`                | `apps/api/src/modules/ai/aiRoutes.js`               |
+| `POST` | `/api/ai/hoy/adjust`                | `apps/api/src/modules/ai/aiRoutes.js`               |
+| `GET`  | `/api/summary/weekly`               | `apps/api/src/modules/summary/summaryRoutes.js`     |
+| `GET`  | `/api/nutrition/profile`            | `apps/api/src/modules/nutrition/nutritionRoutes.js` |
+| `PUT`  | `/api/nutrition/profile`            | `apps/api/src/modules/nutrition/nutritionRoutes.js` |
+| `PUT`  | `/api/nutrition/log`                | `apps/api/src/modules/nutrition/nutritionRoutes.js` |
+| `GET`  | `/api/nutrition/logs`               | `apps/api/src/modules/nutrition/nutritionRoutes.js` |
+
+Resultado VITAL:
+
+```text
+GET = 20
+POST = 13
+PUT = 5
+DELETE = 0
+TOTAL = 38
+```
+
+#### 24. Frontera de control — VITAL
+
+Los módulos de rutas delegan en controllers y services.
+
+Por tanto, para VITAL:
+
+```text
+route_module
+→ controller
+→ service
+→ table/RPC/external dependency
+```
+
+`AUTH-SRV-002` inventaría la superficie HTTP.
+
+No asume que autenticación o autorización se ejecuta solamente porque exista:
+
+```text
+apps/api/src/lib/jwt.js
+```
+
+o porque un service consuma Supabase.
+
+La evidencia de control debe demostrarse en la cadena efectiva durante materialización.
+
+#### 25. Drift observado — FOGO
+
+Snapshot:
+
+```text
+vento-group-sas/vento-fogo
+9bc068d3c5afb7f34ae58c8664685feb5aad812a
+```
+
+Existe:
+
+```text
+src/app/recipes/pdf/route.tsx
+```
+
+El archivo contiene una función `GET` y lógica real de generación de PDF con `requireAppAccess`.
+
+Sin embargo, se clasifica:
+
+```text
+ROUTE_LIKE_DRIFT
+```
+
+y no entra al conteo primario porque el artefacto no usa la extensión especial esperada para un Route Handler materializado.
+
+Resultado:
+
+```text
+FOGO_PRIMARY_API_ROUTE_COUNT = 0
+FOGO_ROUTE_LIKE_DRIFT_COUNT = 1
+```
+
+La futura reconciliación deberá decidir si:
+
+- el archivo es código muerto;
+- existe una configuración no observada que lo materialice;
+- debe renombrarse a una convención válida;
+- debe reemplazarse por otra superficie;
+- debe eliminarse.
+
+Esta tarea no autoriza ninguna de esas acciones.
+
+#### 26. Repositorios sin superficie HTTP primaria detectada
+
+En los snapshots declarados no se detecta Route Handler, Pages API router ni servidor/router HTTP propio primario en:
+
+```text
+vento-group-sas/vento-shell
+vento-group-sas/vento-fogo
+vento-group-sas/vento-pulso
+vento-group-sas/vento-numera
+vento-group-sas/vento-anima
+carlosibarraariza/Vento-Group
+carlosibarraariza/vento-pass
+carlosibarraariza/vento-talento
+```
+
+La declaración significa:
+
+```text
+NO DETECTADA EN EL SNAPSHOT
+```
+
+y no:
+
+```text
+PROHIBIDA
+NO EXISTIRÁ
+NO HAY SUPERFICIES DE SERVIDOR
+```
+
+Cada repositorio puede conservar Server Actions, RPC, Edge Functions u otras superficies vecinas.
+
+#### 27. Clasificación de respuesta observable
+
+Las identidades inventariadas incluyen respuestas de distintas clases:
+
+```text
+JSON
+HEALTH
+CSV
+XLSX
+PDF
+PNG
+STORAGE_PUBLIC_URL
+COMMAND_RESULT
+```
+
+La clase de respuesta forma parte de la evidencia de comportamiento, pero no de la identidad primaria.
+
+Para exports y descargas deberá evaluarse posteriormente:
+
+- autorización;
+- volumen;
+- fuga de información;
+- filtros;
+- nombre de archivo;
+- cache;
+- content disposition;
+- trazabilidad.
+
+#### 28. Clasificación de efectos
+
+La superficie global contiene:
+
+```text
+READ_ONLY
+EXPORT
+MUTATION
+UPLOAD
+DELETE
+PROXY_EXTERNAL
+GENERATE_DOCUMENT
+AI_COMMAND
+TELEMETRY
+HEALTH
+```
+
+Una ruta `GET` no se considera automáticamente libre de efectos.
+
+Una ruta `POST` no se considera automáticamente idempotente.
+
+La semántica real prevalece sobre el verbo nominal.
+
+#### 29. Evidencia de controles observados
+
+Los patrones observables se clasifican sin aprobarlos:
+
+```text
+NO_VISIBLE_AUTH_IN_HANDLER
+USER_SESSION
+RLS_USER_CONTEXT
+ROLE_CHECK
+PERMISSION_CHECK
+APP_GUARD
+TOKEN_OR_SESSION
+DELEGATED_CONTROLLER_SERVICE
+ADMIN_CLIENT_USAGE
+SERVICE_ROLE_PATH
+```
+
+La futura materialización deberá registrar cuál aplica a cada endpoint y si el control es efectivo antes de cualquier efecto sensible.
+
+#### 30. Superficies con privilegio elevado
+
+Se observan casos que usan o pueden alcanzar:
+
+- cliente administrativo;
+- service role;
+- RPC;
+- Storage;
+- servicio externo.
+
+La presencia de privilegio elevado exige separar:
+
+```text
+caller_identity
+authorization_decision
+privileged_execution
+audit_evidence
+```
+
+No se permite inferir autorización correcta a partir de la simple existencia de un guard.
+
+#### 31. Proxy externo observado
+
+`POST /api/labelary` en NEXO:
+
+```text
+cliente
+→ endpoint NEXO
+→ api.labelary.com
+→ PNG
+```
+
+El handler valida tamaño de etiqueta y contenido ZPL, pero no presenta autenticación visible en su propio cuerpo.
+
+La tarea registra esa observación.
+
+Las decisiones sobre autenticación, rate limiting, abuso, tamaño máximo, SSRF, privacidad y disponibilidad pertenecen a endurecimiento posterior.
+
+#### 32. Uploads observados
+
+Los uploads VISO y NEXO demuestran controles variables:
+
+- sesión;
+- rol o permiso;
+- MIME;
+- tamaño;
+- optimización;
+- Storage bucket;
+- URL pública.
+
+La futura evaluación no puede considerar equivalentes todos los uploads solo porque compartan Storage.
+
+Cada endpoint conserva su identidad.
+
+#### 33. Regla de endpoint interno
+
+La etiqueta “interno” no significa “inaccesible desde Internet”.
+
+Para esta tarea:
+
+```text
+interno
+=
+superficie operada por componentes Vento
+y no documentada aquí como API pública general
+```
+
+La exposición física real deberá demostrarse por deployment, routing, dominio, middleware y controles de acceso.
+
+#### 34. Relación con Server Actions
+
+Si una operación existe tanto como Server Action como API route:
+
+```text
+server_action_identity
+≠
+api_route_identity
+```
+
+aunque ambas terminen llamando al mismo helper o mutando la misma tabla.
+
+No se fusionan.
+
+La convergencia de reglas debe resolverse mediante helpers o contratos compartidos en tareas posteriores, no mediante renumeración del inventario.
+
+#### 35. Relación con RPC
+
+Una API route puede consumir una o múltiples RPC.
+
+Se mantiene:
+
+```text
+api_route_identity
+→ rpc_dependency[]
+```
+
+`AUTH-SRV-003` inventariará esas dependencias como identidades RPC propias.
+
+Un cambio de RPC no borra la identidad HTTP.
+
+Un cambio de endpoint no borra la identidad RPC.
+
+#### 36. Regla de materialización futura
+
+Cada unidad futura deberá usar:
+
+```text
+AUTH-SRV-002::<implementation_unit_id>
+```
+
+con lineage mínimo:
+
+```text
+implementation_unit_id
+repository
+commit_before
+source_path
+http_method
+route_path
+package_id[]
+control_before
+effect_before
+decision
+change_set
+evidence
+commit_after
+```
+
+No se permite materializar una unidad usando solamente el nombre humano de la ruta.
+
+#### 37. Evidencia mínima para una unidad futura
+
+Antes de considerar una unidad implementada deberá existir evidencia reproducible de:
+
+1. repositorio correcto;
+2. commit de partida;
+3. archivo exacto;
+4. método HTTP;
+5. ruta;
+6. input relevante;
+7. autenticación;
+8. autorización;
+9. alcance territorial si aplica;
+10. efecto;
+11. dependencias privilegiadas;
+12. respuesta;
+13. error;
+14. auditoría;
+15. pruebas;
+16. commit resultante.
+
+La ausencia de una dimensión requerida debe quedar como bloqueo explícito.
+
+#### 38. Regla de drift de ruta
+
+Si una ruta cambia:
+
+```text
+/api/a
+→
+/api/b
+```
+
+no se reescribe silenciosamente la evidencia anterior.
+
+Debe declararse:
+
+```text
+route_path_changed
+```
+
+y conservar la relación histórica.
+
+Lo mismo aplica a:
+
+```text
+GET
+→
+POST
+```
+
+o a la división de una ruta en múltiples superficies.
+
+#### 39. Regla de conteo
+
+Los conteos de esta tarea se fijan al snapshot.
+
+No deben utilizarse como KPI vivo sin reconciliación.
+
+La igualdad exigida para reproducir el inventario es:
+
+```text
+12 + 13 + 1 + 38 = 64
+```
+
+y:
+
+```text
+10 + 11 + 1 + 16 = 38 contenedores
+```
+
+La superficie FOGO `route.tsx` no se suma a ninguno de los dos conteos primarios.
+
+#### 40. Resultado contractual
+
+`AUTH-SRV-002` deja definido:
+
+```text
+12 repositorios reconciliados
+4 repositorios con superficie HTTP primaria
+8 repositorios sin superficie HTTP primaria detectada
+38 contenedores HTTP primarios
+64 identidades método+ruta
+29 GET
+27 POST
+5 PUT
+3 DELETE
+1 route-like drift excluido
+0 aprobaciones de seguridad implícitas
+0 cambios físicos autorizados por el marcador global
+```
+
+Este inventario es suficiente para que tareas posteriores evalúen controles sobre una población explícita sin inventar endpoints.
+
+#### 41. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+La tarea es inventario y contrato de identidad.
+
+No modifica el registro `04A`.
+
+Las futuras materializaciones y tareas de endurecimiento deberán vincular sus TREQ a las identidades aquí establecidas cuando corresponda.
+
+---
+
+#### 42. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SRV-001 — Inventariar Server Actions de todos los repositorios`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SRV-002 — Inventariar API routes`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SRV-003 — Inventariar RPC utilizadas`
+
+
 ### [ ] AUTH-SRV-003 — Inventariar RPC utilizadas
 
 ### Package VISO mensual

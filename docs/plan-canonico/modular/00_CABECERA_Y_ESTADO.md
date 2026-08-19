@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **984** |
+| Tareas aprobadas | **985** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **610** |
+| Tareas no iniciadas | **609** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **61.73% (984/1594)** |
+| Porcentaje de completamiento | **61.79% (985/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-SRV-001 — Inventariar Server Actions de todos los repositorios** |
-| Tarea actual | **AUTH-SRV-002 — Inventariar API routes** |
+| Última tarea aprobada | **AUTH-SRV-002 — Inventariar API routes** |
+| Tarea actual | **AUTH-SRV-003 — Inventariar RPC utilizadas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-SRV-003 — Inventariar RPC utilizadas** |
+| Siguiente tarea | **AUTH-SRV-004 — Eliminar confianza exclusiva en la interfaz** |
 | Bloque actual | **BLOQUE J — Protección de acciones de servidor** |
-| Progreso del bloque | **BLOQUE J: 1 de 18 aprobadas; AUTH-SRV-002 pendiente** |
+| Progreso del bloque | **BLOQUE J: 2 de 18 aprobadas; AUTH-SRV-003 pendiente** |
 | Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-SRV-002** |
-| Carril documental | **ACTIVO — AUTH-SRV-002** |
+| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-SRV-003** |
+| Carril documental | **ACTIVO — AUTH-SRV-003** |
 | Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-SRV-001` — Inventariar Server Actions de todos los repositorios |
-| Tarea actual | `AUTH-SRV-002` — Inventariar API routes — **NO INICIADA** |
-| Siguiente tarea | `AUTH-SRV-003` — Inventariar RPC utilizadas |
+| Última aprobada | `AUTH-SRV-002` — Inventariar API routes |
+| Tarea actual | `AUTH-SRV-003` — Inventariar RPC utilizadas — **NO INICIADA** |
+| Siguiente tarea | `AUTH-SRV-004` — Eliminar confianza exclusiva en la interfaz |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE J: 1 DE 18 APROBADAS — ACTUAL AUTH-SRV-002** |
+| CONTINUIDAD ACTIVA | **BLOQUE J: 2 DE 18 APROBADAS — ACTUAL AUTH-SRV-003** |
 | Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-SRV-001 — Inventariar Server Actions de todos los repositorios
-        ↓
-TAREA ACTUAL
 AUTH-SRV-002 — Inventariar API routes
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-SRV-003 — Inventariar RPC utilizadas
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-SRV-004 — Eliminar confianza exclusiva en la interfaz
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE J — 1 de 18 tareas aprobadas
+BLOQUE J — 2 de 18 tareas aprobadas
 ```
