@@ -7,6 +7,7 @@ import { spawnSync } from 'node:child_process';
 const DEFAULT_BRANCH = 'main';
 const TASK_PREFIX = 'task/';
 const INFRA_PREFIX = 'infra/';
+const OPS_PREFIX = 'ops/';
 const RESULT_START = '=== RESULTADO PARA CHATGPT ===';
 const RESULT_END = '=== FIN RESULTADO PARA CHATGPT ===';
 const CHECK_REGISTRATION_ATTEMPTS = 24;
@@ -43,6 +44,10 @@ export function normalizeInfraChangeId(value) {
 
 export function infraBranchName(changeId) {
   return `${INFRA_PREFIX}${normalizeInfraChangeId(changeId)}`;
+}
+
+export function opsBranchName(changeId) {
+  return `${OPS_PREFIX}${normalizeInfraChangeId(changeId)}`;
 }
 
 function run(command, args, {
@@ -395,11 +400,27 @@ export function classifyInfraPath(filePath) {
   return 'OTHER';
 }
 
+export function classifyOpsPath(filePath) {
+  const normalized = String(filePath ?? '').replaceAll('\\', '/').replace(/^\.\//u, '');
+  if (!normalized) return 'OTHER';
+  if (/^docs\/[^/]+\.md$/u.test(normalized)) return 'ALLOWED';
+  return 'OTHER';
+}
+
 function ensureInfraPaths(paths) {
   const disallowed = paths.filter((entry) => classifyInfraPath(entry) === 'OTHER');
   if (disallowed.length > 0) {
     fail(
       `docs:infra:publish solo admite infraestructura transversal; rutas no permitidas: ${disallowed.join(', ')}`,
+    );
+  }
+}
+
+function ensureOpsPaths(paths) {
+  const disallowed = paths.filter((entry) => classifyOpsPath(entry) === 'OTHER');
+  if (disallowed.length > 0) {
+    fail(
+      `docs:ops:publish solo admite Markdown operativo ubicado directamente en docs/; rutas no permitidas: ${disallowed.join(', ')}`,
     );
   }
 }
@@ -583,6 +604,25 @@ export function buildInfraPrBody(changeId, paths) {
     `VENTO-TREQ-ZERO-REASON: ${id} es un cambio transversal de infraestructura y este comando bloquea archivos canonicos de tarea.`,
     '',
     '## Cambio transversal de infraestructura',
+    '',
+    id,
+    '',
+    '## Archivos',
+    '',
+    ...normalizedPaths.map((entry) => `- ${entry}`),
+    '',
+  ].join('\n');
+}
+
+export function buildOpsPrBody(changeId, paths) {
+  const id = normalizeInfraChangeId(changeId);
+  const normalizedPaths = [...new Set(paths.map((entry) => String(entry).replaceAll('\\', '/')))].sort();
+  ensureOpsPaths(normalizedPaths);
+  return [
+    'VENTO-TREQ-AFFECTED: NONE',
+    `VENTO-TREQ-ZERO-REASON: ${id} publica documentacion operativa no canonica y este comando bloquea el Plan Canonico, codigo de aplicacion e infraestructura.`,
+    '',
+    '## Documentacion operativa',
     '',
     id,
     '',
@@ -983,6 +1023,177 @@ export function publishInfraChange({ changeId, root = ensureRepositoryRoot() }) 
   });
 }
 
+
+function runOpsLocalValidation(root, paths) {
+  git(['diff', '--check'], { cwd: root });
+
+  for (const entry of paths) {
+    const absolute = path.join(root, ...entry.split('/'));
+    if (!fs.existsSync(absolute)) continue;
+    const source = fs.readFileSync(absolute, 'utf8');
+    if (!source.trim()) fail(`Documento operativo vacio: ${entry}.`);
+  }
+
+  npm(['run', '--silent', 'docs:plan:test'], { cwd: root });
+}
+
+export function publishOpsChange({ changeId, root = ensureRepositoryRoot() }) {
+  const id = normalizeInfraChangeId(changeId);
+  const branch = opsBranchName(id);
+
+  ensureGhReady(root);
+  git(['fetch', 'origin', DEFAULT_BRANCH, '--quiet'], { cwd: root });
+
+  const startingBranch = currentBranch(root);
+  if (startingBranch === DEFAULT_BRANCH) {
+    const mainSync = syncCounts(root, `origin/${DEFAULT_BRANCH}`, 'HEAD');
+    if (mainSync.behind !== 0 || mainSync.ahead !== 0) {
+      fail(`main debe estar sincronizado 0/0 antes de publicar documentacion operativa: ${mainSync.raw}.`);
+    }
+
+    const initialDirty = worktreePaths(root);
+    if (initialDirty.length === 0) {
+      fail('No hay cambios pendientes para publicar como documentacion operativa.');
+    }
+    ensureOpsPaths(initialDirty);
+
+    if (localBranchExists(root, branch) || remoteBranchExists(root, branch)) {
+      fail(`La rama ${branch} ya existe; cambie a esa rama para reanudar o use otro --change-id.`);
+    }
+
+    git(['switch', '-c', branch], { cwd: root });
+  } else if (startingBranch !== branch) {
+    fail(`OPS_PUBLISH debe ejecutarse desde ${DEFAULT_BRANCH} o ${branch}; rama actual: ${startingBranch || 'DETACHED'}.`);
+  }
+
+  const dirty = worktreePaths(root);
+  if (dirty.length > 0) {
+    ensureOpsPaths(dirty);
+    runOpsLocalValidation(root, dirty);
+    git(['add', '--', ...dirty], { cwd: root });
+    npm(['run', '--silent', 'docs:commit-scope:check', '--', '--staged'], { cwd: root });
+    git(['diff', '--cached', '--check'], { cwd: root });
+
+    const staged = parsePorcelainPaths(
+      git(['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root }).stdout,
+    );
+    ensureOpsPaths(staged);
+
+    const stagedNames = git(
+      ['diff', '--cached', '--name-only', '--diff-filter=ACMRD'],
+      { cwd: root },
+    ).stdout.trim();
+    if (stagedNames) {
+      git(['commit', '-m', `docs(${id}): publish operational documentation`], { cwd: root });
+    }
+  }
+
+  ensureClean(root, 'OPS PRE-PUSH');
+
+  const branchCommits = Number(
+    git(['rev-list', '--count', `origin/${DEFAULT_BRANCH}..HEAD`], { cwd: root }).stdout.trim(),
+  );
+  if (!Number.isFinite(branchCommits) || branchCommits <= 0) {
+    fail(`${branch} no contiene commits nuevos respecto de origin/${DEFAULT_BRANCH}.`);
+  }
+
+  const changedPaths = git(
+    ['diff', '--name-only', `origin/${DEFAULT_BRANCH}...HEAD`],
+    { cwd: root },
+  ).stdout.split(/\r?\n/u).map((entry) => entry.trim()).filter(Boolean);
+  ensureOpsPaths(changedPaths);
+
+  git(['push', '-u', 'origin', branch], { cwd: root });
+  const branchSync = syncCounts(root, `origin/${branch}`, 'HEAD');
+  if (branchSync.behind !== 0 || branchSync.ahead !== 0) {
+    fail(`Push incompleto de ${branch}: ${branchSync.raw}.`);
+  }
+
+  const headSha = currentHead(root);
+  const prNumber = createOrUpdateBranchPr(root, {
+    branch,
+    title: `docs(${id}): documentacion operativa`,
+    body: buildOpsPrBody(id, changedPaths),
+  });
+
+  let prState = readOpenPrState(root, prNumber);
+  ensureOpenPrIdentity(prState, prNumber, headSha);
+
+  const registeredCheckCount = waitForPrChecksToRegister(root, prNumber);
+  gh([
+    'pr', 'checks', String(prNumber),
+    '--watch',
+    '--fail-fast',
+    '--interval', String(CHECK_WATCH_INTERVAL_SECONDS),
+  ], { cwd: root, inherit: true });
+
+  prState = readOpenPrState(root, prNumber);
+  ensureOpenPrIdentity(prState, prNumber, headSha);
+
+  gh([
+    'pr', 'merge', String(prNumber),
+    '--merge',
+    '--match-head-commit', headSha,
+  ], { cwd: root });
+
+  const merged = waitForPrMerged(root, prNumber, headSha);
+
+  git(['fetch', 'origin', DEFAULT_BRANCH, '--quiet'], { cwd: root });
+  git(['switch', DEFAULT_BRANCH], { cwd: root });
+  git(['pull', '--ff-only', 'origin', DEFAULT_BRANCH], { cwd: root });
+  ensureClean(root, 'OPS MAIN');
+
+  const mainSync = syncCounts(root, `origin/${DEFAULT_BRANCH}`, 'HEAD');
+  if (mainSync.behind !== 0 || mainSync.ahead !== 0) {
+    fail(`main no quedo sincronizado: ${mainSync.raw}.`);
+  }
+
+  const validatedHeadInMain = git(
+    ['merge-base', '--is-ancestor', headSha, 'HEAD'],
+    { cwd: root, allowFailure: true },
+  );
+  if (validatedHeadInMain.status !== 0) {
+    fail(`El HEAD validado ${headSha} no quedo contenido en main.`);
+  }
+
+  const mergeCommitInMain = git(
+    ['merge-base', '--is-ancestor', merged.mergeCommitSha, 'HEAD'],
+    { cwd: root, allowFailure: true },
+  );
+  if (mergeCommitInMain.status !== 0) {
+    fail(`El merge commit ${merged.mergeCommitSha} no quedo contenido en main.`);
+  }
+
+  const cleanup = cleanupBranch(root, branch);
+  ensureClean(root, 'OPS FINAL');
+
+  const finalMainSync = syncCounts(root, `origin/${DEFAULT_BRANCH}`, 'HEAD');
+  if (finalMainSync.behind !== 0 || finalMainSync.ahead !== 0) {
+    fail(`main perdio sincronizacion al final: ${finalMainSync.raw}.`);
+  }
+
+  printResult({
+    ESTADO: 'PASS',
+    OPERACION: 'OPS_PUBLISH',
+    CHANGE_ID: id,
+    BRANCH: branch,
+    FILES: changedPaths.length,
+    HEAD_VALIDATED: headSha,
+    PR: prNumber,
+    CHECKS_REGISTERED: registeredCheckCount,
+    REQUIRED_CHECKS: 'PASS',
+    MERGE: 'PASS',
+    MERGE_COMMIT: merged.mergeCommitSha,
+    MAIN_HEAD: currentHead(root),
+    HEAD_VALIDATED_IN_MAIN: 'SI',
+    SYNC_MAIN: '0/0',
+    WORKTREE: 'CLEAN',
+    LOCAL_BRANCH: cleanup.local,
+    REMOTE_BRANCH: cleanup.remote,
+    READY_FOR_NEXT_TASK: 'SI',
+  });
+}
+
 function parseArgs(argv) {
   const args = { mode: null, taskId: null, changeId: null, help: false };
   if (argv.length > 0 && !argv[0].startsWith('--')) {
@@ -1012,9 +1223,12 @@ function usage() {
   console.log('  npm run docs:task:start -- --task-id AUTH-SRV-001');
   console.log('  npm run docs:task:finish -- --task-id AUTH-SRV-001');
   console.log('  npm run docs:infra:publish -- --change-id task-lifecycle-finish-verification');
+  console.log('  npm run docs:ops:publish -- --change-id guia-operativa-comandos');
   console.log('');
   console.log('docs:infra:publish se usa desde main con cambios locales de infraestructura permitidos.');
   console.log('Crea infra/<change-id>, valida, hace commit/push/PR, espera checks, mergea, limpia y verifica main 0/0.');
+  console.log('docs:ops:publish se usa desde main con Markdown operativo ubicado directamente en docs/.');
+  console.log('Crea ops/<change-id>, valida, hace commit/push/PR, espera checks, mergea, limpia y verifica main 0/0.');
 }
 
 function main() {
@@ -1023,11 +1237,17 @@ function main() {
     usage();
     return;
   }
-  if (!['start', 'finish', 'infra'].includes(args.mode)) fail('Modo requerido: start, finish o infra.');
+  if (!['start', 'finish', 'infra', 'ops'].includes(args.mode)) fail('Modo requerido: start, finish, infra u ops.');
 
   if (args.mode === 'infra') {
     if (!args.changeId) fail('Falta --change-id.');
     publishInfraChange({ changeId: args.changeId });
+    return;
+  }
+
+  if (args.mode === 'ops') {
+    if (!args.changeId) fail('Falta --change-id.');
+    publishOpsChange({ changeId: args.changeId });
     return;
   }
 
@@ -1047,10 +1267,10 @@ if (isCli) {
     const mode = process.argv[2];
     printResult({
       ESTADO: 'FAIL',
-      OPERACION: mode === 'finish' ? 'TASK_FINISH' : mode === 'infra' ? 'INFRA_PUBLISH' : 'TASK_START',
+      OPERACION: mode === 'finish' ? 'TASK_FINISH' : mode === 'infra' ? 'INFRA_PUBLISH' : mode === 'ops' ? 'OPS_PUBLISH' : 'TASK_START',
       COMPROBACION_FALLIDA: message.replace(/[\r\n]+/gu, ' | '),
       EXIT_CODE_REPORTADO: code,
-      ...(mode === 'infra' ? { READY_FOR_NEXT_TASK: 'NO' } : { NEXT_TASK_ALLOWED: 'NO' }),
+      ...(['infra', 'ops'].includes(mode) ? { READY_FOR_NEXT_TASK: 'NO' } : { NEXT_TASK_ALLOWED: 'NO' }),
     });
     process.exitCode = code;
   }

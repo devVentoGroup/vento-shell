@@ -33,6 +33,7 @@ export function classifyCommitPath(filePath) {
     return 'TRANSVERSAL';
   }
   if (DERIVED_PLAN_PROJECTIONS.has(normalized)) return 'PROJECTION';
+  if (/^docs\/[^/]+\.md$/u.test(normalized)) return 'OPERATIONS_DOC';
   if (
     normalized === 'AGENTS.md'
     || normalized === 'package.json'
@@ -68,6 +69,15 @@ export function analyzeCommitScope(paths) {
   }
   if (byScope.has('CANONICAL_TASK') && byScope.has('APPLICATION')) {
     warnings.push('el commit mezcla plan canónico y aplicación; confirme que la tarea autoriza ambos alcances.');
+  }
+  if (byScope.has('CANONICAL_TASK') && byScope.has('OPERATIONS_DOC')) {
+    errors.push('el commit mezcla desarrollo de tarea canónica con documentación operativa.');
+  }
+  if (byScope.has('TRANSVERSAL') && byScope.has('OPERATIONS_DOC')) {
+    errors.push('el commit mezcla infraestructura transversal con documentación operativa.');
+  }
+  if (byScope.has('APPLICATION') && byScope.has('OPERATIONS_DOC')) {
+    errors.push('el commit mezcla aplicación con documentación operativa.');
   }
   return {
     files,

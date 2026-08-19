@@ -4,11 +4,14 @@ import test from 'node:test';
 
 import {
   buildInfraPrBody,
+  buildOpsPrBody,
   buildPrBody,
   classifyInfraPath,
+  classifyOpsPath,
   classifyPrChecksProbe,
   classifyTaskPath,
   infraBranchName,
+  opsBranchName,
   parsePorcelainPaths,
   parseTaskTreqDeclaration,
   resolveCanonicalOwnerRelativePath,
@@ -78,6 +81,33 @@ test('PR transversal declara TREQ NONE y enumera solo infraestructura permitida'
   assert.throws(
     () => buildInfraPrBody('bad-scope', ['src/app/page.tsx']),
     /solo admite infraestructura transversal/u,
+  );
+});
+
+
+test('documentacion operativa usa ops/<change-id> y solo admite Markdown directo en docs', () => {
+  assert.equal(opsBranchName('guia-operativa-comandos'), 'ops/guia-operativa-comandos');
+  assert.throws(() => opsBranchName('../main'), /CHANGE_ID invalido/u);
+
+  assert.equal(classifyOpsPath('docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md'), 'ALLOWED');
+  assert.equal(classifyOpsPath('docs/OTRA_GUIA.md'), 'ALLOWED');
+  assert.equal(classifyOpsPath('docs/plan-canonico/modular/01_PROTOCOLO.md'), 'OTHER');
+  assert.equal(classifyOpsPath('docs/guias/otra.md'), 'OTHER');
+  assert.equal(classifyOpsPath('scripts/docs/task-branch-lifecycle.mjs'), 'OTHER');
+  assert.equal(classifyOpsPath('src/app/page.tsx'), 'OTHER');
+  assert.equal(classifyInfraPath('docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md'), 'OTHER');
+});
+
+test('PR de documentacion operativa declara TREQ NONE y rechaza otros alcances', () => {
+  const body = buildOpsPrBody('guia-operativa-comandos', [
+    'docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md',
+  ]);
+  assert.match(body, /^VENTO-TREQ-AFFECTED: NONE$/mu);
+  assert.match(body, /guia-operativa-comandos/u);
+  assert.match(body, /- docs\/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS\.md/u);
+  assert.throws(
+    () => buildOpsPrBody('bad-scope', ['docs/plan-canonico/modular/01_PROTOCOLO.md']),
+    /solo admite Markdown operativo/u,
   );
 });
 
@@ -193,6 +223,29 @@ test('infra publish usa el mismo cierre fuerte y solo permite PASS al final', ()
   assert.ok(ready > cleanup);
 });
 
+test('ops publish usa cierre fuerte y solo permite PASS despues de integrar y limpiar', () => {
+  const source = fs.readFileSync('scripts/docs/task-branch-lifecycle.mjs', 'utf8');
+  const start = source.indexOf('export function publishOpsChange');
+  const branchCreate = source.indexOf("git(['switch', '-c', branch]", start);
+  const localValidation = source.indexOf('runOpsLocalValidation(root, dirty);', branchCreate);
+  const push = source.indexOf("git(['push', '-u', 'origin', branch]", localValidation);
+  const registration = source.indexOf('const registeredCheckCount = waitForPrChecksToRegister(root, prNumber);', push);
+  const mergeWait = source.indexOf('const merged = waitForPrMerged(root, prNumber, headSha);', registration);
+  const ancestor = source.indexOf("['merge-base', '--is-ancestor', headSha, 'HEAD']", mergeWait);
+  const cleanup = source.indexOf('const cleanup = cleanupBranch(root, branch);', ancestor);
+  const ready = source.indexOf("READY_FOR_NEXT_TASK: 'SI'", cleanup);
+
+  assert.ok(start >= 0);
+  assert.ok(branchCreate > start);
+  assert.ok(localValidation > branchCreate);
+  assert.ok(push > localValidation);
+  assert.ok(registration > push);
+  assert.ok(mergeWait > registration);
+  assert.ok(ancestor > mergeWait);
+  assert.ok(cleanup > ancestor);
+  assert.ok(ready > cleanup);
+});
+
 test('resuelve el owner del preflight dentro de docs/plan-canonico/modular', () => {
   const relativeOwner = 'bloques/J_ACCIONES_DE_SERVIDOR/01_INVENTARIO_DE_SUPERFICIES_DE_SERVIDOR.md';
   const repoRelativeOwner = `docs/plan-canonico/modular/${relativeOwner}`;
@@ -264,7 +317,7 @@ test('el iniciador exige start antes de trabajo y finish antes de siguiente tare
   assert.match(template, /ninguna tarea siguiente puede comenzar/u);
 });
 
-test('package.json expone ciclo de tarea y publicacion transversal', () => {
+test('package.json expone ciclos de tarea, infraestructura y documentacion operativa', () => {
   const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
   assert.equal(
     packageJson.scripts['docs:task:start'],
@@ -277,6 +330,10 @@ test('package.json expone ciclo de tarea y publicacion transversal', () => {
   assert.equal(
     packageJson.scripts['docs:infra:publish'],
     'node scripts/docs/task-branch-lifecycle.mjs infra',
+  );
+  assert.equal(
+    packageJson.scripts['docs:ops:publish'],
+    'node scripts/docs/task-branch-lifecycle.mjs ops',
   );
 });
 
