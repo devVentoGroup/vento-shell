@@ -316,11 +316,35 @@ export function buildPrBody(taskId, treqDeclaration) {
   ].join('\n');
 }
 
+export function resolveCanonicalOwnerRelativePath(owner) {
+  const raw = String(owner ?? '').trim().replaceAll('\\', '/').replace(/^\.\/+/u, '');
+  if (!raw) fail('El preflight no devolvio archivo propietario.');
+
+  const prefix = 'docs/plan-canonico/modular/';
+  const relative = raw.startsWith(prefix) ? raw.slice(prefix.length) : raw;
+  const normalized = path.posix.normalize(relative);
+
+  if (
+    !normalized
+    || normalized === '.'
+    || normalized === '..'
+    || normalized.startsWith('../')
+    || path.posix.isAbsolute(normalized)
+  ) {
+    fail(`Ruta de archivo propietario invalida: ${owner}.`);
+  }
+
+  return `${prefix}${normalized}`;
+}
+
 function readTreqDeclaration(root, report, taskId) {
   const owner = report?.task?.owner;
   if (!owner) fail(`${taskId}: preflight no devolvio archivo propietario.`);
-  const ownerPath = path.join(root, owner);
-  if (!fs.existsSync(ownerPath)) fail(`No existe archivo propietario: ${owner}.`);
+  const ownerRelativePath = resolveCanonicalOwnerRelativePath(owner);
+  const ownerPath = path.join(root, ...ownerRelativePath.split('/'));
+  if (!fs.existsSync(ownerPath)) {
+    fail(`No existe archivo propietario: ${ownerRelativePath}.`);
+  }
   return parseTaskTreqDeclaration(fs.readFileSync(ownerPath, 'utf8'), taskId);
 }
 
