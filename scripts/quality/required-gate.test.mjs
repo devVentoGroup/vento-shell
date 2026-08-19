@@ -61,7 +61,7 @@ function validTreq(overrides = {}) {
 function validMerge(overrides = {}) {
   return {
     gate_context: 'MERGE',
-    repository: 'devVentoGroup/vento-shell',
+    repository: 'vento-group-sas/vento-shell',
     source_commit: SHA_A,
     base_commit: SHA_B,
     target_branch: 'main',
@@ -79,7 +79,7 @@ function validMerge(overrides = {}) {
 function validDeploy(overrides = {}) {
   return {
     gate_context: 'DEPLOY',
-    repository: 'devVentoGroup/vento-shell',
+    repository: 'vento-group-sas/vento-shell',
     source_commit: SHA_A,
     base_commit: SHA_B,
     target_branch: 'main',
@@ -135,12 +135,12 @@ jobs:
 function providerRecord(repository, overrides = {}) {
   return {
     repository,
-    provider: repository === 'devVentoGroup/vento-anima' ? 'EAS' : 'VERCEL',
+    provider: repository === 'vento-group-sas/vento-anima' ? 'EAS' : 'VERCEL',
     project_identity: `project:${repository}`,
-    enforcement: repository === 'devVentoGroup/vento-anima'
+    enforcement: repository === 'vento-group-sas/vento-anima'
       ? 'NO_GOVERNED_PRODUCTION_PATH'
       : 'PROTECTED_MAIN',
-    production_source_branch: repository === 'devVentoGroup/vento-anima' ? null : 'main',
+    production_source_branch: repository === 'vento-group-sas/vento-anima' ? null : 'main',
     deploy_check_identity: null,
     enforces_gate: true,
     verified: true,
@@ -159,8 +159,8 @@ function validProviderEvidence() {
 // 14 positivos
 
 test('P01 merge de SHELL con prueba y TREQ válidos', () => assertPass(validMerge()));
-test('P02 merge de NEXO usa la misma señal lógica', () => assertPass(validMerge({ repository: 'devVentoGroup/vento-nexo' })));
-test('P03 otro consumidor conserva la misma interfaz pública', () => assertPass(validMerge({ repository: 'devVentoGroup/vento-fogo' })));
+test('P02 merge de NEXO usa la misma señal lógica', () => assertPass(validMerge({ repository: 'vento-group-sas/vento-nexo' })));
+test('P03 otro consumidor conserva la misma interfaz pública', () => assertPass(validMerge({ repository: 'vento-group-sas/vento-fogo' })));
 test('P04 control condicional puede quedar NOT_APPLICABLE con razón', () => assertPass(validMerge({ checks: [validCheck(), validCheck({ check_id: 'build', owner: 'CI', classification: 'CONDITIONAL', result: 'NOT_APPLICABLE', applicability_reason: 'El contrato del cambio no exige build en este contexto.' })] })));
 test('P05 TREQ afectados no vacíos son aceptables', () => assertPass(validMerge({ treq: validTreq({ affected_treq_ids: ['TREQ-SHELL-005'], zero_reason: null }) })));
 test('P06 cero TREQ explícito con razón suficiente es aceptable', () => assertPass(validMerge()));
@@ -175,7 +175,7 @@ test('P14 evidencia provider completa para ocho repositorios', () => assert.equa
 
 // 28 negativos
 
-test('N01 repositorio no gobernado bloquea', () => assertNotPass(validMerge({ repository: 'devVentoGroup/otro' }), 'REPOSITORY_NOT_GOVERNED'));
+test('N01 repositorio no gobernado bloquea', () => assertNotPass(validMerge({ repository: 'vento-group-sas/otro' }), 'REPOSITORY_NOT_GOVERNED'));
 test('N02 contexto inválido bloquea', () => assertNotPass(validMerge({ gate_context: 'PREVIEW' }), 'GATE_CONTEXT_INVALID'));
 test('N03 SHA inválido bloquea', () => assertNotPass(validMerge({ source_commit: 'abc' }), 'SOURCE_COMMIT_INVALID'));
 test('N04 base SHA inválida bloquea', () => assertNotPass(validMerge({ base_commit: 'xyz' }), 'BASE_COMMIT_INVALID'));
@@ -216,7 +216,7 @@ test('R07 neutralización || true es rechazada', () => assert.ok(validateRequire
 test('R08 git push desde el gate es rechazado', () => assert.ok(validateRequiredGateWorkflow(validWorkflow.replace('echo gate', 'git push origin main')).includes('GIT_PUSH_FORBIDDEN')));
 test('R09 auto merge desde el gate es rechazado', () => assert.ok(validateRequiredGateWorkflow(validWorkflow.replace('echo gate', 'gh pr merge --auto')).includes('AUTO_MERGE_FORBIDDEN')));
 test('R10 deploy productivo desde el gate es rechazado', () => assert.ok(validateRequiredGateWorkflow(validWorkflow.replace('echo gate', 'vercel --prod')).includes('DEPLOY_MUTATION_FORBIDDEN')));
-test('R11 Expo Web no puede certificar ANIMA', () => assert.ok(validateRequiredGateWorkflow(validWorkflow.replace('echo gate', 'expo start --web'), 'devVentoGroup/vento-anima').includes('ANIMA_WEB_SURROGATE_FORBIDDEN')));
+test('R11 Expo Web no puede certificar ANIMA', () => assert.ok(validateRequiredGateWorkflow(validWorkflow.replace('echo gate', 'expo start --web'), 'vento-group-sas/vento-anima').includes('ANIMA_WEB_SURROGATE_FORBIDDEN')));
 test('R12 VISO no puede conservar contents write', () => assert.ok(validateVisoLegacyWorkflow('permissions:\n  contents: write\n').includes('VISO_CONTENTS_WRITE_REMAINS')));
 test('R13 VISO no puede conservar git push a main', () => assert.ok(validateVisoLegacyWorkflow('run: git push origin HEAD:main\n').includes('VISO_DIRECT_PUSH_REMAINS')));
 test('R14 evidencia provider duplicada es rechazada', () => { const e = validProviderEvidence(); e.repositories[7] = { ...e.repositories[6] }; assert.equal(verifyProviderEvidence(e).result, 'BLOCKED'); });
