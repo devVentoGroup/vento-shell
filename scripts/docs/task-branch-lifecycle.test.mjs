@@ -7,6 +7,7 @@ import {
   classifyTaskPath,
   parsePorcelainPaths,
   parseTaskTreqDeclaration,
+  resolveCanonicalOwnerRelativePath,
   resolveNpmInvocation,
   taskBranchName,
 } from './task-branch-lifecycle.mjs';
@@ -66,6 +67,24 @@ test('falla cerrado si metadata TREQ y seccion derivada contradicen', () => {
   assert.throws(
     () => parseTaskTreqDeclaration(source, 'TASK-001'),
     /declara 0 TREQ/u,
+  );
+});
+
+test('resuelve el owner del preflight dentro de docs/plan-canonico/modular', () => {
+  const relativeOwner = 'bloques/J_ACCIONES_DE_SERVIDOR/01_INVENTARIO_DE_SUPERFICIES_DE_SERVIDOR.md';
+  const repoRelativeOwner = `docs/plan-canonico/modular/${relativeOwner}`;
+
+  assert.equal(
+    resolveCanonicalOwnerRelativePath(relativeOwner),
+    repoRelativeOwner,
+  );
+  assert.equal(
+    resolveCanonicalOwnerRelativePath(repoRelativeOwner),
+    repoRelativeOwner,
+  );
+  assert.throws(
+    () => resolveCanonicalOwnerRelativePath('../fuera.md'),
+    /Ruta de archivo propietario invalida/u,
   );
 });
 
