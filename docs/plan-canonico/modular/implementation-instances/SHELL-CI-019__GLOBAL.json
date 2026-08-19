@@ -29,7 +29,7 @@
     "npm run lint -- --max-warnings 0 scripts/quality/test-evidence-publisher.mjs scripts/quality/test-evidence-publisher.test.mjs",
     "git diff --check",
     "npm run docs:commit-scope:check -- --staged",
-    "npm run docs:commit-scope:check -- --range origin/main..HEAD",
+    "npm run docs:commit-scope:check -- --range 326efd82a99fb685f4f0b8539d71dc6a1809457c..HEAD",
     "node scripts/quality/test-evidence-publisher.mjs verify-github --head shell-ci-018-global --json"
   ],
   "authorization": {
