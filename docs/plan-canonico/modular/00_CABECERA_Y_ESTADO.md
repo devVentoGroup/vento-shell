@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **978** |
+| Tareas aprobadas | **983** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **616** |
+| Tareas no iniciadas | **611** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **61.36% (978/1594)** |
+| Porcentaje de completamiento | **61.67% (983/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio** |
-| Tarea actual | **SHELL-CI-020 — Implementar y desplegar cada paquete aprobado por E5** |
+| Última tarea aprobada | **SHELL-CI-024 — Certificar cierre del paquete y transferencia a soporte** |
+| Tarea actual | **AUTH-SRV-001 — Inventariar Server Actions de todos los repositorios** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CI-021 — Ejecutar y resolver el checklist de readiness aprobado** |
-| Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
-| Progreso del bloque | **BLOQUE T: 19 de 24 aprobadas; SHELL-CI-020 pendiente** |
+| Siguiente tarea | **AUTH-SRV-002 — Inventariar API routes** |
+| Bloque actual | **BLOQUE J — Protección de acciones de servidor** |
+| Progreso del bloque | **BLOQUE J: 0 de 18 aprobadas; AUTH-SRV-001 pendiente** |
 | Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — SHELL-CI-020** |
-| Carril documental | **ACTIVO — SHELL-CI-020** |
+| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-SRV-001** |
+| Carril documental | **ACTIVO — AUTH-SRV-001** |
 | Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-CI-019` — Publicar evidencia de pruebas por paquete y repositorio |
-| Tarea actual | `SHELL-CI-020` — Implementar y desplegar cada paquete aprobado por E5 — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CI-021` — Ejecutar y resolver el checklist de readiness aprobado |
+| Última aprobada | `SHELL-CI-024` — Certificar cierre del paquete y transferencia a soporte |
+| Tarea actual | `AUTH-SRV-001` — Inventariar Server Actions de todos los repositorios — **NO INICIADA** |
+| Siguiente tarea | `AUTH-SRV-002` — Inventariar API routes |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE T: 19 DE 24 APROBADAS — ACTUAL SHELL-CI-020** |
+| CONTINUIDAD ACTIVA | **BLOQUE J: 0 DE 18 APROBADAS — ACTUAL AUTH-SRV-001** |
 | Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio
+SHELL-CI-024 — Certificar cierre del paquete y transferencia a soporte
         ↓
 TAREA ACTUAL
-SHELL-CI-020 — Implementar y desplegar cada paquete aprobado por E5
+AUTH-SRV-001 — Inventariar Server Actions de todos los repositorios
         ↓
 SIGUIENTE TAREA RESERVADA
-SHELL-CI-021 — Ejecutar y resolver el checklist de readiness aprobado
+AUTH-SRV-002 — Inventariar API routes
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE T — 19 de 24 tareas aprobadas
+BLOQUE J — 0 de 18 tareas aprobadas
 ```
