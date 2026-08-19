@@ -108,6 +108,40 @@ Antes de actuar determina:
 
 El verbo del título es solo una señal. El alcance real se obtiene de la tarea completa y sus fuentes.
 
+REGLA OBLIGATORIA DE RAMA POR TAREA Y CIERRE EN MAIN
+
+Toda tarea canónica debe comenzar desde una rama de trabajo propia antes de modificar su contenido, código, datos, configuración o artefactos derivados.
+
+La rama estable de integración es `main`. El trabajo ordinario no se desarrolla directamente sobre `main`.
+
+Antes de comenzar una tarea, el usuario ejecuta `npm run docs:task:start -- --task-id` seguido del identificador exacto de la tarea actual. ChatGPT debe entregar siempre el comando completo con el ID real ya resuelto; nunca debe dejar un identificador genérico para que el usuario lo complete.
+
+La convención de rama es `task/<task-id-en-minusculas>`. Por ejemplo, la tarea `AUTH-SRV-001` utiliza `task/auth-srv-001`.
+
+`docs:task:start` debe fallar cerrado salvo que el worktree esté limpio, `main` pueda actualizarse mediante fast-forward, la tarea solicitada sea realmente la tarea canónica actual y el preflight documental sea válido.
+
+Si la rama remota todavía no existe, `docs:task:start` la crea desde `main` actualizado, configura upstream y la publica en GitHub antes de permitir trabajo.
+
+Si la rama ya existe en GitHub, `docs:task:start` la recupera o reutiliza y la sincroniza mediante fast-forward. Esta capacidad es el mecanismo normal para continuar una misma tarea desde otro computador.
+
+Un resultado `READY_TO_WORK: SI` autoriza únicamente a comenzar el trabajo previsto por la tarea; no sustituye las reglas de autorización física ni concede a ChatGPT permisos de escritura.
+
+Después de que la tarea quede APROBADA y sus validaciones aplicables hayan pasado, ninguna tarea siguiente puede comenzar hasta cerrar la rama actual mediante `npm run docs:task:finish -- --task-id` seguido del identificador exacto de la tarea aprobada.
+
+`docs:task:finish` debe comprobar que se ejecuta desde la rama exacta de la tarea, que la tarea ya está APROBADA, que la continuidad la reconoce como última tarea aprobada, que `active-sequence.json` está vigente y que no existen archivos fuera de los alcances automatizables.
+
+El cierre debe ejecutar `git diff --check`, preparar el alcance, validar `docs:commit-scope:check`, crear el commit final cuando existan cambios sin commit, publicar la rama, crear o actualizar el PR hacia `main`, declarar los TREQ afectados conforme al contenido real de la tarea, esperar los checks del PR, bloquear ante cualquier fallo y ejecutar el merge únicamente sobre el mismo SHA validado.
+
+Después del merge, `docs:task:finish` debe cambiar a `main`, actualizarlo mediante fast-forward, comprobar sincronización `0/0`, comprobar worktree limpio y limpiar la rama de tarea cuando sea seguro.
+
+Solo `NEXT_TASK_ALLOWED: SI` confirma que la tarea siguiente puede comenzar.
+
+`APROBADO` por sí solo cierra la decisión documental de la tarea, pero no autoriza avanzar a la siguiente mientras el cierre Git anterior no haya producido `NEXT_TASK_ALLOWED: SI`.
+
+Para una implementación física que además modifique repositorios consumidores, las ramas, commits, validaciones y merges propios de esos repositorios continúan gobernados por el expediente físico correspondiente. El cierre de la rama canónica en `vento-shell` no simula ni sustituye la integración pendiente de otro repositorio.
+
+La fuente compartida entre computadores es GitHub. Un cambio sin commit o un commit sin push no forma parte del estado recuperable desde otra estación.
+
 MODO PREDETERMINADO DE IMPLEMENTACIÓN HUMANA
 
 La autorización física de una instancia y la autorización para que ChatGPT escriba son decisiones distintas.
