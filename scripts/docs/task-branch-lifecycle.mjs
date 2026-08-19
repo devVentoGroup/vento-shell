@@ -65,9 +65,41 @@ function gh(args, options = {}) {
   return run('gh', args, options);
 }
 
+export function resolveNpmInvocation({
+  platform = process.platform,
+  execPath = process.execPath,
+  npmExecPath = process.env.npm_execpath,
+  comspec = process.env.ComSpec || process.env.COMSPEC || 'cmd.exe',
+} = {}) {
+  const cliPath = String(npmExecPath ?? '').trim();
+
+  if (cliPath) {
+    return {
+      command: execPath,
+      prefixArgs: [cliPath],
+    };
+  }
+
+  if (platform === 'win32') {
+    return {
+      command: comspec,
+      prefixArgs: ['/d', '/s', '/c', 'npm.cmd'],
+    };
+  }
+
+  return {
+    command: 'npm',
+    prefixArgs: [],
+  };
+}
+
 function npm(args, options = {}) {
-  const command = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-  return run(command, args, options);
+  const invocation = resolveNpmInvocation();
+  return run(
+    invocation.command,
+    [...invocation.prefixArgs, ...args],
+    options,
+  );
 }
 
 function ensureRepositoryRoot() {
@@ -442,7 +474,7 @@ export function finishTask({ taskId, root = ensureRepositoryRoot() }) {
   if (dirty.length > 0) {
     ensureNoUnknownPaths(dirty);
     git(['diff', '--check'], { cwd: root });
-    git(['add', '-A'], { cwd: root });
+    git(['add', '--', ...dirty], { cwd: root });
     npm(['run', '--silent', 'docs:commit-scope:check', '--', '--staged'], { cwd: root });
     git(['diff', '--cached', '--check'], { cwd: root });
 
