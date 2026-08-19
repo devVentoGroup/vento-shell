@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **990** |
+| Aprobadas | **991** |
 | En propuesta | **0** |
-| No iniciadas | **604** |
+| No iniciadas | **603** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **62.11% (990/1594)** |
+| Porcentaje de completamiento | **62.17% (991/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-SRV-007` — Validar área en cada escritura | ✅ APROBADA |
-| Tarea actual | `AUTH-SRV-008` — Validar turno cuando corresponda | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-SRV-009` — Validar rol operativo cuando corresponda | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-SRV-008` — Validar turno cuando corresponda | ✅ APROBADA |
+| Tarea actual | `AUTH-SRV-009` — Validar rol operativo cuando corresponda | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-SRV-010` — Validar dispositivo compartido | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -875,7 +875,7 @@
 | ✅ APROBADA | `AUTH-SRV-005` | Validar permiso en cada escritura | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
 | ✅ APROBADA | `AUTH-SRV-006` | Validar sede en cada escritura | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
 | ✅ APROBADA | `AUTH-SRV-007` | Validar área en cada escritura | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
-| ⬜ NO INICIADA | `AUTH-SRV-008` | Validar turno cuando corresponda | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
+| ✅ APROBADA | `AUTH-SRV-008` | Validar turno cuando corresponda | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-009` | Validar rol operativo cuando corresponda | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-010` | Validar dispositivo compartido | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-011` | Validar estado actual de la entidad | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
