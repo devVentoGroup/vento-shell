@@ -7,6 +7,7 @@ import {
   classifyTaskPath,
   parsePorcelainPaths,
   parseTaskTreqDeclaration,
+  resolveNpmInvocation,
   taskBranchName,
 } from './task-branch-lifecycle.mjs';
 
@@ -65,6 +66,46 @@ test('falla cerrado si metadata TREQ y seccion derivada contradicen', () => {
   assert.throws(
     () => parseTaskTreqDeclaration(source, 'TASK-001'),
     /declara 0 TREQ/u,
+  );
+});
+
+test('resuelve npm de forma portable y evita spawn directo de npm.cmd en Windows', () => {
+  assert.deepEqual(
+    resolveNpmInvocation({
+      platform: 'win32',
+      execPath: 'C:\\Program Files\\nodejs\\node.exe',
+      npmExecPath: 'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+      comspec: 'C:\\Windows\\System32\\cmd.exe',
+    }),
+    {
+      command: 'C:\\Program Files\\nodejs\\node.exe',
+      prefixArgs: ['C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js'],
+    },
+  );
+
+  assert.deepEqual(
+    resolveNpmInvocation({
+      platform: 'win32',
+      execPath: 'C:\\Program Files\\nodejs\\node.exe',
+      npmExecPath: '',
+      comspec: 'C:\\Windows\\System32\\cmd.exe',
+    }),
+    {
+      command: 'C:\\Windows\\System32\\cmd.exe',
+      prefixArgs: ['/d', '/s', '/c', 'npm.cmd'],
+    },
+  );
+
+  assert.deepEqual(
+    resolveNpmInvocation({
+      platform: 'linux',
+      execPath: '/usr/bin/node',
+      npmExecPath: '',
+    }),
+    {
+      command: 'npm',
+      prefixArgs: [],
+    },
   );
 });
 
