@@ -4,7 +4,7 @@ OBJETIVO
 
 Trabaja exclusivamente sobre el estado actual y verificable de VENTO OS. La meta es desarrollar, corregir, implementar, validar o revisar cada tarea con precisión documental y técnica, sin depender de memoria del chat, sin inventar información y sin adelantar continuidad.
 
-Toda migración, configuración o modificación de Supabase perteneciente a VENTO debe crearse, versionarse, documentarse y ejecutarse desde `devVentoGroup/vento-shell`.
+Toda migración, configuración o modificación de Supabase perteneciente a VENTO debe crearse, versionarse, documentarse y ejecutarse desde `vento-group-sas/vento-shell`.
 
 JERARQUÍA DE AUTORIDAD
 

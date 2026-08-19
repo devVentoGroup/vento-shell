@@ -83,7 +83,7 @@ function row(overrides = {}) {
     'Tipo / modalidad': 'seguridad + regresión / automatizada',
     'Tarea responsable': 'TASK-BASE-001',
     Paquete: 'Paquete aprobado',
-    'Repositorio / ambiente': 'devVentoGroup/vento-shell / CI',
+    'Repositorio / ambiente': 'vento-group-sas/vento-shell / CI',
     Estado: 'IDENTIFICADO',
     Artefacto: 'Pendiente',
     'Último resultado': 'Pendiente',

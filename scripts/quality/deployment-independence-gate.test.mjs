@@ -28,14 +28,14 @@ import {
 
 const HEX = Object.freeze(['a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']);
 const REPOSITORIES = Object.freeze([
-  'devVentoGroup/vento-shell',
-  'devVentoGroup/vento-nexo',
-  'devVentoGroup/vento-fogo',
-  'devVentoGroup/vento-origo',
-  'devVentoGroup/vento-pulso',
-  'devVentoGroup/vento-viso',
-  'devVentoGroup/vento-numera',
-  'devVentoGroup/vento-anima',
+  'vento-group-sas/vento-shell',
+  'vento-group-sas/vento-nexo',
+  'vento-group-sas/vento-fogo',
+  'vento-group-sas/vento-origo',
+  'vento-group-sas/vento-pulso',
+  'vento-group-sas/vento-viso',
+  'vento-group-sas/vento-numera',
+  'vento-group-sas/vento-anima',
 ]);
 
 function sha(key = 'a') {
@@ -232,7 +232,7 @@ function rebuildPlanStates(plan, { all = true } = {}) {
 }
 
 function basePlan({
-  repositories = ['devVentoGroup/vento-nexo'],
+  repositories = ['vento-group-sas/vento-nexo'],
   additionalRepositories = [],
 } = {}) {
   const environment = 'SYNTHETIC_CI015';
@@ -331,7 +331,7 @@ function applyPackageChange(plan, repository, packageName, fromVersion, targetVe
       invalidation_reason: null,
     },
   ];
-  if (repository === 'devVentoGroup/vento-anima') {
+  if (repository === 'vento-group-sas/vento-anima') {
     unit.compatibility_refs = [
       ...unit.compatibility_refs.filter((entry) => entry.package_name !== packageName),
       {
@@ -383,7 +383,7 @@ function applyDatabaseExpansion(plan, repository) {
     before_identity: sha('8'),
     target_identity: sha('9'),
     ci015_executes_mutation: false,
-    owner_repository: 'devVentoGroup/vento-shell',
+    owner_repository: 'vento-group-sas/vento-shell',
     owner_task: 'AUTH-DB-029',
     result: 'PASS',
     old_and_new_code_coexist: true,
@@ -445,7 +445,7 @@ const POSITIVE_CASES = [
     name: 'P02 two repositories are supported in any order',
     run() {
       const plan = basePlan({
-        repositories: ['devVentoGroup/vento-nexo', 'devVentoGroup/vento-fogo'],
+        repositories: ['vento-group-sas/vento-nexo', 'vento-group-sas/vento-fogo'],
       });
       const result = evaluateDeploymentIndependence(plan);
       assert.equal(result.result, 'PASS');
@@ -457,15 +457,15 @@ const POSITIVE_CASES = [
     name: 'P03 two repositories have one supported explicit order',
     run() {
       const plan = basePlan({
-        repositories: ['devVentoGroup/vento-nexo', 'devVentoGroup/vento-fogo'],
+        repositories: ['vento-group-sas/vento-nexo', 'vento-group-sas/vento-fogo'],
       });
-      setDependency(plan, 'devVentoGroup/vento-nexo', 'devVentoGroup/vento-fogo');
+      setDependency(plan, 'vento-group-sas/vento-nexo', 'vento-group-sas/vento-fogo');
       const result = evaluateDeploymentIndependence(plan);
       assert.equal(result.result, 'PASS');
       assert.equal(result.classification, 'ORDERED');
       assert.deepEqual(result.record.selected_order, [
-        unitId('devVentoGroup/vento-nexo'),
-        unitId('devVentoGroup/vento-fogo'),
+        unitId('vento-group-sas/vento-nexo'),
+        unitId('vento-group-sas/vento-fogo'),
       ]);
     },
   },
@@ -473,10 +473,10 @@ const POSITIVE_CASES = [
     name: 'P04 shared release is adopted by consumers in staggered units',
     run() {
       const plan = basePlan({
-        repositories: ['devVentoGroup/vento-nexo', 'devVentoGroup/vento-fogo'],
+        repositories: ['vento-group-sas/vento-nexo', 'vento-group-sas/vento-fogo'],
       });
-      applyPackageChange(plan, 'devVentoGroup/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
-      applyPackageChange(plan, 'devVentoGroup/vento-fogo', '@vento/contracts', '1.0.0', '1.1.0');
+      applyPackageChange(plan, 'vento-group-sas/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
+      applyPackageChange(plan, 'vento-group-sas/vento-fogo', '@vento/contracts', '1.0.0', '1.1.0');
       const result = evaluateDeploymentIndependence(plan);
       assert.equal(result.result, 'PASS');
       assert.equal(result.record.compatibility_evidence.length, 2);
@@ -486,15 +486,15 @@ const POSITIVE_CASES = [
     name: 'P05 old and new consumers coexist inside certified support',
     run() {
       const plan = basePlan({
-        repositories: ['devVentoGroup/vento-nexo'],
-        additionalRepositories: ['devVentoGroup/vento-fogo'],
+        repositories: ['vento-group-sas/vento-nexo'],
+        additionalRepositories: ['vento-group-sas/vento-fogo'],
       });
-      applyPackageChange(plan, 'devVentoGroup/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
+      applyPackageChange(plan, 'vento-group-sas/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
       const result = evaluateDeploymentIndependence(plan);
       assert.equal(result.result, 'PASS');
       assert.deepEqual(
         result.record.intermediate_states.at(-1).completed_units,
-        [unitId('devVentoGroup/vento-nexo')],
+        [unitId('vento-group-sas/vento-nexo')],
       );
     },
   },
@@ -502,8 +502,8 @@ const POSITIVE_CASES = [
     name: 'P06 minimal closed multi-package adoption remains one consumer unit',
     run() {
       const plan = basePlan();
-      applyPackageChange(plan, 'devVentoGroup/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
-      applyPackageChange(plan, 'devVentoGroup/vento-nexo', '@vento/os-context', '1.0.0', '1.2.0');
+      applyPackageChange(plan, 'vento-group-sas/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
+      applyPackageChange(plan, 'vento-group-sas/vento-nexo', '@vento/os-context', '1.0.0', '1.2.0');
       const result = evaluateDeploymentIndependence(plan);
       assert.equal(result.result, 'PASS');
       assert.equal(result.record.deployment_units.length, 1);
@@ -514,7 +514,7 @@ const POSITIVE_CASES = [
   {
     name: 'P07 approved schema expansion supports old and new code',
     run() {
-      const plan = applyDatabaseExpansion(basePlan(), 'devVentoGroup/vento-nexo');
+      const plan = applyDatabaseExpansion(basePlan(), 'vento-group-sas/vento-nexo');
       const result = evaluateDeploymentIndependence(plan);
       assert.equal(result.result, 'PASS');
       assert.equal(result.record.database_dependency_evidence[0].old_and_new_code_coexist, true);
@@ -523,7 +523,7 @@ const POSITIVE_CASES = [
   {
     name: 'P08 safe versioned configuration defers activation without bypass',
     run() {
-      const plan = applyConfigurationChange(basePlan(), 'devVentoGroup/vento-nexo');
+      const plan = applyConfigurationChange(basePlan(), 'vento-group-sas/vento-nexo');
       const result = evaluateDeploymentIndependence(plan);
       assert.equal(result.result, 'PASS');
       assert.equal(result.record.configuration_evidence[0].deferred_activation, true);
@@ -533,12 +533,12 @@ const POSITIVE_CASES = [
     name: 'P09 ANIMA remains on supported native version while backend changes',
     run() {
       const plan = basePlan({
-        repositories: ['devVentoGroup/vento-shell'],
-        additionalRepositories: ['devVentoGroup/vento-anima'],
+        repositories: ['vento-group-sas/vento-shell'],
+        additionalRepositories: ['vento-group-sas/vento-anima'],
       });
       plan.anima_in_scope = true;
       plan.anima_compatibility_ref = {
-        repository: 'devVentoGroup/vento-anima',
+        repository: 'vento-group-sas/vento-anima',
         target_class: 'NATIVE_REACT_NATIVE_EXPO',
         result: 'PASS',
         instant_update_required: false,
@@ -546,7 +546,7 @@ const POSITIVE_CASES = [
       };
       const result = evaluateDeploymentIndependence(plan);
       assert.equal(result.result, 'PASS');
-      assert.equal(plan.target_system_state['devVentoGroup/vento-anima'].commit, plan.initial_system_state['devVentoGroup/vento-anima'].commit);
+      assert.equal(plan.target_system_state['vento-group-sas/vento-anima'].commit, plan.initial_system_state['vento-group-sas/vento-anima'].commit);
     },
   },
   {
@@ -554,9 +554,9 @@ const POSITIVE_CASES = [
     run() {
       const plan = basePlan({
         repositories: [
-          'devVentoGroup/vento-nexo',
-          'devVentoGroup/vento-fogo',
-          'devVentoGroup/vento-origo',
+          'vento-group-sas/vento-nexo',
+          'vento-group-sas/vento-fogo',
+          'vento-group-sas/vento-origo',
         ],
       });
       const result = evaluateDeploymentIndependence(plan);
@@ -587,7 +587,7 @@ const POSITIVE_CASES = [
     name: 'P12 repeated evaluation is deterministic and writes machine evidence',
     run() {
       const plan = basePlan({
-        repositories: ['devVentoGroup/vento-nexo', 'devVentoGroup/vento-fogo'],
+        repositories: ['vento-group-sas/vento-nexo', 'vento-group-sas/vento-fogo'],
       });
       const first = evaluateDeploymentIndependence(plan);
       const second = evaluateDeploymentIndependence(plan);
@@ -621,7 +621,7 @@ const NEGATIVE_CASES = [
     name: 'N01 unknown repository is blocked',
     run() {
       const plan = basePlan();
-      plan.deployment_units[0].repository = 'devVentoGroup/vento-unknown';
+      plan.deployment_units[0].repository = 'vento-group-sas/vento-unknown';
       assertBlocked(plan, 'REPOSITORY_UNKNOWN');
     },
   },
@@ -661,7 +661,7 @@ const NEGATIVE_CASES = [
   {
     name: 'N06 unverifiable release is blocked',
     run() {
-      const plan = applyPackageChange(basePlan(), 'devVentoGroup/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
+      const plan = applyPackageChange(basePlan(), 'vento-group-sas/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
       plan.deployment_units[0].release_refs[0].result = 'FAIL';
       assertBlocked(plan, 'RELEASE_NOT_PASS');
     },
@@ -677,7 +677,7 @@ const NEGATIVE_CASES = [
   {
     name: 'N08 floating package set is blocked',
     run() {
-      const plan = applyPackageChange(basePlan(), 'devVentoGroup/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
+      const plan = applyPackageChange(basePlan(), 'vento-group-sas/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
       plan.deployment_units[0].package_set_target[0].version = '^1.1.0';
       assertBlocked(plan, 'PACKAGE_SET_TARGET_VERSION_NOT_EXACT');
     },
@@ -685,7 +685,7 @@ const NEGATIVE_CASES = [
   {
     name: 'N09 missing compatibility is blocked',
     run() {
-      const plan = applyPackageChange(basePlan(), 'devVentoGroup/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
+      const plan = applyPackageChange(basePlan(), 'vento-group-sas/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
       plan.deployment_units[0].compatibility_refs = [];
       assertBlocked(plan, 'COMPATIBILITY_REFS_MISSING');
     },
@@ -693,7 +693,7 @@ const NEGATIVE_CASES = [
   {
     name: 'N10 incompatible relation is blocked',
     run() {
-      const plan = applyPackageChange(basePlan(), 'devVentoGroup/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
+      const plan = applyPackageChange(basePlan(), 'vento-group-sas/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
       plan.deployment_units[0].compatibility_refs[0].relation_state = 'INCOMPATIBLE';
       assertBlocked(plan, 'COMPATIBILITY_RELATION_NOT_SUPPORTED');
     },
@@ -701,7 +701,7 @@ const NEGATIVE_CASES = [
   {
     name: 'N11 compatibility from another consumer is blocked',
     run() {
-      const plan = applyPackageChange(basePlan(), 'devVentoGroup/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
+      const plan = applyPackageChange(basePlan(), 'vento-group-sas/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
       plan.deployment_units[0].compatibility_refs[0].consumer_repository = 'vento-fogo';
       assertBlocked(plan, 'COMPATIBILITY_CONSUMER_MISMATCH');
     },
@@ -710,7 +710,7 @@ const NEGATIVE_CASES = [
     name: 'N12 baseline from another consumer is blocked',
     run() {
       const plan = basePlan();
-      plan.deployment_units[0].consumer_baseline_ref.consumer_repository = 'devVentoGroup/vento-fogo';
+      plan.deployment_units[0].consumer_baseline_ref.consumer_repository = 'vento-group-sas/vento-fogo';
       assertBlocked(plan, 'CONSUMER_BASELINE_REPOSITORY_MISMATCH');
     },
   },
@@ -726,10 +726,10 @@ const NEGATIVE_CASES = [
     name: 'N14 A-B dependency cycle is blocked as lockstep',
     run() {
       const plan = basePlan({
-        repositories: ['devVentoGroup/vento-nexo', 'devVentoGroup/vento-fogo'],
+        repositories: ['vento-group-sas/vento-nexo', 'vento-group-sas/vento-fogo'],
       });
-      setDependency(plan, 'devVentoGroup/vento-nexo', 'devVentoGroup/vento-fogo');
-      setDependency(plan, 'devVentoGroup/vento-fogo', 'devVentoGroup/vento-nexo');
+      setDependency(plan, 'vento-group-sas/vento-nexo', 'vento-group-sas/vento-fogo');
+      setDependency(plan, 'vento-group-sas/vento-fogo', 'vento-group-sas/vento-nexo');
       const result = evaluateDeploymentIndependence(plan);
       assert.equal(result.result, 'BLOCKED');
       assert.equal(result.classification, 'BLOCKED_LOCKSTEP');
@@ -766,7 +766,7 @@ const NEGATIVE_CASES = [
   {
     name: 'N18 destructive migration before consumer retirement is blocked',
     run() {
-      const plan = applyDatabaseExpansion(basePlan(), 'devVentoGroup/vento-nexo');
+      const plan = applyDatabaseExpansion(basePlan(), 'vento-group-sas/vento-nexo');
       plan.deployment_units[0].database_state_ref.destructive_before_consumer_retirement = true;
       assertBlocked(plan, 'DATABASE_DESTRUCTIVE_BEFORE_RETIREMENT');
     },
@@ -774,8 +774,8 @@ const NEGATIVE_CASES = [
   {
     name: 'N19 Supabase mutation from consumer or CI015 is blocked',
     run() {
-      const plan = applyDatabaseExpansion(basePlan(), 'devVentoGroup/vento-nexo');
-      plan.deployment_units[0].database_state_ref.owner_repository = 'devVentoGroup/vento-nexo';
+      const plan = applyDatabaseExpansion(basePlan(), 'vento-group-sas/vento-nexo');
+      plan.deployment_units[0].database_state_ref.owner_repository = 'vento-group-sas/vento-nexo';
       plan.deployment_units[0].database_state_ref.ci015_executes_mutation = true;
       assertBlocked(plan, 'CI015_SUPABASE_MUTATION_FORBIDDEN');
     },
@@ -783,7 +783,7 @@ const NEGATIVE_CASES = [
   {
     name: 'N20 unversioned configuration bridge is blocked',
     run() {
-      const plan = applyConfigurationChange(basePlan(), 'devVentoGroup/vento-nexo');
+      const plan = applyConfigurationChange(basePlan(), 'vento-group-sas/vento-nexo');
       plan.deployment_units[0].configuration_transition.versioned = false;
       assertBlocked(plan, 'CONFIGURATION_NOT_VERSIONED');
     },
@@ -791,7 +791,7 @@ const NEGATIVE_CASES = [
   {
     name: 'N21 flag reopening bypass is blocked',
     run() {
-      const plan = applyConfigurationChange(basePlan(), 'devVentoGroup/vento-nexo');
+      const plan = applyConfigurationChange(basePlan(), 'vento-group-sas/vento-nexo');
       plan.deployment_units[0].configuration_transition.opens_bypass = true;
       assertBlocked(plan, 'CONFIGURATION_OPENS_BYPASS');
     },
@@ -808,7 +808,7 @@ const NEGATIVE_CASES = [
     name: 'N23 untested intermediate state blocks every sequential order',
     run() {
       const plan = basePlan({
-        repositories: ['devVentoGroup/vento-nexo', 'devVentoGroup/vento-fogo'],
+        repositories: ['vento-group-sas/vento-nexo', 'vento-group-sas/vento-fogo'],
       });
       rebuildPlanStates(plan, { all: false });
       const result = evaluateDeploymentIndependence(plan);
@@ -839,7 +839,7 @@ const REGRESSION_CASES = [
   {
     name: 'R02 SemVer range never substitutes executed compatibility',
     run() {
-      const plan = applyPackageChange(basePlan(), 'devVentoGroup/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
+      const plan = applyPackageChange(basePlan(), 'vento-group-sas/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
       plan.deployment_units[0].package_set_target[0].version = '>=1 <2';
       assertBlocked(plan, 'PACKAGE_SET_TARGET_VERSION_NOT_EXACT');
     },
@@ -856,11 +856,11 @@ const REGRESSION_CASES = [
     name: 'R04 manual order without intermediate validation remains blocked',
     run() {
       const plan = basePlan({
-        repositories: ['devVentoGroup/vento-nexo', 'devVentoGroup/vento-fogo'],
+        repositories: ['vento-group-sas/vento-nexo', 'vento-group-sas/vento-fogo'],
       });
       plan.manual_selected_order = [
-        unitId('devVentoGroup/vento-nexo'),
-        unitId('devVentoGroup/vento-fogo'),
+        unitId('vento-group-sas/vento-nexo'),
+        unitId('vento-group-sas/vento-fogo'),
       ];
       rebuildPlanStates(plan, { all: false });
       assertBlocked(plan, 'NO_SAFE_SEQUENTIAL_ORDER');
@@ -885,7 +885,7 @@ const REGRESSION_CASES = [
   {
     name: 'R07 evidence from another consumer is rejected',
     run() {
-      const plan = applyPackageChange(basePlan(), 'devVentoGroup/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
+      const plan = applyPackageChange(basePlan(), 'vento-group-sas/vento-nexo', '@vento/contracts', '1.0.0', '1.1.0');
       plan.deployment_units[0].compatibility_refs[0].consumer_repository = 'vento-origo';
       assertBlocked(plan, 'COMPATIBILITY_CONSUMER_MISMATCH');
     },
@@ -941,7 +941,7 @@ const REGRESSION_CASES = [
   {
     name: 'R14 incompatible schema cannot be hidden by a short window',
     run() {
-      const plan = applyDatabaseExpansion(basePlan(), 'devVentoGroup/vento-nexo');
+      const plan = applyDatabaseExpansion(basePlan(), 'vento-group-sas/vento-nexo');
       plan.deployment_units[0].database_state_ref.old_and_new_code_coexist = false;
       assertBlocked(plan, 'DATABASE_VERSION_SKEW_NOT_SUPPORTED');
     },
@@ -949,7 +949,7 @@ const REGRESSION_CASES = [
   {
     name: 'R15 implicit database migration by CI015 is forbidden',
     run() {
-      const plan = applyDatabaseExpansion(basePlan(), 'devVentoGroup/vento-nexo');
+      const plan = applyDatabaseExpansion(basePlan(), 'vento-group-sas/vento-nexo');
       plan.deployment_units[0].database_state_ref.ci015_executes_mutation = true;
       assertBlocked(plan, 'CI015_SUPABASE_MUTATION_FORBIDDEN');
     },
@@ -982,13 +982,13 @@ const REGRESSION_CASES = [
     name: 'R19 arbitrary manual order cannot hide dependency cycle',
     run() {
       const plan = basePlan({
-        repositories: ['devVentoGroup/vento-nexo', 'devVentoGroup/vento-fogo'],
+        repositories: ['vento-group-sas/vento-nexo', 'vento-group-sas/vento-fogo'],
       });
-      setDependency(plan, 'devVentoGroup/vento-nexo', 'devVentoGroup/vento-fogo');
-      setDependency(plan, 'devVentoGroup/vento-fogo', 'devVentoGroup/vento-nexo');
+      setDependency(plan, 'vento-group-sas/vento-nexo', 'vento-group-sas/vento-fogo');
+      setDependency(plan, 'vento-group-sas/vento-fogo', 'vento-group-sas/vento-nexo');
       plan.manual_selected_order = [
-        unitId('devVentoGroup/vento-nexo'),
-        unitId('devVentoGroup/vento-fogo'),
+        unitId('vento-group-sas/vento-nexo'),
+        unitId('vento-group-sas/vento-fogo'),
       ];
       assertBlocked(plan, 'DEPENDENCY_CYCLE_LOCKSTEP');
     },
@@ -997,7 +997,7 @@ const REGRESSION_CASES = [
     name: 'R20 reported PASS before every intermediate state is validated is rejected',
     run() {
       const plan = basePlan({
-        repositories: ['devVentoGroup/vento-nexo', 'devVentoGroup/vento-fogo'],
+        repositories: ['vento-group-sas/vento-nexo', 'vento-group-sas/vento-fogo'],
       });
       rebuildPlanStates(plan, { all: false });
       plan.reported_result = 'PASS';

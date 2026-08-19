@@ -59,7 +59,7 @@ const validBlock = `### ✅ TEST-SEM-011 — Tarea válida
 **Tarea siguiente:** TEST-SEM-012 — Siguiente
 **Tipo de tarea:** Documental
 **Bloque:** X
-**Repositorio propietario:** \`devVentoGroup/vento-shell\`
+**Repositorio propietario:** \`vento-group-sas/vento-shell\`
 **Archivo propietario:** \`docs/plan-canonico/modular/bloques/X/test.md\`
 **Estado físico resultante:** \`ESPECIFICADO_NO_MATERIALIZADO\`
 **Cambios físicos autorizados:** ninguno

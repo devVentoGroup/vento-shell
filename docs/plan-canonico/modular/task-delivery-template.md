@@ -5,7 +5,7 @@
 **Tarea siguiente:** <NEXT-ID> — <NEXT-TITLE>
 **Tipo de tarea:** <TYPE>
 **Bloque:** <BLOCK>
-**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
 **Archivo propietario:** `<OWNER-FILE>`
 **Estado físico resultante:** `<PHYSICAL-STATE>`
 **Cambios físicos autorizados:** <AUTHORIZED-CHANGES>

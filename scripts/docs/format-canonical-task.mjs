@@ -337,7 +337,7 @@ function addScaffold(block, task) {
       '**Tarea siguiente:** [PENDIENTE_DE_DEFINIR]',
       '**Tipo de tarea:** [PENDIENTE_DE_DEFINIR]',
       '**Bloque:** [PENDIENTE_DE_DEFINIR]',
-      '**Repositorio propietario:** `devVentoGroup/vento-shell`',
+      '**Repositorio propietario:** `vento-group-sas/vento-shell`',
       '**Archivo propietario:** [PENDIENTE_DE_DEFINIR]',
       '**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`',
       '**Cambios físicos autorizados:** ninguno',

@@ -9,14 +9,14 @@ export const TEST_COMMAND_GATE_SCHEMA_VERSION = 1;
 export const RUNTIME_EVIDENCE_RELATIVE_PATH = '.delivery/repository-tests/SHELL-CI-016__GLOBAL.json';
 
 export const CANONICAL_REPOSITORIES = Object.freeze([
-  'devVentoGroup/vento-shell',
-  'devVentoGroup/vento-nexo',
-  'devVentoGroup/vento-fogo',
-  'devVentoGroup/vento-origo',
-  'devVentoGroup/vento-pulso',
-  'devVentoGroup/vento-viso',
-  'devVentoGroup/vento-numera',
-  'devVentoGroup/vento-anima',
+  'vento-group-sas/vento-shell',
+  'vento-group-sas/vento-nexo',
+  'vento-group-sas/vento-fogo',
+  'vento-group-sas/vento-origo',
+  'vento-group-sas/vento-pulso',
+  'vento-group-sas/vento-viso',
+  'vento-group-sas/vento-numera',
+  'vento-group-sas/vento-anima',
 ]);
 
 export const SHELL_REQUIRED_QUALITY_TEST_FILES = Object.freeze([
@@ -114,7 +114,7 @@ function recognizedRunner(command, repository) {
   if (/\bnode\s+--test\b/u.test(normalized)) return true;
   if (/\b(?:vitest|jest|playwright)\b/iu.test(normalized)) return true;
   if (
-    repository === 'devVentoGroup/vento-shell'
+    repository === 'vento-group-sas/vento-shell'
     && normalized === 'node scripts/quality/repository-test-command-gate.mjs run-shell'
   ) return true;
   return false;
@@ -150,7 +150,7 @@ export function resolveScriptChain(manifest, scriptName = 'test') {
   return { chain, error: 'SCRIPT_CHAIN_TOO_DEEP' };
 }
 
-export function validateTestCommandContract(manifest, repository = 'devVentoGroup/unknown') {
+export function validateTestCommandContract(manifest, repository = 'vento-group-sas/unknown') {
   const errors = [];
   const scripts = manifest?.scripts;
   if (!scripts || typeof scripts !== 'object' || Array.isArray(scripts)) {
@@ -184,7 +184,7 @@ export function validateTestCommandContract(manifest, repository = 'devVentoGrou
     for (const pattern of REMOTE_MUTATION_PATTERNS) {
       if (pattern.test(command)) errors.push(`REMOTE_MUTATION_FORBIDDEN:${entry.name}`);
     }
-    if (repository === 'devVentoGroup/vento-anima' && /\bexpo\s+start\s+--web\b/iu.test(command)) {
+    if (repository === 'vento-group-sas/vento-anima' && /\bexpo\s+start\s+--web\b/iu.test(command)) {
       errors.push(`ANIMA_WEB_SURROGATE_FORBIDDEN:${entry.name}`);
     }
   }
@@ -195,7 +195,7 @@ export function validateTestCommandContract(manifest, repository = 'devVentoGrou
   }
 
   if (
-    repository === 'devVentoGroup/vento-shell'
+    repository === 'vento-group-sas/vento-shell'
     && testCommand !== 'node scripts/quality/repository-test-command-gate.mjs run-shell'
   ) {
     errors.push('SHELL_REQUIRED_SUITE_FACADE_MISMATCH');
@@ -353,7 +353,7 @@ function gitCommit(repositoryRoot) {
 function runnerAndSuiteIdentities(manifest, repository) {
   const resolution = resolveScriptChain(manifest, 'test');
   const chain = resolution.chain.map((entry) => `${entry.name}=${entry.command}`);
-  const suiteDescriptor = repository === 'devVentoGroup/vento-shell'
+  const suiteDescriptor = repository === 'vento-group-sas/vento-shell'
     ? [...SHELL_REQUIRED_SUITE_GROUPS, ...SHELL_REQUIRED_QUALITY_TEST_FILES]
     : chain;
   return {
@@ -370,7 +370,7 @@ function repositoryExecutionRecord({ repository, repositoryRoot, sourceCommit })
   });
   const output = `${result.stdout}\n${result.stderr}`;
   const summary = parseNodeTestSummaries(output);
-  const requiredSuites = repository === 'devVentoGroup/vento-shell'
+  const requiredSuites = repository === 'vento-group-sas/vento-shell'
     ? SHELL_REQUIRED_SUITE_GROUPS.length
     : 1;
 
@@ -484,7 +484,7 @@ export function certifyCanonicalRepositories({ shellRoot } = {}) {
   );
   const workspaceRoot = path.dirname(resolvedShellRoot);
   const records = CANONICAL_REPOSITORIES.map((repository) => {
-    const repositoryRoot = repository === 'devVentoGroup/vento-shell'
+    const repositoryRoot = repository === 'vento-group-sas/vento-shell'
       ? resolvedShellRoot
       : path.join(workspaceRoot, repositoryName(repository));
     if (!fs.existsSync(repositoryRoot)) {

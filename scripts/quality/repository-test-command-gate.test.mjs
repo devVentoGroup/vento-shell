@@ -16,7 +16,7 @@ import {
   validateTestCommandContract,
 } from './repository-test-command-gate.mjs';
 
-const REPO = 'devVentoGroup/vento-nexo';
+const REPO = 'vento-group-sas/vento-nexo';
 const COMMIT_A = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 const COMMIT_B = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
 
@@ -90,7 +90,7 @@ const positiveCases = [
           'test:ci008': 'node --test scripts/quality/fogo-consumer-baseline-gate.test.mjs',
         },
       };
-      assert.deepEqual(validateTestCommandContract(fixture, 'devVentoGroup/vento-fogo'), []);
+      assert.deepEqual(validateTestCommandContract(fixture, 'vento-group-sas/vento-fogo'), []);
     },
   },
   {
@@ -103,14 +103,14 @@ const positiveCases = [
           'test:ci013': 'node --test scripts/quality/anima-consumer-baseline-gate.test.mjs',
         },
       };
-      assert.deepEqual(validateTestCommandContract(fixture, 'devVentoGroup/vento-anima'), []);
+      assert.deepEqual(validateTestCommandContract(fixture, 'vento-group-sas/vento-anima'), []);
     },
   },
   {
     id: 'P04',
     name: 'SHELL facade covers more than one required suite group',
     run() {
-      assert.deepEqual(validateTestCommandContract(shellManifest(), 'devVentoGroup/vento-shell'), []);
+      assert.deepEqual(validateTestCommandContract(shellManifest(), 'vento-group-sas/vento-shell'), []);
       assert.ok(SHELL_REQUIRED_SUITE_GROUPS.length >= 2);
       assert.ok(SHELL_REQUIRED_QUALITY_TEST_FILES.length >= 2);
     },
@@ -261,7 +261,7 @@ const negativeCases = [
   {
     id: 'N17',
     name: 'execution from another repository is blocked',
-    run() { assert.equal(decide({ evidence: execution({ repository: 'devVentoGroup/vento-fogo' }) }).reason, 'REPOSITORY_IDENTITY_MISMATCH'); },
+    run() { assert.equal(decide({ evidence: execution({ repository: 'vento-group-sas/vento-fogo' }) }).reason, 'REPOSITORY_IDENTITY_MISMATCH'); },
   },
   {
     id: 'N18',
@@ -355,7 +355,7 @@ const regressionCases = [
   {
     id: 'R12',
     name: 'Expo Web cannot certify native ANIMA tests',
-    run() { assert.ok(validateTestCommandContract({ scripts: { test: 'expo start --web' } }, 'devVentoGroup/vento-anima').some((entry) => entry.includes('ANIMA_WEB_SURROGATE_FORBIDDEN'))); },
+    run() { assert.ok(validateTestCommandContract({ scripts: { test: 'expo start --web' } }, 'vento-group-sas/vento-anima').some((entry) => entry.includes('ANIMA_WEB_SURROGATE_FORBIDDEN'))); },
   },
   {
     id: 'R13',
@@ -367,7 +367,7 @@ const regressionCases = [
     name: 'SHELL npm test cannot collapse to CI016 self certification only',
     run() {
       const collapsed = shellManifest('node --test scripts/quality/repository-test-command-gate.test.mjs');
-      assert.ok(validateTestCommandContract(collapsed, 'devVentoGroup/vento-shell').includes('SHELL_REQUIRED_SUITE_FACADE_MISMATCH'));
+      assert.ok(validateTestCommandContract(collapsed, 'vento-group-sas/vento-shell').includes('SHELL_REQUIRED_SUITE_FACADE_MISMATCH'));
       assert.ok(SHELL_REQUIRED_SUITE_GROUPS.length >= 2);
     },
   },
