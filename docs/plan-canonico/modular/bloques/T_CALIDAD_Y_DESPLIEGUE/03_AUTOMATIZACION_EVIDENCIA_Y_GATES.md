@@ -2828,4 +2828,1023 @@ Esta tarea no:
 `SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio`
 
 
-### [ ] SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio
+### ✅ SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-CI-018 — Bloquear merge o despliegue cuando fallen pruebas obligatorias
+**Tarea siguiente:** SHELL-CI-020 — Implementar y desplegar cada paquete aprobado por E5
+**Tipo de tarea:** Habilitador global único — contrato documental de publicación, integridad, conservación y trazabilidad de evidencia de pruebas por repositorio y paquete
+**Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada cómo Vento OS deberá **materializar, publicar, identificar, conservar y recuperar evidencia reproducible de pruebas y gates** para cada ejecución gobernada, de manera que un resultado pueda demostrarse posteriormente por repositorio, commit, contexto, intento y paquete sin reinterpretar logs, sin depender de un estado mutable y sin ocultar fallos previos.
+
+La regla vinculante queda:
+
+```text
+EJECUCIÓN IDENTIFICADA
++ REPOSITORIO EXACTO
++ COMMIT EXACTO
++ CONTEXTO MERGE O DEPLOY
++ RESULTADOS ESTRUCTURADOS DE LOS OWNERS
++ IDENTIDADES TREQ CUANDO APLIQUE
++ DECISIÓN CI018
++ MANIFIESTO DE EVIDENCIA
++ IDENTIDADES CRIPTOGRÁFICAS
++ PUBLICACIÓN RECUPERABLE
++ TRAZABILIDAD DE INTENTO
+= EXPEDIENTE DE PRUEBAS PUBLICADO Y REPRODUCIBLE
+```
+
+Y, de forma fail-closed:
+
+```text
+EVIDENCIA AUSENTE
+O ARTEFACTO NO RECUPERABLE
+O IDENTIDAD QUE NO COINCIDE
+O SHA DISTINTO
+O REPOSITORIO DISTINTO
+O INTENTO SOBRESCRITO
+O BUNDLE ALTERADO
+O PACKAGE_ID INFERIDO SIN CONTRATO
+O RESULTADO STALE
+O PUBLICACIÓN QUE EXPONE SECRETOS
+≠ EVIDENCIA VÁLIDA PARA ADMISIÓN, READINESS, CUTOVER O CIERRE
+```
+
+CI019 **publica evidencia**. No redefine cómo se ejecutan las pruebas de CI016, no valida 04A en lugar de CI017, no decide admisión en lugar de CI018, no ejecuta implementación por paquete, no despliega y no sustituye el gobierno transversal de documentos y evidencia de E4.
+
+#### 2. Resultado canónico
+
+`SHELL-CI-019` establece un único habilitador reutilizable para:
+
+1. publicar un expediente machine-readable por ejecución de repositorio;
+2. correlacionar ese expediente con uno o más paquetes canónicos cuando exista contexto de paquete;
+3. conservar resultados PASS y DENY sin sobrescribir intentos anteriores;
+4. ligar cada evidencia al repositorio y commit exactos;
+5. conservar el contexto `MERGE` o `DEPLOY`;
+6. conservar ambiente exacto cuando el contexto sea `DEPLOY`;
+7. conservar la identidad de la decisión producida por CI018;
+8. conservar la identidad del conjunto obligatorio de checks;
+9. conservar las identidades de registro y baseline TREQ cuando apliquen;
+10. conservar la declaración de requisitos afectados;
+11. publicar referencias a resultados de checks sin reejecutarlos ni reinterpretarlos;
+12. distinguir evidencia de repositorio de expediente agregado de paquete;
+13. permitir que un mismo bundle de repositorio sea referenciado por varios expedientes de paquete sin duplicar payload;
+14. impedir que una evidencia de otro SHA o repositorio satisfaga una ejecución distinta;
+15. impedir que un rerun borre o reemplace evidencia histórica;
+16. detectar bundles alterados mediante identidad criptográfica;
+17. impedir que logs o variables sensibles se publiquen como payload por defecto;
+18. permitir publicación de resultados fallidos o bloqueados cuando técnicamente sea posible;
+19. hacer que una publicación obligatoria fallida impida declarar evidencia completa;
+20. conservar referencias provider-agnostic para GitHub Actions, Vercel u otros ejecutores;
+21. exponer un contrato consumible por `SHELL-CI-020` a `SHELL-CI-024`;
+22. no crear una segunda fuente de verdad para TREQ;
+23. no utilizar Git como almacenamiento de runtime evidence;
+24. autocertificar una sola vez `SHELL-CI-019::GLOBAL`;
+25. no crear ni modificar requisitos de prueba porque la obligación de publicar resultados reproducibles ya existe.
+
+#### 3. Frontera de responsabilidad
+
+| Responsabilidad | Propietario |
+| --- | --- |
+| fachada homogénea `npm test` y semántica de ejecución | `SHELL-CI-016` |
+| integridad estructural, semántica e histórica de 04A | `SHELL-CI-017` |
+| decisión de admisión de merge y deploy | `SHELL-CI-018` |
+| publicación, integridad y trazabilidad del expediente CI | `SHELL-CI-019` |
+| arquitectura empresarial de documentos, evidencia, retención y acceso | `EVID-ARC-001..010` |
+| implementación por paquete | `SHELL-CI-020` |
+| readiness por paquete | `SHELL-CI-021` |
+| cutover y piloto | `SHELL-CI-022` |
+| hypercare y estabilización | `SHELL-CI-023` |
+| cierre y transferencia a soporte | `SHELL-CI-024` |
+
+CI019 puede **referenciar** evidencia de otros owners, pero no cambia el significado de sus resultados.
+
+#### 4. Topología de trabajo
+
+`PHASE-03-T-CI-FOUNDATION` aplica `GLOBAL_ENABLE_ONCE` a `SHELL-CI-019`.
+
+```text
+MARCADOR CANÓNICO
+SHELL-CI-019
+→ define una sola vez el contrato de evidencia publicada
+
+INSTANCIA FÍSICA FUTURA
+SHELL-CI-019::GLOBAL
+→ materializa y autocertifica una sola vez el publicador
+
+PAQUETES POSTERIORES
+→ reutilizan el mismo contrato
+→ no vuelven a implementar CI019
+```
+
+La futura `SHELL-CI-019::GLOBAL` deberá quedar `VERIFIED` después de CI018 y antes de cualquier `E5-GATE-008` de paquete que pretenda iniciar el ciclo físico `SHELL-CI-020..024`.
+
+#### 5. Universo inicial gobernado
+
+El universo inicial de repositorios se hereda de CI016 y CI018 y comprende exactamente:
+
+1. `vento-group-sas/vento-shell`;
+2. `vento-group-sas/vento-nexo`;
+3. `vento-group-sas/vento-fogo`;
+4. `vento-group-sas/vento-origo`;
+5. `vento-group-sas/vento-pulso`;
+6. `vento-group-sas/vento-viso`;
+7. `vento-group-sas/vento-numera`;
+8. `vento-group-sas/vento-anima`.
+
+El universo de paquetes **no se hardcodea en CI019**. Un `package_id` solo entra al contrato cuando proviene de una definición E5 canónica y aprobada. CI019 no infiere paquetes por carpeta, repositorio, nombre de rama ni lista de archivos modificados.
+
+#### 6. Línea base física observada
+
+El corte vigente muestra:
+
+- `SHELL-CI-016::GLOBAL` materializada y utilizada como fachada de pruebas;
+- `SHELL-CI-017::GLOBAL` materializada como verificador del registro TREQ;
+- `SHELL-CI-018::GLOBAL` en estado `VERIFIED`;
+- los ocho repositorios gobernados por la señal `VENTO Required Gate`;
+- el workflow vigente de CI018 produce un reporte JSON estructurado para `MERGE` y `DEPLOY`;
+- ese reporte contiene identidad de gate, repositorio, commit, contexto, checks, TREQ, ejecución, resultado y razones de bloqueo;
+- el reporte vigente se emite como salida de ejecución, pero no existe todavía un contrato CI019 materializado que lo convierta en bundle publicado, íntegro, recuperable y correlacionado por paquete;
+- no existe todavía `SHELL-CI-019::GLOBAL`.
+
+Por tanto:
+
+```text
+CI018 YA PRODUCE DECISIÓN ESTRUCTURADA
++
+CI019 AÚN NO PUBLICA EXPEDIENTE CANÓNICO
+```
+
+#### 7. Significado de “publicar”
+
+En CI019, **publicar no significa exposición pública en Internet**.
+
+Publicar significa que el expediente:
+
+- queda materializado fuera del stdout efímero;
+- queda asociado a una ejecución identificable;
+- puede recuperarse posteriormente por un actor autorizado o por un gate downstream;
+- conserva identidad verificable;
+- no depende de copiar manualmente texto desde una consola;
+- no exige acceso a secretos para ser leído;
+- no se altera cuando existe un rerun posterior.
+
+La visibilidad concreta queda limitada por las capacidades y permisos del provider utilizado.
+
+#### 8. Dos unidades de evidencia
+
+CI019 define dos unidades distintas.
+
+##### 8.1. Bundle de repositorio
+
+Es la unidad autoritativa de una ejecución real de pruebas y gates en un repositorio.
+
+Cardinalidad:
+
+```text
+1 ejecución identificada
+→ 1 repositorio
+→ 1 commit
+→ 1 contexto de gate
+→ 1 intento
+→ 1 bundle de repositorio
+```
+
+##### 8.2. Expediente de paquete
+
+Es un manifiesto liviano que **referencia** bundles de repositorio ya publicados y los correlaciona con un `package_id`.
+
+No copia ni reinterpreta los payloads.
+
+```text
+1 package_id
+→ 1 conjunto canónico de repositorios requeridos
+→ N referencias a bundles de repositorio
+→ 1 identidad de expediente de paquete
+```
+
+Un paquete de un solo repositorio conserva igualmente su expediente de paquete.
+
+#### 9. Contrato mínimo del bundle de repositorio
+
+El bundle machine-readable deberá contener como mínimo:
+
+```text
+schema_version
+evidence_contract_id
+repository
+source_commit
+base_commit
+target_branch
+environment
+gate_context
+gate_execution_identity
+gate_result
+gate_block_reasons
+required_check_set_identity
+treq_registry_identity
+treq_baseline_identity
+affected_treq_ids
+checks
+provider
+provider_run_id
+provider_run_attempt
+provider_workflow_identity
+started_at
+completed_at
+published_at
+artifacts
+bundle_identity
+publication_reference
+publication_result
+invalidation_reason
+```
+
+Reglas:
+
+1. `repository` es obligatorio;
+2. `source_commit` usa el SHA exacto de la ejecución;
+3. `gate_context` solo puede representar el contexto resuelto por CI018;
+4. `environment` es obligatorio para `DEPLOY` y nulo para un merge sin ambiente;
+5. `gate_execution_identity` debe coincidir con la decisión CI018 consumida;
+6. `gate_result` se copia, no se recalcula;
+7. `checks` se copian desde el resultado estructurado del owner;
+8. `publication_result` describe la publicación, no el resultado del gate;
+9. `bundle_identity` identifica el contenido, no la ubicación;
+10. `publication_reference` permite recuperar el bundle publicado.
+
+#### 10. Contrato mínimo del expediente de paquete
+
+El expediente de paquete deberá contener como mínimo:
+
+```text
+schema_version
+evidence_contract_id
+package_id
+required_repository_set_identity
+repositories
+affected_treq_ids
+created_at
+package_execution_identity
+dossier_identity
+completeness
+result
+block_reasons
+```
+
+Cada elemento de `repositories` deberá contener:
+
+```text
+repository
+source_commit
+gate_context
+environment
+bundle_identity
+publication_reference
+gate_result
+publication_result
+```
+
+Un expediente de paquete puede contener commits distintos por repositorio. CI019 no exige un SHA global ficticio para un paquete multi-repositorio.
+
+#### 11. Semántica de `completeness`
+
+Estados permitidos:
+
+```text
+COMPLETE
+INCOMPLETE
+```
+
+`COMPLETE` exige:
+
+- conjunto de repositorios requeridos resuelto desde el contrato del paquete;
+- una referencia válida por cada repositorio requerido;
+- identidad de bundle verificable;
+- commit exacto por repositorio;
+- evidencia no stale;
+- ausencia de referencias duplicadas;
+- ausencia de repositorios ajenos al paquete.
+
+`INCOMPLETE` nunca equivale a PASS.
+
+#### 12. Evidencia por check
+
+Cada elemento de `checks` conservará, como mínimo, las identidades ya producidas por el owner:
+
+```text
+check_id
+owner
+classification
+applicability_reason
+source_identity
+result
+started_at
+completed_at
+invalidation_reason
+```
+
+CI019 puede añadir una referencia de publicación, pero no sustituye ni reescribe el resultado del owner.
+
+Un check sin salida estructurada suficiente deberá conservar una referencia provider-native y solo los campos realmente demostrables. CI019 no inventa conteos, resultados, duración ni cobertura a partir de texto ambiguo.
+
+#### 13. Consumo de CI016
+
+CI019 consume la evidencia que demuestra la ejecución de `npm test` y sus identidades disponibles.
+
+No podrá:
+
+- cambiar la fachada `npm test`;
+- añadir suites para obtener evidencia más rica;
+- interpretar un build como prueba;
+- declarar número de pruebas no demostrado;
+- reejecutar pruebas únicamente para generar un reporte;
+- modificar `SHELL-CI-016::GLOBAL`.
+
+Si CI016 entrega solo un resultado y una identidad para una ejecución determinada, CI019 publica exactamente esa evidencia disponible y su referencia.
+
+#### 14. Consumo de CI017
+
+CI019 conserva, cuando apliquen:
+
+- `treq_registry_identity`;
+- `treq_baseline_identity`;
+- `affected_treq_ids`;
+- resultado de validación TREQ;
+- referencia al owner que produjo la validación.
+
+CI019 no modifica el registro para completar un expediente y no convierte una declaración TREQ inválida en evidencia aceptable.
+
+#### 15. Consumo de CI018
+
+CI018 entrega a CI019 la decisión de gate estructurada.
+
+CI019 deberá conservar sin reinterpretación:
+
+- identidad lógica del gate;
+- contexto;
+- repositorio;
+- commit;
+- ambiente;
+- package id cuando exista;
+- conjunto obligatorio;
+- checks;
+- TREQ;
+- tiempos;
+- execution identity;
+- resultado;
+- razones de bloqueo.
+
+CI019 no cambia `FAIL`, `BLOCKED`, `CANCELLED`, `TIMED_OUT` o `STALE` a PASS.
+
+#### 16. Orden de publicación dentro del gate
+
+La futura materialización deberá preservar una sola señal final requerida: `VENTO Required Gate`.
+
+La secuencia lógica será:
+
+```text
+RESOLVER CHECKS
+→ PRODUCIR DECISIÓN CI018
+→ MATERIALIZAR BUNDLE CI019
+→ PUBLICAR BUNDLE
+→ VERIFICAR IDENTIDAD Y RECUPERABILIDAD
+→ FINALIZAR LA MISMA SEÑAL REQUIRED
+```
+
+No se crea un segundo required status check que pueda abrir una ventana de bypass o deadlock.
+
+CI019 no cambia el nombre público del gate.
+
+#### 17. Publicación cuando la decisión sería PASS
+
+Si la decisión técnica de CI018 es `PASS`, el gate solo podrá finalizar como admisible cuando la publicación obligatoria del bundle termine correctamente.
+
+```text
+CI018 DECISIÓN = PASS
++
+CI019 PUBLICACIÓN = PASS
+=
+VENTO Required Gate PUEDE TERMINAR PASS
+```
+
+Si el bundle no puede publicarse o verificarse:
+
+```text
+CI018 DECISIÓN = PASS
++
+CI019 PUBLICACIÓN ≠ PASS
+=
+DENY
+```
+
+CI019 no decide el merge; entrega un requisito operativo que la señal final consume de forma fail-closed.
+
+#### 18. Publicación de resultados DENY
+
+CI019 deberá intentar publicar también:
+
+- `FAIL`;
+- `BLOCKED`;
+- `CANCELLED`;
+- `TIMED_OUT`;
+- `STALE`.
+
+El objetivo es conservar historial de diagnóstico y demostrar por qué un cambio no fue admisible.
+
+Si una cancelación externa impide ejecutar el publicador dentro del mismo run:
+
+- el provider run continúa siendo evidencia de que existió la ejecución;
+- el expediente queda `INCOMPLETE`;
+- ningún consumidor puede reinterpretarlo como evidencia completa;
+- una reconciliación posterior podrá publicar un manifiesto de terminación que referencie el run cancelado, sin fabricar resultados que nunca existieron.
+
+#### 19. Reintentos
+
+Cada intento es inmutable e independiente.
+
+```text
+RUN 100 / ATTEMPT 1 / FAIL
+→ bundle A
+
+RUN 100 / ATTEMPT 2 / PASS
+→ bundle B
+```
+
+El bundle B no elimina ni modifica A.
+
+El expediente puede declarar lineage mediante identidades de intento, pero la autoridad de un consumidor siempre se resuelve contra la ejecución exacta exigida.
+
+#### 20. Concurrencia y evidencia stale
+
+Cuando cambia el commit:
+
+1. el bundle del commit anterior permanece histórico;
+2. el nuevo commit genera nueva evidencia;
+3. la evidencia antigua queda no elegible para el nuevo commit;
+4. un resultado tardío no sustituye el bundle del SHA vigente;
+5. un package dossier debe referenciar el commit exacto requerido por cada repositorio.
+
+No existe una noción autoritativa de “último verde” que ignore el SHA.
+
+#### 21. Integridad criptográfica
+
+Cada artefacto material del bundle deberá tener una identidad de contenido:
+
+```text
+sha256:{digest}
+```
+
+El `bundle_identity` se calcula sobre:
+
+- manifiesto normalizado;
+- identidades de los artefactos incluidos;
+- repositorio;
+- commit;
+- gate context;
+- execution identity.
+
+La referencia de almacenamiento o URL no forma parte de la identidad semántica del bundle, de modo que el expediente pueda moverse a un storage autorizado sin cambiar qué evidencia representa.
+
+#### 22. Inmutabilidad
+
+Después de publicado, un bundle no se edita en sitio.
+
+Una corrección produce:
+
+```text
+NUEVO BUNDLE
++ NUEVA IDENTIDAD
++ REFERENCIA AL BUNDLE ANTERIOR
++ MOTIVO DE CORRECCIÓN
+```
+
+Queda prohibido:
+
+- reemplazar un FAIL por un PASS bajo el mismo identificador;
+- reutilizar un nombre mutable como autoridad;
+- editar un manifiesto para cambiar un SHA;
+- borrar fallos para “limpiar” historial;
+- volver a firmar payload alterado con la identidad anterior.
+
+#### 23. Minimización y secretos
+
+El expediente deberá aplicar minimización.
+
+No se publicarán por defecto:
+
+- dumps completos de variables de entorno;
+- tokens;
+- cookies;
+- credenciales;
+- secretos;
+- claves privadas;
+- service role keys;
+- payloads productivos sensibles;
+- archivos `.env`;
+- stdout o stderr completos cuando puedan contener secretos.
+
+La futura implementación deberá bloquear o redactar contenido sensible antes de publicar.
+
+La detección de secreto real no se resuelve ocultando el warning; el secreto deberá retirarse y rotarse conforme al proceso propietario.
+
+#### 24. Logs
+
+Los logs del provider son una fuente auxiliar, no el expediente canónico.
+
+Por defecto, CI019 publica:
+
+- resultados estructurados;
+- identidades;
+- resúmenes;
+- referencias al run;
+- attachments explícitamente autorizados y sanitizados.
+
+El log completo puede permanecer en el provider y ser referenciado mediante una identidad de ejecución. No debe copiarse automáticamente al bundle si no puede garantizarse su sanitización.
+
+#### 25. Conservación
+
+CI019 no inventa una duración legal numérica.
+
+Reglas:
+
+1. un bundle requerido por un paquete activo no puede considerarse disponible si ya expiró;
+2. la fecha de expiración del provider, cuando exista, debe quedar registrada;
+3. `SHELL-CI-020..024` deberán consumir evidencia todavía recuperable;
+4. el cierre de paquete no puede depender exclusivamente de un artefacto ya expirado;
+5. cualquier conservación posterior de naturaleza documental, legal o empresarial deberá respetar EVID-ARC y sus owners;
+6. CI019 no crea una política jurídica paralela de retención.
+
+#### 26. Descubrimiento y recuperación
+
+Un consumidor deberá poder resolver evidencia por identidad exacta, no por navegación manual.
+
+Claves mínimas de consulta:
+
+```text
+repository
+source_commit
+gate_context
+provider_run_id
+provider_run_attempt
+bundle_identity
+```
+
+Cuando exista paquete:
+
+```text
+package_id
+dossier_identity
+```
+
+Una vista “latest” puede existir como comodidad humana, pero no es autoridad para gates.
+
+#### 27. Nombre lógico de artefacto
+
+La gramática lógica inicial será:
+
+```text
+vento-test-evidence__{repository_slug}__{scope_slug}__{source_commit}__{gate_context}__{run_id}__{attempt}
+```
+
+Para un expediente de paquete:
+
+```text
+vento-test-evidence-package__{package_id}__{package_execution_identity}
+```
+
+Estas gramáticas son identidades lógicas. El adapter del provider podrá imponer una representación técnica distinta si conserva todos los campos y la misma semántica.
+
+#### 28. Canal inicial de publicación
+
+Para los ocho repositorios gobernados actuales, el adapter inicial será el sistema de artifacts asociado a la misma ejecución de CI que produce `VENTO Required Gate`.
+
+Reglas:
+
+- el artefacto pertenece al run y attempt exactos;
+- la publicación no hace commit ni push;
+- la publicación no crea releases;
+- la publicación no modifica ramas;
+- el publicador no necesita privilegios de escritura sobre el contenido del repositorio;
+- el acceso a artifacts respeta el control del provider.
+
+CI019 conserva una interfaz provider-agnostic para que otro ejecutor pueda materializar el mismo contrato sin cambiar el expediente.
+
+#### 29. Provider externo de despliegue
+
+Para `DEPLOY`, el expediente puede incorporar referencias de Vercel, EAS u otro provider cuando el gate haya consumido esa identidad.
+
+CI019 no descarga por defecto logs externos ni copia secretos.
+
+La referencia externa deberá conservar:
+
+- provider;
+- proyecto o ejecución cuando sea resoluble;
+- commit;
+- ambiente;
+- resultado;
+- identidad o referencia de ejecución.
+
+Una referencia externa que no corresponda al mismo commit o ambiente es stale.
+
+#### 30. Paquetes de un solo repositorio
+
+Un paquete de un solo repositorio no omite la capa de paquete.
+
+El expediente conserva:
+
+```text
+package_id
+→ required_repository_set_identity
+→ 1 referencia de bundle
+```
+
+Esto permite que `SHELL-CI-020..024` consuman siempre la misma interfaz.
+
+#### 31. Paquetes multi-repositorio
+
+Un paquete multi-repositorio deberá resolver su conjunto requerido desde la autoridad E5.
+
+CI019 no puede completar el dossier hasta tener una referencia por cada repositorio requerido.
+
+Ejemplo conceptual:
+
+```text
+PACKAGE P
+→ vento-shell @ SHA-A
+→ vento-nexo  @ SHA-B
+→ vento-anima @ SHA-C
+```
+
+Los tres commits pueden ser distintos. La identidad del expediente deriva del conjunto ordenado de referencias, no de un SHA inventado.
+
+#### 32. No duplicación de payload
+
+Cuando varios paquetes consuman la misma ejecución de repositorio:
+
+```text
+1 BUNDLE DE REPOSITORIO
+→ PACKAGE A referencia el bundle
+→ PACKAGE B referencia el mismo bundle
+```
+
+No se copian logs, manifests ni resultados completos por paquete.
+
+El dossier de paquete es un índice de lineage y cobertura, no una segunda copia de la prueba.
+
+#### 33. Resultado del expediente de paquete
+
+Estados permitidos:
+
+```text
+PASS
+FAIL
+BLOCKED
+STALE
+```
+
+`PASS` exige:
+
+- `completeness = COMPLETE`;
+- todos los bundles requeridos recuperables;
+- todos los bundles correspondientes a los commits exactos;
+- todos los resultados obligatorios aplicables en PASS;
+- cero referencias stale;
+- cero identidades inválidas.
+
+El expediente no transforma un resultado negativo de repositorio en positivo.
+
+#### 34. Evidencia manual u operativa
+
+Si un gate propietario exige una validación manual controlada, CI019 puede publicar su evidencia únicamente cuando exista:
+
+- owner;
+- actor atribuible;
+- timestamp;
+- recurso o ambiente;
+- resultado;
+- referencia;
+- identidad o integridad verificable cuando aplique.
+
+La ausencia de evidencia manual obligatoria se conserva como `BLOCKED`; nunca se completa con un texto genérico.
+
+#### 35. Errores de publicación
+
+Errores mínimos que deberán distinguirse:
+
+```text
+PUBLICATION_PAYLOAD_MISSING
+PUBLICATION_SCHEMA_INVALID
+PUBLICATION_SECRET_DETECTED
+PUBLICATION_CONTENT_IDENTITY_MISMATCH
+PUBLICATION_BUNDLE_IDENTITY_MISMATCH
+PUBLICATION_REFERENCE_MISSING
+PUBLICATION_NOT_RETRIEVABLE
+PUBLICATION_REPOSITORY_MISMATCH
+PUBLICATION_COMMIT_MISMATCH
+PUBLICATION_EXECUTION_MISMATCH
+PACKAGE_ID_UNRESOLVED
+PACKAGE_REQUIRED_REPOSITORY_MISSING
+PACKAGE_UNEXPECTED_REPOSITORY
+PACKAGE_BUNDLE_STALE
+PACKAGE_BUNDLE_DUPLICATED
+```
+
+La implementación puede añadir códigos, pero no colapsar causas distintas en un PASS genérico.
+
+#### 36. Contrato de verificación de evidencia
+
+La futura implementación deberá poder validar un bundle ya publicado sin ejecutar nuevamente las pruebas.
+
+La verificación deberá comprobar como mínimo:
+
+- schema;
+- repo;
+- commit;
+- contexto;
+- execution identity;
+- identidad de cada artefacto;
+- bundle identity;
+- referencia de publicación;
+- recuperabilidad;
+- ausencia de mismatch;
+- vigencia cuando el provider declare expiración.
+
+La verificación de evidencia no sustituye la ejecución original.
+
+#### 37. Handoff a `SHELL-CI-020..024`
+
+CI019 entrega al ciclo por paquete:
+
+```text
+package_id
+dossier_identity
+required_repository_set_identity
+repository bundles
+source commits
+gate contexts
+gate results
+TREQ identities
+publication references
+bundle identities
+completeness
+result
+```
+
+Uso esperado:
+
+- `SHELL-CI-020` registra qué evidencia respalda la implementación;
+- `SHELL-CI-021` consume bundles para readiness;
+- `SHELL-CI-022` exige evidencia DEPLOY del commit exacto antes de cutover;
+- `SHELL-CI-023` añade evidencia de hypercare sin reescribir la evidencia de pruebas;
+- `SHELL-CI-024` verifica recuperabilidad y lineage antes del cierre.
+
+CI019 no ejecuta ninguna de esas tareas.
+
+#### 38. Casos positivos mínimos de autocertificación futura
+
+La futura `SHELL-CI-019::GLOBAL` deberá demostrar, como mínimo:
+
+1. publicación de bundle PASS de repositorio;
+2. publicación de bundle FAIL sin convertirlo en PASS;
+3. publicación de bundle BLOCKED;
+4. rerun del mismo SHA generando un bundle distinto;
+5. commit nuevo generando identidad distinta;
+6. bundle MERGE con ambiente nulo;
+7. bundle DEPLOY con ambiente exacto;
+8. expediente de paquete de un repositorio;
+9. expediente multi-repositorio con SHAs distintos;
+10. dos paquetes referenciando el mismo bundle sin duplicarlo;
+11. verificación exitosa de hashes;
+12. recuperación por identidad exacta;
+13. TREQ cero explícito conservado sin inventar IDs;
+14. TREQ afectados no vacíos conservados con su registry identity;
+15. provider externo referenciado sin copiar secretos.
+
+#### 39. Casos negativos mínimos de autocertificación futura
+
+La futura instancia deberá bloquear o invalidar, como mínimo:
+
+1. bundle sin repositorio;
+2. bundle con SHA malformado;
+3. bundle de otro repositorio;
+4. bundle de otro commit;
+5. gate execution identity distinta;
+6. content hash alterado;
+7. bundle identity alterada;
+8. publicación no recuperable;
+9. secreto detectado en payload;
+10. intento de sobrescribir bundle histórico;
+11. package id no resoluble;
+12. repositorio requerido ausente en un paquete;
+13. repositorio inesperado en un paquete;
+14. bundle duplicado dentro de un dossier;
+15. bundle stale;
+16. `completeness = COMPLETE` con evidencia faltante;
+17. PASS de paquete con un repositorio en FAIL;
+18. PASS de paquete con publicación fallida;
+19. uso de una vista “latest” como autoridad;
+20. reutilización de evidencia de preview como evidencia DEPLOY gobernada.
+
+#### 40. Regresiones mínimas de autocertificación futura
+
+La futura instancia deberá impedir:
+
+1. cambiar la identidad `VENTO Required Gate`;
+2. crear un segundo required status check obligatorio para sustituir CI018;
+3. reejecutar pruebas dentro del publicador;
+4. parsear logs ambiguos para inventar resultados;
+5. hacer commit o push de evidencia runtime;
+6. publicar `.env` o secretos;
+7. eliminar bundles fallidos;
+8. sobrescribir un intento anterior;
+9. convertir publicación fallida en gate PASS;
+10. inferir `package_id` por ruta;
+11. inferir mismo SHA para repositorios distintos;
+12. modificar 04A para obtener verde;
+13. modificar Supabase;
+14. ejecutar deploy;
+15. ejecutar rollback;
+16. desarrollar `SHELL-CI-020`.
+
+#### 41. Materialización futura de `SHELL-CI-019::GLOBAL`
+
+La instancia podrá declararse materializada únicamente cuando:
+
+1. exista un único motor propietario de publicación en `vento-shell`;
+2. los ocho repositorios puedan consumir el mismo contrato sin duplicar semántica;
+3. el publicador pueda construir y validar bundles de repositorio;
+4. el publicador pueda construir y validar expedientes de paquete;
+5. la señal final `VENTO Required Gate` conserve su identidad;
+6. un PASS técnico con publicación fallida produzca DENY;
+7. un FAIL técnico publique evidencia de fallo cuando técnicamente sea posible;
+8. los intentos se conserven de forma append-only;
+9. la identidad SHA-256 detecte alteración;
+10. el contenido sensible sea rechazado o redactado antes de publicar;
+11. un bundle publicado pueda recuperarse y verificarse sin reejecutar pruebas;
+12. se demuestre paquete de un repositorio;
+13. se demuestre paquete multi-repositorio;
+14. se demuestre rerun sin sobrescritura;
+15. se demuestre stale sin reutilización;
+16. se demuestre compatibilidad con MERGE y DEPLOY;
+17. los ocho repositorios produzcan evidencia con el mismo contrato;
+18. las regresiones de CI018 continúen en PASS;
+19. no se modifiquen requisitos TREQ;
+20. no se modifique 04A;
+21. no se modifique Supabase;
+22. no se haga merge;
+23. no se ejecute despliegue productivo;
+24. no se ejecute rollback;
+25. no se desarrolle CI020;
+26. la instancia y su evidencia queden consolidadas en `SHELL-CI-019::GLOBAL`.
+
+Los archivos, actions, adapters y comandos exactos de la materialización se resolverán contra el estado vigente al iniciar la instancia física.
+
+#### 42. Estado documental conciliado
+
+| Métrica | Resultado |
+| --- | ---: |
+| Topología CI019 | **GLOBAL_ENABLE_ONCE** |
+| Instancias físicas CI016..CI018 verificadas | **3/3** |
+| Repositorios iniciales gobernados | **8** |
+| Contextos heredados | **2 — MERGE / DEPLOY** |
+| Señal final preservada | **VENTO Required Gate** |
+| Unidad primaria de evidencia | **bundle de repositorio** |
+| Unidad de agregación | **expediente de paquete** |
+| Bundles CI019 materializados durante el marcador | **0** |
+| Expedientes de paquete materializados durante el marcador | **0** |
+| Cambios físicos autorizados durante el marcador | **0** |
+| Cambios Supabase autorizados durante el marcador | **0** |
+| Requisitos creados o modificados | **0** |
+
+#### 43. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** el registro vigente ya exige comandos reproducibles que bloqueen integración o despliegue cuando corresponda y exige que cada paquete y PR publique resultados reproducibles. CI019 materializa el contrato técnico de publicación, integridad, lineage y recuperación de esa evidencia sin introducir una obligación empresarial nueva.
+
+#### 44. Cobertura de prueba vigente reutilizada
+
+Sin modificar 04A, CI019 reutiliza cobertura vigente de:
+
+- `TREQ-SHELL-005`, que exige comandos reproducibles y bloqueo ante fallos de controles críticos;
+- `TREQ-SHELL-008`, que exige validación automática del registro, declaración de requisitos afectados y publicación de resultados reproducibles.
+
+Estas referencias son trazabilidad heredada y no una actualización del registro.
+
+#### 45. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | El marcador documental no materializa el publicador, artifacts, workflows ni adapters. |
+| LOCAL | NOT_EXECUTED | No se ejecutaron validadores ni comandos contra el checkout local del usuario durante esta entrega. |
+| REMOTA | PASS | Se revisaron las fuentes canónicas vigentes de continuidad, topología, políticas, contrato de entrega, owner file, package scripts, 04A SHELL, CI016, CI017, el motor CI018, el workflow `VENTO Required Gate` y la instancia `SHELL-CI-018::GLOBAL` verificada. |
+| OPERATIVA | NOT_EXECUTED | No se intentó publicar artifacts, recuperar bundles, reruns, merge, deploy ni gates de paquete. |
+| FÍSICA | NOT_APPLICABLE | La materialización corresponde a la futura `SHELL-CI-019::GLOBAL` después de aprobación documental y autorización física separada. |
+
+#### 46. Criterios de aceptación
+
+`SHELL-CI-019` queda documentalmente completa cuando:
+
+- define evidencia por repositorio y por paquete como unidades separadas;
+- conserva el bundle de repositorio como evidencia autoritativa de ejecución;
+- conserva el expediente de paquete como índice de referencias, no duplicado de payload;
+- liga evidencia a repositorio, commit, contexto e intento exactos;
+- conserva la decisión CI018 sin reinterpretarla;
+- conserva identidades TREQ cuando apliquen;
+- define integridad SHA-256;
+- define inmutabilidad append-only;
+- define semántica de rerun;
+- impide reutilización stale;
+- impide autoridad basada en “latest”;
+- define publicación de resultados DENY;
+- hace obligatoria la publicación para un PASS admisible;
+- preserva una sola señal `VENTO Required Gate`;
+- prohíbe exposición de secretos;
+- limita raw logs a referencias o attachments sanitizados;
+- define recuperabilidad;
+- define conservación sin inventar retención legal;
+- soporta package de un repositorio y multi-repositorio;
+- soporta providers externos;
+- entrega un handoff explícito a CI020..024;
+- no modifica CI016, CI017 ni su semántica;
+- no redefine la decisión de CI018;
+- no crea ni modifica TREQ;
+- no modifica Supabase;
+- no inicia CI020.
+
+#### 47. Límites
+
+Esta tarea no:
+
+- implementa `SHELL-CI-019::GLOBAL`;
+- crea scripts;
+- crea actions;
+- modifica workflows;
+- publica artifacts reales;
+- cambia branch protection;
+- cambia la identidad `VENTO Required Gate`;
+- cambia `npm test`;
+- cambia las suites CI016;
+- cambia el verificador CI017;
+- cambia la semántica del motor CI018;
+- modifica instancias VERIFIED anteriores;
+- modifica `package.json`;
+- modifica lockfiles;
+- modifica dependencias;
+- modifica 04A;
+- crea requisitos;
+- modifica requisitos;
+- ejecuta pruebas;
+- ejecuta lint;
+- ejecuta typecheck;
+- ejecuta build;
+- abre pull requests;
+- fusiona pull requests;
+- hace push;
+- hace force push;
+- crea tags;
+- crea releases;
+- publica packages;
+- despliega;
+- ejecuta cutover;
+- ejecuta hypercare;
+- ejecuta rollback;
+- crea o ejecuta migraciones;
+- modifica schema;
+- modifica RLS;
+- modifica RPC;
+- modifica triggers;
+- modifica grants;
+- modifica Storage;
+- modifica Realtime;
+- modifica Edge Functions;
+- modifica datos;
+- modifica secretos;
+- crea una política jurídica nueva de retención;
+- sustituye EVID-ARC;
+- desarrolla `SHELL-CI-020`.
+
+#### 48. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-CI-018 — Bloquear merge o despliegue cuando fallen pruebas obligatorias`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CI-020 — Implementar y desplegar cada paquete aprobado por E5`
+

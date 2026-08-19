@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **977** |
+| Aprobadas | **978** |
 | En propuesta | **0** |
-| No iniciadas | **617** |
+| No iniciadas | **616** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **61.29% (977/1594)** |
+| Porcentaje de completamiento | **61.36% (978/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CI-018` — Bloquear merge o despliegue cuando fallen pruebas obligatorias | ✅ APROBADA |
-| Tarea actual | `SHELL-CI-019` — Publicar evidencia de pruebas por paquete y repositorio | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CI-020` — Implementar y desplegar cada paquete aprobado por E5 | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CI-019` — Publicar evidencia de pruebas por paquete y repositorio | ✅ APROBADA |
+| Tarea actual | `SHELL-CI-020` — Implementar y desplegar cada paquete aprobado por E5 | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CI-021` — Ejecutar y resolver el checklist de readiness aprobado | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1302,7 +1302,7 @@
 | ✅ APROBADA | `SHELL-CI-016` | Estandarizar un comando de pruebas automatizadas por repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md` |
 | ✅ APROBADA | `SHELL-CI-017` | Crear verificador automático del Registro Canónico de Requisitos de Prueba | `bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md` |
 | ✅ APROBADA | `SHELL-CI-018` | Bloquear merge o despliegue cuando fallen pruebas obligatorias | `bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md` |
-| ⬜ NO INICIADA | `SHELL-CI-019` | Publicar evidencia de pruebas por paquete y repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md` |
+| ✅ APROBADA | `SHELL-CI-019` | Publicar evidencia de pruebas por paquete y repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md` |
 | ⬜ NO INICIADA | `SHELL-CI-020` | Implementar y desplegar cada paquete aprobado por E5 | `bloques/T_CALIDAD_Y_DESPLIEGUE/04_DESPLIEGUE_PILOTO_Y_ESTABILIZACION.md` |
 | ⬜ NO INICIADA | `SHELL-CI-021` | Ejecutar y resolver el checklist de readiness aprobado | `bloques/T_CALIDAD_Y_DESPLIEGUE/04_DESPLIEGUE_PILOTO_Y_ESTABILIZACION.md` |
 | ⬜ NO INICIADA | `SHELL-CI-022` | Ejecutar cutover y piloto conforme al plan aprobado | `bloques/T_CALIDAD_Y_DESPLIEGUE/04_DESPLIEGUE_PILOTO_Y_ESTABILIZACION.md` |

@@ -20,33 +20,33 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **977** |
+| Tareas aprobadas | **978** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **617** |
+| Tareas no iniciadas | **616** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **61.29% (977/1594)** |
+| Porcentaje de completamiento | **61.36% (978/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-CI-018 — Bloquear merge o despliegue cuando fallen pruebas obligatorias** |
-| Tarea actual | **SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio** |
+| Última tarea aprobada | **SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio** |
+| Tarea actual | **SHELL-CI-020 — Implementar y desplegar cada paquete aprobado por E5** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CI-020 — Implementar y desplegar cada paquete aprobado por E5** |
+| Siguiente tarea | **SHELL-CI-021 — Ejecutar y resolver el checklist de readiness aprobado** |
 | Bloque actual | **BLOQUE T — CI, pruebas, despliegue y rollback base** |
-| Progreso del bloque | **BLOQUE T: 18 de 24 aprobadas; SHELL-CI-019 pendiente** |
-| Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — SHELL-CI-019** |
-| Carril documental | **ACTIVO — SHELL-CI-019** |
-| Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
+| Progreso del bloque | **BLOQUE T: 19 de 24 aprobadas; SHELL-CI-020 pendiente** |
+| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
+| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CI-019::GLOBAL** |
+| Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — SHELL-CI-020** |
+| Carril físico | **PENDING_AUTHORIZATION — SHELL-CI-019::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-CI-018` — Bloquear merge o despliegue cuando fallen pruebas obligatorias |
-| Tarea actual | `SHELL-CI-019` — Publicar evidencia de pruebas por paquete y repositorio — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CI-020` — Implementar y desplegar cada paquete aprobado por E5 |
+| Última aprobada | `SHELL-CI-019` — Publicar evidencia de pruebas por paquete y repositorio |
+| Tarea actual | `SHELL-CI-020` — Implementar y desplegar cada paquete aprobado por E5 — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CI-021` — Ejecutar y resolver el checklist de readiness aprobado |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,8 +59,8 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE T: 18 DE 24 APROBADAS — ACTUAL SHELL-CI-019** |
-| Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
+| CONTINUIDAD ACTIVA | **BLOQUE T: 19 DE 24 APROBADAS — ACTUAL SHELL-CI-020** |
+| Implementación física | **SHELL-CI-019::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
 
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-CI-018 — Bloquear merge o despliegue cuando fallen pruebas obligatorias
-        ↓
-TAREA ACTUAL
 SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-CI-020 — Implementar y desplegar cada paquete aprobado por E5
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CI-021 — Ejecutar y resolver el checklist de readiness aprobado
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE T — 18 de 24 tareas aprobadas
+BLOQUE T — 19 de 24 tareas aprobadas
 ```
