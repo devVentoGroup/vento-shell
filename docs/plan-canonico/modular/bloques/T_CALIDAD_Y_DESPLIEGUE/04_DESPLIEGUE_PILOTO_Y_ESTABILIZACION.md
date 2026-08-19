@@ -134,6 +134,8 @@ La aprobación documental del marcador global no implementa ningún paquete.
 
 Una instancia física no reabre, modifica ni vuelve a aprobar `SHELL-CI-020`.
 
+La ejecución de `SHELL-CI-020::<package_id>` no modifica el estado de la tarea canónica `SHELL-CI-020`; la instancia física conserva su estado independiente y el marcador global permanece cerrado.
+
 #### 5. Cadena física obligatoria por paquete
 
 Para cada `package_id`:
