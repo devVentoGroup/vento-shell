@@ -3,7 +3,6 @@ import test from 'node:test';
 
 import {
   CANONICAL_REPOSITORIES,
-  DEPLOY_GATE_CONTEXT,
   REQUIRED_GATE_CONTEXT,
   evaluateRequiredGate,
   validateRequiredGateWorkflow,
