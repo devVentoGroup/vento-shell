@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **999** |
+| Tareas aprobadas | **1000** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **595** |
+| Tareas no iniciadas | **594** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **62.67% (999/1594)** |
+| Porcentaje de completamiento | **62.74% (1000/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-SRV-016 — Normalizar errores de autorización** |
-| Tarea actual | **AUTH-SRV-017 — Crear helpers server compartidos** |
+| Última tarea aprobada | **AUTH-SRV-017 — Crear helpers server compartidos** |
+| Tarea actual | **AUTH-SRV-018 — Revisar acciones administrativas sin turno** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-SRV-018 — Revisar acciones administrativas sin turno** |
+| Siguiente tarea | **AUTH-DB-015 — Documentar y versionar todas las migraciones en vento-shell** |
 | Bloque actual | **BLOQUE J — Protección de acciones de servidor** |
-| Progreso del bloque | **BLOQUE J: 16 de 18 aprobadas; AUTH-SRV-017 pendiente** |
+| Progreso del bloque | **BLOQUE J: 17 de 18 aprobadas; AUTH-SRV-018 pendiente** |
 | Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-SRV-017** |
-| Carril documental | **ACTIVO — AUTH-SRV-017** |
+| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-SRV-018** |
+| Carril documental | **ACTIVO — AUTH-SRV-018** |
 | Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-SRV-016` — Normalizar errores de autorización |
-| Tarea actual | `AUTH-SRV-017` — Crear helpers server compartidos — **NO INICIADA** |
-| Siguiente tarea | `AUTH-SRV-018` — Revisar acciones administrativas sin turno |
+| Última aprobada | `AUTH-SRV-017` — Crear helpers server compartidos |
+| Tarea actual | `AUTH-SRV-018` — Revisar acciones administrativas sin turno — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DB-015` — Documentar y versionar todas las migraciones en vento-shell |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE J: 16 DE 18 APROBADAS — ACTUAL AUTH-SRV-017** |
+| CONTINUIDAD ACTIVA | **BLOQUE J: 17 DE 18 APROBADAS — ACTUAL AUTH-SRV-018** |
 | Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-SRV-016 — Normalizar errores de autorización
-        ↓
-TAREA ACTUAL
 AUTH-SRV-017 — Crear helpers server compartidos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-SRV-018 — Revisar acciones administrativas sin turno
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DB-015 — Documentar y versionar todas las migraciones en vento-shell
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE J — 16 de 18 tareas aprobadas
+BLOQUE J — 17 de 18 tareas aprobadas
 ```
