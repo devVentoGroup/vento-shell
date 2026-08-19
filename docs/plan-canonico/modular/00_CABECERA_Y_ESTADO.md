@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **998** |
+| Tareas aprobadas | **999** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **596** |
+| Tareas no iniciadas | **595** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **62.61% (998/1594)** |
+| Porcentaje de completamiento | **62.67% (999/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-SRV-015 — Registrar rol simulado en auditoría** |
-| Tarea actual | **AUTH-SRV-016 — Normalizar errores de autorización** |
+| Última tarea aprobada | **AUTH-SRV-016 — Normalizar errores de autorización** |
+| Tarea actual | **AUTH-SRV-017 — Crear helpers server compartidos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-SRV-017 — Crear helpers server compartidos** |
+| Siguiente tarea | **AUTH-SRV-018 — Revisar acciones administrativas sin turno** |
 | Bloque actual | **BLOQUE J — Protección de acciones de servidor** |
-| Progreso del bloque | **BLOQUE J: 15 de 18 aprobadas; AUTH-SRV-016 pendiente** |
+| Progreso del bloque | **BLOQUE J: 16 de 18 aprobadas; AUTH-SRV-017 pendiente** |
 | Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-SRV-016** |
-| Carril documental | **ACTIVO — AUTH-SRV-016** |
+| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-SRV-017** |
+| Carril documental | **ACTIVO — AUTH-SRV-017** |
 | Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-SRV-015` — Registrar rol simulado en auditoría |
-| Tarea actual | `AUTH-SRV-016` — Normalizar errores de autorización — **NO INICIADA** |
-| Siguiente tarea | `AUTH-SRV-017` — Crear helpers server compartidos |
+| Última aprobada | `AUTH-SRV-016` — Normalizar errores de autorización |
+| Tarea actual | `AUTH-SRV-017` — Crear helpers server compartidos — **NO INICIADA** |
+| Siguiente tarea | `AUTH-SRV-018` — Revisar acciones administrativas sin turno |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE J: 15 DE 18 APROBADAS — ACTUAL AUTH-SRV-016** |
+| CONTINUIDAD ACTIVA | **BLOQUE J: 16 DE 18 APROBADAS — ACTUAL AUTH-SRV-017** |
 | Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-SRV-015 — Registrar rol simulado en auditoría
-        ↓
-TAREA ACTUAL
 AUTH-SRV-016 — Normalizar errores de autorización
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-SRV-017 — Crear helpers server compartidos
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-SRV-018 — Revisar acciones administrativas sin turno
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE J — 15 de 18 tareas aprobadas
+BLOQUE J — 16 de 18 tareas aprobadas
 ```

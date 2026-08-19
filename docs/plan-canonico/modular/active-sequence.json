@@ -5,25 +5,25 @@
   "sequence_id": "PHASE-03-J-SERVER-ACTIONS",
   "block_code": "BLOQUE J",
   "block_title": "Protección de acciones de servidor",
-  "previous_task_id": "AUTH-SRV-015",
+  "previous_task_id": "AUTH-SRV-016",
   "latest_treq_task_id": "NEXO-UX-025",
   "handoff_task_id": "AUTH-DB-015",
   "handoff_sequence_id": "PHASE-03-R-DATABASE-IMPLEMENTATION",
   "segments": [
     {
       "prefix": "AUTH-SRV",
-      "from": 16,
+      "from": 17,
       "to": 18
     }
   ],
   "block_progress": {
     "total_tasks": 18,
-    "approved_tasks": 15,
-    "pending_tasks": 3
+    "approved_tasks": 16,
+    "pending_tasks": 2
   },
   "route_progress": {
     "covered_tasks": 1594,
-    "pending_tasks": 596,
+    "pending_tasks": 595,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
     "active_stage": 12
