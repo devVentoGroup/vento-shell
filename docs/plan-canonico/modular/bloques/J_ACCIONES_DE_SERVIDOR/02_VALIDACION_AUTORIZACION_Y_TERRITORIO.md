@@ -3018,7 +3018,1307 @@ Estas referencias son trazabilidad heredada y no representan requisitos creados 
 `AUTH-SRV-007 — Validar área en cada escritura`
 
 
-### [ ] AUTH-SRV-007 — Validar área en cada escritura
+### ✅ AUTH-SRV-007 — Validar área en cada escritura
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-SRV-006 — Validar sede en cada escritura
+**Tarea siguiente:** AUTH-SRV-008 — Validar turno cuando corresponda
+**Tipo de tarea:** Contrato global con materialización por unidad (`PER_IMPLEMENTATION_UNIT`) — contrato de autorización territorial por área para que toda escritura protegida resuelva en servidor el área real del recurso o la derive de una fuente canónica válida, verifique su pertenencia a la sede ya autorizada por `AUTH-SRV-006`, evalúe el alcance de área exigido por la capacidad exacta de `AUTH-SRV-005` y falle cerrado ante áreas inexistentes, inactivas, ambiguas, incompatibles o fuera del territorio efectivo del actor
+**Bloque:** BLOQUE J — Protección de acciones de servidor
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global; las futuras materializaciones ocurren únicamente mediante `AUTH-SRV-007::<implementation_unit_id>` después de que `DELIV-PKG-025::<package_id>` asigne la unidad y el paquete propietario supere `E5-GATE-008::<package_id>`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato obligatorio para que toda escritura protegida determine si el efecto debe quedar limitado a un área empresarial concreta, a un tipo de área dentro de una sede autorizada o a un recurso legítimamente site-level sin área específica.
+
+`AUTH-SRV-006` entrega una sede ya resuelta y autorizada.
+
+`AUTH-SRV-007` añade la dimensión de área sin reabrir la decisión de sede.
+
+La regla vinculante queda:
+
+```text
+effective_mutation
++
+required_permission_key
++
+validated_target_site_id
++
+resolved_area_requirement
++
+resolved_target_area
++
+area_authorization_result
+=
+WRITE_ELIGIBLE_FOR_NEXT_GATES
+```
+
+Una sede correcta no convierte automáticamente en válidas todas sus áreas.
+
+#### 2. Handoff recibido de `AUTH-SRV-006`
+
+La tarea anterior entrega como mínimo:
+
+```text
+required_permission_key
+target_site_id
+site_authorization_basis
+site_authorization_result
+```
+
+`AUTH-SRV-007` consume ese resultado y produce:
+
+```text
+area_requirement
+target_area_id
+target_area_kind
+area_resolution_source
+area_authorization_basis
+area_authorization_result
+```
+
+No se permite resolver un área cuya sede contradiga `target_site_id`.
+
+#### 3. Frontera de responsabilidad
+
+Esta tarea responde:
+
+```text
+¿EN QUÉ ÁREA PUEDE PRODUCIRSE ESTA ESCRITURA?
+```
+
+No responde todavía:
+
+```text
+¿REQUIERE TURNO?
+¿QUÉ TURNO ES VÁLIDO?
+¿QUÉ ROL OPERATIVO ES VÁLIDO?
+¿QUÉ DISPOSITIVO PUEDE INTERVENIR?
+¿EL ESTADO ACTUAL DEL RECURSO ADMITE LA MUTACIÓN?
+¿PUEDE CRUZAR ENTRE ÁREAS?
+```
+
+Esas decisiones permanecen en `AUTH-SRV-008`, `AUTH-SRV-009`, `AUTH-SRV-010`, `AUTH-SRV-011` y `AUTH-SRV-013`.
+
+#### 4. Conceptos de área que permanecen separados
+
+Se mantienen distintos:
+
+```text
+organizational_area
+assigned_area
+primary_area
+selected_area
+administrative_active_area
+operational_active_area
+resource_area
+requested_area
+area_kind
+```
+
+No pueden colapsarse en una propiedad genérica llamada “área actual”.
+
+#### 5. Fuente canónica del área empresarial
+
+La fuente de verdad de las áreas empresariales es:
+
+```text
+public.areas
+```
+
+Toda área utilizada en autorización debe:
+
+- existir;
+- estar activa;
+- pertenecer exactamente a una sede;
+- pertenecer a la misma sede validada para la escritura;
+- representar un área empresarial autorizable;
+- no confundirse con ubicación física interna, posición de inventario, geocerca, punto de marcación, dispositivo o centro de costo.
+
+#### 6. Identidad estable del área
+
+La identidad territorial concreta es:
+
+```text
+area_id
+```
+
+No:
+
+```text
+area_name
+area_label
+display_text
+slug
+translated_name
+partial_match
+```
+
+Dos áreas con nombres similares o iguales continúan siendo identidades independientes.
+
+#### 7. Invariante sede–área
+
+Toda evaluación debe conservar:
+
+```text
+target_area.site_id
+=
+validated_target_site_id
+```
+
+Si la relación no coincide:
+
+```text
+AREA_SITE_MISMATCH
+→ DENY
+```
+
+La validación de área nunca puede ampliar la sede ya autorizada.
+
+#### 8. Área específica y tipo de área
+
+Se mantienen separados:
+
+```text
+area_id
+→ área empresarial concreta
+
+area_kind / area_type
+→ categoría funcional del área
+```
+
+Un tipo de área no sustituye la identidad del área real del recurso.
+
+Cuando un permiso utilice tipo de área, el servidor debe resolver primero el `area_id` real y luego comparar su clasificación canónica.
+
+#### 9. Fuente transitoria del tipo de área
+
+Mientras el catálogo normalizado definitivo no esté materializado, el atributo funcional vigente puede ser:
+
+```text
+area_kind
+```
+
+Su uso contractual exige coincidencia exacta contra la clasificación almacenada.
+
+No se autoriza por:
+
+- nombre parecido;
+- alias no registrado;
+- texto visible;
+- traducción;
+- nombre de rol operativo.
+
+#### 10. Clasificación obligatoria del recurso
+
+Antes de decidir el área, la unidad debe clasificar el recurso u operación en una de estas semánticas:
+
+```text
+specific_area
+site_level
+multi_area
+organization
+```
+
+`null` no puede significar por inferencia:
+
+```text
+todas las áreas
+```
+
+La ausencia de `area_id` debe tener una semántica explícita.
+
+#### 11. Recurso `specific_area`
+
+Para un recurso que pertenece a un área concreta:
+
+```text
+resource_area_id
+→ target_area_id
+```
+
+La autorización utiliza esa identidad persistida o derivada canónicamente.
+
+El área enviada por el cliente puede actuar como selector defensivo, pero no como autoridad.
+
+#### 12. Recurso `site_level`
+
+Un recurso legítimamente site-level puede no tener `area_id`.
+
+En ese caso:
+
+```text
+area_id = null
+```
+
+significa únicamente:
+
+```text
+resource_scope = site_level
+```
+
+No concede automáticamente una capacidad area-scoped sobre todas las áreas.
+
+La compatibilidad entre permiso y recurso debe estar declarada.
+
+#### 13. Recurso `multi_area`
+
+Cuando una operación afecta más de un área:
+
+```text
+area_count > 1
+```
+
+la unidad debe identificar todas las áreas reales afectadas antes de producir efectos.
+
+`AUTH-SRV-007` clasifica y resuelve el conjunto.
+
+La autorización transversal entre áreas pertenece a `AUTH-SRV-013`.
+
+#### 14. Recurso `organization`
+
+Un recurso organizacional sin sede ni área no debe forzarse artificialmente a un área.
+
+Si una capacidad area-scoped intenta modificar un recurso organizacional sin contrato de segmentación:
+
+```text
+AREA_SCOPE_INCOMPATIBLE
+→ DENY
+```
+
+#### 15. Área solicitada por cliente
+
+Valores como:
+
+```text
+area_id
+areaId
+selected_area_id
+roleContext.areaId
+```
+
+son:
+
+```text
+SELECTOR_INTENT
+```
+
+Su presencia expresa la intención del caller.
+
+No demuestra:
+
+```text
+area_exists
+area_active
+area_belongs_to_site
+area_authorized_for_actor
+area_valid_for_role
+area_valid_for_resource
+```
+
+#### 16. Área directa del recurso existente
+
+Cuando el recurso persistido contiene:
+
+```text
+area_id
+```
+
+la escritura debe derivar su territorio desde ese valor.
+
+Ejemplos:
+
+- turno;
+- solicitud productiva;
+- configuración de rol;
+- estación;
+- asignación territorial;
+- dispositivo con área fija.
+
+Un parámetro del request no reemplaza el `area_id` persistido.
+
+#### 17. Área indirecta
+
+Cuando el recurso no almacena `area_id` directamente, la unidad debe declarar una ruta canónica reproducible.
+
+Ejemplos conceptuales:
+
+```text
+movement
+→ inventory_location
+→ business_area
+```
+
+o:
+
+```text
+production_line
+→ batch
+→ order
+→ production_area
+```
+
+La ausencia de columna directa no convierte al recurso en site-level.
+
+#### 18. Fallo al resolver área
+
+Si la ruta de resolución:
+
+- no existe;
+- devuelve un área inexistente;
+- devuelve un área inactiva;
+- devuelve varias áreas cuando el contrato exige una;
+- contradice la sede;
+- falla técnicamente;
+
+el resultado es:
+
+```text
+DENY
+```
+
+No se utiliza como fallback un valor cliente.
+
+#### 19. Creación de recurso area-scoped
+
+Antes de crear un recurso con área:
+
+1. recibir el área como intención o derivarla desde una fuente canónica;
+2. resolver `target_area_id`;
+3. consultar o demostrar la identidad canónica del área;
+4. verificar que el área está activa;
+5. verificar `target_area.site_id = validated_target_site_id`;
+6. verificar el alcance territorial del actor para la capacidad exacta;
+7. verificar la compatibilidad de la capacidad con área o tipo de área;
+8. construir el payload final;
+9. persistir únicamente el área ya resuelta.
+
+#### 20. Actualización de recurso area-scoped
+
+Para una actualización ordinaria:
+
+```text
+resource_id
+→ persisted_resource
+→ persisted_area_id
+```
+
+Ese `persisted_area_id` gobierna la evaluación.
+
+Si el request pretende cambiar el área:
+
+```text
+persisted_area_id
+!=
+requested_area_id
+```
+
+la operación debe clasificarse como cambio cross-area y pasar al contrato de `AUTH-SRV-013`.
+
+No se cambia de área silenciosamente dentro de una edición ordinaria.
+
+#### 21. Eliminación de recurso area-scoped
+
+Antes de eliminar:
+
+```text
+resource_id
+→ persisted_area_id
+→ area authorization
+→ remaining gates
+→ delete
+```
+
+La eliminación no queda autorizada únicamente por conocer el identificador del recurso o la sede.
+
+#### 22. Publicación, aprobación y transiciones
+
+Una transición masiva o de negocio debe resolver las áreas de las filas realmente afectadas.
+
+Si el permiso es area-scoped:
+
+```text
+all affected areas
+→ must be individually authorized
+```
+
+Si el permiso está definido como site-level para esa operación, las filas pueden abarcar varias áreas de la sede únicamente dentro del contrato explícito del recurso y sin crear un bypass cross-area.
+
+#### 23. Capacidad con alcance de sede
+
+Un permiso con alcance de sede puede cubrir recursos pertenecientes a varias áreas de esa misma sede cuando el contrato de la capacidad y del recurso sea site-level.
+
+Eso no significa:
+
+```text
+site permission
+→ any area-sensitive action automatically
+```
+
+Las operaciones cuyo recurso o semántica exijan área específica continúan sujetas a esta tarea.
+
+#### 24. Capacidad con alcance de área específica
+
+Para:
+
+```text
+permission_scope = specific_area
+```
+
+debe cumplirse:
+
+```text
+permission_area_id
+=
+target_area_id
+```
+
+y:
+
+```text
+target_area.site_id
+=
+validated_target_site_id
+```
+
+La coincidencia es por identidad, no por nombre ni tipo.
+
+#### 25. Capacidad con alcance por tipo de área
+
+Para un permiso por categoría funcional debe cumplirse:
+
+```text
+target_area_id
+→ canonical area
+→ canonical area_kind
+→ exact permission area_kind match
+```
+
+Además debe existir un límite superior de sede ya autorizado.
+
+Queda prohibido:
+
+```text
+area_kind
++
+missing site scope
+=
+global area authority
+```
+
+#### 26. Áreas asignadas del actor
+
+La fuente canónica futura de afiliación administrativa habitual es:
+
+```text
+public.employee_areas
+```
+
+Una fila activa puede formar parte del cálculo de alcance administrativo cuando el modo del permiso así lo requiera.
+
+No concede por sí sola ninguna capacidad.
+
+#### 27. Cobertura transitoria de `employee_areas`
+
+La cobertura histórica incompleta de `employee_areas` no autoriza fallbacks expansivos.
+
+Por tanto:
+
+```text
+missing employee_areas
+≠
+implicit authorization
+```
+
+y tampoco:
+
+```text
+missing employee_areas
+→ use employees.area_id
+```
+
+La futura materialización deberá respetar el modo de alcance realmente aplicable a la capacidad.
+
+#### 28. `employees.area_id`
+
+```text
+public.employees.area_id
+```
+
+se conserva como campo heredado.
+
+No es fuente canónica de:
+
+- autorización;
+- áreas asignadas completas;
+- área operativa;
+- área del recurso;
+- alcance territorial.
+
+#### 29. Área primaria
+
+```text
+employee_areas.is_primary = true
+```
+
+puede representar una preferencia o afiliación habitual.
+
+No equivale a:
+
+```text
+authorized_area_id
+operational_active_area
+resource_area
+```
+
+#### 30. Área seleccionada
+
+```text
+selected_area_id
+```
+
+es una preferencia administrativa de interfaz.
+
+Puede filtrar la experiencia.
+
+No puede:
+
+- conceder autoridad;
+- ampliar autoridad;
+- reemplazar el área persistida;
+- sobrevivir como autoridad residual cuando deja de ser válida.
+
+#### 31. Actor y persona objetivo
+
+En una escritura administrativa sobre otra persona deben separarse:
+
+```text
+ACTOR
+→ autoridad que ejecuta
+
+TARGET EMPLOYEE
+→ persona afectada
+```
+
+Que la persona objetivo tenga afiliación o perfil en un área no demuestra que el actor pueda administrar esa área.
+
+Ambas validaciones son independientes.
+
+#### 32. Área operativa activa
+
+Cuando una capacidad sea operativa y requiera área, la fuente canónica es:
+
+```text
+employee_shifts.area_id
+```
+
+dentro del contexto laboral válido que corresponda.
+
+No se sustituye con:
+
+```text
+employee_areas
+selected_area_id
+primary_area_id
+device.area_id
+employees.area_id
+```
+
+#### 33. Relación con el turno
+
+`AUTH-SRV-007` define qué área debe quedar asociada o validada.
+
+No certifica todavía que exista un turno válido.
+
+`AUTH-SRV-008` es propietario del prerrequisito de turno.
+
+Por tanto, este marcador puede exigir:
+
+```text
+area_required_by_operation = true
+```
+
+sin declarar satisfecho el contexto laboral.
+
+#### 34. Área obligatoria por configuración operacional
+
+Cuando el contrato de rol o de la superficie determine que el área es obligatoria:
+
+```text
+required_area
++
+target_area_id = null
+=
+DENY
+```
+
+No se aplica fallback a:
+
+- área primaria;
+- área seleccionada;
+- primera área de la sede;
+- área del dispositivo.
+
+#### 35. Configuración site-wide
+
+Una configuración operacional con:
+
+```text
+area_id = null
+```
+
+puede representar un rol o recurso de nivel sede.
+
+No significa:
+
+```text
+all areas authorized
+```
+
+La capacidad concreta decide si una operación site-wide es compatible con ausencia de área específica.
+
+#### 36. Ambigüedad
+
+Cuando una combinación de sede, rol, recurso o intención pueda resolver más de un área y no exista una regla canónica determinista:
+
+```text
+AREA_AMBIGUOUS
+→ DENY
+```
+
+No se selecciona arbitrariamente la primera coincidencia.
+
+#### 37. Fallback determinista permitido
+
+Si el caller no suministra área explícita, una unidad puede derivarla únicamente cuando existe una regla canónica inequívoca, por ejemplo:
+
+- una única área compatible;
+- una fila marcada canónicamente como default;
+- una relación persistida única;
+- una matriz activa que produzca un único resultado.
+
+La fuente y la regla utilizada deben quedar registradas.
+
+#### 38. Fallback prohibido ante área explícita inválida
+
+Si el caller sí suministra un área concreta y esa área:
+
+- no existe;
+- no está activa;
+- no pertenece a la sede;
+- no aparece en la matriz aplicable;
+- contradice el recurso;
+
+la unidad no debe sustituirla silenciosamente por otra área default.
+
+La intención inválida produce rechazo controlado.
+
+#### 39. Uso de cliente administrativo o service role
+
+Antes de una escritura mediante:
+
+```text
+admin client
+service role
+```
+
+deben estar resueltos:
+
+```text
+target_site_id
+target_area_semantics
+target_area_id when required
+area_authorization_result
+```
+
+La credencial privilegiada no sustituye la validación de área.
+
+#### 40. Contrato para Server Actions
+
+Toda Server Action mutante sensible a área debe demostrar:
+
+```text
+input
+→ resolve resource/site
+→ resolve area requirement
+→ resolve canonical area
+→ validate area against site
+→ evaluate exact permission in area context when applicable
+→ remaining gates
+→ effect
+```
+
+Que la pantalla solo muestre áreas permitidas no constituye autorización.
+
+#### 41. Contrato para API routes
+
+Toda API mutante debe tratar:
+
+```text
+body.areaId
+query.areaId
+path area
+header area
+```
+
+como intención no autoritativa.
+
+Para recursos existentes debe preferir el área persistida.
+
+Para creación debe validar la identidad canónica antes de persistir.
+
+#### 42. Contrato para RPC
+
+Una capa de servidor que invoque una RPC mutante deberá enviar un área ya resuelta cuando la función requiera contexto territorial.
+
+Si la RPC puede ser invocada directamente por callers no privilegiados, su protección interna deberá producir una decisión compatible.
+
+La revisión de grants, RLS y `SECURITY DEFINER` conserva sus owners de base de datos.
+
+#### 43. Operación masiva single-area
+
+Una mutación declarada como single-area debe demostrar:
+
+```text
+all affected rows
+→ same target_area_id
+```
+
+y ese área debe estar autorizada.
+
+Una fila perteneciente a otra área invalida el supuesto single-area.
+
+#### 44. Operación multiárea
+
+Cuando el conjunto contiene más de un área:
+
+```text
+area_count > 1
+```
+
+la unidad debe registrar el conjunto de identidades reales.
+
+`AUTH-SRV-007` no concede autoridad transversal por resolverlas.
+
+El gate de autorización cross-area pertenece a `AUTH-SRV-013`.
+
+#### 45. Handoff a `AUTH-SRV-008`
+
+La salida contractual hacia turno es:
+
+```text
+validated_target_site_id
+area_requirement
+target_area_id
+area_authorization_result
+```
+
+`AUTH-SRV-008` determina cuándo la operación exige turno y cuál turno satisface ese territorio.
+
+#### 46. Handoff a `AUTH-SRV-009`
+
+La validación de área no demuestra que el rol operativo sea válido.
+
+`AUTH-SRV-009` deberá comprobar:
+
+```text
+operational_role
++
+target_site_id
++
+target_area_id when required
++
+active role matrix
+```
+
+sin reinterpretar el área ya resuelta.
+
+#### 47. Handoff a `AUTH-SRV-010`
+
+El área del dispositivo puede reducir el alcance efectivo.
+
+`AUTH-SRV-010` debe cruzar:
+
+```text
+actor area
+device area
+resource area
+```
+
+cuando corresponda.
+
+El dispositivo no redefine el área del recurso.
+
+#### 48. Handoff a `AUTH-SRV-011`
+
+Una identidad de área correcta no demuestra que el recurso esté en estado mutable.
+
+Estado actual y transición continúan en `AUTH-SRV-011`.
+
+#### 49. Handoff a `AUTH-SRV-013`
+
+Todo intento de:
+
+```text
+source_area_id
+!=
+destination_area_id
+```
+
+o toda mutación cuyo conjunto efectivo abarque áreas distintas debe clasificarse para `AUTH-SRV-013`.
+
+`AUTH-SRV-007` entrega las áreas reales.
+
+`AUTH-SRV-013` decide si el cruce está autorizado.
+
+#### 50. Baseline VISO mensual
+
+Se conserva el snapshot:
+
+```text
+vento-group-sas/vento-viso
+8cf7c49a593c748cb6c99dd9b919b6947bcfec14
+```
+
+Superficies relevantes:
+
+```text
+src/app/staff/schedule/month/actions.ts
+src/app/staff/schedule/month/block-actions.ts
+src/app/api/viso/staff-schedule-shifts/route.ts
+src/app/staff/schedule/helpers.ts
+src/lib/auth/permissions.ts
+```
+
+#### 51. VISO — soporte existente de contexto de área
+
+El helper de permisos ya admite:
+
+```text
+PermissionContext.areaId
+```
+
+y lo transmite como:
+
+```text
+p_area_id
+```
+
+a `has_permission`.
+
+Esto demuestra capacidad técnica de transportar contexto de área.
+
+No demuestra que las escrituras actuales estén resolviendo o enviando el área correcta.
+
+#### 52. VISO — `roleContext`
+
+Las acciones mensuales reciben una cadena que codifica:
+
+```text
+role_code
++
+area_id
+```
+
+Ese valor se clasifica como intención.
+
+El área efectiva no es el fragmento recibido.
+
+Debe ser el `area_id` de una fila canónica válida de la matriz aplicable.
+
+#### 53. VISO — matriz operacional
+
+El baseline consulta:
+
+```text
+vento_site_operational_role_matrix_v1
+```
+
+filtrando por:
+
+```text
+site_id
+is_active = true
+```
+
+y consume:
+
+```text
+area_id
+area_name
+area_kind
+role_code
+is_default
+```
+
+La futura materialización deberá demostrar que la fila elegida:
+
+- pertenece a la sede ya autorizada;
+- representa una combinación vigente;
+- referencia un área empresarial válida cuando `area_id` no sea null;
+- no introduce un área distinta de la intención explícita sin una regla permitida.
+
+#### 54. VISO — fallback observado en `resolveMatrixRow`
+
+El baseline intenta primero:
+
+```text
+role_code
++
+area_id
+```
+
+y si no encuentra coincidencia puede caer a:
+
+```text
+default row for role
+```
+
+o:
+
+```text
+single row for role
+```
+
+Ese fallback es aceptable únicamente cuando el área no fue expresamente seleccionada y la derivación es determinista conforme al contrato.
+
+Si se suministró un `area_id` explícito que no corresponde, la futura materialización debe rechazarlo en lugar de convertir silenciosamente la intención en otra área.
+
+#### 55. VISO — creación mensual
+
+Para:
+
+```text
+createMonthlyShiftsAction
+createMonthlyScheduleBlocksAction
+```
+
+un bloque laboral deberá resolver:
+
+```text
+validated_target_site_id
++
+requested role/area intent
++
+active canonical matrix row
+=
+resolved area for payload
+```
+
+El payload final puede utilizar:
+
+```text
+area_id = resolved_matrix_row.area_id
+```
+
+solo después de las validaciones de esta tarea.
+
+#### 56. VISO — bloques de descanso
+
+Un bloque de descanso puede estar legítimamente definido sin área específica si su contrato es site-level.
+
+En ese caso:
+
+```text
+area_id = null
+```
+
+no significa todas las áreas.
+
+Significa que el descanso pertenece a la sede y no a una subdivisión concreta, siempre que el modelo del recurso así lo autorice.
+
+#### 57. VISO — API rápida de horarios
+
+La ruta:
+
+```text
+POST /api/viso/staff-schedule-shifts
+```
+
+no recibe un `areaId` explícito en el body auditado.
+
+Para turnos laborales deriva el área desde la matriz de rol.
+
+La derivación solo es válida cuando el resultado es determinista y pertenece a `siteId`.
+
+Si existen varias áreas posibles sin default canónico válido, debe fallar cerrado.
+
+#### 58. VISO — actualización de turno
+
+Cuando `shiftId` existe, la edición debe resolver primero el turno persistido, incluyendo:
+
+```text
+shift.site_id
+shift.area_id
+```
+
+Si la edición conserva el área:
+
+```text
+resolved_area_id
+=
+persisted_area_id
+```
+
+puede continuar por el carril ordinario.
+
+Si cambia:
+
+```text
+resolved_area_id
+!=
+persisted_area_id
+```
+
+debe clasificarse como operación cross-area para `AUTH-SRV-013`.
+
+El baseline observado reconstruye el payload a partir de la matriz y por tanto requiere esta reconciliación explícita antes de la futura implementación.
+
+#### 59. VISO — eliminación de turno
+
+Una eliminación de un turno area-scoped debe resolver el `area_id` persistido antes de autorizar cuando la capacidad efectiva esté limitada por área.
+
+Conocer únicamente:
+
+```text
+shiftId
+siteId
+```
+
+no satisface un permiso area-scoped.
+
+#### 60. VISO — publicación mensual
+
+`publishMonthAction` puede afectar turnos pertenecientes a varias áreas de una misma sede.
+
+La futura materialización debe clasificar la operación según el contrato del permiso `publish`:
+
+```text
+site-level publish
+```
+
+o:
+
+```text
+area-scoped publish
+```
+
+Si es site-level, cada fila continúa obligada a pertenecer a la sede autorizada y a conservar un área internamente válida cuando corresponda.
+
+Si es area-scoped, todas las áreas afectadas deben entrar en el conjunto de autorización y el cruce se entrega a `AUTH-SRV-013`.
+
+#### 61. VISO — controles existentes y brechas
+
+El baseline contiene controles parciales útiles:
+
+- `area_id` dentro de la matriz operacional;
+- `area_kind` como clasificación funcional observable;
+- selección de filas activas;
+- persistencia de `area_id` en turnos laborales;
+- contexto de permiso con soporte para `areaId`;
+- bloqueo cuando una combinación de rol no puede resolverse de forma única en la API rápida.
+
+No se consideran cumplimiento completo porque:
+
+- las escrituras de scheduling no evalúan de forma general la capacidad exacta usando `areaId`;
+- un área explícita inválida puede degradar a una fila default en los resolvers mensuales;
+- no se demuestra de forma independiente que el área resuelta esté activa y pertenezca a `public.areas` salvo que la vista lo garantice contractualmente;
+- la edición con `shiftId` puede reconstruir un área distinta sin clasificar primero un cambio cross-area;
+- eliminaciones y publicaciones pueden necesitar contexto de área según el scope final de sus permisos.
+
+#### 62. Lineage obligatorio
+
+Cada futura unidad debe conservar:
+
+```text
+surface_identity
+→ requested_area
+→ resource_identity
+→ validated_target_site_id
+→ resource_area_resolution
+→ target_area_id
+→ target_area_site_id
+→ target_area_kind
+→ area_requirement
+→ permission_area_scope
+→ actor_area_basis
+→ area_authorization_result
+→ cross_area_detected
+→ downstream shift/role/device/state gates
+→ effect
+```
+
+#### 63. Materialización futura
+
+Cada instancia:
+
+```text
+AUTH-SRV-007::<implementation_unit_id>
+```
+
+deberá registrar como mínimo:
+
+```text
+implementation_unit_id
+repository
+commit_before
+surface_identity[]
+write_operation[]
+required_permission_key[]
+validated_target_site_id
+requested_area_fields[]
+resource_area_source[]
+area_requirement
+target_area_id
+target_area_kind
+area_site_integrity
+permission_area_scope
+actor_area_basis
+target_employee_area_basis
+operational_area_source
+privileged_client_usage
+cross_area_detected
+package_id[]
+change_set
+rollback
+validation_commands
+evidence
+commit_after
+```
+
+#### 64. Evidencia mínima de una futura unidad
+
+La materialización deberá demostrar, cuando aplique:
+
+1. área inexistente → deny;
+2. área inactiva → deny;
+3. área de otra sede → deny;
+4. área seleccionada no concede autoridad;
+5. área primaria no concede autoridad;
+6. `employees.area_id` no se usa como fuente canónica;
+7. área explícita inválida no cae a otra default;
+8. área ausente solo se deriva mediante regla determinista;
+9. `area_id` y `area_kind` no se confunden;
+10. creación persiste solo área resuelta;
+11. update deriva área persistida antes de cambiarla;
+12. delete deriva área persistida cuando el scope lo exige;
+13. permiso area-scoped utiliza contexto `areaId`;
+14. recurso site-level no convierte `null` en wildcard;
+15. rol site-wide no concede automáticamente todas las áreas;
+16. admin/service role no ejecuta antes de resolver territorio;
+17. operación multiárea se clasifica para `AUTH-SRV-013`;
+18. llamada directa produce la misma decisión que la interfaz.
+
+#### 65. Rollback
+
+El rollback de una futura unidad deberá poder restaurar el mecanismo técnico anterior sin:
+
+- convertir `employees.area_id` en fuente canónica;
+- convertir `selected_area_id` en autoridad;
+- transformar `null` en wildcard;
+- ampliar permiso de área a toda la sede;
+- mezclar `area_id` con `area_kind`;
+- eliminar la relación sede–área;
+- permitir cambios cross-area silenciosos;
+- retirar evidencia territorial histórica.
+
+#### 66. Criterios de aceptación
+
+`AUTH-SRV-007` queda documentalmente satisfecha cuando:
+
+1. toda escritura clasifica si el área es específica, site-level, multiárea u organizacional;
+2. `public.areas` queda como fuente canónica de identidad de área;
+3. toda área concreta se valida contra la sede ya autorizada;
+4. `area_id` y `area_kind` quedan separados;
+5. el área real del recurso prevalece sobre el área de interfaz;
+6. recursos con área indirecta declaran una ruta canónica;
+7. recursos site-level no interpretan `null` como todas las áreas;
+8. `employee_areas` queda como afiliación administrativa cuando el scope la requiera;
+9. `employees.area_id`, área primaria y área seleccionada no conceden autoridad;
+10. el área operativa se mantiene ligada al turno cuando corresponda sin absorber `AUTH-SRV-008`;
+11. los scopes por área específica y por tipo de área se evalúan contra el área real;
+12. el cliente privilegiado no omite validación de área;
+13. una intención explícita inválida no cae silenciosamente a otra área;
+14. una derivación sin área explícita debe ser determinista;
+15. update y delete reconcilian el área persistida;
+16. operaciones multiárea se entregan a `AUTH-SRV-013`;
+17. VISO mensual deja definido el contrato de matriz activa y de área persistida;
+18. se preservan los handoffs a turno, rol, dispositivo, estado y cross-area;
+19. no se autorizan cambios físicos desde el marcador global;
+20. no se crean ni modifican requisitos de prueba.
+
+#### 67. Límites
+
+Este marcador no certifica todavía:
+
+- existencia de turno válido;
+- publicación o vigencia del turno;
+- check-in;
+- rol operativo efectivo;
+- habilitación final del rol en la matriz;
+- identidad o restricciones de dispositivo compartido;
+- estado mutable del recurso;
+- autorización completa de una operación cross-area;
+- cruces entre sedes;
+- RLS;
+- grants;
+- `SECURITY DEFINER`;
+- implementación física de `has_permission`;
+- normalización final de `area_types`;
+- poblamiento completo de `employee_areas`;
+- atomicidad;
+- idempotencia;
+- auditoría completa;
+- contrato final de errores.
+
+Estas responsabilidades conservan sus owners canónicos.
+
+#### 68. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                              |
+| --------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | no se ejecutó build durante el desarrollo documental                                                                                                                                                                   |
+| LOCAL     | `NOT_EXECUTED`   | no se ejecutaron comandos contra el checkout del usuario                                                                                                                                                               |
+| REMOTA    | `PASS`           | se auditaron en solo lectura la continuidad vigente, la topología del Bloque J, el owner de `AUTH-SRV-007`, los contratos canónicos de áreas y tipos de área, los fragmentos 04A relevantes y el snapshot VISO mensual |
+| OPERATIVA | `NOT_APPLICABLE` | el marcador no cambia operación real                                                                                                                                                                                   |
+| FÍSICA    | `NOT_APPLICABLE` | no existe instancia física autorizada para esta tarea                                                                                                                                                                  |
+
+#### 69. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** la resolución territorial de sede y área, la compatibilidad administrativa/operativa, el bloqueo de mutaciones manipuladas y la revalidación de persona, sede, área, rol, fechas y alcance ya disponen de cobertura vigente. `AUTH-SRV-007` especifica el contrato que consumirán esas pruebas y no introduce una obligación verificable sin requisito existente.
+
+#### 70. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificar el registro vigente:
+
+- `TREQ-AUTH-007` — administración de roles, perfiles, permisos y disponibilidad limitada al territorio autorizado del actor;
+- `TREQ-AUTH-008` — compatibilidad de sede y área dentro de la separación entre capacidades administrativas y operativas;
+- `TREQ-AUTH-009` — resolución determinista de sede y área efectivas y denegación de cruces territoriales;
+- `TREQ-AUTH-013` — cada mutación valida en servidor permiso exacto, territorio, contexto, estado y columnas permitidas;
+- `TREQ-VISO-042` — persona, sede, área, rol, fechas y alcance se revalidan nuevamente en servidor.
+
+Estas referencias son trazabilidad heredada y no representan requisitos creados o modificados por `AUTH-SRV-007`.
+
+#### 71. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SRV-006 — Validar sede en cada escritura`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SRV-007 — Validar área en cada escritura`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SRV-008 — Validar turno cuando corresponda`
+
+
 ### [ ] AUTH-SRV-008 — Validar turno cuando corresponda
 ### [ ] AUTH-SRV-009 — Validar rol operativo cuando corresponda
 ### [ ] AUTH-SRV-010 — Validar dispositivo compartido
