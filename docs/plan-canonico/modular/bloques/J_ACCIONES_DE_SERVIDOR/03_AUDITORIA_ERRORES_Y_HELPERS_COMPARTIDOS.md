@@ -5483,7 +5483,1824 @@ Estas referencias son trazabilidad heredada y no representan requisitos creados 
 `AUTH-SRV-018 — Revisar acciones administrativas sin turno`
 
 
-### [ ] AUTH-SRV-018 — Revisar acciones administrativas sin turno
+### ✅ AUTH-SRV-018 — Revisar acciones administrativas sin turno
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-SRV-017 — Crear helpers server compartidos
+**Tarea siguiente:** AUTH-DB-015 — Documentar y versionar todas las migraciones en vento-shell
+**Tipo de tarea:** Contrato global con materialización por unidad (`PER_IMPLEMENTATION_UNIT`) — contrato de clasificación y prerrequisitos para que toda acción administrativa protegida pueda ejecutarse sin turno ni check-in únicamente cuando su permiso y modalidad canónicos habiliten el carril base, conservando identidad, aplicación, permiso exacto, cobertura administrativa, territorio, recurso, estado, denegaciones, frescura, dispositivo, simulación, auditoría y reglas de dominio sin convertir la ausencia de contexto operativo en bypass
+**Bloque:** BLOQUE J — Protección de acciones de servidor
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global; las futuras materializaciones ocurren únicamente mediante `AUTH-SRV-018::<implementation_unit_id>` después de que `DELIV-PKG-025::<package_id>` asigne la unidad y el paquete propietario supere `E5-GATE-008::<package_id>`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Cerrar la frontera pendiente entre administración y operación para que ninguna Server Action, Route Handler, RPC adapter, job o superficie equivalente:
+
+- exija un turno al administrador cuando el permiso canónico pertenece al carril base y declara prerrequisito `N`;
+- elimine controles de autorización por el hecho de no exigir turno;
+- use un rol, una sede seleccionada, un dispositivo, una sesión denominada “operativa”, un admin client o `service_role` como sustituto de autoridad administrativa;
+- transforme una capacidad operativa en administrativa para evitar turno o check-in;
+- reutilice un permiso de consulta como autoridad implícita para crear, modificar, eliminar, publicar o corregir.
+
+La regla vinculante queda:
+
+```text
+ACCION ADMINISTRATIVA SIN TURNO
+=
+BINDING SERVER-SIDE EXACTO
++
+PERMISO CANONICO QUE ADMITE CARRIL BASE
++
+PRERREQUISITO BASE N
++
+PRINCIPAL Y ACTOR VALIDOS
++
+CARRIL BASE VALIDO
++
+COBERTURA ADMINISTRATIVA SUFICIENTE
++
+TERRITORIO Y RECURSO COMPATIBLES
++
+ESTADO Y REGLAS DE DOMINIO VIGENTES
++
+DENEGACIONES Y RESTRICCIONES SATISFECHAS
++
+EVIDENCIA Y AUDITORIA
+```
+
+Nunca:
+
+```text
+SIN TURNO
+=
+SIN CONTEXTO
+=
+SIN PERMISO
+=
+SIN ALCANCE
+=
+SIN RECURSO
+=
+SIN AUDITORIA
+```
+
+#### 2. Handoff recibido de `AUTH-SRV-017`
+
+`AUTH-SRV-017` deja definida una composición compartida de servidor que separa:
+
+```text
+validacion contractual
+autorizacion runtime
+calculo de dominio
+resolucion de dominio
+persistencia
+auditoria
+respuesta
+compatibilidad legacy
+```
+
+También deja fijado que:
+
+- el helper compartido no crea autoridad;
+- el binding de operación se resuelve en servidor;
+- contexto y autorización se delegan a la frontera canónica;
+- las reglas de dominio se ejecutan después de una autorización positiva;
+- el payload efectivo se reconstruye en servidor;
+- una misma regla debe conservar semántica y versión coherentes entre consumidores;
+- los guards locales solo podrán sobrevivir como adapters no autoritativos;
+- el baseline VISO actual no se promueve a arquitectura final.
+
+`AUTH-SRV-018` consume ese contrato y añade la decisión que `AUTH-SRV-017` dejó expresamente pendiente: qué debe exigirse cuando la acción es administrativa y no necesita turno.
+
+#### 3. Handoff acumulado de `AUTH-SRV-004..017`
+
+La acción administrativa sin turno continúa consumiendo, cuando aplique, los contratos ya aprobados para:
+
+```text
+intencion no autoritativa del cliente
+permiso exacto
+sede
+area
+turno cuando corresponda
+rol operativo cuando corresponda
+dispositivo compartido
+estado actual de la entidad
+cruces entre sedes
+cruces entre areas
+actor real y efectivo
+simulacion
+errores normalizados
+helpers compartidos
+frescura
+auditoria
+```
+
+La palabra “administrativa” modifica únicamente los prerrequisitos del carril que corresponden a turno, check-in, rol operativo y territorio derivado del turno.
+
+No elimina los demás controles.
+
+#### 4. Pregunta contractual propietaria
+
+Esta tarea responde:
+
+```text
+¿QUE DEBE VALIDAR UNA ACCION ADMINISTRATIVA
+CUANDO EL ACTOR NO TIENE TURNO?
+```
+
+```text
+¿QUE CONTEXTO OPERATIVO DEJA DE SER OBLIGATORIO
+Y QUE AUTORIDAD BASE SIGUE SIENDO OBLIGATORIA?
+```
+
+```text
+¿COMO EVITAR QUE "SIN TURNO"
+SE CONVIERTA EN UN BYPASS ADMINISTRATIVO?
+```
+
+Para el package VISO mensual responde además:
+
+```text
+¿COMO PUEDE UN ADMINISTRADOR
+PROGRAMAR, CORREGIR O PUBLICAR TURNOS DE TERCEROS
+SIN NECESITAR EL MISMO UN TURNO OPERATIVO,
+PERO CONSERVANDO PERMISO, TERRITORIO,
+ESTADO, AUDITORIA Y REGLAS DE PROGRAMACION?
+```
+
+#### 5. Frontera con `AUTH-SRV-008`
+
+`AUTH-SRV-008` ya decidió:
+
+```text
+CAPACIDAD ADMINISTRATIVA
+→ puede no requerir turno cuando el contrato lo permita
+
+CAPACIDAD OPERATIVA
+→ exige turno publicado y vigente
+```
+
+`AUTH-SRV-018` no reabre esa decisión.
+
+La especializa para las acciones administrativas y fija qué controles permanecen obligatorios cuando el turno es `NOT_APPLICABLE`.
+
+Por tanto:
+
+```text
+AUTH-SRV-008
+→ decide cuándo corresponde validar turno
+
+AUTH-SRV-018
+→ cierra el contrato completo del carril administrativo cuando no corresponde
+```
+
+#### 6. Autoridad de clasificación
+
+Una acción no se clasifica como administrativa por:
+
+- estar dentro de VISO;
+- aparecer en una pantalla de administración;
+- ser ejecutada por un gerente;
+- utilizar `createAdminClient`;
+- utilizar `service_role`;
+- operar datos de trabajadores;
+- modificar turnos;
+- ejecutarse fuera del horario laboral;
+- estar en una ruta denominada `admin`;
+- recibir una sede seleccionada;
+- no encontrar un turno vigente.
+
+La clasificación procede de:
+
+```text
+permission_key canonica
++
+authorization modality
++
+prerrequisitos contractuales
++
+binding server-side de la operacion
+```
+
+La implementación no puede cambiar de carril después de observar que el carril esperado sería denegado.
+
+#### 7. Semántica de prerrequisito `N`
+
+Para el carril base:
+
+```text
+N
+=
+turno no requerido
++
+check-in no requerido
+```
+
+`N` no significa:
+
+```text
+actor no requerido
+permiso no requerido
+app access no requerido
+rol base no requerido cuando aplique
+cobertura administrativa no requerida
+sede no requerida cuando el recurso es territorial
+area administrativa no requerida cuando el permiso la exige
+recurso no requerido
+estado no requerido
+denegaciones ignoradas
+dispositivo ignorado
+simulacion ejecutable
+frescura ignorada
+auditoria opcional
+```
+
+El prerrequisito `N` elimina dos dependencias concretas; no elimina el modelo de autorización.
+
+#### 8. Matriz de modalidad y posibilidad de ejecutar sin turno
+
+| Modalidad              | Carril base | Carril operativo | ¿Puede una operación autorizada por base ejecutarse sin turno?               |
+| ---------------------- | ----------- | ---------------- | ---------------------------------------------------------------------------- |
+| `BASE_ONLY`            | `N`         | no aplica        | Sí, si todos los demás controles son válidos                                 |
+| `BASE_OR_OPERATIONAL`  | `N`         | `T` o `T+C`      | Sí, solo cuando el binding permite que el carril base autorice esa operación |
+| `BASE_AND_OPERATIONAL` | `N`         | `T+C`            | No; ambos carriles son obligatorios                                          |
+| `OPERATIONAL_ONLY`     | no aplica   | `T` o `T+C`      | No                                                                           |
+
+La modalidad es parte del contrato versionado del permiso.
+
+No se infiere desde el actor ni desde la pantalla.
+
+#### 9. Carriles independientes
+
+El contexto conserva:
+
+```text
+BASE LANE
+→ identidad laboral aplicable
+→ rol base
+→ grants y denies
+→ cobertura administrativa
+
+OPERATIONAL LANE
+→ turno
+→ check-in
+→ rol operativo
+→ sede operativa
+→ area operativa
+```
+
+La ausencia de turno, check-in, rol operativo o área operativa no invalida por sí sola un carril base válido.
+
+A la inversa, un turno válido no crea un carril base.
+
+#### 10. Un turno existente no transforma la acción administrativa
+
+Si el actor administrativo además tiene un turno vigente:
+
+```text
+accion administrativa
++
+turno vigente
+=
+accion administrativa
+```
+
+El turno:
+
+- no amplía cobertura administrativa;
+- no concede el permiso administrativo;
+- no reemplaza el rol base;
+- no reemplaza grants;
+- no elimina denies;
+- no convierte su sede operativa en alcance administrativo;
+- no obliga a usar su área operativa para administrar otro recurso.
+
+El contexto operativo puede conservarse como evidencia cuando sea relevante, pero no se convierte en fuente del carril base.
+
+#### 11. Ausencia de turno
+
+Para una operación cuyo binding se resuelve válidamente por carril base con `N`:
+
+```text
+active_shift = null
+active_checkin = null
+operational_role = null
+operational_site = null
+operational_area = null
+```
+
+puede ser un estado completamente válido.
+
+La implementación no debe fabricar:
+
+- un turno ficticio;
+- un turno “administrativo”;
+- un rol operativo por defecto;
+- una sede operativa tomada del selector;
+- un área operativa tomada del recurso;
+- un check-in técnico.
+
+#### 12. Problemas estructurales del carril operativo
+
+Un problema que invalida exclusivamente el carril operativo no debe bloquear automáticamente una operación que:
+
+1. admite autorización por carril base;
+2. obtuvo un carril base completo y válido;
+3. no exige el carril operativo por modalidad;
+4. no depende funcionalmente del dato operativo inválido.
+
+Ejemplos conceptuales:
+
+```text
+no active shift
+expired shift
+missing operational role
+missing operational area
+```
+
+no son por sí solos razones para denegar un `BASE_ONLY` válido.
+
+La clasificación de la causa debe conservar el carril al que pertenece.
+
+#### 13. Problemas que sí bloquean una acción administrativa
+
+La acción administrativa falla cerrada cuando sea obligatorio y resulte inválido, ausente, ambiguo o incompatible cualquiera de estos elementos:
+
+```text
+sesion o principal
+actor efectivo
+identidad de dominio
+identidad laboral
+app access
+permission binding
+permission contract
+base lane
+rol base o fuente equivalente requerida
+grant aplicable
+deny
+administrative coverage
+site scope
+area scope administrativo cuando aplique
+resource identity
+resource state
+resource ownership/territory
+policy/version
+device restriction
+strong reauthentication cuando aplique
+simulation restriction
+freshness
+concurrency
+domain invariant
+audit correlation
+```
+
+La ausencia de turno no repara una inconsistencia del carril base.
+
+#### 14. Principal autenticado y sesión
+
+Una acción administrativa humana exige una sesión personal válida cuando su contrato sea humano.
+
+Debe distinguir:
+
+```text
+principal tecnico
+actor efectivo
+identidad laboral
+```
+
+No se admite:
+
+```text
+auth_user_id
+=
+employee_id
+```
+
+por inferencia.
+
+Una sesión válida prueba autenticación.
+
+No prueba autorización administrativa.
+
+#### 15. Actor efectivo
+
+Toda mutación administrativa debe poder atribuirse a un actor efectivo válido.
+
+Para una acción laboral humana:
+
+```text
+principal HUMAN_USER
++
+employee resuelto
++
+employee activo
+=
+candidato a actor efectivo
+```
+
+La resolución se realiza en servidor.
+
+Un actor `UNRESOLVED` no produce una mutación empresarial que requiera actor humano.
+
+#### 16. Estado de la identidad
+
+La ausencia de turno no permite ignorar:
+
+- trabajador inactivo;
+- vínculo terminado;
+- identidad ambigua;
+- identidad laboral ausente cuando la capacidad la exige;
+- sesión expirada;
+- principal conflictivo;
+- configuración contradictoria.
+
+Una identidad inactiva no se vuelve administradora porque la capacidad sea `N`.
+
+#### 17. Acceso a la aplicación
+
+El acceso a la aplicación y el permiso de acción permanecen separados:
+
+```text
+app access
+≠
+action permission
+```
+
+Entrar a VISO no autoriza:
+
+- crear programación;
+- modificar programación;
+- eliminar borradores;
+- publicar;
+- corregir;
+- aprobar excepciones.
+
+Cada operación protegida conserva su binding propio.
+
+#### 18. Permiso exacto de la acción
+
+Toda mutación administrativa deberá exigir el permiso exacto definido para su operación.
+
+Regla:
+
+```text
+view
+≠
+create
+≠
+update
+≠
+delete
+≠
+review
+≠
+publish
+≠
+correct
+≠
+approve exception
+```
+
+Un permiso de consulta no se convierte en permiso de mutación porque:
+
+- la misma pantalla contenga el botón;
+- el código actual lo reutilice;
+- el actor sea gerente;
+- la ruta esté protegida;
+- el cliente use un admin client después del guard.
+
+Si el permiso exacto todavía no está cerrado por su owner funcional, la materialización permanece bloqueada para esa operación.
+
+#### 19. Rol base no equivale a permiso
+
+El rol base puede participar en la resolución de grants y cobertura.
+
+No concede por sí solo la operación.
+
+Quedan prohibidos bypasses conceptuales como:
+
+```text
+if propietario → allow
+if gerente_general → allow
+if gerente → allow
+if admin → allow
+```
+
+sin una decisión de permiso canónica.
+
+La jerarquía organizacional no sustituye el catálogo.
+
+#### 20. Concesiones y denegaciones
+
+La evaluación administrativa debe conservar:
+
+- grants de rol base;
+- grants individuales cuando existan;
+- denies transversales;
+- denies por rol;
+- denies individuales;
+- restricciones de segregación;
+- restricciones de recurso;
+- restricciones territoriales.
+
+Una denegación aplicable no desaparece por ejecutar la acción fuera de turno.
+
+#### 21. Cobertura administrativa
+
+La cobertura administrativa es el territorio disponible para el carril base.
+
+Puede representar, según el contrato:
+
+```text
+organization
+assigned sites
+specific site
+assigned areas
+specific area
+own resource
+third-party explicit scope
+```
+
+La cobertura se resuelve desde fuentes autoritativas.
+
+No se deriva automáticamente de:
+
+- sede primaria;
+- sede del turno;
+- sede seleccionada;
+- última sede usada;
+- área del dispositivo;
+- área del recurso;
+- rol textual.
+
+#### 22. Sede administrativa
+
+Una acción administrativa sobre un recurso con sede debe comprobar que la sede objetivo pertenece al alcance administrativo del actor.
+
+El `site_id` recibido por formulario o URL es:
+
+```text
+SELECTOR_INTENT
+```
+
+El servidor debe resolver:
+
+```text
+site objetivo
++
+site activa
++
+relacion del recurso con la site
++
+cobertura administrativa del actor
+```
+
+antes del efecto.
+
+`site_id` seleccionado no crea cobertura.
+
+#### 23. Área administrativa y área operativa
+
+Se mantienen separadas:
+
+```text
+administrative area scope
+≠
+operational area
+```
+
+Una capacidad administrativa puede:
+
+- no requerir área;
+- aplicar a toda una sede autorizada;
+- exigir una o varias áreas administrativas específicas;
+
+según su contrato.
+
+No se debe fabricar un área operativa solo porque el recurso administrado tenga área.
+
+#### 24. El recurso administrado puede ser operativo
+
+Administrar un recurso operativo no convierte al administrador en actor operativo.
+
+Ejemplo conceptual:
+
+```text
+ADMINISTRADOR
+→ programa un turno para EMPLEADO OBJETIVO
+```
+
+Los datos:
+
+```text
+target shift
+target operational role
+target site
+target area
+target check-in policy
+```
+
+pertenecen al recurso o trabajador administrado.
+
+No describen el turno, rol operativo o área operativa del administrador.
+
+Esta separación es obligatoria para programación laboral.
+
+#### 25. Estado actual del recurso
+
+Una capacidad administrativa sin turno sigue obligada a revalidar el estado actual del recurso antes del efecto.
+
+Según la operación puede incluir:
+
+```text
+existencia
+activo/inactivo
+draft/published/cancelled
+version
+revision
+owner
+site
+area
+period
+locks
+conflicts
+relations
+```
+
+Una autorización base positiva no autoriza una transición imposible.
+
+#### 26. Reglas de dominio
+
+Después de autorizar el carril base todavía deben cumplirse las reglas empresariales.
+
+Ejemplos:
+
+```text
+limite
+conflicto
+periodo
+estado
+atomicidad
+concurrencia
+version
+excepcion
+integridad
+```
+
+La ausencia de turno del administrador no modifica esas reglas.
+
+#### 27. Frontera de confianza del cliente
+
+Para una acción administrativa:
+
+```text
+formData
+URL
+query
+JSON
+hidden input
+client calculation
+```
+
+continúan siendo intención.
+
+No pueden decidir:
+
+- actor;
+- permission key;
+- modalidad;
+- cobertura;
+- rol base;
+- sede autorizada;
+- área autorizada;
+- `published_by`;
+- límite;
+- conflicto;
+- estado final;
+- autorización.
+
+El payload efectivo se reconstruye en servidor.
+
+#### 28. `service_role` y clientes administrativos
+
+`service_role`, un admin client o una función privilegiada son mecanismos técnicos de persistencia.
+
+No son autoridad empresarial.
+
+La regla es:
+
+```text
+autorizacion empresarial valida
++
+efecto reconstruido
++
+adapter privilegiado cuando aplique
+=
+persistencia permitida
+```
+
+Nunca:
+
+```text
+admin client disponible
+=
+accion administrativa autorizada
+```
+
+#### 29. Simulación
+
+Una acción simulada puede mostrar:
+
+```text
+WOULD_ALLOW
+WOULD_DENY
+preview
+decision
+```
+
+según su contrato.
+
+No puede convertir una capacidad administrativa sin turno en efecto real.
+
+La simulación conserva:
+
+```text
+real actor
+≠
+simulated subject
+```
+
+y:
+
+```text
+WOULD_ALLOW
+≠
+ALLOW ejecutable
+```
+
+#### 30. Dispositivo compartido
+
+La ejecución desde dispositivo compartido no elimina ningún prerrequisito administrativo.
+
+Cuando la clasificación de dispositivo de un permiso administrativo exija control `STRONG`, la futura materialización deberá demostrar:
+
+- dispositivo permitido para la aplicación;
+- actor humano efectivo;
+- permiso real del actor;
+- cobertura real del actor;
+- soporte de reautenticación fuerte aprobado;
+- reautenticación personal vigente;
+- restricción territorial del dispositivo cuando aplique;
+- cero herencia de privilegios desde `navigation_role`, plantilla o paquete del dispositivo.
+
+Un PIN ligero no sustituye una exigencia `STRONG`.
+
+#### 31. Terminal administrativa
+
+Una terminal administrativa autorizada:
+
+```text
+habilita una superficie compatible
+```
+
+No:
+
+```text
+concede cobertura administrativa
+concede rol base
+concede permiso
+concede organizacion completa
+convierte al dispositivo en actor
+```
+
+La autoridad continúa perteneciendo al actor humano y a su decisión canónica.
+
+#### 32. Reautenticación fuerte
+
+Cuando el catálogo o la política del dispositivo exijan reautenticación fuerte, una acción `N` sigue siendo:
+
+```text
+sin turno
++
+sin check-in
+```
+
+pero no:
+
+```text
+sin reautenticacion
+```
+
+Turno y reautenticación protegen riesgos diferentes.
+
+#### 33. Pipeline mínimo de una acción administrativa sin turno
+
+La composición aplicable es:
+
+```text
+1. recibir intencion
+2. validar forma
+3. resolver binding server-side
+4. resolver principal y actor
+5. resolver identidad de dominio/laboral aplicable
+6. resolver app access
+7. resolver contrato exacto del permiso
+8. confirmar modalidad y prerrequisito base N
+9. resolver carril base
+10. resolver cobertura administrativa
+11. resolver recurso y territorio objetivo
+12. evaluar permiso y denies
+13. resolver estado actual
+14. recalcular reglas de dominio
+15. comprobar frescura y concurrencia
+16. reconstruir payload efectivo
+17. ejecutar efecto autorizado
+18. aplicar invalidacion/write barrier cuando corresponda
+19. registrar auditoria
+20. normalizar respuesta
+```
+
+No aparece como paso obligatorio:
+
+```text
+resolver un turno del administrador
+```
+
+cuando el permiso es válidamente `N`.
+
+#### 34. Operaciones de consulta
+
+Una consulta administrativa sin turno sigue exigiendo:
+
+- identidad;
+- aplicación;
+- permiso de consulta;
+- cobertura;
+- recurso o colección autorizada;
+- proyección mínima;
+- privacidad;
+- filtros server-side;
+- auditoría cuando corresponda.
+
+La ausencia de turno no habilita listas globales.
+
+#### 35. Operaciones de mutación
+
+Una mutación administrativa sin turno añade, como mínimo:
+
+- permiso mutante exacto;
+- recurso actual;
+- transición válida;
+- allowlist de campos;
+- reconstrucción del payload;
+- frescura;
+- concurrencia cuando aplique;
+- evidencia before/after;
+- idempotencia cuando aplique;
+- rollback o compensación según el dominio.
+
+Que la mutación sea administrativa no reduce el estándar de protección.
+
+#### 36. Package VISO mensual — clasificación del proceso
+
+La programación laboral administrativa opera sobre los turnos de otros trabajadores y puede realizarse fuera del turno operativo del administrador.
+
+El catálogo vigente ya distingue:
+
+```text
+viso.workforce.schedules.view
+→ BASE_ONLY
+→ N
+```
+
+y clasifica la programación del personal como administrativa.
+
+También existen capacidades canónicas de planificación laboral que crean, actualizan o cancelan turnos sin depender del turno operativo del administrador.
+
+Esta evidencia fija la naturaleza administrativa de la planificación.
+
+No fija por sí sola qué clave exacta debe autorizar cada mutación del package mensual.
+
+#### 37. Package VISO mensual — acciones observadas
+
+El baseline físico contiene cuatro superficies mutantes:
+
+```text
+createMonthlyShiftsAction
+deleteMonthlyDraftShiftAction
+deleteMonthlyDraftsAction
+publishMonthAction
+```
+
+Todas pertenecen al proceso de programación laboral, pero no son la misma operación.
+
+La futura materialización debe tratarlas como bindings distintos.
+
+#### 38. Matriz de prerrequisitos del administrador para VISO mensual
+
+| Acción observada                | Naturaleza del actor | Turno del administrador | Check-in del administrador | Obligación principal                                                             |
+| ------------------------------- | -------------------- | ----------------------- | -------------------------- | -------------------------------------------------------------------------------- |
+| `createMonthlyShiftsAction`     | administrativa       | no por inferencia       | no por inferencia          | permiso mutante exacto + cobertura sobre persona/sede + reglas de programación   |
+| `deleteMonthlyDraftShiftAction` | administrativa       | no por inferencia       | no por inferencia          | permiso mutante exacto + recurso draft autorizado + territorio + estado          |
+| `deleteMonthlyDraftsAction`     | administrativa       | no por inferencia       | no por inferencia          | permiso mutante exacto + universo exacto de borradores + atomicidad + territorio |
+| `publishMonthAction`            | administrativa       | no por inferencia       | no por inferencia          | permiso de publicación exacto + periodo/recursos + reglas finales + auditoría    |
+
+“no por inferencia” significa que este marcador no agrega turno/check-in a una operación base.
+
+Si el owner funcional futuro reclasificara una operación mediante un contrato canónico explícito, esa nueva versión deberá reconciliarse antes de materializar.
+
+#### 39. El permiso de consulta no autoriza las mutaciones VISO
+
+El baseline actual utiliza un helper denominado `requireStaffScheduleAccess` con el permiso legacy:
+
+```text
+staff.schedule.view
+```
+
+normalizado hacia la familia canónica de programación VISO.
+
+Ese baseline es suficiente como evidencia de que existe un guard.
+
+No demuestra que:
+
+```text
+view
+→ create
+view
+→ delete
+view
+→ publish
+```
+
+sean bindings válidos.
+
+La futura unidad no podrá preservar esa equivalencia por conveniencia.
+
+#### 40. Owner del binding funcional VISO
+
+La diferenciación definitiva entre:
+
+```text
+consultar
+crear
+modificar
+eliminar borrador
+revisar
+publicar
+corregir
+autorizar excepcion
+```
+
+pertenece a:
+
+```text
+VISO-SCH-007 — Definir autorización, auditoría, eventos y notificaciones
+```
+
+y deberá reconciliarse con el catálogo canónico y el package E5 antes de materializar las acciones.
+
+`AUTH-SRV-018` no inventa nuevas claves de permiso.
+
+Fija que el binding exacto es obligatorio y que una clave de consulta no puede heredarse como mutación.
+
+#### 41. Creación mensual
+
+Para `createMonthlyShiftsAction`, no se exige turno al administrador por el mero hecho de crear turnos.
+
+Sí se exige, cuando corresponda:
+
+```text
+actor administrativo valido
+permiso exacto
+cobertura sobre la sede
+cobertura sobre el trabajador o recurso
+trabajador activo
+vinculo trabajador-sede valido
+periodo valido
+politica de bloques
+rol y area objetivo validos
+duracion
+limite
+conflictos
+estado actual
+concurrencia
+auditoria
+```
+
+El rol operativo insertado pertenece al turno objetivo, no al administrador.
+
+#### 42. Eliminación de un borrador
+
+Para `deleteMonthlyDraftShiftAction`:
+
+```text
+shift_id
+site_id
+month
+```
+
+son referencias de intención.
+
+La acción deberá resolver:
+
+- turno exacto;
+- estado actual;
+- condición de borrador;
+- trabajador;
+- sede;
+- periodo;
+- cobertura administrativa;
+- permiso de eliminación aplicable;
+- ausencia de transición incompatible.
+
+No se puede borrar un turno publicado solo porque el actor tenga cobertura administrativa.
+
+#### 43. Eliminación masiva
+
+Para `deleteMonthlyDraftsAction`, el universo objetivo debe reconstruirse en servidor.
+
+La futura unidad deberá demostrar:
+
+```text
+mismo periodo
++
+misma cobertura administrativa
++
+solo estados eliminables
++
+permiso exacto
++
+politica de atomicidad
++
+auditoria del conjunto
+```
+
+No se autoriza el lote validando únicamente la primera fila.
+
+#### 44. Publicación mensual
+
+`publishMonthAction` representa una transición distinta de guardar borrador.
+
+La publicación deberá revalidar inmediatamente antes del efecto:
+
+- actor administrativo;
+- permiso exacto de publicación;
+- cobertura;
+- periodo;
+- recursos incluidos;
+- estado draft aplicable;
+- reglas de límite;
+- conflictos;
+- versión de política;
+- frescura;
+- concurrencia;
+- simulación;
+- auditoría.
+
+El administrador no necesita adquirir un turno operativo para publicar una programación cuando el binding aprobado sea base.
+
+#### 45. Publicar crea contexto futuro de otros, no del publicador
+
+La publicación de turnos puede crear o activar contexto operativo futuro para trabajadores objetivo.
+
+Eso no convierte al publicador en trabajador operativo del turno publicado.
+
+Se conserva:
+
+```text
+PUBLISHER ADMINISTRATIVE CONTEXT
+≠
+TARGET EMPLOYEE OPERATIONAL CONTEXT
+```
+
+y:
+
+```text
+published_by
+→ actor efectivo validado del publicador
+```
+
+no:
+
+```text
+published_by
+→ actor enviado por cliente
+published_by
+→ empleado objetivo
+published_by
+→ auth user copiado sin resolver
+```
+
+#### 46. `published_by`
+
+`published_by` es un campo `SERVER_DERIVED`.
+
+La futura unidad deberá derivarlo del actor efectivo conforme al contrato de atribución aprobado.
+
+La ausencia de turno del publicador no vuelve nulo el actor.
+
+Si no puede resolverse un actor válido para una acción humana atribuible:
+
+```text
+no publication
+```
+
+#### 47. Auditoría obligatoria del package VISO mensual
+
+La evidencia de las operaciones administrativas debe permitir reconstruir, cuando aplique:
+
+```text
+actor real
+actor efectivo
+simulacion
+operacion
+permiso
+periodo
+sede
+universo de trabajadores/turnos
+bloques
+before
+after
+motivo
+version de politica
+published_by
+resultado empresarial
+resultado de notificacion
+correlation_id
+decision_id cuando exista
+```
+
+La auditoría se minimiza para no copiar indiscriminadamente payloads o PII.
+
+#### 48. Before/after
+
+Para una mutación:
+
+```text
+before
+→ transition
+→ after
+```
+
+debe conservar una proyección suficiente para demostrar el efecto.
+
+No se exige almacenar la fila completa.
+
+Para una denegación:
+
+```text
+before aplicable
++
+decision
++
+reason
++
+effects_committed = false
+```
+
+sin fabricar `after`.
+
+#### 49. Periodo
+
+Toda operación mensual debe preservar la identidad del periodo que realmente fue evaluado.
+
+El periodo de la URL no se convierte automáticamente en el periodo de la mutación.
+
+Debe reconciliarse con:
+
+- fechas objetivo;
+- registros existentes;
+- política temporal;
+- límites del mes;
+- estado vigente.
+
+La política temporal definitiva permanece bajo `VISO-SCH-002`.
+
+#### 50. Sede
+
+La sede administrativa sobre la que se programa debe:
+
+- existir;
+- estar activa;
+- ser administrable;
+- coincidir con el recurso cuando corresponda;
+- estar cubierta por la autoridad administrativa del actor.
+
+La sede objetivo no necesita coincidir con una sede de turno del administrador cuando el carril base le concede cobertura válida.
+
+#### 51. Bloques y fechas
+
+Los bloques del formulario siguen siendo intención.
+
+El servidor debe reconstruir y validar:
+
+- cardinalidad;
+- fechas;
+- pertenencia al periodo;
+- duplicados;
+- área;
+- rol objetivo;
+- horas;
+- duración;
+- descansos;
+- conflictos;
+- límites.
+
+Los valores definitivos pertenecen a `VISO-SCH-003..006`.
+
+`AUTH-SRV-018` fija únicamente que esas validaciones no dependen de que el administrador tenga turno.
+
+#### 52. Motivo
+
+Cuando una operación o excepción exija motivo:
+
+- se valida como contenido empresarial permitido;
+- se limita y normaliza;
+- se conserva en auditoría conforme al contrato;
+- no concede autoridad;
+- no repara un permiso ausente;
+- no reemplaza una excepción aprobada.
+
+Un texto “administrativo” no habilita un bypass.
+
+#### 53. Resultado de notificación
+
+La notificación posterior conserva un resultado independiente del resultado empresarial.
+
+Debe ser posible distinguir:
+
+```text
+PUBLICACION CONFIRMADA
++
+NOTIFICACION ENVIADA
+```
+
+de:
+
+```text
+PUBLICACION CONFIRMADA
++
+NOTIFICACION PENDIENTE/FALLIDA
+```
+
+Una falla de notificación no reescribe la autorización ni falsifica que el efecto empresarial no ocurrió.
+
+El contrato definitivo permanece bajo `VISO-SCH-007` y la integración correspondiente.
+
+#### 54. Baseline de `requireStaffScheduleAccess`
+
+El helper físico actual:
+
+```text
+requireStaffScheduleAccess
+```
+
+es baseline transitorio.
+
+La futura materialización deberá decidir, contra el commit exacto de la instancia, si:
+
+```text
+se adapta
+se divide
+se reemplaza
+se retira
+```
+
+pero su destino obligatorio es delegar en la frontera canónica sin:
+
+- rol local;
+- permiso genérico;
+- sede inferida;
+- autoridad desde navegación;
+- dependencia accidental de una sesión operativa.
+
+Este marcador no prescribe el nombre de su reemplazo.
+
+#### 55. Baseline de `requireAppAccess`
+
+El guard físico actual resuelve una estructura denominada sesión operativa incluso para accesos administrativos y mantiene caminos legacy de permiso y role override.
+
+Ese hecho no se canoniza.
+
+La futura unidad deberá separar:
+
+```text
+resolucion de carril base
+```
+
+de:
+
+```text
+resolucion de carril operativo
+```
+
+y evitar que un fallo o ausencia puramente operacional bloquee una acción `BASE_ONLY` válida.
+
+Tampoco podrá permitir que un fallback operacional conceda una acción base.
+
+#### 56. Baseline de `resolveOperationalSession`
+
+La resolución física actual puede utilizar:
+
+```text
+preferredSiteId
+employee_sites
+employee.site_id
+employees.role
+navigationRole
+```
+
+como parte de su modelo legacy.
+
+`AUTH-SRV-018` no reconoce esos valores como sustitutos automáticos de:
+
+```text
+administrative_coverage
+canonical base role
+canonical authorization decision
+```
+
+La futura materialización consume `AccessContext` y la frontera de autorización aprobada.
+
+#### 57. Falla cerrada sin turno
+
+Una acción administrativa `N` falla cerrada cuando no puede demostrar sus prerrequisitos reales.
+
+No debe degradarse a:
+
+```text
+no shift
+→ use selected site
+→ use current role string
+→ use admin client
+→ allow
+```
+
+La ausencia de un dato operacional no habilita un fallback administrativo.
+
+#### 58. Configuración contradictoria
+
+Si el permission contract, modalidad, prerrequisito o cobertura necesarios son contradictorios o no resolubles de forma concluyente:
+
+```text
+no effect
+```
+
+La implementación no elige la interpretación más permisiva.
+
+La causa se normaliza mediante el contrato de errores aplicable.
+
+#### 59. Permiso no registrado
+
+Una clave de permiso no registrada o un binding incompleto no se interpreta como:
+
+- permiso genérico;
+- `app.access`;
+- permiso `view`;
+- rol administrativo;
+- bypass temporal.
+
+La operación queda bloqueada hasta que el owner canónico resuelva el contrato.
+
+#### 60. Fallo técnico
+
+La indisponibilidad de la fuente de autorización no se transforma en:
+
+```text
+"como es administrativa, permitir"
+```
+
+Un fallo técnico conserva su clase y bloquea el efecto cuando impide una decisión segura.
+
+#### 61. Errores normalizados
+
+La respuesta pública deberá conservar la semántica cerrada por `AUTH-SRV-016`.
+
+La causa interna distingue, entre otras clases:
+
+```text
+autorizacion denegada
+configuracion incompatible
+permiso no registrado
+estado invalido
+conflicto
+concurrencia
+fallo tecnico
+```
+
+La ausencia de turno solo puede ser la causa cuando el carril requerido realmente exige turno.
+
+No debe mostrarse “turno requerido” para un permiso base `N`.
+
+#### 62. Frescura
+
+Una decisión administrativa debe ser fresca respecto de los hechos que sí la gobiernan.
+
+Cambios en:
+
+- actor;
+- vínculo;
+- rol base;
+- grants;
+- denies;
+- cobertura;
+- sede;
+- área administrativa;
+- recurso;
+- estado;
+- política;
+- dispositivo;
+- reautenticación;
+
+pueden invalidar la decisión aunque el turno siga siendo irrelevante.
+
+#### 63. Write barrier
+
+Una acción administrativa que modifique autorización, trabajadores, asignaciones, programación, territorio, políticas o recursos que participan en decisiones posteriores deberá invalidar los snapshots afectados conforme al contrato compartido.
+
+La ausencia de turno no permite conservar un `ALLOW` obsoleto.
+
+#### 64. Concurrencia
+
+Cuando dos acciones administrativas compiten por el mismo estado:
+
+```text
+autorizacion base valida
+```
+
+no resuelve la carrera.
+
+La implementación deberá aplicar el mecanismo de versión, transacción, lock, constraint o enforcement de base de datos que corresponda al dominio.
+
+En VISO mensual, la protección concreta permanece bajo `VISO-SCH-006` y las tareas físicas de base de datos aplicables.
+
+#### 65. Idempotencia
+
+Una clave idempotente no sustituye:
+
+- permiso;
+- actor;
+- cobertura;
+- estado;
+- frescura.
+
+Un reintento administrativo vuelve a validar la autoridad y el estado material que puedan haber cambiado.
+
+#### 66. Operaciones fuera de horario
+
+Una capacidad `BASE_ONLY` no se vuelve inválida porque:
+
+- sea de noche;
+- el administrador no tenga turno;
+- su último turno haya terminado;
+- todavía no haya marcado entrada.
+
+Si existe una política temporal empresarial específica para la operación, esa política debe estar definida por su owner y evaluarse como regla de dominio, no fabricarse como requisito de turno.
+
+#### 67. Acciones administrativas sobre varias sedes
+
+Una capacidad administrativa multi-sede exige demostrar cobertura sobre cada sede afectada.
+
+No basta:
+
+```text
+actor tiene una sede autorizada
+→ puede modificar todas
+```
+
+Una operación masiva debe validar el universo completo.
+
+`ORGANIZATION` solo existe cuando la cobertura canónica lo declare.
+
+#### 68. Acciones administrativas sobre varias áreas
+
+Cuando el recurso exige áreas administrativas:
+
+- se resuelve el conjunto completo;
+- cada área se valida;
+- se verifica pertenencia a sede;
+- se comprueba cobertura;
+- no se autoriza parcialmente una operación atómica.
+
+Un área `null` no se interpreta como toda la sede salvo contrato explícito que declare que el recurso es site-level.
+
+#### 69. Privacidad
+
+El carril administrativo puede exponer información sensible.
+
+La ausencia de turno no amplía la proyección permitida.
+
+Los helpers, errores, logs y auditoría deben minimizar:
+
+```text
+PII
+documentos
+grants
+denies
+JWT
+cookies
+tokens
+secretos
+payloads completos
+```
+
+Una capacidad administrativa de consulta conserva finalidad y mínimo necesario.
+
+#### 70. Evidencia mínima de una futura unidad
+
+Cada instancia:
+
+```text
+AUTH-SRV-018::<implementation_unit_id>
+```
+
+deberá demostrar, cuando aplique:
+
+1. identidad exacta de la unidad;
+2. repositorio y commit de entrada;
+3. superficies administrativas incluidas;
+4. binding exacto por superficie;
+5. permiso canónico por operación;
+6. modalidad de autorización;
+7. prerrequisito por carril;
+8. operaciones que usan `N`;
+9. actor y principal resueltos;
+10. carril base resuelto;
+11. cobertura administrativa;
+12. sede y área administrativa aplicables;
+13. recurso y estado revalidados;
+14. ausencia de dependencia artificial del turno;
+15. separación del carril operativo;
+16. configuración de dispositivo aplicable;
+17. reautenticación fuerte cuando corresponda;
+18. simulación bloqueada para efectos;
+19. legacy guard adaptado o retirado;
+20. permisos de consulta no usados como mutación salvo contrato exacto que lo autorice;
+21. reglas de dominio;
+22. frescura;
+23. concurrencia;
+24. auditoría;
+25. errores normalizados;
+26. validation commands;
+27. rollback;
+28. package IDs consumidores;
+29. commit de salida y evidencia.
+
+Los nombres anteriores describen contenido mínimo del expediente.
+
+No obligan a crear campos físicos homónimos.
+
+#### 71. Escenarios mínimos de certificación futura
+
+La materialización deberá cubrir al menos:
+
+1. `BASE_ONLY + N + sin turno + permiso/cobertura válidos → ALLOW`;
+2. `BASE_ONLY + N + sin turno + permiso ausente → DENY`;
+3. `BASE_ONLY + N + sin turno + cobertura insuficiente → DENY`;
+4. `BASE_ONLY + N + turno presente → mismo resultado del carril base`;
+5. `BASE_ONLY + N + problema exclusivamente operacional → no contamina base`;
+6. identidad inactiva + `N` → DENY;
+7. configuración base contradictoria + `N` → fail closed;
+8. `BASE_OR_OPERATIONAL` con base válido y operativo ausente → resultado conforme al binding del carril base;
+9. `BASE_OR_OPERATIONAL` con base inválido y operativo sin turno → DENY;
+10. `BASE_AND_OPERATIONAL` sin turno → DENY;
+11. `OPERATIONAL_ONLY` sin turno → DENY;
+12. rol privilegiado sin permiso → DENY;
+13. `service_role` sin decisión empresarial → no efecto;
+14. selector de sede fuera de cobertura → DENY;
+15. área operativa ausente en acción site-level base válida → no bloqueo artificial;
+16. área administrativa requerida ausente → DENY;
+17. dispositivo no compatible → DENY;
+18. permiso `STRONG` sin reautenticación fuerte → DENY;
+19. simulación con `WOULD_ALLOW` intenta mutar → DENY;
+20. permiso `view` intenta una mutación sin binding mutante → DENY;
+21. permiso exacto mutante + recurso en estado inválido → no efecto;
+22. decisión válida pero conflicto de dominio → no efecto;
+23. decisión stale después de cambio de cobertura → reevaluación;
+24. auditoría de operación permitida conserva actor, decisión y efecto;
+25. auditoría de denegación conserva cero efectos;
+26. VISO creación mensual por administrador sin turno válido → puede avanzar solo si binding, permiso, cobertura y dominio son válidos;
+27. VISO publicación por administrador sin turno válido → puede avanzar solo si binding de publicación y reglas finales son válidos;
+28. VISO publicación con permiso solo de consulta → DENY;
+29. VISO publicación sobre sede fuera de cobertura → DENY;
+30. VISO publicación con notificación fallida después de efecto confirmado → publicación y notificación conservan resultados distintos.
+
+#### 72. Rollback
+
+El rollback de una futura unidad debe volver a una combinación previamente soportada sin reintroducir:
+
+- turno artificial para capacidades base;
+- bypass por rol;
+- permiso `view` como autoridad genérica de mutación;
+- `service_role` como autorización;
+- cobertura inferida;
+- sede seleccionada como autoridad;
+- área operativa como cobertura administrativa;
+- role override legacy;
+- `navigation_role` como permiso;
+- decisión booleana parcial;
+- simulación ejecutable;
+- actor no resuelto;
+- ausencia de auditoría;
+- mezcla de errores;
+- decisión stale.
+
+Si el comportamiento anterior bloqueaba incorrectamente administración base o permitía mutaciones con autoridad insuficiente, restaurarlo no constituye rollback seguro.
+
+#### 73. Criterios de aceptación
+
+`AUTH-SRV-018` queda documentalmente satisfecha cuando:
+
+1. se define que una acción administrativa sin turno utiliza el carril base cuando su contrato lo permite;
+2. `N` se limita a turno y check-in no requeridos;
+3. `N` no elimina autorización;
+4. la clasificación procede del permission contract y binding;
+5. la ruta o pantalla no decide el carril;
+6. el rol del actor no decide el carril;
+7. `service_role` no decide el carril;
+8. `BASE_ONLY` puede ejecutarse sin turno;
+9. `BASE_OR_OPERATIONAL` conserva carriles independientes;
+10. `BASE_AND_OPERATIONAL` no elimina turno;
+11. `OPERATIONAL_ONLY` no puede degradarse a base;
+12. la ausencia de contexto operativo no invalida automáticamente base;
+13. un problema únicamente operacional no contamina una base independiente válida;
+14. los problemas del carril base continúan bloqueando;
+15. la sesión válida no equivale a permiso;
+16. el actor efectivo continúa siendo obligatorio;
+17. la identidad inactiva continúa bloqueada;
+18. `app.access` no equivale a permiso de acción;
+19. cada mutación exige binding exacto;
+20. `view` no se hereda como `create`, `delete` o `publish`;
+21. no existe bypass por nombre de rol;
+22. grants y denies siguen aplicando;
+23. la cobertura administrativa sigue aplicando;
+24. `site_id` del cliente es intención;
+25. área administrativa y área operativa quedan separadas;
+26. administrar un recurso operativo no vuelve operativo al administrador;
+27. se revalida estado del recurso;
+28. se ejecutan reglas de dominio después de autorización;
+29. el payload se reconstruye en servidor;
+30. admin client no concede autoridad;
+31. simulación no ejecuta;
+32. dispositivo compartido no concede autoridad;
+33. `STRONG` sigue exigiendo reautenticación cuando aplica;
+34. se define pipeline sin turno artificial;
+35. consultas administrativas conservan mínimo necesario;
+36. mutaciones administrativas conservan estándar completo;
+37. se clasifica la programación laboral como administrativa conforme al catálogo vigente;
+38. se identifican las cuatro acciones mensuales observadas;
+39. cada acción mensual obtiene binding independiente;
+40. el administrador no necesita turno por inferencia para programar;
+41. el target shift no se confunde con el turno del administrador;
+42. el permiso legacy de consulta no certifica las mutaciones;
+43. `VISO-SCH-007` conserva ownership del binding funcional definitivo;
+44. creación mensual revalida persona, sede y dominio;
+45. eliminación individual revalida estado draft;
+46. eliminación masiva valida el universo completo;
+47. publicación revalida reglas finales;
+48. publicar no transforma al publicador en actor operativo;
+49. `published_by` se deriva del actor efectivo;
+50. auditoría conserva before/after cuando aplica;
+51. auditoría conserva periodo y sede;
+52. auditoría conserva bloques o universo reproducible;
+53. auditoría conserva motivo cuando aplica;
+54. resultado de notificación permanece separado;
+55. `requireStaffScheduleAccess` queda baseline transitorio;
+56. `requireAppAccess` no se canoniza;
+57. `resolveOperationalSession` no sustituye cobertura base;
+58. no existe fallback permisivo ante ausencia de turno;
+59. configuración contradictoria falla cerrada;
+60. permiso no registrado no se sustituye;
+61. fallo técnico no se transforma en allow;
+62. el error de turno solo aparece cuando el carril requerido exige turno;
+63. frescura del carril base se conserva;
+64. write barrier se conserva;
+65. concurrencia no se resuelve con autorización;
+66. idempotencia no concede autoridad;
+67. operar fuera de horario no bloquea por sí solo un permiso base;
+68. multi-sede valida cada territorio;
+69. multiárea valida el conjunto requerido;
+70. privacidad no se amplía;
+71. se define evidencia futura;
+72. se definen escenarios mínimos;
+73. se define rollback seguro;
+74. no se autorizan cambios físicos desde el marcador global;
+75. no se crean ni modifican requisitos de prueba.
+
+#### 74. Límites
+
+Este marcador no certifica todavía:
+
+- código físico del evaluador;
+- cambios en VISO;
+- cambios en ANIMA;
+- cambios en `@vento/os-context`;
+- cambios en `@vento/contracts`;
+- nuevas claves de permiso;
+- aliases de permisos;
+- migración de guards;
+- retiro de role overrides;
+- retiro de `resolveOperationalSession`;
+- cambios en RLS;
+- RPC;
+- grants;
+- migraciones;
+- constraints;
+- triggers;
+- reautenticación fuerte física;
+- enrolamiento de dispositivos;
+- publicación productiva;
+- políticas definitivas de programación;
+- límite mensual definitivo;
+- conflictos definitivos;
+- atomicidad definitiva;
+- mecanismo definitivo de concurrencia;
+- copy final de errores;
+- despliegues.
+
+Owners pendientes y condición de salida:
+
+```text
+VISO-SCH-002
+→ aprobar politica temporal
+→ entonces las operaciones mensuales consumen periodo y timezone definitivos
+
+VISO-SCH-003
+→ aprobar bloques, fechas, duracion y modalidad
+→ entonces la validacion de inputs usa reglas definitivas
+
+VISO-SCH-004
+→ aprobar limites, advertencias, vigencia y excepciones
+→ entonces guardar/publicar consumen la politica definitiva
+
+VISO-SCH-005
+→ aprobar borrador, revision, publicacion y correccion
+→ entonces cada mutacion usa transicion y atomicidad definitivas
+
+VISO-SCH-006
+→ aprobar conflictos, integridad, concurrencia y recuperacion
+→ entonces server y DB materializan enforcement definitivo
+
+VISO-SCH-007
+→ aprobar permiso por accion, auditoria, eventos y notificaciones
+→ entonces cada accion mensual obtiene binding funcional definitivo
+
+VISO-SCH-008
+→ aprobar el contrato completo antes de E5
+→ entonces el package puede consumir la reconciliacion cerrada de programacion
+
+SHELL-AUTH-001..005
+→ materializar SDK, adapters, scope, gates y migracion
+→ entonces el carril base deja de depender de guards legacy
+
+AUTH-DB-033..035 y tareas DB aplicables
+→ materializar evaluacion, paridad e invalidacion en backend
+→ entonces las capas fisicas pueden demostrar decision equivalente
+```
+
+#### 75. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                                                                                                                                                |
+| --------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | no se ejecutó build durante el desarrollo documental                                                                                                                                                                                                                                                                                     |
+| LOCAL     | `NOT_EXECUTED`   | no se ejecutaron comandos ni validadores contra el checkout del usuario                                                                                                                                                                                                                                                                  |
+| REMOTA    | `PASS`           | se auditó en solo lectura la continuidad vigente, las políticas de entrega/formato/desarrollo/topología, el owner de `AUTH-SRV-018`, `AUTH-SRV-004..017`, los prerrequisitos del catálogo, `AccessContext`, el registro 04A AUTH/VISO relevante, el baseline actual de acciones, helpers y guards VISO, y los owners `VISO-SCH-001..008` |
+| OPERATIVA | `NOT_APPLICABLE` | el marcador no modifica la operación real                                                                                                                                                                                                                                                                                                |
+| FÍSICA    | `NOT_APPLICABLE` | no existe instancia física autorizada para esta tarea                                                                                                                                                                                                                                                                                    |
+
+#### 76. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** la distinción entre carril base y operativo, la ejecución administrativa sin turno cuando el contrato lo permite, la obligación de permiso exacto, el control territorial, la protección server-side, la atribución, la frescura, la simulación, los dispositivos compartidos y las validaciones específicas del package VISO mensual ya cuentan con requisitos canónicos vigentes. Esta tarea cierra la composición explícita de esos prerrequisitos para acciones administrativas sin introducir una regla verificable nueva ni modificar el registro de pruebas.
+
+#### 77. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificar el registro vigente:
+
+- `TREQ-AUTH-007` — administración de roles, perfiles, permisos y disponibilidad exige capacidad administrativa explícita y territorio autorizado;
+- `TREQ-AUTH-008` — capacidades administrativas pueden resolverse por carril base sin turno/check-in cuando el contrato lo permita y las operativas conservan sus prerrequisitos;
+- `TREQ-AUTH-009` — sede y área efectivas se resuelven determinísticamente y el cruce territorial se deniega;
+- `TREQ-AUTH-013` — toda mutación valida permiso exacto, actor, territorio, contexto requerido, estado y columnas permitidas;
+- `TREQ-AUTH-014` — cambios materiales invalidan contexto, caché y decisiones derivadas;
+- `TREQ-AUTH-015` — toda decisión y acción, incluidas las administrativas, conserva evidencia correlacionable;
+- `TREQ-AUTH-063` — permisos `STRONG` en dispositivo compartido exigen reautenticación fuerte personal y no se degradan a PIN ligero;
+- `TREQ-AUTH-292` — problemas estructurales bloquean únicamente los carriles que les corresponden y `BASE_OR_OPERATIONAL` conserva independencia de carriles;
+- `TREQ-AUTH-293` — modalidad, prerrequisitos, cobertura, turno, check-in, dispositivo y simulación se resuelven desde contratos server-side versionados;
+- `TREQ-VISO-037` — guardar borrador y publicar son comandos separados con permisos y resultados distintos;
+- `TREQ-VISO-041` — eliminación masiva afecta solo borradores autorizados y conserva auditoría;
+- `TREQ-VISO-042` — persona, sede, área, rol, fechas y alcance se revalidan en servidor;
+- `TREQ-VISO-043` — auditoría conserva actor real, actor efectivo, simulación, versión, política y `published_by`;
+- `TREQ-VISO-044` — notificación hacia ANIMA es idempotente, recuperable y correlacionada;
+- `TREQ-VISO-045` — URL, formulario o Server Action manipulados quedan bloqueados con error canónico comprensible.
+
+Estas referencias son trazabilidad heredada y no representan requisitos creados o modificados por `AUTH-SRV-018`.
 
 ### Package VISO mensual
 
@@ -5494,3 +7311,16 @@ Estas referencias son trazabilidad heredada y no representan requisitos creados 
 - 018: prerrequisitos administrativos explícitos.
 
 Auditoría: antes/después, periodo, sede, bloques, motivo y resultado de notificación.
+
+---
+
+#### 78. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SRV-017 — Crear helpers server compartidos`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SRV-018 — Revisar acciones administrativas sin turno`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-015 — Documentar y versionar todas las migraciones en vento-shell`

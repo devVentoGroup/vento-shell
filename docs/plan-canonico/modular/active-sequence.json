@@ -2,31 +2,121 @@
   "schema_version": 1,
   "generated_from": "execution-route.json",
   "route_id": "NORMAL-CANONICAL-FLOW-001",
-  "sequence_id": "PHASE-03-J-SERVER-ACTIONS",
-  "block_code": "BLOQUE J",
-  "block_title": "Protección de acciones de servidor",
-  "previous_task_id": "AUTH-SRV-017",
+  "sequence_id": "PHASE-03-R-DATABASE-IMPLEMENTATION",
+  "block_code": "BLOQUE R",
+  "block_title": "Fundación física, migraciones por dominio y normalización",
+  "previous_task_id": "AUTH-SRV-018",
   "latest_treq_task_id": "NEXO-UX-025",
-  "handoff_task_id": "AUTH-DB-015",
-  "handoff_sequence_id": "PHASE-03-R-DATABASE-IMPLEMENTATION",
+  "handoff_task_id": "ANIMA-AUTH-001",
+  "handoff_sequence_id": "PHASE-04-F-ANIMA",
   "segments": [
     {
-      "prefix": "AUTH-SRV",
+      "prefix": "AUTH-DB",
+      "from": 15,
+      "to": 15
+    },
+    {
+      "prefix": "AUTH-DB",
+      "from": 27,
+      "to": 29
+    },
+    {
+      "prefix": "AUTH-DB",
+      "from": 1,
+      "to": 5
+    },
+    {
+      "prefix": "AUTH-DB",
+      "from": 16,
+      "to": 16
+    },
+    {
+      "prefix": "AUTH-DB",
       "from": 18,
       "to": 18
+    },
+    {
+      "prefix": "AUTH-DB",
+      "from": 17,
+      "to": 17
+    },
+    {
+      "prefix": "AUTH-DB",
+      "from": 19,
+      "to": 19
+    },
+    {
+      "prefix": "AUTH-DB",
+      "from": 33,
+      "to": 33
+    },
+    {
+      "prefix": "AUTH-DB",
+      "from": 35,
+      "to": 35
+    },
+    {
+      "prefix": "AUTH-DB",
+      "from": 34,
+      "to": 34
+    },
+    {
+      "prefix": "AUTH-DB",
+      "from": 32,
+      "to": 32
+    },
+    {
+      "prefix": "AUTH-DB",
+      "from": 12,
+      "to": 14
+    },
+    {
+      "prefix": "AUTH-DB",
+      "from": 20,
+      "to": 20
+    },
+    {
+      "prefix": "AUTH-DB",
+      "from": 6,
+      "to": 10
+    },
+    {
+      "prefix": "AUTH-DB",
+      "from": 21,
+      "to": 21
+    },
+    {
+      "prefix": "AUTH-DB",
+      "from": 11,
+      "to": 11
+    },
+    {
+      "prefix": "AUTH-DB",
+      "from": 22,
+      "to": 26
+    },
+    {
+      "prefix": "DATA-NORM-DB",
+      "from": 1,
+      "to": 10
+    },
+    {
+      "prefix": "INT-DB",
+      "from": 1,
+      "to": 8
     }
   ],
   "block_progress": {
-    "total_tasks": 18,
-    "approved_tasks": 17,
-    "pending_tasks": 1
+    "total_tasks": 51,
+    "approved_tasks": 0,
+    "pending_tasks": 51
   },
   "route_progress": {
     "covered_tasks": 1594,
-    "pending_tasks": 594,
+    "pending_tasks": 593,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
-    "active_stage": 12
+    "active_stage": 13
   },
   "selected_route_id": "NORMAL-CANONICAL-FLOW-001"
 }

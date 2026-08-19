@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1000** |
+| Tareas aprobadas | **1001** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **594** |
+| Tareas no iniciadas | **593** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **62.74% (1000/1594)** |
+| Porcentaje de completamiento | **62.80% (1001/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-SRV-017 — Crear helpers server compartidos** |
-| Tarea actual | **AUTH-SRV-018 — Revisar acciones administrativas sin turno** |
+| Última tarea aprobada | **AUTH-SRV-018 — Revisar acciones administrativas sin turno** |
+| Tarea actual | **AUTH-DB-015 — Documentar y versionar todas las migraciones en vento-shell** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DB-015 — Documentar y versionar todas las migraciones en vento-shell** |
-| Bloque actual | **BLOQUE J — Protección de acciones de servidor** |
-| Progreso del bloque | **BLOQUE J: 17 de 18 aprobadas; AUTH-SRV-018 pendiente** |
+| Siguiente tarea | **AUTH-DB-027 — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones** |
+| Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
+| Progreso del bloque | **BLOQUE R: 0 de 51 aprobadas; AUTH-DB-015 pendiente** |
 | Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-SRV-018** |
-| Carril documental | **ACTIVO — AUTH-SRV-018** |
+| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-DB-015** |
+| Carril documental | **ACTIVO — AUTH-DB-015** |
 | Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-SRV-017` — Crear helpers server compartidos |
-| Tarea actual | `AUTH-SRV-018` — Revisar acciones administrativas sin turno — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DB-015` — Documentar y versionar todas las migraciones en vento-shell |
+| Última aprobada | `AUTH-SRV-018` — Revisar acciones administrativas sin turno |
+| Tarea actual | `AUTH-DB-015` — Documentar y versionar todas las migraciones en vento-shell — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DB-027` — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE J: 17 DE 18 APROBADAS — ACTUAL AUTH-SRV-018** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 0 DE 51 APROBADAS — ACTUAL AUTH-DB-015** |
 | Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-SRV-017 — Crear helpers server compartidos
-        ↓
-TAREA ACTUAL
 AUTH-SRV-018 — Revisar acciones administrativas sin turno
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DB-015 — Documentar y versionar todas las migraciones en vento-shell
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DB-027 — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE J — 17 de 18 tareas aprobadas
+BLOQUE R — 0 de 51 tareas aprobadas
 ```
