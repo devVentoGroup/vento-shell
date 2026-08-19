@@ -6,8 +6,14 @@ import { spawnSync } from 'node:child_process';
 
 const DEFAULT_BRANCH = 'main';
 const TASK_PREFIX = 'task/';
+const INFRA_PREFIX = 'infra/';
 const RESULT_START = '=== RESULTADO PARA CHATGPT ===';
 const RESULT_END = '=== FIN RESULTADO PARA CHATGPT ===';
+const CHECK_REGISTRATION_ATTEMPTS = 24;
+const CHECK_REGISTRATION_INTERVAL_MS = 5000;
+const CHECK_WATCH_INTERVAL_SECONDS = 5;
+const MERGE_CONFIRM_ATTEMPTS = 24;
+const MERGE_CONFIRM_INTERVAL_MS = 5000;
 
 function fail(message, code = 1) {
   const error = new Error(message);
@@ -25,6 +31,18 @@ function normalizeTaskId(value) {
 
 export function taskBranchName(taskId) {
   return `${TASK_PREFIX}${normalizeTaskId(taskId).toLowerCase()}`;
+}
+
+export function normalizeInfraChangeId(value) {
+  const changeId = String(value ?? '').trim().toLowerCase();
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(changeId)) {
+    fail(`CHANGE_ID invalido: ${value || 'VACIO'}. Use minusculas, numeros y guiones.`);
+  }
+  return changeId;
+}
+
+export function infraBranchName(changeId) {
+  return `${INFRA_PREFIX}${normalizeInfraChangeId(changeId)}`;
 }
 
 function run(command, args, {
@@ -63,6 +81,124 @@ function git(args, options = {}) {
 
 function gh(args, options = {}) {
   return run('gh', args, options);
+}
+
+function sleep(milliseconds) {
+  const delay = Number(milliseconds);
+  if (!Number.isFinite(delay) || delay <= 0) return;
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, delay);
+}
+
+export function classifyPrChecksProbe({ status, stdout, stderr }) {
+  const rawStdout = String(stdout ?? '').trim();
+  const rawStderr = String(stderr ?? '').trim();
+  const combined = [rawStdout, rawStderr].filter(Boolean).join('\n');
+
+  if (rawStdout.startsWith('[')) {
+    try {
+      const rows = JSON.parse(rawStdout);
+      if (Array.isArray(rows) && rows.length > 0) {
+        return { state: 'REGISTERED', count: rows.length, detail: '' };
+      }
+      if (Array.isArray(rows)) {
+        return { state: 'WAIT', count: 0, detail: '' };
+      }
+    } catch {
+      // handled below
+    }
+  }
+
+  if (/no checks reported/iu.test(combined)) {
+    return { state: 'WAIT', count: 0, detail: combined };
+  }
+
+  if (Number(status) === 0 && !combined) {
+    return { state: 'WAIT', count: 0, detail: '' };
+  }
+
+  return {
+    state: 'ERROR',
+    count: 0,
+    detail: combined || `gh pr checks termino con codigo ${status}.`,
+  };
+}
+
+function waitForPrChecksToRegister(root, prNumber, {
+  attempts = CHECK_REGISTRATION_ATTEMPTS,
+  intervalMs = CHECK_REGISTRATION_INTERVAL_MS,
+} = {}) {
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    const probe = gh([
+      'pr', 'checks', String(prNumber),
+      '--json', 'name,state,bucket,link',
+    ], { cwd: root, allowFailure: true });
+
+    const classification = classifyPrChecksProbe(probe);
+    if (classification.state === 'REGISTERED') return classification.count;
+    if (classification.state === 'ERROR') {
+      fail(`No se pudieron consultar checks de PR #${prNumber}: ${classification.detail}`, probe.status);
+    }
+
+    if (attempt < attempts) sleep(intervalMs);
+  }
+
+  fail(
+    `PR #${prNumber} no registro checks despues de ${attempts} intentos; cierre detenido antes del merge.`,
+  );
+}
+
+function readOpenPrState(root, prNumber) {
+  return parseJsonOutput(
+    gh([
+      'pr', 'view', String(prNumber),
+      '--json', 'number,state,isDraft,mergeable,headRefOid,baseRefName',
+    ], { cwd: root }).stdout,
+    'gh pr view',
+  );
+}
+
+function ensureOpenPrIdentity(prState, prNumber, headSha) {
+  if (prState.state !== 'OPEN') fail(`PR #${prNumber} no esta OPEN; estado: ${prState.state}.`);
+  if (prState.isDraft) fail(`PR #${prNumber} sigue en draft.`);
+  if (prState.baseRefName !== DEFAULT_BRANCH) fail(`PR #${prNumber} no apunta a ${DEFAULT_BRANCH}.`);
+  if (prState.headRefOid !== headSha) fail(`PR #${prNumber} no apunta al HEAD validado ${headSha}.`);
+  if (!['MERGEABLE', 'UNKNOWN'].includes(String(prState.mergeable ?? '').toUpperCase())) {
+    fail(`PR #${prNumber} no es mergeable: ${prState.mergeable}.`);
+  }
+}
+
+function waitForPrMerged(root, prNumber, headSha, {
+  attempts = MERGE_CONFIRM_ATTEMPTS,
+  intervalMs = MERGE_CONFIRM_INTERVAL_MS,
+} = {}) {
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    const state = parseJsonOutput(
+      gh([
+        'pr', 'view', String(prNumber),
+        '--json', 'state,mergedAt,mergeCommit,headRefOid',
+      ], { cwd: root }).stdout,
+      'gh pr view merged',
+    );
+
+    if (state.headRefOid !== headSha) {
+      fail(`PR #${prNumber} cambio de HEAD durante el merge: ${state.headRefOid ?? 'DESCONOCIDO'}.`);
+    }
+
+    if (state.state === 'MERGED') {
+      const mergeCommitSha = String(state.mergeCommit?.oid ?? '').trim();
+      if (!state.mergedAt) fail(`PR #${prNumber} figura MERGED sin mergedAt.`);
+      if (!mergeCommitSha) fail(`PR #${prNumber} figura MERGED sin mergeCommit.`);
+      return { ...state, mergeCommitSha };
+    }
+
+    if (state.state === 'CLOSED') {
+      fail(`PR #${prNumber} fue cerrado sin merge.`);
+    }
+
+    if (attempt < attempts) sleep(intervalMs);
+  }
+
+  fail(`PR #${prNumber} no confirmo estado MERGED despues de ${attempts} intentos.`);
 }
 
 export function resolveNpmInvocation({
@@ -242,6 +378,32 @@ export function classifyTaskPath(filePath) {
   return 'OTHER';
 }
 
+export function classifyInfraPath(filePath) {
+  const normalized = String(filePath ?? '').replaceAll('\\', '/').replace(/^\.\//u, '');
+  if (!normalized) return 'OTHER';
+  if (
+    normalized === 'AGENTS.md'
+    || normalized === 'package.json'
+    || normalized === 'package-lock.json'
+    || normalized.startsWith('scripts/docs/')
+    || normalized.startsWith('scripts/quality/')
+    || normalized.startsWith('quality/')
+    || normalized.startsWith('.github/')
+    || normalized.startsWith('.vscode/')
+    || normalized.startsWith('templates/')
+  ) return 'ALLOWED';
+  return 'OTHER';
+}
+
+function ensureInfraPaths(paths) {
+  const disallowed = paths.filter((entry) => classifyInfraPath(entry) === 'OTHER');
+  if (disallowed.length > 0) {
+    fail(
+      `docs:infra:publish solo admite infraestructura transversal; rutas no permitidas: ${disallowed.join(', ')}`,
+    );
+  }
+}
+
 function ensureNoUnknownPaths(paths) {
   const unknown = paths.filter((entry) => classifyTaskPath(entry) === 'OTHER');
   if (unknown.length > 0) {
@@ -354,7 +516,7 @@ function syncCounts(root, left, right) {
   return { behind: Number(behind), ahead: Number(ahead), raw };
 }
 
-function createOrUpdatePr(root, taskId, branch, body) {
+function createOrUpdateBranchPr(root, { branch, title, body }) {
   const list = gh([
     'pr', 'list',
     '--head', branch,
@@ -365,7 +527,7 @@ function createOrUpdatePr(root, taskId, branch, body) {
   ], { cwd: root });
   const existing = parseJsonOutput(list.stdout || '[]', 'gh pr list');
 
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vento-task-pr-'));
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vento-pr-'));
   const bodyPath = path.join(tempDir, 'body.md');
   fs.writeFileSync(bodyPath, body, 'utf8');
 
@@ -374,7 +536,7 @@ function createOrUpdatePr(root, taskId, branch, body) {
       const pr = existing[0];
       gh([
         'pr', 'edit', String(pr.number),
-        '--title', `${taskId}: cierre de tarea`,
+        '--title', title,
         '--body-file', bodyPath,
       ], { cwd: root });
       return Number(pr.number);
@@ -384,7 +546,7 @@ function createOrUpdatePr(root, taskId, branch, body) {
       'pr', 'create',
       '--base', DEFAULT_BRANCH,
       '--head', branch,
-      '--title', `${taskId}: cierre de tarea`,
+      '--title', title,
       '--body-file', bodyPath,
     ], { cwd: root });
 
@@ -404,13 +566,50 @@ function createOrUpdatePr(root, taskId, branch, body) {
   }
 }
 
-function cleanupTaskBranch(root, branch) {
-  const remoteDelete = git(['push', 'origin', '--delete', branch], { cwd: root, allowFailure: true });
-  const localDelete = git(['branch', '-d', branch], { cwd: root, allowFailure: true });
-  return {
-    remote: remoteDelete.status === 0 ? 'DELETED' : 'KEPT',
-    local: localDelete.status === 0 ? 'DELETED' : 'KEPT',
-  };
+function createOrUpdatePr(root, taskId, branch, body) {
+  return createOrUpdateBranchPr(root, {
+    branch,
+    title: `${taskId}: cierre de tarea`,
+    body,
+  });
+}
+
+export function buildInfraPrBody(changeId, paths) {
+  const id = normalizeInfraChangeId(changeId);
+  const normalizedPaths = [...new Set(paths.map((entry) => String(entry).replaceAll('\\', '/')))].sort();
+  ensureInfraPaths(normalizedPaths);
+  return [
+    'VENTO-TREQ-AFFECTED: NONE',
+    `VENTO-TREQ-ZERO-REASON: ${id} es un cambio transversal de infraestructura y este comando bloquea archivos canonicos de tarea.`,
+    '',
+    '## Cambio transversal de infraestructura',
+    '',
+    id,
+    '',
+    '## Archivos',
+    '',
+    ...normalizedPaths.map((entry) => `- ${entry}`),
+    '',
+  ].join('\n');
+}
+
+function cleanupBranch(root, branch) {
+  if (remoteBranchExists(root, branch)) {
+    git(['push', 'origin', '--delete', branch], { cwd: root, allowFailure: true });
+  }
+  if (localBranchExists(root, branch)) {
+    git(['branch', '-d', branch], { cwd: root, allowFailure: true });
+  }
+
+  const remoteRemaining = remoteBranchExists(root, branch);
+  const localRemaining = localBranchExists(root, branch);
+  if (remoteRemaining || localRemaining) {
+    fail(
+      `No se pudo cerrar completamente ${branch}: local=${localRemaining ? 'PRESENTE' : 'AUSENTE'}, remote=${remoteRemaining ? 'PRESENTE' : 'AUSENTE'}.`,
+    );
+  }
+
+  return { remote: 'DELETED', local: 'DELETED' };
 }
 
 function printResult(fields) {
@@ -525,19 +724,19 @@ export function finishTask({ taskId, root = ensureRepositoryRoot() }) {
   const prBody = buildPrBody(id, treq);
   const prNumber = createOrUpdatePr(root, id, branch, prBody);
 
-  gh(['pr', 'checks', String(prNumber), '--watch', '--fail-fast'], { cwd: root, inherit: true });
+  let prState = readOpenPrState(root, prNumber);
+  ensureOpenPrIdentity(prState, prNumber, headSha);
 
-  const prState = parseJsonOutput(
-    gh(['pr', 'view', String(prNumber), '--json', 'number,state,isDraft,mergeable,headRefOid,baseRefName'], { cwd: root }).stdout,
-    'gh pr view',
-  );
-  if (prState.state !== 'OPEN') fail(`PR #${prNumber} no esta OPEN; estado: ${prState.state}.`);
-  if (prState.isDraft) fail(`PR #${prNumber} sigue en draft.`);
-  if (prState.baseRefName !== DEFAULT_BRANCH) fail(`PR #${prNumber} no apunta a ${DEFAULT_BRANCH}.`);
-  if (prState.headRefOid !== headSha) fail(`PR #${prNumber} no apunta al HEAD validado ${headSha}.`);
-  if (!['MERGEABLE', 'UNKNOWN'].includes(String(prState.mergeable ?? '').toUpperCase())) {
-    fail(`PR #${prNumber} no es mergeable: ${prState.mergeable}.`);
-  }
+  const registeredCheckCount = waitForPrChecksToRegister(root, prNumber);
+  gh([
+    'pr', 'checks', String(prNumber),
+    '--watch',
+    '--fail-fast',
+    '--interval', String(CHECK_WATCH_INTERVAL_SECONDS),
+  ], { cwd: root, inherit: true });
+
+  prState = readOpenPrState(root, prNumber);
+  ensureOpenPrIdentity(prState, prNumber, headSha);
 
   gh([
     'pr', 'merge', String(prNumber),
@@ -545,23 +744,45 @@ export function finishTask({ taskId, root = ensureRepositoryRoot() }) {
     '--match-head-commit', headSha,
   ], { cwd: root });
 
+  const merged = waitForPrMerged(root, prNumber, headSha);
+
   git(['fetch', 'origin', DEFAULT_BRANCH, '--quiet'], { cwd: root });
   git(['switch', DEFAULT_BRANCH], { cwd: root });
   git(['pull', '--ff-only', 'origin', DEFAULT_BRANCH], { cwd: root });
   ensureClean(root, 'FINISH MAIN');
+
+  if (currentBranch(root) !== DEFAULT_BRANCH) {
+    fail(`FINISH no termino en ${DEFAULT_BRANCH}; rama actual: ${currentBranch(root) || 'DETACHED'}.`);
+  }
 
   const mainSync = syncCounts(root, `origin/${DEFAULT_BRANCH}`, 'HEAD');
   if (mainSync.behind !== 0 || mainSync.ahead !== 0) {
     fail(`main no quedo sincronizado: ${mainSync.raw}.`);
   }
 
-  const merged = parseJsonOutput(
-    gh(['pr', 'view', String(prNumber), '--json', 'state,mergedAt,mergeCommit'], { cwd: root }).stdout,
-    'gh pr view merged',
+  const validatedHeadInMain = git(
+    ['merge-base', '--is-ancestor', headSha, 'HEAD'],
+    { cwd: root, allowFailure: true },
   );
-  if (merged.state !== 'MERGED') fail(`PR #${prNumber} no quedo MERGED.`);
+  if (validatedHeadInMain.status !== 0) {
+    fail(`El HEAD validado ${headSha} no quedo contenido en main.`);
+  }
 
-  const cleanup = cleanupTaskBranch(root, branch);
+  const mergeCommitInMain = git(
+    ['merge-base', '--is-ancestor', merged.mergeCommitSha, 'HEAD'],
+    { cwd: root, allowFailure: true },
+  );
+  if (mergeCommitInMain.status !== 0) {
+    fail(`El merge commit ${merged.mergeCommitSha} no quedo contenido en main.`);
+  }
+
+  const cleanup = cleanupBranch(root, branch);
+  ensureClean(root, 'FINISH FINAL');
+
+  const finalMainSync = syncCounts(root, `origin/${DEFAULT_BRANCH}`, 'HEAD');
+  if (finalMainSync.behind !== 0 || finalMainSync.ahead !== 0) {
+    fail(`main perdio sincronizacion al final: ${finalMainSync.raw}.`);
+  }
 
   printResult({
     ESTADO: 'PASS',
@@ -570,9 +791,12 @@ export function finishTask({ taskId, root = ensureRepositoryRoot() }) {
     BRANCH: branch,
     HEAD_VALIDATED: headSha,
     PR: prNumber,
+    CHECKS_REGISTERED: registeredCheckCount,
     REQUIRED_CHECKS: 'PASS',
     MERGE: 'PASS',
+    MERGE_COMMIT: merged.mergeCommitSha,
     MAIN_HEAD: currentHead(root),
+    HEAD_VALIDATED_IN_MAIN: 'SI',
     SYNC_MAIN: '0/0',
     WORKTREE: 'CLEAN',
     LOCAL_BRANCH: cleanup.local,
@@ -581,8 +805,186 @@ export function finishTask({ taskId, root = ensureRepositoryRoot() }) {
   });
 }
 
+
+function runInfraLocalValidation(root, paths) {
+  git(['diff', '--check'], { cwd: root });
+
+  const checkable = paths.filter(
+    (entry) => /\.(?:cjs|js|mjs)$/u.test(entry) && fs.existsSync(path.join(root, ...entry.split('/'))),
+  );
+  for (const entry of checkable) {
+    run(process.execPath, ['--check', entry], { cwd: root });
+  }
+
+  const testFiles = paths.filter(
+    (entry) => /\.test\.mjs$/u.test(entry) && fs.existsSync(path.join(root, ...entry.split('/'))),
+  );
+  for (const entry of testFiles) {
+    run(process.execPath, ['--test', entry], { cwd: root });
+  }
+
+  npm(['run', '--silent', 'docs:plan:test'], { cwd: root });
+}
+
+export function publishInfraChange({ changeId, root = ensureRepositoryRoot() }) {
+  const id = normalizeInfraChangeId(changeId);
+  const branch = infraBranchName(id);
+
+  ensureGhReady(root);
+  git(['fetch', 'origin', DEFAULT_BRANCH, '--quiet'], { cwd: root });
+
+  const startingBranch = currentBranch(root);
+  if (startingBranch === DEFAULT_BRANCH) {
+    const mainSync = syncCounts(root, `origin/${DEFAULT_BRANCH}`, 'HEAD');
+    if (mainSync.behind !== 0 || mainSync.ahead !== 0) {
+      fail(`main debe estar sincronizado 0/0 antes del cambio transversal: ${mainSync.raw}.`);
+    }
+
+    const initialDirty = worktreePaths(root);
+    if (initialDirty.length === 0) {
+      fail('No hay cambios pendientes para publicar como infraestructura transversal.');
+    }
+    ensureInfraPaths(initialDirty);
+
+    if (localBranchExists(root, branch) || remoteBranchExists(root, branch)) {
+      fail(`La rama ${branch} ya existe; cambie a esa rama para reanudar o use otro --change-id.`);
+    }
+
+    git(['switch', '-c', branch], { cwd: root });
+  } else if (startingBranch !== branch) {
+    fail(`INFRA_PUBLISH debe ejecutarse desde ${DEFAULT_BRANCH} o ${branch}; rama actual: ${startingBranch || 'DETACHED'}.`);
+  }
+
+  const dirty = worktreePaths(root);
+  if (dirty.length > 0) {
+    ensureInfraPaths(dirty);
+    runInfraLocalValidation(root, dirty);
+    git(['add', '--', ...dirty], { cwd: root });
+    npm(['run', '--silent', 'docs:commit-scope:check', '--', '--staged'], { cwd: root });
+    git(['diff', '--cached', '--check'], { cwd: root });
+
+    const staged = parsePorcelainPaths(
+      git(['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root }).stdout,
+    );
+    ensureInfraPaths(staged);
+
+    const stagedNames = git(
+      ['diff', '--cached', '--name-only', '--diff-filter=ACMRD'],
+      { cwd: root },
+    ).stdout.trim();
+    if (stagedNames) {
+      git(['commit', '-m', `infra(${id}): publish transversal change`], { cwd: root });
+    }
+  }
+
+  ensureClean(root, 'INFRA PRE-PUSH');
+
+  const branchCommits = Number(
+    git(['rev-list', '--count', `origin/${DEFAULT_BRANCH}..HEAD`], { cwd: root }).stdout.trim(),
+  );
+  if (!Number.isFinite(branchCommits) || branchCommits <= 0) {
+    fail(`${branch} no contiene commits nuevos respecto de origin/${DEFAULT_BRANCH}.`);
+  }
+
+  const changedPaths = git(
+    ['diff', '--name-only', `origin/${DEFAULT_BRANCH}...HEAD`],
+    { cwd: root },
+  ).stdout.split(/\r?\n/u).map((entry) => entry.trim()).filter(Boolean);
+  ensureInfraPaths(changedPaths);
+
+  git(['push', '-u', 'origin', branch], { cwd: root });
+  const branchSync = syncCounts(root, `origin/${branch}`, 'HEAD');
+  if (branchSync.behind !== 0 || branchSync.ahead !== 0) {
+    fail(`Push incompleto de ${branch}: ${branchSync.raw}.`);
+  }
+
+  const headSha = currentHead(root);
+  const prNumber = createOrUpdateBranchPr(root, {
+    branch,
+    title: `infra(${id}): cambio transversal`,
+    body: buildInfraPrBody(id, changedPaths),
+  });
+
+  let prState = readOpenPrState(root, prNumber);
+  ensureOpenPrIdentity(prState, prNumber, headSha);
+
+  const registeredCheckCount = waitForPrChecksToRegister(root, prNumber);
+  gh([
+    'pr', 'checks', String(prNumber),
+    '--watch',
+    '--fail-fast',
+    '--interval', String(CHECK_WATCH_INTERVAL_SECONDS),
+  ], { cwd: root, inherit: true });
+
+  prState = readOpenPrState(root, prNumber);
+  ensureOpenPrIdentity(prState, prNumber, headSha);
+
+  gh([
+    'pr', 'merge', String(prNumber),
+    '--merge',
+    '--match-head-commit', headSha,
+  ], { cwd: root });
+
+  const merged = waitForPrMerged(root, prNumber, headSha);
+
+  git(['fetch', 'origin', DEFAULT_BRANCH, '--quiet'], { cwd: root });
+  git(['switch', DEFAULT_BRANCH], { cwd: root });
+  git(['pull', '--ff-only', 'origin', DEFAULT_BRANCH], { cwd: root });
+  ensureClean(root, 'INFRA MAIN');
+
+  const mainSync = syncCounts(root, `origin/${DEFAULT_BRANCH}`, 'HEAD');
+  if (mainSync.behind !== 0 || mainSync.ahead !== 0) {
+    fail(`main no quedo sincronizado: ${mainSync.raw}.`);
+  }
+
+  const validatedHeadInMain = git(
+    ['merge-base', '--is-ancestor', headSha, 'HEAD'],
+    { cwd: root, allowFailure: true },
+  );
+  if (validatedHeadInMain.status !== 0) {
+    fail(`El HEAD validado ${headSha} no quedo contenido en main.`);
+  }
+
+  const mergeCommitInMain = git(
+    ['merge-base', '--is-ancestor', merged.mergeCommitSha, 'HEAD'],
+    { cwd: root, allowFailure: true },
+  );
+  if (mergeCommitInMain.status !== 0) {
+    fail(`El merge commit ${merged.mergeCommitSha} no quedo contenido en main.`);
+  }
+
+  const cleanup = cleanupBranch(root, branch);
+  ensureClean(root, 'INFRA FINAL');
+
+  const finalMainSync = syncCounts(root, `origin/${DEFAULT_BRANCH}`, 'HEAD');
+  if (finalMainSync.behind !== 0 || finalMainSync.ahead !== 0) {
+    fail(`main perdio sincronizacion al final: ${finalMainSync.raw}.`);
+  }
+
+  printResult({
+    ESTADO: 'PASS',
+    OPERACION: 'INFRA_PUBLISH',
+    CHANGE_ID: id,
+    BRANCH: branch,
+    FILES: changedPaths.length,
+    HEAD_VALIDATED: headSha,
+    PR: prNumber,
+    CHECKS_REGISTERED: registeredCheckCount,
+    REQUIRED_CHECKS: 'PASS',
+    MERGE: 'PASS',
+    MERGE_COMMIT: merged.mergeCommitSha,
+    MAIN_HEAD: currentHead(root),
+    HEAD_VALIDATED_IN_MAIN: 'SI',
+    SYNC_MAIN: '0/0',
+    WORKTREE: 'CLEAN',
+    LOCAL_BRANCH: cleanup.local,
+    REMOTE_BRANCH: cleanup.remote,
+    READY_FOR_NEXT_TASK: 'SI',
+  });
+}
+
 function parseArgs(argv) {
-  const args = { mode: null, taskId: null, help: false };
+  const args = { mode: null, taskId: null, changeId: null, help: false };
   if (argv.length > 0 && !argv[0].startsWith('--')) {
     args.mode = argv[0];
     argv = argv.slice(1);
@@ -595,6 +997,11 @@ function parseArgs(argv) {
       if (!value || value.startsWith('--')) fail('Falta valor de --task-id.');
       args.taskId = value;
       index += 1;
+    } else if (token === '--change-id') {
+      const value = argv[index + 1];
+      if (!value || value.startsWith('--')) fail('Falta valor de --change-id.');
+      args.changeId = value;
+      index += 1;
     } else fail(`Argumento desconocido: ${token}.`);
   }
   return args;
@@ -604,6 +1011,10 @@ function usage() {
   console.log('Uso:');
   console.log('  npm run docs:task:start -- --task-id AUTH-SRV-001');
   console.log('  npm run docs:task:finish -- --task-id AUTH-SRV-001');
+  console.log('  npm run docs:infra:publish -- --change-id task-lifecycle-finish-verification');
+  console.log('');
+  console.log('docs:infra:publish se usa desde main con cambios locales de infraestructura permitidos.');
+  console.log('Crea infra/<change-id>, valida, hace commit/push/PR, espera checks, mergea, limpia y verifica main 0/0.');
 }
 
 function main() {
@@ -612,9 +1023,15 @@ function main() {
     usage();
     return;
   }
-  if (!['start', 'finish'].includes(args.mode)) fail('Modo requerido: start o finish.');
-  if (!args.taskId) fail('Falta --task-id.');
+  if (!['start', 'finish', 'infra'].includes(args.mode)) fail('Modo requerido: start, finish o infra.');
 
+  if (args.mode === 'infra') {
+    if (!args.changeId) fail('Falta --change-id.');
+    publishInfraChange({ changeId: args.changeId });
+    return;
+  }
+
+  if (!args.taskId) fail('Falta --task-id.');
   if (args.mode === 'start') startTask({ taskId: args.taskId });
   else finishTask({ taskId: args.taskId });
 }
@@ -627,12 +1044,13 @@ if (isCli) {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     const code = Number.isInteger(error?.exitCode) ? error.exitCode : 1;
+    const mode = process.argv[2];
     printResult({
       ESTADO: 'FAIL',
-      OPERACION: process.argv[2] === 'finish' ? 'TASK_FINISH' : 'TASK_START',
+      OPERACION: mode === 'finish' ? 'TASK_FINISH' : mode === 'infra' ? 'INFRA_PUBLISH' : 'TASK_START',
       COMPROBACION_FALLIDA: message.replace(/[\r\n]+/gu, ' | '),
       EXIT_CODE_REPORTADO: code,
-      NEXT_TASK_ALLOWED: 'NO',
+      ...(mode === 'infra' ? { READY_FOR_NEXT_TASK: 'NO' } : { NEXT_TASK_ALLOWED: 'NO' }),
     });
     process.exitCode = code;
   }

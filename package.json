@@ -40,6 +40,7 @@
     "docs:task:preflight": "node scripts/docs/canonical-task-preflight.mjs",
     "docs:task:start": "node scripts/docs/task-branch-lifecycle.mjs start",
     "docs:task:finish": "node scripts/docs/task-branch-lifecycle.mjs finish",
+    "docs:infra:publish": "node scripts/docs/task-branch-lifecycle.mjs infra",
     "docs:task:format": "node scripts/docs/format-canonical-task.mjs",
     "docs:task:auto": "node scripts/docs/auto-prepare-canonical-task.mjs",
     "docs:task:policy:check": "node scripts/docs/task-format-policy.mjs",
