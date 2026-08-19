@@ -19,7 +19,7 @@ test('genera un único iniciador desde la acción operativa vigente', () => {
   assert.match(result.source, /Watcher durante implementación física: APAGADO/u);
   assert.match(result.source, /Preflight físico: UNA VEZ/u);
   assert.match(result.source, /Preflight PASS: CONTINUAR LOCALMENTE SIN VOLVER AL CHAT/u);
-  assert.match(result.source, /Batería final PASS: CONTINUAR LOCALMENTE HASTA VERIFIED SIN VOLVER AL CHAT/u);
+  assert.match(result.source, /Batería final PASS: CONTINUAR EN LA MISMA TRANSACCIÓN; EVIDENCIA REMOTA, SI APLICA, ANTES DE VERIFIED/u);
   assert.match(result.source, /Gates intermedios rutinarios: PROHIBIDOS/u);
   assert.match(result.source, /Raíz local exacta del repositorio: .+vento-shell/u);
   assert.match(result.source, /HISTORIAL FÍSICO ACUMULATIVO/u);
@@ -54,7 +54,9 @@ test('ejecutar implementación entrega una transacción continua hasta VERIFIED'
   assert.match(source, /contenido completo sin elipsis/u);
   assert.match(source, /a IMPLEMENTED/u);
   assert.match(source, /una sola batería final/u);
-  assert.match(source, /mismo bloque continúa hasta VERIFIED/u);
+  assert.match(source, /commit\/push de materialización/u);
+  assert.match(source, /tramo remoto/u);
+  assert.match(source, /solo el PASS remoto permite continuar a VERIFIED/u);
   assert.match(source, /No vuelvas a ejecutar la batería después de PASS completo/u);
 });
 
@@ -118,7 +120,8 @@ test('la autorización conserva ledger y entrega también el lote físico condic
   assert.match(source, /En la misma respuesta/u);
   assert.match(source, /todos los archivos y cambios físicos deterministas/u);
   assert.match(source, /No obligues a regenerar el Iniciador/u);
-  assert.match(source, /un único commit\/sync del lote completo/u);
+  assert.match(source, /commit\/push mínimo de materialización/u);
+  assert.match(source, /commit\/sync final separado/u);
   assert.doesNotMatch(source, /comprobar el cambio a INICIAR_IMPLEMENTACION/u);
 });
 
@@ -157,7 +160,9 @@ test('la plantilla global conserva modo humano, watcher apagado y validación fi
   assert.match(template, /nunca se reemplaza un arreglo global `instances`/u);
   assert.match(template, /FLUJO RÁPIDO DE IMPLEMENTACIÓN FÍSICA/u);
   assert.match(template, /watcher debe permanecer apagado/u);
-  assert.match(template, /una sola batería final/u);
+  assert.match(template, /una sola transacción final fail-fast/u);
+  assert.match(template, /commit\/push mínimo de materialización/u);
+  assert.match(template, /evidencia remota/u);
   assert.match(template, /npm run docs:implementation:status/u);
   assert.match(template, /npm run docs:chatgpt:starter/u);
   assert.match(template, /Push Protection/u);

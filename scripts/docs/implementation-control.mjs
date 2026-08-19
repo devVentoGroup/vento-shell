@@ -483,7 +483,7 @@ export function renderCurrentWorkDirective(control) {
 - **Git, GitHub y mutaciones remotas del asistente:** PROHIBIDAS POR DEFECTO
 - **Pausa:** solo cuando un comando fail-fast falla, existe una contradicción real o el siguiente paso requiere una decisión o permiso todavía desconocido
 - **Preflight PASS:** continúa localmente; no requiere volver al chat
-- **Batería final PASS:** continúa localmente hasta VERIFIED; no requiere otra ronda de validación
+- **Batería final PASS:** continúa dentro de la misma transacción; si el contrato exige evidencia remota, completa commit/push de materialización y validación remota antes de VERIFIED
 - **Respuesta en una pausa real:** \`RESULTADO DEL PASO N\` seguida de la evidencia solicitada
 - **Excepción limitada:** solo \`AUTORIZO EJECUCION ASISTIDA DEL PASO N\` autoriza ese paso numerado; después vuelve el modo manual.
 
@@ -507,7 +507,7 @@ ${physicalRows}
 4. \`AUTHORIZED\` habilita el trabajo físico, pero no concede al asistente permiso para escribirlo.
 5. La entrega reúne todos los artefactos deterministas y un lote local continuo; el usuario ejecuta primero el preflight estricto y solo aplica el código si ese preflight termina correctamente.
 6. Un preflight estricto con código de salida 0 no crea un gate conversacional. Un fallo sí detiene el lote y exige evidencia antes de continuar.
-7. Después de materializar todos los cambios, se usa una sola batería final fail-fast; PASS permite consolidar evidencia y pasar a VERIFIED sin repetir validaciones.
+7. Después de materializar todos los cambios, se usa una sola transacción final fail-fast. Si toda la evidencia exigida es local, PASS permite consolidar evidence y pasar a VERIFIED. Si el contrato exige evidencia remota sobre código publicado, la instancia permanece IMPLEMENTED mientras se realiza el commit/push de materialización y se valida el SHA remoto; solo con PASS remoto puede pasar a VERIFIED.
 8. La siguiente instancia global espera la verificación de la anterior; no se concilia trabajo duplicado al final.
 9. “Haz la acción principal” inicia la guía manual continua; nunca autoriza escrituras automáticas.
 `;

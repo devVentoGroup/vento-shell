@@ -60,9 +60,9 @@ export function actionResponseContract(control, sourceContractHash) {
     `Para una instancia física usa el preflight exacto npm run docs:task:preflight -- --instance-id ${target} --json --strict. Debe ejecutarse una sola vez después de IN_PROGRESS y antes de aplicar código.`,
     'El lote local debe comprobar el código de salida del preflight. Si es 0, continúa sin volver al chat. Si es distinto de 0, detén todo antes de modificar código y pide RESULTADO DEL PASO con la salida completa.',
     'Después del preflight PASS no solicites git status, Source Control, capturas, hashes sueltos, diff, build, lint ni tests como gates intermedios. Materializa primero todos los cambios deterministas y ejecuta después una sola batería final de validación.',
-    'La batería final debe ser fail-fast y contener las validation_commands autorizadas en su orden contractual. Si todas terminan con código 0, consolida la evidencia, cambia a VERIFIED y continúa con la regeneración ligera sin volver al chat.',
-    'Si la batería final falla, conserva IMPLEMENTED, corrige únicamente la causa dentro del alcance y vuelve a ejecutar la misma batería final completa. Ese fallo sí es un gate de evidencia.',
-    'Después de VERIFIED regenera el estado y el Iniciador con npm run docs:implementation:status y npm run docs:chatgpt:starter. No ejecutes otro docs:plan:build solo para refrescar la acción.',
+    'La batería final debe ser fail-fast y contener las validation_commands autorizadas en su orden contractual. Si toda la evidencia exigida es local y las validaciones terminan con código 0, consolida la evidencia, cambia a VERIFIED y continúa con la regeneración ligera sin volver al chat. Si alguna validación exige evidencia remota sobre código publicado, la misma transacción final se divide en tramo local y tramo remoto: el tramo local debe pasar mientras la instancia permanece IMPLEMENTED; después se permite el commit/push mínimo de materialización necesario para obtener un SHA remoto real; el tramo remoto valida exactamente ese SHA; solo con PASS remoto se consolida evidence y se cambia a VERIFIED.',
+    'Si la batería final falla en el tramo local o remoto, conserva IMPLEMENTED, corrige únicamente la causa dentro del alcance y vuelve a ejecutar la misma batería final completa sobre el estado corregido. Si la corrección cambia el SHA publicado, realiza un nuevo commit/push de materialización antes del tramo remoto. Ese fallo sí es un gate de evidencia.',
+    'Después de VERIFIED regenera el estado y el Iniciador con npm run docs:implementation:status y npm run docs:chatgpt:starter. No ejecutes otro docs:plan:build solo para refrescar la acción. Si existió un commit/push de materialización previo para obtener evidencia remota, realiza después un commit/sync final separado únicamente para consolidar VERIFIED, evidence y derivados; si no existió evidencia remota, conserva el único commit/sync final del lote.',
     'Si GitHub Push Protection bloquea un push, clasifica primero el hallazgo. Solo puede usarse un bypass de prueba o falso positivo cuando el valor esté verificado como fixture sintético; un secreto real debe retirarse y rotarse, nunca exceptuarse.',
   ];
 
@@ -80,9 +80,9 @@ export function actionResponseContract(control, sourceContractHash) {
       'Distingue la evidencia de autorización de la evidencia de implementación: evidence debe permanecer [] mientras el estado sea AUTHORIZED.',
       'En la misma respuesta, después de la autorización, entrega también todos los archivos y cambios físicos deterministas que requerirá la instancia. Para .mjs entrega siempre el contenido como .txt descargable e indica el archivo .mjs real que debe crearse o reemplazarse.',
       'No obligues a regenerar el Iniciador, crear un commit exclusivo de autorización ni volver al chat entre AUTHORIZED e IN_PROGRESS.',
-      `En PASOS EXACTOS PARA EL USUARIO indica una única secuencia: guardar primero el registro AUTHORIZED; detener el watcher; cambiar únicamente ese registro a IN_PROGRESS; ejecutar el preflight estricto de ${target}; si PASS continuar localmente; aplicar todos los archivos; registrar IMPLEMENTED; ejecutar una sola batería final; si PASS registrar VERIFIED; ejecutar npm run docs:implementation:status y npm run docs:chatgpt:starter; y finalmente hacer un único commit/sync del lote completo.`,
+      `En PASOS EXACTOS PARA EL USUARIO indica una única secuencia: guardar primero el registro AUTHORIZED; detener el watcher; cambiar únicamente ese registro a IN_PROGRESS; ejecutar el preflight estricto de ${target}; si PASS continuar localmente; aplicar todos los archivos; registrar IMPLEMENTED; ejecutar una sola batería final. Si toda la evidencia exigida es local y PASS, registrar VERIFIED, ejecutar npm run docs:implementation:status y npm run docs:chatgpt:starter y hacer un único commit/sync final. Si la batería exige evidencia remota que solo puede existir sobre código publicado, completar primero el tramo local, hacer el commit/push mínimo de materialización mientras la instancia permanece IMPLEMENTED, ejecutar el tramo remoto contra ese SHA y solo con PASS remoto registrar VERIFIED, regenerar control e Iniciador y hacer un commit/sync final separado del ledger y derivados.`,
       'Si el archivo exacto no existe o no está PENDING_AUTHORIZATION, no propongas crear ni sobrescribir nada por inferencia: ese sí es un bloqueo real.',
-      'Incluye el mensaje de commit recomendado para el lote completo, no para la autorización aislada.',
+      'Incluye el mensaje de commit recomendado para el lote completo. Cuando exista evidencia remota dependiente de un SHA publicado, incluye un mensaje para el commit de materialización previo al tramo remoto y otro para el commit/sync final de VERIFIED, evidence y derivados.',
     ].join('\n');
   }
 
@@ -101,8 +101,8 @@ export function actionResponseContract(control, sourceContractHash) {
       'Si la operación es CREAR: indica repositorio, ruta absoluta y relativa, codificación, nombre exacto y contenido completo sin elipsis. Para archivos .mjs entrega además un .txt descargable con el mismo contenido.',
       'Si la operación es MODIFICAR: entrega el archivo completo listo para reemplazar. Solo si es materialmente enorme permite un bloque anterior literal y único más su reemplazo completo; nunca uses fragmentos ambiguos, resúmenes ni “resto sin cambios”.',
       'No ejecutes validaciones entre archivos ni pidas comprobaciones de Source Control, git status, diff o hashes como gates intermedios.',
-      `Cuando todos los cambios físicos estén materializados, lleva ${instanceRecordPath} a IMPLEMENTED con evidencia disponible y ejecuta inmediatamente una sola batería final con las validation_commands autorizadas en orden fail-fast.`,
-      'El bloque local debe detenerse en el primer fallo. Si falla, el usuario responde una sola vez con ese fallo; si todo pasa, el mismo bloque continúa hasta VERIFIED, regeneración ligera y commit/sync sin requerir una ronda adicional.',
+      `Cuando todos los cambios físicos estén materializados, lleva ${instanceRecordPath} a IMPLEMENTED con evidencia disponible y ejecuta una sola transacción final fail-fast con las validation_commands autorizadas. Si toda la evidencia exigida es local, puede continuar directamente a VERIFIED tras PASS. Si alguna validación necesita evidencia remota sobre código publicado, completa primero el tramo local, realiza el commit/push mínimo de materialización mientras ${instanceRecordPath} permanece IMPLEMENTED y ejecuta después el tramo remoto contra ese SHA antes de VERIFIED.`,
+      'La transacción debe detenerse en el primer fallo real. Si falla, el usuario responde una sola vez con ese fallo. Si todo pasa y no existe evidencia remota obligatoria, continúa hasta VERIFIED, regeneración ligera y commit/sync final. Si existe evidencia remota obligatoria, el mismo lote puede publicar el commit de materialización y esperar o consultar esa evidencia; solo el PASS remoto permite continuar a VERIFIED y al commit/sync final.',
       'No vuelvas a ejecutar la batería después de PASS completo. No vuelvas a ejecutar el preflight después de PASS salvo cambio material del checkout.',
     ].join('\n');
   }
@@ -136,7 +136,7 @@ function actionInstruction(control) {
   if (type === 'EJECUTAR_IMPLEMENTACION') {
     return [
       `Guía al usuario en una sola transacción humana continua de ${target} hasta VERIFIED; no la ejecutes por él.`,
-      'El preflight estricto y la batería final son fail-fast locales: PASS continúa automáticamente dentro del lote; solo FAIL o un bloqueo real vuelven al chat.',
+      'El preflight estricto es local y la batería final es una sola transacción fail-fast que puede incluir un tramo local y, cuando el contrato lo exija, un tramo remoto sobre un SHA publicado; PASS continúa automáticamente dentro del lote y solo FAIL o un bloqueo real vuelven al chat.',
     ].join(' ');
   }
   if (type === 'RESOLVER_BLOQUEO') {
@@ -211,7 +211,7 @@ MODO DE EJECUCIÓN Y OPERADOR
 - Preflight físico: UNA VEZ, con --instance-id y --strict, antes de aplicar código
 - Gates intermedios rutinarios: PROHIBIDOS
 - Preflight PASS: CONTINUAR LOCALMENTE SIN VOLVER AL CHAT
-- Batería final PASS: CONTINUAR LOCALMENTE HASTA VERIFIED SIN VOLVER AL CHAT
+- Batería final PASS: CONTINUAR EN LA MISMA TRANSACCIÓN; EVIDENCIA REMOTA, SI APLICA, ANTES DE VERIFIED
 - Pausa obligatoria: solo FAIL, contradicción real, decisión humana, permiso o credencial no resuelta
 - Respuesta del usuario ante una pausa real: RESULTADO DEL PASO N
 - Excepción limitada: AUTORIZO EJECUCION ASISTIDA DEL PASO N, usando el número real del paso ya presentado
@@ -281,7 +281,7 @@ ${actionResponseContract(control, sourceContractHash)}
 
 No desarrolles la tarea documental ${control.documentary.taskId} mientras su carril figure ${control.documentary.state}, salvo que esa misma tarea sea el objetivo exacto de la acción principal. No ejecutes otra instancia, no interpretes la aprobación documental como autorización física y no sustituyas el resultado material por recomendaciones genéricas.
 
-Este iniciador ya contiene la instrucción de trabajo. En implementación física entrega los artefactos de una vez, usa preflight estricto único, watcher apagado, cambios deterministas en lote y una sola batería final. PASS continúa localmente; solo un bloqueo real debe producir una ronda intermedia de chat. No hagas ninguna escritura mientras no exista autorización asistida explícita para el número exacto del paso.
+Este iniciador ya contiene la instrucción de trabajo. En implementación física entrega los artefactos de una vez, usa preflight estricto único, watcher apagado, cambios deterministas en lote y una sola transacción final fail-fast. PASS continúa dentro del mismo lote; cuando el contrato exija evidencia remota sobre código publicado, la instancia permanece IMPLEMENTED durante el commit/push de materialización y la validación remota, y solo pasa a VERIFIED después del PASS remoto. Solo un bloqueo real debe producir una ronda intermedia de chat. No hagas ninguna escritura mientras no exista autorización asistida explícita para el número exacto del paso.
 
 TRAZABILIDAD DEL INICIADOR
 
