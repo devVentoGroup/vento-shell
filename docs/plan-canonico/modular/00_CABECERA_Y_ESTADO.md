@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **993** |
+| Tareas aprobadas | **994** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **601** |
+| Tareas no iniciadas | **600** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **62.30% (993/1594)** |
+| Porcentaje de completamiento | **62.36% (994/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-SRV-010 — Validar dispositivo compartido** |
-| Tarea actual | **AUTH-SRV-011 — Validar estado actual de la entidad** |
+| Última tarea aprobada | **AUTH-SRV-011 — Validar estado actual de la entidad** |
+| Tarea actual | **AUTH-SRV-012 — Evitar operaciones entre sedes no autorizadas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-SRV-012 — Evitar operaciones entre sedes no autorizadas** |
+| Siguiente tarea | **AUTH-SRV-013 — Evitar operaciones entre áreas no autorizadas** |
 | Bloque actual | **BLOQUE J — Protección de acciones de servidor** |
-| Progreso del bloque | **BLOQUE J: 10 de 18 aprobadas; AUTH-SRV-011 pendiente** |
+| Progreso del bloque | **BLOQUE J: 11 de 18 aprobadas; AUTH-SRV-012 pendiente** |
 | Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-SRV-011** |
-| Carril documental | **ACTIVO — AUTH-SRV-011** |
+| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-SRV-012** |
+| Carril documental | **ACTIVO — AUTH-SRV-012** |
 | Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-SRV-010` — Validar dispositivo compartido |
-| Tarea actual | `AUTH-SRV-011` — Validar estado actual de la entidad — **NO INICIADA** |
-| Siguiente tarea | `AUTH-SRV-012` — Evitar operaciones entre sedes no autorizadas |
+| Última aprobada | `AUTH-SRV-011` — Validar estado actual de la entidad |
+| Tarea actual | `AUTH-SRV-012` — Evitar operaciones entre sedes no autorizadas — **NO INICIADA** |
+| Siguiente tarea | `AUTH-SRV-013` — Evitar operaciones entre áreas no autorizadas |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE J: 10 DE 18 APROBADAS — ACTUAL AUTH-SRV-011** |
+| CONTINUIDAD ACTIVA | **BLOQUE J: 11 DE 18 APROBADAS — ACTUAL AUTH-SRV-012** |
 | Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-SRV-010 — Validar dispositivo compartido
-        ↓
-TAREA ACTUAL
 AUTH-SRV-011 — Validar estado actual de la entidad
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-SRV-012 — Evitar operaciones entre sedes no autorizadas
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-SRV-013 — Evitar operaciones entre áreas no autorizadas
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE J — 10 de 18 tareas aprobadas
+BLOQUE J — 11 de 18 tareas aprobadas
 ```
