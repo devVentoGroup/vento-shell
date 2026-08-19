@@ -1888,7 +1888,1136 @@ Estas referencias son trazabilidad heredada y no representan requisitos creados 
 `AUTH-SRV-006 — Validar sede en cada escritura`
 
 
-### [ ] AUTH-SRV-006 — Validar sede en cada escritura
+### ✅ AUTH-SRV-006 — Validar sede en cada escritura
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-SRV-005 — Validar permiso en cada escritura
+**Tarea siguiente:** AUTH-SRV-007 — Validar área en cada escritura
+**Tipo de tarea:** Contrato global con materialización por unidad (`PER_IMPLEMENTATION_UNIT`) — contrato de autorización territorial por sede para que toda escritura protegida derive la sede real del recurso o valide en servidor la sede objetivo de creación, cruce esa sede con el alcance territorial de la capacidad exacta resuelta por `AUTH-SRV-005` y deniegue cualquier efecto cuando la sede sea inválida, inactiva, ambigua o ajena a la autoridad efectiva del actor
+**Bloque:** BLOQUE J — Protección de acciones de servidor
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global; las futuras materializaciones ocurren únicamente mediante `AUTH-SRV-006::<implementation_unit_id>` después de que `DELIV-PKG-025::<package_id>` asigne la unidad y el paquete propietario supere `E5-GATE-008::<package_id>`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato obligatorio para que toda escritura protegida valide en servidor **en qué sede** puede producirse el efecto.
+
+`AUTH-SRV-005` determina la capacidad exacta.
+
+`AUTH-SRV-006` determina el territorio de sede válido para esa capacidad.
+
+La regla vinculante queda:
+
+```text
+effective_mutation
++
+required_permission_key
++
+target_site_resolved
++
+site_scope_authorized
+=
+WRITE_ELIGIBLE_FOR_NEXT_GATES
+```
+
+Una capacidad correcta aplicada a una sede incorrecta continúa siendo:
+
+```text
+DENY
+```
+
+#### 2. Handoff recibido de `AUTH-SRV-005`
+
+La tarea anterior entrega:
+
+```text
+effective_mutation
+required_permission_key
+```
+
+Esta tarea añade:
+
+```text
+target_site_id
+site_authorization_basis
+site_authorization_result
+```
+
+La sede no se recibe como autoridad desde el cliente.
+
+Debe resolverse o validarse contra fuentes canónicas antes del efecto.
+
+#### 3. Distinciones territoriales obligatorias
+
+Se mantienen separados:
+
+```text
+assigned_site
+primary_site
+selected_site
+administrative_active_site
+operational_active_site
+resource_site
+requested_site
+```
+
+No son sinónimos.
+
+La autorización de escritura no puede colapsarlos en una propiedad genérica llamada “sede actual”.
+
+#### 4. Fuente canónica del catálogo de sedes
+
+La existencia y estado de una sede se resuelven desde:
+
+```text
+public.sites
+```
+
+Una sede utilizada en una escritura territorial debe:
+
+- existir;
+- estar activa;
+- pertenecer al ámbito organizacional aplicable;
+- ser compatible con el tipo de recurso o proceso;
+- no ser tratada como sede laboral si en realidad es un punto técnico, punto de check-in, entorno aislado u otra clase no asignable.
+
+Una sede inexistente o inactiva produce:
+
+```text
+DENY
+```
+
+#### 5. Fuente canónica de sedes asignadas
+
+La fuente de verdad de las sedes laboralmente asignadas al actor o trabajador es:
+
+```text
+public.employee_sites
+```
+
+con la relación activa correspondiente.
+
+No se utiliza como autoridad territorial:
+
+```text
+public.employees.site_id
+```
+
+Ese campo conserva carácter legacy y no sustituye `employee_sites`.
+
+#### 6. Asignación no equivale a permiso
+
+La regla permanece:
+
+```text
+ACTIVE_SITE_ASSIGNMENT
++
+MISSING_PERMISSION
+=
+DENY
+```
+
+Tener una sede asignada únicamente establece elegibilidad territorial cuando el modo de alcance la consume.
+
+No concede por sí sola ninguna capacidad.
+
+#### 7. Permiso no crea asignación
+
+Para un permiso cuya semántica exige sedes asignadas:
+
+```text
+EXACT_PERMISSION
++
+UNASSIGNED_SITE
+=
+DENY
+```
+
+La capacidad exacta definida por `AUTH-SRV-005` no crea automáticamente una relación en `employee_sites`.
+
+#### 8. Sede primaria no equivale a autorización
+
+```text
+employee_sites.is_primary = true
+```
+
+sirve como referencia laboral o fallback administrativo cuando corresponda.
+
+No demuestra por sí sola que una escritura sobre esa sede esté autorizada.
+
+#### 9. Sede seleccionada no equivale a autorización
+
+```text
+selected_site_id
+```
+
+es una preferencia de interfaz.
+
+Puede orientar navegación o filtros.
+
+No puede:
+
+- conceder alcance;
+- ampliar alcance;
+- sustituir la sede real del recurso;
+- modificar la evaluación del permiso fuera de las reglas canónicas.
+
+#### 10. Sede solicitada por cliente
+
+Valores como:
+
+```text
+site_id
+siteId
+requested_site
+preferredSiteId
+```
+
+se clasifican como:
+
+```text
+SELECTOR_INTENT
+```
+
+Su significado es únicamente:
+
+```text
+“el caller solicita operar sobre esta sede”
+```
+
+No significa:
+
+```text
+“esta sede está autorizada”
+```
+
+#### 11. Sede del recurso
+
+Cuando el recurso ya existe, su sede real controla la autorización territorial.
+
+La regla canónica queda:
+
+```text
+resource_site_id
+→ TARGET SITE FOR AUTHORIZATION
+```
+
+No exclusivamente:
+
+```text
+request.site_id
+selected_site_id
+primary_site_id
+```
+
+#### 12. Recursos con sede directa
+
+Si el recurso contiene:
+
+```text
+site_id
+```
+
+la escritura debe leer o restringir el recurso utilizando esa sede persistida.
+
+Ejemplos:
+
+- turnos;
+- inventario;
+- remisiones;
+- recepciones;
+- movimientos;
+- objetos administrativos territorializados.
+
+El servidor no debe asumir que el `site_id` recibido coincide con el persistido.
+
+#### 13. Recursos con sede indirecta
+
+Si el recurso no guarda la sede directamente, debe resolverse por una relación canónica reproducible.
+
+Ejemplo conceptual:
+
+```text
+child_resource
+→ parent_resource
+→ site_id
+```
+
+Si la relación:
+
+- falta;
+- es ambigua;
+- devuelve múltiples sedes sin contrato multisede;
+- no puede resolverse;
+
+el resultado es:
+
+```text
+RESOURCE_SITE_UNRESOLVED
+→ DENY
+```
+
+#### 14. Creación de un recurso nuevo
+
+Durante creación todavía no existe `resource_site_id` persistido.
+
+El servidor debe:
+
+1. recibir la sede como intención;
+2. resolver la identidad canónica de la sede;
+3. verificar que está activa y es compatible con el proceso;
+4. comprobar el alcance territorial del actor para la capacidad exacta;
+5. validar los vínculos laborales o empresariales aplicables;
+6. construir el payload final con esa sede ya validada;
+7. persistir exactamente esa `target_site_id`.
+
+La sede del request nunca salta los pasos anteriores.
+
+#### 15. Actualización de un recurso existente
+
+Antes de actualizar:
+
+```text
+resource_id
+→ current_resource
+→ current_site_id
+```
+
+El permiso debe evaluarse contra la sede real del recurso.
+
+Si el request intenta cambiar:
+
+```text
+current_site_id
+→ requested_target_site_id
+```
+
+la operación deja de ser una actualización territorial ordinaria y debe clasificarse como cambio o cruce de sede.
+
+No se autoriza silenciosamente dentro del path normal.
+
+#### 16. Eliminación de un recurso existente
+
+Para eliminar:
+
+```text
+resource_id
+→ persisted_site_id
+→ permission + site evaluation
+→ delete
+```
+
+El `site_id` del request puede usarse como filtro defensivo adicional.
+
+No puede ser la única evidencia de la sede objetivo.
+
+#### 17. Publicación, aprobación y transición
+
+Una transición sobre recursos territorializados debe evaluar la sede de los recursos que realmente serán afectados.
+
+Un parámetro como:
+
+```text
+site_id
+```
+
+puede limitar la consulta.
+
+La autoridad se demuestra con:
+
+```text
+resolved affected resources
++
+their real site
++
+required permission
++
+authorized site scope
+```
+
+#### 18. Alcance global administrativo
+
+Un permiso administrativo con alcance global explícito puede operar sobre sedes ordinarias de la organización sin requerir una fila `employee_sites` por cada sede.
+
+Sin embargo:
+
+```text
+GLOBAL
+≠
+ALL PERMISSIONS
+≠
+ALL ENVIRONMENTS
+≠
+ISOLATED SITE BYPASS
+```
+
+La sede del recurso continúa resolviéndose.
+
+El permiso exacto continúa siendo obligatorio.
+
+#### 19. Alcance por sedes asignadas
+
+Para:
+
+```text
+site_scope_mode = assigned_sites
+```
+
+la autoridad se obtiene de:
+
+```text
+public.employee_sites
+```
+
+activas del actor.
+
+La sede objetivo debe pertenecer al conjunto efectivo.
+
+La semántica legacy:
+
+```text
+scope_type = site
+scope_site_id = null
+```
+
+se interpreta conforme al contrato canónico como sedes activamente asignadas, no como global.
+
+#### 20. Alcance por sede específica
+
+Para:
+
+```text
+site_scope_mode = specific_site
+```
+
+la sede real del recurso debe coincidir exactamente con la sede concedida.
+
+No existe herencia automática hacia:
+
+- sedes hermanas;
+- sedes del mismo tipo;
+- sedes subordinadas;
+- sede primaria;
+- sede seleccionada.
+
+#### 21. Alcance por tipo de sede
+
+Cuando una capacidad tenga alcance por tipo de sede, la evaluación debe utilizar:
+
+```text
+real resource site
++
+canonical site classification
+```
+
+La coincidencia de tipo no permite operar sobre:
+
+- una sede inactiva;
+- una sede aislada no incluida;
+- una sede de clasificación distinta;
+- un punto físico tratado indebidamente como sede empresarial.
+
+#### 22. Alcance operativo
+
+Para una capacidad operativa, incluso cuando su alcance sea reutilizable o global:
+
+```text
+operational permission
+→ active operational site
+```
+
+La sede operativa procede del contexto laboral válido que corresponda.
+
+No del selector administrativo.
+
+Un permiso operativo global no significa:
+
+```text
+cross-site operational permission
+```
+
+#### 23. Alcance administrativo
+
+Una capacidad administrativa por sede puede no requerir turno ni check-in cuando su contrato lo permita.
+
+Sí requiere:
+
+- actor válido;
+- capacidad exacta;
+- sede real;
+- alcance administrativo que cubra esa sede.
+
+La futura validación de rol operativo no se adelanta desde esta tarea.
+
+#### 24. Diferencia entre actor y trabajador objetivo
+
+En operaciones administrativas sobre otra persona deben separarse:
+
+```text
+ACTOR
+→ quién ejecuta
+
+TARGET EMPLOYEE
+→ sobre quién recae la operación
+```
+
+Validar que el trabajador objetivo pertenece a una sede:
+
+```text
+target_employee ↔ site
+```
+
+no demuestra que el actor tenga autoridad sobre esa sede.
+
+Ambas relaciones son independientes.
+
+#### 25. Vínculo del trabajador objetivo
+
+Cuando la operación exige que un trabajador pueda ser programado o administrado en una sede, la elegibilidad del trabajador objetivo debe resolverse desde:
+
+```text
+employee_sites
+```
+
+activa y una sede activa/asignable.
+
+`employees.site_id` no es prueba canónica suficiente del vínculo.
+
+#### 26. Site authority del actor
+
+La autoridad territorial del actor se determina mediante la intersección de:
+
+```text
+required_permission_key
+permission_scope
+target_site_id
+actor_context
+applicable_assignments
+```
+
+según la modalidad administrativa u operativa.
+
+El vínculo del trabajador objetivo no sustituye esta intersección.
+
+#### 27. Evaluación fail-closed
+
+La escritura queda bloqueada si ocurre cualquiera de estos casos:
+
+```text
+missing_target_site
+invalid_target_site
+inactive_target_site
+resource_site_unresolved
+actor_site_scope_unresolved
+actor_site_not_authorized
+target_employee_site_invalid
+site_scope_ambiguous
+technical_site_resolution_failure
+```
+
+No existe fallback a una sede enviada por cliente.
+
+#### 28. Uso de cliente administrativo o service role
+
+Antes de utilizar un cliente que pueda omitir RLS:
+
+```text
+admin client
+service role
+```
+
+la sede objetivo y la autoridad territorial deben estar resueltas.
+
+La credencial privilegiada no sustituye la validación de sede.
+
+#### 29. Contrato para Server Actions
+
+Una Server Action mutante territorial debe demostrar:
+
+```text
+input
+→ resolve target resource or target site
+→ validate site
+→ evaluate exact permission in site context
+→ remaining gates
+→ effect
+```
+
+No basta con que la página que renderizó el formulario ya estuviera filtrada por sede.
+
+#### 30. Contrato para API routes
+
+Una API route mutante debe tratar:
+
+```text
+path site
+query site
+body site
+header site
+```
+
+como intentos no autoritativos.
+
+Para recursos existentes debe preferir la sede derivada del recurso.
+
+Para creación debe validar la sede objetivo antes de utilizarla como contexto efectivo.
+
+#### 31. Contrato para RPC
+
+Una capa de servidor que invoque una RPC mutante deberá pasar una sede ya resuelta cuando la función requiera territorio.
+
+Si la RPC puede ser invocada directamente por callers no privilegiados, su protección interna deberá producir una decisión territorial compatible.
+
+La revisión de RLS, grants y `SECURITY DEFINER` pertenece a las tareas de base de datos correspondientes.
+
+#### 32. Operaciones masivas de una sola sede
+
+Una operación masiva declarada como single-site debe demostrar que todas las filas afectadas pertenecen a:
+
+```text
+one target_site_id
+```
+
+y que esa sede está autorizada.
+
+Una sola fila fuera de esa sede invalida el supuesto single-site.
+
+#### 33. Operaciones que tocan más de una sede
+
+Cuando el conjunto efectivo contiene:
+
+```text
+site_count > 1
+```
+
+la operación debe clasificarse como multisede.
+
+`AUTH-SRV-006` no concede autoridad transversal por el hecho de que una de las sedes esté autorizada.
+
+La regla completa de cruces entre sedes pertenece a `AUTH-SRV-012`.
+
+#### 34. Handoff a `AUTH-SRV-007`
+
+Después de resolver:
+
+```text
+target_site_id
+```
+
+la siguiente tarea puede validar el área aplicable dentro de esa sede.
+
+Separación:
+
+```text
+006
+→ QUÉ SEDE
+
+007
+→ QUÉ ÁREA DENTRO DE ESA SEDE
+```
+
+Una sede autorizada no concede automáticamente todas sus áreas.
+
+#### 35. Handoff a `AUTH-SRV-008`
+
+`AUTH-SRV-006` no decide si la capacidad exige turno.
+
+Entrega la sede resuelta.
+
+`AUTH-SRV-008` determina cuándo el turno es prerrequisito y cuál turno satisface el contexto.
+
+#### 36. Handoff a `AUTH-SRV-009`
+
+La validación de sede no demuestra que el rol operativo sea válido.
+
+`AUTH-SRV-009` conserva:
+
+- rol efectivo;
+- habilitación del rol en la sede;
+- puntos externos asociados cuando correspondan.
+
+#### 37. Handoff a `AUTH-SRV-010`
+
+En dispositivo compartido, la sede del dispositivo puede reducir la autoridad efectiva.
+
+`AUTH-SRV-006` no certifica el dispositivo.
+
+`AUTH-SRV-010` debe comprobar la identidad y restricciones del dispositivo y su intersección con actor, sede y área.
+
+#### 38. Handoff a `AUTH-SRV-011`
+
+Una sede correcta no demuestra que el recurso esté en un estado mutable.
+
+`AUTH-SRV-011` conserva:
+
+- borrador;
+- publicado;
+- cancelado;
+- transición permitida;
+- estado concurrente.
+
+#### 39. Handoff a `AUTH-SRV-012`
+
+`AUTH-SRV-006` valida el target territorial de cada escritura single-site.
+
+`AUTH-SRV-012` gobierna:
+
+- operaciones con origen y destino;
+- agregados multisede;
+- escritura sobre conjuntos con varias sedes;
+- cambios de sede;
+- cualquier operación donde una sede autorizada pudiera utilizarse para alcanzar otra no autorizada.
+
+#### 40. Baseline VISO mensual
+
+Se conserva el snapshot:
+
+```text
+vento-group-sas/vento-viso
+8cf7c49a593c748cb6c99dd9b919b6947bcfec14
+```
+
+Superficies relevantes:
+
+```text
+src/app/staff/schedule/month/actions.ts
+src/app/staff/schedule/month/block-actions.ts
+src/app/api/viso/staff-schedule-shifts/route.ts
+src/app/staff/schedule/helpers.ts
+src/lib/auth/guard.ts
+src/lib/auth/permissions.ts
+src/lib/auth/operational-session.ts
+```
+
+#### 41. Baseline VISO — `preferredSiteId`
+
+El guard recibe una sede preferida y el resolver de sesión actual puede utilizar `preferredSiteId` directamente como `siteId` efectivo antes de demostrar por sí mismo que pertenece al conjunto territorial válido.
+
+Ese comportamiento se clasifica:
+
+```text
+CONTROL_EXISTENTE_REQUIERE_RECONCILIACION_TERRITORIAL
+```
+
+No se declara automáticamente explotable, porque la evaluación posterior de permiso puede denegar.
+
+Tampoco se considera cumplimiento de `AUTH-SRV-006`.
+
+#### 42. Baseline VISO — `checkPermission`
+
+El helper existente permite evaluar:
+
+```text
+has_permission(
+  permission_code,
+  p_site_id,
+  p_area_id
+)
+```
+
+La presencia de `p_site_id` es evidencia de que el modelo soporta contexto territorial.
+
+`AUTH-SRV-006` exige además demostrar que el valor enviado en `p_site_id` es la sede correcta para la operación y no solo una sede elegida por el request.
+
+#### 43. VISO mensual — creación
+
+Para:
+
+```text
+createMonthlyShiftsAction
+createMonthlyScheduleBlocksAction
+```
+
+el `site_id` recibido es intención.
+
+Antes de insertar, la futura unidad debe demostrar:
+
+```text
+site exists and active
++
+actor authorized for required create permission in target site
++
+target employee actively linked to target site
++
+site compatible with staff scheduling
+```
+
+Solo después:
+
+```text
+payload.site_id = validated_target_site_id
+```
+
+#### 44. VISO mensual — vínculo del trabajador
+
+El baseline actual comprueba primero:
+
+```text
+employees.site_id === siteId
+```
+
+y solo consulta `employee_sites` cuando no coincide.
+
+El contrato canónico aprobado establece que:
+
+```text
+employee_sites
+→ source of truth
+
+employees.site_id
+→ legacy
+```
+
+Por tanto, la futura materialización debe dejar de usar `employees.site_id` como prueba suficiente de vínculo territorial.
+
+#### 45. VISO mensual — matriz y perfil
+
+Las consultas:
+
+```text
+vento_site_operational_role_matrix_v1
+employee_site_operational_profiles
+```
+
+ya se filtran por `site_id`.
+
+Ese filtrado es evidencia útil.
+
+No sustituye la autoridad del actor sobre la sede.
+
+La validación de área y rol permanece en `AUTH-SRV-007` y `AUTH-SRV-009`.
+
+#### 46. VISO mensual — eliminación individual
+
+Para:
+
+```text
+deleteMonthlyDraftShiftAction
+```
+
+el baseline filtra:
+
+```text
+shift.id
++
+shift.site_id
+```
+
+antes de eliminar.
+
+La futura unidad debe garantizar además que el `site_id` usado por ese filtro haya sido resuelto como sede autorizada del actor o que la sede se derive del turno persistido antes de autorizar.
+
+La condición de borrador permanece en `AUTH-SRV-011`.
+
+#### 47. VISO mensual — eliminación masiva
+
+Para:
+
+```text
+deleteMonthlyDraftsAction
+```
+
+la operación está declarada por sede y mes.
+
+Antes del `DELETE`, debe existir:
+
+```text
+validated_target_site_id
++
+required delete permission
++
+authorized site scope
+```
+
+El hecho de que la query use `.eq("site_id", siteId)` limita filas pero no prueba por sí solo autoridad sobre esa sede.
+
+#### 48. VISO mensual — publicación
+
+Para:
+
+```text
+publishMonthAction
+```
+
+la sede recibida limita los turnos que se seleccionan y publican.
+
+La futura unidad deberá probar que la sede está autorizada **antes** de utilizar un cliente administrativo para actualizar las filas.
+
+El cálculo mensual puede consultar turnos del mismo trabajador en otras sedes para calcular el límite.
+
+Esa lectura auxiliar no convierte la publicación en autoridad de escritura sobre esas otras sedes.
+
+#### 49. VISO API — creación
+
+Para:
+
+```text
+POST /api/viso/staff-schedule-shifts
+```
+
+sin `shiftId`, el `siteId` del body debe:
+
+1. validarse como sede;
+2. validarse contra el alcance del actor;
+3. validarse como sede elegible del trabajador objetivo;
+4. utilizarse solo después como `target_site_id`.
+
+La comprobación del vínculo del trabajador objetivo no concede autoridad al actor.
+
+#### 50. VISO API — actualización
+
+Para:
+
+```text
+POST /api/viso/staff-schedule-shifts
+```
+
+con `shiftId`, la futura unidad debe resolver primero el turno existente:
+
+```text
+shiftId
+→ persisted shift
+→ current_site_id
+```
+
+Si:
+
+```text
+requested_site_id = current_site_id
+```
+
+puede continuar por el carril single-site después de las demás validaciones.
+
+Si:
+
+```text
+requested_site_id != current_site_id
+```
+
+se clasifica como cambio de sede y debe pasar por el contrato de `AUTH-SRV-012`.
+
+No se transforma el `site_id` del turno como efecto lateral de una edición ordinaria.
+
+#### 51. VISO API — eliminación
+
+El baseline de `DELETE /api/viso/staff-schedule-shifts` ya contiene un patrón más fuerte:
+
+```text
+request shiftId
+→ read persisted shift
+→ obtain shift.site_id
+→ permission check using shift.site_id
+→ delete
+```
+
+La comprobación preliminar basada en el `siteId` recibido no es suficiente por sí sola.
+
+La revalidación contra `shift.site_id` persistido es la referencia contractual que debe preservarse y alinearse con el permiso atómico de `AUTH-SRV-005`.
+
+#### 52. Gap contractual del baseline
+
+El baseline VISO contiene controles parciales correctos:
+
+- `p_site_id` en evaluación de permiso;
+- vínculo trabajador-sede;
+- filtros de escritura por `site_id`;
+- lecturas de `shift.site_id`;
+- matrices y perfiles filtrados por sede.
+
+También contiene brechas frente al contrato definitivo:
+
+- `preferredSiteId` puede convertirse prematuramente en contexto efectivo;
+- `employees.site_id` todavía se acepta como prueba suficiente de vínculo;
+- varias escrituras parten de un `site_id` de request sin derivar primero la sede real del recurso;
+- update de turno puede construir payload con una sede solicitada sin clasificar antes un posible cambio cross-site;
+- admin client exige que la autorización territorial quede demostrada antes del efecto.
+
+Estas brechas son propiedad de futuras unidades `AUTH-SRV-006::implementation_unit_id`.
+
+#### 53. Lineage obligatorio
+
+Cada futura unidad debe conservar:
+
+```text
+surface_identity
+→ requested_site
+→ resource_identity
+→ persisted_or_validated_target_site
+→ site_catalog_status
+→ permission_scope
+→ actor_site_basis
+→ target_employee_site_basis when applicable
+→ site_authorization_result
+→ downstream area/shift/role/device/state gates
+→ effect
+```
+
+No se acepta evidencia que termine en:
+
+```text
+“la UI ya estaba en esa sede”
+```
+
+#### 54. Materialización futura
+
+Cada instancia:
+
+```text
+AUTH-SRV-006::<implementation_unit_id>
+```
+
+deberá registrar como mínimo:
+
+```text
+implementation_unit_id
+repository
+commit_before
+surface_identity[]
+write_operation[]
+required_permission_key[]
+requested_site_fields[]
+resource_site_source[]
+target_site_resolution
+site_scope_mode
+site_authorization_basis
+actor_assigned_sites_source
+target_employee_site_source
+global_or_local_mode
+privileged_client_usage
+cross_site_detected
+package_id[]
+change_set
+rollback
+validation_commands
+evidence
+commit_after
+```
+
+#### 55. Evidencia mínima de una unidad
+
+Una futura materialización no puede declararse cumplida sin demostrar:
+
+1. sede inexistente → deny;
+2. sede inactiva → deny;
+3. sede no autorizada → deny;
+4. sede seleccionada no amplía autoridad;
+5. sede primaria no amplía autoridad;
+6. `employees.site_id` no sustituye `employee_sites`;
+7. creación valida sede antes del insert;
+8. update/delete deriva o ata la sede al recurso persistido;
+9. permiso global administrativo conserva límites de recurso y entorno;
+10. permiso operativo queda limitado al contexto operativo aplicable;
+11. actor y trabajador objetivo se validan por separado;
+12. admin/service role no ejecuta antes de resolver territorio;
+13. cambio de sede se clasifica para `AUTH-SRV-012`;
+14. llamada directa produce la misma decisión territorial que la UI.
+
+#### 56. Rollback
+
+El rollback de una futura unidad deberá restaurar únicamente el mecanismo técnico anterior sin:
+
+- convertir `employees.site_id` en fuente canónica nueva;
+- retirar relaciones históricas de `employee_sites`;
+- ampliar scopes de permiso;
+- convertir site scope en global;
+- eliminar evidencia territorial;
+- permitir que un cambio cross-site vuelva al carril single-site silenciosamente.
+
+Si la materialización introduce helper compartido, RPC o migración, su rollback deberá coordinarse con el owner técnico correspondiente.
+
+#### 57. Criterios de aceptación
+
+`AUTH-SRV-006` queda documentalmente satisfecha cuando:
+
+1. la sede real del recurso controla la autorización de recursos existentes;
+2. la sede objetivo de creación se valida antes de persistir;
+3. `public.sites` gobierna existencia y estado;
+4. `employee_sites` gobierna asignación laboral;
+5. `employees.site_id` queda explícitamente como legacy y no como prueba suficiente;
+6. sede primaria y seleccionada no conceden autoridad;
+7. el permiso exacto se cruza con su scope territorial;
+8. se distinguen global, assigned sites, specific site, site type y contexto operativo según contrato;
+9. actor y trabajador objetivo se validan por separado;
+10. admin/service role no omite la validación de sede;
+11. recursos sin sede resoluble fallan cerrado;
+12. operaciones single-site no absorben cambios cross-site;
+13. VISO mensual deja definida la reconciliación de vínculo y autoridad de sede;
+14. el update de turno diferencia edición local de cambio de sede;
+15. se preservan los handoffs a área, turno, rol, dispositivo, estado y cross-site;
+16. no se autorizan cambios físicos desde el marcador global;
+17. no se crean ni modifican requisitos de prueba.
+
+#### 58. Límites
+
+Este marcador no certifica todavía:
+
+- área autorizada;
+- área activa;
+- prerrequisito de turno;
+- turno publicado/vigente;
+- rol operativo efectivo;
+- puntos externos;
+- dispositivo compartido;
+- estado mutable del recurso;
+- autorización completa de una operación multisede;
+- protección entre áreas;
+- RLS;
+- grants;
+- `SECURITY DEFINER`;
+- implementación física de `has_permission`;
+- comportamiento productivo;
+- atomicidad;
+- idempotencia;
+- contrato final de errores;
+- auditoría completa.
+
+Esas responsabilidades conservan sus tareas propietarias.
+
+#### 59. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                  |
+| --------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | no se ejecutó build durante el desarrollo documental                                                                                                                                                       |
+| LOCAL     | `NOT_EXECUTED`   | no se ejecutaron comandos contra el checkout del usuario                                                                                                                                                   |
+| REMOTA    | `PASS`           | se auditaron en solo lectura la continuidad vigente, la topología del Bloque J, el owner de `AUTH-SRV-006`, los contratos canónicos de sede y scopes, el registro 04A relevante y el snapshot VISO mensual |
+| OPERATIVA | `NOT_APPLICABLE` | el marcador no cambia operación real                                                                                                                                                                       |
+| FÍSICA    | `NOT_APPLICABLE` | no existe instancia física autorizada para esta tarea                                                                                                                                                      |
+
+#### 60. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** la validación territorial por sede, la administración limitada al territorio autorizado y el rechazo de mutaciones manipuladas ya tienen cobertura vigente en el registro canónico. `AUTH-SRV-006` especifica el contrato que consumirán esas pruebas y no introduce una regla verificable sin cobertura existente.
+
+#### 61. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificar el registro vigente:
+
+- `TREQ-AUTH-007` — administración de roles, perfiles, permisos y disponibilidad limitada al territorio autorizado del actor;
+- `TREQ-AUTH-008` — separación entre capacidades administrativas y capacidades operativas con contexto territorial/laboral;
+- `TREQ-AUTH-009` — resolución determinista de sede y área efectivas y denegación de cruces territoriales;
+- `TREQ-AUTH-013` — cada mutación valida en servidor permiso, territorio, contexto, estado y columnas permitidas;
+- `TREQ-VISO-042` — persona, sede, área, rol, fechas y alcance se revalidan nuevamente en servidor.
+
+Estas referencias son trazabilidad heredada y no representan requisitos creados o modificados por `AUTH-SRV-006`.
+
+#### 62. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SRV-005 — Validar permiso en cada escritura`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SRV-006 — Validar sede en cada escritura`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SRV-007 — Validar área en cada escritura`
+
+
 ### [ ] AUTH-SRV-007 — Validar área en cada escritura
 ### [ ] AUTH-SRV-008 — Validar turno cuando corresponda
 ### [ ] AUTH-SRV-009 — Validar rol operativo cuando corresponda
