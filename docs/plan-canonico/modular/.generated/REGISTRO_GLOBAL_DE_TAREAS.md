@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **998** |
+| Aprobadas | **999** |
 | En propuesta | **0** |
-| No iniciadas | **596** |
+| No iniciadas | **595** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **62.61% (998/1594)** |
+| Porcentaje de completamiento | **62.67% (999/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-SRV-015` — Registrar rol simulado en auditoría | ✅ APROBADA |
-| Tarea actual | `AUTH-SRV-016` — Normalizar errores de autorización | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-SRV-017` — Crear helpers server compartidos | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-SRV-016` — Normalizar errores de autorización | ✅ APROBADA |
+| Tarea actual | `AUTH-SRV-017` — Crear helpers server compartidos | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-SRV-018` — Revisar acciones administrativas sin turno | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -883,7 +883,7 @@
 | ✅ APROBADA | `AUTH-SRV-013` | Evitar operaciones entre áreas no autorizadas | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
 | ✅ APROBADA | `AUTH-SRV-014` | Registrar actor real y actor operativo | `bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md` |
 | ✅ APROBADA | `AUTH-SRV-015` | Registrar rol simulado en auditoría | `bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `AUTH-SRV-016` | Normalizar errores de autorización | `bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md` |
+| ✅ APROBADA | `AUTH-SRV-016` | Normalizar errores de autorización | `bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-017` | Crear helpers server compartidos | `bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-018` | Revisar acciones administrativas sin turno | `bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `NEXO-AUTH-001` | Separar configuración administrativa de operación | `bloques/K_NEXO/00_INTRO.md` |

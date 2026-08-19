@@ -2622,7 +2622,1290 @@ Estas referencias son trazabilidad heredada y no representan requisitos creados 
 `AUTH-SRV-016 — Normalizar errores de autorización`
 
 
-### [ ] AUTH-SRV-016 — Normalizar errores de autorización
+### ✅ AUTH-SRV-016 — Normalizar errores de autorización
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-SRV-015 — Registrar rol simulado en auditoría
+**Tarea siguiente:** AUTH-SRV-017 — Crear helpers server compartidos
+**Tipo de tarea:** Contrato global con materialización por unidad (`PER_IMPLEMENTATION_UNIT`) — contrato de normalización server-side para que toda decisión negativa de autorización y toda indisponibilidad técnica de la evaluación se proyecten mediante respuestas públicas tipadas, estables, equivalentes y seguras entre canales, consumiendo los códigos y contratos `AUTH-ERR-*` ya aprobados sin redefinir copy, autorización, helpers compartidos ni prerrequisitos administrativos
+**Bloque:** BLOQUE J — Protección de acciones de servidor
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global; las futuras materializaciones ocurren únicamente mediante `AUTH-SRV-016::<implementation_unit_id>` después de que `DELIV-PKG-025::<package_id>` asigne la unidad y el paquete propietario supere `E5-GATE-008::<package_id>`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir la frontera canónica de servidor que transforma un resultado autoritativo de autorización o una indisponibilidad técnica de su evaluación en una respuesta estable para el consumidor, sin perder la causa, sin inventar permisos y sin exponer detalles internos.
+
+La regla vinculante queda:
+
+```text
+resultado autoritativo completo
++
+causa canónica
++
+canal de entrega
++
+contrato público vigente
+=
+respuesta normalizada estable
+```
+
+Y siempre:
+
+```text
+DENY válido
+≠
+TECHNICAL_FAILURE
+≠
+error de negocio
+≠
+conflicto de estado
+≠
+mensaje libre
+```
+
+La normalización ocurre después de resolver la causa. No decide nuevamente si el actor está autorizado.
+
+#### 2. Handoff recibido de `AUTH-SRV-015`
+
+`AUTH-SRV-015` deja disponible, cuando exista simulación:
+
+```text
+principal técnico real
+actor efectivo real
+sesión real
+autoridad real
+solicitud de simulación
+sujeto simulado cuando exista
+rol simulado tipado
+contexto hipotético
+simulation_result
+executable=false
+razones reales
+razones simuladas
+versiones
+fingerprints
+correlación
+```
+
+Además permanecen vigentes las salidas acumuladas de `AUTH-SRV-004..014`:
+
+```text
+required_permission_key
+principal
+actor efectivo
+contexto real
+territorio
+turno cuando aplique
+rol operativo cuando aplique
+dispositivo cuando aplique
+recurso
+estado y versión
+decisión de autorización
+atribución
+resultado de ejecución
+correlación
+```
+
+`AUTH-SRV-016` no reabre ninguna de esas resoluciones.
+
+#### 3. Contratos consumidos
+
+La tarea consume sin redefinir:
+
+```text
+AuthorizationDecision@1.0.0
+AccessContext
+AUTH-ERR-001..019
+AUTH-ERR-020
+AUTHORIZATION-MESSAGE-CATALOG-001
+AUTHORIZATION-MESSAGE-DISTRIBUTION-CONTRACT-001
+AUTHORIZATION-MESSAGE-PRESENTATION-PROFILE-REGISTER-001
+AUTHORIZATION-MESSAGE-CONSUMER-CHANNEL-MATRIX-001
+```
+
+La fuente de identidad pública de un bloqueo de autorización es el `reason_code` canónico ya resuelto.
+
+El copy humano, acciones visuales, perfiles y localización permanecen gobernados por `AUTH-ERR-020`.
+
+#### 4. Pregunta contractual propietaria
+
+Esta tarea responde:
+
+```text
+¿CÓMO EXPRESA EL SERVIDOR UNA DENEGACIÓN YA RESUELTA
+SIN PERDER SU CAUSA NI FILTRAR DETALLES INTERNOS?
+```
+
+```text
+¿CÓMO DISTINGUE UNA DENEGACIÓN VÁLIDA
+DE UNA EVALUACIÓN QUE NO PUDO COMPLETARSE?
+```
+
+```text
+¿CÓMO CONSERVA LA MISMA SEMÁNTICA
+EN SERVER ACTIONS, HTTP, RPC, RLS, EDGE, REALTIME,
+OFFLINE Y PROCESOS ASÍNCRONOS?
+```
+
+No responde nuevamente quién tiene permiso.
+
+#### 5. Frontera con `AUTH-SRV-015`, `AUTH-SRV-017` y `AUTH-SRV-018`
+
+Las responsabilidades quedan:
+
+```text
+AUTH-SRV-015
+→ evidencia de rol/sujeto simulado
+
+AUTH-SRV-016
+→ normalización tipada y estable de resultados de autorización
+
+AUTH-SRV-017
+→ helpers server compartidos que materialicen los contratos
+
+AUTH-SRV-018
+→ prerrequisitos explícitos de acciones administrativas sin turno
+```
+
+`AUTH-SRV-016` define semántica y shape.
+
+No prescribe nombre de helper, módulo TypeScript, middleware, adapter, RPC, paquete físico ni tecnología de implementación.
+
+#### 6. Resultado contractual
+
+Toda futura unidad deberá poder representar tres resultados raíz sin colapsarlos:
+
+```text
+AUTHORIZED
+AUTHORIZATION_DENIED
+AUTHORIZATION_TECHNICAL_FAILURE
+```
+
+Semántica:
+
+```text
+AUTHORIZED
+→ existe AuthorizationDecision completa
+→ final_decision.outcome = ALLOW
+→ no es un error de autorización
+
+AUTHORIZATION_DENIED
+→ existe AuthorizationDecision completa
+→ final_decision.outcome = DENY
+→ existe reason_code público canónico
+→ executable=false
+
+AUTHORIZATION_TECHNICAL_FAILURE
+→ no existe AuthorizationDecision completa
+→ no se publica decision_id candidato
+→ reason_code = AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE
+→ executable=false
+```
+
+#### 7. Unión discriminada obligatoria
+
+El contrato conceptual será equivalente a:
+
+```ts
+type NormalizedServerAuthorizationResult =
+  | {
+      kind: "AUTHORIZED";
+      authorization_result: "DECIDED";
+      final_outcome: "ALLOW";
+      decision_id: string;
+      correlation_id: string;
+    }
+  | {
+      kind: "AUTHORIZATION_DENIED";
+      authorization_result: "DECIDED";
+      final_outcome: "DENY";
+      reason_code: AuthorizationDenialReasonCode;
+      decision_id: string;
+      correlation_id: string;
+      executable: false;
+    }
+  | {
+      kind: "AUTHORIZATION_TECHNICAL_FAILURE";
+      authorization_result: "TECHNICAL_FAILURE";
+      reason_code: "AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE";
+      decision_id: null;
+      evaluation_attempt_id: string;
+      correlation_id: string;
+      executable: false;
+    };
+```
+
+La sintaxis es documental.
+
+Los nombres físicos podrán variar si conservan la discriminación y los invariantes.
+
+#### 8. `AUTHORIZED` no utiliza contrato de error
+
+Una decisión:
+
+```text
+final_decision.outcome = ALLOW
+```
+
+no debe envolverse artificialmente como:
+
+```text
+error = false
+reason_code = null
+AUTH_OK
+SUCCESS_AUTH
+```
+
+`AUTH-SRV-016` no crea un código de éxito.
+
+La ejecución posterior continúa gobernada por el contrato de la acción y por la frescura de la decisión.
+
+#### 9. Índice público cerrado de autorización
+
+La normalización consume exactamente estas veinte identidades públicas vigentes:
+
+```text
+AUTH_NO_SESSION
+AUTH_USER_INACTIVE
+AUTH_APP_ACCESS_DENIED
+AUTH_ADMIN_PERMISSION_DENIED
+AUTH_OPERATIONAL_PERMISSION_DENIED
+AUTH_SITE_ASSIGNMENT_REQUIRED
+AUTH_ACTIVE_SITE_REQUIRED
+AUTH_AREA_ASSIGNMENT_REQUIRED
+AUTH_ACTIVE_AREA_REQUIRED
+AUTH_PUBLISHED_SHIFT_REQUIRED
+AUTH_OUTSIDE_SHIFT_WINDOW
+AUTH_CHECKIN_REQUIRED
+AUTH_OPERATIONAL_ROLE_REQUIRED
+AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE
+AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA
+AUTH_SHARED_DEVICE_NOT_AUTHORIZED
+AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION
+AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT
+AUTH_PERMISSION_NOT_REGISTERED
+AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE
+```
+
+`AUTH-SRV-016` no agrega, renombra, traduce ni fusiona códigos de esta unión.
+
+#### 10. Mapping canónico de transporte HTTP
+
+Cuando el canal utilice HTTP, la proyección queda:
+
+| `reason_code`                                    | Resultado                  |  HTTP |
+| ------------------------------------------------ | -------------------------- | ----: |
+| `AUTH_NO_SESSION`                                | `DENY`                     | `401` |
+| `AUTH_USER_INACTIVE`                             | `DENY`                     | `403` |
+| `AUTH_APP_ACCESS_DENIED`                         | `DENY`                     | `403` |
+| `AUTH_ADMIN_PERMISSION_DENIED`                   | `DENY`                     | `403` |
+| `AUTH_OPERATIONAL_PERMISSION_DENIED`             | `DENY`                     | `403` |
+| `AUTH_SITE_ASSIGNMENT_REQUIRED`                  | `DENY`                     | `403` |
+| `AUTH_ACTIVE_SITE_REQUIRED`                      | `DENY`                     | `403` |
+| `AUTH_AREA_ASSIGNMENT_REQUIRED`                  | `DENY`                     | `403` |
+| `AUTH_ACTIVE_AREA_REQUIRED`                      | `DENY`                     | `403` |
+| `AUTH_PUBLISHED_SHIFT_REQUIRED`                  | `DENY`                     | `403` |
+| `AUTH_OUTSIDE_SHIFT_WINDOW`                      | `DENY`                     | `403` |
+| `AUTH_CHECKIN_REQUIRED`                          | `DENY`                     | `403` |
+| `AUTH_OPERATIONAL_ROLE_REQUIRED`                 | `DENY`                     | `403` |
+| `AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE`         | `DENY`                     | `403` |
+| `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA`         | `DENY`                     | `403` |
+| `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`              | `DENY`                     | `403` |
+| `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`          | `DENY`                     | `403` |
+| `AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT` | `DENY`                     | `409` |
+| `AUTH_PERMISSION_NOT_REGISTERED`                 | `DENY` / `STRUCTURAL_DENY` | `500` |
+| `AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE`      | `TECHNICAL_FAILURE`        | `503` |
+
+Un canal no HTTP conserva la misma identidad y semántica sin inventar un status artificial.
+
+#### 11. HTTP no es la identidad del error
+
+Queda prohibido seleccionar la causa únicamente desde:
+
+```text
+401
+403
+409
+500
+503
+```
+
+El status es una proyección de transporte.
+
+La identidad es el `reason_code` canónico y la clase de resultado.
+
+Dos razones con `403` no se vuelven equivalentes por compartir status.
+
+#### 12. Envelope de denegación
+
+Una denegación pública deberá ser equivalente en semántica a:
+
+```text
+kind = AUTHORIZATION_DENIED
+authorization_result = DECIDED
+final_outcome = DENY
+reason_code = código canónico
+decision_id = decisión completa emitida
+correlation_id = correlación de la solicitud
+executable = false
+```
+
+Cuando el canal lo soporte podrá incluir metadatos públicos aprobados de sesión, retry y soporte definidos por el contrato propietario.
+
+No se serializa el objeto privado completo de autorización.
+
+#### 13. Envelope de indisponibilidad técnica
+
+Una indisponibilidad previa a una decisión completa deberá conservar:
+
+```text
+kind = AUTHORIZATION_TECHNICAL_FAILURE
+authorization_result = TECHNICAL_FAILURE
+reason_code = AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE
+decision_id = null
+evaluation_attempt_id = identificador técnico del intento
+correlation_id = correlación
+executable = false
+```
+
+Queda prohibido fabricar:
+
+```text
+final_outcome = DENY
+decision_id
+matched_allow
+matched_deny
+lane_decision
+reason_code de permiso
+```
+
+cuando la evaluación no pudo concluir.
+
+#### 14. Fuente de `reason_code`
+
+El normalizador solo puede consumir una causa procedente de:
+
+```text
+AuthorizationDecision completa
+```
+
+o:
+
+```text
+contrato técnico canónico de indisponibilidad
+```
+
+No podrá derivarla desde:
+
+```text
+texto de excepción
+mensaje de Supabase
+mensaje PostgreSQL
+status HTTP
+cero filas
+booleano false
+nombre de ruta
+nombre de helper
+copy de interfaz
+query string
+body
+localStorage
+navigation_role
+```
+
+#### 15. Precedencia
+
+La precedencia se decide antes de normalizar.
+
+Si la evaluación concluyó una causa canónica:
+
+```text
+normalizador
+→ conserva esa causa
+→ no busca otra causa más conveniente
+```
+
+Si existen múltiples hechos internos, la respuesta pública conserva la razón que el evaluador canónico haya determinado como propietaria según precedencia y carril.
+
+El normalizador no ordena razones por texto ni por número HTTP.
+
+#### 16. Una respuesta pública no mezcla causas incompatibles
+
+Queda prohibido devolver simultáneamente, como causas públicas del mismo resultado:
+
+```text
+AUTH_NO_SESSION
++
+AUTH_OPERATIONAL_PERMISSION_DENIED
+```
+
+o:
+
+```text
+AUTH_PERMISSION_NOT_REGISTERED
++
+AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE
+```
+
+La evidencia privada puede conservar hechos relacionados.
+
+La respuesta pública conserva una identidad principal determinista.
+
+#### 17. Código desconocido o incompatible
+
+Un `reason_code` desconocido no se mapea a:
+
+```text
+AUTH_APP_ACCESS_DENIED
+AUTH_ADMIN_PERMISSION_DENIED
+AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE
+```
+
+por conveniencia.
+
+Una incompatibilidad contractual se trata como fallo cerrado de integración.
+
+No se inventa un mensaje ni una denegación distinta para ocultar el drift.
+
+#### 18. Separación pública y privada
+
+La proyección pública puede conservar, según el canal:
+
+```text
+kind
+reason_code
+http_status cuando aplique
+executable
+retryable cuando esté aprobado
+session disposition pública
+correlation_id o referencia opaca de soporte
+```
+
+La evidencia privada puede conservar:
+
+```text
+principal
+actor
+permiso
+grant
+deny
+sede
+área
+turno
+check-in
+rol
+dispositivo
+recurso
+causa interna
+structural issue
+versiones
+fingerprints
+stack técnico protegido
+dependencia fallida
+```
+
+La segunda lista no se expone por convertirla en JSON de error.
+
+#### 19. Copy y presentación
+
+El servidor no inventa:
+
+```text
+title
+message
+help_text
+primary_action_label
+secondary_action_label
+```
+
+El `reason_code` se proyecta mediante `AUTHORIZATION-MESSAGE-CATALOG-001` y su perfil vigente.
+
+Los `null` aprobados permanecen `null`.
+
+Una aplicación no completa copy faltante con texto local.
+
+#### 20. Locale
+
+La normalización del error no traduce el código.
+
+Se mantiene:
+
+```text
+reason_code estable
++
+perfil
++
+locale
+=
+presentación
+```
+
+La falta de un locale puede utilizar el fallback aprobado a `es-CO` de la misma versión.
+
+La falta del perfil o una incompatibilidad de versión no autoriza inventar copy.
+
+#### 21. Sesión
+
+La respuesta respeta la disposición de sesión definida por la razón propietaria.
+
+Queda prohibido:
+
+```text
+403 → cerrar sesión
+409 → limpiar cookies
+500 → invalidar sesión
+503 → redirigir a login
+```
+
+como regla genérica.
+
+`AUTH_NO_SESSION` describe una sesión ausente o no válida.
+
+Las demás razones no se convierten en ausencia de sesión por el status transportado.
+
+#### 22. Cero efectos antes de la ejecución
+
+Toda denegación o fallo técnico resuelto antes del primer efecto deberá conservar:
+
+```text
+executable = false
+effects_committed = false
+```
+
+La normalización no puede confirmar éxito parcial.
+
+Si una falla ocurre después de comenzar una mutación y no existe atomicidad demostrada, deja de ser seguro afirmar `effects_committed=false`.
+
+Ese caso pertenece al incidente y reconciliación de ejecución del proceso propietario.
+
+#### 23. Reintentos
+
+Una respuesta normalizada nunca ordena reejecutar automáticamente la misma mutación.
+
+Cuando el contrato permita reintento:
+
+```text
+nueva solicitud
++
+fuentes frescas
++
+nueva evaluación
++
+idempotencia válida
+```
+
+son obligatorios.
+
+Un `503` no constituye una autorización diferida.
+
+#### 24. Idempotencia
+
+Una clave de idempotencia no convierte:
+
+```text
+DENY
+TECHNICAL_FAILURE
+```
+
+en una futura ejecución exitosa sin nueva evaluación.
+
+Una clave marcada por una ejecución real conserva el contrato del proceso.
+
+Una clave asociada a un intento no ejecutado no funciona como permiso.
+
+#### 25. Concurrencia y frescura
+
+Si cambian antes del efecto:
+
+```text
+actor
+sesión
+permiso
+grants
+denies
+turno
+check-in
+rol
+sede
+área
+dispositivo
+recurso
+estado
+versión
+catálogo
+política
+```
+
+la decisión stale no se normaliza como si siguiera vigente.
+
+Debe resolverse una nueva decisión o producirse el conflicto de dominio que corresponda.
+
+#### 26. Frontera con errores de negocio y estado
+
+`AuthorizationReasonCode` no es un catálogo universal de errores empresariales.
+
+Quedan separados:
+
+```text
+AUTHORIZATION_DENIED
+BUSINESS_RULE_REJECTED
+RESOURCE_STATE_CONFLICT
+RESOURCE_SCOPE_CONFLICT
+CONCURRENCY_CONFLICT
+TECHNICAL_FAILURE
+```
+
+Solo `AUTHORIZATION_DENIED` consume una razón `AUTH_*` de denegación.
+
+Un conflicto empresarial no se convierte en `AUTH_ADMIN_PERMISSION_DENIED`.
+
+Una falta de autorización no se disfraza como conflicto de negocio.
+
+#### 27. Límites, conflictos, alcance y concurrencia
+
+Las superficies de servidor deberán transportar códigos estables para:
+
+```text
+límite de negocio
+conflicto de negocio
+alcance de recurso
+conflicto de concurrencia
+```
+
+cuando el contrato propietario ya los haya aprobado.
+
+`AUTH-SRV-016` fija estas obligaciones:
+
+1. el código procede del contrato propietario de la operación;
+2. no se deriva de texto libre;
+3. no usa el namespace `AUTH_*` salvo que la causa sea realmente autorización;
+4. se preserva sin traducción entre canales;
+5. el mensaje humano no reemplaza la identidad;
+6. una causa de negocio no modifica la `AuthorizationDecision` previa;
+7. una causa de concurrencia obliga a revalidar antes de un nuevo intento.
+
+La tarea no inventa literales de dominio que aún no estén aprobados por sus owners.
+
+#### 28. VISO mensual
+
+Para la programación mensual de VISO se conserva:
+
+```text
+autorización
+→ decide si el actor puede intentar la operación
+
+reglas de programación
+→ deciden límites, integridad y conflictos
+
+concurrencia
+→ decide si la versión que se intenta modificar sigue vigente
+```
+
+La nota del paquete mensual se materializa así:
+
+```text
+límite
+conflicto
+alcance
+concurrencia
+→ códigos estables
+→ no texto libre
+→ no AUTH_ERROR genérico
+→ no permiso falso
+```
+
+La identidad concreta del límite mensual permanece bajo `VISO-SCH-004`.
+
+Los conflictos, integridad y concurrencia permanecen bajo `VISO-SCH-006`.
+
+La publicación y corrección permanecen bajo `VISO-SCH-005`.
+
+`AUTH-SRV-016` garantiza que esas identidades futuras podrán atravesar el envelope de servidor sin ser reclasificadas como autorización.
+
+#### 29. Alcance de autorización frente a alcance de recurso
+
+Cuando una evaluación de permiso concluye que el actor carece del alcance requerido:
+
+```text
+carril base
+→ AUTH_ADMIN_PERMISSION_DENIED
+
+carril operativo
+→ AUTH_OPERATIONAL_PERMISSION_DENIED
+```
+
+según el contrato aplicable.
+
+Cuando el actor sí está autorizado pero el recurso solicitado viola una regla funcional de alcance del proceso, el código pertenece al proceso o recurso propietario.
+
+No se crea un tercer significado ambiguo de `scope`.
+
+#### 30. Server Actions
+
+Una Server Action protegida deberá:
+
+```text
+resolver autorización
+→ obtener resultado normalizado
+→ bloquear antes del efecto si no es AUTHORIZED
+→ devolver o lanzar únicamente la forma contractual del adapter
+```
+
+No deberá usar:
+
+```text
+throw new Error("No autorizado")
+return false
+return { ok: false }
+```
+
+como único contrato de causa.
+
+El mecanismo físico exacto pertenece a `AUTH-SRV-017`.
+
+#### 31. Route Handlers y APIs
+
+Un endpoint HTTP protegido deberá preservar:
+
+```text
+reason_code
+status canónico
+flags públicos
+correlación segura
+```
+
+No devolverá HTML de login para una API no navegacional.
+
+No utilizará `200` con un booleano ambiguo para representar una denegación.
+
+#### 32. RSC y navegación
+
+Una superficie navegacional puede aplicar una recuperación aprobada, incluida la autenticación cuando la razón sea `AUTH_NO_SESSION`.
+
+La navegación no cambia el `reason_code`.
+
+Una redirección no convierte por sí sola la causa en sesión ausente.
+
+#### 33. RPC y PostgREST
+
+Una RPC no debe obligar al consumidor a inferir la razón desde:
+
+```text
+texto SQL
+SQLSTATE genérico
+booleano
+null
+cero filas
+```
+
+Cuando el canal físico no pueda transportar el envelope completo, un adapter autoritativo deberá preservar la equivalencia.
+
+La forma de ese adapter pertenece a las materializaciones posteriores.
+
+#### 34. RLS y Data API
+
+RLS continúa siendo enforcement y no se convierte en motor de presentación.
+
+Un resultado de cero filas no basta para afirmar:
+
+```text
+AUTH_ADMIN_PERMISSION_DENIED
+```
+
+ni cualquier otra causa.
+
+La superficie que necesite explicación pública deberá obtener la razón mediante el contrato autoritativo correspondiente sin debilitar RLS.
+
+#### 35. Edge Functions
+
+Una Edge Function protegida deberá consumir la misma semántica:
+
+```text
+DECIDED / DENY
+o
+TECHNICAL_FAILURE
+```
+
+No podrá crear un catálogo local de errores de autorización.
+
+Un secreto o `service_role` técnico no modifica la causa empresarial.
+
+#### 36. Realtime
+
+Una suscripción o evento protegido no puede interpretar:
+
+```text
+sin evento
+=
+sin permiso
+```
+
+La denegación, indisponibilidad técnica y ausencia legítima de cambios permanecen separadas.
+
+La revocación o cambio de contexto invalida la autoridad stale.
+
+#### 37. Offline y sincronización
+
+Un error conservado offline es evidencia histórica del intento, no autoridad.
+
+Al sincronizar:
+
+```text
+nueva solicitud
++
+estado vigente
++
+nueva autorización
++
+nueva comprobación de conflicto
+```
+
+son obligatorios.
+
+Una denegación vieja no bloquea para siempre.
+
+Un `ALLOW` viejo no autoriza después.
+
+#### 38. Jobs, colas, webhooks e integraciones
+
+Un proceso asíncrono no podrá transformar:
+
+```text
+AUTHORIZATION_DENIED
+```
+
+en retry técnico.
+
+Tampoco podrá transformar:
+
+```text
+TECHNICAL_FAILURE
+```
+
+en denegación empresarial.
+
+La política de retry del transporte no altera la clase semántica del resultado.
+
+#### 39. Dispositivo compartido e interacción
+
+Los estados:
+
+```text
+ACTOR_IDENTIFICATION_REQUIRED
+STRONG_REAUTHENTICATION_REQUIRED
+```
+
+no pertenecen a los veinte `AuthorizationReasonCode`.
+
+No se normalizan como:
+
+```text
+AUTH_SHARED_DEVICE_NOT_AUTHORIZED
+```
+
+cuando el dispositivo y actor continúan dentro de un flujo interactivo válido.
+
+La tarea preserva esa exclusión.
+
+#### 40. Simulación
+
+Una simulación conserva:
+
+```text
+WOULD_ALLOW
+WOULD_DENY
+INDETERMINATE
+```
+
+como resultado hipotético.
+
+Si intenta producir un efecto real, la causa canónica es:
+
+```text
+AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION
+```
+
+No se normaliza `WOULD_ALLOW` como `AUTHORIZED`.
+
+#### 41. Correlación y soporte
+
+La normalización deberá permitir correlacionar:
+
+```text
+solicitud
+→ evaluación
+→ decisión o fallo técnico
+→ respuesta
+→ ejecución o no efecto
+```
+
+`correlation_id` no concede permiso.
+
+`decision_id` no es bearer token.
+
+`evaluation_attempt_id` no es una decisión.
+
+Una referencia pública de soporte debe ser opaca y no revelar infraestructura.
+
+#### 42. Versionado
+
+Toda futura materialización deberá registrar las versiones consumidas de:
+
+```text
+AuthorizationDecision
+catálogo de razones
+catálogo de mensajes
+schema público
+contrato del adapter
+```
+
+No se mezclan versiones incompatibles.
+
+Un código válido en una versión no se reinterpreta silenciosamente con otra.
+
+#### 43. Caches
+
+Una cache de respuesta puede conservar presentación solo dentro de su contrato de frescura.
+
+No puede reutilizar como autoridad:
+
+```text
+decision_id
+ALLOW
+DENY
+reason_code
+```
+
+fuera de la vigencia autorizada.
+
+Cambios materiales invalidan la evaluación, no únicamente el texto visible.
+
+#### 44. Auditoría
+
+La evidencia privada deberá poder distinguir:
+
+```text
+AUTHORIZATION_DENIED
+AUTHORIZATION_TECHNICAL_FAILURE
+BUSINESS_RULE_REJECTED
+RESOURCE_STATE_CONFLICT
+CONCURRENCY_CONFLICT
+EXECUTION_FAILED
+```
+
+La métrica de denegaciones no incluye `TECHNICAL_FAILURE`.
+
+La métrica de errores técnicos no convierte fallos en decisiones.
+
+La observabilidad no sustituye la auditoría de autorización.
+
+#### 45. Minimización de datos
+
+La respuesta pública no almacena ni expone por defecto:
+
+```text
+tokens
+cookies
+JWT
+API keys
+SQL
+stack traces
+headers completos
+payload completo
+employee_id
+auth_user_id
+roles candidatos
+sedes candidatas
+áreas candidatas
+grants
+denies
+permission_key exacta
+resource_id sensible
+```
+
+Los datos privados estrictamente necesarios permanecen bajo el contrato de auditoría correspondiente.
+
+#### 46. Lineage obligatorio
+
+Cada futura unidad deberá conservar:
+
+```text
+surface_identity
+→ authorization evaluation
+→ result kind
+→ reason_code when applicable
+→ transport projection
+→ message contract reference
+→ correlation
+→ execution boundary
+→ final effect state
+```
+
+Para un fallo técnico:
+
+```text
+surface_identity
+→ evaluation_attempt_id
+→ TECHNICAL_FAILURE
+→ AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE
+→ transport projection
+→ zero effect when proven before execution
+```
+
+#### 47. Materialización futura
+
+Cada instancia:
+
+```text
+AUTH-SRV-016::<implementation_unit_id>
+```
+
+deberá registrar como mínimo:
+
+```text
+implementation_unit_id
+repository
+commit_before
+surface_identity[]
+channel[]
+authorization_result_kind[]
+authorization_decision_reference[]
+decision_id[]
+evaluation_attempt_id[]
+correlation_id[]
+reason_code[]
+http_status[]
+message_contract_version[]
+session_disposition[]
+retry_policy[]
+effects_committed[]
+business_error_passthrough[]
+legacy_error_shape_removed[]
+package_id[]
+change_set
+rollback
+validation_commands
+evidence
+commit_after
+```
+
+Los nombres describen evidencia contractual y no obligan a crear columnas, tablas o tipos homónimos.
+
+#### 48. Evidencia mínima de una futura unidad
+
+La materialización deberá demostrar, cuando aplique:
+
+1. `ALLOW` no se convierte en error;
+2. `DENY` conserva una `AuthorizationDecision` completa;
+3. `TECHNICAL_FAILURE` no fabrica `DENY`;
+4. `TECHNICAL_FAILURE` no publica `decision_id`;
+5. el `reason_code` procede de fuente canónica;
+6. los veinte códigos admitidos se consumen sin renombrar;
+7. un código desconocido falla cerrado;
+8. `401` solo representa `AUTH_NO_SESSION` dentro de este catálogo;
+9. las razones ordinarias de autorización usan su `403` aprobado;
+10. configuración inconsistente conserva `409`;
+11. permiso no registrado conserva `500`;
+12. indisponibilidad de evaluación conserva `503`;
+13. HTTP no se usa como identidad;
+14. una causa pública principal es determinista;
+15. detalles privados no aparecen en el envelope público;
+16. el copy procede del catálogo compartido;
+17. `null` de presentación no se completa localmente;
+18. una denegación no cierra sesión por regla genérica;
+19. un fallo técnico no redirige a login por regla genérica;
+20. un resultado pre-efecto conserva cero efectos;
+21. una falla post-efecto incierta no afirma rollback inexistente;
+22. no existe replay automático de mutaciones;
+23. la idempotencia no funciona como permiso;
+24. decisión stale obliga a revalidar;
+25. error de negocio no se convierte en autorización;
+26. falta de autorización no se convierte en conflicto de negocio;
+27. códigos futuros de límite/conflicto/alcance/concurrencia se preservan desde su owner;
+28. un scope de permiso usa la razón del carril aplicable;
+29. Server Actions conservan la causa;
+30. APIs conservan causa y status;
+31. RPC no depende de texto libre;
+32. RLS no usa cero filas como explicación suficiente;
+33. Edge Functions no crean catálogo local;
+34. Realtime separa ausencia de evento y denegación;
+35. offline reautoriza al sincronizar;
+36. jobs separan retry técnico y deny;
+37. estados interactivos de dispositivo no se degradan a bloqueo;
+38. `WOULD_ALLOW` nunca se convierte en `AUTHORIZED`;
+39. correlación no concede autoridad;
+40. versiones incompatibles no se mezclan;
+41. métricas de deny y fallos técnicos permanecen separadas;
+42. rollback no reintroduce errores genéricos.
+
+#### 49. Rollback
+
+El rollback de una futura unidad deberá restaurar únicamente el mecanismo técnico anterior sin:
+
+- convertir `TECHNICAL_FAILURE` en `DENY`;
+- convertir `DENY` en `TECHNICAL_FAILURE`;
+- perder el `reason_code` canónico;
+- mapear todos los `403` a una razón genérica;
+- reintroducir `return false` como contrato único;
+- reintroducir `AUTH_ERROR` genérico;
+- exponer mensajes SQL o de proveedor;
+- borrar la separación entre evidencia pública y privada;
+- cerrar sesiones por inferencia;
+- repetir mutaciones automáticamente;
+- reutilizar una decisión stale;
+- convertir un error de negocio en falta de permiso;
+- inventar códigos VISO aún no aprobados;
+- convertir un estado interactivo de dispositivo en denegación;
+- convertir `WOULD_ALLOW` en autoridad;
+- perder correlación histórica válida.
+
+#### 50. Criterios de aceptación
+
+`AUTH-SRV-016` queda documentalmente satisfecha cuando:
+
+1. se distinguen `AUTHORIZED`, `AUTHORIZATION_DENIED` y `AUTHORIZATION_TECHNICAL_FAILURE`;
+2. `AUTHORIZED` no crea un código de éxito;
+3. una denegación exige decisión completa;
+4. una indisponibilidad técnica no fabrica decisión;
+5. se preserva la unión cerrada de veinte códigos;
+6. no se crean códigos alternativos de autorización;
+7. se fija el mapping HTTP canónico;
+8. HTTP queda definido como transporte y no identidad;
+9. `AUTH_NO_SESSION` conserva `401`;
+10. las denegaciones ordinarias conservan `403`;
+11. configuración inconsistente conserva `409`;
+12. permiso no registrado conserva `500`;
+13. indisponibilidad técnica conserva `503`;
+14. se prohíbe inferir causa desde mensaje, status, booleano o cero filas;
+15. la precedencia permanece propiedad del evaluador;
+16. una respuesta pública principal no mezcla causas incompatibles;
+17. un código desconocido falla cerrado;
+18. la proyección pública está minimizada;
+19. la evidencia privada permanece separada;
+20. el copy continúa gobernado por `AUTH-ERR-020`;
+21. la localización no cambia el código;
+22. ninguna razón cierra sesión por regla genérica;
+23. una denegación pre-efecto conserva cero efectos;
+24. una falla post-efecto incierta pasa al owner de ejecución;
+25. retry e idempotencia no conceden autoridad;
+26. decisiones stale se revalidan;
+27. error de autorización y error de negocio permanecen separados;
+28. límite, conflicto, alcance y concurrencia exigen códigos estables de sus owners;
+29. no se inventan códigos VISO antes de `VISO-SCH-004..006`;
+30. scope de autorización y scope funcional no se confunden;
+31. Server Actions conservan la semántica;
+32. HTTP APIs conservan la semántica;
+33. RSC y navegación conservan la causa;
+34. RPC/PostgREST no dependen de texto libre;
+35. RLS/Data API no fabrican causas desde cero filas;
+36. Edge Functions no crean un catálogo paralelo;
+37. Realtime conserva separación de estados;
+38. offline reautoriza antes de ejecutar;
+39. procesos asíncronos separan deny y retry técnico;
+40. estados interactivos de dispositivo siguen fuera del catálogo de bloqueos;
+41. simulación no se convierte en autoridad;
+42. correlación, decisión e intento técnico mantienen identidades distintas;
+43. versiones y caches no reinterpretan decisiones;
+44. auditoría y métricas distinguen deny de fallo técnico;
+45. no se autorizan cambios físicos desde el marcador global;
+46. no se crean ni modifican requisitos de prueba.
+
+#### 51. Límites
+
+Este marcador no certifica todavía:
+
+- implementación física del envelope;
+- tipos TypeScript;
+- helpers compartidos;
+- middleware;
+- adapters HTTP;
+- adapters RPC;
+- integración RLS;
+- Edge Functions;
+- instrumentación Realtime;
+- cola o worker;
+- SDK consumidor;
+- componentes UI;
+- paquetes npm;
+- cambios de Supabase;
+- migraciones;
+- nuevos códigos de negocio de VISO;
+- valor o unidad del límite mensual;
+- reglas de solapamiento;
+- política de concurrencia de programación;
+- prerrequisitos administrativos sin turno;
+- despliegue;
+- comportamiento productivo.
+
+Owners pendientes y condición de salida:
+
+```text
+VISO-SCH-004
+→ aprobar límite mensual, vigencia y excepciones
+→ entonces su código de límite podrá ser consumido de forma estable
+
+VISO-SCH-005
+→ aprobar publicación y corrección
+→ entonces sus conflictos de estado podrán ser consumidos de forma estable
+
+VISO-SCH-006
+→ aprobar conflictos, integridad y concurrencia
+→ entonces sus códigos concretos podrán ser consumidos de forma estable
+
+AUTH-SRV-017
+→ materializar helpers compartidos
+→ entonces las unidades podrán reutilizar una implementación común
+
+AUTH-SRV-018
+→ fijar prerrequisitos administrativos sin turno
+→ entonces la normalización consumirá esas decisiones sin inferir turno
+```
+
+#### 52. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                                                                                                                                                                                                                       |
+| --------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | no se ejecutó build durante el desarrollo documental                                                                                                                                                                                                                                                                                                                                                            |
+| LOCAL     | `NOT_EXECUTED`   | no se ejecutaron comandos contra el checkout del usuario                                                                                                                                                                                                                                                                                                                                                        |
+| REMOTA    | `PASS`           | se auditaron en solo lectura la continuidad vigente, el contrato de entrega, la topología `PER_IMPLEMENTATION_UNIT`, las políticas de formato y desarrollo, el owner de `AUTH-SRV-016`, `AUTH-SRV-014`, `AUTH-SRV-015`, `AuthorizationDecision`, `AUTH-ERR-001..020`, la familia 04A AUTH relevante, los scripts documentales declarados en `package.json` y la frontera pendiente de programación laboral VISO |
+| OPERATIVA | `NOT_APPLICABLE` | el marcador no cambia operación real                                                                                                                                                                                                                                                                                                                                                                            |
+| FÍSICA    | `NOT_APPLICABLE` | no existe instancia física autorizada para esta tarea                                                                                                                                                                                                                                                                                                                                                           |
+
+#### 53. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** los códigos públicos de autorización, sus estados HTTP, la separación entre denegación y fallo técnico, la equivalencia multicanal, privacidad, recuperación, versionado, mensajes compartidos, invalidación, concurrencia e idempotencia ya disponen de requisitos canónicos vigentes. `AUTH-SRV-016` consolida el contrato server-side que deberá consumir esa cobertura sin introducir una obligación verificable nueva ni alterar el registro 04A.
+
+#### 54. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificar el registro vigente:
+
+- `TREQ-AUTH-004` — equivalencia de decisión y razones entre evaluadores;
+- `TREQ-AUTH-015` — evidencia correlacionable de contexto, decisión y resultado;
+- `TREQ-AUTH-129` a `TREQ-AUTH-318` — contratos de bloqueo `AUTH-ERR-001..019`, incluidos códigos, canales, cero efectos, privacidad, invalidación y separación entre `DENY` y `TECHNICAL_FAILURE`;
+- `TREQ-AUTH-319` a `TREQ-AUTH-331` — catálogo compartido de veinte códigos, perfiles, distribución, compatibilidad, consumo multicanal y prevención de drift.
+
+Estas referencias son trazabilidad heredada y no representan requisitos creados o modificados por `AUTH-SRV-016`.
+
+#### 55. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SRV-015 — Registrar rol simulado en auditoría`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SRV-016 — Normalizar errores de autorización`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SRV-017 — Crear helpers server compartidos`
+
+
 ### [ ] AUTH-SRV-017 — Crear helpers server compartidos
 ### [ ] AUTH-SRV-018 — Revisar acciones administrativas sin turno
 
