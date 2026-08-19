@@ -6582,7 +6582,1358 @@ Estas referencias son trazabilidad heredada y no representan requisitos creados 
 `AUTH-SRV-010 — Validar dispositivo compartido`
 
 
-### [ ] AUTH-SRV-010 — Validar dispositivo compartido
+### ✅ AUTH-SRV-010 — Validar dispositivo compartido
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-SRV-009 — Validar rol operativo cuando corresponda
+**Tarea siguiente:** AUTH-SRV-011 — Validar estado actual de la entidad
+**Tipo de tarea:** Contrato global con materialización por unidad (`PER_IMPLEMENTATION_UNIT`) — contrato de autorización desde dispositivo compartido para que toda escritura protegida distinga la identidad técnica del dispositivo del actor humano efectivo, resuelva en servidor una sesión de actor vigente e interseque la autoridad ya validada del trabajador con las aplicaciones, territorio, paquete máximo de capacidades y requisitos adicionales del dispositivo, sin permitir que la terminal, su plantilla, `navigation_role`, PIN ligero o configuración local concedan o amplíen autoridad empresarial
+**Bloque:** BLOQUE J — Protección de acciones de servidor
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global; las futuras materializaciones ocurren únicamente mediante `AUTH-SRV-010::<implementation_unit_id>` después de que `DELIV-PKG-025::<package_id>` asigne la unidad y el paquete propietario supere `E5-GATE-008::<package_id>`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el gate obligatorio de dispositivo compartido para toda escritura empresarial ejecutada desde una identidad técnica de terminal compartida.
+
+La regla central queda:
+
+```text
+AUTORIDAD DEL ACTOR YA VALIDADA
+∩
+LÍMITES EFECTIVOS DEL DISPOSITIVO
+=
+AUTORIDAD POSIBLE DESDE ESA TERMINAL
+```
+
+El dispositivo puede reducir la autorización.
+
+Nunca puede concederla ni ampliarla.
+
+#### 2. Handoff recibido de `AUTH-SRV-009`
+
+La tarea anterior entrega como mínimo:
+
+```text
+effective_actor
+authorization_mode
+required_permission_key
+effective_shift_id
+validated_target_site_id
+target_area_id
+effective_operational_role
+operational_role_validation_result
+```
+
+`AUTH-SRV-010` añade:
+
+```text
+device_context_requirement
+device_id
+device_status
+actor_session_id
+actor_session_result
+effective_device_application_set
+effective_device_permission_ceiling
+shared_device_requirement
+strong_reauth_result
+device_territory_result
+device_validation_result
+```
+
+No reabre permiso, sede, área, turno ni rol operativo ya resueltos.
+
+#### 3. Pregunta contractual propietaria
+
+Esta tarea responde:
+
+```text
+¿LA ACCIÓN SE ESTÁ EJECUTANDO DESDE UN DISPOSITIVO COMPARTIDO?
+```
+
+y, cuando la respuesta es sí:
+
+```text
+¿LA TERMINAL ESTÁ VIGENTE,
+TIENE UN ACTOR HUMANO VIGENTE,
+ADMITE ESTA APLICACIÓN,
+ADMITE ESTA CLAVE EXACTA,
+ES COMPATIBLE CON EL TERRITORIO
+Y SATISFACE EL NIVEL DE REAUTENTICACIÓN EXIGIDO?
+```
+
+No decide todavía si el estado actual del recurso admite la mutación.
+
+Esa responsabilidad permanece en `AUTH-SRV-011`.
+
+#### 4. Dos identidades separadas
+
+En un dispositivo compartido existen dos identidades distintas:
+
+```text
+PRINCIPAL TÉCNICO
+→ credencial del dispositivo
+
+ACTOR EFECTIVO
+→ empleado humano identificado
+```
+
+Se mantiene:
+
+```text
+technical_device_principal
+≠
+effective_actor
+```
+
+La cuenta técnica no puede convertirse en empleado, rol base, rol operativo ni propietario empresarial del efecto.
+
+#### 5. Aplicación del gate
+
+El gate especializado de esta tarea se aplica cuando el principal autenticado se resuelve canónicamente como:
+
+```text
+SHARED_DEVICE
+```
+
+En una sesión personal ordinaria:
+
+```text
+HUMAN_USER
+→ device_context = null
+```
+
+El hecho de que la persona utilice físicamente una tablet, portátil o terminal no convierte por sí solo su sesión en dispositivo compartido.
+
+#### 6. Fuente canónica de la instancia
+
+La identidad técnica debe resolverse en servidor desde la relación entre:
+
+```text
+auth principal
+→ public.shared_operational_devices.auth_user_id
+→ device_id único
+```
+
+El `device_id` recibido desde interfaz, body, header, cookie no confiable, QR o estado local no es autoridad.
+
+#### 7. Resolución única
+
+La relación principal técnico → dispositivo debe ser inequívoca.
+
+Casos inválidos:
+
+```text
+0 dispositivos canónicos compatibles
+>1 dispositivos canónicos compatibles
+vínculo técnico inconsistente
+```
+
+Resultado:
+
+```text
+DEVICE_IDENTITY_UNRESOLVED
+→ DENY BUSINESS ACTION
+```
+
+No se selecciona la primera coincidencia.
+
+#### 8. Estado del dispositivo
+
+Para permitir una acción empresarial, la instancia debe estar en un estado operativo admitido por su contrato vigente.
+
+Como mínimo, el servidor debe verificar:
+
+```text
+device exists
+device is active
+activation_status permits use
+device is not revoked
+device configuration is current
+```
+
+Una terminal suspendida, revocada, inactiva o estructuralmente inválida no puede producir efectos empresariales aunque su sesión técnica continúe autenticada.
+
+#### 9. Disponibilidad técnica no equivale a autoridad
+
+El dispositivo puede permanecer disponible como interfaz técnica sin actor humano.
+
+En ese estado puede exponer exclusivamente funciones técnicas o de identificación autorizadas por su contrato.
+
+Se mantiene:
+
+```text
+DEVICE AVAILABLE
+≠
+BUSINESS ACTION AUTHORIZED
+```
+
+#### 10. Superficie previa al actor
+
+Antes de resolver un actor humano válido, la terminal puede mostrar únicamente el contenido técnico permitido, por ejemplo:
+
+```text
+estado técnico
+identificación del trabajador
+aplicaciones configuradas
+bloqueo o mantenimiento
+información genérica no empresarial
+```
+
+La pantalla previa no hereda permisos humanos.
+
+#### 11. Sesión de actor
+
+Toda acción empresarial desde un dispositivo compartido exige una sesión canónica de actor cuando el contrato de la superficie requiera actor humano.
+
+La fuente conceptual es:
+
+```text
+public.shared_operational_device_actor_sessions
+```
+
+La sesión debe corresponder al mismo `device_id`.
+
+#### 12. Actor efectivo desde sesión
+
+La sesión de actor debe resolver un empleado humano activo.
+
+La identidad del actor empresarial procede de:
+
+```text
+actor_session
+→ actor_employee_id
+→ effective_actor
+```
+
+No procede de:
+
+```text
+technical auth user
+navigation_role
+last actor
+device label
+device template
+client employee_id
+```
+
+#### 13. Coincidencia con el handoff anterior
+
+Cuando `AUTH-SRV-005..009` ya hayan resuelto al actor y su contexto, la sesión debe ser consistente con ellos.
+
+Como mínimo:
+
+```text
+actor_session.actor_employee_id
+=
+effective_actor
+```
+
+y las referencias de turno, sede, área y rol conservadas por la sesión no pueden contradecir el contexto canónico vigente.
+
+#### 14. Vigencia de la sesión
+
+La sesión de actor debe:
+
+```text
+exist
+belong to device
+not be ended
+not be expired
+match effective actor
+be structurally valid
+```
+
+Una sesión sin vencimiento resoluble cuando el contrato lo exige no se interpreta como infinita.
+
+#### 15. Cardinalidad de actor
+
+Por dispositivo solo puede existir un actor efectivo utilizable en un instante.
+
+```text
+0 sesiones válidas
+→ no business actor
+
+1 sesión válida
+→ candidate actor
+
+2+ sesiones incompatibles
+→ structural conflict
+→ DENY
+```
+
+No se fusionan permisos de varios trabajadores.
+
+#### 16. Sesión de actor no es autorización
+
+Se mantiene:
+
+```text
+actor_session
+≠
+permission
+≠
+shift
+≠
+check_in
+≠
+operational_role
+```
+
+La sesión identifica quién usa la terminal.
+
+Los gates anteriores continúan resolviendo qué puede hacer esa persona.
+
+#### 17. El dispositivo no tiene turno
+
+La terminal compartida no tiene turno ni check-in propios.
+
+Se mantiene:
+
+```text
+DEVICE
+→ no shift
+→ no attendance authority
+
+ACTOR
+→ may require shift/check-in according to required_permission_key
+```
+
+`AUTH-SRV-008` conserva la decisión T/T+C/N aplicable a la capacidad exacta.
+
+#### 18. Cambio de actor
+
+Al cambiar de trabajador:
+
+```text
+old actor session
+→ closed / invalid for new actions
+
+new human identification
+→ new actor session
+→ full revalidation
+```
+
+No pueden sobrevivir al cambio:
+
+- autoridad del actor anterior;
+- reautenticación fuerte del actor anterior;
+- contexto territorial del actor anterior;
+- datos temporales sensibles del actor anterior;
+- decisión cacheada anterior.
+
+#### 19. Consistencia durante la transacción
+
+La acción debe conservar el mismo:
+
+```text
+device_id
+actor_session_id
+effective_actor
+```
+
+desde la autorización hasta la confirmación del efecto.
+
+Si cualquiera cambia antes de confirmar:
+
+```text
+SHARED_DEVICE_ACTOR_CHANGED
+→ reject / restart authorization
+```
+
+#### 20. Aplicaciones efectivas
+
+El conjunto de aplicaciones del dispositivo es una restricción explícita.
+
+Debe resolverse desde configuración canónica de plantilla e instancia.
+
+Se mantiene:
+
+```text
+requested_app
+∈
+effective_device_application_set
+```
+
+como condición necesaria.
+
+No suficiente.
+
+#### 21. Aplicación permitida no concede permiso
+
+Que una aplicación aparezca en la terminal significa únicamente que la superficie puede ser presentada.
+
+No significa:
+
+```text
+app allowed
+→ <app>.access allowed
+```
+
+La clave exacta sigue obligada a pasar por permiso del actor y techo del dispositivo.
+
+#### 22. Techo de permisos del dispositivo
+
+El techo efectivo debe ser la intersección de:
+
+```text
+versioned template package
+∩
+active instance reductions
+∩
+effective applications
+∩
+active canonical permission catalog
+```
+
+La instancia solo puede reducir el techo de su plantilla.
+
+Nunca ampliarlo.
+
+#### 23. Claves exactas
+
+El techo usa únicamente:
+
+```text
+exact canonical permission_key
+```
+
+Quedan prohibidos como fuente de membresía:
+
+```text
+wildcards
+prefixes
+role names
+navigation_role
+application names
+routes
+screens
+client lists
+implicit aliases that widen authority
+```
+
+#### 24. Claves nuevas o reclasificadas
+
+Una clave que aparezca después de la versión aprobada del paquete no se incorpora automáticamente.
+
+La regla es:
+
+```text
+unknown_to_device_package
+→ DENY
+```
+
+hasta existir revisión, nueva versión y despliegue explícito del paquete aplicable.
+
+#### 25. `shared_device_requirement`
+
+Cada permiso canónico debe conservar exactamente una clasificación:
+
+```text
+STANDARD_ACTOR_SESSION
+STRONG_REAUTH_REQUIRED
+NOT_ALLOWED
+```
+
+Una clasificación ausente o desconocida produce:
+
+```text
+DENY_ON_SHARED_DEVICE
+```
+
+#### 26. `STANDARD_ACTOR_SESSION`
+
+Para una clave `STANDARD_ACTOR_SESSION`, la sesión ordinaria de actor puede ser suficiente para el componente de dispositivo, siempre que además se cumplan:
+
+```text
+device valid
+app allowed
+permission in device ceiling
+actor session valid
+actor permission valid
+territory compatible
+shift/check-in when permission requires
+resource compatible
+no higher denial
+```
+
+`STANDARD` no significa bajo riesgo ni autorización automática.
+
+#### 27. `STRONG_REAUTH_REQUIRED`
+
+Una clave `STRONG_REAUTH_REQUIRED` exige, además de todo lo anterior:
+
+```text
+personal strong reauthentication
+bound to effective actor
+short and verifiable validity
+explicit confirmation
+supported by current device
+```
+
+La reautenticación no puede pertenecer al actor anterior.
+
+#### 28. PIN ligero
+
+El PIN ligero puede identificar rápidamente al trabajador e iniciar la sesión de actor según el mecanismo aprobado.
+
+No satisface por sí solo:
+
+```text
+STRONG_REAUTH_REQUIRED
+```
+
+Se mantiene:
+
+```text
+LIGHTWEIGHT_PIN
+≠
+STRONG_REAUTH
+```
+
+#### 29. `NOT_ALLOWED`
+
+Cuando:
+
+```text
+shared_device_requirement = NOT_ALLOWED
+```
+
+la terminal no puede:
+
+- ejecutar la capacidad;
+- revelar el contenido protegido por esa capacidad;
+- degradarla silenciosamente a solo lectura;
+- usar una clave más amplia como sustituto;
+- habilitarla por rol, plantilla o tipo de terminal.
+
+La operación requiere el carril personal que corresponda.
+
+#### 30. Territorio del dispositivo
+
+La sede y área configuradas en el dispositivo son restricciones del dispositivo.
+
+No son fuentes del territorio del actor.
+
+Se mantiene:
+
+```text
+device.site
+≠ actor operational site source
+
+device.area
+≠ actor operational area source
+```
+
+El actor llega con territorio ya resuelto por `AUTH-SRV-006..009`.
+
+#### 31. Dispositivo con sede operacional exacta
+
+Cuando la política de la instancia sea operacional de sede exacta:
+
+```text
+validated_target_site_id
+=
+device_fixed_site_id
+```
+
+debe cumplirse para la acción operativa.
+
+Una discrepancia produce denegación.
+
+#### 32. Dispositivo con área fija exacta
+
+Cuando la política de la instancia exija área exacta:
+
+```text
+target_area_id
+=
+device_fixed_area_id
+```
+
+debe cumplirse cuando la acción tenga semántica operativa de área.
+
+El área del dispositivo nunca sustituye un `target_area_id` ausente o inválido.
+
+#### 33. Conjunto explícito de áreas
+
+Cuando una instancia admita un conjunto cerrado de áreas:
+
+```text
+target_area_id
+∈
+device_allowed_area_ids
+```
+
+Cada acción conserva una sola área efectiva.
+
+El conjunto no se convierte en:
+
+```text
+wildcard
+all site areas
+actor authority union
+```
+
+#### 34. Terminal logística
+
+Una terminal logística móvil puede conservar una sede y área base de propiedad o custodia.
+
+Ruta, vehículo, geolocalización, origen o destino no amplían automáticamente ese territorio.
+
+La autorización del recurso conserva sus lados territoriales propios.
+
+#### 35. Terminal de recepción mixta
+
+Una terminal con modo administrativo y operativo debe mantener los carriles separados.
+
+Carril operativo:
+
+```text
+device territory restrictions
+→ apply as restrictive intersection
+```
+
+Carril administrativo:
+
+```text
+actor administrative scope
+→ remains authoritative
+```
+
+La ubicación física del dispositivo no crea ni amplía cobertura administrativa.
+
+#### 36. Terminal administrativa
+
+Cuando el área del dispositivo sea exclusivamente de ubicación, propiedad o custodia:
+
+```text
+PHYSICAL_OWNERSHIP_ONLY
+```
+
+esa área no debe convertirse en alcance administrativo del actor.
+
+La terminal puede imponer controles de seguridad propios, pero no redefinir la cobertura organizacional legítima.
+
+#### 37. Recurso y dispositivo
+
+El territorio del recurso continúa resolviéndose desde el backend conforme al contrato del recurso.
+
+La terminal no puede reescribir:
+
+```text
+resource.site_id
+resource.area_id
+source territory
+destination territory
+```
+
+para acomodar la acción.
+
+#### 38. Carril administrativo desde dispositivo compartido
+
+Una capacidad administrativa solo puede ejecutarse desde dispositivo compartido si su clasificación explícita lo admite.
+
+Debe cumplirse:
+
+```text
+base actor authorization
++
+device shared requirement
++
+device app
++
+device permission ceiling
++
+valid actor session
++
+device-specific restrictions
+```
+
+No se exige turno o check-in por inferencia cuando el permiso base no los exige.
+
+#### 39. Carril operativo desde dispositivo compartido
+
+Una capacidad operativa conserva íntegramente los gates anteriores:
+
+```text
+actor
+permission
+site
+area when required
+shift
+check-in when required
+operational role
+```
+
+y añade:
+
+```text
+device identity
+actor session
+app
+permission ceiling
+device territory
+shared-device classification
+strong reauth when required
+```
+
+El dispositivo no degrada T+C a T ni T a N.
+
+#### 40. `BASE_OR_OPERATIONAL`
+
+Cuando un permiso permita ambos carriles, el dispositivo no fusiona sus condiciones.
+
+El servidor determina qué carril está autorizando y aplica las restricciones de dispositivo al carril realmente usado.
+
+#### 41. `BASE_AND_OPERATIONAL`
+
+Cuando ambos carriles sean obligatorios, el dispositivo no elimina ninguno.
+
+La acción exige:
+
+```text
+valid base component
++
+valid operational component
++
+valid shared-device component
+```
+
+#### 42. Políticas de actor del dispositivo
+
+La política de actor puede restringir quién puede iniciar o mantener sesión en la terminal.
+
+Debe evaluarse contra hechos canónicos del trabajador y su contexto.
+
+No puede conceder una capacidad empresarial ausente.
+
+#### 43. `navigation_role`
+
+Se mantiene:
+
+```text
+navigation_role
+→ presentation / navigation hint only
+```
+
+Queda prohibido:
+
+```text
+navigation_role
+→ effective actor
+navigation_role
+→ effective operational role
+navigation_role
+→ permission grant
+navigation_role
+→ device permission package
+```
+
+#### 44. Datos controlados por cliente
+
+Valores como:
+
+```text
+device_id
+actor_employee_id
+actor_session_id
+site_id
+area_id
+navigation_role
+permission package
+strong_reauth flag
+```
+
+recibidos desde cliente son selectores o contenido no autoritativo.
+
+La decisión debe reconstruirse desde fuentes de servidor.
+
+#### 45. Server Actions
+
+Una Server Action empresarial invocada desde dispositivo compartido deberá demostrar:
+
+```text
+technical principal
+→ canonical device
+→ device state
+→ canonical actor session
+→ effective actor
+→ prior authorization gates
+→ app/device ceiling
+→ shared-device requirement
+→ territory/device policy
+→ strong reauth when required
+→ current transaction consistency
+→ remaining gates
+→ effect
+```
+
+La página que originó el request no sustituye esa evaluación.
+
+#### 46. API routes
+
+Una API mutante no puede aceptar como autoridad:
+
+```text
+deviceId
+actorId
+actorSessionId
+deviceRole
+isStrongAuthenticated
+```
+
+enviados por cliente.
+
+Debe resolver el contexto compartido desde el principal y registros canónicos.
+
+#### 47. RPC
+
+Una RPC empresarial accesible desde una identidad técnica debe recibir o reconstruir una decisión compatible con este contrato.
+
+Una función privilegiada no puede interpretar que:
+
+```text
+auth.uid() = device auth user
+```
+
+equivale a:
+
+```text
+authorized employee
+```
+
+#### 48. Service role
+
+El uso de un cliente administrativo o `service_role` después del gate no borra la separación principal técnico/actor.
+
+Toda acción humana sigue atribuida al empleado real.
+
+Un proceso autónomo legítimo utiliza su contrato de sistema y no una sesión ficticia de dispositivo.
+
+#### 49. Conectividad
+
+Sin conectividad verificable no se ejecuta una nueva mutación empresarial desde dispositivo compartido bajo este contrato.
+
+Una vista cacheada puede servir para presentación controlada, pero:
+
+```text
+cached authorization decision
+≠
+current authority
+```
+
+Toda futura capacidad offline requiere contrato independiente.
+
+#### 50. Contexto obsoleto
+
+Debe revalidarse cuando cambie cualquiera de estas dimensiones:
+
+```text
+device activation
+device revocation
+template or package version
+instance reduction
+allowed applications
+actor session
+actor
+shift
+check-in
+site
+area
+operational role
+actor permission
+denial
+strong reauthentication
+resource
+```
+
+Una decisión previa no sobrevive automáticamente.
+
+#### 51. Fallo cerrado
+
+Cualquiera de estos estados bloquea cuando sea aplicable:
+
+```text
+shared_device_unresolved
+shared_device_inactive
+shared_device_template_version_invalid
+shared_device_app_not_allowed
+shared_device_permission_not_listed
+shared_device_permission_not_allowed
+shared_device_actor_required
+shared_device_actor_session_expired
+shared_device_session_mode_mismatch
+shared_device_actor_policy_mismatch
+shared_device_site_mismatch
+shared_device_area_mismatch
+shared_device_resource_mismatch
+strong_reauth_required
+strong_reauth_not_supported
+shared_device_actor_changed
+shared_device_context_stale
+shared_device_offline_mutation_denied
+```
+
+La nomenclatura técnica final podrá especializarse sin alterar estas razones conceptuales.
+
+#### 52. Handoff a `AUTH-SRV-011`
+
+`AUTH-SRV-010` entrega:
+
+```text
+effective_actor
+authorization_mode
+required_permission_key
+validated_target_site_id
+target_area_id
+effective_shift_id
+effective_operational_role
+device_id
+actor_session_id
+shared_device_requirement
+effective_device_permission_ceiling
+device_validation_result
+strong_reauth_result
+```
+
+`AUTH-SRV-011` vuelve a resolver el estado actual de la entidad y valida la transición permitida.
+
+#### 53. Handoff a `AUTH-SRV-012`
+
+El dispositivo no concede capacidad cross-site.
+
+`AUTH-SRV-012` conserva la validación de todos los cruces entre sedes involucrados por el recurso o el efecto.
+
+#### 54. Handoff a `AUTH-SRV-013`
+
+El dispositivo no concede capacidad cross-area.
+
+`AUTH-SRV-013` conserva la validación de todo cruce entre áreas.
+
+#### 55. Handoff a auditoría posterior
+
+La decisión debe conservar suficiente lineage para que la auditoría posterior pueda atribuir:
+
+```text
+technical principal
+device_id
+actor_session_id
+effective_actor
+site
+area
+role
+permission
+device package/version
+shared-device requirement
+strong reauth state
+decision
+```
+
+El contrato detallado de evidencia y auditoría continúa en sus tareas propietarias.
+
+#### 56. Baseline físico existente
+
+La infraestructura actual ya contiene, entre otros:
+
+```text
+public.shared_operational_devices
+public.shared_operational_device_apps
+public.shared_operational_device_actor_sessions
+public.shared_operational_device_events
+```
+
+La existencia física de estas tablas no demuestra que cada consumidor aplique el contrato completo.
+
+#### 57. Baseline físico — identidad y estado
+
+El modelo existente vincula:
+
+```text
+shared_operational_devices.auth_user_id
+```
+
+con la identidad técnica y dispone de:
+
+```text
+is_active
+activation_status
+site_id
+area_id
+```
+
+como información registral.
+
+Esto constituye infraestructura aprovechable, no autorización empresarial completa.
+
+#### 58. Baseline físico — sesión de actor
+
+La tabla de sesiones existente conserva:
+
+```text
+device_id
+actor_employee_id
+actor_shift_id
+actor_operational_role
+site_id
+area_id
+started_at
+expires_at
+ended_at
+ended_reason
+```
+
+y mantiene una restricción registral de una sesión abierta por dispositivo.
+
+La futura materialización deberá reconciliar ese estado registral con la vigencia canónica del actor y su contexto.
+
+#### 59. Baseline VISO
+
+Se conserva el snapshot:
+
+```text
+vento-group-sas/vento-viso
+8cf7c49a593c748cb6c99dd9b919b6947bcfec14
+```
+
+Superficies relevantes:
+
+```text
+src/lib/auth/operational-session.ts
+src/lib/auth/guard.ts
+```
+
+#### 60. VISO — resolución actual del dispositivo
+
+El baseline ya:
+
+- busca un dispositivo por `auth_user_id`;
+- exige `is_active = true`;
+- exige `activation_status = active`;
+- carga aplicaciones activas;
+- identifica `sharedDeviceId`, código y etiqueta.
+
+Estos son controles parciales útiles.
+
+#### 61. VISO — ausencia de sesión de actor
+
+El resolver auditado no consulta:
+
+```text
+shared_operational_device_actor_sessions
+```
+
+para construir la sesión compartida.
+
+Por tanto no demuestra:
+
+```text
+human actor
+actor_session_id
+actor session expiry
+actor-session/effective-actor consistency
+```
+
+antes de evaluar permisos.
+
+#### 62. VISO — `navigation_role` como autoridad
+
+El baseline asigna:
+
+```text
+navigationRole = shared_operational_devices.navigation_role
+```
+
+y utiliza ese valor como `roleCode` para `has_operational_role_permission`.
+
+Ese comportamiento no satisface este contrato.
+
+La fuente del rol efectivo permanece en el turno del actor humano conforme a `AUTH-SRV-009`.
+
+#### 63. VISO — territorio preferido sobre territorio del dispositivo
+
+El baseline permite construir:
+
+```text
+siteId = preferredSiteId ?? device.site_id
+areaId = preferredAreaId ?? device.area_id
+```
+
+En una identidad compartida, una preferencia de request no puede ampliar ni sustituir la política territorial fija o permitida de la instancia.
+
+La futura materialización deberá resolver ambos contextos por separado e intersectarlos.
+
+#### 64. VISO — aplicación permitida y acceso
+
+El baseline permite considerar accesible una aplicación por pertenecer a `allowedAppCodes` y contiene una ruta donde la clave `<app>.access` puede resultar verdadera desde la lógica de sesión compartida.
+
+El contrato final exige separar:
+
+```text
+app presentation eligibility
+≠
+actor permission
+≠
+device permission ceiling
+```
+
+La aplicación efectiva es condición necesaria, no concesión.
+
+#### 65. VISO — techo y clasificación ausentes
+
+El baseline auditado no demuestra resolución de:
+
+```text
+capability_package_code
+effective device permission ceiling
+shared_device_requirement
+STRONG reauthentication
+NOT_ALLOWED enforcement
+```
+
+Esas dimensiones deberán incorporarse en la futura unidad física aplicable.
+
+#### 66. VISO — resultado del diagnóstico
+
+El baseline se clasifica:
+
+```text
+PARTIAL_SHARED_DEVICE_CONTROL
+```
+
+porque reconoce identidad técnica y aplicaciones, pero no demuestra todavía la intersección completa entre:
+
+```text
+human actor authority
+∩
+device restrictions
+```
+
+No se considera cumplimiento de `AUTH-SRV-010` hasta la futura materialización.
+
+#### 67. Lineage obligatorio
+
+Cada futura unidad deberá conservar:
+
+```text
+surface_identity
+→ principal_type
+→ technical_principal
+→ device_id
+→ device_status
+→ template/package version
+→ effective applications
+→ actor_session_id
+→ effective_actor
+→ authorization_mode
+→ required_permission_key
+→ prior site/area/shift/role context
+→ shared_device_requirement
+→ effective device permission ceiling
+→ device territory policy
+→ strong reauth result
+→ device validation result
+→ downstream state/cross-territory gates
+→ effect
+```
+
+#### 68. Materialización futura
+
+Cada instancia:
+
+```text
+AUTH-SRV-010::<implementation_unit_id>
+```
+
+deberá registrar como mínimo:
+
+```text
+implementation_unit_id
+repository
+commit_before
+surface_identity[]
+write_operation[]
+principal_type
+technical_principal_source
+device_source
+device_id
+device_status
+device_template_version
+effective_applications[]
+actor_session_source
+actor_session_id
+effective_actor_source
+authorization_mode
+required_permission_key[]
+shared_device_requirement[]
+device_permission_package
+effective_device_permission_keys[]
+device_site_policy
+device_area_policy
+strong_reauth_rule
+strong_reauth_source
+client_device_fields[]
+privileged_client_usage
+offline_mode
+package_id[]
+change_set
+rollback
+validation_commands
+evidence
+commit_after
+```
+
+#### 69. Evidencia mínima de una futura unidad
+
+La materialización deberá demostrar, cuando aplique:
+
+1. sesión personal no recibe `device_context`;
+2. dispositivo inexistente o ambiguo → deny;
+3. dispositivo inactivo, suspendido o revocado → deny empresarial;
+4. dispositivo sin actor puede conservar superficie técnica, no acción empresarial;
+5. sesión de actor ausente → deny empresarial;
+6. sesión de actor expirada → deny;
+7. actor de sesión distinto del actor efectivo → deny;
+8. varias sesiones incompatibles → deny;
+9. aplicación no efectiva → deny;
+10. aplicación efectiva no concede `<app>.access`;
+11. clave fuera del techo → deny;
+12. instancia no amplía paquete de plantilla;
+13. clave nueva no entra automáticamente al paquete;
+14. `NOT_ALLOWED` → deny;
+15. `STANDARD` conserva permiso y contexto del actor;
+16. `STRONG` exige reautenticación personal fuerte;
+17. PIN ligero no satisface `STRONG`;
+18. reautenticación no se transfiere al cambiar actor;
+19. `navigation_role` no concede rol ni permiso;
+20. sede o área del cliente no sustituyen la política del dispositivo;
+21. área fija o permitida solo restringe;
+22. carril administrativo no recibe turno por inferencia;
+23. carril operativo conserva T/T+C y rol del actor;
+24. actor cambia durante la acción → deny/restart;
+25. contexto stale se reautoriza;
+26. mutación offline sin contrato explícito → deny;
+27. llamada directa produce la misma decisión que la interfaz;
+28. auditoría puede reconstruir principal técnico, dispositivo, sesión y actor.
+
+#### 70. Rollback
+
+El rollback de una futura unidad deberá restaurar únicamente el mecanismo técnico anterior sin:
+
+- convertir el dispositivo en actor empresarial;
+- permitir acciones sin actor humano;
+- reintroducir `navigation_role` como autoridad;
+- ampliar el paquete de una instancia;
+- aceptar wildcards de permisos;
+- convertir aplicación permitida en permiso;
+- degradar `STRONG` a PIN ligero;
+- habilitar claves `NOT_ALLOWED`;
+- convertir sede o área del dispositivo en territorio del actor;
+- conservar autoridad residual entre trabajadores;
+- borrar historial de sesiones o eventos.
+
+#### 71. Criterios de aceptación
+
+`AUTH-SRV-010` queda documentalmente satisfecha cuando:
+
+1. identidad técnica y actor humano permanecen separados;
+2. la instancia se resuelve desde el principal técnico en servidor;
+3. estado activo y configuración vigente son condiciones obligatorias;
+4. una terminal sin actor no ejecuta acciones empresariales;
+5. la sesión de actor se resuelve canónicamente y coincide con el actor efectivo;
+6. solo un actor utilizable participa por dispositivo;
+7. la sesión de actor no sustituye turno, check-in, rol ni permiso;
+8. el dispositivo no tiene turno ni check-in;
+9. las aplicaciones efectivas restringen pero no conceden;
+10. el techo de permisos usa claves exactas y la instancia solo reduce;
+11. claves nuevas quedan denegadas hasta versionado explícito;
+12. `STANDARD`, `STRONG` y `NOT_ALLOWED` se aplican sin degradación;
+13. PIN ligero no satisface `STRONG`;
+14. sede y área del dispositivo solo restringen conforme a su política;
+15. carriles administrativos y operativos permanecen separados;
+16. el contexto de dispositivo no reabre decisiones de `AUTH-SRV-005..009`;
+17. cambio de actor invalida el contexto anterior;
+18. Server Actions, API y RPC reconstruyen el dispositivo en servidor;
+19. las mutaciones offline quedan denegadas salvo contrato futuro explícito;
+20. las brechas observadas del baseline VISO quedan identificadas;
+21. se preservan los handoffs a estado actual y cruces territoriales;
+22. no se autorizan cambios físicos desde el marcador global;
+23. no se crean ni modifican requisitos de prueba.
+
+#### 72. Límites
+
+Este marcador no certifica todavía:
+
+- estado mutable actual del recurso;
+- transición de estado de la entidad;
+- autorización cross-site;
+- autorización cross-area;
+- ciclo completo de enrolamiento del dispositivo;
+- duración numérica definitiva de sesión;
+- mecanismo técnico definitivo de PIN, passkey o MFA;
+- heartbeat físico;
+- rotación de credenciales;
+- revocación física completa;
+- validación física de las instancias observadas;
+- implementación final de paquetes de capacidades;
+- RLS;
+- grants;
+- `SECURITY DEFINER`;
+- auditoría completa;
+- atomicidad;
+- idempotencia;
+- contrato final de errores.
+
+Estas responsabilidades conservan sus owners canónicos.
+
+#### 73. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                                                                                                                             |
+| --------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | no se ejecutó build durante el desarrollo documental                                                                                                                                                                                                                                                                  |
+| LOCAL     | `NOT_EXECUTED`   | no se ejecutaron comandos contra el checkout del usuario                                                                                                                                                                                                                                                              |
+| REMOTA    | `PASS`           | se auditaron en solo lectura la continuidad vigente, la topología del Bloque J, el owner de `AUTH-SRV-010`, los contratos canónicos de dispositivo compartido, contexto de dispositivo, compatibilidad de permisos, techo de capacidades, registro 04A aplicable, infraestructura Supabase versionada y baseline VISO |
+| OPERATIVA | `NOT_APPLICABLE` | el marcador no cambia operación real                                                                                                                                                                                                                                                                                  |
+| FÍSICA    | `NOT_APPLICABLE` | no existe instancia física autorizada para esta tarea                                                                                                                                                                                                                                                                 |
+
+#### 74. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** la intersección entre autoridad del actor y límites del dispositivo, la atribución a un humano real, la clasificación `STANDARD`/`STRONG`/`NOT_ALLOWED`, el techo exacto de permisos, la invalidación de contexto y la revalidación server-side ya disponen de cobertura canónica vigente. `AUTH-SRV-010` especifica el gate de servidor que consumirá esa cobertura y no introduce una obligación verificable sin requisito existente.
+
+#### 75. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificar el registro vigente:
+
+- `TREQ-AUTH-011` — la autoridad desde dispositivo compartido es la intersección entre límites del dispositivo y permisos del trabajador identificado;
+- `TREQ-AUTH-013` — toda mutación revalida en servidor principal, actor, permiso, territorio, contexto y estado requerido;
+- `TREQ-AUTH-014` — cambio de trabajador, dispositivo o contexto invalida decisiones y autoridad derivada;
+- `TREQ-AUTH-059` — el techo efectivo del dispositivo es la intersección entre plantilla, reducción de instancia, aplicaciones y catálogo;
+- `TREQ-AUTH-060` — las membresías del paquete utilizan claves canónicas exactas;
+- `TREQ-AUTH-061` — aplicaciones y claves del techo deben permanecer coherentes sin autorización implícita;
+- `TREQ-AUTH-062` — cada acción intersecta actor, techo, aplicación, modo, territorio, recurso, prerrequisitos y denegaciones;
+- `TREQ-AUTH-063` — `STANDARD`, `STRONG` y `NOT_ALLOWED` conservan sus requisitos sin degradación.
+
+Estas referencias son trazabilidad heredada y no representan requisitos creados o modificados por `AUTH-SRV-010`.
+
+#### 76. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SRV-009 — Validar rol operativo cuando corresponda`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SRV-010 — Validar dispositivo compartido`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SRV-011 — Validar estado actual de la entidad`
+
+
 ### [ ] AUTH-SRV-011 — Validar estado actual de la entidad
 ### [ ] AUTH-SRV-012 — Evitar operaciones entre sedes no autorizadas
 ### [ ] AUTH-SRV-013 — Evitar operaciones entre áreas no autorizadas
