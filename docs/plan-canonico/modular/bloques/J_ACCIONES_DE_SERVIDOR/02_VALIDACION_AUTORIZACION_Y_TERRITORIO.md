@@ -5354,7 +5354,1234 @@ Estas referencias son trazabilidad heredada y no representan requisitos creados 
 `AUTH-SRV-009 — Validar rol operativo cuando corresponda`
 
 
-### [ ] AUTH-SRV-009 — Validar rol operativo cuando corresponda
+### ✅ AUTH-SRV-009 — Validar rol operativo cuando corresponda
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-SRV-008 — Validar turno cuando corresponda
+**Tarea siguiente:** AUTH-SRV-010 — Validar dispositivo compartido
+**Tipo de tarea:** Contrato global con materialización por unidad (`PER_IMPLEMENTATION_UNIT`) — contrato de rol operativo para que toda escritura protegida que utilice el carril operativo resuelva en servidor el rol operativo efectivo exclusivamente desde el turno publicado y vigente del actor, valide su identidad canónica, habilitación territorial y compatibilidad con la capacidad exacta, y falle cerrado ante ausencia, inactividad, ambigüedad, incompatibilidad territorial o sustitución por rol base, perfil, interfaz o dispositivo
+**Bloque:** BLOQUE J — Protección de acciones de servidor
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global; las futuras materializaciones ocurren únicamente mediante `AUTH-SRV-009::<implementation_unit_id>` después de que `DELIV-PKG-025::<package_id>` asigne la unidad y el paquete propietario supere `E5-GATE-008::<package_id>`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato obligatorio para determinar cuándo una escritura necesita rol operativo y, cuando lo necesita, cuál rol operativo efectivo participa realmente en la autorización.
+
+La regla principal queda:
+
+```text
+administrative_lane
+→ operational_role_not_required_by_default
+
+operational_lane
+→ valid_effective_operational_role_required
+```
+
+Un rol operativo válido es un prerrequisito de contexto.
+
+No autoriza por sí solo la escritura.
+
+#### 2. Handoff recibido de `AUTH-SRV-008`
+
+La tarea anterior entrega como mínimo:
+
+```text
+required_permission_key
+authorization_mode
+validated_target_site_id
+target_area_id
+shift_requirement
+effective_shift_id
+shift_site_id
+shift_area_id
+shift_operational_role
+shift_resolution_result
+active_attendance_requirement
+active_attendance_result
+```
+
+`AUTH-SRV-009` añade:
+
+```text
+operational_role_requirement
+effective_operational_role
+operational_role_catalog_result
+operational_role_site_result
+operational_role_area_result
+operational_role_permission_basis
+operational_role_validation_result
+```
+
+No reabre la selección del turno.
+
+#### 3. Pregunta contractual propietaria
+
+Esta tarea responde:
+
+```text
+¿ESTA ESCRITURA REQUIERE ROL OPERATIVO?
+```
+
+y, cuando la respuesta es sí:
+
+```text
+¿EL ROL DEL TURNO ES UN ROL OPERATIVO CANÓNICO,
+VIGENTE Y HABILITADO PARA ESTE TERRITORIO?
+```
+
+No decide todavía:
+
+```text
+qué dispositivo compartido puede intervenir
+qué estado del recurso admite la mutación
+si puede cruzar entre sedes
+si puede cruzar entre áreas
+```
+
+Esas decisiones permanecen en `AUTH-SRV-010` a `AUTH-SRV-013`.
+
+#### 4. Separación entre rol base y rol operativo
+
+Se mantiene:
+
+```text
+base_role
+≠
+operational_role
+```
+
+El rol base representa una plantilla permanente de capacidades administrativas o laborales base.
+
+El rol operativo representa una función temporal ejercida durante una jornada concreta.
+
+No se fusionan.
+
+#### 5. Fuente del rol operativo efectivo
+
+La fuente autoritativa es:
+
+```text
+effective_shift.operational_role
+```
+
+donde `effective_shift` es el turno ya validado por `AUTH-SRV-008`.
+
+Por tanto:
+
+```text
+valid_effective_shift
+→ operational_role
+→ effective_operational_role
+```
+
+Sin turno operativo válido:
+
+```text
+effective_operational_role = null
+```
+
+#### 6. Catálogo canónico
+
+El rol resuelto debe existir en:
+
+```text
+public.operational_roles
+```
+
+La coincidencia es por código canónico exacto.
+
+No por:
+
+- etiqueta;
+- traducción;
+- descripción;
+- coincidencia parcial;
+- alias no registrado;
+- nombre de pantalla;
+- cargo contractual.
+
+#### 7. Habilitación territorial
+
+La habilitación territorial del rol se resuelve mediante:
+
+```text
+public.site_operational_roles
+```
+
+El rol efectivo debe ser compatible con:
+
+```text
+validated_target_site_id
+target_area_id when required
+```
+
+La existencia del código en el catálogo global no demuestra que pueda usarse en cualquier sede o área.
+
+#### 8. Permisos del rol operativo
+
+La relación canónica entre rol operativo y capacidades se expresa mediante:
+
+```text
+public.operational_role_permissions
+```
+
+La tarea no redefine `required_permission_key`.
+
+Esa clave llega fijada por `AUTH-SRV-005`.
+
+`AUTH-SRV-009` verifica únicamente que el carril operativo pueda sostener esa capacidad dentro del contexto ya resuelto.
+
+#### 9. Rol válido no equivale a permiso suficiente
+
+Se mantiene:
+
+```text
+valid_operational_role
+≠
+automatic_permission
+```
+
+La decisión completa exige además:
+
+```text
+required_permission_key
++
+permission decision
++
+validated territory
++
+valid shift context
++
+valid operational role
++
+remaining gates
+```
+
+La mera pertenencia a un oficio no concede una acción.
+
+#### 10. Permiso válido no elimina el rol requerido
+
+Cuando la capacidad utiliza un carril operativo:
+
+```text
+permission_allowed
++
+invalid_operational_role
+=
+DENY
+```
+
+Una concesión, excepción o alcance que pueda participar legítimamente en la decisión de permiso no convierte un rol operativo inválido en válido.
+
+#### 11. Carril administrativo
+
+Cuando la capacidad se autoriza exclusivamente por el carril administrativo y su contrato no exige contexto operativo:
+
+```text
+operational_role_requirement = NOT_REQUIRED
+```
+
+No se exige al actor adoptar un oficio operativo para ejecutar administración.
+
+#### 12. Carril operativo
+
+Cuando la capacidad se evalúa por el carril operativo:
+
+```text
+operational_role_requirement = REQUIRED
+```
+
+Debe existir:
+
+```text
+valid shift
++
+effective operational role
++
+territorial enablement
+```
+
+antes de continuar.
+
+#### 13. `BASE_OR_OPERATIONAL`
+
+En una capacidad que admita ambos carriles:
+
+```text
+BASE valid
+→ puede autorizar sin rol operativo
+
+OPERATIONAL path
+→ exige rol operativo válido
+```
+
+Los carriles se evalúan independientemente.
+
+El rol base no toma prestado el rol operativo.
+
+El rol operativo no transforma el carril base.
+
+#### 14. `BASE_AND_OPERATIONAL`
+
+Cuando ambos carriles son obligatorios:
+
+```text
+base authorization
++
+operational authorization
+```
+
+deben satisfacerse de forma independiente.
+
+La existencia de rol base válido no elimina el rol operativo.
+
+La existencia de rol operativo válido no elimina la concesión base requerida.
+
+#### 15. Rol del turno
+
+Para una operación real:
+
+```text
+shift.operational_role
+=
+effective_operational_role
+```
+
+Un rol enviado separadamente por el cliente no puede sustituirlo.
+
+#### 16. Rol solicitado desde cliente
+
+Valores como:
+
+```text
+role
+roleCode
+operationalRole
+roleContext
+navigation_role
+```
+
+son, como máximo:
+
+```text
+SELECTOR_INTENT
+```
+
+cuando forman parte de una solicitud legítima de planificación o navegación.
+
+No constituyen autoridad de una mutación operativa.
+
+#### 17. Rol base del empleado
+
+```text
+public.employees.role
+```
+
+no sustituye:
+
+```text
+effective_shift.operational_role
+```
+
+Queda prohibido:
+
+```text
+employees.role
+→ operational role fallback
+```
+
+para autorizar una capacidad operativa.
+
+#### 18. Perfil operativo predeterminado
+
+Un perfil como:
+
+```text
+default_operational_role
+```
+
+puede sugerir un rol al planificar un turno.
+
+No demuestra qué función está ejecutando actualmente el actor.
+
+La regla queda:
+
+```text
+default_operational_role
+→ planning_default
+
+effective_shift.operational_role
+→ authorization_context
+```
+
+#### 19. Último rol utilizado
+
+El último rol ejercido por el actor no es fallback.
+
+```text
+previous_shift.operational_role
+≠
+current_effective_operational_role
+```
+
+La ausencia de un rol actual no se completa con historial.
+
+#### 20. Rol de navegación
+
+Un valor de navegación:
+
+```text
+navigation_role
+```
+
+puede afectar presentación o selección inicial.
+
+No puede convertirse en:
+
+```text
+effective_actor
+effective_operational_role
+permission
+```
+
+#### 21. Dispositivo compartido
+
+Un dispositivo no posee rol operativo humano propio.
+
+La futura `AUTH-SRV-010` podrá restringir la acción mediante configuración del dispositivo.
+
+No puede:
+
+- crear un rol operativo;
+- reemplazar el rol del turno;
+- ampliar el rol del actor;
+- prestar su `navigation_role` como autoridad.
+
+#### 22. Actor efectivo
+
+El rol operativo pertenece al:
+
+```text
+effective_actor
+```
+
+No al principal técnico ni al usuario administrativo que haya iniciado una sesión técnica distinta.
+
+El rol debe poder atribuirse al mismo actor cuyo turno fue resuelto.
+
+#### 23. Rol y trabajador objetivo
+
+En una operación administrativa sobre otro trabajador:
+
+```text
+ACTOR
+→ quien administra
+
+TARGET EMPLOYEE
+→ persona configurada
+```
+
+El rol operativo asignado al turno del trabajador objetivo describe el recurso laboral que se está planificando.
+
+No se convierte en rol operativo del actor administrador.
+
+#### 24. Turno laboral
+
+Todo turno laboral que deba crear contexto operativo requiere un rol operativo válido.
+
+Un turno de descanso no crea rol operativo efectivo.
+
+#### 25. Rol inexistente
+
+Si:
+
+```text
+effective_shift.operational_role
+```
+
+no existe en `public.operational_roles`:
+
+```text
+OPERATIONAL_ROLE_NOT_FOUND
+→ DENY
+```
+
+No se intenta corregir mediante nombre parecido o rol base.
+
+#### 26. Rol inactivo
+
+Un rol operativo inactivo no puede producir autoridad nueva.
+
+```text
+inactive_operational_role
+→ DENY
+```
+
+El historial del turno puede conservar el código, pero no habilita operación actual.
+
+#### 27. Rol no permitido en la sede
+
+Si el rol existe pero no está habilitado para:
+
+```text
+validated_target_site_id
+```
+
+el resultado es:
+
+```text
+OPERATIONAL_ROLE_NOT_ALLOWED_IN_SITE
+→ DENY
+```
+
+#### 28. Rol no permitido en el área
+
+Cuando el contrato exige área y la habilitación del rol no cubre:
+
+```text
+target_area_id
+```
+
+el resultado es:
+
+```text
+OPERATIONAL_ROLE_NOT_ALLOWED_IN_AREA
+→ DENY
+```
+
+No se sustituye por el área primaria, seleccionada o del dispositivo.
+
+#### 29. Configuración site-wide
+
+Una configuración territorial del rol con:
+
+```text
+area_id = null
+```
+
+puede representar una habilitación explícitamente site-wide.
+
+No significa por omisión:
+
+```text
+all areas automatically authorized
+```
+
+La compatibilidad con una acción area-scoped continúa gobernada por el contrato territorial y de permiso ya resuelto.
+
+#### 30. Área obligatoria por rol
+
+Si el rol operativo exige área:
+
+```text
+effective_operational_role
++
+target_area_id = null
+=
+DENY
+```
+
+No se inventa un área a partir del perfil o de la interfaz.
+
+#### 31. Cardinalidad
+
+La combinación autoritativa debe resolverse de forma determinista.
+
+Cuando existan múltiples configuraciones activas incompatibles para la misma combinación de:
+
+```text
+role
+site
+area semantics
+```
+
+sin una regla canónica única:
+
+```text
+OPERATIONAL_ROLE_AMBIGUOUS
+→ DENY
+```
+
+#### 32. Código exacto
+
+La comparación de autorización usa identidad exacta:
+
+```text
+canonical_role_code === effective_operational_role
+```
+
+Quedan fuera de autorización patrones como:
+
+```text
+contains
+startsWith
+substring match
+label similarity
+normalized display name
+```
+
+#### 33. Heurísticas de planificación
+
+Una heurística puede comparar nombres o aproximar compatibilidades para sugerir programación.
+
+Esa lógica puede servir para:
+
+```text
+planning
+recommendation
+historical inference
+UI suggestion
+```
+
+pero nunca para:
+
+```text
+authorization
+```
+
+Antes de producir efectos, el código debe resolver el rol canónico exacto.
+
+#### 34. Rol administrativo y rol operativo simultáneos
+
+Un mismo actor puede tener:
+
+```text
+base_role
++
+effective_operational_role
+```
+
+sin crear una tercera identidad combinada.
+
+No se crean roles sintéticos como:
+
+```text
+gerente_cajero
+supervisor_bodeguero
+propietario_operativo
+```
+
+La autorización compone carriles, no nombres.
+
+#### 35. Gerencia operativa
+
+Un rol como:
+
+```text
+gerencia_operativa
+```
+
+continúa siendo un rol operativo.
+
+No es un bypass.
+
+Debe cumplir turno, territorio, permiso y demás gates aplicables.
+
+#### 36. Rol transversal
+
+Un rol operativo con alcance funcional transversal no adquiere por ello alcance territorial global.
+
+La sede y el área siguen evaluándose de forma independiente.
+
+#### 37. Cambio de rol durante la jornada
+
+Cuando el rol del turno cambia mediante una transición canónica:
+
+```text
+previous_effective_operational_role
+→ STALE
+```
+
+Toda decisión derivada del rol anterior debe revalidarse antes de una nueva mutación.
+
+La invalidación física de caches y fingerprints conserva su owner específico.
+
+#### 38. Cambio de turno
+
+Un nuevo turno no hereda automáticamente el rol operativo del turno anterior.
+
+La nueva resolución parte del turno actualmente válido.
+
+#### 39. Check-in
+
+El check-in no crea ni elige el rol operativo.
+
+Puede confirmar un contexto laboral vinculado al turno, pero:
+
+```text
+check_in
+≠ operational_role_source
+```
+
+#### 40. Permisos T y T+C
+
+Cuando una capacidad operativa exige:
+
+```text
+T
+```
+
+o:
+
+```text
+T+C
+```
+
+el turno vigente debe contener un rol operativo válido.
+
+`T+C` añade el requisito de check-in activo definido por el contrato previo.
+
+La presencia del check-in no compensa un rol inválido.
+
+#### 41. Server Actions
+
+Una Server Action operativa deberá demostrar:
+
+```text
+effective actor
+→ valid shift
+→ effective shift role
+→ canonical role lookup
+→ site/area role enablement
+→ exact permission context
+→ remaining gates
+→ effect
+```
+
+Una Server Action administrativa puede omitir el gate de rol operativo cuando su carril contractual no lo exige.
+
+#### 42. API routes
+
+Una API mutante no puede confiar en:
+
+```text
+body.role
+body.operationalRole
+query.role
+header role
+```
+
+como autoridad.
+
+Para una acción operativa debe resolver el rol desde el turno efectivo del actor.
+
+#### 43. RPC
+
+Una RPC que evalúe permisos operativos debe recibir o reconstruir un rol operativo ya resuelto de forma canónica.
+
+Una llamada:
+
+```text
+has_operational_role_permission(role_code, ...)
+```
+
+solo es segura cuando `role_code` procede del contexto efectivo y no de un valor manipulable o de navegación.
+
+#### 44. Cliente administrativo y service role
+
+El uso de:
+
+```text
+admin client
+service role
+```
+
+no permite fabricar un rol operativo.
+
+Una acción humana privilegiada debe conservar el actor y su contexto real.
+
+Un proceso técnico autónomo opera bajo su contrato de sistema y no mediante un rol operativo humano inventado.
+
+#### 45. Operaciones offline
+
+Una acción operativa capturada offline debe volver a resolver el rol efectivo al sincronizar cuando el contrato de ejecución exija reautorización fresca.
+
+No puede conservar indefinidamente:
+
+```text
+captured_operational_role
+```
+
+como autoridad.
+
+#### 46. Procesos asíncronos
+
+Un job no puede reutilizar ciegamente el rol operativo que tenía el actor al originar la intención.
+
+Debe actuar bajo una autorización durable explícita o reautorizar según el contrato del proceso.
+
+#### 47. Handoff a `AUTH-SRV-010`
+
+La salida hacia dispositivo compartido queda:
+
+```text
+effective_actor
+authorization_mode
+required_permission_key
+effective_shift_id
+validated_target_site_id
+target_area_id
+effective_operational_role
+operational_role_validation_result
+```
+
+`AUTH-SRV-010` intersecta ese contexto con las restricciones reales del dispositivo.
+
+#### 48. Handoff a `AUTH-SRV-011`
+
+Un rol operativo válido no demuestra que el recurso objetivo esté en un estado mutable.
+
+`AUTH-SRV-011` conserva la validación del estado actual y de la transición.
+
+#### 49. Handoff a `AUTH-SRV-012`
+
+Un rol operativo válido en una sede no concede capacidad para operar otra sede.
+
+`AUTH-SRV-012` conserva el gate cross-site.
+
+#### 50. Handoff a `AUTH-SRV-013`
+
+Un rol operativo válido en un área no concede capacidad para cruzar hacia otra área.
+
+`AUTH-SRV-013` conserva el gate cross-area.
+
+#### 51. Baseline VISO mensual
+
+Se conserva el snapshot:
+
+```text
+vento-group-sas/vento-viso
+8cf7c49a593c748cb6c99dd9b919b6947bcfec14
+```
+
+Superficies relevantes:
+
+```text
+src/app/staff/schedule/month/actions.ts
+src/app/staff/schedule/helpers.ts
+src/lib/auth/operational-session.ts
+src/lib/auth/permissions.ts
+```
+
+#### 52. VISO — `roleContext`
+
+La programación mensual recibe:
+
+```text
+roleContext
+```
+
+y lo separa en:
+
+```text
+roleCode
+areaId
+```
+
+Ese valor es intención de planificación.
+
+No es rol operativo efectivo del administrador que ejecuta la escritura.
+
+#### 53. VISO — matriz operacional
+
+El baseline consulta:
+
+```text
+vento_site_operational_role_matrix_v1
+```
+
+y consume filas con:
+
+```text
+site_id
+area_id
+role_code
+role_label
+role_family
+is_default
+is_active
+```
+
+Para planificación, una fila activa puede resolver el rol que se asignará al turno objetivo.
+
+Ese rol solo será contexto operativo del trabajador cuando el turno aplicable llegue a ser válido conforme a `AUTH-SRV-008`.
+
+#### 54. VISO — persistencia del rol del turno
+
+En creación mensual, el payload utiliza:
+
+```text
+operational_role = matrixRow.role_code
+```
+
+Esto es coherente como asignación del recurso cuando `matrixRow` ha sido resuelta canónicamente para sede y área.
+
+No constituye autorización del actor administrador.
+
+#### 55. VISO — fallback de matriz
+
+El resolver auditado intenta coincidencia exacta por:
+
+```text
+role_code
++
+area_id
+```
+
+y puede caer a:
+
+```text
+default row for role
+```
+
+o a una única fila del rol.
+
+Ese fallback es aceptable únicamente para planificación cuando no contradiga una intención explícita y la resolución sea canónica y determinista.
+
+No puede convertirse en fallback para determinar el rol operativo efectivo de una acción real.
+
+#### 56. VISO — perfiles operativos
+
+El baseline consulta:
+
+```text
+employee_site_operational_profiles.default_operational_role
+```
+
+para apoyar configuración de planificación.
+
+Se conserva:
+
+```text
+profile default
+≠ effective operational role
+```
+
+El perfil no puede autorizar una acción por sí solo.
+
+#### 57. VISO — `OperationalSession` de empleado
+
+El baseline actual resuelve:
+
+```text
+OperationalSession.role
+```
+
+desde:
+
+```text
+employees.role
+```
+
+y no desde:
+
+```text
+effective_shift.operational_role
+```
+
+Por tanto:
+
+```text
+OperationalSession.role
+≠ validated operational role
+```
+
+para una capacidad operativa.
+
+#### 58. VISO — `navigationRole` en dispositivo compartido
+
+El baseline actual obtiene:
+
+```text
+navigationRole
+```
+
+desde:
+
+```text
+shared_operational_devices.navigation_role
+```
+
+y lo usa como `roleCode` al consultar `has_operational_role_permission`.
+
+Ese patrón no satisface este contrato porque:
+
+```text
+device.navigation_role
+≠ effective actor operational role
+```
+
+La futura materialización deberá resolver primero al actor humano y su turno; `AUTH-SRV-010` añadirá después la intersección restrictiva del dispositivo.
+
+#### 59. VISO — empleado y `has_permission`
+
+Para sesiones personales, el baseline invoca:
+
+```text
+has_permission
+```
+
+con sede y área, pero el helper local no demuestra por sí solo que una capacidad operativa haya resuelto:
+
+```text
+effective_shift
+effective_operational_role
+```
+
+Ese gate deberá quedar materializado en la unidad propietaria de la superficie.
+
+#### 60. VISO — `roleMatches`
+
+El helper de planificación contiene una comparación permisiva basada en normalización y coincidencia parcial para señales de planificación.
+
+Esa lógica se clasifica:
+
+```text
+PLANNING_ONLY
+```
+
+y no podrá reutilizarse como comparador de autorización.
+
+La autorización exige código canónico exacto.
+
+#### 61. VISO — brechas concretas del baseline
+
+El snapshot confirma controles útiles:
+
+- matriz operacional activa por sede;
+- `role_code` persistido en turnos laborales;
+- RPC específica `has_operational_role_permission`;
+- separación parcial entre perfil operativo y turno;
+- contexto de sede y área en helpers de permisos.
+
+No demuestra cumplimiento completo porque:
+
+- la sesión operacional del empleado conserva `employees.role`, no el rol del turno;
+- el dispositivo compartido usa `navigation_role` como entrada del permiso operativo;
+- el helper local no resuelve un turno vigente antes de evaluar una capacidad operativa;
+- una heurística de planificación usa coincidencias parciales de rol;
+- el rol del trabajador objetivo en programación y el rol del actor administrador pueden confundirse si no se mantienen separados.
+
+#### 62. Evaluación fail-closed
+
+Cuando el carril exija rol operativo, cualquiera de estos estados bloquea:
+
+```text
+operational_role_required_but_missing
+operational_role_not_found
+operational_role_inactive
+operational_role_shift_mismatch
+operational_role_site_mismatch
+operational_role_area_mismatch
+operational_role_ambiguous
+operational_role_permission_incompatible
+operational_role_resolution_failed
+```
+
+Un fallo técnico de resolución no se degrada a rol base ni a rol de navegación.
+
+#### 63. Lineage obligatorio
+
+Cada futura unidad deberá conservar:
+
+```text
+surface_identity
+→ required_permission_key
+→ authorization_mode
+→ effective_actor
+→ effective_shift_id
+→ shift_operational_role
+→ canonical_operational_role
+→ validated_target_site_id
+→ target_area_id
+→ territorial_role_binding
+→ operational_permission_basis
+→ operational_role_validation_result
+→ downstream device/state/cross-territory gates
+→ effect
+```
+
+#### 64. Materialización futura
+
+Cada instancia:
+
+```text
+AUTH-SRV-009::<implementation_unit_id>
+```
+
+deberá registrar como mínimo:
+
+```text
+implementation_unit_id
+repository
+commit_before
+surface_identity[]
+write_operation[]
+required_permission_key[]
+authorization_mode
+effective_actor_source
+effective_shift_id
+shift_operational_role
+operational_role_catalog_source
+territorial_role_source
+operational_permission_source
+validated_target_site_id
+target_area_id
+area_semantics
+role_resolution_rule
+ambiguity_policy
+client_role_fields[]
+base_role_fallback_present
+profile_role_fallback_present
+device_role_fallback_present
+privileged_client_usage
+offline_or_async_mode
+package_id[]
+change_set
+rollback
+validation_commands
+evidence
+commit_after
+```
+
+#### 65. Evidencia mínima de una futura unidad
+
+La materialización deberá demostrar, cuando aplique:
+
+1. carril administrativo válido funciona sin rol operativo;
+2. carril operativo sin rol → deny;
+3. rol inexistente → deny;
+4. rol inactivo → deny;
+5. rol de otro turno → deny;
+6. rol no permitido en sede → deny;
+7. rol no permitido en área requerida → deny;
+8. rol base no sustituye rol operativo;
+9. perfil predeterminado no sustituye rol operativo;
+10. último rol usado no sustituye rol operativo;
+11. `navigation_role` no sustituye rol del actor;
+12. rol del trabajador objetivo no se convierte en rol del administrador;
+13. código por label o substring no autoriza;
+14. rol válido sin permiso suficiente no autoriza;
+15. permiso suficiente no elimina un rol requerido;
+16. rol site-wide no se interpreta como wildcard accidental;
+17. combinación ambigua → deny;
+18. cambio de turno o rol invalida la decisión anterior;
+19. admin/service role no fabrica rol humano;
+20. llamada directa produce la misma decisión que la interfaz;
+21. sincronización offline no reutiliza rol stale;
+22. dispositivo compartido conserva rol del actor y no de la plantilla.
+
+#### 66. Rollback
+
+El rollback de una futura unidad deberá restaurar únicamente el mecanismo técnico anterior sin:
+
+- volver a usar `employees.role` como rol operativo;
+- volver a usar `navigation_role` como autoridad;
+- convertir perfiles predeterminados en autoridad;
+- permitir coincidencias parciales de código para autorización;
+- eliminar validación territorial del rol;
+- convertir `area_id = null` en wildcard;
+- fusionar rol base y operativo;
+- borrar historial de turnos o roles;
+- retirar evidencia de decisiones ya registradas.
+
+#### 67. Criterios de aceptación
+
+`AUTH-SRV-009` queda documentalmente satisfecha cuando:
+
+1. el rol operativo solo se exige en los carriles cuyo contrato lo requiere;
+2. el carril administrativo no exige rol operativo por inferencia;
+3. el carril operativo resuelve el rol desde el turno efectivo;
+4. `public.operational_roles` queda como catálogo canónico;
+5. `public.site_operational_roles` queda como habilitación territorial;
+6. la relación de permisos operativos se conserva separada de la identidad del rol;
+7. rol válido no equivale a permiso automático;
+8. permiso válido no elimina un rol operativo requerido;
+9. `employees.role` no sustituye el rol del turno;
+10. perfiles predeterminados no sustituyen el rol del turno;
+11. `navigation_role` no constituye autoridad;
+12. el código se compara de forma exacta;
+13. sede y área se validan contra la habilitación territorial del rol;
+14. configuraciones ambiguas fallan cerrado;
+15. un rol site-wide conserva semántica explícita y no wildcard;
+16. el rol del trabajador objetivo y el del actor permanecen separados;
+17. cambio de turno o rol obliga a revalidar contexto;
+18. Server Actions, API y RPC conservan el mismo contrato;
+19. VISO mensual mantiene el rol de planificación separado del rol efectivo del actor;
+20. la brecha de `OperationalSession.role` y `navigationRole` queda explícitamente identificada;
+21. se preservan los handoffs a dispositivo, estado y cruces territoriales;
+22. no se autorizan cambios físicos desde el marcador global;
+23. no se crean ni modifican requisitos de prueba.
+
+#### 68. Límites
+
+Este marcador no certifica todavía:
+
+- identidad y estado final del dispositivo compartido;
+- techo máximo de permisos del dispositivo;
+- sesión física del actor en dispositivo;
+- estado mutable del recurso;
+- autorización cross-site;
+- autorización cross-area;
+- implementación física de `has_operational_role_permission`;
+- implementación física de `has_permission`;
+- RLS;
+- grants;
+- `SECURITY DEFINER`;
+- invalidación física de cachés;
+- auditoría completa;
+- atomicidad;
+- idempotencia;
+- contrato final de errores.
+
+Estas responsabilidades conservan sus owners canónicos.
+
+#### 69. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                                                           |
+| --------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | no se ejecutó build durante el desarrollo documental                                                                                                                                                                                                |
+| LOCAL     | `NOT_EXECUTED`   | no se ejecutaron comandos contra el checkout del usuario                                                                                                                                                                                            |
+| REMOTA    | `PASS`           | se auditaron en solo lectura la continuidad vigente, la topología del Bloque J, el owner de `AUTH-SRV-009`, el modelo canónico de roles base y operativos, los prerrequisitos de autorización, el registro 04A relevante y el snapshot VISO mensual |
+| OPERATIVA | `NOT_APPLICABLE` | el marcador no cambia operación real                                                                                                                                                                                                                |
+| FÍSICA    | `NOT_APPLICABLE` | no existe instancia física autorizada para esta tarea                                                                                                                                                                                               |
+
+#### 70. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** la separación entre carriles base y operativos, la exigencia de rol operativo efectivo, la segregación de funciones, la compatibilidad territorial y la revalidación server-side de rol ya disponen de cobertura canónica vigente. `AUTH-SRV-009` especifica el contrato de enforcement que consumirán esas pruebas y no introduce una obligación verificable sin cobertura existente.
+
+#### 71. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificar el registro vigente:
+
+- `TREQ-AUTH-001` — una lista local o nombre de rol no puede conceder autorización final por sí solo;
+- `TREQ-AUTH-008` — las capacidades operativas exigen rol operativo efectivo dentro del contexto laboral y territorial aplicable;
+- `TREQ-AUTH-010` — las matrices de rol preservan segregación de funciones y las concesiones no neutralizan denegaciones transversales;
+- `TREQ-AUTH-013` — cada mutación revalida en servidor el contexto requerido antes de producir efectos;
+- `TREQ-VISO-042` — persona, sede, área, rol, fechas y alcance se validan nuevamente en servidor.
+
+Estas referencias son trazabilidad heredada y no representan requisitos creados o modificados por `AUTH-SRV-009`.
+
+#### 72. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SRV-008 — Validar turno cuando corresponda`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SRV-009 — Validar rol operativo cuando corresponda`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SRV-010 — Validar dispositivo compartido`
+
+
 ### [ ] AUTH-SRV-010 — Validar dispositivo compartido
 ### [ ] AUTH-SRV-011 — Validar estado actual de la entidad
 ### [ ] AUTH-SRV-012 — Evitar operaciones entre sedes no autorizadas
