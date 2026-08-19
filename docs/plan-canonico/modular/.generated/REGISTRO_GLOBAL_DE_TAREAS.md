@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **993** |
+| Aprobadas | **994** |
 | En propuesta | **0** |
-| No iniciadas | **601** |
+| No iniciadas | **600** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **62.30% (993/1594)** |
+| Porcentaje de completamiento | **62.36% (994/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-SRV-010` — Validar dispositivo compartido | ✅ APROBADA |
-| Tarea actual | `AUTH-SRV-011` — Validar estado actual de la entidad | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-SRV-012` — Evitar operaciones entre sedes no autorizadas | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-SRV-011` — Validar estado actual de la entidad | ✅ APROBADA |
+| Tarea actual | `AUTH-SRV-012` — Evitar operaciones entre sedes no autorizadas | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-SRV-013` — Evitar operaciones entre áreas no autorizadas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -878,7 +878,7 @@
 | ✅ APROBADA | `AUTH-SRV-008` | Validar turno cuando corresponda | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
 | ✅ APROBADA | `AUTH-SRV-009` | Validar rol operativo cuando corresponda | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
 | ✅ APROBADA | `AUTH-SRV-010` | Validar dispositivo compartido | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
-| ⬜ NO INICIADA | `AUTH-SRV-011` | Validar estado actual de la entidad | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
+| ✅ APROBADA | `AUTH-SRV-011` | Validar estado actual de la entidad | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-012` | Evitar operaciones entre sedes no autorizadas | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-013` | Evitar operaciones entre áreas no autorizadas | `bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-014` | Registrar actor real y actor operativo | `bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md` |

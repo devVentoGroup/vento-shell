@@ -7934,7 +7934,1246 @@ Estas referencias son trazabilidad heredada y no representan requisitos creados 
 `AUTH-SRV-011 — Validar estado actual de la entidad`
 
 
-### [ ] AUTH-SRV-011 — Validar estado actual de la entidad
+### ✅ AUTH-SRV-011 — Validar estado actual de la entidad
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-SRV-010 — Validar dispositivo compartido
+**Tarea siguiente:** AUTH-SRV-012 — Evitar operaciones entre sedes no autorizadas
+**Tipo de tarea:** Contrato global con materialización por unidad (`PER_IMPLEMENTATION_UNIT`) — contrato de precondición de estado para que toda escritura protegida sobre una entidad existente resuelva nuevamente en servidor el recurso canónico, lea su estado autoritativo y su versión vigente, verifique que el estado de origen admite el efecto o transición solicitados y falle cerrado ante recurso ausente, estado desconocido, transición incompatible, snapshot obsoleto, conflicto de concurrencia o mutación que intente tratar la interfaz como fuente de estado
+**Bloque:** BLOQUE J — Protección de acciones de servidor
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/02_VALIDACION_AUTORIZACION_Y_TERRITORIO.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
+**Cambios físicos autorizados:** 0 durante el marcador global; las futuras materializaciones ocurren únicamente mediante `AUTH-SRV-011::<implementation_unit_id>` después de que `DELIV-PKG-025::<package_id>` asigne la unidad y el paquete propietario supere `E5-GATE-008::<package_id>`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el gate obligatorio de estado actual para toda escritura empresarial protegida que actúe sobre una entidad existente o pretenda ejecutar una transición de negocio.
+
+La regla vinculante queda:
+
+```text
+RECURSO CANÓNICO ACTUAL
++
+ESTADO AUTORITATIVO ACTUAL
++
+EFECTO EFECTIVO
++
+PREDICADO DE ESTADO
++
+TRANSICIÓN PERMITIDA CUANDO APLIQUE
++
+FRESCURA / CONCURRENCIA VÁLIDA
+=
+WRITE_ELIGIBLE_FOR_NEXT_GATES
+```
+
+Un permiso correcto no autoriza una transición imposible.
+
+#### 2. Handoff recibido de `AUTH-SRV-010`
+
+La tarea anterior entrega como mínimo:
+
+```text
+effective_actor
+authorization_mode
+required_permission_key
+validated_target_site_id
+target_area_id
+effective_shift_id
+effective_operational_role
+device_id
+actor_session_id
+shared_device_requirement
+effective_device_permission_ceiling
+device_validation_result
+strong_reauth_result
+```
+
+`AUTH-SRV-011` añade:
+
+```text
+resource_resolution_result
+resource_id
+resource_version
+current_state_snapshot
+requested_state_effect
+state_predicate
+transition_identity
+state_validation_result
+concurrency_policy
+concurrency_validation_result
+```
+
+No reabre permiso, sede, área, turno, rol operativo ni dispositivo ya validados.
+
+#### 3. Pregunta contractual propietaria
+
+Esta tarea responde:
+
+```text
+¿EN QUÉ ESTADO ESTÁ REALMENTE LA ENTIDAD AHORA?
+```
+
+y:
+
+```text
+¿ESE ESTADO ADMITE EL EFECTO O TRANSICIÓN
+QUE LA ESCRITURA PRETENDE EJECUTAR?
+```
+
+No responde todavía si la operación puede cruzar entre sedes o áreas.
+
+Esas responsabilidades permanecen en `AUTH-SRV-012` y `AUTH-SRV-013`.
+
+#### 4. Estado de interfaz y estado empresarial
+
+Se mantienen separados:
+
+```text
+estado mostrado por UI
+estado enviado por cliente
+estado leído previamente
+estado cacheado
+estado autoritativo actual
+```
+
+Solo el último puede decidir una mutación.
+
+#### 5. Contrato de recurso consumido
+
+Cada capacidad protegida conserva el contrato de recurso aprobado que define, cuando corresponda:
+
+```text
+resource_type
+resource_locator
+subject_resolver
+territory_resolver
+ownership_resolver
+required_sides
+state_predicate
+concurrency_policy
+field_policy
+audit_policy
+```
+
+`AUTH-SRV-011` consume `state_predicate` y `concurrency_policy` sin redefinir el recurso por inferencia.
+
+#### 6. Resolución previa del recurso
+
+Antes de validar estado, el servidor debe resolver la entidad concreta afectada.
+
+La identidad puede provenir de un selector solicitado, pero la entidad completa se obtiene desde la fuente canónica.
+
+Se mantiene:
+
+```text
+requested_resource_id
+→ selector
+
+resolved_resource
+→ authority source
+```
+
+#### 7. Relectura obligatoria
+
+Una entidad existente debe releerse desde la fuente autoritativa antes del efecto.
+
+No basta con reutilizar:
+
+- el objeto cargado al renderizar;
+- el valor incluido en un formulario;
+- una prop de componente;
+- una fila almacenada en cliente;
+- una respuesta anterior de API;
+- una decisión de autorización previa;
+- el estado mostrado por una tabla o modal.
+
+#### 8. `state_snapshot`
+
+La decisión de autorización utiliza un snapshot mínimo de hechos de estado necesarios para decidir.
+
+Puede contener, según el contrato de la capacidad:
+
+```text
+current state
+proposed state
+transition
+effective date
+close condition
+cancellation condition
+receipt condition
+```
+
+El snapshot no es una copia indiscriminada de toda la entidad.
+
+#### 9. Estado actual resuelto en servidor
+
+El estado actual debe derivarse de campos, relaciones o hechos canónicos del recurso.
+
+No podrá sustituirse por:
+
+```text
+status from request
+isDraft from client
+isPublished from UI
+canEdit flag
+button visibility
+route state
+hidden field
+local cache
+```
+
+#### 10. `state_predicate`
+
+Toda mutación sobre una entidad existente debe aplicar el predicado de estado de su contrato cuando la capacidad lo defina.
+
+El predicado responde:
+
+```text
+¿EL RECURSO ACTUAL CUMPLE LAS PRECONDICIONES
+PARA ESTA CAPACIDAD EXACTA?
+```
+
+No es un permiso adicional.
+
+Es una precondición empresarial de la escritura.
+
+#### 11. Estado permitido no equivale a permiso
+
+Se mantiene:
+
+```text
+state_predicate = satisfied
+≠
+permission granted
+```
+
+y:
+
+```text
+permission = granted
+≠
+state_predicate satisfied
+```
+
+Ambas dimensiones deben ser válidas antes del efecto.
+
+#### 12. Estado ausente, desconocido e inaplicable
+
+Se distinguen:
+
+```text
+STATE_NOT_APPLICABLE
+STATE_RESOLVED
+STATE_UNRESOLVED
+STATE_CONFLICT
+```
+
+La ausencia de un predicado solo es válida cuando el contrato de recurso declara explícitamente que el estado no participa.
+
+No se interpreta `null` como “cualquier estado”.
+
+#### 13. Recurso inexistente
+
+Cuando una operación requiere una entidad existente y el resolver no la encuentra:
+
+```text
+RESOURCE_NOT_FOUND
+→ DENY / NO EFFECT
+```
+
+No se crea una entidad sustituta ni se convierte la operación en `create` por inferencia.
+
+#### 14. Creación de una entidad nueva
+
+Una creación legítima no posee todavía un estado actual de la nueva fila.
+
+Por tanto, el gate valida:
+
+```text
+resource absence / uniqueness when required
++
+parent or referenced entities
++
+allowed birth state
++
+creation invariant
+```
+
+No inventa un “estado anterior” ficticio.
+
+#### 15. Estado inicial de creación
+
+El estado inicial de una entidad nueva debe provenir del contrato del recurso o del proceso.
+
+El cliente puede solicitar una intención de creación.
+
+No puede seleccionar libremente un estado inicial privilegiado que salte etapas.
+
+#### 16. Escritura sobre entidad existente
+
+Para `update`, `delete`, `cancel`, `publish`, `approve`, `receive`, `close`, `revoke` u otro efecto equivalente, el recurso se considera existente y requiere estado actual autoritativo cuando el contrato lo establezca.
+
+La semántica empresarial prevalece sobre el verbo técnico.
+
+#### 17. Efecto efectivo y transición
+
+La tarea consume el efecto reconstruido por `AUTH-SRV-004`.
+
+La relación queda:
+
+```text
+effective_mutation
++
+current_state_snapshot
+→ requested_state_effect
+```
+
+El servidor determina si existe una transición de negocio y cuál es.
+
+#### 18. Estado de origen
+
+Toda transición debe declarar un estado o conjunto de estados de origen admitidos por el contrato correspondiente.
+
+Si:
+
+```text
+current_state
+∉
+allowed_origin_states
+```
+
+entonces:
+
+```text
+INVALID_STATE_FOR_OPERATION
+→ DENY
+```
+
+#### 19. Estado de destino
+
+Cuando la operación produce un nuevo estado, el destino debe estar admitido por la transición canónica.
+
+No se acepta:
+
+```text
+arbitrary target status
+```
+
+enviado por cliente.
+
+#### 20. Transición exacta
+
+Una transición se evalúa conceptualmente como:
+
+```text
+process/resource
++
+origin state
++
+business effect
++
+destination state
+```
+
+No como:
+
+```text
+PATCH status = client_value
+```
+
+#### 21. Transición inexistente
+
+Si el proceso o contrato no define una transición entre el origen real y el destino solicitado:
+
+```text
+TRANSITION_NOT_ALLOWED
+→ DENY
+```
+
+Un permiso administrativo amplio no crea una transición inexistente.
+
+#### 22. Guard de estado de origen
+
+Las transiciones canónicas de proceso exigen comprobar que la instancia:
+
+```text
+exists
+belongs to the expected process/resource
+is currently in the expected origin state
+```
+
+La comprobación ocurre nuevamente al ejecutar el comando.
+
+#### 23. Estado actual y estado propuesto
+
+Se mantienen separados:
+
+```text
+current_state
+≠
+proposed_state
+```
+
+El estado propuesto expresa el resultado buscado.
+
+No sustituye el estado actual leído desde servidor.
+
+#### 24. Estados terminales
+
+Una entidad en estado terminal no vuelve automáticamente a un estado previo por recibir una mutación genérica.
+
+Cualquier reapertura, reversa o nueva revisión debe existir como transición canónica explícita.
+
+#### 25. Ciclos y reaperturas
+
+Cuando un proceso permite ciclo, revisión o retorno, la operación debe seguir la transición aprobada.
+
+No se reescriben hechos históricos para simular que la transición anterior nunca ocurrió.
+
+#### 26. Omisiones de estados intermedios
+
+Un salto de estado solo puede realizarse cuando el proceso lo declare expresamente como transición válida o bypass justificado.
+
+No se permite saltar estados porque la interfaz no los muestre.
+
+#### 27. Eliminación física
+
+Una eliminación física solo es válida cuando el contrato del recurso y su estado actual la permiten.
+
+La existencia de permiso `delete` no implica:
+
+```text
+DELETE ANY STATE
+```
+
+Un recurso publicado, aprobado, contabilizado, recibido, cerrado o equivalente puede requerir cancelación, reversa, retiro o nueva revisión en lugar de borrado físico.
+
+#### 28. Cancelación
+
+`cancel` es una acción empresarial distinta de `delete`.
+
+Debe validar:
+
+```text
+current state
++
+cancellation transition
++
+business conditions
+```
+
+y conservar la evidencia que corresponda a su owner de auditoría.
+
+#### 29. Publicación
+
+`publish` es una transición empresarial.
+
+Debe validar:
+
+```text
+current state is publishable
++
+publication preconditions
++
+current version is fresh
+```
+
+No puede limitarse a cambiar un timestamp enviado por cliente.
+
+#### 30. Aprobación
+
+`approve` exige que el recurso se encuentre en un estado aprobable y que la transición esté definida.
+
+La autoridad para aprobar no permite aprobar algo ya cerrado, retirado, reemplazado o incompatible.
+
+#### 31. Recepción y handoff
+
+Cuando una transición representa entrega, recepción, aceptación o handoff, el estado actual debe demostrar que la contraparte está realmente en la etapa pendiente correspondiente.
+
+Las validaciones de ambos lados territoriales continúan en tareas posteriores.
+
+#### 32. Operaciones compuestas
+
+Si una solicitud produce varias transiciones o modifica varias entidades, cada entidad debe satisfacer su propio predicado de estado antes del primer efecto irreversible.
+
+No se usa el estado válido de una fila para justificar las demás.
+
+#### 33. Operaciones masivas
+
+Una operación masiva no convierte el estado en una validación de conjunto genérica.
+
+Para cada recurso:
+
+```text
+resolve resource
+→ resolve current state
+→ validate state predicate
+```
+
+Si el contrato exige comportamiento todo-o-nada y una fila falla, no se autoriza el lote parcial.
+
+#### 34. Conjunto heterogéneo
+
+Si un lote contiene:
+
+```text
+draft
+published
+cancelled
+other incompatible state
+```
+
+la operación no debe filtrar silenciosamente los estados incompatibles cuando el contrato del comando exige que el conjunto solicitado sea válido completo.
+
+Cualquier filtrado permisible debe ser parte explícita de la semántica del comando.
+
+#### 35. Versión del recurso
+
+Cuando el recurso exponga versión autoritativa:
+
+```text
+resource_version
+```
+
+la decisión debe asociarse a esa versión.
+
+Una versión enviada por cliente funciona como expectativa de concurrencia.
+
+No como fuente del estado actual.
+
+#### 36. Políticas de concurrencia
+
+El contrato del recurso puede exigir mecanismos como:
+
+```text
+EXPECTED_VERSION
+UPDATED_AT
+LOCK
+SNAPSHOT
+IDEMPOTENCY_KEY
+```
+
+o su equivalente físico aprobado.
+
+`AUTH-SRV-011` no escoge el mecanismo por conveniencia local.
+
+Consume la política definida para la capacidad y el recurso.
+
+#### 37. Escritura obsoleta
+
+Si la entidad cambió después de que el usuario la observó:
+
+```text
+expected version
+≠
+current version
+```
+
+o existe una contradicción equivalente, la solicitud queda obsoleta.
+
+Resultado:
+
+```text
+STALE_RESOURCE_STATE
+→ NO EFFECT
+```
+
+#### 38. Ventana autorización–escritura
+
+La validación de estado no puede quedar separada del efecto por una ventana que permita que otra transacción cambie la precondición sin ser detectada.
+
+La materialización deberá:
+
+```text
+validate fresh state
+→ bind validation to write
+```
+
+mediante la política de concurrencia aprobada.
+
+#### 39. Cambio concurrente
+
+Si otra operación cambia el recurso entre la lectura y el intento de efecto, la escritura debe:
+
+```text
+fail as conflict
+or
+re-resolve and re-authorize
+```
+
+según el contrato.
+
+No continúa usando la decisión antigua.
+
+#### 40. Reautorización
+
+Una relectura que detecte cambio de estado invalida la parte de la decisión que dependía de ese estado.
+
+La operación debe reconstruir las condiciones afectadas antes de producir el efecto.
+
+#### 41. Estado y territorio
+
+Un cambio de estado puede alterar el significado territorial del recurso.
+
+`AUTH-SRV-011` detecta el cambio de estado.
+
+Los cruces entre sedes o áreas que resulten de la operación se validan después en `AUTH-SRV-012` y `AUTH-SRV-013`.
+
+#### 42. Estado y actor
+
+Un cambio de estado no concede nueva autoridad al actor.
+
+Si el nuevo estado exige otra capacidad, aprobación, rol o participante, la operación debe satisfacer ese contrato exacto.
+
+#### 43. Estado y dispositivo compartido
+
+El hecho de operar desde un dispositivo válido no modifica la máquina de estados del recurso.
+
+Se mantiene:
+
+```text
+device valid
+≠
+state transition valid
+```
+
+#### 44. Estado y simulación
+
+Una simulación puede calcular hipotéticamente una transición permitida o denegada.
+
+No puede convertir el resultado simulado en estado actual ni ejecutar la mutación real.
+
+La protección específica de simulación conserva su owner posterior.
+
+#### 45. Campos de estado controlados por cliente
+
+Campos como:
+
+```text
+status
+state
+phase
+published
+approved
+cancelled
+closed
+resource_version
+updated_at
+```
+
+recibidos desde cliente se tratan como intención, selector o expectativa.
+
+Nunca como confirmación de la realidad actual.
+
+#### 46. Server Actions
+
+Una Server Action que modifica una entidad existente deberá demostrar:
+
+```text
+effective mutation
+→ resolved resource
+→ current server-side state
+→ state predicate
+→ allowed transition
+→ concurrency validation
+→ remaining gates
+→ effect
+```
+
+La página que originó la acción no sustituye la relectura.
+
+#### 47. API routes
+
+Un endpoint mutante debe resolver la entidad antes del efecto.
+
+No se acepta que:
+
+```text
+body.status
+body.published
+body.currentState
+```
+
+decidan si la mutación es válida.
+
+Los valores de cliente pueden expresar el cambio solicitado y una expectativa de versión.
+
+#### 48. RPC
+
+Una RPC mutante debe aplicar o recibir de forma segura la misma precondición de estado.
+
+Una función privilegiada no puede omitir la validación porque la capa llamante ya mostró una UI compatible.
+
+#### 49. Cliente administrativo y `service_role`
+
+Una credencial privilegiada puede ejecutar técnicamente una operación que RLS ordinaria impediría.
+
+Por ello, el gate de estado sigue siendo obligatorio antes del efecto.
+
+Se mantiene:
+
+```text
+service_role
+≠
+state transition authorization
+```
+
+#### 50. RLS y constraints
+
+RLS, constraints y triggers pueden reforzar invariantes de estado.
+
+No sustituyen el contrato de Server Action, API o RPC cuando el consumidor necesita resolver y explicar la precondición antes del efecto.
+
+La materialización física definitiva permanece en sus owners de base de datos y paquete.
+
+#### 51. Colas y operación diferida
+
+Una operación encolada no conserva indefinidamente el estado observado al originarse.
+
+Antes de ejecutar la mutación real debe releer:
+
+```text
+current resource
+current state
+current version
+```
+
+y volver a validar la transición aplicable.
+
+#### 52. Operación offline
+
+Una intención generada offline no autoriza con el snapshot local.
+
+Al sincronizar:
+
+```text
+offline intent
+→ current server-side resource
+→ fresh state validation
+→ authorization
+→ effect
+```
+
+Si el recurso cambió, la operación falla o entra al flujo de conflicto previsto.
+
+#### 53. Recurso `UNRESOLVED` o `CONFLICT`
+
+Cuando el resolver de recurso concluye que el estado o identidad no puede determinarse de forma inequívoca:
+
+```text
+UNRESOLVED
+or
+CONFLICT
+→ DENY
+```
+
+No se selecciona la interpretación más permisiva.
+
+#### 54. Fallo técnico de lectura
+
+Un error técnico al obtener el estado no se interpreta como:
+
+```text
+no state restriction
+```
+
+Resultado:
+
+```text
+STATE_RESOLUTION_FAILED
+→ NO EFFECT
+```
+
+La normalización final del error conserva el owner de `AUTH-SRV-016`.
+
+#### 55. Package VISO mensual — responsabilidad específica
+
+Para `VISO-SCHEDULE-MONTHLY-001`, la regla de package de esta tarea es:
+
+```text
+011
+→ borrador / publicado
+```
+
+Por tanto, el gate debe impedir que las operaciones de borrador afecten filas que ya estén publicadas.
+
+#### 56. VISO mensual — dimensiones separadas
+
+En `employee_shifts` se mantienen distintas:
+
+```text
+publication state
+business/runtime status
+shift kind
+```
+
+El campo `status` no sustituye el estado de publicación.
+
+La publicación se observa actualmente mediante:
+
+```text
+published_at
+published_by
+```
+
+#### 57. VISO mensual — borrador
+
+En las superficies auditadas, una fila con:
+
+```text
+published_at IS NULL
+```
+
+se trata como borrador para las operaciones de edición y eliminación de borradores.
+
+Esto no convierte cualquier otro estado de negocio en irrelevante.
+
+#### 58. VISO mensual — publicado
+
+En las superficies auditadas, una fila con:
+
+```text
+published_at IS NOT NULL
+```
+
+se considera ya publicada para las operaciones de planificación mensual que distinguen borrador/publicado.
+
+Una operación de borrador no puede convertirla silenciosamente en editable.
+
+#### 59. VISO mensual — creación
+
+Las acciones auditadas crean nuevas filas de planificación con:
+
+```text
+status = scheduled
+published_at = null
+published_by = null
+```
+
+La creación produce borrador.
+
+No produce publicación implícita.
+
+#### 60. VISO mensual — eliminación individual
+
+`deleteMonthlyDraftShiftAction` restringe físicamente el borrado mediante:
+
+```text
+shift id
+site id
+published_at IS NULL
+```
+
+Ese filtro es evidencia de control parcial existente.
+
+La materialización deberá además integrar permiso exacto, resolución completa del recurso y manejo canónico del conflicto de estado.
+
+#### 61. VISO mensual — eliminación masiva
+
+`deleteMonthlyDraftsAction` limita actualmente el borrado a:
+
+```text
+site
+month interval
+published_at IS NULL
+```
+
+La regla canónica exige que la eliminación masiva afecte únicamente borradores autorizados y que el conjunto solicitado no pueda incluir publicados por manipulación de cliente.
+
+#### 62. VISO mensual — API de actualización
+
+La API auditada permite actualizar una fila existente únicamente cuando:
+
+```text
+id = requested shift
+AND
+published_at IS NULL
+```
+
+Esto impide que el update ordinario modifique una fila publicada mediante ese camino.
+
+El contrato final deberá convertir una ausencia de fila actualizable por conflicto de estado en una decisión semántica segura y consistente.
+
+#### 63. VISO mensual — API de eliminación
+
+La API auditada relee primero:
+
+```text
+id
+employee_id
+shift_date
+site_id
+published_at
+```
+
+y devuelve conflicto cuando la fila ya está publicada.
+
+Después vuelve a condicionar el `delete` a:
+
+```text
+published_at IS NULL
+```
+
+Este patrón se conserva como referencia positiva de doble comprobación.
+
+#### 64. VISO mensual — publicación
+
+`publishMonthAction`:
+
+1. carga las filas del mes;
+2. identifica borradores mediante ausencia de `published_at`;
+3. no vuelve a publicar cuando no existen borradores;
+4. actualiza publicación únicamente sobre filas cuyo `published_at` sigue nulo.
+
+La condición del `update` es necesaria para evitar convertir nuevamente una fila ya publicada durante el mismo comando.
+
+#### 65. VISO mensual — límite mensual
+
+El trigger versionado de límite mensual se activa cuando una fila queda publicada.
+
+Permite conservar borradores sobre el umbral y bloquea publicación cuando el plan mensual laboral excede el límite vigente.
+
+`AUTH-SRV-011` conserva la separación:
+
+```text
+draft may exist
+≠
+draft may be published
+```
+
+El cálculo exacto del límite permanece en los contratos propietarios del package.
+
+#### 66. VISO mensual — `status` no define publicación
+
+Los estados de runtime como:
+
+```text
+scheduled
+confirmed
+completed
+cancelled
+no_show
+```
+
+no reemplazan:
+
+```text
+published_at
+```
+
+como señal física actual de publicación en el baseline.
+
+Un `scheduled` puede requerir distinguir si todavía es borrador o ya fue publicado.
+
+#### 67. VISO mensual — publicación no editable como borrador
+
+La regla canónica heredada establece:
+
+```text
+published revision
+→ not silently edited as draft
+```
+
+Un cambio posterior a una programación publicada debe seguir el mecanismo canónico de nueva revisión y republicación que corresponda.
+
+`AUTH-SRV-011` no inventa aquí la estructura física final de versionado.
+
+#### 68. VISO mensual — baseline parcial
+
+El baseline actual demuestra controles parciales de estado mediante filtros y relecturas de `published_at`.
+
+No demuestra por sí solo, para todas las superficies y carreras posibles:
+
+- un contrato uniforme de estado;
+- una versión autoritativa común;
+- la misma semántica de conflicto;
+- una transición de revisión/publicación completamente materializada;
+- enforcement equivalente en todas las vías privilegiadas.
+
+Por tanto se clasifica:
+
+```text
+PARTIAL_CURRENT_STATE_CONTROL
+```
+
+#### 69. Fallo cerrado
+
+Cuando aplique, cualquiera de estos estados bloquea el efecto:
+
+```text
+resource_not_found
+resource_resolution_failed
+resource_state_unresolved
+resource_state_conflict
+invalid_state_for_operation
+transition_not_allowed
+resource_version_mismatch
+stale_resource_state
+concurrency_conflict
+published_resource_not_draft_editable
+state_changed_before_effect
+```
+
+La nomenclatura técnica final se normalizará bajo `AUTH-SRV-016` sin alterar estas causas conceptuales.
+
+#### 70. Handoff a `AUTH-SRV-012`
+
+`AUTH-SRV-011` entrega:
+
+```text
+resolved resource
+resource version
+current state snapshot
+validated business transition
+state validation result
+concurrency validation result
+```
+
+`AUTH-SRV-012` utiliza el recurso ya validado para comprobar todos los lados de sede afectados por la operación.
+
+#### 71. Handoff a `AUTH-SRV-013`
+
+El estado válido no concede autoridad sobre otra área.
+
+`AUTH-SRV-013` conserva la validación cross-area cuando el recurso o transición involucra más de un área.
+
+#### 72. Handoff a auditoría y errores
+
+La decisión debe conservar suficiente lineage para que las tareas posteriores puedan registrar y normalizar:
+
+```text
+resource identity
+resource version
+state before
+requested effect
+transition
+state validation result
+concurrency result
+decision
+```
+
+La auditoría completa pertenece a `AUTH-SRV-014` y la normalización de errores a `AUTH-SRV-016`.
+
+#### 73. Lineage obligatorio
+
+Cada futura unidad deberá conservar:
+
+```text
+surface_identity
+→ effective_mutation
+→ required_permission_key
+→ prior actor/territory/shift/role/device gates
+→ resource_type
+→ resource_locator
+→ resource_id
+→ resource_resolution_result
+→ resource_version
+→ current_state_snapshot
+→ state_predicate
+→ requested_state_effect
+→ transition_identity
+→ concurrency_policy
+→ concurrency_validation_result
+→ state_validation_result
+→ downstream cross-site/cross-area gates
+→ effect
+```
+
+#### 74. Materialización futura
+
+Cada instancia:
+
+```text
+AUTH-SRV-011::<implementation_unit_id>
+```
+
+deberá registrar como mínimo:
+
+```text
+implementation_unit_id
+repository
+commit_before
+surface_identity[]
+write_operation[]
+resource_type[]
+resource_locator[]
+resource_source[]
+resource_id_source[]
+current_state_source[]
+current_state_fields[]
+state_predicate[]
+allowed_origin_states[]
+requested_state_effect[]
+allowed_transition_source[]
+resource_version_source[]
+concurrency_policy[]
+client_state_fields[]
+bulk_state_policy
+privileged_client_usage
+offline_or_async_mode
+package_id[]
+change_set
+rollback
+validation_commands
+evidence
+commit_after
+```
+
+#### 75. Evidencia mínima de una futura unidad
+
+La materialización deberá demostrar, cuando aplique:
+
+1. recurso inexistente → no effect;
+2. selector manipulado no sustituye relectura canónica;
+3. estado enviado por cliente no autoriza;
+4. estado actual válido + permiso válido → puede continuar;
+5. permiso válido + estado incompatible → deny;
+6. transición inexistente → deny;
+7. estado de origen distinto del esperado → deny;
+8. estado de destino no permitido → deny;
+9. estado desconocido → deny;
+10. conflicto de resolución → deny;
+11. versión obsoleta → conflicto sin efecto;
+12. cambio concurrente antes del write → conflicto o reautorización;
+13. `service_role` no omite el gate;
+14. Server Action directa aplica la misma regla;
+15. API directa aplica la misma regla;
+16. RPC privilegiada conserva la precondición;
+17. operación offline se revalida al sincronizar;
+18. lote no usa una fila válida para justificar otra inválida;
+19. eliminación física no omite estado;
+20. cancelación no se trata como delete genérico;
+21. publicación no se trata como update genérico;
+22. creación no inventa estado anterior;
+23. estado inicial privilegiado no se acepta desde cliente;
+24. en VISO, borrador puede editarse bajo sus demás gates;
+25. en VISO, publicado no puede editarse como borrador;
+26. en VISO, eliminación individual publicada → deny/conflict;
+27. en VISO, eliminación masiva no afecta publicados;
+28. en VISO, publicación solo toma borradores vigentes;
+29. en VISO, `status` y `published_at` permanecen separados;
+30. en VISO, una revisión publicada no se modifica silenciosamente como borrador.
+
+#### 76. Rollback
+
+El rollback de una futura unidad deberá restaurar únicamente el mecanismo técnico anterior sin:
+
+- convertir estado enviado por cliente en autoridad;
+- permitir edición de publicados como borradores;
+- eliminar filtros de estado existentes;
+- permitir transición inexistente;
+- omitir relectura del recurso;
+- ignorar conflictos de versión;
+- convertir `null` en wildcard;
+- degradar un conflicto a éxito;
+- borrar historial de publicación o transición;
+- reintroducir efectos parciales ante estado incompatible.
+
+#### 77. Criterios de aceptación
+
+`AUTH-SRV-011` queda documentalmente satisfecha cuando:
+
+1. toda escritura sobre entidad existente relee el recurso canónico cuando el contrato lo exige;
+2. el estado actual procede del servidor;
+3. cliente, UI y caché no constituyen autoridad de estado;
+4. `state_snapshot` contiene únicamente hechos necesarios para autorizar;
+5. cada capacidad aplica su `state_predicate`;
+6. permiso válido y estado válido permanecen requisitos independientes;
+7. estado desconocido o conflictivo falla cerrado;
+8. recurso inexistente no se convierte en creación por inferencia;
+9. creación utiliza un estado inicial contractual y no inventa estado anterior;
+10. cada transición valida origen, efecto y destino;
+11. una transición inexistente se deniega;
+12. delete, cancel, publish, approve, receive, close y revoke conservan semántica empresarial propia;
+13. operaciones masivas revalidan el estado de cada recurso;
+14. la decisión queda ligada a una versión o política de concurrencia cuando corresponda;
+15. una escritura obsoleta no produce efecto;
+16. una carrera de estado obliga a conflicto o reautorización;
+17. Server Actions, API y RPC aplican el mismo gate;
+18. `service_role` no omite estado;
+19. colas y operaciones offline revalidan al ejecutar;
+20. en VISO se preserva la separación borrador/publicado;
+21. `status` no sustituye `published_at`;
+22. creación mensual produce borrador;
+23. eliminación de borrador no afecta publicados;
+24. publicación toma únicamente borradores todavía vigentes;
+25. un publicado no vuelve a ser borrador editable silenciosamente;
+26. el baseline VISO queda clasificado como control parcial existente;
+27. los cruces territoriales permanecen reservados a `AUTH-SRV-012` y `AUTH-SRV-013`;
+28. no se autorizan cambios físicos desde el marcador global;
+29. no se crean ni modifican requisitos de prueba.
+
+#### 78. Límites
+
+Este marcador no certifica todavía:
+
+- autorización cross-site;
+- autorización cross-area;
+- actor real y actor operativo en auditoría completa;
+- simulación en auditoría;
+- taxonomía final de errores;
+- helpers server compartidos;
+- revisión de acciones administrativas sin turno;
+- implementación física de un esquema universal de versionado;
+- implementación física de locks;
+- RLS;
+- grants;
+- `SECURITY DEFINER`;
+- idempotencia completa;
+- auditoría completa;
+- notificación de publicación;
+- versionado físico definitivo de revisiones de turno;
+- atomicidad global de todos los procesos.
+
+Estas responsabilidades conservan sus owners canónicos.
+
+#### 79. Evidencia de validación
+
+| Clase     | Estado           | Evidencia                                                                                                                                                                                                                                                                                                                                                  |
+| --------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | `NOT_EXECUTED`   | no se ejecutó build durante el desarrollo documental                                                                                                                                                                                                                                                                                                       |
+| LOCAL     | `NOT_EXECUTED`   | no se ejecutaron comandos contra el checkout del usuario                                                                                                                                                                                                                                                                                                   |
+| REMOTA    | `PASS`           | se auditaron en solo lectura la continuidad vigente, el owner de `AUTH-SRV-011`, la topología `PER_IMPLEMENTATION_UNIT`, el contrato canónico de recurso, `state_snapshot` y concurrencia, la matriz canónica de transiciones, el registro 04A AUTH/VISO relevante, el baseline VISO mensual y las migraciones versionadas de publicación y límite mensual |
+| OPERATIVA | `NOT_APPLICABLE` | el marcador no cambia operación real                                                                                                                                                                                                                                                                                                                       |
+| FÍSICA    | `NOT_APPLICABLE` | no existe instancia física autorizada para esta tarea                                                                                                                                                                                                                                                                                                      |
+
+#### 80. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** la validación server-side del estado actual del recurso, el bloqueo de transiciones imposibles, la separación entre guardar borrador y publicar, y la eliminación exclusiva de borradores del package VISO mensual ya disponen de cobertura canónica vigente. `AUTH-SRV-011` especifica el gate de enforcement que consumirá esa cobertura y no introduce una obligación verificable sin requisito existente.
+
+#### 81. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificar el registro vigente:
+
+- `TREQ-AUTH-004` — los evaluadores deben producir decisiones equivalentes para el mismo contexto y no incorporar excepciones locales;
+- `TREQ-AUTH-013` — toda mutación valida en servidor permiso, actor, territorio, contexto, estado actual del recurso y columnas permitidas, bloqueando transiciones imposibles;
+- `TREQ-AUTH-014` — una decisión obsoleta no puede conservar autoridad después de cambios del contexto aplicable;
+- `TREQ-VISO-035` — una proyección sobre el límite puede guardarse como borrador y no publicarse;
+- `TREQ-VISO-037` — guardar borrador y publicar son comandos separados con permisos y resultados distintos;
+- `TREQ-VISO-038` — los conflictos se recalculan en servidor inmediatamente antes de guardar o publicar;
+- `TREQ-VISO-041` — la eliminación masiva afecta únicamente borradores autorizados y conserva auditoría.
+
+Estas referencias son trazabilidad heredada y no representan requisitos creados o modificados por `AUTH-SRV-011`.
+
+#### 82. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SRV-010 — Validar dispositivo compartido`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SRV-011 — Validar estado actual de la entidad`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SRV-012 — Evitar operaciones entre sedes no autorizadas`
+
+
 ### [ ] AUTH-SRV-012 — Evitar operaciones entre sedes no autorizadas
 ### [ ] AUTH-SRV-013 — Evitar operaciones entre áreas no autorizadas
 
