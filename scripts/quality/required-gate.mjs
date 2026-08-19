@@ -12,14 +12,14 @@ export const RUNTIME_EVIDENCE_DIRECTORY = '.delivery/required-gate';
 export const CI018_BRANCH_NAME = 'shell-ci-018-global';
 
 export const CANONICAL_REPOSITORIES = Object.freeze([
-  'devVentoGroup/vento-shell',
-  'devVentoGroup/vento-nexo',
-  'devVentoGroup/vento-fogo',
-  'devVentoGroup/vento-origo',
-  'devVentoGroup/vento-pulso',
-  'devVentoGroup/vento-viso',
-  'devVentoGroup/vento-numera',
-  'devVentoGroup/vento-anima',
+  'vento-group-sas/vento-shell',
+  'vento-group-sas/vento-nexo',
+  'vento-group-sas/vento-fogo',
+  'vento-group-sas/vento-origo',
+  'vento-group-sas/vento-pulso',
+  'vento-group-sas/vento-viso',
+  'vento-group-sas/vento-numera',
+  'vento-group-sas/vento-anima',
 ]);
 
 export const GATE_RESULT_STATES = Object.freeze([
@@ -238,7 +238,7 @@ export function evaluateRequiredGate(input = {}) {
   };
 }
 
-export function validateRequiredGateWorkflow(source, repository = 'devVentoGroup/unknown') {
+export function validateRequiredGateWorkflow(source, repository = 'vento-group-sas/unknown') {
   const text = String(source ?? '').replace(/\r\n?/gu, '\n');
   const errors = [];
   if (!/^name:\s*VENTO Required Gate\s*$/mu.test(text)) errors.push('WORKFLOW_NAME_MISMATCH');
@@ -254,7 +254,7 @@ export function validateRequiredGateWorkflow(source, repository = 'devVentoGroup
   if (/\bgit\s+push\b/u.test(text)) errors.push('GIT_PUSH_FORBIDDEN');
   if (/\bgh\s+pr\s+merge\b/u.test(text)) errors.push('AUTO_MERGE_FORBIDDEN');
   if (/\b(?:vercel\s+--prod|eas\s+(?:submit|update))\b/iu.test(text)) errors.push('DEPLOY_MUTATION_FORBIDDEN');
-  if (repository === 'devVentoGroup/vento-anima' && /expo\s+start\s+--web/iu.test(text)) {
+  if (repository === 'vento-group-sas/vento-anima' && /expo\s+start\s+--web/iu.test(text)) {
     errors.push('ANIMA_WEB_SURROGATE_FORBIDDEN');
   }
   return [...new Set(errors)].sort((a, b) => a.localeCompare(b, 'en'));
@@ -285,7 +285,7 @@ export function auditWorkspaceMaterialization({ shellRoot } = {}) {
   const errors = [];
 
   for (const repository of CANONICAL_REPOSITORIES) {
-    const root = repository === 'devVentoGroup/vento-shell'
+    const root = repository === 'vento-group-sas/vento-shell'
       ? resolvedShellRoot
       : path.join(workspaceRoot, repositoryName(repository));
     const workflowPath = path.join(root, WORKFLOW_RELATIVE_PATH);
@@ -309,7 +309,7 @@ export function auditWorkspaceMaterialization({ shellRoot } = {}) {
         record.errors.push('PACKAGE_MANIFEST_INVALID');
       }
     }
-    if (repository === 'devVentoGroup/vento-viso') {
+    if (repository === 'vento-group-sas/vento-viso') {
       const legacyPath = path.join(root, VISO_LEGACY_WORKFLOW_RELATIVE_PATH);
       if (!fs.existsSync(legacyPath)) {
         record.errors.push('VISO_LEGACY_WORKFLOW_MISSING');
