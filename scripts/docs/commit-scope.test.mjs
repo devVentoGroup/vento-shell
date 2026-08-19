@@ -17,6 +17,7 @@ test('clasifica fuentes canónicas y herramientas transversales por separado', (
   );
   assert.equal(classifyCommitPath('docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md'), 'PROJECTION');
   assert.equal(classifyCommitPath('src/app/page.tsx'), 'APPLICATION');
+  assert.equal(classifyCommitPath('docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md'), 'OPERATIONS_DOC');
 });
 
 test('rechaza mezclar una tarea canónica con infraestructura transversal', () => {
@@ -45,4 +46,37 @@ test('permite proyecciones derivadas junto a infraestructura transversal', () =>
     'docs/plan-canonico/modular/.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md',
   ]);
   assert.deepEqual(result.errors, []);
+});
+
+
+test('rechaza mezclar documentacion operativa con tarea canonica', () => {
+  const result = analyzeCommitScope([
+    'docs/plan-canonico/modular/bloques/J/tareas.md',
+    'docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md',
+  ]);
+  assert.deepEqual(result.errors, [
+    'el commit mezcla desarrollo de tarea canónica con documentación operativa.',
+  ]);
+});
+
+test('rechaza mezclar documentacion operativa con infraestructura', () => {
+  const result = analyzeCommitScope([
+    'scripts/docs/task-branch-lifecycle.mjs',
+    'docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md',
+  ]);
+  assert.deepEqual(result.errors, [
+    'el commit mezcla infraestructura transversal con documentación operativa.',
+  ]);
+});
+
+test('permite uno o varios documentos operativos en un commit aislado', () => {
+  const result = analyzeCommitScope([
+    'docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md',
+    'docs/OTRA_GUIA.md',
+  ]);
+  assert.deepEqual(result.errors, []);
+  assert.deepEqual(result.scopes.OPERATIONS_DOC, [
+    'docs/OTRA_GUIA.md',
+    'docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md',
+  ]);
 });
