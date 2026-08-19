@@ -1769,7 +1769,7 @@ Esta tarea no:
 **Tarea siguiente:** SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio
 **Tipo de tarea:** Habilitador global único — contrato documental de puerta fail-closed para merge y despliegue condicionada por pruebas obligatorias
 **Bloque:** BLOQUE T — CI, pruebas, despliegue y rollback base
-**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md`
 **Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`
 **Cambios físicos autorizados:** 0 durante el marcador global
@@ -1887,14 +1887,14 @@ La instancia global deberá quedar `VERIFIED` antes de cualquier `E5-GATE-008::<
 
 El universo inicial heredado de CI016 comprende exactamente:
 
-1. `devVentoGroup/vento-shell`;
-2. `devVentoGroup/vento-nexo`;
-3. `devVentoGroup/vento-fogo`;
-4. `devVentoGroup/vento-origo`;
-5. `devVentoGroup/vento-pulso`;
-6. `devVentoGroup/vento-viso`;
-7. `devVentoGroup/vento-numera`;
-8. `devVentoGroup/vento-anima`.
+1. `vento-group-sas/vento-shell`;
+2. `vento-group-sas/vento-nexo`;
+3. `vento-group-sas/vento-fogo`;
+4. `vento-group-sas/vento-origo`;
+5. `vento-group-sas/vento-pulso`;
+6. `vento-group-sas/vento-viso`;
+7. `vento-group-sas/vento-numera`;
+8. `vento-group-sas/vento-anima`.
 
 Un repositorio futuro solo entra a CI018 después de tener identidad y ownership canónicos y de cumplir la fachada de CI016.
 
@@ -1904,14 +1904,14 @@ La auditoría remota del corte actual muestra:
 
 | Repositorio                  | Rama `main` observada | Protección observada | Required status checks observados | Automatización relevante observada                                       |
 | ---------------------------- | --------------------- | -------------------- | --------------------------------- | ------------------------------------------------------------------------ |
-| `devVentoGroup/vento-shell`  | sí                    | deshabilitada        | ninguno                           | `validate-canonical-plan.yml`, especializada y con filtros de paths      |
-| `devVentoGroup/vento-nexo`   | sí                    | deshabilitada        | ninguno                           | workflow temporal que escribe en `preview`; no constituye gate universal |
-| `devVentoGroup/vento-fogo`   | sí                    | deshabilitada        | ninguno                           | no se observó workflow de gate                                           |
-| `devVentoGroup/vento-origo`  | sí                    | deshabilitada        | ninguno                           | no se observó workflow de gate                                           |
-| `devVentoGroup/vento-pulso`  | sí                    | deshabilitada        | ninguno                           | workflow manual deshabilitado para aplicación de cambio                  |
-| `devVentoGroup/vento-viso`   | sí                    | deshabilitada        | ninguno                           | workflow que puede escribir y hacer push directo a `main`                |
-| `devVentoGroup/vento-numera` | sí                    | deshabilitada        | ninguno                           | no se observó workflow de gate                                           |
-| `devVentoGroup/vento-anima`  | sí                    | deshabilitada        | ninguno                           | no se observó workflow de gate                                           |
+| `vento-group-sas/vento-shell`  | sí                    | deshabilitada        | ninguno                           | `validate-canonical-plan.yml`, especializada y con filtros de paths      |
+| `vento-group-sas/vento-nexo`   | sí                    | deshabilitada        | ninguno                           | workflow temporal que escribe en `preview`; no constituye gate universal |
+| `vento-group-sas/vento-fogo`   | sí                    | deshabilitada        | ninguno                           | no se observó workflow de gate                                           |
+| `vento-group-sas/vento-origo`  | sí                    | deshabilitada        | ninguno                           | no se observó workflow de gate                                           |
+| `vento-group-sas/vento-pulso`  | sí                    | deshabilitada        | ninguno                           | workflow manual deshabilitado para aplicación de cambio                  |
+| `vento-group-sas/vento-viso`   | sí                    | deshabilitada        | ninguno                           | workflow que puede escribir y hacer push directo a `main`                |
+| `vento-group-sas/vento-numera` | sí                    | deshabilitada        | ninguno                           | no se observó workflow de gate                                           |
+| `vento-group-sas/vento-anima`  | sí                    | deshabilitada        | ninguno                           | no se observó workflow de gate                                           |
 
 Conciliación del corte:
 
