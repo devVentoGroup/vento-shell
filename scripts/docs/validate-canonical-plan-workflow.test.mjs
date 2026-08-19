@@ -30,7 +30,7 @@ function sliceSection(source, startMarker, endMarker) {
   return source.slice(start, end);
 }
 
-test('verifica fuentes antes del build y publica el compilado regenerado', () => {
+test('verifica rango incremental de PR, fuentes antes del build y compilado regenerado', () => {
   const workflow = fs.readFileSync(workflowPath, 'utf8');
   const prebuildCheck = workflow.indexOf(
     'Verificar fuentes y derivados versionados antes de compilar',
@@ -54,15 +54,30 @@ test('verifica fuentes antes del build y publica el compilado regenerado', () =>
     workflow.slice(reproducibleBuild),
     /run: git diff --exit-code -- docs\/plan-canonico\/modular/u,
   );
+  assert.match(workflow, /Verificar aislamiento de commits en pull request inicial/u);
+  assert.match(workflow, /github\.event\.action != 'synchronize'/u);
+  assert.match(
+    workflow,
+    /docs:commit-scope:check -- --range "\$\{\{ github\.event\.pull_request\.base\.sha \}\}\.\.\$\{\{ github\.event\.pull_request\.head\.sha \}\}"/u,
+  );
+  assert.match(workflow, /Verificar aislamiento de commits incorporados por el push actual/u);
+  assert.match(workflow, /github\.event\.action == 'synchronize'/u);
+  assert.match(
+    workflow,
+    /docs:commit-scope:check -- --range "\$\{\{ github\.event\.before \}\}\.\.\$\{\{ github\.event\.pull_request\.head\.sha \}\}"/u,
+  );
+  assert.doesNotMatch(
+    workflow,
+    /docs:commit-scope:check -- --range "\$\{\{ github\.event\.pull_request\.base\.sha \}\}\.\.\$\{\{ github\.sha \}\}"/u,
+  );
   assert.match(workflow, /uses: actions\/upload-artifact@v4/u);
   assert.match(workflow, /PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO\.md/u);
   assert.match(workflow, /retention-days: 7/u);
   assert.match(workflow, /fetch-depth: 0/u);
-  assert.match(workflow, /docs:commit-scope:check/u);
   assert.match(workflow, /quality:lint:ratchet/u);
 });
 
-test('el watcher regenera y valida también la guía de tareas pendientes', () => {
+test('el watcher arranca en solo lectura y recompila solo ante cambios documentales reales', () => {
   const watcher = fs.readFileSync(watcherPath, 'utf8');
 
   assert.match(watcher, /"build-plan-canonico\.mjs"/u);
@@ -78,18 +93,23 @@ test('el watcher regenera y valida también la guía de tareas pendientes', () =
   assert.match(watcher, /if \(!existsSync\(repositoryDriftBaseline\)\)/u);
   assert.match(watcher, /driftArgs\.push\("--write-baseline"\)/u);
   assert.match(watcher, /driftIntervalMs = 30 \* 60 \* 1000/u);
-  assert.match(watcher, /runRepositoryDriftIfDue\(reason === "verificación inicial"\)/u);
+  assert.match(watcher, /verifyInitialState/u);
+  assert.match(watcher, /function terminalSafeText/u);
+  assert.match(watcher, /installTerminalSafeConsole\(\);/u);
+  assert.match(watcher, /Verificación inicial de solo lectura/u);
+  assert.match(watcher, /Comprobando fuentes y compilado sin escribir/u);
+  assert.match(watcher, /Fuentes comprobadas sin rebuild ni cambios versionados/u);
+  assert.doesNotMatch(watcher, /rebuild\("verificación inicial"\)/u);
+  assert.doesNotMatch(watcher, /writeCurrentTaskDevelopmentArtifacts/u);
+  assert.doesNotMatch(watcher, /writeImplementationControlArtifacts/u);
+  assert.doesNotMatch(watcher, /writeChatgptWorkStarter/u);
   assert.match(watcher, /"plan-watch\.lock\.json"/u);
   assert.match(watcher, /"plan-status\.md"/u);
   assert.match(watcher, /acquireWatcherLock/u);
   assert.match(watcher, /releaseWatcherLock/u);
   assert.match(watcher, /publishStatus\("COMPILANDO"\)/u);
   assert.match(watcher, /publishStatus\("VIGILANDO"\)/u);
-  assert.match(watcher, /writeCurrentTaskDevelopmentArtifacts/u);
-  assert.match(watcher, /writeImplementationControlArtifacts/u);
-  assert.match(watcher, /writeChatgptWorkStarter/u);
   assert.match(watcher, /ACCIÓN PRINCIPAL/u);
-  assert.match(watcher, /publishTaskArtifacts\(true\)/u);
   assert.match(watcher, /invalidPendingJsonFiles/u);
   assert.match(watcher, /ESPERANDO_JSON_COMPLETO/u);
   assert.match(watcher, /JSON todavía guardándose; compilación pospuesta/u);
@@ -115,11 +135,19 @@ test('el build prepara formato sin iniciar tareas vacías', () => {
 test('el build publica un estado local legible sin volverlo canónico', () => {
   const buildWrapper = fs.readFileSync(buildWrapperPath, 'utf8');
   assert.match(buildWrapper, /try \{\s+await import\('\.\/safe-build-plan-canonico\.mjs'\)/u);
-  assert.match(buildWrapper, /\[PLAN CANÓNICO\] Validación bloqueada:/u);
+  const terminalGuard = buildWrapper.indexOf('installTerminalSafeConsole();');
+  const safeBuildImport = buildWrapper.indexOf("await import('./safe-build-plan-canonico.mjs')");
+  assert.ok(terminalGuard >= 0 && terminalGuard < safeBuildImport, 'la normalizacion ASCII debe instalarse antes de importar safe-build');
+  assert.match(buildWrapper, /function terminalSafeText/u);
+  assert.match(
+    buildWrapper,
+    /\[PLAN CAN\\u00d3NICO\] Validaci\\u00f3n bloqueada:/u,
+  );
+  assert.match(buildWrapper, /\\u279c ACCI\\u00d3N PRINCIPAL/u);
   assert.match(buildWrapper, /process\.exit\(1\)/u);
   assert.match(buildWrapper, /"plan-status\.md"|'plan-status\.md'/u);
   assert.match(buildWrapper, /writePlanWatchStatus/u);
-  assert.match(buildWrapper, /state: 'COMPILACIÓN COMPLETADA'/u);
+  assert.match(buildWrapper, /state: 'COMPILACI\\u00d3N COMPLETADA'/u);
   assert.match(buildWrapper, /derivePreflight/u);
   assert.match(buildWrapper, /writeCurrentTaskDevelopmentArtifacts/u);
   assert.match(buildWrapper, /writeImplementationControlArtifacts/u);

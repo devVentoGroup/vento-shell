@@ -4,17 +4,27 @@ import test from 'node:test';
 import {
   classifyPreflightFindings,
   parseWorktreePaths,
+  terminalSafeText,
   validatorsForPath,
+  validatorsForPreflight,
 } from './canonical-task-preflight.mjs';
 
-test('asigna validadores globales a cualquier tarea', () => {
+
+test('normaliza salida operativa de terminal a ASCII seguro', () => {
+  const source = '[PLAN CAN\u00d3NICO] \u279c ACCI\u00d3N PRINCIPAL: v\u00e1lido \u2705';
+  const normalized = terminalSafeText(source);
+  assert.equal(normalized, '[PLAN CANONICO] -> ACCION PRINCIPAL: valido PASS');
+  assert.doesNotMatch(normalized, /[^\x09\x0A\x0D\x20-\x7E]/u);
+});
+
+test('asigna validadores globales a cualquier tarea documental', () => {
   const validators = validatorsForPath('bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md');
   assert.ok(validators.includes('npm run docs:plan:check'));
   assert.ok(validators.includes('npm run docs:treq:check'));
   assert.ok(validators.includes('git diff --check'));
 });
 
-test('añade validadores proporcionales por dominio', () => {
+test('añade validadores proporcionales por dominio documental', () => {
   const screenValidators = validatorsForPath('bloques/I_NAVEGACION_Y_PANTALLAS/01.md');
   assert.ok(screenValidators.includes('npm run docs:block-i:check'));
 
@@ -24,6 +34,27 @@ test('añade validadores proporcionales por dominio', () => {
   const integrationValidators = validatorsForPath('bloques/X_INTEGRACIONES/02.md');
   assert.ok(integrationValidators.includes('npm run docs:int-app:check'));
   assert.ok(integrationValidators.includes('npm run docs:int-ext:check'));
+});
+
+test('carril físico usa exclusivamente validation_commands de la instancia', () => {
+  const validationCommands = [
+    'npm test -- --runInBand',
+    'npm run typecheck',
+  ];
+  const validators = validatorsForPreflight({
+    relativePath: 'bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md',
+    requestedInstance: {
+      instance_id: 'SHELL-CI-019::GLOBAL',
+      task_id: 'SHELL-CI-019',
+      status: 'IN_PROGRESS',
+      validation_commands: validationCommands,
+    },
+  });
+
+  assert.deepEqual(validators, validationCommands);
+  assert.equal(validators.includes('npm run docs:plan:build'), false);
+  assert.equal(validators.includes('npm run docs:plan:check'), false);
+  assert.equal(validators.includes('npm run docs:treq:check'), false);
 });
 
 test('extrae rutas modificadas de git status porcelain', () => {
@@ -66,7 +97,7 @@ test('carril físico IN_PROGRESS acepta continuidad documental adelantada y camb
   assert.match(result.advisories[1], /únicamente cambios esperados del carril físico/u);
 });
 
-test('tolera proyecciones derivadas del estado físico junto con el registro activo', () => {
+test('bloquea derivados documentales sucios antes de aplicar código físico', () => {
   const result = classifyPreflightFindings({
     requestedTaskId: 'SHELL-CI-005',
     currentTaskId: 'SHELL-CI-006',
@@ -82,8 +113,10 @@ test('tolera proyecciones derivadas del estado físico junto con el registro act
     ],
   });
 
-  assert.deepEqual(result.blockers, []);
-  assert.ok(result.advisories.some((entry) => /cambios esperados del carril físico/u.test(entry)));
+  assert.equal(result.blockers.length, 1);
+  assert.match(result.blockers[0], /fuera del carril físico esperado/u);
+  assert.match(result.blockers[0], /00_CABECERA_Y_ESTADO\.md/u);
+  assert.match(result.blockers[0], /REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO\.md/u);
 });
 
 test('bloquea cambios locales ajenos al registro antes de aplicar código', () => {

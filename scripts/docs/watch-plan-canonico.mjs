@@ -3,18 +3,50 @@ import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { derivePreflight } from "./canonical-task-preflight.mjs";
-import { writeCurrentTaskDevelopmentArtifacts } from "./task-development-artifacts.mjs";
-import {
-  deriveImplementationControl,
-  writeImplementationControlArtifacts,
-} from "./implementation-control.mjs";
-import { writeChatgptWorkStarter } from "./chatgpt-work-starter.mjs";
+import { deriveImplementationControl } from "./implementation-control.mjs";
 import {
   acquireWatcherLock,
   registerPendingChange,
   releaseWatcherLock,
   writePlanWatchStatus,
 } from "./plan-watch-runtime.mjs";
+
+function terminalSafeText(value) {
+  const replacements = new Map([
+    ['\u279c', '->'],
+    ['\u2192', '->'],
+    ['\u2705', 'PASS'],
+    ['\u274c', 'FAIL'],
+    ['\u23f3', 'WAIT'],
+    ['\u21bb', 'RETRY'],
+    ['\u25b6', '>'],
+    ['\u2014', '-'],
+    ['\u2013', '-'],
+    ['\u201c', '"'],
+    ['\u201d', '"'],
+    ['\u2018', "'"],
+    ['\u2019', "'"],
+  ]);
+  let source = String(value ?? '');
+  for (const [symbol, replacement] of replacements) {
+    source = source.replaceAll(symbol, replacement);
+  }
+  return source
+    .normalize('NFKD')
+    .replace(/\p{M}/gu, '')
+    .replace(/[^\x09\x0A\x0D\x20-\x7E]/gu, '?');
+}
+
+function installTerminalSafeConsole() {
+  for (const level of ['log', 'warn', 'error']) {
+    const original = console[level].bind(console);
+    console[level] = (...args) => original(
+      ...args.map((value) => typeof value === 'string' ? terminalSafeText(value) : value),
+    );
+  }
+}
+
+installTerminalSafeConsole();
 
 const currentFile = fileURLToPath(import.meta.url);
 const currentDirectory = path.dirname(currentFile);
@@ -122,6 +154,7 @@ function isSynchronizedBuildOutput(relativePath) {
 let debounceTimer = null;
 let buildRunning = false;
 let buildPending = false;
+let initialVerificationRunning = true;
 let buildSequence = 0;
 let changeVersion = 0;
 const pendingChanges = new Set();
@@ -130,9 +163,9 @@ let lastObservedPreflight = null;
 let lastImplementationControl = null;
 let lastBuild = {
   buildId: null,
-  reason: null,
+  reason: "arranque de solo lectura",
   result: "PENDIENTE",
-  message: "El watcher todavía no ha completado su verificación inicial.",
+  message: "El watcher todavía no ha completado su comprobación inicial de solo lectura.",
 };
 
 function publishStatus(state, overrides = {}) {
@@ -155,28 +188,6 @@ function publishStatus(state, overrides = {}) {
     ...lastBuild,
     ...overrides,
   });
-}
-
-function publishTaskArtifacts(buildSucceeded = false) {
-  try {
-    writeCurrentTaskDevelopmentArtifacts({
-      root: repositoryRoot,
-      buildSucceeded,
-    });
-  } catch (error) {
-    console.warn(
-      `[PLAN CANÓNICO] Brief/diff no disponible: ${error instanceof Error ? error.message : String(error)}`
-    );
-  }
-  try {
-    const { control } = writeImplementationControlArtifacts({ root: repositoryRoot });
-    lastImplementationControl = control;
-    writeChatgptWorkStarter({ root: repositoryRoot });
-  } catch (error) {
-    console.warn(
-      `[PLAN CANÓNICO] Directiva operativa no disponible: ${error instanceof Error ? error.message : String(error)}`
-    );
-  }
 }
 
 function normalizeRelativePath(filename) {
@@ -232,9 +243,9 @@ function runNodeScript(args, label) {
   });
 }
 
-async function runRepositoryDriftIfDue(force = false) {
+async function runRepositoryDriftIfDue() {
   const now = Date.now();
-  if (!force && now - lastDriftAt < driftIntervalMs) {
+  if (now - lastDriftAt < driftIntervalMs) {
     return;
   }
   const driftArgs = [repositoryDriftScript];
@@ -248,7 +259,83 @@ async function runRepositoryDriftIfDue(force = false) {
   lastDriftAt = now;
 }
 
+async function verifyInitialState() {
+  console.log("\n[PLAN CANÓNICO] Verificación inicial de solo lectura.");
+  lastBuild = {
+    buildId: null,
+    reason: "arranque de solo lectura",
+    result: "EN CURSO",
+    message: "Comprobando fuentes canónicas sin reconstruir artefactos.",
+  };
+  publishStatus("VERIFICANDO");
+
+  try {
+    await runNodeScript(
+      [checkScript, "--check"],
+      "Comprobando fuentes y compilado sin escribir..."
+    );
+    await runNodeScript(
+      [pendingTaskContextCheckScript, "--check"],
+      "Comprobando guía derivada de tareas pendientes sin escribir..."
+    );
+    await runNodeScript(
+      [retiredPriorityRouteCheckScript, "--check"],
+      "Comprobando rutas y destinos de implementación sin escribir..."
+    );
+
+    if (existsSync(repositoryDriftBaseline)) {
+      await runNodeScript(
+        [repositoryDriftScript],
+        "Comprobando deriva multi-repositorio sin alterar baseline..."
+      );
+      lastDriftAt = Date.now();
+    } else {
+      console.log(
+        "[PLAN CANÓNICO] Deriva multi-repositorio omitida al arrancar: no existe baseline y el modo inicial no crea archivos."
+      );
+    }
+
+    lastBuild = {
+      buildId: null,
+      reason: "arranque de solo lectura",
+      result: "OK",
+      message: "Fuentes comprobadas sin rebuild ni cambios versionados.",
+    };
+    publishStatus("VIGILANDO");
+    console.log("[PLAN CANÓNICO] ✅ Arranque verificado en modo solo lectura.");
+  } catch (error) {
+    console.error("\n[PLAN CANÓNICO] ❌ Verificación inicial fallida:");
+    console.error(error instanceof Error ? error.message : error);
+    lastBuild = {
+      buildId: null,
+      reason: "arranque de solo lectura",
+      result: "ERROR",
+      message: error instanceof Error ? error.message : String(error),
+    };
+    publishStatus("VIGILANDO");
+  } finally {
+    initialVerificationRunning = false;
+    if (buildPending) {
+      buildPending = false;
+      console.log(
+        "[PLAN CANÓNICO] ↻ Se detectaron cambios durante la verificación inicial; se procesarán ahora."
+      );
+      void rebuild("cambios guardados durante verificación inicial");
+      return;
+    }
+    console.log("[PLAN CANÓNICO] Esperando cambios...");
+  }
+}
+
 async function rebuild(reason) {
+  if (initialVerificationRunning) {
+    buildPending = true;
+    console.log(
+      "[PLAN CANÓNICO] ⏳ Cambio recibido durante la verificación inicial; quedó en cola."
+    );
+    return;
+  }
+
   if (buildRunning) {
     buildPending = true;
     console.log(
@@ -272,7 +359,6 @@ async function rebuild(reason) {
     message: "Compilando y validando fuentes canónicas.",
   };
   publishStatus("COMPILANDO");
-  publishTaskArtifacts(false);
 
   try {
     await runNodeScript(
@@ -303,7 +389,7 @@ async function rebuild(reason) {
       "Validando rutas y destinos de implementación..."
     );
 
-    await runRepositoryDriftIfDue(reason === "verificación inicial");
+    await runRepositoryDriftIfDue();
 
     if (changeVersion !== buildVersion) {
       console.log(
@@ -320,10 +406,9 @@ async function rebuild(reason) {
       buildId,
       reason,
       result: "OK",
-      message: "Compilado actualizado y validado.",
+      message: "Compilado actualizado y validado por el build único.",
     };
     publishStatus("VIGILANDO");
-    publishTaskArtifacts(true);
     if (lastImplementationControl) {
       console.log(
         `[PLAN CANÓNICO] ➜ ACCIÓN PRINCIPAL: ${lastImplementationControl.primaryAction.type} `
@@ -354,7 +439,6 @@ async function rebuild(reason) {
       message: error instanceof Error ? error.message : String(error),
     };
     publishStatus("VIGILANDO");
-    publishTaskArtifacts(false);
   } finally {
     buildRunning = false;
 
@@ -439,9 +523,8 @@ function scheduleRebuild(filename) {
 
 console.log("[PLAN CANÓNICO] Vigilancia automática iniciada.");
 console.log(`[PLAN CANÓNICO] Carpeta: ${watchedDirectory}`);
-console.log("[PLAN CANÓNICO] Esperando cambios...");
-publishStatus("VIGILANDO");
-publishTaskArtifacts(false);
+console.log("[PLAN CANÓNICO] Arranque: comprobación de solo lectura; no se ejecutará build hasta detectar un cambio documental real.");
+publishStatus("VERIFICANDO");
 
 const watcher = watch(
   watchedDirectory,
@@ -489,5 +572,4 @@ process.on("exit", () => {
   releaseWatcherLock({ lockPath: watcherLockPath });
 });
 
-// Garantiza que el compilado esté vigente al iniciar VS Code.
-void rebuild("verificación inicial");
+void verifyInitialState();
