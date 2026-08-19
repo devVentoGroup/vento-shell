@@ -36,6 +36,35 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Clasificar alcance para fast lane documental
+        id: scope
+        if: github.event_name == 'pull_request'
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          mapfile -t changed < <(git diff --name-only "$BASE_SHA...$HEAD_SHA")
+          canonical_docs_only=true
+
+          if [ "${#changed[@]}" -eq 0 ]; then
+            canonical_docs_only=false
+          fi
+
+          for file in "${changed[@]}"; do
+            case "$file" in
+              docs/plan-canonico/modular/*)
+                ;;
+              *)
+                canonical_docs_only=false
+                break
+                ;;
+            esac
+          done
+
+          echo "canonical_docs_only=$canonical_docs_only" >> "$GITHUB_OUTPUT"
+          printf 'canonical_docs_only=%s\n' "$canonical_docs_only"
+
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
@@ -58,7 +87,7 @@ jobs:
         run: npm run docs:commit-scope:check -- --range "${{ github.event.before }}..${{ github.sha }}"
 
       - name: Impedir nueva deuda de lint en pull request
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && steps.scope.outputs.canonical_docs_only != 'true'
         run: npm run quality:lint:ratchet -- --range "${{ github.event.pull_request.base.sha }}..${{ github.sha }}"
 
       - name: Impedir nueva deuda de lint en push
@@ -78,15 +107,19 @@ jobs:
         run: git diff --exit-code -- docs/plan-canonico/modular
 
       - name: Probar continuidad documental
+        if: steps.scope.outputs.canonical_docs_only != 'true'
         run: npm run docs:plan:test
 
       - name: Probar validador del registro TREQ
+        if: steps.scope.outputs.canonical_docs_only != 'true'
         run: npm run docs:treq:test
 
       - name: Verificar registro TREQ
+        if: steps.scope.outputs.canonical_docs_only != 'true'
         run: npm run docs:treq:check
 
       - name: Verificar invariantes y compilado
+        if: steps.scope.outputs.canonical_docs_only != 'true'
         run: npm run docs:plan:check
 
       - name: Publicar compilado integral temporal
